@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 /**
  * Class represents Int64 (long) array (matrix)
- * 
+ *
  * @author Wojciech Gradkowski <wgradkowski@gmail.com>
  */
 public class MLInt64 extends MLNumericArray<Long>
@@ -12,7 +12,7 @@ public class MLInt64 extends MLNumericArray<Long>
 
     /**
      * Normally this constructor is used only by MatFileReader and MatFileWriter
-     * 
+     *
      * @param name - array name
      * @param dims - array dimensions
      * @param type - array type: here <code>mxDOUBLE_CLASS</code>
@@ -25,7 +25,7 @@ public class MLInt64 extends MLNumericArray<Long>
     /**
      * Create a <code>{@link MLInt64}</code> array with given name,
      * and dimensions.
-     * 
+     *
      * @param name - array name
      * @param dims - array dimensions
      */
@@ -34,9 +34,9 @@ public class MLInt64 extends MLNumericArray<Long>
         super(name, dims, MLArray.mxINT64_CLASS, 0);
     }
     /**
-     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style: 
+     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style:
      * construct a 2D real matrix from a one-dimensional packed array
-     * 
+     *
      * @param name - array name
      * @param vals - One-dimensional array of doubles, packed by columns (ala Fortran).
      * @param m - Number of rows
@@ -46,11 +46,11 @@ public class MLInt64 extends MLNumericArray<Long>
         super(name, MLArray.mxINT64_CLASS, vals, m );
     }
     /**
-     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style: 
+     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style:
      * construct a 2D real matrix from <code>byte[][]</code>
-     * 
+     *
      * Note: array is converted to Byte[]
-     * 
+     *
      * @param name - array name
      * @param vals - two-dimensional array of values
      */
@@ -59,9 +59,9 @@ public class MLInt64 extends MLNumericArray<Long>
         this( name, long2DToLong(vals), vals.length );
     }
     /**
-     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style: 
+     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style:
      * construct a matrix from a one-dimensional packed array
-     * 
+     *
      * @param name - array name
      * @param vals - One-dimensional array of doubles, packed by columns (ala Fortran).
      * @param m - Number of rows
@@ -79,19 +79,19 @@ public class MLInt64 extends MLNumericArray<Long>
     }
     /**
      * Gets two-dimensional real array.
-     * 
+     *
      * @return - 2D real array
      */
     public long[][] getArray()
     {
         long[][] result = new long[getM()][];
-        
+
         for ( int m = 0; m < getM(); m++ )
         {
            result[m] = new long[ getN() ];
 
            for ( int n = 0; n < getN(); n++ )
-           {               
+           {
                result[m][n] = getReal(m,n);
            }
         }
@@ -99,7 +99,7 @@ public class MLInt64 extends MLNumericArray<Long>
     }
     /**
      * Casts <code>Double[]</code> to <code>byte[]</code>
-     * 
+     *
      * @param - source <code>Long[]</code>
      * @return - result <code>long[]</code>
      */
@@ -114,7 +114,7 @@ public class MLInt64 extends MLNumericArray<Long>
     }
     /**
      * Converts byte[][] to Long[]
-     * 
+     *
      * @param dd
      * @return
      */
@@ -125,7 +125,7 @@ public class MLInt64 extends MLNumericArray<Long>
         {
             for ( int m = 0; m < dd.length; m++ )
             {
-                d[ m+n*dd.length ] = dd[m][n]; 
+                d[ m+n*dd.length ] = dd[m][n];
             }
         }
         return d;
@@ -134,8 +134,8 @@ public class MLInt64 extends MLNumericArray<Long>
     {
         if ( bytes.length != getBytesAllocated() )
         {
-            throw new IllegalArgumentException( 
-                        "To build from byte array I need array of size: " 
+            throw new IllegalArgumentException(
+                        "To build from byte array I need array of size: "
                                 + getBytesAllocated() );
         }
         return ByteBuffer.wrap( bytes ).getLong();
@@ -144,7 +144,7 @@ public class MLInt64 extends MLNumericArray<Long>
     {
         return Long.SIZE >> 3;
     }
-    
+
     public Class<Long> getStorageClazz()
     {
         return Long.class;
@@ -156,6 +156,6 @@ public class MLInt64 extends MLNumericArray<Long>
         buff.putLong( value );
         return buff.array();
     }
-    
+
 
 }

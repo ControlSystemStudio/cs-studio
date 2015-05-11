@@ -39,8 +39,8 @@ public class Meter extends Widget {
 
     /**
      * @param meter ADLWidget that describe the Meter.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      */
     public Meter(final ADLWidget meter, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
         super(meter, storedBasicAttribute, storedDynamicAttribute);
@@ -53,7 +53,7 @@ public class Meter extends Widget {
         DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMax]","")); //$NON-NLS-1$
         _widget.setDynamicsDescriptor(MeterModel.PROP_MAXVAL, dynamicsDescriptor);
-        
+
         _widget.setPropertyValue(MeterModel.PROP_MINVAL, 0.0);
         dynamicsDescriptor = new DynamicsDescriptor("directConnection"); //$NON-NLS-1$
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[graphMin]","")); //$NON-NLS-1$
@@ -86,8 +86,8 @@ public class Meter extends Widget {
     }
 
     /**
-     *{@inheritDoc} 
-     */    
+     *{@inheritDoc}
+     */
     @Override
     final void setWidgetType() {
         _widget = createWidgetModel(MeterModel.ID);

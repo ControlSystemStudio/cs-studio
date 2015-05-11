@@ -27,15 +27,15 @@ public class MemoryDataLogFactory implements IDataLogFactory
     final private Map<Scan, DataLog> logs = new HashMap<Scan, DataLog>();
 
     /** {@inheritDoc} */
-	@Override
-	public synchronized Scan createDataLog(final String scan_name) throws Exception
-	{
-		final long id = scans.size() + 1;
-		final Scan scan = new Scan(id, scan_name, new Date());
-		scans.add(scan);
-		logs.put(scan, new MemoryDataLog());
+    @Override
+    public synchronized Scan createDataLog(final String scan_name) throws Exception
+    {
+        final long id = scans.size() + 1;
+        final Scan scan = new Scan(id, scan_name, new Date());
+        scans.add(scan);
+        logs.put(scan, new MemoryDataLog());
         return scan;
-	}
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -45,11 +45,11 @@ public class MemoryDataLogFactory implements IDataLogFactory
     }
 
     /** {@inheritDoc} */
-	@Override
-	public synchronized DataLog getDataLog(final Scan scan) throws Exception
-	{
-		return logs.get(scan);
-	}
+    @Override
+    public synchronized DataLog getDataLog(final Scan scan) throws Exception
+    {
+        return logs.get(scan);
+    }
 
     /** {@inheritDoc} */
     @Override

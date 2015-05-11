@@ -123,7 +123,7 @@ public class LdapServiceImplHeadlessTest {
 
 
         try {
-            final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder 
+            final ILdapContentModelBuilder<LdapEpicsControlsConfiguration> builder
                 = LDAP_SERVICE.getLdapContentModelBuilder(VIRTUAL_ROOT, result);
             Assert.assertNotNull(builder);
             builder.build();
@@ -147,7 +147,7 @@ public class LdapServiceImplHeadlessTest {
                                      UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
         final Holder<Boolean> read = new Holder<Boolean>(Boolean.FALSE);
-        final ILdapReaderJob job = 
+        final ILdapReaderJob job =
             LDAP_SERVICE.createLdapReaderJob(new LdapSearchParams(name, LdapUtils.any(RECORD.getNodeTypeName())),
                                              new ILdapReadCompletedCallback() {
                                                 @Override

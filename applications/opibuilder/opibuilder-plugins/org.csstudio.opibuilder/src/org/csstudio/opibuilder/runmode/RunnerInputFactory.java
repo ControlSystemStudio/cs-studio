@@ -28,72 +28,72 @@ import org.eclipse.ui.IMemento;
  * The workbench will automatically create instances of this class as required.
  * It is not intended to be instantiated or subclassed by the client.
  * </p>
- * 
+ *
  * @noinstantiate This class is not intended to be instantiated by clients.
  * @noextend This class is not intended to be subclassed by clients.
  * @author Xihui Chen
- * 
+ *
  */
 public class RunnerInputFactory implements IElementFactory {
 
-	private static final String ID_FACTORY = "org.csstudio.opibuilder.runmode.RunnerInputFactory"; //$NON-NLS-1$
+    private static final String ID_FACTORY = "org.csstudio.opibuilder.runmode.RunnerInputFactory"; //$NON-NLS-1$
 
-	private static final String TAG_PATH = "path"; //$NON-NLS-1$
-	private static final String TAG_MACRO = "macro"; //$NON-NLS-1$
+    private static final String TAG_PATH = "path"; //$NON-NLS-1$
+    private static final String TAG_MACRO = "macro"; //$NON-NLS-1$
 
-	public IAdaptable createElement(IMemento memento) {
-		return createInput(memento);
-	}
+    public IAdaptable createElement(IMemento memento) {
+        return createInput(memento);
+    }
 
-	public static IAdaptable createInput(IMemento memento) {
-		// Get the file name.
-		String pathString = memento.getString(TAG_PATH);
-		if (pathString == null) {
-			return null;
-		}
+    public static IAdaptable createInput(IMemento memento) {
+        // Get the file name.
+        String pathString = memento.getString(TAG_PATH);
+        if (pathString == null) {
+            return null;
+        }
 
-		// Get a handle to the IFile...which can be a handle
-		// to a resource that does not exist in workspace
-		IPath path;
-		if (ResourceUtil.isURL(pathString))
-			path = new URLPath(pathString);
-		else
-			path = new Path(pathString);
-		MacrosInput macrosInput = null;
-		String macroString = memento.getString(TAG_MACRO);
-		if (macroString != null)
-			try {
-				macrosInput = MacrosInput.recoverFromString(macroString);
-			} catch (Exception e) {
-				OPIBuilderPlugin.getLogger().log(Level.WARNING,
-						"Failed to recover macro", e); //$NON-NLS-1$
-			}
-		return new RunnerInput(path, null, macrosInput);
-	}
+        // Get a handle to the IFile...which can be a handle
+        // to a resource that does not exist in workspace
+        IPath path;
+        if (ResourceUtil.isURL(pathString))
+            path = new URLPath(pathString);
+        else
+            path = new Path(pathString);
+        MacrosInput macrosInput = null;
+        String macroString = memento.getString(TAG_MACRO);
+        if (macroString != null)
+            try {
+                macrosInput = MacrosInput.recoverFromString(macroString);
+            } catch (Exception e) {
+                OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                        "Failed to recover macro", e); //$NON-NLS-1$
+            }
+        return new RunnerInput(path, null, macrosInput);
+    }
 
-	/**
-	 * Returns the element factory id for this class.
-	 * 
-	 * @return the element factory id
-	 */
-	public static String getFactoryId() {
-		return ID_FACTORY;
-	}
+    /**
+     * Returns the element factory id for this class.
+     *
+     * @return the element factory id
+     */
+    public static String getFactoryId() {
+        return ID_FACTORY;
+    }
 
-	/**
-	 * Saves the state of the given RunnerInput into the given memento.
-	 * 
-	 * @param memento
-	 *            the storage area for element state
-	 * @param input
-	 *            the opi runner input
-	 */
-	public static void saveState(IMemento memento, IRunnerInput input) {
-		IPath path = ((IRunnerInput) input).getPath();
-		memento.putString(TAG_PATH, path.toString());
-		MacrosInput macros = ((IRunnerInput) input).getMacrosInput();
-		if (macros != null)
-			memento.putString(TAG_MACRO, macros.toPersistenceString());
+    /**
+     * Saves the state of the given RunnerInput into the given memento.
+     *
+     * @param memento
+     *            the storage area for element state
+     * @param input
+     *            the opi runner input
+     */
+    public static void saveState(IMemento memento, IRunnerInput input) {
+        IPath path = ((IRunnerInput) input).getPath();
+        memento.putString(TAG_PATH, path.toString());
+        MacrosInput macros = ((IRunnerInput) input).getMacrosInput();
+        if (macros != null)
+            memento.putString(TAG_MACRO, macros.toPersistenceString());
 
-	}
+    }
 }

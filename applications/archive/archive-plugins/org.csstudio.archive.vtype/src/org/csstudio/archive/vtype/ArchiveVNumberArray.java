@@ -26,21 +26,21 @@ import org.epics.util.time.Timestamp;
  */
 public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberArray
 {
-	final private ListNumber data;
+    final private ListNumber data;
 
-	/** Initialize from doubles
-	 *  @param timestamp
-	 *  @param severity
-	 *  @param status
-	 *  @param display
-	 *  @param data
-	 */
-	public ArchiveVNumberArray(final Timestamp timestamp,
-			final AlarmSeverity severity, final String status,
-			final Display display, final double... data)
-	{
-		this(timestamp, severity, status, display, new ArrayDouble(data));
-	}
+    /** Initialize from doubles
+     *  @param timestamp
+     *  @param severity
+     *  @param status
+     *  @param display
+     *  @param data
+     */
+    public ArchiveVNumberArray(final Timestamp timestamp,
+            final AlarmSeverity severity, final String status,
+            final Display display, final double... data)
+    {
+        this(timestamp, severity, status, display, new ArrayDouble(data));
+    }
 
     /** Initialize from longs
      *  @param timestamp
@@ -49,7 +49,7 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
      *  @param display
      *  @param data
      */
-	public ArchiveVNumberArray(final Timestamp timestamp,
+    public ArchiveVNumberArray(final Timestamp timestamp,
             final AlarmSeverity severity, final String status,
             final Display display, final long... data)
     {
@@ -69,7 +69,7 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
     {
         this(timestamp, severity, status, display, new ArrayInt(data));
     }
-	
+
     /** Initialize from {@link ListNumber}
      *  @param timestamp
      *  @param severity
@@ -77,54 +77,54 @@ public class ArchiveVNumberArray extends ArchiveVDisplayType implements VNumberA
      *  @param display
      *  @param data
      */
-	public ArchiveVNumberArray(final Timestamp timestamp,
-			final AlarmSeverity severity, final String status,
-			final Display display, final ListNumber data)
-	{
-		super(timestamp, severity, status, display);
-		this.data = data;
-	}
+    public ArchiveVNumberArray(final Timestamp timestamp,
+            final AlarmSeverity severity, final String status,
+            final Display display, final ListNumber data)
+    {
+        super(timestamp, severity, status, display);
+        this.data = data;
+    }
 
-	@Override
-	public ListInt getSizes()
-	{
-		return new ArrayInt(data.size());
-	}
+    @Override
+    public ListInt getSizes()
+    {
+        return new ArrayInt(data.size());
+    }
 
-	@Override
-	public ListNumber getData()
-	{
-		return data;
-	}
-	
-	@Override
-	public List<ArrayDimensionDisplay> getDimensionDisplay()
-	{
-		return ValueUtil.defaultArrayDisplay(this);
-	}
-	
-	@Override
-	public int hashCode()
-	{
-		return data.hashCode();
-	}
+    @Override
+    public ListNumber getData()
+    {
+        return data;
+    }
 
-	@Override
-	public boolean equals(final Object obj)
-	{
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (! (obj instanceof VNumberArray))
-			return false;
-		final ListNumber other = ((VNumberArray) obj).getData();
-		return data.equals(other);
-	}
+    @Override
+    public List<ArrayDimensionDisplay> getDimensionDisplay()
+    {
+        return ValueUtil.defaultArrayDisplay(this);
+    }
 
-	@Override
-	public String toString()
-	{
-		return VTypeHelper.toString(this);
-	}
+    @Override
+    public int hashCode()
+    {
+        return data.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (! (obj instanceof VNumberArray))
+            return false;
+        final ListNumber other = ((VNumberArray) obj).getData();
+        return data.equals(other);
+    }
+
+    @Override
+    public String toString()
+    {
+        return VTypeHelper.toString(this);
+    }
 }

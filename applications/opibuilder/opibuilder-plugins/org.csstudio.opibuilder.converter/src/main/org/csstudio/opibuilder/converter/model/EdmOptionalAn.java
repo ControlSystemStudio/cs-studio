@@ -13,9 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation class for marking optional EdmAttributes, 
+ * Annotation class for marking optional EdmAttributes,
  * which are not always specified in EDM data model.
- * 
+ *
  * @author Matevz
  *
  */

@@ -24,14 +24,14 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class OpenPlotHandler extends AbstractHandler
 {
     /** {@inheritDoc} */
-	@Override
+    @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-		final ScanInfo info = ScanHandlerUtil.getScanInfo(event);
-		if (info == null)
-			return null;
+        final ScanInfo info = ScanHandlerUtil.getScanInfo(event);
+        if (info == null)
+            return null;
 
-		final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+        final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
         try
         {
             final IWorkbenchPage page = window.getActivePage();
@@ -43,6 +43,6 @@ public class OpenPlotHandler extends AbstractHandler
         {
             ExceptionDetailsErrorDialog.openError(window.getShell(), Messages.Error, Messages.OpenPlotError, ex);
         }
-	    return null;
+        return null;
     }
 }

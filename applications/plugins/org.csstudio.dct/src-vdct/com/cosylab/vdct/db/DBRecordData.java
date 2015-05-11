@@ -8,22 +8,22 @@ package com.cosylab.vdct.db;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -35,35 +35,35 @@ import java.util.*;
  */
 
 public class DBRecordData extends DBComment {
-	protected String record_type;
-	protected String name;
-	protected Hashtable fields = null;
-	protected Vector fieldsV = null;
-	protected Vector visualFieldsV = null;
+    protected String record_type;
+    protected String name;
+    protected Hashtable fields = null;
+    protected Vector fieldsV = null;
+    protected Vector visualFieldsV = null;
 
-	protected int x = -1;			// used for layout
-	protected int y = -1;
-	protected java.awt.Color color = java.awt.Color.black;
-	protected boolean rotated = false;
-	protected String description = null;
+    protected int x = -1;            // used for layout
+    protected int y = -1;
+    protected java.awt.Color color = java.awt.Color.black;
+    protected boolean rotated = false;
+    protected String description = null;
 
 /**
  * RecordData constructor comment.
  */
 public DBRecordData() {
-	fields = new Hashtable();
-	fieldsV = new Vector();
-	visualFieldsV = new Vector();
+    fields = new Hashtable();
+    fieldsV = new Vector();
+    visualFieldsV = new Vector();
 }
 /**
  * This method was created in VisualAge.
  * @param fd VisualDCTPackage.FieldData
  */
 public void addField(DBFieldData fd) {
-	if (!fields.containsKey(fd.getName())) {
-		fields.put(fd.getName(), fd);
-		fieldsV.addElement(fd);
-	}
+    if (!fields.containsKey(fd.getName())) {
+        fields.put(fd.getName(), fd);
+        fieldsV.addElement(fd);
+    }
 }
 
 /**
@@ -71,9 +71,9 @@ public void addField(DBFieldData fd) {
  * @param fd VisualDCTPackage.FieldData
  */
 public void addVisualField(DBFieldData fd) {
-	if (!visualFieldsV.contains(fd)) {
-		visualFieldsV.addElement(fd);
-	}
+    if (!visualFieldsV.contains(fd)) {
+        visualFieldsV.addElement(fd);
+    }
 }
 
 /**
@@ -82,7 +82,7 @@ public void addVisualField(DBFieldData fd) {
  * @return java.awt.Color
  */
 public java.awt.Color getColor() {
-	return color;
+    return color;
 }
 /**
  * Insert the method's description here.
@@ -90,7 +90,7 @@ public java.awt.Color getColor() {
  * @return java.lang.String
  */
 public java.lang.String getDescription() {
-	return description;
+    return description;
 }
 /**
  * Insert the method's description here.
@@ -98,7 +98,7 @@ public java.lang.String getDescription() {
  * @return java.util.Hashtable
  */
 public Hashtable getFields() {
-	return fields;
+    return fields;
 }
 /**
  * Returs ordered (as read) list
@@ -106,7 +106,7 @@ public Hashtable getFields() {
  * @return java.util.Vector
  */
 public Vector getFieldsV() {
-	return fieldsV;
+    return fieldsV;
 }
 /**
  * Returs ordered (as read) list
@@ -114,7 +114,7 @@ public Vector getFieldsV() {
  * @return java.util.Vector
  */
 public Vector getVisualFieldsV() {
-	return visualFieldsV;
+    return visualFieldsV;
 }
 /**
  * Insert the method's description here.
@@ -122,7 +122,7 @@ public Vector getVisualFieldsV() {
  * @return java.lang.String
  */
 public java.lang.String getName() {
-	return name;
+    return name;
 }
 /**
  * Insert the method's description here.
@@ -130,7 +130,7 @@ public java.lang.String getName() {
  * @return java.lang.String
  */
 public java.lang.String getRecord_type() {
-	return record_type;
+    return record_type;
 }
 /**
  * Insert the method's description here.
@@ -138,7 +138,7 @@ public java.lang.String getRecord_type() {
  * @return int
  */
 public int getX() {
-	return x;
+    return x;
 }
 /**
  * Insert the method's description here.
@@ -146,7 +146,7 @@ public int getX() {
  * @return int
  */
 public int getY() {
-	return y;
+    return y;
 }
 /**
  * Insert the method's description here.
@@ -154,7 +154,7 @@ public int getY() {
  * @return boolean
  */
 public boolean isRotated() {
-	return rotated;
+    return rotated;
 }
 /**
  * Insert the method's description here.
@@ -162,7 +162,7 @@ public boolean isRotated() {
  * @param newColor java.awt.Color
  */
 public void setColor(java.awt.Color newColor) {
-	color = newColor;
+    color = newColor;
 }
 /**
  * Insert the method's description here.
@@ -170,7 +170,7 @@ public void setColor(java.awt.Color newColor) {
  * @param newDescriprion java.lang.String
  */
 public void setDescription(java.lang.String newDescription) {
-	description = newDescription;
+    description = newDescription;
 }
 /**
  * Insert the method's description here.
@@ -178,7 +178,7 @@ public void setDescription(java.lang.String newDescription) {
  * @param newName java.lang.String
  */
 public void setName(java.lang.String newName) {
-	name = newName;
+    name = newName;
 }
 /**
  * Insert the method's description here.
@@ -186,7 +186,7 @@ public void setName(java.lang.String newName) {
  * @param newRecord_type java.lang.String
  */
 public void setRecord_type(java.lang.String newRecord_type) {
-	record_type = newRecord_type;
+    record_type = newRecord_type;
 }
 /**
  * Insert the method's description here.
@@ -194,7 +194,7 @@ public void setRecord_type(java.lang.String newRecord_type) {
  * @param newRotated boolean
  */
 public void setRotated(boolean newRotated) {
-	rotated = newRotated;
+    rotated = newRotated;
 }
 /**
  * Insert the method's description here.
@@ -202,7 +202,7 @@ public void setRotated(boolean newRotated) {
  * @param newX int
  */
 public void setX(int newX) {
-	x = newX;
+    x = newX;
 }
 /**
  * Insert the method's description here.
@@ -210,6 +210,6 @@ public void setX(int newX) {
  * @param newY int
  */
 public void setY(int newY) {
-	y = newY;
+    y = newY;
 }
 }

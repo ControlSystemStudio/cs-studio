@@ -46,40 +46,40 @@ package org.csstudio.dal.context;
  */
 public interface Identifier
 {
-	enum Type {PROPERTY, DEVICE, PROXY, APPLICATION, PLUG, OTHER;
-	}
-	;
+    enum Type {PROPERTY, DEVICE, PROXY, APPLICATION, PLUG, OTHER;
+    }
+    ;
 
-	/**
-	 * Returns the name of the <code>Identifiable</code>. This function
-	 * must never return <code>null</code>.
-	 *
-	 * @return the name of <code>Identifiable</code>
-	 */
-	String getName();
+    /**
+     * Returns the name of the <code>Identifiable</code>. This function
+     * must never return <code>null</code>.
+     *
+     * @return the name of <code>Identifiable</code>
+     */
+    String getName();
 
-	/**
-	 * Returns the name of the <code>Identifiable</code>. This function
-	 * must never return <code>null</code>.
-	 *
-	 * @return the name of <code>Identifiable</code>
-	 */
-	String getUniqueName();
+    /**
+     * Returns the name of the <code>Identifiable</code>. This function
+     * must never return <code>null</code>.
+     *
+     * @return the name of <code>Identifiable</code>
+     */
+    String getUniqueName();
 
-	/**
-	 * Returns the qualified name of the <code>Identifiable</code>.
-	 *
-	 * @return full name of the described object
-	 */
-	String getLongQualifiedName();
+    /**
+     * Returns the qualified name of the <code>Identifiable</code>.
+     *
+     * @return full name of the described object
+     */
+    String getLongQualifiedName();
 
-	/**
-	 * Returns one of the constants defined by this interface that
-	 * describe the nature of the <code>Identifiable</code>.
-	 *
-	 * @return the type of the <code>Identifiable</code>
-	 */
-	Type getType();
+    /**
+     * Returns one of the constants defined by this interface that
+     * describe the nature of the <code>Identifiable</code>.
+     *
+     * @return the type of the <code>Identifiable</code>
+     */
+    Type getType();
 }
 
 /* __oOo__ */

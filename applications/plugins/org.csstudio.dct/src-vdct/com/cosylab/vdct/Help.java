@@ -18,11 +18,11 @@ package com.cosylab.vdct;
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  * @version $Id$
- * 
+ *
  * @since VERSION
  */
 public class Help {
-    
+
     public static final String RUN_COMMAND_CLASS = "java -cp VisualDCT.jar com.cosylab.vdct.VisualDCT";
     public static final String RUN_COMMAND_JAR = "java -jar VisualDCT.jar";
     public static final String DBD_LOAD = "<DBD>* or <DB>*";
@@ -34,7 +34,7 @@ public class Help {
     public static final String PATH = "<path>";
     public static final String SPACE = "     ";
     public static final String INDENT = "  ";
-      
+
     public static final String GENERATE_FLAT_DATABASE = "java -cp VisualDCT.jar com.cosylab.vdct.GenerateFlatDatabase";
     public static final String OPTIONS = "[OPTIONS]";
     public static final String INPUT_VDB = "input.vdb";
@@ -45,7 +45,7 @@ public class Help {
     public static final String DISABLE_GLOBAL_MACRO = "--disable-global-macros";
     public static final String ENABLE_CAPFAST = "--enable-capfast";
     public static final String DISABLE_CAPFAST ="--disable-capfast";
-    
+
     public static void printHelpAndExit() {
         System.out.println("VisualDCT help");
         System.out.println();
@@ -60,21 +60,21 @@ public class Help {
                 "paths to database definition files and record instance database files (both optional)");
         System.out.println(INDENT + DIR + PATH + "             " + SPACE +
                 "VDCT_DIR environment variable is used to define the default working directory");
-        System.out.println(INDENT + CONFIG_DIR + PATH + "      " + SPACE + 
+        System.out.println(INDENT + CONFIG_DIR + PATH + "      " + SPACE +
                 "VDCT_CONFIG_DIR is an environment variable used to define the default plug-ins configuration directory");
-        System.out.println(INDENT + EPICS_DB_INCLUDE_PATH + PATH + SPACE + 
+        System.out.println(INDENT + EPICS_DB_INCLUDE_PATH + PATH + SPACE +
                 "definition of EPICS_DB_INCLUDE_PATH environment variable");
         System.out.println();
         System.out.println(INDENT + "Example: " + RUN_COMMAND_CLASS + " " + CONFIG_DIR + "/users/devl/config/vdct test.dbd test.db" );
-        
+
         System.out.println();
         System.out.println("Generating flat database help");
         System.out.println("Usage: " + GENERATE_FLAT_DATABASE + " " + OPTIONS + " ..." + " " + INPUT_VDB + " " + OUTPUT_DB);
         System.out.println();
         System.out.println("Options:");
-        System.out.println(INDENT + DBD_FILE + "                    " + SPACE + 
+        System.out.println(INDENT + DBD_FILE + "                    " + SPACE +
                 "if this command is followed by the name of a .dbd file, the .dbd file is loaded before database is generated");
-        System.out.println(INDENT + ENABLE_GLOBAL_MACRO + "        " + SPACE + 
+        System.out.println(INDENT + ENABLE_GLOBAL_MACRO + "        " + SPACE +
                 "enables global macro evaluation");
         System.out.println(INDENT + DISABLE_GLOBAL_MACRO + "       " + SPACE +
                 "disable global macro evaluation");
@@ -85,9 +85,9 @@ public class Help {
         System.out.println();
         System.out.println("We also provided a script for running flattening database tool, named flatdb, which can be found next to the distribution of VisualDCT.");
         System.out.println(INDENT + "Example: " + FLATDB + " " + DBD_FILE + " app.dbd " + INPUT_VDB + " " + OUTPUT_DB);
-        
-        
-        
+
+
+
         System.exit(0);
     }
 

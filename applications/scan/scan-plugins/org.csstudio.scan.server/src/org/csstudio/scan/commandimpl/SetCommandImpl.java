@@ -43,7 +43,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     {
         this(command, null);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception
@@ -55,47 +55,47 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
         return new String[] { device_name };
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void simulate(final SimulationContext context) throws Exception
     {
-		final SimulatedDevice device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
+        final SimulatedDevice device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
 
-		// Get previous and desired values
-		final double original = VTypeHelper.toDouble(device.read());
-		final double desired;
-		if (command.getValue() instanceof Number)
-			desired = ((Number) command.getValue()).doubleValue();
-		else
-			desired = Double.NaN;
+        // Get previous and desired values
+        final double original = VTypeHelper.toDouble(device.read());
+        final double desired;
+        if (command.getValue() instanceof Number)
+            desired = ((Number) command.getValue()).doubleValue();
+        else
+            desired = Double.NaN;
 
-		// Estimate execution time
-		final double time_estimate = command.getWait()
-				? device.getChangeTimeEstimate(desired)
-				: 0.0;
+        // Estimate execution time
+        final double time_estimate = command.getWait()
+                ? device.getChangeTimeEstimate(desired)
+                : 0.0;
 
-		// Show command
-		final StringBuilder buf = new StringBuilder();
-	    buf.append("Set '").append(command.getDeviceName()).append("' = ").append(command.getValue());
-	    command.appendConditionDetail(buf);
-	    if (! Double.isNaN(original))
-	    	buf.append(" [was ").append(original).append("]");
-    	context.logExecutionStep(context.getMacros().resolveMacros(buf.toString()), time_estimate);
+        // Show command
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Set '").append(command.getDeviceName()).append("' = ").append(command.getValue());
+        command.appendConditionDetail(buf);
+        if (! Double.isNaN(original))
+            buf.append(" [was ").append(original).append("]");
+        context.logExecutionStep(context.getMacros().resolveMacros(buf.toString()), time_estimate);
 
-    	// Set to (simulated) new value
-    	device.write(command.getValue());
+        // Set to (simulated) new value
+        device.write(command.getValue());
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void execute(final ScanContext context)  throws Exception
     {
-	    ScanCommandUtil.write(context,
-	            command.getDeviceName(), command.getValue(),
-	            command.getCompletion(), command.getWait(),
-				command.getReadback(),
-				command.getTolerance(),
-				TimeDuration.ofSeconds(command.getTimeout()));
-		context.workPerformed(1);
+        ScanCommandUtil.write(context,
+                command.getDeviceName(), command.getValue(),
+                command.getCompletion(), command.getWait(),
+                command.getReadback(),
+                command.getTolerance(),
+                TimeDuration.ofSeconds(command.getTimeout()));
+        context.workPerformed(1);
     }
 }

@@ -31,22 +31,22 @@ import org.csstudio.dal.spi.AbstractDeviceFactory;
  */
 public class DeviceFactoryImpl extends AbstractDeviceFactory
 {
-	/**
-	 * Creates a new DeviceFactoryImpl object.
-	 */
-	public DeviceFactoryImpl()
-	{
-		super();
-	}
+    /**
+     * Creates a new DeviceFactoryImpl object.
+     */
+    public DeviceFactoryImpl()
+    {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.spi.AbstractFactorySupport#getPlugClass()
-	 */
-	@Override
-	protected Class<?extends AbstractPlug> getPlugClass()
-	{
-		return SimulatorPlug.class;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.spi.AbstractFactorySupport#getPlugClass()
+     */
+    @Override
+    protected Class<?extends AbstractPlug> getPlugClass()
+    {
+        return SimulatorPlug.class;
+    }
 }
 
 /* __oOo__ */

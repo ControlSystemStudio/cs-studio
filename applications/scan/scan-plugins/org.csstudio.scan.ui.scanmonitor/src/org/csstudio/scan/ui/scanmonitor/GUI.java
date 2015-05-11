@@ -86,7 +86,7 @@ public class GUI implements ScanInfoModelListener
      */
     private boolean suppressed_table_updates = false;
 
-	private Bar mem_info;
+    private Bar mem_info;
 
     /** Initialize
      *  @param parent Parent component
@@ -329,7 +329,7 @@ public class GUI implements ScanInfoModelListener
 
         // Publish current selection
         if (site != null)
-        	site.setSelectionProvider(table_viewer);
+            site.setSelectionProvider(table_viewer);
     }
 
     /** @param display Display
@@ -385,11 +385,11 @@ public class GUI implements ScanInfoModelListener
                 final IHandlerService handler = (IHandlerService) site.getService(IHandlerService.class);
                 try
                 {
-	                handler.executeCommand("org.csstudio.scan.ui.scantree.open", null);
+                    handler.executeCommand("org.csstudio.scan.ui.scantree.open", null);
                 }
                 catch (Exception ex)
                 {
-                	ExceptionDetailsErrorDialog.openError(site.getShell(), "Cannot open scan editor", ex);
+                    ExceptionDetailsErrorDialog.openError(site.getShell(), "Cannot open scan editor", ex);
                 }
             }
         });
@@ -496,16 +496,16 @@ public class GUI implements ScanInfoModelListener
 
         // Allow contributions to the menu
         if (site != null)
-        	site.registerContextMenu(manager, table_viewer);
+            site.registerContextMenu(manager, table_viewer);
     }
 
-	/** @see ScanInfoModelListener */
+    /** @see ScanInfoModelListener */
     @Override
     public void scanServerUpdate(final ScanServerInfo server_info)
     {
-    	if (mem_info.isDisposed())
-    		return;
-    	mem_info.getDisplay().asyncExec(new Runnable()
+        if (mem_info.isDisposed())
+            return;
+        mem_info.getDisplay().asyncExec(new Runnable()
         {
             @Override
             public void run()
@@ -513,12 +513,12 @@ public class GUI implements ScanInfoModelListener
                 if (mem_info.isDisposed())
                     return;
                 mem_info.update(server_info.getMemoryInfo(),
-                			server_info.getMemoryPercentage());
+                            server_info.getMemoryPercentage());
             }
         });
     }
 
-	/** @see ScanInfoModelListener */
+    /** @see ScanInfoModelListener */
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
@@ -534,7 +534,7 @@ public class GUI implements ScanInfoModelListener
                     return;
                 // Received update -> enable table and display info
                 if (! table.getEnabled())
-                	table.setEnabled(true);
+                    table.setEnabled(true);
                 if (context_menu_is_active)
                     suppressed_table_updates = true;
                 else

@@ -40,7 +40,7 @@ public class ScriptCommand extends ScanCommand
         this("MyScanScript");
     }
 
-	/** Initialize
+    /** Initialize
      *  @param script Script
      */
     public ScriptCommand(final String script)
@@ -67,7 +67,7 @@ public class ScriptCommand extends ScanCommand
         super.configureProperties(properties);
     }
 
-	/** @return Name of script class */
+    /** @return Name of script class */
     public String getScript()
     {
         return script;
@@ -138,27 +138,27 @@ public class ScriptCommand extends ScanCommand
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-		final StringBuilder buf = new StringBuilder();
-		buf.append("Script ");
-		buf.append("'").append(script).append("'");
+    @Override
+    public String toString()
+    {
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Script ");
+        buf.append("'").append(script).append("'");
 
-		boolean first = true;
-		for (String arg : args)
-		{
-		    if (first)
-		    {
-		        buf.append(" ('").append(arg).append("'");
-		        first = false;
-		    }
-		    else
+        boolean first = true;
+        for (String arg : args)
+        {
+            if (first)
+            {
+                buf.append(" ('").append(arg).append("'");
+                first = false;
+            }
+            else
                 buf.append(", '").append(arg).append("'");
-		}
-		if (! first)
-		    buf.append(")");
+        }
+        if (! first)
+            buf.append(")");
 
-	    return buf.toString();
-	}
+        return buf.toString();
+    }
 }

@@ -15,13 +15,13 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class Activator extends AbstractUIPlugin
 {
     private static Activator plugin;
-    
+
     /** Constructor */
     public Activator()
     {
         plugin = this;
     }
-    
+
     /** @return The singleton instance. */
     static public Activator getDefault()
     {

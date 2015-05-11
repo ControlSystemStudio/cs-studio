@@ -1,23 +1,23 @@
 
-/* 
- * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -69,37 +69,37 @@ import org.slf4j.LoggerFactory;
  */
 
 public class MailImageWorker implements IImageWorker {
-    
-    private static final Logger LOG = LoggerFactory.getLogger(MailImageWorker.class);
-    
-	/** The string that is used to build the screenshot plugin menu */
-	private final String MENU_ITEM_ENTRY = "eMail";
 
-	/**
-	 * {@inheritDoc}
-	 */
+    private static final Logger LOG = LoggerFactory.getLogger(MailImageWorker.class);
+
+    /** The string that is used to build the screenshot plugin menu */
+    private final String MENU_ITEM_ENTRY = "eMail";
+
+    /**
+     * {@inheritDoc}
+     */
     public String getMenuItemEntry() {
         return MENU_ITEM_ENTRY;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     public void processImage(Shell parentShell, Image image) {
-        
+
         InternetAddress addressFrom = null;
         InternetAddress carbonCopy = null;
         InternetAddress[] addressTo = null;
         BufferedImage bufferedImage = null;
         String workspaceLocation = null;
         String imageFilename = "capture.jpg";
-        
+
         if(image == null) {
-            
+
             MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("MailImageWorker.NO_IMAGE"));
             return;
         }
-        
+
         // Retrieve the location of the workspace directory
         try {
             workspaceLocation = Platform.getLocation().toPortableString();
@@ -110,69 +110,69 @@ public class MailImageWorker implements IImageWorker {
             LOG.warn("Workspace location could not be found. Using working directory '.'");
             workspaceLocation = "./";
         }
-        
+
         bufferedImage = convertToBufferedImage(image.getImageData());
-        
+
         MailSenderDialog dialog = new MailSenderDialog(parentShell);
-        
+
         int value = dialog.open();
         if((value == Window.OK) && (dialog.getMailEntry() != null)) {
-            
+
             try {
                 // ImageIO.write(bufferedImage, "jpg", new File(ScreenshotPlugin.getInstalledFilePath("/") + imageFilename));
                 ImageIO.write(bufferedImage, "jpg", new File(workspaceLocation + imageFilename));
                 Properties props = new Properties();
-                
+
                 IPreferencesService pref = Platform.getPreferencesService();
                 props.put("mail.smtp.host", pref.getString(ScreenshotPlugin.PLUGIN_ID, ScreenshotPreferenceConstants.MAIL_SERVER, "", null));
                 props.put("mail.smtp.port", "25");
-                
+
                 Session session = Session.getDefaultInstance(props);
-                
+
                 Message msg = new MimeMessage(session);
-                
+
                 MimeMultipart content = new MimeMultipart("mixed");
-    
-                MimeBodyPart text = new MimeBodyPart(); 
-                MimeBodyPart bild = new MimeBodyPart(); 
+
+                MimeBodyPart text = new MimeBodyPart();
+                MimeBodyPart bild = new MimeBodyPart();
 
                 text.setText(dialog.getMailEntry().getMailText());
-                
+
                 ScreenshotPlugin.getDefault().setMailEntry(dialog.getMailEntry());
-                
-                text.setHeader("MIME-Version" , "1.0"); 
-                text.setHeader("Content-Type" , text.getContentType()); 
-    
+
+                text.setHeader("MIME-Version" , "1.0");
+                text.setHeader("Content-Type" , text.getContentType());
+
                 // DataSource source = new FileDataSource(ScreenshotPlugin.getInstalledFilePath("/") + imageFilename);
                 DataSource source = new FileDataSource(workspaceLocation + imageFilename);
                 bild.setDataHandler(new DataHandler(source));
                 bild.setFileName("Screenshot.jpg");
-                
-                content.addBodyPart(text); 
-                content.addBodyPart(bild); 
-    
-                msg.setContent( content ); 
-                msg.setHeader( "MIME-Version" , "1.0" ); 
-                msg.setHeader( "Content-Type" , content.getContentType() ); 
-                msg.setHeader( "X-Mailer", "Java-Mailer V 1.60217733" ); 
+
+                content.addBodyPart(text);
+                content.addBodyPart(bild);
+
+                msg.setContent( content );
+                msg.setHeader( "MIME-Version" , "1.0" );
+                msg.setHeader( "Content-Type" , content.getContentType() );
+                msg.setHeader( "X-Mailer", "Java-Mailer V 1.60217733" );
                 msg.setSentDate( new Date() );
-    
+
                 try {
-                    
+
                     addressFrom = new InternetAddress(dialog.getMailEntry().getMailFromAddress());
                     msg.setFrom(addressFrom);
                     addressTo = InternetAddress.parse(dialog.getMailEntry().getMailToAddress());
                     msg.setRecipients(Message.RecipientType.TO, addressTo);
-                    
+
                     if(dialog.getMailEntry().copyToSender()) {
-                        
+
                         carbonCopy = new InternetAddress(dialog.getMailEntry().getMailFromAddress());
                         msg.addRecipient(Message.RecipientType.CC, carbonCopy);
                     }
 
-                    msg.setSubject(dialog.getMailEntry().getMailSubject());    
+                    msg.setSubject(dialog.getMailEntry().getMailSubject());
                     Transport.send(msg);
-                    
+
                     MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("MailImageWorker.MAIL_SENT"));
                 } catch(MessagingException me) {
                     MessageDialog.openError(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), "Not possible to send the mail.\n\nReason:\n" + me.getMessage() + "\n\nIf port 25 is blocked by the virus scanner, you have to allow java(w).exe to use it.");
@@ -183,54 +183,54 @@ public class MailImageWorker implements IImageWorker {
                 MessageDialog.openInformation(parentShell, "Error", ioe.getMessage());
             }
         }
-        
+
         dialog = null;
     }
-    
+
     /**
      * Converts a SWT image to a AWT buffered image.
-     * 
+     *
      * @param data
      * @return
      */
     public BufferedImage convertToBufferedImage(ImageData data) {
-        
+
         ColorModel colorModel = null;
         PaletteData palette = data.palette;
-                
+
         if(palette.isDirect) {
-            
+
             colorModel = new DirectColorModel(data.depth, palette.redMask, palette.greenMask, palette.blueMask);
-            
+
             BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
-            
+
             for (int y = 0; y < data.height; y++) {
-                
+
                 for (int x = 0; x < data.width; x++) {
                     int pixel = data.getPixel(x, y);
                     RGB rgb = palette.getRGB(pixel);
                     bufferedImage.setRGB(x, y,  rgb.red << 16 | rgb.green << 8 | rgb.blue);
                 }
             }
-            
+
             return bufferedImage;
         } else {
-            
+
             RGB[] rgbs = palette.getRGBs();
-            
+
             byte[] red   = new byte[rgbs.length];
             byte[] green = new byte[rgbs.length];
             byte[] blue  = new byte[rgbs.length];
-            
+
             for (int i = 0; i < rgbs.length; i++) {
-                
+
                 RGB rgb = rgbs[i];
-                
+
                 red[i]   = (byte) rgb.red;
                 green[i] = (byte) rgb.green;
                 blue[i]  = (byte) rgb.blue;
             }
-            
+
             if (data.transparentPixel != -1) {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue, data.transparentPixel);
             } else {
@@ -242,9 +242,9 @@ public class MailImageWorker implements IImageWorker {
             int[] pixelArray = new int[1];
 
             for(int y = 0; y < data.height; y++) {
-                
+
                 for(int x = 0; x < data.width; x++) {
-                    
+
                     int pixel = data.getPixel(x, y);
                     pixelArray[0] = pixel;
                     raster.setPixel(x, y, pixelArray);
@@ -254,24 +254,24 @@ public class MailImageWorker implements IImageWorker {
             return bufferedImage;
         }
     }
-    
+
     /*
-    MimeMultipart content = new MimeMultipart( "alternative" ); 
-    MimeBodyPart text = new MimeBodyPart(); 
-    MimeBodyPart html = new MimeBodyPart(); 
-    text.setText( "Text als normaler String" ); 
-    text.setHeader( "MIME-Version" , "1.0" ); 
-    text.setHeader( "Content-Type" , text.getContentType() ); 
-    html.setContent( "<html>Text als <b>HTML</b></html>", "text/html"); 
-    html.setHeader( "MIME-Version" , "1.0" ); 
-    html.setHeader( "Content-Type" , html.getContentType() ); 
-    content.addBodyPart( text ); 
-    content.addBodyPart( html ); 
-    Message msg = ... 
-    msg.setContent( content ); 
-    msg.setHeader( "MIME-Version" , "1.0" ); 
-    msg.setHeader( "Content-Type" , content.getContentType() ); 
-    msg.setHeader( "X-Mailer", "Java-Mailer V 1.60217733" ); 
+    MimeMultipart content = new MimeMultipart( "alternative" );
+    MimeBodyPart text = new MimeBodyPart();
+    MimeBodyPart html = new MimeBodyPart();
+    text.setText( "Text als normaler String" );
+    text.setHeader( "MIME-Version" , "1.0" );
+    text.setHeader( "Content-Type" , text.getContentType() );
+    html.setContent( "<html>Text als <b>HTML</b></html>", "text/html");
+    html.setHeader( "MIME-Version" , "1.0" );
+    html.setHeader( "Content-Type" , html.getContentType() );
+    content.addBodyPart( text );
+    content.addBodyPart( html );
+    Message msg = ...
+    msg.setContent( content );
+    msg.setHeader( "MIME-Version" , "1.0" );
+    msg.setHeader( "Content-Type" , content.getContentType() );
+    msg.setHeader( "X-Mailer", "Java-Mailer V 1.60217733" );
     msg.setSentDate( new Date() );
  */
 }

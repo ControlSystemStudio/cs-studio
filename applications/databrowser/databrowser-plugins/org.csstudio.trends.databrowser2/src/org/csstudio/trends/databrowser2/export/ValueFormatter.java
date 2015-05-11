@@ -77,7 +77,7 @@ public class ValueFormatter
         }
 
         final VStatistics stats = (value instanceof VStatistics) ? (VStatistics) value : null;
-        
+
         final StringBuilder buf = new StringBuilder();
         if (stats != null)
             // Show only the average, since min/max handled separately

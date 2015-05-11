@@ -12,35 +12,35 @@ import org.eclipse.draw2d.geometry.Rectangle;
  */
 public class ConnectionAnchor extends AbstractConnectionAnchor {
 
-	public boolean leftToRight = true;
-	public int offsetH;
-	public int offsetV;
-	public boolean topDown = true;
+    public boolean leftToRight = true;
+    public int offsetH;
+    public int offsetV;
+    public boolean topDown = true;
 
-	public ConnectionAnchor(IFigure iOwner) {
-		super(iOwner);
-	}
+    public ConnectionAnchor(IFigure iOwner) {
+        super(iOwner);
+    }
 
-	/**
-	 * This method is taken from FixedConnectionAnchor in Logical Diagram Editor
-	 * example.
-	 **/
-	public Point getLocation(Point iReference) {
-		Rectangle r = getOwner().getBounds();
-		int x, y;
-		if (topDown)
-			y = r.y + offsetV;
-		else
-			y = r.y + r.height - offsetV;
+    /**
+     * This method is taken from FixedConnectionAnchor in Logical Diagram Editor
+     * example.
+     **/
+    public Point getLocation(Point iReference) {
+        Rectangle r = getOwner().getBounds();
+        int x, y;
+        if (topDown)
+            y = r.y + offsetV;
+        else
+            y = r.y + r.height - offsetV;
 
-		if (leftToRight)
-			x = r.x + offsetH;
-		else
-			x = r.x + r.width - offsetH;
+        if (leftToRight)
+            x = r.x + offsetH;
+        else
+            x = r.x + r.width - offsetH;
 
-		Point p = new Point(x, y);
-		getOwner().translateToAbsolute(p);
+        Point p = new Point(x, y);
+        getOwner().translateToAbsolute(p);
 
-		return p;
-	}
+        return p;
+    }
 }

@@ -21,7 +21,7 @@ public interface ChartListener extends XAxisListener, YAxisListener
      *  @param description What kind of zoom or pan is about to happen?
      */
     public void aboutToZoomOrPan(String description);
-    
+
     /** A coordinate was selected.
      *  Somebody clicked the mouse on the graph area.
      *  @param x, y Selected screen coordinates

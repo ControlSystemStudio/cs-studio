@@ -21,26 +21,26 @@ import org.eclipse.jface.action.Action;
  */
 public class CopyToClipboardAction extends Action
 {
-	final private List<AlarmTreeLeaf> alarms;
+    final private List<AlarmTreeLeaf> alarms;
 
-	public CopyToClipboardAction(final List<AlarmTreeLeaf> alarms)
+    public CopyToClipboardAction(final List<AlarmTreeLeaf> alarms)
     {
-		super(Messages.CopyToClipboard,
-				Activator.getImageDescriptor("icons/clipboard.gif")); //$NON-NLS-1$
-		this.alarms = alarms;
+        super(Messages.CopyToClipboard,
+                Activator.getImageDescriptor("icons/clipboard.gif")); //$NON-NLS-1$
+        this.alarms = alarms;
 
-		// Copy to clipboard is not available in RAP version
-		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
-			setEnabled(false);
-		}
+        // Copy to clipboard is not available in RAP version
+        if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+            setEnabled(false);
+        }
     }
 
-	@Override
+    @Override
     public void run()
     {
-		final String alarm_info = AlarmTextHelper.createAlarmInfoText(alarms);
+        final String alarm_info = AlarmTextHelper.createAlarmInfoText(alarms);
         // Copy as text to clipboard
-		SingleSourcePlugin.getUIHelper().copyToClipboard(
-				new String[] { alarm_info });
+        SingleSourcePlugin.getUIHelper().copyToClipboard(
+                new String[] { alarm_info });
     }
 }

@@ -26,26 +26,26 @@ import org.eclipse.ui.ide.IDE;
  */
 public class NewPythonScriptWizard extends Wizard implements INewWizard {
 
-	private NewPythonScriptWizardPage pyFilePage;
+    private NewPythonScriptWizardPage pyFilePage;
 
-	private IStructuredSelection selection;
+    private IStructuredSelection selection;
 
-	private IWorkbench workbench;
+    private IWorkbench workbench;
 
-	@Override
-	public void addPages() {
-		pyFilePage =new NewPythonScriptWizardPage("PythonScriptFilePage", selection); //$NON-NLS-1$
-		addPage(pyFilePage);
-	}
+    @Override
+    public void addPages() {
+        pyFilePage =new NewPythonScriptWizardPage("PythonScriptFilePage", selection); //$NON-NLS-1$
+        addPage(pyFilePage);
+    }
 
-	@Override
-	public boolean performFinish() {
-		IFile file = pyFilePage.createNewFile();
+    @Override
+    public boolean performFinish() {
+        IFile file = pyFilePage.createNewFile();
 
-		if (file == null) {
-			return false;
-		}
-		  // Open editor on new file.
+        if (file == null) {
+            return false;
+        }
+          // Open editor on new file.
         IWorkbenchWindow dw = workbench.getActiveWorkbenchWindow();
         try {
             if (dw != null) {
@@ -54,17 +54,17 @@ public class NewPythonScriptWizard extends Wizard implements INewWizard {
                     IDE.openEditor(page, file, true);
                 }
             }
-        } catch (PartInitException e) {           
-			MessageDialog.openError(null, "Open Python Script File error",
-					"Failed to open the newly created Python Script File. \n" + e.getMessage());
+        } catch (PartInitException e) {
+            MessageDialog.openError(null, "Open Python Script File error",
+                    "Failed to open the newly created Python Script File. \n" + e.getMessage());
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Python Editor error", e); //$NON-NLS-1$
-		}
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.workbench = workbench;
-		this.selection = selection;
-	}
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
+        this.workbench = workbench;
+        this.selection = selection;
+    }
 }

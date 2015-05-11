@@ -37,7 +37,7 @@ import org.eclipse.ui.part.ViewPart;
 public class TineTest extends ViewPart {
 
     /**
-     * 
+     *
      */
     public TineTest() {
         // TODO Auto-generated constructor stub

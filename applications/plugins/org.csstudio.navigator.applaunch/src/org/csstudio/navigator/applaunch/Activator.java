@@ -16,17 +16,17 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 @SuppressWarnings("nls")
 public class Activator
 {
-	/** Plugin ID defined in MANIFEST.MF */
+    /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.navigator.applaunch";
-	
-	/** @param path Image path
-	 *  @return {@link ImageDescriptor}
-	 */
-	public static ImageDescriptor getImageDescriptor(final String path)
-	{
-		// Similar:
-		// URL url = new URL("platform:/plugin/" + Activator.ID + "/" + path);
-		// return  ImageDescriptor.createFromURL(url);
-		return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
-	}
+
+    /** @param path Image path
+     *  @return {@link ImageDescriptor}
+     */
+    public static ImageDescriptor getImageDescriptor(final String path)
+    {
+        // Similar:
+        // URL url = new URL("platform:/plugin/" + Activator.ID + "/" + path);
+        // return  ImageDescriptor.createFromURL(url);
+        return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
+    }
 }

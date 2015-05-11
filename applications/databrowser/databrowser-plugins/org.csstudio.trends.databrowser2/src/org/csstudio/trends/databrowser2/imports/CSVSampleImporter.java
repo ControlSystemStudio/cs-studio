@@ -52,12 +52,12 @@ public class CSVSampleImporter implements SampleImporter
                 "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.,eE]+)\\s*.*");
 
         final Pattern statisticsPattern = Pattern.compile(
-                //    YYYY-MM-DD HH:MM:SS.SSS   value	negativeError	positiveError	ignore
+                //    YYYY-MM-DD HH:MM:SS.SSS   value    negativeError    positiveError    ignore
                 // or
-                //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value	negativeError	positiveError	ignore
+                //    YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value    negativeError    positiveError    ignore
                 "\\s*([0-9][0-9][0-9][0-9][-/][0-9][0-9][-/][0-9][0-9] [0-9][0-9]:[0-9][0-9]:[0-9][0-9]\\.[0-9]*)[ \\t,]+([-+0-9.,eE]+)[ \\t,]+([-+0-9.,eE]+)[ \\t,]+([-+0-9.,eE]+)\\s*.*");
 
-        
+
         final List<VType> values = new ArrayList<VType>();
 
         final BufferedReader reader =
@@ -78,7 +78,7 @@ public class CSVSampleImporter implements SampleImporter
             Matcher matcher = statisticsPattern.matcher(line);
             if (! matcher.matches())
             {
-            	// Not statistical data, try normal
+                // Not statistical data, try normal
                 matcher = pattern.matcher(line);
                 if (! matcher.matches())
                 {
@@ -87,8 +87,8 @@ public class CSVSampleImporter implements SampleImporter
                 }
                 statistics = false;
             }
-            
-            
+
+
             // Parse
             // Date may use '-' or '/' as separator. Force '-'
             String date_text = matcher.group(1).replace('/', '-');
@@ -96,37 +96,37 @@ public class CSVSampleImporter implements SampleImporter
             if (date_text.length() > 23)
                 date_text = date_text.substring(0, 23);
             final Date date = date_parser.parse(date_text);
-            //Double.parseDouble only parses numbers in format #.#... or #.#...#E0, meaning 
+            //Double.parseDouble only parses numbers in format #.#... or #.#...#E0, meaning
             //that you cannot have any grouping separators, and the decimal separator must be '.'
             //First remove all grouping separators, then replace the decimal separator with a '.'
             final double number = Double.parseDouble(
-            		remove(matcher.group(2),groupingSeparator).replace(decimalSeparator, '.'));
+                    remove(matcher.group(2),groupingSeparator).replace(decimalSeparator, '.'));
             final Timestamp time = TimestampHelper.fromMillisecs(date.getTime());
             if (statistics) {
-            	final double min = Double.parseDouble(
-                		remove(matcher.group(3),groupingSeparator).replace(decimalSeparator, '.'));
-            	final double max = Double.parseDouble(
-                		remove(matcher.group(4),groupingSeparator).replace(decimalSeparator, '.'));
-            	values.add(new ArchiveVStatistics(time, AlarmSeverity.NONE, "", meta_data, number, number-min, number+max, 0, 1));
+                final double min = Double.parseDouble(
+                        remove(matcher.group(3),groupingSeparator).replace(decimalSeparator, '.'));
+                final double max = Double.parseDouble(
+                        remove(matcher.group(4),groupingSeparator).replace(decimalSeparator, '.'));
+                values.add(new ArchiveVStatistics(time, AlarmSeverity.NONE, "", meta_data, number, number-min, number+max, 0, 1));
             } else {
-	            values.add(new ArchiveVNumber(time, AlarmSeverity.NONE, "", meta_data, number));
+                values.add(new ArchiveVNumber(time, AlarmSeverity.NONE, "", meta_data, number));
             }
         }
         reader.close();
 
         return values;
     }
-        
+
     /**
      * Remove all occurrences of the character from the string.
-     * 
+     *
      * @param source the string to remove the characters from
      * @param charToRemove the character to remove
      * @return the string without any occurrence of the given character
      */
     private static String remove(String source, char charToRemove) {
-    	if (source.indexOf(charToRemove) < 0) return source;
-    	char[] chars = source.toCharArray();
+        if (source.indexOf(charToRemove) < 0) return source;
+        char[] chars = source.toCharArray();
         int pos = 0;
         for (int j = 0; j < chars.length; j++) {
             if (chars[j] != charToRemove) {

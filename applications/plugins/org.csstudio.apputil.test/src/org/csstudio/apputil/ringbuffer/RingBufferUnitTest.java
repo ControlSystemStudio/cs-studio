@@ -22,7 +22,7 @@ public class RingBufferUnitTest
         final RingBuffer<Integer> ring = new RingBuffer<Integer>(5);
         assertTrue(ring.isEmpty());
         assertFalse(ring.isFull());
-        
+
         // Add/remove one item
         ring.add(1);
         dump(ring);
@@ -32,18 +32,18 @@ public class RingBufferUnitTest
         assertNull(ring.remove());
         assertTrue(ring.isEmpty());
         dump(ring);
-        
+
         // Add 4 items
         for (int i=1; i<=4; ++i)
             ring.add(i);
         assertFalse(ring.isFull());
         dump(ring);
-        
+
         // Fill with 5th element
         ring.add(5);
         assertTrue(ring.isFull());
         dump(ring);
-        
+
         // Fill to 9, but ring only remembers the last 5 items
         for (int i=6; i<10; ++i)
             ring.add(i);
@@ -79,9 +79,9 @@ public class RingBufferUnitTest
 
     private void dump(final RingBuffer<Integer> ring)
     {
-    	final Integer[] values = ring.toArray(new Integer[0]);
-    	for (Integer i : values)
+        final Integer[] values = ring.toArray(new Integer[0]);
+        for (Integer i : values)
             System.out.print(i + " "); //$NON-NLS-1$
-    	System.out.println();
+        System.out.println();
     }
 }

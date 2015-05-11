@@ -26,50 +26,50 @@ import org.eclipse.ui.PlatformUI;
  */
 public class OpenWebpageAction extends AbstractWidgetAction {
 
-	public static final String PROP_HYPERLINK = "hyperlink";//$NON-NLS-1$
+    public static final String PROP_HYPERLINK = "hyperlink";//$NON-NLS-1$
 
-	@Override
-	protected void configureProperties() {
-		addProperty(new StringProperty(PROP_HYPERLINK, "Web Address", WidgetPropertyCategory.Basic, "http://"));
+    @Override
+    protected void configureProperties() {
+        addProperty(new StringProperty(PROP_HYPERLINK, "Web Address", WidgetPropertyCategory.Basic, "http://"));
 
-	}
+    }
 
-	@Override
-	public ActionType getActionType() {
-		return ActionType.OPEN_WEBPAGE;
-	}
+    @Override
+    public ActionType getActionType() {
+        return ActionType.OPEN_WEBPAGE;
+    }
 
-	@Override
-	public void run() {
-		String hyperLink = getHyperLink();
-		if (!hyperLink.contains("://")) { //$NON-NLS-1$
-			hyperLink = "http://" + hyperLink; //$NON-NLS-1$
-		}
-		try {
-			if (SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-				SingleSourceHelper.rapOpenWebPage(hyperLink);
-			else
-				PlatformUI.getWorkbench().getBrowserSupport()
-						.createBrowser("opi_web_browser").openURL( //$NON-NLS-1$
-								new URL(hyperLink));
-		} catch (Exception e) {
-			String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}",
-					hyperLink, e);
-			OPIBuilderPlugin.getLogger().log(Level.WARNING,
-					"Failed to open " + hyperLink, e); //$NON-NLS-1$
-			ConsoleService.getInstance().writeError(message);
-		}
-	}
+    @Override
+    public void run() {
+        String hyperLink = getHyperLink();
+        if (!hyperLink.contains("://")) { //$NON-NLS-1$
+            hyperLink = "http://" + hyperLink; //$NON-NLS-1$
+        }
+        try {
+            if (SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+                SingleSourceHelper.rapOpenWebPage(hyperLink);
+            else
+                PlatformUI.getWorkbench().getBrowserSupport()
+                        .createBrowser("opi_web_browser").openURL( //$NON-NLS-1$
+                                new URL(hyperLink));
+        } catch (Exception e) {
+            String message = NLS.bind("Failed to open the hyperlink: {0}\n{1}",
+                    hyperLink, e);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                    "Failed to open " + hyperLink, e); //$NON-NLS-1$
+            ConsoleService.getInstance().writeError(message);
+        }
+    }
 
-	private String getHyperLink(){
-		return (String)getPropertyValue(PROP_HYPERLINK);
-	}
+    private String getHyperLink(){
+        return (String)getPropertyValue(PROP_HYPERLINK);
+    }
 
 
 
-	@Override
-	public String getDefaultDescription() {
-		return super.getDefaultDescription() + " " + getHyperLink(); //$NON-NLS-1$
-	}
+    @Override
+    public String getDefaultDescription() {
+        return super.getDefaultDescription() + " " + getHyperLink(); //$NON-NLS-1$
+    }
 
 }

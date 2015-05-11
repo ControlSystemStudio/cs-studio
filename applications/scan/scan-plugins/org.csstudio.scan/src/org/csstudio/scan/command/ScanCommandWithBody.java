@@ -31,9 +31,9 @@ import org.w3c.dom.Element;
 @SuppressWarnings("nls")
 abstract public class ScanCommandWithBody extends ScanCommand
 {
-	private List<ScanCommand> body;
+    private List<ScanCommand> body;
 
-	/** Initialize
+    /** Initialize
      *  @param body Optional body commands
      */
     public ScanCommandWithBody(final List<ScanCommand> body)
@@ -102,9 +102,9 @@ abstract public class ScanCommandWithBody extends ScanCommand
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    return getCommandName();
-	}
+    @Override
+    public String toString()
+    {
+        return getCommandName();
+    }
 }

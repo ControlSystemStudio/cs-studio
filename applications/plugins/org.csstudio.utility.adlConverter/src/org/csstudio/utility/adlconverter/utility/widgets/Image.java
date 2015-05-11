@@ -48,9 +48,9 @@ public class Image extends Widget {
 
     /**
      * @param image ADLWidget that describe the Image.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
-     * @param targetProject 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
+     * @param targetProject
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public Image(final ADLWidget image, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute, IPath targetPath) throws WrongADLFormatException {
@@ -64,7 +64,7 @@ public class Image extends Widget {
             if(row[0].equals("type")){ //$NON-NLS-1$
                 ;// not used
             }else if(row[0].equals("\"image name\"")){ //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 row[1] = ADLHelper.cleanString(row[1])[0];
                 IResource res = ResourcesPlugin.getWorkspace().getRoot();
                 String target = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
@@ -76,7 +76,7 @@ public class Image extends Widget {
                 }
                 path = path.append(row[1]);
                 _widget.setPropertyValue(ImageModel.PROP_FILENAME, path);
-            }else{                
+            }else{
                 throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin+ obj+Messages.Label_WrongADLFormatException_Parameter_End);
             } //image have no Parameter
         }

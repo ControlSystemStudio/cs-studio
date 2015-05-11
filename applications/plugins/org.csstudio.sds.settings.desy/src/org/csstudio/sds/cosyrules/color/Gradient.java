@@ -32,33 +32,33 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  *
  */
 public final class Gradient implements IRule {
-	/**
-	 * The ID for this rule.
-	 */
-	public static final String TYPE_ID = "cosyrules.color.gradient";
+    /**
+     * The ID for this rule.
+     */
+    public static final String TYPE_ID = "cosyrules.color.gradient";
 
-	/**
-	 * Standard constructor.
-	 */
-	public Gradient() {
-	}
+    /**
+     * Standard constructor.
+     */
+    public Gradient() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0)) {
-		    double d = 0.0;
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        if ((arguments != null) && (arguments.length > 0)) {
+            double d = 0.0;
             if (arguments[0] instanceof Double) {
                  d = (Double) arguments[0];
             }else if (arguments[0] instanceof Long) {
                 d = ((Long)  arguments[0]).doubleValue();
             }
             double b=(d+1.0)/2.0;
-			return ColorAndFontUtil.toHex((int)(b*240.0),(int)(b*240.0),(int)(b*240.0));
-		}
-		return ColorAndFontUtil.toHex(0,0,0);
-	}
+            return ColorAndFontUtil.toHex((int)(b*240.0),(int)(b*240.0),(int)(b*240.0));
+        }
+        return ColorAndFontUtil.toHex(0,0,0);
+    }
 
     /**
      * {@inheritDoc}

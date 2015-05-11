@@ -25,7 +25,7 @@ public class ExponentialVTypeFormat extends DecimalVTypeFormat
     {
         super(precision);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected NumberFormat initFormat()
@@ -38,7 +38,7 @@ public class ExponentialVTypeFormat extends DecimalVTypeFormat
         pattern.append("E0");
         return new DecimalFormat(pattern.toString());
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String toString()

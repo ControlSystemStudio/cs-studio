@@ -33,7 +33,7 @@ import com.sun.security.auth.UserPrincipal;
  *  <li>userPassword must be in '{crypt}' format
  *  <li>entry must have uidNumber and gidNumber
  *  </ul>
- *   
+ *
  *  This login module performs a 'bind' to LDAP without trying
  *  to read any specific attributes.
  *  <p>
@@ -50,7 +50,7 @@ import com.sun.security.auth.UserPrincipal;
  *  </ul>
  *  <p>
  *  For now this login module always performs a "simple" bind.
- * 
+ *
  *  @author Kay Kasemir
  *  @see com.sun.security.auth.module.JndiLoginModule
  */
@@ -81,7 +81,7 @@ public class LDAPBindLoginModule implements LoginModule
 
     /** Name of authenticated user or <code>null</code> */
     private String user = null;
-    
+
     /** Initialize from JAAS config file
      *  @see LoginModule
      */
@@ -104,7 +104,7 @@ public class LDAPBindLoginModule implements LoginModule
     {
         if (server_url == null)
             throw new LoginException("Missing " + URL_TAG);
-        
+
         if (callbackHandler == null)
             throw new LoginException("No CallbackHandler");
 
@@ -165,7 +165,7 @@ public class LDAPBindLoginModule implements LoginModule
             System.out.println("Attempting to bind to '" + dn + "'");
         env.put(Context.SECURITY_PRINCIPAL, dn);
         env.put(Context.SECURITY_CREDENTIALS, password);
-        
+
         try
         {
             final DirContext context = new InitialDirContext(env);

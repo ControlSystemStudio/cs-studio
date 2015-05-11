@@ -19,72 +19,72 @@ import org.csstudio.swt.xygraph.linearscale.Range;
  */
 public class ZoomCommand extends SaveStateCommand
 {
-	final private List<Axis> xAxisList;
-	final private List<Axis> yAxisList;
-	
-	final private List<Range> beforeXRangeList = new ArrayList<Range>();
-	final private List<Range> beforeYRangeList = new ArrayList<Range>();
-	final private List<Range> afterXRangeList = new ArrayList<Range>();
-	final private List<Range> afterYRangeList = new ArrayList<Range>();
+    final private List<Axis> xAxisList;
+    final private List<Axis> yAxisList;
 
-	/** Initialize
-	 *  @param name Name of operation for undo/redo GUI
-	 *  @param xAxisList X Axes to save or <code>null</code>
-	 *  @param yAxisList Y Axes to save
-	 */
-	public ZoomCommand(final String name, final List<Axis> xAxisList,
-	        final List<Axis> yAxisList)
-	{
-	    super(name);
-		this.xAxisList = xAxisList;
-		this.yAxisList = yAxisList;
-		saveOriginalState();
-	}
+    final private List<Range> beforeXRangeList = new ArrayList<Range>();
+    final private List<Range> beforeYRangeList = new ArrayList<Range>();
+    final private List<Range> afterXRangeList = new ArrayList<Range>();
+    final private List<Range> afterYRangeList = new ArrayList<Range>();
 
-	private void saveOriginalState(){
+    /** Initialize
+     *  @param name Name of operation for undo/redo GUI
+     *  @param xAxisList X Axes to save or <code>null</code>
+     *  @param yAxisList Y Axes to save
+     */
+    public ZoomCommand(final String name, final List<Axis> xAxisList,
+            final List<Axis> yAxisList)
+    {
+        super(name);
+        this.xAxisList = xAxisList;
+        this.yAxisList = yAxisList;
+        saveOriginalState();
+    }
+
+    private void saveOriginalState(){
         if (xAxisList != null)
             for(Axis axis : xAxisList)
                 beforeXRangeList.add(axis.getRange());
         for(Axis axis : yAxisList)
             beforeYRangeList.add(axis.getRange());
     }
-    
-	public void redo() {
-		int i=0;
-		if (xAxisList != null) {
-    		for(Axis axis : xAxisList){
-    			axis.setRange(afterXRangeList.get(i));
-    			i++;
-    		}
-		}
-		i=0;
-		for(Axis axis : yAxisList){
-			axis.setRange(afterYRangeList.get(i));
-			i++;
-		}
-	}
 
-	public void undo() {
-		int i=0;
+    public void redo() {
+        int i=0;
         if (xAxisList != null) {
-    		for(Axis axis : xAxisList){
-    			axis.setRange(beforeXRangeList.get(i));
-    			i++;
-    		}
+            for(Axis axis : xAxisList){
+                axis.setRange(afterXRangeList.get(i));
+                i++;
+            }
         }
-		i=0;
-		for(Axis axis : yAxisList){
-			axis.setRange(beforeYRangeList.get(i));
-			i++;
-		}
-	}
-	
+        i=0;
+        for(Axis axis : yAxisList){
+            axis.setRange(afterYRangeList.get(i));
+            i++;
+        }
+    }
+
+    public void undo() {
+        int i=0;
+        if (xAxisList != null) {
+            for(Axis axis : xAxisList){
+                axis.setRange(beforeXRangeList.get(i));
+                i++;
+            }
+        }
+        i=0;
+        for(Axis axis : yAxisList){
+            axis.setRange(beforeYRangeList.get(i));
+            i++;
+        }
+    }
+
     @Override
-	public void saveState(){
+    public void saveState(){
         if (xAxisList != null)
-    		for(Axis axis : xAxisList)
-    			afterXRangeList.add(axis.getRange());
-		for(Axis axis : yAxisList)
-			afterYRangeList.add(axis.getRange());
-	}
+            for(Axis axis : xAxisList)
+                afterXRangeList.add(axis.getRange());
+        for(Axis axis : yAxisList)
+            afterYRangeList.add(axis.getRange());
+    }
 }

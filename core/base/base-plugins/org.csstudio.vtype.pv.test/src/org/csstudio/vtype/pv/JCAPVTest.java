@@ -31,7 +31,7 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 /** JUnit tests
- * 
+ *
  *  <p>These require a softIoc with
  *  org.csstudio.scan/examples/*.db
  *  and org.csstudio.vtype.pv.test/examples/test.db
@@ -42,7 +42,7 @@ public class JCAPVTest implements PVListener
     private static final String NETWORK = "127.0.0.1 webopi.sns.gov:5066";
     private static final int MAX_ARRAY = 20000;
     final private CountDownLatch updates = new CountDownLatch(1);
-    
+
     @Before
     public void setup()
     {
@@ -54,7 +54,7 @@ public class JCAPVTest implements PVListener
             handler.setLevel(Level.FINE);
             handler.setFormatter(new SimpleFormatter());
         }
-        
+
         System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", NETWORK);
         System.setProperty("com.cosylab.epics.caj.CAJContext.auto_addr_list", "false");
 
@@ -63,7 +63,7 @@ public class JCAPVTest implements PVListener
 
         System.setProperty("com.cosylab.epics.caj.CAJContext.max_array_bytes", Integer.toString(MAX_ARRAY));
         System.setProperty("gov.aps.jca.jni.JNIContext.max_array_bytes", Integer.toString(MAX_ARRAY));
-        
+
         final PVFactory factory = new JCA_PVFactory();
         PVPool.addPVFactory(factory);
     }
@@ -82,7 +82,7 @@ public class JCAPVTest implements PVListener
         PVPool.releasePV(pv3);
         PVPool.releasePV(pv2);
         PVPool.releasePV(pv1);
-        
+
         // Create _new_ PV
         final PV pv4 = PVPool.getPV("motor_x");
         assertThat(pv1, not(sameInstance(pv4)));
@@ -95,21 +95,21 @@ public class JCAPVTest implements PVListener
         // Create PV
         final PV pv1 = PVPool.getPV("ca://motor_x");
         assertThat(pv1.getName(), equalTo("ca://motor_x"));
-        
+
         // Reference the same PV
         final PV pv2 = PVPool.getPV("ca://motor_x");
         assertThat(pv1, sameInstance(pv2));
         PVPool.releasePV(pv2);
-        
+
         // Different name because of prefix
         final PV pv3 = PVPool.getPV("motor_x");
         assertThat(pv3.getName(), equalTo("motor_x"));
         assertThat(pv1, not(sameInstance(pv3)));
         PVPool.releasePV(pv3);
-        
+
         PVPool.releasePV(pv1);
     }
-    
+
     @Test(timeout=5000)
     public void testBasicRead() throws Exception
     {
@@ -160,7 +160,7 @@ public class JCAPVTest implements PVListener
         final PV pv = PVPool.getPV("TestEnumArray");
         pv.addListener(this);
         updates.await();
-        
+
         // Write known value
         pv.asyncWrite(new short[] { 4, 3, 2, 1 }).get(5, TimeUnit.SECONDS);
         // Check readback
@@ -173,7 +173,7 @@ public class JCAPVTest implements PVListener
         assertThat(enum_val.getIndexes().getInt(3), equalTo(1));
         // Write other value, so next time the test runs it'll start with this
         pv.asyncWrite(new short[] { 10, 20, 30, 40 }).get(5, TimeUnit.SECONDS);
-        
+
         pv.removeListener(this);
         PVPool.releasePV(pv);
         System.out.println("Done.");
@@ -185,7 +185,7 @@ public class JCAPVTest implements PVListener
         final PV pv = PVPool.getPV("TestStringArray");
         pv.addListener(this);
         updates.await();
-        
+
         // Write known value
         pv.asyncWrite(new String[] { "Hi", "there" }).get(5, TimeUnit.SECONDS);
         // Check readback
@@ -198,7 +198,7 @@ public class JCAPVTest implements PVListener
         assertThat(str_val.getData().get(1), equalTo("there"));
         // Write other value, so next time the test runs it'll start with this
         pv.asyncWrite(new String[] { "Bye", "for", "now" }).get(5, TimeUnit.SECONDS);
-        
+
         pv.removeListener(this);
         PVPool.releasePV(pv);
         System.out.println("Done.");
@@ -220,7 +220,7 @@ public class JCAPVTest implements PVListener
         while (pv.read() == null)
             Thread.sleep(10);
         System.out.println("Connected");
-        
+
         for (int i=0; i<10; ++i)
         {
             final Future<VType> value = pv.asyncRead();
@@ -229,7 +229,7 @@ public class JCAPVTest implements PVListener
             System.out.println(value.get(1, TimeUnit.SECONDS));
             assertThat(value.isDone(), equalTo(true));
         }
-        
+
         PVPool.releasePV(pv);
         System.out.println("Done.");
     }
@@ -244,21 +244,21 @@ public class JCAPVTest implements PVListener
         PVPool.releasePV(pv);
         System.out.println("Done.");
     }
-    
+
     @Test(timeout=5000)
     public void testBasicWrite() throws Exception
     {
         final PV pv = PVPool.getPV("motor_x");
         pv.addListener(this);
         updates.await();
-        
+
         pv.write(4.0);
-        
+
         pv.removeListener(this);
         PVPool.releasePV(pv);
         System.out.println("Done.");
     }
-    
+
     @Test(timeout=5000)
     public void testAsyncWrite() throws Exception
     {
@@ -273,16 +273,16 @@ public class JCAPVTest implements PVListener
         double seconds = (end - start) / 1000.0;
         System.out.println("Write-callback took " + seconds + " seconds");
         assertTrue(Math.abs(seconds - 4.0) < 1.0);
-        
+
         pv.removeListener(this);
         PVPool.releasePV(pv);
         System.out.println("Done.");
     }
-    
+
     @Override
     public void permissionsChanged(PV pv, boolean readonly)
     {
-        System.out.println("Permissions");        
+        System.out.println("Permissions");
     }
 
     @Override

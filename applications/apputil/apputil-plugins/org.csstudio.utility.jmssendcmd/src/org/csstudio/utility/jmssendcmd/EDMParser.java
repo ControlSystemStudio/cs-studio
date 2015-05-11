@@ -17,14 +17,14 @@ public class EDMParser
    private String user;
    /** pv name */
    private String name;
-   
+
    /** pvtext which is "pvname=pvalue" */
    final private String pvtext;
    /** the option that passes the ssh value */
    private String ssh;
    /** option for the display value */
    private String dsp;
-   
+
   /** Parse the input EDM string.
    *  @param edm_log_line
    *  @throws Throwable on parse error (incomplete options, missing user, ...)
@@ -55,19 +55,19 @@ public class EDMParser
          if(space!=-1)
            optionStr= edm_log_line.substring(posn+2,space);
          else
-         { 
+         {
            optionStr= edm_log_line.substring(posn+2,edm_log_line.length()-1);
            done = true;
          }
          final int blank=option.lastIndexOf(" ");
         /**
-         * Based on the option read, set the appropriate variable to optionStr. 
+         * Based on the option read, set the appropriate variable to optionStr.
          */
          if(blank >=0)
            option=option.substring(option.lastIndexOf(" ")+1);
          space++;
 
-         /** 
+         /**
           * Retrieve various parts of the parsed EDM string.
           */
          if(option.equalsIgnoreCase("host"))
@@ -83,7 +83,7 @@ public class EDMParser
          else if(option.equalsIgnoreCase("new"))
             value=optionStr;
          else if(option.equalsIgnoreCase("old"))
-            oldVal=optionStr;   
+            oldVal=optionStr;
          /** Move to the next option of the input string */
          edm_log_line=edm_log_line.substring(space);
          /**
@@ -98,17 +98,17 @@ public class EDMParser
        */
       if (ssh != null)
       {
-    	  // Format is "IP port IP port", looking for the first IP:
-    	  // "::ffff:160.91.234.112 56165 ::ffff:160.91.230.38 22"
-    	  // "172.31.96.16 53395 172.31.72.100 22"
-    	  final String[] sections = ssh.split(" +");
-    	  // Unclear if that's possible, but accepting single "IP port"
-    	  if (sections.length < 2)
-    		  throw new Exception("Expecting ssh entry with \"IP port IP port\", got " + ssh);
-    	  host = sections[0];
-    	  final int prefix = host.lastIndexOf(':');
-    	  if (prefix > 0)
-    		  host = host.substring(prefix + 1);
+          // Format is "IP port IP port", looking for the first IP:
+          // "::ffff:160.91.234.112 56165 ::ffff:160.91.230.38 22"
+          // "172.31.96.16 53395 172.31.72.100 22"
+          final String[] sections = ssh.split(" +");
+          // Unclear if that's possible, but accepting single "IP port"
+          if (sections.length < 2)
+              throw new Exception("Expecting ssh entry with \"IP port IP port\", got " + ssh);
+          host = sections[0];
+          final int prefix = host.lastIndexOf(':');
+          if (prefix > 0)
+              host = host.substring(prefix + 1);
       }
       /**
        * If an error exists in the entries for user, host, value or pv name
@@ -123,7 +123,7 @@ public class EDMParser
       if(name==null)
           throw new Exception("pv name entry cannot be NULL");
    }
-   
+
    public String getUser()
    {
       return user;
@@ -143,22 +143,22 @@ public class EDMParser
    {
       return pvtext;
    }
-   
+
    public String getValue()
    {
       return value;
    }
-   
+
    public String getOriginalValue()
    {
       return oldVal;
    }
-   
+
    public String getSsh()
    {
       return ssh;
    }
-   
+
    public String getDsp()
    {
       return dsp;

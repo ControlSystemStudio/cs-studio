@@ -23,7 +23,7 @@ public class LinearScreenTransformTest
     public void testTransform()
     {
         ScreenTransform<Double> t = new LinearScreenTransform();
-        
+
         // Default 1:1
         assertThat(t.transform(0.0), equalTo(0.0));
         assertThat(t.transform(1.0), equalTo(1.0));

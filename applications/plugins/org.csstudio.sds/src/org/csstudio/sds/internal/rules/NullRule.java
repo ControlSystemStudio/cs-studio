@@ -25,11 +25,11 @@ import org.csstudio.sds.model.IRule;
 
 public class NullRule implements IRule {
 
-	public static final String ID = "rule.null";
+    public static final String ID = "rule.null";
 
-	public Object evaluate(final Object[] arguments) {
-		return null;
-	}
+    public Object evaluate(final Object[] arguments) {
+        return null;
+    }
 
     /**
      * {@inheritDoc}

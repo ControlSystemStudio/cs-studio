@@ -92,7 +92,7 @@ public class LdapNameUtilsUnitTest {
     }
     @Test
     public void testBaseName2() {
-        
+
         LdapName name = createLdapName("leaf", "leafValue");
         Assert.assertEquals(1, name.size());
         LdapName baseName = LdapNameUtils.baseName(name);
@@ -101,14 +101,14 @@ public class LdapNameUtilsUnitTest {
     }
     @Test
     public void testBaseName3() throws InvalidNameException {
-        
+
         LdapName name = new LdapName("");
         Assert.assertEquals(0, name.size());
         LdapName baseName = LdapNameUtils.baseName(name);
         Assert.assertEquals(0, baseName.size());
         Assert.assertEquals("", baseName.toString());
     }
-    
+
     @Test
     public void testSimpleNameOfSingleRdnName() throws Exception {
         final LdapName name = new LdapName("foo=bar");

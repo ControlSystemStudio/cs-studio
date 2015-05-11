@@ -43,549 +43,549 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Control figure for Boolean Symbol Image widget based on
  * {@link ControlBoolSymbolModel}
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
-		implements SymbolImageListener {
+        implements SymbolImageListener {
 
-	private static final String[] offStates = { "Off", "OFF", "off" };
-	private static final String[] onStates = { "On", "ON", "on" };
+    private static final String[] offStates = { "Off", "OFF", "off" };
+    private static final String[] onStates = { "On", "ON", "on" };
 
-	private String baseImagePath;
-	private Map<Integer, String> statesMap;
+    private String baseImagePath;
+    private Map<Integer, String> statesMap;
 
-	/**
-	 * The {@link IPath} to the on and off images.
-	 */
-	private IPath onImagePath = new Path("");
-	private IPath offImagePath = new Path("");
+    /**
+     * The {@link IPath} to the on and off images.
+     */
+    private IPath onImagePath = new Path("");
+    private IPath offImagePath = new Path("");
 
-	/**
-	 * The on and off images themselves.
-	 */
-	private SymbolImage onImage;
-	private SymbolImage offImage;
-	protected SymbolImageProperties symbolProperties;
+    /**
+     * The on and off images themselves.
+     */
+    private SymbolImage onImage;
+    private SymbolImage offImage;
+    protected SymbolImageProperties symbolProperties;
 
-	private ExecutionMode executionMode;
-	private Cursor cursor;
+    private ExecutionMode executionMode;
+    private Cursor cursor;
 
-	private IImageListener imageListener;
-	private int remainingImagesToLoad = 0;
+    private IImageListener imageListener;
+    private int remainingImagesToLoad = 0;
 
-	private Color foregroundColor;
-	private boolean useForegroundColor = false;
+    private Color foregroundColor;
+    private boolean useForegroundColor = false;
 
-	private boolean animationDisabled = false;
+    private boolean animationDisabled = false;
 
-	/* ************************* */
-	/* Specific code for control */
-	/* ************************* */
+    /* ************************* */
+    /* Specific code for control */
+    /* ************************* */
 
-	public ControlBoolSymbolFigure() {
-		super();
-		statesMap = new HashMap<Integer, String>();
-		statesMap.put(0, "off");
-		statesMap.put(1, "on");
-		cursor = Cursors.HAND;
-		addMouseListener(buttonPresser);
-		add(boolLabel);
-	}
+    public ControlBoolSymbolFigure() {
+        super();
+        statesMap = new HashMap<Integer, String>();
+        statesMap.put(0, "off");
+        statesMap.put(1, "on");
+        cursor = Cursors.HAND;
+        addMouseListener(buttonPresser);
+        add(boolLabel);
+    }
 
-	@Override
-	public void setEnabled(boolean value) {
-		super.setEnabled(value);
-		if (runMode) {
-			if (value) {
-				if (cursor == null || cursor.isDisposed()) {
-					cursor = Cursors.HAND;
-				}
-			} else {
-				cursor = null;
-			}
-		}
-		setCursor(runMode ? cursor : null);
-	}
+    @Override
+    public void setEnabled(boolean value) {
+        super.setEnabled(value);
+        if (runMode) {
+            if (value) {
+                if (cursor == null || cursor.isDisposed()) {
+                    cursor = Cursors.HAND;
+                }
+            } else {
+                cursor = null;
+            }
+        }
+        setCursor(runMode ? cursor : null);
+    }
 
-	@Override
-	public void setRunMode(boolean runMode) {
-		super.setRunMode(runMode);
-		setCursor(runMode ? cursor : null);
-	}
+    @Override
+    public void setRunMode(boolean runMode) {
+        super.setRunMode(runMode);
+        setCursor(runMode ? cursor : null);
+    }
 
-	/* ************************* */
-	/* Common code with monitor */
-	/* ************************* */
+    /* ************************* */
+    /* Common code with monitor */
+    /* ************************* */
 
-	@Override
-	protected void updateBoolValue() {
-		super.updateBoolValue();
-		if (onImage == null || offImage == null)
-			return;
-		if (booleanValue) {
-			onImage.setVisible(true);
-			offImage.setVisible(false);
-		} else {
-			onImage.setVisible(false);
-			offImage.setVisible(true);
-		}
-		sizeChanged();
-	}
+    @Override
+    protected void updateBoolValue() {
+        super.updateBoolValue();
+        if (onImage == null || offImage == null)
+            return;
+        if (booleanValue) {
+            onImage.setVisible(true);
+            offImage.setVisible(false);
+        } else {
+            onImage.setVisible(false);
+            offImage.setVisible(true);
+        }
+        sizeChanged();
+    }
 
-	/**
-	 * Return the current displayed image. If null, returns an empty image.
-	 */
-	public SymbolImage getCurrentImage() {
-		SymbolImage image = null;
-		if (isEditMode()) {
-			image = offImage;
-		} else {
-			image = booleanValue ? onImage : offImage;
-		}
-		if (image == null) {
-			image = SymbolImageFactory.createEmptyImage(!isEditMode());
-		}
-		return image;
-	}
+    /**
+     * Return the current displayed image. If null, returns an empty image.
+     */
+    public SymbolImage getCurrentImage() {
+        SymbolImage image = null;
+        if (isEditMode()) {
+            image = offImage;
+        } else {
+            image = booleanValue ? onImage : offImage;
+        }
+        if (image == null) {
+            image = SymbolImageFactory.createEmptyImage(!isEditMode());
+        }
+        return image;
+    }
 
-	/**
-	 * Return all mapped images.
-	 */
-	public Collection<SymbolImage> getAllImages() {
-		Collection<SymbolImage> list = new ArrayList<SymbolImage>();
-		if (onImage == null) {
-			onImage = SymbolImageFactory.asynCreateSymbolImage(onImagePath,
-					!isEditMode(), symbolProperties, this);
-		}
-		if (offImage == null) {
-			offImage = SymbolImageFactory.asynCreateSymbolImage(offImagePath,
-					!isEditMode(), symbolProperties, this);
-		}
-		list.add(onImage);
-		list.add(offImage);
-		return list;
-	}
+    /**
+     * Return all mapped images.
+     */
+    public Collection<SymbolImage> getAllImages() {
+        Collection<SymbolImage> list = new ArrayList<SymbolImage>();
+        if (onImage == null) {
+            onImage = SymbolImageFactory.asynCreateSymbolImage(onImagePath,
+                    !isEditMode(), symbolProperties, this);
+        }
+        if (offImage == null) {
+            offImage = SymbolImageFactory.asynCreateSymbolImage(offImagePath,
+                    !isEditMode(), symbolProperties, this);
+        }
+        list.add(onImage);
+        list.add(offImage);
+        return list;
+    }
 
-	/**
-	 * Dispose the image resources used by this figure.
-	 */
-	public void dispose() {
-		if (onImage != null && !onImage.isDisposed()) {
-			onImage.dispose();
-			onImage = null;
-		}
-		if (offImage != null && !offImage.isDisposed()) {
-			offImage.dispose();
-			offImage = null;
-		}
-	}
+    /**
+     * Dispose the image resources used by this figure.
+     */
+    public void dispose() {
+        if (onImage != null && !onImage.isDisposed()) {
+            onImage.dispose();
+            onImage = null;
+        }
+        if (offImage != null && !offImage.isDisposed()) {
+            offImage.dispose();
+            offImage = null;
+        }
+    }
 
-	protected boolean isEditMode() {
-		return ExecutionMode.EDIT_MODE.equals(executionMode);
-	}
-	
-	public void setExecutionMode(ExecutionMode executionMode) {
-		this.executionMode = executionMode;
-	}
-	
-	public void setSymbolProperties(SymbolImageProperties symbolProperties) {
-		this.symbolProperties = symbolProperties;
-	}
-	
-	// ************************************************************
-	// Image loading
-	// ************************************************************
+    protected boolean isEditMode() {
+        return ExecutionMode.EDIT_MODE.equals(executionMode);
+    }
 
-	public boolean isLoadingImage() {
-		return remainingImagesToLoad > 0;
-	}
+    public void setExecutionMode(ExecutionMode executionMode) {
+        this.executionMode = executionMode;
+    }
 
-	public synchronized void decrementLoadingCounter() {
-		remainingImagesToLoad--;
-	}
+    public void setSymbolProperties(SymbolImageProperties symbolProperties) {
+        this.symbolProperties = symbolProperties;
+    }
 
-	public void setImageLoadedListener(IImageListener listener) {
-		this.imageListener = listener;
-	}
+    // ************************************************************
+    // Image loading
+    // ************************************************************
 
-	public void fireImageResized() {
-		if (imageListener != null)
-			imageListener.imageResized(this);
-	}
+    public boolean isLoadingImage() {
+        return remainingImagesToLoad > 0;
+    }
 
-	/**
-	 * Set the boolean symbol on and off image path. If the path is relative,
-	 * then build absolute path.
-	 * <p>
-	 * <b>Rules:</b> <br>
-	 * If the image selected is on, then search off image. <br>
-	 * If the image selected is off, then search on image. <br>
-	 * If one or both is not found, the image path selected is the same for
-	 * both.
-	 * 
-	 * @param model
-	 * @param imagePath The path to the selected image (on or off or other)
-	 */
-	public void setSymbolImagePath(ControlBoolSymbolModel model,
-			IPath imagePath) {
-		if (imagePath == null || imagePath.isEmpty()) {
-			return;
-		}
-		if (!imagePath.isAbsolute()) {
-			imagePath = org.csstudio.opibuilder.util.ResourceUtil
-					.buildAbsolutePath(model, imagePath);
-		}
-		// Default
-		this.onImagePath = imagePath;
-		this.offImagePath = imagePath;
-		loadAllImages();
-	}
+    public synchronized void decrementLoadingCounter() {
+        remainingImagesToLoad--;
+    }
 
-	public void updateImagesPathFromMeta(List<String> values) {
-		if (values == null || values.size() < 2)
-			return; // Not boolean
-		if (!offImagePath.equals(onImagePath))
-			return; // Already set
-		// Search on/off files
-		statesMap.put(0, statesMap.get(0) + "|" + values.get(0));
-		statesMap.put(1, statesMap.get(1) + "|" + values.get(1));
-		Display.getDefault().syncExec(new Runnable() {
-			@Override
-			public void run() {
-				loadAllImages();
-			}
-		});
-	}
+    public void setImageLoadedListener(IImageListener listener) {
+        this.imageListener = listener;
+    }
 
-	private void loadAllImages() {
-		if (offImagePath == null || onImagePath == null)
-			return;
-		baseImagePath = SymbolUtils.getBaseImagePath(offImagePath, statesMap);
-		if (baseImagePath != null && !baseImagePath.isEmpty()) {
-			int count = 0;
-			IPath path = null;
-			List<String> offStatesList = new ArrayList<>(Arrays.asList(offStates));
-			offStatesList.addAll(Arrays.asList(StringUtils.split(statesMap.get(0), '|')));
-			while (path == null && count < offStatesList.size()) {
-				path = SymbolUtils.searchStateImage(offStatesList.get(count++), baseImagePath);
-			}
-			if (path == null)
-				path = SymbolUtils.searchStateImage(0, baseImagePath);
-			if (path != null)
-				offImagePath = path;
-			count = 0;
-			path = null;
-			List<String> onStatesList = new ArrayList<>(Arrays.asList(onStates));
-			onStatesList.addAll(Arrays.asList(StringUtils.split(statesMap.get(1), '|')));
-			while (path == null && count < onStatesList.size()) {
-				path = SymbolUtils.searchStateImage(onStatesList.get(count++), baseImagePath);
-			}
-			if (path == null)
-				path = SymbolUtils.searchStateImage(1, baseImagePath);
-			if (path != null)
-				onImagePath = path;
-		}
-		dispose();
-		remainingImagesToLoad = 2;
-		onImage = SymbolImageFactory.asynCreateSymbolImage(onImagePath,
-				!isEditMode(), symbolProperties, this);
-		offImage = SymbolImageFactory.asynCreateSymbolImage(offImagePath,
-				!isEditMode(), symbolProperties, this);
-	}
+    public void fireImageResized() {
+        if (imageListener != null)
+            imageListener.imageResized(this);
+    }
 
-	// ************************************************************
-	// Image size calculation delegation
-	// ************************************************************
+    /**
+     * Set the boolean symbol on and off image path. If the path is relative,
+     * then build absolute path.
+     * <p>
+     * <b>Rules:</b> <br>
+     * If the image selected is on, then search off image. <br>
+     * If the image selected is off, then search on image. <br>
+     * If one or both is not found, the image path selected is the same for
+     * both.
+     *
+     * @param model
+     * @param imagePath The path to the selected image (on or off or other)
+     */
+    public void setSymbolImagePath(ControlBoolSymbolModel model,
+            IPath imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) {
+            return;
+        }
+        if (!imagePath.isAbsolute()) {
+            imagePath = org.csstudio.opibuilder.util.ResourceUtil
+                    .buildAbsolutePath(model, imagePath);
+        }
+        // Default
+        this.onImagePath = imagePath;
+        this.offImagePath = imagePath;
+        loadAllImages();
+    }
 
-	public void resizeImage() {
-		Rectangle bounds = getBounds().getCopy();
-		if (!hasDisconnectedBorder())
-			ImageUtils.crop(bounds, this.getInsets());
-		for (SymbolImage si : getAllImages())
-			si.setBounds(bounds);
-		repaint();
-	}
+    public void updateImagesPathFromMeta(List<String> values) {
+        if (values == null || values.size() < 2)
+            return; // Not boolean
+        if (!offImagePath.equals(onImagePath))
+            return; // Already set
+        // Search on/off files
+        statesMap.put(0, statesMap.get(0) + "|" + values.get(0));
+        statesMap.put(1, statesMap.get(1) + "|" + values.get(1));
+        Display.getDefault().syncExec(new Runnable() {
+            @Override
+            public void run() {
+                loadAllImages();
+            }
+        });
+    }
 
-	public void setAutoSize(final boolean autoSize) {
-		if (symbolProperties != null) {
-			symbolProperties.setAutoSize(autoSize);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setAutoSize(autoSize);
-		repaint();
-	}
+    private void loadAllImages() {
+        if (offImagePath == null || onImagePath == null)
+            return;
+        baseImagePath = SymbolUtils.getBaseImagePath(offImagePath, statesMap);
+        if (baseImagePath != null && !baseImagePath.isEmpty()) {
+            int count = 0;
+            IPath path = null;
+            List<String> offStatesList = new ArrayList<>(Arrays.asList(offStates));
+            offStatesList.addAll(Arrays.asList(StringUtils.split(statesMap.get(0), '|')));
+            while (path == null && count < offStatesList.size()) {
+                path = SymbolUtils.searchStateImage(offStatesList.get(count++), baseImagePath);
+            }
+            if (path == null)
+                path = SymbolUtils.searchStateImage(0, baseImagePath);
+            if (path != null)
+                offImagePath = path;
+            count = 0;
+            path = null;
+            List<String> onStatesList = new ArrayList<>(Arrays.asList(onStates));
+            onStatesList.addAll(Arrays.asList(StringUtils.split(statesMap.get(1), '|')));
+            while (path == null && count < onStatesList.size()) {
+                path = SymbolUtils.searchStateImage(onStatesList.get(count++), baseImagePath);
+            }
+            if (path == null)
+                path = SymbolUtils.searchStateImage(1, baseImagePath);
+            if (path != null)
+                onImagePath = path;
+        }
+        dispose();
+        remainingImagesToLoad = 2;
+        onImage = SymbolImageFactory.asynCreateSymbolImage(onImagePath,
+                !isEditMode(), symbolProperties, this);
+        offImage = SymbolImageFactory.asynCreateSymbolImage(offImagePath,
+                !isEditMode(), symbolProperties, this);
+    }
 
-	public Dimension getAutoSizedDimension() {
-		// Widget dimension = Symbol Image + insets
-		Dimension dim = getCurrentImage().getAutoSizedDimension();
-		if (dim == null) return null;
-		if (hasDisconnectedBorder()) return dim;
-		return new Dimension(dim.width + getInsets().getWidth(), dim.height
-				+ getInsets().getHeight());
-	}
+    // ************************************************************
+    // Image size calculation delegation
+    // ************************************************************
 
-	private boolean hasDisconnectedBorder() {
-		return getBorder() != null
-				&& getBorder().equals(
-						AlarmRepresentationScheme.getDisonnectedBorder());
-	}
+    public void resizeImage() {
+        Rectangle bounds = getBounds().getCopy();
+        if (!hasDisconnectedBorder())
+            ImageUtils.crop(bounds, this.getInsets());
+        for (SymbolImage si : getAllImages())
+            si.setBounds(bounds);
+        repaint();
+    }
 
-	@Override
-	public void setBorder(Border b) {
-		super.setBorder(b);
-		sizeChanged();
-	}
+    public void setAutoSize(final boolean autoSize) {
+        if (symbolProperties != null) {
+            symbolProperties.setAutoSize(autoSize);
+        }
+        for (SymbolImage si : getAllImages())
+            si.setAutoSize(autoSize);
+        repaint();
+    }
 
-	// ************************************************************
-	// Image crop calculation delegation
-	// ************************************************************
+    public Dimension getAutoSizedDimension() {
+        // Widget dimension = Symbol Image + insets
+        Dimension dim = getCurrentImage().getAutoSizedDimension();
+        if (dim == null) return null;
+        if (hasDisconnectedBorder()) return dim;
+        return new Dimension(dim.width + getInsets().getWidth(), dim.height
+                + getInsets().getHeight());
+    }
 
-	public void setLeftCrop(final int newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setLeftCrop(newval);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setLeftCrop(newval);
-		repaint();
-	}
+    private boolean hasDisconnectedBorder() {
+        return getBorder() != null
+                && getBorder().equals(
+                        AlarmRepresentationScheme.getDisonnectedBorder());
+    }
 
-	public void setRightCrop(final int newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setRightCrop(newval);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setRightCrop(newval);
-		repaint();
-	}
+    @Override
+    public void setBorder(Border b) {
+        super.setBorder(b);
+        sizeChanged();
+    }
 
-	public void setBottomCrop(final int newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setBottomCrop(newval);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setBottomCrop(newval);
-		repaint();
-	}
+    // ************************************************************
+    // Image crop calculation delegation
+    // ************************************************************
 
-	public void setTopCrop(final int newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setTopCrop(newval);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setTopCrop(newval);
-		repaint();
-	}
+    public void setLeftCrop(final int newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setLeftCrop(newval);
+        }
+        for (SymbolImage si : getAllImages())
+            si.setLeftCrop(newval);
+        repaint();
+    }
 
-	// ************************************************************
-	// Image flip & degree & stretch calculation delegation
-	// ************************************************************
+    public void setRightCrop(final int newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setRightCrop(newval);
+        }
+        for (SymbolImage si : getAllImages())
+            si.setRightCrop(newval);
+        repaint();
+    }
 
-	public void setStretch(final boolean newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setStretch(newval);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setStretch(newval);
-		repaint();
-	}
+    public void setBottomCrop(final int newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setBottomCrop(newval);
+        }
+        for (SymbolImage si : getAllImages())
+            si.setBottomCrop(newval);
+        repaint();
+    }
 
-	public void setPermutationMatrix(PermutationMatrix permutationMatrix) {
-		if (symbolProperties != null) {
-			symbolProperties.setMatrix(permutationMatrix);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setPermutationMatrix(permutationMatrix);
-		repaint();
-	}
+    public void setTopCrop(final int newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setTopCrop(newval);
+        }
+        for (SymbolImage si : getAllImages())
+            si.setTopCrop(newval);
+        repaint();
+    }
 
-	public PermutationMatrix getPermutationMatrix() {
-		return getCurrentImage().getPermutationMatrix();
-	}
+    // ************************************************************
+    // Image flip & degree & stretch calculation delegation
+    // ************************************************************
 
-	// ************************************************************
-	// Image color & paint
-	// ************************************************************
+    public void setStretch(final boolean newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setStretch(newval);
+        }
+        for (SymbolImage si : getAllImages())
+            si.setStretch(newval);
+        repaint();
+    }
 
-	/**
-	 * The main drawing routine.
-	 * 
-	 * @param gfx The {@link Graphics} to use
-	 */
-	@Override
-	public void paintFigure(final Graphics gfx) {
-		if (isLoadingImage())
-			return;
-		Rectangle bounds = getBounds().getCopy();
-		if (!hasDisconnectedBorder())
-			ImageUtils.crop(bounds, this.getInsets());
-		if (bounds.width <= 0 || bounds.height <= 0)
-			return;
-		SymbolImage symbolImage = getCurrentImage();
-		if (symbolImage.isEmpty() && isEditMode()) {
-			return;
-		} else if (symbolImage.isEmpty()) {
-			IPath imagePath = booleanValue ? onImagePath : offImagePath;
-			if (!imagePath.isEmpty()) {
-				gfx.setBackgroundColor(getBackgroundColor());
-				gfx.setForegroundColor(getForegroundColor());
-				gfx.fillRectangle(bounds);
-				gfx.translate(bounds.getLocation());
-				TextPainter.drawText(gfx, "ERROR in loading image\n"
-						+ imagePath, bounds.width / 2, bounds.height / 2,
-						TextPainter.CENTER);
-			}
-			return;
-		}
-		symbolImage.setBounds(bounds);
-		symbolImage.setAbsoluteScale(gfx.getAbsoluteScale());
-		Color currentcolor = null;
-		if (useForegroundColor) currentcolor = getForegroundColor();
-		else currentcolor = booleanValue ? onColor : offColor;
-		symbolImage.setCurrentColor(currentcolor);
-		symbolImage.setBackgroundColor(getBackgroundColor());
-		symbolImage.paintFigure(gfx);
-	}
+    public void setPermutationMatrix(PermutationMatrix permutationMatrix) {
+        if (symbolProperties != null) {
+            symbolProperties.setMatrix(permutationMatrix);
+        }
+        for (SymbolImage si : getAllImages())
+            si.setPermutationMatrix(permutationMatrix);
+        repaint();
+    }
 
-	/**
-	 * @param onColor the onColor to set
-	 */
-	public void setOnColor(Color onColor) {
-		if (this.onColor != null && this.onColor.equals(onColor)) {
-			return;
-		}
-		if ((onColor.getRed() << 16 | onColor.getGreen() << 8 | onColor.getBlue()) == 0xFFFFFF) {
-			this.onColor = CustomMediaFactory.getInstance().getColor(new RGB(255, 255, 254));
-		} else {
-			this.onColor = onColor;
-		}
-		repaint();
-	}
+    public PermutationMatrix getPermutationMatrix() {
+        return getCurrentImage().getPermutationMatrix();
+    }
 
-	/**
-	 * @param offColor  the offColor to set
-	 */
-	public void setOffColor(Color offColor) {
-		if (this.offColor != null && this.offColor.equals(offColor)) {
-			return;
-		}
-		if ((offColor.getRed() << 16 | offColor.getGreen() << 8 | offColor.getBlue()) == 0xFFFFFF) {
-			this.offColor = CustomMediaFactory.getInstance().getColor(new RGB(255, 255, 254));
-		} else {
-			this.offColor = offColor;
-		}
-		repaint();
-	}
+    // ************************************************************
+    // Image color & paint
+    // ************************************************************
 
-	public void setUseForegroundColor(boolean useForegroundColor) {
-		this.useForegroundColor = useForegroundColor;
-		repaint();
-	}
+    /**
+     * The main drawing routine.
+     *
+     * @param gfx The {@link Graphics} to use
+     */
+    @Override
+    public void paintFigure(final Graphics gfx) {
+        if (isLoadingImage())
+            return;
+        Rectangle bounds = getBounds().getCopy();
+        if (!hasDisconnectedBorder())
+            ImageUtils.crop(bounds, this.getInsets());
+        if (bounds.width <= 0 || bounds.height <= 0)
+            return;
+        SymbolImage symbolImage = getCurrentImage();
+        if (symbolImage.isEmpty() && isEditMode()) {
+            return;
+        } else if (symbolImage.isEmpty()) {
+            IPath imagePath = booleanValue ? onImagePath : offImagePath;
+            if (!imagePath.isEmpty()) {
+                gfx.setBackgroundColor(getBackgroundColor());
+                gfx.setForegroundColor(getForegroundColor());
+                gfx.fillRectangle(bounds);
+                gfx.translate(bounds.getLocation());
+                TextPainter.drawText(gfx, "ERROR in loading image\n"
+                        + imagePath, bounds.width / 2, bounds.height / 2,
+                        TextPainter.CENTER);
+            }
+            return;
+        }
+        symbolImage.setBounds(bounds);
+        symbolImage.setAbsoluteScale(gfx.getAbsoluteScale());
+        Color currentcolor = null;
+        if (useForegroundColor) currentcolor = getForegroundColor();
+        else currentcolor = booleanValue ? onColor : offColor;
+        symbolImage.setCurrentColor(currentcolor);
+        symbolImage.setBackgroundColor(getBackgroundColor());
+        symbolImage.paintFigure(gfx);
+    }
 
-	@Override
-	public Color getForegroundColor() {
-		return foregroundColor;
-	}
+    /**
+     * @param onColor the onColor to set
+     */
+    public void setOnColor(Color onColor) {
+        if (this.onColor != null && this.onColor.equals(onColor)) {
+            return;
+        }
+        if ((onColor.getRed() << 16 | onColor.getGreen() << 8 | onColor.getBlue()) == 0xFFFFFF) {
+            this.onColor = CustomMediaFactory.getInstance().getColor(new RGB(255, 255, 254));
+        } else {
+            this.onColor = onColor;
+        }
+        repaint();
+    }
 
-	@Override
-	public void setForegroundColor(Color foregroundColor) {
-		this.foregroundColor = foregroundColor;
-		if (foregroundColor != null)
-			this.boolLabel.setForegroundColor(foregroundColor);
-		repaint();
-	}
+    /**
+     * @param offColor  the offColor to set
+     */
+    public void setOffColor(Color offColor) {
+        if (this.offColor != null && this.offColor.equals(offColor)) {
+            return;
+        }
+        if ((offColor.getRed() << 16 | offColor.getGreen() << 8 | offColor.getBlue()) == 0xFFFFFF) {
+            this.offColor = CustomMediaFactory.getInstance().getColor(new RGB(255, 255, 254));
+        } else {
+            this.offColor = offColor;
+        }
+        repaint();
+    }
 
-	@Override
-	public void setBackgroundColor(Color backgroundColor) {
-		super.setBackgroundColor(backgroundColor);
-		if (symbolProperties != null) {
-			symbolProperties.setBackgroundColor(backgroundColor);
-		}
-		for (SymbolImage si : getAllImages())
-			si.setBackgroundColor(backgroundColor);
-		repaint();
-	}
+    public void setUseForegroundColor(boolean useForegroundColor) {
+        this.useForegroundColor = useForegroundColor;
+        repaint();
+    }
 
-	// ************************************************************
-	// Override Figure class methods 
-	// ************************************************************
+    @Override
+    public Color getForegroundColor() {
+        return foregroundColor;
+    }
 
-	/**
-	 * We want to have local coordinates here.
-	 * 
-	 * @return True if here should used local coordinates
-	 */
-	@Override
-	protected boolean useLocalCoordinates() {
-		return true;
-	}
+    @Override
+    public void setForegroundColor(Color foregroundColor) {
+        this.foregroundColor = foregroundColor;
+        if (foregroundColor != null)
+            this.boolLabel.setForegroundColor(foregroundColor);
+        repaint();
+    }
 
-	@Override
-	protected void layout() {
-		Rectangle clientArea = getClientArea().getCopy();
-		if (boolLabel.isVisible()) {
-			Dimension labelSize = boolLabel.getPreferredSize();
-			boolLabel.setBounds(new Rectangle(getLabelLocation(clientArea.x
-					+ clientArea.width / 2 - labelSize.width / 2, clientArea.y
-					+ clientArea.height / 2 - labelSize.height / 2),
-					new Dimension(labelSize.width, labelSize.height)));
-		}
-		super.layout();
-	}
+    @Override
+    public void setBackgroundColor(Color backgroundColor) {
+        super.setBackgroundColor(backgroundColor);
+        if (symbolProperties != null) {
+            symbolProperties.setBackgroundColor(backgroundColor);
+        }
+        for (SymbolImage si : getAllImages())
+            si.setBackgroundColor(backgroundColor);
+        repaint();
+    }
 
-	// ************************************************************
-	// Animated images
-	// ************************************************************
+    // ************************************************************
+    // Override Figure class methods
+    // ************************************************************
 
-	/**
-	 * @return the animationDisabled
-	 */
-	public boolean isAnimationDisabled() {
-		return animationDisabled;
-	}
+    /**
+     * We want to have local coordinates here.
+     *
+     * @return True if here should used local coordinates
+     */
+    @Override
+    protected boolean useLocalCoordinates() {
+        return true;
+    }
 
-	public void setAnimationDisabled(final boolean stop) {
-		if (animationDisabled == stop)
-			return;
-		animationDisabled = stop;
-		if (symbolProperties != null) {
-			symbolProperties.setAnimationDisabled(stop);
-		}
-		for (SymbolImage asi : getAllImages())
-			asi.setAnimationDisabled(stop);
-		repaint();
-	}
+    @Override
+    protected void layout() {
+        Rectangle clientArea = getClientArea().getCopy();
+        if (boolLabel.isVisible()) {
+            Dimension labelSize = boolLabel.getPreferredSize();
+            boolLabel.setBounds(new Rectangle(getLabelLocation(clientArea.x
+                    + clientArea.width / 2 - labelSize.width / 2, clientArea.y
+                    + clientArea.height / 2 - labelSize.height / 2),
+                    new Dimension(labelSize.width, labelSize.height)));
+        }
+        super.layout();
+    }
 
-	public void setAlignedToNearestSecond(final boolean aligned) {
-		if (symbolProperties != null) {
-			symbolProperties.setAlignedToNearestSecond(aligned);
-		}
-		for (SymbolImage asi : getAllImages())
-			asi.setAlignedToNearestSecond(aligned);
-		repaint();
-	}
+    // ************************************************************
+    // Animated images
+    // ************************************************************
 
-	// ************************************************************
-	// Symbol Image Listener
-	// ************************************************************
+    /**
+     * @return the animationDisabled
+     */
+    public boolean isAnimationDisabled() {
+        return animationDisabled;
+    }
 
-	@Override
-	public void symbolImageLoaded() {
-		decrementLoadingCounter();
-		fireImageResized();
-		repaint();
-		revalidate();
-	}
+    public void setAnimationDisabled(final boolean stop) {
+        if (animationDisabled == stop)
+            return;
+        animationDisabled = stop;
+        if (symbolProperties != null) {
+            symbolProperties.setAnimationDisabled(stop);
+        }
+        for (SymbolImage asi : getAllImages())
+            asi.setAnimationDisabled(stop);
+        repaint();
+    }
 
-	@Override
-	public void repaintRequested() {
-		repaint();
-	}
+    public void setAlignedToNearestSecond(final boolean aligned) {
+        if (symbolProperties != null) {
+            symbolProperties.setAlignedToNearestSecond(aligned);
+        }
+        for (SymbolImage asi : getAllImages())
+            asi.setAlignedToNearestSecond(aligned);
+        repaint();
+    }
 
-	@Override
-	public void sizeChanged() {
-		imageListener.imageResized(this);
-	}
+    // ************************************************************
+    // Symbol Image Listener
+    // ************************************************************
+
+    @Override
+    public void symbolImageLoaded() {
+        decrementLoadingCounter();
+        fireImageResized();
+        repaint();
+        revalidate();
+    }
+
+    @Override
+    public void repaintRequested() {
+        repaint();
+    }
+
+    @Override
+    public void sizeChanged() {
+        imageListener.imageResized(this);
+    }
 
 }

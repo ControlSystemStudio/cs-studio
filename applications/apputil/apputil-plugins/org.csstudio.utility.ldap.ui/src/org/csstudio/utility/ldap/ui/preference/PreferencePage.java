@@ -31,56 +31,56 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class PreferencePage extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+    implements IWorkbenchPreferencePage {
 
-	public PreferencePage() {
-		super(GRID);
-		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
-				Activator.getDefault().getBundle().getSymbolicName()));
-		
-		String string = Messages.getString("PreferencePage.LDAP");
+    public PreferencePage() {
+        super(GRID);
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
+                Activator.getDefault().getBundle().getSymbolicName()));
+
+        String string = Messages.getString("PreferencePage.LDAP");
         setDescription(string); //$NON-NLS-1$
-	}
+    }
 
-	/**
-	 * Creates the field editors. Field editors are abstractions of
-	 * the common GUI blocks needed to manipulate various types
-	 * of preferences. Each field editor knows how to save and
-	 * restore itself.
-	 */
-	@Override
+    /**
+     * Creates the field editors. Field editors are abstractions of
+     * the common GUI blocks needed to manipulate various types
+     * of preferences. Each field editor knows how to save and
+     * restore itself.
+     */
+    @Override
     public void createFieldEditors() {
-		addField(new StringFieldEditor(LdapPreference.URL.getKeyAsString(),
-		                               Messages.getString("PreferencePage.URL"),
-		                               getFieldEditorParent())); //$NON-NLS-1$
-		addField(new StringFieldEditor(LdapPreference.USER_DN.getKeyAsString(),
-		                               Messages.getString("PreferencePage.DN"),
-		                               getFieldEditorParent())); //$NON-NLS-1$
+        addField(new StringFieldEditor(LdapPreference.URL.getKeyAsString(),
+                                       Messages.getString("PreferencePage.URL"),
+                                       getFieldEditorParent())); //$NON-NLS-1$
+        addField(new StringFieldEditor(LdapPreference.USER_DN.getKeyAsString(),
+                                       Messages.getString("PreferencePage.DN"),
+                                       getFieldEditorParent())); //$NON-NLS-1$
 
-		final StringFieldEditor sfeP =
-		    new StringFieldEditor(LdapPreference.USER_PASSWORD.getKeyAsString(),
-		                          Messages.getString("PreferencePage.PASS"),
-		                          getFieldEditorParent()); //$NON-NLS-1$
+        final StringFieldEditor sfeP =
+            new StringFieldEditor(LdapPreference.USER_PASSWORD.getKeyAsString(),
+                                  Messages.getString("PreferencePage.PASS"),
+                                  getFieldEditorParent()); //$NON-NLS-1$
 
         sfeP.getTextControl(getFieldEditorParent()).setEchoChar('*');
-		addField(sfeP);
+        addField(sfeP);
 
-		addField(new StringFieldEditor(LdapPreference.SECURITY_PROTOCOL.getKeyAsString(),
-		                               Messages.getString("PreferencePage.SECURITY_PROTOCOL"),
-		                               getFieldEditorParent())); //$NON-NLS-1$
+        addField(new StringFieldEditor(LdapPreference.SECURITY_PROTOCOL.getKeyAsString(),
+                                       Messages.getString("PreferencePage.SECURITY_PROTOCOL"),
+                                       getFieldEditorParent())); //$NON-NLS-1$
 
-		addField(new StringFieldEditor(LdapPreference.SECURITY_AUTH.getKeyAsString(),
-		                               Messages.getString("PreferencePage.SECURITY_AUTHENTICATION"),
-		                               getFieldEditorParent())); //$NON-NLS-1$
+        addField(new StringFieldEditor(LdapPreference.SECURITY_AUTH.getKeyAsString(),
+                                       Messages.getString("PreferencePage.SECURITY_AUTHENTICATION"),
+                                       getFieldEditorParent())); //$NON-NLS-1$
 
-	}
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	public void init(final IWorkbench workbench) {
-	    // Empty
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     */
+    public void init(final IWorkbench workbench) {
+        // Empty
+    }
 
 
 }

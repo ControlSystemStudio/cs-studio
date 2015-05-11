@@ -144,7 +144,7 @@ public class RDBArchiveWriter implements ArchiveWriter
         // Check cache
         RDBWriteChannel channel = channels.get(name);
         if (channel == null)
-        {	// Get channel information from RDB
+        {    // Get channel information from RDB
             final Connection connection = rdb.getConnection();
             // connection.setReadOnly(true);
             connection.setAutoCommit(true);
@@ -185,65 +185,65 @@ public class RDBArchiveWriter implements ArchiveWriter
      */
     private void writeMetaData(final RDBWriteChannel channel, final VType sample) throws Exception
     {
-    	// Note that Strings have no meta data. But we don't know at this point
-    	// if it's really a string channel, or of this is just a special
-    	// string value like "disconnected".
-    	// In order to not delete any existing meta data,
-    	// we just do nothing for strings
+        // Note that Strings have no meta data. But we don't know at this point
+        // if it's really a string channel, or of this is just a special
+        // string value like "disconnected".
+        // In order to not delete any existing meta data,
+        // we just do nothing for strings
 
-    	if (sample instanceof Display)
+        if (sample instanceof Display)
         {
-        	final Display display = (Display)sample;
-        	if (MetaDataHelper.equals(display, channel.getMetadata()))
-        		return;
-        	
-        	// Clear enumerated meta data, replace numeric
-        	EnumMetaDataHelper.delete(rdb, sql, channel);
-        	NumericMetaDataHelper.delete(rdb, sql, channel);
-        	NumericMetaDataHelper.insert(rdb, sql, channel, display);
-        	rdb.getConnection().commit();
+            final Display display = (Display)sample;
+            if (MetaDataHelper.equals(display, channel.getMetadata()))
+                return;
+
+            // Clear enumerated meta data, replace numeric
+            EnumMetaDataHelper.delete(rdb, sql, channel);
+            NumericMetaDataHelper.delete(rdb, sql, channel);
+            NumericMetaDataHelper.insert(rdb, sql, channel, display);
+            rdb.getConnection().commit();
             channel.setMetaData(display);
         }
-    	else if (sample instanceof VEnum)
-    	{
-    		final List<String> labels = ((VEnum)sample).getLabels();
-        	if (MetaDataHelper.equals(labels, channel.getMetadata()))
-        		return;
+        else if (sample instanceof VEnum)
+        {
+            final List<String> labels = ((VEnum)sample).getLabels();
+            if (MetaDataHelper.equals(labels, channel.getMetadata()))
+                return;
 
             // Clear numeric meta data, set enumerated in RDB
             NumericMetaDataHelper.delete(rdb, sql, channel);
             EnumMetaDataHelper.delete(rdb, sql, channel);
             EnumMetaDataHelper.insert(rdb, sql, channel, labels);
-        	rdb.getConnection().commit();
+            rdb.getConnection().commit();
             channel.setMetaData(labels);
         }
     }
-    
-	/**
-	 * Create a new prepared statement. For PostgreSQL connections, this method
-	 * create a PGCopyPreparedStatement to improve insert speed using COPY
-	 * insetad of INSERT.
-	 * 
-	 * @param sqlQuery
-	 * @return
-	 * @throws SQLException
-	 * @throws Exception
-	 */
-	@SuppressWarnings("resource")
-	private PreparedStatement createInsertPrepareStatement(String sqlQuery)
-			throws SQLException, Exception {
-		PreparedStatement statement = null;
-		if (rdb.getDialect() == Dialect.PostgreSQL
-				&& Preferences.isUsePostgresCopy()) {
-			statement = new PGCopyPreparedStatement(rdb.getConnection(),
-					sqlQuery);
-		} else {
-			statement = rdb.getConnection().prepareStatement(sqlQuery);
-		}
-		if (SQL_TIMEOUT_SECS > 0)
-			statement.setQueryTimeout(SQL_TIMEOUT_SECS);
-		return statement;
-	}
+
+    /**
+     * Create a new prepared statement. For PostgreSQL connections, this method
+     * create a PGCopyPreparedStatement to improve insert speed using COPY
+     * insetad of INSERT.
+     *
+     * @param sqlQuery
+     * @return
+     * @throws SQLException
+     * @throws Exception
+     */
+    @SuppressWarnings("resource")
+    private PreparedStatement createInsertPrepareStatement(String sqlQuery)
+            throws SQLException, Exception {
+        PreparedStatement statement = null;
+        if (rdb.getDialect() == Dialect.PostgreSQL
+                && Preferences.isUsePostgresCopy()) {
+            statement = new PGCopyPreparedStatement(rdb.getConnection(),
+                    sqlQuery);
+        } else {
+            statement = rdb.getConnection().prepareStatement(sqlQuery);
+        }
+        if (SQL_TIMEOUT_SECS > 0)
+            statement.setQueryTimeout(SQL_TIMEOUT_SECS);
+        return statement;
+    }
 
     /** Perform 'batched' insert for sample.
      *  <p>Needs eventual flush()
@@ -259,23 +259,23 @@ public class RDBArchiveWriter implements ArchiveWriter
 
         // Severity/status cache may enable auto-commit
         if (rdb.getConnection().getAutoCommit() == true)
-        	rdb.getConnection().setAutoCommit(false);
+            rdb.getConnection().setAutoCommit(false);
 
         // Start with most likely cases and highest precision: Double, ...
         // Then going down in precision to integers, finally strings...
         if (sample instanceof VDouble)
             batchDoubleSamples(channel, stamp, severity, status, ((VDouble)sample).getValue(), null);
         else if (sample instanceof VNumber)
-        {	// Write as double or integer?
-        	final Number number = ((VNumber)sample).getValue();
-        	if (number instanceof Double)
-        		batchDoubleSamples(channel, stamp, severity, status, number.doubleValue(), null);
-        	else
-        		batchLongSample(channel, stamp, severity, status, number.longValue());
+        {    // Write as double or integer?
+            final Number number = ((VNumber)sample).getValue();
+            if (number instanceof Double)
+                batchDoubleSamples(channel, stamp, severity, status, number.doubleValue(), null);
+            else
+                batchLongSample(channel, stamp, severity, status, number.longValue());
         }
         else if (sample instanceof VNumberArray)
         {
-        	final ListNumber data = ((VNumberArray)sample).getData();
+            final ListNumber data = ((VNumberArray)sample).getData();
             batchDoubleSamples(channel, stamp, severity, status, data.getDouble(0), data);
         }
         else if (sample instanceof VEnum)
@@ -306,7 +306,7 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         if (insert_double_sample == null)
         {
-        	insert_double_sample = createInsertPrepareStatement(sql.sample_insert_double_blob);
+            insert_double_sample = createInsertPrepareStatement(sql.sample_insert_double_blob);
         }
         // Set scalar or 1st element of a waveform.
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
@@ -374,7 +374,7 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         if (insert_double_sample == null)
         {
-        	insert_double_sample = createInsertPrepareStatement(sql.sample_insert_double);
+            insert_double_sample = createInsertPrepareStatement(sql.sample_insert_double);
         }
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
         if (Double.isNaN(dbl))
@@ -432,7 +432,7 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         if (insert_long_sample == null)
         {
-        	insert_long_sample = createInsertPrepareStatement(sql.sample_insert_int);
+            insert_long_sample = createInsertPrepareStatement(sql.sample_insert_int);
         }
         insert_long_sample.setLong(5, num);
         completeAndBatchInsert(insert_long_sample, channel, stamp, severity, status);
@@ -446,7 +446,7 @@ public class RDBArchiveWriter implements ArchiveWriter
     {
         if (insert_txt_sample == null)
         {
-        	insert_txt_sample = createInsertPrepareStatement(sql.sample_insert_string);
+            insert_txt_sample = createInsertPrepareStatement(sql.sample_insert_string);
         }
         if (txt.length() > MAX_TEXT_SAMPLE_LENGTH)
         {
@@ -688,38 +688,38 @@ public class RDBArchiveWriter implements ArchiveWriter
             stati = null;
         }
 
-		if (insert_double_sample != null) {
-			try {
-				insert_double_sample.close();
-			} catch (SQLException e) {
-				Activator.getLogger().log(Level.WARNING, "close() error", e);
-			}
-			insert_double_sample = null;
-		}
-		if (insert_array_sample != null) {
-			try {
-				insert_array_sample.close();
-			} catch (SQLException e) {
-				Activator.getLogger().log(Level.WARNING, "close() error", e);
-			}
-			insert_array_sample = null;
-		}
-		if (insert_long_sample != null) {
-			try {
-				insert_long_sample.close();
-			} catch (SQLException e) {
-				Activator.getLogger().log(Level.WARNING, "close() error", e);
-			}
-			insert_long_sample = null;
-		}
-		if (insert_txt_sample != null) {
-			try {
-				insert_txt_sample.close();
-			} catch (SQLException e) {
-				Activator.getLogger().log(Level.WARNING, "close() error", e);
-			}
-			insert_txt_sample = null;
-		}
-		rdb.close();
+        if (insert_double_sample != null) {
+            try {
+                insert_double_sample.close();
+            } catch (SQLException e) {
+                Activator.getLogger().log(Level.WARNING, "close() error", e);
+            }
+            insert_double_sample = null;
+        }
+        if (insert_array_sample != null) {
+            try {
+                insert_array_sample.close();
+            } catch (SQLException e) {
+                Activator.getLogger().log(Level.WARNING, "close() error", e);
+            }
+            insert_array_sample = null;
+        }
+        if (insert_long_sample != null) {
+            try {
+                insert_long_sample.close();
+            } catch (SQLException e) {
+                Activator.getLogger().log(Level.WARNING, "close() error", e);
+            }
+            insert_long_sample = null;
+        }
+        if (insert_txt_sample != null) {
+            try {
+                insert_txt_sample.close();
+            } catch (SQLException e) {
+                Activator.getLogger().log(Level.WARNING, "close() error", e);
+            }
+            insert_txt_sample = null;
+        }
+        rdb.close();
     }
 }

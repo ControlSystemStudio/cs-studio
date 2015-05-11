@@ -35,7 +35,7 @@ public class AddAxisCommand extends UndoableAction
         super(Messages.AddAxis);
         this.model = model;
         operations_manager.add(this);
-		axis = model.addAxis();
+        axis = model.addAxis();
     }
 
     /** @return AxisConfig that was added */

@@ -8,22 +8,22 @@ package com.cosylab.vdct.db;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -36,155 +36,155 @@ import java.util.Vector;
  */
 public class DBTemplateInstance extends DBComment
 {
-	protected String templateInstanceId;
-	protected String templateId;
-	protected Hashtable properties = null;
-	protected Vector propertiesV = null;
+    protected String templateInstanceId;
+    protected String templateId;
+    protected Hashtable properties = null;
+    protected Vector propertiesV = null;
 
-	protected int x = -1;			// used for layout
-	protected int y = -1;
-	protected java.awt.Color color = java.awt.Color.black;
-	protected String description = null;
+    protected int x = -1;            // used for layout
+    protected int y = -1;
+    protected java.awt.Color color = java.awt.Color.black;
+    protected String description = null;
 
-	protected Vector templateFields = null;
-	/**
-	 * Constructor.
-	 */
-	public DBTemplateInstance(String templateInstanceId, String templateId)
-	{
-		properties = new Hashtable();
-		propertiesV = new Vector();
-		templateFields = new Vector();
-		this.templateInstanceId = templateInstanceId;
-		this.templateId = templateId;
-	}
-	
-	/**
-	 * Returns the properties.
-	 * @return Hashtable
-	 */
-	public Hashtable getProperties()
-	{
-		return properties;
-	}
+    protected Vector templateFields = null;
+    /**
+     * Constructor.
+     */
+    public DBTemplateInstance(String templateInstanceId, String templateId)
+    {
+        properties = new Hashtable();
+        propertiesV = new Vector();
+        templateFields = new Vector();
+        this.templateInstanceId = templateInstanceId;
+        this.templateId = templateId;
+    }
 
-	/**
-	 * Returns the properties.
-	 * @return Vector
-	 */
-	public Vector getPropertiesV()
-	{
-		return propertiesV;
-	}
+    /**
+     * Returns the properties.
+     * @return Hashtable
+     */
+    public Hashtable getProperties()
+    {
+        return properties;
+    }
 
-	/**
-	 * Returns the properties.
-	 * @return Vector
-	 */
-	public void addProperty(Object key, String value)
-	{
-		if (!propertiesV.contains(key))
-		{
-			properties.put(key, value);
-			propertiesV.addElement(key);
-		}
-	}
+    /**
+     * Returns the properties.
+     * @return Vector
+     */
+    public Vector getPropertiesV()
+    {
+        return propertiesV;
+    }
 
-	/**
-	 * Returns the templateId.
-	 * @return String
-	 */
-	public String getTemplateId()
-	{
-		return templateId;
-	}
+    /**
+     * Returns the properties.
+     * @return Vector
+     */
+    public void addProperty(Object key, String value)
+    {
+        if (!propertiesV.contains(key))
+        {
+            properties.put(key, value);
+            propertiesV.addElement(key);
+        }
+    }
 
-	/**
-	 * Returns the color.
-	 * @return java.awt.Color
-	 */
-	public java.awt.Color getColor()
-	{
-		return color;
-	}
+    /**
+     * Returns the templateId.
+     * @return String
+     */
+    public String getTemplateId()
+    {
+        return templateId;
+    }
 
-	/**
-	 * Returns the description.
-	 * @return String
-	 */
-	public String getDescription()
-	{
-		return description;
-	}
+    /**
+     * Returns the color.
+     * @return java.awt.Color
+     */
+    public java.awt.Color getColor()
+    {
+        return color;
+    }
 
-	/**
-	 * Returns the x.
-	 * @return int
-	 */
-	public int getX()
-	{
-		return x;
-	}
+    /**
+     * Returns the description.
+     * @return String
+     */
+    public String getDescription()
+    {
+        return description;
+    }
 
-	/**
-	 * Returns the y.
-	 * @return int
-	 */
-	public int getY()
-	{
-		return y;
-	}
+    /**
+     * Returns the x.
+     * @return int
+     */
+    public int getX()
+    {
+        return x;
+    }
 
-	/**
-	 * Sets the color.
-	 * @param color The color to set
-	 */
-	public void setColor(java.awt.Color color)
-	{
-		this.color = color;
-	}
+    /**
+     * Returns the y.
+     * @return int
+     */
+    public int getY()
+    {
+        return y;
+    }
 
-	/**
-	 * Sets the description.
-	 * @param description The description to set
-	 */
-	public void setDescription(String description)
-	{
-		this.description = description;
-	}
+    /**
+     * Sets the color.
+     * @param color The color to set
+     */
+    public void setColor(java.awt.Color color)
+    {
+        this.color = color;
+    }
 
-	/**
-	 * Sets the x.
-	 * @param x The x to set
-	 */
-	public void setX(int x)
-	{
-		this.x = x;
-	}
+    /**
+     * Sets the description.
+     * @param description The description to set
+     */
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
 
-	/**
-	 * Sets the y.
-	 * @param y The y to set
-	 */
-	public void setY(int y)
-	{
-		this.y = y;
-	}
+    /**
+     * Sets the x.
+     * @param x The x to set
+     */
+    public void setX(int x)
+    {
+        this.x = x;
+    }
 
-	/**
-	 * Returns the templateInstanceId.
-	 * @return String
-	 */
-	public String getTemplateInstanceId()
-	{
-		return templateInstanceId;
-	}
+    /**
+     * Sets the y.
+     * @param y The y to set
+     */
+    public void setY(int y)
+    {
+        this.y = y;
+    }
 
-	/**
-	 * @return
-	 */
-	public Vector getTemplateFields() {
-		return templateFields;
-	}
+    /**
+     * Returns the templateInstanceId.
+     * @return String
+     */
+    public String getTemplateInstanceId()
+    {
+        return templateInstanceId;
+    }
+
+    /**
+     * @return
+     */
+    public Vector getTemplateFields() {
+        return templateFields;
+    }
 
 }

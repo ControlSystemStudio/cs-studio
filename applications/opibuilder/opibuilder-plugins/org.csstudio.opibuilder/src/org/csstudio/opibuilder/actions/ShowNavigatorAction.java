@@ -26,29 +26,29 @@ import org.eclipse.ui.WorkbenchException;
  */
 public class ShowNavigatorAction implements IObjectActionDelegate {
 
-	private IWorkbenchWindow window;
+    private IWorkbenchWindow window;
 
-	@SuppressWarnings("deprecation")
-	public void run(IAction action) {
-		try {
-			if(window == null)
-				window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-			final IWorkbenchPage page = window.getActivePage();
-			page.showView(IPageLayout.ID_RES_NAV);			
-		} catch (WorkbenchException e) {
-			final String message = NLS.bind(
-					"Failed to open navigator. \n{0}", e.getMessage());
-			MessageDialog.openError(null, "Error",
-						message);
-			OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-		}
-	}
+    @SuppressWarnings("deprecation")
+    public void run(IAction action) {
+        try {
+            if(window == null)
+                window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+            final IWorkbenchPage page = window.getActivePage();
+            page.showView(IPageLayout.ID_RES_NAV);
+        } catch (WorkbenchException e) {
+            final String message = NLS.bind(
+                    "Failed to open navigator. \n{0}", e.getMessage());
+            MessageDialog.openError(null, "Error",
+                        message);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
+        }
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-	}
+    public void selectionChanged(IAction action, ISelection selection) {
+    }
 
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		window=targetPart.getSite().getWorkbenchWindow();
-	}
+    @Override
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        window=targetPart.getSite().getWorkbenchWindow();
+    }
 }

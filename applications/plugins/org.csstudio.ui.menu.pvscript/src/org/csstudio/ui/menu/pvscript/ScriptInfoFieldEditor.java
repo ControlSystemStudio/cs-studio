@@ -29,19 +29,19 @@ import org.eclipse.swt.widgets.Label;
  */
 public class ScriptInfoFieldEditor extends FieldEditor
 {
-	final private List<String[]> texts = new ArrayList<String[]>();
-	private StringTableEditor table_editor;
-	
-	public ScriptInfoFieldEditor(final Composite parent)
-	{
-		init(Preferences.PREF_SCRIPTS, Messages.PrefEdit_Scripts);
-		createControl(parent);
-	}
+    final private List<String[]> texts = new ArrayList<String[]>();
+    private StringTableEditor table_editor;
+
+    public ScriptInfoFieldEditor(final Composite parent)
+    {
+        init(Preferences.PREF_SCRIPTS, Messages.PrefEdit_Scripts);
+        createControl(parent);
+    }
 
     /** {@inheritDoc} */
     @Override
-	protected void doFillIntoGrid(final Composite parent, final int numColumns)
-	{
+    protected void doFillIntoGrid(final Composite parent, final int numColumns)
+    {
         final Label label = getLabelControl(parent);
         GridData gd = new GridData();
         gd.horizontalSpan = numColumns;
@@ -49,23 +49,23 @@ public class ScriptInfoFieldEditor extends FieldEditor
 
         final RowEditDialog editor = new ScriptInfoEditor(parent.getShell());
         table_editor = new StringTableEditor(parent,
-        	new String[] { Messages.PrefEdit_Description, Messages.PrefEdit_Command },
-        	new boolean[] { true, true },
-        	texts,
-        	editor,
-        	new int[] { 100, 200 });
+            new String[] { Messages.PrefEdit_Description, Messages.PrefEdit_Command },
+            new boolean[] { true, true },
+            texts,
+            editor,
+            new int[] { 100, 200 });
         table_editor.setLayoutData(
-        		new GridData(SWT.FILL, SWT.FILL, true, true, numColumns, 1));
-	}
+                new GridData(SWT.FILL, SWT.FILL, true, true, numColumns, 1));
+    }
 
     /** {@inheritDoc} */
-	@Override
-	public int getNumberOfControls()
-	{
-		return 1;
-	}
+    @Override
+    public int getNumberOfControls()
+    {
+        return 1;
+    }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     protected void adjustForNumColumns(final int numColumns)
     {
@@ -77,52 +77,52 @@ public class ScriptInfoFieldEditor extends FieldEditor
 
     /** {@inheritDoc} */
     @Override
-	protected void doLoad()
+    protected void doLoad()
     {
-		final String encoded = getPreferenceStore().getString(Preferences.PREF_SCRIPTS);
-    	loadSettings(encoded);
-	}
+        final String encoded = getPreferenceStore().getString(Preferences.PREF_SCRIPTS);
+        loadSettings(encoded);
+    }
 
     /** {@inheritDoc} */
     @Override
-	protected void doLoadDefault()
+    protected void doLoadDefault()
     {
-		final String encoded = getPreferenceStore().getDefaultString(Preferences.PREF_SCRIPTS);
-    	loadSettings(encoded);
-	}
+        final String encoded = getPreferenceStore().getDefaultString(Preferences.PREF_SCRIPTS);
+        loadSettings(encoded);
+    }
 
     /** Load preference settings into GUI
      *  @param encoded Encoded settings
      */
-	private void loadSettings(final String encoded)
+    private void loadSettings(final String encoded)
     {
-    	if (table_editor == null)
-    		return;
-	    try
-    	{
-			final ScriptInfo[] infos = Preferences.decode(encoded);
-			texts.clear();
-			for (ScriptInfo info : infos)
-				texts.add(new String[] { info.getDescription(), info.getScript() });
-			table_editor.updateInput(texts);
-    	}
-    	catch (Exception ex)
-    	{
-    		MessageDialog.openError(table_editor.getShell(),
-    				Messages.Error,
-    				NLS.bind(Messages.PreferenceErrorFmt, ex.getMessage()));
-    	}
+        if (table_editor == null)
+            return;
+        try
+        {
+            final ScriptInfo[] infos = Preferences.decode(encoded);
+            texts.clear();
+            for (ScriptInfo info : infos)
+                texts.add(new String[] { info.getDescription(), info.getScript() });
+            table_editor.updateInput(texts);
+        }
+        catch (Exception ex)
+        {
+            MessageDialog.openError(table_editor.getShell(),
+                    Messages.Error,
+                    NLS.bind(Messages.PreferenceErrorFmt, ex.getMessage()));
+        }
     }
 
 
     /** {@inheritDoc} */
     @Override
-	protected void doStore()
+    protected void doStore()
     {
-    	final ScriptInfo[] infos = new ScriptInfo[texts.size()];
-    	for (int i=0; i<infos.length; ++i)
-    		infos[i] = new ScriptInfo(texts.get(i)[0], texts.get(i)[1]);
-    	final String encoded = Preferences.encode(infos);
-    	getPreferenceStore().setValue(Preferences.PREF_SCRIPTS, encoded);
-	}
+        final ScriptInfo[] infos = new ScriptInfo[texts.size()];
+        for (int i=0; i<infos.length; ++i)
+            infos[i] = new ScriptInfo(texts.get(i)[0], texts.get(i)[1]);
+        final String encoded = Preferences.encode(infos);
+        getPreferenceStore().setValue(Preferences.PREF_SCRIPTS, encoded);
+    }
 }

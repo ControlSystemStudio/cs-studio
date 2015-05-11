@@ -18,14 +18,14 @@ import org.epics.vtype.Display;
 import org.epics.vtype.VType;
 
 /** {@link ValueIterator} that performs linear interpolation
- * 
+ *
  *  <p>Reads from an underlying value iterator and returns
  *  linearly interpolated values.
- *  
+ *
  *  <p>Interpolation will 'maximize' the severity of samples
  *  received from the base iterator within an interpolation
  *  period.
- *  
+ *
  *  <p>Fundamentally, values are interpolated numerically,
  *  allowing <code>NaN</code> to simply result in not-a-number
  *  interpolation values, meaning:
@@ -33,7 +33,7 @@ import org.epics.vtype.VType;
  *  treated as 3.0. The INVALID severity will be included in the
  *  maximized severity of the interpolated samples, but it does not
  *  affect the numeric output.
- *  
+ *
  *  <p>An exception is made for UNDEFINED values.
  *  If the last base sample before an interpolation point
  *  is UNDEFINED, that interpolation point will be undefined
@@ -43,7 +43,7 @@ import org.epics.vtype.VType;
  *  before and after the exact interpolation point.
  *  But if the last sample before the interpolation point is UNDEFINED,
  *  so will be the interpolation point.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -54,10 +54,10 @@ public class LinearValueIterator implements ValueIterator
 
     /** Interpolation interval */
     final private TimeDuration interval;
-    
+
     /** Last value read from the base iterator */
     private VType base_value;
-    
+
     /** The next value to return */
     private VType next;
 
@@ -73,7 +73,7 @@ public class LinearValueIterator implements ValueIterator
         base_value = base.hasNext() ? base.next() : null;
         next = determineNextValue();
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean hasNext()
@@ -96,7 +96,7 @@ public class LinearValueIterator implements ValueIterator
     {
         base.close();
     }
-    
+
     /** Continue to read base iterator to determine next
      *  interpolated value
      *  @return next value
@@ -106,21 +106,21 @@ public class LinearValueIterator implements ValueIterator
     {
         if (base_value == null)
             return null;
-        
+
         // Have one, initial value
         final StatisticsAccumulator accumulator = new StatisticsAccumulator();
         Timestamp t0, t1 = VTypeHelper.getTimestamp(base_value);
         double v0, v1 = VTypeHelper.toDouble(base_value);
         AlarmSeverity severity = VTypeHelper.getSeverity(base_value);
         accumulator.add(v1);
-    
+
         // Most severe alarm
         AlarmSeverity max_severity = severity;
         String max_status = VTypeHelper.getMessage(base_value);
-        
+
         // Track the last undefined sample
         VType last_undefined = null;
-        
+
         // Look for values until end of current interpolation bin
         final Timestamp end_of_bin = TimestampHelper.roundUp(t1, interval);
         do
@@ -134,7 +134,7 @@ public class LinearValueIterator implements ValueIterator
                 last_undefined = base_value;
             else
                 last_undefined = null;
-            
+
             // Reached end of input data?
             if (!base.hasNext())
             {
@@ -142,7 +142,7 @@ public class LinearValueIterator implements ValueIterator
                 base_value = null;
                 return last_value;
             }
-            
+
             // Get next value
             base_value = base.next();
             t1 = VTypeHelper.getTimestamp(base_value);
@@ -172,7 +172,7 @@ public class LinearValueIterator implements ValueIterator
                 interpol = v0 + (v1 - v0) * (end_of_bin.durationFrom(t0).toSeconds() / dT);
             else
                 interpol = (v0 + v1)/2; // Use average?
-            
+
             if (! (base_value instanceof Display))
             {   // Cannot be packaged as ArchiveVStatistics since there's no Display info,
                 // so pass the base value with 'interpolated' time stamp.
@@ -185,7 +185,7 @@ public class LinearValueIterator implements ValueIterator
                 return new ArchiveVStatistics(end_of_bin, max_severity, max_status, (Display) base_value,
                         interpol, accumulator.getMin(), accumulator.getMax(), accumulator.getStdDev(), accumulator.getNSamples());
         }
-        
+
         // Have nothing in this bin
         // TODO Check this case
         throw new Exception("Not handled");

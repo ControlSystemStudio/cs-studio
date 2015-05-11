@@ -37,9 +37,9 @@ import org.csstudio.utility.ldap.ui.Activator;
  */
 public final class Messages {
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(Activator.PLUGIN_ID + ".preference.messages");
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(Activator.PLUGIN_ID + ".preference.messages");
 
-	/**
+    /**
      * Constructor.
      */
     private Messages() {
@@ -51,11 +51,11 @@ public final class Messages {
      * @param key the resource key
      * @return the resource string
      */
-	public static String getString(final String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (final MissingResourceException e) {
-			return '!' + key + '!';
-		}
-	}
+    public static String getString(final String key) {
+        try {
+            return RESOURCE_BUNDLE.getString(key);
+        } catch (final MissingResourceException e) {
+            return '!' + key + '!';
+        }
+    }
 }

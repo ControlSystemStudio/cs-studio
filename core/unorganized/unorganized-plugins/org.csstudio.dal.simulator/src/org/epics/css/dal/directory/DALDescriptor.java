@@ -27,57 +27,57 @@ import javax.naming.directory.Attributes;
 
 public interface DALDescriptor extends Attributes
 {
-	public static final String DESCRIPTOR_TYPE = "descriptorType";
-	public static final String NAME = "name";
-	public static final String CLASS_TYPE = "classType";
+    public static final String DESCRIPTOR_TYPE = "descriptorType";
+    public static final String NAME = "name";
+    public static final String CLASS_TYPE = "classType";
 
-	/**
-	 * Name of this descriptor.
-	 * This value is available also as attribute, this method is for conveninence.
-	 * @return name
-	 */
-	public String getName();
+    /**
+     * Name of this descriptor.
+     * This value is available also as attribute, this method is for conveninence.
+     * @return name
+     */
+    public String getName();
 
-	/**
-	 * Class of object, which si represented by this descriptor.
-	 * This value is available also as attribute, this method is for conveninence.
-	 * @return class of reperesnted type or object
-	 */
-	public Class getClassType();
+    /**
+     * Class of object, which si represented by this descriptor.
+     * This value is available also as attribute, this method is for conveninence.
+     * @return class of reperesnted type or object
+     */
+    public Class getClassType();
 
-	/**
-	 * Returns type of this descriptor.
-	 * This value is available also as attribute, this method is for conveninence.
-	 * @return type of this descriptor
-	 */
-	public DescriptorType getDescriptorType();
+    /**
+     * Returns type of this descriptor.
+     * This value is available also as attribute, this method is for conveninence.
+     * @return type of this descriptor
+     */
+    public DescriptorType getDescriptorType();
 
-	/**
-	 * Sets descriptor name.
-	 * @param name the name of descriptor
-	 */
-	public void setName(String name);
+    /**
+     * Sets descriptor name.
+     * @param name the name of descriptor
+     */
+    public void setName(String name);
 
-	/**
-	 * Set type (class) of by this descriptor represented object.
-	 * @param type the type of represented object
-	 */
-	public void setClassType(Class type);
+    /**
+     * Set type (class) of by this descriptor represented object.
+     * @param type the type of represented object
+     */
+    public void setClassType(Class type);
 
-	/**
-	 * Returns value from attributes.
-	 * @param attrId attribute name
-	 * @return attribute value
-	 */
-	public Object getAttributeValue(String attrId);
+    /**
+     * Returns value from attributes.
+     * @param attrId attribute name
+     * @return attribute value
+     */
+    public Object getAttributeValue(String attrId);
 
-	/**
-	 * Sets attribute value.
-	 * @param objId attribute name
-	 * @param value attribute value
-	 * @return of value already existed odl value, otherwise <code>null</code>
-	 */
-	public Object putAttributeValue(String objId, Object value);
+    /**
+     * Sets attribute value.
+     * @param objId attribute name
+     * @param value attribute value
+     * @return of value already existed odl value, otherwise <code>null</code>
+     */
+    public Object putAttributeValue(String objId, Object value);
 }
 
 /* __oOo__ */

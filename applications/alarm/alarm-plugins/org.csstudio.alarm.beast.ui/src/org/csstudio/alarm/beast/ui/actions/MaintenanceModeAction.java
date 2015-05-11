@@ -73,7 +73,7 @@ public class MaintenanceModeAction extends Action
     private static void getIcons()
     {
         if (image_off != null)
-        	return;
+            return;
         image_on = Activator.getImageDescriptor("icons/maintenance_act.gif"); //$NON-NLS-1$
         image_off = Activator.getImageDescriptor("icons/operate.gif"); //$NON-NLS-1$
     }

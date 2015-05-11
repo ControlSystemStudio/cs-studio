@@ -33,34 +33,34 @@ import org.csstudio.scan.server.MemoryInfo;
  */
 public class MemoryDataLog extends DataLog
 {
-	/** Map from device name to list of samples for that device */
-	final private Map<String, List<ScanSample>> device_logs =
-			new HashMap<String, List<ScanSample>>();
+    /** Map from device name to list of samples for that device */
+    final private Map<String, List<ScanSample>> device_logs =
+            new HashMap<String, List<ScanSample>>();
 
     final private double threshold = ScanSystemPreferences.getOldScanRemovalMemoryThreshold();
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public synchronized void doLog(final String device, final ScanSample sample) throws Exception
     {
-		// Check Memory usage
-		final MemoryInfo mem = new MemoryInfo();
-		if (mem.getMemoryPercentage() > threshold)
-    		return;
+        // Check Memory usage
+        final MemoryInfo mem = new MemoryInfo();
+        if (mem.getMemoryPercentage() > threshold)
+            return;
 
-		List<ScanSample> samples = device_logs.get(device);
-		if (samples == null)
-		{
-			samples = new ArrayList<ScanSample>();
-			device_logs.put(device, samples);
-		}
-		samples.add(sample);
+        List<ScanSample> samples = device_logs.get(device);
+        if (samples == null)
+        {
+            samples = new ArrayList<ScanSample>();
+            device_logs.put(device, samples);
+        }
+        samples.add(sample);
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public synchronized ScanData getScanData()  throws Exception
-	{
-		return new ScanData(new HashMap<String, List<ScanSample>>(device_logs));
-	}
+    {
+        return new ScanData(new HashMap<String, List<ScanSample>>(device_logs));
+    }
 }

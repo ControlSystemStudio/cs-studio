@@ -25,16 +25,16 @@ public class StringValue extends Value implements IStringValue
     // Slight inconsistency, because that's the way EPICS works right now:
     // There is no array of Strings as there would be arrays of
     // the other types, so we only handle a scalar string as well....
-	private final String values[];
+    private final String values[];
 
-	public StringValue(final ITimestamp time, final ISeverity severity, final String status,
-	        final Quality quality, final String values[])
+    public StringValue(final ITimestamp time, final ISeverity severity, final String status,
+            final Quality quality, final String values[])
     {   // String has no meta data!
-		super(time, severity, status, null, quality);
-		this.values = values;
-		if (values == null  ||  values.length < 1)
-		    throw new java.lang.IllegalArgumentException("Values"); //$NON-NLS-1$
-	}
+        super(time, severity, status, null, quality);
+        this.values = values;
+        if (values == null  ||  values.length < 1)
+            throw new java.lang.IllegalArgumentException("Values"); //$NON-NLS-1$
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -44,21 +44,21 @@ public class StringValue extends Value implements IStringValue
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public final String getValue()
-	{
-		return values[0];
-	}
+    {
+        return values[0];
+    }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public final String format(final Format how, final int precision)
-	{
-		if (getSeverity() != null && getSeverity().hasValue() == false)
-	        return Messages.NoValue;
-		if (values.length == 1)
+    {
+        if (getSeverity() != null && getSeverity().hasValue() == false)
+            return Messages.NoValue;
+        if (values.length == 1)
             return values[0];
-		final StringBuffer result = new StringBuffer();
+        final StringBuffer result = new StringBuffer();
         result.append(values[0]);
         for (int i = 1; i < values.length; i++)
         {
@@ -66,22 +66,22 @@ public class StringValue extends Value implements IStringValue
             result.append(values[i]);
         }
         return result.toString();
-	}
+    }
 
     /** {@inheritDoc} */
-	@Override
-	public final boolean equals(final Object obj)
-	{
-		if (! (obj instanceof StringValue))
-			return false;
-		final StringValue rhs = (StringValue) obj;
-		// compare strings
-		return Arrays.equals(values, rhs.getValues());
-	}
+    @Override
+    public final boolean equals(final Object obj)
+    {
+        if (! (obj instanceof StringValue))
+            return false;
+        final StringValue rhs = (StringValue) obj;
+        // compare strings
+        return Arrays.equals(values, rhs.getValues());
+    }
 
     @Override
     public int hashCode()
     {
-    	return Arrays.hashCode(values);
+        return Arrays.hashCode(values);
     }
 }

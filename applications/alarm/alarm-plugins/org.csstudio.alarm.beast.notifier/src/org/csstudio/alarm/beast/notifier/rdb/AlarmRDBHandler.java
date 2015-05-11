@@ -31,56 +31,56 @@ public class AlarmRDBHandler implements IAlarmRDBHandler {
     final private AlarmClientModel model;
 
 
-	public AlarmRDBHandler(final String root) throws Exception {
-		model = AlarmClientModel.getInstance(root);
-		model.addListener(this);
-	}
+    public AlarmRDBHandler(final String root) throws Exception {
+        model = AlarmClientModel.getInstance(root);
+        model.addListener(this);
+    }
 
-	/** Initialize wrapper with AlarmNotifier */
-	@Override
+    /** Initialize wrapper with AlarmNotifier */
+    @Override
     public void init(final AlarmNotifier notifier) {
-		this.notifier = notifier;
-	}
+        this.notifier = notifier;
+    }
 
-	/** Find item by path */
-	@Override
+    /** Find item by path */
+    @Override
     public AlarmTreeItem findItem(String path) {
-		return model.getConfigTree().getItemByPath(path);
-	}
+        return model.getConfigTree().getItemByPath(path);
+    }
 
-	/** @return Current alarm tree */
-	@Override
+    /** @return Current alarm tree */
+    @Override
     public TreeItem getAlarmTree() {
-		return model.getConfigTree();
-	}
+        return model.getConfigTree();
+    }
 
-	/** Must be called to release resources */
-	@Override
+    /** Must be called to release resources */
+    @Override
     public void close() {
-		model.release();
-	}
+        model.release();
+    }
 
-	@Override
-	public void newAlarmConfiguration(AlarmClientModel model) {
-		notifier.handleNewAlarmConfiguration();
-	}
+    @Override
+    public void newAlarmConfiguration(AlarmClientModel model) {
+        notifier.handleNewAlarmConfiguration();
+    }
 
-	@Override
-	public void serverModeUpdate(AlarmClientModel model, boolean maintenance_mode) {
-		notifier.handleModeUpdate(maintenance_mode);
-	}
+    @Override
+    public void serverModeUpdate(AlarmClientModel model, boolean maintenance_mode) {
+        notifier.handleModeUpdate(maintenance_mode);
+    }
 
-	@Override
-	public void serverTimeout(AlarmClientModel model) {
-		Activator.getLogger().log(Level.SEVERE, "Alarm Server timeout");
-	}
+    @Override
+    public void serverTimeout(AlarmClientModel model) {
+        Activator.getLogger().log(Level.SEVERE, "Alarm Server timeout");
+    }
 
-	@Override
-	public void newAlarmState(AlarmClientModel model, AlarmTreePV pv,
-			boolean parent_changed) {
-		if (pv == null)
-			return;
-		notifier.handleAlarmUpdate(pv);
-	}
+    @Override
+    public void newAlarmState(AlarmClientModel model, AlarmTreePV pv,
+            boolean parent_changed) {
+        if (pv == null)
+            return;
+        notifier.handleAlarmUpdate(pv);
+    }
 
 }

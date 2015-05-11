@@ -94,7 +94,7 @@ public class ChunkableCollection<E> implements Iterable<Collection<E>> {
         }
 
         private int calcChunkSize() {
-			int result = _chunkSize;
+            int result = _chunkSize;
             if ( (_currentChunk + 1) == _chunkCount) {
                 int rest = _collection.size() % _chunkSize;
                 result = rest == 0 ? _chunkSize : rest;

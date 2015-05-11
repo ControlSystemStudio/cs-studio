@@ -28,23 +28,23 @@ import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
  * Widget model factory for strip chart models.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class StripChartModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new StripChartModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new StripChartModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Class<StripChartModel> getWidgetModelType() {
-		return StripChartModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Class<StripChartModel> getWidgetModelType() {
+        return StripChartModel.class;
+    }
 
 }

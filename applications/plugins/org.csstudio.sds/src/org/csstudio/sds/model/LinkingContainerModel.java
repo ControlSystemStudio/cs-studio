@@ -33,95 +33,95 @@ import org.eclipse.core.runtime.Path;
  *
  */
 public final class LinkingContainerModel extends ContainerModel {
-	/**
-	 * The ID of the resource property.
-	 */
-	public static final String PROP_RESOURCE = "resource"; //$NON-NLS-1$
+    /**
+     * The ID of the resource property.
+     */
+    public static final String PROP_RESOURCE = "resource"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the auto zoom property.
-	 */
-	private static final String PROP_AUTOZOOM = "autozoom"; //$NON-NLS-1$
+    /**
+     * The ID of the auto zoom property.
+     */
+    private static final String PROP_AUTOZOOM = "autozoom"; //$NON-NLS-1$
 
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.LinkingContainer"; //$NON-NLS-1$
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.LinkingContainer"; //$NON-NLS-1$
 
-	/**
-	 * The default value of the height property.
-	 */
-	private static final int DEFAULT_HEIGHT = 100;
+    /**
+     * The default value of the height property.
+     */
+    private static final int DEFAULT_HEIGHT = 100;
 
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 100;
+    /**
+     * The default value of the width property.
+     */
+    private static final int DEFAULT_WIDTH = 100;
 
-	private boolean isResourceLoaded = false;
-	
-	/**
-	 * Standard constructor.
-	 */
-	public LinkingContainerModel() {
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
+    private boolean isResourceLoaded = false;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * Standard constructor.
+     */
+    public LinkingContainerModel() {
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		addResourceProperty(PROP_RESOURCE, "Resource", WidgetPropertyCategory.DISPLAY, new Path(""), new String[] { "css-sds" }, true, PROP_TOOLTIP);
-		addBooleanProperty(PROP_AUTOZOOM, "Automatic Zoom", WidgetPropertyCategory.DISPLAY, true, false, PROP_RESOURCE);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
-		// .. hide properties
-		hideProperty(PROP_ROTATION, getTypeID());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        addResourceProperty(PROP_RESOURCE, "Resource", WidgetPropertyCategory.DISPLAY, new Path(""), new String[] { "css-sds" }, true, PROP_TOOLTIP);
+        addBooleanProperty(PROP_AUTOZOOM, "Automatic Zoom", WidgetPropertyCategory.DISPLAY, true, false, PROP_RESOURCE);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String getDefaultToolTip() {
-		StringBuffer buffer = new StringBuffer();
-		buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
-		buffer.append("Resource:\t");
-		buffer.append(createTooltipParameter(PROP_RESOURCE));
-		return buffer.toString();
-	}
+        // .. hide properties
+        hideProperty(PROP_ROTATION, getTypeID());
+    }
 
-	/**
-	 * Return the target resource.
-	 *
-	 * @return The target resource.
-	 */
-	public IPath getResource() {
-		return getResourceProperty(PROP_RESOURCE);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getDefaultToolTip() {
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(createTooltipParameter(PROP_ALIASES) + "\n");
+        buffer.append("Resource:\t");
+        buffer.append(createTooltipParameter(PROP_RESOURCE));
+        return buffer.toString();
+    }
 
-	/**
-	 * Returns the auto zoom state.
-	 *
-	 * @return the auto zoom state
-	 */
-	public boolean isAutoZoom() {
-		return getBooleanProperty(PROP_AUTOZOOM);
-	}
-	
-	public boolean isResourceLoaded() {
-		return isResourceLoaded;
-	}
-	
-	public void setResourceLoaded(boolean isResourceLoaded) {
-		this.isResourceLoaded = isResourceLoaded;
-	}
+    /**
+     * Return the target resource.
+     *
+     * @return The target resource.
+     */
+    public IPath getResource() {
+        return getResourceProperty(PROP_RESOURCE);
+    }
+
+    /**
+     * Returns the auto zoom state.
+     *
+     * @return the auto zoom state
+     */
+    public boolean isAutoZoom() {
+        return getBooleanProperty(PROP_AUTOZOOM);
+    }
+
+    public boolean isResourceLoaded() {
+        return isResourceLoaded;
+    }
+
+    public void setResourceLoaded(boolean isResourceLoaded) {
+        this.isResourceLoaded = isResourceLoaded;
+    }
 }

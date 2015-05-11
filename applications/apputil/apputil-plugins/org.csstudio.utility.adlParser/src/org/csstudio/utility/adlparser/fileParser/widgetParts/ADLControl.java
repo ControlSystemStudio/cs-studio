@@ -36,42 +36,42 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  */
 public class ADLControl extends ADLConnected {
 
-	/**
-	 * The default constructor.
-	 * 
-	 * @param adlWidget
-	 *            An ADLWidget that correspond a ADL Control.
-	 * @param parentWidgetModel
-	 *            The Widget that set the parameter from ADLWidget.
-	 * @throws WrongADLFormatException
-	 *             Wrong ADL format or untreated parameter found.
-	 */
-	public ADLControl(final ADLWidget adlWidget) throws WrongADLFormatException {
-		super(adlWidget);
-	}
+    /**
+     * The default constructor.
+     *
+     * @param adlWidget
+     *            An ADLWidget that correspond a ADL Control.
+     * @param parentWidgetModel
+     *            The Widget that set the parameter from ADLWidget.
+     * @throws WrongADLFormatException
+     *             Wrong ADL format or untreated parameter found.
+     */
+    public ADLControl(final ADLWidget adlWidget) throws WrongADLFormatException {
+        super(adlWidget);
+    }
 
-	/**
-	 * Default constructor
-	 */
-	public ADLControl() {
-		super();
-	}
+    /**
+     * Default constructor
+     */
+    public ADLControl() {
+        super();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	final void init() {
-		name = new String("control");
-		_chan = String.valueOf("");
-		set_isForeColorDefined(false);
-		set_isBackColorDefined(false);
-		assertBeginMsg = Messages.ADLControl_AssertError_Begin;
-		assertEndMsg = Messages.ADLControl_AssertError_End;
-		exceptionBeginMsg = Messages.ADLControl_WrongADLFormatException_Begin;
-		exceptionEndMsg = Messages.ADLControl_WrongADLFormatException_End;
-		exceptionBeginParameterMsg = Messages.ADLControl_WrongADLFormatException_Parameter_Begin;
-		exceptionEndParameterMsg = Messages.ADLControl_WrongADLFormatException_Parameter_End;
-		oldChannelName = "ctrl";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    final void init() {
+        name = new String("control");
+        _chan = String.valueOf("");
+        set_isForeColorDefined(false);
+        set_isBackColorDefined(false);
+        assertBeginMsg = Messages.ADLControl_AssertError_Begin;
+        assertEndMsg = Messages.ADLControl_AssertError_End;
+        exceptionBeginMsg = Messages.ADLControl_WrongADLFormatException_Begin;
+        exceptionEndMsg = Messages.ADLControl_WrongADLFormatException_End;
+        exceptionBeginParameterMsg = Messages.ADLControl_WrongADLFormatException_Parameter_Begin;
+        exceptionEndParameterMsg = Messages.ADLControl_WrongADLFormatException_Parameter_End;
+        oldChannelName = "ctrl";
+    }
 }

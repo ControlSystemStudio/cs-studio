@@ -15,50 +15,50 @@ import org.csstudio.swt.xygraph.figures.XYGraph;
  */
 public class XYGraphConfigCommand implements IUndoableCommand {
 
-	private XYGraph xyGraph;
-	private XYGraphMemento previousXYGraphMem, afterXYGraphMem;
-	
-	public XYGraphConfigCommand(XYGraph xyGraph) {
-		this.xyGraph = xyGraph;
-		previousXYGraphMem = new XYGraphMemento();		
-		afterXYGraphMem = new XYGraphMemento();
-		
-		for(int i =0; i< xyGraph.getPlotArea().getAnnotationList().size(); i++){
-			previousXYGraphMem.addAnnotationMemento(new AnnotationMemento());
-			afterXYGraphMem.addAnnotationMemento(new AnnotationMemento());
-		}	
-		
-		for(int i=0; i<xyGraph.getAxisList().size(); i++){
-			previousXYGraphMem.addAxisMemento(new AxisMemento());
-			afterXYGraphMem.addAxisMemento(new AxisMemento());
-		}
-		
-		for(int i=0; i<xyGraph.getPlotArea().getTraceList().size(); i++){
-			previousXYGraphMem.addTraceMemento(new TraceMemento());
-			afterXYGraphMem.addTraceMemento(new TraceMemento());
-		}
-		
-	}
+    private XYGraph xyGraph;
+    private XYGraphMemento previousXYGraphMem, afterXYGraphMem;
 
-	public void redo() {
-		XYGraphMementoUtil.restoreXYGraphPropsFromMemento(xyGraph, afterXYGraphMem);
-	}
+    public XYGraphConfigCommand(XYGraph xyGraph) {
+        this.xyGraph = xyGraph;
+        previousXYGraphMem = new XYGraphMemento();
+        afterXYGraphMem = new XYGraphMemento();
 
-	public void undo() {
-		XYGraphMementoUtil.restoreXYGraphPropsFromMemento(xyGraph, previousXYGraphMem);
-	}
-	
-	public void savePreviousStates(){
-		XYGraphMementoUtil.saveXYGraphPropsToMemento(xyGraph, previousXYGraphMem);
-	}
-	
-	public void saveAfterStates(){
-		XYGraphMementoUtil.saveXYGraphPropsToMemento(xyGraph, afterXYGraphMem);
-	}
+        for(int i =0; i< xyGraph.getPlotArea().getAnnotationList().size(); i++){
+            previousXYGraphMem.addAnnotationMemento(new AnnotationMemento());
+            afterXYGraphMem.addAnnotationMemento(new AnnotationMemento());
+        }
 
-	@Override
-	public String toString() {
-		return "Configure XYGraph Settings";
-	}
-	
+        for(int i=0; i<xyGraph.getAxisList().size(); i++){
+            previousXYGraphMem.addAxisMemento(new AxisMemento());
+            afterXYGraphMem.addAxisMemento(new AxisMemento());
+        }
+
+        for(int i=0; i<xyGraph.getPlotArea().getTraceList().size(); i++){
+            previousXYGraphMem.addTraceMemento(new TraceMemento());
+            afterXYGraphMem.addTraceMemento(new TraceMemento());
+        }
+
+    }
+
+    public void redo() {
+        XYGraphMementoUtil.restoreXYGraphPropsFromMemento(xyGraph, afterXYGraphMem);
+    }
+
+    public void undo() {
+        XYGraphMementoUtil.restoreXYGraphPropsFromMemento(xyGraph, previousXYGraphMem);
+    }
+
+    public void savePreviousStates(){
+        XYGraphMementoUtil.saveXYGraphPropsToMemento(xyGraph, previousXYGraphMem);
+    }
+
+    public void saveAfterStates(){
+        XYGraphMementoUtil.saveXYGraphPropsToMemento(xyGraph, afterXYGraphMem);
+    }
+
+    @Override
+    public String toString() {
+        return "Configure XYGraph Settings";
+    }
+
 }

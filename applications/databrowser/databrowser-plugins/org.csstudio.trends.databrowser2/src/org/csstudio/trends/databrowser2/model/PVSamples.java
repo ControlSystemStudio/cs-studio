@@ -109,9 +109,9 @@ public class PVSamples extends PlotSamples
         // Last sample is valid, so it should still apply 'now'
         final PlotSample sample = getRawSample(raw_count-1);
         if (Instant.now().compareTo(sample.getPosition()) < 0)
-        	return sample;
+            return sample;
         else
-        	return new PlotSample(sample.getSource(), VTypeHelper.transformTimestampToNow(sample.getVType()));
+            return new PlotSample(sample.getSource(), VTypeHelper.transformTimestampToNow(sample.getVType()));
     }
 
     /** Get 'raw' sample, no continuation until 'now'
@@ -160,11 +160,11 @@ public class PVSamples extends PlotSamples
         lockForWriting();
         try
         {
-        	if (emptyHistoryOnAdd)
-        	{
-        		emptyHistoryOnAdd = false;
-        		history.clear();
-        	}
+            if (emptyHistoryOnAdd)
+            {
+                emptyHistoryOnAdd = false;
+                history.clear();
+            }
             history.mergeArchivedData(source, result);
         }
         finally
@@ -240,37 +240,37 @@ public class PVSamples extends PlotSamples
         getLock().lock();
         try
         {
-        	//if already waiting for history to be loaded, wait on
-    	   	if (emptyHistoryOnAdd) return false;
-    	   	//if the live samples have more than 15% of capacity left before old data is erased,
-    	   	//refresh is not yet needed
-    	   	if (samplesAddedSinceLastRefresh < live.getCapacity()*0.85) return false;
-        	//if live data hasn't reached capacity, do not refresh anything
-        	if (live.size() < live.getCapacity() || live.size() == 0) return false;
-        	//if there is no history data, there is nothing to refresh anyway
-        	if (history.getRawSize() == 0) return false;
-        	PlotSample first = live.get(0);
-        	//if the first time in the live data is smaller than the visible start time,
-        	//the buffer is large enough to contain all the "currently" visible data
-        	if (first.getPosition().compareTo(startTime) <= 0) return false;
-        	PlotSample last = live.get(live.size()-1);
-        	//if the las sample is greater than the current end time than we are not
-        	//looking at the live data
-        	if (last.getPosition().compareTo(endTime) > 0) return false;
-        	PlotSample historyLast = history.getRawSample(history.getRawSize()-1);
-        	//if the last raw history data is smaller than the first live sample, do refresh
-        	if (historyLast.getPosition().compareTo(first.getPosition()) < 0) {
-        		samplesAddedSinceLastRefresh = 0;
-        		emptyHistoryOnAdd = true;
-        		return true;
-        	}
-        	//maybe we are looking at live data with a window extending into the future:
-        	//in such case check the number of samples that arrived since the previous refresh
-        	if (samplesAddedSinceLastRefresh > live.getCapacity()) {
-        		samplesAddedSinceLastRefresh = 0;
-        		emptyHistoryOnAdd = true;
-        		return true;
-        	}
+            //if already waiting for history to be loaded, wait on
+               if (emptyHistoryOnAdd) return false;
+               //if the live samples have more than 15% of capacity left before old data is erased,
+               //refresh is not yet needed
+               if (samplesAddedSinceLastRefresh < live.getCapacity()*0.85) return false;
+            //if live data hasn't reached capacity, do not refresh anything
+            if (live.size() < live.getCapacity() || live.size() == 0) return false;
+            //if there is no history data, there is nothing to refresh anyway
+            if (history.getRawSize() == 0) return false;
+            PlotSample first = live.get(0);
+            //if the first time in the live data is smaller than the visible start time,
+            //the buffer is large enough to contain all the "currently" visible data
+            if (first.getPosition().compareTo(startTime) <= 0) return false;
+            PlotSample last = live.get(live.size()-1);
+            //if the las sample is greater than the current end time than we are not
+            //looking at the live data
+            if (last.getPosition().compareTo(endTime) > 0) return false;
+            PlotSample historyLast = history.getRawSample(history.getRawSize()-1);
+            //if the last raw history data is smaller than the first live sample, do refresh
+            if (historyLast.getPosition().compareTo(first.getPosition()) < 0) {
+                samplesAddedSinceLastRefresh = 0;
+                emptyHistoryOnAdd = true;
+                return true;
+            }
+            //maybe we are looking at live data with a window extending into the future:
+            //in such case check the number of samples that arrived since the previous refresh
+            if (samplesAddedSinceLastRefresh > live.getCapacity()) {
+                samplesAddedSinceLastRefresh = 0;
+                emptyHistoryOnAdd = true;
+                return true;
+            }
         }
         finally
         {

@@ -40,7 +40,7 @@ public class ArgParserUnitTest
             assertEquals("Unknown option '-url'", ex.getMessage());
         }
     }
-    
+
     @Test
     public void testErrorForExtraParameters() throws Exception
     {
@@ -58,7 +58,7 @@ public class ArgParserUnitTest
             assertEquals("Extra, non-option parameter 'another'", ex.getMessage());
         }
     }
-        
+
     @Test
     public void testArgs() throws Exception
     {
@@ -68,10 +68,10 @@ public class ArgParserUnitTest
         final StringOption url =
             new StringOption(parser, "-url", "http://...", "URL", "http://localhost");
         final IntegerOption port = new IntegerOption(parser, "-port", "TCP Port", 4812);
-        
+
         // Show help
         System.out.println(parser.getHelp());
-        
+
         // Check if option match is somewhat flexible
         assertTrue(help.matchesThisOption("-help"));
         assertTrue(help.matchesThisOption("-hel"));
@@ -79,7 +79,7 @@ public class ArgParserUnitTest
         assertTrue(help.matchesThisOption("-h"));
         assertFalse(help.matchesThisOption("help"));
         assertFalse(help.matchesThisOption("-egon"));
-        
+
         // Parse arguments
         try
         {
@@ -95,7 +95,7 @@ public class ArgParserUnitTest
         assertEquals(true, help.get());
         assertEquals("http://a.b.c/d", url.get());
         assertEquals(4813, port.get());
-        
+
         // Check remaining arguments (without '-...')
         final String extra[] = parser.getExtraParameters();
         assertEquals(2, extra.length);

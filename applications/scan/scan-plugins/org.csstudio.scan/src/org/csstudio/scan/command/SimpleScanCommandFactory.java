@@ -67,7 +67,7 @@ public class SimpleScanCommandFactory
         buf.append("Command");
         return buf.toString();
     }
-    
+
     /** Create a {@link ScanCommand} for a command ID
      *
      *  <p>This is the basic implementation that does NOT use the Eclipse registry.

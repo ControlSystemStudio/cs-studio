@@ -41,8 +41,8 @@ public class Ellipse extends Widget {
 
     /**
      * @param ellipse The ADLWidget that describe the Ellipse.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      */
     public Ellipse(final ADLWidget ellipse, AbstractWidgetModel abstractWidgetModel, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
         super(ellipse, storedBasicAttribute, storedDynamicAttribute);
@@ -64,7 +64,7 @@ public class Ellipse extends Widget {
         ADLHelper.checkAndSetLayer(_widget, abstractWidgetModel);
     }
 
-    
+
     /**
      * {@inheritDoc}
      */

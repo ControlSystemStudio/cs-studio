@@ -16,40 +16,40 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class MultiLineTextCellEditor extends AbstractDialogCellEditor {
-	
-	private String stringValue;
 
-	public MultiLineTextCellEditor(Composite parent, String title) {
-		super(parent, title);
-	}
+    private String stringValue;
 
-	@Override
-	protected void openDialog(Shell parentShell, String dialogTitle) {
-		MultilineTextEditDialog dialog = 
-			new MultilineTextEditDialog(parentShell, stringValue,dialogTitle);
-		if(dialog.open() == Window.OK){
-			stringValue = dialog.getResult();
-		}
+    public MultiLineTextCellEditor(Composite parent, String title) {
+        super(parent, title);
+    }
 
-	}
+    @Override
+    protected void openDialog(Shell parentShell, String dialogTitle) {
+        MultilineTextEditDialog dialog =
+            new MultilineTextEditDialog(parentShell, stringValue,dialogTitle);
+        if(dialog.open() == Window.OK){
+            stringValue = dialog.getResult();
+        }
 
-	@Override
-	protected boolean shouldFireChanges() {
-		return stringValue != null;
-	}
+    }
 
-	@Override
-	protected Object doGetValue() {
-		return stringValue;
-	}
+    @Override
+    protected boolean shouldFireChanges() {
+        return stringValue != null;
+    }
 
-	@Override
-	protected void doSetValue(Object value) {
-		if(value == null)
-			stringValue =  "";  //$NON-NLS-1$
-		else
-			stringValue = value.toString();
-			
-	}
+    @Override
+    protected Object doGetValue() {
+        return stringValue;
+    }
+
+    @Override
+    protected void doSetValue(Object value) {
+        if(value == null)
+            stringValue =  "";  //$NON-NLS-1$
+        else
+            stringValue = value.toString();
+
+    }
 
 }

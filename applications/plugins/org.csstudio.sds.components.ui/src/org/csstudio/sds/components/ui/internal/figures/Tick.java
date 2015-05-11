@@ -24,61 +24,61 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 /**
  * A tick shown along an axis.
- * 
+ *
  * @author Joerg Rathlev
  */
 final class Tick {
 
-	/**
-	 * The type of this tick.
-	 */
-	private final TickType _type;
-	
-	/**
-	 * The value at which this tick appears. 
-	 */
-	private final double _value;
+    /**
+     * The type of this tick.
+     */
+    private final TickType _type;
 
-	/**
-	 * Creates a new tick.
-	 * 
-	 * @param type the type of this tick.
-	 * @param value the value at which this tick appears.
-	 */
-	public Tick(final TickType type, final double value) {
-		if (type == null) {
-			throw new IllegalArgumentException("type == null");
-		}
-		
-		_type = type;
-		_value = value;
-	}
-	
-	/**
-	 * Returns the type of this tick.
-	 * 
-	 * @return the type of this tick.
-	 */
-	public TickType type() {
-		return _type;
-	}
-	
-	/**
-	 * Returns the value at which this tick appears.
-	 * 
-	 * @return the value at which this tick appears.
-	 */
-	public double value() {
-		return _value;
-	}
-	
-	/**
-	 * Returns a string representation of this tick.
-	 * 
-	 * @return a string representation of this tick.
-	 */
-	@Override
-	public String toString() {
-		return "[" + _type + "," + _value + "]";
-	}
+    /**
+     * The value at which this tick appears.
+     */
+    private final double _value;
+
+    /**
+     * Creates a new tick.
+     *
+     * @param type the type of this tick.
+     * @param value the value at which this tick appears.
+     */
+    public Tick(final TickType type, final double value) {
+        if (type == null) {
+            throw new IllegalArgumentException("type == null");
+        }
+
+        _type = type;
+        _value = value;
+    }
+
+    /**
+     * Returns the type of this tick.
+     *
+     * @return the type of this tick.
+     */
+    public TickType type() {
+        return _type;
+    }
+
+    /**
+     * Returns the value at which this tick appears.
+     *
+     * @return the value at which this tick appears.
+     */
+    public double value() {
+        return _value;
+    }
+
+    /**
+     * Returns a string representation of this tick.
+     *
+     * @return a string representation of this tick.
+     */
+    @Override
+    public String toString() {
+        return "[" + _type + "," + _value + "]";
+    }
 }

@@ -29,62 +29,62 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Messages extends NLS {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Messages.class);
-    
-	private static final String BUNDLE_NAME = "org.csstudio.utility.nameSpaceSearch.messages"; //$NON-NLS-1$
 
-	public static String MainView_Controller;
+    private static final String BUNDLE_NAME = "org.csstudio.utility.nameSpaceSearch.messages"; //$NON-NLS-1$
 
-	public static String MainView_ecom;
+    public static String MainView_Controller;
 
-	public static String MainView_facility;
+    public static String MainView_ecom;
 
-	public static String MainView_Record;
+    public static String MainView_facility;
 
-	public static String MainView_searchButton;
+    public static String MainView_Record;
 
-	public static String MainView_SearchButtonFont;
+    public static String MainView_searchButton;
 
-	public static String MainView_ToolTip;
+    public static String MainView_SearchButtonFont;
 
-	public static String MainView_ToolTip_Sort;
+    public static String MainView_ToolTip;
 
-	public static String PreferencePage_DN;
+    public static String MainView_ToolTip_Sort;
 
-	public static String PreferencePage_LDAP;
+    public static String PreferencePage_DN;
 
-	public static String PreferencePage_PASS;
+    public static String PreferencePage_LDAP;
 
-	public static String PreferencePage_URL;
+    public static String PreferencePage_PASS;
 
-	public static String PreferencePage_RECORD_ATTRIBUTE;
+    public static String PreferencePage_URL;
 
-	public static String PreferencePage_SEARCH_ROOT;
+    public static String PreferencePage_RECORD_ATTRIBUTE;
 
-	public static String PreferencePage_SEARCH_ROOT_TOOL_TIP;
+    public static String PreferencePage_SEARCH_ROOT;
 
-	/**
-	 * The localzation messages ressource bundle.
-	 */
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
+    public static String PreferencePage_SEARCH_ROOT_TOOL_TIP;
 
-	static {
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    /**
+     * The localzation messages ressource bundle.
+     */
+    private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
+            .getBundle(BUNDLE_NAME);
 
-	private Messages() {
-	    // EMPTY
-	}
+    static {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	public static String getString(final String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (final MissingResourceException e) {
-			LOG.error("Key '{}' Error", key,e);
-			return '!' + key + '!';
-		}
-	}
+    private Messages() {
+        // EMPTY
+    }
+
+    public static String getString(final String key) {
+        try {
+            return RESOURCE_BUNDLE.getString(key);
+        } catch (final MissingResourceException e) {
+            LOG.error("Key '{}' Error", key,e);
+            return '!' + key + '!';
+        }
+    }
 }

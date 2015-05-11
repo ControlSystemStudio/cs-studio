@@ -17,6 +17,6 @@ import java.awt.image.BufferedImage;
  */
 public interface SVGHandlerListener {
 
-	public void newImage(BufferedImage awtImage);
+    public void newImage(BufferedImage awtImage);
 
 }

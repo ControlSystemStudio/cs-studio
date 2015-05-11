@@ -40,29 +40,29 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 24.10.2007
  */
 public abstract class WidgetPart {
-    
+
     /**
      * The Widget that set the parameter from ADLWidget.
      */
-	protected String name = new String();
+    protected String name = new String();
     /**
      * The default constructor.
-     * 
-     * @param widgetPart An ADLWidget that correspond to the Child Widget Part. 
+     *
+     * @param widgetPart An ADLWidget that correspond to the Child Widget Part.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public WidgetPart(final ADLWidget widgetPart) throws WrongADLFormatException {
         init();
         if (!widgetPart.getType().startsWith(getName())){
-        	throw new WrongADLFormatException("part type does not match widget name(part type, widget name): (" 
-        			+widgetPart.getType() + ", " + getName() + ")");
+            throw new WrongADLFormatException("part type does not match widget name(part type, widget name): ("
+                    +widgetPart.getType() + ", " + getName() + ")");
         }
         parseWidgetPart(widgetPart);
     }
 
     public WidgetPart(){
-    	init();
+        init();
     }
     /**
      * Initialization.
@@ -71,7 +71,7 @@ public abstract class WidgetPart {
 
     /**
      * Pars the {@link ADLWidget}.
-     * 
+     *
      * @param widgetPart the widget Part to pars.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
@@ -81,7 +81,7 @@ public abstract class WidgetPart {
 
 
     public String getName(){
-    	return name;
+        return name;
     }
- 
+
 }

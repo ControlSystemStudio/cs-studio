@@ -19,13 +19,13 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 public class ThumbnailViewOutlinePage extends ContentOutlinePage implements IContentOutlinePage {
-    
+
     private Canvas _overview;
-    
+
     public ThumbnailViewOutlinePage(EditPartViewer viewer) {
         super(viewer);
     }
-    
+
     @Override
     public void createControl(Composite parent) {
         _overview = new Canvas(parent, SWT.NONE);
@@ -34,20 +34,20 @@ public class ThumbnailViewOutlinePage extends ContentOutlinePage implements ICon
         if (rep instanceof ScalableFreeformRootEditPart) {
             Thumbnail thumbnail = createThumbnail((ScalableFreeformRootEditPart) rep);
             lws.setContents(thumbnail);
-            
+
             DisposeListener disposeListener = createDisposeListenerToViewerControl(thumbnail);
             getViewer().getControl().addDisposeListener(disposeListener);
         }
     }
-    
+
     private Thumbnail createThumbnail(ScalableFreeformRootEditPart root) {
         Thumbnail thumbnail = new ScrollableThumbnail((Viewport) root.getFigure());
         thumbnail.setBorder(new MarginBorder(3));
         thumbnail.setSource(root.getLayer(LayerConstants.PRINTABLE_LAYERS));
-        
+
         return thumbnail;
     }
-    
+
     private DisposeListener createDisposeListenerToViewerControl(final Thumbnail _thumbnail) {
         return new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
@@ -57,7 +57,7 @@ public class ThumbnailViewOutlinePage extends ContentOutlinePage implements ICon
             }
         };
     }
-    
+
     @Override
     public Control getControl() {
         return _overview;

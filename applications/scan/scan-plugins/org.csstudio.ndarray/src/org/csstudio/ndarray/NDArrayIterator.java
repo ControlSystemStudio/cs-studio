@@ -19,24 +19,24 @@ import org.epics.util.array.IteratorDouble;
  */
 public class NDArrayIterator extends IteratorDouble
 {
-	final private NDArray array;
-	final private ShapeIterator shape_iter;
+    final private NDArray array;
+    final private ShapeIterator shape_iter;
 
-	public NDArrayIterator(final NDArray array)
+    public NDArrayIterator(final NDArray array)
     {
-		this.array = array;
-		shape_iter = new ShapeIterator(array.getShape());
+        this.array = array;
+        shape_iter = new ShapeIterator(array.getShape());
     }
 
-	@Override
-	public boolean hasNext()
-	{
-		return shape_iter.hasNext();
-	}
+    @Override
+    public boolean hasNext()
+    {
+        return shape_iter.hasNext();
+    }
 
-	@Override
-	public double nextDouble()
-	{
-		return array.getDouble(shape_iter.getPosition());
-	}
+    @Override
+    public double nextDouble()
+    {
+        return array.getDouble(shape_iter.getPosition());
+    }
 }

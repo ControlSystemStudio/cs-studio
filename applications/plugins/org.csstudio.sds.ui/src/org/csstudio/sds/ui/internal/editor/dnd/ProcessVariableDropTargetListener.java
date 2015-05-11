@@ -28,21 +28,21 @@ import org.eclipse.swt.dnd.TransferData;
 
 /**
  * Drop target listener that processes a single {@link ProcessVariable}.
- * 
+ *
  * @author Sven Wende
  */
 public final class ProcessVariableDropTargetListener extends AbstractDropTargetListener<SerializableItemTransfer> {
 
-	private static SerializableItemTransfer TRANSFER = SerializableItemTransfer.getTransfer(ProcessVariable.class);
+    private static SerializableItemTransfer TRANSFER = SerializableItemTransfer.getTransfer(ProcessVariable.class);
 
-	public ProcessVariableDropTargetListener(final EditPartViewer viewer) {
-		super(viewer, TRANSFER);
-	}
+    public ProcessVariableDropTargetListener(final EditPartViewer viewer) {
+        super(viewer, TRANSFER);
+    }
 
-	@Override
-	protected String[] translate(SerializableItemTransfer transfer, TransferData transferData) {
-		ProcessVariable processVariable = (ProcessVariable) TRANSFER.nativeToJava(transferData);
-		return new String[] { processVariable.getName() };
-	}
+    @Override
+    protected String[] translate(SerializableItemTransfer transfer, TransferData transferData) {
+        ProcessVariable processVariable = (ProcessVariable) TRANSFER.nativeToJava(transferData);
+        return new String[] { processVariable.getName() };
+    }
 
 }

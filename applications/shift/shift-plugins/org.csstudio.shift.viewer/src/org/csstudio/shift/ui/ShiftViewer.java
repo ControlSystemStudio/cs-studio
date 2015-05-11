@@ -37,13 +37,13 @@ public class ShiftViewer extends EditorPart {
     private static ShiftViewer editor;
 
     /**
-     * 
+     *
      */
     public ShiftViewer() {
     }
 
     public static ShiftViewer createInstance() {
-	    return createInstance(new ShiftViewerModel(null));
+        return createInstance(new ShiftViewerModel(null));
     }
 
     public static ShiftViewer createInstance(final IEditorInput input) {
@@ -70,30 +70,30 @@ public class ShiftViewer extends EditorPart {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.
      * IProgressMonitor)
      */
     @Override
     public void doSave(IProgressMonitor monitor) {
-	// TODO Auto-generated method stub
+    // TODO Auto-generated method stub
 
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.part.EditorPart#doSaveAs()
      */
     @Override
     public void doSaveAs() {
-	// TODO Auto-generated method stub
+    // TODO Auto-generated method stub
 
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite,
      * org.eclipse.ui.IEditorInput)
      */
@@ -128,29 +128,29 @@ public class ShiftViewer extends EditorPart {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.part.EditorPart#isDirty()
      */
     @Override
     public boolean isDirty() {
-	// TODO Auto-generated method stub
-	    return false;
+    // TODO Auto-generated method stub
+        return false;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
      */
     @Override
     public boolean isSaveAsAllowed() {
-	// TODO Auto-generated method stub
-	    return false;
+    // TODO Auto-generated method stub
+        return false;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
      * .Composite)
@@ -174,7 +174,7 @@ public class ShiftViewer extends EditorPart {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
      */
     @Override

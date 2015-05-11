@@ -23,10 +23,10 @@ package org.csstudio.remote.jms.command;
 
 /**
  * Client groups are used to group clients (ie. listeners) for jms commands into groups.
- * 
+ *
  * Design decision: Currently this module is used at DESY only, so the client groups are defined here
- * in a static way. To enhance this, factories for client groups may be considered. 
- * 
+ * in a static way. To enhance this, factories for client groups may be considered.
+ *
  * @author jpenning
  * @since 17.01.2012
  */

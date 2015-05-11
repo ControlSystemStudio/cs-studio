@@ -13,8 +13,8 @@ package org.csstudio.opibuilder.widgets.symbol.multistate;
  */
 public class MonitorMultiSymbolFigure extends CommonMultiSymbolFigure {
 
-	public MonitorMultiSymbolFigure(boolean runMode) {
-		super(runMode);
-	}
+    public MonitorMultiSymbolFigure(boolean runMode) {
+        super(runMode);
+    }
 
 }

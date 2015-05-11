@@ -21,76 +21,76 @@ import org.jdom.Element;
  */
 public class PVValueProperty extends AbstractWidgetProperty {
 
-	/**The property is used to store pv values. The value type is {@link VType}.
-	 * @param prop_id the property ID.
-	 * @param defaultValue the default value.
-	 */
-	public PVValueProperty(String prop_id, VType defaultValue) {
-		super(prop_id, prop_id, null, defaultValue);
-		setVisibleInPropSheet(false);
-	}
+    /**The property is used to store pv values. The value type is {@link VType}.
+     * @param prop_id the property ID.
+     * @param defaultValue the default value.
+     */
+    public PVValueProperty(String prop_id, VType defaultValue) {
+        super(prop_id, prop_id, null, defaultValue);
+        setVisibleInPropSheet(false);
+    }
 
-	@Override
-	public Object checkValue(Object value) {
-		if(value == null)
-			return null;
-		VType acceptableValue = null;
-		if(value instanceof VType)
-			acceptableValue = (VType) value;
-		else if(value instanceof Double || value instanceof Float || value instanceof Long){
-			acceptableValue = ValueFactory.newVDouble(
-					(value instanceof Double? (Double)value : (value instanceof Float? (Float)value:(Long)value)));
-		}else if(value instanceof String){
-			acceptableValue = ValueFactory.newVString(
-					(String)value, ValueFactory.alarmNone(), ValueFactory.timeNow());
-		}else if(value instanceof Integer || value instanceof Short 
-				|| value instanceof Boolean
-				|| value instanceof Byte || value instanceof Character){	       
-			int r = 0;
-			//TODO: change it to VLong when VLong is added to VType.
-//			if(value instanceof Long)
-//				r = (Long)value;
-			if(value instanceof Integer)
-				r = (Integer)value;
-			else if(value instanceof Short)
-				r = (Short)value;
-			else if(value instanceof Boolean)
-				r= ((Boolean)value)?1:0;
-			else if(value instanceof Byte)
-				r=(Byte)value;
-			else if(value instanceof Character)
-				r=(Character)value;			
-	        
-	        acceptableValue = ValueFactory.newVInt(
-	        		r, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
+    @Override
+    public Object checkValue(Object value) {
+        if(value == null)
+            return null;
+        VType acceptableValue = null;
+        if(value instanceof VType)
+            acceptableValue = (VType) value;
+        else if(value instanceof Double || value instanceof Float || value instanceof Long){
+            acceptableValue = ValueFactory.newVDouble(
+                    (value instanceof Double? (Double)value : (value instanceof Float? (Float)value:(Long)value)));
+        }else if(value instanceof String){
+            acceptableValue = ValueFactory.newVString(
+                    (String)value, ValueFactory.alarmNone(), ValueFactory.timeNow());
+        }else if(value instanceof Integer || value instanceof Short
+                || value instanceof Boolean
+                || value instanceof Byte || value instanceof Character){
+            int r = 0;
+            //TODO: change it to VLong when VLong is added to VType.
+//            if(value instanceof Long)
+//                r = (Long)value;
+            if(value instanceof Integer)
+                r = (Integer)value;
+            else if(value instanceof Short)
+                r = (Short)value;
+            else if(value instanceof Boolean)
+                r= ((Boolean)value)?1:0;
+            else if(value instanceof Byte)
+                r=(Byte)value;
+            else if(value instanceof Character)
+                r=(Character)value;
 
-		}
+            acceptableValue = ValueFactory.newVInt(
+                    r, ValueFactory.alarmNone(), ValueFactory.timeNow(), ValueFactory.displayNone());
 
-		return acceptableValue;
-	}
+        }
 
-	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {
-		return null;
-	}
+        return acceptableValue;
+    }
 
-	@Override
-	public void writeToXML(Element propElement) {
-	}
+    @Override
+    protected PropertyDescriptor createPropertyDescriptor() {
+        return null;
+    }
 
-	@Override
-	public Object readValueFromXML(Element propElement) {
-		return null;
-	}
+    @Override
+    public void writeToXML(Element propElement) {
+    }
 
-	@Override
-	public boolean configurableByRule() {
-		return true;
-	}
-	
-	@Override
-	public boolean onlyAcceptExpressionInRule() {
-		return true;
-	}
+    @Override
+    public Object readValueFromXML(Element propElement) {
+        return null;
+    }
+
+    @Override
+    public boolean configurableByRule() {
+        return true;
+    }
+
+    @Override
+    public boolean onlyAcceptExpressionInRule() {
+        return true;
+    }
 
 }

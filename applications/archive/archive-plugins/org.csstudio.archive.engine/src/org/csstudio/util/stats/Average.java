@@ -22,13 +22,13 @@ public class Average
     {
         average = 0.0;
     }
-    
+
     /** @return Average value */
     public double get()
     {
         return average;
     }
-    
+
     /** Update average by including given value */
     public void update(double value)
     {

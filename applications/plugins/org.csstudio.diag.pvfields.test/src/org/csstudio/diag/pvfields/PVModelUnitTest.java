@@ -16,7 +16,7 @@ import org.junit.Test;
 
 public class PVModelUnitTest implements PVModelListener
 {
-	// Expect updates on properties, fields overall and at least two individual fields
+    // Expect updates on properties, fields overall and at least two individual fields
     final private CountDownLatch updates = new CountDownLatch(4);
 
     @Before
@@ -24,12 +24,12 @@ public class PVModelUnitTest implements PVModelListener
     {
         TestSetup.setup();
     }
-    
+
     @Override
     public void updateProperties(final Map<String, String> properties)
     {
         System.out.println("Properties");
-    	for (String prop : properties.keySet())
+        for (String prop : properties.keySet())
             System.out.println(prop + " = " + properties.get(prop));
         updates.countDown();
     }
@@ -42,30 +42,30 @@ public class PVModelUnitTest implements PVModelListener
             System.out.println(field);
         updates.countDown();
     }
-    
-    @Override
-	public void updateField(final PVField field)
-    {
-    	System.out.println("Update from field " + field);
-        updates.countDown();
-	}
 
-	@Test
+    @Override
+    public void updateField(final PVField field)
+    {
+        System.out.println("Update from field " + field);
+        updates.countDown();
+    }
+
+    @Test
     public void testPVModel() throws Exception
     {
-    	final PVModel model = new PVModel(TestSetup.CHANNEL_NAME, this);
+        final PVModel model = new PVModel(TestSetup.CHANNEL_NAME, this);
         updates.await();
-        
+
         assertThat(TestSetup.CHANNEL_NAME, equalTo(model.getPVName()));
-        
+
         final Map<String, String> properties = model.getProperties();
         assertTrue(properties.size() > 0);
-        
+
         // Wait a little longer to allow more field updates
         System.out.println("Allowing more updates...");
         TimeUnit.SECONDS.sleep(1);
         System.out.println("Stopping");
-        
+
         model.stop();
     }
 }

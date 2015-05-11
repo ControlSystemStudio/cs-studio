@@ -8,7 +8,7 @@
 package org.csstudio.swt.chart;
 
 
-/** Search for samples in a haystack. 
+/** Search for samples in a haystack.
  *  @author Kay Kasemir
  */
 public class ChartSampleSearch
@@ -28,15 +28,15 @@ public class ChartSampleSearch
         mid = -1;
         while (low <= high)
         {
-            mid = (low + high) / 2;  
+            mid = (low + high) / 2;
             // Compare 'mid' sample with goal
             double diff = samples.get(mid).getX() - x;
             if (diff > 0.0)
-            	cmp = 1;
+                cmp = 1;
             else if (diff < 0.0)
-            	cmp = -1;
+                cmp = -1;
             else
-            	cmp = 0;
+                cmp = 0;
             // See where to look next
             if (cmp == 0)
                 return true; // key found

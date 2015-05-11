@@ -36,7 +36,7 @@ public class ReadInfoJob extends Job
      *  @param listener Listener to be notified, or <code>null</code>
      */
     public ReadInfoJob(final String rdb_url, final String rdb_user, final String rdb_password,
-    		final String rdb_schema,
+            final String rdb_schema,
             final GlobalAlarm alarm, final ReadInfoJobListener listener)
     {
         super(Messages.ReadConfigJobName);

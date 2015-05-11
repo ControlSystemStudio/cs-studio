@@ -19,90 +19,90 @@ import org.eclipse.jface.resource.ImageDescriptor;
  *
  */
 public class WidgetActionFactory {
-	public enum ActionType{
-		OPEN_DISPLAY("Open OPI", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
-		OPEN_OPI_IN_VIEW("Open OPI in View", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
-		WRITE_PV("Write PV", createImage("icons/writePV.png")), //$NON-NLS-2$
-		EXECUTE_CMD("Execute Command", createImage("icons/command.gif")), //$NON-NLS-2$
-		EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/exeJS.png")),//$NON-NLS-2$
-		EXECUTE_PYTHONSCRIPT("Execute Python Script", createImage("icons/exePy.gif")),//$NON-NLS-2$
-		PLAY_SOUND("Play WAV File", createImage("icons/sound.gif")),//$NON-NLS-2$
-		OPEN_FILE("Open File", createImage("icons/openFile.png")),//$NON-NLS-2$		
-		OPEN_WEBPAGE("Open Webpage", createImage("icons/hyperlink.gif"));//$NON-NLS-2$
-		
-		private ImageDescriptor iconImage;
-		private String description;
-		private ActionType(String description, 
-				ImageDescriptor iconImage) {
-			this.description = description;
-			this.iconImage = iconImage;
-		}
-		
-		/**Parse a string to an ActionType. The string should be equal to the results
-		 * of element.toString().
-		 * @param actionString.
-		 * @return the ActionType. null if parse failed.
-		 */
-		public static ActionType parseAction(String actionString){
-			for(ActionType type : values()){
-				if(actionString.equals(type.toString()))
-					return type;
-			}
-			return null;		
-		}
+    public enum ActionType{
+        OPEN_DISPLAY("Open OPI", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
+        OPEN_OPI_IN_VIEW("Open OPI in View", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
+        WRITE_PV("Write PV", createImage("icons/writePV.png")), //$NON-NLS-2$
+        EXECUTE_CMD("Execute Command", createImage("icons/command.gif")), //$NON-NLS-2$
+        EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/exeJS.png")),//$NON-NLS-2$
+        EXECUTE_PYTHONSCRIPT("Execute Python Script", createImage("icons/exePy.gif")),//$NON-NLS-2$
+        PLAY_SOUND("Play WAV File", createImage("icons/sound.gif")),//$NON-NLS-2$
+        OPEN_FILE("Open File", createImage("icons/openFile.png")),//$NON-NLS-2$
+        OPEN_WEBPAGE("Open Webpage", createImage("icons/hyperlink.gif"));//$NON-NLS-2$
 
-		/**
-		 * @return the iconImageData
-		 */
-		public ImageDescriptor getIconImage() {
-			return iconImage;
-		}
-		
-		/**
-		 * @return the description
-		 */
-		public String getDescription() {
-			return description;
-		}
+        private ImageDescriptor iconImage;
+        private String description;
+        private ActionType(String description,
+                ImageDescriptor iconImage) {
+            this.description = description;
+            this.iconImage = iconImage;
+        }
 
-		
-		private static ImageDescriptor createImage(String path) {			
-			ImageDescriptor image = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-					OPIBuilderPlugin.PLUGIN_ID, path);				
-			return image;
-		}
-		
-	}
-	
-	public static AbstractWidgetAction createWidgetAction(ActionType actionType){
-		Assert.isNotNull(actionType);
-		switch (actionType) {
-		case OPEN_DISPLAY:
-			return new OpenDisplayAction();		
-		case OPEN_OPI_IN_VIEW:
-			return new OpenOPIInViewAction();
-		case WRITE_PV:
-			return new WritePVAction();
-		case OPEN_FILE:
-			return new OpenFileAction();
-		case EXECUTE_CMD:
-			return new ExecuteCommandAction();
-		case EXECUTE_JAVASCRIPT:
-			if (ScriptStoreFactory.getDefaultJavaScriptEngine() == JavaScriptEngine.RHINO) {
-				return new ExecuteJavaScriptRhinoAction();
-			}
-			else {
-				return new ExecuteJavaScriptJdkAction();
-			}
-		case EXECUTE_PYTHONSCRIPT:
-			return new ExecutePythonScriptAction();
-		case OPEN_WEBPAGE:
-			return new OpenWebpageAction();
-		case PLAY_SOUND:
-			return new PlayWavFileAction();
-		default:
-			break;
-		}
-		return null;
-	}
+        /**Parse a string to an ActionType. The string should be equal to the results
+         * of element.toString().
+         * @param actionString.
+         * @return the ActionType. null if parse failed.
+         */
+        public static ActionType parseAction(String actionString){
+            for(ActionType type : values()){
+                if(actionString.equals(type.toString()))
+                    return type;
+            }
+            return null;
+        }
+
+        /**
+         * @return the iconImageData
+         */
+        public ImageDescriptor getIconImage() {
+            return iconImage;
+        }
+
+        /**
+         * @return the description
+         */
+        public String getDescription() {
+            return description;
+        }
+
+
+        private static ImageDescriptor createImage(String path) {
+            ImageDescriptor image = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                    OPIBuilderPlugin.PLUGIN_ID, path);
+            return image;
+        }
+
+    }
+
+    public static AbstractWidgetAction createWidgetAction(ActionType actionType){
+        Assert.isNotNull(actionType);
+        switch (actionType) {
+        case OPEN_DISPLAY:
+            return new OpenDisplayAction();
+        case OPEN_OPI_IN_VIEW:
+            return new OpenOPIInViewAction();
+        case WRITE_PV:
+            return new WritePVAction();
+        case OPEN_FILE:
+            return new OpenFileAction();
+        case EXECUTE_CMD:
+            return new ExecuteCommandAction();
+        case EXECUTE_JAVASCRIPT:
+            if (ScriptStoreFactory.getDefaultJavaScriptEngine() == JavaScriptEngine.RHINO) {
+                return new ExecuteJavaScriptRhinoAction();
+            }
+            else {
+                return new ExecuteJavaScriptJdkAction();
+            }
+        case EXECUTE_PYTHONSCRIPT:
+            return new ExecutePythonScriptAction();
+        case OPEN_WEBPAGE:
+            return new OpenWebpageAction();
+        case PLAY_SOUND:
+            return new PlayWavFileAction();
+        default:
+            break;
+        }
+        return null;
+    }
 }

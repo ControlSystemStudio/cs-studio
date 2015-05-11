@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.ui.internal.adapters;
@@ -36,181 +36,181 @@ import org.csstudio.sds.ui.properties.PropertyDescriptor;
 /**
  * Adapter that enriches {@link AbstractWidgetModel} so that
  * {@link IPropertySource} behaviour is supported. <br>
- * 
+ *
  * @author Sven Wende
  * @version $Revision: 1.11 $
- * 
+ *
  */
 public final class WidgetPropertySourceAdapter implements IPropertySource {
-	/**
-	 * The encapsulated display widget model.
-	 */
-	private AbstractWidgetModel _widgetModel;
+    /**
+     * The encapsulated display widget model.
+     */
+    private AbstractWidgetModel _widgetModel;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param widgetModel
-	 *            a display widget model
-	 */
-	public WidgetPropertySourceAdapter(final AbstractWidgetModel widgetModel) {
-		_widgetModel = widgetModel;
-	}
+    /**
+     * Constructor.
+     *
+     * @param widgetModel
+     *            a display widget model
+     */
+    public WidgetPropertySourceAdapter(final AbstractWidgetModel widgetModel) {
+        _widgetModel = widgetModel;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getEditableValue() {
-		return "Properties of display widget model"; //$NON-NLS-1$
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Object getEditableValue() {
+        return "Properties of display widget model"; //$NON-NLS-1$
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IPropertyDescriptor[] getPropertyDescriptors() {
-		Set<String> visiblePropertyIds = _widgetModel.getVisiblePropertyIds();
-		
-		IPropertyDescriptor[] result = new IPropertyDescriptor[visiblePropertyIds
-				.size()];
+    /**
+     * {@inheritDoc}
+     */
+    public IPropertyDescriptor[] getPropertyDescriptors() {
+        Set<String> visiblePropertyIds = _widgetModel.getVisiblePropertyIds();
 
-		PropertyDescriptorFactoryService service = PropertyDescriptorFactoryService
-				.getInstance();
+        IPropertyDescriptor[] result = new IPropertyDescriptor[visiblePropertyIds
+                .size()];
 
-		int i = 0;
+        PropertyDescriptorFactoryService service = PropertyDescriptorFactoryService
+                .getInstance();
 
-		for (String propertyId : visiblePropertyIds) {
-			WidgetProperty widgetProperty = _widgetModel
-					.getPropertyInternal(propertyId);
+        int i = 0;
 
-			IPropertyDescriptor descriptor = null;
+        for (String propertyId : visiblePropertyIds) {
+            WidgetProperty widgetProperty = _widgetModel
+                    .getPropertyInternal(propertyId);
 
-			// get a property descriptor for the current property´s type
-			if (service.hasPropertyDescriptorFactory(widgetProperty
-					.getPropertyType())) {
-				final IPropertyDescriptorFactory factory = service
-						.getPropertyDescriptorFactory(widgetProperty
-								.getPropertyType());
+            IPropertyDescriptor descriptor = null;
 
-				descriptor = factory.createPropertyDescriptor(propertyId,
-						widgetProperty);
+            // get a property descriptor for the current property´s type
+            if (service.hasPropertyDescriptorFactory(widgetProperty
+                    .getPropertyType())) {
+                final IPropertyDescriptorFactory factory = service
+                        .getPropertyDescriptorFactory(widgetProperty
+                                .getPropertyType());
 
-				if (descriptor instanceof PropertyDescriptor) {
-					PropertyDescriptor pDescriptor = (PropertyDescriptor) descriptor;
+                descriptor = factory.createPropertyDescriptor(propertyId,
+                        widgetProperty);
 
-					pDescriptor.setCategory(widgetProperty.getCategory()
-							.toString());
-				}
+                if (descriptor instanceof PropertyDescriptor) {
+                    PropertyDescriptor pDescriptor = (PropertyDescriptor) descriptor;
 
-			}
+                    pDescriptor.setCategory(widgetProperty.getCategory()
+                            .toString());
+                }
 
-			if (descriptor == null) {
-				throw new IllegalArgumentException(
-						"Could not create property descriptor for property "
-								+ widgetProperty.getDescription() + " of type "
-								+ widgetProperty.getPropertyType());
-			}
-			result[i] = descriptor;
+            }
 
-			i++;
-		}
+            if (descriptor == null) {
+                throw new IllegalArgumentException(
+                        "Could not create property descriptor for property "
+                                + widgetProperty.getDescription() + " of type "
+                                + widgetProperty.getPropertyType());
+            }
+            result[i] = descriptor;
 
-		return result;
-	}
+            i++;
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object getPropertyValue(final Object id) {
-		assert id != null;
-		Object result = null;
+        return result;
+    }
 
-		String propertyId = id.toString();
+    /**
+     * {@inheritDoc}
+     */
+    public Object getPropertyValue(final Object id) {
+        assert id != null;
+        Object result = null;
 
-		if (_widgetModel.hasProperty(propertyId)) {
-			result = _widgetModel.getPropertyInternal(propertyId).getPropertyValue();
-		}
+        String propertyId = id.toString();
 
-		return result;
-	}
+        if (_widgetModel.hasProperty(propertyId)) {
+            result = _widgetModel.getPropertyInternal(propertyId).getPropertyValue();
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean isPropertySet(final Object id) {
-		String propertyId = id.toString();
+        return result;
+    }
 
-		if (!_widgetModel.hasProperty(propertyId)) {
-			return false;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean isPropertySet(final Object id) {
+        String propertyId = id.toString();
 
-		final Object defaultValue = _widgetModel.getPropertyInternal(propertyId)
-				.getDefaultValue();
-		final Object currentValue = _widgetModel.getPropertyInternal(propertyId)
-				.getPropertyValue();
+        if (!_widgetModel.hasProperty(propertyId)) {
+            return false;
+        }
 
-		final boolean hasDefaultValue = (defaultValue != null);
-		final boolean hasCurrentValue = (currentValue != null);
+        final Object defaultValue = _widgetModel.getPropertyInternal(propertyId)
+                .getDefaultValue();
+        final Object currentValue = _widgetModel.getPropertyInternal(propertyId)
+                .getPropertyValue();
 
-		return (hasDefaultValue && !defaultValue.equals(currentValue))
-				|| (!hasDefaultValue && hasCurrentValue);
-	}
+        final boolean hasDefaultValue = (defaultValue != null);
+        final boolean hasCurrentValue = (currentValue != null);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void resetPropertyValue(final Object id) {
-		String propertyId = id.toString();
+        return (hasDefaultValue && !defaultValue.equals(currentValue))
+                || (!hasDefaultValue && hasCurrentValue);
+    }
 
-		if (isPropertySet(propertyId)) {
-			final Object defaultValue = _widgetModel.getPropertyInternal((String) id)
-					.getDefaultValue();
-			_widgetModel.setPropertyValue(propertyId, defaultValue);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void resetPropertyValue(final Object id) {
+        String propertyId = id.toString();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setPropertyValue(final Object id, final Object value) {
-		String propertyId = id.toString();
+        if (isPropertySet(propertyId)) {
+            final Object defaultValue = _widgetModel.getPropertyInternal((String) id)
+                    .getDefaultValue();
+            _widgetModel.setPropertyValue(propertyId, defaultValue);
+        }
+    }
 
-		if (_widgetModel.hasProperty(propertyId)) {
-			_widgetModel.setPropertyValue(propertyId, value);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setPropertyValue(final Object id, final Object value) {
+        String propertyId = id.toString();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public DynamicsDescriptor getDynamicsDescriptor(final Object id) {
-		String propertyId = id.toString();
+        if (_widgetModel.hasProperty(propertyId)) {
+            _widgetModel.setPropertyValue(propertyId, value);
+        }
+    }
 
-		if (_widgetModel.hasProperty(propertyId)) {
-			return _widgetModel.getDynamicsDescriptor(propertyId);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public DynamicsDescriptor getDynamicsDescriptor(final Object id) {
+        String propertyId = id.toString();
 
-		return null;
-	}
+        if (_widgetModel.hasProperty(propertyId)) {
+            return _widgetModel.getDynamicsDescriptor(propertyId);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setDynamicsDescriptor(final Object id,
-			final DynamicsDescriptor dynamicsDescriptor) {
-		String propertyId = id.toString();
+        return null;
+    }
 
-		if (_widgetModel.hasProperty(propertyId)) {
-			DynamicsDescriptor newDescriptor = dynamicsDescriptor != null ? dynamicsDescriptor
-					.clone()
-					: null;
-			_widgetModel.setDynamicsDescriptor(propertyId, newDescriptor);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setDynamicsDescriptor(final Object id,
+            final DynamicsDescriptor dynamicsDescriptor) {
+        String propertyId = id.toString();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, String> getAliases() {
-		return _widgetModel.getAllInheritedAliases();
-	}
+        if (_widgetModel.hasProperty(propertyId)) {
+            DynamicsDescriptor newDescriptor = dynamicsDescriptor != null ? dynamicsDescriptor
+                    .clone()
+                    : null;
+            _widgetModel.setDynamicsDescriptor(propertyId, newDescriptor);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, String> getAliases() {
+        return _widgetModel.getAllInheritedAliases();
+    }
 }

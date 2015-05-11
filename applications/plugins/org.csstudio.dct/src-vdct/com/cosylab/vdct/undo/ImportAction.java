@@ -24,15 +24,15 @@ import com.cosylab.vdct.graphics.objects.VisibleObject;
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  * @version $Id$
- * 
+ *
  * @since VERSION
  */
 public class ImportAction extends ActionObject {
 
-    
+
     private HashMap importedObjects;
     private Group parent;
-    
+
     /**
      * TODO DOCUMENT ME!
      * @param object
@@ -51,7 +51,7 @@ public class ImportAction extends ActionObject {
             String key = (String) it.next();
             parent.addSubObject(key, (VisibleObject) importedObjects.get(key), false);
         }
-        
+
     }
 
     /* (non-Javadoc)

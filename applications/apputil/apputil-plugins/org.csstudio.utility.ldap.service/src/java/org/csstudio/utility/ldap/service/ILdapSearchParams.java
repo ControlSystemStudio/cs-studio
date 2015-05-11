@@ -24,8 +24,8 @@ package org.csstudio.utility.ldap.service;
 import javax.naming.ldap.LdapName;
 
 /**
- * Search parameter container for LDAP search queries. 
- * 
+ * Search parameter container for LDAP search queries.
+ *
  * @author bknerr
  * @since 17.05.2011
  */

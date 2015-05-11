@@ -41,14 +41,14 @@ public class OpenPVTree extends AbstractHandler implements IHandler
             final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
             if (pvs == null)
                 return null;
-            
+
             if (pvs.length > 5 &&
                 ! MessageDialog.openConfirm(
                         HandlerUtil.getActiveShell(event),
                         Messages.ManyPVs,
                         NLS.bind(Messages.ManyPVConfirmFmt, pvs.length)))
                 return null;
-                    
+
             // Set PV name(s)
             for (int i=0; i<pvs.length; ++i)
             {
@@ -65,7 +65,7 @@ public class OpenPVTree extends AbstractHandler implements IHandler
         }
         return null;
     }
-    
+
     /** Open (new) PV Tree view
      *  @param event
      *  @return {@link PVTreeView}
@@ -73,12 +73,12 @@ public class OpenPVTree extends AbstractHandler implements IHandler
      */
     private PVTreeView openView(final ExecutionEvent event) throws Exception
     {
-    	// Use page which is related to the event
-    	// HandlerUtil.getActiveSite(event).getPage() fails because
-    	// 'activeSite' is null when there's no other view open.
-    	// 'activeWindow' is always defined
-    	final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-    	final IWorkbenchPage page = window.getActivePage();
+        // Use page which is related to the event
+        // HandlerUtil.getActiveSite(event).getPage() fails because
+        // 'activeSite' is null when there's no other view open.
+        // 'activeWindow' is always defined
+        final IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
+        final IWorkbenchPage page = window.getActivePage();
         return (PVTreeView) page.showView(PVTreeView.ID, PVTreeView.newInstance(), IWorkbenchPage.VIEW_ACTIVATE);
     }
 }

@@ -74,11 +74,11 @@ public class ArgParser
     public void addEclipseParameters()
     {
         new StringOption(this, "-pluginCustomization",
-        		"/path/to/my/settings.ini",
+                "/path/to/my/settings.ini",
                 "Eclipse plugin defaults", null);
         new StringOption(this, "-data",
-        		"/home/fred/Workspace",
-        		"Eclipse workspace location", null);
+                "/home/fred/Workspace",
+                "Eclipse workspace location", null);
         // On OS X, the application will have a file
         // WhateverAppName.app/Contents/Info.plist
         // that includes a default option "-showlocation",

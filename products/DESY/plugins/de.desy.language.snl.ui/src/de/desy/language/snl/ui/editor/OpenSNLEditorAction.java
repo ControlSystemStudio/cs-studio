@@ -18,28 +18,28 @@ import de.desy.language.snl.ui.Identifier;
 
 public class OpenSNLEditorAction extends Action {
 
-	private IWorkbenchWindow _window;
-	private final IPath _stFilePath;
+    private IWorkbenchWindow _window;
+    private final IPath _stFilePath;
 
-	public OpenSNLEditorAction(IPath stFilePath) {
-		assert stFilePath != null : "stFilePath != null";
+    public OpenSNLEditorAction(IPath stFilePath) {
+        assert stFilePath != null : "stFilePath != null";
 
-		_stFilePath = stFilePath;
-		_window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-	}
+        _stFilePath = stFilePath;
+        _window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+    }
 
-	public void run(IAction action) {
-		IWorkbenchPage page = _window.getActivePage();
+    public void run(IAction action) {
+        IWorkbenchPage page = _window.getActivePage();
 
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
-				_stFilePath);
-		FileEditorInput input = new FileEditorInput(file);
-		try {
-			page.openEditor(input, Identifier.SNL_EDITOR_ID.getId());
-		} catch (PartInitException e) {
-			Logger.getAnonymousLogger().log(Level.SEVERE,
-					"Unable to open the SNL Editor", e);
-		}
-	}
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
+                _stFilePath);
+        FileEditorInput input = new FileEditorInput(file);
+        try {
+            page.openEditor(input, Identifier.SNL_EDITOR_ID.getId());
+        } catch (PartInitException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE,
+                    "Unable to open the SNL Editor", e);
+        }
+    }
 
 }

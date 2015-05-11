@@ -36,120 +36,120 @@ import org.csstudio.dal.spi.Plugs;
  * Default application context implementation
  */
 public class DefaultApplicationContext extends LifecycleReporterSupport
-	implements AbstractApplicationContext
+    implements AbstractApplicationContext
 {
-	private final String name;
-	protected Properties configuration;
-	protected Identifier identificator;
-	private Logger logger;
-	private Hashtable<String, Object> properties;
+    private final String name;
+    protected Properties configuration;
+    protected Identifier identificator;
+    private Logger logger;
+    private Hashtable<String, Object> properties;
 
-	/**
-	 * Creates a new DefaultApplicationContext object.
-	 *
-	 * @param name application context name
-	 */
-	public DefaultApplicationContext(final String name)
-	{
-		super();
-		this.name = name;
-		fireInitializing();
-		fireInitialized();
-	}
+    /**
+     * Creates a new DefaultApplicationContext object.
+     *
+     * @param name application context name
+     */
+    public DefaultApplicationContext(final String name)
+    {
+        super();
+        this.name = name;
+        fireInitializing();
+        fireInitialized();
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.context.AbstractApplicationContext#getConfiguration()
-	 */
-	@Override
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.context.AbstractApplicationContext#getConfiguration()
+     */
+    @Override
     public Properties getConfiguration()
-	{
-		if (configuration == null) {
-			configuration = new Properties(System.getProperties());
-			Plugs.configureSimulatorPlug(configuration);
-		}
+    {
+        if (configuration == null) {
+            configuration = new Properties(System.getProperties());
+            Plugs.configureSimulatorPlug(configuration);
+        }
 
-		return configuration;
-	}
+        return configuration;
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.context.Identifiable#getIdentifier()
-	 */
-	@Override
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.context.Identifiable#getIdentifier()
+     */
+    @Override
     public Identifier getIdentifier()
-	{
-		if (identificator == null) {
-			return null;
-		}
+    {
+        if (identificator == null) {
+            return null;
+        }
 
-		return identificator;
+        return identificator;
 
-		// TODO Check if this is OK
-	}
+        // TODO Check if this is OK
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.context.Identifiable#isDebug()
-	 */
-	@Override
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.context.Identifiable#isDebug()
+     */
+    @Override
     public boolean isDebug()
-	{
-		return false;
-	}
+    {
+        return false;
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.context.AbstractApplicationContext#getName()
-	 */
-	@Override
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.context.AbstractApplicationContext#getName()
+     */
+    @Override
     public String getName()
-	{
-		return name;
-	}
+    {
+        return name;
+    }
 
-	/**
-	 * Destroys context by signaling all listners that lifecycle has
-	 * ended and  releases all resources. After this point context is not
-	 * valid any more.
-	 */
-	@Override
+    /**
+     * Destroys context by signaling all listners that lifecycle has
+     * ended and  releases all resources. After this point context is not
+     * valid any more.
+     */
+    @Override
     public void destroy()
-	{
-		fireDestroying();
-		fireDestroyed();
-	}
+    {
+        fireDestroying();
+        fireDestroyed();
+    }
 
-	/**
-	 * Returns a logger registered to this application context. The name of the logger is
-	 * the same as the name of application context.
-	 * @return
-	 */
-	public Logger getLogger() {
-		if (logger == null) {
-			return Logger.getLogger(getClass());
-		}
-		return logger;
-	}
+    /**
+     * Returns a logger registered to this application context. The name of the logger is
+     * the same as the name of application context.
+     * @return
+     */
+    public Logger getLogger() {
+        if (logger == null) {
+            return Logger.getLogger(getClass());
+        }
+        return logger;
+    }
 
-	@Override
-	public Object getApplicationProperty(final String keyName) {
-		if (properties==null || keyName==null) {
-			return null;
-		}
-		return properties.get(keyName);
-	}
+    @Override
+    public Object getApplicationProperty(final String keyName) {
+        if (properties==null || keyName==null) {
+            return null;
+        }
+        return properties.get(keyName);
+    }
 
-	@Override
-	public synchronized void putApplicationProperty(final String keyName, final Object value) {
-		if (keyName==null) {
-			return;
-		}
-		if (properties==null) {
-			properties= new Hashtable<String, Object>();
-		}
-		properties.put(keyName, value);
-	}
+    @Override
+    public synchronized void putApplicationProperty(final String keyName, final Object value) {
+        if (keyName==null) {
+            return;
+        }
+        if (properties==null) {
+            properties= new Hashtable<String, Object>();
+        }
+        properties.put(keyName, value);
+    }
 }
 
 /* __oOo__ */

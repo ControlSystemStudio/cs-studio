@@ -37,10 +37,10 @@ public class MergingValueIteratorUnitTest
         while (merge.hasNext())
         {
             final VType value = merge.next();
-			System.out.println(value);
-			if (result.length() > 0)
-				result.append(", ");
-			format.format(value, result);
+            System.out.println(value);
+            if (result.length() > 0)
+                result.append(", ");
+            format.format(value, result);
             ++count;
         }
         assertThat(count, equalTo(20));

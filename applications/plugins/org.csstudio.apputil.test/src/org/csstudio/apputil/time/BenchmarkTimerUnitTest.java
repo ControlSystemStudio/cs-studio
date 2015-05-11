@@ -34,10 +34,10 @@ public class BenchmarkTimerUnitTest
         timer.stop();
         System.out.println(timer.toString());
         assertEquals(timer.getSeconds(), 0.5, 0.1);
-        
+
         // Do something else
         Thread.sleep(1000);
-        
+
         // Continue timer from when it was stopped
         timer.cont();
         Thread.sleep(500);

@@ -85,15 +85,15 @@ public class Application implements IApplication
         {
             return ex.getMessage() + "\n" + parser.getHelp();
         }
-		final String version = (String) context.getBrandingBundle()
-				.getHeaders().get("Bundle-Version");
-		final String app_info = context.getBrandingName() + " " + version;
-		if (help_opt.get())
-			return app_info + "\n\n" + parser.getHelp();
-		if (version_opt.get()) {
-			// Display configuration info
-			return app_info;
-		}
+        final String version = (String) context.getBrandingBundle()
+                .getHeaders().get("Bundle-Version");
+        final String app_info = context.getBrandingName() + " " + version;
+        if (help_opt.get())
+            return app_info + "\n\n" + parser.getHelp();
+        if (version_opt.get()) {
+            // Display configuration info
+            return app_info;
+        }
         final String option = set_password.get();
         if (option != null)
         {   // Split "plugin/key=value"
@@ -121,7 +121,7 @@ public class Application implements IApplication
             // Returning non-null will end the application
             return "";
         }
-        
+
         this.url = url.get();
         this.user = (user.get() == null || user.get().isEmpty()) ? null : user.get();
         this.password = (password.get() == null || password.get().isEmpty()) ? null : password.get();
@@ -136,13 +136,13 @@ public class Application implements IApplication
         if (root.get().isEmpty())
             return "Missing configuration root name\n" + parser.getHelp();
         this.root = root.get();
-        
-		if (do_delete.get().length() > 0) 
-		{
-			delete = true;
-			path = do_delete.get();
-		}
-        
+
+        if (do_delete.get().length() > 0)
+        {
+            delete = true;
+            path = do_delete.get();
+        }
+
         if (do_export.get())
             mode = Mode.EXPORT;
         else if (do_modify.get())
@@ -151,18 +151,18 @@ public class Application implements IApplication
             mode = Mode.IMPORT;
         else if (convert_alh.get())
             mode = Mode.CONVERT_ALH;
-        else if (delete) 
+        else if (delete)
         {
-        	mode = Mode.DELETE;
-        	return null;
+            mode = Mode.DELETE;
+            return null;
         }
         else
             return "Specify import or export or alh conversion\n" + parser.getHelp();
-        
+
         if (file.get().isEmpty())
             return "Missing file name\n" + parser.getHelp();
         this.filename = file.get();
-        
+
         return null;
     }
 
@@ -172,7 +172,7 @@ public class Application implements IApplication
     {
         final String version = (String)
                 context.getBrandingBundle().getHeaders().get("Bundle-Version");
-        
+
         // Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");
@@ -191,22 +191,22 @@ public class Application implements IApplication
         // Perform selected action
         try
         {
-	        switch (mode)
-	        {
-	        case LIST:
-	            listConfigs();
-	            break;
-	        case CONVERT_ALH:
-	            convertAlh();
-	            break;
-	        default:
-	            importExport();
-	        }
+            switch (mode)
+            {
+            case LIST:
+                listConfigs();
+                break;
+            case CONVERT_ALH:
+                convertAlh();
+                break;
+            default:
+                importExport();
+            }
         }
         catch (Exception ex)
         {
-        	ex.printStackTrace();
-        	return Integer.valueOf(-1);
+            ex.printStackTrace();
+            return Integer.valueOf(-1);
         }
         return EXIT_OK;
     }
@@ -265,7 +265,7 @@ public class Application implements IApplication
         }
         catch (Exception ex)
         {
-        	throw new Exception("Error while converting ALH config file", ex);
+            throw new Exception("Error while converting ALH config file", ex);
         }
     }
 
@@ -281,28 +281,28 @@ public class Application implements IApplication
             config = new AlarmConfiguration(url, user, password, schema, false);
             System.out.println("Reading RDB configuration of '" + root + "'");
             config.readConfiguration(root, mode == Mode.IMPORT, new NullProgressMonitor()
-			{
-				@Override
-				public void beginTask(final String name, final int totalWork)
-				{
-					System.out.println(name);
-				}
+            {
+                @Override
+                public void beginTask(final String name, final int totalWork)
+                {
+                    System.out.println(name);
+                }
 
-				@Override
-				public void subTask(final String name)
-				{
-					System.out.println(name);
-				}
-				@Override
-				public void done()
-				{
-					System.out.println("Done.");
-				}
-			});
+                @Override
+                public void subTask(final String name)
+                {
+                    System.out.println(name);
+                }
+                @Override
+                public void done()
+                {
+                    System.out.println("Done.");
+                }
+            });
         }
         catch (Exception ex)
         {
-        	throw new Exception("Error connecting to alarm config database", ex);
+            throw new Exception("Error connecting to alarm config database", ex);
         }
 
         try
@@ -326,14 +326,14 @@ public class Application implements IApplication
                 break;
             case MODIFY:
                 {
-                	if(delete) 
-                	{
-        				final AlarmTreeItem item = config.getAlarmTree().getItemByPath(path);
-        				if (item == null)
-        					throw new Exception("Cannot locate item with path " + path);
-        				System.out.println("Deleting existing RDB configuration for '" + path + "'");
-        				config.remove(item);
-                	}
+                    if(delete)
+                    {
+                        final AlarmTreeItem item = config.getAlarmTree().getItemByPath(path);
+                        if (item == null)
+                            throw new Exception("Cannot locate item with path " + path);
+                        System.out.println("Deleting existing RDB configuration for '" + path + "'");
+                        config.remove(item);
+                    }
                     System.out.println("Modifying configuration '" + root + "' from " + filename);
                     new AlarmConfigurationLoader(config).load(filename);
                 }
@@ -347,13 +347,13 @@ public class Application implements IApplication
                 }
                 break;
             case DELETE:
-	            {
-	            	final AlarmTreeItem item = config.getAlarmTree().getItemByPath(path);
-					if (item == null)
-						throw new Exception("Cannot locate item with path " + path);
-					System.out.println("Deleting existing RDB configuration for '" + path + "'");
-					config.remove(item);
-	            }
+                {
+                    final AlarmTreeItem item = config.getAlarmTree().getItemByPath(path);
+                    if (item == null)
+                        throw new Exception("Cannot locate item with path " + path);
+                    System.out.println("Deleting existing RDB configuration for '" + path + "'");
+                    config.remove(item);
+                }
             break;
             default:
                 throw new Exception("Unknown mode " + mode.name());
@@ -364,7 +364,7 @@ public class Application implements IApplication
             config.close();
         }
     }
-    
+
     /** IApplication stop */
     @Override
     public void stop()

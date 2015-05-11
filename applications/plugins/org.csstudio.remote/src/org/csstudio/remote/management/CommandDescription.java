@@ -26,103 +26,103 @@ import java.io.Serializable;
 
 /**
  * Describes a remote management command.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class CommandDescription implements Serializable {
 
-	private static final long serialVersionUID = 2L;
-	
-	private final String _id;
-	private final String _label;
-	private final CommandParameterDefinition[] _parameters;
+    private static final long serialVersionUID = 2L;
 
-	/**
-	 * Creates a new command description.
-	 * 
-	 * @param id
-	 *            the ID of the command.
-	 * @param label
-	 *            the label that will be used for the command in the user
-	 *            interface.
-	 * @param parameters
-	 *            the parameters expected by the command. May be null if the
-	 *            command does not require any parameters.
-	 */
-	public CommandDescription(String id, String label,
-			CommandParameterDefinition[] parameters) {
-		if (id == null || label == null) {
-			throw new NullPointerException("id and label must not be null");
-		}
-		
-		_id = id;
-		_label = label;
-		if (parameters == null) {
-			_parameters = new CommandParameterDefinition[0];
-		} else {
-			_parameters = new CommandParameterDefinition[parameters.length];
-			System.arraycopy(parameters, 0, _parameters, 0, parameters.length);
-		}
-	}
-	
-	/**
-	 * Returns the identifier of the command.
-	 * 
-	 * @return the identifier of the command.
-	 */
-	public String getIdentifier() {
-		return _id;
-	}
-	
-	/**
-	 * Returns the label which is used for the command in the user interface.
-	 * 
-	 * @return the label for the command.
-	 */
-	public String getLabel() {
-		return _label;
-	}
+    private final String _id;
+    private final String _label;
+    private final CommandParameterDefinition[] _parameters;
 
-	/**
-	 * Returns the parameters required by this command.
-	 * 
-	 * @return the parameters required by this command. If this command does not
-	 *         require any parameters, returns an empty array (not
-	 *         <code>null</code>).
-	 */
-	public CommandParameterDefinition[] getParameters() {
-		CommandParameterDefinition[] result =
-			new CommandParameterDefinition[_parameters.length];
-		System.arraycopy(_parameters, 0, result, 0, _parameters.length);
-		return result;
-	}
+    /**
+     * Creates a new command description.
+     *
+     * @param id
+     *            the ID of the command.
+     * @param label
+     *            the label that will be used for the command in the user
+     *            interface.
+     * @param parameters
+     *            the parameters expected by the command. May be null if the
+     *            command does not require any parameters.
+     */
+    public CommandDescription(String id, String label,
+            CommandParameterDefinition[] parameters) {
+        if (id == null || label == null) {
+            throw new NullPointerException("id and label must not be null");
+        }
 
-	/**
-	 * Compares this description for equality with another object. Two command
-	 * descriptions are considered equal by this method if their command
-	 * identifiers are equal.
-	 */
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof CommandDescription) {
-			return ((CommandDescription) o)._id.equals(_id);
-		}
-		return false;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		return _id.hashCode();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return _label;
-	}
+        _id = id;
+        _label = label;
+        if (parameters == null) {
+            _parameters = new CommandParameterDefinition[0];
+        } else {
+            _parameters = new CommandParameterDefinition[parameters.length];
+            System.arraycopy(parameters, 0, _parameters, 0, parameters.length);
+        }
+    }
+
+    /**
+     * Returns the identifier of the command.
+     *
+     * @return the identifier of the command.
+     */
+    public String getIdentifier() {
+        return _id;
+    }
+
+    /**
+     * Returns the label which is used for the command in the user interface.
+     *
+     * @return the label for the command.
+     */
+    public String getLabel() {
+        return _label;
+    }
+
+    /**
+     * Returns the parameters required by this command.
+     *
+     * @return the parameters required by this command. If this command does not
+     *         require any parameters, returns an empty array (not
+     *         <code>null</code>).
+     */
+    public CommandParameterDefinition[] getParameters() {
+        CommandParameterDefinition[] result =
+            new CommandParameterDefinition[_parameters.length];
+        System.arraycopy(_parameters, 0, result, 0, _parameters.length);
+        return result;
+    }
+
+    /**
+     * Compares this description for equality with another object. Two command
+     * descriptions are considered equal by this method if their command
+     * identifiers are equal.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof CommandDescription) {
+            return ((CommandDescription) o)._id.equals(_id);
+        }
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        return _id.hashCode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return _label;
+    }
 }

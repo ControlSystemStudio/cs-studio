@@ -9,16 +9,16 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.ui.PartInitException;
 
 public class OpenPVTableByProperty extends AbstractAdaptedHandler<ChannelQuery> {
-	
-	public OpenPVTableByProperty() {
-		super(ChannelQuery.class);
-	}
-	
-	@Override
-	protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
-		if (!queries.isEmpty()) {
-			findView(PVTableByPropertyView.class, PVTableByPropertyView.ID)
-				.setChannelQuery(queries.get(0));
-		}
-	}
+
+    public OpenPVTableByProperty() {
+        super(ChannelQuery.class);
+    }
+
+    @Override
+    protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
+        if (!queries.isEmpty()) {
+            findView(PVTableByPropertyView.class, PVTableByPropertyView.ID)
+                .setChannelQuery(queries.get(0));
+        }
+    }
 }

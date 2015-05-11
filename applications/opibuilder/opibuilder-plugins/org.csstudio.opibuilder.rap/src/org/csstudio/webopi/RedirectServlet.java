@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author Xihui Chen
  *
  */
-public class RedirectServlet extends HttpServlet { 
-  
+public class RedirectServlet extends HttpServlet {
+
 private static final long serialVersionUID = -3424333798547040185L;
 
 protected void doGet( HttpServletRequest request,
@@ -22,15 +22,15 @@ protected void doGet( HttpServletRequest request,
   {
     redirect( request, response );
   }
- 
+
   protected void doPost( HttpServletRequest request,
                          HttpServletResponse response )
     throws ServletException, IOException
   {
     redirect( request, response );
   }
- 
-  static void redirect( HttpServletRequest request, 
+
+  static void redirect( HttpServletRequest request,
                         HttpServletResponse response )
     throws IOException
   {

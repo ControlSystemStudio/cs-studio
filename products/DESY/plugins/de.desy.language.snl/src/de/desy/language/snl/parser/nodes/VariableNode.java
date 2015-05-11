@@ -4,90 +4,90 @@ import de.desy.language.snl.codeElements.PredefinedTypes;
 
 /**
  * The outline node of an SNL variable.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class VariableNode extends AbstractSNLNode {
 
-	private final String _variableName;
-	private final String _variableType;
-	private AssignStatementNode _assignNode;
-	private MonitorStatementNode _monitorNode;
-	private final boolean _isArray;
+    private final String _variableName;
+    private final String _variableType;
+    private AssignStatementNode _assignNode;
+    private MonitorStatementNode _monitorNode;
+    private final boolean _isArray;
 
-	public VariableNode(final String variableName, final String variableType,
-			final int statementsStartOffsetInSource,
-			final int statementsEndOffsetInSource, boolean isArray) {
-		_variableName = variableName;
-		_variableType = variableType;
-		_assignNode = null;
-		_monitorNode = null;
-		_isArray = isArray;
-		
-		this.setStatementOffsets(statementsStartOffsetInSource,
-				statementsEndOffsetInSource);
-	}
+    public VariableNode(final String variableName, final String variableType,
+            final int statementsStartOffsetInSource,
+            final int statementsEndOffsetInSource, boolean isArray) {
+        _variableName = variableName;
+        _variableType = variableType;
+        _assignNode = null;
+        _monitorNode = null;
+        _isArray = isArray;
 
-	@Override
-	public String humanReadableRepresentation() {
-		final StringBuffer result = new StringBuffer(this.getNodeTypeName());
-		result.append(": ");
-		result.append(this.getSourceIdentifier());
-		result.append(" (Type: ");
-		result.append(this._variableType);
-		if (this.isAssigned()) {
-			result.append(", assigned to \"");
-			result.append(this.getAssignedChannelName());
-			result.append("\"");
-		}
-		if (this.isMonitored()) {
-			result.append(", monitored");
-		}
-		result.append(")");
-		return result.toString();
-	}
+        this.setStatementOffsets(statementsStartOffsetInSource,
+                statementsEndOffsetInSource);
+    }
 
-	@Override
-	public String getNodeTypeName() {
-		return "Variable";
-	}
+    @Override
+    public String humanReadableRepresentation() {
+        final StringBuffer result = new StringBuffer(this.getNodeTypeName());
+        result.append(": ");
+        result.append(this.getSourceIdentifier());
+        result.append(" (Type: ");
+        result.append(this._variableType);
+        if (this.isAssigned()) {
+            result.append(", assigned to \"");
+            result.append(this.getAssignedChannelName());
+            result.append("\"");
+        }
+        if (this.isMonitored()) {
+            result.append(", monitored");
+        }
+        result.append(")");
+        return result.toString();
+    }
 
-	@Override
-	protected String doGetSourceIdentifier() {
-		return this._variableName;
-	}
+    @Override
+    public String getNodeTypeName() {
+        return "Variable";
+    }
 
-	/**
-	 * Change this method to return an element of {@link PredefinedTypes}.
-	 */
-	public String getTypeName() {
-		return this._variableType;
-	}
+    @Override
+    protected String doGetSourceIdentifier() {
+        return this._variableName;
+    }
 
-	public boolean isAssigned() {
-		return this._assignNode != null;
-	}
+    /**
+     * Change this method to return an element of {@link PredefinedTypes}.
+     */
+    public String getTypeName() {
+        return this._variableType;
+    }
 
-	public void setAssignedChannel(final AssignStatementNode assignNode) {
-		this._assignNode = assignNode;
-		this.addChild(assignNode);
-	}
+    public boolean isAssigned() {
+        return this._assignNode != null;
+    }
 
-	public String getAssignedChannelName() {
-		return this._assignNode.getContent();
-	}
+    public void setAssignedChannel(final AssignStatementNode assignNode) {
+        this._assignNode = assignNode;
+        this.addChild(assignNode);
+    }
 
-	public boolean isMonitored() {
-		return this._monitorNode != null;
-	}
-	
-	public boolean isArray() {
-		return _isArray;
-	}
+    public String getAssignedChannelName() {
+        return this._assignNode.getContent();
+    }
 
-	public void setMonitored(final MonitorStatementNode monitorNode) {
-		this._monitorNode = monitorNode;
-		this.addChild(this._monitorNode);
-	}
+    public boolean isMonitored() {
+        return this._monitorNode != null;
+    }
+
+    public boolean isArray() {
+        return _isArray;
+    }
+
+    public void setMonitored(final MonitorStatementNode monitorNode) {
+        this._monitorNode = monitorNode;
+        this.addChild(this._monitorNode);
+    }
 
 }

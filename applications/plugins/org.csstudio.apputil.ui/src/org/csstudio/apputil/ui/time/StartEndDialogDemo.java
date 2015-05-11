@@ -31,7 +31,7 @@ public class StartEndDialogDemo
         Display display = new Display();
         Shell shell = new Shell(display);
         shell.setLayout(new FillLayout());
-        
+
         shell.pack();
         shell.open();
 
@@ -40,7 +40,7 @@ public class StartEndDialogDemo
         {
             System.out.println("Start: '" + dlg.getStartSpecification() + "'");
             System.out.println("End: '" + dlg.getEndSpecification() + "'");
-            
+
             final SimpleDateFormat date_format =
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
@@ -51,7 +51,7 @@ public class StartEndDialogDemo
 
         display.dispose();
     }
-    
+
     public static void main(String[] args)
     {
         new StartEndDialogDemo().run();

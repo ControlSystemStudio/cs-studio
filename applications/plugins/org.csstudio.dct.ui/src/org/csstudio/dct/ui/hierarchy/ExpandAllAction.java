@@ -7,22 +7,22 @@ import org.eclipse.ui.IViewPart;
 
 /**
  * View action the collapses all tree items in the hierarchy view.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ExpandAllAction implements IViewActionDelegate {
-	private HierarchyView view;
-	
-	public void init(IViewPart view) {
-		this.view = (HierarchyView) view;
-	}
+    private HierarchyView view;
 
-	public void run(IAction action) {
-		view.getTreeViewer().expandAll();
-	}
+    public void init(IViewPart view) {
+        this.view = (HierarchyView) view;
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		
-	}
+    public void run(IAction action) {
+        view.getTreeViewer().expandAll();
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
+
+    }
 }

@@ -13,6 +13,6 @@ package org.csstudio.archive.config.rdb;
 @SuppressWarnings("nls")
 public class Activator
 {
-	/** Plugin ID defined in MANIFEST.MF */
-	final public static String ID = "org.csstudio.archive.config.rdb";
+    /** Plugin ID defined in MANIFEST.MF */
+    final public static String ID = "org.csstudio.archive.config.rdb";
 }

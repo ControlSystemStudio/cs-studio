@@ -14,130 +14,130 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
 public class TextWidget extends ADLAbstractWidget implements ITextWidget{
-	private String textix = new String();
-	private String alignment = new String();
-	private String color_mode = new String();
-	private String format = new String();
-	
-	public TextWidget(ADLWidget adlWidget) {
-		super(adlWidget);
-		name = new String("text");
-		descriptor = Activator.getImageDescriptor(IImageKeys.ADL_TEXT);
-		try {
-			for (ADLWidget childWidget : adlWidget.getObjects()) {
-	        	if (childWidget.getType().equals("basic attribute")){
-	        		_adlBasicAttribute = new ADLBasicAttribute(childWidget);
-	        		if (_adlBasicAttribute != null){
-	        			_hasBasicAttribute = true;
-	        		}
-	        	}
-	        	else if (childWidget.getType().equals("object")){
-	        		_adlObject = new ADLObject(childWidget);
-	        		if (_adlObject != null){
-	        			_hasObject = true;
-	        		}
-	        		
-	        	}
-	        	else if (childWidget.getType().equals("dynamic attribute")){
-	        		_adlDynamicAttribute = new ADLDynamicAttribute(childWidget);
-	        		if (_adlDynamicAttribute != null){
-	        			_hasDynamicAttribute = true;
-	        		}
-	        	}
-	        }
-			for (FileLine fileLine : adlWidget.getBody()){
-				String bodyPart = fileLine.getLine();
-				String[] row = bodyPart.trim().split("=", 2);
-				if (row.length < 2){
-					throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
-				}
-				if (FileLine.argEquals(row[0], "textix")){
-					setTextix(FileLine.getTrimmedValue(row[1]));
-				}
-				else if (FileLine.argEquals(row[0], "align")){
-					setAlignment(FileLine.getTrimmedValue(row[1]));
-				}
-				else if (FileLine.argEquals(row[0], "color_mode")){
-					setColor_mode(FileLine.getTrimmedValue(row[1]));
-				}
-				else if (FileLine.argEquals(row[0], "format")){
-					setFormat(FileLine.getTrimmedValue(row[1]));
-				}
-			}
-		}
-		catch (WrongADLFormatException ex) {
-			ex.printStackTrace();
-		}
-	}
+    private String textix = new String();
+    private String alignment = new String();
+    private String color_mode = new String();
+    private String format = new String();
 
-	private void setTextix(String inString){
-		textix = inString;
-	}
-	/**
-	 * @return the textix
-	 */
-	public String getTextix() {
-		return textix;
-	}
+    public TextWidget(ADLWidget adlWidget) {
+        super(adlWidget);
+        name = new String("text");
+        descriptor = Activator.getImageDescriptor(IImageKeys.ADL_TEXT);
+        try {
+            for (ADLWidget childWidget : adlWidget.getObjects()) {
+                if (childWidget.getType().equals("basic attribute")){
+                    _adlBasicAttribute = new ADLBasicAttribute(childWidget);
+                    if (_adlBasicAttribute != null){
+                        _hasBasicAttribute = true;
+                    }
+                }
+                else if (childWidget.getType().equals("object")){
+                    _adlObject = new ADLObject(childWidget);
+                    if (_adlObject != null){
+                        _hasObject = true;
+                    }
 
-	/**
-	 * @param alignment the alignment to set
-	 */
-	public void setAlignment(String alignment) {
-		this.alignment = alignment;
-	}
+                }
+                else if (childWidget.getType().equals("dynamic attribute")){
+                    _adlDynamicAttribute = new ADLDynamicAttribute(childWidget);
+                    if (_adlDynamicAttribute != null){
+                        _hasDynamicAttribute = true;
+                    }
+                }
+            }
+            for (FileLine fileLine : adlWidget.getBody()){
+                String bodyPart = fileLine.getLine();
+                String[] row = bodyPart.trim().split("=", 2);
+                if (row.length < 2){
+                    throw new WrongADLFormatException(Messages.Label_WrongADLFormatException_Parameter_Begin + bodyPart + Messages.Label_WrongADLFormatException_Parameter_End);
+                }
+                if (FileLine.argEquals(row[0], "textix")){
+                    setTextix(FileLine.getTrimmedValue(row[1]));
+                }
+                else if (FileLine.argEquals(row[0], "align")){
+                    setAlignment(FileLine.getTrimmedValue(row[1]));
+                }
+                else if (FileLine.argEquals(row[0], "color_mode")){
+                    setColor_mode(FileLine.getTrimmedValue(row[1]));
+                }
+                else if (FileLine.argEquals(row[0], "format")){
+                    setFormat(FileLine.getTrimmedValue(row[1]));
+                }
+            }
+        }
+        catch (WrongADLFormatException ex) {
+            ex.printStackTrace();
+        }
+    }
 
-	/**
-	 * @return the alignment
-	 */
-	public String getAlignment() {
-		return alignment;
-	}
+    private void setTextix(String inString){
+        textix = inString;
+    }
+    /**
+     * @return the textix
+     */
+    public String getTextix() {
+        return textix;
+    }
 
-	/**
-	 * @param clrmod the clrmod to set
-	 */
-	public void setColor_mode(String clrmod) {
-		this.color_mode = clrmod;
-	}
+    /**
+     * @param alignment the alignment to set
+     */
+    public void setAlignment(String alignment) {
+        this.alignment = alignment;
+    }
 
-	/**
-	 * @return the clrmod
-	 */
-	public String getColor_mode() {
-		return color_mode;
-	}
+    /**
+     * @return the alignment
+     */
+    public String getAlignment() {
+        return alignment;
+    }
 
-	/**
-	 * @param format the format to set
-	 */
-	public void setFormat(String format) {
-		this.format = format;
-	}
+    /**
+     * @param clrmod the clrmod to set
+     */
+    public void setColor_mode(String clrmod) {
+        this.color_mode = clrmod;
+    }
 
-	/**
-	 * @return the format
-	 */
-	public String getFormat() {
-		return format;
-	}
+    /**
+     * @return the clrmod
+     */
+    public String getColor_mode() {
+        return color_mode;
+    }
 
-	@Override
-	public Object[] getChildren() {
-		ArrayList<Object> ret = new ArrayList<Object>();
-		if (_adlObject != null) ret.add( _adlObject);
-		if (_adlBasicAttribute != null) ret.add( _adlBasicAttribute);
-		if (_adlDynamicAttribute != null) ret.add( _adlDynamicAttribute);
-		if (!(color_mode.equals(""))) ret.add(new ADLResource(ADLResource.COLOR_MODE, color_mode));
-		if (!(alignment.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_ALIGNMENT, alignment));
-		if (!(format.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_FORMAT, format));
-		if (!(textix.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_TEXTIX, textix));
-		return ret.toArray();
-	}
-	
+    /**
+     * @param format the format to set
+     */
+    public void setFormat(String format) {
+        this.format = format;
+    }
+
+    /**
+     * @return the format
+     */
+    public String getFormat() {
+        return format;
+    }
+
+    @Override
+    public Object[] getChildren() {
+        ArrayList<Object> ret = new ArrayList<Object>();
+        if (_adlObject != null) ret.add( _adlObject);
+        if (_adlBasicAttribute != null) ret.add( _adlBasicAttribute);
+        if (_adlDynamicAttribute != null) ret.add( _adlDynamicAttribute);
+        if (!(color_mode.equals(""))) ret.add(new ADLResource(ADLResource.COLOR_MODE, color_mode));
+        if (!(alignment.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_ALIGNMENT, alignment));
+        if (!(format.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_FORMAT, format));
+        if (!(textix.equals(""))) ret.add(new ADLResource(ADLResource.TEXT_TEXTIX, textix));
+        return ret.toArray();
+    }
+
 }

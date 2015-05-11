@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.unitconversion.ui;
 
@@ -14,10 +14,10 @@ import org.eclipse.swt.widgets.Composite;
 public class MeasurementDataWidget extends Composite {
 
     private MeasurementData measurementData;
-    
+
     public MeasurementDataWidget(Composite parent, int style) {
-	super(parent, style);
-	
+    super(parent, style);
+
     }
 
 }

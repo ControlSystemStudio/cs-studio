@@ -33,9 +33,9 @@ import org.eclipse.core.commands.ExecutionException;
  */
 public class LoginAction extends AbstractHandler
 {
-	/**
-	 * Performs user login.
-	 */
+    /**
+     * Performs user login.
+     */
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {

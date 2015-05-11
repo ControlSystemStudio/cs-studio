@@ -15,31 +15,31 @@ import org.csstudio.archive.config.EngineConfig;
 @SuppressWarnings("nls")
 public class RDBEngineConfig extends EngineConfig
 {
-	final private int id;
-	
-	/** Initialize
-	 *  @param id
-	 *  @param name
-	 *  @param description
-	 *  @param url
-	 *  @throws Exception if url is not a valid URL
-	 */
-	public RDBEngineConfig(final int id, final String name, final String description, final String url) throws Exception
+    final private int id;
+
+    /** Initialize
+     *  @param id
+     *  @param name
+     *  @param description
+     *  @param url
+     *  @throws Exception if url is not a valid URL
+     */
+    public RDBEngineConfig(final int id, final String name, final String description, final String url) throws Exception
     {
-		super(name, description, url);
-		this.id = id;
+        super(name, description, url);
+        this.id = id;
     }
 
-	/** @return RDB ID of engine */
-	public int getId()
+    /** @return RDB ID of engine */
+    public int getId()
     {
-    	return id;
+        return id;
     }
 
-	/** @return Debug representation */
+    /** @return Debug representation */
     @Override
     public String toString()
-	{
-    	return super.toString() + " [" + id + "]";
-	}
+    {
+        return super.toString() + " [" + id + "]";
+    }
 }

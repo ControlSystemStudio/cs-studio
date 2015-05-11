@@ -110,12 +110,12 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     /** Device Names for status PVs.
      *  They should either all be set or all be empty, so checking one is sufficient.
      */
-	private Optional<String> device_active = Optional.empty(), device_status = Optional.empty(), device_state = Optional.empty(), device_progress = Optional.empty(), device_finish = Optional.empty();
+    private Optional<String> device_active = Optional.empty(), device_status = Optional.empty(), device_state = Optional.empty(), device_progress = Optional.empty(), device_finish = Optional.empty();
 
-	/** Timeout for updating the status PVs */
-	final private static TimeDuration timeout = TimeDuration.ofSeconds(10);
+    /** Timeout for updating the status PVs */
+    final private static TimeDuration timeout = TimeDuration.ofSeconds(10);
 
-	/** Initialize
+    /** Initialize
      *  @param name User-provided name for this scan
      *  @param devices {@link DeviceContext} to use for scan
      *  @param implementations Commands to execute in this scan
@@ -172,7 +172,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         for (ScanCommandImpl<?> impl : implementations)
         {
             address = impl.setAddress(address);
-        	work_units += impl.getWorkUnits();
+            work_units += impl.getWorkUnits();
         }
         total_work_units = work_units;
     }
@@ -347,7 +347,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         return automatic_log_mode;
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public Optional<DataLog> getDataLog()
     {
@@ -431,7 +431,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         final String prefix = ScanSystemPreferences.getStatusPvPrefix();
         if (prefix != null   &&   !prefix.isEmpty())
         {
-        	device_active = Optional.of(prefix + "Active");
+            device_active = Optional.of(prefix + "Active");
             devices.addPVDevice(new DeviceInfo(device_active.get()));
 
             device_status = Optional.of(prefix + "Status");
@@ -463,11 +463,11 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
             // Initialize scan status PVs. Error will prevent scan from starting.
             if (device_active.isPresent())
             {
-            	getDevice(device_status.get()).write(getName());
-            	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
-            	ScanCommandUtil.write(this, device_active.get(), Double.valueOf(1.0));
-            	ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(0.0));
-            	getDevice(device_finish.get()).write("Starting ...");
+                getDevice(device_status.get()).write(getName());
+                ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
+                ScanCommandUtil.write(this, device_active.get(), Double.valueOf(1.0));
+                ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(0.0));
+                getDevice(device_finish.get()).write("Starting ...");
             }
 
             try
@@ -482,35 +482,35 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 execute(implementations);
 
                 // Successful finish
-            	state.set(ScanState.Finished);
+                state.set(ScanState.Finished);
             }
             finally
             {
                 // Try post-scan commands even if submitted commands ran into problems or were aborted.
-            	// Save the state before going back to Running for post commands.
-            	final long saved_steps = work_performed.get();
+                // Save the state before going back to Running for post commands.
+                final long saved_steps = work_performed.get();
                 final ScanState saved_state = state.getAndSet(ScanState.Running);
 
                 execute(post_scan);
 
                 // Restore saved state
                 work_performed.set(saved_steps);
-            	state.set(saved_state);
+                state.set(saved_state);
             }
         }
         catch (Exception ex)
         {
-    	    if (state.get() == ScanState.Aborted)
-    	        error = Optional.of(ScanState.Aborted.name());
-    	    else
-    	    {
-    	        if (ex.getMessage() != null)
-    	            error = Optional.of(ex.getMessage());
-    	        else
-    	            error = Optional.of(ex.getClass().getName());
-    	        state.set(ScanState.Failed);
-    	        logger.log(Level.WARNING, "Scan " + getName() + " failed", ex);
-    	    }
+            if (state.get() == ScanState.Aborted)
+                error = Optional.of(ScanState.Aborted.name());
+            else
+            {
+                if (ex.getMessage() != null)
+                    error = Optional.of(ex.getMessage());
+                else
+                    error = Optional.of(ex.getClass().getName());
+                state.set(ScanState.Failed);
+                logger.log(Level.WARNING, "Scan " + getName() + " failed", ex);
+            }
         }
         finally
         {
@@ -522,7 +522,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 if (device_active.isPresent())
                 {
                     getDevice(device_status.get()).write("");
-                	ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
+                    ScanCommandUtil.write(this, device_state.get(), getScanState().ordinal());
                     getDevice(device_finish.get()).write(ScanSampleFormatter.format(new Date()));
                     ScanCommandUtil.write(this, device_progress.get(), Double.valueOf(100.0));
                     ScanCommandUtil.write(this, device_active.get(), Double.valueOf(0.0));

@@ -34,56 +34,56 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Base class for selection dependent actions.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public abstract class AbstractEditPartSelectionAction extends SelectionAction {
-	
-	private final GraphicalViewer _viewer;
 
-	public AbstractEditPartSelectionAction(IWorkbenchPart part, GraphicalViewer viewer) {
-		super(part);
-		this._viewer = viewer;
-	}
+    private final GraphicalViewer _viewer;
 
-	protected abstract Command doCreateCommand(List<AbstractBaseEditPart> selectedEditParts);
+    public AbstractEditPartSelectionAction(IWorkbenchPart part, GraphicalViewer viewer) {
+        super(part);
+        this._viewer = viewer;
+    }
 
-	protected abstract boolean doCalculateEnabled(List<AbstractBaseEditPart> selectedEditParts);
+    protected abstract Command doCreateCommand(List<AbstractBaseEditPart> selectedEditParts);
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public final void run() {
-		Command cmd = doCreateCommand(getSelectedEditParts());
-		if (cmd != null) {
-			execute(cmd);
-		}
-	}
+    protected abstract boolean doCalculateEnabled(List<AbstractBaseEditPart> selectedEditParts);
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected final boolean calculateEnabled() {
-		return doCalculateEnabled(getSelectedEditParts());
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public final void run() {
+        Command cmd = doCreateCommand(getSelectedEditParts());
+        if (cmd != null) {
+            execute(cmd);
+        }
+    }
 
-	protected GraphicalViewer getGraphicalViewer() {
-		return ((DisplayEditor) getWorkbenchPart()).getGraphicalViewer();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected final boolean calculateEnabled() {
+        return doCalculateEnabled(getSelectedEditParts());
+    }
 
-	private final List<AbstractBaseEditPart> getSelectedEditParts() {
-		List<?> selection = getSelectedObjects();
-		
-		List<AbstractBaseEditPart> selectedEditParts = new ArrayList<AbstractBaseEditPart>(selection.size());
-		for (Object o : selection) {
-			if (o instanceof AbstractBaseEditPart) {
-				selectedEditParts.add(((AbstractBaseEditPart) o));
-			}
-		}
-		return selectedEditParts;
-	}
+    protected GraphicalViewer getGraphicalViewer() {
+        return ((DisplayEditor) getWorkbenchPart()).getGraphicalViewer();
+    }
+
+    private final List<AbstractBaseEditPart> getSelectedEditParts() {
+        List<?> selection = getSelectedObjects();
+
+        List<AbstractBaseEditPart> selectedEditParts = new ArrayList<AbstractBaseEditPart>(selection.size());
+        for (Object o : selection) {
+            if (o instanceof AbstractBaseEditPart) {
+                selectedEditParts.add(((AbstractBaseEditPart) o));
+            }
+        }
+        return selectedEditParts;
+    }
 
 }

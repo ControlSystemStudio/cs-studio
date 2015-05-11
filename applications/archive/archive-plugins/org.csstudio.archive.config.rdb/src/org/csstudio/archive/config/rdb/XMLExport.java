@@ -24,35 +24,35 @@ import org.epics.util.time.Timestamp;
 @SuppressWarnings("nls")
 public class XMLExport
 {
-	/** Export configuration
-	 *  @param out {@link PrintStream}
-	 *  @param rdb_url
-	 *  @param rdb_user
-	 *  @param rdb_password
-	 *  @param rdb_schema
+    /** Export configuration
+     *  @param out {@link PrintStream}
+     *  @param rdb_url
+     *  @param rdb_user
+     *  @param rdb_password
+     *  @param rdb_schema
      *  @param engine_name Name of engine configuration
-	 *  @throws Exception on error
+     *  @throws Exception on error
      */
     public void export(final PrintStream out,
-    		final String rdb_url, final String rdb_user, final String rdb_password, final String rdb_schema,
-    		final String engine_name) throws Exception
+            final String rdb_url, final String rdb_user, final String rdb_password, final String rdb_schema,
+            final String engine_name) throws Exception
     {
-    	final RDBArchiveConfig config = new RDBArchiveConfig(rdb_url, rdb_user, rdb_password, rdb_schema);
-    	try
-    	{
-	        final EngineConfig engine = config.findEngine(engine_name);
-	        if (engine == null)
-	            throw new Exception("Unknown engine '" + engine_name + "'");
-	        out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
-	        out.println("<!-- Created by ArchiveConfigTool -engine " + engine_name + " -export");
-	        out.println("     " + TimestampHelper.format(Timestamp.now()));
-	        out.println(" -->");
-	        dumpEngine(out, config, engine);
-    	}
-    	finally
-    	{
-    		config.close();
-    	}
+        final RDBArchiveConfig config = new RDBArchiveConfig(rdb_url, rdb_user, rdb_password, rdb_schema);
+        try
+        {
+            final EngineConfig engine = config.findEngine(engine_name);
+            if (engine == null)
+                throw new Exception("Unknown engine '" + engine_name + "'");
+            out.println("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>");
+            out.println("<!-- Created by ArchiveConfigTool -engine " + engine_name + " -export");
+            out.println("     " + TimestampHelper.format(Timestamp.now()));
+            out.println(" -->");
+            dumpEngine(out, config, engine);
+        }
+        finally
+        {
+            config.close();
+        }
     }
 
     private void dumpEngine(final PrintStream out, final ArchiveConfig config, final EngineConfig engine) throws Exception

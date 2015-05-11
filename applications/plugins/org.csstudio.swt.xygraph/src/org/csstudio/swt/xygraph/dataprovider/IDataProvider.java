@@ -10,9 +10,9 @@ package org.csstudio.swt.xygraph.dataprovider;
 import org.csstudio.swt.xygraph.linearscale.Range;
 
 /**
- * Interface for the data provider of trace. This gives the possibilities to implement 
+ * Interface for the data provider of trace. This gives the possibilities to implement
  * different data provider, which could have different data source or data storage structure.
- * For example: the data source could be from user input, database, files, etc,. 
+ * For example: the data source could be from user input, database, files, etc,.
  * The storage structure could be array, queue, circular buffer, bucket buffer, etc,.
  * <p>
  * An API like
@@ -44,55 +44,55 @@ import org.csstudio.swt.xygraph.linearscale.Range;
  * Implementations of the <code>IDataProvider</code> should likewise synchronize
  * on it whenever the data is changed, and other methods like
  * <code>getXDataMinMax</code> should probably be synchronized implementations.
- * 
+ *
  * @author Xihui Chen
  * @author Kay Kasemir (synchronization)
  */
 public interface IDataProvider {
 
-	/**Total number of samples.
-	 * @return the size.
+    /**Total number of samples.
+     * @return the size.
      * @see #getSample(int)
-	 */
-	public int getSize();
+     */
+    public int getSize();
 
-	/**Get sample by index
+    /**Get sample by index
      * <p>
-     * <b>Synchronization:</b> 
+     * <b>Synchronization:</b>
      * Since the data might change dynamically, <code>synchronize</code> on the
      * <code>IDataProvider</code> around calls to <code>getSize()</code>
      * and <code>getSample()</code>.
      *
-	 * @param index Sample index, 0...<code>getSize()-1</code>
-	 * @return the sample.
-	 */
-	public ISample getSample(int index);
+     * @param index Sample index, 0...<code>getSize()-1</code>
+     * @return the sample.
+     */
+    public ISample getSample(int index);
 
-	/**Get the minimum and maximum xdata.
-	 * @return a range includes the min and max as lower and upper. 
-	 * return null if there is no data.
-	 */
-	public Range getXDataMinMax();
+    /**Get the minimum and maximum xdata.
+     * @return a range includes the min and max as lower and upper.
+     * return null if there is no data.
+     */
+    public Range getXDataMinMax();
 
-	/**Get the minimum and maximum ydata.
-	 * @return a range includes the min and max as lower and upper.
-	 * return null if there is no data.
-	 */
-	public Range getYDataMinMax();
+    /**Get the minimum and maximum ydata.
+     * @return a range includes the min and max as lower and upper.
+     * return null if there is no data.
+     */
+    public Range getYDataMinMax();
 
-	/**
-	 * @return true if data is ascending sorted on X axis; false otherwise 
-	 */
-	public boolean isChronological();
+    /**
+     * @return true if data is ascending sorted on X axis; false otherwise
+     */
+    public boolean isChronological();
 
-	/** @param listener New listener to notify when data changes */
-	public void addDataProviderListener(
-			final IDataProviderListener listener);
+    /** @param listener New listener to notify when data changes */
+    public void addDataProviderListener(
+            final IDataProviderListener listener);
 
     /** @param listener Listener to no longer notify when data changes
      *  @return <code>true</code> if listener was known and removed
      */
-	public boolean removeDataProviderListener(
-			final IDataProviderListener listener);	
+    public boolean removeDataProviderListener(
+            final IDataProviderListener listener);
 
 }

@@ -44,160 +44,160 @@ import org.eclipse.draw2d.geometry.Rectangle;
  *
  */
 public final class RefreshableTriangleFigure extends RectangleFigure implements IAdaptable{
-	/**
-	 * The fill grade (0 - 100%).
-	 */
-	private double _fillGrade = 50;
+    /**
+     * The fill grade (0 - 100%).
+     */
+    private double _fillGrade = 50;
 
-	/**
-	 * The rotation angle (0 - 360).
-	 */
-	private double _rotationAngle = 0;
+    /**
+     * The rotation angle (0 - 360).
+     */
+    private double _rotationAngle = 0;
 
-	/**
-	 * The transparent state of the background.
-	 */
-	private boolean _transparent = false;
+    /**
+     * The transparent state of the background.
+     */
+    private boolean _transparent = false;
 
-	//private InternalTriangle _internalFigure;
+    //private InternalTriangle _internalFigure;
 
-	private final PolylineDecoration _polylineDecoration;
+    private final PolylineDecoration _polylineDecoration;
 
-	/**
-	 * A border adapter, which covers all border handlings.
-	 */
-	private IBorderEquippedWidget _borderAdapter;
+    /**
+     * A border adapter, which covers all border handlings.
+     */
+    private IBorderEquippedWidget _borderAdapter;
 
     private CrossedOutAdapter _crossedOutAdapter;
 
     private RhombusAdapter _rhombusAdapter;
 
 
-	public RefreshableTriangleFigure() {
-//		_internalFigure = new InternalTriangle();
-//		this.add(_internalFigure, BorderLayout.CENTER);
+    public RefreshableTriangleFigure() {
+//        _internalFigure = new InternalTriangle();
+//        this.add(_internalFigure, BorderLayout.CENTER);
 
-		Rectangle figureBounds = getBounds().getCopy();
-		figureBounds.crop(this.getInsets());
+        Rectangle figureBounds = getBounds().getCopy();
+        figureBounds.crop(this.getInsets());
 
-		_polylineDecoration = new PolylineDecoration();
-		PointList points = new PointList();
-		points.addPoint(-1, -1);
-		points.addPoint(1, 0);
-		points.addPoint(-1, 1);
-		//points.addPoint(-1, 1);
-		points.addPoint(-1, -1);
-		_polylineDecoration.setTemplate(points);
-		//_polylineDecoration.setTemplate(PolylineDecoration.TRIANGLE_TIP);
-		_polylineDecoration.setRotation(Math.toRadians(_rotationAngle));
-		this.add(_polylineDecoration, BorderLayout.CENTER);
-		addFigureListener(new FigureListener() {
-			public void figureMoved(final IFigure source) {
-				refreshConstraints();
-			}
-		});
-		refreshConstraints();
-	}
+        _polylineDecoration = new PolylineDecoration();
+        PointList points = new PointList();
+        points.addPoint(-1, -1);
+        points.addPoint(1, 0);
+        points.addPoint(-1, 1);
+        //points.addPoint(-1, 1);
+        points.addPoint(-1, -1);
+        _polylineDecoration.setTemplate(points);
+        //_polylineDecoration.setTemplate(PolylineDecoration.TRIANGLE_TIP);
+        _polylineDecoration.setRotation(Math.toRadians(_rotationAngle));
+        this.add(_polylineDecoration, BorderLayout.CENTER);
+        addFigureListener(new FigureListener() {
+            public void figureMoved(final IFigure source) {
+                refreshConstraints();
+            }
+        });
+        refreshConstraints();
+    }
 
-	private void refreshConstraints() {
-		System.out.println("RefreshableTriangleFigure.refreshConstraints()");
-		Rectangle figureBounds = getBounds().getCopy();
-		figureBounds.crop(this.getInsets());
-		System.out.println("   "+figureBounds);
-		Point point = new Point(figureBounds.x+figureBounds.width/2, figureBounds.y+figureBounds.height/2);
-		System.out.println("   Location: "+point);
-		_polylineDecoration.setLocation(point);
-		//_polylineDecoration.setSize(figureBounds.width, figureBounds.height);
-		Point refPoint = new Point(figureBounds.x+figureBounds.width/2, figureBounds.y+figureBounds.height/2);
-		System.out.println("   ReferencePoint: "+refPoint);
-		_polylineDecoration.setRotation(Math.toRadians(_rotationAngle));
-		_polylineDecoration.setReferencePoint(refPoint);
-		_polylineDecoration.setScale(20, 20);
+    private void refreshConstraints() {
+        System.out.println("RefreshableTriangleFigure.refreshConstraints()");
+        Rectangle figureBounds = getBounds().getCopy();
+        figureBounds.crop(this.getInsets());
+        System.out.println("   "+figureBounds);
+        Point point = new Point(figureBounds.x+figureBounds.width/2, figureBounds.y+figureBounds.height/2);
+        System.out.println("   Location: "+point);
+        _polylineDecoration.setLocation(point);
+        //_polylineDecoration.setSize(figureBounds.width, figureBounds.height);
+        Point refPoint = new Point(figureBounds.x+figureBounds.width/2, figureBounds.y+figureBounds.height/2);
+        System.out.println("   ReferencePoint: "+refPoint);
+        _polylineDecoration.setRotation(Math.toRadians(_rotationAngle));
+        _polylineDecoration.setReferencePoint(refPoint);
+        _polylineDecoration.setScale(20, 20);
 
-		Point newPoint = refPoint.getCopy();
-		Point pt = Point.SINGLETON;
-		pt.setLocation(newPoint);
-		pt.negate();
-		System.out.println("   Negated RefPoint: "+pt);
-		pt.translate(point);
-		System.out.println("   Translated RefPoint: "+pt);
-	}
+        Point newPoint = refPoint.getCopy();
+        Point pt = Point.SINGLETON;
+        pt.setLocation(newPoint);
+        pt.negate();
+        System.out.println("   Negated RefPoint: "+pt);
+        pt.translate(point);
+        System.out.println("   Translated RefPoint: "+pt);
+    }
 
-	@Override
-	protected boolean useLocalCoordinates() {
-		return false;
-	}
+    @Override
+    protected boolean useLocalCoordinates() {
+        return false;
+    }
 
-	@Override
-	public void paintFigure(final Graphics graphics) {
-	}
+    @Override
+    public void paintFigure(final Graphics graphics) {
+    }
 
-	/**
-	 * Sets the fill grade.
-	 *
-	 * @param fill
-	 *            the fill grade.
-	 */
-	public void setFillLevel(final double fill) {
-		_fillGrade = fill;
-	}
+    /**
+     * Sets the fill grade.
+     *
+     * @param fill
+     *            the fill grade.
+     */
+    public void setFillLevel(final double fill) {
+        _fillGrade = fill;
+    }
 
-	/**
-	 * Gets the fill grade.
-	 *
-	 * @return the fill grade
-	 */
-	public double getFill() {
-		return _fillGrade;
-	}
+    /**
+     * Gets the fill grade.
+     *
+     * @return the fill grade
+     */
+    public double getFill() {
+        return _fillGrade;
+    }
 
-	/**
-	 * Sets the rotation angle.
-	 *
-	 * @param rotationAngle
-	 *            the rotation angle.
-	 */
-	public void setRotationAngle(final double rotationAngle) {
-		_rotationAngle = rotationAngle;
-		_polylineDecoration.setRotation(Math.toRadians(_rotationAngle));
-	}
+    /**
+     * Sets the rotation angle.
+     *
+     * @param rotationAngle
+     *            the rotation angle.
+     */
+    public void setRotationAngle(final double rotationAngle) {
+        _rotationAngle = rotationAngle;
+        _polylineDecoration.setRotation(Math.toRadians(_rotationAngle));
+    }
 
-	/**
-	 * Gets the rotation angle.
-	 *
-	 * @return the rotation angle
-	 */
-	public double getRotationAngle() {
-		return _rotationAngle;
-	}
+    /**
+     * Gets the rotation angle.
+     *
+     * @return the rotation angle
+     */
+    public double getRotationAngle() {
+        return _rotationAngle;
+    }
 
-	/**
-	 * Sets the transparent state of the background.
-	 *
-	 * @param transparent
-	 *            the transparent state.
-	 */
-	public void setTransparent(final boolean transparent) {
-		_transparent = transparent;
-	}
+    /**
+     * Sets the transparent state of the background.
+     *
+     * @param transparent
+     *            the transparent state.
+     */
+    public void setTransparent(final boolean transparent) {
+        _transparent = transparent;
+    }
 
-	/**
-	 * Gets the transparent state of the background.
-	 *
-	 * @return the transparent state of the background
-	 */
-	public boolean getTransparent() {
-		return _transparent;
-	}
+    /**
+     * Gets the transparent state of the background.
+     *
+     * @return the transparent state of the background
+     */
+    public boolean getTransparent() {
+        return _transparent;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Class adapter) {
-		if (adapter == IBorderEquippedWidget.class) {
-			if(_borderAdapter==null) {
-				_borderAdapter = new BorderAdapter(this);
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Class adapter) {
+        if (adapter == IBorderEquippedWidget.class) {
+            if(_borderAdapter==null) {
+                _borderAdapter = new BorderAdapter(this);
             }
             return _borderAdapter;
         } else if (adapter == ICrossedFigure.class) {
@@ -212,44 +212,44 @@ public final class RefreshableTriangleFigure extends RectangleFigure implements 
             return _rhombusAdapter;
         }
 
-		return null;
-	}
+        return null;
+    }
 
-	private final class InternalTriangle extends RectangleFigure {
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void paintFigure(final Graphics graphics) {
-			fillShape(graphics);
-		}
+    private final class InternalTriangle extends RectangleFigure {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void paintFigure(final Graphics graphics) {
+            fillShape(graphics);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected synchronized void fillShape(final Graphics graphics) {
-			Rectangle figureBounds = getBounds().getCopy();
-			figureBounds.crop(this.getInsets());
-			graphics.setBackgroundColor(getForegroundColor());
-			int x = figureBounds.x+figureBounds.width/2;
-			int y = figureBounds.y+figureBounds.height/2;
-			graphics.translate(x, y);
-			graphics.rotate(Float.parseFloat(String.valueOf(_rotationAngle)));
-			PointList points = new PointList();
-			points.addPoint(-figureBounds.width/2, -figureBounds.height/2);
-			points.addPoint(figureBounds.width/2, 0);
-			points.addPoint(-figureBounds.width/2, figureBounds.height/2);
-			if (!_transparent) {
-				graphics.setBackgroundColor(getBackgroundColor());
-				graphics.fillPolygon(points);
-			}
-			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-			Rectangle fillRectangle = new Rectangle(-figureBounds.width/2,-figureBounds.height/2,newW,figureBounds.height);
-			graphics.setClip(fillRectangle);
-			graphics.setBackgroundColor(getForegroundColor());
-			graphics.fillPolygon(points);
-		}
-	}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected synchronized void fillShape(final Graphics graphics) {
+            Rectangle figureBounds = getBounds().getCopy();
+            figureBounds.crop(this.getInsets());
+            graphics.setBackgroundColor(getForegroundColor());
+            int x = figureBounds.x+figureBounds.width/2;
+            int y = figureBounds.y+figureBounds.height/2;
+            graphics.translate(x, y);
+            graphics.rotate(Float.parseFloat(String.valueOf(_rotationAngle)));
+            PointList points = new PointList();
+            points.addPoint(-figureBounds.width/2, -figureBounds.height/2);
+            points.addPoint(figureBounds.width/2, 0);
+            points.addPoint(-figureBounds.width/2, figureBounds.height/2);
+            if (!_transparent) {
+                graphics.setBackgroundColor(getBackgroundColor());
+                graphics.fillPolygon(points);
+            }
+            int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+            Rectangle fillRectangle = new Rectangle(-figureBounds.width/2,-figureBounds.height/2,newW,figureBounds.height);
+            graphics.setClip(fillRectangle);
+            graphics.setBackgroundColor(getForegroundColor());
+            graphics.fillPolygon(points);
+        }
+    }
 
 }

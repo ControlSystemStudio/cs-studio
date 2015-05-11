@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.internal.editor.newproperties.colorservice;
@@ -55,125 +55,125 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 
+ *
  * @author Kai Meyer (C1 WPS)
  *
  */
 public class InstallDefaultSettingsAction extends Action implements ICheatSheetAction, IWorkbenchWindowActionDelegate {
 
     private static final Logger LOG = LoggerFactory.getLogger(InstallDefaultSettingsAction.class);
-	
-	public void run(String[] params, ICheatSheetManager manager) {
-		run(null);
-	}
 
-	public void dispose() {
+    public void run(String[] params, ICheatSheetManager manager) {
+        run(null);
+    }
 
-	}
+    public void dispose() {
 
-	public void init(IWorkbenchWindow window) {
+    }
 
-	}
+    public void init(IWorkbenchWindow window) {
 
-	public void run(IAction action) {
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+    }
 
-		final String projectName = "Settings";
-		final IProject project = root.getProject(projectName);
-		boolean install = !project.exists();
-		if (!install) {
-			install = MessageDialog.openConfirm(new Shell(), "Project exists", "Project already exists!\r\nOverride?");
-			if (install) {
-				try {
-					project.create(new NullProgressMonitor());
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+    public void run(IAction action) {
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
-		if (install) {
+        final String projectName = "Settings";
+        final IProject project = root.getProject(projectName);
+        boolean install = !project.exists();
+        if (!install) {
+            install = MessageDialog.openConfirm(new Shell(), "Project exists", "Project already exists!\r\nOverride?");
+            if (install) {
+                try {
+                    project.create(new NullProgressMonitor());
+                } catch (CoreException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
-			Job job = new Job("Import SDS Default settings") {
+        if (install) {
 
-				@SuppressWarnings("unchecked")
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						// copy the sample displays
-						if (!project.exists()) {
-							project.create(monitor);
-						}
+            Job job = new Job("Import SDS Default settings") {
 
-						if (!project.isOpen()) {
-							project.open(monitor);
-						}
+                @SuppressWarnings("unchecked")
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    try {
+                        // copy the sample displays
+                        if (!project.exists()) {
+                            project.create(monitor);
+                        }
 
-						URL url = FileLocator.find(SdsUiPlugin.getDefault().getBundle(), new Path("defaultSettings"), new HashMap());
+                        if (!project.isOpen()) {
+                            project.open(monitor);
+                        }
 
-						try {
-							File directory = new File(FileLocator.toFileURL(url).getPath());
-							if (directory.isDirectory()) {
-								File[] files = directory.listFiles();
-								monitor.beginTask("Copying Files", count(files));
-								copy(files, project, monitor);
-							}
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+                        URL url = FileLocator.find(SdsUiPlugin.getDefault().getBundle(), new Path("defaultSettings"), new HashMap());
 
-					} catch (CoreException e) {
-						e.printStackTrace();
-					}
+                        try {
+                            File directory = new File(FileLocator.toFileURL(url).getPath());
+                            if (directory.isDirectory()) {
+                                File[] files = directory.listFiles();
+                                monitor.beginTask("Copying Files", count(files));
+                                copy(files, project, monitor);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
 
-					return Status.OK_STATUS;
-				}
+                    } catch (CoreException e) {
+                        e.printStackTrace();
+                    }
 
-			};
+                    return Status.OK_STATUS;
+                }
 
-			job.schedule();
-		}
-	}
+            };
 
-	private int count(File[] files) {
-		int result = 0;
-		for (File file : files) {
-			if (file.isDirectory()) {
-				result += count(file.listFiles());
-			} else {
-				result++;
-			}
-		}
+            job.schedule();
+        }
+    }
 
-		return result;
-	}
+    private int count(File[] files) {
+        int result = 0;
+        for (File file : files) {
+            if (file.isDirectory()) {
+                result += count(file.listFiles());
+            } else {
+                result++;
+            }
+        }
 
-	private void copy(File[] files, IContainer container, IProgressMonitor monitor) {
-		try {
-			for (File file : files) {
-				monitor.subTask("Copying " + file.getName());
-				if (file.isDirectory()) {
-					IFolder folder = container.getFolder(new Path(file.getName()));
+        return result;
+    }
 
-					if (!folder.exists()) {
-						folder.create(true, true, null);
-						copy(file.listFiles(), folder, monitor);
-					}
-				} else {
-					IFile pFile = container.getFile(new Path(file.getName()));
-					if (!pFile.exists()) {
-						pFile.create(new FileInputStream(file), true, new NullProgressMonitor());
-					}
-					monitor.internalWorked(1);
-				}
+    private void copy(File[] files, IContainer container, IProgressMonitor monitor) {
+        try {
+            for (File file : files) {
+                monitor.subTask("Copying " + file.getName());
+                if (file.isDirectory()) {
+                    IFolder folder = container.getFolder(new Path(file.getName()));
 
-			}
-		} catch (Exception e) {
-			LOG.error(e.toString());
-		}
-	}
+                    if (!folder.exists()) {
+                        folder.create(true, true, null);
+                        copy(file.listFiles(), folder, monitor);
+                    }
+                } else {
+                    IFile pFile = container.getFile(new Path(file.getName()));
+                    if (!pFile.exists()) {
+                        pFile.create(new FileInputStream(file), true, new NullProgressMonitor());
+                    }
+                    monitor.internalWorked(1);
+                }
 
-	public void selectionChanged(IAction action, ISelection selection) {
+            }
+        } catch (Exception e) {
+            LOG.error(e.toString());
+        }
+    }
 
-	}
+    public void selectionChanged(IAction action, ISelection selection) {
+
+    }
 }

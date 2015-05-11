@@ -33,7 +33,7 @@ package org.csstudio.dal;
  */
 public interface PointAccess extends DataAccess<Point<?>>, AsynchronousAccess<Point<?>>
 {
-	//
+    //
 }
 
 /* __oOo__ */

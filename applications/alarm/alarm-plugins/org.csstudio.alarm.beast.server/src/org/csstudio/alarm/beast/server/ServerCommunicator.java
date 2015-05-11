@@ -45,7 +45,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
 
     /** Work queue in main application */
     final private WorkQueue work_queue;
-    
+
     /** Alarm tree root (config) name */
     final private String root_name;
 
@@ -80,10 +80,10 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  and listens to 'client' topic messages
      *  @param server Alarm server
      *  @param work_queue
-     *  @param root_name 
+     *  @param root_name
      */
     public ServerCommunicator(final AlarmServer server, final WorkQueue work_queue,
-    		final String root_name) throws Exception
+            final String root_name) throws Exception
     {
         super(Preferences.getJMS_URL());
         this.server = server;
@@ -123,7 +123,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         {
             client_producer.close();
         }
-        
+
         server_producer = createProducer(Preferences.getJMS_AlarmServerTopic(root_name));
         talk_producer = createProducer(Preferences.getJMS_TalkTopic(root_name));
         global_producer = createProducer(Preferences.getJMS_GlobalServerTopic());
@@ -159,8 +159,8 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     @Override
     public void start()
     {
-    	super.start();
-    	idle_timer.start();
+        super.start();
+        idle_timer.start();
     }
 
     /** Stop the communicator */
@@ -279,7 +279,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             @Override
             public void run()
             {
-            	try
+                try
                 {
                     final MapMessage map = createAlarmMessage(
                             AlarmLogic.getMaintenanceMode()
@@ -321,7 +321,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             @Override
             public void run()
             {
-            	try
+                try
                 {
                     final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_STATE);
                     map.setString(JMSLogMessage.NAME, pv.getPathName());
@@ -329,7 +329,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
                         map.setString(JMSAlarmMessage.VALUE, value);
-                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));  
+                    map.setString(JMSAlarmMessage.EVENTTIME, date_format.format(timestamp.toDate()));
                     global_producer.send(map);
                 }
                 catch (Exception ex)
@@ -339,7 +339,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             }
         });
     }
-    
+
     /** Notify clients of enablement state
      *  @param pv PV that is now enabled/disabled
      *  @param enabled Enabled?
@@ -366,7 +366,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             }
         });
         idle_timer.reset();
-	}
+    }
 
     /** Send message to annunciator
      *  @param message Message text
@@ -402,7 +402,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         });
     }
 
-	/** Handle messages received from alarm clients.
+    /** Handle messages received from alarm clients.
      *  <p>
      *  This is invoked from a JMS thread.
      *  There have been deadlocks when trying to reconfigure the

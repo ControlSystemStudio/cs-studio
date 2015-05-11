@@ -5,11 +5,11 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 public class SDSScriptingPerspective implements IPerspectiveFactory {
 
-	public void createInitialLayout(IPageLayout layout) {
-		layout.addView("org.eclipse.ui.views.ResourceNavigator",
-				IPageLayout.LEFT, 0.2f, layout.getEditorArea());
-		layout.addView("org.eclipse.ui.views.ContentOutline",
-				IPageLayout.RIGHT, 0.8f, layout.getEditorArea());
-	}
+    public void createInitialLayout(IPageLayout layout) {
+        layout.addView("org.eclipse.ui.views.ResourceNavigator",
+                IPageLayout.LEFT, 0.2f, layout.getEditorArea());
+        layout.addView("org.eclipse.ui.views.ContentOutline",
+                IPageLayout.RIGHT, 0.8f, layout.getEditorArea());
+    }
 
 }

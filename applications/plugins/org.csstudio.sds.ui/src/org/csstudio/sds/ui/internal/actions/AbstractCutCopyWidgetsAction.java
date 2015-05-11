@@ -39,77 +39,77 @@ import org.eclipse.ui.IWorkbenchPart;
 /**
  * Abstract base class which contains the common parts of the cut and copy
  * actions.
- * 
+ *
  * @author Joerg Rathlev
  */
 public abstract class AbstractCutCopyWidgetsAction extends SelectionAction {
 
-	/**
-	 * Creates a new cut or copy action.
-	 * 
-	 * @param part the workbench part.
-	 */
-	public AbstractCutCopyWidgetsAction(final IWorkbenchPart part) {
-		super(part);
-	}
+    /**
+     * Creates a new cut or copy action.
+     *
+     * @param part the workbench part.
+     */
+    public AbstractCutCopyWidgetsAction(final IWorkbenchPart part) {
+        super(part);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final boolean calculateEnabled() {
-		List<AbstractWidgetModel> widgets = getSelectedWidgetModels();
-		return (widgets.size()==1 && !( widgets.get(0) instanceof DisplayModel)) || widgets.size()>1;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final boolean calculateEnabled() {
+        List<AbstractWidgetModel> widgets = getSelectedWidgetModels();
+        return (widgets.size()==1 && !( widgets.get(0) instanceof DisplayModel)) || widgets.size()>1;
+    }
 
-	/**
-	 * Sets the clipboard contents to the given list of widgets.
-	 * 
-	 * @param widgets
-	 *            the list of widgets.
-	 */
-	protected final void copyToClipboard(final List<AbstractWidgetModel> widgets) {
-		Clipboard clipboard = new Clipboard(Display.getCurrent());
-		clipboard.setContents(new Object[] { widgets },
-				new Transfer[] { WidgetModelTransfer.getInstance() });
-	}
+    /**
+     * Sets the clipboard contents to the given list of widgets.
+     *
+     * @param widgets
+     *            the list of widgets.
+     */
+    protected final void copyToClipboard(final List<AbstractWidgetModel> widgets) {
+        Clipboard clipboard = new Clipboard(Display.getCurrent());
+        clipboard.setContents(new Object[] { widgets },
+                new Transfer[] { WidgetModelTransfer.getInstance() });
+    }
 
-	/**
-	 * Gets the widget models of all currently selected EditParts.
-	 * 
-	 * @return a list with all widget models that are currently selected
-	 */
-	@SuppressWarnings("rawtypes")
-	protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
-		List selection = getSelectedObjects();
-	
-		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
-	
-		for (Object o : selection) {
-			if (o instanceof AbstractBaseEditPart) {
-				selectedWidgetModels.add(((AbstractBaseEditPart) o)
-						.getWidgetModel());
-			}
-		}
-		sortWidgetModels(selectedWidgetModels);
-		return selectedWidgetModels;
-	}
-	
-	private void sortWidgetModels(final List<AbstractWidgetModel> widgetModels) {
-		Collections.sort(widgetModels, new Comparator<AbstractWidgetModel>() {
-			@Override
-			public int compare(AbstractWidgetModel model1, AbstractWidgetModel model2) {
-				int indexOfModel1 = model1.getParent().getIndexOf(model1);
-				int indexOfModel2 = model1.getParent().getIndexOf(model2);
-				if (indexOfModel1 < indexOfModel2) {
-					return -1;
-				} else if (indexOfModel1 > indexOfModel2) {
-					return 1;
-				} else {
-					return 0;
-				}
-			}
-		});
-	}
+    /**
+     * Gets the widget models of all currently selected EditParts.
+     *
+     * @return a list with all widget models that are currently selected
+     */
+    @SuppressWarnings("rawtypes")
+    protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
+        List selection = getSelectedObjects();
+
+        List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
+
+        for (Object o : selection) {
+            if (o instanceof AbstractBaseEditPart) {
+                selectedWidgetModels.add(((AbstractBaseEditPart) o)
+                        .getWidgetModel());
+            }
+        }
+        sortWidgetModels(selectedWidgetModels);
+        return selectedWidgetModels;
+    }
+
+    private void sortWidgetModels(final List<AbstractWidgetModel> widgetModels) {
+        Collections.sort(widgetModels, new Comparator<AbstractWidgetModel>() {
+            @Override
+            public int compare(AbstractWidgetModel model1, AbstractWidgetModel model2) {
+                int indexOfModel1 = model1.getParent().getIndexOf(model1);
+                int indexOfModel2 = model1.getParent().getIndexOf(model2);
+                if (indexOfModel1 < indexOfModel2) {
+                    return -1;
+                } else if (indexOfModel1 > indexOfModel2) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+    }
 
 }

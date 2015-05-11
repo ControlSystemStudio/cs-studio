@@ -24,11 +24,11 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  *  @author Xihui Chen
  */
 public class PreferencePage extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage
+    implements IWorkbenchPreferencePage
 {
     /** Constructor */
-	public PreferencePage()
-	{
+    public PreferencePage()
+    {
         // This way, preference changes in the GUI end up in a file under
         // {workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings/,
         // i.e. they are specific to the workspace instance.
@@ -36,7 +36,7 @@ public class PreferencePage extends FieldEditorPreferencePage
             new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.ID);
         setPreferenceStore(store);
         setMessage(Messages.MessageHistory);
-	}
+    }
 
     /** {@inheritDoc */
     @Override
@@ -55,7 +55,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(new StringFieldEditor(Preferences.START, Messages.Pref_Starttime, parent));
         addField(new StringFieldEditor(Preferences.AUTO_REFRESH_PERIOD, Messages.Pref_AutoRefreshPeriod, parent));
         final IntegerFieldEditor max_properties =
-        	new IntegerFieldEditor(Preferences.MAX_PROPERTIES, Messages.Pref_MaxProperties, parent);
+            new IntegerFieldEditor(Preferences.MAX_PROPERTIES, Messages.Pref_MaxProperties, parent);
         max_properties.setValidRange(0, Integer.MAX_VALUE);
         addField(max_properties);
         addField(new TableColumnsFieldEditor(parent));

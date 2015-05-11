@@ -4,7 +4,7 @@
  * used to define commands that can be used by administrative tools to manage
  * a running CSS application.
  * </p>
- * 
+ *
  * <p>
  * To provide a management command, clients must implement the
  * {@link IManagementCommand} interface and register the management command as
@@ -12,7 +12,7 @@
  * Paramaters which the command expects can be specified declaratively as part
  * of the extension declaration.
  * </p>
- * 
+ *
  * <p>
  * To call a mangement command, the {@link IManagementCommandService} can be
  * used. The platform publishes an implementation of this interface as an OSGi
@@ -21,7 +21,7 @@
  * commands). Other plug-ins can use this service to make those management
  * commands available for remote access by remote management tools.
  * </p>
- * 
+ *
  * <p>
  * Management commands can return results. Results consist of a type, which
  * indicates how the result should be handled, and a type-specific serializable

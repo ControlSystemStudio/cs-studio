@@ -13,6 +13,6 @@ package org.csstudio.scan.ui.scandata;
 @SuppressWarnings("nls")
 public class Activator
 {
-	/** Plugin ID defined in MANIFEST.MF */
+    /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.scan.ui.scandata";
 }

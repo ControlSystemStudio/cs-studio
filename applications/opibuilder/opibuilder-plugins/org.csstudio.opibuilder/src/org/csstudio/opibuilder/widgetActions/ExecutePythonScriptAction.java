@@ -37,122 +37,122 @@ import org.python.core.PySystemState;
  */
 public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 
-	private PyCode code;
-	private PythonInterpreter interpreter;
-	private DisplayEditpart displayEditpart;
-	private AbstractBaseEditPart widgetEditPart;
+    private PyCode code;
+    private PythonInterpreter interpreter;
+    private DisplayEditpart displayEditpart;
+    private AbstractBaseEditPart widgetEditPart;
 
-	@Override
-	public ActionType getActionType() {
-		return ActionType.EXECUTE_PYTHONSCRIPT;
-	}
+    @Override
+    public ActionType getActionType() {
+        return ActionType.EXECUTE_PYTHONSCRIPT;
+    }
 
-	@Override
-	public void run() {
-		if(code == null){
-			try {
-				ScriptStoreFactory.initPythonInterpreter();
-			} catch (Exception e) {
-				final String message = "Failed to initialize PythonInterpreter";
-	            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-				ConsoleService.getInstance().writeError(message + "\n" + e); //$NON-NLS-1$
-			}
-			//read file
-			IPath absolutePath = getAbsolutePath();
-			PySystemState state = new PySystemState();
+    @Override
+    public void run() {
+        if(code == null){
+            try {
+                ScriptStoreFactory.initPythonInterpreter();
+            } catch (Exception e) {
+                final String message = "Failed to initialize PythonInterpreter";
+                OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
+                ConsoleService.getInstance().writeError(message + "\n" + e); //$NON-NLS-1$
+            }
+            //read file
+            IPath absolutePath = getAbsolutePath();
+            PySystemState state = new PySystemState();
 
-			//Add the path of script to python module search path
-			if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){
-				//If it is a workspace file.
-				if(ResourceUtil.isExistingWorkspaceFile(absolutePath)){
-					IPath folderPath = absolutePath.removeLastSegments(1);
-					String sysLocation = ResourceUtil.workspacePathToSysPath(folderPath).toOSString();
-					state.path.append(new PyString(sysLocation));
-				}else if(ResourceUtil.isExistingLocalFile(absolutePath)){
-					IPath folderPath = absolutePath.removeLastSegments(1);
-					state.path.append(new PyString(folderPath.toOSString()));
-				}
-			}
+            //Add the path of script to python module search path
+            if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){
+                //If it is a workspace file.
+                if(ResourceUtil.isExistingWorkspaceFile(absolutePath)){
+                    IPath folderPath = absolutePath.removeLastSegments(1);
+                    String sysLocation = ResourceUtil.workspacePathToSysPath(folderPath).toOSString();
+                    state.path.append(new PyString(sysLocation));
+                }else if(ResourceUtil.isExistingLocalFile(absolutePath)){
+                    IPath folderPath = absolutePath.removeLastSegments(1);
+                    state.path.append(new PyString(folderPath.toOSString()));
+                }
+            }
 
-			interpreter = new PythonInterpreter(null,state);
+            interpreter = new PythonInterpreter(null,state);
 
-			GraphicalViewer viewer = getWidgetModel().getRootDisplayModel().getViewer();
-			if(viewer != null){
-				Object obj = viewer.getEditPartRegistry().get(getWidgetModel());
-				if(obj != null && obj instanceof AbstractBaseEditPart){
-					displayEditpart = (DisplayEditpart)(viewer.getContents());
-					widgetEditPart = (AbstractBaseEditPart)obj;
-				}
-			}
-		}
+            GraphicalViewer viewer = getWidgetModel().getRootDisplayModel().getViewer();
+            if(viewer != null){
+                Object obj = viewer.getEditPartRegistry().get(getWidgetModel());
+                if(obj != null && obj instanceof AbstractBaseEditPart){
+                    displayEditpart = (DisplayEditpart)(viewer.getContents());
+                    widgetEditPart = (AbstractBaseEditPart)obj;
+                }
+            }
+        }
 
-		Job job = new Job("Execute Python Script") {
+        Job job = new Job("Execute Python Script") {
 
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				String taskName = isEmbedded()?"Execute Python Script" :
-					"Connecting to " + getAbsolutePath();
-				monitor.beginTask(taskName,
-						IProgressMonitor.UNKNOWN);
-				runTask();
-				monitor.done();
-				return Status.OK_STATUS;
-			}
-		};
-		job.setUser(true);
-		job.schedule();
-	}
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                String taskName = isEmbedded()?"Execute Python Script" :
+                    "Connecting to " + getAbsolutePath();
+                monitor.beginTask(taskName,
+                        IProgressMonitor.UNKNOWN);
+                runTask();
+                monitor.done();
+                return Status.OK_STATUS;
+            }
+        };
+        job.setUser(true);
+        job.schedule();
+    }
 
-	public void runTask() {
-		Display display = getWidgetModel().getRootDisplayModel().getViewer().getControl().getDisplay();
+    public void runTask() {
+        Display display = getWidgetModel().getRootDisplayModel().getViewer().getControl().getDisplay();
 
-		try {
-			if(code == null){
+        try {
+            if(code == null){
 
-				//compile
-				if(isEmbedded())
-					code = interpreter.compile(getScriptText());
-				else{
-					InputStream inputStream = getInputStream();
-					code = interpreter.compile(inputStream);
-					inputStream.close();
-				}
-			}
+                //compile
+                if(isEmbedded())
+                    code = interpreter.compile(getScriptText());
+                else{
+                    InputStream inputStream = getInputStream();
+                    code = interpreter.compile(inputStream);
+                    inputStream.close();
+                }
+            }
 
 
-			UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
+            UIBundlingThread.getInstance().addRunnable(display, new Runnable() {
 
-				@Override
+                @Override
                 public void run() {
 
-						try {
-							interpreter.set(ScriptService.WIDGET, widgetEditPart);
-							interpreter.set(ScriptService.DISPLAY, displayEditpart);
-							interpreter.exec(code);
-						} catch (Exception e) {
-							final String message =  "Error exists in script " + getPath();
-		                    OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-							ConsoleService.getInstance().writeError(message + "\n" + e); //$NON-NLS-1$
-						}
-				}
-			});
-		} catch (Exception e) {
-			final String message = "Failed to execute Python Script: " + getPath();
+                        try {
+                            interpreter.set(ScriptService.WIDGET, widgetEditPart);
+                            interpreter.set(ScriptService.DISPLAY, displayEditpart);
+                            interpreter.exec(code);
+                        } catch (Exception e) {
+                            final String message =  "Error exists in script " + getPath();
+                            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
+                            ConsoleService.getInstance().writeError(message + "\n" + e); //$NON-NLS-1$
+                        }
+                }
+            });
+        } catch (Exception e) {
+            final String message = "Failed to execute Python Script: " + getPath();
             OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-			ConsoleService.getInstance().writeError(message + "\n" + e); //$NON-NLS-1$
-		}
-	}
+            ConsoleService.getInstance().writeError(message + "\n" + e); //$NON-NLS-1$
+        }
+    }
 
 
-	@Override
-	protected String getFileExtension() {
-		return ScriptService.PY;
-	}
+    @Override
+    protected String getFileExtension() {
+        return ScriptService.PY;
+    }
 
-	@Override
-	protected String getScriptHeader() {
-		return ScriptService.DEFAULT_PYTHONSCRIPT_HEADER;
-	}
+    @Override
+    protected String getScriptHeader() {
+        return ScriptService.DEFAULT_PYTHONSCRIPT_HEADER;
+    }
 
 
 

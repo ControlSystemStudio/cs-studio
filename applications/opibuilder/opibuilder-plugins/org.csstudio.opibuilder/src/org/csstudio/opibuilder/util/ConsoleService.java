@@ -19,76 +19,76 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class ConsoleService{
 
-	private static ConsoleService instance;
-	
-	private static final ConsoleServiceSSHelper IMPL;
-	
-	static {
-		IMPL = (ConsoleServiceSSHelper)ImplementationLoader.newInstance(
-				ConsoleServiceSSHelper.class, false);
-	}
-	
-	
-	/**
-	 * Return the only one instance of this class.
-	 *
-	 * @return The only one instance of this class.
-	 */
-	public synchronized static ConsoleService getInstance() {
-		if (instance == null) {
-			instance = new ConsoleService();
-		}
-		return instance;
-	}
+    private static ConsoleService instance;
 
-	
-	public void writeError(String message) {
-		if(IMPL != null)
-			IMPL.writeError(message);
-	}
+    private static final ConsoleServiceSSHelper IMPL;
 
-	
-	public void writeWarning(String message) {
-		if(IMPL != null)
-			IMPL.writeWarning(message);
-	}
+    static {
+        IMPL = (ConsoleServiceSSHelper)ImplementationLoader.newInstance(
+                ConsoleServiceSSHelper.class, false);
+    }
 
-	
-	public void writeInfo(String message) {
-		if(IMPL != null)
-			IMPL.writeInfo(message);
-	}
 
-	
-	public void writeString(String s) {
-		if(IMPL != null)
-			IMPL.writeString(s);
-	}
-	
-	public void writeString(String s, RGB color){
-		if(IMPL != null)
-			IMPL.writeString(s, color);
-	}
+    /**
+     * Return the only one instance of this class.
+     *
+     * @return The only one instance of this class.
+     */
+    public synchronized static ConsoleService getInstance() {
+        if (instance == null) {
+            instance = new ConsoleService();
+        }
+        return instance;
+    }
 
-	
-	/**
-	 * Direct system output to BOY console. 
-	 * <b>Warning: </b>To make this take effect for the Python script calling this method, 
-	 * it is required to rerun the OPI with the Python script so that the Python interpreter
-	 * has a chance to reload system output. 
-	 */
-	public void turnOnSystemOutput(){
-		if(IMPL != null)
-			IMPL.turnOnSystemOutput();
-	}
-	
-	/**
-	 * Turn off displaying system output in BOY console and 
-	 * reset system output to original output.
-	 * <b>Warning: </b>It is required to rerun the OPI if this method is called from Python script. 
-	 */
-	public void turnOffSystemOutput() {
-		if(IMPL != null)
-			IMPL.turnOffSystemOutput();
-	}
+
+    public void writeError(String message) {
+        if(IMPL != null)
+            IMPL.writeError(message);
+    }
+
+
+    public void writeWarning(String message) {
+        if(IMPL != null)
+            IMPL.writeWarning(message);
+    }
+
+
+    public void writeInfo(String message) {
+        if(IMPL != null)
+            IMPL.writeInfo(message);
+    }
+
+
+    public void writeString(String s) {
+        if(IMPL != null)
+            IMPL.writeString(s);
+    }
+
+    public void writeString(String s, RGB color){
+        if(IMPL != null)
+            IMPL.writeString(s, color);
+    }
+
+
+    /**
+     * Direct system output to BOY console.
+     * <b>Warning: </b>To make this take effect for the Python script calling this method,
+     * it is required to rerun the OPI with the Python script so that the Python interpreter
+     * has a chance to reload system output.
+     */
+    public void turnOnSystemOutput(){
+        if(IMPL != null)
+            IMPL.turnOnSystemOutput();
+    }
+
+    /**
+     * Turn off displaying system output in BOY console and
+     * reset system output to original output.
+     * <b>Warning: </b>It is required to rerun the OPI if this method is called from Python script.
+     */
+    public void turnOffSystemOutput() {
+        if(IMPL != null)
+            IMPL.turnOffSystemOutput();
+    }
 }

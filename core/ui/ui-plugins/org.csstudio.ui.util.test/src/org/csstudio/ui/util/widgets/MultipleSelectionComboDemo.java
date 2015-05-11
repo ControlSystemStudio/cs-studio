@@ -25,7 +25,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * SWT Demo of the {@link MultiSelectionCombo}
- * 
+ *
  * @author Kay Kasemir, Kunal Shroff
  */
 @SuppressWarnings("nls")
@@ -51,7 +51,7 @@ public class MultipleSelectionComboDemo
             return name;
         }
     };
-    
+
     private static Text text;
     private final static List<MyItem> itemSet1 = Arrays.asList(
         new MyItem("Zero"), new MyItem("One"),
@@ -63,101 +63,101 @@ public class MultipleSelectionComboDemo
         new MyItem("4"), new MyItem("5"), new MyItem("6"));
 
     public static void main(String[] args) {
-	Display display = new Display();
-	Shell shell = new Shell(display);
+    Display display = new Display();
+    Shell shell = new Shell(display);
 
-	shell.setLayout(new GridLayout());
+    shell.setLayout(new GridLayout());
 
-	Label lblNewLabel = new Label(shell, SWT.NONE);
-	lblNewLabel.setText("Basic");
+    Label lblNewLabel = new Label(shell, SWT.NONE);
+    lblNewLabel.setText("Basic");
 
-	final MultipleSelectionCombo<MyItem> list = new MultipleSelectionCombo<>(
-		shell, 0);
-	list.addPropertyChangeListener(new PropertyChangeListener() {
+    final MultipleSelectionCombo<MyItem> list = new MultipleSelectionCombo<>(
+        shell, 0);
+    list.addPropertyChangeListener(new PropertyChangeListener() {
 
-	    @Override
-	    public void propertyChange(PropertyChangeEvent evt) {
-		if (evt.getPropertyName().equals("selection")) {
-		    StringBuilder sb = new StringBuilder();
-		    String loopDelim = "";
-		    for (MyItem s : list.getSelection()) {
-			sb.append(loopDelim);
-			sb.append(s);
-			loopDelim = ", ";
-		    }
-		    text.setText(sb.toString());
-		}
-	    }
-	});
-	list.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-	list.setForeground(display.getSystemColor(SWT.COLOR_DARK_BLUE));
-	list.setToolTipText("Enter items");
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+        if (evt.getPropertyName().equals("selection")) {
+            StringBuilder sb = new StringBuilder();
+            String loopDelim = "";
+            for (MyItem s : list.getSelection()) {
+            sb.append(loopDelim);
+            sb.append(s);
+            loopDelim = ", ";
+            }
+            text.setText(sb.toString());
+        }
+        }
+    });
+    list.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+    list.setForeground(display.getSystemColor(SWT.COLOR_DARK_BLUE));
+    list.setToolTipText("Enter items");
 
-	Button dump = new Button(shell, SWT.PUSH);
-	dump.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-	dump.setText("Dump selected items");
-	dump.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		System.out.println("Selected items: " + list.getSelection());
-	    }
-	});
+    Button dump = new Button(shell, SWT.PUSH);
+    dump.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    dump.setText("Dump selected items");
+    dump.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+        System.out.println("Selected items: " + list.getSelection());
+        }
+    });
 
-	shell.setSize(400, 500);
+    shell.setSize(400, 500);
 
-	Button btnNewButton = new Button(shell, SWT.NONE);
-	btnNewButton.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		list.setItems(itemSet1);
-	    }
-	});
-	btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 1, 1));
-	btnNewButton.setText("Items set1");
+    Button btnNewButton = new Button(shell, SWT.NONE);
+    btnNewButton.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+        list.setItems(itemSet1);
+        }
+    });
+    btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+        false, 1, 1));
+    btnNewButton.setText("Items set1");
 
-	Button btnNewButton_1 = new Button(shell, SWT.NONE);
-	btnNewButton_1.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		list.setItems(itemSet2);
-	    }
-	});
-	btnNewButton_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 1, 1));
-	btnNewButton_1.setText("Item set2");
+    Button btnNewButton_1 = new Button(shell, SWT.NONE);
+    btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+        list.setItems(itemSet2);
+        }
+    });
+    btnNewButton_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+        false, 1, 1));
+    btnNewButton_1.setText("Item set2");
 
-	Label lblSelectedValues = new Label(shell, SWT.NONE);
-	lblSelectedValues.setText("Selected Values:");
+    Label lblSelectedValues = new Label(shell, SWT.NONE);
+    lblSelectedValues.setText("Selected Values:");
 
-	text = new Text(shell, SWT.BORDER);
-	text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    text = new Text(shell, SWT.BORDER);
+    text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 
-	// Set initial Data
+    // Set initial Data
 
-	list.setItems(itemSet1);
-	list.setSelection("One, Four  , Five");
+    list.setItems(itemSet1);
+    list.setSelection("One, Four  , Five");
 
-	Label lblUserSpecifiedDisplay = new Label(shell, SWT.NONE);
-	lblUserSpecifiedDisplay.setText("User Specified display");
+    Label lblUserSpecifiedDisplay = new Label(shell, SWT.NONE);
+    lblUserSpecifiedDisplay.setText("User Specified display");
 
-	MultipleSelectionCombo<MyItem> list2 = new MultipleSelectionCombo<MyItem>(
-		shell, SWT.NONE) {
-	    @Override
-	    public String stringRepresention(MyItem object) {
-		return "~" + object.toString() + "~";
-	    }
-	};
-	list2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
-		1));
+    MultipleSelectionCombo<MyItem> list2 = new MultipleSelectionCombo<MyItem>(
+        shell, SWT.NONE) {
+        @Override
+        public String stringRepresention(MyItem object) {
+        return "~" + object.toString() + "~";
+        }
+    };
+    list2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1,
+        1));
 
-	list2.setToolTipText("Enter items");
-	list2.setItems(itemSet2);
+    list2.setToolTipText("Enter items");
+    list2.setItems(itemSet2);
 
-	shell.open();
-	while (!shell.isDisposed())
-	    if (!display.readAndDispatch())
-		display.sleep();
-	display.dispose();
+    shell.open();
+    while (!shell.isDisposed())
+        if (!display.readAndDispatch())
+        display.sleep();
+    display.dispose();
     }
 }

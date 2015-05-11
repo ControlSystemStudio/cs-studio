@@ -41,14 +41,14 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
- * TODO (mmoeller) : 
- * 
+ * TODO (mmoeller) :
+ *
  * @author mmoeller
  * @version 1.0
  * @since 22.07.2011
  */
 public class JmsMultipleProducer {
-    
+
     private Hashtable<String, String> properties;
     private Context context;
     private ConnectionFactory factory;
@@ -59,83 +59,83 @@ public class JmsMultipleProducer {
     private String jmsUrl;
 
     private SimpleDateFormat dateFormater;
-    
+
     public JmsMultipleProducer(String id, String url, String f) {
-        
+
         clientId = id;
         jmsUrl = url;
-        
+
         dateFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         producer = new Hashtable<String, MessageProducer>();
-        
+
         properties = new Hashtable<String, String>();
-        
+
         // Set the properties for the context
         properties.put(Context.INITIAL_CONTEXT_FACTORY, f);
         properties.put(Context.PROVIDER_URL, jmsUrl);
-                
+
         try {
-            
+
             // Create a context
             context = new InitialContext(properties);
-           
+
             // Create a connection factory
             factory = (ConnectionFactory)context.lookup("ConnectionFactory");
-            
+
             // Create a connection
             connection = factory.createConnection();
-            
+
             // Set client id
             connection.setClientID(clientId);
-            
+
             // Start the connection
             connection.start();
-            
+
             // Create a session
             session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-            
+
         } catch(NamingException ne) {
             // logger.info(" *** NamingException *** : " + ne.getMessage());
             closeAll();
         } catch(JMSException jmse) {
             // logger.info(" *** JMSException *** : " + jmse.getMessage());
             closeAll();
-        }       
+        }
 
     }
-    
+
     public boolean addMessageProducer(String producerName, String topicName) {
-        
+
         boolean success = false;
-        
+
         if (producer.containsKey(producerName)) {
             return false;
         }
-        
+
         try {
 
             Topic topic = session.createTopic(topicName);
-            
+
             // Create a message producer
             MessageProducer p = session.createProducer(topic);
             producer.put(producerName, p);
             success = true;
-            
+
         } catch (JMSException jmse) {
             // Can be ignored
         }
 
         return success;
     }
-    
+
     /**
-     * 
+     *
      * @return The fresh MapMessage
      */
     public MapMessage createMapMessage() {
-        
+
         MapMessage message = null;
-        
+
         if(session != null) {
             try {
                 message = session.createMapMessage();
@@ -143,30 +143,30 @@ public class JmsMultipleProducer {
                 // Can be ignored
             }
         }
-        
+
         return message;
     }
 
     /**
-     * 
+     *
      * @param message
      * @return True if the message has been sent, otherwise false
      */
     public boolean sendMessage(String producerName, Message message) {
-        
+
         boolean success = false;
-        
+
         if (producer.containsKey(producerName) == false) {
             return false;
         }
-        
+
         try {
             // TODO: producer.send(message, DeliveryMode.PERSISTENT, 1, 0);
             producer.get(producerName).send(message);
         } catch (JMSException jmse) {
             // Can be ignored
         }
-        
+
         return success;
     }
 
@@ -177,24 +177,24 @@ public class JmsMultipleProducer {
     public boolean isConnected() {
         return (connection != null);
     }
-    
+
     public void closeAll() {
-        
+
         Enumeration<String> keys = producer.keys();
         while (keys.hasMoreElements()) {
-            
+
             String key = keys.nextElement();
             try {
                 producer.get(key).close();
             } catch(Exception e) {
                 /*Can be ignored*/
             }
-            
+
             if (key != null) {
                 producer.remove(key);
             }
         }
-        
+
         if(connection!=null){try{connection.stop();}catch(Exception e){/*Can be ignored*/}}
         if(session!=null){try{session.close();}catch(Exception e){/*Can be ignored*/}session=null;}
         if(connection!=null){try{connection.close();}catch(Exception e){/*Can be ignored*/}connection=null;}

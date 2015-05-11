@@ -14,7 +14,7 @@ public class IntegerOption extends Option
 {
     /** Current value */
     private int value;
-    
+
     /** Construct String option
      *  @param parser Parser to which to add
      *  @param option Option name: "-something"
@@ -46,7 +46,7 @@ public class IntegerOption extends Option
         value = default_value;
     }
 
-    
+
     /** @return Value */
     public int get()
     {
@@ -73,7 +73,7 @@ public class IntegerOption extends Option
         }
         return 0;
     }
-    
+
     @Override
     public String toString()
     {

@@ -19,65 +19,65 @@ import org.osgi.framework.Version;
  * @author Xihui Chen
  *
  */
-public class PVWidgetModelDelegate implements IPVWidgetModel{	
-	
+public class PVWidgetModelDelegate implements IPVWidgetModel{
 
-	AbstractWidgetModel model;	
 
-	public PVWidgetModelDelegate(AbstractWidgetModel model) {
-		this.model = model;
-	}
-	
-	public void configureBaseProperties() {
-		model.addPVProperty(new PVNameProperty(PROP_PVNAME, "PV Name", WidgetPropertyCategory.Basic,
-				""), new PVValueProperty(PROP_PVVALUE, null));
-		
-		model.addProperty(new BooleanProperty(PROP_BORDER_ALARMSENSITIVE, 
-				"Alarm Sensitive", WidgetPropertyCategory.Border, true));
-		model.addProperty(new BooleanProperty(PROP_FORECOLOR_ALARMSENSITIVE, 
-				"ForeColor Alarm Sensitive", WidgetPropertyCategory.Display, false));
-		model.addProperty(new BooleanProperty(PROP_BACKCOLOR_ALARMSENSITIVE, 
-				"BackColor Alarm Sensitive", WidgetPropertyCategory.Display, false));
-		model.addProperty(new BooleanProperty(PROP_ALARM_PULSING, 
-				"Alarm Pulsing", WidgetPropertyCategory.Display, false));		
-		
-		model.setTooltip("$(" + PROP_PVNAME + ")\n" + "$(" + PROP_PVVALUE + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-	}
-	
-	public boolean isBorderAlarmSensitve(){
-		if(model.getProperty(PROP_BORDER_ALARMSENSITIVE) == null)
-			return false;
-		return (Boolean)model.getCastedPropertyValue(PROP_BORDER_ALARMSENSITIVE);
-	}
-	
-	public boolean isForeColorAlarmSensitve(){
-		if(model.getProperty(PROP_FORECOLOR_ALARMSENSITIVE) == null)
-			return false;
-		return (Boolean)model.getCastedPropertyValue(PROP_FORECOLOR_ALARMSENSITIVE);
-	}
-	
-	public boolean isBackColorAlarmSensitve(){
-		if(model.getProperty(PROP_BACKCOLOR_ALARMSENSITIVE) == null)
-			return false;
-		return (Boolean)model.getCastedPropertyValue(PROP_BACKCOLOR_ALARMSENSITIVE);
-	}
-	
-	public boolean isAlarmPulsing(){
-		if(model.getProperty(PROP_ALARM_PULSING) == null)
-			return false;
-		return (Boolean)model.getCastedPropertyValue(PROP_ALARM_PULSING);
-	}	
-	
-	public String getPVName(){
-		return (String)model.getCastedPropertyValue(PROP_PVNAME);
-	}
-	
-	public void processVersionDifference(Version boyVersionOnFile) {
-		if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){
-			model.setPropertyValue(PROP_PVNAME, 
-					UpgradeUtil.convertUtilityPVNameToPM(getPVName()));
-			
-		}
-	}
+    AbstractWidgetModel model;
+
+    public PVWidgetModelDelegate(AbstractWidgetModel model) {
+        this.model = model;
+    }
+
+    public void configureBaseProperties() {
+        model.addPVProperty(new PVNameProperty(PROP_PVNAME, "PV Name", WidgetPropertyCategory.Basic,
+                ""), new PVValueProperty(PROP_PVVALUE, null));
+
+        model.addProperty(new BooleanProperty(PROP_BORDER_ALARMSENSITIVE,
+                "Alarm Sensitive", WidgetPropertyCategory.Border, true));
+        model.addProperty(new BooleanProperty(PROP_FORECOLOR_ALARMSENSITIVE,
+                "ForeColor Alarm Sensitive", WidgetPropertyCategory.Display, false));
+        model.addProperty(new BooleanProperty(PROP_BACKCOLOR_ALARMSENSITIVE,
+                "BackColor Alarm Sensitive", WidgetPropertyCategory.Display, false));
+        model.addProperty(new BooleanProperty(PROP_ALARM_PULSING,
+                "Alarm Pulsing", WidgetPropertyCategory.Display, false));
+
+        model.setTooltip("$(" + PROP_PVNAME + ")\n" + "$(" + PROP_PVVALUE + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
+    }
+
+    public boolean isBorderAlarmSensitve(){
+        if(model.getProperty(PROP_BORDER_ALARMSENSITIVE) == null)
+            return false;
+        return (Boolean)model.getCastedPropertyValue(PROP_BORDER_ALARMSENSITIVE);
+    }
+
+    public boolean isForeColorAlarmSensitve(){
+        if(model.getProperty(PROP_FORECOLOR_ALARMSENSITIVE) == null)
+            return false;
+        return (Boolean)model.getCastedPropertyValue(PROP_FORECOLOR_ALARMSENSITIVE);
+    }
+
+    public boolean isBackColorAlarmSensitve(){
+        if(model.getProperty(PROP_BACKCOLOR_ALARMSENSITIVE) == null)
+            return false;
+        return (Boolean)model.getCastedPropertyValue(PROP_BACKCOLOR_ALARMSENSITIVE);
+    }
+
+    public boolean isAlarmPulsing(){
+        if(model.getProperty(PROP_ALARM_PULSING) == null)
+            return false;
+        return (Boolean)model.getCastedPropertyValue(PROP_ALARM_PULSING);
+    }
+
+    public String getPVName(){
+        return (String)model.getCastedPropertyValue(PROP_PVNAME);
+    }
+
+    public void processVersionDifference(Version boyVersionOnFile) {
+        if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){
+            model.setPropertyValue(PROP_PVNAME,
+                    UpgradeUtil.convertUtilityPVNameToPM(getPVName()));
+
+        }
+    }
 
 }

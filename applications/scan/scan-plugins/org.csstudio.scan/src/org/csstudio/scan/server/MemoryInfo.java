@@ -25,21 +25,21 @@ import java.lang.management.MemoryUsage;
 @SuppressWarnings("nls")
 public class MemoryInfo
 {
-	final private static double MB = 1024*1024;
+    final private static double MB = 1024*1024;
 
     final private long used_mem, max_mem, non_heap;
 
     /** Initialize with memory usage of this JVM */
     public MemoryInfo()
     {
-		final MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
+        final MemoryMXBean memory = ManagementFactory.getMemoryMXBean();
         final MemoryUsage heap = memory.getHeapMemoryUsage();
-		used_mem = heap.getUsed();
-	    max_mem = heap.getMax();
-	    non_heap = memory.getNonHeapMemoryUsage().getUsed();
+        used_mem = heap.getUsed();
+        max_mem = heap.getMax();
+        non_heap = memory.getNonHeapMemoryUsage().getUsed();
     }
 
-    /** Initialize 
+    /** Initialize
      *  @param used_mem Used memory (kB)
      *  @param max_mem Maximum available memory (kB)
      *  @param non_heap Used non-heap memory (kB)
@@ -51,36 +51,36 @@ public class MemoryInfo
         this.non_heap = non_heap;
     }
 
-	/** @return Used memory (kB) */
-	public long getUsedMem()
+    /** @return Used memory (kB) */
+    public long getUsedMem()
     {
-    	return used_mem;
+        return used_mem;
     }
 
-	/** @return Maximum memory that server will try to use (kB) */
-	public long getMaxMem()
+    /** @return Maximum memory that server will try to use (kB) */
+    public long getMaxMem()
     {
-    	return max_mem;
+        return max_mem;
     }
 
-	/** @return Memory usage in percent of max: 0..100 */
-	public double getMemoryPercentage()
-	{
-		return used_mem * 100.0 / max_mem;
-	}
+    /** @return Memory usage in percent of max: 0..100 */
+    public double getMemoryPercentage()
+    {
+        return used_mem * 100.0 / max_mem;
+    }
 
     /** @return Used non-heap memory (kB) */
     public long getNonHeapUsedMem()
     {
         return non_heap;
     }
-	
-	/** @return Memory usage in percent of max */
+
+    /** @return Memory usage in percent of max */
     public String getMemoryInfo()
-	{
-		return String.format("Heap: %.1f / %.1f MB (%.1f %%), Non-Heap: %.1f MB",
-				used_mem / MB, max_mem / MB, getMemoryPercentage(), non_heap / MB);
-	}
+    {
+        return String.format("Heap: %.1f / %.1f MB (%.1f %%), Non-Heap: %.1f MB",
+                used_mem / MB, max_mem / MB, getMemoryPercentage(), non_heap / MB);
+    }
 
     /** {@inheritDoc} */
     @Override

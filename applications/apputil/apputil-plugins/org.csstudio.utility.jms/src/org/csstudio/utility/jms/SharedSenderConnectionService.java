@@ -31,36 +31,36 @@ import org.csstudio.utility.jms.sharedconnection.MonitorableSharedConnection;
  * Service which manages a shared connection for sending JMS messages. The
  * settings for the connection are read from the preferences of the JMS Utility
  * plug-in.
- * 
+ *
  * @author Joerg Rathlev
  * @author Markus Moeller
  */
 public class SharedSenderConnectionService {
-	
-	private final MonitorableSharedConnection _connection;
-	
-	private final String publisherUrl;
-	
-	private final String clientId;
-	
-	/**
-	 * Creates the service.
-	 */
-	public SharedSenderConnectionService(String url, String id) {
-	    clientId = id;
-	    publisherUrl = url;
-		_connection = new MonitorableSharedConnection(clientId, publisherUrl);
-	}
 
-	/**
-	 * Returns a handle to the shared connection.
-	 * 
-	 * @return a handle to the shared connection.
-	 * @throws JMSException
-	 *             if the underlying shared connection could not be created or
-	 *             started due to an internal error.
-	 */
-	public ISharedConnectionHandle sharedConnection() throws JMSException {
-		return _connection.createHandle();
-	}
+    private final MonitorableSharedConnection _connection;
+
+    private final String publisherUrl;
+
+    private final String clientId;
+
+    /**
+     * Creates the service.
+     */
+    public SharedSenderConnectionService(String url, String id) {
+        clientId = id;
+        publisherUrl = url;
+        _connection = new MonitorableSharedConnection(clientId, publisherUrl);
+    }
+
+    /**
+     * Returns a handle to the shared connection.
+     *
+     * @return a handle to the shared connection.
+     * @throws JMSException
+     *             if the underlying shared connection could not be created or
+     *             started due to an internal error.
+     */
+    public ISharedConnectionHandle sharedConnection() throws JMSException {
+        return _connection.createHandle();
+    }
 }

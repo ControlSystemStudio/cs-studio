@@ -26,17 +26,17 @@ package org.csstudio.dct.ui.editor.highlighter;
 import org.eclipse.swt.custom.StyleRange;
 
 /**
- * 
+ *
  * Build the {@link StyleRange} to highlight an EPICS DB File.
- * 
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 01.08.2011
  */
 public interface IEpicsDBSyntaxHighlighter {
-    
+
     IEpicsDBSyntaxHighlighter append(String epicsDB);
-    
+
     StyleRange[] getStyleRange();
 }

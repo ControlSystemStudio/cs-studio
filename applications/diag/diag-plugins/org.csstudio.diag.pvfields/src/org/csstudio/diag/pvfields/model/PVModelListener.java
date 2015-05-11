@@ -17,9 +17,9 @@ import org.csstudio.diag.pvfields.PVField;
  */
 public interface PVModelListener extends PVFieldListener
 {
-	/** @param properties New properties */
+    /** @param properties New properties */
     public void updateProperties(Map<String, String> properties);
 
-	/** @param fields New fields */
+    /** @param fields New fields */
     public void updateFields(List<PVField> fields);
 }

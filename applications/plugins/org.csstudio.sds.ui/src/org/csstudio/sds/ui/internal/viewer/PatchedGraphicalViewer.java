@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.sds.ui.internal.viewer;
 
@@ -17,79 +17,79 @@ import org.eclipse.ui.internal.ObjectPluginAction;
 
 /**
  * Patched graphical viewer implementation.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public class PatchedGraphicalViewer extends ScrollingGraphicalViewer {
-	private MenuManager contextMenu;
+    private MenuManager contextMenu;
 
-	/**
-	 * The original implementation in
-	 * {@link GraphicalViewerImpl#setContextMenu(MenuManager)} registers a menu
-	 * listener on the context menu. This causes a memory leak, because that
-	 * listener is never removed.
-	 */
-	@Override
-	public void setContextMenu(MenuManager manager) {
-		// code from AbstractEditPartViewer base class (=super.super)
-		if (contextMenu != null) {
-			contextMenu.dispose();
-		}
+    /**
+     * The original implementation in
+     * {@link GraphicalViewerImpl#setContextMenu(MenuManager)} registers a menu
+     * listener on the context menu. This causes a memory leak, because that
+     * listener is never removed.
+     */
+    @Override
+    public void setContextMenu(MenuManager manager) {
+        // code from AbstractEditPartViewer base class (=super.super)
+        if (contextMenu != null) {
+            contextMenu.dispose();
+        }
 
-		contextMenu = manager;
+        contextMenu = manager;
 
-		if (getControl() != null && !getControl().isDisposed()) {
-			getControl().setMenu(contextMenu.createContextMenu(getControl()));
-		}
+        if (getControl() != null && !getControl().isDisposed()) {
+            getControl().setMenu(contextMenu.createContextMenu(getControl()));
+        }
 
-		// code from GraphicalViewerImpl (=super)
+        // code from GraphicalViewerImpl (=super)
 
-		// ... is left out
+        // ... is left out
 
-		// ... and rewritten here
-		if (contextMenu != null) {
-			final IMenuListener menuListener = new IMenuListener() {
-				public void menuAboutToShow(IMenuManager manager) {
-					flush();
-				}
-			};
+        // ... and rewritten here
+        if (contextMenu != null) {
+            final IMenuListener menuListener = new IMenuListener() {
+                public void menuAboutToShow(IMenuManager manager) {
+                    flush();
+                }
+            };
 
-			contextMenu.addMenuListener(menuListener);
+            contextMenu.addMenuListener(menuListener);
 
-			final Control control = getControl();
+            final Control control = getControl();
 
-			if (control != null) {
-				control.addDisposeListener(new DisposeListener() {
-					public void widgetDisposed(DisposeEvent e) {
-						contextMenu.removeMenuListener(menuListener);
-						control.removeDisposeListener(this);
-					}
-				});
-			}
-		}
-	}
+            if (control != null) {
+                control.addDisposeListener(new DisposeListener() {
+                    public void widgetDisposed(DisposeEvent e) {
+                        contextMenu.removeMenuListener(menuListener);
+                        control.removeDisposeListener(this);
+                    }
+                });
+            }
+        }
+    }
 
-	/**
-	 * Patch selections. Return amended selections that keep only weak
-	 * references to their underlying objects. This is part of a workaround for
-	 * a memory leak which is caused by popup menu actions that are contributed
-	 * via extension point 'org.eclipse.ui.popupMenus' and as
-	 * 'objectContribution'. Those actions will references the latest workbench
-	 * selection for as long as a new selection occurs (see
-	 * {@link ObjectPluginAction#selectionChanged(ISelection)}. In certain
-	 * situations this behaviour prevents garbage collection of SDS displays.
-	 */
-	@Override
-	public ISelection getSelection() {
-		IStructuredSelection selection = (IStructuredSelection) super
-				.getSelection();
+    /**
+     * Patch selections. Return amended selections that keep only weak
+     * references to their underlying objects. This is part of a workaround for
+     * a memory leak which is caused by popup menu actions that are contributed
+     * via extension point 'org.eclipse.ui.popupMenus' and as
+     * 'objectContribution'. Those actions will references the latest workbench
+     * selection for as long as a new selection occurs (see
+     * {@link ObjectPluginAction#selectionChanged(ISelection)}. In certain
+     * situations this behaviour prevents garbage collection of SDS displays.
+     */
+    @Override
+    public ISelection getSelection() {
+        IStructuredSelection selection = (IStructuredSelection) super
+                .getSelection();
 
-		if (selection != null) {
-			return new WeakStructuredSelection(selection);
-		} else {
-			return null;
-		}
-	}
+        if (selection != null) {
+            return new WeakStructuredSelection(selection);
+        } else {
+            return null;
+        }
+    }
 
 }

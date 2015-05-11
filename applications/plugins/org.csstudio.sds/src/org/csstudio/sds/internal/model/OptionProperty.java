@@ -35,59 +35,59 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  *
  */
 public final class OptionProperty extends WidgetProperty {
-	/**
-	 * The option values.
-	 */
-	private final IOption[] _options;
+    /**
+     * The option values.
+     */
+    private final IOption[] _options;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 * @param options
-	 *            The option values
-	 */
-	public OptionProperty(final String description,
-			final WidgetPropertyCategory category, final IOption[] options,
-			final String defaultValue) {
-		super(PropertyTypesEnum.OPTION, description, category,
-				defaultValue, null);
-		_options = options;
-	}
+    /**
+     * Constructor.
+     *
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     * @param options
+     *            The option values
+     */
+    public OptionProperty(final String description,
+            final WidgetPropertyCategory category, final IOption[] options,
+            final String defaultValue) {
+        super(PropertyTypesEnum.OPTION, description, category,
+                defaultValue, null);
+        _options = options;
+    }
 
-	/**
-	 * Return the option values.
-	 *
-	 * @return The option values.
-	 */
-	public IOption[] getOptions() {
-		return _options;
-	}
+    /**
+     * Return the option values.
+     *
+     * @return The option values.
+     */
+    public IOption[] getOptions() {
+        return _options;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		assert value != null : "value!=null"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        assert value != null : "value!=null"; //$NON-NLS-1$
 
-		String acceptedValue = null;
+        String acceptedValue = null;
 
-		if (value instanceof String) {
-			String id = (String) value;
-			for (IOption o : _options) {
-			    // only accept the identifier for one of the configured options
-			    if (o.getIdentifier().equals(id)) {
-			        acceptedValue = id;
-			    }
-			}
+        if (value instanceof String) {
+            String id = (String) value;
+            for (IOption o : _options) {
+                // only accept the identifier for one of the configured options
+                if (o.getIdentifier().equals(id)) {
+                    acceptedValue = id;
+                }
+            }
 
-		} else if (value instanceof IOption) {
+        } else if (value instanceof IOption) {
             IOption option = (IOption) value;
             for (IOption o : _options) {
                 // only accept the identifier for one of the configured options
@@ -98,14 +98,14 @@ public final class OptionProperty extends WidgetProperty {
 
 
         }
-		return acceptedValue;
-	}
+        return acceptedValue;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[] { String.class, IOption.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[] { String.class, IOption.class };
+    }
 }

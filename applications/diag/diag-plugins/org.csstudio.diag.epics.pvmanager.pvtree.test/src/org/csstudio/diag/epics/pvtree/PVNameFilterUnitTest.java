@@ -19,13 +19,13 @@ import org.junit.Test;
 public class PVNameFilterUnitTest
 {
     @Test
-	public void testPVNames() throws Exception
-	{
+    public void testPVNames() throws Exception
+    {
         assertThat(PVNameFilter.isPvName("10"), equalTo(false));
         assertThat(PVNameFilter.isPvName("-3.14"), equalTo(false));
         assertThat(PVNameFilter.isPvName("@vme whatever"), equalTo(false));
         assertThat(PVNameFilter.isPvName("#C2 S2 @whatever"), equalTo(false));
         assertThat(PVNameFilter.isPvName("SomePV"), equalTo(true));
         assertThat(PVNameFilter.isPvName("SomePV47 NMS PP"), equalTo(true));
-	}
+    }
 }

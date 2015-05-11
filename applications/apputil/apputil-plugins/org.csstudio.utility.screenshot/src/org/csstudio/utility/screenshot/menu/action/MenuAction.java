@@ -6,16 +6,16 @@ import org.eclipse.jface.action.Action;
 public class MenuAction extends Action
 {
     private String name = null;
-    
+
     public MenuAction(String n)
     {
         super();
-        
+
         name = n;
-        
+
         setText(name);
     }
-    
+
     public void run()
     {
         System.out.println(name + " Ausgewählt...");

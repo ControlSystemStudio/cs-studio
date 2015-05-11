@@ -25,62 +25,62 @@ package org.csstudio.dal.tine;
 import de.desy.tine.dataUtils.TDataType;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class LongPropertyProxyImpl extends PropertyProxyImpl<Long>{
-	
-	private int[] value;
-	
-	/**
-	 * Constructs a new LongPropertyProxy.
-	 * @param name
-	 */
-	public LongPropertyProxyImpl(String name, TINEPlug plug) {
-		super(name, plug);
-//		value = new long[(Integer)getCharacteristic("sequenceLength")];
-		this.value = new int[1];
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
-	 */
-	@Override
-	protected Long extractData(TDataType out) {
-		out.getData(this.value);
-		if (this.value != null && this.value.length > 0) {
-			return new Long(this.value[0]);
-		} else {
-			return new Long(0);
-		}
-		
-	}
+    private int[] value;
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
-	 */
-	@Override
-	protected Object getDataObject() {
-		return this.value;
-	}
+    /**
+     * Constructs a new LongPropertyProxy.
+     * @param name
+     */
+    public LongPropertyProxyImpl(String name, TINEPlug plug) {
+        super(name, plug);
+//        value = new long[(Integer)getCharacteristic("sequenceLength")];
+        this.value = new int[1];
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#setDataToObject(java.lang.Object)
-	 */
-	@Override
-	protected Object convertDataToObject(Long data) {
-		return new int[]{data.intValue()};
-	}
-	/* (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
-	 */
-	@Override
-	protected Class getNumericType() {
-		return Long.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
+     */
+    @Override
+    protected Long extractData(TDataType out) {
+        out.getData(this.value);
+        if (this.value != null && this.value.length > 0) {
+            return new Long(this.value[0]);
+        } else {
+            return new Long(0);
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
+     */
+    @Override
+    protected Object getDataObject() {
+        return this.value;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#setDataToObject(java.lang.Object)
+     */
+    @Override
+    protected Object convertDataToObject(Long data) {
+        return new int[]{data.intValue()};
+    }
+    /* (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
+     */
+    @Override
+    protected Class getNumericType() {
+        return Long.class;
+    }
 
 }

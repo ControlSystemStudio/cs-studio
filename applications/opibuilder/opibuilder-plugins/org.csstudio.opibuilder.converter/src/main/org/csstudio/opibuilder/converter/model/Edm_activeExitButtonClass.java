@@ -9,18 +9,18 @@ package org.csstudio.opibuilder.converter.model;
 
 /**
  * @author Xihui Chen
- * 
+ *
  */
 public class Edm_activeExitButtonClass extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String label;
+    @EdmAttributeAn @EdmOptionalAn private String label;
 
-	public Edm_activeExitButtonClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    public Edm_activeExitButtonClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
-	public String getLabel() {
-		return label;
-	}
+    public String getLabel() {
+        return label;
+    }
 
 }

@@ -63,7 +63,7 @@ public class AdvancedSliderConnectionBehavior extends AbstractDesyConnectionBeha
     }
 
     @Override
-    
+
     protected String[] doGetSettablePropertyIds() {
         return new String[] { AdvancedSliderModel.PROP_VALUE };
     }

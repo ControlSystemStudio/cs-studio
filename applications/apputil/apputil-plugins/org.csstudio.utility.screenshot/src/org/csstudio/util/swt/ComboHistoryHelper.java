@@ -74,8 +74,8 @@ public abstract class ComboHistoryHelper
     {
         if (debug)
             System.out.println("ComboHelper: Add "+new_entry);
-//    	TODO jhatje: implement new datatype
-//    	IProcessVariable pv = CentralItemFactory.createProcessVariable(new_entry);
+//        TODO jhatje: implement new datatype
+//        IProcessVariable pv = CentralItemFactory.createProcessVariable(new_entry);
 
         // Locate & remove the entry to avoid duplicates.
         // A simple remove() would throw exception in case the elem isn't found.
@@ -84,7 +84,7 @@ public abstract class ComboHistoryHelper
         for (int i=0; i<ctrl.getItemCount(); ++i)
         {
             final Object obj = combo.getElementAt(i);
-//        	TODO jhatje: implement new datatype
+//            TODO jhatje: implement new datatype
 //            IProcessVariable elem = (IProcessVariable) obj;
 //            if (elem.getName().equals(new_entry))
 //            {
@@ -94,10 +94,10 @@ public abstract class ComboHistoryHelper
         }
         // Maybe remove oldest (first) entry to keep list size <= max
         if (ctrl.getItemCount() >= max)
-        	combo.remove(combo.getElementAt(0));
+            combo.remove(combo.getElementAt(0));
 
         // Add new entry to the end
-//    	TODO jhatje: implement new datatype
+//        TODO jhatje: implement new datatype
 //        combo.add(pv);
         if (! only_a_reorg)
             ctrl.select(ctrl.getItemCount()-1);
@@ -128,7 +128,7 @@ public abstract class ComboHistoryHelper
         String values[] = pvs.getArray(TAG);
         if (values != null)
             for (int i = 0; i < values.length; i++) {
-//            	TODO jhatje: implement new datatype
+//                TODO jhatje: implement new datatype
 //                combo.add(CentralItemFactory.createProcessVariable(values[i]));
     }
     }

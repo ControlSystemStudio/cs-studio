@@ -43,7 +43,7 @@ public class ElizaGUI
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         messages.setLayoutData(gd);
-        
+
         textentry = new Text(parent, SWT.BORDER);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
@@ -60,7 +60,7 @@ public class ElizaGUI
         });
         textentry.setText("<Enter your sorrows here>"); //$NON-NLS-1$
         textentry.selectAll();
-        
+
         addText(eliza.getIntroMsg());
         printAccumulatedMessages();
     }

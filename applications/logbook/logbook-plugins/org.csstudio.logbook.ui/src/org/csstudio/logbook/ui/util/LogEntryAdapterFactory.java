@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.util;
 
@@ -24,31 +24,31 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 
 /**
- * 
+ *
  * An adapter factory from adaption an LogEntry to
  * 1. A string
  * 2. A {@link URL}
  * 3. A list of {@link ProcessVariable}
  * 4. A list of {@link TimestampedPV}
  * @author shroffk
- * 
+ *
  */
 public class LogEntryAdapterFactory implements IAdapterFactory {
 
     private static String pvRegex = "^.*pv.*?:(.*?)$";
     private final IPreferencesService prefs = Platform.getPreferencesService();
-    
+
     @SuppressWarnings("rawtypes")
     @Override
     /**
-     * 
+     *
      * @param adaptableObject
      * @param adapterType
      * @return
      */
     public Object getAdapter(Object adaptableObject, Class adapterType) {
-        final LogEntry logEntry = ((LogEntry) adaptableObject);  
-        
+        final LogEntry logEntry = ((LogEntry) adaptableObject);
+
         Collection<String> pvNames = new ArrayList<String>();
         try {
             pvRegex = prefs.getString("org.csstudio.logbook.ui", pvRegex, "^.*pv.*?:(.*?)$", null);
@@ -60,7 +60,7 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
         while (pvMatcher.find()) {
             pvNames.add(pvMatcher.group(1));
         }
-        
+
         if (adapterType == String.class) {
             return logEntry.getText();
         } else if (adapterType == URL.class) {
@@ -115,11 +115,11 @@ public class LogEntryAdapterFactory implements IAdapterFactory {
     @SuppressWarnings("rawtypes")
     @Override
     /**
-     * 
+     *
      * @return
      */
     public Class[] getAdapterList() {
-	return new Class[] { UpdateLogEntryBuilder.class, String.class, URL.class, ProcessVariable.class, ProcessVariable[].class,
+    return new Class[] { UpdateLogEntryBuilder.class, String.class, URL.class, ProcessVariable.class, ProcessVariable[].class,
                 TimestampedPV.class, TimestampedPV[].class };
     }
 

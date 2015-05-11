@@ -25,6 +25,6 @@ package org.csstudio.utility.tine.preference;
  * Constant definitions for plug-in preferences
  */
 public class PreferenceConstants {
-	public static final String TINE_CONFIG_PATH = "TINE_CONFIG_PATH";
-	public static final String TINE_CONFIG_DEFAULT = "TINE_CONFIG_DEFAULT";
-	}
+    public static final String TINE_CONFIG_PATH = "TINE_CONFIG_PATH";
+    public static final String TINE_CONFIG_DEFAULT = "TINE_CONFIG_DEFAULT";
+    }

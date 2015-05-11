@@ -17,92 +17,92 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Cursor helper methods.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public class CursorHelper {
 
     private static final Logger LOG = LoggerFactory.getLogger(CursorHelper.class);
 
-	/**
-	 * Private to prevent instantiation of this class.
-	 */
-	private CursorHelper() {
+    /**
+     * Private to prevent instantiation of this class.
+     */
+    private CursorHelper() {
 
-	}
+    }
 
-	/**
-	 * Tries to find a cursor for the specified id.
-	 * 
-	 * @param cursorId
-	 *            the cursor id
-	 * @return a cursor or null if none was found
-	 */
-	public static Cursor getCursor(String cursorId) {
-		// find the descriptor for the specified cursor id
-		AbstractCursor d = CursorService.getInstance().findCursor(
-				cursorId);
+    /**
+     * Tries to find a cursor for the specified id.
+     *
+     * @param cursorId
+     *            the cursor id
+     * @return a cursor or null if none was found
+     */
+    public static Cursor getCursor(String cursorId) {
+        // find the descriptor for the specified cursor id
+        AbstractCursor d = CursorService.getInstance().findCursor(
+                cursorId);
 
-		Cursor cursor = null;
+        Cursor cursor = null;
 
-		if (d != null) {
-			if (d == ICursorService.SYSTEM_DEFAULT_CURSOR) {
-				cursor = null;
-			} else if (d instanceof SWTCursor) {
-				cursor = new Cursor(Display.getCurrent(),
-						((SWTCursor) d).getSWTCursor());
-			} else if (d instanceof ContributedCursor) {
-				ContributedCursor cc = (ContributedCursor) d;
-				ImageData imageData = ImageUtil.getInstance()
-						.getImage(cc.getBundle(),
-								cc.getImage()).getImageData();
-				cursor = new Cursor(Display.getCurrent(), imageData, 1, 1);
-			} else if (d instanceof WorkspaceCursor) {
-				WorkspaceCursor wc = (WorkspaceCursor) d;
-				ImageData imageData = ImageUtil.getInstance()
-						.getImageDescriptorFromFile(
-								wc.getGraphicsFile()).getImageData();
-				cursor = new Cursor(Display.getCurrent(), imageData, 1, 1);
-			} else {
-				LOG.warn("Unknown cursor type: " + d.getClass());
-				cursor = null;
-			}
-		}
+        if (d != null) {
+            if (d == ICursorService.SYSTEM_DEFAULT_CURSOR) {
+                cursor = null;
+            } else if (d instanceof SWTCursor) {
+                cursor = new Cursor(Display.getCurrent(),
+                        ((SWTCursor) d).getSWTCursor());
+            } else if (d instanceof ContributedCursor) {
+                ContributedCursor cc = (ContributedCursor) d;
+                ImageData imageData = ImageUtil.getInstance()
+                        .getImage(cc.getBundle(),
+                                cc.getImage()).getImageData();
+                cursor = new Cursor(Display.getCurrent(), imageData, 1, 1);
+            } else if (d instanceof WorkspaceCursor) {
+                WorkspaceCursor wc = (WorkspaceCursor) d;
+                ImageData imageData = ImageUtil.getInstance()
+                        .getImageDescriptorFromFile(
+                                wc.getGraphicsFile()).getImageData();
+                cursor = new Cursor(Display.getCurrent(), imageData, 1, 1);
+            } else {
+                LOG.warn("Unknown cursor type: " + d.getClass());
+                cursor = null;
+            }
+        }
 
-		return cursor;
-	}
+        return cursor;
+    }
 
-	/**
-	 * Applies a cursor to the specified Draw2d figure. If no cursor is found
-	 * for the specified id, no cursor is applied.
-	 * 
-	 * @param figure
-	 *            the Draw2d figure
-	 * @param cursorId
-	 *            the cursor id
-	 */
-	public static void applyCursor(IFigure figure, String cursorId) {
-		Cursor cursor = getCursor(cursorId);
+    /**
+     * Applies a cursor to the specified Draw2d figure. If no cursor is found
+     * for the specified id, no cursor is applied.
+     *
+     * @param figure
+     *            the Draw2d figure
+     * @param cursorId
+     *            the cursor id
+     */
+    public static void applyCursor(IFigure figure, String cursorId) {
+        Cursor cursor = getCursor(cursorId);
 
-		// a null value sets the cursor back to the system default
-		figure.setCursor(cursor);
-	}
+        // a null value sets the cursor back to the system default
+        figure.setCursor(cursor);
+    }
 
-	/**
-	 * Applies a cursor to the specified SWT control. If no cursor is found for
-	 * the specified id, no cursor is applied.
-	 * 
-	 * @param control
-	 *            the SWT control
-	 * @param cursorId
-	 *            the cursor id
-	 */
-	public static void applyCursor(Control control, String cursorId) {
-		Cursor cursor = getCursor(cursorId);
+    /**
+     * Applies a cursor to the specified SWT control. If no cursor is found for
+     * the specified id, no cursor is applied.
+     *
+     * @param control
+     *            the SWT control
+     * @param cursorId
+     *            the cursor id
+     */
+    public static void applyCursor(Control control, String cursorId) {
+        Cursor cursor = getCursor(cursorId);
 
-		// a null value sets the cursor back to the system default
-		control.setCursor(cursor);
-	}
+        // a null value sets the cursor back to the system default
+        control.setCursor(cursor);
+    }
 
 }

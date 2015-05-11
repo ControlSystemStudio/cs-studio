@@ -21,152 +21,152 @@ import org.epics.vtype.VType;
  */
 public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart implements IPVWidgetEditpart{
 
-	protected PVWidgetEditpartDelegate delegate;
-	
-	public AbstractPVWidgetEditPart() {
-		delegate = new PVWidgetEditpartDelegate(this);
-	}
-	
-	@Override
-	protected void doActivate() {
-		super.doActivate();
-		delegate.doActivate();			
-	}
-	@Override
-	public void activate() {
-		super.activate();
-		//PV should be started at the last step.
-		delegate.startPVs();
-	}
-	
-	@Override
-	public void addSetPVValueListener(ISetPVValueListener listener) {
-		delegate.addSetPVValueListener(listener);
-	}
+    protected PVWidgetEditpartDelegate delegate;
 
-	@Override
-	public Border calculateBorder(){
-		Border border = delegate.calculateBorder();
-		if(border == null)
-			return super.calculateBorder();
-		else 
-			return border;
-	}
+    public AbstractPVWidgetEditPart() {
+        delegate = new PVWidgetEditpartDelegate(this);
+    }
 
-	@Override
-	protected ConnectionHandler createConnectionHandler() {
-		return new PVWidgetConnectionHandler(this);
-	}
-	
-	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE,
-				new DropPVtoPVWidgetEditPolicy());
-	}
+    @Override
+    protected void doActivate() {
+        super.doActivate();
+        delegate.doActivate();
+    }
+    @Override
+    public void activate() {
+        super.activate();
+        //PV should be started at the last step.
+        delegate.startPVs();
+    }
 
-	@Override
-	protected void doDeActivate() {
-		if(isActive()){
-			delegate.doDeActivate();
-			super.doDeActivate();
-		}
-	}
-	
-	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
-		if(key == ProcessVariable.class){			
-			return new ProcessVariable(getPVName());
-		}
-		return super.getAdapter(key);
-	}
-	
-	/**
-	 * @return A String array with all PV names from PV properties.
-	 */
-	public String[] getAllPVNames(){
-		return delegate.getAllPVNames();
-	}
-	
-	/**
-	 * @return the control PV. null if no control PV on this widget.
-	 */
-	public IPV getControlPV(){
-		return delegate.getControlPV();
-	}
+    @Override
+    public void addSetPVValueListener(ISetPVValueListener listener) {
+        delegate.addSetPVValueListener(listener);
+    }
 
-	/**Get the PV corresponding to the <code>PV Name</code> property. 
-	 * It is same as calling <code>getPV("pv_name")</code>.
-	 * @return the PV corresponding to the <code>PV Name</code> property. 
-	 * null if PV Name is not configured for this widget.
-	 */
-	public IPV getPV(){
-		return delegate.getPV();
-	}
+    @Override
+    public Border calculateBorder(){
+        Border border = delegate.calculateBorder();
+        if(border == null)
+            return super.calculateBorder();
+        else
+            return border;
+    }
 
-	/**Get the pv by PV property id.
-	 * @param pvPropId the PV property id.
-	 * @return the corresponding pv for the pvPropId. null if the pv doesn't exist.
-	 */
-	public IPV getPV(String pvPropId){
-		return delegate.getPV(pvPropId);
-	}
-	
-	public PVWidgetEditpartDelegate getPVWidgetEditpartDelegate() {
-		return delegate;
-	}
+    @Override
+    protected ConnectionHandler createConnectionHandler() {
+        return new PVWidgetConnectionHandler(this);
+    }
 
-	
-	/**
-	 * @return the first PV name.
-	 */
-	public String getPVName() {
-		return delegate.getPVName();
-	}
+    @Override
+    protected void createEditPolicies() {
+        super.createEditPolicies();
+        installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE,
+                new DropPVtoPVWidgetEditPolicy());
+    }
 
-	
-	/**Get value from one of the attached PVs.
-	 * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
-	 * @return the {@link IValue} of the PV.
-	 */
-	public VType getPVValue(String pvPropId){
-		return delegate.getPVValue(pvPropId);
-	}
-	
-	@Override
-	protected void initFigure(IFigure figure) {
-		super.initFigure(figure);
-		delegate.initFigure(figure);
-	}
+    @Override
+    protected void doDeActivate() {
+        if(isActive()){
+            delegate.doDeActivate();
+            super.doDeActivate();
+        }
+    }
+
+    @Override
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
+        if(key == ProcessVariable.class){
+            return new ProcessVariable(getPVName());
+        }
+        return super.getAdapter(key);
+    }
+
+    /**
+     * @return A String array with all PV names from PV properties.
+     */
+    public String[] getAllPVNames(){
+        return delegate.getAllPVNames();
+    }
+
+    /**
+     * @return the control PV. null if no control PV on this widget.
+     */
+    public IPV getControlPV(){
+        return delegate.getControlPV();
+    }
+
+    /**Get the PV corresponding to the <code>PV Name</code> property.
+     * It is same as calling <code>getPV("pv_name")</code>.
+     * @return the PV corresponding to the <code>PV Name</code> property.
+     * null if PV Name is not configured for this widget.
+     */
+    public IPV getPV(){
+        return delegate.getPV();
+    }
+
+    /**Get the pv by PV property id.
+     * @param pvPropId the PV property id.
+     * @return the corresponding pv for the pvPropId. null if the pv doesn't exist.
+     */
+    public IPV getPV(String pvPropId){
+        return delegate.getPV(pvPropId);
+    }
+
+    public PVWidgetEditpartDelegate getPVWidgetEditpartDelegate() {
+        return delegate;
+    }
 
 
-	/**For PV Control widgets, mark this PV as control PV.
-	 * @param pvPropId the propId of the PV.
-	 */
-	protected void markAsControlPV(String pvPropId, String pvValuePropId){
-		delegate.markAsControlPV(pvPropId, pvValuePropId);
-	}
+    /**
+     * @return the first PV name.
+     */
+    public String getPVName() {
+        return delegate.getPVName();
+    }
 
-	@Override
-	protected void registerBasePropertyChangeHandlers() {
-		super.registerBasePropertyChangeHandlers();		
-		delegate.registerBasePropertyChangeHandlers();
-	}
-	
-	public void setIgnoreOldPVValue(boolean ignoreOldValue) {
-		delegate.setIgnoreOldPVValue(ignoreOldValue);
-	}
-	
-	/**Set PV to given value. Should accept Double, Double[], Integer, String, maybe more.
-	 * @param pvPropId
-	 * @param value
-	 */
-	public void setPVValue(String pvPropId, Object value){
-		delegate.setPVValue(pvPropId, value);
-	}
-	
-	@Override
-	public boolean isPVControlWidget() {
-		return delegate.isPVControlWidget();
-	}
+
+    /**Get value from one of the attached PVs.
+     * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
+     * @return the {@link IValue} of the PV.
+     */
+    public VType getPVValue(String pvPropId){
+        return delegate.getPVValue(pvPropId);
+    }
+
+    @Override
+    protected void initFigure(IFigure figure) {
+        super.initFigure(figure);
+        delegate.initFigure(figure);
+    }
+
+
+    /**For PV Control widgets, mark this PV as control PV.
+     * @param pvPropId the propId of the PV.
+     */
+    protected void markAsControlPV(String pvPropId, String pvValuePropId){
+        delegate.markAsControlPV(pvPropId, pvValuePropId);
+    }
+
+    @Override
+    protected void registerBasePropertyChangeHandlers() {
+        super.registerBasePropertyChangeHandlers();
+        delegate.registerBasePropertyChangeHandlers();
+    }
+
+    public void setIgnoreOldPVValue(boolean ignoreOldValue) {
+        delegate.setIgnoreOldPVValue(ignoreOldValue);
+    }
+
+    /**Set PV to given value. Should accept Double, Double[], Integer, String, maybe more.
+     * @param pvPropId
+     * @param value
+     */
+    public void setPVValue(String pvPropId, Object value){
+        delegate.setPVValue(pvPropId, value);
+    }
+
+    @Override
+    public boolean isPVControlWidget() {
+        return delegate.isPVControlWidget();
+    }
 }

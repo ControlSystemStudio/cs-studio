@@ -19,11 +19,11 @@ public class Activator
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
     final public static String ID = "org.csstudio.email";
-    
+
     final private static Logger logger = Logger.getLogger(ID);
 
-	/** @return Logger for plugin ID */
-	public static Logger getLogger() {
-		return logger;
-	}
+    /** @return Logger for plugin ID */
+    public static Logger getLogger() {
+        return logger;
+    }
 }

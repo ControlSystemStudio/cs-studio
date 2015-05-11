@@ -31,13 +31,13 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * TODO (jhatje) : 
- * 
+ * TODO (jhatje) :
+ *
  * @author jhatje
  * @since 01.06.2012
  */
 public class SdsFileWriter {
-    
+
     public void writeSdsFile(DisplayModel[] displayModel) {
         final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
         IProject project = root.getProject("FPCreator");
@@ -48,9 +48,9 @@ public class SdsFileWriter {
                     .setXMLHeader("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"); //$NON-NLS-1$
             DisplayModelInputStream modelInputStream = (DisplayModelInputStream) PersistenceUtil
                     .createStream(model);
-            
+
             file = project.getFile(model.getName() + ".css-sds");
-            
+
             try {
                 if (file.exists()) {
                     file.setContents(modelInputStream, true, false, null);

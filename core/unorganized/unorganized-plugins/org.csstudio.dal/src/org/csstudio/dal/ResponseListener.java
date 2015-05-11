@@ -37,32 +37,32 @@ import java.util.EventListener;
  */
 public interface ResponseListener<T> extends EventListener
 {
-	/**
-	 * Event notification specifying that the request state has
-	 * changed. This happens in all cases where the request is modified by the
-	 * underlying implementation.  Examples are: the arrival of new response,
-	 * timeout or error condition, successful completion of the request etc.
-	 *
-	 * @param event the event carrying the new response and the request for
-	 *        which the notification is being delivered
-	 */
-	public void responseReceived(ResponseEvent<T> event);
+    /**
+     * Event notification specifying that the request state has
+     * changed. This happens in all cases where the request is modified by the
+     * underlying implementation.  Examples are: the arrival of new response,
+     * timeout or error condition, successful completion of the request etc.
+     *
+     * @param event the event carrying the new response and the request for
+     *        which the notification is being delivered
+     */
+    public void responseReceived(ResponseEvent<T> event);
 
-	/**
-	 * Event notification specifying that the response indicates an
-	 * error condition. This may mean that either the request as a whole
-	 * indicates an error (timeout in response delivery, or error while
-	 * submitting a request), or that a single response contains data that
-	 * indicate an error response. The implementor of Datatypes sets the
-	 * criteria for success / failure. The user should examine the event and
-	 * its encapsulated response and request objects to determine the exact
-	 * nature of an error.
-	 *
-	 * @param event the event carrying the request for which the notification
-	 *        is being delivered; and possibly a response that indicates an
-	 *        error state
-	 */
-	public void responseError(ResponseEvent<T> event);
+    /**
+     * Event notification specifying that the response indicates an
+     * error condition. This may mean that either the request as a whole
+     * indicates an error (timeout in response delivery, or error while
+     * submitting a request), or that a single response contains data that
+     * indicate an error response. The implementor of Datatypes sets the
+     * criteria for success / failure. The user should examine the event and
+     * its encapsulated response and request objects to determine the exact
+     * nature of an error.
+     *
+     * @param event the event carrying the request for which the notification
+     *        is being delivered; and possibly a response that indicates an
+     *        error state
+     */
+    public void responseError(ResponseEvent<T> event);
 }
 
 /* __oOo__ */

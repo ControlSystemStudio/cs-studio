@@ -68,7 +68,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** Alarm table GUI
- * 
+ *
  *  @author Kay Kasemir
  *  @author Jaka Bobnar - Combined/split alarm tables, configurable columns
  */
@@ -148,7 +148,7 @@ public class GUI implements AlarmClientModelListener
             });
         }
     };
-    
+
     /** Column editor for the 'ACK' column that acknowledges or un-ack's
      *  alarm in that row
      */
@@ -189,7 +189,7 @@ public class GUI implements AlarmClientModelListener
 
     /**
      * Initialize GUI
-     * 
+     *
      * @param parent
      *            Parent widget
      * @param model
@@ -276,7 +276,7 @@ public class GUI implements AlarmClientModelListener
 
     /**
      * Create GUI elements
-     * 
+     *
      * @param parent
      *            Parent widget
      */
@@ -292,7 +292,7 @@ public class GUI implements AlarmClientModelListener
             {
                 sort_column = settings.getInt(ALARM_TABLE_SORT_COLUMN);
                 sort_up = settings.getBoolean(ALARM_TABLE_SORT_UP);
-            } 
+            }
             catch (NumberFormatException ex)
             {
                 // Ignore, use default
@@ -311,7 +311,7 @@ public class GUI implements AlarmClientModelListener
             addAcknowledgedAlarmSashElement(baseComposite, sort_column, sort_up);
             ((SashForm) baseComposite).setWeights(new int[]
             { 80, 20 });
-        } 
+        }
         else
         {
             baseComposite = new Composite(parent, SWT.NONE);
@@ -379,7 +379,7 @@ public class GUI implements AlarmClientModelListener
 
     /**
      * Add the sash element for active alarms
-     * 
+     *
      * @param sash
      *            SashForm
      * @param sort_column
@@ -435,7 +435,7 @@ public class GUI implements AlarmClientModelListener
 
     /**
      * Add the sash element for acknowledged alarms
-     * 
+     *
      * @param sash
      *            SashForm
      * @param sort_column
@@ -459,7 +459,7 @@ public class GUI implements AlarmClientModelListener
 
     /**
      * Select PVs in table that match filter expression
-     * 
+     *
      * @param pattern
      *            PV name pattern ('vac', 'amp*trip')
      * @param table_viewer
@@ -479,7 +479,7 @@ public class GUI implements AlarmClientModelListener
 
     /**
      * Create a table viewer for displaying alarms
-     * 
+     *
      * @param parent
      *            Parent widget, uses GridLayout
      * @param sort_column
@@ -551,7 +551,7 @@ public class GUI implements AlarmClientModelListener
 
     /**
      * Add context menu to tree
-     * 
+     *
      * @param table_viewer
      *            TableViewer to which to add the menu
      * @param site
@@ -605,7 +605,7 @@ public class GUI implements AlarmClientModelListener
      * Set or clear error message. Setting an error message also disables the GUI.
      * <p>
      * OK to call multiple times or after disposal.
-     * 
+     *
      * @param error
      *            Error message or <code>null</code> to clear error
      */
@@ -665,7 +665,7 @@ public class GUI implements AlarmClientModelListener
             if (model.isServerAlive())
             {
                 setErrorMessage(null);
-            } 
+            }
             else
             {
                 setErrorMessage(Messages.WaitingForServer);
@@ -699,7 +699,7 @@ public class GUI implements AlarmClientModelListener
         {
             ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
             ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(ackalarms);
-        } 
+        }
         else
         {
             AlarmTreePV[] items = new AlarmTreePV[alarms.length + ackalarms.length];

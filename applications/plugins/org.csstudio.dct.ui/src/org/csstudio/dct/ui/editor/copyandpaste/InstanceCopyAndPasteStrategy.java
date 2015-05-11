@@ -20,87 +20,87 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 /**
  * Copy & Paste strategy for instances.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class InstanceCopyAndPasteStrategy extends BaseCopyAndPasteStrategy {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public Command createPasteCommand(List<IElement> copiedElements, IProject project, List<IElement> selectedElements) {
-		assert copiedElements != null;
-		assert project != null;
-		assert selectedElements != null;
+    /**
+     *{@inheritDoc}
+     */
+    public Command createPasteCommand(List<IElement> copiedElements, IProject project, List<IElement> selectedElements) {
+        assert copiedElements != null;
+        assert project != null;
+        assert selectedElements != null;
 
-		Map<UUID, IPrototype> tmpPrototypes = new HashMap<UUID, IPrototype>();
+        Map<UUID, IPrototype> tmpPrototypes = new HashMap<UUID, IPrototype>();
 
-		CompoundCommand cmd = new CompoundCommand();
+        CompoundCommand cmd = new CompoundCommand();
 
-		for (IElement c : selectedElements) {
-			for (IElement p : copiedElements) {
-				assert p instanceof IInstance;
+        for (IElement c : selectedElements) {
+            for (IElement p : copiedElements) {
+                assert p instanceof IInstance;
 
-				chainInstance((IInstance) p, cmd, tmpPrototypes, project, (c instanceof IFolder ? (IFolder) c : null),
-						(c instanceof IContainer ? (IContainer) c : null));
-			}
-		}
+                chainInstance((IInstance) p, cmd, tmpPrototypes, project, (c instanceof IFolder ? (IFolder) c : null),
+                        (c instanceof IContainer ? (IContainer) c : null));
+            }
+        }
 
-		return cmd;
-	}
+        return cmd;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public List<Serializable> createCopyElements(List<IElement> selectedElements) {
-		Set<IContainer> items = new HashSet<IContainer>();
+    /**
+     *{@inheritDoc}
+     */
+    public List<Serializable> createCopyElements(List<IElement> selectedElements) {
+        Set<IContainer> items = new HashSet<IContainer>();
 
-		for (IElement e : selectedElements) {
-			assert e instanceof IContainer;
-			IContainer container = (IContainer) e;
-			items.add(container);
-		}
+        for (IElement e : selectedElements) {
+            assert e instanceof IContainer;
+            IContainer container = (IContainer) e;
+            items.add(container);
+        }
 
-		return new ArrayList<Serializable>(items);
-	}
+        return new ArrayList<Serializable>(items);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public boolean canCopy(List<IElement> selectedElements) {
-		boolean result = false;
+    /**
+     *{@inheritDoc}
+     */
+    public boolean canCopy(List<IElement> selectedElements) {
+        boolean result = false;
 
-		if (!selectedElements.isEmpty()) {
-			result = true;
-			for (IElement e : selectedElements) {
-				result &= e instanceof IInstance;
-			}
-		}
+        if (!selectedElements.isEmpty()) {
+            result = true;
+            for (IElement e : selectedElements) {
+                result &= e instanceof IInstance;
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public boolean canPaste(List<IElement> selectedElements) {
-		boolean result = false;
+    /**
+     *{@inheritDoc}
+     */
+    public boolean canPaste(List<IElement> selectedElements) {
+        boolean result = false;
 
-		if (!selectedElements.isEmpty()) {
-			result = true;
-			for (IElement e : selectedElements) {
-				result &= (e instanceof IFolder | e instanceof IContainer);
-			}
-		}
+        if (!selectedElements.isEmpty()) {
+            result = true;
+            for (IElement e : selectedElements) {
+                result &= (e instanceof IFolder | e instanceof IContainer);
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getContentDescription() {
-		return "Instances";
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getContentDescription() {
+        return "Instances";
+    }
 }

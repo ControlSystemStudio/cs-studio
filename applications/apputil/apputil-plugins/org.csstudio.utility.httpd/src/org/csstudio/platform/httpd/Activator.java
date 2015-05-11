@@ -20,7 +20,7 @@ public class Activator extends Plugin
 {
     /** Set to >0 at compile time to include demo server */
     final private static int demo_port = 0 /* 9005 */;
-    
+
     /** {@inheritDoc} */
     @Override
     public void start(BundleContext context) throws Exception

@@ -63,18 +63,18 @@ public class SampleBuffer
     /** @return Queue capacity, i.e. maximum queue size. */
     public int getCapacity()
     {
-    	synchronized (samples)
+        synchronized (samples)
         {
-    		return samples.getCapacity();
+            return samples.getCapacity();
         }
     }
 
     /** @return Current queue size, i.e. number of samples in the queue. */
     public int getQueueSize()
     {
-    	synchronized (samples)
+        synchronized (samples)
         {
-    		return samples.size();
+            return samples.size();
         }
     }
 
@@ -94,7 +94,7 @@ public class SampleBuffer
     @SuppressWarnings("nls")
     void add(final VType value)
     {
-    	synchronized (samples)
+        synchronized (samples)
         {
             if (samples.isFull())
             {   // Note start of overruns, then drop older sample
@@ -115,7 +115,7 @@ public class SampleBuffer
     /** @return latest sample in queue or <code>null</code> if empty */
     VType remove()
     {
-    	synchronized (samples)
+        synchronized (samples)
         {
             return samples.remove();
         }

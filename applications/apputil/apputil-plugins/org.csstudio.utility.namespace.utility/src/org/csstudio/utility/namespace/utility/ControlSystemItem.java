@@ -28,24 +28,24 @@ import org.csstudio.csdata.ProcessVariable;
 
 public class ControlSystemItem extends ProcessVariable {
 
-	private static final long serialVersionUID = 7560030613315777768L;
-	private final String TYPE_ID = "css:controlSystemItem"; //$NON-NLS-1$
-	private final String _path;
+    private static final long serialVersionUID = 7560030613315777768L;
+    private final String TYPE_ID = "css:controlSystemItem"; //$NON-NLS-1$
+    private final String _path;
     private boolean _redundant;
 
 
-	public ControlSystemItem(final String name, final String path) {
-		this(name, path, null);
-	}
+    public ControlSystemItem(final String name, final String path) {
+        this(name, path, null);
+    }
 
-	/**
+    /**
      * Constructor.
      * @param string
      * @param cleanList
      * @param attribute
      */
     public ControlSystemItem(String name, String path, Attribute attribute) {
-    	super(name);
+        super(name);
         this._path = path;
         setRedundant(attribute);
     }
@@ -69,9 +69,9 @@ public class ControlSystemItem extends ProcessVariable {
     }
 
 
-	public String getPath() {
-		return _path;
-	}
+    public String getPath() {
+        return _path;
+    }
 
     public boolean isRedundant() {
         return _redundant;

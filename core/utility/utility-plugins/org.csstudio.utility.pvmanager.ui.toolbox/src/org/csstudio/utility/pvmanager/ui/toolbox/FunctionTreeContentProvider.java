@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
@@ -15,70 +15,70 @@ import org.epics.pvmanager.formula.FormulaFunctionSet;
 
 /**
  * @author carcassi
- * 
+ *
  */
 public class FunctionTreeContentProvider implements ITreeContentProvider {
 
-	private List<FormulaFunctionSet> functionSets;
+    private List<FormulaFunctionSet> functionSets;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.jface.viewers.IContentProvider#dispose()
-	 */
-	@Override
-	public void dispose() {
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.IContentProvider#dispose()
+     */
+    @Override
+    public void dispose() {
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
-	 * .viewers.Viewer, java.lang.Object, java.lang.Object)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-		this.functionSets = (List<FormulaFunctionSet>) newInput;
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
+     * .viewers.Viewer, java.lang.Object, java.lang.Object)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+        this.functionSets = (List<FormulaFunctionSet>) newInput;
+    }
 
-	@Override
-	public Object[] getElements(Object inputElement) {
-		return functionSets.toArray();
-	}
+    @Override
+    public Object[] getElements(Object inputElement) {
+        return functionSets.toArray();
+    }
 
-	@Override
-	public Object[] getChildren(Object parentElement) {
-		if (parentElement instanceof FormulaFunctionSet) {
-			List<FormulaFunction> functions = new ArrayList<FormulaFunction>(
-					((FormulaFunctionSet) parentElement).getFunctions());
-			Collections.sort(functions, new Comparator<FormulaFunction>() {
+    @Override
+    public Object[] getChildren(Object parentElement) {
+        if (parentElement instanceof FormulaFunctionSet) {
+            List<FormulaFunction> functions = new ArrayList<FormulaFunction>(
+                    ((FormulaFunctionSet) parentElement).getFunctions());
+            Collections.sort(functions, new Comparator<FormulaFunction>() {
 
-				@Override
-				public int compare(FormulaFunction o1, FormulaFunction o2) {
-					int result = o1.getName().compareTo(o2.getName());
-					if (result != 0) {
-						return result;
-					}
-					return Integer.compare(o1.getArgumentTypes().size(), o2.getArgumentTypes().size());
-				}
-			});
-			return functions.toArray();
-		}
-		return null;
-	}
+                @Override
+                public int compare(FormulaFunction o1, FormulaFunction o2) {
+                    int result = o1.getName().compareTo(o2.getName());
+                    if (result != 0) {
+                        return result;
+                    }
+                    return Integer.compare(o1.getArgumentTypes().size(), o2.getArgumentTypes().size());
+                }
+            });
+            return functions.toArray();
+        }
+        return null;
+    }
 
-	@Override
-	public Object getParent(Object element) {
-		return null;
-	}
+    @Override
+    public Object getParent(Object element) {
+        return null;
+    }
 
-	@Override
-	public boolean hasChildren(Object element) {
-		if (element instanceof FormulaFunctionSet) {
-			return !((FormulaFunctionSet) element).getFunctions().isEmpty();
-		}
-		return false;
-	}
+    @Override
+    public boolean hasChildren(Object element) {
+        if (element instanceof FormulaFunctionSet) {
+            return !((FormulaFunctionSet) element).getFunctions().isEmpty();
+        }
+        return false;
+    }
 }

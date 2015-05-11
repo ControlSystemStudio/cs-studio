@@ -43,21 +43,21 @@ public class ChangeAxisCommand extends UndoableAction
     @Override
     public void run()
     {
-		if (!new_axis.isVisible())
-			new_axis.setVisible(true);
-		item.setAxis(new_axis);
-		final Optional<Model> model = item.getModel();
-		if (model.isPresent()  &&  !model.get().hasAxisActiveItems(old_axis))
-			old_axis.setVisible(false);
+        if (!new_axis.isVisible())
+            new_axis.setVisible(true);
+        item.setAxis(new_axis);
+        final Optional<Model> model = item.getModel();
+        if (model.isPresent()  &&  !model.get().hasAxisActiveItems(old_axis))
+            old_axis.setVisible(false);
     }
 
     /** {@inheritDoc} */
     @Override
     public void undo()
     {
-		if (!old_axis.isVisible())
-			old_axis.setVisible(true);
-		item.setAxis(old_axis);
+        if (!old_axis.isVisible())
+            old_axis.setVisible(true);
+        item.setAxis(old_axis);
         final Optional<Model> model = item.getModel();
         if (model.isPresent()  &&  !model.get().hasAxisActiveItems(new_axis))
             new_axis.setVisible(false);

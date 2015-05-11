@@ -31,44 +31,44 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  *
  */
 public final class Set_5 implements IRule {
-	/**
-	 * The ID for this rule.
-	 */
-	public static final String TYPE_ID = "cosyrules.color.set#5";
+    /**
+     * The ID for this rule.
+     */
+    public static final String TYPE_ID = "cosyrules.color.set#5";
 
-	/**
-	 * Standard constructor.
-	 */
-	public Set_5() {
-	}
+    /**
+     * Standard constructor.
+     */
+    public Set_5() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0)) {
-		    double d = 0.0;
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        if ((arguments != null) && (arguments.length > 0)) {
+            double d = 0.0;
             if (arguments[0] instanceof Double) {
                  d = (Double) arguments[0];
             }else if (arguments[0] instanceof Long) {
                 d = ((Long)  arguments[0]).doubleValue();
             }
-			if (Math.abs(d-0.00)<0.00001) {
-				return ColorAndFontUtil.toHex(0,216,0);
-			}
-			if (Math.abs(d-1.00)<0.00001) {
-				return ColorAndFontUtil.toHex(253,0,0);
-			}
-			if (Math.abs(d-2.00)<0.00001) {
-				return ColorAndFontUtil.toHex(253,0,0);
-			}
-			if (Math.abs(d-3.00)<0.00001) {
-				return ColorAndFontUtil.toHex(255,255,255);
-			}
-		}
+            if (Math.abs(d-0.00)<0.00001) {
+                return ColorAndFontUtil.toHex(0,216,0);
+            }
+            if (Math.abs(d-1.00)<0.00001) {
+                return ColorAndFontUtil.toHex(253,0,0);
+            }
+            if (Math.abs(d-2.00)<0.00001) {
+                return ColorAndFontUtil.toHex(253,0,0);
+            }
+            if (Math.abs(d-3.00)<0.00001) {
+                return ColorAndFontUtil.toHex(255,255,255);
+            }
+        }
 
-		return ColorAndFontUtil.toHex(0,0,0);
-	}
+        return ColorAndFontUtil.toHex(0,0,0);
+    }
 
     /**
      * {@inheritDoc}

@@ -61,89 +61,89 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author Kai Meyer
  */
 public final class WidgetOptionPreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	/**
-	 * The {@link org.eclipse.jface.viewers.TreeViewer} to show the available widgets.
-	 */
-	private CheckboxTreeViewer _viewer;
+    /**
+     * The {@link org.eclipse.jface.viewers.TreeViewer} to show the available widgets.
+     */
+    private CheckboxTreeViewer _viewer;
     private ColorFieldEditor _cfeColor;
     private IntegerFieldEditor _ifeLine;
 
-	/**
-	 * Constructor.
-	 */
-	public WidgetOptionPreferencePage() {
-		super();
-		this.setMessage("Choose the widgets you want to use in the SDS");
-	}
+    /**
+     * Constructor.
+     */
+    public WidgetOptionPreferencePage() {
+        super();
+        this.setMessage("Choose the widgets you want to use in the SDS");
+    }
 
-	/**
-	 * Constructor.
-	 * @param title The title for this page
-	 */
-	public WidgetOptionPreferencePage(final String title) {
-		super(title);
-		this.setMessage("Choose the widgets you want to use in the SDS");
-	}
+    /**
+     * Constructor.
+     * @param title The title for this page
+     */
+    public WidgetOptionPreferencePage(final String title) {
+        super(title);
+        this.setMessage("Choose the widgets you want to use in the SDS");
+    }
 
-	/**
-	 * Constructor.
-	 * @param title The title for this page
-	 * @param image The image for this page
-	 */
-	public WidgetOptionPreferencePage(final String title, final ImageDescriptor image) {
-		super(title, image);
-		this.setMessage("Choose the widgets you want to use in the SDS");
-	}
+    /**
+     * Constructor.
+     * @param title The title for this page
+     * @param image The image for this page
+     */
+    public WidgetOptionPreferencePage(final String title, final ImageDescriptor image) {
+        super(title, image);
+        this.setMessage("Choose the widgets you want to use in the SDS");
+    }
 
-	/**
-	 *
-	 * (@inheritDoc)
-	 */
-	public void init(final IWorkbench workbench) {
-		// nothing to do
-	}
+    /**
+     *
+     * (@inheritDoc)
+     */
+    public void init(final IWorkbench workbench) {
+        // nothing to do
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createContents(final Composite parent) {
-		final Composite mainComposite = new Composite(parent, SWT.NONE);
-		mainComposite.setLayout(new GridLayout(1, false));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createContents(final Composite parent) {
+        final Composite mainComposite = new Composite(parent, SWT.NONE);
+        mainComposite.setLayout(new GridLayout(1, false));
 
-		Label label = new Label(mainComposite, SWT.WRAP);
-		label.setText("Registered widgets:");
-		label.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false));
+        Label label = new Label(mainComposite, SWT.WRAP);
+        label.setText("Registered widgets:");
+        label.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false));
 
-		_viewer = new CheckboxTreeViewer(mainComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.CHECK);
-		final GridData gridData = new GridData(SWT.FILL,SWT.FILL,false,true);
-		gridData.widthHint = 300;
-		_viewer.getTree().setLayoutData(gridData);
-		WidgetContentProvider contentProvider = new WidgetContentProvider();
-		_viewer.setContentProvider(contentProvider);
-		_viewer.setLabelProvider(new WidgetLabelProvider());
-		_viewer.getTree().addSelectionListener(new TreeCheckSelectionListener());
+        _viewer = new CheckboxTreeViewer(mainComposite, SWT.H_SCROLL | SWT.V_SCROLL | SWT.CHECK);
+        final GridData gridData = new GridData(SWT.FILL,SWT.FILL,false,true);
+        gridData.widthHint = 300;
+        _viewer.getTree().setLayoutData(gridData);
+        WidgetContentProvider contentProvider = new WidgetContentProvider();
+        _viewer.setContentProvider(contentProvider);
+        _viewer.setLabelProvider(new WidgetLabelProvider());
+        _viewer.getTree().addSelectionListener(new TreeCheckSelectionListener());
 
-		_viewer.setInput(WidgetModelFactoryService.getInstance());
+        _viewer.setInput(WidgetModelFactoryService.getInstance());
 
-		label = new Label(mainComposite, SWT.WRAP);
-		label.setText("Changing these settings requires a re-opening of all active SDS-editors.");
-		label.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false));
+        label = new Label(mainComposite, SWT.WRAP);
+        label.setText("Changing these settings requires a re-opening of all active SDS-editors.");
+        label.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,false));
 
-		_viewer.expandAll();
+        _viewer.expandAll();
 
-		final String widgets = this.getPreferenceStore().getString(PreferenceConstants.PROP_DESELECTED_WIDGETS);
-		selectItems(contentProvider, widgets);
-		_viewer.collapseAll();
+        final String widgets = this.getPreferenceStore().getString(PreferenceConstants.PROP_DESELECTED_WIDGETS);
+        selectItems(contentProvider, widgets);
+        _viewer.collapseAll();
 
-		Label label2 = new Label(mainComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
+        Label label2 = new Label(mainComposite, SWT.SEPARATOR | SWT.HORIZONTAL);
         label2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 
         createCrossWidgetPart(mainComposite);
-		return mainComposite;
-	}
+        return mainComposite;
+    }
 
     /**
      * @param mainComposite
@@ -169,270 +169,270 @@ public final class WidgetOptionPreferencePage extends PreferencePage implements
         _ifeLine.load();
     }
 
-	/**
-	 * Sets the initial selection of the tree.
-	 * @param contentProvider The ContentProvider of the Tree
-	 * @param widgetsExcluded The string, which contains all not selected widget-IDs
-	 */
-	private void selectItems(final WidgetContentProvider contentProvider, final String widgetsExcluded) {
-		final List<String> widgetIds = WidgetSelectionStringConverter.createStringListFromString(widgetsExcluded);
-		for (PluginTreeElement plugin : contentProvider.getElements()) {
-			boolean allChecked = true;
-			boolean oneChecked = false;
-			for (WidgetTreeElement widget : plugin.getElements()) {
-				if ( !widgetIds.contains(widget.getId()) ) {
-					oneChecked = true;
-					_viewer.setChecked(widget, true);
-				} else {
-					allChecked = false;
-					_viewer.setChecked(widget, false);
-				}
-			}
-			_viewer.setGrayed(plugin, !allChecked);
-			_viewer.setChecked(plugin, oneChecked);
-		}
-	}
+    /**
+     * Sets the initial selection of the tree.
+     * @param contentProvider The ContentProvider of the Tree
+     * @param widgetsExcluded The string, which contains all not selected widget-IDs
+     */
+    private void selectItems(final WidgetContentProvider contentProvider, final String widgetsExcluded) {
+        final List<String> widgetIds = WidgetSelectionStringConverter.createStringListFromString(widgetsExcluded);
+        for (PluginTreeElement plugin : contentProvider.getElements()) {
+            boolean allChecked = true;
+            boolean oneChecked = false;
+            for (WidgetTreeElement widget : plugin.getElements()) {
+                if ( !widgetIds.contains(widget.getId()) ) {
+                    oneChecked = true;
+                    _viewer.setChecked(widget, true);
+                } else {
+                    allChecked = false;
+                    _viewer.setChecked(widget, false);
+                }
+            }
+            _viewer.setGrayed(plugin, !allChecked);
+            _viewer.setChecked(plugin, oneChecked);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean performOk() {
-		final String storedString = WidgetSelectionStringConverter.createStringFromStringList(getNotCheckedWidgets());
-		this.getPreferenceStore().putValue(PreferenceConstants.PROP_DESELECTED_WIDGETS, storedString);
-		_cfeColor.store();
-		_ifeLine.store();
-		return super.performOk();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean performOk() {
+        final String storedString = WidgetSelectionStringConverter.createStringFromStringList(getNotCheckedWidgets());
+        this.getPreferenceStore().putValue(PreferenceConstants.PROP_DESELECTED_WIDGETS, storedString);
+        _cfeColor.store();
+        _ifeLine.store();
+        return super.performOk();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IPreferenceStore doGetPreferenceStore() {
-		return SdsUiPlugin.getCorePreferenceStore();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IPreferenceStore doGetPreferenceStore() {
+        return SdsUiPlugin.getCorePreferenceStore();
+    }
 
-	/**
-	 * Returns all not selected widgets.
-	 * @return A list of the widget-IDs
-	 */
-	private List<String> getNotCheckedWidgets() {
-		final List<String> result = new LinkedList<String>();
-		_viewer.expandAll();
-		Object[] elements = _viewer.getExpandedElements();
-		for (Object current : elements) {
-			if (current instanceof PluginTreeElement) {
-				PluginTreeElement plugin = (PluginTreeElement) current;
-				for (WidgetTreeElement widget : plugin.getElements()) {
-					if (!_viewer.getChecked(widget)) {
-						result.add(widget.getId());
-					}
-				}
-			}
-		}
-		return result;
-	}
+    /**
+     * Returns all not selected widgets.
+     * @return A list of the widget-IDs
+     */
+    private List<String> getNotCheckedWidgets() {
+        final List<String> result = new LinkedList<String>();
+        _viewer.expandAll();
+        Object[] elements = _viewer.getExpandedElements();
+        for (Object current : elements) {
+            if (current instanceof PluginTreeElement) {
+                PluginTreeElement plugin = (PluginTreeElement) current;
+                for (WidgetTreeElement widget : plugin.getElements()) {
+                    if (!_viewer.getChecked(widget)) {
+                        result.add(widget.getId());
+                    }
+                }
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * The {@link ITreeContentProvider} for the tree.
-	 * @author Kai Meyer
-	 *
-	 */
-	private final class WidgetContentProvider implements ITreeContentProvider {
+    /**
+     * The {@link ITreeContentProvider} for the tree.
+     * @author Kai Meyer
+     *
+     */
+    private final class WidgetContentProvider implements ITreeContentProvider {
 
-		private PluginTreeElement[] _elements;
+        private PluginTreeElement[] _elements;
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public Object[] getChildren(final Object parentElement) {
-			if (parentElement instanceof PluginTreeElement) {
-				return ((PluginTreeElement) parentElement).getElements();
-			}
-			return null;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public Object[] getChildren(final Object parentElement) {
+            if (parentElement instanceof PluginTreeElement) {
+                return ((PluginTreeElement) parentElement).getElements();
+            }
+            return null;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public Object getParent(final Object element) {
-			return null;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public Object getParent(final Object element) {
+            return null;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public boolean hasChildren(final Object element) {
-			if (element instanceof PluginTreeElement) {
-				return ((PluginTreeElement) element).hasWidgets();
-			}
-			return false;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public boolean hasChildren(final Object element) {
+            if (element instanceof PluginTreeElement) {
+                return ((PluginTreeElement) element).hasWidgets();
+            }
+            return false;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public Object[] getElements(final Object inputElement) {
-			return _elements;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public Object[] getElements(final Object inputElement) {
+            return _elements;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void dispose() {
-		}
+        /**
+         * {@inheritDoc}
+         */
+        public void dispose() {
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
-			if (newInput instanceof WidgetModelFactoryService) {
-				WidgetModelFactoryService service = (WidgetModelFactoryService)newInput;
-				List<PluginTreeElement> elements = new ArrayList<PluginTreeElement>();
+        /**
+         * {@inheritDoc}
+         */
+        public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+            if (newInput instanceof WidgetModelFactoryService) {
+                WidgetModelFactoryService service = (WidgetModelFactoryService)newInput;
+                List<PluginTreeElement> elements = new ArrayList<PluginTreeElement>();
 
-				for (String pluginId : service.getAllContributingPluginIds()) {
-					PluginTreeElement treeElement = new PluginTreeElement(pluginId);
-					final Set<String> widgetIdsOfPlugin = service.getWidgetIdsOfPlugin(pluginId);
-					for (String widgetId : widgetIdsOfPlugin) {
-						String name = service.getName(widgetId);
-						String iconPath = service.getIcon(widgetId);
-						treeElement.addWidget(new WidgetTreeElement(widgetId, name, iconPath, pluginId));
-					}
-					elements.add(treeElement);
-				}
-				_elements = elements.toArray(new PluginTreeElement[elements.size()]);
-			}
-		}
+                for (String pluginId : service.getAllContributingPluginIds()) {
+                    PluginTreeElement treeElement = new PluginTreeElement(pluginId);
+                    final Set<String> widgetIdsOfPlugin = service.getWidgetIdsOfPlugin(pluginId);
+                    for (String widgetId : widgetIdsOfPlugin) {
+                        String name = service.getName(widgetId);
+                        String iconPath = service.getIcon(widgetId);
+                        treeElement.addWidget(new WidgetTreeElement(widgetId, name, iconPath, pluginId));
+                    }
+                    elements.add(treeElement);
+                }
+                _elements = elements.toArray(new PluginTreeElement[elements.size()]);
+            }
+        }
 
-		public PluginTreeElement[] getElements() {
-			return _elements;
-		}
-	}
+        public PluginTreeElement[] getElements() {
+            return _elements;
+        }
+    }
 
-	/**
-	 * The {@link LabelProvider} for the tree.
-	 * @author Kai Meyer
-	 *
-	 */
-	private final class WidgetLabelProvider extends LabelProvider {
+    /**
+     * The {@link LabelProvider} for the tree.
+     * @author Kai Meyer
+     *
+     */
+    private final class WidgetLabelProvider extends LabelProvider {
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public Image getImage(final Object element) {
-			if (element instanceof WidgetTreeElement) {
-				WidgetTreeElement widgetTreeElement = (WidgetTreeElement) element;
-				String iconPath = widgetTreeElement.getIconPath();
-				if (iconPath!=null) {
-					final String pluginId = widgetTreeElement.getPluginId();
-					return CustomMediaFactory.getInstance().getImageFromPlugin(pluginId, iconPath);
-				}
-			}
-			return super.getImage(element);
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public Image getImage(final Object element) {
+            if (element instanceof WidgetTreeElement) {
+                WidgetTreeElement widgetTreeElement = (WidgetTreeElement) element;
+                String iconPath = widgetTreeElement.getIconPath();
+                if (iconPath!=null) {
+                    final String pluginId = widgetTreeElement.getPluginId();
+                    return CustomMediaFactory.getInstance().getImageFromPlugin(pluginId, iconPath);
+                }
+            }
+            return super.getImage(element);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@SuppressWarnings("unchecked")
-		@Override
-		public String getText(final Object element) {
-			if (element instanceof WidgetTreeElement) {
-				return ((WidgetTreeElement) element).getName();
-			}
-			if (element instanceof PluginTreeElement) {
-				String typeId = ((PluginTreeElement)element).getId();
-				try {
-					Dictionary headers = Platform.getBundle(typeId).getHeaders();
-					StringBuffer resultBuffer = new StringBuffer(headers.get("Bundle-Name").toString());
-					resultBuffer.append(" (");
-					resultBuffer.append(typeId);
-					resultBuffer.append(")");
-					return resultBuffer.toString();
-				} catch (Exception e) {
-					e.printStackTrace();
-					// do nothing
-				}
-				return typeId;
-			}
-			return super.getText(element);
-		}
-	}
+        /**
+         * {@inheritDoc}
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        public String getText(final Object element) {
+            if (element instanceof WidgetTreeElement) {
+                return ((WidgetTreeElement) element).getName();
+            }
+            if (element instanceof PluginTreeElement) {
+                String typeId = ((PluginTreeElement)element).getId();
+                try {
+                    Dictionary headers = Platform.getBundle(typeId).getHeaders();
+                    StringBuffer resultBuffer = new StringBuffer(headers.get("Bundle-Name").toString());
+                    resultBuffer.append(" (");
+                    resultBuffer.append(typeId);
+                    resultBuffer.append(")");
+                    return resultBuffer.toString();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    // do nothing
+                }
+                return typeId;
+            }
+            return super.getText(element);
+        }
+    }
 
-	/**
-	 *
-	 * @author Kai Meyer
-	 * @author $Author: jhatje $
-	 * @version $Revision: 1.8 $
-	 * @since 14.04.2010
-	 */
-	private class PluginTreeElement {
+    /**
+     *
+     * @author Kai Meyer
+     * @author $Author: jhatje $
+     * @version $Revision: 1.8 $
+     * @since 14.04.2010
+     */
+    private class PluginTreeElement {
 
-		private final List<WidgetTreeElement> _widgets;
-		private final String _id;
+        private final List<WidgetTreeElement> _widgets;
+        private final String _id;
 
-		public PluginTreeElement(final String id) {
-			_id = id;
-			_widgets = new ArrayList<WidgetTreeElement>();
-		}
+        public PluginTreeElement(final String id) {
+            _id = id;
+            _widgets = new ArrayList<WidgetTreeElement>();
+        }
 
-		public void addWidget(final WidgetTreeElement element) {
-			_widgets.add(element);
-		}
+        public void addWidget(final WidgetTreeElement element) {
+            _widgets.add(element);
+        }
 
-		public WidgetTreeElement[] getElements() {
-			return _widgets.toArray(new WidgetTreeElement[_widgets.size()]);
-		}
+        public WidgetTreeElement[] getElements() {
+            return _widgets.toArray(new WidgetTreeElement[_widgets.size()]);
+        }
 
-		public boolean hasWidgets() {
-			return !_widgets.isEmpty();
-		}
+        public boolean hasWidgets() {
+            return !_widgets.isEmpty();
+        }
 
-		public String getId() {
-			return _id;
-		}
-	}
+        public String getId() {
+            return _id;
+        }
+    }
 
-	/**
-	 *
-	 *
-	 * @author Kai Meyer
-	 * @author $Author: jhatje $
-	 * @version $Revision: 1.8 $
-	 * @since 14.04.2010
-	 */
-	private class WidgetTreeElement {
+    /**
+     *
+     *
+     * @author Kai Meyer
+     * @author $Author: jhatje $
+     * @version $Revision: 1.8 $
+     * @since 14.04.2010
+     */
+    private class WidgetTreeElement {
 
-		private final String _name;
-		private final String _id;
-		private final String _iconPath;
-		private final String _pluginId;
+        private final String _name;
+        private final String _id;
+        private final String _iconPath;
+        private final String _pluginId;
 
-		public WidgetTreeElement(final String id, final String name, final String iconPath, final String pluginId) {
-			_id = id;
-			_name = name;
-			_iconPath = iconPath;
-			_pluginId = pluginId;
-		}
+        public WidgetTreeElement(final String id, final String name, final String iconPath, final String pluginId) {
+            _id = id;
+            _name = name;
+            _iconPath = iconPath;
+            _pluginId = pluginId;
+        }
 
-		public String getName() {
-			return _name;
-		}
+        public String getName() {
+            return _name;
+        }
 
-		public String getIconPath() {
-			return _iconPath;
-		}
+        public String getIconPath() {
+            return _iconPath;
+        }
 
-		public String getId() {
-			return _id;
-		}
+        public String getId() {
+            return _id;
+        }
 
-		public String getPluginId() {
-			return _pluginId;
-		}
+        public String getPluginId() {
+            return _pluginId;
+        }
 
-	}
+    }
 
 }

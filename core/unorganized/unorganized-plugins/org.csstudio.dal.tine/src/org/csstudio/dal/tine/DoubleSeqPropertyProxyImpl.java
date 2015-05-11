@@ -30,83 +30,83 @@ import de.desy.tine.definitions.TFormat;
 import de.desy.tine.types.SPECTRUM;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]>{
-	
-	private Object value;
-//	private double[] value;
-	private int length;
-	
-	/**
-	 * Constructs a new DoubleSeqPropertyProxy.
-	 * @param name
-	 */
-	public DoubleSeqPropertyProxyImpl(String name, TINEPlug plug) {
-		super(name, plug);
-//		value = new double[length];
-		switch (TINEPlug.getInstance().getTFormat(getUniqueName()).getValue()) {
-			case TFormat.CF_SPECTRUM: {
-				this.value = new SPECTRUM(); 
-				break;
-			}
-			default: {
-				try {
-					this.length = (Integer)getCharacteristic("sequenceLength");
-				} catch (DataExchangeException e) {
-					Logger.getLogger(this.getClass()).error("Getting characteristic failed.", e);
-				}
-				this.value = new double[this.length];
-			}
-		}
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
-	 */
-	@Override
-	protected double[] extractData(TDataType out) {
-		out.getData(this.value);
-		if (this.value != null) {
-			//			return value;
-			//TODO what should be returned for SPECTRUM? float[] d_spect_array?
-			if (this.value instanceof SPECTRUM) {
-				return null;
-			} else {
-				return (double[]) this.value;
-			}
-		} else {
-			return new double[this.length];
-		}
-		
-	}
+    private Object value;
+//    private double[] value;
+    private int length;
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
-	 */
-	@Override
-	protected Object getDataObject() {
-		return this.value;
-	}
+    /**
+     * Constructs a new DoubleSeqPropertyProxy.
+     * @param name
+     */
+    public DoubleSeqPropertyProxyImpl(String name, TINEPlug plug) {
+        super(name, plug);
+//        value = new double[length];
+        switch (TINEPlug.getInstance().getTFormat(getUniqueName()).getValue()) {
+            case TFormat.CF_SPECTRUM: {
+                this.value = new SPECTRUM();
+                break;
+            }
+            default: {
+                try {
+                    this.length = (Integer)getCharacteristic("sequenceLength");
+                } catch (DataExchangeException e) {
+                    Logger.getLogger(this.getClass()).error("Getting characteristic failed.", e);
+                }
+                this.value = new double[this.length];
+            }
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#setDataToObject(java.lang.Object)
-	 */
-	@Override
-	protected Object convertDataToObject(double[] data) {
-		return data;
-	}
-	/* (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
-	 */
-	@Override
-	protected Class getNumericType() {
-		return Double.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
+     */
+    @Override
+    protected double[] extractData(TDataType out) {
+        out.getData(this.value);
+        if (this.value != null) {
+            //            return value;
+            //TODO what should be returned for SPECTRUM? float[] d_spect_array?
+            if (this.value instanceof SPECTRUM) {
+                return null;
+            } else {
+                return (double[]) this.value;
+            }
+        } else {
+            return new double[this.length];
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
+     */
+    @Override
+    protected Object getDataObject() {
+        return this.value;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#setDataToObject(java.lang.Object)
+     */
+    @Override
+    protected Object convertDataToObject(double[] data) {
+        return data;
+    }
+    /* (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
+     */
+    @Override
+    protected Class getNumericType() {
+        return Double.class;
+    }
 
 }

@@ -39,7 +39,7 @@ public class PSGr extends java.awt.Graphics {
       Page_Height = PAGEHEIGHT,
       Page_Width = PAGEWIDTH;
 
-	protected boolean Page_Portrait = PAGEPORTRAIT;
+    protected boolean Page_Portrait = PAGEPORTRAIT;
 
 /* Output stream where PostScript goes */
 
@@ -114,7 +114,7 @@ public class PSGr extends java.awt.Graphics {
 //    public PSGr (OutputStream o, Graphics g, int margin, int width, int height) {
 
     public PSGr (OutputStream o, /*Graphics g,*/ int marginX, int marginY, int width,
-    	int height, boolean portrait)
+        int height, boolean portrait)
     {
         if (o instanceof PrintStream)
             os = (PrintStream)o;
@@ -129,7 +129,7 @@ public class PSGr extends java.awt.Graphics {
         Page_Height = height;
         Page_Portrait = portrait;
 
-	clippingRect = new Rectangle (0,0,Page_Width,Page_Height);
+    clippingRect = new Rectangle (0,0,Page_Width,Page_Height);
 
 /* This must be first thing in the file --
  * not even % comments should be ahead of it.
@@ -280,24 +280,24 @@ public class PSGr extends java.awt.Graphics {
         if (c != null)
             clr = c;
         emitThis
-	    (strunc (clr.getRed()/255.0)
+        (strunc (clr.getRed()/255.0)
         +" "+strunc (clr.getGreen()/255.0)
         +" "+strunc (clr.getBlue()/255.0)
-	+" setrgbcolor");
+    +" setrgbcolor");
     }
 
 /* Short reals are enough */
 
     protected String strunc (double d) {
-	if (0 == d)
-	    return "0";
+    if (0 == d)
+        return "0";
 
-	if (1 == d)
-	    return "1";
+    if (1 == d)
+        return "1";
 
-	String s = Double.toString (d);
-	if (s.length () > 5)
-	    return s.substring (0, 5);
+    String s = Double.toString (d);
+    if (s.length () > 5)
+        return s.substring (0, 5);
 
         return s;
     }
@@ -987,9 +987,9 @@ public class PSGr extends java.awt.Graphics {
  * Cannot use Integer.toHexString because not always two characters. */
 
     protected String myHexString (int n) {
-	int msb = (n >> 4) & 0xf;
-	int lsb = n & 0xf;
-	return hd[msb] + hd[lsb];
+    int msb = (n >> 4) & 0xf;
+    int lsb = n & 0xf;
+    return hd[msb] + hd[lsb];
     }
 
 /* Support all versions of drawImage () */
@@ -1002,10 +1002,10 @@ public class PSGr extends java.awt.Graphics {
         String bgString = null;
 
         if (null != bgcolor)
-	    bgString =
-	     myHexString (bgcolor.getRed ())
-	    +myHexString (bgcolor.getGreen ())
-	    +myHexString (bgcolor.getBlue ());
+        bgString =
+         myHexString (bgcolor.getRed ())
+        +myHexString (bgcolor.getGreen ())
+        +myHexString (bgcolor.getBlue ());
 
         int yps = yTrans (y);
         int xps = xTrans (x);
@@ -1014,15 +1014,15 @@ public class PSGr extends java.awt.Graphics {
 
 /* Get image dimensions and data */
 
-	int iw = img.getWidth (observer);
-	int ih = img.getHeight (observer);
+    int iw = img.getWidth (observer);
+    int ih = img.getHeight (observer);
 
 /* Punt --
  * should just wait here until we have it,
  * waiting for image before coming here is the safest way */
 
-	if ((0 > iw) || (0 > ih))
-	    return false;
+    if ((0 > iw) || (0 > ih))
+        return false;
 
         emitThis ("gsave");
 
@@ -1090,7 +1090,7 @@ public class PSGr extends java.awt.Graphics {
 
         emitThis ("");
 
-	int nchars = 0;
+    int nchars = 0;
 
 /* This is simplest but BAD FOR LARGE IMAGES,
  * because it requires a lot of memory,
@@ -1099,7 +1099,7 @@ public class PSGr extends java.awt.Graphics {
  * it seems we would need a new PixelGrabber each time,
  * because the constructor requires x y w h. */
 
-	int [] pixels = new int [iw * ih];
+    int [] pixels = new int [iw * ih];
 
         PixelGrabber pg = new PixelGrabber (img, 0, 0, iw, ih, pixels, 0, iw);
 
@@ -1108,48 +1108,48 @@ public class PSGr extends java.awt.Graphics {
  * note that either form throws InterruptedException.
  * Should never use wait-forever. */
 
-	try { pg.grabPixels (); }
-	catch (Exception ex) {
-	    System.out.println ("Failed grabPixels");
-	    return false;
-	}
+    try { pg.grabPixels (); }
+    catch (Exception ex) {
+        System.out.println ("Failed grabPixels");
+        return false;
+    }
 
-	for (int py = 0; py < ih; py++) {
-	    for (int px = 0; px < iw; px++) {
-		int apixel = pixels [py * iw + px];
+    for (int py = 0; py < ih; py++) {
+        for (int px = 0; px < iw; px++) {
+        int apixel = pixels [py * iw + px];
 
-		int alpha = (apixel >> 24) & 0xff;
-		int red   = (apixel >> 16) & 0xff;
-		int green = (apixel >>  8) & 0xff;
-		int blue  = (apixel ) & 0xff;
+        int alpha = (apixel >> 24) & 0xff;
+        int red   = (apixel >> 16) & 0xff;
+        int green = (apixel >>  8) & 0xff;
+        int blue  = (apixel ) & 0xff;
 
 /* Completely transparent pixels get BG if one specified.
  * We make no other (partial) use of alpha,
  * either we paint BG or stated color,
  * never leave the PostScript BG. */
 
-		if ((0 == alpha) && (null != bgString))
-		    emitThisNext (bgString);
+        if ((0 == alpha) && (null != bgString))
+            emitThisNext (bgString);
 
-		else
-		    emitThisNext
-		    (myHexString (red)
-		    +myHexString (green)
-		    +myHexString (blue));
+        else
+            emitThisNext
+            (myHexString (red)
+            +myHexString (green)
+            +myHexString (blue));
 
 /* Because readhextstring ignores whitespace,
  * we can write these safe and tidy blocks regardless,
  * and still use a read buffer sized to image width. */
 
-		nchars +=6;
-		if (60 == nchars) {
-		    emitThis ("");
-		    nchars = 0;
-		}
-	    }
-	}
-	if (0 < nchars)
-	    emitThis ("");
+        nchars +=6;
+        if (60 == nchars) {
+            emitThis ("");
+            nchars = 0;
+        }
+        }
+    }
+    if (0 < nchars)
+        emitThis ("");
 
 /* Blank cosmetic line after all the data */
 
@@ -1312,14 +1312,14 @@ public class PSGr extends java.awt.Graphics {
  * @see #finalize
  */
     public void dispose () {
-	if (disposed)
-	    return;
+    if (disposed)
+        return;
 
         emitThis ("%dispose "+this);
         emitThis ("grestore");
         os.flush ();
 
-	disposed = true;
+    disposed = true;
     }
 
 /** Needed unless the file is intended as part of a larger one.
@@ -1512,14 +1512,14 @@ public class PSGr extends java.awt.Graphics {
 /* Allow for non-printing margins all around.
  * Negative Y from top of page (less margin) for PostScript coord. */
 
-		if(Page_Portrait)
-	        emitThis(Page_MarginX + " " + (Page_Height - Page_MarginY) + " translate");
-	    else
-	    {
-	        emitThis("90 rotate");
-	        emitThis(Page_MarginX + " " + (-Page_MarginY) + " translate");
-	    }
-	    	
+        if(Page_Portrait)
+            emitThis(Page_MarginX + " " + (Page_Height - Page_MarginY) + " translate");
+        else
+        {
+            emitThis("90 rotate");
+            emitThis(Page_MarginX + " " + (-Page_MarginY) + " translate");
+        }
+
 //        emitThis (angle + " rotate");
 
 
@@ -1544,14 +1544,14 @@ public class PSGr extends java.awt.Graphics {
     }
 
     public void emitThisNext (String s) {
-	if (disposed)
-	    throw new IllegalStateException ("Graphics has been disposed");
+    if (disposed)
+        throw new IllegalStateException ("Graphics has been disposed");
         os.print (s);
     }
 
     public void emitThis (String s) {
-	if (disposed)
-	    throw new IllegalStateException ("Graphics has been disposed");
+    if (disposed)
+        throw new IllegalStateException ("Graphics has been disposed");
         os.println (s);
     }
 
@@ -1574,7 +1574,7 @@ public class PSGr extends java.awt.Graphics {
             setColor (Color.black);
 
         if (edge)
-	    drawRect (0, 0, tb.width-1, tb.height-1);
+        drawRect (0, 0, tb.width-1, tb.height-1);
     }
 
 /** Find scale factor that will fit the page,
@@ -1603,7 +1603,7 @@ public class PSGr extends java.awt.Graphics {
 
         emitThis (xyScale+" "+xyScale+" scale");
     }
-    
+
 
 }
 /* <IMG SRC="/cgi-bin/counter">*/

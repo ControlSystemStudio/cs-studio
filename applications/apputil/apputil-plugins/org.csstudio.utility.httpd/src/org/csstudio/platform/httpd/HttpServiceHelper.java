@@ -62,12 +62,12 @@ public class HttpServiceHelper
         final HttpService http = http_tracker.getService();
         if (http == null)
             throw new Exception("No HttpService found");
-        
+
         // Don't close the tracker?
         // When closed, the HttpService seems to get
         // closed as well, at least in _some_ tests!?
         // http_tracker.close();
-        
+
         return http;
     }
 

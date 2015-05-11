@@ -25,119 +25,119 @@ import org.eclipse.swt.widgets.Display;
 /** Replace the default LaunchConfig icon with
  *  one that is (optionally) specified within
  *  the launch config file.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class IconDecorator implements ILabelDecorator
 {
-	/** Cache of icon images by name */
-	final private Map<String, Image> icons = new HashMap<String, Image>();
-	
-	/** {@inheritDoc} */
-	@Override
-    public void addListener(ILabelProviderListener listener)
-	{
-		// NOP
-	}
+    /** Cache of icon images by name */
+    final private Map<String, Image> icons = new HashMap<String, Image>();
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
+    @Override
+    public void addListener(ILabelProviderListener listener)
+    {
+        // NOP
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void removeListener(ILabelProviderListener listener)
     {
-		// NOP
+        // NOP
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void dispose()
-	{
-		final Iterator<Image> iter = icons.values().iterator();
-		while (iter.hasNext())
-			iter.next().dispose();
-		icons.clear();
-	}
+    {
+        final Iterator<Image> iter = icons.values().iterator();
+        while (iter.hasNext())
+            iter.next().dispose();
+        icons.clear();
+    }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public boolean isLabelProperty(Object element, String property)
-	{
-		return false;
-	}
+    {
+        return false;
+    }
 
-	/** Check if a file describes a launch config
-	 *  @param file {@link IFile} to check
-	 *  @return <code>true</code> if it has the correct content type
-	 */
+    /** Check if a file describes a launch config
+     *  @param file {@link IFile} to check
+     *  @return <code>true</code> if it has the correct content type
+     */
     public static boolean isApplicationConfig(final IFile file)
-	{
-		IContentDescription content;
+    {
+        IContentDescription content;
         try
         {
-	        content = file.getContentDescription();
+            content = file.getContentDescription();
         }
         catch (CoreException e)
         {
-        	return false;
+            return false;
         }
-		if (content == null)
-			return false;
-		final IContentType type = content.getContentType();
-		if (type == null)
-			return false;
-		return "org.csstudio.navigator.applaunch.application".equals(type.getId());
-	}
-    
+        if (content == null)
+            return false;
+        final IContentType type = content.getContentType();
+        if (type == null)
+            return false;
+        return "org.csstudio.navigator.applaunch.application".equals(type.getId());
+    }
+
     @Override
     public Image decorateImage(final Image original, final Object element)
     {
-		if (! (element instanceof IFile))
-			return original;
+        if (! (element instanceof IFile))
+            return original;
 
-		final IFile file = (IFile) element;
+        final IFile file = (IFile) element;
 
-		// Could check Content type...
-		// but enablement markup in plugin.xml should
-		// already assert that we only get the correct content type
-		// if (! isApplicationConfig(file)) ...
-		
-		try
-		{
-			final LaunchConfig config = new LaunchConfig(file.getContents());
-			final String icon_name = config.getIconName();
-			if (icon_name.isEmpty())
-				return original;
-			// Try cached image
-			Image image = icons.get(icon_name);
-			if (image == null)
-			{	// Create image
-				if (icon_name.startsWith("icon:"))
-					image = LaunchConfig.getBuildinIcon(icon_name.substring(5));
-				else
-				{	// Resolve icon name within workspace
-					final IResource icon_path =
-						ResourcesPlugin.getWorkspace().getRoot().findMember(icon_name);
-					if (icon_path != null)
-						image = new Image(Display.getCurrent(), icon_path.getLocation().toOSString());
-				}
-				// Add to cache
-				if (image != null)
-					icons.put(icon_name, image);
-			}
+        // Could check Content type...
+        // but enablement markup in plugin.xml should
+        // already assert that we only get the correct content type
+        // if (! isApplicationConfig(file)) ...
 
-			if (image != null)
-				return image;
-		}
-		catch (Exception ex)
-		{
-		}
-		return original;
+        try
+        {
+            final LaunchConfig config = new LaunchConfig(file.getContents());
+            final String icon_name = config.getIconName();
+            if (icon_name.isEmpty())
+                return original;
+            // Try cached image
+            Image image = icons.get(icon_name);
+            if (image == null)
+            {    // Create image
+                if (icon_name.startsWith("icon:"))
+                    image = LaunchConfig.getBuildinIcon(icon_name.substring(5));
+                else
+                {    // Resolve icon name within workspace
+                    final IResource icon_path =
+                        ResourcesPlugin.getWorkspace().getRoot().findMember(icon_name);
+                    if (icon_path != null)
+                        image = new Image(Display.getCurrent(), icon_path.getLocation().toOSString());
+                }
+                // Add to cache
+                if (image != null)
+                    icons.put(icon_name, image);
+            }
+
+            if (image != null)
+                return image;
+        }
+        catch (Exception ex)
+        {
+        }
+        return original;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public String decorateText(String text, Object element)
     {
-	    return null;
+        return null;
     }
 }

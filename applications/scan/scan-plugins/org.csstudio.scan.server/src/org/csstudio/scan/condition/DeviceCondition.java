@@ -24,9 +24,9 @@ package org.csstudio.scan.condition;
  */
 public interface DeviceCondition
 {
-	/** Wait for the condition to be met
-	 *  @throws Exception on error
-	 */
+    /** Wait for the condition to be met
+     *  @throws Exception on error
+     */
     public void await() throws Exception;
     // toString should give human-readable description,
     // including why the condition is currently waiting

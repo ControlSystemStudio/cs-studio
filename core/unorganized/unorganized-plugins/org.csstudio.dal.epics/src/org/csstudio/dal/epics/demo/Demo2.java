@@ -36,11 +36,11 @@ import com.cosylab.epics.caj.CAJChannel;
  */
 public class Demo2 {
 
-	/**
+    /**
      * Implementation of monitor listener.
      */
     private static class MonitorListenerImpl implements MonitorListener {
-        
+
         /**
          * @see gov.aps.jca.event.MonitorListener#monitorChanged(gov.aps.jca.event.MonitorEvent)
          */
@@ -53,41 +53,41 @@ public class Demo2 {
                 System.err.println("Monitor error: " + event.getStatus());
         }
     }
-    
+
     private static class ConnectionListenerImpl implements ConnectionListener {
-		private AtomicBoolean onlyOnce = new AtomicBoolean(false);
-		public void connectionChanged(final ConnectionEvent ev) {
-			System.err.println("-----------> connection changed for " + ev.getSource() + " : " + ev.isConnected());
-			if (!onlyOnce.getAndSet(true))
-			{
-				try {
-					((Channel)ev.getSource()).addMonitor(Monitor.VALUE, new MonitorListenerImpl());
-					((CAJChannel)ev.getSource()).getContext().flushIO();
-				} catch (Throwable e) {
-					e.printStackTrace();
-				}
-			}
-		}
+        private AtomicBoolean onlyOnce = new AtomicBoolean(false);
+        public void connectionChanged(final ConnectionEvent ev) {
+            System.err.println("-----------> connection changed for " + ev.getSource() + " : " + ev.isConnected());
+            if (!onlyOnce.getAndSet(true))
+            {
+                try {
+                    ((Channel)ev.getSource()).addMonitor(Monitor.VALUE, new MonitorListenerImpl());
+                    ((CAJChannel)ev.getSource()).getContext().flushIO();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
-    
+
     /**
      * JCA context.
      */
     private Context context = null;
-    
+
     /**
      * Initialize JCA context.
-     * @throws CAException	throws on any failure.
+     * @throws CAException    throws on any failure.
      */
     private void initialize() throws CAException {
-        
-		// Get the JCALibrary instance.
-		JCALibrary jca = JCALibrary.getInstance();
 
-		// Create a context with default configuration values.
-		context = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
+        // Get the JCALibrary instance.
+        JCALibrary jca = JCALibrary.getInstance();
 
-		// Display basic information about the context.
+        // Create a context with default configuration values.
+        context = jca.createContext(JCALibrary.CHANNEL_ACCESS_JAVA);
+
+        // Display basic information about the context.
         System.out.println(context.getVersion().getVersionString());
         context.printInfo(); System.out.println();
     }
@@ -96,56 +96,56 @@ public class Demo2 {
      * Destroy JCA context.
      */
     private void destroy() {
-        
+
         try {
 
             // Destroy the context, check if never initialized.
             if (context != null)
                 context.destroy();
-            
+
         } catch (Throwable th) {
             th.printStackTrace();
         }
     }
 
-    
-	public void execute() {
 
-		try {
-		    
-		    // initialize context
-		    initialize();
+    public void execute() {
 
-			// Create the Channel to connect to the PV.
-			/*Channel channel1 =*/ context.createChannel("manyChannel_001", new ConnectionListenerImpl());
-			/*Channel channel2 =*/ context.createChannel("nonexisting", new ConnectionListenerImpl());
-			
-			// ... forever
-			synchronized (this) {
-				this.wait();
-			}
+        try {
 
-			System.out.println("Done.");
+            // initialize context
+            initialize();
 
-		} catch (Throwable th) {
-			th.printStackTrace();
-		}
-		finally {
-		    // always finalize
-		    destroy();
-		}
+            // Create the Channel to connect to the PV.
+            /*Channel channel1 =*/ context.createChannel("manyChannel_001", new ConnectionListenerImpl());
+            /*Channel channel2 =*/ context.createChannel("nonexisting", new ConnectionListenerImpl());
 
-	}
-	
-	
-	/**
-	 * Program entry point. 
-	 * @param args	command-line arguments
-	 */
-	public static void main(String[] args) {
+            // ... forever
+            synchronized (this) {
+                this.wait();
+            }
 
-		// execute
-		new Demo2().execute();
-	}
-	
+            System.out.println("Done.");
+
+        } catch (Throwable th) {
+            th.printStackTrace();
+        }
+        finally {
+            // always finalize
+            destroy();
+        }
+
+    }
+
+
+    /**
+     * Program entry point.
+     * @param args    command-line arguments
+     */
+    public static void main(String[] args) {
+
+        // execute
+        new Demo2().execute();
+    }
+
 }

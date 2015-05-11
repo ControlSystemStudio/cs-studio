@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class MultiAxisLineGraph2DView extends AbstractGraph2DView<MultiAxisLineGraph2DWidget> {
 
@@ -19,7 +19,7 @@ public class MultiAxisLineGraph2DView extends AbstractGraph2DView<MultiAxisLineG
 
     @Override
     protected MultiAxisLineGraph2DWidget createAbstractGraph2DWidget(Composite parent,
-	    int style) {
-	return new MultiAxisLineGraph2DWidget(parent, SWT.NONE);
+        int style) {
+    return new MultiAxisLineGraph2DWidget(parent, SWT.NONE);
     }
 }

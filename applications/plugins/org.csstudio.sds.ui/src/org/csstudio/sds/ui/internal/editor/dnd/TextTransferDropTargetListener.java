@@ -27,19 +27,19 @@ import org.eclipse.swt.dnd.TransferData;
 
 /**
  * Drop target listener that processes a single {@link String}.
- * 
+ *
  * @author Sven Wende
  */
 public final class TextTransferDropTargetListener extends AbstractDropTargetListener<TextTransfer> {
 
-	public TextTransferDropTargetListener(final EditPartViewer viewer) {
-		super(viewer, TextTransfer.getInstance());
-	}
+    public TextTransferDropTargetListener(final EditPartViewer viewer) {
+        super(viewer, TextTransfer.getInstance());
+    }
 
-	@Override
-	protected String[] translate(TextTransfer transfer, TransferData transferData) {
-		String s = (String) TextTransfer.getInstance().nativeToJava(transferData);
-		return s != null ? new String[] { s } : new String[0];
-	}
+    @Override
+    protected String[] translate(TextTransfer transfer, TransferData transferData) {
+        String s = (String) TextTransfer.getInstance().nativeToJava(transferData);
+        return s != null ? new String[] { s } : new String[0];
+    }
 
 }

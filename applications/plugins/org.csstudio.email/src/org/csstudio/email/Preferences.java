@@ -30,13 +30,13 @@ public class Preferences
             host = service.getString(Activator.ID, SMTP_HOST, host, null);
         return host;
     }
-    
+
     /** @return SMTP URL */
     public static String getSMTP_Sender()
     {
-		final IPreferencesService service = Platform.getPreferencesService();
-		if (service != null)
-			return service.getString(Activator.ID, SMTP_SENDER, null, null);
-		return null;
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            return service.getString(Activator.ID, SMTP_SENDER, null, null);
+        return null;
     }
 }

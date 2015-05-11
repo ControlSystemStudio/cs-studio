@@ -45,7 +45,7 @@ public class ScanCommandFactory extends SimpleScanCommandFactory
     @Override
     public ScanCommand createCommandForID(final String id) throws Exception
     {
-    	// Locate registered commands
+        // Locate registered commands
         final IExtensionPoint point = RegistryFactory.getRegistry().getExtensionPoint(COMMAND_EXT_POINT);
         final IConfigurationElement[] configs = point.getConfigurationElements();
         // Find command with matching ID

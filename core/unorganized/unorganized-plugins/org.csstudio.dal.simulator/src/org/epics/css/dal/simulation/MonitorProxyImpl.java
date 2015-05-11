@@ -43,159 +43,159 @@ import org.csstudio.dal.proxy.MonitorProxy;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
 public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
-	Runnable
+    Runnable
 {
-	protected PropertyProxyImpl<T> proxy;
-	protected long timerTrigger = 1000;
-	protected boolean heartbeat = true;
-	protected TimerTask task;
-	protected boolean destroyed = false;
+    protected PropertyProxyImpl<T> proxy;
+    protected long timerTrigger = 1000;
+    protected boolean heartbeat = true;
+    protected TimerTask task;
+    protected boolean destroyed = false;
 
-	/**
-	 * Creates new instance.
-	 *
-	 * @param proxy parent proxy object
-	 * @param l listener for notifications
-	 */
-	public MonitorProxyImpl(PropertyProxyImpl<T> proxy, ResponseListener<T> l)
-	{
-		super(proxy, l);
-		this.proxy = proxy;
-		proxy.addMonitor(this);
-		resetTimer();
-	}
+    /**
+     * Creates new instance.
+     *
+     * @param proxy parent proxy object
+     * @param l listener for notifications
+     */
+    public MonitorProxyImpl(PropertyProxyImpl<T> proxy, ResponseListener<T> l)
+    {
+        super(proxy, l);
+        this.proxy = proxy;
+        proxy.addMonitor(this);
+        resetTimer();
+    }
 
-	public void reInitialize(PropertyProxyImpl<T> proxy) throws RemoteException
-	{
-		this.source = proxy;
-		this.proxy = proxy;
-	}
+    public void reInitialize(PropertyProxyImpl<T> proxy) throws RemoteException
+    {
+        this.source = proxy;
+        this.proxy = proxy;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.proxy.MonitorProxy#getRequest()
-	 */
-	public Request<T> getRequest()
-	{
-		return this;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.proxy.MonitorProxy#getRequest()
+     */
+    public Request<T> getRequest()
+    {
+        return this;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.SimpleMonitor#getTimerTrigger()
-	 */
-	public long getTimerTrigger() throws DataExchangeException
-	{
-		return timerTrigger;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.SimpleMonitor#getTimerTrigger()
+     */
+    public long getTimerTrigger() throws DataExchangeException
+    {
+        return timerTrigger;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.SimpleMonitor#setTimerTrigger(long)
-	 */
-	public void setTimerTrigger(long trigger)
-		throws DataExchangeException, UnsupportedOperationException
-	{
-		timerTrigger = trigger;
-		resetTimer();
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.SimpleMonitor#setTimerTrigger(long)
+     */
+    public void setTimerTrigger(long trigger)
+        throws DataExchangeException, UnsupportedOperationException
+    {
+        timerTrigger = trigger;
+        resetTimer();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.SimpleMonitor#setHeartbeat(boolean)
-	 */
-	public void setHeartbeat(boolean heartbeat)
-		throws DataExchangeException, UnsupportedOperationException
-	{
-		this.heartbeat = heartbeat;
-		resetTimer();
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.SimpleMonitor#setHeartbeat(boolean)
+     */
+    public void setHeartbeat(boolean heartbeat)
+        throws DataExchangeException, UnsupportedOperationException
+    {
+        this.heartbeat = heartbeat;
+        resetTimer();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.SimpleMonitor#isHeartbeat()
-	 */
-	public boolean isHeartbeat()
-	{
-		return heartbeat;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.SimpleMonitor#isHeartbeat()
+     */
+    public boolean isHeartbeat()
+    {
+        return heartbeat;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.SimpleMonitor#getDefaultTimerTrigger()
-	 */
-	public long getDefaultTimerTrigger() throws DataExchangeException
-	{
-		return 1000;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.SimpleMonitor#getDefaultTimerTrigger()
+     */
+    public long getDefaultTimerTrigger() throws DataExchangeException
+    {
+        return 1000;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.SimpleMonitor#isDefault()
-	 */
-	public boolean isDefault()
-	{
-		return true;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.SimpleMonitor#isDefault()
+     */
+    public boolean isDefault()
+    {
+        return true;
+    }
 
-	private void fireValueEvent()
-	{
-		try {
-			ResponseImpl<T> r = new ResponseImpl<T>(proxy, this,
-				    proxy.getValueSync(), "value", true, null,
-				    proxy.getCondition(), null, false);
-			addResponse(r);
-		} catch (DataExchangeException e) {
-			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
-		}
-	}
+    private void fireValueEvent()
+    {
+        try {
+            ResponseImpl<T> r = new ResponseImpl<T>(proxy, this,
+                    proxy.getValueSync(), "value", true, null,
+                    proxy.getCondition(), null, false);
+            addResponse(r);
+        } catch (DataExchangeException e) {
+            Logger.getLogger(this.getClass()).warn("Simulator error.", e);
+        }
+    }
 
-	/**
-	 * Fires value change event if monitor is not in heartbeat mode.
-	 */
-	public void fireValueChange()
-	{
-		if (!heartbeat) {
-			fireValueEvent();
-		}
-	}
+    /**
+     * Fires value change event if monitor is not in heartbeat mode.
+     */
+    public void fireValueChange()
+    {
+        if (!heartbeat) {
+            fireValueEvent();
+        }
+    }
 
-	/**
-	 * Run method executed at schedulet time intervals.
-	 */
-	public void run()
-	{
-		fireValueEvent();
-	}
+    /**
+     * Run method executed at schedulet time intervals.
+     */
+    public void run()
+    {
+        fireValueEvent();
+    }
 
-	private synchronized void resetTimer()
-	{
-		if (task != null) {
-			task.cancel();
-		}
+    private synchronized void resetTimer()
+    {
+        if (task != null) {
+            task.cancel();
+        }
 
-		if (heartbeat) {
-			task = SimulatorPlug.getInstance().schedule(this, timerTrigger);
-		}
-	}
+        if (heartbeat) {
+            task = SimulatorPlug.getInstance().schedule(this, timerTrigger);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.SimpleMonitor#destroy()
-	 */
-	public void destroy()
-	{
-		if (task != null) {
-			task.cancel();
-		}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.SimpleMonitor#destroy()
+     */
+    public void destroy()
+    {
+        if (task != null) {
+            task.cancel();
+        }
 
-		destroyed = true;
-	}
+        destroyed = true;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.SimpleMonitor#isDestroyed()
-	 */
-	public boolean isDestroyed()
-	{
-		return destroyed;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.SimpleMonitor#isDestroyed()
+     */
+    public boolean isDestroyed()
+    {
+        return destroyed;
+    }
 
-	public void refresh()
-	{
-		// Override in order to clean up cached values.
-	}
+    public void refresh()
+    {
+        // Override in order to clean up cached values.
+    }
 }
 
 /* __oOo__ */

@@ -2,7 +2,7 @@ package com.jmatio.common;
 
 /**
  * MAT-file data types
- * 
+ *
  * @author Wojciech Gradkowski <wgradkowski@gmail.com>
  */
 public class MatDataTypes
@@ -33,10 +33,10 @@ public class MatDataTypes
     public static final int miSIZE_UINT8    = 1;
     public static final int miSIZE_DOUBLE   = 8;
     public static final int miSIZE_CHAR     = 1;
-    
+
     /**
      * Return number of bytes for given type.
-     * 
+     *
      * @param type - <code>MatDataTypes</code>
      * @return
      */
@@ -64,7 +64,7 @@ public class MatDataTypes
     }
     /**
      * Get String representation of a data type
-     * 
+     *
      * @param type - data type
      * @return - String representation
      */
@@ -126,5 +126,5 @@ public class MatDataTypes
         }
         return s;
     }
-    
+
 }

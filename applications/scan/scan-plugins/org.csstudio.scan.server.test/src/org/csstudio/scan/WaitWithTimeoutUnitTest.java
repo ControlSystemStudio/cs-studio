@@ -28,7 +28,7 @@ public class WaitWithTimeoutUnitTest
     public void testTimeout() throws Exception
     {
         final WaitWithTimeout timeout = new WaitWithTimeout(TimeDuration.ofSeconds(2.0));
-        
+
         BenchmarkTimer timer = new BenchmarkTimer();
         try
         {
@@ -46,7 +46,7 @@ public class WaitWithTimeoutUnitTest
             System.out.println("Received expected timeout after " + timer);
             assertThat(Math.abs(2.0 - timer.getSeconds()), lessThan(0.2));
         }
-        
+
         // Further attempts to wait should fail right away
         synchronized (this)
         {

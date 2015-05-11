@@ -31,16 +31,16 @@ package org.csstudio.sds.components.model;
  *
  */
 public class PolygonModel extends AbstractPolyModel {
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.Polygon"; //$NON-NLS-1$
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.Polygon"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 }

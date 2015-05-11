@@ -58,9 +58,9 @@ abstract public class BasicPV<T extends Value> implements PV, ValueListener
     public void addListener(final PVListener listener)
     {
         listeners.add(listener);
-    	if(running && isConnected()){
-    		listener.pvValueUpdate(this);
-    	}
+        if(running && isConnected()){
+            listener.pvValueUpdate(this);
+        }
     }
 
     /** {@inheritDoc} */

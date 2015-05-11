@@ -13,7 +13,7 @@ import java.util.Arrays;
  *  <p>
  *  Elements can be added. When ring buffer is full, oldest elements
  *  are dropped for each newly added item.
- *  
+ *
  *  @author Kay Kasemir
  *  @param <T> Element type
  */
@@ -31,7 +31,7 @@ public class RingBuffer<T>
     // This implementation gives more efficient size() call.
     private T ring[];
     private int start, size, capacity;
-    
+
     /** Initialize
      *  @param capacity Initial capacity
      */
@@ -56,7 +56,7 @@ public class RingBuffer<T>
     {
         return size >= capacity;
     }
-    
+
     /** @return Number of valid entries in ring buffer */
     public int size()
     {
@@ -68,7 +68,7 @@ public class RingBuffer<T>
     {
         return capacity;
     }
-    
+
     /** Set new capacity.
      *  <p>
      *  Tries to preserve the newest samples.
@@ -80,7 +80,7 @@ public class RingBuffer<T>
     {
         try
         {
-            final T new_ring[] = (T[]) new Object[new_capacity];        
+            final T new_ring[] = (T[]) new Object[new_capacity];
             // Copy old items over
             if (ring != null)
             {   // How many can be copied?
@@ -104,7 +104,7 @@ public class RingBuffer<T>
             throw new Exception("Out of memory: " + err.getMessage()); //$NON-NLS-1$
         }
     }
-    
+
     /** Remove all ring buffer elements */
     public void clear()
     {
@@ -130,7 +130,7 @@ public class RingBuffer<T>
         // Update that element
         ring[i] = item;
     }
-    
+
     /** @param i Ring buffer index 0 .. size()-1
      *  @return Item at given index.
      */
@@ -158,21 +158,21 @@ public class RingBuffer<T>
     }
 
     /** @return Array with content of ring buffer */
-	public T[] toArray(T[] array)
+    public T[] toArray(T[] array)
     {
-		if (array.length != size)
-			array = (T[]) Arrays.copyOf(array, size);
-		
-	    //  [start], [start+1], ..., [start+size-1]
-	    //  with wrap-around at [capacity-1].
-		if (start + size <= capacity)
-			System.arraycopy(ring, start, array, 0, size);
-		else
-		{
-			final int part = capacity - start;
-			System.arraycopy(ring, start, array, 0, part);
-			System.arraycopy(ring, 0, array, part, size-part);
-		}
-		return array;
+        if (array.length != size)
+            array = (T[]) Arrays.copyOf(array, size);
+
+        //  [start], [start+1], ..., [start+size-1]
+        //  with wrap-around at [capacity-1].
+        if (start + size <= capacity)
+            System.arraycopy(ring, start, array, 0, size);
+        else
+        {
+            final int part = capacity - start;
+            System.arraycopy(ring, start, array, 0, part);
+            System.arraycopy(ring, 0, array, part, size-part);
+        }
+        return array;
     }
 }

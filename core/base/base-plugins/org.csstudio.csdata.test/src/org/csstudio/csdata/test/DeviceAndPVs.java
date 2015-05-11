@@ -9,24 +9,24 @@ import org.csstudio.csdata.Device;
 import org.csstudio.csdata.ProcessVariable;
 
 public class DeviceAndPVs implements Serializable {
-	/** @see Serializable */
-	final private static long serialVersionUID = 1L;
+    /** @see Serializable */
+    final private static long serialVersionUID = 1L;
 
-	private final Device device;
-	private final List<ProcessVariable> pvs;
+    private final Device device;
+    private final List<ProcessVariable> pvs;
 
-	public DeviceAndPVs(Device device, List<ProcessVariable> pvs) {
-		this.device = device;
-		this.pvs = Collections
-				.unmodifiableList(new ArrayList<ProcessVariable>(pvs));
-	}
+    public DeviceAndPVs(Device device, List<ProcessVariable> pvs) {
+        this.device = device;
+        this.pvs = Collections
+                .unmodifiableList(new ArrayList<ProcessVariable>(pvs));
+    }
 
-	public Device getDevice() {
-		return device;
-	}
+    public Device getDevice() {
+        return device;
+    }
 
-	public List<ProcessVariable> getPvs() {
-		return pvs;
-	}
+    public List<ProcessVariable> getPvs() {
+        return pvs;
+    }
 
 }

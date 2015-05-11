@@ -13,9 +13,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
 /**
  * A Open the pretune editor without any associated configuration file and let
  * the user browse and load any json configuration file.
- * 
+ *
  * @author Kunal Shroff
- * 
+ *
  */
 public class NewPretune extends AbstractHandler implements IHandler {
 

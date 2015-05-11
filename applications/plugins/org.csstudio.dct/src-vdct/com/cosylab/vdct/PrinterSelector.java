@@ -34,7 +34,7 @@ import javax.swing.JPanel;
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  * @version $Id$
- * 
+ *
  * @since VERSION
  */
 public class PrinterSelector extends JDialog implements ActionListener {
@@ -46,15 +46,15 @@ public class PrinterSelector extends JDialog implements ActionListener {
     private JButton cancelButton;
     private static final String OK_COMMAND = "Ok";
     private static final String CANCEL_COMMAND = "Cancel";
-    
+
     private PrintService service = null;
-    
+
     private static PrinterSelector selector = new PrinterSelector();
-    
+
     /**
-     * 
+     *
      * Return the instance of the PrinterSelector.
-     * 
+     *
      * @param parent the parent component of this dialog
      * @return selector
      */
@@ -62,7 +62,7 @@ public class PrinterSelector extends JDialog implements ActionListener {
         selector.setLocationRelativeTo(parent);
         return selector;
     }
-    
+
     private PrinterSelector() {
         this.setTitle("Select printer");
         this.setSize(430,120);
@@ -70,17 +70,17 @@ public class PrinterSelector extends JDialog implements ActionListener {
         this.setResizable(false);
         this.setContentPane(getCanvas());
     }
-    
+
     private JPanel getCanvas() {
         if (canvas == null) {
             canvas = new JPanel();
             canvas.setLayout(new GridBagLayout());
-            
+
             servicesLabel = new JLabel("Available printers: ");
             canvas.add(servicesLabel, new GridBagConstraints(0,0,1,1,1,0,GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(5,5,5,5), 1,1));
             servicesCombo = new JComboBox();
             canvas.add(servicesCombo, new GridBagConstraints(1,0,3,1,0.8,0,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 1,1));
-            
+
             okButton = new JButton("OK");
             canvas.add(okButton, new GridBagConstraints(2,1,1,1,1,0,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 1,1));
             okButton.addActionListener(this);
@@ -89,13 +89,13 @@ public class PrinterSelector extends JDialog implements ActionListener {
             canvas.add(cancelButton, new GridBagConstraints(3,1,1,1,1,0,GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(5,5,5,5), 1,1));
             cancelButton.addActionListener(this);
             cancelButton.setActionCommand(CANCEL_COMMAND);
-            
+
         }
         return canvas;
     }
-    
+
     /**
-     * 
+     *
      * Shows the PrinterSelector and return the selected PrintService if SAVE button is pressed.
      * If the SKIP button is pressed method returns null.
      * @return selected PrintService.
@@ -105,7 +105,7 @@ public class PrinterSelector extends JDialog implements ActionListener {
         this.setVisible(true);
         return service;
     }
-    
+
     /*
      *  (non-Javadoc)
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
@@ -120,7 +120,7 @@ public class PrinterSelector extends JDialog implements ActionListener {
             this.dispose();
         }
     }
-    
+
     private void refresh(PrintService previousService) {
         service = null;
         servicesCombo.removeAllItems();
@@ -131,6 +131,6 @@ public class PrinterSelector extends JDialog implements ActionListener {
         if (previousService != null) {
             servicesCombo.setSelectedItem(previousService);
         }
-        
+
     }
 }

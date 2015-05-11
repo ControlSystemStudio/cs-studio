@@ -57,7 +57,7 @@ abstract public class TextAsPVDropTarget extends DropTargetAdapter
         final String name = ((String) event.data).trim();
         handleDrop(name);
     }
-    
+
     /** Must be implemented to handle the received PV name
      *  @param name The string that was dropped, presumably a PV name
      */

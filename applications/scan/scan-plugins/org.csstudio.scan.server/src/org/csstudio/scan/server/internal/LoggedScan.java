@@ -41,7 +41,7 @@ public class LoggedScan extends Scan
     {
         return new ScanInfo(this, getScanState());
     }
-    
+
     /** Get serial of last logged sample.
      *
      *  <p>Can be used to determine if there are new samples
@@ -66,16 +66,16 @@ public class LoggedScan extends Scan
      *  @return {@link ScanData}
      *  @throws Exception on error
      */
-	public ScanData getScanData() throws Exception
-	{
-	    try
-	    (
+    public ScanData getScanData() throws Exception
+    {
+        try
+        (
             final DataLog logger = DataLogFactory.getDataLog(this);
         )
-	    {
-	        return logger.getScanData();
-	    }
-	}
+        {
+            return logger.getScanData();
+        }
+    }
 
     // Compare by ID
     @Override

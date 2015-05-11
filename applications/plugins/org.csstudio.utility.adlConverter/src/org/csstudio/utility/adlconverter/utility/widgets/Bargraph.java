@@ -44,13 +44,13 @@ import org.slf4j.LoggerFactory;
  * @since 19.09.2007
  */
 public class Bargraph extends Widget {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Bargraph.class);
 
     /**
      * @param bargraph The ADLWidget that describe the Bargraph.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     @SuppressWarnings("restriction")
@@ -99,10 +99,10 @@ public class Bargraph extends Widget {
                 }
             }else if(row[0].equals("showBar")){ //$NON-NLS-1$
                 barOnly=true;
-                _widget.setPropertyValue(BargraphModel.PROP_SHOW_VALUES, false); 
+                _widget.setPropertyValue(BargraphModel.PROP_SHOW_VALUES, false);
                 scaleShowStatus=0; // No scale
 //              <property type="sds.integer" id="border.width" value="0" />
-                _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, 0); 
+                _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_WIDTH, 0);
             }else if(row[0].equals("format")){ //$NON-NLS-1$
                 //TODO: Bargraph --> format
                 LOG.debug(Messages.Bargraph_Format_Debug, fileLine);
@@ -113,7 +113,7 @@ public class Bargraph extends Widget {
                     final String[] color= new String[]{"0","1","2","3"}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
                     assert( typ.length==val.length&&val.length==color.length);
                     for (int i = 0; i < color.length; i++) {
-                        makeLevel(typ[i],val[i],color[i]);    
+                        makeLevel(typ[i],val[i],color[i]);
                     }
                 }else{
                     //TODO: Bargraph --> limitType
@@ -141,11 +141,11 @@ public class Bargraph extends Widget {
             }else if(row[0].equals("fillmod")){ //$NON-NLS-1$
                 //TODO: Bargraph --> fillmod
                 LOG.debug(Messages.Bargraph_Clrmod_Debug, fileLine);
-            }else{ //Bargraph have no Parameter                
+            }else{ //Bargraph have no Parameter
                 throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Parameter_Begin+fileLine);
-            } 
+            }
         }
-        _widget.setPropertyValue(BargraphModel.PROP_SHOW_MARKS, marksShowStatus); 
+        _widget.setPropertyValue(BargraphModel.PROP_SHOW_MARKS, marksShowStatus);
         _widget.setPropertyValue(BargraphModel.PROP_SHOW_SCALE,scaleShowStatus);
 
         _widget.setPropertyValue(BargraphModel.PROP_MIN, 0.0);
@@ -175,12 +175,12 @@ public class Bargraph extends Widget {
         }else {
             throw new WrongADLFormatException(Messages.Bargraph_WrongADLFormatException_Type);
         }
-        
+
         _widget.setPropertyValue(BargraphModel.PROP_DEFAULT_FILL_COLOR, ADLHelper.getRGB(getMonitor().getClr()));
         dynamicsDescriptor = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_foreground"); //$NON-NLS-1$
         ADLHelper.setConnectionState(dynamicsDescriptor);
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[severity]","")); //$NON-NLS-1$
-        
+
         _widget.setDynamicsDescriptor(BargraphModel.PROP_DEFAULT_FILL_COLOR, dynamicsDescriptor);
 
         _widget.setPropertyValue(BargraphModel.PROP_FILLBACKGROUND_COLOR, ADLHelper.getRGB(getMonitor().getBclr()));
@@ -188,13 +188,13 @@ public class Bargraph extends Widget {
         dynamicsDescriptor = new DynamicsDescriptor("rule.null"); //$NON-NLS-1$
         ADLHelper.setConnectionState(dynamicsDescriptor);
         dynamicsDescriptor.addInputChannel(new ParameterDescriptor("$channel$[severity]","")); //$NON-NLS-1$
-        
+
         _widget.setDynamicsDescriptor(BargraphModel.PROP_FILLBACKGROUND_COLOR, dynamicsDescriptor);
         */
         _widget.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, null);
         _widget.setLayer("Bargraph"); //$NON-NLS-1$
 
-        
+
     }
 
     /**

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene.opiwidgets;
 
@@ -9,17 +9,17 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class IntensityGraph2DWidgetFigure extends AbstractPointDatasetGraph2DWidgetFigure<IntensityGraph2DWidget> {
 
-	public IntensityGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
-		super(editpart);
-	}
+    public IntensityGraph2DWidgetFigure(AbstractBaseEditPart editpart) {
+        super(editpart);
+    }
 
-	@Override
-	protected IntensityGraph2DWidget createSWTWidget(Composite parent, int style) {
-		return new IntensityGraph2DWidget(parent, style);
-	}
+    @Override
+    protected IntensityGraph2DWidget createSWTWidget(Composite parent, int style) {
+        return new IntensityGraph2DWidget(parent, style);
+    }
 
 }

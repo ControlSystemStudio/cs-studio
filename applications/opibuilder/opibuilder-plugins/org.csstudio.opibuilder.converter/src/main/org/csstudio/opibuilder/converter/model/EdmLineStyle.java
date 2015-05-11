@@ -11,62 +11,62 @@ import org.apache.log4j.Logger;
 
 /**
  * Specific class representing lineStyle property.
- * 
+ *
  * @author SSah
  *
  */
 public class EdmLineStyle extends EdmAttribute {
-	
-	public static final int SOLID = 0;
-	public static final int DASH = 1;
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmLineStyle");
+    public static final int SOLID = 0;
+    public static final int DASH = 1;
 
-	private static final String solidString = "solid";
-	private static final String dashString = "dash";
-	
-	private int val;
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmLineStyle");
 
-	/**
-	 * Constructor, which parses lineStyle property from EdmAttribute general interface.
-	 * 
-	 * @param genericAttribute	EdmAttribute containing lineStyle string format data.
-	 * @param required false if this attribute is optional, else true
-	 * @throws EdmException	if data from EdmAttribute of invalid format.
-	 */
-	public EdmLineStyle(EdmAttribute genericAttribute, boolean required) throws EdmException {
-		super(genericAttribute);
+    private static final String solidString = "solid";
+    private static final String dashString = "dash";
 
-		setRequired(required);
+    private int val;
 
-		val = SOLID;
+    /**
+     * Constructor, which parses lineStyle property from EdmAttribute general interface.
+     *
+     * @param genericAttribute    EdmAttribute containing lineStyle string format data.
+     * @param required false if this attribute is optional, else true
+     * @throws EdmException    if data from EdmAttribute of invalid format.
+     */
+    public EdmLineStyle(EdmAttribute genericAttribute, boolean required) throws EdmException {
+        super(genericAttribute);
 
-		if (genericAttribute != null && getValueCount() > 0) {
+        setRequired(required);
 
-			String valueString = getValue(0);
-			if (solidString.equals(valueString)) {
-				val = SOLID;
-			} else if (dashString.equals(valueString)) {
-				val = DASH;
-			} else {
-				throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-				"Unrecognized line style '" + valueString + "'.", null);
-			}
-			setInitialized(true);
-		
-		} else {
-			if (isRequired()) {
-				log.warn("Missing required property.");
-			} else {
-				log.warn("Missing optional property.");
-			}
-		}
-	}
+        val = SOLID;
 
-	/**
-	 * @return	The int enum lineStyle value.
-	 */
-	public int get() {
-		return val;
-	}
+        if (genericAttribute != null && getValueCount() > 0) {
+
+            String valueString = getValue(0);
+            if (solidString.equals(valueString)) {
+                val = SOLID;
+            } else if (dashString.equals(valueString)) {
+                val = DASH;
+            } else {
+                throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
+                "Unrecognized line style '" + valueString + "'.", null);
+            }
+            setInitialized(true);
+
+        } else {
+            if (isRequired()) {
+                log.warn("Missing required property.");
+            } else {
+                log.warn("Missing optional property.");
+            }
+        }
+    }
+
+    /**
+     * @return    The int enum lineStyle value.
+     */
+    public int get() {
+        return val;
+    }
 }

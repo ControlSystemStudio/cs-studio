@@ -22,7 +22,7 @@ public class TimestampHelper
 
     /** Time stamp format */
     final private static Format time_format = new TimestampFormat(TimestampHelper.FORMAT_FULL);
-    
+
     /** @param timestamp {@link Timestamp}, may be <code>null</code>
      *  @return Time stamp formatted as string
      */

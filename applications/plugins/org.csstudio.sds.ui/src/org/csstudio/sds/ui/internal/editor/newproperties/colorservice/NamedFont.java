@@ -6,70 +6,70 @@ import org.eclipse.swt.graphics.FontData;
 
 /**
  * Describes a named color.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class NamedFont {
-	private String name;
-	private String description;
-	
-	private String fontName;
-	private int fontSize;
-	private boolean italic;
-	private boolean bold;
+    private String name;
+    private String description;
 
-	public NamedFont(String name, String description, String fontName, int fontSize, boolean bold, boolean italic) {
-		assert name != null : "name != null";
-		assert name.trim().length() > 0 : "name.trim().length() > 0";
-		assert description != null : "description != null";
-		assert description.trim().length() > 0 : "description.trim().length() > 0";
-		assert fontName != null : "fontName != null";
-		assert fontName.trim().length() > 0 : "fontName.trim().length() > 0";
-		assert fontSize > 0 : "fontSize > 0";
-		
-		this.name = name;
-		this.description = description;
-		this.fontName = fontName;
-		this.fontSize = fontSize;
-		this.bold = bold;
-		this.italic = italic;
-	}
+    private String fontName;
+    private int fontSize;
+    private boolean italic;
+    private boolean bold;
 
-	public String getName() {
-		return name;
-	}
+    public NamedFont(String name, String description, String fontName, int fontSize, boolean bold, boolean italic) {
+        assert name != null : "name != null";
+        assert name.trim().length() > 0 : "name.trim().length() > 0";
+        assert description != null : "description != null";
+        assert description.trim().length() > 0 : "description.trim().length() > 0";
+        assert fontName != null : "fontName != null";
+        assert fontName.trim().length() > 0 : "fontName.trim().length() > 0";
+        assert fontSize > 0 : "fontSize > 0";
 
-	public String getDescription() {
-		return description;
-	}
+        this.name = name;
+        this.description = description;
+        this.fontName = fontName;
+        this.fontSize = fontSize;
+        this.bold = bold;
+        this.italic = italic;
+    }
 
-	public FontData getFontData(){
-		FontData fd = new FontData();
+    public String getName() {
+        return name;
+    }
 
-		// .. font type
-		fd.setName(fontName);
-		
-		// .. height
-		if(fontSize>0) {
-			fd.setHeight(fontSize);
-		}
+    public String getDescription() {
+        return description;
+    }
 
-		// .. style
-		int style = SWT.None;
+    public FontData getFontData(){
+        FontData fd = new FontData();
 
-		if(bold) {
-			style|=SWT.BOLD;
-		}
-		if(italic) {
-			style|=SWT.ITALIC;
-		}
-		fd.setStyle(style);
-		
-		return fd;
-	}
-	
-	public String toFontString() {
-		return ColorAndFontUtil.toFontString(fontName, fontSize, bold, italic);
-	}
+        // .. font type
+        fd.setName(fontName);
+
+        // .. height
+        if(fontSize>0) {
+            fd.setHeight(fontSize);
+        }
+
+        // .. style
+        int style = SWT.None;
+
+        if(bold) {
+            style|=SWT.BOLD;
+        }
+        if(italic) {
+            style|=SWT.ITALIC;
+        }
+        fd.setStyle(style);
+
+        return fd;
+    }
+
+    public String toFontString() {
+        return ColorAndFontUtil.toFontString(fontName, fontSize, bold, italic);
+    }
 }

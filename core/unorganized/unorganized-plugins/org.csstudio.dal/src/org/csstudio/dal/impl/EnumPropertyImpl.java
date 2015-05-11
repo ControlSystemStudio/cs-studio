@@ -33,82 +33,82 @@ import org.csstudio.dal.context.PropertyContext;
  *
  */
 public class EnumPropertyImpl extends NumericPropertyImpl<Long,Long>
-	implements EnumProperty
+    implements EnumProperty
 {
-	private Object[] enumValues;
-	private String[] enumDescriptions;
-	private boolean chInitialized = false;
-	
-	public EnumPropertyImpl(String name, PropertyContext propertyContext)
-	{
-		super(Long.class, name, propertyContext);
-	}
+    private Object[] enumValues;
+    private String[] enumDescriptions;
+    private boolean chInitialized = false;
 
-	private void readCharacteristics() throws DataExchangeException
-	{
-		if (chInitialized)
-			return;
-	
-		enumDescriptions = (String[])getCharacteristic(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS);
-		enumValues = (Object[])getCharacteristic(EnumPropertyCharacteristics.C_ENUM_VALUES);
-		if (enumDescriptions == null || enumValues == null) {
-			throw new IllegalArgumentException(
-			    "Values and descriptions may not be null");
-		}
-		chInitialized = true;
+    public EnumPropertyImpl(String name, PropertyContext propertyContext)
+    {
+        super(Long.class, name, propertyContext);
+    }
 
-	}
-	
+    private void readCharacteristics() throws DataExchangeException
+    {
+        if (chInitialized)
+            return;
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.EnumSimpleProperty#getEnumValues()
-	 */
-	public Object[] getEnumValues() throws DataExchangeException
-	{
-		if (!chInitialized)
-			readCharacteristics();
-		return enumValues;
-	}
+        enumDescriptions = (String[])getCharacteristic(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS);
+        enumValues = (Object[])getCharacteristic(EnumPropertyCharacteristics.C_ENUM_VALUES);
+        if (enumDescriptions == null || enumValues == null) {
+            throw new IllegalArgumentException(
+                "Values and descriptions may not be null");
+        }
+        chInitialized = true;
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.EnumSimpleProperty#getEnumDescriptions()
-	 */
-	public String[] getEnumDescriptions() throws DataExchangeException
-	{
-		if (!chInitialized)
-			readCharacteristics();
-		return enumDescriptions;
-	}
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.EnumSimpleProperty#indexOf(java.lang.Object)
-	 */
-	public long indexOf(Object enumerated)
-	{
-		for (int i = 0; i < enumValues.length; i++) {
-			if (enumValues[i].equals(enumerated)) {
-				return i;
-			}
-		}
 
-		return -1;
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.EnumSimpleProperty#getEnumValues()
+     */
+    public Object[] getEnumValues() throws DataExchangeException
+    {
+        if (!chInitialized)
+            readCharacteristics();
+        return enumValues;
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.EnumSimpleProperty#valueOf(long)
-	 */
-	public Object valueOf(long index)
-	{
-		if (index >= 0 && index < enumValues.length) {
-			return enumValues[(int)index];
-		}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.EnumSimpleProperty#getEnumDescriptions()
+     */
+    public String[] getEnumDescriptions() throws DataExchangeException
+    {
+        if (!chInitialized)
+            readCharacteristics();
+        return enumDescriptions;
+    }
 
-		return null;
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.EnumSimpleProperty#indexOf(java.lang.Object)
+     */
+    public long indexOf(Object enumerated)
+    {
+        for (int i = 0; i < enumValues.length; i++) {
+            if (enumValues[i].equals(enumerated)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.EnumSimpleProperty#valueOf(long)
+     */
+    public Object valueOf(long index)
+    {
+        if (index >= 0 && index < enumValues.length) {
+            return enumValues[(int)index];
+        }
+
+        return null;
+    }
 }
 
 /* __oOo__ */

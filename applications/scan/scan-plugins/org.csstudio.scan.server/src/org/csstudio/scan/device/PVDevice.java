@@ -50,22 +50,22 @@ public class PVDevice extends Device
     /** Alarm that is used to identify a disconnected PV */
    final private static Alarm DISCONNECTED = ValueFactory.newAlarm(AlarmSeverity.INVALID, "Disconnected");
 
-	/** Is the underlying PV type a BYTE[]?
-	 *  @see #TREAT_BYTES_AS_STRING
-	 */
-	private boolean is_byte_array = false;
+    /** Is the underlying PV type a BYTE[]?
+     *  @see #TREAT_BYTES_AS_STRING
+     */
+    private boolean is_byte_array = false;
 
-	/** Most recent value of the PV
-	 *  SYNC on this
-	 */
-	private VType value = getDisconnectedValue();
+    /** Most recent value of the PV
+     *  SYNC on this
+     */
+    private VType value = getDisconnectedValue();
 
-	/** Underlying control system PV
-	 *  SYNC on this
-	 */
-	private PV pv;
+    /** Underlying control system PV
+     *  SYNC on this
+     */
+    private PV pv;
 
-	final private PVListener pv_listener = new PVListenerAdapter()
+    final private PVListener pv_listener = new PVListenerAdapter()
     {
         @Override
         public void valueChanged(final PV pv, final VType new_value)
@@ -107,27 +107,27 @@ public class PVDevice extends Device
 
     }
 
-	/** Initialize
-	 *  @param info {@link DeviceInfo}
-	 *  @throws Exception on error during PV setup
-	 */
-	public PVDevice(final DeviceInfo info) throws Exception
+    /** Initialize
+     *  @param info {@link DeviceInfo}
+     *  @throws Exception on error during PV setup
+     */
+    public PVDevice(final DeviceInfo info) throws Exception
     {
-	    super(info);
+        super(info);
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void start() throws Exception
-	{
-		synchronized (this)
-		{
+    {
+        synchronized (this)
+        {
             pv = PVPool.getPV(getName());
-		}
-		pv.addListener(pv_listener);
-	}
+        }
+        pv.addListener(pv_listener);
+    }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public synchronized boolean isReady()
     {
@@ -141,7 +141,7 @@ public class PVDevice extends Device
                ! alarm.getAlarmName().equals(DISCONNECTED.getAlarmName());
     }
 
-	/** @return Human-readable device status */
+    /** @return Human-readable device status */
     @Override
     public synchronized String getStatus()
     {
@@ -152,49 +152,49 @@ public class PVDevice extends Device
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void stop()
-	{
-		final PV copy;
-		synchronized (this)
-		{
-			copy = pv;
-		}
-		copy.removeListener(pv_listener);
-		PVPool.releasePV(copy);
-		synchronized (this)
-		{
-			pv = null;
-			value = getDisconnectedValue();
-		}
-	}
+    {
+        final PV copy;
+        synchronized (this)
+        {
+            copy = pv;
+        }
+        copy.removeListener(pv_listener);
+        PVPool.releasePV(copy);
+        synchronized (this)
+        {
+            pv = null;
+            value = getDisconnectedValue();
+        }
+    }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public VType read() throws Exception
     {
-		final VType current;
-		synchronized (this)
+        final VType current;
+        synchronized (this)
         {
             current = this.value;
         }
-		logger.log(Level.FINER, "Reading: PV {0} = {1}",
-				new Object[] { getName(), current });
-		return current;
+        logger.log(Level.FINER, "Reading: PV {0} = {1}",
+                new Object[] { getName(), current });
+        return current;
     }
 
-	/** Turn {@link TimeDuration} into millisecs for {@link TimeUnit} API
-	 *  @param timeout {@link TimeDuration}
-	 *  @return Milliseconds or 0
-	 */
-	private static long getMillisecs(final TimeDuration timeout)
-	{
-	    if (timeout == null  ||  ! timeout.isPositive())
-	        return 0;
-	    return timeout.getSec() * 1000L  +  timeout.getNanoSec() / 1000;
-	}
+    /** Turn {@link TimeDuration} into millisecs for {@link TimeUnit} API
+     *  @param timeout {@link TimeDuration}
+     *  @return Milliseconds or 0
+     */
+    private static long getMillisecs(final TimeDuration timeout)
+    {
+        if (timeout == null  ||  ! timeout.isPositive())
+            return 0;
+        return timeout.getSec() * 1000L  +  timeout.getNanoSec() / 1000;
+    }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public VType read(final TimeDuration timeout) throws Exception
     {
@@ -253,65 +253,65 @@ public class PVDevice extends Device
         return value;
     }
 
-	/** Write value to device, with special handling of EPICS BYTE[] as String
+    /** Write value to device, with special handling of EPICS BYTE[] as String
      *  @param value Value to write (Double, String)
      *  @throws Exception on error: Cannot write, ...
      */
     @Override
     public void write(Object value) throws Exception
     {
-		logger.log(Level.FINER, "Writing: PV {0} = {1}",
+        logger.log(Level.FINER, "Writing: PV {0} = {1}",
                 new Object[] { getName(), value });
-		try
-		{
-	        value = wrapSentValue(value);
+        try
+        {
+            value = wrapSentValue(value);
 
-	        final PV pv; // Copy to access PV outside of lock
-	        synchronized (this)
-	        {
-	            pv = Objects.requireNonNull(this.pv, "PV not ready");
-	        }
-	        pv.write(value);
-		}
-		catch (Exception ex)
-		{
-			throw new Exception("Failed to write " + value + " to " + getName(), ex);
-		}
+            final PV pv; // Copy to access PV outside of lock
+            synchronized (this)
+            {
+                pv = Objects.requireNonNull(this.pv, "PV not ready");
+            }
+            pv.write(value);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to write " + value + " to " + getName(), ex);
+        }
     }
 
-	/** Write value to device, with special handling of EPICS BYTE[] as String
+    /** Write value to device, with special handling of EPICS BYTE[] as String
      *  @param value Value to write (Double, String)
      *  @param timeout Timeout, <code>null</code> as "forever"
      *  @throws Exception on error: Cannot write, ...
      */
-	@Override
+    @Override
     public void write(Object value, final TimeDuration timeout) throws Exception
     {
-		logger.log(Level.FINE, "Writing with completion: PV {0} = {1}",
-	            new Object[] { getName(), value });
-		try
-		{
-		    value = wrapSentValue(value);
+        logger.log(Level.FINE, "Writing with completion: PV {0} = {1}",
+                new Object[] { getName(), value });
+        try
+        {
+            value = wrapSentValue(value);
 
-		    final PV pv; // Copy to access PV outside of lock
-		    synchronized (this)
-			{
-		        pv = this.pv;
-			}
-		    final Future<?> write_result = pv.asyncWrite(value);
-		    final long millisec = getMillisecs(timeout);
-		    if (millisec > 0)
-		        write_result.get(millisec, TimeUnit.MILLISECONDS);
-		    else
-		        write_result.get();
-		}
-		catch (InterruptedException ex)
-		{   // Report InterruptedException (from abort) as such
+            final PV pv; // Copy to access PV outside of lock
+            synchronized (this)
+            {
+                pv = this.pv;
+            }
+            final Future<?> write_result = pv.asyncWrite(value);
+            final long millisec = getMillisecs(timeout);
+            if (millisec > 0)
+                write_result.get(millisec, TimeUnit.MILLISECONDS);
+            else
+                write_result.get();
+        }
+        catch (InterruptedException ex)
+        {   // Report InterruptedException (from abort) as such
             throw new InterruptedException("Interrupted while writing " + value + " to " + getName());
-		}
-		catch (Exception ex)
-		{
-			throw new Exception("Failed to write " + value + " to " + getName(), ex);
-		}
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Failed to write " + value + " to " + getName(), ex);
+        }
     }
 }

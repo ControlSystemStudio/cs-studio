@@ -25,36 +25,36 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public final class OptionSection extends AbstractBaseSection<OptionProperty> {
 
-	private ComboViewer optionViewer;
+    private ComboViewer optionViewer;
     private ISelectionChangedListener _changeListener;
 
-	public OptionSection(final String propertyId) {
-		super(propertyId);
-	}
+    public OptionSection(final String propertyId) {
+        super(propertyId);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doCreateControls(final Composite parent, final TabbedPropertySheetPage tabbedPropertySheetPage) {
-		parent.setLayout(new FormLayout());
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doCreateControls(final Composite parent, final TabbedPropertySheetPage tabbedPropertySheetPage) {
+        parent.setLayout(new FormLayout());
 
-		CCombo combo = getWidgetFactory().createCCombo(parent, SWT.BORDER | SWT.READ_ONLY);
-		FormData fd = new FormData();
-		fd.left = new FormAttachment(0,0);
-		fd.right = new FormAttachment(50,0);
-		combo.setLayoutData(fd);
+        CCombo combo = getWidgetFactory().createCCombo(parent, SWT.BORDER | SWT.READ_ONLY);
+        FormData fd = new FormData();
+        fd.left = new FormAttachment(0,0);
+        fd.right = new FormAttachment(50,0);
+        combo.setLayoutData(fd);
 
-		optionViewer = new ComboViewer(combo);
-		optionViewer.setLabelProvider(new LabelProvider() {
-			@Override
-			public String getText(final Object element) {
-				return ((IOption) element).getIdentifier();
-			}
-		});
+        optionViewer = new ComboViewer(combo);
+        optionViewer.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(final Object element) {
+                return ((IOption) element).getIdentifier();
+            }
+        });
 
-		optionViewer.setContentProvider(new ArrayContentProvider());
-	      // .. listen to changes
+        optionViewer.setContentProvider(new ArrayContentProvider());
+          // .. listen to changes
         _changeListener = new ISelectionChangedListener() {
             public void selectionChanged(final SelectionChangedEvent event) {
                 IOption[] options = (IOption[]) optionViewer.getInput();
@@ -69,28 +69,28 @@ public final class OptionSection extends AbstractBaseSection<OptionProperty> {
         };
         optionViewer.addSelectionChangedListener(_changeListener);
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doRefreshControls(final OptionProperty widgetProperty) {
-		String value = widgetProperty.getPropertyValue();
-		IOption[] options = widgetProperty.getOptions();
-		optionViewer.setInput(options);
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doRefreshControls(final OptionProperty widgetProperty) {
+        String value = widgetProperty.getPropertyValue();
+        IOption[] options = widgetProperty.getOptions();
+        optionViewer.setInput(options);
 
-		IOption sel = null;
+        IOption sel = null;
 
-		for (IOption option : options) {
-			if (value.equals(option.getIdentifier())) {
-				sel = option;
-			}
-		}
+        for (IOption option : options) {
+            if (value.equals(option.getIdentifier())) {
+                sel = option;
+            }
+        }
         optionViewer.removeSelectionChangedListener(_changeListener);
         optionViewer.setSelection(sel != null ? new StructuredSelection(sel) : null);
         optionViewer.addSelectionChangedListener(_changeListener);
 
-	}
+    }
 
 }

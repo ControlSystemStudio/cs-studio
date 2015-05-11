@@ -16,17 +16,17 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class RadioBoxModel extends AbstractChoiceModel {
 
-	public final String ID = "org.csstudio.opibuilder.widgets.radioBox";
+    public final String ID = "org.csstudio.opibuilder.widgets.radioBox";
 
-	public RadioBoxModel() {
-		setPropertyValue(PROP_COLOR_BACKGROUND, new RGB(230, 230, 230));
-		setPropertyValue(PROP_SELECTED_COLOR, new RGB(77,77,77));
-	}
-	
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
-	
+    public RadioBoxModel() {
+        setPropertyValue(PROP_COLOR_BACKGROUND, new RGB(230, 230, 230));
+        setPropertyValue(PROP_SELECTED_COLOR, new RGB(77,77,77));
+    }
+
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
+
 
 }

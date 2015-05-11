@@ -1,5 +1,5 @@
 /*
- * @(#)StreamTokenizer.java	1.39 03/01/23
+ * @(#)StreamTokenizer.java    1.39 03/01/23
  *
  * Copyright 2003 Sun Microsystems, Inc. All rights reserved.
  * SUN PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
@@ -15,7 +15,7 @@ import java.io.Reader;
 /**
  * Enhanced (in terms of tuning) version of <code>java.io.StreamTokenizer</code>.
  * If particular regarding parsing escape sequences - there are cases where we do not want to do that.
- * 
+ *
  * The <code>StreamTokenizer</code> class takes an input stream and
  * parses it into "tokens", allowing the tokens to be
  * read one at a time. The parsing process is controlled by a table
@@ -174,22 +174,22 @@ public class EnhancedStreamTokenizer {
     public double nval;
 
 
-	/**
-	 * Flag indicating whether escape sequences should be parsed.
-	 * Taken java.io.StreamTokenizer <code>true</code> as default.
-	 */
-	private boolean parseEscapeSequences = true;
+    /**
+     * Flag indicating whether escape sequences should be parsed.
+     * Taken java.io.StreamTokenizer <code>true</code> as default.
+     */
+    private boolean parseEscapeSequences = true;
 
     /** Private constructor that initializes everything except the streams. */
     private EnhancedStreamTokenizer() {
-	wordChars('a', 'z');
-	wordChars('A', 'Z');
-	wordChars(128 + 32, 255);
-	whitespaceChars(0, ' ');
-	commentChar('/');
-	quoteChar('"');
-	quoteChar('\'');
-	parseNumbers();
+    wordChars('a', 'z');
+    wordChars('A', 'Z');
+    wordChars(128 + 32, 255);
+    whitespaceChars(0, ' ');
+    commentChar('/');
+    quoteChar('"');
+    quoteChar('\'');
+    parseNumbers();
     }
 
     /**
@@ -224,11 +224,11 @@ public class EnhancedStreamTokenizer {
      * @see        java.io.StreamTokenizer#StreamTokenizer(java.io.Reader)
      */
     public EnhancedStreamTokenizer(InputStream is) {
-	this();
+    this();
         if (is == null) {
             throw new NullPointerException();
         }
-	input = is;
+    input = is;
     }
 
     /**
@@ -238,11 +238,11 @@ public class EnhancedStreamTokenizer {
      * @since   JDK1.1
      */
     public EnhancedStreamTokenizer(Reader r) {
-	this();
+    this();
         if (r == null) {
             throw new NullPointerException();
         }
-	reader = r;
+    reader = r;
     }
 
     /**
@@ -253,8 +253,8 @@ public class EnhancedStreamTokenizer {
      * @see     java.io.StreamTokenizer#ordinaryChar(int)
      */
     public void resetSyntax() {
-	for (int i = ctype.length; --i >= 0;)
-	    ctype[i] = 0;
+    for (int i = ctype.length; --i >= 0;)
+        ctype[i] = 0;
     }
 
     /**
@@ -267,12 +267,12 @@ public class EnhancedStreamTokenizer {
      * @param   hi    the high end of the range.
      */
     public void wordChars(int low, int hi) {
-	if (low < 0)
-	    low = 0;
-	if (hi >= ctype.length)
-	    hi = ctype.length - 1;
-	while (low <= hi)
-	    ctype[low++] |= CT_ALPHA;
+    if (low < 0)
+        low = 0;
+    if (hi >= ctype.length)
+        hi = ctype.length - 1;
+    while (low <= hi)
+        ctype[low++] |= CT_ALPHA;
     }
 
     /**
@@ -288,12 +288,12 @@ public class EnhancedStreamTokenizer {
      * @param   hi    the high end of the range.
      */
     public void whitespaceChars(int low, int hi) {
-	if (low < 0)
-	    low = 0;
-	if (hi >= ctype.length)
-	    hi = ctype.length - 1;
-	while (low <= hi)
-	    ctype[low++] = CT_WHITESPACE;
+    if (low < 0)
+        low = 0;
+    if (hi >= ctype.length)
+        hi = ctype.length - 1;
+    while (low <= hi)
+        ctype[low++] = CT_WHITESPACE;
     }
 
     /**
@@ -308,12 +308,12 @@ public class EnhancedStreamTokenizer {
      * @see     java.io.StreamTokenizer#ordinaryChar(int)
      */
     public void ordinaryChars(int low, int hi) {
-	if (low < 0)
-	    low = 0;
-	if (hi >= ctype.length)
-	    hi = ctype.length - 1;
-	while (low <= hi)
-	    ctype[low++] = 0;
+    if (low < 0)
+        low = 0;
+    if (hi >= ctype.length)
+        hi = ctype.length - 1;
+    while (low <= hi)
+        ctype[low++] = 0;
     }
 
     /**
@@ -330,7 +330,7 @@ public class EnhancedStreamTokenizer {
      */
     public void ordinaryChar(int ch) {
         if (ch >= 0 && ch < ctype.length)
-  	    ctype[ch] = 0;
+          ctype[ch] = 0;
     }
 
     /**
@@ -344,7 +344,7 @@ public class EnhancedStreamTokenizer {
      */
     public void commentChar(int ch) {
         if (ch >= 0 && ch < ctype.length)
-	    ctype[ch] = CT_COMMENT;
+        ctype[ch] = CT_COMMENT;
     }
 
     /**
@@ -373,7 +373,7 @@ public class EnhancedStreamTokenizer {
      */
     public void quoteChar(int ch) {
         if (ch >= 0 && ch < ctype.length)
- 	    ctype[ch] = CT_QUOTE;
+         ctype[ch] = CT_QUOTE;
     }
 
     /**
@@ -397,10 +397,10 @@ public class EnhancedStreamTokenizer {
      * @see     java.io.StreamTokenizer#ttype
      */
     public void parseNumbers() {
-	for (int i = '0'; i <= '9'; i++)
-	    ctype[i] |= CT_DIGIT;
-	ctype['.'] |= CT_DIGIT;
-	ctype['-'] |= CT_DIGIT;
+    for (int i = '0'; i <= '9'; i++)
+        ctype[i] |= CT_DIGIT;
+    ctype['.'] |= CT_DIGIT;
+    ctype['-'] |= CT_DIGIT;
     }
 
     /**
@@ -427,7 +427,7 @@ public class EnhancedStreamTokenizer {
      * @see     java.io.StreamTokenizer#TT_EOL
      */
     public void eolIsSignificant(boolean flag) {
-	eolIsSignificantP = flag;
+    eolIsSignificantP = flag;
     }
 
     /**
@@ -443,7 +443,7 @@ public class EnhancedStreamTokenizer {
      *                 C-style comments.
      */
     public void slashStarComments(boolean flag) {
-	slashStarCommentsP = flag;
+    slashStarCommentsP = flag;
     }
 
     /**
@@ -460,7 +460,7 @@ public class EnhancedStreamTokenizer {
      *                 C++-style comments.
      */
     public void slashSlashComments(boolean flag) {
-	slashSlashCommentsP = flag;
+    slashSlashCommentsP = flag;
     }
 
     /**
@@ -481,17 +481,17 @@ public class EnhancedStreamTokenizer {
      * @see     java.io.StreamTokenizer#TT_WORD
      */
     public void lowerCaseMode(boolean fl) {
-	forceLower = fl;
+    forceLower = fl;
     }
 
     /** Read the next character */
     private int read() throws IOException {
-	if (reader != null)
-	    return reader.read();
-	else if (input != null)
-	    return input.read();
-	else
-	    throw new IllegalStateException();
+    if (reader != null)
+        return reader.read();
+    else if (input != null)
+        return input.read();
+    else
+        throw new IllegalStateException();
     }
 
     /**
@@ -513,217 +513,217 @@ public class EnhancedStreamTokenizer {
      * @see        java.io.StreamTokenizer#ttype
      */
     public int nextToken() throws IOException {
-	if (pushedBack) {
-	    pushedBack = false;
-	    return ttype;
-	}
-	byte ct[] = ctype;
-	sval = null;
+    if (pushedBack) {
+        pushedBack = false;
+        return ttype;
+    }
+    byte ct[] = ctype;
+    sval = null;
 
-	int c = peekc;
-	if (c < 0)
-	    c = NEED_CHAR;
-	if (c == SKIP_LF) {
-	    c = read();
-	    if (c < 0)
-		return ttype = TT_EOF;
-	    if (c == '\n')
-		c = NEED_CHAR;
-	}
-	if (c == NEED_CHAR) {
-	    c = read();
-	    if (c < 0)
-		return ttype = TT_EOF;
-	}
-	ttype = c;		/* Just to be safe */
+    int c = peekc;
+    if (c < 0)
+        c = NEED_CHAR;
+    if (c == SKIP_LF) {
+        c = read();
+        if (c < 0)
+        return ttype = TT_EOF;
+        if (c == '\n')
+        c = NEED_CHAR;
+    }
+    if (c == NEED_CHAR) {
+        c = read();
+        if (c < 0)
+        return ttype = TT_EOF;
+    }
+    ttype = c;        /* Just to be safe */
 
-	/* Set peekc so that the next invocation of nextToken will read
-	 * another character unless peekc is reset in this invocation
-	 */
-	peekc = NEED_CHAR;
+    /* Set peekc so that the next invocation of nextToken will read
+     * another character unless peekc is reset in this invocation
+     */
+    peekc = NEED_CHAR;
 
-	int ctype = c < 256 ? ct[c] : CT_ALPHA;
-	while ((ctype & CT_WHITESPACE) != 0) {
-	    if (c == '\r') {
-		LINENO++;
-		if (eolIsSignificantP) {
-		    peekc = SKIP_LF;
-		    return ttype = TT_EOL;
-		}
-		c = read();
-		if (c == '\n')
-		    c = read();
-	    } else {
-		if (c == '\n') {
-		    LINENO++;
-		    if (eolIsSignificantP) {
-			return ttype = TT_EOL;
-		    }
-		}
-		c = read();
-	    }
-	    if (c < 0)
-		return ttype = TT_EOF;
-	    ctype = c < 256 ? ct[c] : CT_ALPHA;
-	}
+    int ctype = c < 256 ? ct[c] : CT_ALPHA;
+    while ((ctype & CT_WHITESPACE) != 0) {
+        if (c == '\r') {
+        LINENO++;
+        if (eolIsSignificantP) {
+            peekc = SKIP_LF;
+            return ttype = TT_EOL;
+        }
+        c = read();
+        if (c == '\n')
+            c = read();
+        } else {
+        if (c == '\n') {
+            LINENO++;
+            if (eolIsSignificantP) {
+            return ttype = TT_EOL;
+            }
+        }
+        c = read();
+        }
+        if (c < 0)
+        return ttype = TT_EOF;
+        ctype = c < 256 ? ct[c] : CT_ALPHA;
+    }
 
-	if ((ctype & CT_DIGIT) != 0) {
-	    boolean neg = false;
-	    if (c == '-') {
-		c = read();
-		if (c != '.' && (c < '0' || c > '9')) {
-		    peekc = c;
-		    return ttype = '-';
-		}
-		neg = true;
-	    }
-	    double v = 0;
-	    int decexp = 0;
-	    int seendot = 0;
-	    while (true) {
-		if (c == '.' && seendot == 0)
-		    seendot = 1;
-		else if ('0' <= c && c <= '9') {
-		    v = v * 10 + (c - '0');
-		    decexp += seendot;
-		} else
-		    break;
-		c = read();
-	    }
-	    peekc = c;
-	    if (decexp != 0) {
-		double denom = 10;
-		decexp--;
-		while (decexp > 0) {
-		    denom *= 10;
-		    decexp--;
-		}
-		/* Do one division of a likely-to-be-more-accurate number */
-		v = v / denom;
-	    }
-	    nval = neg ? -v : v;
-	    return ttype = TT_NUMBER;
-	}
+    if ((ctype & CT_DIGIT) != 0) {
+        boolean neg = false;
+        if (c == '-') {
+        c = read();
+        if (c != '.' && (c < '0' || c > '9')) {
+            peekc = c;
+            return ttype = '-';
+        }
+        neg = true;
+        }
+        double v = 0;
+        int decexp = 0;
+        int seendot = 0;
+        while (true) {
+        if (c == '.' && seendot == 0)
+            seendot = 1;
+        else if ('0' <= c && c <= '9') {
+            v = v * 10 + (c - '0');
+            decexp += seendot;
+        } else
+            break;
+        c = read();
+        }
+        peekc = c;
+        if (decexp != 0) {
+        double denom = 10;
+        decexp--;
+        while (decexp > 0) {
+            denom *= 10;
+            decexp--;
+        }
+        /* Do one division of a likely-to-be-more-accurate number */
+        v = v / denom;
+        }
+        nval = neg ? -v : v;
+        return ttype = TT_NUMBER;
+    }
 
-	if ((ctype & CT_ALPHA) != 0) {
-	    int i = 0;
-	    do {
-		if (i >= buf.length) {
-		    char nb[] = new char[buf.length * 2];
-		    System.arraycopy(buf, 0, nb, 0, buf.length);
-		    buf = nb;
-		}
-		buf[i++] = (char) c;
-		c = read();
-		ctype = c < 0 ? CT_WHITESPACE : c < 256 ? ct[c] : CT_ALPHA;
-	    } while ((ctype & (CT_ALPHA | CT_DIGIT)) != 0);
-	    peekc = c;
-	    sval = String.copyValueOf(buf, 0, i);
-	    if (forceLower)
-		sval = sval.toLowerCase();
-	    return ttype = TT_WORD;
-	}
+    if ((ctype & CT_ALPHA) != 0) {
+        int i = 0;
+        do {
+        if (i >= buf.length) {
+            char nb[] = new char[buf.length * 2];
+            System.arraycopy(buf, 0, nb, 0, buf.length);
+            buf = nb;
+        }
+        buf[i++] = (char) c;
+        c = read();
+        ctype = c < 0 ? CT_WHITESPACE : c < 256 ? ct[c] : CT_ALPHA;
+        } while ((ctype & (CT_ALPHA | CT_DIGIT)) != 0);
+        peekc = c;
+        sval = String.copyValueOf(buf, 0, i);
+        if (forceLower)
+        sval = sval.toLowerCase();
+        return ttype = TT_WORD;
+    }
 
-	if ((ctype & CT_QUOTE) != 0) {
-	    ttype = c;
-	    int i = 0;
-	    /* Invariants (because \Octal needs a lookahead):
-	     *   (i)  c contains char value
-	     *   (ii) d contains the lookahead
-	     */
-	    int d = read();
-	    while (d >= 0 && d != ttype && d != '\n' && d != '\r') {
-	        if (parseEscapeSequences && d == '\\') {
-   		    c = read();
-		    int first = c;   /* To allow \377, but not \477 */
-		    if (c >= '0' && c <= '7') {
-			c = c - '0';
-			int c2 = read();
-			if ('0' <= c2 && c2 <= '7') {
-			    c = (c << 3) + (c2 - '0');
-			    c2 = read();
-			    if ('0' <= c2 && c2 <= '7' && first <= '3') {
-				c = (c << 3) + (c2 - '0');
-				d = read();
-			    } else
-				d = c2;
-			} else
-			  d = c2;
-		    } else {
-  		        switch (c) {
-			case 'a':
-			    c = 0x7;
-			    break;
-			case 'b':
-			    c = '\b';
-			    break;
-			case 'f':
-			    c = 0xC;
-			    break;
-			case 'n':
-			    c = '\n';
-			    break;
-		        case 'r':
-			    c = '\r';
-			    break;
-			case 't':
-			    c = '\t';
-			    break;
-			case 'v':
-			    c = 0xB;
-			    break;
-			}
-			d = read();
-		    }
-		} else {
-		    c = d;
-		    d = read();
-		}
-		if (i >= buf.length) {
-		    char nb[] = new char[buf.length * 2];
-		    System.arraycopy(buf, 0, nb, 0, buf.length);
-		    buf = nb;
-		}
-		buf[i++] = (char)c;
-	    }
+    if ((ctype & CT_QUOTE) != 0) {
+        ttype = c;
+        int i = 0;
+        /* Invariants (because \Octal needs a lookahead):
+         *   (i)  c contains char value
+         *   (ii) d contains the lookahead
+         */
+        int d = read();
+        while (d >= 0 && d != ttype && d != '\n' && d != '\r') {
+            if (parseEscapeSequences && d == '\\') {
+               c = read();
+            int first = c;   /* To allow \377, but not \477 */
+            if (c >= '0' && c <= '7') {
+            c = c - '0';
+            int c2 = read();
+            if ('0' <= c2 && c2 <= '7') {
+                c = (c << 3) + (c2 - '0');
+                c2 = read();
+                if ('0' <= c2 && c2 <= '7' && first <= '3') {
+                c = (c << 3) + (c2 - '0');
+                d = read();
+                } else
+                d = c2;
+            } else
+              d = c2;
+            } else {
+                  switch (c) {
+            case 'a':
+                c = 0x7;
+                break;
+            case 'b':
+                c = '\b';
+                break;
+            case 'f':
+                c = 0xC;
+                break;
+            case 'n':
+                c = '\n';
+                break;
+                case 'r':
+                c = '\r';
+                break;
+            case 't':
+                c = '\t';
+                break;
+            case 'v':
+                c = 0xB;
+                break;
+            }
+            d = read();
+            }
+        } else {
+            c = d;
+            d = read();
+        }
+        if (i >= buf.length) {
+            char nb[] = new char[buf.length * 2];
+            System.arraycopy(buf, 0, nb, 0, buf.length);
+            buf = nb;
+        }
+        buf[i++] = (char)c;
+        }
 
-	    /* If we broke out of the loop because we found a matching quote
-	     * character then arrange to read a new character next time
-	     * around; otherwise, save the character.
-	     */
-	    peekc = (d == ttype) ? NEED_CHAR : d;
+        /* If we broke out of the loop because we found a matching quote
+         * character then arrange to read a new character next time
+         * around; otherwise, save the character.
+         */
+        peekc = (d == ttype) ? NEED_CHAR : d;
 
-	    sval = String.copyValueOf(buf, 0, i);
-	    return ttype;
-	}
+        sval = String.copyValueOf(buf, 0, i);
+        return ttype;
+    }
 
-	if (c == '/' && (slashSlashCommentsP || slashStarCommentsP)) {
-	    c = read();
-	    if (c == '*' && slashStarCommentsP) {
-		int prevc = 0;
-		while ((c = read()) != '/' || prevc != '*') {
-		    if (c == '\r') {
-			LINENO++;
-			c = read();
-			if (c == '\n') {
-			    c = read();
-			}
-		    } else {
-		        if (c == '\n') {
-			    LINENO++;
-			    c = read();
-			}
-		    }
-		    if (c < 0)
-		        return ttype = TT_EOF;
-		    prevc = c;
-		}
-		return nextToken();
-	    } else if (c == '/' && slashSlashCommentsP) {
-	        while ((c = read()) != '\n' && c != '\r' && c >= 0);
-	        peekc = c;
-		return nextToken();
-	    } else {
+    if (c == '/' && (slashSlashCommentsP || slashStarCommentsP)) {
+        c = read();
+        if (c == '*' && slashStarCommentsP) {
+        int prevc = 0;
+        while ((c = read()) != '/' || prevc != '*') {
+            if (c == '\r') {
+            LINENO++;
+            c = read();
+            if (c == '\n') {
+                c = read();
+            }
+            } else {
+                if (c == '\n') {
+                LINENO++;
+                c = read();
+            }
+            }
+            if (c < 0)
+                return ttype = TT_EOF;
+            prevc = c;
+        }
+        return nextToken();
+        } else if (c == '/' && slashSlashCommentsP) {
+            while ((c = read()) != '\n' && c != '\r' && c >= 0);
+            peekc = c;
+        return nextToken();
+        } else {
                 /* Now see if it is still a single line comment */
                 if ((ct['/'] & CT_COMMENT) != 0) {
                     while ((c = read()) != '\n' && c != '\r' && c >= 0);
@@ -733,7 +733,7 @@ public class EnhancedStreamTokenizer {
                     peekc = c;
                     return ttype = '/';
                 }
-	    }
+        }
         }
 
         if ((ctype & CT_COMMENT) != 0) {
@@ -742,7 +742,7 @@ public class EnhancedStreamTokenizer {
             return nextToken();
         }
 
-	return ttype = c;
+    return ttype = c;
     }
 
     /**
@@ -758,7 +758,7 @@ public class EnhancedStreamTokenizer {
      */
     public void pushBack() {
         if (ttype != TT_NOTHING)   /* No-op if nextToken() not called */
-	    pushedBack = true;
+        pushedBack = true;
     }
 
     /**
@@ -767,7 +767,7 @@ public class EnhancedStreamTokenizer {
      * @return  the current line number of this stream tokenizer.
      */
     public int lineno() {
-	return LINENO;
+    return LINENO;
     }
 
     /**
@@ -785,60 +785,60 @@ public class EnhancedStreamTokenizer {
      * @see     java.io.StreamTokenizer#ttype
      */
     public String toString() {
-	String ret;
-	switch (ttype) {
-	  case TT_EOF:
-	    ret = "EOF";
-	    break;
-	  case TT_EOL:
-	    ret = "EOL";
-	    break;
-	  case TT_WORD:
-	    ret = sval;
-	    break;
-	  case TT_NUMBER:
-	    ret = "n=" + nval;
-	    break;
-   	  case TT_NOTHING:
-	    ret = "NOTHING";
-	    break;
-	  default: {
-		/* 
-		 * ttype is the first character of either a quoted string or
-		 * is an ordinary character. ttype can definitely not be less
-		 * than 0, since those are reserved values used in the previous
-		 * case statements
-		 */
-		if (ttype < 256 && 
-		    ((ctype[ttype] & CT_QUOTE) != 0)) {
-		    ret = sval;
-		    break;
-		}
+    String ret;
+    switch (ttype) {
+      case TT_EOF:
+        ret = "EOF";
+        break;
+      case TT_EOL:
+        ret = "EOL";
+        break;
+      case TT_WORD:
+        ret = sval;
+        break;
+      case TT_NUMBER:
+        ret = "n=" + nval;
+        break;
+         case TT_NOTHING:
+        ret = "NOTHING";
+        break;
+      default: {
+        /*
+         * ttype is the first character of either a quoted string or
+         * is an ordinary character. ttype can definitely not be less
+         * than 0, since those are reserved values used in the previous
+         * case statements
+         */
+        if (ttype < 256 &&
+            ((ctype[ttype] & CT_QUOTE) != 0)) {
+            ret = sval;
+            break;
+        }
 
-		char s[] = new char[3];
-		s[0] = s[2] = '\'';
-		s[1] = (char) ttype;
-		ret = new String(s);
-		break;
-	    }
-	}
-	return "Token[" + ret + "], line " + LINENO;
+        char s[] = new char[3];
+        s[0] = s[2] = '\'';
+        s[1] = (char) ttype;
+        ret = new String(s);
+        break;
+        }
+    }
+    return "Token[" + ret + "], line " + LINENO;
     }
 
-	/**
-	 * Get status of the flag indicating whether escape sequences should be parsed.
-	 * @return flag indicating whether escape sequences should be parsed.
-	 */
-	public boolean isParseEscapeSequences() {
-		return parseEscapeSequences;
-	}
+    /**
+     * Get status of the flag indicating whether escape sequences should be parsed.
+     * @return flag indicating whether escape sequences should be parsed.
+     */
+    public boolean isParseEscapeSequences() {
+        return parseEscapeSequences;
+    }
 
-	/**
-	 * Set status of the flag indicating whether escape sequences should be parsed.
-	 * @param b flag indicating whether escape sequences should be parsed.
-	 */
-	public void setParseEscapeSequences(boolean b) {
-		parseEscapeSequences = b;
-	}
+    /**
+     * Set status of the flag indicating whether escape sequences should be parsed.
+     * @param b flag indicating whether escape sequences should be parsed.
+     */
+    public void setParseEscapeSequences(boolean b) {
+        parseEscapeSequences = b;
+    }
 
 }

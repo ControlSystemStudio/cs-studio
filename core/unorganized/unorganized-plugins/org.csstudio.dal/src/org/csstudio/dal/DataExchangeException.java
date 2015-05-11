@@ -37,31 +37,31 @@ package org.csstudio.dal;
  */
 public class DataExchangeException extends RemoteException
 {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	     * Constructs the exception with the source and message specification.
-	     *
-	     * @param instance object creating the exception
-	     * @param message exception message
-	     */
-	public DataExchangeException(Object instance, String message)
-	{
-		super(instance, message);
-	}
+    /**
+         * Constructs the exception with the source and message specification.
+         *
+         * @param instance object creating the exception
+         * @param message exception message
+         */
+    public DataExchangeException(Object instance, String message)
+    {
+        super(instance, message);
+    }
 
-	/**
-	     * Constructs the exception with the source, message and cause specification.
-	     *
-	     * @param instance object creating the exception
-	     * @param message exception message
-	     * @param t the exception that is causing <code>this</code> exception to
-	     *            be thrown
-	     */
-	public DataExchangeException(Object instance, String message, Throwable t)
-	{
-		super(instance, message, t);
-	}
+    /**
+         * Constructs the exception with the source, message and cause specification.
+         *
+         * @param instance object creating the exception
+         * @param message exception message
+         * @param t the exception that is causing <code>this</code> exception to
+         *            be thrown
+         */
+    public DataExchangeException(Object instance, String message, Throwable t)
+    {
+        super(instance, message, t);
+    }
 } /* __oOo__ */
 
 

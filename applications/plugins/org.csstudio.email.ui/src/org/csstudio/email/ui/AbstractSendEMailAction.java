@@ -21,7 +21,7 @@ abstract public class AbstractSendEMailAction extends Action
     final protected Shell shell;
     final private String from, subject;
     private String body;
-    
+
     /** Initialize with body, awaiting image
      *  @param shell
      *  @param from
@@ -60,27 +60,27 @@ abstract public class AbstractSendEMailAction extends Action
     @Override
     public void run()
     {
-    	if (body == null)
-    		body = getBody();
-    	if (body == null)
-    		body = ""; //$NON-NLS-1$
+        if (body == null)
+            body = getBody();
+        if (body == null)
+            body = ""; //$NON-NLS-1$
 
-    	// This action might be invoked from a context menu. In principle, RCP
-    	// closes the context menu before invoking this action.
+        // This action might be invoked from a context menu. In principle, RCP
+        // closes the context menu before invoking this action.
         // Tools that need to implement getImage() by taking a screenshot thus capture the original display,
-    	// without the context menu.
-    	// On Linux (X11, GTK), however, the context menu is still visible.
-    	// Presumably, the X11 display update queue is not 'flushed'?
-    	// By delaying the getImage() call into another Runnable, the context menu
-    	// was successfully closed in tests on Linux.
-    	final Display display = shell == null ? Display.getCurrent() : shell.getDisplay();
-    	display.asyncExec(new Runnable()
+        // without the context menu.
+        // On Linux (X11, GTK), however, the context menu is still visible.
+        // Presumably, the X11 display update queue is not 'flushed'?
+        // By delaying the getImage() call into another Runnable, the context menu
+        // was successfully closed in tests on Linux.
+        final Display display = shell == null ? Display.getCurrent() : shell.getDisplay();
+        display.asyncExec(new Runnable()
         {
             @Override
             public void run()
             {
                 final String image_filename = getImage();
-                
+
                 final Dialog dlg;
                 if (image_filename == null)
                     dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
@@ -99,9 +99,9 @@ abstract public class AbstractSendEMailAction extends Action
      */
     public String getBody()
     {
-	    return null;
+        return null;
     }
 
-	/** @return Image attachment. May return <code>null</code> for 'no image' */
+    /** @return Image attachment. May return <code>null</code> for 'no image' */
     abstract protected String getImage();
 }

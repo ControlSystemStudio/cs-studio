@@ -29,194 +29,194 @@ import java.io.Serializable;
  * The result of executing a management command. A result consists of the result
  * type and the value returned by the command, if any.
  * </p>
- * 
+ *
  * <p>
  * Note that the result type is not the Java class of the return value but a
  * logical type identifier which will be used to dispatch the return value to
  * an appropriate receiver.
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class CommandResult implements Serializable {
 
-	private static final long serialVersionUID = 5L;
+    private static final long serialVersionUID = 5L;
 
-	/**
-	 * Result type to indicate success without returning a value.
-	 */
-	public static final String TYPE_VOID =
-		"org.csstudio.platform.remotemanagement.resulttype.Void";
-	
-	/**
-	 * Result type for a message returned by a command that should be displayed
-	 * to the end user. This type can for example be used by commands that want
-	 * to return simple status information to the user in a generic way, without
-	 * the possibility of displaying the result in a type-specific viewer. The
-	 * Java type of the serialized object returned by the command must be
-	 * {@link String}.
-	 */
-	public static final String TYPE_MESSAGE =
-		"org.csstudio.platform.remotemanagement.resulttype.Message";
+    /**
+     * Result type to indicate success without returning a value.
+     */
+    public static final String TYPE_VOID =
+        "org.csstudio.platform.remotemanagement.resulttype.Void";
 
-	/**
-	 * Result type which indicates that the command did not execute successfully
-	 * and no value was returned.
-	 */
-	public static final String TYPE_ERROR =
-		"org.csstudio.platform.remotemanagement.resulttype.Error";
-	
-	/**
-	 * Result type which indicates that the command did not execute successfully
-	 * and an exception was returned. The Java type of the serialized object
-	 * returned by the command must be {@link Throwable}.
-	 */
-	public static final String TYPE_EXCEPTION =
-		"org.csstudio.platform.remotemanagement.resulttype.Exception";
-	
-	/**
-	 * Result type which indicates that the command did not execute successfully
-	 * and an error message was returned. The Java type of the serialized object
-	 * returned by the command must be {@link String}. Receivers which handle
-	 * this result type should display the error message to the end user.
-	 */
-	public static final String TYPE_ERROR_MESSAGE = 
-			"org.csstudio.platform.remotemanagement.resulttype.ErrorMessage";
-	
-	private final Object _value;
-	private final String _type;
+    /**
+     * Result type for a message returned by a command that should be displayed
+     * to the end user. This type can for example be used by commands that want
+     * to return simple status information to the user in a generic way, without
+     * the possibility of displaying the result in a type-specific viewer. The
+     * Java type of the serialized object returned by the command must be
+     * {@link String}.
+     */
+    public static final String TYPE_MESSAGE =
+        "org.csstudio.platform.remotemanagement.resulttype.Message";
 
-	/**
-	 * Creates a new command result.
-	 * 
-	 * @param value
-	 *            the return value, or <code>null</code> if the command did not
-	 *            return any value.
-	 * @param type
-	 *            the type of this result.
-	 */
-	private CommandResult(Object value, String type) {
-		_value = value;
-		_type = type;
-	}
-	
-	/**
-	 * Creates a command result which indicates success and does not return any
-	 * value.
-	 * 
-	 * @return the command result.
-	 */
-	public static CommandResult createSuccessResult() {
-		return new CommandResult(null, TYPE_VOID);
-	}
+    /**
+     * Result type which indicates that the command did not execute successfully
+     * and no value was returned.
+     */
+    public static final String TYPE_ERROR =
+        "org.csstudio.platform.remotemanagement.resulttype.Error";
 
-	/**
-	 * Creates a command result which indicates success and returns a value.
-	 * 
-	 * @param value
-	 *            the value that is returned by the command.
-	 * @param type
-	 *            the type of the result.
-	 * @return the command result.
-	 */
-	public static CommandResult createSuccessResult(Serializable value,
-			String type) {
-		if (value == null || type == null) {
-			throw new NullPointerException("value and type must not be null");
-		}
-		
-		return new CommandResult(value, type);
-	}
+    /**
+     * Result type which indicates that the command did not execute successfully
+     * and an exception was returned. The Java type of the serialized object
+     * returned by the command must be {@link Throwable}.
+     */
+    public static final String TYPE_EXCEPTION =
+        "org.csstudio.platform.remotemanagement.resulttype.Exception";
 
-	/**
-	 * Creates a command result which transports a message for the end user who
-	 * executed the command.
-	 * 
-	 * @param message
-	 *            the message.
-	 * @return the command result.
-	 */
-	public static CommandResult createMessageResult(String message) {
-		if (message == null) {
-			throw new NullPointerException("message must not be null");
-		}
-		
-		return new CommandResult(message, TYPE_MESSAGE);
-	}
+    /**
+     * Result type which indicates that the command did not execute successfully
+     * and an error message was returned. The Java type of the serialized object
+     * returned by the command must be {@link String}. Receivers which handle
+     * this result type should display the error message to the end user.
+     */
+    public static final String TYPE_ERROR_MESSAGE =
+            "org.csstudio.platform.remotemanagement.resulttype.ErrorMessage";
 
-	/**
-	 * Creates a command result which indicates failure. The returned result
-	 * does not contain any information about the error. It is recommended to
-	 * use one of the methods {@link #createFailureResult(String)} or
-	 * {@link #createFailureResult(Throwable)} instead of this method so that
-	 * administration tools can display an informative error message to the
-	 * user.
-	 * 
-	 * @return the command result.
-	 */
-	public static CommandResult createFailureResult() {
-		return new CommandResult(null, TYPE_ERROR);
-	}
+    private final Object _value;
+    private final String _type;
 
-	/**
-	 * Creates a command result which indicates failure and contains an error
-	 * message.
-	 * 
-	 * @param errorMessage
-	 *            the error message.
-	 * @return the command result.
-	 */
-	public static CommandResult createFailureResult(String errorMessage) {
-		if (errorMessage == null) {
-			throw new NullPointerException("errorMessage must not be null");
-		}
-		
-		return new CommandResult(errorMessage, TYPE_ERROR_MESSAGE);
-	}
+    /**
+     * Creates a new command result.
+     *
+     * @param value
+     *            the return value, or <code>null</code> if the command did not
+     *            return any value.
+     * @param type
+     *            the type of this result.
+     */
+    private CommandResult(Object value, String type) {
+        _value = value;
+        _type = type;
+    }
 
-	/**
-	 * Creates a command result which indicates failure and contains the
-	 * exception which caused the failure.
-	 * 
-	 * @param cause
-	 *            the exception which caused the command to fail.
-	 * @return the command result.
-	 */
-	public static CommandResult createFailureResult(Throwable cause) {
-		if (cause == null) {
-			throw new NullPointerException("cause must not be null");
-		}
-		
-		return new CommandResult(cause, TYPE_EXCEPTION);
-	}
+    /**
+     * Creates a command result which indicates success and does not return any
+     * value.
+     *
+     * @return the command result.
+     */
+    public static CommandResult createSuccessResult() {
+        return new CommandResult(null, TYPE_VOID);
+    }
 
-	/**
-	 * Returns the value returned by the command.
-	 * 
-	 * @return the return value.
-	 */
-	public Object getValue() {
-		return _value;
-	}
-	
-	/**
-	 * Returns the type of this result.
-	 * 
-	 * @return the type of this result.
-	 */
-	public String getType() {
-		return _type;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		StringBuilder result = new StringBuilder("CommandResult[");
-		result.append("type=");
-		result.append(_type);
-		result.append("]");
-		return result.toString();
-	}
+    /**
+     * Creates a command result which indicates success and returns a value.
+     *
+     * @param value
+     *            the value that is returned by the command.
+     * @param type
+     *            the type of the result.
+     * @return the command result.
+     */
+    public static CommandResult createSuccessResult(Serializable value,
+            String type) {
+        if (value == null || type == null) {
+            throw new NullPointerException("value and type must not be null");
+        }
+
+        return new CommandResult(value, type);
+    }
+
+    /**
+     * Creates a command result which transports a message for the end user who
+     * executed the command.
+     *
+     * @param message
+     *            the message.
+     * @return the command result.
+     */
+    public static CommandResult createMessageResult(String message) {
+        if (message == null) {
+            throw new NullPointerException("message must not be null");
+        }
+
+        return new CommandResult(message, TYPE_MESSAGE);
+    }
+
+    /**
+     * Creates a command result which indicates failure. The returned result
+     * does not contain any information about the error. It is recommended to
+     * use one of the methods {@link #createFailureResult(String)} or
+     * {@link #createFailureResult(Throwable)} instead of this method so that
+     * administration tools can display an informative error message to the
+     * user.
+     *
+     * @return the command result.
+     */
+    public static CommandResult createFailureResult() {
+        return new CommandResult(null, TYPE_ERROR);
+    }
+
+    /**
+     * Creates a command result which indicates failure and contains an error
+     * message.
+     *
+     * @param errorMessage
+     *            the error message.
+     * @return the command result.
+     */
+    public static CommandResult createFailureResult(String errorMessage) {
+        if (errorMessage == null) {
+            throw new NullPointerException("errorMessage must not be null");
+        }
+
+        return new CommandResult(errorMessage, TYPE_ERROR_MESSAGE);
+    }
+
+    /**
+     * Creates a command result which indicates failure and contains the
+     * exception which caused the failure.
+     *
+     * @param cause
+     *            the exception which caused the command to fail.
+     * @return the command result.
+     */
+    public static CommandResult createFailureResult(Throwable cause) {
+        if (cause == null) {
+            throw new NullPointerException("cause must not be null");
+        }
+
+        return new CommandResult(cause, TYPE_EXCEPTION);
+    }
+
+    /**
+     * Returns the value returned by the command.
+     *
+     * @return the return value.
+     */
+    public Object getValue() {
+        return _value;
+    }
+
+    /**
+     * Returns the type of this result.
+     *
+     * @return the type of this result.
+     */
+    public String getType() {
+        return _type;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder("CommandResult[");
+        result.append("type=");
+        result.append(_type);
+        result.append("]");
+        return result.toString();
+    }
 }

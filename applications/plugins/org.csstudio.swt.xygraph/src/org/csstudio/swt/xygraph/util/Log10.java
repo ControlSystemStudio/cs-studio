@@ -41,7 +41,7 @@ public class Log10
     }
 
     /** Counterpart to log10.
-     * 
+     *
      *  <p>Turns 'really big negative' number as provided by
      *  log10 into a 'really small' value
      *

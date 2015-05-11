@@ -15,32 +15,32 @@ import org.eclipse.jface.text.rules.IToken;
 
 /**
  * Rule to recognize operators.
- * 
+ *
  * @author P.Tomaszewski
- * 
+ *
  * TODO Move this class and its Test to
  * de.desy.snl.editor.draft.ui.extension.predefinedRules
  */
 public class OperatorRule extends SingleCharRule {
-	/**
-	 * Creates new rule.
-	 * 
-	 * @param token
-	 *            Style token.
-	 */
-	public OperatorRule(final IToken token) {
-		super(token);
-	}
+    /**
+     * Creates new rule.
+     *
+     * @param token
+     *            Style token.
+     */
+    public OperatorRule(final IToken token) {
+        super(token);
+    }
 
-	/**
-	 * @see SingleCharRule#isRuleChar(int)
-	 */
-	@Override
-	public boolean isRuleChar(final int ch) {
-		return ((ch == ';') || (ch == '.') || (ch == ':') || (ch == '=')
-				|| (ch == '-') || (ch == '+') || (ch == '\\') || (ch == '*')
-				|| (ch == '!') || (ch == '%') || (ch == '^') || (ch == '&')
-				|| (ch == '~') || (ch == '>') || (ch == '<'))
-				|| (ch == '|');
-	}
+    /**
+     * @see SingleCharRule#isRuleChar(int)
+     */
+    @Override
+    public boolean isRuleChar(final int ch) {
+        return ((ch == ';') || (ch == '.') || (ch == ':') || (ch == '=')
+                || (ch == '-') || (ch == '+') || (ch == '\\') || (ch == '*')
+                || (ch == '!') || (ch == '%') || (ch == '^') || (ch == '&')
+                || (ch == '~') || (ch == '>') || (ch == '<'))
+                || (ch == '|');
+    }
 }

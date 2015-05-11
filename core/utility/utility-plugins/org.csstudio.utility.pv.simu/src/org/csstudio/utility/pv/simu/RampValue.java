@@ -26,14 +26,14 @@ public class RampValue extends DynamicValue
         if (step <= 0)
             step = 1;
         if(step > Math.abs(max-min))
-        	step = Math.abs((max-min)/10);
+            step = Math.abs((max-min)/10);
         value = down ? max : min;
     }
 
     /** {@inheritDoc} */
     @Override
     protected void update()
-    {    	
+    {
         if (down)
         {
             value = value - step;

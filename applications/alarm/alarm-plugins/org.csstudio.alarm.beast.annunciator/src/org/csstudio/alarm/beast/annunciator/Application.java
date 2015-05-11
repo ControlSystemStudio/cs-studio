@@ -33,61 +33,61 @@ public class Application implements IApplication, JMSAnnunciatorListener
 {
     /** Flag to control if the application runs or stops */
     private boolean run = true;
-    
+
     /** {@inheritDoc} */
-	@Override
+    @Override
     public Object start(IApplicationContext context) throws Exception
-	{
-	    // Stupid, silly, annoying:
-	    // Not sure what exactly happened, but after a JVM update from Apple
-	    // around Oct. 2008 the FreeTTS library would hang when called from
-	    // an Eclipse application. Looks like it uses some AWT features
-	    // which are available from a plain old main() program as well
-	    // as Swing apps, but not headless Eclipse apps.
-	    // With OS X 10.6.8 and the 1.6.0_26 JDK this is no longer
-	    // necessary, in fact it will cause the annunciator to hang
-	    // in new JFrame()
-//	    if (System.getProperty("os.name").startsWith("Mac"))
-//	    {
-//    	    //Create Swing window, which triggers some
-//	        // Java CocoaComponent compatibility crap ...
+    {
+        // Stupid, silly, annoying:
+        // Not sure what exactly happened, but after a JVM update from Apple
+        // around Oct. 2008 the FreeTTS library would hang when called from
+        // an Eclipse application. Looks like it uses some AWT features
+        // which are available from a plain old main() program as well
+        // as Swing apps, but not headless Eclipse apps.
+        // With OS X 10.6.8 and the 1.6.0_26 JDK this is no longer
+        // necessary, in fact it will cause the annunciator to hang
+        // in new JFrame()
+//        if (System.getProperty("os.name").startsWith("Mac"))
+//        {
+//            //Create Swing window, which triggers some
+//            // Java CocoaComponent compatibility crap ...
 //            JFrame frame = new JFrame("JMS2SPEECH");
 //            frame.pack();
 //            frame.setVisible(true);
-//	    }
+//        }
 
-		final String url = Preferences.getURL();
-		final String topics[] = Preferences.getTopics();
+        final String url = Preferences.getURL();
+        final String topics[] = Preferences.getTopics();
 
-		// Display configuration info
+        // Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
 
-		// Create parser for arguments and run it.
-		final String args[] = (String[]) context.getArguments().get("application.args");
+        // Create parser for arguments and run it.
+        final String args[] = (String[]) context.getArguments().get("application.args");
 
-		final ArgParser parser = new ArgParser();
-		final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
-		final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
-		parser.addEclipseParameters();
-		try {
-			parser.parse(args);
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage() + "\n" + parser.getHelp());
-			return IApplication.EXIT_OK;
-		}
-		if (help_opt.get()) {
-			System.out.println(app_info + "\n\n" + parser.getHelp());
-			return IApplication.EXIT_OK;
-		}
-		if (version_opt.get()) {
-			System.out.println(app_info);
-			return IApplication.EXIT_OK;
-		}
+        final ArgParser parser = new ArgParser();
+        final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
+        final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
+        parser.addEclipseParameters();
+        try {
+            parser.parse(args);
+        } catch (final Exception ex) {
+            System.out.println(ex.getMessage() + "\n" + parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
+        if (help_opt.get()) {
+            System.out.println(app_info + "\n\n" + parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
+        if (version_opt.get()) {
+            System.out.println(app_info);
+            return IApplication.EXIT_OK;
+        }
 
         // Put startup info with JMS topic & URL into log
         Logger.getLogger(Activator.PLUGIN_ID).info
-		    ("JMS2SPEECH " + version + ", topic " + Arrays.toString(topics) + " @ " + url);
+            ("JMS2SPEECH " + version + ", topic " + Arrays.toString(topics) + " @ " + url);
 
         final Connection connection = JMSConnectionFactory.connect(url);
 
@@ -97,7 +97,7 @@ public class Application implements IApplication, JMSAnnunciatorListener
 
         annunciator.start();
 
-		// Run for some time. Actually forever.
+        // Run for some time. Actually forever.
         while (run)
             Thread.sleep(1000);
 
@@ -105,16 +105,16 @@ public class Application implements IApplication, JMSAnnunciatorListener
         annunciator.close();
 
         return IApplication.EXIT_OK;
-	}
-
-    /** {@inheritDoc} */
-	@Override
-    public void stop()
-	{
-	    run = false;
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
+    @Override
+    public void stop()
+    {
+        run = false;
+    }
+
+    /** {@inheritDoc} */
     @Override
     public void performedAnnunciation(final AnnunciationMessage annunciation)
     {

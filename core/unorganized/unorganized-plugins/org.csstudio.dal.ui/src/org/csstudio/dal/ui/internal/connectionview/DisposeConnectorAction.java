@@ -13,51 +13,51 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Action that dispose all currently selected connectors.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class DisposeConnectorAction implements IObjectActionDelegate {
 
-	private List<IConnector> _selectedConnectors;
+    private List<IConnector> _selectedConnectors;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+    /**
+     * {@inheritDoc}
+     */
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void run(IAction action) {
-		if(_selectedConnectors!=null) {
-			for(IConnector c : _selectedConnectors) {
-				c.forceDispose();
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void run(IAction action) {
+        if(_selectedConnectors!=null) {
+            for(IConnector c : _selectedConnectors) {
+                c.forceDispose();
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection != null && selection instanceof IStructuredSelection) {
-			IStructuredSelection sel = (IStructuredSelection) selection;
+    /**
+     * {@inheritDoc}
+     */
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (selection != null && selection instanceof IStructuredSelection) {
+            IStructuredSelection sel = (IStructuredSelection) selection;
 
-			_selectedConnectors = new ArrayList<IConnector>();
+            _selectedConnectors = new ArrayList<IConnector>();
 
-			Iterator it = sel.iterator();
+            Iterator it = sel.iterator();
 
-			while (it.hasNext()) {
-				Object o = it.next();
+            while (it.hasNext()) {
+                Object o = it.next();
 
-				if (o instanceof IConnector) {
-					_selectedConnectors.add((IConnector) o);
-				}
-			}
-		}
-	}
+                if (o instanceof IConnector) {
+                    _selectedConnectors.add((IConnector) o);
+                }
+            }
+        }
+    }
 
 }

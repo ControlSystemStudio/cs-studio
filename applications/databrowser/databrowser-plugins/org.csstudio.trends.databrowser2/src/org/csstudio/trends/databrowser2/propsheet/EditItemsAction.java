@@ -35,7 +35,7 @@ public class EditItemsAction extends Action
      *  @param model Model
      */
     public EditItemsAction(final UndoableActionManager operations_manager,
-    		final Shell shell,
+            final Shell shell,
             final TableViewer trace_table,
             final Model model)
     {

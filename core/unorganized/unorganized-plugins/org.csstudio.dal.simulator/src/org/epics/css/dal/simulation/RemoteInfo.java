@@ -65,585 +65,585 @@ import com.cosylab.naming.URIName;
  */
 public class RemoteInfo extends URIName
 {
-	private static final long serialVersionUID = 5208467218927145986L;
-
-	private static final Escaper remoteInfoEscaper = new Escaper(new char[]{
-			    '/', '?'
-		    });
-
-	/** Prefix, which is used for concate URI schema part from plug type name. */
-	public static final String SCHEME_PREFIX = "DAL-";
-
-	/**
-	 * Takes a single escaped part of an URI and unescapes it to reveal
-	 * the true name component. The string parameter should not contain any
-	 * special characters (such as '/', ':', '?', ';', '#' etc.) except for
-	 * the '%' character which should be used for escaping only.  Example:
-	 * "Device%203%2F1" -&gt; "Device 3/1"
-	 *
-	 * @param escapedPart the String that should be escaped
-	 *
-	 * @return String which can be used to form an URI
-	 */
-	public static String unescapePartOfURI(String escapedPart)
-	{
-		String ret = URI.create("DAL:///" + escapedPart).getPath().substring(1);
-
-		return ret;
-	}
-
-	private RemoteInfo()
-	{
-		//
-	}
-
-	/**
-	 * Creates a new remote info object from the name of the remote entity, the
-	 * authority and the plug type. This constructor will usually be used to
-	 * name connectable entities. All string are expected to be encoded for
-	 * nonhierarcical use of '/' or '?' characters.
-	 *
-	 * @param name the name of the connectable entity; this name may contain
-	 *        slash hierarchical separators, or end with query part, separated
-	 *        with '?' from remote name part; non-<code>null</code>
-	 * @param authority an optional namespace authority (such as a name server,
-	 *        context server, device manager etc); i.e. that is the entity in
-	 *        the scope of which the <code>remoteName</code> becomes a unique
-	 *        remote target designation; may be <code>null</code> if the plug
-	 *        can either provide a default value or the system runs on top of
-	 *        a global namespace
-	 * @param plugType the name of the plug under which this remote info is
-	 *        being issued; this is the plug where the remote target runs;
-	 *        non-<code>null</code>
-	 *
-	 * @throws NamingException if name creation fails
-	 * @throws NullPointerException if name or plug type is <code>null</code>.
-	 */
-	public RemoteInfo(String name, String authority, String plugType)
-		throws NamingException
-	{
-		super();
-		assert (name != null);
-		assert (plugType != null);
-
-		if (name == null) {
-			throw new NullPointerException("name");
-		}
-
-		if (plugType == null) {
-			throw new NullPointerException("plugType");
-		}
-
-		String query = null;
-		int i = name.lastIndexOf('?');
-
-		if (i > -1) {
-			query = name.substring(i + 1);
-			name = name.substring(0, i);
-		}
-
-		initialize(SCHEME_PREFIX + plugType, authority, name, query);
-	}
-
-	/**
-	 * Creates new RemoteInfo from URI instance.
-	 *
-	 * @param uri remote URI
-	 */
-	public RemoteInfo(URI uri)
-	{
-		super(uri);
-	}
-
-	/**
-	 * Creates new RemoteInfo from URI instance.
-	 *
-	 * @param uri URI based implementation ov Name
-	 */
-	public RemoteInfo(URIName uri)
-	{
-		super(uri);
-	}
-
-	/**
-	 * Creates new RemoteInfo by parsing URI string.
-	 *
-	 * @param uri URI string
-	 *
-	 * @throws NamingException if creation fails
-	 */
-	public RemoteInfo(String uri) throws NamingException
-	{
-		super(uri);
-	}
-
-	/**
-	 * Creates a new remote info by appending both a hierarchical component and
-	 * finally a query to the given <code>remoteName</code>. This constructor
-	 * is used internally by the <code>create...()</code> methods of this
-	 * class.
-	 *
-	 * @param remoteName the name of the connectable for which this remote info
-	 *        is to be created, may be hierarchical with slash separators
-	 * @param query the query to be added right after the
-	 *        <code>component</code> part
-	 * @param authority authority to use with this remote info, may be
-	 *        <code>null</code> if the plug will determine authority or if a
-	 *        global namespace is used
-	 * @param plugType the type of the plug in the scope of which this info is
-	 *        going to be issued / valid, non-<code>null</code>
-	 *
-	 * @throws NamingException if creation fails
-	 * @throws NullPointerException if plug type is null
-	 */
-	public RemoteInfo(String remoteName, String query, String authority,
-	    String plugType) throws NamingException
-	{
-		super();
-		assert (plugType != null);
-
-		if (plugType == null) {
-			throw new NullPointerException("plugType");
-		}
-
-		initialize(SCHEME_PREFIX + plugType, authority, remoteName, query);
-	}
-
-	/**
-	 * Creates a new remote info by appending both a hierarchical component and
-	 * finally a query to the given <code>remoteName</code>. This constructor
-	 * is used internally by the <code>create...()</code> methods of this
-	 * class.
-	 *
-	 * @param parent name, from which to copy contents; non-<code>null</code>
-	 * @param component the part of name that will be appended right after the
-	 *        <code>remoteName</code>, without slashes, non-<code>null</code>
-	 * @param query the query to be added right after the
-	 *        <code>remoteName</code> part
-	 *
-	 * @throws InvalidNameException if creation fails
-	 */
-	public RemoteInfo(RemoteInfo parent, String component, String query)
-		throws InvalidNameException
-	{
-		super();
-		initialize(0, parent.isWithQuery() ? parent.size() - 1 : parent.size(),
-		    parent.components, parent.relative, parent.withAuthority,
-		    parent.withQuery);
-
-		if (component != null) {
-			super.add(component);
-		}
-
-		if (query != null) {
-			super.add(query);
-			setWithQuery(true);
-		}
-	}
-
-	/**
-	 * Returns the name part of this remote info: the remote name with
-	 * the query. This is the part of URI without the schema and authority.
-	 *
-	 * @return the name part of the remote info
-	 */
-	public String getName()
-	{
-		return extractName(toURI());
-	}
-
-	/**
-	 * Returns the remote name part of this remote info. This is the
-	 * part of URI without the schema, authority and query.
-	 *
-	 * @return the name part of the remote info
-	 */
-	public String getRemoteName()
-	{
-		return extractRemoteName(toURI());
-	}
-
-	/**
-	 * Returns the plug name by which this remote info has been
-	 * instantiated.
-	 *
-	 * @return name of the plug that instantiated this remote info
-	 */
-	public String getPlugType()
-	{
-		return extractPlugType(toURI());
-	}
-
-	/**
-	 * Creates a new remote info instance by appending a new path
-	 * component part into the name. For example, "abeans-Simulator:///PSBEND"
-	 * plus "current" will result in "abeans-Simulator:///PSBEND/current".
-	 * Quary part is not included in new RemoteInfo.
-	 *
-	 * @param componentName the name to append into the pathcomponent URI part,
-	 *        non-<code>null</code>
-	 *
-	 * @return a new remote info instance with appended path
-	 */
-	public RemoteInfo createHierarchy(String componentName)
-	{
-		try {
-			return new RemoteInfo(this, componentName, null);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-	}
-
-	/**
-	 * Creates a new remote info instance by appending a query string
-	 * to the end of the name. For example,
-	 * "abeans-Simulator:///PSBEND/current" plus query "get" will result in
-	 * "abeans-Simulator:///PSBEND/current?get".
-	 *
-	 * @param queryName the query that will be appended after all pathcomponent
-	 *        parts of the URI name, non-<code>null</code>
-	 *
-	 * @return a new remote info instance with appended query
-	 */
-	public RemoteInfo createQuery(String queryName)
-	{
-		try {
-			return new RemoteInfo(this, null, queryName);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-	}
-
-	/**
-	 * Returns the authority part of this remote info if it exists.
-	 *
-	 * @return authority or <code>null</code> if either the plug is calculating
-	 *         the authority on the fly or the plug is running on no-authority
-	 *         (global) namespace
-	 */
-	public String getAuthority()
-	{
-		return extractAuthority(toURI());
-	}
-
-	/**
-	 * Creates a new remote info by appending to an existing remote
-	 * name both a hierarchy pathcomponent and a new query. Other properties
-	 * of the existing remote info are retained (such as the authority, plug
-	 * type etc).
-	 *
-	 * @param componentName the component to append to the existing remote
-	 *        name, non-<code>null</code>
-	 * @param queryName the query to append to the end of pathcomponent
-	 *        sequence, non-<code>null</code>
-	 *
-	 * @return a new instance of remote info with names appended
-	 */
-	public RemoteInfo createHierarchyAndQuery(String componentName,
-	    String queryName)
-	{
-		try {
-			return new RemoteInfo(this, componentName, queryName);
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			return null;
-		}
-	}
-
-	/**
-	 * Throws an exception.
-	 *
-	 * @param posn ignored
-	 * @param comp ignored
-	 *
-	 * @return exception always thrown
-	 *
-	 * @throws InvalidNameException always thrown
-	 */
-	public Name add(int posn, String comp) throws InvalidNameException
-	{
-		throw new InvalidNameException(
-		    "Cannot add to a remote info with generic add method. Use 'create...' methods instead.");
-	}
-
-	/**
-	 * Throws an exception.
-	 *
-	 * @param comp ignored
-	 *
-	 * @return exception always thrown
-	 *
-	 * @throws InvalidNameException always thrown
-	 */
-	public Name add(String comp) throws InvalidNameException
-	{
-		throw new InvalidNameException(
-		    "Cannot add to a remote info with generic add method. Use 'create...' methods instead.");
-	}
-
-	/**
-	 * Throws an exception.
-	 *
-	 * @param posn ignored
-	 * @param n ignored
-	 *
-	 * @return exception always thrown
-	 *
-	 * @throws InvalidNameException always thrown
-	 */
-	public Name addAll(int posn, Name n) throws InvalidNameException
-	{
-		throw new InvalidNameException(
-		    "Cannot add to a remote info with generic add method. Use 'create...' methods instead.");
-	}
-
-	/**
-	 * Throws an exception.
-	 *
-	 * @param suffix ignored
-	 *
-	 * @return exception always thrown
-	 *
-	 * @throws InvalidNameException always thrown
-	 */
-	public Name addAll(Name suffix) throws InvalidNameException
-	{
-		throw new InvalidNameException(
-		    "Cannot add to a remote info with generic add method. Use 'create...' methods instead.");
-	}
-
-	/**
-	 * Throws an exception.
-	 *
-	 * @param posn ignored
-	 *
-	 * @return exception always thrown
-	 *
-	 * @throws InvalidNameException always thrown
-	 */
-	public Object remove(int posn) throws InvalidNameException
-	{
-		throw new InvalidNameException(
-		    "Cannot remove name elements from remote info.");
-	}
-
-	/**
-	 * Returns the query part of this remote info if it exists.
-	 *
-	 * @return query or <code>null</code>
-	 */
-	public String getQuery()
-	{
-		return extractQuery(toURI());
-	}
-
-	/**
-	 * Creates Name instance by parsing URI string.
-	 *
-	 * @param uri URI string
-	 *
-	 * @return Name instance
-	 *
-	 * @throws NamingException if Name creation fails
-	 */
-	public static Name parseURIstring(String uri) throws NamingException
-	{
-		return new URIName(uri);
-	}
-
-	/**
-	 * Parses remote name to relative URIName. Remote name corresponds
-	 * to path part of URI.
-	 *
-	 * @param remoteName remote name, a relative path in URI with no
-	 *
-	 * @return relative URIName
-	 */
-	public static Name parseRemoteName(String remoteName)
-	{
-		String[] comps = remoteInfoEscaper.stringToComponents(remoteName);
-
-		URIName ret = new URIName(comps);
-
-		ret.setRelative(true);
-
-		return ret;
-	}
-
-	/**
-	 * Parses Abeans URI string to URIName.
-	 *
-	 * @param uri URI sting
-	 * @param relative flags URIName to be relative or not
-	 *
-	 * @return instance of URIName
-	 */
-	public static Name parseAbeansURI(String uri, boolean relative)
-	{
-		String[] comps = remoteInfoEscaper.stringToComponents(uri);
-
-		URIName ret = new URIName(comps);
-
-		ret.setRelative(relative);
-
-		return ret;
-	}
-
-	/**
-	 * Takes a single unescaped part of a hierarchical name and escapes
-	 * it so that it can be used to form remoteName part of remoteInfo. Escape
-	 * rules are similar to those in javax.naming.CompositeName, only that '?'
-	 * character is added as a separator and is escaped in the same way as '/'
-	 * character.   Example "Device 3/1" -&gt; "Device 3\/1"
-	 *
-	 * @param string which should be escaped to represent a part of a Name
-	 *        instance
-	 *
-	 * @return an escaped string, which can be concatenated with '/' and '?' to
-	 *         form remoteName part of RemoteInfo
-	 */
-	public static String escapePartToRemoteName(String string)
-	{
-		return remoteInfoEscaper.escapeComponent(string);
-	}
-
-	/**
-	 * Extracts name from <code>URI</code>.<p>This method helps
-	 * creating <code>RemoteInfo</code> from <code>URI</code> serialized form.</p>
-	 *
-	 * @param uri the target <code>URI</code> for remote entity or operation
-	 *
-	 * @return extracted Abeans name
-	 */
-	public static String extractRemoteName(URI uri)
-	{
-		if (uri == null) {
-			return null;
-		}
-
-		String path = uri.getPath();
-
-		if (path != null && path.length() > 0) {
-			if (path.charAt(0) == '/') {
-				return path.substring(1);
-			}
-
-			return path;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Extracts remote name from <code>URI</code>. Extracted
-	 * nametontains remote entity name plus query.<p>This method helps
-	 * creating <code>RemoteInfo</code> from <code>URI</code> serialized form.</p>
-	 *
-	 * @param uri the target <code>URI</code> for remote entity or operation
-	 *
-	 * @return extracted Abeans name
-	 */
-	public static String extractName(URI uri)
-	{
-		if (uri == null) {
-			return null;
-		}
-
-		String path = uri.getPath();
-		String query = uri.getQuery();
-
-		int l = path != null ? path.length() : 0;
-		l += query != null ? query.length() : 0;
-		l++;
-
-		StringBuffer sb = new StringBuffer(l);
-
-		if (path != null && path.length() > 0) {
-			if (path.charAt(0) == '/') {
-				sb.append(path.toCharArray(), 1, path.length() - 1);
-			} else {
-				sb.append(path.toCharArray());
-			}
-		}
-
-		if (uri.getQuery() != null) {
-			sb.append('?');
-			sb.append(uri.getQuery());
-		}
-
-		return sb.length() > 0 ? sb.toString() : null;
-	}
-
-	/**
-	 * Extracts authority part of URI for Abeans entity.<p>This method
-	 * helps creating <code>RemoteInfo</code> from <code>URI</code> serialized
-	 * form.</p>
-	 *
-	 * @param uri the target <code>URI</code> for Abeans Entity
-	 *
-	 * @return extracted Abeans authority
-	 */
-	public static String extractAuthority(URI uri)
-	{
-		if (uri == null) {
-			return null;
-		}
-
-		return uri.getAuthority();
-	}
-
-	/**
-	 * Extracts query part of URI for Abeans entity.<p>This method
-	 * helps creating <code>RemoteInfo</code> from <code>URI</code> serialized
-	 * form.</p>
-	 *
-	 * @param uri the target <code>URI</code> for Abeans Entity
-	 *
-	 * @return extracted Abeans query
-	 */
-	public static String extractQuery(URI uri)
-	{
-		if (uri == null) {
-			return null;
-		}
-
-		return uri.getQuery();
-	}
-
-	/**
-	 * Extracts plug type from scheme part of URI for Abeans entity.<p>This
-	 * method helps creating <code>RemoteInfo</code> from <code>URI</code>
-	 * serialized form.</p>
-	 *
-	 * @param uri the target <code>URI</code> for Abeans Entity
-	 *
-	 * @return extracted Abeans plug type
-	 */
-	public static String extractPlugType(URI uri)
-	{
-		if (uri == null) {
-			return null;
-		}
-
-		String scheme = uri.getScheme();
-
-		if (scheme == null) {
-			return null;
-		}
-
-		int i = SCHEME_PREFIX.length();
-
-		if (scheme.length() > i) {
-			return scheme.substring(i);
-		}
-
-		return null;
-	}
+    private static final long serialVersionUID = 5208467218927145986L;
+
+    private static final Escaper remoteInfoEscaper = new Escaper(new char[]{
+                '/', '?'
+            });
+
+    /** Prefix, which is used for concate URI schema part from plug type name. */
+    public static final String SCHEME_PREFIX = "DAL-";
+
+    /**
+     * Takes a single escaped part of an URI and unescapes it to reveal
+     * the true name component. The string parameter should not contain any
+     * special characters (such as '/', ':', '?', ';', '#' etc.) except for
+     * the '%' character which should be used for escaping only.  Example:
+     * "Device%203%2F1" -&gt; "Device 3/1"
+     *
+     * @param escapedPart the String that should be escaped
+     *
+     * @return String which can be used to form an URI
+     */
+    public static String unescapePartOfURI(String escapedPart)
+    {
+        String ret = URI.create("DAL:///" + escapedPart).getPath().substring(1);
+
+        return ret;
+    }
+
+    private RemoteInfo()
+    {
+        //
+    }
+
+    /**
+     * Creates a new remote info object from the name of the remote entity, the
+     * authority and the plug type. This constructor will usually be used to
+     * name connectable entities. All string are expected to be encoded for
+     * nonhierarcical use of '/' or '?' characters.
+     *
+     * @param name the name of the connectable entity; this name may contain
+     *        slash hierarchical separators, or end with query part, separated
+     *        with '?' from remote name part; non-<code>null</code>
+     * @param authority an optional namespace authority (such as a name server,
+     *        context server, device manager etc); i.e. that is the entity in
+     *        the scope of which the <code>remoteName</code> becomes a unique
+     *        remote target designation; may be <code>null</code> if the plug
+     *        can either provide a default value or the system runs on top of
+     *        a global namespace
+     * @param plugType the name of the plug under which this remote info is
+     *        being issued; this is the plug where the remote target runs;
+     *        non-<code>null</code>
+     *
+     * @throws NamingException if name creation fails
+     * @throws NullPointerException if name or plug type is <code>null</code>.
+     */
+    public RemoteInfo(String name, String authority, String plugType)
+        throws NamingException
+    {
+        super();
+        assert (name != null);
+        assert (plugType != null);
+
+        if (name == null) {
+            throw new NullPointerException("name");
+        }
+
+        if (plugType == null) {
+            throw new NullPointerException("plugType");
+        }
+
+        String query = null;
+        int i = name.lastIndexOf('?');
+
+        if (i > -1) {
+            query = name.substring(i + 1);
+            name = name.substring(0, i);
+        }
+
+        initialize(SCHEME_PREFIX + plugType, authority, name, query);
+    }
+
+    /**
+     * Creates new RemoteInfo from URI instance.
+     *
+     * @param uri remote URI
+     */
+    public RemoteInfo(URI uri)
+    {
+        super(uri);
+    }
+
+    /**
+     * Creates new RemoteInfo from URI instance.
+     *
+     * @param uri URI based implementation ov Name
+     */
+    public RemoteInfo(URIName uri)
+    {
+        super(uri);
+    }
+
+    /**
+     * Creates new RemoteInfo by parsing URI string.
+     *
+     * @param uri URI string
+     *
+     * @throws NamingException if creation fails
+     */
+    public RemoteInfo(String uri) throws NamingException
+    {
+        super(uri);
+    }
+
+    /**
+     * Creates a new remote info by appending both a hierarchical component and
+     * finally a query to the given <code>remoteName</code>. This constructor
+     * is used internally by the <code>create...()</code> methods of this
+     * class.
+     *
+     * @param remoteName the name of the connectable for which this remote info
+     *        is to be created, may be hierarchical with slash separators
+     * @param query the query to be added right after the
+     *        <code>component</code> part
+     * @param authority authority to use with this remote info, may be
+     *        <code>null</code> if the plug will determine authority or if a
+     *        global namespace is used
+     * @param plugType the type of the plug in the scope of which this info is
+     *        going to be issued / valid, non-<code>null</code>
+     *
+     * @throws NamingException if creation fails
+     * @throws NullPointerException if plug type is null
+     */
+    public RemoteInfo(String remoteName, String query, String authority,
+        String plugType) throws NamingException
+    {
+        super();
+        assert (plugType != null);
+
+        if (plugType == null) {
+            throw new NullPointerException("plugType");
+        }
+
+        initialize(SCHEME_PREFIX + plugType, authority, remoteName, query);
+    }
+
+    /**
+     * Creates a new remote info by appending both a hierarchical component and
+     * finally a query to the given <code>remoteName</code>. This constructor
+     * is used internally by the <code>create...()</code> methods of this
+     * class.
+     *
+     * @param parent name, from which to copy contents; non-<code>null</code>
+     * @param component the part of name that will be appended right after the
+     *        <code>remoteName</code>, without slashes, non-<code>null</code>
+     * @param query the query to be added right after the
+     *        <code>remoteName</code> part
+     *
+     * @throws InvalidNameException if creation fails
+     */
+    public RemoteInfo(RemoteInfo parent, String component, String query)
+        throws InvalidNameException
+    {
+        super();
+        initialize(0, parent.isWithQuery() ? parent.size() - 1 : parent.size(),
+            parent.components, parent.relative, parent.withAuthority,
+            parent.withQuery);
+
+        if (component != null) {
+            super.add(component);
+        }
+
+        if (query != null) {
+            super.add(query);
+            setWithQuery(true);
+        }
+    }
+
+    /**
+     * Returns the name part of this remote info: the remote name with
+     * the query. This is the part of URI without the schema and authority.
+     *
+     * @return the name part of the remote info
+     */
+    public String getName()
+    {
+        return extractName(toURI());
+    }
+
+    /**
+     * Returns the remote name part of this remote info. This is the
+     * part of URI without the schema, authority and query.
+     *
+     * @return the name part of the remote info
+     */
+    public String getRemoteName()
+    {
+        return extractRemoteName(toURI());
+    }
+
+    /**
+     * Returns the plug name by which this remote info has been
+     * instantiated.
+     *
+     * @return name of the plug that instantiated this remote info
+     */
+    public String getPlugType()
+    {
+        return extractPlugType(toURI());
+    }
+
+    /**
+     * Creates a new remote info instance by appending a new path
+     * component part into the name. For example, "abeans-Simulator:///PSBEND"
+     * plus "current" will result in "abeans-Simulator:///PSBEND/current".
+     * Quary part is not included in new RemoteInfo.
+     *
+     * @param componentName the name to append into the pathcomponent URI part,
+     *        non-<code>null</code>
+     *
+     * @return a new remote info instance with appended path
+     */
+    public RemoteInfo createHierarchy(String componentName)
+    {
+        try {
+            return new RemoteInfo(this, componentName, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+    /**
+     * Creates a new remote info instance by appending a query string
+     * to the end of the name. For example,
+     * "abeans-Simulator:///PSBEND/current" plus query "get" will result in
+     * "abeans-Simulator:///PSBEND/current?get".
+     *
+     * @param queryName the query that will be appended after all pathcomponent
+     *        parts of the URI name, non-<code>null</code>
+     *
+     * @return a new remote info instance with appended query
+     */
+    public RemoteInfo createQuery(String queryName)
+    {
+        try {
+            return new RemoteInfo(this, null, queryName);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+    /**
+     * Returns the authority part of this remote info if it exists.
+     *
+     * @return authority or <code>null</code> if either the plug is calculating
+     *         the authority on the fly or the plug is running on no-authority
+     *         (global) namespace
+     */
+    public String getAuthority()
+    {
+        return extractAuthority(toURI());
+    }
+
+    /**
+     * Creates a new remote info by appending to an existing remote
+     * name both a hierarchy pathcomponent and a new query. Other properties
+     * of the existing remote info are retained (such as the authority, plug
+     * type etc).
+     *
+     * @param componentName the component to append to the existing remote
+     *        name, non-<code>null</code>
+     * @param queryName the query to append to the end of pathcomponent
+     *        sequence, non-<code>null</code>
+     *
+     * @return a new instance of remote info with names appended
+     */
+    public RemoteInfo createHierarchyAndQuery(String componentName,
+        String queryName)
+    {
+        try {
+            return new RemoteInfo(this, componentName, queryName);
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            return null;
+        }
+    }
+
+    /**
+     * Throws an exception.
+     *
+     * @param posn ignored
+     * @param comp ignored
+     *
+     * @return exception always thrown
+     *
+     * @throws InvalidNameException always thrown
+     */
+    public Name add(int posn, String comp) throws InvalidNameException
+    {
+        throw new InvalidNameException(
+            "Cannot add to a remote info with generic add method. Use 'create...' methods instead.");
+    }
+
+    /**
+     * Throws an exception.
+     *
+     * @param comp ignored
+     *
+     * @return exception always thrown
+     *
+     * @throws InvalidNameException always thrown
+     */
+    public Name add(String comp) throws InvalidNameException
+    {
+        throw new InvalidNameException(
+            "Cannot add to a remote info with generic add method. Use 'create...' methods instead.");
+    }
+
+    /**
+     * Throws an exception.
+     *
+     * @param posn ignored
+     * @param n ignored
+     *
+     * @return exception always thrown
+     *
+     * @throws InvalidNameException always thrown
+     */
+    public Name addAll(int posn, Name n) throws InvalidNameException
+    {
+        throw new InvalidNameException(
+            "Cannot add to a remote info with generic add method. Use 'create...' methods instead.");
+    }
+
+    /**
+     * Throws an exception.
+     *
+     * @param suffix ignored
+     *
+     * @return exception always thrown
+     *
+     * @throws InvalidNameException always thrown
+     */
+    public Name addAll(Name suffix) throws InvalidNameException
+    {
+        throw new InvalidNameException(
+            "Cannot add to a remote info with generic add method. Use 'create...' methods instead.");
+    }
+
+    /**
+     * Throws an exception.
+     *
+     * @param posn ignored
+     *
+     * @return exception always thrown
+     *
+     * @throws InvalidNameException always thrown
+     */
+    public Object remove(int posn) throws InvalidNameException
+    {
+        throw new InvalidNameException(
+            "Cannot remove name elements from remote info.");
+    }
+
+    /**
+     * Returns the query part of this remote info if it exists.
+     *
+     * @return query or <code>null</code>
+     */
+    public String getQuery()
+    {
+        return extractQuery(toURI());
+    }
+
+    /**
+     * Creates Name instance by parsing URI string.
+     *
+     * @param uri URI string
+     *
+     * @return Name instance
+     *
+     * @throws NamingException if Name creation fails
+     */
+    public static Name parseURIstring(String uri) throws NamingException
+    {
+        return new URIName(uri);
+    }
+
+    /**
+     * Parses remote name to relative URIName. Remote name corresponds
+     * to path part of URI.
+     *
+     * @param remoteName remote name, a relative path in URI with no
+     *
+     * @return relative URIName
+     */
+    public static Name parseRemoteName(String remoteName)
+    {
+        String[] comps = remoteInfoEscaper.stringToComponents(remoteName);
+
+        URIName ret = new URIName(comps);
+
+        ret.setRelative(true);
+
+        return ret;
+    }
+
+    /**
+     * Parses Abeans URI string to URIName.
+     *
+     * @param uri URI sting
+     * @param relative flags URIName to be relative or not
+     *
+     * @return instance of URIName
+     */
+    public static Name parseAbeansURI(String uri, boolean relative)
+    {
+        String[] comps = remoteInfoEscaper.stringToComponents(uri);
+
+        URIName ret = new URIName(comps);
+
+        ret.setRelative(relative);
+
+        return ret;
+    }
+
+    /**
+     * Takes a single unescaped part of a hierarchical name and escapes
+     * it so that it can be used to form remoteName part of remoteInfo. Escape
+     * rules are similar to those in javax.naming.CompositeName, only that '?'
+     * character is added as a separator and is escaped in the same way as '/'
+     * character.   Example "Device 3/1" -&gt; "Device 3\/1"
+     *
+     * @param string which should be escaped to represent a part of a Name
+     *        instance
+     *
+     * @return an escaped string, which can be concatenated with '/' and '?' to
+     *         form remoteName part of RemoteInfo
+     */
+    public static String escapePartToRemoteName(String string)
+    {
+        return remoteInfoEscaper.escapeComponent(string);
+    }
+
+    /**
+     * Extracts name from <code>URI</code>.<p>This method helps
+     * creating <code>RemoteInfo</code> from <code>URI</code> serialized form.</p>
+     *
+     * @param uri the target <code>URI</code> for remote entity or operation
+     *
+     * @return extracted Abeans name
+     */
+    public static String extractRemoteName(URI uri)
+    {
+        if (uri == null) {
+            return null;
+        }
+
+        String path = uri.getPath();
+
+        if (path != null && path.length() > 0) {
+            if (path.charAt(0) == '/') {
+                return path.substring(1);
+            }
+
+            return path;
+        }
+
+        return null;
+    }
+
+    /**
+     * Extracts remote name from <code>URI</code>. Extracted
+     * nametontains remote entity name plus query.<p>This method helps
+     * creating <code>RemoteInfo</code> from <code>URI</code> serialized form.</p>
+     *
+     * @param uri the target <code>URI</code> for remote entity or operation
+     *
+     * @return extracted Abeans name
+     */
+    public static String extractName(URI uri)
+    {
+        if (uri == null) {
+            return null;
+        }
+
+        String path = uri.getPath();
+        String query = uri.getQuery();
+
+        int l = path != null ? path.length() : 0;
+        l += query != null ? query.length() : 0;
+        l++;
+
+        StringBuffer sb = new StringBuffer(l);
+
+        if (path != null && path.length() > 0) {
+            if (path.charAt(0) == '/') {
+                sb.append(path.toCharArray(), 1, path.length() - 1);
+            } else {
+                sb.append(path.toCharArray());
+            }
+        }
+
+        if (uri.getQuery() != null) {
+            sb.append('?');
+            sb.append(uri.getQuery());
+        }
+
+        return sb.length() > 0 ? sb.toString() : null;
+    }
+
+    /**
+     * Extracts authority part of URI for Abeans entity.<p>This method
+     * helps creating <code>RemoteInfo</code> from <code>URI</code> serialized
+     * form.</p>
+     *
+     * @param uri the target <code>URI</code> for Abeans Entity
+     *
+     * @return extracted Abeans authority
+     */
+    public static String extractAuthority(URI uri)
+    {
+        if (uri == null) {
+            return null;
+        }
+
+        return uri.getAuthority();
+    }
+
+    /**
+     * Extracts query part of URI for Abeans entity.<p>This method
+     * helps creating <code>RemoteInfo</code> from <code>URI</code> serialized
+     * form.</p>
+     *
+     * @param uri the target <code>URI</code> for Abeans Entity
+     *
+     * @return extracted Abeans query
+     */
+    public static String extractQuery(URI uri)
+    {
+        if (uri == null) {
+            return null;
+        }
+
+        return uri.getQuery();
+    }
+
+    /**
+     * Extracts plug type from scheme part of URI for Abeans entity.<p>This
+     * method helps creating <code>RemoteInfo</code> from <code>URI</code>
+     * serialized form.</p>
+     *
+     * @param uri the target <code>URI</code> for Abeans Entity
+     *
+     * @return extracted Abeans plug type
+     */
+    public static String extractPlugType(URI uri)
+    {
+        if (uri == null) {
+            return null;
+        }
+
+        String scheme = uri.getScheme();
+
+        if (scheme == null) {
+            return null;
+        }
+
+        int i = SCHEME_PREFIX.length();
+
+        if (scheme.length() > i) {
+            return scheme.substring(i);
+        }
+
+        return null;
+    }
 } /* __oOo__ */
 
 

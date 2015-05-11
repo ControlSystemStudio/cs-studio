@@ -33,76 +33,76 @@ import org.eclipse.jface.resource.ImageDescriptor;
  */
 public class OPIEditorPaletteFactory {
 
-	public static PaletteRoot createPalette(){
-		PaletteRoot palette = new PaletteRoot();
-		createToolsGroup(palette);
-		createPaletteContents(palette);
-		return palette;
-	}
-	
-	private static void createToolsGroup(PaletteRoot palette){
-		PaletteToolbar toolbar = new PaletteToolbar("Tools");
-		// Add a selection tool to the group
-		ToolEntry tool = new PanningSelectionToolEntry();
-		toolbar.add(tool);
-		palette.setDefaultEntry(tool);
-		
-		tool = new ConnectionCreationToolEntry(
-				"Connection", "Create a connection between widgets", 
-				new CreationFactory() {
-					
-					@Override
-					public Object getObjectType() {
-						return null;
-					}
-					
-					@Override
-					public Object getNewObject() {
-						return null;
-					}
-				}, 
-				CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-						OPIBuilderPlugin.PLUGIN_ID, "icons/connection_s16.gif"),
-				CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-						OPIBuilderPlugin.PLUGIN_ID, "icons/connection_s24.gif"));
-		toolbar.add(tool);
-		palette.add(toolbar);
-		
-	}
-	
-	
-	private static void createPaletteContents(PaletteRoot palette){
-		Map<String, List<String>> categoriesMap = 
-			WidgetsService.getInstance().getAllCategoriesMap();
-		String[] hiddenWidgets = PreferencesHelper.getHiddenWidgets();
-		List<String> hiddenWidgetsList = null;
-		if(hiddenWidgets != null)
-			hiddenWidgetsList = Arrays.asList(hiddenWidgets);
-		for(final Map.Entry<String, List<String>> entry: categoriesMap.entrySet()){
-			PaletteDrawer categoryDrawer = new PaletteDrawer(entry.getKey());
-			for(String typeId : entry.getValue()){
-				if(hiddenWidgetsList != null && hiddenWidgetsList.indexOf(typeId) >=0)
-					continue;
-				WidgetDescriptor widgetDescriptor = 
-					WidgetsService.getInstance().getWidgetDescriptor(typeId);
-				ImageDescriptor icon = CustomMediaFactory.getInstance().
-					getImageDescriptorFromPlugin(
-							widgetDescriptor.getPluginId(), widgetDescriptor.getIconPath());
-				CombinedTemplateCreationEntry widgetEntry = new CombinedTemplateCreationEntry(
-					widgetDescriptor.getName(), 
-					widgetDescriptor.getDescription(),
-					new WidgetCreationFactory(widgetDescriptor), icon, icon);
-				
-				IGraphicalFeedbackFactory feedbackFactory = 
-					WidgetsService.getInstance().getWidgetFeedbackFactory(
-							widgetDescriptor.getTypeID());
-				if( feedbackFactory != null && feedbackFactory.getCreationTool() != null){
-					widgetEntry.setToolClass(feedbackFactory.getCreationTool());
-				}				
-				categoryDrawer.add(widgetEntry);
-			}
-			palette.add(categoryDrawer);			
-		}		
-	}
-	
+    public static PaletteRoot createPalette(){
+        PaletteRoot palette = new PaletteRoot();
+        createToolsGroup(palette);
+        createPaletteContents(palette);
+        return palette;
+    }
+
+    private static void createToolsGroup(PaletteRoot palette){
+        PaletteToolbar toolbar = new PaletteToolbar("Tools");
+        // Add a selection tool to the group
+        ToolEntry tool = new PanningSelectionToolEntry();
+        toolbar.add(tool);
+        palette.setDefaultEntry(tool);
+
+        tool = new ConnectionCreationToolEntry(
+                "Connection", "Create a connection between widgets",
+                new CreationFactory() {
+
+                    @Override
+                    public Object getObjectType() {
+                        return null;
+                    }
+
+                    @Override
+                    public Object getNewObject() {
+                        return null;
+                    }
+                },
+                CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                        OPIBuilderPlugin.PLUGIN_ID, "icons/connection_s16.gif"),
+                CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                        OPIBuilderPlugin.PLUGIN_ID, "icons/connection_s24.gif"));
+        toolbar.add(tool);
+        palette.add(toolbar);
+
+    }
+
+
+    private static void createPaletteContents(PaletteRoot palette){
+        Map<String, List<String>> categoriesMap =
+            WidgetsService.getInstance().getAllCategoriesMap();
+        String[] hiddenWidgets = PreferencesHelper.getHiddenWidgets();
+        List<String> hiddenWidgetsList = null;
+        if(hiddenWidgets != null)
+            hiddenWidgetsList = Arrays.asList(hiddenWidgets);
+        for(final Map.Entry<String, List<String>> entry: categoriesMap.entrySet()){
+            PaletteDrawer categoryDrawer = new PaletteDrawer(entry.getKey());
+            for(String typeId : entry.getValue()){
+                if(hiddenWidgetsList != null && hiddenWidgetsList.indexOf(typeId) >=0)
+                    continue;
+                WidgetDescriptor widgetDescriptor =
+                    WidgetsService.getInstance().getWidgetDescriptor(typeId);
+                ImageDescriptor icon = CustomMediaFactory.getInstance().
+                    getImageDescriptorFromPlugin(
+                            widgetDescriptor.getPluginId(), widgetDescriptor.getIconPath());
+                CombinedTemplateCreationEntry widgetEntry = new CombinedTemplateCreationEntry(
+                    widgetDescriptor.getName(),
+                    widgetDescriptor.getDescription(),
+                    new WidgetCreationFactory(widgetDescriptor), icon, icon);
+
+                IGraphicalFeedbackFactory feedbackFactory =
+                    WidgetsService.getInstance().getWidgetFeedbackFactory(
+                            widgetDescriptor.getTypeID());
+                if( feedbackFactory != null && feedbackFactory.getCreationTool() != null){
+                    widgetEntry.setToolClass(feedbackFactory.getCreationTool());
+                }
+                categoryDrawer.add(widgetEntry);
+            }
+            palette.add(categoryDrawer);
+        }
+    }
+
 }

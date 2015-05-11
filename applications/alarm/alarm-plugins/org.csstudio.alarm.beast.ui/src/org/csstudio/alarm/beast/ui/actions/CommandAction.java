@@ -24,19 +24,19 @@ public class CommandAction extends AbstractExecuteAction
      *  @param tree_position Origin of this command in alarm tree
      *  @param command Command description
      */
-    public CommandAction(final Shell shell, 
+    public CommandAction(final Shell shell,
             final AlarmTreePosition tree_position,
             final GDCDataStructure command)
     {
-        super(shell, 
+        super(shell,
               AlarmTreeActionIcon.createIcon("icons/command.gif",  //$NON-NLS-1$
                                                tree_position),
               command.getTeaser(),
               command.getDetails());
-        
-		// Related display action are disabled in RAP version
-		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
-			setEnabled(false);
-		}
+
+        // Related display action are disabled in RAP version
+        if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+            setEnabled(false);
+        }
     }
 }

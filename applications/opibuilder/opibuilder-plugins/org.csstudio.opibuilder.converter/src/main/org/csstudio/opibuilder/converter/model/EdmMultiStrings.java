@@ -17,22 +17,22 @@ package org.csstudio.opibuilder.converter.model;
 public class EdmMultiStrings extends AbstractEdmMultiAttributes<EdmString> {
 
 
-	/**
-	 * Constructor which parses EdmColor from general EdmAttribute value.
-	 *
-	 * @param genericEntity EdmAttribute containing general EdmColor data.
-	 * @param required false if this attribute is optional, else true
-	 * @throws EdmException if EdmAttribute contains invalid data.
-	 */
-	public EdmMultiStrings(EdmAttribute genericEntity, boolean required) throws EdmException {
-		super(genericEntity, required);
+    /**
+     * Constructor which parses EdmColor from general EdmAttribute value.
+     *
+     * @param genericEntity EdmAttribute containing general EdmColor data.
+     * @param required false if this attribute is optional, else true
+     * @throws EdmException if EdmAttribute contains invalid data.
+     */
+    public EdmMultiStrings(EdmAttribute genericEntity, boolean required) throws EdmException {
+        super(genericEntity, required);
 
-	}
-	
-    @Override
-    protected EdmString createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
-    	return new EdmString(genericEntity, false);
     }
 
-	
+    @Override
+    protected EdmString createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
+        return new EdmString(genericEntity, false);
+    }
+
+
 }

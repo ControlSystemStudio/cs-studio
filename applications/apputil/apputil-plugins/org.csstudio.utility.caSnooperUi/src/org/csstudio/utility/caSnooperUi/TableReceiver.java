@@ -19,11 +19,11 @@ public class TableReceiver implements IResultReceiver {
                     IWorkbench workbench = PlatformUI.getWorkbench();
                     IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
                     IWorkbenchPage snoopPage = window.getActivePage();
-                    
+
                     SnooperView view = (SnooperView)snoopPage.showView(SnooperView.ID);
-                   
+
                     view.setMessage(response);
-                    
+
                     return;
                 }catch (Exception e)
                 {

@@ -19,25 +19,25 @@ import org.eclipse.jface.action.IAction;
 public class SelectAllInGroupAction extends AbstractWidgetTargetAction{
 
 
-	public void run(IAction action) {
-		
-		GroupingContainerModel containerModel = getContainerModel();
-		containerModel.selectWidgets(containerModel.getChildren(), false);
-		
-		
-	}
+    public void run(IAction action) {
+
+        GroupingContainerModel containerModel = getContainerModel();
+        containerModel.selectWidgets(containerModel.getChildren(), false);
 
 
-	/**
-	 * Gets the widget models of all currently selected EditParts.
-	 * 
-	 * @return a list with all widget models that are currently selected
-	 */
-	protected final GroupingContainerModel getContainerModel() {
-		return ((GroupingContainerEditPart)selection.getFirstElement()).getWidgetModel();
-	}
+    }
 
-	
-		
-		
+
+    /**
+     * Gets the widget models of all currently selected EditParts.
+     *
+     * @return a list with all widget models that are currently selected
+     */
+    protected final GroupingContainerModel getContainerModel() {
+        return ((GroupingContainerEditPart)selection.getFirstElement()).getWidgetModel();
+    }
+
+
+
+
 }

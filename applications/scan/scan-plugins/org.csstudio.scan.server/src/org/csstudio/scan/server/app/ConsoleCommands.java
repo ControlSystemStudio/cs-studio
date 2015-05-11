@@ -215,7 +215,7 @@ public class ConsoleCommands implements CommandProvider
 
         return null;
     }
-    
+
     /** 'commands' command */
     public Object _commands(final CommandInterpreter intp)
     {
@@ -233,7 +233,7 @@ public class ConsoleCommands implements CommandProvider
         }
         return null;
     }
-    
+
     /** 'data' command */
     public Object _data(final CommandInterpreter intp)
     {
@@ -256,7 +256,7 @@ public class ConsoleCommands implements CommandProvider
             {
                 final ScanSample[] line = sheet.getSamples();
                 for (ScanSample sample : line)
-                	intp.print(sample + "  ");
+                    intp.print(sample + "  ");
                 intp.println();
             }
             intp.println("Last sample serial: " + last_serial);
@@ -332,7 +332,7 @@ public class ConsoleCommands implements CommandProvider
         }
         return _scans(intp);
     }
-    
+
     /** 'removeCompleted' command */
     public Object _removeCompleted(final CommandInterpreter intp)
     {

@@ -32,18 +32,18 @@ public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
         super(command, jython);
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void simulate(final SimulationContext context) throws Exception
     {
-    	context.logExecutionStep(command.toString(), command.getSeconds());
+        context.logExecutionStep(command.toString(), command.getSeconds());
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void execute(final ScanContext command_context) throws Exception
     {
-		Thread.sleep(Math.round(command.getSeconds() * 1000));
+        Thread.sleep(Math.round(command.getSeconds() * 1000));
         command_context.workPerformed(1);
     }
 }

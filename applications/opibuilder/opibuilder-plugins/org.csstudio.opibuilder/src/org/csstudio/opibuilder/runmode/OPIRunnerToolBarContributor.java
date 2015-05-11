@@ -15,38 +15,38 @@ import org.eclipse.ui.part.EditorActionBarContributor;
 
 /**
  * The toolbar contributor for OPI runner
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class OPIRunnerToolBarContributor extends EditorActionBarContributor {
 
-	private OPIRuntimeToolBarDelegate opiRuntimeToolBarDelegate;
+    private OPIRuntimeToolBarDelegate opiRuntimeToolBarDelegate;
 
-	@Override
-	public void init(IActionBars bars, IWorkbenchPage page) {
-		opiRuntimeToolBarDelegate.init(bars, page);
-		super.init(bars, page);		
-	}
+    @Override
+    public void init(IActionBars bars, IWorkbenchPage page) {
+        opiRuntimeToolBarDelegate.init(bars, page);
+        super.init(bars, page);
+    }
 
-	public OPIRunnerToolBarContributor() {
-		opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();	
-	}
+    public OPIRunnerToolBarContributor() {
+        opiRuntimeToolBarDelegate = new OPIRuntimeToolBarDelegate();
+    }
 
-	@Override
-	public void contributeToToolBar(IToolBarManager toolBarManager) {
-		opiRuntimeToolBarDelegate.contributeToToolBar(toolBarManager);
-	}
+    @Override
+    public void contributeToToolBar(IToolBarManager toolBarManager) {
+        opiRuntimeToolBarDelegate.contributeToToolBar(toolBarManager);
+    }
 
-	@Override
-	public void setActiveEditor(IEditorPart targetEditor) {
-		opiRuntimeToolBarDelegate
-				.setActiveOPIRuntime((IOPIRuntime) targetEditor);
-	}
-	
-	@Override
-	public void dispose() {
-	    opiRuntimeToolBarDelegate.dispose();
-	}
+    @Override
+    public void setActiveEditor(IEditorPart targetEditor) {
+        opiRuntimeToolBarDelegate
+                .setActiveOPIRuntime((IOPIRuntime) targetEditor);
+    }
+
+    @Override
+    public void dispose() {
+        opiRuntimeToolBarDelegate.dispose();
+    }
 
 }

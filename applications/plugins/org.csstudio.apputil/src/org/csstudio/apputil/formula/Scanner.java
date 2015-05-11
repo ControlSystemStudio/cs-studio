@@ -15,7 +15,7 @@ import java.io.StringReader;
  *  skips spaces and linefeeds,
  *  and allows to 'get' the current char
  *  without advancing.
- *  
+ *
  *  @author Kay Kasemir
  */
 class Scanner
@@ -24,7 +24,7 @@ class Scanner
     private StringReader reader;
     private int current;
     private boolean done;
-    
+
     /** Create, initialize with string, position on first character. */
     public Scanner(String s) throws Exception
     {
@@ -32,7 +32,7 @@ class Scanner
         done = false;
         next();
     }
-    
+
     /** @return Returns the current character. */
     public char get()
     {
@@ -57,13 +57,13 @@ class Scanner
             throw new Exception("Internal parser error: " + ex.getMessage()); //$NON-NLS-1$
         }
     }
-    
+
     /** @return Returns <code>true</code> when reaching the end of the string. */
     public boolean isDone()
     {
         return done;
     }
-    
+
     /** @return Returns the remaining string from the current char on. */
     public String rest() throws Exception
     {

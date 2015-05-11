@@ -14,14 +14,14 @@ import org.eclipse.draw2d.AbstractPointListShape;
  *
  */
 public class PolyWidgetIntrospector extends ShapeWidgetIntrospector {
-	public static String[] POLY_WIDGET_NON_PROPERTIES = new String[]{
-		"start",
-		"end"		
-	};
-	@Override
-	public String[] getNonProperties() {
-	
-		return concatenateStringArrays(super.getNonProperties(), POLY_WIDGET_NON_PROPERTIES);
-	}
-	
+    public static String[] POLY_WIDGET_NON_PROPERTIES = new String[]{
+        "start",
+        "end"
+    };
+    @Override
+    public String[] getNonProperties() {
+
+        return concatenateStringArrays(super.getNonProperties(), POLY_WIDGET_NON_PROPERTIES);
+    }
+
 }

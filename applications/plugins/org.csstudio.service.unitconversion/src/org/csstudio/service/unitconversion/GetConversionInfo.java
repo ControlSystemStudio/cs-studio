@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.service.unitconversion;
 
@@ -26,61 +26,61 @@ import com.google.common.collect.Lists;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class GetConversionInfo extends ServiceMethod {
 
     private ConversionClient client;
 
     public GetConversionInfo() {
-	super(new ServiceMethodDescription("info", "get conversion Info")
-		.addArgument("name", "device name", VString.class)
-		.addResult("result", "conversion Info", VTable.class));
+    super(new ServiceMethodDescription("info", "get conversion Info")
+        .addArgument("name", "device name", VString.class)
+        .addResult("result", "conversion Info", VTable.class));
     }
 
     @Override
     public void executeMethod(Map<String, Object> parameters,
-	    WriteFunction<Map<String, Object>> callback,
-	    WriteFunction<Exception> errorCallback) {
-	if (client == null) {
-	    client = new ConversionClient("http://localhost:8000/magnets");
-	}
-	try {
-	    String query = ((VString) parameters.get("name")).getValue();
-	    List<Device> result = new ArrayList<Device>(client.getConversionInfo(query));
+        WriteFunction<Map<String, Object>> callback,
+        WriteFunction<Exception> errorCallback) {
+    if (client == null) {
+        client = new ConversionClient("http://localhost:8000/magnets");
+    }
+    try {
+        String query = ((VString) parameters.get("name")).getValue();
+        List<Device> result = new ArrayList<Device>(client.getConversionInfo(query));
 
-	    Collections.sort(result, new Comparator<Device>() {
+        Collections.sort(result, new Comparator<Device>() {
 
-		@Override
-		public int compare(Device o1, Device o2) {
-		    return o1.getName().compareTo(o2.getName());
-		}
+        @Override
+        public int compare(Device o1, Device o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
 
-	    });
+        });
 
-	    List<String> names = new ArrayList<String>();
-	    List<Class<?>> types = new ArrayList<Class<?>>();
-	    List<Object> values = new ArrayList<Object>();
+        List<String> names = new ArrayList<String>();
+        List<Class<?>> types = new ArrayList<Class<?>>();
+        List<Object> values = new ArrayList<Object>();
 
-	    // Add Device Name column
-	    names.add("Name");
-	    types.add(String.class);
-	    values.add(Lists.transform(result, new Function<Device, String>() {
-		@Override
-		public String apply(Device input) {
-		    return input.getName();
-		}
-	    }));
+        // Add Device Name column
+        names.add("Name");
+        types.add(String.class);
+        values.add(Lists.transform(result, new Function<Device, String>() {
+        @Override
+        public String apply(Device input) {
+            return input.getName();
+        }
+        }));
 
-	    Map<String, Object> resultMap = new HashMap<>();
-	    resultMap.put("result",
-		    ValueFactory.newVTable(types, names, values));
-	    resultMap.put("result_size", result.size());
-	    callback.writeValue(resultMap);
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("result",
+            ValueFactory.newVTable(types, names, values));
+        resultMap.put("result_size", result.size());
+        callback.writeValue(resultMap);
 
-	} catch (IOException e) {
-	    errorCallback.writeValue(e);
-	}
+    } catch (IOException e) {
+        errorCallback.writeValue(e);
+    }
 
     }
 }

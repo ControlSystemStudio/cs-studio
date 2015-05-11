@@ -19,17 +19,17 @@ public class Marker
 {
     /** The position and value, i.e. x/y in value space */
     final private double position, value;
-    
+
     /** The (multiline) text to display */
     private String text;
-    
+
     private boolean selected = false;
-    
+
     /** The screen coordinates.
      *  Only updated when painted !
      */
     private Rectangle screen_pos = null;
-    
+
     /** Constructor */
     public Marker(double position, double value, String text)
     {
@@ -43,19 +43,19 @@ public class Marker
     {
         return position;
     }
-    
+
     /** @return Value (on the Y axis) of this marker */
     final public double getValue()
     {
         return value;
     }
-    
+
     /** @return Text (label) of this marker */
     final public String getText()
     {
         return text;
     }
-    
+
     /** @param text New marker text, may include '\n' */
     @SuppressWarnings("nls")
     final public void setText(final String text)
@@ -68,13 +68,13 @@ public class Marker
     {
         return selected;
     }
-    
+
     /** Set the selection state */
     final void select(boolean selected)
     {
         this.selected = selected;
     }
-    
+
     /** @return On-screen coordinates or <code>null</code> if never displayed. */
     final Rectangle getScreenCoords()
     {
@@ -125,6 +125,6 @@ public class Marker
     @Override
     public String toString()
     {
-        return "Marker @ " + position + " / " + value + " : " + text; 
+        return "Marker @ " + position + " / " + value + " : " + text;
     }
 }

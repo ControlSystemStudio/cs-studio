@@ -27,17 +27,17 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * The extension simply delegates to the InitLogging-Class and returns an empty map.
- * 
+ *
  * This is implemented for the startup parameter extension (and not eg. for the startup services extension) because
  * it has to be carried most early during CSS startup.
- * 
+ *
  * @author jpenning
  */
 public class StartupLogging implements StartupParametersExtPoint {
-    
+
     public Map<String, Object> readStartupParameters(Display display, IApplicationContext context) throws Exception {
         InitLogging.setupLogging();
         return Collections.emptyMap();
     }
-    
+
 }

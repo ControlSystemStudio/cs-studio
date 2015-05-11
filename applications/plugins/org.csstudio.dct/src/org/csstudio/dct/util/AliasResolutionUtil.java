@@ -16,200 +16,200 @@ import org.slf4j.LoggerFactory;
 /**
  * Utility class that provides methods to access information that arise from the
  * hierarchical relationships between model elements.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AliasResolutionUtil {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(AliasResolutionUtil.class);
-    
-	private AliasResolutionUtil() {
-	    // Constructor
-	}
 
-	/**
-	 * Returns the name for an element that arises from its hierarchy. The
-	 * delivered name can be defined on the element directly or is inherited
-	 * from one of its parents.
-	 * 
-	 * @param element
-	 *            the element
-	 * 
-	 * @return the element name as it is inherited from the hierarchy
-	 */
-	public static String getNameFromHierarchy(IElement element) {
-		return getPropertyViaHierarchy(element, "name");
-	}
+    private AliasResolutionUtil() {
+        // Constructor
+    }
 
-	/**
-	 * Returns the EPICS name for a record that arises from its hierarchy. The
-	 * delivered name can be defined on the record directly or is inherited from
-	 * one of its parent records.
-	 * 
-	 * @param record
-	 *            the record
-	 * 
-	 * @return the records EPICS name as it is inherited from the hierarchy
-	 */
-	public static String getEpicsNameFromHierarchy(IRecord record) {
-		return getPropertyViaHierarchy(record, "epicsName");
-	}
+    /**
+     * Returns the name for an element that arises from its hierarchy. The
+     * delivered name can be defined on the element directly or is inherited
+     * from one of its parents.
+     *
+     * @param element
+     *            the element
+     *
+     * @return the element name as it is inherited from the hierarchy
+     */
+    public static String getNameFromHierarchy(IElement element) {
+        return getPropertyViaHierarchy(element, "name");
+    }
 
-	@SuppressWarnings("unchecked")
-	public static <E> E getPropertyViaHierarchy(IElement element, String propertyName) {
-		E result = null;
+    /**
+     * Returns the EPICS name for a record that arises from its hierarchy. The
+     * delivered name can be defined on the record directly or is inherited from
+     * one of its parent records.
+     *
+     * @param record
+     *            the record
+     *
+     * @return the records EPICS name as it is inherited from the hierarchy
+     */
+    public static String getEpicsNameFromHierarchy(IRecord record) {
+        return getPropertyViaHierarchy(record, "epicsName");
+    }
 
-		Stack<IElement> stack = getElementStack(element);
+    @SuppressWarnings("unchecked")
+    public static <E> E getPropertyViaHierarchy(IElement element, String propertyName) {
+        E result = null;
 
-		while (!stack.isEmpty()) {
-			IElement top = stack.pop();
+        Stack<IElement> stack = getElementStack(element);
 
-			E p;
-			try {
-				p = (E) PropertyUtils.getProperty(top, propertyName);
+        while (!stack.isEmpty()) {
+            IElement top = stack.pop();
 
-				if (p != null) {
-					result = p;
-				}
-			} catch (Exception e) {
-				LOG.warn("", e);
-			}
+            E p;
+            try {
+                p = (E) PropertyUtils.getProperty(top, propertyName);
 
-		}
+                if (p != null) {
+                    result = p;
+                }
+            } catch (Exception e) {
+                LOG.warn("", e);
+            }
 
-		return result;
-	}
-	
-	/**
-	 * Returns the value for a named parameter or an instance. The delivered
-	 * value can be defined on the instance directly or is inherited from one of
-	 * its parent instance or the initial prototype.
-	 * 
-	 * @param instance
-	 *            the instance
-	 * @param parameter
-	 *            the parameter name
-	 * 
-	 * @return a parameter value as it is inherited from the hierarchy
-	 */
-	public static String getParameterValueFromHierarchy(IInstance instance, String parameter) {
-		String result = null;
+        }
 
-		// 1. step: derive parameters from parents
-		Stack<IContainer> parentStack = getParentStack(instance);
+        return result;
+    }
 
-		while (!parentStack.isEmpty()) {
-			IContainer top = parentStack.pop();
-			if (top.hasParameterValue(parameter)) {
-				result = top.getParameterValue(parameter);
-			}
-		}
+    /**
+     * Returns the value for a named parameter or an instance. The delivered
+     * value can be defined on the instance directly or is inherited from one of
+     * its parent instance or the initial prototype.
+     *
+     * @param instance
+     *            the instance
+     * @param parameter
+     *            the parameter name
+     *
+     * @return a parameter value as it is inherited from the hierarchy
+     */
+    public static String getParameterValueFromHierarchy(IInstance instance, String parameter) {
+        String result = null;
 
-		return result;
-	}
+        // 1. step: derive parameters from parents
+        Stack<IContainer> parentStack = getParentStack(instance);
 
-	/**
-	 * Returns the final aliases for a container. The aliases are inherited
-	 * from hierarchical parents (classical inheritance) and from container´s.
-	 * 
-	 * @param container
-	 *            the container
-	 * @return the final aliases for this container
-	 */
-	public static Map<String, String> getFinalAliases(IContainer container) {
-		Map<String, String> result = new HashMap<String, String>();
+        while (!parentStack.isEmpty()) {
+            IContainer top = parentStack.pop();
+            if (top.hasParameterValue(parameter)) {
+                result = top.getParameterValue(parameter);
+            }
+        }
 
-		// 1. step: derive parameters from parents
-		Stack<IContainer> parentStack = getParentStack(container);
+        return result;
+    }
 
-		while (!parentStack.isEmpty()) {
-			IContainer top = parentStack.pop();
-			result.putAll(top.getParameterValues());
-		}
+    /**
+     * Returns the final aliases for a container. The aliases are inherited
+     * from hierarchical parents (classical inheritance) and from container´s.
+     *
+     * @param container
+     *            the container
+     * @return the final aliases for this container
+     */
+    public static Map<String, String> getFinalAliases(IContainer container) {
+        Map<String, String> result = new HashMap<String, String>();
 
-		// 2. step: derive from containers
-		Stack<IContainer> containerStack = getContainerStack(container);
+        // 1. step: derive parameters from parents
+        Stack<IContainer> parentStack = getParentStack(container);
 
-		while (!containerStack.isEmpty()) {
-			IContainer top = containerStack.pop();
-			Map<String, String> finalAliases = getFinalAliases(top);
-			result.putAll(finalAliases);
-		}
+        while (!parentStack.isEmpty()) {
+            IContainer top = parentStack.pop();
+            result.putAll(top.getParameterValues());
+        }
 
-		return result;
-	}
+        // 2. step: derive from containers
+        Stack<IContainer> containerStack = getContainerStack(container);
 
-	/**
-	 * Collect all parent containers in a stack. On top of the returned stack is
-	 * the parent that resides at the top of the hierarchy.
-	 * 
-	 * @param container
-	 *            the container
-	 * @return all parent containers, including this
-	 */
-	private static Stack<IContainer> getContainerStack(IContainer container) {
-		Stack<IContainer> stack = new Stack<IContainer>();
+        while (!containerStack.isEmpty()) {
+            IContainer top = containerStack.pop();
+            Map<String, String> finalAliases = getFinalAliases(top);
+            result.putAll(finalAliases);
+        }
 
-		IContainer c = container.getContainer();
+        return result;
+    }
 
-		while (c != null) {
-			stack.add(c);
-			c = c.getContainer();
-		}
-		return stack;
-	}
+    /**
+     * Collect all parent containers in a stack. On top of the returned stack is
+     * the parent that resides at the top of the hierarchy.
+     *
+     * @param container
+     *            the container
+     * @return all parent containers, including this
+     */
+    private static Stack<IContainer> getContainerStack(IContainer container) {
+        Stack<IContainer> stack = new Stack<IContainer>();
 
-	/**
-	 * Collect all parent containers in a stack. On top of the returned stack is
-	 * the parent that resides at the top of the hierarchy.
-	 * 
-	 * @param instance
-	 *            the instance
-	 * @return all parent containers, including this
-	 */
-	private static Stack<IContainer> getParentStack(IContainer instance) {
-		Stack<IContainer> stack = new Stack<IContainer>();
+        IContainer c = container.getContainer();
 
-		IContainer c = instance;
+        while (c != null) {
+            stack.add(c);
+            c = c.getContainer();
+        }
+        return stack;
+    }
 
-		while (c != null) {
-			stack.add(c);
-			c = c.getParent();
-		}
+    /**
+     * Collect all parent containers in a stack. On top of the returned stack is
+     * the parent that resides at the top of the hierarchy.
+     *
+     * @param instance
+     *            the instance
+     * @return all parent containers, including this
+     */
+    private static Stack<IContainer> getParentStack(IContainer instance) {
+        Stack<IContainer> stack = new Stack<IContainer>();
 
-		return stack;
-	}
+        IContainer c = instance;
 
-	/**
-	 * Collect all parent records in a stack. On top of the returned stack is
-	 * the parent that resides at the top of the hierarchy.
-	 * 
-	 * @param element
-	 *            the record
-	 * @return all parent records, including this
-	 */
-	private static Stack<IElement> getElementStack(IElement element) {
-		Stack<IElement> stack = new Stack<IElement>();
+        while (c != null) {
+            stack.add(c);
+            c = c.getParent();
+        }
 
-		IElement e = element;
+        return stack;
+    }
 
-		while (e != null) {
-			stack.add(e);
+    /**
+     * Collect all parent records in a stack. On top of the returned stack is
+     * the parent that resides at the top of the hierarchy.
+     *
+     * @param element
+     *            the record
+     * @return all parent records, including this
+     */
+    private static Stack<IElement> getElementStack(IElement element) {
+        Stack<IElement> stack = new Stack<IElement>();
 
-			if (e instanceof IRecord) {
-				e = ((IRecord) e).getParentRecord();
-			} else if (e instanceof IContainer) {
-				e = ((IContainer) e).getParent();
+        IElement e = element;
 
-			} else if (e instanceof IFolder) {
-				e = ((IFolder) e).getParentFolder();
-			} else {
-				e = null;
-			}
-		}
+        while (e != null) {
+            stack.add(e);
 
-		return stack;
-	}
+            if (e instanceof IRecord) {
+                e = ((IRecord) e).getParentRecord();
+            } else if (e instanceof IContainer) {
+                e = ((IContainer) e).getParent();
+
+            } else if (e instanceof IFolder) {
+                e = ((IFolder) e).getParentFolder();
+            } else {
+                e = null;
+            }
+        }
+
+        return stack;
+    }
 
 }

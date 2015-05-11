@@ -12,14 +12,14 @@ import org.csstudio.dal.PropertyCharacteristics;
  */
 public interface EpicsPropertyCharacteristics extends PropertyCharacteristics {
 
-	public static final String EPICS_WARNING_MAX = "HI";
-	public static final String EPICS_WARNING_MIN = "LO";
-	public static final String EPICS_ALARM_MAX = "HIHI";
-	public static final String EPICS_ALARM_MIN = "LOLO";
-	public static final String EPICS_MAX = "DRVH";
-	public static final String EPICS_MIN = "DRVL";
-	public static final String EPICS_OPR_MAX = "HOPR";
-	public static final String EPICS_OPR_MIN = "LOPR";
-	public static final String EPICS_UNITS = "EGU";
-	public static final String EPICS_NUMBER_OF_ELEMENTS = "NELM";
+    public static final String EPICS_WARNING_MAX = "HI";
+    public static final String EPICS_WARNING_MIN = "LO";
+    public static final String EPICS_ALARM_MAX = "HIHI";
+    public static final String EPICS_ALARM_MIN = "LOLO";
+    public static final String EPICS_MAX = "DRVH";
+    public static final String EPICS_MIN = "DRVL";
+    public static final String EPICS_OPR_MAX = "HOPR";
+    public static final String EPICS_OPR_MIN = "LOPR";
+    public static final String EPICS_UNITS = "EGU";
+    public static final String EPICS_NUMBER_OF_ELEMENTS = "NELM";
 }

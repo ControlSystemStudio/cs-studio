@@ -8,22 +8,22 @@ package com.cosylab.vdct.events;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -36,14 +36,14 @@ import java.util.*;
  * @author Matej Sekoranja
  */
 public class CommandManager {
-	protected Hashtable commands;
+    protected Hashtable commands;
 
-	protected static CommandManager instance = null;
+    protected static CommandManager instance = null;
 /**
  * CommandManager constructor comment.
  */
 protected CommandManager() {
-	commands = new Hashtable();
+    commands = new Hashtable();
 }
 /**
  * Insert the method's description here.
@@ -52,16 +52,16 @@ protected CommandManager() {
  * @param command com.cosylab.vdct.events.Command
  */
 public void addCommand(String id, Command command) {
-	if (commands.containsKey(id))
-		throw new IllegalArgumentException("Error: command with id '"+id+"' already exists...");
-	else commands.put(id, command);
+    if (commands.containsKey(id))
+        throw new IllegalArgumentException("Error: command with id '"+id+"' already exists...");
+    else commands.put(id, command);
 }
 /**
  * Insert the method's description here.
  * Creation date: (18.12.2000 15:32:53)
  */
 public void clear() {
-	commands.clear();
+    commands.clear();
 }
 /**
  * Insert the method's description here.
@@ -69,8 +69,8 @@ public void clear() {
  * @param id java.lang.String
  */
 public void execute(String id) {
-	Command command = (Command)commands.get(id);
-	if (command!=null) command.execute();
+    Command command = (Command)commands.get(id);
+    if (command!=null) command.execute();
 }
 /**
  * Insert the method's description here.
@@ -79,8 +79,8 @@ public void execute(String id) {
  * @param id java.lang.String
  */
 public Command getCommand(String id) {
-	Command command = (Command)commands.get(id);
-	return command;
+    Command command = (Command)commands.get(id);
+    return command;
 }
 /**
  * Insert the method's description here.
@@ -88,9 +88,9 @@ public Command getCommand(String id) {
  * @return com.cosylab.vdct.events.CommandManager
  */
 public static CommandManager getInstance() {
-	if (instance==null)
-		instance = new CommandManager();
-	return instance;
+    if (instance==null)
+        instance = new CommandManager();
+    return instance;
 }
 /**
  * Insert the method's description here.
@@ -98,6 +98,6 @@ public static CommandManager getInstance() {
  * @param id java.lang.String
  */
 public void removeCommand(String id) {
-	commands.remove(id);
+    commands.remove(id);
 }
 }

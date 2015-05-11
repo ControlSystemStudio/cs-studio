@@ -35,12 +35,12 @@ public class FileLine {
     private static String _file;
     private String _line;
     private int _lineNumber;
-    
+
     public FileLine(String line, int lineNumber){
         setLine(line);
         setLineNumber(lineNumber);
     }
-    
+
     public final String getLine() {
         if(_line==null){
             _line="";

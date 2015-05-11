@@ -54,178 +54,178 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
 
     private static final Logger LOG = LoggerFactory.getLogger(SimpleSliderEditPart.class);
 
-	/**
-	 * A UI job, which is used to reset the manual value of the slider figure
-	 * after a certain amount of time.
-	 */
-	private UIJob _resetManualValueDisplayJob;
+    /**
+     * A UI job, which is used to reset the manual value of the slider figure
+     * after a certain amount of time.
+     */
+    private UIJob _resetManualValueDisplayJob;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		final SimpleSliderModel model = (SimpleSliderModel) getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        final SimpleSliderModel model = (SimpleSliderModel) getWidgetModel();
 
-		final SimpleSliderFigure slider = new SimpleSliderFigure();
-		slider.addSliderListener(new SimpleSliderFigure.ISliderListener() {
-			public void sliderValueChanged(final double newValue) {
-				if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-					model.setPropertyManualValue(SimpleSliderModel.PROP_VALUE, newValue);
+        final SimpleSliderFigure slider = new SimpleSliderFigure();
+        slider.addSliderListener(new SimpleSliderFigure.ISliderListener() {
+            public void sliderValueChanged(final double newValue) {
+                if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+                    model.setPropertyManualValue(SimpleSliderModel.PROP_VALUE, newValue);
 
-					slider.setManualValue(newValue);
+                    slider.setManualValue(newValue);
 
-					if (_resetManualValueDisplayJob == null) {
-						_resetManualValueDisplayJob = new UIJob("reset") {
-							@Override
-							public IStatus runInUIThread(
-									final IProgressMonitor monitor) {
-								slider.setManualValue(model.getValue());
-								slider.setValue(model.getValue());
-								return Status.OK_STATUS;
-							}
-						};
+                    if (_resetManualValueDisplayJob == null) {
+                        _resetManualValueDisplayJob = new UIJob("reset") {
+                            @Override
+                            public IStatus runInUIThread(
+                                    final IProgressMonitor monitor) {
+                                slider.setManualValue(model.getValue());
+                                slider.setValue(model.getValue());
+                                return Status.OK_STATUS;
+                            }
+                        };
 
-					}
-					_resetManualValueDisplayJob.schedule(5000);
-				} else {
-					LOG.info("Slider value changed");
-				}
-			}
-		});
+                    }
+                    _resetManualValueDisplayJob.schedule(5000);
+                } else {
+                    LOG.info("Slider value changed");
+                }
+            }
+        });
 
-		slider.setPopulateEvents(false);
-		slider.setMax(model.getMax());
-		slider.setMin(model.getMin());
-		slider.setIncrement(model.getIncrement());
-		slider.setValue(model.getValue());
-		slider.setShowValueAsText(model.isShowValueAsText());
-		slider.setManualValue(model.getValue());
-		slider.setOrientation(model.isHorizontal());
-		slider.setDecimalPlaces(model.getPrecision());
-		slider.setSliderWide(model.getSliderWidth());
-		slider.setPopulateEvents(true);
-		slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE)
-				&& model.isAccesible());
-		return slider;
-	}
+        slider.setPopulateEvents(false);
+        slider.setMax(model.getMax());
+        slider.setMin(model.getMin());
+        slider.setIncrement(model.getIncrement());
+        slider.setValue(model.getValue());
+        slider.setShowValueAsText(model.isShowValueAsText());
+        slider.setManualValue(model.getValue());
+        slider.setOrientation(model.isHorizontal());
+        slider.setDecimalPlaces(model.getPrecision());
+        slider.setSliderWide(model.getSliderWidth());
+        slider.setPopulateEvents(true);
+        slider.setEnabled(getExecutionMode().equals(ExecutionMode.RUN_MODE)
+                && model.isAccesible());
+        return slider;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// value
-		IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setPopulateEvents(false);
-				slider.setValue((Double) newValue);
-				slider.setManualValue((Double) newValue);
-				slider.setPopulateEvents(true);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_VALUE, valHandler);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // value
+        IWidgetPropertyChangeHandler valHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+                slider.setPopulateEvents(false);
+                slider.setValue((Double) newValue);
+                slider.setManualValue((Double) newValue);
+                slider.setPopulateEvents(true);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(SimpleSliderModel.PROP_VALUE, valHandler);
 
-		// min
-		IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setPopulateEvents(false);
-				// slider.setMin((Integer) newValue);
-				slider.setMin((Double) newValue);
-				slider.setPopulateEvents(true);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_MIN, minHandler);
+        // min
+        IWidgetPropertyChangeHandler minHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+                slider.setPopulateEvents(false);
+                // slider.setMin((Integer) newValue);
+                slider.setMin((Double) newValue);
+                slider.setPopulateEvents(true);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(SimpleSliderModel.PROP_MIN, minHandler);
 
-		// max
-		IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setPopulateEvents(false);
-				slider.setMax((Double) newValue);
-				slider.setPopulateEvents(true);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_MAX, maxHandler);
+        // max
+        IWidgetPropertyChangeHandler maxHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+                slider.setPopulateEvents(false);
+                slider.setMax((Double) newValue);
+                slider.setPopulateEvents(true);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(SimpleSliderModel.PROP_MAX, maxHandler);
 
-		// increment
-		IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setPopulateEvents(false);
-				slider.setIncrement((Double) newValue);
-				slider.setPopulateEvents(true);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_INCREMENT,
-				incrementHandler);
+        // increment
+        IWidgetPropertyChangeHandler incrementHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+                slider.setPopulateEvents(false);
+                slider.setIncrement((Double) newValue);
+                slider.setPopulateEvents(true);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(SimpleSliderModel.PROP_INCREMENT,
+                incrementHandler);
 
-		// precision
-		IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setPopulateEvents(false);
-				slider.setDecimalPlaces((Integer) newValue);
-				slider.setPopulateEvents(true);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_PRECISION,
-				precisionHandler);
+        // precision
+        IWidgetPropertyChangeHandler precisionHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+                slider.setPopulateEvents(false);
+                slider.setDecimalPlaces((Integer) newValue);
+                slider.setPopulateEvents(true);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(SimpleSliderModel.PROP_PRECISION,
+                precisionHandler);
 
-		// show value as text
-		IWidgetPropertyChangeHandler showValueAsTextHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setShowValueAsText((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_SHOW_VALUE_AS_TEXT,
-				showValueAsTextHandler);
+        // show value as text
+        IWidgetPropertyChangeHandler showValueAsTextHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+                slider.setShowValueAsText((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(SimpleSliderModel.PROP_SHOW_VALUE_AS_TEXT,
+                showValueAsTextHandler);
 
-		// minSliderWide
-		IWidgetPropertyChangeHandler minSliderWideHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setPopulateEvents(false);
-				slider.setSliderWide((Integer) newValue);
-				slider.setPopulateEvents(true);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_SLIDER_WIDTH,
-				minSliderWideHandler);
+        // minSliderWide
+        IWidgetPropertyChangeHandler minSliderWideHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+                slider.setPopulateEvents(false);
+                slider.setSliderWide((Integer) newValue);
+                slider.setPopulateEvents(true);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(SimpleSliderModel.PROP_SLIDER_WIDTH,
+                minSliderWideHandler);
 
-		// orientation
-		IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
-				slider.setPopulateEvents(false);
-				slider.setOrientation((Boolean) newValue);
-				slider.setPopulateEvents(true);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(SimpleSliderModel.PROP_ORIENTATION,
-				orientationHandler);
+        // orientation
+        IWidgetPropertyChangeHandler orientationHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                SimpleSliderFigure slider = (SimpleSliderFigure) refreshableFigure;
+                slider.setPopulateEvents(false);
+                slider.setOrientation((Boolean) newValue);
+                slider.setPopulateEvents(true);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(SimpleSliderModel.PROP_ORIENTATION,
+                orientationHandler);
 
-		// Color
-		ColorChangeHandler<SimpleSliderFigure> colorHandler = new ColorChangeHandler<SimpleSliderFigure>() {
+        // Color
+        ColorChangeHandler<SimpleSliderFigure> colorHandler = new ColorChangeHandler<SimpleSliderFigure>() {
 
             @Override
             protected void doHandle(final SimpleSliderFigure figure, final Color color) {
@@ -233,54 +233,54 @@ public final class SimpleSliderEditPart extends AbstractWidgetEditPart {
                 figure.setForegroundColor(color);
 //                figure.setPopulateEvents(true);
             }
-		};
+        };
         setPropertyChangeHandler(SimpleSliderModel.PROP_COLOR_FOREGROUND,
                                  colorHandler);
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IValue getSample(final int index) {
-		if (index != 0) {
-			throw new IndexOutOfBoundsException(index
-					+ " is not a valid sample index");
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public IValue getSample(final int index) {
+        if (index != 0) {
+            throw new IndexOutOfBoundsException(index
+                    + " is not a valid sample index");
+        }
 
-		SimpleSliderModel model = (SimpleSliderModel) getWidgetModel();
-		double value = model.getValue();
-		int precision = model.getPrecision();
-		ITimestamp timestamp = TimestampFactory.now();
+        SimpleSliderModel model = (SimpleSliderModel) getWidgetModel();
+        double value = model.getValue();
+        int precision = model.getPrecision();
+        ITimestamp timestamp = TimestampFactory.now();
 
-		// Note: the IValue implementations require a Severity, otherwise the
-		// format() method will throw a NullPointerException. We don't really
-		// have a severity here, so we fake one. This may cause problems for
-		// clients who rely on getting a meaningful severity from the IValue.
-		ISeverity severity = ValueFactory.createOKSeverity();
+        // Note: the IValue implementations require a Severity, otherwise the
+        // format() method will throw a NullPointerException. We don't really
+        // have a severity here, so we fake one. This may cause problems for
+        // clients who rely on getting a meaningful severity from the IValue.
+        ISeverity severity = ValueFactory.createOKSeverity();
 
-		// Fake some metadata because it is required for an IValue.
-		INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0,
-				0, precision, "");
+        // Fake some metadata because it is required for an IValue.
+        INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0,
+                0, precision, "");
 
-		IDoubleValue result = ValueFactory.createDoubleValue(timestamp,
-				severity, null, md, Quality.Original, new double[] { value });
+        IDoubleValue result = ValueFactory.createDoubleValue(timestamp,
+                severity, null, md, Quality.Original, new double[] { value });
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int size() {
-		// always one sample
-		return 1;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public int size() {
+        // always one sample
+        return 1;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected boolean forceDisabledInEditMode() {
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected boolean forceDisabledInEditMode() {
+        return true;
+    }
 }

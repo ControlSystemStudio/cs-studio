@@ -28,24 +28,24 @@ public class OpenScanData  extends AbstractHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-		final ScanInfo scan = ScanHandlerUtil.getScanInfo(event);
-		if (scan == null)
-			return null;
+        final ScanInfo scan = ScanHandlerUtil.getScanInfo(event);
+        if (scan == null)
+            return null;
 
-		// Open ScanDataEditor for this scan
-		final IEditorInput input = new ScanInfoEditorInput(scan);
-    	try
+        // Open ScanDataEditor for this scan
+        final IEditorInput input = new ScanInfoEditorInput(scan);
+        try
         {
-    		final IWorkbench workbench = PlatformUI.getWorkbench();
-    		final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-    		final IWorkbenchPage page = window.getActivePage();
-	        page.openEditor(input, ScanDataEditor.ID);
+            final IWorkbench workbench = PlatformUI.getWorkbench();
+            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            final IWorkbenchPage page = window.getActivePage();
+            page.openEditor(input, ScanDataEditor.ID);
         }
         catch (PartInitException ex)
         {
-        	throw new ExecutionException("Cannot open scan data editor", ex);
+            throw new ExecutionException("Cannot open scan data editor", ex);
         }
 
-		return null;
+        return null;
     }
 }

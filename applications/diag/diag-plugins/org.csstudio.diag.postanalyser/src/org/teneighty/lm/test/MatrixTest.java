@@ -40,158 +40,158 @@ import org.teneighty.lm.MatrixFactory;
  */
 @SuppressWarnings("nls")
 public class MatrixTest
-	extends TestCase
+    extends TestCase
 {
 
 
-	/**
-	 * Epsilon.
-	 */
-	private static final double EPS = 1.0e-10;
+    /**
+     * Epsilon.
+     */
+    private static final double EPS = 1.0e-10;
 
-	/**
-	 * Times to test.
-	 */
-	private static final int TIMES = 100;
+    /**
+     * Times to test.
+     */
+    private static final int TIMES = 100;
 
-	/**
-	 * Min size.
-	 */
-	private static final int MIN = 3;
+    /**
+     * Min size.
+     */
+    private static final int MIN = 3;
 
-	/**
-	 * Max size.
-	 */
-	private static final int MAX = 50;
-
-
-	/**
-	 * Random.
-	 */
-	private Random random;
+    /**
+     * Max size.
+     */
+    private static final int MAX = 50;
 
 
-	/**
-	 * Constructor.
-	 *
-	 * @param name the test name.
-	 */
-	public MatrixTest( final String name )
-	{
-		super( name );
-
-		// create random...
-		this.random = new Random( System.currentTimeMillis() );
-	}
+    /**
+     * Random.
+     */
+    private Random random;
 
 
-	/**
-	 * Test inverse.
-	 */
-	public void testInverse()
-	{
-		int size = 0;
-		for( int index = 0; index < TIMES; index++ )
-		{
-			size = this.random.nextInt( MAX - MIN ) + MIN;
-			this.runSize( size );
-		}
-	}
+    /**
+     * Constructor.
+     *
+     * @param name the test name.
+     */
+    public MatrixTest( final String name )
+    {
+        super( name );
+
+        // create random...
+        this.random = new Random( System.currentTimeMillis() );
+    }
 
 
-	/**
-	 * Run the specified size.
-	 *
-	 * @param size the size.
-	 */
+    /**
+     * Test inverse.
+     */
+    public void testInverse()
+    {
+        int size = 0;
+        for( int index = 0; index < TIMES; index++ )
+        {
+            size = this.random.nextInt( MAX - MIN ) + MIN;
+            this.runSize( size );
+        }
+    }
+
+
+    /**
+     * Run the specified size.
+     *
+     * @param size the size.
+     */
     private void runSize( int size )
-	{
-		MatrixFactory mf = MatrixFactory.getInstance();
-		Matrix matrix = mf.newMatrix( size, size );
-		Matrix orig = mf.newMatrix( size, size );
-		Matrix result = mf.newMatrix( size, size );
+    {
+        MatrixFactory mf = MatrixFactory.getInstance();
+        Matrix matrix = mf.newMatrix( size, size );
+        Matrix orig = mf.newMatrix( size, size );
+        Matrix result = mf.newMatrix( size, size );
 
 
-		final int row = matrix.getRowCount();
-		final int col = matrix.getColumnCount();
+        final int row = matrix.getRowCount();
+        final int col = matrix.getColumnCount();
 
-		int r, c, c2;
-		double val;
+        int r, c, c2;
+        double val;
 
-		for( r = 0; r < row; r++ )
-		{
-			for( c = 0; c < col; c++ )
-			{
-				matrix.set( r, c, this.random.nextInt( 1000 ) );
-			}
-		}
+        for( r = 0; r < row; r++ )
+        {
+            for( c = 0; c < col; c++ )
+            {
+                matrix.set( r, c, this.random.nextInt( 1000 ) );
+            }
+        }
 
-		copy( matrix, orig );
+        copy( matrix, orig );
 
-		try
-		{
-			matrix.invert();
-		}
-		catch( IllegalStateException ise )
-		{
-			// just bad luck, really.
-		}
+        try
+        {
+            matrix.invert();
+        }
+        catch( IllegalStateException ise )
+        {
+            // just bad luck, really.
+        }
 
-		for( r = 0; r < row; r++ )
-		{
-			for( c = 0; c < col; c++ )
-			{
-				val = 0;
-				for( c2 = 0; c2 < col; c2++ )
-				{
-					val = val + orig.get( r, c2 ) * matrix.get( c2, c );
-				}
+        for( r = 0; r < row; r++ )
+        {
+            for( c = 0; c < col; c++ )
+            {
+                val = 0;
+                for( c2 = 0; c2 < col; c2++ )
+                {
+                    val = val + orig.get( r, c2 ) * matrix.get( c2, c );
+                }
 
-				result.set( r, c, val );
-			}
-		}
+                result.set( r, c, val );
+            }
+        }
 
-		// check that result = I.
-		for( r = 0; r < row; r++ )
-		{
-			for( c = 0; c < col; c++ )
-			{
-				val = result.get( r, c );
+        // check that result = I.
+        for( r = 0; r < row; r++ )
+        {
+            for( c = 0; c < col; c++ )
+            {
+                val = result.get( r, c );
 
-				if( r == c )
-				{
-					assertTrue( "Bad diagonal: " + val, Math.abs( 1 - val ) < EPS );
-				}
-				else
-				{
-					assertTrue( "Bad non-diagonal: " + val, Math.abs( val ) < EPS );
-				}
-			}
-		}
-	}
+                if( r == c )
+                {
+                    assertTrue( "Bad diagonal: " + val, Math.abs( 1 - val ) < EPS );
+                }
+                else
+                {
+                    assertTrue( "Bad non-diagonal: " + val, Math.abs( val ) < EPS );
+                }
+            }
+        }
+    }
 
 
-	/**
-	 * Copy matrix.
-	 *
-	 * @param src the source.
-	 * @param dest the destination.
-	 */
-	private static void copy( final Matrix src, final Matrix dest )
-	{
-		final int row = src.getRowCount();
-		final int col = src.getColumnCount();
+    /**
+     * Copy matrix.
+     *
+     * @param src the source.
+     * @param dest the destination.
+     */
+    private static void copy( final Matrix src, final Matrix dest )
+    {
+        final int row = src.getRowCount();
+        final int col = src.getColumnCount();
 
-		int r, c;
+        int r, c;
 
-		for( r = 0; r < row; r++ )
-		{
-			for( c = 0; c < col; c++ )
-			{
-				dest.set( r, c, src.get( r, c ) );
-			}
-		}
-	}
+        for( r = 0; r < row; r++ )
+        {
+            for( c = 0; c < col; c++ )
+            {
+                dest.set( r, c, src.get( r, c ) );
+            }
+        }
+    }
 
 
 }

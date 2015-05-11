@@ -15,18 +15,18 @@ import org.csstudio.opibuilder.converter.model.EdmString;
  */
 public class OpiString extends OpiAttribute {
 
-	/**
-	 * Creates an element <name>stringValue</name> with the given EdmString value.
-	 */
-	public OpiString(Context con, String name, EdmString s) {
-		this(con, name, s.get());
-	}
-	
-	/**
-	 * Creates an element <name>stringValue</name> with the given String value.
-	 */
-	public OpiString(Context con, String name, String s) {
-		super(con, name);
-		propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(s)));
-	}
+    /**
+     * Creates an element <name>stringValue</name> with the given EdmString value.
+     */
+    public OpiString(Context con, String name, EdmString s) {
+        this(con, name, s.get());
+    }
+
+    /**
+     * Creates an element <name>stringValue</name> with the given String value.
+     */
+    public OpiString(Context con, String name, String s) {
+        super(con, name);
+        propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(s)));
+    }
 }

@@ -17,46 +17,46 @@ import com.sun.speech.freetts.VoiceManager;
 @SuppressWarnings("nls")
 class FreeTTSAnnunciator extends BaseAnnunciator
 {
-	final public static String DEFAULT_VOICE = "kevin16";
+    final public static String DEFAULT_VOICE = "kevin16";
 
-	final private Voice voice;
+    final private Voice voice;
 
-	/** Construct annunciator with default voice
-	 *  @throws Exception on error
-	 */
-	public FreeTTSAnnunciator() throws Exception
-	{
-		this(DEFAULT_VOICE);
-	}
+    /** Construct annunciator with default voice
+     *  @throws Exception on error
+     */
+    public FreeTTSAnnunciator() throws Exception
+    {
+        this(DEFAULT_VOICE);
+    }
 
-	/** Construct annunciator with certain voice
-	 *  @param voice_name Name of the voice
-	 *  @throws Exception on error
-	 *  @see #getVoiceNames()
-	 */
-	public FreeTTSAnnunciator(final String voice_name) throws Exception
-	{
+    /** Construct annunciator with certain voice
+     *  @param voice_name Name of the voice
+     *  @throws Exception on error
+     *  @see #getVoiceNames()
+     */
+    public FreeTTSAnnunciator(final String voice_name) throws Exception
+    {
         FreeTTSHacks.perform();
 
-    	// The VoiceManager manages all the voices for FreeTTS.
-    	final VoiceManager voiceManager = VoiceManager.getInstance();
+        // The VoiceManager manages all the voices for FreeTTS.
+        final VoiceManager voiceManager = VoiceManager.getInstance();
         voice = voiceManager.getVoice(voice_name);
         if (voice == null)
-        	throw new Exception("Cannot find a voice named " + voice_name);
+            throw new Exception("Cannot find a voice named " + voice_name);
         // voice.setVerbose(true);
 
         // Allocate resources for the voice.
         voice.allocate();
     }
 
-	/** @return Array of voice names */
+    /** @return Array of voice names */
     public static String[] getVoiceNames()
     {
-    	final VoiceManager voiceManager = VoiceManager.getInstance();
-    	final Voice[] voices = voiceManager.getVoices();
-    	final String names[] = new String[voices.length];
+        final VoiceManager voiceManager = VoiceManager.getInstance();
+        final Voice[] voices = voiceManager.getVoices();
+        final String names[] = new String[voices.length];
         for (int i = 0; i < voices.length; i++)
-        	names[i] = voices[i].getName();
+            names[i] = voices[i].getName();
         return names;
     }
 
@@ -64,7 +64,7 @@ class FreeTTSAnnunciator extends BaseAnnunciator
     @Override
     public void say(final String something)
     {
-    	voice.speak(applyTranslations(something));
+        voice.speak(applyTranslations(something));
     }
 
     /** {@inheritDoc} */

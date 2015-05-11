@@ -39,7 +39,7 @@ import org.eclipse.ui.dialogs.ContainerSelectionDialog;
  * @author $Author$
  * @version $Revision$
  * @since 11.08.2008
- * 
+ *
  * The class is based on the @link DirectoryFieldEditor
  */
 
@@ -56,7 +56,7 @@ public class ContainerFieldEditor extends StringButtonFieldEditor {
 
     /**
      * Creates a directory field editor.
-     * 
+     *
      * @param name the name of the preference this field editor works on
      * @param labelText the label text of the field editor
      * @param parent the parent of the field editor's control
@@ -115,7 +115,7 @@ public class ContainerFieldEditor extends StringButtonFieldEditor {
      * Helper that opens the directory chooser dialog.
      * @param startingDirectory The directory the dialog will open in.
      * @return File File or <code>null</code>.
-     * 
+     *
      */
     private Path getDirectory(final Path startingDirectory) {
         IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();

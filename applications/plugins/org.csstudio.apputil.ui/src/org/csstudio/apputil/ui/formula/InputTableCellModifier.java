@@ -29,14 +29,14 @@ public class InputTableCellModifier implements ICellModifier
         this.viewer = viewer;
     }
 
-	/** Variable name can change. */
-	@Override
+    /** Variable name can change. */
+    @Override
     public boolean canModify(final Object element, final String col_title)
-	{
+    {
         return col_title.equals(InputTableHelper.Column.VARIABLE.getTitle());
     }
 
-	/** @return Returns the original cell value. */
+    /** @return Returns the original cell value. */
     @Override
     public Object getValue(final Object element, final String col_title)
     {
@@ -53,10 +53,10 @@ public class InputTableCellModifier implements ICellModifier
         return null;
     }
 
-	/** Editor finished and tries to update element's property. */
-	@Override
+    /** Editor finished and tries to update element's property. */
+    @Override
     public void modify(Object element, final String property,
-	        final Object value)
+            final Object value)
     {
         if (value == null)
             return;

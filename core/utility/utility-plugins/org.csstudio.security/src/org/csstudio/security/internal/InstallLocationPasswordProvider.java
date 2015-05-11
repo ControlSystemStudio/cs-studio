@@ -15,10 +15,10 @@ import org.eclipse.equinox.security.storage.provider.IPreferencesContainer;
 import org.eclipse.equinox.security.storage.provider.PasswordProvider;
 
 /** Eclipse password provider based on install location.
- * 
+ *
  *  <p>Eclipse {@link SecurePreferencesFactory} requires
  *  a master password.
- *  
+ *
  *  <p>On Windows and OS X, OS-specific plugins (fragments)
  *  <code>org.eclipse.equinox.security.*</code>
  *  provide such a password based on the current user.
@@ -26,14 +26,14 @@ import org.eclipse.equinox.security.storage.provider.PasswordProvider;
  *  so the <code>DefaultPasswordProvider</code>
  *  from <code>org.eclipse.equinox.security.ui</code>
  *  will prompt the user.
- *  
+ *
  *  <p>This password provider should be registered with priority 4.
  *  That's over the priority 2 used by the <code>DefaultPasswordProvider</code>,
  *  so it will suppress the prompt.
  *  The Windows resp. Mac OS X password providers use
  *  priority 5, i.e. on those platforms this password provider
  *  will be ignored.
- *  
+ *
  *  @author Kay Kasemir
  *  @author Xihui Chen - Original SNSPasswordProvider
  */

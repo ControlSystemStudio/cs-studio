@@ -21,7 +21,7 @@ public class LocalPVFactory implements IPVFactory
 {
     private static final String QUOTE = "\""; //$NON-NLS-1$
 
-	/** PV type prefix */
+    /** PV type prefix */
     public static final String PREFIX = "loc";
 
     /** All the 'local' PVs, mapped by name */
@@ -41,20 +41,20 @@ public class LocalPVFactory implements IPVFactory
     @Override
     public PV createPV(final String name) throws Exception
     {
-    	String namePart;
-    	String value_text = null;
-    	// Parse value, locate the "..(value)"
+        String namePart;
+        String value_text = null;
+        // Parse value, locate the "..(value)"
         final int value_start = name.indexOf('('); //$NON-NLS-1$
         if(value_start <0) //no initial value specified
-        	namePart = name;
-        else{	//it has initial value specified
-        	namePart = name.substring(0, value_start);
-        	 final int value_end = name.indexOf(')', value_start + 1); //$NON-NLS-1$
-        	 if (value_end < 0)
-        		 throw new Exception("Value in PV " + name +" not terminated by ')'");
-        	 value_text = name.substring(value_start+1, value_end);
-        	 if(value_text.startsWith(QUOTE) && value_text.endsWith(QUOTE))
-        		 value_text=value_text.substring(1, value_text.length()-1);
+            namePart = name;
+        else{    //it has initial value specified
+            namePart = name.substring(0, value_start);
+             final int value_end = name.indexOf(')', value_start + 1); //$NON-NLS-1$
+             if (value_end < 0)
+                 throw new Exception("Value in PV " + name +" not terminated by ')'");
+             value_text = name.substring(value_start+1, value_end);
+             if(value_text.startsWith(QUOTE) && value_text.endsWith(QUOTE))
+                 value_text=value_text.substring(1, value_text.length()-1);
         }
 
 
@@ -64,7 +64,7 @@ public class LocalPVFactory implements IPVFactory
             value = new Value(namePart);
             values.put(namePart, value);
             if(value_text != null)
-            	value.setValue(TextUtil.parseValueFromString(value_text, null));
+                value.setValue(TextUtil.parseValueFromString(value_text, null));
         }
         return new LocalPV(PREFIX, value);
     }

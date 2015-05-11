@@ -33,7 +33,7 @@ public class FormulaDialogTest
         final FormulaDialog dialog = new FormulaDialog(shell, "2*x + y", inputs);
         for (final InputItem input : dialog.getInputs())
             Assert.assertEquals(input.getVariableName(), input.getInputName());
-        
+
         dialog.open();
     }
 }

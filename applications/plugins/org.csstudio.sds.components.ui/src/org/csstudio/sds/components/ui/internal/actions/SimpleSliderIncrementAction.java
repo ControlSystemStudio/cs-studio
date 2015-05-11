@@ -49,10 +49,10 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
     public final void run(final IAction action) {
         this.run();
     }
-    
+
     @Override
     public void run() {
-    	if (_widgetModel != null) {
+        if (_widgetModel != null) {
             String title = "Change increment";
             String message = "Enter the new increment";
             String initialValue = String.valueOf(_widgetModel.getIncrement());
@@ -92,8 +92,8 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
      *
      * (@inheritDoc)
      */
-	public final void selectionChanged(final IAction action, final ISelection selection) {
-    	if (selection instanceof IStructuredSelection) {
+    public final void selectionChanged(final IAction action, final ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
             Object element = ((IStructuredSelection) selection).getFirstElement();
             if (element instanceof SimpleSliderEditPart) {
                 _widgetModel = (SimpleSliderModel) ((SimpleSliderEditPart) element)

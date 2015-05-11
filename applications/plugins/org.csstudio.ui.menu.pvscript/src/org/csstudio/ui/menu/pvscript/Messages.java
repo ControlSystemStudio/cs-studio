@@ -14,25 +14,25 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS
 {
-	private static final String BUNDLE_NAME = "org.csstudio.ui.menu.pvscript.messages"; //$NON-NLS-1$
-	public static String Error;
-	public static String PrefEdit_Command;
-	public static String PrefEdit_Description;
-	public static String PrefEdit_IndividualScripts;
-	public static String PrefEdit_Scripts;
-	public static String PreferenceErrorFmt;
-	public static String PreferencePageMessage;
-	public static String ScriptExecutionErrorFmt;
-	public static String ScriptInfoDlgTitle;
+    private static final String BUNDLE_NAME = "org.csstudio.ui.menu.pvscript.messages"; //$NON-NLS-1$
+    public static String Error;
+    public static String PrefEdit_Command;
+    public static String PrefEdit_Description;
+    public static String PrefEdit_IndividualScripts;
+    public static String PrefEdit_Scripts;
+    public static String PreferenceErrorFmt;
+    public static String PreferencePageMessage;
+    public static String ScriptExecutionErrorFmt;
+    public static String ScriptInfoDlgTitle;
 
-	static
-	{
-		// initialize resource bundle
-		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-	}
+    static
+    {
+        // initialize resource bundle
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+    }
 
-	private Messages()
-	{
-		// Prevent instantiation
-	}
+    private Messages()
+    {
+        // Prevent instantiation
+    }
 }

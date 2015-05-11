@@ -16,95 +16,95 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * Controller for a {@link Connection} between records.
- * 
+ *
  * @version $Revision$
  */
 public class ConnectionEditPart extends AbstractConnectionEditPart implements PropertyChangeListener {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void activate() {
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void activate() {
 
-		if (!isActive()) {
-			super.activate();
-			// register property change listener
-			((Connection) getModel()).addPropertyChangeListener(this);
+        if (!isActive()) {
+            super.activate();
+            // register property change listener
+            ((Connection) getModel()).addPropertyChangeListener(this);
 
-			// show figure
-			getFigure().setVisible(true);
-		}
-	}
+            // show figure
+            getFigure().setVisible(true);
+        }
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void deactivate() {
-		if (isActive()) {
-			super.deactivate();
-			// remove property change listener
-			((Connection) getModel()).removePropertyChangeListener(this);
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void deactivate() {
+        if (isActive()) {
+            super.deactivate();
+            // remove property change listener
+            ((Connection) getModel()).removePropertyChangeListener(this);
 
-			// hide figure
-			getFigure().setVisible(false);
-		}
-	}
+            // hide figure
+            getFigure().setVisible(false);
+        }
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void propertyChange(PropertyChangeEvent event) {
-		refreshVisuals();
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void propertyChange(PropertyChangeEvent event) {
+        refreshVisuals();
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void createEditPolicies() {
-		boolean moveable = false;
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void createEditPolicies() {
+        boolean moveable = false;
 
-		if (moveable) {
-			// Selection handle edit policy.
-			// Makes the connection show a feedback, when selected by the user.
-			installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy());
-		}
+        if (moveable) {
+            // Selection handle edit policy.
+            // Makes the connection show a feedback, when selected by the user.
+            installEditPolicy(EditPolicy.CONNECTION_ENDPOINTS_ROLE, new ConnectionEndpointEditPolicy());
+        }
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected IFigure createFigure() {
-		ConnectionFigure figure = new ConnectionFigure();
-		figure.setTargetDecoration(new PolygonDecoration());
-		figure.setLineStyle(getCastedModel().getLineStyle());
-		figure.setLineWidth(1);
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected IFigure createFigure() {
+        ConnectionFigure figure = new ConnectionFigure();
+        figure.setTargetDecoration(new PolygonDecoration());
+        figure.setLineStyle(getCastedModel().getLineStyle());
+        figure.setLineWidth(1);
 
-		RGB rgb = getCastedModel().getCaption().startsWith("datalink") ? new RGB(128, 128, 255) : new RGB(128,0,128);
-		figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(rgb));
-		
-		 ConnectionLocator locator = new ConnectionLocator(figure,
-		 ConnectionLocator.MIDDLE);
-		 locator.setGap(10);
-		 locator.setRelativePosition(3);
-//		 figure.add(new Label(getCastedModel().getCaption()), locator);
+        RGB rgb = getCastedModel().getCaption().startsWith("datalink") ? new RGB(128, 128, 255) : new RGB(128,0,128);
+        figure.setForegroundColor(CustomMediaFactory.getInstance().getColor(rgb));
 
-		return figure;
-	}
+         ConnectionLocator locator = new ConnectionLocator(figure,
+         ConnectionLocator.MIDDLE);
+         locator.setGap(10);
+         locator.setRelativePosition(3);
+//         figure.add(new Label(getCastedModel().getCaption()), locator);
 
-	protected Connection getCastedModel() {
-		return (Connection) getModel();
-	}
+        return figure;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void refreshVisuals() {
-	}
+    protected Connection getCastedModel() {
+        return (Connection) getModel();
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void refreshVisuals() {
+    }
 
 }

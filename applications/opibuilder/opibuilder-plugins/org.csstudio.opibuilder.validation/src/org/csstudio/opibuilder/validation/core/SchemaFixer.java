@@ -38,7 +38,7 @@ public class SchemaFixer {
     /**
      * Fix the given validation failures. All failures are expected to belong to the same OPI file. The fix replaces
      * the actual value of the validated property with the expected value.
-     * 
+     *
      * @param failureToFix the validation failures to fix
      * @throws IOException if there was an exception in reading the OPI
      * @throws IllegalArgumentException if the failures do not belong to the same OPI
@@ -52,7 +52,7 @@ public class SchemaFixer {
             } else if (!f.isFixable()) {
                 throw new IllegalArgumentException("Validation failure '" + f + "' is not fixable.");
             }
-            
+
         }
         DisplayModel displayModel = null;
         try (InputStream inputStream = ResourceUtil.pathToInputStream(path, false)) {
@@ -61,7 +61,7 @@ public class SchemaFixer {
         } catch (Exception e) {
             throw new IOException("Could not read the opi " + path.toOSString() +".",e);
         }
-        
+
         for (ValidationFailure f : failureToFix) {
             fixFailure:
             if (f instanceof SubValidationFailure) {
@@ -74,7 +74,7 @@ public class SchemaFixer {
                         break fixFailure;
                     }
                 }
-                
+
                 //fix the sub validation failure
                 AbstractWidgetModel model = findWidget(displayModel, parent);
                 if (model == null) {
@@ -86,7 +86,7 @@ public class SchemaFixer {
                 if (model == null) {
                     continue;
                 }
-                
+
                 if (f.getRule() == ValidationRule.RO) {
                     model.setPropertyValue(f.getProperty(), f.getExpectedValue());
                 } else if (f.getRule() == ValidationRule.WRITE) {
@@ -115,21 +115,21 @@ public class SchemaFixer {
                 }
             }
         }
-        
+
         IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path, false);
         if (r!= null && r instanceof IFile) {
             IFile file = (IFile) r;
             if (file.exists()) {
                 try (FileOutputStream output = new FileOutputStream(file.getLocation().toFile())) {
                     XMLUtil.widgetToOutputStream(displayModel, output, true);
-                }              
+                }
             }
-        }    
+        }
     }
-    
+
     /**
      * For actions, rules and scripts we need to add the missing elements.
-     * 
+     *
      * @param destination the destination
      * @param expected the expected value
      */
@@ -148,10 +148,10 @@ public class SchemaFixer {
             addMissing(existing, needToBe, (s1,s2) -> Utilities.areScriptsIdentical(s1, s2));
         }
     }
-    
+
     /**
      * Add elements from needToBe to destination if they are not already present there.
-     * 
+     *
      * @param destination the list that should contain the element
      * @param needToBe the list of elements that should be present in the destination
      * @param comparator the comparator to compare elements
@@ -168,10 +168,10 @@ public class SchemaFixer {
             }
         }
     }
-    
+
     /**
      * Finds the widget model that matches the validation failure.
-     * 
+     *
      * @param parent the parent to look for the widget model in
      * @param failure the failure to match
      * @return the widget model if found, or null if match was not found
@@ -183,13 +183,13 @@ public class SchemaFixer {
         }
         return model;
     }
-        
-    private static AbstractWidgetModel findWidgetInternal(AbstractContainerModel parent, ValidationFailure failure, 
+
+    private static AbstractWidgetModel findWidgetInternal(AbstractContainerModel parent, ValidationFailure failure,
                 boolean useWuid) {
         for (AbstractWidgetModel model : parent.getChildren()) {
             AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
             if (m != null) return m;
-        }  
+        }
         if (failure.getWidgetType().equals(ConnectionModel.ID) && parent instanceof DisplayModel) {
             for (ConnectionModel model : ((DisplayModel)parent).getConnectionList()) {
                 AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
@@ -198,7 +198,7 @@ public class SchemaFixer {
         }
         return null;
     }
-    
+
     private static AbstractWidgetModel doesWidgetMatch(AbstractWidgetModel model, ValidationFailure failure,
             boolean useWuid) {
         String widgetType = model.getTypeID();
@@ -209,7 +209,7 @@ public class SchemaFixer {
                 skipCheck = true;
             }
         }
-        
+
         if (!skipCheck && widgetType.equals(failure.getWidgetType()) && widgetName.equals(failure.getWidgetName())) {
             Object obj = model.getPropertyValue(failure.getProperty());
             if (equals(obj, failure.getActualValue())) {
@@ -222,13 +222,13 @@ public class SchemaFixer {
         }
         return null;
     }
-    
+
     /**
      * Check if the objects are identical. In most cases this is simple equals call, except in the case of actions,
-     * scripts and rules. Ideally those would be compared with equals as well, but they have properties 
+     * scripts and rules. Ideally those would be compared with equals as well, but they have properties
      * that we do not want to compare here (e.g. widgetModel).
-     * 
-     * @param o1 
+     *
+     * @param o1
      * @param o2
      * @return true if the objects are identical or false otherwise
      */
@@ -287,7 +287,7 @@ public class SchemaFixer {
             return Objects.equals(o1,o2);
         }
     }
-    
+
     private static void fixSubValidation(SubValidationFailure failure, AbstractWidgetModel model) {
         ValidationFailure parent = failure.getParent();
         Object propValue = model.getPropertyValue(parent.getProperty());
@@ -319,7 +319,7 @@ public class SchemaFixer {
                         break;
                     }
                 }
-            }  
+            }
         } else if (rule == ValidationRule.WRITE) {
             //expected sub value is missing
             Object toAdd = failure.getExpectedValue();
@@ -329,7 +329,7 @@ public class SchemaFixer {
                 ((ScriptsInput)propValue).getScriptList().add((ScriptData)toAdd);
             } else if (toAdd instanceof AbstractWidgetAction) {
                 ((ActionsInput)propValue).getActionsList().add((AbstractWidgetAction)toAdd);
-            }        
+            }
         } else if (rule == ValidationRule.RO) {
             if (failure.getActualValue() == null) {
                 //missing actual value, so add it
@@ -340,7 +340,7 @@ public class SchemaFixer {
                     ((ScriptsInput)propValue).getScriptList().add((ScriptData)toAdd);
                 } else if (toAdd instanceof AbstractWidgetAction) {
                     ((ActionsInput)propValue).getActionsList().add((AbstractWidgetAction)toAdd);
-                }                
+                }
             } else if (failure.getExpectedValue() == null) {
                 //there is an actual value, which should not be there
                 Object toRemove = failure.getActualValue();
@@ -371,7 +371,7 @@ public class SchemaFixer {
                             return;
                         }
                     }
-                }   
+                }
             } else {
                 //can only happen in the action case
                 ActionsInput ai = (ActionsInput)propValue;

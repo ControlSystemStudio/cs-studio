@@ -43,8 +43,8 @@ public class ProcessVariableWithSamples extends ProcessVariable {
      * @param samples of PV
      */
     public ProcessVariableWithSamples(final String name, final IValue[] samples) {
-    	super(name);
-		_samplesList= samples;
+        super(name);
+        _samplesList= samples;
     }
 
     /* (non-Javadoc)

@@ -24,42 +24,42 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Editor implements IEditorLauncher
 {
-	/** Invoked by Eclipse with the path to the launcher config
-	 *  {@inheritDoc}
-	 */
-	@Override
-	public void open(final IPath path)
-	{
-		LaunchConfig config;
-		try
-		{
-			config = new LaunchConfig(path.toFile());
-		}
-		catch (Exception ex)
-		{
-			config = new LaunchConfig();
-		}
-
-		final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		final LaunchConfigDialog dlg = new LaunchConfigDialog(shell, config);
-		if (dlg.open() != Window.OK)
-			return;
-		
-		// Update file
-		try
+    /** Invoked by Eclipse with the path to the launcher config
+     *  {@inheritDoc}
+     */
+    @Override
+    public void open(final IPath path)
+    {
+        LaunchConfig config;
+        try
         {
-			final FileOutputStream stream = new FileOutputStream(path.toFile());
-			stream.write(dlg.getConfig().getXML().getBytes());
-			stream.close();
-			
-			// Since we changed a file in the workspace, refresh it.
-			ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+            config = new LaunchConfig(path.toFile());
         }
         catch (Exception ex)
         {
-        	MessageDialog.openError(shell, Messages.Error,
-        			NLS.bind(Messages.LaunchConfigUpdateErrorFmt,
-        					ex.getMessage()));
+            config = new LaunchConfig();
         }
-	}
+
+        final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        final LaunchConfigDialog dlg = new LaunchConfigDialog(shell, config);
+        if (dlg.open() != Window.OK)
+            return;
+
+        // Update file
+        try
+        {
+            final FileOutputStream stream = new FileOutputStream(path.toFile());
+            stream.write(dlg.getConfig().getXML().getBytes());
+            stream.close();
+
+            // Since we changed a file in the workspace, refresh it.
+            ResourcesPlugin.getWorkspace().getRoot().refreshLocal(IResource.DEPTH_INFINITE, null);
+        }
+        catch (Exception ex)
+        {
+            MessageDialog.openError(shell, Messages.Error,
+                    NLS.bind(Messages.LaunchConfigUpdateErrorFmt,
+                            ex.getMessage()));
+        }
+    }
 }

@@ -25,17 +25,17 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  */
 
 public class ChannelFinderPreferencePage extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+    implements IWorkbenchPreferencePage {
 
     StringFieldEditor urlField;
     FileFieldEditor truststoreField;
 
     public ChannelFinderPreferencePage() {
-	super(GRID);
-	setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
-		Activator.PLUGIN_ID));
-	setMessage("ChannelFinderAPI Client Preferences");
-	setDescription("ChannelFinder preference page");
+    super(GRID);
+    setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
+        Activator.PLUGIN_ID));
+    setMessage("ChannelFinderAPI Client Preferences");
+    setDescription("ChannelFinder preference page");
     }
 
     /**
@@ -44,37 +44,37 @@ public class ChannelFinderPreferencePage extends FieldEditorPreferencePage
      * editor knows how to save and restore itself.
      */
     public void createFieldEditors() {
-	urlField = new StringFieldEditor(PreferenceConstants.ChannelFinder_URL,
-		"ChannelFinder Service URL:", getFieldEditorParent());
-	// no need to override checkstate
-	// urlField.setEmptyStringAllowed(false);
-	addField(urlField);
+    urlField = new StringFieldEditor(PreferenceConstants.ChannelFinder_URL,
+        "ChannelFinder Service URL:", getFieldEditorParent());
+    // no need to override checkstate
+    // urlField.setEmptyStringAllowed(false);
+    addField(urlField);
 
-	addField(new StringFieldEditor(PreferenceConstants.Username,
-		"username:", getFieldEditorParent()));
+    addField(new StringFieldEditor(PreferenceConstants.Username,
+        "username:", getFieldEditorParent()));
 
-	addField(new PasswordFieldEditor(Activator.PLUGIN_ID,
-		PreferenceConstants.Password, "user password: ",
-		getFieldEditorParent()));
+    addField(new PasswordFieldEditor(Activator.PLUGIN_ID,
+        PreferenceConstants.Password, "user password: ",
+        getFieldEditorParent()));
     }
 
     @Override
     public void propertyChange(PropertyChangeEvent event) {
-	super.propertyChange(event);
-	if (event.getProperty().equals(FieldEditor.VALUE)) {
-	    checkState();
-	}
+    super.propertyChange(event);
+    if (event.getProperty().equals(FieldEditor.VALUE)) {
+        checkState();
+    }
     }
 
     @Override
     public boolean performOk() {
-	boolean ret = super.performOk();
-	return ret;
+    boolean ret = super.performOk();
+    return ret;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */

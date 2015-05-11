@@ -49,10 +49,10 @@ public class ScanInfoModel
 
     /** Has poller received anything in last request to server? */
     private volatile boolean is_connected = false;
-    
+
     /** Most recent server info from <code>server</code> */
     private volatile ScanServerInfo server_info = null;
-    
+
     /** Most recent infos from <code>server</code> */
     private volatile List<ScanInfo> infos = Collections.emptyList();
 
@@ -129,7 +129,7 @@ public class ScanInfoModel
     /** Start model, i.e. connect to server, poll, ... */
     private void start() throws Exception
     {
-    	final long poll_period = ScanSystemPreferences.getScanClientPollPeriod();
+        final long poll_period = ScanSystemPreferences.getScanClientPollPeriod();
         poller = new Thread(new Runnable()
         {
             @Override
@@ -180,7 +180,7 @@ public class ScanInfoModel
                 listener.scanServerUpdate(server_info);
 
             // List of scans. Suppress updates if there is no change
-			final List<ScanInfo> update = client.getScanInfos();
+            final List<ScanInfo> update = client.getScanInfos();
             if (update.equals(infos) && is_connected)
                 return;
 
@@ -208,10 +208,10 @@ public class ScanInfoModel
     /** @return Scan Server info or <code>null</code> */
     public ScanServerInfo getServerInfo()
     {
-    	return server_info;
+        return server_info;
     }
 
-	/** @return Most recent infos obtained from server */
+    /** @return Most recent infos obtained from server */
     public List<ScanInfo> getInfos()
     {
         return infos;

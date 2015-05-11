@@ -28,32 +28,32 @@ import org.csstudio.dal.SequencePropertyCharacteristics;
 
 public class DoubleSeqPropertyProxyImpl extends PropertyProxyImpl<double[]>
 {
-	/**
-	 * Creates a new DoublePropertyProxyImpl object.
-	 *
-	 * @param name Proxy name
-	 */
-	public DoubleSeqPropertyProxyImpl(String name, SimulatorPlug plug)
-	{
-		super(name,plug,double[].class);
+    /**
+     * Creates a new DoublePropertyProxyImpl object.
+     *
+     * @param name Proxy name
+     */
+    public DoubleSeqPropertyProxyImpl(String name, SimulatorPlug plug)
+    {
+        super(name,plug,double[].class);
 
-		try {
-			Integer length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
+        try {
+            Integer length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
 
-			if (length != null) {
-				int len = length.intValue();
-				double[] dSeq = new double[len];
+            if (length != null) {
+                int len = length.intValue();
+                double[] dSeq = new double[len];
 
-				for (int i = 0; i < len; i++) {
-					dSeq[i] = 0d;
-				}
+                for (int i = 0; i < len; i++) {
+                    dSeq[i] = 0d;
+                }
 
-				valueProvider.set(dSeq);
-			}
-		} catch (Exception e) {
-			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
-		}
-	}
+                valueProvider.set(dSeq);
+            }
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass()).warn("Simulator error.", e);
+        }
+    }
 }
 
 /* __oOo__ */

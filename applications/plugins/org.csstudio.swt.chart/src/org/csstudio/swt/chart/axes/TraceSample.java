@@ -17,7 +17,7 @@ public class TraceSample
 {
     private Trace trace;
     private ChartSample sample;
-    
+
     /** Constructor, private to package. */
     TraceSample(Trace trace, ChartSample sample)
     {

@@ -38,7 +38,7 @@ package org.csstudio.dal.context;
  *
  * @see com.cosylab.lifecycle.LifecycleReporter
  */
-public enum LifecycleState {BEFORE_INITIALIZATION, INITIALIZING, INITIALIZED, 
-	DESTROYING, DESTROYED;
+public enum LifecycleState {BEFORE_INITIALIZATION, INITIALIZING, INITIALIZED,
+    DESTROYING, DESTROYED;
 }
 /* __oOo__ */

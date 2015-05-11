@@ -19,41 +19,41 @@ import org.eclipse.draw2d.IFigure;
  */
 public class BoolSwitchEditPart extends AbstractBoolControlEditPart{
 
-	@Override
-	protected IFigure doCreateFigure() {
-		final BoolSwitchModel model = getWidgetModel();
+    @Override
+    protected IFigure doCreateFigure() {
+        final BoolSwitchModel model = getWidgetModel();
 
-		BoolSwitchFigure boolSwitch = new BoolSwitchFigure();
-		
-		initializeCommonFigureProperties(boolSwitch, model);			
-		boolSwitch.setEffect3D(model.isEffect3D());
-		return boolSwitch;
-		
-		
-	}
-	
-	@Override
-	public BoolSwitchModel getWidgetModel() {
-		return (BoolSwitchModel)getModel();
-	}
+        BoolSwitchFigure boolSwitch = new BoolSwitchFigure();
 
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		registerCommonPropertyChangeHandlers();
-		
-		//effect 3D
-		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				BoolSwitchFigure boolSwitch = (BoolSwitchFigure) refreshableFigure;
-				boolSwitch.setEffect3D((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(BoolSwitchModel.PROP_EFFECT3D, handler);	
-		
-		
-	}
+        initializeCommonFigureProperties(boolSwitch, model);
+        boolSwitch.setEffect3D(model.isEffect3D());
+        return boolSwitch;
+
+
+    }
+
+    @Override
+    public BoolSwitchModel getWidgetModel() {
+        return (BoolSwitchModel)getModel();
+    }
+
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        registerCommonPropertyChangeHandlers();
+
+        //effect 3D
+        IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                BoolSwitchFigure boolSwitch = (BoolSwitchFigure) refreshableFigure;
+                boolSwitch.setEffect3D((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(BoolSwitchModel.PROP_EFFECT3D, handler);
+
+
+    }
 
 }

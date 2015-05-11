@@ -17,33 +17,33 @@ import org.eclipse.gef.commands.Command;
  *
  */
 public class AddTabCommand extends Command {
-	private int tabIndex;
-	private TabModel tabModel;
-	private TabItem tabItem = null;
-	
-	public AddTabCommand(TabEditPart tabEditPart, boolean before) {
-		this.tabModel = tabEditPart.getWidgetModel();
-		if(before)
-			this.tabIndex = tabEditPart.getActiveTabIndex();
-		else
-			this.tabIndex = tabEditPart.getActiveTabIndex()+1;
-		setLabel("Add Tab");
-	}
-	
-	@Override
-	public void execute() {
-		if(tabItem == null)
-			tabItem = new TabItem(tabModel, tabIndex);
-		tabModel.addTab(tabIndex, tabItem);
-	}
-	
-	@Override
-	public void undo() {
-		tabModel.removeTab(tabIndex);
-	}
-	
-	
-	
-	
-	
+    private int tabIndex;
+    private TabModel tabModel;
+    private TabItem tabItem = null;
+
+    public AddTabCommand(TabEditPart tabEditPart, boolean before) {
+        this.tabModel = tabEditPart.getWidgetModel();
+        if(before)
+            this.tabIndex = tabEditPart.getActiveTabIndex();
+        else
+            this.tabIndex = tabEditPart.getActiveTabIndex()+1;
+        setLabel("Add Tab");
+    }
+
+    @Override
+    public void execute() {
+        if(tabItem == null)
+            tabItem = new TabItem(tabModel, tabIndex);
+        tabModel.addTab(tabIndex, tabItem);
+    }
+
+    @Override
+    public void undo() {
+        tabModel.removeTab(tabIndex);
+    }
+
+
+
+
+
 }

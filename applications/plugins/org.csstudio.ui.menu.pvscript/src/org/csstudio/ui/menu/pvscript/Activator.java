@@ -13,6 +13,6 @@ package org.csstudio.ui.menu.pvscript;
 @SuppressWarnings("nls")
 public class Activator
 {
-	/** Plugin ID defined in MANIFEST.MF */
-	final public static String ID = "org.csstudio.ui.menu.pvscript";
+    /** Plugin ID defined in MANIFEST.MF */
+    final public static String ID = "org.csstudio.ui.menu.pvscript";
 }

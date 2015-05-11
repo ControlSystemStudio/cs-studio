@@ -42,219 +42,219 @@ import com.cosylab.util.ListenerList;
  *
  */
 public class DeviceCollectionMap<T extends AbstractDevice>
-	implements DeviceCollection<T>
+    implements DeviceCollection<T>
 {
-	protected ListenerList groupListeners;
-	protected Map<String, T> devices;
-	protected Class<T> type;
+    protected ListenerList groupListeners;
+    protected Map<String, T> devices;
+    protected Class<T> type;
 
-	/**
-	 * Creates a new DeviceCollectionMap object.
-	 */
-	public DeviceCollectionMap(Class<T> type)
-	{
-		super();
-		this.type = type;
-		devices = new HashMap<String, T>();
-	}
+    /**
+     * Creates a new DeviceCollectionMap object.
+     */
+    public DeviceCollectionMap(Class<T> type)
+    {
+        super();
+        this.type = type;
+        devices = new HashMap<String, T>();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#size()
-	 */
-	public int size()
-	{
-		return devices.size();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#size()
+     */
+    public int size()
+    {
+        return devices.size();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#isEmpty()
-	 */
-	public boolean isEmpty()
-	{
-		return devices.isEmpty();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#isEmpty()
+     */
+    public boolean isEmpty()
+    {
+        return devices.isEmpty();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#contains(java.lang.Object)
-	 */
-	public boolean contains(Object property)
-	{
-		return devices.containsValue(property);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#contains(java.lang.Object)
+     */
+    public boolean contains(Object property)
+    {
+        return devices.containsValue(property);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#iterator()
-	 */
-	public Iterator<T> iterator()
-	{
-		return devices.values().iterator();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#iterator()
+     */
+    public Iterator<T> iterator()
+    {
+        return devices.values().iterator();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#toArray()
-	 */
-	public Object[] toArray()
-	{
-		return devices.values().toArray();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#toArray()
+     */
+    public Object[] toArray()
+    {
+        return devices.values().toArray();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#toDeviceArray()
-	 */
-	public T[] toDeviceArray()
-	{
-		T[] devs = (T[])Array.newInstance(type, devices.size());
-		Iterator<T> it= iterator();
-		for (int i = 0; i < devs.length; i++) {
-			devs[i]=it.next();
-		}
-		return devs;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#toDeviceArray()
+     */
+    public T[] toDeviceArray()
+    {
+        T[] devs = (T[])Array.newInstance(type, devices.size());
+        Iterator<T> it= iterator();
+        for (int i = 0; i < devs.length; i++) {
+            devs[i]=it.next();
+        }
+        return devs;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#toArray(E[])
-	 */
-	public <E extends T> E[] toArray(E[] array)
-	{
-		return devices.values().toArray(array);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#toArray(E[])
+     */
+    public <E extends T> E[] toArray(E[] array)
+    {
+        return devices.values().toArray(array);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#containsAll(java.util.Collection)
-	 */
-	public boolean containsAll(Collection<?> colection)
-	{
-		return devices.values().contains(colection);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#containsAll(java.util.Collection)
+     */
+    public boolean containsAll(Collection<?> colection)
+    {
+        return devices.values().contains(colection);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#contains(java.lang.String)
-	 */
-	public boolean contains(String name)
-	{
-		return devices.containsKey(name);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#contains(java.lang.String)
+     */
+    public boolean contains(String name)
+    {
+        return devices.containsKey(name);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#get(java.lang.String)
-	 */
-	public T get(String name)
-	{
-		return devices.get(name);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#get(java.lang.String)
+     */
+    public T get(String name)
+    {
+        return devices.get(name);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#getDeviceNames()
-	 */
-	public String[] getDeviceNames()
-	{
-		return (String[])devices.keySet().toArray();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#getDeviceNames()
+     */
+    public String[] getDeviceNames()
+    {
+        return (String[])devices.keySet().toArray();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#addGroupListner(org.csstudio.dal.group.GroupListener)
-	 */
-	public void addDeviceGroupListner(DeviceGroupListener<T> l)
-	{
-		if (groupListeners == null) {
-			groupListeners = new ListenerList(DeviceGroupListener.class);
-		}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#addGroupListner(org.csstudio.dal.group.GroupListener)
+     */
+    public void addDeviceGroupListner(DeviceGroupListener<T> l)
+    {
+        if (groupListeners == null) {
+            groupListeners = new ListenerList(DeviceGroupListener.class);
+        }
 
-		groupListeners.add(l);
-	}
+        groupListeners.add(l);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#removeGroupListner(org.csstudio.dal.group.GroupListener)
-	 */
-	public void removeDeviceGroupListner(DeviceGroupListener<T> l)
-	{
-		if (groupListeners != null) {
-			groupListeners.remove(l);
-		}
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#removeGroupListner(org.csstudio.dal.group.GroupListener)
+     */
+    public void removeDeviceGroupListner(DeviceGroupListener<T> l)
+    {
+        if (groupListeners != null) {
+            groupListeners.remove(l);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.DeviceCollection#getGroupListners()
-	 */
-	public DeviceGroupListener<T>[] getDeviceGroupListners()
-	{
-		if (groupListeners != null) {
-			return (DeviceGroupListener<T>[])groupListeners.toArray();
-		}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.DeviceCollection#getGroupListners()
+     */
+    public DeviceGroupListener<T>[] getDeviceGroupListners()
+    {
+        if (groupListeners != null) {
+            return (DeviceGroupListener<T>[])groupListeners.toArray();
+        }
 
-		return new DeviceGroupListener[0];
-	}
-	
-	/**
-	 * Notifies all the <code>GroupListener<code> objects, about members added/removed.
-	 *
-	 * @param event Group event
-	 * @param added <code>true</code> if members were added, <code>false</code> otherwise.
-	 */
-	protected void fireGroupEvent(DeviceGroupEvent<T> event, boolean added)
-	{
-		if (groupListeners == null) {
-			return;
-		}
+        return new DeviceGroupListener[0];
+    }
 
-		DeviceGroupListener<T>[] l = (DeviceGroupListener<T>[])groupListeners.toArray();
+    /**
+     * Notifies all the <code>GroupListener<code> objects, about members added/removed.
+     *
+     * @param event Group event
+     * @param added <code>true</code> if members were added, <code>false</code> otherwise.
+     */
+    protected void fireGroupEvent(DeviceGroupEvent<T> event, boolean added)
+    {
+        if (groupListeners == null) {
+            return;
+        }
 
-		if (added) {
-			for (int i = 0; i < l.length; i++) {
-				try {
-					l[i].membersAdded(event);
-				} catch (Exception e) {
-					Logger.getLogger(DeviceCollectionMap.class).warn("Error in event handler, continuing.", e);
-				}
-			}
-		} else {
-			for (int i = 0; i < l.length; i++) {
-				try {
-					l[i].membersRemoved(event);
-				} catch (Exception e) {
-					Logger.getLogger(DeviceCollectionMap.class).warn("Error in event handler, continuing.", e);
-				}
-			}
-		}
-	}
+        DeviceGroupListener<T>[] l = (DeviceGroupListener<T>[])groupListeners.toArray();
 
-	/**
-	 * Adds property to this collection.
-	 *
-	 * @param device The property to add to this collection
-	 *
-	 * @throws IllegalArgumentException If a property with the same name already exists in the collection
-	 */
-	protected void add(T device)
-	{
-		if (contains(((AbstractDevice)device).getUniqueName())) {
-			throw new IllegalArgumentException(
-			    "This collection already contains device with name '"
-			    + ((AbstractDevice)device).getUniqueName() + "'.");
-		}
+        if (added) {
+            for (int i = 0; i < l.length; i++) {
+                try {
+                    l[i].membersAdded(event);
+                } catch (Exception e) {
+                    Logger.getLogger(DeviceCollectionMap.class).warn("Error in event handler, continuing.", e);
+                }
+            }
+        } else {
+            for (int i = 0; i < l.length; i++) {
+                try {
+                    l[i].membersRemoved(event);
+                } catch (Exception e) {
+                    Logger.getLogger(DeviceCollectionMap.class).warn("Error in event handler, continuing.", e);
+                }
+            }
+        }
+    }
 
-		devices.put(((AbstractDevice)device).getUniqueName(), device);
-		//infer generics type safety
-		T[] devices = (T[])Array.newInstance(device.getClass(), 1);
-		devices[0] = device;
-		fireGroupEvent(new DeviceGroupEvent<T>(this, devices), true);
-	}
+    /**
+     * Adds property to this collection.
+     *
+     * @param device The property to add to this collection
+     *
+     * @throws IllegalArgumentException If a property with the same name already exists in the collection
+     */
+    protected void add(T device)
+    {
+        if (contains(((AbstractDevice)device).getUniqueName())) {
+            throw new IllegalArgumentException(
+                "This collection already contains device with name '"
+                + ((AbstractDevice)device).getUniqueName() + "'.");
+        }
 
-	/**
-	 * Removes property from this collection.
-	 *
-	 * @param device The property to remove.
-	 */
-	protected void remove(T device)
-	{
-		T removed = devices.remove(((AbstractDevice)device).getUniqueName());
-		if (removed != null) {
-			//infer generics type safety
-			T[] devices = (T[])Array.newInstance(device.getClass(), 1);
-			devices[0] = device;
-			fireGroupEvent(new DeviceGroupEvent<T>(this, devices), false);
-		}
-	}
+        devices.put(((AbstractDevice)device).getUniqueName(), device);
+        //infer generics type safety
+        T[] devices = (T[])Array.newInstance(device.getClass(), 1);
+        devices[0] = device;
+        fireGroupEvent(new DeviceGroupEvent<T>(this, devices), true);
+    }
+
+    /**
+     * Removes property from this collection.
+     *
+     * @param device The property to remove.
+     */
+    protected void remove(T device)
+    {
+        T removed = devices.remove(((AbstractDevice)device).getUniqueName());
+        if (removed != null) {
+            //infer generics type safety
+            T[] devices = (T[])Array.newInstance(device.getClass(), 1);
+            devices[0] = device;
+            fireGroupEvent(new DeviceGroupEvent<T>(this, devices), false);
+        }
+    }
 }
 
 /* __oOo__ */

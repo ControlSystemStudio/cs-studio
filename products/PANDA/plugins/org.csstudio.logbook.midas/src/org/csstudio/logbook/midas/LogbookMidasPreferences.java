@@ -6,7 +6,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class LogbookMidasPreferences {
     public static final String HOST = "host";
     public static final String PORT = "port";
-    
+
     /** @return HOST of Elog server */
     public static String getHOST()
     {
@@ -26,5 +26,5 @@ public class LogbookMidasPreferences {
             default_value = prefs.getString(Activator.ID, PORT, default_value, null);
         return default_value.trim();
     }
-        
+
 }

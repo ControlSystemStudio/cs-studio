@@ -24,8 +24,8 @@ package org.csstudio.utility.adlconverter.fpcreator;
 import org.eclipse.core.runtime.Path;
 
 /**
- * TODO (jhatje) : 
- * 
+ * TODO (jhatje) :
+ *
  * @author jhatje
  * @since 04.06.2012
  */
@@ -38,7 +38,7 @@ public class EpicsRecord {
 
     /**
      * Constructor.
-     * @param sequenceNo 
+     * @param sequenceNo
      * @param string
      */
     public EpicsRecord(String recordName, int sequenceNo) {
@@ -79,8 +79,8 @@ public class EpicsRecord {
     }
 
     public String getNameWithoutTypeSuffix() {
-    	int lastIndexOf = _recordName.lastIndexOf("_");
-    	String recordName = _recordName.substring(0, lastIndexOf);
-		return recordName;
+        int lastIndexOf = _recordName.lastIndexOf("_");
+        String recordName = _recordName.substring(0, lastIndexOf);
+        return recordName;
     }
 }

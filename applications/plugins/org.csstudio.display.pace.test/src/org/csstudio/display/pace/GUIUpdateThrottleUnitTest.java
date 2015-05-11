@@ -24,7 +24,7 @@ public class GUIUpdateThrottleUnitTest
     private static final long SUPPRESS = 1000;
     final private AtomicInteger events = new AtomicInteger(0);
     private volatile String last_item = null;
-    
+
     @Test
     public void testThrottle() throws Exception
     {
@@ -42,16 +42,16 @@ public class GUIUpdateThrottleUnitTest
                 last_item = item;
             }
         };
-        
+
         // Start without events
         assertEquals(0, events.get());
-        
+
         // One event goes through after small delay
         throttle.trigger("Initial");
         Thread.sleep(2*INITIAL);
         assertEquals(1, events.get());
         assertEquals("Initial", last_item);
-        
+
         // Later, another one goes through
         Thread.sleep(2*SUPPRESS);
         throttle.trigger("Another single event");
@@ -63,7 +63,7 @@ public class GUIUpdateThrottleUnitTest
         for (int i=0; i<50; ++i)
             throttle.trigger("part of burst update");
         assertEquals(2, events.get());
-        
+
         // Later we we get one(!) other event for the N
         Thread.sleep(2*SUPPRESS);
         assertEquals(3, events.get());

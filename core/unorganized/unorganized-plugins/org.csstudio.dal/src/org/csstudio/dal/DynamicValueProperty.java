@@ -35,49 +35,49 @@ import org.csstudio.dal.context.PropertyContext;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
 public interface DynamicValueProperty<T> extends SimpleProperty<T>,
-	AsynchronousAccess<T>, AsynchronousCharacteristicContext, Updateable<T>,
-	Linkable, EventSystemContext<DynamicValueEvent<T, SimpleProperty<T>>>
+    AsynchronousAccess<T>, AsynchronousCharacteristicContext, Updateable<T>,
+    Linkable, EventSystemContext<DynamicValueEvent<T, SimpleProperty<T>>>
 {
-	/**
-	 * Returns parent property context, may be
-	 * <code>PropertyFamily</code> or <code>AbstractDevice</code>.
-	 *
-	 * @return parent context
-	 */
-	public PropertyContext getParentContext();
+    /**
+     * Returns parent property context, may be
+     * <code>PropertyFamily</code> or <code>AbstractDevice</code>.
+     *
+     * @return parent context
+     */
+    public PropertyContext getParentContext();
 
-	/**
-	 * Returns map with supported parameters for obtaining expert monitor, may be <code>null</code>.
-	 * Key value pairs may be in following combinations:
-	 *
-	 * <ul>
-	 * <li>If key is defined and value is <code>null</code> it means that it is enough to provide
-	 * key with <code>null</code> valeu in parameter in order to acctivate specific event parameter.</li>
-	 * <li>If value is of tyle <code>Class</code>, this means that only values of specified type
-	 * are supported for this key.</li>
-	 * <li>If value is array, than only elements in array are supported as parameters for this key.</li>
-	 * <li>If value is Java 1.5 enum class, than only enum elements are supported as parameters
-	 * for this key.</li>
-	 * </ul>
-	 *
-	 * <p>If returned map is <code>null</code> or empty, than no special parameters are supported
-	 * and they have no efect, thus expert monitor is not supported.</p>
-	 *
-	 * @return map with supported parameters.
-	 */
-	public Map<String, Object> getSupportedExpertMonitorParameters();
+    /**
+     * Returns map with supported parameters for obtaining expert monitor, may be <code>null</code>.
+     * Key value pairs may be in following combinations:
+     *
+     * <ul>
+     * <li>If key is defined and value is <code>null</code> it means that it is enough to provide
+     * key with <code>null</code> valeu in parameter in order to acctivate specific event parameter.</li>
+     * <li>If value is of tyle <code>Class</code>, this means that only values of specified type
+     * are supported for this key.</li>
+     * <li>If value is array, than only elements in array are supported as parameters for this key.</li>
+     * <li>If value is Java 1.5 enum class, than only enum elements are supported as parameters
+     * for this key.</li>
+     * </ul>
+     *
+     * <p>If returned map is <code>null</code> or empty, than no special parameters are supported
+     * and they have no efect, thus expert monitor is not supported.</p>
+     *
+     * @return map with supported parameters.
+     */
+    public Map<String, Object> getSupportedExpertMonitorParameters();
 
-	/**
-	 * Creates new expert monitor, which supports communication layer specific parameters.
-	 * @param listener listener which will receive expert value updates.
-	 * @param parameters communication layer specific parameters
-	 * @return expert monitor
-	 * @throws RemoteException if requested expert monitor in not supported or available.
-	 *
-	 * @see ValueUpdateable#getSupportedParameters()
-	 */
-	public <E extends SimpleProperty<T>, M extends ExpertMonitor,DynamicValueMonitor> M createNewExpertMonitor(DynamicValueListener<T, E> listener,
-	    Map<String, Object> parameters) throws RemoteException;
+    /**
+     * Creates new expert monitor, which supports communication layer specific parameters.
+     * @param listener listener which will receive expert value updates.
+     * @param parameters communication layer specific parameters
+     * @return expert monitor
+     * @throws RemoteException if requested expert monitor in not supported or available.
+     *
+     * @see ValueUpdateable#getSupportedParameters()
+     */
+    public <E extends SimpleProperty<T>, M extends ExpertMonitor,DynamicValueMonitor> M createNewExpertMonitor(DynamicValueListener<T, E> listener,
+        Map<String, Object> parameters) throws RemoteException;
 }
 
 /* __oOo__ */

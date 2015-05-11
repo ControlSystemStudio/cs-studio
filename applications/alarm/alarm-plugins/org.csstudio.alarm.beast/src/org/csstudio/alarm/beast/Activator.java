@@ -14,12 +14,12 @@ import java.util.logging.Logger;
  */
 public class Activator
 {
-	/** Plug-in ID, defined in MANUIFEST.MF */
-	public static final String ID = "org.csstudio.alarm.beast"; //$NON-NLS-1$
+    /** Plug-in ID, defined in MANUIFEST.MF */
+    public static final String ID = "org.csstudio.alarm.beast"; //$NON-NLS-1$
 
-	/** @return Logger for the plugin ID */
-	public static Logger getLogger()
-	{
-	    return Logger.getLogger(ID);
-	}
+    /** @return Logger for the plugin ID */
+    public static Logger getLogger()
+    {
+        return Logger.getLogger(ID);
+    }
 }

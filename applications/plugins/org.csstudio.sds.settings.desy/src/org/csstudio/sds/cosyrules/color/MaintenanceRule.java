@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.sds.cosyrules.color;
 
@@ -18,24 +18,24 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class MaintenanceRule implements IRule {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(MaintenanceRule.class);
-    
+
     private IPath _defaultPath;
     private IPath _dispayPath = null;
     private String _preFileName = null;
-    
+
     //    private Map<String, IPath> _rTypUrlMap;
-    
+
     /**
-     * 
+     *
      */
     public MaintenanceRule() {
         init();
     }
-    
+
     /**
-    * 
+    *
     */
     private boolean init() {
         try {
@@ -48,7 +48,7 @@ public class MaintenanceRule implements IRule {
         }
         return false;
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.sds.model.IRule#evaluate(java.lang.Object[])
      */
@@ -84,7 +84,7 @@ public class MaintenanceRule implements IRule {
         }
         return iPath;
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.sds.model.IRule#getDescription()
      */
@@ -92,5 +92,5 @@ public class MaintenanceRule implements IRule {
     public String getDescription() {
         return "Gibt das Maintenance Display für den übergebenen RTYP wieder";
     }
-    
+
 }

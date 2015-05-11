@@ -37,7 +37,7 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 11.09.2007
  */
 public class ADLDynamicAttribute extends WidgetPart{
-	//TODO Strip out old code lines that refer to SDS implementations
+    //TODO Strip out old code lines that refer to SDS implementations
 
     /**
      * The Color.
@@ -71,8 +71,8 @@ public class ADLDynamicAttribute extends WidgetPart{
 
     /**
      * The default constructor.
-     * 
-     * @param adlDynamicAttribute An ADLWidget that correspond a ADL Dynamic Attribute. 
+     *
+     * @param adlDynamicAttribute An ADLWidget that correspond a ADL Dynamic Attribute.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
@@ -81,10 +81,10 @@ public class ADLDynamicAttribute extends WidgetPart{
     }
 
     public ADLDynamicAttribute() {
-    	super();
+        super();
     }
 
-	/**
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -100,7 +100,7 @@ public class ADLDynamicAttribute extends WidgetPart{
         _calc = String.valueOf("");
 
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -109,9 +109,9 @@ public class ADLDynamicAttribute extends WidgetPart{
 
         assert adlDynamicAttribute.isType("dynamic attribute") : Messages.ADLDynamicAttribute_AssertError_Begin+adlDynamicAttribute.getType()+Messages.ADLDynamicAttribute_AssertError_End; //$NON-NLS-1$
         for (ADLWidget adlWidget : adlDynamicAttribute.getObjects()) {
-        	if(adlWidget.getType().equals("attr")){
+            if(adlWidget.getType().equals("attr")){
                 for (FileLine fileLine : adlWidget.getBody()) {
-                    adlDynamicAttribute.addBody(fileLine);    
+                    adlDynamicAttribute.addBody(fileLine);
                 }
             }
         }
@@ -120,15 +120,15 @@ public class ADLDynamicAttribute extends WidgetPart{
         _color=false;
 
         for (FileLine parameter : adlDynamicAttribute.getBody()) {
-            if(parameter.getLine().trim().startsWith("//")){ 
+            if(parameter.getLine().trim().startsWith("//")){
                 continue;
             }
             String head = parameter.getLine().replaceAll("\"", "").split("=")[0]; //$NON-NLS-1$
             String[] row = {parameter.getLine().replaceAll("\"", "").substring(head.length()+1)};
             head=head.trim().toLowerCase();
             if(head.equals("clr")){ //$NON-NLS-1$
-            	//TODO catch if this is string discrete/alarm/static
-            	clrMode=FileLine.getTrimmedValue(row[0]);
+                //TODO catch if this is string discrete/alarm/static
+                clrMode=FileLine.getTrimmedValue(row[0]);
 //                set_isColorDefined(true);
             }else if(head.equals("vis")){ //$NON-NLS-1$
                 set_vis(FileLine.getTrimmedValue(row[0]));
@@ -165,123 +165,123 @@ public class ADLDynamicAttribute extends WidgetPart{
         return _color;
     }
 
-	@Override
-	public Object[] getChildren() {
-    	Object[] ret = new Object[4];
-		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, clrMode);
-		ret[1] = new ADLResource(ADLResource.VISIBILITY, _vis);
-		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
-		ret[2] = new ADLResource(ADLResource.CHANNELB, _chanb);
-		ret[2] = new ADLResource(ADLResource.CHANNELC, _chanc);
-		ret[2] = new ADLResource(ADLResource.CHANNELD, _chand);
-		ret[2] = new ADLResource(ADLResource.CALC, _chan);
-		ret[3] = new ADLResource(ADLResource.COLOR_RULE, _colorRule);
-		return ret;
-	}
+    @Override
+    public Object[] getChildren() {
+        Object[] ret = new Object[4];
+        ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, clrMode);
+        ret[1] = new ADLResource(ADLResource.VISIBILITY, _vis);
+        ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
+        ret[2] = new ADLResource(ADLResource.CHANNELB, _chanb);
+        ret[2] = new ADLResource(ADLResource.CHANNELC, _chanc);
+        ret[2] = new ADLResource(ADLResource.CHANNELD, _chand);
+        ret[2] = new ADLResource(ADLResource.CALC, _chan);
+        ret[3] = new ADLResource(ADLResource.COLOR_RULE, _colorRule);
+        return ret;
+    }
 
-	protected String getClrMode() {
-		return clrMode;
-	}
+    protected String getClrMode() {
+        return clrMode;
+    }
 
-	protected void setClrMode(String clrMode) {
-		this.clrMode = clrMode;
-	}
+    protected void setClrMode(String clrMode) {
+        this.clrMode = clrMode;
+    }
 
-//	/**
-//	 * @param _isColorDefined the _isColorDefined to set
-//	 */
-//	private void set_isColorDefined(boolean _isColorDefined) {
-//		this._isColorDefined = _isColorDefined;
-//	}
+//    /**
+//     * @param _isColorDefined the _isColorDefined to set
+//     */
+//    private void set_isColorDefined(boolean _isColorDefined) {
+//        this._isColorDefined = _isColorDefined;
+//    }
 //
-//	/**
-//	 * @return the _isColorDefined
-//	 */
-//	public boolean isColorDefined() {
-//		return _isColorDefined;
-//	}
+//    /**
+//     * @return the _isColorDefined
+//     */
+//    public boolean isColorDefined() {
+//        return _isColorDefined;
+//    }
 
-	/**
-	 * @param _chanb the _chanb to set
-	 */
-	public void set_chanb(String _chanb) {
-		this._chanb = _chanb;
-	}
+    /**
+     * @param _chanb the _chanb to set
+     */
+    public void set_chanb(String _chanb) {
+        this._chanb = _chanb;
+    }
 
-	/**
-	 * @return the _chanb
-	 */
-	public String get_chanb() {
-		return _chanb;
-	}
+    /**
+     * @return the _chanb
+     */
+    public String get_chanb() {
+        return _chanb;
+    }
 
-	/**
-	 * @param _chanc the _chanc to set
-	 */
-	public void set_chanc(String _chanc) {
-		this._chanc = _chanc;
-	}
+    /**
+     * @param _chanc the _chanc to set
+     */
+    public void set_chanc(String _chanc) {
+        this._chanc = _chanc;
+    }
 
-	/**
-	 * @return the _chanc
-	 */
-	public String get_chanc() {
-		return _chanc;
-	}
+    /**
+     * @return the _chanc
+     */
+    public String get_chanc() {
+        return _chanc;
+    }
 
-	/**
-	 * @param _chand the _chand to set
-	 */
-	public void set_chand(String _chand) {
-		this._chand = _chand;
-	}
+    /**
+     * @param _chand the _chand to set
+     */
+    public void set_chand(String _chand) {
+        this._chand = _chand;
+    }
 
-	/**
-	 * @return the _chand
-	 */
-	public String get_chand() {
-		return _chand;
-	}
+    /**
+     * @return the _chand
+     */
+    public String get_chand() {
+        return _chand;
+    }
 
-	/**
-	 * @param _calc the _calc to set
-	 */
-	public void set_calc(String _calc) {
-		this._calc = _calc;
-	}
+    /**
+     * @param _calc the _calc to set
+     */
+    public void set_calc(String _calc) {
+        this._calc = _calc;
+    }
 
-	/**
-	 * @return the _calc
-	 */
-	public String get_calc() {
-		return _calc;
-	}
+    /**
+     * @return the _calc
+     */
+    public String get_calc() {
+        return _calc;
+    }
 
-	/**
-	 * @param _vis the _vis to set
-	 */
-	public void set_vis(String _vis) {
-		this._vis = _vis;
-	}
+    /**
+     * @param _vis the _vis to set
+     */
+    public void set_vis(String _vis) {
+        this._vis = _vis;
+    }
 
-	/**
-	 * @return the _vis
-	 */
-	public String get_vis() {
-		return _vis;
-	}
+    /**
+     * @return the _vis
+     */
+    public String get_vis() {
+        return _vis;
+    }
 
-	/**
-	 * @param _chan the _chan to set
-	 */
-	public void set_chan(String _chan) {
-		this._chan = _chan;
-	}
+    /**
+     * @param _chan the _chan to set
+     */
+    public void set_chan(String _chan) {
+        this._chan = _chan;
+    }
 
-	/**
-	 * @return the _chan
-	 */
-	public String get_chan() {
-		return _chan;
-	}
+    /**
+     * @return the _chan
+     */
+    public String get_chan() {
+        return _chan;
+    }
 }

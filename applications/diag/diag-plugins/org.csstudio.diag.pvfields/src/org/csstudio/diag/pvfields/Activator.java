@@ -17,42 +17,42 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
 
-	/** Plug-in ID defined in MANIFEST.MF */
-	public static final String PLUGIN_ID = "org.csstudio.diag.pvfields"; //$NON-NLS-1$
+    /** Plug-in ID defined in MANIFEST.MF */
+    public static final String PLUGIN_ID = "org.csstudio.diag.pvfields"; //$NON-NLS-1$
 
-	public static final Logger logger = Logger.getLogger(PLUGIN_ID);
+    public static final Logger logger = Logger.getLogger(PLUGIN_ID);
 
-	/** The shared instance */
-	private static Activator plugin;
+    /** The shared instance */
+    private static Activator plugin;
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
+        super.start(context);
+        plugin = this;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
+        plugin = null;
+        super.stop(context);
+    }
 
-	/** @return the shared instance */
-	public static Activator getDefault() {
-		return plugin;
-	}
+    /** @return the shared instance */
+    public static Activator getDefault() {
+        return plugin;
+    }
 
-	/** @return Logger for plugin ID */
-	public static Logger getLogger()
-	{
-	    return logger;
-	}
+    /** @return Logger for plugin ID */
+    public static Logger getLogger()
+    {
+        return logger;
+    }
 }

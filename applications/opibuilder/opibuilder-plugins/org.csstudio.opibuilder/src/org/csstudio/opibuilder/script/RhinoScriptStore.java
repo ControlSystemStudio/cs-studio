@@ -21,62 +21,62 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
 /**
- * This is the implementation of {@link AbstractScriptStore} for Rhino script engine. 
+ * This is the implementation of {@link AbstractScriptStore} for Rhino script engine.
  * @author Xihui Chen
  *
  */
 public class RhinoScriptStore extends AbstractScriptStore{
 
-	private Context scriptContext;
+    private Context scriptContext;
 
-	private Scriptable scriptScope;
-
-
-
-	private Script script;
+    private Scriptable scriptScope;
 
 
-	public RhinoScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-			final IPV[] pvArray) throws Exception {		
-		super(scriptData, editpart, pvArray);		
-		
-	}
 
-	protected void initScriptEngine() throws Exception {
-		scriptContext = ScriptStoreFactory.getRhinoContext();
-		scriptScope = new ImporterTopLevel(scriptContext);
-		Object widgetController = Context.javaToJS(getEditPart(), scriptScope);
-		Object pvArrayObject = Context.javaToJS(getPvArray(), scriptScope);
-		Object displayObject = Context.javaToJS(getDisplayEditPart(), scriptScope);
-		
-		ScriptableObject.putProperty(scriptScope, ScriptService.WIDGET, widgetController);
-		ScriptableObject.putProperty(scriptScope, ScriptService.PVS, pvArrayObject);
-		ScriptableObject.putProperty(scriptScope, ScriptService.DISPLAY, displayObject);		
-		ScriptableObject.putProperty(scriptScope, 
-				ScriptService.WIDGET_CONTROLLER_DEPRECIATED, widgetController);
-		ScriptableObject.putProperty(scriptScope, 
-				ScriptService.PV_ARRAY_DEPRECIATED, pvArrayObject);
-	}
+    private Script script;
 
-	
-	@Override
-	protected void compileString(String string) throws Exception{
-		script = scriptContext.compileString(string, "rule", 1, null);		
-	}
 
-	@Override
-	protected void compileInputStream(InputStream s) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(s));
-		script = scriptContext.compileReader(reader, "script", 1, null); //$NON-NLS-1$
-		s.close();
-		reader.close();
-	}
+    public RhinoScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
+            final IPV[] pvArray) throws Exception {
+        super(scriptData, editpart, pvArray);
 
-	@Override
-	protected void execScript(final IPV triggerPV) throws Exception {
-		ScriptableObject.putProperty(scriptScope, 
-				ScriptService.TRIGGER_PV, Context.javaToJS(triggerPV, scriptScope));
-		script.exec(scriptContext, scriptScope);
-	}
+    }
+
+    protected void initScriptEngine() throws Exception {
+        scriptContext = ScriptStoreFactory.getRhinoContext();
+        scriptScope = new ImporterTopLevel(scriptContext);
+        Object widgetController = Context.javaToJS(getEditPart(), scriptScope);
+        Object pvArrayObject = Context.javaToJS(getPvArray(), scriptScope);
+        Object displayObject = Context.javaToJS(getDisplayEditPart(), scriptScope);
+
+        ScriptableObject.putProperty(scriptScope, ScriptService.WIDGET, widgetController);
+        ScriptableObject.putProperty(scriptScope, ScriptService.PVS, pvArrayObject);
+        ScriptableObject.putProperty(scriptScope, ScriptService.DISPLAY, displayObject);
+        ScriptableObject.putProperty(scriptScope,
+                ScriptService.WIDGET_CONTROLLER_DEPRECIATED, widgetController);
+        ScriptableObject.putProperty(scriptScope,
+                ScriptService.PV_ARRAY_DEPRECIATED, pvArrayObject);
+    }
+
+
+    @Override
+    protected void compileString(String string) throws Exception{
+        script = scriptContext.compileString(string, "rule", 1, null);
+    }
+
+    @Override
+    protected void compileInputStream(InputStream s) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(s));
+        script = scriptContext.compileReader(reader, "script", 1, null); //$NON-NLS-1$
+        s.close();
+        reader.close();
+    }
+
+    @Override
+    protected void execScript(final IPV triggerPV) throws Exception {
+        ScriptableObject.putProperty(scriptScope,
+                ScriptService.TRIGGER_PV, Context.javaToJS(triggerPV, scriptScope));
+        script.exec(scriptContext, scriptScope);
+    }
 
 }

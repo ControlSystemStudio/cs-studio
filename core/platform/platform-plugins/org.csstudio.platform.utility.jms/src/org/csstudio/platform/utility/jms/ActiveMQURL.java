@@ -31,60 +31,60 @@ package org.csstudio.platform.utility.jms;
  * @since 15.06.2007
  */
 public class ActiveMQURL {
-    
-    
+
+
     /**
      * The Complett URL.
-     */ 
+     */
     private String _url=null;
     /**
      * The Prefix of the URL.
      * For instance failover
      */
     private String _pre=null;
-    
+
     /**
      * The Host Name.
      */
     private String _host=null;
-    
+
     /**
      * Max Reconnect Attempts.
      * If not 0, then this is the maximum number of reconnect attempts before an error is sent back to the client.
      */
     private String _maxReconnectAttempts=null;
-    
+
     /**
      * Initial Reconnect Delay.
      * How long to wait before the first reconnect attempt (in ms).
      */
     private String _initialReconnectDelay=null;
-    
+
     /**
      * Max Reconnect Delay.
      * The maximum amount of time we ever wait between reconnect attempts (in ms).
      */
     private String _maxReconnectDelay=null;
-    
+
     /**
      * Use Exponential BackOff.
      * Should an exponential backoff be used btween reconnect attempts.
      */
     private String _useExponentialBackOff=null;
-    
+
     /**
      * Back Off Multiplier.
-     * The exponent used in the exponential backoff attempts. 
+     * The exponent used in the exponential backoff attempts.
      */
     private String _backOffMultiplier=null;
-    
+
     /**
      * randomize.
      * use a random algorithm to choose the the URI to use for reconnect from the list provided;
      */
     private String _randomize=null;
     /**
-     *  @param url The ActiveMQ URL. 
+     *  @param url The ActiveMQ URL.
      */
     public ActiveMQURL(final String url) {
         _url=url;
@@ -104,13 +104,13 @@ public class ActiveMQURL {
                 }
             }
         }else{
-        	ind =0;
-        	endInd = _url.indexOf('?');
-        	if(endInd<0){
-        		endInd=_url.length();
-        	}
+            ind =0;
+            endInd = _url.indexOf('?');
+            if(endInd<0){
+                endInd=_url.length();
+            }
         }
-                
+
         _host = _url.substring(ind,endInd);
         ind=endInd;
         while(endInd<_url.length()){
@@ -123,7 +123,7 @@ public class ActiveMQURL {
                 endInd = _url.indexOf('&',ind);
                 if(endInd<0){
                     endInd=url.length();
-                } 
+                }
                 String tmp= _url.substring(ind,endInd);
                 if(tmp.startsWith("maxReconnectAttempts")){
                     _maxReconnectAttempts = new String(tmp);
@@ -139,7 +139,7 @@ public class ActiveMQURL {
                     _useExponentialBackOff = new String(tmp);
                 }
             }
-            
+
             ind = _url.indexOf('&',endInd);
         }
     }
@@ -150,7 +150,7 @@ public class ActiveMQURL {
         return _backOffMultiplier;
     }
     /**
-     * 
+     *
      * @param backOffMultiplier The exponent used in the exponential backoff attempts
      */
     public final void setBackOffMultiplier(final String backOffMultiplier) {
@@ -163,14 +163,14 @@ public class ActiveMQURL {
         return _host;
     }
     /**
-     * 
+     *
      * @param host The Host.
      */
     public final void setHost(final String host) {
         _host = host;
     }
     /**
-     * 
+     *
      * @return initial Reconnect Delay
      */
     public final String getInitialReconnectDelay() {
@@ -189,20 +189,20 @@ public class ActiveMQURL {
         return _maxReconnectAttempts;
     }
     /**
-     * 
+     *
      * @param maxReconnectAttempts The maximum amount of time we ever wait between reconnect attempts (in ms).
      */
     public final void setMaxReconnectAttempts(final String maxReconnectAttempts) {
-    	/** Soll unentlich weiter versucht werden eine Verbindung auf zu bauen muss derEintarg entfernt werden.
-    	 * In der Doku steht zwar das die zuweisung mit dem Wert 0 das gleich bewirkt doch das funktioniert nicht. 
-    	 */
-//    	int count = new Integer(maxReconnectAttempts.substring(maxReconnectAttempts.indexOf('=')+1,maxReconnectAttempts.length()));
-//    	if(count>0){
-    		_maxReconnectAttempts = maxReconnectAttempts;
-//    	}else{
-//    		_maxReconnectAttempts=null;
-//    	}
-    		
+        /** Soll unentlich weiter versucht werden eine Verbindung auf zu bauen muss derEintarg entfernt werden.
+         * In der Doku steht zwar das die zuweisung mit dem Wert 0 das gleich bewirkt doch das funktioniert nicht.
+         */
+//        int count = new Integer(maxReconnectAttempts.substring(maxReconnectAttempts.indexOf('=')+1,maxReconnectAttempts.length()));
+//        if(count>0){
+            _maxReconnectAttempts = maxReconnectAttempts;
+//        }else{
+//            _maxReconnectAttempts=null;
+//        }
+
     }
     /**
      * @return max Reconnect Delay.
@@ -211,7 +211,7 @@ public class ActiveMQURL {
         return _maxReconnectDelay;
     }
     /**
-     * 
+     *
      * @param reconnectDelay The maximum amount of time we ever wait between reconnect attempts (in ms)
      */
     public final void setmaxReconnectDelay(final String reconnectDelay) {
@@ -224,7 +224,7 @@ public class ActiveMQURL {
         return _pre;
     }
     /**
-     * 
+     *
      * @param pre The Prefix of High Level Protocol URIs (ActiveMQ: Failover, Fanout,...)
      */
     public final void setPrefix(final String pre) {
@@ -252,12 +252,12 @@ public class ActiveMQURL {
 
         _url ="";
         if(_pre!=null){
-            _url = _pre+":("+_host+")";    
+            _url = _pre+":("+_host+")";
         }else{
             _url=_host;
             return _url;
         }
-        char c = '?'; 
+        char c = '?';
         if(_maxReconnectAttempts!=null){
             _url=_url.concat(c+_maxReconnectAttempts);
             c='&';
@@ -296,20 +296,20 @@ public class ActiveMQURL {
         return _useExponentialBackOff;
     }
     /**
-     * 
+     *
      * @param useExponentialBackOff Should an exponential backoff be used btween reconnect attempts (String 'true' or 'false')
      */
     public final void setUseExponentialBackOff(final String useExponentialBackOff) {
         _useExponentialBackOff = useExponentialBackOff;
     }
     /**
-     * @return Get the URL as String. 
+     * @return Get the URL as String.
      */
     @Override
     public final String toString (){
         return getURL();
     }
-    
-    
+
+
 
 }

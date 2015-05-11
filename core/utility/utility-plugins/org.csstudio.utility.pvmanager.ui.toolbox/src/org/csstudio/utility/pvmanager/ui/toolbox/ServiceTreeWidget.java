@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
@@ -39,125 +39,125 @@ public class ServiceTreeWidget extends Composite implements ISelectionProvider{
     private TreeViewer treeViewer;
 
     public ServiceTreeWidget(Composite parent, int style) {
-	super(parent, style);
-	setLayout(new FormLayout());
-	
-	Composite composite = new Composite(this, SWT.NONE);
-	composite.setBounds(0, 0, 64, 64);
-	FormData fd_composite = new FormData();
-	fd_composite.bottom = new FormAttachment(100);
-	fd_composite.right = new FormAttachment(100);
-	fd_composite.top = new FormAttachment(0);
-	fd_composite.left = new FormAttachment(0);
-	composite.setLayoutData(fd_composite);
-	
-	TreeColumnLayout tcl_composite = new TreeColumnLayout();
-	composite.setLayout(tcl_composite);
+    super(parent, style);
+    setLayout(new FormLayout());
 
-	treeViewer = new TreeViewer(composite, SWT.BORDER);
-	Tree tree = treeViewer.getTree();
-	tree.setHeaderVisible(true);
-	tree.setLinesVisible(true);
+    Composite composite = new Composite(this, SWT.NONE);
+    composite.setBounds(0, 0, 64, 64);
+    FormData fd_composite = new FormData();
+    fd_composite.bottom = new FormAttachment(100);
+    fd_composite.right = new FormAttachment(100);
+    fd_composite.top = new FormAttachment(0);
+    fd_composite.left = new FormAttachment(0);
+    composite.setLayoutData(fd_composite);
 
-	TreeViewerColumn treeViewerColumn = new TreeViewerColumn(treeViewer,
-		SWT.NONE);
-	treeViewerColumn.setLabelProvider(new ColumnLabelProvider() {
-	    public Image getImage(Object element) {
-		return null;
-	    }
+    TreeColumnLayout tcl_composite = new TreeColumnLayout();
+    composite.setLayout(tcl_composite);
 
-	    public String getText(Object element) {
-		if (element instanceof Service) {
-		    return ((Service) element).getName();
-		} else if (element instanceof ServiceMethod) {
-		    return serviceMethod2String((ServiceMethod) element);
-		} else if (element instanceof Entry) {
-		    return ((Entry<String, String>) element).getKey();
-		}
-		return "";
-	    }
-	});
-	TreeColumn trclmnNewColumn = treeViewerColumn.getColumn();
-	tcl_composite.setColumnData(trclmnNewColumn, new ColumnWeightData(10,
-		ColumnWeightData.MINIMUM_WIDTH, true));
-	trclmnNewColumn.setText("Name");
+    treeViewer = new TreeViewer(composite, SWT.BORDER);
+    Tree tree = treeViewer.getTree();
+    tree.setHeaderVisible(true);
+    tree.setLinesVisible(true);
 
-	TreeViewerColumn treeViewerColumn_1 = new TreeViewerColumn(treeViewer,
-		SWT.NONE);
-	treeViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
-	    public Image getImage(Object element) {
-		return null;
-	    }
+    TreeViewerColumn treeViewerColumn = new TreeViewerColumn(treeViewer,
+        SWT.NONE);
+    treeViewerColumn.setLabelProvider(new ColumnLabelProvider() {
+        public Image getImage(Object element) {
+        return null;
+        }
 
-	    public String getText(Object element) {
-		if (element instanceof Service) {
-		    return ((Service) element).getDescription();
-		} else if (element instanceof ServiceMethod) {
-		    return ((ServiceMethod) element).getDescription();
-		} else if (element instanceof Entry) {
-		    return ((Entry<String, String>) element).getValue();
-		}
-		return "";
-	    }
-	});
-	TreeColumn trclmnNewColumn_1 = treeViewerColumn_1.getColumn();
-	tcl_composite.setColumnData(trclmnNewColumn_1, new ColumnWeightData(7,
-		ColumnWeightData.MINIMUM_WIDTH, true));
-	trclmnNewColumn_1.setText("Description");
-	treeViewer.setContentProvider(new ServiceTreeContentProvider());
+        public String getText(Object element) {
+        if (element instanceof Service) {
+            return ((Service) element).getName();
+        } else if (element instanceof ServiceMethod) {
+            return serviceMethod2String((ServiceMethod) element);
+        } else if (element instanceof Entry) {
+            return ((Entry<String, String>) element).getKey();
+        }
+        return "";
+        }
+    });
+    TreeColumn trclmnNewColumn = treeViewerColumn.getColumn();
+    tcl_composite.setColumnData(trclmnNewColumn, new ColumnWeightData(10,
+        ColumnWeightData.MINIMUM_WIDTH, true));
+    trclmnNewColumn.setText("Name");
+
+    TreeViewerColumn treeViewerColumn_1 = new TreeViewerColumn(treeViewer,
+        SWT.NONE);
+    treeViewerColumn_1.setLabelProvider(new ColumnLabelProvider() {
+        public Image getImage(Object element) {
+        return null;
+        }
+
+        public String getText(Object element) {
+        if (element instanceof Service) {
+            return ((Service) element).getDescription();
+        } else if (element instanceof ServiceMethod) {
+            return ((ServiceMethod) element).getDescription();
+        } else if (element instanceof Entry) {
+            return ((Entry<String, String>) element).getValue();
+        }
+        return "";
+        }
+    });
+    TreeColumn trclmnNewColumn_1 = treeViewerColumn_1.getColumn();
+    tcl_composite.setColumnData(trclmnNewColumn_1, new ColumnWeightData(7,
+        ColumnWeightData.MINIMUM_WIDTH, true));
+    trclmnNewColumn_1.setText("Description");
+    treeViewer.setContentProvider(new ServiceTreeContentProvider());
     }
-    
-    
+
+
     public void setServiceNames(List<Service> services){
-	treeViewer.setInput(services);
+    treeViewer.setInput(services);
     }
-    
+
     private String serviceMethod2String(ServiceMethod serviceMethod) {
-	StringBuffer stringBuffer = new StringBuffer();
-	stringBuffer.append(serviceMethod.getName()).append("(");
-	List<String> arguments = new ArrayList<String>();
-	SortedMap<String, Class<?>> argumentTypesMap = new TreeMap<String, Class<?>>();
-	argumentTypesMap.putAll(serviceMethod.getArgumentTypes());
-	for (Entry<String, Class<?>> argument : argumentTypesMap.entrySet()) {
-	    arguments.add(argument.getValue().getSimpleName() + " "
-		    + argument.getKey());
-	}
-	stringBuffer.append(Joiner.on(", ").join(arguments));
-	stringBuffer.append(")");
-	stringBuffer.append(": ");
-	List<String> results = new ArrayList<String>();
-	SortedMap<String, Class<?>> resultTypesMap = new TreeMap<String, Class<?>>();
-	resultTypesMap.putAll(serviceMethod.getResultTypes());
-	for (Entry<String, Class<?>> result : resultTypesMap.entrySet()) {
-	    results.add(result.getValue().getSimpleName() + " "
-		    + result.getKey());
-	}
-	stringBuffer.append(Joiner.on(", ").join(results));
-	return stringBuffer.toString();
+    StringBuffer stringBuffer = new StringBuffer();
+    stringBuffer.append(serviceMethod.getName()).append("(");
+    List<String> arguments = new ArrayList<String>();
+    SortedMap<String, Class<?>> argumentTypesMap = new TreeMap<String, Class<?>>();
+    argumentTypesMap.putAll(serviceMethod.getArgumentTypes());
+    for (Entry<String, Class<?>> argument : argumentTypesMap.entrySet()) {
+        arguments.add(argument.getValue().getSimpleName() + " "
+            + argument.getKey());
+    }
+    stringBuffer.append(Joiner.on(", ").join(arguments));
+    stringBuffer.append(")");
+    stringBuffer.append(": ");
+    List<String> results = new ArrayList<String>();
+    SortedMap<String, Class<?>> resultTypesMap = new TreeMap<String, Class<?>>();
+    resultTypesMap.putAll(serviceMethod.getResultTypes());
+    for (Entry<String, Class<?>> result : resultTypesMap.entrySet()) {
+        results.add(result.getValue().getSimpleName() + " "
+            + result.getKey());
+    }
+    stringBuffer.append(Joiner.on(", ").join(results));
+    return stringBuffer.toString();
     }
 
 
     @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
-	treeViewer.addSelectionChangedListener(listener);
+    treeViewer.addSelectionChangedListener(listener);
     }
 
 
     @Override
     public ISelection getSelection() {
-	return treeViewer.getSelection();
+    return treeViewer.getSelection();
     }
 
 
     @Override
     public void removeSelectionChangedListener(
-	    ISelectionChangedListener listener) {
-	treeViewer.removeSelectionChangedListener(listener);
+        ISelectionChangedListener listener) {
+    treeViewer.removeSelectionChangedListener(listener);
     }
 
 
     @Override
     public void setSelection(ISelection selection) {
-	treeViewer.setSelection(selection);
+    treeViewer.setSelection(selection);
     }
 }

@@ -41,258 +41,258 @@ import org.eclipse.ui.views.contentoutline.ContentOutlinePage;
  *
  */
 public final class OutlinePage extends ContentOutlinePage implements CommandStackListener {
-	private IProject input;
-	private CommandStack commandStack;
-	private TreeViewer viewer;
-	final Map<Class, AbstractDnDHandler> dndHandlers;
+    private IProject input;
+    private CommandStack commandStack;
+    private TreeViewer viewer;
+    final Map<Class, AbstractDnDHandler> dndHandlers;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param input
-	 *            the project to display
-	 * @param commandStack
-	 *            a command stack
-	 */
-	public OutlinePage(final IProject input, final CommandStack commandStack) {
-		this.input = input;
-		this.commandStack = commandStack;
-		dndHandlers = new HashMap<Class, AbstractDnDHandler>();
-		dndHandlers.put(IPrototype.class, new PrototypeDndHandler());
-		dndHandlers.put(IRecord.class, new RecordDndHandler());
-		dndHandlers.put(IInstance.class, new InstanceDndHandler());
-	}
+    /**
+     * Constructor.
+     *
+     * @param input
+     *            the project to display
+     * @param commandStack
+     *            a command stack
+     */
+    public OutlinePage(final IProject input, final CommandStack commandStack) {
+        this.input = input;
+        this.commandStack = commandStack;
+        dndHandlers = new HashMap<Class, AbstractDnDHandler>();
+        dndHandlers.put(IPrototype.class, new PrototypeDndHandler());
+        dndHandlers.put(IRecord.class, new RecordDndHandler());
+        dndHandlers.put(IInstance.class, new InstanceDndHandler());
+    }
 
-	/**
-	 * Sets the input for the outline.
-	 *
-	 * @param input
-	 *            the project to display
-	 */
-	public void setInput(final IProject input) {
-		this.input = input;
+    /**
+     * Sets the input for the outline.
+     *
+     * @param input
+     *            the project to display
+     */
+    public void setInput(final IProject input) {
+        this.input = input;
 
-		if (getTreeViewer() != null) {
-			getTreeViewer().setInput(input);
-		}
-	}
+        if (getTreeViewer() != null) {
+            getTreeViewer().setInput(input);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void createControl(final Composite parent) {
-		super.createControl(parent);
-		viewer = getTreeViewer();
-		viewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
-		viewer.setUseHashlookup(true);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createControl(final Composite parent) {
+        super.createControl(parent);
+        viewer = getTreeViewer();
+        viewer.setLabelProvider(WorkbenchLabelProvider.getDecoratingWorkbenchLabelProvider());
+        viewer.setUseHashlookup(true);
 
-		viewer.setContentProvider(new WorkbenchContentProvider());
-		viewer.setAutoExpandLevel(2);
+        viewer.setContentProvider(new WorkbenchContentProvider());
+        viewer.setAutoExpandLevel(2);
 
-		viewer.setInput(new WorkbenchAdapter() {
-			@Override
+        viewer.setInput(new WorkbenchAdapter() {
+            @Override
             public Object[] getChildren(final Object o) {
-				return new Object[] { input };
-			}
-		});
+                return new Object[] { input };
+            }
+        });
 
-		final MenuManager menuManager = new MenuManager();
-		menuManager.add(new Separator("add.ext"));
-		menuManager.add(new Separator("remove.ext"));
-		menuManager.add(new Action("Refresh") {
+        final MenuManager menuManager = new MenuManager();
+        menuManager.add(new Separator("add.ext"));
+        menuManager.add(new Separator("remove.ext"));
+        menuManager.add(new Action("Refresh") {
 
-			@Override
-			public void run() {
-				viewer.refresh();
-			}
+            @Override
+            public void run() {
+                viewer.refresh();
+            }
 
-		});
+        });
 
-		initDragAndDrop(viewer);
+        initDragAndDrop(viewer);
 
-		viewer.getControl().setMenu(menuManager.createContextMenu(viewer.getControl()));
-		getSite().registerContextMenu("css.dct.outline", menuManager, viewer);
-	}
+        viewer.getControl().setMenu(menuManager.createContextMenu(viewer.getControl()));
+        getSite().registerContextMenu("css.dct.outline", menuManager, viewer);
+    }
 
-	private IElement dndSource;
+    private IElement dndSource;
 
-	private void initDragAndDrop(final TreeViewer viewer) {
+    private void initDragAndDrop(final TreeViewer viewer) {
 
-		viewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { TextTransfer.getInstance() }, new DragSourceListener() {
-			public void dragFinished(final DragSourceEvent event) {
+        viewer.addDragSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { TextTransfer.getInstance() }, new DragSourceListener() {
+            public void dragFinished(final DragSourceEvent event) {
 
-			}
+            }
 
-			public void dragSetData(final DragSourceEvent event) {
-				event.doit = true;
-				event.data = "do_not_delete_because_its_empty_but_important";
+            public void dragSetData(final DragSourceEvent event) {
+                event.doit = true;
+                event.data = "do_not_delete_because_its_empty_but_important";
 
-			}
+            }
 
-			public void dragStart(final DragSourceEvent event) {
-				// .. save current selection in local var
-				final IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
+            public void dragStart(final DragSourceEvent event) {
+                // .. save current selection in local var
+                final IStructuredSelection sel = (IStructuredSelection) viewer.getSelection();
 
-				if (sel != null && sel.toList().size()==1 && sel.getFirstElement() instanceof IElement) {
-					dndSource = (IElement) sel.getFirstElement();
-					event.doit = getDndHandler(dndSource) != null;
-				} else {
-					dndSource = null;
-					event.doit = false;
-				}
+                if (sel != null && sel.toList().size()==1 && sel.getFirstElement() instanceof IElement) {
+                    dndSource = (IElement) sel.getFirstElement();
+                    event.doit = getDndHandler(dndSource) != null;
+                } else {
+                    dndSource = null;
+                    event.doit = false;
+                }
 
-			}
+            }
 
-		});
+        });
 
-		viewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { TextTransfer.getInstance() }, new DropTargetListener() {
-			private void updateFeedback(final DropTargetEvent event) {
-				final AbstractDnDHandler handler = getDndHandler(dndSource);
+        viewer.addDropSupport(DND.DROP_MOVE | DND.DROP_COPY, new Transfer[] { TextTransfer.getInstance() }, new DropTargetListener() {
+            private void updateFeedback(final DropTargetEvent event) {
+                final AbstractDnDHandler handler = getDndHandler(dndSource);
 
-				// .. determine drop target element
-				final TreeItem item = (TreeItem) event.item;
+                // .. determine drop target element
+                final TreeItem item = (TreeItem) event.item;
 
-				if (item != null && item.getData() instanceof IElement && handler != null) {
-					final IElement dndTarget = (IElement) item.getData();
-					handler.updateDragFeedback(dndSource, dndTarget, event);
-				} else {
-					event.detail = DND.DROP_NONE;
-					event.feedback = DND.FEEDBACK_NONE;
-				}
-			}
+                if (item != null && item.getData() instanceof IElement && handler != null) {
+                    final IElement dndTarget = (IElement) item.getData();
+                    handler.updateDragFeedback(dndSource, dndTarget, event);
+                } else {
+                    event.detail = DND.DROP_NONE;
+                    event.feedback = DND.FEEDBACK_NONE;
+                }
+            }
 
-			public void dragEnter(final DropTargetEvent event) {
-				updateFeedback(event);
-			}
+            public void dragEnter(final DropTargetEvent event) {
+                updateFeedback(event);
+            }
 
-			public void dragLeave(final DropTargetEvent event) {
-				updateFeedback(event);
-			}
+            public void dragLeave(final DropTargetEvent event) {
+                updateFeedback(event);
+            }
 
-			public void dragOperationChanged(final DropTargetEvent event) {
-				updateFeedback(event);
-			}
+            public void dragOperationChanged(final DropTargetEvent event) {
+                updateFeedback(event);
+            }
 
-			public void dragOver(final DropTargetEvent event) {
-				updateFeedback(event);
-			}
+            public void dragOver(final DropTargetEvent event) {
+                updateFeedback(event);
+            }
 
-			public void drop(final DropTargetEvent event) {
-				final TreeItem item = (TreeItem) event.item;
+            public void drop(final DropTargetEvent event) {
+                final TreeItem item = (TreeItem) event.item;
 
-				if (item != null && item.getData() instanceof IElement) {
-					final IElement dndTarget = (IElement) item.getData();
+                if (item != null && item.getData() instanceof IElement) {
+                    final IElement dndTarget = (IElement) item.getData();
 
-					final AbstractDnDHandler handler = getDndHandler(dndSource);
+                    final AbstractDnDHandler handler = getDndHandler(dndSource);
 
-					if (handler != null) {
-						Command cmd = null;
-						if (event.detail == DND.DROP_MOVE) {
-							cmd = handler.createMoveCommand(dndSource, dndTarget);
-						} else if (event.detail == DND.DROP_COPY) {
-							cmd = handler.createCopyCommand(dndSource, dndTarget);
-						}
+                    if (handler != null) {
+                        Command cmd = null;
+                        if (event.detail == DND.DROP_MOVE) {
+                            cmd = handler.createMoveCommand(dndSource, dndTarget);
+                        } else if (event.detail == DND.DROP_COPY) {
+                            cmd = handler.createCopyCommand(dndSource, dndTarget);
+                        }
 
-						if (cmd != null) {
-							getCommandStack().execute(cmd);
-						}
-					}
+                        if (cmd != null) {
+                            getCommandStack().execute(cmd);
+                        }
+                    }
 
-				}
-			}
+                }
+            }
 
-			public void dropAccept(final DropTargetEvent event) {
-			}
+            public void dropAccept(final DropTargetEvent event) {
+            }
 
-		});
+        });
 
-	}
+    }
 
-	/**
-	 * Sets the command stack.
-	 *
-	 * @param commandStack
-	 *            the command stack
-	 */
-	public void setCommandStack(final CommandStack commandStack) {
-		this.commandStack = commandStack;
-		this.commandStack.addCommandStackListener(this);
+    /**
+     * Sets the command stack.
+     *
+     * @param commandStack
+     *            the command stack
+     */
+    public void setCommandStack(final CommandStack commandStack) {
+        this.commandStack = commandStack;
+        this.commandStack.addCommandStackListener(this);
 
-	}
+    }
 
-	/**
-	 * Returns the command stack.
-	 *
-	 * @return the command stack
-	 */
-	public CommandStack getCommandStack() {
-		return commandStack;
-	}
+    /**
+     * Returns the command stack.
+     *
+     * @return the command stack
+     */
+    public CommandStack getCommandStack() {
+        return commandStack;
+    }
 
-	/**
-	 * Returns the current input.
-	 *
-	 * @return the current project
-	 */
-	public IProject getInput() {
-		return input;
-	}
+    /**
+     * Returns the current input.
+     *
+     * @return the current project
+     */
+    public IProject getInput() {
+        return input;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void commandStackChanged(final EventObject event) {
-		if (getTreeViewer() != null) {
-			getTreeViewer().refresh();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void commandStackChanged(final EventObject event) {
+        if (getTreeViewer() != null) {
+            getTreeViewer().refresh();
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setSelection(final ISelection selection) {
-		if (getTreeViewer() != null) {
-			getTreeViewer().refresh();
-			getTreeViewer().setSelection(selection, true);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setSelection(final ISelection selection) {
+        if (getTreeViewer() != null) {
+            getTreeViewer().refresh();
+            getTreeViewer().setSelection(selection, true);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void selectionChanged(final SelectionChangedEvent event) {
-		super.selectionChanged(event);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void selectionChanged(final SelectionChangedEvent event) {
+        super.selectionChanged(event);
 
-		final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+        final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
 
-		if (sel != null && sel.getFirstElement() != null) {
-			//FIXME: Mach Probleme beim DnD  - vielleicht lässt sich auf das Ausklappen verzichten!?
-//			viewer.setExpandedState(sel.getFirstElement(), true);
-//			viewer.refresh(sel.getFirstElement(), false);
-		}
-	}
+        if (sel != null && sel.getFirstElement() != null) {
+            //FIXME: Mach Probleme beim DnD  - vielleicht lässt sich auf das Ausklappen verzichten!?
+//            viewer.setExpandedState(sel.getFirstElement(), true);
+//            viewer.refresh(sel.getFirstElement(), false);
+        }
+    }
 
-	/**
-	 * Returns the tree viewer which is used to display the outline contents.
-	 *
-	 * @return the tree viewer
-	 */
-	public TreeViewer getViewer() {
-		return viewer;
-	}
+    /**
+     * Returns the tree viewer which is used to display the outline contents.
+     *
+     * @return the tree viewer
+     */
+    public TreeViewer getViewer() {
+        return viewer;
+    }
 
-	private AbstractDnDHandler getDndHandler(final IElement source) {
-		for (final Class type : dndHandlers.keySet()) {
-			if (type.isAssignableFrom(source.getClass())) {
-				final AbstractDnDHandler handler = dndHandlers.get(type);
-				if (handler.supports(source)) {
-					return handler;
-				}
-			}
-		}
-		return null;
-	}
+    private AbstractDnDHandler getDndHandler(final IElement source) {
+        for (final Class type : dndHandlers.keySet()) {
+            if (type.isAssignableFrom(source.getClass())) {
+                final AbstractDnDHandler handler = dndHandlers.get(type);
+                if (handler.supports(source)) {
+                    return handler;
+                }
+            }
+        }
+        return null;
+    }
 }

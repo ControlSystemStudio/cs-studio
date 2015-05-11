@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.widgetactionhandler;
@@ -40,76 +40,76 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Opens a display in a shell.
- * 
+ *
  * @author Kai Meyer + Sven Wende
  */
 public final class OpenDisplayActionHandler implements IWidgetActionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(OpenDisplayActionHandler.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void executeAction(final AbstractWidgetModel widget,
-			final AbstractWidgetActionModel action) {
-		assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";
-		OpenDisplayActionModel displayAction = (OpenDisplayActionModel) action;
-		IPath path = displayAction.getResource();
+    /**
+     * {@inheritDoc}
+     */
+    public void executeAction(final AbstractWidgetModel widget,
+            final AbstractWidgetActionModel action) {
+        assert action instanceof OpenDisplayActionModel : "Precondition violated: action instanceof OpenDisplayWidgetAction";
+        OpenDisplayActionModel displayAction = (OpenDisplayActionModel) action;
+        IPath path = displayAction.getResource();
 
-		// resolve the forwarded aliases
+        // resolve the forwarded aliases
 
-		// ... we take all aliases that are in the namespace of the widget that
-		// was used to execute this action
-		Map<String, String> allAliases = widget.getAllInheritedAliases();
+        // ... we take all aliases that are in the namespace of the widget that
+        // was used to execute this action
+        Map<String, String> allAliases = widget.getAllInheritedAliases();
 
-		// ... the aliases that are forwarded to the new display are configured
-		// on the action
-		Map<String, String> forwardedAliases = displayAction.getAliases();
+        // ... the aliases that are forwarded to the new display are configured
+        // on the action
+        Map<String, String> forwardedAliases = displayAction.getAliases();
 
-		// ... we resolve the forwarded aliases using all known information
-		for (String key : forwardedAliases.keySet()) {
-			String raw = forwardedAliases.get(key);
+        // ... we resolve the forwarded aliases using all known information
+        for (String key : forwardedAliases.keySet()) {
+            String raw = forwardedAliases.get(key);
 
-			String resolved;
-			try {
-				resolved = ChannelReferenceValidationUtil.createCanonicalName(
-						raw, allAliases);
+            String resolved;
+            try {
+                resolved = ChannelReferenceValidationUtil.createCanonicalName(
+                        raw, allAliases);
 
-				forwardedAliases.put(key, resolved);
-			} catch (ChannelReferenceValidationException e) {
-				// ignore
-				LOG.info("Cannot resolve alias [" + raw + "]");
-			}
+                forwardedAliases.put(key, resolved);
+            } catch (ChannelReferenceValidationException e) {
+                // ignore
+                LOG.info("Cannot resolve alias [" + raw + "]");
+            }
 
-		}
+        }
 
-		// close the parent display if necessary
+        // close the parent display if necessary
 
-		boolean shouldClose = SdsUiPlugin.getCorePreferenceStore().getBoolean(
-				PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY);
+        boolean shouldClose = SdsUiPlugin.getCorePreferenceStore().getBoolean(
+                PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY);
 
-		if (displayAction.getClose() || shouldClose) {
-			RuntimeContext rtc = widget.getRoot().getRuntimeContext();
+        if (displayAction.getClose() || shouldClose) {
+            RuntimeContext rtc = widget.getRoot().getRuntimeContext();
 
-			if (rtc != null) {
-				RunModeService.getInstance().closeRunModeBox(
-						rtc.getRunModeBoxInput());
-			}
-		}
+            if (rtc != null) {
+                RunModeService.getInstance().closeRunModeBox(
+                        rtc.getRunModeBoxInput());
+            }
+        }
 
-		// open the new display in a shell or view
-		if (displayAction.getTarget() == OpenDisplayActionTarget.SHELL) {
-			RunModeService.getInstance().openDisplayShellInRunMode(
-					path,
-					forwardedAliases,
-					(RunModeBoxInput) widget.getRoot().getRuntimeContext()
-							.getRunModeBoxInput());
-		} else if (displayAction.getTarget() == OpenDisplayActionTarget.VIEW) {
-			RunModeService.getInstance().openDisplayViewInRunMode(path,
-					forwardedAliases);
-		} else {
-			throw new IllegalArgumentException("Not implemented yet.");
-		}
-	}
+        // open the new display in a shell or view
+        if (displayAction.getTarget() == OpenDisplayActionTarget.SHELL) {
+            RunModeService.getInstance().openDisplayShellInRunMode(
+                    path,
+                    forwardedAliases,
+                    (RunModeBoxInput) widget.getRoot().getRuntimeContext()
+                            .getRunModeBoxInput());
+        } else if (displayAction.getTarget() == OpenDisplayActionTarget.VIEW) {
+            RunModeService.getInstance().openDisplayViewInRunMode(path,
+                    forwardedAliases);
+        } else {
+            throw new IllegalArgumentException("Not implemented yet.");
+        }
+    }
 
 }

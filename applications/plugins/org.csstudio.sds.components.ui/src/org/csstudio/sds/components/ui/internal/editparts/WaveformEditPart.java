@@ -35,75 +35,75 @@ import org.eclipse.draw2d.IFigure;
  */
 public final class WaveformEditPart extends AbstractChartEditPart {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		WaveformModel model = (WaveformModel) getWidgetModel();
-		WaveformFigure figure = new WaveformFigure(WaveformModel.NUMBER_OF_ARRAYS);
-		initializeCommonFigureProperties(figure, model);
-		initializeDataProperties(figure, model);
-		return figure;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        WaveformModel model = (WaveformModel) getWidgetModel();
+        WaveformFigure figure = new WaveformFigure(WaveformModel.NUMBER_OF_ARRAYS);
+        initializeCommonFigureProperties(figure, model);
+        initializeDataProperties(figure, model);
+        return figure;
+    }
 
-	/**
-	 * Initializes the data properties of the figure.
-	 *
-	 * @param figure
-	 *            the figure.
-	 * @param model
-	 *            the model.
-	 */
-	private void initializeDataProperties(final WaveformFigure figure,
-			final WaveformModel model) {
-		for (int i = 0; i < model.numberOfDataSeries(); i++) {
-			figure.setData(i, model.getData(i));
-		}
-	}
+    /**
+     * Initializes the data properties of the figure.
+     *
+     * @param figure
+     *            the figure.
+     * @param model
+     *            the model.
+     */
+    private void initializeDataProperties(final WaveformFigure figure,
+            final WaveformModel model) {
+        for (int i = 0; i < model.numberOfDataSeries(); i++) {
+            figure.setData(i, model.getData(i));
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		registerCommonPropertyChangeHandlers();
-		registerDataPropertyChangeHandlers();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        registerCommonPropertyChangeHandlers();
+        registerDataPropertyChangeHandlers();
+    }
 
-	/**
-	 * Registers the property change handlers for the waveform data properties.
-	 */
-	private void registerDataPropertyChangeHandlers() {
-		/**
-		 * Change handler for the waveform data properties.
-		 */
-		class DataChangeHandler implements IWidgetPropertyChangeHandler {
+    /**
+     * Registers the property change handlers for the waveform data properties.
+     */
+    private void registerDataPropertyChangeHandlers() {
+        /**
+         * Change handler for the waveform data properties.
+         */
+        class DataChangeHandler implements IWidgetPropertyChangeHandler {
 
-			private final int _index;
+            private final int _index;
 
-			/**
-			 * Constructor.
-			 * @param index the index of the data array.
-			 */
-			DataChangeHandler(final int index) {
-				_index = index;
-			}
+            /**
+             * Constructor.
+             * @param index the index of the data array.
+             */
+            DataChangeHandler(final int index) {
+                _index = index;
+            }
 
-			/**
-			 * {@inheritDoc}
-			 */
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				WaveformFigure figure = (WaveformFigure) refreshableFigure;
-				figure.setData(_index, (double[]) newValue);
-				return true;
-			}
-		}
+            /**
+             * {@inheritDoc}
+             */
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                WaveformFigure figure = (WaveformFigure) refreshableFigure;
+                figure.setData(_index, (double[]) newValue);
+                return true;
+            }
+        }
 
-		for (int i = 0; i < WaveformModel.NUMBER_OF_ARRAYS; i++) {
-			setPropertyChangeHandler(WaveformModel.dataPropertyId(i),
-					new DataChangeHandler(i));
-		}
-	}
+        for (int i = 0; i < WaveformModel.NUMBER_OF_ARRAYS; i++) {
+            setPropertyChangeHandler(WaveformModel.dataPropertyId(i),
+                    new DataChangeHandler(i));
+        }
+    }
 }

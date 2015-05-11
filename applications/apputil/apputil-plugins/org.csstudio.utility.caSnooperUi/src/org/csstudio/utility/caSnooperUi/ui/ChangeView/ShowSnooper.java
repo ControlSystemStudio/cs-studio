@@ -12,17 +12,17 @@ import org.eclipse.ui.PlatformUI;
 
 public class ShowSnooper extends AbstractHandler {
 
-	@Override
-	public Object execute(ExecutionEvent event) throws ExecutionException {
+    @Override
+    public Object execute(ExecutionEvent event) throws ExecutionException {
 
         final IWorkbench workbench = PlatformUI.getWorkbench();
         final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
         final IWorkbenchPage page = window.getActivePage();
-	    try {
-	        page.showView(SnooperView.ID);
-	    } catch (final PartInitException e) {
-	        e.printStackTrace();
-	    }
-	    return null;
-	}
+        try {
+            page.showView(SnooperView.ID);
+        } catch (final PartInitException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

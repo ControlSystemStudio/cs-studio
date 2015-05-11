@@ -23,7 +23,7 @@ public class SelectAllAction extends PVTableAction
         super(Messages.CheckAll, "icons/checked.gif", viewer); //$NON-NLS-1$
         setToolTipText(Messages.CheckAll_TT);
     }
-    
+
     public void run()
     {
         final PVTableModel model = (PVTableModel) viewer.getInput();
@@ -34,7 +34,7 @@ public class SelectAllAction extends PVTableAction
         {
             final PVTableItem item = model.getItem(i);
             if (item.isSelected())
-            	continue;
+                continue;
             item.setSelected(true);
             viewer.update(item, null);
         }

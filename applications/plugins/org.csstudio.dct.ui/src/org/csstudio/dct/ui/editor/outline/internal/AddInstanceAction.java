@@ -19,50 +19,50 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Action that adds an instance.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class AddInstanceAction extends AbstractOutlineAction {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Command createCommand(List<IElement> selection) {
-		assert selection != null;
-		assert selection.size() == 1;
-		assert selection.get(0) instanceof IFolder || selection.get(0) instanceof IContainer;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Command createCommand(List<IElement> selection) {
+        assert selection != null;
+        assert selection.size() == 1;
+        assert selection.get(0) instanceof IFolder || selection.get(0) instanceof IContainer;
 
-		IElement container = selection.get(0);
+        IElement container = selection.get(0);
 
-		CompoundCommand result = null;
+        CompoundCommand result = null;
 
-		InstanceDialog rsd = new InstanceDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), getProject(),
-				container instanceof IContainer ? (IContainer) container : null);
+        InstanceDialog rsd = new InstanceDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), getProject(),
+                container instanceof IContainer ? (IContainer) container : null);
 
-		if (rsd.open() == Window.OK) {
-			result = new CompoundCommand("Add Instance");
+        if (rsd.open() == Window.OK) {
+            result = new CompoundCommand("Add Instance");
 
-			IPrototype prototype = (IPrototype) rsd.getSelection();
+            IPrototype prototype = (IPrototype) rsd.getSelection();
 
-			IInstance instance = new Instance(prototype, UUID.randomUUID());
+            IInstance instance = new Instance(prototype, UUID.randomUUID());
 
-			if (container instanceof IFolder) {
-				result.add(new AddInstanceCommand((IFolder) container, instance));
-			} else if (container instanceof IContainer) {
-				if (ModelValidationUtil.causesTransitiveLoop((IContainer) container, prototype)) {
-					MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error",
-							"An instance of the selected prototype cannot be inserted because this would cause a transitive relationship.");
-				} else {
-					result.add(new AddInstanceCommand((IContainer) container, instance));
-				}
-			}
+            if (container instanceof IFolder) {
+                result.add(new AddInstanceCommand((IFolder) container, instance));
+            } else if (container instanceof IContainer) {
+                if (ModelValidationUtil.causesTransitiveLoop((IContainer) container, prototype)) {
+                    MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error",
+                            "An instance of the selected prototype cannot be inserted because this would cause a transitive relationship.");
+                } else {
+                    result.add(new AddInstanceCommand((IContainer) container, instance));
+                }
+            }
 
-			result.add(new SelectInOutlineCommand(getOutlineView(), instance));
+            result.add(new SelectInOutlineCommand(getOutlineView(), instance));
 
-		}
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

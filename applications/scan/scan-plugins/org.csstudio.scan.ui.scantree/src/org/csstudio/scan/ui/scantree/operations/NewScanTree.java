@@ -22,7 +22,7 @@ public class NewScanTree extends AbstractHandler
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         ScanEditor.createInstance();
-        
+
         try
         {
             Perspective.showPerspective();

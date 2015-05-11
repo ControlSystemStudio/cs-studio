@@ -21,28 +21,28 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 public class NewJavaScriptWizardPage extends WizardNewFileCreationPage {
 
 
-	public NewJavaScriptWizardPage(String pageName, IStructuredSelection selection) {
-		super(pageName, selection);
-		setTitle("Create a new javascript");
-		setDescription("Create a new javascript in the selected project or folder.");
-	}
-	
-	@Override
-	protected InputStream getInitialContents() {
-		String s = ScriptService.DEFAULT_JS_HEADER; 
-		InputStream result = new ByteArrayInputStream(s.getBytes());
-		return result;
-	}
-	
-	
-	@Override
-	protected String getNewFileLabel() {
-		return "Javascript File Name:";
-	}
-	
-	@Override
-	public String getFileExtension() {
-		return "js"; //$NON-NLS-1$
-	}
+    public NewJavaScriptWizardPage(String pageName, IStructuredSelection selection) {
+        super(pageName, selection);
+        setTitle("Create a new javascript");
+        setDescription("Create a new javascript in the selected project or folder.");
+    }
+
+    @Override
+    protected InputStream getInitialContents() {
+        String s = ScriptService.DEFAULT_JS_HEADER;
+        InputStream result = new ByteArrayInputStream(s.getBytes());
+        return result;
+    }
+
+
+    @Override
+    protected String getNewFileLabel() {
+        return "Javascript File Name:";
+    }
+
+    @Override
+    public String getFileExtension() {
+        return "js"; //$NON-NLS-1$
+    }
 
 }

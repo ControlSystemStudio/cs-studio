@@ -30,72 +30,72 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class ReplaceWidgetsAction extends SelectionAction {
 
-	public static final String ID = "org.csstudio.opibuilder.actions.replaceWidgets";	//$NON-NLS-1$
-	
-	
-	public ReplaceWidgetsAction(IWorkbenchPart part) {
-		super(part);
-		setText("Replace Widgets With...");
-		setId(ID);
-		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-				OPIBuilderPlugin.PLUGIN_ID, "icons/replace.png")); //$NON-NLS-1$
-	}
+    public static final String ID = "org.csstudio.opibuilder.actions.replaceWidgets";    //$NON-NLS-1$
 
-	@Override
-	protected boolean calculateEnabled() {
-		if(getSelectedWidgetModels().size() >0 &&
-				!(getSelectedWidgetModels().get(0) instanceof DisplayModel))
-			return true;
-		return false;
-	}
-	
-	
-	public Command createReplaceWidgetCommand(String typeID){
-		CompoundCommand cmd = new CompoundCommand("Replace widgets");
-		
-		for(AbstractWidgetModel targetWidget : getSelectedWidgetModels()){		
-			AbstractWidgetModel widgetModel = WidgetsService.getInstance().
-					getWidgetDescriptor(typeID).getWidgetModel();	
-			for(String prop_id : targetWidget.getAllPropertyIDs()){
-				if(widgetModel.getProperty(prop_id) == null || 
-						prop_id.equals(AbstractWidgetModel.PROP_WIDGET_TYPE))
-					continue;				
-				widgetModel.setPropertyValue(prop_id, targetWidget.getPropertyValue(prop_id));				
-			}
-			cmd.add(new ReplaceWidgetCommand(targetWidget.getParent(), targetWidget, widgetModel));					
-		}
-		
-		return cmd;
-		
-	}
-	
-	
-	@Override
-	public void run() {
-		WidgetsSelectDialog dialog = new WidgetsSelectDialog(
-				getWorkbenchPart().getSite().getShell(), 1, false);		
-		dialog.setDefaultSelectedWidgetID("org.csstudio.opibuilder.widgets.NativeText"); //$NON-NLS-1$
-		if(dialog.open() == Window.OK){
-			String typeID = dialog.getOutput();
-			execute(createReplaceWidgetCommand(typeID));
-		}
-	}	
-	
-	/**
-	 * Gets the widget models of all currently selected EditParts.
-	 * 
-	 * @return a list with all widget models that are currently selected
-	 */
-	protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
-		List<?> selection = getSelectedObjects();
-	
-		List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
-	
-		for (Object o : selection) {
-			if (o instanceof EditPart) {
-				selectedWidgetModels.add((AbstractWidgetModel) ((EditPart) o).getModel());
-			}
-		}
-		return selectedWidgetModels;
-	}
+
+    public ReplaceWidgetsAction(IWorkbenchPart part) {
+        super(part);
+        setText("Replace Widgets With...");
+        setId(ID);
+        setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                OPIBuilderPlugin.PLUGIN_ID, "icons/replace.png")); //$NON-NLS-1$
+    }
+
+    @Override
+    protected boolean calculateEnabled() {
+        if(getSelectedWidgetModels().size() >0 &&
+                !(getSelectedWidgetModels().get(0) instanceof DisplayModel))
+            return true;
+        return false;
+    }
+
+
+    public Command createReplaceWidgetCommand(String typeID){
+        CompoundCommand cmd = new CompoundCommand("Replace widgets");
+
+        for(AbstractWidgetModel targetWidget : getSelectedWidgetModels()){
+            AbstractWidgetModel widgetModel = WidgetsService.getInstance().
+                    getWidgetDescriptor(typeID).getWidgetModel();
+            for(String prop_id : targetWidget.getAllPropertyIDs()){
+                if(widgetModel.getProperty(prop_id) == null ||
+                        prop_id.equals(AbstractWidgetModel.PROP_WIDGET_TYPE))
+                    continue;
+                widgetModel.setPropertyValue(prop_id, targetWidget.getPropertyValue(prop_id));
+            }
+            cmd.add(new ReplaceWidgetCommand(targetWidget.getParent(), targetWidget, widgetModel));
+        }
+
+        return cmd;
+
+    }
+
+
+    @Override
+    public void run() {
+        WidgetsSelectDialog dialog = new WidgetsSelectDialog(
+                getWorkbenchPart().getSite().getShell(), 1, false);
+        dialog.setDefaultSelectedWidgetID("org.csstudio.opibuilder.widgets.NativeText"); //$NON-NLS-1$
+        if(dialog.open() == Window.OK){
+            String typeID = dialog.getOutput();
+            execute(createReplaceWidgetCommand(typeID));
+        }
+    }
+
+    /**
+     * Gets the widget models of all currently selected EditParts.
+     *
+     * @return a list with all widget models that are currently selected
+     */
+    protected final List<AbstractWidgetModel> getSelectedWidgetModels() {
+        List<?> selection = getSelectedObjects();
+
+        List<AbstractWidgetModel> selectedWidgetModels = new ArrayList<AbstractWidgetModel>();
+
+        for (Object o : selection) {
+            if (o instanceof EditPart) {
+                selectedWidgetModels.add((AbstractWidgetModel) ((EditPart) o).getModel());
+            }
+        }
+        return selectedWidgetModels;
+    }
 }

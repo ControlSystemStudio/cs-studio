@@ -29,27 +29,27 @@ import static org.mockito.Mockito.*;
 /**
  * Plugin-Test for the jms-based implementation of the remote command service.
  * Must be runs with a specific set of preferences using the test jms installation. To ensure this, the tests are
- * by default set to 'ignore'. See the preference initializer for details. 
- * 
+ * by default set to 'ignore'. See the preference initializer for details.
+ *
  * @author jpenning
  * @since 18.01.2012
  */
 public class RemoteCommandServiceHeadlessTest {
-    
+
     @Test
     @Ignore
     public void testSendMultiple() throws RemoteCommandException {
         IRemoteCommandService service = new JmsRemoteCommandService();
         IRemoteCommandService.IListener listener = mock(IRemoteCommandService.IListener.class);
         service.register(ClientGroup.DESY_MKK, listener);
-        
+
         service.sendCommand(ClientGroup.DESY_MKK, "reloadFromLdap");
         verify(listener).receiveCommand("reloadFromLdap");
-        
+
         service.sendCommand(ClientGroup.DESY_MKK, "reloadFromLdap");
         verify(listener, times(2)).receiveCommand("reloadFromLdap");
     }
-    
+
     @Test
     @Ignore
     public void testDeregisterListener() throws RemoteCommandException {
@@ -59,7 +59,7 @@ public class RemoteCommandServiceHeadlessTest {
         service.register(ClientGroup.DESY_MKK, listener0);
         service.register(ClientGroup.DESY_MKK, listener1);
         service.deregister(listener0);
-        
+
         service.sendCommand(ClientGroup.DESY_MKK, "reloadFromLdap");
         verify(listener1).receiveCommand("reloadFromLdap");
         verifyZeroInteractions(listener0);
@@ -78,7 +78,7 @@ public class RemoteCommandServiceHeadlessTest {
         verify(listener).receiveCommand("reloadFromLdap");
         verifyZeroInteractions(listenerDead);
     }
-    
+
     @Test
     @Ignore
     public void testSendToMultipleClients() throws RemoteCommandException {

@@ -25,14 +25,14 @@ import com.sun.security.auth.callback.TextCallbackHandler;
  *
  *  <p>Must run as Plug-In JUnit test, where preferences determine
  *  the JAAS config file, JAAS config name, authorization provider.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class ConsoleLoginPluginDemo implements SecurityListener
 {
     final private CountDownLatch updates = new CountDownLatch(1);
-    
+
     @Override
     public void changedSecurity(final Subject subject,
             final boolean is_current_user, final Authorizations authorizations)
@@ -49,11 +49,11 @@ public class ConsoleLoginPluginDemo implements SecurityListener
         SecuritySupport.addListener(this);
         final LoginJob login = new LoginJob(new TextCallbackHandler());
         login.schedule();
-        
+
         updates.await();
-        
+
         SecuritySupport.removeListener(this);
-        
+
         assertThat(SecuritySupport.getSubject(), not(nullValue()));
     }
 }

@@ -34,9 +34,9 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.DynamicValueProperty
  */
 public interface ObjectSeqProperty extends DynamicValueProperty<Object[]>,
-	ObjectSeqSimpleProperty
+    ObjectSeqSimpleProperty
 {
-	//
+    //
 }
 
 /* __oOo__ */

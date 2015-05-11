@@ -26,7 +26,7 @@ import org.csstudio.scan.server.ScanContext;
  */
 public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCommand>
 {
-	private volatile DeviceCondition condition = null;
+    private volatile DeviceCondition condition = null;
 
     /** {@inheritDoc} */
     public WaitForDevicesCommandImpl(final WaitForDevicesCommand command, final JythonSupport jython) throws Exception
@@ -35,12 +35,12 @@ public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCom
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void execute(final ScanContext context) throws Exception
     {
-		condition = new WaitForDevicesCondition(command.getDevices());
-		condition.await();
-		condition = null;
+        condition = new WaitForDevicesCondition(command.getDevices());
+        condition.await();
+        condition = null;
         context.workPerformed(1);
     }
 
@@ -48,9 +48,9 @@ public class WaitForDevicesCommandImpl extends ScanCommandImpl<WaitForDevicesCom
     @Override
     public String toString()
     {
-    	final DeviceCondition active = condition;
-    	if (active != null)
-    		return active.toString();
+        final DeviceCondition active = condition;
+        if (active != null)
+            return active.toString();
         return super.toString();
     }
 }

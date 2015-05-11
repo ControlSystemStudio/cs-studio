@@ -14,7 +14,7 @@ package org.csstudio.simplepv;
  * @author     Xihui Chen
  */
 public interface ExceptionHandler {
-	
-	public void handleException(Exception exception);
+
+    public void handleException(Exception exception);
 
 }

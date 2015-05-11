@@ -35,31 +35,31 @@ import org.csstudio.sds.model.IRule;
  */
 public final class SystemTimeRule implements IRule {
 
-	/**
-	 * Used date format.
-	 */
-	private final SimpleDateFormat _dateFormat = new SimpleDateFormat("HH:mm:ss:SSS"); //$NON-NLS-1$
+    /**
+     * Used date format.
+     */
+    private final SimpleDateFormat _dateFormat = new SimpleDateFormat("HH:mm:ss:SSS"); //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0)
-				&& (arguments[0] instanceof Number)) {
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        if ((arguments != null) && (arguments.length > 0)
+                && (arguments[0] instanceof Number)) {
 
-			Number number = (Number) arguments[0];
+            Number number = (Number) arguments[0];
 
-			return _dateFormat.format(new Date(number.longValue()));
-		}
+            return _dateFormat.format(new Date(number.longValue()));
+        }
 
-		return "Invalid TIME"; //$NON-NLS-1$
-	}
+        return "Invalid TIME"; //$NON-NLS-1$
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getDescription() {
-	    return "";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+        return "";
+    }
 }

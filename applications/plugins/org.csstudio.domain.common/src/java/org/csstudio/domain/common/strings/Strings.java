@@ -177,9 +177,9 @@ public final class Strings {
                                                          final String qIgn) {
         return "([^" + qSep + qIgn + "]+)";
     }
-    
-	/**
-	 * Checks if a String is whitespace, empty ("") or null.
+
+    /**
+     * Checks if a String is whitespace, empty ("") or null.
        <code>
          StringUtils.isBlank(null)      = true
          StringUtils.isBlank("")        = true
@@ -187,11 +187,11 @@ public final class Strings {
          StringUtils.isBlank("bob")     = false
          StringUtils.isBlank("  bob  ") = false
        </code>
-	 * @param s
-	 * @return true if the string is null, empty, or does only contain whitespaces
-	 */
-	public static boolean isBlank(final String s) {
-	    return s == null || s.trim().equals("");
-	}
+     * @param s
+     * @return true if the string is null, empty, or does only contain whitespaces
+     */
+    public static boolean isBlank(final String s) {
+        return s == null || s.trim().equals("");
+    }
 
 }

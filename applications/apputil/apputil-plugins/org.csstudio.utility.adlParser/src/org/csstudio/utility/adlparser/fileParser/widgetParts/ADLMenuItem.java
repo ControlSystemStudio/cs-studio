@@ -36,7 +36,7 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 21.09.2007
  */
 public class ADLMenuItem extends WidgetPart {
-	//TODO Strip out old code lines that refer to SDS implementations
+    //TODO Strip out old code lines that refer to SDS implementations
 
     /**
      * The displayed text and description of the Action.
@@ -82,7 +82,7 @@ public class ADLMenuItem extends WidgetPart {
      * Default constructor
      */
     public ADLMenuItem(){
-    	super();
+        super();
     }
 
     /**
@@ -125,9 +125,9 @@ public class ADLMenuItem extends WidgetPart {
     }
 
 
-	@Override
-	public Object[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public Object[] getChildren() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

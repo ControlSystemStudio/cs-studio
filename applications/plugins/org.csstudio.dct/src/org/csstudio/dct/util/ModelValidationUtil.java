@@ -9,85 +9,85 @@ import org.csstudio.dct.model.IPrototype;
 
 /**
  * Collection of utility method used for model validation.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ModelValidationUtil {
-	private ModelValidationUtil() {
-	}
-	
-	/**
-	 * Returns all instances that dependend on the specified instance.
-	 *  
-	 * @param instance the instance
-	 * 
-	 * @return all instances depending on the specified instance
-	 */
-	public static List<IInstance> recursivelyGetDependentInstances(IInstance instance) {
-		List<IInstance> result = new ArrayList<IInstance>();
+    private ModelValidationUtil() {
+    }
 
-		for (IContainer c : instance.getDependentContainers()) {
-			assert c instanceof IInstance;
-			IInstance di = (IInstance) c;
-			List<IInstance> dependent = recursivelyGetDependentInstances(di);
+    /**
+     * Returns all instances that dependend on the specified instance.
+     *
+     * @param instance the instance
+     *
+     * @return all instances depending on the specified instance
+     */
+    public static List<IInstance> recursivelyGetDependentInstances(IInstance instance) {
+        List<IInstance> result = new ArrayList<IInstance>();
 
-			for (IInstance i : dependent) {
-				if (result.contains(i)) {
-					throw new IllegalArgumentException("TODO");
-				}
-			}
+        for (IContainer c : instance.getDependentContainers()) {
+            assert c instanceof IInstance;
+            IInstance di = (IInstance) c;
+            List<IInstance> dependent = recursivelyGetDependentInstances(di);
 
-			result.addAll(dependent);
-			result.add(di);
-		}
+            for (IInstance i : dependent) {
+                if (result.contains(i)) {
+                    throw new IllegalArgumentException("TODO");
+                }
+            }
 
-		return result;
+            result.addAll(dependent);
+            result.add(di);
+        }
 
-	}
+        return result;
 
-	/**
-	 * Checks for a transitive loop between the specified target container and a
-	 * prototype.
-	 * 
-	 * @param container
-	 *            the target container
-	 * @param prototype
-	 *            the prototype
-	 * 
-	 * @return true, if the specified prototype is already used in the
-	 *         transitive closure of the specified container
-	 */
-	public static boolean causesTransitiveLoop(IContainer container, IPrototype prototype) {
-		IPrototype forbiddenPrototype;
+    }
 
-		if (container instanceof IPrototype) {
-			forbiddenPrototype = (IPrototype) container;
-		} else {
-			forbiddenPrototype = ((IInstance) container).getPrototype();
-		}
+    /**
+     * Checks for a transitive loop between the specified target container and a
+     * prototype.
+     *
+     * @param container
+     *            the target container
+     * @param prototype
+     *            the prototype
+     *
+     * @return true, if the specified prototype is already used in the
+     *         transitive closure of the specified container
+     */
+    public static boolean causesTransitiveLoop(IContainer container, IPrototype prototype) {
+        IPrototype forbiddenPrototype;
 
-		boolean result = prototype == forbiddenPrototype;
+        if (container instanceof IPrototype) {
+            forbiddenPrototype = (IPrototype) container;
+        } else {
+            forbiddenPrototype = ((IInstance) container).getPrototype();
+        }
 
-		for (IInstance i : prototype.getInstances()) {
-			result |= isInTransitiveClosure(i, forbiddenPrototype);
-		}
+        boolean result = prototype == forbiddenPrototype;
 
-		return result;
-	}
+        for (IInstance i : prototype.getInstances()) {
+            result |= isInTransitiveClosure(i, forbiddenPrototype);
+        }
 
-	private static boolean isInTransitiveClosure(IInstance instance, IPrototype forbiddenPrototype) {
-		boolean result = false;
+        return result;
+    }
 
-		result |= instance.getPrototype() == forbiddenPrototype;
+    private static boolean isInTransitiveClosure(IInstance instance, IPrototype forbiddenPrototype) {
+        boolean result = false;
 
-		for (IInstance i : instance.getInstances()) {
-			result |= i.getPrototype() == forbiddenPrototype;
-			result |= isInTransitiveClosure(i, forbiddenPrototype);
-		}
+        result |= instance.getPrototype() == forbiddenPrototype;
 
-		return result;
-	}
-	
-	
+        for (IInstance i : instance.getInstances()) {
+            result |= i.getPrototype() == forbiddenPrototype;
+            result |= isInTransitiveClosure(i, forbiddenPrototype);
+        }
+
+        return result;
+    }
+
+
 }

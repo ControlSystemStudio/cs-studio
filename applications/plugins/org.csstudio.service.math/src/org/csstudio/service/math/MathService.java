@@ -7,8 +7,8 @@ public class MathService  extends Service {
 
     public MathService() {
         super(new ServiceDescription("math", "Simple math service")
-	        .addServiceMethod(new AddServiceMethod())
-	        .addServiceMethod(new MultiplyServiceMethod()));
+            .addServiceMethod(new AddServiceMethod())
+            .addServiceMethod(new MultiplyServiceMethod()));
     }
-    
+
 }

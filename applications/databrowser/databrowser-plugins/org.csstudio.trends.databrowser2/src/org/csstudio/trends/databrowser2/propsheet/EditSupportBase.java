@@ -32,7 +32,7 @@ abstract public class EditSupportBase extends EditingSupport
     {
         return true;
     }
-    
+
     /** Default to TextCellEditor */
     @Override
     protected CellEditor getCellEditor(final Object element)

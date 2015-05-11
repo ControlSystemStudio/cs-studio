@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class HistogramGraph2DView extends AbstractGraph2DView<HistogramGraph2DWidget> {
 
@@ -19,8 +19,8 @@ public class HistogramGraph2DView extends AbstractGraph2DView<HistogramGraph2DWi
 
     @Override
     protected HistogramGraph2DWidget createAbstractGraph2DWidget(
-	    Composite parent, int style) {
-    	return new HistogramGraph2DWidget(parent, SWT.NONE);
+        Composite parent, int style) {
+        return new HistogramGraph2DWidget(parent, SWT.NONE);
     }
 
 }

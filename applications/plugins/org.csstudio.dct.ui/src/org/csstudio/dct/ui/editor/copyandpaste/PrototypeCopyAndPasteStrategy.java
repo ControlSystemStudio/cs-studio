@@ -20,91 +20,91 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 /**
  * Copy & Paste strategy for prototypes.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class PrototypeCopyAndPasteStrategy extends BaseCopyAndPasteStrategy {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public Command createPasteCommand(List<IElement> copiedElements, IProject project, List<IElement> selectedElements) {
-		assert copiedElements != null;
-		assert project != null;
-		assert selectedElements != null;
+    /**
+     *{@inheritDoc}
+     */
+    public Command createPasteCommand(List<IElement> copiedElements, IProject project, List<IElement> selectedElements) {
+        assert copiedElements != null;
+        assert project != null;
+        assert selectedElements != null;
 
-		Map<UUID, IPrototype> tmpPrototypes = new HashMap<UUID, IPrototype>();
+        Map<UUID, IPrototype> tmpPrototypes = new HashMap<UUID, IPrototype>();
 
-		CompoundCommand cmd = new CompoundCommand();
+        CompoundCommand cmd = new CompoundCommand();
 
-		for (IElement c : selectedElements) {
-			assert c instanceof IFolder;
+        for (IElement c : selectedElements) {
+            assert c instanceof IFolder;
 
-			for (IElement p : copiedElements) {
-				if (p instanceof IPrototype) {
-					chainPrototype((IPrototype) p, cmd, tmpPrototypes, project, (IFolder) c);
-				} else {
-					chainInstance((IInstance) p, cmd, tmpPrototypes, project, (IFolder) c, null);
-				}
-			}
-		}
+            for (IElement p : copiedElements) {
+                if (p instanceof IPrototype) {
+                    chainPrototype((IPrototype) p, cmd, tmpPrototypes, project, (IFolder) c);
+                } else {
+                    chainInstance((IInstance) p, cmd, tmpPrototypes, project, (IFolder) c, null);
+                }
+            }
+        }
 
-		return cmd;
-	}
+        return cmd;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public List<Serializable> createCopyElements(List<IElement> selectedElements) {
-		Set<IContainer> items = new HashSet<IContainer>();
+    /**
+     *{@inheritDoc}
+     */
+    public List<Serializable> createCopyElements(List<IElement> selectedElements) {
+        Set<IContainer> items = new HashSet<IContainer>();
 
-		for (IElement e : selectedElements) {
-			assert e instanceof IContainer;
-			IContainer container = (IContainer) e;
-			items.add(container);
-		}
+        for (IElement e : selectedElements) {
+            assert e instanceof IContainer;
+            IContainer container = (IContainer) e;
+            items.add(container);
+        }
 
-		return new ArrayList<Serializable>(items);
-	}
+        return new ArrayList<Serializable>(items);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public boolean canCopy(List<IElement> selectedElements) {
-		boolean result = false;
+    /**
+     *{@inheritDoc}
+     */
+    public boolean canCopy(List<IElement> selectedElements) {
+        boolean result = false;
 
-		if (!selectedElements.isEmpty()) {
-			result = true;
-			for (IElement e : selectedElements) {
-				result &= e instanceof IPrototype;
-			}
-		}
+        if (!selectedElements.isEmpty()) {
+            result = true;
+            for (IElement e : selectedElements) {
+                result &= e instanceof IPrototype;
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public boolean canPaste(List<IElement> selectedElements) {
-		boolean result = false;
+    /**
+     *{@inheritDoc}
+     */
+    public boolean canPaste(List<IElement> selectedElements) {
+        boolean result = false;
 
-		if (!selectedElements.isEmpty()) {
-			result = true;
-			for (IElement e : selectedElements) {
-				result &= (e instanceof IFolder);
-			}
-		}
+        if (!selectedElements.isEmpty()) {
+            result = true;
+            for (IElement e : selectedElements) {
+                result &= (e instanceof IFolder);
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getContentDescription() {
-		return "Prototypes";
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getContentDescription() {
+        return "Prototypes";
+    }
 
 }

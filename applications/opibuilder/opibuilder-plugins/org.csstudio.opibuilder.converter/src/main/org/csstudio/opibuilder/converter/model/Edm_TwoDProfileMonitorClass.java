@@ -15,40 +15,40 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_TwoDProfileMonitorClass extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String dataPvStr;
-	@EdmAttributeAn @EdmOptionalAn private String widthPvStr;
-	@EdmAttributeAn @EdmOptionalAn private String heightPvStr;
-	@EdmAttributeAn @EdmOptionalAn private int dataWidth;
-	@EdmAttributeAn @EdmOptionalAn private boolean pvBasedDataSize;
-	@EdmAttributeAn @EdmOptionalAn private int nBitsPerPixel;
+    @EdmAttributeAn @EdmOptionalAn private String dataPvStr;
+    @EdmAttributeAn @EdmOptionalAn private String widthPvStr;
+    @EdmAttributeAn @EdmOptionalAn private String heightPvStr;
+    @EdmAttributeAn @EdmOptionalAn private int dataWidth;
+    @EdmAttributeAn @EdmOptionalAn private boolean pvBasedDataSize;
+    @EdmAttributeAn @EdmOptionalAn private int nBitsPerPixel;
 
-	public Edm_TwoDProfileMonitorClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    public Edm_TwoDProfileMonitorClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
-	public String getDataPvStr() {
-		return dataPvStr;
-	}
+    public String getDataPvStr() {
+        return dataPvStr;
+    }
 
-	public String getWidthPvStr() {
-		return widthPvStr;
-	}
+    public String getWidthPvStr() {
+        return widthPvStr;
+    }
 
-	public String getHeightPvStr() {
-		return heightPvStr;
-	}
+    public String getHeightPvStr() {
+        return heightPvStr;
+    }
 
-	public int getDataWidth() {
-		return dataWidth;
-	}
+    public int getDataWidth() {
+        return dataWidth;
+    }
 
-	public boolean isPvBasedDataSize() {
-		return pvBasedDataSize;
-	}
+    public boolean isPvBasedDataSize() {
+        return pvBasedDataSize;
+    }
 
-	public int getnBitsPerPixel() {
-		return nBitsPerPixel;
-	}
+    public int getnBitsPerPixel() {
+        return nBitsPerPixel;
+    }
 
-	
+
 }

@@ -23,18 +23,18 @@ public class ByteHelper
      */
     final public static VString toString(final VByteArray barray)
     {
-	    final ListByte data = barray.getData();
-	    final byte[] bytes = new byte[data.size()];
-	    // Copy bytes until end or '\0'
-	    int len = 0;
-	    while (len<bytes.length)
-	    {
-	        final byte b = data.getByte(len);
-	        if (b == 0)
-	            break;
-	        else
-	            bytes[len++] = b;
-	    }
+        final ListByte data = barray.getData();
+        final byte[] bytes = new byte[data.size()];
+        // Copy bytes until end or '\0'
+        int len = 0;
+        while (len<bytes.length)
+        {
+            final byte b = data.getByte(len);
+            if (b == 0)
+                break;
+            else
+                bytes[len++] = b;
+        }
         return ValueFactory.newVString(new String(bytes, 0, len), barray, barray);
     }
 

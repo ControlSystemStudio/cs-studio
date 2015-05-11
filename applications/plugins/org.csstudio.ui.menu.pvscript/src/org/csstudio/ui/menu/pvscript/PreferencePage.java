@@ -18,36 +18,36 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 /** Preference Page, registered in plugin.xml
  *  @author Kay Kasemir
  */
-public class PreferencePage	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage
+public class PreferencePage    extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage
 {
-	/** Initialize */
-	public PreferencePage()
-	{
+    /** Initialize */
+    public PreferencePage()
+    {
         super(FieldEditorPreferencePage.GRID);
         setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE, Activator.ID));
-		setDescription(Messages.PreferencePageMessage);
-	}
+        setDescription(Messages.PreferencePageMessage);
+    }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void init(final IWorkbench workbench)
-	{
-		// NOP
-	}
+    {
+        // NOP
+    }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void createFieldEditors()
-	{
-		final Composite parent = getFieldEditorParent();
+    {
+        final Composite parent = getFieldEditorParent();
 
-		// Editing a plain string preference is easy:
-		addField(new BooleanFieldEditor(Preferences.PREV_INDIVIDUAL,
-				Messages.PrefEdit_IndividualScripts, parent));
+        // Editing a plain string preference is easy:
+        addField(new BooleanFieldEditor(Preferences.PREV_INDIVIDUAL,
+                Messages.PrefEdit_IndividualScripts, parent));
 
-		// A preference string that's really an encoded list of
-		// complex objects needs a custom editor
-		addField(new ScriptInfoFieldEditor(parent));
-	}
+        // A preference string that's really an encoded list of
+        // complex objects needs a custom editor
+        addField(new ScriptInfoFieldEditor(parent));
+    }
 }

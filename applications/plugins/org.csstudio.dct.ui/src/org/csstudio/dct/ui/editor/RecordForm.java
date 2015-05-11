@@ -39,227 +39,227 @@ import org.csstudio.domain.common.LayoutUtil;
 
 /**
  * Editing component for {@link IRecord}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
-	private ConvenienceTableWrapper recordFieldTable;
-	private boolean hideDefaults = false;
-	private PromptGroup promptGroup = PromptGroup.ALL;
+    private ConvenienceTableWrapper recordFieldTable;
+    private boolean hideDefaults = false;
+    private PromptGroup promptGroup = PromptGroup.ALL;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param editor
-	 *            the editor instance
-	 */
-	public RecordForm(DctEditor editor) {
-		super(editor);
-	}
+    /**
+     * Constructor.
+     *
+     * @param editor
+     *            the editor instance
+     */
+    public RecordForm(DctEditor editor) {
+        super(editor);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
-		super.doCreateControl(bar, commandStack);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
+        super.doCreateControl(bar, commandStack);
 
-		// .. field table
-		Composite composite = new Composite(bar, SWT.NONE);
-		GridLayoutFactory.swtDefaults().margins(5, 5).spacing(8,8).applyTo(composite);
+        // .. field table
+        Composite composite = new Composite(bar, SWT.NONE);
+        GridLayoutFactory.swtDefaults().margins(5, 5).spacing(8,8).applyTo(composite);
 
 
-		// .. filter options
-		Composite buttons = new Composite(composite, SWT.None);
-		buttons.setLayout(LayoutUtil.createGridLayout(3, 0, 5, 5));
+        // .. filter options
+        Composite buttons = new Composite(composite, SWT.None);
+        buttons.setLayout(LayoutUtil.createGridLayout(3, 0, 5, 5));
 
-		// .. promptgroup filter combo
-		Label l = new Label(buttons, SWT.NONE);
-		l.setText("Group:");
-		GridDataFactory.swtDefaults().applyTo(l);
-		ComboViewer promptGroupCombo = new ComboViewer(new CCombo(buttons, SWT.READ_ONLY | SWT.BORDER));
-		GridDataFactory.swtDefaults().applyTo(promptGroupCombo.getControl());
-		promptGroupCombo.setContentProvider(new ArrayContentProvider());
-		promptGroupCombo.setLabelProvider(new LabelProvider() {
-			@Override
-			public String getText(Object element) {
-				PromptGroup group = (PromptGroup) element;
-				return group.getDescription();
-			}
-		});
-		promptGroupCombo.setInput(PromptGroup.values());
-		promptGroupCombo.setSelection(new StructuredSelection(PromptGroup.ALL));
+        // .. promptgroup filter combo
+        Label l = new Label(buttons, SWT.NONE);
+        l.setText("Group:");
+        GridDataFactory.swtDefaults().applyTo(l);
+        ComboViewer promptGroupCombo = new ComboViewer(new CCombo(buttons, SWT.READ_ONLY | SWT.BORDER));
+        GridDataFactory.swtDefaults().applyTo(promptGroupCombo.getControl());
+        promptGroupCombo.setContentProvider(new ArrayContentProvider());
+        promptGroupCombo.setLabelProvider(new LabelProvider() {
+            @Override
+            public String getText(Object element) {
+                PromptGroup group = (PromptGroup) element;
+                return group.getDescription();
+            }
+        });
+        promptGroupCombo.setInput(PromptGroup.values());
+        promptGroupCombo.setSelection(new StructuredSelection(PromptGroup.ALL));
 
-		promptGroupCombo.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				promptGroup = (PromptGroup) ((IStructuredSelection) event.getSelection()).getFirstElement();
-				refreshFilter();
-			}
-		});
+        promptGroupCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+            public void selectionChanged(SelectionChangedEvent event) {
+                promptGroup = (PromptGroup) ((IStructuredSelection) event.getSelection()).getFirstElement();
+                refreshFilter();
+            }
+        });
 
-		// .. filter button
-		final Button hideDefaultsButton = new Button(buttons, SWT.CHECK);
-		GridDataFactory.swtDefaults().applyTo(hideDefaultsButton);
-		hideDefaultsButton.setText("Hide Defaults");
-		hideDefaultsButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseUp(MouseEvent e) {
-				hideDefaults = hideDefaultsButton.getSelection();
-				refreshFilter();
-			}
-		});
+        // .. filter button
+        final Button hideDefaultsButton = new Button(buttons, SWT.CHECK);
+        GridDataFactory.swtDefaults().applyTo(hideDefaultsButton);
+        hideDefaultsButton.setText("Hide Defaults");
+        hideDefaultsButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseUp(MouseEvent e) {
+                hideDefaults = hideDefaultsButton.getSelection();
+                refreshFilter();
+            }
+        });
 
-		hideDefaultsButton.setSelection(false);
+        hideDefaultsButton.setSelection(false);
 
-		// .. table with record fields
-		recordFieldTable = WidgetUtil.create3ColumnTable(composite, commandStack);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(recordFieldTable.getViewer().getControl());
+        // .. table with record fields
+        recordFieldTable = WidgetUtil.create3ColumnTable(composite, commandStack);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(recordFieldTable.getViewer().getControl());
 
-		
-		// .. the expand item
-		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE);
-		expandItem.setText("Fields");
-		expandItem.setHeight(1400);
-		expandItem.setControl(composite);
-		expandItem.setExpanded(true);
-		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_fields.png"));
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void doSetInput(IRecord record) {
-		super.doSetInput(record);
+        // .. the expand item
+        ExpandItem expandItem = new ExpandItem(bar, SWT.NONE);
+        expandItem.setText("Fields");
+        expandItem.setHeight(1400);
+        expandItem.setControl(composite);
+        expandItem.setExpanded(true);
+        expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_fields.png"));
+    }
 
-		// prepare input for field table
-		List<ITableRow> rowsForFields = new ArrayList<ITableRow>();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doSetInput(IRecord record) {
+        super.doSetInput(record);
 
-		for (String key : record.getFinalFields().keySet()) {
-			rowsForFields.add(new RecordFieldTableRowAdapter(record, key));
-		}
+        // prepare input for field table
+        List<ITableRow> rowsForFields = new ArrayList<ITableRow>();
 
-		recordFieldTable.setInput(rowsForFields);
-	}
+        for (String key : record.getFinalFields().keySet()) {
+            rowsForFields.add(new RecordFieldTableRowAdapter(record, key));
+        }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected String doGetFormLabel(IRecord record) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(record.getType());
-		sb.append("-Record");
+        recordFieldTable.setInput(rowsForFields);
+    }
 
-		if (!record.isAbstract()) {
-			try {
-				String resolvedName = ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);
-				sb.append(" (");
-				sb.append(resolvedName);
-				sb.append(")");
-			} catch (AliasResolutionException e) {
-				// ignore
-			}
-		}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected String doGetFormLabel(IRecord record) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(record.getType());
+        sb.append("-Record");
 
-		return sb.toString();
-	}
+        if (!record.isAbstract()) {
+            try {
+                String resolvedName = ResolutionUtil.resolve(AliasResolutionUtil.getEpicsNameFromHierarchy(record), record);
+                sb.append(" (");
+                sb.append(resolvedName);
+                sb.append(")");
+            } catch (AliasResolutionException e) {
+                // ignore
+            }
+        }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doAddCommonRows(List<ITableRow> rows, IRecord record) {
-		rows.add(new BeanPropertyTableRowAdapter("Type", record, "type", true));
-		rows.add(new HierarchicalBeanPropertyTableRowAdapter("Epics Name", record, "epicsName", false));
-		rows.add(new HierarchicalBeanPropertyTableRowAdapter("Disabled", record, "disabled", false));
-	}
+        return sb.toString();
+    }
 
-	/**
-	 * 
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected String doGetAdditionalBreadcrumbLinks(IRecord record) {
-		if (record.isInherited()) {
-			return "jump to <a href=\"" + record.getParentRecord().getId() + "\">parent record</a>";
-		} else {
-			return null;
-		}
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doAddCommonRows(List<ITableRow> rows, IRecord record) {
+        rows.add(new BeanPropertyTableRowAdapter("Type", record, "type", true));
+        rows.add(new HierarchicalBeanPropertyTableRowAdapter("Epics Name", record, "epicsName", false));
+        rows.add(new HierarchicalBeanPropertyTableRowAdapter("Disabled", record, "disabled", false));
+    }
 
-	/**
-	 * Returns the currently selected property.
-	 * 
-	 * @return the selected property or null
-	 */
-	public String getSelectedField() {
-		String result = null;
+    /**
+     *
+     *{@inheritDoc}
+     */
+    @Override
+    protected String doGetAdditionalBreadcrumbLinks(IRecord record) {
+        if (record.isInherited()) {
+            return "jump to <a href=\"" + record.getParentRecord().getId() + "\">parent record</a>";
+        } else {
+            return null;
+        }
+    }
 
-		IStructuredSelection sel = recordFieldTable != null ? (IStructuredSelection) recordFieldTable.getViewer().getSelection() : null;
+    /**
+     * Returns the currently selected property.
+     *
+     * @return the selected property or null
+     */
+    public String getSelectedField() {
+        String result = null;
 
-		if (sel != null && sel.getFirstElement() != null) {
-			RecordFieldTableRowAdapter adapter = (RecordFieldTableRowAdapter) sel.getFirstElement();
-			result = adapter.getFieldKey();
-		}
+        IStructuredSelection sel = recordFieldTable != null ? (IStructuredSelection) recordFieldTable.getViewer().getSelection() : null;
 
-		return result;
-	}
+        if (sel != null && sel.getFirstElement() != null) {
+            RecordFieldTableRowAdapter adapter = (RecordFieldTableRowAdapter) sel.getFirstElement();
+            result = adapter.getFieldKey();
+        }
 
-	protected void refreshFilter() {
-		recordFieldTable.getViewer().setFilters(new ViewerFilter[] { new HideDefaultsFilter(hideDefaults), new PromptGroupFilter(promptGroup) });
-	}
+        return result;
+    }
 
-	private abstract class AbstractFilter extends ViewerFilter {
-		@Override
-		public final boolean select(Viewer viewer, Object parentElement, Object element) {
-			RecordFieldTableRowAdapter row = (RecordFieldTableRowAdapter) element;
-			return doSelect(row.getDelegate(), row.getFieldKey());
-		}
+    protected void refreshFilter() {
+        recordFieldTable.getViewer().setFilters(new ViewerFilter[] { new HideDefaultsFilter(hideDefaults), new PromptGroupFilter(promptGroup) });
+    }
 
-		protected abstract boolean doSelect(IRecord record, String field);
-	}
+    private abstract class AbstractFilter extends ViewerFilter {
+        @Override
+        public final boolean select(Viewer viewer, Object parentElement, Object element) {
+            RecordFieldTableRowAdapter row = (RecordFieldTableRowAdapter) element;
+            return doSelect(row.getDelegate(), row.getFieldKey());
+        }
 
-	private final class PromptGroupFilter extends AbstractFilter {
-		private PromptGroup promptGroup;
+        protected abstract boolean doSelect(IRecord record, String field);
+    }
 
-		public PromptGroupFilter(PromptGroup promptGroup) {
-			this.promptGroup = promptGroup;
-		}
+    private final class PromptGroupFilter extends AbstractFilter {
+        private PromptGroup promptGroup;
 
-		@Override
-		protected boolean doSelect(IRecord record, String field) {
-			if (promptGroup != null && promptGroup != PromptGroup.ALL) {
-				IRecordDefinition recordDefinition = record.getRecordDefinition();
+        public PromptGroupFilter(PromptGroup promptGroup) {
+            this.promptGroup = promptGroup;
+        }
 
-				if (recordDefinition != null) {
-					return recordDefinition.getFieldDefinitions(field).getPromptGroup() == promptGroup;
-				} else {
-					return false;
-				}
-			} else {
-				return true;
-			}
-		}
-	}
+        @Override
+        protected boolean doSelect(IRecord record, String field) {
+            if (promptGroup != null && promptGroup != PromptGroup.ALL) {
+                IRecordDefinition recordDefinition = record.getRecordDefinition();
 
-	private final class HideDefaultsFilter extends AbstractFilter {
-		private boolean active;
+                if (recordDefinition != null) {
+                    return recordDefinition.getFieldDefinitions(field).getPromptGroup() == promptGroup;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        }
+    }
 
-		public HideDefaultsFilter(boolean active) {
-			this.active = active;
-		}
+    private final class HideDefaultsFilter extends AbstractFilter {
+        private boolean active;
 
-		@Override
-		protected boolean doSelect(IRecord record, String field) {
-			if (active) {
-				String finalValue = record.getFinalFields().get(field);
-				String defaultValue = record.getDefaultFields().get(field);
-				return !CompareUtil.equals(finalValue, defaultValue);
-			} else {
-				return true;
-			}
-		}
-	}
+        public HideDefaultsFilter(boolean active) {
+            this.active = active;
+        }
+
+        @Override
+        protected boolean doSelect(IRecord record, String field) {
+            if (active) {
+                String finalValue = record.getFinalFields().get(field);
+                String defaultValue = record.getDefaultFields().get(field);
+                return !CompareUtil.equals(finalValue, defaultValue);
+            } else {
+                return true;
+            }
+        }
+    }
 }

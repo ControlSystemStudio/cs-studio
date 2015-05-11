@@ -8,193 +8,193 @@ import org.csstudio.dct.metamodel.PromptGroup;
 
 /**
  * Standard implementation of {@link IFieldDefinition}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class FieldDefinition implements IFieldDefinition, Serializable {
-	private String extra;
-	private String initial;
-	private String interest;
-	private String name;
-	private String prompt;
-	private PromptGroup promptGroup;
-	private String size;
-	private String special;
-	private String type;
-	private IMenuDefinition menuDefinition;
+    private String extra;
+    private String initial;
+    private String interest;
+    private String name;
+    private String prompt;
+    private PromptGroup promptGroup;
+    private String size;
+    private String special;
+    private String type;
+    private IMenuDefinition menuDefinition;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param name
-	 *            the name
-	 * @param type
-	 *            the type
-	 */
-	public FieldDefinition(String name, String type) {
-		assert type != null;
-		assert name != null;
-		this.type = type;
-		this.name = name;
-	}
+    /**
+     * Constructor.
+     *
+     * @param name
+     *            the name
+     * @param type
+     *            the type
+     */
+    public FieldDefinition(String name, String type) {
+        assert type != null;
+        assert name != null;
+        this.type = type;
+        this.name = name;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getExtra() {
-		return extra;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getExtra() {
+        return extra;
+    }
 
-	/**
-	 * Sets extra.
-	 * 
-	 * @param extra
-	 *            extra
-	 */
-	public void setExtra(String extra) {
-		this.extra = extra;
-	}
+    /**
+     * Sets extra.
+     *
+     * @param extra
+     *            extra
+     */
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getInitial() {
-		return initial;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getInitial() {
+        return initial;
+    }
 
-	/**
-	 * Sets the initial value.
-	 * 
-	 * @param initial
-	 *            the initial value
-	 */
-	public void setInitial(String initial) {
-		this.initial = initial;
-	}
+    /**
+     * Sets the initial value.
+     *
+     * @param initial
+     *            the initial value
+     */
+    public void setInitial(String initial) {
+        this.initial = initial;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getInterest() {
-		return interest;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getInterest() {
+        return interest;
+    }
 
-	/**
-	 * Sets the interest.
-	 * 
-	 * @param interest
-	 *            the interest
-	 */
-	public void setInterest(String interest) {
-		this.interest = interest;
-	}
+    /**
+     * Sets the interest.
+     *
+     * @param interest
+     *            the interest
+     */
+    public void setInterest(String interest) {
+        this.interest = interest;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public IMenuDefinition getMenu() {
-		return menuDefinition;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public IMenuDefinition getMenu() {
+        return menuDefinition;
+    }
 
-	/**
-	 * Sets the menu.
-	 * 
-	 * @param menuDefinition
-	 *            the menu
-	 */
-	public void setMenuDefinition(IMenuDefinition menuDefinition) {
-		this.menuDefinition = menuDefinition;
-	}
+    /**
+     * Sets the menu.
+     *
+     * @param menuDefinition
+     *            the menu
+     */
+    public void setMenuDefinition(IMenuDefinition menuDefinition) {
+        this.menuDefinition = menuDefinition;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getName() {
-		return name;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getPrompt() {
-		return prompt;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	/**
-	 * Sets the prompt.
-	 * 
-	 * @param prompt
-	 *            the prompt
-	 */
-	public void setPrompt(String prompt) {
-		this.prompt = prompt;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getPrompt() {
+        return prompt;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public PromptGroup getPromptGroup() {
-		return promptGroup;
-	}
+    /**
+     * Sets the prompt.
+     *
+     * @param prompt
+     *            the prompt
+     */
+    public void setPrompt(String prompt) {
+        this.prompt = prompt;
+    }
 
-	/**
-	 * Sets the prompt group.
-	 * 
-	 * @param promptGroup
-	 *            the prompt group
-	 */
-	public void setPromptGroup(PromptGroup promptGroup) {
-		this.promptGroup = promptGroup;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public PromptGroup getPromptGroup() {
+        return promptGroup;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getSize() {
-		return size;
-	}
+    /**
+     * Sets the prompt group.
+     *
+     * @param promptGroup
+     *            the prompt group
+     */
+    public void setPromptGroup(PromptGroup promptGroup) {
+        this.promptGroup = promptGroup;
+    }
 
-	/**
-	 * Sets the size.
-	 * 
-	 * @param size
-	 *            the size
-	 */
-	public void setSize(String size) {
-		this.size = size;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getSize() {
+        return size;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getSpecial() {
-		return special;
-	}
+    /**
+     * Sets the size.
+     *
+     * @param size
+     *            the size
+     */
+    public void setSize(String size) {
+        this.size = size;
+    }
 
-	/**
-	 * Sets the special.
-	 * 
-	 * @param special
-	 *            the special
-	 */
-	public void setSpecial(String special) {
-		this.special = special;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public String getSpecial() {
+        return special;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getType() {
-		return type;
-	}
-	
-	public void setType(String type) {
-		this.type = type;
-	}
+    /**
+     * Sets the special.
+     *
+     * @param special
+     *            the special
+     */
+    public void setSpecial(String special) {
+        this.special = special;
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
 }

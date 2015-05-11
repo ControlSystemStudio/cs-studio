@@ -15,12 +15,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
 /** Label provider for TableViewer.
- *  
+ *
  *  For each row of the table, the RDBTableModelContentProvider gives an
  *  RDBTableRow to the TableViewer, which then asks this class to
  *  determine how to display the information in the row,
  *  i.e. the columns, in the table.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class RDBTableRowLabelProvider extends CellLabelProvider

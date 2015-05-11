@@ -32,50 +32,50 @@ import org.osgi.framework.BundleContext;
  */
 public final class Activator extends Plugin {
 
-	/**
-	 *  The plug-in ID.
-	 */
-	public static final String PLUGIN_ID = "org.csstudio.sds.components.epics"; //$NON-NLS-1$
+    /**
+     *  The plug-in ID.
+     */
+    public static final String PLUGIN_ID = "org.csstudio.sds.components.epics"; //$NON-NLS-1$
 
-	/**
-	 * The shared instance.
-	 */
-	private static Activator INSTANCE;
+    /**
+     * The shared instance.
+     */
+    private static Activator INSTANCE;
 
-	/**
-	 * The constructor.
-	 */
-	public Activator() {
-	    if (INSTANCE != null) { // ENSURE SINGLETON
+    /**
+     * The constructor.
+     */
+    public Activator() {
+        if (INSTANCE != null) { // ENSURE SINGLETON
             throw new IllegalStateException("Class " + PLUGIN_ID + " already exists.");
         }
         INSTANCE = this;
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void start(final BundleContext context) throws Exception {
-		super.start(context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void start(final BundleContext context) throws Exception {
+        super.start(context);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-	    INSTANCE = null;
-		super.stop(context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        INSTANCE = null;
+        super.stop(context);
+    }
 
-	/**
-	 * Returns the shared instance.
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return INSTANCE;
-	}
+    /**
+     * Returns the shared instance.
+     *
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+        return INSTANCE;
+    }
 
 }

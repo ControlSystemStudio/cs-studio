@@ -21,81 +21,81 @@ import org.csstudio.sds.ui.dialogs.SdsResourceSelectionDialog;
 
 public class RessourceSection extends AbstractTextSection<ResourceProperty, IPath> {
 
-	public RessourceSection(String propertyId) {
-		super(propertyId);
-	}
+    public RessourceSection(String propertyId) {
+        super(propertyId);
+    }
 
-	@Override
-	protected List<IContentProposal> getContentProposals(ResourceProperty property, AbstractWidgetModel selectedWidget,
-			List<AbstractWidgetModel> selectedWidgets) {
-		return null;
-	}
+    @Override
+    protected List<IContentProposal> getContentProposals(ResourceProperty property, AbstractWidgetModel selectedWidget,
+            List<AbstractWidgetModel> selectedWidgets) {
+        return null;
+    }
 
-	@Override
-	protected IPath getConvertedValue(String text) {
-		IPath result = new Path(text);
-		return result;
-	}
+    @Override
+    protected IPath getConvertedValue(String text) {
+        IPath result = new Path(text);
+        return result;
+    }
 
-	@Override
-	protected void doRefreshControls(ResourceProperty widgetProperty) {
-		if (widgetProperty != null && widgetProperty.getPropertyValue() != null
-				&& !widgetProperty.getPropertyValue().toString().equals(getTextControl().getText())) {
-			getTextControl().setText(widgetProperty.getPropertyValue().toString());
-		}
-	}
+    @Override
+    protected void doRefreshControls(ResourceProperty widgetProperty) {
+        if (widgetProperty != null && widgetProperty.getPropertyValue() != null
+                && !widgetProperty.getPropertyValue().toString().equals(getTextControl().getText())) {
+            getTextControl().setText(widgetProperty.getPropertyValue().toString());
+        }
+    }
 
-	@Override
-	protected void doCreateControls(final Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
-		super.doCreateControls(parent, tabbedPropertySheetPage);
+    @Override
+    protected void doCreateControls(final Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+        super.doCreateControls(parent, tabbedPropertySheetPage);
 
-		// .. change position of the text control
-		FormData fd = new FormData();
-		fd.left = new FormAttachment(0, 0);
-		fd.right = new FormAttachment(50, -85);
-		getTextControl().setLayoutData(fd);
+        // .. change position of the text control
+        FormData fd = new FormData();
+        fd.left = new FormAttachment(0, 0);
+        fd.right = new FormAttachment(50, -85);
+        getTextControl().setLayoutData(fd);
 
-		// .. create button
-		Hyperlink link = getWidgetFactory().createHyperlink(parent, "Choose ...", SWT.NONE);
-		link.setUnderlined(false);
+        // .. create button
+        Hyperlink link = getWidgetFactory().createHyperlink(parent, "Choose ...", SWT.NONE);
+        link.setUnderlined(false);
 
-		fd = new FormData();
-		fd.left = new FormAttachment(getTextControl(), 5);
-		fd.right = new FormAttachment(50, 0);
-		link.setLayoutData(fd);
+        fd = new FormData();
+        fd.left = new FormAttachment(getTextControl(), 5);
+        fd.right = new FormAttachment(50, 0);
+        link.setLayoutData(fd);
 
-		link.addHyperlinkListener(new HyperlinkAdapter() {
+        link.addHyperlinkListener(new HyperlinkAdapter() {
 
-			public void linkActivated(HyperlinkEvent e) {
-				ResourceProperty property = getMainWidgetProperty();
-				String[] fileExtensions = new String[] { "*.*" };
-				IPath path = new Path("");
+            public void linkActivated(HyperlinkEvent e) {
+                ResourceProperty property = getMainWidgetProperty();
+                String[] fileExtensions = new String[] { "*.*" };
+                IPath path = new Path("");
 
-				if (property != null) {
-					fileExtensions = property.getFileExtensions();
-					path = property.getPropertyValue();
-				}
-				// Special dialog for SDS display selection
-				if(fileExtensions.length == 1 && fileExtensions[0].equalsIgnoreCase("css-sds")) {
-					SdsResourceSelectionDialog sdsDialog = new SdsResourceSelectionDialog(parent.getShell());
-					if(Window.OK == sdsDialog.open()) {
-						path = sdsDialog.getSelectedPath();
-						applyPropertyChange(path);
-					}
-				}
-				else {
-					ResourceSelectionDialog dialog = new ResourceSelectionDialog(parent.getShell(), "Select a resource", fileExtensions);
-					dialog.setSelectedResource(path);
-					if (Window.OK == dialog.open()) {
-						if (dialog.getSelectedResource() != null) {
-							path = dialog.getSelectedResource();
-							applyPropertyChange(path);
-						}
-					}
-				}
-			}
+                if (property != null) {
+                    fileExtensions = property.getFileExtensions();
+                    path = property.getPropertyValue();
+                }
+                // Special dialog for SDS display selection
+                if(fileExtensions.length == 1 && fileExtensions[0].equalsIgnoreCase("css-sds")) {
+                    SdsResourceSelectionDialog sdsDialog = new SdsResourceSelectionDialog(parent.getShell());
+                    if(Window.OK == sdsDialog.open()) {
+                        path = sdsDialog.getSelectedPath();
+                        applyPropertyChange(path);
+                    }
+                }
+                else {
+                    ResourceSelectionDialog dialog = new ResourceSelectionDialog(parent.getShell(), "Select a resource", fileExtensions);
+                    dialog.setSelectedResource(path);
+                    if (Window.OK == dialog.open()) {
+                        if (dialog.getSelectedResource() != null) {
+                            path = dialog.getSelectedResource();
+                            applyPropertyChange(path);
+                        }
+                    }
+                }
+            }
 
-		});
-	}
+        });
+    }
 
 }

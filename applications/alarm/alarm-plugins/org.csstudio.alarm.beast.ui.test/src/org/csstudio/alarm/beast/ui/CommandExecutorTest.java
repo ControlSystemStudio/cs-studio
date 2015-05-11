@@ -16,9 +16,9 @@ import static org.junit.Assert.*;
 @SuppressWarnings("nls")
 class CommandExecutorForSleep extends CommandExecutorThread
 {
-	/** Initialize Command Executor Thread
-	 *  @param long_running Create long-running 'xclock' or 'sleep 10'?
-	 */
+    /** Initialize Command Executor Thread
+     *  @param long_running Create long-running 'xclock' or 'sleep 10'?
+     */
     public CommandExecutorForSleep(final boolean long_running)
     {
         super(long_running ? "/usr/bin/xclock" : "sleep 10", CommandExecutorTest.dir, 5);
@@ -79,7 +79,7 @@ public class CommandExecutorTest
         assertEquals(Thread.State.TERMINATED, cmd.getState());
         assertEquals(CommandExecutorThread.CommandState.FINISHED_OK, cmd.getCommandState());
     }
-    
+
     @Test
     public void testLong() throws Exception
     {
@@ -98,28 +98,28 @@ public class CommandExecutorTest
         assertEquals(Thread.State.TERMINATED, cmd.getState());
         assertEquals(CommandExecutorThread.CommandState.LEFT_RUNNING, cmd.getCommandState());
     }
-    
+
     // Long running stand-alone test to check for memory leaks.
     // JProfiler on OS X shows a java.lang.UnixProcess for each
     // CommandExecutorForSleep.
     // On Linux, the UnixProcess implementation is
     // a little different but same end result:
     // One UnixProcess per actual external process.
-    // 
+    //
     // The UnixProcess instances may linger until a garbage collection
     // is forced, but a GC removes all of them with both
     // JDK 1.5.0_09 and JDK 1.6.0_13.
     public static void main(String[] args) throws Exception
     {
-    	final int N = 1000;
-    	for (int i=0; i<N; ++i)
-    	{
-    	    // Command sleeps for 10 seconds.
-    	    // Wait only 5 seconds for command, i.e. leave it running.
-    	    // Do this every 5 seconds, i.e. about one sleep active all the time
-    		System.out.println("Run " + (i+1));
+        final int N = 1000;
+        for (int i=0; i<N; ++i)
+        {
+            // Command sleeps for 10 seconds.
+            // Wait only 5 seconds for command, i.e. leave it running.
+            // Do this every 5 seconds, i.e. about one sleep active all the time
+            System.out.println("Run " + (i+1));
             new CommandExecutorForSleep((i % 100) == 0).start();
             Thread.sleep(5*1000);
-    	}
-	}
+        }
+    }
 }

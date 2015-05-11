@@ -33,12 +33,12 @@ public class VTypeFormatTest
     {
         final Timestamp now = Timestamp.now();
         final Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "a.u.", NumberFormats.format(3), 8.0, 9.0, 10.0, 0.0, 10.0);
-        
+
         final VTypeFormat devault = new DefaultVTypeFormat();
         final VTypeFormat decimal = new DecimalVTypeFormat(2);
         final VTypeFormat exponen = new ExponentialVTypeFormat(1);
         final VTypeFormat strings = new StringVTypeFormat();
-        
+
         assertThat(devault.toString(), equalTo("Default"));
         assertThat(decimal.toString(), equalTo("Decimal (2 digits)"));
         assertThat(exponen.toString(), equalTo("Exponential (1 digits)"));
@@ -49,7 +49,7 @@ public class VTypeFormatTest
         assertThat(decimal.format(value), equalTo("31.40"));
         assertThat(exponen.format(value), equalTo("3.1E1"));
         assertThat(strings.format(value), equalTo("31.400"));
-        
+
         final List<String> labels = Arrays.asList("zero", "one", "two", "three");
         value = new ArchiveVEnum(now, AlarmSeverity.NONE, "", labels, 3);
         assertThat(devault.format(value), equalTo("three (3)"));
@@ -66,7 +66,7 @@ public class VTypeFormatTest
         //value = new ArchiveVNumberArray(now, AlarmSeverity.NONE, "", display, 72, 101, 108, 108, 111, 32, 33, 0);
         assertThat(decimal.format(value), equalTo("72.00, 101.00, 108.00, 108.00, 111.00, 32.00, 33.00, 0.00"));
         assertThat(strings.format(value), equalTo("Hello !"));
-        
+
         assertThat(VTypeFormat.MAX_ARRAY_ELEMENTS, equalTo(10));
         final double[] data = new double[20];
         for (int i=0; i<data.length; ++i)
@@ -81,7 +81,7 @@ public class VTypeFormatTest
         // Initial '0' results in empty string
         text = strings.format(value);
         assertThat(text.length(), equalTo(0));
-        
+
         text = decimal.format(value);
         System.out.println(text);
         assertThat(text, containsString("0.00, 1.00, 2.00, 3.00, 4.00"));

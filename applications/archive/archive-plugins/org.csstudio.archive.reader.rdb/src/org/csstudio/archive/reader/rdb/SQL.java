@@ -19,10 +19,10 @@ public class SQL
 {
     // 'status' table
     final public String sel_stati;
-    
+
     // 'severity' table
     final public String sel_severities;
-    
+
     // Meta data tables
     final public String numeric_meta_sel_by_channel;
     final public String enum_sel_num_val_by_channel;
@@ -37,20 +37,20 @@ public class SQL
     final public String sample_sel_by_id_start_end;
     final public String sample_sel_by_id_start_end_with_blob;
     final public String sample_sel_array_vals;
-	final public String sample_count_by_id_start_end;
-    
+    final public String sample_count_by_id_start_end;
+
     /** Initialize SQL statements
      *  @param dialect RDB dialect
      *  @param prefix Schema (table) prefix, including "." etc. as needed
      */
     public SQL(final Dialect dialect, String prefix)
     {
-    	if (prefix == null  ||  dialect == Dialect.MySQL)
-    		prefix = "";
-    	else
-    		if (prefix.length() > 0   &&   !prefix.endsWith("."))
-    			prefix = prefix + ".";
-    			
+        if (prefix == null  ||  dialect == Dialect.MySQL)
+            prefix = "";
+        else
+            if (prefix.length() > 0   &&   !prefix.endsWith("."))
+                prefix = prefix + ".";
+
         // 'status' table
         sel_stati = "SELECT status_id, name FROM " + prefix + "status";
 
@@ -62,10 +62,10 @@ public class SQL
         " low_warn_lmt, high_warn_lmt," +
         " low_alarm_lmt, high_alarm_lmt," +
         " prec, unit FROM " + prefix + "num_metadata WHERE channel_id=?";
-        
+
         enum_sel_num_val_by_channel = "SELECT enum_nbr, enum_val FROM "
             + prefix + "enum_metadata WHERE channel_id=? ORDER BY enum_nbr";
-        
+
         // 'channel' table
         if (dialect == RDBUtil.Dialect.Oracle)
         {   // '\\' because Java swallows one '\', be case-insensitive by using all lowercase
@@ -77,13 +77,13 @@ public class SQL
         {   // MySQL uses '\' by default, and everything is  by default case-insensitive
             channel_sel_by_like = "SELECT name FROM " + prefix + "channel WHERE name LIKE ? ORDER BY name";
             if (dialect == RDBUtil.Dialect.PostgreSQL)
-            	channel_sel_by_reg_exp = "SELECT name FROM " + prefix + "channel WHERE name ~* ? ORDER BY name";
+                channel_sel_by_reg_exp = "SELECT name FROM " + prefix + "channel WHERE name ~* ? ORDER BY name";
             else
-            	channel_sel_by_reg_exp = "SELECT name FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
+                channel_sel_by_reg_exp = "SELECT name FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
         }
 
         channel_sel_by_name = "SELECT channel_id FROM " + prefix + "channel WHERE name=?";
-    
+
         // 'sample' table
         if (dialect == RDBUtil.Dialect.Oracle)
         {
@@ -97,16 +97,16 @@ public class SQL
                 "     AND smpl_time BETWEEN ? AND ?" +
                 "   ORDER BY smpl_time";
             sample_sel_by_id_start_end_with_blob =
-    	            "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, datatype, array_val" +
-    	            "   FROM " + prefix + "sample" +
-    	            "   WHERE channel_id=?" +
-    	            "     AND smpl_time>=? AND smpl_time<=?" +
-    	            "   ORDER BY smpl_time";
+                    "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, datatype, array_val" +
+                    "   FROM " + prefix + "sample" +
+                    "   WHERE channel_id=?" +
+                    "     AND smpl_time>=? AND smpl_time<=?" +
+                    "   ORDER BY smpl_time";
             sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
                 " WHERE channel_id=? AND smpl_time=? ORDER BY seq_nbr";
         }
         else
-        {	// MySQL, Postgres
+        {    // MySQL, Postgres
             sample_sel_initial_time =
                 "SELECT smpl_time, nanosecs" +
                 "   FROM " + prefix + "sample WHERE channel_id=? AND smpl_time<=?" +
@@ -117,11 +117,11 @@ public class SQL
                 "     AND smpl_time>=? AND smpl_time<=?" +
                 "   ORDER BY smpl_time, nanosecs";
             sample_sel_by_id_start_end_with_blob =
-	            "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs, datatype, array_val" +
-	            "   FROM " + prefix + "sample" +
-	            "   WHERE channel_id=?" +
-	            "     AND smpl_time>=? AND smpl_time<=?" +
-	            "   ORDER BY smpl_time, nanosecs";
+                "SELECT smpl_time, severity_id, status_id, num_val, float_val, str_val, nanosecs, datatype, array_val" +
+                "   FROM " + prefix + "sample" +
+                "   WHERE channel_id=?" +
+                "     AND smpl_time>=? AND smpl_time<=?" +
+                "   ORDER BY smpl_time, nanosecs";
             sample_sel_array_vals = "SELECT float_val FROM " + prefix + "array_val" +
                 " WHERE channel_id=? AND smpl_time=? AND nanosecs=? ORDER BY seq_nbr";
         }

@@ -17,13 +17,13 @@ import javax.swing.SwingUtilities;
  * @author carcassi
  */
 public class Executors {
-    
+
     private static final Logger log = Logger.getLogger(Executors.class.getName());
 
     /**
      * Executes tasks on the Swing Event Dispatch Thread using
      * SwingUtilities.invokeLater().
-     * 
+     *
      * @return an executor that posts events on the EDT
      */
     public static Executor swingEDT() {
@@ -32,7 +32,7 @@ public class Executors {
 
     /**
      * Executes tasks on the current thread.
-     * 
+     *
      * @return an object that runs tasks on the current thread
      */
     public static Executor localThread() {
@@ -60,22 +60,22 @@ public class Executors {
             }
         }
     };
-    
-    
+
+
     /**
      * A thread factory where each new thread starts with the given name. The
      * name of the thread will be poolname + number. This can be used instead
      * of {@link java.util.concurrent.Executors#defaultThreadFactory()},
      * which unfortunately
      * only use generic names for the thread, which makes it harder to debug.
-     * 
+     *
      * @param poolName name of the pool
      * @return a new factory
      */
     public static ThreadFactory namedPool(String poolName) {
         return new DefaultThreadFactory(poolName);
     }
-    
+
     /**
      * Taken from {@link Executors#defaultThreadFactory() }.
      */
@@ -101,5 +101,5 @@ public class Executors {
                 t.setPriority(Thread.NORM_PRIORITY);
             return t;
         }
-    }    
+    }
 }

@@ -49,7 +49,7 @@ public class StartEndTimeAction
             final UndoableActionManager operations_manager,
             final String start_time, final String end_time) throws Exception
     {
-    	// Parsing somewhat redundant, but gives exception 'right away' for better error display
+        // Parsing somewhat redundant, but gives exception 'right away' for better error display
         final StartEndTimeParser parser =
             new StartEndTimeParser(start_time, end_time);
         new ChangeTimerangeCommand(model, operations_manager, parser.isEndNow(), start_time, end_time);

@@ -8,23 +8,23 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 public class RuleFoldersPreferencePage extends FieldEditorPreferencePage
-		implements IWorkbenchPreferencePage {
+        implements IWorkbenchPreferencePage {
 
-	@Override
-	protected void createFieldEditors() {
-		addField(new FolderFieldEditor(PreferenceConstants.PROP_RULE_FOLDERS, "Additional folders containing rules", getFieldEditorParent()));
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IPreferenceStore doGetPreferenceStore() {
-		return SdsUiPlugin.getCorePreferenceStore();
-	}
+    @Override
+    protected void createFieldEditors() {
+        addField(new FolderFieldEditor(PreferenceConstants.PROP_RULE_FOLDERS, "Additional folders containing rules", getFieldEditorParent()));
+    }
 
-	public void init(IWorkbench workbench) {
-		// nothing to do
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IPreferenceStore doGetPreferenceStore() {
+        return SdsUiPlugin.getCorePreferenceStore();
+    }
+
+    public void init(IWorkbench workbench) {
+        // nothing to do
+    }
 
 }

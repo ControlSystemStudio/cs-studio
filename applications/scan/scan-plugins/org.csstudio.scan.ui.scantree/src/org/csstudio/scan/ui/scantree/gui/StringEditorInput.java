@@ -27,102 +27,102 @@ import org.eclipse.ui.IStorageEditorInput;
  */
 public class StringEditorInput implements IStorageEditorInput
 {
-	final private IStorage storage;
+    final private IStorage storage;
 
-	/** Storage implementation for String */
-	private static class StringStorage implements IStorage
-	{
-		final private String name;
-		final private String text;
+    /** Storage implementation for String */
+    private static class StringStorage implements IStorage
+    {
+        final private String name;
+        final private String text;
 
-		public StringStorage(final String name, final String text)
+        public StringStorage(final String name, final String text)
         {
-			this.name = name;
-	        this.text = text;
+            this.name = name;
+            this.text = text;
         }
 
-		@SuppressWarnings("rawtypes")
+        @SuppressWarnings("rawtypes")
         @Override
         public Object getAdapter(Class adapter)
         {
-	        return null;
+            return null;
         }
 
-		@Override
-		public InputStream getContents() throws CoreException
-		{
-			return new ByteArrayInputStream(text.getBytes());
-		}
+        @Override
+        public InputStream getContents() throws CoreException
+        {
+            return new ByteArrayInputStream(text.getBytes());
+        }
 
-		@Override
-		public IPath getFullPath()
-		{
-			return null;
-		}
+        @Override
+        public IPath getFullPath()
+        {
+            return null;
+        }
 
-		@Override
+        @Override
         public String getName()
         {
-	        return name;
+            return name;
         }
 
-		@Override
+        @Override
         public boolean isReadOnly()
         {
-			return true;
+            return true;
         }
-	};
+    };
 
-	/** Initialize
-	 *  @param title Title of the editor, name of the content
-	 *  @param text String content
-	 */
-	public StringEditorInput(final String title, final String text)
-	{
-		storage = new StringStorage(title, text);
-	}
+    /** Initialize
+     *  @param title Title of the editor, name of the content
+     *  @param text String content
+     */
+    public StringEditorInput(final String title, final String text)
+    {
+        storage = new StringStorage(title, text);
+    }
 
-	// IStorageEditorInput
-	@Override
+    // IStorageEditorInput
+    @Override
     public boolean exists()
     {
-	    return true;
+        return true;
     }
 
-	@Override
+    @Override
     public ImageDescriptor getImageDescriptor()
     {
-	    return null;
+        return null;
     }
 
-	@Override
+    @Override
     public String getName()
     {
-	    return storage.getName();
+        return storage.getName();
     }
 
-	@Override
+    @Override
     public IPersistableElement getPersistable()
     {
-	    return null;
+        return null;
     }
 
-	@Override
+    @Override
     public String getToolTipText()
     {
-	    return getName();
+        return getName();
     }
 
-	@SuppressWarnings("rawtypes")
+    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(final Class adapter)
     {
-	    return null;
+        return null;
     }
 
-	@Override
+    @Override
     public IStorage getStorage() throws CoreException
     {
-	    return storage;
+        return storage;
     }
 }

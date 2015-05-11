@@ -62,81 +62,81 @@ public class Application implements IApplication
     @Override
     public Object start(final IApplicationContext context) throws Exception
     {
-		// Display configuration info
-		synchronized (Application.class)
-		{
-			final String version = (String) context.getBrandingBundle()
-					.getHeaders().get("Bundle-Version");
-			bundle_version = context.getBrandingName() + " " + version;
-		}
+        // Display configuration info
+        synchronized (Application.class)
+        {
+            final String version = (String) context.getBrandingBundle()
+                    .getHeaders().get("Bundle-Version");
+            bundle_version = context.getBrandingName() + " " + version;
+        }
 
-    	// Create parser for arguments and run it.
+        // Create parser for arguments and run it.
         final String args[] = (String []) context.getArguments().get("application.args");
 
-		final ArgParser parser = new ArgParser();
-		final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
-		final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
-		parser.addEclipseParameters();
-		try {
-			parser.parse(args);
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage() + "\n" + parser.getHelp());
-			return IApplication.EXIT_OK;
-		}
-		if (help_opt.get()) {
-			System.out.println(bundle_version + "\n\n" + parser.getHelp());
-			return IApplication.EXIT_OK;
-		}
-		if (version_opt.get()) {
-			System.out.println(bundle_version);
-			return IApplication.EXIT_OK;
-		}
+        final ArgParser parser = new ArgParser();
+        final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
+        final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
+        parser.addEclipseParameters();
+        try {
+            parser.parse(args);
+        } catch (final Exception ex) {
+            System.out.println(ex.getMessage() + "\n" + parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
+        if (help_opt.get()) {
+            System.out.println(bundle_version + "\n\n" + parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
+        if (version_opt.get()) {
+            System.out.println(bundle_version);
+            return IApplication.EXIT_OK;
+        }
 
-    	final Logger log = Logger.getLogger(getClass().getName());
-    	try
-    	{
-	        // Display config info
-	        final Bundle bundle = context.getBrandingBundle();
-	        log.info(bundle_version);
+        final Logger log = Logger.getLogger(getClass().getName());
+        try
+        {
+            // Display config info
+            final Bundle bundle = context.getBrandingBundle();
+            log.info(bundle_version);
 
             LogConfigurator.configureFromPreferences();
 
-	        log.config("Scan config       : " + ScanSystemPreferences.getScanConfigPath());
-	        log.config("Simulation config : " + ScanSystemPreferences.getSimulationConfigPath());
-	        log.config("Server host:port  : " + ScanSystemPreferences.getServerHost() + ":" + ScanSystemPreferences.getServerPort());
-	        log.config("Pre-scan commands : " + Arrays.toString(ScanSystemPreferences.getPreScanPaths()));
-	        log.config("Post-scan commands: " + Arrays.toString(ScanSystemPreferences.getPostScanPaths()));
-	        log.config("Script paths      : " + Arrays.toString(ScanSystemPreferences.getScriptPaths()));
+            log.config("Scan config       : " + ScanSystemPreferences.getScanConfigPath());
+            log.config("Simulation config : " + ScanSystemPreferences.getSimulationConfigPath());
+            log.config("Server host:port  : " + ScanSystemPreferences.getServerHost() + ":" + ScanSystemPreferences.getServerPort());
+            log.config("Pre-scan commands : " + Arrays.toString(ScanSystemPreferences.getPreScanPaths()));
+            log.config("Post-scan commands: " + Arrays.toString(ScanSystemPreferences.getPostScanPaths()));
+            log.config("Script paths      : " + Arrays.toString(ScanSystemPreferences.getScriptPaths()));
 
-	        // Start server
-	        final int port = ScanSystemPreferences.getServerPort();
-	        server = new ScanServerImpl();
-	        server.start();
-	        log.config("Scan Server REST interface on http://localhost:" + port + "/index.html");
-	        final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port);
+            // Start server
+            final int port = ScanSystemPreferences.getServerPort();
+            server = new ScanServerImpl();
+            server.start();
+            log.config("Scan Server REST interface on http://localhost:" + port + "/index.html");
+            final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port);
                 // TODO
-	        //final PVAccessServer pva = new PVAccessServer(server);
-	        //pva.initializeServerContext();
+            //final PVAccessServer pva = new PVAccessServer(server);
+            //pva.initializeServerContext();
 
-	        // Register console commands
-	        ConsoleCommands commands = new ConsoleCommands(server);
-	        final BundleContext bundle_context = bundle.getBundleContext();
-	        bundle_context.registerService(CommandProvider.class.getName(), commands, null);
+            // Register console commands
+            ConsoleCommands commands = new ConsoleCommands(server);
+            final BundleContext bundle_context = bundle.getBundleContext();
+            bundle_context.registerService(CommandProvider.class.getName(), commands, null);
 
-	        // Keep running...
-	        run.await();
-	        server.stop();
+            // Keep running...
+            run.await();
+            server.stop();
 
-	        httpd.stop();
-	        //pva.destroyServerContext();
-	        // Release commands
-	        commands = null;
-    	}
-    	catch (Exception ex)
-    	{
-    		log.log(Level.SEVERE, "Exiting on error", ex);
-    		return Integer.valueOf(-1);
-    	}
+            httpd.stop();
+            //pva.destroyServerContext();
+            // Release commands
+            commands = null;
+        }
+        catch (Exception ex)
+        {
+            log.log(Level.SEVERE, "Exiting on error", ex);
+            return Integer.valueOf(-1);
+        }
 
         return EXIT_OK;
     }

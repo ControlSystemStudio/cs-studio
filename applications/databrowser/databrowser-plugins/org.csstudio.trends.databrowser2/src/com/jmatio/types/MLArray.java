@@ -2,7 +2,7 @@ package com.jmatio.types;
 
 public class MLArray
 {
-    
+
     /* Matlab Array Types (Classes) */
     public static final int mxUNKNOWN_CLASS = 0;
     public static final int mxCELL_CLASS    = 1;
@@ -22,23 +22,23 @@ public class MLArray
     public static final int mxUINT64_CLASS  = 15;
     public static final int mxFUNCTION_CLASS = 16;
     public static final int mxOPAQUE_CLASS  = 17;
-    
+
     public static final int mtFLAG_COMPLEX       = 0x0800;
     public static final int mtFLAG_GLOBAL        = 0x0400;
     public static final int mtFLAG_LOGICAL       = 0x0200;
     public static final int mtFLAG_TYPE          = 0xff;
-    
+
     protected int dims[];
     public String name;
     protected int attributes;
     protected int type;
-    
+
     public MLArray(String name, int[] dims, int type, int attributes)
     {
         this.dims = new int[dims.length];
         System.arraycopy(dims, 0, this.dims, 0, dims.length);
-        
-        
+
+
         if ( name != null && !name.equals("") )
         {
             this.name = name;
@@ -47,15 +47,15 @@ public class MLArray
         {
             this.name = "@"; //default name
         }
-        
-        
+
+
         this.type = type;
         this.attributes = attributes;
     }
-    
+
     /**
      * Gets array name
-     * 
+     *
      * @return - array name
      */
     public String getName()
@@ -63,16 +63,16 @@ public class MLArray
         return name;
     }
     public int getFlags()
-    { 
+    {
         int flags = type & mtFLAG_TYPE | attributes & 0xffffff00;
-        
+
         return flags;
     }
     public byte[] getNameToByteArray()
     {
         return name.getBytes();
     }
-    
+
     public int[] getDimensions()
     {
         int ai[] = null;
@@ -106,7 +106,7 @@ public class MLArray
                 {
                     i *= dims[j];
                 }
-            } 
+            }
             else
             {
                 i = dims[1];
@@ -137,7 +137,7 @@ public class MLArray
     {
         return getN() == 0;
     }
-    
+
     public static final String typeToString(int type)
     {
         String s;
@@ -203,7 +203,7 @@ public class MLArray
         }
         return s;
     }
-    
+
     public boolean isCell()
     {
         return type == mxCELL_CLASS;
@@ -307,7 +307,7 @@ public class MLArray
     {
         return m+n*getM();
     }
-    
+
     public String toString()
     {
         StringBuffer sb = new StringBuffer();
@@ -354,15 +354,15 @@ public class MLArray
         }
         return sb.toString();
     }
-    
+
     public String contentToString()
     {
         return "content cannot be displayed";
     }
-    
+
     public void dispose()
     {
-        
+
     }
-    
+
 }

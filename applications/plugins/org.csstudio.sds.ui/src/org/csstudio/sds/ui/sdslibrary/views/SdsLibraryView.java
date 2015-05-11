@@ -44,146 +44,146 @@ import org.slf4j.LoggerFactory;
 
 public class SdsLibraryView extends ViewPart {
 
-	/**
-	 * The ID of the view as specified by the extension.
-	 */
-	public static final String ID = "org.csstudio.sds.ui.thumbnailspike.views.SpikeView";
+    /**
+     * The ID of the view as specified by the extension.
+     */
+    public static final String ID = "org.csstudio.sds.ui.thumbnailspike.views.SpikeView";
 
-	private static final Logger LOG = LoggerFactory.getLogger(SdsLibraryView.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SdsLibraryView.class);
 
-	private final LibraryFolderPreferenceService libraryFolderPreferenceService;
+    private final LibraryFolderPreferenceService libraryFolderPreferenceService;
 
-	private LibraryFolderPreferenceChangeListener preferenceChangeListener;
+    private LibraryFolderPreferenceChangeListener preferenceChangeListener;
 
-	private SdsThumbnailPanel libraryPanel;
+    private SdsThumbnailPanel libraryPanel;
 
-	/**
-	 * The constructor.
-	 * 
-	 * @throws FileNotFoundException
-	 */
-	public SdsLibraryView() {
-		libraryFolderPreferenceService = SdsUiPlugin.getDefault()
-				.getLibraryFolderPreferenceService();
-	}
+    /**
+     * The constructor.
+     *
+     * @throws FileNotFoundException
+     */
+    public SdsLibraryView() {
+        libraryFolderPreferenceService = SdsUiPlugin.getDefault()
+                .getLibraryFolderPreferenceService();
+    }
 
-	/**
-	 * This is a callback that will allow us to create the viewer and initialize
-	 * it.
-	 */
-	public void createPartControl(final Composite parent) {
-		parent.setLayout(new FillLayout());
+    /**
+     * This is a callback that will allow us to create the viewer and initialize
+     * it.
+     */
+    public void createPartControl(final Composite parent) {
+        parent.setLayout(new FillLayout());
 
-		libraryPanel = new SdsThumbnailPanel(parent, SWT.None, LibraryPanelLayout.GroupedGrid);
-		libraryPanel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseDoubleClick(MouseEvent arg0) {
-				try {
-					File selectedFile = libraryPanel.getSelectedFile();
-					if (selectedFile != null) {
-						IWorkspace workspace = ResourcesPlugin.getWorkspace();
-						IWorkspaceRoot root = workspace.getRoot();
-						IFile file = root.getFileForLocation(new Path(
-								selectedFile.getAbsolutePath()));
-						IEditorInput editorInput = new FileEditorInput(file);
-						IWorkbenchWindow window = PlatformUI.getWorkbench()
-								.getActiveWorkbenchWindow();
-						IWorkbenchPage page = window.getActivePage();
-						page.openEditor(editorInput,
-								"org.csstudio.sds.ui.internal.editor.DisplayEditor");
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+        libraryPanel = new SdsThumbnailPanel(parent, SWT.None, LibraryPanelLayout.GroupedGrid);
+        libraryPanel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseDoubleClick(MouseEvent arg0) {
+                try {
+                    File selectedFile = libraryPanel.getSelectedFile();
+                    if (selectedFile != null) {
+                        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+                        IWorkspaceRoot root = workspace.getRoot();
+                        IFile file = root.getFileForLocation(new Path(
+                                selectedFile.getAbsolutePath()));
+                        IEditorInput editorInput = new FileEditorInput(file);
+                        IWorkbenchWindow window = PlatformUI.getWorkbench()
+                                .getActiveWorkbenchWindow();
+                        IWorkbenchPage page = window.getActivePage();
+                        page.openEditor(editorInput,
+                                "org.csstudio.sds.ui.internal.editor.DisplayEditor");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
 
-		preferenceChangeListener = new LibraryFolderPreferenceChangeListener() {
-			@Override
-			public void preferencesChanged() {
-				createLibraryWidgets(libraryFolderPreferenceService.loadLibraryItems());
-			}
-		};
-		libraryFolderPreferenceService.addChangeListener(preferenceChangeListener);
+        preferenceChangeListener = new LibraryFolderPreferenceChangeListener() {
+            @Override
+            public void preferencesChanged() {
+                createLibraryWidgets(libraryFolderPreferenceService.loadLibraryItems());
+            }
+        };
+        libraryFolderPreferenceService.addChangeListener(preferenceChangeListener);
 
-		initDragAndDrop();
+        initDragAndDrop();
 
-		createLibraryWidgets(libraryFolderPreferenceService.loadLibraryItems());
-	}
+        createLibraryWidgets(libraryFolderPreferenceService.loadLibraryItems());
+    }
 
-	private void initDragAndDrop() {
-		DragSource dragSource = new DragSource(libraryPanel.getGallery(), DND.DROP_COPY);
-		dragSource.setTransfer(new Transfer[] { WidgetModelTransfer
-				.getInstance() });
-		SdsLibraryDragSourceEffect effect = new SdsLibraryDragSourceEffect(libraryPanel, getSite().getPage());
-		
-		dragSource.setDragSourceEffect(effect);
-		dragSource.addDragListener(new DragSourceAdapter() {
+    private void initDragAndDrop() {
+        DragSource dragSource = new DragSource(libraryPanel.getGallery(), DND.DROP_COPY);
+        dragSource.setTransfer(new Transfer[] { WidgetModelTransfer
+                .getInstance() });
+        SdsLibraryDragSourceEffect effect = new SdsLibraryDragSourceEffect(libraryPanel, getSite().getPage());
 
-			public void dragStart(DragSourceEvent event) {
-				event.doit = libraryPanel.getSelectedFile() != null;
-			}
+        dragSource.setDragSourceEffect(effect);
+        dragSource.addDragListener(new DragSourceAdapter() {
 
-			public void dragSetData(DragSourceEvent event) {
-				DisplayModel model = new DisplayModel();
-				FileInputStream fip;
-				try {
-					fip = new FileInputStream(libraryPanel.getSelectedFile());
-					PersistenceUtil.syncFillModel(model, fip);
-					try {
-						fip.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} catch (Exception e) {
-				}
-				event.data = model.getWidgets();
-			}
-		});
-	}
-	
-	@Override
-	public void dispose() {
-		if (preferenceChangeListener != null) {
-			this.libraryFolderPreferenceService.removeChangeListener(preferenceChangeListener);
-		}
-		
-		super.dispose();
-	}
+            public void dragStart(DragSourceEvent event) {
+                event.doit = libraryPanel.getSelectedFile() != null;
+            }
 
-	@Override
-	public void setFocus() {
-		libraryPanel.setFocus();
-	}
+            public void dragSetData(DragSourceEvent event) {
+                DisplayModel model = new DisplayModel();
+                FileInputStream fip;
+                try {
+                    fip = new FileInputStream(libraryPanel.getSelectedFile());
+                    PersistenceUtil.syncFillModel(model, fip);
+                    try {
+                        fip.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (Exception e) {
+                }
+                event.data = model.getWidgets();
+            }
+        });
+    }
 
-	private void createLibraryWidgets(List<LibraryFolderPreferenceItem> libraryFolders) {
-		assert libraryFolders != null;
+    @Override
+    public void dispose() {
+        if (preferenceChangeListener != null) {
+            this.libraryFolderPreferenceService.removeChangeListener(preferenceChangeListener);
+        }
 
-		List<File> folders = new ArrayList<File>();
-		
-		String filePathPrefix = ResourcesPlugin.getWorkspace().getRoot()
-				.getRawLocation().toOSString();
-		for (LibraryFolderPreferenceItem folderItem : libraryFolders) {
-			if (folderItem.isChecked()) {
-				File folder = new File(filePathPrefix
-						+ folderItem.getFolderPath());
+        super.dispose();
+    }
 
-				if(!folder.isDirectory()) {
-					LOG.warn("library preference folder: \""+folder.getAbsolutePath() + "\" does not exist");
-				}
-				else {
-					folders.add(folder);
-				}
-			}
-		}
-		
-		libraryPanel.setFolders(folders);
-	}
+    @Override
+    public void setFocus() {
+        libraryPanel.setFocus();
+    }
 
-	@Override
-	protected void finalize() throws Throwable {
-		
-		super.finalize();
-	}
+    private void createLibraryWidgets(List<LibraryFolderPreferenceItem> libraryFolders) {
+        assert libraryFolders != null;
+
+        List<File> folders = new ArrayList<File>();
+
+        String filePathPrefix = ResourcesPlugin.getWorkspace().getRoot()
+                .getRawLocation().toOSString();
+        for (LibraryFolderPreferenceItem folderItem : libraryFolders) {
+            if (folderItem.isChecked()) {
+                File folder = new File(filePathPrefix
+                        + folderItem.getFolderPath());
+
+                if(!folder.isDirectory()) {
+                    LOG.warn("library preference folder: \""+folder.getAbsolutePath() + "\" does not exist");
+                }
+                else {
+                    folders.add(folder);
+                }
+            }
+        }
+
+        libraryPanel.setFolders(folders);
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+
+        super.finalize();
+    }
 }

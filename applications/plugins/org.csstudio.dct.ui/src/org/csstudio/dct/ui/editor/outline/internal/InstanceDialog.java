@@ -48,118 +48,118 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
  * Selection dialog that displays the prototypes of a project.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class InstanceDialog extends Dialog {
-	private IPrototype selection;
+    private IPrototype selection;
 
-	private IProject project;
+    private IProject project;
 
-	private TreeViewer treeViewer;
+    private TreeViewer treeViewer;
 
-	private IContainer selectedContainer;
+    private IContainer selectedContainer;
 
-	/**
-	 * Creates an input dialog with OK and Cancel buttons. Note that the dialog
-	 * will have no visual representation (no widgets) until it is told to open.
-	 * <p>
-	 * Note that the <code>open</code> method blocks for input dialogs.
-	 * </p>
-	 * 
-	 * @param parentShell
-	 *            the parent shell, or <code>null</code> to create a top-level
-	 *            shell
-	 * @param dialogMessage
-	 *            the dialog message, or <code>null</code> if none
-	 * @param project
-	 *            the project
-	 * @param selectedContainer
-	 *            the current selected container
-	 */
-	public InstanceDialog(final Shell parentShell, final IProject project, IContainer selectedContainer) {
-		super(parentShell);
-		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
-		this.project = project;
-		this.selectedContainer = selectedContainer;
-	}
+    /**
+     * Creates an input dialog with OK and Cancel buttons. Note that the dialog
+     * will have no visual representation (no widgets) until it is told to open.
+     * <p>
+     * Note that the <code>open</code> method blocks for input dialogs.
+     * </p>
+     *
+     * @param parentShell
+     *            the parent shell, or <code>null</code> to create a top-level
+     *            shell
+     * @param dialogMessage
+     *            the dialog message, or <code>null</code> if none
+     * @param project
+     *            the project
+     * @param selectedContainer
+     *            the current selected container
+     */
+    public InstanceDialog(final Shell parentShell, final IProject project, IContainer selectedContainer) {
+        super(parentShell);
+        this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
+        this.project = project;
+        this.selectedContainer = selectedContainer;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureShell(final Shell shell) {
-		super.configureShell(shell);
-		shell.setText("Prototypes");
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureShell(final Shell shell) {
+        super.configureShell(shell);
+        shell.setText("Prototypes");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createDialogArea(final Composite parent) {
-		Composite composite = (Composite) super.createDialogArea(parent);
-		composite.setLayout(new GridLayout(1, false));
-		
-		Label label = new Label(composite, SWT.WRAP);
-		label.setText("Available Prototypes:");
-		GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
-		data.horizontalSpan = 2;
-		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-		label.setLayoutData(data);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        Composite composite = (Composite) super.createDialogArea(parent);
+        composite.setLayout(new GridLayout(1, false));
 
-		treeViewer = new TreeViewer(composite);
-		treeViewer.getTree().setLayoutData(LayoutUtil.createGridDataForFillingCell(200, 400));
-		treeViewer.setLabelProvider(new WorkbenchLabelProvider());
-		treeViewer.setContentProvider(new WorkbenchContentProvider());
-		treeViewer.setAutoExpandLevel(4);
-		treeViewer.addFilter(new ViewerFilter() {
-			@Override
-			public boolean select(Viewer viewer, Object parentElement, Object element) {
-				boolean result = false;
+        Label label = new Label(composite, SWT.WRAP);
+        label.setText("Available Prototypes:");
+        GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+        data.horizontalSpan = 2;
+        data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        label.setLayoutData(data);
 
-				if (element instanceof IPrototype) {
-					if (selectedContainer != null) {
-						// filter prototype that would cause a transitive loop
-						result = !ModelValidationUtil.causesTransitiveLoop(selectedContainer, (IPrototype) element);
-					} else {
-						result = true;
-					}
-				} else if (element instanceof IFolder) {
-					result = true;
-				}
+        treeViewer = new TreeViewer(composite);
+        treeViewer.getTree().setLayoutData(LayoutUtil.createGridDataForFillingCell(200, 400));
+        treeViewer.setLabelProvider(new WorkbenchLabelProvider());
+        treeViewer.setContentProvider(new WorkbenchContentProvider());
+        treeViewer.setAutoExpandLevel(4);
+        treeViewer.addFilter(new ViewerFilter() {
+            @Override
+            public boolean select(Viewer viewer, Object parentElement, Object element) {
+                boolean result = false;
 
-				return result;
-			}
-		});
-		treeViewer.setInput(project);
-		
-		treeViewer.addOpenListener(new IOpenListener(){
-			public void open(OpenEvent event) {
-				okPressed();
-			}
-		});
-		
-		return composite;
-	}
+                if (element instanceof IPrototype) {
+                    if (selectedContainer != null) {
+                        // filter prototype that would cause a transitive loop
+                        result = !ModelValidationUtil.causesTransitiveLoop(selectedContainer, (IPrototype) element);
+                    } else {
+                        result = true;
+                    }
+                } else if (element instanceof IFolder) {
+                    result = true;
+                }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void okPressed() {
-		selection = (IPrototype) ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
-		super.okPressed();
-	}
+                return result;
+            }
+        });
+        treeViewer.setInput(project);
 
-	/**
-	 * Returns the selected prototype.
-	 * 
-	 * @return the selected prototype
-	 */
-	public IPrototype getSelection() {
-		return selection;
-	}
+        treeViewer.addOpenListener(new IOpenListener(){
+            public void open(OpenEvent event) {
+                okPressed();
+            }
+        });
+
+        return composite;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void okPressed() {
+        selection = (IPrototype) ((IStructuredSelection) treeViewer.getSelection()).getFirstElement();
+        super.okPressed();
+    }
+
+    /**
+     * Returns the selected prototype.
+     *
+     * @return the selected prototype
+     */
+    public IPrototype getSelection() {
+        return selection;
+    }
 
 }

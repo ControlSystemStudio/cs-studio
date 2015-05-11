@@ -19,9 +19,9 @@ public class Preferences
     public static final String WRITE_SAMPLE_TABLE = "write_sample_table";
 
     public static final String MAX_TEXT_SAMPLE_LENGTH = "max_text_sample_length";
-    
+
     public static final String USE_POSTGRES_COPY = "use_postgres_copy";
-    
+
     /** @return # Name of sample table for writing */
     public static String getWriteSampleTable()
     {
@@ -31,7 +31,7 @@ public class Preferences
             name = prefs.getString(Activator.ID, WRITE_SAMPLE_TABLE, name, null);
         return name;
     }
-    
+
     /** @return Maximum length of text samples written to SAMPLE.STR_VAL */
     public static int getMaxStringSampleLength()
     {
@@ -40,7 +40,7 @@ public class Preferences
             return 80;
         return prefs.getInt(Activator.ID, MAX_TEXT_SAMPLE_LENGTH, 80, null);
     }
-    
+
     /** @return true to use postgres copy instead of insert */
     public static boolean isUsePostgresCopy()
     {

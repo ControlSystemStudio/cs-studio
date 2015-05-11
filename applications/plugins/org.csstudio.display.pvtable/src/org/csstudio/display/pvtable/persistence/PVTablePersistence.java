@@ -37,7 +37,7 @@ abstract public class PVTablePersistence
 
     /** @return Preferred file extension (without '.') */
     abstract public String getFileExtension();
-    
+
     /** Read {@link PVTableModel} from file
      *  @param filename Filename
      *  @return PV table model
@@ -54,7 +54,7 @@ abstract public class PVTablePersistence
      *  @throws Exception on error
      */
     abstract public PVTableModel read(final InputStream stream) throws Exception;
-    
+
     /** Write {@link PVTableModel} to file
      *  @param model Model
      *  @param filename Filename
@@ -71,7 +71,7 @@ abstract public class PVTablePersistence
      *  @throws Exception on error
      */
     abstract public void write(final PVTableModel model, final OutputStream stream) throws Exception;
-    
+
     /** Format the value (without alarm, timestamp) as a string
      *  @param value VType returned by <code>createValue</code>
      *  @return Text for the value

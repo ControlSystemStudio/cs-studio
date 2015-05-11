@@ -17,152 +17,152 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 
-/**The editor input for OPI Runner. 
+/**The editor input for OPI Runner.
  * @author Xihui Chen
  *
  */
 public class RunnerInput implements IRunnerInput{
 
-	private DisplayOpenManager displayOpenManager;
-	private MacrosInput macrosInput;
-	private IPath path;
-	
-	public RunnerInput(IPath path, DisplayOpenManager displayOpenManager, 
-			MacrosInput macrosInput){
-		this.path = path;
-		this.setDisplayOpenManager(displayOpenManager);
-		this.macrosInput = macrosInput;
-	}
-	
-	public RunnerInput(IPath path, DisplayOpenManager displayOpenManager){
-		this(path, displayOpenManager, null);
-	}
-	
+    private DisplayOpenManager displayOpenManager;
+    private MacrosInput macrosInput;
+    private IPath path;
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.opibuilder.runmode.IRunnerInput#setDisplayOpenManager(org.csstudio.opibuilder.runmode.DisplayOpenManager)
-	 */
-	public void setDisplayOpenManager(DisplayOpenManager displayOpenManager) {
-		this.displayOpenManager = displayOpenManager;
-	}
+    public RunnerInput(IPath path, DisplayOpenManager displayOpenManager,
+            MacrosInput macrosInput){
+        this.path = path;
+        this.setDisplayOpenManager(displayOpenManager);
+        this.macrosInput = macrosInput;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.opibuilder.runmode.IRunnerInput#getDisplayOpenManager()
-	 */
-	public DisplayOpenManager getDisplayOpenManager() {
-		return displayOpenManager;
-	}
-	
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((macrosInput == null) ? 0 : macrosInput.hashCode());
-		result = prime * result + ((path == null) ? 0 : path.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RunnerInput other = (RunnerInput) obj;
-		if (macrosInput == null) {
-			if (other.macrosInput != null)
-				return false;
-		} else if (!macrosInput.equals(other.macrosInput))
-			return false;
-		if (path == null) {
-			if (other.path != null)
-				return false;
-		} else if (!path.equals(other.path))
-			return false;
-		return true;
-	}
-	
-//	@Override
-//	public boolean equals(Object obj) {
-//		if (this == obj) {
-//			return true;
-//		}
-//		if (!(obj instanceof RunnerInput)) {
-//			return false;
-//		}
-//		RunnerInput other = (RunnerInput) obj;
-//		boolean macroSame = false;
-//		if(macrosInput != null && other.getMacrosInput() !=null){
-//			macroSame = macrosInput.equals(other.getMacrosInput());
-//		}else if(macrosInput == null && other.getMacrosInput() == null)
-//			macroSame = true;
-//		return getPath().equals(other.getPath()) && macroSame;
-//	//		displayOpenManager == other.getDisplayOpenManager()  && 
-//			
-//	}
+    public RunnerInput(IPath path, DisplayOpenManager displayOpenManager){
+        this(path, displayOpenManager, null);
+    }
 
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.opibuilder.runmode.IRunnerInput#getMacrosInput()
-	 */
-	public MacrosInput getMacrosInput() {
-		return macrosInput;
-	}
-	
-	public void saveState(IMemento memento) {
-		RunnerInputFactory.saveState(memento, this);
-	}
-	
-	public String getFactoryId() {
-		return RunnerInputFactory.getFactoryId();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.opibuilder.runmode.IRunnerInput#setDisplayOpenManager(org.csstudio.opibuilder.runmode.DisplayOpenManager)
+     */
+    public void setDisplayOpenManager(DisplayOpenManager displayOpenManager) {
+        this.displayOpenManager = displayOpenManager;
+    }
 
-	public IPath getPath() {
-		return path;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.opibuilder.runmode.IRunnerInput#getDisplayOpenManager()
+     */
+    public DisplayOpenManager getDisplayOpenManager() {
+        return displayOpenManager;
+    }
 
-	public boolean exists() {
-		InputStream in = null;
-		try {
-			 in = getInputStream();
-		} catch (Exception e) {
-			return false;
-		}
-		return in != null;
-	}
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                + ((macrosInput == null) ? 0 : macrosInput.hashCode());
+        result = prime * result + ((path == null) ? 0 : path.hashCode());
+        return result;
+    }
 
-	public ImageDescriptor getImageDescriptor() {
-		return null;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        RunnerInput other = (RunnerInput) obj;
+        if (macrosInput == null) {
+            if (other.macrosInput != null)
+                return false;
+        } else if (!macrosInput.equals(other.macrosInput))
+            return false;
+        if (path == null) {
+            if (other.path != null)
+                return false;
+        } else if (!path.equals(other.path))
+            return false;
+        return true;
+    }
 
-	public String getName() {
-		return getPath().lastSegment();
-	}
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (this == obj) {
+//            return true;
+//        }
+//        if (!(obj instanceof RunnerInput)) {
+//            return false;
+//        }
+//        RunnerInput other = (RunnerInput) obj;
+//        boolean macroSame = false;
+//        if(macrosInput != null && other.getMacrosInput() !=null){
+//            macroSame = macrosInput.equals(other.getMacrosInput());
+//        }else if(macrosInput == null && other.getMacrosInput() == null)
+//            macroSame = true;
+//        return getPath().equals(other.getPath()) && macroSame;
+//    //        displayOpenManager == other.getDisplayOpenManager()  &&
+//
+//    }
 
-	public IPersistableElement getPersistable() {
-		return this;
-	}
 
-	public String getToolTipText() {
-		return path.toString();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.opibuilder.runmode.IRunnerInput#getMacrosInput()
+     */
+    public MacrosInput getMacrosInput() {
+        return macrosInput;
+    }
 
-	
+    public void saveState(IMemento memento) {
+        RunnerInputFactory.saveState(memento, this);
+    }
 
-	public InputStream getInputStream() throws Exception {
-		return ResourceUtil.pathToInputStream(getPath(), false);
-	}
+    public String getFactoryId() {
+        return RunnerInputFactory.getFactoryId();
+    }
 
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
-		return null;
-	}
-	
-	@Override
-	public String toString() {
-		return getPath().toString();
-	}
-	
+    public IPath getPath() {
+        return path;
+    }
+
+    public boolean exists() {
+        InputStream in = null;
+        try {
+             in = getInputStream();
+        } catch (Exception e) {
+            return false;
+        }
+        return in != null;
+    }
+
+    public ImageDescriptor getImageDescriptor() {
+        return null;
+    }
+
+    public String getName() {
+        return getPath().lastSegment();
+    }
+
+    public IPersistableElement getPersistable() {
+        return this;
+    }
+
+    public String getToolTipText() {
+        return path.toString();
+    }
+
+
+
+    public InputStream getInputStream() throws Exception {
+        return ResourceUtil.pathToInputStream(getPath(), false);
+    }
+
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return getPath().toString();
+    }
+
 }

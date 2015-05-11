@@ -40,57 +40,57 @@ import org.csstudio.sds.model.ActionData;
  */
 public final class DesyRule extends CursorSelectionRule {
 
-	/**
-	 * Cursor state ID of the default cursor state.
-	 */
-	private static final String DEFAULT = "default";
+    /**
+     * Cursor state ID of the default cursor state.
+     */
+    private static final String DEFAULT = "default";
 
-	/**
-	 * Cursor state ID for disabled widgets.
-	 */
-	private static final String WIDGET_DISABLED = "widgetDisabled";
+    /**
+     * Cursor state ID for disabled widgets.
+     */
+    private static final String WIDGET_DISABLED = "widgetDisabled";
 
-	/**
-	 * Cursor state ID for widgets with an output channel which they cannot
-	 * access.
-	 */
-	private static final String ACCESS_DENIED = "accessDenied";
+    /**
+     * Cursor state ID for widgets with an output channel which they cannot
+     * access.
+     */
+    private static final String ACCESS_DENIED = "accessDenied";
 
-	/**
-	 * Cursor state ID for widgets with a writable output channel.
-	 */
-	private static final String ACCESS_ALLOWED = "accessAllowed";
+    /**
+     * Cursor state ID for widgets with a writable output channel.
+     */
+    private static final String ACCESS_ALLOWED = "accessAllowed";
 
-	/**
-	 * Cursor state ID for widgets with an output channel whose access
-	 * permission are unknown.
-	 */
-	private static final String ACCESS_UNKNOWN = "accessUnknown";
+    /**
+     * Cursor state ID for widgets with an output channel whose access
+     * permission are unknown.
+     */
+    private static final String ACCESS_UNKNOWN = "accessUnknown";
 
-	/**
-	 * Cursor state ID for widgets which are disabled by the CSS security
-	 * system.
-	 */
-	private static final String NO_PERMISSION = "noPermission";
+    /**
+     * Cursor state ID for widgets which are disabled by the CSS security
+     * system.
+     */
+    private static final String NO_PERMISSION = "noPermission";
 
-	/**
-	 * Cursor state ID for widgets which have a configured output channel, but
-	 * access to it is denied by preference.
-	 */
-	private static final String WRITE_ACCESS_DENIED = "writeAccessDenied";
+    /**
+     * Cursor state ID for widgets which have a configured output channel, but
+     * access to it is denied by preference.
+     */
+    private static final String WRITE_ACCESS_DENIED = "writeAccessDenied";
 
     private static final String ACTION_AVAILABLE = "actionDataAvailable";
 
-	/**
-	 * Returns the cursor state this rule associates with the given widget.
-	 *
-	 * @param widget
-	 *            the widget.
-	 * @return the cursor state this rule associates with the given widget.
-	 */
-	@Override
+    /**
+     * Returns the cursor state this rule associates with the given widget.
+     *
+     * @param widget
+     *            the widget.
+     * @return the cursor state this rule associates with the given widget.
+     */
+    @Override
     public String determineState(final AbstractWidgetModel widget) {
-	    // Default
+        // Default
         String state = ACCESS_ALLOWED;
 
         // Priority 1: Is the widget enabled/disabled ?
@@ -157,10 +157,10 @@ public final class DesyRule extends CursorSelectionRule {
         return state;
     }
 
-	/*
-	 * Check if the widget has a permission id. If yes, check if the widget is disabled
-	 * because the user does not have the required permission.
-	 */
+    /*
+     * Check if the widget has a permission id. If yes, check if the widget is disabled
+     * because the user does not have the required permission.
+     */
     private String calculateStateForWidget(final AbstractWidgetModel widget) {
         String state = WIDGET_DISABLED;
         if (!widget.isAccessGranted()) {

@@ -15,12 +15,12 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class Activator extends AbstractUIPlugin
 {
-	/** Plug-in ID defined in MANIFEST.MF */
-	public static final String PLUGIN_ID = "org.csstudio.scan.ui.scantree"; //$NON-NLS-1$
-	
-	/** @param path Path to plugin image
-	 *  @return {@link ImageDescriptor}
-	 */
+    /** Plug-in ID defined in MANIFEST.MF */
+    public static final String PLUGIN_ID = "org.csstudio.scan.ui.scantree"; //$NON-NLS-1$
+
+    /** @param path Path to plugin image
+     *  @return {@link ImageDescriptor}
+     */
     public static ImageDescriptor getImageDescriptor(final String path)
     {
         return imageDescriptorFromPlugin(PLUGIN_ID, path);

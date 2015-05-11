@@ -14,64 +14,64 @@ package org.csstudio.opibuilder.converter.model;
  *
  */
 public class Edm_activeSymbolClass extends EdmWidget {
-	
-	
-	@EdmAttributeAn @EdmOptionalAn private String file;
-	@EdmAttributeAn @EdmOptionalAn private boolean truthTable;
-	@EdmAttributeAn @EdmOptionalAn private int numStates;
-	@EdmAttributeAn @EdmOptionalAn private int numPvs;
-	
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiDoubles minValues;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiDoubles maxValues;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings controlPvs;
-	
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiInts andMask;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiInts xorMask;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiInts shiftCount;
-	
-	public Edm_activeSymbolClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
 
-	public String getFile() {
-		return file;
-	}
 
-	public boolean isTruthTable() {
-		return truthTable;
-	}
+    @EdmAttributeAn @EdmOptionalAn private String file;
+    @EdmAttributeAn @EdmOptionalAn private boolean truthTable;
+    @EdmAttributeAn @EdmOptionalAn private int numStates;
+    @EdmAttributeAn @EdmOptionalAn private int numPvs;
 
-	public int getNumStates() {
-		return numStates;
-	}
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiDoubles minValues;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiDoubles maxValues;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings controlPvs;
 
-	public int getNumPvs() {
-		return numPvs;
-	}
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiInts andMask;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiInts xorMask;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiInts shiftCount;
 
-	public EdmMultiDoubles getMinValues() {
-		return minValues;
-	}
+    public Edm_activeSymbolClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
-	public EdmMultiDoubles getMaxValues() {
-		return maxValues;
-	}
+    public String getFile() {
+        return file;
+    }
 
-	public EdmMultiStrings getControlPvs() {
-		return controlPvs;
-	}
+    public boolean isTruthTable() {
+        return truthTable;
+    }
 
-	public EdmMultiInts getAndMask() {
-		return andMask;
-	}
+    public int getNumStates() {
+        return numStates;
+    }
 
-	public EdmMultiInts getXorMask() {
-		return xorMask;
-	}
+    public int getNumPvs() {
+        return numPvs;
+    }
 
-	public EdmMultiInts getShiftCount() {
-		return shiftCount;
-	}
+    public EdmMultiDoubles getMinValues() {
+        return minValues;
+    }
+
+    public EdmMultiDoubles getMaxValues() {
+        return maxValues;
+    }
+
+    public EdmMultiStrings getControlPvs() {
+        return controlPvs;
+    }
+
+    public EdmMultiInts getAndMask() {
+        return andMask;
+    }
+
+    public EdmMultiInts getXorMask() {
+        return xorMask;
+    }
+
+    public EdmMultiInts getShiftCount() {
+        return shiftCount;
+    }
 
 
 }

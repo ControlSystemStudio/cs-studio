@@ -41,7 +41,7 @@ public class TextinputConnectionExpDblSwitchBehavior extends AbstractDesyConnect
      * current value smaller than threshold, display value as exp.
      */
     private static final double EXP_DOUBLE_THRESHOLD = 0.001;
-    
+
     private boolean _defTransparent;
 
     /**

@@ -175,7 +175,7 @@ public class WriteThread implements Runnable
                     // .. and we continue to write.
                 }
                 if (writer == null)
-                	writer = ArchiveWriterFactory.getArchiveWriter();
+                    writer = ArchiveWriterFactory.getArchiveWriter();
                 timer.start();
                 // In case of a network problem, we can hang in here
                 // for a long time...
@@ -226,15 +226,15 @@ public class WriteThread implements Runnable
         // Errors in this last write are passed up.
         try
         {
-        	write();
+            write();
         }
         finally
         {
-        	if (writer != null)
-        	{
-        		writer.close();
-        		writer = null;
-        	}
+            if (writer != null)
+            {
+                writer.close();
+                writer = null;
+            }
         }
     }
 

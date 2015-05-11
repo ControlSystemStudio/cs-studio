@@ -46,165 +46,165 @@ import org.csstudio.dal.spi.PropertyFactory;
  * are stored within a {@link HashMap}. Note that HashMap is not synchronized
  * and therefore if multiple threads add or remove properties to this family
  * the calls should be synchronized externally.
- * 
+ *
  * @author ikriznar
  *
  */
 public class PropertyFamilyImpl
-	extends PropertyCollectionMap<DynamicValueProperty<?>> implements PropertyFamily
+    extends PropertyCollectionMap<DynamicValueProperty<?>> implements PropertyFamily
 {
-	PropertyFactory pf;
-	static final Class<?> c = DynamicValueProperty.class;
-	
-	/**
-	 * Constructs a new PropertyFamilyImpl that belongs to the given {@link PropertyFactory}.
-	 */
-	@SuppressWarnings("unchecked")
-	public PropertyFamilyImpl(PropertyFactory pf)
-	{
-		super((Class<DynamicValueProperty<?>>) c);
-		
-		this.pf = pf;
-	}
+    PropertyFactory pf;
+    static final Class<?> c = DynamicValueProperty.class;
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.PropertyFamily#destroyAll()
-	 */
-	public void destroyAll()
-	{
-		DynamicValueProperty<?>[] props = new DynamicValueProperty[size()];
-		props = toArray((DynamicValueProperty<?>[])props);
-		clear();
+    /**
+     * Constructs a new PropertyFamilyImpl that belongs to the given {@link PropertyFactory}.
+     */
+    @SuppressWarnings("unchecked")
+    public PropertyFamilyImpl(PropertyFactory pf)
+    {
+        super((Class<DynamicValueProperty<?>>) c);
 
-		AbstractPlug plug = (AbstractPlug)pf.getPlug();
+        this.pf = pf;
+    }
 
-		for (DynamicValueProperty<?> p : props) {
-			PropertyProxy<?,?> proxy = ((DataAccessImpl<?>)p).getProxy();
-			if (!(proxy instanceof DirectoryProxy)) {
-				DirectoryProxy<?> dp = ((SimplePropertyImpl<?>)p).getDirectoryProxy();
-				if (dp != null) {
-					plug.releaseProxy(dp);
-					dp.destroy();
-				}
-			}
-			if (p instanceof DynamicValuePropertyImpl<?>) {
-				((DynamicValuePropertyImpl<?>) p).releaseProxy(true);
-			}
-			plug.releaseProxy(proxy);
-		}
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.PropertyFamily#destroyAll()
+     */
+    public void destroyAll()
+    {
+        DynamicValueProperty<?>[] props = new DynamicValueProperty[size()];
+        props = toArray((DynamicValueProperty<?>[])props);
+        clear();
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.PropertyFamily#destroy(org.csstudio.dal.DynamicValueProperty)
-	 */
-	public void destroy(DynamicValueProperty<?> prop)
-	{
-		if (prop==null || !contains(prop)) return;
-		this.remove((DynamicValueProperty<?>) prop); 
-		AbstractPlug plug = (AbstractPlug)pf.getPlug();
-		Proxy<?>[] proxy = ((DataAccessImpl<?>)prop).releaseProxy(true);
-		if (proxy!=null && proxy[0]!=null) {
-			plug.releaseProxy(proxy[0]);
-		}
-		if (proxy!=null && proxy[1]!=null && proxy[0]!=proxy[1]) {
-			plug.releaseProxy(proxy[1]);
-		}
-	}
+        AbstractPlug plug = (AbstractPlug)pf.getPlug();
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.PropertyFamily#getApplicationContext()
-	 */
-	public AbstractApplicationContext getApplicationContext()
-	{
-		return pf.getApplicationContext();
-	}
+        for (DynamicValueProperty<?> p : props) {
+            PropertyProxy<?,?> proxy = ((DataAccessImpl<?>)p).getProxy();
+            if (!(proxy instanceof DirectoryProxy)) {
+                DirectoryProxy<?> dp = ((SimplePropertyImpl<?>)p).getDirectoryProxy();
+                if (dp != null) {
+                    plug.releaseProxy(dp);
+                    dp.destroy();
+                }
+            }
+            if (p instanceof DynamicValuePropertyImpl<?>) {
+                ((DynamicValuePropertyImpl<?>) p).releaseProxy(true);
+            }
+            plug.releaseProxy(proxy);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.GroupDataAccessProvider#getGroupDataAccess(java.lang.Class, java.lang.Class)
-	 */
-	public <T, P extends DynamicValueProperty<?>> GroupDataAccess<T, P> getGroupDataAccess(
-	    Class<T> dataType, Class<P> propertyType)
-	{
-		// TODO later
-		throw new UnsupportedOperationException();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.PropertyFamily#destroy(org.csstudio.dal.DynamicValueProperty)
+     */
+    public void destroy(DynamicValueProperty<?> prop)
+    {
+        if (prop==null || !contains(prop)) return;
+        this.remove((DynamicValueProperty<?>) prop);
+        AbstractPlug plug = (AbstractPlug)pf.getPlug();
+        Proxy<?>[] proxy = ((DataAccessImpl<?>)prop).releaseProxy(true);
+        if (proxy!=null && proxy[0]!=null) {
+            plug.releaseProxy(proxy[0]);
+        }
+        if (proxy!=null && proxy[1]!=null && proxy[0]!=proxy[1]) {
+            plug.releaseProxy(proxy[1]);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.GroupDataAccessProvider#getGroupDataAccess(java.lang.Class, java.lang.Class, org.csstudio.dal.group.PropertyGroupConstrain)
-	 */
-	public <T, P extends DynamicValueProperty<T>> GroupDataAccess<T, P> getGroupDataAccess(
-	    Class<T> dataType, Class<P> propertyType,
-	    PropertyGroupConstrain constrain)
-	{
-		// TODO later
-		throw new UnsupportedOperationException();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.PropertyFamily#getApplicationContext()
+     */
+    public AbstractApplicationContext getApplicationContext()
+    {
+        return pf.getApplicationContext();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.group.PropertyCollectionMap#add(T)
-	 */
-	@Override
-	public void add(DynamicValueProperty<?> property)
-	{
-		super.add(property);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.GroupDataAccessProvider#getGroupDataAccess(java.lang.Class, java.lang.Class)
+     */
+    public <T, P extends DynamicValueProperty<?>> GroupDataAccess<T, P> getGroupDataAccess(
+        Class<T> dataType, Class<P> propertyType)
+    {
+        // TODO later
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 * Returns true if context contains property.
-	 * 
-	 * @param property the property to check
-	 * 
-	 * @see org.csstudio.dal.context.PropertyContext#containsProperty(java.lang.Object)
-	 */
-	public boolean containsProperty(Object property) {
-		return contains(property);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.GroupDataAccessProvider#getGroupDataAccess(java.lang.Class, java.lang.Class, org.csstudio.dal.group.PropertyGroupConstrain)
+     */
+    public <T, P extends DynamicValueProperty<T>> GroupDataAccess<T, P> getGroupDataAccess(
+        Class<T> dataType, Class<P> propertyType,
+        PropertyGroupConstrain constrain)
+    {
+        // TODO later
+        throw new UnsupportedOperationException();
+    }
 
-	/**
-	 * Returns true if context contains <b>ANY</b> property with provided name.
-	 * <p>
-	 * <b>Note!</b> there could be multiple property instances with same name in family.
-	 * </p>
-	 * 
-	 * @param name the property name to check for
-	 * 
-	 * @see org.csstudio.dal.context.PropertyContext#containsProperty(java.lang.String)
-	 */
-	public boolean containsProperty(String name) {
-		return contains(name);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.group.PropertyCollectionMap#add(T)
+     */
+    @Override
+    public void add(DynamicValueProperty<?> property)
+    {
+        super.add(property);
+    }
 
-	/**
-	 * Returns first property it finds with provided name. 
-	 * There is no specific order in which multiple properties are held in the family.
-	 * 
-	 * <p>
-	 * <b>Note!</b> there could be multiple property instances with same name in family.
-	 * </p>
-	 * 
-	 * <p>
-	 * This method calls <code>getFirst(String)</code>.
-	 * </p>
-	 * 
-	 * @param name the property name to check for
-	 * 
-	 * @see org.csstudio.dal.context.PropertyContext#getProperty(java.lang.String)
-	 * @see PropertyCollectionMap#getFirst(String);
-	 */
-	public DynamicValueProperty<?> getProperty(String name) {
-		return getFirst(name);
-	}
-	
-	/**
-	 * Returns plug type string, which is distinguishing for plug which
-	 * creates  proxies for particular communication layer.<p>For
-	 * example plug that connects to EPICS device my return string "EPICS".</p>
-	 *
-	 * @return plug destingushing type name
-	 */
-	public String getPlugType() {
-		return pf.getPlugType();
-	}
+    /**
+     * Returns true if context contains property.
+     *
+     * @param property the property to check
+     *
+     * @see org.csstudio.dal.context.PropertyContext#containsProperty(java.lang.Object)
+     */
+    public boolean containsProperty(Object property) {
+        return contains(property);
+    }
+
+    /**
+     * Returns true if context contains <b>ANY</b> property with provided name.
+     * <p>
+     * <b>Note!</b> there could be multiple property instances with same name in family.
+     * </p>
+     *
+     * @param name the property name to check for
+     *
+     * @see org.csstudio.dal.context.PropertyContext#containsProperty(java.lang.String)
+     */
+    public boolean containsProperty(String name) {
+        return contains(name);
+    }
+
+    /**
+     * Returns first property it finds with provided name.
+     * There is no specific order in which multiple properties are held in the family.
+     *
+     * <p>
+     * <b>Note!</b> there could be multiple property instances with same name in family.
+     * </p>
+     *
+     * <p>
+     * This method calls <code>getFirst(String)</code>.
+     * </p>
+     *
+     * @param name the property name to check for
+     *
+     * @see org.csstudio.dal.context.PropertyContext#getProperty(java.lang.String)
+     * @see PropertyCollectionMap#getFirst(String);
+     */
+    public DynamicValueProperty<?> getProperty(String name) {
+        return getFirst(name);
+    }
+
+    /**
+     * Returns plug type string, which is distinguishing for plug which
+     * creates  proxies for particular communication layer.<p>For
+     * example plug that connects to EPICS device my return string "EPICS".</p>
+     *
+     * @return plug destingushing type name
+     */
+    public String getPlugType() {
+        return pf.getPlugType();
+    }
 
 
 }

@@ -34,67 +34,67 @@ import org.csstudio.dal.context.PropertyContext;
  *
  */
 public class DoubleSeqPropertyImpl extends NumericPropertyImpl<double[],Double>
-	implements DoubleSeqProperty
+    implements DoubleSeqProperty
 {
-	private int sequenceLength;
-	private boolean chInitialized = false;
-	
-	/**
-	 * Creates a new DoubleSeqPropertyImpl object.
-	 *
-	 * @param name property name
-	 * @param propertyContext property context
-	 */
-	public DoubleSeqPropertyImpl(String name, PropertyContext propertyContext)
-	{
-		super(double[].class, name, propertyContext);
-		addDataAccessType(LongSeqAccess.class, LongSeqDataAccessWrapper.class);
-	}
+    private int sequenceLength;
+    private boolean chInitialized = false;
 
-	
-	
-	private void readCharacteristics() throws DataExchangeException
-	{
-		if (chInitialized)
-			return;
-	
-		Integer length = null;
-		length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
-		if (length==null) {
-			throw new DataExchangeException(this, "Obtaining characteristic "+SequencePropertyCharacteristics.C_SEQUENCE_LENGTH+" failed for unknown reason.");
-		}
-		sequenceLength = length.intValue();
-		chInitialized = true;
+    /**
+     * Creates a new DoubleSeqPropertyImpl object.
+     *
+     * @param name property name
+     * @param propertyContext property context
+     */
+    public DoubleSeqPropertyImpl(String name, PropertyContext propertyContext)
+    {
+        super(double[].class, name, propertyContext);
+        addDataAccessType(LongSeqAccess.class, LongSeqDataAccessWrapper.class);
+    }
 
-	}
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.SequenceAccess#getSequenceLength()
-	 */
-	public int getSequenceLength() throws DataExchangeException
-	{
-		if (!chInitialized)
-			readCharacteristics();
-		return sequenceLength;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.NumericSimpleProperty#getMinimum()
-	 */
-	@Override
-	public Double getMinimum() throws DataExchangeException {
-		return (Double)getCharacteristic(C_MINIMUM);
-	}
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.NumericSimpleProperty#getMaximum()
-	 */
-	@Override
-	public Double getMaximum() throws DataExchangeException {
-		return (Double)getCharacteristic(C_MAXIMUM);
-	}
-	
+    private void readCharacteristics() throws DataExchangeException
+    {
+        if (chInitialized)
+            return;
+
+        Integer length = null;
+        length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
+        if (length==null) {
+            throw new DataExchangeException(this, "Obtaining characteristic "+SequencePropertyCharacteristics.C_SEQUENCE_LENGTH+" failed for unknown reason.");
+        }
+        sequenceLength = length.intValue();
+        chInitialized = true;
+
+    }
+
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.SequenceAccess#getSequenceLength()
+     */
+    public int getSequenceLength() throws DataExchangeException
+    {
+        if (!chInitialized)
+            readCharacteristics();
+        return sequenceLength;
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.NumericSimpleProperty#getMinimum()
+     */
+    @Override
+    public Double getMinimum() throws DataExchangeException {
+        return (Double)getCharacteristic(C_MINIMUM);
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.NumericSimpleProperty#getMaximum()
+     */
+    @Override
+    public Double getMaximum() throws DataExchangeException {
+        return (Double)getCharacteristic(C_MAXIMUM);
+    }
+
 }
 
 /* __oOo__ */

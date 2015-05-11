@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.opibuilder.widgets.feedback;
@@ -42,223 +42,223 @@ import org.eclipse.gef.requests.CreateRequest;
 
 /**
  * Graphical feedback factory for polyline widgets.
- * 
+ *
  * @author Sven Wende
  */
 abstract class AbstractPolyFeedbackFactory implements
-		IGraphicalFeedbackFactory {
-	/**
-	 * An identifier which is used as key for extended data in request objects.
-	 */
-	public static final String PROP_POINTS = "points"; //$NON-NLS-1$
+        IGraphicalFeedbackFactory {
+    /**
+     * An identifier which is used as key for extended data in request objects.
+     */
+    public static final String PROP_POINTS = "points"; //$NON-NLS-1$
 
-	/**
-	 * Subclasses should return an appropriate feedback figure. This basically
-	 * supports code inheritance for the polyline and polygon implementations.
-	 * 
-	 * @return a polyline or polygon figure which is used for graphical feedback
-	 */
-	protected abstract Polyline createFeedbackFigure();
+    /**
+     * Subclasses should return an appropriate feedback figure. This basically
+     * supports code inheritance for the polyline and polygon implementations.
+     *
+     * @return a polyline or polygon figure which is used for graphical feedback
+     */
+    protected abstract Polyline createFeedbackFigure();
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final IFigure createDragSourceFeedbackFigure(
-			final AbstractWidgetModel model, final Rectangle initalBounds) {
-		assert model != null;
-		assert model instanceof AbstractPolyModel : "model instanceof AbstractPolyModel"; //$NON-NLS-1$
-		assert initalBounds != null;
+    /**
+     * {@inheritDoc}
+     */
+    public final IFigure createDragSourceFeedbackFigure(
+            final AbstractWidgetModel model, final Rectangle initalBounds) {
+        assert model != null;
+        assert model instanceof AbstractPolyModel : "model instanceof AbstractPolyModel"; //$NON-NLS-1$
+        assert initalBounds != null;
 
-		// get the points from the model
-		AbstractPolyModel abstractPolyElement = (AbstractPolyModel) model;
-		PointList points = abstractPolyElement.getPoints();
+        // get the points from the model
+        AbstractPolyModel abstractPolyElement = (AbstractPolyModel) model;
+        PointList points = abstractPolyElement.getPoints();
 
-		// create feedbackfigure
-		// RectangleWithPolyLineFigure r = new
-		// RectangleWithPolyLineFigure(points);
+        // create feedbackfigure
+        // RectangleWithPolyLineFigure r = new
+        // RectangleWithPolyLineFigure(points);
 
-		PolyFeedbackFigureWithRectangle feedbackFigure = new PolyFeedbackFigureWithRectangle(
-				createFeedbackFigure(), points);
+        PolyFeedbackFigureWithRectangle feedbackFigure = new PolyFeedbackFigureWithRectangle(
+                createFeedbackFigure(), points);
 
-		return feedbackFigure;
-	}
+        return feedbackFigure;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void showChangeBoundsFeedback(
-			final AbstractWidgetModel model, final PrecisionRectangle bounds,
-			final IFigure feedbackFigure, final ChangeBoundsRequest request) {
-		assert model != null;
-		assert model instanceof AbstractPolyModel : "model instanceof AbstractPolyModel"; //$NON-NLS-1$
-		assert bounds != null;
-		assert feedbackFigure != null;
-		assert feedbackFigure instanceof PolyFeedbackFigureWithRectangle : "feedbackFigure instanceof AbstractPolyFeedbackFigure"; //$NON-NLS-1$
-		assert request != null;
+    /**
+     * {@inheritDoc}
+     */
+    public final void showChangeBoundsFeedback(
+            final AbstractWidgetModel model, final PrecisionRectangle bounds,
+            final IFigure feedbackFigure, final ChangeBoundsRequest request) {
+        assert model != null;
+        assert model instanceof AbstractPolyModel : "model instanceof AbstractPolyModel"; //$NON-NLS-1$
+        assert bounds != null;
+        assert feedbackFigure != null;
+        assert feedbackFigure instanceof PolyFeedbackFigureWithRectangle : "feedbackFigure instanceof AbstractPolyFeedbackFigure"; //$NON-NLS-1$
+        assert request != null;
 
-		PolyFeedbackFigureWithRectangle figure = (PolyFeedbackFigureWithRectangle) feedbackFigure;
+        PolyFeedbackFigureWithRectangle figure = (PolyFeedbackFigureWithRectangle) feedbackFigure;
 
-		figure.translateToRelative(bounds);
+        figure.translateToRelative(bounds);
 
-		// try to get a point list from the request (this happens only, when
-		// poly point handles are dragged arround)
-		PointList points = (PointList) request.getExtendedData().get(
-				PROP_POINTS);
+        // try to get a point list from the request (this happens only, when
+        // poly point handles are dragged arround)
+        PointList points = (PointList) request.getExtendedData().get(
+                PROP_POINTS);
 
-		// otherwise take the points from the model
-		if (points == null) {
-			points = ((AbstractPolyModel) model).getPoints();
-		}
+        // otherwise take the points from the model
+        if (points == null) {
+            points = ((AbstractPolyModel) model).getPoints();
+        }
 
-		// scale the points to the specified bounds
-		PointList scaledPoints = PointListHelper.scaleTo(points.getCopy(),
-				bounds);
+        // scale the points to the specified bounds
+        PointList scaledPoints = PointListHelper.scaleTo(points.getCopy(),
+                bounds);
 
-		// apply the scaled points
-		figure.setPoints(scaledPoints);
+        // apply the scaled points
+        figure.setPoints(scaledPoints);
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final Shape createSizeOnDropFeedback(
-			final CreateRequest createRequest) {
-		assert createRequest != null;
+    /**
+     * {@inheritDoc}
+     */
+    public final Shape createSizeOnDropFeedback(
+            final CreateRequest createRequest) {
+        assert createRequest != null;
 
-		// Polyline polyline = new Polyline();
+        // Polyline polyline = new Polyline();
 
-		// the request should contain a point list, because the creation is done
-		// by a special creation tool
-		PointList points = (PointList) createRequest.getExtendedData().get(
-				PROP_POINTS);
+        // the request should contain a point list, because the creation is done
+        // by a special creation tool
+        PointList points = (PointList) createRequest.getExtendedData().get(
+                PROP_POINTS);
 
-		assert points != null;
+        assert points != null;
 
-		// polyline.setPoints(points);
+        // polyline.setPoints(points);
 
-		Polyline feedbackFigure = createFeedbackFigure();
-		feedbackFigure.setPoints(points);
+        Polyline feedbackFigure = createFeedbackFigure();
+        feedbackFigure.setPoints(points);
 
-		return feedbackFigure;
-	}
+        return feedbackFigure;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void showSizeOnDropFeedback(final CreateRequest createRequest,
-			final IFigure feedbackFigure, final Insets insets) {
-		assert createRequest != null;
-		assert feedbackFigure instanceof Polyline : "feedbackFigure instanceof Polyline"; //$NON-NLS-1$
-		Polyline polyline = (Polyline) feedbackFigure;
+    /**
+     * {@inheritDoc}
+     */
+    public final void showSizeOnDropFeedback(final CreateRequest createRequest,
+            final IFigure feedbackFigure, final Insets insets) {
+        assert createRequest != null;
+        assert feedbackFigure instanceof Polyline : "feedbackFigure instanceof Polyline"; //$NON-NLS-1$
+        Polyline polyline = (Polyline) feedbackFigure;
 
-		// the request should contain a point list, because the creation is done
-		// by a special creation tool
-		PointList points = ((PointList) createRequest.getExtendedData().get(
-				PROP_POINTS)).getCopy();
+        // the request should contain a point list, because the creation is done
+        // by a special creation tool
+        PointList points = ((PointList) createRequest.getExtendedData().get(
+                PROP_POINTS)).getCopy();
 
-		assert points != null;
+        assert points != null;
 
-		// the points are viewer relative and need to be translated to reflect
-		// the zoom level, scrollbar occurence etc.
-		polyline.translateToRelative(points);
+        // the points are viewer relative and need to be translated to reflect
+        // the zoom level, scrollbar occurence etc.
+        polyline.translateToRelative(points);
 
-		polyline.setPoints(points);
-	}
+        polyline.setPoints(points);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("rawtypes")
-	public final Class getCreationTool() {
-		return PointListCreationTool.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("rawtypes")
+    public final Class getCreationTool() {
+        return PointListCreationTool.class;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final Command createInitialBoundsCommand(
-			final AbstractWidgetModel widgetModel,
-			final CreateRequest request, final Rectangle bounds) {
-		assert widgetModel instanceof AbstractPolyModel : "widgetModel instanceof AbstractPolyModel"; //$NON-NLS-1$
-		assert request != null;
-		assert bounds != null;
+    /**
+     * {@inheritDoc}
+     */
+    public final Command createInitialBoundsCommand(
+            final AbstractWidgetModel widgetModel,
+            final CreateRequest request, final Rectangle bounds) {
+        assert widgetModel instanceof AbstractPolyModel : "widgetModel instanceof AbstractPolyModel"; //$NON-NLS-1$
+        assert request != null;
+        assert bounds != null;
 
-		AbstractPolyModel abstractPolyElement = (AbstractPolyModel) widgetModel;
+        AbstractPolyModel abstractPolyElement = (AbstractPolyModel) widgetModel;
 
-		PointList points = (PointList) request.getExtendedData().get(
-				PROP_POINTS);
-		// necessary if the call was occurred by a "Drag and Drop" action
-		if (points==null) {
-			points = (PointList)widgetModel.getProperty(AbstractPolyModel.PROP_POINTS).getPropertyValue();
-		}
+        PointList points = (PointList) request.getExtendedData().get(
+                PROP_POINTS);
+        // necessary if the call was occurred by a "Drag and Drop" action
+        if (points==null) {
+            points = (PointList)widgetModel.getProperty(AbstractPolyModel.PROP_POINTS).getPropertyValue();
+        }
 
-		// the points are viewer relative and need to be translated to the
-		// specified bounds, to reflect zoom level, scrollbar occurence etc.
-		PointList scaledPoints = PointListHelper.scaleTo(points, bounds);
+        // the points are viewer relative and need to be translated to the
+        // specified bounds, to reflect zoom level, scrollbar occurence etc.
+        PointList scaledPoints = PointListHelper.scaleTo(points, bounds);
 
-		return new ChangePolyPointsCommand(abstractPolyElement, scaledPoints);
-	}
+        return new ChangePolyPointsCommand(abstractPolyElement, scaledPoints);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final Command createChangeBoundsCommand(
-			final AbstractWidgetModel model,
-			final ChangeBoundsRequest request, final Rectangle targetBounds) {
-		assert model instanceof AbstractPolyModel : "model instanceof AbstractPolyModel"; //$NON-NLS-1$
-	
-		Rectangle correctedBounds = targetBounds;
-//		if (model instanceof PolyLineModel) {
-//			PolyLineModel polyline = (PolyLineModel) model;
-//			int correctedX = targetBounds.x + (polyline.getLineWidth() / 2);
-//			int correctedY = targetBounds.y + (polyline.getLineWidth() / 2);
-//			correctedBounds = new Rectangle(correctedX, correctedY, targetBounds.width, targetBounds.height);
-//		}
+    /**
+     * {@inheritDoc}
+     */
+    public final Command createChangeBoundsCommand(
+            final AbstractWidgetModel model,
+            final ChangeBoundsRequest request, final Rectangle targetBounds) {
+        assert model instanceof AbstractPolyModel : "model instanceof AbstractPolyModel"; //$NON-NLS-1$
 
-		AbstractPolyModel abstractPolyElement = (AbstractPolyModel) model;
+        Rectangle correctedBounds = targetBounds;
+//        if (model instanceof PolyLineModel) {
+//            PolyLineModel polyline = (PolyLineModel) model;
+//            int correctedX = targetBounds.x + (polyline.getLineWidth() / 2);
+//            int correctedY = targetBounds.y + (polyline.getLineWidth() / 2);
+//            correctedBounds = new Rectangle(correctedX, correctedY, targetBounds.width, targetBounds.height);
+//        }
 
-		// try to get a point list from the request (this happens only, when
-		// poly point handles are dragged arround)
-		PointList points = (PointList) request.getExtendedData().get(
-				PROP_POINTS);
+        AbstractPolyModel abstractPolyElement = (AbstractPolyModel) model;
 
-		// otherwise take the points from the model
-		if (points == null) {
-			points = ((AbstractPolyModel) model).getPoints();
-		}
+        // try to get a point list from the request (this happens only, when
+        // poly point handles are dragged arround)
+        PointList points = (PointList) request.getExtendedData().get(
+                PROP_POINTS);
 
-		assert points != null;
+        // otherwise take the points from the model
+        if (points == null) {
+            points = ((AbstractPolyModel) model).getPoints();
+        }
 
-		// the points are viewer relative and need to be translated to the
-		// specified bounds, to reflect zoom level, scrollbar occurence etc.
-		points = PointListHelper.scaleTo(points, correctedBounds);
+        assert points != null;
 
-		return new ChangePolyPointsCommand(abstractPolyElement, points);
-	}
+        // the points are viewer relative and need to be translated to the
+        // specified bounds, to reflect zoom level, scrollbar occurence etc.
+        points = PointListHelper.scaleTo(points, correctedBounds);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final List<Handle> createCustomHandles(final GraphicalEditPart hostEP) {
-		assert hostEP != null;
-		assert hostEP.getModel() instanceof AbstractPolyModel : "hostEP.getModel() instanceof AbstractPolyModel"; //$NON-NLS-1$
+        return new ChangePolyPointsCommand(abstractPolyElement, points);
+    }
 
-		// create some custom handles, which enable the user to drag arround
-		// single points of the polyline
-		List<Handle> handles = new ArrayList<Handle>();
+    /**
+     * {@inheritDoc}
+     */
+    public final List<Handle> createCustomHandles(final GraphicalEditPart hostEP) {
+        assert hostEP != null;
+        assert hostEP.getModel() instanceof AbstractPolyModel : "hostEP.getModel() instanceof AbstractPolyModel"; //$NON-NLS-1$
 
-		AbstractPolyModel abstractPolyElement = (AbstractPolyModel) hostEP
-				.getModel();
+        // create some custom handles, which enable the user to drag arround
+        // single points of the polyline
+        List<Handle> handles = new ArrayList<Handle>();
 
-		int pointCount = abstractPolyElement.getPoints().size();
+        AbstractPolyModel abstractPolyElement = (AbstractPolyModel) hostEP
+                .getModel();
 
-		for (int i = 0; i < pointCount; i++) {
-			PolyPointHandle myHandle = new PolyPointHandle(hostEP, i);
-			handles.add(myHandle);
-		}
+        int pointCount = abstractPolyElement.getPoints().size();
 
-		return handles;
-	}
+        for (int i = 0; i < pointCount; i++) {
+            PolyPointHandle myHandle = new PolyPointHandle(hostEP, i);
+            handles.add(myHandle);
+        }
+
+        return handles;
+    }
 
 }

@@ -22,7 +22,7 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /** 'Dynamic' context menu contribution.
- * 
+ *
  *  <p>plugin.xml hooks this into the ProcessVariable
  *  context menu.
  *  Creates one entry per registered script.
@@ -30,7 +30,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  */
 public class ContextMenuItems extends CompoundContributionItem
 {
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     protected IContributionItem[] getContributionItems()
     {
@@ -39,35 +39,35 @@ public class ContextMenuItems extends CompoundContributionItem
         final ScriptInfo[] infos;
         try
         {
-        	infos = Preferences.getCommandInfos();
+            infos = Preferences.getCommandInfos();
         }
         catch (Exception ex)
         {
-        	MessageDialog.openError(window.getShell(), Messages.Error,
-        			NLS.bind(Messages.PreferenceErrorFmt, ex.getMessage()));
-        	return new IContributionItem[0];
+            MessageDialog.openError(window.getShell(), Messages.Error,
+                    NLS.bind(Messages.PreferenceErrorFmt, ex.getMessage()));
+            return new IContributionItem[0];
         }
-    	
-    	
-    	final ImageDescriptor script_icon =
+
+
+        final ImageDescriptor script_icon =
             AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, "icons/script.gif"); //$NON-NLS-1$
 
         // Create a CommandContributionItem for each script
         final IContributionItem[] items = new IContributionItem[infos.length];
-		for (int i=0; i<items.length; ++i)
+        for (int i=0; i<items.length; ++i)
         {
-			// The command to invoke is RunScriptHandler.COMMAND_ID
-        	final CommandContributionItemParameter params
-        		= new CommandContributionItemParameter(window, null, RunScriptHandler.COMMAND_ID,
-        			 CommandContributionItem.STYLE_PUSH);
-        	// Label of the command (= displayed menu item) is the script's description
-        	params.label = infos[i].getDescription();
-        	params.icon = script_icon;
-        	// Name of the script to invoke is passed as a command parameter
-        	final Map<String, String> cmd_parms = new HashMap<String, String>();
-        	cmd_parms.put(RunScriptHandler.PARAM_SCRIPT, infos[i].getScript());
-			params.parameters = cmd_parms;
-			items[i] = new CommandContributionItem(params);
+            // The command to invoke is RunScriptHandler.COMMAND_ID
+            final CommandContributionItemParameter params
+                = new CommandContributionItemParameter(window, null, RunScriptHandler.COMMAND_ID,
+                     CommandContributionItem.STYLE_PUSH);
+            // Label of the command (= displayed menu item) is the script's description
+            params.label = infos[i].getDescription();
+            params.icon = script_icon;
+            // Name of the script to invoke is passed as a command parameter
+            final Map<String, String> cmd_parms = new HashMap<String, String>();
+            cmd_parms.put(RunScriptHandler.PARAM_SCRIPT, infos[i].getScript());
+            params.parameters = cmd_parms;
+            items[i] = new CommandContributionItem(params);
         }
         return items;
     }

@@ -37,11 +37,11 @@ public class JythonSupport
 {
     private static List<String> paths = init();
 
-	final private PythonInterpreter interpreter;
+    final private PythonInterpreter interpreter;
 
-	/** Perform static, one-time initialization */
-	private static List<String> init()
-	{
+    /** Perform static, one-time initialization */
+    private static List<String> init()
+    {
         final List<String> paths = new ArrayList<String>();
         try
         {   // Add Jython's /Lib to path
@@ -107,7 +107,7 @@ public class JythonSupport
                 log(Level.SEVERE, "Once this worked OK, but now the Jython initialization failed. Don't you hate computers?", ex);
         }
         return paths;
-	}
+    }
 
     /** Locate a path inside a bundle.
     *
@@ -140,11 +140,11 @@ public class JythonSupport
     /** Initialize
      *  @throws Exception on error
      */
-	public JythonSupport() throws Exception
-	{
-		final PySystemState state = new PySystemState();
+    public JythonSupport() throws Exception
+    {
+        final PySystemState state = new PySystemState();
 
-		// Path to Python standard lib, numjy, scan system
+        // Path to Python standard lib, numjy, scan system
         for (String path : paths)
             state.path.append(new PyString(path));
 
@@ -162,42 +162,42 @@ public class JythonSupport
         {
             interpreter = new PythonInterpreter(null, state);
         }
-	}
+    }
 
-	/** Load a Jython class
-	 *
- 	 *  @param type Type of the Java object to return
-	 *  @param class_name Name of the Jython class,
-	 *                    must be in package (file) using lower case of class name
-	 *  @param args Arguments to pass to constructor
-	 *  @return Java object for instance of Jython class
-	 *  @throws Exception on error
-	 */
+    /** Load a Jython class
+     *
+      *  @param type Type of the Java object to return
+     *  @param class_name Name of the Jython class,
+     *                    must be in package (file) using lower case of class name
+     *  @param args Arguments to pass to constructor
+     *  @return Java object for instance of Jython class
+     *  @throws Exception on error
+     */
     @SuppressWarnings("unchecked")
     public <T> T loadClass(final Class<T> type, final String class_name, final String... args) throws Exception
-	{
-		// Get package name
-		final String pack_name = class_name.toLowerCase();
-		Logger.getLogger(getClass().getName()).log(Level.FINE,
-	        "Loading Jython class {0} from {1}",
-	        new Object[] { class_name, pack_name });
+    {
+        // Get package name
+        final String pack_name = class_name.toLowerCase();
+        Logger.getLogger(getClass().getName()).log(Level.FINE,
+            "Loading Jython class {0} from {1}",
+            new Object[] { class_name, pack_name });
 
-		// Display path
-		//interpreter.exec("import sys");
+        // Display path
+        //interpreter.exec("import sys");
         //interpreter.exec("print 'Jython Path: ', sys.path");
-		try
-		{
-        	// Import class into Jython
-    		interpreter.exec("from " + pack_name +  " import " + class_name);
-		}
-		catch (PyException ex)
-		{
-	        Logger.getLogger(getClass().getName()).log(Level.WARNING,
+        try
+        {
+            // Import class into Jython
+            interpreter.exec("from " + pack_name +  " import " + class_name);
+        }
+        catch (PyException ex)
+        {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING,
                 "Error loading Jython class {0} from {1}",
                 new Object[] { class_name, pack_name });
-		    throw new Exception("Error loading Jython class " + class_name + ":" + getExceptionMessage(ex), ex);
-		}
-		// Create Java reference
+            throw new Exception("Error loading Jython class " + class_name + ":" + getExceptionMessage(ex), ex);
+        }
+        // Create Java reference
         final PyObject py_class = interpreter.get(class_name);
         final PyObject py_object;
         if (args.length <= 0)
@@ -211,28 +211,28 @@ public class JythonSupport
         }
         final T java_ref = (T) py_object.__tojava__(type);
         return java_ref;
-	}
+    }
 
-	/** We can only report the message of an exception back to scan server
-	 *  clients, not the whole exception because it doesn't 'serialize'.
-	 *  The PyException, however, tends to have no message at all.
-	 *  This helper tries to generate a somewhat useful message
-	 *  from the content of the exception.
-	 *  @param ex Python exception
-	 *  @return Message with info about python exception
-	 */
+    /** We can only report the message of an exception back to scan server
+     *  clients, not the whole exception because it doesn't 'serialize'.
+     *  The PyException, however, tends to have no message at all.
+     *  This helper tries to generate a somewhat useful message
+     *  from the content of the exception.
+     *  @param ex Python exception
+     *  @return Message with info about python exception
+     */
     public static String getExceptionMessage(final PyException ex)
     {
-    	final StringBuilder buf = new StringBuilder();
-    	if (ex.value instanceof PyString)
-    		buf.append(" ").append(ex.value.asString());
-    	else if (ex.getCause() != null)
-    		buf.append(" ").append(ex.getCause().getMessage());
-    	if (ex.traceback != null)
-    	{
-    		buf.append(" ");
-    		ex.traceback.dumpStack(buf);
-    	}
-    	return buf.toString();
+        final StringBuilder buf = new StringBuilder();
+        if (ex.value instanceof PyString)
+            buf.append(" ").append(ex.value.asString());
+        else if (ex.getCause() != null)
+            buf.append(" ").append(ex.getCause().getMessage());
+        if (ex.traceback != null)
+        {
+            buf.append(" ");
+            ex.traceback.dumpStack(buf);
+        }
+        return buf.toString();
     }
 }

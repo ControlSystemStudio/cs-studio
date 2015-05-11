@@ -28,25 +28,25 @@ import org.csstudio.remote.management.IManagementCommand;
 
 /**
  * Management command to get statistics from the CSS application.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class GetStatisticsManagementCommand implements IManagementCommand {
 
-	/**
-	 * The result type of results returned by this command. The platform.ui
-	 * plug-in contributes a receiver for this type which will display the
-	 * result in a view.
-	 */
-	private static final String TYPE =
-		"org.csstudio.domain.common.statistic.XmlStatistic";
+    /**
+     * The result type of results returned by this command. The platform.ui
+     * plug-in contributes a receiver for this type which will display the
+     * result in a view.
+     */
+    private static final String TYPE =
+        "org.csstudio.domain.common.statistic.XmlStatistic";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public CommandResult execute(CommandParameters parameters) {
-		String stats = CollectorSupervisor.getInstance().getCollectionAsXMLString();
-		return CommandResult.createSuccessResult(stats, TYPE);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public CommandResult execute(CommandParameters parameters) {
+        String stats = CollectorSupervisor.getInstance().getCollectionAsXMLString();
+        return CommandResult.createSuccessResult(stats, TYPE);
+    }
 
 }

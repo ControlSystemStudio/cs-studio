@@ -18,22 +18,22 @@ import org.csstudio.scan.server.Scan;
 public class DerbyDataLogFactory implements IDataLogFactory
 {
     /** {@inheritDoc} */
-	@Override
+    @Override
     public Scan createDataLog(final String scan_name) throws Exception
     {
-		final DerbyDataLogger logger = new DerbyDataLogger();
-		try
-		{
-			return logger.createScan(scan_name);
-		}
-		finally
-		{
-			logger.close();
-		}
+        final DerbyDataLogger logger = new DerbyDataLogger();
+        try
+        {
+            return logger.createScan(scan_name);
+        }
+        finally
+        {
+            logger.close();
+        }
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public Scan[] getScans() throws Exception
     {
         final DerbyDataLogger logger = new DerbyDataLogger();

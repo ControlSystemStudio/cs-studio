@@ -43,6 +43,6 @@ public class InfoAction extends AbstractGUIAction
     {
         final ScanServerInfo info = model.getServerInfo();
         final String text = (info == null) ? Messages.NotConnected : info.toString();
-    	MessageDialog.openInformation(shell, Messages.InfoTitle, text);
+        MessageDialog.openInformation(shell, Messages.InfoTitle, text);
     }
 }

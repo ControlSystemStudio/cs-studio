@@ -30,74 +30,74 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ResourceUtil {
 
-	private static final ResourceUtilSSHelper IMPL;
+    private static final ResourceUtilSSHelper IMPL;
 
-	static {
-		IMPL = (ResourceUtilSSHelper) ImplementationLoader
-				.newInstance(ResourceUtilSSHelper.class);
-	}
+    static {
+        IMPL = (ResourceUtilSSHelper) ImplementationLoader
+                .newInstance(ResourceUtilSSHelper.class);
+    }
 
-	/**
-	 * Convert workspace path to OS system path.
-	 * @param path the workspace path
-	 * @return the corresponding system path. null if it is not exist.
-	 */
-	public static IPath workspacePathToSysPath(IPath path) {
-		if (SWT.getPlatform().startsWith("rap"))
-			return null;
-		return IMPL.workspacePathToSysPath(path);
-	}
+    /**
+     * Convert workspace path to OS system path.
+     * @param path the workspace path
+     * @return the corresponding system path. null if it is not exist.
+     */
+    public static IPath workspacePathToSysPath(IPath path) {
+        if (SWT.getPlatform().startsWith("rap"))
+            return null;
+        return IMPL.workspacePathToSysPath(path);
+    }
 
-	/**Get inputstream from path. Run in a Job. The uiTask is responsible for closing the inputstream
-	 * @param path the path to load
-	 * @param uiTask the task to be executed in UI thread after path is loaded.
-	 * @param jobName name of the job
-	 * @param errorHandler the handler to handle IO exception.
-	 */
-	public static void pathToInputStreamInJob(final IPath path, 
-			final AbstractInputStreamRunnable uiTask, final String jobName,
-			final IJobErrorHandler errorHandler){
-		final Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
-		Job job = new Job(jobName) {
-			
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Connecting to " + path, IProgressMonitor.UNKNOWN);
-				try {
-					final InputStream inputStream = pathToInputStream(path);
-					uiTask.setInputStream(inputStream);
-					display.asyncExec(uiTask);
-				} catch (Exception e) {
-					errorHandler.handleError(e);
-				}finally{
-					monitor.done();
-				}
-				return Status.OK_STATUS;
-			}
-		};
-		job.schedule();
-	}
-	
+    /**Get inputstream from path. Run in a Job. The uiTask is responsible for closing the inputstream
+     * @param path the path to load
+     * @param uiTask the task to be executed in UI thread after path is loaded.
+     * @param jobName name of the job
+     * @param errorHandler the handler to handle IO exception.
+     */
+    public static void pathToInputStreamInJob(final IPath path,
+            final AbstractInputStreamRunnable uiTask, final String jobName,
+            final IJobErrorHandler errorHandler){
+        final Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
+        Job job = new Job(jobName) {
 
-	/**
-	 * Return the {@link InputStream} of the file that is available on the
-	 * specified path. The caller is responsible for closing inputstream.
-	 *
-	 * @param path
-	 *            The {@link IPath} to the file in the workspace, the local
-	 *            file system, or a URL (http:, https:, ftp:, file:, platform:)
-	 * @return The corresponding {@link InputStream}. Never <code>null</code>
-	 * @throws Exception
-	 */
-	@SuppressWarnings("nls")
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                monitor.beginTask("Connecting to " + path, IProgressMonitor.UNKNOWN);
+                try {
+                    final InputStream inputStream = pathToInputStream(path);
+                    uiTask.setInputStream(inputStream);
+                    display.asyncExec(uiTask);
+                } catch (Exception e) {
+                    errorHandler.handleError(e);
+                }finally{
+                    monitor.done();
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
+    }
+
+
+    /**
+     * Return the {@link InputStream} of the file that is available on the
+     * specified path. The caller is responsible for closing inputstream.
+     *
+     * @param path
+     *            The {@link IPath} to the file in the workspace, the local
+     *            file system, or a URL (http:, https:, ftp:, file:, platform:)
+     * @return The corresponding {@link InputStream}. Never <code>null</code>
+     * @throws Exception
+     */
+    @SuppressWarnings("nls")
     public static InputStream pathToInputStream(final IPath path) throws Exception
     {
-	   InputStream inputStream = SingleSourceHelper.workspaceFileToInputStream(path);
-	   
-	   if(inputStream != null)
-		   return inputStream;
+       InputStream inputStream = SingleSourceHelper.workspaceFileToInputStream(path);
 
-	    // Not a workspace file. Try local file system
+       if(inputStream != null)
+           return inputStream;
+
+        // Not a workspace file. Try local file system
         File local_file = path.toFile();
         // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
@@ -112,7 +112,7 @@ public class ResourceUtil {
             // Could not open as local file.
             // Does it look like a URL?
             //TODO:
-        	// Eclipse Path collapses "//" into "/", revert that: Is this true? Need test on Mac.        	
+            // Eclipse Path collapses "//" into "/", revert that: Is this true? Need test on Mac.
             urlString = path.toString();
 //            if(!urlString.startsWith("platform") && !urlString.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
 //                urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -127,80 +127,80 @@ public class ResourceUtil {
         URI uri = new URI(urlString);
         final URL url = uri.toURL();
         return  openURLStream(url);
-	}
-	
-	private static InputStream openURLStream(final URL url) throws IOException {
-		URLConnection connection = url.openConnection();
-		int timeout = 0;
-		String value = System.getProperty(Preferences.URL_FILE_LOAD_TIMEOUT); //$NON-NLS-1$
-		if(value != null ){
-			 try {
-				timeout = Integer.parseInt(value);
-			} catch (NumberFormatException e) {				
-			}
-		}
-		if(timeout == 0){
-			timeout = Preferences.getURLFileLoadTimeout();
-		}
-		connection.setReadTimeout(timeout);
-		return connection.getInputStream();
-	}
-	
-	
-	/** Check if a URL is actually a URL
-	 *  @param url Possible URL
-	 *  @return <code>true</code> if considered a URL
-	 */
-	@SuppressWarnings("nls")
+    }
+
+    private static InputStream openURLStream(final URL url) throws IOException {
+        URLConnection connection = url.openConnection();
+        int timeout = 0;
+        String value = System.getProperty(Preferences.URL_FILE_LOAD_TIMEOUT); //$NON-NLS-1$
+        if(value != null ){
+             try {
+                timeout = Integer.parseInt(value);
+            } catch (NumberFormatException e) {
+            }
+        }
+        if(timeout == 0){
+            timeout = Preferences.getURLFileLoadTimeout();
+        }
+        connection.setReadTimeout(timeout);
+        return connection.getInputStream();
+    }
+
+
+    /** Check if a URL is actually a URL
+     *  @param url Possible URL
+     *  @return <code>true</code> if considered a URL
+     */
+    @SuppressWarnings("nls")
     public static boolean isURL(final String url){
-		return url.contains(":/");  //$NON-NLS-1$
-	}
-	
-//	/**
-//	 * Return the {@link InputStream} of the file that is available on the
-//	 * specified path.
-//	 * 
-//	 * @param path
-//	 *            The {@link IPath} to the file
-//	 * 
-//	 * @return The corresponding {@link InputStream} or null
-//	 * @throws Exception 
-//	 */
-//	public static InputStream pathToInputStream(final IPath path) throws Exception{
-//		InputStream result = null;
-//		
-//		IResource r = null;
-//		try {
-//			// try workspace
-//			r = ResourcesPlugin.getWorkspace().getRoot().findMember(
-//					path, false);
-//			if (r!= null && r instanceof IFile) {			
-//				result = ((IFile) r).getContents();		
-//				return result;
-//			}else
-//				throw new Exception();
-//		} catch (Exception e) {
-//			// try from local file system			
-//			try {
-//				result = new FileInputStream(path.toFile());
-//				if(result != null)
-//					return result;
-//				else
-//					throw new Exception();
-//			} catch (Exception e1) {
-//				try {
-//					//try from URL					
-//					String urlString = path.toString();
-//					if(!urlString.contains("://")) //$NON-NLS-1$
-//						urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
-//					URL url = new URL(urlString);
-//					result = url.openStream();
-//					return result;
-//				} catch (Exception e2) {
-//					throw new Exception("This exception includes three sub-exceptions:\n"+ 
-//							e+ "\n" + e1 + "\n" + e2);
-//				}				
-//			}
-//		}
-//	}
+        return url.contains(":/");  //$NON-NLS-1$
+    }
+
+//    /**
+//     * Return the {@link InputStream} of the file that is available on the
+//     * specified path.
+//     *
+//     * @param path
+//     *            The {@link IPath} to the file
+//     *
+//     * @return The corresponding {@link InputStream} or null
+//     * @throws Exception
+//     */
+//    public static InputStream pathToInputStream(final IPath path) throws Exception{
+//        InputStream result = null;
+//
+//        IResource r = null;
+//        try {
+//            // try workspace
+//            r = ResourcesPlugin.getWorkspace().getRoot().findMember(
+//                    path, false);
+//            if (r!= null && r instanceof IFile) {
+//                result = ((IFile) r).getContents();
+//                return result;
+//            }else
+//                throw new Exception();
+//        } catch (Exception e) {
+//            // try from local file system
+//            try {
+//                result = new FileInputStream(path.toFile());
+//                if(result != null)
+//                    return result;
+//                else
+//                    throw new Exception();
+//            } catch (Exception e1) {
+//                try {
+//                    //try from URL
+//                    String urlString = path.toString();
+//                    if(!urlString.contains("://")) //$NON-NLS-1$
+//                        urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
+//                    URL url = new URL(urlString);
+//                    result = url.openStream();
+//                    return result;
+//                } catch (Exception e2) {
+//                    throw new Exception("This exception includes three sub-exceptions:\n"+
+//                            e+ "\n" + e1 + "\n" + e2);
+//                }
+//            }
+//        }
+//    }
 }

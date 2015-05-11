@@ -30,41 +30,41 @@ package org.csstudio.dal;
  */
 public class Point<T>
 {
-	private Timestamp timestamp;
-	private T value;
+    private Timestamp timestamp;
+    private T value;
 
-	/**
-	 * Creates a new Point object.
-	 *
-	 * @param timestamp Timestamp of the value
-	 * @param value Value
-	 */
-	public Point(Timestamp timestamp, T value)
-	{
-		this.timestamp = timestamp;
-		this.value = value;
-	}
+    /**
+     * Creates a new Point object.
+     *
+     * @param timestamp Timestamp of the value
+     * @param value Value
+     */
+    public Point(Timestamp timestamp, T value)
+    {
+        this.timestamp = timestamp;
+        this.value = value;
+    }
 
-	/**
-	 * Returns the value
-	 *
-	 * @return value
-	 */
-	public T value()
-	{
-		return value;
-	}
+    /**
+     * Returns the value
+     *
+     * @return value
+     */
+    public T value()
+    {
+        return value;
+    }
 
-	/**
-	 * Returns the timestamp of the value
-	 *
-	 * @return timestamp of the value
-	 *
-	 */
-	public Timestamp timestamp()
-	{
-		return timestamp;
-	}
+    /**
+     * Returns the timestamp of the value
+     *
+     * @return timestamp of the value
+     *
+     */
+    public Timestamp timestamp()
+    {
+        return timestamp;
+    }
 }
 
 /* __oOo__ */

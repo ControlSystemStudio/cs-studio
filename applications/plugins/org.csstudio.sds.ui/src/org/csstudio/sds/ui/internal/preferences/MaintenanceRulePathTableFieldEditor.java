@@ -56,34 +56,34 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
  * The class is no longer needed!
- * 
+ *
  * This class serves only as an example of using the {@link AbstractTableFieldEditor}
- * 
+ *
  * @author Rickens Helge
  * @author $Author: $
  * @since 16.03.2011
 
  */
 public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEditor {
-    
+
     /**
      * Constructor.
      */
     protected MaintenanceRulePathTableFieldEditor() {
         super();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void createColumns() {
         final TableViewer tableViewer = getTableViewer();
-        
+
         tableViewer.setContentProvider(new ArrayContentProvider());
-        
+
         TableViewerColumn tvc;
-        
+
         tvc = new TableViewerColumn(tableViewer, SWT.NONE);
         tvc.getColumn().setText("R-Typ");
         tvc.getColumn().setWidth(50);
@@ -104,7 +104,7 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
             }
         });
         tvc.setEditingSupport(new EditingSupport(tableViewer) {
-            
+
             @Override
             protected void setValue(Object element, Object value) {
                 @SuppressWarnings("unchecked")
@@ -112,25 +112,25 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                 propertList.set(0, (String) value);
                 tableViewer.refresh(element);
             }
-            
+
             @Override
             protected Object getValue(Object element) {
                 @SuppressWarnings("unchecked")
                 List<String> propertList = (List<String>) element;
                 return propertList.get(0);
             }
-            
+
             @Override
             protected CellEditor getCellEditor(Object element) {
                 return new TextCellEditor(tableViewer.getTable());
             }
-            
+
             @Override
             protected boolean canEdit(Object element) {
                 return true;
             }
         });
-        
+
         tvc = new TableViewerColumn(tableViewer, SWT.NONE);
         tvc.getColumn().setText("Faceplate Path");
         tvc.getColumn().setWidth(250);
@@ -150,9 +150,9 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                 return super.getText(element);
             }
         });
-        
+
         tvc.setEditingSupport(new EditingSupport(tableViewer) {
-            
+
             @Override
             protected void setValue(Object element, Object value) {
                 @SuppressWarnings("unchecked")
@@ -169,7 +169,7 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                 }
                 tableViewer.refresh(element);
             }
-            
+
             @Override
             protected Object getValue(Object element) {
                 @SuppressWarnings("unchecked")
@@ -180,11 +180,11 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                 }
                 return path;
             }
-            
+
             @Override
             protected CellEditor getCellEditor(Object elem) {
                 return new DialogCellEditor(tableViewer.getTable()) {
-                    
+
                     @Override
                     protected Object openDialogBox(Control cellEditorWindow) {
                         final ElementTreeSelectionDialog dialog = new ElementTreeSelectionDialog(cellEditorWindow
@@ -202,7 +202,7 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                         IResource findMember = workspace.getRoot().findMember(stringValue);
                         dialog.setInitialSelection(findMember);
                         dialog.setValidator(new ISelectionStatusValidator() {
-                            
+
                             @Override
                             public IStatus validate(Object[] selection) {
                                 if (selection != null && selection.length > 0) {
@@ -214,9 +214,9 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                                 return new Status(IStatus.ERROR, "org.csstudio.sds.ui", "Please select a SDS-File");
                             }
                         });
-                        
+
                         dialog.addFilter(new ViewerFilter() {
-                            
+
                             @Override
                             public boolean select(Viewer viewer,
                                                   Object parentElement,
@@ -231,7 +231,7 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                                 return true;
                             }
                         });
-                        
+
                         int open = dialog.open();
                         switch (open) {
                             case Window.OK:
@@ -244,14 +244,14 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
                     }
                 };
             }
-            
+
             @Override
             protected boolean canEdit(Object element) {
                 return true;
             }
         });
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -260,7 +260,7 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
         Table table = getTable();
         if (0 <= table.getItems().length) {
             List<List<String>> parseString = new ArrayList<List<String>>(table.getItems().length);
-            
+
             for (TableItem item : table.getItems()) {
                 ArrayList<String> currentColumnTableSet = new ArrayList<String>(2);
                 currentColumnTableSet.add(item.getText(0));
@@ -270,5 +270,5 @@ public class MaintenanceRulePathTableFieldEditor extends AbstractTableFieldEdito
             setPreferenceStructure(parseString);
         }
     }
-    
+
 }

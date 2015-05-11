@@ -14,71 +14,71 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeXTextDspClass_noedit extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String controlPv;
-	@EdmAttributeAn @EdmOptionalAn private String format;
-	@EdmAttributeAn @EdmOptionalAn private boolean autoHeight;
-	@EdmAttributeAn @EdmOptionalAn private boolean limitsFromDb;
-	@EdmAttributeAn @EdmOptionalAn private boolean showUnits;
-	@EdmAttributeAn @EdmOptionalAn private boolean useAlarmBorder;
-	@EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
-	@EdmAttributeAn @EdmOptionalAn private int precision;
-	@EdmAttributeAn @EdmOptionalAn private String fontAlign;
-	
-	public Edm_activeXTextDspClass_noedit(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
-	
-	
-	public boolean isLimitsFromDb() {
-		return limitsFromDb;
-	}
+    @EdmAttributeAn @EdmOptionalAn private String controlPv;
+    @EdmAttributeAn @EdmOptionalAn private String format;
+    @EdmAttributeAn @EdmOptionalAn private boolean autoHeight;
+    @EdmAttributeAn @EdmOptionalAn private boolean limitsFromDb;
+    @EdmAttributeAn @EdmOptionalAn private boolean showUnits;
+    @EdmAttributeAn @EdmOptionalAn private boolean useAlarmBorder;
+    @EdmAttributeAn @EdmOptionalAn private boolean useDisplayBg;
+    @EdmAttributeAn @EdmOptionalAn private int precision;
+    @EdmAttributeAn @EdmOptionalAn private String fontAlign;
+
+    public Edm_activeXTextDspClass_noedit(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 
-	public boolean isShowUnits() {
-		return showUnits;
-	}
+    public boolean isLimitsFromDb() {
+        return limitsFromDb;
+    }
+
+
+    public boolean isShowUnits() {
+        return showUnits;
+    }
 
 
 
 
-	public boolean isUseAlarmBorder() {
-		return useAlarmBorder;
-	}
+    public boolean isUseAlarmBorder() {
+        return useAlarmBorder;
+    }
 
-	public boolean isTransparent() {
-		return useDisplayBg;
-	}
-
-
-	public int getPrecision() {
-		return precision;
-	}
+    public boolean isTransparent() {
+        return useDisplayBg;
+    }
 
 
-	public String getFontAlign() {
-		if(getAttribute("fontAlign").isExistInEDL())
-			return fontAlign;
-		return "left";
-	}
-
-	
+    public int getPrecision() {
+        return precision;
+    }
 
 
-	/**
-	 * @return the lineAlarm
-	 */
-	public final String getControlPv() {
-		return controlPv;
-	}
+    public String getFontAlign() {
+        if(getAttribute("fontAlign").isExistInEDL())
+            return fontAlign;
+        return "left";
+    }
 
-	
-	public String getFormat() {
-		return format;
-	}
-	
-	public boolean isAutoHeight() {
-		return autoHeight;
-	}
+
+
+
+    /**
+     * @return the lineAlarm
+     */
+    public final String getControlPv() {
+        return controlPv;
+    }
+
+
+    public String getFormat() {
+        return format;
+    }
+
+    public boolean isAutoHeight() {
+        return autoHeight;
+    }
 
 
 }

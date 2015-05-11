@@ -16,46 +16,46 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
  *
  */
 public class PropertiesCopyData {
-	
-	private AbstractWidgetModel widgetModel;
-	
-	private List<String> propIDList;
 
-	public PropertiesCopyData(AbstractWidgetModel widgetModel,
-			List<String> propIDList) {
-		this.widgetModel = widgetModel;
-		this.propIDList = propIDList;
-	}
+    private AbstractWidgetModel widgetModel;
 
-	/**
-	 * @return the widgetModel
-	 */
-	public final AbstractWidgetModel getWidgetModel() {
-		return widgetModel;
-	}
+    private List<String> propIDList;
 
-	/**
-	 * @param widgetModel the widgetModel to set
-	 */
-	public final void setWidgetModel(AbstractWidgetModel widgetModel) {
-		this.widgetModel = widgetModel;
-	}
+    public PropertiesCopyData(AbstractWidgetModel widgetModel,
+            List<String> propIDList) {
+        this.widgetModel = widgetModel;
+        this.propIDList = propIDList;
+    }
 
-	/**
-	 * @return the propIDList
-	 */
-	public final List<String> getPropIDList() {
-		return propIDList;
-	}
+    /**
+     * @return the widgetModel
+     */
+    public final AbstractWidgetModel getWidgetModel() {
+        return widgetModel;
+    }
 
-	/**
-	 * @param propIDList the propIDList to set
-	 */
-	public final void setPropIDList(List<String> propIDList) {
-		this.propIDList = propIDList;
-	}
-	
-	
-	
-	
+    /**
+     * @param widgetModel the widgetModel to set
+     */
+    public final void setWidgetModel(AbstractWidgetModel widgetModel) {
+        this.widgetModel = widgetModel;
+    }
+
+    /**
+     * @return the propIDList
+     */
+    public final List<String> getPropIDList() {
+        return propIDList;
+    }
+
+    /**
+     * @param propIDList the propIDList to set
+     */
+    public final void setPropIDList(List<String> propIDList) {
+        this.propIDList = propIDList;
+    }
+
+
+
+
 }

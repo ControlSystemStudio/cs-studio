@@ -36,68 +36,68 @@ import java.util.EventObject;
  */
 public class ProxyEvent<P extends Proxy> extends EventObject
 {
-	private static final long serialVersionUID = 6073834917280287435L;
-	private DynamicValueCondition condition;
-	private ConnectionState connectionState;
-	private Throwable error;
+    private static final long serialVersionUID = 6073834917280287435L;
+    private DynamicValueCondition condition;
+    private ConnectionState connectionState;
+    private Throwable error;
 
-	/**
-	 * Creates a new ProxyEvent object.
-	 *
-	 * @param source event source
-	 * @param condition data condition
-	 * @param connectionState connections state
-	 * @param error exceptions
-	 */
-	public ProxyEvent(P source, DynamicValueCondition condition,
-	    ConnectionState connectionState, Throwable error)
-	{
-		super(source);
-		this.condition = condition;
-		this.connectionState = connectionState;
-		this.error = error;
-	}
+    /**
+     * Creates a new ProxyEvent object.
+     *
+     * @param source event source
+     * @param condition data condition
+     * @param connectionState connections state
+     * @param error exceptions
+     */
+    public ProxyEvent(P source, DynamicValueCondition condition,
+        ConnectionState connectionState, Throwable error)
+    {
+        super(source);
+        this.condition = condition;
+        this.connectionState = connectionState;
+        this.error = error;
+    }
 
-	/**
-	 * Returns event source as proxy.
-	 *
-	 * @return event source
-	 */
-	@SuppressWarnings("unchecked")
-	public P getProxy()
-	{
-		return (P)getSource();
-	}
+    /**
+     * Returns event source as proxy.
+     *
+     * @return event source
+     */
+    @SuppressWarnings("unchecked")
+    public P getProxy()
+    {
+        return (P)getSource();
+    }
 
-	/**
-	 * Returns data condition.
-	 *
-	 * @return data condition
-	 */
-	public DynamicValueCondition getCondition()
-	{
-		return condition;
-	}
+    /**
+     * Returns data condition.
+     *
+     * @return data condition
+     */
+    public DynamicValueCondition getCondition()
+    {
+        return condition;
+    }
 
-	/**
-	 * Returns proxy connection state.
-	 *
-	 * @return proxy connection state
-	 */
-	public ConnectionState getConnectionState()
-	{
-		return connectionState;
-	}
+    /**
+     * Returns proxy connection state.
+     *
+     * @return proxy connection state
+     */
+    public ConnectionState getConnectionState()
+    {
+        return connectionState;
+    }
 
-	/**
-	 * Returns event's exception.
-	 *
-	 * @return exceptions carried by this event
-	 */
-	public Throwable getError()
-	{
-		return error;
-	}
+    /**
+     * Returns event's exception.
+     *
+     * @return exceptions carried by this event
+     */
+    public Throwable getError()
+    {
+        return error;
+    }
 }
 
 /* __oOo__ */

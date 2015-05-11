@@ -8,7 +8,7 @@
 package org.csstudio.scan.command;
 
 /** Base class for Jython scripts that handle scan errors
- * 
+ *
  *  <p>Example:
  *  <pre>
  *  class MyErrorHandler(ScanErrorHandler):
@@ -37,20 +37,20 @@ public class ScanErrorHandler
     }
 
     /** Invoked by the scan server when command generated an error
-     * 
+     *
      *  <p>Code within this method may inspect the command that generated
      *  an error as well as details of that error.
-     *  
+     *
      *  <p>It returns a code that instructs the scan server to either
      *  ignore the error or abort the scan.
-     *  
-	 *  @param command Command that created the error
-	 *  @param error Error created by command
-	 *  @param context Access to logged data, devices, ...
-	 */
-	public Result handleError(final ScanCommand command, final Exception error, final ScanScriptContext context)
-	{
-		// Default will abort the scan.
-	    return Result.Abort;
-	}
+     *
+     *  @param command Command that created the error
+     *  @param error Error created by command
+     *  @param context Access to logged data, devices, ...
+     */
+    public Result handleError(final ScanCommand command, final Exception error, final ScanScriptContext context)
+    {
+        // Default will abort the scan.
+        return Result.Abort;
+    }
 }

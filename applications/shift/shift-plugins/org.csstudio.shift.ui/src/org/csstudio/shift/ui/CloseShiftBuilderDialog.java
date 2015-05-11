@@ -38,14 +38,14 @@ public class CloseShiftBuilderDialog extends Dialog {
     private boolean authenticate = true;
     private ErrorBar errorBar;
     private boolean end;
-	private ShiftClient shiftClient;
+    private ShiftClient shiftClient;
 
     public CloseShiftBuilderDialog(final Shell parentShell, final ShiftBuilder shiftBuilder, final boolean end) {
-		super(parentShell);
-		setBlockOnOpen(false);
-		setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
-		this.shiftBuilder = shiftBuilder;
-		this.end = end;
+        super(parentShell);
+        setBlockOnOpen(false);
+        setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
+        this.shiftBuilder = shiftBuilder;
+        this.end = end;
     }
 
     @Override
@@ -76,7 +76,7 @@ public class CloseShiftBuilderDialog extends Dialog {
             try {
                 shiftWidget.setShift(shiftBuilder.build());
             } catch (IOException e) {
-            	errorBar.setException(e);
+                errorBar.setException(e);
             }
         }
 
@@ -85,7 +85,7 @@ public class CloseShiftBuilderDialog extends Dialog {
 
     @Override
     protected void createButtonsForButtonBar(final Composite parent) {
-    	// create OK and Cancel buttons by default
+        // create OK and Cancel buttons by default
         createButton(parent, IDialogConstants.OK_ID, "Submit", true);
         createButton(parent, IDialogConstants.CANCEL_ID, IDialogConstants.CANCEL_LABEL, false);
     }
@@ -96,62 +96,62 @@ public class CloseShiftBuilderDialog extends Dialog {
         try {
             if (authenticate) {
                 shiftClient = ShiftClientManager.getShiftClientFactory()
-                		.getClient(userCredentialWidget.getUsername(), userCredentialWidget.getPassword());
+                        .getClient(userCredentialWidget.getUsername(), userCredentialWidget.getPassword());
             } else {
                 shiftClient = ShiftClientManager.getShiftClientFactory().getClient();
             }
 
             final Shift shift = shiftWidget.getShift();
-            
+
             getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
 
-			Job job = new Job("Create new Entry") {
+            Job job = new Job("Create new Entry") {
 
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						if(end) {
-			            	shiftClient.end(shift);
-			            } else {
-			            	shiftClient.close(shift);
-			            }
-						return Status.OK_STATUS;
-					} catch (final Exception e) {
-						getShell().getDisplay().asyncExec(new Runnable() {
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    try {
+                        if(end) {
+                            shiftClient.end(shift);
+                        } else {
+                            shiftClient.close(shift);
+                        }
+                        return Status.OK_STATUS;
+                    } catch (final Exception e) {
+                        getShell().getDisplay().asyncExec(new Runnable() {
 
-							@Override
-							public void run() {
-								getShell().setCursor(originalCursor);
-								getButton(IDialogConstants.OK_ID).setEnabled(true);
-								errorBar.setException(e);
-							}
-						});
-						return Status.CANCEL_STATUS;
-					}
-				}
-			};
-			job.addJobChangeListener(new JobChangeAdapter() {
-				public void done(IJobChangeEvent event) {
-					if (event.getResult().isOK()) {
-						getShell().getDisplay().asyncExec(new Runnable() {
+                            @Override
+                            public void run() {
+                                getShell().setCursor(originalCursor);
+                                getButton(IDialogConstants.OK_ID).setEnabled(true);
+                                errorBar.setException(e);
+                            }
+                        });
+                        return Status.CANCEL_STATUS;
+                    }
+                }
+            };
+            job.addJobChangeListener(new JobChangeAdapter() {
+                public void done(IJobChangeEvent event) {
+                    if (event.getResult().isOK()) {
+                        getShell().getDisplay().asyncExec(new Runnable() {
 
-							@Override
-							public void run() {
-								getShell().setCursor(originalCursor);
-								getButton(IDialogConstants.OK_ID).setEnabled(true);
-								setReturnCode(OK);
-									close();
-							}
-						});
+                            @Override
+                            public void run() {
+                                getShell().setCursor(originalCursor);
+                                getButton(IDialogConstants.OK_ID).setEnabled(true);
+                                setReturnCode(OK);
+                                    close();
+                            }
+                        });
 
-					}
-				}
-			});
-			job.schedule();			
-		} catch (Exception ex) {
-			getShell().setCursor(originalCursor);
-			getButton(IDialogConstants.OK_ID).setEnabled(true);
-			errorBar.setException(ex);
-		}   
+                    }
+                }
+            });
+            job.schedule();
+        } catch (Exception ex) {
+            getShell().setCursor(originalCursor);
+            getButton(IDialogConstants.OK_ID).setEnabled(true);
+            errorBar.setException(ex);
+        }
     }
 }

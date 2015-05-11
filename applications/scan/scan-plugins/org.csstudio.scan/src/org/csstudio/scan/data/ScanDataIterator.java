@@ -37,12 +37,12 @@ import org.csstudio.scan.util.TextTable;
 @SuppressWarnings("nls")
 public class ScanDataIterator
 {
-	/** "Comma Separator" is actually comma,
-	 *  but could in the future be changed to '\t' or other
-	 */
+    /** "Comma Separator" is actually comma,
+     *  but could in the future be changed to '\t' or other
+     */
     final private static String CSV_SEPARATOR = ",";
 
-	/** Device names, i.e. columns in spreadsheet */
+    /** Device names, i.e. columns in spreadsheet */
     final private String[] device_names;
 
     /** Raw data for each device */
@@ -73,7 +73,7 @@ public class ScanDataIterator
     @SuppressWarnings("unchecked")
     public ScanDataIterator(final ScanData scan_data, final String... device_names)
     {
-	    this.device_names = device_names;
+        this.device_names = device_names;
         final int N = device_names.length;
 
         data = new List[N];
@@ -89,69 +89,69 @@ public class ScanDataIterator
         }
     }
 
-	/** @param i Device index
-	 *  @return data[index[i]]
-	 */
-	private ScanSample getCurrentSample(final int i)
-	{
-	    if (data[i].size() > index[i])
-	        return data[i].get(index[i]);
-	    return null;
-	}
+    /** @param i Device index
+     *  @return data[index[i]]
+     */
+    private ScanSample getCurrentSample(final int i)
+    {
+        if (data[i].size() > index[i])
+            return data[i].get(index[i]);
+        return null;
+    }
 
-	/** @return Device names, i.e. spreadsheet columns */
-	public String[] getDevices()
-	{
-	    return device_names;
-	}
+    /** @return Device names, i.e. spreadsheet columns */
+    public String[] getDevices()
+    {
+        return device_names;
+    }
 
     /** @return <code>true</code> if there is another line in the spreadsheet */
     public boolean hasNext()
-	{
+    {
         // Find oldest serial
         final int N = device_names.length;
-		long oldest = Long.MAX_VALUE;
-		timestamp = null;
-		for (int i=0; i<N; ++i)
-		{
-		    final ScanSample sample = getCurrentSample(i);
-			if (sample == null)
-				continue;
-			if (sample.getSerial() < oldest)
-				oldest = sample.getSerial();
-		}
-		if (oldest == Long.MAX_VALUE)
-			return false;
+        long oldest = Long.MAX_VALUE;
+        timestamp = null;
+        for (int i=0; i<N; ++i)
+        {
+            final ScanSample sample = getCurrentSample(i);
+            if (sample == null)
+                continue;
+            if (sample.getSerial() < oldest)
+                oldest = sample.getSerial();
+        }
+        if (oldest == Long.MAX_VALUE)
+            return false;
 
         // 'oldest' now defines the current spreadsheet line.
-		// Determine value for that line.
-		for (int i=0; i<N; ++i)
-		{
+        // Determine value for that line.
+        for (int i=0; i<N; ++i)
+        {
             final ScanSample sample = getCurrentSample(i);
-			if (sample == null)
-			{	// No more data for device #i
-			    // Leave value[i] as is, "still valid"
-				continue;
-			}
-			// Device #i has data
-			if (sample.getSerial() <= oldest)
-			{
-				// Use that as the 'value' for this line
-				value[i] = sample;
-				// Set index to the next sample, which will
-				// be used as 'value' once we reach that time slot.
-				++index[i];
-			}
-			// else: sample[i] already points to a sample
-			// _after_ the current line, so leave value[i] as is
-			
-			// For time stamp, use the newest stamp on current line
-			if (timestamp == null  ||  timestamp.before(sample.getTimestamp()))
-			    timestamp = sample.getTimestamp();
-		}
+            if (sample == null)
+            {    // No more data for device #i
+                // Leave value[i] as is, "still valid"
+                continue;
+            }
+            // Device #i has data
+            if (sample.getSerial() <= oldest)
+            {
+                // Use that as the 'value' for this line
+                value[i] = sample;
+                // Set index to the next sample, which will
+                // be used as 'value' once we reach that time slot.
+                ++index[i];
+            }
+            // else: sample[i] already points to a sample
+            // _after_ the current line, so leave value[i] as is
 
-		return true;
-	}
+            // For time stamp, use the newest stamp on current line
+            if (timestamp == null  ||  timestamp.before(sample.getTimestamp()))
+                timestamp = sample.getTimestamp();
+        }
+
+        return true;
+    }
 
     /** @return Time stamp of the current spreadsheet line */
     public Date getTimestamp()
@@ -162,7 +162,7 @@ public class ScanDataIterator
     /** @return Samples on the current spreadsheet line */
     public ScanSample[] getSamples()
     {
-    	// Copy because value[] will be overridden with next line
+        // Copy because value[] will be overridden with next line
         return Arrays.copyOf(value, value.length);
     }
 
@@ -171,21 +171,21 @@ public class ScanDataIterator
      */
     public void printTable(final PrintStream out)
     {
-    	final TextTable table = new TextTable(out);
+        final TextTable table = new TextTable(out);
         // Header
-    	table.addColumn("Time");
+        table.addColumn("Time");
         for (String device : getDevices())
-        	table.addColumn(device);
+            table.addColumn(device);
 
         // Iterate over device data in 'spreadsheet' manner
         while (hasNext())
         {
-        	table.addCell(ScanSampleFormatter.format(getTimestamp()));
+            table.addCell(ScanSampleFormatter.format(getTimestamp()));
             // Print current line
             for (ScanSample sample : getSamples())
             {
                 if (sample == null)
-                	table.addCell("#N/A");
+                    table.addCell("#N/A");
                 else
                     table.addCell(ScanSampleFormatter.asString(sample));
             }
@@ -200,23 +200,23 @@ public class ScanDataIterator
     public void printCSV(final PrintStream out)
     {
         // Header
-    	out.append("Time");
+        out.append("Time");
         for (String device : getDevices())
-        	out.append(CSV_SEPARATOR).append(device);
+            out.append(CSV_SEPARATOR).append(device);
         out.println();
 
         // Iterate over device data in 'spreadsheet' manner
         while (hasNext())
         {
-        	out.append(ScanSampleFormatter.format(getTimestamp()));
+            out.append(ScanSampleFormatter.format(getTimestamp()));
             // Print current line
             for (ScanSample sample : getSamples())
             {
-            	out.append(CSV_SEPARATOR);
+                out.append(CSV_SEPARATOR);
                 if (sample == null)
-                	out.append("#N/A");
+                    out.append("#N/A");
                 else
-                	out.append(ScanSampleFormatter.asString(sample));
+                    out.append(ScanSampleFormatter.asString(sample));
             }
             out.println();
         }

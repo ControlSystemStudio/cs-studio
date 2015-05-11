@@ -14,33 +14,33 @@ import org.epics.vtype.io.CSVIO;
 
 /**
  * Command to copy the selected value to clipboard.
- * 
+ *
  * @author carcassi
  */
 public class CopyValueToClipboardHandler extends AbstractAdaptedHandler<VType> {
-	
-	private CSVIO export = new CSVIO();
 
-	public CopyValueToClipboardHandler() {
-		super(VType.class);
-	}
+    private CSVIO export = new CSVIO();
 
-	@Override
-	protected void execute(List<VType> data, ExecutionEvent event) {
-		if (!data.isEmpty()) {
-			VType value = data.get(0);
-			if (export.canExport(value)) {
-				StringWriter writer = new StringWriter();
-				export.export(value, writer);
-				String text = writer.toString();
-		        final Clipboard clipboard = new Clipboard(
-		                PlatformUI.getWorkbench().getDisplay());
-		            clipboard.setContents(new String[] { text },
-		                new Transfer[] { TextTransfer.getInstance() });
-			} else {
-				throw new RuntimeException("Copy operation for value " + value + " is not supported.");
-			}
-		}
-	}
+    public CopyValueToClipboardHandler() {
+        super(VType.class);
+    }
+
+    @Override
+    protected void execute(List<VType> data, ExecutionEvent event) {
+        if (!data.isEmpty()) {
+            VType value = data.get(0);
+            if (export.canExport(value)) {
+                StringWriter writer = new StringWriter();
+                export.export(value, writer);
+                String text = writer.toString();
+                final Clipboard clipboard = new Clipboard(
+                        PlatformUI.getWorkbench().getDisplay());
+                    clipboard.setContents(new String[] { text },
+                        new Transfer[] { TextTransfer.getInstance() });
+            } else {
+                throw new RuntimeException("Copy operation for value " + value + " is not supported.");
+            }
+        }
+    }
 
 }

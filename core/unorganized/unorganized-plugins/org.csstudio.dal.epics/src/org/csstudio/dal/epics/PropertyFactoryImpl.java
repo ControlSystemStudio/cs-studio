@@ -32,19 +32,19 @@ import org.csstudio.dal.spi.AbstractPropertyFactory;
   */
 public class PropertyFactoryImpl extends AbstractPropertyFactory
 {
-	/**
-	 * @see org.csstudio.dal.spi.AbstractFactorySupport#getPlugClass()
-	 */
-	@Override
-	protected Class<? extends AbstractPlug> getPlugClass() {
-		return EPICSPlug.class;
-	}
+    /**
+     * @see org.csstudio.dal.spi.AbstractFactorySupport#getPlugClass()
+     */
+    @Override
+    protected Class<? extends AbstractPlug> getPlugClass() {
+        return EPICSPlug.class;
+    }
 
-	/**
-	 * Creates a new PropertyFactoryImpl object.
-	 */
-	public PropertyFactoryImpl() {
-		super();
-	}
+    /**
+     * Creates a new PropertyFactoryImpl object.
+     */
+    public PropertyFactoryImpl() {
+        super();
+    }
 
 }

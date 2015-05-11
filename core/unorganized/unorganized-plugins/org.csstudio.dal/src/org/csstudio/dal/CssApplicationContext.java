@@ -34,17 +34,17 @@ import org.csstudio.dal.spi.Plugs;
  *
  */
 public class CssApplicationContext extends DefaultApplicationContext {
-	/**
-	 * Standard constructor.
-	 *
-	 * @param name
-	 *            The context name.
-	 */
-	public CssApplicationContext(final String name) {
-		super(name);
-		PlugRegistry.getInstance().configurePlugs(getConfiguration());
-		getConfiguration().setProperty(Plugs.CONNECTION_TIMEOUT, "5000");
-		putApplicationProperty(Plugs.PROPERTY_FACTORY_SERVICE_IMPLEMENTATION, DalPlugin.getDefault());
-	}
+    /**
+     * Standard constructor.
+     *
+     * @param name
+     *            The context name.
+     */
+    public CssApplicationContext(final String name) {
+        super(name);
+        PlugRegistry.getInstance().configurePlugs(getConfiguration());
+        getConfiguration().setProperty(Plugs.CONNECTION_TIMEOUT, "5000");
+        putApplicationProperty(Plugs.PROPERTY_FACTORY_SERVICE_IMPLEMENTATION, DalPlugin.getDefault());
+    }
 
 }

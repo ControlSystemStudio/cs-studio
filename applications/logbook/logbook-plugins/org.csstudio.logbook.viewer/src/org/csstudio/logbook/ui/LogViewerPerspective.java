@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -9,7 +9,7 @@ import org.eclipse.ui.IPerspectiveFactory;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogViewerPerspective implements IPerspectiveFactory {
 
@@ -17,7 +17,7 @@ public class LogViewerPerspective implements IPerspectiveFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui
      * .IPageLayout)
@@ -25,11 +25,11 @@ public class LogViewerPerspective implements IPerspectiveFactory {
     @Override
     public void createInitialLayout(IPageLayout layout) {
 
-	final String editor = layout.getEditorArea();
+    final String editor = layout.getEditorArea();
 
-	final IFolderLayout left = layout.createFolder("Left",
-		IPageLayout.LEFT, 0.33f, editor);
-	left.addView(org.csstudio.logbook.ui.LogTableView.ID);
-	left.addView(org.csstudio.logbook.ui.LogTreeView.ID);
+    final IFolderLayout left = layout.createFolder("Left",
+        IPageLayout.LEFT, 0.33f, editor);
+    left.addView(org.csstudio.logbook.ui.LogTableView.ID);
+    left.addView(org.csstudio.logbook.ui.LogTreeView.ID);
     }
 }

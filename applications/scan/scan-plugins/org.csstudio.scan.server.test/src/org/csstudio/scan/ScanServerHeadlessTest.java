@@ -52,7 +52,7 @@ import org.junit.Test;
 public class ScanServerHeadlessTest implements Runnable
 {
     private ScanServer server = null;
-    
+
     private volatile Throwable client_error = null;
 
     /** @return Demo scan sequence */
@@ -81,7 +81,7 @@ public class ScanServerHeadlessTest implements Runnable
 
             // Connect to scan server
             final ScanServerInfo server_info = server.getInfo();
-			System.out.println("Thread using " + server_info);
+            System.out.println("Thread using " + server_info);
 
             // Submit two scans, holding on to the second one
             final CommandSequence commands = createCommands();
@@ -119,10 +119,10 @@ public class ScanServerHeadlessTest implements Runnable
             infos = server.getScanInfos();
             for (ScanInfo info : infos)
                 System.out.println(info);
-            
+
             // Check if scan that just finished shows up as such
             assertEquals(ScanState.Finished, server.getScanInfo(id).getState());
-    
+
             // Also wait for scan to end by monitoring xpos (not really useful)
             System.out.println("Client waiting for PV to reach final value...");
             new NumericValueCondition(pv, Comparison.EQUALS, 5.0, 0.1, null).await();
@@ -220,12 +220,12 @@ public class ScanServerHeadlessTest implements Runnable
         }
         catch (Exception ex)
         {
-        	if (ex.getMessage().startsWith("Cannot start"))
-        	{
-        		System.out.println("Server probably alreay running, skipping ScanServerHeadlessTest:");
-        		ex.printStackTrace();
-        		return;
-        	}
+            if (ex.getMessage().startsWith("Cannot start"))
+            {
+                System.out.println("Server probably alreay running, skipping ScanServerHeadlessTest:");
+                ex.printStackTrace();
+                return;
+            }
         }
         System.out.println("Scan Server running...");
         server = server_impl;

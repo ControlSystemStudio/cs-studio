@@ -100,7 +100,7 @@ public class ChannelProviderImpl implements ChannelProvider {
 
     public ChannelProviderImpl(ScanServerImpl scan_server)
     {
-    	this.scan_server = scan_server;
+        this.scan_server = scan_server;
         // not nice but users would like to see this
         System.out.println("Created ChannelProvider that hosts the following channels: "
                 + HOSTED_CHANNELS_SET.toString());
@@ -133,89 +133,89 @@ public class ChannelProviderImpl implements ChannelProvider {
 
         PVTopStructure retVal = null;;
 
-		if (channelName.indexOf("?") > -1) {
-			String parameters = channelName.substring(channelName.indexOf("?") + 1);
-			StringTokenizer paramGroup = new StringTokenizer(parameters, "&");
+        if (channelName.indexOf("?") > -1) {
+            String parameters = channelName.substring(channelName.indexOf("?") + 1);
+            StringTokenizer paramGroup = new StringTokenizer(parameters, "&");
 
-			while (paramGroup.hasMoreTokens()) {
-				StringTokenizer value = new StringTokenizer(paramGroup.nextToken(), "=");
-				paramValue.put(value.nextToken(), value.nextToken());
-			}
+            while (paramGroup.hasMoreTokens()) {
+                StringTokenizer value = new StringTokenizer(paramGroup.nextToken(), "=");
+                paramValue.put(value.nextToken(), value.nextToken());
+            }
 
-			/* Construct the return data NTTable */
-			Structure value = fieldCreate.createStructure(new String[0],
-					new Field[0]);
-			Structure top = fieldCreate.createStructure(
-					"uri:ev4:nt/2012/pwd:NTTable",
-					new String[] { "labels", "value" },
-					new Field[] {fieldCreate.createScalarArray(ScalarType.pvString), value});
+            /* Construct the return data NTTable */
+            Structure value = fieldCreate.createStructure(new String[0],
+                    new Field[0]);
+            Structure top = fieldCreate.createStructure(
+                    "uri:ev4:nt/2012/pwd:NTTable",
+                    new String[] { "labels", "value" },
+                    new Field[] {fieldCreate.createScalarArray(ScalarType.pvString), value});
 
             PVStructure pvTop = pvDataCreate.createPVStructure(top);
             PVStructure pvValue = pvTop.getStructureField("value");
             PVStringArray labelsArray = (PVStringArray) pvTop.getScalarArrayField("labels", ScalarType.pvString);
-			Long id=0L;
-			if(paramValue.containsKey("id")){
-					id = Long.parseLong(paramValue.get("id"));
-			}else{
-				// return empty table?
-				return new PVTopStructure(pvTop);
-			}
+            Long id=0L;
+            if(paramValue.containsKey("id")){
+                    id = Long.parseLong(paramValue.get("id"));
+            }else{
+                // return empty table?
+                return new PVTopStructure(pvTop);
+            }
 
             // need to talk to Matej about timestamps and units in a table
             String [] timestampLabel = {"Timestamp"};
             try {
-            	final ScanData data = scan_server.getScanData(id);
+                final ScanData data = scan_server.getScanData(id);
 
 
-            	labelsArray.put(0, 1, timestampLabel, 0);
-            	labelsArray.put(0, data.getDevices().length, data.getDevices(), 0);
+                labelsArray.put(0, 1, timestampLabel, 0);
+                labelsArray.put(0, data.getDevices().length, data.getDevices(), 0);
 
-            	for (String device : data.getDevices()){
+                for (String device : data.getDevices()){
                     ScalarArray doubleColumnField = fieldCreate.createScalarArray(ScalarType.pvDouble);
                     PVDoubleArray valuesArrayD = (PVDoubleArray) pvDataCreate.createPVScalarArray(doubleColumnField);
-            		List<ScanSample> samples = data.getSamples(device);
-            		double[] arrD = new double[samples.size()];
-            		int i = 0;
-            		for (ScanSample sample : samples){
-            			arrD[i]=ScanSampleFormatter.asDouble(sample);
-            			i++;
-            		}
-            		valuesArrayD.put(0,samples.size(),arrD,0);
-            		pvValue.appendPVField(device, valuesArrayD);
-            	}
+                    List<ScanSample> samples = data.getSamples(device);
+                    double[] arrD = new double[samples.size()];
+                    int i = 0;
+                    for (ScanSample sample : samples){
+                        arrD[i]=ScanSampleFormatter.asDouble(sample);
+                        i++;
+                    }
+                    valuesArrayD.put(0,samples.size(),arrD,0);
+                    pvValue.appendPVField(device, valuesArrayD);
+                }
 
-            	retVal = new PVTopStructure(pvTop);
-            	final ScanContext scan_context = scan_server.getScanContext(id);
-            	if (scan_context != null)
-            	{
-            	    final DataLog log = scan_context.getDataLog().orElse(null);
-            	    if (log != null)
-            	    {
-            	        // TODO: Remember 'log', remove listener when done
-            	        log.addDataLogListener(new LogDataVTable(retVal));
-            	    }
-            	}
+                retVal = new PVTopStructure(pvTop);
+                final ScanContext scan_context = scan_server.getScanContext(id);
+                if (scan_context != null)
+                {
+                    final DataLog log = scan_context.getDataLog().orElse(null);
+                    if (log != null)
+                    {
+                        // TODO: Remember 'log', remove listener when done
+                        log.addDataLogListener(new LogDataVTable(retVal));
+                    }
+                }
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
 
 
         }
 
         else
         {
-        	// return empty table?
-        	Structure value = fieldCreate.createStructure(new String[0],
-					new Field[0]);
-			Structure top = fieldCreate.createStructure(
-					"uri:ev4:nt/2012/pwd:NTTable",
-					new String[] { "labels", "value" },
-					new Field[] {fieldCreate.createScalarArray(ScalarType.pvString), value});
+            // return empty table?
+            Structure value = fieldCreate.createStructure(new String[0],
+                    new Field[0]);
+            Structure top = fieldCreate.createStructure(
+                    "uri:ev4:nt/2012/pwd:NTTable",
+                    new String[] { "labels", "value" },
+                    new Field[] {fieldCreate.createScalarArray(ScalarType.pvString), value});
 
             PVStructure pvTop = pvDataCreate.createPVStructure(top);
 
-        	retVal = new PVTopStructure(pvTop);
+            retVal = new PVTopStructure(pvTop);
            // retVal =  new PVTopStructure(fieldCreate.createScalar(ScalarType.pvDouble));
         }
 
@@ -290,7 +290,7 @@ public class ChannelProviderImpl implements ChannelProvider {
     }
 
     private static final Status channelNotFoundStatus =
-             		statusCreate.createStatus(StatusType.ERROR, "channel not found", null);
+                     statusCreate.createStatus(StatusType.ERROR, "channel not found", null);
 
     @Override
     public Channel createChannel(String s, ChannelRequester channelRequester, short priority, String address) {
@@ -356,8 +356,8 @@ public class ChannelProviderImpl implements ChannelProvider {
 
             private final ChannelGetRequester channelGetRequester;
             private final PVStructure pvGetStructure;
-            private final BitSet bitSet;		// for user
-            private final BitSet activeBitSet;		// changed monitoring
+            private final BitSet bitSet;        // for user
+            private final BitSet activeBitSet;        // changed monitoring
             private final boolean process;
             private final AtomicBoolean firstGet = new AtomicBoolean(true);
 
@@ -371,7 +371,7 @@ public class ChannelProviderImpl implements ChannelProvider {
 
                 pvGetStructure = mapper.getCopyStructure();
                 activeBitSet = new BitSet(pvGetStructure.getNumberFields());
-                activeBitSet.set(0);	// initial get gets all
+                activeBitSet.set(0);    // initial get gets all
 
                 bitSet = new BitSet(pvGetStructure.getNumberFields());
 
@@ -428,8 +428,8 @@ public class ChannelProviderImpl implements ChannelProvider {
         {
             private final MonitorRequester monitorRequester;
             private final PVStructure pvGetStructure;
-            private final BitSet bitSet;		// for user
-            private final BitSet activeBitSet;		// changed monitoring
+            private final BitSet bitSet;        // for user
+            private final BitSet activeBitSet;        // changed monitoring
             private final AtomicBoolean started = new AtomicBoolean(false);
 
 
@@ -446,7 +446,7 @@ public class ChannelProviderImpl implements ChannelProvider {
 
                 pvGetStructure = mapper.getCopyStructure();
                 activeBitSet = new BitSet(pvGetStructure.getNumberFields());
-                activeBitSet.set(0);	// initial get gets all
+                activeBitSet.set(0);    // initial get gets all
 
                 bitSet = new BitSet(pvGetStructure.getNumberFields());
 
@@ -645,7 +645,7 @@ public class ChannelProviderImpl implements ChannelProvider {
         {
             private final ChannelPutRequester channelPutRequester;
             private final PVStructure pvPutStructure;
-            private final BitSet bitSet;		// for user
+            private final BitSet bitSet;        // for user
             private final boolean process;
 
             public ChannelPutImpl(PVTopStructure pvTopStructure, ChannelPutRequester channelPutRequester, PVStructure pvRequest)
@@ -785,7 +785,7 @@ public class ChannelProviderImpl implements ChannelProvider {
                 try
                 {
                     //if (process)
-                    //	pvTopStructure.process();
+                    //    pvTopStructure.process();
 
                     if(count<=0) count = pvArray.getLength() - offset;
                     int len = convert.copyScalarArray(pvArray, offset, pvCopy, 0, count);
@@ -1178,10 +1178,10 @@ public class ChannelProviderImpl implements ChannelProvider {
             if (channelRPCRequester == null)
                 throw new IllegalArgumentException("channelRPCRequester");
 
-			/*
-			if (pvRequest == null)
-				throw new IllegalArgumentException("pvRequest");
-			*/
+            /*
+            if (pvRequest == null)
+                throw new IllegalArgumentException("pvRequest");
+            */
 
             if (destroyed.get())
             {

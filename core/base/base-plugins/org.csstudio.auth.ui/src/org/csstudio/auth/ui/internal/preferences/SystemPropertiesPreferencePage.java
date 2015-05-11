@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.auth.ui.internal.preferences;
@@ -60,25 +60,25 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * Preference page for setting up defaults for system properties.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class SystemPropertiesPreferencePage extends PreferencePage
         implements IWorkbenchPreferencePage {
-    
-	/**
-	 * Column property name for the key column.
-	 */
-	private static final String KEY = "key"; //$NON-NLS-1$
-	
-	/**
-	 * Column property name for the value column.
-	 */
-	private static final String VALUE = "value"; //$NON-NLS-1$
-	
-	/**
-	 * Model representing the preference entries.
-	 */
+
+    /**
+     * Column property name for the key column.
+     */
+    private static final String KEY = "key"; //$NON-NLS-1$
+
+    /**
+     * Column property name for the value column.
+     */
+    private static final String VALUE = "value"; //$NON-NLS-1$
+
+    /**
+     * Model representing the preference entries.
+     */
     private PropertiesModel _properties;
 
     /**
@@ -90,27 +90,27 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         // Apply does not work anyway (system properties are set during startup)
         // and Reset is not supported currently.
         noDefaultAndApplyButton();
-        
+
         Composite contents = new Composite(parent, SWT.NULL);
         GridLayout layout = new GridLayout(2, false);
         layout.marginHeight = 0;
         layout.marginWidth = 0;
         contents.setLayout(layout);
         contents.setFont(parent.getFont());
-        
+
         Label about = new Label(contents, SWT.WRAP);
         about.setText(Messages.SystemPropertiesPreferencePage_ABOUT_TEXT);
         GridData data = new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1);
         data.widthHint = 300;
         about.setLayoutData(data);
-        
+
         final TableViewer viewer = new TableViewer(contents,
                 SWT.MULTI | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
         viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
         initializeTableViewer(viewer);
         viewer.setContentProvider(new PropertiesContentProvider());
         viewer.setLabelProvider(new PropertiesLabelProvider());
-        
+
         Button addButton = new Button(contents, SWT.PUSH);
         addButton.setText(Messages.SystemPropertiesPreferencePage_ADD_BUTTON);
         data = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
@@ -128,7 +128,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
                 }
             }
         });
-        
+
         final Button removeButton = new Button(contents, SWT.PUSH);
         removeButton.setText(Messages.SystemPropertiesPreferencePage_REMOVE_BUTTON);
         data = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false);
@@ -151,18 +151,18 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         // Add a selection listener to the viewer that will enable the
         // "Remove" button when at least one item is selected in the table.
         viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(final SelectionChangedEvent event) {
-				removeButton.setEnabled(!event.getSelection().isEmpty());
-			}
+            public void selectionChanged(final SelectionChangedEvent event) {
+                removeButton.setEnabled(!event.getSelection().isEmpty());
+            }
         });
-        
+
         _properties = new PropertiesModel();
         _properties.loadFromPreferences();
         viewer.setInput(_properties);
-        
+
         return contents;
     }
-    
+
     /**
      * Stores the entries in the preferences.
      * @return <code>true</code>.
@@ -172,7 +172,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         _properties.storeToPreferences();
         return true;
     }
-    
+
     /**
      * Initializes the table control.
      * @param viewer the viewer.
@@ -181,7 +181,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         Table table = viewer.getTable();
         table.setHeaderVisible(true);
         table.setLinesVisible(true);
-        
+
         viewer.setColumnProperties(new String[] {KEY, VALUE});
         TableColumn col;
         // first column: key
@@ -192,12 +192,12 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         col = new TableColumn(table, SWT.LEFT);
         col.setWidth(150);
         col.setText(Messages.SystemPropertiesPreferencePage_VALUE_COLUMN_LABEL);
-        
+
         CellEditor[] editors = new CellEditor[2];
         editors[0] = new TextCellEditor(table);
         editors[1] = new TextCellEditor(table);
         viewer.setCellEditors(editors);
-        
+
         // Add a cell modifier so values can be edited inline in the table
         viewer.setCellModifier(new ICellModifier() {
             public boolean canModify(final Object element, final String property) {
@@ -221,7 +221,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
                 if (element instanceof Item) {
                     element = ((Item) element).getData();
                 }
-                
+
                 SystemPropertyPreferenceEntry entry =
                     (SystemPropertyPreferenceEntry) element;
                 if (KEY.equals(property)) {
@@ -233,7 +233,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
             }
         });
     }
-    
+
 
     /**
      * {@inheritDoc}
@@ -241,25 +241,25 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
     public void init(final IWorkbench workbench) {
         // nothing to do
     }
-    
-    
+
+
     /**
      * Model representing the preference entries. An instance of this class is
      * used as the input element for the content provider. It will notify the
      * content provider when the entries in the model are changed.
      */
     private static class PropertiesModel {
-    	/**
-    	 * The entries.
-    	 */
+        /**
+         * The entries.
+         */
         private Collection<SystemPropertyPreferenceEntry> _entries =
             new ArrayList<SystemPropertyPreferenceEntry>();
-        
+
         /**
          * Content provider that gets notified when the entries are updated.
          */
         private PropertiesContentProvider _listener;
-        
+
         /**
          * Sets the content provider that will be notified when the entries
          * are updated.
@@ -268,7 +268,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         private void setListener(final PropertiesContentProvider provider) {
             _listener = provider;
         }
-        
+
         /**
          * Loads the entries from the preferences.
          */
@@ -280,7 +280,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
          * Stores the entries in the preferences.
          */
         private void storeToPreferences() {
-        	SystemPropertyPreferenceEntry.storeToPreferences(_entries);
+            SystemPropertyPreferenceEntry.storeToPreferences(_entries);
         }
 
         /**
@@ -293,7 +293,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
                 _listener.add(entry);
             }
         }
-        
+
         /**
          * Removes an entry from this model.
          * @param entry the entry.
@@ -314,12 +314,12 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         /**
          * The table viewer to which this provider provides content.
          */
-    	private TableViewer _viewer;
-        
+        private TableViewer _viewer;
+
         /**
          * {@inheritDoc}
          */
-    	public Object[] getElements(final Object inputElement) {
+        public Object[] getElements(final Object inputElement) {
             if (inputElement instanceof PropertiesModel) {
                 return ((PropertiesModel) inputElement)._entries.toArray();
             } else {
@@ -332,17 +332,17 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
          * underlying model.
          * @param entry the entry that was removed.
          */
-    	private void remove(final SystemPropertyPreferenceEntry entry) {
+        private void remove(final SystemPropertyPreferenceEntry entry) {
             if (_viewer != null) {
                 _viewer.remove(entry);
             }
         }
 
-    	/**
-    	 * Notifies this content provider that an entry was added to the
-    	 * underlying model.
-    	 * @param entry the entry that was added.
-    	 */
+        /**
+         * Notifies this content provider that an entry was added to the
+         * underlying model.
+         * @param entry the entry that was added.
+         */
         private void add(final SystemPropertyPreferenceEntry entry) {
             if (_viewer != null) {
                 _viewer.add(entry);
@@ -360,7 +360,7 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
          * {@inheritDoc}
          */
         public void inputChanged(final Viewer viewer, final Object oldInput,
-        		final Object newInput) {
+                final Object newInput) {
             if (viewer instanceof TableViewer) {
                 _viewer = (TableViewer) viewer;
             }
@@ -382,14 +382,14 @@ public final class SystemPropertiesPreferencePage extends PreferencePage
         /**
          * {@inheritDoc}
          */
-    	public Image getColumnImage(final Object element, final int columnIndex) {
+        public Image getColumnImage(final Object element, final int columnIndex) {
             return null;  // no images
         }
 
         /**
          * {@inheritDoc}
          */
-    	public String getColumnText(final Object element, final int columnIndex) {
+        public String getColumnText(final Object element, final int columnIndex) {
             if (element instanceof SystemPropertyPreferenceEntry) {
                 SystemPropertyPreferenceEntry entry =
                     (SystemPropertyPreferenceEntry) element;

@@ -66,7 +66,7 @@ public class OpenAsViewMenuAction implements IWorkbenchWindowActionDelegate {
             DisplayEditor editor = (DisplayEditor)activeEditor;
             RunModeService.getInstance().openDisplayViewInRunMode(editor.getFilePath());
         }
-        
+
     }
 
     /* (non-Javadoc)

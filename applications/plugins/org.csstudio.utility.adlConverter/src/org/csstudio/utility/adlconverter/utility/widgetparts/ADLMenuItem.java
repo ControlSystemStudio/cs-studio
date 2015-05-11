@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
 public class ADLMenuItem extends WidgetPart {
 
     private static final Logger LOG = LoggerFactory.getLogger(ADLMenuItem.class);
-    
+
     /**
      * The displayed text and description of the Action.
      */
@@ -85,7 +85,7 @@ public class ADLMenuItem extends WidgetPart {
 
     /**
      * The default constructor.
-     * 
+     *
      * @param menuItem
      *            An ADLWidget that correspond a ADL Menu Item.
      * @param parentWidgetModel
@@ -201,7 +201,7 @@ public class ADLMenuItem extends WidgetPart {
                 actionData = new ActionData();
             }
             if (_command.contains("StripHistoryToolAAPI")) {
-//                OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory(); 
+//                OpenDisplayActionModelFactory factory = new OpenDisplayActionModelFactory();
                 OpenDataBrowserActionModelFactory factory = new OpenDataBrowserActionModelFactory();
                 OpenDataBrowserActionModel action = (OpenDataBrowserActionModel) factory.createWidgetActionModel();
                 action.getProperty(OpenDataBrowserActionModel.PROP_DESCRIPTION).setPropertyValue(_label.replace('"', ' ').trim());

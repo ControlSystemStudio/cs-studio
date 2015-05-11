@@ -15,19 +15,19 @@ public class PVFieldTest implements PVFieldListener
     {
         TestSetup.setup();
     }
-    
+
     @Override
     public void updateField(final PVField field)
     {
-    	System.out.println("Field update: " + field);
-    	updates.countDown();
+        System.out.println("Field update: " + field);
+        updates.countDown();
     }
 
     @Test
     public void testPVField() throws Exception
     {
-    	final PVField field = new PVField(TestSetup.CHANNEL_NAME + ".VAL", "test");
-    	field.start(this);
+        final PVField field = new PVField(TestSetup.CHANNEL_NAME + ".VAL", "test");
+        field.start(this);
         updates.await();
         field.stop();
     }

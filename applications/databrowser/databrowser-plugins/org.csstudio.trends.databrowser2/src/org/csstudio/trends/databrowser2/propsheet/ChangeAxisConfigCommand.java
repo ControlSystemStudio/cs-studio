@@ -59,8 +59,8 @@ public class ChangeAxisConfigCommand extends UndoableAction
      */
     private void apply(final AxisConfig config)
     {
-    	if (axis.isVisible() != config.isVisible())
-    		axis.setVisible(config.isVisible());
+        if (axis.isVisible() != config.isVisible())
+            axis.setVisible(config.isVisible());
         if (! axis.getName().equals(config.getName()))
             axis.setName(config.getName());
         if (axis.isUsingAxisName() != config.isUsingAxisName())

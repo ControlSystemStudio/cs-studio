@@ -26,98 +26,98 @@ import java.util.List;
 
 /**
  * Maps data values to display coordinates.
- * 
+ *
  * @author Joerg Rathlev
  */
 interface IAxis {
 
-	/**
-	 * <p>Converts a data value to a display coordinate.</p>
-	 * 
-	 * <p>This method returns a coordinate for all data values for which a
-	 * coordinate can be calculated, even if the data value is not within the
-	 * data range of this axis. In other words, this method assumes an
-	 * infinitely large (more precisely,
-	 * {@code Integer.MIN_VALUE .. Integer.MAX_VALUE}) display. This behavior
-	 * is required for line graphs to make sure that the line is drawn with the
-	 * correct slope, even if some of the values it connects lie outside the
-	 * data range of the plot.</p>
-	 * 
-	 * <p>If the specified value cannot be converted to a coordinate (for
-	 * example, if this axis is a logarithmic axis and value is lower than or
-	 * equal to zero), the return value is unspecified. Clients should call
-	 * {@link #isLegalValue} to check whether a value can be converted to a
-	 * coordinate.</p>
-	 * 
-	 * @param value
-	 *            the data value.
-	 * @return the display coordinate.
-	 */
-	int valueToCoordinate(double value);
-	
-	/**
-	 * Checks whether the specified value is a legal value for this axis. Legal
-	 * values are all values that can be converted to display coordinates,
-	 * whether or not the value lies within the data range of this axis. An
-	 * example of an illegal value is a value lower than or equal to zero for an
-	 * axis with logarithmic scaling.
-	 * 
-	 * @param value
-	 *            the data value to check.
-	 * @return <code>true</code> if the value is legal, <code>false</code>
-	 *         otherwise.
-	 */
-	boolean isLegalValue(double value);
-	
-	/**
-	 * Calculates the ticks to display on this axis.
-	 * 
-	 * @param minMajorDistance
-	 *            the minimum distance of major ticks, in display units. Set
-	 *            this to a negative value or zero if you don't want any major
-	 *            ticks to be generated.
-	 * @param minMinorDistance
-	 *            the minimum distance of minor ticks, in display units. Set
-	 *            this to a negative value or zero if you don't want any minor
-	 *            ticks to be generated.
-	 * @return the list of ticks to display on this axis.
-	 */
-	List<Tick> calculateTicks(int minMajorDistance, int minMinorDistance);
+    /**
+     * <p>Converts a data value to a display coordinate.</p>
+     *
+     * <p>This method returns a coordinate for all data values for which a
+     * coordinate can be calculated, even if the data value is not within the
+     * data range of this axis. In other words, this method assumes an
+     * infinitely large (more precisely,
+     * {@code Integer.MIN_VALUE .. Integer.MAX_VALUE}) display. This behavior
+     * is required for line graphs to make sure that the line is drawn with the
+     * correct slope, even if some of the values it connects lie outside the
+     * data range of the plot.</p>
+     *
+     * <p>If the specified value cannot be converted to a coordinate (for
+     * example, if this axis is a logarithmic axis and value is lower than or
+     * equal to zero), the return value is unspecified. Clients should call
+     * {@link #isLegalValue} to check whether a value can be converted to a
+     * coordinate.</p>
+     *
+     * @param value
+     *            the data value.
+     * @return the display coordinate.
+     */
+    int valueToCoordinate(double value);
 
-	/**
-	 * Calculates the ticks to display on this axis. This method places major
-	 * tickmarks only at integral values.
-	 * 
-	 * @param minMajorDistance
-	 *            the minimum distance of major ticks, in display units. Set
-	 *            this to a negative value or zero if you don't want any major
-	 *            ticks to be generated.
-	 * @param minMinorDistance
-	 *            the minimum distance of minor ticks, in display units. Set
-	 *            this to a negative value or zero if you don't want any minor
-	 *            ticks to be generated.
-	 * @return the list of ticks to display on this axis.
-	 */
-	List<Tick> calculateIntegerTicks(int minMajorDistance, int minMinorDistance);
+    /**
+     * Checks whether the specified value is a legal value for this axis. Legal
+     * values are all values that can be converted to display coordinates,
+     * whether or not the value lies within the data range of this axis. An
+     * example of an illegal value is a value lower than or equal to zero for an
+     * axis with logarithmic scaling.
+     *
+     * @param value
+     *            the data value to check.
+     * @return <code>true</code> if the value is legal, <code>false</code>
+     *         otherwise.
+     */
+    boolean isLegalValue(double value);
 
-	/**
-	 * Sets the data range to a new range. The specified upper bound must be
-	 * greater than the specified lower bound. Implementations of this interface
-	 * may impose additional restrictions.
-	 * 
-	 * @param lower
-	 *            the new lower bound of the data range.
-	 * @param upper
-	 *            the new upper bound of the data range.
-	 */
-	void setDataRange(double lower, double upper);
+    /**
+     * Calculates the ticks to display on this axis.
+     *
+     * @param minMajorDistance
+     *            the minimum distance of major ticks, in display units. Set
+     *            this to a negative value or zero if you don't want any major
+     *            ticks to be generated.
+     * @param minMinorDistance
+     *            the minimum distance of minor ticks, in display units. Set
+     *            this to a negative value or zero if you don't want any minor
+     *            ticks to be generated.
+     * @return the list of ticks to display on this axis.
+     */
+    List<Tick> calculateTicks(int minMajorDistance, int minMinorDistance);
 
-	/**
-	 * Sets the display size to a new value.
-	 * 
-	 * @param size
-	 *            the new display size.
-	 */
-	void setDisplaySize(int size);
+    /**
+     * Calculates the ticks to display on this axis. This method places major
+     * tickmarks only at integral values.
+     *
+     * @param minMajorDistance
+     *            the minimum distance of major ticks, in display units. Set
+     *            this to a negative value or zero if you don't want any major
+     *            ticks to be generated.
+     * @param minMinorDistance
+     *            the minimum distance of minor ticks, in display units. Set
+     *            this to a negative value or zero if you don't want any minor
+     *            ticks to be generated.
+     * @return the list of ticks to display on this axis.
+     */
+    List<Tick> calculateIntegerTicks(int minMajorDistance, int minMinorDistance);
+
+    /**
+     * Sets the data range to a new range. The specified upper bound must be
+     * greater than the specified lower bound. Implementations of this interface
+     * may impose additional restrictions.
+     *
+     * @param lower
+     *            the new lower bound of the data range.
+     * @param upper
+     *            the new upper bound of the data range.
+     */
+    void setDataRange(double lower, double upper);
+
+    /**
+     * Sets the display size to a new value.
+     *
+     * @param size
+     *            the new display size.
+     */
+    void setDisplaySize(int size);
 
 }

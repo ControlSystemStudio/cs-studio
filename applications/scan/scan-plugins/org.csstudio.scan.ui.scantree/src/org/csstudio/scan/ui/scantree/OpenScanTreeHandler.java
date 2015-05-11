@@ -46,21 +46,21 @@ public class OpenScanTreeHandler extends AbstractHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-		final ScanInfo info = ScanHandlerUtil.getScanInfo(event);
-		if (info == null)
-			return null;
+        final ScanInfo info = ScanHandlerUtil.getScanInfo(event);
+        if (info == null)
+            return null;
 
-		final Shell shell = HandlerUtil.getActiveShellChecked(event);
-		if (info.getState() == ScanState.Logged)
-		{
-		    MessageDialog.openInformation(shell, Messages.OpenScanTreeError,
-		          NLS.bind(Messages.NoScanCommandsFmt, info.getName()));
-		    return null;
-		}
+        final Shell shell = HandlerUtil.getActiveShellChecked(event);
+        if (info.getState() == ScanState.Logged)
+        {
+            MessageDialog.openInformation(shell, Messages.OpenScanTreeError,
+                  NLS.bind(Messages.NoScanCommandsFmt, info.getName()));
+            return null;
+        }
 
-		final Display display = shell.getDisplay();
+        final Display display = shell.getDisplay();
 
-		// Use Job to read commands from server
+        // Use Job to read commands from server
         final Job job = new Job("Download Scan") //$NON-NLS-1$
         {
             @Override

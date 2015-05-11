@@ -64,7 +64,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         implements ILdapContentModelBuilder<T> {
 
     private static final Logger LOG = LoggerFactory.getLogger(LdapContentModelBuilder.class);
-    
+
     private ILdapSearchResult _searchResult;
     private final T _objectClassRoot;
     private final NameParser _parser;
@@ -73,10 +73,10 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * Constructor.
      * @param searchResult the search result to build the model from
      * @param objectClassRoot the model type
-     * @param nameParser 
+     * @param nameParser
      */
     public LdapContentModelBuilder(final T objectClassRoot,
-                                   final ILdapSearchResult searchResult, 
+                                   final ILdapSearchResult searchResult,
                                    final NameParser parser) {
         _searchResult = searchResult;
         _objectClassRoot = objectClassRoot;
@@ -86,9 +86,9 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
     /**
      * Constructor for builder that enriches an already existing model.
      * @param model the already filled model
-     * @param nameParser 
+     * @param nameParser
      */
-    public LdapContentModelBuilder(final ContentModel<T> model, 
+    public LdapContentModelBuilder(final ContentModel<T> model,
                                    final NameParser parser) {
         _objectClassRoot = model.getVirtualRoot().getType();
         setModel(model);
@@ -119,11 +119,11 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * Adds a given search result to the current LDAP content model.
      *
      * @param searchResult the search result .
-     * @param parser 
+     * @param parser
      * @return the enriched model
      */
     private ContentModel<T> addSearchResult(final ContentModel<T> model,
-                                            final ILdapSearchResult searchResult, 
+                                            final ILdapSearchResult searchResult,
                                             final NameParser parser) {
 
         if (searchResult != null) {
@@ -136,7 +136,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
                 List<SearchResult> answerList = new ArrayList<SearchResult>(searchResult.getAnswerSet());
                 Comparator<? super SearchResult> comparator = createSearchResultComparator(parser);
                 Collections.sort(answerList, comparator);
-                
+
                 for (final SearchResult row : answerList) {
                     final Attributes attributes = row.getAttributes();
                     final LdapName parsedName = (LdapName) parser.parse(row.getNameInNamespace());

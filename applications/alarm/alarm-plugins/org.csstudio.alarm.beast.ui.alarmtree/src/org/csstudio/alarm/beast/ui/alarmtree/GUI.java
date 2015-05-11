@@ -159,34 +159,34 @@ public class GUI implements AlarmClientModelListener
 
         final IPreferencesService service = Platform.getPreferencesService();
         final boolean allow_multiselection =
-        	service.getBoolean(Activator.ID, "allow_multi_selection", false, null); //$NON-NLS-1$
+            service.getBoolean(Activator.ID, "allow_multi_selection", false, null); //$NON-NLS-1$
 
         // Tree with single, max-width column
         final Tree tree =
-        	allow_multiselection
-        	? new MultiSelectionTree(tree_parent,
-        		// Must be virtual for ILazyTreeContentProvider
-        		SWT.VIRTUAL |
-        		// V_SCROLL seems automatic, but H_SCROLL can help when view is small
-        		SWT.H_SCROLL | SWT.V_SCROLL |
-    			// Used to have a border, not really needed
-        		// SWT.BORDER |
-        		// Used to have full-line-selection.
-        		// Actually looks better when only the elements are selected
-        		// SWT.FULL_SELECTION |
-        		// Multi-element selection
-        		// (via Shift-click, Ctrl-click).
-        		// with the original SWT.Tree is very slow
-        		// because of the way SWT preserves the selection
-        		// https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
-        		// With the patched MultiSelectionTree, it's OK
-        		SWT.MULTI)
+            allow_multiselection
+            ? new MultiSelectionTree(tree_parent,
+                // Must be virtual for ILazyTreeContentProvider
+                SWT.VIRTUAL |
+                // V_SCROLL seems automatic, but H_SCROLL can help when view is small
+                SWT.H_SCROLL | SWT.V_SCROLL |
+                // Used to have a border, not really needed
+                // SWT.BORDER |
+                // Used to have full-line-selection.
+                // Actually looks better when only the elements are selected
+                // SWT.FULL_SELECTION |
+                // Multi-element selection
+                // (via Shift-click, Ctrl-click).
+                // with the original SWT.Tree is very slow
+                // because of the way SWT preserves the selection
+                // https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
+                // With the patched MultiSelectionTree, it's OK
+                SWT.MULTI)
             : new Tree(tree_parent, SWT.VIRTUAL | SWT.H_SCROLL | SWT.V_SCROLL);
         tree.setLinesVisible(true);
         final TreeColumn column = new TreeColumn(tree,  SWT.LEFT);
         tree_layout.setColumnData(column, new ColumnWeightData(100, true));
 
-    	tree_viewer = new TreeViewer(tree);
+        tree_viewer = new TreeViewer(tree);
 
         // Connect tree viewer to data model
         tree_viewer.setUseHashlookup(true);
@@ -275,43 +275,43 @@ public class GUI implements AlarmClientModelListener
         final Shell shell = tree_viewer.getTree().getShell();
         final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
-		final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
-				.getUI());
+        final boolean isRcp = UI.RCP.equals(SingleSourcePlugin.getUIHelper()
+                .getUI());
 
         new ContextMenuHelper(null, manager, shell, items, model.isWriteAllowed());
         manager.add(new Separator());
-		if(model.isWriteAllowed())
-		{
-	        // Add edit items
-		    if (items.size() <= 0)
-		    {
-		        // Use the 'root' element as the parent
+        if(model.isWriteAllowed())
+        {
+            // Add edit items
+            if (items.size() <= 0)
+            {
+                // Use the 'root' element as the parent
                 manager.add(new AddComponentAction(shell, model, model.getConfigTree()));
-		    }
-		    else if (items.size() == 1)
-	        {
-	            final AlarmTreeItem item = items.get(0);
-	            // Allow configuration of single item
+            }
+            else if (items.size() == 1)
+            {
+                final AlarmTreeItem item = items.get(0);
+                // Allow configuration of single item
 
-		        manager.add(new ConfigureItemAction(shell, model, item));
-		        manager.add(new Separator());
-		        // Allow addition of items to all but PVs (leafs of tree)
-		        if (! (item instanceof AlarmTreePV))
-		        	manager.add(new AddComponentAction(shell, model, item));
-		        manager.add(new RenameItemAction(shell, model, item));
+                manager.add(new ConfigureItemAction(shell, model, item));
+                manager.add(new Separator());
+                // Allow addition of items to all but PVs (leafs of tree)
+                if (! (item instanceof AlarmTreePV))
+                    manager.add(new AddComponentAction(shell, model, item));
+                manager.add(new RenameItemAction(shell, model, item));
 
-		        if (items.get(0).getPosition() == AlarmTreePosition.PV)
-	                  manager.add(new DuplicatePVAction(shell, model,
-	                                                    (AlarmTreePV)items.get(0)));
-	        }
-	        if (items.size() >= 1)
-	        {   // Allow certain actions on one or more selected items
+                if (items.get(0).getPosition() == AlarmTreePosition.PV)
+                      manager.add(new DuplicatePVAction(shell, model,
+                                                        (AlarmTreePV)items.get(0)));
+            }
+            if (items.size() >= 1)
+            {   // Allow certain actions on one or more selected items
                 manager.add(new EnableComponentAction(shell, model, items));
-	            manager.add(new DisableComponentAction(shell, model, items));
-	            manager.add(new MoveItemAction(shell, model, items));
-	            manager.add(new RemoveComponentAction(shell, model, items));
-	        }
-		}
+                manager.add(new DisableComponentAction(shell, model, items));
+                manager.add(new MoveItemAction(shell, model, items));
+                manager.add(new RemoveComponentAction(shell, model, items));
+            }
+        }
         manager.add(new Separator());
         if(isRcp) {
             manager.add(new AlarmPerspectiveAction());
@@ -329,31 +329,31 @@ public class GUI implements AlarmClientModelListener
     /** Collapse the alarm tree */
     public void collapse()
     {
-    	final Tree tree = tree_viewer.getTree();
-		tree.setRedraw(false);
+        final Tree tree = tree_viewer.getTree();
+        tree.setRedraw(false);
 
-       	// This was very slow (>5 seconds for 50k PVs in 250 areas)
-    	// tree_viewer.collapseAll();
+           // This was very slow (>5 seconds for 50k PVs in 250 areas)
+        // tree_viewer.collapseAll();
         // tree_viewer.refresh(false);
 
-    	// Not much better:
-		//    	final TreePath[] expanded = tree_viewer.getExpandedTreePaths();
-		//    	for (TreePath path : expanded)
-		//    	{
-		//    		if (path.getSegmentCount() > 2)
-		//    			continue;
-		//    		tree_viewer.collapseToLevel(path, 1);
-		//    	}
+        // Not much better:
+        //        final TreePath[] expanded = tree_viewer.getExpandedTreePaths();
+        //        for (TreePath path : expanded)
+        //        {
+        //            if (path.getSegmentCount() > 2)
+        //                continue;
+        //            tree_viewer.collapseToLevel(path, 1);
+        //        }
 
-		// Fastest (<1 sec), collapsing just the first level of elements
-		final TreeItem[] items = tree.getItems();
-		for (TreeItem item : items)
-			item.setExpanded(false);
+        // Fastest (<1 sec), collapsing just the first level of elements
+        final TreeItem[] items = tree.getItems();
+        for (TreeItem item : items)
+            item.setExpanded(false);
 
-		// This was for Eclipse 3.6.2 under Windows (7)
-		// Implementation might need adjustment in later versions of SWT/JFace
+        // This was for Eclipse 3.6.2 under Windows (7)
+        // Implementation might need adjustment in later versions of SWT/JFace
 
-    	tree.setRedraw(true);
+        tree.setRedraw(true);
     }
 
     /** @return <code>true</code> if we only show alarms,
@@ -371,8 +371,8 @@ public class GUI implements AlarmClientModelListener
         show_only_alarms = only_alarms;
         tree_viewer.refresh();
         // Expanding the whole tree can be very expensive
-		//        if (show_only_alarms)
-		//            tree_viewer.expandAll();
+        //        if (show_only_alarms)
+        //            tree_viewer.expandAll();
     }
 
     // @see AlarmClientModelListener
@@ -470,16 +470,16 @@ public class GUI implements AlarmClientModelListener
                     // needs to be refreshed
 
                     tree_viewer.update(pv, null);
-                	if (parent_changed)
-            		{	// Update parents up to root
-            			AlarmTreeItem item = pv.getParent();
-            			while (! (item instanceof AlarmTreeRoot))
-	                	{
-	            			// Parent could become hidden with its PV
-           				    tree_viewer.update(item,null);
-	                		item = item.getParent();
-	                	}
-            		}
+                    if (parent_changed)
+                    {    // Update parents up to root
+                        AlarmTreeItem item = pv.getParent();
+                        while (! (item instanceof AlarmTreeRoot))
+                        {
+                            // Parent could become hidden with its PV
+                               tree_viewer.update(item,null);
+                            item = item.getParent();
+                        }
+                    }
                 }
             });
         }

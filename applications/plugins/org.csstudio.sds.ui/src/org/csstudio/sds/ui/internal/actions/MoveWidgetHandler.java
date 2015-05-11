@@ -41,15 +41,15 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Moves a widget, over shortcuts, in edit mode on the Display.
- * 
+ *
  * @author Helge Rickens <css-desy@desy.de>
  * @author $Author: $
  * @since 20.10.2010
  */
 public class MoveWidgetHandler extends AbstractHandler {
-    
+
     private static final int COMMAND_ASSOCIATION_TIME = 510;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -75,7 +75,7 @@ public class MoveWidgetHandler extends AbstractHandler {
         }
         return null;
     }
-    
+
     private void createAndExecuteCommand(AbstractWidgetModel model,
                                          Event trigger,
                                          CommandStack commandStack) {

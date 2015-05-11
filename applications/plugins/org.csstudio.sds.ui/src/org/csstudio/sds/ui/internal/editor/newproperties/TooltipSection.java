@@ -14,112 +14,112 @@ import org.eclipse.swt.SWT;
 
 /**
  * Section implementation for {@link TooltipProperty}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class TooltipSection extends AbstractTextSection<TooltipProperty, String> {
 
-	public TooltipSection(String propertyId) {
-		super(propertyId);
-	}
+    public TooltipSection(String propertyId) {
+        super(propertyId);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public int getTextHeight() {
-		return STANDARD_WIDGET_HEIGHT * 6;
-	}
-	
-	@Override
-	protected int getTextControlStyle() {
-		return SWT.MULTI | SWT.V_SCROLL;
-	}
-	
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected String getConvertedValue(String text) {
-		return text;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected int getProposalAcceptanceStyle() {
-		return ContentProposalAdapter.PROPOSAL_INSERT;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public int getTextHeight() {
+        return STANDARD_WIDGET_HEIGHT * 6;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doRefreshControls(TooltipProperty widgetProperty) {
-		if (widgetProperty != null && !widgetProperty.getPropertyValue().toString().equals(getTextControl().getText())) {
-			getTextControl().setText(widgetProperty.getPropertyValue().toString());
-		}
-	}
+    @Override
+    protected int getTextControlStyle() {
+        return SWT.MULTI | SWT.V_SCROLL;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected List<IContentProposal> getContentProposals(TooltipProperty property, AbstractWidgetModel selectedWidget,
-			List<AbstractWidgetModel> selectedWidgets) {
-		List<IContentProposal> proposals = new ArrayList<IContentProposal>();
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected String getConvertedValue(String text) {
+        return text;
+    }
 
-		// .. collect property proposals
-		if (selectedWidgets != null && selectedWidgets.size() > 0) {
-			Set<String> props = new HashSet<String>();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int getProposalAcceptanceStyle() {
+        return ContentProposalAdapter.PROPOSAL_INSERT;
+    }
 
-			// .. we only display proposals for properties that are currently visible on all selected widgets
-			props.addAll(selectedWidgets.get(0).getVisiblePropertyIds());
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doRefreshControls(TooltipProperty widgetProperty) {
+        if (widgetProperty != null && !widgetProperty.getPropertyValue().toString().equals(getTextControl().getText())) {
+            getTextControl().setText(widgetProperty.getPropertyValue().toString());
+        }
+    }
 
-			for (AbstractWidgetModel widget : selectedWidgets) {
-				props.retainAll(widget.getVisiblePropertyIds());
-			}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected List<IContentProposal> getContentProposals(TooltipProperty property, AbstractWidgetModel selectedWidget,
+            List<AbstractWidgetModel> selectedWidgets) {
+        List<IContentProposal> proposals = new ArrayList<IContentProposal>();
 
-			for (String propertyId : props) {
-				proposals.add(new WidgetPropertContentProposal(selectedWidgets.get(0).getPropertyInternal(propertyId)));
-			}
+        // .. collect property proposals
+        if (selectedWidgets != null && selectedWidgets.size() > 0) {
+            Set<String> props = new HashSet<String>();
 
-		}
+            // .. we only display proposals for properties that are currently visible on all selected widgets
+            props.addAll(selectedWidgets.get(0).getVisiblePropertyIds());
 
-		return proposals;
-	}
+            for (AbstractWidgetModel widget : selectedWidgets) {
+                props.retainAll(widget.getVisiblePropertyIds());
+            }
 
-	/**
-	 * Describes a proposal.
-	 * 
-	 * @author Sven Wende
-	 */
-	private static final class WidgetPropertContentProposal implements IContentProposal {
-		private WidgetProperty property;
+            for (String propertyId : props) {
+                proposals.add(new WidgetPropertContentProposal(selectedWidgets.get(0).getPropertyInternal(propertyId)));
+            }
 
-		private WidgetPropertContentProposal(WidgetProperty property) {
-			assert property != null;
-			this.property = property;
-		}
+        }
 
-		public String getContent() {
-			return "${" + property.getId() + "}";
-		}
+        return proposals;
+    }
 
-		public int getCursorPosition() {
-			return 0;
-		}
+    /**
+     * Describes a proposal.
+     *
+     * @author Sven Wende
+     */
+    private static final class WidgetPropertContentProposal implements IContentProposal {
+        private WidgetProperty property;
 
-		public String getDescription() {
-			return property.getDescription();
-		}
+        private WidgetPropertContentProposal(WidgetProperty property) {
+            assert property != null;
+            this.property = property;
+        }
 
-		public String getLabel() {
-			return property.getDescription();
-		}
+        public String getContent() {
+            return "${" + property.getId() + "}";
+        }
 
-	}
+        public int getCursorPosition() {
+            return 0;
+        }
+
+        public String getDescription() {
+            return property.getDescription();
+        }
+
+        public String getLabel() {
+            return property.getDescription();
+        }
+
+    }
 
 }

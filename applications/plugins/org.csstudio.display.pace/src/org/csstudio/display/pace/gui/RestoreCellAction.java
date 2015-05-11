@@ -13,13 +13,13 @@ import org.eclipse.jface.action.Action;
 
 /** Action that restores a cell's value to the original value,
  *  replacing the "user" value.
- *  
+ *
  *  @author Kay Kasemir
- *  
+ *
  *    reviewed by Delphy 01/29/09
  */
 public class RestoreCellAction extends Action
-{   
+{
     final private Cell cells[];
 
     public RestoreCellAction(final Cell[] cells)

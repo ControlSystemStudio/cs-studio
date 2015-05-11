@@ -21,7 +21,7 @@ public class OpenPerspectiveAction extends Action
 {
     /** ID of the Perspective to open */
     final private String ID;
-    
+
     /** Construct the action for opening a perspective.
      *  @param icon Icon to use for the action.
      *  @param name Name to use for the action.
@@ -34,7 +34,7 @@ public class OpenPerspectiveAction extends Action
         setImageDescriptor(icon);
         this.ID = ID;
     }
-    
+
     @Override
     public void run()
     {

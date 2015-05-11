@@ -35,14 +35,14 @@ public class ScanScript
 {
     /** Scan scripts may have arguments,
      *  and their constructor will be called with those arguments.
-     *  
+     *
      *  <p>The default implementation has no arguments.
      */
     public ScanScript()
     {
         // Nop
     }
-    
+
     /** Scan scripts that intend to access devices
      *  need to list their names.
      *  This allows the scan system to connect to the
@@ -61,14 +61,14 @@ public class ScanScript
         return new String[0];
     }
 
-	/** The <code>run</code> method is invoked by the scan server
-	 *  to execute the script
-	 *  @param context Access to logged data, devices, ...
-	 */
-	public void run(final ScanScriptContext context)
-	{
-		// Default doesn't do anything
-		// Script can read log data, perform computation,
-		// write result to devices
-	}
+    /** The <code>run</code> method is invoked by the scan server
+     *  to execute the script
+     *  @param context Access to logged data, devices, ...
+     */
+    public void run(final ScanScriptContext context)
+    {
+        // Default doesn't do anything
+        // Script can read log data, perform computation,
+        // write result to devices
+    }
 }

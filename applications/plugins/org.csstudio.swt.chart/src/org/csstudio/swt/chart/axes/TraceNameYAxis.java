@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.Point;
  *  <p>
  *  The chart maintains one or more Y axes.
  *  Each trace to plot needs to be assigned to a Y axis.
- *  
+ *
  *  @see Trace
  *  @author Kay Kasemir
  */
@@ -32,13 +32,13 @@ public class TraceNameYAxis extends YAxis
     private int row_items[];
     /** Pixel width (or height, since they're vertical) of each row. */
     private int row_widths[];
-    
+
     /** @see YAxis#YAxis */
     public TraceNameYAxis(String label, YAxisListener listener)
     {
         super(label, listener);
     }
-    
+
     // In addition to inherited bahavior, trigger a new layout
     @Override
     public final void addTrace(Trace trace)
@@ -56,7 +56,7 @@ public class TraceNameYAxis extends YAxis
         super.removeTrace(trace);
         fireEvent(YAxisListener.Aspect.LABEL);
     }
-    
+
     // In addition to inherited bahavior, trigger a new layout
     @Override
     public final void setRegion(int x, int y, int width, int height)
@@ -108,7 +108,7 @@ public class TraceNameYAxis extends YAxis
             row_widths[i] = widths.get(i).intValue();
         traces_changed = false;
     }
-    
+
     @Override
     public final int getPixelWidth(final GC gc)
     {
@@ -139,7 +139,7 @@ public class TraceNameYAxis extends YAxis
         // y+height = botton, then go up by half the 'extra'
         int y = region.y + (region.height + row_widths[row])/2;
         Color fg = gc.getForeground();
-    	
+
         for (int i=0; i<getNumTraces(); ++i)
         {
             String name = getTrace(i).getName();
@@ -154,7 +154,7 @@ public class TraceNameYAxis extends YAxis
                 items = 0;
             }
             y -= name_width;
-            
+
             GraphicsUtils.drawVerticalText(name, x, y, gc, SWT.UP);
             gc.setForeground(fg); // restore original fg
             if (i < getNumTraces()-1)

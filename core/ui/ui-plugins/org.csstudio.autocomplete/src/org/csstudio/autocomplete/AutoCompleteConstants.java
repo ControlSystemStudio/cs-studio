@@ -9,14 +9,14 @@ package org.csstudio.autocomplete;
 
 /**
  * Common used constants.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteConstants {
 
-	public static final String FORMULA_PREFIX = "="; //$NON-NLS-1$
-	public static final String DATA_SOURCE_NAME_SEPARATOR = "://"; //$NON-NLS-1$
-	public static final String WILDCARD_SINGLE_REPLACE = "?"; //$NON-NLS-1$
-	public static final String WILDCARD_MULTI_REPLACE = "*"; //$NON-NLS-1$
+    public static final String FORMULA_PREFIX = "="; //$NON-NLS-1$
+    public static final String DATA_SOURCE_NAME_SEPARATOR = "://"; //$NON-NLS-1$
+    public static final String WILDCARD_SINGLE_REPLACE = "?"; //$NON-NLS-1$
+    public static final String WILDCARD_MULTI_REPLACE = "*"; //$NON-NLS-1$
 
 }

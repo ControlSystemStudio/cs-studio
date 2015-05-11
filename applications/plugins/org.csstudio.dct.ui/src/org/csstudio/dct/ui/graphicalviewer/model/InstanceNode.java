@@ -5,27 +5,27 @@ import org.csstudio.dct.util.AliasResolutionUtil;
 
 /**
  * Box node that represents {@link IInstance}s in the graphical model.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class InstanceNode extends AbstractContainerNode<IInstance> {
-	/**
-	 * Standard constructor.
-	 * 
-	 * @param instance
-	 *            the dct instance that is represented graphically
-	 */
-	public InstanceNode(IInstance instance) {
-		super(instance);
-	}
+    /**
+     * Standard constructor.
+     *
+     * @param instance
+     *            the dct instance that is represented graphically
+     */
+    public InstanceNode(IInstance instance) {
+        super(instance);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected String doGetCaption(IInstance instance) {
-		return AliasResolutionUtil.getNameFromHierarchy(instance);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected String doGetCaption(IInstance instance) {
+        return AliasResolutionUtil.getNameFromHierarchy(instance);
+    }
 
 }

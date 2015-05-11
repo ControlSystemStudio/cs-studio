@@ -30,178 +30,178 @@ import org.eclipse.gef.RequestConstants;
 /**
  * EditPart controller for the ActioButton widget. The controller mediates
  * between {@link ActionButtonModel} and {@link ActionButtonFigure2}.
- * 
+ *
  * @author Sven Wende (class of same name in SDS)
  * @author Xihui Chen
- * 
+ *
  */
 public class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 
-	private IButtonEditPartDelegate delegate;
+    private IButtonEditPartDelegate delegate;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		ActionButtonModel model = getWidgetModel();
-		
-		switch (model.getStyle()) {
-		case NATIVE:
-			this.delegate = new NativeButtonEditPartDelegate(this);
-			break;
-		case CLASSIC:
-		default:
-			this.delegate = new Draw2DButtonEditPartDelegate(this);
-			break;
-		}
-		updatePropSheet();	
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
-		return delegate.doCreateFigure();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        ActionButtonModel model = getWidgetModel();
 
-	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		if (getExecutionMode() == ExecutionMode.EDIT_MODE)
-			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
-					new TextDirectEditPolicy());
-	}
+        switch (model.getStyle()) {
+        case NATIVE:
+            this.delegate = new NativeButtonEditPartDelegate(this);
+            break;
+        case CLASSIC:
+        default:
+            this.delegate = new Draw2DButtonEditPartDelegate(this);
+            break;
+        }
+        updatePropSheet();
+        markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
+        return delegate.doCreateFigure();
+    }
 
-	@Override
-	public void performRequest(Request request) {
-		if (getExecutionMode() == ExecutionMode.EDIT_MODE
-				&& (request.getType() == RequestConstants.REQ_DIRECT_EDIT || request
-						.getType() == RequestConstants.REQ_OPEN))
-			new TextEditManager(this, new LabelCellEditorLocator(getFigure()),
-					false).show();
-	}
+    @Override
+    protected void createEditPolicies() {
+        super.createEditPolicies();
+        if (getExecutionMode() == ExecutionMode.EDIT_MODE)
+            installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE,
+                    new TextDirectEditPolicy());
+    }
 
-	@Override
-	protected void hookMouseClickAction() {
-		delegate.hookMouseClickAction();
-	}
+    @Override
+    public void performRequest(Request request) {
+        if (getExecutionMode() == ExecutionMode.EDIT_MODE
+                && (request.getType() == RequestConstants.REQ_DIRECT_EDIT || request
+                        .getType() == RequestConstants.REQ_OPEN))
+            new TextEditManager(this, new LabelCellEditorLocator(getFigure()),
+                    false).show();
+    }
 
-	@Override
-	public List<AbstractWidgetAction> getHookedActions() {
-		ActionButtonModel widgetModel = getWidgetModel();
-		boolean isSelected = delegate.isSelected();
-		return getHookedActionsForButton(widgetModel, isSelected);
+    @Override
+    protected void hookMouseClickAction() {
+        delegate.hookMouseClickAction();
+    }
 
-	}
+    @Override
+    public List<AbstractWidgetAction> getHookedActions() {
+        ActionButtonModel widgetModel = getWidgetModel();
+        boolean isSelected = delegate.isSelected();
+        return getHookedActionsForButton(widgetModel, isSelected);
 
-	/**
-	 * A shared static method for all button widgets.
-	 * 
-	 * @param widgetModel
-	 * @param isSelected
-	 * @return
-	 */
-	public static List<AbstractWidgetAction> getHookedActionsForButton(
-			ActionButtonModel widgetModel, boolean isSelected) {
-		int actionIndex;
+    }
 
-		if (widgetModel.isToggleButton()) {
-			if (isSelected) {
-				actionIndex = widgetModel.getActionIndex();
-			} else
-				actionIndex = widgetModel.getReleasedActionIndex();
-		} else
-			actionIndex = widgetModel.getActionIndex();
+    /**
+     * A shared static method for all button widgets.
+     *
+     * @param widgetModel
+     * @param isSelected
+     * @return
+     */
+    public static List<AbstractWidgetAction> getHookedActionsForButton(
+            ActionButtonModel widgetModel, boolean isSelected) {
+        int actionIndex;
 
-		ActionsInput actionsInput = widgetModel.getActionsInput();
-		if (actionsInput.getActionsList().size() <= 0)
-			return null;
-		if (actionsInput.isHookUpAllActionsToWidget())
-			return actionsInput.getActionsList();
+        if (widgetModel.isToggleButton()) {
+            if (isSelected) {
+                actionIndex = widgetModel.getActionIndex();
+            } else
+                actionIndex = widgetModel.getReleasedActionIndex();
+        } else
+            actionIndex = widgetModel.getActionIndex();
 
-		if (actionIndex >= 0
-				&& actionsInput.getActionsList().size() > actionIndex) {
-			return widgetModel.getActionsInput().getActionsList()
-					.subList(actionIndex, actionIndex + 1);
-		}
+        ActionsInput actionsInput = widgetModel.getActionsInput();
+        if (actionsInput.getActionsList().size() <= 0)
+            return null;
+        if (actionsInput.isHookUpAllActionsToWidget())
+            return actionsInput.getActionsList();
 
-		if (actionIndex == -1)
-			return actionsInput.getActionsList();
+        if (actionIndex >= 0
+                && actionsInput.getActionsList().size() > actionIndex) {
+            return widgetModel.getActionsInput().getActionsList()
+                    .subList(actionIndex, actionIndex + 1);
+        }
 
-		return null;
-	}
+        if (actionIndex == -1)
+            return actionsInput.getActionsList();
 
-	@Override
-	public ActionButtonModel getWidgetModel() {
-		return (ActionButtonModel) getModel();
-	}
+        return null;
+    }
 
-	@Override
-	public void deactivate() {
-		super.deactivate();
-		delegate.deactivate();
-	}
+    @Override
+    public ActionButtonModel getWidgetModel() {
+        return (ActionButtonModel) getModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
+    @Override
+    public void deactivate() {
+        super.deactivate();
+        delegate.deactivate();
+    }
 
-		PropertyChangeListener styleListener = new PropertyChangeListener() {
-			
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				AbstractWidgetModel model = getWidgetModel();
-				WidgetDescriptor descriptor = 
-						WidgetsService.getInstance().getWidgetDescriptor(model.getTypeID());
-				String type = descriptor == null? model.getTypeID().substring(
-						model.getTypeID().lastIndexOf(".")+1) :	descriptor.getName();
-				model.setPropertyValue(AbstractWidgetModel.PROP_WIDGET_TYPE, type);
-				AbstractContainerModel parent = model.getParent();
-				parent.removeChild(model);
-				parent.addChild(model);
-				parent.selectWidget(model, true);				
-			}
-		};
-		getWidgetModel().getProperty(ActionButtonModel.PROP_STYLE).addPropertyChangeListener(
-				styleListener);
-		updatePropSheet();	
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
 
-		delegate.registerPropertyChangeHandlers();
-	}
+        PropertyChangeListener styleListener = new PropertyChangeListener() {
 
-	/**
-	 * @param newValue
-	 */
-	protected void updatePropSheet() {
-		boolean isToggle = getWidgetModel().isToggleButton();
-		getWidgetModel().setPropertyVisible(
-				ActionButtonModel.PROP_RELEASED_ACTION_INDEX, isToggle);
-		getWidgetModel().setPropertyDescription(
-				ActionButtonModel.PROP_ACTION_INDEX,
-				isToggle ? "Push Action Index" : "Click Action Index");
-		boolean isDraw2DButton = delegate instanceof Draw2DButtonEditPartDelegate;
-		getWidgetModel().setPropertyVisible(AbstractWidgetModel.PROP_COLOR_BACKGROUND, 
-				isDraw2DButton);
-		getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_BACKCOLOR_ALARMSENSITIVE, 
-				isDraw2DButton);
-		getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_ALARM_PULSING, 
-				isDraw2DButton);		
-	}
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                AbstractWidgetModel model = getWidgetModel();
+                WidgetDescriptor descriptor =
+                        WidgetsService.getInstance().getWidgetDescriptor(model.getTypeID());
+                String type = descriptor == null? model.getTypeID().substring(
+                        model.getTypeID().lastIndexOf(".")+1) :    descriptor.getName();
+                model.setPropertyValue(AbstractWidgetModel.PROP_WIDGET_TYPE, type);
+                AbstractContainerModel parent = model.getParent();
+                parent.removeChild(model);
+                parent.addChild(model);
+                parent.selectWidget(model, true);
+            }
+        };
+        getWidgetModel().getProperty(ActionButtonModel.PROP_STYLE).addPropertyChangeListener(
+                styleListener);
+        updatePropSheet();
 
-	@Override
-	public void setValue(Object value) {
-		delegate.setValue(value);
-	}
+        delegate.registerPropertyChangeHandlers();
+    }
 
-	@Override
-	public Object getValue() {
-		return delegate.getValue();
-	}
+    /**
+     * @param newValue
+     */
+    protected void updatePropSheet() {
+        boolean isToggle = getWidgetModel().isToggleButton();
+        getWidgetModel().setPropertyVisible(
+                ActionButtonModel.PROP_RELEASED_ACTION_INDEX, isToggle);
+        getWidgetModel().setPropertyDescription(
+                ActionButtonModel.PROP_ACTION_INDEX,
+                isToggle ? "Push Action Index" : "Click Action Index");
+        boolean isDraw2DButton = delegate instanceof Draw2DButtonEditPartDelegate;
+        getWidgetModel().setPropertyVisible(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
+                isDraw2DButton);
+        getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_BACKCOLOR_ALARMSENSITIVE,
+                isDraw2DButton);
+        getWidgetModel().setPropertyVisible(ActionButtonModel.PROP_ALARM_PULSING,
+                isDraw2DButton);
+    }
 
-	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
-		if (key == ITextFigure.class)
-			return getFigure();
+    @Override
+    public void setValue(Object value) {
+        delegate.setValue(value);
+    }
 
-		return super.getAdapter(key);
-	}
+    @Override
+    public Object getValue() {
+        return delegate.getValue();
+    }
+
+    @Override
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
+        if (key == ITextFigure.class)
+            return getFigure();
+
+        return super.getAdapter(key);
+    }
 
 }

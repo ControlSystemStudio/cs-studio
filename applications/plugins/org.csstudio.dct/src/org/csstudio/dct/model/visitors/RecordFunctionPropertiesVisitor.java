@@ -9,27 +9,27 @@ import org.csstudio.dct.model.IRecord;
 /**
  * Visitor that equips all abstract records of a project with properties that
  * belong to {@link IRecordFunction} extensions.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordFunctionPropertiesVisitor extends AbstractVisitor {
-	private Map<String, String> properties;
+    private Map<String, String> properties;
 
-	public RecordFunctionPropertiesVisitor( Map<String, String> properties) {
-		this.properties = properties;
-	}
+    public RecordFunctionPropertiesVisitor( Map<String, String> properties) {
+        this.properties = properties;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IRecord record) {
-		if (record.isAbstract()) {
-			for (String key : properties.keySet()) {
-				if (!record.getProperties().containsKey(key)) {
-					record.addProperty(key, properties.get(key));
-				}
-			}
-		}
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IRecord record) {
+        if (record.isAbstract()) {
+            for (String key : properties.keySet()) {
+                if (!record.getProperties().containsKey(key)) {
+                    record.addProperty(key, properties.get(key));
+                }
+            }
+        }
+    }
 }

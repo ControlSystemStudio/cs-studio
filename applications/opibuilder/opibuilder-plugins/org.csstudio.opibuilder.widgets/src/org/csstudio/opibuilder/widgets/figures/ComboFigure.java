@@ -26,65 +26,65 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class ComboFigure extends AbstractSWTWidgetFigure<Combo> {
 
-	
-	Triangle selector;
-	private final static Color GRAY_COLOR = 
-		CustomMediaFactory.getInstance().getColor(240,240,240);
-	private final static Color DARK_GRAY_COLOR = 
-		CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_DARK_GRAY);
 
-	private static final int SELECTOR_WIDTH = 8;
+    Triangle selector;
+    private final static Color GRAY_COLOR =
+        CustomMediaFactory.getInstance().getColor(240,240,240);
+    private final static Color DARK_GRAY_COLOR =
+        CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_DARK_GRAY);
 
-	private Combo combo;
-	
-	public ComboFigure(AbstractBaseEditPart editPart) {
-		super(editPart);		
-		if(!runmode){
-			selector = new Triangle();	
-			selector.setBackgroundColor(DARK_GRAY_COLOR);
-			selector.setDirection(PositionConstants.SOUTH);
-			selector.setFill(true);
-			add(selector);
-		}				
-		
-	}
-	
-	@Override
-	protected Combo createSWTWidget(Composite parent, int style) {
-		combo= new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
-		return combo;
-	}
-	
-	@Override
-	protected void layout() {
-		super.layout();
-		if(!runmode){
-			Rectangle clientArea = getClientArea().getCopy().shrink(2, 2);
-			selector.setBounds(new Rectangle(clientArea.x + clientArea.width - SELECTOR_WIDTH -2,
-					clientArea.y, SELECTOR_WIDTH, clientArea.height));
-		}
-	}
-	
-	@Override
-	protected void paintOutlineFigure(Graphics graphics) {
-		// draw this so that it can be seen in the outline view
-		if (!runmode) {
-			Rectangle clientArea = getClientArea().getCopy().shrink(2, 2);
-			graphics.setBackgroundColor(GRAY_COLOR);
-			graphics.fillRectangle(clientArea);
-			graphics.setForegroundColor(DARK_GRAY_COLOR);
-			graphics.drawRectangle(new Rectangle(clientArea.getLocation(),
-					clientArea.getSize().shrink(1, 1)));
-		}
-	}
-	
-	public void setText(String text) {
-		combo.setText(text);
-	}
-	
-	public Dimension getAutoSizeDimension(){
-		return new Dimension(getBounds().width, 
-				combo.computeSize(SWT.DEFAULT, SWT.DEFAULT).y + getInsets().getHeight());
-	}	
-	
+    private static final int SELECTOR_WIDTH = 8;
+
+    private Combo combo;
+
+    public ComboFigure(AbstractBaseEditPart editPart) {
+        super(editPart);
+        if(!runmode){
+            selector = new Triangle();
+            selector.setBackgroundColor(DARK_GRAY_COLOR);
+            selector.setDirection(PositionConstants.SOUTH);
+            selector.setFill(true);
+            add(selector);
+        }
+
+    }
+
+    @Override
+    protected Combo createSWTWidget(Composite parent, int style) {
+        combo= new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+        return combo;
+    }
+
+    @Override
+    protected void layout() {
+        super.layout();
+        if(!runmode){
+            Rectangle clientArea = getClientArea().getCopy().shrink(2, 2);
+            selector.setBounds(new Rectangle(clientArea.x + clientArea.width - SELECTOR_WIDTH -2,
+                    clientArea.y, SELECTOR_WIDTH, clientArea.height));
+        }
+    }
+
+    @Override
+    protected void paintOutlineFigure(Graphics graphics) {
+        // draw this so that it can be seen in the outline view
+        if (!runmode) {
+            Rectangle clientArea = getClientArea().getCopy().shrink(2, 2);
+            graphics.setBackgroundColor(GRAY_COLOR);
+            graphics.fillRectangle(clientArea);
+            graphics.setForegroundColor(DARK_GRAY_COLOR);
+            graphics.drawRectangle(new Rectangle(clientArea.getLocation(),
+                    clientArea.getSize().shrink(1, 1)));
+        }
+    }
+
+    public void setText(String text) {
+        combo.setText(text);
+    }
+
+    public Dimension getAutoSizeDimension(){
+        return new Dimension(getBounds().width,
+                combo.computeSize(SWT.DEFAULT, SWT.DEFAULT).y + getInsets().getHeight());
+    }
+
 }

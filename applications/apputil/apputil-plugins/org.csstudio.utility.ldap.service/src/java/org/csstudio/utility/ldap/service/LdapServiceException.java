@@ -24,12 +24,12 @@ package org.csstudio.utility.ldap.service;
 
 /**
  * Dedicated service exception.
- * 
+ *
  * @author bknerr
  * @since 18.05.2011
  */
 public class LdapServiceException extends Exception {
-    
+
     private static final long serialVersionUID = -5731228959253970022L;
 
     /**

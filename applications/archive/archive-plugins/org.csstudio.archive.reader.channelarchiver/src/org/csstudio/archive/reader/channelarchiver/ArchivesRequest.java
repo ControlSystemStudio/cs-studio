@@ -19,54 +19,54 @@ import org.csstudio.archive.reader.ArchiveInfo;
  */
 public class ArchivesRequest
 {
-	private ArchiveInfo archive_infos[];
+    private ArchiveInfo archive_infos[];
 
-	/** Read info from data server */
-	@SuppressWarnings({ "nls", "unchecked" })
+    /** Read info from data server */
+    @SuppressWarnings({ "nls", "unchecked" })
     public void read(XmlRpcClient xmlrpc) throws Exception
-	{
-		Vector<?> result;
-		try
-		{
-			final Vector<Object> params = new Vector<Object>();
-			result = (Vector<?>) xmlrpc.execute("archiver.archives", params);
-		}
-		catch (XmlRpcException e)
-		{
-			throw new Exception("archiver.archives call failed", e);
-		}
+    {
+        Vector<?> result;
+        try
+        {
+            final Vector<Object> params = new Vector<Object>();
+            result = (Vector<?>) xmlrpc.execute("archiver.archives", params);
+        }
+        catch (XmlRpcException e)
+        {
+            throw new Exception("archiver.archives call failed", e);
+        }
 
-		//	{  int32 key,
-		//     string name,
-		//     string path }[] = archiver.archives()
+        //    {  int32 key,
+        //     string name,
+        //     string path }[] = archiver.archives()
         archive_infos = new ArchiveInfo[result.size()];
-		for (int i=0; i<result.size(); ++i)
-		{
-			final Hashtable<String,Object> info =
-			    (Hashtable<String,Object>) result.get(i);
-            archive_infos[i] = 
+        for (int i=0; i<result.size(); ++i)
+        {
+            final Hashtable<String,Object> info =
+                (Hashtable<String,Object>) result.get(i);
+            archive_infos[i] =
                 new ArchiveInfo((String) info.get("name"),
                                 (String) info.get("path"),
-				                (Integer) info.get("key"));
-		}
-	}
+                                (Integer) info.get("key"));
+        }
+    }
 
-	/** @return Returns all the archive infos obtained in the request. */
+    /** @return Returns all the archive infos obtained in the request. */
     public ArchiveInfo[] getArchiveInfos()
-	{
-		return archive_infos;
-	}
+    {
+        return archive_infos;
+    }
 
-	/** @return Returns a more or less useful string. */
-	@SuppressWarnings("nls")
+    /** @return Returns a more or less useful string. */
+    @SuppressWarnings("nls")
     @Override public String toString()
-	{
-		StringBuffer result = new StringBuffer();
+    {
+        StringBuffer result = new StringBuffer();
         for (int i = 0; i < archive_infos.length; i++)
-        	result.append(String.format("Key %4d: '%s' (%s)\n",
+            result.append(String.format("Key %4d: '%s' (%s)\n",
                 archive_infos[i].getKey(),
                 archive_infos[i].getName(),
                 archive_infos[i].getDescription()));
-		return result.toString();
-	}
+        return result.toString();
+    }
 }

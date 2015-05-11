@@ -49,221 +49,221 @@ import org.eclipse.ui.part.CellEditorActionHandler;
  */
 public class PVWidgetSelectionHandle extends AbstractHandle {
 
-	private static final Dimension PREFERED_SIZE = new Dimension(10, 10);
-	private static final String TIP = "<Set PV Name>";
-	private  static final Color handleBackColor = CustomMediaFactory.getInstance().getColor(180, 180, 180);
-	private  static final Color handleFilledBackColor = CustomMediaFactory.getInstance().getColor(255, 200, 0);
-	
-	private Dimension textExtents;
-	private AbstractWidgetModel widgetModel;
-	private String pvName = "";
+    private static final Dimension PREFERED_SIZE = new Dimension(10, 10);
+    private static final String TIP = "<Set PV Name>";
+    private  static final Color handleBackColor = CustomMediaFactory.getInstance().getColor(180, 180, 180);
+    private  static final Color handleFilledBackColor = CustomMediaFactory.getInstance().getColor(255, 200, 0);
 
-	public PVWidgetSelectionHandle(final GraphicalEditPart owner) {
-		super(owner, new Locator() {
-			
-			@Override
-			public void relocate(IFigure target) {
-				IFigure ownerFigure = owner.getFigure();
-				Dimension preferedSize = target.getPreferredSize();
-				Point targetLocation = ownerFigure.getBounds().getLocation();
-				ownerFigure.translateToAbsolute(targetLocation);
-				target.translateToRelative(targetLocation);
-				targetLocation.translate(-3, -preferedSize.height-2);
-				target.setBounds(new Rectangle(targetLocation, preferedSize));
-			}
-		});			
-		setCursor(Cursors.HAND);
-				
-		if(owner.getModel() instanceof AbstractWidgetModel)
-			this.widgetModel = (AbstractWidgetModel) owner.getModel();
-		
-		if(widgetModel instanceof IPVWidgetModel){
-			String p = ((IPVWidgetModel)widgetModel).getPVName();
-			if(p!=null && !p.isEmpty()){
-				pvName = p;
-			}
-		}
-		setToolTip(new Label(pvName.isEmpty()? "Click to set PV name.":pvName));
-		setBorder(new LineBorder(ColorConstants.white));
-	}
-	
+    private Dimension textExtents;
+    private AbstractWidgetModel widgetModel;
+    private String pvName = "";
 
-	
-	private Dimension getTextExtent(){
-		if(textExtents == null){
-			textExtents = Draw2dSingletonUtil.getTextUtilities().getTextExtents(pvName, getFont());
-		}
-		return textExtents;
-	}
-	
-	@Override
-	protected DragTracker createDragTracker() {
-		DragEditPartsTracker tracker = new DragEditPartsTracker(getOwner()){
-			@Override
-			protected boolean handleButtonDown(int button) {
-				
-				if((button == 1 || button==3) && widgetModel instanceof IPVWidgetModel){
-					
-					DirectEditManager directEditManager = new PVNameDirectEditManager(getOwner(), new CellEditorLocator() {
-						
-						@Override
-						public void relocate(CellEditor celleditor) {
-							Rectangle rect;
-							int width=120;
-							if(!pvName.isEmpty() && getTextExtent().width>120)
-								width = getTextExtent().width+4;
-							
-							rect = new Rectangle(PVWidgetSelectionHandle.this.getLocation(), 
-										new Dimension(width, getTextExtent().height));
-							
-							translateToAbsolute(rect);							
-							Text control = (Text) celleditor.getControl();
-							org.eclipse.swt.graphics.Rectangle trim = control .computeTrim(0, 0, 0, 0);
-							rect.translate(trim.x, trim.y);
-							rect.width += trim.width;
-							rect.height += trim.height;
-							control.setBounds(rect.x, rect.y, rect.width, rect.height);
-						}
-					}); 					
-					directEditManager.show();
+    public PVWidgetSelectionHandle(final GraphicalEditPart owner) {
+        super(owner, new Locator() {
 
-					
-				}				
-				return true;
-			}
-		};
-		tracker.setDefaultCursor(getCursor());
-		return tracker;
-	}
-	
-	@Override
-	protected void paintFigure(Graphics graphics) {
-		super.paintFigure(graphics);		
-		if(pvName == null|| pvName.isEmpty())
-			graphics.setBackgroundColor(handleBackColor);
-		else
-			graphics.setBackgroundColor(handleFilledBackColor);
-		graphics.fillRectangle(getClientArea());
-	}
+            @Override
+            public void relocate(IFigure target) {
+                IFigure ownerFigure = owner.getFigure();
+                Dimension preferedSize = target.getPreferredSize();
+                Point targetLocation = ownerFigure.getBounds().getLocation();
+                ownerFigure.translateToAbsolute(targetLocation);
+                target.translateToRelative(targetLocation);
+                targetLocation.translate(-3, -preferedSize.height-2);
+                target.setBounds(new Rectangle(targetLocation, preferedSize));
+            }
+        });
+        setCursor(Cursors.HAND);
+
+        if(owner.getModel() instanceof AbstractWidgetModel)
+            this.widgetModel = (AbstractWidgetModel) owner.getModel();
+
+        if(widgetModel instanceof IPVWidgetModel){
+            String p = ((IPVWidgetModel)widgetModel).getPVName();
+            if(p!=null && !p.isEmpty()){
+                pvName = p;
+            }
+        }
+        setToolTip(new Label(pvName.isEmpty()? "Click to set PV name.":pvName));
+        setBorder(new LineBorder(ColorConstants.white));
+    }
 
 
 
-	
+    private Dimension getTextExtent(){
+        if(textExtents == null){
+            textExtents = Draw2dSingletonUtil.getTextUtilities().getTextExtents(pvName, getFont());
+        }
+        return textExtents;
+    }
 
-	
-	@Override
-	public Dimension getPreferredSize(int wHint, int hHint) {			
-		return PREFERED_SIZE;
-	}
-	
-	final class PVNameDirectEditManager extends DirectEditManager{
+    @Override
+    protected DragTracker createDragTracker() {
+        DragEditPartsTracker tracker = new DragEditPartsTracker(getOwner()){
+            @Override
+            protected boolean handleButtonDown(int button) {
 
-		private boolean committing;
-		private IActionBars actionBars;
-		private CellEditorActionHandler actionHandler;
-		private IAction copy, cut, paste, undo, redo, find, selectAll, delete;
-		public PVNameDirectEditManager(GraphicalEditPart source,
-				CellEditorLocator locator) {
-			super(source, null, locator);
-		}
-		
-			
-			protected CellEditor createCellEditorOn(Composite composite) {
-				final PVNameTextCellEditor cellEditor = new PVNameTextCellEditor(
-				(Composite) getEditPart().getViewer().getControl());
-				return cellEditor;
-			};
-			
-			@Override
-			protected void initCellEditor() {
-				getCellEditor().getControl().setBackground(ColorConstants.white);
-				getCellEditor().setValue(pvName.isEmpty()?TIP:pvName);
-				getCellEditor().getControl().moveAbove(null);
-				// Hook the cell editor's copy/paste actions to the actionBars so that they can
-				// be invoked via keyboard shortcuts.
-				IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-						.getActiveEditor();
-				if(activeEditor != null){
-					actionBars = activeEditor.getEditorSite().getActionBars();
-					saveCurrentActions(actionBars);
-					actionHandler = new CellEditorActionHandler(actionBars);
-					actionHandler.addCellEditor(getCellEditor());
-					actionBars.updateActionBars();
-				}
-			}
-		
-			/**
-			 * Commits the current value of the cell editor by getting a {@link Command}
-			 * from the source edit part and executing it via the {@link CommandStack}.
-			 * Finally, {@link #bringDown()} is called to perform and necessary cleanup.
-			 */
-			protected void commit() {
-				if (committing)
-					return;
-				committing = true;
-				try {
-					eraseFeedback();
-					String newName = (String) getCellEditor().getValue();
-					if (isDirty()&&!newName.equals(TIP)) {
-						CommandStack stack = getEditPart().getViewer().getEditDomain()
-								.getCommandStack();
-						stack.execute(new SetWidgetPropertyCommand(
-								widgetModel,
-								IPVWidgetModel.PROP_PVNAME,
-								newName));
-					}
-				} finally {					
-					//work around to make sure autocomplete widget get notified before bringdown
-					Display.getCurrent().asyncExec(new Runnable() {
-						
-						@Override
-						public void run() {
-							bringDown();
-						}
-					});
-					committing = false;
-				}
-			}
-			
-			private void restoreSavedActions(IActionBars actionBars){
-				actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), copy);
-				actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), paste);
-				actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), delete);
-				actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), selectAll);
-				actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), cut);
-				actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), find);
-				actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), undo);
-				actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redo);
-			}
+                if((button == 1 || button==3) && widgetModel instanceof IPVWidgetModel){
 
-			private void saveCurrentActions(IActionBars actionBars) {
-				copy = actionBars.getGlobalActionHandler(ActionFactory.COPY.getId());
-				paste = actionBars.getGlobalActionHandler(ActionFactory.PASTE.getId());
-				delete = actionBars.getGlobalActionHandler(ActionFactory.DELETE.getId());
-				selectAll = actionBars.getGlobalActionHandler(ActionFactory.SELECT_ALL.getId());
-				cut = actionBars.getGlobalActionHandler(ActionFactory.CUT.getId());
-				find = actionBars.getGlobalActionHandler(ActionFactory.FIND.getId());
-				undo = actionBars.getGlobalActionHandler(ActionFactory.UNDO.getId());
-				redo = actionBars.getGlobalActionHandler(ActionFactory.REDO.getId());
-			}
-			
-			protected void bringDown() {
+                    DirectEditManager directEditManager = new PVNameDirectEditManager(getOwner(), new CellEditorLocator() {
 
-				if (actionHandler != null) {
-					actionHandler.dispose();
-					actionHandler = null;
-				}
-				if (actionBars != null) {
-					restoreSavedActions(actionBars);
-					actionBars.updateActionBars();
-					actionBars = null;
-				}
-				
-				super.bringDown();
+                        @Override
+                        public void relocate(CellEditor celleditor) {
+                            Rectangle rect;
+                            int width=120;
+                            if(!pvName.isEmpty() && getTextExtent().width>120)
+                                width = getTextExtent().width+4;
 
-			}
-		
-		
-	}
-	
+                            rect = new Rectangle(PVWidgetSelectionHandle.this.getLocation(),
+                                        new Dimension(width, getTextExtent().height));
+
+                            translateToAbsolute(rect);
+                            Text control = (Text) celleditor.getControl();
+                            org.eclipse.swt.graphics.Rectangle trim = control .computeTrim(0, 0, 0, 0);
+                            rect.translate(trim.x, trim.y);
+                            rect.width += trim.width;
+                            rect.height += trim.height;
+                            control.setBounds(rect.x, rect.y, rect.width, rect.height);
+                        }
+                    });
+                    directEditManager.show();
+
+
+                }
+                return true;
+            }
+        };
+        tracker.setDefaultCursor(getCursor());
+        return tracker;
+    }
+
+    @Override
+    protected void paintFigure(Graphics graphics) {
+        super.paintFigure(graphics);
+        if(pvName == null|| pvName.isEmpty())
+            graphics.setBackgroundColor(handleBackColor);
+        else
+            graphics.setBackgroundColor(handleFilledBackColor);
+        graphics.fillRectangle(getClientArea());
+    }
+
+
+
+
+
+
+    @Override
+    public Dimension getPreferredSize(int wHint, int hHint) {
+        return PREFERED_SIZE;
+    }
+
+    final class PVNameDirectEditManager extends DirectEditManager{
+
+        private boolean committing;
+        private IActionBars actionBars;
+        private CellEditorActionHandler actionHandler;
+        private IAction copy, cut, paste, undo, redo, find, selectAll, delete;
+        public PVNameDirectEditManager(GraphicalEditPart source,
+                CellEditorLocator locator) {
+            super(source, null, locator);
+        }
+
+
+            protected CellEditor createCellEditorOn(Composite composite) {
+                final PVNameTextCellEditor cellEditor = new PVNameTextCellEditor(
+                (Composite) getEditPart().getViewer().getControl());
+                return cellEditor;
+            };
+
+            @Override
+            protected void initCellEditor() {
+                getCellEditor().getControl().setBackground(ColorConstants.white);
+                getCellEditor().setValue(pvName.isEmpty()?TIP:pvName);
+                getCellEditor().getControl().moveAbove(null);
+                // Hook the cell editor's copy/paste actions to the actionBars so that they can
+                // be invoked via keyboard shortcuts.
+                IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
+                        .getActiveEditor();
+                if(activeEditor != null){
+                    actionBars = activeEditor.getEditorSite().getActionBars();
+                    saveCurrentActions(actionBars);
+                    actionHandler = new CellEditorActionHandler(actionBars);
+                    actionHandler.addCellEditor(getCellEditor());
+                    actionBars.updateActionBars();
+                }
+            }
+
+            /**
+             * Commits the current value of the cell editor by getting a {@link Command}
+             * from the source edit part and executing it via the {@link CommandStack}.
+             * Finally, {@link #bringDown()} is called to perform and necessary cleanup.
+             */
+            protected void commit() {
+                if (committing)
+                    return;
+                committing = true;
+                try {
+                    eraseFeedback();
+                    String newName = (String) getCellEditor().getValue();
+                    if (isDirty()&&!newName.equals(TIP)) {
+                        CommandStack stack = getEditPart().getViewer().getEditDomain()
+                                .getCommandStack();
+                        stack.execute(new SetWidgetPropertyCommand(
+                                widgetModel,
+                                IPVWidgetModel.PROP_PVNAME,
+                                newName));
+                    }
+                } finally {
+                    //work around to make sure autocomplete widget get notified before bringdown
+                    Display.getCurrent().asyncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            bringDown();
+                        }
+                    });
+                    committing = false;
+                }
+            }
+
+            private void restoreSavedActions(IActionBars actionBars){
+                actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), copy);
+                actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), paste);
+                actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), delete);
+                actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), selectAll);
+                actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), cut);
+                actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), find);
+                actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), undo);
+                actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), redo);
+            }
+
+            private void saveCurrentActions(IActionBars actionBars) {
+                copy = actionBars.getGlobalActionHandler(ActionFactory.COPY.getId());
+                paste = actionBars.getGlobalActionHandler(ActionFactory.PASTE.getId());
+                delete = actionBars.getGlobalActionHandler(ActionFactory.DELETE.getId());
+                selectAll = actionBars.getGlobalActionHandler(ActionFactory.SELECT_ALL.getId());
+                cut = actionBars.getGlobalActionHandler(ActionFactory.CUT.getId());
+                find = actionBars.getGlobalActionHandler(ActionFactory.FIND.getId());
+                undo = actionBars.getGlobalActionHandler(ActionFactory.UNDO.getId());
+                redo = actionBars.getGlobalActionHandler(ActionFactory.REDO.getId());
+            }
+
+            protected void bringDown() {
+
+                if (actionHandler != null) {
+                    actionHandler.dispose();
+                    actionHandler = null;
+                }
+                if (actionBars != null) {
+                    restoreSavedActions(actionBars);
+                    actionBars.updateActionBars();
+                    actionBars = null;
+                }
+
+                super.bringDown();
+
+            }
+
+
+    }
+
 }

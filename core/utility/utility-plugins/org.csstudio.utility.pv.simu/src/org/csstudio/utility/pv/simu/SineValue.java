@@ -22,7 +22,7 @@ public class SineValue extends DynamicValue
     {
         super(name);
         if(step <= 1)
-        	step = DEFAULT_COUNT;
+            step = DEFAULT_COUNT;
     }
 
     /** {@inheritDoc} */

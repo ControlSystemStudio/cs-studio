@@ -14,41 +14,41 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-	public ApplicationWorkbenchWindowAdvisor(
-			IWorkbenchWindowConfigurer configurer) {
-		super(configurer);
-	}
+    public ApplicationWorkbenchWindowAdvisor(
+            IWorkbenchWindowConfigurer configurer) {
+        super(configurer);
+    }
 
-	@Override
-	public void postWindowCreate() {
-		super.postWindowCreate();
-		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		Shell shell = configurer.getWindow().getShell();
-		shell.setText("Web Alarm");
-		shell.setMaximized(true);
-	}
+    @Override
+    public void postWindowCreate() {
+        super.postWindowCreate();
+        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+        Shell shell = configurer.getWindow().getShell();
+        shell.setText("Web Alarm");
+        shell.setMaximized(true);
+    }
 
-	public void preWindowOpen() {
-		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		configurer.setShowMenuBar(false);
-		configurer.setShowStatusLine(false);
-		configurer.setShowCoolBar(true);
-		configurer.setTitle("Web Alarm");
+    public void preWindowOpen() {
+        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+        configurer.setShowMenuBar(false);
+        configurer.setShowStatusLine(false);
+        configurer.setShowCoolBar(true);
+        configurer.setTitle("Web Alarm");
 
-		configurer.setShellStyle(SWT.NO_TRIM);
+        configurer.setShellStyle(SWT.NO_TRIM);
 
-		String treeRoot = null;
-		try {
-			// Forec reload to handle new alarm tree
-			AlarmClientModel.getInstance().readConfig(null);
-			
-			// Force reload default tree root
-			treeRoot = Preferences.getAlarmTreeRoot();
-			AlarmClientModel.getInstance().setConfigurationName(treeRoot, null);
-		} catch (Exception e) {
-			Activator.getLogger().log(Level.SEVERE,
-					"Unable to reload alarm configuration : " + treeRoot, e);
-		}
-	}
+        String treeRoot = null;
+        try {
+            // Forec reload to handle new alarm tree
+            AlarmClientModel.getInstance().readConfig(null);
+
+            // Force reload default tree root
+            treeRoot = Preferences.getAlarmTreeRoot();
+            AlarmClientModel.getInstance().setConfigurationName(treeRoot, null);
+        } catch (Exception e) {
+            Activator.getLogger().log(Level.SEVERE,
+                    "Unable to reload alarm configuration : " + treeRoot, e);
+        }
+    }
 
 }

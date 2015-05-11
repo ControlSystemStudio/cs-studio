@@ -21,37 +21,37 @@ import org.eclipse.swt.graphics.Color;
  */
 public class VersatileLineBorder extends LineBorder {
 
-	private int lineStyle;
-	
-	/**
-	 *
-	 * @param borderColor the border color
-	 * @param lineWidth the line width in pixels
-	 * @param lineStyle the line style, which must be one of the constants
-	 * SWT.LINE_SOLID, SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT or
-	 * SWT.LINE_DASHDOTDOT.
-	 */
-	public VersatileLineBorder(Color borderColor, int lineWidth, int lineStyle) {
-		super(borderColor, lineWidth);
-		this.lineStyle = lineStyle;
-	}
-	
-	/**
-	 * @see org.eclipse.draw2d.Border#paint(IFigure, Graphics, Insets)
-	 */
-	public void paint(IFigure figure, Graphics graphics, Insets insets) {
-		tempRect.setBounds(getPaintRectangle(figure, insets));
-		if ((getWidth() & 1) == 1) {
-			tempRect.width--;
-			tempRect.height--;
-		}
-		tempRect.shrink(getWidth() / 2, getWidth() / 2);
-		graphics.setLineWidth(getWidth());
-		graphics.setLineStyle(lineStyle);
-		if (getColor() != null)
-			graphics.setForegroundColor(getColor());
-		graphics.drawRectangle(tempRect);
-	}
-	
-	
+    private int lineStyle;
+
+    /**
+     *
+     * @param borderColor the border color
+     * @param lineWidth the line width in pixels
+     * @param lineStyle the line style, which must be one of the constants
+     * SWT.LINE_SOLID, SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT or
+     * SWT.LINE_DASHDOTDOT.
+     */
+    public VersatileLineBorder(Color borderColor, int lineWidth, int lineStyle) {
+        super(borderColor, lineWidth);
+        this.lineStyle = lineStyle;
+    }
+
+    /**
+     * @see org.eclipse.draw2d.Border#paint(IFigure, Graphics, Insets)
+     */
+    public void paint(IFigure figure, Graphics graphics, Insets insets) {
+        tempRect.setBounds(getPaintRectangle(figure, insets));
+        if ((getWidth() & 1) == 1) {
+            tempRect.width--;
+            tempRect.height--;
+        }
+        tempRect.shrink(getWidth() / 2, getWidth() / 2);
+        graphics.setLineWidth(getWidth());
+        graphics.setLineStyle(lineStyle);
+        if (getColor() != null)
+            graphics.setForegroundColor(getColor());
+        graphics.drawRectangle(tempRect);
+    }
+
+
 }

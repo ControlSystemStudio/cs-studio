@@ -54,10 +54,10 @@ public class PVFieldsView  extends ViewPart
     @Override
     public void createPartControl(Composite parent)
     {
-    	gui = new GUI(parent, Activator.getDefault().getDialogSettings(), getSite());
-    	
-    	// Restore
-    	if (memento != null)
+        gui = new GUI(parent, Activator.getDefault().getDialogSettings(), getSite());
+
+        // Restore
+        if (memento != null)
         {
             String pv_name = memento.getString(PV_TAG);
             if (pv_name != null  &&  pv_name.length() > 0)

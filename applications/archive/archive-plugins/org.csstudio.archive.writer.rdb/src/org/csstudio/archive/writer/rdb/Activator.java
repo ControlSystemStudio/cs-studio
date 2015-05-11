@@ -15,12 +15,12 @@ import java.util.logging.Logger;
 @SuppressWarnings("nls")
 public class Activator
 {
-	/** Plugin ID defined in MANIFEST.MF */
-	public static final String ID = "org.csstudio.archive.writer.rdb";
+    /** Plugin ID defined in MANIFEST.MF */
+    public static final String ID = "org.csstudio.archive.writer.rdb";
 
-	/** @return Logger for the plugin ID */
-	public static Logger getLogger()
-	{
-		return Logger.getLogger(ID);
-	}
+    /** @return Logger for the plugin ID */
+    public static Logger getLogger()
+    {
+        return Logger.getLogger(ID);
+    }
 }

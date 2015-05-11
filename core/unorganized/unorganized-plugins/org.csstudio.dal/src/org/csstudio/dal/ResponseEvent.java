@@ -39,68 +39,68 @@ import java.util.EventObject;
  */
 public class ResponseEvent<T> extends EventObject
 {
-	private static final long serialVersionUID = 1L;
-	/**
-	 * Variable holding a reference to the request object. The request
-	 * contained by this field is the request for which a new response is
-	 * being delivered.
-	 */
-	protected Request<T> request = null;
-	protected Response<T> response = null;
+    private static final long serialVersionUID = 1L;
+    /**
+     * Variable holding a reference to the request object. The request
+     * contained by this field is the request for which a new response is
+     * being delivered.
+     */
+    protected Request<T> request = null;
+    protected Response<T> response = null;
 
-	/**
-	     * Creates a new instance of the event, by specifying the
-	     * <code>AsynchronousAccess</code> source that generated the event and the
-	     * request object which caused the notification to occur.
-	     *
-	     * @param source the source firing the event
-	     * @param req request the status of which has changed
-	     */
-	public ResponseEvent(Object source, Request<T> req, Response<T> res)
-	{
-		super(source);
-		assert (req != null);
-		this.request = req;
-		response = res;
-	}
+    /**
+         * Creates a new instance of the event, by specifying the
+         * <code>AsynchronousAccess</code> source that generated the event and the
+         * request object which caused the notification to occur.
+         *
+         * @param source the source firing the event
+         * @param req request the status of which has changed
+         */
+    public ResponseEvent(Object source, Request<T> req, Response<T> res)
+    {
+        super(source);
+        assert (req != null);
+        this.request = req;
+        response = res;
+    }
 
-	/**
-	 * Returns the request specified as a constructor parameter. This
-	 * event instance is delivering a response for the request returned by
-	 * this  method.
-	 *
-	 * @return Object the request object
-	 */
-	public Request<T> getRequest()
-	{
-		return request;
-	}
+    /**
+     * Returns the request specified as a constructor parameter. This
+     * event instance is delivering a response for the request returned by
+     * this  method.
+     *
+     * @return Object the request object
+     */
+    public Request<T> getRequest()
+    {
+        return request;
+    }
 
-	/**
-	 * Implementations of this method must return the response object
-	 * that is  causing this notification to be delivered. The response object
-	 * should  contain the reason for this event, for example new value
-	 * delivered, timeout, error, successful completion etc.
-	 *
-	 * @return Object the response object that is causing this event
-	 */
-	public Response<T> getResponse()
-	{
-		return response;
-	}
+    /**
+     * Implementations of this method must return the response object
+     * that is  causing this notification to be delivered. The response object
+     * should  contain the reason for this event, for example new value
+     * delivered, timeout, error, successful completion etc.
+     *
+     * @return Object the response object that is causing this event
+     */
+    public Response<T> getResponse()
+    {
+        return response;
+    }
 
-	/**
-	 * Returns <code>true</code> if this event is the last event in the
-	 * series. In  other words, <code>true</code> indicates that no more
-	 * events are forthcomming from the given request.
-	 *
-	 * @return <code>true</code> if no more events will be delivered for the
-	 *         request contained in this event
-	 */
-	public boolean isLast()
-	{
-		return response.isLast();
-	}
+    /**
+     * Returns <code>true</code> if this event is the last event in the
+     * series. In  other words, <code>true</code> indicates that no more
+     * events are forthcomming from the given request.
+     *
+     * @return <code>true</code> if no more events will be delivered for the
+     *         request contained in this event
+     */
+    public boolean isLast()
+    {
+        return response.isLast();
+    }
 }
 
 /* __oOo__ */

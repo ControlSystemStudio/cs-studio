@@ -26,7 +26,7 @@ public class DeleteAction extends PVTableAction
         super(Messages.Delete, "icons/delete.gif", viewer); //$NON-NLS-1$
         setToolTipText(Messages.Delete_TT);
     }
-    
+
     public void run()
     {
         final PVTableModel model = (PVTableModel) viewer.getInput();
@@ -35,7 +35,7 @@ public class DeleteAction extends PVTableAction
         final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
         if (sel == null)
             return;
-        
+
         final Iterator<?> iterator = sel.iterator();
         while (iterator.hasNext())
         {

@@ -24,25 +24,25 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 
 /** Widget that displays an image.
- *  
+ *
  *  <p>Similar to a Label with image, but image is resized to fit the widget.
- *  
+ *
  *  <p>Image can be provided as {@link InputStream}.
  *
  *  <p>As a shortcut, the widget can also read a file.
- *  
+ *
  *  <p>Setting the {@link Image} directly is not supported
  *  to avoid issues with ownership and disposal of such an image.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class ImagePreview extends Canvas implements DisposeListener,
         PaintListener
 {
-	private static final long serialVersionUID = -5663464409023894169L;
+    private static final long serialVersionUID = -5663464409023894169L;
 
-	/** Image or <code>null</code> */
+    /** Image or <code>null</code> */
     private Image image = null;
 
     /** Additional short message or <code>null</code> */
@@ -57,7 +57,7 @@ public class ImagePreview extends Canvas implements DisposeListener,
         addDisposeListener(this);
         addPaintListener(this);
     }
-    
+
     /** Set image to display
      *  @param image_filename Full path to image file or <code>null</code> for no image
      */
@@ -77,7 +77,7 @@ public class ImagePreview extends Canvas implements DisposeListener,
             }
         }
     }
-    
+
     /** Set image to display
      *  @param image_stream Image stream
      */
@@ -104,10 +104,10 @@ public class ImagePreview extends Canvas implements DisposeListener,
         this.message = message;
         redraw();
     }
-    
+
     // Note that this is supported by Canvas
     // public void setToolTipText(final String tooltip);
-    
+
     /** @see Control */
     @Override
     public Point computeSize(final int wHint, final int hHint)

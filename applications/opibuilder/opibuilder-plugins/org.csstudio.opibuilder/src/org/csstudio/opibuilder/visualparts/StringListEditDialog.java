@@ -23,53 +23,53 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class StringListEditDialog extends Dialog {
-	
-	private String title;	
-	private List<String> contents;
-	
-	private StringTableEditor tableEditor;
 
-	public StringListEditDialog(Shell parentShell, List<String> inputData, String dialogTitle) {
-		super(parentShell);
-		this.title = dialogTitle;
-		this.contents = new ArrayList<String>();
-		for(String item : inputData){
-			this.contents.add(item);
-		}
-		// Allow resize
+    private String title;
+    private List<String> contents;
+
+    private StringTableEditor tableEditor;
+
+    public StringListEditDialog(Shell parentShell, List<String> inputData, String dialogTitle) {
+        super(parentShell);
+        this.title = dialogTitle;
+        this.contents = new ArrayList<String>();
+        for(String item : inputData){
+            this.contents.add(item);
+        }
+        // Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
-	}
+    }
 
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		final Composite container = (Composite) super.createDialogArea(parent);
-		// Table editor should stretch to fill the dialog space, but
-		// at least on OS X, it has some minimum size below which it
-		// doesn't properly shrink.
-		tableEditor = new StringTableEditor(container,contents);
-		tableEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
-	
-		return container;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureShell(final Shell shell) {
-		super.configureShell(shell);
-		if (title != null) {
-			shell.setText(title);
-		}
-	}
+    @Override
+    protected Control createDialogArea(Composite parent) {
+        final Composite container = (Composite) super.createDialogArea(parent);
+        // Table editor should stretch to fill the dialog space, but
+        // at least on OS X, it has some minimum size below which it
+        // doesn't properly shrink.
+        tableEditor = new StringTableEditor(container,contents);
+        tableEditor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-	public List<String> getResult() {		
-		return contents;
-	}
-	
-	@Override
-	protected void okPressed() {
-		tableEditor.forceFocus();
-		super.okPressed();
-	}
+        return container;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureShell(final Shell shell) {
+        super.configureShell(shell);
+        if (title != null) {
+            shell.setText(title);
+        }
+    }
+
+    public List<String> getResult() {
+        return contents;
+    }
+
+    @Override
+    protected void okPressed() {
+        tableEditor.forceFocus();
+        super.okPressed();
+    }
 }

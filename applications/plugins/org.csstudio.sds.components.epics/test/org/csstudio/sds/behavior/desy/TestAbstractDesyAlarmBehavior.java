@@ -25,20 +25,20 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.dal.simple.MetaData;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @since 03.11.2011
  */
 public class TestAbstractDesyAlarmBehavior extends AbstractDesyAlarmBehavior {
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void doProcessMetaDataChange(AbstractWidgetModel widget, MetaData metaData) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
 }

@@ -46,7 +46,7 @@ public class ScaledSliderConnectionBehavior extends
         _defFillBackColor = widget.getColor(ThermometerModel.PROP_FILLBACKGROUND_COLOR);
         _defFillColor = widget.getColor(ThermometerModel.PROP_FILL_COLOR);
     }
-    
+
     /**
      * {@inheritDoc}
      */

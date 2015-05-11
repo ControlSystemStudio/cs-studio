@@ -34,62 +34,62 @@ import org.eclipse.ui.PlatformUI;
  */
 public class RunOPIAction extends Action implements IWorkbenchWindowActionDelegate{
 
-	public static String ID = "org.csstudio.opibuilder.editor.run"; //$NON-NLS-1$
-	public static String ACITON_DEFINITION_ID = "org.csstudio.opibuilder.runopi"; //$NON-NLS-1$
-	
+    public static String ID = "org.csstudio.opibuilder.editor.run"; //$NON-NLS-1$
+    public static String ACITON_DEFINITION_ID = "org.csstudio.opibuilder.runopi"; //$NON-NLS-1$
+
   public RunOPIAction() {
-	 super("Run OPI", CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-			 OPIBuilderPlugin.PLUGIN_ID, "icons/run.gif"));	 //$NON-NLS-1$
-	 setId(ID);
-	 setActionDefinitionId(ACITON_DEFINITION_ID);
+     super("Run OPI", CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+             OPIBuilderPlugin.PLUGIN_ID, "icons/run.gif"));     //$NON-NLS-1$
+     setId(ID);
+     setActionDefinitionId(ACITON_DEFINITION_ID);
   }
 
   @Override
-	public void run() {
-		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-		IEditorPart activeEditor = page.getActiveEditor();
-		if(activeEditor instanceof OPIEditor){
-			if(PreferencesHelper.isAutoSaveBeforeRunning() && activeEditor.isDirty())
-				activeEditor.doSave(null);
-			
-			//It seems that the synch with editor is not necessary
-			DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
-			
-			IEditorInput input = activeEditor.getEditorInput();	
-			
-			
-			IPath path = null;
-				path = ResourceUtil.getPathInEditor(input);
-				RunModeService.getInstance().runOPI(path, TargetWindow.RUN_WINDOW,  
-						new Rectangle(displayModel.getLocation(), displayModel.getSize()));
-	
-		}
-			
-	}
-  
-  	@Override
-  	public boolean isEnabled() {
-  		return true;
-  	}
-  	
-  	@Override
-  	public void setEnabled(boolean enabled) {
-  		super.setEnabled(true);
-  	}
+    public void run() {
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        IEditorPart activeEditor = page.getActiveEditor();
+        if(activeEditor instanceof OPIEditor){
+            if(PreferencesHelper.isAutoSaveBeforeRunning() && activeEditor.isDirty())
+                activeEditor.doSave(null);
 
-	public void dispose() {
-		
-	}
+            //It seems that the synch with editor is not necessary
+            DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
 
-	public void init(IWorkbenchWindow window) {
-		
-	}
+            IEditorInput input = activeEditor.getEditorInput();
 
-	public void run(IAction action) {
-		run();
-	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		
-	}
+            IPath path = null;
+                path = ResourceUtil.getPathInEditor(input);
+                RunModeService.getInstance().runOPI(path, TargetWindow.RUN_WINDOW,
+                        new Rectangle(displayModel.getLocation(), displayModel.getSize()));
+
+        }
+
+    }
+
+      @Override
+      public boolean isEnabled() {
+          return true;
+      }
+
+      @Override
+      public void setEnabled(boolean enabled) {
+          super.setEnabled(true);
+      }
+
+    public void dispose() {
+
+    }
+
+    public void init(IWorkbenchWindow window) {
+
+    }
+
+    public void run(IAction action) {
+        run();
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
+
+    }
 }

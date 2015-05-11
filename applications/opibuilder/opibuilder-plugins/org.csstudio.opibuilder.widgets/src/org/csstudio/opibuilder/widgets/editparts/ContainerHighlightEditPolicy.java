@@ -17,66 +17,66 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.editpolicies.GraphicalEditPolicy;
 import org.eclipse.swt.graphics.Color;
 
-/** The EditPolicy help to show the blue background 
+/** The EditPolicy help to show the blue background
  * when there are selected widgets hovering over the container.
  * @author Xihui Chen
  *
  */
 public class ContainerHighlightEditPolicy extends GraphicalEditPolicy {
 
-	private static Color BACK_BLUE = CustomMediaFactory.getInstance().getColor(200, 200, 240);
-	
-	private Color revertColor;
-	private boolean revertOpaque;
-	
-	@Override
-	public EditPart getTargetEditPart(Request request) {
-		return request.getType().equals(RequestConstants.REQ_SELECTION_HOVER) ?
-				getHost() : null;
-	}
+    private static Color BACK_BLUE = CustomMediaFactory.getInstance().getColor(200, 200, 240);
 
-	private Color getContainerBackground(){
-		return getContainerFigure().getBackgroundColor();
-	}
+    private Color revertColor;
+    private boolean revertOpaque;
 
-	private IFigure getContainerFigure(){
-		return ((GraphicalEditPart)getHost()).getContentPane();
-	}
-	
-	private void setContainerBackground(Color c){
-		getContainerFigure().setBackgroundColor(c);
-	}
-	
-	protected void showHighlight(){
-		if (revertColor == null){
-			revertColor = getContainerBackground();
-			revertOpaque = getContainerFigure().isOpaque();
-			setContainerBackground(BACK_BLUE);
-			getContainerFigure().setOpaque(true);
-		}
-	}
+    @Override
+    public EditPart getTargetEditPart(Request request) {
+        return request.getType().equals(RequestConstants.REQ_SELECTION_HOVER) ?
+                getHost() : null;
+    }
 
-	
-	public void eraseTargetFeedback(Request request){
-		if (revertColor != null){
-			setContainerBackground(revertColor);
-			getContainerFigure().setOpaque(revertOpaque);
-			revertColor = null;
-		}
-	}
-	
-	public void showTargetFeedback(Request request){
-		if(request.getType().equals(RequestConstants.REQ_MOVE) ||
-			request.getType().equals(RequestConstants.REQ_ADD) ||
-			request.getType().equals(RequestConstants.REQ_CLONE) ||
-			request.getType().equals(RequestConstants.REQ_CREATE) ||
-			request.getType().equals(DropPVRequest.REQ_DROP_PV)
-		)
-			showHighlight();
-	}
+    private Color getContainerBackground(){
+        return getContainerFigure().getBackgroundColor();
+    }
 
-	
-	
-	
-	
+    private IFigure getContainerFigure(){
+        return ((GraphicalEditPart)getHost()).getContentPane();
+    }
+
+    private void setContainerBackground(Color c){
+        getContainerFigure().setBackgroundColor(c);
+    }
+
+    protected void showHighlight(){
+        if (revertColor == null){
+            revertColor = getContainerBackground();
+            revertOpaque = getContainerFigure().isOpaque();
+            setContainerBackground(BACK_BLUE);
+            getContainerFigure().setOpaque(true);
+        }
+    }
+
+
+    public void eraseTargetFeedback(Request request){
+        if (revertColor != null){
+            setContainerBackground(revertColor);
+            getContainerFigure().setOpaque(revertOpaque);
+            revertColor = null;
+        }
+    }
+
+    public void showTargetFeedback(Request request){
+        if(request.getType().equals(RequestConstants.REQ_MOVE) ||
+            request.getType().equals(RequestConstants.REQ_ADD) ||
+            request.getType().equals(RequestConstants.REQ_CLONE) ||
+            request.getType().equals(RequestConstants.REQ_CREATE) ||
+            request.getType().equals(DropPVRequest.REQ_DROP_PV)
+        )
+            showHighlight();
+    }
+
+
+
+
+
 }

@@ -36,41 +36,41 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class SimulateScanHandler extends AbstractHandler
 {
-	private SimulationResult simulate(final List<ScanCommand> commands) throws Exception
-	{
-    	final ScanInfoModel scan_info = ScanInfoModel.getInstance();
-		try
-		{
-			final ScanClient client = scan_info.getScanClient();
-			return client.simulateScan(XMLCommandWriter.toXMLString(commands));
-		}
-		finally
-		{
-			scan_info.release();
-		}
-	}
+    private SimulationResult simulate(final List<ScanCommand> commands) throws Exception
+    {
+        final ScanInfoModel scan_info = ScanInfoModel.getInstance();
+        try
+        {
+            final ScanClient client = scan_info.getScanClient();
+            return client.simulateScan(XMLCommandWriter.toXMLString(commands));
+        }
+        finally
+        {
+            scan_info.release();
+        }
+    }
 
     /** {@inheritDoc} */
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-    	final Shell shell = HandlerUtil.getActiveShell(event);
-		final Display display = shell.getDisplay();
+        final Shell shell = HandlerUtil.getActiveShell(event);
+        final Display display = shell.getDisplay();
 
-    	final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
-    	final List<ScanCommand> commands = editor.getModel().getCommands();
+        final ScanEditor editor = ScanEditorContributor.getCurrentScanEditor();
+        final List<ScanCommand> commands = editor.getModel().getCommands();
 
         // Use background Job to submit scan to server for simulation
         final Job job = new Job(Messages.SimulateScan)
         {
 
-			@Override
+            @Override
             protected IStatus run(IProgressMonitor monitor)
             {
-				final SimulationResult simulation;
+                final SimulationResult simulation;
                 try
                 {
-                	simulation = simulate(commands);
+                    simulation = simulate(commands);
                 }
                 catch (Exception ex)
                 {
@@ -87,17 +87,17 @@ public class SimulateScanHandler extends AbstractHandler
                 // Open in text editor, on UI thread
                 display.asyncExec(new Runnable()
                 {
-					@Override
+                    @Override
                     public void run()
                     {
-						try
-						{
-							SimulationDisplay.show(simulation);
-						}
-						catch (Exception ex)
-						{
-							ExceptionDetailsErrorDialog.openError(shell, Messages.SimulateScan, ex);
-						}
+                        try
+                        {
+                            SimulationDisplay.show(simulation);
+                        }
+                        catch (Exception ex)
+                        {
+                            ExceptionDetailsErrorDialog.openError(shell, Messages.SimulateScan, ex);
+                        }
                     }
                 });
 
@@ -107,6 +107,6 @@ public class SimulateScanHandler extends AbstractHandler
         job.setUser(true);
         job.schedule();
 
-    	return null;
+        return null;
     }
 }

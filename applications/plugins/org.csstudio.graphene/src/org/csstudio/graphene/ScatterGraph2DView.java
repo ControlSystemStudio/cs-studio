@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ScatterGraph2DView extends AbstractGraph2DView<ScatterGraph2DWidget> {
 
@@ -19,8 +19,8 @@ public class ScatterGraph2DView extends AbstractGraph2DView<ScatterGraph2DWidget
 
     @Override
     protected ScatterGraph2DWidget createAbstractGraph2DWidget(
-	    Composite parent, int style) {
-	return new ScatterGraph2DWidget(parent, SWT.NONE);
+        Composite parent, int style) {
+    return new ScatterGraph2DWidget(parent, SWT.NONE);
     }
 
 }

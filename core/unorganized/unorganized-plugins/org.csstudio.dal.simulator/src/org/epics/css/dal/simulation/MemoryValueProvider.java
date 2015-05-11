@@ -32,31 +32,31 @@ import org.csstudio.dal.DataExchangeException;
  */
 public class MemoryValueProvider<T> implements ValueProvider<T>
 {
-	protected T value;
+    protected T value;
 
-	/**
-	 * Creates a new MemoryValueProvider object.
-	 */
-	public MemoryValueProvider()
-	{
-		super();
-	}
+    /**
+     * Creates a new MemoryValueProvider object.
+     */
+    public MemoryValueProvider()
+    {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.simulation.ValueProvider#get()
-	 */
-	public T get() throws DataExchangeException
-	{
-		return value;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.simulation.ValueProvider#get()
+     */
+    public T get() throws DataExchangeException
+    {
+        return value;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.simulation.ValueProvider#set(T)
-	 */
-	public void set(T value) throws DataExchangeException
-	{
-		this.value = value;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.simulation.ValueProvider#set(T)
+     */
+    public void set(T value) throws DataExchangeException
+    {
+        this.value = value;
+    }
 }
 
 /* __oOo__ */

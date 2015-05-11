@@ -29,8 +29,8 @@ abstract public class ScanScriptContext
      *
      *  <p>Provides access to the scan data in its basic form.
      *  @return {@link ScanData} of currently logged data or <code>null</code>
-	 *  @throws Exception on error
-	 *  @see #getData
+     *  @throws Exception on error
+     *  @see #getData
      */
     abstract public ScanData getScanData() throws Exception;
 
@@ -42,32 +42,32 @@ abstract public class ScanScriptContext
      *  @param devices Names of devices for which to get logged data
      *  @return 2D array: result[0][...] has data for first device,
      *                    result[1][...] has data for second device and so on
-	 *  @throws Exception on error
+     *  @throws Exception on error
      */
     public double[][] getData(final String... devices) throws Exception
     {
-    	ScanDataIterator sheet = new ScanDataIterator(getScanData(), devices);
-    	final List<List<Double>> data = new ArrayList<List<Double>>(devices.length);
-    	for (int i=0; i<devices.length; ++i)
-    		data.add(new ArrayList<Double>());
-    	while (sheet.hasNext())
-    	{
-    		final ScanSample[] samples = sheet.getSamples();
-        	for (int i=0; i<devices.length; ++i)
-        		data.get(i).add(ScanSampleFormatter.asDouble(samples[i]));
-    	}
-    	sheet = null;
+        ScanDataIterator sheet = new ScanDataIterator(getScanData(), devices);
+        final List<List<Double>> data = new ArrayList<List<Double>>(devices.length);
+        for (int i=0; i<devices.length; ++i)
+            data.add(new ArrayList<Double>());
+        while (sheet.hasNext())
+        {
+            final ScanSample[] samples = sheet.getSamples();
+            for (int i=0; i<devices.length; ++i)
+                data.get(i).add(ScanSampleFormatter.asDouble(samples[i]));
+        }
+        sheet = null;
 
-    	// Convert to plain array
-    	final double[][] result = new double[devices.length][];
-    	for (int i=0; i<devices.length; ++i)
-    	{
-    		final List<Double> list = data.get(i);
-    		result[i] = new double[list.size()];
-    		for (int j=list.size()-1; j>=0; --j)
-    			result[i][j] = list.get(j);
-    	}
-    	return result;
+        // Convert to plain array
+        final double[][] result = new double[devices.length][];
+        for (int i=0; i<devices.length; ++i)
+        {
+            final List<Double> list = data.get(i);
+            result[i] = new double[list.size()];
+            for (int j=list.size()-1; j>=0; --j)
+                result[i][j] = list.get(j);
+        }
+        return result;
     }
 
     /** Add data for a device to the log.
@@ -103,9 +103,9 @@ abstract public class ScanScriptContext
      *  @param value Value to write to the device
      *  @throws Exception on error
      */
-	public void write(final String device_name, final Object value) throws Exception
+    public void write(final String device_name, final Object value) throws Exception
     {
-		write(device_name, value, true);
+        write(device_name, value, true);
     }
 
     /** Write to device, with or without waiting for readback
@@ -116,7 +116,7 @@ abstract public class ScanScriptContext
      */
     public void write(final String device_name, final Object value, final boolean wait) throws Exception
     {
-    	write(device_name, value, device_name, wait, 0.1, null);
+        write(device_name, value, device_name, wait, 0.1, null);
     }
 
     /** Write to device, using alternate readback device
@@ -128,19 +128,19 @@ abstract public class ScanScriptContext
     public void write(final String device_name, final Object value,
             final String readback) throws Exception
     {
-    	write(device_name, value, readback, true, 0.1, null);
+        write(device_name, value, readback, true, 0.1, null);
     }
 
     /** Write to device
-	 *  @param device_name Name of device
-	 *  @param value Value to write to the device
-	 *  @param readback Readback device
-	 *  @param wait Wait for readback to match?
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     *  @param readback Readback device
+     *  @param wait Wait for readback to match?
      *  @param tolerance Numeric tolerance when checking value
      *  @param timeout Timeout in seconds, <code>null</code> as "forever"
      *  @throws Exception on error
-	 */
-	abstract public void write(final String device_name, final Object value,
-	        final String readback, final boolean wait,
+     */
+    abstract public void write(final String device_name, final Object value,
+            final String readback, final boolean wait,
             final double tolerance, final TimeDuration timeout) throws Exception;
 }

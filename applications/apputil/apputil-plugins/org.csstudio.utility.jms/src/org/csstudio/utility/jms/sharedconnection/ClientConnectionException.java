@@ -31,21 +31,21 @@ package org.csstudio.utility.jms.sharedconnection;
  * @since 02.04.2012
  */
 public class ClientConnectionException extends Exception {
-    
+
     private static final long serialVersionUID = 1L;
 
     public ClientConnectionException() {
         super();
     }
-    
+
     public ClientConnectionException(String message) {
         super(message);
     }
-    
+
     public ClientConnectionException(Throwable cause) {
         super(cause);
     }
-    
+
     public ClientConnectionException(String message, Throwable cause) {
         super(message, cause);
     }

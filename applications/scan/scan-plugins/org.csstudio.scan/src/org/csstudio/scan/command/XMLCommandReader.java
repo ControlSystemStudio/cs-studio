@@ -18,7 +18,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /** Read {@link ScanCommand}s from XML stream.
- * 
+ *
  *  <p>Depends on a {@link SimpleScanCommandFactory} to
  *  create the {@link ScanCommand} instances.
  *
@@ -28,7 +28,7 @@ import org.w3c.dom.Element;
 public class XMLCommandReader
 {
     final private SimpleScanCommandFactory factory;
-    
+
     /** Initialize
      *  @param factory {@link SimpleScanCommandFactory} to use
      */
@@ -47,7 +47,7 @@ public class XMLCommandReader
         final InputStream stream = new ByteArrayInputStream(xml_text.getBytes());
         return readXMLStream(stream);
     }
-    
+
     /** Read scan commands from XML stream
      *  @param in XML stream that contains commands
      *  @return List of {@link ScanCommand}s

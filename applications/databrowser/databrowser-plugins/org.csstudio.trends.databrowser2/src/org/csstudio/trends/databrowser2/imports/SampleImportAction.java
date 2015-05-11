@@ -49,10 +49,10 @@ public class SampleImportAction extends Action
     @Override
     public void run()
     {
-		// Prompt for file
-		final IPath path = SingleSourcePlugin.getUIHelper()
-				.openDialog(shell, SWT.OPEN, null, "*",
-						NLS.bind(Messages.ImportActionFileSelectorTitleFmt, description));
+        // Prompt for file
+        final IPath path = SingleSourcePlugin.getUIHelper()
+                .openDialog(shell, SWT.OPEN, null, "*",
+                        NLS.bind(Messages.ImportActionFileSelectorTitleFmt, description));
         if (path == null)
             return;
         try

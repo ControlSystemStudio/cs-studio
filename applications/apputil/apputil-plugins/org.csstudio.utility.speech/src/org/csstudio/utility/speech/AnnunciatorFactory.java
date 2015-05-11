@@ -26,7 +26,7 @@ public class AnnunciatorFactory
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs == null)
             return new FreeTTS_JSAPI_Annunciator("kevin");
-        
+
         final String type = prefs.getString(Plugin.ID, "annunciator", "JSAPI", null);
         final String voice = prefs.getString(Plugin.ID, "voice", "kevin", null);
 
@@ -36,9 +36,9 @@ public class AnnunciatorFactory
             return new FreeTTSAnnunciator(voice);
         if ("UDP".equalsIgnoreCase(type))
         {
-        	final String host = prefs.getString(Plugin.ID, "host", "", null);
-        	final int port = prefs.getInt(Plugin.ID, "port", 6543, null);
-        	return new UDPAnnunciator(host, port);
+            final String host = prefs.getString(Plugin.ID, "host", "", null);
+            final int port = prefs.getInt(Plugin.ID, "port", 6543, null);
+            return new UDPAnnunciator(host, port);
         }
 
         return new ExternalAnnunciator();

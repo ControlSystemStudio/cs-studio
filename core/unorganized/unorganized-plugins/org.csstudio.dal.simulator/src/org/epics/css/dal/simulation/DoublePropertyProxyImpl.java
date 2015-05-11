@@ -33,21 +33,21 @@ import org.apache.log4j.Logger;
  */
 public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double>
 {
-	/**
-	 * Creates a new DoublePropertyProxyImpl object.
-	 *
-	 * @param name Proxy name
-	 */
-	public DoublePropertyProxyImpl(String name, SimulatorPlug plug)
-	{
-		super(name,plug,Double.class);
+    /**
+     * Creates a new DoublePropertyProxyImpl object.
+     *
+     * @param name Proxy name
+     */
+    public DoublePropertyProxyImpl(String name, SimulatorPlug plug)
+    {
+        super(name,plug,Double.class);
 
-		try {
-			valueProvider.set(0.0);
-		} catch (Exception e) {
-			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
-		}
-	}
+        try {
+            valueProvider.set(0.0);
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass()).warn("Simulator error.", e);
+        }
+    }
 }
 
 /* __oOo__ */

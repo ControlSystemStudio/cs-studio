@@ -25,9 +25,9 @@ import static java.util.Objects.isNull;
 public class ClockView
 {
     /** Fill the view. */
-	@PostConstruct @Optional
+    @PostConstruct @Optional
     public void createPartControl(final Composite parent,
-    		@Preference(value = "hours") final String hours_pref)
+            @Preference(value = "hours") final String hours_pref)
     {
         parent.setLayout(new FillLayout());
         final int hours = isNull(hours_pref) ? DEFAULT_HOURS : Integer.parseInt(hours_pref);

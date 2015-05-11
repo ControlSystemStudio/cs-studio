@@ -19,16 +19,16 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
  *
  */
 public interface IAlarmRDBHandler extends AlarmClientModelListener {
-	
-	/** Initialize handler with {@link AlarmNotifier} */
-	public void init(final AlarmNotifier notifier);
-	
-	/** Find item by path */
-	public AlarmTreeItem findItem(String path);
-	
-	/** Get current {@link AlarmTreeRoot} */
-	public TreeItem getAlarmTree();
-	
-	/** Release model */
-	public void close();
+
+    /** Initialize handler with {@link AlarmNotifier} */
+    public void init(final AlarmNotifier notifier);
+
+    /** Find item by path */
+    public AlarmTreeItem findItem(String path);
+
+    /** Get current {@link AlarmTreeRoot} */
+    public TreeItem getAlarmTree();
+
+    /** Release model */
+    public void close();
 }

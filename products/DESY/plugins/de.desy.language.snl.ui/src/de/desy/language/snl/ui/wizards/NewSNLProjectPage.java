@@ -4,13 +4,13 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.dialogs.WizardNewProjectCreationPage;
 
 public class NewSNLProjectPage extends WizardNewProjectCreationPage {
-	IWorkbench workbench;
+    IWorkbench workbench;
 
-	String nature;
+    String nature;
 
-	public NewSNLProjectPage(final String pageName) {
-		super("Project Creation Page");
-		this.setTitle("Create a new SNL project");
-		this.setDescription("Enter a name for the new SNL project");
-	}
+    public NewSNLProjectPage(final String pageName) {
+        super("Project Creation Page");
+        this.setTitle("Create a new SNL project");
+        this.setDescription("Enter a name for the new SNL project");
+    }
 }

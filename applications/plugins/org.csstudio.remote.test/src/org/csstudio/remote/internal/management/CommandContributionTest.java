@@ -42,70 +42,70 @@ import org.junit.Test;
  * @author Joerg Rathlev
  */
 public class CommandContributionTest {
-	
-	private IManagementCommand _dummyImplementation;
-	
-	@Before
-	public void setUp() {
-		_dummyImplementation = new IManagementCommand() {
-			public CommandResult execute(CommandParameters parameters) {
-				return null;
-			}
-		};
-	}
 
-	@Test
-	public void testDescription() throws Exception {
-		CommandContribution c = new CommandContribution.Builder()
-				.setIdentifier("id")
-				.setLabel("label")
-				.setCommandImplementation(_dummyImplementation)
-				.build();
-		assertEquals("id", c.getDescription().getIdentifier());
-		assertEquals("label", c.getDescription().getLabel());
-		assertEquals(0, c.getDescription().getParameters().length);
-		assertSame(_dummyImplementation, c.getCommandImplementation());
-	}
-	
-	@Test
-	public void testStringParameter() throws Exception {
-		CommandParameterDefinition parameterDefinition = new CommandParameterDefinition.Builder()
-				.setIdentifier("param")
-				.setLabel("Parameter")
-				.setType(CommandParameterType.STRING)
-				.build();
-		CommandContribution c = new CommandContribution.Builder()
-				.setIdentifier("id")
-				.setLabel("label")
-				.setCommandImplementation(_dummyImplementation)
-				.addParameter(parameterDefinition, null)
-				.build();
-		assertEquals(1, c.getDescription().getParameters().length);
-		assertEquals(parameterDefinition, c.getDescription().getParameters()[0]);
-	}
-	
-	@Test
-	public void testDynamicEnumerationParameter() throws Exception {
-		CommandParameterDefinition parameterDefinition = new CommandParameterDefinition.Builder()
-				.setIdentifier("param")
-				.setLabel("Parameter")
-				.setType(CommandParameterType.DYNAMIC_ENUMERATION)
-				.build();
-		final CommandParameterEnumValue enumValue =
-			new CommandParameterEnumValue("value", "Value Label");
-		IDynamicParameterValues dynamicValues = new IDynamicParameterValues() {
-			public CommandParameterEnumValue[] getEnumerationValues() {
-				return new CommandParameterEnumValue[] { enumValue };
-			}
-		};
-		CommandContribution c = new CommandContribution.Builder()
-				.setIdentifier("id")
-				.setLabel("label")
-				.setCommandImplementation(_dummyImplementation)
-				.addParameter(parameterDefinition, dynamicValues)
-				.build();
-		assertEquals(1, c.getDescription().getParameters().length);
-		assertArrayEquals(new CommandParameterEnumValue[] { enumValue },
-				c.getDynamicEnumerationValues("param"));
-	}
+    private IManagementCommand _dummyImplementation;
+
+    @Before
+    public void setUp() {
+        _dummyImplementation = new IManagementCommand() {
+            public CommandResult execute(CommandParameters parameters) {
+                return null;
+            }
+        };
+    }
+
+    @Test
+    public void testDescription() throws Exception {
+        CommandContribution c = new CommandContribution.Builder()
+                .setIdentifier("id")
+                .setLabel("label")
+                .setCommandImplementation(_dummyImplementation)
+                .build();
+        assertEquals("id", c.getDescription().getIdentifier());
+        assertEquals("label", c.getDescription().getLabel());
+        assertEquals(0, c.getDescription().getParameters().length);
+        assertSame(_dummyImplementation, c.getCommandImplementation());
+    }
+
+    @Test
+    public void testStringParameter() throws Exception {
+        CommandParameterDefinition parameterDefinition = new CommandParameterDefinition.Builder()
+                .setIdentifier("param")
+                .setLabel("Parameter")
+                .setType(CommandParameterType.STRING)
+                .build();
+        CommandContribution c = new CommandContribution.Builder()
+                .setIdentifier("id")
+                .setLabel("label")
+                .setCommandImplementation(_dummyImplementation)
+                .addParameter(parameterDefinition, null)
+                .build();
+        assertEquals(1, c.getDescription().getParameters().length);
+        assertEquals(parameterDefinition, c.getDescription().getParameters()[0]);
+    }
+
+    @Test
+    public void testDynamicEnumerationParameter() throws Exception {
+        CommandParameterDefinition parameterDefinition = new CommandParameterDefinition.Builder()
+                .setIdentifier("param")
+                .setLabel("Parameter")
+                .setType(CommandParameterType.DYNAMIC_ENUMERATION)
+                .build();
+        final CommandParameterEnumValue enumValue =
+            new CommandParameterEnumValue("value", "Value Label");
+        IDynamicParameterValues dynamicValues = new IDynamicParameterValues() {
+            public CommandParameterEnumValue[] getEnumerationValues() {
+                return new CommandParameterEnumValue[] { enumValue };
+            }
+        };
+        CommandContribution c = new CommandContribution.Builder()
+                .setIdentifier("id")
+                .setLabel("label")
+                .setCommandImplementation(_dummyImplementation)
+                .addParameter(parameterDefinition, dynamicValues)
+                .build();
+        assertEquals(1, c.getDescription().getParameters().length);
+        assertArrayEquals(new CommandParameterEnumValue[] { enumValue },
+                c.getDynamicEnumerationValues("param"));
+    }
 }

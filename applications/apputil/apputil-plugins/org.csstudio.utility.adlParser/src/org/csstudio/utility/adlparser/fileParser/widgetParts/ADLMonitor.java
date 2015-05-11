@@ -36,42 +36,42 @@ import org.csstudio.utility.adlparser.internationalization.Messages;
  */
 public class ADLMonitor extends ADLConnected {
 
-	/**
-	 * The default constructor.
-	 * 
-	 * @param adlWidget
-	 *            An ADLWidget that correspond a ADL Monitor.
-	 * @param parentWidgetModel
-	 *            The Widget that set the parameter from ADLWidget.
-	 * @throws WrongADLFormatException
-	 *             Wrong ADL format or untreated parameter found.
-	 */
-	public ADLMonitor(final ADLWidget adlWidget) throws WrongADLFormatException {
-		super(adlWidget);
-	}
+    /**
+     * The default constructor.
+     *
+     * @param adlWidget
+     *            An ADLWidget that correspond a ADL Monitor.
+     * @param parentWidgetModel
+     *            The Widget that set the parameter from ADLWidget.
+     * @throws WrongADLFormatException
+     *             Wrong ADL format or untreated parameter found.
+     */
+    public ADLMonitor(final ADLWidget adlWidget) throws WrongADLFormatException {
+        super(adlWidget);
+    }
 
-	/**
-	 * Default constructor
-	 */
-	public ADLMonitor() {
-		super();
-	}
+    /**
+     * Default constructor
+     */
+    public ADLMonitor() {
+        super();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	void init() {
-		name = new String("monitor");
-		_chan = String.valueOf("");
-		set_isForeColorDefined(false);
-		set_isBackColorDefined(false);
-		assertBeginMsg = Messages.ADLMonitor_AssertError_Begin;
-		assertEndMsg = Messages.ADLMonitor_AssertError_End;
-		exceptionBeginMsg = Messages.ADLMonitor_WrongADLFormatException_Begin;
-		exceptionEndMsg = Messages.ADLMonitor_WrongADLFormatException_End;
-		exceptionBeginParameterMsg = Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin;
-		exceptionEndParameterMsg = Messages.ADLMonitor_WrongADLFormatException_Parameter_End;
-		oldChannelName = "rdbk";
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    void init() {
+        name = new String("monitor");
+        _chan = String.valueOf("");
+        set_isForeColorDefined(false);
+        set_isBackColorDefined(false);
+        assertBeginMsg = Messages.ADLMonitor_AssertError_Begin;
+        assertEndMsg = Messages.ADLMonitor_AssertError_End;
+        exceptionBeginMsg = Messages.ADLMonitor_WrongADLFormatException_Begin;
+        exceptionEndMsg = Messages.ADLMonitor_WrongADLFormatException_End;
+        exceptionBeginParameterMsg = Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin;
+        exceptionEndParameterMsg = Messages.ADLMonitor_WrongADLFormatException_Parameter_End;
+        oldChannelName = "rdbk";
+    }
 }

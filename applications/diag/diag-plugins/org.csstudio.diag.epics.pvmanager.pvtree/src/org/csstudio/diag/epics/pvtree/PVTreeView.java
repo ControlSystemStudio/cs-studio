@@ -46,7 +46,7 @@ public class PVTreeView extends ViewPart
 {
     /** View ID, defined in plugin.xml */
     public static final String ID = PVTreeView.class.getName();
-    
+
     /** (Numeric) secondary view ID */
     final private static AtomicInteger instance = new AtomicInteger();
 
@@ -67,7 +67,7 @@ public class PVTreeView extends ViewPart
     private DrillDownAdapter drillDownAdapter;
 
     // private ComboHistoryHelper pv_name_helper;
-    
+
     /** @return New unique code to allow multiple instances of this view */
     public static String newInstance()
     {
@@ -99,13 +99,13 @@ public class PVTreeView extends ViewPart
             return;
 
         hookContextMenu();
-        
+
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         toolbar.add(new CollapseTreeAction(viewer.getTree()));
         toolbar.add(new ExpandAlarmTreeAction(viewer));
         toolbar.add(new ExpandTreeAction(viewer.getTree()));
     }
-    
+
     private void createGUI(final Composite parent)
     {
         GridLayout gl = new GridLayout();
@@ -118,28 +118,28 @@ public class PVTreeView extends ViewPart
         gd = new GridData();
         l.setLayoutData(gd);
 
-		pv_name = new Text(parent, SWT.LEFT | SWT.BORDER);
-		pv_name.setToolTipText(Messages.PV_TT);
-		gd = new GridData();
-		gd.grabExcessHorizontalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		pv_name.setLayoutData(gd);
-		pv_name.addListener(SWT.DefaultSelection, new Listener()
-		{
-			@Override
+        pv_name = new Text(parent, SWT.LEFT | SWT.BORDER);
+        pv_name.setToolTipText(Messages.PV_TT);
+        gd = new GridData();
+        gd.grabExcessHorizontalSpace = true;
+        gd.horizontalAlignment = SWT.FILL;
+        pv_name.setLayoutData(gd);
+        pv_name.addListener(SWT.DefaultSelection, new Listener()
+        {
+            @Override
             public void handleEvent(Event e) {
-				setPVName(pv_name.getText());
-			}
-		});
-		new AutoCompleteWidget(pv_name, AutoCompleteTypes.PV);
-		// pv_name_helper =
-		// new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
-		// PV_LIST_TAG, pv_name)
-		// {
-		// @Override
-		// public void newSelection(String new_pv_name)
-		// { setPVName(new_pv_name); }
-		// };
+                setPVName(pv_name.getText());
+            }
+        });
+        new AutoCompleteWidget(pv_name, AutoCompleteTypes.PV);
+        // pv_name_helper =
+        // new ComboHistoryHelper(Plugin.getDefault().getDialogSettings(),
+        // PV_LIST_TAG, pv_name)
+        // {
+        // @Override
+        // public void newSelection(String new_pv_name)
+        // { setPVName(new_pv_name); }
+        // };
 
         final Tree tree = new Tree(parent, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
         gd = new GridData();
@@ -172,16 +172,16 @@ public class PVTreeView extends ViewPart
 
         // Support drop
         new ControlSystemDropTarget(parent, ProcessVariable.class, String.class)
-		{
-			@Override
-			public void handleDrop(final Object item)
-			{
-				if (item instanceof ProcessVariable)
-					setPVName(((ProcessVariable) item).getName());
-				else
-					setPVName((String) item);
-			}
-		};
+        {
+            @Override
+            public void handleDrop(final Object item)
+            {
+                if (item instanceof ProcessVariable)
+                    setPVName(((ProcessVariable) item).getName());
+                else
+                    setPVName((String) item);
+            }
+        };
 
         // Stop the press when we're no more
         pv_name.addDisposeListener(new DisposeListener()

@@ -41,24 +41,24 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Jms-based implementation.
- * 
+ *
  * @author jpenning
  * @since 17.01.2012
  */
 public class JmsRemoteCommandService implements IRemoteCommandService {
     private static final Logger LOG = LoggerFactory.getLogger(JmsRemoteCommandService.class);
-    
+
     // Given as preference
     private final String _topicName = "COMMAND";
-    
+
     // Given as preference
     private final int _timeToLiveForAlarms = 3600000;
-    
+
     private final Map<IRemoteCommandService.IListener, IMessageListenerSession> _listenersMap = new HashMap<IRemoteCommandService.IListener, IMessageListenerSession>();
-    
+
     @Override
     public void register(ClientGroup group, IListener listener) throws RemoteCommandException {
-        
+
         try {
             MessageListener listenerAdapter = new MessageListenerAdapter(group, listener);
             IMessageListenerSession listenerSession = SharedJmsConnections
@@ -70,16 +70,16 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
             throw newRemoteCommandException("JmsRemoteCommandService.register failed", e);
         }
     }
-    
+
     @Override
     public void deregister(IListener listener) {
         IMessageListenerSession listenerSession = _listenersMap.get(listener);
         if (listenerSession != null) {
             listenerSession.close();
         }
-        
+
     }
-    
+
     @Override
     public void sendCommand(ClientGroup group, String command) throws RemoteCommandException {
         Session session = null;
@@ -91,19 +91,19 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
         } catch (final JMSException e) {
             throw newRemoteCommandException("JmsRemoteCommandService.sendCommand failed", e);
         } catch (JmsUtilityException e) {
-        	throw newRemoteCommandException("JmsRemoteCommandService.sendCommand failed", e);
-		} finally {
+            throw newRemoteCommandException("JmsRemoteCommandService.sendCommand failed", e);
+        } finally {
             tryToCloseSession(session);
         }
-        
+
     }
-    
+
     private RemoteCommandException newRemoteCommandException(final String message,
                                                              final Exception e) {
         LOG.error(message, e);
         return new RemoteCommandException(message, e);
     }
-    
+
     private void sendViaMessageProducer(final Session session,
                                         final Message message) throws JMSException {
         MessageProducer producer = null;
@@ -114,7 +114,7 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
             tryToCloseMessageProducer(producer);
         }
     }
-    
+
     private MessageProducer newMessageProducer(final Session session) throws JMSException {
         Destination destination = session.createTopic(_topicName);
         MessageProducer result = session.createProducer(destination);
@@ -122,18 +122,18 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
         result.setTimeToLive(_timeToLiveForAlarms);
         return result;
     }
-    
+
     private void tryToCloseMessageProducer(final MessageProducer messageProducer) throws JMSException {
         if (messageProducer != null) {
             messageProducer.close();
         }
     }
-    
+
     private Session newSession() throws JMSException, JmsUtilityException {
         return SharedJmsConnections.sharedSenderConnection()
                 .createSession(false, Session.AUTO_ACKNOWLEDGE);
     }
-    
+
     private void tryToCloseSession(final Session session) {
         if (session != null) {
             try {
@@ -143,18 +143,18 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
             }
         }
     }
-    
+
     private static final class MessageListenerAdapter implements MessageListener {
-        
+
         private final IListener _listener;
         private final ClientGroup _group;
-        
+
         public MessageListenerAdapter(final ClientGroup group,
                                       final IListener listener) {
             _group = group;
             _listener = listener;
         }
-        
+
         @SuppressWarnings("synthetic-access")
         @Override
         public void onMessage(final Message message) {
@@ -164,27 +164,27 @@ public class JmsRemoteCommandService implements IRemoteCommandService {
                           message.getClass().getCanonicalName());
                 return;
             }
-            
+
             final MapMessage mapMessage = (MapMessage) message;
             try {
                 if (isCommandMessage(mapMessage) && isProperClientGroup(mapMessage)) {
                     String command = mapMessage.getString("NAME");
                     _listener.receiveCommand(command);
                 }
-                
+
             } catch (JMSException e) {
                 LOG.error("JmsRemoteCommandService.MessageListenerAdapter.onMessage failed", e);
             }
         }
-        
+
         private boolean isProperClientGroup(final MapMessage message) throws JMSException {
             return _group.toString().equals(message.getString("GROUP"));
         }
-        
+
         private boolean isCommandMessage(final MapMessage message) throws JMSException {
             return "command".equals(message.getString("TYPE"));
         }
-        
+
     }
-    
+
 }

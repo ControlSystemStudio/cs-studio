@@ -6,10 +6,10 @@ import org.xml.sax.helpers.DefaultHandler;
 
 public abstract class AbstractColorAndFontHandler extends DefaultHandler{
 
-	public abstract void reset();
+    public abstract void reset();
 
-	public abstract NamedStyle getStyle(String styleName);
+    public abstract NamedStyle getStyle(String styleName);
 
-	public abstract List<NamedStyle> getStyles();
+    public abstract List<NamedStyle> getStyles();
 
 }

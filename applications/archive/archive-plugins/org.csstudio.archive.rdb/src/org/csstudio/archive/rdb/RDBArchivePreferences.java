@@ -51,7 +51,7 @@ public class RDBArchivePreferences
         return SecurePreferences.get(Activator.ID, PASSWORD, null);
     }
 
-	/** @return SQL Timeout in seconds */
+    /** @return SQL Timeout in seconds */
     public static int getSQLTimeoutSecs()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();

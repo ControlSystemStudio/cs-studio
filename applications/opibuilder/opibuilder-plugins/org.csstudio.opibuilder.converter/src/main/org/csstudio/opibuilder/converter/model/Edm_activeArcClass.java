@@ -15,77 +15,77 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeArcClass extends EdmWidget {
 
-	
-	@EdmAttributeAn private EdmColor lineColor;
-	
-	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
-	@EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;	
-	@EdmAttributeAn @EdmOptionalAn private EdmColor fillColor;
-	@EdmAttributeAn @EdmOptionalAn private boolean fill;
-	@EdmAttributeAn @EdmOptionalAn private boolean invisible;
-	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
-	@EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
-	@EdmAttributeAn @EdmOptionalAn private double startAngle;
-	@EdmAttributeAn @EdmOptionalAn private double totalAngle;
-	@EdmAttributeAn @EdmOptionalAn private String fillMode;
-	public Edm_activeArcClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
 
-	
+    @EdmAttributeAn private EdmColor lineColor;
 
-	
-
-	/**
-	 * @return the lineAlarm
-	 */
-	public final boolean isLineAlarm() {
-		return lineAlarm;
-	}
+    @EdmAttributeAn @EdmOptionalAn private int lineWidth;
+    @EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;
+    @EdmAttributeAn @EdmOptionalAn private EdmColor fillColor;
+    @EdmAttributeAn @EdmOptionalAn private boolean fill;
+    @EdmAttributeAn @EdmOptionalAn private boolean invisible;
+    @EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
+    @EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
+    @EdmAttributeAn @EdmOptionalAn private double startAngle;
+    @EdmAttributeAn @EdmOptionalAn private double totalAngle;
+    @EdmAttributeAn @EdmOptionalAn private String fillMode;
+    public Edm_activeArcClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 
 
 
 
-	/**
-	 * @return the fillAlarm
-	 */
-	public final boolean isFillAlarm() {
-		return fillAlarm;
-	}
+    /**
+     * @return the lineAlarm
+     */
+    public final boolean isLineAlarm() {
+        return lineAlarm;
+    }
 
 
-	public EdmColor getLineColor() {
-		return lineColor;
-	}
 
-	public int getLineWidth() {
-		return lineWidth;
-	}
 
-	public EdmLineStyle getLineStyle() {
-		return lineStyle;
-	}
 
-	public EdmColor getFillColor() {
-		return fillColor;
-	}
+    /**
+     * @return the fillAlarm
+     */
+    public final boolean isFillAlarm() {
+        return fillAlarm;
+    }
 
-	public boolean isInvisible() {
-		return invisible;
-	}
 
-	public boolean isFill(){
-		return fill;
-	}
-	
-	public double getStartAngle() {
-		return startAngle;
-	}
-	public double getTotalAngle() {
-		return totalAngle;
-	}
-	public final String getFillMode() {
-		return fillMode;
-	}
+    public EdmColor getLineColor() {
+        return lineColor;
+    }
+
+    public int getLineWidth() {
+        return lineWidth;
+    }
+
+    public EdmLineStyle getLineStyle() {
+        return lineStyle;
+    }
+
+    public EdmColor getFillColor() {
+        return fillColor;
+    }
+
+    public boolean isInvisible() {
+        return invisible;
+    }
+
+    public boolean isFill(){
+        return fill;
+    }
+
+    public double getStartAngle() {
+        return startAngle;
+    }
+    public double getTotalAngle() {
+        return totalAngle;
+    }
+    public final String getFillMode() {
+        return fillMode;
+    }
 }

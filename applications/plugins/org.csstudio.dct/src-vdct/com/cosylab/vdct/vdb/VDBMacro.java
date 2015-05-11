@@ -8,22 +8,22 @@ package com.cosylab.vdct.vdb;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -54,354 +54,354 @@ import com.cosylab.vdct.undo.DescriptionChangeAction;
  */
 public class VDBMacro implements InspectableProperty, Descriptable, ChangableVisibility, LinkSource
 {
-	protected String name = null;
-	protected String description = null;
-	protected String comment = null;
-	
-	private static final String nullString = "";
+    protected String name = null;
+    protected String description = null;
+    protected String comment = null;
 
-	protected static String defaultDescription = "";
+    private static final String nullString = "";
 
-	private static final String removeString = "Remove";
-	private static final String renameString = "Rename";
-	
-	private VDBTemplate template = null;
+    protected static String defaultDescription = "";
 
-	protected int visibility = ALWAYS_VISIBLE;
+    private static final String removeString = "Remove";
+    private static final String renameString = "Rename";
 
-	protected Macro visibleObject = null;
-	
-	/**
-	 * Insert the method's description here.
-	 */
-	public VDBMacro(VDBTemplate template, DBMacro macro)
-	{
-		this.template = template;
-		this.name = macro.getName();
-		this.description = macro.getDescription();
-		this.comment = macro.getComment();
-	}
-	
-	/**
-	 * Insert the method's description here.
-	 */
-	public VDBMacro(VDBTemplate template, String name, String description)
-	{
-		this.template = template;
+    private VDBTemplate template = null;
 
-		this.name = name;
-		this.description = description;
-	}
-	
-	/**
-	 * Returns the name.
-	 * @return String
-	 */
-	public String getName()
-	{
-		return name;
-	}
+    protected int visibility = ALWAYS_VISIBLE;
 
-	/**
-	 * Returns the name.
-	 * @return String
-	 */
-	public String getFullName()
-	{
-		StringBuffer fullName = new StringBuffer();
-		fullName.append("$(");
-		fullName.append(getName());
-		fullName.append(")");
-		return fullName.toString();
-	}
+    protected Macro visibleObject = null;
 
-	/**
-	 * Sets the name.
-	 * @param name The name to set
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+    /**
+     * Insert the method's description here.
+     */
+    public VDBMacro(VDBTemplate template, DBMacro macro)
+    {
+        this.template = template;
+        this.name = macro.getName();
+        this.description = macro.getDescription();
+        this.comment = macro.getComment();
+    }
 
-	/**
-	 * Sets the target.
-	 * @param target The target to set
-	 */
-/*	public void setTarget(String target)
-	{
-		this.target = target;
-	}
+    /**
+     * Insert the method's description here.
+     */
+    public VDBMacro(VDBTemplate template, String name, String description)
+    {
+        this.template = template;
 
-	/**
-	 * Returns the description.
-	 * @return String
-	 */
-	public String getDescription()
-	{
-		if (description==null)
-			return defaultDescription;
-		else
-			return description;
-	}
+        this.name = name;
+        this.description = description;
+    }
 
-	/**
-	 * Returns the description.
-	 * @return String
-	 */
-	public String getRealDescription()
-	{
-		return description;
-	}
+    /**
+     * Returns the name.
+     * @return String
+     */
+    public String getName()
+    {
+        return name;
+    }
 
-	/**
-	 * Sets the description.
-	 * @param description The description to set
-	 */
-	public void setDescription(String description)
-	{
-		boolean update = false;
-		
-		if (this.description==null || !this.description.equals(description))
-		{
-			com.cosylab.vdct.undo.UndoManager.getInstance().addAction(
-					new DescriptionChangeAction(this, this.description, description));
-			update = true;
-		}
+    /**
+     * Returns the name.
+     * @return String
+     */
+    public String getFullName()
+    {
+        StringBuffer fullName = new StringBuffer();
+        fullName.append("$(");
+        fullName.append(getName());
+        fullName.append(")");
+        return fullName.toString();
+    }
 
-		this.description = description;
+    /**
+     * Sets the name.
+     * @param name The name to set
+     */
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
-		if (update)
-		{
-			InspectorManager.getInstance().updateObject(template);
+    /**
+     * Sets the target.
+     * @param target The target to set
+     */
+/*    public void setTarget(String target)
+    {
+        this.target = target;
+    }
 
-			// update inspector (if inspecting visible rep.)
-			if (visibleObject!=null && InspectorManager.getInstance().isInspected(visibleObject))
-			{
-				InspectorManager.getInstance().updateObject(visibleObject);
-			}
-		}
+    /**
+     * Returns the description.
+     * @return String
+     */
+    public String getDescription()
+    {
+        if (description==null)
+            return defaultDescription;
+        else
+            return description;
+    }
 
-	}
-	
-	/**
-	 * Returns macro name
-	 * @param templateInstanceName The name of the template instance
-	 */
-	public String getMacroDefinition(String templateInstanceName)
-	{
-		StringBuffer fullName = new StringBuffer();
-		fullName.append("$(");
-		fullName.append(getName());
-		fullName.append(")");
-		return fullName.toString();
-	}
-	/**
-	 * Returns the comment.
-	 * @return String
-	 */
-	public String getComment()
-	{
-		return comment;
-	}
+    /**
+     * Returns the description.
+     * @return String
+     */
+    public String getRealDescription()
+    {
+        return description;
+    }
 
-	/**
-	 * Sets the comment.
-	 * @param comment The comment to set
-	 */
-	public void setComment(String comment)
-	{
-		this.comment = comment;
-	}
+    /**
+     * Sets the description.
+     * @param description The description to set
+     */
+    public void setDescription(String description)
+    {
+        boolean update = false;
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#allowsOtherValues()
-	 */
-	public boolean allowsOtherValues()
-	{
-		return true;
-	}
+        if (this.description==null || !this.description.equals(description))
+        {
+            com.cosylab.vdct.undo.UndoManager.getInstance().addAction(
+                    new DescriptionChangeAction(this, this.description, description));
+            update = true;
+        }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#getEditPattern()
-	 */
-	public Pattern getEditPattern()
-	{
-		return null;
-	}
+        this.description = description;
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#getHelp()
-	 */
-	public String getHelp()
-	{
-		return description;
-	}
+        if (update)
+        {
+            InspectorManager.getInstance().updateObject(template);
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#getInitValue()
-	 */
-	public String getInitValue()
-	{
-		return null;
-	}
+            // update inspector (if inspecting visible rep.)
+            if (visibleObject!=null && InspectorManager.getInstance().isInspected(visibleObject))
+            {
+                InspectorManager.getInstance().updateObject(visibleObject);
+            }
+        }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#getSelectableValues()
-	 */
-	public String[] getSelectableValues()
-	{
-		return null;
-	}
+    }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#getToolTipText()
-	 */
-	public String getToolTipText()
-	{
-		return description;
-	}
+    /**
+     * Returns macro name
+     * @param templateInstanceName The name of the template instance
+     */
+    public String getMacroDefinition(String templateInstanceName)
+    {
+        StringBuffer fullName = new StringBuffer();
+        fullName.append("$(");
+        fullName.append(getName());
+        fullName.append(")");
+        return fullName.toString();
+    }
+    /**
+     * Returns the comment.
+     * @return String
+     */
+    public String getComment()
+    {
+        return comment;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#getValue()
-	 */
-	public String getValue()
-	{
-		return nullString;
-	}
+    /**
+     * Sets the comment.
+     * @param comment The comment to set
+     */
+    public void setComment(String comment)
+    {
+        this.comment = comment;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#getVisibility()
-	 */
-	public int getVisibility()
-	{
-		return visibility;
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#allowsOtherValues()
+     */
+    public boolean allowsOtherValues()
+    {
+        return true;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#isEditable()
-	 */
-	public boolean isEditable()
-	{
-		return false;
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#getEditPattern()
+     */
+    public Pattern getEditPattern()
+    {
+        return null;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#isSepatator()
-	 */
-	public boolean isSepatator()
-	{
-		return false;
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#getHelp()
+     */
+    public String getHelp()
+    {
+        return description;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#isValid()
-	 */
-	public boolean isValid()
-	{
-		return true;
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#getInitValue()
+     */
+    public String getInitValue()
+    {
+        return null;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#popupEvent(Component, int, int)
-	 */
-	public void popupEvent(Component component, int x, int y)
-	{
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#getSelectableValues()
+     */
+    public String[] getSelectableValues()
+    {
+        return null;
+    }
 
-		ActionListener al = new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e) {
-				String action = e.getActionCommand();
-				if (action.equals(renameString))
-					template.renameProperty(VDBMacro.this);
-				else if (action.equals(removeString))
-					template.removeProperty(VDBMacro.this);
-			}
-	
-		};
-		
-		JPopupMenu popup = new JPopupMenu();
-		
-		JMenuItem mi = new JMenuItem(renameString);
-		mi.addActionListener(al);
-		popup.add(mi);
-	
-		popup.add(new JSeparator());
-		
-		mi = new JMenuItem(removeString);
-		mi.addActionListener(al);
-		popup.add(mi);
-	
-		popup.show(component, x, y);
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#getToolTipText()
+     */
+    public String getToolTipText()
+    {
+        return description;
+    }
 
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#getValue()
+     */
+    public String getValue()
+    {
+        return nullString;
+    }
 
-	/**
-	 * Insert the method's description here.
-	 * Creation date: (9.12.2000 18:11:46)
-	 * @param newValue java.lang.String
-	 */
-	public void setValueSilently(java.lang.String newValue) {
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#getVisibility()
+     */
+    public int getVisibility()
+    {
+        return visibility;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.InspectableProperty#setValue(String)
-	 */
-	public void setValue(String value)
-	{
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#isEditable()
+     */
+    public boolean isEditable()
+    {
+        return false;
+    }
 
-	/**
-	 * Returns the template.
-	 * @return VDBTemplate
-	 */
-	public VDBTemplate getTemplate()
-	{
-		return template;
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#isSepatator()
+     */
+    public boolean isSepatator()
+    {
+        return false;
+    }
 
-	/**
-	 * Sets the template.
-	 * @param template The template to set
-	 */
-	public void setTemplate(VDBTemplate template)
-	{
-		this.template = template;
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#isValid()
+     */
+    public boolean isValid()
+    {
+        return true;
+    }
 
-	/**
-	 * @see com.cosylab.vdct.inspector.ChangableVisibility#setVisibility(int)
-	 */
-	public void setVisibility(int visibility)
-	{
-		this.visibility = visibility;
-		template.propertyChanged(this);
-	}
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#popupEvent(Component, int, int)
+     */
+    public void popupEvent(Component component, int x, int y)
+    {
 
-	/**
-	 * @see com.cosylab.vdct.graphics.objects.LinkSource#getType()
-	 */
-	public int getType()
-	{
-		return DBDConstants.DBF_MACRO;
-	}
+        ActionListener al = new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e) {
+                String action = e.getActionCommand();
+                if (action.equals(renameString))
+                    template.renameProperty(VDBMacro.this);
+                else if (action.equals(removeString))
+                    template.removeProperty(VDBMacro.this);
+            }
 
-	/**
-	 * Returns the visibleObject.
-	 * @return Macro
-	 */
-	public Macro getVisibleObject()
-	{
-		return visibleObject;
-	}
+        };
 
-	/**
-	 * Sets the visibleObject.
-	 * @param visibleObject The visibleObject to set
-	 */
-	public void setVisibleObject(Macro visibleObject)
-	{
-		this.visibleObject = visibleObject;
-	}
+        JPopupMenu popup = new JPopupMenu();
+
+        JMenuItem mi = new JMenuItem(renameString);
+        mi.addActionListener(al);
+        popup.add(mi);
+
+        popup.add(new JSeparator());
+
+        mi = new JMenuItem(removeString);
+        mi.addActionListener(al);
+        popup.add(mi);
+
+        popup.show(component, x, y);
+
+    }
+
+    /**
+     * Insert the method's description here.
+     * Creation date: (9.12.2000 18:11:46)
+     * @param newValue java.lang.String
+     */
+    public void setValueSilently(java.lang.String newValue) {
+    }
+
+    /**
+     * @see com.cosylab.vdct.inspector.InspectableProperty#setValue(String)
+     */
+    public void setValue(String value)
+    {
+    }
+
+    /**
+     * Returns the template.
+     * @return VDBTemplate
+     */
+    public VDBTemplate getTemplate()
+    {
+        return template;
+    }
+
+    /**
+     * Sets the template.
+     * @param template The template to set
+     */
+    public void setTemplate(VDBTemplate template)
+    {
+        this.template = template;
+    }
+
+    /**
+     * @see com.cosylab.vdct.inspector.ChangableVisibility#setVisibility(int)
+     */
+    public void setVisibility(int visibility)
+    {
+        this.visibility = visibility;
+        template.propertyChanged(this);
+    }
+
+    /**
+     * @see com.cosylab.vdct.graphics.objects.LinkSource#getType()
+     */
+    public int getType()
+    {
+        return DBDConstants.DBF_MACRO;
+    }
+
+    /**
+     * Returns the visibleObject.
+     * @return Macro
+     */
+    public Macro getVisibleObject()
+    {
+        return visibleObject;
+    }
+
+    /**
+     * Sets the visibleObject.
+     * @param visibleObject The visibleObject to set
+     */
+    public void setVisibleObject(Macro visibleObject)
+    {
+        this.visibleObject = visibleObject;
+    }
 
 }

@@ -35,55 +35,55 @@ import org.csstudio.dal.context.Identifiable;
  */
 public interface Request<T> extends Iterable<Response<T>>
 {
-	/**
-	 * Returns the Iterator for the response storage.
-	 *
-	 * @return Response iterator
-	 */
-	public Iterator<Response<T>> responses();
+    /**
+     * Returns the Iterator for the response storage.
+     *
+     * @return Response iterator
+     */
+    public Iterator<Response<T>> responses();
 
-	/**
-	 * Returns true if there are any responses available
-	 *
-	 * @return true if response available
-	 */
-	public boolean hasResponse();
+    /**
+     * Returns true if there are any responses available
+     *
+     * @return true if response available
+     */
+    public boolean hasResponse();
 
-	/**
-	 * Returns the source of the request
-	 *
-	 * @return source of the request
-	 */
-	public Identifiable getSource();
+    /**
+     * Returns the source of the request
+     *
+     * @return source of the request
+     */
+    public Identifiable getSource();
 
-	/**
-	 * Returns <code>true</code> if request has been completed.
-	 *
-	 * @return <code>true</code> if request was completed.
-	 */
-	public boolean isCompleted();
+    /**
+     * Returns <code>true</code> if request has been completed.
+     *
+     * @return <code>true</code> if request was completed.
+     */
+    public boolean isCompleted();
 
-	/**
-	 * Returns the first response to this request.
-	 *
-	 * @return the first response
-	 */
-	public Response<T> getFirstResponse();
+    /**
+     * Returns the first response to this request.
+     *
+     * @return the first response
+     */
+    public Response<T> getFirstResponse();
 
-	/**
-	 * Returns the last arrived response.
-	 *
-	 * @return the last response
-	 */
-	public Response<T> getLastResponse();
+    /**
+     * Returns the last arrived response.
+     *
+     * @return the last response
+     */
+    public Response<T> getLastResponse();
 
-	/**
-	 * Blocks call until last response is received. <br><b>NOTE: </b> call from this method is returned after events
-	 * are dispatched on ResponseListeners.
-	 *
-	 * @return final value received with done event.
-	 */
-	public T waitUntilDone();
+    /**
+     * Blocks call until last response is received. <br><b>NOTE: </b> call from this method is returned after events
+     * are dispatched on ResponseListeners.
+     *
+     * @return final value received with done event.
+     */
+    public T waitUntilDone();
 }
 
 /* __oOo__ */

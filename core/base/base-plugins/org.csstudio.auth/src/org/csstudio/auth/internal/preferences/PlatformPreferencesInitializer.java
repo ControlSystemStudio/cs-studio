@@ -37,52 +37,52 @@ import org.osgi.service.prefs.Preferences;
  * @author Jan Hatje, J�rg Penning
  */
 public final class PlatformPreferencesInitializer extends
-		AbstractPreferenceInitializer {
+        AbstractPreferenceInitializer {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void initializeDefaultPreferences() {
-		IEclipsePreferences node = DefaultScope.INSTANCE
-				.getNode(AuthActivator.ID);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void initializeDefaultPreferences() {
+        IEclipsePreferences node = DefaultScope.INSTANCE
+                .getNode(AuthActivator.ID);
 
-		initializeSystemPropertyPreferences(node);
-		initializeOnsitePreferences(node);
-		initializeAuthenticationPreferences(node);
-	}
+        initializeSystemPropertyPreferences(node);
+        initializeOnsitePreferences(node);
+        initializeAuthenticationPreferences(node);
+    }
 
 
-	/**
-	 * Initializes the preferences for the onsite networks.
-	 * @param node the preferences node to use.
-	 */
-	private void initializeOnsitePreferences(IEclipsePreferences node) {
-		node.put(OnsiteSubnetPreferences.PREFERENCE_KEY, "131.169.0.0/255.255.0.0,");
-	}
+    /**
+     * Initializes the preferences for the onsite networks.
+     * @param node the preferences node to use.
+     */
+    private void initializeOnsitePreferences(IEclipsePreferences node) {
+        node.put(OnsiteSubnetPreferences.PREFERENCE_KEY, "131.169.0.0/255.255.0.0,");
+    }
 
-	/**
-	 * Initializes preferences for system property defaults.
-	 * @param node the preferences node to use.
-	 */
-	@SuppressWarnings("nls")
+    /**
+     * Initializes preferences for system property defaults.
+     * @param node the preferences node to use.
+     */
+    @SuppressWarnings("nls")
     private void initializeSystemPropertyPreferences(
-			final IEclipsePreferences node) {
-		Preferences propNode = node.node("systemProperties");
-		propNode.put("java.security.krb5.realm", "DESY.DE");
-		propNode.put("java.security.krb5.kdc", "kdc1.desy.de:kdc2.desy.de:kdc3.desy.de");
-	}
-	
-	/**
-	 * Initializes all preference settings for the authentication mechanism.
-	 *
-	 * @param node
-	 *            the preferences node to use
-	 */
-	private void initializeAuthenticationPreferences(
-			final IEclipsePreferences node) {
-		node.put(SecurityFacade.ONSITE_LOGIN_PREFERECE, "true"); //$NON-NLS-1$
-		node.put(SecurityFacade.OFFSITE_LOGIN_PREFERENCE, "false"); //$NON-NLS-1$
-	}
-	
+            final IEclipsePreferences node) {
+        Preferences propNode = node.node("systemProperties");
+        propNode.put("java.security.krb5.realm", "DESY.DE");
+        propNode.put("java.security.krb5.kdc", "kdc1.desy.de:kdc2.desy.de:kdc3.desy.de");
+    }
+
+    /**
+     * Initializes all preference settings for the authentication mechanism.
+     *
+     * @param node
+     *            the preferences node to use
+     */
+    private void initializeAuthenticationPreferences(
+            final IEclipsePreferences node) {
+        node.put(SecurityFacade.ONSITE_LOGIN_PREFERECE, "true"); //$NON-NLS-1$
+        node.put(SecurityFacade.OFFSITE_LOGIN_PREFERENCE, "false"); //$NON-NLS-1$
+    }
+
 }

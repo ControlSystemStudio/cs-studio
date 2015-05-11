@@ -16,20 +16,20 @@ import java.io.InputStream;
  *
  */
 public abstract class AbstractInputStreamRunnable implements Runnable {
-	
-	private InputStream inputStream;
-	
-	public void setInputStream(InputStream inputStream) {
-		this.inputStream = inputStream;
-	}
-	
-	/**The task to be executed.
-	 * @param inputStream the injected inputstream.
-	 */
-	public abstract void runWithInputStream(final InputStream inputStream); 
 
-	public void run() {
-		runWithInputStream(inputStream);
-	}
+    private InputStream inputStream;
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+    /**The task to be executed.
+     * @param inputStream the injected inputstream.
+     */
+    public abstract void runWithInputStream(final InputStream inputStream);
+
+    public void run() {
+        runWithInputStream(inputStream);
+    }
 
 }

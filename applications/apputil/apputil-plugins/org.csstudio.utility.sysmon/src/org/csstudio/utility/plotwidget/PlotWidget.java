@@ -21,13 +21,13 @@ import org.eclipse.swt.widgets.Composite;
 public class PlotWidget extends Canvas implements PaintListener
 {
     PlotSamples samples;
-    
+
     public PlotWidget(Composite parent, int style)
     {
         super(parent, style);
         addPaintListener(this);
     }
-    
+
     public void setSamples(PlotSamples samples)
     {
         this.samples = samples;
@@ -37,7 +37,7 @@ public class PlotWidget extends Canvas implements PaintListener
     public void paintControl(PaintEvent e)
     {
         final GC gc = e.gc;
-        
+
         Rectangle rect = getClientArea();
         // When used with drawRectangle, this adjustment makes it actually fit
         --rect.width;
@@ -47,7 +47,7 @@ public class PlotWidget extends Canvas implements PaintListener
         gc.fillRectangle(rect);
         gc.setForeground(getDisplay().getSystemColor(SWT.COLOR_BLACK));
         gc.drawRectangle(rect);
-        
+
         final int N = samples.getSampleCount();
         // Any samples to show?
         if (N < 2)

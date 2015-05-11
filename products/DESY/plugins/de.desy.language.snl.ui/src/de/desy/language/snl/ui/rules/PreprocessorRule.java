@@ -26,112 +26,112 @@ import org.eclipse.jface.text.rules.WordRule;
  */
 public class PreprocessorRule extends WordRule implements IRule {
 
-	private final StringBuffer fBuffer = new StringBuffer();
+    private final StringBuffer fBuffer = new StringBuffer();
 
-	/**
-	 * Creates a rule which, with the help of a word detector, will return the
-	 * token associated with the detected word. If no token has been associated,
-	 * the scanner will be rolled back and an undefined token will be returned
-	 * in order to allow any subsequent rules to analyze the characters.
-	 * 
-	 * @param detector
-	 *            the word detector to be used by this rule, may not be
-	 *            <code>null</code>
-	 * 
-	 * @see WordRule#addWord
-	 */
-	public PreprocessorRule(final IWordDetector detector) {
-		this(detector, Token.UNDEFINED);
-	}
+    /**
+     * Creates a rule which, with the help of a word detector, will return the
+     * token associated with the detected word. If no token has been associated,
+     * the scanner will be rolled back and an undefined token will be returned
+     * in order to allow any subsequent rules to analyze the characters.
+     *
+     * @param detector
+     *            the word detector to be used by this rule, may not be
+     *            <code>null</code>
+     *
+     * @see WordRule#addWord
+     */
+    public PreprocessorRule(final IWordDetector detector) {
+        this(detector, Token.UNDEFINED);
+    }
 
-	/**
-	 * Creates a rule which, with the help of an word detector, will return the
-	 * token associated with the detected word. If no token has been associated,
-	 * the specified default token will be returned.
-	 * 
-	 * @param detector
-	 *            the word detector to be used by this rule, may not be
-	 *            <code>null</code>
-	 * @param defaultToken
-	 *            the default token to be returned on success if nothing else is
-	 *            specified, may not be <code>null</code>
-	 * 
-	 * @see WordRule#addWord
-	 */
-	public PreprocessorRule(final IWordDetector detector,
-			final IToken defaultToken) {
-		super(detector, defaultToken);
-	}
+    /**
+     * Creates a rule which, with the help of an word detector, will return the
+     * token associated with the detected word. If no token has been associated,
+     * the specified default token will be returned.
+     *
+     * @param detector
+     *            the word detector to be used by this rule, may not be
+     *            <code>null</code>
+     * @param defaultToken
+     *            the default token to be returned on success if nothing else is
+     *            specified, may not be <code>null</code>
+     *
+     * @see WordRule#addWord
+     */
+    public PreprocessorRule(final IWordDetector detector,
+            final IToken defaultToken) {
+        super(detector, defaultToken);
+    }
 
-	/*
-	 * @see IRule#evaluate
-	 */
-	@Override
-	public IToken evaluate(final ICharacterScanner scanner) {
-		int c;
-		int nCharsToRollback = 0;
-		boolean hashSignDetected = false;
+    /*
+     * @see IRule#evaluate
+     */
+    @Override
+    public IToken evaluate(final ICharacterScanner scanner) {
+        int c;
+        int nCharsToRollback = 0;
+        boolean hashSignDetected = false;
 
-		if (scanner.getColumn() > 0) {
-			return Token.UNDEFINED;
-		}
+        if (scanner.getColumn() > 0) {
+            return Token.UNDEFINED;
+        }
 
-		do {
-			c = scanner.read();
-			nCharsToRollback++;
-		} while (Character.isWhitespace((char) c));
+        do {
+            c = scanner.read();
+            nCharsToRollback++;
+        } while (Character.isWhitespace((char) c));
 
-		// Di- and trigraph support
-		if (c == '#') {
-			hashSignDetected = true;
-		} else if (c == '%') {
-			c = scanner.read();
-			nCharsToRollback++;
-			if (c == ':') {
-				hashSignDetected = true;
-			}
-		} else if (c == '?') {
-			c = scanner.read();
-			nCharsToRollback++;
-			if (c == '?') {
-				c = scanner.read();
-				nCharsToRollback++;
-				if (c == '=') {
-					hashSignDetected = true;
-				}
-			}
-		}
+        // Di- and trigraph support
+        if (c == '#') {
+            hashSignDetected = true;
+        } else if (c == '%') {
+            c = scanner.read();
+            nCharsToRollback++;
+            if (c == ':') {
+                hashSignDetected = true;
+            }
+        } else if (c == '?') {
+            c = scanner.read();
+            nCharsToRollback++;
+            if (c == '?') {
+                c = scanner.read();
+                nCharsToRollback++;
+                if (c == '=') {
+                    hashSignDetected = true;
+                }
+            }
+        }
 
-		if (hashSignDetected) {
+        if (hashSignDetected) {
 
-			do {
-				c = scanner.read();
-			} while (Character.isWhitespace((char) c));
+            do {
+                c = scanner.read();
+            } while (Character.isWhitespace((char) c));
 
-			this.fBuffer.setLength(0);
+            this.fBuffer.setLength(0);
 
-			do {
-				this.fBuffer.append((char) c);
-				c = scanner.read();
-			} while (Character.isJavaIdentifierPart((char) c));
+            do {
+                this.fBuffer.append((char) c);
+                c = scanner.read();
+            } while (Character.isJavaIdentifierPart((char) c));
 
-			scanner.unread();
+            scanner.unread();
 
-			final IToken token = (IToken) this.fWords
-					.get("#" + this.fBuffer.toString()); //$NON-NLS-1$
-			if (token != null) {
-				return token;
-			}
+            final IToken token = (IToken) this.fWords
+                    .get("#" + this.fBuffer.toString()); //$NON-NLS-1$
+            if (token != null) {
+                return token;
+            }
 
-			return this.fDefaultToken;
+            return this.fDefaultToken;
 
-		}
-		// Doesn't start with '#', roll back scanner
+        }
+        // Doesn't start with '#', roll back scanner
 
-		for (int i = 0; i < nCharsToRollback; i++) {
-			scanner.unread();
-		}
+        for (int i = 0; i < nCharsToRollback; i++) {
+            scanner.unread();
+        }
 
-		return Token.UNDEFINED;
-	}
+        return Token.UNDEFINED;
+    }
 }

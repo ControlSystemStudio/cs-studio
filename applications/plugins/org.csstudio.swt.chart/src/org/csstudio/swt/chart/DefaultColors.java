@@ -8,7 +8,7 @@
 package org.csstudio.swt.chart;
 
 /** Helper for providing default colors.
- * 
+ *
  *  @author Kay Kasemir
  */
 public class DefaultColors

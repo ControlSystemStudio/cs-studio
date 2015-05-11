@@ -12,20 +12,20 @@ import org.junit.Test;
 
 public class ArchiveRecordValueIterator {
 
-	@Before
-	public void setUp() throws Exception {
-	}
-	
-	@Test
-	public void testGetData() throws UnknownChannelException, Exception {
-		ITimestamp start = TimestampFactory.createTimestamp(1262875070, 0);
-		ITimestamp end = TimestampFactory.createTimestamp(1262875270, 0);
-		ArchiveRecordReader reader = new ArchiveRecordReader("archiveRecord://");
-		//TDOD (jhatje): implement vType
-//		ValueIterator valueIterator = reader.getRawValues(0, 
-//				"krykWeather:vWindBoe_ai", start, end);
-//		assertNotNull(valueIterator);
-//		printoutRaw(rawValues);
-	}
+    @Before
+    public void setUp() throws Exception {
+    }
+
+    @Test
+    public void testGetData() throws UnknownChannelException, Exception {
+        ITimestamp start = TimestampFactory.createTimestamp(1262875070, 0);
+        ITimestamp end = TimestampFactory.createTimestamp(1262875270, 0);
+        ArchiveRecordReader reader = new ArchiveRecordReader("archiveRecord://");
+        //TDOD (jhatje): implement vType
+//        ValueIterator valueIterator = reader.getRawValues(0,
+//                "krykWeather:vWindBoe_ai", start, end);
+//        assertNotNull(valueIterator);
+//        printoutRaw(rawValues);
+    }
 
 }

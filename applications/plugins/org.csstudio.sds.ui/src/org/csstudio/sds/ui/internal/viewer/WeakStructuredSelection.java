@@ -10,67 +10,67 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 /**
  * A selection implementation that references selected objects only weak, using
  * {@link WeakReference} instances.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public class WeakStructuredSelection implements IStructuredSelection {
-	private List<WeakReference> weakList;
+    private List<WeakReference> weakList;
 
-	public WeakStructuredSelection(IStructuredSelection originalSelection) {
-		List originalList = originalSelection.toList();
-		if (originalList != null) {
-			weakList = new ArrayList<WeakReference>();
+    public WeakStructuredSelection(IStructuredSelection originalSelection) {
+        List originalList = originalSelection.toList();
+        if (originalList != null) {
+            weakList = new ArrayList<WeakReference>();
 
-			for (Object o : originalList) {
-				weakList.add(new WeakReference<Object>(o));
-			}
-		}
-	}
+            for (Object o : originalList) {
+                weakList.add(new WeakReference<Object>(o));
+            }
+        }
+    }
 
-	@Override
-	public boolean isEmpty() {
-		return getAlive().isEmpty();
-	}
+    @Override
+    public boolean isEmpty() {
+        return getAlive().isEmpty();
+    }
 
-	@Override
-	public Object getFirstElement() {
-		List<Object> alive = getAlive();
-		return alive.isEmpty() ? null : alive.get(0);
-	}
+    @Override
+    public Object getFirstElement() {
+        List<Object> alive = getAlive();
+        return alive.isEmpty() ? null : alive.get(0);
+    }
 
-	@Override
-	public Iterator iterator() {
-		return getAlive().iterator();
-	}
+    @Override
+    public Iterator iterator() {
+        return getAlive().iterator();
+    }
 
-	@Override
-	public int size() {
-		return getAlive().size();
-	}
+    @Override
+    public int size() {
+        return getAlive().size();
+    }
 
-	@Override
-	public Object[] toArray() {
-		return getAlive().toArray();
-	}
+    @Override
+    public Object[] toArray() {
+        return getAlive().toArray();
+    }
 
-	@Override
-	public List toList() {
-		return getAlive();
-	}
+    @Override
+    public List toList() {
+        return getAlive();
+    }
 
-	private List<Object> getAlive() {
-		List<Object> result = new ArrayList<Object>();
+    private List<Object> getAlive() {
+        List<Object> result = new ArrayList<Object>();
 
-		if (weakList != null) {
-			for (WeakReference<Object> wr : weakList) {
-				Object o = wr.get();
-				if (o != null) {
-					result.add(o);
-				}
-			}
-		}
+        if (weakList != null) {
+            for (WeakReference<Object> wr : weakList) {
+                Object o = wr.get();
+                if (o != null) {
+                    result.add(o);
+                }
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

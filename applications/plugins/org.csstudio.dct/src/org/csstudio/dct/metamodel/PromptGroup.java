@@ -3,91 +3,91 @@ package org.csstudio.dct.metamodel;
 import com.cosylab.vdct.dbd.DBDConstants;
 
 public enum PromptGroup {
-	ALL (-1, "", "All"),
-	
-	UNDEFINED(-1, "", "Undefined"),
+    ALL (-1, "", "All"),
 
-	COMMON(DBDConstants.GUI_COMMON, "GUI_COMMON", "Common"),
+    UNDEFINED(-1, "", "Undefined"),
 
-	ALARMS(DBDConstants.GUI_ALARMS, "GUI_ALARMS", "Alarms"),
+    COMMON(DBDConstants.GUI_COMMON, "GUI_COMMON", "Common"),
 
-	BITS1(DBDConstants.GUI_BITS1, "GUI_BITS1", "Bits 1"),
+    ALARMS(DBDConstants.GUI_ALARMS, "GUI_ALARMS", "Alarms"),
 
-	BITS2(DBDConstants.GUI_BITS2, "GUI_BITS2", "Bits 2"),
+    BITS1(DBDConstants.GUI_BITS1, "GUI_BITS1", "Bits 1"),
 
-	CALC(DBDConstants.GUI_CALC, "GUI_CALC", "Calc"),
+    BITS2(DBDConstants.GUI_BITS2, "GUI_BITS2", "Bits 2"),
 
-	CLOCK(DBDConstants.GUI_CLOCK, "GUI_CLOCK", "Clock"),
+    CALC(DBDConstants.GUI_CALC, "GUI_CALC", "Calc"),
 
-	COMPRESS(DBDConstants.GUI_COMPRESS, "GUI_COMPRESS", "Compress"),
+    CLOCK(DBDConstants.GUI_CLOCK, "GUI_CLOCK", "Clock"),
 
-	CONVERT(DBDConstants.GUI_CONVERT, "GUI_CONVERT", "Convert"),
+    COMPRESS(DBDConstants.GUI_COMPRESS, "GUI_COMPRESS", "Compress"),
 
-	DISPLAY(DBDConstants.GUI_DISPLAY, "GUI_DISPLAY", "Display"),
+    CONVERT(DBDConstants.GUI_CONVERT, "GUI_CONVERT", "Convert"),
 
-	HIST(DBDConstants.GUI_HIST, "GUI_HIST", "Hist"),
+    DISPLAY(DBDConstants.GUI_DISPLAY, "GUI_DISPLAY", "Display"),
 
-	INPUTS(DBDConstants.GUI_INPUTS, "GUI_INPUTS", "Inputs"),
+    HIST(DBDConstants.GUI_HIST, "GUI_HIST", "Hist"),
 
-	LINKS(DBDConstants.GUI_LINKS, "GUI_LINKS", "Links"),
+    INPUTS(DBDConstants.GUI_INPUTS, "GUI_INPUTS", "Inputs"),
 
-	MBB(DBDConstants.GUI_MBB, "GUI_MBB", "MBB"),
+    LINKS(DBDConstants.GUI_LINKS, "GUI_LINKS", "Links"),
 
-	MOTOR(DBDConstants.GUI_MOTOR, "GUI_MOTOR", "Motor"),
+    MBB(DBDConstants.GUI_MBB, "GUI_MBB", "MBB"),
 
-	OUTPUT(DBDConstants.GUI_OUTPUT, "GUI_OUTPUT", "Output"),
+    MOTOR(DBDConstants.GUI_MOTOR, "GUI_MOTOR", "Motor"),
 
-	PID(DBDConstants.GUI_PID, "GUI_PID", "PID"),
+    OUTPUT(DBDConstants.GUI_OUTPUT, "GUI_OUTPUT", "Output"),
 
-	PULSE(DBDConstants.GUI_PULSE, "GUI_PULSE", "Pulse"),
+    PID(DBDConstants.GUI_PID, "GUI_PID", "PID"),
 
-	SELECT(DBDConstants.GUI_SELECT, "GUI_SELECT", "Select"),
+    PULSE(DBDConstants.GUI_PULSE, "GUI_PULSE", "Pulse"),
 
-	SEQ1(DBDConstants.GUI_SEQ1, "GUI_SEQ1", "Seq 1"),
+    SELECT(DBDConstants.GUI_SELECT, "GUI_SELECT", "Select"),
 
-	SEQ2(DBDConstants.GUI_SEQ2, "GUI_SEQ2", "Seq 2"),
+    SEQ1(DBDConstants.GUI_SEQ1, "GUI_SEQ1", "Seq 1"),
 
-	SEQ3(DBDConstants.GUI_SEQ3, "GUI_SEQ3", "Seq 3"),
+    SEQ2(DBDConstants.GUI_SEQ2, "GUI_SEQ2", "Seq 2"),
 
-	SUB(DBDConstants.GUI_SUB, "GUI_SUB", "Sub"),
+    SEQ3(DBDConstants.GUI_SEQ3, "GUI_SEQ3", "Seq 3"),
 
-	TIMER(DBDConstants.GUI_TIMER, "GUI_TIMER", "Timer"),
+    SUB(DBDConstants.GUI_SUB, "GUI_SUB", "Sub"),
 
-	WAVE(DBDConstants.GUI_WAVE, "GUI_WAVE", "Wave"),
+    TIMER(DBDConstants.GUI_TIMER, "GUI_TIMER", "Timer"),
 
-	SCAN(DBDConstants.GUI_SCAN, "GUI_SCAN", "Scan");
+    WAVE(DBDConstants.GUI_WAVE, "GUI_WAVE", "Wave"),
 
-	private int vdctType;
-	private String dbdString;
-	private String description;
+    SCAN(DBDConstants.GUI_SCAN, "GUI_SCAN", "Scan");
 
-	private PromptGroup(int vdctType, String dbdString, String humanReadable) {
-		this.vdctType = vdctType;
-		this.dbdString = dbdString;
-		this.description = humanReadable;
-	}
+    private int vdctType;
+    private String dbdString;
+    private String description;
 
-	public int getVdctType() {
-		return vdctType;
-	}
+    private PromptGroup(int vdctType, String dbdString, String humanReadable) {
+        this.vdctType = vdctType;
+        this.dbdString = dbdString;
+        this.description = humanReadable;
+    }
 
-	public String getDbdString() {
-		return dbdString;
-	}
+    public int getVdctType() {
+        return vdctType;
+    }
 
-	public String getDescription() {
-		return description;
-	}
-	
-	public static PromptGroup findByType(int type) {
-		PromptGroup result = UNDEFINED;
-		
-		for(PromptGroup g : values()) {
-			if(g.getVdctType() == type) {
-				result = g;
-			}
-		}
-		
-		return result;
-	}
+    public String getDbdString() {
+        return dbdString;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public static PromptGroup findByType(int type) {
+        PromptGroup result = UNDEFINED;
+
+        for(PromptGroup g : values()) {
+            if(g.getVdctType() == type) {
+                result = g;
+            }
+        }
+
+        return result;
+    }
 }

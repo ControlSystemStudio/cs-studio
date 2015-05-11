@@ -32,50 +32,50 @@ import org.csstudio.dal.RemoteException;
  */
 public interface Command
 {
-	/**
-	 * The name of the command within its context.
-	 *
-	 * @return the name
-	 */
-	public String getName();
+    /**
+     * The name of the command within its context.
+     *
+     * @return the name
+     */
+    public String getName();
 
-	/**
-	 * Executes command syncrhonously. Thread calling this method is
-	 * blocked until  execution is finished.
-	 *
-	 * @return returned valune, <code>null</code> if non exists
-	 *
-	 * @throws RemoteException if executions fails
-	 */
-	public Object execute(Object... parameters) throws RemoteException;
+    /**
+     * Executes command syncrhonously. Thread calling this method is
+     * blocked until  execution is finished.
+     *
+     * @return returned valune, <code>null</code> if non exists
+     *
+     * @throws RemoteException if executions fails
+     */
+    public Object execute(Object... parameters) throws RemoteException;
 
-	/**
-	 * Returns input parameter types.
-	 *
-	 * @return array of types
-	 */
-	public Class[] getParameterTypes();
+    /**
+     * Returns input parameter types.
+     *
+     * @return array of types
+     */
+    public Class[] getParameterTypes();
 
-	/**
-	 * The owner command context.
-	 *
-	 * @return the owner command context
-	 */
-	public CommandContext getOwner();
+    /**
+     * The owner command context.
+     *
+     * @return the owner command context
+     */
+    public CommandContext getOwner();
 
-	/**
-	 * Returns <code>true</code> if this command can be executed asynchronously
-	 *
-	 * @return <code>true</code> if asynchronous
-	 */
-	public boolean isAsynchronous();
+    /**
+     * Returns <code>true</code> if this command can be executed asynchronously
+     *
+     * @return <code>true</code> if asynchronous
+     */
+    public boolean isAsynchronous();
 
-	/**
-	 * Returned type, may be <code>null</code> if no value is returned.
-	 *
-	 * @return return type or <code>null</code>
-	 */
-	public Class getReturnedType();
+    /**
+     * Returned type, may be <code>null</code> if no value is returned.
+     *
+     * @return return type or <code>null</code>
+     */
+    public Class getReturnedType();
 }
 
 /* __oOo__ */

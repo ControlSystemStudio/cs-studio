@@ -42,66 +42,66 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 public class Workbench implements WorkbenchExtPoint
 {
     /** {@inheritDoc} */
-	@Override
+    @Override
     public Object afterWorkbenchCreation(final Display display, final IApplicationContext context,
-    		final Map<String, Object> parameters)
-	{
-		return null;
-	}
+            final Map<String, Object> parameters)
+    {
+        return null;
+    }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public Object beforeWorkbenchCreation(final Display display, final IApplicationContext context,
-    		final Map<String, Object> parameters)
-	{
-		final Object option = parameters.get(StartupParameters.SHARE_LINK_PARAM);
-		if (option instanceof String)
-		{
-			final Job job = new LinkedResourcesJob((String) option);
-			// Delay a little to allow faster startup of workbench
-			job.schedule(1000);
-		}
-		return null;
-	}
-    
+            final Map<String, Object> parameters)
+    {
+        final Object option = parameters.get(StartupParameters.SHARE_LINK_PARAM);
+        if (option instanceof String)
+        {
+            final Job job = new LinkedResourcesJob((String) option);
+            // Delay a little to allow faster startup of workbench
+            job.schedule(1000);
+        }
+        return null;
+    }
+
 
     /**
      * Creates a workbench advisor to be used by the created workbench. This methods allows
      * to provide your own advisor and keep the rest of the logic intact.
-     * 
+     *
      * @param parameters the parameters that may give hints on how to create the advisor
      * @return a new advisor instance
      */
     protected WorkbenchAdvisor createWorkbenchAdvisor(final Map<String, Object> parameters) {
-    	final OpenDocumentEventProcessor openDocProcessor =
-    	    	  (OpenDocumentEventProcessor) parameters.get(
-    	    			  OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR);
-    	return new ApplicationWorkbenchAdvisor(openDocProcessor);
+        final OpenDocumentEventProcessor openDocProcessor =
+                  (OpenDocumentEventProcessor) parameters.get(
+                          OpenDocumentEventProcessor.OPEN_DOC_PROCESSOR);
+        return new ApplicationWorkbenchAdvisor(openDocProcessor);
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public Object runWorkbench(final Display display, final IApplicationContext context,
-			final Map<String, Object> parameters)
-	{
-	    // Configure Logging
-	    try
-	    {
-	        LogConfigurator.configureFromPreferences();
-	    }
-	    catch (Exception ex)
-	    {
-	        ex.printStackTrace();
-	        // Continue without customized log configuration
-	    }
-	    final Logger logger = Logger.getLogger(getClass().getName());
+            final Map<String, Object> parameters)
+    {
+        // Configure Logging
+        try
+        {
+            LogConfigurator.configureFromPreferences();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+            // Continue without customized log configuration
+        }
+        final Logger logger = Logger.getLogger(getClass().getName());
 
         //authenticate user
-	    LoginJob.forCurrentUser().schedule();
+        LoginJob.forCurrentUser().schedule();
 
         // Run the workbench
         final int returnCode = PlatformUI.createAndRunWorkbench(display,
-        		createWorkbenchAdvisor(parameters));
+                createWorkbenchAdvisor(parameters));
 
         // Plain exit from IWorkbench.close()
         if (returnCode != PlatformUI.RETURN_RESTART)
@@ -120,5 +120,5 @@ public class Workbench implements WorkbenchExtPoint
         }
         // RESTART without changes
         return IApplication.EXIT_RESTART;
-	}
+    }
 }

@@ -32,7 +32,7 @@ import org.apache.activemq.transport.TransportListener;
  *  -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
  *  -Dorg.apache.commons.logging.simplelog.defaultlog=fatal
  *  </pre>
- *  
+ *
  *  @author Kay Kasemir
  */
 public class JMSConnectionFactory
@@ -62,7 +62,7 @@ public class JMSConnectionFactory
     {
         // Instead of using JNDI lookup like this...
         //   Context ctx = new InitialContext();
-        //   QueueConnectionFactory queueConnectionFactory = 
+        //   QueueConnectionFactory queueConnectionFactory =
         //     (QueueConnectionFactory) ctx.lookup("SomeConnectionFactory");
         // ... which requires an appropriate jndi.properties file,
         // we directly use the ActiveMQConnectionFactory.
@@ -70,7 +70,7 @@ public class JMSConnectionFactory
             new ActiveMQConnectionFactory(user, password, url);
         return factory.createConnection();
     }
-    
+
     /** Add a listener that is notified about JMS connection issues
      *  to an existing connection.
      *  Connection should not be 'start'ed, yet.
@@ -81,7 +81,7 @@ public class JMSConnectionFactory
      *  might never get called.
      *  <p>
      *  For ActiveMQ it's not clear how to track the connection
-     *  state dependably. 
+     *  state dependably.
      *  For "failover:..." URLs, the initial connection.start() call will
      *  hang until there is a connection established.
      *  On the other hand, it seems as if it will already try to connect
@@ -92,7 +92,7 @@ public class JMSConnectionFactory
      *  <p>
      *  So in summary this is meant to help track the connection state
      *  and JMS server name, but only for info/debugging; it is not dependable.
-     *  
+     *
      *  @param connection Connection to monitor
      *  @param listener JMSConnectionListener to notify
      */

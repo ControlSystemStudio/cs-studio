@@ -29,12 +29,12 @@ public class ContextErrorHandler implements ContextExceptionListener,
     @Override
     public void contextException(final ContextExceptionEvent ev)
     {
-    	//Ignore warnings for DBE_PROPERTY from old CAJ.
-    	if(ev != null && "event add req with mask=0X8\n".equals(ev.getMessage())){ //$NON-NLS-1$
-    		 logger.log(Level.FINE, "Ignored Message from {0}: {1}", 
-    				 new Object[] { ev.getSource(), ev.getMessage()});
-    		 return;
-    	}
+        //Ignore warnings for DBE_PROPERTY from old CAJ.
+        if(ev != null && "event add req with mask=0X8\n".equals(ev.getMessage())){ //$NON-NLS-1$
+             logger.log(Level.FINE, "Ignored Message from {0}: {1}",
+                     new Object[] { ev.getSource(), ev.getMessage()});
+             return;
+        }
         logger.log(Level.WARNING, "Channel Access Exception from {0}: {1}",
                 new Object[] { ev.getSource(), ev.getMessage() });
     }

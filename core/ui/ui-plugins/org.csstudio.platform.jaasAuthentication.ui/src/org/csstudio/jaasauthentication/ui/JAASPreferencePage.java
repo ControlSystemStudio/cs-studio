@@ -45,107 +45,107 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author Xihui Chen
  */
 public class JAASPreferencePage extends PreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	private static final String PREFERENCE_PAGE_TITLE = Messages.JAASPreferencePage_title;
-	private static final String RESTART_NOTICE =
-		Messages.JAASPreferencePage_restartNotice;
-	private Combo sourceCombo;
-	private Text configFileEntryText;
-	private ModuleTableEditor moduleTableEditor;
+    private static final String PREFERENCE_PAGE_TITLE = Messages.JAASPreferencePage_title;
+    private static final String RESTART_NOTICE =
+        Messages.JAASPreferencePage_restartNotice;
+    private Combo sourceCombo;
+    private Text configFileEntryText;
+    private ModuleTableEditor moduleTableEditor;
 
-	@Override
-	protected Control createContents(Composite parent) {
-		Composite composite_sourceField = createComposite(parent, 2);
+    @Override
+    protected Control createContents(Composite parent) {
+        Composite composite_sourceField = createComposite(parent, 2);
 
-		//source select combo
-		createLabel(composite_sourceField, Messages.JAASPreferencePage_source);
-		sourceCombo = new Combo(composite_sourceField, SWT.DROP_DOWN | SWT.READ_ONLY);
-		sourceCombo.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
-		sourceCombo.setItems(JAASPreferenceModel.CONFIG_SOURCES);
-		sourceCombo.addModifyListener(new ModifyListener() {
-			@Override
+        //source select combo
+        createLabel(composite_sourceField, Messages.JAASPreferencePage_source);
+        sourceCombo = new Combo(composite_sourceField, SWT.DROP_DOWN | SWT.READ_ONLY);
+        sourceCombo.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
+        sourceCombo.setItems(JAASPreferenceModel.CONFIG_SOURCES);
+        sourceCombo.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
-				setMessage(RESTART_NOTICE);
-				final boolean fileSource =
-					sourceCombo.getText().equals(JAASPreferenceModel.SOURCE_FILE);
-				configFileEntryText.setEnabled(fileSource);
-				moduleTableEditor.setEnabled(!fileSource);
-			}
-		});
+                setMessage(RESTART_NOTICE);
+                final boolean fileSource =
+                    sourceCombo.getText().equals(JAASPreferenceModel.SOURCE_FILE);
+                configFileEntryText.setEnabled(fileSource);
+                moduleTableEditor.setEnabled(!fileSource);
+            }
+        });
 
-		//configuration file entry text
-		createLabel(composite_sourceField, Messages.JAASPreferencePage_fileEntry);
-		configFileEntryText = new Text(composite_sourceField, SWT.SINGLE | SWT.BORDER);
-		configFileEntryText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
-		configFileEntryText.addModifyListener(new ModifyListener() {
-			@Override
+        //configuration file entry text
+        createLabel(composite_sourceField, Messages.JAASPreferencePage_fileEntry);
+        configFileEntryText = new Text(composite_sourceField, SWT.SINGLE | SWT.BORDER);
+        configFileEntryText.setLayoutData(new GridData(GridData.FILL, GridData.CENTER, true, false));
+        configFileEntryText.addModifyListener(new ModifyListener() {
+            @Override
             public void modifyText(ModifyEvent e) {
-				setMessage(RESTART_NOTICE);
-			}
-		});
+                setMessage(RESTART_NOTICE);
+            }
+        });
 
-		//create module table editor
-		Composite composite_configField = createComposite(parent, 1);
-		moduleTableEditor = new ModuleTableEditor(composite_configField);
+        //create module table editor
+        Composite composite_configField = createComposite(parent, 1);
+        moduleTableEditor = new ModuleTableEditor(composite_configField);
 
-		initializeValues();
+        initializeValues();
 
-		setMessage(PREFERENCE_PAGE_TITLE);
-		return new Composite(parent, SWT.NULL);
+        setMessage(PREFERENCE_PAGE_TITLE);
+        return new Composite(parent, SWT.NULL);
 
-	}
+    }
 
-	@Override
+    @Override
     public void init(IWorkbench workbench)
-	{
-	    // NOP
-	}
+    {
+        // NOP
+    }
 
-	/**
+    /**
      * Initializes states of the controls from the preference store.
      */
     private void initializeValues() {
-    	sourceCombo.setText(PreferencesHelper.getConfigSource());
-    	configFileEntryText.setText(PreferencesHelper.getConfigFileEntry());
-    	JAASPreferenceModel.configurationEntryList.clear();
-    	JAASPreferenceModel.configurationEntryList.addAll(
-    			Arrays.asList(PreferencesHelper.getJAASConfigurationEntries(false)));
-    	moduleTableEditor.refresh();
-		final boolean fileSource =
-			sourceCombo.getText().equals(JAASPreferenceModel.SOURCE_FILE);
-		configFileEntryText.setEnabled(fileSource);
-		moduleTableEditor.setEnabled(!fileSource);
+        sourceCombo.setText(PreferencesHelper.getConfigSource());
+        configFileEntryText.setText(PreferencesHelper.getConfigFileEntry());
+        JAASPreferenceModel.configurationEntryList.clear();
+        JAASPreferenceModel.configurationEntryList.addAll(
+                Arrays.asList(PreferencesHelper.getJAASConfigurationEntries(false)));
+        moduleTableEditor.refresh();
+        final boolean fileSource =
+            sourceCombo.getText().equals(JAASPreferenceModel.SOURCE_FILE);
+        configFileEntryText.setEnabled(fileSource);
+        moduleTableEditor.setEnabled(!fileSource);
     }
 
-	 /**
+     /**
      * Initializes states of the controls using default values
      * in the preference store.
      */
     private void initializeDefaults() {
-    	sourceCombo.setText(PreferencesHelper.getDefaultConfigSource());
-    	configFileEntryText.setText(PreferencesHelper.getDefaultConfigFileEntry());
-    	JAASPreferenceModel.configurationEntryList.clear();
-    	JAASPreferenceModel.configurationEntryList.addAll(
-    			Arrays.asList(PreferencesHelper.getJAASConfigurationEntries(true)));
-    	moduleTableEditor.refresh();
-		final boolean fileSource =
-			sourceCombo.getText().equals(JAASPreferenceModel.SOURCE_FILE);
-		configFileEntryText.setEnabled(fileSource);
-		moduleTableEditor.setEnabled(!fileSource);
+        sourceCombo.setText(PreferencesHelper.getDefaultConfigSource());
+        configFileEntryText.setText(PreferencesHelper.getDefaultConfigFileEntry());
+        JAASPreferenceModel.configurationEntryList.clear();
+        JAASPreferenceModel.configurationEntryList.addAll(
+                Arrays.asList(PreferencesHelper.getJAASConfigurationEntries(true)));
+        moduleTableEditor.refresh();
+        final boolean fileSource =
+            sourceCombo.getText().equals(JAASPreferenceModel.SOURCE_FILE);
+        configFileEntryText.setEnabled(fileSource);
+        moduleTableEditor.setEnabled(!fileSource);
 
     }
 
     @Override
     protected void performDefaults() {
-    	super.performDefaults();
-    	initializeDefaults();
+        super.performDefaults();
+        initializeDefaults();
     }
 
     @Override
     public boolean performOk() {
-    	PreferencesHelper.storeValues(sourceCombo.getText(), configFileEntryText.getText());
-    	return true;
+        PreferencesHelper.storeValues(sourceCombo.getText(), configFileEntryText.getText());
+        return true;
     }
 
 

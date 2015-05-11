@@ -12,14 +12,14 @@ package org.csstudio.opibuilder.converter.model;
  *
  */
 public class Edm_activeIndicatorClass extends Edm_activeBarClass {
-	
 
 
-	public Edm_activeIndicatorClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
-	
+
+    public Edm_activeIndicatorClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 
-	
+
+
 }

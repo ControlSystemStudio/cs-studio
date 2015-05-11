@@ -69,7 +69,7 @@ public class ArchiveURLEditor extends RowEditDialog
         alias = new Text(composite, SWT.BORDER);
         alias.setText(rowData[1]);
         alias.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         return parent_composite;
     }
 
@@ -79,7 +79,7 @@ public class ArchiveURLEditor extends RowEditDialog
     protected void okPressed()
     {
         rowData[0] = url == null ? "" : url.getText().trim();
-    	rowData[1] = alias == null ? "" : alias.getText().trim();
+        rowData[1] = alias == null ? "" : alias.getText().trim();
         super.okPressed();
     }
 }

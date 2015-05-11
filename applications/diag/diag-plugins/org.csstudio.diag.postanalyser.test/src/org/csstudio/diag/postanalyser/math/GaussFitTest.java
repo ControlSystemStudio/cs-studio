@@ -17,7 +17,7 @@ public class GaussFitTest
         final double amp = 2.0;
         final double center = 4.0;
         final double sigma = 0.5;
-        
+
         final double x0 = 0.0;
         final double x1 = 8.0;
         final double dx = 0.1;
@@ -35,7 +35,7 @@ public class GaussFitTest
         // Perform the fit
         final GaussFit fit = new GaussFit(x, data);
         System.out.println("\n\n# Fit:" + fit);
-        
+
         for (int i=0; i<N; ++i)
         {
             System.out.println(x[i] + "\t" + fit.getValue(x[i]));

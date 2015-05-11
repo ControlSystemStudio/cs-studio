@@ -8,22 +8,22 @@ package com.cosylab.vdct.db;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -34,38 +34,38 @@ import com.cosylab.vdct.inspector.InspectableProperty;
  * This type was created in VisualAge.
  */
 public class DBFieldData extends DBComment {
-	protected String name;	
-	protected String value;
-	protected boolean template_def = false;
-	
-	protected java.awt.Color color = java.awt.Color.black;
-	protected boolean rotated;
+    protected String name;
+    protected String value;
+    protected boolean template_def = false;
 
-	private static final String nullString = "";
-	protected String description = nullString;
+    protected java.awt.Color color = java.awt.Color.black;
+    protected boolean rotated;
 
-	protected boolean hasAdditionalData = false;
+    private static final String nullString = "";
+    protected String description = nullString;
 
-	protected int visibility = InspectableProperty.NON_DEFAULT_VISIBLE;       // = 0
-	
+    protected boolean hasAdditionalData = false;
+
+    protected int visibility = InspectableProperty.NON_DEFAULT_VISIBLE;       // = 0
+
 /**
  * FieldData constructor comment.
  */
 public DBFieldData(String name, String value) {
-	this.name=name;
-	this.value=value;
+    this.name=name;
+    this.value=value;
 }
 /**
  * FieldData constructor comment.
  */
 public DBFieldData(String name, String value, java.awt.Color color, boolean rotated, String description, int visibility) {
-	this.name=name;
-	this.value=value;
-	this.color=color;
-	this.rotated=rotated;
-	this.description=description;
-	this.visibility=visibility;
-	this.hasAdditionalData=true;
+    this.name=name;
+    this.value=value;
+    this.color=color;
+    this.rotated=rotated;
+    this.description=description;
+    this.visibility=visibility;
+    this.hasAdditionalData=true;
 }
 /**
  * Insert the method's description here.
@@ -73,7 +73,7 @@ public DBFieldData(String name, String value, java.awt.Color color, boolean rota
  * @return java.awt.Color
  */
 public java.awt.Color getColor() {
-	return color;
+    return color;
 }
 /**
  * Insert the method's description here.
@@ -81,7 +81,7 @@ public java.awt.Color getColor() {
  * @return java.lang.String
  */
 public java.lang.String getDescription() {
-	return description;
+    return description;
 }
 /**
  * Insert the method's description here.
@@ -89,7 +89,7 @@ public java.lang.String getDescription() {
  * @return java.lang.String
  */
 public java.lang.String getName() {
-	return name;
+    return name;
 }
 /**
  * Insert the method's description here.
@@ -97,7 +97,7 @@ public java.lang.String getName() {
  * @return java.lang.String
  */
 public java.lang.String getValue() {
-	return value;
+    return value;
 }
 /**
  * Insert the method's description here.
@@ -105,7 +105,7 @@ public java.lang.String getValue() {
  * @return boolean
  */
 public boolean isHasAdditionalData() {
-	return hasAdditionalData;
+    return hasAdditionalData;
 }
 /**
  * Insert the method's description here.
@@ -113,7 +113,7 @@ public boolean isHasAdditionalData() {
  * @return boolean
  */
 public boolean isRotated() {
-	return rotated;
+    return rotated;
 }
 /**
  * Insert the method's description here.
@@ -121,7 +121,7 @@ public boolean isRotated() {
  * @return boolean
  */
 public boolean isTemplate_def() {
-	return template_def;
+    return template_def;
 }
 /**
  * Insert the method's description here.
@@ -129,8 +129,8 @@ public boolean isTemplate_def() {
  * @param newColor java.awt.Color
  */
 public void setColor(java.awt.Color newColor) {
-	this.hasAdditionalData=true;
-	color = newColor;
+    this.hasAdditionalData=true;
+    color = newColor;
 }
 /**
  * Insert the method's description here.
@@ -138,8 +138,8 @@ public void setColor(java.awt.Color newColor) {
  * @param newDescription java.lang.String
  */
 public void setDescription(java.lang.String newDescription) {
-	this.hasAdditionalData=true;
-	description = newDescription;
+    this.hasAdditionalData=true;
+    description = newDescription;
 }
 /**
  * Insert the method's description here.
@@ -147,7 +147,7 @@ public void setDescription(java.lang.String newDescription) {
  * @param newHasAdditionalData boolean
  */
 public void setHasAdditionalData(boolean newHasAdditionalData) {
-	hasAdditionalData = newHasAdditionalData;
+    hasAdditionalData = newHasAdditionalData;
 }
 /**
  * Insert the method's description here.
@@ -155,7 +155,7 @@ public void setHasAdditionalData(boolean newHasAdditionalData) {
  * @param newName java.lang.String
  */
 public void setName(java.lang.String newName) {
-	name = newName;
+    name = newName;
 }
 /**
  * Insert the method's description here.
@@ -163,8 +163,8 @@ public void setName(java.lang.String newName) {
  * @param newRotated boolean
  */
 public void setRotated(boolean newRotated) {
-	this.hasAdditionalData=true;
-	rotated = newRotated;
+    this.hasAdditionalData=true;
+    rotated = newRotated;
 }
 /**
  * Insert the method's description here.
@@ -172,7 +172,7 @@ public void setRotated(boolean newRotated) {
  * @param newTemplate_def boolean
  */
 public void setTemplate_def(boolean newTemplate_def) {
-	template_def = newTemplate_def;
+    template_def = newTemplate_def;
 }
 /**
  * Insert the method's description here.
@@ -180,7 +180,7 @@ public void setTemplate_def(boolean newTemplate_def) {
  * @param newValue java.lang.String
  */
 public void setValue(java.lang.String newValue) {
-	value = newValue;
+    value = newValue;
 }
 /**
  * Returns the visibility.
@@ -188,7 +188,7 @@ public void setValue(java.lang.String newValue) {
  */
 public int getVisibility()
 {
-	return visibility;
+    return visibility;
 }
 
 /**
@@ -197,7 +197,7 @@ public int getVisibility()
  */
 public void setVisibility(int visibility)
 {
-	this.visibility = visibility;
+    this.visibility = visibility;
 }
 
 }

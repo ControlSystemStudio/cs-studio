@@ -50,7 +50,7 @@ public class Application implements IApplication
     private String jms_filters = "ALARM;TEXT=IDLE";
 
     /** RDB Server URL
-     *  
+     *
      *  Must include the user/password unless they are provided
      *  in rdb_user, rdb_password
      */
@@ -61,7 +61,7 @@ public class Application implements IApplication
 
     /** RDB password */
     private String rdb_password = null;
-    
+
     /** RDB Schema */
     private String rdb_schema = "";
 
@@ -87,48 +87,48 @@ public class Application implements IApplication
         //      pref_key=value
         // - If all fails, the 'default' argument to
         //   service.getXXX(.., .., default, ..) is used
-    	// Display configuration info
+        // Display configuration info
         final String version = (String) context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-    	
-    	// Create parser for arguments and run it.
+
+        // Create parser for arguments and run it.
         final String args[] = (String []) context.getArguments().get("application.args");
 
         final ArgParser parser = new ArgParser();
         final BooleanOption help_opt = new BooleanOption(parser, "-help", "Display help");
         final BooleanOption version_opt = new BooleanOption(parser, "-version", "Display version info");
         final StringOption set_password = new StringOption(parser,
-				"-set_password", "plugin/key=value", "Set secure preferences", null);
+                "-set_password", "plugin/key=value", "Set secure preferences", null);
         parser.addEclipseParameters();
-		try {
-			parser.parse(args);
-		} catch (final Exception ex) {
-			System.out.println(ex.getMessage() + "\n" + parser.getHelp());
-			return IApplication.EXIT_OK;
-		}
-		if (help_opt.get()) {
-			System.out.println(app_info + "\n\n" + parser.getHelp());
-			return IApplication.EXIT_OK;
-		}
-		if (version_opt.get()) {
-			System.out.println(app_info);
-			return IApplication.EXIT_OK;
-		}
-		final String option = set_password.get();
-		if (option != null) { // Split "plugin/key=value"
-			final String pref, value;
-			final int sep = option.indexOf("=");
-			if (sep >= 0) {
-				pref = option.substring(0, sep);
-				value = option.substring(sep + 1);
-			} else {
-				pref = option;
-				value = PasswordInput.readPassword("Value for " + pref + ":");
-			}
-			SecurePreferences.set(pref, value);
-			return IApplication.EXIT_OK;
-		}
-    	
+        try {
+            parser.parse(args);
+        } catch (final Exception ex) {
+            System.out.println(ex.getMessage() + "\n" + parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
+        if (help_opt.get()) {
+            System.out.println(app_info + "\n\n" + parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
+        if (version_opt.get()) {
+            System.out.println(app_info);
+            return IApplication.EXIT_OK;
+        }
+        final String option = set_password.get();
+        if (option != null) { // Split "plugin/key=value"
+            final String pref, value;
+            final int sep = option.indexOf("=");
+            if (sep >= 0) {
+                pref = option.substring(0, sep);
+                value = option.substring(sep + 1);
+            } else {
+                pref = option;
+                value = PasswordInput.readPassword("Value for " + pref + ":");
+            }
+            SecurePreferences.set(pref, value);
+            return IApplication.EXIT_OK;
+        }
+
         final IPreferencesService service = Platform.getPreferencesService();
         httpd_port =
             service.getInt(Activator.ID, "httpd_port", httpd_port, null);

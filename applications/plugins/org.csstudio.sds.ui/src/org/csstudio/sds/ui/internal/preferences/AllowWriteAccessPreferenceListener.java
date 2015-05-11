@@ -7,13 +7,13 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 
 public class AllowWriteAccessPreferenceListener implements IPropertyChangeListener {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void propertyChange(PropertyChangeEvent event) {
-		if (event.getProperty().equals(PreferenceConstants.PROP_WRITE_ACCESS_DENIED)) {
-			ActivationService.getInstance().handleRightsManagementEvent(null);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void propertyChange(PropertyChangeEvent event) {
+        if (event.getProperty().equals(PreferenceConstants.PROP_WRITE_ACCESS_DENIED)) {
+            ActivationService.getInstance().handleRightsManagementEvent(null);
+        }
+    }
 
 }

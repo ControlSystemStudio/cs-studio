@@ -131,7 +131,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
     {
         final DataBrowserWidgedModel model = getWidgetModel();
         gui = new DataBrowserWidgetFigure(this, model.isToolbarVisible(), model.isLegendVisible(),
-        		model.getSelectionValuePv(), model.isShowValueLabels());
+                model.getSelectionValuePv(), model.isShowValueLabels());
         return gui;
     }
 

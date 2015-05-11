@@ -23,31 +23,31 @@
 package org.csstudio.remote.management;
 
 /**
- * The type of a management command parameter. 
- * 
+ * The type of a management command parameter.
+ *
  * @author Joerg Rathlev
  */
 public enum CommandParameterType {
 
-	/**
-	 * Type for string parameters.
-	 */
-	STRING,
-	
-	/**
-	 * Type for integer parameters.
-	 */
-	INTEGER,
-	
-	/**
-	 * Type for parameters with an enumerated set of values. 
-	 */
-	ENUMERATION,
-	
-	/**
-	 * Type for parameters with an enumerated set of values which is dynamically
-	 * queried from the management service. 
-	 */
-	DYNAMIC_ENUMERATION,
-	;
+    /**
+     * Type for string parameters.
+     */
+    STRING,
+
+    /**
+     * Type for integer parameters.
+     */
+    INTEGER,
+
+    /**
+     * Type for parameters with an enumerated set of values.
+     */
+    ENUMERATION,
+
+    /**
+     * Type for parameters with an enumerated set of values which is dynamically
+     * queried from the management service.
+     */
+    DYNAMIC_ENUMERATION,
+    ;
 }

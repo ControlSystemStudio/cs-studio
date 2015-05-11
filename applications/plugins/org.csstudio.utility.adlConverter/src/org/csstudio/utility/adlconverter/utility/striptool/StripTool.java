@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @since 08.09.2009
  */
 public class StripTool {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(StripTool.class);
     private final Document _document;
     private final Element _root;
@@ -65,12 +65,12 @@ public class StripTool {
         _formatter = new DecimalFormat("#.####",instance);
     }
 
-    
+
     /**
-     * 
+     *
      * @param path
      *            The target File Path.
-     * @throws IOException 
+     * @throws IOException
      */
     public final void getXmlFile(final File path) throws IOException {
         FileWriter writer = new FileWriter(path);
@@ -97,12 +97,12 @@ public class StripTool {
         start.setText(String.format(Locale.ENGLISH, "-0 hours %1$f seconds", timespan));
         _root.addContent(start);
     }
-    
+
     public void setNumSamples(int numSamples) {
         Element start = new Element("ring_size");
         start.setText(String.format(Locale.ENGLISH, "%1$d", numSamples));
         _root.addContent(start);
-        
+
     }
 
 
@@ -128,7 +128,7 @@ public class StripTool {
         Element start = makeColorElement("foreground", foreground);
         _root.addContent(start);
     }
-    
+
     public void setGridColor(RGB gridColor) {
         Element start = makeColorElement("grid_color", gridColor);
         _root.addContent(start);
@@ -143,7 +143,7 @@ public class StripTool {
         green.setText(String.format("%1$d", color.green));
         Element blue = new Element("blue");
         blue.setText(String.format("%1$d", color.blue));
-        
+
         colorElement.addContent(red);
         colorElement.addContent(green);
         colorElement.addContent(blue);
@@ -158,32 +158,32 @@ public class StripTool {
             _root.addContent(_pvList);
         }
         Element pv = new Element("pv");
-        
+
         // Name
         Element nameElement = new Element("name");
         nameElement.setText(pvName);
         pv.addContent(nameElement);
-        
+
         // Axis
         Element axisElement = new Element("axis");
         axisElement.setText(Integer.toString(axis));
         pv.addContent(axisElement);
-        
+
         // Min
         Element minElement = new Element("min");
         minElement.setText(Double.toString(min));
         pv.addContent(minElement);
-        
+
         // Max
         Element maxElement = new Element("max");
         maxElement.setText(Double.toString(max));
         pv.addContent(maxElement);
-        
+
         // Visible
         Element visibleElement = new Element("visible");
         visibleElement.setText("true");
         pv.addContent(visibleElement);
-        
+
         // Axis visible
         Element axisVisibleElement = new Element("axis_visible");
         System.out.println("axis_visible: "+Boolean.toString(axisVisible));
@@ -191,8 +191,8 @@ public class StripTool {
 //        axisVisibleElement.setText(Boolean.toString(axisVisible));
         axisVisibleElement.setText("true");
         pv.addContent(axisVisibleElement);
-        
-        // Autoscale   
+
+        // Autoscale
         Element autoscale = new Element("autoscale");
         autoscale.setText("false");
         pv.addContent(autoscale);
@@ -200,17 +200,17 @@ public class StripTool {
         // Color
         Element color = makeColorElement("color", rgb);
         pv.addContent(color);
-        
+
         // log_scale
         Element logScale = new Element("log_scale");
         logScale.setText("false");
         pv.addContent(logScale);
-        
+
         // trace type
         Element traceType = new Element("trace_type");
         traceType.setText("Area");
         pv.addContent(traceType);
-        
+
         // Request
         Element request = new Element("request");
         request.setText("1");
@@ -228,7 +228,7 @@ public class StripTool {
         archive.addContent(archiveUrl);
         archive.addContent(archiveKey);
         pv.addContent(archive);
-        
+
         _pvList.addContent(pv);
     }
 

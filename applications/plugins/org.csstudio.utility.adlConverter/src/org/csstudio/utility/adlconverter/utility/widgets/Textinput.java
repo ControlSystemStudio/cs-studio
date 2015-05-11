@@ -46,13 +46,13 @@ import org.slf4j.LoggerFactory;
  * @since 18.09.2007
  */
 public class Textinput extends Widget {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(Textinput.class);
 
     /**
      * @param textInput The ADLWidget that describe the Textinput.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      * @throws WrongADLFormatException WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     @SuppressWarnings("restriction")
@@ -65,14 +65,14 @@ public class Textinput extends Widget {
                 throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+row[0]);
             }
             if(row[0].equals("clrmod")){ //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 String[] clrmod = ADLHelper.cleanString(row[1]);
                 if(clrmod[0].equals("discrete")&&getControl()!=null){ //$NON-NLS-1$
                     getControl().setConnectionState(true);
                 }else if(clrmod[0].equals("alarm")){ //$NON-NLS-1$
-                    //TODO: Textinput-->clrmod(alarm)                    
+                    //TODO: Textinput-->clrmod(alarm)
                 }else if(clrmod[0].equals("static")){ //$NON-NLS-1$
-                    //TODO: Textinput-->clrmod(static)                 
+                    //TODO: Textinput-->clrmod(static)
                 }else{
                     throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException+fileLine);
                 }
@@ -109,7 +109,7 @@ public class Textinput extends Widget {
                 }else{
                     LOG.debug(Messages.Textinput_Format_Debug, fileLine);
                 }
-            }else{                
+            }else{
 
                 throw new WrongADLFormatException(Messages.Textinput_WrongADLFormatException_Parameter_Begin+fileLine);
             } //polygon have no Parameter

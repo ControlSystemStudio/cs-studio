@@ -28,10 +28,10 @@ import org.w3c.dom.Element;
 public class SetCommand extends ScanCommand
 {
     private volatile String device_name;
-	private volatile Object value;
-	private volatile String readback;
+    private volatile Object value;
+    private volatile String readback;
     private volatile boolean completion;
-	private volatile boolean wait;
+    private volatile boolean wait;
     private volatile double tolerance;
     private volatile double timeout;
 
@@ -72,33 +72,33 @@ public class SetCommand extends ScanCommand
     }
 
     /** Initialize
-	 *  @param device_name Name of device
-	 *  @param value Value to write to the device
-	 *  @param completion Wait for write completion?
-	 *  @param readback Readback device
-	 *  @param wait Wait for readback to match?
+     *  @param device_name Name of device
+     *  @param value Value to write to the device
+     *  @param completion Wait for write completion?
+     *  @param readback Readback device
+     *  @param wait Wait for readback to match?
      *  @param tolerance Numeric tolerance when checking value
      *  @param timeout Timeout in seconds, 0 as "forever"
-	 */
-	public SetCommand(final String device_name, final Object value,
-	        final boolean completion,
-	        final String readback, final boolean wait,
+     */
+    public SetCommand(final String device_name, final Object value,
+            final boolean completion,
+            final String readback, final boolean wait,
             final double tolerance, final double timeout)
     {
-	    if (device_name == null)
-	        throw new NullPointerException();
-		this.device_name = device_name;
-		this.value = value;
-		this.completion = completion;
-		if (readback == null)
+        if (device_name == null)
             throw new NullPointerException();
-		this.readback = readback;
-		this.wait = wait;
+        this.device_name = device_name;
+        this.value = value;
+        this.completion = completion;
+        if (readback == null)
+            throw new NullPointerException();
+        this.readback = readback;
+        this.wait = wait;
         this.tolerance = tolerance;
         this.timeout = timeout;
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     protected void configureProperties(final List<ScanCommandProperty> properties)
     {
@@ -112,13 +112,13 @@ public class SetCommand extends ScanCommand
         super.configureProperties(properties);
     }
 
-	/** @return Name of device to set (may be "" but not <code>null</code>) */
-	public String getDeviceName()
+    /** @return Name of device to set (may be "" but not <code>null</code>) */
+    public String getDeviceName()
     {
         return device_name;
     }
 
-	/** @param device_name Name of device */
+    /** @param device_name Name of device */
     public void setDeviceName(final String device_name)
     {
         if (device_name == null)
@@ -149,7 +149,7 @@ public class SetCommand extends ScanCommand
     {
         this.completion = completion;
     }
-    
+
     /** @return Wait for readback to match? */
     public boolean getWait()
     {
@@ -214,7 +214,7 @@ public class SetCommand extends ScanCommand
         else
             element.appendChild(dom.createTextNode(value.toString()));
         command_element.appendChild(element);
-        
+
         if (completion)
         {
             element = dom.createElement("completion");
@@ -247,7 +247,7 @@ public class SetCommand extends ScanCommand
         }
         super.addXMLElements(dom, command_element);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
@@ -273,29 +273,29 @@ public class SetCommand extends ScanCommand
             if (timeout > 0)
                 buf.append(" in ").append(timeout).append(" sec");
         }
-    	if (wait)
-    	{
-    		buf.append(" (wait for '");
-    		if (readback.isEmpty())
-    			buf.append(device_name);
-    		else
-    			buf.append(readback);
-    		if (tolerance > 0)
-    			buf.append("' +-").append(tolerance);
-    		if (timeout > 0)
-    			buf.append(", ").append(timeout).append(" sec timeout");
-    		buf.append(")");
-    	}
+        if (wait)
+        {
+            buf.append(" (wait for '");
+            if (readback.isEmpty())
+                buf.append(device_name);
+            else
+                buf.append(readback);
+            if (tolerance > 0)
+                buf.append("' +-").append(tolerance);
+            if (timeout > 0)
+                buf.append(", ").append(timeout).append(" sec timeout");
+            buf.append(")");
+        }
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    final StringBuilder buf = new StringBuilder();
-	    buf.append("Set '").append(device_name).append("' = ");
-	    buf.append(StringOrDouble.quote(value));
-	    appendConditionDetail(buf);
-	    return buf.toString();
-	}
+    @Override
+    public String toString()
+    {
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Set '").append(device_name).append("' = ");
+        buf.append(StringOrDouble.quote(value));
+        appendConditionDetail(buf);
+        return buf.toString();
+    }
 }

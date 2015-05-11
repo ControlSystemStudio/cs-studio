@@ -32,25 +32,25 @@ import org.csstudio.sds.internal.localization.Messages;
  *
  */
 public enum WidgetPropertyCategory {
-	CONNECTION(Messages.getString("PropertyCategory_Connection")),
-	ACTIONS(Messages.getString("PropertyCategory_Actions")),
-	IMAGE(Messages.getString("PropertyCategory_Image")),
-	BEHAVIOR(Messages.getString("PropertyCategory_Behaviour")),
-	DISPLAY(Messages.getString("PropertyCategory_Display")),
-	FORMAT(Messages.getString("PropertyCategory_Format")),
-	SCALE(Messages.getString("PropertyCategory_Scale")),
-	MISC(Messages.getString("PropertyCategory_Misc")),
-	POSITION(Messages.getString("PropertyCategory_Position")),
-	BORDER(Messages.getString("PropertyCategory_Border"));
+    CONNECTION(Messages.getString("PropertyCategory_Connection")),
+    ACTIONS(Messages.getString("PropertyCategory_Actions")),
+    IMAGE(Messages.getString("PropertyCategory_Image")),
+    BEHAVIOR(Messages.getString("PropertyCategory_Behaviour")),
+    DISPLAY(Messages.getString("PropertyCategory_Display")),
+    FORMAT(Messages.getString("PropertyCategory_Format")),
+    SCALE(Messages.getString("PropertyCategory_Scale")),
+    MISC(Messages.getString("PropertyCategory_Misc")),
+    POSITION(Messages.getString("PropertyCategory_Position")),
+    BORDER(Messages.getString("PropertyCategory_Border"));
 
-	private String description;
+    private String description;
 
-	private WidgetPropertyCategory(final String description) {
-		this.description = description;
-	}
+    private WidgetPropertyCategory(final String description) {
+        this.description = description;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
 }

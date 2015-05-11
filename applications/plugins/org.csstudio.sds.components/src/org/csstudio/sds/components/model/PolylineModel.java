@@ -31,60 +31,60 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public final class PolylineModel extends AbstractPolyModel {
 
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.Polyline"; //$NON-NLS-1$
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.Polyline"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the width of the line.
-	 */
-	public static final String PROP_LINE_WIDTH = "linewidth";
+    /**
+     * The ID of the width of the line.
+     */
+    public static final String PROP_LINE_WIDTH = "linewidth";
 
-	/**
-	 * The ID of the width of the line.
-	 */
-	public static final String PROP_LINE_STYLE = "linestyle";
+    /**
+     * The ID of the width of the line.
+     */
+    public static final String PROP_LINE_STYLE = "linestyle";
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureProperties() {
-		super.configureProperties();
-		addIntegerProperty(PROP_LINE_WIDTH, "Line Width", WidgetPropertyCategory.DISPLAY, 1, 1, 100, true, PROP_TOOLTIP);
-		addArrayOptionProperty(PROP_LINE_STYLE, "Line Style", WidgetPropertyCategory.DISPLAY, new String[] { "Solid", "Dash", "Dot", "DashDot",
-				"DashDotDot" }, 0, false, PROP_LINE_STYLE);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureProperties() {
+        super.configureProperties();
+        addIntegerProperty(PROP_LINE_WIDTH, "Line Width", WidgetPropertyCategory.DISPLAY, 1, 1, 100, true, PROP_TOOLTIP);
+        addArrayOptionProperty(PROP_LINE_STYLE, "Line Style", WidgetPropertyCategory.DISPLAY, new String[] { "Solid", "Dash", "Dot", "DashDot",
+                "DashDotDot" }, 0, false, PROP_LINE_STYLE);
 
-		// .. hide properties
-		hideProperty(AbstractWidgetModel.PROP_BORDER_COLOR, getTypeID());
-		hideProperty(AbstractWidgetModel.PROP_BORDER_WIDTH, getTypeID());
-		hideProperty(AbstractWidgetModel.PROP_BORDER_STYLE, getTypeID());
-	}
+        // .. hide properties
+        hideProperty(AbstractWidgetModel.PROP_BORDER_COLOR, getTypeID());
+        hideProperty(AbstractWidgetModel.PROP_BORDER_WIDTH, getTypeID());
+        hideProperty(AbstractWidgetModel.PROP_BORDER_STYLE, getTypeID());
+    }
 
-	/**
-	 * Gets the width of the line.
-	 *
-	 * @return int The width of the line
-	 */
-	public int getLineWidth() {
-		return getIntegerProperty(PROP_LINE_WIDTH);
-	}
+    /**
+     * Gets the width of the line.
+     *
+     * @return int The width of the line
+     */
+    public int getLineWidth() {
+        return getIntegerProperty(PROP_LINE_WIDTH);
+    }
 
-	/**
-	 * Gets the style of the line.
-	 *
-	 * @return int The style of the line
-	 */
-	public int getLineStyle() {
-		return getArrayOptionProperty(PROP_LINE_STYLE);
-	}
+    /**
+     * Gets the style of the line.
+     *
+     * @return int The style of the line
+     */
+    public int getLineStyle() {
+        return getArrayOptionProperty(PROP_LINE_STYLE);
+    }
 }

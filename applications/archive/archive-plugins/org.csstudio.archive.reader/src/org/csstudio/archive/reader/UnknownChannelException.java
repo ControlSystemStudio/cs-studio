@@ -15,7 +15,7 @@ import org.eclipse.osgi.util.NLS;
  *  Support is optional: Some archive data sources might just silently return
  *  no data, others might know for sure that they have no data for a given
  *  channel and then throw this exception.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class UnknownChannelException extends Exception

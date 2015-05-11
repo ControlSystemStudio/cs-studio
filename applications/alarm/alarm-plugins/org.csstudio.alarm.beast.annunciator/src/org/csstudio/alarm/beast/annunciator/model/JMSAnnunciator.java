@@ -50,7 +50,7 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
     final private SpeechPriorityQueue queue = new SpeechPriorityQueue();
 
     /** QueueManager thread picks messages off the queue for annunciation */
-	private QueueManager queuemanager;
+    private QueueManager queuemanager;
 
     /** Create the JMS consumers.
 
@@ -66,21 +66,21 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
      */
     public JMSAnnunciator(
             final JMSAnnunciatorListener listener,
-    		final Connection connection,
-    		final String topics[],
-    		final String translations_file,
-    		final int threshold)
+            final Connection connection,
+            final String topics[],
+            final String translations_file,
+            final int threshold)
         throws Exception
     {
         this.listener = listener;
         this.threshold = threshold;
 
-       	translations = null;
+           translations = null;
         if (translations_file.length() <= 0)
             Activator.getLogger().fine("No translations file name => no translations will be used ");
         else
         {
-   	        // Read translations from translations_file (in preferences.ini)
+               // Read translations from translations_file (in preferences.ini)
             try
             {
                 translations = TranslationFileReader.getTranslations(translations_file);
@@ -152,7 +152,7 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
     public void onMessage(final Message msg)
     {
         // Handle only MapMessages
-    	if (! (msg instanceof MapMessage))
+        if (! (msg instanceof MapMessage))
         {
             Activator.getLogger().log(Level.WARNING, "Received unknown message type {0}", msg.getClass().getName());
             return;
@@ -161,20 +161,20 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
         // Extract info from map:
         // 'TEXT' is actual message
         // 'SEVERITY' is optional severity name of the message
- 		try
-		{
- 			final String text = map.getString(JMSLogMessage.TEXT);
- 			String sevr_text = map.getString(JMSLogMessage.SEVERITY);
- 			// Use low-priority default severity
- 			if (sevr_text == null)
- 			    sevr_text = "NONE";
- 			// Enqueue message text with severity
- 			queue.add(Severity.fromString(sevr_text), text);
-		}
-		catch (JMSException ex)
-		{
-		    listener.annunciatorError(ex);
-		}
+         try
+        {
+             final String text = map.getString(JMSLogMessage.TEXT);
+             String sevr_text = map.getString(JMSLogMessage.SEVERITY);
+             // Use low-priority default severity
+             if (sevr_text == null)
+                 sevr_text = "NONE";
+             // Enqueue message text with severity
+             queue.add(Severity.fromString(sevr_text), text);
+        }
+        catch (JMSException ex)
+        {
+            listener.annunciatorError(ex);
+        }
     }
 
     /** Stop the receiver: Disconnect from JMS, stop QueueManager...
@@ -182,26 +182,26 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
      */
     public void close()
     {
-    	queuemanager.stop();
-    	if (consumers != null)
-    	{
-    	    for (MessageConsumer consumer : consumers)
-    	    {
-    	        try
-    	        {
-    	            consumer.close();
-    	        }
-    	        catch (Exception ex)
-    	        {
-    	            // Ignore, we're closing down anyway
-    	        }
-    	    }
-    	}
-    	try
-    	{
-    	    session.close();
-    	    connection.close();
-    	}
+        queuemanager.stop();
+        if (consumers != null)
+        {
+            for (MessageConsumer consumer : consumers)
+            {
+                try
+                {
+                    consumer.close();
+                }
+                catch (Exception ex)
+                {
+                    // Ignore, we're closing down anyway
+                }
+            }
+        }
+        try
+        {
+            session.close();
+            connection.close();
+        }
         catch (Exception ex)
         {
             // Ignore, we're closing down anyway

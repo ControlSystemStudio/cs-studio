@@ -35,8 +35,8 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 /**
- * TODO (jhatje) : 
- * 
+ * TODO (jhatje) :
+ *
  * @author jhatje
  * @since 01.06.2012
  */
@@ -62,8 +62,8 @@ public class ConfigReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
- 
+
+
         return null;
     }
 
@@ -81,5 +81,5 @@ public class ConfigReader {
         }
         return null;
     }
-    
+
 }

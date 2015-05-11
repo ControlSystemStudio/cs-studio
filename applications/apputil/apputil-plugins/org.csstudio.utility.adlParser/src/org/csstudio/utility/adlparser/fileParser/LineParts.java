@@ -28,19 +28,19 @@ package org.csstudio.utility.adlparser.fileParser;
  * @author hrickens
  * @author $Author$
  * @version $Revision$
- * @since 12.08.2008ls 
+ * @since 12.08.2008ls
  */
 public class LineParts {
 
     /**
-     * Have the raw line a File. 
+     * Have the raw line a File.
      */
     private boolean _isFile;
     /**
-     * Have the raw line an Alias. 
+     * Have the raw line an Alias.
      */
     private boolean _haveAlias;
-    
+
     /**
      * The unhandled ADL Line.
      */
@@ -57,7 +57,7 @@ public class LineParts {
      * The File extension.
      */
     private String _fileEnd;
-    
+
     /**
      * The default constructor.
      * @param rowLine unhandled ADL Line.
@@ -113,8 +113,8 @@ public class LineParts {
     public final void setFileEnd(String fileEnd) {
         _fileEnd = fileEnd;
     }
-    
-    
-    
-    
+
+
+
+
 }

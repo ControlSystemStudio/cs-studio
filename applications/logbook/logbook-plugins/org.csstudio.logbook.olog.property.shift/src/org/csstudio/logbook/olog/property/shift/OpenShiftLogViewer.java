@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.olog.property.shift;
 
@@ -20,7 +20,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class OpenShiftLogViewer extends AbstractHandler {
 
@@ -28,35 +28,35 @@ public class OpenShiftLogViewer extends AbstractHandler {
     private String searchString = "";
 
     public OpenShiftLogViewer() {
-	super();
+    super();
     }
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-	final IWorkbench workbench = PlatformUI.getWorkbench();
-	final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-	ISelection selection = HandlerUtil.getCurrentSelection(event);
-	if (selection instanceof IStructuredSelection) {
-	    IStructuredSelection strucSelection = (IStructuredSelection) selection;
-	    if (strucSelection.getFirstElement() instanceof Shift) {
-		searchString = "* " + ShiftPropertyWidget.propertyName + "."
-			+ ShiftPropertyWidget.attrIdName + ":"
-			+ ((Shift) strucSelection.getFirstElement()).getId();
-	    } else {
-		
-	    }
-	} else {
-	    // TODO invalid selection
-	}
-	try {
-	    IWorkbenchPage page = workbench.showPerspective(LogViewerPerspective.ID, window);
-	    LogTreeView logTreeView = (LogTreeView)page.findView(LogTreeView.ID);
-	    page.showView(LogTreeView.ID);
-	    logTreeView.setSearchString(searchString);
-	} catch (Exception ex) {
-	    // ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event),
-	    // "Error executing command...", ex);
-	}
-	return null;
+    final IWorkbench workbench = PlatformUI.getWorkbench();
+    final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+    ISelection selection = HandlerUtil.getCurrentSelection(event);
+    if (selection instanceof IStructuredSelection) {
+        IStructuredSelection strucSelection = (IStructuredSelection) selection;
+        if (strucSelection.getFirstElement() instanceof Shift) {
+        searchString = "* " + ShiftPropertyWidget.propertyName + "."
+            + ShiftPropertyWidget.attrIdName + ":"
+            + ((Shift) strucSelection.getFirstElement()).getId();
+        } else {
+
+        }
+    } else {
+        // TODO invalid selection
+    }
+    try {
+        IWorkbenchPage page = workbench.showPerspective(LogViewerPerspective.ID, window);
+        LogTreeView logTreeView = (LogTreeView)page.findView(LogTreeView.ID);
+        page.showView(LogTreeView.ID);
+        logTreeView.setSearchString(searchString);
+    } catch (Exception ex) {
+        // ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event),
+        // "Error executing command...", ex);
+    }
+    return null;
     }
 }

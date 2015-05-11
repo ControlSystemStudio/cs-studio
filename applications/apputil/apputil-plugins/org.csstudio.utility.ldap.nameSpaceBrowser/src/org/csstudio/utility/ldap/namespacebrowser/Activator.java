@@ -35,51 +35,51 @@ public class Activator extends AbstractUIPlugin {
     /**
      * The id of this Java plug-in (value <code>{@value}</code> as defined in MANIFEST.MF.
      */
-	public static final String PLUGIN_ID = "org.csstudio.utility.ldap.nameSpaceBrowser";
+    public static final String PLUGIN_ID = "org.csstudio.utility.ldap.nameSpaceBrowser";
 
-	// The shared instance
-	private static Activator INSTANCE;
+    // The shared instance
+    private static Activator INSTANCE;
 
     private LdapServiceTracker _ldapServiceTracker;
 
 
-	/**
-	 * The constructor
-	 */
-	public Activator() {
+    /**
+     * The constructor
+     */
+    public Activator() {
         if (INSTANCE != null) {
             throw new IllegalStateException("Application " + PLUGIN_ID + " does already exist.");
         }
         INSTANCE = this; // Antipattern is required by the framework!
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void start(final BundleContext context) throws Exception {
-		super.start(context);
+        super.start(context);
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void stop(final BundleContext context) throws Exception {
-		super.stop(context);
-	    _ldapServiceTracker.close();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void stop(final BundleContext context) throws Exception {
+        super.stop(context);
+        _ldapServiceTracker.close();
+    }
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return INSTANCE;
-	}
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+        return INSTANCE;
+    }
 
     /**
      * @return the LDAP service

@@ -55,16 +55,16 @@ public class LoopCommandHeadlessTest
 
     private static void waitForValue(final Device device, final double value) throws Exception
     {
-    	int tens = 0;
-    	while (VTypeHelper.toDouble(device.read()) != value)
-    	{
-    		Thread.sleep(100);
-    		++tens;
-    		if (tens > 20)
-    			throw new TimeoutException();
-    	}
+        int tens = 0;
+        while (VTypeHelper.toDouble(device.read()) != value)
+        {
+            Thread.sleep(100);
+            ++tens;
+            if (tens > 20)
+                throw new TimeoutException();
+        }
     }
-    
+
     @Test(timeout=5000)
     public void testLoopCommand() throws Throwable
     {

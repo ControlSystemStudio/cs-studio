@@ -25,7 +25,7 @@ public interface ITransform
      *  If the transformation is undefined (x1 == x2),
      *  or results in a==0 so that the 'inverse' won't work,
      *  the result is a 1:1 transformation. No error message.
-     *  
+     *
      *  @param x1 Start of 'source'
      *  @param x2 End of 'source'
      *  @param y1 Start of 'destination'

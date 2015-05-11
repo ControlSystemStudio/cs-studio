@@ -19,49 +19,49 @@ import org.apache.log4j.Logger;
  */
 public abstract class AbstractEdmMultiAttributes<T extends EdmAttribute> extends EdmAttribute {
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmColor");
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmColor");
 
-	
-	private LinkedHashMap<String, T> edmAttrMap = new LinkedHashMap<String, T>();
-	
-	/**
-	 * Constructor which parses EdmColor from general EdmAttribute value.
-	 *
-	 * @param genericEntity EdmAttribute containing general EdmColor data.
-	 * @param required false if this attribute is optional, else true
-	 * @throws EdmException if EdmAttribute contains invalid data.
-	 */
-	public AbstractEdmMultiAttributes(EdmAttribute genericEntity, boolean required) throws EdmException {
-		super(genericEntity);
 
-		setRequired(required);
+    private LinkedHashMap<String, T> edmAttrMap = new LinkedHashMap<String, T>();
 
-		if (genericEntity == null || getValueCount() == 0) {
-			if (isRequired()) {
-				log.warn("Missing required property.");
-			} else {
-				log.warn("Missing optional property.");
-				return;
-			}
-		}		
-		
-		for(int i=0; i<getValueCount(); i++){
-			String[] vals = getValue(i).split("\\s+", 2);
-			edmAttrMap.put(vals[0], createEdmAttribute(new EdmAttribute(vals[1])));			
-		}		
+    /**
+     * Constructor which parses EdmColor from general EdmAttribute value.
+     *
+     * @param genericEntity EdmAttribute containing general EdmColor data.
+     * @param required false if this attribute is optional, else true
+     * @throws EdmException if EdmAttribute contains invalid data.
+     */
+    public AbstractEdmMultiAttributes(EdmAttribute genericEntity, boolean required) throws EdmException {
+        super(genericEntity);
 
-		setInitialized(true);
-	}
-	
-	protected abstract T createEdmAttribute(EdmAttribute genericEntity) throws EdmException;
-	
+        setRequired(required);
 
-	/**
-	 * @return the color map with name and value.
-	 */
-	public LinkedHashMap<String, T> getEdmAttributesMap() {
-		return edmAttrMap;
-	}
+        if (genericEntity == null || getValueCount() == 0) {
+            if (isRequired()) {
+                log.warn("Missing required property.");
+            } else {
+                log.warn("Missing optional property.");
+                return;
+            }
+        }
 
-	
+        for(int i=0; i<getValueCount(); i++){
+            String[] vals = getValue(i).split("\\s+", 2);
+            edmAttrMap.put(vals[0], createEdmAttribute(new EdmAttribute(vals[1])));
+        }
+
+        setInitialized(true);
+    }
+
+    protected abstract T createEdmAttribute(EdmAttribute genericEntity) throws EdmException;
+
+
+    /**
+     * @return the color map with name and value.
+     */
+    public LinkedHashMap<String, T> getEdmAttributesMap() {
+        return edmAttrMap;
+    }
+
+
 }

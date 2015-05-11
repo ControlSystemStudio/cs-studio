@@ -24,63 +24,63 @@ package org.csstudio.auth.security;
 /**
  * Information about the usage of a registered authorization ID. Instances of
  * this class are immutable.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class AuthorizationIdUsage {
 
-	private final String _location;
-	private final boolean _allowByDefault;
-	private final String _plugin;
+    private final String _location;
+    private final boolean _allowByDefault;
+    private final String _plugin;
 
-	/**
-	 * Creates a new authorization ID usage description.
-	 * 
-	 * @param location
-	 *            a description of the location where the ID is used. For
-	 *            example, a description of the action which is associated with
-	 *            the authorization ID.
-	 * @param allowByDefault
-	 *            <code>true</code> if usage of the associated action is allowed
-	 *            by default, <code>false</code> otherwise.
-	 * @param plugin
-	 *            the name of the plug-in which contributed this usage
-	 *            description.
-	 */
-	public AuthorizationIdUsage(String location, boolean allowByDefault,
-			String plugin) {
-		_location = location;
-		_allowByDefault = allowByDefault;
-		_plugin = plugin;
-	}
+    /**
+     * Creates a new authorization ID usage description.
+     *
+     * @param location
+     *            a description of the location where the ID is used. For
+     *            example, a description of the action which is associated with
+     *            the authorization ID.
+     * @param allowByDefault
+     *            <code>true</code> if usage of the associated action is allowed
+     *            by default, <code>false</code> otherwise.
+     * @param plugin
+     *            the name of the plug-in which contributed this usage
+     *            description.
+     */
+    public AuthorizationIdUsage(String location, boolean allowByDefault,
+            String plugin) {
+        _location = location;
+        _allowByDefault = allowByDefault;
+        _plugin = plugin;
+    }
 
-	/**
-	 * Returns a description of the location where the authorization ID is used.
-	 * For example, a description of the action which is associated with the
-	 * authorization ID.
-	 * 
-	 * @return a description of the location where the authorization ID is used.
-	 */
-	public String getLocation() {
-		return _location;
-	}
+    /**
+     * Returns a description of the location where the authorization ID is used.
+     * For example, a description of the action which is associated with the
+     * authorization ID.
+     *
+     * @return a description of the location where the authorization ID is used.
+     */
+    public String getLocation() {
+        return _location;
+    }
 
-	/**
-	 * Returns whether using the associated action is allowed by default.
-	 * 
-	 * @return <code>true</code> if using the associated action is allowed by
-	 *         default, <code>false</code> otherwise.
-	 */
-	public boolean isAllowedByDefault() {
-		return _allowByDefault;
-	}
-	
-	/**
-	 * Returns the name of the plug-in which contributed this usage description.
-	 * 
-	 * @return the name of the plug-in which contributed this usage description.
-	 */
-	public String getPlugIn() {
-		return _plugin;
-	}
+    /**
+     * Returns whether using the associated action is allowed by default.
+     *
+     * @return <code>true</code> if using the associated action is allowed by
+     *         default, <code>false</code> otherwise.
+     */
+    public boolean isAllowedByDefault() {
+        return _allowByDefault;
+    }
+
+    /**
+     * Returns the name of the plug-in which contributed this usage description.
+     *
+     * @return the name of the plug-in which contributed this usage description.
+     */
+    public String getPlugIn() {
+        return _plugin;
+    }
 }

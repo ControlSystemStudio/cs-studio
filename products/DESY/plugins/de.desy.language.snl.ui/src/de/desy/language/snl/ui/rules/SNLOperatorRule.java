@@ -18,29 +18,29 @@ import de.desy.language.editor.ui.editor.highlighting.predefinedRules.SingleChar
 
 /**
  * Rule to recognize operators.
- * 
+ *
  * @author P.Tomaszewski
  */
 public class SNLOperatorRule extends SingleCharRule {
-	/**
-	 * Creates new rule.
-	 * 
-	 * @param token
-	 *            Style token.
-	 */
-	public SNLOperatorRule(final IToken token) {
-		super(token);
-	}
+    /**
+     * Creates new rule.
+     *
+     * @param token
+     *            Style token.
+     */
+    public SNLOperatorRule(final IToken token) {
+        super(token);
+    }
 
-	/**
-	 * @see SingleCharRule#isRuleChar(int)
-	 */
-	@Override
-	public boolean isRuleChar(final int ch) {
-		return ((ch == ';') || (ch == '.') || (ch == ':') || (ch == '=')
-				|| (ch == '-') || (ch == '+') || (ch == '\\') || (ch == '*')
-				|| (ch == '!') || (ch == '%') || (ch == '^') || (ch == '&')
-				|| (ch == '~') || (ch == '>') || (ch == '<'))
-				|| (ch == '|');
-	}
+    /**
+     * @see SingleCharRule#isRuleChar(int)
+     */
+    @Override
+    public boolean isRuleChar(final int ch) {
+        return ((ch == ';') || (ch == '.') || (ch == ':') || (ch == '=')
+                || (ch == '-') || (ch == '+') || (ch == '\\') || (ch == '*')
+                || (ch == '!') || (ch == '%') || (ch == '^') || (ch == '&')
+                || (ch == '~') || (ch == '>') || (ch == '<'))
+                || (ch == '|');
+    }
 }

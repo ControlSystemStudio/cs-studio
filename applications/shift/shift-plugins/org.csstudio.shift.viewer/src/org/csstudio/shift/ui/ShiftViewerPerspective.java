@@ -11,7 +11,7 @@ public class ShiftViewerPerspective implements IPerspectiveFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui
      * .IPageLayout)
@@ -19,8 +19,8 @@ public class ShiftViewerPerspective implements IPerspectiveFactory {
     @Override
     public void createInitialLayout(final IPageLayout layout) {
 
-	    final String editor = layout.getEditorArea();
-	    final IFolderLayout left = layout.createFolder("Left", IPageLayout.LEFT, 0.33f, editor);
-	    left.addView(org.csstudio.shift.ui.ShiftTableView.ID);
+        final String editor = layout.getEditorArea();
+        final IFolderLayout left = layout.createFolder("Left", IPageLayout.LEFT, 0.33f, editor);
+        left.addView(org.csstudio.shift.ui.ShiftTableView.ID);
     }
 }

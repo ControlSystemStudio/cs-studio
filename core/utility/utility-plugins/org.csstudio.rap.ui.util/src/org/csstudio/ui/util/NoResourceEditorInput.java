@@ -91,21 +91,21 @@ public class NoResourceEditorInput implements IEditorInput
         return orig.getToolTipText();
     }
 
-	public IEditorInput getOriginEditorInput() {
-		return orig;
-	}
-	
+    public IEditorInput getOriginEditorInput() {
+        return orig;
+    }
+
     @Override
     public boolean equals(Object obj) {
-    	if(obj ==null)
-    		return false;
-    	if(obj instanceof NoResourceEditorInput)
-    		return orig.equals(((NoResourceEditorInput)obj).getOriginEditorInput());
-    	return orig.equals(obj);
+        if(obj ==null)
+            return false;
+        if(obj instanceof NoResourceEditorInput)
+            return orig.equals(((NoResourceEditorInput)obj).getOriginEditorInput());
+        return orig.equals(obj);
     }
-    
+
     @Override
     public int hashCode() {
-    	return orig.hashCode();
+        return orig.hashCode();
     }
 }

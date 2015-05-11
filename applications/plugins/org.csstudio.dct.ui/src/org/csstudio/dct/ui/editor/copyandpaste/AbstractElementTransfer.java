@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.dct.ui.editor.copyandpaste;
@@ -39,126 +39,126 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractElementTransfer extends ByteArrayTransfer {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbstractElementTransfer.class);
-    
-	private final ICopyAndPasteStrategy copyAndPasteStrategy;
 
-	/**
-	 * Type name for this transfer type.
-	 */
-	private static final String TYPENAME = "dct_record_list"; //$NON-NLS-1$
+    private final ICopyAndPasteStrategy copyAndPasteStrategy;
 
-	/**
-	 * Type ID for this transfer type.
-	 */
-	private static final int TYPEID = registerType(TYPENAME);
+    /**
+     * Type name for this transfer type.
+     */
+    private static final String TYPENAME = "dct_record_list"; //$NON-NLS-1$
 
-	/**
-	 * Private constructor (singleton pattern).
-	 * 
-	 */
-	AbstractElementTransfer(ICopyAndPasteStrategy strategy) {
-		assert strategy != null;
-		copyAndPasteStrategy = strategy;
-	}
+    /**
+     * Type ID for this transfer type.
+     */
+    private static final int TYPEID = registerType(TYPENAME);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void javaToNative(final Object object, final TransferData transferData) {
-		if (!isSupportedType(transferData) || !(checkInput(object))) {
-			DND.error(DND.ERROR_INVALID_DATA);
-		}
+    /**
+     * Private constructor (singleton pattern).
+     *
+     */
+    AbstractElementTransfer(ICopyAndPasteStrategy strategy) {
+        assert strategy != null;
+        copyAndPasteStrategy = strategy;
+    }
 
-		// clean up
-		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public void javaToNative(final Object object, final TransferData transferData) {
+        if (!isSupportedType(transferData) || !(checkInput(object))) {
+            DND.error(DND.ERROR_INVALID_DATA);
+        }
 
-			ObjectOutputStream objOut = new ObjectOutputStream(new BufferedOutputStream(bos));
-			objOut.writeObject(copyAndPasteStrategy.createCopyElements((List<IElement>) object));
-			objOut.close();
+        // clean up
+        try {
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
 
-			byte[] bytes = bos.toByteArray();
+            ObjectOutputStream objOut = new ObjectOutputStream(new BufferedOutputStream(bos));
+            objOut.writeObject(copyAndPasteStrategy.createCopyElements((List<IElement>) object));
+            objOut.close();
 
-			// store the byte array
-			super.javaToNative(bytes, transferData);
+            byte[] bytes = bos.toByteArray();
 
-			bos.close();
-		} catch (IOException e) {
-			LOG.debug("IO Error", e);
-		}
+            // store the byte array
+            super.javaToNative(bytes, transferData);
 
-	}
+            bos.close();
+        } catch (IOException e) {
+            LOG.debug("IO Error", e);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object nativeToJava(final TransferData transferData) {
-		if (isSupportedType(transferData)) {
-			byte[] bytes = (byte[]) super.nativeToJava(transferData);
+    }
 
-			try {
-				ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(bytes));
-				Object result = objIn.readObject();
-				objIn.close();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object nativeToJava(final TransferData transferData) {
+        if (isSupportedType(transferData)) {
+            byte[] bytes = (byte[]) super.nativeToJava(transferData);
 
-				return result;
-			} catch (Exception e) {
-				LOG.debug("Input Error", e);
-				return null;
-			}
-		}
-		return null;
-	}
+            try {
+                ObjectInputStream objIn = new ObjectInputStream(new ByteArrayInputStream(bytes));
+                Object result = objIn.readObject();
+                objIn.close();
 
-	/**
-	 * Checks the provided input, which must be a non-empty list that contains
-	 * only objects of type {@link IElement}.
-	 * 
-	 * @param input
-	 *            the input to check
-	 * @return true, if the input object is valid, false otherwise
-	 */
-	private boolean checkInput(final Object input) {
-		boolean result = false;
+                return result;
+            } catch (Exception e) {
+                LOG.debug("Input Error", e);
+                return null;
+            }
+        }
+        return null;
+    }
 
-		if (input instanceof List) {
-			List list = (List) input;
+    /**
+     * Checks the provided input, which must be a non-empty list that contains
+     * only objects of type {@link IElement}.
+     *
+     * @param input
+     *            the input to check
+     * @return true, if the input object is valid, false otherwise
+     */
+    private boolean checkInput(final Object input) {
+        boolean result = false;
 
-			if (!list.isEmpty()) {
-				result = true;
-				for (Object o : list) {
-					result &= o instanceof IElement;
-				}
+        if (input instanceof List) {
+            List list = (List) input;
 
-				if (result) {
-					result &= copyAndPasteStrategy.canCopy((List<IElement>) input);
-				}
-			}
-		}
+            if (!list.isEmpty()) {
+                result = true;
+                for (Object o : list) {
+                    result &= o instanceof IElement;
+                }
 
-		return result;
-	}
+                if (result) {
+                    result &= copyAndPasteStrategy.canCopy((List<IElement>) input);
+                }
+            }
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected String[] getTypeNames() {
-		return new String[] { TYPENAME };
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected int[] getTypeIds() {
-		return new int[] { TYPEID };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String[] getTypeNames() {
+        return new String[] { TYPENAME };
+    }
 
-	public ICopyAndPasteStrategy getCopyAndPasteStrategy() {
-		return copyAndPasteStrategy;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected int[] getTypeIds() {
+        return new int[] { TYPEID };
+    }
+
+    public ICopyAndPasteStrategy getCopyAndPasteStrategy() {
+        return copyAndPasteStrategy;
+    }
 }

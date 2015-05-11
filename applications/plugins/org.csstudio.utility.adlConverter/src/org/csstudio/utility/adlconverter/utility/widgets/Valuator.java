@@ -40,8 +40,8 @@ public class Valuator extends Widget {
 
     /**
      * @param valuator ADLWidget that describe the Valuator.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
      */
     public Valuator(final ADLWidget valuator, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) {
         super(valuator, storedBasicAttribute, storedDynamicAttribute);

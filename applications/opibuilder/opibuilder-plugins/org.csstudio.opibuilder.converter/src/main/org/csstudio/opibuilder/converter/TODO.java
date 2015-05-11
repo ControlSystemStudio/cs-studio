@@ -14,7 +14,7 @@ public interface TODO
 {
     /**
      * TODO Avoid restart after color list file preference setting changed.
-     * 
+     *
      * TODO Support HEX color presentation in color list file.
      */
 }

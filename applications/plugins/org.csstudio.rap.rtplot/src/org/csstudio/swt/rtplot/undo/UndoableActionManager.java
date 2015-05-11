@@ -21,13 +21,13 @@ import org.csstudio.swt.rtplot.Activator;
 @SuppressWarnings("nls")
 public class UndoableActionManager
 {
-	final private SizeLimitedStack<UndoableAction> undoStack = new SizeLimitedStack<UndoableAction>(30);
-	final private SizeLimitedStack<UndoableAction> redoStack = new SizeLimitedStack<UndoableAction>(30);
-	final private List<UndoRedoListener> listeners = new CopyOnWriteArrayList<>();
+    final private SizeLimitedStack<UndoableAction> undoStack = new SizeLimitedStack<UndoableAction>(30);
+    final private SizeLimitedStack<UndoableAction> redoStack = new SizeLimitedStack<UndoableAction>(30);
+    final private List<UndoRedoListener> listeners = new CopyOnWriteArrayList<>();
 
-	/** @param listener Listener to add */
-	public void addListener(final UndoRedoListener listener)
-	{
+    /** @param listener Listener to add */
+    public void addListener(final UndoRedoListener listener)
+    {
         listeners.add(listener);
     }
 
@@ -49,20 +49,20 @@ public class UndoableActionManager
         return ! redoStack.isEmpty();
     }
 
-	/** @param action Action to perform and add to the un-do stack */
-	public void execute(final UndoableAction action)
-	{
-	    try
-	    {
-	        action.run();
-	    }
-	    catch (Throwable ex)
-	    {
-	        Activator.getLogger().log(Level.WARNING, "Action failed: " + action, ex);
-	        return;
-	    }
-	    add(action);
-	}
+    /** @param action Action to perform and add to the un-do stack */
+    public void execute(final UndoableAction action)
+    {
+        try
+        {
+            action.run();
+        }
+        catch (Throwable ex)
+        {
+            Activator.getLogger().log(Level.WARNING, "Action failed: " + action, ex);
+            return;
+        }
+        add(action);
+    }
 
     /** @param action Action that has already been performed, which can be un-done */
     public void add(final UndoableAction action)
@@ -72,41 +72,41 @@ public class UndoableActionManager
         fireOperationsHistoryChanged();
     }
 
-	/** Undo the last command */
-	public void undoLast()
-	{
-	    if (undoStack.isEmpty())
-	        return;
-	    final UndoableAction action = undoStack.pop();
-	    try
-	    {
-	        action.undo();
-	    }
-	    catch (Throwable ex)
+    /** Undo the last command */
+    public void undoLast()
+    {
+        if (undoStack.isEmpty())
+            return;
+        final UndoableAction action = undoStack.pop();
+        try
+        {
+            action.undo();
+        }
+        catch (Throwable ex)
         {
             Activator.getLogger().log(Level.WARNING, "Undo failed: " + action, ex);
             return;
         }
-		redoStack.push(action);
-		fireOperationsHistoryChanged();
-	}
+        redoStack.push(action);
+        fireOperationsHistoryChanged();
+    }
 
-	/** Re-do the last command */
-	public void redoLast()
-	{
-	    if (redoStack.isEmpty())
-	        return;
+    /** Re-do the last command */
+    public void redoLast()
+    {
+        if (redoStack.isEmpty())
+            return;
         final UndoableAction action = redoStack.pop();
         action.run();
         undoStack.push(action);
         fireOperationsHistoryChanged();
-	}
+    }
 
-	private void fireOperationsHistoryChanged()
-	{
-	    final String to_undo = undoStack.isEmpty() ? null : undoStack.peek().toString();
+    private void fireOperationsHistoryChanged()
+    {
+        final String to_undo = undoStack.isEmpty() ? null : undoStack.peek().toString();
         final String to_redo = redoStack.isEmpty() ? null : redoStack.peek().toString();
-		for (UndoRedoListener listener : listeners)
-			listener.operationsHistoryChanged(to_undo, to_redo);
-	}
+        for (UndoRedoListener listener : listeners)
+            listener.operationsHistoryChanged(to_undo, to_redo);
+    }
 }

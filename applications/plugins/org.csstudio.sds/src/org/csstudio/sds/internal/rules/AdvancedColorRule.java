@@ -33,54 +33,54 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  */
 public final class AdvancedColorRule implements IRule {
 
-	/**
-	 * BLACK color.
-	 */
-	private static final String COLOR_BLACK = "#000000";
+    /**
+     * BLACK color.
+     */
+    private static final String COLOR_BLACK = "#000000";
 
-	/**
-	 * Standard constructor.
-	 */
-	public AdvancedColorRule() {
-	}
+    /**
+     * Standard constructor.
+     */
+    public AdvancedColorRule() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0) && (arguments.length < 5)) {
-			if (arguments[0] instanceof Number) {
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        if ((arguments != null) && (arguments.length > 0) && (arguments.length < 5)) {
+            if (arguments[0] instanceof Number) {
 
-				String highColor =arguments.length>1 ? resolveColor(arguments[1]) : COLOR_BLACK;
-				String mediumColor = arguments.length>2 ? resolveColor(arguments[2]) : COLOR_BLACK;
-				String lowColor = arguments.length>3 ? resolveColor(arguments[3]) : COLOR_BLACK;
+                String highColor =arguments.length>1 ? resolveColor(arguments[1]) : COLOR_BLACK;
+                String mediumColor = arguments.length>2 ? resolveColor(arguments[2]) : COLOR_BLACK;
+                String lowColor = arguments.length>3 ? resolveColor(arguments[3]) : COLOR_BLACK;
 
-				double d = ((Number) arguments[0]).doubleValue();
+                double d = ((Number) arguments[0]).doubleValue();
 
-				if (d > 66) {
-					return highColor;
-				}
+                if (d > 66) {
+                    return highColor;
+                }
 
-				if (d > 33) {
-					return mediumColor;
-				}
+                if (d > 33) {
+                    return mediumColor;
+                }
 
-				if (d > 0) {
-					return lowColor;
-				}
-			}
-		}
+                if (d > 0) {
+                    return lowColor;
+                }
+            }
+        }
 
-		return COLOR_BLACK;
-	}
+        return COLOR_BLACK;
+    }
 
-	private String resolveColor(final Object arg) {
-		if ((arg!=null) && ColorAndFontUtil.isHex(arg.toString())) {
-			return arg.toString();
-		} else {
-			return COLOR_BLACK;
-		}
-	}
+    private String resolveColor(final Object arg) {
+        if ((arg!=null) && ColorAndFontUtil.isHex(arg.toString())) {
+            return arg.toString();
+        } else {
+            return COLOR_BLACK;
+        }
+    }
 
     /**
      * {@inheritDoc}

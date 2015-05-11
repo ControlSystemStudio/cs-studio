@@ -16,69 +16,69 @@ import org.csstudio.dct.model.internal.Project;
 /**
  * Visitor implementation that can be used to find instances using their
  * prototype´s id as search criteria.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public final class SearchInstancesVisitor implements IVisitor {
-	private UUID prototypeId;
-	private List<IInstance> result;
+    private UUID prototypeId;
+    private List<IInstance> result;
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(Project project) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(Project project) {
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IFolder folder) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IFolder folder) {
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IPrototype prototype) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IPrototype prototype) {
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IRecord record) {
-		
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IRecord record) {
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IInstance instance) {
-		if(prototypeId.equals(instance.getPrototype().getId())) {
-			result.add(instance);
-		}
-	}
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IInstance instance) {
+        if(prototypeId.equals(instance.getPrototype().getId())) {
+            result.add(instance);
+        }
+    }
 
 
-	/**
-	 * Deep search for instances in a project.
-	 * 
-	 * @param project
-	 *            the project
-	 * @param prototypeId
-	 *            the id of a prototype
-	 * @return all instances of the specified prototype
-	 */
-	public List<IInstance> search(IProject project, UUID prototypeId) {
-		assert project != null;
-		assert prototypeId != null;
+    /**
+     * Deep search for instances in a project.
+     *
+     * @param project
+     *            the project
+     * @param prototypeId
+     *            the id of a prototype
+     * @return all instances of the specified prototype
+     */
+    public List<IInstance> search(IProject project, UUID prototypeId) {
+        assert project != null;
+        assert prototypeId != null;
 
-		this.prototypeId = prototypeId;
-		this.result = new ArrayList<IInstance>();
+        this.prototypeId = prototypeId;
+        this.result = new ArrayList<IInstance>();
 
-		project.accept(this);
+        project.accept(this);
 
-		return result;
-	}
+        return result;
+    }
 
 
 }

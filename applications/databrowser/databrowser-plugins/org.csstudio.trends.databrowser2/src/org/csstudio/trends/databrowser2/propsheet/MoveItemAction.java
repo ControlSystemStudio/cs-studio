@@ -44,6 +44,6 @@ public class MoveItemAction extends Action
     @Override
     public void run()
     {
-    	new MoveItemCommand(operations_manager, model, item, up);
+        new MoveItemCommand(operations_manager, model, item, up);
     }
 }

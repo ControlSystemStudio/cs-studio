@@ -15,21 +15,21 @@ import org.csstudio.opibuilder.converter.model.Edm_TextentryClass;
  */
 public class Opi_TextentryClass extends Opi_TextupdateClass {
 
-	private static final String typeId = "TextInput";	
-	private static final String name = "EDM Text Entry";
-	private static final String version = "1.0";
+    private static final String typeId = "TextInput";
+    private static final String name = "EDM Text Entry";
+    private static final String version = "1.0";
 
-	/**
-	 * Converts the Edm_TextupdateClass to OPI TextUpdate widget XML.  
-	 */
-	public Opi_TextentryClass(Context con, Edm_TextentryClass t) {
-		super(con,t);
-		setTypeId(typeId);
-		setName(name);
-		setVersion(version);		
-		new OpiInt(widgetContext, "style", 0);
-		new OpiInt(widgetContext, "border_style", 3);
-		
-	}
-	
+    /**
+     * Converts the Edm_TextupdateClass to OPI TextUpdate widget XML.
+     */
+    public Opi_TextentryClass(Context con, Edm_TextentryClass t) {
+        super(con,t);
+        setTypeId(typeId);
+        setName(name);
+        setVersion(version);
+        new OpiInt(widgetContext, "style", 0);
+        new OpiInt(widgetContext, "border_style", 3);
+
+    }
+
 }

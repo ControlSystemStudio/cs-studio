@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CollapseTreeAction extends Action
 {
     final private Tree tree;
-    
+
     public CollapseTreeAction(final Tree tree)
     {
         super(Messages.Collapse,
@@ -26,13 +26,13 @@ public class CollapseTreeAction extends Action
         setToolTipText(Messages.CollapseTT);
         this.tree = tree;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void run()
     {
         tree.setRedraw(false);
-     
+
         // While working on the alarm tree,
         // this turned out to be very slow:
         // tree_viewer.collapseAll();
@@ -42,7 +42,7 @@ public class CollapseTreeAction extends Action
         final TreeItem[] items = tree.getItems();
         for (TreeItem item : items)
             item.setExpanded(false);
-        
+
         tree.setRedraw(true);
     }
 }

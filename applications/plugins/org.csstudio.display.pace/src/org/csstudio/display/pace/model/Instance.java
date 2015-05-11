@@ -18,10 +18,10 @@ import org.w3c.dom.Element;
  *  <p>
  *  Describes one row in the table/model: Name of the instance, macros to use.
  *  After full initialization by Model, it also holds the cells in the row.
- *  
+ *
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
- *  
+ *
  *    reviewed by Delphy 01/29/09
  */
 @SuppressWarnings("nls")
@@ -31,7 +31,7 @@ public class Instance
     final private String name;
     final private IMacroTableProvider macros;
     private Cell[] cells;
-    
+
     /** Parse and create Column from DOM
      *  @param model Model
      *  @param node DOM node for instance info
@@ -96,7 +96,7 @@ public class Instance
     {
         return macros;
     }
-    
+
     /** @param c Cell index, 0 .. model.getColumnCount()-1
      *  @return Cell at given column in this instance/row
      */

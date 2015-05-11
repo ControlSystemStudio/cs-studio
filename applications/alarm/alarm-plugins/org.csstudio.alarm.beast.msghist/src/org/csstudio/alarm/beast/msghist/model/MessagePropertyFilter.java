@@ -14,7 +14,7 @@ public class MessagePropertyFilter
 {
     final private String property;
     final private String pattern;
-    
+
     /** Constructor
      *  @param property Property name
      *  @param pattern  Pattern for the property's value

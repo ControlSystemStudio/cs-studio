@@ -26,7 +26,7 @@ import java.util.Arrays;
 @SuppressWarnings("nls")
 public class SampleValue implements Serializable
 {
-	/** Serialization ID */
+    /** Serialization ID */
     final private static long serialVersionUID = 1L;
 
     /** Values.
@@ -43,44 +43,44 @@ public class SampleValue implements Serializable
      *  @return {@link SampleValue}
      *  @see #SampleValue(Object...)
      */
-	public static SampleValue create(final Double value)
-	{
-	    return new SampleValue(new Number[] { value });
-	}
+    public static SampleValue create(final Double value)
+    {
+        return new SampleValue(new Number[] { value });
+    }
 
-	/** Initialize
-	 *  @param values One or more {@link Number}
-	 *  @throws IllegalArgumentException when values not accepted
-	 */
+    /** Initialize
+     *  @param values One or more {@link Number}
+     *  @throws IllegalArgumentException when values not accepted
+     */
     public SampleValue(final Object[] values)
-	{
+    {
         if (values instanceof Number[]  ||
             values instanceof String[])
             this.values = values;
         else
             throw new IllegalArgumentException("Cannot handle " + values[0].getClass().getName());
-	}
+    }
 
-	/** @return First array element */
-	public Number getNumber()
-	{
-	    if (values[0] instanceof Number)
-	        return (Number) values[0];
-	    return null;
-	}
+    /** @return First array element */
+    public Number getNumber()
+    {
+        if (values[0] instanceof Number)
+            return (Number) values[0];
+        return null;
+    }
 
-	/** @return Values */
+    /** @return Values */
     public Object[] getValues()
     {
         return values;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public String toString()
-	{
-	    if (values.length == 1)
-	        return values[0].toString();
-	    return Arrays.toString(values);
-	}
+    {
+        if (values.length == 1)
+            return values[0].toString();
+        return Arrays.toString(values);
+    }
 }

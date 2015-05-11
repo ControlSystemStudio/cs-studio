@@ -46,97 +46,97 @@ import org.eclipse.ui.model.WorkbenchLabelProvider;
 /**
  * Selection dialog for record types. Only one record type can be chosen at a
  * time.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RecordDialog extends Dialog {
 
-	private TreeViewer viewer;
-	private IRecordDefinition selection;
-	private List<IRecordDefinition> recordDefinitions;
+    private TreeViewer viewer;
+    private IRecordDefinition selection;
+    private List<IRecordDefinition> recordDefinitions;
 
-	/**
-	 * Creates an input dialog with OK and Cancel buttons. Note that the dialog
-	 * will have no visual representation (no widgets) until it is told to open.
-	 * <p>
-	 * Note that the <code>open</code> method blocks for input dialogs.
-	 * </p>
-	 * 
-	 * @param parentShell
-	 *            the parent shell, or <code>null</code> to create a top-level
-	 *            shell
-	 * @param dialogMessage
-	 *            the dialog message, or <code>null</code> if none
-	 * @param recordDefinitions
-	 *            the record definitions
-	 */
-	public RecordDialog(final Shell parentShell, final List<IRecordDefinition> recordDefinitions) {
-		super(parentShell);
-		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
-		this.recordDefinitions = recordDefinitions;
-	}
+    /**
+     * Creates an input dialog with OK and Cancel buttons. Note that the dialog
+     * will have no visual representation (no widgets) until it is told to open.
+     * <p>
+     * Note that the <code>open</code> method blocks for input dialogs.
+     * </p>
+     *
+     * @param parentShell
+     *            the parent shell, or <code>null</code> to create a top-level
+     *            shell
+     * @param dialogMessage
+     *            the dialog message, or <code>null</code> if none
+     * @param recordDefinitions
+     *            the record definitions
+     */
+    public RecordDialog(final Shell parentShell, final List<IRecordDefinition> recordDefinitions) {
+        super(parentShell);
+        this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
+        this.recordDefinitions = recordDefinitions;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureShell(final Shell shell) {
-		super.configureShell(shell);
-		shell.setText("Record Types");
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureShell(final Shell shell) {
+        super.configureShell(shell);
+        shell.setText("Record Types");
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createDialogArea(final Composite parent) {
-		Composite composite = (Composite) super.createDialogArea(parent);
-		
-		composite.setLayout(new GridLayout(1, false));
-		Label label = new Label(composite, SWT.WRAP);
-		label.setText("Please select the record type:");
-		GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
-		data.horizontalSpan = 2;
-		data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-		label.setLayoutData(data);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        Composite composite = (Composite) super.createDialogArea(parent);
 
-		viewer = new TreeViewer(composite);
-		viewer.getControl().setLayoutData(LayoutUtil.createGridDataForFillingCell(200, 400));
-		viewer.setLabelProvider(new WorkbenchLabelProvider());
-		viewer.setContentProvider(new WorkbenchContentProvider() {
-			@Override
-			public Object[] getElements(Object element) {
-				return (Object[]) element;
-			}
-		});
-		viewer.setSorter(new ViewerSorter());
-		viewer.setInput(recordDefinitions.toArray());
+        composite.setLayout(new GridLayout(1, false));
+        Label label = new Label(composite, SWT.WRAP);
+        label.setText("Please select the record type:");
+        GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+        data.horizontalSpan = 2;
+        data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+        label.setLayoutData(data);
 
-		viewer.addOpenListener(new IOpenListener() {
-			public void open(OpenEvent event) {
-				okPressed();
-			}
-		});
-		return composite;
-	}
+        viewer = new TreeViewer(composite);
+        viewer.getControl().setLayoutData(LayoutUtil.createGridDataForFillingCell(200, 400));
+        viewer.setLabelProvider(new WorkbenchLabelProvider());
+        viewer.setContentProvider(new WorkbenchContentProvider() {
+            @Override
+            public Object[] getElements(Object element) {
+                return (Object[]) element;
+            }
+        });
+        viewer.setSorter(new ViewerSorter());
+        viewer.setInput(recordDefinitions.toArray());
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void okPressed() {
-		selection = (IRecordDefinition) ((IStructuredSelection) viewer.getSelection()).getFirstElement();
-		super.okPressed();
-	}
+        viewer.addOpenListener(new IOpenListener() {
+            public void open(OpenEvent event) {
+                okPressed();
+            }
+        });
+        return composite;
+    }
 
-	/**
-	 * Returns the selected record definition.
-	 * 
-	 * @return the selected record definition
-	 */
-	public IRecordDefinition getSelection() {
-		return selection;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void okPressed() {
+        selection = (IRecordDefinition) ((IStructuredSelection) viewer.getSelection()).getFirstElement();
+        super.okPressed();
+    }
+
+    /**
+     * Returns the selected record definition.
+     *
+     * @return the selected record definition
+     */
+    public IRecordDefinition getSelection() {
+        return selection;
+    }
 
 }

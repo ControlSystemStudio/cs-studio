@@ -22,15 +22,15 @@ import org.csstudio.alarm.beast.notifier.PVSnapshot;
  */
 public interface IAutomatedAction {
 
-	/**
-	 * Initialize the action.
-	 */
-	public void init(ItemInfo item, AAData auto_action, IActionHandler handler) throws Exception;
-	
-	/**  
-	 * Method to be implemented with action specific code.
-	 * Called by action thread after the delay if {@link EActionStatus} is still OK.
-	 */
-	public void execute(List<PVSnapshot> pvs) throws Exception;
-	
+    /**
+     * Initialize the action.
+     */
+    public void init(ItemInfo item, AAData auto_action, IActionHandler handler) throws Exception;
+
+    /**
+     * Method to be implemented with action specific code.
+     * Called by action thread after the delay if {@link EActionStatus} is still OK.
+     */
+    public void execute(List<PVSnapshot> pvs) throws Exception;
+
 }

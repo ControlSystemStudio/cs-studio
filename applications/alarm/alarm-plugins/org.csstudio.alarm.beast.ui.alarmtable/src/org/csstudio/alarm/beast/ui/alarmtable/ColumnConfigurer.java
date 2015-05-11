@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * 
+ *
  * <code>ColumnConfigurer</code> is a dialog that allows to configure the visibility
  * of table columns as well as their order of appearance in the table.
  *
@@ -87,7 +87,7 @@ public class ColumnConfigurer extends TitleAreaDialog {
 
     /**
      * Constructs a new configurer.
-     * 
+     *
      * @param parentShell the parent window
      * @param columns the columns that will be manipulated
      */
@@ -103,7 +103,7 @@ public class ColumnConfigurer extends TitleAreaDialog {
     public ColumnWrapper[] getColumns() {
         return columns;
     }
-    
+
     @SuppressWarnings("unchecked")
     @Override
     protected void okPressed() {

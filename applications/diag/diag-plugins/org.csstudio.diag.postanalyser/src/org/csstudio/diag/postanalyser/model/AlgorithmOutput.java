@@ -11,7 +11,7 @@ public class AlgorithmOutput
     final String name;
     final ChartSampleSequence samples;
     final TraceType trace_type;
-    
+
     /** Construct output
      *  @param name Short description of this output
      *  @param samples X/Y samples
@@ -30,13 +30,13 @@ public class AlgorithmOutput
     {
         return name;
     }
-    
+
     /** @return samples X/Y samples */
     public ChartSampleSequence getSamples()
     {
         return samples;
     }
-    
+
     /** @return How to display */
     public TraceType getTraceType()
     {

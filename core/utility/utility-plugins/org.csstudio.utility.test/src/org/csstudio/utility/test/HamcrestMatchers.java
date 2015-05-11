@@ -39,7 +39,7 @@ public class HamcrestMatchers
             {
                 desc.appendText(goal + " +- " + tolerance);
             }
-            
+
             @Override
             public boolean matches(final Object value)
             {
@@ -65,7 +65,7 @@ public class HamcrestMatchers
             {
                 desc.appendText("greater than or equal " + threshold);
             }
-            
+
             @Override
             public boolean matches(final Object value)
             {
@@ -91,7 +91,7 @@ public class HamcrestMatchers
             {
                 desc.appendText("greater than " + threshold);
             }
-            
+
             @Override
             public boolean matches(final Object value)
             {
@@ -117,7 +117,7 @@ public class HamcrestMatchers
             {
                 desc.appendText("less than or equal " + threshold);
             }
-            
+
             @Override
             public boolean matches(final Object value)
             {
@@ -143,7 +143,7 @@ public class HamcrestMatchers
             {
                 desc.appendText("less than " + threshold);
             }
-            
+
             @Override
             public boolean matches(final Object value)
             {
@@ -167,7 +167,7 @@ public class HamcrestMatchers
             {
                 desc.appendText("not a number");
             }
-            
+
             @Override
             public boolean matches(final Object value)
             {

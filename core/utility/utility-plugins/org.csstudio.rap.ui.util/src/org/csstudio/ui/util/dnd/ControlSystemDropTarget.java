@@ -43,12 +43,12 @@ abstract public class ControlSystemDropTarget
             final Class<?>... accepted)
     {
         target = new DropTarget(control, DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
-        
+
         final List<Transfer> supportedTransfers = new ArrayList<Transfer>();
         for (Class<?> clazz : accepted)
         {
             if (clazz == String.class)
-        	supportedTransfers.add(TextTransfer.getInstance());
+            supportedTransfers.add(TextTransfer.getInstance());
             if (clazz == File.class)
                 supportedTransfers.add(FileTransfer.getInstance());
             else
@@ -68,21 +68,21 @@ abstract public class ControlSystemDropTarget
             @Override
             public void dragEnter(final DropTargetEvent event)
             {
-            	// Seems DropTarget it is not honoring the order of the transferData:
-            	// Making sure is right
-				boolean done = false;
-            	for (Transfer transfer : target.getTransfer()) {
-            		for (TransferData data : event.dataTypes) {
-            			if (transfer.isSupportedType(data)) {
-            				event.currentDataType = data;
-            				done = true;
-            				break;
-            			}
-            		}
-            		if (done)
-            			break;
-            	}
-            	
+                // Seems DropTarget it is not honoring the order of the transferData:
+                // Making sure is right
+                boolean done = false;
+                for (Transfer transfer : target.getTransfer()) {
+                    for (TransferData data : event.dataTypes) {
+                        if (transfer.isSupportedType(data)) {
+                            event.currentDataType = data;
+                            done = true;
+                            break;
+                        }
+                    }
+                    if (done)
+                        break;
+                }
+
                 if ((event.operations & DND.DROP_COPY) != 0)
                     event.detail = DND.DROP_COPY;
                 else
@@ -95,7 +95,7 @@ abstract public class ControlSystemDropTarget
             @Override
             public void drop(final DropTargetEvent event)
             {
-            	handleDrop(event.data);
+                handleDrop(event.data);
             }
         });
     }
@@ -108,5 +108,5 @@ abstract public class ControlSystemDropTarget
      *  @param item Control system item
      */
     abstract public void handleDrop(Object item);
-    
+
 }

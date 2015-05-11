@@ -38,8 +38,8 @@ import org.eclipse.draw2d.geometry.PointList;
  * @since 07.09.2007
  */
 public class ADLPoints extends WidgetPart{
-	//TODO Strip out old code lines that refer to SDS implementations
-	//TODO Add LineParser routines to get commonly used entries 
+    //TODO Strip out old code lines that refer to SDS implementations
+    //TODO Add LineParser routines to get commonly used entries
     /**
      * List with all coordinate points.
      */
@@ -47,8 +47,8 @@ public class ADLPoints extends WidgetPart{
 
     /**
      * The default constructor.
-     * 
-     * @param adlPoints An ADLWidget that correspond a ADL Points. 
+     *
+     * @param adlPoints An ADLWidget that correspond a ADL Points.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
@@ -60,9 +60,9 @@ public class ADLPoints extends WidgetPart{
      * Default constructor
      */
     public ADLPoints(){
-    	super();
+        super();
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,7 +71,7 @@ public class ADLPoints extends WidgetPart{
         name = new String("points");
         /* Not to initialization*/
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -79,7 +79,7 @@ public class ADLPoints extends WidgetPart{
     final void parseWidgetPart(final ADLWidget adlPoints) throws WrongADLFormatException {
 
         assert adlPoints.isType("points") : Messages.ADLPoints_AssertError_Begin+adlPoints.getType()+Messages.ADLPoints_AssertError_End; //$NON-NLS-1$
-        
+
         _pointsList = new PointList(adlPoints.getBody().size());
         for (FileLine  fileLine : adlPoints.getBody()) {
             String points = fileLine.getLine();
@@ -87,29 +87,29 @@ public class ADLPoints extends WidgetPart{
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLPoints_WrongADLFormatException_Begin+points+Messages.ADLPoints_WrongADLFormatException_End);
             }
-            
+
             _pointsList.addPoint(FileLine.getIntValue(row[0]),FileLine.getIntValue(row[1]));
         }
     }
 
 //**    /**
 //**     * {@inheritDoc}
-//**     */ 
+//**     */
 //**    @Override
 //**    final void generateElements() {
 //**        _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
 //**    }
 
     /**
-     * 
-     * @return the Coordinate list. 
+     *
+     * @return the Coordinate list.
      */
     public final PointList getPointsList() {
         return _pointsList;
     }
 
 //**    /**
-  //**     * 
+  //**     *
   //**     * @param pointsList set the Coordinate list.
   //**     */
   //**    public final void setPointsList(final PointList pointsList) {
@@ -117,13 +117,13 @@ public class ADLPoints extends WidgetPart{
   //**        _widgetModel.setPropertyValue("points", _pointsList); //$NON-NLS-1$
   //**    }
 
-	@Override
-	public Object[] getChildren() {
-		Object[] ret = new Object[_pointsList.size()];
-		for (int ii=0; ii<_pointsList.size(); ii++){
-			ret[ii] = _pointsList.getPoint(ii);
-		}
-		return ret;
-	}
+    @Override
+    public Object[] getChildren() {
+        Object[] ret = new Object[_pointsList.size()];
+        for (int ii=0; ii<_pointsList.size(); ii++){
+            ret[ii] = _pointsList.getPoint(ii);
+        }
+        return ret;
+    }
 
 }

@@ -53,7 +53,7 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         // Text
         String text = getText(item);
         if (!text.equals(cell.getText()))
-        	cell.setText(text);
+            cell.setText(text);
 
         // Provide icon that represents the item's severity
         if (item instanceof AlarmTreePV  &&
@@ -122,7 +122,7 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         buf.append(item.getName());
         // Suppress alarm info for disabled PVs
         if (pv != null  &&  pv.isEnabled() == false)
-        	return buf.toString();
+            return buf.toString();
         // Add alarm info unless it's all OK
         if (item.getCurrentSeverity() != SeverityLevel.OK ||
             item.getSeverity() != SeverityLevel.OK)

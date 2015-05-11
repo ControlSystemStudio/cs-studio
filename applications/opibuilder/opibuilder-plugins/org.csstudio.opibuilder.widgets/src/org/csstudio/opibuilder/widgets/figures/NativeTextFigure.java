@@ -22,43 +22,43 @@ import org.eclipse.swt.widgets.Text;
  */
 public class NativeTextFigure extends AbstractSWTWidgetFigure<Text> implements ITextFigure {
 
-	private Text text;
-	
-	private boolean readOnly;
-	
-	public NativeTextFigure(AbstractBaseEditPart editPart, int style) {
-		super(editPart, style);		
-	}
-	
-	@Override
-	protected Text createSWTWidget(Composite parent, int style) {
-		text= new Text(parent, style);
-		readOnly = (style & SWT.READ_ONLY)!=0;
-		return text;
-	}
-	
-	public Dimension getAutoSizeDimension(){
-		Point preferredSize = text.computeSize(SWT.DEFAULT, SWT.DEFAULT);
-		return new Dimension(preferredSize.x + getInsets().getWidth(), 
-				preferredSize.y + getInsets().getHeight());
-	}
-	
-	@Override
-	public void setEnabled(boolean value) {		
-			super.setEnabled(value);
-			if(runmode && getSWTWidget() != null && !getSWTWidget().isDisposed()){
-				//Its parent should be always enabled so the text can be enabled.
-				text.getParent().setEnabled(true);
-				text.setEnabled(true);
-				if(!readOnly)
-					getSWTWidget().setEditable(value);
-			}
-			
-	}
+    private Text text;
 
-	@Override
-	public String getText() {
-		return text.getText();
-	}
-	
+    private boolean readOnly;
+
+    public NativeTextFigure(AbstractBaseEditPart editPart, int style) {
+        super(editPart, style);
+    }
+
+    @Override
+    protected Text createSWTWidget(Composite parent, int style) {
+        text= new Text(parent, style);
+        readOnly = (style & SWT.READ_ONLY)!=0;
+        return text;
+    }
+
+    public Dimension getAutoSizeDimension(){
+        Point preferredSize = text.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        return new Dimension(preferredSize.x + getInsets().getWidth(),
+                preferredSize.y + getInsets().getHeight());
+    }
+
+    @Override
+    public void setEnabled(boolean value) {
+            super.setEnabled(value);
+            if(runmode && getSWTWidget() != null && !getSWTWidget().isDisposed()){
+                //Its parent should be always enabled so the text can be enabled.
+                text.getParent().setEnabled(true);
+                text.setEnabled(true);
+                if(!readOnly)
+                    getSWTWidget().setEditable(value);
+            }
+
+    }
+
+    @Override
+    public String getText() {
+        return text.getText();
+    }
+
 }

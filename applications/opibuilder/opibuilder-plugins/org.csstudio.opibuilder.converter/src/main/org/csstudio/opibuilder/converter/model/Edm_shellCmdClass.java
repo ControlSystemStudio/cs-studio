@@ -9,49 +9,49 @@ package org.csstudio.opibuilder.converter.model;
 
 /**
  * @author Xihui Chen
- * 
+ *
  */
 public class Edm_shellCmdClass extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String buttonLabel;
-	@EdmAttributeAn @EdmOptionalAn private int numCmds;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings commandLabel;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings command;
-	@EdmAttributeAn private boolean invisible;
-
-	
-
-	public Edm_shellCmdClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    @EdmAttributeAn @EdmOptionalAn private String buttonLabel;
+    @EdmAttributeAn @EdmOptionalAn private int numCmds;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings commandLabel;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings command;
+    @EdmAttributeAn private boolean invisible;
 
 
 
-	public String getButtonLabel() {
-		return buttonLabel;
-	}
+    public Edm_shellCmdClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 
 
-	public int getNumCmds() {
-		return numCmds;
-	}
+    public String getButtonLabel() {
+        return buttonLabel;
+    }
 
 
 
-	public EdmMultiStrings getCommandLabel() {
-		return commandLabel;
-	}
+    public int getNumCmds() {
+        return numCmds;
+    }
 
 
 
-	public EdmMultiStrings getCommand() {
-		return command;
-	}
+    public EdmMultiStrings getCommandLabel() {
+        return commandLabel;
+    }
 
 
-	public boolean isInvisible() {
-		return invisible;
-	}
+
+    public EdmMultiStrings getCommand() {
+        return command;
+    }
+
+
+    public boolean isInvisible() {
+        return invisible;
+    }
 
 }

@@ -30,8 +30,8 @@ public class Plot
 {
     final private Display display;
     private ToolbarArmedXYGraph plot;
-	private XYGraph xygraph;
-	private String x_device;
+    private XYGraph xygraph;
+    private String x_device;
 
     /** Initialize
      *  @param parent Parent composite
@@ -86,8 +86,8 @@ public class Plot
         // Nothing to show?
         if (data_providers.length <= 0)
         {
-			String xTitle = x_device == null || x_device.isEmpty() ? Messages.Plot_DefaultXAxisLabel : x_device;
-			xygraph.primaryXAxis.setTitle(xTitle);
+            String xTitle = x_device == null || x_device.isEmpty() ? Messages.Plot_DefaultXAxisLabel : x_device;
+            xygraph.primaryXAxis.setTitle(xTitle);
             xygraph.primaryYAxis.setTitle(Messages.Plot_DefaultYAxisLabel);
             return;
         }
@@ -124,8 +124,8 @@ public class Plot
         xygraph.performAutoScale();
     }
 
-	public void setXDevice(String x_device) {
-		this.x_device = x_device;
-	}
+    public void setXDevice(String x_device) {
+        this.x_device = x_device;
+    }
 
 }

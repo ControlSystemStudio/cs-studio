@@ -40,67 +40,67 @@ import org.csstudio.dal.ResponseListener;
  */
 public interface PropertyProxy<T, P extends AbstractPlug> extends Proxy<P>
 {
-	/**
-	 * Asynchronously gets remote property value.
-	 *
-	 * @param callback The callback that receives the response
-	 *
-	 * @return a Request, which identifies incoming responses.
-	 *
-	 * @throws DataExchangeException if remote operation fails
-	 */
-	public Request<T> getValueAsync(ResponseListener<T> callback)
-		throws DataExchangeException;
+    /**
+     * Asynchronously gets remote property value.
+     *
+     * @param callback The callback that receives the response
+     *
+     * @return a Request, which identifies incoming responses.
+     *
+     * @throws DataExchangeException if remote operation fails
+     */
+    public Request<T> getValueAsync(ResponseListener<T> callback)
+        throws DataExchangeException;
 
-	/**
-	 * Asynchronously sets value on remote property.
-	 *
-	 * @param value new value.
-	 * @param callback The callback that receives the response.
-	 *
-	 * @return a Request, which identifies incoming responses.
-	 *
-	 * @throws DataExchangeException if remote operation fails
-	 */
-	public Request<T> setValueAsync(T value, ResponseListener<T> callback)
-		throws DataExchangeException;
+    /**
+     * Asynchronously sets value on remote property.
+     *
+     * @param value new value.
+     * @param callback The callback that receives the response.
+     *
+     * @return a Request, which identifies incoming responses.
+     *
+     * @throws DataExchangeException if remote operation fails
+     */
+    public Request<T> setValueAsync(T value, ResponseListener<T> callback)
+        throws DataExchangeException;
 
-	/**
-	 * Returns whether the value can be set on remote object presented
-	 * by this proxy.
-	 *
-	 * @return <code>true</code> if value can be set.
-	 */
-	public boolean isSettable();
+    /**
+     * Returns whether the value can be set on remote object presented
+     * by this proxy.
+     *
+     * @return <code>true</code> if value can be set.
+     */
+    public boolean isSettable();
 
-	/**
-	 * Creates new value subscription and returns monitor proxy, which
-	 * controls the subscription. If parameter are provided (non-<code>null</code>), 
-	 * then returned monitor must have implemented {@link ExpertMonitor} interface. 
-	 *
-	 * @param callback The callback that receives the response.
-	 * @param parameters special parameters when expert monitor is to be created, by default it can be null and returned monitor is normal monitor.
-	 *
-	 * @return monitor proxy, which controls the subscription. In case of non-<code>null</code> parameters monitor could be casteed to {@link ExpertMonitor}.
-	 *
-	 * @throws RemoteException if operation fails
-	 */
-	public MonitorProxy createMonitor(ResponseListener<T> callback, Map<String,Object> parameters)
-		throws RemoteException;
+    /**
+     * Creates new value subscription and returns monitor proxy, which
+     * controls the subscription. If parameter are provided (non-<code>null</code>),
+     * then returned monitor must have implemented {@link ExpertMonitor} interface.
+     *
+     * @param callback The callback that receives the response.
+     * @param parameters special parameters when expert monitor is to be created, by default it can be null and returned monitor is normal monitor.
+     *
+     * @return monitor proxy, which controls the subscription. In case of non-<code>null</code> parameters monitor could be casteed to {@link ExpertMonitor}.
+     *
+     * @throws RemoteException if operation fails
+     */
+    public MonitorProxy createMonitor(ResponseListener<T> callback, Map<String,Object> parameters)
+        throws RemoteException;
 
-	/**
-	 * Returns remote condition of this dynamic value representation.
-	 *
-	 * @return remote condition
-	 */
-	public DynamicValueCondition getCondition();
-	
-	/**
-	 * Returns the latest response the proxy received with updated value.
-	 *
-	 * @return Object the response object that contains the value update
-	 */
-	public Response<T> getLatestValueResponse();
+    /**
+     * Returns remote condition of this dynamic value representation.
+     *
+     * @return remote condition
+     */
+    public DynamicValueCondition getCondition();
+
+    /**
+     * Returns the latest response the proxy received with updated value.
+     *
+     * @return Object the response object that contains the value update
+     */
+    public Response<T> getLatestValueResponse();
 }
 
 /* __oOo__ */

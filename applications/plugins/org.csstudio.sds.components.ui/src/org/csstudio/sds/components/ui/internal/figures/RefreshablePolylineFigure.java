@@ -46,150 +46,150 @@ import org.eclipse.swt.SWT;
 public final class RefreshablePolylineFigure extends Polyline implements
     IAdaptable, HandleBounds {
 
-	/**
-	 * The fill grade (0 - 100%).
-	 */
-	private double _fill = 100.0;
+    /**
+     * The fill grade (0 - 100%).
+     */
+    private double _fill = 100.0;
 
-	/**
-	 * A border adapter, which covers all border handlings.
-	 */
-	private IBorderEquippedWidget _borderAdapter;
+    /**
+     * A border adapter, which covers all border handlings.
+     */
+    private IBorderEquippedWidget _borderAdapter;
 
-	/**
-	 * The line styles.
-	 */
-	private final int[] _lineStyles = new int[] { SWT.LINE_SOLID,
-			SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT, SWT.LINE_DASHDOTDOT };
+    /**
+     * The line styles.
+     */
+    private final int[] _lineStyles = new int[] { SWT.LINE_SOLID,
+            SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT, SWT.LINE_DASHDOTDOT };
 
     private CrossedOutAdapter _crossedOutAdapter;
 
     private RhombusAdapter _rhombusAdapter;
 
-	/**
-	 * Constructor.
-	 */
-	public RefreshablePolylineFigure() {
-		setFill(true);
-		setBackgroundColor(ColorConstants.darkGreen);
-	}
+    /**
+     * Constructor.
+     */
+    public RefreshablePolylineFigure() {
+        setFill(true);
+        setBackgroundColor(ColorConstants.darkGreen);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void outlineShape(final Graphics graphics) {
-		Rectangle figureBounds = getBounds();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void outlineShape(final Graphics graphics) {
+        Rectangle figureBounds = getBounds();
 
-		PointList points = getPoints();
+        PointList points = getPoints();
 
-		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-		if (newW >= figureBounds.width) {
-			graphics.setForegroundColor(getForegroundColor());
-			graphics.drawPolyline(points);
-		} else {
-			Rectangle clip = new Rectangle(figureBounds.x, figureBounds.y,
-					newW, figureBounds.height);
-			graphics.pushState();
-			graphics.clipRect(clip);
-			graphics.setForegroundColor(getForegroundColor());
-			graphics.drawPolyline(points);
-			clip = new Rectangle(figureBounds.x + newW, figureBounds.y,
-					figureBounds.width - newW, figureBounds.height);
-			graphics.popState();
-			graphics.pushState();
-			graphics.clipRect(clip);
-			graphics.setForegroundColor(getBackgroundColor());
-			graphics.drawPolyline(points);
-			graphics.popState();
-		}
+        int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+        if (newW >= figureBounds.width) {
+            graphics.setForegroundColor(getForegroundColor());
+            graphics.drawPolyline(points);
+        } else {
+            Rectangle clip = new Rectangle(figureBounds.x, figureBounds.y,
+                    newW, figureBounds.height);
+            graphics.pushState();
+            graphics.clipRect(clip);
+            graphics.setForegroundColor(getForegroundColor());
+            graphics.drawPolyline(points);
+            clip = new Rectangle(figureBounds.x + newW, figureBounds.y,
+                    figureBounds.width - newW, figureBounds.height);
+            graphics.popState();
+            graphics.pushState();
+            graphics.clipRect(clip);
+            graphics.setForegroundColor(getBackgroundColor());
+            graphics.drawPolyline(points);
+            graphics.popState();
+        }
         _crossedOutAdapter.paint(graphics);
         _rhombusAdapter.paint(graphics);
 
-	}
+    }
 
-	/**
-	 * Overridden, to ensure that the bounds rectangle gets repainted each time,
-	 * the points of the polygon change. {@inheritDoc}
-	 */
-	@Override
-	public void setBounds(final Rectangle rect) {
-		invalidate();
-		fireFigureMoved();
-		repaint();
-		int correctedWidth = rect.width + getLineWidth();
-		int correctedHeight = rect.height + getLineWidth();
-		Rectangle correctedRectangle = new Rectangle(rect.x, rect.y, correctedWidth, correctedHeight);
-		super.setBounds(correctedRectangle);
-	}
+    /**
+     * Overridden, to ensure that the bounds rectangle gets repainted each time,
+     * the points of the polygon change. {@inheritDoc}
+     */
+    @Override
+    public void setBounds(final Rectangle rect) {
+        invalidate();
+        fireFigureMoved();
+        repaint();
+        int correctedWidth = rect.width + getLineWidth();
+        int correctedHeight = rect.height + getLineWidth();
+        Rectangle correctedRectangle = new Rectangle(rect.x, rect.y, correctedWidth, correctedHeight);
+        super.setBounds(correctedRectangle);
+    }
 
-	@Override
-	public void setSize(final int w, final int h) {
-		int correctedWidth = w + getLineWidth();
-		int correctedHeight = h + getLineWidth();
-		super.setSize(correctedWidth, correctedHeight);
-	}
+    @Override
+    public void setSize(final int w, final int h) {
+        int correctedWidth = w + getLineWidth();
+        int correctedHeight = h + getLineWidth();
+        super.setSize(correctedWidth, correctedHeight);
+    }
 
-	@Override
-	public void setLocation(final Point p) {
-		super.setLocation(p);
-	}
+    @Override
+    public void setLocation(final Point p) {
+        super.setLocation(p);
+    }
 
-	/**
-	 * This method is a tribute to unit tests, which need a way to test the
-	 * performance of the figure implementation. Implementors should produce
-	 * some random changes and refresh the figure, when this method is called.
-	 *
-	 */
-	public void randomNoiseRefresh() {
-	}
+    /**
+     * This method is a tribute to unit tests, which need a way to test the
+     * performance of the figure implementation. Implementors should produce
+     * some random changes and refresh the figure, when this method is called.
+     *
+     */
+    public void randomNoiseRefresh() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Rectangle getHandleBounds() {
-		return getPoints().getBounds();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Rectangle getHandleBounds() {
+        return getPoints().getBounds();
+    }
 
-	/**
-	 * Sets the fill grade.
-	 *
-	 * @param fill
-	 *            the fill grade.
-	 */
-	public void setFill(final double fill) {
-		_fill = fill;
-	}
+    /**
+     * Sets the fill grade.
+     *
+     * @param fill
+     *            the fill grade.
+     */
+    public void setFill(final double fill) {
+        _fill = fill;
+    }
 
-	/**
-	 * Gets the fill grade.
-	 *
-	 * @return the fill grade
-	 */
-	public double getFill() {
-		return _fill;
-	}
+    /**
+     * Gets the fill grade.
+     *
+     * @return the fill grade
+     */
+    public double getFill() {
+        return _fill;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setLineStyle(final int lineStyle) {
-		if ((lineStyle >= 0) && (lineStyle < _lineStyles.length)) {
-			super.setLineStyle(_lineStyles[lineStyle]);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void setLineStyle(final int lineStyle) {
+        if ((lineStyle >= 0) && (lineStyle < _lineStyles.length)) {
+            super.setLineStyle(_lineStyles[lineStyle]);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Class adapter) {
-		if (adapter == IBorderEquippedWidget.class) {
-			if (_borderAdapter == null) {
-				_borderAdapter = new BorderAdapter(this);
-			}
-			return _borderAdapter;
-		} else if(adapter == ICrossedFigure.class) {
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Class adapter) {
+        if (adapter == IBorderEquippedWidget.class) {
+            if (_borderAdapter == null) {
+                _borderAdapter = new BorderAdapter(this);
+            }
+            return _borderAdapter;
+        } else if(adapter == ICrossedFigure.class) {
             if(_crossedOutAdapter==null) {
                 _crossedOutAdapter = new CrossedOutAdapter(this);
             }
@@ -201,7 +201,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
             return _rhombusAdapter;
         }
 
-		return null;
-	}
+        return null;
+    }
 
 }

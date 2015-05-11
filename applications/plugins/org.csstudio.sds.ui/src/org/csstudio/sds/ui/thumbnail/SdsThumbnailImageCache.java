@@ -25,126 +25,126 @@ import org.eclipse.swt.graphics.ImageLoader;
 
 public class SdsThumbnailImageCache {
 
-	private static final String CACHE_FOLDER_NAME = "libraryCache";
+    private static final String CACHE_FOLDER_NAME = "libraryCache";
 
-	private Cache cache;
-	private CacheManager cacheManager;
+    private Cache cache;
+    private CacheManager cacheManager;
 
-	public SdsThumbnailImageCache() {
+    public SdsThumbnailImageCache() {
 
-		File cacheDirectory = getImageCacheDirectory();
+        File cacheDirectory = getImageCacheDirectory();
 
-		Configuration configuration = new Configuration();
-		configuration.addDiskStore(new DiskStoreConfiguration().path(cacheDirectory.getAbsolutePath()));
-		cacheManager = CacheManager.create(configuration);
-		
-		CacheConfiguration config = new CacheConfiguration("DisplayThumbnailCache", 1000);
-		config.overflowToOffHeap(false);
-		config.overflowToDisk(true);
-		config.setDiskPersistent(true);
-		config.setTimeToIdleSeconds(60 * 60 * 24 * 7);
-		config.setTimeToLiveSeconds(60 * 60 * 24 * 30);
+        Configuration configuration = new Configuration();
+        configuration.addDiskStore(new DiskStoreConfiguration().path(cacheDirectory.getAbsolutePath()));
+        cacheManager = CacheManager.create(configuration);
 
-		config.setEternal(true); // Overrides time to live
-		
-		config.setMaxEntriesLocalHeap(100);
-		config.setMaxBytesLocalDisk("100M");
-		config.setMaxEntriesLocalDisk(50000);
-		cache = new Cache(config);
+        CacheConfiguration config = new CacheConfiguration("DisplayThumbnailCache", 1000);
+        config.overflowToOffHeap(false);
+        config.overflowToDisk(true);
+        config.setDiskPersistent(true);
+        config.setTimeToIdleSeconds(60 * 60 * 24 * 7);
+        config.setTimeToLiveSeconds(60 * 60 * 24 * 30);
 
-		cacheManager.addCache(cache);
-	}
+        config.setEternal(true); // Overrides time to live
 
-	public ImageData getCachedImage(File file) {
-		assert file != null : "Precondition failed: file != null";
+        config.setMaxEntriesLocalHeap(100);
+        config.setMaxBytesLocalDisk("100M");
+        config.setMaxEntriesLocalDisk(50000);
+        cache = new Cache(config);
 
-		Element element = cache.get(file);
+        cacheManager.addCache(cache);
+    }
 
-		if (element != null) {
-			byte[][] value =  (byte[][]) element.getValue();
-			if (Arrays.equals(value[0], hashFile(file))) {
-				ByteArrayInputStream inputStream = new ByteArrayInputStream(value[1]);
-				try {
-					ImageLoader imageLoader = new ImageLoader();
-					return imageLoader.load(inputStream)[0];
-				} finally {
-					try {
-						inputStream.close();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+    public ImageData getCachedImage(File file) {
+        assert file != null : "Precondition failed: file != null";
 
-		return null;
-	}
+        Element element = cache.get(file);
 
-	public void cacheImage(File file, ImageData imageData) {
-		assert imageData != null;
+        if (element != null) {
+            byte[][] value =  (byte[][]) element.getValue();
+            if (Arrays.equals(value[0], hashFile(file))) {
+                ByteArrayInputStream inputStream = new ByteArrayInputStream(value[1]);
+                try {
+                    ImageLoader imageLoader = new ImageLoader();
+                    return imageLoader.load(inputStream)[0];
+                } finally {
+                    try {
+                        inputStream.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
 
-		byte[] hash = hashFile(file);
+        return null;
+    }
 
-		if (hash != null) {
-			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+    public void cacheImage(File file, ImageData imageData) {
+        assert imageData != null;
 
-			ImageLoader imageLoader = new ImageLoader();
-			imageLoader.data = new ImageData[] { imageData };
-			imageLoader.save(byteArrayOutputStream, SWT.IMAGE_PNG);
-			byte[] thumbnailData = byteArrayOutputStream.toByteArray();
+        byte[] hash = hashFile(file);
 
-			cache.put(new Element(file, new byte[][] { hash, thumbnailData }));
-			cache.flush();
-		}
-	}
+        if (hash != null) {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 
-	private File getImageCacheDirectory() {
-		File workspaceFile = ResourcesPlugin.getWorkspace().getRoot()
-				.getLocation().toFile();
-		
-		File result = new File(workspaceFile, ".metadata/.plugins/" + SdsUiPlugin.PLUGIN_ID + "/" + CACHE_FOLDER_NAME);
-		if (!result.exists()) {
-			result.mkdirs();
-		}
-		return result;
-	}
+            ImageLoader imageLoader = new ImageLoader();
+            imageLoader.data = new ImageData[] { imageData };
+            imageLoader.save(byteArrayOutputStream, SWT.IMAGE_PNG);
+            byte[] thumbnailData = byteArrayOutputStream.toByteArray();
 
-	private byte[] hashFile(File file) {
-		assert file != null : "Precondition failed: file != null";
-		assert file.exists() : "Precondition failed: file.exists()";
+            cache.put(new Element(file, new byte[][] { hash, thumbnailData }));
+            cache.flush();
+        }
+    }
 
-		FileInputStream fis = null;
-		try {
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
-			fis = new FileInputStream(file);
-			byte[] dataBytes = new byte[1024];
+    private File getImageCacheDirectory() {
+        File workspaceFile = ResourcesPlugin.getWorkspace().getRoot()
+                .getLocation().toFile();
 
-			int nread = 0;
+        File result = new File(workspaceFile, ".metadata/.plugins/" + SdsUiPlugin.PLUGIN_ID + "/" + CACHE_FOLDER_NAME);
+        if (!result.exists()) {
+            result.mkdirs();
+        }
+        return result;
+    }
 
-			while ((nread = fis.read(dataBytes)) != -1) {
-				messageDigest.update(dataBytes, 0, nread);
-			}
-			return messageDigest.digest();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+    private byte[] hashFile(File file) {
+        assert file != null : "Precondition failed: file != null";
+        assert file.exists() : "Precondition failed: file.exists()";
 
-		return null;
-	}
+        FileInputStream fis = null;
+        try {
+            MessageDigest messageDigest = MessageDigest.getInstance("SHA1");
+            fis = new FileInputStream(file);
+            byte[] dataBytes = new byte[1024];
 
-	public void shutdown() {
-		cacheManager.shutdown();
-	}
+            int nread = 0;
+
+            while ((nread = fis.read(dataBytes)) != -1) {
+                messageDigest.update(dataBytes, 0, nread);
+            }
+            return messageDigest.digest();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (fis != null) {
+                try {
+                    fis.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public void shutdown() {
+        cacheManager.shutdown();
+    }
 }

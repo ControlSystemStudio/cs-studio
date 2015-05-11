@@ -36,22 +36,22 @@ public class AlarmTableView extends ViewPart
     public static final String ID = "org.csstudio.alarm.beast.ui.alarmtable.view"; //$NON-NLS-1$
 
     private AlarmClientModel model;
-    
+
     private Composite parent;
-    private IDialogSettings settings; 
+    private IDialogSettings settings;
     private GUI gui;
-    
+
     /** Combined active and acknowledge alarms, group into separate tables? */
-    private boolean group = true;  
-    
+    private boolean group = true;
+
     ColumnWrapper[] columns = ColumnWrapper.getNewWrappers();
-    
+
     @Override
     public void createPartControl(final Composite parent)
     {
         this.parent = parent;
         this.settings = Activator.getDefault().getDialogSettings();
-        
+
         try
         {
             model = AlarmClientModel.getInstance();
@@ -84,7 +84,7 @@ public class AlarmTableView extends ViewPart
         String groupSet = settings.get(Preferences.ALARM_TABLE_GROUP_SETTING);
         if (groupSet != null)
             this.group = Boolean.valueOf(groupSet);
-        else 
+        else
             this.group = Preferences.isCombinedAlarmTable();
 
         String[] columns = settings.getArray(Preferences.ALARM_TABLE_COLUMN_SETTING);
@@ -93,7 +93,7 @@ public class AlarmTableView extends ViewPart
         if (columns != null)
             this.columns = ColumnWrapper.fromSaveArray(columns);
         makeGUI();
-        
+
         if (model.isWriteAllowed())
         {
             // Add Toolbar buttons
@@ -107,36 +107,36 @@ public class AlarmTableView extends ViewPart
             action.clearSelectionOnAcknowledgement(gui.getAcknowledgedAlarmTable());
             toolbar.add(action);
         }
-        
+
         final IMenuManager menu = getViewSite().getActionBars().getMenuManager();
         menu.add(new GroupUngroupAction(this,true,group));
         menu.add(new GroupUngroupAction(this,false,!group));
         menu.add(new Separator());
         menu.add(new ColumnConfigureAction(this));
     }
-    
+
     void setColumns(ColumnWrapper[] columns)
     {
         this.columns = columns;
         settings.put(Preferences.ALARM_TABLE_COLUMN_SETTING, ColumnWrapper.toSaveArray(columns));
         redoGUI();
     }
-    
+
     private void makeGUI()
     {
      // Add GUI to model
         if (parent.isDisposed()) return;
-        if (gui != null) 
+        if (gui != null)
             gui.dispose();
         gui = new GUI(parent, model, getSite(), settings, group, columns);
     }
-    
-    private void redoGUI() 
+
+    private void redoGUI()
     {
-        if (gui != null) 
+        if (gui != null)
         {
             parent.getDisplay().asyncExec(() ->
-            { 
+            {
                 makeGUI();
                 parent.layout();
             });
@@ -148,10 +148,10 @@ public class AlarmTableView extends ViewPart
     {
         // NOP
     }
-    
+
     /**
      * Group the alarms into two separate tables (by the acknowledge status) or display them all in one table.
-     * 
+     *
      * @param group true if the acknowledged and unacknowledged alarms should be displayed in separate tables,
      *          or false if they should be displayed all in one table
      */

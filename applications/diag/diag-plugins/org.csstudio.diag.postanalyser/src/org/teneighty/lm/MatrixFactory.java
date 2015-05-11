@@ -42,136 +42,136 @@ import java.security.PrivilegedAction;
  */
 @SuppressWarnings("nls")
 public abstract class MatrixFactory
-	extends Object
+    extends Object
 {
 
 
-	/**
-	 * Property name.
-	 */
-	public static final String IMPLEMENTATION_PROPERTY = "org.teneighty.lm.MatrixFactory";
+    /**
+     * Property name.
+     */
+    public static final String IMPLEMENTATION_PROPERTY = "org.teneighty.lm.MatrixFactory";
 
-	/**
-	 * Default implementation.
-	 */
-	private static final String DEFAULT_IMPLEMENTATION = "org.teneighty.lm.DefaultMatrixFactory";
+    /**
+     * Default implementation.
+     */
+    private static final String DEFAULT_IMPLEMENTATION = "org.teneighty.lm.DefaultMatrixFactory";
 
-	/**
-	 * The lone instance of this class.
-	 */
-	private static MatrixFactory instance;
-
-
-	/**
-	 * Class initializer.
-	 * <p>
-	 * Creates the instance... not much else.
-	 */
-	static
-	{
-
-		try
-		{
-			// create the lone instance!
-			instance = AccessController.doPrivileged( new PrivilegedAction<MatrixFactory>()
-			{
+    /**
+     * The lone instance of this class.
+     */
+    private static MatrixFactory instance;
 
 
-				/**
-				 * Create the new instance, and so forth.
-				 *
-				 * @return Matrix a new factory instance.
-				 * @throws SecurityException If stuff fails.
-				 */
-				@SuppressWarnings("rawtypes")
+    /**
+     * Class initializer.
+     * <p>
+     * Creates the instance... not much else.
+     */
+    static
+    {
+
+        try
+        {
+            // create the lone instance!
+            instance = AccessController.doPrivileged( new PrivilegedAction<MatrixFactory>()
+            {
+
+
+                /**
+                 * Create the new instance, and so forth.
+                 *
+                 * @return Matrix a new factory instance.
+                 * @throws SecurityException If stuff fails.
+                 */
+                @SuppressWarnings("rawtypes")
                 @Override
                 public MatrixFactory run()
-					throws SecurityException
-				{
-					String prop = System.getProperty( IMPLEMENTATION_PROPERTY );
-					if( prop == null )
-					{
-						prop = DEFAULT_IMPLEMENTATION;
-					}
+                    throws SecurityException
+                {
+                    String prop = System.getProperty( IMPLEMENTATION_PROPERTY );
+                    if( prop == null )
+                    {
+                        prop = DEFAULT_IMPLEMENTATION;
+                    }
 
-					try
-					{
-						// lookup the class.
-						Class clazz = Class.forName( prop, true, Thread.currentThread().getContextClassLoader() );
+                    try
+                    {
+                        // lookup the class.
+                        Class clazz = Class.forName( prop, true, Thread.currentThread().getContextClassLoader() );
 
-						// instantiate
-						MatrixFactory factory = (MatrixFactory)clazz.newInstance();
+                        // instantiate
+                        MatrixFactory factory = (MatrixFactory)clazz.newInstance();
 
-						// finit!
-						return ( factory );
-					}
-					catch( final ClassNotFoundException cnfe )
-					{
-						throw new SecurityException( cnfe );
-					}
-					catch( final InstantiationException ie )
-					{
-						throw new SecurityException( ie );
-					}
-					catch( final IllegalAccessException iae )
-					{
-						throw new SecurityException( iae );
-					}
+                        // finit!
+                        return ( factory );
+                    }
+                    catch( final ClassNotFoundException cnfe )
+                    {
+                        throw new SecurityException( cnfe );
+                    }
+                    catch( final InstantiationException ie )
+                    {
+                        throw new SecurityException( ie );
+                    }
+                    catch( final IllegalAccessException iae )
+                    {
+                        throw new SecurityException( iae );
+                    }
 
-					// never get here.
-				}
-
-
-			} );
-
-		}
-		catch( final SecurityException se )
-		{
-			// most likely, the guy changed the matrix factory impl to something
-			// stupid or non-existent.
-			InternalError ie = new InternalError( "Unable to create MatrixFactory implementation" );
-			ie.initCause( se );
-			throw se;
-		}
+                    // never get here.
+                }
 
 
-	}
+            } );
+
+        }
+        catch( final SecurityException se )
+        {
+            // most likely, the guy changed the matrix factory impl to something
+            // stupid or non-existent.
+            InternalError ie = new InternalError( "Unable to create MatrixFactory implementation" );
+            ie.initCause( se );
+            throw se;
+        }
 
 
-	/**
-	 * Get the instance of this class.
-	 *
-	 * @return MatrixFactory the instance.
-	 */
-	public static MatrixFactory getInstance()
-	{
-		return ( instance );
-	}
+    }
 
 
-	/**
-	 * Constructor.
-	 * <p>
-	 * Does nothing. Should be considered <code>private protected</code>.
-	 */
-	protected MatrixFactory()
-	{
-		super();
-	}
+    /**
+     * Get the instance of this class.
+     *
+     * @return MatrixFactory the instance.
+     */
+    public static MatrixFactory getInstance()
+    {
+        return ( instance );
+    }
 
 
-	/**
-	 * Create and return a new <code>Matrix</code> instance, of the specified
-	 * size.
-	 *
-	 * @param rows the number of rows.
-	 * @param cols the number of columns.
-	 * @return Matrix a new Matrix instance of the specified size.
-	 * @throws IllegalArgumentException If <code>rows</code> or
-	 *         <code>cols</code> is illegal.
-	 */
-	public abstract Matrix newMatrix( int rows, int cols )
-		throws IllegalArgumentException;
+    /**
+     * Constructor.
+     * <p>
+     * Does nothing. Should be considered <code>private protected</code>.
+     */
+    protected MatrixFactory()
+    {
+        super();
+    }
+
+
+    /**
+     * Create and return a new <code>Matrix</code> instance, of the specified
+     * size.
+     *
+     * @param rows the number of rows.
+     * @param cols the number of columns.
+     * @return Matrix a new Matrix instance of the specified size.
+     * @throws IllegalArgumentException If <code>rows</code> or
+     *         <code>cols</code> is illegal.
+     */
+    public abstract Matrix newMatrix( int rows, int cols )
+        throws IllegalArgumentException;
 
 
 }

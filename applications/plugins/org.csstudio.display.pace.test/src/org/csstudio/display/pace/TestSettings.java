@@ -19,10 +19,10 @@ import org.epics.pvmanager.loc.LocalDataSource;
 @SuppressWarnings("nls")
 public class TestSettings
 {
-	/** EPICS CA address list */
+    /** EPICS CA address list */
     final private static String CA_ADDR_LIST = "127.0.0.1 160.91.228.17";
 
-	/** Configuration file name used for testing.
+    /** Configuration file name used for testing.
      *  Tests are specific to this file,
      *  and some also expect to actually connect to
      *  the PVs in there.
@@ -31,13 +31,13 @@ public class TestSettings
 
     public static void setup()
     {
-    	System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", CA_ADDR_LIST);
-    	System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", CA_ADDR_LIST);
-    	
-    	final CompositeDataSource sources = new CompositeDataSource();
-    	sources.putDataSource("loc", new LocalDataSource());
-    	sources.putDataSource("ca", new JCADataSource());
-    	sources.setDefaultDataSource("ca");
-    	PVManager.setDefaultDataSource(sources);
+        System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", CA_ADDR_LIST);
+        System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", CA_ADDR_LIST);
+
+        final CompositeDataSource sources = new CompositeDataSource();
+        sources.putDataSource("loc", new LocalDataSource());
+        sources.putDataSource("ca", new JCADataSource());
+        sources.setDefaultDataSource("ca");
+        PVManager.setDefaultDataSource(sources);
     }
 }

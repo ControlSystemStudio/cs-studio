@@ -36,41 +36,41 @@ import org.junit.Test;
  */
 public class CommandParametersTest {
 
-	@Test
-	public void testSetAndGetParameters() throws Exception {
-		CommandParameters params = new CommandParameters();
-		assertNull(params.get("string"));
-		assertNull(params.get("int"));
-		assertNull(params.get("enum"));
-		
-		params.set("string", "foo");
-		params.set("int", Integer.valueOf(42));
-		params.set("enum", new CommandParameterEnumValue("bar", "baz"));
-		
-		assertEquals("foo", params.get("string"));
-		assertEquals(42, params.get("int"));
-		CommandParameterEnumValue e = (CommandParameterEnumValue) params.get("enum");
-		assertEquals("bar", e.getValue());
-		assertEquals("baz", e.getLabel());
-	}
-	
-	@Test
-	public void testParameterIdentifiers() throws Exception {
-		CommandParameters params = new CommandParameters();
-		params.set("foo", "bar");
-		params.set("baz", "quux");
-		
-		Set<String> parameterIDs = params.identifiers();
-		assertEquals(2, parameterIDs.size());
-		assertTrue(parameterIDs.contains("foo"));
-		assertTrue(parameterIDs.contains("baz"));
-	}
-	
-	@Test
-	public void testToString() throws Exception {
-		CommandParameters params = new CommandParameters();
-		assertNotNull(params.toString());
-		params.set("foo", "bar");
-		assertNotNull(params.toString());
-	}
+    @Test
+    public void testSetAndGetParameters() throws Exception {
+        CommandParameters params = new CommandParameters();
+        assertNull(params.get("string"));
+        assertNull(params.get("int"));
+        assertNull(params.get("enum"));
+
+        params.set("string", "foo");
+        params.set("int", Integer.valueOf(42));
+        params.set("enum", new CommandParameterEnumValue("bar", "baz"));
+
+        assertEquals("foo", params.get("string"));
+        assertEquals(42, params.get("int"));
+        CommandParameterEnumValue e = (CommandParameterEnumValue) params.get("enum");
+        assertEquals("bar", e.getValue());
+        assertEquals("baz", e.getLabel());
+    }
+
+    @Test
+    public void testParameterIdentifiers() throws Exception {
+        CommandParameters params = new CommandParameters();
+        params.set("foo", "bar");
+        params.set("baz", "quux");
+
+        Set<String> parameterIDs = params.identifiers();
+        assertEquals(2, parameterIDs.size());
+        assertTrue(parameterIDs.contains("foo"));
+        assertTrue(parameterIDs.contains("baz"));
+    }
+
+    @Test
+    public void testToString() throws Exception {
+        CommandParameters params = new CommandParameters();
+        assertNotNull(params.toString());
+        params.set("foo", "bar");
+        assertNotNull(params.toString());
+    }
 }

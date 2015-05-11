@@ -23,101 +23,101 @@ import org.eclipse.draw2d.geometry.Rectangle;
  */
 public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 
-	/**
-	 * The previously set angle.
-	 */
-	private double _previousRotationAngle = 0.0;
+    /**
+     * The previously set angle.
+     */
+    private double _previousRotationAngle = 0.0;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// Transparent background
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				GroupingContainerFigure container = (GroupingContainerFigure) refreshableFigure;
-				container.setTransparent((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(GroupingContainerModel.PROP_TRANSPARENT,
-				transparentHandler);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // Transparent background
+        IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                GroupingContainerFigure container = (GroupingContainerFigure) refreshableFigure;
+                container.setTransparent((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(GroupingContainerModel.PROP_TRANSPARENT,
+                transparentHandler);
 
-		// Rotation
-		IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				rotateChildren((Double) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(GroupingContainerModel.PROP_ROTATION,
-				rotationHandler);
-	}
+        // Rotation
+        IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                rotateChildren((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(GroupingContainerModel.PROP_ROTATION,
+                rotationHandler);
+    }
 
-	/**
-	 * Rotates all children.
-	 * 
-	 * @param angle
-	 *            the angle to rotate
-	 */
-	protected void rotateChildren(final double angle) {
-		double trueAngle = angle - _previousRotationAngle;
-		_previousRotationAngle = angle;
-		for (Object obj : this.getChildren()) {
-			if (obj instanceof AbstractBaseEditPart) {
-				AbstractBaseEditPart editPart = (AbstractBaseEditPart) obj;
+    /**
+     * Rotates all children.
+     *
+     * @param angle
+     *            the angle to rotate
+     */
+    protected void rotateChildren(final double angle) {
+        double trueAngle = angle - _previousRotationAngle;
+        _previousRotationAngle = angle;
+        for (Object obj : this.getChildren()) {
+            if (obj instanceof AbstractBaseEditPart) {
+                AbstractBaseEditPart editPart = (AbstractBaseEditPart) obj;
 
-				Rectangle childBounds = editPart.getFigure().getBounds();
-				Point point = childBounds.getCenter();
-				Rectangle groupBounds = this.getFigure().getBounds();
-				Point center = groupBounds.getCenter();
-				Point rotationPoint = new Point(center.x - groupBounds.x,
-						center.y - groupBounds.y);
+                Rectangle childBounds = editPart.getFigure().getBounds();
+                Point point = childBounds.getCenter();
+                Rectangle groupBounds = this.getFigure().getBounds();
+                Point center = groupBounds.getCenter();
+                Point rotationPoint = new Point(center.x - groupBounds.x,
+                        center.y - groupBounds.y);
 
-				Point rotatedPoint = RotationUtil.rotate(point, trueAngle,
-						rotationPoint);
+                Point rotatedPoint = RotationUtil.rotate(point, trueAngle,
+                        rotationPoint);
 
-				editPart.getCastedModel().setLocation(
-						rotatedPoint.x - childBounds.width / 2,
-						rotatedPoint.y - childBounds.height / 2);
+                editPart.getCastedModel().setLocation(
+                        rotatedPoint.x - childBounds.width / 2,
+                        rotatedPoint.y - childBounds.height / 2);
 
-				if (editPart.getCastedModel().isRotatable()) {
-					// rotate children if it is rotatable
-					editPart.getCastedModel().setRotationAngle(angle);
-				}
-			}
-		}
-	}
+                if (editPart.getCastedModel().isRotatable()) {
+                    // rotate children if it is rotatable
+                    editPart.getCastedModel().setRotationAngle(angle);
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IFigure getContentPane() {
-		return ((GroupingContainerFigure) getFigure()).getContentsPane();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public IFigure getContentPane() {
+        return ((GroupingContainerFigure) getFigure()).getContentsPane();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		GroupingContainerFigure groupingContainerFigure = new GroupingContainerFigure();
-		GroupingContainerModel model = (GroupingContainerModel) this
-				.getCastedModel();
-		groupingContainerFigure.setTransparent(model.getTransparent());
-		return groupingContainerFigure;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        GroupingContainerFigure groupingContainerFigure = new GroupingContainerFigure();
+        GroupingContainerModel model = (GroupingContainerModel) this
+                .getCastedModel();
+        groupingContainerFigure.setTransparent(model.getTransparent());
+        return groupingContainerFigure;
+    }
 
-	@Override
-	public void setSelected(int value) {
-		super.setSelected(value);
-	}
+    @Override
+    public void setSelected(int value) {
+        super.setSelected(value);
+    }
 
-	@Override
-	protected boolean determineChildrenSelectability() {
-		return isSelected() || isAnyChildSelected();
-	}
+    @Override
+    protected boolean determineChildrenSelectability() {
+        return isSelected() || isAnyChildSelected();
+    }
 }

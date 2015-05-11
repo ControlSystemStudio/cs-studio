@@ -40,8 +40,8 @@ public class StripChartBehavior extends AbstractDesyConnectionBehavior<StripChar
     }
 
     /**
-    		* {@inheritDoc}
-    		*/
+            * {@inheritDoc}
+            */
     @Override
     protected void doProcessMetaDataChange(final StripChartModel widget, final MetaData metaData) {
         // TODO Auto-generated method stub

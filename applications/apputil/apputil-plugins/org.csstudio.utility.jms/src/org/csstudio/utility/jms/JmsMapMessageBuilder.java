@@ -41,15 +41,15 @@ import javax.jms.Session;
  * @since 12.04.2012
  */
 public class JmsMapMessageBuilder {
-    
+
     private Map<String, String> content;
-    
+
     public JmsMapMessageBuilder(String type) {
         content = new HashMap<String, String>();
         content.put("TYPE", type);
         content.put("EVENTTIME", createTimeString());
     }
-    
+
     public JmsMapMessageBuilder setCreateTime() {
         content.put("CREATETIME", createTimeString());
         return this;
@@ -59,7 +59,7 @@ public class JmsMapMessageBuilder {
         content.put("TEXT", text);
         return this;
     }
-    
+
     public JmsMapMessageBuilder setName(String name) {
         content.put("NAME", name);
         return this;
@@ -101,9 +101,9 @@ public class JmsMapMessageBuilder {
     }
 
     public MapMessage build(Session session) throws JMSException {
-        
+
         MapMessage msg = null;
-        
+
         msg = session.createMapMessage();
         Iterator<String> iter = content.keySet().iterator();
         while (iter.hasNext()) {
@@ -111,10 +111,10 @@ public class JmsMapMessageBuilder {
             String value = content.get(key);
             msg.setString(key, value);
         }
-        
+
         return msg;
     }
-    
+
     public String createTimeString() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         return sdf.format(Calendar.getInstance().getTime());

@@ -70,7 +70,7 @@ public class Formula implements Node
     final private static VariableNode constants[] = new VariableNode[]
     {
         new VariableNode("E", Math.E),
-    	new VariableNode("PI", Math.PI)
+        new VariableNode("PI", Math.PI)
     };
 
     /** Names of functions that take one argument. */
@@ -131,14 +131,14 @@ public class Formula implements Node
     {
         this.formula = formula;
         if (variables == null)
-        	this.variables = null;
+            this.variables = null;
         else
         {
-	        this.variables = new ArrayList<VariableNode>();
-	        for (VariableNode var : variables)
-	        	this.variables.add(var);
+            this.variables = new ArrayList<VariableNode>();
+            for (VariableNode var : variables)
+                this.variables.add(var);
         }
-    	this.determine_variables = false;
+        this.determine_variables = false;
         tree = parse();
     }
 
@@ -148,25 +148,25 @@ public class Formula implements Node
      *  @throws Exception on parse error
      */
     public Formula(final String formula, final boolean determine_variables)
-    	throws Exception
+        throws Exception
     {
-    	this.formula = formula;
-    	this.variables = new ArrayList<VariableNode>();
-    	this.determine_variables = determine_variables;
-    	tree = parse();
-	}
+        this.formula = formula;
+        this.variables = new ArrayList<VariableNode>();
+        this.determine_variables = determine_variables;
+        tree = parse();
+    }
 
-	/** @return Original formula that got parsed. */
+    /** @return Original formula that got parsed. */
     public String getFormula()
     {   return formula;    }
 
     /** @return Array of variables or <code>null</code> if none are used. */
     public VariableNode[] getVariables()
     {
-    	if (variables == null)
-    		return null;
-    	final VariableNode result[] = new VariableNode[variables.size()];
-    	return variables.toArray(result);
+        if (variables == null)
+            return null;
+        final VariableNode result[] = new VariableNode[variables.size()];
+        return variables.toArray(result);
     }
 
     /** {@inheritDoc} */
@@ -372,7 +372,7 @@ public class Formula implements Node
         final VariableNode var = new VariableNode(name);
         variables.add(var);
         return var;
-	}
+    }
 
     /** @return node for sub-expression in ( .. ) braces.
      *  @throws Exception when no closing ')' is found.

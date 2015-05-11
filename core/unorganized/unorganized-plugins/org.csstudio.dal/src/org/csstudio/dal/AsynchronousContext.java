@@ -37,67 +37,67 @@ package org.csstudio.dal;
  */
 public interface AsynchronousContext
 {
-	/**
-	 * Adds a response listener that will receive the notifications
-	 * about asynchronous completions for all asynchronous mode operations
-	 * declared by the implementing instance.
-	 *
-	 * @param l listener object
-	 */
-	public void addResponseListener(ResponseListener<?> l);
+    /**
+     * Adds a response listener that will receive the notifications
+     * about asynchronous completions for all asynchronous mode operations
+     * declared by the implementing instance.
+     *
+     * @param l listener object
+     */
+    public void addResponseListener(ResponseListener<?> l);
 
-	/**
-	 * Removes a response listener.
-	 *
-	 * @param l listener object
-	 *
-	 * @see #addResponseListener
-	 */
-	public void removeResponseListener(ResponseListener<?> l);
+    /**
+     * Removes a response listener.
+     *
+     * @param l listener object
+     *
+     * @see #addResponseListener
+     */
+    public void removeResponseListener(ResponseListener<?> l);
 
-	/**
-	 * Returns a list of all response listeners.
-	 *
-	 * @return all response listeners of the object implementing this interface
-	 */
-	public ResponseListener<?>[] getResponseListeners();
+    /**
+     * Returns a list of all response listeners.
+     *
+     * @return all response listeners of the object implementing this interface
+     */
+    public ResponseListener<?>[] getResponseListeners();
 
-	/**
-	 * Returns the latest request invoked within the calling thread. The possible requests
-	 * are set requests, requests for chatacteristics or setting triggers in
-	 * the monitors issued by this <code>Updateable</code> and so on.
-	 *
-	 * @return Object the latest request
-	 */
-	public Request<?> getLatestRequest();
+    /**
+     * Returns the latest request invoked within the calling thread. The possible requests
+     * are set requests, requests for chatacteristics or setting triggers in
+     * the monitors issued by this <code>Updateable</code> and so on.
+     *
+     * @return Object the latest request
+     */
+    public Request<?> getLatestRequest();
 
-	/**
-	 * Returns the latest response.
-	 *
-	 * @return Object the latest response
-	 *
-	 * @see #getLatestRequest
-	 */
-	public Response<?> getLatestResponse();
+    /**
+     * Returns the latest response.
+     *
+     * @return Object the latest response
+     *
+     * @see #getLatestRequest
+     */
+    public Response<?> getLatestResponse();
 
-	/**
-	 * Returns <code>true</code> if the latest response is error-free.
-	 * The error-free condition is defined by the underlying implementation.
-	 * If the condition is  error-free, there should be no need for the
-	 * DAL users to query the latest response explicitly. Please note
-	 * that the return value of this method applies to the latest response
-	 * received (not the latest request completed). These two may differ
-	 * because the request can generate multiple responses in general. This
-	 * also  corresponds to natural interpretation of a request-response
-	 * mechanism: what the user must check is the correctness of the
-	 * responses, where the correctness of  requests is implied if any
-	 * response can be produced in the first place.<p>Note: this method
-	 * returns <code>true</code> if no response has arrived yet or if no
-	 * request has been submitted.</p>
-	 *
-	 * @return boolean true iff the latest response is error free.
-	 */
-	public boolean getLatestSuccess();
+    /**
+     * Returns <code>true</code> if the latest response is error-free.
+     * The error-free condition is defined by the underlying implementation.
+     * If the condition is  error-free, there should be no need for the
+     * DAL users to query the latest response explicitly. Please note
+     * that the return value of this method applies to the latest response
+     * received (not the latest request completed). These two may differ
+     * because the request can generate multiple responses in general. This
+     * also  corresponds to natural interpretation of a request-response
+     * mechanism: what the user must check is the correctness of the
+     * responses, where the correctness of  requests is implied if any
+     * response can be produced in the first place.<p>Note: this method
+     * returns <code>true</code> if no response has arrived yet or if no
+     * request has been submitted.</p>
+     *
+     * @return boolean true iff the latest response is error free.
+     */
+    public boolean getLatestSuccess();
 } /* __oOo__ */
 
 

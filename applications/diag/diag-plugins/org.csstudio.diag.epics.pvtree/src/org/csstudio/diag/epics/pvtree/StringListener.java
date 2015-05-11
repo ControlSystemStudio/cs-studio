@@ -14,21 +14,21 @@ import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.epics.vtype.VType;
 
 /** {@link IPVListener} that extracts text from value.
- * 
+ *
  *  <p>Derived class determines how to handle the text.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 abstract public class StringListener extends PVListenerAdapter
 {
-	/** @param error Error to handle */
+    /** @param error Error to handle */
     public void handleError(final String error)
-	{
-		handleText("Error: " + error);
-	}
+    {
+        handleText("Error: " + error);
+    }
 
-	/** @param text Text to handle */
-	abstract public void handleText(final String text);
+    /** @param text Text to handle */
+    abstract public void handleText(final String text);
 
     /** {@inheritDoc} */
     @Override
@@ -45,12 +45,11 @@ abstract public class StringListener extends PVListenerAdapter
                     e);
         }
     }
-    
+
     @Override
     public void disconnected(final PV pv)
     {
         handleError(pv.getName() + " disconnected");
     }
-	
+
 };
-        

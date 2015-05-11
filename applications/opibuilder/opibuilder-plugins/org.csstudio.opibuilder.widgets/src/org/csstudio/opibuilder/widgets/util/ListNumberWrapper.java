@@ -9,20 +9,20 @@ import org.epics.util.array.ListNumber;
  */
 public class ListNumberWrapper implements IPrimaryArrayWrapper {
 
-	private ListNumber listNumber;
-	
-	public ListNumberWrapper(ListNumber listNumber) {
-		this.listNumber = listNumber;
-	}
+    private ListNumber listNumber;
 
-	@Override
-	public double get(int i) {
-		return listNumber.getDouble(i);
-	}
+    public ListNumberWrapper(ListNumber listNumber) {
+        this.listNumber = listNumber;
+    }
 
-	@Override
-	public int getSize() {
-		return listNumber.size();
-	}
+    @Override
+    public double get(int i) {
+        return listNumber.getDouble(i);
+    }
+
+    @Override
+    public int getSize() {
+        return listNumber.size();
+    }
 
 }

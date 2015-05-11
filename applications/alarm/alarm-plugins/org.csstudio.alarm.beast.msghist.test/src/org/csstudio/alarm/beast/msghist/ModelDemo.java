@@ -22,7 +22,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ModelDemo implements ModelListener
 {
-	private CountDownLatch got_response = new CountDownLatch(1);
+    private CountDownLatch got_response = new CountDownLatch(1);
 
     // ModelListener
     @Override
@@ -46,9 +46,9 @@ public class ModelDemo implements ModelListener
         assertTrue(messages.length > 0);
     }
 
-	@Override
-	public void onErrorModel(String errorMsg) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void onErrorModel(String errorMsg) {
+        // TODO Auto-generated method stub
+
+    }
 }

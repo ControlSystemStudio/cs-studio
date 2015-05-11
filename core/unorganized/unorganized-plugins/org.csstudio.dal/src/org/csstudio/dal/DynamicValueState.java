@@ -28,7 +28,7 @@ import java.util.EnumSet;
 /**
  * Enumeration <code>DynamicValue</code> describes available states in which
  * dynamic value property might find itself. This state does not described
- * connection management status since this is done by ConnectionState. 
+ * connection management status since this is done by ConnectionState.
  * By definition DynamicValueState
  * objects define data property from point when property is connected to remote
  * object till the point this connection is destroyed on local system. Dynamic
@@ -40,191 +40,191 @@ import java.util.EnumSet;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
 public enum DynamicValueState {
-	/**
-	 * No value received from remote object up to this point.
-	 */
-	NO_VALUE,
-	/**
-	 * Normal state, no errors or alarms, connection to remote object functions
-	 * without problems.
-	 */
-	NORMAL, 
-	/**
-	 * General warning, dynamic value my not be reliable. Corresponds to MINOR_ALARM severity in EPICS.
-	 */
-	WARNING, 
-	/**
-	 * More serious than warning, dynamic value my not be reliable. Corresponds to MAJOR_ALARM severity in EPICS.
-	 */
-	ALARM, 
-	/**
-	 * Error occured on remote object, dynamic value my not be reliable. Corresponds to INVALID_ALARM severity in EPICS.
-	 */
-	ERROR, 
-	/**
-	 * Dynamic value updated are not ariving for longer than timeout period.
-	 */
-	TIMEOUT, 
-	/**
-	 * Dynamic value updates are arriving but with delay larger than timelag
-	 * period.
-	 */
-	TIMELAG, 
-	/**
-	 * Remote object is not available, value is not reliable, timeout my occur as
-	 * well.
-	 */
-	LINK_NOT_AVAILABLE,
-	/**
-	 * Dynamic value is has initialized basic set of meta-data characteristic. This means that 
-	 * call for meta-data characteristic will return values. 
-	 */
-	HAS_METADATA,
-	/**
-	 * Dynamic value has received at least one live update. This means for example that proxy returns 
-	 * non-null value for latestReceivedValueResponse.
-	 */
-	HAS_LIVE_DATA;
+    /**
+     * No value received from remote object up to this point.
+     */
+    NO_VALUE,
+    /**
+     * Normal state, no errors or alarms, connection to remote object functions
+     * without problems.
+     */
+    NORMAL,
+    /**
+     * General warning, dynamic value my not be reliable. Corresponds to MINOR_ALARM severity in EPICS.
+     */
+    WARNING,
+    /**
+     * More serious than warning, dynamic value my not be reliable. Corresponds to MAJOR_ALARM severity in EPICS.
+     */
+    ALARM,
+    /**
+     * Error occured on remote object, dynamic value my not be reliable. Corresponds to INVALID_ALARM severity in EPICS.
+     */
+    ERROR,
+    /**
+     * Dynamic value updated are not ariving for longer than timeout period.
+     */
+    TIMEOUT,
+    /**
+     * Dynamic value updates are arriving but with delay larger than timelag
+     * period.
+     */
+    TIMELAG,
+    /**
+     * Remote object is not available, value is not reliable, timeout my occur as
+     * well.
+     */
+    LINK_NOT_AVAILABLE,
+    /**
+     * Dynamic value is has initialized basic set of meta-data characteristic. This means that
+     * call for meta-data characteristic will return values.
+     */
+    HAS_METADATA,
+    /**
+     * Dynamic value has received at least one live update. This means for example that proxy returns
+     * non-null value for latestReceivedValueResponse.
+     */
+    HAS_LIVE_DATA;
 
-	
-	/**
-	 * Return <code>true</code> if both sets has same states.
-	 * @param set1 first set
-	 * @param set2 second set
-	 * @return <code>true</code> if both sets has same states
-	 */
-	public static final boolean areSetsEqual(final EnumSet<DynamicValueState> set1, final EnumSet<DynamicValueState> set2)
-	{
-		if (set1 == null && set2 == null) {
-			return true;
-		}
-		if (set1 == null && set2 !=null 
-				|| set1 != null && set2 ==null) {
-			return false;
-		}
-		
-		if (set1.size()!=set2.size()) {
-			return false;
-		}
-		
-		// if sizes are equal, than all in A must be in B.
-		for (DynamicValueState dvs : set2) {
-			if (!set1.contains(dvs)) {
-				return false;
-			}
-		}
-		
-		return true;
-	}
 
-	/**
-	 * Returns <code>true</code> if provided state set contains at least one of provided states.
-	 * 
-	 * @param set set to be tested against
-	 * @param states the states to be checked for inclusion
-	 * @return <code>true</code> if at least one of provided states is inside this condition
-	 */
-	public static final boolean containsAnyOfStates(final EnumSet<DynamicValueState> set, final DynamicValueState... states)
-	{
-		for (DynamicValueState state : states) {
-			if (set.contains(state)) {
-				return true;
-			}
-		}
-	
-		return false;
-	}
+    /**
+     * Return <code>true</code> if both sets has same states.
+     * @param set1 first set
+     * @param set2 second set
+     * @return <code>true</code> if both sets has same states
+     */
+    public static final boolean areSetsEqual(final EnumSet<DynamicValueState> set1, final EnumSet<DynamicValueState> set2)
+    {
+        if (set1 == null && set2 == null) {
+            return true;
+        }
+        if (set1 == null && set2 !=null
+                || set1 != null && set2 ==null) {
+            return false;
+        }
 
-	/**
-	 * Returns <code>true</code> if provided state set contains at least one of provided states.
-	 * 
-	 * @param states1 set to be tested against
-	 * @param states2 the states to be checked for inclusion
-	 * @return <code>true</code> if at least one of provided states is inside this condition
-	 */
-	public static final boolean containsAnyOfStates(final EnumSet<DynamicValueState> states1, final EnumSet<DynamicValueState> states2)
-	{
-		for (DynamicValueState state : states2) {
-			if (states1.contains(state)) {
-				return true;
-			}
-		}
-	
-		return false;
-	}
+        if (set1.size()!=set2.size()) {
+            return false;
+        }
 
-	/**
-	 * Returns <code>true</code> only of all states are inside provided state set.
-	 * @param set the set to be tested against
-	 * @param states the states to be checked for inclusion
-	 * @return <code>true</code> only of all states are inside this condition
-	 */
-	public static final boolean containsAllStates(
-			final EnumSet<DynamicValueState> set, 
-			final DynamicValueState... states)
-	{
-		for (DynamicValueState st: states) {
-			if (!set.contains(st)) {
-				return false;
-			}
-		}
-		return true;
-	}
+        // if sizes are equal, than all in A must be in B.
+        for (DynamicValueState dvs : set2) {
+            if (!set1.contains(dvs)) {
+                return false;
+            }
+        }
 
-	/**
-	 * Returns <code>true</code> only of all states are inside provided state set.
-	 * @param states1 the set to be tested against
-	 * @param states2 the states to be checked for inclusion
-	 * @return <code>true</code> only of all states are inside this condition
-	 */
-	public static final boolean containsAllStates(EnumSet<DynamicValueState> states1,
-			EnumSet<DynamicValueState> states2) 
-	{
-		for (DynamicValueState st: states2) {
-			if (!states1.contains(st)) {
-				return false;
-			}
-		}
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Returns set, which is copy of provided state only without requested states. 
-	 * @param set the set to be copied
-	 * @param states the states to be excluded in copy
-	 * @return set, which is copy of provided state only without requested states
-	 */
-	public static final EnumSet<DynamicValueState> deriveSetWithoutStates(
-			final EnumSet<DynamicValueState> set, 
-			final DynamicValueState... states)
-	{
-		EnumSet<DynamicValueState> s = EnumSet.copyOf(set);
-	
-		for (DynamicValueState state : states) {
-			s.remove(state);
-		}
-	
-		return s;
-	}
+    /**
+     * Returns <code>true</code> if provided state set contains at least one of provided states.
+     *
+     * @param set set to be tested against
+     * @param states the states to be checked for inclusion
+     * @return <code>true</code> if at least one of provided states is inside this condition
+     */
+    public static final boolean containsAnyOfStates(final EnumSet<DynamicValueState> set, final DynamicValueState... states)
+    {
+        for (DynamicValueState state : states) {
+            if (set.contains(state)) {
+                return true;
+            }
+        }
 
-	/**
-	 * Returns set, which is copy of provided state only with included requested states. 
-	 * @param set the set to be copied
-	 * @param states the states to be included in copy
-	 * @return set, which is copy of provided state only with included requested states
-	 */
-	public static final EnumSet<DynamicValueState> deriveSetWithStates(
-		final EnumSet<DynamicValueState> set, 
-	    final DynamicValueState... states)
-	{
-		EnumSet<DynamicValueState> s = EnumSet.copyOf(set);
-	
-		for (DynamicValueState state : states) {
-			s.add(state);
-		}
-	
-		return s;
-	}
+        return false;
+    }
+
+    /**
+     * Returns <code>true</code> if provided state set contains at least one of provided states.
+     *
+     * @param states1 set to be tested against
+     * @param states2 the states to be checked for inclusion
+     * @return <code>true</code> if at least one of provided states is inside this condition
+     */
+    public static final boolean containsAnyOfStates(final EnumSet<DynamicValueState> states1, final EnumSet<DynamicValueState> states2)
+    {
+        for (DynamicValueState state : states2) {
+            if (states1.contains(state)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns <code>true</code> only of all states are inside provided state set.
+     * @param set the set to be tested against
+     * @param states the states to be checked for inclusion
+     * @return <code>true</code> only of all states are inside this condition
+     */
+    public static final boolean containsAllStates(
+            final EnumSet<DynamicValueState> set,
+            final DynamicValueState... states)
+    {
+        for (DynamicValueState st: states) {
+            if (!set.contains(st)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns <code>true</code> only of all states are inside provided state set.
+     * @param states1 the set to be tested against
+     * @param states2 the states to be checked for inclusion
+     * @return <code>true</code> only of all states are inside this condition
+     */
+    public static final boolean containsAllStates(EnumSet<DynamicValueState> states1,
+            EnumSet<DynamicValueState> states2)
+    {
+        for (DynamicValueState st: states2) {
+            if (!states1.contains(st)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns set, which is copy of provided state only without requested states.
+     * @param set the set to be copied
+     * @param states the states to be excluded in copy
+     * @return set, which is copy of provided state only without requested states
+     */
+    public static final EnumSet<DynamicValueState> deriveSetWithoutStates(
+            final EnumSet<DynamicValueState> set,
+            final DynamicValueState... states)
+    {
+        EnumSet<DynamicValueState> s = EnumSet.copyOf(set);
+
+        for (DynamicValueState state : states) {
+            s.remove(state);
+        }
+
+        return s;
+    }
+
+    /**
+     * Returns set, which is copy of provided state only with included requested states.
+     * @param set the set to be copied
+     * @param states the states to be included in copy
+     * @return set, which is copy of provided state only with included requested states
+     */
+    public static final EnumSet<DynamicValueState> deriveSetWithStates(
+        final EnumSet<DynamicValueState> set,
+        final DynamicValueState... states)
+    {
+        EnumSet<DynamicValueState> s = EnumSet.copyOf(set);
+
+        for (DynamicValueState state : states) {
+            s.add(state);
+        }
+
+        return s;
+    }
 
 }
 /* __oOo__ */

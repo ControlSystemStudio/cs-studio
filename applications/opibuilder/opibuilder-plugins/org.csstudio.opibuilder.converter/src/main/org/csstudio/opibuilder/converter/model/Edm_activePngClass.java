@@ -15,38 +15,38 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activePngClass extends EdmWidget {
 
-	@EdmAttributeAn private String file;
-	@EdmAttributeAn @EdmOptionalAn private boolean uniformSize;
-	@EdmAttributeAn @EdmOptionalAn private boolean fastErase;
-	@EdmAttributeAn @EdmOptionalAn private boolean noErase;
-	
-
-	public Edm_activePngClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    @EdmAttributeAn private String file;
+    @EdmAttributeAn @EdmOptionalAn private boolean uniformSize;
+    @EdmAttributeAn @EdmOptionalAn private boolean fastErase;
+    @EdmAttributeAn @EdmOptionalAn private boolean noErase;
 
 
-	public final String getFile() {
-		return file;
-	}
+    public Edm_activePngClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 
-	public boolean isUniformSize() {
-		return uniformSize;
-	}
+    public final String getFile() {
+        return file;
+    }
 
 
-	public boolean isFastErase() {
-		return fastErase;
-	}
+    public boolean isUniformSize() {
+        return uniformSize;
+    }
 
 
-	public boolean isNoErase() {
-		return noErase;
-	}
+    public boolean isFastErase() {
+        return fastErase;
+    }
 
-	
-	
+
+    public boolean isNoErase() {
+        return noErase;
+    }
+
+
+
 
 }
 

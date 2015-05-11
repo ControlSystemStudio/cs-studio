@@ -71,7 +71,7 @@ public class XMLImport extends DefaultHandler
         /** Looking for the initial element */
         NEED_FIRST_ELEMENT,
 
-    	/** Reading all the initial parameters */
+        /** Reading all the initial parameters */
         PREAMBLE,
 
         /** Got start of a group, waiting for group name */
@@ -114,55 +114,55 @@ public class XMLImport extends DefaultHandler
      *  @param steal_channels Steal channels that currently belong to a different engine?
      *  @throws Exception
      */
-	public XMLImport(final String rdb_url, final String rdb_user, final String rdb_password,
-			final String rdb_schema,
-			final boolean replace, final boolean steal_channels) throws Exception
+    public XMLImport(final String rdb_url, final String rdb_user, final String rdb_password,
+            final String rdb_schema,
+            final boolean replace, final boolean steal_channels) throws Exception
     {
-		this.replace = replace;
-		this.steal_channels = steal_channels;
-		config = new RDBArchiveConfig(rdb_url, rdb_user, rdb_password, rdb_schema);
+        this.replace = replace;
+        this.steal_channels = steal_channels;
+        config = new RDBArchiveConfig(rdb_url, rdb_user, rdb_password, rdb_schema);
     }
 
-	/** Parse an XML configuration into the RDB
-	 *  @param stream
-	 *  @param engine_name
-	 *  @param description
-	 *  @param engine_url
-	 *  @throws Exception
-	 */
+    /** Parse an XML configuration into the RDB
+     *  @param stream
+     *  @param engine_name
+     *  @param description
+     *  @param engine_url
+     *  @throws Exception
+     */
     public void parse(final InputStream stream, final String engine_name, final String description,
-			final String engine_url) throws Exception, XMLImportException
+            final String engine_url) throws Exception, XMLImportException
     {
-		engine = config.findEngine(engine_name);
-		if (engine != null)
-		{
-			if (replace)
-			{
-				System.out.println("Replacing existing engine config " + engine_name);
-				config.deleteEngine(engine);
-			}
-			else
-				throw new XMLImportException("Error: Engine config '" + engine_name +
+        engine = config.findEngine(engine_name);
+        if (engine != null)
+        {
+            if (replace)
+            {
+                System.out.println("Replacing existing engine config " + engine_name);
+                config.deleteEngine(engine);
+            }
+            else
+                throw new XMLImportException("Error: Engine config '" + engine_name +
                 "' already exists");
-		}
-		engine = config.createEngine(engine_name, description, engine_url);
+        }
+        engine = config.createEngine(engine_name, description, engine_url);
 
         final SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
         parser.parse(stream, this);
     }
 
-	/** Reset the accumulator at the start of each element */
+    /** Reset the accumulator at the start of each element */
     @Override
     public void startElement(final String uri, final String localName,
                     final String element, final Attributes attributes)
                     throws SAXException
     {
-    	if (state == State.NEED_FIRST_ELEMENT)
-    	{	// Check for 'engineconfig'
-    		if (! TAG_ENGINECONFIG.equals(element))
-    			throw new XMLImportException("Expected <" + XMLImport.TAG_ENGINECONFIG + "> but found <" + element + ">");
-    		state = State.PREAMBLE;
-    	}
+        if (state == State.NEED_FIRST_ELEMENT)
+        {    // Check for 'engineconfig'
+            if (! TAG_ENGINECONFIG.equals(element))
+                throw new XMLImportException("Expected <" + XMLImport.TAG_ENGINECONFIG + "> but found <" + element + ">");
+            state = State.PREAMBLE;
+        }
         accumulator.setLength(0);
         if (element.equals(TAG_GROUP))
         {
@@ -271,11 +271,11 @@ public class XMLImport extends DefaultHandler
             checkStateForTag(State.CHANNEL, element);
             if (group.getEnablingChannel() != null)
             {
-            	System.out.println("WARNING: Group " + group.getName() + " is already enabled by " + group.getEnablingChannel() +
-            			". Ignoring additional enabling channels for the same group");
+                System.out.println("WARNING: Group " + group.getName() + " is already enabled by " + group.getEnablingChannel() +
+                        ". Ignoring additional enabling channels for the same group");
             }
             else
-            	is_enabling = true;
+                is_enabling = true;
         }
         else if (element.equals(TAG_DISABLE))
         {
@@ -288,39 +288,39 @@ public class XMLImport extends DefaultHandler
             state = State.GROUP;
             try
             {
-            	// System.out.println(group.getName() + " - " + name);
-            	// Check if channel is already in another group
-            	final RDBGroupConfig other_group = config.getChannelGroup(name);
+                // System.out.println(group.getName() + " - " + name);
+                // Check if channel is already in another group
+                final RDBGroupConfig other_group = config.getChannelGroup(name);
                 if (other_group != null)
                 {
-                	final EngineConfig other_engine = config.getEngine(other_group);
-                	// Don't proceed with this channel,
-                	// but run on with the next channel so that we
-                	// get all the errors once instead of having
-                	// to run the tool error by error
-                	if (steal_channels)
-                    	System.out.format("Channel '%s/%s - %s' already found in '%s/%s', moved to this engine\n",
+                    final EngineConfig other_engine = config.getEngine(other_group);
+                    // Don't proceed with this channel,
+                    // but run on with the next channel so that we
+                    // get all the errors once instead of having
+                    // to run the tool error by error
+                    if (steal_channels)
+                        System.out.format("Channel '%s/%s - %s' already found in '%s/%s', moved to this engine\n",
                                 engine.getName(), group.getName(), name,
                                 other_engine.getName(), other_group.getName());
-                	else
-                	{
-                    	System.out.format("WARNING: Channel '%s/%s - %s' already found in '%s/%s', not added again to this engine\n",
+                    else
+                    {
+                        System.out.format("WARNING: Channel '%s/%s - %s' already found in '%s/%s', not added again to this engine\n",
                                 engine.getName(), group.getName(), name,
                                 other_engine.getName(), other_group.getName());
-                		return;
-                	}
+                        return;
+                    }
                 }
 
                 final RDBSampleMode mode = config.getSampleMode(monitor, sample_value, period);
                 final RDBChannelConfig channel = config.addChannel(group, name, mode);
                 if (is_enabling)
                 {
-                	config.setEnablingChannel(group, channel);
-                	group.setEnablingChannel(channel);
+                    config.setEnablingChannel(group, channel);
+                    group.setEnablingChannel(channel);
                 }
             }
             catch (Exception ex)
-            {	// Must convert to SAXException
+            {    // Must convert to SAXException
                 final StackTraceElement[] trace = ex.getStackTrace();
                 throw new SAXException("Cannot add channel '" + name
                                 + "' to group '" + group.getName()
@@ -364,13 +364,13 @@ public class XMLImport extends DefaultHandler
     @Override
     public void error(final SAXParseException ex)
     {
-    	System.out.println("Configuration file line " + ex.getLineNumber() + ":");
-    	ex.printStackTrace();
+        System.out.println("Configuration file line " + ex.getLineNumber() + ":");
+        ex.printStackTrace();
     }
 
-	/** Must be called to reclaim RDB resources */
-	public void close()
-	{
-		config.close();
-	}
+    /** Must be called to reclaim RDB resources */
+    public void close()
+    {
+        config.close();
+    }
 }

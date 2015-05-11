@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 public class RequestPath
 {
     final private String[] elements;
-    
+
     /** Initialize
      *  @param request {@link HttpServletRequest}
      */
@@ -32,13 +32,13 @@ public class RequestPath
             elements = path.substring(1).split("/");
         }
     }
-    
+
     /** @return Number of request path elements */
     public int size()
     {
         return elements.length;
     }
-    
+
     /** @param index Path element index
      *  @return Path element as String
      */
@@ -46,7 +46,7 @@ public class RequestPath
     {
         return elements[index];
     }
-    
+
     /** @param index Path element index
      *  @return Path element as number
      */

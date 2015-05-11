@@ -55,13 +55,13 @@ public class ADLBasicAttributeTest {
                 null,
                 0
         );
-        String colors = 
+        String colors =
                 "\"color map\" {"+"\r\n"+
                 "ncolors=5"+"\r\n"+
                 "colors {"+"\r\n"+
                 "010203,"+"\r\n"+
                 "ececec,"+"\r\n"+
-                "dadada,"+"\r\n"+ 
+                "dadada,"+"\r\n"+
                 "c8c8c8,"+"\r\n"+
                 "99Ffc7,"+"\r\n"+
           "}" ;

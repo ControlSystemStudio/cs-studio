@@ -12,35 +12,35 @@ import org.eclipse.swt.dnd.DragSourceEvent;
 import org.eclipse.swt.dnd.Transfer;
 
 abstract class AbstractDragSourceListener<E> extends
-		AbstractTransferDragSourceListener {
+        AbstractTransferDragSourceListener {
 
-	public AbstractDragSourceListener(EditPartViewer viewer, Transfer transfer) {
-		super(viewer, transfer);
-	}
+    public AbstractDragSourceListener(EditPartViewer viewer, Transfer transfer) {
+        super(viewer, transfer);
+    }
 
-	@SuppressWarnings("unchecked")
-	public final void dragSetData(DragSourceEvent event) {
-		List<AbstractEditPart> controllers = getViewer().getSelectedEditParts();
+    @SuppressWarnings("unchecked")
+    public final void dragSetData(DragSourceEvent event) {
+        List<AbstractEditPart> controllers = getViewer().getSelectedEditParts();
 
-		E transferDataObject = null;
+        E transferDataObject = null;
 
-		for (AbstractEditPart controller : controllers) {
-			if (controller instanceof IProcessVariableAdressProvider) {
-				IProcessVariableAdressProvider provider = (IProcessVariableAdressProvider) controller;
+        for (AbstractEditPart controller : controllers) {
+            if (controller instanceof IProcessVariableAdressProvider) {
+                IProcessVariableAdressProvider provider = (IProcessVariableAdressProvider) controller;
 
-				transferDataObject = convert(
-						provider.getPVAdress(),
-						provider.getProcessVariableAdresses() != null ? provider
-								.getProcessVariableAdresses()
-								: Collections.EMPTY_LIST);
+                transferDataObject = convert(
+                        provider.getPVAdress(),
+                        provider.getProcessVariableAdresses() != null ? provider
+                                .getProcessVariableAdresses()
+                                : Collections.EMPTY_LIST);
 
-			}
-		}
+            }
+        }
 
-		event.doit = (transferDataObject != null);
-		event.data = transferDataObject;
-	}
+        event.doit = (transferDataObject != null);
+        event.data = transferDataObject;
+    }
 
-	protected abstract E convert(IProcessVariableAddress mainAddress,
-			List<IProcessVariableAddress> allAddresses);
+    protected abstract E convert(IProcessVariableAddress mainAddress,
+            List<IProcessVariableAddress> allAddresses);
 }

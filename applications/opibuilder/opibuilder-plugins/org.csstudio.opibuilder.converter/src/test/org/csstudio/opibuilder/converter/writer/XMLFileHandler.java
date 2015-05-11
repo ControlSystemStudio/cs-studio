@@ -31,135 +31,135 @@ import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
  */
 public class XMLFileHandler extends TestCase {
 
-	/**
-	 *  A dummy method to prevent a warning that this TestCase has no tests.
-	 */
-	public void testDummy() {
-	}
-	
-	public static Document createDomDocument() throws EdmException {
-		try {
-			DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			return builder.newDocument();
+    /**
+     *  A dummy method to prevent a warning that this TestCase has no tests.
+     */
+    public void testDummy() {
+    }
 
-		} catch (ParserConfigurationException e) {
-			throw new EdmException(EdmException.DOM_BUILDER_EXCEPTION, 
-					"Error instantiating DOM document.",e);
-		}
-	}
+    public static Document createDomDocument() throws EdmException {
+        try {
+            DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            return builder.newDocument();
 
-	public static void writeXML(Document doc) {
-		try {
+        } catch (ParserConfigurationException e) {
+            throw new EdmException(EdmException.DOM_BUILDER_EXCEPTION,
+                    "Error instantiating DOM document.",e);
+        }
+    }
 
-			OutputFormat format = new OutputFormat(doc);
-			format.setLineWidth(65);
-			format.setIndenting(true);
-			format.setIndent(2);
-			Writer out = new StringWriter();
-			XMLSerializer serializer = new XMLSerializer(out, format);
-			serializer.serialize(doc);
+    public static void writeXML(Document doc) {
+        try {
 
-			System.out.println(out.toString());
-		}
-		catch (Exception e) { 
-			e.printStackTrace();
-		}
-	}
+            OutputFormat format = new OutputFormat(doc);
+            format.setLineWidth(65);
+            format.setIndenting(true);
+            format.setIndent(2);
+            Writer out = new StringWriter();
+            XMLSerializer serializer = new XMLSerializer(out, format);
+            serializer.serialize(doc);
 
-	public static Document readXml(String fileName) {
-		try {
-			File file = new File(fileName);
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-			DocumentBuilder db = dbf.newDocumentBuilder();
-			return db.parse(file);
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+            System.out.println(out.toString());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-	public static void isColorElementEqual(EdmColor c, String tag, Element e) {
-		Element subElement = (Element)e.getElementsByTagName(tag).item(0);
-		Element colorElement = (Element)subElement.getElementsByTagName("color").item(0);
+    public static Document readXml(String fileName) {
+        try {
+            File file = new File(fileName);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            return db.parse(file);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
-		if (colorElement.hasAttribute("name")) {
-			assertEquals(c.getName(), colorElement.getAttribute("name"));
-		}
-		else {
-			assertEquals(String.valueOf(c.getRed() / 256), colorElement.getAttribute("red"));
-			assertEquals(String.valueOf(c.getGreen() / 256), colorElement.getAttribute("green"));
-			assertEquals(String.valueOf(c.getBlue() / 256), colorElement.getAttribute("blue"));
+    public static void isColorElementEqual(EdmColor c, String tag, Element e) {
+        Element subElement = (Element)e.getElementsByTagName(tag).item(0);
+        Element colorElement = (Element)subElement.getElementsByTagName("color").item(0);
 
-			if (colorElement.hasAttribute("blinkRed"))
-				assertEquals(String.valueOf(c.getBlinkRed() / 256), colorElement.getAttribute("blinkRed"));
-			if (colorElement.hasAttribute("blinkGreen"))
-				assertEquals(String.valueOf(c.getBlinkGreen() / 256), colorElement.getAttribute("blinkGreen"));
-			if (colorElement.hasAttribute("blinkBlue"))
-				assertEquals(String.valueOf(c.getBlinkBlue() / 256), colorElement.getAttribute("blinkBlue"));
-		}
-	}
+        if (colorElement.hasAttribute("name")) {
+            assertEquals(c.getName(), colorElement.getAttribute("name"));
+        }
+        else {
+            assertEquals(String.valueOf(c.getRed() / 256), colorElement.getAttribute("red"));
+            assertEquals(String.valueOf(c.getGreen() / 256), colorElement.getAttribute("green"));
+            assertEquals(String.valueOf(c.getBlue() / 256), colorElement.getAttribute("blue"));
 
-	public static void isColorElementEqual(
-			String name,
-			int red, int green, int blue,
-			int blinkRed, int blinkBlue, int blinkGreen,
-			String tag, Element e) {
+            if (colorElement.hasAttribute("blinkRed"))
+                assertEquals(String.valueOf(c.getBlinkRed() / 256), colorElement.getAttribute("blinkRed"));
+            if (colorElement.hasAttribute("blinkGreen"))
+                assertEquals(String.valueOf(c.getBlinkGreen() / 256), colorElement.getAttribute("blinkGreen"));
+            if (colorElement.hasAttribute("blinkBlue"))
+                assertEquals(String.valueOf(c.getBlinkBlue() / 256), colorElement.getAttribute("blinkBlue"));
+        }
+    }
 
-		Element subElement = (Element)e.getElementsByTagName(tag).item(0);
-		Element colorElement = (Element)subElement.getElementsByTagName("color").item(0);
+    public static void isColorElementEqual(
+            String name,
+            int red, int green, int blue,
+            int blinkRed, int blinkBlue, int blinkGreen,
+            String tag, Element e) {
 
-		if (colorElement.hasAttribute("name")) {
-			assertEquals(name, colorElement.getAttribute("name"));
-		} else {
-			assertEquals(String.valueOf(red), colorElement.getAttribute("red"));
-			assertEquals(String.valueOf(green), colorElement.getAttribute("green"));
-			assertEquals(String.valueOf(blue), colorElement.getAttribute("blue"));
+        Element subElement = (Element)e.getElementsByTagName(tag).item(0);
+        Element colorElement = (Element)subElement.getElementsByTagName("color").item(0);
 
-			if (colorElement.hasAttribute("blinkRed"))
-				assertEquals(String.valueOf(blinkRed), colorElement.getAttribute("blinkRed"));
-			if (colorElement.hasAttribute("blinkGreen"))
-				assertEquals(String.valueOf(blinkGreen), colorElement.getAttribute("blinkGreen"));
-			if (colorElement.hasAttribute("blinkBlue"))
-				assertEquals(String.valueOf(blinkBlue), colorElement.getAttribute("blinkBlue"));
-		}
-	}
+        if (colorElement.hasAttribute("name")) {
+            assertEquals(name, colorElement.getAttribute("name"));
+        } else {
+            assertEquals(String.valueOf(red), colorElement.getAttribute("red"));
+            assertEquals(String.valueOf(green), colorElement.getAttribute("green"));
+            assertEquals(String.valueOf(blue), colorElement.getAttribute("blue"));
 
-	public static void isElementEqual(String expectedValue, String tag, Element e) {
-		Element subElement = (Element)e.getElementsByTagName(tag).item(0);
-		assertEquals(expectedValue, subElement.getTextContent());
-	}
+            if (colorElement.hasAttribute("blinkRed"))
+                assertEquals(String.valueOf(blinkRed), colorElement.getAttribute("blinkRed"));
+            if (colorElement.hasAttribute("blinkGreen"))
+                assertEquals(String.valueOf(blinkGreen), colorElement.getAttribute("blinkGreen"));
+            if (colorElement.hasAttribute("blinkBlue"))
+                assertEquals(String.valueOf(blinkBlue), colorElement.getAttribute("blinkBlue"));
+        }
+    }
 
-	public static void isFontElementEqual(String expectedValue, String tag,	Element e) throws EdmException {
-		EdmFont f = new EdmFont(new EdmAttribute(expectedValue), true);
+    public static void isElementEqual(String expectedValue, String tag, Element e) {
+        Element subElement = (Element)e.getElementsByTagName(tag).item(0);
+        assertEquals(expectedValue, subElement.getTextContent());
+    }
 
-		Element subElement = (Element)e.getElementsByTagName(tag).item(0);
-		Element fontElement = (Element)subElement.getElementsByTagName("font").item(0);
+    public static void isFontElementEqual(String expectedValue, String tag,    Element e) throws EdmException {
+        EdmFont f = new EdmFont(new EdmAttribute(expectedValue), true);
 
-		assertTrue(fontElement.hasAttribute("fontName"));
-		assertEquals(f.getName(), fontElement.getAttribute("fontName"));
-		assertTrue(fontElement.hasAttribute("height"));
-		assertEquals(String.valueOf(f.getSize()), fontElement.getAttribute("height"));
-		int s = 0;
-		if (f.isItalic())
-			s = s + 2;
-		if (f.isBold())
-			s = s + 1;
-		String style = String.valueOf(s);
-		assertEquals(style, fontElement.getAttribute("style"));
-	}
-	
-	/** Returns true if parent element has a child element with the given name.
-	 *  Descendants of children are ignored.
-	 */
-	public static boolean isChildElement(String childName, Element parent) {
-		Node node = parent.getFirstChild();
-		while (node != null) {
-			if (childName.equals(((Element)node).getLocalName())) {
-				return true;
-			}
-			node = node.getNextSibling();
-		}
-		return false;		
-	}
+        Element subElement = (Element)e.getElementsByTagName(tag).item(0);
+        Element fontElement = (Element)subElement.getElementsByTagName("font").item(0);
+
+        assertTrue(fontElement.hasAttribute("fontName"));
+        assertEquals(f.getName(), fontElement.getAttribute("fontName"));
+        assertTrue(fontElement.hasAttribute("height"));
+        assertEquals(String.valueOf(f.getSize()), fontElement.getAttribute("height"));
+        int s = 0;
+        if (f.isItalic())
+            s = s + 2;
+        if (f.isBold())
+            s = s + 1;
+        String style = String.valueOf(s);
+        assertEquals(style, fontElement.getAttribute("style"));
+    }
+
+    /** Returns true if parent element has a child element with the given name.
+     *  Descendants of children are ignored.
+     */
+    public static boolean isChildElement(String childName, Element parent) {
+        Node node = parent.getFirstChild();
+        while (node != null) {
+            if (childName.equals(((Element)node).getLocalName())) {
+                return true;
+            }
+            node = node.getNextSibling();
+        }
+        return false;
+    }
 }

@@ -15,11 +15,11 @@ import org.csstudio.util.stats.Average;
 public class BufferStats
 {
     private int max_size = 0;
-    
+
     private Average average_size = new Average();
 
     private int overruns = 0;
-    
+
     /** @return Maximum queue size so far
      *  @see #reset()
      */
@@ -47,7 +47,7 @@ public class BufferStats
         average_size.reset();
         overruns = 0;
     }
-    
+
     /** Update the buffer stats.
      *  @param size Current buffer size.
      */
@@ -57,7 +57,7 @@ public class BufferStats
             max_size = size;
         average_size.update(size);
     }
-    
+
     /** Add an overrun. */
     synchronized public void addOverrun()
     {

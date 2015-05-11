@@ -41,218 +41,218 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
  */
 public class ColorSection extends AbstractTextSection<ColorProperty, String> implements ISelectionChangedListener {
 
-	static ImageRegistry imageRegistry = new ImageRegistry();
+    static ImageRegistry imageRegistry = new ImageRegistry();
 
-	private Label colorPreview;
+    private Label colorPreview;
 
-	public ColorSection(final String propertyId) {
-		super(propertyId);
-	}
+    public ColorSection(final String propertyId) {
+        super(propertyId);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected String getConvertedValue(final String text) {
-		return text;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected String getConvertedValue(final String text) {
+        return text;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doCreateControls(final Composite parent, final TabbedPropertySheetPage tabbedPropertySheetPage) {
-		super.doCreateControls(parent, tabbedPropertySheetPage);
-		FormData fd;
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doCreateControls(final Composite parent, final TabbedPropertySheetPage tabbedPropertySheetPage) {
+        super.doCreateControls(parent, tabbedPropertySheetPage);
+        FormData fd;
 
-		Font font = SdsUiPlugin.getDefault().getColorAndFontService().getFont("Courier, 10");
-		getTextControl().setFont(font);
+        Font font = SdsUiPlugin.getDefault().getColorAndFontService().getFont("Courier, 10");
+        getTextControl().setFont(font);
 
-		// .. preview icon
-		colorPreview = getWidgetFactory().createLabel(parent, "");
+        // .. preview icon
+        colorPreview = getWidgetFactory().createLabel(parent, "");
 
-		// .. button to open the color dialog
-		Hyperlink chooseLink = getWidgetFactory().createHyperlink(parent, "Choose ...", SWT.NONE);
-		chooseLink.setUnderlined(false);
+        // .. button to open the color dialog
+        Hyperlink chooseLink = getWidgetFactory().createHyperlink(parent, "Choose ...", SWT.NONE);
+        chooseLink.setUnderlined(false);
 
-		chooseLink.addHyperlinkListener(new HyperlinkAdapter(){
-			@Override
-			public void linkActivated(final HyperlinkEvent e) {
-				ColorDialog d = new ColorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
+        chooseLink.addHyperlinkListener(new HyperlinkAdapter(){
+            @Override
+            public void linkActivated(final HyperlinkEvent e) {
+                ColorDialog d = new ColorDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
                 if ((mainWidgetProperty != null) && (mainWidgetProperty.getPropertyValue() != null)) {
                     String propertyValue = mainWidgetProperty.getPropertyValue();
                     RGB oldRgb = SdsUiPlugin.getDefault().getColorAndFontService()
                             .getColor(propertyValue).getRGB();
                     d.setRGB(oldRgb);
                 }
-				RGB rgb = d.open();
-				if (rgb != null) {
-					applyPropertyChange(ColorAndFontUtil.toHex(rgb.red, rgb.green, rgb.blue));
-				}
-			}
-		});
+                RGB rgb = d.open();
+                if (rgb != null) {
+                    applyPropertyChange(ColorAndFontUtil.toHex(rgb.red, rgb.green, rgb.blue));
+                }
+            }
+        });
 
-		// .. layout
-		fd = new FormData();
-		fd.right = new FormAttachment(50,0);
-		chooseLink.setLayoutData(fd);
+        // .. layout
+        fd = new FormData();
+        fd.right = new FormAttachment(50,0);
+        chooseLink.setLayoutData(fd);
 
-		fd = new FormData();
-		fd.right = new FormAttachment(chooseLink, -5);
-		colorPreview.setLayoutData(fd);
+        fd = new FormData();
+        fd.right = new FormAttachment(chooseLink, -5);
+        colorPreview.setLayoutData(fd);
 
-		fd = new FormData();
-		fd.left = new FormAttachment(0,0);
-		fd.right = new FormAttachment(colorPreview,-5);
-		getTextControl().setLayoutData(fd);
+        fd = new FormData();
+        fd.left = new FormAttachment(0,0);
+        fd.right = new FormAttachment(colorPreview,-5);
+        getTextControl().setLayoutData(fd);
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doRefreshControls(final ColorProperty widgetProperty) {
-		// .. refresh colored preview icon
-		if (widgetProperty != null) {
-			String hexOrId = widgetProperty.getPropertyValue();
-			setCurrentText(hexOrId);
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doRefreshControls(final ColorProperty widgetProperty) {
+        // .. refresh colored preview icon
+        if (widgetProperty != null) {
+            String hexOrId = widgetProperty.getPropertyValue();
+            setCurrentText(hexOrId);
 
-			RGB rgb = SdsUiPlugin.getDefault().getColorAndFontService().getColor(hexOrId).getRGB();
+            RGB rgb = SdsUiPlugin.getDefault().getColorAndFontService().getColor(hexOrId).getRGB();
 
-			if (rgb != null) {
-				colorPreview.setImage(getIcon(rgb, 20, 20));
-			} else {
-				colorPreview.setImage(getNoColorIcon(20, 20));
-			}
-		}
-	}
+            if (rgb != null) {
+                colorPreview.setImage(getIcon(rgb, 20, 20));
+            } else {
+                colorPreview.setImage(getNoColorIcon(20, 20));
+            }
+        }
+    }
 
-	/**
-	 * Creates a small icon using the specified color.
-	 *
-	 * @param rgb
-	 *            the color
-	 * @return an icon
-	 */
-	private Image getIcon(final RGB rgb, final int width, final int height) {
-		assert rgb != null : "rgb!=null"; //$NON-NLS-1$
+    /**
+     * Creates a small icon using the specified color.
+     *
+     * @param rgb
+     *            the color
+     * @return an icon
+     */
+    private Image getIcon(final RGB rgb, final int width, final int height) {
+        assert rgb != null : "rgb!=null"; //$NON-NLS-1$
 
-		String id = "SDS.COLORPROPERTY.ICON_" + rgb.red + "_" + rgb.green + "_" + rgb.blue;
+        String id = "SDS.COLORPROPERTY.ICON_" + rgb.red + "_" + rgb.green + "_" + rgb.blue;
 
-		if (imageRegistry.get(id) == null) {
-			Color color = CustomMediaFactory.getInstance().getColor(rgb);
+        if (imageRegistry.get(id) == null) {
+            Color color = CustomMediaFactory.getInstance().getColor(rgb);
 
-			// create new graphics context, to draw on
-			Image image = new Image(Display.getCurrent(), width, height);
-			GC gc = new GC(image);
+            // create new graphics context, to draw on
+            Image image = new Image(Display.getCurrent(), width, height);
+            GC gc = new GC(image);
 
-			// draw transparent background
-			Color bg = CustomMediaFactory.getInstance().getColor(255, 255, 255);
-			gc.setBackground(bg);
-			gc.fillRectangle(0, 0, width, height);
-			// draw icon
-			gc.setBackground(color);
-			Rectangle r = new Rectangle(0, 0, width - 1, height - 1);
-			gc.fillRectangle(r);
-			gc.setBackground(CustomMediaFactory.getInstance().getColor(0, 0, 0));
-			gc.drawRectangle(r);
-			gc.dispose();
+            // draw transparent background
+            Color bg = CustomMediaFactory.getInstance().getColor(255, 255, 255);
+            gc.setBackground(bg);
+            gc.fillRectangle(0, 0, width, height);
+            // draw icon
+            gc.setBackground(color);
+            Rectangle r = new Rectangle(0, 0, width - 1, height - 1);
+            gc.fillRectangle(r);
+            gc.setBackground(CustomMediaFactory.getInstance().getColor(0, 0, 0));
+            gc.drawRectangle(r);
+            gc.dispose();
 
-			// setup tranparency
-			image.getImageData().transparentPixel = image.getImageData().palette.getPixel(new RGB(255, 255, 255));
+            // setup tranparency
+            image.getImageData().transparentPixel = image.getImageData().palette.getPixel(new RGB(255, 255, 255));
 
-			imageRegistry.put(id, image);
-		}
+            imageRegistry.put(id, image);
+        }
 
-		return imageRegistry.get(id);
-	}
+        return imageRegistry.get(id);
+    }
 
-	/**
-	 * Creates a small icon using the specified color.
-	 *
-	 * @param rgb
-	 *            the color
-	 * @return an icon
-	 */
-	private Image getNoColorIcon(final int width, final int height) {
-		String id = "SDS.COLORPROPERTY.ICON_NO_COLOR";
+    /**
+     * Creates a small icon using the specified color.
+     *
+     * @param rgb
+     *            the color
+     * @return an icon
+     */
+    private Image getNoColorIcon(final int width, final int height) {
+        String id = "SDS.COLORPROPERTY.ICON_NO_COLOR";
 
-		if (imageRegistry.get(id) == null) {
-			// create new graphics context, to draw on
-			Image image = new Image(Display.getCurrent(), width, height);
-			GC gc = new GC(image);
+        if (imageRegistry.get(id) == null) {
+            // create new graphics context, to draw on
+            Image image = new Image(Display.getCurrent(), width, height);
+            GC gc = new GC(image);
 
-			// draw transparent background
-			Color bg = CustomMediaFactory.getInstance().getColor(255, 255, 255);
-			gc.setBackground(bg);
-			gc.fillRectangle(0, 0, width, height);
-			// draw lines
-			gc.drawLine(0, 0, 20, 20);
-			gc.dispose();
+            // draw transparent background
+            Color bg = CustomMediaFactory.getInstance().getColor(255, 255, 255);
+            gc.setBackground(bg);
+            gc.fillRectangle(0, 0, width, height);
+            // draw lines
+            gc.drawLine(0, 0, 20, 20);
+            gc.dispose();
 
-			// setup tranparency
-			image.getImageData().transparentPixel = image.getImageData().palette.getPixel(new RGB(255, 255, 255));
+            // setup tranparency
+            image.getImageData().transparentPixel = image.getImageData().palette.getPixel(new RGB(255, 255, 255));
 
-			imageRegistry.put(id, image);
-		}
+            imageRegistry.put(id, image);
+        }
 
-		return imageRegistry.get(id);
-	}
+        return imageRegistry.get(id);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void selectionChanged(final SelectionChangedEvent event) {
-		final NamedColor namedColor = (NamedColor) ((IStructuredSelection) event.getSelection()).getFirstElement();
-		applyPropertyChange(namedColor.getHex());
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void selectionChanged(final SelectionChangedEvent event) {
+        final NamedColor namedColor = (NamedColor) ((IStructuredSelection) event.getSelection()).getFirstElement();
+        applyPropertyChange(namedColor.getHex());
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected List<IContentProposal> getContentProposals(final ColorProperty property, final AbstractWidgetModel selectedWidget,
-			final List<AbstractWidgetModel> selectedWidgets) {
-		List<NamedColor> colors = SdsUiPlugin.getDefault().getColorAndFontService().listAvailableColors();
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected List<IContentProposal> getContentProposals(final ColorProperty property, final AbstractWidgetModel selectedWidget,
+            final List<AbstractWidgetModel> selectedWidgets) {
+        List<NamedColor> colors = SdsUiPlugin.getDefault().getColorAndFontService().listAvailableColors();
 
-		List<IContentProposal> proposals = new ArrayList<IContentProposal>();
-		for (NamedColor c : colors) {
-			proposals.add(new NamedColorContentProposal(c));
-		}
-		return proposals;
-	}
+        List<IContentProposal> proposals = new ArrayList<IContentProposal>();
+        for (NamedColor c : colors) {
+            proposals.add(new NamedColorContentProposal(c));
+        }
+        return proposals;
+    }
 
-	/**
-	 * Proposal for named colors.
-	 *
-	 * @author Sven Wende
-	 *
-	 */
-	private static final class NamedColorContentProposal implements IContentProposal {
-		private final NamedColor namedColor;
+    /**
+     * Proposal for named colors.
+     *
+     * @author Sven Wende
+     *
+     */
+    private static final class NamedColorContentProposal implements IContentProposal {
+        private final NamedColor namedColor;
 
-		public NamedColorContentProposal(final NamedColor namedColor) {
-			assert namedColor != null;
-			this.namedColor = namedColor;
-		}
+        public NamedColorContentProposal(final NamedColor namedColor) {
+            assert namedColor != null;
+            this.namedColor = namedColor;
+        }
 
-		public String getContent() {
-			return "${" + namedColor.getName() + "}";
-		}
+        public String getContent() {
+            return "${" + namedColor.getName() + "}";
+        }
 
-		public int getCursorPosition() {
-			return 0;
-		}
+        public int getCursorPosition() {
+            return 0;
+        }
 
-		public String getDescription() {
-			return namedColor.getDescription();
-		}
+        public String getDescription() {
+            return namedColor.getDescription();
+        }
 
-		public String getLabel() {
-			return namedColor.getName();
-		}
+        public String getLabel() {
+            return namedColor.getName();
+        }
 
-	}
+    }
 
 }

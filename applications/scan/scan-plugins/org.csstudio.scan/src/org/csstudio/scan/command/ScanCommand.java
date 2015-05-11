@@ -72,7 +72,7 @@ abstract public class ScanCommand
 
     /** Error handler script name */
     private volatile String error_handler = "";
-    
+
     /** Initialize */
     public ScanCommand()
     {
@@ -88,7 +88,7 @@ abstract public class ScanCommand
         final int sep = name.lastIndexOf('.');
         return name.substring(sep + 1);
     }
-    
+
     /** A command with implementing class "DoSomeThingCommand"
      *  has an ID of "do_some_thing"
      *  @return ID of this command
@@ -96,8 +96,8 @@ abstract public class ScanCommand
     final public String getCommandID()
     {
         // Detected by Frederic Arnaud:
-        // Java 7 will split "DoSomeThingCommand" into [ "", "Do", "Some", "Thing", "Command" ] 
-        // Java 8 will instead return  [  "Do", "Some", "Thing", "Command" ] 
+        // Java 7 will split "DoSomeThingCommand" into [ "", "Do", "Some", "Thing", "Command" ]
+        // Java 8 will instead return  [  "Do", "Some", "Thing", "Command" ]
         final String[] sections = getCommandName().split("(?=[A-Z][a-z])");
         final int start = (sections.length > 0  &&  sections[0].isEmpty()) ? 1 : 0;
         final StringBuilder buf = new StringBuilder();
@@ -119,7 +119,7 @@ abstract public class ScanCommand
      *  within its body, but the <code>IncludeCommand</code>
      *  will not be able to assign addresses for the included
      *  scan or possibly further sub-includes.
-     *  
+     *
      *  @return Address of this command or -1
      */
     final public long getAddress()
@@ -144,7 +144,7 @@ abstract public class ScanCommand
     }
 
     /** Declare properties of this command
-     * 
+     *
      *  <p>Derived classes should add their properties and
      *  call the base implementation to declare inherited properties.
      *
@@ -204,7 +204,7 @@ abstract public class ScanCommand
             type = String.class;
         else if (type == DeviceInfo[].class)
             type = String[].class;
-        
+
         // Try to adjust string if more specific type is required
         try
         {
@@ -303,13 +303,13 @@ abstract public class ScanCommand
     {
         this.error_handler = error_handler;
     }
-    
+
     /** Write the command (and its sub-commands) to XML document.
      *
      *  <p>A command called AbcCommand writes itself as a tag "abc"
      *  so that the {@link XMLCommandReader} can later determine
      *  which class to use for reading the command back from XML.
-     *  
+     *
      *  <p>This method creates the overall XML element for the command
      *  and calls <code>addXMLElements()</code> for the content.
      *  Derived classes should update <code>addXMLElements()</code>.
@@ -343,10 +343,10 @@ abstract public class ScanCommand
     }
 
     /** Read command parameters from XML element
-     *  
+     *
      *  <p>Derived classes must call base class implementation
      *  to read inherited properties.
-     *  
+     *
      *  @param factory ScanCommandFactory to use in case inner scan commands,
      *                 for example a loop body, need to be created
      *  @param element

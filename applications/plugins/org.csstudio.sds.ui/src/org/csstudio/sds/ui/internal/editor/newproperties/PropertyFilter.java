@@ -9,40 +9,40 @@ import org.eclipse.jface.viewers.IFilter;
  * Filter implementation that selects {@link EditPart} instances which control
  * an {@link AbstractWidgetModel} that has a certain {@link WidgetProperty}
  * which is identified by its id.
- * 
+ *
  * Can be
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class PropertyFilter implements IFilter {
 
-	private String propertyId;
+    private String propertyId;
 
-	public PropertyFilter() {
-	}
+    public PropertyFilter() {
+    }
 
-	public PropertyFilter(String propertyId) {
-		this.propertyId = propertyId;
-	}
+    public PropertyFilter(String propertyId) {
+        this.propertyId = propertyId;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public final boolean select(Object o) {
-		boolean result = false;
+    /**
+     * {@inheritDoc}
+     */
+    public final boolean select(Object o) {
+        boolean result = false;
 
-		if (o instanceof EditPart) {
-			EditPart ep = (EditPart) o;
+        if (o instanceof EditPart) {
+            EditPart ep = (EditPart) o;
 
-			if (ep.getModel() instanceof AbstractWidgetModel) {
-				AbstractWidgetModel widget = (AbstractWidgetModel) ep.getModel();
+            if (ep.getModel() instanceof AbstractWidgetModel) {
+                AbstractWidgetModel widget = (AbstractWidgetModel) ep.getModel();
 
-				result = widget.hasProperty(propertyId);
-			}
-		}
+                result = widget.hasProperty(propertyId);
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 
 }

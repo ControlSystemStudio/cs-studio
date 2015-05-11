@@ -13,11 +13,11 @@ import org.eclipse.ui.handlers.HandlerUtil;
 public class OpenShiftBuilderDialog extends AbstractAdaptedHandler<ShiftBuilder> {
 
     public OpenShiftBuilderDialog() {
-	    super(ShiftBuilder.class);
+        super(ShiftBuilder.class);
     }
 
     @SuppressWarnings("unchecked")
-	@Override
+    @Override
     protected void execute(List<ShiftBuilder> data, final ExecutionEvent event) throws Exception {
         final Shell shell = HandlerUtil.getActiveShell(event);
         if (data == null || data.isEmpty()) {

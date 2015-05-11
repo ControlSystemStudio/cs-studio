@@ -32,15 +32,15 @@ import org.csstudio.sds.util.ColorAndFontUtil;
 import org.eclipse.core.runtime.Path;
 
 /**
- * TODO (jhatje) : 
- * 
+ * TODO (jhatje) :
+ *
  * @author jhatje
  * @since 01.06.2012
  */
 public class DisplayBuilder {
 
     private List<DisplayModel> _modelList = new ArrayList<DisplayModel>();
-    
+
     public DisplayModel[] buildDisplayModel(RecordConfiguration config) {
         EpicsRecordTypesEnum[] recordTypes = EpicsRecordTypesEnum.values();
         for (EpicsRecordTypesEnum recordType : recordTypes) {

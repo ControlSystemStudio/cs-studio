@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.RegistryFactory;
 @SuppressWarnings("nls")
 public class DataLogFactory
 {
-	/** Plugin ID defined in MANIFEST.MF */
+    /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.scan.log";
 
     private static IDataLogFactory factory = null;
@@ -29,31 +29,31 @@ public class DataLogFactory
     /** @return IDataLogFactory from registry or default (mem log) */
     private static synchronized IDataLogFactory getDataLogFactory() throws Exception
     {
-    	if (factory == null)
-    	{
-        	// Is registry available?
-        	final IExtensionRegistry registry = RegistryFactory.getRegistry();
-        	if (registry != null)
-        	{	// Locate 'plugged' data logger
-        		final IConfigurationElement[] configs = registry.getConfigurationElementsFor("org.csstudio.scan.log.datalog");
-        		// Allow only one
-        		if (configs.length > 1)
-        		{
-        			final Logger logger = Logger.getLogger(DataLogFactory.class.getName());
-    				logger.log(Level.SEVERE, "Found multiple data loggers:");
-    				for (IConfigurationElement config : configs)
-    					logger.log(Level.SEVERE, config.getContributor().getName() + " - " + config.getAttribute("class") + " [" + config.getAttribute("name") + "]");
-        			throw new Exception("Found multiple scan data loggers");
-        		}
-        		else if (configs.length == 1)
-        			factory = (IDataLogFactory) configs[0].createExecutableExtension("class");
-        	}
+        if (factory == null)
+        {
+            // Is registry available?
+            final IExtensionRegistry registry = RegistryFactory.getRegistry();
+            if (registry != null)
+            {    // Locate 'plugged' data logger
+                final IConfigurationElement[] configs = registry.getConfigurationElementsFor("org.csstudio.scan.log.datalog");
+                // Allow only one
+                if (configs.length > 1)
+                {
+                    final Logger logger = Logger.getLogger(DataLogFactory.class.getName());
+                    logger.log(Level.SEVERE, "Found multiple data loggers:");
+                    for (IConfigurationElement config : configs)
+                        logger.log(Level.SEVERE, config.getContributor().getName() + " - " + config.getAttribute("class") + " [" + config.getAttribute("name") + "]");
+                    throw new Exception("Found multiple scan data loggers");
+                }
+                else if (configs.length == 1)
+                    factory = (IDataLogFactory) configs[0].createExecutableExtension("class");
+            }
 
-        	// Fall back to default logger
-        	if (factory == null)
-        		factory = new MemoryDataLogFactory();
-    	}
-    	return factory;
+            // Fall back to default logger
+            if (factory == null)
+                factory = new MemoryDataLogFactory();
+        }
+        return factory;
     }
 
     /** Create new log for a new scan
@@ -63,8 +63,8 @@ public class DataLogFactory
      */
     public static Scan createDataLog(final String scan_name) throws Exception
     {
-		final Scan scan = getDataLogFactory().createDataLog(scan_name);
-		return scan;
+        final Scan scan = getDataLogFactory().createDataLog(scan_name);
+        return scan;
     }
 
     /** Obtain all available scans
@@ -83,7 +83,7 @@ public class DataLogFactory
      */
     public static DataLog getDataLog(final Scan scan) throws Exception
     {
-		return getDataLogFactory().getDataLog(scan);
+        return getDataLogFactory().getDataLog(scan);
     }
 
     /** Delete logged data for a scan

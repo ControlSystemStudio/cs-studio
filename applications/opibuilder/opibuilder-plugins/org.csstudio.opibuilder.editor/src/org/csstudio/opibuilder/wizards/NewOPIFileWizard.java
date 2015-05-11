@@ -25,42 +25,42 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public class NewOPIFileWizard extends Wizard implements INewWizard {
 
-	private NewOPIFileWizardPage opiFilePage;
+    private NewOPIFileWizardPage opiFilePage;
 
-	private IStructuredSelection selection;
+    private IStructuredSelection selection;
 
-	private IWorkbench workbench;
-
-
-	@Override
-	public void addPages() {
-		opiFilePage =new NewOPIFileWizardPage("OPIFilePage", selection); //$NON-NLS-1$
-		addPage(opiFilePage);
-	}
+    private IWorkbench workbench;
 
 
-	@Override
-	public boolean performFinish() {
-		IFile file = opiFilePage.createNewFile();
+    @Override
+    public void addPages() {
+        opiFilePage =new NewOPIFileWizardPage("OPIFilePage", selection); //$NON-NLS-1$
+        addPage(opiFilePage);
+    }
 
-		if (file == null) {
-			return false;
-		}
 
-		try {
-			workbench.getActiveWorkbenchWindow().getActivePage().openEditor(
-					new FileEditorInput(file), "org.csstudio.opibuilder.OPIEditor");//$NON-NLS-1$
-		} catch (PartInitException e) {
-			MessageDialog.openError(null, "Open OPI File error",
-					"Failed to open the newly created OPI File. \n" + e.getMessage());
+    @Override
+    public boolean performFinish() {
+        IFile file = opiFilePage.createNewFile();
+
+        if (file == null) {
+            return false;
+        }
+
+        try {
+            workbench.getActiveWorkbenchWindow().getActivePage().openEditor(
+                    new FileEditorInput(file), "org.csstudio.opibuilder.OPIEditor");//$NON-NLS-1$
+        } catch (PartInitException e) {
+            MessageDialog.openError(null, "Open OPI File error",
+                    "Failed to open the newly created OPI File. \n" + e.getMessage());
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "OPIEditor activation error", e);
-		}
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.workbench = workbench;
-		this.selection = selection;
-	}
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
+        this.workbench = workbench;
+        this.selection = selection;
+    }
 }

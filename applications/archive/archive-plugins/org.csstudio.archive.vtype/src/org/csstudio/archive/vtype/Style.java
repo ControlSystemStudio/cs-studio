@@ -25,7 +25,7 @@ public enum Style
 
     /** If possible, convert to String */
     String;
-    
+
     public static VTypeFormat getFormat(final Style style, final int precision)
     {
         switch (style)

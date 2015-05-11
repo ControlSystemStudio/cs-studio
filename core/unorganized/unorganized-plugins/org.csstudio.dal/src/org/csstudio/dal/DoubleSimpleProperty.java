@@ -33,9 +33,9 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.SimpleProperty
  */
 public interface DoubleSimpleProperty extends NumericSimpleProperty<Double,Double>,
-	DoubleAccess
+    DoubleAccess
 {
-	//
+    //
 }
 
 /* __oOo__ */

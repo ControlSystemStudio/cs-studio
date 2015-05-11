@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
  * @since 21.09.2007
  */
 public class ADLChildren {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ADLChildren.class);
 
     /**
@@ -69,7 +69,7 @@ public class ADLChildren {
     private final ArrayList<Widget> _childrens = new ArrayList<Widget>();
 
     /**
-     * @param adlChildren 
+     * @param adlChildren
      */
     public ADLChildren(final ADLWidget adlChildren, AbstractWidgetModel displayModel, IPath targetPath) {
         ADLWidget storedBasicAttribute=null;
@@ -183,11 +183,11 @@ public class ADLChildren {
                 e.printStackTrace();
             }
         }
-        
+
     }
 
-    
-    
+
+
     /**
      * @return the ADL Grouping Container Children's.
      */

@@ -35,8 +35,8 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 /**
- * Logging is configured here: Install watch for log4j configuration file, install bridge for jul. 
- * 
+ * Logging is configured here: Install watch for log4j configuration file, install bridge for jul.
+ *
  * @author jpenning
  * @since 21.03.2012
  */
@@ -50,7 +50,7 @@ public class InitLogging  {
         LOG.info("Initializing slf4j over log4j logging");
         // disable dal-internal configuration of logging
         System.setProperty("dal.logging", "false"); // dal.logging is defined as Plugs.PLUGS_LOGGING
-        
+
         try {
             String filePath = getFilePath();
             PropertyConfigurator.configureAndWatch(filePath);
@@ -63,7 +63,7 @@ public class InitLogging  {
         java.util.logging.Logger.getLogger("").setLevel(Level.ALL);
         LOG.info("Installed bridge from java.util.logging to sl4j");
     }
-    
+
     private static String getFilePath() throws IOException {
         // actually the log4j properties are found inside the org.apache.log4j fragment
         // take care that there is exactly one fragment with log4j properties defined in the launcher
@@ -73,6 +73,6 @@ public class InitLogging  {
         String result = FileLocator.toFileURL(url).getPath();
         return result;
     }
-    
+
 
 }

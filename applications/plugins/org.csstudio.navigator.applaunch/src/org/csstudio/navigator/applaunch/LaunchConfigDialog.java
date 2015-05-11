@@ -17,51 +17,51 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class LaunchConfigDialog extends Dialog
 {
-	final private LaunchConfigUI gui;
-	private LaunchConfig edited_config = null;
-	
-	/** Initialize
-	 *  @param shell
-	 *  @param config
-	 */
-	protected LaunchConfigDialog(final Shell shell, final LaunchConfig config)
+    final private LaunchConfigUI gui;
+    private LaunchConfig edited_config = null;
+
+    /** Initialize
+     *  @param shell
+     *  @param config
+     */
+    protected LaunchConfigDialog(final Shell shell, final LaunchConfig config)
     {
-	    super(shell);
-	    gui = new LaunchConfigUI(config);
+        super(shell);
+        gui = new LaunchConfigUI(config);
     }
 
-	@Override
+    @Override
     protected void configureShell(final Shell shell)
     {
-	    super.configureShell(shell);
-	    shell.setText(Messages.LaunchConfigTitle);
-	    shell.setSize(400, 350);
+        super.configureShell(shell);
+        shell.setText(Messages.LaunchConfigTitle);
+        shell.setSize(400, 350);
     }
 
-	/** Allow resize */
-	@Override
+    /** Allow resize */
+    @Override
     protected boolean isResizable()
     {
-	    return true;
+        return true;
     }
 
-	/** Display {@link LaunchConfigUI} inside dialog */
-	@Override
+    /** Display {@link LaunchConfigUI} inside dialog */
+    @Override
     protected Control createDialogArea(final Composite parent)
     {
-		return gui.createControl(parent);
-    }
-	
-	@Override
-    protected void okPressed()
-    {
-		edited_config = gui.getConfig();
-	    super.okPressed();
+        return gui.createControl(parent);
     }
 
-	/** @return {@link LaunchConfig} that the user entered or <code>null</code> on cancel */
-	public LaunchConfig getConfig()
+    @Override
+    protected void okPressed()
     {
-	    return edited_config;
+        edited_config = gui.getConfig();
+        super.okPressed();
+    }
+
+    /** @return {@link LaunchConfig} that the user entered or <code>null</code> on cancel */
+    public LaunchConfig getConfig()
+    {
+        return edited_config;
     }
 }

@@ -17,16 +17,16 @@ import org.junit.Test;
  */
 public class PVHelperTest
 {
-	@Test
-	public void testGetField()
-	{
-		assertThat("INP", equalTo(PVHelper.getField("SomePV.INP")));
-		assertThat("VAL", equalTo(PVHelper.getField("SomePV")));
-	}
+    @Test
+    public void testGetField()
+    {
+        assertThat("INP", equalTo(PVHelper.getField("SomePV.INP")));
+        assertThat("VAL", equalTo(PVHelper.getField("SomePV")));
+    }
 
-	@Test
-	public void testGetPV()
-	{
-		assertThat("SomePV", equalTo(PVHelper.getPV("SomePV.INP")));
-	}
+    @Test
+    public void testGetPV()
+    {
+        assertThat("SomePV", equalTo(PVHelper.getPV("SomePV.INP")));
+    }
 }

@@ -25,7 +25,7 @@ import org.epics.vtype.VType;
 import org.junit.Test;
 
 /** JUnit-based demo of copying data
- * 
+ *
  *  <p>Not a test, not a great tool, but a quick hack
  *  that was actually used to copy data from a backup MySQL
  *  setup to an Oracle setup that had partition issue,
@@ -46,24 +46,24 @@ public class CopyDemo
     {
         return new RDBArchiveReader("jdbc:mysql://server1/archive", "archive", "$archive", "", "");
     }
-    
+
     private RDBArchiveConfig getTargetConfig() throws Exception
     {
         return new RDBArchiveConfig("jdbc:mysql://server2/archive", "archive", "$archive", "");
     }
-    
+
     private ArchiveWriter getWriter() throws Exception
     {
         return new RDBArchiveWriter("jdbc:mysql://server2/archive", "archive", "$archive", "", true);
-	}
-    
+    }
+
     @Test
     public void demoCopy() throws Exception
     {
         final DateFormat parser = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         final Timestamp start = Timestamp.of(parser.parse("2013-05-17 17:00"));
         final Timestamp end = Timestamp.of(parser.parse("2013-05-18 00:00"));
-        
+
         final ArchiveReader reader = getReader();
         final ArchiveWriter writer = getWriter();
 
@@ -78,7 +78,7 @@ public class CopyDemo
             group = config.addGroup(engine, "demo");
             mode = config.getSampleMode(false, 0.0, 30.0);
         }
-        
+
         final String[] names = reader.getNamesByPattern(1, "*");
         for (String name : names)
         {
@@ -88,7 +88,7 @@ public class CopyDemo
 
             if (create_config)
                 config.addChannel(group, name, mode);
-            
+
             long count = 0;
             final WriteChannel channel = writer.getChannel(name);
             while (values.hasNext())
@@ -119,7 +119,7 @@ public class CopyDemo
             writer.flush();
             System.out.println(count + " samples");
         }
-        
+
         writer.close();
         reader.close();
     }

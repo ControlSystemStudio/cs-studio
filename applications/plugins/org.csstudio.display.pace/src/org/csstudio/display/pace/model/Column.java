@@ -19,7 +19,7 @@ import org.w3c.dom.Element;
  *
  *  @author Delphy Nypaver Armstrong
  *  @author Kay Kasemir
- *  
+ *
  *      reviewed by Delphy 01/29/09
  */
 @SuppressWarnings("nls")
@@ -47,14 +47,14 @@ public class Column
             throw new Exception("Missing column name");
         if (pv_pattern.length() <= 0)
             throw new Exception("Missing PV name pattern");
-        // Look in the XML file to see if the column has comment, name and/or 
+        // Look in the XML file to see if the column has comment, name and/or
         // date pvs.
         final String name_pv = DOMHelper.getSubelementString(col_node, "name_pv");
         final String date_pv = DOMHelper.getSubelementString(col_node, "date_pv");
         final String comment_pv = DOMHelper.getSubelementString(col_node, "comment_pv");
         // When access=="ro", make read-only. Otherwise, including no access
         // info, use read/write
-        return new Column(name, pv_pattern, "ro".equalsIgnoreCase(access), 
+        return new Column(name, pv_pattern, "ro".equalsIgnoreCase(access),
               name_pv, date_pv, comment_pv);
     }
 
@@ -80,14 +80,14 @@ public class Column
     {
         return name;
     }
- 
+
 
     /** @return <code>true</code> for read-only column */
     public boolean isReadonly()
     {
         return readonly;
     }
-    
+
     /** @return Name of the PV with unexpanded macros */
     protected String getPvWithMacros()
     {
@@ -107,13 +107,13 @@ public class Column
     {
         return namePv_with_macros;
     }
-    
+
     /** @return macro string of the pv for the comment made with the change or "" */
     public String getCommentPvWithMacros()
     {
         return commentPv_with_macros;
     }
-    
+
     /** @return macro string of the pv for the date/time the change was made or "" */
     public String getDatePvWithMacros()
     {

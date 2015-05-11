@@ -24,7 +24,7 @@ import org.junit.Test;
 public class RDBCacheUnitTest
 {
     final private static String CACHE_NAME = "Test";
-    
+
     /** @return Thread that runs the RDBCache timer or <code>null</code> */
     public Thread findThread()
     {
@@ -34,7 +34,7 @@ public class RDBCacheUnitTest
                 return thread;
         return null;
     }
-    
+
     @Test
     public void testCache() throws Exception
     {
@@ -60,13 +60,13 @@ public class RDBCacheUnitTest
         cache.releaseConnection();
         thread = findThread();
         assertThat(thread, notNullValue());
-        
+
         // Get same back
         Connection connection2 = cache.getConnection();
         System.out.println(connection2);
         assertThat(connection2, sameInstance(connection));
         cache.releaseConnection();
-        
+
         // .. once more within timeout
         Thread.sleep(500);
         connection2 = cache.getConnection();

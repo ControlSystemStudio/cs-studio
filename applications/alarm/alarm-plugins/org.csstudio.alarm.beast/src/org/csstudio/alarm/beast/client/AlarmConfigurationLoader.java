@@ -110,9 +110,9 @@ public class AlarmConfigurationLoader
 
         // Read component config elements
         loadCommonConfig(component, tree_component);
-		config.configureItem(tree_component, tree_component.getGuidance(),
-				tree_component.getDisplays(), tree_component.getCommands(),
-				tree_component.getAutomatedActions());
+        config.configureItem(tree_component, tree_component.getGuidance(),
+                tree_component.getDisplays(), tree_component.getCommands(),
+                tree_component.getAutomatedActions());
 
         System.out.println("Loading " + tree_component.getPathName());
 
@@ -150,10 +150,10 @@ public class AlarmConfigurationLoader
     private void loadCommonConfig(final Element node,
             final AlarmTreeItem item) throws Exception
     {
-    	item.setGuidance(loadGDC(node, XMLTags.GUIDANCE));
-    	item.setDisplays(loadGDC(node, XMLTags.DISPLAY));
-    	item.setCommands(loadGDC(node, XMLTags.COMMAND));
-    	item.setAutomatedActions(loadAA(node, XMLTags.AUTOMATED_ACTION));
+        item.setGuidance(loadGDC(node, XMLTags.GUIDANCE));
+        item.setDisplays(loadGDC(node, XMLTags.DISPLAY));
+        item.setCommands(loadGDC(node, XMLTags.COMMAND));
+        item.setAutomatedActions(loadAA(node, XMLTags.AUTOMATED_ACTION));
     }
 
     /** Load AlarmTreePV
@@ -226,24 +226,24 @@ public class AlarmConfigurationLoader
         }
         return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
-    
+
     /** Load Automated Actions
      *  @param node DOM node, could be a component or a PV
      *  @param name name of the item to load, it must be XMLTags.AUTOMATED_ACTION
      *  @return Automated Actions array, never null.
      */
-	private AADataStructure[] loadAA(final Element node, final String name)
-			throws Exception {
-		final List<AADataStructure> aaList = new ArrayList<AADataStructure>();
+    private AADataStructure[] loadAA(final Element node, final String name)
+            throws Exception {
+        final List<AADataStructure> aaList = new ArrayList<AADataStructure>();
 
-		Element aaNode = DOMHelper.findFirstElementNode(node.getFirstChild(), name);
-		while (aaNode != null) {
-			String title = DOMHelper.getSubelementString(aaNode, XMLTags.TITLE);
-			String details = DOMHelper.getSubelementString(aaNode, XMLTags.DETAILS);
-			Integer delay = DOMHelper.getSubelementInt(aaNode, XMLTags.DELAY);
-			aaList.add(new AADataStructure(title, details, delay));
-			aaNode = DOMHelper.findNextElementNode(aaNode, name);
-		}
-		return aaList.toArray(new AADataStructure[aaList.size()]);
-	}
+        Element aaNode = DOMHelper.findFirstElementNode(node.getFirstChild(), name);
+        while (aaNode != null) {
+            String title = DOMHelper.getSubelementString(aaNode, XMLTags.TITLE);
+            String details = DOMHelper.getSubelementString(aaNode, XMLTags.DETAILS);
+            Integer delay = DOMHelper.getSubelementInt(aaNode, XMLTags.DELAY);
+            aaList.add(new AADataStructure(title, details, delay));
+            aaNode = DOMHelper.findNextElementNode(aaNode, name);
+        }
+        return aaList.toArray(new AADataStructure[aaList.size()]);
+    }
 }

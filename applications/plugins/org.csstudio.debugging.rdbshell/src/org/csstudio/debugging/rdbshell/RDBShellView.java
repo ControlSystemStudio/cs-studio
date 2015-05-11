@@ -40,7 +40,7 @@ public class RDBShellView extends ViewPart
 {
     /** View ID registered in plugin.xml */
     public static final String ID = "org.csstudio.debugging.rdbshell.view";
-    
+
     // Memento tags
     final private static String MEMENTO_QUERY = "QUERY";
     final private static String MEMENTO_USER = "USER";
@@ -85,7 +85,7 @@ public class RDBShellView extends ViewPart
         url.setText(prefs.getString(Activator.ID, MEMENTO_URL, "jdbc:oracle:thin:@//HOST:1521/DB", null));
         user.setText(prefs.getString(Activator.ID, MEMENTO_USER, "user", null));
         query.setText(prefs.getString(Activator.ID, MEMENTO_QUERY, "select * from dual", null));
-        
+
         // Override with values from last invocation
         if (memento != null)
         {
@@ -99,7 +99,7 @@ public class RDBShellView extends ViewPart
             if (saved != null)
                 query.setText(saved);
         }
-        
+
         run.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -132,7 +132,7 @@ public class RDBShellView extends ViewPart
 
         sash.setWeights(new int[] { 30, 70 });
     }
-        
+
     /** Create sash elements for query
      *  @param parent Parent sash
      */
@@ -144,13 +144,13 @@ public class RDBShellView extends ViewPart
         parent.setLayout(layout);
 
         // URL: ____ User: ____ Password: ____ [Run]
-        // Query:                        
+        // Query:
         // -----------------------------------------
         // -----------------------------------------
         Label l = new Label(parent, 0);
         l.setText("URL:");
         l.setLayoutData(new GridData());
-        
+
         url = new Text(parent, SWT.BORDER);
         url.setToolTipText("Enter database URL");
         GridData gd = new GridData();
@@ -158,11 +158,11 @@ public class RDBShellView extends ViewPart
         gd.grabExcessHorizontalSpace = true;
         gd.minimumWidth = 200;
         url.setLayoutData(gd);
-        
+
         l = new Label(parent, 0);
         l.setText("User:");
         l.setLayoutData(new GridData());
-        
+
         user = new Text(parent, SWT.BORDER);
         user.setToolTipText("Enter database user name");
         user.setLayoutData(new GridData(SWT.FILL, 0, true, false));
@@ -170,7 +170,7 @@ public class RDBShellView extends ViewPart
         l = new Label(parent, 0);
         l.setText("Password:");
         l.setLayoutData(new GridData());
-        
+
         password = new Text(parent, SWT.BORDER | SWT.PASSWORD);
         password.setToolTipText("Enter database user password");
         password.setLayoutData(new GridData(SWT.FILL, 0, true, false));
@@ -183,7 +183,7 @@ public class RDBShellView extends ViewPart
         l = new Label(parent, 0);
         l.setText("Query:");
         l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
-        
+
         // New row
         query = new Text(parent, SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.BORDER);
         query.setToolTipText("Enter SQL commands");
@@ -197,7 +197,7 @@ public class RDBShellView extends ViewPart
     {
         final Composite parent = new Composite(sash, SWT.BORDER);
         parent.setLayout(new FillLayout());
-        
+
         result = new Table(parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
         result.setHeaderVisible(true);
@@ -226,7 +226,7 @@ public class RDBShellView extends ViewPart
                 NLS.bind("Cannot connect to database:\n{0}", ex.getMessage()));
            return;
         }
-        
+
         ArrayList<String[]> rows;
         try
         {
@@ -243,10 +243,10 @@ public class RDBShellView extends ViewPart
         {
             rdb.close();
         }
-            
+
         if (rows.size() < 1)
             return;
-            
+
         // Display: Create columns for each header
         final String[] headers = rows.get(0);
         for (String header : headers)

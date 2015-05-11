@@ -200,10 +200,10 @@ public class PreferencePage extends FieldEditorPreferencePage
         addField(new BooleanFieldEditor(Preferences.USE_DEFAULT_ARCHIVES,
                 Messages.UseDefaultArchives_Label, parent));
 
-		addField(new BooleanFieldEditor(Preferences.USE_AUTO_SCALE,
-				Messages.UseAutoScale_Label, parent));
+        addField(new BooleanFieldEditor(Preferences.USE_AUTO_SCALE,
+                Messages.UseAutoScale_Label, parent));
 
-		addField(new BooleanFieldEditor(Preferences.AUTOMATIC_HISTORY_REFRESH,
-				Messages.PrefPage_AutomaticHistoryRefresh, parent));
+        addField(new BooleanFieldEditor(Preferences.AUTOMATIC_HISTORY_REFRESH,
+                Messages.PrefPage_AutomaticHistoryRefresh, parent));
     }
 }

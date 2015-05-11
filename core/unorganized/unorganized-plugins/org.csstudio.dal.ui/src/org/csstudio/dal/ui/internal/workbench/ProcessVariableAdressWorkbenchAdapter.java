@@ -35,24 +35,24 @@ import org.eclipse.ui.model.WorkbenchAdapter;
  */
 public final class ProcessVariableAdressWorkbenchAdapter extends WorkbenchAdapter {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public ImageDescriptor getImageDescriptor(final Object object) {
-		return ImageUtil.getInstance().getImageDescriptor(Activator.PLUGIN_ID, "icons/pv.gif"); //$NON-NLS-1$
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ImageDescriptor getImageDescriptor(final Object object) {
+        return ImageUtil.getInstance().getImageDescriptor(Activator.PLUGIN_ID, "icons/pv.gif"); //$NON-NLS-1$
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getLabel(final Object object) {
-		String label = "<unknown>"; //$NON-NLS-1$
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getLabel(final Object object) {
+        String label = "<unknown>"; //$NON-NLS-1$
 
-		if (object instanceof IProcessVariableAddress) {
-			label = ((IProcessVariableAddress) object).getFullName();
-		}
-		return label;
-	}
+        if (object instanceof IProcessVariableAddress) {
+            label = ((IProcessVariableAddress) object).getFullName();
+        }
+        return label;
+    }
 }

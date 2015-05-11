@@ -18,34 +18,34 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class ScanDataTableContentProvider implements ILazyContentProvider
 {
-	private TableViewer table_viewer = null;
+    private TableViewer table_viewer = null;
 
-	private List<ScanDataRow> rows = null;
+    private List<ScanDataRow> rows = null;
 
-	@SuppressWarnings("unchecked")
+    @SuppressWarnings("unchecked")
     @Override
     public void inputChanged(final Viewer viewer, final Object oldInput, Object input)
     {
-		table_viewer = (TableViewer) viewer;
+        table_viewer = (TableViewer) viewer;
 
-		if (input instanceof List<?>)
-		{
-			rows = (List<ScanDataRow>) input;
-			table_viewer.setItemCount(rows.size());
-		}
-		else
-			table_viewer.setItemCount(0);
+        if (input instanceof List<?>)
+        {
+            rows = (List<ScanDataRow>) input;
+            table_viewer.setItemCount(rows.size());
+        }
+        else
+            table_viewer.setItemCount(0);
     }
 
-	@Override
+    @Override
     public void updateElement(final int index)
     {
-		table_viewer.replace(rows.get(index), index);
+        table_viewer.replace(rows.get(index), index);
     }
 
-	@Override
+    @Override
     public void dispose()
     {
-	    // NOP
+        // NOP
     }
 }

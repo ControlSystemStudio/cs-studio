@@ -19,12 +19,12 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ArchiveWriterFactoryHeadlessTest
 {
-	@Test
-	public void testChannelLookup() throws Exception
-	{
-		final ArchiveWriter writer = ArchiveWriterFactory.getArchiveWriter();
-		assertNotNull(writer);
-		System.out.println("Found " + writer.getClass().getName());
-		writer.close();
-	}
+    @Test
+    public void testChannelLookup() throws Exception
+    {
+        final ArchiveWriter writer = ArchiveWriterFactory.getArchiveWriter();
+        assertNotNull(writer);
+        System.out.println("Found " + writer.getClass().getName());
+        writer.close();
+    }
 }

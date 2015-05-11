@@ -22,143 +22,143 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
- * The abstract widget action, which can be executed from the widget by click or context menu. 
+ * The abstract widget action, which can be executed from the widget by click or context menu.
  * @author Xihui Chen
  *
  */
 public abstract class AbstractWidgetAction implements IAdaptable {
-	
-	
-	private Map<String, AbstractWidgetProperty> propertyMap;
-	
-	private boolean enabled = true;
-	
-	private AbstractWidgetModel widgetModel;
-	public static final String PROP_DESCRIPTION = "description";//$NON-NLS-1$
 
-	public AbstractWidgetAction() {
-		propertyMap = new LinkedHashMap<String, AbstractWidgetProperty>();
-		configureProperties();
-		addProperty(new StringProperty(PROP_DESCRIPTION, "Description", 
-				WidgetPropertyCategory.Basic, ""));		//$NON-NLS-1$
-	}
-	
-	/**Add a property to the widget.
-	 * @param property the property to be added.
-	 */
-	public void addProperty(final AbstractWidgetProperty property){
-		Assert.isNotNull(property);
-		property.setWidgetModel(getWidgetModel());
-		propertyMap.put(property.getPropertyID(), property);				
-	}
-	
-	protected abstract void configureProperties();
-	
-	public String getDefaultDescription(){
-		return getActionType().getDescription();
-	}
-	
-	public String getDescription(){
-		String description = (String)getPropertyValue(PROP_DESCRIPTION);
-		if(description.trim().length()==0)
-			description = getDefaultDescription();
-		return description;
-	}
-	
-	public abstract void run();
-	
-	
-	public abstract ActionType getActionType();
-	
-	public AbstractWidgetProperty[] getAllProperties(){
-		AbstractWidgetProperty[] propArray = new AbstractWidgetProperty[propertyMap.size()];
-		int i=0;
-		for(AbstractWidgetProperty p : propertyMap.values())
-			propArray[i++] = p;
-		return propArray;
-	}	
 
-	
-	public Object getPropertyValue(Object id) {
-		Assert.isTrue(propertyMap.containsKey(id));
-		return propertyMap.get(id).getPropertyValue();
-	}
-	
-	public void setPropertyValue(Object id, Object value) {
-		Assert.isTrue(propertyMap.containsKey(id));
-		propertyMap.get(id).setPropertyValue(value);
-	}
-	
-	
-	
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
-		if(adapter == IWorkbenchAdapter.class)
-			return new IWorkbenchAdapter() {
-				
-				public Object getParent(Object o) {
-					return null;
-				}
-				
-				public String getLabel(Object o) {
-					return getActionType().getDescription();
-				}
-				
-				public ImageDescriptor getImageDescriptor(Object object) {
-					return getActionType().getIconImage();
-				}
-				
-				public Object[] getChildren(Object o) {
-					return new Object[0];
-				}
-			};
-		
-		return null;
-	}
+    private Map<String, AbstractWidgetProperty> propertyMap;
 
-	public AbstractWidgetAction getCopy() {
-		AbstractWidgetAction action = WidgetActionFactory.createWidgetAction(getActionType());
-		for(String id : propertyMap.keySet()){
-			action.setPropertyValue(id, getPropertyValue(id));
-		}
-		return action;
-	}
+    private boolean enabled = true;
 
-	public Set<String> getAllPropertyIDs() {
-		return propertyMap.keySet();
-	}
+    private AbstractWidgetModel widgetModel;
+    public static final String PROP_DESCRIPTION = "description";//$NON-NLS-1$
 
-	public AbstractWidgetProperty getProperty(String propId) {
-		return propertyMap.get(propId);
-	}
+    public AbstractWidgetAction() {
+        propertyMap = new LinkedHashMap<String, AbstractWidgetProperty>();
+        configureProperties();
+        addProperty(new StringProperty(PROP_DESCRIPTION, "Description",
+                WidgetPropertyCategory.Basic, ""));        //$NON-NLS-1$
+    }
 
-	/**
-	 * @param enabled the enabled to set
-	 */
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
+    /**Add a property to the widget.
+     * @param property the property to be added.
+     */
+    public void addProperty(final AbstractWidgetProperty property){
+        Assert.isNotNull(property);
+        property.setWidgetModel(getWidgetModel());
+        propertyMap.put(property.getPropertyID(), property);
+    }
 
-	/**
-	 * @return the enabled
-	 */
-	public boolean isEnabled() {
-		return enabled;
-	}
+    protected abstract void configureProperties();
 
-	/**
-	 * @param widgetModel the widgetModel to set
-	 */
-	public void setWidgetModel(AbstractWidgetModel widgetModel) {
-		this.widgetModel = widgetModel;
-		for(AbstractWidgetProperty property : getAllProperties())
-			property.setWidgetModel(widgetModel);
-	}
+    public String getDefaultDescription(){
+        return getActionType().getDescription();
+    }
 
-	/**
-	 * @return the widgetModel
-	 */
-	public AbstractWidgetModel getWidgetModel() {
-		return widgetModel;
-	}
+    public String getDescription(){
+        String description = (String)getPropertyValue(PROP_DESCRIPTION);
+        if(description.trim().length()==0)
+            description = getDefaultDescription();
+        return description;
+    }
+
+    public abstract void run();
+
+
+    public abstract ActionType getActionType();
+
+    public AbstractWidgetProperty[] getAllProperties(){
+        AbstractWidgetProperty[] propArray = new AbstractWidgetProperty[propertyMap.size()];
+        int i=0;
+        for(AbstractWidgetProperty p : propertyMap.values())
+            propArray[i++] = p;
+        return propArray;
+    }
+
+
+    public Object getPropertyValue(Object id) {
+        Assert.isTrue(propertyMap.containsKey(id));
+        return propertyMap.get(id).getPropertyValue();
+    }
+
+    public void setPropertyValue(Object id, Object value) {
+        Assert.isTrue(propertyMap.containsKey(id));
+        propertyMap.get(id).setPropertyValue(value);
+    }
+
+
+
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
+        if(adapter == IWorkbenchAdapter.class)
+            return new IWorkbenchAdapter() {
+
+                public Object getParent(Object o) {
+                    return null;
+                }
+
+                public String getLabel(Object o) {
+                    return getActionType().getDescription();
+                }
+
+                public ImageDescriptor getImageDescriptor(Object object) {
+                    return getActionType().getIconImage();
+                }
+
+                public Object[] getChildren(Object o) {
+                    return new Object[0];
+                }
+            };
+
+        return null;
+    }
+
+    public AbstractWidgetAction getCopy() {
+        AbstractWidgetAction action = WidgetActionFactory.createWidgetAction(getActionType());
+        for(String id : propertyMap.keySet()){
+            action.setPropertyValue(id, getPropertyValue(id));
+        }
+        return action;
+    }
+
+    public Set<String> getAllPropertyIDs() {
+        return propertyMap.keySet();
+    }
+
+    public AbstractWidgetProperty getProperty(String propId) {
+        return propertyMap.get(propId);
+    }
+
+    /**
+     * @param enabled the enabled to set
+     */
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
+    /**
+     * @return the enabled
+     */
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    /**
+     * @param widgetModel the widgetModel to set
+     */
+    public void setWidgetModel(AbstractWidgetModel widgetModel) {
+        this.widgetModel = widgetModel;
+        for(AbstractWidgetProperty property : getAllProperties())
+            property.setWidgetModel(widgetModel);
+    }
+
+    /**
+     * @return the widgetModel
+     */
+    public AbstractWidgetModel getWidgetModel() {
+        return widgetModel;
+    }
 
 }

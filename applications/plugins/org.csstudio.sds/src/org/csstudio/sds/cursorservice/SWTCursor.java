@@ -26,37 +26,37 @@ package org.csstudio.sds.cursorservice;
 /**
  * A system cursor. Instances of this class represent the system cursors defined
  * by the cursor constants in {@link org.eclipse.swt.SWT}.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class SWTCursor extends AbstractCursor {
-	
-	/**
-	 * The value of the SWT constant that identifies this cursor.
-	 */
-	private final int _swtCursor;
 
-	/**
-	 * Creates a new system cursor.
-	 * 
-	 * @param id
-	 *            the id of the cursor.
-	 * @param title
-	 *            the name of the cursor.
-	 * @param cursor
-	 *            the value of the SWT constant that identifies this cursor.
-	 */
-	SWTCursor(final String id, final String title, final int cursor) {
-		super(id, title);
-		_swtCursor = cursor;
-	}
-	
-	/**
-	 * Returns the value of the SWT constant that identifies this cursor.
-	 * 
-	 * @return the value of the SWT constant that identifies this cursor.
-	 */
-	public int getSWTCursor() {
-		return _swtCursor;
-	}
+    /**
+     * The value of the SWT constant that identifies this cursor.
+     */
+    private final int _swtCursor;
+
+    /**
+     * Creates a new system cursor.
+     *
+     * @param id
+     *            the id of the cursor.
+     * @param title
+     *            the name of the cursor.
+     * @param cursor
+     *            the value of the SWT constant that identifies this cursor.
+     */
+    SWTCursor(final String id, final String title, final int cursor) {
+        super(id, title);
+        _swtCursor = cursor;
+    }
+
+    /**
+     * Returns the value of the SWT constant that identifies this cursor.
+     *
+     * @return the value of the SWT constant that identifies this cursor.
+     */
+    public int getSWTCursor() {
+        return _swtCursor;
+    }
 }

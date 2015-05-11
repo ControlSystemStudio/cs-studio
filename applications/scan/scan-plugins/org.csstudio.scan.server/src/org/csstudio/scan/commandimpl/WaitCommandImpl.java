@@ -47,7 +47,7 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
     {
         this(command, null);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception
@@ -55,57 +55,57 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
         return new String[] { macros.resolveMacros(command.getDeviceName()) };
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void simulate(final SimulationContext context) throws Exception
     {
-		final SimulatedDevice device = context.getDevice(command.getDeviceName());
-		
-		// Estimate execution time
-		final double time_estimate;
-		double original = VTypeHelper.toDouble(device.read());
-		Object desired = command.getDesiredValue();
-		if (desired instanceof Number)
-		{
-			switch (command.getComparison())
-			{
-			case INCREASE_BY:
-				if (Double.isNaN(original))
-				{
-					original = 0.0;
-			    	device.write(original);
-				}
-				desired = original + ((Number) desired).doubleValue();
-				break;
-			case DECREASE_BY:
-				if (Double.isNaN(original))
-				{
-					original = 0.0;
-			    	device.write(original);
-				}
-				desired = original - ((Number) desired).doubleValue();
-				break;
-			default:
-				break;
-			}
-			time_estimate = device.getChangeTimeEstimate(((Number) desired).doubleValue());
-		}
-		else
-			time_estimate = 1.0; // Not numeric, no known slew rate 
+        final SimulatedDevice device = context.getDevice(command.getDeviceName());
 
-		// Show command
-		final StringBuilder buf = new StringBuilder();
-	    buf.append(context.getMacros().resolveMacros(command.toString()));
-	    if (! Double.isNaN(original))
-	    	buf.append(" [was ").append(original).append("]");
-    	context.logExecutionStep(buf.toString(), time_estimate);
+        // Estimate execution time
+        final double time_estimate;
+        double original = VTypeHelper.toDouble(device.read());
+        Object desired = command.getDesiredValue();
+        if (desired instanceof Number)
+        {
+            switch (command.getComparison())
+            {
+            case INCREASE_BY:
+                if (Double.isNaN(original))
+                {
+                    original = 0.0;
+                    device.write(original);
+                }
+                desired = original + ((Number) desired).doubleValue();
+                break;
+            case DECREASE_BY:
+                if (Double.isNaN(original))
+                {
+                    original = 0.0;
+                    device.write(original);
+                }
+                desired = original - ((Number) desired).doubleValue();
+                break;
+            default:
+                break;
+            }
+            time_estimate = device.getChangeTimeEstimate(((Number) desired).doubleValue());
+        }
+        else
+            time_estimate = 1.0; // Not numeric, no known slew rate
 
-    	// Set to (simulated) new value
-    	device.write(desired);
+        // Show command
+        final StringBuilder buf = new StringBuilder();
+        buf.append(context.getMacros().resolveMacros(command.toString()));
+        if (! Double.isNaN(original))
+            buf.append(" [was ").append(original).append("]");
+        context.logExecutionStep(buf.toString(), time_estimate);
+
+        // Set to (simulated) new value
+        device.write(desired);
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void execute(final ScanContext context) throws Exception
     {
         final Device device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
@@ -116,8 +116,8 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
         if (desired instanceof Number)
         {
             final double number = ((Number)desired).doubleValue();
-			condition = new NumericValueCondition(device, command.getComparison(),
-					number, command.getTolerance(), timeout);
+            condition = new NumericValueCondition(device, command.getComparison(),
+                    number, command.getTolerance(), timeout);
         }
         else
             condition = new TextValueCondition(device, Comparison.EQUALS, desired.toString(), timeout);

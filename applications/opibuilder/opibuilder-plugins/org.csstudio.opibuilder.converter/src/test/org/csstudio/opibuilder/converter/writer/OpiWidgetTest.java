@@ -17,21 +17,21 @@ import org.w3c.dom.Element;
 
 public class OpiWidgetTest extends TestCase {
 
-	public void testOpiWidget() throws EdmException {
-		
-		// init document
-		Document doc = XMLFileHandler.createDomDocument();
-		
-		String widgetType = "newWidget";
-		EdmWidget edmWidget = new EdmWidget(new EdmEntity(widgetType));
-		
-		Element parent = doc.createElement("root");
-		doc.appendChild(parent);
-		Context context = new Context(doc, parent, null, 0, 0);
-		new OpiWidget(context, edmWidget);
-		
-		// Input tests here when there will be some implementation.
-		
-		//XMLFileHandler.writeXML(doc);
-	}
+    public void testOpiWidget() throws EdmException {
+
+        // init document
+        Document doc = XMLFileHandler.createDomDocument();
+
+        String widgetType = "newWidget";
+        EdmWidget edmWidget = new EdmWidget(new EdmEntity(widgetType));
+
+        Element parent = doc.createElement("root");
+        doc.appendChild(parent);
+        Context context = new Context(doc, parent, null, 0, 0);
+        new OpiWidget(context, edmWidget);
+
+        // Input tests here when there will be some implementation.
+
+        //XMLFileHandler.writeXML(doc);
+    }
 }

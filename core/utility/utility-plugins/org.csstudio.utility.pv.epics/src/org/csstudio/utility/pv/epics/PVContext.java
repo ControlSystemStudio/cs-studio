@@ -215,8 +215,8 @@ public class PVContext
      */
     public static void scheduleCommand(final Runnable command)
     {
-    	// Debug: Run immediately
-    	// command.run();
+        // Debug: Run immediately
+        // command.run();
         command_thread.addCommand(command);
     }
 

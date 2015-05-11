@@ -28,10 +28,10 @@ import org.eclipse.equinox.security.auth.ILoginContext;
 import org.eclipse.equinox.security.auth.LoginContextFactory;
 
 /** Eclipse Job for performing Log-in
- * 
+ *
  *  <p>Uses Eclipse {@link ILoginContext} to perform
  *  a JAAS-based login.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -43,12 +43,12 @@ public class LoginJob extends Job
 
     /** Create an (unattended) login job that fetches
      *  the current user.
-     *  
+     *
      *  Depending on the OS, this requires an entry "windows"
      *  or "unix" in the JAAS configuration.
-     *  
+     *
      *  See default jaas.conf for example
-     *  
+     *
      *  @return LoginJob
      */
     public static LoginJob forCurrentUser()
@@ -59,7 +59,7 @@ public class LoginJob extends Job
                 : "unix";
          return new LoginJob(method, new UnattendedCallbackHandler(), true);
     }
-    
+
     /** Initialize login for JAAS config set in preferences
      *  @param callback {@link CallbackHandler} for name, password, errors and "OK" when done
      */
@@ -76,7 +76,7 @@ public class LoginJob extends Job
     {
         this(jaas_name, callback, false);
     }
-    
+
     /** Initialize
      *  @param jaas_name JAAS config name to use for log in
      *  @param callback {@link CallbackHandler} for name, password, errors and "OK" when done
@@ -90,7 +90,7 @@ public class LoginJob extends Job
         this.callback = callback;
         this.get_current_user = get_current_user;
     }
-    
+
     /** Log user out */
     public static void logout()
     {
@@ -104,24 +104,24 @@ public class LoginJob extends Job
         final Logger logger = Logger.getLogger(getClass().getName());
         try
         {
-        	final String jaas_config = SecurityPreferences.getJaasConfig();
-        	if (jaas_config != null  &&  !jaas_config.isEmpty())
-        	{	// Use complete configuration from preferences
-        		Configuration.setConfiguration(new PreferenceBasedJAASConfiguration(jaas_config));
-        	}
-        	// Get JAAS file and config name in any case.
-        	// Will actually be ignored if we set a complete preference-based config
-        	final URL jaas_file = new URL(SecurityPreferences.getJaasConfigFile());
+            final String jaas_config = SecurityPreferences.getJaasConfig();
+            if (jaas_config != null  &&  !jaas_config.isEmpty())
+            {    // Use complete configuration from preferences
+                Configuration.setConfiguration(new PreferenceBasedJAASConfiguration(jaas_config));
+            }
+            // Get JAAS file and config name in any case.
+            // Will actually be ignored if we set a complete preference-based config
+            final URL jaas_file = new URL(SecurityPreferences.getJaasConfigFile());
             final ILoginContext login = LoginContextFactory.createContext(jaas_name, jaas_file, callback);
             login.login();
-                        
+
             final Subject subject = login.getSubject();
             logger.log(Level.FINE, "Logged in as {0}", subject);
             SecurityContext.getInstance().setSubject(subject, get_current_user);
-            
+
             // Signal 'OK'
             callback.handle(new Callback[]
-            { 
+            {
                 new TextOutputCallback(TextOutputCallback.INFORMATION, "OK")
             });
         }
@@ -136,7 +136,7 @@ public class LoginJob extends Job
             try
             {
                 callback.handle(new Callback[]
-                { 
+                {
                     new TextOutputCallback(TextOutputCallback.ERROR, message)
                 });
             }

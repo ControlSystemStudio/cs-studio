@@ -55,15 +55,15 @@ public class PrintAction extends Action
             final Logger logger = Logger.getLogger(getClass().getName());
             if (printers != null)
             {
-            	logger.fine("Available printers:");
-            	for (PrinterData p : printers)
-            		logger.fine("Printer: " + p.name + " (" + p.driver + ")");
-            	setEnabled(printers.length > 0);
+                logger.fine("Available printers:");
+                for (PrinterData p : printers)
+                    logger.fine("Printer: " + p.name + " (" + p.driver + ")");
+                setEnabled(printers.length > 0);
             }
             else
             {
-            	logger.fine("No available printers");
-            	setEnabled(false);
+                logger.fine("No available printers");
+                setEnabled(false);
             }
         }
     }
@@ -76,7 +76,7 @@ public class PrintAction extends Action
         final Image snapshot = graph.getImage();
         if (snapshot == null)
         {
-        	Logger.getLogger(getClass().getName()).fine("Cannot obtain image");
+            Logger.getLogger(getClass().getName()).fine("Cannot obtain image");
             return;
         }
 
@@ -85,7 +85,7 @@ public class PrintAction extends Action
         PrinterData data = dlg.open();
         if (data == null)
         {
-        	Logger.getLogger(getClass().getName()).fine("Cannot obtain printer");
+            Logger.getLogger(getClass().getName()).fine("Cannot obtain printer");
             snapshot.dispose();
             return;
         }
@@ -96,7 +96,7 @@ public class PrintAction extends Action
         {
             if (!printer.startJob("Data Browser"))
             {
-            	Logger.getLogger(getClass().getName()).fine("Cannot start print job");
+                Logger.getLogger(getClass().getName()).fine("Cannot start print job");
                 return;
             }
             try

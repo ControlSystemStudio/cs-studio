@@ -8,42 +8,42 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.diag.pvmanager.probe"; //$NON-NLS-1$
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.csstudio.diag.pvmanager.probe"; //$NON-NLS-1$
 
-	// The shared instance
-	private static Activator plugin;
-    
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-		plugin = this;
-	}
-	
-	@Override
+    // The shared instance
+    private static Activator plugin;
+
+    /**
+     * The constructor
+     */
+    public Activator() {
+        plugin = this;
+    }
+
+    @Override
     public void start(BundleContext context) throws Exception
     {
-	    super.start(context);
-		setPlugin(this);	
+        super.start(context);
+        setPlugin(this);
     }
 
-	@Override
+    @Override
     public void stop(BundleContext context) throws Exception
     {
-		setPlugin(this);	
-	    super.stop(context);
+        setPlugin(this);
+        super.stop(context);
     }
 
-	/** Static setter to avoid FindBugs warning */
-	private static void setPlugin(final Activator the_plugin)
-	{
-		plugin = the_plugin;
-	}
-
-	/** @eturn The shared instance. */
-	public static Activator getDefault()
+    /** Static setter to avoid FindBugs warning */
+    private static void setPlugin(final Activator the_plugin)
     {
-		return plugin;
-	}
+        plugin = the_plugin;
+    }
+
+    /** @eturn The shared instance. */
+    public static Activator getDefault()
+    {
+        return plugin;
+    }
 }

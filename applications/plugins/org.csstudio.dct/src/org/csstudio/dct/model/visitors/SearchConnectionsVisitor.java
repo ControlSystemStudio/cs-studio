@@ -23,121 +23,121 @@ import org.csstudio.dct.nameresolution.internal.ForwardLinkFieldFunction;
 /**
  * Visitor implementation that can be used to find instances using their
  * prototype´s id as search criteria.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public final class SearchConnectionsVisitor implements IVisitor {
-	private Set<ConnectionDescriptor> connections;
+    private Set<ConnectionDescriptor> connections;
 
-	private static final Pattern FIND_FORWARDLINK_PATTERN = Pattern.compile("^>forwardlink\\((.*)\\)$");
-	private static final Pattern FIND_DATALINK_PATTERN = Pattern.compile("^>datalink\\((.*)\\)$");
+    private static final Pattern FIND_FORWARDLINK_PATTERN = Pattern.compile("^>forwardlink\\((.*)\\)$");
+    private static final Pattern FIND_DATALINK_PATTERN = Pattern.compile("^>datalink\\((.*)\\)$");
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(Project project) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(Project project) {
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IFolder folder) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IFolder folder) {
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IPrototype prototype) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IPrototype prototype) {
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IRecord record) {
-		for (String source : record.getFinalFields().values()) {
-			if (source != null) {
-				// find forward links
-				Matcher matcher = FIND_FORWARDLINK_PATTERN.matcher(source);
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IRecord record) {
+        for (String source : record.getFinalFields().values()) {
+            if (source != null) {
+                // find forward links
+                Matcher matcher = FIND_FORWARDLINK_PATTERN.matcher(source);
 
-				if (matcher.find()) {
-					String[] params = matcher.group(1).split(",");
-					for (int i = 0; i < params.length; i++) {
-						params[i] = params[i].trim();
-					}
+                if (matcher.find()) {
+                    String[] params = matcher.group(1).split(",");
+                    for (int i = 0; i < params.length; i++) {
+                        params[i] = params[i].trim();
+                    }
 
-					IRecord target = RecordFinder.findRecordByPath(params[0], record.getContainer());
+                    IRecord target = RecordFinder.findRecordByPath(params[0], record.getContainer());
 
-					if (target != null) {
-						connections.add(new ConnectionDescriptor(record, target, "forwardlink"));
-					}
-				}
+                    if (target != null) {
+                        connections.add(new ConnectionDescriptor(record, target, "forwardlink"));
+                    }
+                }
 
-				// find data links
-				matcher = FIND_DATALINK_PATTERN.matcher(source);
+                // find data links
+                matcher = FIND_DATALINK_PATTERN.matcher(source);
 
-				if (matcher.find()) {
-					String[] params = matcher.group(1).split(",");
-					for (int i = 0; i < params.length; i++) {
-						params[i] = params[i].trim();
-					}
+                if (matcher.find()) {
+                    String[] params = matcher.group(1).split(",");
+                    for (int i = 0; i < params.length; i++) {
+                        params[i] = params[i].trim();
+                    }
 
-					IRecord target = RecordFinder.findRecordByPath(params[0], record.getContainer());
+                    IRecord target = RecordFinder.findRecordByPath(params[0], record.getContainer());
 
-					if (target != null) {
-						connections.add(new ConnectionDescriptor(record, target, "datalink"));
-					}
-				}
-			}
-		}
-	}
+                    if (target != null) {
+                        connections.add(new ConnectionDescriptor(record, target, "datalink"));
+                    }
+                }
+            }
+        }
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void visit(IInstance instance) {
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void visit(IInstance instance) {
+    }
 
-	/**
-	 * Deep search for record connections (forward and/or datalinks) in a
-	 * project.
-	 * 
-	 * @param project
-	 *            the project
-	 * @return all connections
-	 */
-	public Set<ConnectionDescriptor> search(IProject project) {
-		assert project != null;
+    /**
+     * Deep search for record connections (forward and/or datalinks) in a
+     * project.
+     *
+     * @param project
+     *            the project
+     * @return all connections
+     */
+    public Set<ConnectionDescriptor> search(IProject project) {
+        assert project != null;
 
-		connections = new HashSet<ConnectionDescriptor>();
-		
-		project.accept(this);
+        connections = new HashSet<ConnectionDescriptor>();
 
-		return connections;
-	}
+        project.accept(this);
 
-	public static class ConnectionDescriptor {
-		private IRecord source;
-		private IRecord target;
-		private String details;
+        return connections;
+    }
 
-		private ConnectionDescriptor(IRecord source, IRecord target, String details) {
-			this.details = details;
-			this.source = source;
-			this.target = target;
-		}
+    public static class ConnectionDescriptor {
+        private IRecord source;
+        private IRecord target;
+        private String details;
 
-		public IRecord getSource() {
-			return source;
-		}
+        private ConnectionDescriptor(IRecord source, IRecord target, String details) {
+            this.details = details;
+            this.source = source;
+            this.target = target;
+        }
 
-		public IRecord getTarget() {
-			return target;
-		}
+        public IRecord getSource() {
+            return source;
+        }
 
-		public String getDetails() {
-			return details;
-		}
+        public IRecord getTarget() {
+            return target;
+        }
 
-	}
+        public String getDetails() {
+            return details;
+        }
+
+    }
 }

@@ -5,27 +5,27 @@ import org.csstudio.sds.eventhandling.AbstractWidgetPropertyPostProcessor;
 import org.eclipse.gef.commands.Command;
 
 public class PolyModelPositionPostProcessor extends
-		AbstractWidgetPropertyPostProcessor<AbstractPolyModel> {
+        AbstractWidgetPropertyPostProcessor<AbstractPolyModel> {
 
-	@Override
-	protected Command doCreateCommand(AbstractPolyModel widget) {
-		assert widget != null : "widget != null";
-		return new SetLocationCommand(widget);
-	}
-	
-	private static class SetLocationCommand extends Command {
+    @Override
+    protected Command doCreateCommand(AbstractPolyModel widget) {
+        assert widget != null : "widget != null";
+        return new SetLocationCommand(widget);
+    }
 
-		private final AbstractPolyModel widget;
+    private static class SetLocationCommand extends Command {
 
-		public SetLocationCommand(AbstractPolyModel widget) {
-			this.widget = widget;
-		}
-		
-		@Override
-		public void execute() {
-			widget.setLocation(widget.getX(),widget.getY());
-		}
-		
-	}
+        private final AbstractPolyModel widget;
+
+        public SetLocationCommand(AbstractPolyModel widget) {
+            this.widget = widget;
+        }
+
+        @Override
+        public void execute() {
+            widget.setLocation(widget.getX(),widget.getY());
+        }
+
+    }
 
 }

@@ -15,11 +15,11 @@ import org.csstudio.scan.server.Scan;
  */
 public interface IDataLogFactory
 {
-	/** Create new log for a new scan
-	 *  @param scan_name Name of the scan (doesn't need to be unique)
-	 *  @return Scan with ID that can now and later be used to access the data log
-	 *  @throws Exception on error
-	 */
+    /** Create new log for a new scan
+     *  @param scan_name Name of the scan (doesn't need to be unique)
+     *  @return Scan with ID that can now and later be used to access the data log
+     *  @throws Exception on error
+     */
     public Scan createDataLog(final String scan_name) throws Exception;
 
     /** Obtain all available scans
@@ -28,14 +28,14 @@ public interface IDataLogFactory
      */
     public Scan[] getScans() throws Exception;
 
-	/** Get log for a scan
-	 *
-	 *  <p>Caller needs to <code>close()</code>
-	 *  @param scan Scan
-	 *  @return DataLog for Scan, or <code>null</code> if there is none
-	 *  @throws Exception on error
-	 *  @see DataLog#close()
-	 */
+    /** Get log for a scan
+     *
+     *  <p>Caller needs to <code>close()</code>
+     *  @param scan Scan
+     *  @return DataLog for Scan, or <code>null</code> if there is none
+     *  @throws Exception on error
+     *  @see DataLog#close()
+     */
     public DataLog getDataLog(final Scan scan) throws Exception;
 
     /** Delete logged data for a scan

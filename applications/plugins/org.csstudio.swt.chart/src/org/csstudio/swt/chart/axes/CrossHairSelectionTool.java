@@ -12,8 +12,8 @@ package org.csstudio.swt.chart.axes;
  * A simple class which uses xor to draw selection. It is fast and optimized
  * to display selected region without flickering. However this implementation
  * won't work on MacOS, but it is a nice feature for Windows and Linux users.
- *  
- * @author Blaz Lipuscek 
+ *
+ * @author Blaz Lipuscek
  *
  * NOT USED for several reasons:
  * <ul>
@@ -35,32 +35,32 @@ public class CrossHairSelectionTool
     /*
         private final Cursor cursorCross;
         private final Cursor cursorDefault;
-        
+
         private final Point EmptyPoint = new Point(Integer.MIN_VALUE, Integer.MIN_VALUE);
         private final Rectangle EmptyRect = new Rectangle(0, 0, 0, 0);
         private final Color selectionColor;
-        
+
         private Rectangle prevZoomRect = EmptyRect;
         private Point mouseLocation = EmptyPoint;
         private Point mousePoint = EmptyPoint;
-        
-        public CrossHairSelectionTool() 
-        {   
+
+        public CrossHairSelectionTool()
+        {
             this.selectionColor = new Color(Chart.this.getDisplay(), 57, 41, 16);
             this.cursorCross = new Cursor(getDisplay(), SWT.CURSOR_CROSS);
             this.cursorDefault = new Cursor(getDisplay(), SWT.CURSOR_ARROW);
-            
-            addMouseListener(new MouseListener() 
+
+            addMouseListener(new MouseListener()
             {
                 public void mouseDown(MouseEvent e)
                 {
-                    if(plot_region.contains(e.x, e.y)) 
+                    if(plot_region.contains(e.x, e.y))
                     {
                         mousePoint = new Point(e.x, e.y);
                         Chart.this.redrawTracesWithBounds();
                     }
                 }
-                
+
                 public void mouseUp(MouseEvent e)
                 {
                     rubberZoom(getZoomRect());
@@ -71,32 +71,32 @@ public class CrossHairSelectionTool
 
                 public void mouseDoubleClick(MouseEvent e) {}
             });
-            
-            addMouseTrackListener(new MouseTrackListener() 
+
+            addMouseTrackListener(new MouseTrackListener()
             {
-                public void mouseEnter(MouseEvent e) { mouseLocation = EmptyPoint; } 
-                
+                public void mouseEnter(MouseEvent e) { mouseLocation = EmptyPoint; }
+
                 public void mouseExit(MouseEvent e)
-                { 
+                {
                     mouseLocation = EmptyPoint;
                     Chart.this.redrawTracesWithBounds();
-                } 
-                
+                }
+
                 public void mouseHover(MouseEvent e) {}
             });
-            
+
             addMouseMoveListener(new MouseMoveListener() {
-                
-                public void mouseMove(MouseEvent e) 
+
+                public void mouseMove(MouseEvent e)
                 {
-                    if(plot_region.contains(e.x, e.y)) 
+                    if(plot_region.contains(e.x, e.y))
                     {
                         if(mouseLocation == EmptyPoint)
                         {
                             prevZoomRect = EmptyRect;
                             redrawTraces();
                         }
-                        
+
                         setCursor(cursorCross);
                         // Let's paint it.
                         GC gc = new GC(Chart.this);
@@ -120,12 +120,12 @@ public class CrossHairSelectionTool
                     }
                 }
             });
-            
+
             addPaintListener(new PaintListener() {
                 public void paintControl(PaintEvent e) { paintCrossHair(e.gc, true); }
             });
         }
-        
+
         public void paintCrossHair(GC gc, boolean completePaint) {
             try {
                 if (mouseLocation == EmptyPoint)
@@ -205,26 +205,26 @@ public class CrossHairSelectionTool
                 // Just catch any exceptions.
             }
         }
-        
-        private Rectangle getZoomRect() 
+
+        private Rectangle getZoomRect()
         {
             return getZoomRect(mousePoint, mouseLocation);
         }
-        
+
         private Rectangle getZoomRect(Point p1, Point p2) {
-            
-            if(p1 == EmptyPoint || p2  == EmptyPoint) 
+
+            if(p1 == EmptyPoint || p2  == EmptyPoint)
                 return EmptyRect;
-            
+
             int x = Math.min(p1.x, p2.x) + 1;
             int y = Math.min(p1.y, p2.y) + 1;
             int width = Math.max(0, Math.abs(p1.x - p2.x) - 1);
             int height = Math.max(0, Math.abs(p1.y - p2.y) - 1);
-            
+
             return new Rectangle(x, y, width, height);
         }
-    } 
-    
+    }
+
     */
 }
 

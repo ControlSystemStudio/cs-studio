@@ -29,49 +29,49 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.gef.commands.Command;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: $
  * @since 19.10.2010
 
  */
 public class PolyModelPointsPostProcessor extends
-		AbstractWidgetPropertyPostProcessor<AbstractPolyModel> {
+        AbstractWidgetPropertyPostProcessor<AbstractPolyModel> {
 
-	/**
-	 * Constructor.
-	 */
-	public PolyModelPointsPostProcessor() {
-		// TODO Auto-generated constructor stub
-	}
+    /**
+     * Constructor.
+     */
+    public PolyModelPointsPostProcessor() {
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Command doCreateCommand(AbstractPolyModel widget) {
-		assert widget != null : "widget != null";
-		return new SetPointsCommand(widget);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Command doCreateCommand(AbstractPolyModel widget) {
+        assert widget != null : "widget != null";
+        return new SetPointsCommand(widget);
+    }
 
-	
-	private static class SetPointsCommand extends Command {
 
-		private final AbstractPolyModel widget;
+    private static class SetPointsCommand extends Command {
 
-		public SetPointsCommand(AbstractPolyModel widget) {
-			this.widget = widget;
-		}
-		
-		@Override
-		public void execute() {
-			PointList pointList = widget.getPoints();
-			widget.setHeight(pointList.getBounds().height);
-			widget.setWidth(pointList.getBounds().width);
-			widget.setX(pointList.getBounds().x);
-			widget.setY(pointList.getBounds().y);
-		}
-		
-	}
+        private final AbstractPolyModel widget;
+
+        public SetPointsCommand(AbstractPolyModel widget) {
+            this.widget = widget;
+        }
+
+        @Override
+        public void execute() {
+            PointList pointList = widget.getPoints();
+            widget.setHeight(pointList.getBounds().height);
+            widget.setWidth(pointList.getBounds().width);
+            widget.setX(pointList.getBounds().x);
+            widget.setY(pointList.getBounds().y);
+        }
+
+    }
 }

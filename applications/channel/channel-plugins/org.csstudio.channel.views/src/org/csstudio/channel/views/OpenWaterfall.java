@@ -10,22 +10,22 @@ import org.eclipse.core.commands.ExecutionEvent;
 
 /**
  * Opens the waterfall view.
- * 
+ *
  * @author carcassi
  */
 public class OpenWaterfall extends AbstractAdaptedHandler<ProcessVariable> {
-	
-	public OpenWaterfall() {
-		super(ProcessVariable.class);
-	}
 
-	@Override
-	protected void execute(List<ProcessVariable> pvs, ExecutionEvent event)
-			throws Exception {
-		if (!pvs.isEmpty()) {
-			findView(WaterfallView.class, WaterfallView.ID)
-				.setChannelQuery(ChannelQuery.query(pvs.get(0).getName()).build());
-		}
-	}
+    public OpenWaterfall() {
+        super(ProcessVariable.class);
+    }
+
+    @Override
+    protected void execute(List<ProcessVariable> pvs, ExecutionEvent event)
+            throws Exception {
+        if (!pvs.isEmpty()) {
+            findView(WaterfallView.class, WaterfallView.ID)
+                .setChannelQuery(ChannelQuery.query(pvs.get(0).getName()).build());
+        }
+    }
 
 }

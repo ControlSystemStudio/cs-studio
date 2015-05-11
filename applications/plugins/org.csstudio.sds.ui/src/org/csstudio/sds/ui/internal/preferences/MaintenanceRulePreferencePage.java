@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.sds.ui.internal.preferences;
 
@@ -22,7 +22,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  */
 public class MaintenanceRulePreferencePage extends FieldEditorPreferencePage implements
         IWorkbenchPreferencePage {
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
@@ -33,31 +33,31 @@ public class MaintenanceRulePreferencePage extends FieldEditorPreferencePage imp
                                                              .getPluginID()));
         setDescription("Das Display setzt sich aus den Pfad, dem Name und dem RTYP zusammen.\nDer Filename ist dabei so anzugeben das {rtyp} durch den RTYP ersetzt wird.\n(Bsp.: Mein{rtyp}File.css-sds");
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
      */
     @Override
     protected void createFieldEditors() {
-        
+
         WorkspaceDirectoryFieldEditor displayPathFieldEditor = new WorkspaceDirectoryFieldEditor(MaintenanceRulePreference.MAINTENANCE_DISPLAY_PATH
                                                                                  .getKeyAsString(),
                                                                          "Display Pfad",
                                                                          getFieldEditorParent());
-        
+
         addField(displayPathFieldEditor);
         StringFieldEditor preFileNameFielsEditor = new StringFieldEditor(MaintenanceRulePreference.MAINTENANCE_PRE_FILE_NAME
                                                                                  .getKeyAsString(),
                                                                          "Display Name",
                                                                          getFieldEditorParent());
         addField(preFileNameFielsEditor);
-        
+
         WorkspaceFileFieldEditor unknownDisplayPathFieldEditor = new WorkspaceFileFieldEditor(MaintenanceRulePreference.MAINTENANCE_UNKNOWN_DISPLAY_PATH
                                                                                               .getKeyAsString(),
                                                                                               "Unknown Display",
                                                                                               getFieldEditorParent());
         unknownDisplayPathFieldEditor.setFilter(new ViewerFilter() {
-            
+
             @Override
             public boolean select(Viewer viewer, Object parentElement, Object element) {
                 if (element instanceof IFile) {
@@ -70,8 +70,8 @@ public class MaintenanceRulePreferencePage extends FieldEditorPreferencePage imp
                 return true;
             }
         });
-        
+
         addField(unknownDisplayPathFieldEditor);
     }
-    
+
 }

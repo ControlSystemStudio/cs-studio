@@ -14,7 +14,7 @@ public class StringOption extends Option
 {
     /** Current value */
     private String value;
-    
+
     /** Construct String option
      *  @param parser Parser to which to add
      *  @param option Option name: "-something"

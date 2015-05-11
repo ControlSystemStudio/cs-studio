@@ -10,16 +10,16 @@ package org.csstudio.apputil.xml;
 import java.io.PrintWriter;
 
 /** Helper for XML output.
- *  
+ *
  *  Not 100% clear how Unicode etc. all work, but the general idea is this:
  *  The XML will only contain ASCII chars.
  *  Every code point > 126 could be UTF-8 encoded, but we're not doing that.
- * 
+ *
  *  Instead, the XML might include things like "&#246;", i.e. plain
  *  ASCII '&', '#', '2', ... to represent the German u-Umlaut, which
  *  itself is not UTF-8 but recognized by XML parsers as a Unicode
  *  code point.
- * 
+ *
  *  @author Kay Kasemir, Kunal Shroff
  */
 @SuppressWarnings("nls")

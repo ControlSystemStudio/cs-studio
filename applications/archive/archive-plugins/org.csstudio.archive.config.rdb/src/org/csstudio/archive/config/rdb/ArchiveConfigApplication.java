@@ -33,8 +33,8 @@ import org.eclipse.equinox.app.IApplicationContext;
 public class ArchiveConfigApplication implements IApplication
 {
     @Override
-	public Object start(final IApplicationContext context) throws Exception
-	{
+    public Object start(final IApplicationContext context) throws Exception
+    {
         // Handle command-line options
         final String args[] =
             (String []) context.getArguments().get("application.args");
@@ -42,9 +42,9 @@ public class ArchiveConfigApplication implements IApplication
         final ArgParser parser = new ArgParser();
         final BooleanOption help = new BooleanOption(parser,
                 "-help", "show help");
-		final BooleanOption version = new BooleanOption(parser, 
-				"-version", "Display version info");
-		final BooleanOption list = new BooleanOption(parser,
+        final BooleanOption version = new BooleanOption(parser,
+                "-version", "Display version info");
+        final BooleanOption list = new BooleanOption(parser,
                 "-list", "List engine names");
         final StringOption  engine_name = new StringOption(parser,
                 "-engine", "my_engine", "Engine Name", "");
@@ -88,13 +88,13 @@ public class ArchiveConfigApplication implements IApplication
             return Integer.valueOf(-2);
         }
 
-		// Display configuration info
-		final String app_info = context.getBrandingName() + " "
-				+ context.getBrandingBundle().getHeaders().get("Bundle-Version");
-		if (help.get()) {
-			System.out.println(app_info + "\n\n" + parser.getHelp());
-			return IApplication.EXIT_OK;
-		}
+        // Display configuration info
+        final String app_info = context.getBrandingName() + " "
+                + context.getBrandingBundle().getHeaders().get("Bundle-Version");
+        if (help.get()) {
+            System.out.println(app_info + "\n\n" + parser.getHelp());
+            return IApplication.EXIT_OK;
+        }
 
         if (version.get())
         {
@@ -103,24 +103,24 @@ public class ArchiveConfigApplication implements IApplication
         }
 
         String option = set_password.get();
-		if (option != null)
-        {	// Split "plugin/key=value"
-        	final String pref, value;
-        	final int sep = option.indexOf("=");
-        	if (sep >= 0)
-        	{
-        		pref = option.substring(0, sep);
-        		value = option.substring(sep + 1);
-        	}
-        	else
-        	{
-        		pref = option;
-        		value = PasswordInput.readPassword("Value for " + pref + ":");
-        	}
-    		SecurePreferences.set(pref, value);
+        if (option != null)
+        {    // Split "plugin/key=value"
+            final String pref, value;
+            final int sep = option.indexOf("=");
+            if (sep >= 0)
+            {
+                pref = option.substring(0, sep);
+                value = option.substring(sep + 1);
+            }
+            else
+            {
+                pref = option;
+                value = PasswordInput.readPassword("Value for " + pref + ":");
+            }
+            SecurePreferences.set(pref, value);
             return IApplication.EXIT_OK;
         }
-        
+
         if (!list.get() && engine_name.get().length() <= 0)
         {
             System.err.println("Missing option " + engine_name.getOption());
@@ -132,70 +132,70 @@ public class ArchiveConfigApplication implements IApplication
 
         try
         {
-        	if (list.get())
-        	{
-        		final RDBArchiveConfig config = new RDBArchiveConfig(rdb_url.get(), rdb_user.get(),
-                		rdb_password.get(), rdb_schema.get());
-        		final EngineConfig[] engines = config.getEngines();
-        		for (EngineConfig engine : engines)
-        			System.out.println(engine);
-        	}
+            if (list.get())
+            {
+                final RDBArchiveConfig config = new RDBArchiveConfig(rdb_url.get(), rdb_user.get(),
+                        rdb_password.get(), rdb_schema.get());
+                final EngineConfig[] engines = config.getEngines();
+                for (EngineConfig engine : engines)
+                    System.out.println(engine);
+            }
             if (do_export.get())
             {
-            	final PrintStream out;
-            	if (filename.get().isEmpty())
-            		out = System.out;
-            	else
-            	{
-            		out = new PrintStream(filename.get());
-            		System.out.println("Exporting config for engine " + engine_name.get()
-            				+ " to " + filename.get());
-            	}
+                final PrintStream out;
+                if (filename.get().isEmpty())
+                    out = System.out;
+                else
+                {
+                    out = new PrintStream(filename.get());
+                    System.out.println("Exporting config for engine " + engine_name.get()
+                            + " to " + filename.get());
+                }
                 new XMLExport().export(out, rdb_url.get(), rdb_user.get(),
-                		rdb_password.get(), rdb_schema.get(),
-                		engine_name.get());
+                        rdb_password.get(), rdb_schema.get(),
+                        engine_name.get());
                 if (out != System.out)
-                	out.close();
+                    out.close();
                 return IApplication.EXIT_OK;
             }
             else if (do_delete.get())
             {
-            	final RDBArchiveConfig config = new RDBArchiveConfig(rdb_url.get(), rdb_user.get(),
-                		rdb_password.get(), rdb_schema.get());
-            	try
-            	{
-        			final EngineConfig engine = config.findEngine(engine_name.get());
-        			if (engine == null)
-        				System.out.println("Engine config '" + engine_name.get() + "' does not exist");
-        			else
-        			{
-        				config.deleteEngine(engine);
-        				System.out.println("Deleted engine config '" + engine_name.get() + "'");
-        			}
-        		}
-        		finally
-        		{
-        			config.close();
-        		}
+                final RDBArchiveConfig config = new RDBArchiveConfig(rdb_url.get(), rdb_user.get(),
+                        rdb_password.get(), rdb_schema.get());
+                try
+                {
+                    final EngineConfig engine = config.findEngine(engine_name.get());
+                    if (engine == null)
+                        System.out.println("Engine config '" + engine_name.get() + "' does not exist");
+                    else
+                    {
+                        config.deleteEngine(engine);
+                        System.out.println("Deleted engine config '" + engine_name.get() + "'");
+                    }
+                }
+                finally
+                {
+                    config.close();
+                }
                 return IApplication.EXIT_OK;
             }
             else if (do_import.get())
             {
-            	if (filename.get().isEmpty())
-            	{
+                if (filename.get().isEmpty())
+                {
                     System.err.println("Missing option " + filename.getOption());
                     System.err.println(parser.getHelp());
                     return IApplication.EXIT_OK;
-            	}
+                }
                 final String engine_url = "http://" + engine_host.get() + ":" + engine_port.get() + "/main";
                 final InputStream stream;
                 try
                 {
-                	stream = new FileInputStream(filename.get());
+                    stream = new FileInputStream(filename.get());
                 }
                 catch (FileNotFoundException ex)
                 {
-                	System.out.println("Cannot open engine config file, " + ex.getMessage());
+                    System.out.println("Cannot open engine config file, " + ex.getMessage());
                     return IApplication.EXIT_OK;
                 }
                 System.out.println("Importing     : " + filename.get());
@@ -205,35 +205,35 @@ public class ArchiveConfigApplication implements IApplication
                 System.out.println("Replace engine: " + replace_engine.get());
                 System.out.println("Steal channels: " + steal_channels.get());
                 final XMLImport importer = new XMLImport(rdb_url.get(), rdb_user.get(),
-                		rdb_password.get(), rdb_schema.get(),
-                		replace_engine.get(), steal_channels.get());
+                        rdb_password.get(), rdb_schema.get(),
+                        replace_engine.get(), steal_channels.get());
                 try
                 {
-                	importer.parse(stream, engine_name.get(), engine_description.get(), engine_url);
+                    importer.parse(stream, engine_name.get(), engine_description.get(), engine_url);
                 }
                 catch (XMLImportException ex)
-                {	// Print message
-                	System.out.println(ex.getMessage());
-                	// Other exceptions result in a full stack trace
+                {    // Print message
+                    System.out.println(ex.getMessage());
+                    // Other exceptions result in a full stack trace
                     return Integer.valueOf(-1);
                 }
                 finally
                 {
-                	importer.close();
+                    importer.close();
                 }
             }
         }
         catch (final Exception ex)
         {
-        	Logger.getLogger(Activator.ID).log(Level.SEVERE, "Exception", ex);
+            Logger.getLogger(Activator.ID).log(Level.SEVERE, "Exception", ex);
             return Integer.valueOf(-1);
         }
         return IApplication.EXIT_OK;
-	}
+    }
 
-	@Override
-	public void stop()
-	{
-		// Ignored
-	}
+    @Override
+    public void stop()
+    {
+        // Ignored
+    }
 }

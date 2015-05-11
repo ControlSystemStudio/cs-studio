@@ -21,62 +21,62 @@ import org.csstudio.scan.log.DataLog;
  */
 public class DerbyDataLog extends DataLog
 {
-	final private long scan_id;
+    final private long scan_id;
 
-	private RDBDataLogger logger = null;
+    private RDBDataLogger logger = null;
 
-	/** Initialize
-	 *  @param scan_id ID of scan for which this logger should operate
-	 */
-	public DerbyDataLog(final long scan_id) throws Exception
+    /** Initialize
+     *  @param scan_id ID of scan for which this logger should operate
+     */
+    public DerbyDataLog(final long scan_id) throws Exception
     {
-		this.scan_id = scan_id;
-		// Initialize sample serial
-		final RDBDataLogger logger = new DerbyDataLogger();
-		try
-		{
-		    last_serial = logger.getLastScanDataSerial(scan_id);
-		}
-		finally
-		{
-		    logger.close();
-		}
+        this.scan_id = scan_id;
+        // Initialize sample serial
+        final RDBDataLogger logger = new DerbyDataLogger();
+        try
+        {
+            last_serial = logger.getLastScanDataSerial(scan_id);
+        }
+        finally
+        {
+            logger.close();
+        }
     }
 
     /** {@inheritDoc} */
-	@Override
-	public void doLog(final String device, final ScanSample sample) throws Exception
-	{
-		if (logger == null)
-			logger = new DerbyDataLogger();
-		logger.log(scan_id, device, sample);
-	}
+    @Override
+    public void doLog(final String device, final ScanSample sample) throws Exception
+    {
+        if (logger == null)
+            logger = new DerbyDataLogger();
+        logger.log(scan_id, device, sample);
+    }
 
     /** {@inheritDoc} */
-	@Override
-	public ScanData getScanData() throws Exception
-	{
-	    // Can be called without doLog(), so use separate logger just for this call
-		final RDBDataLogger logger = new DerbyDataLogger();
-		try
-		{
-			return logger.getScanData(scan_id);
-		}
-		finally
-		{
-			logger.close();
-		}
-	}
+    @Override
+    public ScanData getScanData() throws Exception
+    {
+        // Can be called without doLog(), so use separate logger just for this call
+        final RDBDataLogger logger = new DerbyDataLogger();
+        try
+        {
+            return logger.getScanData(scan_id);
+        }
+        finally
+        {
+            logger.close();
+        }
+    }
 
     /** {@inheritDoc} */
-	@Override
-	public synchronized void close()
-	{
-		if (logger != null)
-		{
-			logger.close();
-			logger = null;
-		}
-		super.close();
-	}
+    @Override
+    public synchronized void close()
+    {
+        if (logger != null)
+        {
+            logger.close();
+            logger = null;
+        }
+        super.close();
+    }
 }

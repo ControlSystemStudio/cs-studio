@@ -31,11 +31,11 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin
 {
     /** Plug-in ID defined in MANIFEST.MF */
-	final public static String PLUGIN_ID = "org.csstudio.trends.databrowser2";
+    final public static String PLUGIN_ID = "org.csstudio.trends.databrowser2";
 
-	/** Checkbox images */
+    /** Checkbox images */
     final public static String ICON_UNCHECKED = "icons/unchecked.gif",
-	                           ICON_CHECKED = "icons/checked.gif";
+                               ICON_CHECKED = "icons/checked.gif";
 
     /** Singleton instance */
     private static Activator plugin;
@@ -50,12 +50,12 @@ public class Activator extends AbstractUIPlugin
     public void start(BundleContext context) throws Exception
     {
         super.start(context);
-		if (SingleSourcePlugin.getUIHelper().getUI() == UI.RAP)
-		{
-		    // Is this necessary?
-		    // RAPCorePlugin adds the "server" scope for all plugins,
-		    // but starts too late...
-	        Platform.getPreferencesService().setDefaultLookupOrder(
+        if (SingleSourcePlugin.getUIHelper().getUI() == UI.RAP)
+        {
+            // Is this necessary?
+            // RAPCorePlugin adds the "server" scope for all plugins,
+            // but starts too late...
+            Platform.getPreferencesService().setDefaultLookupOrder(
                 PLUGIN_ID, null,
                 new String[]
                 {
@@ -64,7 +64,7 @@ public class Activator extends AbstractUIPlugin
                         "server",
                         DefaultScope.SCOPE
                 });
-		}
+        }
         plugin = this;
     }
 

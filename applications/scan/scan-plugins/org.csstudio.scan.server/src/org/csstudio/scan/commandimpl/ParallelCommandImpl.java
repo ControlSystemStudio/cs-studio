@@ -45,9 +45,9 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
 {
     final private static ExecutorService executor = Executors.newCachedThreadPool(new NamedThreadFactory("ParallelCommands"));
 
-	final private List<ScanCommandImpl<?>> implementation;
+    final private List<ScanCommandImpl<?>> implementation;
 
-	/** Logger for execution of sub-commands, <code>null</code> unless executing */
+    /** Logger for execution of sub-commands, <code>null</code> unless executing */
     private Logger step_logger = null;
 
     /** Initialize
@@ -69,7 +69,7 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public long getWorkUnits()
     {
         long body_units = 1; // One unit for this command, rest for body
@@ -92,19 +92,19 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
         return device_names.toArray(new String[device_names.size()]);
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void simulate(final SimulationContext context) throws Exception
     {
-	    context.logExecutionStep("Start following commands in parallel", 0.0);
-    	context.simulate(implementation);
+        context.logExecutionStep("Start following commands in parallel", 0.0);
+        context.simulate(implementation);
         context.logExecutionStep("Await completion of above commands", 0.0);
     }
 
-	/** {@inheritDoc} */
-	@Override
-	public void execute(final ScanContext context) throws Exception
-	{
+    /** {@inheritDoc} */
+    @Override
+    public void execute(final ScanContext context) throws Exception
+    {
         step_logger = Logger.getLogger(getClass().getName());
         try
         {
@@ -116,7 +116,7 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
             for (ScanCommandImpl<?> body_command : implementation)
                 results.add(launch(context, body_command));
 
-    		// Wait for commands to finish
+            // Wait for commands to finish
             try
             {
                 for (Future<Object> result : results)
@@ -143,13 +143,13 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
             step_logger = null;
         }
         context.workPerformed(1);
-	}
+    }
 
-	/** Launch one of the body commands
-	 *  @param context
-	 *  @param body_command
-	 *  @return Future for the command, may provide Exception
-	 */
+    /** Launch one of the body commands
+     *  @param context
+     *  @param body_command
+     *  @return Future for the command, may provide Exception
+     */
     private Future<Object> launch(final ScanContext context, ScanCommandImpl<?> body_command)
     {
         step_logger.log(Level.FINE, "Launching: {0}", body_command);
@@ -165,9 +165,9 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    return command.toString();
-	}
+    @Override
+    public String toString()
+    {
+        return command.toString();
+    }
 }

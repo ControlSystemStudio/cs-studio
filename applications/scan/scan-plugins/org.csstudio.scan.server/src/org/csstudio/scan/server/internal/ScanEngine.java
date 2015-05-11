@@ -191,12 +191,12 @@ public class ScanEngine
     {
         synchronized (scan_queue)
         {
-        	for (LoggedScan scan : scan_queue)
-        		if (scan.getScanState().isDone())
-        		{
-        			scan_queue.remove(scan);
-        			return true;
-        		}
+            for (LoggedScan scan : scan_queue)
+                if (scan.getScanState().isDone())
+                {
+                    scan_queue.remove(scan);
+                    return true;
+                }
         }
         return false;
     }

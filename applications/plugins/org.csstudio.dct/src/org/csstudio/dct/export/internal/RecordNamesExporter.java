@@ -11,27 +11,27 @@ import org.csstudio.dct.util.ResolutionUtil;
 
 public class RecordNamesExporter implements IExporter {
 
-	public RecordNamesExporter() {
-	}
-	public String export(IProject project) {
-		StringBuffer sb = new StringBuffer();
-		sb.append(String.format("%-30s\t%-20s\t%s%n", "Naming rule", "Record name","Description"));
-		for(IRecord r : project.getFinalRecords()) {
-			String name = AliasResolutionUtil.getEpicsNameFromHierarchy(r);
-			String resolvedName;
-			try {
-				resolvedName = ResolutionUtil.resolve(name, r);
-			} catch (AliasResolutionException e) {
-				resolvedName = e.getMessage();
-			}
-			Map<String, String> resolveFields = ResolutionUtil.resolveFields(r);
+    public RecordNamesExporter() {
+    }
+    public String export(IProject project) {
+        StringBuffer sb = new StringBuffer();
+        sb.append(String.format("%-30s\t%-20s\t%s%n", "Naming rule", "Record name","Description"));
+        for(IRecord r : project.getFinalRecords()) {
+            String name = AliasResolutionUtil.getEpicsNameFromHierarchy(r);
+            String resolvedName;
+            try {
+                resolvedName = ResolutionUtil.resolve(name, r);
+            } catch (AliasResolutionException e) {
+                resolvedName = e.getMessage();
+            }
+            Map<String, String> resolveFields = ResolutionUtil.resolveFields(r);
             String desc = resolveFields.get("DESC");
             if(desc==null) {
                 desc="";
             }
-			sb.append(String.format("%-30s\t%-20s\t%s%n", name, resolvedName,desc ));
-		}
-		return sb.toString();
-	}
+            sb.append(String.format("%-30s\t%-20s\t%s%n", name, resolvedName,desc ));
+        }
+        return sb.toString();
+    }
 
 }

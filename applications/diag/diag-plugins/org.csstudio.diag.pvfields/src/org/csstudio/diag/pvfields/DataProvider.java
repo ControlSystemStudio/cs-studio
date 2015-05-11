@@ -12,15 +12,15 @@ package org.csstudio.diag.pvfields;
  */
 public interface DataProvider
 {
-	/** ID of extension point for {@link DataProvider} implementations */
-	final public static String ID = "org.csstudio.diag.pvfields.dataprovider";
-	
-	/** Perform lookup
-	 *  <p>Will be invoked in background thread,
-	 *  does not need to start its own thread for long-running activities.
-	 *  @param name Name of PV/Channel
-	 *  @return {@link PVInfo}
-	 *  @throws Exception on error
-	 */
+    /** ID of extension point for {@link DataProvider} implementations */
+    final public static String ID = "org.csstudio.diag.pvfields.dataprovider";
+
+    /** Perform lookup
+     *  <p>Will be invoked in background thread,
+     *  does not need to start its own thread for long-running activities.
+     *  @param name Name of PV/Channel
+     *  @return {@link PVInfo}
+     *  @throws Exception on error
+     */
     public PVInfo lookup(String name) throws Exception;
 }

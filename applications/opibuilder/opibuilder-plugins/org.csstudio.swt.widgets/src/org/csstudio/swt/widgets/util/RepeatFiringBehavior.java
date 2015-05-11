@@ -14,63 +14,63 @@ import org.eclipse.swt.widgets.Display;
 
 public class RepeatFiringBehavior
 {
-	protected static final int
-		INITIAL_DELAY = 250,
-		STEP_DELAY = 40;
-	
-	protected int
-		stepDelay = INITIAL_DELAY,
-		initialDelay = STEP_DELAY;
-	
-	protected Timer timer;
-	
-	private Runnable runTask;
-	private Display display;
-	public RepeatFiringBehavior() {
-		 display = Display.getCurrent();
-	}
-	
-	public void pressed() {
-		runTask.run();
-		
-		timer = new Timer();
-		TimerTask runAction = new Task();
+    protected static final int
+        INITIAL_DELAY = 250,
+        STEP_DELAY = 40;
 
-		timer.scheduleAtFixedRate(runAction, INITIAL_DELAY, STEP_DELAY);
-	}
+    protected int
+        stepDelay = INITIAL_DELAY,
+        initialDelay = STEP_DELAY;
 
-	public void canceled() {
-		suspend();
-	}	
-	public void released() {
-		suspend();
-	}
-	
-	public void resume() {
-		timer = new Timer();
-		
-		TimerTask runAction = new Task();
-		
-		timer.scheduleAtFixedRate(runAction, STEP_DELAY, STEP_DELAY);
-	}
-	
-	public void suspend() {
-		if (timer == null) return;
-		timer.cancel();
-		timer = null;
-	}
+    protected Timer timer;
 
-	
-	public void setRunTask(Runnable runTask) {
-		this.runTask = runTask;
-	}
+    private Runnable runTask;
+    private Display display;
+    public RepeatFiringBehavior() {
+         display = Display.getCurrent();
+    }
 
-class Task 
-	extends TimerTask {
-	
-	public void run() {
-		display.syncExec(runTask);
-	}
+    public void pressed() {
+        runTask.run();
+
+        timer = new Timer();
+        TimerTask runAction = new Task();
+
+        timer.scheduleAtFixedRate(runAction, INITIAL_DELAY, STEP_DELAY);
+    }
+
+    public void canceled() {
+        suspend();
+    }
+    public void released() {
+        suspend();
+    }
+
+    public void resume() {
+        timer = new Timer();
+
+        TimerTask runAction = new Task();
+
+        timer.scheduleAtFixedRate(runAction, STEP_DELAY, STEP_DELAY);
+    }
+
+    public void suspend() {
+        if (timer == null) return;
+        timer.cancel();
+        timer = null;
+    }
+
+
+    public void setRunTask(Runnable runTask) {
+        this.runTask = runTask;
+    }
+
+class Task
+    extends TimerTask {
+
+    public void run() {
+        display.syncExec(runTask);
+    }
 }
 
 }

@@ -20,43 +20,43 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ActionsCellEditor extends AbstractDialogCellEditor {
 
-	private ActionsInput actionsInput;
-	private boolean showHookOption;
-	
-	public ActionsCellEditor(Composite parent, String title, boolean showHookOption) {
-		super(parent, title);
-		this.showHookOption = showHookOption;
-	}
+    private ActionsInput actionsInput;
+    private boolean showHookOption;
 
-	@Override
-	protected void openDialog(Shell parentShell, String dialogTitle) {
-		if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-		"org.eclipse.help.ui.HelpView") !=null) //$NON-NLS-1$
-			PlatformUI.getWorkbench().getHelpSystem().displayHelp(
-			OPIBuilderPlugin.PLUGIN_ID + ".action"); //$NON-NLS-1$
-		ActionsInputDialog dialog = 
-			new ActionsInputDialog(parentShell, actionsInput, dialogTitle, showHookOption);
-		
-		if(dialog.open() == Window.OK)
-			actionsInput = dialog.getOutput();
-	}
+    public ActionsCellEditor(Composite parent, String title, boolean showHookOption) {
+        super(parent, title);
+        this.showHookOption = showHookOption;
+    }
 
-	@Override
-	protected boolean shouldFireChanges() {
-		return actionsInput != null;
-	}
+    @Override
+    protected void openDialog(Shell parentShell, String dialogTitle) {
+        if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+        "org.eclipse.help.ui.HelpView") !=null) //$NON-NLS-1$
+            PlatformUI.getWorkbench().getHelpSystem().displayHelp(
+            OPIBuilderPlugin.PLUGIN_ID + ".action"); //$NON-NLS-1$
+        ActionsInputDialog dialog =
+            new ActionsInputDialog(parentShell, actionsInput, dialogTitle, showHookOption);
 
-	@Override
-	protected Object doGetValue() {
-		return actionsInput;
-	}
+        if(dialog.open() == Window.OK)
+            actionsInput = dialog.getOutput();
+    }
 
-	@Override
-	protected void doSetValue(Object value) {
-		if(value == null || !(value instanceof ActionsInput))
-			actionsInput = new ActionsInput();
-		else
-			actionsInput = (ActionsInput)value;
-	}
+    @Override
+    protected boolean shouldFireChanges() {
+        return actionsInput != null;
+    }
+
+    @Override
+    protected Object doGetValue() {
+        return actionsInput;
+    }
+
+    @Override
+    protected void doSetValue(Object value) {
+        if(value == null || !(value instanceof ActionsInput))
+            actionsInput = new ActionsInput();
+        else
+            actionsInput = (ActionsInput)value;
+    }
 
 }

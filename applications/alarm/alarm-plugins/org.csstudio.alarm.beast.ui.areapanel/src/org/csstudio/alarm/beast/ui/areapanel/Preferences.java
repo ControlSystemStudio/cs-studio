@@ -18,11 +18,11 @@ public class Preferences
 {
     final public static String HIERARCHY_LEVEL = "hierarchy_level";
     final public static String COLUMNS = "columns";
-    
+
     /** @return Level of alarm tree hierarchy to display by the panel. 1 for 'area' */
     public static int getHierarchyLevel()
     {
-    	final int level = 1;
+        final int level = 1;
         final IPreferencesService service = Platform.getPreferencesService();
         if (service == null)
             return level;
@@ -32,7 +32,7 @@ public class Preferences
     /** @return Number of columns to use for display */
     public static int getColumns()
     {
-    	final int columns = 2;
+        final int columns = 2;
         final IPreferencesService service = Platform.getPreferencesService();
         if (service == null)
             return columns;

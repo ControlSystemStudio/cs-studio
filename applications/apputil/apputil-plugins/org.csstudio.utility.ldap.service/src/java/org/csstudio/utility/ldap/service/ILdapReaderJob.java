@@ -23,15 +23,15 @@ package org.csstudio.utility.ldap.service;
 
 
 /**
- * Reader job interface. 
- * 
+ * Reader job interface.
+ *
  * @author bknerr
  * @since 18.05.2011
  */
 public interface ILdapReaderJob {
     ILdapSearchResult getSearchResult();
-    
+
     void schedule();
-    
+
     void join() throws InterruptedException;
 }

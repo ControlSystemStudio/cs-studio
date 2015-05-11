@@ -20,43 +20,43 @@ package com.cosylab.vdct;
  */
 public interface ConsoleInterface
 {
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void flush();
+    /**
+     * DOCUMENT ME!
+     */
+    public void flush();
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param text DOCUMENT ME!
-	 */
-	public void print(String text);
+    /**
+     * DOCUMENT ME!
+     *
+     * @param text DOCUMENT ME!
+     */
+    public void print(String text);
 
-	/**
-	 * DOCUMENT ME!
-	 */
-	public void println();
+    /**
+     * DOCUMENT ME!
+     */
+    public void println();
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param text DOCUMENT ME!
-	 */
-	public void println(String text);
+    /**
+     * DOCUMENT ME!
+     *
+     * @param text DOCUMENT ME!
+     */
+    public void println(String text);
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param thr DOCUMENT ME!
-	 */
-	public void println(Throwable thr);
+    /**
+     * DOCUMENT ME!
+     *
+     * @param thr DOCUMENT ME!
+     */
+    public void println(Throwable thr);
 
-	/**
-	 * DOCUMENT ME!
-	 *
-	 * @param string DOCUMENT ME!
-	 */
-	public void silent(String string);
+    /**
+     * DOCUMENT ME!
+     *
+     * @param string DOCUMENT ME!
+     */
+    public void silent(String string);
 }
 
 /* __oOo__ */

@@ -23,84 +23,84 @@ import org.eclipse.swt.widgets.Display;
 
 public class SingleSourceHelperImpl extends SingleSourceHelper{
 
-	
-	
-	/**Get the IFile from IPath.
-	 * @param path Path to file in workspace
-	 * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
-	 */
-	public static IFile getIFileFromIPath(final IPath path)
-	{
-	    try
-	    {
-    		final IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
-    				path, false);
-    		if (r!= null && r instanceof IFile)
-		    {
-    		    final IFile file = (IFile) r;
-    		    if (file.exists())
-    		        return file;
-		    }
-	    }
-	    catch (Exception ex)
-	    {
-	        // Ignored
-	    }
-	    return null;
-	}
 
 
-	@Override
-	protected GC internalGetImageGC(Image image) {
-		return new GC(image);
-	}
+    /**Get the IFile from IPath.
+     * @param path Path to file in workspace
+     * @return the IFile. <code>null</code> if no IFile on the path, file does not exist, internal error.
+     */
+    public static IFile getIFileFromIPath(final IPath path)
+    {
+        try
+        {
+            final IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(
+                    path, false);
+            if (r!= null && r instanceof IFile)
+            {
+                final IFile file = (IFile) r;
+                if (file.exists())
+                    return file;
+            }
+        }
+        catch (Exception ex)
+        {
+            // Ignored
+        }
+        return null;
+    }
 
 
-	@Override
-	protected Cursor createInternalCursor(Display display, ImageData imageData,
-			int width, int height, int backUpSWTCursorStyle) {
-		return new Cursor(display, imageData, width, height);
-	}
+    @Override
+    protected GC internalGetImageGC(Image image) {
+        return new GC(image);
+    }
 
 
-	@Override
-	protected void internalSetGCTransform(GC gc, Transform transform) {
-		gc.setTransform(transform);
-	}
+    @Override
+    protected Cursor createInternalCursor(Display display, ImageData imageData,
+            int width, int height, int backUpSWTCursorStyle) {
+        return new Cursor(display, imageData, width, height);
+    }
 
 
-	@Override
-	protected AbstractWidgetProperty internalCreateColorMapProperty(
-			String prop_id, String description,
-			WidgetPropertyCategory category, ColorMap defaultValue) {
-		return new ColorMapProperty(prop_id, description, category, defaultValue);
-	}
+    @Override
+    protected void internalSetGCTransform(GC gc, Transform transform) {
+        gc.setTransform(transform);
+    }
 
 
-	@Override
-	protected AbstractWebBrowserFigure internalCreateWebBrowserFigure(
-			AbstractBaseEditPart editPart, boolean showToolbar) {
-		return new WebBrowserFigure(editPart, showToolbar);
-	}
+    @Override
+    protected AbstractWidgetProperty internalCreateColorMapProperty(
+            String prop_id, String description,
+            WidgetPropertyCategory category, ColorMap defaultValue) {
+        return new ColorMapProperty(prop_id, description, category, defaultValue);
+    }
 
 
-	@Override
-	protected void internalSwtWidgetAddMouseTrackListener(Control control,
-			MouseTrackListener listener) {
-		control.addMouseTrackListener(listener);
-		if(control instanceof Composite){
-			for(Control c : ((Composite)control).getChildren()){
-				internalSwtWidgetAddMouseTrackListener(c, listener);						
-			}
-		}
-	}
+    @Override
+    protected AbstractWebBrowserFigure internalCreateWebBrowserFigure(
+            AbstractBaseEditPart editPart, boolean showToolbar) {
+        return new WebBrowserFigure(editPart, showToolbar);
+    }
 
 
-	@Override
-	protected void internalSWTControlTraverse(Control control, int traversal) {
-		control.traverse(traversal);
-	}
+    @Override
+    protected void internalSwtWidgetAddMouseTrackListener(Control control,
+            MouseTrackListener listener) {
+        control.addMouseTrackListener(listener);
+        if(control instanceof Composite){
+            for(Control c : ((Composite)control).getChildren()){
+                internalSwtWidgetAddMouseTrackListener(c, listener);
+            }
+        }
+    }
 
 
-	
+    @Override
+    protected void internalSWTControlTraverse(Control control, int traversal) {
+        control.traverse(traversal);
+    }
+
+
+
 }

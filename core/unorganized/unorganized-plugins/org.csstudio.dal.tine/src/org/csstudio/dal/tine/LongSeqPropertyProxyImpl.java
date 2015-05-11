@@ -28,67 +28,67 @@ import org.csstudio.dal.DataExchangeException;
 import de.desy.tine.dataUtils.TDataType;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class LongSeqPropertyProxyImpl extends PropertyProxyImpl<long[]>{
-	
-	private long[] value;
-	private int length;
-	
-	/**
-	 * Constructs a new LongSeqPropertyProxy.
-	 * @param name
-	 */
-	public LongSeqPropertyProxyImpl(String name, TINEPlug plug) {
-		super(name, plug);
-		try {
-			this.length = (Integer)getCharacteristic("sequenceLength");
-		} catch (DataExchangeException e) {
-			Logger.getLogger(this.getClass()).error("Getting characteristic failed.", e);
-		}
-		this.value = new long[this.length];
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
-	 */
-	@Override
-	protected long[] extractData(TDataType out) {
-		out.getData(this.value);
-		if (this.value != null) {
-			return this.value;
-		} else {
-			return new long[this.length];
-		}
-		
-	}
+    private long[] value;
+    private int length;
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
-	 */
-	@Override
-	protected Object getDataObject() {
-		return this.value;
-	}
+    /**
+     * Constructs a new LongSeqPropertyProxy.
+     * @param name
+     */
+    public LongSeqPropertyProxyImpl(String name, TINEPlug plug) {
+        super(name, plug);
+        try {
+            this.length = (Integer)getCharacteristic("sequenceLength");
+        } catch (DataExchangeException e) {
+            Logger.getLogger(this.getClass()).error("Getting characteristic failed.", e);
+        }
+        this.value = new long[this.length];
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#setDataToObject(java.lang.Object)
-	 */
-	@Override
-	protected Object convertDataToObject(long[] data) {
-		return data;
-	}
-	/* (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
-	 */
-	@Override
-	protected Class getNumericType() {
-		return Long.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
+     */
+    @Override
+    protected long[] extractData(TDataType out) {
+        out.getData(this.value);
+        if (this.value != null) {
+            return this.value;
+        } else {
+            return new long[this.length];
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
+     */
+    @Override
+    protected Object getDataObject() {
+        return this.value;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#setDataToObject(java.lang.Object)
+     */
+    @Override
+    protected Object convertDataToObject(long[] data) {
+        return data;
+    }
+    /* (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
+     */
+    @Override
+    protected Class getNumericType() {
+        return Long.class;
+    }
 
 }

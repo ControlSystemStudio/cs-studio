@@ -30,56 +30,56 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends Plugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.dal.epics";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.csstudio.dal.epics";
 
-	// The shared instance
-	private static Activator plugin;
+    // The shared instance
+    private static Activator plugin;
 
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-		plugin = this;
-	}
+    /**
+     * The constructor
+     */
+    public Activator() {
+        plugin = this;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void start(final BundleContext context) throws Exception {
-		super.start(context);
+        super.start(context);
 
-		//Read preference 'use_pure_java' from plug-in 'org.csstudio.libs.epics' and
-		//set it to the DAL configuration.
+        //Read preference 'use_pure_java' from plug-in 'org.csstudio.libs.epics' and
+        //set it to the DAL configuration.
         if (EpicsPlugin.getDefault().usePureJava()) {
-        	System.getProperties().put("EPICSPlug.use_jni", "false");
+            System.getProperties().put("EPICSPlug.use_jni", "false");
         } else {
-        	System.getProperties().put("EPICSPlug.use_jni", "true");
+            System.getProperties().put("EPICSPlug.use_jni", "true");
         }
 
         final String defaultValue = new Integer(EpicsPlugin.getDefault().getMonitorMask().getMask()).toString();
         System.getProperties().put("EPICSPlug.default_monitor_mask", defaultValue);
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
-	 */
-	@Override
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
     public void stop(final BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
+        plugin = null;
+        super.stop(context);
+    }
 
-	/**
-	 * Returns the shared instance
-	 *
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
-	}
+    /**
+     * Returns the shared instance
+     *
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+        return plugin;
+    }
 
 }

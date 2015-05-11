@@ -25,16 +25,16 @@ public class ArchiveConfigFactory
      *  @throws Exception on error: No implementation found, or error initializing it
      */
     public static ArchiveConfig getArchiveConfig() throws Exception
-	{
+    {
         final IConfigurationElement[] configs = Platform.getExtensionRegistry()
-        	.getConfigurationElementsFor(EXTENSION_ID);
-		// Need exactly one implementation
-		if (configs.length != 1)
-			throw new Exception("Need 1 extension to " + EXTENSION_ID + ", found " + configs.length);
-		
-		final IConfigurationElement config = configs[0];
-		// final String plugin = config.getContributor().getName();
-		final ArchiveConfig arch_config = (ArchiveConfig)config.createExecutableExtension("class");
-		return arch_config;
-	}
+            .getConfigurationElementsFor(EXTENSION_ID);
+        // Need exactly one implementation
+        if (configs.length != 1)
+            throw new Exception("Need 1 extension to " + EXTENSION_ID + ", found " + configs.length);
+
+        final IConfigurationElement config = configs[0];
+        // final String plugin = config.getContributor().getName();
+        final ArchiveConfig arch_config = (ArchiveConfig)config.createExecutableExtension("class");
+        return arch_config;
+    }
 }

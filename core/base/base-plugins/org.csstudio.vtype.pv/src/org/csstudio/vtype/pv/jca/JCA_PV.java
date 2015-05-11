@@ -183,9 +183,9 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             old_monitor.clear();
         }
         catch (Exception ex)
-        {	// This is 'normal', log only on FINE:
-        	// When the channel is disconnected, CAJ cannot send
-        	// an un-subscribe request to the client
+        {    // This is 'normal', log only on FINE:
+            // When the channel is disconnected, CAJ cannot send
+            // an un-subscribe request to the client
             logger.log(Level.FINE, getName() + " cannot unsubscribe", ex);
         }
     }

@@ -38,95 +38,95 @@ import java.util.EventObject;
  */
 public class DynamicValuesEvent<T> extends EventObject
 {
-	private static final long serialVersionUID = 1L;
-	private long[] timestamps;
-	private EnumSet<DynamicValueState> conditions;
-	private String message = null;
-	private T values;
-	private Exception[] errors;
+    private static final long serialVersionUID = 1L;
+    private long[] timestamps;
+    private EnumSet<DynamicValueState> conditions;
+    private String message = null;
+    private T values;
+    private Exception[] errors;
 
-	/**
-	     * Creates a new instance of this event. All arrays should be orderd in same order as properties in group.
-	     *
-	     * @param source the source that generated the event
-	     * @param values the event value
-	     * @param conditions is array of conditions of the properties in group and may be <code>null</code>
-	     * @param timestamps are exact timestamps of the even values. If <code>null</code>, current time will be used for <code>timestamp</code>.
-	     * @param message event message, may be <code>null</code>
-	     */
-	public DynamicValuesEvent(GroupDataAccess<T, DynamicValueProperty<T>> source, T values,
-	    EnumSet<DynamicValueState> conditions, long[] timestamps, String message)
-	{
-		super(source);
+    /**
+         * Creates a new instance of this event. All arrays should be orderd in same order as properties in group.
+         *
+         * @param source the source that generated the event
+         * @param values the event value
+         * @param conditions is array of conditions of the properties in group and may be <code>null</code>
+         * @param timestamps are exact timestamps of the even values. If <code>null</code>, current time will be used for <code>timestamp</code>.
+         * @param message event message, may be <code>null</code>
+         */
+    public DynamicValuesEvent(GroupDataAccess<T, DynamicValueProperty<T>> source, T values,
+        EnumSet<DynamicValueState> conditions, long[] timestamps, String message)
+    {
+        super(source);
 
-		if (conditions == null) {
-			throw new NullPointerException("conditions");
-		}
+        if (conditions == null) {
+            throw new NullPointerException("conditions");
+        }
 
-		if (values == null) {
-			throw new NullPointerException("values");
-		}
+        if (values == null) {
+            throw new NullPointerException("values");
+        }
 
-		if (timestamps == null) {
-			this.timestamps = new long[conditions.size()];
-			Arrays.fill(this.timestamps, System.currentTimeMillis());
-		} else {
-			this.timestamps = timestamps;
-		}
+        if (timestamps == null) {
+            this.timestamps = new long[conditions.size()];
+            Arrays.fill(this.timestamps, System.currentTimeMillis());
+        } else {
+            this.timestamps = timestamps;
+        }
 
-		this.message = message;
-		this.conditions = conditions;
-	}
+        this.message = message;
+        this.conditions = conditions;
+    }
 
-	/**
-	 * Returns event message.
-	 *
-	 * @return Event message string
-	 */
-	public String getMessage()
-	{
-		return message;
-	}
+    /**
+     * Returns event message.
+     *
+     * @return Event message string
+     */
+    public String getMessage()
+    {
+        return message;
+    }
 
-	/**
-	 * Returns the conditions of the properties.
-	 *
-	 * @return The condition of event's property
-	 */
-	public EnumSet<DynamicValueState> getConditions()
-	{
-		return conditions;
-	}
+    /**
+     * Returns the conditions of the properties.
+     *
+     * @return The condition of event's property
+     */
+    public EnumSet<DynamicValueState> getConditions()
+    {
+        return conditions;
+    }
 
-	/**
-	 * Returns event timestamps, each timestamp for each value.
-	 *
-	 * @return Event timestamps
-	 */
-	public long[] getTimestamps()
-	{
-		return timestamps;
-	}
+    /**
+     * Returns event timestamps, each timestamp for each value.
+     *
+     * @return Event timestamps
+     */
+    public long[] getTimestamps()
+    {
+        return timestamps;
+    }
 
-	/**
-	 * Returns the event values.
-	 *
-	 * @return event values
-	 */
-	public T getValues()
-	{
-		return values;
-	}
+    /**
+     * Returns the event values.
+     *
+     * @return event values
+     */
+    public T getValues()
+    {
+        return values;
+    }
 
-	/**
-	 * Returns event exceptions.
-	 *
-	 * @return event exceptions
-	 */
-	public Exception[] getErrors()
-	{
-		return errors;
-	}
+    /**
+     * Returns event exceptions.
+     *
+     * @return event exceptions
+     */
+    public Exception[] getErrors()
+    {
+        return errors;
+    }
 } /* __oOo__ */
 
 

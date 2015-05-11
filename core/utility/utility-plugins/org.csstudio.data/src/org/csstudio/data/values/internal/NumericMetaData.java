@@ -18,29 +18,29 @@ public class NumericMetaData implements INumericMetaData
     private static final long serialVersionUID = 1L;
 
     private final double disp_low;
-	private final double disp_high;
+    private final double disp_high;
     private final double warn_low;
     private final double warn_high;
     private final double alarm_low;
-	private final double alarm_high;
-	private final int prec;
-	private final String units;
+    private final double alarm_high;
+    private final int prec;
+    private final String units;
 
-	/** Constructor for meta data from pieces. */
-	public NumericMetaData(double disp_low, double disp_high,
+    /** Constructor for meta data from pieces. */
+    public NumericMetaData(double disp_low, double disp_high,
                     double warn_low, double warn_high,
                     double alarm_low, double alarm_high,
                     int prec, String units)
-	{
+    {
         this.disp_low = disp_low;
-		this.disp_high = disp_high;
+        this.disp_high = disp_high;
         this.warn_low = warn_low;
         this.warn_high = warn_high;
         this.alarm_low = alarm_low;
-		this.alarm_high = alarm_high;
-		this.prec = prec;
-		this.units = units;
-	}
+        this.alarm_high = alarm_high;
+        this.prec = prec;
+        this.units = units;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -74,35 +74,35 @@ public class NumericMetaData implements INumericMetaData
 
     /** {@inheritDoc} */
     @Override
-	public int getPrecision()
-	{	return prec;	}
+    public int getPrecision()
+    {    return prec;    }
 
     /** {@inheritDoc} */
     @Override
-	public String getUnits()
-	{	return units;	}
+    public String getUnits()
+    {    return units;    }
 
     @Override
     public int hashCode()
     {
-	    final int prime = 31;
-	    int result = 1;
-	    long temp;
-	    temp = Double.doubleToLongBits(alarm_high);
-	    result = prime * result + (int) (temp ^ (temp >>> 32));
-	    temp = Double.doubleToLongBits(alarm_low);
-	    result = prime * result + (int) (temp ^ (temp >>> 32));
-	    temp = Double.doubleToLongBits(disp_high);
-	    result = prime * result + (int) (temp ^ (temp >>> 32));
-	    temp = Double.doubleToLongBits(disp_low);
-	    result = prime * result + (int) (temp ^ (temp >>> 32));
-	    result = prime * result + prec;
-	    result = prime * result + ((units == null) ? 0 : units.hashCode());
-	    temp = Double.doubleToLongBits(warn_high);
-	    result = prime * result + (int) (temp ^ (temp >>> 32));
-	    temp = Double.doubleToLongBits(warn_low);
-	    result = prime * result + (int) (temp ^ (temp >>> 32));
-	    return result;
+        final int prime = 31;
+        int result = 1;
+        long temp;
+        temp = Double.doubleToLongBits(alarm_high);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(alarm_low);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(disp_high);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(disp_low);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        result = prime * result + prec;
+        result = prime * result + ((units == null) ? 0 : units.hashCode());
+        temp = Double.doubleToLongBits(warn_high);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(warn_low);
+        result = prime * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 
     /** @return <code>true</code> if given meta data equals this */
@@ -133,17 +133,17 @@ public class NumericMetaData implements INumericMetaData
 
     /** {@inheritDoc} */
     @Override
-	@SuppressWarnings("nls")
+    @SuppressWarnings("nls")
     public String toString()
-	{
-		return "NumericMetaData:\n"
+    {
+        return "NumericMetaData:\n"
         + "    units      :" + units + "\n"
         + "    prec       :" + prec + "\n"
         + "    disp_low   :" + disp_low + "\n"
-		+ "    disp_high  :" + disp_high + "\n"
+        + "    disp_high  :" + disp_high + "\n"
         + "    alarm_low  :" + alarm_low + "\n"
         + "    warn_low   :" + warn_low + "\n"
         + "    warn_high  :" + warn_high + "\n"
-		+ "    alarm_high :" + alarm_high + "\n";
-	}
+        + "    alarm_high :" + alarm_high + "\n";
+    }
 }

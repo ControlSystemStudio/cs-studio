@@ -14,11 +14,11 @@ import org.csstudio.platform.utility.rdb.StringID;
  */
 public class Status extends StringID
 {
-	public Status(int id, String name)
-	{
-		super(id, name);
-	}
-	
+    public Status(int id, String name)
+    {
+        super(id, name);
+    }
+
     @Override
     @SuppressWarnings("nls")
     final public String toString()

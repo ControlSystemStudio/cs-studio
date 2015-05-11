@@ -19,21 +19,21 @@ import org.csstudio.platform.utility.rdb.StringIDHelper;
  */
 public class StatusCache
 {
-	/** Helper. */
-	final private StringIDHelper helper;
-	
+    /** Helper. */
+    final private StringIDHelper helper;
+
     /** Cache that maps names to stati */
     final private HashMap<String, Status> cache_by_name =
         new HashMap<String, Status>();
-    
-	/** Constructor */
-	public StatusCache(final RDBUtil rdb, final SQL sql)
-	{
-	    helper = new StringIDHelper(rdb,
-	        sql.status_table, sql.status_id_column, sql.status_name_column);
-	}
-	
-	/** Close prepared statements, clear cache. */
+
+    /** Constructor */
+    public StatusCache(final RDBUtil rdb, final SQL sql)
+    {
+        helper = new StringIDHelper(rdb,
+            sql.status_table, sql.status_id_column, sql.status_name_column);
+    }
+
+    /** Close prepared statements, clear cache. */
     public void dispose()
     {
         helper.dispose();
@@ -41,44 +41,44 @@ public class StatusCache
     }
 
     /** Add Status to cache */
-	public void memorize(final Status status)
-	{
-		cache_by_name.put(status.getName(), status);
-	}
+    public void memorize(final Status status)
+    {
+        cache_by_name.put(status.getName(), status);
+    }
 
-	/** Get status by name.
-	 *  @param name status name
-	 *  @return status or <code>null</code>
-	 *  @throws Exception on error
-	 */
-	private Status find(String name) throws Exception
-	{
-		if (name.length() == 0)
-			name = ArchiveVType.STATUS_OK;
-		// Check cache
-		Status status = cache_by_name.get(name);
-		if (status != null)
-			return status;
-		final StringID found = helper.find(name);
-		if (found != null)
-		{
-        	status = new Status(found.getId(), found.getName());
+    /** Get status by name.
+     *  @param name status name
+     *  @return status or <code>null</code>
+     *  @throws Exception on error
+     */
+    private Status find(String name) throws Exception
+    {
+        if (name.length() == 0)
+            name = ArchiveVType.STATUS_OK;
+        // Check cache
+        Status status = cache_by_name.get(name);
+        if (status != null)
+            return status;
+        final StringID found = helper.find(name);
+        if (found != null)
+        {
+            status = new Status(found.getId(), found.getName());
             memorize(status);
         }
         // else: Nothing found
         return status;
-	}
-	
-	/** Find or create a status by name.
-	 *  @param name Status name
-	 *  @return Status
-	 *  @throws Exception on error
-	 */
-	public Status findOrCreate(String name) throws Exception
-	{
-    	if (name.length() == 0)
-    		name = ArchiveVType.STATUS_OK;
-    	// Existing entry?
+    }
+
+    /** Find or create a status by name.
+     *  @param name Status name
+     *  @return Status
+     *  @throws Exception on error
+     */
+    public Status findOrCreate(String name) throws Exception
+    {
+        if (name.length() == 0)
+            name = ArchiveVType.STATUS_OK;
+        // Existing entry?
         Status status = find(name);
         if (status != null)
             return status;
@@ -86,5 +86,5 @@ public class StatusCache
         status = new Status(added.getId(), added.getName());
         memorize(status);
         return status;
-	}
+    }
 }

@@ -36,50 +36,50 @@ import org.csstudio.dal.DynamicValueProperty;
  */
 public class PropertyGroupEvent<T extends DynamicValueProperty<?>> extends EventObject
 {
-	private static final long serialVersionUID = 1L;
-	private T[] members;
+    private static final long serialVersionUID = 1L;
+    private T[] members;
 
-	/**
-	 * Creates a new GroupEvent object.
-	 *
-	 * @param source source of the event
-	 * @param members members which were added or removed
-	 */
-	public PropertyGroupEvent(PropertyCollection<T> source, T[] members)
-	{
-		super(source);
-		this.members = members;
+    /**
+     * Creates a new GroupEvent object.
+     *
+     * @param source source of the event
+     * @param members members which were added or removed
+     */
+    public PropertyGroupEvent(PropertyCollection<T> source, T[] members)
+    {
+        super(source);
+        this.members = members;
 
-		if (members == null) {
-			throw new NullPointerException("members");
-		}
+        if (members == null) {
+            throw new NullPointerException("members");
+        }
 
-		if (members.length == 0) {
-			throw new IllegalArgumentException("Members array is empty");
-		}
-	}
+        if (members.length == 0) {
+            throw new IllegalArgumentException("Members array is empty");
+        }
+    }
 
-	/**
-	 * Returns collection source, if this event is assotiated with
-	 * property group.
-	 *
-	 * @return collection source
-	 */
-	@SuppressWarnings("unchecked")
-	public PropertyCollection<T> getPropertyCollectionSource()
-	{
-		return (PropertyCollection<T>)getSource();
-	}
+    /**
+     * Returns collection source, if this event is assotiated with
+     * property group.
+     *
+     * @return collection source
+     */
+    @SuppressWarnings("unchecked")
+    public PropertyCollection<T> getPropertyCollectionSource()
+    {
+        return (PropertyCollection<T>)getSource();
+    }
 
-	/**
-	 * Returns members, which were added or romoved from collection.
-	 *
-	 * @return added or removed collection members
-	 */
-	public T[] getMembers()
-	{
-		return members;
-	}
+    /**
+     * Returns members, which were added or romoved from collection.
+     *
+     * @return added or removed collection members
+     */
+    public T[] getMembers()
+    {
+        return members;
+    }
 } /* __oOo__ */
 
 

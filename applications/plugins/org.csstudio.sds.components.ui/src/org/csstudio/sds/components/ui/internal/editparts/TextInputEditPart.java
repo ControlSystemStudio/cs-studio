@@ -81,387 +81,387 @@ import org.slf4j.LoggerFactory;
  */
 public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart {
 
-	private static final Logger LOG = LoggerFactory.getLogger(TextInputEditPart.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TextInputEditPart.class);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		TextInputModel model = (TextInputModel) getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        TextInputModel model = (TextInputModel) getWidgetModel();
 
-		RefreshableLabelFigure label = new RefreshableLabelFigure();
+        RefreshableLabelFigure label = new RefreshableLabelFigure();
 
-		label.setTextValue(determineLabel(null));
-		label.setFont(getModelFont(TextInputModel.PROP_FONT));
-		label.setTextAlignment(model.getTextAlignment());
-		label.setTransparent(model.getTransparent());
+        label.setTextValue(determineLabel(null));
+        label.setFont(getModelFont(TextInputModel.PROP_FONT));
+        label.setTextAlignment(model.getTextAlignment());
+        label.setTransparent(model.getTransparent());
 
-		label.setEnabled(model.isAccesible() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
+        label.setEnabled(model.isAccesible() && getExecutionMode().equals(ExecutionMode.RUN_MODE));
 
-		return label;
-	}
+        return label;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void createEditPoliciesHook() {
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new LabelDirectEditPolicy());
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void createEditPoliciesHook() {
+        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new LabelDirectEditPolicy());
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void performRequest(final Request req) {
-		Object type = req.getType();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void performRequest(final Request req) {
+        Object type = req.getType();
 
-		// entering a value is only allowed in run mode and when the widget is
-		// enabled
-		if ((type != null) && (type.equals(RequestConstants.REQ_OPEN) || type.equals(RequestConstants.REQ_DIRECT_EDIT))) {
-			performDirectEdit();
-		}
-	}
+        // entering a value is only allowed in run mode and when the widget is
+        // enabled
+        if ((type != null) && (type.equals(RequestConstants.REQ_OPEN) || type.equals(RequestConstants.REQ_DIRECT_EDIT))) {
+            performDirectEdit();
+        }
+    }
 
-	/**
-	 * Open the cell editor for direct editing.
-	 */
-	private void performDirectEdit() {
-		CellEditor cellEditor = createCellEditor();
-		locateCellEditor(cellEditor);
-		cellEditor.activate();
-		cellEditor.setFocus();
-	}
+    /**
+     * Open the cell editor for direct editing.
+     */
+    private void performDirectEdit() {
+        CellEditor cellEditor = createCellEditor();
+        locateCellEditor(cellEditor);
+        cellEditor.activate();
+        cellEditor.setFocus();
+    }
 
-	/**
-	 * Create the cell editor for direct editing.
-	 *
-	 * @return The cell editor for direct editing.
-	 */
-	private CellEditor createCellEditor() {
-		final CellEditor result = new TextCellEditor((Composite) getViewer().getControl());
+    /**
+     * Create the cell editor for direct editing.
+     *
+     * @return The cell editor for direct editing.
+     */
+    private CellEditor createCellEditor() {
+        final CellEditor result = new TextCellEditor((Composite) getViewer().getControl());
 
-		// init cell editor...
-		String currentValue = "N/A"; //$NON-NLS-1$
-		currentValue = getWidgetModel().getStringProperty(TextInputModel.PROP_INPUT_TEXT);
+        // init cell editor...
+        String currentValue = "N/A"; //$NON-NLS-1$
+        currentValue = getWidgetModel().getStringProperty(TextInputModel.PROP_INPUT_TEXT);
 
-		result.setValue(currentValue);
-		final Text text = (Text) result.getControl();
-		text.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyPressed(final KeyEvent e) {
-				if ((e.keyCode == SWT.CR) || (e.keyCode == SWT.KEYPAD_CR)) {
-					int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_TEXT_TYPE);
+        result.setValue(currentValue);
+        final Text text = (Text) result.getControl();
+        text.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(final KeyEvent e) {
+                if ((e.keyCode == SWT.CR) || (e.keyCode == SWT.KEYPAD_CR)) {
+                    int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_TEXT_TYPE);
 
-					TextTypeEnum propertyValue = TextTypeEnum.values()[option];
-					if (!propertyValue.isValidFormat(text.getText())) {
-						InvalidFormatDialog dialog = new InvalidFormatDialog(Display.getCurrent().getActiveShell());
-						dialog.setText(text.getText());
-						dialog.open();
-						LOG.warn("Invalid value format: " + text.getText());
-						return;
-					}
-					DirectEditCommand cmd = new DirectEditCommand(text.getText(), getExecutionMode());
-					// In EDIT mode use the CommandStack provided by the DisplayEditor to execute the command.
-					if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
-						getViewer().getEditDomain().getCommandStack().execute(cmd);
-					} else {
-						cmd.execute();
-					}
-				} else if (e.keyCode == SWT.ESC) {
-					result.deactivate();
-				}
-			}
+                    TextTypeEnum propertyValue = TextTypeEnum.values()[option];
+                    if (!propertyValue.isValidFormat(text.getText())) {
+                        InvalidFormatDialog dialog = new InvalidFormatDialog(Display.getCurrent().getActiveShell());
+                        dialog.setText(text.getText());
+                        dialog.open();
+                        LOG.warn("Invalid value format: " + text.getText());
+                        return;
+                    }
+                    DirectEditCommand cmd = new DirectEditCommand(text.getText(), getExecutionMode());
+                    // In EDIT mode use the CommandStack provided by the DisplayEditor to execute the command.
+                    if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
+                        getViewer().getEditDomain().getCommandStack().execute(cmd);
+                    } else {
+                        cmd.execute();
+                    }
+                } else if (e.keyCode == SWT.ESC) {
+                    result.deactivate();
+                }
+            }
 
-		});
-		text.addVerifyListener(new VerifyListener() {
+        });
+        text.addVerifyListener(new VerifyListener() {
 
-			public void verifyText(final VerifyEvent e) {
-				e.doit = true;
-				int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_TEXT_TYPE);
-				TextTypeEnum propertyValue = TextTypeEnum.values()[option];
-				e.doit = propertyValue.isValidChars(e.character, e.text, e.start);
+            public void verifyText(final VerifyEvent e) {
+                e.doit = true;
+                int option = getWidgetModel().getArrayOptionProperty(TextInputModel.PROP_TEXT_TYPE);
+                TextTypeEnum propertyValue = TextTypeEnum.values()[option];
+                e.doit = propertyValue.isValidChars(e.character, e.text, e.start);
 
-			}
-		});
+            }
+        });
 
-		text.setForeground(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
-		text.setFont(getModelFont(TextInputModel.PROP_FONT));
+        text.setForeground(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+        text.setFont(getModelFont(TextInputModel.PROP_FONT));
 
-		// calculate background color
-		RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
+        // calculate background color
+        RGB backgroundRgb = getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND).getRGB();
 
-		int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
-		int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);
-		int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS, 255);
+        int red = Math.min(backgroundRgb.red + INPUT_FIELD_BRIGHTNESS, 255);
+        int green = Math.min(backgroundRgb.green + INPUT_FIELD_BRIGHTNESS, 255);
+        int blue = Math.min(backgroundRgb.blue + INPUT_FIELD_BRIGHTNESS, 255);
 
-		Color backgroundColor = CustomMediaFactory.getInstance().getColor(new RGB(red, green, blue));
+        Color backgroundColor = CustomMediaFactory.getInstance().getColor(new RGB(red, green, blue));
 
-		text.setBackground(backgroundColor);
-		text.selectAll();
+        text.setBackground(backgroundColor);
+        text.selectAll();
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Locate the given cell editor .
-	 *
-	 * @param cellEditor
-	 *            A cell editor.
-	 */
-	private void locateCellEditor(final CellEditor cellEditor) {
-		Rectangle rect = TextInputEditPart.this.figure.getBounds().getCopy();
-		rect.x = rect.x + FRAME_WIDTH;
-		rect.y = rect.y + FRAME_WIDTH;
-		rect.height = rect.height - (FRAME_WIDTH * 1);
-		rect.width = rect.width - (FRAME_WIDTH * 1);
-		getFigure().translateToAbsolute(rect);
+    /**
+     * Locate the given cell editor .
+     *
+     * @param cellEditor
+     *            A cell editor.
+     */
+    private void locateCellEditor(final CellEditor cellEditor) {
+        Rectangle rect = TextInputEditPart.this.figure.getBounds().getCopy();
+        rect.x = rect.x + FRAME_WIDTH;
+        rect.y = rect.y + FRAME_WIDTH;
+        rect.height = rect.height - (FRAME_WIDTH * 1);
+        rect.width = rect.width - (FRAME_WIDTH * 1);
+        getFigure().translateToAbsolute(rect);
 
-		cellEditor.getControl().setBounds(rect.x, rect.y, rect.width, rect.height);
-		cellEditor.getControl().setLayoutData(new GridData(SWT.CENTER));
-		cellEditor.getControl().setVisible(true);
-	}
+        cellEditor.getControl().setBounds(rect.x, rect.y, rect.width, rect.height);
+        cellEditor.getControl().setLayoutData(new GridData(SWT.CENTER));
+        cellEditor.getControl().setVisible(true);
+    }
 
-	private final class InvalidFormatDialog extends Dialog {
-		private String _text;
+    private final class InvalidFormatDialog extends Dialog {
+        private String _text;
 
-		private InvalidFormatDialog(final Shell parentShell) {
-			super(parentShell);
-			setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
-			this.setText("Titel");
-		}
+        private InvalidFormatDialog(final Shell parentShell) {
+            super(parentShell);
+            setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE | SWT.BORDER | SWT.RESIZE);
+            this.setText("Titel");
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void configureShell(final Shell shell) {
-			super.configureShell(shell);
-			shell.setText("Invalid format");
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void configureShell(final Shell shell) {
+            super.configureShell(shell);
+            shell.setText("Invalid format");
+        }
 
-		@Override
-		protected Control createDialogArea(final Composite parent) {
-			Composite composite = (Composite) super.createDialogArea(parent);
-			composite.setLayout(new GridLayout(2, false));
-			Label label = new Label(composite, SWT.NONE);
-			label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-			label.setText("Invalid format of new value: ");
-			Text text = new Text(composite, SWT.NONE);
-			text.setText(_text);
-			text.setEditable(false);
-			text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-			return composite;
-		}
+        @Override
+        protected Control createDialogArea(final Composite parent) {
+            Composite composite = (Composite) super.createDialogArea(parent);
+            composite.setLayout(new GridLayout(2, false));
+            Label label = new Label(composite, SWT.NONE);
+            label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+            label.setText("Invalid format of new value: ");
+            Text text = new Text(composite, SWT.NONE);
+            text.setText(_text);
+            text.setEditable(false);
+            text.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+            return composite;
+        }
 
-		@Override
-		protected Control createButtonBar(final Composite parent) {
-			Control createButtonBar = super.createButtonBar(parent);
-			getButton(IDialogConstants.OK_ID).setText("Copy");
-			return createButtonBar;
-		}
+        @Override
+        protected Control createButtonBar(final Composite parent) {
+            Control createButtonBar = super.createButtonBar(parent);
+            getButton(IDialogConstants.OK_ID).setText("Copy");
+            return createButtonBar;
+        }
 
-		@Override
-		protected void okPressed() {
-			Clipboard clipboard = new Clipboard(Display.getCurrent());
-			TextTransfer textTransfer = TextTransfer.getInstance();
-			Transfer[] transfers = new Transfer[] { textTransfer };
-			Object[] data = new Object[] { _text };
-			clipboard.setContents(data, transfers);
-			clipboard.dispose();
-			super.okPressed();
-		}
+        @Override
+        protected void okPressed() {
+            Clipboard clipboard = new Clipboard(Display.getCurrent());
+            TextTransfer textTransfer = TextTransfer.getInstance();
+            Transfer[] transfers = new Transfer[] { textTransfer };
+            Object[] data = new Object[] { _text };
+            clipboard.setContents(data, transfers);
+            clipboard.dispose();
+            super.okPressed();
+        }
 
-		public void setText(final String text) {
-			_text = text;
-		}
+        public void setText(final String text) {
+            _text = text;
+        }
 
-	}
+    }
 
-	/**
-	 * The direct edit command that changes the input text.
-	 */
-	private class DirectEditCommand extends Command {
-		/**
-		 * The entered input text.
-		 */
-		private final String _text;
-		private final ExecutionMode _executionMode;
-		private String _oldValue;
+    /**
+     * The direct edit command that changes the input text.
+     */
+    private class DirectEditCommand extends Command {
+        /**
+         * The entered input text.
+         */
+        private final String _text;
+        private final ExecutionMode _executionMode;
+        private String _oldValue;
 
-		/**
-		 * Standard constructor.
-		 *
-		 * @param text
-		 *            The entered input text.
-		 */
-		public DirectEditCommand(final String text, final ExecutionMode executionMode) {
-			_text = text;
-			_executionMode = executionMode;
-		}
+        /**
+         * Standard constructor.
+         *
+         * @param text
+         *            The entered input text.
+         */
+        public DirectEditCommand(final String text, final ExecutionMode executionMode) {
+            _text = text;
+            _executionMode = executionMode;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void execute() {
-			execute(_text);
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void execute() {
+            execute(_text);
+        }
 
-		private void execute(final String newText) {
-			_oldValue = getWidgetModel().getStringProperty(TextInputModel.PROP_INPUT_TEXT);
+        private void execute(final String newText) {
+            _oldValue = getWidgetModel().getStringProperty(TextInputModel.PROP_INPUT_TEXT);
 
-			if (_executionMode == ExecutionMode.RUN_MODE) {
-				// In RUN mode set the manual value, because the connected
-				// channel sets the
-				// property value.
-				getCastedModel().setPropertyManualValue(TextInputModel.PROP_INPUT_TEXT, newText);
-			} else {
-				// In EDIT mode we can set the property value directly.
-				getCastedModel().setPropertyValue(TextInputModel.PROP_INPUT_TEXT, newText);
-			}
-		}
+            if (_executionMode == ExecutionMode.RUN_MODE) {
+                // In RUN mode set the manual value, because the connected
+                // channel sets the
+                // property value.
+                getCastedModel().setPropertyManualValue(TextInputModel.PROP_INPUT_TEXT, newText);
+            } else {
+                // In EDIT mode we can set the property value directly.
+                getCastedModel().setPropertyValue(TextInputModel.PROP_INPUT_TEXT, newText);
+            }
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public boolean canUndo() {
-			// Only in EDIT mode the command can be undone.
-			return _executionMode == ExecutionMode.EDIT_MODE;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean canUndo() {
+            // Only in EDIT mode the command can be undone.
+            return _executionMode == ExecutionMode.EDIT_MODE;
+        }
 
-		@Override
-		public void undo() {
-			execute(_oldValue);
-		}
-	}
+        @Override
+        public void undo() {
+            execute(_oldValue);
+        }
+    }
 
-	/**
-	 * The direct edit policy.
-	 */
-	private class LabelDirectEditPolicy extends DirectEditPolicy {
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected Command getDirectEditCommand(final DirectEditRequest request) {
-			DirectEditCommand command = new DirectEditCommand((String) request.getCellEditor().getValue(), getExecutionMode());
-			return command;
-		}
+    /**
+     * The direct edit policy.
+     */
+    private class LabelDirectEditPolicy extends DirectEditPolicy {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected Command getDirectEditCommand(final DirectEditRequest request) {
+            DirectEditCommand command = new DirectEditCommand((String) request.getCellEditor().getValue(), getExecutionMode());
+            return command;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void showCurrentEditValue(final DirectEditRequest request) {
-		    // do nothing
-		}
-	}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void showCurrentEditValue(final DirectEditRequest request) {
+            // do nothing
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-	    super.registerPropertyChangeHandlers();
-		// input text
-		IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTextValue(determineLabel(TextInputModel.PROP_INPUT_TEXT));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_INPUT_TEXT, textHandler);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        super.registerPropertyChangeHandlers();
+        // input text
+        IWidgetPropertyChangeHandler textHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+                RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+                label.setTextValue(determineLabel(TextInputModel.PROP_INPUT_TEXT));
+                return true;
+            }
+        };
+        setPropertyChangeHandler(TextInputModel.PROP_INPUT_TEXT, textHandler);
 
-		// font
-		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHandler<RefreshableLabelFigure>() {
-			@Override
-			protected void doHandle(final RefreshableLabelFigure refreshLableFigure, final Font font) {
-				refreshLableFigure.setFont(font);
-			}
-		});
+        // font
+        setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHandler<RefreshableLabelFigure>() {
+            @Override
+            protected void doHandle(final RefreshableLabelFigure refreshLableFigure, final Font font) {
+                refreshLableFigure.setFont(font);
+            }
+        });
 
-		// text alignment
-		IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTextAlignment((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
+        // text alignment
+        IWidgetPropertyChangeHandler alignmentHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+                RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+                label.setTextAlignment((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(TextInputModel.PROP_TEXT_ALIGNMENT, alignmentHandler);
 
-		// transparent background
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-				RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
-				label.setTransparent((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TextInputModel.PROP_TRANSPARENT, transparentHandler);
-	}
+        // transparent background
+        IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+                RefreshableLabelFigure label = (RefreshableLabelFigure) refreshableFigure;
+                label.setTransparent((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(TextInputModel.PROP_TRANSPARENT, transparentHandler);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IValue getSample(final int index) {
-		if (index != 0) {
-			throw new IndexOutOfBoundsException(index + " is not a valid sample index");
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public IValue getSample(final int index) {
+        if (index != 0) {
+            throw new IndexOutOfBoundsException(index + " is not a valid sample index");
+        }
 
-		TextInputModel model = (TextInputModel) getWidgetModel();
-		ITimestamp timestamp = TimestampFactory.now();
+        TextInputModel model = (TextInputModel) getWidgetModel();
+        ITimestamp timestamp = TimestampFactory.now();
 
-		// Note: the IValue implementations require a Severity, otherwise the
-		// format() method will throw a NullPointerException. We don't really
-		// have a severity here, so we fake one. This may cause problems for
-		// clients who rely on getting a meaningful severity from the IValue.
-		ISeverity severity = ValueFactory.createOKSeverity();
+        // Note: the IValue implementations require a Severity, otherwise the
+        // format() method will throw a NullPointerException. We don't really
+        // have a severity here, so we fake one. This may cause problems for
+        // clients who rely on getting a meaningful severity from the IValue.
+        ISeverity severity = ValueFactory.createOKSeverity();
 
-		IValue result;
-		switch (model.getValueType()) {
-		case DOUBLE:
-			// try to convert the input text to a double
-			double value = 0.0;
-			try {
-				value = Double.parseDouble(model.getInputText());
-			} catch (NumberFormatException e) {
-				// ProcessVariableWithSamples doesn't define
-				// what to do in case of error and there aren't any declared
-				// checked exceptions for this method. So, the best we can
-				// do is to rethrow an unchecked exception and hope that the
-				// caller will handle it.
-				throw new IllegalStateException("Text input type is Double," + " but text is not a floating point value.", e);
-			}
-			// Have to create a meta data object because otherwise DoubleValue's
-			// format() method might throw a NullPointerException :(
-			int precision = model.getPrecision();
-			INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0, 0, precision, "");
+        IValue result;
+        switch (model.getValueType()) {
+        case DOUBLE:
+            // try to convert the input text to a double
+            double value = 0.0;
+            try {
+                value = Double.parseDouble(model.getInputText());
+            } catch (NumberFormatException e) {
+                // ProcessVariableWithSamples doesn't define
+                // what to do in case of error and there aren't any declared
+                // checked exceptions for this method. So, the best we can
+                // do is to rethrow an unchecked exception and hope that the
+                // caller will handle it.
+                throw new IllegalStateException("Text input type is Double," + " but text is not a floating point value.", e);
+            }
+            // Have to create a meta data object because otherwise DoubleValue's
+            // format() method might throw a NullPointerException :(
+            int precision = model.getPrecision();
+            INumericMetaData md = ValueFactory.createNumericMetaData(0, 0, 0, 0, 0, 0, precision, "");
 
-			result = ValueFactory.createDoubleValue(timestamp, severity, null, md, Quality.Original, new double[] { value });
-			break;
-		case TEXT:
-		case HEX: // hex and alias are undocumented, so treating them
-		case ALIAS: // like text for now
-			result = ValueFactory.createStringValue(timestamp, severity, null, Quality.Original, new String[] { model.getInputText() });
-			break;
-		default:
-			throw new AssertionError("Never get here");
-		}
+            result = ValueFactory.createDoubleValue(timestamp, severity, null, md, Quality.Original, new double[] { value });
+            break;
+        case TEXT:
+        case HEX: // hex and alias are undocumented, so treating them
+        case ALIAS: // like text for now
+            result = ValueFactory.createStringValue(timestamp, severity, null, Quality.Original, new String[] { model.getInputText() });
+            break;
+        default:
+            throw new AssertionError("Never get here");
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int size() {
-		// we always have one sample
-		return 1;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public int size() {
+        // we always have one sample
+        return 1;
+    }
 
 }

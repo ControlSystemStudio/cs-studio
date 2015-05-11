@@ -20,38 +20,38 @@ import org.epics.graphene.AxisRanges;
  */
 public class AxisRangeCellEditor extends AbstractDialogCellEditor {
 
-	private AxisRange axisRange;
-	
-	
-	public AxisRangeCellEditor(Composite parent, String title) {
-		super(parent, title);
-	}
+    private AxisRange axisRange;
 
-	@Override
-	protected void openDialog(Shell parentShell, String dialogTitle) {
-		AxisRangePropertyDialog dialog = 
-			new AxisRangePropertyDialog(parentShell, axisRange, dialogTitle);
-		if(dialog.open() == Window.OK)
-			axisRange = dialog.getAxisRange();
-	}
 
-	@Override
-	protected boolean shouldFireChanges() {
-		return axisRange != null;
-	}
+    public AxisRangeCellEditor(Composite parent, String title) {
+        super(parent, title);
+    }
 
-	@Override
-	protected Object doGetValue() {
-		return axisRange;
-	}
+    @Override
+    protected void openDialog(Shell parentShell, String dialogTitle) {
+        AxisRangePropertyDialog dialog =
+            new AxisRangePropertyDialog(parentShell, axisRange, dialogTitle);
+        if(dialog.open() == Window.OK)
+            axisRange = dialog.getAxisRange();
+    }
 
-	@Override
-	protected void doSetValue(Object value) {
-		if (value instanceof AxisRange) {
-			axisRange = (AxisRange) value;
-		} else {
-			axisRange = AxisRanges.display();
-		}
-	}
+    @Override
+    protected boolean shouldFireChanges() {
+        return axisRange != null;
+    }
+
+    @Override
+    protected Object doGetValue() {
+        return axisRange;
+    }
+
+    @Override
+    protected void doSetValue(Object value) {
+        if (value instanceof AxisRange) {
+            axisRange = (AxisRange) value;
+        } else {
+            axisRange = AxisRanges.display();
+        }
+    }
 
 }

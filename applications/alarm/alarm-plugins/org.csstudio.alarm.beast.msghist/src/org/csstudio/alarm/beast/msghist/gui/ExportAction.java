@@ -48,7 +48,7 @@ public class ExportAction extends Action
     public void run()
     {
         // Prompt for file name
-    	UIHelper uiHelper = SingleSourcePlugin.getUIHelper();
+        UIHelper uiHelper = SingleSourcePlugin.getUIHelper();
         final String filename = uiHelper.openOutsideWorkspaceDialog(shell, SWT.SAVE, null, null);
         if (filename == null)
             return;

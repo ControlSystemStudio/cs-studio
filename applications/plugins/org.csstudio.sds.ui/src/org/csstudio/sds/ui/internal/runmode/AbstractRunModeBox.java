@@ -71,349 +71,349 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractRunModeBox {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRunModeBox.class);
-	
-	private boolean _disposed;
 
-	/**
-	 * The viewer that displays the model.
-	 */
-	private GraphicalViewer _graphicalViewer;
+    private boolean _disposed;
 
-	/**
-	 * A List of DisposeListener.
-	 */
-	private List<IRunModeDisposeListener> _disposeListeners;
+    /**
+     * The viewer that displays the model.
+     */
+    private GraphicalViewer _graphicalViewer;
 
-	/**
-	 * An input stream for the display xml data.
-	 */
-	private InputStream _inputStream;
+    /**
+     * A List of DisposeListener.
+     */
+    private List<IRunModeDisposeListener> _disposeListeners;
 
-	/**
-	 * The display model which should be shown.
-	 */
-	private DisplayModel _displayModel;
+    /**
+     * An input stream for the display xml data.
+     */
+    private InputStream _inputStream;
 
-	/**
-	 * The input for this box.
-	 */
-	private final RunModeBoxInput _input;
+    /**
+     * The display model which should be shown.
+     */
+    private DisplayModel _displayModel;
 
-	/**
-	 * Contains all property change listeners that will be added to the display
-	 * model or widgets.
-	 */
-	private HashMap<WidgetProperty, IPropertyChangeListener> _propertyListeners;
+    /**
+     * The input for this box.
+     */
+    private final RunModeBoxInput _input;
 
-	private IDisplayLoadedCallback callback;
+    /**
+     * Contains all property change listeners that will be added to the display
+     * model or widgets.
+     */
+    private HashMap<WidgetProperty, IPropertyChangeListener> _propertyListeners;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param input
-	 *            the {@link RunModeBoxInput} for the model file that should be displayed
-	 */
-	public AbstractRunModeBox(final RunModeBoxInput input)
-			throws IllegalArgumentException {
-		assert input != null;
+    private IDisplayLoadedCallback callback;
 
-		_input = input;
-		_inputStream = getInputStream(input.getFilePath());
-		_disposed = false;
+    /**
+     * Constructor.
+     *
+     * @param input
+     *            the {@link RunModeBoxInput} for the model file that should be displayed
+     */
+    public AbstractRunModeBox(final RunModeBoxInput input)
+            throws IllegalArgumentException {
+        assert input != null;
 
-		if (_inputStream == null) {
-			throw new IllegalArgumentException("Cannot open display "
-					+ input.getFilePath().toPortableString());
-		}
+        _input = input;
+        _inputStream = getInputStream(input.getFilePath());
+        _disposed = false;
 
-		_disposeListeners = new ArrayList<IRunModeDisposeListener>();
-		_propertyListeners = new HashMap<WidgetProperty, IPropertyChangeListener>();
-	}
+        if (_inputStream == null) {
+            throw new IllegalArgumentException("Cannot open display "
+                    + input.getFilePath().toPortableString());
+        }
 
-	/**
-	 * Open!
-	 */
-	public void openRunMode(final Runnable runAfterOpen, final IDisplayLoadedCallback callback) {
-		// Open the run mode representation
+        _disposeListeners = new ArrayList<IRunModeDisposeListener>();
+        _propertyListeners = new HashMap<WidgetProperty, IPropertyChangeListener>();
+    }
 
-		this.callback = callback;
-		// initialize model
-		_displayModel = new DisplayModel();
-		_displayModel.setLive(true);
+    /**
+     * Open!
+     */
+    public void openRunMode(final Runnable runAfterOpen, final IDisplayLoadedCallback callback) {
+        // Open the run mode representation
 
-		// load and connect the model
-		PersistenceUtil.asyncFillModel(_displayModel, _inputStream,
-				new DisplayModelLoadAdapter() {
+        this.callback = callback;
+        // initialize model
+        _displayModel = new DisplayModel();
+        _displayModel.setLive(true);
 
-					@Override
-					public void onDisplayModelLoaded() {
-					}
+        // load and connect the model
+        PersistenceUtil.asyncFillModel(_displayModel, _inputStream,
+                new DisplayModelLoadAdapter() {
 
-					public void onDisplayPropertiesLoaded() {
-						// expose runtime information to the model
-						RuntimeContext runtimeContext = new RuntimeContext(
-								_input.getFilePath(), _input.getAliases());
-						runtimeContext.setRunModeBoxInput(_input);
-						
-						// .. we create a separate broker instance for each running display 
-						runtimeContext.setBroker(SimpleDALBroker.newInstance(new CssApplicationContext("CSS")));
-						LOG.info("SimpleDALBroker instance created");
-						
-						_displayModel.setRuntimeContext(runtimeContext);
+                    @Override
+                    public void onDisplayModelLoaded() {
+                    }
 
-						final int x = _displayModel.getX();
-						final int y = _displayModel.getY();
-						final boolean openRelative = _displayModel.getOpenRelative();
-						final int width = _displayModel.getWidth();
-						final int height = _displayModel.getHeight();
+                    public void onDisplayPropertiesLoaded() {
+                        // expose runtime information to the model
+                        RuntimeContext runtimeContext = new RuntimeContext(
+                                _input.getFilePath(), _input.getAliases());
+                        runtimeContext.setRunModeBoxInput(_input);
 
-						PlatformUI.getWorkbench().getDisplay().syncExec(
-								new Runnable() {
-									public void run() {
-										Map<String, String> aliases = _input
-												.getAliases();
+                        // .. we create a separate broker instance for each running display
+                        runtimeContext.setBroker(SimpleDALBroker.newInstance(new CssApplicationContext("CSS")));
+                        LOG.info("SimpleDALBroker instance created");
 
-										// create and open the viewer
-										StringBuffer title = new StringBuffer();
+                        _displayModel.setRuntimeContext(runtimeContext);
 
-										// title
-										title.append(_input.getFilePath()
-												.makeRelative()
-												.toPortableString());
+                        final int x = _displayModel.getX();
+                        final int y = _displayModel.getY();
+                        final boolean openRelative = _displayModel.getOpenRelative();
+                        final int width = _displayModel.getWidth();
+                        final int height = _displayModel.getHeight();
 
-										if ((aliases != null)
-												&& !aliases.isEmpty()) {
-											title.append("?");
+                        PlatformUI.getWorkbench().getDisplay().syncExec(
+                                new Runnable() {
+                                    public void run() {
+                                        Map<String, String> aliases = _input
+                                                .getAliases();
 
-											Iterator<String> it = aliases
-													.keySet().iterator();
+                                        // create and open the viewer
+                                        StringBuffer title = new StringBuffer();
 
-											while (it.hasNext()) {
-												String key = it.next();
-												String val = aliases.get(key);
-												title.append(key);
-												title.append("=");
-												title.append(val);
-												title.append(it.hasNext() ? "&"
-														: "");
-											}
-										}
+                                        // title
+                                        title.append(_input.getFilePath()
+                                                .makeRelative()
+                                                .toPortableString());
 
-										_graphicalViewer = doOpen(x, y, openRelative, width,
-												height, title.toString());
+                                        if ((aliases != null)
+                                                && !aliases.isEmpty()) {
+                                            title.append("?");
 
-										// configure the viewer
-										_graphicalViewer
-												.setContents(_displayModel);
+                                            Iterator<String> it = aliases
+                                                    .keySet().iterator();
 
-										String bgColor = _displayModel.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+                                            while (it.hasNext()) {
+                                                String key = it.next();
+                                                String val = aliases.get(key);
+                                                title.append(key);
+                                                title.append("=");
+                                                title.append(val);
+                                                title.append(it.hasNext() ? "&"
+                                                        : "");
+                                            }
+                                        }
 
-										_graphicalViewer
-												.getControl()
-												.setBackground(SdsUiPlugin.getDefault().getColorAndFontService().getColor(bgColor));
+                                        _graphicalViewer = doOpen(x, y, openRelative, width,
+                                                height, title.toString());
+
+                                        // configure the viewer
+                                        _graphicalViewer
+                                                .setContents(_displayModel);
+
+                                        String bgColor = _displayModel.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+
+                                        _graphicalViewer
+                                                .getControl()
+                                                .setBackground(SdsUiPlugin.getDefault().getColorAndFontService().getColor(bgColor));
 
 
-										// execute the runnable
-										if (runAfterOpen != null) {
-											runAfterOpen.run();
-										}
-										callback.displayLoaded();
-									}
-								});
-					}
-				});
-	}
+                                        // execute the runnable
+                                        if (runAfterOpen != null) {
+                                            runAfterOpen.run();
+                                        }
+                                        callback.displayLoaded();
+                                    }
+                                });
+                    }
+                });
+    }
 
-	/**
-	 * Subclasses should open the necessary workbench elements (usually views or
-	 * shells), which should display a synoptic display using a GEF
-	 * {@link GraphicalViewer}.
-	 *
-	 * Subclasses should also take care for a clean shutdown handling, by adding
-	 * the necessary listeners to the created workbench parts which call
-	 * {@link #dispose()} on this box, in case the part is closed by the user.
-	 *
-	 * @param x
-	 *            x position hint
-	 * @param y
-	 *            y position hin
-	 * @param openRelative 
-	 * 			  To be opened relative to predecessor displays          
-	 * @param width
-	 *            width hint
-	 * @param height
-	 *            height hint
-	 * @param title
-	 *            a title
-	 * @return the {@link GraphicalViewer} which is used to display the model
-	 */
-	protected abstract GraphicalViewer doOpen(int x, int y, boolean openRelative, int width,
-			int height, String title);
+    /**
+     * Subclasses should open the necessary workbench elements (usually views or
+     * shells), which should display a synoptic display using a GEF
+     * {@link GraphicalViewer}.
+     *
+     * Subclasses should also take care for a clean shutdown handling, by adding
+     * the necessary listeners to the created workbench parts which call
+     * {@link #dispose()} on this box, in case the part is closed by the user.
+     *
+     * @param x
+     *            x position hint
+     * @param y
+     *            y position hin
+     * @param openRelative
+     *               To be opened relative to predecessor displays
+     * @param width
+     *            width hint
+     * @param height
+     *            height hint
+     * @param title
+     *            a title
+     * @return the {@link GraphicalViewer} which is used to display the model
+     */
+    protected abstract GraphicalViewer doOpen(int x, int y, boolean openRelative, int width,
+            int height, String title);
 
-	/**
-	 * Adds the given IRunModeDisposeListener to the internal List of
-	 * DisposeListeners.
-	 *
-	 * @param listener
-	 *            The IRunModeDisposeListener, which should be added
-	 */
-	public void addDisposeListener(final IRunModeDisposeListener listener) {
-		if (!_disposeListeners.contains(listener)) {
-			_disposeListeners.add(listener);
-		}
-	}
+    /**
+     * Adds the given IRunModeDisposeListener to the internal List of
+     * DisposeListeners.
+     *
+     * @param listener
+     *            The IRunModeDisposeListener, which should be added
+     */
+    public void addDisposeListener(final IRunModeDisposeListener listener) {
+        if (!_disposeListeners.contains(listener)) {
+            _disposeListeners.add(listener);
+        }
+    }
 
-	/**
-	 * Removes the given IRunModeDisposeListener from the internal List of
-	 * DisposeListeners.
-	 *
-	 * @param listener
-	 *            The IRunModeDisposeListener, which should be removed
-	 */
-	public void removeDisposeListener(final IRunModeDisposeListener listener) {
-		if (_disposeListeners.contains(listener)) {
-			_disposeListeners.remove(listener);
-		}
-	}
+    /**
+     * Removes the given IRunModeDisposeListener from the internal List of
+     * DisposeListeners.
+     *
+     * @param listener
+     *            The IRunModeDisposeListener, which should be removed
+     */
+    public void removeDisposeListener(final IRunModeDisposeListener listener) {
+        if (_disposeListeners.contains(listener)) {
+            _disposeListeners.remove(listener);
+        }
+    }
 
-	/**
-	 * Notifies all registered IRunModeDisposeListener, that this RunModeBox is
-	 * disposed.
-	 */
-	private void fireDispose() {
-		if (_disposeListeners != null) {
-			for (IRunModeDisposeListener l : _disposeListeners) {
-				l.dispose();
-			}
-		}
-	}
+    /**
+     * Notifies all registered IRunModeDisposeListener, that this RunModeBox is
+     * disposed.
+     */
+    private void fireDispose() {
+        if (_disposeListeners != null) {
+            for (IRunModeDisposeListener l : _disposeListeners) {
+                l.dispose();
+            }
+        }
+    }
 
-	/**
-	 * Disposes the shell.
-	 */
-	public final synchronized void dispose() {
-		if(!_disposed) {
-			_disposed = true;
+    /**
+     * Disposes the shell.
+     */
+    public final synchronized void dispose() {
+        if(!_disposed) {
+            _disposed = true;
 
-			// remove all change listeners
-			for (WidgetProperty p : _propertyListeners.keySet()) {
-				p.removePropertyChangeListener(_propertyListeners.get(p));
-			}
+            // remove all change listeners
+            for (WidgetProperty p : _propertyListeners.keySet()) {
+                p.removePropertyChangeListener(_propertyListeners.get(p));
+            }
 
-			// let subclasses do their job
-			doDispose();
+            // let subclasses do their job
+            doDispose();
 
-			// inform listeners that this box has been disposed
-			fireDispose();
+            // inform listeners that this box has been disposed
+            fireDispose();
 
-			// kill broker
-			RuntimeContext context = _displayModel.getRuntimeContext();
-			
-			if(context!=null) {
-				SimpleDALBroker broker = context.getBroker();
-				broker.releaseAll();
-				context.setBroker(null);
-				LOG.info("SimpleDALBroker instance released.");
-				callback.displayClosed();
-			}
+            // kill broker
+            RuntimeContext context = _displayModel.getRuntimeContext();
 
-			// forget all referenced objects
-			_graphicalViewer = null;
-			_displayModel = null;
-			_disposeListeners = null;
-			_inputStream = null;
-			_propertyListeners = null;
-			_disposed = true;
-		}
-	}
+            if(context!=null) {
+                SimpleDALBroker broker = context.getBroker();
+                broker.releaseAll();
+                context.setBroker(null);
+                LOG.info("SimpleDALBroker instance released.");
+                callback.displayClosed();
+            }
 
-	protected RunModeBoxInput getInput() {
-		return _input;
-	}
+            // forget all referenced objects
+            _graphicalViewer = null;
+            _displayModel = null;
+            _disposeListeners = null;
+            _inputStream = null;
+            _propertyListeners = null;
+            _disposed = true;
+        }
+    }
 
-	protected abstract void doDispose();
+    protected RunModeBoxInput getInput() {
+        return _input;
+    }
 
-	protected abstract void handleWindowPositionChange(int x, int y, int width,
-			int height);
+    protected abstract void doDispose();
 
-	/**
-	 * Sets the focus on this Shell.
-	 */
-	public abstract void bringToTop();
+    protected abstract void handleWindowPositionChange(int x, int y, int width,
+            int height);
 
-	/**
-	 * Creates a graphical viewer that can be used to display SDS models.
-	 *
-	 * @param parent
-	 *            the parent composite
-	 *
-	 * @return a graphical viewer that can be used to display SDS models
-	 */
-	static GraphicalViewer createGraphicalViewer(final Composite parent) {
+    /**
+     * Sets the focus on this Shell.
+     */
+    public abstract void bringToTop();
 
-		final PatchedGraphicalViewer viewer = new PatchedGraphicalViewer();
-		viewer.createControl(parent);
+    /**
+     * Creates a graphical viewer that can be used to display SDS models.
+     *
+     * @param parent
+     *            the parent composite
+     *
+     * @return a graphical viewer that can be used to display SDS models
+     */
+    static GraphicalViewer createGraphicalViewer(final Composite parent) {
 
-		viewer.setEditPartFactory(new WidgetEditPartFactory(
-				ExecutionMode.RUN_MODE));
+        final PatchedGraphicalViewer viewer = new PatchedGraphicalViewer();
+        viewer.createControl(parent);
 
-		final ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
-		viewer.setRootEditPart(root);
+        viewer.setEditPartFactory(new WidgetEditPartFactory(
+                ExecutionMode.RUN_MODE));
 
-		EditDomain editDomain = new EditDomain();
+        final ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
+        viewer.setRootEditPart(root);
 
-		final SelectionTool tool = new SelectionTool();
-		tool.setUnloadWhenFinished(false);
-		editDomain.setDefaultTool(tool);
-		editDomain.addViewer(viewer);
+        EditDomain editDomain = new EditDomain();
 
-		// initialize drag support (order matters!)
-		viewer.addDragSourceListener(new ProcessVariableDragSourceListener(viewer));
-		viewer.addDragSourceListener(new ProcessVariablesDragSourceListener(viewer));
-//		viewer.addDragSourceListener(new ProcessVariableDragSourceListener(viewer));
-//		viewer.addDragSourceListener(new TextTransferDragSourceListener(viewer));
+        final SelectionTool tool = new SelectionTool();
+        tool.setUnloadWhenFinished(false);
+        editDomain.setDefaultTool(tool);
+        editDomain.addViewer(viewer);
 
-		return viewer;
-	}
+        // initialize drag support (order matters!)
+        viewer.addDragSourceListener(new ProcessVariableDragSourceListener(viewer));
+        viewer.addDragSourceListener(new ProcessVariablesDragSourceListener(viewer));
+//        viewer.addDragSourceListener(new ProcessVariableDragSourceListener(viewer));
+//        viewer.addDragSourceListener(new TextTransferDragSourceListener(viewer));
 
-	/**
-	 * Return the {@link InputStream} from the given path.
-	 *
-	 * @param path
-	 *            The {@link IPath} to the file
-	 * @return The corresponding {@link InputStream}
-	 */
-	private InputStream getInputStream(final IPath path) {
-		InputStream result = null;
+        return viewer;
+    }
 
-		// try workspace
+    /**
+     * Return the {@link InputStream} from the given path.
+     *
+     * @param path
+     *            The {@link IPath} to the file
+     * @return The corresponding {@link InputStream}
+     */
+    private InputStream getInputStream(final IPath path) {
+        InputStream result = null;
 
-		IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path,
-				false);
-		if (r instanceof IFile) {
-			try {
-				result = ((IFile) r).getContents();
-			} catch (CoreException e) {
-				result = null;
-			}
-		}
+        // try workspace
 
-		if (result == null) {
-			// try from local file system
-			try {
-				result = new FileInputStream(path.toFile());
-			} catch (FileNotFoundException e) {
-				result = null;
-			}
+        IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path,
+                false);
+        if (r instanceof IFile) {
+            try {
+                result = ((IFile) r).getContents();
+            } catch (CoreException e) {
+                result = null;
+            }
+        }
 
-		}
+        if (result == null) {
+            // try from local file system
+            try {
+                result = new FileInputStream(path.toFile());
+            } catch (FileNotFoundException e) {
+                result = null;
+            }
 
-		return result;
-	}
+        }
 
-	public abstract Point getCurrentLocation();
-	
-	public DisplayModel getDisplayModel() {
-		return _displayModel;
-	}
+        return result;
+    }
+
+    public abstract Point getCurrentLocation();
+
+    public DisplayModel getDisplayModel() {
+        return _displayModel;
+    }
 }

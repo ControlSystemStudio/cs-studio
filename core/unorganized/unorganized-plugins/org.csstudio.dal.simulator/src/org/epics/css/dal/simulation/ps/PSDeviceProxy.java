@@ -48,95 +48,95 @@ import org.epics.css.dal.simulation.SimulatorUtilities;
  * @since VERSION
  */
 public class PSDeviceProxy extends DeviceProxyImpl implements DeviceProxy<SimulatorPlug>,
-	DirectoryProxy<SimulatorPlug>
+    DirectoryProxy<SimulatorPlug>
 {
-	private Map<String, Class<?extends PropertyProxy<?,SimulatorPlug>>> propertyProxyTypes;
-	private long delay = 0;
-	
-	/**
-	 * Creates a new DeviceProxyImpl object.
-	 *
-	 * @param name Proxy name
-	 */
-	public PSDeviceProxy(String name, SimulatorPlug plug)
-	{
-		this(name, plug, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY));
-	}
-	
-	/**
-	 * Creates a new DeviceProxyImpl object.
-	 *
-	 * @param name Proxy name
-	 * @param connectionDelay
-	 */
-	public PSDeviceProxy(String name, SimulatorPlug plug, long connectionDelay)
-	{
-		super(name,plug);
-		this.delay = connectionDelay;
-	}
+    private Map<String, Class<?extends PropertyProxy<?,SimulatorPlug>>> propertyProxyTypes;
+    private long delay = 0;
 
-	public void initalizeCommands(CommandProxyImpl[] ifcComm)
-	{
-		for (CommandProxyImpl com : ifcComm) {
-			commands.put(com.getName(), com);
-		}
-	}
+    /**
+     * Creates a new DeviceProxyImpl object.
+     *
+     * @param name Proxy name
+     */
+    public PSDeviceProxy(String name, SimulatorPlug plug)
+    {
+        this(name, plug, (Long)SimulatorUtilities.getConfiguration(SimulatorUtilities.CONNECTION_DELAY));
+    }
 
-	public void initalizeProperties(String[] propertyNames,
-	    Class<?extends SimpleProperty<?>>[] propTypes,
-	    Class<?extends PropertyProxy<?,SimulatorPlug>>[] propProxyTypes)
-	{
-		if (propertyProxies == null) {
-			propertyProxies = new HashMap<String, PropertyProxy<?,SimulatorPlug>>(propertyNames.length
-				    + 1);
-		}
+    /**
+     * Creates a new DeviceProxyImpl object.
+     *
+     * @param name Proxy name
+     * @param connectionDelay
+     */
+    public PSDeviceProxy(String name, SimulatorPlug plug, long connectionDelay)
+    {
+        super(name,plug);
+        this.delay = connectionDelay;
+    }
 
-		if (propertyProxyTypes == null) {
-			propertyProxyTypes = new HashMap<String, Class<? extends PropertyProxy<?,SimulatorPlug>>>(propertyNames.length
-				    + 1);
-		}
+    public void initalizeCommands(CommandProxyImpl[] ifcComm)
+    {
+        for (CommandProxyImpl com : ifcComm) {
+            commands.put(com.getName(), com);
+        }
+    }
 
-		if (directoryProxies == null) {
-			directoryProxies = new HashMap<String, DirectoryProxy<SimulatorPlug>>(propertyNames.length
-				    + 1);
-		}
+    public void initalizeProperties(String[] propertyNames,
+        Class<?extends SimpleProperty<?>>[] propTypes,
+        Class<?extends PropertyProxy<?,SimulatorPlug>>[] propProxyTypes)
+    {
+        if (propertyProxies == null) {
+            propertyProxies = new HashMap<String, PropertyProxy<?,SimulatorPlug>>(propertyNames.length
+                    + 1);
+        }
 
-		if (propProxyTypes == null) {
-			for (int i = 0; i < propertyNames.length; i++) {
-				String s = propertyNames[i];
-				propertyTypes.put(s, propTypes[i]);
-				propertyProxies.put(s, null);
-				directoryProxies.put(s, null);
-			}
-		} else {
-			for (int i = 0; i < propertyNames.length; i++) {
-				String s = propertyNames[i];
-				propertyTypes.put(s, propTypes[i]);
-				propertyProxies.put(s, null);
-				directoryProxies.put(s, null);
-				propertyProxyTypes.put(s, propProxyTypes[i]);
-			}
-		}
+        if (propertyProxyTypes == null) {
+            propertyProxyTypes = new HashMap<String, Class<? extends PropertyProxy<?,SimulatorPlug>>>(propertyNames.length
+                    + 1);
+        }
 
-		delayedConnect(delay);
-	}
-	
-	public void delayedConnect(long timeout)
-	{
-		setConnectionState(ConnectionState.CONNECTING);
-		if (timeout > 0) {
-			Timer t = new Timer();
-			t.schedule(new TimerTask() {
-					@Override
-					public void run()
-					{
-						setConnectionState(ConnectionState.CONNECTED);
-					}
-				}, timeout);
-		} else {
-			setConnectionState(ConnectionState.CONNECTED);
-		}
-	}
+        if (directoryProxies == null) {
+            directoryProxies = new HashMap<String, DirectoryProxy<SimulatorPlug>>(propertyNames.length
+                    + 1);
+        }
+
+        if (propProxyTypes == null) {
+            for (int i = 0; i < propertyNames.length; i++) {
+                String s = propertyNames[i];
+                propertyTypes.put(s, propTypes[i]);
+                propertyProxies.put(s, null);
+                directoryProxies.put(s, null);
+            }
+        } else {
+            for (int i = 0; i < propertyNames.length; i++) {
+                String s = propertyNames[i];
+                propertyTypes.put(s, propTypes[i]);
+                propertyProxies.put(s, null);
+                directoryProxies.put(s, null);
+                propertyProxyTypes.put(s, propProxyTypes[i]);
+            }
+        }
+
+        delayedConnect(delay);
+    }
+
+    public void delayedConnect(long timeout)
+    {
+        setConnectionState(ConnectionState.CONNECTING);
+        if (timeout > 0) {
+            Timer t = new Timer();
+            t.schedule(new TimerTask() {
+                    @Override
+                    public void run()
+                    {
+                        setConnectionState(ConnectionState.CONNECTED);
+                    }
+                }, timeout);
+        } else {
+            setConnectionState(ConnectionState.CONNECTED);
+        }
+    }
 } /* __oOo__ */
 
 

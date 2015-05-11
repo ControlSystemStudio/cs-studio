@@ -133,7 +133,7 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
     public LdapEpicsControlsConfiguration getRoot() {
         return UNIT;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -185,7 +185,7 @@ public enum LdapEpicsControlsConfiguration implements ILdapTreeNodeConfiguration
     public ImmutableSet<String> getAttributes() {
         return ImmutableSet.<String>builder().build(); // Empty for this tree configuration type
     }
-    
+
     public static String getDtdFilePath() throws IOException {
         return TreeConfigurationActivator.getResourceFromBundle("./res/dtd/epicsControls.dtd");
     }

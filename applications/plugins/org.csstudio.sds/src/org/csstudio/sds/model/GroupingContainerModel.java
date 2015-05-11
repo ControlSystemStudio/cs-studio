@@ -29,55 +29,55 @@ package org.csstudio.sds.model;
  *
  */
 public final class GroupingContainerModel extends ContainerModel {
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.sds.components.GroupingContainer"; //$NON-NLS-1$
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.sds.components.GroupingContainer"; //$NON-NLS-1$
 
-	/**
-	 * The ID of the <i>transparent</i> property.
-	 */
-	public static final String PROP_TRANSPARENT = "transparency";
+    /**
+     * The ID of the <i>transparent</i> property.
+     */
+    public static final String PROP_TRANSPARENT = "transparency";
 
-	/**
-	 * The default value of the height property.
-	 */
-	private static final int DEFAULT_HEIGHT = 20;
+    /**
+     * The default value of the height property.
+     */
+    private static final int DEFAULT_HEIGHT = 20;
 
-	/**
-	 * The default value of the width property.
-	 */
-	private static final int DEFAULT_WIDTH = 80;
+    /**
+     * The default value of the width property.
+     */
+    private static final int DEFAULT_WIDTH = 80;
 
-	/**
-	 * Standard constructor.
-	 */
-	public GroupingContainerModel() {
-		super(true, true);
-		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-	}
+    /**
+     * Standard constructor.
+     */
+    public GroupingContainerModel() {
+        super(true, true);
+        setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public String getTypeID() {
+        return ID;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected void configureProperties() {
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background",WidgetPropertyCategory.FORMAT,true, true, PROP_COLOR_FOREGROUND);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected void configureProperties() {
+        addBooleanProperty(PROP_TRANSPARENT, "Transparent Background",WidgetPropertyCategory.FORMAT,true, true, PROP_COLOR_FOREGROUND);
+    }
 
-	/**
-	 * Returns, if this widget should have a transparent background.
-	 * @return boolean
-	 * 				True, if it should have a transparent background, false otherwise
-	 */
-	public boolean getTransparent() {
-		return getBooleanProperty(PROP_TRANSPARENT);
-	}
+    /**
+     * Returns, if this widget should have a transparent background.
+     * @return boolean
+     *                 True, if it should have a transparent background, false otherwise
+     */
+    public boolean getTransparent() {
+        return getBooleanProperty(PROP_TRANSPARENT);
+    }
 
 }

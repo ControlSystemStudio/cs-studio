@@ -34,48 +34,48 @@ import org.epics.vtype.ValueFactory;
 @SuppressWarnings("nls")
 public class ValueRequest implements AsyncCallback
 {
-	/** Helper for passing the result or an error from the XML-RPC callback
-	 *  to the ValueRequest that waits for it
-	 */
-	static class Result
-	{
-		boolean isSet = false;
-	    Vector<Object> xml_rpc_result = null;
-	    Exception xml_rpc_exception = null;
+    /** Helper for passing the result or an error from the XML-RPC callback
+     *  to the ValueRequest that waits for it
+     */
+    static class Result
+    {
+        boolean isSet = false;
+        Vector<Object> xml_rpc_result = null;
+        Exception xml_rpc_exception = null;
 
-		synchronized void clear()
+        synchronized void clear()
         {
-			notify(null, null);
+            notify(null, null);
         }
 
-		synchronized void setError(final Exception error)
+        synchronized void setError(final Exception error)
         {
-			notify(null, error);
+            notify(null, error);
         }
 
-		synchronized void setData(Vector<Object> data)
+        synchronized void setData(Vector<Object> data)
         {
-			notify(data, null);
+            notify(data, null);
         }
 
-		private void notify(final Vector<Object> data, final Exception error)
+        private void notify(final Vector<Object> data, final Exception error)
         {
-			xml_rpc_result = data;
-			xml_rpc_exception = error;
-			isSet = true;
-			notifyAll();
+            xml_rpc_result = data;
+            xml_rpc_exception = error;
+            isSet = true;
+            notifyAll();
         }
-	};
+    };
 
-	final private ChannelArchiverReader reader;
-	final private int key;
-	final private String channels[];
-	final private Timestamp start, end;
-	final private int how;
+    final private ChannelArchiverReader reader;
+    final private int key;
+    final private String channels[];
+    final private Timestamp start, end;
+    final private int how;
     final private Object parms[];
 
     // Possible 'type' IDs for the received values.
-	final private static int TYPE_STRING = 0;
+    final private static int TYPE_STRING = 0;
     final private static int TYPE_ENUM = 1;
     final private static int TYPE_INT = 2;
     final private static int TYPE_DOUBLE = 3;
@@ -85,20 +85,20 @@ public class ValueRequest implements AsyncCallback
     /** The result of the query */
     private VType samples[];
 
-	/** Constructor for new value request.
-	 *  @param reader ChannelArchiverReader
-	 *  @param key Archive key
-	 *  @param channel Channel name
-	 *  @param start Start time for retrieval
-	 *  @param end  End time for retrieval
+    /** Constructor for new value request.
+     *  @param reader ChannelArchiverReader
+     *  @param key Archive key
+     *  @param channel Channel name
+     *  @param start Start time for retrieval
+     *  @param end  End time for retrieval
      *  @param optimized Get optimized or raw data?
-	 *  @param count Number of values
-	 */
-	public ValueRequest(final ChannelArchiverReader reader,
-			final int key, final String channel,
-			final Timestamp start, final Timestamp end, final boolean optimized, final int count)
-	        throws Exception
-	{
+     *  @param count Number of values
+     */
+    public ValueRequest(final ChannelArchiverReader reader,
+            final int key, final String channel,
+            final Timestamp start, final Timestamp end, final boolean optimized, final int count)
+            throws Exception
+    {
         this.reader = reader;
         this.key = key;
         this.channels = new String[] { channel };
@@ -128,82 +128,82 @@ public class ValueRequest implements AsyncCallback
             how = reader.getRequestCode("raw");
             parms = new Object[] { Integer.valueOf(count) };
         }
-	}
+    }
 
-	/** @see org.csstudio.archive.channelarchiver.ClientRequest#read() */
+    /** @see org.csstudio.archive.channelarchiver.ClientRequest#read() */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     public void read(XmlRpcClient xmlrpc) throws Exception
-	{
+    {
         final Vector<Object> params = new Vector<Object>(8);
-		params.add(Integer.valueOf(key));
-		params.add(channels);
-		params.add(Integer.valueOf((int)start.getSec()));
-		params.add(Integer.valueOf(start.getNanoSec()));
-		params.add(Integer.valueOf((int)end.getSec()));
-		params.add(Integer.valueOf(end.getNanoSec()));
+        params.add(Integer.valueOf(key));
+        params.add(channels);
+        params.add(Integer.valueOf((int)start.getSec()));
+        params.add(Integer.valueOf(start.getNanoSec()));
+        params.add(Integer.valueOf((int)end.getSec()));
+        params.add(Integer.valueOf(end.getNanoSec()));
         params.add(parms[0]);
-		params.add(Integer.valueOf(how));
-		// xmlrpc.execute("archiver.values", params);
+        params.add(Integer.valueOf(how));
+        // xmlrpc.execute("archiver.values", params);
         xmlrpc.executeAsync("archiver.values", params, this);
 
-		// Wait for AsynCallback to set the result
-	    final Vector<Object> xml_rpc_result;
-		synchronized (result)
+        // Wait for AsynCallback to set the result
+        final Vector<Object> xml_rpc_result;
+        synchronized (result)
         {
-			while (! result.isSet)
-				result.wait();
-			// Failed?
-			if (result.xml_rpc_exception != null)
-			    throw new Exception("archiver.values call failed: " + result.xml_rpc_exception.getMessage());
-			// Cancelled?
-			if (result.xml_rpc_result == null)
-			{
-			    samples = new VType[0];
-			    return;
-			}
-			xml_rpc_result = result.xml_rpc_result;
+            while (! result.isSet)
+                result.wait();
+            // Failed?
+            if (result.xml_rpc_exception != null)
+                throw new Exception("archiver.values call failed: " + result.xml_rpc_exception.getMessage());
+            // Cancelled?
+            if (result.xml_rpc_result == null)
+            {
+                samples = new VType[0];
+                return;
+            }
+            xml_rpc_result = result.xml_rpc_result;
         }
 
-		// result := { string name,  meta, int32 type,
+        // result := { string name,  meta, int32 type,
         //              int32 count,  values }[]
-		final int num_returned_channels = xml_rpc_result.size();
-		if (num_returned_channels != 1)
+        final int num_returned_channels = xml_rpc_result.size();
+        if (num_returned_channels != 1)
             throw new Exception("archiver.values returned data for " + num_returned_channels + " channels?");
 
-		final Hashtable<String, Object> channel_data =
-		    (Hashtable<String, Object>) xml_rpc_result.get(0);
+        final Hashtable<String, Object> channel_data =
+            (Hashtable<String, Object>) xml_rpc_result.get(0);
         final String name = (String)channel_data.get("name");
         final int type = (Integer)channel_data.get("type");
         final int count = (Integer)channel_data.get("count");
-		try
-		{
-			final Object meta = decodeMetaData(type, (Hashtable)channel_data.get("meta"));
-			final Display display;
-			final List<String> labels;
-			if (meta instanceof Display)
-			{
-				display = (Display) meta;
-				labels = null;
-			}
-			else if (meta instanceof List)
-			{
-				display = null;
-				labels = (List) meta;
-			}
-			else
-			{
-				display = null;
-				labels = null;
-			}
-			samples = decodeValues(type, count, display, labels,
-					(Vector)channel_data.get("values"));
-		}
-		catch (Exception e)
-		{
-			throw new Exception("Error while decoding values for channel '"
-					+ name + "': " + e.getMessage(), e);
-		}
-	}
+        try
+        {
+            final Object meta = decodeMetaData(type, (Hashtable)channel_data.get("meta"));
+            final Display display;
+            final List<String> labels;
+            if (meta instanceof Display)
+            {
+                display = (Display) meta;
+                labels = null;
+            }
+            else if (meta instanceof List)
+            {
+                display = null;
+                labels = (List) meta;
+            }
+            else
+            {
+                display = null;
+                labels = null;
+            }
+            samples = decodeValues(type, count, display, labels,
+                    (Vector)channel_data.get("values"));
+        }
+        catch (Exception e)
+        {
+            throw new Exception("Error while decoding values for channel '"
+                    + name + "': " + e.getMessage(), e);
+        }
+    }
 
     /** Cancel an ongoing read.
      *  <p>
@@ -211,12 +211,12 @@ public class ValueRequest implements AsyncCallback
      *  XML-RPC request, but we can abandon the read and pretend
      *  that we didn't receive any data.
      */
-	public void cancel()
+    public void cancel()
     {
         result.clear();
     }
 
-	/** @see AsyncCallback */
+    /** @see AsyncCallback */
     @Override
     public void handleError(Exception error, URL arg1, String arg2)
     {
@@ -228,114 +228,114 @@ public class ValueRequest implements AsyncCallback
     @SuppressWarnings("unchecked")
     public void handleResult(Object data, URL arg1, String arg2)
     {
-    	result.setData((Vector<Object>) data);
+        result.setData((Vector<Object>) data);
     }
 
     /** Parse the MetaData from the received XML-RPC response.
-	 *  @param value_type Type code of received values
-	 *  @param meta_hash Hash with meta data to decode
-	 *  @return {@link Display} or List of {@link String}[] depending on data type
-	 */
-	@SuppressWarnings({ "rawtypes" })
+     *  @param value_type Type code of received values
+     *  @param meta_hash Hash with meta data to decode
+     *  @return {@link Display} or List of {@link String}[] depending on data type
+     */
+    @SuppressWarnings({ "rawtypes" })
     private Object decodeMetaData(final int value_type, final Hashtable meta_hash)
-		throws Exception
-	{
-		// meta := { int32 type;
-		//		     type==0: string states[],
-		//		     type==1: double disp_high,
-		//		              double disp_low,
-		//		              double alarm_high,
-		//		              double alarm_low,
-		//		              double warn_high,
-		//		              double warn_low,
-		//		              int prec,  string units
-		//         }
-		final int meta_type = (Integer) meta_hash.get("type");
-		if (meta_type < 0 || meta_type > 1)
-			throw new Exception("Invalid 'meta' type " + meta_type);
-		if (meta_type == 1)
-		{
+        throws Exception
+    {
+        // meta := { int32 type;
+        //             type==0: string states[],
+        //             type==1: double disp_high,
+        //                      double disp_low,
+        //                      double alarm_high,
+        //                      double alarm_low,
+        //                      double warn_high,
+        //                      double warn_low,
+        //                      int prec,  string units
+        //         }
+        final int meta_type = (Integer) meta_hash.get("type");
+        if (meta_type < 0 || meta_type > 1)
+            throw new Exception("Invalid 'meta' type " + meta_type);
+        if (meta_type == 1)
+        {
             // The 2.8.1 server will give 'ENUM' type values
             // with Numeric meta data, units = "<No data>"
             // as an error message.
-        	final NumberFormat format = NumberFormats.format((Integer) meta_hash.get("prec"));
-			return ValueFactory.newDisplay(
-					(Double) meta_hash.get("disp_low"),
-					(Double) meta_hash.get("alarm_low"),
-					(Double) meta_hash.get("warn_low"),
-					(String) meta_hash.get("units"),
-					format,
-					(Double) meta_hash.get("warn_high"),
-					(Double) meta_hash.get("alarm_high"),
-					(Double) meta_hash.get("disp_high"),
-					(Double) meta_hash.get("disp_low"),
-					(Double) meta_hash.get("disp_high"));
-		}
+            final NumberFormat format = NumberFormats.format((Integer) meta_hash.get("prec"));
+            return ValueFactory.newDisplay(
+                    (Double) meta_hash.get("disp_low"),
+                    (Double) meta_hash.get("alarm_low"),
+                    (Double) meta_hash.get("warn_low"),
+                    (String) meta_hash.get("units"),
+                    format,
+                    (Double) meta_hash.get("warn_high"),
+                    (Double) meta_hash.get("alarm_high"),
+                    (Double) meta_hash.get("disp_high"),
+                    (Double) meta_hash.get("disp_low"),
+                    (Double) meta_hash.get("disp_high"));
+        }
         //  else
-		if (! (value_type == TYPE_ENUM  ||  value_type == TYPE_STRING))
-			throw new Exception(
-					"Received enumerated meta information for value type "
-					+ value_type);
-		final Vector state_vec = (Vector) meta_hash.get("states");
-		final int N = state_vec.size();
-		final List<String> states = new ArrayList<String>(N);
-		// Silly loop because of type warnings from state_vec.toArray(states)
-		for (int i=0; i<N; ++i)
-			states.add((String) state_vec.get(i));
-		return states;
-	}
+        if (! (value_type == TYPE_ENUM  ||  value_type == TYPE_STRING))
+            throw new Exception(
+                    "Received enumerated meta information for value type "
+                    + value_type);
+        final Vector state_vec = (Vector) meta_hash.get("states");
+        final int N = state_vec.size();
+        final List<String> states = new ArrayList<String>(N);
+        // Silly loop because of type warnings from state_vec.toArray(states)
+        for (int i=0; i<N; ++i)
+            states.add((String) state_vec.get(i));
+        return states;
+    }
 
-	/** Parse the values from the received XML-RPC response. */
-	@SuppressWarnings({ "rawtypes" })
+    /** Parse the values from the received XML-RPC response. */
+    @SuppressWarnings({ "rawtypes" })
     private VType[] decodeValues(final int type, final int count, final Display display,
-    		                     final List<String> labels, final Vector value_vec) throws Exception
-	{
+                                 final List<String> labels, final Vector value_vec) throws Exception
+    {
         // values := { int32 stat,  int32 sevr,
-	    //             int32 secs,  int32 nano,
-	    //             <type> value[] } []
-		// [{secs=1137596340, stat=0, nano=344419666, value=[0.79351], sevr=0},
-		//  {secs=1137596400, stat=0, nano=330619666, value=[0.79343], sevr=0},..]
-		final int num_samples = value_vec.size();
-		final VType samples[] = new VType[num_samples];
-		for (int si=0; si<num_samples; ++si)
-		{
-			final Hashtable sample_hash = (Hashtable) value_vec.get(si);
-			final long secs = (Integer)sample_hash.get("secs");
-			final int nano = (Integer)sample_hash.get("nano");
-			final Timestamp time = Timestamp.of(secs, nano);
-			final int stat_code = (Integer)sample_hash.get("stat");
-			final int sevr_code = (Integer)sample_hash.get("sevr");
+        //             int32 secs,  int32 nano,
+        //             <type> value[] } []
+        // [{secs=1137596340, stat=0, nano=344419666, value=[0.79351], sevr=0},
+        //  {secs=1137596400, stat=0, nano=330619666, value=[0.79343], sevr=0},..]
+        final int num_samples = value_vec.size();
+        final VType samples[] = new VType[num_samples];
+        for (int si=0; si<num_samples; ++si)
+        {
+            final Hashtable sample_hash = (Hashtable) value_vec.get(si);
+            final long secs = (Integer)sample_hash.get("secs");
+            final int nano = (Integer)sample_hash.get("nano");
+            final Timestamp time = Timestamp.of(secs, nano);
+            final int stat_code = (Integer)sample_hash.get("stat");
+            final int sevr_code = (Integer)sample_hash.get("sevr");
             final SeverityImpl sevr = reader.getSeverity(sevr_code);
             final String stat = reader.getStatus(sevr, stat_code);
-			final Vector vv = (Vector)sample_hash.get("value");
-			final AlarmSeverity severity = sevr.getSeverity();
-			
-			if (! sevr.hasValue()) {
-				if (si == 0) {
-					samples[si] = new ArchiveVString(time, AlarmSeverity.UNDEFINED, "Disconnected", "#N/A");
-				} else {
-					VType previousSample = samples[si -1];
-					if (previousSample instanceof ArchiveVNumber) {
-                		samples[si] = new ArchiveVNumber(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, ((ArchiveVNumber) previousSample).getValue());
-					} else if (previousSample instanceof ArchiveVNumberArray) {
-                		samples[si] = new ArchiveVNumberArray(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, ((ArchiveVNumberArray) previousSample).getData());
-					} else if (previousSample instanceof ArchiveVStatistics) {
-						ArchiveVStatistics sample = (ArchiveVStatistics) previousSample;
-                		samples[si] = new ArchiveVStatistics(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, 
-                				sample.getAverage(), sample.getMin(), sample.getMax(), sample.getStdDev(), sample.getNSamples());
-					} else if (previousSample instanceof ArchiveVEnum) {
-						ArchiveVEnum sample = (ArchiveVEnum) previousSample;
-                		samples[si] = new ArchiveVEnum(time, AlarmSeverity.UNDEFINED, "Disconnected", sample.getLabels(), sample.getIndex());
-					} else if (previousSample instanceof ArchiveVEnum) {
-						ArchiveVString sample = (ArchiveVString) previousSample;
-                		samples[si] = new ArchiveVString(time, AlarmSeverity.UNDEFINED, "Disconnected", sample.getValue());
-					}
-				}
-			} else if (type == TYPE_DOUBLE)
-			{
-				final double values[] = new double[count];
-				for (int vi=0; vi<count; ++vi)
-					values[vi] = (Double)vv.get(vi);
+            final Vector vv = (Vector)sample_hash.get("value");
+            final AlarmSeverity severity = sevr.getSeverity();
+
+            if (! sevr.hasValue()) {
+                if (si == 0) {
+                    samples[si] = new ArchiveVString(time, AlarmSeverity.UNDEFINED, "Disconnected", "#N/A");
+                } else {
+                    VType previousSample = samples[si -1];
+                    if (previousSample instanceof ArchiveVNumber) {
+                        samples[si] = new ArchiveVNumber(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, ((ArchiveVNumber) previousSample).getValue());
+                    } else if (previousSample instanceof ArchiveVNumberArray) {
+                        samples[si] = new ArchiveVNumberArray(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample, ((ArchiveVNumberArray) previousSample).getData());
+                    } else if (previousSample instanceof ArchiveVStatistics) {
+                        ArchiveVStatistics sample = (ArchiveVStatistics) previousSample;
+                        samples[si] = new ArchiveVStatistics(time, AlarmSeverity.UNDEFINED, "Disconnected", (Display) previousSample,
+                                sample.getAverage(), sample.getMin(), sample.getMax(), sample.getStdDev(), sample.getNSamples());
+                    } else if (previousSample instanceof ArchiveVEnum) {
+                        ArchiveVEnum sample = (ArchiveVEnum) previousSample;
+                        samples[si] = new ArchiveVEnum(time, AlarmSeverity.UNDEFINED, "Disconnected", sample.getLabels(), sample.getIndex());
+                    } else if (previousSample instanceof ArchiveVEnum) {
+                        ArchiveVString sample = (ArchiveVString) previousSample;
+                        samples[si] = new ArchiveVString(time, AlarmSeverity.UNDEFINED, "Disconnected", sample.getValue());
+                    }
+                }
+            } else if (type == TYPE_DOUBLE)
+            {
+                final double values[] = new double[count];
+                for (int vi=0; vi<count; ++vi)
+                    values[vi] = (Double)vv.get(vi);
                 // Check for "min", "max".
                 // Only handles min/max for double, but that's OK
                 // since for now that's all that the server does as well.
@@ -345,73 +345,73 @@ public class ValueRequest implements AsyncCallback
                     final double min = (Double)sample_hash.get("min");
                     final double max = (Double)sample_hash.get("max");
                     samples[si] = new ArchiveVStatistics(time, severity, stat, display,
-                    		values[0], min, max, 0.0, 1);
+                            values[0], min, max, 0.0, 1);
                 }
                 else
                 {   // Was this from a min/max/avg request?
                     // Yes: Then we ran into a raw value.
                     // No: Then it's whatever quality we expected in general
-                	if (values.length == 1)
-                		samples[si] = new ArchiveVNumber(time, severity, stat, display, values[0]);
-                	else
-                		samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
+                    if (values.length == 1)
+                        samples[si] = new ArchiveVNumber(time, severity, stat, display, values[0]);
+                    else
+                        samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
                 }
-			}
-			else if (type == TYPE_ENUM)
-			{
-				// The 2.8.1 server will give 'ENUM' type values
-	            // with Numeric meta data, units = "<No data>".
-	            // as an error message -> Handle it by returning
-			    // the data as long with the numeric meta that we have.
-				if (labels != null)
-				{
-					if (count < 0)
-						throw new Exception("No values");
-					final int index = (Integer)vv.get(0);
-					samples[si] = new ArchiveVEnum(time, severity, stat, labels, index);
-				}
-				else
-				{
-					if (count == 1)
-                		samples[si] = new ArchiveVNumber(time, severity, stat, display, (Integer)vv.get(0));
-					else
-					{
-		                final int values[] = new int[count];
-		                for (int vi=0; vi<count; ++vi)
-		                    values[vi] = ((Integer)vv.get(vi));
-                		samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
-					}
-				}
-			}
-			else if (type == TYPE_STRING)
-			{
-				final String value = (String)vv.get(0);
+            }
+            else if (type == TYPE_ENUM)
+            {
+                // The 2.8.1 server will give 'ENUM' type values
+                // with Numeric meta data, units = "<No data>".
+                // as an error message -> Handle it by returning
+                // the data as long with the numeric meta that we have.
+                if (labels != null)
+                {
+                    if (count < 0)
+                        throw new Exception("No values");
+                    final int index = (Integer)vv.get(0);
+                    samples[si] = new ArchiveVEnum(time, severity, stat, labels, index);
+                }
+                else
+                {
+                    if (count == 1)
+                        samples[si] = new ArchiveVNumber(time, severity, stat, display, (Integer)vv.get(0));
+                    else
+                    {
+                        final int values[] = new int[count];
+                        for (int vi=0; vi<count; ++vi)
+                            values[vi] = ((Integer)vv.get(vi));
+                        samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
+                    }
+                }
+            }
+            else if (type == TYPE_STRING)
+            {
+                final String value = (String)vv.get(0);
                 samples[si] = new ArchiveVString(time, severity, stat, value);
-			}
-			else if (type == TYPE_INT)
-			{
-				if (count == 1)
-				{
-					final int value = (Integer)vv.get(0);
-					samples[si] = new ArchiveVNumber(time, severity, stat, display, value);
-				}
-				else
-				{
-					final int values[] = new int[count];
-					for (int vi=0; vi<count; ++vi)
-						values[vi] = ((Integer)vv.get(vi));
-					samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
-				}
-			}
-			else
-				throw new Exception("Unknown value type " + type);
-		}
-		return samples;
-	}
+            }
+            else if (type == TYPE_INT)
+            {
+                if (count == 1)
+                {
+                    final int value = (Integer)vv.get(0);
+                    samples[si] = new ArchiveVNumber(time, severity, stat, display, value);
+                }
+                else
+                {
+                    final int values[] = new int[count];
+                    for (int vi=0; vi<count; ++vi)
+                        values[vi] = ((Integer)vv.get(vi));
+                    samples[si] = new ArchiveVNumberArray(time, severity, stat, display, values);
+                }
+            }
+            else
+                throw new Exception("Unknown value type " + type);
+        }
+        return samples;
+    }
 
-	/** @return Samples */
-	public VType[] getSamples()
-	{
-		return samples;
-	}
+    /** @return Samples */
+    public VType[] getSamples()
+    {
+        return samples;
+    }
 }

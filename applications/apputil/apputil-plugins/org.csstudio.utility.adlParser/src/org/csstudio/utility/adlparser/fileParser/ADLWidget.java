@@ -33,7 +33,7 @@ import java.util.ArrayList;
  * @since 11.09.2007
  */
 public class ADLWidget {
-    
+
     /**
      * The Widget type.
      */
@@ -46,9 +46,9 @@ public class ADLWidget {
     private ArrayList<ADLWidget> _objects = new ArrayList<ADLWidget>();
     /** The Number of this object in the Display. useful for Debugging and Error handling.*/
     private int _objectNr;
-    
+
     /**
-     * @param type The Widgettype of this Object.  
+     * @param type The Widgettype of this Object.
      * @param parent The parent widget.
      * @param objectNr The Number of this Object.
      */
@@ -57,16 +57,16 @@ public class ADLWidget {
         setType(type);
         setParent(parent);
     }
-    
+
     /**
      * @param type Widget  type
      */
     public final void setType(final String type){
-    	//TODO replacement of slashes does not work
-    	_type = type.replaceAll("[\\{\"]", "").trim().toLowerCase();  //$NON-NLS-1$ //$NON-NLS-2$
+        //TODO replacement of slashes does not work
+        _type = type.replaceAll("[\\{\"]", "").trim().toLowerCase();  //$NON-NLS-1$ //$NON-NLS-2$
     }
     /**
-     * 
+     *
      * @return the Type of Widget;
      */
     public final String getType() {
@@ -85,13 +85,13 @@ public class ADLWidget {
         _body.add(parameter);
     }
     /**
-     * 
-     * @return a list of children objects. 
+     *
+     * @return a list of children objects.
      */
     public final ArrayList<ADLWidget> getObjects() {
         return _objects;
     }
-    
+
     /**
      * Add an object as children.
      * @param object the children object.
@@ -100,8 +100,8 @@ public class ADLWidget {
         _objects.add(object);
     }
 
-    /** 
-     *  
+    /**
+     *
      * @return the parent Widget.
      */
     public final ADLWidget getParent() {
@@ -109,7 +109,7 @@ public class ADLWidget {
     }
 
     /**
-     * 
+     *
      * @param parent set the parent widget.
      */
     public final void setParent(final ADLWidget parent) {
@@ -125,7 +125,7 @@ public class ADLWidget {
         return equals;
     }
     /**
-     * 
+     *
      * @return the number of this Object.
      */
     public final int getObjectNr() {
@@ -151,5 +151,5 @@ public class ADLWidget {
         }
         return string;
     }
-    
+
 }

@@ -32,24 +32,24 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ScanSampleUnitTest
 {
-	@Test
-	public void testScanSample() throws Exception
-	{
-	    ScanSample sample = new NumberScanSample(new Date(), 1, new Number[] { 3.14 });
-	    System.out.println(sample);
-	    assertThat(sample.toString().endsWith("3.14"), equalTo(true));
+    @Test
+    public void testScanSample() throws Exception
+    {
+        ScanSample sample = new NumberScanSample(new Date(), 1, new Number[] { 3.14 });
+        System.out.println(sample);
+        assertThat(sample.toString().endsWith("3.14"), equalTo(true));
 
-	    sample = new NumberScanSample(new Date(), 1, new Number[] { 3.14, 42.0 });
-	    System.out.println(sample);
-	    assertThat(sample.toString().endsWith("42.0]"), equalTo(true));
+        sample = new NumberScanSample(new Date(), 1, new Number[] { 3.14, 42.0 });
+        System.out.println(sample);
+        assertThat(sample.toString().endsWith("42.0]"), equalTo(true));
 
 
-	    sample = ScanSampleFactory.createSample(new Date(), 0, 1, 2, 3, 4);
+        sample = ScanSampleFactory.createSample(new Date(), 0, 1, 2, 3, 4);
         System.out.println(sample);
         assertThat(sample.toString().endsWith("3, 4]"), equalTo(true));
 
         assertThat(ScanSampleFormatter.asDouble(sample), equalTo(1.0));
-	}
+    }
 
     @Test
     public void testTimeFormatting() throws Exception
@@ -59,7 +59,7 @@ public class ScanSampleUnitTest
         String text = ScanSampleFormatter.formatCompactDateTime(date);
         System.out.println(date + " -> " + text);
         assertThat(text.length(), equalTo(8));
-        
+
         // Different day
         date = new Date(date.getTime() + 25l*60*60*1000);
         text = ScanSampleFormatter.formatCompactDateTime(date);

@@ -17,10 +17,10 @@ public class PeriodFormat
 
     /** Identifier for 'hour' units */
     private static final String HOURS = "hours"; //$NON-NLS-1$
-    
+
     /** Identifier for 'minute' units */
     private static final String MINUTES = "minutes"; //$NON-NLS-1$
-    
+
     /** Identifier for 'second' units */
     private static final String SECONDS = "seconds"; //$NON-NLS-1$
 
@@ -32,14 +32,14 @@ public class PeriodFormat
 
     /** Seconds per day */
     private static final double SEC_PER_DAY = 24.0*SEC_PER_HOUR;
-    
+
     /** Parse seconds from text.
      *  <p>
      *  Text must contain a (double) number,
      *  optionally followed by units "days", "hours", "minutes", "seconds".
      *  Only "m", "min", ... is interpreted as "minutes" as well.
      *  In the absense of units, it defaults to seconds.
-     *  
+     *
      *  @param text Text to parse
      *  @return seconds
      */
@@ -50,26 +50,26 @@ public class PeriodFormat
         if (units > 0)
         {
             final double days = Double.parseDouble(text.substring(0, units));
-            return days*SEC_PER_DAY; 
+            return days*SEC_PER_DAY;
         }
         units = findUnits(text, HOURS);
         if (units > 0)
         {
             final double hours = Double.parseDouble(text.substring(0, units));
-            return hours*SEC_PER_HOUR; 
+            return hours*SEC_PER_HOUR;
         }
         units = findUnits(text, MINUTES);
         if (units > 0)
         {
             final double min = Double.parseDouble(text.substring(0, units));
-            return min*SEC_PER_MIN; 
+            return min*SEC_PER_MIN;
         }
         units = findUnits(text, SECONDS);
         if (units < 0)
             units = text.length();
         return Double.parseDouble(text.substring(0, units));
     }
-    
+
     /** Format seconds as string, using hours or minutes if appropriate.
      *  @param seconds Seconds to format
      *  @return A string that <code>parseSeconds()</code> can handle.

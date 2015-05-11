@@ -12,54 +12,54 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 /**
  * Command the initializes an instance.
- * 
+ *
  * @author Sven Wende
  *
  */
 public final class InitInstanceCommand extends Command {
-	private CompoundCommand internalCmd;
-	private IInstance instance;
+    private CompoundCommand internalCmd;
+    private IInstance instance;
 
-	/**
-	 * Constructor.
-	 * @param instance the instance
-	 */
-	public InitInstanceCommand(IInstance instance) {
-		this.instance = instance;
-	}
+    /**
+     * Constructor.
+     * @param instance the instance
+     */
+    public InitInstanceCommand(IInstance instance) {
+        this.instance = instance;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		internalCmd = new CompoundCommand();
-		
-		IContainer parent = instance.getParent();
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        internalCmd = new CompoundCommand();
 
-		if (parent != null) {
-			// inherit all records from parent
-			for (IRecord r : parent.getRecords()) {
-				Record record = new Record(r, UUID.randomUUID());
-				internalCmd.add(new AddRecordCommand(instance, record));
-			}
+        IContainer parent = instance.getParent();
 
-			// inherit all instances
-			for (IInstance pInstance : parent.getInstances()) {
-				Instance iInstance = new Instance(pInstance, UUID.randomUUID());
-				internalCmd.add(new AddInstanceCommand(instance, iInstance));
-			}
-		}
-		
-		internalCmd.execute();
-	}
-	
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		internalCmd.undo();
-	}
+        if (parent != null) {
+            // inherit all records from parent
+            for (IRecord r : parent.getRecords()) {
+                Record record = new Record(r, UUID.randomUUID());
+                internalCmd.add(new AddRecordCommand(instance, record));
+            }
+
+            // inherit all instances
+            for (IInstance pInstance : parent.getInstances()) {
+                Instance iInstance = new Instance(pInstance, UUID.randomUUID());
+                internalCmd.add(new AddInstanceCommand(instance, iInstance));
+            }
+        }
+
+        internalCmd.execute();
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        internalCmd.undo();
+    }
 
 }

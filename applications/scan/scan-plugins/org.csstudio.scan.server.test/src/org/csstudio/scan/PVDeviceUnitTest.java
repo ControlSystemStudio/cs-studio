@@ -34,7 +34,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /** JUnit test of the {@link PVDevice}
- * 
+ *
  *  <p>Requires
  *  <code>softIoc -s -d org.csstudio.scan/examples/simulation.db</code>
  *
@@ -45,13 +45,13 @@ public class PVDeviceUnitTest implements DeviceListener
 {
     /** Updates with non-null, connected value */
     private int updates = 0;
-    
+
     private synchronized void awaitUpdates(final int desired_updates) throws InterruptedException
     {
         while (updates != desired_updates)
             wait();
     }
-    
+
     @Before
     public void setup()
     {
@@ -80,7 +80,7 @@ public class PVDeviceUnitTest implements DeviceListener
             device.stop();
         }
     }
-    
+
     /** Read with listener for long text */
     @Test(timeout=5000)
     public void testLongStringRead() throws Exception
@@ -98,7 +98,7 @@ public class PVDeviceUnitTest implements DeviceListener
             device.stop();
         }
     }
-    
+
     /** Read with get-callback */
     @Test(timeout=5000)
     public void testReadCallback() throws Exception
@@ -112,14 +112,14 @@ public class PVDeviceUnitTest implements DeviceListener
         {
             final VType value = device.read(TimeDuration.ofSeconds(5.0));
             System.out.println("Get-callback value: " + value);
-            System.out.println("Last value        : " + device.read());   
+            System.out.println("Last value        : " + device.read());
         }
         finally
         {
             device.stop();
         }
     }
-    
+
     // DeviceListener
     @Override
     public void deviceChanged(final Device device)
@@ -127,9 +127,9 @@ public class PVDeviceUnitTest implements DeviceListener
         try
         {
             final VType value = device.read();
-			System.out.println(device + " = " + value);
-			if (device.isReady())
-			    synchronized (this)
+            System.out.println(device + " = " + value);
+            if (device.isReady())
+                synchronized (this)
                 {
                     ++updates;
                     notifyAll();
@@ -140,7 +140,7 @@ public class PVDeviceUnitTest implements DeviceListener
             ex.printStackTrace();
         }
     }
-    
+
     /** Test write w/o callback */
     @Test(timeout=10000)
     public void testWrite() throws Exception
@@ -194,7 +194,7 @@ public class PVDeviceUnitTest implements DeviceListener
         System.out.format("Write finished in %.2f seconds\n", seconds);
         // assertTrue(Math.abs(4.0 - seconds) < 1.0);
     }
-    
+
     /** Test write with callback to 'local' device */
     @Test(timeout=5000)
     public void testPutCallbackToLocal() throws Exception
@@ -206,7 +206,7 @@ public class PVDeviceUnitTest implements DeviceListener
             device.addListener(this);
             // Wait for initial value
             awaitUpdates(1);
-            
+
             // This should finish right away
             final long start = System.currentTimeMillis();
             device.write(Double.valueOf(1.0), TimeDuration.ofSeconds(2.0));

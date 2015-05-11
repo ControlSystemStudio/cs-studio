@@ -17,7 +17,7 @@ public class CorrelatorTest
         final double y1[] = new double [] { 1.0,      2.0,      3.0,      4.0 };
         final double x2[] = new double [] {      0.5,      1.5,      2.5,     3.5 };
         final double y2[] = new double [] {      1.0,      2.0,      3.0,     4.0 };
-        
+
         final Correlator corr = new Correlator(x1, y1, x2, y2);
         final int N = corr.getCorrY1().length;
         for (int i=0; i<N; ++i)

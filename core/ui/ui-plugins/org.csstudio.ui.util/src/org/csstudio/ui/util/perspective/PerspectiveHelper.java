@@ -38,7 +38,7 @@ public class PerspectiveHelper
         final IPerspectiveRegistry registry = workbench.getPerspectiveRegistry();
         page.setPerspective(registry.findPerspectiveWithId(id));
     }
-    
+
     /** Open perspective, show if already open, or prompt for 'reset' if already visible.
      *  @param id Perspective ID
      *  @param window Workbench window. Perspective will use its 'active' page

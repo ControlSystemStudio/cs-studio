@@ -25,7 +25,7 @@ class DebugResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -35,7 +35,7 @@ class DebugResponse extends AbstractResponse
 
         html.text("Engine wrote debug info ....");
         model.dumpDebugInfo();
-        
+
         html.close();
     }
 }

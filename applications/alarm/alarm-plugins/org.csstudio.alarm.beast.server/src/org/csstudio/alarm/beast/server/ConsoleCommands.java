@@ -39,7 +39,7 @@ public class ConsoleCommands implements CommandProvider
 {
     final private AlarmServer server;
     private String pwd = AlarmTreePath.PATH_SEP;
-    
+
     /** Initialize
      *  @param server {@link AlarmServer}
      */
@@ -95,17 +95,17 @@ public class ConsoleCommands implements CommandProvider
     /** 'pvs' command */
     public Object _pvs(final CommandInterpreter intp)
     {
-    	boolean only_alarm = false;
-    	boolean only_disconnected = false;
-    	String partial_match = null;
+        boolean only_alarm = false;
+        boolean only_disconnected = false;
+        String partial_match = null;
         for (String arg = intp.nextArgument(); arg != null; arg = intp.nextArgument())
         {
-        	if ("-a".equals(arg))
-        		only_alarm = true;
-        	else if ("-d".equals(arg))
-        		only_disconnected = true;
-        	else
-        		partial_match = arg;
+            if ("-a".equals(arg))
+                only_alarm = true;
+            else if ("-d".equals(arg))
+                only_disconnected = true;
+            else
+                partial_match = arg;
         }
         try
         {
@@ -115,7 +115,7 @@ public class ConsoleCommands implements CommandProvider
                 if (only_disconnected  &&  pv.isConnected())
                     continue;
                 if (only_alarm && ! pv.getAlarmLogic().getAlarmState().getSeverity().isActive())
-                	continue;
+                    continue;
                 if (partial_match == null   ||   pv.getName().contains(partial_match))
                     intp.println(pv.toString());
             }
@@ -133,14 +133,14 @@ public class ConsoleCommands implements CommandProvider
         intp.println("Path: '" + pwd + "'");
         return null;
     }
-    
+
     /** 'cd' command */
     public Object _cd(final CommandInterpreter intp)
     {
         pwd = AlarmTreePath.update(pwd, intp.nextArgument());
         return _pwd(intp);
     }
-    
+
     /** 'lsa' command */
     public Object _lsa(final CommandInterpreter intp)
     {

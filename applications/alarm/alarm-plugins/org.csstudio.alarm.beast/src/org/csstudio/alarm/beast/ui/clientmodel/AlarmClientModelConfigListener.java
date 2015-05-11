@@ -12,7 +12,7 @@ package org.csstudio.alarm.beast.ui.clientmodel;
  *  Compared to the {@link AlarmClientModelListener} that receives
  *  every PV state change, this listener is only notified when a
  *  new alarm model was loaded.
- *  
+ *
  *  @author Kay Kasemir
  */
 public interface AlarmClientModelConfigListener
@@ -21,7 +21,7 @@ public interface AlarmClientModelConfigListener
      *  loaded a new configuration, i.e. has new name and content.
      *  <p>
      *  May originate from non-UI thread
-     *  
+     *
      *  @param model Model
      */
     void newAlarmConfiguration(AlarmClientModel model);

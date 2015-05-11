@@ -32,7 +32,7 @@ import org.junit.Test;
 public class LocalPVTest implements PVListener
 {
     final private CountDownLatch updates = new CountDownLatch(1);
-    
+
     @Before
     public void setup()
     {
@@ -40,10 +40,10 @@ public class LocalPVTest implements PVListener
         root.setLevel(Level.FINE);
         for (Handler handler : root.getHandlers())
             handler.setLevel(Level.FINE);
-        
+
         PVPool.addPVFactory(new LocalPVFactory());
     }
-    
+
     @After
     public void shutdown()
     {
@@ -61,16 +61,16 @@ public class LocalPVTest implements PVListener
         // Different initial value means different PV
         final PV pv3 = PVPool.getPV("x(1)");
         assertThat(pv3, not(sameInstance(pv1)));
-        
+
         pv1.write(10);
         pv3.write(30);
         assertThat(ValueUtil.numericValueOf(pv1.read()), equalTo(10.0));
         assertThat(ValueUtil.numericValueOf(pv3.read()), equalTo(30.0));
-        
+
         PVPool.releasePV(pv3);
         PVPool.releasePV(pv1);
     }
-    
+
     @Test(timeout=5000)
     public void testBasicRead() throws Exception
     {
@@ -104,11 +104,11 @@ public class LocalPVTest implements PVListener
         assertThat(((VString)pv.read()).getValue(), equalTo("was here"));
         PVPool.releasePV(pv);
     }
-    
+
     @Override
     public void permissionsChanged(PV pv, boolean readonly)
     {
-        System.out.println("Permissions");        
+        System.out.println("Permissions");
     }
 
     @Override

@@ -19,44 +19,44 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  */
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
-	public ApplicationWorkbenchWindowAdvisor(
-			IWorkbenchWindowConfigurer configurer) {
-		super(configurer);
-	}
+    public ApplicationWorkbenchWindowAdvisor(
+            IWorkbenchWindowConfigurer configurer) {
+        super(configurer);
+    }
 
-	@Override
-	public void postWindowCreate() {
-		super.postWindowCreate();
-		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-		Shell shell = configurer.getWindow().getShell();
-		shell.setText("DataBrowser");
-		shell.setMaximized(true);
-		IPath path = RequestUtil.getPltPathFromRequest();
+    @Override
+    public void postWindowCreate() {
+        super.postWindowCreate();
+        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+        Shell shell = configurer.getWindow().getShell();
+        shell.setText("DataBrowser");
+        shell.setMaximized(true);
+        IPath path = RequestUtil.getPltPathFromRequest();
 
-		if (path == null) {
-			return;
-		}
-		IWorkbenchWindow targetWindow = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow();
-		IEditorInput dataBrowserInput = new PathEditorInput(path);
-		try {
-			targetWindow.getActivePage().openEditor(dataBrowserInput,
-					DataBrowserEditor.ID);
-		} catch (PartInitException e) {
-			Activator.getLogger().log(Level.WARNING, "Cannot open editor", e); //$NON-NLS-1$
-		}
-	}
+        if (path == null) {
+            return;
+        }
+        IWorkbenchWindow targetWindow = PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow();
+        IEditorInput dataBrowserInput = new PathEditorInput(path);
+        try {
+            targetWindow.getActivePage().openEditor(dataBrowserInput,
+                    DataBrowserEditor.ID);
+        } catch (PartInitException e) {
+            Activator.getLogger().log(Level.WARNING, "Cannot open editor", e); //$NON-NLS-1$
+        }
+    }
 
-	public void preWindowOpen() {
+    public void preWindowOpen() {
 
-		IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
 
-		// configurer.setShowCoolBar(!RequestUtil.isStandaloneMode());
-		configurer.setShowMenuBar(false);
-		configurer.setShowStatusLine(false);
-		configurer.setTitle("DataBrowser");
+        // configurer.setShowCoolBar(!RequestUtil.isStandaloneMode());
+        configurer.setShowMenuBar(false);
+        configurer.setShowStatusLine(false);
+        configurer.setTitle("DataBrowser");
 
-		configurer.setShellStyle(SWT.NO_TRIM);
-	}
+        configurer.setShellStyle(SWT.NO_TRIM);
+    }
 
 }

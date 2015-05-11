@@ -48,20 +48,20 @@ import org.slf4j.LoggerFactory;
 public class StripChart extends Widget {
 
     private static final Logger LOG = LoggerFactory.getLogger(StripChart.class);
-    
+
     /**
      * @param widget ADLWidget that describe the StripChart.
-     * @param storedDynamicAttribute 
-     * @param storedBasicAttribute 
-     * @throws WrongADLFormatException 
+     * @param storedDynamicAttribute
+     * @param storedBasicAttribute
+     * @throws WrongADLFormatException
      */
     public StripChart(final ADLWidget widget, ADLWidget storedBasicAttribute, ADLWidget storedDynamicAttribute) throws WrongADLFormatException {
         super(widget, storedBasicAttribute, storedDynamicAttribute);
-        
+
         _widget.setPropertyValue(AbstractChartModel.PROP_SHOW_AXES, 3);
         _widget.setPropertyValue(AbstractWidgetModel.PROP_BORDER_STYLE, BorderStyleEnum.RAISED.getIndex());
         _widget.setPropertyValue(AbstractChartModel.PROP_AUTOSCALE, true);
-        
+
         for (ADLWidget srtipChartPart : widget.getObjects()) {
             if(srtipChartPart.getType().equalsIgnoreCase("plotcom")){
                 plotcom(srtipChartPart);
@@ -82,13 +82,13 @@ public class StripChart extends Widget {
             }else if(row[0].equals("units")){ //$NON-NLS-1$
                 _widget.setPropertyValue(AbstractChartModel.PROP_X_AXIS_LABEL, row[1]);
             }
-            
+
         }
     }
 
     /**
      * @param stripChartPart
-     * @throws WrongADLFormatException 
+     * @throws WrongADLFormatException
      */
     private void pen(ADLWidget stripChartPart) throws WrongADLFormatException {
         int start = stripChartPart.getType().indexOf("[");
@@ -96,7 +96,7 @@ public class StripChart extends Widget {
         String id = stripChartPart.getType().substring(start+1, end);
         int index = Integer.parseInt(id);
 
-        
+
         for (FileLine fileLine : stripChartPart.getBody()) {
             String stripChart = fileLine.getLine();
             String[] row = stripChart.split("=");
@@ -110,7 +110,7 @@ public class StripChart extends Widget {
              * clr=62
              */
             if(parameter.equals("chan")){
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 row = ADLHelper.cleanString(row[1]);
                 if(index==0){
                     _widget.setPrimarPv(row[1]);
@@ -136,7 +136,7 @@ public class StripChart extends Widget {
 
     /**
      * @param stripChartPart
-     * @throws WrongADLFormatException 
+     * @throws WrongADLFormatException
      */
     private void plotcom(ADLWidget stripChartPart) throws WrongADLFormatException {
         for (FileLine fileLine : stripChartPart.getBody()) {
@@ -174,6 +174,6 @@ public class StripChart extends Widget {
      */
     @Override
     final void setWidgetType() {
-        _widget = createWidgetModel(StripChartModel.ID);  
+        _widget = createWidgetModel(StripChartModel.ID);
     }
 }

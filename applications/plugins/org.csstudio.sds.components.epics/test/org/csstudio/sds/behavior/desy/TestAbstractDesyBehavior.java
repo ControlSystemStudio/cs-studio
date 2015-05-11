@@ -27,22 +27,22 @@ import org.csstudio.dal.simple.AnyDataChannel;
 import org.csstudio.dal.simple.MetaData;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @since 03.11.2011
  */
 public class TestAbstractDesyBehavior extends AbstractDesyBehavior {
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void doInitialize(AbstractWidgetModel widget) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -50,27 +50,27 @@ public class TestAbstractDesyBehavior extends AbstractDesyBehavior {
     protected void doProcessConnectionStateChange(AbstractWidgetModel widget,
                                                   AnyDataChannel anyDataChannel) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void doProcessValueChange(AbstractWidgetModel model, AnyData anyData) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     protected void doProcessMetaDataChange(AbstractWidgetModel widget, MetaData metaData) {
         // TODO Auto-generated method stub
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -79,5 +79,5 @@ public class TestAbstractDesyBehavior extends AbstractDesyBehavior {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
 }

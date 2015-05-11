@@ -64,14 +64,14 @@ public class VTypeHelper
         else if (value instanceof VEnum)
         {
             final VEnum item = (VEnum) value;
-        	try
-        	{
+            try
+            {
                 buf.append(item.getValue()).append(" ");
-        	}
-        	catch (ArrayIndexOutOfBoundsException ex)
-        	{
-        		// PVManager doesn't handle enums that have no label. Ignore
-        	}
+            }
+            catch (ArrayIndexOutOfBoundsException ex)
+            {
+                // PVManager doesn't handle enums that have no label. Ignore
+            }
             buf.append("(").append(item.getIndex()).append(")");
         }
         else
@@ -111,7 +111,7 @@ public class VTypeHelper
         // but in other cases the empty value could well be
         // a valid alarm to display...
         if (buf.length() > 0)
-        	appendAlarm(buf, value);
+            appendAlarm(buf, value);
         return buf.toString();
     }
 }

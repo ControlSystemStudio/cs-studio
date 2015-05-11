@@ -8,16 +8,16 @@ public class Fourier
 {
     /** Number of points in original signal */
     final private int N;
-    
+
     /** Sample period, distance between signal points, in seconds */
     final double period;
-    
+
     /** Index of Nyquist frequency */
     final private int nyquist_index;
-    
+
     /** FFT amplitudes, DC to nyquist_index */
     final private double amplitude[];
-    
+
     /** Compute discrete Fourier transform
      *  <p>
      *  <code>FFT(n) = 1/N sum{k} [ signal(k) exp(-2 pi j k n/N) ]</code>
@@ -37,7 +37,7 @@ public class Fourier
      *  <li>Amplitude[N/2 + i] is the same as Amplitude[i], meaning the second
      *      half is a mirror image of the first half.
      *  </ul>
-     *  
+     *
      *  @param signal Real-valued input signal, N points
      *  @see #getAmplitudes()
      *  @see #getFrequencies()
@@ -47,7 +47,7 @@ public class Fourier
         this.period = period;
         N = signal.length;
         final double exp_coeff = 2.0 * Math.PI / N;
-        
+
         // FFT(n) = 1/N sum{k} [ signal(k) exp(-2 pi j k n/N) ]
         nyquist_index = (int) Math.ceil(N/2);
         amplitude = new double[nyquist_index];
@@ -67,13 +67,13 @@ public class Fourier
             amplitude[n] = Math.sqrt(real*real + imag*imag);
         }
     }
-    
+
     /** @return Amplitude of FFT(signal) for 0 to Nyquist (N/2) */
     public double [] getAmplitudes()
     {
         return amplitude;
     }
-    
+
     /** @return Frequency points in Hz; 0 to Nyquist */
     public double [] getFrequencies()
     {

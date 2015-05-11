@@ -28,7 +28,7 @@ public class FFTAlgorithm extends Algorithm
     {
         this.type = type;
     }
-    
+
     /** @return <code>false</code> because FFT needs no time axis */
     @Override
     public boolean needTimeAxis()
@@ -43,7 +43,7 @@ public class FFTAlgorithm extends Algorithm
         x_axis_label = Messages.FFT_XAxisLabel;
         if (input == null)
             throw new IllegalArgumentException(Messages.Algorithm_NoDataPoints);
-        
+
         // Guess the signal period
         final int N = input.size();
         if (N <= 0)

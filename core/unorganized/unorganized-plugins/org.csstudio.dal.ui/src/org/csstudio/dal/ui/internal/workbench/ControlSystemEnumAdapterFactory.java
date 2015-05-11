@@ -27,31 +27,31 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 public final class ControlSystemEnumAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
-		assert adaptableObject instanceof ControlSystemEnum;
+            final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
+        assert adaptableObject instanceof ControlSystemEnum;
 
-		Object result = null;
+        Object result = null;
 
-		if (adapterType == IWorkbenchAdapter.class) {
-			result = new ControlSystemEnumWorkbenchAdapter();
-		}
+        if (adapterType == IWorkbenchAdapter.class) {
+            result = new ControlSystemEnumWorkbenchAdapter();
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Class[] getAdapterList() {
-		return new Class[] { IWorkbenchAdapter.class };
-	}
+        return new Class[] { IWorkbenchAdapter.class };
+    }
 
 }

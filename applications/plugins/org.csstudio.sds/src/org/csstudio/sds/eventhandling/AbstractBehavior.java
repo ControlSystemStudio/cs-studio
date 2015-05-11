@@ -28,11 +28,11 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
     private static final String PROP_DESCRIPTION = "description";
     private static final String PROP_WIDGET_TYPE_ID = "widgetTypeId";
     private static final String PROP_ID = "id";
-    
+
     private String _behaviorId;
     private String _widgetTypeId;
     private String _description;
-    
+
     public final void setInitializationData(final IConfigurationElement config,
                                             final String propertyName,
                                             final Object data) throws CoreException {
@@ -46,15 +46,15 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
         assert _description != null : "description != null";
         assert _description.trim().length() > 0 : "description.trim().length() > 0";
     }
-    
+
     public final String getBehaviorId() {
         return _behaviorId;
     }
-    
+
     public final String getDescription() {
         return _description;
     }
-    
+
     /**
      * Returns the widget type, this behavior is registered for.
      *
@@ -63,7 +63,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
     public final String getWidgetTypeId() {
         return _widgetTypeId;
     }
-    
+
     /**
      * Initializes the widget independently of any connections. Will be called
      * before the widget is connected to the control system.
@@ -76,7 +76,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
         assert widget != null;
         doInitialize(widget);
     }
-    
+
     /**
      * Handles a change of the {@link AnyData} object which provides some
      * metadata for the current connection.
@@ -86,7 +86,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      * @param anyData
      *            the {@link AnyData} object
      */
-    
+
     /**
      * Processes DAL events received via
      * {@link ChannelListener#channelDataUpdate(AnyDataChannel)}. By default
@@ -106,12 +106,12 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      */
     public final void processChannelDataUpdate(final W model, final AnyDataChannel channel) {
         AnyData data = channel.getData();
-        
+
         doProcessMetaDataChange(model, data.getMetaData());
         doProcessValueChange(model, data);
         doProcessConnectionStateChange(model, channel);
     }
-    
+
     /**
      * Processes DAL events received via
      * {@link ChannelListener#channelDataUpdate(AnyDataChannel)}. By default
@@ -130,11 +130,11 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
     public final void processChannelStateUpdate(final W model, final AnyDataChannel channel) {
         doProcessConnectionStateChange(model, channel);
     }
-    
+
     /**
      * Handles changes of widget property manual values.
      * @param widgetModel
-     * 			  the model of the current widget
+     *               the model of the current widget
      * @param propertyId
      *            the property id
      * @param value
@@ -146,7 +146,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
         assert propertyId != null;
         return doConvertOutgoingValue(widgetModel, propertyId, value);
     }
-    
+
     /**
      * Returns ids of properties that will become invisible when this behavior
      * is active.
@@ -156,13 +156,13 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      */
     public final String[] getInvisiblePropertyIds() {
         String[] result = doGetInvisiblePropertyIds();
-        
+
         if (result == null) {
             return new String[0];
         }
         return result;
     }
-    
+
     /**
      * Returns ids of properties that are used to trigger write access to the
      * control system.
@@ -171,20 +171,20 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      */
     public final String[] getSettablePropertyIds() {
         String[] result = doGetSettablePropertyIds();
-        
+
         if (result == null) {
             result = new String[0];
         }
-        
+
         return result;
     }
-    
+
     /**
      * Template method which is called when a manual value of a widget property
      * changes. Subclasses should apply type conversion if necessary. By default
      * the current value is returned without any conversion.
      * @param widgetModel
-     * 			  the model of the current widget
+     *               the model of the current widget
      * @param propertyId
      *            the property id
      * @param value
@@ -195,7 +195,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
                                             final Object value) {
         return value;
     }
-    
+
     /**
      * Template method which should return the ids of properties that are used
      * for writing values to the control system. Returns an empty set by
@@ -206,7 +206,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
     protected String[] doGetSettablePropertyIds() {
         return new String[0];
     }
-    
+
     /**
      * Template method which is called before the widget is connected to the
      * control systems. Subclasses should initialize the widgets initial look
@@ -216,7 +216,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      *            the widget
      */
     protected abstract void doInitialize(W widget);
-    
+
     /**
      * Template method which is called when the connection state of the
      * underlying channel changes. Subclasses may implement a widgets look and
@@ -229,7 +229,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      *            the current connection state
      */
     protected abstract void doProcessConnectionStateChange(W widget, AnyDataChannel anyDataChannel);
-    
+
     /**
      * Template method which is called when the value of the underlying channel
      * changes. Subclasses may implement a widgets look and feel depending on
@@ -241,7 +241,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      *            the current connection state
      */
     protected abstract void doProcessValueChange(W model, AnyData anyData);
-    
+
     /**
      * Template method which is called when the {@link AnyData} of the
      * underlying channel changes. Subclasses may implement a widgets look and
@@ -253,7 +253,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      *            the {@link MetaData}
      */
     protected abstract void doProcessMetaDataChange(W widget, MetaData metaData);
-    
+
     /**
      * Subclasses should return identifiers of all properties handled by this
      * behavior. Those properties will not appear in the property view when this
@@ -262,7 +262,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
      * @return identifiers of all properties handled by this behavior
      */
     protected abstract String[] doGetInvisiblePropertyIds();
-    
+
     /**
      *{@inheritDoc}
      */
@@ -276,7 +276,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
         buffer.append(_description);
         return buffer.toString();
     }
-    
+
     /**
      *{@inheritDoc}
      */
@@ -288,7 +288,7 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
         result = prime * result + ( (_widgetTypeId == null) ? 0 : _widgetTypeId.hashCode());
         return result;
     }
-    
+
     /**
      *{@inheritDoc}
      */
@@ -321,5 +321,5 @@ public abstract class AbstractBehavior<W extends AbstractWidgetModel> {
         }
         return true;
     }
-    
+
 }

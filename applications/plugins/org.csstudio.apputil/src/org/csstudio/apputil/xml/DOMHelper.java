@@ -21,13 +21,13 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-/** Helpers for parsing a DOM NodeList. 
- * 
+/** Helpers for parsing a DOM NodeList.
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class DOMHelper
-{ 
+{
     /** Reads a string that contains XML markup as a DOM.
      * @param xml String with XML content.
      * @return Returns the root Element.
@@ -61,7 +61,7 @@ public class DOMHelper
         doc.getDocumentElement ().normalize();
         return doc.getDocumentElement();
     }
-    
+
     /** Look for Element node if given name.
      *  <p>
      *  Checks the node and its siblings.
@@ -73,7 +73,7 @@ public class DOMHelper
     public static final Element findFirstElementNode(Node node, final String name)
     {
         while (node != null)
-        {   
+        {
             if (node.getNodeType() == Node.ELEMENT_NODE &&
                     node.getNodeName().equals(name))
                 return (Element) node;
@@ -81,7 +81,7 @@ public class DOMHelper
         }
         return null;
     }
-    
+
     /** @return Returns the next matching element.
      *  @see #findFirstElementNode(Node, String)
      */
@@ -89,14 +89,14 @@ public class DOMHelper
     {
         return findFirstElementNode(node.getNextSibling(), name);
     }
-    
+
     /** Locate a sub-element tagged 'name', return its value.
-     * 
+     *
      *  Will only go one level down, not search the whole tree.
-     *  
+     *
      *  @param element Element where to start looking. May be null.
      *  @param name Name of sub-element to locate.
-     *  
+     *
      *  @return Returns string that was found or empty string.
      */
     public static final String getSubelementString(
@@ -114,16 +114,16 @@ public class DOMHelper
             return text_node.getNodeValue();
         }
         return "";
-    }    
+    }
 
     /** Locate a sub-element tagged 'name', return its value.
-     * 
+     *
      *  Will only go one level down, not search the whole tree.
-     *  
+     *
      *  @param element Element where to start looking. May be null.
      *  @param name Name of sub-element to locate.
      *  @param default_value Default value if not found
-     *  
+     *
      *  @return Returns string that was found or default_value.
      */
     public static final String getSubelementString(
@@ -141,16 +141,16 @@ public class DOMHelper
             return text_node.getNodeValue();
         }
         return default_value;
-    }    
+    }
 
-    
+
     /** Locate all sub-elements tagged 'name', return their values.
-     * 
+     *
      *  Will only go one level down, not search the whole tree.
-     *  
+     *
      *  @param element Element where to start looking.
      *  @param name Name of sub-element to locate.
-     *  
+     *
      *  @return Returns String array or null if nothing found.
      */
     public static final String [] getSubelementStrings(
@@ -175,15 +175,15 @@ public class DOMHelper
             return val_array;
         }
         return null;
-    }    
-    
+    }
+
     /** Locate a sub-element tagged 'name', return its boolean value.
-     * 
+     *
      *  Will only go one level down, not search the whole tree.
-     *  
+     *
      *  @param element Element where to start looking. May be null.
      *  @param element_name Name of sub-element to locate.
-     *  
+     *
      *  @return Returns <code>true</code> if sub-element was "true".
      *          If nothing was found, the default is <code>false</code>.
      */
@@ -194,13 +194,13 @@ public class DOMHelper
     }
 
     /** Locate a sub-element tagged 'name', return its boolean value.
-     * 
+     *
      *  Will only go one level down, not search the whole tree.
-     *  
+     *
      *  @param element Element where to start looking. May be null.
      *  @param element_name Name of sub-element to locate.
      *  @param default_value Default to use if tag's value is neither "true" nor "false".
-     *  
+     *
      *  @return Returns <code>true</code> if sub-element was "true",
      *          <code>false</code> if it was "false", otherwise the default.
      */
@@ -216,10 +216,10 @@ public class DOMHelper
     }
 
     /** Locate attribute tagged 'name', return its boolean value.
-     * 
+     *
      *  @param element Element where to start looking.
      *  @param name Name of the attribute.
-     *  
+     *
      *  @return Returns true if attribute was "true". Defaults to false.
      */
     public static final boolean getAttributeBoolean(
@@ -228,7 +228,7 @@ public class DOMHelper
         String s = element.getAttribute(name);
         return s.equalsIgnoreCase("true");
     }
-   
+
     /** Locate a sub-element tagged 'name', return its integer value.
      *
      *  Will only go one level down, not seach the whole tree.
@@ -266,7 +266,7 @@ public class DOMHelper
            return default_value;
        return Integer.parseInt(s);
    }
-    
+
     /** Locate a sub-element tagged 'name', return its double value.
     *
     *  Will only go one level down, not seach the whole tree.
@@ -285,7 +285,7 @@ public class DOMHelper
            throw new Exception("No number found for tag '" + element_name + "'");
        return Double.parseDouble(s);
    }
-   
+
    /** Locate a sub-element tagged 'name', return its double value.
    *
    *  Will only go one level down, not seach the whole tree.

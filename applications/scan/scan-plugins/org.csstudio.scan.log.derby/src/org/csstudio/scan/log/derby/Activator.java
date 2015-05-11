@@ -24,43 +24,43 @@ import org.osgi.framework.BundleContext;
 @SuppressWarnings("nls")
 public class Activator implements BundleActivator
 {
-	/** Plugin ID defined in MANIFEST.MF */
+    /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.scan.log.derby";
 
-	private static Bundle bundle = null;
+    private static Bundle bundle = null;
 
-	// Please FindBugs about static access
-	private static void setBundle(final Bundle bundle)
-	{
-		Activator.bundle = bundle;
-	}
+    // Please FindBugs about static access
+    private static void setBundle(final Bundle bundle)
+    {
+        Activator.bundle = bundle;
+    }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void start(final BundleContext context) throws Exception
     {
-		setBundle(context.getBundle());
-		DerbyDataLogger.startup();
+        setBundle(context.getBundle());
+        DerbyDataLogger.startup();
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void stop(final BundleContext context) throws Exception
     {
-		DerbyDataLogger.shutdown();
+        DerbyDataLogger.shutdown();
     }
 
-	/** Open stream to file, either from bundle when running as plugin
-	 *  or via direct file access when running as test
-	 *  @param filename File name within bundle
-	 *  @return InputStream
-	 *  @throws Exception on error
-	 */
-	public static InputStream openStream(final String filename) throws Exception
+    /** Open stream to file, either from bundle when running as plugin
+     *  or via direct file access when running as test
+     *  @param filename File name within bundle
+     *  @return InputStream
+     *  @throws Exception on error
+     */
+    public static InputStream openStream(final String filename) throws Exception
     {
-		if (bundle == null)
-			return new FileInputStream(filename);
-		else
-			return FileLocator.openStream(bundle, new Path(filename), false);
+        if (bundle == null)
+            return new FileInputStream(filename);
+        else
+            return FileLocator.openStream(bundle, new Path(filename), false);
     }
 }

@@ -36,7 +36,7 @@ package org.csstudio.dal;
  */
 public interface NumberAccess extends DataAccess<Number>
 {
-	//
+    //
 }
 
 /* __oOo__ */

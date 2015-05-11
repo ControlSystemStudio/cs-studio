@@ -104,10 +104,10 @@ abstract public class ModelItem
     /** @return Name of this item (PV, Formula, ...) with all macros resolved */
     public String getResolvedName()
     {
-    	if (model.isPresent())
-    	    return model.get().resolveMacros(name);
-    	else
-    		return name;
+        if (model.isPresent())
+            return model.get().resolveMacros(name);
+        else
+            return name;
     }
 
     /** @param new_name New item name
@@ -138,10 +138,10 @@ abstract public class ModelItem
      */
     public String getResolvedDisplayName()
     {
-    	if (model.isPresent())
-    	    return model.get().resolveMacros(display_name);
-    	else
-    		return display_name;
+        if (model.isPresent())
+            return model.get().resolveMacros(display_name);
+        else
+            return display_name;
     }
 
     /** @param new_display_name New display name
@@ -281,7 +281,7 @@ abstract public class ModelItem
     /** @param axis New X-Axis index */
     public void setAxis(final AxisConfig axis)
     {   // Comparing exact AxisConfig reference, not equals()!
-    	if (axis == this.axis)
+        if (axis == this.axis)
             return;
         this.axis = axis;
         fireItemLookChanged();
@@ -303,7 +303,7 @@ abstract public class ModelItem
      */
     public void setWaveformIndex(int index)
     {
-    	// Do nothing.
+        // Do nothing.
     }
 
     /** @return Samples held by this item */
@@ -333,7 +333,7 @@ abstract public class ModelItem
     {
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_DISPLAYNAME, getDisplayName());
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_VISIBLE, Boolean.toString(isVisible()));
-    	XMLWriter.XML(writer, 3, XMLPersistence.TAG_NAME, getName());
+        XMLWriter.XML(writer, 3, XMLPersistence.TAG_NAME, getName());
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_AXIS, getAxisIndex());
         XMLPersistence.writeColor(writer, 3, XMLPersistence.TAG_COLOR, getColor());
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_TRACE_TYPE, getTraceType().name());

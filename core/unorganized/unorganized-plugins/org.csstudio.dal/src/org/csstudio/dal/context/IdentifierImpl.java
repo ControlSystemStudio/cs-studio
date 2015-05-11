@@ -31,59 +31,59 @@ package org.csstudio.dal.context;
  */
 public class IdentifierImpl implements Identifier
 {
-	private String longName;
-	String name;
-	String uniqueName;
-	Type type;
+    private String longName;
+    String name;
+    String uniqueName;
+    Type type;
 
-	/**
-	 * Creates a new IdentifierImpl object.
-	 *
-	 * @param name new name
-	 * @param uniqueName new unique name
-	 * @param longName new long qualified name
-	 * @param type new indentifiable type
-	 */
-	public IdentifierImpl(String name, String uniqueName, String longName,
-	    Type type)
-	{
-		this.name = name;
-		this.uniqueName = uniqueName;
-		this.longName = longName;
-		this.type = type;
-	}
+    /**
+     * Creates a new IdentifierImpl object.
+     *
+     * @param name new name
+     * @param uniqueName new unique name
+     * @param longName new long qualified name
+     * @param type new indentifiable type
+     */
+    public IdentifierImpl(String name, String uniqueName, String longName,
+        Type type)
+    {
+        this.name = name;
+        this.uniqueName = uniqueName;
+        this.longName = longName;
+        this.type = type;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Identifier#getLongQualifiedName()
-	 */
-	public String getLongQualifiedName()
-	{
-		return longName;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Identifier#getLongQualifiedName()
+     */
+    public String getLongQualifiedName()
+    {
+        return longName;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Identifier#getName()
-	 */
-	public String getName()
-	{
-		return name;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Identifier#getName()
+     */
+    public String getName()
+    {
+        return name;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Identifier#getType()
-	 */
-	public Type getType()
-	{
-		return type;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Identifier#getType()
+     */
+    public Type getType()
+    {
+        return type;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Identifier#getUniqueName()
-	 */
-	public String getUniqueName()
-	{
-		return uniqueName;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Identifier#getUniqueName()
+     */
+    public String getUniqueName()
+    {
+        return uniqueName;
+    }
 }
 
 /* __oOo__ */

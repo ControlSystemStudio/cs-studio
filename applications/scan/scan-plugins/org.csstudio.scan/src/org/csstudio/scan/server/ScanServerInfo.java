@@ -40,17 +40,17 @@ public class ScanServerInfo extends MemoryInfo
      *  @param simulation_config
      */
     public ScanServerInfo(final String version, final Date start_time,
-    		final String scan_config,
-    		final String simulation_config,
-    		final String[] script_paths,
-    		final String macros)
+            final String scan_config,
+            final String simulation_config,
+            final String[] script_paths,
+            final String macros)
     {
-	    this.version = version;
-	    this.start_time = start_time;
-	    this.scan_config = scan_config;
-	    this.simulation_config = simulation_config;
-	    this.script_paths = script_paths;
-	    this.macros = macros;
+        this.version = version;
+        this.start_time = start_time;
+        this.scan_config = scan_config;
+        this.simulation_config = simulation_config;
+        this.script_paths = script_paths;
+        this.macros = macros;
     }
 
     /** Initialize
@@ -79,34 +79,34 @@ public class ScanServerInfo extends MemoryInfo
         this.script_paths = script_paths;
         this.macros = macros;
     }
-    
+
     /** @return Version number */
-	public String getVersion()
+    public String getVersion()
     {
-    	return version;
+        return version;
     }
 
-	/** @return Start time */
-	public Date getStartTime()
+    /** @return Start time */
+    public Date getStartTime()
     {
-    	return start_time;
+        return start_time;
     }
 
-	/** @return Scan configuration path */
-	public String getScanConfig()
+    /** @return Scan configuration path */
+    public String getScanConfig()
     {
-    	return scan_config;
+        return scan_config;
     }
 
-	/** @return Simulation configuration path (since originally that was a separate file)
-	 *  @see #getScanConfig()
-	 */
-	public String getSimulationConfig()
-	{
-		return simulation_config;
-	}
+    /** @return Simulation configuration path (since originally that was a separate file)
+     *  @see #getScanConfig()
+     */
+    public String getSimulationConfig()
+    {
+        return simulation_config;
+    }
 
-	/** @return Script paths */
+    /** @return Script paths */
     public String[] getScriptPaths()
     {
         return script_paths;
@@ -117,7 +117,7 @@ public class ScanServerInfo extends MemoryInfo
     {
         return macros;
     }
-	
+
     /** {@inheritDoc} */
     @Override
     public String toString()

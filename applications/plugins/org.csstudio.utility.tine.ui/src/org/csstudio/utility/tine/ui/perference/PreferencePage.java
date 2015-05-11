@@ -32,33 +32,33 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class PreferencePage extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage {
+    implements IWorkbenchPreferencePage {
 
-	public PreferencePage() {
-		super(GRID);
-		setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
-				Activator.getDefault().getBundle().getSymbolicName()));
-		setDescription(Messages.getString("PreferencePage.TINE")); //$NON-NLS-1$
-	}
+    public PreferencePage() {
+        super(GRID);
+        setPreferenceStore(new ScopedPreferenceStore(new InstanceScope(),
+                Activator.getDefault().getBundle().getSymbolicName()));
+        setDescription(Messages.getString("PreferencePage.TINE")); //$NON-NLS-1$
+    }
 
-	/**
-	 * Creates the field editors. Field editors are abstractions of
-	 * the common GUI blocks needed to manipulate various types
-	 * of preferences. Each field editor knows how to save and
-	 * restore itself.
-	 */
-	@Override
+    /**
+     * Creates the field editors. Field editors are abstractions of
+     * the common GUI blocks needed to manipulate various types
+     * of preferences. Each field editor knows how to save and
+     * restore itself.
+     */
+    @Override
     public void createFieldEditors() {
-		final StringFieldEditor pathSFE = new StringFieldEditor(PreferenceConstants.TINE_CONFIG_PATH, Messages.getString("Tine.PreferencePage.Path"), getFieldEditorParent());
-		pathSFE.getTextControl(getFieldEditorParent()).setToolTipText(Messages.getString("Tine.PreferencePage.Path.ToolTip"));
-		addField(pathSFE); //$NON-NLS-1$
-	}
+        final StringFieldEditor pathSFE = new StringFieldEditor(PreferenceConstants.TINE_CONFIG_PATH, Messages.getString("Tine.PreferencePage.Path"), getFieldEditorParent());
+        pathSFE.getTextControl(getFieldEditorParent()).setToolTipText(Messages.getString("Tine.PreferencePage.Path.ToolTip"));
+        addField(pathSFE); //$NON-NLS-1$
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	public void init(final IWorkbench workbench) {
-	}
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     */
+    public void init(final IWorkbench workbench) {
+    }
 
 
 }

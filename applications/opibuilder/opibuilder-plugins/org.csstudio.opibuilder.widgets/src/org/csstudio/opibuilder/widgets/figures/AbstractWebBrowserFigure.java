@@ -16,15 +16,15 @@ import org.eclipse.swt.widgets.Control;
  * @author Xihui Chen
  *
  */
-public abstract class AbstractWebBrowserFigure <T extends Control> extends AbstractSWTWidgetFigure<T> {	
-	
+public abstract class AbstractWebBrowserFigure <T extends Control> extends AbstractSWTWidgetFigure<T> {
 
-	public AbstractWebBrowserFigure(AbstractBaseEditPart editpart, int style) {
-		super(editpart, style);
-	}
 
-	public abstract void setUrl(String url);
-	
-	public abstract Browser getBrowser() ;
-	
+    public AbstractWebBrowserFigure(AbstractBaseEditPart editpart, int style) {
+        super(editpart, style);
+    }
+
+    public abstract void setUrl(String url);
+
+    public abstract Browser getBrowser() ;
+
 }

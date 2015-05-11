@@ -13,18 +13,18 @@ package org.csstudio.utility.speech;
  */
 public interface Annunciator
 {
-	/** Define a list of translations to improve the sound
-	 *  of certain acronyms.
-	 *  @param translations
-	 */
-	public void setTranslations(Translation[] translations);
-	
-	/** Speak some text
-	 *  @param something Text to speak
-	 *  @throws Exception on error
-	 */
-	public void say(final String something) throws Exception;
+    /** Define a list of translations to improve the sound
+     *  of certain acronyms.
+     *  @param translations
+     */
+    public void setTranslations(Translation[] translations);
 
-	/** Must be called when Annunciator no longer needed to release resources */
-	public void close();
+    /** Speak some text
+     *  @param something Text to speak
+     *  @throws Exception on error
+     */
+    public void say(final String something) throws Exception;
+
+    /** Must be called when Annunciator no longer needed to release resources */
+    public void close();
 }

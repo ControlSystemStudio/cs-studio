@@ -43,8 +43,8 @@ import org.epics.util.time.TimeParser;
 
 /**
  * A view to search for shifts and then display them in a tabluar form
- * 
- * 
+ *
+ *
  */
 public class ShiftTableView extends ViewPart {
     private Text text;
@@ -76,41 +76,41 @@ public class ShiftTableView extends ViewPart {
         btnNewButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(final SelectionEvent e) {
-            	final Runnable openSearchDialog = new Runnable() {
+                final Runnable openSearchDialog = new Runnable() {
 
-	                @Override
-	                public void run() {
-	                try {
-	                    if (shifts.isEmpty() && initializeClient()) {
-	                        shifts = new ArrayList<String>();
-	                        for (Shift shift : shiftClient.listShifts()) {
-	                            shifts.add(shift.getId().toString());
-	                        }
-	                    }
-	                    if(types.isEmpty() && initializeClient()) {
-	                    	types = new ArrayList<String>();
-	                    	for(Type type : shiftClient.listTypes()) {
-	                    		types.add(type.getName());
-	                    	}
-	                    }
-	                    Display.getDefault().asyncExec(new Runnable() {
-	                        public void run() {
-	                            final ShiftSearchDialog dialog = new ShiftSearchDialog(parent.getShell(), shifts, types, 
-	                            		ShiftSearchUtil.parseSearchString(text.getText()));
-	                            dialog.setBlockOnOpen(true);
-	                            if (dialog.open() == IDialogConstants.OK_ID) {
-		                            text.setText(dialog.getSearchString());
-		                            text.getParent().update();
-		                            search();
-	                            }
-	                        }
-	                    });
-	                } catch (Exception e) {
-	                    e.printStackTrace();
-	                }
-	                }
-	            };
-	            BusyIndicator.showWhile(Display.getDefault(), openSearchDialog);
+                    @Override
+                    public void run() {
+                    try {
+                        if (shifts.isEmpty() && initializeClient()) {
+                            shifts = new ArrayList<String>();
+                            for (Shift shift : shiftClient.listShifts()) {
+                                shifts.add(shift.getId().toString());
+                            }
+                        }
+                        if(types.isEmpty() && initializeClient()) {
+                            types = new ArrayList<String>();
+                            for(Type type : shiftClient.listTypes()) {
+                                types.add(type.getName());
+                            }
+                        }
+                        Display.getDefault().asyncExec(new Runnable() {
+                            public void run() {
+                                final ShiftSearchDialog dialog = new ShiftSearchDialog(parent.getShell(), shifts, types,
+                                        ShiftSearchUtil.parseSearchString(text.getText()));
+                                dialog.setBlockOnOpen(true);
+                                if (dialog.open() == IDialogConstants.OK_ID) {
+                                    text.setText(dialog.getSearchString());
+                                    text.getParent().update();
+                                    search();
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    }
+                };
+                BusyIndicator.showWhile(Display.getDefault(), openSearchDialog);
             }
         });
         final FormData fd_btnNewButton = new FormData();
@@ -123,9 +123,9 @@ public class ShiftTableView extends ViewPart {
         text.addKeyListener(new KeyAdapter() {
             @Override
             public void keyReleased(final KeyEvent e) {
-	            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
-	                search();
-	            }
+                if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+                    search();
+                }
             }
         });
         final FormData fd_text = new FormData();
@@ -140,7 +140,7 @@ public class ShiftTableView extends ViewPart {
         label = new Label(parent, SWT.SEPARATOR | SWT.HORIZONTAL);
         label.addMouseMoveListener(new MouseMoveListener() {
             public void mouseMove(final MouseEvent e) {
-            	final FormData fd = (FormData) label.getLayoutData();
+                final FormData fd = (FormData) label.getLayoutData();
                 final long calNumerator = fd.top.numerator + (e.y * 100) / e.display.getActiveShell().getClientArea().height;
                 fd.top = new FormAttachment((int) calNumerator);
                 label.setLayoutData(fd);
@@ -223,25 +223,25 @@ public class ShiftTableView extends ViewPart {
     @Override
     public void setFocus() {
     }
-    
+
     private List<Shift> findShiftsBySearch(final String searchString) {
-    	final Map<String, String> searchParameters = ShiftSearchUtil.parseSearchString(searchString);
-	    if(searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START) || searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
-		    TimeInterval timeInterval = null;
-			if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START) && searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
-				timeInterval = TimeParser.getTimeInterval(searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_START),
-						searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_END));
-			    searchParameters.put("from", String.valueOf(timeInterval.getStart().getSec()));
-			    searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
-			} else if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START)) {
-				timeInterval = TimeParser.getTimeInterval(searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_START), "now");
-			    searchParameters.put("from", String.valueOf(timeInterval.getStart().getSec()));
-			    searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
-			} else if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
-				timeInterval = TimeParser.getTimeInterval("now", searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_END));
-			    searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
-			}
-		}
-	    return new ArrayList<Shift>(shiftClient.findShifts(searchParameters));
+        final Map<String, String> searchParameters = ShiftSearchUtil.parseSearchString(searchString);
+        if(searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START) || searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
+            TimeInterval timeInterval = null;
+            if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START) && searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
+                timeInterval = TimeParser.getTimeInterval(searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_START),
+                        searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_END));
+                searchParameters.put("from", String.valueOf(timeInterval.getStart().getSec()));
+                searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
+            } else if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_START)) {
+                timeInterval = TimeParser.getTimeInterval(searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_START), "now");
+                searchParameters.put("from", String.valueOf(timeInterval.getStart().getSec()));
+                searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
+            } else if (searchParameters.containsKey(ShiftSearchUtil.SEARCH_KEYWORD_END)) {
+                timeInterval = TimeParser.getTimeInterval("now", searchParameters.get(ShiftSearchUtil.SEARCH_KEYWORD_END));
+                searchParameters.put("to", String.valueOf(timeInterval.getEnd().getSec()));
+            }
+        }
+        return new ArrayList<Shift>(shiftClient.findShifts(searchParameters));
     }
 }

@@ -33,7 +33,7 @@ public class SendEMailAction extends AbstractSendEMailAction
         opiRuntime = part;
         setId(ID);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected String getImage()
@@ -41,7 +41,7 @@ public class SendEMailAction extends AbstractSendEMailAction
         try
         {
             return ResourceUtil.getScreenshotFile(
-            		(GraphicalViewer) opiRuntime.getAdapter(GraphicalViewer.class));
+                    (GraphicalViewer) opiRuntime.getAdapter(GraphicalViewer.class));
         }
         catch (Exception ex)
         {

@@ -34,102 +34,102 @@ import org.csstudio.dal.SimpleProperty;
  */
 public class DynamicValueCommand<T> implements Command
 {
-	private SimpleProperty<T> property;
-	private T value;
-	private String name;
-	private CommandContext owner;
+    private SimpleProperty<T> property;
+    private T value;
+    private String name;
+    private CommandContext owner;
 
-	/**
-	 * Creates a new DynamicValueCommand object.
-	 *
-	 * @param owner The context that this command belongs to
-	 * @param name Command name
-	 * @param property Property to set value to
-	 * @param value Value to set to the property
-	 */
-	public DynamicValueCommand(CommandContext owner, String name,
-	    SimpleProperty<T> property, T value)
-	{
-		super();
+    /**
+     * Creates a new DynamicValueCommand object.
+     *
+     * @param owner The context that this command belongs to
+     * @param name Command name
+     * @param property Property to set value to
+     * @param value Value to set to the property
+     */
+    public DynamicValueCommand(CommandContext owner, String name,
+        SimpleProperty<T> property, T value)
+    {
+        super();
 
-		if (property == null) {
-			throw new IllegalArgumentException("property==null");
-		}
+        if (property == null) {
+            throw new IllegalArgumentException("property==null");
+        }
 
-		if (value == null) {
-			throw new IllegalArgumentException("value==null");
-		}
+        if (value == null) {
+            throw new IllegalArgumentException("value==null");
+        }
 
-		this.property = property;
-		this.value = value;
-	}
+        this.property = property;
+        this.value = value;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#name()
-	 */
-	public String getName()
-	{
-		return name;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#name()
+     */
+    public String getName()
+    {
+        return name;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#execute(java.lang.Object...)
-	 */
-	public Object execute(Object... parameters) throws RemoteException
-	{
-		property.setValue(value);
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#execute(java.lang.Object...)
+     */
+    public Object execute(Object... parameters) throws RemoteException
+    {
+        property.setValue(value);
 
-		return null;
-	}
+        return null;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getParameterTypes()
-	 */
-	public Class[] getParameterTypes()
-	{
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getParameterTypes()
+     */
+    public Class[] getParameterTypes()
+    {
+        return null;
+    }
 
-	/**
-	 * Returns the property to set the value to.
-	 *
-	 * @return property
-	 */
-	public SimpleProperty getProperty()
-	{
-		return property;
-	}
+    /**
+     * Returns the property to set the value to.
+     *
+     * @return property
+     */
+    public SimpleProperty getProperty()
+    {
+        return property;
+    }
 
-	/**
-	 * Returns the value which is set to the property
-	 *
-	 * @return value
-	 */
-	public T getValue()
-	{
-		return value;
-	}
+    /**
+     * Returns the value which is set to the property
+     *
+     * @return value
+     */
+    public T getValue()
+    {
+        return value;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getOwner()
-	 */
-	public CommandContext getOwner()
-	{
-		return owner;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getOwner()
+     */
+    public CommandContext getOwner()
+    {
+        return owner;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getREturnedType()
-	 */
-	public Class getReturnedType()
-	{
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getREturnedType()
+     */
+    public Class getReturnedType()
+    {
+        return null;
+    }
 
-	public boolean isAsynchronous()
-	{
-		return false;
-	}
+    public boolean isAsynchronous()
+    {
+        return false;
+    }
 } /* __oOo__ */
 
 

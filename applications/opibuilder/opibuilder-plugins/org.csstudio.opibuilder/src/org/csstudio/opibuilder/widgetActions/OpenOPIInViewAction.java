@@ -21,44 +21,44 @@ import org.eclipse.core.runtime.IPath;
  */
 public class OpenOPIInViewAction extends AbstractOpenOPIAction {
 
-	public static final String PROP_POSITION = "Position";//$NON-NLS-1$
-
-	
-	@Override
-	protected void configureProperties() {
-		super.configureProperties();
-		addProperty(new ComboProperty(PROP_POSITION, "Position", WidgetPropertyCategory.Basic,
-				Position.stringValues(), 1));
-	}
-	
-	@Override
-	protected void openOPI(IPath absolutePath) {
-		if(!ctrlPressed && !shiftPressed ){
-			RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), getPosition());
-		}else{
-			TargetWindow target;
-			if (shiftPressed && !ctrlPressed)
-				target = TargetWindow.NEW_WINDOW;
-			else
-				target = TargetWindow.SAME_WINDOW;
-
-			RunModeService.getInstance().runOPI(absolutePath, target, null, getMacrosInput(), null);
-		}	
-	}
-
-	protected Position getPosition(){
-		return Position.values()[(Integer)getPropertyValue(PROP_POSITION)];
-	}
-	
-	@Override
-	public ActionType getActionType() {
-		return ActionType.OPEN_OPI_IN_VIEW;
-	}
+    public static final String PROP_POSITION = "Position";//$NON-NLS-1$
 
 
-	@Override
-	public String getDefaultDescription() {
-		return "Open " + getPath();
-	}
+    @Override
+    protected void configureProperties() {
+        super.configureProperties();
+        addProperty(new ComboProperty(PROP_POSITION, "Position", WidgetPropertyCategory.Basic,
+                Position.stringValues(), 1));
+    }
+
+    @Override
+    protected void openOPI(IPath absolutePath) {
+        if(!ctrlPressed && !shiftPressed ){
+            RunModeService.runOPIInView(absolutePath, null, getMacrosInput(), getPosition());
+        }else{
+            TargetWindow target;
+            if (shiftPressed && !ctrlPressed)
+                target = TargetWindow.NEW_WINDOW;
+            else
+                target = TargetWindow.SAME_WINDOW;
+
+            RunModeService.getInstance().runOPI(absolutePath, target, null, getMacrosInput(), null);
+        }
+    }
+
+    protected Position getPosition(){
+        return Position.values()[(Integer)getPropertyValue(PROP_POSITION)];
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.OPEN_OPI_IN_VIEW;
+    }
+
+
+    @Override
+    public String getDefaultDescription() {
+        return "Open " + getPath();
+    }
 
 }

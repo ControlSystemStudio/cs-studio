@@ -24,7 +24,7 @@ public class RefCountMapUnitTest
         // Empty
         Integer item = map.get("one");
         assertThat(item, is(nullValue()));
-        
+
         // Add 'one', reference 1
         final Integer one = Integer.valueOf(1);
         map.put("one", one);
@@ -36,7 +36,7 @@ public class RefCountMapUnitTest
         map.put("two", 2);
         item = map.get("two");
         assertThat(item, equalTo(2));
-        
+
         // Release, one reference left
         assertThat(map.release("one"), equalTo(1));
         // Release, no reference left

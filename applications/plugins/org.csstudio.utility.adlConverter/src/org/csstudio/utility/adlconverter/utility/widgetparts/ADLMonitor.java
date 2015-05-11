@@ -59,8 +59,8 @@ public class ADLMonitor extends WidgetPart{
 
     /**
      * The default constructor.
-     * 
-     * @param monitor An ADLWidget that correspond a ADL Monitor. 
+     *
+     * @param monitor An ADLWidget that correspond a ADL Monitor.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
@@ -75,7 +75,7 @@ public class ADLMonitor extends WidgetPart{
     void init() {
         /* Not to initialization*/
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -97,13 +97,13 @@ public class ADLMonitor extends WidgetPart{
             }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("chan")){   // chan and rdbk means both the same. Readback channel. //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
                 if(_chan[0].contains("[")) {
                     uninit();
                 }
             }else if(row[0].trim().toLowerCase().equals("rdbk")){ //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);
@@ -111,7 +111,7 @@ public class ADLMonitor extends WidgetPart{
         }
     }
 
-    
+
     /**
      * Generate all Elements from ADL Monitor Attributes.
      */
@@ -127,7 +127,7 @@ public class ADLMonitor extends WidgetPart{
             /*
              * EDIT: Helge Rickens 21.11.08
              * Im alias ist der Postfix enthalten und wurde hier noch mal weiter gegeben.
-             * Dadurch kam es das der Postfix doppelt gesetzt wurde. 
+             * Dadurch kam es das der Postfix doppelt gesetzt wurde.
              */
 //            _postfix = ADLHelper.setChan(_widgetModel,_chan);
             ADLHelper.setChan(_widgetModel,_chan);
@@ -135,7 +135,7 @@ public class ADLMonitor extends WidgetPart{
     }
 
     /**
-     * 
+     *
      * @return the postfix (property/Feldname) of the record.
      */
     public final String getPostfix() {
@@ -143,7 +143,7 @@ public class ADLMonitor extends WidgetPart{
     }
 
     /**
-     * 
+     *
      * @return the backgoundcolor.
      */
     public final String getBclr() {
@@ -151,7 +151,7 @@ public class ADLMonitor extends WidgetPart{
     }
 
     /**
-     * 
+     *
      * @param bclr set the background color.
      */
     public final void setBclr(final String bclr) {
@@ -159,7 +159,7 @@ public class ADLMonitor extends WidgetPart{
     }
 
     /**
-     * 
+     *
      * @return get the foreground color.
      */
     public final String getClr() {
@@ -167,7 +167,7 @@ public class ADLMonitor extends WidgetPart{
     }
 
     /**
-     * 
+     *
      * @param clr set the foreground color.
      */
     public final void setClr(final String clr) {
@@ -175,7 +175,7 @@ public class ADLMonitor extends WidgetPart{
     }
 
     /**
-     * 
+     *
      * @return get the Channel.
      */
     public final String[] getChan() {

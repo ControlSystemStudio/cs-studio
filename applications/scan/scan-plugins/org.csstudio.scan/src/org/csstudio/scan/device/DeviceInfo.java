@@ -21,8 +21,8 @@ package org.csstudio.scan.device;
 @SuppressWarnings("nls")
 public class DeviceInfo
 {
-	final private String name;
-	final private String alias;
+    final private String name;
+    final private String alias;
     private String status;
 
     /** Initialize
@@ -32,7 +32,7 @@ public class DeviceInfo
     {
         this(name, name);
     }
-    
+
     /** Initialize
      *  @param name Device name as understood by the control system
      *  @param alias Alias for the device that is used in GUI and scans
@@ -41,26 +41,26 @@ public class DeviceInfo
     {
         this(name, alias, "");
     }
-    
+
     /** Initialize
-	 *  @param name Device name as understood by the control system
-	 *  @param alias Alias for the device that is used in GUI and scans
+     *  @param name Device name as understood by the control system
+     *  @param alias Alias for the device that is used in GUI and scans
      *  @param status Status of the device, for display purpose
-	 */
-	public DeviceInfo(final String name, final String alias, final String status)
+     */
+    public DeviceInfo(final String name, final String alias, final String status)
     {
         this.name = name;
         this.alias = alias;
         this.status = status;
     }
 
-	/** @return Name of the device */
-	public String getName()
-	{
-		return name;
-	}
+    /** @return Name of the device */
+    public String getName()
+    {
+        return name;
+    }
 
-	/** @return Alias of the device */
+    /** @return Alias of the device */
     public String getAlias()
     {
         return alias;
@@ -71,7 +71,7 @@ public class DeviceInfo
     {
         return status;
     }
-    
+
     /** Hash on name
      *  {@inheritDoc}
      */
@@ -95,15 +95,15 @@ public class DeviceInfo
 
     /** @return Debug representation */
     @Override
-	public String toString()
-	{
+    public String toString()
+    {
         final StringBuilder buf = new StringBuilder();
         buf.append(alias);
         if (! alias.equals(name))
-        	buf.append(" [").append(name).append("]");
+            buf.append(" [").append(name).append("]");
         final String status = getStatus();
         if (! status.isEmpty())
             buf.append(" (").append(status).append(")");
         return buf.toString();
-	}
+    }
 }

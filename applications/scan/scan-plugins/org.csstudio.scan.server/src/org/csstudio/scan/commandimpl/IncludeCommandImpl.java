@@ -41,13 +41,13 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
     private List<ScanCommandImpl<?>> scan_impl;
 
     /** {@inheritDoc} */
-	public IncludeCommandImpl(final IncludeCommand command, final JythonSupport jython) throws Exception
+    public IncludeCommandImpl(final IncludeCommand command, final JythonSupport jython) throws Exception
     {
-	    super(command, jython);
+        super(command, jython);
 
-	    // Parse scan
-	    final String[] paths = ScanSystemPreferences.getScriptPaths();
-	    final InputStream scan_stream = PathStreamTool.openStream(paths, command.getScanFile());
+        // Parse scan
+        final String[] paths = ScanSystemPreferences.getScriptPaths();
+        final InputStream scan_stream = PathStreamTool.openStream(paths, command.getScanFile());
         final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
         final List<ScanCommand> commands = reader.readXMLStream(scan_stream);
 
@@ -67,27 +67,27 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public String[] getDeviceNames(final MacroContext macros) throws Exception
-	{
-	    macros.pushMacros(command.getMacros());
-	    try
-	    {
+    {
+        macros.pushMacros(command.getMacros());
+        try
+        {
             final Set<String> devices = new HashSet<String>();
             for (ScanCommandImpl<?> command : scan_impl)
             {
                 for (String device_name : command.getDeviceNames(macros))
                     devices.add(device_name);
             }
-    	    return devices.toArray(new String[devices.size()]);
-	    }
-	    finally
-	    {
-	        macros.popMacros();
-	    }
-	}
+            return devices.toArray(new String[devices.size()]);
+        }
+        finally
+        {
+            macros.popMacros();
+        }
+    }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public void simulate(final SimulationContext context) throws Exception
     {
@@ -103,18 +103,18 @@ public class IncludeCommandImpl extends ScanCommandImpl<IncludeCommand>
         }
     }
 
-	/** {@inheritDoc} */
-	@Override
-	public void execute(final ScanContext context) throws Exception
-	{
-	    context.getMacros().pushMacros(command.getMacros());
-	    try
-	    {
-	        context.execute(scan_impl);
-	    }
-	    finally
-	    {
-	        context.getMacros().popMacros();
-	    }
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void execute(final ScanContext context) throws Exception
+    {
+        context.getMacros().pushMacros(command.getMacros());
+        try
+        {
+            context.execute(scan_impl);
+        }
+        finally
+        {
+            context.getMacros().popMacros();
+        }
+    }
 }

@@ -16,12 +16,12 @@ public class LineFitTest
         // y = a x + b
         final double a = 2.0;
         final double b = 3.0;
-        
+
         final double x0 = -1.0;
         final double x1 = +8.0;
         final double dx = 0.1;
         final int N = (int) ((x1-x0)/dx) + 1;
-        
+
         final double x[] = new double[N];
         final double data[] = new double[N];
         for (int i=0; i<N; ++i)
@@ -31,7 +31,7 @@ public class LineFitTest
             data[i] += 2.0*(Math.random()-0.5);
             System.out.println(x[i] + "\t" + data[i]);
         }
-        
+
         // Perform the fit
         final LineFit fit = new LineFit(x, data);
 

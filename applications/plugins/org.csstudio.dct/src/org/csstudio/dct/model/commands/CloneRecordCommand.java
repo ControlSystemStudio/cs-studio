@@ -16,52 +16,52 @@ import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 
 public final class CloneRecordCommand extends Command {
-	private IRecord original;
-	private IContainer targetContainer;
-	private String namePrefix;
-	private CompoundCommand chain;
+    private IRecord original;
+    private IContainer targetContainer;
+    private String namePrefix;
+    private CompoundCommand chain;
 
-	public CloneRecordCommand(IRecord original, IContainer targetContainer, String namePrefix) {
-		this.original = original;
-		this.targetContainer = targetContainer;
-		this.namePrefix = namePrefix;
-	}
+    public CloneRecordCommand(IRecord original, IContainer targetContainer, String namePrefix) {
+        this.original = original;
+        this.targetContainer = targetContainer;
+        this.namePrefix = namePrefix;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void execute() {
-		if(chain==null) {
-			chain = createCommandChain();
-		}
-		chain.execute();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void execute() {
+        if(chain==null) {
+            chain = createCommandChain();
+        }
+        chain.execute();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void undo() {
-		chain.undo();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void undo() {
+        chain.undo();
+    }
 
-	private CompoundCommand createCommandChain() {
-		CompoundCommand chain = new CompoundCommand();
-		
-		IRecord record = RecordFactory.createRecord(targetContainer.getProject(), original.getType(), (namePrefix!=null?namePrefix:"")+original.getName(), UUID.randomUUID());
+    private CompoundCommand createCommandChain() {
+        CompoundCommand chain = new CompoundCommand();
 
-		chain.add(new ChangeBeanPropertyCommand(record, "epicsName", original.getEpicsName()));
-		chain.add(new ChangeBeanPropertyCommand(record, "disabled", original.getDisabled()));
-		chain.add(new ChangeBeanPropertyCommand(record, "name", original.getName()));
-		
-		chain.add(new AddRecordCommand(targetContainer, record));
+        IRecord record = RecordFactory.createRecord(targetContainer.getProject(), original.getType(), (namePrefix!=null?namePrefix:"")+original.getName(), UUID.randomUUID());
 
-		for (String key : original.getFields().keySet()) {
-			chain.add(new ChangeFieldValueCommand(record, key, original.getField(key)));
-		}
-		
-		return chain;
-	}
+        chain.add(new ChangeBeanPropertyCommand(record, "epicsName", original.getEpicsName()));
+        chain.add(new ChangeBeanPropertyCommand(record, "disabled", original.getDisabled()));
+        chain.add(new ChangeBeanPropertyCommand(record, "name", original.getName()));
+
+        chain.add(new AddRecordCommand(targetContainer, record));
+
+        for (String key : original.getFields().keySet()) {
+            chain.add(new ChangeFieldValueCommand(record, key, original.getField(key)));
+        }
+
+        return chain;
+    }
 
 }

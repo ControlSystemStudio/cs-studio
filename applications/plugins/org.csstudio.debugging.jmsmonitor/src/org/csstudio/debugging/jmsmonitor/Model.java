@@ -52,7 +52,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     private volatile boolean run = true;
 
     final private RingBuffer<ReceivedMessage> messages =
-    	new RingBuffer<ReceivedMessage>(Preferences.getMaxMessages());
+        new RingBuffer<ReceivedMessage>(Preferences.getMaxMessages());
 
     private CopyOnWriteArrayList<ModelListener> listeners =
         new CopyOnWriteArrayList<ModelListener>();
@@ -82,15 +82,15 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
             {
                 try
                 {
-	                connect(url, user, password);
-	                while (run)
-	                {
-    	                synchronized (Model.this)
-    	                {
-    	                	Model.this.wait();
-    	                }
-	                }
-	                disconnect();
+                    connect(url, user, password);
+                    while (run)
+                    {
+                        synchronized (Model.this)
+                        {
+                            Model.this.wait();
+                        }
+                    }
+                    disconnect();
                 }
                 catch (Exception ex)
                 {
@@ -110,7 +110,7 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
      *  @throws Exception on error
      */
     private void connect(final String url, final String user, final String password)
-    	throws Exception
+        throws Exception
     {
         connection = JMSConnectionFactory.connect(url, user, password);
         JMSConnectionFactory.addListener(connection, this);
@@ -135,36 +135,36 @@ public class Model implements ExceptionListener, MessageListener, JMSConnectionL
     }
 
     /** Disconnect JMS. Called in background thread */
-	private void disconnect()
-	{
-	    listeners.clear();
-	    messages.clear();
-	    try
-	    {
-	        for (MessageConsumer c : consumer)
+    private void disconnect()
+    {
+        listeners.clear();
+        messages.clear();
+        try
+        {
+            for (MessageConsumer c : consumer)
                 c.close();
-	        if (session != null)
-	            session.close();
-	        if (connection != null)
-	            connection.close();
-	    }
-	    catch (Exception ex)
-	    {
+            if (session != null)
+                session.close();
+            if (connection != null)
+                connection.close();
+        }
+        catch (Exception ex)
+        {
             Logger.getLogger(Activator.ID).log(Level.WARNING, "JMS shutdown error", ex); //$NON-NLS-1$
-	    }
-	}
+        }
+    }
 
     /** Must be called to release resources when no longer used */
-	public void close()
-	{
-	    run  = false;
-		synchronized (this)
-		{
-			this.notifyAll();
-		}
-	}
+    public void close()
+    {
+        run  = false;
+        synchronized (this)
+        {
+            this.notifyAll();
+        }
+    }
 
-	/** Add listener
+    /** Add listener
      *  @param listener Listener to add
      */
     public void addListener(final ModelListener listener)

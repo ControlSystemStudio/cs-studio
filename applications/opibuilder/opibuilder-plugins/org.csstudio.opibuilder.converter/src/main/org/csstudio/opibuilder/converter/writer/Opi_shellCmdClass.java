@@ -15,63 +15,63 @@ import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_activeExitButtonClass
- * 
+ *
  * @author Xihui Chen
  */
 public class Opi_shellCmdClass extends OpiWidget {
 
-	private static final String typeId = "ActionButton";
-	private static final String name = "EDM shell command";
-	private static final String version = "1.0";
+    private static final String typeId = "ActionButton";
+    private static final String name = "EDM shell command";
+    private static final String version = "1.0";
 
-	/**
-	 * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
-	 */
-	public Opi_shellCmdClass(Context con, Edm_shellCmdClass r) {
-		super(con, r);
-		if (r.getNumCmds() == 1) {
-			if (r.isInvisible()) {
-				setTypeId("Rectangle");
-				new OpiBoolean(widgetContext, "transparent", true);
-			} else {
-				setTypeId(typeId);
-			}
-		}
-		else {
-			setTypeId("MenuButton");
-			new OpiBoolean(widgetContext, "actions_from_pv", false);
-		}
-		setName(name);
-		setVersion(version);
-		for (int i = 0; i < r.getNumCmds(); i++) {
-			//path
-			Element cmdNode = widgetContext.getDocument().createElement("command");
-			cmdNode.setTextContent(processCommand(r.getCommand().getEdmAttributesMap().get("" + i).get()));
+    /**
+     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
+     */
+    public Opi_shellCmdClass(Context con, Edm_shellCmdClass r) {
+        super(con, r);
+        if (r.getNumCmds() == 1) {
+            if (r.isInvisible()) {
+                setTypeId("Rectangle");
+                new OpiBoolean(widgetContext, "transparent", true);
+            } else {
+                setTypeId(typeId);
+            }
+        }
+        else {
+            setTypeId("MenuButton");
+            new OpiBoolean(widgetContext, "actions_from_pv", false);
+        }
+        setName(name);
+        setVersion(version);
+        for (int i = 0; i < r.getNumCmds(); i++) {
+            //path
+            Element cmdNode = widgetContext.getDocument().createElement("command");
+            cmdNode.setTextContent(processCommand(r.getCommand().getEdmAttributesMap().get("" + i).get()));
 
-			//command directory
-			Element dirNode = widgetContext.getDocument().createElement("command_directory");
-			dirNode.setTextContent("$(opi.dir)");
+            //command directory
+            Element dirNode = widgetContext.getDocument().createElement("command_directory");
+            dirNode.setTextContent("$(opi.dir)");
 
-			//description		
-			Element descElement = widgetContext.getDocument().createElement("description");
-			EdmString menuLabel = r.getCommandLabel().getEdmAttributesMap().get(""+i);
-			descElement.setTextContent(menuLabel!=null?menuLabel.get():"");
-			
-			// Hook the first action when invisible, as we'll be using a rectangle instead of action button
-			new OpiAction(widgetContext, "EXECUTE_CMD", Arrays.asList(cmdNode, dirNode, descElement),
-					r.isInvisible(), false);
-		}
-		if (r.getButtonLabel() != null){
-			new OpiString(widgetContext, r.getNumCmds()==1?"text":"label", r.getButtonLabel());
-		}
+            //description
+            Element descElement = widgetContext.getDocument().createElement("description");
+            EdmString menuLabel = r.getCommandLabel().getEdmAttributesMap().get(""+i);
+            descElement.setTextContent(menuLabel!=null?menuLabel.get():"");
 
-	}
-	
-	public static String processCommand(String originCmd){
-		if(originCmd.endsWith(" &")){
-			originCmd=originCmd.substring(0, originCmd.indexOf(" &"));
-		}
-		return originCmd;
-	}
+            // Hook the first action when invisible, as we'll be using a rectangle instead of action button
+            new OpiAction(widgetContext, "EXECUTE_CMD", Arrays.asList(cmdNode, dirNode, descElement),
+                    r.isInvisible(), false);
+        }
+        if (r.getButtonLabel() != null){
+            new OpiString(widgetContext, r.getNumCmds()==1?"text":"label", r.getButtonLabel());
+        }
+
+    }
+
+    public static String processCommand(String originCmd){
+        if(originCmd.endsWith(" &")){
+            originCmd=originCmd.substring(0, originCmd.indexOf(" &"));
+        }
+        return originCmd;
+    }
 
 }

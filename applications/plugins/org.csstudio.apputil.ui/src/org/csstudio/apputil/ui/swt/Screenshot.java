@@ -20,31 +20,31 @@ import org.eclipse.ui.PlatformUI;
  */
 public class Screenshot
 {
-	/** @return Image with screenshot of complete display */
-	public static Image getFullScreenshot()
-	{
-		final Display display = Display.getCurrent();
-		return getScreenshot(display, display, display.getBounds());
-	}
-
-	/** @return Image with screenshot of application window */
-	public static Image getApplicationScreenshot()
-	{
-		final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-		return getScreenshot(shell.getDisplay(), shell, shell.getBounds());
-	}
-	
-	/** @param display Display
-	 *  @param drawable Drawable
-	 *  @param bounds bounds of that drawable
-	 *  @return Image with screenshot of the drawable
-	 */
-	public static Image getScreenshot(
-			final Display display,
-			final Drawable drawable,
-			final Rectangle bounds)
+    /** @return Image with screenshot of complete display */
+    public static Image getFullScreenshot()
     {
-		return SingleSourcePlugin.getUIHelper().getScreenshot(display,
-				drawable, bounds);
+        final Display display = Display.getCurrent();
+        return getScreenshot(display, display, display.getBounds());
+    }
+
+    /** @return Image with screenshot of application window */
+    public static Image getApplicationScreenshot()
+    {
+        final Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+        return getScreenshot(shell.getDisplay(), shell, shell.getBounds());
+    }
+
+    /** @param display Display
+     *  @param drawable Drawable
+     *  @param bounds bounds of that drawable
+     *  @return Image with screenshot of the drawable
+     */
+    public static Image getScreenshot(
+            final Display display,
+            final Drawable drawable,
+            final Rectangle bounds)
+    {
+        return SingleSourcePlugin.getUIHelper().getScreenshot(display,
+                drawable, bounds);
     }
 }

@@ -42,93 +42,93 @@ import org.eclipse.swt.graphics.Font;
  *
  */
 public final class RefreshableActionButtonFigure extends Button implements
-		IAdaptable, ITextFigure {
+        IAdaptable, ITextFigure {
 
-	/**
-	 * Default label font.
-	 */
-	public static final Font FONT = CustomMediaFactory.getInstance().getFont(
-			"Arial", 8, SWT.NONE); //$NON-NLS-1$
+    /**
+     * Default label font.
+     */
+    public static final Font FONT = CustomMediaFactory.getInstance().getFont(
+            "Arial", 8, SWT.NONE); //$NON-NLS-1$
 
-	/**
-	 * The Label for the Button.
-	 */
-	private final Label _label;
+    /**
+     * The Label for the Button.
+     */
+    private final Label _label;
 
-	/**
-	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
-	 */
-	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
+    /**
+     * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
+     */
+    private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
 
     private CrossedOutAdapter _crossedOutAdapter;
 
     private RhombusAdapter _rhombusAdapter;
 
-	/**
-	 * Constructor.
-	 */
-	public RefreshableActionButtonFigure() {
-		_label = new Label("");
-		setContents(_label);
-		setFont(FONT);
-	}
+    /**
+     * Constructor.
+     */
+    public RefreshableActionButtonFigure() {
+        _label = new Label("");
+        setContents(_label);
+        setFont(FONT);
+    }
 
-	@Override
-	public void paint(final Graphics graphics) {
-	    super.paint(graphics);
+    @Override
+    public void paint(final Graphics graphics) {
+        super.paint(graphics);
        _crossedOutAdapter.paint(graphics);
        _rhombusAdapter.paint(graphics);
-	}
+    }
 
-	/**
-	 * Sets the text for the Button.
-	 * @param s
-	 * 			The text for the button
-	 */
-	public void setTextValue(final String s) {
-		_label.setText(s);
-	}
+    /**
+     * Sets the text for the Button.
+     * @param s
+     *             The text for the button
+     */
+    public void setTextValue(final String s) {
+        _label.setText(s);
+    }
 
-	public void setPressed(final boolean pressed){
-	    getModel().setPressed(pressed);
-	}
+    public void setPressed(final boolean pressed){
+        getModel().setPressed(pressed);
+    }
 
-	/**
-	 * Sets the alignment of the buttons text.
-	 * The parameter is a {@link PositionConstants} (LEFT, RIGHT, TOP, CENTER, BOTTOM)
-	 * @param alignment
-	 * 			The alignment for the text
-	 */
-	public void setTextAlignment(final int alignment) {
-		if ((alignment>=0) && (alignment<_alignments.length)) {
-			if ((_alignments[alignment]==PositionConstants.LEFT) || (_alignments[alignment]==PositionConstants.RIGHT)) {
-				_label.setTextPlacement(PositionConstants.NORTH);
-			} else {
-				_label.setTextPlacement(PositionConstants.EAST);
-			}
-			_label.setTextAlignment(_alignments[alignment]);
-		}
-	}
+    /**
+     * Sets the alignment of the buttons text.
+     * The parameter is a {@link PositionConstants} (LEFT, RIGHT, TOP, CENTER, BOTTOM)
+     * @param alignment
+     *             The alignment for the text
+     */
+    public void setTextAlignment(final int alignment) {
+        if ((alignment>=0) && (alignment<_alignments.length)) {
+            if ((_alignments[alignment]==PositionConstants.LEFT) || (_alignments[alignment]==PositionConstants.RIGHT)) {
+                _label.setTextPlacement(PositionConstants.NORTH);
+            } else {
+                _label.setTextPlacement(PositionConstants.EAST);
+            }
+            _label.setTextAlignment(_alignments[alignment]);
+        }
+    }
 
-	/**
-	 * Set the style of the Button.
-	 * @param style false = Push, true=Toggle.
-	 */
-	public void setStyle(final boolean style){
-	    if(style){
-	        setStyle(Button.STYLE_TOGGLE);
-	    }else{
-	        setStyle(Button.STYLE_BUTTON);
-	    }
+    /**
+     * Set the style of the Button.
+     * @param style false = Push, true=Toggle.
+     */
+    public void setStyle(final boolean style){
+        if(style){
+            setStyle(Button.STYLE_TOGGLE);
+        }else{
+            setStyle(Button.STYLE_BUTTON);
+        }
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(final Class adapter) {
-	    if(adapter == ICrossedFigure.class) {
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(final Class adapter) {
+        if(adapter == ICrossedFigure.class) {
             if(_crossedOutAdapter==null) {
                 _crossedOutAdapter = new CrossedOutAdapter(this);
             }
@@ -139,7 +139,7 @@ public final class RefreshableActionButtonFigure extends Button implements
             }
             return _rhombusAdapter;
         }
-		return null;
-	}
+        return null;
+    }
 
 }

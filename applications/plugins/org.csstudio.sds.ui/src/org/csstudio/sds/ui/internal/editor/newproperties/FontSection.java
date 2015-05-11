@@ -28,142 +28,142 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * Section for {@link FontProperty}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class FontSection extends AbstractTextSection<FontProperty, String> implements ISelectionChangedListener {
-	private String latestFont;
-	static ImageRegistry imageRegistry = new ImageRegistry();
-	private FontDialog fontDialog;
+    private String latestFont;
+    static ImageRegistry imageRegistry = new ImageRegistry();
+    private FontDialog fontDialog;
 
-	public FontSection(String propertyId) {
-		super(propertyId);
-	}
+    public FontSection(String propertyId) {
+        super(propertyId);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected String getConvertedValue(String text) {
-		return text;
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected String getConvertedValue(String text) {
+        return text;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doCreateControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
-		super.doCreateControls(parent, tabbedPropertySheetPage);
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doCreateControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
+        super.doCreateControls(parent, tabbedPropertySheetPage);
 
-		fontDialog = new FontDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-		
-		FormData fd;
-		
-		// .. button to open the color dialog
-		Hyperlink link = getWidgetFactory().createHyperlink(parent, "Choose ...", SWT.NONE);
-		link.setUnderlined(false);
-		fd = new FormData();
-		fd.right = new FormAttachment(50,0);
-		link.setLayoutData(fd);
+        fontDialog = new FontDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
 
-		link.addHyperlinkListener(new HyperlinkAdapter() {
-			@Override
-			public void linkActivated(HyperlinkEvent e) {
-				FontData fontdata = fontDialog.open();
+        FormData fd;
 
-				if (fontdata != null) {
-					boolean italic = ((fontdata.getStyle() & SWT.ITALIC) == SWT.ITALIC);
-					boolean bold = ((fontdata.getStyle() & SWT.BOLD) == SWT.BOLD);
-					String f = ColorAndFontUtil.toFontString(fontdata.getName(), fontdata.getHeight(), bold, italic);
-					applyPropertyChange(f);
-				}
-			}
-		});
-		
+        // .. button to open the color dialog
+        Hyperlink link = getWidgetFactory().createHyperlink(parent, "Choose ...", SWT.NONE);
+        link.setUnderlined(false);
+        fd = new FormData();
+        fd.right = new FormAttachment(50,0);
+        link.setLayoutData(fd);
 
-		// .. change position of the text control
-		fd = new FormData();
-		fd.left = new FormAttachment(0,0);
-		fd.right = new FormAttachment(link, -5);
-		getTextControl().setLayoutData(fd);
-		
-	}
+        link.addHyperlinkListener(new HyperlinkAdapter() {
+            @Override
+            public void linkActivated(HyperlinkEvent e) {
+                FontData fontdata = fontDialog.open();
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doRefreshControls(FontProperty widgetProperty) {
-		// .. refresh colored preview icon
-		if (widgetProperty != null) {
-			latestFont = widgetProperty.getPropertyValue();
+                if (fontdata != null) {
+                    boolean italic = ((fontdata.getStyle() & SWT.ITALIC) == SWT.ITALIC);
+                    boolean bold = ((fontdata.getStyle() & SWT.BOLD) == SWT.BOLD);
+                    String f = ColorAndFontUtil.toFontString(fontdata.getName(), fontdata.getHeight(), bold, italic);
+                    applyPropertyChange(f);
+                }
+            }
+        });
 
-			if (latestFont != null) {
-				setCurrentText(latestFont);
-				Font font = SdsUiPlugin.getDefault().getColorAndFontService().getFont(latestFont);
 
-				if (font != null) {
-					fontDialog.setFontList(new FontData[] { font.getFontData()[0] });
-				}
-			}
-		}
-	}
+        // .. change position of the text control
+        fd = new FormData();
+        fd.left = new FormAttachment(0,0);
+        fd.right = new FormAttachment(link, -5);
+        getTextControl().setLayoutData(fd);
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void selectionChanged(SelectionChangedEvent event) {
-		final NamedFont namedColor = (NamedFont) ((IStructuredSelection) event.getSelection()).getFirstElement();
-		applyPropertyChange(namedColor.toFontString());
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected List<IContentProposal> getContentProposals(FontProperty property, AbstractWidgetModel selectedWidget,
-			List<AbstractWidgetModel> selectedWidgets) {
-		List<IContentProposal> proposals = new ArrayList<IContentProposal>();
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doRefreshControls(FontProperty widgetProperty) {
+        // .. refresh colored preview icon
+        if (widgetProperty != null) {
+            latestFont = widgetProperty.getPropertyValue();
 
-		List<NamedFont> fonts = SdsUiPlugin.getDefault().getColorAndFontService().listAvailableFonts();
+            if (latestFont != null) {
+                setCurrentText(latestFont);
+                Font font = SdsUiPlugin.getDefault().getColorAndFontService().getFont(latestFont);
 
-		for (NamedFont f : fonts) {
-			proposals.add(new NamedFontContentProposal(f));
-		}
-		return proposals;
-	}
+                if (font != null) {
+                    fontDialog.setFontList(new FontData[] { font.getFontData()[0] });
+                }
+            }
+        }
+    }
 
-	/**
-	 * Content proposal for named fonts.
-	 * 
-	 * @author Sven Wende
-	 * 
-	 */
-	private static final class NamedFontContentProposal implements IContentProposal {
-		private NamedFont namedFont;
+    /**
+     *{@inheritDoc}
+     */
+    public void selectionChanged(SelectionChangedEvent event) {
+        final NamedFont namedColor = (NamedFont) ((IStructuredSelection) event.getSelection()).getFirstElement();
+        applyPropertyChange(namedColor.toFontString());
+    }
 
-		public NamedFontContentProposal(NamedFont namedColor) {
-			assert namedColor != null;
-			this.namedFont = namedColor;
-		}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected List<IContentProposal> getContentProposals(FontProperty property, AbstractWidgetModel selectedWidget,
+            List<AbstractWidgetModel> selectedWidgets) {
+        List<IContentProposal> proposals = new ArrayList<IContentProposal>();
 
-		public String getContent() {
-			return "${" + namedFont.getName() + "}";
-		}
+        List<NamedFont> fonts = SdsUiPlugin.getDefault().getColorAndFontService().listAvailableFonts();
 
-		public int getCursorPosition() {
-			return 0;
-		}
+        for (NamedFont f : fonts) {
+            proposals.add(new NamedFontContentProposal(f));
+        }
+        return proposals;
+    }
 
-		public String getDescription() {
-			return namedFont.getDescription();
-		}
+    /**
+     * Content proposal for named fonts.
+     *
+     * @author Sven Wende
+     *
+     */
+    private static final class NamedFontContentProposal implements IContentProposal {
+        private NamedFont namedFont;
 
-		public String getLabel() {
-			return namedFont.getName();
-		}
+        public NamedFontContentProposal(NamedFont namedColor) {
+            assert namedColor != null;
+            this.namedFont = namedColor;
+        }
 
-	}
+        public String getContent() {
+            return "${" + namedFont.getName() + "}";
+        }
+
+        public int getCursorPosition() {
+            return 0;
+        }
+
+        public String getDescription() {
+            return namedFont.getDescription();
+        }
+
+        public String getLabel() {
+            return namedFont.getName();
+        }
+
+    }
 
 }

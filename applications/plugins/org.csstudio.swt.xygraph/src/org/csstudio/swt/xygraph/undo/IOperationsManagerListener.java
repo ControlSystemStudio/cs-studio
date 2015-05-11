@@ -12,5 +12,5 @@ package org.csstudio.swt.xygraph.undo;
  *
  */
 public interface IOperationsManagerListener {
-	public void operationsHistoryChanged(OperationsManager manager);
+    public void operationsHistoryChanged(OperationsManager manager);
 }

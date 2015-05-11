@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Display;
  *  <p>
  *  The chart maintains one or more Y axes.
  *  Each trace to plot needs to be assigned to a Y axis.
- *  
+ *
  *  @see Trace
  *  @see Chart
  *  @author Kay Kasemir
@@ -42,7 +42,7 @@ public class YAxis extends Axis
 
     /** The traces to plot. */
     private ArrayList<Trace> traces = new ArrayList<Trace>();
-    
+
     /** Markers.
      *  <p>
      *  One could argue if markers belong to the Graph, YAxis or Trace.
@@ -55,18 +55,18 @@ public class YAxis extends Axis
      *  so it's for now on the y-axis.
      */
     private ArrayList<Marker> markers = new ArrayList<Marker>();
-    
-    /** The listener. For now exactly one, must not be <code>null</code>. */ 
+
+    /** The listener. For now exactly one, must not be <code>null</code>. */
     private YAxisListener listener;
-    
-    /** <code>true</code> if this axis is selected. 
+
+    /** <code>true</code> if this axis is selected.
      *  The chart actually only deals with one selected axis at a time,
      *  but maybe later one can select multiple axes? */
     private boolean selected;
-    
+
     /** Set <code>true</code> to get minor tick marks. */
     private boolean show_minor_ticks = true;
-    
+
     /** <code>true</code> if this axis auto-zooms. */
     private boolean auto_scale = false;
 
@@ -83,7 +83,7 @@ public class YAxis extends Axis
         super(false, label, new Ticks(), new LinearTransform());
         this.listener = listener;
     }
-    
+
     /** @return Something useful for debugging
      *  @see java.lang.Object#toString()
      */
@@ -110,26 +110,26 @@ public class YAxis extends Axis
     {
         return visible;
     }
-    
+
     /** Set a new label. */
     public final void setLabel(String new_label)
     {
         label = new_label;
         fireEvent(YAxisListener.Aspect.LABEL);
     }
-    
+
     /** Configure the Y-Axis to use a log. scale or not.
      *  <p>
      *  Initial default is <code>false</code>, i.e. linear scale.
-     */ 
+     */
     public final void setLogarithmic(boolean use_log)
-    { 
+    {
         ticks = (use_log ? new LogTicks() : new Ticks());
         transform = (use_log ? new LogTransform() : new LinearTransform());
         // re-initialize the transform; set 'dirty' ticks
         setValueRange(low_value, high_value);
     }
-    
+
     /** @return <code>true</code> if the axis is logarithmic. */
     public boolean isLogarithmic()
     {
@@ -141,7 +141,7 @@ public class YAxis extends Axis
     {   // Silly, but maybe there'll once be a list of listeners?
         listener.changedYAxis(what, this);
     }
-    
+
     /** Add a trace to the axis.
      *  <p>
      *  Not meant for end users, the trace is supposed to add itself.
@@ -164,11 +164,11 @@ public class YAxis extends Axis
             throw new Error("Internal YAxis error, unknown trace"); //$NON-NLS-1$
         traces.remove(trace);
     }
-    
+
     /** @return Returns the number of traces. */
     public final int getNumTraces()
     {   return traces.size();  }
-    
+
     /** @return Returns the trace of given index. */
     public final Trace getTrace(int index)
     {   return traces.get(index); }
@@ -183,7 +183,7 @@ public class YAxis extends Axis
         markers.add(marker);
         fireEvent(YAxisListener.Aspect.MARKER);
     }
-    
+
     /** @return Array of current markers. */
     public final Marker[] getMarkers()
     {
@@ -199,7 +199,7 @@ public class YAxis extends Axis
                 return true;
         return false;
     }
-    
+
     /** Toggle the selection of markers under given screen coordinates.
      *  @return Removed <code>true</code> if any marker was touched
      */
@@ -219,7 +219,7 @@ public class YAxis extends Axis
             fireEvent(YAxisListener.Aspect.SELECTION);
         return anything;
     }
-    
+
     /** Remove all markers from this axis. */
     public final void removeMarkers()
     {
@@ -238,10 +238,10 @@ public class YAxis extends Axis
                 markers.remove(i);
             else
                 ++i;
-        }        
+        }
         fireEvent(YAxisListener.Aspect.MARKER);
     }
-    
+
     /** Set the 'selected' state of this axis.
      *  <p>
      *  If this actually changes the selection, the axis will notify the listener
@@ -282,7 +282,7 @@ public class YAxis extends Axis
         fireEvent(YAxisListener.Aspect.RANGE);
         return true;
     }
-    
+
     /** Auto-Zoom the value range of this Y axis to include all traces.
      *  <p>
      *  This call forces an auto-zoom.
@@ -349,7 +349,7 @@ public class YAxis extends Axis
         }
         // Determined low..high.
         if (low == high)
-        {	// If low equals high we'll move the trace to the middle.
+        {    // If low equals high we'll move the trace to the middle.
             low -= 1.0;
             high += 1.0;
         }
@@ -380,10 +380,10 @@ public class YAxis extends Axis
             System.out.println("Autozoom " + this + " to "
                                + low + " ... " + high);
     }
-    
+
     /** Zoom axis to the default range of its traces.
      *  If a traces have no default display range, auto-zoom.
-     */ 
+     */
     public final void setDefaultZoom(XAxis xaxis)
     {
         double low = Double.MAX_VALUE;
@@ -420,7 +420,7 @@ public class YAxis extends Axis
             return traces.get(0).getColor();
         return Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
     }
-    
+
     /** Seach all traces on this axis, return the sample that's closest
      *  to the given coordinates.
      *  @param xaxis The XAxis over which the YAxis is drawn
@@ -487,7 +487,7 @@ public class YAxis extends Axis
             return null;
         return new TraceSample(best_trace, best_sample);
     }
-    
+
     /** @return Width (approximated) of this axis in pixels */
     public int getPixelWidth(final GC gc)
     {
@@ -497,7 +497,7 @@ public class YAxis extends Axis
         // Room for label (vertical) + value text + tick markers.
         return 2*char_size.y + TICK_LENGTH;
     }
-    
+
     /** Paint the axis.
      *  <p>
      *  Does not paint any series data, only the axis (labels, ticks, ...)
@@ -514,19 +514,19 @@ public class YAxis extends Axis
                           + region.height + " pixel height");
         final GC gc = event.gc;
         final Point char_size = gc.textExtent("X"); //$NON-NLS-1$
-        
+
         final Color old_bg = gc.getBackground();
-        
+
         // Axis and Tick marks
 /*
           if (selected)
-        {	// Fill yaxis background with grid color.
-        	gc.setBackground(grid_color);
-        	gc.fillRectangle(region.x + 1, region.y, region.width - 2, region.height);
-        	// "Thick" line
+        {    // Fill yaxis background with grid color.
+            gc.setBackground(grid_color);
+            gc.fillRectangle(region.x + 1, region.y, region.width - 2, region.height);
+            // "Thick" line
             gc.drawRectangle(
                 region.x + region.width-2,
-                region.y, 
+                region.y,
                 1,
                 region.height-1);
         }
@@ -535,7 +535,7 @@ public class YAxis extends Axis
          // Simple line for the axis
             gc.drawLine(
                 region.x + region.width-1,
-                region.y, 
+                region.y,
                 region.x + region.width-1,
                 region.y + region.height-1);
         computeTicks(gc);
@@ -546,7 +546,7 @@ public class YAxis extends Axis
         {
             // Major tick marks
             int y = getScreenCoord(tick);
-            gc.drawLine(region.x + region.width - TICK_LENGTH, y, 
+            gc.drawLine(region.x + region.width - TICK_LENGTH, y,
                         region.x + region.width - 1, y);
             // Tick Label
             String mark = ticks.format(tick);
@@ -567,18 +567,18 @@ public class YAxis extends Axis
                         {
                             double minor = last_tick + dist * i;
                             int my = getScreenCoord(minor);
-                            gc.drawLine(region.x + region.width - (2*TICK_LENGTH)/3, my, 
+                            gc.drawLine(region.x + region.width - (2*TICK_LENGTH)/3, my,
                                         region.x + region.width - 1, my);
                         }
                 }
                 last_tick = tick;
             }
         }
-        
+
         paintLabel(gc);
         if (Chart.debug)
             gc.drawRectangle(region.x, region.y, region.width-1, region.height-1);
-        
+
         gc.setBackground(old_bg);
     }
 
@@ -588,15 +588,15 @@ public class YAxis extends Axis
         Color fg = gc.getForeground();
         gc.setForeground(getColor());
         Point label_size = gc.textExtent(getLabel());
-    
+
         GraphicsUtils.drawVerticalText(getLabel(),
                 region.x + 1,
                 region.y + (region.height-label_size.x)/2,
                 gc, SWT.UP);
-    
+
         gc.setForeground(fg);
     }
-    
+
     /** Draw all the markers of this axis */
     public void paintMarkers(GC gc, Axis xaxis)
     {

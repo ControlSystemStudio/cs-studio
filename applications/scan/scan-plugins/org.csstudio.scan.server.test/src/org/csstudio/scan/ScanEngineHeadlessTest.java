@@ -44,8 +44,8 @@ import org.csstudio.scan.server.internal.ScanEngine;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the {@link ScanEngine}
- * 
- *  <p>Requires 
+ *
+ *  <p>Requires
  *    softIoc -d simulation.db
  *  @author Kay Kasemir
  */

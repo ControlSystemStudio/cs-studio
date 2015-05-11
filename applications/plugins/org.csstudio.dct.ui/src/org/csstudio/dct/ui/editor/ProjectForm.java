@@ -16,120 +16,120 @@ import org.eclipse.swt.widgets.ExpandBar;
 
 /**
  * Editing form for projects.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ProjectForm extends AbstractForm<IProject> {
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param editor
-	 *            the editor instance
-	 */
-	public ProjectForm(DctEditor editor) {
-		super(editor);
-	}
+    /**
+     * Constructor.
+     *
+     * @param editor
+     *            the editor instance
+     */
+    public ProjectForm(DctEditor editor) {
+        super(editor);
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doCreateControl(ExpandBar bar, CommandStack commandStack) {
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doSetInput(IProject project) {
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doSetInput(IProject project) {
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected String doGetFormLabel(IProject input) {
-		return "Project";
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected String doGetFormLabel(IProject input) {
+        return "Project";
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected void doAddCommonRows(List<ITableRow> rows, IProject project) {
-		rows.add(new BeanPropertyTableRowAdapter("IOC", project, "ioc", false));
-		rows.add(new DbdFileTableRowAdapter(project));
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    protected void doAddCommonRows(List<ITableRow> rows, IProject project) {
+        rows.add(new BeanPropertyTableRowAdapter("IOC", project, "ioc", false));
+        rows.add(new DbdFileTableRowAdapter(project));
 
-	}
+    }
 
-	/**
-	 * Row adapter for the dbd file setting.
-	 * 
-	 * @author Sven Wende
-	 *
-	 */
-	private static class DbdFileTableRowAdapter extends AbstractTableRowAdapter<IProject> {
-		public DbdFileTableRowAdapter(IProject delegate) {
-			super(delegate);
-		}
+    /**
+     * Row adapter for the dbd file setting.
+     *
+     * @author Sven Wende
+     *
+     */
+    private static class DbdFileTableRowAdapter extends AbstractTableRowAdapter<IProject> {
+        public DbdFileTableRowAdapter(IProject delegate) {
+            super(delegate);
+        }
 
-		/**
-		 *{@inheritDoc}
-		 */
-		@Override
-		protected String doGetKey(IProject project) {
-			return "DBD File Path";
-		}
+        /**
+         *{@inheritDoc}
+         */
+        @Override
+        protected String doGetKey(IProject project) {
+            return "DBD File Path";
+        }
 
-		/**
-		 *{@inheritDoc}
-		 */
-		@Override
-		protected RGB doGetForegroundColorForKey(IProject delegate) {
-			RGB rgb = super.doGetForegroundColorForKey(delegate);
+        /**
+         *{@inheritDoc}
+         */
+        @Override
+        protected RGB doGetForegroundColorForKey(IProject delegate) {
+            RGB rgb = super.doGetForegroundColorForKey(delegate);
 
-			if (!StringUtil.hasLength(delegate.getDbdPath())) {
-				rgb = new RGB(255, 0, 0);
-			}
-			return rgb;
-		}
+            if (!StringUtil.hasLength(delegate.getDbdPath())) {
+                rgb = new RGB(255, 0, 0);
+            }
+            return rgb;
+        }
 
-		/**
-		 *{@inheritDoc}
-		 */
-		@Override
-		protected String doGetValue(IProject project) {
-			return project.getDbdPath();
-		}
+        /**
+         *{@inheritDoc}
+         */
+        @Override
+        protected String doGetValue(IProject project) {
+            return project.getDbdPath();
+        }
 
-		/**
-		 *{@inheritDoc}
-		 */
-		@Override
-		protected Command doSetValue(IProject project, Object value) {
-			return new ChangeDbdFileCommand(project, value.toString());
-		}
+        /**
+         *{@inheritDoc}
+         */
+        @Override
+        protected Command doSetValue(IProject project, Object value) {
+            return new ChangeDbdFileCommand(project, value.toString());
+        }
 
-		/**
-		 *{@inheritDoc}
-		 */
-		@Override
-		protected CellEditor doGetValueCellEditor(IProject delegate, Composite parent) {
-			return new WorkspaceResourceCellEditor(parent, new String[] { "dbd" }, "Select DBD-File");
-		}
+        /**
+         *{@inheritDoc}
+         */
+        @Override
+        protected CellEditor doGetValueCellEditor(IProject delegate, Composite parent) {
+            return new WorkspaceResourceCellEditor(parent, new String[] { "dbd" }, "Select DBD-File");
+        }
 
-	}
+    }
 
-	/**
-	 * 
-	 *{@inheritDoc}
-	 */
-	@Override
-	protected String doGetAdditionalBreadcrumbLinks(IProject project) {
-		return null;
-	}
+    /**
+     *
+     *{@inheritDoc}
+     */
+    @Override
+    protected String doGetAdditionalBreadcrumbLinks(IProject project) {
+        return null;
+    }
 }

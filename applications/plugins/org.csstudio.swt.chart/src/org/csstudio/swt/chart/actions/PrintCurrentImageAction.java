@@ -23,17 +23,17 @@ import org.eclipse.swt.printing.PrinterData;
  *  <p>
  *  Suggested use is in the context menu of an editor or view that
  *  uses the InteractiveChart.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class PrintCurrentImageAction extends Action
 {
     /** Chart to print */
     private final Chart chart;
-    
+
     /** Snapshot of the chart at time of print command */
     private Image snapshot;
-    
+
     /** Printer */
     private Printer printer;
 
@@ -45,7 +45,7 @@ public class PrintCurrentImageAction extends Action
         this.chart = chart;
         setToolTipText(Messages.PrintImage_ActionName_TT);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void run()
@@ -54,7 +54,7 @@ public class PrintCurrentImageAction extends Action
         snapshot = chart.createSnapshot();
         if (snapshot == null)
             return;
-        
+
         // Printer GUI
         PrintDialog dlg = new PrintDialog(chart.getShell());
         PrinterData data = dlg.open();
@@ -93,7 +93,7 @@ public class PrintCurrentImageAction extends Action
             final Rectangle area = printer.getClientArea();
             final Rectangle trim = printer.computeTrim(0, 0, 0, 0);
             final Point dpi = printer.getDPI();
-            
+
             // Compute layout
             final Rectangle image_rect = snapshot.getBounds();
             // Leave one inch on each border.
@@ -106,8 +106,8 @@ public class PrintCurrentImageAction extends Action
             final int max_height = area.height - 2*top_bottom;
             final int printed_height = Math.min(max_height,
                image_rect.height * printed_width / image_rect.width);
-            
-            
+
+
             // Print one page
             printer.startPage();
             final GC gc = new GC(printer);

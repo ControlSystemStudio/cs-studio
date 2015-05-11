@@ -17,20 +17,20 @@ import org.csstudio.apputil.formula.Node;
  */
 public class MathFuncNode implements Node
 {
-	final private String function;
+    final private String function;
     final private Node args[];
-	final private Method method;
+    final private Method method;
 
-	/** Construct node for math function.
-	 *
-	 *  @param function One of the java.lang.Math.* method names
-	 *  @param n Argument node
-	 *  @throws Exception On error
-	 */
-	@SuppressWarnings("rawtypes")
+    /** Construct node for math function.
+     *
+     *  @param function One of the java.lang.Math.* method names
+     *  @param n Argument node
+     *  @throws Exception On error
+     */
+    @SuppressWarnings("rawtypes")
     public MathFuncNode(final String function, final Node args[]) throws Exception
     {
-    	this.function = function;
+        this.function = function;
         this.args = args;
         Class argcls[] = new Class[args.length];
         for (int i = 0; i < args.length; i++)
@@ -49,14 +49,14 @@ public class MathFuncNode implements Node
 
         try
         {
-        	Object result = method.invoke(null, arglist );
-			if (result instanceof Double)
-				return ((Double) result).doubleValue();
-		}
+            Object result = method.invoke(null, arglist );
+            if (result instanceof Double)
+                return ((Double) result).doubleValue();
+        }
         catch (Exception e)
         {
-			e.printStackTrace();
-		}
+            e.printStackTrace();
+        }
         return 0.0;
     }
 
@@ -81,8 +81,8 @@ public class MathFuncNode implements Node
     }
 
     @Override
-	@SuppressWarnings("nls")
-	public String toString()
+    @SuppressWarnings("nls")
+    public String toString()
     {
         final StringBuffer b = new StringBuffer(function);
         b.append("(");

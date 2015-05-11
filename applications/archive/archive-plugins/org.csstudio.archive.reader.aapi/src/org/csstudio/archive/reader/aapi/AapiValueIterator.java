@@ -15,65 +15,65 @@ import de.desy.aapi.RequestData;
 
 public abstract class AapiValueIterator implements ValueIterator {
 
-	private final AapiClient _aapiClient;
-	private RequestData _requestData = new RequestData();
-	
-	private List<IValue> _result = new ArrayList<IValue>();
+    private final AapiClient _aapiClient;
+    private RequestData _requestData = new RequestData();
 
-	public AapiValueIterator(AapiClient aapiClient, int key, String name,
-			ITimestamp start, ITimestamp end) {
-		_aapiClient = aapiClient;
-		_requestData.setFromTime((int) start.seconds());
-		_requestData.setToTime((int) end.seconds());
-		_requestData.setPvList(new String[]{name});
-	}
-	
-	public void setCount(int count) {
-		_requestData.setNumberOfSamples(count);
-	}
-	
-	public void setConversionParam(double deadbandParam) {
-		_requestData.setConversParam(deadbandParam);
-	}
-	
-	public void setConversionMethod(AapiReductionMethod minMaxAverageMethod) {
-		_requestData.setConversionMethod(minMaxAverageMethod);
-	}
-	
-	@Override
-	public boolean hasNext() {
-//		System.out.println(">>>>> AapiValueIterator.hasNext");
-		if (_result.size() > 0) {
-			return true;
-		}
-//		System.out.println(">>>>> AapiValueIterator.hasNext no next value");
-		return false;
-	}
+    private List<IValue> _result = new ArrayList<IValue>();
 
-	@Override
-	public VType next() throws Exception {
-//		System.out.println(">>>>> AapiValueIterator.next");
-		if (_result.size() > 0) {
-			_result.remove(0);
-//			IMinMaxDoubleValue mmval = (IMinMaxDoubleValue) val;
-//			System.out.println(">>>>> " + mmval.getTime() + " " + mmval.getValue());
-			//TODO (jhatje): implement vType
-			return null;
-		}
-//		System.out.println(">>>>> AapiValueIterator.next return null");
-		return null;
-	}
-	
-	public void getData() {
-		dataConversion(_aapiClient.getData(_requestData), _result);
-	}
+    public AapiValueIterator(AapiClient aapiClient, int key, String name,
+            ITimestamp start, ITimestamp end) {
+        _aapiClient = aapiClient;
+        _requestData.setFromTime((int) start.seconds());
+        _requestData.setToTime((int) end.seconds());
+        _requestData.setPvList(new String[]{name});
+    }
 
-	@Override
-	public void close() {
-		_result.clear();
-		_result = null;
-	}
+    public void setCount(int count) {
+        _requestData.setNumberOfSamples(count);
+    }
 
-	abstract void dataConversion(AnswerData answerData, List<IValue> result);
+    public void setConversionParam(double deadbandParam) {
+        _requestData.setConversParam(deadbandParam);
+    }
+
+    public void setConversionMethod(AapiReductionMethod minMaxAverageMethod) {
+        _requestData.setConversionMethod(minMaxAverageMethod);
+    }
+
+    @Override
+    public boolean hasNext() {
+//        System.out.println(">>>>> AapiValueIterator.hasNext");
+        if (_result.size() > 0) {
+            return true;
+        }
+//        System.out.println(">>>>> AapiValueIterator.hasNext no next value");
+        return false;
+    }
+
+    @Override
+    public VType next() throws Exception {
+//        System.out.println(">>>>> AapiValueIterator.next");
+        if (_result.size() > 0) {
+            _result.remove(0);
+//            IMinMaxDoubleValue mmval = (IMinMaxDoubleValue) val;
+//            System.out.println(">>>>> " + mmval.getTime() + " " + mmval.getValue());
+            //TODO (jhatje): implement vType
+            return null;
+        }
+//        System.out.println(">>>>> AapiValueIterator.next return null");
+        return null;
+    }
+
+    public void getData() {
+        dataConversion(_aapiClient.getData(_requestData), _result);
+    }
+
+    @Override
+    public void close() {
+        _result.clear();
+        _result = null;
+    }
+
+    abstract void dataConversion(AnswerData answerData, List<IValue> result);
 
 }

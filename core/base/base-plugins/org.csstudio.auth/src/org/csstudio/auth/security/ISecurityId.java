@@ -31,11 +31,11 @@ package org.csstudio.auth.security;
  * @since 07.01.2009
  */
 public interface ISecurityId {
-    
+
     public String getId();
-    
+
     public String getDesciption();
-    
+
     public String getDefaultAccesses();
 
 }

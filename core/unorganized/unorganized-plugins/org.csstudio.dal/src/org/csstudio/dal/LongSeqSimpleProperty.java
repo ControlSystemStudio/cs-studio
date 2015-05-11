@@ -33,7 +33,7 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.SimpleProperty
  */
 public interface LongSeqSimpleProperty extends LongSeqAccess,
-	SequencePropertyCharacteristics, NumericSimpleProperty<long[],Long>
+    SequencePropertyCharacteristics, NumericSimpleProperty<long[],Long>
 {
 }
 

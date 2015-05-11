@@ -32,7 +32,7 @@ public class Messages extends NLS
     public static String Chart_ZoomAuto;
     public static String Chart_ZoomIn;
     public static String Chart_ZoomOut;
-    
+
     public static String PrintImage_ActionName;
     public static String PrintImage_ActionName_TT;
     public static String RemoveMarkers;
@@ -51,7 +51,7 @@ public class Messages extends NLS
     public static String TraceType_Markers;
     public static String UpdateSelectedMarker;
     public static String UpdateSelectedMarker_TT;
-    
+
     static
     {
         // initialize resource bundle

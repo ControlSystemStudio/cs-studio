@@ -78,7 +78,7 @@ import org.slf4j.LoggerFactory;
 public final class LdapServiceImpl implements ILdapService {
 
     static final Logger LOG = LoggerFactory.getLogger(LdapServiceImpl.class);
-    
+
     /**
      * DirContext Holder to prevent accidental direct access to DirContext field.
      *
@@ -155,7 +155,7 @@ public final class LdapServiceImpl implements ILdapService {
             setScope(params.getScope()).
             setJobCompletedCallBack(callBack).
             build();
-        
+
         return ldapr;
     }
 
@@ -251,7 +251,7 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}}
      * @throws InvalidNameException
      * @throws CreateContentModelException
-     * @throws LdapServiceException 
+     * @throws LdapServiceException
      */
     @Override
     public <T extends Enum<T> & ITreeNodeConfiguration<T>>
@@ -267,7 +267,7 @@ public final class LdapServiceImpl implements ILdapService {
                                               SearchControls.SUBTREE_SCOPE);
 
         if (result == null || result.getAnswerSet().isEmpty()) {
-            LOG.debug("LDAP query returned empty or null result for component {}\nand filter {}", 
+            LOG.debug("LDAP query returned empty or null result for component {}\nand filter {}",
                       component.toString(), any(ATTR_FIELD_OBJECT_CLASS));
             return false;
         }
@@ -403,15 +403,15 @@ public final class LdapServiceImpl implements ILdapService {
     }
 
     @Override
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
     ILdapContentModelBuilder<T> getLdapContentModelBuilder(final T objectClassRoot,
                                                            final ILdapSearchResult searchResult) throws LdapServiceException {
-        
+
         return new LdapContentModelBuilder<T>(objectClassRoot, searchResult, getLdapNameParser());
     }
-    
+
     @Override
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
     ILdapContentModelBuilder<T> getLdapContentModelBuilder(final ContentModel<T> model) throws LdapServiceException {
         return new LdapContentModelBuilder<T>(model, getLdapNameParser());
     }
@@ -420,8 +420,8 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> 
-    ContentModel<T> getLdapContentModelForSearchResult(final T configurationRoot, 
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
+    ContentModel<T> getLdapContentModelForSearchResult(final T configurationRoot,
                                                        final ILdapSearchResult result) throws CreateContentModelException, LdapServiceException {
         LdapContentModelBuilder<T> builder = new LdapContentModelBuilder<T>(configurationRoot, result, getLdapNameParser());
         builder.build();

@@ -16,10 +16,10 @@ package org.csstudio.opibuilder.converter.model;
 public class Edm_activeXRegTextClass extends Edm_activeXTextClass {
 
 
-		
-	public Edm_activeXRegTextClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+
+    public Edm_activeXRegTextClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 
 

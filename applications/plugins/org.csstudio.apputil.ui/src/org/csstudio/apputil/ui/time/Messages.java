@@ -26,7 +26,7 @@ public class Messages extends NLS
     public static String seven_days;
 
     public static String seven_days_TT;
-    
+
     public static String StartEnd_AbsEnd;
     public static String StartEnd_AbsEnd_TT;
     public static String StartEnd_EndError;
@@ -55,7 +55,7 @@ public class Messages extends NLS
     public static String Time_Hours;
     public static String Time_Minutes;
     public static String Time_Seconds;
-    
+
     public static String Time_Before;
     public static String Time_Before_TT;
     public static String Time_Now;
@@ -73,7 +73,7 @@ public class Messages extends NLS
     public static String Time_Midnight_TT;
     public static String Time_Noon;
     public static String Time_Noon_TT;
-    
+
     static
     {
         // initialize resource bundle

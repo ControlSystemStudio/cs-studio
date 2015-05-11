@@ -24,19 +24,19 @@ import java.util.Date;
 public class ScanSampleFactory
 {
     /** Create ScanSample for plain number
-	 *  @param timestamp Time stamp
+     *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken
-	 *  @param numbers {@link Number}s
-	 *  @return {@link ScanSample}
-	 *  @throws IllegalArgumentException if the value type is not handled
-	 */
-	public static ScanSample createSample(final Date timestamp,
-	        final long serial, final Number... numbers) throws IllegalArgumentException
-	{
-	    if (numbers.length <= 0)
-	        throw new IllegalArgumentException("Missing values");
-		return new NumberScanSample(timestamp, serial, numbers);
-	}
+     *  @param numbers {@link Number}s
+     *  @return {@link ScanSample}
+     *  @throws IllegalArgumentException if the value type is not handled
+     */
+    public static ScanSample createSample(final Date timestamp,
+            final long serial, final Number... numbers) throws IllegalArgumentException
+    {
+        if (numbers.length <= 0)
+            throw new IllegalArgumentException("Missing values");
+        return new NumberScanSample(timestamp, serial, numbers);
+    }
 
     /** Create ScanSample for strings
      *  @param timestamp Time stamp
@@ -52,7 +52,7 @@ public class ScanSampleFactory
             throw new IllegalArgumentException("Missing values");
         return new StringScanSample(timestamp, serial, values);
     }
-	
+
     /** Create ScanSample for plain number or text value
      *  @param timestamp Time stamp
      *  @param serial Serial to identify when the sample was taken

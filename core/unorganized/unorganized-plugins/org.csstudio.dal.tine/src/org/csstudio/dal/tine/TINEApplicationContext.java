@@ -27,15 +27,15 @@ import java.util.Properties;
 import org.csstudio.dal.impl.DefaultApplicationContext;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class TINEApplicationContext extends DefaultApplicationContext {
-	protected Properties configuration;
-	
-	public TINEApplicationContext(String name) {
-		super(name);
-		PlugUtilities.configureTINEPlug(getConfiguration());
-	}
+    protected Properties configuration;
+
+    public TINEApplicationContext(String name) {
+        super(name);
+        PlugUtilities.configureTINEPlug(getConfiguration());
+    }
 }

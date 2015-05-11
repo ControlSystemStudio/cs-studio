@@ -34,12 +34,12 @@ public class CalendarWidget extends Composite
 
     /** The currently configed calendar (date and time). */
     private Calendar calendar;
-    
+
     /** Used to prevent recursion when the widget updates the GUI,
      *  which in turn fires listener notifications...
      */
     private boolean in_GUI_update = false;
-    
+
     private ArrayList<CalendarWidgetListener> listeners
        = new ArrayList<CalendarWidgetListener>();
 
@@ -51,7 +51,7 @@ public class CalendarWidget extends Composite
     {
         this(parent, flags, Calendar.getInstance());
     }
-        
+
     /** Construct widget, initialized to given time.
      *  @param parent Widget parent.
      *  @param flags SWT widget flags.
@@ -62,11 +62,11 @@ public class CalendarWidget extends Composite
         GridLayout layout = new GridLayout();
         setLayout(layout);
         GridData gd;
-        
+
         // |               |
         // |    Calendar   |
         // |               |
-        // Time: ---time--- 
+        // Time: ---time---
         // [Today] [Midnight] [Noon]
 
         date = new DateTime(this, SWT.CALENDAR);
@@ -77,7 +77,7 @@ public class CalendarWidget extends Composite
         gd.grabExcessVerticalSpace = true;
         gd.verticalAlignment = SWT.FILL;
         date.setLayoutData(gd);
- 
+
         // New row
         Composite box = new Composite(this, 0);
         box.setLayout(new RowLayout());
@@ -85,13 +85,13 @@ public class CalendarWidget extends Composite
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.CENTER;
         box.setLayoutData(gd);
-        
+
         Label l = new Label(box, SWT.NONE);
         l.setText("Time:");
         // SWT.MEDIUM to include seconds as needed by BOY
         time = new DateTime(box, SWT.TIME | SWT.MEDIUM);
         gd = new GridData();
-        
+
         // New row
         box = new Composite(this, 0);
         box.setLayout(new RowLayout());
@@ -111,10 +111,10 @@ public class CalendarWidget extends Composite
         Button noon = new Button(box, SWT.PUSH);
         noon.setText("12:00");
         noon.setToolTipText("Set time to noon");
-        
+
         // Initialize to 'now'
         setCalendar(calendar);
-        
+
         now.addSelectionListener(new SelectionAdapter()
         {
             @Override
@@ -155,7 +155,7 @@ public class CalendarWidget extends Composite
                 }
             }
         });
-        final SelectionAdapter update = new SelectionAdapter() 
+        final SelectionAdapter update = new SelectionAdapter()
         {
             @Override
             public void widgetSelected(SelectionEvent e)
@@ -167,20 +167,20 @@ public class CalendarWidget extends Composite
         date.addSelectionListener(update);
         time.addSelectionListener(update);
     }
-    
+
     /** Add given listener. */
     public void addListener(CalendarWidgetListener listener)
     {
         if (!listeners.contains(listener))
             listeners.add(listener);
     }
-    
+
     /** Remove given listener. */
     public void removeListener(CalendarWidgetListener listener)
     {
         listeners.remove(listener);
     }
-    
+
     /** Set the widget to display the given time.
      *  @see #setNow()
      */
@@ -197,7 +197,7 @@ public class CalendarWidget extends Composite
     {
         return (Calendar) calendar.clone();
     }
-    
+
     /** Update the data from the interactive GUI elements. */
     private void updateDataFromGUI()
     {
@@ -223,7 +223,7 @@ public class CalendarWidget extends Composite
         time.setMinutes(calendar.get(Calendar.MINUTE));
         time.setSeconds(calendar.get(Calendar.SECOND));
         in_GUI_update = false;
-        
+
         // fireUpdatedTimestamp
         for (CalendarWidgetListener l : listeners)
             l.updatedCalendar(this, calendar);

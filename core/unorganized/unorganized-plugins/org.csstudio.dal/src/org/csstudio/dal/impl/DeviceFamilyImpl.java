@@ -35,104 +35,104 @@ import org.csstudio.dal.spi.DeviceFactory;
 
 
 /**
- * Default device family implementation. This class is based on the 
- * {@link DeviceCollectionMap} which means that all devices are stored 
+ * Default device family implementation. This class is based on the
+ * {@link DeviceCollectionMap} which means that all devices are stored
  * in a HashMap, which is not synchronized. Therefore, when adding
  * and removing devices one should be careful about the synchronization
  * because HashMap is not syncrhonized.
  *
  */
 public class DeviceFamilyImpl<T extends AbstractDevice>
-	extends DeviceCollectionMap<T> implements DeviceFamily<T>
+    extends DeviceCollectionMap<T> implements DeviceFamily<T>
 {
-	private DeviceFactory df;
-	static final Class<? extends AbstractDevice> c = AbstractDevice.class;
+    private DeviceFactory df;
+    static final Class<? extends AbstractDevice> c = AbstractDevice.class;
 
-	/**
-	 * Creates a new DeviceFamilyImpl object.
-	 *
-	 * @param df Device factory.
-	 */
-	public DeviceFamilyImpl(DeviceFactory df)
-	{
-		super((Class<T>) c);
-		this.df = df;
-	}
+    /**
+     * Creates a new DeviceFamilyImpl object.
+     *
+     * @param df Device factory.
+     */
+    public DeviceFamilyImpl(DeviceFactory df)
+    {
+        super((Class<T>) c);
+        this.df = df;
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.context.DeviceFamily#destroyAll()
-	 */
-	public void destroyAll()
-	{
-		Object[] devArray = devices.values().toArray();
-		this.devices.clear();
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.context.DeviceFamily#destroyAll()
+     */
+    public void destroyAll()
+    {
+        Object[] devArray = devices.values().toArray();
+        this.devices.clear();
 
-		for (Object dev : devArray) {
-			destroy((T)dev);
-		}
-	}
+        for (Object dev : devArray) {
+            destroy((T)dev);
+        }
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.context.DeviceFamily#destroy(org.csstudio.dal.device.AbstractDevice)
-	 */
-	public void destroy(T device)
-	{
-		remove(device);
-		if (!device.isDestroyed()) {
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.context.DeviceFamily#destroy(org.csstudio.dal.device.AbstractDevice)
+     */
+    public void destroy(T device)
+    {
+        remove(device);
+        if (!device.isDestroyed()) {
 
-			AbstractPlug plug = (AbstractPlug)df.getPlug();
-			Proxy[] proxy = ((AbstractDeviceImpl)device).releaseProxy(true);
-			if (proxy != null && proxy[0]!=null) {
-				plug.releaseProxy(proxy[0]);
-			}
-			if (proxy != null && proxy[1]!=null && proxy[1]!=proxy[0]) {
-				plug.releaseProxy(proxy[1]);
-			}
-		}
-	}
+            AbstractPlug plug = (AbstractPlug)df.getPlug();
+            Proxy[] proxy = ((AbstractDeviceImpl)device).releaseProxy(true);
+            if (proxy != null && proxy[0]!=null) {
+                plug.releaseProxy(proxy[0]);
+            }
+            if (proxy != null && proxy[1]!=null && proxy[1]!=proxy[0]) {
+                plug.releaseProxy(proxy[1]);
+            }
+        }
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.context.DeviceFamily#getApplicationContext()
-	 */
-	public AbstractApplicationContext getApplicationContext()
-	{
-		return df.getApplicationContext();
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.context.DeviceFamily#getApplicationContext()
+     */
+    public AbstractApplicationContext getApplicationContext()
+    {
+        return df.getApplicationContext();
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.group.GroupDataAccessProvider#getGroupDataAccess(java.lang.Class, java.lang.Class)
-	 */
-	public <Tt, P extends DynamicValueProperty<?>> GroupDataAccess<Tt, P> getGroupDataAccess(
-	    Class<Tt> dataType, Class<P> propertyType)
-	{
-		// NOT TO BE DONE
-		throw new UnsupportedOperationException();
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.group.GroupDataAccessProvider#getGroupDataAccess(java.lang.Class, java.lang.Class)
+     */
+    public <Tt, P extends DynamicValueProperty<?>> GroupDataAccess<Tt, P> getGroupDataAccess(
+        Class<Tt> dataType, Class<P> propertyType)
+    {
+        // NOT TO BE DONE
+        throw new UnsupportedOperationException();
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.group.GroupDataAccessProvider#getGroupDataAccess(java.lang.Class, java.lang.Class, org.csstudio.dal.group.PropertyGroupConstrain)
-	 */
-	public <Tt, P extends DynamicValueProperty<Tt>> GroupDataAccess<Tt, P> getGroupDataAccess(
-	    Class<Tt> dataType, Class<P> propertyType,
-	    PropertyGroupConstrain constrain)
-	{
-		// NOT TO BE DONE
-		throw new UnsupportedOperationException();
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.group.GroupDataAccessProvider#getGroupDataAccess(java.lang.Class, java.lang.Class, org.csstudio.dal.group.PropertyGroupConstrain)
+     */
+    public <Tt, P extends DynamicValueProperty<Tt>> GroupDataAccess<Tt, P> getGroupDataAccess(
+        Class<Tt> dataType, Class<P> propertyType,
+        PropertyGroupConstrain constrain)
+    {
+        // NOT TO BE DONE
+        throw new UnsupportedOperationException();
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.device.DeviceCollectionMap#add(null)
-	 */
-	public void add(T object)
-	{
-		super.add(object);
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.device.DeviceCollectionMap#add(null)
+     */
+    public void add(T object)
+    {
+        super.add(object);
+    }
 }
 
 /* __oOo__ */

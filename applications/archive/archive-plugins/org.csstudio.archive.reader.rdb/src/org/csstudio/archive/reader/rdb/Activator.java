@@ -20,7 +20,7 @@ public class Activator extends Plugin
 {
     /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.archive.reader.rdb";
-    
+
     private static Activator instance;
 
     /** {@inheritDoc} */
@@ -40,6 +40,6 @@ public class Activator extends Plugin
     /** @return Logger for plugin ID */
     public static Logger getLogger()
     {
-    	return Logger.getLogger(Activator.ID);
+        return Logger.getLogger(Activator.ID);
     }
 }

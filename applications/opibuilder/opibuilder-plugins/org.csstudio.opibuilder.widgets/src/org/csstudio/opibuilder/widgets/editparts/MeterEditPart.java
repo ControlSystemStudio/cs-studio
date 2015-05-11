@@ -16,75 +16,75 @@ import org.eclipse.draw2d.IFigure;
 /**
  * EditPart controller for the Gauge widget. The controller mediates between
  * {@link MeterModel} and {@link MeterFigure}.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class MeterEditPart extends AbstractMarkedWidgetEditPart {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		final MeterModel model = getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        final MeterModel model = getWidgetModel();
 
-		MeterFigure xMeter = new MeterFigure();
+        MeterFigure xMeter = new MeterFigure();
 
-		initializeCommonFigureProperties(xMeter, model);
-		xMeter.setNeedleColor((model.getNeedleColor()));
-		xMeter.setGradient(model.isRampGradient());
-		xMeter.setValueLabelVisibility(model.isShowValueLabelVisible());
+        initializeCommonFigureProperties(xMeter, model);
+        xMeter.setNeedleColor((model.getNeedleColor()));
+        xMeter.setGradient(model.isRampGradient());
+        xMeter.setValueLabelVisibility(model.isShowValueLabelVisible());
 
-		return xMeter;
-	}
+        return xMeter;
+    }
 
-	@Override
-	public MeterModel getWidgetModel() {
-		return (MeterModel) getModel();
-	}
+    @Override
+    public MeterModel getWidgetModel() {
+        return (MeterModel) getModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		registerCommonPropertyChangeHandlers();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        registerCommonPropertyChangeHandlers();
 
-		// needle Color
-		IWidgetPropertyChangeHandler needleColorColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				MeterFigure xMeter = (MeterFigure) refreshableFigure;
-				xMeter.setNeedleColor(((OPIColor) newValue).getSWTColor());
-				return false;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_NEEDLE_COLOR,
-				needleColorColorHandler);
+        // needle Color
+        IWidgetPropertyChangeHandler needleColorColorHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                MeterFigure xMeter = (MeterFigure) refreshableFigure;
+                xMeter.setNeedleColor(((OPIColor) newValue).getSWTColor());
+                return false;
+            }
+        };
+        setPropertyChangeHandler(MeterModel.PROP_NEEDLE_COLOR,
+                needleColorColorHandler);
 
-		// Ramp gradient
-		IWidgetPropertyChangeHandler gradientHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				MeterFigure xMeter = (MeterFigure) refreshableFigure;
-				xMeter.setGradient((Boolean) newValue);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_RAMP_GRADIENT, gradientHandler);
+        // Ramp gradient
+        IWidgetPropertyChangeHandler gradientHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                MeterFigure xMeter = (MeterFigure) refreshableFigure;
+                xMeter.setGradient((Boolean) newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(MeterModel.PROP_RAMP_GRADIENT, gradientHandler);
 
-		// Show Value Label
-		IWidgetPropertyChangeHandler valueLabelHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				MeterFigure xMeter = (MeterFigure) refreshableFigure;
-				xMeter.setValueLabelVisibility((Boolean) newValue);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(MeterModel.PROP_SHOW_VALUE_LABEL, valueLabelHandler);
+        // Show Value Label
+        IWidgetPropertyChangeHandler valueLabelHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                MeterFigure xMeter = (MeterFigure) refreshableFigure;
+                xMeter.setValueLabelVisibility((Boolean) newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(MeterModel.PROP_SHOW_VALUE_LABEL, valueLabelHandler);
 
-	}
+    }
 
 }

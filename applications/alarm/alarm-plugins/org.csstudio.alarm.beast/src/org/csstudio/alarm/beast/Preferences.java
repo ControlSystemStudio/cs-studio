@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 @SuppressWarnings("nls")
 public class Preferences
 {
-	final public static String READONLY = "readonly";
+    final public static String READONLY = "readonly";
     final public static String ALLOW_CONFIG_SELECTION = "allow_config_selection";
     final public static String RDB_URL = "rdb_url";
     final public static String RDB_USER = "rdb_user";
@@ -107,16 +107,16 @@ public class Preferences
     /** @return RDB User name */
     public static String getRDB_User()
     {
-    	return getString(RDB_USER);
+        return getString(RDB_USER);
     }
 
-	/** @return RDB Password */
+    /** @return RDB Password */
     public static String getRDB_Password()
     {
         return SecurePreferences.get(Activator.ID, RDB_PASSWORD, null);
     }
 
-	/** @return RDB schema */
+    /** @return RDB schema */
     public static String getRDB_Schema()
     {
         final String schema = getString(RDB_SCHEMA);
@@ -127,7 +127,7 @@ public class Preferences
         return schema;
     }
 
-	/** @return Configuration Name, i.e. name of alarm tree root component */
+    /** @return Configuration Name, i.e. name of alarm tree root component */
     public static String getAlarmTreeRoot()
     {
         return getString(ROOT_COMPONENT);
@@ -136,7 +136,7 @@ public class Preferences
     /** @return JMS URL */
     public static String getJMS_URL()
     {
-    	return getString(JMS_URL, "tcp://localhost:61616");
+        return getString(JMS_URL, "tcp://localhost:61616");
     }
 
     /** @return JMS User name */
@@ -298,22 +298,22 @@ public class Preferences
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getInt(Activator.ID, MAX_CONTEXT_MENU_ENTRIES, 10, null);
     }
-    
-    /** @return the batch update period for rdb updates (the interval how often 
-     * 			the alarm state updates are inserted into the database in seconds)
+
+    /** @return the batch update period for rdb updates (the interval how often
+     *             the alarm state updates are inserted into the database in seconds)
      */
     public static double getBatchUpdatePeriod()
     {
-    	final IPreferencesService service = Platform.getPreferencesService();
+        final IPreferencesService service = Platform.getPreferencesService();
         return service.getDouble(Activator.ID, BATCH_UPDATE_PERIOD, 1., null);
     }
-    
-    /** @return the batch size for rdb updates (the number of sql statements in 
-     * 				a single batch)
+
+    /** @return the batch size for rdb updates (the number of sql statements in
+     *                 a single batch)
      */
     public static int getBatchSize()
     {
-    	final IPreferencesService service = Platform.getPreferencesService();
+        final IPreferencesService service = Platform.getPreferencesService();
         return service.getInt(Activator.ID, BATCH_SIZE, 3000, null);
     }
 }

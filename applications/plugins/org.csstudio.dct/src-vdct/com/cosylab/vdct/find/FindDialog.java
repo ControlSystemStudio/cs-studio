@@ -43,7 +43,7 @@ import javax.swing.JDialog;
 public class FindDialog extends JDialog implements WindowListener {
 
     private FindPanel panel;
-    
+
     /**
      * @param owner
      * @throws java.awt.HeadlessException
@@ -55,7 +55,7 @@ public class FindDialog extends JDialog implements WindowListener {
         setSize(400, 300);
         addWindowListener(this);
         setLocationRelativeTo(owner);
-        
+
         panel = new FindPanel();
         getContentPane().add(panel);
     }
@@ -63,15 +63,15 @@ public class FindDialog extends JDialog implements WindowListener {
     public void windowClosing(WindowEvent e) { panel.quit(); }
 
     public void windowActivated(WindowEvent e) {}
-    
+
     public void windowClosed(WindowEvent e) {}
 
     public void windowDeactivated(WindowEvent e) {}
 
     public void windowDeiconified(WindowEvent e) {}
-    
+
     public void windowIconified(WindowEvent e) {}
-    
+
     public void windowOpened(WindowEvent e) {}
 
     /**

@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.internal.runmode;
@@ -45,13 +45,13 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
  * ContextMenuProvider implementation for the display editor.
- * 
+ *
  * @author Sven Wende, Kai Meyer
  * @version $Revision: 1.15 $
- * 
+ *
  */
 public final class RunModeContextMenuProvider extends ContextMenuProvider {
-    
+
     /**
      * The ID for the close action.
      */
@@ -60,15 +60,15 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
      * The action registry.
      */
     private ActionRegistry _actionRegistry;
-    
+
     @Override
     public void addMenuListener(IMenuListener listener) {
         super.addMenuListener(listener);
     }
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param viewer
      *            the graphical viewer
      * @param actionRegistry
@@ -80,13 +80,13 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
         assert actionRegistry != null : "actionRegistry!=null"; //$NON-NLS-1$
         _actionRegistry = actionRegistry;
     }
-    
+
     public void dispose() {
         super.dispose();
         super.removeAll();
         super.setViewer(null);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -94,7 +94,7 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
     public void buildContextMenu(final IMenuManager menu) {
         menu.add(new Separator("actions"));
         this.addWidgetActionToMenu(menu);
-        
+
         IAction closeAction = _actionRegistry.getAction(CLOSE_ACTION_ID);
         GEFActionConstants.addStandardActionGroups(menu);
         if (closeAction != null) {
@@ -104,11 +104,11 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
             menu.add(closeAction);
         }
     }
-    
+
     /**
      * Adds the defined {@link AbstractWidgetActionModel}s to the given
      * {@link IMenuManager}.
-     * 
+     *
      * @param menu
      *            The {@link IMenuManager}
      */
@@ -119,7 +119,7 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
             if (selectedEditParts.get(0) instanceof AbstractBaseEditPart) {
                 AbstractBaseEditPart editPart = (AbstractBaseEditPart) selectedEditParts.get(0);
                 AbstractWidgetModel widget = editPart.getWidgetModel();
-                
+
                 List<AbstractWidgetActionModel> widgetActions = widget.getActionData()
                         .getWidgetActions();
                 if (!widgetActions.isEmpty()) {
@@ -134,7 +134,7 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
             }
         }
     }
-    
+
     /**
      * @param menu
      * @param widget
@@ -147,27 +147,27 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
             menu.add(new MenuAction(widget, action));
         }
     }
-    
+
     /**
      * An Action, which encapsulates a {@link AbstractWidgetActionModel}.
-     * 
+     *
      * @author Kai Meyer
-     * 
+     *
      */
     private final class MenuAction extends Action {
         /**
          * The selected widget model.
          */
         private AbstractWidgetModel _widget;
-        
+
         /**
          * The {@link AbstractWidgetActionModel}.
          */
         private AbstractWidgetActionModel _widgetAction;
-        
+
         /**
          * Constructor.
-         * 
+         *
          * @param widgetAction
          *            The encapsulated {@link AbstractWidgetActionModel}
          */
@@ -176,7 +176,7 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
             assert widgetAction != null;
             _widget = widget;
             _widgetAction = widgetAction;
-            
+
             // decorate the action
             this.setText(_widgetAction.getActionLabel());
             IWorkbenchAdapter adapter = (IWorkbenchAdapter) Platform.getAdapterManager()
@@ -184,12 +184,12 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
             if (adapter != null) {
                 this.setImageDescriptor(adapter.getImageDescriptor(widgetAction));
             }
-            
+
             // enablement of the action is dependent on the enablement of the
             // corresponding widget
             this.setEnabled(_widget.isAccesible() && widgetAction.isEnabled());
         }
-        
+
         /**
          * {@inheritDoc}
          */
@@ -198,5 +198,5 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
             WidgetActionHandlerService.getInstance().performAction(_widget, _widgetAction);
         }
     }
-    
+
 }

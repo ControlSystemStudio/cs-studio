@@ -15,33 +15,33 @@ import org.eclipse.ui.PlatformUI;
 
 public class CopyElementAction extends AbstractOutlineAction {
 
-	private AbstractElementTransfer[] transferTypes = new AbstractElementTransfer[] { RecordTransfer.getInstance(),
-			PrototypeTransfer.getInstance(), InstanceTransfer.getInstance() };
+    private AbstractElementTransfer[] transferTypes = new AbstractElementTransfer[] { RecordTransfer.getInstance(),
+            PrototypeTransfer.getInstance(), InstanceTransfer.getInstance() };
 
-	@Override
-	protected Command createCommand(List<IElement> selection) {
-		assert selection != null;
-		assert !selection.isEmpty();
+    @Override
+    protected Command createCommand(List<IElement> selection) {
+        assert selection != null;
+        assert !selection.isEmpty();
 
-		Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench().getDisplay());
+        Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench().getDisplay());
 
-		for (AbstractElementTransfer transfer : transferTypes) {
-			if (transfer.getCopyAndPasteStrategy().canCopy(selection)) {
-				clipboard.setContents(new Object[] { selection }, new Transfer[] { transfer });
-				return null;
-			}
-		}
-		return null;
-	}
+        for (AbstractElementTransfer transfer : transferTypes) {
+            if (transfer.getCopyAndPasteStrategy().canCopy(selection)) {
+                clipboard.setContents(new Object[] { selection }, new Transfer[] { transfer });
+                return null;
+            }
+        }
+        return null;
+    }
 
-	@Override
-	protected void afterSelectionChanged(List<IElement> selection, IAction action) {
-		boolean enabled = false;
+    @Override
+    protected void afterSelectionChanged(List<IElement> selection, IAction action) {
+        boolean enabled = false;
 
-		for (AbstractElementTransfer transfer : transferTypes) {
-			enabled |= transfer.getCopyAndPasteStrategy().canCopy(selection);
-		}
+        for (AbstractElementTransfer transfer : transferTypes) {
+            enabled |= transfer.getCopyAndPasteStrategy().canCopy(selection);
+        }
 
-		action.setEnabled(enabled);
-	}
+        action.setEnabled(enabled);
+    }
 }

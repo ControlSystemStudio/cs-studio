@@ -39,48 +39,48 @@ import javax.naming.spi.NamingManager;
  */
 public final class DirectoryUtilities
 {
-	private DirectoryUtilities()
-	{
-		super();
-	}
+    private DirectoryUtilities()
+    {
+        super();
+    }
 
-	/**
-	 * Returns DAL initial context.
-	 * @return DAL initial context
-	 * @throws NamingException if loading context fails
-	 */
-	public static DirContext getInitialContext() throws NamingException
-	{
-		Properties p = System.getProperties();
+    /**
+     * Returns DAL initial context.
+     * @return DAL initial context
+     * @throws NamingException if loading context fails
+     */
+    public static DirContext getInitialContext() throws NamingException
+    {
+        Properties p = System.getProperties();
 
-		try {
-			URL url = ClassLoader.getSystemResource("jndi.properties");
+        try {
+            URL url = ClassLoader.getSystemResource("jndi.properties");
 
-			if (url != null) {
-				FileInputStream fis = new FileInputStream(url.getFile());
-				p.load(fis);
-			}
-		} catch (Exception e) {
-			// TODO: exception should be logged somewhere
-			return (DirContext)new InitialContextFactoryImpl().getInitialContext(System
-			    .getProperties());
-		}
+            if (url != null) {
+                FileInputStream fis = new FileInputStream(url.getFile());
+                p.load(fis);
+            }
+        } catch (Exception e) {
+            // TODO: exception should be logged somewhere
+            return (DirContext)new InitialContextFactoryImpl().getInitialContext(System
+                .getProperties());
+        }
 
-		if (!p.containsKey("java.naming.factory.initial")) {
-			p.setProperty("java.naming.factory.initial",
-			    InitialContextFactoryImpl.class.getName());
+        if (!p.containsKey("java.naming.factory.initial")) {
+            p.setProperty("java.naming.factory.initial",
+                InitialContextFactoryImpl.class.getName());
 
-			return (DirContext)NamingManager.getInitialContext(p);
-		}
+            return (DirContext)NamingManager.getInitialContext(p);
+        }
 
-		return (DirContext)new InitialContextFactoryImpl().getInitialContext(System
-		    .getProperties());
-	}
+        return (DirContext)new InitialContextFactoryImpl().getInitialContext(System
+            .getProperties());
+    }
 
-	public static void main(String[] args) throws NamingException
-	{
-		System.out.println(getInitialContext());
-	}
+    public static void main(String[] args) throws NamingException
+    {
+        System.out.println(getInitialContext());
+    }
 }
 
 /* __oOo__ */

@@ -22,7 +22,7 @@ public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
     private static final long serialVersionUID = 1L;
 
     /** The minimum resp. maximum. */
-	final private double minimum, maximum;
+    final private double minimum, maximum;
 
     /** Constructor from pieces. */
     public MinMaxDoubleValue(final ITimestamp time, final ISeverity severity,
@@ -31,11 +31,11 @@ public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
                        final double values[],
                        final double minimum,
                        final double maximum)
-	{
-		super(time, severity, status, meta_data, quality, values);
+    {
+        super(time, severity, status, meta_data, quality, values);
         if (minimum <= maximum)
         {
-    		this.minimum = minimum;
+            this.minimum = minimum;
             this.maximum = maximum;
         }
         else
@@ -43,7 +43,7 @@ public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
             this.minimum = maximum;
             this.maximum = minimum;
         }
-	}
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -60,35 +60,35 @@ public class MinMaxDoubleValue extends DoubleValue implements IMinMaxDoubleValue
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     final public String format(final Format how, final int precision)
-	{
-		if (getSeverity().hasValue())
+    {
+        if (getSeverity().hasValue())
             return super.format(how, precision)
                    + NLS.bind(Messages.MiniMaxiFormat,
                               new Double(minimum), new Double(maximum));
-		// else
+        // else
         return Messages.NoValue;
-	}
+    }
 
     /** {@inheritDoc} */
-	@Override
-	final public boolean equals(final Object obj)
-	{
-		if (! (obj instanceof MinMaxDoubleValue))
-			return false;
-		final MinMaxDoubleValue rhs = (MinMaxDoubleValue) obj;
+    @Override
+    final public boolean equals(final Object obj)
+    {
+        if (! (obj instanceof MinMaxDoubleValue))
+            return false;
+        final MinMaxDoubleValue rhs = (MinMaxDoubleValue) obj;
         return Double.doubleToLongBits(minimum) ==
                    Double.doubleToLongBits(rhs.minimum) &&
                Double.doubleToLongBits(maximum) ==
                    Double.doubleToLongBits(rhs.maximum) &&
                super.equals(obj);
-	}
+    }
 
     /** {@inheritDoc} */
-	@Override
-	final public int hashCode()
-	{
+    @Override
+    final public int hashCode()
+    {
         return super.hashCode() + (int) (minimum + maximum);
-	}
+    }
 }

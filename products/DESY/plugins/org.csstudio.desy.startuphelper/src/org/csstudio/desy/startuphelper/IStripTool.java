@@ -36,9 +36,9 @@ import org.eclipse.ui.part.ViewPart;
  */
 public interface IStripTool {
 
-    
+
     ViewPart openView(IFile file);
-    
+
     EditorPart openEditor(IFile file);
-    
+
 }

@@ -6,25 +6,25 @@ import org.csstudio.sds.model.IWidgetModelFactory;
 
 /**
  * This class defines a widget model factory for thermometer widget models.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class ThermometerModelFactory implements IWidgetModelFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractWidgetModel createWidgetModel() {
-		return new ThermometerModel();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractWidgetModel createWidgetModel() {
+        return new ThermometerModel();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class getWidgetModelType() {
-		return ThermometerModel.class;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class getWidgetModelType() {
+        return ThermometerModel.class;
+    }
 
 }

@@ -31,18 +31,18 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-	 */
-	public void initializeDefaultPreferences() {
-		String lineSep = System.getProperty( "line.separator" );
-		IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
-		prefs.put(PreferenceConstants.TINE_CONFIG_PATH,"tine/database"); //$NON-NLS-1$
-		prefs.put(PreferenceConstants.TINE_CONFIG_DEFAULT,"FecName,Protocol,FecNetwork,FecNode,IPaddr,Description,Location,Hardware,Responsible"+lineSep+
-														  "ENS#0,3,0,0,131.169.120.41,Equip. Name Server,Bldg 30a 1st Floor,Watchdog,P.Duval"+lineSep+
-														  "ENS#1,3,0,0,131.169.120.46,Equip. Name Server,Bldg 30a 1st Floor,Watchdog,P.Duval"); //$NON-NLS-1$
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+     */
+    public void initializeDefaultPreferences() {
+        String lineSep = System.getProperty( "line.separator" );
+        IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+        prefs.put(PreferenceConstants.TINE_CONFIG_PATH,"tine/database"); //$NON-NLS-1$
+        prefs.put(PreferenceConstants.TINE_CONFIG_DEFAULT,"FecName,Protocol,FecNetwork,FecNode,IPaddr,Description,Location,Hardware,Responsible"+lineSep+
+                                                          "ENS#0,3,0,0,131.169.120.41,Equip. Name Server,Bldg 30a 1st Floor,Watchdog,P.Duval"+lineSep+
+                                                          "ENS#1,3,0,0,131.169.120.46,Equip. Name Server,Bldg 30a 1st Floor,Watchdog,P.Duval"); //$NON-NLS-1$
+    }
 
 }

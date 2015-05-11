@@ -68,8 +68,8 @@ public class SpreadsheetIterator
      *  @see #next()
      */
     public boolean hasNext()
-    { 
-    	return values != null; 
+    {
+        return values != null;
     }
 
     /** Get the time of the spreadsheet line.
@@ -90,7 +90,7 @@ public class SpreadsheetIterator
      *  @return The time stamp of the current spreadsheet 'line'. */
     public Timestamp getTime()
     {
-    	return time;
+        return time;
     }
 
     /** Get the next set of values, and move iterator to the following line.

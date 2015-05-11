@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * 
+ *
  * <code>ApplianceArchiveReaderTestSuite</code> is the test suite that combines
  * all junit tests of the appliance archive reader.
  *
@@ -13,12 +13,12 @@ import org.junit.runners.Suite.SuiteClasses;
  *
  */
 @RunWith(Suite.class)
-@SuiteClasses({ 
-		ApplianceArchiveReaderOptimizedTest.class,
-		ApplianceArchiveReaderOptimizedStatisticsTest.class,
-		ApplianceArchiveReaderRawTest.class,
-		ApplianceArchiveReaderRawWaveformTest.class,
-		ApplianceArchiveReaderOptimizedWaveformTest.class})
+@SuiteClasses({
+        ApplianceArchiveReaderOptimizedTest.class,
+        ApplianceArchiveReaderOptimizedStatisticsTest.class,
+        ApplianceArchiveReaderRawTest.class,
+        ApplianceArchiveReaderRawWaveformTest.class,
+        ApplianceArchiveReaderOptimizedWaveformTest.class})
 public class ApplianceArchiveReaderTestSuite {
 
 }

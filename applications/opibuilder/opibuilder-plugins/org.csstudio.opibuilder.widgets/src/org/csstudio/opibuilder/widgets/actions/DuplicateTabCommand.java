@@ -22,29 +22,29 @@ import org.eclipse.gef.commands.Command;
  */
 public class DuplicateTabCommand extends Command {
     final private int tabIndex;
-	final private TabModel tabModel;
-	private TabItem tabItem;
+    final private TabModel tabModel;
+    private TabItem tabItem;
 
-	public DuplicateTabCommand(final TabEditPart tabEditPart) {
-		this.tabModel = tabEditPart.getWidgetModel();
-		this.tabIndex = tabEditPart.getActiveTabIndex()+1;
-		try {
-			this.tabItem = tabEditPart.getTabItem(tabIndex -1).getCopy();
-		} catch (Exception e) {
-		    final String message = "Failed to duplicate tab";
-			Activator.getLogger().log(Level.WARNING, message , e);
-			ConsoleService.getInstance().writeError(message);
-		}
-		setLabel("Duplicate Tab");
-	}
+    public DuplicateTabCommand(final TabEditPart tabEditPart) {
+        this.tabModel = tabEditPart.getWidgetModel();
+        this.tabIndex = tabEditPart.getActiveTabIndex()+1;
+        try {
+            this.tabItem = tabEditPart.getTabItem(tabIndex -1).getCopy();
+        } catch (Exception e) {
+            final String message = "Failed to duplicate tab";
+            Activator.getLogger().log(Level.WARNING, message , e);
+            ConsoleService.getInstance().writeError(message);
+        }
+        setLabel("Duplicate Tab");
+    }
 
-	@Override
-	public void execute() {
-		tabModel.addTab(tabIndex, tabItem);
-	}
+    @Override
+    public void execute() {
+        tabModel.addTab(tabIndex, tabItem);
+    }
 
-	@Override
-	public void undo() {
-		tabModel.removeTab(tabIndex);
-	}
+    @Override
+    public void undo() {
+        tabModel.removeTab(tabIndex);
+    }
 }

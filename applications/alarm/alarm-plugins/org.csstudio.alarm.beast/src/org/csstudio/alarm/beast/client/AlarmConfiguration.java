@@ -91,11 +91,11 @@ public class AlarmConfiguration
         this.auto_reconnect = auto_reconnect;
         try
         {
-        	rdb = RDBUtil.connect(url, user, password, auto_reconnect);
+            rdb = RDBUtil.connect(url, user, password, auto_reconnect);
         }
         catch (Exception ex)
         {
-        	throw new Exception(NLS.bind(Messages.DatabaseConnectionErrorFmt, ex.getMessage()), ex);
+            throw new Exception(NLS.bind(Messages.DatabaseConnectionErrorFmt, ex.getMessage()), ex);
         }
 
         // Disable it while reading initial config. because that
@@ -495,7 +495,7 @@ public class AlarmConfiguration
     {
         // Prepare statements
         final Connection connection = rdb.getConnection();
-		final PreparedStatement    delete_guidance_by_id = connection.prepareStatement(sql.delete_guidance_by_id);
+        final PreparedStatement    delete_guidance_by_id = connection.prepareStatement(sql.delete_guidance_by_id);
         final PreparedStatement    insert_guidance = connection.prepareStatement(sql.insert_guidance);
         final PreparedStatement    delete_displays_by_id = connection.prepareStatement(sql.delete_displays_by_id);
         final PreparedStatement    insert_display = connection.prepareStatement(sql.insert_display);
@@ -874,31 +874,31 @@ public class AlarmConfiguration
      * @param insertAA The statement for inserting new AA.
      * @throws SQLException
      */
-	private void updateAA(final int id, final AADataStructure aaList[],
-			final PreparedStatement deleteAA, final PreparedStatement insertAA)
-			throws Exception {
-		try {
-			deleteAA.setInt(1, id);
-			deleteAA.executeUpdate();
-			int order = 0;
-			if (aaList != null && aaList.length > 0)
-			{
-				for (AADataStructure aa : aaList)
-				{
-					insertAA.setInt(1, id);
-					insertAA.setInt(2, order);
-					insertAA.setString(3, aa.getTitle());
-					insertAA.setString(4, aa.getDetails());
-					insertAA.setInt(5, aa.getDelay());
-					insertAA.executeUpdate();
-					order++;
-				}
-			}
-		} catch (Exception ex)
-		{
-			throw ex;
-		}
-	}
+    private void updateAA(final int id, final AADataStructure aaList[],
+            final PreparedStatement deleteAA, final PreparedStatement insertAA)
+            throws Exception {
+        try {
+            deleteAA.setInt(1, id);
+            deleteAA.executeUpdate();
+            int order = 0;
+            if (aaList != null && aaList.length > 0)
+            {
+                for (AADataStructure aa : aaList)
+                {
+                    insertAA.setInt(1, id);
+                    insertAA.setInt(2, order);
+                    insertAA.setString(3, aa.getTitle());
+                    insertAA.setString(4, aa.getDetails());
+                    insertAA.setInt(5, aa.getDelay());
+                    insertAA.executeUpdate();
+                    order++;
+                }
+            }
+        } catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
 
     /** Delete all guidance, displays, commands for an item
      *  @param id Item ID

@@ -22,7 +22,7 @@ public interface PlotSamples
 
     /** @return Number of values. */
     public int getSampleCount();
-    
+
     /** Get a Value.
      *  @param i Value index; 0...(numValues-1)
      *  @return Array with one value per trace.

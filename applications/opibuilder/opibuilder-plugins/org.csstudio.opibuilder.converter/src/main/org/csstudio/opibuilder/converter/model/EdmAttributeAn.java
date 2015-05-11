@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation class for marking EdmAttributes, which should be specialized by specific parser.
- * 
+ *
  * @author Matevz
  *
  */

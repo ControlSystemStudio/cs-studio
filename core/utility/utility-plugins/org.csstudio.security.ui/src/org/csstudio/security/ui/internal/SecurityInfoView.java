@@ -40,8 +40,8 @@ import org.eclipse.ui.part.ViewPart;
 @SuppressWarnings("nls") // No externalize strings, not meant for end users
 public class SecurityInfoView extends ViewPart implements SecurityListener
 {
-	// View ID
-	final public static String ID = "org.csstudio.security.info";
+    // View ID
+    final public static String ID = "org.csstudio.security.info";
     private Text user;
     private List subject_detail, authorization_detail;
 
@@ -50,7 +50,7 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
     public void createPartControl(final Composite parent)
     {
         createComponents(parent);
-        
+
         // Add demo actions
         final String[] demo_actions = new String[] { "alarm_config", "alarm_acknowledge" };
         final IAction[] actions = new IAction[demo_actions.length];
@@ -69,7 +69,7 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
             getViewSite().getActionBars().getMenuManager().add(actions[i]);
             getViewSite().getActionBars().getToolBarManager().add(actions[i]);
         }
-        
+
         // Toggle initial update
         changedSecurity(SecuritySupport.getSubject(),
                 SecuritySupport.isCurrentUser(),
@@ -77,7 +77,7 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
 
         // Update when security info changes
         SecuritySupport.addListener(this);
-        
+
         // Unregister actions and listener
         parent.addDisposeListener(new DisposeListener()
         {
@@ -99,7 +99,7 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
     private void createComponents(final Composite parent)
     {
         parent.setLayout(new FillLayout());
-        
+
         final SashForm sashes = new SashForm(parent, SWT.VERTICAL);
 
         // Top
@@ -112,11 +112,11 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
 
         user = new Text(top, SWT.BORDER | SWT.READ_ONLY);
         user.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
-        
+
         l = new Label(top, 0);
         l.setText("Logged in User:");
         l.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-        
+
         subject_detail = new List(top, SWT.V_SCROLL);
         subject_detail.setToolTipText("List of 'principals', names associated with the user");
         subject_detail.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -124,15 +124,15 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
         // Bottom
         final Composite bottom = new Composite(sashes, 0);
         bottom.setLayout(new GridLayout(2, false));
-        
+
         l = new Label(bottom, 0);
         l.setText("Authorizations:");
         l.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-        
+
         authorization_detail = new List(bottom, SWT.V_SCROLL);
         authorization_detail.setToolTipText("List of authorizations held by the user");
         authorization_detail.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         sashes.setWeights(new int[] { 50, 50 });
     }
 
@@ -150,7 +150,7 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
     {
         final Collection<String> user_info = new ArrayList<>();
         final String user_text;
-        
+
         if (subject == null)
             user_text = "- Not logged in -";
         else
@@ -173,7 +173,7 @@ public class SecurityInfoView extends ViewPart implements SecurityListener
         final Collection<String> auth_info = new ArrayList<>();
         if (authorizations != null)
             auth_info.addAll(authorizations.getAuthorizations());
-        
+
         subject_detail.getDisplay().asyncExec(new Runnable()
         {
             @Override

@@ -19,37 +19,37 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class DeleteRowAction implements IObjectActionDelegate {
-	
 
 
-	private IStructuredSelection selection;
-	
-	public DeleteRowAction() {
-	}
-	
 
-	public void run(IAction action) {
-		TableEditPart tableEditPart = getSelectedWidget();
-		tableEditPart.getTable().deleteRow(tableEditPart.getMenuTriggeredCell().x);		
-	}
+    private IStructuredSelection selection;
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			this.selection = (IStructuredSelection) selection;
-		}
-	}
-	
-	private TableEditPart getSelectedWidget(){ 
-		if(selection.getFirstElement() instanceof TableEditPart){
-			return (TableEditPart)selection.getFirstElement();
-		}else
-			return null;
-	}
+    public DeleteRowAction() {
+    }
 
 
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		
-	}
+    public void run(IAction action) {
+        TableEditPart tableEditPart = getSelectedWidget();
+        tableEditPart.getTable().deleteRow(tableEditPart.getMenuTriggeredCell().x);
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            this.selection = (IStructuredSelection) selection;
+        }
+    }
+
+    private TableEditPart getSelectedWidget(){
+        if(selection.getFirstElement() instanceof TableEditPart){
+            return (TableEditPart)selection.getFirstElement();
+        }else
+            return null;
+    }
+
+
+    @Override
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+
+    }
 
 }

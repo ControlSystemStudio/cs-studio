@@ -15,7 +15,7 @@ import org.csstudio.java.string.StringSplitter;
 @SuppressWarnings("nls")
 public class PathUtil extends SystemSettings
 {
-	/** @param path_spec Path elements joined by ","
+    /** @param path_spec Path elements joined by ","
      *  @return Separate path elements
      *  @throws Exception on parse error (missing end of quoted string)
      */

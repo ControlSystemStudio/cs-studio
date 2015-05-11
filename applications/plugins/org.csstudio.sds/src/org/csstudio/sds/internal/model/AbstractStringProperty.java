@@ -37,49 +37,49 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  */
 public abstract class AbstractStringProperty extends WidgetProperty {
 
-	/**
-	 * Constructor.
-	 *
-	 * @param description
-	 *            a description
-	 * @param category
-	 *            a category
-	 * @param defaultValue
-	 *            the default value
-	 */
-	public AbstractStringProperty(final PropertyTypesEnum type, final String description,
-			final WidgetPropertyCategory category, final String defaultValue) {
-		super(type, description, category, defaultValue,
-				null);
-	}
+    /**
+     * Constructor.
+     *
+     * @param description
+     *            a description
+     * @param category
+     *            a category
+     * @param defaultValue
+     *            the default value
+     */
+    public AbstractStringProperty(final PropertyTypesEnum type, final String description,
+            final WidgetPropertyCategory category, final String defaultValue) {
+        super(type, description, category, defaultValue,
+                null);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Object checkValue(final Object value) {
-		Object acceptedValue = value;
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object checkValue(final Object value) {
+        Object acceptedValue = value;
 
-		if(value != null && value instanceof Number) {
-		    final NumberFormat instance = NumberFormat.getInstance(Locale.US);
-		    instance.setGroupingUsed(false);
-		    instance.setMinimumFractionDigits(0);
-		    instance.setMaximumFractionDigits(100);
-		    acceptedValue = instance.format(value);
-		}else if (value != null && !(value instanceof String)) {
-			acceptedValue = value.toString();
-		}
+        if(value != null && value instanceof Number) {
+            final NumberFormat instance = NumberFormat.getInstance(Locale.US);
+            instance.setGroupingUsed(false);
+            instance.setMinimumFractionDigits(0);
+            instance.setMaximumFractionDigits(100);
+            acceptedValue = instance.format(value);
+        }else if (value != null && !(value instanceof String)) {
+            acceptedValue = value.toString();
+        }
 
-		return acceptedValue;
-	}
+        return acceptedValue;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @SuppressWarnings("unchecked")
-	public Class[] getCompatibleJavaTypes() {
-		return new Class[]{Object.class, String.class};
-	}
+    public Class[] getCompatibleJavaTypes() {
+        return new Class[]{Object.class, String.class};
+    }
 
 }

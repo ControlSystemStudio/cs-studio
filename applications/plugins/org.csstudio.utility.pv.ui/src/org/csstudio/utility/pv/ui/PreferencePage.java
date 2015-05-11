@@ -48,7 +48,7 @@ public class PreferencePage extends FieldEditorPreferencePage
             final String prefixes[] = PVFactory.getSupportedPrefixes();
             final String values[][] = new String[prefixes.length][2];
             for (int i = 0; i < prefixes.length; i++)
-            {           
+            {
                 values[i][0] = prefixes[i] + PVFactory.SEPARATOR;
                 values[i][1] = prefixes[i];
             }

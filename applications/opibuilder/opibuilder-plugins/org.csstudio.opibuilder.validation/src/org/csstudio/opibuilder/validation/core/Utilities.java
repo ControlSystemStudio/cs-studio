@@ -43,7 +43,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**
- * 
+ *
  * <code>Utilities</code> provides some static methods used during the validation or quick fixing the failures.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -54,12 +54,12 @@ public final class Utilities {
     static final String TAG_NAME = "name";
     static final String PROP_ACTION_HOOK_ALL = "hook_all";
     static final String PROP_ACTION_HOOK = "hook";
-    
+
     /**
      * Get message for the rule match failure.
-     * 
+     *
      * @see #areRulesIdentical(RuleData, RuleData)
-     * 
+     *
      * @param value the rule comparison value
      * @return message corresponding to the given value
      */
@@ -71,12 +71,12 @@ public final class Utilities {
             default: return null;
         }
     }
-    
+
     /**
      * Get message for the action match failure.
-     * 
+     *
      * @see #areActionsIdentical(AbstractWidgetAction, AbstractWidgetAction)
-     * 
+     *
      * @param value the action comparison value
      * @return message corresponding to the given value
      */
@@ -86,12 +86,12 @@ public final class Utilities {
         }
         return null;
     }
-    
+
     /**
      * Get message for the script match failure.
-     * 
+     *
      * @see #areScriptsIdentical(ScriptData, ScriptData)
-     * 
+     *
      * @param value the script comparison failure
      * @return message corresponding to the given value
      */
@@ -102,14 +102,14 @@ public final class Utilities {
             case 3: return "Skip execution on first connection does not match";
             case 4: return "Execute even if PVs are disconnected does not match";
             case 5: return "Script text does not match";
-            default: return null;    
+            default: return null;
         }
     }
-    
+
     /**
      * Check if the rule definitions are identical. Rules are identical if they have the same name, property id,
      * PV tuples and expressions.
-     * 
+     *
      * @param original the original rule
      * @param model the validated rule
      * @return 0 if the rules are identical, 1 if tuples are different, 2 if expressions are different, 3 if
@@ -118,7 +118,7 @@ public final class Utilities {
     public static int areRulesIdentical(RuleData original, RuleData model) {
         if (!Objects.equals(original.getName(), model.getName())) return 4;
         if (!Objects.equals(original.getPropId(),model.getPropId())) return 3;
-                
+
         List<Expression> orgex = original.getExpressionList();
         List<Expression> modex = original.getExpressionList();
         if (orgex.size() != modex.size()) {
@@ -128,7 +128,7 @@ public final class Utilities {
         for (Expression oex : orgex) {
             checkExpression: {
                 for (Expression mex : modex) {
-                    if (mex.getBooleanExpression().equals(oex.getBooleanExpression()) 
+                    if (mex.getBooleanExpression().equals(oex.getBooleanExpression())
                             && Objects.equals(oex.getValue(), mex.getValue())) {
                         break checkExpression;
                     }
@@ -136,7 +136,7 @@ public final class Utilities {
                 return 2;
             }
         }
-        
+
         List<PVTuple> orgpvs = original.getPVList();
         List<PVTuple> mpvs = model.getPVList();
         if (orgpvs.size() != mpvs.size()) {
@@ -147,17 +147,17 @@ public final class Utilities {
             PVTuple opt = orgpvs.get(i);
             PVTuple mpt = mpvs.get(i);
             if (!mpt.pvName.equals(opt.pvName) || mpt.trigger != opt.trigger) {
-                return 1; 
+                return 1;
             }
         }
-        
+
         return 0;
     }
-    
+
     /**
      * Compare the widget actions and return 0 if the actions are identical, 1 if their
      * properties are different or 2 if they are of different types.
-     * 
+     *
      * @param original the original action
      * @param model the validated action
      * @return 0 if actions are identical, 1 if properties are different or 2 if action types are different
@@ -171,12 +171,12 @@ public final class Utilities {
         }
         return 0;
     }
-    
+
     /**
      * Checks if two scripts are identical, which means that all their fields are identical. If one of the properties
      * from the original is different from the one in the mode a value greater than 0 is returned. The value depends
-     * on which property is different. 
-     * 
+     * on which property is different.
+     *
      * @param original the original script
      * @param model the validated script
      * @return 0 if identical, or more than 0 if they are different
@@ -190,7 +190,7 @@ public final class Utilities {
         if (original.isCheckConnectivity() != model.isCheckConnectivity()) return 4;
         if (original.isSkipPVsFirstConnection() != model.isSkipPVsFirstConnection()) return 3;
         if (original.isStopExecuteOnError() != model.isStopExecuteOnError()) return 2;
-        
+
         List<PVTuple> orgpvs = original.getPVList();
         List<PVTuple> mpvs = model.getPVList();
         if (orgpvs.size() != mpvs.size()) {
@@ -201,17 +201,17 @@ public final class Utilities {
             PVTuple opt = orgpvs.get(i);
             PVTuple mpt = mpvs.get(i);
             if (!mpt.pvName.equals(opt.pvName) || mpt.trigger != opt.trigger) {
-                return 1; 
+                return 1;
             }
         }
-        
+
         return 0;
     }
-    
+
     /**
      * Loads the schema from the given path and stores data into a map, where the keys are the widget IDs and
      * the values are the widget models.
-     * 
+     *
      * @param path the path to the schema
      * @return a map containing all elements defined in the schema
      * @throws IOException if there was an error reading the schema
@@ -220,7 +220,7 @@ public final class Utilities {
         try (InputStream inputStream = ResourceUtil.pathToInputStream(path, false)) {
             DisplayModel displayModel = new DisplayModel(path);
             XMLUtil.fillDisplayModelFromInputStream(inputStream, displayModel, Display.getDefault());
-    
+
             Map<String, AbstractWidgetModel> map = new HashMap<>();
             map.put(displayModel.getTypeID(), displayModel);
             loadModelFromContainer(displayModel,map);
@@ -244,22 +244,22 @@ public final class Utilities {
             }
         }
     }
-    
+
     /**
      * Check if any of the resources are currently open in any of the editors. If yes and the file is not
      * saved, a popup message will inform the user about that and ask to continue or cancel. If the user
      * cancels the popup at any time, the method returns false. If there are no dirty files or if the user
      * confirms all popups, method returns true.
-     * 
+     *
      * @param process the name of the process that is being done (validation, quick fix)
      * @param resources the resources to check
      * @return true if all messages have been confirmed or no resource is dirty, false if at least one popup has been
      *          cancelled
      * @throws PartInitException if initialisation of the editor failed
      */
-    public static boolean shouldContinueIfFileOpen(String process, IResource... resources) 
+    public static boolean shouldContinueIfFileOpen(String process, IResource... resources)
             throws PartInitException {
-        final boolean save = Activator.getInstance().isSaveBeforeValidation(); 
+        final boolean save = Activator.getInstance().isSaveBeforeValidation();
         IWorkbenchWindow[] windows = PlatformUI.getWorkbench().getWorkbenchWindows();
         for (IWorkbenchWindow w : windows) {
             for (IEditorReference r : w.getActivePage().getEditorReferences()) {
@@ -279,7 +279,7 @@ public final class Utilities {
                                     final Shell shell = w.getShell();
                                     boolean[] ret = new boolean[1];
                                     Display.getDefault().syncExec(()->
-                                       ret[0] = MessageDialog.openConfirm(shell, "File Is Being Edited", 
+                                       ret[0] = MessageDialog.openConfirm(shell, "File Is Being Edited",
                                                "The OPI file " + file.getFullPath() + " is being edited and has unsaved " +
                                                "changes.\nClick OK to continue " + process + " or Cancel to abort."));
                                     if (!ret[0]) return false;

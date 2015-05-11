@@ -29,10 +29,10 @@ import org.eclipse.ui.IEditorInput;
 @SuppressWarnings("nls")
 public class OpenDisplayFile implements IOpenDisplayAction
 {
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
-	public void openDisplay(final String path, final String data) throws Exception
-	{
+    public void openDisplay(final String path, final String data) throws Exception
+    {
         final Model model = new Model();
 
         // Read file
@@ -52,5 +52,5 @@ public class OpenDisplayFile implements IOpenDisplayAction
         final DataBrowserEditor editor = DataBrowserEditor.createInstance(input);
         if (editor == null)
             throw new Exception("Cannot create Data Browser");
-	}
+    }
 }

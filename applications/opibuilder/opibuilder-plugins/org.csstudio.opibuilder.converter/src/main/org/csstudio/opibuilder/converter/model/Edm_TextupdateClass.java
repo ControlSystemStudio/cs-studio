@@ -16,58 +16,58 @@ package org.csstudio.opibuilder.converter.model;
 public class Edm_TextupdateClass extends EdmWidget {
 
 
-	@EdmAttributeAn private String controlPv;
+    @EdmAttributeAn private String controlPv;
 
-	@EdmAttributeAn @EdmOptionalAn private boolean fill;
-	
-	@EdmAttributeAn @EdmOptionalAn private String displayMode;
-	@EdmAttributeAn @EdmOptionalAn private int precision;
-	
-	@EdmAttributeAn @EdmOptionalAn private String fontAlign;
+    @EdmAttributeAn @EdmOptionalAn private boolean fill;
 
-	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
-	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
+    @EdmAttributeAn @EdmOptionalAn private String displayMode;
+    @EdmAttributeAn @EdmOptionalAn private int precision;
 
-	
-	public Edm_TextupdateClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    @EdmAttributeAn @EdmOptionalAn private String fontAlign;
+
+    @EdmAttributeAn @EdmOptionalAn private int lineWidth;
+    @EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
+
+
+    public Edm_TextupdateClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 /**
-	 * @return the mode
-	 */
-	public final String getDisplayMode() {
-		return displayMode;
-	}
+     * @return the mode
+     */
+    public final String getDisplayMode() {
+        return displayMode;
+    }
 
 
 
-	/**
-	 * @return the precision
-	 */
-	public final int getPrecision() {
-		return precision;
-	}
+    /**
+     * @return the precision
+     */
+    public final int getPrecision() {
+        return precision;
+    }
 
 
-	public String getControlPv() {
-		return controlPv;
-	}
+    public String getControlPv() {
+        return controlPv;
+    }
 
-	public boolean isFill() {
-		return fill;
-	}
+    public boolean isFill() {
+        return fill;
+    }
 
-	public String getFontAlign() {
-		return fontAlign;
-	}
+    public String getFontAlign() {
+        return fontAlign;
+    }
 
-	public int getLineWidth() {
-		return lineWidth;
-	}
+    public int getLineWidth() {
+        return lineWidth;
+    }
 
-	public boolean isLineAlarm() {
-		return lineAlarm;
-	}
-	
+    public boolean isLineAlarm() {
+        return lineAlarm;
+    }
+
 }

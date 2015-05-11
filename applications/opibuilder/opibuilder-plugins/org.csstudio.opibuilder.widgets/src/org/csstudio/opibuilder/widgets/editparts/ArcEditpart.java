@@ -19,75 +19,75 @@ import org.eclipse.draw2d.IFigure;
  */
 public class ArcEditpart extends AbstractShapeEditPart {
 
-	
-	@Override
-	protected IFigure doCreateFigure() {
-		ArcFigure figure = new ArcFigure();
-		ArcModel model = getWidgetModel();
-		figure.setFill(model.isFill());		
-		figure.setStartAngle(model.getStartAngle());
-		figure.setTotalAngle(model.getTotalAngle());		
-		return figure;
-	}	
-	
-	@Override
-	public ArcModel getWidgetModel() {
-		return (ArcModel)getModel();
-	}
-	
 
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		super.registerPropertyChangeHandlers();
-		// fill
-		IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ArcFigure figure = (ArcFigure) refreshableFigure;
-				figure.setFill((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ArcModel.PROP_FILL, fillHandler);	
-		
-		//start angle
-		IWidgetPropertyChangeHandler startAngleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ArcFigure figure = (ArcFigure) refreshableFigure;
-				figure.setStartAngle((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ArcModel.PROP_START_ANGLE, startAngleHandler);
-		
-		//total angle
-		IWidgetPropertyChangeHandler totalAngleHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ArcFigure figure = (ArcFigure) refreshableFigure;
-				figure.setTotalAngle((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ArcModel.PROP_TOTAL_ANGLE, totalAngleHandler);
-		
-	}
+    @Override
+    protected IFigure doCreateFigure() {
+        ArcFigure figure = new ArcFigure();
+        ArcModel model = getWidgetModel();
+        figure.setFill(model.isFill());
+        figure.setStartAngle(model.getStartAngle());
+        figure.setTotalAngle(model.getTotalAngle());
+        return figure;
+    }
 
-	@Override
-	public void setValue(Object value) {
-		if(value instanceof Boolean){
-			((ArcFigure)getFigure()).setFill((Boolean)value);
-		}else
-			super.setValue(value);
-	}
-	
-	@Override
-	public Object getValue() {
-		return ((ArcFigure)getFigure()).isFill();
-	}
-	
+    @Override
+    public ArcModel getWidgetModel() {
+        return (ArcModel)getModel();
+    }
+
+
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        super.registerPropertyChangeHandlers();
+        // fill
+        IWidgetPropertyChangeHandler fillHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                ArcFigure figure = (ArcFigure) refreshableFigure;
+                figure.setFill((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ArcModel.PROP_FILL, fillHandler);
+
+        //start angle
+        IWidgetPropertyChangeHandler startAngleHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                ArcFigure figure = (ArcFigure) refreshableFigure;
+                figure.setStartAngle((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ArcModel.PROP_START_ANGLE, startAngleHandler);
+
+        //total angle
+        IWidgetPropertyChangeHandler totalAngleHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                ArcFigure figure = (ArcFigure) refreshableFigure;
+                figure.setTotalAngle((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ArcModel.PROP_TOTAL_ANGLE, totalAngleHandler);
+
+    }
+
+    @Override
+    public void setValue(Object value) {
+        if(value instanceof Boolean){
+            ((ArcFigure)getFigure()).setFill((Boolean)value);
+        }else
+            super.setValue(value);
+    }
+
+    @Override
+    public Object getValue() {
+        return ((ArcFigure)getFigure()).isFill();
+    }
+
 }

@@ -16,7 +16,7 @@ import java.beans.SimpleBeanInfo;
 
 /**
  * Mostly this is used as a placeholder for the descriptors.
- * 
+ *
  */
 
 class GenericBeanInfo extends SimpleBeanInfo {
@@ -30,46 +30,46 @@ class GenericBeanInfo extends SimpleBeanInfo {
     private BeanInfo targetBeanInfo;
 
     public GenericBeanInfo(BeanDescriptor beanDescriptor,
-		EventSetDescriptor[] events, int defaultEvent,
-		PropertyDescriptor[] properties, int defaultProperty,
-		MethodDescriptor[] methods, BeanInfo targetBeanInfo) {
-	this.beanDescriptor = beanDescriptor;
-	this.events = events;
-	this.defaultEvent = defaultEvent;
-	this.properties = properties;
-	this.defaultProperty = defaultProperty;
-	this.methods = methods;
-	this.targetBeanInfo = targetBeanInfo;
+        EventSetDescriptor[] events, int defaultEvent,
+        PropertyDescriptor[] properties, int defaultProperty,
+        MethodDescriptor[] methods, BeanInfo targetBeanInfo) {
+    this.beanDescriptor = beanDescriptor;
+    this.events = events;
+    this.defaultEvent = defaultEvent;
+    this.properties = properties;
+    this.defaultProperty = defaultProperty;
+    this.methods = methods;
+    this.targetBeanInfo = targetBeanInfo;
     }
-    
+
     public PropertyDescriptor[] getPropertyDescriptors() {
-	return properties;
+    return properties;
     }
 
     public int getDefaultPropertyIndex() {
-	return defaultProperty;
+    return defaultProperty;
     }
 
     public EventSetDescriptor[] getEventSetDescriptors() {
-	return events;
+    return events;
     }
 
     public int getDefaultEventIndex() {
-	return defaultEvent;
+    return defaultEvent;
     }
 
     public MethodDescriptor[] getMethodDescriptors() {
-	return methods;
+    return methods;
     }
 
     public BeanDescriptor getBeanDescriptor() {
-	return beanDescriptor;
+    return beanDescriptor;
     }
 
     public java.awt.Image getIcon(int iconKind) {
-	if (targetBeanInfo != null) {
-	    return targetBeanInfo.getIcon(iconKind);
-	}
-	return super.getIcon(iconKind);
+    if (targetBeanInfo != null) {
+        return targetBeanInfo.getIcon(iconKind);
+    }
+    return super.getIcon(iconKind);
     }
 }

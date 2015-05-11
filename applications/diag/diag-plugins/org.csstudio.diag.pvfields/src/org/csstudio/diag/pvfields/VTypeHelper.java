@@ -28,14 +28,14 @@ public class VTypeHelper
             return ((VNumber)value).getValue().toString();
         if (value instanceof VEnum)
         {
-        	try
-        	{
-        		return ((VEnum)value).getValue();
-        	}
-        	catch (ArrayIndexOutOfBoundsException ex)
-        	{	// PVManager doesn't handle enums that have no label
-        		return "<enum " + ((VEnum)value).getIndex() + ">";
-        	}
+            try
+            {
+                return ((VEnum)value).getValue();
+            }
+            catch (ArrayIndexOutOfBoundsException ex)
+            {    // PVManager doesn't handle enums that have no label
+                return "<enum " + ((VEnum)value).getIndex() + ">";
+            }
         }
         if (value instanceof VString)
             return ((VString)value).getValue();

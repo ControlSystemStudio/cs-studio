@@ -42,9 +42,9 @@ public class SineClient {
     private static int size = 1024;
     private float[] sdat = new float[size];
     private float[] refdat = new float[size];
-    
+
     public class cdSineClient implements TLinkCallback
-    { 
+    {
       public void callback(TLink lnk)
       {
         if (lnk.getLinkStatus() != 0)
@@ -56,8 +56,8 @@ public class SineClient {
         System.out.println("");
       }
     }
-    
-    
+
+
     /**
      * @param sdat
      * @param refdat
@@ -70,7 +70,7 @@ public class SineClient {
           Thread.currentThread().sleep(10000);
         }
         catch (InterruptedException e) {};
-        
+
         System.exit(0);
     }
 
@@ -96,9 +96,9 @@ public class SineClient {
       }
       return cc;
     }
-    
+
     public static void main(String[] args)
     {
-     
+
     }
 }

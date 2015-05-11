@@ -15,7 +15,7 @@ public class StandaloneApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
         return new StandaloneApplicationWorkbenchWindowAdvisor(configurer);
     }
 
-	public String getInitialWindowPerspectiveId() {		
-			 return StandaloneRuntimePerspective.ID;
-	}
+    public String getInitialWindowPerspectiveId() {
+             return StandaloneRuntimePerspective.ID;
+    }
 }

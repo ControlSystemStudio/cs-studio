@@ -32,9 +32,9 @@ public class AddAnnotationAction<XTYPE extends Comparable<XTYPE>> extends Undoab
         plot.addAnnotation(annotation);
     }
 
-	@Override
+    @Override
     public void undo()
     {
-	    plot.removeAnnotation(annotation);
+        plot.removeAnnotation(annotation);
     }
 }

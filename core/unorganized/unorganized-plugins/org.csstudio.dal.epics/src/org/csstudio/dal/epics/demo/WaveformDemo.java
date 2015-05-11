@@ -8,19 +8,19 @@ import org.csstudio.dal.spi.PropertyFactory;
 
 public class WaveformDemo {
 
-	public static void main(final String[] args) throws Exception {
-		final char c = 0;
+    public static void main(final String[] args) throws Exception {
+        final char c = 0;
 
-		System.out.println(">>>"+c);
-		final EPICSApplicationContext ctx = new EPICSApplicationContext("Test");
-		final PropertyFactory pf = DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx, LinkPolicy.SYNC_LINK_POLICY);
+        System.out.println(">>>"+c);
+        final EPICSApplicationContext ctx = new EPICSApplicationContext("Test");
+        final PropertyFactory pf = DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx, LinkPolicy.SYNC_LINK_POLICY);
 
-		final StringProperty sp = pf.getProperty("wave", StringProperty.class, null);
-		System.out.println("Waveform value: " + sp.getValue());
-//		String val = "2345678900;
-//		System.out.println("Set value: " + val);
-//		sp.setValue(val);
-//		Thread.sleep(2000);
-//		System.out.println("New Value: " + sp.getValue());
-	}
+        final StringProperty sp = pf.getProperty("wave", StringProperty.class, null);
+        System.out.println("Waveform value: " + sp.getValue());
+//        String val = "2345678900;
+//        System.out.println("Set value: " + val);
+//        sp.setValue(val);
+//        Thread.sleep(2000);
+//        System.out.println("New Value: " + sp.getValue());
+    }
 }

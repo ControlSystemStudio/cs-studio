@@ -24,22 +24,22 @@ import org.junit.Test;
 public class FieldParserUnitTest
 {
     @Test
-	public void testFieldParser() throws Exception
-	{
-		final Map<String, List<String>> rec_fields =
-			FieldParser.parse("ai(INP,FLNK) ; ao (DOL, SIML , FLNK, SCAN )  ; calc(X, INPA-L);bigASub(INP001-128); Odd(ODD0-5);"
-			        + " scalcout(INPA-L,INAA,INBB,INCC,INDD,INEE,INFF,INGG,INHH,INII,INJJ,INKK,INLL)");
+    public void testFieldParser() throws Exception
+    {
+        final Map<String, List<String>> rec_fields =
+            FieldParser.parse("ai(INP,FLNK) ; ao (DOL, SIML , FLNK, SCAN )  ; calc(X, INPA-L);bigASub(INP001-128); Odd(ODD0-5);"
+                    + " scalcout(INPA-L,INAA,INBB,INCC,INDD,INEE,INFF,INGG,INHH,INII,INJJ,INKK,INLL)");
 
-		assertThat(rec_fields.get("quirk"), nullValue());
+        assertThat(rec_fields.get("quirk"), nullValue());
 
-		List<String> fields = rec_fields.get("ao");
-		assertThat(fields.size(), equalTo(4));
-		assertThat(fields.get(0), equalTo("DOL"));
-		assertThat(fields.get(1), equalTo("SIML"));
-		assertThat(fields.get(2), equalTo("FLNK"));
-		assertThat(fields.get(3), equalTo("SCAN"));
+        List<String> fields = rec_fields.get("ao");
+        assertThat(fields.size(), equalTo(4));
+        assertThat(fields.get(0), equalTo("DOL"));
+        assertThat(fields.get(1), equalTo("SIML"));
+        assertThat(fields.get(2), equalTo("FLNK"));
+        assertThat(fields.get(3), equalTo("SCAN"));
 
-		fields = rec_fields.get("calc");
+        fields = rec_fields.get("calc");
         assertThat(fields.size(), equalTo(13));
         assertThat(fields.get(0), equalTo("X"));
         assertThat(fields.get(1), equalTo("INPA"));
@@ -62,5 +62,5 @@ public class FieldParserUnitTest
         assertThat(fields, hasItem("INAA"));
         assertThat(fields, hasItem("INGG"));
         assertThat(fields, hasItem("INLL"));
-	}
+    }
 }

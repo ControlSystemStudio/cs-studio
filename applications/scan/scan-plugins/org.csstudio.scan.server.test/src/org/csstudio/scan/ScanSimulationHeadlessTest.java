@@ -36,18 +36,18 @@ public class ScanSimulationHeadlessTest
     public void testImplementScanCommand() throws Exception
     {
         final List<ScanCommand> commands = Arrays.asList( (ScanCommand)
-        		new DelayCommand(60.0),
-        		new SetCommand("shutter", 1.0),
-        		new SetCommand("shutter", 0.0),
-        		new SetCommand("shutter", 1.0),
-        		new SetCommand("setpoint", 1.0, "readback"),
-        		new SetCommand("setpoint", 10.0, "readback"),
-        		new LoopCommand("xpos", 0, 10, 5,
-        			new LoopCommand("ypos", 0, 10, 5,
-        				new WaitCommand("neutrons", Comparison.INCREASE_BY, 3.0)
-        			)
-        		)
-    		);
+                new DelayCommand(60.0),
+                new SetCommand("shutter", 1.0),
+                new SetCommand("shutter", 0.0),
+                new SetCommand("shutter", 1.0),
+                new SetCommand("setpoint", 1.0, "readback"),
+                new SetCommand("setpoint", 10.0, "readback"),
+                new LoopCommand("xpos", 0, 10, 5,
+                    new LoopCommand("ypos", 0, 10, 5,
+                        new WaitCommand("neutrons", Comparison.INCREASE_BY, 3.0)
+                    )
+                )
+            );
 
         final ScanCommandImplTool tool = ScanCommandImplTool.getInstance();
         List<ScanCommandImpl<?>> scan = tool.implement(commands, null);
@@ -60,7 +60,7 @@ public class ScanSimulationHeadlessTest
         System.out.println("--------");
         System.out.println("Simulation:");
         System.out.println("--------");
-		System.out.print(log_text);
+        System.out.print(log_text);
         System.out.println("--------");
         System.out.println(context.getSimulationTime() + "   Total estimated execution time");
 

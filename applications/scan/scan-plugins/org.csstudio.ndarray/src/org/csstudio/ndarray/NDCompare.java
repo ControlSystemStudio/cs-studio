@@ -25,28 +25,28 @@ public class NDCompare
     /** @param a N-dim array
      *  @return True if any element is true
      */
-	public static boolean any(final NDArray a)
-	{
-		final IteratorNumber iterator = a.getIterator();
-		while (iterator.hasNext())
-			if (iterator.nextByte() != 0)
-				return true;
-		return false;
-	}
+    public static boolean any(final NDArray a)
+    {
+        final IteratorNumber iterator = a.getIterator();
+        while (iterator.hasNext())
+            if (iterator.nextByte() != 0)
+                return true;
+        return false;
+    }
 
     /** @param a N-dim array
      *  @return True if all elements are true
      */
-	public static boolean all(final NDArray a)
-	{
-		final IteratorNumber iterator = a.getIterator();
-		while (iterator.hasNext())
-			if (iterator.nextByte() == 0)
-				return false;
-		return true;
-	}
+    public static boolean all(final NDArray a)
+    {
+        final IteratorNumber iterator = a.getIterator();
+        while (iterator.hasNext())
+            if (iterator.nextByte() == 0)
+                return false;
+        return true;
+    }
 
-	
+
     /** @param a N-dim array
      *  @return Array, length matching the rank of input, where element [d] has indices of non-zero elements for dimension d
      */
@@ -59,7 +59,7 @@ public class NDCompare
         while (count_iter.hasNext())
             if (count_iter.nextByte() != 0)
                 ++count;
-        
+
         final NDArray result = NDMatrix.zeros(NDType.INT32, new NDShape(a.getRank(), count));
         int next_result = 0;
         final ShapeIterator iter = new ShapeIterator(a.getShape());
@@ -76,54 +76,54 @@ public class NDCompare
         return result;
     }
 
-	
+
     /** Binary operation */
     private interface BinaryOperation
     {
-    	/** @param a First input
-    	 *  @param b Second input
-    	 *  @return Result of operation
-    	 */
-    	boolean compare(double a, double b);
+        /** @param a First input
+         *  @param b Second input
+         *  @return Result of operation
+         */
+        boolean compare(double a, double b);
     }
 
     final private static BinaryOperation op_eq = new BinaryOperation()
-	{
-		@Override
-		public boolean compare(final double a, final double b) 	{ return a == b;	}
-	};
+    {
+        @Override
+        public boolean compare(final double a, final double b)     { return a == b;    }
+    };
 
     final private static BinaryOperation op_ne = new BinaryOperation()
-	{
-		@Override
-		public boolean compare(final double a, final double b) 	{ return a != b;	}
-	};
+    {
+        @Override
+        public boolean compare(final double a, final double b)     { return a != b;    }
+    };
 
     final private static BinaryOperation op_lt = new BinaryOperation()
-	{
-		@Override
-		public boolean compare(final double a, final double b) 	{ return a < b;	}
-	};
+    {
+        @Override
+        public boolean compare(final double a, final double b)     { return a < b;    }
+    };
 
     final private static BinaryOperation op_le = new BinaryOperation()
-	{
-		@Override
-		public boolean compare(final double a, final double b) 	{ return a <= b;	}
-	};
+    {
+        @Override
+        public boolean compare(final double a, final double b)     { return a <= b;    }
+    };
 
     final private static BinaryOperation op_gt = new BinaryOperation()
-	{
-		@Override
-		public boolean compare(final double a, final double b) 	{ return a > b;	}
-	};
+    {
+        @Override
+        public boolean compare(final double a, final double b)     { return a > b;    }
+    };
 
     final private static BinaryOperation op_ge = new BinaryOperation()
-	{
-		@Override
-		public boolean compare(final double a, final double b) 	{ return a >= b;	}
-	};
+    {
+        @Override
+        public boolean compare(final double a, final double b)     { return a >= b;    }
+    };
 
-	/** Perform operation on arrays element-by-element,
+    /** Perform operation on arrays element-by-element,
      *  using the NumPy broadcast idea but switching
      *  to linear interation if possible
      *  @param array N-dim array
@@ -133,13 +133,13 @@ public class NDCompare
      *  @throws IllegalArgumentException if shapes are not compatible
      */
     private static NDArray binary_operation(final NDArray a, final NDArray b,
-			final BinaryOperation operation)
-	{
-    	final NDArray result;
+            final BinaryOperation operation)
+    {
+        final NDArray result;
 
-    	switch (NDCompatibility.forArrays(a, b))
-    	{
-    	case FLAT_ITERATION:
+        switch (NDCompatibility.forArrays(a, b))
+        {
+        case FLAT_ITERATION:
             result = new NDArray(NDType.BOOL, a.getShape());
             final int size = result.getSize();
             for (int i=0; i<size; ++i)
@@ -149,7 +149,7 @@ public class NDCompare
                 result.setFlatDouble(i, value ? 1.0 : 0.0);
             }
             break;
-    	case SHAPE_ITERATION:
+        case SHAPE_ITERATION:
             result = new NDArray(NDType.BOOL, a.getShape());
             final ShapeIterator shape = new ShapeIterator(result.getShape());
             while (shape.hasNext())
@@ -160,22 +160,22 @@ public class NDCompare
                 result.setDouble(value ? 1.0 : 0.0, pos);
             }
             break;
-    	case BROADCAST_ITERATION:
-    	    final BroadcastIterator bcst = new BroadcastIterator(a.getShape(), b.getShape());
-    	    result = new NDArray(NDType.BOOL, bcst.getBroadcastShape());
-    	    while (bcst.hasNext())
-    	    {
-    	        final boolean value = operation.compare(
-    	                a.getDouble(bcst.getPosA()), b.getDouble(bcst.getPosB()));
-    	        result.setDouble(value ? 1.0 : 0.0, bcst.getPosition());
-    	    }
+        case BROADCAST_ITERATION:
+            final BroadcastIterator bcst = new BroadcastIterator(a.getShape(), b.getShape());
+            result = new NDArray(NDType.BOOL, bcst.getBroadcastShape());
+            while (bcst.hasNext())
+            {
+                final boolean value = operation.compare(
+                        a.getDouble(bcst.getPosA()), b.getDouble(bcst.getPosB()));
+                result.setDouble(value ? 1.0 : 0.0, bcst.getPosition());
+            }
             break;
-	    default:
+        default:
             throw new IllegalArgumentException("Cannot compare array of shape " + a +
                     " with incompatible array of shape " + b);
-    	}
+        }
 
-    	return result;
+        return result;
     }
 
     /** Element-by-element comparison
@@ -185,7 +185,7 @@ public class NDCompare
      */
     public static NDArray equal_to(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_eq);
+        return binary_operation(a, b, op_eq);
     }
 
 
@@ -196,7 +196,7 @@ public class NDCompare
      */
     public static NDArray not_equal_to(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_ne);
+        return binary_operation(a, b, op_ne);
     }
 
     /** Element-by-element comparison
@@ -206,7 +206,7 @@ public class NDCompare
      */
     public static NDArray less_than(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_lt);
+        return binary_operation(a, b, op_lt);
     }
 
     /** Element-by-element comparison
@@ -216,7 +216,7 @@ public class NDCompare
      */
     public static NDArray less_equal(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_le);
+        return binary_operation(a, b, op_le);
     }
 
     /** Element-by-element comparison
@@ -226,7 +226,7 @@ public class NDCompare
      */
     public static NDArray greater_than(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_gt);
+        return binary_operation(a, b, op_gt);
     }
 
     /** Element-by-element comparison
@@ -236,6 +236,6 @@ public class NDCompare
      */
     public static NDArray greater_equal(final NDArray a, final NDArray b)
     {
-    	return binary_operation(a, b, op_ge);
+        return binary_operation(a, b, op_ge);
     }
 }

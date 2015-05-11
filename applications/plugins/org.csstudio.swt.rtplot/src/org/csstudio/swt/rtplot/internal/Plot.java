@@ -393,7 +393,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     /** @return Count the number of traces */
     public int getTraceCount(){
-	return traces.size();
+    return traces.size();
     }
 
     /** Remove trace from plot

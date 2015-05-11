@@ -31,11 +31,11 @@ public class ConfigLogCommandImpl extends ScanCommandImpl<ConfigLogCommand>
         super(command, jython);
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void execute(final ScanContext context)  throws Exception
     {
-		context.setLogMode(command.getAutomatic());
-		context.workPerformed(1);
+        context.setLogMode(command.getAutomatic());
+        context.workPerformed(1);
     }
 }

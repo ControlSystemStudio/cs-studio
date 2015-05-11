@@ -14,7 +14,7 @@ public class ColumnInfo
 {
     final private String header;
     final private int width;
-    
+
     /** Initialize
      *  @param header Column name (header)
      *  @param width Column widths (in percent)

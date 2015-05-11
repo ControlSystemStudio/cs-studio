@@ -27,75 +27,75 @@ import org.csstudio.dal.DoubleAccess;
 
 
 public class DoubleDataAccessWrapper extends AbstractDataAccessWrapper<Double>
-	implements DoubleAccess
+    implements DoubleAccess
 {
-	private static final int NUMBER_TO_DOUBLE = 1;
-	private static final int LONG_TO_DOUBLE = 2;
+    private static final int NUMBER_TO_DOUBLE = 1;
+    private static final int LONG_TO_DOUBLE = 2;
 
-	public DoubleDataAccessWrapper(DataAccess sourceDA)
-	{
-		super(Double.class, sourceDA);
-	}
+    public DoubleDataAccessWrapper(DataAccess sourceDA)
+    {
+        super(Double.class, sourceDA);
+    }
 
-	protected int getConversion()
-	{
-		if (valClass.equals(Double.class)) {
-			if (sourceDA.getDataType().equals(Number.class)) {
-				return NUMBER_TO_DOUBLE;
-			} else if (sourceDA.getDataType().equals(Long.class)) {
-				return LONG_TO_DOUBLE;
-			}
-		}
+    protected int getConversion()
+    {
+        if (valClass.equals(Double.class)) {
+            if (sourceDA.getDataType().equals(Number.class)) {
+                return NUMBER_TO_DOUBLE;
+            } else if (sourceDA.getDataType().equals(Long.class)) {
+                return LONG_TO_DOUBLE;
+            }
+        }
 
-		return UNKNOWN;
-	}
+        return UNKNOWN;
+    }
 
-	@Override
-	protected Object convertToOriginal(Double value, DataAccess dataAccess)
-	{
-		if (value == null) {
-			return null;
-		}
+    @Override
+    protected Object convertToOriginal(Double value, DataAccess dataAccess)
+    {
+        if (value == null) {
+            return null;
+        }
 
-		switch (conversion) {
-		case LONG_TO_DOUBLE: {
-			Long longVal = value.longValue();
+        switch (conversion) {
+        case LONG_TO_DOUBLE: {
+            Long longVal = value.longValue();
 
-			return longVal;
-		}
+            return longVal;
+        }
 
-		case NUMBER_TO_DOUBLE: {
+        case NUMBER_TO_DOUBLE: {
 
-			return value;
-		}
-		}
+            return value;
+        }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	@Override
-	protected Double convertFromOriginal(Object value, DataAccess dataAccess)
-	{
-		if (value == null) {
-			return null;
-		}
+    @Override
+    protected Double convertFromOriginal(Object value, DataAccess dataAccess)
+    {
+        if (value == null) {
+            return null;
+        }
 
-		switch (conversion) {
-		case NUMBER_TO_DOUBLE: {
-			Double doubleVal = new Double(((Number)value).doubleValue());
+        switch (conversion) {
+        case NUMBER_TO_DOUBLE: {
+            Double doubleVal = new Double(((Number)value).doubleValue());
 
-			return doubleVal;
-		}
+            return doubleVal;
+        }
 
-		case LONG_TO_DOUBLE: {
-			Double doubleVal = new Double(((Long)value).doubleValue());
+        case LONG_TO_DOUBLE: {
+            Double doubleVal = new Double(((Long)value).doubleValue());
 
-			return doubleVal;
-		}
-		}
+            return doubleVal;
+        }
+        }
 
-		return null;
-	}
+        return null;
+    }
 }
 
 /* __oOo__ */

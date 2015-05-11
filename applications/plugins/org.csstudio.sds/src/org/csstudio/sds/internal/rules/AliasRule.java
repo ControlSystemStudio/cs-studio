@@ -28,15 +28,15 @@ import java.util.HashMap;
 import org.csstudio.sds.model.IRule;
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
  * @since 19.05.2011
  */
 public class AliasRule implements IRule {
-    
+
     /**
      * {@inheritDoc}
      */
@@ -53,14 +53,14 @@ public class AliasRule implements IRule {
         }
         return aliasMap;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String getDescription() {
         return "Säubert eine String das nur der Channel übrig bleibt. Der channel wird dem Alias $channel$ zugewiesen." +
-        		"\nDer Channel muß an erster Stelle stehen. Getrennt wird durch ' ','.','['";
+                "\nDer Channel muß an erster Stelle stehen. Getrennt wird durch ' ','.','['";
     }
-    
+
 }

@@ -186,9 +186,9 @@ abstract public class ArchiveChannel extends PVListenerAdapter
     /** @return Human-readable info on internal state of PV */
     public synchronized String getInternalState()
     {
-    	if (pv == null)
-    		return "Not initialized";
-    	return pv.read() != null ? "Connected" : "Disconnected";
+        if (pv == null)
+            return "Not initialized";
+        return pv.read() != null ? "Connected" : "Disconnected";
     }
 
     /** Start archiving this channel. */
@@ -196,14 +196,14 @@ abstract public class ArchiveChannel extends PVListenerAdapter
     {
         is_running = true;
         need_first_sample = true;
-        
-		final PV pv = PVPool.getPV(name);
-		pv.addListener(this);
-		synchronized (this)
+
+        final PV pv = PVPool.getPV(name);
+        pv.addListener(this);
+        synchronized (this)
         {
-		    if (this.pv != null)
-		        throw new Exception(name + " started twice");
-		    this.pv = pv;
+            if (this.pv != null)
+                throw new Exception(name + " started twice");
+            this.pv = pv;
         }
     }
 
@@ -255,12 +255,12 @@ abstract public class ArchiveChannel extends PVListenerAdapter
             trouble_sample_log.log("'" + getName() + "': Received no time information for " + value);
        return value;
     }
-    
+
     /** Stop archiving this channel */
     final void stop()
     {
-    	if (!is_running)
-    		return;
+        if (!is_running)
+            return;
         is_running = false;
         final PV safe_pv;
         synchronized (this)
@@ -276,7 +276,7 @@ abstract public class ArchiveChannel extends PVListenerAdapter
     /** @return Most recent value of the channel's PV */
     final public synchronized String getCurrentValue()
     {
-    	return VTypeHelper.toString(most_recent_value);
+        return VTypeHelper.toString(most_recent_value);
     }
 
     /** @return Count of received values */
@@ -288,7 +288,7 @@ abstract public class ArchiveChannel extends PVListenerAdapter
     /** @return Last value written to archive */
     final public synchronized String getLastArchivedValue()
     {
-    	return VTypeHelper.toString(last_archived_value);
+        return VTypeHelper.toString(last_archived_value);
     }
 
     /** @return Sample buffer */
@@ -455,7 +455,7 @@ abstract public class ArchiveChannel extends PVListenerAdapter
                 return false;
             }
             // else ...
-	        last_archived_value = value;
+            last_archived_value = value;
         }
         buffer.add(value);
         if (SampleBuffer.isInErrorState())

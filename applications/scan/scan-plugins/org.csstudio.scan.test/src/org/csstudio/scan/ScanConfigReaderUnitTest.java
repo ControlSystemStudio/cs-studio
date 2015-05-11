@@ -31,19 +31,19 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ScanConfigReaderUnitTest
 {
-	@Test
-	public void testReadLegacyFile() throws Exception
-	{
-		ScanConfig config = new ScanConfig("examples/beamline.xml");
+    @Test
+    public void testReadLegacyFile() throws Exception
+    {
+        ScanConfig config = new ScanConfig("examples/beamline.xml");
         final DeviceInfo[] devices = config.getDevices();
-		assertThat(devices.length, greaterThanOrEqualTo(4));
+        assertThat(devices.length, greaterThanOrEqualTo(4));
 
-		for (DeviceInfo device : devices)
-			System.out.println(device);
+        for (DeviceInfo device : devices)
+            System.out.println(device);
 
-		DeviceInfo device = find(devices, "motor_x");
-		assertThat(device, not(nullValue()));
-		assertThat(device.getAlias(), equalTo("xpos"));
+        DeviceInfo device = find(devices, "motor_x");
+        assertThat(device, not(nullValue()));
+        assertThat(device.getAlias(), equalTo("xpos"));
 
         device = find(devices, "setpoint");
         assertThat(device, not(nullValue()));
@@ -56,11 +56,11 @@ public class ScanConfigReaderUnitTest
 
         config = new ScanConfig("examples/simulation.xml");
         assertThat(config.getSlewRate("neutrons"), equalTo(7.0));
-	}
+    }
 
-	@Test
-	public void testConfigFile() throws Exception
-	{
+    @Test
+    public void testConfigFile() throws Exception
+    {
         final ScanConfig config = new ScanConfig("examples/scan_config.xml");
         final DeviceInfo[] devices = config.getDevices();
         assertThat(devices.length, greaterThanOrEqualTo(4));
@@ -79,20 +79,20 @@ public class ScanConfigReaderUnitTest
         device = find(devices, "readback");
         assertThat(device, not(nullValue()));
         assertThat(device.getAlias(), equalTo("readback"));
-        
+
         assertThat(config.getSlewRate("neutrons"), equalTo(7.0));
         // Not specifically listed, but there's ".pos" pattern
         assertThat(find(devices, "qpos"), nullValue());
         assertThat(config.getSlewRate("qpos"), equalTo(0.2));
-        
+
         // Unknown PV
         assertThat(config.getSlewRate("whatever"), equalTo(ScanConfig.DEFAULT_SLEW_RATE));
     }
 
-	/** @param devices
-	 *  @param name Requested device name
-	 *  @return {@link DeviceInfo} with specified name or <code>null</code>
-	 */
+    /** @param devices
+     *  @param name Requested device name
+     *  @return {@link DeviceInfo} with specified name or <code>null</code>
+     */
     private DeviceInfo find(final DeviceInfo[] devices, final String name)
     {
         for (DeviceInfo device : devices)

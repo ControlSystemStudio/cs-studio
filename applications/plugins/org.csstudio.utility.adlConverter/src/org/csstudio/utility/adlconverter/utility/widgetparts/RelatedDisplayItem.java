@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
  * @since 20.09.2007
  */
 public class RelatedDisplayItem extends WidgetPart {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(RelatedDisplayItem.class);
 
     /**
@@ -79,7 +79,7 @@ public class RelatedDisplayItem extends WidgetPart {
 
     /**
      * The default constructor.
-     * 
+     *
      * @param display
      *            An ADLWidget that correspond a ADL Related Display Item.
      * @param parentWidgetModel
@@ -97,66 +97,66 @@ public class RelatedDisplayItem extends WidgetPart {
      */
     @Override
     final void init() {
-    	//_path = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
+        //_path = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
     }
-    
-    
+
+
     final String checkPath(String path, String name){
-    	path = path.trim();
-    	if(path.endsWith("/"))
-    		path = path.substring(0, path.length()-1);
-    	
-    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    	
-    	// Both file formats are checked, to ensure that if multiple displays are being
-    	// converted out of order, this method doesn't break by failing to find
-    	// the yet to be converted <filename>.adl display.
-    	File file1 = new File(path + "/" + name + ".adl");
-    	File file2 = new File(path + "/" + name + ".css-sds");
-    	Path path1 = new Path(path + "/" + name + ".adl");
-    	Path path2 = new Path(path + "/" + name + ".css-sds");
-    	
-    	if(file1.exists() || file2.exists())
-    		return path.replaceAll(root.getRawLocation().toString(), "");
-    	
-    	if(root.exists(path1) || root.exists(path2))
-    		return root.getFullPath().toString();
-    	 
-    	return null;
+        path = path.trim();
+        if(path.endsWith("/"))
+            path = path.substring(0, path.length()-1);
+
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+
+        // Both file formats are checked, to ensure that if multiple displays are being
+        // converted out of order, this method doesn't break by failing to find
+        // the yet to be converted <filename>.adl display.
+        File file1 = new File(path + "/" + name + ".adl");
+        File file2 = new File(path + "/" + name + ".css-sds");
+        Path path1 = new Path(path + "/" + name + ".adl");
+        Path path2 = new Path(path + "/" + name + ".css-sds");
+
+        if(file1.exists() || file2.exists())
+            return path.replaceAll(root.getRawLocation().toString(), "");
+
+        if(root.exists(path1) || root.exists(path2))
+            return root.getFullPath().toString();
+
+        return null;
     }
-    
-    
+
+
     /**
      * First checks the parent path of the calling display, then the workspace path, then
      * each of the display paths provided in the preferences for the source file
-     * of this display.  Returns the FIRST directory where the display exists. 
+     * of this display.  Returns the FIRST directory where the display exists.
      */
     final String findPath() {
-    	// At this point, _name = <filename>.css-sds.
-    	String name = _name.replaceAll(".css-sds", "");
-    	String parent = ADLHelper.getFolderPath();
-    	String path = null;
-    	String allpaths = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Display_Paths);
-    	String[] displaypaths = allpaths.split(",");    	
-    	if(name.startsWith("/"))
-    		name = name.substring(1,name.length());
+        // At this point, _name = <filename>.css-sds.
+        String name = _name.replaceAll(".css-sds", "");
+        String parent = ADLHelper.getFolderPath();
+        String path = null;
+        String allpaths = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Display_Paths);
+        String[] displaypaths = allpaths.split(",");
+        if(name.startsWith("/"))
+            name = name.substring(1,name.length());
 
-    	path = checkPath(parent, name);
-    	if(path != null)
-    		return path;
-    	
-    	path = checkPath("", name);
-    	if(path != null)
-    		return path;
-    	
-    	for(String dpath : displaypaths){
-    		path = checkPath(dpath, name);
-    		if(path != null)
-    			return path;
-    	}
-    	
-    	// Return the default if nothing else is found
-    	return Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
+        path = checkPath(parent, name);
+        if(path != null)
+            return path;
+
+        path = checkPath("", name);
+        if(path != null)
+            return path;
+
+        for(String dpath : displaypaths){
+            path = checkPath(dpath, name);
+            if(path != null)
+                return path;
+        }
+
+        // Return the default if nothing else is found
+        return Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
     }
 
     /**
@@ -186,8 +186,8 @@ public class RelatedDisplayItem extends WidgetPart {
             head = head.trim().toLowerCase();
             /* XXX: Wenn es noch mal Probleme geben sollte mit Punkten im Dateinamen, sollte ein
              *  eigener String-Cleaner für Pfade gemacht werden! Dafür muss das clean String in den
-             *  'if else block' und 'name' würde dann den neuen String-Path-Cleaner aufrufen. 
-             */ 
+             *  'if else block' und 'name' würde dann den neuen String-Path-Cleaner aufrufen.
+             */
             DebugHelper.add(this, head+" : "+tmp);
             String[] row = ADLHelper.cleanString(tmp);
             if (head.equals("label")) { //$NON-NLS-1$
@@ -289,7 +289,7 @@ public class RelatedDisplayItem extends WidgetPart {
     }
 
     /**
-     * 
+     *
      * @return the Label of the Related Display Item.
      */
     public final String getLabel() {

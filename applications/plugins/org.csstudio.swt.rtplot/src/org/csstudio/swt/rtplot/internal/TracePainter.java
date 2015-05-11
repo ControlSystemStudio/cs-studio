@@ -111,7 +111,7 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
                 break;
             case AREA:
                 gc.setAlpha(50);
-            	drawMinMaxArea(gc, x_transform, y_axis, data);
+                drawMinMaxArea(gc, x_transform, y_axis, data);
                 gc.setAlpha(255);
                 drawStdDevLines(gc, x_transform, y_axis, data, trace.getWidth());
                 drawValueStaircase(gc, x_transform, y_axis, data, trace.getWidth());
@@ -185,26 +185,26 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
         gc.setLineWidth(line_width);
         for (int i=0; i<N; ++i)
         {
-        	final PlotDataItem<XTYPE> item = data.get(i);
-        	final int x = clipX(Math.round(x_transform.transform(item.getPosition())));
-        	final double value = item.getValue();
-        	if (value_poly.size() > 0  && x != last_x)
-        	{   // Staircase from last 'y'..
-        	    value_poly.add(x);
-        	    value_poly.add(last_y);
+            final PlotDataItem<XTYPE> item = data.get(i);
+            final int x = clipX(Math.round(x_transform.transform(item.getPosition())));
+            final double value = item.getValue();
+            if (value_poly.size() > 0  && x != last_x)
+            {   // Staircase from last 'y'..
+                value_poly.add(x);
+                value_poly.add(last_y);
                 last_x = x;
-        	}
-        	if (Double.isNaN(value))
+            }
+            if (Double.isNaN(value))
                 flushPolyLine(gc, value_poly, line_width);
-        	else
-        	{
-        		final int y = clipY(y_axis.getScreenCoord(value));
-        		if (last_x == x  &&  last_y == y)
-        		    continue;
-    			value_poly.add(x);
-    			value_poly.add(y);
-    			last_y = y;
-        	}
+            else
+            {
+                final int y = clipY(y_axis.getScreenCoord(value));
+                if (last_x == x  &&  last_y == y)
+                    continue;
+                value_poly.add(x);
+                value_poly.add(y);
+                last_y = y;
+            }
         }
         flushPolyLine(gc, value_poly, line_width);
     }
@@ -255,27 +255,27 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
             final ScreenTransform<XTYPE> x_transform, final YAxisImpl<XTYPE> y_axis,
             final PlotDataProvider<XTYPE> data)
     {
-    	final IntList pos = new IntList(INITIAL_ARRAY_SIZE);
-    	final IntList min = new IntList(INITIAL_ARRAY_SIZE);
-    	final IntList max = new IntList(INITIAL_ARRAY_SIZE);
+        final IntList pos = new IntList(INITIAL_ARRAY_SIZE);
+        final IntList min = new IntList(INITIAL_ARRAY_SIZE);
+        final IntList max = new IntList(INITIAL_ARRAY_SIZE);
 
         final int N = data.size();
         for (int i = 0;  i < N;  ++i)
         {
-        	final PlotDataItem<XTYPE> item = data.get(i);
-        	double ymin = item.getMin();
-        	double ymax = item.getMax();
-        	if (Double.isNaN(ymin)  ||  Double.isNaN(ymax))
+            final PlotDataItem<XTYPE> item = data.get(i);
+            double ymin = item.getMin();
+            double ymax = item.getMax();
+            if (Double.isNaN(ymin)  ||  Double.isNaN(ymax))
                 flushPolyFill(gc, pos, min, max);
-        	else
-        	{
-        		final int x1 = clipX(x_transform.transform(item.getPosition()));
-        		final int y1min = clipY(y_axis.getScreenCoord(ymin));
-        		final int y1max = clipY(y_axis.getScreenCoord(ymax));
-        		pos.add(x1);
-        		min.add(y1min);
-        		max.add(y1max);
-        	}
+            else
+            {
+                final int x1 = clipX(x_transform.transform(item.getPosition()));
+                final int y1min = clipY(y_axis.getScreenCoord(ymin));
+                final int y1max = clipY(y_axis.getScreenCoord(ymax));
+                pos.add(x1);
+                min.add(y1min);
+                max.add(y1max);
+            }
         }
         flushPolyFill(gc, pos, min, max);
     }
@@ -359,14 +359,14 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
      *  @param line_width
      */
     final private void flushPolyLine(final GC gc, final IntList poly, final int line_width)
-	{
+    {
         final int N = poly.size();
-		if (N == 2)
-		    drawPoint(gc, poly.get(0), poly.get(1), line_width);
-		else if (N > 1)
-        	gc.drawPolyline(poly.toArray());
-		poly.clear();
-	}
+        if (N == 2)
+            drawPoint(gc, poly.get(0), poly.get(1), line_width);
+        else if (N > 1)
+            gc.drawPolyline(poly.toArray());
+        poly.clear();
+    }
 
     /** Draw values of data as direct line
      *  @param gc GC
@@ -444,60 +444,60 @@ public class TracePainter<XTYPE extends Comparable<XTYPE>>
      *  @param min Minimum 'y' values in screen coords
      *  @param max .. maximum
      */
-	@SuppressWarnings("unused")
-	final private void flushPolyFill(final GC gc, final IntList pos, final IntList min, final IntList max)
+    @SuppressWarnings("unused")
+    final private void flushPolyFill(final GC gc, final IntList pos, final IntList min, final IntList max)
     {
-	    final int N = pos.size();
-	    if (N <= 0)
-	        return;
+        final int N = pos.size();
+        if (N <= 0)
+            return;
 
-	    if (true)
-	    {
-		    // 'direct' outline, point-to-point
-		    // Turn pos/min/max into array required by fillPolygon:
-		    // pos[0], min[0], pos[1], min[1], ..., pos[N-1], max[N-1], pos[N], max[N]
-		    final int N4 = N * 4;
-		    final int points[] = new int[N4];
-		    int head = 0, tail = N4;
-		    for (int i=0; i<N; ++i)
-		    {
-		        points[head++] = pos.get(i);
-		        points[head++] = min.get(i);
-		        points[--tail] = max.get(i);
-		        points[--tail] = pos.get(i);
-		    }
-		    gc.fillPolygon(points);
-	    }
-	    else
-	    {
-		    // 'staircase' outline
-		    final int points[] = new int[8*N-4];
+        if (true)
+        {
+            // 'direct' outline, point-to-point
+            // Turn pos/min/max into array required by fillPolygon:
+            // pos[0], min[0], pos[1], min[1], ..., pos[N-1], max[N-1], pos[N], max[N]
+            final int N4 = N * 4;
+            final int points[] = new int[N4];
+            int head = 0, tail = N4;
+            for (int i=0; i<N; ++i)
+            {
+                points[head++] = pos.get(i);
+                points[head++] = min.get(i);
+                points[--tail] = max.get(i);
+                points[--tail] = pos.get(i);
+            }
+            gc.fillPolygon(points);
+        }
+        else
+        {
+            // 'staircase' outline
+            final int points[] = new int[8*N-4];
 
-		    int p = 0;
-	        points[p++] = pos.get(0);
-	        int ly = points[p++] = min.get(0);
-		    for (int i=1; i<N; ++i)
-		    {
-		        points[p++] = pos.get(i);
-		        points[p++] = ly;
-		        points[p++] = pos.get(i);
-		        ly = points[p++] = min.get(i);
-		    }
+            int p = 0;
+            points[p++] = pos.get(0);
+            int ly = points[p++] = min.get(0);
+            for (int i=1; i<N; ++i)
+            {
+                points[p++] = pos.get(i);
+                points[p++] = ly;
+                points[p++] = pos.get(i);
+                ly = points[p++] = min.get(i);
+            }
 
-		    int lx = points[p++] = pos.get(N-1);
-		    points[p++] = max.get(N-1);
-		    for (int i=N-2; i>=0; --i)
-		    {
-			    points[p++] = lx;
-			    points[p++] = max.get(i);
-			    lx = points[p++] = pos.get(i);
-			    points[p++] = max.get(i);
-		    }
-		    gc.fillPolygon(points);
-	    }
+            int lx = points[p++] = pos.get(N-1);
+            points[p++] = max.get(N-1);
+            for (int i=N-2; i>=0; --i)
+            {
+                points[p++] = lx;
+                points[p++] = max.get(i);
+                lx = points[p++] = pos.get(i);
+                points[p++] = max.get(i);
+            }
+            gc.fillPolygon(points);
+        }
 
-	    pos.clear();
-	    min.clear();
-	    max.clear();
-	}
+        pos.clear();
+        min.clear();
+        max.clear();
+    }
 }

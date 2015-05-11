@@ -22,7 +22,7 @@ import org.eclipse.ui.WorkbenchException;
 @SuppressWarnings("nls")
 public class Perspective implements IPerspectiveFactory
 {
-	/** Perspective ID defined in plugin.xml */
+    /** Perspective ID defined in plugin.xml */
     final public static String ID = "org.csstudio.scan.ui.scantree.perspective";
 
     /** ID of console view */

@@ -9,115 +9,115 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 
 public class LibraryFolderPreferenceService {
 
-	private static final String SERIALIZED_ITEM_REGEX = "([^,]+,(true|false),)+";
+    private static final String SERIALIZED_ITEM_REGEX = "([^,]+,(true|false),)+";
 
-	private static final String TEMPLATE_LIBRARY_ITEMS = "template_library_items";
-	private final IPreferenceStore preferenceStore;
-	
-	private final List<LibraryFolderPreferenceChangeListener> listeners;
+    private static final String TEMPLATE_LIBRARY_ITEMS = "template_library_items";
+    private final IPreferenceStore preferenceStore;
 
-	public LibraryFolderPreferenceService(IPreferenceStore preferenceStore) {
-		assert preferenceStore != null : "Precondition failed: preferenceStore != null";
+    private final List<LibraryFolderPreferenceChangeListener> listeners;
 
-		this.preferenceStore = preferenceStore;
-		this.listeners = new ArrayList<LibraryFolderPreferenceService.LibraryFolderPreferenceChangeListener>();
-		
-		preferenceStore.setDefault(TEMPLATE_LIBRARY_ITEMS, "");
-		
-		preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
-			@Override
-			public void propertyChange(PropertyChangeEvent event) {
-				if(event.getProperty().equals(TEMPLATE_LIBRARY_ITEMS)) {
-					for (LibraryFolderPreferenceChangeListener listener : listeners) {
-						listener.preferencesChanged();
-					}
-				}
-			}
-		});
-	}
+    public LibraryFolderPreferenceService(IPreferenceStore preferenceStore) {
+        assert preferenceStore != null : "Precondition failed: preferenceStore != null";
 
-	public void saveLibraryFolderPreferenceItems(
-			List<LibraryFolderPreferenceItem> items) {
-		assert items != null : "Precondition failed: items != null";
+        this.preferenceStore = preferenceStore;
+        this.listeners = new ArrayList<LibraryFolderPreferenceService.LibraryFolderPreferenceChangeListener>();
 
-		preferenceStore.setValue(TEMPLATE_LIBRARY_ITEMS, serializeItems(items));
-	}
+        preferenceStore.setDefault(TEMPLATE_LIBRARY_ITEMS, "");
 
-	public List<LibraryFolderPreferenceItem> loadLibraryItems() {
-		List<LibraryFolderPreferenceItem> result;
+        preferenceStore.addPropertyChangeListener(new IPropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                if(event.getProperty().equals(TEMPLATE_LIBRARY_ITEMS)) {
+                    for (LibraryFolderPreferenceChangeListener listener : listeners) {
+                        listener.preferencesChanged();
+                    }
+                }
+            }
+        });
+    }
 
-		String serializedItems = preferenceStore
-				.getString(TEMPLATE_LIBRARY_ITEMS);
-		if (serializedItems.length() > 0) {
-			result = deserializeItems(serializedItems);
-		} else {
-			result = new ArrayList<LibraryFolderPreferenceItem>();
-		}
+    public void saveLibraryFolderPreferenceItems(
+            List<LibraryFolderPreferenceItem> items) {
+        assert items != null : "Precondition failed: items != null";
 
-		assert result != null : "Postcondition failed: result != null";
-		return result;
-	}
+        preferenceStore.setValue(TEMPLATE_LIBRARY_ITEMS, serializeItems(items));
+    }
 
-	public void addChangeListener(LibraryFolderPreferenceChangeListener changeListener) {
-		assert changeListener != null : "Precondition failed: changeListener != null";
-		
-		this.listeners.add(changeListener);
-	}
-	
-	public void removeChangeListener(LibraryFolderPreferenceChangeListener changeListener) {
-		assert changeListener != null : "Precondition failed: changeListener != null";
-		
-		this.listeners.remove(changeListener);
-	}
+    public List<LibraryFolderPreferenceItem> loadLibraryItems() {
+        List<LibraryFolderPreferenceItem> result;
 
-	protected static String serializeItems(
-			List<LibraryFolderPreferenceItem> items) {
-		assert items != null : "Precondition failed: items != null";
-		assert !items.isEmpty() : "Precondition failed: !items.isEmpty()";
+        String serializedItems = preferenceStore
+                .getString(TEMPLATE_LIBRARY_ITEMS);
+        if (serializedItems.length() > 0) {
+            result = deserializeItems(serializedItems);
+        } else {
+            result = new ArrayList<LibraryFolderPreferenceItem>();
+        }
 
-		StringBuffer result = new StringBuffer("");
-		for (LibraryFolderPreferenceItem libraryFolderPreferenceItem : items) {
-			result.append(libraryFolderPreferenceItem.getFolderPath() + ","
-					+ libraryFolderPreferenceItem.isChecked() + ",");
-		}
+        assert result != null : "Postcondition failed: result != null";
+        return result;
+    }
 
-		assert result != null : "Postcondition failed: result != null";
-		return result.toString();
-	}
+    public void addChangeListener(LibraryFolderPreferenceChangeListener changeListener) {
+        assert changeListener != null : "Precondition failed: changeListener != null";
 
-	protected static List<LibraryFolderPreferenceItem> deserializeItems(
-			String serializedItemsString) {
-		assert serializedItemsString != null : "Precondition failed: serializedItemsString != null";
-		assert isValidSerializedItemList(serializedItemsString) : "Precondition failed: isValidSerializedItemList(serializedItemsString)";
+        this.listeners.add(changeListener);
+    }
 
-		String[] splitStrings = serializedItemsString.split(",");
+    public void removeChangeListener(LibraryFolderPreferenceChangeListener changeListener) {
+        assert changeListener != null : "Precondition failed: changeListener != null";
 
-		ArrayList<LibraryFolderPreferenceItem> result = new ArrayList<LibraryFolderPreferenceItem>();
+        this.listeners.remove(changeListener);
+    }
 
-		LibraryFolderPreferenceItem currentItem = null;
-		for (int stringIndex = 0; stringIndex < splitStrings.length; stringIndex++) {
-			if (stringIndex % 2 == 0) {
-				// current element is folder path
-				currentItem = new LibraryFolderPreferenceItem(
-						splitStrings[stringIndex]);
-			} else {
-				// current element is checked state of folder
-				currentItem.setChecked(Boolean
-						.parseBoolean(splitStrings[stringIndex]));
-				result.add(currentItem);
-			}
-		}
-		return result;
-	}
+    protected static String serializeItems(
+            List<LibraryFolderPreferenceItem> items) {
+        assert items != null : "Precondition failed: items != null";
+        assert !items.isEmpty() : "Precondition failed: !items.isEmpty()";
 
-	protected static boolean isValidSerializedItemList(
-			String serializedItemsString) {
-		assert serializedItemsString != null : "Precondition failed: serializedItemsString != null";
+        StringBuffer result = new StringBuffer("");
+        for (LibraryFolderPreferenceItem libraryFolderPreferenceItem : items) {
+            result.append(libraryFolderPreferenceItem.getFolderPath() + ","
+                    + libraryFolderPreferenceItem.isChecked() + ",");
+        }
 
-		return serializedItemsString.matches(SERIALIZED_ITEM_REGEX);
-	}
+        assert result != null : "Postcondition failed: result != null";
+        return result.toString();
+    }
 
-	public interface LibraryFolderPreferenceChangeListener {
-		void preferencesChanged();
-	}
+    protected static List<LibraryFolderPreferenceItem> deserializeItems(
+            String serializedItemsString) {
+        assert serializedItemsString != null : "Precondition failed: serializedItemsString != null";
+        assert isValidSerializedItemList(serializedItemsString) : "Precondition failed: isValidSerializedItemList(serializedItemsString)";
+
+        String[] splitStrings = serializedItemsString.split(",");
+
+        ArrayList<LibraryFolderPreferenceItem> result = new ArrayList<LibraryFolderPreferenceItem>();
+
+        LibraryFolderPreferenceItem currentItem = null;
+        for (int stringIndex = 0; stringIndex < splitStrings.length; stringIndex++) {
+            if (stringIndex % 2 == 0) {
+                // current element is folder path
+                currentItem = new LibraryFolderPreferenceItem(
+                        splitStrings[stringIndex]);
+            } else {
+                // current element is checked state of folder
+                currentItem.setChecked(Boolean
+                        .parseBoolean(splitStrings[stringIndex]));
+                result.add(currentItem);
+            }
+        }
+        return result;
+    }
+
+    protected static boolean isValidSerializedItemList(
+            String serializedItemsString) {
+        assert serializedItemsString != null : "Precondition failed: serializedItemsString != null";
+
+        return serializedItemsString.matches(SERIALIZED_ITEM_REGEX);
+    }
+
+    public interface LibraryFolderPreferenceChangeListener {
+        void preferencesChanged();
+    }
 }

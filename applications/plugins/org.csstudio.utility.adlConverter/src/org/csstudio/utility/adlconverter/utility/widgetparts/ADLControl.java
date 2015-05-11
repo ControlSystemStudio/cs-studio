@@ -63,19 +63,19 @@ public class ADLControl extends WidgetPart{
      * The Record property/Feldname.
      */
     private String _postfix;
-     
+
 
     /**
      * The default constructor.
-     * 
-     * @param adlControl An ADLWidget that correspond a ADL Control. 
+     *
+     * @param adlControl An ADLWidget that correspond a ADL Control.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public ADLControl(final ADLWidget adlControl, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
         super(adlControl, parentWidgetModel);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -83,9 +83,9 @@ public class ADLControl extends WidgetPart{
     final void init() {
         _connectionState = false;
     }
-    
+
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlControl) throws WrongADLFormatException {
@@ -105,10 +105,10 @@ public class ADLControl extends WidgetPart{
             }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("chan")){ // chan and ctrl means both the same.  //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
             }else if(row[0].trim().toLowerCase().equals("ctrl")){ //$NON-NLS-1$
-            	DebugHelper.add(this, row[1]);
+                DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLControl_WrongADLFormatException_Parameter_End);
@@ -136,7 +136,7 @@ public class ADLControl extends WidgetPart{
             _postfix = ADLHelper.setChan(_widgetModel,_chan);
         }
     }
-    
+
     /**
      * @return the state of background color display the ConnectionState.
      */

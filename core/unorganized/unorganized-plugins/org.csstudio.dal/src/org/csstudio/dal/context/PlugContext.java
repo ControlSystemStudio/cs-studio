@@ -44,37 +44,37 @@ import org.csstudio.dal.simple.RemoteInfo;
  */
 public interface PlugContext extends Identifiable, EventSystemContext<PlugEvent<?>>
 {
-	/**
-	 * Returns plug type string, which is distinguishing for plug which
-	 * creates  proxies for particular communication layer.<p>For
-	 * example plug that connects to EPICS device my return string "EPICS".</p>
-	 *
-	 * @return plug destingushing type name
-	 */
-	public String getPlugType();
+    /**
+     * Returns plug type string, which is distinguishing for plug which
+     * creates  proxies for particular communication layer.<p>For
+     * example plug that connects to EPICS device my return string "EPICS".</p>
+     *
+     * @return plug destingushing type name
+     */
+    public String getPlugType();
 
-	/**
-	 * Return active configuration of this plug. Configuration should not be changed.
-	 * @return Returns the configuration.
-	 */
-	public Properties getConfiguration();
+    /**
+     * Return active configuration of this plug. Configuration should not be changed.
+     * @return Returns the configuration.
+     */
+    public Properties getConfiguration();
 
-	/**
-	 * Returns a default Directory Context. This is convenience method, directory is obtained from PlugContext.
-	 *
-	 * @return default directory from PlugContext
-	 */
-	public DirContext getDefaultDirectory();
+    /**
+     * Returns a default Directory Context. This is convenience method, directory is obtained from PlugContext.
+     *
+     * @return default directory from PlugContext
+     */
+    public DirContext getDefaultDirectory();
 
-	/**
-	 * Creates new <code>RemoteInfo</code> for provided unique name with additional plug specific information.
-	 * @param uniqueName unique name
-	 * @return remote info
-	 *
-	 * @throws NamingException if unique name can nto be transformed to remote info
-	 */
-	public RemoteInfo createRemoteInfo(String uniqueName)
-		throws NamingException;
+    /**
+     * Creates new <code>RemoteInfo</code> for provided unique name with additional plug specific information.
+     * @param uniqueName unique name
+     * @return remote info
+     *
+     * @throws NamingException if unique name can nto be transformed to remote info
+     */
+    public RemoteInfo createRemoteInfo(String uniqueName)
+        throws NamingException;
 }
 
 /* __oOo__ */

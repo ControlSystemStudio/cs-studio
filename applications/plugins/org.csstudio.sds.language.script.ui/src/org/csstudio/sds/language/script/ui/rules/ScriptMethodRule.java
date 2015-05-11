@@ -10,65 +10,65 @@ import de.desy.language.editor.ui.editor.highlighting.CharacterSequence;
 
 public class ScriptMethodRule implements IRule {
 
-	private final PredefinedFunctions _method;
-	private final IToken _token;
+    private final PredefinedFunctions _method;
+    private final IToken _token;
 
-	public ScriptMethodRule(final PredefinedFunctions method, final IToken token) {
-		this._method = method;
-		this._token = token;
-	}
+    public ScriptMethodRule(final PredefinedFunctions method, final IToken token) {
+        this._method = method;
+        this._token = token;
+    }
 
-	public IToken evaluate(final ICharacterScanner scanner) {
-		IToken result = null;
+    public IToken evaluate(final ICharacterScanner scanner) {
+        IToken result = null;
 
-		final CharacterSequence cs = new CharacterSequence(scanner);
+        final CharacterSequence cs = new CharacterSequence(scanner);
 
-		final short readCharsInMethodName = ScriptMethodRule.checkNamePrefix(cs,
-				this._method.getElementName());
-		if (readCharsInMethodName > 0) {
-			result = this._token;
-		}
+        final short readCharsInMethodName = ScriptMethodRule.checkNamePrefix(cs,
+                this._method.getElementName());
+        if (readCharsInMethodName > 0) {
+            result = this._token;
+        }
 
-		if (result == null) {
-			result = Token.UNDEFINED;
-			cs.performUnread();
-		} else {
-			cs.performUnreadWithKeepingGivenCharsRead(readCharsInMethodName);
-		}
+        if (result == null) {
+            result = Token.UNDEFINED;
+            cs.performUnread();
+        } else {
+            cs.performUnreadWithKeepingGivenCharsRead(readCharsInMethodName);
+        }
 
-		return result;
-	}
+        return result;
+    }
 
-	/**
-	 * Checks if the given method name is the name in the character sequence.
-	 * 
-	 * @returns the number of chars read for the name.
-	 */
-	private static short checkNamePrefix(final CharacterSequence cs,
-			final String methodName) {
+    /**
+     * Checks if the given method name is the name in the character sequence.
+     *
+     * @returns the number of chars read for the name.
+     */
+    private static short checkNamePrefix(final CharacterSequence cs,
+            final String methodName) {
 
-		short readedChars = 0;
-		char lastReadChar;
-		final char[] pattern = methodName.toCharArray();
+        short readedChars = 0;
+        char lastReadChar;
+        final char[] pattern = methodName.toCharArray();
 
-		for (final char c : pattern) {
-			if (!cs.hasMoreCharacters()) {
-				// no more chars, but char expected -> false
-				return -1;
-			}
+        for (final char c : pattern) {
+            if (!cs.hasMoreCharacters()) {
+                // no more chars, but char expected -> false
+                return -1;
+            }
 
-			lastReadChar = cs.readSingleCharacter();
-			readedChars++;
+            lastReadChar = cs.readSingleCharacter();
+            readedChars++;
 
-			if (lastReadChar != c) {
-				return -1;
-			}
-		}
+            if (lastReadChar != c) {
+                return -1;
+            }
+        }
 
-		if (pattern.length != cs.getReadCount()) {
-			return -1;
-		}
+        if (pattern.length != cs.getReadCount()) {
+            return -1;
+        }
 
-		return readedChars;
-	}
+        return readedChars;
+    }
 }

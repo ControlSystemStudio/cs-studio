@@ -18,17 +18,17 @@ import org.eclipse.swt.graphics.RGB;
  */
 public abstract class ConsoleServiceSSHelper{
 
-	public abstract void writeError(String message);
+    public abstract void writeError(String message);
 
-	public abstract void writeWarning(String message) ;
+    public abstract void writeWarning(String message) ;
 
-	public abstract void writeInfo(String message);
+    public abstract void writeInfo(String message);
 
-	public abstract void writeString(String s);
-	
-	public abstract void writeString(String s, RGB color);
+    public abstract void writeString(String s);
 
-	public abstract void turnOnSystemOutput();
-	
-	public abstract void turnOffSystemOutput();
+    public abstract void writeString(String s, RGB color);
+
+    public abstract void turnOnSystemOutput();
+
+    public abstract void turnOffSystemOutput();
 }

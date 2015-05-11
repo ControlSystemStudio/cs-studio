@@ -50,11 +50,11 @@ public class ScanCommandUtil
             final String device_name, final Object value,
             final double tolerance, final TimeDuration timeout) throws Exception
     {
-    	write(context, device_name, value, false, true, device_name, tolerance, timeout);
+        write(context, device_name, value, false, true, device_name, tolerance, timeout);
     }
 
-	/** Write to device with optional completion and/or readback,
-	 *  logging if the context was configured to auto-log
+    /** Write to device with optional completion and/or readback,
+     *  logging if the context was configured to auto-log
      *
      *  @param context Scan context
      *  @param device_name Name of device

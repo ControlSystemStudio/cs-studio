@@ -23,7 +23,7 @@ public class GUIUpdateThrottleUnitTest
     private static final long INITIAL = 100;
     private static final long SUPPRESS = 1000;
     final AtomicInteger events = new AtomicInteger(0);
-    
+
     @Test
     public void testThrottle() throws Exception
     {
@@ -38,15 +38,15 @@ public class GUIUpdateThrottleUnitTest
             }
         };
         throttle.start();
-        
+
         // Start without events
         assertEquals(0, events.get());
-        
+
         // One event goes through after small delay
         throttle.trigger();
         Thread.sleep(2*INITIAL);
         assertEquals(1, events.get());
-        
+
         // Later, another one goes through
         Thread.sleep(2*SUPPRESS);
         throttle.trigger();
@@ -57,7 +57,7 @@ public class GUIUpdateThrottleUnitTest
         for (int i=0; i<50; ++i)
             throttle.trigger();
         assertEquals(2, events.get());
-        
+
         // Later we we get one(!) other event for the N
         Thread.sleep(2*SUPPRESS);
         assertEquals(3, events.get());
@@ -66,7 +66,7 @@ public class GUIUpdateThrottleUnitTest
         throttle.trigger();
         Thread.sleep(2*INITIAL);
         assertEquals(4, events.get());
-        
+
         // Cleanup
         System.out.println("Done?");
         throttle.dispose();

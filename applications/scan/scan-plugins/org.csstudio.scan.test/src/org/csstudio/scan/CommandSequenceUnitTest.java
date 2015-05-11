@@ -38,15 +38,15 @@ public class CommandSequenceUnitTest
     @Test
     public void testCommandSequence()
     {
-    	final CommandSequence commands = new CommandSequence(
-    	    new SetCommand("setpoint", 1),
-    	    new WaitCommand("readback", Comparison.EQUALS, 1.0, 0.1, 0.0),
-    	    new LoopCommand("setpoint", 1, 5, 1, new LogCommand("readback")),
-    	    new LogCommand("readback")
+        final CommandSequence commands = new CommandSequence(
+            new SetCommand("setpoint", 1),
+            new WaitCommand("readback", Comparison.EQUALS, 1.0, 0.1, 0.0),
+            new LoopCommand("setpoint", 1, 5, 1, new LogCommand("readback")),
+            new LogCommand("readback")
         );
-    	commands.dump();
-    	// Check the list
-    	final List<ScanCommand> list = commands.getCommands();
+        commands.dump();
+        // Check the list
+        final List<ScanCommand> list = commands.getCommands();
         assertEquals(4, list.size());
         assertEquals(SetCommand.class, list.get(0).getClass());
         assertEquals(WaitCommand.class, list.get(1).getClass());

@@ -34,7 +34,7 @@ public class DeviceContextHelperHeadlessTest
     public void testDeviceContextHelper() throws Exception
     {
         final MacroContext macros = new MacroContext("T=Test");
-        
+
         final List<ScanCommand> commands = Arrays.asList(
             (ScanCommand) new SetCommand("device1", 3.14),
             (ScanCommand) new SetCommand("xpos", 2),
@@ -45,13 +45,13 @@ public class DeviceContextHelperHeadlessTest
                 ScanCommandImplTool.getInstance().implement(commands, jython);
         final DeviceContext device_context = new DeviceContext();
         DeviceContextHelper.addScanDevices(device_context, macros, main_scan);
-        
+
         final Device[] devices = device_context.getDevices();
         System.out.println(Arrays.toString(devices));
-        
+
         // Devices from commands, but account for motor_x = alias xpos
         assertThat(devices.length, equalTo(commands.size() - 1));
-        
+
         // Check lookup via alias
         final Device aliased_device = device_context.getDevice("xpos");
         assertThat(aliased_device.getName(), equalTo("motor_x"));

@@ -15,35 +15,35 @@ import org.csstudio.archive.config.GroupConfig;
 @SuppressWarnings("nls")
 public class RDBGroupConfig extends GroupConfig
 {
-	final private int id;
+    final private int id;
 
-	/** Initialize
-	 *  @param id
-	 *  @param name
-	 *  @param enabling_channel
-	 */
-	public RDBGroupConfig(final int id, final String name, final String enabling_channel)
+    /** Initialize
+     *  @param id
+     *  @param name
+     *  @param enabling_channel
+     */
+    public RDBGroupConfig(final int id, final String name, final String enabling_channel)
     {
-		super(name, enabling_channel);
-	    this.id = id;
+        super(name, enabling_channel);
+        this.id = id;
     }
-	
-	/** @return RDB ID of channel group */
-	public int getId()
+
+    /** @return RDB ID of channel group */
+    public int getId()
     {
-    	return id;
+        return id;
     }
 
     /** @param channel Channel that enables this group */
-	void setEnablingChannel(final RDBChannelConfig channel)
+    void setEnablingChannel(final RDBChannelConfig channel)
     {
-		enabling_channel = channel.getName();
+        enabling_channel = channel.getName();
     }
 
-	/** @return Debug representation */
+    /** @return Debug representation */
     @Override
     public String toString()
     {
-	    return super.toString() + " (" + id + ")";
+        return super.toString() + " (" + id + ")";
     }
 }

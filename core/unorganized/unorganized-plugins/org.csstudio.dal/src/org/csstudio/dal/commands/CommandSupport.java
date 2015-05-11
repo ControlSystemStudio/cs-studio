@@ -34,77 +34,77 @@ import java.lang.reflect.Method;
  */
 public class CommandSupport implements Command
 {
-	private CommandContext owner;
-	private Object host;
-	private Method method;
+    private CommandContext owner;
+    private Object host;
+    private Method method;
 
-	/**
-	     * General constructor.
-	     *
-	     * @param owner    in this context is method present.
-	     * @param host on it, this command is called.
-	     * @param method this command represents it.
-	     */
-	public CommandSupport(CommandContext owner, Object host, Method method)
-	{
-		this.owner = owner;
-		this.host = host;
-		this.method = method;
-	}
+    /**
+         * General constructor.
+         *
+         * @param owner    in this context is method present.
+         * @param host on it, this command is called.
+         * @param method this command represents it.
+         */
+    public CommandSupport(CommandContext owner, Object host, Method method)
+    {
+        this.owner = owner;
+        this.host = host;
+        this.method = method;
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getName()
-	 */
-	public String getName()
-	{
-		return method.getName();
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getName()
+     */
+    public String getName()
+    {
+        return method.getName();
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#execute(java.lang.Object[])
-	 */
-	public Object execute(Object... parameters) throws RemoteException
-	{
-		try {
-			return method.invoke(host, parameters);
-		} catch (Throwable e) {
-			throw new RemoteException(this, "Unable to execute command", e);
-		}
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#execute(java.lang.Object[])
+     */
+    public Object execute(Object... parameters) throws RemoteException
+    {
+        try {
+            return method.invoke(host, parameters);
+        } catch (Throwable e) {
+            throw new RemoteException(this, "Unable to execute command", e);
+        }
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getParameterTypes()
-	 */
-	public Class[] getParameterTypes()
-	{
-		return method.getParameterTypes();
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getParameterTypes()
+     */
+    public Class[] getParameterTypes()
+    {
+        return method.getParameterTypes();
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getOwner()
-	 */
-	public CommandContext getOwner()
-	{
-		return owner;
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getOwner()
+     */
+    public CommandContext getOwner()
+    {
+        return owner;
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getReturnedType()
-	 */
-	public Class getReturnedType()
-	{
-		return method.getReturnType();
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getReturnedType()
+     */
+    public Class getReturnedType()
+    {
+        return method.getReturnType();
+    }
 
-	public boolean isAsynchronous()
-	{
-		return false;
-	}
+    public boolean isAsynchronous()
+    {
+        return false;
+    }
 } /* __oOo__ */
 
 

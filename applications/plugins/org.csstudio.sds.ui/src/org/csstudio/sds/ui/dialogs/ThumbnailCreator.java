@@ -28,152 +28,152 @@ import org.eclipse.swt.widgets.Shell;
 
 public class ThumbnailCreator {
 
-	private static ThumbnailImageCache imageCache = new ThumbnailImageCache();
+    private static ThumbnailImageCache imageCache = new ThumbnailImageCache();
 
-	public ThumbnailCreator() {
-		
-		Display.getCurrent().addListener(SWT.Dispose, new Listener() {
-			@Override
-			public void handleEvent(Event arg0) {
-				imageCache.shutdown();
-			}
-		});
-		
-	}
+    public ThumbnailCreator() {
 
-	public ImageData createImage(final File file, final int thumbSize,
-			final Display display) {
+        Display.getCurrent().addListener(SWT.Dispose, new Listener() {
+            @Override
+            public void handleEvent(Event arg0) {
+                imageCache.shutdown();
+            }
+        });
 
-		ImageData imageData = imageCache.getCachedImage(file);
-		if (imageData == null) {
-			
-			ThumbnailCreationJob job = new ThumbnailCreationJob(display, file, thumbSize);
-			imageData = job.getImageData();
-			if (imageData != null) {
-				imageCache.cacheImage(file, imageData);
-			}
-		}
-		return imageData;
-	}
-	
-	private static class ThumbnailCreationJob implements Runnable {
+    }
 
-		private final Display display;
-		private final DisplayModel model;
-		private final int thumbSize;
+    public ImageData createImage(final File file, final int thumbSize,
+            final Display display) {
 
-		private ImageData imageData;
+        ImageData imageData = imageCache.getCachedImage(file);
+        if (imageData == null) {
 
-		public ThumbnailCreationJob(Display display, File file, int thumbSize) {
-			this.display = display;
-			this.thumbSize = thumbSize;
-			
-			model = new DisplayModel();
-			FileInputStream fip = null;
-			try {
-				fip = new FileInputStream(file);
-				PersistenceUtil.syncFillModel(model, fip);
-				
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					fip.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			if (!display.isDisposed()) {
-				display.syncExec(this);
-			}
-		}
-		
-		public ImageData getImageData() {
-			return imageData;
-		}
-		
-		@Override
-		public void run() {
-			if (!display.isDisposed()) {
-				Shell shell = new Shell(display, SWT.NO_TRIM);
-				Image image = null;
-				try {
-					shell.setLayout(new FillLayout());
-					shell.setSize(model.getWidth(),
-							model.getHeight());
+            ThumbnailCreationJob job = new ThumbnailCreationJob(display, file, thumbSize);
+            imageData = job.getImageData();
+            if (imageData != null) {
+                imageCache.cacheImage(file, imageData);
+            }
+        }
+        return imageData;
+    }
 
-					ThumbnailDrawingViewer viewer = new ThumbnailDrawingViewer();
-					viewer.createControl(shell);
-					viewer.setEditPartFactory(new NoBorderWidgetEditPartFactory(
-							ExecutionMode.EDIT_MODE));
-					viewer.setRootEditPart(new ScalableFreeformRootEditPart());
-					viewer.setContents(model);
+    private static class ThumbnailCreationJob implements Runnable {
 
-					shell.layout();
+        private final Display display;
+        private final DisplayModel model;
+        private final int thumbSize;
 
-					image = viewer.createImage(thumbSize);
-					imageData = image.getImageData();
-					
-				} finally {
-					if (image != null) {
-						image.dispose();
-					}
-					shell.dispose();
-				}
-			}
-		}
-		
-	}
-	
-	private static class ThumbnailDrawingViewer extends GraphicalViewerImpl {
+        private ImageData imageData;
 
-		public Image createImage(int thumbSize) {
+        public ThumbnailCreationJob(Display display, File file, int thumbSize) {
+            this.display = display;
+            this.thumbSize = thumbSize;
 
-			IFigure figure = getLightweightSystem().getRootFigure();
+            model = new DisplayModel();
+            FileInputStream fip = null;
+            try {
+                fip = new FileInputStream(file);
+                PersistenceUtil.syncFillModel(model, fip);
 
-			Rectangle bounds = figure.getBounds();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    fip.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
 
-			double factor = Math.min(
-					(double) thumbSize / (double) bounds.width,
-					(double) thumbSize / (double) bounds.height);
+            if (!display.isDisposed()) {
+                display.syncExec(this);
+            }
+        }
 
-			Image image = new Image(Display.getCurrent(),
-					(int) Math.ceil((double) bounds.width * factor),
-					(int) Math.ceil((double) bounds.height * factor));
-			GC gc = new GC(image);
-			Graphics graphics = new SWTGraphics(gc);
+        public ImageData getImageData() {
+            return imageData;
+        }
 
-			// TODO Antialiasing an GC oder Graphics konfigurieren
+        @Override
+        public void run() {
+            if (!display.isDisposed()) {
+                Shell shell = new Shell(display, SWT.NO_TRIM);
+                Image image = null;
+                try {
+                    shell.setLayout(new FillLayout());
+                    shell.setSize(model.getWidth(),
+                            model.getHeight());
 
-			graphics.scale(factor);
+                    ThumbnailDrawingViewer viewer = new ThumbnailDrawingViewer();
+                    viewer.createControl(shell);
+                    viewer.setEditPartFactory(new NoBorderWidgetEditPartFactory(
+                            ExecutionMode.EDIT_MODE));
+                    viewer.setRootEditPart(new ScalableFreeformRootEditPart());
+                    viewer.setContents(model);
 
-			figure.paint(graphics);
+                    shell.layout();
 
-			gc.dispose(); // TODO disposing in finally-Block
+                    image = viewer.createImage(thumbSize);
+                    imageData = image.getImageData();
 
-			return image;
-		}
+                } finally {
+                    if (image != null) {
+                        image.dispose();
+                    }
+                    shell.dispose();
+                }
+            }
+        }
 
-	}
+    }
 
-	private static class NoBorderWidgetEditPartFactory extends
-			WidgetEditPartFactory {
+    private static class ThumbnailDrawingViewer extends GraphicalViewerImpl {
 
-		public NoBorderWidgetEditPartFactory(ExecutionMode executionMode) {
-			super(executionMode);
-		}
+        public Image createImage(int thumbSize) {
 
-		@Override
-		public EditPart createEditPart(EditPart context, Object modelElement) {
-			EditPart result = super.createEditPart(context, modelElement);
+            IFigure figure = getLightweightSystem().getRootFigure();
 
-			if (modelElement instanceof DisplayModel) {
-				((DisplayEditPart) result)
-						.setExecutionMode(ExecutionMode.RUN_MODE);
-			}
-			return result;
-		}
+            Rectangle bounds = figure.getBounds();
 
-	}
+            double factor = Math.min(
+                    (double) thumbSize / (double) bounds.width,
+                    (double) thumbSize / (double) bounds.height);
+
+            Image image = new Image(Display.getCurrent(),
+                    (int) Math.ceil((double) bounds.width * factor),
+                    (int) Math.ceil((double) bounds.height * factor));
+            GC gc = new GC(image);
+            Graphics graphics = new SWTGraphics(gc);
+
+            // TODO Antialiasing an GC oder Graphics konfigurieren
+
+            graphics.scale(factor);
+
+            figure.paint(graphics);
+
+            gc.dispose(); // TODO disposing in finally-Block
+
+            return image;
+        }
+
+    }
+
+    private static class NoBorderWidgetEditPartFactory extends
+            WidgetEditPartFactory {
+
+        public NoBorderWidgetEditPartFactory(ExecutionMode executionMode) {
+            super(executionMode);
+        }
+
+        @Override
+        public EditPart createEditPart(EditPart context, Object modelElement) {
+            EditPart result = super.createEditPart(context, modelElement);
+
+            if (modelElement instanceof DisplayModel) {
+                ((DisplayEditPart) result)
+                        .setExecutionMode(ExecutionMode.RUN_MODE);
+            }
+            return result;
+        }
+
+    }
 }

@@ -22,39 +22,39 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class SendEMailAction extends AbstractSendEMailAction
 {
-	final private List<AlarmTreeLeaf> alarms;
-	
-	/** Initialize
-	 *  @param shell
-	 *  @param alarms
-	 */
-	public SendEMailAction(final Shell shell, final List<AlarmTreeLeaf> alarms)
+    final private List<AlarmTreeLeaf> alarms;
+
+    /** Initialize
+     *  @param shell
+     *  @param alarms
+     */
+    public SendEMailAction(final Shell shell, final List<AlarmTreeLeaf> alarms)
     {
-		super(shell, Preferences.getDefaultEmailSender(),
-				Messages.DefaultEMailTitle);
-		this.alarms = alarms;
-		
-		// send email actions are disabled in RAP version
-		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
-			setEnabled(false);
-		}
+        super(shell, Preferences.getDefaultEmailSender(),
+                Messages.DefaultEMailTitle);
+        this.alarms = alarms;
+
+        // send email actions are disabled in RAP version
+        if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+            setEnabled(false);
+        }
     }
 
-	/** Pre-populate body with alarm info
-	 *  {@inheritDoc}
-	 */
-	@Override
+    /** Pre-populate body with alarm info
+     *  {@inheritDoc}
+     */
+    @Override
     public String getBody()
     {
-		return Messages.DefaultEMailBodyStart + AlarmTextHelper.createAlarmInfoText(alarms);
+        return Messages.DefaultEMailBodyStart + AlarmTextHelper.createAlarmInfoText(alarms);
     }
 
-	/** No image
-	 *  {@inheritDoc}
-	 */
-	@Override
+    /** No image
+     *  {@inheritDoc}
+     */
+    @Override
     protected String getImage()
     {
-		return null;
+        return null;
     }
 }

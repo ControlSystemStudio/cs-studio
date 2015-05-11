@@ -17,7 +17,7 @@ abstract class Option
 
     /** Information about argument */
     final private String arg_info;
-    
+
     /** Information for help */
     final private String info;
 
@@ -32,7 +32,7 @@ abstract class Option
     {
         this(parser, option, "", info); //$NON-NLS-1$
     }
-    
+
     /** Constructor
      *  @param parser Parser to which to add
      *  @param option Option name: "-something"
@@ -61,7 +61,7 @@ abstract class Option
     {
         return arg_info;
     }
-    
+
     /** @return Argument information (description) for help */
     final public String getInfo()
     {
@@ -77,7 +77,7 @@ abstract class Option
      *  @throws Exception if parameters were wrong or missing.
      */
     abstract public int handle(String[] args, int position) throws Exception;
-    
+
     /** Check if there is a string parameter for this option.
      *  @param args Argument list
      *  @param position Current position
@@ -98,7 +98,7 @@ abstract class Option
         }
         return false;
     }
-    
+
     /** @return <code>true</code> if given text matches this option,
      *          checking the full option as well as shorter versions.
      */

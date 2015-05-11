@@ -24,59 +24,59 @@ import org.eclipse.gef.requests.ChangeBoundsRequest;
 import org.eclipse.gef.requests.CreateRequest;
 
 /**A default implementation of {@link IGraphicalFeedbackFactory} which does nothing to changing
- * default graphical feedback behavior. 
+ * default graphical feedback behavior.
  * Subclass can override this class to create customized feedback behavior.
  * @author Xihui Chen
  *
  */
 public class DefaultGraphicalFeedbackFactory implements
-		IGraphicalFeedbackFactory {
+        IGraphicalFeedbackFactory {
 
-	public IFigure createDragSourceFeedbackFigure(AbstractWidgetModel model,
-			Rectangle initalBounds) {
-		return null;
-	}
+    public IFigure createDragSourceFeedbackFigure(AbstractWidgetModel model,
+            Rectangle initalBounds) {
+        return null;
+    }
 
-	public void showChangeBoundsFeedback(AbstractWidgetModel widgetModel,
-			PrecisionRectangle bounds, IFigure feedbackFigure,
-			ChangeBoundsRequest request) {	
+    public void showChangeBoundsFeedback(AbstractWidgetModel widgetModel,
+            PrecisionRectangle bounds, IFigure feedbackFigure,
+            ChangeBoundsRequest request) {
 
-		feedbackFigure.translateToRelative(bounds);
-		feedbackFigure.setBounds(bounds);
-		
-	}
+        feedbackFigure.translateToRelative(bounds);
+        feedbackFigure.setBounds(bounds);
 
-	public Shape createSizeOnDropFeedback(CreateRequest createRequest) {
-		return null;
-	}
+    }
 
-	public void showSizeOnDropFeedback(CreateRequest request,
-			IFigure feedback, Insets insets) {
-		Point p = new Point(request.getLocation().getCopy());
-		feedback.translateToRelative(p);
-		Dimension size = request.getSize().getCopy();
-		feedback.translateToRelative(size);
-		feedback.setBounds(new Rectangle(p, size)
-				.expand(insets));
+    public Shape createSizeOnDropFeedback(CreateRequest createRequest) {
+        return null;
+    }
 
-	}
+    public void showSizeOnDropFeedback(CreateRequest request,
+            IFigure feedback, Insets insets) {
+        Point p = new Point(request.getLocation().getCopy());
+        feedback.translateToRelative(p);
+        Dimension size = request.getSize().getCopy();
+        feedback.translateToRelative(size);
+        feedback.setBounds(new Rectangle(p, size)
+                .expand(insets));
 
-	public Class<?> getCreationTool() {
-		return null;
-	}
+    }
 
-	public Command createChangeBoundsCommand(AbstractWidgetModel widgetModel,
-			ChangeBoundsRequest request, Rectangle targetBounds) {
-		return null;
-	}
+    public Class<?> getCreationTool() {
+        return null;
+    }
 
-	public Command createInitialBoundsCommand(AbstractWidgetModel widgetModel,
-			CreateRequest request, Rectangle targetBounds) {
-		return null;
-	}
+    public Command createChangeBoundsCommand(AbstractWidgetModel widgetModel,
+            ChangeBoundsRequest request, Rectangle targetBounds) {
+        return null;
+    }
 
-	public List<Handle> createCustomHandles(GraphicalEditPart editPart) {
-		return null;
-	}
+    public Command createInitialBoundsCommand(AbstractWidgetModel widgetModel,
+            CreateRequest request, Rectangle targetBounds) {
+        return null;
+    }
+
+    public List<Handle> createCustomHandles(GraphicalEditPart editPart) {
+        return null;
+    }
 
 }

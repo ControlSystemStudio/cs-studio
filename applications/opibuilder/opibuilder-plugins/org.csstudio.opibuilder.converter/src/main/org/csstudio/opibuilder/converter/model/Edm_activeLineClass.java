@@ -16,91 +16,91 @@ package org.csstudio.opibuilder.converter.model;
 public class Edm_activeLineClass extends EdmWidget {
 
 
-	@EdmAttributeAn private EdmColor lineColor;
-	@EdmAttributeAn private EdmColor fillColor;
-	@EdmAttributeAn private int numPoints;
-	@EdmAttributeAn private EdmPointsList xPoints;
-	@EdmAttributeAn private EdmPointsList yPoints;
-	
-	
-	@EdmAttributeAn @EdmOptionalAn private int lineWidth;
-	@EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;	
-	@EdmAttributeAn @EdmOptionalAn private String arrows;
-	@EdmAttributeAn @EdmOptionalAn private boolean closePolygon;
-	@EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
-	@EdmAttributeAn @EdmOptionalAn private boolean fill;
-	@EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
-	
-	
+    @EdmAttributeAn private EdmColor lineColor;
+    @EdmAttributeAn private EdmColor fillColor;
+    @EdmAttributeAn private int numPoints;
+    @EdmAttributeAn private EdmPointsList xPoints;
+    @EdmAttributeAn private EdmPointsList yPoints;
 
 
-	public Edm_activeLineClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    @EdmAttributeAn @EdmOptionalAn private int lineWidth;
+    @EdmAttributeAn @EdmOptionalAn private EdmLineStyle lineStyle;
+    @EdmAttributeAn @EdmOptionalAn private String arrows;
+    @EdmAttributeAn @EdmOptionalAn private boolean closePolygon;
+    @EdmAttributeAn @EdmOptionalAn private boolean lineAlarm;
+    @EdmAttributeAn @EdmOptionalAn private boolean fill;
+    @EdmAttributeAn @EdmOptionalAn private boolean fillAlarm;
 
 
-	public int getNumPoints(){
-		return numPoints;
-	}
-
-	public EdmPointsList getXPoints() {
-		return xPoints;
-	}
-	
-	public EdmPointsList getYPoints() {
-		return yPoints;
-	}
-	
-	public EdmColor getLineColor() {
-		return lineColor;
-	}
-
-	public int getLineWidth() {
-		return lineWidth;
-	}
-
-	public EdmLineStyle getLineStyle() {
-		return lineStyle;
-	}
-
-	public EdmColor getFillColor() {
-		return fillColor;
-	}
-
-	public boolean isFill(){
-		return fill;
-	}
-	
-	
-	/**
-	 * @return the arrows
-	 */
-	public final String getArrows() {
-		return arrows;
-	}
 
 
-	/**
-	 * @return the closePolygon
-	 */
-	public final boolean isClosePolygon() {
-		return closePolygon;
-	}
+    public Edm_activeLineClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 
-	/**
-	 * @return the lineAlarm
-	 */
-	public final boolean isLineAlarm() {
-		return lineAlarm;
-	}
+    public int getNumPoints(){
+        return numPoints;
+    }
+
+    public EdmPointsList getXPoints() {
+        return xPoints;
+    }
+
+    public EdmPointsList getYPoints() {
+        return yPoints;
+    }
+
+    public EdmColor getLineColor() {
+        return lineColor;
+    }
+
+    public int getLineWidth() {
+        return lineWidth;
+    }
+
+    public EdmLineStyle getLineStyle() {
+        return lineStyle;
+    }
+
+    public EdmColor getFillColor() {
+        return fillColor;
+    }
+
+    public boolean isFill(){
+        return fill;
+    }
 
 
-	/**
-	 * @return the fillAlarm
-	 */
-	public final boolean isFillAlarm() {
-		return fillAlarm;
-	}
+    /**
+     * @return the arrows
+     */
+    public final String getArrows() {
+        return arrows;
+    }
+
+
+    /**
+     * @return the closePolygon
+     */
+    public final boolean isClosePolygon() {
+        return closePolygon;
+    }
+
+
+    /**
+     * @return the lineAlarm
+     */
+    public final boolean isLineAlarm() {
+        return lineAlarm;
+    }
+
+
+    /**
+     * @return the fillAlarm
+     */
+    public final boolean isFillAlarm() {
+        return fillAlarm;
+    }
 
 }

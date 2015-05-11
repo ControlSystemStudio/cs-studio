@@ -32,18 +32,18 @@ import com.cosylab.util.CommonException;
  */
 public class IllegalViewException extends CommonException
 {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	     * Constructs a new exception with source and message specification.
-	     *
-	     * @param instance object throwing the exception
-	     * @param message exception message
-	     */
-	public IllegalViewException(Object instance, String message)
-	{
-		super(instance, message);
-	}
+    /**
+         * Constructs a new exception with source and message specification.
+         *
+         * @param instance object throwing the exception
+         * @param message exception message
+         */
+    public IllegalViewException(Object instance, String message)
+    {
+        super(instance, message);
+    }
 }
 
 /* __oOo__ */

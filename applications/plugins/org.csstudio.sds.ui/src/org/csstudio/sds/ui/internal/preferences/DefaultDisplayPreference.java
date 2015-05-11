@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.IPath;
 
 
 /**
- * TODO (hrickens) : 
- * 
+ * TODO (hrickens) :
+ *
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.7 $
@@ -41,22 +41,22 @@ public class DefaultDisplayPreference<T> extends AbstractPreference<T> {
 
     public static final DefaultDisplayPreference<IPath> DEFAULT_DISPLAY_PATH =
         new DefaultDisplayPreference<IPath>("PROP_DEFAULT_DISPLAY_FILE", ResourcesPlugin.getWorkspace().getRoot().getFullPath());
-    
+
     public static final DefaultDisplayPreference<Boolean> OPEN_AS_SHELL =
         new DefaultDisplayPreference<Boolean>("PROP_DEFAULT_DISPLAY_OPEN_AS_SHELL", true);
 
     public static final DefaultDisplayPreference<String> DEFAULT_DISPLAY_ALIAS =
         new DefaultDisplayPreference<String>("PROP_DEFAULT_DISPLAY_ALIAS", "channel");
-    
-    
-    
+
+
+
     /**
      * Constructor.
      */
     public DefaultDisplayPreference(final String keyAsString, final T defaultValue) {
         super(keyAsString, defaultValue);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -71,5 +71,5 @@ public class DefaultDisplayPreference<T> extends AbstractPreference<T> {
     public String getPluginID() {
         return SdsPlugin.PLUGIN_ID;
     }
-    
+
 }

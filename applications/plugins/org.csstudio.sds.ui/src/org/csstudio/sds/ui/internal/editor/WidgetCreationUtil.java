@@ -13,58 +13,58 @@ import org.eclipse.swt.widgets.Shell;
 
 public class WidgetCreationUtil {
 
-	/**
-	 * Opens a dialog that allows for pre-configuring a new widget.
-	 * 
-	 * @param widgetType
-	 *            optional - if null, the dialog will offer a widget type
-	 *            selection
-	 * @param processVariables
-	 *            process variables, may be null
-	 * @return a preconfigured widget model
-	 */
-	public static AbstractWidgetModel createAndPreconfigureWidget(String widgetType, List<IProcessVariableAddress> processVariables) {
-		final WidgetCreationDialog dialog = new WidgetCreationDialog(new Shell(), processVariables, widgetType);
+    /**
+     * Opens a dialog that allows for pre-configuring a new widget.
+     *
+     * @param widgetType
+     *            optional - if null, the dialog will offer a widget type
+     *            selection
+     * @param processVariables
+     *            process variables, may be null
+     * @return a preconfigured widget model
+     */
+    public static AbstractWidgetModel createAndPreconfigureWidget(String widgetType, List<IProcessVariableAddress> processVariables) {
+        final WidgetCreationDialog dialog = new WidgetCreationDialog(new Shell(), processVariables, widgetType);
 
-		if (dialog.open() == Window.OK) {
-			String selectedWidgetType = widgetType != null ? widgetType : dialog.getSelectedWidgetType();
+        if (dialog.open() == Window.OK) {
+            String selectedWidgetType = widgetType != null ? widgetType : dialog.getSelectedWidgetType();
 
-			if (selectedWidgetType != null) {
-				AbstractWidgetModel widgetModel = createWidgetHeadlessly(selectedWidgetType, true);
+            if (selectedWidgetType != null) {
+                AbstractWidgetModel widgetModel = createWidgetHeadlessly(selectedWidgetType, true);
 
-				String processVariableName = dialog.getSelectedProcessVariable();
-				if (processVariableName != null) {
-					widgetModel.setAliasValue("channel", processVariableName);
-					widgetModel.setPrimarPv("$channel$");
-				}
+                String processVariableName = dialog.getSelectedProcessVariable();
+                if (processVariableName != null) {
+                    widgetModel.setAliasValue("channel", processVariableName);
+                    widgetModel.setPrimarPv("$channel$");
+                }
 
-				widgetModel.setBehavior(dialog.getSelectedBehaviourId());
-				return widgetModel;
-			}
-		}
+                widgetModel.setBehavior(dialog.getSelectedBehaviourId());
+                return widgetModel;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Creates a preconfigured widget, without popping up a configuration
-	 * dialog.
-	 * 
-	 * @param widgetType
-	 *            the widget type, mandatory
-	 * @param runInitializers
-	 *            if true, widget initializers will be run
-	 * 
-	 * @return the preconfigured widget
-	 */
-	public static AbstractWidgetModel createWidgetHeadlessly(String widgetType, boolean runInitializers) {
-		AbstractWidgetModel widgetModel = WidgetModelFactoryService.getInstance().getWidgetModel(widgetType);
-		SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(widgetModel, EventType.ON_MANUAL_CHANGE);
+    /**
+     * Creates a preconfigured widget, without popping up a configuration
+     * dialog.
+     *
+     * @param widgetType
+     *            the widget type, mandatory
+     * @param runInitializers
+     *            if true, widget initializers will be run
+     *
+     * @return the preconfigured widget
+     */
+    public static AbstractWidgetModel createWidgetHeadlessly(String widgetType, boolean runInitializers) {
+        AbstractWidgetModel widgetModel = WidgetModelFactoryService.getInstance().getWidgetModel(widgetType);
+        SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(widgetModel, EventType.ON_MANUAL_CHANGE);
 
-		if (runInitializers) {
-			WidgetInitializationService.getInstance().initialize(widgetModel);
-		}
-		return widgetModel;
-	}
+        if (runInitializers) {
+            WidgetInitializationService.getInstance().initialize(widgetModel);
+        }
+        return widgetModel;
+    }
 
 }

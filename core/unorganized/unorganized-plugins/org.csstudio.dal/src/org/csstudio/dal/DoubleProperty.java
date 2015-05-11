@@ -34,9 +34,9 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.DynamicValueProperty
  */
 public interface DoubleProperty extends NumericProperty<Double,Double>,
-	DoubleSimpleProperty
+    DoubleSimpleProperty
 {
-	//
+    //
 }
 
 /* __oOo__ */

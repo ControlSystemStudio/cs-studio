@@ -36,145 +36,145 @@ import org.csstudio.dal.simple.impl.DataUtil;
  */
 public class ResponseImpl<T> implements Response<T>
 {
-	private Request<T> request;
-	private T value;
-	private String idTag;
-	private DynamicValueCondition condition;
-	private boolean success;
-	private Exception error;
-	private boolean last;
-	private Identifiable source;
-	private Timestamp timestamp;
+    private Request<T> request;
+    private T value;
+    private String idTag;
+    private DynamicValueCondition condition;
+    private boolean success;
+    private Exception error;
+    private boolean last;
+    private Identifiable source;
+    private Timestamp timestamp;
 
-	/**
-	 * Creates a new ResponseImpl object.
-	 *
-	 * @param source response source
-	 * @param r the request this response is the response of
-	 * @param value response value
-	 * @param idTag optional response identification tag
-	 * @param success <code>true</code> if response is a success
-	 * @param error response error
-	 * @param cond response condition
-	 * @param timestamp response timestamp. If timestamp is 0, current time will be used.
-	 * @param last <code>true</code> if this is the last response.
-	 */
-	public ResponseImpl(Identifiable source, Request<T> r, T value,
-	    String idTag, boolean success, Exception error,
-	    DynamicValueCondition cond, Timestamp timestamp, boolean last)
-	{
-		this.source = source;
-		this.request = r;
-		this.value = value;
-		this.idTag = idTag;
-		this.condition = cond;
-		this.success = success;
-		this.error = error;
-		this.last = last;
+    /**
+     * Creates a new ResponseImpl object.
+     *
+     * @param source response source
+     * @param r the request this response is the response of
+     * @param value response value
+     * @param idTag optional response identification tag
+     * @param success <code>true</code> if response is a success
+     * @param error response error
+     * @param cond response condition
+     * @param timestamp response timestamp. If timestamp is 0, current time will be used.
+     * @param last <code>true</code> if this is the last response.
+     */
+    public ResponseImpl(Identifiable source, Request<T> r, T value,
+        String idTag, boolean success, Exception error,
+        DynamicValueCondition cond, Timestamp timestamp, boolean last)
+    {
+        this.source = source;
+        this.request = r;
+        this.value = value;
+        this.idTag = idTag;
+        this.condition = cond;
+        this.success = success;
+        this.error = error;
+        this.last = last;
 
-		if (timestamp == null) {
-			this.timestamp = new Timestamp();
-		} else {
-			this.timestamp = timestamp;
-		}
-	}
+        if (timestamp == null) {
+            this.timestamp = new Timestamp();
+        } else {
+            this.timestamp = timestamp;
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Response#getCondition()
-	 */
-	public DynamicValueCondition getCondition()
-	{
-		return condition;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Response#getCondition()
+     */
+    public DynamicValueCondition getCondition()
+    {
+        return condition;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Response#getError()
-	 */
-	public Exception getError()
-	{
-		return error;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Response#getError()
+     */
+    public Exception getError()
+    {
+        return error;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Response#getNumber()
-	 */
-	public Number getNumber()
-	{
-		return DataUtil.castToNumber(value);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Response#getNumber()
+     */
+    public Number getNumber()
+    {
+        return DataUtil.castToNumber(value);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Response#getRequest()
-	 */
-	public Request<T> getRequest()
-	{
-		return request;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Response#getRequest()
+     */
+    public Request<T> getRequest()
+    {
+        return request;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Response#getValue()
-	 */
-	public T getValue()
-	{
-		return value;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Response#getValue()
+     */
+    public T getValue()
+    {
+        return value;
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.Response#getIdTag()
-	 */
-	public String getIdTag()
-	{
-		return idTag;
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.Response#getIdTag()
+     */
+    public String getIdTag()
+    {
+        return idTag;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Response#isLast()
-	 */
-	public boolean isLast()
-	{
-		return last;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Response#isLast()
+     */
+    public boolean isLast()
+    {
+        return last;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Response#success()
-	 */
-	public boolean success()
-	{
-		return success;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Response#success()
+     */
+    public boolean success()
+    {
+        return success;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Response#getSource()
-	 */
-	public Identifiable getSource()
-	{
-		return source;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Response#getSource()
+     */
+    public Identifiable getSource()
+    {
+        return source;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.Response#getTimestamp()
-	 */
-	public Timestamp getTimestamp()
-	{
-		return timestamp;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb= new StringBuilder(256);
-		sb.append("Response{");
-		sb.append(source.getIdentifier().getUniqueName());
-		sb.append(',');
-		sb.append(idTag);
-		sb.append(',');
-		sb.append(value);
-		sb.append(',');
-		sb.append(timestamp);
-		sb.append('}');
-		
-		return sb.toString();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.Response#getTimestamp()
+     */
+    public Timestamp getTimestamp()
+    {
+        return timestamp;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb= new StringBuilder(256);
+        sb.append("Response{");
+        sb.append(source.getIdentifier().getUniqueName());
+        sb.append(',');
+        sb.append(idTag);
+        sb.append(',');
+        sb.append(value);
+        sb.append(',');
+        sb.append(timestamp);
+        sb.append('}');
+
+        return sb.toString();
+    }
 }
 
 /* __oOo__ */

@@ -21,46 +21,46 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ComplexDataCellEditor extends AbstractDialogCellEditor {
 
-	private AbstractComplexData complexData;
-	
-	public ComplexDataCellEditor(Composite parent, String title) {
-		super(parent, title);
-	}
+    private AbstractComplexData complexData;
 
-	@Override
-	protected void openDialog(Shell parentShell, String dialogTitle) {
-		if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
-		"org.eclipse.help.ui.HelpView") !=null) //$NON-NLS-1$
-			PlatformUI.getWorkbench().getHelpSystem().displayHelp(
-			OPIBuilderPlugin.PLUGIN_ID + ".action"); //$NON-NLS-1$
-		PropertiesEditDialog dialog = 
-			new PropertiesEditDialog(parentShell, complexData.getAllProperties(), dialogTitle);
-		
-		if(dialog.open() == Window.OK){
-			complexData = complexData.getCopy();
-			for (PropertyData propertyData : dialog.getOutput()){
-				complexData.setPropertyValue(
-						propertyData.property.getPropertyID(), propertyData.tmpValue);
-			}			
-		}
-	}
+    public ComplexDataCellEditor(Composite parent, String title) {
+        super(parent, title);
+    }
 
-	@Override
-	protected boolean shouldFireChanges() {
-		return complexData != null;
-	}
+    @Override
+    protected void openDialog(Shell parentShell, String dialogTitle) {
+        if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findView(
+        "org.eclipse.help.ui.HelpView") !=null) //$NON-NLS-1$
+            PlatformUI.getWorkbench().getHelpSystem().displayHelp(
+            OPIBuilderPlugin.PLUGIN_ID + ".action"); //$NON-NLS-1$
+        PropertiesEditDialog dialog =
+            new PropertiesEditDialog(parentShell, complexData.getAllProperties(), dialogTitle);
 
-	@Override
-	protected Object doGetValue() {
-		return complexData;
-	}
+        if(dialog.open() == Window.OK){
+            complexData = complexData.getCopy();
+            for (PropertyData propertyData : dialog.getOutput()){
+                complexData.setPropertyValue(
+                        propertyData.property.getPropertyID(), propertyData.tmpValue);
+            }
+        }
+    }
 
-	@Override
-	protected void doSetValue(Object value) {
-		if(value == null || !(value instanceof AbstractComplexData))
-			throw new RuntimeException(value + " is not instance of AbstractComplexData");
-		else
-			complexData = (AbstractComplexData)value;
-	}
+    @Override
+    protected boolean shouldFireChanges() {
+        return complexData != null;
+    }
+
+    @Override
+    protected Object doGetValue() {
+        return complexData;
+    }
+
+    @Override
+    protected void doSetValue(Object value) {
+        if(value == null || !(value instanceof AbstractComplexData))
+            throw new RuntimeException(value + " is not instance of AbstractComplexData");
+        else
+            complexData = (AbstractComplexData)value;
+    }
 
 }

@@ -15,48 +15,48 @@ import org.epics.util.time.Timestamp;
 @SuppressWarnings("nls")
 public class ChannelConfig
 {
-	final private String name;
-	final private SampleMode sample_mode;
-	final private Timestamp last_sample_time;
-	
-	/** Initialize
-	 *  @param name Channel name
-	 *  @param sample_mode Sample mode
-	 *  @param last_sample_time Time stamp of last sample in archive or <code>null</code>
-	 */
-	public ChannelConfig(final String name, final SampleMode sample_mode, final Timestamp last_sample_time)
+    final private String name;
+    final private SampleMode sample_mode;
+    final private Timestamp last_sample_time;
+
+    /** Initialize
+     *  @param name Channel name
+     *  @param sample_mode Sample mode
+     *  @param last_sample_time Time stamp of last sample in archive or <code>null</code>
+     */
+    public ChannelConfig(final String name, final SampleMode sample_mode, final Timestamp last_sample_time)
     {
-	    this.name = name;
-	    this.sample_mode = sample_mode;
-	    this.last_sample_time = last_sample_time;
+        this.name = name;
+        this.sample_mode = sample_mode;
+        this.last_sample_time = last_sample_time;
     }
 
-	/** @return Channel name */
-	public String getName()
-	{
-		return name;
-	}
-	
-	/** @return Sample mode */
-	public SampleMode getSampleMode()
-	{
-		return sample_mode;
-	}
+    /** @return Channel name */
+    public String getName()
+    {
+        return name;
+    }
 
-	// TODO Maybe the last sample time of a channel should be accessed via
-	// the archive(.)reader API, not the archive.config?
-	// But changing archive(.)reader needs to be coordinated with all its
-	// implementations.
-	/** @return Time stamp of last sample in archive or <code>null</code> */
-	public Timestamp getLastSampleTime()
-	{
-		return last_sample_time;
-	}
+    /** @return Sample mode */
+    public SampleMode getSampleMode()
+    {
+        return sample_mode;
+    }
 
-	/** @return Debug representation */
+    // TODO Maybe the last sample time of a channel should be accessed via
+    // the archive(.)reader API, not the archive.config?
+    // But changing archive(.)reader needs to be coordinated with all its
+    // implementations.
+    /** @return Time stamp of last sample in archive or <code>null</code> */
+    public Timestamp getLastSampleTime()
+    {
+        return last_sample_time;
+    }
+
+    /** @return Debug representation */
     @Override
     public String toString()
     {
-	    return "Channel '" + name + "', " + sample_mode;
+        return "Channel '" + name + "', " + sample_mode;
     }
 }

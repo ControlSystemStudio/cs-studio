@@ -35,144 +35,144 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
  * Responsible for the redirection of global actions to the active editor.
  */
 public final class DctEditorContributor extends MultiPageEditorActionBarContributor {
-	private DctEditor activeEditor;
-	private IEditorPart activeEditorPart;
+    private DctEditor activeEditor;
+    private IEditorPart activeEditorPart;
 
-	private List<RecordFunctionAction> recordFunctionActions;
+    private List<RecordFunctionAction> recordFunctionActions;
 
-	/**
-	 * Constructor.
-	 */
-	public DctEditorContributor() {
-		super();
-		createActions();
-	}
+    /**
+     * Constructor.
+     */
+    public DctEditorContributor() {
+        super();
+        createActions();
+    }
 
-	private void createActions() {
-		recordFunctionActions = new ArrayList<RecordFunctionAction>();
-		Map<String, ServiceExtension<IRecordFunction>> extensions = ExtensionPointUtil
-				.lookupNamingServiceExtensions(DctActivator.EXTPOINT_RECORD_FUNCTIONS);
+    private void createActions() {
+        recordFunctionActions = new ArrayList<RecordFunctionAction>();
+        Map<String, ServiceExtension<IRecordFunction>> extensions = ExtensionPointUtil
+                .lookupNamingServiceExtensions(DctActivator.EXTPOINT_RECORD_FUNCTIONS);
 
-		for (final ServiceExtension<IRecordFunction> extension : extensions.values()) {
-			recordFunctionActions.add(new RecordFunctionAction(extension));
-		}
-	}
+        for (final ServiceExtension<IRecordFunction> extension : extensions.values()) {
+            recordFunctionActions.add(new RecordFunctionAction(extension));
+        }
+    }
 
-	/**
-	 * Returns the action registered with the given text editor.
-	 * 
-	 * @param editor
-	 *            the text edit editor
-	 * @param actionID
-	 *            the action id
-	 * 
-	 * @return IAction or null if editor is null.
-	 */
-	protected IAction getAction(ITextEditor editor, String actionID) {
-		return (editor == null ? null : editor.getAction(actionID));
-	}
+    /**
+     * Returns the action registered with the given text editor.
+     *
+     * @param editor
+     *            the text edit editor
+     * @param actionID
+     *            the action id
+     *
+     * @return IAction or null if editor is null.
+     */
+    protected IAction getAction(ITextEditor editor, String actionID) {
+        return (editor == null ? null : editor.getAction(actionID));
+    }
 
-	@Override
-	public void setActiveEditor(IEditorPart part) {
-		if (part instanceof DctEditor) {
-			activeEditor = (DctEditor) part;
+    @Override
+    public void setActiveEditor(IEditorPart part) {
+        if (part instanceof DctEditor) {
+            activeEditor = (DctEditor) part;
 
-			for (RecordFunctionAction a : recordFunctionActions) {
-				a.setProject(activeEditor.getProject());
-			}
-		} else {
-			activeEditor = null;
-		}
+            for (RecordFunctionAction a : recordFunctionActions) {
+                a.setProject(activeEditor.getProject());
+            }
+        } else {
+            activeEditor = null;
+        }
 
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void setActivePage(IEditorPart part) {
-		if (activeEditorPart == part) {
-			return;
-		}
+    /**
+     *{@inheritDoc}
+     */
+    public void setActivePage(IEditorPart part) {
+        if (activeEditorPart == part) {
+            return;
+        }
 
-		activeEditorPart = part;
+        activeEditorPart = part;
 
-		IActionBars actionBars = getActionBars();
-		if (actionBars != null) {
+        IActionBars actionBars = getActionBars();
+        if (actionBars != null) {
 
-			ITextEditor editor = (part instanceof ITextEditor) ? (ITextEditor) part : null;
+            ITextEditor editor = (part instanceof ITextEditor) ? (ITextEditor) part : null;
 
-			actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(editor, ITextEditorActionConstants.DELETE));
-			actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(editor, ITextEditorActionConstants.UNDO));
-			actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction(editor, ITextEditorActionConstants.REDO));
-			actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(editor, ITextEditorActionConstants.CUT));
-			actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction(editor, ITextEditorActionConstants.COPY));
-			actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(editor, ITextEditorActionConstants.PASTE));
-			actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(editor, ITextEditorActionConstants.SELECT_ALL));
-			actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction(editor, ITextEditorActionConstants.FIND));
-			actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction(editor, IDEActionFactory.BOOKMARK.getId()));
-			actionBars.updateActionBars();
-		}
-	}
+            actionBars.setGlobalActionHandler(ActionFactory.DELETE.getId(), getAction(editor, ITextEditorActionConstants.DELETE));
+            actionBars.setGlobalActionHandler(ActionFactory.UNDO.getId(), getAction(editor, ITextEditorActionConstants.UNDO));
+            actionBars.setGlobalActionHandler(ActionFactory.REDO.getId(), getAction(editor, ITextEditorActionConstants.REDO));
+            actionBars.setGlobalActionHandler(ActionFactory.CUT.getId(), getAction(editor, ITextEditorActionConstants.CUT));
+            actionBars.setGlobalActionHandler(ActionFactory.COPY.getId(), getAction(editor, ITextEditorActionConstants.COPY));
+            actionBars.setGlobalActionHandler(ActionFactory.PASTE.getId(), getAction(editor, ITextEditorActionConstants.PASTE));
+            actionBars.setGlobalActionHandler(ActionFactory.SELECT_ALL.getId(), getAction(editor, ITextEditorActionConstants.SELECT_ALL));
+            actionBars.setGlobalActionHandler(ActionFactory.FIND.getId(), getAction(editor, ITextEditorActionConstants.FIND));
+            actionBars.setGlobalActionHandler(IDEActionFactory.BOOKMARK.getId(), getAction(editor, IDEActionFactory.BOOKMARK.getId()));
+            actionBars.updateActionBars();
+        }
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void contributeToMenu(IMenuManager manager) {
-		IMenuManager menu = new MenuManager("DCT");
-		manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
+    /**
+     *{@inheritDoc}
+     */
+    public void contributeToMenu(IMenuManager manager) {
+        IMenuManager menu = new MenuManager("DCT");
+        manager.prependToGroup(IWorkbenchActionConstants.MB_ADDITIONS, menu);
 
-		// actions for record functions
-		for (Action a : recordFunctionActions) {
-			menu.add(a);
-		}
-	}
+        // actions for record functions
+        for (Action a : recordFunctionActions) {
+            menu.add(a);
+        }
+    }
 
-	private static final class RecordFunctionAction extends Action {
-		private IProject project;
-		private ServiceExtension<IRecordFunction> extension;
+    private static final class RecordFunctionAction extends Action {
+        private IProject project;
+        private ServiceExtension<IRecordFunction> extension;
 
-		public RecordFunctionAction(ServiceExtension<IRecordFunction> extension) {
-			this.extension = extension;
-			setText(extension.getName());
-			setDescription(extension.getName());
-			if (extension.getIconPath() != null) {
-				setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(extension.getPluginId(),
-						extension.getIconPath()));
-			}
-		}
+        public RecordFunctionAction(ServiceExtension<IRecordFunction> extension) {
+            this.extension = extension;
+            setText(extension.getName());
+            setDescription(extension.getName());
+            if (extension.getIconPath() != null) {
+                setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(extension.getPluginId(),
+                        extension.getIconPath()));
+            }
+        }
 
-		public void setProject(IProject project) {
-			this.project = project;
-		}
+        public void setProject(IProject project) {
+            this.project = project;
+        }
 
-		@Override
-		public void run() {
-			if (project != null) {
-				final IRecordFunction function = extension.getService();
+        @Override
+        public void run() {
+            if (project != null) {
+                final IRecordFunction function = extension.getService();
 
-				ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
+                ProgressMonitorDialog dialog = new ProgressMonitorDialog(Display.getCurrent().getActiveShell());
 
-				try {
-					dialog.run(false, true, new IRunnableWithProgress() {
-						public void run(IProgressMonitor monitor) {
-							function.run(project, monitor);
-						}
-					});
-				} catch (InvocationTargetException e) {
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+                try {
+                    dialog.run(false, true, new IRunnableWithProgress() {
+                        public void run(IProgressMonitor monitor) {
+                            function.run(project, monitor);
+                        }
+                    });
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-			}
-		}
-	}
+            }
+        }
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void contributeToToolBar(IToolBarManager manager) {
-		manager.add(new Separator());
-	}
+    /**
+     *{@inheritDoc}
+     */
+    public void contributeToToolBar(IToolBarManager manager) {
+        manager.add(new Separator());
+    }
 
 }

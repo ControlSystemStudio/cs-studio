@@ -34,62 +34,62 @@ import org.csstudio.dal.proxy.CommandProxy;
  * Default asynchronus command implementation.
  */
 public class AsynchronousCommandImpl extends CommandImpl
-	implements AsynchronousCommand
+    implements AsynchronousCommand
 {
-	protected CommandProxy proxy;
-	protected AbstractDeviceImpl owner;
-	protected ResponseListener<?> defaultResponseListener;
+    protected CommandProxy proxy;
+    protected AbstractDeviceImpl owner;
+    protected ResponseListener<?> defaultResponseListener;
 
-	private class ResponseForwarder implements ResponseListener
-	{
-		private ResponseListener<?> callback;
+    private class ResponseForwarder implements ResponseListener
+    {
+        private ResponseListener<?> callback;
 
-		ResponseForwarder(ResponseListener<?> callback)
-		{
-			this.callback = callback;
-		}
+        ResponseForwarder(ResponseListener<?> callback)
+        {
+            this.callback = callback;
+        }
 
-		public void responseReceived(ResponseEvent event)
-		{
-			defaultResponseListener.responseReceived(event);
-			callback.responseReceived(event);
-		}
+        public void responseReceived(ResponseEvent event)
+        {
+            defaultResponseListener.responseReceived(event);
+            callback.responseReceived(event);
+        }
 
-		public void responseError(ResponseEvent event)
-		{
-			defaultResponseListener.responseError(event);
-			callback.responseError(event);
-		}
-	}
+        public void responseError(ResponseEvent event)
+        {
+            defaultResponseListener.responseError(event);
+            callback.responseError(event);
+        }
+    }
 
-	/**
-	 * Constructor for asynchronus command
-	 * @param p    Command proxy
-	 * @param ctx    Device
-	 */
-	public AsynchronousCommandImpl(CommandProxy p, AbstractDeviceImpl ctx,
-	    ResponseListener<?> responseListener)
-	{
-		super(p, ctx);
-		proxy = p;
-		owner = ctx;
-		this.defaultResponseListener = responseListener;
-	}
+    /**
+     * Constructor for asynchronus command
+     * @param p    Command proxy
+     * @param ctx    Device
+     */
+    public AsynchronousCommandImpl(CommandProxy p, AbstractDeviceImpl ctx,
+        ResponseListener<?> responseListener)
+    {
+        super(p, ctx);
+        proxy = p;
+        owner = ctx;
+        this.defaultResponseListener = responseListener;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.AsynchronousCommand#executeAsync(java.lang.Object...)
-	 */
-	public Request<?> executeAsync(ResponseListener<?> listener, Object... parameters)
-		throws RemoteException
-	{
-		return proxy.execute(listener == null ? defaultResponseListener
-		    : new ResponseForwarder(listener), parameters);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.AsynchronousCommand#executeAsync(java.lang.Object...)
+     */
+    public Request<?> executeAsync(ResponseListener<?> listener, Object... parameters)
+        throws RemoteException
+    {
+        return proxy.execute(listener == null ? defaultResponseListener
+            : new ResponseForwarder(listener), parameters);
+    }
 
-	public boolean isAsynchronous()
-	{
-		return true;
-	}
+    public boolean isAsynchronous()
+    {
+        return true;
+    }
 }
 
 /* __oOo__ */

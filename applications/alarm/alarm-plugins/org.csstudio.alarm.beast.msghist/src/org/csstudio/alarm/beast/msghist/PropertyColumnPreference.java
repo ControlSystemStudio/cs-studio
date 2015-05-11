@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.msghist;
 
 /** Settings for a "Property" table column:
  *  Name of property to display, suggested columns size, ...
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -18,7 +18,7 @@ public class PropertyColumnPreference
     final String name;
     final int size;
     final int weight;
-    
+
     /** Initialize
      *  @param name
      *  @param size
@@ -31,14 +31,14 @@ public class PropertyColumnPreference
         this.size = size;
         this.weight = weight;
     }
-    
+
     /** Parse PropertyColumnPreference from preference string
      *  @param pref_string String as stored in preferences
      *  @return PropertyColumnPreference
      *  @throws Exception On error
      */
     static PropertyColumnPreference fromString(final String pref_string)
-    	throws Exception
+        throws Exception
     {
         final String[] pieces = pref_string.split(",");
         if (pieces.length != 3)
@@ -55,7 +55,7 @@ public class PropertyColumnPreference
             throw new Exception("Cannot parse size, weight from '" + pref_string + "'");
         }
     }
-    
+
     /** @return Property Name */
     public String getName()
     {
@@ -74,10 +74,10 @@ public class PropertyColumnPreference
         return weight;
     }
 
-	@Override
-	public String toString()
-	{
-		return "PropertyColumnPreference '" + name + ", min " + size
-			+ ", weight " + weight;
-	}
+    @Override
+    public String toString()
+    {
+        return "PropertyColumnPreference '" + name + ", min " + size
+            + ", weight " + weight;
+    }
 }

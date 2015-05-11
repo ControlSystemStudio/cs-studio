@@ -71,12 +71,12 @@ public class AlarmClientModel
     private AtomicInteger references = new AtomicInteger();
 
     /** Name of this configuration, i.e. root element of the configuration tree */
-	private String config_name;
+    private String config_name;
 
     /** Names of all available configuration, i.e. all root elements */
     private String config_names[] = new String[0];
 
-	/** Have we recently heard from the server? */
+    /** Have we recently heard from the server? */
     private volatile boolean server_alive = false;
 
     /** Do we think the server is in maintenance mode? */
@@ -97,7 +97,7 @@ public class AlarmClientModel
     /** Lock for <code>communicator</code> */
     final private Object communicator_lock = new Object();
 
-	/** Root of the alarm tree.
+    /** Root of the alarm tree.
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      *  Usually this would be the same as config.getConfigTree(),
      *  but initially and after errors it will be a pseudo-alarm-tree
@@ -125,10 +125,10 @@ public class AlarmClientModel
     /** @return <code>true</code> for read-only model */
     final private boolean allow_write = ! Preferences.isReadOnly();
 
-	/** Initialize client model */
-	private AlarmClientModel(final String config_name) throws Exception
-	{
-		this.config_name = config_name;
+    /** Initialize client model */
+    private AlarmClientModel(final String config_name) throws Exception
+    {
+        this.config_name = config_name;
         // Initial dummy alarm info
         createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
 
@@ -145,8 +145,8 @@ public class AlarmClientModel
      */
     public static AlarmClientModel getInstance(final String config_name) throws Exception
     {
-    	if(config_name == null)
-    		throw new Exception("Configuration name can't be null");
+        if(config_name == null)
+            throw new Exception("Configuration name can't be null");
         synchronized (AlarmClientModel.class)
         {
             if (instance == null)
@@ -154,7 +154,7 @@ public class AlarmClientModel
         }
         instance.references.incrementAndGet();
         return instance;
-	}
+    }
 
     /** Obtain the shared instance.
      *  <p>
@@ -163,12 +163,12 @@ public class AlarmClientModel
      *  @return Alarm client model instance
      *  @throws Exception on error
      */
-	public static AlarmClientModel getInstance() throws Exception
-	{
-		return getInstance(Preferences.getAlarmTreeRoot());
-	}
+    public static AlarmClientModel getInstance() throws Exception
+    {
+        return getInstance(Preferences.getAlarmTreeRoot());
+    }
 
-	/** Release the 'instance' */
+    /** Release the 'instance' */
     private static void releaseInstance()
     {
         synchronized (AlarmClientModel.class)
@@ -196,8 +196,8 @@ public class AlarmClientModel
             {
                 if (communicator != null)
                 {
-                	communicator.stop();
-                	communicator = null;
+                    communicator.stop();
+                    communicator = null;
                 }
             }
             synchronized (this)
@@ -223,13 +223,13 @@ public class AlarmClientModel
      */
     public synchronized String[] getConfigurationNames()
     {
-    	return config_names;
+        return config_names;
     }
 
     /** @return Name of this configuration, i.e. name of its root element */
     public synchronized String getConfigurationName()
     {
-    	return config_name;
+        return config_name;
     }
 
     /** Load a new alarm configuration.
@@ -241,38 +241,38 @@ public class AlarmClientModel
      *          if requested configuration is already the current one
      */
     public boolean setConfigurationName(final String new_root_name,
-    		final AlarmClientModelConfigListener listener)
+            final AlarmClientModelConfigListener listener)
     {
-    	// TODO If loading, ignore change
-    	synchronized (this)
+        // TODO If loading, ignore change
+        synchronized (this)
         {
-        	if (new_root_name.equals(config_name))
-        		return false;
+            if (new_root_name.equals(config_name))
+                return false;
 
-        	// Update config. name
-        	config_name = new_root_name;
+            // Update config. name
+            config_name = new_root_name;
         }
 
-    	// Update GUI with 'empty' model
+        // Update GUI with 'empty' model
         createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
         fireNewConfig();
 
-    	// Clear JMS communicator because it uses topics of the old config. name
+        // Clear JMS communicator because it uses topics of the old config. name
         synchronized (communicator_lock)
         {
-	    	if (communicator != null)
-	    	{
-		    	// Close old communicator
-		    	communicator.stop();
-		    	communicator = null;
-	    	}
+            if (communicator != null)
+            {
+                // Close old communicator
+                communicator.stop();
+                communicator = null;
+            }
         }
-    	server_alive = false;
+        server_alive = false;
 
         // Load new configuration:
         // Create new JMS communicator, read from RDB, fire events, ...
-    	new ReadConfigJob(this, listener).schedule();
-    	return true;
+        new ReadConfigJob(this, listener).schedule();
+        return true;
     }
 
     /** @return <code>true</code> if model allows write access
@@ -347,17 +347,17 @@ public class AlarmClientModel
         final AlarmConfiguration new_config;
         try
         {
-        	// TODO Rearrange AlarmClientModel, AlarmConfiguration
-        	// This is currently odd:
-        	// Reading a new configuration (tree), but while doing that
-        	// we already update the active_alarms & acknowledged_alarms
-        	// of this model.
-        	// Better have a separate
-        	// 1) AlarmConfiguration with config tree AND active_alarms, acknowledged_alarms
-        	// 2) RDB reader/writer
-        	// 3) AlarmClientModel that uses 1 & 2
-        	// That way, the 'notify_listeners' can go away:
-        	// Reading a new config does not affect an existing config.
+            // TODO Rearrange AlarmClientModel, AlarmConfiguration
+            // This is currently odd:
+            // Reading a new configuration (tree), but while doing that
+            // we already update the active_alarms & acknowledged_alarms
+            // of this model.
+            // Better have a separate
+            // 1) AlarmConfiguration with config tree AND active_alarms, acknowledged_alarms
+            // 2) RDB reader/writer
+            // 3) AlarmClientModel that uses 1 & 2
+            // That way, the 'notify_listeners' can go away:
+            // Reading a new config does not affect an existing config.
             new_config = new AlarmConfiguration(Preferences.getRDB_Url(),Preferences.getRDB_User(),
                                    Preferences.getRDB_Password(), Preferences.getRDB_Schema())
             {
@@ -451,7 +451,7 @@ public class AlarmClientModel
         {
             final int count;
             final int pv_count;
-        	synchronized (this)
+            synchronized (this)
             {
                 count = config_tree.getElementCount();
                 pv_count = config_tree.getLeafCount();
@@ -477,8 +477,8 @@ public class AlarmClientModel
             createPseudoAlarmTree("Cancelled");
             synchronized (this)
             {
-            	if (config != null)
-            		config.close();
+                if (config != null)
+                    config.close();
                 config = null;
                 active_alarms.clear();
                 acknowledged_alarms.clear();
@@ -496,8 +496,8 @@ public class AlarmClientModel
     {
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
-        		return communicator.toString();
+            if (communicator != null)
+                return communicator.toString();
         }
         return "No Communicator";
     }
@@ -545,8 +545,8 @@ public class AlarmClientModel
     {
         synchronized (communicator_lock)
         {
-        	if (allow_write  &&  communicator != null)
-        		communicator.requestMaintenanceMode(maintenance);
+            if (allow_write  &&  communicator != null)
+                communicator.requestMaintenanceMode(maintenance);
         }
     }
 
@@ -594,8 +594,8 @@ public class AlarmClientModel
         }
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
-        		communicator.sendConfigUpdate(AlarmTreePath.makePath(root_or_component.getPathName(), name));
+            if (communicator != null)
+                communicator.sendConfigUpdate(AlarmTreePath.makePath(root_or_component.getPathName(), name));
         }
     }
 
@@ -618,7 +618,7 @@ public class AlarmClientModel
         // Notify via JMS, then add to local model in response to notification.
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
+            if (communicator != null)
                 communicator.sendConfigUpdate(null);
         }
     }
@@ -643,17 +643,17 @@ public class AlarmClientModel
                 return;
             try
             {
-            	config.configureItem(item, guidance, displays, commands, auto_actions);
+                config.configureItem(item, guidance, displays, commands, auto_actions);
             }
             finally
             {
-            	config.closeStatements();
+                config.closeStatements();
             }
         }
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
-        		communicator.sendConfigUpdate(item.getPathName());
+            if (communicator != null)
+                communicator.sendConfigUpdate(item.getPathName());
         }
     }
 
@@ -686,19 +686,19 @@ public class AlarmClientModel
                 return;
             try
             {
-	            config.configurePV(pv, description, enabled, annunciate,
-	                    latch, delay, count, filter,
-	                    guidance, displays, commands, auto_actions);
+                config.configurePV(pv, description, enabled, annunciate,
+                        latch, delay, count, filter,
+                        guidance, displays, commands, auto_actions);
             }
             finally
             {
-            	config.closeStatements();
+                config.closeStatements();
             }
         }
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
-        		communicator.sendConfigUpdate(pv.getPathName());
+            if (communicator != null)
+                communicator.sendConfigUpdate(pv.getPathName());
         }
     }
 
@@ -750,8 +750,8 @@ public class AlarmClientModel
         }
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
-        		communicator.sendConfigUpdate(null);
+            if (communicator != null)
+                communicator.sendConfigUpdate(null);
         }
     }
 
@@ -776,8 +776,8 @@ public class AlarmClientModel
         }
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
-        		communicator.sendConfigUpdate(null);
+            if (communicator != null)
+                communicator.sendConfigUpdate(null);
         }
     }
 
@@ -828,8 +828,8 @@ public class AlarmClientModel
         // in this model as well as other alarm system listeners
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
-        		communicator.sendConfigUpdate(null);
+            if (communicator != null)
+                communicator.sendConfigUpdate(null);
         }
     }
 
@@ -849,8 +849,8 @@ public class AlarmClientModel
         }
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
-        		communicator.sendConfigUpdate(null);
+            if (communicator != null)
+                communicator.sendConfigUpdate(null);
         }
     }
 
@@ -875,11 +875,11 @@ public class AlarmClientModel
                 return;
             try
             {
-            	config.readPVConfig(pv);
+                config.readPVConfig(pv);
             }
             finally
             {
-            	config.closeStatements();
+                config.closeStatements();
             }
         }
 
@@ -901,7 +901,7 @@ public class AlarmClientModel
         fireNewAlarmState(pv, true);
     }
 
-	/** Update the enablement of a PV in model.
+    /** Update the enablement of a PV in model.
      *  <p>
      *  Called by AlarmUpdateCommunicator, i.e. from JMS thread.
      *
@@ -929,9 +929,9 @@ public class AlarmClientModel
             parent.maximizeSeverity();
         // Update alarm display
         fireNewAlarmState(pv, true);
-	}
+    }
 
-	/** Update the state of a PV in model.
+    /** Update the state of a PV in model.
      *  <p>
      *  Called by AlarmUpdateCommunicator, i.e. from JMS thread.
      *
@@ -978,7 +978,7 @@ public class AlarmClientModel
      */
     public void acknowledge(final AlarmTreePV pv, final boolean acknowledge)
     {
-    	synchronized (communicator_lock)
+        synchronized (communicator_lock)
         {
             if (allow_write  &&  communicator != null)
                 communicator.requestAcknowledgement(pv, acknowledge);
@@ -1002,8 +1002,8 @@ public class AlarmClientModel
     {
         synchronized (communicator_lock)
         {
-        	if (communicator != null)
-        		communicator.triggerDebugAction();
+            if (communicator != null)
+                communicator.triggerDebugAction();
         }
     }
 
@@ -1080,12 +1080,12 @@ public class AlarmClientModel
                 {
                     if (severity.isActive())
                     {
-                    	active_alarms.add(pv);
+                        active_alarms.add(pv);
                         acknowledged_alarms.remove(pv);
                     }
                     else
                     {
-                    	acknowledged_alarms.add(pv);
+                        acknowledged_alarms.add(pv);
                         active_alarms.remove(pv);
                     }
                 }

@@ -35,39 +35,39 @@ import org.csstudio.dal.RemoteException;
  */
 public class EnumPropertyProxyImpl extends PropertyProxyImpl<Long> {
 
-	/**
-	 * Constructor.
-	 * @param plug plug handling this property.
-	 * @param name property name.
-	 * @throws RemoteException
-	 */
-	public EnumPropertyProxyImpl(final EPICSPlug plug, final String name)
-			throws RemoteException {
-		super(plug, name, Long.class, DBRType.ENUM);
-	}
+    /**
+     * Constructor.
+     * @param plug plug handling this property.
+     * @param name property name.
+     * @throws RemoteException
+     */
+    public EnumPropertyProxyImpl(final EPICSPlug plug, final String name)
+            throws RemoteException {
+        super(plug, name, Long.class, DBRType.ENUM);
+    }
 
-	@Override
-	protected void createSpecificCharacteristics(final DBR dbr) {
+    @Override
+    protected void createSpecificCharacteristics(final DBR dbr) {
 
 
-		String[] names= (String[])getCharacteristics().get(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS);
+        String[] names= (String[])getCharacteristics().get(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS);
 
-		if (names==null || names.length==0) {
-			names= new String[16];
-			final Object[] vals= new Object[16];
-			for (int i = 0; i < names.length; i++) {
-				names[i]="Value "+i;
-				vals[i]= new Long(i);
-			}
-			getCharacteristics().put(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS, names);
-			getCharacteristics().put(EnumPropertyCharacteristics.C_ENUM_VALUES, vals);
-		}
+        if (names==null || names.length==0) {
+            names= new String[16];
+            final Object[] vals= new Object[16];
+            for (int i = 0; i < names.length; i++) {
+                names[i]="Value "+i;
+                vals[i]= new Long(i);
+            }
+            getCharacteristics().put(EnumPropertyCharacteristics.C_ENUM_DESCRIPTIONS, names);
+            getCharacteristics().put(EnumPropertyCharacteristics.C_ENUM_VALUES, vals);
+        }
 
-		getCharacteristics().put(NumericPropertyCharacteristics.C_MINIMUM, new Long(0));
-		getCharacteristics().put(NumericPropertyCharacteristics.C_MAXIMUM, new Long(names.length));
+        getCharacteristics().put(NumericPropertyCharacteristics.C_MINIMUM, new Long(0));
+        getCharacteristics().put(NumericPropertyCharacteristics.C_MAXIMUM, new Long(names.length));
 
-		getCharacteristics().put(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(0));
-		getCharacteristics().put(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(names.length));
+        getCharacteristics().put(NumericPropertyCharacteristics.C_GRAPH_MIN, new Long(0));
+        getCharacteristics().put(NumericPropertyCharacteristics.C_GRAPH_MAX, new Long(names.length));
 
-	}
+    }
 }

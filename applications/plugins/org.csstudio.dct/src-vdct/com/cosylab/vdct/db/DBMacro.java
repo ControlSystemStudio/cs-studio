@@ -8,22 +8,22 @@ package com.cosylab.vdct.db;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -36,169 +36,169 @@ import com.cosylab.vdct.inspector.InspectableProperty;
  */
 public class DBMacro extends DBComment
 {
-	protected String name = null;
-	protected String description = null;
+    protected String name = null;
+    protected String description = null;
 
-	protected boolean hasVisual = false;
-	protected int x = -1;			// used for layout
-	protected int y = -1;
-	protected boolean isNamePositionNorth = true;
-	protected int mode = InLink.INPUT_MACRO_MODE;
-	protected int defaultVisibility = InspectableProperty.UNDEFINED_VISIBILITY;
-	protected java.awt.Color color = java.awt.Color.black;
-	
-	/**
-	 * Insert the method's description here.
-	 */
-	public DBMacro(String name)
-	{
-		this.name = name;
-	}
-	
-	
-	/**
-	 * Returns the name.
-	 * @return String
-	 */
-	public String getName()
-	{
-		return name;
-	}
+    protected boolean hasVisual = false;
+    protected int x = -1;            // used for layout
+    protected int y = -1;
+    protected boolean isNamePositionNorth = true;
+    protected int mode = InLink.INPUT_MACRO_MODE;
+    protected int defaultVisibility = InspectableProperty.UNDEFINED_VISIBILITY;
+    protected java.awt.Color color = java.awt.Color.black;
 
-	/**
-	 * Sets the name.
-	 * @param name The name to set
-	 */
-	public void setName(String name)
-	{
-		this.name = name;
-	}
+    /**
+     * Insert the method's description here.
+     */
+    public DBMacro(String name)
+    {
+        this.name = name;
+    }
 
-	/**
-	 * Returns the description.
-	 * @return String
-	 */
-	public String getDescription()
-	{
-		return description;
-	}
 
-	/**
-	 * Sets the description.
-	 * @param description The description to set
-	 */
-	public void setDescription(String description)
-	{
-		this.description = description;
-	}
-	
-	/**
-	 * Returns the color.
-	 * @return java.awt.Color
-	 */
-	public java.awt.Color getColor()
-	{
-		return color;
-	}
+    /**
+     * Returns the name.
+     * @return String
+     */
+    public String getName()
+    {
+        return name;
+    }
 
-	/**
-	 * Returns the hasVisual.
-	 * @return boolean
-	 */
-	public boolean isHasVisual()
-	{
-		return hasVisual;
-	}
+    /**
+     * Sets the name.
+     * @param name The name to set
+     */
+    public void setName(String name)
+    {
+        this.name = name;
+    }
 
-	/**
-	 * Returns the x.
-	 * @return int
-	 */
-	public int getX()
-	{
-		return x;
-	}
+    /**
+     * Returns the description.
+     * @return String
+     */
+    public String getDescription()
+    {
+        return description;
+    }
 
-	/**
-	 * Returns the y.
-	 * @return int
-	 */
-	public int getY()
-	{
-		return y;
-	}
+    /**
+     * Sets the description.
+     * @param description The description to set
+     */
+    public void setDescription(String description)
+    {
+        this.description = description;
+    }
 
-	/**
-	 * Sets the color.
-	 * @param color The color to set
-	 */
-	public void setColor(java.awt.Color color)
-	{
-		this.color = color;
-	}
+    /**
+     * Returns the color.
+     * @return java.awt.Color
+     */
+    public java.awt.Color getColor()
+    {
+        return color;
+    }
 
-	/**
-	 * Sets the hasVisual.
-	 * @param hasVisual The hasVisual to set
-	 */
-	public void setHasVisual(boolean hasVisual)
-	{
-		this.hasVisual = hasVisual;
-	}
+    /**
+     * Returns the hasVisual.
+     * @return boolean
+     */
+    public boolean isHasVisual()
+    {
+        return hasVisual;
+    }
 
-	/**
-	 * Sets the x.
-	 * @param x The x to set
-	 */
-	public void setX(int x)
-	{
-		this.x = x;
-	}
+    /**
+     * Returns the x.
+     * @return int
+     */
+    public int getX()
+    {
+        return x;
+    }
 
-	/**
-	 * Sets the y.
-	 * @param y The y to set
-	 */
-	public void setY(int y)
-	{
-		this.y = y;
-	}
+    /**
+     * Returns the y.
+     * @return int
+     */
+    public int getY()
+    {
+        return y;
+    }
 
-	/**
-	 * Returns the mode.
-	 * @return int
-	 */
-	public int getMode()
-	{
-		return mode;
-	}
+    /**
+     * Sets the color.
+     * @param color The color to set
+     */
+    public void setColor(java.awt.Color color)
+    {
+        this.color = color;
+    }
 
-	/**
-	 * Sets the mode.
-	 * @param mode The mode to set
-	 */
-	public void setMode(int mode)
-	{
-		this.mode = mode;
-	}
+    /**
+     * Sets the hasVisual.
+     * @param hasVisual The hasVisual to set
+     */
+    public void setHasVisual(boolean hasVisual)
+    {
+        this.hasVisual = hasVisual;
+    }
 
-	/**
-	 * Returns the defaultVisibility.
-	 * @return int
-	 */
-	public int getDefaultVisibility()
-	{
-		return defaultVisibility;
-	}
+    /**
+     * Sets the x.
+     * @param x The x to set
+     */
+    public void setX(int x)
+    {
+        this.x = x;
+    }
 
-	/**
-	 * Sets the defaultVisibility.
-	 * @param defaultVisibility The defaultVisibility to set
-	 */
-	public void setDefaultVisibility(int defaultVisibility)
-	{
-		this.defaultVisibility = defaultVisibility;
-	}
+    /**
+     * Sets the y.
+     * @param y The y to set
+     */
+    public void setY(int y)
+    {
+        this.y = y;
+    }
+
+    /**
+     * Returns the mode.
+     * @return int
+     */
+    public int getMode()
+    {
+        return mode;
+    }
+
+    /**
+     * Sets the mode.
+     * @param mode The mode to set
+     */
+    public void setMode(int mode)
+    {
+        this.mode = mode;
+    }
+
+    /**
+     * Returns the defaultVisibility.
+     * @return int
+     */
+    public int getDefaultVisibility()
+    {
+        return defaultVisibility;
+    }
+
+    /**
+     * Sets the defaultVisibility.
+     * @param defaultVisibility The defaultVisibility to set
+     */
+    public void setDefaultVisibility(int defaultVisibility)
+    {
+        this.defaultVisibility = defaultVisibility;
+    }
 
 
     /**
@@ -208,11 +208,11 @@ public class DBMacro extends DBComment
      */
     public void setNamePositionNorth(boolean namePositionNorth) {
         this.isNamePositionNorth = namePositionNorth;
-        
+
     }
-    
+
     /**
-     * 
+     *
      * Returns the position of the text.
      * @return
      */

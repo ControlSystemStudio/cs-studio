@@ -24,22 +24,22 @@ import org.junit.Test;
 import com.sun.security.auth.callback.TextCallbackHandler;
 
 /** Console (text-based) JUnit demo of various login methods
- * 
+ *
  *  <p>Does not require Plug-In test
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class LoginDemo
 {
     final private static String USER_NAME = "fred";
-    
+
     @Before
     public void setup()
     {
         System.setProperty("java.security.auth.login.config", "jaas.conf");
     }
-    
+
     /** Should work on all Linux (Mac OS) systems */
     @Test
     public void systemDemo() throws Exception
@@ -54,36 +54,36 @@ public class LoginDemo
             new LoginContext(jaas_config, new UnattendedCallbackHandler());
         login.login();
         final Subject subject = login.getSubject();
-        
+
         System.out.println(subject);
         final String current_user = System.getProperty("user.name");
         boolean got_user = false;
         for (Principal p : subject.getPrincipals())
             if (p.getName().equals(current_user))
                 got_user = true;
-        
+
         assertThat(subject.getPrincipals().size(), greaterThanOrEqualTo(1));
         assertThat(got_user, equalTo(true));
-        
+
         System.out.println("Primary user name: " +
-        		SecuritySupport.getSubjectName(subject));
+                SecuritySupport.getSubjectName(subject));
     }
 
     /** Should work as long as passwords.conf isn't changed */
     @Test
     public void fileDemo() throws Exception
-    {   
+    {
         final LoginContext login = new LoginContext("file",
                 new UnattendedCallbackHandler(USER_NAME, "$fred"));
         login.login();
         final Subject subject = login.getSubject();
-        
+
         System.out.println(subject);
         boolean got_user = false;
         for (Principal p : subject.getPrincipals())
             if (p.getName().equals(USER_NAME))
                 got_user = true;
-        
+
         // FileLoginModule should return exactly one Principal named "fred"
         assertThat(got_user, equalTo(true));
         assertThat(subject.getPrincipals().size(), equalTo(1));

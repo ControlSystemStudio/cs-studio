@@ -8,22 +8,22 @@ package com.cosylab.vdct.about;
  * are permitted provided that the following conditions are met:
  *
  * Redistributions of source code must retain the above copyright notice,
- * this list of conditions and the following disclaimer. 
+ * this list of conditions and the following disclaimer.
  * Redistributions in binary form must reproduce the above copyright notice,
- * this list of conditions and the following disclaimer in the documentation 
- * and/or other materials provided with the distribution. 
+ * this list of conditions and the following disclaimer in the documentation
+ * and/or other materials provided with the distribution.
  * Neither the name of the Cosylab, Ltd., Control System Laboratory nor the names
- * of its contributors may be used to endorse or promote products derived 
+ * of its contributors may be used to endorse or promote products derived
  * from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE 
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE
  * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
  * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
- * THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
@@ -44,27 +44,27 @@ public class LicenseTabPanel extends AboutTabPanel {
     private javax.swing.JPanel JPanel1 = null;
     private javax.swing.JPanel JPanel2 = null;
 
-   	private javax.swing.JLabel JLabelTitle = null;
-	private javax.swing.JLabel JLabelDivider = null;
+       private javax.swing.JLabel JLabelTitle = null;
+    private javax.swing.JLabel JLabelDivider = null;
 
-	private javax.swing.JScrollPane JScrollPaneLicense = null;
-	private javax.swing.JTextArea JTextAreaLicense = null;
-	
-	public String name = "License";
-	
-	/**
-	 * Constructor for LicenseTab.
-	 * @param tabModel
-	 */
-	public LicenseTabPanel(LicenseTabModel tabModel) {
-		super(tabModel);
-	}
+    private javax.swing.JScrollPane JScrollPaneLicense = null;
+    private javax.swing.JTextArea JTextAreaLicense = null;
 
-	/**
-	 * @see com.cosylab.gui.components.about.AboutTabPanel#initializePanel()
-	 */
-	protected void initializePanel() {
-	
+    public String name = "License";
+
+    /**
+     * Constructor for LicenseTab.
+     * @param tabModel
+     */
+    public LicenseTabPanel(LicenseTabModel tabModel) {
+        super(tabModel);
+    }
+
+    /**
+     * @see com.cosylab.gui.components.about.AboutTabPanel#initializePanel()
+     */
+    protected void initializePanel() {
+
     try {
 
         setName("License");
@@ -88,27 +88,27 @@ public class LicenseTabPanel extends AboutTabPanel {
         add(getJPanel2(), constraintsJPanel2);
 
 
-        
+
     } catch (Exception e) {
         e.printStackTrace();
     }
 
-	
-	}
 
-	/**
-	 * @see com.cosylab.gui.components.about.AboutTabPanel#processData()
-	 */
-	protected void processData() {
+    }
 
-	getJTextAreaLicense().setText(((LicenseTabModel)model).getLicense());
-	getJTextAreaLicense().setCaretPosition(0);
-	
-	}
+    /**
+     * @see com.cosylab.gui.components.about.AboutTabPanel#processData()
+     */
+    protected void processData() {
+
+    getJTextAreaLicense().setText(((LicenseTabModel)model).getLicense());
+    getJTextAreaLicense().setCaretPosition(0);
+
+    }
 
 
 
-	
+
 
 /**
  * Insert the method's description here.
@@ -116,17 +116,17 @@ public class LicenseTabPanel extends AboutTabPanel {
  * @return javax.swing.JLabel
  */
 private javax.swing.JLabel getJLabelDivider() {
-	if (JLabelDivider == null) {
-		try {
-			JLabelDivider = new javax.swing.JLabel();
-			JLabelTitle.setName("JLabelDivider");
-			JLabelDivider.setText("  ");
+    if (JLabelDivider == null) {
+        try {
+            JLabelDivider = new javax.swing.JLabel();
+            JLabelTitle.setName("JLabelDivider");
+            JLabelDivider.setText("  ");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	return JLabelDivider;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    return JLabelDivider;
 }
 /**
  * Insert the method's description here.
@@ -134,18 +134,18 @@ private javax.swing.JLabel getJLabelDivider() {
  * @return javax.swing.JLabel
  */
 private javax.swing.JLabel getJLabelTitle() {
-	if (JLabelTitle == null) {
-		try {
-			JLabelTitle = new javax.swing.JLabel();
-			JLabelTitle.setName("JLabelTitle");
-			JLabelTitle.setFont(new java.awt.Font("dialog", 1, 18));
-			JLabelTitle.setText("License");
+    if (JLabelTitle == null) {
+        try {
+            JLabelTitle = new javax.swing.JLabel();
+            JLabelTitle.setName("JLabelTitle");
+            JLabelTitle.setFont(new java.awt.Font("dialog", 1, 18));
+            JLabelTitle.setText("License");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	return JLabelTitle;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    return JLabelTitle;
 }
 /**
  * Insert the method's description here.
@@ -186,24 +186,24 @@ private javax.swing.JPanel getJPanel1() {
  * @return javax.swing.JPanel
  */
 private javax.swing.JPanel getJPanel2() {
-	if (JPanel2 == null) {
-		try {
-			JPanel2 = new javax.swing.JPanel();
-			JPanel2.setName("JPanel2");
-			JPanel2.setLayout(new java.awt.GridBagLayout());
+    if (JPanel2 == null) {
+        try {
+            JPanel2 = new javax.swing.JPanel();
+            JPanel2.setName("JPanel2");
+            JPanel2.setLayout(new java.awt.GridBagLayout());
 
-			java.awt.GridBagConstraints constraintsJScrollPaneLicense = new java.awt.GridBagConstraints();
-			constraintsJScrollPaneLicense.gridx = 0; constraintsJScrollPaneLicense.gridy = 0;
-			constraintsJScrollPaneLicense.fill = java.awt.GridBagConstraints.BOTH;
-			constraintsJScrollPaneLicense.weightx = 1.0;
-			constraintsJScrollPaneLicense.weighty = 1.0;
-			constraintsJScrollPaneLicense.insets = new java.awt.Insets(4, 12, 12, 12);
-			getJPanel2().add(getJScrollPaneLicense(), constraintsJScrollPaneLicense);
+            java.awt.GridBagConstraints constraintsJScrollPaneLicense = new java.awt.GridBagConstraints();
+            constraintsJScrollPaneLicense.gridx = 0; constraintsJScrollPaneLicense.gridy = 0;
+            constraintsJScrollPaneLicense.fill = java.awt.GridBagConstraints.BOTH;
+            constraintsJScrollPaneLicense.weightx = 1.0;
+            constraintsJScrollPaneLicense.weighty = 1.0;
+            constraintsJScrollPaneLicense.insets = new java.awt.Insets(4, 12, 12, 12);
+            getJPanel2().add(getJScrollPaneLicense(), constraintsJScrollPaneLicense);
         } catch (Exception e) {
             e.printStackTrace();
         }
-	}
-	return JPanel2;
+    }
+    return JPanel2;
 }
 /**
  * Insert the method's description here.
@@ -229,29 +229,29 @@ private javax.swing.JScrollPane getJScrollPaneLicense() {
  * @return javax.swing.JTextArea
  */
 private javax.swing.JTextArea getJTextAreaLicense() {
-	if (JTextAreaLicense == null) {
-		try {
-			JTextAreaLicense = new javax.swing.JTextArea();
-			JTextAreaLicense.setName("JTextAreaLicense");
-			JTextAreaLicense.setLineWrap(true);
-			JTextAreaLicense.setWrapStyleWord(true);
-			JTextAreaLicense.setFont(new java.awt.Font("monospaced", 0, 12));
-			JTextAreaLicense.setBounds(0, 0, 160, 120);
-			JTextAreaLicense.setMargin(new java.awt.Insets(1, 3, 1, 3));
-			JTextAreaLicense.setEditable(false);
+    if (JTextAreaLicense == null) {
+        try {
+            JTextAreaLicense = new javax.swing.JTextArea();
+            JTextAreaLicense.setName("JTextAreaLicense");
+            JTextAreaLicense.setLineWrap(true);
+            JTextAreaLicense.setWrapStyleWord(true);
+            JTextAreaLicense.setFont(new java.awt.Font("monospaced", 0, 12));
+            JTextAreaLicense.setBounds(0, 0, 160, 120);
+            JTextAreaLicense.setMargin(new java.awt.Insets(1, 3, 1, 3));
+            JTextAreaLicense.setEditable(false);
         } catch (Exception e) {
             e.printStackTrace();
         }
-	}
-	return JTextAreaLicense;
+    }
+    return JTextAreaLicense;
 }
-	/**
-	 * @see com.cosylab.gui.components.about.AboutTab#getPanel()
-	 */
-	public JPanel getPanel() {
-		
-		
-		return this;
-	}
+    /**
+     * @see com.cosylab.gui.components.about.AboutTab#getPanel()
+     */
+    public JPanel getPanel() {
+
+
+        return this;
+    }
 
 }

@@ -21,82 +21,82 @@ import org.epics.util.time.Timestamp;
 @SuppressWarnings("nls")
 public class ArchiveVEnum extends ArchiveVType implements VEnum
 {
-	final private List<String> labels;
-	final private int index;
+    final private List<String> labels;
+    final private int index;
 
-	public ArchiveVEnum(final Timestamp timestamp,
-			final AlarmSeverity severity, final String status,
-			final List<String> labels, final int index)
-	{
-		super(timestamp, severity, status);
-		this.labels = labels;
-		this.index = index;
-	}
-	
-	@Override
-	public List<String> getLabels()
-	{
-		return labels;
-	}
+    public ArchiveVEnum(final Timestamp timestamp,
+            final AlarmSeverity severity, final String status,
+            final List<String> labels, final int index)
+    {
+        super(timestamp, severity, status);
+        this.labels = labels;
+        this.index = index;
+    }
 
     @Override
-	public String getValue()
-	{
-		try
-		{
-			return labels.get(index);
-		}
-		catch (RuntimeException ex)
-		{
-			return "Enum <" + index + ">";
-		}
-	}
+    public List<String> getLabels()
+    {
+        return labels;
+    }
 
-	@Override
-	public int getIndex()
-	{
-		return index;
-	}
+    @Override
+    public String getValue()
+    {
+        try
+        {
+            return labels.get(index);
+        }
+        catch (RuntimeException ex)
+        {
+            return "Enum <" + index + ">";
+        }
+    }
 
-	/** @return Hash based on the index */
-	@Override
-	public int hashCode()
-	{
-		final int prime = 31;
-		return super.hashCode() * prime + index;
-	}
+    @Override
+    public int getIndex()
+    {
+        return index;
+    }
 
-	/** Compare based on index
-	 *  @param obj Other {@link VNumber} or {@link VEnum} or {@link VString}
-	 *  @return <code>true</code> if the two numbers have the same index,
-	 *          so Enum(3) and Integer(3) will be 'equal'
-	 */
-	@Override
-	public boolean equals(final Object obj)
-	{
-		if (this == obj)
-			return true;
-		if (!super.equals(obj))
-			return false;
-		if (obj instanceof VEnum)
-			return index == ((VEnum)obj).getIndex();
-		if (obj instanceof VNumber)
-		{
-			final double dbl = ((VNumber)obj).getValue().doubleValue();
-			return index == dbl;
-		}
-		if (obj instanceof VString)
-		{
-			final VString str = (VString) obj;
-			return getValue().equals(str.getValue());
-		}
-		return false;
-	}
+    /** @return Hash based on the index */
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        return super.hashCode() * prime + index;
+    }
 
-	
-	@Override
-	public String toString()
-	{
-		return VTypeHelper.toString(this);
-	}
+    /** Compare based on index
+     *  @param obj Other {@link VNumber} or {@link VEnum} or {@link VString}
+     *  @return <code>true</code> if the two numbers have the same index,
+     *          so Enum(3) and Integer(3) will be 'equal'
+     */
+    @Override
+    public boolean equals(final Object obj)
+    {
+        if (this == obj)
+            return true;
+        if (!super.equals(obj))
+            return false;
+        if (obj instanceof VEnum)
+            return index == ((VEnum)obj).getIndex();
+        if (obj instanceof VNumber)
+        {
+            final double dbl = ((VNumber)obj).getValue().doubleValue();
+            return index == dbl;
+        }
+        if (obj instanceof VString)
+        {
+            final VString str = (VString) obj;
+            return getValue().equals(str.getValue());
+        }
+        return false;
+    }
+
+
+    @Override
+    public String toString()
+    {
+        return VTypeHelper.toString(this);
+    }
 }

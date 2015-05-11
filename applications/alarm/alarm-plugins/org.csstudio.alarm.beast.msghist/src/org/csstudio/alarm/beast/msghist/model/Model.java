@@ -49,9 +49,9 @@ public class Model
      *  @param shell UI shell to display error dialog
      *  @throws Exception on error
      */
-	public Model(final String url, final String user, final String password,
-			final String schema, final int max_properties, final Shell shell)
-			throws Exception
+    public Model(final String url, final String user, final String password,
+            final String schema, final int max_properties, final Shell shell)
+            throws Exception
     {
         this.url = url;
         this.user = user;
@@ -127,8 +127,8 @@ public class Model
         launchQuery();
     }
 
-   
-    
+
+
     /**
      * Refresh.
      *
@@ -137,8 +137,8 @@ public class Model
     public void refresh() throws Exception {
         launchQuery();
     }
-    
-    
+
+
     /** Launch RDB query with current settings. */
     private synchronized void launchQuery() throws Exception
     {
@@ -163,32 +163,32 @@ public class Model
                 fireModelChanged();
             }
 
-            
-			@Override
-			void handleError(final String message, final Exception ex) {
-			    	Activator.getLogger().log(Level.WARNING, message, ex);
-			    	// notify scheduler auto refresh 
-	                fireErrorModel(message);
-			        if (shell == null) {
-			        	return;
-			        }
-			        if (shell.isDisposed()) {
-			            return;
-			        }
-			        shell.getDisplay().asyncExec(new Runnable() {
-			            @Override
-			            public void run() {
-			                if (shell.isDisposed()) {
-			                    return;
-			                }
-			                //check error dialog already open
-			                if (errorCase) return;
-		                	errorCase = true;
-		                	ExceptionDetailsErrorDialog.openError(shell, message, ex);
-			            }
-			        });
-			}
-            
+
+            @Override
+            void handleError(final String message, final Exception ex) {
+                    Activator.getLogger().log(Level.WARNING, message, ex);
+                    // notify scheduler auto refresh
+                    fireErrorModel(message);
+                    if (shell == null) {
+                        return;
+                    }
+                    if (shell.isDisposed()) {
+                        return;
+                    }
+                    shell.getDisplay().asyncExec(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (shell.isDisposed()) {
+                                return;
+                            }
+                            //check error dialog already open
+                            if (errorCase) return;
+                            errorCase = true;
+                            ExceptionDetailsErrorDialog.openError(shell, message, ex);
+                        }
+                    });
+            }
+
         };
         message_job.schedule();
     }
@@ -218,19 +218,19 @@ public class Model
             }
         }
     }
-    
+
     /**
      * Fire error model.
      *
      * @param errorMsg the error msg
      */
-	protected void fireErrorModel(final String errorMsg) {
-		for (ModelListener listener : listeners) {
-			try {
-				listener.onErrorModel(errorMsg);
-			} catch (Throwable ex) {
-				Activator.getLogger().log(Level.WARNING, "Notify error", ex);
-			}
-		}
-	}
+    protected void fireErrorModel(final String errorMsg) {
+        for (ModelListener listener : listeners) {
+            try {
+                listener.onErrorModel(errorMsg);
+            } catch (Throwable ex) {
+                Activator.getLogger().log(Level.WARNING, "Notify error", ex);
+            }
+        }
+    }
 }

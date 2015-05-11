@@ -9,19 +9,19 @@ import org.eclipse.gef.EditPartViewer;
 
 /**
  * Drag source listener for SDS that provides a single {@link ProcessVariable}.
- * 
+ *
  * @author swende
- * 
+ *
  */
 public class ProcessVariableDragSourceListener extends AbstractDragSourceListener<ProcessVariable> {
 
-	public ProcessVariableDragSourceListener(EditPartViewer viewer) {
-		super(viewer, SerializableItemTransfer.getTransfer(ProcessVariable.class));
-	}
+    public ProcessVariableDragSourceListener(EditPartViewer viewer) {
+        super(viewer, SerializableItemTransfer.getTransfer(ProcessVariable.class));
+    }
 
-	@Override
-	protected ProcessVariable convert(IProcessVariableAddress mainAddress, List<IProcessVariableAddress> allAddresses) {
-		return mainAddress != null ? new ProcessVariable(mainAddress.getProperty()) : null;
-	}
+    @Override
+    protected ProcessVariable convert(IProcessVariableAddress mainAddress, List<IProcessVariableAddress> allAddresses) {
+        return mainAddress != null ? new ProcessVariable(mainAddress.getProperty()) : null;
+    }
 
 }

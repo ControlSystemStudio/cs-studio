@@ -35,18 +35,18 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
 
     public FreeTTS_JSAPI_Annunciator(final String voice_name) throws Exception
     {
-		// Test if a sound card is available first
-    	AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
+        // Test if a sound card is available first
+        AudioFormat format = new AudioFormat(44100, 16, 2, true, false);
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
         try {
             AudioSystem.getLine(info);
         } catch (IllegalArgumentException e) {
-			if (e.getMessage() != null && e.getMessage().startsWith("No line")) {
-				throw new NoSoundCardAvailableException(
-						"No sound card available.", e);
-			}
+            if (e.getMessage() != null && e.getMessage().startsWith("No line")) {
+                throw new NoSoundCardAvailableException(
+                        "No sound card available.", e);
+            }
         }
-		
+
         FreeTTSHacks.perform();
 
         // Start the synthesizer
@@ -58,7 +58,7 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
         if (debug)
             listTTSVoices();
         final Voice voice = new Voice(
-        		voice_name, Voice.AGE_DONT_CARE,
+                voice_name, Voice.AGE_DONT_CARE,
                  Voice.GENDER_DONT_CARE, null);
         synthesizer.getSynthesizerProperties().setVoice(voice);
 

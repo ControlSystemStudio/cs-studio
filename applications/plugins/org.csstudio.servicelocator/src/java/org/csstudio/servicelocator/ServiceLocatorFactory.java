@@ -36,21 +36,21 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Support for the service locator. Helps registering services with service trackers.
- * 
+ *
  * @author jpenning
  * @since 25.01.2012
  */
 public final class ServiceLocatorFactory {
-    
+
     private static final Logger LOG = LoggerFactory.getLogger(ServiceLocatorFactory.class);
-    
+
     private ServiceLocatorFactory() {
         // utility class, no objects will be created
     }
-    
+
     /**
      * Creates a service tracker for the given service type at the given bundle context
-     * 
+     *
      * @param <T> the type of the service
      * @param context the bundle context of the calling activator
      * @param service the interface type of the service
@@ -64,11 +64,11 @@ public final class ServiceLocatorFactory {
         serviceTracker.open();
         return serviceTracker;
     }
-    
+
     /**
      * Register the given service (consists of the interface type and the implementation)
      * at the osgi service registry and also at the service locator for singleton-style easy access.
-     * 
+     *
      * @param <T> type of the service interface
      * @param <I> implementation of the service
      * @param description only a descriptive string useful in the osgi console
@@ -81,25 +81,25 @@ public final class ServiceLocatorFactory {
                                                                    final Class<T> service,
                                                                    final I impl) {
         LOG.info("Registering OSGi service: " + description);
-        
+
         final Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("service.vendor", "DESY");
         properties.put("service.description", description);
-        
+
         context.registerService(service, impl, properties);
         ServiceLocator.registerServiceTracker(service, ServiceLocatorFactory
                 .createServiceTracker(context, service));
     }
-    
+
     public static <T, I extends T> void registerRemoteService(final String description,
                                                               final String rmiServer,
                                                               final int rmiPort,
                                                               final Class<T> service) throws RemoteException,
                                                                                               NotBoundException {
         LOG.info("Registering remote service: " + description);
-        
+
         IServiceProvider<T> serviceProvider = new ServiceLocator.ServiceProviderForRemote<T, I>(rmiServer, rmiPort, service);
         ServiceLocator.registerServiceProvider(service, serviceProvider);
     }
-    
+
 }

@@ -16,17 +16,17 @@ import org.eclipse.swt.dnd.TextTransfer;
  */
 public class TextTransferDropPVTargetListener extends AbstractDropPVTargetListener {
 
-	public TextTransferDropPVTargetListener(EditPartViewer viewer) {
-		super(viewer, TextTransfer.getInstance());
-	}
+    public TextTransferDropPVTargetListener(EditPartViewer viewer) {
+        super(viewer, TextTransfer.getInstance());
+    }
 
-	@Override
-	protected String[] getPVNamesFromTransfer() {
-		if(getCurrentEvent().data == null)
-			return null;
-		String text = (String)getCurrentEvent().data;
-		String[] pvNames = text.trim().split("\\s+"); //$NON-NLS-1$
-		return pvNames;
-	}
+    @Override
+    protected String[] getPVNamesFromTransfer() {
+        if(getCurrentEvent().data == null)
+            return null;
+        String text = (String)getCurrentEvent().data;
+        String[] pvNames = text.trim().split("\\s+"); //$NON-NLS-1$
+        return pvNames;
+    }
 
 }

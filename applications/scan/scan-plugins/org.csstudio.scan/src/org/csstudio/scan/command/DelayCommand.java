@@ -34,16 +34,16 @@ public class DelayCommand extends ScanCommand
         this(1.0);
     }
 
-	/** Initialize
-	 *  @param seconds Delay in seconds
-	 */
-	public DelayCommand(final double seconds)
+    /** Initialize
+     *  @param seconds Delay in seconds
+     */
+    public DelayCommand(final double seconds)
     {
-	    this.seconds = seconds;
+        this.seconds = seconds;
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     protected void configureProperties(final List<ScanCommandProperty> properties)
     {
         properties.add(new ScanCommandProperty("seconds", "Delay (seconds)", Double.class));
@@ -51,39 +51,39 @@ public class DelayCommand extends ScanCommand
     }
 
     /** @return Delay in seconds */
-	public double getSeconds()
+    public double getSeconds()
     {
         return seconds;
     }
 
-	/**@param seconds Delay in seconds */
-	public void setSeconds(final Double seconds)
-	{
-	    this.seconds = seconds;
-	}
+    /**@param seconds Delay in seconds */
+    public void setSeconds(final Double seconds)
+    {
+        this.seconds = seconds;
+    }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void addXMLElements(final Document dom, final Element command_element)
-	{
+    {
         Element element = dom.createElement("seconds");
         element.appendChild(dom.createTextNode(Double.toString(seconds)));
         command_element.appendChild(element);
         super.addXMLElements(dom, command_element);
-	}
+    }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void readXML(final SimpleScanCommandFactory factory, final Element element) throws Exception
-	{
+    {
         setSeconds(DOMHelper.getSubelementDouble(element, "seconds"));
         super.readXML(factory, element);
-	}
+    }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    return "Delay " + seconds + " sec";
-	}
+    @Override
+    public String toString()
+    {
+        return "Delay " + seconds + " sec";
+    }
 }

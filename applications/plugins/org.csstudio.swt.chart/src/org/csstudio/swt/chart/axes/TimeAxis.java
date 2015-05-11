@@ -26,7 +26,7 @@ public class TimeAxis extends XAxis
     {
         super(label, listener, new TimeTicks());
     }
-    
+
     /* @see org.csstudio.swt.chart.axes.XAxis#setValueRange(double, double)
      */
     @Override
@@ -67,7 +67,7 @@ public class TimeAxis extends XAxis
             gc.drawText(mark, x - mark_size.x/2,
                           region.y + TICK_LENGTH, false);
         }
-        
+
         // Label: centered at bottom of region
         /*
         gc.drawString(label,

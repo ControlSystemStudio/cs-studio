@@ -25,7 +25,7 @@ public class ThrottleUnitTest
         // the basic time difference should still work?!
         assertEquals(2, now - start);
     }
-    
+
     @Test
     public void testIsPermitted() throws Exception
     {

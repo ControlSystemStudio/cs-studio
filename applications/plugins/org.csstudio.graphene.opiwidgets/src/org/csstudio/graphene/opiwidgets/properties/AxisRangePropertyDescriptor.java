@@ -16,18 +16,18 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  */
 public class AxisRangePropertyDescriptor extends PropertyDescriptor {
 
-	public AxisRangePropertyDescriptor(Object id, String displayName) {
-		super(id, displayName);
-	}
+    public AxisRangePropertyDescriptor(Object id, String displayName) {
+        super(id, displayName);
+    }
 
-	@Override
-	public CellEditor createPropertyEditor(Composite parent) {
-		AxisRangeCellEditor editor = new AxisRangeCellEditor(parent, "Choose range for axis...");
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
-	
+    @Override
+    public CellEditor createPropertyEditor(Composite parent) {
+        AxisRangeCellEditor editor = new AxisRangeCellEditor(parent, "Choose range for axis...");
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+
+
 }

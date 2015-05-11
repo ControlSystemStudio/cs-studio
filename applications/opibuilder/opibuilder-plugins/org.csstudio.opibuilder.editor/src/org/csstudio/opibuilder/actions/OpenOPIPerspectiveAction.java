@@ -19,27 +19,27 @@ import org.eclipse.ui.PlatformUI;
  */
 public class OpenOPIPerspectiveAction implements IWorkbenchWindowActionDelegate {
 
-	private IWorkbenchWindow window;
+    private IWorkbenchWindow window;
 
-	@Override
+    @Override
     public void dispose() {
-	    // NOP
-	}
+        // NOP
+    }
 
-	@Override
+    @Override
     public void init(IWorkbenchWindow window) {
-		this.window = window;
-	}
+        this.window = window;
+    }
 
-	@Override
+    @Override
     public void run(IAction action) {
-		if(window == null)
-			window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-		PerspectiveHelper.showPerspectiveOrPromptForReset(OPIEditorPerspective.ID, window);
-	}
+        if(window == null)
+            window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        PerspectiveHelper.showPerspectiveOrPromptForReset(OPIEditorPerspective.ID, window);
+    }
 
-	@Override
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
-	    // NOP
-	}
+        // NOP
+    }
 }

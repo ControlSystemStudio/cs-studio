@@ -35,7 +35,7 @@ package org.csstudio.dal;
  */
 public interface LongProperty extends NumericProperty<Long,Long>, LongSimpleProperty
 {
-	//
+    //
 }
 
 /* __oOo__ */

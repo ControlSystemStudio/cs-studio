@@ -16,28 +16,28 @@ import org.eclipse.ui.part.FileEditorInput;
 
 public class OpenDiagramEditorAction extends Action {
 
-	private IWorkbenchWindow _window;
-	private final IPath _stFilePath;
+    private IWorkbenchWindow _window;
+    private final IPath _stFilePath;
 
-	public OpenDiagramEditorAction(IPath stFilePath) {
-		assert stFilePath != null : "stFilePath != null";
+    public OpenDiagramEditorAction(IPath stFilePath) {
+        assert stFilePath != null : "stFilePath != null";
 
-		_stFilePath = stFilePath;
-		_window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-	}
+        _stFilePath = stFilePath;
+        _window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+    }
 
-	public void run(IAction action) {
-		IWorkbenchPage page = _window.getActivePage();
+    public void run(IAction action) {
+        IWorkbenchPage page = _window.getActivePage();
 
-		IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
-				_stFilePath);
-		FileEditorInput input = new FileEditorInput(file);
-		try {
-			page.openEditor(input, Identifier.DIAGRAM_EDITOR_ID.getId());
-		} catch (PartInitException e) {
-			Logger.getAnonymousLogger().log(Level.SEVERE,
-					"Unable to open the SNL Diagram Editor", e);
-		}
-	}
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(
+                _stFilePath);
+        FileEditorInput input = new FileEditorInput(file);
+        try {
+            page.openEditor(input, Identifier.DIAGRAM_EDITOR_ID.getId());
+        } catch (PartInitException e) {
+            Logger.getAnonymousLogger().log(Level.SEVERE,
+                    "Unable to open the SNL Diagram Editor", e);
+        }
+    }
 
 }

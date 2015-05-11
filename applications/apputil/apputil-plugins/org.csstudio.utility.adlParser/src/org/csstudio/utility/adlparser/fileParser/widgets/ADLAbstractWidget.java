@@ -13,153 +13,153 @@ import org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
- * 
+ *
  * @author hammonds
  *
  */
 public abstract class ADLAbstractWidget {
-	protected ADLObject _adlObject= null;
-	protected ADLBasicAttribute _adlBasicAttribute= null;
-	protected ADLControl _adlControl= null;
-	protected ADLMonitor _adlMonitor= null;
-	protected ADLPoints _adlPoints= null;
-	protected RelatedDisplayItem[] _relatedDisplayItem = null;
-	protected ADLDynamicAttribute _adlDynamicAttribute = null;
-	protected ADLLimits _adlLimits = null;
-	protected ADLPlotcom _adlPlotcom = null;
-	
-	protected boolean _hasBasicAttribute = false;
-	protected boolean _hasObject = false;
-	protected boolean _hasControl = false;
-	protected boolean _hasMonitor = false;
-	protected boolean _hasPoints = false;
-	protected boolean _hasRelatedDisplayItem = false;
-	protected boolean _hasDynamicAttribute = false;
-	protected boolean _hasLimits = false;
-	protected boolean _hasPlotcom = false;
-	
-	protected ImageDescriptor descriptor = null;
-	protected String name = new String();
+    protected ADLObject _adlObject= null;
+    protected ADLBasicAttribute _adlBasicAttribute= null;
+    protected ADLControl _adlControl= null;
+    protected ADLMonitor _adlMonitor= null;
+    protected ADLPoints _adlPoints= null;
+    protected RelatedDisplayItem[] _relatedDisplayItem = null;
+    protected ADLDynamicAttribute _adlDynamicAttribute = null;
+    protected ADLLimits _adlLimits = null;
+    protected ADLPlotcom _adlPlotcom = null;
 
-	public ADLAbstractWidget(final ADLWidget adlWidget){
-		
-	}
-	
-	public final ImageDescriptor getImageDescriptor(){
-		return descriptor;
-	}
-	public final String getName(){
-		return name;
-	}
+    protected boolean _hasBasicAttribute = false;
+    protected boolean _hasObject = false;
+    protected boolean _hasControl = false;
+    protected boolean _hasMonitor = false;
+    protected boolean _hasPoints = false;
+    protected boolean _hasRelatedDisplayItem = false;
+    protected boolean _hasDynamicAttribute = false;
+    protected boolean _hasLimits = false;
+    protected boolean _hasPlotcom = false;
+
+    protected ImageDescriptor descriptor = null;
+    protected String name = new String();
+
+    public ADLAbstractWidget(final ADLWidget adlWidget){
+
+    }
+
+    public final ImageDescriptor getImageDescriptor(){
+        return descriptor;
+    }
+    public final String getName(){
+        return name;
+    }
     abstract public Object[] getChildren();
-	
-	public boolean hasADLObject(){
-		return _hasObject;
-	}
-	
-	public boolean hasADLBasicAttribute(){
-		return _hasBasicAttribute;
-	}
 
-	public boolean hasADLControl(){
-		return _hasControl;
-	}
-	
-	public boolean hasADLMonitor(){
-		return _hasMonitor;
-	}
-	
-	public boolean hasADLPoints(){
-		return _hasPoints;
-	}
-	
-	public boolean hasRelatedDisplayItem(){
-		return _hasRelatedDisplayItem;
-	}
-	
-	public boolean hasADLDynamicAttribute(){
-		return _hasDynamicAttribute;
-	}
-	
-	public boolean hasADLLimits(){
-		return _hasLimits;
-	}
-	
-	public boolean hasADLPlotcom(){
-		return _hasPlotcom;
-	}
-	
+    public boolean hasADLObject(){
+        return _hasObject;
+    }
 
-	/**
-	 * @return ADLObject
-	 */
-	public ADLObject getAdlObject(){
-		return _adlObject;
-	}
+    public boolean hasADLBasicAttribute(){
+        return _hasBasicAttribute;
+    }
 
-	/**
-	 * @return ADLBasicAttribute
-	 */
-	public ADLBasicAttribute getAdlBasicAttribute(){
-		return _adlBasicAttribute;
-	}
+    public boolean hasADLControl(){
+        return _hasControl;
+    }
 
-	/**
-	 * @return ADLControl
-	 */
-	public ADLControl getAdlControl(){
-		return _adlControl;
-	}
+    public boolean hasADLMonitor(){
+        return _hasMonitor;
+    }
 
-	/**
-	 * @return ADLMonitor
-	 */
-	public ADLMonitor getAdlMonitor(){
-		return _adlMonitor;
-	}
+    public boolean hasADLPoints(){
+        return _hasPoints;
+    }
 
-	/**
-	 * @return ADLPoints
-	 */
-	public ADLPoints getAdlPoints(){
-		return _adlPoints;
-	}
+    public boolean hasRelatedDisplayItem(){
+        return _hasRelatedDisplayItem;
+    }
 
-	/**
-	 * @return RelatedDisplayItem[]
-	 */
-	public RelatedDisplayItem[] getRelatedDisplayItem(){
-		return _relatedDisplayItem;
-	}
+    public boolean hasADLDynamicAttribute(){
+        return _hasDynamicAttribute;
+    }
 
-	/**
-	 * @return ADLDynamicAttribute
-	 */
-	public ADLDynamicAttribute getAdlDynamicAttribute(){
-		return _adlDynamicAttribute;
-	}
+    public boolean hasADLLimits(){
+        return _hasLimits;
+    }
 
-	/**
-	 * @return ADLLimits
-	 */
-	public ADLLimits getAdlLimits(){
-		return _adlLimits;
-	}
+    public boolean hasADLPlotcom(){
+        return _hasPlotcom;
+    }
 
-	/**
-	 * @return ADLPlotcom
-	 */
-	public ADLPlotcom getAdlPlotcom(){
-		return _adlPlotcom;
-	}
 
-	public void setAdlBasicAttribute(ADLBasicAttribute basAttr){
-		_adlBasicAttribute = basAttr;
-		_hasBasicAttribute = true;
-	}
+    /**
+     * @return ADLObject
+     */
+    public ADLObject getAdlObject(){
+        return _adlObject;
+    }
 
-	public void setAdlDynamicAttribute(ADLDynamicAttribute dynAttr){
-		_adlDynamicAttribute = dynAttr;
-		_hasDynamicAttribute = true;
-	}
-}	
+    /**
+     * @return ADLBasicAttribute
+     */
+    public ADLBasicAttribute getAdlBasicAttribute(){
+        return _adlBasicAttribute;
+    }
+
+    /**
+     * @return ADLControl
+     */
+    public ADLControl getAdlControl(){
+        return _adlControl;
+    }
+
+    /**
+     * @return ADLMonitor
+     */
+    public ADLMonitor getAdlMonitor(){
+        return _adlMonitor;
+    }
+
+    /**
+     * @return ADLPoints
+     */
+    public ADLPoints getAdlPoints(){
+        return _adlPoints;
+    }
+
+    /**
+     * @return RelatedDisplayItem[]
+     */
+    public RelatedDisplayItem[] getRelatedDisplayItem(){
+        return _relatedDisplayItem;
+    }
+
+    /**
+     * @return ADLDynamicAttribute
+     */
+    public ADLDynamicAttribute getAdlDynamicAttribute(){
+        return _adlDynamicAttribute;
+    }
+
+    /**
+     * @return ADLLimits
+     */
+    public ADLLimits getAdlLimits(){
+        return _adlLimits;
+    }
+
+    /**
+     * @return ADLPlotcom
+     */
+    public ADLPlotcom getAdlPlotcom(){
+        return _adlPlotcom;
+    }
+
+    public void setAdlBasicAttribute(ADLBasicAttribute basAttr){
+        _adlBasicAttribute = basAttr;
+        _hasBasicAttribute = true;
+    }
+
+    public void setAdlDynamicAttribute(ADLDynamicAttribute dynAttr){
+        _adlDynamicAttribute = dynAttr;
+        _hasDynamicAttribute = true;
+    }
+}

@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.Platform;
  * Dispatches the results returned by management commands to receivers that can
  * process them.
  * </p>
- * 
+ *
  * <p>
  * When a result is dispatched, the dispatcher first tries to dispatch it to one
  * of the preset receivers. Thus, the preset receivers can be used by
@@ -46,117 +46,117 @@ import org.eclipse.core.runtime.Platform;
  * extension; and finally, if none of the extensions can handle the result, will
  * dispatch it to a default receiver.
  * </p>
- * 
+ *
  * @author Joerg Rathlev
  */
 public class ResultDispatcher {
 
-	private static final String EXTENSION_POINT_ID = 
-		"org.csstudio.remote.managementCommandResultReceivers";
-	
-	private final Map<String, IResultReceiver> _presetReceivers;
-	private final Map<String, IResultReceiver> _extensionReceivers;
-	private final IResultReceiver _defaultReceiver;
+    private static final String EXTENSION_POINT_ID =
+        "org.csstudio.remote.managementCommandResultReceivers";
 
-	/**
-	 * Creates a new result dispatcher.
-	 * 
-	 * @param defaultReceiver
-	 *            the default receiver. Results for which no preset of extension
-	 *            receiver is found will be dispatched to the default receiver.
-	 */
-	public ResultDispatcher(IResultReceiver defaultReceiver) {
-		if (defaultReceiver == null) {
-			throw new NullPointerException("defaultReceiver must not be null");
-		}
-		
-		_presetReceivers = new HashMap<String, IResultReceiver>();
-		_extensionReceivers = new HashMap<String, IResultReceiver>();
-		_defaultReceiver = defaultReceiver;
-		readExtensionPoint();
-	}
+    private final Map<String, IResultReceiver> _presetReceivers;
+    private final Map<String, IResultReceiver> _extensionReceivers;
+    private final IResultReceiver _defaultReceiver;
 
-	/**
-	 * Adds a preset receiver to this dispatcher.
-	 * 
-	 * @param resultType
-	 *            the type of results that this dispatcher will dispatch to the
-	 *            receiver.
-	 * @param receiver
-	 *            the receiver.
-	 */
-	public void addPresetReceiver(String resultType, IResultReceiver receiver) {
-		if (resultType == null || receiver == null) {
-			throw new NullPointerException("resultType and receiver must not be null");
-		}
-		
-		_presetReceivers.put(resultType, receiver);
-	}
+    /**
+     * Creates a new result dispatcher.
+     *
+     * @param defaultReceiver
+     *            the default receiver. Results for which no preset of extension
+     *            receiver is found will be dispatched to the default receiver.
+     */
+    public ResultDispatcher(IResultReceiver defaultReceiver) {
+        if (defaultReceiver == null) {
+            throw new NullPointerException("defaultReceiver must not be null");
+        }
 
-	/**
-	 * Dispatches a command result to a receiver.
-	 * 
-	 * @param result
-	 *            a command result.
-	 */
-	public void dispatch(CommandResult result) {
-		IResultReceiver receiver = findReceiver(result.getType());
-		receiver.processResult(result);
-	}
+        _presetReceivers = new HashMap<String, IResultReceiver>();
+        _extensionReceivers = new HashMap<String, IResultReceiver>();
+        _defaultReceiver = defaultReceiver;
+        readExtensionPoint();
+    }
 
-	/**
-	 * Returns the receiver for the specified result type.
-	 * 
-	 * @param resultType
-	 *            the result type.
-	 * @return the receiver.
-	 */
-	private IResultReceiver findReceiver(String resultType) {
-		IResultReceiver receiver;
-		receiver = _presetReceivers.get(resultType);
-		if (receiver == null) {
-			receiver = _extensionReceivers.get(resultType);
-			if (receiver == null) {
-				receiver = _defaultReceiver;
-			}
-		}
-		return receiver;
-	}
+    /**
+     * Adds a preset receiver to this dispatcher.
+     *
+     * @param resultType
+     *            the type of results that this dispatcher will dispatch to the
+     *            receiver.
+     * @param receiver
+     *            the receiver.
+     */
+    public void addPresetReceiver(String resultType, IResultReceiver receiver) {
+        if (resultType == null || receiver == null) {
+            throw new NullPointerException("resultType and receiver must not be null");
+        }
 
-	/**
-	 * Reads the receivers registered via the
-	 * <code>managementCommandResultReceivers</code> extension point and adds
-	 * them to the extension receivers.
-	 */
-	private void readExtensionPoint() {
-		IExtension[] extensions = Platform.getExtensionRegistry()
-				.getExtensionPoint(EXTENSION_POINT_ID).getExtensions();
-		for (IExtension extension : extensions) {
-			IConfigurationElement[] configElements =
-				extension.getConfigurationElements();
-			for (IConfigurationElement configElement : configElements) {
-				if ("receiver".equals(configElement.getName())) {
-					readReceiverContribution(configElement);
-				}
-			}
-		}
-	}
+        _presetReceivers.put(resultType, receiver);
+    }
 
-	/**
-	 * Reads a single receiver configuration element.
-	 * 
-	 * @param configElement
-	 *            the configuration element.
-	 */
-	private void readReceiverContribution(IConfigurationElement configElement) {
-		try {
-			String type = configElement.getAttribute("resultType");
-			IResultReceiver receiver =
-				(IResultReceiver) configElement.createExecutableExtension("class");
-			_extensionReceivers.put(type, receiver);
-		} catch (CoreException e) {
-			// TODO: error handling
-		}
-	}
+    /**
+     * Dispatches a command result to a receiver.
+     *
+     * @param result
+     *            a command result.
+     */
+    public void dispatch(CommandResult result) {
+        IResultReceiver receiver = findReceiver(result.getType());
+        receiver.processResult(result);
+    }
+
+    /**
+     * Returns the receiver for the specified result type.
+     *
+     * @param resultType
+     *            the result type.
+     * @return the receiver.
+     */
+    private IResultReceiver findReceiver(String resultType) {
+        IResultReceiver receiver;
+        receiver = _presetReceivers.get(resultType);
+        if (receiver == null) {
+            receiver = _extensionReceivers.get(resultType);
+            if (receiver == null) {
+                receiver = _defaultReceiver;
+            }
+        }
+        return receiver;
+    }
+
+    /**
+     * Reads the receivers registered via the
+     * <code>managementCommandResultReceivers</code> extension point and adds
+     * them to the extension receivers.
+     */
+    private void readExtensionPoint() {
+        IExtension[] extensions = Platform.getExtensionRegistry()
+                .getExtensionPoint(EXTENSION_POINT_ID).getExtensions();
+        for (IExtension extension : extensions) {
+            IConfigurationElement[] configElements =
+                extension.getConfigurationElements();
+            for (IConfigurationElement configElement : configElements) {
+                if ("receiver".equals(configElement.getName())) {
+                    readReceiverContribution(configElement);
+                }
+            }
+        }
+    }
+
+    /**
+     * Reads a single receiver configuration element.
+     *
+     * @param configElement
+     *            the configuration element.
+     */
+    private void readReceiverContribution(IConfigurationElement configElement) {
+        try {
+            String type = configElement.getAttribute("resultType");
+            IResultReceiver receiver =
+                (IResultReceiver) configElement.createExecutableExtension("class");
+            _extensionReceivers.put(type, receiver);
+        } catch (CoreException e) {
+            // TODO: error handling
+        }
+    }
 
 }

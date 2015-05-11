@@ -41,15 +41,15 @@ public class ScanDataIteratorUnitTest
     public void testScanDataIteratorUnitTest()
     {
         // Create simple ScanData: Devices x, y, values 0...9
-    	final Date now = new Date();
+        final Date now = new Date();
         final List<ScanSample> xsamples = new ArrayList<ScanSample>();
         final List<ScanSample> ysamples = new ArrayList<ScanSample>();
         for (int i=0; i<20; ++i)
         {
-        	if (i % 2 == 0)
-	            xsamples.add(ScanSampleFactory.createSample(new Date(now.getTime() + i*1000), i, i/2));
-        	else
-        		ysamples.add(ScanSampleFactory.createSample(new Date(now.getTime() + i*1000), i, i/2));
+            if (i % 2 == 0)
+                xsamples.add(ScanSampleFactory.createSample(new Date(now.getTime() + i*1000), i, i/2));
+            else
+                ysamples.add(ScanSampleFactory.createSample(new Date(now.getTime() + i*1000), i, i/2));
         }
         final Map<String, List<ScanSample>> device_data = new HashMap<String, List<ScanSample>>();
         device_data.put("x", xsamples);

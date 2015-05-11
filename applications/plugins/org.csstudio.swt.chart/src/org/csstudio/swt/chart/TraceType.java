@@ -8,7 +8,7 @@
 package org.csstudio.swt.chart;
 
 /** Select how a trace should be displayed.
- *  @author Blaz Lipuscek 
+ *  @author Blaz Lipuscek
  *  @author Kay Kasemir
  */
 public enum TraceType
@@ -17,13 +17,13 @@ public enum TraceType
      *  the min/max envelope.
      */
     Area(Messages.TraceType_Area),
-    
+
     /** Connect samples with lines.
      *  Uses additional min/max lines for samples
      *  that carry min/max info.
      */
     Lines(Messages.TraceType_Lines),
-    
+
     /** Connect samples with lines.
      *  Uses additional min/max lines for samples
      *  that carry min/max info.
@@ -35,7 +35,7 @@ public enum TraceType
      *  Uses candlesticks for samples that carry min/max info.
      */
     Markers(Messages.TraceType_Markers),
-    
+
     /** Bar from the x axis up to the y value.
      *  <p>
      *  Doesn't show min/max info.
@@ -44,16 +44,16 @@ public enum TraceType
 
     /** User-readable name, localized. */
     final private String localized_name;
-    
+
     /** List of all localized names. */
     private static String[] localized_names;
-    
+
     /** Constructor. */
     private TraceType(final String localized_name)
     {
         this.localized_name = localized_name;
     }
-    
+
     /** @return Localized name.
      *  @see #name()
      */
@@ -61,25 +61,25 @@ public enum TraceType
     {
         return localized_name;
     }
-    
+
     /** Get the available trace types as localized names.
      *  @return An array of Strings that describes the available TraceTypes.
      *  @see #fromOrdinal(int)
-     */ 
+     */
     public final static String[] getLocalizedNames()
     {
-        if (localized_names == null) 
+        if (localized_names == null)
         {
             final TraceType[] types = TraceType.values();
-            localized_names = new String[types.length]; 
+            localized_names = new String[types.length];
             for (int i = 0; i < types.length; i++)
                 localized_names[i] = types[i].localized_name;
         }
         return localized_names;
     }
-    
+
     /** Obtain a trace type from its ordinal
-     *  @return TraceType for the given ordinal. 
+     *  @return TraceType for the given ordinal.
      */
     public static TraceType fromOrdinal(int ordinal)
     {   // This is expensive, but java.lang.Enum offers no easy way...

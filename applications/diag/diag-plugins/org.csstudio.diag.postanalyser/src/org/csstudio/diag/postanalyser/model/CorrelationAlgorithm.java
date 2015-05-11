@@ -17,14 +17,14 @@ public class CorrelationAlgorithm extends Algorithm
     {
         super(Messages.Algorithm_Correlation);
     }
-    
+
     /** Set the "other" channel with which to correlate */
     public void setCorrelationChannel(final Channel other)
     {
         corr_channel = other;
         x_axis_label = other.getName();
     }
-    
+
         @Override
     public void reset()
     {
@@ -40,7 +40,7 @@ public class CorrelationAlgorithm extends Algorithm
             throw new IllegalArgumentException(Messages.Algorithm_NoDataPoints);
         if (corr_channel == null)
             throw new IllegalArgumentException(Messages.Algorithm_NoSecondChannelError);
-        
+
         final Correlator corr = new Correlator(
                 corr_channel.getX(), corr_channel.getY(),
                 input.getX(), input.getY());
@@ -53,7 +53,7 @@ public class CorrelationAlgorithm extends Algorithm
             new AlgorithmOutput(message, corr_samples, TraceType.Markers)
         };
     }
-    
+
     /** @return <code>false</code> because Correlation needs no time axis */
     @Override
     public boolean needTimeAxis()

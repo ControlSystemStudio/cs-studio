@@ -16,25 +16,25 @@ import org.csstudio.opibuilder.converter.model.Edm_activeMotifSliderClass;
  */
 public class Opi_activeMotifSliderClass extends Opi_activeSliderClass {
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeMotifSliderClass");
-	private static final String name = "EDM Motif Slider";
-	private static final String version = "1.0";
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeMotifSliderClass");
+    private static final String name = "EDM Motif Slider";
+    private static final String version = "1.0";
 
-	/**
-	 * Converts the Edm_activeMotifSliderClasss to OPI Rectangle widget XML.  
-	 */
-	public Opi_activeMotifSliderClass(Context con, Edm_activeMotifSliderClass r) {
-		super(con, r);
-		setVersion(version);
-		setName(name);
-		
-		new OpiBoolean(widgetContext, "horizontal", 
-				!(r.getOrientation() !=null && r.getOrientation().equals("vertical")));
-		
-		
+    /**
+     * Converts the Edm_activeMotifSliderClasss to OPI Rectangle widget XML.
+     */
+    public Opi_activeMotifSliderClass(Context con, Edm_activeMotifSliderClass r) {
+        super(con, r);
+        setVersion(version);
+        setName(name);
 
-		log.debug("Edm_activeMotifSliderClass written.");
+        new OpiBoolean(widgetContext, "horizontal",
+                !(r.getOrientation() !=null && r.getOrientation().equals("vertical")));
 
-	}
+
+
+        log.debug("Edm_activeMotifSliderClass written.");
+
+    }
 
 }

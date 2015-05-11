@@ -12,22 +12,22 @@ import de.desy.language.snl.diagram.model.SNLDiagram;
  */
 public class ShapesTreeEditPartFactory implements EditPartFactory {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart,
-	 * java.lang.Object)
-	 */
-	public EditPart createEditPart(final EditPart context, final Object model) {
-		if (model instanceof SNLModel) {
-			return new ShapeTreeEditPart((SNLModel) model);
-		}
-		if (model instanceof SNLDiagram) {
-			return new DiagramTreeEditPart((SNLDiagram) model);
-		}
-		return null; // will not show an entry for the corresponding model
-						// instance
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.gef.EditPartFactory#createEditPart(org.eclipse.gef.EditPart,
+     * java.lang.Object)
+     */
+    public EditPart createEditPart(final EditPart context, final Object model) {
+        if (model instanceof SNLModel) {
+            return new ShapeTreeEditPart((SNLModel) model);
+        }
+        if (model instanceof SNLDiagram) {
+            return new DiagramTreeEditPart((SNLDiagram) model);
+        }
+        return null; // will not show an entry for the corresponding model
+                        // instance
+    }
 
 }

@@ -29,8 +29,8 @@ import org.eclipse.core.runtime.FileLocator;
 
 
 /**
- * Basic configurator for the Soft IOC. 
- * 
+ * Basic configurator for the Soft IOC.
+ *
  * @author bknerr
  * @since 27.05.2011
  */
@@ -38,9 +38,9 @@ public class BasicSoftIocConfigurator extends AbstractSoftIocConfigurator {
 
     /**
      * Constructor.
-     * 
-     * @throws URISyntaxException 
-     * @throws IOException 
+     *
+     * @throws URISyntaxException
+     * @throws IOException
      */
     public BasicSoftIocConfigurator() throws URISyntaxException, IOException {
         // TODO (bknerr) : find out how to resolve resources both with AND without the eclipse framework without polluting this code with logic
@@ -48,8 +48,8 @@ public class BasicSoftIocConfigurator extends AbstractSoftIocConfigurator {
         super(new File(FileLocator.toFileURL(BasicSoftIocConfigurator.class.getClassLoader().getResource("win/demo.exe")).toURI()),
               new File(FileLocator.toFileURL(BasicSoftIocConfigurator.class.getClassLoader().getResource("st.cmd")).toURI()));
         //    new File(BasicSoftIocConfigurator.class.getClassLoader().getResource("st.cmd").toURI())); // <- works without eclipse framework
-        // but throws IAE when used with framework, as getResource yields a URL/URI which is of scheme==bundleresource instead scheme==file                                                               
-        
+        // but throws IAE when used with framework, as getResource yields a URL/URI which is of scheme==bundleresource instead scheme==file
+
     }
-    
+
 }

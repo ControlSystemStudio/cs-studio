@@ -13,166 +13,166 @@ import org.csstudio.dct.model.IVisitor;
 
 /**
  * Standard implementation of {@link IPrototype}.
- * 
+ *
  * @author Sven Wende
  */
 public final class Prototype extends AbstractContainer implements IPrototype {
-	private static final long serialVersionUID = 2845048590453820494L;
-	
-	private List<Parameter> parameters;
+    private static final long serialVersionUID = 2845048590453820494L;
 
-	public Prototype() {
-	}
-	
-	/**
-	 * Constructor.
-	 * @param name the name
-	 * @param id the id
-	 */
-	public Prototype(String name, UUID id) {
-		super(name, null, id);
-		this.parameters = new ArrayList<Parameter>();
-	}
+    private List<Parameter> parameters;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public List<Parameter> getParameters() {
-		return parameters;
-	}
+    public Prototype() {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void addParameter(Parameter parameter) {
-		parameters.add(parameter);
-	}
+    /**
+     * Constructor.
+     * @param name the name
+     * @param id the id
+     */
+    public Prototype(String name, UUID id) {
+        super(name, null, id);
+        this.parameters = new ArrayList<Parameter>();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void addParameter(int index, Parameter parameter) {
-		parameters.add(index, parameter);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public List<Parameter> getParameters() {
+        return parameters;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void removeParameter(Parameter parameter) {
-		parameters.remove(parameter);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void addParameter(Parameter parameter) {
+        parameters.add(parameter);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void removeParameter(int index) {
-		parameters.remove(index);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void addParameter(int index, Parameter parameter) {
+        parameters.add(index, parameter);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public boolean hasParameter(String key) {
-		boolean result = false;
-		for (Parameter p : parameters) {
-			if (p.getName().equals(key)) {
-				result = true;
-			}
-		}
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void removeParameter(Parameter parameter) {
+        parameters.remove(parameter);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, String> getParameterValues() {
-		Map<String, String> result = new HashMap<String, String>();
+    /**
+     * {@inheritDoc}
+     */
+    public void removeParameter(int index) {
+        parameters.remove(index);
+    }
 
-		for (Parameter p : parameters) {
-			result.put(p.getName(), p.getDefaultValue());
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasParameter(String key) {
+        boolean result = false;
+        for (Parameter p : parameters) {
+            if (p.getName().equals(key)) {
+                result = true;
+            }
+        }
+        return result;
+    }
 
-		return result;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public Map<String, String> getParameterValues() {
+        Map<String, String> result = new HashMap<String, String>();
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public boolean isInherited() {
-		return false;
-	}
+        for (Parameter p : parameters) {
+            result.put(p.getName(), p.getDefaultValue());
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void accept(IVisitor visitor) {
-		visitor.visit(this);
+        return result;
+    }
 
-		for (IInstance instance : getInstances()) {
-			instance.accept(visitor);
-		}
+    /**
+     *{@inheritDoc}
+     */
+    public boolean isInherited() {
+        return false;
+    }
 
-		for (IRecord record : getRecords()) {
-			record.accept(visitor);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public void accept(IVisitor visitor) {
+        visitor.visit(this);
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		boolean result = false;
+        for (IInstance instance : getInstances()) {
+            instance.accept(visitor);
+        }
 
-		if (obj instanceof Prototype) {
-			Prototype prototype = (Prototype) obj;
+        for (IRecord record : getRecords()) {
+            record.accept(visitor);
+        }
+    }
 
-			if (super.equals(obj)) {
-				// .. parameters
-				if (getParameters().equals(prototype.getParameters())) {
-					result = true;
-				}
-			}
-		}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public boolean equals(Object obj) {
+        boolean result = false;
 
-		return result;
-	}
+        if (obj instanceof Prototype) {
+            Prototype prototype = (Prototype) obj;
 
-	/**
-	 *{@inheritDoc}
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-//		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-		return getId().hashCode();
+            if (super.equals(obj)) {
+                // .. parameters
+                if (getParameters().equals(prototype.getParameters())) {
+                    result = true;
+                }
+            }
+        }
 
-	}
+        return result;
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public String getParameterValue(String key) {
-		return getParameterValues().get(key);
-	}
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = super.hashCode();
+//        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+        return getId().hashCode();
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public boolean hasParameterValue(String key) {
-		return getParameterValues().get(key) != null;
-	}
+    }
 
-	/**
-	 *{@inheritDoc}
-	 */
-	public void setParameterValue(String key, String value) {
-		for (Parameter p : parameters) {
-			if (key.equals(p.getName())) {
-				p.setDefaultValue(value);
-			}
-		}
-	}
-	
+    /**
+     *{@inheritDoc}
+     */
+    public String getParameterValue(String key) {
+        return getParameterValues().get(key);
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    public boolean hasParameterValue(String key) {
+        return getParameterValues().get(key) != null;
+    }
+
+    /**
+     *{@inheritDoc}
+     */
+    public void setParameterValue(String key, String value) {
+        for (Parameter p : parameters) {
+            if (key.equals(p.getName())) {
+                p.setDefaultValue(value);
+            }
+        }
+    }
+
 }

@@ -19,7 +19,7 @@ import org.eclipse.swt.graphics.Point;
 public class XAxis extends Axis
 {
     private XAxisListener listener;
-    
+
     /** Create axis with label and listener. */
     public XAxis(String label, XAxisListener listener)
     {
@@ -32,14 +32,14 @@ public class XAxis extends Axis
         super(true, label, ticks);
         this.listener = listener;
     }
-    
+
     /** Set a new label. */
     public final void setLabel(String new_label)
     {
         label = new_label;
         listener.changedXAxis(this);
     }
-    
+
     @Override
     public boolean setValueRange(double low, double high)
     {
@@ -50,7 +50,7 @@ public class XAxis extends Axis
         }
         return false;
     }
-    
+
     /** Helper for layout of axis, used by Chart.
      *  @return Aprx. height of axis in pixel.
      */
@@ -61,7 +61,7 @@ public class XAxis extends Axis
         // Plus a few pixels space at the bottom.
         return TICK_LENGTH + 2*char_size.y+2;
     }
-    
+
     public void paint(final PaintEvent event)
     {
         if (!region.intersects(event.x, event.y, event.width, event.height))
@@ -83,7 +83,7 @@ public class XAxis extends Axis
             gc.drawString(mark, x - mark_size.x/2,
                           region.y + TICK_LENGTH, false);
         }
-        
+
         // Label: centered at bottom of region
         Point label_size = gc.textExtent(getLabel());
         gc.drawString(getLabel(),
