@@ -142,8 +142,6 @@
     
     
     
-    <module>org.csstudio.utility.shift</module>
-    <module>org.csstudio.utility.shift.ui</module>
     
   </modules>
 </project>
