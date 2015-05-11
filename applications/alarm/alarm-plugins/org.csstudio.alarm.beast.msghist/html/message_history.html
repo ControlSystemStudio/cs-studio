@@ -138,9 +138,21 @@ then navigating to
 
 <li>Schema: Schema name in the database.</li>
 
-<li>Start time: Start time used to filter on message history</>
+<li>Start time: Start time used to filter on message history</li>
 
-<li>Auto refresh period: Refresh period to reload message history from db</>
+<li>Auto refresh period: Refresh period to reload message history from db</li>
+
+<li>Max. retrieved properties:
+    To prevent excessive memory consumption, the number of displayed messages
+    is restricted based on the total count of message properties.<br>
+    If the currently selected time range and filters result in reaching this limit,
+    the list of messages will start and end with an internal message
+    "Suppressing more messages, reached ... properties".<br>
+    When you see this message, adjust the time range or filter settings to
+    narrow the list of messages to those of actual concern,
+    or update this preference setting, remaining aware of the possible
+    memory consumption consequences.
+</li>
 
 <li>Message Property Columns: List of displayed Table Columns
                               (Message Property, widths, weight).</li>

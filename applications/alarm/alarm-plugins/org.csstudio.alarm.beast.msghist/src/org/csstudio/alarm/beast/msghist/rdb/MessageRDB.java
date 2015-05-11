@@ -84,13 +84,16 @@ public class MessageRDB
         try
         {
             int parm = 1;
+            // Set start/end
             statement.setTimestamp(parm++, new Timestamp(start.getTimeInMillis()));
             statement.setTimestamp(parm++, new Timestamp(end.getTimeInMillis()));
             // Set filter parameters
             for (MessagePropertyFilter filter : filters)
                 statement.setString(parm++, filter.getPattern());
-            // Set start/end/limit
-            statement.setInt(parm++, max_properties);
+            // Set query limit a bit higher than max_properties.
+            // This still limits the number of properties on the RDB side,
+            // but allows the following code to detect exhausting the limit.
+            statement.setInt(parm++, max_properties+10);
 
             // One benchmark example:
             // Query took <<1 second, but reading all the messages took ~30.
@@ -161,10 +164,16 @@ public class MessageRDB
             {
                 props = new HashMap<String, String>();
                 props.put(Message.TYPE, "internal");
+                props.put(Message.SEVERITY, "FATAL");
                 props.put("TEXT",
                         NLS.bind(Messages.ReachedMaxPropertiesFmt, max_properties));
-                final Message message = createMessage(++sequence, id, props);
-                messages.add(message);
+                // Add this message both as the first and last messages,
+                // so user is more likely to see it.
+                // A dialog box is even harder to miss,
+                // but auto-refresh mode would result in either
+                // blocked updates or a profusion of message boxes.
+                messages.add(0, createMessage(0, -1, props));
+                messages.add(createMessage(++sequence, -1, props));
             }
         }
         finally

@@ -222,6 +222,9 @@
 		<module>opibuilder</module>
 		<module>scan</module>
 		<module>databrowser</module>
+		<module>shift</module>
+		<module>diag</module>
+		<module>apputil</module>
 	</modules>
 
 
