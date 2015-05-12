@@ -62,6 +62,14 @@ public final class ImageUtils {
 
 		ImageData newImageData = new ImageData(newWidth, newHeight,
 				srcData.depth, srcData.palette);
+		for (int destX = 0; destX < newImageData.width; destX++) {
+			for (int destY = 0; destY < newImageData.height; destY++) {
+				if (srcData.transparentPixel >= 0) {
+					newImageData.setPixel(destX, destY, srcData.transparentPixel);
+				}
+				newImageData.setAlpha(destX, destY, 0);
+			}
+		}
 
 		for (int srcX = 0; srcX < srcData.width; srcX++) {
 			for (int srcY = 0; srcY < srcData.height; srcY++) {
