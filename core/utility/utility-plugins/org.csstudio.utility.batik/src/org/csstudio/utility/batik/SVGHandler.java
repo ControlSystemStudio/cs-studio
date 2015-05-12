@@ -462,6 +462,10 @@ public class SVGHandler {
 				} catch (Exception e) {
 					handleException(e);
 					return;
+				} catch (OutOfMemoryError e) {
+					Activator.getLogger().log(Level.SEVERE,
+							"ERROR starting SVG animation: " + e.getMessage());
+					return;
 				}
 			}
 		};
@@ -690,6 +694,8 @@ public class SVGHandler {
 					Activator.getLogger().log(Level.FINE,
 							"SVG cache FILLED with " + cache.getSize() + " images");
 					svgAnimationEngine.pause();
+					updateManager.suspend();
+					updateManager.getScriptingEnvironment().interrupt();
 					if (!suspended) {
 						cache.startProcessing();
 					}
@@ -743,7 +749,8 @@ public class SVGHandler {
 					Activator.getLogger().log(Level.FINE, "SVG image buffer FLUSHED");
 				}
 			};
-			new Thread(flushTask).start();
+//			new Thread(flushTask).start();
+			flushTask.run();
 		}
 		imageBuffer.add(image);
 	}

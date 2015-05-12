@@ -59,7 +59,6 @@ public class AnimatedSVGCache {
 	 * Cache main task.
 	 */
 	private ScheduledFuture<?> scheduledMain;
-	private ScheduledFuture<?> scheduledQuery;
 
 	/**
 	 * Time root of the current SVG document.
@@ -89,10 +88,6 @@ public class AnimatedSVGCache {
 	}
 
 	public void dispose() {
-		if (scheduledQuery != null) {
-			scheduledQuery.cancel(true);
-			scheduledQuery = null;
-		}
 		stopProcessing();
 		synchronized (entries) {
 			for (Entry entry : entries) {
@@ -127,7 +122,8 @@ public class AnimatedSVGCache {
 				Activator.getLogger().log(Level.FINE, "SVG cache FLUSHED");
 			}
 		};
-		new Thread(flushTask).start();
+//		new Thread(flushTask).start();
+		flushTask.run();
 	}
 
 	public Image addImage(BufferedImage awtImage) {
