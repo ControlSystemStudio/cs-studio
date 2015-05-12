@@ -27,11 +27,13 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.swt.widgets.figures.ImageFigure;
+import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
+import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
-import org.csstudio.swt.widgets.util.IImageLoadedListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -62,37 +64,36 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		ImageModel model = getWidgetModel();
 		// create AND initialize the view properly
-		final ImageFigure figure = new ImageFigure();		
+		final ImageFigure figure = new ImageFigure();
 
 		// Resize when new image is loaded
-		figure.setImageLoadedListener(new IImageLoadedListener() {
+		figure.setImageLoadedListener(new IImageListener() {
 
 			@Override
-			public void imageLoaded(IFigure figure) {
+			public void imageResized(IFigure figure) {
 				ImageFigure imageFigure = (ImageFigure) figure;
 				autoSizeWidget(imageFigure);
 			}
 		});
 
-		figure.setFilePath(model.getFilename());		
-		figure.setStretch(model.getStretch());
-		figure.setAutoSize(model.isAutoSize());
-		figure.setAnimationDisabled(model.isStopAnimation());
-		figure.setTopCrop(model.getTopCrop());
-		figure.setBottomCrop(model.getBottomCrop());
-		figure.setLeftCrop(model.getLeftCrop());
-		figure.setRightCrop(model.getRightCrop());
-		figure.setPermutationMatrix(model.getPermutationMatrix());
-		figure.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
+		// Image default parameters
+		SymbolImageProperties sip = new SymbolImageProperties();
+		sip.setTopCrop(model.getTopCrop());
+		sip.setBottomCrop(model.getBottomCrop());
+		sip.setLeftCrop(model.getLeftCrop());
+		sip.setRightCrop(model.getRightCrop());
+		sip.setStretch(model.getStretch());
+		sip.setAutoSize(model.isAutoSize());
+		sip.setMatrix(model.getPermutationMatrix());
+		sip.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
+		sip.setBackgroundColor(new Color(Display.getDefault(), model.getBackgroundColor()));
+		sip.setAnimationDisabled(model.isStopAnimation());
+		figure.setSymbolProperties(sip);
+
+		figure.setFilePath(model.getFilename());
 		return figure;
 	}
-	
-	@Override
-	public void activate() {
-		super.activate();
-		if(((ImageModel)getModel()).isVisible() && !((ImageModel)getModel()).isStopAnimation())
-			((ImageFigure) getFigure()).startAnimation();
-	}
+
 	/**
 	 * Register change handlers for the four crop properties.
 	 */
