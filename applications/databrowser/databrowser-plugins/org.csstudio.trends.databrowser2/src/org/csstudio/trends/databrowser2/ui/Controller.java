@@ -357,7 +357,20 @@ public class Controller
             {
                 model.fireSelectedSamplesChanged();
             }
+
+            @Override
+            public void changedToolbar(final boolean visible)
+            {
+                model.setToolbarVisible(visible);
+            }
+
+            @Override
+            public void changedLegend(final boolean visible)
+            {
+                model.setLegendVisible(visible);
+            }
         });
+        
 
         model_listener = new ModelListenerAdapter()
         {
@@ -365,6 +378,13 @@ public class Controller
             public void changedTitle()
             {
                 plot.getPlot().setTitle(model.getTitle());
+            }
+
+            @Override
+            public void changedLayout()
+            {
+                plot.getPlot().showToolbar(model.isToolbarVisible());
+                plot.getPlot().showLegend(model.isLegendVisible());
             }
 
             @Override
@@ -382,6 +402,7 @@ public class Controller
                 plot.getPlot().setTitleFont(model.getTitleFont());
                 plot.getPlot().setLabelFont(model.getLabelFont());
                 plot.getPlot().setScaleFont(model.getScaleFont());
+                plot.getPlot().setLegendFont(model.getLegendFont());
             }
 
             @Override
@@ -515,9 +536,12 @@ public class Controller
 
         plot.getPlot().setBackground(model.getPlotBackground());
         plot.getPlot().getXAxis().setGridVisible(model.isGridVisible());
+        plot.getPlot().showToolbar(model.isToolbarVisible());
+        plot.getPlot().showLegend(model.isLegendVisible());
         plot.getPlot().setTitleFont(model.getTitleFont());
         plot.getPlot().setLabelFont(model.getLabelFont());
         plot.getPlot().setScaleFont(model.getScaleFont());
+        plot.getPlot().setLegendFont(model.getLegendFont());
         plot.getPlot().setTitle(model.getTitle());
         plot.getPlot().setScrollStep(model.getScrollStep());
 

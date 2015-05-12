@@ -128,6 +128,7 @@ public class ValuePlotDemo
         final Control menu_holder = plot.getPlotControl();
         final MenuManager mm = new MenuManager();
         mm.add(plot.getToolbarAction());
+        mm.add(plot.getLegendAction());
         final Menu menu = mm.createContextMenu(menu_holder);
         menu_holder.setMenu(menu);
 

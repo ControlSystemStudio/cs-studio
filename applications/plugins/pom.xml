@@ -51,7 +51,6 @@
     
     <module>org.csstudio.logging.jms2rdb</module>
     <module>org.csstudio.navigator.applaunch</module>
-    <module>org.csstudio.opibuilder.alarm</module>
     <module>org.csstudio.pvmanager.formula.channelfinder</module>
     <module>org.csstudio.remote</module>
 <!--     <module>org.csstudio.remote.test</module> -->
@@ -130,7 +129,6 @@
     <!--<module>org.csstudio.utility.tine.ui</module>--><!-- depends on org.csstudio.utility.tine -->
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
-    <!--module>org.csstudio.alarm.beast.test</module--><!-- Error in threading. Test failes to end. -->
     
     <module>org.csstudio.diag.epics.pvmanager.pvtree.test</module>
     <module>org.csstudio.diag.epics.pvtree.test</module>    

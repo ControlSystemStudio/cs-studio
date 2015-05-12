@@ -122,11 +122,20 @@ public class Model
     /** Scale font */
     private volatile FontData scale_font = new FontData("", 10, 0);
 
+    /** Legend font */
+    private volatile FontData legend_font = new FontData("", 10, 0);
+
     /** Annotations */
     private volatile List<AnnotationInfo> annotations = Collections.emptyList();
 
     /** How should plot rescale when archived data arrives? */
     private volatile ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
+
+    /** Show toolbar*/
+    private boolean show_toolbar;
+
+    /** Show legend*/
+    private boolean show_legend;
 
     public Model()
     {
@@ -137,6 +146,7 @@ public class Model
             title_font = new FontData(default_font.getName(), (default_font.getHeight()*3)/2, SWT.BOLD);
             label_font = new FontData(default_font.getName(), default_font.getHeight(), SWT.BOLD);
             scale_font = new FontData(default_font.getName(), default_font.getHeight()-1, SWT.NORMAL);
+            legend_font = new FontData(default_font.getName(), default_font.getHeight()-1, SWT.NORMAL);
         }
         start_spec = "-" + PeriodFormat.formatSeconds(TimeHelper.toSeconds(time_span));
         end_spec = RelativeTime.NOW;
@@ -716,6 +726,38 @@ public class Model
             listener.changedColorsOrFonts();
     }
 
+    /** @return <code>true</code> if toolbar is visible*/
+    public boolean isToolbarVisible()
+    {
+        return show_toolbar;
+    }
+
+    /** @param visible Should toolbar be visible? */
+    public void setToolbarVisible(final boolean toolbar)
+    {
+        if (show_toolbar == toolbar)
+            return;
+        show_toolbar = toolbar;
+        for (ModelListener listener : listeners)
+            listener.changedLayout();
+    }
+
+    /** @return <code>true</code> if toolbar is visible*/
+    public boolean isLegendVisible()
+    {
+        return show_legend;
+    }
+
+    /** @param visible Should toolbar be visible? */
+    public void setLegendVisible(final boolean legend)
+    {
+        if (show_legend == legend)
+            return;
+        show_legend = legend;
+        for (ModelListener listener : listeners)
+            listener.changedLayout();
+    }
+
     /** @return <code>true</code> if grid lines are drawn */
     public boolean isGridVisible()
     {
@@ -770,6 +812,20 @@ public class Model
     public void setScaleFont(final FontData font)
     {
         scale_font = font;
+        for (ModelListener listener : listeners)
+            listener.changedColorsOrFonts();
+    }
+
+    /** @return Legend font */
+    public FontData getLegendFont()
+    {
+        return legend_font;
+    }
+
+    /** @param font Scale font */
+    public void setLegendFont(final FontData font)
+    {
+        legend_font = font;
         for (ModelListener listener : listeners)
             listener.changedColorsOrFonts();
     }
