@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?eclipse version="3.4"?>
-<plugin>
-   <extension-point id="managementCommands" name="Management Commands" schema="schema/managementCommands.exsd"/>
-   <extension-point id="managementCommandResultReceivers" name="Receivers for Management Command Results" schema="schema/managementCommandResultReceivers.exsd"/>
-</plugin>
