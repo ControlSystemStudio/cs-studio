@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
+<head>
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+	<!-- meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" -->
+	<title>PV Scripts</title>
+    <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+</head>
+
+<body>
+<h1>PV Scripts</h1>
+<p>This tool allows you to add scripts to the Process Variable
+context menu.
+Whenever a context menu is opened in any CSS application,
+these scripts will then appead in the context menu.
+Selecting them will invoke the script with the PV name
+as an additional argument.
+</p>
+<p>Scripts are used in a generic sense.
+Any external program that supports invocation from the command line
+can be used as a command.
+The preference page of the PV Scripts tool allows you to
+configure one or more commands together with a description.
+The description will be displayed in the context menu,
+and the command will be invoked.
+</p>
+<p>Examples:
+<table>
+<tr><th>Description</th><td>External Probe</td></tr>
+<tr><th>Command</th><td>/usr/local/bin/probe</td></tr>
+</table>
+will display a new entry "External Probe" in the Process Variable
+context menu.
+When invoked on a PV called "some_pv", it will launch the command
+<code>/usr/local/bin/probe some_pv</code>
+</p>
+</body>
+</html>

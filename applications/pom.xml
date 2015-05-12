@@ -212,8 +212,6 @@
 	</repositories>
 	<!-- CHILD MODULES -->
 	<modules>
-		<module>plugins</module>
-		<module>features</module>
 		<module>repository</module>
 		<module>alarm</module>
 		<module>archive</module>
@@ -225,6 +223,7 @@
 		<module>shift</module>
 		<module>diag</module>
 		<module>apputil</module>
+		<module>appunorganized</module>
 	</modules>
 
 

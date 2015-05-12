@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.csstudio.remote.managementCommands">
+      <command
+            class="org.csstudio.domain.common.statistic.GetStatisticsManagementCommand"
+            id="org.csstudio.domain.common.statistic.GetStatisticCommand"
+            label="Get Statistics">
+      </command>
+   </extension>
+
+
+</plugin>

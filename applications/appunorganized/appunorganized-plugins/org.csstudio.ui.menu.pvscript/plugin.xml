@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <dynamic
+               class="org.csstudio.ui.menu.pvscript.ContextMenuItems"
+               id="org.csstudio.ui.menu.pvscript.items">
+         </dynamic>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.ui.menu.pvscript.RunScriptHandler"
+            id="org.csstudio.ui.menu.pvscript.runscript"
+            name="RunScript">
+         <commandParameter
+               id="script"
+               name="Script"
+               optional="false">
+         </commandParameter>
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.utilities"
+            class="org.csstudio.ui.menu.pvscript.PreferencePage"
+            id="org.csstudio.ui.menu.pvscript.preferences.PreferencePage"
+            name="%Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="false">
+      </toc>
+   </extension>
+
+</plugin>

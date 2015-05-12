@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Application Launcher Configuration File Details</title><link rel="stylesheet" type="text/css" href="../../PRODUCT_PLUGIN/book.css"><meta name="generator" content="DocBook XSL Stylesheets V1.76.1"><link rel="home" href="index.html" title="Application Launcher - org.csstudio.navigator.applaunch"><link rel="up" href="index.html" title="Application Launcher - org.csstudio.navigator.applaunch"><link rel="prev" href="ch01s04.html" title="Editing an Application Launcher Configuration File"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Application Launcher Configuration File Details</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="ch01s04.html">Prev</a> </td><th width="60%" align="center"> </th><td width="20%" align="right"> </td></tr></table><hr></div><div class="sect1" title="Application Launcher Configuration File Details"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp50256"></a>Application Launcher Configuration File Details</h2></div></div></div> 
+<p>If you create launcher configuration files by other means,
+you need to be familiar with its XML file format.
+</p>
+<p>The application launcher configuration file name must end in
+<code class="filename">.app</code>.
+It must be a valid XML file with an <code class="code">application</code>
+root element and a <code class="code">command</code>:
+</p>
+<pre class="programlisting">&lt;application&gt;
+  &lt;command&gt;/path/to/the/command&lt;/command&gt;
+&lt;/application&gt;
+</pre>
+
+<p>The command should be the path to a command.
+On MS Windows and Mac OS X, the command may also the path
+to a file that the operating system can open.
+For example, it could be the path to a Microsoft Word document
+and invoking the command would then open that file in Microsoft Word
+on a PC or Mac that has MS Word available.
+</p>
+
+<p>The launcher configuration file may include an optional <code class="code">icon</code>:
+</p>
+
+<pre class="programlisting">&lt;application&gt;
+  &lt;command&gt;/path/to/the/command&lt;/command&gt;
+  &lt;icon&gt;icon_info&lt;/icon&gt;
+&lt;/application&gt;
+</pre>
+
+<p>The icon info can be the following:
+</p><div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">
+<code class="code">icon:clipboard</code>,
+<code class="code">icon:console</code>,
+<code class="code">icon:edit</code>,
+<code class="code">icon:run</code>,
+<code class="code">icon:text</code>, or
+<code class="code">icon:work</code>
+to select built-in icons.
+The default is <code class="code">icon:run</code>.
+</li><li class="listitem">A path to an icon file within the workspace.
+In an operational setup one might prepare a shared icon folder like
+<code class="filename">CSS/Share/icons</code>, and then use an icon path
+like
+<code class="filename">CSS/Share/icons/some_icon.gif</code>
+as a launcher icon.
+</li></ul></div><p>
+</p>
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="ch01s04.html">Prev</a> </td><td width="20%" align="center"> </td><td width="40%" align="right"> </td></tr><tr><td width="40%" align="left" valign="top">Editing an Application Launcher Configuration File </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> </td></tr></table></div></body></html>

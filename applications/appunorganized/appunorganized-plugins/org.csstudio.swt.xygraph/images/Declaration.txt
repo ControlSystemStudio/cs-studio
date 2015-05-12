@@ -1,0 +1,3 @@
+Part of the icons in this project are from Internet.
+
+camera.png Configure.png Undo.png Redo.png are from http://tango.freedesktop.org/Tango_Icon_Library

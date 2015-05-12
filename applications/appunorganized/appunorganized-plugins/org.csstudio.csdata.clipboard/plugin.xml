@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.csdata.clipboard.CopyPvToClipboard"
+            id="org.csstudio.csdata.clipboard.copy_pv"
+            name="Copy PV to clipboard">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.csstudio.ui.menu.popup.processvariable">
+         <command
+               commandId="org.csstudio.csdata.clipboard.copy_pv"
+               icon="icons/clipboard.gif"
+               label="%CopyPvToClipboard"
+               style="push">
+         </command>
+      </menuContribution>
+   </extension>
+
+</plugin>

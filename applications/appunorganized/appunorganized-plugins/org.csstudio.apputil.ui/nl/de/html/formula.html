@@ -1,0 +1,145 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title>Formulas</title>
+</head>
+<body>
+
+<a name=top><h1>Formulas</h1></a>
+
+<span class="index">
+- <a href="#numbers">Numbers</a>
+- <a href="#const">Constants</a>
+- <a href="#vars">Variables/PV Names</a>
+- <a href="#basic">Basic Computations</a>
+- <a href="#bool">Boolean Operations</a>
+- <a href="#func">Functions</a>
+-
+</span>
+
+<p>
+Todo kv:
+</p>
+<p>
+Dieses File steht schon an der richtigen Stelle (Deutsche Help-Datei!) 
+muss aber noch uebersetzt werden. Und nachsehen, ob der header xhtml-kompatibel etc. ist.
+</p>
+
+
+<p>
+The Data Browser, the Alarm Server 'filter' and maybe other CSS tools support
+the following type of formula.
+</p>
+
+
+<h2><a name=numbers>Numbers</a></h2>
+<p>
+Numbers can be entered as
+<ul>
+<li>3</li>
+<li>-3.14</li>
+<li>-2.123e-14</li>
+</ul>
+</p>
+
+<h2><a name=const>Constants</a></h2>
+<p>
+Predefined constants<ul>
+<li>E</li>
+<li>PI</li>
+</ul>
+</p>
+
+<h2><a name=vars>Variables/PV Names</a></h2>
+<p>
+In the Data Browser, formulas can contain variables which are mapped to other
+Data Browser traces. In the Alarm Server 'filter', formulas can contain PV names.
+In either case, enclose names that contain numbers or other special characters
+with single quotes:
+<ul>
+<li>PlainName</li>
+<li>'Name-with:special/characters'</li>
+<li>'4aNameThatStartsWithANumber'</li>
+</ul>
+</p>
+
+<h2><a name=basic>Basic Computations</a></h2>
+<p>
+Basic computations are supported with the standard order of operations:
+<ul>
+<li>-3.14 + 2 - 1.10</li>
+<li>-12/-3</li>
+<li>1 + 2 * 3 - 4</li>
+<li>(1 + 2) * (3 - 4)</li>
+<li>-(3.14)</li>
+<li>-(-3.14)</li>
+</ul>
+</p>
+
+
+<h2><a name=bool>Boolean Operations</a></h2>
+<p>
+Boolean operations result in 0.0 or 1.0 for 'false' respectively 'true',
+supporting the following operators for comparisons, 'not', 'or', 'and',
+as well as the C/Java type if-then-else operator:
+<ul>
+<li>2 == 2</li>
+<li>2 != 3</li>
+<li>2 &lt; 3</li>
+<li>3 &gt; 2</li>
+<li>2 &le;= 3</li>
+<li>3 &gt;= 2</li>
+<li>! (2 == 3)</li>
+<li>(1 == 2) | (2 == 2)</li>
+<li>(1 == 1) & (2 == 2)</li>
+<li>(2 &lt; 3) ? (1.0) : (0.0)</li>
+</ul>
+</p>
+
+<h2><a name=func>Functions</a></h2>
+<p>
+Random number [0 ... x[: 
+<ul>
+<li>rnd(x)</li>
+</ul>
+</p>
+<p>
+The following functions take one or two arguments as indicated and
+return the value defined by the respective
+<a href="http://java.sun.com/j2se/1.5.0/docs/api/java/lang/Math.html">Java 'Math'</a>
+routine:
+<ul>
+<li>abs(a)</li>
+<li>acos(a)</li>
+<li>asin(a)</li>
+<li>atan(a)</li>
+<li>ceil(a)</li>
+<li>cos(a)</li>
+<li>cosh(a)</li>
+<li>exp(a)</li>
+<li>expm1(a)</li>
+<li>floor(a)</li>
+<li>log(a)</li>
+<li>log10(a)</li>
+<li>round(a)</li>
+<li>sin(a)</li> 
+<li>sinh(a)</li> 
+<li>sqrt(a)</li>
+<li>tan(a)</li>
+<li>tanh(a)</li>
+<li>toDegrees(a)</li>
+<li>toRadians(a)</li>
+<li>atan2(a, b)</li>
+<li>hypot(a, b)</li>
+<li>pow(a, b)</li>
+</ul>
+
+These special functions take two or more arguments:
+<ul>
+<li>min(a, b, c, d, e)</li>
+<li>max(a, b, c, d, e)</li>
+</ul>
+</p>
+
+</body>
+</html>

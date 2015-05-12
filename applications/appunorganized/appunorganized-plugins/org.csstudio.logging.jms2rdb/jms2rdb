@@ -1,0 +1,67 @@
+# jms2rdb:  Controls the CSS JMS-2-RDB tool
+#
+# This is meant to be run by the appropriate user.
+# See init_d_... for a wrapper that switches to
+# the correct user
+#
+# Note that 'stop' doesn't work as well as it should.
+# At least on ics-srv-epics1, 2 processes get started,
+# but we only know the PID of the first, so we use the
+# web interface to stop the second, more important
+# process.
+#
+# kasemirk@ornl.gov
+
+#export JAVA_HOME=/usr/local/java/jdk1.5.0_05
+export JAVA_HOME=/usr/local/java/jdk1.6.0_19
+PROGRAM=JMS2RDB
+# HTTP port must match JMS2RDB configuration!
+HTTP=4913
+
+DIR=/usr/local/css/$PROGRAM
+LOGFILE=$DIR/$PROGRAM.log
+PIDFILE=$DIR/$PROGRAM.pid
+DATA=/tmp/$PROGRAM.$$
+OPT="-pluginCustomization $DIR/install/settings.ini -data $DATA -consoleLog -vmargs -Djava.awt.headless=true"
+unset DISPLAY
+
+export PATH=$JAVA_HOME/bin:$PATH
+
+case $1 in
+start)
+    cd $DIR
+    nohup ./install/JMS2RDB/$PROGRAM $OPT >$LOGFILE 2>&1 &
+    echo $! > $PIDFILE
+    ;;
+stop)
+    if [ ! -f $PIDFILE ]
+    then
+       exit
+    fi
+    PID=`cat $PIDFILE`
+    FOUND=`ps aux | fgrep $PID | grep -v grep | grep --count $PROGRAM`
+    if [ $FOUND -eq 1 ]
+    then
+        kill $PID
+        rm $PIDFILE
+        lynx -dump http://localhost:$HTTP/stop
+    else
+        echo "Cannot locate $PROGRAM under pid $PID"
+    fi
+    ;;
+status)
+    if [ ! -f $PIDFILE ]
+    then
+       echo "No pid"
+       exit
+    fi
+    PID=`cat $PIDFILE`
+    ps aux | fgrep $PID | grep -v grep
+    ;;
+view)
+    lynx http://localhost:$HTTP/main
+    ;;
+*)
+    echo $0 "start | stop | status | view"
+esac
+

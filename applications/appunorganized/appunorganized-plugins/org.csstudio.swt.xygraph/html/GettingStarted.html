@@ -1,0 +1,153 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK"/>
+<link rel="stylesheet" href="default.css" type="text/css" />
+<title>Getting Started with SWT XYGraph</title>
+</head>
+<body>
+	<h3> 
+   		1. Installation
+	</h3> 	 
+	
+	<h4>1.1 Download</h4>
+	
+	<p>SWT XYGraph can be downloaded from <a href="http://code.google.com/p/swt-xy-graph/downloads/list">Google Code</a>. 
+	There are two versions of SWT XYGraph: Pure Java version and RCP_RAP version. Pure Java version can be used in all java 
+	applications including RCP applications. RCP_RAP version can be used for RCP applications and RAP applications. So if you are 
+	not creating a RAP application, you should use the Pure Java version.
+	</p>
+	<h4>1.2 Install Pure Java Version</h4>	
+	<p>
+	For pure java applications, add org.csstudio.swt.xygraph.jar to your project build path. 
+	It also requires following jar files:
+	<ul>
+	<li>org.eclipse.draw2d.jar</li>
+	<li>org.eclipse.swt.jar</li>
+<li>org.eclipse.swt.win32.win32.x86.jar or other equivalent platform swt library</li>
+<li>org.eclipse.jface.jar</li>
+<li>org.eclipse.core.commands.jar</li>
+<li>org.eclipse.equinox.common.jar</li>
+<li>org.eclipse.osgi.jar</li>
+</ul>
+<p>
+These jar files are generally available with your eclipse installation under eclipse/plugins folder.
+Also add these jars to your project build path.Now you are ready to Rock and Roll! </p>
+<p>
+If you don't have org.eclipse.draw2d in your eclipse/plugins folder, you should also install draw2d plugin. 
+	    Draw2D is part of Eclipse GEF project, If you don't have GEF installed in your eclipse, 
+	    please install it following instruction here:
+	    <a href="http://www.eclipse.org/gef/downloads.php">http://www.eclipse.org/gef/downloads.php</a> 
+
+</p>
+
+	<p> 
+	    For Eclipse plugin development, add org.csstudio.swt.xygraph.jar to your project build path. 
+	    Add required jars listed above as plugin dependencies (If you already have 
+	    org.eclipse.ui and org.eclipse.core.runtime in dependencies, you only need to add org.eclipse.draw2d). 
+	    
+	</p>  
+	
+	<h4>1.3 Install RCP_RAP Version</h4>
+	<p>Please skip this section if you are not using RCP_RAP version of SWT_XYGraph.
+	</p>
+	<p>RCP_RAP version of SWT XYGraph aims to use SWT XYGraph in both RCP and RAP application with single sourcing.
+	<code>org.csstudio.swt.xygraph</code> is the base plugin for both RCP an RAP applications.
+	<code>org.csstudio.swt.xygraph.rcp</code> is the fragment for RCP applications. It should not be included in your RAP application.
+	<code>org.csstudio.swt.xygraph.rap</code> is the fragment for RAP applications. It should not be included in your RCP application.
+	So you should add <code>org.csstudio.swt.xygraph</code> and <code>org.csstudio.swt.xygraph.rcp</code> to your RCP target platform.
+	Add <code>org.csstudio.swt.xygraph</code> and <code>org.csstudio.swt.xygraph.rap</code> to your RAP target platform.
+	</p>
+	
+		<h3> 
+   		2. Concepts
+	</h3> 
+	<h4> 
+    	2.1. Overview
+	</h4> 
+	<p> 
+	   As described in the class diagram below, a complete XY Graph is composed of Legend,
+	   Title, Axes, PlotArea. The PlotArea will include Traces, Grids and Annotations.
+	   An XYGraph can also be wrapped into a ToolbarArmedXYGraph, which provides a toolbar
+	   for the interactive operations functionality.
+	 </p>  
+	<p>
+		<img src = "img/XYGraphUML.png" alt = "XYGraph Class Diagram" border="1"/>
+	</p>	
+	<p>
+		There are two interfaces <code>IDataProvider</code> and <code>ISample</code> in the class diagram,
+		which means the user can also implemented there own data provider or sample.
+		This gives the possibilities to implement a different data provider
+		with different data source or data storage structure for special applications, 
+	    For example, the data source in the data provider could be from user input, database or files etc,. 
+	    The storage structure could be array, queue, circular buffer or bucket buffer etc,. 
+	    A default data provider <code>CircularBufferDataProvider</code> and sample <code>Sample</code>
+	    have been provided with the XYGraph plugin.
+	</p>
+	
+	<h3> 
+    	3. Create your first XY Graph
+	</h3> 
+	<p>
+		Just few simple steps, you can create your first XYGraph with a trace added.<br>
+		See <a href = "../examples/SimpleExample.java">SimpleExample.java</a>		
+	</p>
+	<p><strong>Step 1</strong>. Establish the bridge between Draw2D and SWT.
+	</p>
+	<p> 
+		The XY Graph is a Draw2D figure, so if you want to display an XY Graph as an SWT widget,
+		you have to create the bridge between Draw2D and SWT: 	
+	</p> 
+	<pre class="example_code"><strong>final</strong> LightweightSystem lws = <strong>new</strong> LightweightSystem(shell);	</pre> 
+	<p>
+	The shell can also be replaced with an SWT Canvas. 	
+	</p>
+	
+	<p><strong>Step 2</strong>. Create a new XYGraph.</p>	
+	<pre class="example_code">XYGraph xyGraph = <strong>new</strong> XYGraph();
+xyGraph.setTitle(<span class = "string">"Simple Example"</span>);	</pre> 
+	
+	<p><strong>Step 3</strong>. Set it as the content of LightwightSystem.</p>	
+	<pre class="example_code">lws.setContents(xyGraph);</pre> 
+	
+	<p><strong>Step 4</strong>. Create a trace data provider, 
+		which will provide the data to the trace. Here we use CircularBufferDataProvider which 
+		is a default provided data provider in XY Graph package. You can also create your own data provider by implementing
+		the interface <code>IDataProvider </code>.
+	</p>	
+	<pre class="example_code">
+CircularBufferDataProvider traceDataProvider = <strong>new</strong> CircularBufferDataProvider(<strong>false</strong>);
+traceDataProvider.setBufferSize(100);		
+traceDataProvider.setCurrentXDataArray(<strong>new double</strong>[]{10, 23, 34, 45, 56, 78, 88, 99});
+traceDataProvider.setCurrentYDataArray(<strong>new double</strong>[]{11, 44, 55, 45, 88, 98, 52, 23});
+</pre> 
+	<p><strong>Step 5</strong>. Create a trace and set its properties.</p>	
+	<pre class="example_code">
+Trace trace = new Trace(<span class="string">"Trace1-XY Plot"</span>, 
+	xyGraph.primaryXAxis, xyGraph.primaryYAxis, traceDataProvider);			
+trace.setPointStyle(PointStyle.<i>XCROSS</i>);</pre> 
+	<p><strong>Step 6</strong>. Add the trace to xyGraph.</p>	
+	<pre class="example_code">xyGraph.addTrace(trace);</pre> 
+	<p>
+		Congratulations! You just created your first XYGraph which has the basic elements: title, axes, trace and legend. 
+	</p><p>	
+		<img src = "./img/SimpleExample.PNG" alt = "Simple Example"/>
+	</p>
+	
+	<h3>4. Learn from examples</h3>
+	<p>Once you have finished the first simple example, you have already mastered 90% of usage of SWT XYGraph! 
+	So now you can just learn from examples!</p>
+	<h4>4.1 XYGraph with Toolbar example</h4>
+	<ul>
+	<li><a href = "../examples/BarChartExample.java">Bar and Area Chart </a>
+	<p>
+	<img src="./img/BarAreaChart.gif" alt=""></p> </li>
+	<li><a href = "../examples/SimpleToolbarArmedXYGraphExample.java">XYGraph with Toolbar </a>
+	<p><img src="./img/SimpleToolbarArmedXYGraph.gif" alt=""></p> </li>
+	<li><a href = "../examples/ComprehensiveExample.java">Comprehensive Example </a>
+	<p>In this example, the XY graph is dynamically updated by a timer. It also shows how to add key listeners
+	 to perform interactive operations programmatically.</p>
+	<p><img src="./img/ComprehensiveExample.gif" alt=""></p> </li>
+	
+	</ul>
+</body>
+</html>

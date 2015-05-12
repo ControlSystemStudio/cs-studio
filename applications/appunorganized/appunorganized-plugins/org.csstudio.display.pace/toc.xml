@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#display" label="PACE Editor">
+	<topic label="PACE Editor"  href="html/pace_editor.html">
+	   <topic label="Starting the PACE Editor" href="html/open_config.html"/>
+	   <topic label="Editing Values" href="html/edit_limits.html"/>
+	   <topic label="Tooltips" href="html/tooltips.html"/>
+	   <topic label="Saving Changes" href="html/save_limits.html"/>
+	   <topic label="Sending PVs to Other CSS Applications" href="html/send_pvs.html"/>
+       <topic label="Configuration Files" href="html/config.html"/>
+	</topic>
+</toc>

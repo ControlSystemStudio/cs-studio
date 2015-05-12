@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#debugging" label="RDB Shell">
+	<topic label="RDB Shell"  href="html/rdb_shell.html">
+	</topic>
+</toc>

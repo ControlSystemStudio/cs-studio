@@ -1,0 +1,96 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Application Launcher - org.csstudio.navigator.applaunch</title>
+
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<link rel="home" href="index.html" title="Application Launcher - org.csstudio.navigator.applaunch">
+<link rel="next" href="ch01s02.html" title="Creating a new Application Launcher Configuration File">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+<div class="navheader">
+<table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">Application Launcher - org.csstudio.navigator.applaunch</th></tr><tr><td width="20%" align="left"> </td><th width="60%" align="center"> </th><td width="20%" align="right"> <a accesskey="n" href="ch01s02.html">Next</a></td></tr></table><hr></div><div class="chapter" title="Application Launcher - org.csstudio.navigator.applaunch"><div class="titlepage"><div><div><h2 class="title"><a name="ch_applaunch"></a>Application Launcher - org.csstudio.navigator.applaunch<a class="indexterm" name="idp4848"></a></h2></div></div></div>
+
+
+
+
+<p>This plugin supports Application Launch configuration files
+which can then be started from the Eclipse Navigator.
+</p>
+
+<div class="figure"><a name="fig_applaunch"></a><p class="title"><b>Figure 1. Application Launch files</b></p><div class="figure-contents">  
+  <div class="mediaobject"><table border="0" summary="manufactured viewport for HTML img" cellspacing="0" cellpadding="0" width="40%"><tr><td><img src="applaunch.png" width="100%" alt="Application Launch files"></td></tr></table></div>
+</div></div><br class="figure-break">
+
+<p>Most accelerator sites have some type of application launcher
+that lists the many specialized tools that operators or
+experimenters can start.
+Users of several subsystem groups can create their own section
+of the launch configuration.
+Some tools are listed more than once as shown for the Terminal
+tool in <a class="xref" href="index.html#fig_applaunch" title="Figure 1. Application Launch files">Figure 1, &#8220;Application Launch files&#8221;</a> because several groups
+would like to list it in <span class="quote">&#8220;<span class="quote">their</span>&#8221;</span> section of the launcher.
+</p>
+
+<p>This plugin allows using the Eclipse Navigator view as such a launcher.
+The navigator already displays all workspace files, and can for example
+open the operator display editor or runtime for display files.
+It is thus a basic launcher where users can arrange the files
+in projects and sub-directories and then launch the associated CSS tools.
+Using linked folders, one can create shared as well as user-specific
+arrangements.
+</p>
+
+<p>The use of the Navigator as a launcher complements the CSS menu bar:
+The menu bar has a comparable limited size and fixed arrangement.
+It lists the tools built into CSS that many users need.
+Each CSS tool typically shows only once in the menu bar.
+</p>
+<p>A launcher configuration can be much bigger, listing many external
+tools. Some entries like the launcher for a terminal window can appear
+in multiple sub-directories of the launch configuration because
+each subsystem group of users can create their own section of the launch
+configuration.
+</p>
+
+<div class="sect1" title="Basic Usage"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="idp22016"></a>Basic Usage</h2></div></div></div> 
+<p>End users simply double-click a launch configuration
+file in the Navigator.
+Similar to the way double-clicking a display file opens
+the operator interface tool, opening a launch configuration file
+will start the associated external application.
+</p>
+<p>Eclipse remembers the last action on a file.
+If the user had previously edited a launch configuration,
+i.e. opened it in an editor instead of executing it,
+Eclipse will remember this and again open the editor
+on the next double-click.
+In this case once right-click the launch configuration file
+and select <code class="code">Open With</code>, then <code class="code">Launch Application</code>
+to execute it. From now on the double-click will also default to
+launching the application.
+</p>
+<p>Users can create new subsections of the launcher by creating
+new file folders in the Navigator:
+</p>
+<div class="itemizedlist"><ul class="itemizedlist" type="disc"><li class="listitem">Right-click on the parent folder</li><li class="listitem">Select <code class="code">New</code>, <code class="code">Other..</code>,
+section <code class="code">General</code>, type <code class="code">Folder</code></li><li class="listitem">Enter name of new folder</li></ul></div>
+<p>Since launch configuration files are still files,
+they can be moved, copied, renamed like any other file
+in the Navigator.
+</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"> </td><td width="20%" align="center"> </td><td width="40%" align="right"> <a accesskey="n" href="ch01s02.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top"> </td><td width="20%" align="center"> </td><td width="40%" align="right" valign="top"> Creating a new Application Launcher Configuration File</td></tr></table></div></body></html>
