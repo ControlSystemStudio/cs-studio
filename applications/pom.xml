@@ -212,7 +212,6 @@
 	</repositories>
 	<!-- CHILD MODULES -->
 	<modules>
-		<module>repository</module>
 		<module>alarm</module>
 		<module>archive</module>
 		<module>channel</module>

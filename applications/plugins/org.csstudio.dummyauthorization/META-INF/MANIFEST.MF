@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Dummyauthorization
-Bundle-SymbolicName: org.csstudio.dummyauthorization;singleton:=true
-Bundle-Version: 3.0.0.qualifier
-Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.auth
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS

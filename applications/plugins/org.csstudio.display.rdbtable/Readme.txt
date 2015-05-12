@@ -1,3 +1,0 @@
-- Manual: html/rdbtable.html
-- Demo files: demo/*.rdb
-- SNS Examples: sns/*.rdb

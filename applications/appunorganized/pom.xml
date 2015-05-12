@@ -10,7 +10,7 @@
   <modules>
   	<module>appunorganized-plugins</module>
   	<module>appunorganized-features</module>
-<!--   	<module>appunorganized-repository</module> -->
+   	<module>appunorganized-repository</module>
   </modules>
   <version>0.0.1-SNAPSHOT</version>
 </project>

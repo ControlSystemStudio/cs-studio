@@ -1,6 +1,0 @@
-Offene Punkte am SDS:
- - Soll das neue Thermometer in die Doku? Wer macht das?
- - Unterschiedliche Dateiendungen fuer Rules und Skripte?
- - Erweiterten Script Editor erstellen?
- - Weitere Shortcuts wie %workspace% fuer Skripte?
- - Kategorisierung der Widgets in der Palette des Display Editors? Nach welchen Kriterien?
