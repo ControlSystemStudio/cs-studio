@@ -1,0 +1,27 @@
+record(ai, "BL7:test_ai")
+{
+    info(autosaveFields, "VAL PREC SCAN DESC")
+    field(PINI, "YES")
+    field(PREC, "10")
+}
+
+record(waveform, "BL7:test_wf")
+{
+    info(autosaveFields, "VAL")
+    field(PINI, "YES")
+    field(FTVL, "LONG")
+    field(NELM, "10")
+}
+
+record(waveform, "BL7:test_ls")
+{
+    info(autosaveFields, "VAL")
+    field(PINI, "YES")
+    field(FTVL, "CHAR")
+    field(NELM, "10")
+}
+
+record(longin, "long")
+{
+    field(PINI, "YES")
+}

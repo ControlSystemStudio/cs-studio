@@ -1,0 +1,17 @@
+<paceconfig>
+<title>Demo</title>
+<columns>
+   <column>
+     <name>Limit</name>
+     <access>rw</access>
+     <pv>loc://limit${N}</pv>
+   </column>
+</columns>
+
+ <instances>
+   <instance>
+      <name>System 1</name>
+      <macros>N=1</macros>
+   </instance>
+</instances>
+</paceconfig>

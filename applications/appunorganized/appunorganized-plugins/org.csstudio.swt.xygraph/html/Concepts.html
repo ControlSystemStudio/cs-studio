@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=GBK"/>
+<link rel="stylesheet" href="default.css" type="text/css" />
+<title>Concepts</title>
+</head>
+<body>
+	<h3> 
+   		2. Concepts
+	</h3> 
+	<h4> 
+    	2.1. Overview
+	</h4> 
+	<p> 
+	   As described in the class diagram below, a complete XY Graph is composed of Legend,
+	   Title, Axes, PlotArea. The PlotArea will include Traces, Grids and Annotations.
+	   An XYGraph can also be wrapped into a ToolbarArmedXYGraph, which provides a toolbar
+	   for the interactive operations functionality.
+	 </p>  
+	<p>
+		<img src = "img/XYGraphUML.png" alt = "XYGraph Class Diagram" border="1"/>
+	</p>	
+	<p>
+		There are two interfaces <code>IDataProvider</code> and <code>ISample</code> in the class diagram,
+		which means the user can also implemented there own data provider or sample.
+		This gives the possibilities to implement a different data provider
+		with different data source or data storage structure for special applications, 
+	    For example, the data source in the data provider could be from user input, database or files etc,. 
+	    The storage structure could be array, queue, circular buffer or bucket buffer etc,. 
+	    A default data provider <code>CircularBufferDataProvider</code> and sample <code>Sample</code>
+	    have been provided with the XYGraph plugin.
+	</p>
+	
+</body>
+</html>

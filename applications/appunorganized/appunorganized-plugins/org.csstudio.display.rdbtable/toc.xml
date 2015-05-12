@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.csstudio.ui.help/tocApps.xml#display" label="RDB Table Editor">
+	<topic label="RDB Table Editor"  href="html/rdbtable.html">
+       <topic label="Usage"  href="html/usage.html"/>
+       <topic label="Configuration"  href="html/config.html"/>
+	</topic>
+</toc>

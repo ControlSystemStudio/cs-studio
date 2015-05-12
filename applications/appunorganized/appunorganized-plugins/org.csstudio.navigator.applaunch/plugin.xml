@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <!-- Use XML files that start with <application>... as
+        launch config files.
+    -->
+   <extension point="org.eclipse.core.contenttype.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            file-extensions="app"
+            id="application"
+            name="Application"
+            priority="high">
+         <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+            <parameter name="element" value="application"/>
+         </describer>
+      </content-type>
+   </extension>
+
+   <!-- Ideally, I would like to be able to use any file extension,
+        including empty, so that a launch config file called "Emacs"
+        could start emacs.
+        But the editor and its icon are only associated by file extension,
+        so at least the org.eclipse.ui.editors extension must list
+        file extensions.
+    -->
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            default="true"
+            extensions="app"
+            icon="icons/run.gif"
+            id="org.csstudio.navigator.applaunch.launch"
+            launcher="org.csstudio.navigator.applaunch.Launcher"
+            name="%LaunchApplication">
+         <contentTypeBinding contentTypeId="org.csstudio.navigator.applaunch.application"/>
+      </editor>
+
+      <editor
+            extensions="app"
+            icon="icons/edit.gif"
+            id="org.csstudio.navigator.applaunch.edit"
+            launcher="org.csstudio.navigator.applaunch.Editor"
+            name="%EditLaunchConfig">
+         <contentTypeBinding contentTypeId="org.csstudio.navigator.applaunch.application"/>
+      </editor>
+   </extension>
+   
+   <!-- Decorate files with custom icons.
+        When a launcher config file is initially empty,
+        it lacks the <application> tag to be identified via type id.
+        When lated edited, a navigator refresh is required for the
+        icon to update.
+     -->
+   <extension point="org.eclipse.ui.decorators">
+      <decorator id="org.csstudio.navigator.applaunch.IconDecorator"
+            adaptable="true"
+            class="org.csstudio.navigator.applaunch.IconDecorator"
+            label="Application Icon"
+            lightweight="false"
+            state="true">
+         <enablement>
+            <and>
+               <objectClass
+                    name="org.eclipse.core.resources.IFile">
+               </objectClass>
+               <objectState
+                     name="contentTypeId"
+                     value="org.csstudio.navigator.applaunch.application">
+               </objectState>
+            </and>
+         </enablement>
+      </decorator>
+   </extension>
+   
+   <extension point="org.eclipse.help.toc">
+     <toc file="toc.xml" primary="true"/>
+     <toc file="tocChangelog.xml"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.csstudio.navigator.applaunch"
+            name="%Launcher">
+      </category>
+      <wizard
+            category="org.csstudio.navigator.applaunch"
+            class="org.csstudio.navigator.applaunch.NewLaunchConfigWizard"
+            icon="icons/run.gif"
+            id="org.csstudio.navigator.applaunch.configwizard"
+            name="%ApplicationLaunchConfig">
+      </wizard>
+   </extension>
+   
+   <!-- Alternatively, could have added a command for
+        editing the config from the context menu.
+        
+   <extension point="org.eclipse.ui.menus">
+      <menuContribution
+            allPopups="false"
+            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <command
+               commandId="org.csstudio.navigator.applaunch.command.edit"
+               icon="icons/run.gif"
+               label="%EditLaunchConfig"
+               style="push">
+            <visibleWhen>
+              <with variable="activeMenuSelection">
+                <iterate>
+                  <adapt type="org.eclipse.core.resources.IFile">
+                    <test property="org.eclipse.core.resources.contentTypeId" 
+                           value="org.csstudio.navigator.applaunch.application"/>
+                  </adapt>
+                </iterate>
+               <and>
+                  <count value="1"/>
+               </and>
+              </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+   </extension>
+    -->
+   
+</plugin>

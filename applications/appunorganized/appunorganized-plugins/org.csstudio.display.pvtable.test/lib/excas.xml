@@ -1,0 +1,7 @@
+<pvtable version="1.0">
+    <pvlist>
+        <pv> <name>fred</name> <saved_value>0.7738302946090698</saved_value> <readback>freddy</readback> <readback_value>3.8542075157165527</readback_value> </pv>
+        <pv> <name>jane</name> <saved_value>5.478230953216553</saved_value> <readback_value></readback_value> </pv>
+        <pv> <name>janet</name> <saved_value>1.9157788753509521</saved_value> <readback_value></readback_value> </pv>
+    </pvlist>
+</pvtable>

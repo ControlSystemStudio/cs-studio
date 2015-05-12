@@ -1,0 +1,62 @@
+<paceconfig>
+<name>BLM Limits</name>
+<title>BLM HV and Pulse Limits</title>
+<columns>
+   <column>
+     <name>HVBias</name>
+     <access >ro</access>
+     <pv>${S}_Diag:BLM${N}:HVBias</pv>
+   </column>
+   <column>
+     <name>HVBias_Set</name>
+     <access >rw</access>
+     <pv>${S}_Diag:BLM${N}:HVBias_Set</pv>
+   </column>
+   <column>
+     <name>MPS_Trip_Rad</name>
+     <access >ro</access>
+     <pv>${S}_Diag:BLM${N}:MPS_Trip_Rad</pv>
+   </column>
+   <column>
+     <name>MPS_Trip_limit_Rads</name>
+     <access >rw</access>
+     <pv>${S}_Diag:BLM${N}:MPS_Trip_limit_Rads</pv>
+   </column>
+     <column>
+     <name>Slow60PulsesTotalLoss</name>
+     <access >ro</access>
+     <pv>${S}_Diag:BLM${N}:Slow60PulsesTotalLoss</pv>
+   </column>
+    <column>
+     <name>Fast60PulsesTotalLoss</name>
+     <access >ro</access>
+     <pv>${S}_Diag:BLM${N}:Fast60PulsesTotalLoss</pv>
+   </column>
+   <column>
+     <name>Slow1PulseBeamOnTotalLoss</name>
+     <access >ro</access>
+     <pv>${S}_Diag:BLM${N}:Slow1PulseBeamOnTotalLoss</pv>
+   </column>
+     <column>
+     <name>Fast1PulsesTotalLoss</name>
+     <access >ro</access>
+     <pv>${S}_Diag:BLM${N}:Fast1PulseBeamOnTotalLoss</pv>
+   </column>
+</columns>
+<instances>
+     <instance>
+       <name>CCL 1</name>
+       <macros>S=CCL,N=00</macros>
+     </instance>
+     <instance>
+       <name>HEBT</name>
+       <macros>S=HEBT,N=02</macros>
+     </instance>
+     <instance>
+       <name>Ring</name>
+       <macros>S=Ring,N=_A03</macros>
+     </instance>
+   <!--  Many more...: DTL 1..6, CCL 1..4. -->
+</instances>
+
+</paceconfig>

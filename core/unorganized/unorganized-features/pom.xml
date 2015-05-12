@@ -17,6 +17,7 @@
 		<module>org.csstudio.pvmanager.feature</module>
 		<module>org.csstudio.pvmanager.jdbc.feature</module>
 		<module>org.csstudio.pvmanager.pva.feature</module>
+		<module>org.csstudio.dal.feature</module>
 	</modules>
 	<build>
 		<plugins>

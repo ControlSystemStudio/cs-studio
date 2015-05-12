@@ -1,0 +1,45 @@
+<!-- kasemirk@ornl.gov -->
+<rdbtable>
+    <!-- Title that will appear in editor window -->
+    <title>Archive Sample Retentions</title>
+    
+    <!-- RDB connection info.
+         If user/password are missing, application will prompt for them.
+         Otherwise they can be put here.
+      -->
+    <url>jdbc:oracle:thin:@172.31.75.138:1521/prod</url>
+    <user>sns_reports</user>
+    
+    <!-- Table column info.
+         The first column must be a "key" that's used to
+         update or delete table rows.
+         When creating a new table row, users can enter
+         a new "key" value.
+         On existing rows, the "key" column values cannot be changed.
+         
+         An optional 'width' attribute in percent is used to auto-size
+         the table column. The default is "100%", meaning each column
+         gets 100% of its share when the table widths is equally distributed
+         amongst columns.
+      -->
+    <columns>
+      <column width="10%">ID</column>
+      <column width="100%">Description</column>
+    </columns>
+    
+    <sql>
+      <!-- Read initial table content: Must return one string per column -->
+      <select>SELECT retent_id, descr FROM CHAN_ARCH.retent ORDER BY retent_id</select>
+
+      <!-- Add new rows: Will receive one string per column -->
+      <insert>INSERT INTO CHAN_ARCH.retent(retent_id, descr) VALUES (?, ?)</insert>
+
+      <!-- Update changed rows: Will receive all non-key column values
+           followed by the "key" column value
+       -->
+      <update>UPDATE CHAN_ARCH.retent SET descr=? WHERE retent_id=?</update>
+
+      <!-- Delete rows: Will receive "key" column value -->
+      <delete>DELETE FROM CHAN_ARCH.retent WHERE retent_id=?</delete>
+    </sql> 
+</rdbtable>

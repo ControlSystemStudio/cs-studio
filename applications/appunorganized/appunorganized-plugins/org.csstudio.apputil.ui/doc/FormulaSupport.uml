@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_isnYkQBNEd-9YJt11UFxiA" name="FormulaSupport">
+  <elementImport xmi:id="_iviJsABNEd-9YJt11UFxiA">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+  </elementImport>
+  <elementImport xmi:id="_ivr6sABNEd-9YJt11UFxiA">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+  </elementImport>
+  <elementImport xmi:id="_ivr6sQBNEd-9YJt11UFxiA">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#UnlimitedNatural"/>
+  </elementImport>
+  <elementImport xmi:id="_ivr6sgBNEd-9YJt11UFxiA">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+  </elementImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_nn_tcABNEd-9YJt11UFxiA" name="Formula">
+    <ownedOperation xmi:id="_gFP4QABOEd-9YJt11UFxiA" name="double eval">
+      <ownedParameter xmi:id="_g7qi4ABOEd-9YJt11UFxiA" direction="return"/>
+    </ownedOperation>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_suFdgABNEd-9YJt11UFxiA" name="VariableNode">
+    <generalization xmi:id="_-gxmkABOEd-9YJt11UFxiA" general="_5iMCIABNEd-9YJt11UFxiA"/>
+    <ownedAttribute xmi:id="_svgkYABOEd-9YJt11UFxiA" name="String name" aggregation="composite"/>
+    <ownedAttribute xmi:id="_tnWyYABOEd-9YJt11UFxiA" name="double value" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_yWaX8ABNEd-9YJt11UFxiA" name="variables" memberEnd="_yWa_AABNEd-9YJt11UFxiA _yWbmEgBNEd-9YJt11UFxiA">
+    <ownedEnd xmi:id="_yWa_AABNEd-9YJt11UFxiA" name="src" type="_nn_tcABNEd-9YJt11UFxiA" association="_yWaX8ABNEd-9YJt11UFxiA">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_yWbmEQBNEd-9YJt11UFxiA" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_yWbmEABNEd-9YJt11UFxiA" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_yWbmEgBNEd-9YJt11UFxiA" name="dst" type="_suFdgABNEd-9YJt11UFxiA" association="_yWaX8ABNEd-9YJt11UFxiA">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_yWbmFABNEd-9YJt11UFxiA" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_yWbmEwBNEd-9YJt11UFxiA" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Interface" xmi:id="_5iMCIABNEd-9YJt11UFxiA" name="Node">
+    <ownedOperation xmi:id="_AGe1kABOEd-9YJt11UFxiA" name="double eval">
+      <ownedParameter xmi:id="_BSy3sABOEd-9YJt11UFxiA" direction="return"/>
+    </ownedOperation>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_7bJH0ABNEd-9YJt11UFxiA" name="tree" memberEnd="_7bJH0QBNEd-9YJt11UFxiA _7bJu4gBNEd-9YJt11UFxiA">
+    <ownedEnd xmi:id="_7bJH0QBNEd-9YJt11UFxiA" name="src" type="_nn_tcABNEd-9YJt11UFxiA" association="_7bJH0ABNEd-9YJt11UFxiA">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_7bJu4QBNEd-9YJt11UFxiA" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_7bJu4ABNEd-9YJt11UFxiA" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_7bJu4gBNEd-9YJt11UFxiA" name="dst" type="_5iMCIABNEd-9YJt11UFxiA" association="_7bJH0ABNEd-9YJt11UFxiA">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_7bJu5ABNEd-9YJt11UFxiA" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_7bJu4wBNEd-9YJt11UFxiA" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_FuSyoABOEd-9YJt11UFxiA" name="ConstantNode">
+    <generalization xmi:id="_FH5rkABPEd-9YJt11UFxiA" general="_5iMCIABNEd-9YJt11UFxiA"/>
+    <ownedAttribute xmi:id="_NtAVoABOEd-9YJt11UFxiA" name="double value" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_YYBt4ABOEd-9YJt11UFxiA" name="AddNode">
+    <generalization xmi:id="_F_EkIABPEd-9YJt11UFxiA" general="_5iMCIABNEd-9YJt11UFxiA"/>
+    <ownedAttribute xmi:id="_ZzjQsABOEd-9YJt11UFxiA" name="Node left" aggregation="composite"/>
+    <ownedAttribute xmi:id="_berVwABOEd-9YJt11UFxiA" name="Node right" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_PycisABPEd-9YJt11UFxiA" name="FormulaDialog" clientDependency="_9gRWYABPEd-9YJt11UFxiA">
+    <ownedAttribute xmi:id="_5yeO8ABPEd-9YJt11UFxiA" name="formula" aggregation="composite"/>
+    <ownedOperation xmi:id="_3Lio8ABPEd-9YJt11UFxiA" name="boolean open">
+      <ownedParameter xmi:id="_D2v60ABREd-9YJt11UFxiA" direction="return"/>
+    </ownedOperation>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_X8d90ABPEd-9YJt11UFxiA" name="InputItem">
+    <ownedAttribute xmi:id="_yEsq8ABPEd-9YJt11UFxiA" name="String input_name" aggregation="composite"/>
+    <ownedAttribute xmi:id="_zJ0f8ABPEd-9YJt11UFxiA" name="String variable_name" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_0jXs0ABPEd-9YJt11UFxiA" name="inputs" memberEnd="_0jXs0QBPEd-9YJt11UFxiA _0jYT4gBPEd-9YJt11UFxiA">
+    <ownedEnd xmi:id="_0jXs0QBPEd-9YJt11UFxiA" name="src" type="_PycisABPEd-9YJt11UFxiA" association="_0jXs0ABPEd-9YJt11UFxiA">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_0jYT4QBPEd-9YJt11UFxiA" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_0jYT4ABPEd-9YJt11UFxiA" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_0jYT4gBPEd-9YJt11UFxiA" name="dst" type="_X8d90ABPEd-9YJt11UFxiA" association="_0jXs0ABPEd-9YJt11UFxiA">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_0jYT5ABPEd-9YJt11UFxiA" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_0jYT4wBPEd-9YJt11UFxiA" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_9gRWYABPEd-9YJt11UFxiA" name="creates temporary Formulas to check syntax" supplier="_nn_tcABNEd-9YJt11UFxiA" client="_PycisABPEd-9YJt11UFxiA"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_o3YKUABQEd-9YJt11UFxiA" name="OtherNodes...">
+    <generalization xmi:id="_o3YKUQBQEd-9YJt11UFxiA" general="_5iMCIABNEd-9YJt11UFxiA"/>
+  </packagedElement>
+</uml:Package>

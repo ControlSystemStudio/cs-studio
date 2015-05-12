@@ -1,0 +1,42 @@
+<!-- Example configuration file for the CSS RDB Table Editor -->
+<rdbtable>
+    <!-- Title that will appear in editor window -->
+    <title>Example Configuration</title>
+    
+    <!-- RDB connection info.
+         If user/password are missing, application will prompt for them.
+         Otherwise they can be put here.
+      -->
+    <url>jdbc:mysql://ics-web.sns.ornl.gov/ALARM</url>
+    <user>alarm</user>
+    
+    <!-- Table column info.
+         The first column must be a "key" that's used to
+         update or delete table rows.
+         When creating a new table row, users can enter
+         a new "key" value.
+         On existing rows, the "key" column values cannot be changed.
+      -->
+    <columns>
+      <column>ID</column>
+      <column>Title</column>
+      <column>Order</column>
+      <column>Display</column>
+    </columns>
+    
+    <sql>
+      <!-- Read initial table content: Must return one string per column -->
+      <select>SELECT COMPONENT_ID, TITLE, DISPLAY_ORDER, DETAIL FROM DISPLAY</select>
+
+      <!-- Add new rows: Will receive one string per column -->
+      <insert>INSERT INTO DISPLAY(COMPONENT_ID, TITLE, DISPLAY_ORDER, DETAIL) VALUES (?, ?, ?, ?)</insert>
+
+      <!-- Update changed rows: Will receive all non-key column values
+           followed by the "key" column value
+       -->
+      <update>UPDATE DISPLAY SET TITLE=?, DISPLAY_ORDER=?, DETAIL=? WHERE COMPONENT_ID=?</update>
+
+      <!-- Delete rows: Will receive "key" column value -->
+      <delete>DELETE FROM DISPLAY WHERE COMPONENT_ID=?</delete>
+    </sql> 
+</rdbtable>

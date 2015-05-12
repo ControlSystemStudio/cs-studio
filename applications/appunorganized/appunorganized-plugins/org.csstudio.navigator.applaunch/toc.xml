@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<toc link_to="../org.csstudio.ui.help/tocCore.xml#core" label="Application Launcher">
+  <topic label="Application Launcher" href="html/index.html">
+      <!-- The links in this section can change when the help is
+           re-generated from the docbook sources!
+           Compare with the generated toc.xml,
+           then adjust the href's paths
+        -->
+	  <topic label="Basic Usage" href="html/index.html#id452571"/>
+	  <topic label="Creating a new Application Launcher Configuration File" href="html/ch01s02.html"/>
+	  <topic label="Examples for commands to launch" href="html/ch01s03.html"/>
+	  <topic label="Editing an Application Launcher Configuration File" href="html/ch01s04.html"/>
+	  <topic label="Application Launcher Configuration File Details" href="html/ch01s05.html"/>  
+  </topic>
+</toc>
+
+
+
+
+
