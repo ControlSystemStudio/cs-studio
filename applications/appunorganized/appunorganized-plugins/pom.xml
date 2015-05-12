@@ -14,9 +14,9 @@
   	<module>org.csstudio.apputil.ui</module>
   	<module>org.csstudio.apputil.ui.test</module>
   	<module>org.csstudio.csdata.clipboard</module>
-  	<module>org.csstudio.dct</module>
+	<!--<module>org.csstudio.dct</module>
   	<module>org.csstudio.dct.intro</module>
-  	<module>org.csstudio.dct.ui</module>
+	<module>org.csstudio.dct.ui</module>-->
   	<module>org.csstudio.debugging.jmsmonitor</module>
   	<module>org.csstudio.debugging.rdbshell</module>
   	<module>org.csstudio.desy.logging.ui</module>
@@ -41,11 +41,11 @@
   	<module>org.csstudio.rap.rtplot</module>
   	<module>org.csstudio.remote</module>
   	<module>org.csstudio.remote.test</module>
-  	<module>org.csstudio.sds</module>
+	<!--<module>org.csstudio.sds</module>
   	<module>org.csstudio.sds.components</module>
   	<module>org.csstudio.sds.components.epics</module>
   	<module>org.csstudio.sds.components.ui</module>
-	<!--<module>org.csstudio.sds.docu</module>-->
+	<module>org.csstudio.sds.docu</module>
   	<module>org.csstudio.sds.importer</module>
   	<module>org.csstudio.sds.importer.ui</module>
   	<module>org.csstudio.sds.intro</module>
@@ -55,7 +55,7 @@
   	<module>org.csstudio.sds.service.pvvalidation.mkk</module>
   	<module>org.csstudio.sds.settings.desy</module>
   	<module>org.csstudio.sds.simpledal.validation.mock</module>
-  	<module>org.csstudio.sds.ui</module>
+	<module>org.csstudio.sds.ui</module>-->
   	<module>org.csstudio.service.channelfinder</module>
   	<module>org.csstudio.service.jdbcsample</module>
   	<module>org.csstudio.service.math</module>
@@ -81,14 +81,14 @@
   	<module>org.csstudio.ui.menu.pvscript</module>
   	<module>org.csstudio.ui.menu.web</module>
   	<module>org.csstudio.unitconversion.ui</module>
-  	<module>org.csstudio.utility.adlConverter</module>
-  	<module>org.csstudio.utility.adlConverter.test</module>
+	<!--<module>org.csstudio.utility.adlConverter</module>
+	<module>org.csstudio.utility.adlConverter.test</module>-->
   	<module>org.csstudio.utility.ldap.service.impl.test</module>
   	<module>org.csstudio.utility.ldap.service.test</module>
   	<module>org.csstudio.utility.pv.ui</module>
-  	<module>org.csstudio.utility.quickstart</module>
+<!--  	<module>org.csstudio.utility.quickstart</module> -->
 <!--   	<module>org.csstudio.utility.speech.mbrola</module> -->
-  	<module>org.csstudio.utility.tine</module>
-  	<module>org.csstudio.utility.tine.ui</module>
+<!--  	<module>org.csstudio.utility.tine</module> -->
+<!--  	<module>org.csstudio.utility.tine.ui</module> -->
   </modules>
 </project>

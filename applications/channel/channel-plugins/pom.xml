@@ -39,5 +39,8 @@
 		<module>
   		org.csstudio.utility.channelfinder.ui
   	</module>
+		<module>
+  		org.csstudio.pvmanager.formula.channelfinder
+  	</module>
 	</modules>
 </project>
