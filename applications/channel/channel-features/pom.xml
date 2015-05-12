@@ -11,10 +11,10 @@
   <packaging>pom</packaging>
   <modules>
   	<module>
-  		org.csstudio.channel.feature
+  		org.csstudio.applications.channel.feature
   	</module>
   	<module>
-  		org.csstudio.channelfinder.feature
+  		org.csstudio.applications.channelfinder.feature
   	</module>
   </modules>
 </project>

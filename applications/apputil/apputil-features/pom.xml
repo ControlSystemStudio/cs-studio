@@ -8,6 +8,6 @@
   <artifactId>apputil-features</artifactId>
   <packaging>pom</packaging>
   <modules>
-  	<module>org.csstudio.apputil.feature</module>
+  	<module>org.csstudio.applications.utility.feature</module>
   </modules>
 </project>

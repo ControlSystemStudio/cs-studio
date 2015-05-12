@@ -239,7 +239,6 @@
 
 	<!-- CHILD MODULES -->
 	<modules>
-		<module>repository</module>
 		<module>utility</module>
 		<module>diirt</module>
 		<module>base</module>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.csstudio.shift.feature_1.0.0.qualifier.jar" id="org.csstudio.shift.feature" version="1.0.0.qualifier">
+   <feature id="org.csstudio.applications.shift.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
    <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>
