@@ -9,10 +9,8 @@
 	<artifactId>appunorganized-features</artifactId>
 	<packaging>pom</packaging>
 	<modules>
-		<module>org.csstudio.boy.feature</module>
 		<module>org.csstudio.email.feature</module>
 		<module>org.csstudio.pvmanager.ca.feature</module>
-		<!--<module>org.csstudio.sds.feature</module>-->
 		<module>org.csstudio.utilities.feature</module>
 		<module>org.eclipse.nebula.widgets.grid.feature</module>
 	</modules>

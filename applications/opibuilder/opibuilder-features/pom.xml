@@ -9,7 +9,7 @@
 	<artifactId>opibuilder-features</artifactId>
 	<packaging>pom</packaging>
 	<modules>
-		<module>org.csstudio.opibuilder.feature</module>
-		<module>org.csstudio.opibuilder.rap.feature</module>
+		<module>org.csstudio.applications.opibuilder.feature</module>
+		<module>org.csstudio.applications.opibuilder.rap.feature</module>
 	</modules>
 </project>
