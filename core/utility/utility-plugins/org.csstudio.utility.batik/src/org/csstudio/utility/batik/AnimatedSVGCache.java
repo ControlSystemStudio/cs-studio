@@ -122,8 +122,7 @@ public class AnimatedSVGCache {
 				Activator.getLogger().log(Level.FINE, "SVG cache FLUSHED");
 			}
 		};
-//		new Thread(flushTask).start();
-		flushTask.run();
+		new Thread(flushTask).start();
 	}
 
 	public Image addImage(BufferedImage awtImage) {

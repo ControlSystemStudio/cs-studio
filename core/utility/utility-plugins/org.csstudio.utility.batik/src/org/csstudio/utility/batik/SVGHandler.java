@@ -388,6 +388,7 @@ public class SVGHandler {
 			if (useCache && cache.isFilled() && !cache.isRunning()) {
 				cache.startProcessing();
 			} else if (svgAnimationEngine.isPaused()) {
+				updateManager.manageUpdates(renderer);
 				svgAnimationEngine.unpause();
 			}
 			suspended = false;
@@ -401,6 +402,7 @@ public class SVGHandler {
 	public void suspendProcessing() {
 		if (updateManager != null && started) {
 			svgAnimationEngine.pause();
+			updateManager.suspend();
 			if (useCache) {
 				cache.stopProcessing();
 			}
@@ -559,7 +561,7 @@ public class SVGHandler {
 				cache.flush();
 			}
 			doRender();
-			resetDocumentTime();
+			// resetDocumentTime();
 			if (isRunning) {
 				resumeProcessing();
 			}
@@ -637,7 +639,6 @@ public class SVGHandler {
 
 		if (updateManager != null) {
 			updateManager.setGVTRoot(gvtRoot);
-			updateManager.manageUpdates(renderer);
 		}
 		needRender = false;
 	}
@@ -749,8 +750,7 @@ public class SVGHandler {
 					Activator.getLogger().log(Level.FINE, "SVG image buffer FLUSHED");
 				}
 			};
-//			new Thread(flushTask).start();
-			flushTask.run();
+			new Thread(flushTask).start();
 		}
 		imageBuffer.add(image);
 	}
@@ -759,6 +759,9 @@ public class SVGHandler {
 		if (handlerListener != null && newImage != null && !suspended) {
 			swtDisplay.asyncExec(new Runnable() {
 				public void run() {
+					if (suspended) {
+						return;
+					}
 					handlerListener.newImage(newImage);
 					if (!useCache) {
 						addToBuffer(newImage);
