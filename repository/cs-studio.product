@@ -76,11 +76,10 @@
       <feature id="org.csstudio.pvmanager.extra.feature"/>
       <feature id="org.csstudio.pvmanager.pva.feature"/>
       <feature id="org.csstudio.utilities.feature"/>
-      <feature id="org.csstudio.boy.feature"/>
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
-      <feature id="org.csstudio.opibuilder.feature"/>
       <feature id="org.csstudio.product.configuration.feature"/>
       <feature id="org.eclipse.fx.target.feature"/>
+      <feature id="org.csstudio.applications.opibuilder.feature"/>
    </features>
 
    <configurations>
