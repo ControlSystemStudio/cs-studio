@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: BOY Symbol Widgets
 Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-SymbolicName: org.csstudio.opibuilder.widgets.symbol;singleton:=true
-Bundle-Version: 4.4.2.qualifier
+Bundle-Version: 4.5.0.qualifier
 Bundle-Activator: org.csstudio.opibuilder.widgets.symbol.Activator
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.rap.ui;resolution:=optional,
