@@ -13,6 +13,7 @@
     <module>org.csstudio.utility.caSnooperUi</module>
     <module>org.csstudio.utility.clock</module>
     <module>org.csstudio.csdata.clipboard</module>
+    <module>org.csstudio.navigator.applaunch</module>
     <module>org.csstudio.ui.menu.web</module>
     <module>org.csstudio.utility.eliza</module>
     <module>org.csstudio.utility.file</module>

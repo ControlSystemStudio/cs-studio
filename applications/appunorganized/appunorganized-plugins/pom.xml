@@ -36,7 +36,6 @@
     <module>org.csstudio.graphene</module>
     <module>org.csstudio.graphene.opiwidgets</module>
     <module>org.csstudio.logging.jms2rdb</module>
-    <module>org.csstudio.navigator.applaunch</module>
     <!--<module>org.csstudio.pretune</module>-->
     <module>org.csstudio.rap.rtplot</module>
     <module>org.csstudio.remote</module>
