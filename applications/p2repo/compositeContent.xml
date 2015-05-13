@@ -16,7 +16,7 @@
     <child location="../databrowser/databrowser-repository/target/repository"/>
     <child location="../diag/diag-repository/target/repository"/>
     <child location="../logbook/logbook-repository/target/repository"/>
-    <child location="../opibuidler/opibuilder-repository/target/repository"/>
+    <child location="../opibuilder/opibuilder-repository/target/repository"/>
     <child location="../scan/scan-repository/target/repository"/>
     <child location="../shift/shift-repository/target/repository"/>
   </children>
