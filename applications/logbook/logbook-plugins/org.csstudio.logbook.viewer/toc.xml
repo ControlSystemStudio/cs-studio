@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
-
 <toc link_to="../org.csstudio.ui.help/tocApps.xml#utility" label="Search Logbook">
-	<topic label="Search Logbook"  href="html/logbook_viewer.html">
-	</topic>
+  <topic label="Search Logbook" href="html/logbook_viewer.html">
+  </topic>
 </toc>
