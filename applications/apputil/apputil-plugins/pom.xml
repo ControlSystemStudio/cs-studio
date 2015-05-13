@@ -35,5 +35,7 @@
     <module>org.csstudio.utility.sysmon</module>
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
+    <module>org.csstudio.servicelocator</module>
+    <module>org.csstudio.servicelocator.test</module>
   </modules>
 </project>
