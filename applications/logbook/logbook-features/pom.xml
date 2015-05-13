@@ -6,7 +6,6 @@
     <artifactId>logbook</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.csstudio</groupId>
   <artifactId>logbook-features</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
@@ -14,5 +13,6 @@
     <module>org.csstudio.logbook.shift.feature</module>
     <module>org.csstudio.logbook.viewer.feature</module>
     <module>org.csstudio.olog.feature</module>
+    <module>org.csstudio.applications.logbook.feature</module>
   </modules>
 </project>
