@@ -9,6 +9,6 @@
   </parent>
   <version>4.0.101-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
-  
+
   <artifactId>org.csstudio.alarm.beast.server.test</artifactId>
 </project>

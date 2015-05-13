@@ -26,5 +26,5 @@
         <font name="Static" description="Default Font for static Text" fontName="Times New Roman" fontSize="14" bold="false" italic="false"/>
         <font name="Dynamic" description="Default Font for dynamic Text" fontName="Arial" fontSize="20" bold="true" italic="false"/>
     </style>
-    
+
 </settings>

@@ -307,5 +307,5 @@
             widgetTypeId="org.csstudio.sds.components.Switch">
       </behavior>
    </extension>
-   
+
 </plugin>

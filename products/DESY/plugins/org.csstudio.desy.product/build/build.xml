@@ -1,9 +1,9 @@
 <project name="css.hudson.build" default="build">
     <property file="desy.build.properties" />
     <property file="desy.eclipse.properties" />
-    
+
     <property file="build.properties" /> <!-- used by the pde build internally -->
-    
+
     <target name="build" depends="synchronizeBuildSources, buildPackageWin32, buildPackageSolaris"/>
 
     <target name="buildPackageWin32" depends="cleanup, pdeBuildWin, updateConfigWin, updateJenkinsArtifactsWin32"/>
@@ -26,62 +26,62 @@
     <echo message="CS Studio location:  ${csStudioLocation}"/>
     <echo message="DESY config location:  ${desyConfigLocation}"/>
     <echo message="Launcher: ${equinoxLauncher}" />
-    
-    
+
+
     <!--
-     Synchronizes the plugin contents retrieved by the upstream jenkins jobs with the current build 
+     Synchronizes the plugin contents retrieved by the upstream jenkins jobs with the current build
      directory (avoiding unnecessary copying and deleting as much as possible).
     -->
     <target name="synchronizeBuildSources">
         <delete dir="${buildDirectory}"/>
         <mkdir dir="${buildDirectory}"/>
-        <!--  
-         overwrites all files in ${workspaceLocation}/build with newer files from filesets, 
-         deletes files from ${workspaceLocation}/build that are not present in filesets. 
+        <!--
+         overwrites all files in ${workspaceLocation}/build with newer files from filesets,
+         deletes files from ${workspaceLocation}/build that are not present in filesets.
         -->
         <sync todir="${desyBuildDirectory}">
           <fileset dir="${csStudioLocation}/core"/>
           <fileset dir="${csStudioLocation}/applications"/>
           <fileset dir="${csStudioLocation}/products/DESY/DESY-CSS">
             <exclude name="plugins/${projectDir}/build/build.xml"/>
-          </fileset>          
+          </fileset>
           <fileset dir="${targetPlatformLocation}">
             <include name="plugins/**/*"/>
           </fileset>
         </sync>
-        
-        <!-- 
-         copy the pde build files into the build directory 
+
+        <!--
+         copy the pde build files into the build directory
         -->
         <copy todir="${desyBuildDirectory}">
           <fileset dir="${csStudioLocation}${projectPath}/${projectDir}/build" casesensitive="yes">
             <include name="build.properties"/>
             <include name="productBuild.xml"/>
-          </fileset>          
+          </fileset>
           <fileset dir="${desyConfigLocation}/DESY/css/sensitivedata/${projectDir}" casesensitive="yes">
             <include name="plugin_customization.ini"/>
             <include name="plugin_customization_solaris.ini"/>
           </fileset>
         </copy>
     </target>
-    
-    
+
+
     <!--
         Headless Eclipse Build.
     -->
-    <target name="cleanup"> 
-        <delete dir="${buildDirectory}"/>   
-        <delete dir="${iniTmpDir}"/>    
+    <target name="cleanup">
+        <delete dir="${buildDirectory}"/>
+        <delete dir="${iniTmpDir}"/>
     </target>
 
     <!--
         Headless Eclipse Build for Windows
     -->
     <target name="pdeBuildWin">
-        <java classname="org.eclipse.equinox.launcher.Main" 
+        <java classname="org.eclipse.equinox.launcher.Main"
               dir="${desyBuildDirectory}"
-              fork="true" 
-              failonerror="true">           
+              fork="true"
+              failonerror="true">
             <arg value="-application" />
             <arg value="org.eclipse.ant.core.antRunner" />
             <arg value="-buildfile" />
@@ -92,16 +92,16 @@
                 <pathelement location="${equinoxLauncher}" />
             </classpath>
         </java>
-    </target>   
+    </target>
 
     <!--
         Headless Eclipse Build for Solaris
     -->
     <target name="pdebuildPackageSolaris">
-        <java classname="org.eclipse.equinox.launcher.Main" 
+        <java classname="org.eclipse.equinox.launcher.Main"
               dir="${desyBuildDirectory}"
-              fork="true" 
-              failonerror="true">           
+              fork="true"
+              failonerror="true">
             <arg value="-application" />
             <arg value="org.eclipse.ant.core.antRunner" />
             <arg value="-buildfile" />
@@ -119,9 +119,9 @@
     -->
     <target name="updateConfigWin">
         <mkdir dir="${iniTmpDir}/${archivePrefix}" />
-        <copy file="${desyBuildDirectory}/plugin_customization.ini" 
+        <copy file="${desyBuildDirectory}/plugin_customization.ini"
               tofile="${iniTmpDir}/${archivePrefix}/plugin_customization.ini"/>
-        <zip destfile="${buildDirectory}/${buildLabel}/${productName}-win32.win32.x86.zip" 
+        <zip destfile="${buildDirectory}/${buildLabel}/${productName}-win32.win32.x86.zip"
              basedir="${iniTmpDir}" update="true" />
     </target>
 
@@ -130,9 +130,9 @@
     -->
     <target name="updateConfigSolaris">
         <mkdir dir="${iniTmpDir}/${archivePrefix}" />
-        <copy file="${desyBuildDirectory}/plugin_customization_solaris.ini" 
+        <copy file="${desyBuildDirectory}/plugin_customization_solaris.ini"
               tofile="${iniTmpDir}/${archivePrefix}/plugin_customization.ini"/>
-        <zip destfile="${buildDirectory}/${buildLabel}/${buildId}-solaris.gtk.sparc.zip" 
+        <zip destfile="${buildDirectory}/${buildLabel}/${buildId}-solaris.gtk.sparc.zip"
              basedir="${iniTmpDir}" update="true" />
     </target>
 
@@ -140,7 +140,7 @@
         Copy win product to artifact folder from hudson
     -->
     <target name="updateJenkinsArtifactsWin32">
-        <copy file="${buildDirectory}/${buildLabel}/${productName}-win32.win32.x86.zip" 
+        <copy file="${buildDirectory}/${buildLabel}/${productName}-win32.win32.x86.zip"
               todir="${workspaceLocation}/artifacts"/>
     </target>
 
@@ -148,7 +148,7 @@
         Copy solaris product to artifact folder from hudson
     -->
     <target name="updateJenkinsArtifactsSolaris">
-        <copy file="${buildDirectory}/${buildLabel}/${buildId}-solaris.gtk.sparc.zip" 
+        <copy file="${buildDirectory}/${buildLabel}/${buildId}-solaris.gtk.sparc.zip"
               todir="${workspaceLocation}/artifacts"/>
     </target>
 </project>

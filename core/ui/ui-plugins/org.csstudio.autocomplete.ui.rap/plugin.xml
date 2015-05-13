@@ -7,5 +7,5 @@
          ui="org.csstudio.autocomplete.ui.rap.RAPUIHelper">
       </helpers>
    </extension>
-   
+
 </plugin>

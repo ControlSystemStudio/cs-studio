@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -8,9 +9,9 @@
   <artifactId>appunorganized</artifactId>
   <packaging>pom</packaging>
   <modules>
-  	<module>appunorganized-plugins</module>
-  	<module>appunorganized-features</module>
-   	<module>appunorganized-repository</module>
+    <module>appunorganized-plugins</module>
+    <module>appunorganized-features</module>
+    <module>appunorganized-repository</module>
   </modules>
   <version>0.0.1-SNAPSHOT</version>
 </project>

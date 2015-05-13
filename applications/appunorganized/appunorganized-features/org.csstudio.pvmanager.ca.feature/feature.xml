@@ -18,7 +18,7 @@
       EPICS license for CAJ.
    </license>
 
-  
+
    <plugin
          id="org.csstudio.utility.pvmanager.epics"
          download-size="0"

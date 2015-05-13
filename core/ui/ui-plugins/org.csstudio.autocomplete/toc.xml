@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
-
 <toc link_to="../org.csstudio.ui.help/tocCore.xml#core" label="Auto-Complete">
-	<topic label="Auto-Complete" href="html/index.html"></topic>
+  <topic label="Auto-Complete" href="html/index.html"/>
 </toc>

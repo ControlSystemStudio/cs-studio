@@ -2,84 +2,77 @@
 <!-- Ant file for building a scan system client
      library that Jython, Matlab or other plain java,
      i.e. non-Eclipse tools can use.
-     
+
      Depends on cs-studio/applications already having been built
      via the maven command line, so that ../../repository/target/repository/plugins
      contains external dependencies.
-     
+
      Have also seen problems with older ant and Java 8.
      What works:
-     
+
      export JAVA_HOME=/path/to/java8
      export ANT_HOME=/path/to/ant1.9.4
      export PATH=$ANT_HOME/bin:$JAVA_HOME/bin:$PATH
-     
+
      ant all
 
      Kay Kasemir
   -->
 <project name="scan.client" default="all">
-    <!-- Map all environment variables XYZ to ${env.XYZ} -->
-    <property environment="env"/>
-
-    <!-- Build directory -->
-    <property name="build_dir" value="build_dir" />
-
-    <property name="classes" value="${build_dir}/classes" />
-    <path id="build.classpath">
-        <fileset dir="../../repository/target/repository/plugins">
-          <include name="org.epics.util_*.jar"/>
-        </fileset>
-    </path>
-	
-    <!-- Remove all that might have been built previously -->
-    <target name="clean">
-        <delete dir="${build_dir}" />
-        <delete file="${ant.project.name}.jar" />
-    </target>
-
-    <!-- Create build directory structure -->
-    <target name="prepare">
-        <mkdir dir="${classes}" />
-    </target>
-
-    <!-- Compile Java sources -->
-    <target name="compile" depends="prepare">
-        <!-- org.csstudio.java -->
-        <javac srcdir="../../../core/platform/platform-plugins/org.csstudio.java/src" destdir="${classes}"
-               includeantruntime="true" deprecation="on" debug="on">
-            <classpath><path refid="build.classpath"/></classpath>
-        </javac>
-        <!-- org.csstudio.ndarray -->
-        <javac srcdir="../org.csstudio.ndarray/src" destdir="${classes}"
-               includeantruntime="true" deprecation="on" debug="on">
-            <classpath><path refid="build.classpath"/></classpath>
-        </javac>
-    	<!-- org.csstudio.scan, excluding Eclipse-only code -->
-        <javac srcdir="../org.csstudio.scan/src" destdir="${classes}"
-               excludes="**/Activator.java, **/ScanSystemPreferences.java, **/ScanCommandFactory.java"
-               includeantruntime="true" deprecation="on" debug="on">
-            <classpath><path refid="build.classpath"/></classpath>
-        </javac>
-        <!-- org.csstudio.scan.client -->
-        <javac srcdir="src" destdir="${classes}"
-               excludes="**/ScanInfoModel.java"
-               includeantruntime="true" deprecation="on" debug="on">
-            <classpath>
-            	<path refid="build.classpath"/>
-            </classpath>
-        </javac>
-    </target>
-
-    <!-- Create jar file with client code -->
-    <target name="zip" depends="compile">
-        <jar jarfile="${ant.project.name}.jar" basedir="${classes}">
-            <fileset dir="${classes}"/>
-        </jar>
-    </target>
-
-    <!-- Run the whole chain -->
-    <target name="all" depends="compile,zip">
-        <echo>=== Completed building ${ant.project.name}.jar ===</echo>
-    </target>
+  <!-- Map all environment variables XYZ to ${env.XYZ} -->
+  <property environment="env"/>
+  <!-- Build directory -->
+  <property name="build_dir" value="build_dir"/>
+  <property name="classes" value="${build_dir}/classes"/>
+  <path id="build.classpath">
+    <fileset dir="../../repository/target/repository/plugins">
+      <include name="org.epics.util_*.jar"/>
+    </fileset>
+  </path>
+  <!-- Remove all that might have been built previously -->
+  <target name="clean">
+    <delete dir="${build_dir}"/>
+    <delete file="${ant.project.name}.jar"/>
+  </target>
+  <!-- Create build directory structure -->
+  <target name="prepare">
+    <mkdir dir="${classes}"/>
+  </target>
+  <!-- Compile Java sources -->
+  <target name="compile" depends="prepare">
+    <!-- org.csstudio.java -->
+    <javac srcdir="../../../core/platform/platform-plugins/org.csstudio.java/src" destdir="${classes}" includeantruntime="true" deprecation="on" debug="on">
+      <classpath>
+        <path refid="build.classpath"/>
+      </classpath>
+    </javac>
+    <!-- org.csstudio.ndarray -->
+    <javac srcdir="../org.csstudio.ndarray/src" destdir="${classes}" includeantruntime="true" deprecation="on" debug="on">
+      <classpath>
+        <path refid="build.classpath"/>
+      </classpath>
+    </javac>
+    <!-- org.csstudio.scan, excluding Eclipse-only code -->
+    <javac srcdir="../org.csstudio.scan/src" destdir="${classes}" excludes="**/Activator.java, **/ScanSystemPreferences.java, **/ScanCommandFactory.java" includeantruntime="true" deprecation="on" debug="on">
+      <classpath>
+        <path refid="build.classpath"/>
+      </classpath>
+    </javac>
+    <!-- org.csstudio.scan.client -->
+    <javac srcdir="src" destdir="${classes}" excludes="**/ScanInfoModel.java" includeantruntime="true" deprecation="on" debug="on">
+      <classpath>
+        <path refid="build.classpath"/>
+      </classpath>
+    </javac>
+  </target>
+  <!-- Create jar file with client code -->
+  <target name="zip" depends="compile">
+    <jar jarfile="${ant.project.name}.jar" basedir="${classes}">
+      <fileset dir="${classes}"/>
+    </jar>
+  </target>
+  <!-- Run the whole chain -->
+  <target name="all" depends="compile,zip">
+    <echo>=== Completed building ${ant.project.name}.jar ===</echo>
+  </target>
 </project>

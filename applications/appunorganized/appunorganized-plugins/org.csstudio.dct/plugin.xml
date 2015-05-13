@@ -69,5 +69,5 @@
             class="org.csstudio.dct.PreferenceInitializer">
       </initializer>
    </extension>
-   
+
 </plugin>
