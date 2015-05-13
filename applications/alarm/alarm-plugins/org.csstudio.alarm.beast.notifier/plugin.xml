@@ -25,17 +25,17 @@
          </property>
       </product>
    </extension>
-   
+
    <extension-point id="org.csstudio.alarm.beast.notifier" name="Automated Actions" schema="schema/actions.exsd"/>
    <extension-point id="org.csstudio.alarm.beast.notifier.start" name="Application Listeners" schema="schema/listeners.exsd"/>
 
    <extension point="org.csstudio.alarm.beast.notifier">
-      <action scheme="mailto" 
+      <action scheme="mailto"
             action="org.csstudio.alarm.beast.notifier.actions.AutomatedEmailAction"/>
-      <action scheme="sms" 
+      <action scheme="sms"
             action="org.csstudio.alarm.beast.notifier.actions.AutomatedSmsAction"/>
-      <action scheme="cmd" 
+      <action scheme="cmd"
             action="org.csstudio.alarm.beast.notifier.actions.AutomatedCommandAction"/>
    </extension>
-   
+
 </plugin>

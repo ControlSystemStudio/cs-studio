@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project name="junit.ci.tests" default="test">
   <!--
-    Create a sinle common build property file 
+    Create a sinle common build property file
   <property file="${desy.build.properties}"/>
   -->
   <property file="${desy.test.properties}"/>
@@ -32,7 +32,7 @@
         Run the test with ETF (using library.xml targets)
     -->
   <target name="test" depends="createCleanTestInstanceDirectory">
-    <!-- 
+    <!--
             Run the test.
         -->
     <property name="eclipse-home" value="${testEnvironmentInstance}"/>

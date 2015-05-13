@@ -9,6 +9,6 @@
   </parent>
   <version>1.1.1-SNAPSHOT</version>
   <packaging>eclipse-test-plugin</packaging>
-  
+
   <artifactId>org.csstudio.security.test</artifactId>
 </project>

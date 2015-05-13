@@ -56,7 +56,7 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.alarm.beast.annunciator.view">
-            </parameter> 
+            </parameter>
          </command>
       </menuContribution>
    </extension>

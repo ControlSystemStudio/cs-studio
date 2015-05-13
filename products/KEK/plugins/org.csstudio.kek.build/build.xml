@@ -5,12 +5,12 @@
      shell scripts with Ant
 
      Needs Environment Variables:
-     
+
      TOP
      BUILDDIR
      WORKSPACE
      VERSION
-     
+
      Author: Kay Kasemir, Takashi Nakamoto (Cosylab)
   -->
 <project name="sns_css" default="all">
@@ -41,11 +41,11 @@
   <!-- Gather all the source files for building -->
   <target name="get_sources" depends="prepare">
     <!-- Plugins
-      
+
            Uses one list of plugins, but applies them to the various
            directories that hold the sources, copying them all into
            one flat 'todir'.
-           
+
              With 'overwrite' it seems much faster in case we really need
              to copy.
              If there's nothing to copy, it would have been faster without
@@ -102,7 +102,7 @@
       </fileset>
     </copy>
   </target>
-  <!-- Zip all the source files 
+  <!-- Zip all the source files
          Use build dir, but don't include the  local.list
     -->
   <target name="zip_sources" depends="check_vars">

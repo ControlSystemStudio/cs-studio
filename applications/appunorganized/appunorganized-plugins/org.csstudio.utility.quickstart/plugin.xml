@@ -323,7 +323,7 @@
             id="org.csstudio.utility.quickstart.startupService"
             isHighPriority="False">
       </startupService>
-   </extension>  
+   </extension>
 
 </plugin>
 

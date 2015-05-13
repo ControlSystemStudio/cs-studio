@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <!-- Scan configuration
-    
+
      Lists PV names and possible alias.
-     
+
      Alias can be used in scans instead of the beam line name
-     
+
      All PVs (resp. alias if defined) listed in here are available
      in the scan tree editor.
   -->
 <scan_config>
    <!-- Simulation information for a PV
-        
+
         Slew rate is in [units of the device] / second
-        
+
         The (simulated) neutrons change at about 7/sec
      -->
    <pv>
@@ -24,17 +24,17 @@
        <name>pcharge</name>
        <slew_rate>9.7222e+08</slew_rate>
    </pv>
-   
+
    <!-- Alias, if present, is preferred over pv name -->
    <pv>
        <name>motor_x</name>
        <alias>xpos</alias>
        <slew_rate>0.1</slew_rate>
    </pv>
-   
+
    <!-- In addition, a name_pattern is allowed
         for slew rate (simulation) configuration.
-        
+
         Name is regular expression
      -->
    <pv>

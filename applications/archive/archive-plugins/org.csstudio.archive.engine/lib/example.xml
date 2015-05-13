@@ -16,7 +16,7 @@
       <enable/>
     </channel>
   </group>
-  <!-- 
+  <!--
   <group>
     <name>Waveforms</name>
         <channel><name>SCL_Diag:BPM11:beamIA</name><period>30</period><monitor/></channel>

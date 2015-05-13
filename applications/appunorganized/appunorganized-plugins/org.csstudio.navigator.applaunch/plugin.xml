@@ -44,7 +44,7 @@
          <contentTypeBinding contentTypeId="org.csstudio.navigator.applaunch.application"/>
       </editor>
    </extension>
-   
+
    <!-- Decorate files with custom icons.
         When a launcher config file is initially empty,
         it lacks the <application> tag to be identified via type id.
@@ -71,7 +71,7 @@
          </enablement>
       </decorator>
    </extension>
-   
+
    <extension point="org.eclipse.help.toc">
      <toc file="toc.xml" primary="true"/>
      <toc file="tocChangelog.xml"/>
@@ -90,10 +90,10 @@
             name="%ApplicationLaunchConfig">
       </wizard>
    </extension>
-   
+
    <!-- Alternatively, could have added a command for
         editing the config from the context menu.
-        
+
    <extension point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
@@ -107,7 +107,7 @@
               <with variable="activeMenuSelection">
                 <iterate>
                   <adapt type="org.eclipse.core.resources.IFile">
-                    <test property="org.eclipse.core.resources.contentTypeId" 
+                    <test property="org.eclipse.core.resources.contentTypeId"
                            value="org.csstudio.navigator.applaunch.application"/>
                   </adapt>
                 </iterate>
@@ -120,5 +120,5 @@
       </menuContribution>
    </extension>
     -->
-   
+
 </plugin>

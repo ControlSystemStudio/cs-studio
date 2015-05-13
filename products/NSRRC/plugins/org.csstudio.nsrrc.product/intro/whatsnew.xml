@@ -4,7 +4,7 @@
     <group id="content-group" style-id="content-group">
       <link id="csssns" label="CSS for EPICS" style-id="content-link" url="http://org.eclipse.ui.intro/openBrowser?url=http://ics-web.sns.ornl.gov/css/news.html">
         <text>
-          Find out about updates on the SNS CSS web page 
+          Find out about updates on the SNS CSS web page
         </text>
       </link>
     </group>

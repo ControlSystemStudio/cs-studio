@@ -2,7 +2,7 @@
 <introContent>
     <extensionContent id="org.csstudio.trends.databrowser" name="Databrowser" style="db_intro.css" path="firststeps/@">
         <group id="content-group" style-id="content-group">
-        
+
             <!-- Links to Cheat Sheets require org.eclipse.platform,
                  which in turn includes a lot more stuff that I don't
                  want to require
@@ -17,7 +17,7 @@
             <link id="databrowser" label="Data Browser"
                   url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.trends.databrowser2/doc/databrowser.html"
                   style-id="content-link">
-                <text>Read the online manual to learn more, or try the menu 
+                <text>Read the online manual to learn more, or try the menu
                      "Help/Cheat Sheets..." to access step-by-step
                      instructions for selected tasks.
                      (Use the 'triangle' in the Cheat Sheets view panel

@@ -21,7 +21,7 @@
       <update label="CSS update site" url="http://cs-studio.sourceforge.net/nsls2/updates"/>
    </url>
 
-   
+
 
    <plugin
          id="org.csstudio.email"

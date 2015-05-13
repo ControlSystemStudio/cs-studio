@@ -157,7 +157,7 @@
             id="org.csstudio.opibuilder.wizards.newPyWizard"
             name="Python Script">
       </wizard>
-   </extension> 
+   </extension>
    <extension
          point="org.eclipse.ui.contexts">
       <context

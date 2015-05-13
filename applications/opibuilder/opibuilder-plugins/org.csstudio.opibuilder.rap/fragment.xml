@@ -65,7 +65,7 @@
             title="WebOPI Mobile Simple">
       </branding>
    </extension>
-   
+
    <extension
          point="org.eclipse.equinox.http.registry.resources">
       <resource
@@ -73,7 +73,7 @@
             base-name="html/loading.gif">
       </resource>
    </extension>
-   
+
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
@@ -81,7 +81,7 @@
             class="org.csstudio.webopi.RedirectServlet">
       </servlet>
    </extension>
-   
+
    <extension
          point="org.eclipse.equinox.http.registry.filters">
       <filter
@@ -90,5 +90,5 @@
             load-on-startup="true">
       </filter>
    </extension>
-   
+
 </fragment>

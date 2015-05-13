@@ -78,7 +78,7 @@
       </command>
      </extension>
       <extension
-           point="org.eclipse.ui.menus">    
+           point="org.eclipse.ui.menus">
        <menuContribution
             allPopups="false"
             locationURI="menu:utility">

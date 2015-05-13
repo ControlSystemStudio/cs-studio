@@ -5,7 +5,7 @@
     <!ELEMENT ecom (econ)*>
     <!ELEMENT econ (eren)*>
     <!ELEMENT eren (#PCDATA)>
-    
+
     <!ATTLIST ou name CDATA #REQUIRED>
     <!ATTLIST efan name CDATA #REQUIRED>
     <!ATTLIST ecom name CDATA #REQUIRED>

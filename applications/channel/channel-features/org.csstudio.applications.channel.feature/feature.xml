@@ -21,7 +21,7 @@
       <update label="CSS dev update site" url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
    </url>
 
-   
+
 
    <plugin
          id="org.csstudio.channel.opiwidgets"

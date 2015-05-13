@@ -17,7 +17,7 @@
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">
-         
+
       <!-- Perspective used be have same ID as Editor (..OPIRunner),
            but in Eclipse 4 that caused problems,
            so perspective now has this somewhat odd name
@@ -334,7 +334,7 @@
          </menu>
       </menuContribution>
    </extension>
-   
+
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory

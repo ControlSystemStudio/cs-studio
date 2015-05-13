@@ -32,7 +32,7 @@
             category="org.csstudio.platform.ui.css.applications"
             class="org.csstudio.ui.preferences.CSSApplicationsPreferencePage"
             id="org.csstudio.platform.ui.css.applications.diag"
-            name="%diagnosticsPreferencesName"/>            
+            name="%diagnosticsPreferencesName"/>
       <page
             category="org.csstudio.platform.ui.css.applications"
             class="org.csstudio.ui.preferences.CSSApplicationsPreferencePage"
@@ -52,17 +52,17 @@
             category="org.csstudio.platform.ui.css.applications"
             class="org.csstudio.ui.preferences.CSSApplicationsPreferencePage"
             id="org.csstudio.platform.ui.css.applications.utilities"
-            name="%utilitiesPreferencesName"/>                                                
+            name="%utilitiesPreferencesName"/>
       <page
             category="org.csstudio.platform.ui.css.applications"
             class="org.csstudio.ui.preferences.CSSApplicationsPreferencePage"
             id="org.csstudio.platform.ui.css.applications.test"
-            name="%testPreferencesName"/> 
+            name="%testPreferencesName"/>
       <page
             category="org.csstudio.platform.ui.css.applications"
             class="org.csstudio.ui.preferences.CSSApplicationsPreferencePage"
             id="org.csstudio.platform.ui.css.applications.others"
-            name="%othersPreferencesName"/>                         
+            name="%othersPreferencesName"/>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

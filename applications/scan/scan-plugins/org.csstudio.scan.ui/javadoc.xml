@@ -2,9 +2,9 @@
 <!-- Ant file for generating javadoc for scan system client API
 
      Execute as
-     
+
        ant -f javadoc.xml clean all
-       
+
      to re-create the doc/java files.
   -->
 <project name="scan.client.api" default="all">
