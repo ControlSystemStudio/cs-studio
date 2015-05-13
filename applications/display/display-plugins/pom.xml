@@ -3,15 +3,15 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>appunorganized</artifactId>
+    <artifactId>display</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>appunorganized-features</artifactId>
+  <groupId>org.csstudio</groupId>
+  <artifactId>display-plugins</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-    <module>org.csstudio.email.feature</module>
-    <module>org.csstudio.pvmanager.ca.feature</module>
-    <module>org.csstudio.utilities.feature</module>
-    <module>org.eclipse.nebula.widgets.grid.feature</module>
+    <module>org.csstudio.display.pvtable</module>
+    <module>org.csstudio.display.pvtable.test</module>
   </modules>
 </project>

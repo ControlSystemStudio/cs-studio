@@ -23,8 +23,6 @@
     <module>org.csstudio.diag.pvfields.test</module>
     <module>org.csstudio.display.pace</module>
     <module>org.csstudio.display.pace.test</module>
-    <module>org.csstudio.display.pvtable</module>
-    <module>org.csstudio.display.pvtable.test</module>
     <module>org.csstudio.display.rdbtable</module>
     <module>org.csstudio.domain.common</module>
     <module>org.csstudio.domain.common.test</module>

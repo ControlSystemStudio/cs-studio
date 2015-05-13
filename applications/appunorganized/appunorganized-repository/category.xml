@@ -3,9 +3,6 @@
    <feature id="org.csstudio.email.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
-   <feature id="org.csstudio.display.pvtable.feature">
-      <category name="org.csstudio.category.applications"/>
-   </feature>
    <feature id="org.csstudio.pvmanager.ca.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>

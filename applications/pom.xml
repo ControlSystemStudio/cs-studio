@@ -222,6 +222,7 @@
     <module>alarm</module>
     <module>archive</module>
     <module>channel</module>
+    <module>display</module>
     <module>logbook</module>
     <module>opibuilder</module>
     <module>scan</module>
