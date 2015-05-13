@@ -9,6 +9,10 @@
   <artifactId>apputil-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>
+    <module>org.csstudio.apputil</module>
+    <module>org.csstudio.apputil.test</module>
+    <module>org.csstudio.apputil.ui</module>
+    <module>org.csstudio.apputil.ui.test</module>
     <module>org.csstudio.remote</module>
     <module>org.csstudio.remote.test</module>
     <module>org.csstudio.utility.adlParser</module>

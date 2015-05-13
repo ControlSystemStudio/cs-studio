@@ -10,10 +10,6 @@
   <artifactId>appunorganized-plugins</artifactId>
   <packaging>pom</packaging>
   <modules>
-    <module>org.csstudio.apputil</module>
-    <module>org.csstudio.apputil.test</module>
-    <module>org.csstudio.apputil.ui</module>
-    <module>org.csstudio.apputil.ui.test</module>
     <!--<module>org.csstudio.dct</module>
     <module>org.csstudio.dct.intro</module>
   <module>org.csstudio.dct.ui</module>-->
