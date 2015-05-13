@@ -79,7 +79,6 @@
     <module>org.csstudio.systemopen.win</module>
     <module>org.csstudio.testsuite</module>
     <module>org.csstudio.ui.menu.pvscript</module>
-    <module>org.csstudio.ui.menu.web</module>
     <module>org.csstudio.unitconversion.ui</module>
     <!--<module>org.csstudio.utility.adlConverter</module>
   <module>org.csstudio.utility.adlConverter.test</module>-->
