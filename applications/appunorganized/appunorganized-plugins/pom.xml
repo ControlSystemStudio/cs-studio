@@ -38,8 +38,8 @@
     <module>org.csstudio.logging.jms2rdb</module>
     <!--<module>org.csstudio.pretune</module>-->
     <module>org.csstudio.rap.rtplot</module>
-    <module>org.csstudio.remote</module>
-    <module>org.csstudio.remote.test</module>
+    
+    
     <!--<module>org.csstudio.sds</module>
     <module>org.csstudio.sds.components</module>
     <module>org.csstudio.sds.components.epics</module>

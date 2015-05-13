@@ -11,5 +11,6 @@
   <modules>
     <module>org.csstudio.applications.utility.feature</module>
     <module>org.csstudio.applications.utility.navigator.applaunch.feature</module>
+    <module>org.csstudio.applications.casnooperui.feature</module>
   </modules>
 </project>
