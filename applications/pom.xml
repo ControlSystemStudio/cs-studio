@@ -18,6 +18,7 @@
     <!-- VERSIONS -->
     <tycho.version>0.22.0</tycho.version>
     <tycho-extras.version>0.22.0</tycho-extras.version>
+    <cs-studio.version>4.1</cs-studio.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.1</cs-studio-central.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
@@ -202,6 +203,20 @@
       <layout>p2</layout>
     </repository>
   </repositories>
+   <distributionManagement>
+    <site>
+      <id>s3.site</id>
+      <url>s3://maven.controlsystemstudio.org/site</url>
+    </site>
+    <repository>
+      <id>s3.release</id>
+      <url>s3://maven.controlsystemstudio.org/release</url>
+    </repository>
+    <snapshotRepository>
+      <id>s3.snapshot</id>
+      <url>s3://maven.controlsystemstudio.org/snapshot</url>
+    </snapshotRepository>
+  </distributionManagement>
   <!-- CHILD MODULES -->
   <modules>
     <module>alarm</module>
@@ -217,6 +232,13 @@
     <module>appunorganized</module>
   </modules>
   <build>
+    <extensions>
+      <extension>
+        <groupId>org.kuali.maven.wagons</groupId>
+        <artifactId>maven-s3-wagon</artifactId>
+        <version>1.2.1</version>
+      </extension>
+    </extensions>
     <!-- PLUGIN MANAGEMENT -->
     <pluginManagement>
       <plugins>
