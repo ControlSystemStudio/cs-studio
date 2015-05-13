@@ -24,8 +24,6 @@
     <module>org.csstudio.display.pace</module>
     <module>org.csstudio.display.pace.test</module>
     <module>org.csstudio.display.rdbtable</module>
-    <module>org.csstudio.domain.common</module>
-    <module>org.csstudio.domain.common.test</module>
     <module>org.csstudio.dummyauthorization</module>
     <module>org.csstudio.email</module>
     <module>org.csstudio.email.test</module>
@@ -36,8 +34,8 @@
     <module>org.csstudio.logging.jms2rdb</module>
     <!--<module>org.csstudio.pretune</module>-->
     <module>org.csstudio.rap.rtplot</module>
-    <module>org.csstudio.remote</module>
-    <module>org.csstudio.remote.test</module>
+    
+    
     <!--<module>org.csstudio.sds</module>
     <module>org.csstudio.sds.components</module>
     <module>org.csstudio.sds.components.epics</module>
@@ -57,8 +55,6 @@
     <module>org.csstudio.service.jdbcsample</module>
     <module>org.csstudio.service.math</module>
     <module>org.csstudio.service.unitconversion</module>
-    <module>org.csstudio.servicelocator</module>
-    <module>org.csstudio.servicelocator.test</module>
     <module>org.csstudio.simplepv.utilitypv</module>
     <module>org.csstudio.simplepv.utilitypv.test</module>
     <module>org.csstudio.simplepv.vtypepv</module>
