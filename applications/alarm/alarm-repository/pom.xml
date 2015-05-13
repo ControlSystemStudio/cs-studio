@@ -137,7 +137,7 @@
             <executions>
               <execution>
                 <id>upload-repo</id>
-                <phase>install</phase>
+                <phase>verify</phase>
                 <goals>
                   <goal>upload</goal>
                 </goals>
