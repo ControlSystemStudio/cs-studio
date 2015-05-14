@@ -10,7 +10,6 @@
   <packaging>pom</packaging>
   <name>Unorganized features</name>
   <modules>
-    <module>org.csstudio.core.unorganized.feature</module>
     <module>org.csstudio.pvmanager.autocomplete.feature</module>
     <module>org.csstudio.pvmanager.exec.feature</module>
     <module>org.csstudio.pvmanager.extra.feature</module>
