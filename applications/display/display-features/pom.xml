@@ -11,5 +11,6 @@
   <modules>
     <module>org.csstudio.display.pace.feature</module>
     <module>org.csstudio.display.pvtable.feature</module>
+    <module>org.csstudio.display.rdbtable.feature</module>
   </modules>
 </project>
