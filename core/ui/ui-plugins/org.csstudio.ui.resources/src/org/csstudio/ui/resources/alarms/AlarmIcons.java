@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /*******************************************************************************
  * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials
@@ -34,7 +33,7 @@ public final class AlarmIcons {
     private static final String MINOR_ACKNOWLEDGED = "minor_ack.png";
     private static final String MINOR_NOTACKNOWLEDGED = "minor_notack.png";
     private static final String MINOR_CLEARED_NOTACKNOWLEDGED = "minor_cleared_notack.png";
-    
+
     private static final String INVALID_ACKNOWLEDGED_DISABLED = "invalid_ack_disabled.png";
     private static final String INVALID_NOTACKNOWLEDGED_DISABLED = "invalid_notack_disabled.png";
     private static final String INVALID_CLEARED_NOTACKNOWLEDGED_DISABLED = "invalid_cleared_notack_disabled.png";
@@ -44,7 +43,7 @@ public final class AlarmIcons {
     private static final String MINOR_ACKNOWLEDGED_DISABLED = "minor_ack_disabled.png";
     private static final String MINOR_NOTACKNOWLEDGED_DISABLED = "minor_notack_disabled.png";
     private static final String MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED = "minor_cleared_notack_disabled.png";
-    
+
     private static final String ICONS = "icons/";
 
     private static final AlarmIcons INSTANCE = new AlarmIcons();
@@ -65,31 +64,28 @@ public final class AlarmIcons {
                 Activator.getImageDescriptor(ICONS + INVALID_CLEARED_NOTACKNOWLEDGED));
         registry.put(MAJOR_ACKNOWLEDGED, Activator.getImageDescriptor(ICONS + MAJOR_ACKNOWLEDGED));
         registry.put(MAJOR_NOTACKNOWLEDGED, Activator.getImageDescriptor(ICONS + MAJOR_NOTACKNOWLEDGED));
-        registry.put(MAJOR_CLEARED_NOTACKNOWLEDGED, 
-                Activator.getImageDescriptor(ICONS + MAJOR_CLEARED_NOTACKNOWLEDGED));
+        registry.put(MAJOR_CLEARED_NOTACKNOWLEDGED, Activator.getImageDescriptor(ICONS + MAJOR_CLEARED_NOTACKNOWLEDGED));
         registry.put(MINOR_ACKNOWLEDGED, Activator.getImageDescriptor(ICONS + MINOR_ACKNOWLEDGED));
         registry.put(MINOR_NOTACKNOWLEDGED, Activator.getImageDescriptor(ICONS + MINOR_NOTACKNOWLEDGED));
-        registry.put(MINOR_CLEARED_NOTACKNOWLEDGED, 
-                Activator.getImageDescriptor(ICONS + MINOR_CLEARED_NOTACKNOWLEDGED));
+        registry.put(MINOR_CLEARED_NOTACKNOWLEDGED, Activator.getImageDescriptor(ICONS + MINOR_CLEARED_NOTACKNOWLEDGED));
 
-        registry.put(INVALID_NOTACKNOWLEDGED_DISABLED, 
+        registry.put(INVALID_NOTACKNOWLEDGED_DISABLED,
                 Activator.getImageDescriptor(ICONS + INVALID_NOTACKNOWLEDGED_DISABLED));
-        registry.put(INVALID_ACKNOWLEDGED_DISABLED, 
-                Activator.getImageDescriptor(ICONS + INVALID_ACKNOWLEDGED_DISABLED));
+        registry.put(INVALID_ACKNOWLEDGED_DISABLED, Activator.getImageDescriptor(ICONS + INVALID_ACKNOWLEDGED_DISABLED));
         registry.put(INVALID_CLEARED_NOTACKNOWLEDGED_DISABLED,
                 Activator.getImageDescriptor(ICONS + INVALID_CLEARED_NOTACKNOWLEDGED_DISABLED));
         registry.put(MAJOR_ACKNOWLEDGED_DISABLED, Activator.getImageDescriptor(ICONS + MAJOR_ACKNOWLEDGED_DISABLED));
-        registry.put(MAJOR_NOTACKNOWLEDGED_DISABLED, 
+        registry.put(MAJOR_NOTACKNOWLEDGED_DISABLED,
                 Activator.getImageDescriptor(ICONS + MAJOR_NOTACKNOWLEDGED_DISABLED));
-        registry.put(MAJOR_CLEARED_NOTACKNOWLEDGED_DISABLED, 
+        registry.put(MAJOR_CLEARED_NOTACKNOWLEDGED_DISABLED,
                 Activator.getImageDescriptor(ICONS + MAJOR_CLEARED_NOTACKNOWLEDGED_DISABLED));
         registry.put(MINOR_ACKNOWLEDGED_DISABLED, Activator.getImageDescriptor(ICONS + MINOR_ACKNOWLEDGED_DISABLED));
-        registry.put(MINOR_NOTACKNOWLEDGED_DISABLED, 
+        registry.put(MINOR_NOTACKNOWLEDGED_DISABLED,
                 Activator.getImageDescriptor(ICONS + MINOR_NOTACKNOWLEDGED_DISABLED));
-        registry.put(MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED, 
+        registry.put(MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED,
                 Activator.getImageDescriptor(ICONS + MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED));
     }
-    
+
     /**
      * @return icon descriptor representing invalid or disconnected alarm, which has not been acknowledged
      */
@@ -102,8 +98,8 @@ public final class AlarmIcons {
      * @return icon descriptor representing invalid or disconnected alarm, which has been cleared but not acknowledged
      */
     public ImageDescriptor getInvalidClearedNotAcknowledged(boolean disabled) {
-        return disabled ? registry.get(INVALID_CLEARED_NOTACKNOWLEDGED_DISABLED) 
-                : registry.get(INVALID_CLEARED_NOTACKNOWLEDGED);
+        return disabled ? registry.get(INVALID_CLEARED_NOTACKNOWLEDGED_DISABLED) : registry
+                .get(INVALID_CLEARED_NOTACKNOWLEDGED);
     }
 
     /**
@@ -151,8 +147,8 @@ public final class AlarmIcons {
      * @return icon descriptor representing a major cleared and not yet acknowledged alarm
      */
     public ImageDescriptor getMajorClearedNotAcknowledged(boolean disabled) {
-        return disabled ? registry.get(MAJOR_CLEARED_NOTACKNOWLEDGED_DISABLED) 
-                : registry.get(MAJOR_CLEARED_NOTACKNOWLEDGED);
+        return disabled ? registry.get(MAJOR_CLEARED_NOTACKNOWLEDGED_DISABLED) : registry
+                .get(MAJOR_CLEARED_NOTACKNOWLEDGED);
     }
 
     /**
@@ -160,7 +156,7 @@ public final class AlarmIcons {
      * @return icon descriptor representing a minor cleared and not yet acknowledged alarm
      */
     public ImageDescriptor getMinorClearedNotAcknowledged(boolean disabled) {
-        return disabled ? registry.get(MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED) 
-                : registry.get(MINOR_CLEARED_NOTACKNOWLEDGED);
+        return disabled ? registry.get(MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED) : registry
+                .get(MINOR_CLEARED_NOTACKNOWLEDGED);
     }
 }

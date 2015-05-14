@@ -75,11 +75,11 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
                 protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
                 {
                     final int cmp = pv1.getMessage().compareTo(pv2.getMessage());
-		            if (cmp != 0)
-		            	return cmp;
-	                return super.doCompare(pv1, pv2);
-				}
-			};
+                    if (cmp != 0)
+                        return cmp;
+                    return super.doCompare(pv1, pv2);
+                }
+            };
         case CURRENT_STATUS:
             return new AlarmComparator(up)
             {
