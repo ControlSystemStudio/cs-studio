@@ -74,11 +74,15 @@ public class AWT2SWTImageConverter {
 			DirectColorModel colorModel = (DirectColorModel)bufferedImage.getColorModel();
 			PaletteData palette = new PaletteData(colorModel.getRedMask(), colorModel.getGreenMask(), colorModel.getBlueMask());
 			ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(), colorModel.getPixelSize(), palette);
+			boolean alpha = colorModel.hasAlpha();
 			for (int y = 0; y < data.height; y++) {
 				for (int x = 0; x < data.width; x++) {
 					int rgb = bufferedImage.getRGB(x, y);
 					int pixel = palette.getPixel(new RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF)); 
 					data.setPixel(x, y, pixel);
+					if (alpha) {
+					    data.setAlpha(x, y, (rgb >> 24 ) & 0xFF);
+					}
 				}
 			}		
 			return data;		

@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import org.csstudio.alarm.beast.SeverityLevel;
@@ -49,10 +50,8 @@ public class SeverityIconProvider
         final Display display = parent.getDisplay();
 
         final  BufferedImage awtImage = new BufferedImage(ICON_SIZE, ICON_SIZE,
-        				BufferedImage.TYPE_INT_RGB);
+        				BufferedImage.TYPE_INT_ARGB);
 		Graphics g = awtImage.getGraphics();
-        g.setColor(new Color(255,255,255));
-        g.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
 
         // Left rectangle for 'latched', right for 'current' indicator
         g.setColor(new Color(GRAY, GRAY, GRAY));
@@ -84,17 +83,8 @@ public class SeverityIconProvider
      * @param awtImage
      * @return
      */
-	private static Image makeSWTImage(final Display display, final java.awt.Image awtImage) {
-		final int width = awtImage.getWidth(null);
-		final int height = awtImage.getHeight(null);
-		final BufferedImage bufferedImage = new BufferedImage(width, height,
-				BufferedImage.TYPE_INT_RGB);
-		final Graphics2D g2d = bufferedImage.createGraphics();
-		g2d.drawImage(awtImage, 0, 0, null);
-		g2d.dispose();
-
-		return new Image(display,
-				AWT2SWTImageConverter.convertToSWT(bufferedImage));
+	private static Image makeSWTImage(final Display display, final BufferedImage awtImage) {
+		return new Image(display,AWT2SWTImageConverter.convertToSWT(awtImage));
 	}
 
     /** @return Array of icons */
@@ -116,10 +106,9 @@ public class SeverityIconProvider
 						severities[s].getGreen(),
 						severities[s].getBlue());
 				final BufferedImage awtImage = new BufferedImage(ICON_SIZE,
-						ICON_SIZE, BufferedImage.TYPE_INT_RGB);
+						ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
         		final Graphics g = awtImage.getGraphics();
-                g.setColor(new Color(255,255,255));
-                g.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
+        		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                 // Left rectangle for 'latched', right for 'current' indicator
                 g.setColor(s_col);
@@ -129,10 +118,10 @@ public class SeverityIconProvider
                 g.setColor(c_col);
                 g.setClip(ICON_SIZE/2, 0, ICON_SIZE/2, ICON_SIZE);
                 g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
-
+                   
                 // Icon without indicator for any disabled alarms
-                icons[c][s][0] = makeSWTImage(display, awtImage);
-
+                icons[c][s][0] = makeSWTImage(display, awtImage);    
+                
                 // Add grey area to indicate disabled alarms
                 g.setClip(ICON_SIZE/2, 0, ICON_SIZE/2, ICON_SIZE/2);
                 g.setColor(new Color(GRAY, GRAY, GRAY));
