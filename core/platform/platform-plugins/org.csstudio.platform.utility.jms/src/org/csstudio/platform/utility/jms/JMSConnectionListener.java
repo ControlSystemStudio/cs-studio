@@ -7,7 +7,7 @@ package org.csstudio.platform.utility.jms;
  *  directly using the ActiveMQ API.
  *  <p>
  *  This interface removes the direct ActiveMQ dependency from client code.
- *  
+ *
  *  @see JMSConnectionFactory#addListener
  *  @author Kay Kasemir
  */

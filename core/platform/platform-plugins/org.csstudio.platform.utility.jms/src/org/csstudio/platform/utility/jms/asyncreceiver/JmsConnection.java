@@ -46,229 +46,229 @@ import org.csstudio.platform.utility.jms.JMSConnectionFactory;
  * connection, session, and the message consumers. A <code>JmsConnection</code>
  * monitors the state of its underlying JMS connection and reports changes to
  * the <code>JmsConnector</code> from which it was created.</p>
- * 
+ *
  * <p>This class is intended to be used only by a <code>JmsConnector</code>.</p>
- * 
+ *
  * @author Joerg Rathlev
  */
 final class JmsConnection implements TransportListener {
-	
-	/**
-	 * The initial context factory used for JNDI.
-	 */
-	// Note: this used to be a preference setting, but this class requires
-	// ActiveMQ anyway for the connection monitoring, so this cannot actually
-	// be changed. So we can use a constant here and keep the UI simple.
-	private static final String JNDI_CONTEXT_FACTORY =
-		"org.apache.activemq.jndi.ActiveMQInitialContextFactory";
 
-	/**
-	 * The logger used by this object.
-	 */
-//	private final CentralLogger _log = CentralLogger.getInstance();
+    /**
+     * The initial context factory used for JNDI.
+     */
+    // Note: this used to be a preference setting, but this class requires
+    // ActiveMQ anyway for the connection monitoring, so this cannot actually
+    // be changed. So we can use a constant here and keep the UI simple.
+    private static final String JNDI_CONTEXT_FACTORY =
+        "org.apache.activemq.jndi.ActiveMQInitialContextFactory";
 
-	/**
-	 * The topics that this connection will subscribe to.
-	 */
-	private String[] _topics;
+    /**
+     * The logger used by this object.
+     */
+//    private final CentralLogger _log = CentralLogger.getInstance();
 
-	/**
-	 * The URI of the JMS broker which this connection connects to.
-	 */
-	private String _brokerUri;
+    /**
+     * The topics that this connection will subscribe to.
+     */
+    private String[] _topics;
 
-	/**
-	 * The message listener to which messages will be delievered.
-	 */
-	private final MessageListener _listener;
+    /**
+     * The URI of the JMS broker which this connection connects to.
+     */
+    private String _brokerUri;
 
-	/**
-	 * The JMS connection.
-	 */
-	private Connection _connection;
-	
-	/**
-	 * The JMS connector to which this connection belongs.
-	 */
-	private JmsConnector _connector;
+    /**
+     * The message listener to which messages will be delievered.
+     */
+    private final MessageListener _listener;
 
-	/**
-	 * Whether this connection is interrupted.
-	 */
-	private boolean _interrupted = false;
+    /**
+     * The JMS connection.
+     */
+    private Connection _connection;
 
-	/**
-	 * Creates a new JMS connection.
-	 * 
-	 * @param connector
-	 *            the <code>JmsConnector</code> to which this connection
-	 *            belongs.
-	 * @param brokerUri
-	 *            the URI of the broker to connect to.
-	 * @param topics
-	 *            the JMS topics to connect to.
-	 * @param listener
-	 *            the message listener to which messages will be delivered.
-	 */
-	JmsConnection(final JmsConnector connector, final String brokerUri,
-			final String[] topics, final MessageListener listener) {
-		_connector = connector;
-		_brokerUri = brokerUri;
-		_listener = listener;
-		_topics = new String[topics.length];
-		System.arraycopy(topics, 0, _topics, 0, topics.length);
-	}
+    /**
+     * The JMS connector to which this connection belongs.
+     */
+    private JmsConnector _connector;
 
-	/**
-	 * Starts this connection. This method blocks until the connection is
-	 * established successfully. Note that this does not guarantee that the
-	 * connection is available when this method returns; the connection might
-	 * fail after it was established but before this method returns.
-	 * 
-	 * @throws JmsConnectionException
-	 *             when an error occurs that prevents this connection from
-	 *             connecting to the JMS broker.
-	 */
-	void start() throws JmsConnectionException {
-		try {
-			_interrupted = false;
-			_connection = JMSConnectionFactory.connect(_brokerUri);
-			((ActiveMQConnection) _connection).addTransportListener(this);
+    /**
+     * Whether this connection is interrupted.
+     */
+    private boolean _interrupted = false;
 
-			// The following call blocks for ActiveMQ when using the failover
-			// transport
-			Session session = _connection.createSession(false,
-					Session.AUTO_ACKNOWLEDGE);
-			
-			createMessageConsumers(session);
-			
-//			_log.debug(this, "Starting connection.");
-			_connection.start();
-//			_log.debug(this, "Connection started.");
-			_connector.onConnectionStateChanged();
-		} catch (JMSException e) {
-//			_log.error(this, "Error creating JMS connection.", e);
-			throw new JmsConnectionException("Error connecting to broker", e);
-		}
-	}
-	
-	/**
-	 * Closes this connection.
-	 */
-	void close() {
-		if (_connection != null) {
-//			_log.debug(this, "Closing JMS connection.");
-			try {
-				// Closing the connection will also close the session and
-				// the message consumers.
-				_connection.close();
-				_connector.onConnectionStateChanged();
-			} catch (JMSException e) {
-//				_log.warn(this, "Error while closing JMS connection.", e);
-			}
-		}
-		
-		// Allow garbage collection to do its work
-		_connection = null;
-	}
+    /**
+     * Creates a new JMS connection.
+     *
+     * @param connector
+     *            the <code>JmsConnector</code> to which this connection
+     *            belongs.
+     * @param brokerUri
+     *            the URI of the broker to connect to.
+     * @param topics
+     *            the JMS topics to connect to.
+     * @param listener
+     *            the message listener to which messages will be delivered.
+     */
+    JmsConnection(final JmsConnector connector, final String brokerUri,
+            final String[] topics, final MessageListener listener) {
+        _connector = connector;
+        _brokerUri = brokerUri;
+        _listener = listener;
+        _topics = new String[topics.length];
+        System.arraycopy(topics, 0, _topics, 0, topics.length);
+    }
 
-	/**
-	 * Creates the <code>MessageConsumers</code> for the topics.
-	 * 
-	 * @param session
-	 *            the session to use.
-	 * @throws JMSException
-	 *             if the creation of the message consumers fails.
-	 */
-	private void createMessageConsumers(final Session session)
-			throws JMSException {
-		for (String topicName : _topics) {
-//			_log.debug(this, "Creating MessageConsumer for topic " + topicName);
-			Topic topic = session.createTopic(topicName);
-			MessageConsumer consumer = session.createConsumer(topic);
-			consumer.setMessageListener(_listener);
-		}
-	}
+    /**
+     * Starts this connection. This method blocks until the connection is
+     * established successfully. Note that this does not guarantee that the
+     * connection is available when this method returns; the connection might
+     * fail after it was established but before this method returns.
+     *
+     * @throws JmsConnectionException
+     *             when an error occurs that prevents this connection from
+     *             connecting to the JMS broker.
+     */
+    void start() throws JmsConnectionException {
+        try {
+            _interrupted = false;
+            _connection = JMSConnectionFactory.connect(_brokerUri);
+            ((ActiveMQConnection) _connection).addTransportListener(this);
 
-	/**
-	 * Looks up the JMS connection factory via JNDI.
-	 * 
-	 * @return the connection factory.
-	 * @throws JmsConnectionException
-	 *             if the connection factory cannot be looked up.
-	 */
-	@SuppressWarnings("unused")
-	private ConnectionFactory lookupConnectionFactory() throws JmsConnectionException {
-//		_log.debug(this, "Looking up JMS connection factory.");
-		Hashtable<String, String> properties = new Hashtable<String, String>();
-		properties.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_CONTEXT_FACTORY);
-		properties.put(Context.PROVIDER_URL, _brokerUri);
-		try {
-			Context context = new InitialContext(properties);
-			return (ConnectionFactory) context.lookup("ConnectionFactory");
-		} catch (NamingException e) {
-//			_log.error(this, "Error getting connection factory.");
-			throw new JmsConnectionException("Error looking up connection factory", e);
-		}
-	}
+            // The following call blocks for ActiveMQ when using the failover
+            // transport
+            Session session = _connection.createSession(false,
+                    Session.AUTO_ACKNOWLEDGE);
 
-	/**
-	 * Returns whether this connection is connected. A connection is connected
-	 * if it is started and its transport is not interrupted.
-	 * 
-	 * @return <code>true</code> if this connection is connected,
-	 *         <code>false</code> otherwise.
-	 */
-	boolean isConnected() {
-		return (_connection != null)
-				&& (((ActiveMQConnection) _connection).isStarted())
-				&& !_interrupted;
-	}
+            createMessageConsumers(session);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public void onCommand(final Object command) {
-		// do nothing
-	}
+//            _log.debug(this, "Starting connection.");
+            _connection.start();
+//            _log.debug(this, "Connection started.");
+            _connector.onConnectionStateChanged();
+        } catch (JMSException e) {
+//            _log.error(this, "Error creating JMS connection.", e);
+            throw new JmsConnectionException("Error connecting to broker", e);
+        }
+    }
 
-	/**
-	 * Called when an unrecoverable exception has occurred on the underlying JMS
-	 * connection.
-	 * 
-	 * @param e
-	 *            the exception.
-	 */
-	public void onException(final IOException e) {
-		// TODO perform recovery in this case?
-//		_log.error(this, "Exception occurred.", e);
-		_connector.onConnectionStateChanged();
-	}
+    /**
+     * Closes this connection.
+     */
+    void close() {
+        if (_connection != null) {
+//            _log.debug(this, "Closing JMS connection.");
+            try {
+                // Closing the connection will also close the session and
+                // the message consumers.
+                _connection.close();
+                _connector.onConnectionStateChanged();
+            } catch (JMSException e) {
+//                _log.warn(this, "Error while closing JMS connection.", e);
+            }
+        }
 
-	/**
-	 * Called when the JMS transport is interrupted.
-	 */
-	public void transportInterupted() {
-//		_log.debug(this, "Transport interrupted.");
-		_interrupted = true;
-		_connector.onConnectionStateChanged();
-	}
+        // Allow garbage collection to do its work
+        _connection = null;
+    }
 
-	/**
-	 * Called when the JMS transport is resumed.
-	 */
-	public void transportResumed() {
-//		_log.debug(this, "Transport resumed.");
-		_interrupted = false;
-		_connector.onConnectionStateChanged();
-	}
+    /**
+     * Creates the <code>MessageConsumers</code> for the topics.
+     *
+     * @param session
+     *            the session to use.
+     * @throws JMSException
+     *             if the creation of the message consumers fails.
+     */
+    private void createMessageConsumers(final Session session)
+            throws JMSException {
+        for (String topicName : _topics) {
+//            _log.debug(this, "Creating MessageConsumer for topic " + topicName);
+            Topic topic = session.createTopic(topicName);
+            MessageConsumer consumer = session.createConsumer(topic);
+            consumer.setMessageListener(_listener);
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return "JmsConnection {broker=" + _brokerUri + ", topics="
-				+ Arrays.toString(_topics) + "}";
-	}
+    /**
+     * Looks up the JMS connection factory via JNDI.
+     *
+     * @return the connection factory.
+     * @throws JmsConnectionException
+     *             if the connection factory cannot be looked up.
+     */
+    @SuppressWarnings("unused")
+    private ConnectionFactory lookupConnectionFactory() throws JmsConnectionException {
+//        _log.debug(this, "Looking up JMS connection factory.");
+        Hashtable<String, String> properties = new Hashtable<String, String>();
+        properties.put(Context.INITIAL_CONTEXT_FACTORY, JNDI_CONTEXT_FACTORY);
+        properties.put(Context.PROVIDER_URL, _brokerUri);
+        try {
+            Context context = new InitialContext(properties);
+            return (ConnectionFactory) context.lookup("ConnectionFactory");
+        } catch (NamingException e) {
+//            _log.error(this, "Error getting connection factory.");
+            throw new JmsConnectionException("Error looking up connection factory", e);
+        }
+    }
+
+    /**
+     * Returns whether this connection is connected. A connection is connected
+     * if it is started and its transport is not interrupted.
+     *
+     * @return <code>true</code> if this connection is connected,
+     *         <code>false</code> otherwise.
+     */
+    boolean isConnected() {
+        return (_connection != null)
+                && (((ActiveMQConnection) _connection).isStarted())
+                && !_interrupted;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void onCommand(final Object command) {
+        // do nothing
+    }
+
+    /**
+     * Called when an unrecoverable exception has occurred on the underlying JMS
+     * connection.
+     *
+     * @param e
+     *            the exception.
+     */
+    public void onException(final IOException e) {
+        // TODO perform recovery in this case?
+//        _log.error(this, "Exception occurred.", e);
+        _connector.onConnectionStateChanged();
+    }
+
+    /**
+     * Called when the JMS transport is interrupted.
+     */
+    public void transportInterupted() {
+//        _log.debug(this, "Transport interrupted.");
+        _interrupted = true;
+        _connector.onConnectionStateChanged();
+    }
+
+    /**
+     * Called when the JMS transport is resumed.
+     */
+    public void transportResumed() {
+//        _log.debug(this, "Transport resumed.");
+        _interrupted = false;
+        _connector.onConnectionStateChanged();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return "JmsConnection {broker=" + _brokerUri + ", topics="
+                + Arrays.toString(_topics) + "}";
+    }
 }

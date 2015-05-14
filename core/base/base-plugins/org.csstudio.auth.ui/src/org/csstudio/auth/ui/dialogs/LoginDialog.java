@@ -56,85 +56,85 @@ import org.eclipse.swt.widgets.Text;
  */
 public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandler  {
 
-	/**
-	 * Text box that holds the user name.
-	 */
-	private Text _username;
+    /**
+     * Text box that holds the user name.
+     */
+    private Text _username;
 
-	/**
-	 * Text box that holds the password.
-	 */
-	private Text _password;
+    /**
+     * Text box that holds the password.
+     */
+    private Text _password;
 
-	/**
-	 * checkbox to show "Login as anonymous"
-	 */
-	private Button _loginAnonymous;
+    /**
+     * checkbox to show "Login as anonymous"
+     */
+    private Button _loginAnonymous;
 
-	/**
-	 * Checkbox for option to remember username and password.
-	 */
-	private Button _rememberLogin;
+    /**
+     * Checkbox for option to remember username and password.
+     */
+    private Button _rememberLogin;
 
-	/**
-	 * Stores the credentials object after OK has been pressed.
-	 */
-	private Credentials _credentials;
+    /**
+     * Stores the credentials object after OK has been pressed.
+     */
+    private Credentials _credentials;
 
-	/**
-	 * The name of the last User.
-	 */
+    /**
+     * The name of the last User.
+     */
     private String _lastUser;
 
-	/**
-	 * The dialog title.
-	 */
-	private final String _title;
-
-	/**
-	 * The message displayed in the dialog.
-	 */
-	private final String _message;
-
-	/**
-	 * Creates a new login dialog.
-	 * @param parentShell the parent shell.
-	 */
-	public LoginDialog(final Shell parentShell) {
-		this(parentShell, "");
-	}
-
-	/**
-     * Creates a new login dialog.
-     *
-	 * @param parentShell
-	 *            the parent shell.
-	 * @param lastUser
-	 *            the initial user name.
+    /**
+     * The dialog title.
      */
-    public LoginDialog(final Shell parentShell, String lastUser) {
-        this(parentShell, "Login", "Please enter your user name and password.",
-        		lastUser);
+    private final String _title;
+
+    /**
+     * The message displayed in the dialog.
+     */
+    private final String _message;
+
+    /**
+     * Creates a new login dialog.
+     * @param parentShell the parent shell.
+     */
+    public LoginDialog(final Shell parentShell) {
+        this(parentShell, "");
     }
 
     /**
-	 * Creates a new login dialog.
-	 *
-	 * @param parentShell
-	 *            the parent shell.
-	 * @param title
-	 *            the dialog title.
-	 * @param message
-	 *            the message that is displayed in the dialog.
-	 * @param lastUser
-	 *            the initial user name.
-	 */
+     * Creates a new login dialog.
+     *
+     * @param parentShell
+     *            the parent shell.
+     * @param lastUser
+     *            the initial user name.
+     */
+    public LoginDialog(final Shell parentShell, String lastUser) {
+        this(parentShell, "Login", "Please enter your user name and password.",
+                lastUser);
+    }
+
+    /**
+     * Creates a new login dialog.
+     *
+     * @param parentShell
+     *            the parent shell.
+     * @param title
+     *            the dialog title.
+     * @param message
+     *            the message that is displayed in the dialog.
+     * @param lastUser
+     *            the initial user name.
+     */
     public LoginDialog(final Shell parentShell, final String title,
-    		final String message, final String lastUser) {
-    	super(parentShell);
-		_title = title;
-		_message = message;
-		_lastUser = lastUser;
+            final String message, final String lastUser) {
+        super(parentShell);
+        _title = title;
+        _message = message;
+        _lastUser = lastUser;
     }
 
     /**
@@ -142,153 +142,153 @@ public class LoginDialog extends TitleAreaDialog implements ILoginCallbackHandle
      */
     @Override
     protected void configureShell(Shell newShell) {
-    	super.configureShell(newShell);
-    	newShell.setText(_title);
+        super.configureShell(newShell);
+        newShell.setText(_title);
     }
 
-	/**
-	 * Creates the contents of this dialog.
-	 */
-	@Override
-	protected Control createDialogArea(final Composite parent) {
-		Composite parentComposite = (Composite) super.createDialogArea(parent);
+    /**
+     * Creates the contents of this dialog.
+     */
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        Composite parentComposite = (Composite) super.createDialogArea(parent);
 
-		setTitle(_title);
-		setMessage(_message);
+        setTitle(_title);
+        setMessage(_message);
 
-		// Create the layout
-		Composite contents = new Composite(parent, SWT.NONE);
-		GridLayout layout = new GridLayout(2, false);
+        // Create the layout
+        Composite contents = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout(2, false);
         layout.marginHeight = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_MARGIN);
         layout.marginWidth = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_MARGIN);
         layout.verticalSpacing = convertVerticalDLUsToPixels(IDialogConstants.VERTICAL_SPACING);
         layout.horizontalSpacing = convertHorizontalDLUsToPixels(IDialogConstants.HORIZONTAL_SPACING);
-		contents.setLayout(layout);
-		contents.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
-		contents.setFont(parent.getFont());
+        contents.setLayout(layout);
+        contents.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, true));
+        contents.setFont(parent.getFont());
 
-		// user name
-		Label label = new Label(contents, SWT.NONE);
-		label.setText(Messages.LoginDialog_UserName);
-		_username = new Text(contents, SWT.BORDER | SWT.FLAT);
+        // user name
+        Label label = new Label(contents, SWT.NONE);
+        label.setText(Messages.LoginDialog_UserName);
+        _username = new Text(contents, SWT.BORDER | SWT.FLAT);
 
-		_username.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
-		_username.setText(_lastUser != null ? _lastUser : "");
+        _username.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+        _username.setText(_lastUser != null ? _lastUser : "");
 
 
-		// password
-		label = new Label(contents, SWT.NONE);
-		label.setText(Messages.LoginDialog_Password);
-		_password = new Text(contents, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
-		_password.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+        // password
+        label = new Label(contents, SWT.NONE);
+        label.setText(Messages.LoginDialog_Password);
+        _password = new Text(contents, SWT.BORDER | SWT.FLAT | SWT.PASSWORD);
+        _password.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
 
-		// Anonymous login checkbox
-		_loginAnonymous = new Button(contents, SWT.CHECK);
-		_loginAnonymous.setText(Messages.LoginDialog_LoginAnonymous);
-		_loginAnonymous.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
-		_loginAnonymous.addSelectionListener(new SelectionAdapter(){
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				if(_loginAnonymous.getSelection()) {
-				    // Disable name/password when anonymous
-					_username.setEnabled(false);
-					_password.setEnabled(false);
-				} else {
-				    // (Re-)enable name/password entry
-					_username.setEnabled(true);
-					_password.setEnabled(true);
-					// ... and jump to name field
-					_username.setFocus();
-				}
-			}
-		});
+        // Anonymous login checkbox
+        _loginAnonymous = new Button(contents, SWT.CHECK);
+        _loginAnonymous.setText(Messages.LoginDialog_LoginAnonymous);
+        _loginAnonymous.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+        _loginAnonymous.addSelectionListener(new SelectionAdapter(){
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                if(_loginAnonymous.getSelection()) {
+                    // Disable name/password when anonymous
+                    _username.setEnabled(false);
+                    _password.setEnabled(false);
+                } else {
+                    // (Re-)enable name/password entry
+                    _username.setEnabled(true);
+                    _password.setEnabled(true);
+                    // ... and jump to name field
+                    _username.setFocus();
+                }
+            }
+        });
 
-		// remember password checkbox (invisible by default)
-		_rememberLogin = new Button(contents, SWT.CHECK);
-		_rememberLogin.setText("Remember my user name and password");
-		_rememberLogin.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
-		_rememberLogin.setVisible(false);
+        // remember password checkbox (invisible by default)
+        _rememberLogin = new Button(contents, SWT.CHECK);
+        _rememberLogin.setText("Remember my user name and password");
+        _rememberLogin.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false, 2, 1));
+        _rememberLogin.setVisible(false);
 
-		if(_lastUser!=null&&_lastUser.trim().length()>0){
-		    _password.setFocus();
-		}else{
-		    _username.setFocus();
-		}
-		return parentComposite;
-	}
+        if(_lastUser!=null&&_lastUser.trim().length()>0){
+            _password.setFocus();
+        }else{
+            _username.setFocus();
+        }
+        return parentComposite;
+    }
 
-	/**
-	 * Sets the window title of this login dialog window.
-	 * @param title the title.
-	 */
-	public final void setWindowTitle(final String title) {
-		getShell().setText(title);
-	}
+    /**
+     * Sets the window title of this login dialog window.
+     * @param title the title.
+     */
+    public final void setWindowTitle(final String title) {
+        getShell().setText(title);
+    }
 
-	/**
-	 * Sets whether the remember password checkbox is visible (default is
-	 * <code>false</code>.
-	 * @param visible <code>true</code> to display the checkbox.
-	 */
-	public final void setRememberPasswordVisible(final boolean visible) {
-		_rememberLogin.setVisible(visible);
-	}
+    /**
+     * Sets whether the remember password checkbox is visible (default is
+     * <code>false</code>.
+     * @param visible <code>true</code> to display the checkbox.
+     */
+    public final void setRememberPasswordVisible(final boolean visible) {
+        _rememberLogin.setVisible(visible);
+    }
 
-	/**
-	 * Returns whether the user checked the remember password option.
-	 * @return <code>true</code> if the user wants the password to be
-	 *         remembered, <code>false</code> otherwise.
-	 */
-	public final boolean isRememberPasswordChecked() {
-		return _rememberLogin.getSelection();
-	}
+    /**
+     * Returns whether the user checked the remember password option.
+     * @return <code>true</code> if the user wants the password to be
+     *         remembered, <code>false</code> otherwise.
+     */
+    public final boolean isRememberPasswordChecked() {
+        return _rememberLogin.getSelection();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final void okPressed() {
-		if(_loginAnonymous.getSelection())
-			_credentials = Credentials.ANONYMOUS;
-		else {
-			_credentials = new Credentials(this._username.getText(), this._password.getText());
-			WorkspaceIndependentStore.writeLastLoginUser(this._username.getText());
-		}
-		// reset the username & password field
-		_username = null;
-		_password = null;
-		super.okPressed();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void okPressed() {
+        if(_loginAnonymous.getSelection())
+            _credentials = Credentials.ANONYMOUS;
+        else {
+            _credentials = new Credentials(this._username.getText(), this._password.getText());
+            WorkspaceIndependentStore.writeLastLoginUser(this._username.getText());
+        }
+        // reset the username & password field
+        _username = null;
+        _password = null;
+        super.okPressed();
+    }
 
-	/**
-	 * Returns the credentials that were entered by the user.
-	 *
-	 * @return the credentials entered by the user, or <code>null</code> if
-	 *         the user did not enter any credentials.
-	 */
-	public Credentials getLoginCredentials() {
-		return _credentials;
-	}
+    /**
+     * Returns the credentials that were entered by the user.
+     *
+     * @return the credentials entered by the user, or <code>null</code> if
+     *         the user did not enter any credentials.
+     */
+    public Credentials getLoginCredentials() {
+        return _credentials;
+    }
 
-	/**
-	 * Opens the login window and queries the user
-	 * for credentials which it returns.
-	 *
-	 * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
-	 */
-	public Credentials getCredentials() {
-		_credentials = null;
-		this.setBlockOnOpen(true);
-		this.open();
-		return _credentials;
-	}
+    /**
+     * Opens the login window and queries the user
+     * for credentials which it returns.
+     *
+     * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
+     */
+    public Credentials getCredentials() {
+        _credentials = null;
+        this.setBlockOnOpen(true);
+        this.open();
+        return _credentials;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 *
-	 * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
-	 */
-	public void signalFailedLoginAttempt() {
-		MessageDialog.openError(null, "Login", "Login failed. Please try again.");
-	}
+    /**
+     * {@inheritDoc}
+     *
+     * @deprecated Do not use this class as an <code>ILoginCallbackHandler</code>.
+     */
+    public void signalFailedLoginAttempt() {
+        MessageDialog.openError(null, "Login", "Login failed. Please try again.");
+    }
 }

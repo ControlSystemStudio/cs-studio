@@ -94,18 +94,18 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         }
 
         boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
-		// Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
-		if (reader.getRDB().getDialect() == Dialect.PostgreSQL && autoCommit) {
-			reader.getRDB().getConnection().setAutoCommit(false);
-		}
-        
+        // Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
+        if (reader.getRDB().getDialect() == Dialect.PostgreSQL && autoCommit) {
+            reader.getRDB().getConnection().setAutoCommit(false);
+        }
+
         // Fetch the samples
         if (reader.useArrayBlob())
-	        sel_samples = reader.getRDB().getConnection().prepareStatement(
-	                reader.getSQL().sample_sel_by_id_start_end_with_blob);
+            sel_samples = reader.getRDB().getConnection().prepareStatement(
+                    reader.getSQL().sample_sel_by_id_start_end_with_blob);
         else
-	        sel_samples = reader.getRDB().getConnection().prepareStatement(
-	                reader.getSQL().sample_sel_by_id_start_end);
+            sel_samples = reader.getRDB().getConnection().prepareStatement(
+                    reader.getSQL().sample_sel_by_id_start_end);
         sel_samples.setFetchDirection(ResultSet.FETCH_FORWARD);
 
         // Test w/ ~170000 raw samples:
@@ -200,12 +200,12 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             sel_samples = null;
         }
         if (reader.getRDB().getDialect() == Dialect.PostgreSQL) {
-        	// Restore default auto-commit on result set close 
-        	 try {
-     			reader.getRDB().getConnection().setAutoCommit(true);
-     		} catch (Exception e) {
-     			// Ignore
-     		}
+            // Restore default auto-commit on result set close
+             try {
+                 reader.getRDB().getConnection().setAutoCommit(true);
+             } catch (Exception e) {
+                 // Ignore
+             }
         }
     }
 }

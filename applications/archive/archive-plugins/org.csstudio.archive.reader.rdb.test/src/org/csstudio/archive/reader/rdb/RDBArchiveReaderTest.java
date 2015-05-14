@@ -40,51 +40,51 @@ public class RDBArchiveReaderTest
 {
     final private static TimeDuration TIMERANGE = TimeDuration.ofHours(10.0);
     final private static TimeDuration WAVEFORM_TIMERANGE = TimeDuration.ofMinutes(20.0);
-    
+
     final private static int BUCKETS = 50;
 
     final private static boolean dump = true;
 
     @SuppressWarnings("unused")
     final private static SimpleDateFormat parser = new SimpleDateFormat("yyyy/MM/dd");
-	
+
     private RDBArchiveReader reader;
-	private String proc, name, array_name;
+    private String proc, name, array_name;
 
     @Before
     public void connect() throws Exception
     {
-		final TestProperties settings = new TestProperties();
-		final String url = settings.getString("archive_rdb_url");
-		final String user = settings.getString("archive_rdb_user");
-		final String password = settings.getString("archive_rdb_password");
-		final String schema = settings.getString("archive_rdb_schema");
-		proc = settings.getString("archive_rdb_stored_procedure");
-		if (proc == null)
-			proc = "";
-		name = settings.getString("archive_channel");
-		array_name = settings.getString("archive_array_channel");
-		if (url == null  ||  user == null  ||  password == null  ||  name == null)
-		{
-			System.out.println("Skipping test, no archive_rdb_url, user, password, name");
-			reader = null;
-			return;
-		}
-		final boolean use_blob = Boolean.parseBoolean(settings.getString("archive_use_blob"));
-		if (use_blob)
-			System.out.println("Running read test with BLOB");
-		else
-			System.out.println("Running read test with old array_val table");
-		reader = new RDBArchiveReader(url, user, password, schema, proc, use_blob);
-		
-		assertEquals(use_blob, reader.useArrayBlob());
+        final TestProperties settings = new TestProperties();
+        final String url = settings.getString("archive_rdb_url");
+        final String user = settings.getString("archive_rdb_user");
+        final String password = settings.getString("archive_rdb_password");
+        final String schema = settings.getString("archive_rdb_schema");
+        proc = settings.getString("archive_rdb_stored_procedure");
+        if (proc == null)
+            proc = "";
+        name = settings.getString("archive_channel");
+        array_name = settings.getString("archive_array_channel");
+        if (url == null  ||  user == null  ||  password == null  ||  name == null)
+        {
+            System.out.println("Skipping test, no archive_rdb_url, user, password, name");
+            reader = null;
+            return;
+        }
+        final boolean use_blob = Boolean.parseBoolean(settings.getString("archive_use_blob"));
+        if (use_blob)
+            System.out.println("Running read test with BLOB");
+        else
+            System.out.println("Running read test with old array_val table");
+        reader = new RDBArchiveReader(url, user, password, schema, proc, use_blob);
+
+        assertEquals(use_blob, reader.useArrayBlob());
     }
-    
+
     @After
     public void close()
     {
-    	if (reader != null)
-    		reader.close();
+        if (reader != null)
+            reader.close();
     }
 
     /** Schedule a call to 'cancel()'
@@ -104,13 +104,13 @@ public class RDBArchiveReaderTest
             }
         }, 2000);
     }
-    
+
     /** Basic connection */
     @Test
     public void testBasicInfo() throws Exception
     {
-    	if (reader == null)
-    		return;
+        if (reader == null)
+            return;
         assertEquals("RDB", reader.getServerName());
         System.out.println(reader.getDescription());
         for (ArchiveInfo arch : reader.getArchiveInfos())
@@ -121,9 +121,9 @@ public class RDBArchiveReaderTest
     @Test
     public void testChannelByPattern() throws Exception
     {
-    	if (reader == null)
-    		return;
-    	final String pattern = name.substring(0, name.length()-1) + "?";
+        if (reader == null)
+            return;
+        final String pattern = name.substring(0, name.length()-1) + "?";
         System.out.println("Channels matching a pattern: " + pattern);
         final String[] names = reader.getNamesByPattern(1, pattern);
         for (String name : names)
@@ -135,11 +135,11 @@ public class RDBArchiveReaderTest
     @Test
     public void testChannelByRegExp() throws Exception
     {
-    	if (reader == null)
-    		return;
-    	final String pattern = "." + name.replace("(", "\\(").substring(1, name.length()-3) + ".*";
-    	System.out.println("Channels matching a regular expression: " + pattern);
-    	final String[] names = reader.getNamesByRegExp(1, pattern);
+        if (reader == null)
+            return;
+        final String pattern = "." + name.replace("(", "\\(").substring(1, name.length()-3) + ".*";
+        System.out.println("Channels matching a regular expression: " + pattern);
+        final String[] names = reader.getNamesByRegExp(1, pattern);
         for (String name : names)
             System.out.println(name);
         assertTrue(names.length > 0);
@@ -149,30 +149,30 @@ public class RDBArchiveReaderTest
     @Test
     public void testRawData() throws Exception
     {
-    	if (reader == null)
-    		return;
+        if (reader == null)
+            return;
         System.out.println("Raw samples for " + name + ":");
         final Timestamp end = Timestamp.now();
         final Timestamp start = end.minus(TIMERANGE);
-        
+
         final BenchmarkTimer timer = new BenchmarkTimer();
         final ValueIterator values = reader.getRawValues(0, name, start, end);
 
         if (dump)
         {
-        	int count = 0;
-        	Display display = null;
+            int count = 0;
+            Display display = null;
             while (values.hasNext())
             {
                 VType value = values.next();
                 System.out.println(value);
                 if (display == null)
-                	display = ValueUtil.displayOf(value);
+                    display = ValueUtil.displayOf(value);
                 ++count;
                 if (count > 10)
                 {
-                	System.out.println("Skipping rest...");
-                	break;
+                    System.out.println("Skipping rest...");
+                    break;
                 }
             }
             values.close();
@@ -183,29 +183,29 @@ public class RDBArchiveReaderTest
             int count = 0;
             while (values.hasNext())
             {
-            	final VType value = values.next();
+                final VType value = values.next();
                 // System.out.println(value);
                 assertNotNull(value);
                 ++count;
             }
             timer.stop();
             /* PostgreSQL 9 Test Results without the System.out in the loop:
-             * 
+             *
              * HP Compact 8000 Elite Small Form Factor,
-	    	 * Intel Core Duo, 3GHz, Windows 7, 32 bit,
-	    	 * Hitachi Hds721025cla382 250gb Sata 7200rpm
-	    	 * 
-	    	 * No constraints on sample table.
-	    	 * 723000 samples in 7.547 seconds
-	    	 * 95796.79727732475 samples/sec
-	    	 * 
-	    	 * JProfiler shows that time is spent in ResultSet.next(),
-	    	 * which fetches new data according to the 'fetch size'
-	    	 * of 100000.
-	    	 * But overall about 3 times that much CPU is spent
-	    	 * in ResultSet.getTimestamp() because it needs to
-	    	 * deal with Calendar
-	    	 */
+             * Intel Core Duo, 3GHz, Windows 7, 32 bit,
+             * Hitachi Hds721025cla382 250gb Sata 7200rpm
+             *
+             * No constraints on sample table.
+             * 723000 samples in 7.547 seconds
+             * 95796.79727732475 samples/sec
+             *
+             * JProfiler shows that time is spent in ResultSet.next(),
+             * which fetches new data according to the 'fetch size'
+             * of 100000.
+             * But overall about 3 times that much CPU is spent
+             * in ResultSet.getTimestamp() because it needs to
+             * deal with Calendar
+             */
             System.out.println(count + " samples in " + timer);
             System.out.println(count/timer.getSeconds() + " samples/sec");
         }
@@ -215,15 +215,15 @@ public class RDBArchiveReaderTest
     @Test
     public void testRawWaveformData() throws Exception
     {
-    	if (reader == null  ||  array_name == null)
-    		return;
+        if (reader == null  ||  array_name == null)
+            return;
         System.out.println("Raw samples for waveform " + array_name + ":");
-        
+
         if (reader.useArrayBlob())
-        	System.out.println(".. using BLOB");
+            System.out.println(".. using BLOB");
         else
-        	System.out.println(".. using non-BLOB array table");
-        
+            System.out.println(".. using non-BLOB array table");
+
         final Timestamp end = Timestamp.now();
         final Timestamp start = end.minus(WAVEFORM_TIMERANGE);
 
@@ -242,24 +242,24 @@ public class RDBArchiveReaderTest
     @Test
     public void testJavaOptimizedScalarData() throws Exception
     {
-    	if (reader == null)
-    		return;
+        if (reader == null)
+            return;
         System.out.println("Optimized samples for " + name + ":");
         System.out.println("-- Java implementation --");
 
         final Timestamp end = Timestamp.now();
         final Timestamp start = end.minus(TIMERANGE);
-        
+
         final ValueIterator raw = reader.getRawValues(0, name, start, end);
         final double seconds = end.durationFrom(start).toSeconds() / BUCKETS;
         System.out.println("Time range: "
-        		+ TimestampHelper.format(start) + " ... " + TimestampHelper.format(end)
-        		+ ", " + BUCKETS + " bins, "
-        		+ "i.e. every " + seconds + " seconds");
+                + TimestampHelper.format(start) + " ... " + TimestampHelper.format(end)
+                + ", " + BUCKETS + " bins, "
+                + "i.e. every " + seconds + " seconds");
         final ValueIterator values = new AveragedValueIterator(raw, seconds);
         while (values.hasNext())
         {
-        	final VType value = values.next();
+            final VType value = values.next();
             System.out.println(value);
         }
         values.close();
@@ -269,20 +269,20 @@ public class RDBArchiveReaderTest
     @Test
     public void testStoredProcedure() throws Exception
     {
-    	if (reader == null)
-    		return;
-    	if (proc.isEmpty())
-    		System.out.println("No stored procedure available");
-    	final int channel_id = reader.getChannelID(name);
+        if (reader == null)
+            return;
+        if (proc.isEmpty())
+            System.out.println("No stored procedure available");
+        final int channel_id = reader.getChannelID(name);
         System.out.println("Optimized samples for " + name + " (" + channel_id + "):");
         System.out.println("-- Stored procedure --");
 
         final Timestamp end = Timestamp.now();
         final Timestamp start = end.minus(TIMERANGE);
-		final ValueIterator values = new StoredProcedureValueIterator(reader, proc, channel_id, start, end, BUCKETS);
+        final ValueIterator values = new StoredProcedureValueIterator(reader, proc, channel_id, start, end, BUCKETS);
         while (values.hasNext())
         {
-        	final VType value = values.next();
+            final VType value = values.next();
             System.out.println(value);
         }
         values.close();

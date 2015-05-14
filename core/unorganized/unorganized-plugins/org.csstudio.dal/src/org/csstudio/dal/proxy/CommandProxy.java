@@ -36,56 +36,56 @@ import org.csstudio.dal.ResponseListener;
  */
 public interface CommandProxy
 {
-	/**
-	 * The name of the command within parent context.
-	 *
-	 * @return the name
-	 */
-	public String getName();
+    /**
+     * The name of the command within parent context.
+     *
+     * @return the name
+     */
+    public String getName();
 
-	/**
-	 * Executes command syncrhonously. Thread calling this method is
-	 * blocked until  execution is finished.
-	 *
-	 * @return returned valune, <code>null</code> if non exists
-	 *
-	 * @throws RemoteException if executions fails
-	 */
-	public Object execute(Object... parameters) throws RemoteException;
+    /**
+     * Executes command syncrhonously. Thread calling this method is
+     * blocked until  execution is finished.
+     *
+     * @return returned valune, <code>null</code> if non exists
+     *
+     * @throws RemoteException if executions fails
+     */
+    public Object execute(Object... parameters) throws RemoteException;
 
-	/**
-	 * Returns input parameter types.
-	 *
-	 * @return array of types
-	 */
-	public Class[] getParameterTypes();
+    /**
+     * Returns input parameter types.
+     *
+     * @return array of types
+     */
+    public Class[] getParameterTypes();
 
-	/**
-	 * Returned type, may be <code>null</code> if no value is returned.
-	 *
-	 * @return return type or <code>null</code>
-	 */
-	public Class getReturnedType();
+    /**
+     * Returned type, may be <code>null</code> if no value is returned.
+     *
+     * @return return type or <code>null</code>
+     */
+    public Class getReturnedType();
 
-	/**
-	 * Returns <code>true</code> if this command can be executed
-	 * asynchronously.
-	 *
-	 * @return <code>true</code> if this command can be executed asynchronously
-	 */
-	public boolean isAsynchronous();
+    /**
+     * Returns <code>true</code> if this command can be executed
+     * asynchronously.
+     *
+     * @return <code>true</code> if this command can be executed asynchronously
+     */
+    public boolean isAsynchronous();
 
-	/**
-	 * Asynchronously executes command.
-	 *
-	 * @param callback a callback which receives response notification
-	 *
-	 * @return request object which identifies responses
-	 *
-	 * @throws RemoteException if remote operation fails
-	 */
-	public <T> Request<T> execute(ResponseListener<T> callback, Object... parameters)
-		throws RemoteException;
+    /**
+     * Asynchronously executes command.
+     *
+     * @param callback a callback which receives response notification
+     *
+     * @return request object which identifies responses
+     *
+     * @throws RemoteException if remote operation fails
+     */
+    public <T> Request<T> execute(ResponseListener<T> callback, Object... parameters)
+        throws RemoteException;
 }
 
 /* __oOo__ */

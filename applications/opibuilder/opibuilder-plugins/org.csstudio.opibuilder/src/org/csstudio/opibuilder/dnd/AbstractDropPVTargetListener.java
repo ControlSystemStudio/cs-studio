@@ -19,49 +19,49 @@ import org.eclipse.swt.dnd.Transfer;
  *
  */
 public abstract class AbstractDropPVTargetListener extends AbstractTransferDropTargetListener {
-	
 
-	public AbstractDropPVTargetListener(EditPartViewer viewer, Transfer xfer) {
-		super(viewer, xfer);
-	}
 
-	@Override
-	protected void updateTargetRequest() {
-		((DropPVRequest)getTargetRequest()).setLocation(getDropLocation());
-	}
-	
-	@Override
-	protected void updateTargetEditPart() {
-		super.updateTargetEditPart();
-		if(getTargetEditPart() instanceof AbstractBaseEditPart)
-			((DropPVRequest)getTargetRequest()).setTargetWidget(
-					(AbstractBaseEditPart) getTargetEditPart());
+    public AbstractDropPVTargetListener(EditPartViewer viewer, Transfer xfer) {
+        super(viewer, xfer);
+    }
 
-	}
-	
-	@Override
-	protected Request createTargetRequest() {		
-		return new DropPVRequest();
-	}
-	
-	@Override
-	protected void handleDragOver() {
-		getCurrentEvent().detail = DND.DROP_COPY;
-		super.handleDragOver();
-	}
-	
-	@Override
-	protected void handleDrop() {
-		String[] pvNames = getPVNamesFromTransfer();
-		if(pvNames == null)
-			return;
-		((DropPVRequest)getTargetRequest()).setPvNames(pvNames);
-		super.handleDrop();
-	}
-	
-	/**
-	 * @return the PV Name array from transfer.
-	 */
-	protected abstract String[] getPVNamesFromTransfer();
+    @Override
+    protected void updateTargetRequest() {
+        ((DropPVRequest)getTargetRequest()).setLocation(getDropLocation());
+    }
+
+    @Override
+    protected void updateTargetEditPart() {
+        super.updateTargetEditPart();
+        if(getTargetEditPart() instanceof AbstractBaseEditPart)
+            ((DropPVRequest)getTargetRequest()).setTargetWidget(
+                    (AbstractBaseEditPart) getTargetEditPart());
+
+    }
+
+    @Override
+    protected Request createTargetRequest() {
+        return new DropPVRequest();
+    }
+
+    @Override
+    protected void handleDragOver() {
+        getCurrentEvent().detail = DND.DROP_COPY;
+        super.handleDragOver();
+    }
+
+    @Override
+    protected void handleDrop() {
+        String[] pvNames = getPVNamesFromTransfer();
+        if(pvNames == null)
+            return;
+        ((DropPVRequest)getTargetRequest()).setPvNames(pvNames);
+        super.handleDrop();
+    }
+
+    /**
+     * @return the PV Name array from transfer.
+     */
+    protected abstract String[] getPVNamesFromTransfer();
 
 }

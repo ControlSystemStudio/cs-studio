@@ -179,7 +179,7 @@ public class DOMHelper
             throw new Exception("Missing value for '" + element_name + "'");
         try
         {
-        	return StringOrDouble.parse(text);
+            return StringOrDouble.parse(text);
         }
         catch (NumberFormatException ex)
         {
@@ -191,7 +191,7 @@ public class DOMHelper
             return text;
         }
     }
-    
+
     /** Locate a sub-element tagged 'name', return its integer value.
      *
      *  <p>Will only go one level down, not search the whole tree.

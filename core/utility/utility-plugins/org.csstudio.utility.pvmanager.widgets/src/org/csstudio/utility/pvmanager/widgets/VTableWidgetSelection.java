@@ -7,19 +7,19 @@ import org.csstudio.csdata.ProcessVariable;
 import org.epics.vtype.VType;
 
 public class VTableWidgetSelection implements VTypeAdaptable, ProcessVariableAdaptable {
-	private final VTableWidget vTableWidget;
-	
-	public VTableWidgetSelection(VTableWidget vTableWidget) {
-		this.vTableWidget = vTableWidget;
-	}
+    private final VTableWidget vTableWidget;
 
-	@Override
-	public VType toVType() {
-		return vTableWidget.getValue();
-	}
+    public VTableWidgetSelection(VTableWidget vTableWidget) {
+        this.vTableWidget = vTableWidget;
+    }
 
-	@Override
-	public Collection<ProcessVariable> toProcessVariables() {
-		return Collections.singleton(new ProcessVariable(vTableWidget.getPvFormula()));
-	}
+    @Override
+    public VType toVType() {
+        return vTableWidget.getValue();
+    }
+
+    @Override
+    public Collection<ProcessVariable> toProcessVariables() {
+        return Collections.singleton(new ProcessVariable(vTableWidget.getPvFormula()));
+    }
 }

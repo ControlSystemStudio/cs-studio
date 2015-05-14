@@ -16,21 +16,21 @@ import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
  * <p>
  * plugin.xml registers this for the "log" scheme.
  * </p>
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class AutomatedLogAction implements IActionProvider {
 
-	/** {@inheritDoc} */
-	@Override
-	public IActionValidator getValidator() {
-		return new LogCommandValidator();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public IActionValidator getValidator() {
+        return new LogCommandValidator();
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public IAutomatedAction getNotifier() {
-		return new LogActionImpl();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public IAutomatedAction getNotifier() {
+        return new LogActionImpl();
+    }
 }

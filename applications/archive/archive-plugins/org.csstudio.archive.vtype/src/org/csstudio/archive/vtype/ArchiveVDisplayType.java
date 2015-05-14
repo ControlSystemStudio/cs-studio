@@ -20,7 +20,7 @@ import org.epics.util.time.Timestamp;
 public class ArchiveVDisplayType extends ArchiveVType implements Display
 {
     final private Display display;
-    
+
     public ArchiveVDisplayType(final Timestamp timestamp,
             final AlarmSeverity severity, final String status,
             final Display display)

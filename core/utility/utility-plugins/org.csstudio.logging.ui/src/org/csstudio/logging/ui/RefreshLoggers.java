@@ -6,7 +6,7 @@ import org.eclipse.core.commands.ExecutionException;
 
 /**
  * Rebuild the logging configuration tree by reloading all the loggers
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -14,8 +14,8 @@ public class RefreshLoggers extends AbstractHandler {
 
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
-	FXLogginConfiguration.updateLoggerMap();
-	return null;
+    FXLogginConfiguration.updateLoggerMap();
+    return null;
     }
 
 }

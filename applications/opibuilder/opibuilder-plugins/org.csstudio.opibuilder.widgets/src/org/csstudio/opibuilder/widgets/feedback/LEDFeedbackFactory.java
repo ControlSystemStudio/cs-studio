@@ -17,14 +17,14 @@ import org.csstudio.opibuilder.widgets.model.LEDModel;
 public class LEDFeedbackFactory extends AbstractFixRatioSizeFeedbackFactory {
 
 
-	@Override
-	public int getMinimumWidth() {
-		return LEDModel.MINIMUM_SIZE;
-	}
-	
-	@Override
-	public boolean isSquareSizeRequired(AbstractWidgetModel widgetModel) {
-		return !((LEDModel)widgetModel).isSquareLED();
-	}
-	
+    @Override
+    public int getMinimumWidth() {
+        return LEDModel.MINIMUM_SIZE;
+    }
+
+    @Override
+    public boolean isSquareSizeRequired(AbstractWidgetModel widgetModel) {
+        return !((LEDModel)widgetModel).isSquareLED();
+    }
+
 }

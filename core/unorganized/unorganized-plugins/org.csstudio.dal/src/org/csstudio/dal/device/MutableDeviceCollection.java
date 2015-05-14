@@ -31,73 +31,73 @@ import java.util.Collection;
  * @author <a href="mailto:igor.kriznar@cosylab.com">Igor Kriznar</a>
  */
 public interface MutableDeviceCollection<T extends AbstractDevice>
-	extends DeviceCollection<T>, Collection<T>
+    extends DeviceCollection<T>, Collection<T>
 {
-	// Modification Operations
+    // Modification Operations
 
-	/**
-	 * Removes all <code>TypelessProperty</code> elements from this collection,
-	 * whose unique name macthes with the provided name.
-	 *
-	 * @param name unique name of removed properties
-	 *
-	 * @return true if collection was modified by this operation
-	 */
-	boolean remove(String name);
+    /**
+     * Removes all <code>TypelessProperty</code> elements from this collection,
+     * whose unique name macthes with the provided name.
+     *
+     * @param name unique name of removed properties
+     *
+     * @return true if collection was modified by this operation
+     */
+    boolean remove(String name);
 
-	/**
-	 * Adds all of the elements in the specified collection to this set if
-	 * they're not already present (optional operation).  If the specified
-	 * collection is also a set, the <tt>addAll</tt> operation effectively
-	 * modifies this set so that its value is the <i>union</i> of the two
-	 * sets.  The behavior of this operation is unspecified if the specified
-	 * collection is modified while the operation is in progress.
-	 *
-	 * @param c collection whose elements are to be added to this set.
-	 *
-	 * @return <tt>true</tt> if this set changed as a result of the call.
-	 *
-	 * @see #add(TypelessProperty)
-	 */
-	boolean addAll(DeviceCollection c);
+    /**
+     * Adds all of the elements in the specified collection to this set if
+     * they're not already present (optional operation).  If the specified
+     * collection is also a set, the <tt>addAll</tt> operation effectively
+     * modifies this set so that its value is the <i>union</i> of the two
+     * sets.  The behavior of this operation is unspecified if the specified
+     * collection is modified while the operation is in progress.
+     *
+     * @param c collection whose elements are to be added to this set.
+     *
+     * @return <tt>true</tt> if this set changed as a result of the call.
+     *
+     * @see #add(TypelessProperty)
+     */
+    boolean addAll(DeviceCollection c);
 
-	/**
-	 * Retains only the elements in this set that are contained in the
-	 * specified collection (optional operation).  In other words, removes
-	 * from this set all of its elements that are not contained in the
-	 * specified collection.  If the specified collection is also a set, this
-	 * operation effectively modifies this set so that its value is the
-	 * <i>intersection</i> of the two sets.
-	 *
-	 * @param c collection that defines which elements this set will retain.
-	 *
-	 * @return <tt>true</tt> if this collection changed as a result of the
-	 *         call.
-	 *
-	 * @see #remove(Object)
-	 */
-	boolean retainAll(DeviceCollection c);
+    /**
+     * Retains only the elements in this set that are contained in the
+     * specified collection (optional operation).  In other words, removes
+     * from this set all of its elements that are not contained in the
+     * specified collection.  If the specified collection is also a set, this
+     * operation effectively modifies this set so that its value is the
+     * <i>intersection</i> of the two sets.
+     *
+     * @param c collection that defines which elements this set will retain.
+     *
+     * @return <tt>true</tt> if this collection changed as a result of the
+     *         call.
+     *
+     * @see #remove(Object)
+     */
+    boolean retainAll(DeviceCollection c);
 
-	/**
-	 * Removes from this set all of its elements that are contained in the
-	 * specified collection (optional operation).  If the specified collection
-	 * is also a set, this operation effectively modifies this set so that its
-	 * value is the <i>asymmetric set difference</i> of the two sets.
-	 *
-	 * @param c collection that defines which elements will be removed from
-	 *        this set.
-	 *
-	 * @return <tt>true</tt> if this set changed as a result of the call.
-	 *
-	 * @see #remove(TypelessProperty)
-	 */
-	boolean removeAll(DeviceCollection c);
+    /**
+     * Removes from this set all of its elements that are contained in the
+     * specified collection (optional operation).  If the specified collection
+     * is also a set, this operation effectively modifies this set so that its
+     * value is the <i>asymmetric set difference</i> of the two sets.
+     *
+     * @param c collection that defines which elements will be removed from
+     *        this set.
+     *
+     * @return <tt>true</tt> if this set changed as a result of the call.
+     *
+     * @see #remove(TypelessProperty)
+     */
+    boolean removeAll(DeviceCollection c);
 
-	/**
-	 * Removes all of the elements from this set. This set will be empty after
-	 * this call returns (unless it throws an exception).
-	 */
-	void clear();
+    /**
+     * Removes all of the elements from this set. This set will be empty after
+     * this call returns (unless it throws an exception).
+     */
+    void clear();
 }
 
 /* __oOo__ */

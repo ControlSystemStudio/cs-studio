@@ -10,56 +10,56 @@ import org.csstudio.platform.libs.jms.IJmsProducer;
 import org.csstudio.platform.libs.jms.JmsRedundantProducer.ProducerId;
 
 /**
- * 
+ *
  * @author Goesta Steen
  */
 public class DummyJmsProducer implements IJmsProducer {
 
-	private boolean isClosed = false;
-	private HashMap<ProducerId, String> producerToDestination = new HashMap<ProducerId, String>();
-	
-	public void closeAll() {
-		producerToDestination = null;
-		isClosed = true;
-	}
+    private boolean isClosed = false;
+    private HashMap<ProducerId, String> producerToDestination = new HashMap<ProducerId, String>();
 
-	public MapMessage createMapMessage() throws RuntimeException {
-		return new ActiveMQMapMessage();
-	}
+    public void closeAll() {
+        producerToDestination = null;
+        isClosed = true;
+    }
 
-	public ProducerId createProducer(String topicName) throws RuntimeException {
-		ProducerId producerId = new ProducerId() {};
-		producerToDestination.put(producerId, topicName);
-		return producerId;
-	}
+    public MapMessage createMapMessage() throws RuntimeException {
+        return new ActiveMQMapMessage();
+    }
 
-	public boolean hasProducerDestiantion(ProducerId id)
-			throws RuntimeException {
-		String destination = producerToDestination.get(id);
-		if (destination != null && destination.length() > 0) {
-			return true;
-		}
-		return false;
-	}
+    public ProducerId createProducer(String topicName) throws RuntimeException {
+        ProducerId producerId = new ProducerId() {};
+        producerToDestination.put(producerId, topicName);
+        return producerId;
+    }
 
-	public boolean isClosed() {
-		return isClosed;
-	}
+    public boolean hasProducerDestiantion(ProducerId id)
+            throws RuntimeException {
+        String destination = producerToDestination.get(id);
+        if (destination != null && destination.length() > 0) {
+            return true;
+        }
+        return false;
+    }
 
-	public boolean knowsProducer(ProducerId id) {
-		return producerToDestination.keySet().contains(id);
-	}
+    public boolean isClosed() {
+        return isClosed;
+    }
 
-	public String[] send(ProducerId id, Message message)
-			throws RuntimeException {
-		return send(id, null, message);
-	}
+    public boolean knowsProducer(ProducerId id) {
+        return producerToDestination.keySet().contains(id);
+    }
 
-	public String[] send(ProducerId id, String topicName, Message message)
-			throws RuntimeException {
-		//TODO 
-		System.out.println(topicName + " " + message.toString());
-		return new String[]{"DummyJmsProducer"};
-	}
+    public String[] send(ProducerId id, Message message)
+            throws RuntimeException {
+        return send(id, null, message);
+    }
+
+    public String[] send(ProducerId id, String topicName, Message message)
+            throws RuntimeException {
+        //TODO
+        System.out.println(topicName + " " + message.toString());
+        return new String[]{"DummyJmsProducer"};
+    }
 
 }

@@ -44,10 +44,10 @@ import org.csstudio.data.values.ValueFactory;
  */
 public class DBR_Helper
 {
-	/** All live samples are 'original' */
-	final private static IValue.Quality quality = IValue.Quality.Original;
+    /** All live samples are 'original' */
+    final private static IValue.Quality quality = IValue.Quality.Original;
 
-	/** Convert the EPICS time stamp (based on 1990) into the usual 1970 epoch.
+    /** Convert the EPICS time stamp (based on 1990) into the usual 1970 epoch.
      *  <p>
      *  In case this is called with data from a CTRL_... request,
      *  the null timestamp is replaced with the current host time.

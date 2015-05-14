@@ -24,57 +24,57 @@ import org.python.core.PySystemState;
  */
 public class JythonScriptStore extends AbstractScriptStore{
 
-	private PythonInterpreter interpreter;
+    private PythonInterpreter interpreter;
 
-	private PyCode code;
+    private PyCode code;
 
-	public JythonScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
-			final IPV[] pvArray) throws Exception {
-		super(scriptData, editpart, pvArray);
+    public JythonScriptStore(final ScriptData scriptData, final AbstractBaseEditPart editpart,
+            final IPV[] pvArray) throws Exception {
+        super(scriptData, editpart, pvArray);
 
-	}
+    }
 
-	@Override
+    @Override
     protected void initScriptEngine() {
-		IPath scriptPath = getAbsoluteScriptPath();
-		//Add the path of script to python module search path
-		PySystemState state = new PySystemState();
-		if(scriptPath != null && !scriptPath.isEmpty()){
+        IPath scriptPath = getAbsoluteScriptPath();
+        //Add the path of script to python module search path
+        PySystemState state = new PySystemState();
+        if(scriptPath != null && !scriptPath.isEmpty()){
 
-			//If it is a workspace file.
-			if(ResourceUtil.isExistingWorkspaceFile(scriptPath)){
-				IPath folderPath = scriptPath.removeLastSegments(1);
-				String sysLocation = ResourceUtil.workspacePathToSysPath(folderPath).toOSString();
-				state.path.append(new PyString(sysLocation));
-			}else if(ResourceUtil.isExistingLocalFile(scriptPath)){
-				IPath folderPath = scriptPath.removeLastSegments(1);
-				state.path.append(new PyString(folderPath.toOSString()));
-			}
-		}
+            //If it is a workspace file.
+            if(ResourceUtil.isExistingWorkspaceFile(scriptPath)){
+                IPath folderPath = scriptPath.removeLastSegments(1);
+                String sysLocation = ResourceUtil.workspacePathToSysPath(folderPath).toOSString();
+                state.path.append(new PyString(sysLocation));
+            }else if(ResourceUtil.isExistingLocalFile(scriptPath)){
+                IPath folderPath = scriptPath.removeLastSegments(1);
+                state.path.append(new PyString(folderPath.toOSString()));
+            }
+        }
 
-		interpreter = new PythonInterpreter(null, state);
-	}
+        interpreter = new PythonInterpreter(null, state);
+    }
 
-	@Override
-	protected void compileString(String string) throws Exception {
-		code = interpreter.compile(string);
-	}
+    @Override
+    protected void compileString(String string) throws Exception {
+        code = interpreter.compile(string);
+    }
 
-	@Override
-	protected void compileInputStream(InputStream s) throws Exception {
-		code = interpreter.compile(s);
-	}
+    @Override
+    protected void compileInputStream(InputStream s) throws Exception {
+        code = interpreter.compile(s);
+    }
 
-	@Override
-	protected void execScript(final IPV triggerPV) throws Exception {
-		interpreter.set(ScriptService.WIDGET, getEditPart());
-		interpreter.set(ScriptService.PVS, getPvArray());
-		interpreter.set(ScriptService.DISPLAY, getDisplayEditPart());
-		interpreter.set(ScriptService.WIDGET_CONTROLLER_DEPRECIATED, getEditPart());
-		interpreter.set(ScriptService.PV_ARRAY_DEPRECIATED, getPvArray());
-		interpreter.set(ScriptService.TRIGGER_PV, triggerPV);
-		interpreter.exec(code);
-	}
+    @Override
+    protected void execScript(final IPV triggerPV) throws Exception {
+        interpreter.set(ScriptService.WIDGET, getEditPart());
+        interpreter.set(ScriptService.PVS, getPvArray());
+        interpreter.set(ScriptService.DISPLAY, getDisplayEditPart());
+        interpreter.set(ScriptService.WIDGET_CONTROLLER_DEPRECIATED, getEditPart());
+        interpreter.set(ScriptService.PV_ARRAY_DEPRECIATED, getPvArray());
+        interpreter.set(ScriptService.TRIGGER_PV, triggerPV);
+        interpreter.exec(code);
+    }
 
 
 }

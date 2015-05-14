@@ -15,5 +15,5 @@ import org.eclipse.draw2d.IFigure;
  *
  */
 public interface ITextFigure extends IFigure {
-	public String getText();
+    public String getText();
 }

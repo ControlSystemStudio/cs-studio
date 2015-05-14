@@ -6,14 +6,14 @@ public class Messages extends NLS
 {
     private static final String BUNDLE_NAME = "org.csstudio.platform.workspace.messages"; //$NON-NLS-1$
     public static String LoginDialog_Anonymous;
-	public static String LoginDialog_Login;
-	public static String LoginDialog_LoginAnonymous;
-	public static String LoginDialog_Password;
-	public static String LoginDialog_UserName;
+    public static String LoginDialog_Login;
+    public static String LoginDialog_LoginAnonymous;
+    public static String LoginDialog_Password;
+    public static String LoginDialog_UserName;
 
-	public static String StartupDialog_SelectWorkspace;
-	
-	public static String Workspace_AskAgain;
+    public static String StartupDialog_SelectWorkspace;
+
+    public static String Workspace_AskAgain;
     public static String Workspace_AskAgainTT;
     public static String Workspace_Browse;
     public static String Workspace_BrowseDialogMessage;
@@ -35,7 +35,7 @@ public class Messages extends NLS
     public static String Workspace_LockErrorTitle;
     public static String Workspace_NestedErrorFMT;
     public static String Workspace_ContainsWorkspacesErrorFMT;
-    
+
     static
     {
         // initialize resource bundle

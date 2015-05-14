@@ -30,29 +30,29 @@ package org.csstudio.dal;
  */
 public interface PatternPropertyCharacteristics extends PropertyCharacteristics
 {
-	/**
-	 * Name of the characteristic describing bits. Returned value type
-	 * is <code>String[]</code>.
-	 */
-	public static final String C_BIT_DESCRIPTIONS = CharacteristicInfo.C_BIT_DESCRIPTIONS.getName();
+    /**
+     * Name of the characteristic describing bits. Returned value type
+     * is <code>String[]</code>.
+     */
+    public static final String C_BIT_DESCRIPTIONS = CharacteristicInfo.C_BIT_DESCRIPTIONS.getName();
 
-	/**
-	 * Name of the characteristic defining active bit significance.
-	 * Returned value type is <code>BitCondition[]</code>.
-	 */
-	public static final String C_CONDITION_WHEN_SET = CharacteristicInfo.C_CONDITION_WHEN_SET.getName();
+    /**
+     * Name of the characteristic defining active bit significance.
+     * Returned value type is <code>BitCondition[]</code>.
+     */
+    public static final String C_CONDITION_WHEN_SET = CharacteristicInfo.C_CONDITION_WHEN_SET.getName();
 
-	/**
-	 * Name of the characteristic defining inactive bit significance.
-	 * Returned value type is <code>BitCondition[]</code>.
-	 */
-	public static final String C_CONDITION_WHEN_CLEARED = CharacteristicInfo.C_CONDITION_WHEN_CLEARED.getName();
+    /**
+     * Name of the characteristic defining inactive bit significance.
+     * Returned value type is <code>BitCondition[]</code>.
+     */
+    public static final String C_CONDITION_WHEN_CLEARED = CharacteristicInfo.C_CONDITION_WHEN_CLEARED.getName();
 
-	/**
-	 * Name of the characteristic defining bits relevance. Returned
-	 * value type is <code>BitSet</code>.
-	 */
-	public static final String C_BIT_MASK = CharacteristicInfo.C_BIT_MASK.getName();
+    /**
+     * Name of the characteristic defining bits relevance. Returned
+     * value type is <code>BitSet</code>.
+     */
+    public static final String C_BIT_MASK = CharacteristicInfo.C_BIT_MASK.getName();
 } /* __oOo__ */
 
 

@@ -14,34 +14,34 @@ import org.w3c.dom.Node;
 
 /**
  * XML output class for OPI Rule type.
- * 
+ *
  * @author Xihui Chen
  */
 public class OpiAction {
 
 
-	/**Create/add an opi action.
-	 * @param widgetContext
-	 * @param actionType
-	 * @param actionProperties
-	 * @param hookfirst
-	 * @param hookAll
-	 */
-	public OpiAction(Context widgetContext, String actionType, List<Element> actionProperties,
-			boolean hookfirst, boolean hookAll) {
-		if (widgetContext.getElement().getElementsByTagName("actions").getLength() <= 0) {
-			Element actionsNode = widgetContext.getDocument().createElement("actions");
-			widgetContext.getElement().appendChild(actionsNode);
-			actionsNode.setAttribute("hook", String.valueOf(hookfirst));
-			actionsNode.setAttribute("hook_all", String.valueOf(hookAll));
-		}
-		Node actionsNode = widgetContext.getElement().getElementsByTagName("actions").item(0);
-		Element actionNode = widgetContext.getDocument().createElement("action");
-		actionsNode.appendChild(actionNode);
+    /**Create/add an opi action.
+     * @param widgetContext
+     * @param actionType
+     * @param actionProperties
+     * @param hookfirst
+     * @param hookAll
+     */
+    public OpiAction(Context widgetContext, String actionType, List<Element> actionProperties,
+            boolean hookfirst, boolean hookAll) {
+        if (widgetContext.getElement().getElementsByTagName("actions").getLength() <= 0) {
+            Element actionsNode = widgetContext.getDocument().createElement("actions");
+            widgetContext.getElement().appendChild(actionsNode);
+            actionsNode.setAttribute("hook", String.valueOf(hookfirst));
+            actionsNode.setAttribute("hook_all", String.valueOf(hookAll));
+        }
+        Node actionsNode = widgetContext.getElement().getElementsByTagName("actions").item(0);
+        Element actionNode = widgetContext.getDocument().createElement("action");
+        actionsNode.appendChild(actionNode);
 
-		actionNode.setAttribute("type", actionType);
-		for (Element propElement : actionProperties) {
-			actionNode.appendChild(propElement);
-		}
-	}
+        actionNode.setAttribute("type", actionType);
+        for (Element propElement : actionProperties) {
+            actionNode.appendChild(propElement);
+        }
+    }
 }

@@ -23,12 +23,12 @@ class DisconnectedResponse extends AbstractResponse
 {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
-    
+
     DisconnectedResponse(final EngineModel model)
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -59,8 +59,8 @@ class DisconnectedResponse extends AbstractResponse
         html.closeTable();
 
         if (disconnected == 0)
-            html.h2("All channels are connected");            
-        
+            html.h2("All channels are connected");
+
         html.close();
     }
 }

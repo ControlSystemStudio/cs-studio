@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature id="org.csstudio.channel.feature">
+   <feature id="org.csstudio.applications.channel.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
-   <feature id="org.csstudio.channelfinder.feature">
+   <feature id="org.csstudio.applications.channelfinder.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
    <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>

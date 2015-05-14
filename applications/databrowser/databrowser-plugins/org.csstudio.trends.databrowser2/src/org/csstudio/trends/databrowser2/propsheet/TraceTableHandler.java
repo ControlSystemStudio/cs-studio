@@ -115,16 +115,16 @@ public class TraceTableHandler implements IStructuredContentProvider
         }
 
         @Override
-		public void selectedSamplesChanged()
-		{
+        public void selectedSamplesChanged()
+        {
 
-			if (!editing)
-			    trace_table.getTable().getDisplay().asyncExec(() ->
+            if (!editing)
+                trace_table.getTable().getDisplay().asyncExec(() ->
             {
                 if (!trace_table.getTable().isDisposed())
                     trace_table.refresh();
             });
-		}
+        }
     };
 
 
@@ -160,15 +160,15 @@ public class TraceTableHandler implements IStructuredContentProvider
         });
         new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
         {
-			@Override
+            @Override
             public int compare(final ModelItem item1, final ModelItem item2)
             {
-				final int v1 = item1.isVisible() ? 1 : 0;
-				final int v2 = item2.isVisible() ? 1 : 0;
-				final int cmp = v1 - v2;
-				if (cmp != 0)
-					return cmp;
-				return item1.getName().compareTo(item2.getName());
+                final int v1 = item1.isVisible() ? 1 : 0;
+                final int v2 = item2.isVisible() ? 1 : 0;
+                final int cmp = v1 - v2;
+                if (cmp != 0)
+                    return cmp;
+                return item1.getName().compareTo(item2.getName());
             }
         };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -176,7 +176,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
-            	editing = true;
+                editing = true;
                 return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
             }
 
@@ -223,10 +223,10 @@ public class TraceTableHandler implements IStructuredContentProvider
         });
         new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
         {
-			@Override
+            @Override
             public int compare(final ModelItem item1, final ModelItem item2)
             {
-				return item1.getName().compareTo(item2.getName());
+                return item1.getName().compareTo(item2.getName());
             }
         };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -239,8 +239,8 @@ public class TraceTableHandler implements IStructuredContentProvider
 
             @Override
             protected CellEditor getCellEditor(Object element) {
-            	editing = true;
-            	return super.getCellEditor(element);
+                editing = true;
+                return super.getCellEditor(element);
             }
 
             @Override
@@ -274,10 +274,10 @@ public class TraceTableHandler implements IStructuredContentProvider
         });
         new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
         {
-			@Override
+            @Override
             public int compare(final ModelItem item1, final ModelItem item2)
             {
-				return item1.getDisplayName().compareTo(item2.getDisplayName());
+                return item1.getDisplayName().compareTo(item2.getDisplayName());
             }
         };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -290,8 +290,8 @@ public class TraceTableHandler implements IStructuredContentProvider
 
             @Override
             protected CellEditor getCellEditor(Object element) {
-            	editing = true;
-            	return super.getCellEditor(element);
+                editing = true;
+                return super.getCellEditor(element);
             }
 
             @Override
@@ -322,7 +322,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
-            	editing = true;
+                editing = true;
                 return new RGBCellEditor(table_viewer.getTable());
             }
 
@@ -419,8 +419,8 @@ public class TraceTableHandler implements IStructuredContentProvider
 
             @Override
             protected CellEditor getCellEditor(Object element) {
-            	editing = true;
-            	return super.getCellEditor(element);
+                editing = true;
+                return super.getCellEditor(element);
             }
 
             @Override
@@ -496,8 +496,8 @@ public class TraceTableHandler implements IStructuredContentProvider
 
             @Override
             protected CellEditor getCellEditor(Object element) {
-            	editing = true;
-            	return super.getCellEditor(element);
+                editing = true;
+                return super.getCellEditor(element);
             }
 
             @Override
@@ -540,13 +540,13 @@ public class TraceTableHandler implements IStructuredContentProvider
         });
         new TableColumnSortHelper<ModelItem>(table_viewer, view_col)
         {
-			@Override
+            @Override
             public int compare(final ModelItem item1, final ModelItem item2)
             {
-				final int cmp = item1.getAxis().getName().compareTo(item2.getAxis().getName());
-				if (cmp != 0)
-					return cmp;
-				return item1.getDisplayName().compareTo(item2.getDisplayName());
+                final int cmp = item1.getAxis().getName().compareTo(item2.getAxis().getName());
+                if (cmp != 0)
+                    return cmp;
+                return item1.getDisplayName().compareTo(item2.getDisplayName());
             }
         };
         view_col.setEditingSupport(new EditSupportBase(table_viewer)
@@ -556,7 +556,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
-            	editing = true;
+                editing = true;
                 final List<String> axis_names = new ArrayList<>();
                 axes.clear();
                 for (AxisConfig axis : model.getAxes())
@@ -608,7 +608,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
-            	editing = true;
+                editing = true;
                 final ComboBoxCellEditor combo = new ComboBoxCellEditor(table_viewer.getTable(),
                         TraceType.getDisplayNames(), SWT.READ_ONLY);
                 combo.setValue(getValue(element));
@@ -810,7 +810,7 @@ public class TraceTableHandler implements IStructuredContentProvider
             @Override
             protected CellEditor getCellEditor(final Object element)
             {
-            	editing = true;
+                editing = true;
                 return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
             }
 
@@ -866,8 +866,8 @@ public class TraceTableHandler implements IStructuredContentProvider
 
             @Override
             protected CellEditor getCellEditor(Object element) {
-            	editing = true;
-            	return super.getCellEditor(element);
+                editing = true;
+                return super.getCellEditor(element);
             }
 
             @Override
@@ -878,7 +878,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                 {
                     index = Integer.parseInt(value.toString().trim());
                     if (index < 0)
-                    	return;
+                        return;
                     final ModelItem item = (ModelItem)element;
                     if (index != item.getWaveformIndex())
                         new ChangeWaveformIndexCommand(operations_manager, item, index);
@@ -887,7 +887,7 @@ public class TraceTableHandler implements IStructuredContentProvider
                 {
                     return;
                 } finally {
-                	editing = false;
+                    editing = false;
                 }
 
             }
@@ -915,13 +915,13 @@ public class TraceTableHandler implements IStructuredContentProvider
     @Override
     public Object[] getElements(final Object inputElement)
     {
-    	final List<ModelItem> items = new ArrayList<>();
-    	for (ModelItem item : model.getItems())
-    	    items.add(item);
-	    return items.toArray(new ModelItem[items.size()]);
+        final List<ModelItem> items = new ArrayList<>();
+        for (ModelItem item : model.getItems())
+            items.add(item);
+        return items.toArray(new ModelItem[items.size()]);
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public void dispose()
     {

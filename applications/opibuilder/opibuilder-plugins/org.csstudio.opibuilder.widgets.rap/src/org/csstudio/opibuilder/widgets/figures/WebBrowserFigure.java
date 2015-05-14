@@ -18,31 +18,31 @@ import org.eclipse.swt.widgets.Composite;
  *
  */
 public class WebBrowserFigure extends AbstractWebBrowserFigure<Browser> {
-	
-	private Browser browser;
 
-	
-	public WebBrowserFigure(AbstractBaseEditPart editPart) {
-		super(editPart, SWT.None);				
-	}
+    private Browser browser;
 
-	public void setUrl(String url){
-		if(runmode && url.trim().length() > 0){
-			if(!url.startsWith("http") && !url.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
-				url = "http://" + url; //$NON-NLS-1$
-			browser.setUrl(url);
-		}
-	}
-	
-	@Override
-	protected Browser createSWTWidget(Composite parent, int style) {
-		browser = new Browser(parent, SWT.None);
-		return browser;
-	}
-	
-		
-	public Browser getBrowser() {
-		return browser;
-	}
-	
+
+    public WebBrowserFigure(AbstractBaseEditPart editPart) {
+        super(editPart, SWT.None);
+    }
+
+    public void setUrl(String url){
+        if(runmode && url.trim().length() > 0){
+            if(!url.startsWith("http") && !url.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
+                url = "http://" + url; //$NON-NLS-1$
+            browser.setUrl(url);
+        }
+    }
+
+    @Override
+    protected Browser createSWTWidget(Composite parent, int style) {
+        browser = new Browser(parent, SWT.None);
+        return browser;
+    }
+
+
+    public Browser getBrowser() {
+        return browser;
+    }
+
 }

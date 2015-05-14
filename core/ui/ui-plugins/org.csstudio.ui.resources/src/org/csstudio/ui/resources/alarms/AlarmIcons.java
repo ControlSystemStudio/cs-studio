@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*******************************************************************************
  * Copyright (c) 2010-2015 ITER Organization.
  * All rights reserved. This program and the accompanying materials

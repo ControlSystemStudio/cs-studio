@@ -18,91 +18,91 @@ import org.eclipse.ui.internal.WorkbenchWindow;
  */
 @SuppressWarnings("restriction")
 public final class WorkbenchWindowService {
-	
-	
-	private static WorkbenchWindowService instance;
-	
-	private Map<IWorkbenchWindow, CompactModeAction> compactModeRegistry;
-	
-	private Map<IWorkbenchWindow, FullScreenAction> fullScreenRegistry;
-	
-	private static boolean inCompactMode;
-	
-	public WorkbenchWindowService() {
-		compactModeRegistry = new HashMap<IWorkbenchWindow, CompactModeAction>();
-		fullScreenRegistry = new HashMap<IWorkbenchWindow, FullScreenAction>();
-	}
-	
-	public synchronized static final WorkbenchWindowService getInstance() {
-		if(instance == null)
-			instance = new WorkbenchWindowService();
-		return instance;
-	}
-	
-	public void registerCompactModeAction(CompactModeAction action, IWorkbenchWindow window){
-		compactModeRegistry.put(window, action);
-	}
-	
-	public void unregisterCompactModeAction(IWorkbenchWindow window){
-		compactModeRegistry.remove(window);
-	}
-	
-	public void registerFullScreenAction(FullScreenAction action, IWorkbenchWindow window){
-		fullScreenRegistry.put(window, action);
-	}
-	
-	public void unregisterFullScreenAction(IWorkbenchWindow window){
-		fullScreenRegistry.remove(window);
-	}
-	
-	
-	public CompactModeAction getCompactModeAction(IWorkbenchWindow window){
-		return compactModeRegistry.get(window);
-	}
-	
-	public FullScreenAction getFullScreenAction(IWorkbenchWindow window){
-		return fullScreenRegistry.get(window);
-	}
-	
-	public static void setInCompactMode(boolean inCompactMode) {
-		WorkbenchWindowService.inCompactMode = inCompactMode;
-	}
-	
-	public static boolean isInCompactMode() {
-		return inCompactMode | PreferencesHelper.isStartWindowInCompactMode();
-	}
 
-	public static void setToolbarVisibility(final WorkbenchWindow window, final boolean visible){
-		window.setCoolBarVisible(visible);
-		window.setPerspectiveBarVisible(visible);
 
-		//All these don't work
-		// window.setStatusLineVisible(false);
-		// window.getActionBars().getStatusLineManager().getItems()[0].setVisible(visible);
-		// window.getStatusLineManager().getItems()[0].setVisible(visible);
-		// window.getStatusLineManager().getControl().setVisible(visible);
+    private static WorkbenchWindowService instance;
 
-		//A hack to set status line invisible.
-		for (Control child : window.getShell().getChildren()) {
-			if (child.isDisposed())
-				continue;
-			else if (child.getClass().equals(Canvas.class))
-				continue;
-			else if (child.getClass().equals(Composite.class)) {
-				for (Control c : ((Composite)child).getChildren()) {
-					if (c.getClass().getSimpleName().contains("StatusLine")) {
-						child.setVisible(visible);
-						break;
-					}
-				}
-				continue;
-			}
-				
-			child.setVisible(visible);
+    private Map<IWorkbenchWindow, CompactModeAction> compactModeRegistry;
 
-		}
-		window.getShell().layout();
-		
-	}
-	
+    private Map<IWorkbenchWindow, FullScreenAction> fullScreenRegistry;
+
+    private static boolean inCompactMode;
+
+    public WorkbenchWindowService() {
+        compactModeRegistry = new HashMap<IWorkbenchWindow, CompactModeAction>();
+        fullScreenRegistry = new HashMap<IWorkbenchWindow, FullScreenAction>();
+    }
+
+    public synchronized static final WorkbenchWindowService getInstance() {
+        if(instance == null)
+            instance = new WorkbenchWindowService();
+        return instance;
+    }
+
+    public void registerCompactModeAction(CompactModeAction action, IWorkbenchWindow window){
+        compactModeRegistry.put(window, action);
+    }
+
+    public void unregisterCompactModeAction(IWorkbenchWindow window){
+        compactModeRegistry.remove(window);
+    }
+
+    public void registerFullScreenAction(FullScreenAction action, IWorkbenchWindow window){
+        fullScreenRegistry.put(window, action);
+    }
+
+    public void unregisterFullScreenAction(IWorkbenchWindow window){
+        fullScreenRegistry.remove(window);
+    }
+
+
+    public CompactModeAction getCompactModeAction(IWorkbenchWindow window){
+        return compactModeRegistry.get(window);
+    }
+
+    public FullScreenAction getFullScreenAction(IWorkbenchWindow window){
+        return fullScreenRegistry.get(window);
+    }
+
+    public static void setInCompactMode(boolean inCompactMode) {
+        WorkbenchWindowService.inCompactMode = inCompactMode;
+    }
+
+    public static boolean isInCompactMode() {
+        return inCompactMode | PreferencesHelper.isStartWindowInCompactMode();
+    }
+
+    public static void setToolbarVisibility(final WorkbenchWindow window, final boolean visible){
+        window.setCoolBarVisible(visible);
+        window.setPerspectiveBarVisible(visible);
+
+        //All these don't work
+        // window.setStatusLineVisible(false);
+        // window.getActionBars().getStatusLineManager().getItems()[0].setVisible(visible);
+        // window.getStatusLineManager().getItems()[0].setVisible(visible);
+        // window.getStatusLineManager().getControl().setVisible(visible);
+
+        //A hack to set status line invisible.
+        for (Control child : window.getShell().getChildren()) {
+            if (child.isDisposed())
+                continue;
+            else if (child.getClass().equals(Canvas.class))
+                continue;
+            else if (child.getClass().equals(Composite.class)) {
+                for (Control c : ((Composite)child).getChildren()) {
+                    if (c.getClass().getSimpleName().contains("StatusLine")) {
+                        child.setVisible(visible);
+                        break;
+                    }
+                }
+                continue;
+            }
+
+            child.setVisible(visible);
+
+        }
+        window.getShell().layout();
+
+    }
+
 }

@@ -37,7 +37,7 @@ public class DALPrecisionTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(DALPrecisionTest.class);
 
-	
+
     /**
      * TODO (hrickens) :
      *

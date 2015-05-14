@@ -26,76 +26,76 @@ import java.util.List;
 @SuppressWarnings("nls")
 final public class NDStrides
 {
-	final private int[] strides;
+    final private int[] strides;
 
-	/** Initialize
-	 *  @param strides Array strides, e.g. [1, 2]
-	 */
-	public NDStrides(final int... strides)
-	{
-		this.strides = strides.clone();
-	}
+    /** Initialize
+     *  @param strides Array strides, e.g. [1, 2]
+     */
+    public NDStrides(final int... strides)
+    {
+        this.strides = strides.clone();
+    }
 
-	/** Initialize
+    /** Initialize
      *  @param shape Array strides, e.g. [1, 2]
-	 */
-	public NDStrides(final List<Integer> strides)
+     */
+    public NDStrides(final List<Integer> strides)
     {
         this.strides = new int[strides.size()];
         for (int i=0; i<this.strides.length; ++i)
-        	this.strides[i] = strides.get(i);
+            this.strides[i] = strides.get(i);
     }
 
-	/** Initialize with default strides for a shape
-	 *  @param shape Shape
-	 */
-	public NDStrides(final NDShape shape)
+    /** Initialize with default strides for a shape
+     *  @param shape Shape
+     */
+    public NDStrides(final NDShape shape)
     {
         this.strides = defaultStrides(shape);
     }
 
-	/** Compute default strides for a shape addressing a complete flat array
-	 *  @param shape Shape that describes the array
-	 *  @return strides
-	 */
-	private static int[] defaultStrides(final NDShape shape)
+    /** Compute default strides for a shape addressing a complete flat array
+     *  @param shape Shape that describes the array
+     *  @return strides
+     */
+    private static int[] defaultStrides(final NDShape shape)
     {
-		final int[] strides = new int[shape.getDimensions()];
-		strides[strides.length-1] = 1;
-		for (int i=strides.length-2; i>=0; --i)
-			strides[i] = strides[i+1] * shape.getSize(i+1);
-	    return strides;
+        final int[] strides = new int[shape.getDimensions()];
+        strides[strides.length-1] = 1;
+        for (int i=strides.length-2; i>=0; --i)
+            strides[i] = strides[i+1] * shape.getSize(i+1);
+        return strides;
     }
 
-	/** Check if strides match the default for a shape
-	 *  @param shape Shape
-	 *  @return <code>true</code> if strides are the default, not 'skipping' anything
-	 */
-	public boolean isDefault(final NDShape shape)
-	{
-	    // Simpler but slower:
-	    // return Arrays.equals(strides, defaultStrides(shape));
-	    final int dim = strides.length;
-	    if (shape.getDimensions() != dim)
-	        return false;
-	    int step = 1;
-	    for (int i=dim-1; i>=0; --i)
-	    {
-	        if (step != strides[i])
-	            return false;
-	        step *= shape.getSize(i);
-	    }
-	    return true;
-	}
+    /** Check if strides match the default for a shape
+     *  @param shape Shape
+     *  @return <code>true</code> if strides are the default, not 'skipping' anything
+     */
+    public boolean isDefault(final NDShape shape)
+    {
+        // Simpler but slower:
+        // return Arrays.equals(strides, defaultStrides(shape));
+        final int dim = strides.length;
+        if (shape.getDimensions() != dim)
+            return false;
+        int step = 1;
+        for (int i=dim-1; i>=0; --i)
+        {
+            if (step != strides[i])
+                return false;
+            step *= shape.getSize(i);
+        }
+        return true;
+    }
 
-	/** @return Number of strides */
-	public int getSize()
-	{
-		return strides.length;
-	}
+    /** @return Number of strides */
+    public int getSize()
+    {
+        return strides.length;
+    }
 
-	/** Get stride for one dimension
-	 *  @param dimension Selected dimension, <code>0 ... getSize()</code>
+    /** Get stride for one dimension
+     *  @param dimension Selected dimension, <code>0 ... getSize()</code>
      *  @return Stride for that dimension
      */
     public int getStride(final int dimension)
@@ -104,9 +104,9 @@ final public class NDStrides
     }
 
     /** @return Stride elements */
-	public int[] getStrides()
+    public int[] getStrides()
     {
-	    return strides.clone();
+        return strides.clone();
     }
 
     /** Compute index in flattened array
@@ -123,7 +123,7 @@ final public class NDStrides
         int i = 0;
         // Correct negative index via modulo. -1 -> last element
         for (int dim=0; dim<position.length; ++dim)
-        	i += shape.adjustIndex(dim, position[dim]) * strides[dim];
+            i += shape.adjustIndex(dim, position[dim]) * strides[dim];
         return i;
     }
 
@@ -135,7 +135,7 @@ final public class NDStrides
     {
         int i = 0;
         for (int dim=0; dim<position.length; ++dim)
-        	i += position[dim] * strides[dim];
+            i += position[dim] * strides[dim];
         return i;
     }
 
@@ -143,22 +143,22 @@ final public class NDStrides
     @Override
     public int hashCode()
     {
-    	return Arrays.hashCode(strides);
+        return Arrays.hashCode(strides);
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public boolean equals(final Object other)
     {
-		if (! (other instanceof NDStrides))
-			return false;
-	    return Arrays.equals(strides, ((NDStrides)other).strides);
+        if (! (other instanceof NDStrides))
+            return false;
+        return Arrays.equals(strides, ((NDStrides)other).strides);
     }
 
-	/** @return String representation */
+    /** @return String representation */
     @Override
     public String toString()
     {
-    	return Arrays.toString(strides);
+        return Arrays.toString(strides);
     }
 }

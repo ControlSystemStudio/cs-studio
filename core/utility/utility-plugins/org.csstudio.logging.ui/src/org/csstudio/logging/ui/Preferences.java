@@ -5,7 +5,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * 
+ *
  * <code>Preferences</code> provides the color settings for the logging streams.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.RGB;
 public class Preferences {
 
     private static final String PLUGIN_ID = "org.csstudio.logging.ui";
-    
+
     private static final String COLOR_SEVERE = "color_severe";
     private static final String COLOR_WARNING = "color_warning";
     private static final String COLOR_INFO = "color_info";

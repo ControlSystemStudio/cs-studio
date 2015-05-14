@@ -18,19 +18,19 @@ import org.eclipse.swt.widgets.Control;
  */
 public class AutoCompleteUIHelper {
 
-	public static TextCellEditor createAutoCompleteTextCellEditor(
-			Composite parent, String type) {
-		return new AutoCompleteTextCellEditor(parent, type);
-	}
+    public static TextCellEditor createAutoCompleteTextCellEditor(
+            Composite parent, String type) {
+        return new AutoCompleteTextCellEditor(parent, type);
+    }
 
-	public static TextCellEditor createAutoCompleteTextCellEditor(
-			Composite parent, String type, List<Control> historyHandlers) {
-		return new AutoCompleteTextCellEditor(parent, type, historyHandlers);
-	}
+    public static TextCellEditor createAutoCompleteTextCellEditor(
+            Composite parent, String type, List<Control> historyHandlers) {
+        return new AutoCompleteTextCellEditor(parent, type, historyHandlers);
+    }
 
-	public static void handleSelectEvent(final Control control,
-			final AutoCompleteWidget autocompleteWidget) {
-		autocompleteWidget.getHistory().installListener(control);
-	}
+    public static void handleSelectEvent(final Control control,
+            final AutoCompleteWidget autocompleteWidget) {
+        autocompleteWidget.getHistory().installListener(control);
+    }
 
 }

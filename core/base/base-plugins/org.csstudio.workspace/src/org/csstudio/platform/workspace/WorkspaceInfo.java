@@ -36,7 +36,7 @@ public class WorkspaceInfo
 
     /** Number of recent workspaces that we remember */
     private static final int RECENT_WORKSPACE_MAX = 10;
-    
+
     /** Path separator '/' */
     private static final String SLASH = "/";  //$NON-NLS-1$
 
@@ -45,7 +45,7 @@ public class WorkspaceInfo
 
     /** Show the select-workspace dialog? */
     private boolean show_dialog;
-    
+
     /** List of recent workspaces, most recent one on top */
     final private ArrayList<String> recent_workspaces = new ArrayList<String>();
 
@@ -64,13 +64,13 @@ public class WorkspaceInfo
         // use the previous selection as the default?
         if (select_previous_workspace && recent_workspaces.size() > 0)
             return; // OK, recent_workspaces.get(0) is the one we want
-        
+
         // No previous info, or we're asked to use initial_default in any case:
         if(initial_default != null)
-        	setSelectedWorkspace(initial_default.getFile());
+            setSelectedWorkspace(initial_default.getFile());
         else
-        	//if no default workspace provided, use "@usr.home/CSS-Workspaces/Default"
-        	setSelectedWorkspace(System.getProperty("user.home") //$NON-NLS-1$
+            //if no default workspace provided, use "@usr.home/CSS-Workspaces/Default"
+            setSelectedWorkspace(System.getProperty("user.home") //$NON-NLS-1$
                     + File.separator + "CSS-Workspaces" + File.separator + "Default");
     }
 
@@ -78,10 +78,10 @@ public class WorkspaceInfo
     @SuppressWarnings("nls")
     private void readPersistedData()
     {
-    	final Preferences node = ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
+        final Preferences node = ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
     //    final IPreferenceStore store = new ScopedPreferenceStore(
     //            new ConfigurationScope(), PREF_QUALIFIER);
-        
+
         // Get value for show_dialog.
         final String dlg_info = node.get(SHOW_DIALOG, "true");
         // We use a default of true if nothing was specified.
@@ -103,7 +103,7 @@ public class WorkspaceInfo
     {
         return current_workspace;
     }
-    
+
     /** @return Selected workspace, the one that the user would like to have,
      *  which is the first one in the list of recent workspace
      */
@@ -113,7 +113,7 @@ public class WorkspaceInfo
             return ""; //$NON-NLS-1$
         return recent_workspaces.get(0);
     }
-    
+
     /** Set the selected workspace, add to list of recent workspaces */
     public void setSelectedWorkspace(String workspace)
     {
@@ -179,9 +179,9 @@ public class WorkspaceInfo
     {
         final Preferences node =
             ConfigurationScope.INSTANCE.getNode(PREF_QUALIFIER);
-    
+
         node.put(SHOW_DIALOG, Boolean.toString(show_dialog));
-        
+
         // Encode recent workspaces into one string
         final StringBuffer recent = new StringBuffer();
         for (String workspace : recent_workspaces)
@@ -190,7 +190,7 @@ public class WorkspaceInfo
             recent.append(WORKSPACE_SEPARATOR);
         }
         node.put(RECENT_WORKSPACES, recent.toString());
-        
+
         try
         {
             node.flush();

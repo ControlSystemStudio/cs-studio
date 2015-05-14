@@ -4,7 +4,7 @@ import java.io.IOException;
 
 /**
  * MAT-file reader/writer exception
- * 
+ *
  * @author Wojciech Gradkowski (<a href="mailto:wgradkowski@gmail.com">wgradkowski@gmail.com</a>)
  */
 @SuppressWarnings("serial")

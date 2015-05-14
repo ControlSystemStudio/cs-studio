@@ -21,60 +21,60 @@ import org.eclipse.ui.part.FileEditorInput;
 
 /**
  * The Class NewScanFileWizard.
- * @author benhad naceur @ sopra group 
+ * @author benhad naceur @ sopra group
  */
 public class NewScanFileWizard extends Wizard implements INewWizard {
 
-	/** The scan file page. */
-	private NewScanFileWizardPage scanFilePage;
+    /** The scan file page. */
+    private NewScanFileWizardPage scanFilePage;
 
-	/** The selection. */
-	private IStructuredSelection selection;
+    /** The selection. */
+    private IStructuredSelection selection;
 
-	/** The workbench. */
-	private IWorkbench workbench;
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addPages() {
-		scanFilePage =new NewScanFileWizardPage("ScanFilePage", selection); 
-		addPage(scanFilePage);
-	}
+    /** The workbench. */
+    private IWorkbench workbench;
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public boolean performFinish() {
-		IFile file = scanFilePage.createNewFile();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addPages() {
+        scanFilePage =new NewScanFileWizardPage("ScanFilePage", selection);
+        addPage(scanFilePage);
+    }
 
-		if (file == null) {
-			return false;
-		}
 
-		try {
-			workbench.getActiveWorkbenchWindow().getActivePage().openEditor(
-					new FileEditorInput(file), "org.csstudio.scan.ui.scantree.editor");
-		} catch (PartInitException e) {
-			MessageDialog.openError(null, "Open Scan File error",
-					"Failed to open the newly created Scan File. \n" + e.getMessage());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean performFinish() {
+        IFile file = scanFilePage.createNewFile();
+
+        if (file == null) {
+            return false;
+        }
+
+        try {
+            workbench.getActiveWorkbenchWindow().getActivePage().openEditor(
+                    new FileEditorInput(file), "org.csstudio.scan.ui.scantree.editor");
+        } catch (PartInitException e) {
+            MessageDialog.openError(null, "Open Scan File error",
+                    "Failed to open the newly created Scan File. \n" + e.getMessage());
             ScanUIActivator.getLogger().log(Level.WARNING, "Scan activation error", e);
-		}
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
-		this.workbench = workbench;
-		this.selection = selection;
-	}
+        this.workbench = workbench;
+        this.selection = selection;
+    }
 
 }

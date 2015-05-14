@@ -15,9 +15,9 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_RegTextupdateClass extends Edm_TextupdateClass {
 
-	
-	public Edm_RegTextupdateClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
-	
+
+    public Edm_RegTextupdateClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
+
 }

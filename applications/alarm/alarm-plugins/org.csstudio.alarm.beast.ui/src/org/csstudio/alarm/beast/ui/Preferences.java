@@ -12,15 +12,15 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 *  @author Fred Arnaud
 */
 @SuppressWarnings("nls")
-public class Preferences 
+public class Preferences
 {
-	final public static String DEFAULT_EMAIL_SENDER = "default_email_sender";
+    final public static String DEFAULT_EMAIL_SENDER = "default_email_sender";
 
-	public static String getDefaultEmailSender() {
-	    String sender = "alarms@css";
-		final IPreferencesService prefs = Platform.getPreferencesService();
-		if (prefs == null)
-			return sender;
-		return prefs.getString(Activator.ID, DEFAULT_EMAIL_SENDER, sender, null);
-	}
+    public static String getDefaultEmailSender() {
+        String sender = "alarms@css";
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return sender;
+        return prefs.getString(Activator.ID, DEFAULT_EMAIL_SENDER, sender, null);
+    }
 }

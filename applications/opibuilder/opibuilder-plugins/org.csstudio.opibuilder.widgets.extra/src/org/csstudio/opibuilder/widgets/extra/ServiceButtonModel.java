@@ -15,22 +15,22 @@ public class ServiceButtonModel extends AbstractWidgetModel {
 
     @Override
     protected void configureProperties() {
-	addProperty(new ServiceMethodProperty(SERVICE_METHOD,
-		"Service Method Definition", WidgetPropertyCategory.Basic));
-	addProperty(new StringProperty(PROP_LABEL, "Label", WidgetPropertyCategory.Display, "Execute"));
+    addProperty(new ServiceMethodProperty(SERVICE_METHOD,
+        "Service Method Definition", WidgetPropertyCategory.Basic));
+    addProperty(new StringProperty(PROP_LABEL, "Label", WidgetPropertyCategory.Display, "Execute"));
     }
 
     public ServiceMethodDescription getServiceMethodDescription() {
-	return (ServiceMethodDescription) getCastedPropertyValue(SERVICE_METHOD);
+    return (ServiceMethodDescription) getCastedPropertyValue(SERVICE_METHOD);
     }
 
     public String getLabel() {
-	return (String) getProperty(PROP_LABEL).getPropertyValue();
+    return (String) getProperty(PROP_LABEL).getPropertyValue();
     }
 
     @Override
     public String getTypeID() {
-	return ID;
+    return ID;
     }
 
 }

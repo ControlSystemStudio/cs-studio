@@ -25,14 +25,14 @@ import org.eclipse.ui.console.MessageConsole;
 import org.eclipse.ui.console.MessageConsoleStream;
 
 /** Log handler that displays messages in the Eclipse Console view.
- * 
+ *
  *  <p>The {@link MessageConsoleStream} description mentions buffering
  *  and appears thread-safe, but lockups have been observed
  *  if multiple threads try to access the console streams.
  *  This handler therefore logs in the UI thread, using the {@link Display}
  *  that was available on initialization.
  *  This is suitable for RCP, but not RAP.
- * 
+ *
  *  @author Kay Kasemir
  *  @author Alexander Will - Author of org.csstudio.platform.ui.internal.console.Console that was used with Log4j
  */
@@ -40,10 +40,10 @@ public class ConsoleViewHandler extends Handler
 {
     /** Flag to prevent multiple instances */
     private static boolean have_console = false;
-    
+
     /** Display used for performing console access in the UI thread */
     final Display display;
-    
+
     /** Connection to Console View.
      *  Set to <code>null</code> when console support shuts down
      */
@@ -51,7 +51,7 @@ public class ConsoleViewHandler extends Handler
 
     /** Printable, color-coded stream of the <code>console</code> */
     final private MessageConsoleStream severe_stream, warning_stream, info_stream, basic_stream;
-    
+
     private Color severeColor, warningColor, infoColor, basicColor;
 
     /** Add console view to the (root) logger.
@@ -72,18 +72,18 @@ public class ConsoleViewHandler extends Handler
     {
         if (have_console)
             return;
-        
+
         try
         {
             // RAP has one (pseudo-)display per web client.
             // Cannot obtain one shared display as on RCP.
             if (SWT.getPlatform().startsWith("rap"))
                 throw new Exception("Console logging not supported on RAP");
-                
+
             final Display display = Display.getCurrent();
             if (display == null)
                 throw new Exception("No display");
-        
+
             final ConsoleViewHandler handler = new ConsoleViewHandler(display);
             handler.setFormatter(new LogFormatter(Preferences.getDetail()));
             Logger.getLogger("").addHandler(handler);
@@ -105,7 +105,7 @@ public class ConsoleViewHandler extends Handler
     private ConsoleViewHandler(final Display display)
     {
         this.display = display;
-        
+
         // Allocate a console for text messages.
         console = new MessageConsole(Messages.ConsoleView_Title, null);
         // Values are from https://bugs.eclipse.org/bugs/show_bug.cgi?id=46871#c5
@@ -127,12 +127,12 @@ public class ConsoleViewHandler extends Handler
         // affect only the next message or the whole Console View.
         // Using different streams for the color-coded message levels
         // seem to work OK.
-        
+
         severeColor = new Color(display, org.csstudio.logging.ui.Preferences.getColorSevere());
         warningColor = new Color(display, org.csstudio.logging.ui.Preferences.getColorWarning());
         infoColor = new Color(display, org.csstudio.logging.ui.Preferences.getColorInfo());
         basicColor = new Color(display, org.csstudio.logging.ui.Preferences.getColorBasic());
-        
+
         severe_stream.setColor(severeColor);
         warning_stream.setColor(warningColor);
         info_stream.setColor(infoColor);
@@ -174,7 +174,7 @@ public class ConsoleViewHandler extends Handler
     {
         if (! isLoggable(record))
             return;
-        
+
         // Format message
         final String msg;
         try

@@ -24,52 +24,52 @@ import org.eclipse.core.runtime.IPath;
  */
 public class ExecuteCommandAction extends AbstractWidgetAction {
 
-	private static final String OPI_DIR = "opi.dir"; //$NON-NLS-1$
-	public final static String PROP_COMMAND = "command"; //$NON-NLS-1$
-	public final static String PROP_DIRECTORY = "command_directory"; //$NON-NLS-1$
-	public final static String PROP_WAIT_TIME = "wait_time"; //$NON-NLS-1$
-	
-	@Override
-	protected void configureProperties() {
-		addProperty(new StringProperty(
-				PROP_COMMAND, "Command", WidgetPropertyCategory.Basic, ""));
-		addProperty(new StringProperty(
-				PROP_DIRECTORY, "Command Directory[path]", WidgetPropertyCategory.Basic, "$(user.home)"));
-		addProperty(new IntegerProperty(
-				PROP_WAIT_TIME, "Wait Time(s)", WidgetPropertyCategory.Basic, 10, 1, Integer.MAX_VALUE));
-		
-	}
+    private static final String OPI_DIR = "opi.dir"; //$NON-NLS-1$
+    public final static String PROP_COMMAND = "command"; //$NON-NLS-1$
+    public final static String PROP_DIRECTORY = "command_directory"; //$NON-NLS-1$
+    public final static String PROP_WAIT_TIME = "wait_time"; //$NON-NLS-1$
 
-	@Override
-	public ActionType getActionType() {
-		return ActionType.EXECUTE_CMD;
-	}
+    @Override
+    protected void configureProperties() {
+        addProperty(new StringProperty(
+                PROP_COMMAND, "Command", WidgetPropertyCategory.Basic, ""));
+        addProperty(new StringProperty(
+                PROP_DIRECTORY, "Command Directory[path]", WidgetPropertyCategory.Basic, "$(user.home)"));
+        addProperty(new IntegerProperty(
+                PROP_WAIT_TIME, "Wait Time(s)", WidgetPropertyCategory.Basic, 10, 1, Integer.MAX_VALUE));
 
-	@Override
-	public void run() {
-		ConsoleService.getInstance().writeInfo("Execute Command: " + getCommand());
-		new CommandExecutor(getCommand(), getDirectory(), getWaitTime());
-		
-	}
-	
-	public String getCommand(){
-		return (String)getPropertyValue(PROP_COMMAND);
-	}
-	
-	public String getDirectory(){
-		String directory = (String)getPropertyValue(PROP_DIRECTORY);
-		try {
-			return replaceProperties(directory);
-		} catch (Exception e) {
-			ConsoleService.getInstance().writeError(e.getMessage());
-		}
-		return  directory;
-	}
+    }
 
-	public int getWaitTime(){
-		return (Integer)getPropertyValue(PROP_WAIT_TIME);
-	}
-	
+    @Override
+    public ActionType getActionType() {
+        return ActionType.EXECUTE_CMD;
+    }
+
+    @Override
+    public void run() {
+        ConsoleService.getInstance().writeInfo("Execute Command: " + getCommand());
+        new CommandExecutor(getCommand(), getDirectory(), getWaitTime());
+
+    }
+
+    public String getCommand(){
+        return (String)getPropertyValue(PROP_COMMAND);
+    }
+
+    public String getDirectory(){
+        String directory = (String)getPropertyValue(PROP_DIRECTORY);
+        try {
+            return replaceProperties(directory);
+        } catch (Exception e) {
+            ConsoleService.getInstance().writeError(e.getMessage());
+        }
+        return  directory;
+    }
+
+    public int getWaitTime(){
+        return (Integer)getPropertyValue(PROP_WAIT_TIME);
+    }
+
 
     /** @param value Value that might contain "$(prop)"
      *  @return Value where "$(prop)" is replaced by Java system property "prop"
@@ -83,12 +83,12 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
             final String prop_name = matcher.group(1);
             String prop = System.getProperty(prop_name);
             if(prop==null && prop_name.equals(OPI_DIR)){
-            	IPath opiFilePath = getWidgetModel().getRootDisplayModel().getOpiFilePath();
-            	if(ResourceUtil.isExistingWorkspaceFile(opiFilePath))
-            		opiFilePath = ResourceUtil.workspacePathToSysPath(opiFilePath);
-				prop=opiFilePath.removeLastSegments(1).toOSString();
+                IPath opiFilePath = getWidgetModel().getRootDisplayModel().getOpiFilePath();
+                if(ResourceUtil.isExistingWorkspaceFile(opiFilePath))
+                    opiFilePath = ResourceUtil.workspacePathToSysPath(opiFilePath);
+                prop=opiFilePath.removeLastSegments(1).toOSString();
             }
-            
+
             if (prop == null)
                 throw new Exception("Property '" + prop_name + "' is not defined");
             return prop;
@@ -96,9 +96,9 @@ public class ExecuteCommandAction extends AbstractWidgetAction {
         // Return as is
         return value;
     }
-    
+
     @Override
     public String getDefaultDescription() {
-    	return super.getDefaultDescription() + " " + getCommand(); //$NON-NLS-1$
+        return super.getDefaultDescription() + " " + getCommand(); //$NON-NLS-1$
     }
 }

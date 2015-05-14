@@ -15,24 +15,24 @@ import org.w3c.dom.Element;
 
 public class OpiAttributeTest extends TestCase {
 
-	public void testOpiAttribute() throws EdmException {
-		
-		// init document
-		Document doc = XMLFileHandler.createDomDocument();
-		
-		// OpiAttribute data
-		String name = "x";
-		
-		// instantiating OpiAttribute
-		Element parent = doc.createElement("root");
-		doc.appendChild(parent);
-		Context context = new Context(doc, parent, null,  0, 0);
-		new OpiAttribute(context, name);
-		
-		// testing
-		assertEquals(1, doc.getElementsByTagName(name).getLength());
-		
-		//XMLFileHandler.writeXML(doc);
-		
-	}
+    public void testOpiAttribute() throws EdmException {
+
+        // init document
+        Document doc = XMLFileHandler.createDomDocument();
+
+        // OpiAttribute data
+        String name = "x";
+
+        // instantiating OpiAttribute
+        Element parent = doc.createElement("root");
+        doc.appendChild(parent);
+        Context context = new Context(doc, parent, null,  0, 0);
+        new OpiAttribute(context, name);
+
+        // testing
+        assertEquals(1, doc.getElementsByTagName(name).getLength());
+
+        //XMLFileHandler.writeXML(doc);
+
+    }
 }

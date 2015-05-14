@@ -12,5 +12,5 @@ package org.csstudio.opibuilder.runmode;
  *
  */
 public interface IDisplayOpenManagerListener {
-	public void displayOpenHistoryChanged(DisplayOpenManager manager);
+    public void displayOpenHistoryChanged(DisplayOpenManager manager);
 }

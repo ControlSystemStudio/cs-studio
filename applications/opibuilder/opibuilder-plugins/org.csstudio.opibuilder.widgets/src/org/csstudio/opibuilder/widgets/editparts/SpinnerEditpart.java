@@ -43,335 +43,335 @@ import org.epics.vtype.VType;
  */
 public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
-	private IPVListener pvLoadLimitsListener;
-	private Display meta = null;
-	private IPVListener pvLoadPrecisionListener;
-	
-	@Override
-	protected IFigure doCreateFigure() {
-		SpinnerFigure spinner = new SpinnerFigure();
-		TextFigure labelFigure = spinner.getLabelFigure();
-		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
-				getWidgetModel().getFont().getFontData()));
-		labelFigure.setOpaque(!getWidgetModel().isTransparent());
-		labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
-		labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
-		spinner.setMax(getWidgetModel().getMaximum());
-		spinner.setMin(getWidgetModel().getMinimum());
-		spinner.setStepIncrement(getWidgetModel().getStepIncrement());
-		spinner.setPageIncrement(getWidgetModel().getPageIncrement());
-		spinner.setFormatType(getWidgetModel().getFormat());
-		spinner.setPrecision((Integer) getPropertyValue(SpinnerModel.PROP_PRECISION));
-		spinner.setArrowButtonsOnLeft(getWidgetModel().isButtonsOnLeft());
-		spinner.setArrowButtonsHorizontal(getWidgetModel().isHorizontalButtonsLayout());
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			spinner.addManualValueChangeListener(new IManualValueChangeListener() {
+    private IPVListener pvLoadLimitsListener;
+    private Display meta = null;
+    private IPVListener pvLoadPrecisionListener;
 
-				public void manualValueChanged(double newValue) {
-					setPVValue(SpinnerModel.PROP_PVNAME, newValue);
-					getWidgetModel().setText(((SpinnerFigure)getFigure()).getLabelFigure().getText(), false);
-				}
-			});
-		}
+    @Override
+    protected IFigure doCreateFigure() {
+        SpinnerFigure spinner = new SpinnerFigure();
+        TextFigure labelFigure = spinner.getLabelFigure();
+        labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
+                getWidgetModel().getFont().getFontData()));
+        labelFigure.setOpaque(!getWidgetModel().isTransparent());
+        labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
+        labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
+        spinner.setMax(getWidgetModel().getMaximum());
+        spinner.setMin(getWidgetModel().getMinimum());
+        spinner.setStepIncrement(getWidgetModel().getStepIncrement());
+        spinner.setPageIncrement(getWidgetModel().getPageIncrement());
+        spinner.setFormatType(getWidgetModel().getFormat());
+        spinner.setPrecision((Integer) getPropertyValue(SpinnerModel.PROP_PRECISION));
+        spinner.setArrowButtonsOnLeft(getWidgetModel().isButtonsOnLeft());
+        spinner.setArrowButtonsHorizontal(getWidgetModel().isHorizontalButtonsLayout());
+        if(getExecutionMode() == ExecutionMode.RUN_MODE){
+            spinner.addManualValueChangeListener(new IManualValueChangeListener() {
 
-		return spinner;
-	}
+                public void manualValueChanged(double newValue) {
+                    setPVValue(SpinnerModel.PROP_PVNAME, newValue);
+                    getWidgetModel().setText(((SpinnerFigure)getFigure()).getLabelFigure().getText(), false);
+                }
+            });
+        }
 
-
-	@Override
-	public SpinnerModel getWidgetModel() {
-		return (SpinnerModel)getModel();
-	}
+        return spinner;
+    }
 
 
-	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new SpinnerDirectEditPolicy());
-	}
-
-	@Override
-	public void activate() {
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
-		super.activate();
-	}
-
-	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadLimitsListener();
-	}
+    @Override
+    public SpinnerModel getWidgetModel() {
+        return (SpinnerModel)getModel();
+    }
 
 
-	/**
-	 *
-	 */
-	private void registerLoadLimitsListener() {
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			final SpinnerModel model = getWidgetModel();
-			if(model.isLimitsFromPV() || model.isPrecisionFromPV()){
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if(pv != null){
-					if(pvLoadLimitsListener == null)
-						pvLoadLimitsListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								Display displayInfo = VTypeHelper.getDisplayInfo(value);
-								if (value != null && displayInfo!=null){
-									Display new_meta = displayInfo;
-									if(meta == null || !meta.equals(new_meta)){
-										meta = new_meta;
-										if(model.isLimitsFromPV()){
-											model.setPropertyValue(SpinnerModel.PROP_MAX,	meta.getUpperDisplayLimit());
-											model.setPropertyValue(SpinnerModel.PROP_MIN,	meta.getLowerDisplayLimit());
-										}
-										if(model.isPrecisionFromPV())
-											model.setPropertyValue(SpinnerModel.PROP_PRECISION,	meta.getFormat().getMaximumFractionDigits());
-									}
-								}
-							}
-						};
-					pv.addListener(pvLoadLimitsListener);
-				}
-			}			
-		}
-	}
+    @Override
+    protected void createEditPolicies() {
+        super.createEditPolicies();
+        installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new SpinnerDirectEditPolicy());
+    }
 
-	@Override
-	protected void registerPropertyChangeHandlers() {
-			//text
-			IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
-				public boolean handleChange(Object oldValue, Object newValue,
-						IFigure figure) {
-					String text = (String)newValue;
-					try {
-						text = text.replace("e", "E"); //$NON-NLS-1$ //$NON-NLS-2$
-						double value = new DecimalFormat().parse(text).doubleValue();
-						//coerce value in range
-						value = Math.max(((SpinnerFigure)figure).getMin(),
-								Math.min(((SpinnerFigure)figure).getMax(), value));
-						((SpinnerFigure)figure).setValue(value);
-						if(getExecutionMode() == ExecutionMode.RUN_MODE)
-							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);
-						getWidgetModel().setText(
-								((SpinnerFigure)figure).getLabelFigure().getText(), false);
-						return false;
-					} catch (Exception e) {
-						return false;
-					}
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_TEXT, handler);
+    @Override
+    public void activate() {
+        markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
+        super.activate();
+    }
 
-			IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
-
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					registerLoadLimitsListener();
-					return false;
-				}
-			};
-			setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
+    @Override
+    protected void doActivate() {
+        super.doActivate();
+        registerLoadLimitsListener();
+    }
 
 
-			//pv value
-			handler = new IWidgetPropertyChangeHandler() {
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					if(newValue == null )
-						return false;
-					double value = VTypeHelper.getDouble((VType) newValue);
-					((SpinnerFigure)figure).setDisplayValue(value);
-					getWidgetModel().setText(((SpinnerFigure)figure).getLabelFigure().getText(), false);
-					return false;
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_PVVALUE, handler);
+    /**
+     *
+     */
+    private void registerLoadLimitsListener() {
+        if(getExecutionMode() == ExecutionMode.RUN_MODE){
+            final SpinnerModel model = getWidgetModel();
+            if(model.isLimitsFromPV() || model.isPrecisionFromPV()){
+                IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+                if(pv != null){
+                    if(pvLoadLimitsListener == null)
+                        pvLoadLimitsListener = new IPVListener.Stub() {
+                            public void valueChanged(IPV pv) {
+                                VType value = pv.getValue();
+                                Display displayInfo = VTypeHelper.getDisplayInfo(value);
+                                if (value != null && displayInfo!=null){
+                                    Display new_meta = displayInfo;
+                                    if(meta == null || !meta.equals(new_meta)){
+                                        meta = new_meta;
+                                        if(model.isLimitsFromPV()){
+                                            model.setPropertyValue(SpinnerModel.PROP_MAX,    meta.getUpperDisplayLimit());
+                                            model.setPropertyValue(SpinnerModel.PROP_MIN,    meta.getLowerDisplayLimit());
+                                        }
+                                        if(model.isPrecisionFromPV())
+                                            model.setPropertyValue(SpinnerModel.PROP_PRECISION,    meta.getFormat().getMaximumFractionDigits());
+                                    }
+                                }
+                            }
+                        };
+                    pv.addListener(pvLoadLimitsListener);
+                }
+            }
+        }
+    }
 
-			//min
-			handler = new IWidgetPropertyChangeHandler() {
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setMin((Double)newValue);
-					return false;
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_MIN, handler);
+    @Override
+    protected void registerPropertyChangeHandlers() {
+            //text
+            IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+                public boolean handleChange(Object oldValue, Object newValue,
+                        IFigure figure) {
+                    String text = (String)newValue;
+                    try {
+                        text = text.replace("e", "E"); //$NON-NLS-1$ //$NON-NLS-2$
+                        double value = new DecimalFormat().parse(text).doubleValue();
+                        //coerce value in range
+                        value = Math.max(((SpinnerFigure)figure).getMin(),
+                                Math.min(((SpinnerFigure)figure).getMax(), value));
+                        ((SpinnerFigure)figure).setValue(value);
+                        if(getExecutionMode() == ExecutionMode.RUN_MODE)
+                            setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);
+                        getWidgetModel().setText(
+                                ((SpinnerFigure)figure).getLabelFigure().getText(), false);
+                        return false;
+                    } catch (Exception e) {
+                        return false;
+                    }
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_TEXT, handler);
 
-			//max
-			handler = new IWidgetPropertyChangeHandler() {
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setMax((Double)newValue);
-					return false;
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_MAX, handler);
+            IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
-			//step increment
-			handler = new IWidgetPropertyChangeHandler() {
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setStepIncrement((Double)newValue);
-					return false;
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_STEP_INCREMENT, handler);
-
-			//page increment
-			handler = new IWidgetPropertyChangeHandler() {
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setPageIncrement((Double)newValue);
-					return false;
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_PAGE_INCREMENT, handler);
-
-			//font
-			IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
-				public boolean handleChange(Object oldValue, Object newValue,
-						IFigure figure) {
-					((SpinnerFigure)figure).getLabelFigure().
-						setFont(CustomMediaFactory.getInstance().getFont(
-							((OPIFont)newValue).getFontData()));
-					return true;
-				}
-			};
-			setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
-
-
-			handler = new IWidgetPropertyChangeHandler(){
-				public boolean handleChange(Object oldValue, Object newValue,
-						IFigure figure) {
-					((SpinnerFigure)figure).getLabelFigure().setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
-					return true;
-				}
-			};
-			setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
-
-			handler = new IWidgetPropertyChangeHandler(){
-				public boolean handleChange(Object oldValue, Object newValue,
-						IFigure figure) {
-					((SpinnerFigure)figure).getLabelFigure().setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
-					return true;
-				}
-			};
-			setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    registerLoadLimitsListener();
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 
 
-			handler = new IWidgetPropertyChangeHandler(){
-				public boolean handleChange(Object oldValue, Object newValue,
-						IFigure figure) {
-					((SpinnerFigure)figure).getLabelFigure().setOpaque(!(Boolean)newValue);
-					return true;
-				}
-			};
-			setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
+            //pv value
+            handler = new IWidgetPropertyChangeHandler() {
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    if(newValue == null )
+                        return false;
+                    double value = VTypeHelper.getDouble((VType) newValue);
+                    ((SpinnerFigure)figure).setDisplayValue(value);
+                    getWidgetModel().setText(((SpinnerFigure)figure).getLabelFigure().getText(), false);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_PVVALUE, handler);
 
-			handler = new IWidgetPropertyChangeHandler() {
+            //min
+            handler = new IWidgetPropertyChangeHandler() {
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    ((SpinnerFigure)figure).setMin((Double)newValue);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_MIN, handler);
 
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setFormatType(NumericFormatType.values()[(Integer)newValue]);
-					return false;
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_FORMAT, handler);
+            //max
+            handler = new IWidgetPropertyChangeHandler() {
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    ((SpinnerFigure)figure).setMax((Double)newValue);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_MAX, handler);
 
-			handler = new IWidgetPropertyChangeHandler() {
+            //step increment
+            handler = new IWidgetPropertyChangeHandler() {
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    ((SpinnerFigure)figure).setStepIncrement((Double)newValue);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_STEP_INCREMENT, handler);
 
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setPrecision((Integer)newValue);
-					return false;
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_PRECISION, handler);
-			
-			handler = new IWidgetPropertyChangeHandler() {
+            //page increment
+            handler = new IWidgetPropertyChangeHandler() {
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    ((SpinnerFigure)figure).setPageIncrement((Double)newValue);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_PAGE_INCREMENT, handler);
 
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setArrowButtonsOnLeft((Boolean)newValue);
-					return false;
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_BUTTONS_ON_LEFT, handler);
-			
-			handler = new IWidgetPropertyChangeHandler() {
-
-				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-					((SpinnerFigure)figure).setArrowButtonsHorizontal((Boolean)newValue);
-					return false;
-				}
-			};
-			setPropertyChangeHandler(SpinnerModel.PROP_HORIZONTAL_BUTTONS_LAYOUT, handler);
-			
-
-	}
-
-	public DragTracker getDragTracker(Request request) {
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-			return new SelectEditPartTracker(this) {				
-				@Override
-				protected boolean handleButtonUp(int button) {
-					if (button == 1) {
-						//make widget in edit mode by single click
-						performOpen();
-					}
-					return super.handleButtonUp(button);
-				}
-			};
-		}else
-			return super.getDragTracker(request);
-	}
-
-	@Override
-	public void performRequest(Request request){
-		if (getFigure().isEnabled()
-				&&((request.getType() == RequestConstants.REQ_DIRECT_EDIT &&
-				getExecutionMode() != ExecutionMode.RUN_MODE)||
-				request.getType() == RequestConstants.REQ_OPEN))
-			performDirectEdit();
-	}
-
-	protected void performDirectEdit(){
-		new SpinnerTextEditManager(this,
-				new LabelCellEditorLocator(
-						((SpinnerFigure)getFigure()).getLabelFigure()), false,((SpinnerFigure)figure).getStepIncrement(),((SpinnerFigure)figure).getPageIncrement()).show();	
-	}
-
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if(getWidgetModel().isLimitsFromPV()){
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null && pvLoadLimitsListener != null){
-				pv.removeListener(pvLoadLimitsListener);
-			}
-			if(pv != null && pvLoadPrecisionListener != null){
-				pv.removeListener(pvLoadPrecisionListener);
-			}
-		}
-
-	}
-
-	@Override
-	public Double getValue() {
-		return ((SpinnerFigure)getFigure()).getValue();
-	}
+            //font
+            IWidgetPropertyChangeHandler fontHandler = new IWidgetPropertyChangeHandler(){
+                public boolean handleChange(Object oldValue, Object newValue,
+                        IFigure figure) {
+                    ((SpinnerFigure)figure).getLabelFigure().
+                        setFont(CustomMediaFactory.getInstance().getFont(
+                            ((OPIFont)newValue).getFontData()));
+                    return true;
+                }
+            };
+            setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
 
 
-	@Override
-	public void setValue(Object value) {
-		if(value instanceof Number)
-			((SpinnerFigure)getFigure()).setValue(((Number) value).doubleValue());
-		else
-			super.setValue(value);
-	}
+            handler = new IWidgetPropertyChangeHandler(){
+                public boolean handleChange(Object oldValue, Object newValue,
+                        IFigure figure) {
+                    ((SpinnerFigure)figure).getLabelFigure().setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
+                    return true;
+                }
+            };
+            setPropertyChangeHandler(LabelModel.PROP_ALIGN_H, handler);
+
+            handler = new IWidgetPropertyChangeHandler(){
+                public boolean handleChange(Object oldValue, Object newValue,
+                        IFigure figure) {
+                    ((SpinnerFigure)figure).getLabelFigure().setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
+                    return true;
+                }
+            };
+            setPropertyChangeHandler(LabelModel.PROP_ALIGN_V, handler);
+
+
+            handler = new IWidgetPropertyChangeHandler(){
+                public boolean handleChange(Object oldValue, Object newValue,
+                        IFigure figure) {
+                    ((SpinnerFigure)figure).getLabelFigure().setOpaque(!(Boolean)newValue);
+                    return true;
+                }
+            };
+            setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
+
+            handler = new IWidgetPropertyChangeHandler() {
+
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    ((SpinnerFigure)figure).setFormatType(NumericFormatType.values()[(Integer)newValue]);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_FORMAT, handler);
+
+            handler = new IWidgetPropertyChangeHandler() {
+
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    ((SpinnerFigure)figure).setPrecision((Integer)newValue);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_PRECISION, handler);
+
+            handler = new IWidgetPropertyChangeHandler() {
+
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    ((SpinnerFigure)figure).setArrowButtonsOnLeft((Boolean)newValue);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_BUTTONS_ON_LEFT, handler);
+
+            handler = new IWidgetPropertyChangeHandler() {
+
+                public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                    ((SpinnerFigure)figure).setArrowButtonsHorizontal((Boolean)newValue);
+                    return false;
+                }
+            };
+            setPropertyChangeHandler(SpinnerModel.PROP_HORIZONTAL_BUTTONS_LAYOUT, handler);
+
+
+    }
+
+    public DragTracker getDragTracker(Request request) {
+        if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+            return new SelectEditPartTracker(this) {
+                @Override
+                protected boolean handleButtonUp(int button) {
+                    if (button == 1) {
+                        //make widget in edit mode by single click
+                        performOpen();
+                    }
+                    return super.handleButtonUp(button);
+                }
+            };
+        }else
+            return super.getDragTracker(request);
+    }
+
+    @Override
+    public void performRequest(Request request){
+        if (getFigure().isEnabled()
+                &&((request.getType() == RequestConstants.REQ_DIRECT_EDIT &&
+                getExecutionMode() != ExecutionMode.RUN_MODE)||
+                request.getType() == RequestConstants.REQ_OPEN))
+            performDirectEdit();
+    }
+
+    protected void performDirectEdit(){
+        new SpinnerTextEditManager(this,
+                new LabelCellEditorLocator(
+                        ((SpinnerFigure)getFigure()).getLabelFigure()), false,((SpinnerFigure)figure).getStepIncrement(),((SpinnerFigure)figure).getPageIncrement()).show();
+    }
+
+    @Override
+    protected void doDeActivate() {
+        super.doDeActivate();
+        if(getWidgetModel().isLimitsFromPV()){
+            IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+            if(pv != null && pvLoadLimitsListener != null){
+                pv.removeListener(pvLoadLimitsListener);
+            }
+            if(pv != null && pvLoadPrecisionListener != null){
+                pv.removeListener(pvLoadPrecisionListener);
+            }
+        }
+
+    }
+
+    @Override
+    public Double getValue() {
+        return ((SpinnerFigure)getFigure()).getValue();
+    }
+
+
+    @Override
+    public void setValue(Object value) {
+        if(value instanceof Number)
+            ((SpinnerFigure)getFigure()).setValue(((Number) value).doubleValue());
+        else
+            super.setValue(value);
+    }
 
 
 
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Object getAdapter(Class key) {
-		if(key == ITextFigure.class)
-			return ((SpinnerFigure)getFigure()).getLabelFigure();
+    @SuppressWarnings("rawtypes")
+    @Override
+    public Object getAdapter(Class key) {
+        if(key == ITextFigure.class)
+            return ((SpinnerFigure)getFigure()).getLabelFigure();
 
-		return super.getAdapter(key);
-	}
+        return super.getAdapter(key);
+    }
 
 
 }

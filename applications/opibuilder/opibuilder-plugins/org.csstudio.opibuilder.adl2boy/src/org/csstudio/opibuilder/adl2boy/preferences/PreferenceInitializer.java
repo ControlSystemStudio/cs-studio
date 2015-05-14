@@ -10,15 +10,15 @@ import org.csstudio.opibuilder.adl2boy.ADL2BOYPlugin;
  */
 public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
-	 */
-	public void initializeDefaultPreferences() {
-		IPreferenceStore store = ADL2BOYPlugin.getDefault().getPreferenceStore();
-		store.setDefault(PreferenceConstants.P_COLOR_PREFIX, "MEDM_COLOR_");
-		store.setDefault(PreferenceConstants.P_FONT_PREFIX, "MEDM_FONT_");
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences()
+     */
+    public void initializeDefaultPreferences() {
+        IPreferenceStore store = ADL2BOYPlugin.getDefault().getPreferenceStore();
+        store.setDefault(PreferenceConstants.P_COLOR_PREFIX, "MEDM_COLOR_");
+        store.setDefault(PreferenceConstants.P_FONT_PREFIX, "MEDM_FONT_");
+    }
 
 }

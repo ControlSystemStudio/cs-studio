@@ -51,8 +51,8 @@ import org.eclipse.wst.validation.ValidationState;
 import org.eclipse.wst.validation.ValidatorMessage;
 
 /**
- * 
- * <code>Validator</code> implements the wst validation api for validating OPI files. 
+ *
+ * <code>Validator</code> implements the wst validation api for validating OPI files.
  * OPIs are validated by comparing their values to the ones defined in the OPI schema.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -69,10 +69,10 @@ public class Validator extends AbstractValidator {
             return super.put(key, value);
         }
     }
-    
+
     private static final Logger LOGGER = Logger.getLogger(Validator.class.getName());
-    
-    /** Marker name for OPI validation failure */ 
+
+    /** Marker name for OPI validation failure */
     public static final String MARKER_PROBLEM = Activator.ID + ".opiValidationProblem";
     /** Marker name for OPI loading error */
     public static final String MARKER_ERROR = Activator.ID + ".opiLoadingError";
@@ -80,12 +80,12 @@ public class Validator extends AbstractValidator {
     private static final String DEFAULT_TEXT_EDITOR = "org.eclipse.ui.DefaultTextEditor";
     /** The name of the marker attribute that contains the validation failure */
     public static final String ATTR_VALIDATION_FAILURE = "validationFailure";
-    
+
     private SchemaVerifier verifier;
 
     //if a rule matches this pattern it defines a property, if it doesn't match, the rule is a regex
     private static final Pattern TRUE_PROPERTY_PATTERN = Pattern.compile("[0-9a-z_\\.]*");
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.wst.validation.AbstractValidator#validate(org.eclipse.core.resources.IResource, int, org.eclipse.wst.validation.ValidationState, org.eclipse.core.runtime.IProgressMonitor)
@@ -99,7 +99,7 @@ public class Validator extends AbstractValidator {
         if (monitor.isCanceled()) {
             return null;
         }
-        
+
         try {
             if(!Utilities.shouldContinueIfFileOpen("validation",resource)) {
                 monitor.setCanceled(true);
@@ -110,13 +110,13 @@ public class Validator extends AbstractValidator {
             monitor.setCanceled(true);
             return null;
         }
-        
+
         boolean useDefaultEditor = Activator.getInstance().isShowMarkersInDefaultEditor();
         ValidationResult result = new ValidationResult();
         try {
             ValidationFailure[] failures = verifier.validate(resource.getFullPath());
             ValidatorMessage message;
-            for (ValidationFailure vf : failures) {     
+            for (ValidationFailure vf : failures) {
                 message = createMessage(vf, resource, useDefaultEditor);
                 result.add(message);
                 if (vf.hasSubFailures()) {
@@ -124,7 +124,7 @@ public class Validator extends AbstractValidator {
                         message = createMessage(f, resource, useDefaultEditor);
                         result.add(message);
                     }
-                }                 
+                }
             }
         } catch (IOException e) {
             ValidatorMessage message = ValidatorMessage.create(e.getMessage(), resource);
@@ -136,7 +136,7 @@ public class Validator extends AbstractValidator {
 
         return result;
     }
-    
+
     private ValidatorMessage createMessage(ValidationFailure vf, IResource resource, boolean useDefaultEditor) {
         ValidatorMessage message = ValidatorMessage.create(vf.getMessage(), resource);
         message.setType(MARKER_PROBLEM);
@@ -168,7 +168,7 @@ public class Validator extends AbstractValidator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.wst.validation.AbstractValidator#validationStarting(org.eclipse.core.resources.IProject,
      * org.eclipse.wst.validation.ValidationState, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -239,7 +239,7 @@ public class Validator extends AbstractValidator {
                     } else {
                         ruleStr = value;
                     }
-                    
+
                     try {
                         ValidationRule rule = ValidationRule.valueOf(ruleStr.toUpperCase());
                         if (TRUE_PROPERTY_PATTERN.matcher(key).matches()) {
@@ -264,7 +264,7 @@ public class Validator extends AbstractValidator {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.wst.validation.AbstractValidator#validationFinishing(org.eclipse.core.resources.IProject,
      * org.eclipse.wst.validation.ValidationState, org.eclipse.core.runtime.IProgressMonitor)
      */
@@ -294,7 +294,7 @@ public class Validator extends AbstractValidator {
             }
         }
     }
-    
+
     private static void showView(final String view, final boolean update) {
         Display.getDefault().asyncExec(() -> {
             try {
@@ -310,7 +310,7 @@ public class Validator extends AbstractValidator {
             }
         });
     }
-    
+
     private static void updateProblemsView(IWorkbenchPage page) {
         try {
             ProblemsView v = (ProblemsView)page.showView("org.eclipse.ui.views.ProblemView");
@@ -327,7 +327,7 @@ public class Validator extends AbstractValidator {
                         SWTEventListener l = ((TypedListener)exp[i]).getEventListener();
                         if (l.getClass().getName().contains("ExtendedMarkersView")) {
                             viewer.getTree().removeListener(SWT.Expand, exp[i]);
-                            viewer.getTree().addListener(SWT.Expand, 
+                            viewer.getTree().addListener(SWT.Expand,
                                     new TypedListener(new TreeViewerListener((TreeListener)l)));
                         }
                     }
@@ -337,7 +337,7 @@ public class Validator extends AbstractValidator {
                         SWTEventListener l = ((TypedListener)col[i]).getEventListener();
                         if (l.getClass().getName().contains("ExtendedMarkersView")) {
                             viewer.getTree().removeListener(SWT.Collapse, col[i]);
-                            viewer.getTree().addListener(SWT.Collapse, 
+                            viewer.getTree().addListener(SWT.Collapse,
                                     new TypedListener(new TreeViewerListener((TreeListener)l)));
                         }
                     }
@@ -348,7 +348,7 @@ public class Validator extends AbstractValidator {
             //cannot update view, we will use the original one
         }
     }
-    
+
     private static IWorkbenchPage getPage() {
         IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (window == null && PlatformUI.getWorkbench().getWorkbenchWindowCount() > 0) {

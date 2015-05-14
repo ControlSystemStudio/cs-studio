@@ -31,63 +31,63 @@ package org.csstudio.dal.context;
  * @param <C> default Connectable type
  */
 public class ConnectionAdapter<C extends Connectable> extends LinkAdapter<C>
-	implements ConnectionListener<C>
+    implements ConnectionListener<C>
 {
-	/**
-	 * Default constructor.
-	 */
-	public ConnectionAdapter()
-	{
-		super();
-	}
+    /**
+     * Default constructor.
+     */
+    public ConnectionAdapter()
+    {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.ConnectionListener#connecting(org.csstudio.dal.context.ConnectionEvent)
-	 */
-	public void connecting(ConnectionEvent<C> e)
-	{
-		// override in necessary
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.ConnectionListener#connecting(org.csstudio.dal.context.ConnectionEvent)
+     */
+    public void connecting(ConnectionEvent<C> e)
+    {
+        // override in necessary
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.ConnectionListener#disconnecting(org.csstudio.dal.context.ConnectionEvent)
-	 */
-	public void disconnecting(ConnectionEvent<C> e)
-	{
-		// override in necessary
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.ConnectionListener#disconnecting(org.csstudio.dal.context.ConnectionEvent)
+     */
+    public void disconnecting(ConnectionEvent<C> e)
+    {
+        // override in necessary
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.ConnectionListener#destroyed(org.csstudio.dal.context.ConnectionEvent)
-	 */
-	public void destroyed(ConnectionEvent<C> e)
-	{
-		// override in necessary
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.ConnectionListener#destroyed(org.csstudio.dal.context.ConnectionEvent)
+     */
+    public void destroyed(ConnectionEvent<C> e)
+    {
+        // override in necessary
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.ConnectionListener#connectionFailed(org.csstudio.dal.context.ConnectionEvent)
-	 */
-	public void connectionFailed(ConnectionEvent<C> e)
-	{
-		// override in necessary
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.ConnectionListener#connectionFailed(org.csstudio.dal.context.ConnectionEvent)
+     */
+    public void connectionFailed(ConnectionEvent<C> e)
+    {
+        // override in necessary
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.ConnectionListener#initialState(org.csstudio.dal.context.ConnectionEvent)
-	 */
-	public void initialState(ConnectionEvent<C> e)
-	{
-		// override in necessary
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.ConnectionListener#initialState(org.csstudio.dal.context.ConnectionEvent)
+     */
+    public void initialState(ConnectionEvent<C> e)
+    {
+        // override in necessary
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.ConnectionListener#ready(org.csstudio.dal.context.ConnectionEvent)
-	 */
-	public void ready(ConnectionEvent<C> e)
-	{
-		// override in necessary
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.ConnectionListener#ready(org.csstudio.dal.context.ConnectionEvent)
+     */
+    public void ready(ConnectionEvent<C> e)
+    {
+        // override in necessary
+    }
 }
 
 /* __oOo__ */

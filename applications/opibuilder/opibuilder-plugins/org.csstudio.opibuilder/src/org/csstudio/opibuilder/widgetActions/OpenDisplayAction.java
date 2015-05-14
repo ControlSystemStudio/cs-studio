@@ -27,110 +27,110 @@ import org.jdom.Element;
 
 /**
  * The action running another OPI file.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class OpenDisplayAction extends AbstractOpenOPIAction {
 
 
-	public static final String PROP_REPLACE = "replace";//$NON-NLS-1$
+    public static final String PROP_REPLACE = "replace";//$NON-NLS-1$
 
-	private enum OpenDisplayTarget{
-		NEW_TAB("Open in new Tab"),
-		REPLACE("Replace"),		
-		NEW_WINDOW("Open in new Window");
-		
-		private String description;
-		private OpenDisplayTarget(String desc) {
-			this.description = desc;
-		}
-		
-		public static String[] stringValues(){
-			String[] sv = new String[values().length];
-			int i=0;
-			for(OpenDisplayTarget p : values())
-				sv[i++] = p.description;
-			return sv;
-		}
-	}
-	
+    private enum OpenDisplayTarget{
+        NEW_TAB("Open in new Tab"),
+        REPLACE("Replace"),
+        NEW_WINDOW("Open in new Window");
 
-	@Override
-	protected void configureProperties() {
-		super.configureProperties();
-		addProperty(new ComboProperty(PROP_REPLACE, "Target",
-				WidgetPropertyCategory.Basic, OpenDisplayTarget.stringValues(), 1){
-			@Override
-			public Object readValueFromXML(Element propElement) {
-				try {
-					Integer index = Integer.parseInt(propElement.getValue());
-					return index;
-				} catch (NumberFormatException e) {
-					boolean b = Boolean.parseBoolean(propElement.getValue());
-					return b?new Integer(1): new Integer(0);
-				}
-			}
-		});
-	}
+        private String description;
+        private OpenDisplayTarget(String desc) {
+            this.description = desc;
+        }
 
-	@Override
-	protected void openOPI(IPath absolutePath) {
-		if (!ctrlPressed && !shiftPressed && getOpenDisplayTarget() == OpenDisplayTarget.REPLACE) {				
-			IOPIRuntime opiRuntime = getWidgetModel().getRootDisplayModel()
-					.getOpiRuntime();
-			DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime
-					.getAdapter(DisplayOpenManager.class));
-			manager.openNewDisplay();
-			try {
-				RunModeService
-						.replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
-								absolutePath, manager, getMacrosInput()));
-			} catch (PartInitException e) {
-				OPIBuilderPlugin.getLogger().log(Level.WARNING,
-						"Failed to open " + absolutePath, e); //$NON-NLS-1$
-				MessageDialog.openError(Display.getDefault().getActiveShell(),
-						"Open file error",
-						NLS.bind("Failed to open {0}", absolutePath));
-			}
-			
-		} else {
-			TargetWindow target;
-			if(!ctrlPressed && !shiftPressed){
-				switch (getOpenDisplayTarget()) {
-				case NEW_TAB:
-					target = TargetWindow.SAME_WINDOW;
-					break;
-				case NEW_WINDOW:
-					target = TargetWindow.NEW_WINDOW;
-					break;
-				default:
-					target = TargetWindow.SAME_WINDOW;
-					break;
-				}
-			}else if (shiftPressed && !ctrlPressed)
-				target = TargetWindow.NEW_WINDOW;
-			else
-				target = TargetWindow.SAME_WINDOW;
+        public static String[] stringValues(){
+            String[] sv = new String[values().length];
+            int i=0;
+            for(OpenDisplayTarget p : values())
+                sv[i++] = p.description;
+            return sv;
+        }
+    }
 
-			RunModeService.getInstance().runOPI(absolutePath, target, null,
-					getMacrosInput(), null);
-		}		
-	}
 
-	private OpenDisplayTarget getOpenDisplayTarget() {
-		int index = (Integer) getPropertyValue(PROP_REPLACE);
-		return OpenDisplayTarget.values()[index];
-	}
+    @Override
+    protected void configureProperties() {
+        super.configureProperties();
+        addProperty(new ComboProperty(PROP_REPLACE, "Target",
+                WidgetPropertyCategory.Basic, OpenDisplayTarget.stringValues(), 1){
+            @Override
+            public Object readValueFromXML(Element propElement) {
+                try {
+                    Integer index = Integer.parseInt(propElement.getValue());
+                    return index;
+                } catch (NumberFormatException e) {
+                    boolean b = Boolean.parseBoolean(propElement.getValue());
+                    return b?new Integer(1): new Integer(0);
+                }
+            }
+        });
+    }
 
-	@Override
-	public ActionType getActionType() {
-		return ActionType.OPEN_DISPLAY;
-	}
+    @Override
+    protected void openOPI(IPath absolutePath) {
+        if (!ctrlPressed && !shiftPressed && getOpenDisplayTarget() == OpenDisplayTarget.REPLACE) {
+            IOPIRuntime opiRuntime = getWidgetModel().getRootDisplayModel()
+                    .getOpiRuntime();
+            DisplayOpenManager manager = (DisplayOpenManager) (opiRuntime
+                    .getAdapter(DisplayOpenManager.class));
+            manager.openNewDisplay();
+            try {
+                RunModeService
+                        .replaceOPIRuntimeContent(opiRuntime, new RunnerInput(
+                                absolutePath, manager, getMacrosInput()));
+            } catch (PartInitException e) {
+                OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                        "Failed to open " + absolutePath, e); //$NON-NLS-1$
+                MessageDialog.openError(Display.getDefault().getActiveShell(),
+                        "Open file error",
+                        NLS.bind("Failed to open {0}", absolutePath));
+            }
 
-	@Override
-	public String getDefaultDescription() {
-		return "Open " + getPath();
-	}
+        } else {
+            TargetWindow target;
+            if(!ctrlPressed && !shiftPressed){
+                switch (getOpenDisplayTarget()) {
+                case NEW_TAB:
+                    target = TargetWindow.SAME_WINDOW;
+                    break;
+                case NEW_WINDOW:
+                    target = TargetWindow.NEW_WINDOW;
+                    break;
+                default:
+                    target = TargetWindow.SAME_WINDOW;
+                    break;
+                }
+            }else if (shiftPressed && !ctrlPressed)
+                target = TargetWindow.NEW_WINDOW;
+            else
+                target = TargetWindow.SAME_WINDOW;
+
+            RunModeService.getInstance().runOPI(absolutePath, target, null,
+                    getMacrosInput(), null);
+        }
+    }
+
+    private OpenDisplayTarget getOpenDisplayTarget() {
+        int index = (Integer) getPropertyValue(PROP_REPLACE);
+        return OpenDisplayTarget.values()[index];
+    }
+
+    @Override
+    public ActionType getActionType() {
+        return ActionType.OPEN_DISPLAY;
+    }
+
+    @Override
+    public String getDefaultDescription() {
+        return "Open " + getPath();
+    }
 
 }

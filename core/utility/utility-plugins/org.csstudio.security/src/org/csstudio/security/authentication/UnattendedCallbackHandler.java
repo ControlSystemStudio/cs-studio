@@ -19,11 +19,11 @@ import javax.security.auth.callback.TextOutputCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
 /** JAAS {@link CallbackHandler} for unattended/automatic login.
- * 
+ *
  *  <p>Passes a provided name, password to JAAS.
- *  
+ *
  *  <p>By default, text messages are logged, but derived class may override.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -48,7 +48,7 @@ public class UnattendedCallbackHandler implements CallbackHandler
         this.name = name;
         this.password = password;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     final public void handle(final Callback[] callbacks) throws IOException,
@@ -78,7 +78,7 @@ public class UnattendedCallbackHandler implements CallbackHandler
     }
 
     /** Handle received text
-     *  
+     *
      *  <p>Default implementation logs the text.
      *  Derived class may handle it as needed.
      *  @param text {@link TextOutputCallback}

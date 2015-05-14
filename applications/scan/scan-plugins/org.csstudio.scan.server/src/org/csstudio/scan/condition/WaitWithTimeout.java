@@ -24,7 +24,7 @@ import org.epics.util.time.TimeDuration;
 public class WaitWithTimeout
 {
     final private long end_ms;
-    
+
     /** Initialize time out to start 'now'
      *  @param duration Overall duration of the timeout, <code>null</code> to wait 'forever'
      */
@@ -36,10 +36,10 @@ public class WaitWithTimeout
     }
 
     /** Wait on lock until timeout, or notification on lock
-     * 
+     *
      *  <p>If notified, but condition is not met, can be invoked again,
      *  keeping track of the overall duration of the desired timeout.
-     *  
+     *
      *  @param lock Object to wait on
      *  @return <code>true</code> if the wait timed out,
      *          <code>false</code> if wait was notified within time

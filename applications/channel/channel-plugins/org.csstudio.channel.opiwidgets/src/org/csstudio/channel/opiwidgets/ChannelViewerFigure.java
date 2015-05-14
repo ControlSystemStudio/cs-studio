@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.opiwidgets;
 
@@ -14,13 +14,13 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class ChannelViewerFigure extends AbstractChannelWidgetFigure<ChannelViewerWidget> {
 
-	public ChannelViewerFigure(AbstractBaseEditPart editPart) {
-		super(editPart);
-	}
+    public ChannelViewerFigure(AbstractBaseEditPart editPart) {
+        super(editPart);
+    }
 
-	@Override
-	protected ChannelViewerWidget createSWTWidget(Composite parent, int style) {
-		return new ChannelViewerWidget(parent, SWT.None);
-	}
+    @Override
+    protected ChannelViewerWidget createSWTWidget(Composite parent, int style) {
+        return new ChannelViewerWidget(parent, SWT.None);
+    }
 
 }

@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 /**
- * 
+ *
  * <code>ResultsDialog</code> shows the summary of the validation - how many files, widgets, and properties were
  * analyzed and how many of them failed validation.
  *
@@ -30,11 +30,11 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class ResultsDialog extends TitleAreaDialog {
-    
+
     private static final String MESSAGE = "OPI Validation completed successfully.\n"
             + "Below is the summary of the validation. Details can be found in the Problems View.";
     private static final String TITLE = "OPI Validation Results";
-    
+
     private final int noValidatedFiles;
     private final int noFilesWithFailures;
     private final int noValidatedWidgets;
@@ -51,7 +51,7 @@ public class ResultsDialog extends TitleAreaDialog {
 
     /**
      * Constructs a new dialog.
-     * 
+     *
      * @param parentShell the parent shell
      * @param noValidatedFiles number of validated files
      * @param noFilesWithFailures number of files that did not pass the validation
@@ -81,7 +81,7 @@ public class ResultsDialog extends TitleAreaDialog {
         this.noValidatedRWProperties = noValidatedRWProperties;
         this.noRWPropertiesWithFailures = noRWPropertiesWithFailures;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
@@ -98,9 +98,9 @@ public class ResultsDialog extends TitleAreaDialog {
                 }
             }
         });
-        
+
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
@@ -115,21 +115,21 @@ public class ResultsDialog extends TitleAreaDialog {
         layout.horizontalSpacing = 5;
         layout.marginLeft = 5;
         layout.marginRight = 5;
-        
+
         Composite report = new Composite(parent, SWT.NONE);
         GridData data = new GridData(GridData.HORIZONTAL_ALIGN_FILL, GridData.VERTICAL_ALIGN_FILL, true,true);
         report.setLayoutData(data);
-        
+
         GridLayout reportLayout = new GridLayout();
         reportLayout.verticalSpacing = 3;
         reportLayout.horizontalSpacing = 3;
         reportLayout.marginLeft = 15;
         report.setLayout(reportLayout);
-        
+
         createReportContents(report);
         return c;
     }
-    
+
     private void createReportContents(Composite parent) {
         Label l = new Label(parent, SWT.HORIZONTAL);
         l.setText("Validated files: " + noValidatedFiles);
@@ -139,27 +139,27 @@ public class ResultsDialog extends TitleAreaDialog {
             fd.setStyle(SWT.ITALIC);
             font = new Font(parent.getDisplay(),fd);
         }
-        
+
         l = new Label(parent, SWT.HORIZONTAL);
         int ratio = (int)((noFilesWithFailures/(double)noValidatedFiles)*100);
         l.setText("Files with errors: " + noFilesWithFailures + " (" + ratio + " %)");
         l.setLayoutData(createGridData(true));
         l.setFont(font);
-        
+
         l = new Label(parent, SWT.HORIZONTAL);
         l.setText("Validated widgets: " + noValidatedWidgets);
         l.setLayoutData(createGridData(false));
-        
+
         l = new Label(parent, SWT.HORIZONTAL);
         ratio = (int)((noWidgetsWithFailures/(double)noValidatedWidgets)*100);
         l.setText("Widgets with errors: " + noWidgetsWithFailures + " (" + ratio + " %)");
         l.setLayoutData(createGridData(true));
         l.setFont(font);
-        
+
         l = new Label(parent, SWT.HORIZONTAL);
         l.setText("Validated RO properties: " + noValidatedROProperties);
         l.setLayoutData(createGridData(false));
-        
+
         l = new Label(parent, SWT.HORIZONTAL);
         ratio = (int)((noROPropertiesWithCriticalFailures/(double)noValidatedROProperties)*100);
         int ratio1 = (int)((noROPropertiesWithMajorFailures/(double)noValidatedROProperties)*100);
@@ -172,7 +172,7 @@ public class ResultsDialog extends TitleAreaDialog {
                 + ratio + " %)");
         l.setLayoutData(createGridData(true));
         l.setFont(font);
-        
+
         l = new Label(parent, SWT.HORIZONTAL);
         l.setText("Validated WRITE properties: " + noValidatedWRITEProperties);
         l.setLayoutData(createGridData(false));
@@ -181,7 +181,7 @@ public class ResultsDialog extends TitleAreaDialog {
         l.setText("WRITE properties with errors: " + noWRITEPropertiesWithFailures + " (" + ratio + " %)");
         l.setLayoutData(createGridData(true));
         l.setFont(font);
-        
+
         l = new Label(parent, SWT.HORIZONTAL);
         l.setText("Validated RW properties: " + noValidatedRWProperties);
         l.setLayoutData(createGridData(false));
@@ -191,7 +191,7 @@ public class ResultsDialog extends TitleAreaDialog {
         l.setLayoutData(createGridData(true));
         l.setFont(font);
     }
-    
+
     private GridData createGridData(boolean indent) {
         GridData d = new GridData(GridData.HORIZONTAL_ALIGN_FILL, GridData.VERTICAL_ALIGN_BEGINNING, true,false);
         if (indent) {
@@ -201,7 +201,7 @@ public class ResultsDialog extends TitleAreaDialog {
         }
         return d;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)

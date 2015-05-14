@@ -27,69 +27,69 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 public class AddTagCommandHandler extends AbstractAdaptedHandler<Channel> {
-	
-	public AddTagCommandHandler() {
-		super(Channel.class);
-	}
-	
-	@Override
-	protected void execute(List<Channel> channels, ExecutionEvent event) {
-		final Shell shell = HandlerUtil.getActiveShell(event);
-		Collection<String> existingTagNames = null;
-		GetAllTags getAllTags = new GetAllTags();
-		getAllTags.addExceptionListener(new ExceptionListener() {
 
-			@Override
-			public void exceptionThrown(Exception e) {
-				final Exception exception = e;
-				PlatformUI.getWorkbench().getDisplay()
-						.asyncExec(new Runnable() {
+    public AddTagCommandHandler() {
+        super(Channel.class);
+    }
 
-							@Override
-							public void run() {
-								Status status = new Status(Status.ERROR,
-										Activator.PLUGIN_ID,
-										((ChannelFinderException) exception)
-												.getMessage(), exception
-												.getCause());
-								ErrorDialog.openError(shell,
-										"Error retrieving all the tag names.",
-										exception.getMessage(), status);
-							}
-						});
-			}
-		});
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		try {
-			existingTagNames = executor.submit(getAllTags).get();
-		} catch (InterruptedException e1) {
-		} catch (ExecutionException e1) {
-		}
+    @Override
+    protected void execute(List<Channel> channels, ExecutionEvent event) {
+        final Shell shell = HandlerUtil.getActiveShell(event);
+        Collection<String> existingTagNames = null;
+        GetAllTags getAllTags = new GetAllTags();
+        getAllTags.addExceptionListener(new ExceptionListener() {
 
-		AddTagDialog dialog = new AddTagDialog(shell, existingTagNames);
-		dialog.setBlockOnOpen(true);
-		if (dialog.open() == Window.OK) {
-			String tagName = dialog.getValue();
-			Tag.Builder tag = tag(tagName);
-			if (existingTagNames.contains(tagName)) {
-			    
-			} else if (tagName != null && !tagName.equals("")) {
-				CreateTagDialog createTagDialog = new CreateTagDialog(shell,
-						tagName);
-				createTagDialog.setBlockOnOpen(true);
-				if (createTagDialog.open() == Window.OK) {
-					Job create = new CreateTagJob("Create Tag", tag(
-							createTagDialog.getTagName(),
-							createTagDialog.getTagOwner()));
-					create.schedule();
-				}else{
-					return;
-				}
-			}
-			Job job = new AddTag2ChannelsJob("AddTags", channels, tag);
-			job.schedule();
-		}
-	}
+            @Override
+            public void exceptionThrown(Exception e) {
+                final Exception exception = e;
+                PlatformUI.getWorkbench().getDisplay()
+                        .asyncExec(new Runnable() {
 
-	
+                            @Override
+                            public void run() {
+                                Status status = new Status(Status.ERROR,
+                                        Activator.PLUGIN_ID,
+                                        ((ChannelFinderException) exception)
+                                                .getMessage(), exception
+                                                .getCause());
+                                ErrorDialog.openError(shell,
+                                        "Error retrieving all the tag names.",
+                                        exception.getMessage(), status);
+                            }
+                        });
+            }
+        });
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        try {
+            existingTagNames = executor.submit(getAllTags).get();
+        } catch (InterruptedException e1) {
+        } catch (ExecutionException e1) {
+        }
+
+        AddTagDialog dialog = new AddTagDialog(shell, existingTagNames);
+        dialog.setBlockOnOpen(true);
+        if (dialog.open() == Window.OK) {
+            String tagName = dialog.getValue();
+            Tag.Builder tag = tag(tagName);
+            if (existingTagNames.contains(tagName)) {
+
+            } else if (tagName != null && !tagName.equals("")) {
+                CreateTagDialog createTagDialog = new CreateTagDialog(shell,
+                        tagName);
+                createTagDialog.setBlockOnOpen(true);
+                if (createTagDialog.open() == Window.OK) {
+                    Job create = new CreateTagJob("Create Tag", tag(
+                            createTagDialog.getTagName(),
+                            createTagDialog.getTagOwner()));
+                    create.schedule();
+                }else{
+                    return;
+                }
+            }
+            Job job = new AddTag2ChannelsJob("AddTags", channels, tag);
+            job.schedule();
+        }
+    }
+
+
 }

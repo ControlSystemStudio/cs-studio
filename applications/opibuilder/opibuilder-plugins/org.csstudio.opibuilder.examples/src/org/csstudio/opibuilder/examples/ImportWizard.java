@@ -24,42 +24,42 @@ import org.eclipse.ui.IWorkbench;
  *
  */
 public class ImportWizard extends Wizard implements IImportWizard {
-	@Override
-	public boolean performFinish() {
-		new InstallExamplesAction().run(null);
-		return true;
-	}
+    @Override
+    public boolean performFinish() {
+        new InstallExamplesAction().run(null);
+        return true;
+    }
 
-	public void init(IWorkbench workbench, IStructuredSelection selection) {
-	    // NOP
-	}
-
-
-	@Override
-	public void addPages() {
-		super.addPages();
-		setWindowTitle("Import BOY Examples");
-		addPage(new WizardPage("BOY Examples") {
-
-			public void createControl(Composite parent) {
-				setTitle("Import BOY Examples");
-				setDescription("Import the OPI Examples come with BOY");
-				Composite container = new Composite(parent, SWT.None);
-				container.setLayout(new GridLayout());
-				setControl(container);
+    public void init(IWorkbench workbench, IStructuredSelection selection) {
+        // NOP
+    }
 
 
-				Label label = new Label(container, SWT.WRAP);
-				GridData gd = new GridData();
-				gd.widthHint = 500;
-				label.setLayoutData(gd);
+    @Override
+    public void addPages() {
+        super.addPages();
+        setWindowTitle("Import BOY Examples");
+        addPage(new WizardPage("BOY Examples") {
 
-				label.setText("BOY Examples will be imported to your workspace. " +
-						NLS.bind("If there is already a project named \"{0}\" in your workspace," +
-								"the import will fail. ",
-								InstallExamplesAction.PROJECT_NAME) +
-								"Please rename or delete it and import again.");
-			}
-		});
-	}
+            public void createControl(Composite parent) {
+                setTitle("Import BOY Examples");
+                setDescription("Import the OPI Examples come with BOY");
+                Composite container = new Composite(parent, SWT.None);
+                container.setLayout(new GridLayout());
+                setControl(container);
+
+
+                Label label = new Label(container, SWT.WRAP);
+                GridData gd = new GridData();
+                gd.widthHint = 500;
+                label.setLayoutData(gd);
+
+                label.setText("BOY Examples will be imported to your workspace. " +
+                        NLS.bind("If there is already a project named \"{0}\" in your workspace," +
+                                "the import will fail. ",
+                                InstallExamplesAction.PROJECT_NAME) +
+                                "Please rename or delete it and import again.");
+            }
+        });
+    }
 }

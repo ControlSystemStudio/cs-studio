@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.opiwidgets;
 
@@ -12,23 +12,23 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescrip
  *
  */
 public class Line2DPlotModel extends AbstractChannelWidgetModel {
-	
-	public Line2DPlotModel() {
-		super(AbstractSelectionWidgetModelDescription.newModelFrom(ChannelLinePlotWidget.class));
-	}
 
-	public final String ID = "org.csstudio.channel.opiwidgets.Line2DPlot"; //$NON-NLS-1$
-	
-	@Override
-	protected void configureProperties() {
-	}
+    public Line2DPlotModel() {
+        super(AbstractSelectionWidgetModelDescription.newModelFrom(ChannelLinePlotWidget.class));
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.opibuilder.model.AbstractWidgetModel#getTypeID()
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    public final String ID = "org.csstudio.channel.opiwidgets.Line2DPlot"; //$NON-NLS-1$
+
+    @Override
+    protected void configureProperties() {
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.opibuilder.model.AbstractWidgetModel#getTypeID()
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
 
 }

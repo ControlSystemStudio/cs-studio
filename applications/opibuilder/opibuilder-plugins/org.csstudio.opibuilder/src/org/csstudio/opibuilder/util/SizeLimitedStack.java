@@ -10,34 +10,34 @@ package org.csstudio.opibuilder.util;
 import java.util.LinkedList;
 import java.util.NoSuchElementException;
 
-/**A stack with limited size. If the stack is full, 
+/**A stack with limited size. If the stack is full,
  * the oldest element will be removed when new element was pushed.
  * @author Xihui Chen
  */
 public class SizeLimitedStack<T> {
-	private LinkedList<T> list = new LinkedList<T>();	
-	private int sizeLimit;
-	
-	/**Constructor
-	 * @param sizeLimit the maximum number of elements in the stack.
-	 * If the stack is full, 
-	 * the oldest element will be removed when new element was pushed.
-	 */
-	public SizeLimitedStack(int sizeLimit) {
-		this.sizeLimit = sizeLimit;
-	}
-	/**
-     * Pushes an item onto the top of this stack.      
+    private LinkedList<T> list = new LinkedList<T>();
+    private int sizeLimit;
+
+    /**Constructor
+     * @param sizeLimit the maximum number of elements in the stack.
+     * If the stack is full,
+     * the oldest element will be removed when new element was pushed.
+     */
+    public SizeLimitedStack(int sizeLimit) {
+        this.sizeLimit = sizeLimit;
+    }
+    /**
+     * Pushes an item onto the top of this stack.
      * @param e the item to be pushed onto this stack.
      */
-	public void push(T e){
-		if(list.size() >= sizeLimit)
-			list.removeFirst();
-		list.addLast(e);
-	}
-	
-	
-	/**
+    public void push(T e){
+        if(list.size() >= sizeLimit)
+            list.removeFirst();
+        list.addLast(e);
+    }
+
+
+    /**
      * Removes the object at the top of this stack and returns that
      * object as the value of this function.
      *
@@ -45,12 +45,12 @@ public class SizeLimitedStack<T> {
      *             of the <tt>Vector</tt> object).
      * @throws NoSuchElementException if this list is empty
      */
-            
-	public T pop(){
-		return list.removeLast();
-	}
-	
-	/**
+
+    public T pop(){
+        return list.removeLast();
+    }
+
+    /**
      * Looks at the object at the top of this stack without removing it
      * from the stack.
      *
@@ -58,33 +58,33 @@ public class SizeLimitedStack<T> {
      *             of the <tt>Vector</tt> object).
      * @throws NoSuchElementException if this list is empty
      */
-	public T peek(){
-		return list.getLast();
-	}
+    public T peek(){
+        return list.getLast();
+    }
 
-	/**
-	 * Empty the stack.
-	 */
-	public void clear(){
-		list.clear();
-	}
-	
-	/**Return an array of all elements in the stack. 
-	 * The oldest element is the first element of the returned array.
-	 * @return the array contained all elements in the stack.
-	 */
-	public Object[] toArray(){
-		return list.toArray();
-	}
-	
-	/**Returns the number of elements in this stack.
-	 * @return the number of elements in this stack
-	 */
-	public int size(){
-		return list.size();
-	}
-	
-	/**
+    /**
+     * Empty the stack.
+     */
+    public void clear(){
+        list.clear();
+    }
+
+    /**Return an array of all elements in the stack.
+     * The oldest element is the first element of the returned array.
+     * @return the array contained all elements in the stack.
+     */
+    public Object[] toArray(){
+        return list.toArray();
+    }
+
+    /**Returns the number of elements in this stack.
+     * @return the number of elements in this stack
+     */
+    public int size(){
+        return list.size();
+    }
+
+    /**
      * Returns <tt>true</tt> if this stack contains the specified element.
      * More formally, returns <tt>true</tt> if and only if this stack contains
      * at least one element <tt>e</tt> such that
@@ -93,7 +93,7 @@ public class SizeLimitedStack<T> {
      * @param o element whose presence in this stack is to be tested
      * @return <tt>true</tt> if this list contains the specified element
      */
-	public boolean contains(T o){
-		return list.contains(o);
-	}
+    public boolean contains(T o){
+        return list.contains(o);
+    }
 }

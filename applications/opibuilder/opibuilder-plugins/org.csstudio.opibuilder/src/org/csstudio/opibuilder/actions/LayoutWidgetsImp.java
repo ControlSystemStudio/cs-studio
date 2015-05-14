@@ -25,32 +25,32 @@ import org.eclipse.gef.commands.CompoundCommand;
  */
 public class LayoutWidgetsImp {
 
-	
-	public  static void run(AbstractLayoutEditpart layoutWidget, CommandStack commandStack) {
 
-		AbstractContainerModel container = layoutWidget.getWidgetModel().getParent();
-		
-		List<AbstractWidgetModel> modelChildren = new ArrayList<AbstractWidgetModel>();
-		modelChildren.addAll(container.getChildren());
-		modelChildren.remove(layoutWidget.getWidgetModel());
-		
-		if(modelChildren.size() ==0)
-			return;
-		
-		List<Rectangle> newBounds = 
-			layoutWidget.getNewBounds(modelChildren, container.getBounds());
-		
-		CompoundCommand compoundCommand = new CompoundCommand("Layout Widgets");
-		
-		int i=0;
-		for(AbstractWidgetModel model : modelChildren){
-			compoundCommand.add(new SetBoundsCommand(model, newBounds.get(i)));
-			i++;
-		}
-		
-		commandStack.execute(compoundCommand);
-		
-	}
-	
-	
+    public  static void run(AbstractLayoutEditpart layoutWidget, CommandStack commandStack) {
+
+        AbstractContainerModel container = layoutWidget.getWidgetModel().getParent();
+
+        List<AbstractWidgetModel> modelChildren = new ArrayList<AbstractWidgetModel>();
+        modelChildren.addAll(container.getChildren());
+        modelChildren.remove(layoutWidget.getWidgetModel());
+
+        if(modelChildren.size() ==0)
+            return;
+
+        List<Rectangle> newBounds =
+            layoutWidget.getNewBounds(modelChildren, container.getBounds());
+
+        CompoundCommand compoundCommand = new CompoundCommand("Layout Widgets");
+
+        int i=0;
+        for(AbstractWidgetModel model : modelChildren){
+            compoundCommand.add(new SetBoundsCommand(model, newBounds.get(i)));
+            i++;
+        }
+
+        commandStack.execute(compoundCommand);
+
+    }
+
+
 }

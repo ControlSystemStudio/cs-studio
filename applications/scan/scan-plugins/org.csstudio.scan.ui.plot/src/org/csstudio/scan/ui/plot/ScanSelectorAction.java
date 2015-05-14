@@ -13,22 +13,22 @@ import org.csstudio.apputil.ui.swt.DropdownToolbarAction;
 import org.csstudio.scan.server.ScanInfo;
 
 /** Toolbar action to select the scan
- * 
+ *
  *  <p>Selectable options are strings.
  *  The scan ID that's used to identify a specific
  *  scan is encoded/decoded in the string.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class ScanSelectorAction extends DropdownToolbarAction
 {
     /** Scan model */
     final private PlotDataModel model;
-    
+
     /** Plot */
     final private Plot plot;
 
-    /** Initialize 
+    /** Initialize
      * @param model */
     public ScanSelectorAction(final PlotDataModel model, final Plot plot)
     {
@@ -54,7 +54,7 @@ public class ScanSelectorAction extends DropdownToolbarAction
     {
         return name + " [" + id + "]";
     }
-    
+
     /** @param option Option in drop-down list
      *  @return Decoded Scan ID or <code>-1</code>
      */
@@ -73,7 +73,7 @@ public class ScanSelectorAction extends DropdownToolbarAction
             return -1;
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String[] getOptions()

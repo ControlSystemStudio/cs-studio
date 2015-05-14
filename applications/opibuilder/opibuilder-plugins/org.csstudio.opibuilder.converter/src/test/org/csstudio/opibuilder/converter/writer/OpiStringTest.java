@@ -17,24 +17,24 @@ import org.w3c.dom.Element;
 
 public class OpiStringTest extends TestCase {
 
-	public void testOpiString() throws EdmException {
-		// init document
-		Document doc = XMLFileHandler.createDomDocument();
-		
-		String name = "stringElement";
-		String val = "test";
-		EdmString s = new EdmString(new EdmAttribute(val), true);
-		
-		Element parent = doc.createElement("root");
-		doc.appendChild(parent);
-		Context context = new Context(doc, parent, null, 0, 0);
-		OpiString o = new OpiString(context, name, s);
-		assertTrue(o instanceof OpiAttribute);
-		
-		// testing
-		Element x = (Element)doc.getElementsByTagName(name).item(0);
-		assertEquals(val, x.getTextContent());
-		
-		//XMLFileHandler.writeXML(doc);
-	}
+    public void testOpiString() throws EdmException {
+        // init document
+        Document doc = XMLFileHandler.createDomDocument();
+
+        String name = "stringElement";
+        String val = "test";
+        EdmString s = new EdmString(new EdmAttribute(val), true);
+
+        Element parent = doc.createElement("root");
+        doc.appendChild(parent);
+        Context context = new Context(doc, parent, null, 0, 0);
+        OpiString o = new OpiString(context, name, s);
+        assertTrue(o instanceof OpiAttribute);
+
+        // testing
+        Element x = (Element)doc.getElementsByTagName(name).item(0);
+        assertEquals(val, x.getTextContent());
+
+        //XMLFileHandler.writeXML(doc);
+    }
 }

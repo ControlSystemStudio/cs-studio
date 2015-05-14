@@ -35,7 +35,7 @@ import java.util.BitSet;
  */
 public interface PatternAccess extends DataAccess<BitSet>
 {
-	//
+    //
 }
 
 /* __oOo__ */

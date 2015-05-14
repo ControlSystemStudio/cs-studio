@@ -12,7 +12,7 @@ import org.eclipse.swt.graphics.RGB;
 
 public class Line2Model extends PolyLine2Model {
 
-	public Line2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
-		super(adlWidget, colorMap, parentModel);
-	}
+    public Line2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
+        super(adlWidget, colorMap, parentModel);
+    }
 }

@@ -44,13 +44,13 @@ public class DuplicatePVAction extends Action
         this.model = model;
         this.pv = pv;
 
-    	//authorization
+        //authorization
         SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
-	@Override
-	public void run()
-	{
+    @Override
+    public void run()
+    {
         final String path = pv.getPathName();
         final InputDialog dlg = new InputDialog(shell, Messages.DuplicatePV,
                 NLS.bind(Messages.DuplicatePVMesgFmt,
@@ -69,5 +69,5 @@ public class DuplicatePVAction extends Action
                     NLS.bind(Messages.CannotUpdateConfigurationErrorFmt,
                             new_path, ex.getMessage()));
         }
-	}
+    }
 }

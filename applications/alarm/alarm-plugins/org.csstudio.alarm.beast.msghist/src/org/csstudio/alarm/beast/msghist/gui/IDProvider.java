@@ -20,11 +20,11 @@ public class IDProvider extends CellLabelProvider
 {
     /** Show "ID: Value" as tool-tip */
     @Override
-	public String getToolTipText(final Object element)
+    public String getToolTipText(final Object element)
     {
         final Message message = (Message) element;
         return NLS.bind(Messages.CellID_TTFmt, message.getId());
-	}
+    }
 
     @Override
     public void update(final ViewerCell cell)

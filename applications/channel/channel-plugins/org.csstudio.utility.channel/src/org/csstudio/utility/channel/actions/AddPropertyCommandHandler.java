@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 

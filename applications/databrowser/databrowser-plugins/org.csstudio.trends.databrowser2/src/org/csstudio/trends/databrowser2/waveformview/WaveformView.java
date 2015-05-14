@@ -106,7 +106,7 @@ public class WaveformView extends DataBrowserAwareView
         parent.addDisposeListener((DisposeEvent e) ->
         {   // Ignore current model after this view is disposed.
             if (model != null)
-            	model.removeListener(model_listener);
+                model.removeListener(model_listener);
         });
 
         final GridLayout layout = new GridLayout(4, false);
@@ -193,9 +193,9 @@ public class WaveformView extends DataBrowserAwareView
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void setFocus()
-	{
+    {
         pv_name.setFocus();
     }
 
@@ -203,16 +203,16 @@ public class WaveformView extends DataBrowserAwareView
     @Override
     protected void updateModel(final Model old_model, final Model model)
     {
-    	this.model = model;
-    	if (old_model != model)
-    	{
-    		if (old_model != null)
-    			old_model.removeListener(model_listener);
+        this.model = model;
+        if (old_model != model)
+        {
+            if (old_model != null)
+                old_model.removeListener(model_listener);
 
-    		if (model != null)
-    			model.addListener(model_listener);
-    	}
-    	update(old_model != model);
+            if (model != null)
+                model.addListener(model_listener);
+        }
+        update(old_model != model);
     }
 
     /** Update combo box of this view.

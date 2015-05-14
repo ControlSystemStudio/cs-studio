@@ -35,7 +35,7 @@ class DemoDataIterator implements ValueIterator
     {
         return forStrings(name, 0);
     }
-    
+
     public DemoDataIterator(final VType[] values)
     {
         this.values = values;

@@ -12,16 +12,16 @@ import org.csstudio.autocomplete.proposals.ProposalStyle;
 /**
  * Content that will be displayed in UI. Result of concatenation of all provided
  * {@link TooltipData}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class TooltipContent {
 
-	/** Multiple-lines value that will be displayed in UI. */
-	public String value;
-	/** SWT StyleRange that will be applied to value. */
-	public ProposalStyle[] styles;
-	public int maxLineLength;
-	public int numberOfLines;
+    /** Multiple-lines value that will be displayed in UI. */
+    public String value;
+    /** SWT StyleRange that will be applied to value. */
+    public ProposalStyle[] styles;
+    public int maxLineLength;
+    public int numberOfLines;
 
 }

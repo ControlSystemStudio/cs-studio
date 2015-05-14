@@ -31,22 +31,22 @@ public class ShowSimulationHandler extends AbstractHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-    	// We should probably use HandlerUtil.getActiveWorkbenchWindowChecked(event)
-    	// to move away from PlatformUI, HandlerUtil will fail if a dialog or other
-    	// window was in focus, while PlatformUI always returns the window in which
-    	// we're running
-    	final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-    	final String log = event.getParameter("org.csstudio.scan.ui.scantree.show_simulation.log");
-		final IEditorInput input = new StringEditorInput(Messages.ScanSimulation, log);
-		try
+        // We should probably use HandlerUtil.getActiveWorkbenchWindowChecked(event)
+        // to move away from PlatformUI, HandlerUtil will fail if a dialog or other
+        // window was in focus, while PlatformUI always returns the window in which
+        // we're running
+        final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        final String log = event.getParameter("org.csstudio.scan.ui.scantree.show_simulation.log");
+        final IEditorInput input = new StringEditorInput(Messages.ScanSimulation, log);
+        try
         {
-			final IWorkbenchPage page = window.getActivePage();
+            final IWorkbenchPage page = window.getActivePage();
             page.openEditor(input, "org.eclipse.ui.DefaultTextEditor");
         }
         catch (PartInitException ex)
         {
-        	ExceptionDetailsErrorDialog.openError(window.getShell(), Messages.ScanSimulation, ex);
+            ExceptionDetailsErrorDialog.openError(window.getShell(), Messages.ScanSimulation, ex);
         }
-	    return null;
+        return null;
     }
 }

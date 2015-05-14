@@ -21,93 +21,93 @@ import org.jdom.Element;
  *
  */
 public class StringProperty extends AbstractWidgetProperty {
-	
-	private boolean multiLine, saveAsCDATA;
-	/**String Property Constructor. The property value type is {@link String}.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param defaultValue the default value when the widget is first created.
-	 */
-	public StringProperty(String prop_id, String description,
-			WidgetPropertyCategory category, String defaultValue) {
-		this(prop_id, description, category, defaultValue, false, false);
-	}
-	
-	public StringProperty(String prop_id, String description,
-			WidgetPropertyCategory category, String defaultValue, boolean multiLine) {
-		this(prop_id, description, category, defaultValue, multiLine, false);
-	}
-	
-	public StringProperty(String prop_id, String description,
-			WidgetPropertyCategory category, String defaultValue, boolean multiLine, boolean saveAsCDATA) {
-		super(prop_id, description, category, defaultValue);
-		this.multiLine = multiLine;
-		this.saveAsCDATA = saveAsCDATA;
-	}
-	
 
-	@Override
-	public Object checkValue(Object value) {
-		if(value == null)
-			return null;
-		
-		String acceptedValue = null;
+    private boolean multiLine, saveAsCDATA;
+    /**String Property Constructor. The property value type is {@link String}.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param defaultValue the default value when the widget is first created.
+     */
+    public StringProperty(String prop_id, String description,
+            WidgetPropertyCategory category, String defaultValue) {
+        this(prop_id, description, category, defaultValue, false, false);
+    }
 
-		if (value instanceof String) 
-			acceptedValue = (String) value;
-		else
-			acceptedValue = value.toString();
-		
-		return acceptedValue;
-	}
+    public StringProperty(String prop_id, String description,
+            WidgetPropertyCategory category, String defaultValue, boolean multiLine) {
+        this(prop_id, description, category, defaultValue, multiLine, false);
+    }
 
-	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {
-		if(PropertySSHelper.getIMPL() == null)
-			return null;
-		if(multiLine)
-			return PropertySSHelper.getIMPL().getMultiLineTextPropertyDescriptor(prop_id, description);
-		else
-			return PropertySSHelper.getIMPL().getTextPropertyDescriptor(prop_id, description);
-	}
-
-	@Override
-	public void writeToXML(Element propElement){
-		if (saveAsCDATA) {
-			propElement.setContent(new CDATA(getPropertyValue().toString()));
-		} else {
-			String reShapedString = getPropertyValue().toString().replaceAll(
-					"\\x0D\\x0A?", new String(new byte[] { 13, 10 })); //$NON-NLS-1$
-			propElement.setText(reShapedString);
-		}
-	}
-	
+    public StringProperty(String prop_id, String description,
+            WidgetPropertyCategory category, String defaultValue, boolean multiLine, boolean saveAsCDATA) {
+        super(prop_id, description, category, defaultValue);
+        this.multiLine = multiLine;
+        this.saveAsCDATA = saveAsCDATA;
+    }
 
 
-	@Override
-	public Object readValueFromXML(Element propElement) {
-		return propElement.getValue();
-	}
-	
-	@Override
-	public Object getPropertyValue() {
-		if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE)
-			return OPIBuilderMacroUtil.replaceMacros(
-					widgetModel, (String) super.getPropertyValue());
-		else
-			return super.getPropertyValue();
-	}
-	
-	@Override
-	public boolean configurableByRule() {
-		return true;
-	}
-	
-	@Override
-	public String toStringInRuleScript(Object propValue) {
-		return RuleData.QUOTE + super.toStringInRuleScript(propValue) + RuleData.QUOTE;
-	}	
+    @Override
+    public Object checkValue(Object value) {
+        if(value == null)
+            return null;
+
+        String acceptedValue = null;
+
+        if (value instanceof String)
+            acceptedValue = (String) value;
+        else
+            acceptedValue = value.toString();
+
+        return acceptedValue;
+    }
+
+    @Override
+    protected PropertyDescriptor createPropertyDescriptor() {
+        if(PropertySSHelper.getIMPL() == null)
+            return null;
+        if(multiLine)
+            return PropertySSHelper.getIMPL().getMultiLineTextPropertyDescriptor(prop_id, description);
+        else
+            return PropertySSHelper.getIMPL().getTextPropertyDescriptor(prop_id, description);
+    }
+
+    @Override
+    public void writeToXML(Element propElement){
+        if (saveAsCDATA) {
+            propElement.setContent(new CDATA(getPropertyValue().toString()));
+        } else {
+            String reShapedString = getPropertyValue().toString().replaceAll(
+                    "\\x0D\\x0A?", new String(new byte[] { 13, 10 })); //$NON-NLS-1$
+            propElement.setText(reShapedString);
+        }
+    }
+
+
+
+    @Override
+    public Object readValueFromXML(Element propElement) {
+        return propElement.getValue();
+    }
+
+    @Override
+    public Object getPropertyValue() {
+        if(widgetModel !=null && widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE)
+            return OPIBuilderMacroUtil.replaceMacros(
+                    widgetModel, (String) super.getPropertyValue());
+        else
+            return super.getPropertyValue();
+    }
+
+    @Override
+    public boolean configurableByRule() {
+        return true;
+    }
+
+    @Override
+    public String toStringInRuleScript(Object propValue) {
+        return RuleData.QUOTE + super.toStringInRuleScript(propValue) + RuleData.QUOTE;
+    }
 
 }

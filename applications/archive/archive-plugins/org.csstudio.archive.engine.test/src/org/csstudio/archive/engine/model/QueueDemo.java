@@ -66,7 +66,7 @@ public class QueueDemo
     public void testLinkedList() throws Exception
     {
         final LinkedList<Integer> queue = new LinkedList<Integer>();
-    
+
         final long start = System.currentTimeMillis();
         final long run = start + RUNTIME;
         int i = 0;

@@ -31,10 +31,10 @@ package org.csstudio.dal;
  */
 public interface SequencePropertyCharacteristics extends PropertyCharacteristics
 {
-	/**
-	 * The name of the characteristic denoting sequence length. The returned value type is <code>Integer</code>.
-	 */
-	public static final String C_SEQUENCE_LENGTH = CharacteristicInfo.C_SEQUENCE_LENGTH.getName();
+    /**
+     * The name of the characteristic denoting sequence length. The returned value type is <code>Integer</code>.
+     */
+    public static final String C_SEQUENCE_LENGTH = CharacteristicInfo.C_SEQUENCE_LENGTH.getName();
 }
 
 /* __oOo__ */

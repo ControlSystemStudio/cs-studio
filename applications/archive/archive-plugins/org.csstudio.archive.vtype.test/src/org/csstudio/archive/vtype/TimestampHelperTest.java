@@ -32,9 +32,9 @@ public class TimestampHelperTest
         String text = format.format(orig);
         System.out.println(text);
         assertThat(text, equalTo("2012/01/19 12:23:14"));
-        
+
         Timestamp time;
-        
+
         // Round within a few seconds
         time = TimestampHelper.roundUp(orig, 10);
         text = format.format(time);
@@ -62,7 +62,7 @@ public class TimestampHelperTest
         text = format.format(time);
         System.out.println(text);
         assertThat(text, equalTo("2012/01/19 14:00:00"));
-              
+
         // .. full day(s)
         assertThat(24L*60*60, equalTo(TimestampHelper.SECS_PER_DAY));
 
@@ -70,7 +70,7 @@ public class TimestampHelperTest
         text = format.format(time);
         System.out.println(text);
         assertThat(text, equalTo("2012/01/20 00:00:00"));
-          
+
         time = TimestampHelper.roundUp(orig, 3*TimestampHelper.SECS_PER_DAY);
         text = format.format(time);
         System.out.println(text);
@@ -99,11 +99,11 @@ public class TimestampHelperTest
         System.out.println(date);
         System.out.println(date.getTime());
         assertThat(date.getTime(), lessThan(0));
-        
+
         Timestamp timestamp = TimestampHelper.fromMillisecs(date.getTime());
         System.out.println(TimestampHelper.format(timestamp));
         assertThat(timestamp.toDate(), equalTo(date));
-        
+
         try
         {
             timestamp = Timestamp.of(date);

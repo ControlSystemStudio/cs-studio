@@ -12,16 +12,16 @@ import org.eclipse.osgi.util.NLS;
  */
 public class ImplementationLoader {
 
-	public static Object newInstance(Class<?> type){
-		String name = type.getName();
-		Object result = null;		
-		try {
-			result = type.getClassLoader().loadClass(name + "Impl").newInstance(); //$NON-NLS-1$
-		} catch (Exception e) {
-			Activator.getLogger().log(Level.SEVERE, 
-					NLS.bind("Failed to load class {0} from fragment.", name+"Impl"), e); //$NON-NLS-2$
-		} 
-		return result;
-	}
-	
+    public static Object newInstance(Class<?> type){
+        String name = type.getName();
+        Object result = null;
+        try {
+            result = type.getClassLoader().loadClass(name + "Impl").newInstance(); //$NON-NLS-1$
+        } catch (Exception e) {
+            Activator.getLogger().log(Level.SEVERE,
+                    NLS.bind("Failed to load class {0} from fragment.", name+"Impl"), e); //$NON-NLS-2$
+        }
+        return result;
+    }
+
 }

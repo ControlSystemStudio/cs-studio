@@ -21,13 +21,13 @@ public class StringIDHelperTest
     public void test() throws Exception
     {
         final RDBUtil rdb = RDBUtil.connect(TestSetup.URL, true);
-        
+
         final StringIDHelper helper =
             new StringIDHelper(rdb, "RETENT", "RETENT_ID", "DESCR");
-        
+
         StringID retent = helper.find("forever");
         assertNull(retent);
-        
+
         retent = helper.find(9999);
         assertNull(retent);
 
@@ -38,9 +38,9 @@ public class StringIDHelperTest
         retent = helper.add("2 Months");
         assertEquals("2 Months", retent.getName());
         System.out.println(retent);
-        
+
         helper.dispose();
-        
+
         rdb.close();
     }
 }

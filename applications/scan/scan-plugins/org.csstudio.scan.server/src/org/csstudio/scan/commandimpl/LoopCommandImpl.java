@@ -43,10 +43,10 @@ import org.epics.util.time.TimeDuration;
 public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 {
     final private boolean reverse;
-	final private List<ScanCommandImpl<?>> implementation;
-	private int direction = 1;
+    final private List<ScanCommandImpl<?>> implementation;
+    private int direction = 1;
 
-	/** Logger for execution of loop steps, <code>null</code> unless executing the loop */
+    /** Logger for execution of loop steps, <code>null</code> unless executing the loop */
     private Logger step_logger = null;
 
     /** Initialize
@@ -70,7 +70,7 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public long getWorkUnits()
     {
         final long iterations = 1 + Math.round(Math.abs((command.getEnd() - command.getStart()) / command.getStepSize()));
@@ -102,80 +102,80 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 
     private double getLoopStart()
     {
-    	return Math.min(command.getStart(), command.getEnd());
+        return Math.min(command.getStart(), command.getEnd());
     }
     private double getLoopEnd()
     {
-    	return Math.max(command.getStart(), command.getEnd());
+        return Math.max(command.getStart(), command.getEnd());
     }
     private double getLoopStep()
     {
-    	final double step  = direction * command.getStepSize();
-		// Revert direction for next iteration of the complete loop?
-		if (reverse)
-		    direction = -direction;
-		return step;
+        final double step  = direction * command.getStepSize();
+        // Revert direction for next iteration of the complete loop?
+        if (reverse)
+            direction = -direction;
+        return step;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void simulate(final SimulationContext context) throws Exception
     {
-		final SimulatedDevice device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
+        final SimulatedDevice device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
 
-		final double start = getLoopStart();
+        final double start = getLoopStart();
         final double end   = getLoopEnd();
         final double step  = getLoopStep();
-		if (step > 0)
-    		for (double value = start; value <= end; value += step)
-    			simulateStep(context, device, value);
-		else // step is < 0, so stepping down
+        if (step > 0)
+            for (double value = start; value <= end; value += step)
+                simulateStep(context, device, value);
+        else // step is < 0, so stepping down
             for (double value = end; value >= start; value += step)
-            	simulateStep(context, device, value);
+                simulateStep(context, device, value);
     }
 
-	/** Simulate one step in the loop iteration
-	 *  @param context {@link SimulationContext}
-	 *  @param device {@link SimulatedDevice} that the loop modifies
-	 *  @param value Value of the loop variable for this iteration
-	 *  @throws Exception on error
-	 */
+    /** Simulate one step in the loop iteration
+     *  @param context {@link SimulationContext}
+     *  @param device {@link SimulatedDevice} that the loop modifies
+     *  @param value Value of the loop variable for this iteration
+     *  @throws Exception on error
+     */
     private void simulateStep(final SimulationContext context,
             final SimulatedDevice device, final double value) throws Exception
     {
-		// Get previous value
-		final double original = VTypeHelper.toDouble(device.read());
+        // Get previous value
+        final double original = VTypeHelper.toDouble(device.read());
 
-		// Estimate execution time
-		final double time_estimate = command.getWait()
-				? device.getChangeTimeEstimate(value)
-				: 0.0;
+        // Estimate execution time
+        final double time_estimate = command.getWait()
+                ? device.getChangeTimeEstimate(value)
+                : 0.0;
 
-		// Show command
-		final StringBuilder buf = new StringBuilder();
-	    buf.append("Loop '").append(command.getDeviceName()).append("' = ").append(value);
-	    command.appendConditionDetail(buf);
-	    if (! Double.isNaN(original))
-	    	buf.append(" [was ").append(original).append("]");
-	    context.logExecutionStep(context.getMacros().resolveMacros(buf.toString()), time_estimate);
+        // Show command
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Loop '").append(command.getDeviceName()).append("' = ").append(value);
+        command.appendConditionDetail(buf);
+        if (! Double.isNaN(original))
+            buf.append(" [was ").append(original).append("]");
+        context.logExecutionStep(context.getMacros().resolveMacros(buf.toString()), time_estimate);
 
-    	// Set to (simulated) new value
-    	device.write(value);
+        // Set to (simulated) new value
+        device.write(value);
 
         // Simulate loop body
-    	context.simulate(implementation);
+        context.simulate(implementation);
     }
 
-	/** {@inheritDoc} */
-	@Override
-	public void execute(final ScanContext context) throws Exception
-	{
+    /** {@inheritDoc} */
+    @Override
+    public void execute(final ScanContext context) throws Exception
+    {
         step_logger = Logger.getLogger(getClass().getName());
         try
         {
-    		final Device device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
+            final Device device = context.getDevice(context.getMacros().resolveMacros(command.getDeviceName()));
 
-    	    // Separate read-back device, or use 'set' device?
+            // Separate read-back device, or use 'set' device?
             final Device readback;
             if (command.getReadback().isEmpty())
                 readback = device;
@@ -192,13 +192,13 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             else
                 condition = null;
 
-    		final double start = getLoopStart();
+            final double start = getLoopStart();
             final double end   = getLoopEnd();
             final double step  = getLoopStep();
-    		if (step > 0)
-        		for (double value = start; value <= end; value += step)
-        		    executeStep(context, device, condition, readback, value);
-    		else // step is < 0, so stepping down
+            if (step > 0)
+                for (double value = start; value <= end; value += step)
+                    executeStep(context, device, condition, readback, value);
+            else // step is < 0, so stepping down
                 for (double value = end; value >= start; value += step)
                     executeStep(context, device, condition, readback, value);
         }
@@ -206,16 +206,16 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         {
             step_logger = null;
         }
-	}
+    }
 
-	/** Execute one step of the loop
-	 *  @param context
-	 *  @param device
-	 *  @param condition
-	 *  @param readback
-	 *  @param value
-	 *  @throws Exception
-	 */
+    /** Execute one step of the loop
+     *  @param context
+     *  @param device
+     *  @param condition
+     *  @param readback
+     *  @param value
+     *  @throws Exception
+     */
     private void executeStep(final ScanContext context, final Device device,
             final NumericValueCondition condition, final Device readback, double value)
             throws Exception
@@ -239,22 +239,22 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
         if (context.isAutomaticLogMode())
         {
             final DataLog log = context.getDataLog().get();
-	        final long serial = log.getNextScanDataSerial();
-	        log.log(readback.getAlias(), VTypeHelper.createSample(serial, readback.read()));
+            final long serial = log.getNextScanDataSerial();
+            log.log(readback.getAlias(), VTypeHelper.createSample(serial, readback.read()));
         }
 
         // Execute loop body
-    	context.execute(implementation);
+        context.execute(implementation);
 
-    	// If there are no commands that inc. the work units, do it yourself
+        // If there are no commands that inc. the work units, do it yourself
         if (implementation.size() <= 0)
             context.workPerformed(1);
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    return command.toString() + (reverse ? " (reversing)" : "");
-	}
+    @Override
+    public String toString()
+    {
+        return command.toString() + (reverse ? " (reversing)" : "");
+    }
 }

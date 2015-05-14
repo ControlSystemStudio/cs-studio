@@ -2,10 +2,10 @@
 <!-- "Beamline" Configuration
 
   THIS FORMAT HAS BEEN DEPRECATED
-  
+
   This format was originally used to configure the scan system,
   plus other control-system related tools:
-  
+
   * Soft IOC control
     Allows automated start/stop of the required IOCs
     when beamline configuration is changed.
@@ -13,16 +13,16 @@
   * Scan Server
     Defines human-readable alias names for raw PV names.
     Allows GUIs to suggest device/PV names.
-    
+
   * Aggregator
     Determines which PVs to monitor and merge into
     the experiment data stream (Nexus file).
-    
-  Eventually, this type of information could 
+
+  Eventually, this type of information could
   be stored in a relational database,
   with convenient web interfaces, iPhone apps,
   "Channel Finder" bindings etc.
-  
+
   This XML format is a basis for discussing the content,
   the beam line data that is required to configure
   certain control system tools.
@@ -33,8 +33,8 @@
   Still, for robustness' sake, there should probably always be
   a local XML "snapshot" instead of relying on an RDB connection
   to a server outside of the beamline subnet for basic IOC operation.
-  
-  
+
+
   The scan system now prefers the scan_config.xml (schema scan_config.xsd).
   The beamline.xml format is still read, but with warnings.
   See beamline2scan_config.xsl for converting existing beamline.xml files.
@@ -45,7 +45,7 @@
 <beamline
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:noNamespaceSchemaLocation="beamline.xsd">
- 
+
  Or run standalone validation  (use double'-', can't show that in XML comment):
   xmllint -valid -schema beamline.xsd beamline.xml
  -->
@@ -62,17 +62,17 @@
         <!-- In the future, it may be useful to define these in a hierarchy,
              for example organize devices by "section" or "component"
              of the beam line.
-             
+
              The tools we create for now should ignore those levels of hierarchy
              and concentrate on the elements of interest.
-             
+
              For example, the Scan Server simply
              look for <pv> anywhere below <device>,
              optionally using their alias instead of the "real" name.
-             
+
              The IOC control tools don't care about the PV names, they only
              see which <ioc>s need to be operational.
-             
+
              The beam line data acquisition looks for PVs marked to <log/>.
           -->
         <device>
@@ -91,20 +91,20 @@
             <!-- PVs provided by the soft IOC that are of interest
                  to Scan Server, DAQ, maybe more:
                  Name, optional alias, log?
-             -->            
+             -->
             <pv><name>neutrons</name></pv>
             <pv><name>pcharge</name></pv>
             <pv><name>shutter</name></pv>
             <pv><name>motor_x</name><alias>xpos</alias><log/></pv>
             <pv><name>motor_y</name><alias>ypos</alias><log/></pv>
         </device>
-        
+
         <!-- In this example the 'setpoint' PV can be scanned,
              but the 'readback' is logged.
           -->
         <device>
             <name>Deep frying heater</name>
-            <!-- IOC without script is actually ignored -->            
+            <!-- IOC without script is actually ignored -->
             <ioc><name>ics-bl99-dfh-ioc</name></ioc>
             <pv><name>setpoint</name><alias>setpoint</alias></pv>
             <pv><name>readback</name><alias>readback</alias></pv>

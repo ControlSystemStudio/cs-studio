@@ -43,301 +43,301 @@ import org.eclipse.swt.widgets.Display;
  */
 public class CheckBoxFigure extends Toggle implements Introspectable, ITextFigure{
 
-	private TotalBits totalBits = TotalBits.BITS_64;
-	
-	private static final int BOX_SIZE = 14;
+    private TotalBits totalBits = TotalBits.BITS_64;
 
-	private static final int GAP = 4;
+    private static final int BOX_SIZE = 14;
 
-	protected long value = 0;
+    private static final int GAP = 4;
 
-	protected int bit = -1;
+    protected long value = 0;
 
-	protected boolean boolValue = false;
+    protected int bit = -1;
 
-
-		/**
-	 * Listeners that react on manual boolean value change events.
-	 */
-	private List<IManualValueChangeListener> boolControlListeners =
-		new ArrayList<IManualValueChangeListener>();
-
-	private boolean runMode;
-	
-	private String text;
-
-	private Boolean support3d;
-
-	private Color selectedColor=ColorConstants.darkGray;;
-
-	public CheckBoxFigure(final boolean runMode) {
-		this.runMode = runMode;
-		final BoxFigure boxFigure = new BoxFigure();
-		setContents(boxFigure);	
-		if(!runMode)
-			setEventHandler(null);
-		else
-			setCursor(Cursors.HAND);
-		addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent event) {
-				if(runMode){
-					fireManualValueChange(!boolValue);
-				}
-			}
-		});
-		
-		if (runMode && !Activator.isRAP()){
-			addMouseMotionListener(new MouseMotionListener.Stub() {
-
-				@Override
-				public void mouseEntered(MouseEvent me) {
-					Color backColor = getBackgroundColor();
-					RGB darkColor = GraphicsUtil.mixColors(
-							backColor.getRGB(), new RGB(94, 151, 230), 0.7);
-					boxFigure.setBackgroundColor(CustomMediaFactory.getInstance()
-							.getColor(darkColor));
-				}
-
-				@Override
-				public void mouseExited(MouseEvent me) {
-					boxFigure.setBackgroundColor(getBackgroundColor());
-				}
-			});
-		}
-	}
-
-	/**add a boolean control listener which will be executed when pressed or released
-	 * @param listener the listener to add
-	 */
-	public void addManualValueChangeListener(final IManualValueChangeListener listener){
-		boolControlListeners.add(listener);
-	}
-
-	public void removeManualValueChangeListener(final IManualValueChangeListener listener){
-		if(boolControlListeners.contains(listener))
-			boolControlListeners.remove(listener);
-	}
+    protected boolean boolValue = false;
 
 
-	/**
-	 * Inform all boolean control listeners, that the manual value has changed.
-	 *
-	 * @param newManualValue
-	 *            the new manual value
-	 */
-	protected void fireManualValueChange(final boolean newManualValue) {
-		boolValue = newManualValue;
-		updateValue();
-		for (IManualValueChangeListener l : boolControlListeners) {
-			l.manualValueChanged(value);
-		}
+        /**
+     * Listeners that react on manual boolean value change events.
+     */
+    private List<IManualValueChangeListener> boolControlListeners =
+        new ArrayList<IManualValueChangeListener>();
 
-	}
+    private boolean runMode;
 
-	/**
-	 * @return the bit
-	 */
-	public int getBit() {
-		return bit;
-	}
+    private String text;
 
-	/**
-	 * @return the boolValue
-	 */
-	public boolean getBoolValue() {
-		return boolValue;
-	}
+    private Boolean support3d;
 
-	public Color getSelectedColor() {
-		return selectedColor;
-	}
-	
-	/**
-	 * @return the value
-	 */
-	public long getValue() {
-		return value;
-	}
+    private Color selectedColor=ColorConstants.darkGray;;
 
-	@Override
-	public boolean isOpaque() {
-		return false;
-	}
+    public CheckBoxFigure(final boolean runMode) {
+        this.runMode = runMode;
+        final BoxFigure boxFigure = new BoxFigure();
+        setContents(boxFigure);
+        if(!runMode)
+            setEventHandler(null);
+        else
+            setCursor(Cursors.HAND);
+        addActionListener(new ActionListener() {
 
-	/**
-	 * @return the runMode
-	 */
-	public boolean isRunMode() {
-		return runMode;
-	}
-	
-	
-
-	/**
-	 * @param bit the bit to set
-	 */
-	public void setBit(int bit) {
-		if(this.bit == bit)
-			return;
-		this.bit = bit;
-		updateBoolValue();
-	}
-
-	public void setBoolValue(boolean boolValue) {
-		if(this.boolValue == boolValue)
-			return;
-		this.boolValue = boolValue;
-		updateValue();
-	}
-	
-	@Override
-	public void setEnabled(boolean value) {
-		super.setEnabled(value);
-		repaint();
-	}
-
-	
-	public void setSelectedColor(Color selectedColor) {
-		this.selectedColor = selectedColor;
-		repaint();
-	}
-	
-	/**
-	 * @param value the value to set
-	 */
-	public void setValue(double value) {
-		setValue((long)value);
-	}
-
-
-	/**
-	 * @param value the value to set
-	 */
-	public void setValue(long value) {
-		if(this.value == value)
-			return;
-		this.value = value;
-		updateBoolValue();
-		repaint();
-	}
-
-	/**
-	 * update the boolValue from value and bit.
-	 * All the boolValue based behavior changes should be implemented here by inheritance.
-	 */
-	protected void updateBoolValue() {
-		//get boolValue
-		if(bit <0 )
-			boolValue = (this.value != 0);
-		else if(bit >=0) {
-			boolValue = ((value>>bit)&1L) >0;
-		}
-		repaint();
-	}
-
-
-	/**
-	 * update the value from boolValue
-	 */
-	@SuppressWarnings("nls")
-    private void updateValue(){
-		//get boolValue
-		if(bit < 0)
-			setValue(boolValue ? 1 : 0);
-		else if(bit >=0) {
-			if(bit >= 64 ) {
-			    // Log with exception to obtain call stack
-			    Activator.getLogger().log(Level.WARNING, "Bit " + bit + " exceeds 63.", new Exception());
+            public void actionPerformed(ActionEvent event) {
+                if(runMode){
+                    fireManualValueChange(!boolValue);
+                }
             }
-			else {
-				switch (totalBits) {
-				case BITS_16:
-					setValue(boolValue? value | ((short)1<<bit) : value & ~((short)1<<bit));
-				break;				
-				case BITS_32:
-					setValue(boolValue? value | ((int)1<<bit) : value & ~((int)1<<bit));
-				break;
-				default:				
-					setValue(boolValue? value | (1L<<bit) : value & ~(1L<<bit));
-					break;
-				}				
-			}
-		}
-		repaint();
-	}
+        });
 
-	public BeanInfo getBeanInfo() throws IntrospectionException {
-		return new LabelWidgetIntrospector().getBeanInfo(this.getClass());
-	}
-	
-	public void setText(String text) {
-		this.text = text;
-		repaint();
-	}
+        if (runMode && !Activator.isRAP()){
+            addMouseMotionListener(new MouseMotionListener.Stub() {
 
-	public String getText() {
-		return text;
-	}
+                @Override
+                public void mouseEntered(MouseEvent me) {
+                    Color backColor = getBackgroundColor();
+                    RGB darkColor = GraphicsUtil.mixColors(
+                            backColor.getRGB(), new RGB(94, 151, 230), 0.7);
+                    boxFigure.setBackgroundColor(CustomMediaFactory.getInstance()
+                            .getColor(darkColor));
+                }
 
-	
-	public TotalBits getTotalBits() {
-		return totalBits;
-	}
+                @Override
+                public void mouseExited(MouseEvent me) {
+                    boxFigure.setBackgroundColor(getBackgroundColor());
+                }
+            });
+        }
+    }
 
-	/**
-	 * @param totalBits number of total bits
-	 */
-	public void setTotalBits(TotalBits totalBits) {
-		this.totalBits = totalBits;
-	}
+    /**add a boolean control listener which will be executed when pressed or released
+     * @param listener the listener to add
+     */
+    public void addManualValueChangeListener(final IManualValueChangeListener listener){
+        boolControlListeners.add(listener);
+    }
+
+    public void removeManualValueChangeListener(final IManualValueChangeListener listener){
+        if(boolControlListeners.contains(listener))
+            boolControlListeners.remove(listener);
+    }
 
 
-	class BoxFigure extends Figure{
-		@Override
-		protected void paintClientArea(Graphics graphics) {
-			if(support3d == null)
-				support3d = GraphicsUtil.testPatternSupported(graphics);
-			Rectangle clientArea = getClientArea();
-			Rectangle square = new Rectangle(clientArea.x, clientArea.y+clientArea.height/2 - BOX_SIZE/2,
-					BOX_SIZE, BOX_SIZE);
-			graphics.pushState();
-			if(support3d)
-				graphics.setBackgroundPattern(
-					GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), 
-							square.x, square.y+1, 
-							square.x, square.y+square.height,
-							ColorConstants.white, graphics.getBackgroundColor()));
-			graphics.fillRoundRectangle(square, 4, 4);
-			graphics.setForegroundColor(
-					CustomMediaFactory.getInstance().getColor(130, 130, 130));
-			graphics.drawRoundRectangle(square, 4, 4);
-			
-			if(boolValue){
-				graphics.translate(square.x, square.y);
-				graphics.setLineWidth(3);
-				graphics.setForegroundColor(selectedColor);
-			
-				graphics.drawPolyline(new int[]{
-						3, (int) (BOX_SIZE*0.45),  (int) (BOX_SIZE*0.45), BOX_SIZE*3/4-1, BOX_SIZE-2, 3
-				});
-			}
-			graphics.popState();
-			Dimension textSize = FigureUtilities.getTextExtents(text, graphics.getFont());
+    /**
+     * Inform all boolean control listeners, that the manual value has changed.
+     *
+     * @param newManualValue
+     *            the new manual value
+     */
+    protected void fireManualValueChange(final boolean newManualValue) {
+        boolValue = newManualValue;
+        updateValue();
+        for (IManualValueChangeListener l : boolControlListeners) {
+            l.manualValueChanged(value);
+        }
 
-			if (!isEnabled()) {
-				graphics.translate(1, 1);
-				graphics.setForegroundColor(ColorConstants.buttonLightest);
-				graphics.drawText(text, square.getRight().getTranslated(GAP, -textSize.height/2));
-				graphics.translate(-1, -1);
-				graphics.setForegroundColor(ColorConstants.buttonDarker);
-			}
-			graphics.drawText(text, square.getRight().getTranslated(GAP, -textSize.height/2));
+    }
 
-			super.paintClientArea(graphics);
-			
-		}
-	}
+    /**
+     * @return the bit
+     */
+    public int getBit() {
+        return bit;
+    }
+
+    /**
+     * @return the boolValue
+     */
+    public boolean getBoolValue() {
+        return boolValue;
+    }
+
+    public Color getSelectedColor() {
+        return selectedColor;
+    }
+
+    /**
+     * @return the value
+     */
+    public long getValue() {
+        return value;
+    }
+
+    @Override
+    public boolean isOpaque() {
+        return false;
+    }
+
+    /**
+     * @return the runMode
+     */
+    public boolean isRunMode() {
+        return runMode;
+    }
+
+
+
+    /**
+     * @param bit the bit to set
+     */
+    public void setBit(int bit) {
+        if(this.bit == bit)
+            return;
+        this.bit = bit;
+        updateBoolValue();
+    }
+
+    public void setBoolValue(boolean boolValue) {
+        if(this.boolValue == boolValue)
+            return;
+        this.boolValue = boolValue;
+        updateValue();
+    }
+
+    @Override
+    public void setEnabled(boolean value) {
+        super.setEnabled(value);
+        repaint();
+    }
+
+
+    public void setSelectedColor(Color selectedColor) {
+        this.selectedColor = selectedColor;
+        repaint();
+    }
+
+    /**
+     * @param value the value to set
+     */
+    public void setValue(double value) {
+        setValue((long)value);
+    }
+
+
+    /**
+     * @param value the value to set
+     */
+    public void setValue(long value) {
+        if(this.value == value)
+            return;
+        this.value = value;
+        updateBoolValue();
+        repaint();
+    }
+
+    /**
+     * update the boolValue from value and bit.
+     * All the boolValue based behavior changes should be implemented here by inheritance.
+     */
+    protected void updateBoolValue() {
+        //get boolValue
+        if(bit <0 )
+            boolValue = (this.value != 0);
+        else if(bit >=0) {
+            boolValue = ((value>>bit)&1L) >0;
+        }
+        repaint();
+    }
+
+
+    /**
+     * update the value from boolValue
+     */
+    @SuppressWarnings("nls")
+    private void updateValue(){
+        //get boolValue
+        if(bit < 0)
+            setValue(boolValue ? 1 : 0);
+        else if(bit >=0) {
+            if(bit >= 64 ) {
+                // Log with exception to obtain call stack
+                Activator.getLogger().log(Level.WARNING, "Bit " + bit + " exceeds 63.", new Exception());
+            }
+            else {
+                switch (totalBits) {
+                case BITS_16:
+                    setValue(boolValue? value | ((short)1<<bit) : value & ~((short)1<<bit));
+                break;
+                case BITS_32:
+                    setValue(boolValue? value | ((int)1<<bit) : value & ~((int)1<<bit));
+                break;
+                default:
+                    setValue(boolValue? value | (1L<<bit) : value & ~(1L<<bit));
+                    break;
+                }
+            }
+        }
+        repaint();
+    }
+
+    public BeanInfo getBeanInfo() throws IntrospectionException {
+        return new LabelWidgetIntrospector().getBeanInfo(this.getClass());
+    }
+
+    public void setText(String text) {
+        this.text = text;
+        repaint();
+    }
+
+    public String getText() {
+        return text;
+    }
+
+
+    public TotalBits getTotalBits() {
+        return totalBits;
+    }
+
+    /**
+     * @param totalBits number of total bits
+     */
+    public void setTotalBits(TotalBits totalBits) {
+        this.totalBits = totalBits;
+    }
+
+
+    class BoxFigure extends Figure{
+        @Override
+        protected void paintClientArea(Graphics graphics) {
+            if(support3d == null)
+                support3d = GraphicsUtil.testPatternSupported(graphics);
+            Rectangle clientArea = getClientArea();
+            Rectangle square = new Rectangle(clientArea.x, clientArea.y+clientArea.height/2 - BOX_SIZE/2,
+                    BOX_SIZE, BOX_SIZE);
+            graphics.pushState();
+            if(support3d)
+                graphics.setBackgroundPattern(
+                    GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                            square.x, square.y+1,
+                            square.x, square.y+square.height,
+                            ColorConstants.white, graphics.getBackgroundColor()));
+            graphics.fillRoundRectangle(square, 4, 4);
+            graphics.setForegroundColor(
+                    CustomMediaFactory.getInstance().getColor(130, 130, 130));
+            graphics.drawRoundRectangle(square, 4, 4);
+
+            if(boolValue){
+                graphics.translate(square.x, square.y);
+                graphics.setLineWidth(3);
+                graphics.setForegroundColor(selectedColor);
+
+                graphics.drawPolyline(new int[]{
+                        3, (int) (BOX_SIZE*0.45),  (int) (BOX_SIZE*0.45), BOX_SIZE*3/4-1, BOX_SIZE-2, 3
+                });
+            }
+            graphics.popState();
+            Dimension textSize = FigureUtilities.getTextExtents(text, graphics.getFont());
+
+            if (!isEnabled()) {
+                graphics.translate(1, 1);
+                graphics.setForegroundColor(ColorConstants.buttonLightest);
+                graphics.drawText(text, square.getRight().getTranslated(GAP, -textSize.height/2));
+                graphics.translate(-1, -1);
+                graphics.setForegroundColor(ColorConstants.buttonDarker);
+            }
+            graphics.drawText(text, square.getRight().getTranslated(GAP, -textSize.height/2));
+
+            super.paintClientArea(graphics);
+
+        }
+    }
 
 
 }

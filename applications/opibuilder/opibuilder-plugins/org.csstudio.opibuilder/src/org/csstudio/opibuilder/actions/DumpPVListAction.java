@@ -40,99 +40,99 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class DumpPVListAction implements IObjectActionDelegate {
 
-	private IStructuredSelection selection;
-	private IWorkbenchPart targetPart;
+    private IStructuredSelection selection;
+    private IWorkbenchPart targetPart;
 
 
-	public void run(IAction action) {
-		Object o = getSelectedWidget().getViewer().getEditPartRegistry().get(
-				getSelectedWidget().getWidgetModel().getRootDisplayModel());
-		if(o instanceof DisplayEditpart){
-			Object[] allRuntimePVNames = ((DisplayEditpart)o).getAllRuntimePVNames().toArray();
-			
-			Arrays.sort(allRuntimePVNames);
-			new PVListDialog(targetPart.getSite().getShell(), allRuntimePVNames).open();
-		}
-	}
+    public void run(IAction action) {
+        Object o = getSelectedWidget().getViewer().getEditPartRegistry().get(
+                getSelectedWidget().getWidgetModel().getRootDisplayModel());
+        if(o instanceof DisplayEditpart){
+            Object[] allRuntimePVNames = ((DisplayEditpart)o).getAllRuntimePVNames().toArray();
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			this.selection = (IStructuredSelection) selection;
-		}
-	}
+            Arrays.sort(allRuntimePVNames);
+            new PVListDialog(targetPart.getSite().getShell(), allRuntimePVNames).open();
+        }
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            this.selection = (IStructuredSelection) selection;
+        }
+    }
 
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
-	}
-	
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        this.targetPart = targetPart;
+    }
 
-	
-	private AbstractBaseEditPart getSelectedWidget(){ 
-		if(selection.getFirstElement() instanceof AbstractBaseEditPart){
-			return (AbstractBaseEditPart)selection.getFirstElement();
-		}else
-			return null;
-	}
-	
-	private final class PVListDialog extends Dialog {
 
-		private Object[] allPVNames;
-		private String pvsText;
 
-		protected PVListDialog(Shell parentShell, Object[] allRuntimePVNames) {
-			super(parentShell);
-			this.allPVNames = allRuntimePVNames;
-			setShellStyle(getShellStyle()|SWT.RESIZE);
-			StringBuilder sb = new StringBuilder();
-			int i=0;
-			for(Object pv:allPVNames){
-				sb.append(pv);
-				if(i<allPVNames.length-1)
-					sb.append("\n"); //$NON-NLS-1$
-				i++;
-			}
-			
-			pvsText = sb.toString();
-		}
-		
-		@Override
-		protected Control createDialogArea(Composite parent) {
-			getShell().setText("PV List");			
-			getShell().setMinimumSize(200, 300);
-			Composite container = (Composite)super.createDialogArea(parent);			
-			FillLayout layout = new FillLayout();
-			layout.marginHeight = 10;
-			layout.marginWidth = 5;			
-			container.setLayout(layout);
-			Text text = new Text(container, SWT.BORDER|SWT.MULTI|SWT.V_SCROLL);			
-			text.setText(pvsText);			
-			return container;
-		}
-		
-		protected void createButtonsForButtonBar(final Composite parent) {
-			if(!OPIBuilderPlugin.isRAP()){
-				Button copyButton = createButton(parent,
-						IDialogConstants.DETAILS_ID, "Copy to Clipboard", false);
-				copyButton.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						final Clipboard cb = new Clipboard(parent.getDisplay());
-						TextTransfer textTransfer = TextTransfer.getInstance();
-						cb.setContents(new Object[] { pvsText },
-								new Transfer[] { textTransfer });
+    private AbstractBaseEditPart getSelectedWidget(){
+        if(selection.getFirstElement() instanceof AbstractBaseEditPart){
+            return (AbstractBaseEditPart)selection.getFirstElement();
+        }else
+            return null;
+    }
 
-					}
-				});
-				if (pvsText.isEmpty())
-					copyButton.setEnabled(false);
-			}
-			
-			// create OK button			
-			createButton(parent, IDialogConstants.OK_ID, JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY),
-					true);			
-		}
-		
-		
-	}
+    private final class PVListDialog extends Dialog {
+
+        private Object[] allPVNames;
+        private String pvsText;
+
+        protected PVListDialog(Shell parentShell, Object[] allRuntimePVNames) {
+            super(parentShell);
+            this.allPVNames = allRuntimePVNames;
+            setShellStyle(getShellStyle()|SWT.RESIZE);
+            StringBuilder sb = new StringBuilder();
+            int i=0;
+            for(Object pv:allPVNames){
+                sb.append(pv);
+                if(i<allPVNames.length-1)
+                    sb.append("\n"); //$NON-NLS-1$
+                i++;
+            }
+
+            pvsText = sb.toString();
+        }
+
+        @Override
+        protected Control createDialogArea(Composite parent) {
+            getShell().setText("PV List");
+            getShell().setMinimumSize(200, 300);
+            Composite container = (Composite)super.createDialogArea(parent);
+            FillLayout layout = new FillLayout();
+            layout.marginHeight = 10;
+            layout.marginWidth = 5;
+            container.setLayout(layout);
+            Text text = new Text(container, SWT.BORDER|SWT.MULTI|SWT.V_SCROLL);
+            text.setText(pvsText);
+            return container;
+        }
+
+        protected void createButtonsForButtonBar(final Composite parent) {
+            if(!OPIBuilderPlugin.isRAP()){
+                Button copyButton = createButton(parent,
+                        IDialogConstants.DETAILS_ID, "Copy to Clipboard", false);
+                copyButton.addSelectionListener(new SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        final Clipboard cb = new Clipboard(parent.getDisplay());
+                        TextTransfer textTransfer = TextTransfer.getInstance();
+                        cb.setContents(new Object[] { pvsText },
+                                new Transfer[] { textTransfer });
+
+                    }
+                });
+                if (pvsText.isEmpty())
+                    copyButton.setEnabled(false);
+            }
+
+            // create OK button
+            createButton(parent, IDialogConstants.OK_ID, JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY),
+                    true);
+        }
+
+
+    }
 }

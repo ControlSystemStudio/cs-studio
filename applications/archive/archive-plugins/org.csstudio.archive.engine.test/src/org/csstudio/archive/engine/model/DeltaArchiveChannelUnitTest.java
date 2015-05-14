@@ -17,7 +17,7 @@ import org.csstudio.vtype.pv.local.LocalPVFactory;
 import org.junit.Test;
 
 /** JUnit test of the DeltaArchiveChannel
- * 
+ *
  *  <p>Depending on timing, this test does not always pass...
  *  @author Kay Kasemir
  */
@@ -30,8 +30,8 @@ public class DeltaArchiveChannelUnitTest
     public void testHandleNewValue() throws Exception
     {
         PVPool.addPVFactory(new LocalPVFactory());
-    	
-    	final PV pv = PVPool.getPV(PV_NAME);
+
+        final PV pv = PVPool.getPV(PV_NAME);
 
         final DeltaArchiveChannel channel = new DeltaArchiveChannel(PV_NAME, Enablement.Passive, 100, null, 1.01, 0.1);
         final SampleBuffer samples = channel.getSampleBuffer();

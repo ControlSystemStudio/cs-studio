@@ -11,276 +11,276 @@ import de.desy.language.libraries.utils.contract.Contract;
 
 /**
  * A node in the outline tree for exactly one document.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public abstract class Node {
 
-	private int _statementEndOffset;
-	private int _statementStartOffset;
-	private List<Node> _children = new LinkedList<Node>();
-	private final Set<String> _errorMessages = new HashSet<String>();
-	private final Set<String> _warningMessages = new HashSet<String>();
+    private int _statementEndOffset;
+    private int _statementStartOffset;
+    private List<Node> _children = new LinkedList<Node>();
+    private final Set<String> _errorMessages = new HashSet<String>();
+    private final Set<String> _warningMessages = new HashSet<String>();
 
-	public Node() {
-		this._statementStartOffset = -1;
-		this._statementEndOffset = -1;
-	}
+    public Node() {
+        this._statementStartOffset = -1;
+        this._statementEndOffset = -1;
+    }
 
-	/**
-	 * Gives the children of this node.
-	 * 
-	 * @return A not-null array of nodes which are the children of this node (this array may be empty!).
-	 */
-	public final Node[] getChildrenNodesAsArray()
-	{
-		Node[] result = this._children.toArray(new Node[this._children.size()]);
-		
-		Contract.ensureResultNotNull(result);
-		return result;
-	}
-	
-	/**
-	 * Gives the children of this node.
-	 * 
-	 * @require hasChildren()
-	 * @return A not-null Set of nodes which are the children of this node.
-	 */
-	public final Collection<Node> getChildrenNodes()
-	{
-		Contract.require(hasChildren(), Messages.Node_Contract_Require_hasChildren);
-		
-		Collection<Node> result = Collections.unmodifiableCollection(this._children);
-		
-		Contract.ensureResultNotNull(result);
-		return result;
-	}
+    /**
+     * Gives the children of this node.
+     *
+     * @return A not-null array of nodes which are the children of this node (this array may be empty!).
+     */
+    public final Node[] getChildrenNodesAsArray()
+    {
+        Node[] result = this._children.toArray(new Node[this._children.size()]);
 
-	/**
-	 * Determines if this node has children.
-	 */
-	public final boolean hasChildren() {
-		return this._children.size() > 0;
-	}
+        Contract.ensureResultNotNull(result);
+        return result;
+    }
 
-	/**
-	 * Gives the statements ending index in the source. Pay attention, this
-	 * index may not be accurate if changes happens since the last call of save.
-	 * 
-	 * To enable this feature, you have to set the offsets by internally calling
-	 * {@link #setStatementOffsets(int, int)}.
-	 * 
-	 * @return An index >= 0.
-	 */
-	public final int getStatementEndOffset() {
-		Contract.require(this.hasOffsets(), Messages.Node_Contract_Require_this_hasOffsets);
+    /**
+     * Gives the children of this node.
+     *
+     * @require hasChildren()
+     * @return A not-null Set of nodes which are the children of this node.
+     */
+    public final Collection<Node> getChildrenNodes()
+    {
+        Contract.require(hasChildren(), Messages.Node_Contract_Require_hasChildren);
 
-		final int result = this._statementEndOffset;
+        Collection<Node> result = Collections.unmodifiableCollection(this._children);
 
-		Contract.ensure(result >= 0, Messages.Node_Contract_Ensure_result_ge_0_todoParam);
-		return result;
-	}
+        Contract.ensureResultNotNull(result);
+        return result;
+    }
 
-	/**
-	 * Gives the statements beginning index in the source. Pay attention, this
-	 * index may not be accurate if changes happens since the last call of save.
-	 * 
-	 * To enable this feature, you have to set the offsets by internally calling
-	 * {@link #setStatementOffsets(int, int)}.
-	 * 
-	 * @return An index >= 0.
-	 */
-	public final int getStatementStartOffset() {
-		Contract.require(this.hasOffsets(), Messages.Node_Contract_Require_this_hasOffsets);
+    /**
+     * Determines if this node has children.
+     */
+    public final boolean hasChildren() {
+        return this._children.size() > 0;
+    }
 
-		final int result = this._statementStartOffset;
+    /**
+     * Gives the statements ending index in the source. Pay attention, this
+     * index may not be accurate if changes happens since the last call of save.
+     *
+     * To enable this feature, you have to set the offsets by internally calling
+     * {@link #setStatementOffsets(int, int)}.
+     *
+     * @return An index >= 0.
+     */
+    public final int getStatementEndOffset() {
+        Contract.require(this.hasOffsets(), Messages.Node_Contract_Require_this_hasOffsets);
 
-		Contract.ensure(result >= 0, Messages.Node_Contract_Ensure_result_ge_0_todoParam);
-		return result;
-	}
+        final int result = this._statementEndOffset;
 
-	/**
-	 * Indicates if source offsets of the statement are avail.
-	 * 
-	 * To enable this feature, you have to set the offsets by internally calling
-	 * {@link #setStatementOffsets(int, int)}.
-	 */
-	public final boolean hasOffsets() {
-		return (this._statementStartOffset >= 0)
-				&& (this._statementEndOffset >= 0);
-	}
-	
-	public abstract String getNodeTypeName();
+        Contract.ensure(result >= 0, Messages.Node_Contract_Ensure_result_ge_0_todoParam);
+        return result;
+    }
 
-	/**
-	 * Gives the name to be shown for this note.
-	 * 
-	 * @return A not null non empty string.
-	 */
-	public abstract String humanReadableRepresentation();
+    /**
+     * Gives the statements beginning index in the source. Pay attention, this
+     * index may not be accurate if changes happens since the last call of save.
+     *
+     * To enable this feature, you have to set the offsets by internally calling
+     * {@link #setStatementOffsets(int, int)}.
+     *
+     * @return An index >= 0.
+     */
+    public final int getStatementStartOffset() {
+        Contract.require(this.hasOffsets(), Messages.Node_Contract_Require_this_hasOffsets);
 
-	@Override
-	final public String toString() {
-		return this.humanReadableRepresentation();
-	}
+        final int result = this._statementStartOffset;
 
-	/**
-	 * Used to internally set the offsets of a statement in the source.
-	 * 
-	 * @param start
-	 *            The start offset (>= 0)
-	 * @param end
-	 *            The end offset (>= 0, end > start)
-	 */
-	protected final void setStatementOffsets(final int start, final int end) {
-		Contract.require(start >= 0, Messages.Node_Contract_Ensure_start_ge_0_todoParam);
-		Contract.require(end >= 0, Messages.Node_Contract_Ensure_end_ge_0_todoParam);
-		Contract.require(end > start, Messages.Node_Contract_Ensure_end_ge_start_todoParam);
+        Contract.ensure(result >= 0, Messages.Node_Contract_Ensure_result_ge_0_todoParam);
+        return result;
+    }
 
-		this._statementStartOffset = start;
-		this._statementEndOffset = end;
-	}
+    /**
+     * Indicates if source offsets of the statement are avail.
+     *
+     * To enable this feature, you have to set the offsets by internally calling
+     * {@link #setStatementOffsets(int, int)}.
+     */
+    public final boolean hasOffsets() {
+        return (this._statementStartOffset >= 0)
+                && (this._statementEndOffset >= 0);
+    }
 
-	/**
-	 * Adds a child node to this node. Currently this is only done be the parser
-	 * which uses the statement contents to determine the child-nodes. This is
-	 * done to avoid a hierarchical structure of the parser-process.
-	 */
-	public final void addChild(final Node child) {
-		Contract.requireNotNull(Messages.Node_Contract_RequireNotNull_child_todoParam, child);
-		this._children.add(child);
-	}
+    public abstract String getNodeTypeName();
 
-	//	
-	// public final void removeChild(final Node child) {
-	// this._children.remove(child);
-	// }
+    /**
+     * Gives the name to be shown for this note.
+     *
+     * @return A not null non empty string.
+     */
+    public abstract String humanReadableRepresentation();
 
-	/**
-	 * Checks if this node contains any error messages.
-	 * 
-	 * @return {@code true} if and only if error messages are added to this
-	 *         node, {@code false} otherwise.
-	 */
-	public final boolean containsErrors() {
-		return !this._errorMessages.isEmpty();
-	}
+    @Override
+    final public String toString() {
+        return this.humanReadableRepresentation();
+    }
 
-	/**
-	 * Checks if this node contains any warning messages.
-	 * 
-	 * @return {@code true} if and only if warning messages are added to this
-	 *         node, {@code false} otherwise.
-	 */
-	public final boolean containsWarnings() {
-		return !this._warningMessages.isEmpty();
-	}
+    /**
+     * Used to internally set the offsets of a statement in the source.
+     *
+     * @param start
+     *            The start offset (>= 0)
+     * @param end
+     *            The end offset (>= 0, end > start)
+     */
+    protected final void setStatementOffsets(final int start, final int end) {
+        Contract.require(start >= 0, Messages.Node_Contract_Ensure_start_ge_0_todoParam);
+        Contract.require(end >= 0, Messages.Node_Contract_Ensure_end_ge_0_todoParam);
+        Contract.require(end > start, Messages.Node_Contract_Ensure_end_ge_start_todoParam);
 
-	/**
-	 * Adds a new error message to this node.
-	 * 
-	 * @param errorMessage
-	 *            The not-null, non-empty error message to be added.
-	 */
-	public synchronized final void addError(final String errorMessage) {
-		Contract.requireNotNull(Messages.Node_Contract_requireNotNull_errorMessage_todoParam, errorMessage);
-		Contract.require(errorMessage.trim().length() > 0,
-				Messages.Node_Contract_require_errorMessage_trim_length_ge_0_todoParam);
+        this._statementStartOffset = start;
+        this._statementEndOffset = end;
+    }
 
-		this._errorMessages.add(errorMessage);
+    /**
+     * Adds a child node to this node. Currently this is only done be the parser
+     * which uses the statement contents to determine the child-nodes. This is
+     * done to avoid a hierarchical structure of the parser-process.
+     */
+    public final void addChild(final Node child) {
+        Contract.requireNotNull(Messages.Node_Contract_RequireNotNull_child_todoParam, child);
+        this._children.add(child);
+    }
 
-		Contract.ensure(this.containsErrors(), Messages.Node_Contract_Ensure_this_containsErrors);
-	}
+    //
+    // public final void removeChild(final Node child) {
+    // this._children.remove(child);
+    // }
 
-	/**
-	 * Adds a new warning message to this node.
-	 * 
-	 * @param errorMessage
-	 *            The not-null, non-empty warning message to be added.
-	 */
-	public synchronized final void addWarning(final String warningMessage) {
-		Contract.requireNotNull(Messages.Node_Contract_requireNotNull_warningMessage, warningMessage);
-		Contract.require(warningMessage.trim().length() > 0,
-				Messages.Node_Contract_Ensure_this_containsWarnings_trim_length_ge_0);
+    /**
+     * Checks if this node contains any error messages.
+     *
+     * @return {@code true} if and only if error messages are added to this
+     *         node, {@code false} otherwise.
+     */
+    public final boolean containsErrors() {
+        return !this._errorMessages.isEmpty();
+    }
 
-		this._warningMessages.add(warningMessage);
+    /**
+     * Checks if this node contains any warning messages.
+     *
+     * @return {@code true} if and only if warning messages are added to this
+     *         node, {@code false} otherwise.
+     */
+    public final boolean containsWarnings() {
+        return !this._warningMessages.isEmpty();
+    }
 
-		Contract.ensure(this.containsWarnings(), Messages.Node_Contract_Ensure_this_containsWarnings);
-	}
+    /**
+     * Adds a new error message to this node.
+     *
+     * @param errorMessage
+     *            The not-null, non-empty error message to be added.
+     */
+    public synchronized final void addError(final String errorMessage) {
+        Contract.requireNotNull(Messages.Node_Contract_requireNotNull_errorMessage_todoParam, errorMessage);
+        Contract.require(errorMessage.trim().length() > 0,
+                Messages.Node_Contract_require_errorMessage_trim_length_ge_0_todoParam);
 
-	/**
-	 * Gives all nodes beginning with this one and including all children-node
-	 * which contains warnings. The current may not be present in resulting
-	 * list, if the current node does not contains warnings.
-	 * 
-	 * @return A not-null but possible empty set containing all significant
-	 *         nodes; the result is an unmodifiable view on a set.
-	 */
-	public final Set<Node> getAllWarningNodes() {
-		Set<Node> result = new HashSet<Node>();
-		if (this.containsWarnings()) {
-			result.add(this);
-		}
-		for (final Node child : this.getChildrenNodesAsArray()) {
-			result.addAll(child.getAllWarningNodes());
-		}
+        this._errorMessages.add(errorMessage);
 
-		result = Collections.unmodifiableSet(result);
+        Contract.ensure(this.containsErrors(), Messages.Node_Contract_Ensure_this_containsErrors);
+    }
 
-		Contract.ensureResultNotNull(result);
-		return result;
-	}
+    /**
+     * Adds a new warning message to this node.
+     *
+     * @param errorMessage
+     *            The not-null, non-empty warning message to be added.
+     */
+    public synchronized final void addWarning(final String warningMessage) {
+        Contract.requireNotNull(Messages.Node_Contract_requireNotNull_warningMessage, warningMessage);
+        Contract.require(warningMessage.trim().length() > 0,
+                Messages.Node_Contract_Ensure_this_containsWarnings_trim_length_ge_0);
 
-	/**
-	 * Gives all nodes beginning with this one and including all children-node
-	 * which contains errors. The current may not be present in resulting list,
-	 * if the current node does not contains errors.
-	 * 
-	 * @return A not-null but possible empty set containing all significant
-	 *         nodes; the result is an unmodifiable view on a set.
-	 */
-	public final Set<Node> getAllErrorNodes() {
-		Set<Node> result = new HashSet<Node>();
-		if (this.containsErrors()) {
-			result.add(this);
-		}
-		for (final Node child : this.getChildrenNodesAsArray()) {
-			result.addAll(child.getAllErrorNodes());
-		}
+        this._warningMessages.add(warningMessage);
 
-		result = Collections.unmodifiableSet(result);
+        Contract.ensure(this.containsWarnings(), Messages.Node_Contract_Ensure_this_containsWarnings);
+    }
 
-		Contract.ensureResultNotNull(result);
-		return result;
-	}
+    /**
+     * Gives all nodes beginning with this one and including all children-node
+     * which contains warnings. The current may not be present in resulting
+     * list, if the current node does not contains warnings.
+     *
+     * @return A not-null but possible empty set containing all significant
+     *         nodes; the result is an unmodifiable view on a set.
+     */
+    public final Set<Node> getAllWarningNodes() {
+        Set<Node> result = new HashSet<Node>();
+        if (this.containsWarnings()) {
+            result.add(this);
+        }
+        for (final Node child : this.getChildrenNodesAsArray()) {
+            result.addAll(child.getAllWarningNodes());
+        }
 
-	/**
-	 * Returns a unmodifiable view on a Set of error messages.
-	 * 
-	 * @require this.containsErrors()
-	 * @return A not-null, possible empty Set of errors.
-	 */
-	public final Set<String> getErrorMessages() {
-		Contract.require(this.containsErrors(), Messages.Node_Contract_Ensure_this_containsErrors);
+        result = Collections.unmodifiableSet(result);
 
-		Set<String> result = Collections.unmodifiableSet(this._errorMessages);
+        Contract.ensureResultNotNull(result);
+        return result;
+    }
 
-		Contract.ensureResultNotNull(result);
-		return result;
-	}
+    /**
+     * Gives all nodes beginning with this one and including all children-node
+     * which contains errors. The current may not be present in resulting list,
+     * if the current node does not contains errors.
+     *
+     * @return A not-null but possible empty set containing all significant
+     *         nodes; the result is an unmodifiable view on a set.
+     */
+    public final Set<Node> getAllErrorNodes() {
+        Set<Node> result = new HashSet<Node>();
+        if (this.containsErrors()) {
+            result.add(this);
+        }
+        for (final Node child : this.getChildrenNodesAsArray()) {
+            result.addAll(child.getAllErrorNodes());
+        }
 
-	/**
-	 * Returns a unmodifiable view on a Set of warning messages.
-	 * 
-	 * @require this.containsWarnings()
-	 * @return A not-null, possible empty Set of warnings.
-	 */
-	public final Set<String> getWarningMessages() {
-		Contract.require(this.containsWarnings(), Messages.Node_Contract_Ensure_this_containsWarnings);
+        result = Collections.unmodifiableSet(result);
 
-		Set<String> result = Collections.unmodifiableSet(this._warningMessages);
+        Contract.ensureResultNotNull(result);
+        return result;
+    }
 
-		Contract.ensureResultNotNull(result);
-		return result;
-	}
+    /**
+     * Returns a unmodifiable view on a Set of error messages.
+     *
+     * @require this.containsErrors()
+     * @return A not-null, possible empty Set of errors.
+     */
+    public final Set<String> getErrorMessages() {
+        Contract.require(this.containsErrors(), Messages.Node_Contract_Ensure_this_containsErrors);
+
+        Set<String> result = Collections.unmodifiableSet(this._errorMessages);
+
+        Contract.ensureResultNotNull(result);
+        return result;
+    }
+
+    /**
+     * Returns a unmodifiable view on a Set of warning messages.
+     *
+     * @require this.containsWarnings()
+     * @return A not-null, possible empty Set of warnings.
+     */
+    public final Set<String> getWarningMessages() {
+        Contract.require(this.containsWarnings(), Messages.Node_Contract_Ensure_this_containsWarnings);
+
+        Set<String> result = Collections.unmodifiableSet(this._warningMessages);
+
+        Contract.ensureResultNotNull(result);
+        return result;
+    }
 }

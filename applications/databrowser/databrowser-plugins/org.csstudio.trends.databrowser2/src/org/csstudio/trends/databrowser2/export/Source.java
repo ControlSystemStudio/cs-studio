@@ -19,24 +19,24 @@ public enum Source
 
     /** Fetch raw archive data */
     RAW_ARCHIVE(Messages.ExportSource_RawArchive),
-    
+
     /** Get optimized (reduced) archive data.
      *  Optimization parameter: Number of desired samples.
      */
     OPTIMIZED_ARCHIVE(Messages.ExportSource_OptimizedArchive),
-    
+
     /** Linear interpolation
      *  Optimization parameter: Seconds between interpolation points.
      */
     LINEAR_INTERPOLATION(Messages.ExportSource_Linear);
-    
+
     final private String name;
-    
+
     private Source(final String name)
     {
         this.name = name;
     }
-    
+
     @Override
     public String toString()
     {

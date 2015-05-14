@@ -21,7 +21,7 @@ import org.epics.vtype.VTypeToString;
 public class VTypeForString extends DBRAlarmTimeWrapper<DBR_TIME_String> implements VString
 {
     final private DBR_String string;
-    
+
     public VTypeForString(final DBR_String dbr)
     {
         super((dbr instanceof DBR_TIME_String) ? (DBR_TIME_String) dbr : null);

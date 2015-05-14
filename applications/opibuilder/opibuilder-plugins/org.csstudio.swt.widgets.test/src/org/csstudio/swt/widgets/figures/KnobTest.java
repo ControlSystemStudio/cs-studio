@@ -12,36 +12,36 @@ import org.eclipse.draw2d.Figure;
 
 public class KnobTest extends AbstractRoundRampedWidgetTest{
 
-	@Override
-	public Figure createTestWidget() {
-		KnobFigure knob = new KnobFigure();
-		knob.addManualValueChangeListener(new IManualValueChangeListener() {
-			
-			public void manualValueChanged(double newValue) {
-				System.out.println("Knob Dragged: " + newValue);
-			}
-		});
-		return knob;
-	}
+    @Override
+    public Figure createTestWidget() {
+        KnobFigure knob = new KnobFigure();
+        knob.addManualValueChangeListener(new IManualValueChangeListener() {
 
-	
-	
-	
-	@Override
-	public boolean isAutoTest() {
-		return true;
-	}
-	
-	
-	@Override
-	public String[] getPropertyNames() {
-		String[] superProps =  super.getPropertyNames();
-		String[] myProps = new String[]{
-				"effect3D",
-				"thumbColor",
-				"increment"
-		};
-		
-		return concatenateStringArrays(superProps, myProps);
-	}
+            public void manualValueChanged(double newValue) {
+                System.out.println("Knob Dragged: " + newValue);
+            }
+        });
+        return knob;
+    }
+
+
+
+
+    @Override
+    public boolean isAutoTest() {
+        return true;
+    }
+
+
+    @Override
+    public String[] getPropertyNames() {
+        String[] superProps =  super.getPropertyNames();
+        String[] myProps = new String[]{
+                "effect3D",
+                "thumbColor",
+                "increment"
+        };
+
+        return concatenateStringArrays(superProps, myProps);
+    }
 }

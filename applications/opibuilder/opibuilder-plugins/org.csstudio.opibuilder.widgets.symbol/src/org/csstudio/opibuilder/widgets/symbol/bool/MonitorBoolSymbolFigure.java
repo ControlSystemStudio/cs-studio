@@ -16,9 +16,9 @@ package org.csstudio.opibuilder.widgets.symbol.bool;
  */
 public class MonitorBoolSymbolFigure extends CommonBoolSymbolFigure {
 
-	public MonitorBoolSymbolFigure() {
-		super();
-		add(boolLabel);
-	}
-	
+    public MonitorBoolSymbolFigure() {
+        super();
+        add(boolLabel);
+    }
+
 }

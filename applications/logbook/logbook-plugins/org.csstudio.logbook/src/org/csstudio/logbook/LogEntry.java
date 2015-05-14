@@ -5,29 +5,29 @@ import java.util.Date;
 
 /**
  * This interface represents a entry in the Logbook service.
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public interface LogEntry {
 
     /**
      * The Id of the LogEntry
-     * 
+     *
      * @return Object - identifier for this logEntry
      */
     public Object getId();
 
-    
+
     /**
      * The Level of the LegEntry
-     * 
+     *
      * @return String - log entry level
      */
     public String getLevel();
-    
+
     /**
-     * 
+     *
      * @return String - the text of this logEntry
      */
     public String getText();

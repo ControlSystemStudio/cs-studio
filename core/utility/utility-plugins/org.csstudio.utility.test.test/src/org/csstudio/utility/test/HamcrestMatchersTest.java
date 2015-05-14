@@ -50,7 +50,7 @@ public class HamcrestMatchersTest
         assertThat(2.0, closeTo(3.0, 1.0));
         assertThat(2.0, closeTo(1.0, 1.0));
         assertThat(2.0, not(closeTo(1.0, 0.5)));
-        
+
         try
         {
             assertThat(2.0, closeTo(1.0, 0.5));
@@ -69,7 +69,7 @@ public class HamcrestMatchersTest
         assertThat(2, greaterThanOrEqualTo(2));
         assertThat(3.0, greaterThanOrEqualTo(2.0));
         assertThat(1.9, not(greaterThanOrEqualTo(2.0)));
-       
+
         try
         {
             assertThat(1.9, greaterThanOrEqualTo(2));

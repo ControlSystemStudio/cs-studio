@@ -25,147 +25,147 @@ import org.eclipse.swt.widgets.Shell;
  */
 @SuppressWarnings("nls")
 public class Snippet047VirtualLazyTreeViewer {
-	// Totally beside the point but was confusing when
-	// trying to understand this snippet:
-	// The model is a hack, not an obvious tree.
-	// The tree usually doesn't show its 'root' element.
-	// Here elements[] is the input to the tree viewer,
-	// but because getParent() returns elements[] as parent of elements[],
-	// those elements[] in the input serve as both the (not visible) root
-	// of the tree and the first (visible) level.
+    // Totally beside the point but was confusing when
+    // trying to understand this snippet:
+    // The model is a hack, not an obvious tree.
+    // The tree usually doesn't show its 'root' element.
+    // Here elements[] is the input to the tree viewer,
+    // but because getParent() returns elements[] as parent of elements[],
+    // those elements[] in the input serve as both the (not visible) root
+    // of the tree and the first (visible) level.
 
-	private class MyContentProvider implements ILazyTreeContentProvider {
-		private TreeViewer viewer;
-		private IntermediateNode[] elements;
+    private class MyContentProvider implements ILazyTreeContentProvider {
+        private TreeViewer viewer;
+        private IntermediateNode[] elements;
 
-		public MyContentProvider(TreeViewer viewer) {
-			this.viewer = viewer;
-		}
+        public MyContentProvider(TreeViewer viewer) {
+            this.viewer = viewer;
+        }
 
-		@Override
+        @Override
         public void dispose() {
 
-		}
+        }
 
-		@Override
+        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			this.elements = (IntermediateNode[]) newInput;
-		}
+            this.elements = (IntermediateNode[]) newInput;
+        }
 
-		@Override
+        @Override
         public Object getParent(Object element) {
-			if (element instanceof LeafNode)
-				return ((LeafNode) element).parent;
-			return elements;
-		}
+            if (element instanceof LeafNode)
+                return ((LeafNode) element).parent;
+            return elements;
+        }
 
-		@Override
+        @Override
         public void updateElement(Object parent, int index) {
-			Object element;
-			if (parent instanceof IntermediateNode)
-				element = ((IntermediateNode) parent).children[index];
+            Object element;
+            if (parent instanceof IntermediateNode)
+                element = ((IntermediateNode) parent).children[index];
 
-			else
-				element =  elements[index];
-			viewer.replace(parent, index, element);
-			updateChildCount(element, -1);
-		}
+            else
+                element =  elements[index];
+            viewer.replace(parent, index, element);
+            updateChildCount(element, -1);
+        }
 
-		@Override
+        @Override
         public void updateChildCount(Object element, int currentChildCount) {
 
-			int length = 0;
-			if (element instanceof IntermediateNode) {
-				IntermediateNode node = (IntermediateNode) element;
-				length =  node.children.length;
-			}
-			if(element == elements)
-				length = elements.length;
-			viewer.setChildCount(element, length);
-		}
-	}
+            int length = 0;
+            if (element instanceof IntermediateNode) {
+                IntermediateNode node = (IntermediateNode) element;
+                length =  node.children.length;
+            }
+            if(element == elements)
+                length = elements.length;
+            viewer.setChildCount(element, length);
+        }
+    }
 
-	public class LeafNode {
-		public int counter;
-		public IntermediateNode parent;
+    public class LeafNode {
+        public int counter;
+        public IntermediateNode parent;
 
-		public LeafNode(int counter, IntermediateNode parent) {
-			this.counter = counter;
-			this.parent = parent;
-		}
+        public LeafNode(int counter, IntermediateNode parent) {
+            this.counter = counter;
+            this.parent = parent;
+        }
 
         @Override
         public String toString() {
-			return "Leaf " + this.counter;
-		}
-	}
+            return "Leaf " + this.counter;
+        }
+    }
 
-	public class IntermediateNode {
-		public int counter;
-		public LeafNode[] children = new LeafNode[0];
+    public class IntermediateNode {
+        public int counter;
+        public LeafNode[] children = new LeafNode[0];
 
-		public IntermediateNode(int counter) {
-			this.counter = counter;
-		}
+        public IntermediateNode(int counter) {
+            this.counter = counter;
+        }
 
-		@Override
+        @Override
         public String toString() {
-			return "Node " + this.counter;
-		}
+            return "Node " + this.counter;
+        }
 
-		public void generateChildren(int i) {
-			children = new LeafNode[i];
-			for (int j = 0; j < i; j++) {
-				children[j] = new LeafNode(j, this);
-			}
+        public void generateChildren(int i) {
+            children = new LeafNode[i];
+            for (int j = 0; j < i; j++) {
+                children[j] = new LeafNode(j, this);
+            }
 
-		}
-	}
+        }
+    }
 
-	public Snippet047VirtualLazyTreeViewer(Shell shell) {
-		// THIS IS THE KEY POINT:
-		// With SWT.MULTI expanding tree items is slow as snot
-		// (at least on Windows, Eclipse 3.6.2)
-		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
-		// The original snippet without SWT.MULTI is fine.
-		final TreeViewer v = new TreeViewer(shell, SWT.VIRTUAL | SWT.BORDER | SWT.MULTI);
-		v.setLabelProvider(new LabelProvider());
-		v.setContentProvider(new MyContentProvider(v));
-		v.setUseHashlookup(true);
-		IntermediateNode[] model = createModel();
-		v.setInput(model);
-		v.getTree().setItemCount(model.length);
+    public Snippet047VirtualLazyTreeViewer(Shell shell) {
+        // THIS IS THE KEY POINT:
+        // With SWT.MULTI expanding tree items is slow as snot
+        // (at least on Windows, Eclipse 3.6.2)
+        // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=259141
+        // The original snippet without SWT.MULTI is fine.
+        final TreeViewer v = new TreeViewer(shell, SWT.VIRTUAL | SWT.BORDER | SWT.MULTI);
+        v.setLabelProvider(new LabelProvider());
+        v.setContentProvider(new MyContentProvider(v));
+        v.setUseHashlookup(true);
+        IntermediateNode[] model = createModel();
+        v.setInput(model);
+        v.getTree().setItemCount(model.length);
 
-	}
+    }
 
-	private IntermediateNode[] createModel() {
-		IntermediateNode[] elements = new IntermediateNode[10];
+    private IntermediateNode[] createModel() {
+        IntermediateNode[] elements = new IntermediateNode[10];
 
-		for (int i = 0; i < 10; i++) {
-			elements[i] = new IntermediateNode(i);
-			elements[i].generateChildren(1000);
-		}
+        for (int i = 0; i < 10; i++) {
+            elements[i] = new IntermediateNode(i);
+            elements[i].generateChildren(1000);
+        }
 
-		return elements;
-	}
+        return elements;
+    }
 
-	/**
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		Display display = new Display();
-		Shell shell = new Shell(display);
-		shell.setLayout(new FillLayout());
-		new Snippet047VirtualLazyTreeViewer(shell);
-		shell.open();
+    /**
+     * @param args
+     */
+    public static void main(String[] args) {
+        Display display = new Display();
+        Shell shell = new Shell(display);
+        shell.setLayout(new FillLayout());
+        new Snippet047VirtualLazyTreeViewer(shell);
+        shell.open();
 
-		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch())
-				display.sleep();
-		}
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch())
+                display.sleep();
+        }
 
-		display.dispose();
+        display.dispose();
 
-	}
+    }
 
 }

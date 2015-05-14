@@ -41,39 +41,39 @@ public class EditItemsCommand extends UndoableAction
      *  @param result Result instance returned by EditItemsDialog.
      */
     public EditItemsCommand(
-    		final UndoableActionManager operations_manager,
+            final UndoableActionManager operations_manager,
             final List<ModelItem> items,
             final EditItemsDialog.Result result)
     {
         super(Messages.EditItems);
-    	this.items = items;
-    	this.result = result;
+        this.items = items;
+        this.result = result;
 
-    	// Save old values so that this operation can be undone later.
-    	for (ModelItem item : items)
-    	{
-    	    wasVisible.add(item.isVisible());
-    	    oldName.add(item.getName());
-    	    oldDisplayName.add(item.getDisplayName());
-    	    oldColor.add(item.getColor());
-    	    oldLineWidth.add(item.getLineWidth());
-    	    oldAxis.add(item.getAxis());
-    	    oldTraceType.add(item.getTraceType());
-    	    oldWaveformIndex.add(item.getWaveformIndex());
-    		if (item instanceof PVItem)
-    		{
-    		    oldScanPeriod.add(((PVItem) item).getScanPeriod());
-    			oldBufferSizes.add(((PVItem)item).getLiveCapacity());
-    			oldRequestType.add(((PVItem) item).getRequestType());
-    		}
-    		else
-    		{
+        // Save old values so that this operation can be undone later.
+        for (ModelItem item : items)
+        {
+            wasVisible.add(item.isVisible());
+            oldName.add(item.getName());
+            oldDisplayName.add(item.getDisplayName());
+            oldColor.add(item.getColor());
+            oldLineWidth.add(item.getLineWidth());
+            oldAxis.add(item.getAxis());
+            oldTraceType.add(item.getTraceType());
+            oldWaveformIndex.add(item.getWaveformIndex());
+            if (item instanceof PVItem)
+            {
+                oldScanPeriod.add(((PVItem) item).getScanPeriod());
+                oldBufferSizes.add(((PVItem)item).getLiveCapacity());
+                oldRequestType.add(((PVItem) item).getRequestType());
+            }
+            else
+            {
                 oldScanPeriod.add(0.0);
                 oldBufferSizes.add(0);
                 oldRequestType.add(RequestType.RAW);
-    		}
-    	}
-    	operations_manager.execute(this);
+            }
+        }
+        operations_manager.execute(this);
     }
 
     @Override
@@ -116,33 +116,33 @@ public class EditItemsCommand extends UndoableAction
         }
     }
 
-	@Override
-	public void undo()
-	{
-		for (int i=0; i<items.size(); ++i)
-		{
-			final ModelItem item = items.get(i);
-			try
-			{
-    			item.setVisible(wasVisible.get(i));
-    			item.setName(oldName.get(i));
-    			item.setDisplayName(oldDisplayName.get(i));
-    			item.setColor(oldColor.get(i));
-    			item.setLineWidth(oldLineWidth.get(i));
-    			item.setAxis(oldAxis.get(i));
-    			item.setTraceType(oldTraceType.get(i));
-    			item.setWaveformIndex(oldWaveformIndex.get(i));
-    			if (item instanceof PVItem)
-    			{
-    			    ((PVItem)item).setScanPeriod(oldScanPeriod.get(i));
-    			    ((PVItem)item).setLiveCapacity(oldBufferSizes.get(i));
-    				((PVItem)item).setRequestType(oldRequestType.get(i));
-    			}
+    @Override
+    public void undo()
+    {
+        for (int i=0; i<items.size(); ++i)
+        {
+            final ModelItem item = items.get(i);
+            try
+            {
+                item.setVisible(wasVisible.get(i));
+                item.setName(oldName.get(i));
+                item.setDisplayName(oldDisplayName.get(i));
+                item.setColor(oldColor.get(i));
+                item.setLineWidth(oldLineWidth.get(i));
+                item.setAxis(oldAxis.get(i));
+                item.setTraceType(oldTraceType.get(i));
+                item.setWaveformIndex(oldWaveformIndex.get(i));
+                if (item instanceof PVItem)
+                {
+                    ((PVItem)item).setScanPeriod(oldScanPeriod.get(i));
+                    ((PVItem)item).setLiveCapacity(oldBufferSizes.get(i));
+                    ((PVItem)item).setRequestType(oldRequestType.get(i));
+                }
             }
             catch (Exception ex)
             {
                 ExceptionDetailsErrorDialog.openError(null, Messages.Error, ex);
             }
-		}
-	}
+        }
+    }
 }

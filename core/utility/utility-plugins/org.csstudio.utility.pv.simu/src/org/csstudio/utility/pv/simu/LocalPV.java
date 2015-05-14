@@ -49,28 +49,28 @@ public class LocalPV extends BasicPV<Value>
     @Override
     public void setValue(Object newValue) throws Exception
     {
-		final ISeverity OK = ValueFactory.createOKSeverity();
-	    final ITimestamp now = TimestampFactory.now();
-		IValue result = null;
-    	if(newValue instanceof Double[]){
-    		double[] data = new double[((Double [])newValue).length];
-    		int i=0;
-    		for(Double d : (Double[])newValue)
-    			data[i++] = d.doubleValue();
-    		result = ValueFactory.createDoubleValue(now, OK, OK.toString(),
-    				meta, Quality.Original, data);
-    	}else if(newValue instanceof double[]){
-    		result = ValueFactory.createDoubleValue(now, OK, OK.toString(),
-    				meta, Quality.Original, (double[])newValue);
-    	}else if(newValue instanceof Double){
-    		result = ValueFactory.createDoubleValue(now, OK, OK.toString(),
-    				meta, Quality.Original, new double[]{(Double)newValue});
-    	}
-    	if(result != null){
-    		value.setValue(result);
-    		return;
-    	}
-    	value.setValue(TextUtil.parseValueFromString(newValue.toString(), meta));
+        final ISeverity OK = ValueFactory.createOKSeverity();
+        final ITimestamp now = TimestampFactory.now();
+        IValue result = null;
+        if(newValue instanceof Double[]){
+            double[] data = new double[((Double [])newValue).length];
+            int i=0;
+            for(Double d : (Double[])newValue)
+                data[i++] = d.doubleValue();
+            result = ValueFactory.createDoubleValue(now, OK, OK.toString(),
+                    meta, Quality.Original, data);
+        }else if(newValue instanceof double[]){
+            result = ValueFactory.createDoubleValue(now, OK, OK.toString(),
+                    meta, Quality.Original, (double[])newValue);
+        }else if(newValue instanceof Double){
+            result = ValueFactory.createDoubleValue(now, OK, OK.toString(),
+                    meta, Quality.Original, new double[]{(Double)newValue});
+        }
+        if(result != null){
+            value.setValue(result);
+            return;
+        }
+        value.setValue(TextUtil.parseValueFromString(newValue.toString(), meta));
     }
 
     /** {@inheritDoc} */

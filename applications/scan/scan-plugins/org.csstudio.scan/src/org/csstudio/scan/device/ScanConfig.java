@@ -49,7 +49,7 @@ public class ScanConfig
 
     /** Predefined devices, maybe with alias */
     final private DeviceInfo[] devices;
-    
+
     /** Map of PV names to slew rate */
     final private Map<String, Double> pv_slew_rates = new HashMap<String, Double>();
 
@@ -76,7 +76,7 @@ public class ScanConfig
 
     /** Default slew rate for PVs that were not specified */
     final public static double DEFAULT_SLEW_RATE = 0.05;
-    
+
     /** Read scan configuration from XML file
      *  @param config_file_name Name of XML file
      *  @throws Exception on error
@@ -114,7 +114,7 @@ public class ScanConfig
                 return ps.slew_rate;
         return DEFAULT_SLEW_RATE;
     }
-    
+
     /** Read device configuration from XML stream
      *  @param stream Stream for XML content
      *  @return {@link DeviceInfo}s read from stream
@@ -138,7 +138,7 @@ public class ScanConfig
             else
                 throw new Exception("Got " + root_name + " instead of " + XML_SCAN_CONFIG);
         }
-        
+
         // Loop over <pv>s, being very lenient where they are in the document.
         // This allows both <scan_config> and legacy <beamline>.
         // Users who want strict checking can refer to the schema in their XML files,

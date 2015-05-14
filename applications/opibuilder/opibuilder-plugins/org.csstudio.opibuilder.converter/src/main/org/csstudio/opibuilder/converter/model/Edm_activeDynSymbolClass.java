@@ -15,29 +15,29 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeDynSymbolClass extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String file;
-	@EdmAttributeAn @EdmOptionalAn private double rate;
-	@EdmAttributeAn @EdmOptionalAn private int numStates;
-	
-	
-	public Edm_activeDynSymbolClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    @EdmAttributeAn @EdmOptionalAn private String file;
+    @EdmAttributeAn @EdmOptionalAn private double rate;
+    @EdmAttributeAn @EdmOptionalAn private int numStates;
 
 
-	public String getFile() {
-		return file;
-	}
+    public Edm_activeDynSymbolClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 
-	public double getRate() {
-		return rate;
-	}
+    public String getFile() {
+        return file;
+    }
 
 
-	public int getNumStates() {
-		return numStates;
-	}
+    public double getRate() {
+        return rate;
+    }
+
+
+    public int getNumStates() {
+        return numStates;
+    }
 
 
 

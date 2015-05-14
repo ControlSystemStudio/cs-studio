@@ -12,31 +12,31 @@ package org.csstudio.swt.widgets.util;
 
 class ButtonStateTransitionListener {
 
-	protected final void cancel() throws Exception {
-	}
+    protected final void cancel() throws Exception {
+    }
 
-	public void canceled() {
-	}
+    public void canceled() {
+    }
 
-	final void cancelled() throws Exception {
-	}
+    final void cancelled() throws Exception {
+    }
 
-	protected final void press() throws Exception {
-	}
+    protected final void press() throws Exception {
+    }
 
-	public void pressed() {
-	}
+    public void pressed() {
+    }
 
-	protected final void release() throws Exception {
-	}
+    protected final void release() throws Exception {
+    }
 
-	public void released() {
-	}
+    public void released() {
+    }
 
-	public void resume() {
-	}
+    public void resume() {
+    }
 
-	public void suspend() {
-	}
+    public void suspend() {
+    }
 
 }

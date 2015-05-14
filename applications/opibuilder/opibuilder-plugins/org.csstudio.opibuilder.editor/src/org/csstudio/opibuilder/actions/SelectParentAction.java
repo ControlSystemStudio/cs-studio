@@ -19,17 +19,17 @@ import org.eclipse.jface.action.IAction;
 public class SelectParentAction extends AbstractWidgetTargetAction{
 
 
-	public void run(IAction action) {
-		
-		AbstractContainerEditpart containerEditpart = getParentContainerEditpart();
-		containerEditpart.getViewer().select(containerEditpart);	
-	
-	}
+    public void run(IAction action) {
+
+        AbstractContainerEditpart containerEditpart = getParentContainerEditpart();
+        containerEditpart.getViewer().select(containerEditpart);
+
+    }
 
 
-	protected final AbstractContainerEditpart getParentContainerEditpart() {
-		return (AbstractContainerEditpart) (
-				(AbstractBaseEditPart)selection.getFirstElement()).getParent();
-	}
-		
+    protected final AbstractContainerEditpart getParentContainerEditpart() {
+        return (AbstractContainerEditpart) (
+                (AbstractBaseEditPart)selection.getFirstElement()).getParent();
+    }
+
 }

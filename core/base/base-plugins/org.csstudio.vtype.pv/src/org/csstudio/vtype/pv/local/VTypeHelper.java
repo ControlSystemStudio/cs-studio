@@ -11,7 +11,7 @@ import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
 /** Local Process Variable
- *  
+ *
  *  @author Kay Kasemir
  */
 public class VTypeHelper

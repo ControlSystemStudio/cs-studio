@@ -16,13 +16,13 @@ import org.eclipse.draw2d.IFigure;
  */
 public interface ITextInputEditPartDelegate {
 
-	public IFigure doCreateFigure();
+    public IFigure doCreateFigure();
 
-	public void registerPropertyChangeHandlers();
+    public void registerPropertyChangeHandlers();
 
-	public void updatePropSheet();	
-	
-	public void createEditPolicies();
+    public void updatePropSheet();
+
+    public void createEditPolicies();
 
 
 }

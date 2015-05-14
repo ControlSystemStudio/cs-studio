@@ -18,32 +18,32 @@ import org.eclipse.jface.viewers.ViewerCell;
  */
 public class ScanDataLabelProvider extends CellLabelProvider
 {
-	final private int index;
+    final private int index;
 
-	/** Initialize
-	 *  @param index Index of device within {@link ScanDataRow}
-	 */
-	public ScanDataLabelProvider(final int index)
+    /** Initialize
+     *  @param index Index of device within {@link ScanDataRow}
+     */
+    public ScanDataLabelProvider(final int index)
     {
-		this.index = index;
+        this.index = index;
     }
 
-	@Override
+    @Override
     public String getToolTipText(Object element)
     {
-	    final ScanDataRow row = (ScanDataRow) element;
-		final ScanSample sample = row.getSample(index);
-		if (sample == null)
-			return Messages.NoSampleTT;
-		else
-			return sample.toString();
+        final ScanDataRow row = (ScanDataRow) element;
+        final ScanSample sample = row.getSample(index);
+        if (sample == null)
+            return Messages.NoSampleTT;
+        else
+            return sample.toString();
     }
 
-	@Override
-	public void update(final ViewerCell cell)
-	{
-	    final ScanDataRow row = (ScanDataRow) cell.getElement();
-		final ScanSample sample = row.getSample(index);
-		cell.setText(ScanSampleFormatter.asString(sample));
-	}
+    @Override
+    public void update(final ViewerCell cell)
+    {
+        final ScanDataRow row = (ScanDataRow) cell.getElement();
+        final ScanSample sample = row.getSample(index);
+        cell.setText(ScanSampleFormatter.asString(sample));
+    }
 }

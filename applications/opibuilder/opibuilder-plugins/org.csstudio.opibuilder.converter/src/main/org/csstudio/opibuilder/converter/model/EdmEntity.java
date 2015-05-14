@@ -21,288 +21,288 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 /**
  * Generic data container for Edm widget or group.
  * Base class for all specific Edm widget classes.
- * 
+ *
  * @author Matevz
  *
  */
 public class EdmEntity extends Object {
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.model.EdmEntity");
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.model.EdmEntity");
 
-	private Map<String, EdmAttribute>	attributeMap;
-	private Vector<EdmEntity>			subEntities;
-	private String						type;
+    private Map<String, EdmAttribute>    attributeMap;
+    private Vector<EdmEntity>            subEntities;
+    private String                        type;
 
-	/**
-	 * Constructs an empty EdmEntity of type specified.
-	 * @param type EdmEntity type.
-	 */
-	public EdmEntity(String type) {
-		attributeMap = new HashMap<String, EdmAttribute>();
-		subEntities = new Vector<EdmEntity>();
-		this.type = type;
-	}
+    /**
+     * Constructs an empty EdmEntity of type specified.
+     * @param type EdmEntity type.
+     */
+    public EdmEntity(String type) {
+        attributeMap = new HashMap<String, EdmAttribute>();
+        subEntities = new Vector<EdmEntity>();
+        this.type = type;
+    }
 
-	/**
-	 * Constructs an instance of EdmEntity from data of another EdmEntity instance.
-	 * If given EdmEntity is an extended Edm class, its annotated properties will
-	 * be parsed and replaced with specific extensions of EdmAttribute and EdmWidget
-	 * instances. 
-	 * 
-	 * @param genericEntity EdmEntity to copy.
-	 * @throws EdmException if there is a parsing error.
-	 */
-	public EdmEntity(EdmEntity genericEntity) throws EdmException {
+    /**
+     * Constructs an instance of EdmEntity from data of another EdmEntity instance.
+     * If given EdmEntity is an extended Edm class, its annotated properties will
+     * be parsed and replaced with specific extensions of EdmAttribute and EdmWidget
+     * instances.
+     *
+     * @param genericEntity EdmEntity to copy.
+     * @throws EdmException if there is a parsing error.
+     */
+    public EdmEntity(EdmEntity genericEntity) throws EdmException {
 
-		// Multiple specializations test.
-		if (!genericEntity.getClass().equals(EdmEntity.class)) {
-			throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-			"Trying to initialize from an already specialized entity.", null);
-		}
+        // Multiple specializations test.
+        if (!genericEntity.getClass().equals(EdmEntity.class)) {
+            throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
+            "Trying to initialize from an already specialized entity.", null);
+        }
 
-		attributeMap = new HashMap<String, EdmAttribute>();
-		subEntities = new Vector<EdmEntity>();
-		this.type = genericEntity.type;
+        attributeMap = new HashMap<String, EdmAttribute>();
+        subEntities = new Vector<EdmEntity>();
+        this.type = genericEntity.type;
 
-		for (String key : genericEntity.getAttributeIdSet())
-			attributeMap.put(key, genericEntity.getAttribute(key));
+        for (String key : genericEntity.getAttributeIdSet())
+            attributeMap.put(key, genericEntity.getAttribute(key));
 
-		for (int i = 0; i < genericEntity.getSubEntityCount(); i++)
-			subEntities.add(new EdmEntity(genericEntity.getSubEntity(i)));
+        for (int i = 0; i < genericEntity.getSubEntityCount(); i++)
+            subEntities.add(new EdmEntity(genericEntity.getSubEntity(i)));
 
-		String className = this.getClass().getName();
-		Logger log = Logger.getLogger(className);
-		log.debug("Parsing specific " + className + ".");
+        String className = this.getClass().getName();
+        Logger log = Logger.getLogger(className);
+        log.debug("Parsing specific " + className + ".");
 
-		try {
-			Class<?> entitySubClass = this.getClass();
+        try {
+            Class<?> entitySubClass = this.getClass();
 
-			while (entitySubClass != null) {
+            while (entitySubClass != null) {
 
-				for (Field f : entitySubClass.getDeclaredFields()) {
-					if (f.isAnnotationPresent(EdmAttributeAn.class)) {
+                for (Field f : entitySubClass.getDeclaredFields()) {
+                    if (f.isAnnotationPresent(EdmAttributeAn.class)) {
 
-						// new, specific attribute id(name) & instance
-						String name = f.getName();
-						EdmAttribute a = null;
-						boolean isEdmAttribute = true;	// if attribute has been initialized
+                        // new, specific attribute id(name) & instance
+                        String name = f.getName();
+                        EdmAttribute a = null;
+                        boolean isEdmAttribute = true;    // if attribute has been initialized
 
-						boolean required = true;
-						if (f.isAnnotationPresent(EdmOptionalAn.class)) {
-							log.debug("Parsing optional property: " + name);
-							required = false;
-						}
-						else {
-							log.debug("Parsing required property: " + name);
-						}
+                        boolean required = true;
+                        if (f.isAnnotationPresent(EdmOptionalAn.class)) {
+                            log.debug("Parsing optional property: " + name);
+                            required = false;
+                        }
+                        else {
+                            log.debug("Parsing required property: " + name);
+                        }
 
-						f.setAccessible(true);
+                        f.setAccessible(true);
 
-						// Initialize primitive fields using corresponding EdmAtrtibute classes.
-						if (f.getType().equals(int.class)) {
-							EdmInt i = new EdmInt(getAttribute(name), required);
-							setAttribute(name, i);
-							f.set(this, i.get());
-							isEdmAttribute = false;
-						}
+                        // Initialize primitive fields using corresponding EdmAtrtibute classes.
+                        if (f.getType().equals(int.class)) {
+                            EdmInt i = new EdmInt(getAttribute(name), required);
+                            setAttribute(name, i);
+                            f.set(this, i.get());
+                            isEdmAttribute = false;
+                        }
 
-						else if (f.getType().equals(boolean.class)) {
-							EdmBoolean b = new EdmBoolean(getAttribute(name), required);
-							setAttribute(name, b);
-							f.set(this, b.is());
-							isEdmAttribute = false;
-						}
+                        else if (f.getType().equals(boolean.class)) {
+                            EdmBoolean b = new EdmBoolean(getAttribute(name), required);
+                            setAttribute(name, b);
+                            f.set(this, b.is());
+                            isEdmAttribute = false;
+                        }
 
-						else if (f.getType().equals(double.class)) {
-							EdmDouble d = new EdmDouble(getAttribute(name), required);
-							setAttribute(name, d);
-							f.set(this, d.get());
-							isEdmAttribute = false;
-						}
+                        else if (f.getType().equals(double.class)) {
+                            EdmDouble d = new EdmDouble(getAttribute(name), required);
+                            setAttribute(name, d);
+                            f.set(this, d.get());
+                            isEdmAttribute = false;
+                        }
 
-						else if (f.getType().equals(String.class)) {
-							EdmString s = new EdmString(getAttribute(name), required);
-							setAttribute(name, s);
-							f.set(this, s.get());
-							isEdmAttribute = false;
-						}
-						
-						
-						
-						// Specialize sub-entities recursively.
-						else if (f.getType().equals(Vector.class)) {
-							f.set(this, parseWidgets());
-							isEdmAttribute = false;
-						}
-
-						// Initialize non-primitive fields - EdmAttribute subclasses. 
-						else if (EdmAttribute.class.isAssignableFrom(f.getType())){
-
-							Object attribute = f.getType().getConstructor(EdmAttribute.class, boolean.class)
-							.newInstance(getAttribute(name), required);
-
-							if (attribute instanceof EdmAttribute) {
-								a = (EdmAttribute)attribute;
-							} else {
-								isEdmAttribute = false;
-							}
-
-						} else {
-							isEdmAttribute = false;
-							log.warn("Property type not mapped!");
-						}
+                        else if (f.getType().equals(String.class)) {
+                            EdmString s = new EdmString(getAttribute(name), required);
+                            setAttribute(name, s);
+                            f.set(this, s.get());
+                            isEdmAttribute = false;
+                        }
 
 
-						if (isEdmAttribute) {
-							setAttribute(name, a);
-							f.set(this, a);
-						}
 
-						f.setAccessible(false);
-					}
-				}
+                        // Specialize sub-entities recursively.
+                        else if (f.getType().equals(Vector.class)) {
+                            f.set(this, parseWidgets());
+                            isEdmAttribute = false;
+                        }
 
-				entitySubClass = entitySubClass.getSuperclass();
-			}
-		} catch (Exception e) {
-			if (e instanceof EdmException)
-				throw (EdmException)e;
-			else {
-				throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
-				"Error when parsing annotated field.", 
-				e instanceof InvocationTargetException? e.getCause():e);
-			}
-		}
-	}
+                        // Initialize non-primitive fields - EdmAttribute subclasses.
+                        else if (EdmAttribute.class.isAssignableFrom(f.getType())){
 
-	/**
-	 * Returns the number of attributes in entity.
-	 * @return	The number of attributes in entity.
-	 */
-	public int getAttributeCount() {
-		return attributeMap.size();
-	}
+                            Object attribute = f.getType().getConstructor(EdmAttribute.class, boolean.class)
+                            .newInstance(getAttribute(name), required);
 
-	/**
-	 * Adds the attribute with specified id to entity.
-	 * Id must be unique.
-	 * @param id	Unique id of attribute.
-	 * @param a		Attribute to add.
-	 * @throws EdmException 
-	 */
-	public void addAttribute(String id, EdmAttribute a) throws EdmException {
-		if (attributeMap.containsKey(id))
-			throw new EdmException(EdmException.ATTRIBUTE_ALREADY_EXISTS,
-					"Attribute " + id + " already exists.", null);
-		else
-			attributeMap.put(id, a);
-	}
+                            if (attribute instanceof EdmAttribute) {
+                                a = (EdmAttribute)attribute;
+                            } else {
+                                isEdmAttribute = false;
+                            }
 
-	/**
-	 * Returns the attribute with specified id.
-	 * @param id	The id of attribute that we want to get.
-	 * @return		Attribute with desired id.
-	 */
-	public EdmAttribute getAttribute(String id) {
-		return attributeMap.get(id);
-	}
+                        } else {
+                            isEdmAttribute = false;
+                            log.warn("Property type not mapped!");
+                        }
 
-	/**
-	 * Returns all names of EdmAttributes in current EdmEntity.
-	 * @return Names of all EdmAttributes (keys in HashMap).
-	 */
-	public Set<String> getAttributeIdSet() {
-		return attributeMap.keySet();
-	}
 
-	/**
-	 * Returns the number of subentities in an entity. 
-	 * @return	The number of subentities.
-	 */
-	public int getSubEntityCount() {
-		return subEntities.size();
-	}
+                        if (isEdmAttribute) {
+                            setAttribute(name, a);
+                            f.set(this, a);
+                        }
 
-	/**
-	 * Adds subentity to an entity.
-	 * @param subE	Subentity to add.
-	 */
-	public void addSubEntity(EdmEntity subE) {
-		subEntities.add(subE);
-	}
+                        f.setAccessible(false);
+                    }
+                }
 
-	/**
-	 * Returns the subentity at specified index.
-	 * @param i	Index of desired subentity.
-	 * @return	Subentity.
-	 */
-	public EdmEntity getSubEntity(int i) {
-		return subEntities.get(i);
-	}
+                entitySubClass = entitySubClass.getSuperclass();
+            }
+        } catch (Exception e) {
+            if (e instanceof EdmException)
+                throw (EdmException)e;
+            else {
+                throw new EdmException(EdmException.SPECIFIC_PARSING_ERROR,
+                "Error when parsing annotated field.",
+                e instanceof InvocationTargetException? e.getCause():e);
+            }
+        }
+    }
 
-	/**
-	 * Changes the attribute with specified id.
-	 * @param id		Id of the attribute that we want to change.
-	 * @param newAtt	New attribute.
-	 */
-	protected void setAttribute(String id, EdmAttribute newAtt) {
-		attributeMap.put(id, newAtt);
-	}
+    /**
+     * Returns the number of attributes in entity.
+     * @return    The number of attributes in entity.
+     */
+    public int getAttributeCount() {
+        return attributeMap.size();
+    }
 
-	/**
-	 * Changes the subentity at desired index.
-	 * @param i		Index of the subentity to change.
-	 * @param subE	New subentity.
-	 */
-	public void setSubEntity(int i, EdmEntity subE) {
-		subEntities.set(i, subE);
-	}
+    /**
+     * Adds the attribute with specified id to entity.
+     * Id must be unique.
+     * @param id    Unique id of attribute.
+     * @param a        Attribute to add.
+     * @throws EdmException
+     */
+    public void addAttribute(String id, EdmAttribute a) throws EdmException {
+        if (attributeMap.containsKey(id))
+            throw new EdmException(EdmException.ATTRIBUTE_ALREADY_EXISTS,
+                    "Attribute " + id + " already exists.", null);
+        else
+            attributeMap.put(id, a);
+    }
 
-	/**
-	 * Returns EdmEntity type.
-	 * @return EdmEntity type.
-	 */
-	public String getType() {
-		return type;
-	}
+    /**
+     * Returns the attribute with specified id.
+     * @param id    The id of attribute that we want to get.
+     * @return        Attribute with desired id.
+     */
+    public EdmAttribute getAttribute(String id) {
+        return attributeMap.get(id);
+    }
 
-	/**
-	 * Parses specific widget data from its parent EdmEntity.
-	 */
-	private Vector<EdmEntity> parseWidgets()  {
+    /**
+     * Returns all names of EdmAttributes in current EdmEntity.
+     * @return Names of all EdmAttributes (keys in HashMap).
+     */
+    public Set<String> getAttributeIdSet() {
+        return attributeMap.keySet();
+    }
 
-//		boolean robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
+    /**
+     * Returns the number of subentities in an entity.
+     * @return    The number of subentities.
+     */
+    public int getSubEntityCount() {
+        return subEntities.size();
+    }
 
-		Vector<EdmEntity> w = new Vector<EdmEntity>();
+    /**
+     * Adds subentity to an entity.
+     * @param subE    Subentity to add.
+     */
+    public void addSubEntity(EdmEntity subE) {
+        subEntities.add(subE);
+    }
 
-		log.debug("Parsing specific widgets.");
+    /**
+     * Returns the subentity at specified index.
+     * @param i    Index of desired subentity.
+     * @return    Subentity.
+     */
+    public EdmEntity getSubEntity(int i) {
+        return subEntities.get(i);
+    }
 
-		String packageName = EdmWidget.class.getPackage().getName();
+    /**
+     * Changes the attribute with specified id.
+     * @param id        Id of the attribute that we want to change.
+     * @param newAtt    New attribute.
+     */
+    protected void setAttribute(String id, EdmAttribute newAtt) {
+        attributeMap.put(id, newAtt);
+    }
 
-		for (int i = 0; i < subEntities.size(); i++) {
-			EdmEntity subE = subEntities.get(i);
-			String wType = "Edm_" + subE.getType();
+    /**
+     * Changes the subentity at desired index.
+     * @param i        Index of the subentity to change.
+     * @param subE    New subentity.
+     */
+    public void setSubEntity(int i, EdmEntity subE) {
+        subEntities.set(i, subE);
+    }
 
-			log.debug("Parsing specific widget: " + wType);
-			wType = wType.replace(":", "_");
-			Object o;
-			try {
-				o = Class.forName(packageName + "." + wType).
-				getConstructor(EdmEntity.class).newInstance(subE);
-				if (o instanceof EdmEntity) {
-					subEntities.set(i, (EdmEntity)o);
-					w.add((EdmEntity)o);
-				} else {
-					log.warn("Class not declared: " + wType);
-				}
-			}catch (Exception e) {					
-					if(e instanceof ClassNotFoundException){
-						ConsoleService.getInstance().writeWarning(wType + " is not convertible.");
-					}else
-						ErrorHandlerUtil.handleError("Parse widget error.",
-							e instanceof InvocationTargetException? e.getCause():e);				
-			}
-		}
-		return w;
-	}
+    /**
+     * Returns EdmEntity type.
+     * @return EdmEntity type.
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Parses specific widget data from its parent EdmEntity.
+     */
+    private Vector<EdmEntity> parseWidgets()  {
+
+//        boolean robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
+
+        Vector<EdmEntity> w = new Vector<EdmEntity>();
+
+        log.debug("Parsing specific widgets.");
+
+        String packageName = EdmWidget.class.getPackage().getName();
+
+        for (int i = 0; i < subEntities.size(); i++) {
+            EdmEntity subE = subEntities.get(i);
+            String wType = "Edm_" + subE.getType();
+
+            log.debug("Parsing specific widget: " + wType);
+            wType = wType.replace(":", "_");
+            Object o;
+            try {
+                o = Class.forName(packageName + "." + wType).
+                getConstructor(EdmEntity.class).newInstance(subE);
+                if (o instanceof EdmEntity) {
+                    subEntities.set(i, (EdmEntity)o);
+                    w.add((EdmEntity)o);
+                } else {
+                    log.warn("Class not declared: " + wType);
+                }
+            }catch (Exception e) {
+                    if(e instanceof ClassNotFoundException){
+                        ConsoleService.getInstance().writeWarning(wType + " is not convertible.");
+                    }else
+                        ErrorHandlerUtil.handleError("Parse widget error.",
+                            e instanceof InvocationTargetException? e.getCause():e);
+            }
+        }
+        return w;
+    }
 }

@@ -14,38 +14,38 @@ import org.eclipse.gef.ui.actions.UndoRetargetAction;
  */
 public class ShapesEditorActionBarContributor extends ActionBarContributor {
 
-	/**
-	 * Create actions managed by this contributor.
-	 * 
-	 * @see org.eclipse.gef.ui.actions.ActionBarContributor#buildActions()
-	 */
-	@Override
-	protected void buildActions() {
-		addRetargetAction(new DeleteRetargetAction());
-		addRetargetAction(new UndoRetargetAction());
-		addRetargetAction(new RedoRetargetAction());
-	}
+    /**
+     * Create actions managed by this contributor.
+     *
+     * @see org.eclipse.gef.ui.actions.ActionBarContributor#buildActions()
+     */
+    @Override
+    protected void buildActions() {
+        addRetargetAction(new DeleteRetargetAction());
+        addRetargetAction(new UndoRetargetAction());
+        addRetargetAction(new RedoRetargetAction());
+    }
 
-	/**
-	 * Add actions to the given toolbar.
-	 * 
-	 * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
-	 */
-	@Override
-	public void contributeToToolBar(final IToolBarManager toolBarManager) {
-		toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
-		toolBarManager.add(getAction(ActionFactory.REDO.getId()));
-	}
+    /**
+     * Add actions to the given toolbar.
+     *
+     * @see org.eclipse.ui.part.EditorActionBarContributor#contributeToToolBar(org.eclipse.jface.action.IToolBarManager)
+     */
+    @Override
+    public void contributeToToolBar(final IToolBarManager toolBarManager) {
+        toolBarManager.add(getAction(ActionFactory.UNDO.getId()));
+        toolBarManager.add(getAction(ActionFactory.REDO.getId()));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.gef.ui.actions.ActionBarContributor#declareGlobalActionKeys()
-	 */
-	@Override
-	protected void declareGlobalActionKeys() {
-		// currently none
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.gef.ui.actions.ActionBarContributor#declareGlobalActionKeys()
+     */
+    @Override
+    protected void declareGlobalActionKeys() {
+        // currently none
+    }
 
 }

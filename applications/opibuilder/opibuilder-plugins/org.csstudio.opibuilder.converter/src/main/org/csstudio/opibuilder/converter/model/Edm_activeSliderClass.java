@@ -12,105 +12,105 @@ package org.csstudio.opibuilder.converter.model;
  *
  */
 public class Edm_activeSliderClass extends EdmWidget {
-	
-	@EdmAttributeAn @EdmOptionalAn private String controlPv;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor controlColor;
-	@EdmAttributeAn @EdmOptionalAn private boolean controlAlarm;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor indicatorColor;
-	@EdmAttributeAn @EdmOptionalAn private boolean indicatorAlarm;
-	@EdmAttributeAn @EdmOptionalAn private String controlLabel;
-	@EdmAttributeAn @EdmOptionalAn private double increment;
-	@EdmAttributeAn @EdmOptionalAn private double incMultiplier;
-	@EdmAttributeAn @EdmOptionalAn private int precision;
-	@EdmAttributeAn @EdmOptionalAn private double scaleMin;
-	@EdmAttributeAn @EdmOptionalAn private double scaleMax;
-	@EdmAttributeAn @EdmOptionalAn private String displayFormat;	
-	@EdmAttributeAn @EdmOptionalAn private boolean limitsFromDb;
-	
-	
-	
 
-	public Edm_activeSliderClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
-
-	public boolean isLimitsFromDb() {
-		return limitsFromDb;
-	}
-
-	/**
-	 * @return the lineAlarm
-	 */
-	public final String getControlPv() {
-		return controlPv;
-	}
+    @EdmAttributeAn @EdmOptionalAn private String controlPv;
+    @EdmAttributeAn @EdmOptionalAn private EdmColor controlColor;
+    @EdmAttributeAn @EdmOptionalAn private boolean controlAlarm;
+    @EdmAttributeAn @EdmOptionalAn private EdmColor indicatorColor;
+    @EdmAttributeAn @EdmOptionalAn private boolean indicatorAlarm;
+    @EdmAttributeAn @EdmOptionalAn private String controlLabel;
+    @EdmAttributeAn @EdmOptionalAn private double increment;
+    @EdmAttributeAn @EdmOptionalAn private double incMultiplier;
+    @EdmAttributeAn @EdmOptionalAn private int precision;
+    @EdmAttributeAn @EdmOptionalAn private double scaleMin;
+    @EdmAttributeAn @EdmOptionalAn private double scaleMax;
+    @EdmAttributeAn @EdmOptionalAn private String displayFormat;
+    @EdmAttributeAn @EdmOptionalAn private boolean limitsFromDb;
 
 
 
-	public EdmColor getControlColor() {
-		return controlColor;
-	}
+
+    public Edm_activeSliderClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
+
+    public boolean isLimitsFromDb() {
+        return limitsFromDb;
+    }
+
+    /**
+     * @return the lineAlarm
+     */
+    public final String getControlPv() {
+        return controlPv;
+    }
 
 
 
-	public boolean isControlAlarm() {
-		return controlAlarm;
-	}
+    public EdmColor getControlColor() {
+        return controlColor;
+    }
 
 
 
-	public EdmColor getIndicatorColor() {
-		return indicatorColor;
-	}
+    public boolean isControlAlarm() {
+        return controlAlarm;
+    }
 
 
 
-	public boolean isIndicatorAlarm() {
-		return indicatorAlarm;
-	}
+    public EdmColor getIndicatorColor() {
+        return indicatorColor;
+    }
 
 
 
-	public String getControlLabel() {
-		return controlLabel;
-	}
+    public boolean isIndicatorAlarm() {
+        return indicatorAlarm;
+    }
 
 
 
-	public double getIncrement() {
-		return increment;
-	}
+    public String getControlLabel() {
+        return controlLabel;
+    }
 
 
 
-	public double getIncMultiplier() {
-		return incMultiplier;
-	}
+    public double getIncrement() {
+        return increment;
+    }
 
 
 
-	public int getPrecision() {
-		return precision;
-	}
+    public double getIncMultiplier() {
+        return incMultiplier;
+    }
 
 
 
-	public double getScaleMin() {
-		return scaleMin;
-	}
+    public int getPrecision() {
+        return precision;
+    }
 
 
 
-	public double getScaleMax() {
-		return scaleMax;
-	}
+    public double getScaleMin() {
+        return scaleMin;
+    }
 
 
 
-	public String getDisplayFormat() {
-		return displayFormat;
-	}	
+    public double getScaleMax() {
+        return scaleMax;
+    }
 
-	
-	
+
+
+    public String getDisplayFormat() {
+        return displayFormat;
+    }
+
+
+
 }

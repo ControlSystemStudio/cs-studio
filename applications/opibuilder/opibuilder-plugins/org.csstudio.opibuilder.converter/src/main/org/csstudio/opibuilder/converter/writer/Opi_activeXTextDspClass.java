@@ -16,36 +16,36 @@ import org.csstudio.opibuilder.converter.model.Edm_activeXTextDspClass;
  */
 public class Opi_activeXTextDspClass extends Opi_activeXTextDspClass_noedit {
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeXTextDspClass");
-	private static final String typeId = "TextInput";
-	private static final String name = "EDM TextInput";
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeXTextDspClass");
+    private static final String typeId = "TextInput";
+    private static final String name = "EDM TextInput";
 
-	/**
-	 * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.  
-	 */
-	public Opi_activeXTextDspClass(Context con, Edm_activeXTextDspClass r) {
-		super(con, r);
-		setName(name);
-		if(r.isEditable()){
-			setTypeId(typeId);
-			if(r.isDate())
-				new OpiInt(widgetContext, "selector_type", 2);
-			if(r.isFile()){
-				new OpiInt(widgetContext, "selector_type", 1);		
-				new OpiInt(widgetContext, "file_source", 1);
-				int f=0;
-				if(r.getFileComponent().equals("nameAndExt"))
-					f=1;
-				else if(r.getFileComponent().equals("name"))
-					f=2;
-				new OpiInt(widgetContext, "file_return_part", f);
-			}
-		}
-		
+    /**
+     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
+     */
+    public Opi_activeXTextDspClass(Context con, Edm_activeXTextDspClass r) {
+        super(con, r);
+        setName(name);
+        if(r.isEditable()){
+            setTypeId(typeId);
+            if(r.isDate())
+                new OpiInt(widgetContext, "selector_type", 2);
+            if(r.isFile()){
+                new OpiInt(widgetContext, "selector_type", 1);
+                new OpiInt(widgetContext, "file_source", 1);
+                int f=0;
+                if(r.getFileComponent().equals("nameAndExt"))
+                    f=1;
+                else if(r.getFileComponent().equals("name"))
+                    f=2;
+                new OpiInt(widgetContext, "file_return_part", f);
+            }
+        }
 
-		log.debug("Edm_activeXTextDspClass written.");
 
-	}
+        log.debug("Edm_activeXTextDspClass written.");
+
+    }
 
 }
 

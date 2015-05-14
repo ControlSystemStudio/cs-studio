@@ -20,90 +20,90 @@ import de.desy.language.snl.diagram.ui.ShapesPlugin;
  * This edit part must implement the PropertyChangeListener interface, so it can
  * be notified of property changes in the corresponding model element.
  * </p>
- * 
+ *
  */
 class ShapeTreeEditPart extends AbstractTreeEditPart implements
-		PropertyChangeListener {
+        PropertyChangeListener {
 
-	/**
-	 * Create a new instance of this edit part using the given model element.
-	 * 
-	 * @param model
-	 *            a non-null Shapes instance
-	 */
-	ShapeTreeEditPart(final SNLModel model) {
-		super(model);
-	}
+    /**
+     * Create a new instance of this edit part using the given model element.
+     *
+     * @param model
+     *            a non-null Shapes instance
+     */
+    ShapeTreeEditPart(final SNLModel model) {
+        super(model);
+    }
 
-	/**
-	 * Upon activation, attach to the model element as a property change
-	 * listener.
-	 */
-	@Override
-	public void activate() {
-		if (!isActive()) {
-			super.activate();
-			((ModelElement) getModel()).addPropertyChangeListener(this);
-		}
-	}
+    /**
+     * Upon activation, attach to the model element as a property change
+     * listener.
+     */
+    @Override
+    public void activate() {
+        if (!isActive()) {
+            super.activate();
+            ((ModelElement) getModel()).addPropertyChangeListener(this);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.gef.editparts.AbstractTreeEditPart#createEditPolicies()
-	 */
-	@Override
-	protected void createEditPolicies() {
-		// allow removal of the associated model element
-		installEditPolicy(EditPolicy.COMPONENT_ROLE,
-				new ShapeComponentEditPolicy());
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.gef.editparts.AbstractTreeEditPart#createEditPolicies()
+     */
+    @Override
+    protected void createEditPolicies() {
+        // allow removal of the associated model element
+        installEditPolicy(EditPolicy.COMPONENT_ROLE,
+                new ShapeComponentEditPolicy());
+    }
 
-	/**
-	 * Upon deactivation, detach from the model element as a property change
-	 * listener.
-	 */
-	@Override
-	public void deactivate() {
-		if (isActive()) {
-			super.deactivate();
-			((ModelElement) getModel()).removePropertyChangeListener(this);
-		}
-	}
+    /**
+     * Upon deactivation, detach from the model element as a property change
+     * listener.
+     */
+    @Override
+    public void deactivate() {
+        if (isActive()) {
+            super.deactivate();
+            ((ModelElement) getModel()).removePropertyChangeListener(this);
+        }
+    }
 
-	private SNLModel getCastedModel() {
-		return (SNLModel) getModel();
-	}
+    private SNLModel getCastedModel() {
+        return (SNLModel) getModel();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.gef.editparts.AbstractTreeEditPart#getImage()
-	 */
-	@Override
-	protected Image getImage() {
-		final String name = getCastedModel().getIconName();
-		return ShapesPlugin.getImageDescriptor("icons/" + name).createImage();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.gef.editparts.AbstractTreeEditPart#getImage()
+     */
+    @Override
+    protected Image getImage() {
+        final String name = getCastedModel().getIconName();
+        return ShapesPlugin.getImageDescriptor("icons/" + name).createImage();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.gef.editparts.AbstractTreeEditPart#getText()
-	 */
-	@Override
-	protected String getText() {
-		return getCastedModel().toString();
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.gef.editparts.AbstractTreeEditPart#getText()
+     */
+    @Override
+    protected String getText() {
+        return getCastedModel().toString();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
-	 * PropertyChangeEvent)
-	 */
-	public void propertyChange(final PropertyChangeEvent evt) {
-		refreshVisuals(); // this will cause an invocation of getImage() and
-		// getText(), see below
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @seejava.beans.PropertyChangeListener#propertyChange(java.beans.
+     * PropertyChangeEvent)
+     */
+    public void propertyChange(final PropertyChangeEvent evt) {
+        refreshVisuals(); // this will cause an invocation of getImage() and
+        // getText(), see below
+    }
 }

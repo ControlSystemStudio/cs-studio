@@ -38,11 +38,11 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class EPICS_V3_Connection_Demo implements PVListener
 {
-	/** PV Name.
-	 *  "fred" 1Hz
-	 *  "janet" 10Hz
-	 *  "longs" array
-	 */
+    /** PV Name.
+     *  "fred" 1Hz
+     *  "janet" 10Hz
+     *  "longs" array
+     */
     private static final String PV_NAME = "longs";
 
 

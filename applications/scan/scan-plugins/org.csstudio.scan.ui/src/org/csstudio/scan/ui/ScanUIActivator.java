@@ -18,10 +18,10 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 @SuppressWarnings("nls")
 public class ScanUIActivator
 {
-	/** Plug-in ID defined in MANIFEST.MF */
+    /** Plug-in ID defined in MANIFEST.MF */
     public static final String PLUGIN_ID = "org.csstudio.scan.ui";
 
-	/** ID of the Scan Monitor View */
+    /** ID of the Scan Monitor View */
     public static final String ID_SCAN_MONITOR_VIEW = "org.csstudio.scan.ui.scanmonitor";
 
     /** ID of the Scan Monitor View */
@@ -29,19 +29,19 @@ public class ScanUIActivator
 
     /** The Constant logger. */
     final private static Logger logger = Logger.getLogger(PLUGIN_ID);
-    
-	/** @param path Path to plugin image
-	 *  @return {@link ImageDescriptor}
-	 */
+
+    /** @param path Path to plugin image
+     *  @return {@link ImageDescriptor}
+     */
     public static ImageDescriptor getImageDescriptor(final String path)
     {
         return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
-    
-	/** @return Logger for plugin ID */
-	public static Logger getLogger()
-	{
-	    return logger;
-	}
-    
+
+    /** @return Logger for plugin ID */
+    public static Logger getLogger()
+    {
+        return logger;
+    }
+
 }

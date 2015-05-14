@@ -9,105 +9,105 @@ package org.csstudio.opibuilder.converter.model;
 
 /**
  * @author Xihui Chen
- * 
+ *
  */
 public class Edm_relatedDisplayClass extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String buttonLabel;
-	@EdmAttributeAn @EdmOptionalAn private int numDsps;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings displayFileName;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings menuLabel;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans closeAction;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings setPosition;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans allowDups;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings symbols;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans replaceSymbols;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans propagateMacros;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans closeDisplay;
-	@EdmAttributeAn @EdmOptionalAn private boolean icon;
-	@EdmAttributeAn @EdmOptionalAn private boolean invisible;
-	
-
-	
-
-	public Edm_relatedDisplayClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
-
-
-	public boolean isInvisible() {
-		return invisible;
-	}
-
-	public String getButtonLabel() {
-		return buttonLabel;
-	}
+    @EdmAttributeAn @EdmOptionalAn private String buttonLabel;
+    @EdmAttributeAn @EdmOptionalAn private int numDsps;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings displayFileName;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings menuLabel;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans closeAction;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings setPosition;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans allowDups;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings symbols;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans replaceSymbols;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans propagateMacros;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans closeDisplay;
+    @EdmAttributeAn @EdmOptionalAn private boolean icon;
+    @EdmAttributeAn @EdmOptionalAn private boolean invisible;
 
 
 
-	public int getNumDsps() {
-		return numDsps;
-	}
+
+    public Edm_relatedDisplayClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
+
+
+    public boolean isInvisible() {
+        return invisible;
+    }
+
+    public String getButtonLabel() {
+        return buttonLabel;
+    }
 
 
 
-	public EdmMultiStrings getDisplayFileName() {
-		return displayFileName;
-	}
+    public int getNumDsps() {
+        return numDsps;
+    }
 
 
 
-	public EdmMultiStrings getMenuLabel() {
-		return menuLabel;
-	}
+    public EdmMultiStrings getDisplayFileName() {
+        return displayFileName;
+    }
 
 
 
-	public EdmMultiBooleans getCloseAction() {
-		return closeAction;
-	}
+    public EdmMultiStrings getMenuLabel() {
+        return menuLabel;
+    }
 
 
 
-	public EdmMultiStrings getSetPosition() {
-		return setPosition;
-	}
+    public EdmMultiBooleans getCloseAction() {
+        return closeAction;
+    }
 
 
 
-	public EdmMultiBooleans getAllowDups() {
-		return allowDups;
-	}
+    public EdmMultiStrings getSetPosition() {
+        return setPosition;
+    }
 
 
 
-	public EdmMultiStrings getSymbols() {
-		return symbols;
-	}
+    public EdmMultiBooleans getAllowDups() {
+        return allowDups;
+    }
 
 
 
-	public EdmMultiBooleans getReplaceSymbols() {
-		return replaceSymbols;
-	}
+    public EdmMultiStrings getSymbols() {
+        return symbols;
+    }
 
 
 
-	public EdmMultiBooleans getPropagateMacros() {
-		return propagateMacros;
-	}
+    public EdmMultiBooleans getReplaceSymbols() {
+        return replaceSymbols;
+    }
 
 
 
-	public EdmMultiBooleans getCloseDisplay() {
-		return closeDisplay;
-	}
+    public EdmMultiBooleans getPropagateMacros() {
+        return propagateMacros;
+    }
 
 
 
-	public boolean isIcon() {
-		return icon;
-	}
+    public EdmMultiBooleans getCloseDisplay() {
+        return closeDisplay;
+    }
+
+
+
+    public boolean isIcon() {
+        return icon;
+    }
 
 
 

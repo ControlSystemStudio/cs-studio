@@ -20,38 +20,38 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class WebBrowserModel extends AbstractWidgetModel {
 
-	
-	public final String ID = "org.csstudio.opibuilder.widgets.webbrowser";//$NON-NLS-1$
-	public static final String PROP_URL = "url";//$NON-NLS-1$
-	public static final String PROP_SHOW_TOOLBAR = "show_toolbar";//$NON-NLS-1$
-	
-	public WebBrowserModel() {
-		setBorderStyle(BorderStyle.LINE);
-		setBorderColor(new RGB(192, 192, 192));
-		setSize(450, 300);
-	}
 
-	@Override
-	protected void configureProperties() {		
-		addProperty(new StringProperty(
-				PROP_URL, "URL", WidgetPropertyCategory.Basic, "")); //$NON-NLS-2$
-		addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, "Show Toolbar", 
-				WidgetPropertyCategory.Display, true));
-		setPropertyVisible(PROP_FONT, false);
-	}
-	
-	public String getURL(){
-		return (String)getPropertyValue(PROP_URL);
-	}
-	
-	
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    public final String ID = "org.csstudio.opibuilder.widgets.webbrowser";//$NON-NLS-1$
+    public static final String PROP_URL = "url";//$NON-NLS-1$
+    public static final String PROP_SHOW_TOOLBAR = "show_toolbar";//$NON-NLS-1$
 
-	public boolean isShowToolBar() {
-		return (Boolean)getPropertyValue(PROP_SHOW_TOOLBAR);
-	}
+    public WebBrowserModel() {
+        setBorderStyle(BorderStyle.LINE);
+        setBorderColor(new RGB(192, 192, 192));
+        setSize(450, 300);
+    }
+
+    @Override
+    protected void configureProperties() {
+        addProperty(new StringProperty(
+                PROP_URL, "URL", WidgetPropertyCategory.Basic, "")); //$NON-NLS-2$
+        addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, "Show Toolbar",
+                WidgetPropertyCategory.Display, true));
+        setPropertyVisible(PROP_FONT, false);
+    }
+
+    public String getURL(){
+        return (String)getPropertyValue(PROP_URL);
+    }
+
+
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
+
+    public boolean isShowToolBar() {
+        return (Boolean)getPropertyValue(PROP_SHOW_TOOLBAR);
+    }
 
 }

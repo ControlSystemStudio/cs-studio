@@ -6,10 +6,10 @@ import org.eclipse.ui.WorkbenchException;
 
 public interface IWorkbenchWindowAdvisorExtPoint
 {
-	public static final String ID = "org.csstudio.utility.product.module";
-	/** The name of this extension point element */
-	public static final String NAME = "class";
-	
+    public static final String ID = "org.csstudio.utility.product.module";
+    /** The name of this extension point element */
+    public static final String NAME = "class";
+
     /**
      * Performs arbitrary actions before the window is opened.
      * <p>
@@ -18,7 +18,7 @@ public interface IWorkbenchWindowAdvisorExtPoint
      * The default implementation does nothing. Subclasses may override.
      * Typical clients will use the window configurer to tweak the
      * workbench window in an application-specific way; however, filling the
-     * window's menu bar, tool bar, and status line must be done in 
+     * window's menu bar, tool bar, and status line must be done in
      * {@link ActionBarAdvisor#fillActionBars}, which is called immediately
      * after this method is called.
      * </p>
@@ -39,7 +39,7 @@ public interface IWorkbenchWindowAdvisorExtPoint
      * an opportunity to query the user and/or veto the closing of a window
      * under some circumstances.
      * </p>
-     * 
+     *
      * @return <code>true</code> to allow the window to close, and
      *         <code>false</code> to prevent the window from closing
      * @see org.eclipse.ui.IWorkbenchWindow#close
@@ -48,7 +48,7 @@ public interface IWorkbenchWindowAdvisorExtPoint
     public boolean preWindowShellClose();
 
     /**
-     * Performs arbitrary actions after the window has been restored, 
+     * Performs arbitrary actions after the window has been restored,
      * but before it is opened.
      * <p>
      * This method is called after a previously-saved window has been
@@ -59,17 +59,17 @@ public interface IWorkbenchWindowAdvisorExtPoint
      * The default implementation does nothing. Subclasses may override.
      * It is okay to call <code>IWorkbench.close()</code> from this method.
      * </p>
-     * 
+     *
      * @exception WorkbenchException thrown if there are any errors to report
      *   from post-restoration of the window
      */
     void postWindowRestore() throws WorkbenchException;
 
     /**
-     * Performs arbitrary actions after the window has been created (possibly 
+     * Performs arbitrary actions after the window has been created (possibly
      * after being restored), but has not yet been opened.
      * <p>
-     * This method is called after the window has been created from scratch, 
+     * This method is called after the window has been created from scratch,
      * or when it has been restored from a previously-saved window.  In the latter case,
      * this method is called after <code>postWindowRestore</code>.
      * Clients must not call this method directly (although super calls are okay).
@@ -79,10 +79,10 @@ public interface IWorkbenchWindowAdvisorExtPoint
     void postWindowCreate();
 
     /**
-     * Performs arbitrary actions after the window has been opened (possibly 
+     * Performs arbitrary actions after the window has been opened (possibly
      * after being restored).
      * <p>
-     * This method is called after the window has been opened. This method is 
+     * This method is called after the window has been opened. This method is
      * called after the window has been created from scratch, or when
      * it has been restored from a previously-saved window.
      * Clients must not call this method directly (although super calls are okay).
@@ -100,20 +100,20 @@ public interface IWorkbenchWindowAdvisorExtPoint
      * </p>
      */
     void postWindowClose();
-    
+
     /**
      * Saves arbitrary application specific state information.
-     * 
+     *
      * @param memento
      * @return a status object indicating whether the save was successful
      */
-	public IStatus saveState(IMemento memento);
+    public IStatus saveState(IMemento memento);
 
-	/**
-	* Restores arbitrary application specific state information.
-	* 
-	* @param memento
-	* @return a status object indicating whether the restore was successful
-	*/
-	public IStatus restoreState(IMemento memento);
+    /**
+    * Restores arbitrary application specific state information.
+    *
+    * @param memento
+    * @return a status object indicating whether the restore was successful
+    */
+    public IStatus restoreState(IMemento memento);
 }

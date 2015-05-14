@@ -10,24 +10,24 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class PreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	public PreferencePage() {
-		super(GRID);
+    public PreferencePage() {
+        super(GRID);
         final IPreferenceStore store =
                 new ScopedPreferenceStore(new InstanceScope(),
                                           org.csstudio.logbook.midas.Activator.ID);
             setPreferenceStore(store);
             setMessage(Messages.PreferenceTitle);
-		
-	}
+
+    }
 
 
-	@Override
-	public void init(IWorkbench workbench) {
-		// TODO Auto-generated method stub
+    @Override
+    public void init(IWorkbench workbench) {
+        // TODO Auto-generated method stub
 
-	}
+    }
 
     @Override
     protected void createFieldEditors()

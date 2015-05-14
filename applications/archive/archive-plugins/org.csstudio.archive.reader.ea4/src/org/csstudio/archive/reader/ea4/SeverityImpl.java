@@ -15,37 +15,37 @@ import org.epics.vtype.AlarmSeverity;
  */
 public class SeverityImpl
 {
-	final private AlarmSeverity severity;
-	final private String text;
-	final private boolean has_value;
-	final private boolean txt_stat;
+    final private AlarmSeverity severity;
+    final private String text;
+    final private boolean has_value;
+    final private boolean txt_stat;
 
-	public SeverityImpl(final AlarmSeverity severity, final String text, final boolean has_value,
-	        final boolean txt_stat)
-	{
-		this.severity = severity;
-		this.text = text;
-		this.has_value = has_value;
-		this.txt_stat = txt_stat;
-	}
+    public SeverityImpl(final AlarmSeverity severity, final String text, final boolean has_value,
+            final boolean txt_stat)
+    {
+        this.severity = severity;
+        this.text = text;
+        this.has_value = has_value;
+        this.txt_stat = txt_stat;
+    }
 
     public AlarmSeverity getSeverity()
-	{
-		return severity;
-	}
+    {
+        return severity;
+    }
 
     public String getText()
-	{
-		return text;
-	}
-    
-    public boolean hasValue()
-	{
-		return has_value;
-	}
+    {
+        return text;
+    }
 
-	public boolean statusIsText()
-	{
-		return txt_stat;
-	}
+    public boolean hasValue()
+    {
+        return has_value;
+    }
+
+    public boolean statusIsText()
+    {
+        return txt_stat;
+    }
 }

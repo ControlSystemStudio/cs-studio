@@ -60,7 +60,7 @@ public interface PlotListener
 
     /** ModelItems have new selected sample */
     public void selectedSamplesChanged();
-    
+
     /** Plot tool bar displayed or hidden */
     public void changedToolbar(boolean visible);
 

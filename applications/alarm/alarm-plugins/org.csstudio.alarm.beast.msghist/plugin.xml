@@ -36,7 +36,7 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.alarm.beast.msghist.MessageHistoryView">
-            </parameter> 
+            </parameter>
          </command>
       </menuContribution>
    </extension>

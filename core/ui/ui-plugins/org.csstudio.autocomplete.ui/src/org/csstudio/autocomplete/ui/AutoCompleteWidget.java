@@ -23,136 +23,136 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Enable auto-completed content on the specified {@link Control}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteWidget {
 
-	private AutoCompleteProposalProvider provider = null;
-	private ContentProposalAdapter adapter = null;
-	private final Control control;
-	private final String type;
+    private AutoCompleteProposalProvider provider = null;
+    private ContentProposalAdapter adapter = null;
+    private final Control control;
+    private final String type;
 
-	/**
-	 * Enable auto-completed content on the specified widget.
-	 * 
-	 * @param control {@link Combo} or {@link Text}
-	 * @param type see {@link AutoCompleteTypes}
-	 */
-	public AutoCompleteWidget(Control control, String type) {
-		Assert.isNotNull(type);
-		this.control = control;
-		this.type = type;
-		enableContentProposal();
-	}
+    /**
+     * Enable auto-completed content on the specified widget.
+     *
+     * @param control {@link Combo} or {@link Text}
+     * @param type see {@link AutoCompleteTypes}
+     */
+    public AutoCompleteWidget(Control control, String type) {
+        Assert.isNotNull(type);
+        this.control = control;
+        this.type = type;
+        enableContentProposal();
+    }
 
-	/**
-	 * Enable auto-completed content on the specified widget.
-	 * 
-	 * @param control {@link Combo} or {@link Text}
-	 * @param type see {@link AutoCompleteTypes}
-	 * @param historyHandlers control which trigger add entry event on history
-	 */
-	public AutoCompleteWidget(Control control, String type,
-			List<Control> historyHandlers) {
-		this(control, type);
-		if (historyHandlers != null) {
-			for (Control handler : historyHandlers) {
-				getHistory().installListener(handler);
-			}
-		}
-	}
+    /**
+     * Enable auto-completed content on the specified widget.
+     *
+     * @param control {@link Combo} or {@link Text}
+     * @param type see {@link AutoCompleteTypes}
+     * @param historyHandlers control which trigger add entry event on history
+     */
+    public AutoCompleteWidget(Control control, String type,
+            List<Control> historyHandlers) {
+        this(control, type);
+        if (historyHandlers != null) {
+            for (Control handler : historyHandlers) {
+                getHistory().installListener(handler);
+            }
+        }
+    }
 
-	/**
-	 * Enable auto-completed content on the specified widget.
-	 * 
-	 * @param control {@link Combo} or {@link Text}
-	 * @param type see {@link AutoCompleteTypes}
-	 */
-	public AutoCompleteWidget(CellEditor cellEditor, String type) {
-		Assert.isNotNull(type);
-		this.control = cellEditor.getControl();
-		this.type = type;
-		enableContentProposal();
-	}
+    /**
+     * Enable auto-completed content on the specified widget.
+     *
+     * @param control {@link Combo} or {@link Text}
+     * @param type see {@link AutoCompleteTypes}
+     */
+    public AutoCompleteWidget(CellEditor cellEditor, String type) {
+        Assert.isNotNull(type);
+        this.control = cellEditor.getControl();
+        this.type = type;
+        enableContentProposal();
+    }
 
-	/**
-	 * Enable auto-completed content on the specified widget.
-	 * 
-	 * @param control {@link Combo} or {@link Text}
-	 * @param type see {@link AutoCompleteTypes}
-	 * @param historyHandlers control which trigger add entry event on history
-	 */
-	public AutoCompleteWidget(CellEditor cellEditor, String type,
-			List<Control> historyHandlers) {
-		this(cellEditor, type);
-		if (historyHandlers != null) {
-			for (Control handler : historyHandlers) {
-				getHistory().installListener(handler);
-			}
-		}
-	}
+    /**
+     * Enable auto-completed content on the specified widget.
+     *
+     * @param control {@link Combo} or {@link Text}
+     * @param type see {@link AutoCompleteTypes}
+     * @param historyHandlers control which trigger add entry event on history
+     */
+    public AutoCompleteWidget(CellEditor cellEditor, String type,
+            List<Control> historyHandlers) {
+        this(cellEditor, type);
+        if (historyHandlers != null) {
+            for (Control handler : historyHandlers) {
+                getHistory().installListener(handler);
+            }
+        }
+    }
 
-	/**
-	 * Return a character array representing the keyboard input triggers used
-	 * for firing the ContentProposalAdapter.
-	 * 
-	 * @return - character array of trigger chars
-	 */
-	protected static char[] getAutoactivationChars() {
-		String lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
-		String uppercaseLetters = lowercaseLetters.toUpperCase();
-		String numbers = "0123456789";
-		// String delete = new String(new char[] {SWT.DEL});
-		// the event in {@link ContentProposalAdapter#addControlListener(Control
-		// control)}
-		// holds onto a character and when the DEL key is pressed that char
-		// value is 8 so the line below catches the DEL key press
-		String delete = new String(new char[] { 8 });
-		String allChars = lowercaseLetters + uppercaseLetters + numbers
-				+ delete + "*?/<>(),.\"\': ";
-		return allChars.toCharArray();
-	}
+    /**
+     * Return a character array representing the keyboard input triggers used
+     * for firing the ContentProposalAdapter.
+     *
+     * @return - character array of trigger chars
+     */
+    protected static char[] getAutoactivationChars() {
+        String lowercaseLetters = "abcdefghijklmnopqrstuvwxyz";
+        String uppercaseLetters = lowercaseLetters.toUpperCase();
+        String numbers = "0123456789";
+        // String delete = new String(new char[] {SWT.DEL});
+        // the event in {@link ContentProposalAdapter#addControlListener(Control
+        // control)}
+        // holds onto a character and when the DEL key is pressed that char
+        // value is 8 so the line below catches the DEL key press
+        String delete = new String(new char[] { 8 });
+        String allChars = lowercaseLetters + uppercaseLetters + numbers
+                + delete + "*?/<>(),.\"\': ";
+        return allChars.toCharArray();
+    }
 
-	/**
-	 * Returns KeyStroke object which when pressed will fire the
-	 * ContentProposalAdapter.
-	 * 
-	 * @return - the activation keystroke
-	 */
-	protected static KeyStroke getActivationKeystroke() {
-		// keyStroke = KeyStroke.getInstance("Ctrl+Space");
-		// Activate on <ctrl><space>
-		return KeyStroke.getInstance(new Integer(SWT.CTRL).intValue(),
-				new Integer(' ').intValue());
-	}
+    /**
+     * Returns KeyStroke object which when pressed will fire the
+     * ContentProposalAdapter.
+     *
+     * @return - the activation keystroke
+     */
+    protected static KeyStroke getActivationKeystroke() {
+        // keyStroke = KeyStroke.getInstance("Ctrl+Space");
+        // Activate on <ctrl><space>
+        return KeyStroke.getInstance(new Integer(SWT.CTRL).intValue(),
+                new Integer(' ').intValue());
+    }
 
-	private void enableContentProposal() {
-		if (control instanceof Combo) {
+    private void enableContentProposal() {
+        if (control instanceof Combo) {
 
-			Combo combo = (Combo) control;
-			provider = new AutoCompleteProposalProvider(type);
-			adapter = new ContentProposalAdapter(combo,
-					new ComboContentAdapter(), provider,
-					getActivationKeystroke(), getAutoactivationChars());
+            Combo combo = (Combo) control;
+            provider = new AutoCompleteProposalProvider(type);
+            adapter = new ContentProposalAdapter(combo,
+                    new ComboContentAdapter(), provider,
+                    getActivationKeystroke(), getAutoactivationChars());
 
-		} else if (control instanceof Text) {
+        } else if (control instanceof Text) {
 
-			Text text = (Text) control;
-			provider = new AutoCompleteProposalProvider(type);
-			adapter = new ContentProposalAdapter(text,
-					new TextContentAdapter(), provider,
-					getActivationKeystroke(), getAutoactivationChars());
+            Text text = (Text) control;
+            provider = new AutoCompleteProposalProvider(type);
+            adapter = new ContentProposalAdapter(text,
+                    new TextContentAdapter(), provider,
+                    getActivationKeystroke(), getAutoactivationChars());
 
-		}
-	}
+        }
+    }
 
-	public ContentProposalAdapter getContentProposalAdapter() {
-		return adapter;
-	}
+    public ContentProposalAdapter getContentProposalAdapter() {
+        return adapter;
+    }
 
-	public AutoCompleteHistory getHistory() {
-		return adapter.getHistory();
-	}
+    public AutoCompleteHistory getHistory() {
+        return adapter.getHistory();
+    }
 
 }

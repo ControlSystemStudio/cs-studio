@@ -7,7 +7,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.input.SAXHandler;
 
 /**
- * 
+ *
  * <code>LineAwareXMLParser</code> provides a set of classes that parse an XML file and set
  * the line number on each Element that was parsed.
  *
@@ -17,7 +17,7 @@ import org.jdom.input.SAXHandler;
 public class LineAwareXMLParser {
 
     /**
-     * 
+     *
      * <code>LineAwareElement</code> is an element that also holds the line number at which it is located within the file.
      *
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -36,7 +36,7 @@ public class LineAwareXMLParser {
         public int getLineNumber() {
             return lineNumber;
         }
-        
+
         @Override
         public int compareTo(LineAwareElement o) {
             return this.lineNumber - o.lineNumber;

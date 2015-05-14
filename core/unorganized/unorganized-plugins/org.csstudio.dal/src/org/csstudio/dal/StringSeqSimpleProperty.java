@@ -33,9 +33,9 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.SimpleProperty
  */
 public interface StringSeqSimpleProperty extends StringSeqAccess,
-	SequencePropertyCharacteristics, SimpleProperty<String[]>
+    SequencePropertyCharacteristics, SimpleProperty<String[]>
 {
-	//
+    //
 }
 
 /* __oOo__ */

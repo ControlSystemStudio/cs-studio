@@ -41,155 +41,155 @@ import org.junit.Test;
 // FIXME (bknerr) : TEST Undo this as soon as possible
 @Ignore("Property factory with shutdown hook does not work in AllTestsSuite environment.")
 public class TINEPlugTest extends TestCase {
-	/**
-	 * The application context.
-	 */
-	private DefaultApplicationContext _applicationContext;
+    /**
+     * The application context.
+     */
+    private DefaultApplicationContext _applicationContext;
 
-	/**
-	 * The TINE property factory.
-	 */
-	private PropertyFactory _propertyFactory;
+    /**
+     * The TINE property factory.
+     */
+    private PropertyFactory _propertyFactory;
 
-	/**
-	 * An event counter.
-	 */
-	private long _eventCount;
+    /**
+     * An event counter.
+     */
+    private long _eventCount;
 
-	/**
-	 * The TINE property we connect to.
-	 */
-	//private static final String PROPERTY_NAME = "DEFAULT/TIMESRV/device_0/SYSTIME";
-	private static final String PROPERTY_NAME = "TINE/DEFAULT/JavaIOC-EQM/valueOnly/valueOnly";
+    /**
+     * The TINE property we connect to.
+     */
+    //private static final String PROPERTY_NAME = "DEFAULT/TIMESRV/device_0/SYSTIME";
+    private static final String PROPERTY_NAME = "TINE/DEFAULT/JavaIOC-EQM/valueOnly/valueOnly";
 
-	/**
-	 * Set up the test case.
-	 */
-	@Override
+    /**
+     * Set up the test case.
+     */
+    @Override
     @Before
-	public void setUp() throws Exception {
-		_applicationContext = new TINEApplicationContext("TINEPlugTest"); //$NON-NLS-1$
-		_eventCount = 0;
-		_propertyFactory = DefaultPropertyFactoryService
-				.getPropertyFactoryService().getPropertyFactory(
-						_applicationContext, LinkPolicy.ASYNC_LINK_POLICY);
-	}
+    public void setUp() throws Exception {
+        _applicationContext = new TINEApplicationContext("TINEPlugTest"); //$NON-NLS-1$
+        _eventCount = 0;
+        _propertyFactory = DefaultPropertyFactoryService
+                .getPropertyFactoryService().getPropertyFactory(
+                        _applicationContext, LinkPolicy.ASYNC_LINK_POLICY);
+    }
 
-	/**
-	 * Test the basic connection behaviour.
-	 *
-	 * @throws Exception
-	 */
-	@Test
-	public void basicDynamicValueListenerTest() throws Exception {
-		final DynamicValueListener listener = createDynamicValueListener();
+    /**
+     * Test the basic connection behaviour.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void basicDynamicValueListenerTest() throws Exception {
+        final DynamicValueListener listener = createDynamicValueListener();
 
-		final DynamicValueProperty property = _propertyFactory.getProperty(
-				new RemoteInfo(TINEPlug.PLUG_TYPE, PROPERTY_NAME, null, null), DoubleProperty.class, null);
+        final DynamicValueProperty property = _propertyFactory.getProperty(
+                new RemoteInfo(TINEPlug.PLUG_TYPE, PROPERTY_NAME, null, null), DoubleProperty.class, null);
 
-		assertTrue(_propertyFactory.getPropertyFamily().contains(property));
+        assertTrue(_propertyFactory.getPropertyFamily().contains(property));
 
-		final long initialEventCount = _eventCount;
+        final long initialEventCount = _eventCount;
 
-		property.addDynamicValueListener(listener);
+        property.addDynamicValueListener(listener);
 
-		Thread.sleep(3000);
-		assertTrue(_eventCount > initialEventCount);
+        Thread.sleep(3000);
+        assertTrue(_eventCount > initialEventCount);
 
-		property.removeDynamicValueListener(listener);
-		_propertyFactory.getPropertyFamily().destroy(property);
+        property.removeDynamicValueListener(listener);
+        _propertyFactory.getPropertyFamily().destroy(property);
 
-		assertFalse(_propertyFactory.getPropertyFamily().contains(property));
-	}
+        assertFalse(_propertyFactory.getPropertyFamily().contains(property));
+    }
 
-	/**
-	 * Test the connection behaviour with an intermediate
-	 * <code>getValue()</code> call.
-	 *
-	 * @throws Exception
-	 */
-	@Test
-	public void extendedDynamicValueListenerTest() throws Exception {
-		final DynamicValueListener listener = createDynamicValueListener();
+    /**
+     * Test the connection behaviour with an intermediate
+     * <code>getValue()</code> call.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void extendedDynamicValueListenerTest() throws Exception {
+        final DynamicValueListener listener = createDynamicValueListener();
 
-		final DynamicValueProperty property = _propertyFactory.getProperty(
-				new RemoteInfo(TINEPlug.PLUG_TYPE, PROPERTY_NAME, null, null), DoubleProperty.class, null);
+        final DynamicValueProperty property = _propertyFactory.getProperty(
+                new RemoteInfo(TINEPlug.PLUG_TYPE, PROPERTY_NAME, null, null), DoubleProperty.class, null);
 
-		final long initialEventCount = _eventCount;
+        final long initialEventCount = _eventCount;
 
-		property.addDynamicValueListener(listener);
+        property.addDynamicValueListener(listener);
 
-		Thread.sleep(3000);
-		assertTrue(_eventCount > initialEventCount);
+        Thread.sleep(3000);
+        assertTrue(_eventCount > initialEventCount);
 
-		final long changedEventCount = _eventCount;
+        final long changedEventCount = _eventCount;
 
-		// now we request a value
-		final Object value = property.getValue();
-		assertNotNull(value);
+        // now we request a value
+        final Object value = property.getValue();
+        assertNotNull(value);
 
-		Thread.sleep(3000);
+        Thread.sleep(3000);
 
-		// there is one event that is generated by getValue
-		assertTrue(_eventCount > changedEventCount + 1);
+        // there is one event that is generated by getValue
+        assertTrue(_eventCount > changedEventCount + 1);
 
-		property.removeDynamicValueListener(listener);
-		_propertyFactory.getPropertyFamily().destroy(property);
-	}
+        property.removeDynamicValueListener(listener);
+        _propertyFactory.getPropertyFamily().destroy(property);
+    }
 
-	/**
-	 * Create a new dynamic value listener.
-	 *
-	 * @return A new dynamic value listener.
-	 */
-	protected DynamicValueListener createDynamicValueListener() {
-		return new DynamicValueAdapter() {
-			@Override
-			public void valueUpdated(final DynamicValueEvent arg0) {
-				_eventCount++;
-			}
+    /**
+     * Create a new dynamic value listener.
+     *
+     * @return A new dynamic value listener.
+     */
+    protected DynamicValueListener createDynamicValueListener() {
+        return new DynamicValueAdapter() {
+            @Override
+            public void valueUpdated(final DynamicValueEvent arg0) {
+                _eventCount++;
+            }
 
-			@Override
-			public void valueChanged(final DynamicValueEvent arg0) {
-				_eventCount++;
-			}
-		};
-	}
+            @Override
+            public void valueChanged(final DynamicValueEvent arg0) {
+                _eventCount++;
+            }
+        };
+    }
 
-	@Test
-	public void testMandatoryCharacteristics() {
+    @Test
+    public void testMandatoryCharacteristics() {
 
-		try {
+        try {
 
-			final DynamicValueProperty<Double> property = _propertyFactory.getProperty(PROPERTY_NAME, DoubleProperty.class, null);
+            final DynamicValueProperty<Double> property = _propertyFactory.getProperty(PROPERTY_NAME, DoubleProperty.class, null);
 
-			final CharacteristicInfo[] infos= CharacteristicInfo.getDefaultCharacteristics(DoubleProperty.class, null);
+            final CharacteristicInfo[] infos= CharacteristicInfo.getDefaultCharacteristics(DoubleProperty.class, null);
 
-			assertNotNull(infos);
+            assertNotNull(infos);
 
-			for (final CharacteristicInfo info : infos) {
-				assertNotNull(info);
+            for (final CharacteristicInfo info : infos) {
+                assertNotNull(info);
 
-				if ( info.isMeta() ) {
-					continue;
-				}
-
-
-				final Object value= property.getCharacteristic(info.getName());
-
-				//System.out.println(info.getName()+" '"+value+"' "+(value!=null ? value.getClass().getName() : ""));
-
-				assertNotNull("'"+info.getName()+"' is null",value);
-				assertTrue("'"+info.getName()+"' is "+value.getClass().getName(), info.getType().isAssignableFrom(value.getClass()));
+                if ( info.isMeta() ) {
+                    continue;
+                }
 
 
-			}
+                final Object value= property.getCharacteristic(info.getName());
+
+                //System.out.println(info.getName()+" '"+value+"' "+(value!=null ? value.getClass().getName() : ""));
+
+                assertNotNull("'"+info.getName()+"' is null",value);
+                assertTrue("'"+info.getName()+"' is "+value.getClass().getName(), info.getType().isAssignableFrom(value.getClass()));
 
 
-		} catch (final Exception e) {
-			e.printStackTrace();
-			fail(e.getMessage());
-		}
+            }
 
-	}
+
+        } catch (final Exception e) {
+            e.printStackTrace();
+            fail(e.getMessage());
+        }
+
+    }
 }

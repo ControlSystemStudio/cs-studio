@@ -101,7 +101,7 @@ public class AveragedValueIterator implements ValueIterator
         AlarmSeverity severity = VTypeHelper.getSeverity(base_value);
         String status = VTypeHelper.getMessage(base_value);
         while (base_value != null &&
-        	   VTypeHelper.getTimestamp(base_value).compareTo(average_window_end) < 0)
+               VTypeHelper.getTimestamp(base_value).compareTo(average_window_end) < 0)
         {
             final Number num = getNumericValue(base_value);
             if (num != null)
@@ -111,8 +111,8 @@ public class AveragedValueIterator implements ValueIterator
                 // Remember the first meta data that we can use
                 if (display == null)
                 {
-                	if (base_value instanceof Display)
-                		display = (Display) base_value;
+                    if (base_value instanceof Display)
+                        display = (Display) base_value;
                 }
                 // Value average
                 stats.add(num.doubleValue());
@@ -145,12 +145,12 @@ public class AveragedValueIterator implements ValueIterator
             return last_value;
         // Create time stamp in center of averaging window ('bin')
         final Timestamp bin_time = average_window_end.minus(TimeDuration.ofSeconds(seconds/2));
-        
+
         // Return the min/max/average
         final ArchiveVStatistics result = new ArchiveVStatistics(bin_time, severity, status, display, stats);
         if (debug)
             System.out.println("Result: " + result.toString());
-		return result;
+        return result;
     }
 
     /** @return <code>true</code> if the <code>new_severity</code> is more
@@ -159,7 +159,7 @@ public class AveragedValueIterator implements ValueIterator
     private boolean isHigherSeverity(final AlarmSeverity current,
                                      final AlarmSeverity new_severity)
     {
-    	return new_severity.ordinal() > current.ordinal(); 
+        return new_severity.ordinal() > current.ordinal();
     }
 
     /** Try to get numeric value for interpolation.
@@ -170,19 +170,19 @@ public class AveragedValueIterator implements ValueIterator
      */
     private static Number getNumericValue(final VType value)
     {
-    	if (value instanceof VNumber)
-    	{
-    		final VNumber number = (VNumber) value;
-    		if (number.getAlarmSeverity() != AlarmSeverity.UNDEFINED)
-    			return number.getValue();
-    	}
-    	if (value instanceof VNumberArray)
-    	{
-    		final VNumberArray numbers = (VNumberArray) value;
-    		if (numbers.getAlarmSeverity() != AlarmSeverity.UNDEFINED  &&
-    		    numbers.getData().size() > 0)
-    			return numbers.getData().getDouble(0);
-    	}
+        if (value instanceof VNumber)
+        {
+            final VNumber number = (VNumber) value;
+            if (number.getAlarmSeverity() != AlarmSeverity.UNDEFINED)
+                return number.getValue();
+        }
+        if (value instanceof VNumberArray)
+        {
+            final VNumberArray numbers = (VNumberArray) value;
+            if (numbers.getAlarmSeverity() != AlarmSeverity.UNDEFINED  &&
+                numbers.getData().size() > 0)
+                return numbers.getData().getDouble(0);
+        }
         // String or Enum, or no Value at all
         // Cannot decode that sample type as a number.
         return null;

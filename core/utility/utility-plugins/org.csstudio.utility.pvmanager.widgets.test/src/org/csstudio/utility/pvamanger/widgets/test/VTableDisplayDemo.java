@@ -26,80 +26,80 @@ import org.epics.vtype.VTable;
 
 public class VTableDisplayDemo extends ViewPart {
 
-	public static final String ID = "org.csstudio.utility.pvamanger.widgets.test.VImageDisplayDemo"; //$NON-NLS-1$
+    public static final String ID = "org.csstudio.utility.pvamanger.widgets.test.VImageDisplayDemo"; //$NON-NLS-1$
 
-	
-	private VTableDisplay table;
-	private PVReader<VTable> pv;
 
-	
-	public VTableDisplayDemo() {
-	}
+    private VTableDisplay table;
+    private PVReader<VTable> pv;
 
-	/**
-	 * Create contents of the view part.
-	 * @param parent
-	 */
-	@Override
-	public void createPartControl(Composite parent) {
-		parent.setLayout(new FillLayout(SWT.HORIZONTAL));
-		table = new VTableDisplay(parent);
 
-		List<String> names = Arrays.asList("One", "Ten", "Hundred");
-		List<String> ramps = Arrays.asList("sim://ramp(0,1,0.1,1)", "sim://ramp(0,10,0.1,0.75)", "sim://ramp(0,100,0.1,0.5)");
-		List<String> sines = Arrays.asList("sim://sine(0,1,1)", "sim://sine(0,10,0.75)", "sim://sine(0,100,0.5)");
-		pv = PVManager.read(vTable(column("Names", vStringConstants(names)),
-				column("Ramps", latestValueOf(vDoubles(ramps))),
-				column("Sines", latestValueOf(vDoubles(sines)))))
-				.readListener(new PVReaderListener<VTable>() {
-					@Override
-					public void pvChanged(PVReaderEvent<VTable> event) {
-						table.setVTable(pv.getValue());
-					}
-				})
-				.notifyOn(SWTUtil.swtThread())
-				.maxRate(ofMillis(250));
+    public VTableDisplayDemo() {
+    }
 
-		//createActions();
-		//initializeToolBar();
-		//initializeMenu();
-		
-	}
+    /**
+     * Create contents of the view part.
+     * @param parent
+     */
+    @Override
+    public void createPartControl(Composite parent) {
+        parent.setLayout(new FillLayout(SWT.HORIZONTAL));
+        table = new VTableDisplay(parent);
 
-	/**
-	 * Create the actions.
-	 */
-	private void createActions() {
-		// Create the actions
-	}
+        List<String> names = Arrays.asList("One", "Ten", "Hundred");
+        List<String> ramps = Arrays.asList("sim://ramp(0,1,0.1,1)", "sim://ramp(0,10,0.1,0.75)", "sim://ramp(0,100,0.1,0.5)");
+        List<String> sines = Arrays.asList("sim://sine(0,1,1)", "sim://sine(0,10,0.75)", "sim://sine(0,100,0.5)");
+        pv = PVManager.read(vTable(column("Names", vStringConstants(names)),
+                column("Ramps", latestValueOf(vDoubles(ramps))),
+                column("Sines", latestValueOf(vDoubles(sines)))))
+                .readListener(new PVReaderListener<VTable>() {
+                    @Override
+                    public void pvChanged(PVReaderEvent<VTable> event) {
+                        table.setVTable(pv.getValue());
+                    }
+                })
+                .notifyOn(SWTUtil.swtThread())
+                .maxRate(ofMillis(250));
 
-	/**
-	 * Initialize the toolbar.
-	 */
-	private void initializeToolBar() {
-		IToolBarManager toolbarManager = getViewSite().getActionBars()
-				.getToolBarManager();
-	}
+        //createActions();
+        //initializeToolBar();
+        //initializeMenu();
 
-	/**
-	 * Initialize the menu.
-	 */
-	@SuppressWarnings("unused")
-	private void initializeMenu() {
-		IMenuManager menuManager = getViewSite().getActionBars()
-				.getMenuManager();
-	}
+    }
 
-	@Override
-	public void setFocus() {
-		// Set the focus
-	}
-	
-	@Override
-	public void dispose() {
-		super.dispose();
-		if (pv != null) {
-			pv.close();
-		}
-	}
+    /**
+     * Create the actions.
+     */
+    private void createActions() {
+        // Create the actions
+    }
+
+    /**
+     * Initialize the toolbar.
+     */
+    private void initializeToolBar() {
+        IToolBarManager toolbarManager = getViewSite().getActionBars()
+                .getToolBarManager();
+    }
+
+    /**
+     * Initialize the menu.
+     */
+    @SuppressWarnings("unused")
+    private void initializeMenu() {
+        IMenuManager menuManager = getViewSite().getActionBars()
+                .getMenuManager();
+    }
+
+    @Override
+    public void setFocus() {
+        // Set the focus
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (pv != null) {
+            pv.close();
+        }
+    }
 }

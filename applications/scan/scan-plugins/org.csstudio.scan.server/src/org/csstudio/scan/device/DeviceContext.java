@@ -37,7 +37,7 @@ public class DeviceContext
     /** Map of device names to {@link Device} based on alias or real name */
     final private Map<String, Device> device_by_alias = new HashMap<>(),
                                       device_by_name = new HashMap<>();
-    
+
     /** @return {@link DeviceInfo}s for aliased devices, initialized from preferences */
     public static DeviceInfo[] getDeviceAliases() throws Exception
     {
@@ -45,7 +45,7 @@ public class DeviceContext
         final InputStream config_stream = PathStreamTool.openStream(path);
         return new ScanConfig(config_stream).getDevices();
     }
-    
+
     /** @return Default {@link DeviceContext}, initialized from preferences */
     public static DeviceContext getDefault() throws Exception
     {
@@ -55,7 +55,7 @@ public class DeviceContext
         final DeviceContext context = new DeviceContext();
         for (DeviceInfo alias : aliases)
             context.addPVDevice(alias);
-		return context;
+        return context;
     }
 
     /** Initialize empty device context
@@ -100,7 +100,7 @@ public class DeviceContext
         // Not a known alias, nor magically added
         throw new Exception("Unknown device '" + alias_or_name + "'");
     }
-    
+
     /** @return All Devices */
     public synchronized Device[] getDevices()
     {

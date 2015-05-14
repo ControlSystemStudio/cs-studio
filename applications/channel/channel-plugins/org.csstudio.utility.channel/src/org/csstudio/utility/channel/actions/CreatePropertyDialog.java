@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -23,11 +23,11 @@ public class CreatePropertyDialog  extends TitleAreaDialog{
     private String propertyOwner;
     private Text textPropertyName;
     private Text textPropertyOwner;
-    
+
 
     /**
      * Create a dialog with the an initial property name <tt>propertyName</tt>
-     * 
+     *
      * @param parentShell
      * @param tagName
      */
@@ -38,7 +38,7 @@ public class CreatePropertyDialog  extends TitleAreaDialog{
 
     /**
      * Creates the dialog's contents
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return Control
@@ -57,7 +57,7 @@ public class CreatePropertyDialog  extends TitleAreaDialog{
 
     /**
      * Creates the gray area
-     * 
+     *
      * @param parent
      *            the parent composite
      * @return Control
@@ -67,24 +67,24 @@ public class CreatePropertyDialog  extends TitleAreaDialog{
             composite.setLayoutData(new GridData(GridData.FILL_BOTH));
             composite.setFont(parent.getFont());
             composite.setLayout(new GridLayout(2, false));
-            
+
             Label lblPropertyName = new Label(composite, SWT.NONE);
             lblPropertyName.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
             lblPropertyName.setText("Property Name: ");
-            
+
             textPropertyName = new Text(composite, SWT.BORDER);
             textPropertyName.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
             textPropertyName.setText(propertyName);
-            
+
             Label lblPropertyOwner = new Label(composite, SWT.NONE);
             lblPropertyOwner.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false, false, 1, 1));
             lblPropertyOwner.setText("Property Owner: ");
-            
+
             textPropertyOwner = new Text(composite, SWT.BORDER);
             textPropertyOwner.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-            return composite;       
+            return composite;
     }
-    
+
     protected void okPressed() {
             propertyName = textPropertyName.getText();
             propertyOwner = textPropertyOwner.getText();
@@ -98,5 +98,5 @@ public class CreatePropertyDialog  extends TitleAreaDialog{
     public String getPropertyOwner() {
         return propertyOwner;
     }
-        
+
 }

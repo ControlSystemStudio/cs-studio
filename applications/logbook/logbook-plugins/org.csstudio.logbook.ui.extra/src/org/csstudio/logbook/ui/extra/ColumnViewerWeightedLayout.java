@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.extra;
 
@@ -11,7 +11,7 @@ import org.eclipse.swt.graphics.Point;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ColumnViewerWeightedLayout extends ControlAdapter {
 
@@ -22,30 +22,30 @@ public class ColumnViewerWeightedLayout extends ControlAdapter {
     private Point oldSize = new Point(0, 0);
 
     public ColumnViewerWeightedLayout(GridTableViewer gridTableViewer,
-	    GridViewerColumn gridViewerColumn, int weight, int minWidth) {
+        GridViewerColumn gridViewerColumn, int weight, int minWidth) {
 
-	this.gridViewerColumn = gridViewerColumn;
-	this.gridTableViewer = gridTableViewer;
-	this.weight = weight;
-	this.minWidth = minWidth;
-	this.gridTableViewer.getGrid().addControlListener(this);
+    this.gridViewerColumn = gridViewerColumn;
+    this.gridTableViewer = gridTableViewer;
+    this.weight = weight;
+    this.minWidth = minWidth;
+    this.gridTableViewer.getGrid().addControlListener(this);
     }
 
     @Override
     public void controlResized(ControlEvent e) {
-	super.controlResized(e);
-	Point newSize = gridTableViewer.getGrid().getSize();
-	int newWidth;
-	if (oldSize.x == 0 && oldSize.y == 0) {
-	    newWidth = weight * (newSize.x - oldSize.x) / 100;
-	} else {
-	    newWidth = gridViewerColumn.getColumn().getWidth()
-		    + (weight * (newSize.x - oldSize.x) / 100);
-	}
-	if (gridViewerColumn.getColumn().getWidth() != newWidth) {
-	    gridViewerColumn.getColumn().setWidth(
-		    newWidth >= minWidth ? newWidth : minWidth);
-	    oldSize = newSize;
-	}
+    super.controlResized(e);
+    Point newSize = gridTableViewer.getGrid().getSize();
+    int newWidth;
+    if (oldSize.x == 0 && oldSize.y == 0) {
+        newWidth = weight * (newSize.x - oldSize.x) / 100;
+    } else {
+        newWidth = gridViewerColumn.getColumn().getWidth()
+            + (weight * (newSize.x - oldSize.x) / 100);
+    }
+    if (gridViewerColumn.getColumn().getWidth() != newWidth) {
+        gridViewerColumn.getColumn().setWidth(
+            newWidth >= minWidth ? newWidth : minWidth);
+        oldSize = newSize;
+    }
     }
 }

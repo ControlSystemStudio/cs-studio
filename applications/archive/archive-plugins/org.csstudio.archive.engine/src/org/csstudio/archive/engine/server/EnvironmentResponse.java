@@ -61,20 +61,20 @@ class EnvironmentResponse extends AbstractResponse
             return name.compareTo(other.name);
         }
 
-		@Override
+        @Override
         public int hashCode()
         {
-			return name.hashCode();
+            return name.hashCode();
         }
 
-		@Override
+        @Override
         public boolean equals(final Object obj)
         {
-	        if (this == obj) return true;
-	        if (! (obj instanceof NameValue))
-	        	return false;
-	        final NameValue other = (NameValue) obj;
-	        return name.equals(other.name);
+            if (this == obj) return true;
+            if (! (obj instanceof NameValue))
+                return false;
+            final NameValue other = (NameValue) obj;
+            return name.equals(other.name);
         }
     }
 

@@ -22,17 +22,17 @@ public class WriteThreadHeadlessTest
     @Test(timeout=20000)
     public void testWriteThread() throws Exception
     {
-    	// Get test configuration
-    	final TestProperties settings = new TestProperties();
-    	final String channel = settings.getString("archive_write_channel");
-    	if (channel == null)
-    	{
-    		System.out.println("Skipping, no name for archive_write_channel");
-    		return;
-    	}
-		System.out.println("Writing samples for channel " + channel);
+        // Get test configuration
+        final TestProperties settings = new TestProperties();
+        final String channel = settings.getString("archive_write_channel");
+        if (channel == null)
+        {
+            System.out.println("Skipping, no name for archive_write_channel");
+            return;
+        }
+        System.out.println("Writing samples for channel " + channel);
 
-    	// Setup buffer
+        // Setup buffer
         final SampleBuffer buffer = new SampleBuffer(channel, 1000);
 
         // Connect writer to it

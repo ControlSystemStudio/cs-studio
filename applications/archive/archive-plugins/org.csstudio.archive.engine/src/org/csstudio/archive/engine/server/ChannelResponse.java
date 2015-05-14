@@ -30,7 +30,7 @@ class ChannelResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -62,10 +62,10 @@ class ChannelResponse extends AbstractResponse
                         : HTMLWriter.makeRedText(Messages.HTTP_Disconnected);
         html.tableLine(new String[]
         { Messages.HTTP_Connected, connected });
-        
+
         html.tableLine(new String[]
         { Messages.HTTP_InternalState, channel.getInternalState() });
-        
+
         html.tableLine(new String[]
         { Messages.HTTP_Mechanism, channel.getMechanism() });
 
@@ -81,10 +81,10 @@ class ChannelResponse extends AbstractResponse
         html.tableLine(new String[]
         {
             Messages.HTTP_State,
-            channel.isEnabled() ? Messages.HTTP_Enabled 
+            channel.isEnabled() ? Messages.HTTP_Enabled
                                 : HTMLWriter.makeRedText(Messages.HTTP_Disabled)
         });
-        
+
         final SampleBuffer buffer = channel.getSampleBuffer();
         html.tableLine(new String[]
         { Messages.HTTP_QueueLen, Integer.toString(buffer.getQueueSize()) });
@@ -132,7 +132,7 @@ class ChannelResponse extends AbstractResponse
             });
         }
         html.closeTable();
-        
+
         html.close();
     }
 }

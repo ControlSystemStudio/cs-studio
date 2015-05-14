@@ -17,22 +17,22 @@ package org.csstudio.opibuilder.converter.model;
 public class EdmMultiFonts extends AbstractEdmMultiAttributes<EdmFont> {
 
 
-	/**
-	 * Constructor which parses EdmColor from general EdmAttribute value.
-	 *
-	 * @param genericEntity EdmAttribute containing general EdmColor data.
-	 * @param required false if this attribute is optional, else true
-	 * @throws EdmException if EdmAttribute contains invalid data.
-	 */
-	public EdmMultiFonts(EdmAttribute genericEntity, boolean required) throws EdmException {
-		super(genericEntity, required);
+    /**
+     * Constructor which parses EdmColor from general EdmAttribute value.
+     *
+     * @param genericEntity EdmAttribute containing general EdmColor data.
+     * @param required false if this attribute is optional, else true
+     * @throws EdmException if EdmAttribute contains invalid data.
+     */
+    public EdmMultiFonts(EdmAttribute genericEntity, boolean required) throws EdmException {
+        super(genericEntity, required);
 
-	}
-	
-    @Override
-    protected EdmFont createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
-    	return new EdmFont(genericEntity, false);
     }
 
-	
+    @Override
+    protected EdmFont createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
+        return new EdmFont(genericEntity, false);
+    }
+
+
 }

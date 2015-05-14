@@ -38,23 +38,23 @@ package org.csstudio.dal;
  */
 public interface HistoryAccess
 {
-	/**
-	 * Creates a new history iterator with specified history
-	 * constraints. The iterator  can be only partly used by the client (i.e.
-	 * the iteration does not need to complete).  The resources should be
-	 * freed when the iterator is being garbage collected.
-	 *
-	 * @param hc the constraints that select the range of history elements in
-	 *        which  the user has an interest, non-<code>null</code>
-	 *
-	 * @return an instance of iterator, delivering history entries in the order
-	 *         from the latest to earliest
-	 *
-	 * @throws DataExchangeException if the constraints cannot be met or an
-	 *         error occurs in the implementation of this datatypes method
-	 */
-	HistoryIterator getHistory(HistoryConstraints hc)
-		throws DataExchangeException;
+    /**
+     * Creates a new history iterator with specified history
+     * constraints. The iterator  can be only partly used by the client (i.e.
+     * the iteration does not need to complete).  The resources should be
+     * freed when the iterator is being garbage collected.
+     *
+     * @param hc the constraints that select the range of history elements in
+     *        which  the user has an interest, non-<code>null</code>
+     *
+     * @return an instance of iterator, delivering history entries in the order
+     *         from the latest to earliest
+     *
+     * @throws DataExchangeException if the constraints cannot be met or an
+     *         error occurs in the implementation of this datatypes method
+     */
+    HistoryIterator getHistory(HistoryConstraints hc)
+        throws DataExchangeException;
 }
 
 /* __oOo__ */

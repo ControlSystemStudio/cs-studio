@@ -24,60 +24,60 @@ import org.csstudio.autocomplete.parser.engine.expr.ExprVariable;
 
 /**
  * Helper for content parsing.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class ContentParserHelper {
 
-	/**
-	 * @return {@link FunctionDescriptor} filled from the content.
-	 */
-	public static FunctionDescriptor parseStandardFunction(String content) {
-		FunctionDescriptor token = new FunctionDescriptor();
-		if (content == null || content.isEmpty())
-			return token;
-		ExprFunction function = null;
-		try {
-			Expr e = ExprParser.parse(content);
-			if (e == null)
-				return token;
-			else if (e.type == ExprType.Function)
-				function = (ExprFunction) e;
-			else if (e.type == ExprType.Variable) {
-				function = new ExprFunction(((ExprVariable) e).getName(), null);
-			}
-		} catch (IOException | ExprException e) {
-			AutoCompletePlugin.getLogger().log(Level.SEVERE,
-					"Failed to parse function \"" + content + "\": " + e.getMessage());
-		}
-		if (function == null)
-			return token;
-		token.setValue(content);
-		token.setFunctionName(function.getName());
-		if (function.getArgs() != null) {
-			token.setOpenBracket(true);
-			token.setCurrentArgIndex(function.size() > 0 ? function.size() - 1 : 0);
-			for (Expr e : function.getArgs()) {
-				switch (e.type) {
-				case Boolean:
-					token.addArgument(((ExprBoolean) e).value);
-					break;
-				case Double:
-					token.addArgument(((ExprDouble) e).value);
-					break;
-				case Integer:
-					token.addArgument(((ExprInteger) e).value);
-					break;
-				case String:
-					token.addArgument(((ExprString) e).str);
-					break;
-				default: // ignore other types
-					token.addArgument(new Object());
-					break;
-				}
-			}
-		}
-		token.setComplete(function.isComplete());
-		return token;
-	}
+    /**
+     * @return {@link FunctionDescriptor} filled from the content.
+     */
+    public static FunctionDescriptor parseStandardFunction(String content) {
+        FunctionDescriptor token = new FunctionDescriptor();
+        if (content == null || content.isEmpty())
+            return token;
+        ExprFunction function = null;
+        try {
+            Expr e = ExprParser.parse(content);
+            if (e == null)
+                return token;
+            else if (e.type == ExprType.Function)
+                function = (ExprFunction) e;
+            else if (e.type == ExprType.Variable) {
+                function = new ExprFunction(((ExprVariable) e).getName(), null);
+            }
+        } catch (IOException | ExprException e) {
+            AutoCompletePlugin.getLogger().log(Level.SEVERE,
+                    "Failed to parse function \"" + content + "\": " + e.getMessage());
+        }
+        if (function == null)
+            return token;
+        token.setValue(content);
+        token.setFunctionName(function.getName());
+        if (function.getArgs() != null) {
+            token.setOpenBracket(true);
+            token.setCurrentArgIndex(function.size() > 0 ? function.size() - 1 : 0);
+            for (Expr e : function.getArgs()) {
+                switch (e.type) {
+                case Boolean:
+                    token.addArgument(((ExprBoolean) e).value);
+                    break;
+                case Double:
+                    token.addArgument(((ExprDouble) e).value);
+                    break;
+                case Integer:
+                    token.addArgument(((ExprInteger) e).value);
+                    break;
+                case String:
+                    token.addArgument(((ExprString) e).str);
+                    break;
+                default: // ignore other types
+                    token.addArgument(new Object());
+                    break;
+                }
+            }
+        }
+        token.setComplete(function.isComplete());
+        return token;
+    }
 }

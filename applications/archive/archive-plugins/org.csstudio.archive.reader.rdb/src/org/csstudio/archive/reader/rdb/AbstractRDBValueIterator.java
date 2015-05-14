@@ -38,23 +38,23 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
 {
     final protected RDBArchiveReader reader;
     final protected int channel_id;
-    
+
     protected Display display = null;
     protected List<String> labels = null;
 
     /** SELECT ... for the array samples. */
     private PreparedStatement sel_array_samples = null;
-    
+
     /** Before version 3.1.0, we would look for array
      *  values in the array_val table until we are sure
      *  that there are no array samples.
      *  Than we stopped looking for array samples
      *  to speed things up.
-     *  
+     *
      *  Since version 3.1.0, there is the option of using a
      *  BLOB and the sample table contains an is_array indicator,
      *  so we know for sure right away.
-     *  
+     *
      *  To remain compatible with old data, we still assume
      *  there are array values until we know otherwise.
      */
@@ -84,7 +84,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             // Else: Not a real error, return empty iterator
         }
         if (labels == null  &&  display == null)
-        	display = ValueFactory.newDisplay(0.0, 0.0, 0.0, "", NumberFormats.format(0), 0.0, 0.0, 10.0, 0.0, 10.0);
+            display = ValueFactory.newDisplay(0.0, 0.0, 0.0, "", NumberFormats.format(0), 0.0, 0.0, 10.0, 0.0, 10.0);
     }
 
     /** @return Numeric meta data information for the channel or <code>null</code>
@@ -101,19 +101,19 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             final ResultSet result = statement.executeQuery();
             if (result.next())
             {
-            	final NumberFormat format = NumberFormats.format(result.getInt(7));   // prec
+                final NumberFormat format = NumberFormats.format(result.getInt(7));   // prec
                 return ValueFactory.newDisplay(
-                		result.getDouble(1),  // lowerDisplayLimit
-                		result.getDouble(5),  // lowerAlarmLimit
-                		result.getDouble(3),  // lowerWarningLimit
-                		result.getString(8),   // units
-                		format,               // numberFormat
-                		result.getDouble(4),  // upperWarningLimit
-                		result.getDouble(6),  // upperAlarmLimit
-                		result.getDouble(2),  // upperDisplayLimit
-                		result.getDouble(1),  // lowerCtrlLimit
-                		result.getDouble(2)); // upperCtrlLimit
-            
+                        result.getDouble(1),  // lowerDisplayLimit
+                        result.getDouble(5),  // lowerAlarmLimit
+                        result.getDouble(3),  // lowerWarningLimit
+                        result.getString(8),   // units
+                        format,               // numberFormat
+                        result.getDouble(4),  // upperWarningLimit
+                        result.getDouble(6),  // upperAlarmLimit
+                        result.getDouble(2),  // upperDisplayLimit
+                        result.getDouble(1),  // lowerCtrlLimit
+                        result.getDouble(2)); // upperCtrlLimit
+
             }
         }
         finally
@@ -123,7 +123,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         // No numeric display meta data
         return null;
     }
-    
+
     /** @return Numeric meta data information for the channel or <code>null</code>
      *  @throws Exception on error
      */
@@ -191,17 +191,17 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
             // In here, we handle it by returning enumeration samples,
             // because the meta data would be wrong for double values.
             if (labels != null)
-            	return new ArchiveVEnum(time, severity, status, labels, (int) dbl0);
+                return new ArchiveVEnum(time, severity, status, labels, (int) dbl0);
             // Double data.
             if (handle_array)
             {   // Get array elements - if any.
                 final double data[] = reader.useArrayBlob()
-            		? readBlobArrayElements(dbl0, result)
-    				: readArrayElements(time, dbl0, severity);
-        		if (data.length == 1)
-        			return new ArchiveVNumber(time, severity, status, display, data[0]);
-        		else
-        			return new ArchiveVNumberArray(time, severity, status, display, data);
+                    ? readBlobArrayElements(dbl0, result)
+                    : readArrayElements(time, dbl0, severity);
+                if (data.length == 1)
+                    return new ArchiveVNumber(time, severity, status, display, data[0]);
+                else
+                    return new ArchiveVNumberArray(time, severity, status, display, data);
             }
             else
                 return new ArchiveVNumber(time, severity, status, display, dbl0);
@@ -212,8 +212,8 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         if (! result.wasNull())
         {   // Enumerated integer?
             if (labels != null)
-            	return new ArchiveVEnum(time, severity, status, labels, num);
-			return new ArchiveVNumber(time, severity, status, display, num);
+                return new ArchiveVEnum(time, severity, status, labels, num);
+            return new ArchiveVNumber(time, severity, status, display, num);
         }
 
         // Default to string
@@ -236,7 +236,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         if (status.equalsIgnoreCase("Archive_Off") ||
             status.equalsIgnoreCase("Disconnected") ||
             status.equalsIgnoreCase("Write_Error"))
-        	return AlarmSeverity.UNDEFINED;
+            return AlarmSeverity.UNDEFINED;
         return severity;
     }
 
@@ -292,7 +292,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         if (N == 1  &&  severity != AlarmSeverity.UNDEFINED)
         {   // Found a perfect non-array sample:
             // Assume that the data is scalar, skip the array check from now on
-        	is_an_array = false;
+            is_an_array = false;
         }
         return ret;
     }
@@ -305,34 +305,34 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
      */
     private double[] readBlobArrayElements(final double dbl0, final ResultSet result) throws Exception
     {
-    	final String datatype;
-    	if (reader.isOracle())
-    	    datatype = result.getString(7);
-    	else
-    	    datatype = result.getString(8);
-    		
+        final String datatype;
+        if (reader.isOracle())
+            datatype = result.getString(7);
+        else
+            datatype = result.getString(8);
+
         // ' ' or NULL indicate: Scalar, not an array
-    	if (datatype == null || " ".equals(datatype) || result.wasNull())
+        if (datatype == null || " ".equals(datatype) || result.wasNull())
             return new double [] { dbl0 };
 
         // Decode BLOB
-    	final byte[] bytes = result.getBytes(reader.isOracle() ? 8 : 9);
-    	final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
-    	final DataInputStream data = new DataInputStream(stream);
-    	if ("d".equals(datatype))
-    	{	// Read Double typed array elements
-    	    final int nelm = data.readInt();
+        final byte[] bytes = result.getBytes(reader.isOracle() ? 8 : 9);
+        final ByteArrayInputStream stream = new ByteArrayInputStream(bytes);
+        final DataInputStream data = new DataInputStream(stream);
+        if ("d".equals(datatype))
+        {    // Read Double typed array elements
+            final int nelm = data.readInt();
             final double[] array = new double[nelm];
-        	for (int i = 0; i < nelm; i++)
-        		array[i] = data.readDouble();
-        	data.close();
-        	return array;
-    	}
-    	// TODO Decode 'l' Long and 'i' Integer?
-    	else
-    	{
-    		throw new Exception("Sample BLOBs of type '" + datatype + "' are not decoded");
-    	}
+            for (int i = 0; i < nelm; i++)
+                array[i] = data.readDouble();
+            data.close();
+            return array;
+        }
+        // TODO Decode 'l' Long and 'i' Integer?
+        else
+        {
+            throw new Exception("Sample BLOBs of type '" + datatype + "' are not decoded");
+        }
     }
 
     /** @param result ResultSet positioned on row to dump to console

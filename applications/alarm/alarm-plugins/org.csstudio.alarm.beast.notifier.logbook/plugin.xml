@@ -2,7 +2,7 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension point="org.csstudio.alarm.beast.notifier">
-      <action scheme="log" 
+      <action scheme="log"
             action="org.csstudio.alarm.beast.notifier.logbook.AutomatedLogAction"/>
    </extension>
 </plugin>

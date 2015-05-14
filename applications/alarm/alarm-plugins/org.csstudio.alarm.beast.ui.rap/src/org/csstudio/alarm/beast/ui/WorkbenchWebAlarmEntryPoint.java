@@ -8,16 +8,16 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 
 public class WorkbenchWebAlarmEntryPoint implements EntryPoint {
 
-	
 
-	public int createUI() {
-		Display display = PlatformUI.createDisplay();
-		DisplayManager.getInstance().registerDisplay(display, true);
-		WorkbenchAdvisor advisor = new ApplicationWorkbenchAdvisor();
-	    int result = PlatformUI.createAndRunWorkbench( display, advisor );
-	    display.dispose();
-		return result;
-		
-	}
+
+    public int createUI() {
+        Display display = PlatformUI.createDisplay();
+        DisplayManager.getInstance().registerDisplay(display, true);
+        WorkbenchAdvisor advisor = new ApplicationWorkbenchAdvisor();
+        int result = PlatformUI.createAndRunWorkbench( display, advisor );
+        display.dispose();
+        return result;
+
+    }
 
 }

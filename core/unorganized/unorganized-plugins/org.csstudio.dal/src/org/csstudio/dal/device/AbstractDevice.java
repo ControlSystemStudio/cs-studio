@@ -42,25 +42,25 @@ import org.csstudio.dal.group.GroupDataAccessProvider;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
 public interface AbstractDevice extends AsynchronousCommandContext,
-	PropertyContext, Linkable, Identifiable, LifecycleReporter,
-	GroupDataAccessProvider, CharacteristicContext
+    PropertyContext, Linkable, Identifiable, LifecycleReporter,
+    GroupDataAccessProvider, CharacteristicContext
 {
-	/**
-	 * Returns the Dynamic Value Unique Name. The name syntax is not specified
-	 * by Datatypes; the value is used as unique identifier. This name is used to initiate
-	 * connection to remote object and can be regardes as remote name.
-	 *
-	 * @return String DVUN for this property
-	 */
-	public String getUniqueName();
-	
-	/**
-	 * Returns parent device context, only 
-	 * <code>DeviceFamily</code> exists at the moment.
-	 *
-	 * @return parent context
-	 */
-	public DeviceFamily<?> getParentContext();
+    /**
+     * Returns the Dynamic Value Unique Name. The name syntax is not specified
+     * by Datatypes; the value is used as unique identifier. This name is used to initiate
+     * connection to remote object and can be regardes as remote name.
+     *
+     * @return String DVUN for this property
+     */
+    public String getUniqueName();
+
+    /**
+     * Returns parent device context, only
+     * <code>DeviceFamily</code> exists at the moment.
+     *
+     * @return parent context
+     */
+    public DeviceFamily<?> getParentContext();
 
 }
 

@@ -31,181 +31,181 @@ import org.epics.vtype.VType;
  */
 public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 
-	@Override
-	protected IFigure doCreateFigure() {
-		CheckBoxFigure figure = new CheckBoxFigure(getExecutionMode().equals(
-				ExecutionMode.RUN_MODE));
-		figure.setBit(getWidgetModel().getBit());
-		figure.setText(getWidgetModel().getLabel());
-		figure.setSelectedColor(getWidgetModel().getSelectedColor().getSWTColor());
-		figure.addManualValueChangeListener(new IManualValueChangeListener() {
+    @Override
+    protected IFigure doCreateFigure() {
+        CheckBoxFigure figure = new CheckBoxFigure(getExecutionMode().equals(
+                ExecutionMode.RUN_MODE));
+        figure.setBit(getWidgetModel().getBit());
+        figure.setText(getWidgetModel().getLabel());
+        figure.setSelectedColor(getWidgetModel().getSelectedColor().getSWTColor());
+        figure.addManualValueChangeListener(new IManualValueChangeListener() {
 
-			public void manualValueChanged(double newValue) {
-				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
-			}
-		});
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
+            public void manualValueChanged(double newValue) {
+                if (getExecutionMode() == ExecutionMode.RUN_MODE)
+                    setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
+            }
+        });
+        markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 
-		return figure;
-	}
-	
-	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
-			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
-	}
-	
-	protected void performDirectEdit(){
-		new TextEditManager(this, 
-				new LabelCellEditorLocator(getFigure()), false).show();
-	}
+        return figure;
+    }
 
-	@Override
-	public void performRequest(Request request){
-		if (getExecutionMode() == ExecutionMode.EDIT_MODE &&(
-				request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
-				request.getType() == RequestConstants.REQ_OPEN))
-			performDirectEdit();
-	}
+    @Override
+    protected void createEditPolicies() {
+        super.createEditPolicies();
+        if(getExecutionMode() == ExecutionMode.EDIT_MODE)
+            installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
+    }
 
-	@Override
-	public CheckBoxModel getWidgetModel() {
-		return  (CheckBoxModel)getModel();
-	}
+    protected void performDirectEdit(){
+        new TextEditManager(this,
+                new LabelCellEditorLocator(getFigure()), false).show();
+    }
 
-	@Override
-	protected void registerPropertyChangeHandlers() {
+    @Override
+    public void performRequest(Request request){
+        if (getExecutionMode() == ExecutionMode.EDIT_MODE &&(
+                request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
+                request.getType() == RequestConstants.REQ_OPEN))
+            performDirectEdit();
+    }
 
-		// value
-		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				if(newValue == null)
-					return false;
-				CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
+    @Override
+    public CheckBoxModel getWidgetModel() {
+        return  (CheckBoxModel)getModel();
+    }
 
-				switch (VTypeHelper.getBasicDataType((VType) newValue)) {
-				case SHORT:
-					figure.setTotalBits(TotalBits.BITS_16);
-					break;
-				case INT:
-				case ENUM:
-					figure.setTotalBits(TotalBits.BITS_32);
-					break;
-				default:
-					break;
-				}				
-				
-				figure.setValue(VTypeHelper.getDouble((VType)newValue));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
+    @Override
+    protected void registerPropertyChangeHandlers() {
 
-		// bit
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
-				figure.setBit((Integer) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(CheckBoxModel.PROP_BIT, handler);
+        // value
+        IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                if(newValue == null)
+                    return false;
+                CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
 
-		//label
-		handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
-				figure.setText((String) newValue);
-				Display.getCurrent().timerExec(10, new Runnable() {
-					public void run() {
-						if(getWidgetModel().isAutoSize())
-							performAutoSize(refreshableFigure);
-					}
-				});
-				return true;
-			}
-		};
-		setPropertyChangeHandler(CheckBoxModel.PROP_LABEL, handler);
+                switch (VTypeHelper.getBasicDataType((VType) newValue)) {
+                case SHORT:
+                    figure.setTotalBits(TotalBits.BITS_16);
+                    break;
+                case INT:
+                case ENUM:
+                    figure.setTotalBits(TotalBits.BITS_32);
+                    break;
+                default:
+                    break;
+                }
 
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				if((Boolean)newValue){
-					performAutoSize(figure);
-					figure.revalidate();
-				}
-				return true;
-			}
-		};
-		setPropertyChangeHandler(CheckBoxModel.PROP_AUTOSIZE, handler);
-		
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((CheckBoxFigure)figure).setSelectedColor(
-						getWidgetModel().getSelectedColor().getSWTColor());
-				return true;
-			}
-		};
-		setPropertyChangeHandler(CheckBoxModel.PROP_SELECTED_COLOR, handler);
+                figure.setValue(VTypeHelper.getDouble((VType)newValue));
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, handler);
 
-		handler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					final IFigure figure) {
-				Display.getCurrent().timerExec(10, new Runnable() {
-					public void run() {
-						if(getWidgetModel().isAutoSize()){
-							performAutoSize(figure);
-							figure.revalidate();
-						}
-					}
-				});
+        // bit
+        handler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
+                figure.setBit((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(CheckBoxModel.PROP_BIT, handler);
 
-				return true;
-			}
-		};
-		setPropertyChangeHandler(CheckBoxModel.PROP_FONT, handler);
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
-	}
+        //label
+        handler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                CheckBoxFigure figure = (CheckBoxFigure) refreshableFigure;
+                figure.setText((String) newValue);
+                Display.getCurrent().timerExec(10, new Runnable() {
+                    public void run() {
+                        if(getWidgetModel().isAutoSize())
+                            performAutoSize(refreshableFigure);
+                    }
+                });
+                return true;
+            }
+        };
+        setPropertyChangeHandler(CheckBoxModel.PROP_LABEL, handler);
 
-	/**
-	 * @param figure
-	 */
-	private void performAutoSize(IFigure figure) {
-		getWidgetModel().setSize(((CheckBoxFigure)figure).getPreferredSize());
-	}
+        handler = new IWidgetPropertyChangeHandler(){
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                if((Boolean)newValue){
+                    performAutoSize(figure);
+                    figure.revalidate();
+                }
+                return true;
+            }
+        };
+        setPropertyChangeHandler(CheckBoxModel.PROP_AUTOSIZE, handler);
+
+        handler = new IWidgetPropertyChangeHandler(){
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                ((CheckBoxFigure)figure).setSelectedColor(
+                        getWidgetModel().getSelectedColor().getSWTColor());
+                return true;
+            }
+        };
+        setPropertyChangeHandler(CheckBoxModel.PROP_SELECTED_COLOR, handler);
+
+        handler = new IWidgetPropertyChangeHandler(){
+            public boolean handleChange(Object oldValue, Object newValue,
+                    final IFigure figure) {
+                Display.getCurrent().timerExec(10, new Runnable() {
+                    public void run() {
+                        if(getWidgetModel().isAutoSize()){
+                            performAutoSize(figure);
+                            figure.revalidate();
+                        }
+                    }
+                });
+
+                return true;
+            }
+        };
+        setPropertyChangeHandler(CheckBoxModel.PROP_FONT, handler);
+        setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handler);
+        setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handler);
+    }
+
+    /**
+     * @param figure
+     */
+    private void performAutoSize(IFigure figure) {
+        getWidgetModel().setSize(((CheckBoxFigure)figure).getPreferredSize());
+    }
 
 
-	@Override
-	public void setValue(Object value) {
-		if(value instanceof Number)
-			((CheckBoxFigure)getFigure()).setValue(((Number)value).longValue());
-		else if (value instanceof Boolean)
-			((CheckBoxFigure)getFigure()).setBoolValue((Boolean)value);
-		else
-			super.setValue(value);
-	}
+    @Override
+    public void setValue(Object value) {
+        if(value instanceof Number)
+            ((CheckBoxFigure)getFigure()).setValue(((Number)value).longValue());
+        else if (value instanceof Boolean)
+            ((CheckBoxFigure)getFigure()).setBoolValue((Boolean)value);
+        else
+            super.setValue(value);
+    }
 
-	@Override
-	public Boolean getValue() {
-		return ((CheckBoxFigure)getFigure()).getBoolValue();
-	}
-	
-	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
-		if(key == ITextFigure.class)
-			return getFigure();
+    @Override
+    public Boolean getValue() {
+        return ((CheckBoxFigure)getFigure()).getBoolValue();
+    }
 
-		return super.getAdapter(key);
-	}
+    @Override
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
+        if(key == ITextFigure.class)
+            return getFigure();
+
+        return super.getAdapter(key);
+    }
 
 }

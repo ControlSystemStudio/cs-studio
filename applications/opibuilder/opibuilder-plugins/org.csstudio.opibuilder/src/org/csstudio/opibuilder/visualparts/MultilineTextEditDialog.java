@@ -22,68 +22,68 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public class MultilineTextEditDialog extends Dialog {
-	
-	private String title;	
-	private String contents;
-	private Text text;
 
-	protected MultilineTextEditDialog(Shell parentShell, String stringValue, String dialogTitle) {
-		super(parentShell);
-		this.title = dialogTitle;
-		this.contents = stringValue;
+    private String title;
+    private String contents;
+    private Text text;
+
+    protected MultilineTextEditDialog(Shell parentShell, String stringValue, String dialogTitle) {
+        super(parentShell);
+        this.title = dialogTitle;
+        this.contents = stringValue;
         // Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
-	}
+    }
 
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		final Composite container = (Composite) super.createDialogArea(parent);
-		// Single Text area within container.
-		// Resize doesn't fully work, at least on OS X:
-		// Making the Dialog bigger is fine, vertical scrollbars also work.
-		// But when making the Dialog smaller, no horiz. scrollbars appear.
-		final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
-		//gridData.widthHint = 300;
-		gridData.heightHint = 150;
-		text = new Text(container, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
-		text.setText(contents);
-		text.setSelection(0, contents.length());
-		text.setLayoutData(gridData);
-		text.addKeyListener(new KeyListener() {
-			
-			public void keyReleased(KeyEvent e) {}
-			
-			public void keyPressed(KeyEvent e) {		
-				if (e.character == '\r') { // Return key	            
-	                if ((e.stateMask & SWT.CTRL) != 0) {
-	                    okPressed();
-	                }
-	            }
-	            return;	
-			}
-		});
-		return container;
-	}
-	
-	@Override
-	protected void okPressed() {
-		contents = text.getText();
-		super.okPressed();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureShell(final Shell shell) {
-		super.configureShell(shell);
-		if (title != null) {
-			shell.setText(title);
-		}
-	}
+    @Override
+    protected Control createDialogArea(Composite parent) {
+        final Composite container = (Composite) super.createDialogArea(parent);
+        // Single Text area within container.
+        // Resize doesn't fully work, at least on OS X:
+        // Making the Dialog bigger is fine, vertical scrollbars also work.
+        // But when making the Dialog smaller, no horiz. scrollbars appear.
+        final GridData gridData = new GridData(SWT.FILL, SWT.FILL, true, true);
+        //gridData.widthHint = 300;
+        gridData.heightHint = 150;
+        text = new Text(container, SWT.MULTI | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
+        text.setText(contents);
+        text.setSelection(0, contents.length());
+        text.setLayoutData(gridData);
+        text.addKeyListener(new KeyListener() {
 
-	public String getResult() {
-			
-		return contents;
-	}
+            public void keyReleased(KeyEvent e) {}
+
+            public void keyPressed(KeyEvent e) {
+                if (e.character == '\r') { // Return key
+                    if ((e.stateMask & SWT.CTRL) != 0) {
+                        okPressed();
+                    }
+                }
+                return;
+            }
+        });
+        return container;
+    }
+
+    @Override
+    protected void okPressed() {
+        contents = text.getText();
+        super.okPressed();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureShell(final Shell shell) {
+        super.configureShell(shell);
+        if (title != null) {
+            shell.setText(title);
+        }
+    }
+
+    public String getResult() {
+
+        return contents;
+    }
 }

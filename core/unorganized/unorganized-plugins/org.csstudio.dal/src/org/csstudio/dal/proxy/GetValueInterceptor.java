@@ -37,72 +37,72 @@ import org.csstudio.dal.ResponseListener;
  */
 public class GetValueInterceptor<T> implements ResponseListener<T>
 {
-	private DataExchangeException error;
-	private boolean done = false;
-	private T value;
+    private DataExchangeException error;
+    private boolean done = false;
+    private T value;
 
-	/**
-	     * Constructor.
-	     */
-	public GetValueInterceptor()
-	{
-		super();
-	}
+    /**
+         * Constructor.
+         */
+    public GetValueInterceptor()
+    {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.ResponseListener#responseReceived(org.csstudio.dal.ResponseEvent)
-	 */
-	public synchronized void responseReceived(ResponseEvent<T> event)
-	{
-		done = true;
-		value = event.getResponse().getValue();
-		notify();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.ResponseListener#responseReceived(org.csstudio.dal.ResponseEvent)
+     */
+    public synchronized void responseReceived(ResponseEvent<T> event)
+    {
+        done = true;
+        value = event.getResponse().getValue();
+        notify();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.ResponseListener#responseError(org.csstudio.dal.ResponseEvent)
-	 */
-	public synchronized void responseError(ResponseEvent<T> event)
-	{
-		error = new DataExchangeException(event.getSource(),
-			    "Remote call returned error.", event.getResponse().getError());
-		done = true;
-		notify();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.ResponseListener#responseError(org.csstudio.dal.ResponseEvent)
+     */
+    public synchronized void responseError(ResponseEvent<T> event)
+    {
+        error = new DataExchangeException(event.getSource(),
+                "Remote call returned error.", event.getResponse().getError());
+        done = true;
+        notify();
+    }
 
-	/**
-	 * Executes an asynchronous getValue call and waits for it to finish or timeout.
-	 *
-	 * @param proxy  Proxy on which to execute getValue
-	 *
-	 * @return value
-	 *
-	 * @throws DataExchangeException is thrown if getValue timed out
-	 */
-	public synchronized T executeAndWait(PropertyProxy<T,?> proxy)
-		throws DataExchangeException
-	{
-		proxy.getValueAsync(this);
+    /**
+     * Executes an asynchronous getValue call and waits for it to finish or timeout.
+     *
+     * @param proxy  Proxy on which to execute getValue
+     *
+     * @return value
+     *
+     * @throws DataExchangeException is thrown if getValue timed out
+     */
+    public synchronized T executeAndWait(PropertyProxy<T,?> proxy)
+        throws DataExchangeException
+    {
+        proxy.getValueAsync(this);
 
-		if (!done) {
-			try {
-				wait(GlobalPlugConfiguration.getGlobalPlugConfiguration()
-				    .getDefaultTimeout());
-			} catch (Exception e) {
-				Logger.getLogger(this.getClass()).error("Unhandled exception.", e);
-			}
-		}
+        if (!done) {
+            try {
+                wait(GlobalPlugConfiguration.getGlobalPlugConfiguration()
+                    .getDefaultTimeout());
+            } catch (Exception e) {
+                Logger.getLogger(this.getClass()).error("Unhandled exception.", e);
+            }
+        }
 
-		if (error != null) {
-			throw error;
-		}
+        if (error != null) {
+            throw error;
+        }
 
-		if (!done) {
-			throw new DataExchangeException(proxy, "Remote call in timeout.");
-		}
+        if (!done) {
+            throw new DataExchangeException(proxy, "Remote call in timeout.");
+        }
 
-		return value;
-	}
+        return value;
+    }
 }
 
 /* __oOo__ */

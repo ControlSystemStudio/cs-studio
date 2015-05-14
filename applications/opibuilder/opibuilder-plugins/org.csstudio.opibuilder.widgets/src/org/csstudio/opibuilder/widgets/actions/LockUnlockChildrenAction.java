@@ -23,58 +23,58 @@ import org.eclipse.swt.widgets.Display;
  */
 public class LockUnlockChildrenAction extends AbstractWidgetTargetAction{
 
-	public void run(IAction action) {
-		
-		final GroupingContainerModel containerModel = getSelectedContainer();
-		
-		Command cmd = createLockUnlockCommand(containerModel);
-		execute(cmd);		
-		
-	}
+    public void run(IAction action) {
 
-	public static Command createLockUnlockCommand(
-			final GroupingContainerModel containerModel) {
-		Command cmd = new SetWidgetPropertyCommand(containerModel, 
-				GroupingContainerModel.PROP_LOCK_CHILDREN, !containerModel.isLocked()){
-			@Override
-			public void execute() {
-				super.execute();
-				selectWidgets();
-			}
-			
-			@Override
-			public void undo() {
-				super.undo();
-				selectWidgets();
-			}
-			
-			private void selectWidgets(){
-				//must be queued so it is executed after property has been changed.
-				GUIRefreshThread.getInstance(false).addIgnorableTask(
-						new WidgetIgnorableUITask(this,
-								new Runnable() {
-					
-					public void run() {
-//						if(!containerModel.isLocked())
-//							containerModel.selectWidgets(containerModel.getChildren(), false);
-//						else
-							containerModel.getParent().selectWidget(containerModel, false);						
-					}
-				}, Display.getCurrent()));
-			
-			}
-		};	
-		cmd.setLabel(containerModel.isLocked()? "Unlock Children" : "Lock Children");
-		return cmd;
-	}
-	
-	/**
-	 * Gets the widget models of all currently selected EditParts.
-	 * 
-	 * @return a list with all widget models that are currently selected
-	 */
-	protected final GroupingContainerModel getSelectedContainer() {
-		return ((GroupingContainerEditPart)selection.getFirstElement()).getWidgetModel();
-	}
+        final GroupingContainerModel containerModel = getSelectedContainer();
+
+        Command cmd = createLockUnlockCommand(containerModel);
+        execute(cmd);
+
+    }
+
+    public static Command createLockUnlockCommand(
+            final GroupingContainerModel containerModel) {
+        Command cmd = new SetWidgetPropertyCommand(containerModel,
+                GroupingContainerModel.PROP_LOCK_CHILDREN, !containerModel.isLocked()){
+            @Override
+            public void execute() {
+                super.execute();
+                selectWidgets();
+            }
+
+            @Override
+            public void undo() {
+                super.undo();
+                selectWidgets();
+            }
+
+            private void selectWidgets(){
+                //must be queued so it is executed after property has been changed.
+                GUIRefreshThread.getInstance(false).addIgnorableTask(
+                        new WidgetIgnorableUITask(this,
+                                new Runnable() {
+
+                    public void run() {
+//                        if(!containerModel.isLocked())
+//                            containerModel.selectWidgets(containerModel.getChildren(), false);
+//                        else
+                            containerModel.getParent().selectWidget(containerModel, false);
+                    }
+                }, Display.getCurrent()));
+
+            }
+        };
+        cmd.setLabel(containerModel.isLocked()? "Unlock Children" : "Lock Children");
+        return cmd;
+    }
+
+    /**
+     * Gets the widget models of all currently selected EditParts.
+     *
+     * @return a list with all widget models that are currently selected
+     */
+    protected final GroupingContainerModel getSelectedContainer() {
+        return ((GroupingContainerEditPart)selection.getFirstElement()).getWidgetModel();
+    }
 
 }

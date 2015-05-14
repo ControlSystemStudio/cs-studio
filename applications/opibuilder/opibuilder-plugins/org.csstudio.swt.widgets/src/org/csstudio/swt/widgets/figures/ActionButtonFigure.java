@@ -61,730 +61,730 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ActionButtonFigure extends Figure implements Introspectable, ITextFigure{
 
-	/**
-	 * When it was set as armed, action will be fired when mouse released.
-	 */
-	private boolean armed = false;
+    /**
+     * When it was set as armed, action will be fired when mouse released.
+     */
+    private boolean armed = false;
 
-	/**
-	 * The status of mouse button.
-	 */
-	private boolean mousePressed = false;
-
-
-	/**
-	 * Default label font.
-	 */
-	public static final Font FONT = CustomMediaFactory.getInstance().getFont(
-			CustomMediaFactory.FONT_ARIAL);
-
-	/**
-	 * The Label for the Button.
-	 */
-	private Label label;
-
-	private boolean toggleStyle = false;
-
-	private boolean selected = false;
-
-	private boolean toggled =false;
-
-	/**
-	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
-	 */
-	private final int[] alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
-
-	private boolean runMode = false;
-
-	private List<ButtonActionListener> listeners;
-
-	private Image image, grayImage;
+    /**
+     * The status of mouse button.
+     */
+    private boolean mousePressed = false;
 
 
-	private IPath imagePath;
+    /**
+     * Default label font.
+     */
+    public static final Font FONT = CustomMediaFactory.getInstance().getFont(
+            CustomMediaFactory.FONT_ARIAL);
 
-	private int textAlignment;
-	public ActionButtonFigure(boolean runMode) {
-		setEnabled(false);
-		this.runMode = runMode;
-		armed = false;
-		mousePressed = false;
-		listeners = new ArrayList<ButtonActionListener>();
+    /**
+     * The Label for the Button.
+     */
+    private Label label;
 
-		setRequestFocusEnabled(true);
-		setFocusTraversable(true);
+    private boolean toggleStyle = false;
 
-		setLayoutManager(new StackLayout());
+    private boolean selected = false;
 
+    private boolean toggled =false;
 
-		label = new Label(){
-			@Override
-			public boolean isOpaque() {
-				return true;
-			}
+    /**
+     * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
+     */
+    private final int[] alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
 
-			/**
-			 * If this button has focus, this method paints a focus rectangle.
-			 *
-			 * @param graphics Graphics handle for painting
-			 */
-			protected void paintBorder(Graphics graphics) {
-				super.paintBorder(graphics);
-				if (ActionButtonFigure.this.hasFocus()) {
-					Color selection = Display.getCurrent().getSystemColor(SWT.COLOR_LIST_SELECTION);
-					graphics.setForegroundColor(selection);
-					graphics.setBackgroundColor(ColorConstants.white);
+    private boolean runMode = false;
 
-					Rectangle area = getClientArea();
-					graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
+    private List<ButtonActionListener> listeners;
 
-				}
-			}
+    private Image image, grayImage;
 
 
-		};
-		label.setBorder(new ButtonBorder());
-		add(label);
+    private IPath imagePath;
 
-		if(runMode){
-			hookEventHandler(new ButtonEventHandler());
-			label.setCursor(Cursors.HAND);	
-		}
-	}
+    private int textAlignment;
+    public ActionButtonFigure(boolean runMode) {
+        setEnabled(false);
+        this.runMode = runMode;
+        armed = false;
+        mousePressed = false;
+        listeners = new ArrayList<ButtonActionListener>();
 
-	public ActionButtonFigure() {
-		this(true);
-	}
+        setRequestFocusEnabled(true);
+        setFocusTraversable(true);
 
-	/**
-	 * Registers the given listener as an {@link ButtonActionListener}.
-	 *
-	 * @param listener The {@link ButtonActionListener} to add
-	 */
-	public void addActionListener(ButtonActionListener listener) {
-		if (listener == null)
-			throw new IllegalArgumentException();
-		listeners.add(listener);
-	}
-
-	/**
-	 * Dispose the resources on this figure.
-	 */
-	public void dispose() {
-
-		if(image != null){
-			image.dispose();
-			image = null;
-		}
-		if(grayImage != null){
-			grayImage.dispose();
-			grayImage = null;
-		}
-	}
-
-	/**
-	 * Notifies any {@link ButtonActionListener} on this button
-	 * that an action has been performed.
-	 *
-	 */
-	protected void fireActionPerformed(int i) {
-		for(ButtonActionListener listener : listeners)
-			listener.actionPerformed(i);
-	}
-
-	/**
-	 * @return the imagePath
-	 */
-	public IPath getImagePath() {
-		return imagePath;
-	}
-
-	/**
-	 * @return the textAlignment
-	 */
-	public int getTextAlignment() {
-		return textAlignment;
-	}
-
-	/**
-	 * Adds the given {@link ButtonEventHandler} to this button. A {@link ButtonEventHandler}
-	 * should be a MouseListener, MouseMotionListener, KeyListener,  and
-	 * FocusListener.
-	 *
-	 * @param handler  The new event handler
-	 * @since 2.0
-	 */
-	protected void hookEventHandler(ButtonEventHandler handler) {
-		if (handler == null)
-			return;
-		addMouseListener(handler);
-		addMouseMotionListener(handler);
-		addKeyListener(handler);
-		addFocusListener(handler);
-	}
-
-	protected boolean isArmed() {
-		return armed;
-	}
-
-	protected boolean isMousePressed() {
-		return mousePressed;
-	}
-
-	@Override
-	public boolean isOpaque() {
-		return false;
-	}
+        setLayoutManager(new StackLayout());
 
 
+        label = new Label(){
+            @Override
+            public boolean isOpaque() {
+                return true;
+            }
 
-	/**
-	 * @return the runMode
-	 */
-	public boolean isRunMode() {
-		return runMode;
-	}
+            /**
+             * If this button has focus, this method paints a focus rectangle.
+             *
+             * @param graphics Graphics handle for painting
+             */
+            protected void paintBorder(Graphics graphics) {
+                super.paintBorder(graphics);
+                if (ActionButtonFigure.this.hasFocus()) {
+                    Color selection = Display.getCurrent().getSystemColor(SWT.COLOR_LIST_SELECTION);
+                    graphics.setForegroundColor(selection);
+                    graphics.setBackgroundColor(ColorConstants.white);
 
-	/**
-	 * @return true if the button is pushed down. false otherwise.
-	 */
-	public boolean isSelected() {
-		return selected;
-	}
+                    Rectangle area = getClientArea();
+                    graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
 
-	/**
-	 * @return true if the button is toggled. false otherwise.
-	 */
-	public boolean isToggled() {
-		return toggled;
-	}
-
-	public boolean isToggleStyle() {
-		return toggleStyle;
-	}
-
-	/**
-	 * Paints the area of this figure excluded by the borders. Induces a (1,1) pixel shift in
-	 * the painting if the  mouse is armed, giving it the pressed appearance.
-	 *
-	 * @param graphics  Graphics handle for painting
-	 * @since 2.0
-	 */
-	protected void paintClientArea(Graphics graphics) {
-		if (isSelected()) {
-			graphics.translate(1, 1);
-			graphics.pushState();
-			super.paintClientArea(graphics);
-			graphics.popState();
-			graphics.translate(-1, -1);
-		} else
-			super.paintClientArea(graphics);
-	}
-
-	public void removeActionListener(ButtonActionListener listener){
-		if(listener != null && listeners.contains(listener))
-			listeners.remove(listener);
-	}
-
-	/**Set the armed status of the button.
-	 * @param armed
-	 */
-	protected void setArmed(boolean armed) {
-		this.armed = armed;
-	}
+                }
+            }
 
 
-	@Override
-	public void setCursor(Cursor cursor) {
-		label.setCursor(cursor);
-		super.setCursor(cursor);
-	}
+        };
+        label.setBorder(new ButtonBorder());
+        add(label);
 
-	@Override
-	public void setEnabled(boolean value) {
-		if(label != null){
-			label.setEnabled(value);
-			//update the icon
-			if(image != null){
-				if(value)
-					label.setIcon(image);
-				else {
-					if(grayImage == null)
-						if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-							grayImage = image;
-						else
-							grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
-					label.setIcon(grayImage);
-				}
-			}
-		}
-		if(runMode)
-			super.setEnabled(value);
-		repaint();
-	}
+        if(runMode){
+            hookEventHandler(new ButtonEventHandler());
+            label.setCursor(Cursors.HAND);
+        }
+    }
 
-	@Override
-	public void setFont(Font f) {
-		super.setFont(f);
-		calculateTextPosition();
-		label.revalidate();
-	}
+    public ActionButtonFigure() {
+        this(true);
+    }
 
-	@SuppressWarnings("nls")
+    /**
+     * Registers the given listener as an {@link ButtonActionListener}.
+     *
+     * @param listener The {@link ButtonActionListener} to add
+     */
+    public void addActionListener(ButtonActionListener listener) {
+        if (listener == null)
+            throw new IllegalArgumentException();
+        listeners.add(listener);
+    }
+
+    /**
+     * Dispose the resources on this figure.
+     */
+    public void dispose() {
+
+        if(image != null){
+            image.dispose();
+            image = null;
+        }
+        if(grayImage != null){
+            grayImage.dispose();
+            grayImage = null;
+        }
+    }
+
+    /**
+     * Notifies any {@link ButtonActionListener} on this button
+     * that an action has been performed.
+     *
+     */
+    protected void fireActionPerformed(int i) {
+        for(ButtonActionListener listener : listeners)
+            listener.actionPerformed(i);
+    }
+
+    /**
+     * @return the imagePath
+     */
+    public IPath getImagePath() {
+        return imagePath;
+    }
+
+    /**
+     * @return the textAlignment
+     */
+    public int getTextAlignment() {
+        return textAlignment;
+    }
+
+    /**
+     * Adds the given {@link ButtonEventHandler} to this button. A {@link ButtonEventHandler}
+     * should be a MouseListener, MouseMotionListener, KeyListener,  and
+     * FocusListener.
+     *
+     * @param handler  The new event handler
+     * @since 2.0
+     */
+    protected void hookEventHandler(ButtonEventHandler handler) {
+        if (handler == null)
+            return;
+        addMouseListener(handler);
+        addMouseMotionListener(handler);
+        addKeyListener(handler);
+        addFocusListener(handler);
+    }
+
+    protected boolean isArmed() {
+        return armed;
+    }
+
+    protected boolean isMousePressed() {
+        return mousePressed;
+    }
+
+    @Override
+    public boolean isOpaque() {
+        return false;
+    }
+
+
+
+    /**
+     * @return the runMode
+     */
+    public boolean isRunMode() {
+        return runMode;
+    }
+
+    /**
+     * @return true if the button is pushed down. false otherwise.
+     */
+    public boolean isSelected() {
+        return selected;
+    }
+
+    /**
+     * @return true if the button is toggled. false otherwise.
+     */
+    public boolean isToggled() {
+        return toggled;
+    }
+
+    public boolean isToggleStyle() {
+        return toggleStyle;
+    }
+
+    /**
+     * Paints the area of this figure excluded by the borders. Induces a (1,1) pixel shift in
+     * the painting if the  mouse is armed, giving it the pressed appearance.
+     *
+     * @param graphics  Graphics handle for painting
+     * @since 2.0
+     */
+    protected void paintClientArea(Graphics graphics) {
+        if (isSelected()) {
+            graphics.translate(1, 1);
+            graphics.pushState();
+            super.paintClientArea(graphics);
+            graphics.popState();
+            graphics.translate(-1, -1);
+        } else
+            super.paintClientArea(graphics);
+    }
+
+    public void removeActionListener(ButtonActionListener listener){
+        if(listener != null && listeners.contains(listener))
+            listeners.remove(listener);
+    }
+
+    /**Set the armed status of the button.
+     * @param armed
+     */
+    protected void setArmed(boolean armed) {
+        this.armed = armed;
+    }
+
+
+    @Override
+    public void setCursor(Cursor cursor) {
+        label.setCursor(cursor);
+        super.setCursor(cursor);
+    }
+
+    @Override
+    public void setEnabled(boolean value) {
+        if(label != null){
+            label.setEnabled(value);
+            //update the icon
+            if(image != null){
+                if(value)
+                    label.setIcon(image);
+                else {
+                    if(grayImage == null)
+                        if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+                            grayImage = image;
+                        else
+                            grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
+                    label.setIcon(grayImage);
+                }
+            }
+        }
+        if(runMode)
+            super.setEnabled(value);
+        repaint();
+    }
+
+    @Override
+    public void setFont(Font f) {
+        super.setFont(f);
+        calculateTextPosition();
+        label.revalidate();
+    }
+
+    @SuppressWarnings("nls")
     public void setImagePath(final IPath path){
-		dispose();
-		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
-			
-			@Override
-			public void runWithInputStream(InputStream stream) {
-				image = new Image(null, stream);
-				try {
-					stream.close();
-				} catch (IOException e) {
-				}
-				if(label.isEnabled())
-					label.setIcon(image);
-				else{
-					if(grayImage == null && image != null)
-						if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-							grayImage = image;
-						else
-							grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
-					label.setIcon(grayImage);
-				}
-				calculateTextPosition();
-			}
-		};
-		if(path != null && !path.isEmpty()){
-			this.imagePath = path;
-			ResourceUtil.pathToInputStreamInJob(path, uiTask, "Load Action Button Icon...", new IJobErrorHandler() {
-				
-				public void handleError(Exception exception) {
-					image = null;
-					Activator.getLogger().log(Level.WARNING,
-			            "Failed to load image from path" + path, exception);
-				}
-			});			
-		}
+        dispose();
+        AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
 
-		if(label.isEnabled())
-			label.setIcon(image);
-		else{
-			if(grayImage == null && image != null)
-				if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-					grayImage = image;
-				else
-					grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
-			label.setIcon(grayImage);
-		}
-		calculateTextPosition();
-	}
+            @Override
+            public void runWithInputStream(InputStream stream) {
+                image = new Image(null, stream);
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                }
+                if(label.isEnabled())
+                    label.setIcon(image);
+                else{
+                    if(grayImage == null && image != null)
+                        if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+                            grayImage = image;
+                        else
+                            grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
+                    label.setIcon(grayImage);
+                }
+                calculateTextPosition();
+            }
+        };
+        if(path != null && !path.isEmpty()){
+            this.imagePath = path;
+            ResourceUtil.pathToInputStreamInJob(path, uiTask, "Load Action Button Icon...", new IJobErrorHandler() {
 
-	protected void setMousePressed(boolean mousePressed) {
-			this.mousePressed = mousePressed;
-	}
+                public void handleError(Exception exception) {
+                    image = null;
+                    Activator.getLogger().log(Level.WARNING,
+                        "Failed to load image from path" + path, exception);
+                }
+            });
+        }
 
+        if(label.isEnabled())
+            label.setIcon(image);
+        else{
+            if(grayImage == null && image != null)
+                if(SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
+                    grayImage = image;
+                else
+                    grayImage = new Image(null, image, SWTConstants.IMAGE_GRAY);
+            label.setIcon(grayImage);
+        }
+        calculateTextPosition();
+    }
 
-	/**
-	 * @param runMode the runMode to set
-	 */
-	public void setRunMode(boolean runMode) {
-		this.runMode = runMode;
-	}
+    protected void setMousePressed(boolean mousePressed) {
+            this.mousePressed = mousePressed;
+    }
 
 
-	public void setSelected(boolean selected) {
-		if(this.selected == selected)
-			return;
-		this.selected = selected;
-		repaint();
-	}
+    /**
+     * @param runMode the runMode to set
+     */
+    public void setRunMode(boolean runMode) {
+        this.runMode = runMode;
+    }
+
+
+    public void setSelected(boolean selected) {
+        if(this.selected == selected)
+            return;
+        this.selected = selected;
+        repaint();
+    }
 
 
 
 
-	/**
-	 * Sets the text for the Button.
-	 * @param s
-	 * 			The text for the button
-	 */
-	public void setText(final String s) {
-		label.setText(s);
-	}
+    /**
+     * Sets the text for the Button.
+     * @param s
+     *             The text for the button
+     */
+    public void setText(final String s) {
+        label.setText(s);
+    }
 
 
-	/**
-	 * @return the label text.
-	 */
-	public String getText(){
-		return label.getText();
-	}
+    /**
+     * @return the label text.
+     */
+    public String getText(){
+        return label.getText();
+    }
 
 
-	/**
-	 * Sets the alignment of the buttons text.
-	 * The parameter is a {@link PositionConstants} (LEFT, RIGHT, TOP, CENTER, BOTTOM)
-	 * @param alignment
-	 * 			The alignment for the text
-	 */
-	public void setTextAlignment(final int alignment) {
-		this.textAlignment = alignment;
-		if (alignment>=0 && alignment<alignments.length) {
-			if (alignments[alignment]==PositionConstants.LEFT || alignments[alignment]==PositionConstants.RIGHT) {
-				label.setTextPlacement(PositionConstants.NORTH);
-			} else {
-				label.setTextPlacement(PositionConstants.EAST);
-			}
-			label.setTextAlignment(alignments[alignment]);
-		}
-	}
-	
-	public void calculateTextPosition() {		
-		calculateTextPosition(getClientArea().width(), getClientArea().height());
-	}
-	
-	public void calculateTextPosition(int width, int height) {		
-		if (image != null) {
-			Dimension textDimension = Draw2dSingletonUtil.getTextUtilities().getTextExtents(getText(), getFont());
-			// Calculate available space in height and width
-			double hratio = ((double) height - image.getBounds().height) / textDimension.height;
-			double wratio = ((double) width - image.getBounds().width) / textDimension.width;
-			// Put the label where we have the most space (highest ratio)
-			if (wratio > hratio) {				
-				// Space for text on the right of the icon
-				label.setTextPlacement(PositionConstants.EAST);
-				label.setTextAlignment(PositionConstants.LEFT);	
-			} else {
-				// Text goes under the icon
-				label.setTextPlacement(PositionConstants.SOUTH);
-				label.setTextAlignment(PositionConstants.CENTER);	
-			}
-		} else {
-			// Center text
-			label.setTextAlignment(PositionConstants.CENTER);
-		}
-	}
-	
-	public void setToggled(boolean toggled) {
-		this.toggled = toggled;
-		setSelected(toggled);
-	}
+    /**
+     * Sets the alignment of the buttons text.
+     * The parameter is a {@link PositionConstants} (LEFT, RIGHT, TOP, CENTER, BOTTOM)
+     * @param alignment
+     *             The alignment for the text
+     */
+    public void setTextAlignment(final int alignment) {
+        this.textAlignment = alignment;
+        if (alignment>=0 && alignment<alignments.length) {
+            if (alignments[alignment]==PositionConstants.LEFT || alignments[alignment]==PositionConstants.RIGHT) {
+                label.setTextPlacement(PositionConstants.NORTH);
+            } else {
+                label.setTextPlacement(PositionConstants.EAST);
+            }
+            label.setTextAlignment(alignments[alignment]);
+        }
+    }
 
-	/**
-	 * Set the style of the Button.
-	 * @param style false = Push, true=Toggle.
-	 */
-	public void setToggleStyle(final boolean style){
-		  toggleStyle = style;
+    public void calculateTextPosition() {
+        calculateTextPosition(getClientArea().width(), getClientArea().height());
+    }
 
-	}
-	
-	// Need this as label has repaint bug so it doesn't always change colour when its parent does
-	public void setBackgroundColor(Color bg) {
-		label.setBackgroundColor(bg);
-		super.setBackgroundColor(bg);
-		repaint();
-	}
+    public void calculateTextPosition(int width, int height) {
+        if (image != null) {
+            Dimension textDimension = Draw2dSingletonUtil.getTextUtilities().getTextExtents(getText(), getFont());
+            // Calculate available space in height and width
+            double hratio = ((double) height - image.getBounds().height) / textDimension.height;
+            double wratio = ((double) width - image.getBounds().width) / textDimension.width;
+            // Put the label where we have the most space (highest ratio)
+            if (wratio > hratio) {
+                // Space for text on the right of the icon
+                label.setTextPlacement(PositionConstants.EAST);
+                label.setTextAlignment(PositionConstants.LEFT);
+            } else {
+                // Text goes under the icon
+                label.setTextPlacement(PositionConstants.SOUTH);
+                label.setTextAlignment(PositionConstants.CENTER);
+            }
+        } else {
+            // Center text
+            label.setTextAlignment(PositionConstants.CENTER);
+        }
+    }
 
-	public BeanInfo getBeanInfo() throws IntrospectionException {
-		return new ActionButtonIntrospector().getBeanInfo(this.getClass());
-	}
+    public void setToggled(boolean toggled) {
+        this.toggled = toggled;
+        setSelected(toggled);
+    }
 
-	public interface ButtonActionListener extends EventListener{
-		public void actionPerformed(int i);
-	}
+    /**
+     * Set the style of the Button.
+     * @param style false = Push, true=Toggle.
+     */
+    public void setToggleStyle(final boolean style){
+          toggleStyle = style;
 
-	/**
-	 * The border for a button which has different paint based on the button pressed status.
-	 */
-	class ButtonBorder
-		extends SchemeBorder
-	{
+    }
 
+    // Need this as label has repaint bug so it doesn't always change colour when its parent does
+    public void setBackgroundColor(Color bg) {
+        label.setBackgroundColor(bg);
+        super.setBackgroundColor(bg);
+        repaint();
+    }
 
-	/**
-	 * Provides for a scheme to represent the borders of clickable figures like buttons.
-	 * Though similar to the {@link SchemeBorder.Scheme Scheme} it supports an extra set of
-	 * borders for the pressed states.
-	 */
-	 class ButtonScheme
-		extends Scheme
-	{
-		private Color
-			highlightPressed[] = null,
-			shadowPressed[] = null;
+    public BeanInfo getBeanInfo() throws IntrospectionException {
+        return new ActionButtonIntrospector().getBeanInfo(this.getClass());
+    }
 
-		/**
-		 * Constructs a new button scheme where the input colors are the colors for the
-		 * top-left and bottom-right sides of the  border. These colors serve as the colors
-		 * when the border is in a pressed state too. The width of each side is determined by
-		 * the number of colors passed in as input.
-		 *
-		 * @param highlight  Colors for the top-left sides of the border
-		 * @param shadow     Colors for the bottom-right sides of the border
-		 * @since 2.0
-		 */
-		public ButtonScheme(Color[] highlight, Color[] shadow) {
-			highlightPressed = this.highlight = highlight;
-			shadowPressed = this.shadow = shadow;
-			init();
-		}
+    public interface ButtonActionListener extends EventListener{
+        public void actionPerformed(int i);
+    }
 
-		/**
-		 * Constructs a new button scheme where the input colors are the colors for the
-		 * top-left and bottom-right sides of the  border, for the normal and pressed states.
-		 * The width of  each side is determined by the number of colors passed in  as input.
-		 *
-		 * @param hl   Colors for the top-left sides of the border
-		 * @param sh   Colors for the bottom-right sides of the border
-		 * @param hlp  Colors for the top-left sides of the border when figure is pressed
-		 * @param shp  Colors for the bottom-right sides of the border when figure is pressed
-		 * @since 2.0
-		 */
-		public ButtonScheme(Color[] hl, Color[] sh, Color[] hlp, Color[] shp) {
-			highlight = hl;
-			shadow = sh;
-			highlightPressed = hlp;
-			shadowPressed = shp;
-			init();
-		}
-
-		/**
-		 * Calculates and returns the Insets for this border. The calculations are based on
-		 * the number of normal and pressed, highlight and shadow colors.
-		 *
-		 * @return  The insets for this border
-		 * @since 2.0
-		 */
-		protected Insets calculateInsets() {
-			int br = 1 + Math.max(getShadow().length, getHighlightPressed().length);
-			int tl = Math.max(getHighlight().length, getShadowPressed().length);
-			return new Insets(tl, tl, br, br);
-		}
-
-		/**
-		 * Calculates and returns the opaque state of this border.
-		 * <p>
-		 * Returns false in the following conditions:
-		 * <ul>
-		 * 		<li> The number of highlight colors is different than the the number of
-		 * 		shadow colors.
-		 * 		<li> The number of pressed highlight colors is different than the number of
-		 * 		pressed shadow colors.
-		 * 		<li> Any of the highlight and shadow colors are set to <code>null</code>
-		 * 		<li> Any of the pressed highlight and shadow colors are set to
-		 * 		<code>null</code>
-		 * </ul>
-		 * This is done so that the entire region under the figure is properly covered.
-		 *
-		 * @return  The opaque state of this border
-		 * @since 2.0
-		 */
-		protected boolean calculateOpaque() {
-			if (!super.calculateOpaque())
-				return false;
-			if (getHighlight().length != getShadowPressed().length)
-				return false;
-			if (getShadow().length != getHighlightPressed().length)
-				return false;
-			Color [] colors = getHighlightPressed();
-			for (int i = 0; i < colors.length; i++)
-				if (colors[i] == null)
-					return false;
-			colors = getShadowPressed();
-			for (int i = 0; i < colors.length; i++)
-				if (colors[i] == null)
-					return false;
-			return true;
-		}
-
-		/**
-		 * Returns the pressed highlight colors of this border.
-		 *
-		 * @return  Colors as an array of Colors
-		 * @since 2.0
-		 */
-		protected Color[] getHighlightPressed() {
-			return highlightPressed;
-		}
-
-		/**
-		 * Returns the pressed highlight colors of this border.
-		 *
-		 * @return  Colors as an array of Colors
-		 * @since 2.0
-		 */
-		protected Color[] getHighlightReleased() {
-			return getHighlight();
-		}
-
-		/**
-		 * Returns the pressed shadow colors of this border.
-		 *
-		 * @return  Colors as an array of Colors
-		 * @since 2.0
-		 */
-		protected Color[] getShadowPressed() {
-			return shadowPressed;
-		}
-
-		/**
-		 * Returns the pressed shadow colors of this border.
-		 *
-		 * @return  Colors as an array of Colors
-		 * @since 2.0
-		 */
-		protected Color[] getShadowReleased() {
-			return getShadow();
-		}
-	}
-
-	 /**
-		 * Regular button scheme
-	 */
-	ButtonScheme BUTTON = new ButtonScheme(
-			new Color[] {buttonLightest},
-			new Color[] {buttonDarker}
-	);
-	/**
-	 * Constructs a ButtonBorder with a predefined button scheme set as its default.
-	 *
-	 * @since 2.0
-	 */
-	public ButtonBorder() {
-		setScheme(BUTTON);
-	}
+    /**
+     * The border for a button which has different paint based on the button pressed status.
+     */
+    class ButtonBorder
+        extends SchemeBorder
+    {
 
 
-	/**
-	 * Paints this border with the help of the set scheme, the model of the clickable figure,
-	 * and other inputs. The scheme is used in conjunction with the state of the model to get
-	 * the appropriate colors for the border.
-	 *
-	 * @param figure The Clickable that this border belongs to
-	 * @param graphics The graphics used for painting
-	 * @param insets The insets
-	 */
-	public void paint(IFigure figure, Graphics graphics, Insets insets) {
+    /**
+     * Provides for a scheme to represent the borders of clickable figures like buttons.
+     * Though similar to the {@link SchemeBorder.Scheme Scheme} it supports an extra set of
+     * borders for the pressed states.
+     */
+     class ButtonScheme
+        extends Scheme
+    {
+        private Color
+            highlightPressed[] = null,
+            shadowPressed[] = null;
 
-		ButtonScheme colorScheme = (ButtonScheme)getScheme();
+        /**
+         * Constructs a new button scheme where the input colors are the colors for the
+         * top-left and bottom-right sides of the  border. These colors serve as the colors
+         * when the border is in a pressed state too. The width of each side is determined by
+         * the number of colors passed in as input.
+         *
+         * @param highlight  Colors for the top-left sides of the border
+         * @param shadow     Colors for the bottom-right sides of the border
+         * @since 2.0
+         */
+        public ButtonScheme(Color[] highlight, Color[] shadow) {
+            highlightPressed = this.highlight = highlight;
+            shadowPressed = this.shadow = shadow;
+            init();
+        }
 
-		Color tl[], br[];
-		if (isSelected()) {
-			tl = colorScheme.getShadowPressed();
-			br = colorScheme.getHighlightPressed();
-		} else {
-			tl = colorScheme.getHighlightReleased();
-			br = colorScheme.getShadowReleased();
-		}
+        /**
+         * Constructs a new button scheme where the input colors are the colors for the
+         * top-left and bottom-right sides of the  border, for the normal and pressed states.
+         * The width of  each side is determined by the number of colors passed in  as input.
+         *
+         * @param hl   Colors for the top-left sides of the border
+         * @param sh   Colors for the bottom-right sides of the border
+         * @param hlp  Colors for the top-left sides of the border when figure is pressed
+         * @param shp  Colors for the bottom-right sides of the border when figure is pressed
+         * @since 2.0
+         */
+        public ButtonScheme(Color[] hl, Color[] sh, Color[] hlp, Color[] shp) {
+            highlight = hl;
+            shadow = sh;
+            highlightPressed = hlp;
+            shadowPressed = shp;
+            init();
+        }
 
-		paint(graphics, figure, insets, tl, br);
-	}
+        /**
+         * Calculates and returns the Insets for this border. The calculations are based on
+         * the number of normal and pressed, highlight and shadow colors.
+         *
+         * @return  The insets for this border
+         * @since 2.0
+         */
+        protected Insets calculateInsets() {
+            int br = 1 + Math.max(getShadow().length, getHighlightPressed().length);
+            int tl = Math.max(getHighlight().length, getShadowPressed().length);
+            return new Insets(tl, tl, br, br);
+        }
 
-	}
+        /**
+         * Calculates and returns the opaque state of this border.
+         * <p>
+         * Returns false in the following conditions:
+         * <ul>
+         *         <li> The number of highlight colors is different than the the number of
+         *         shadow colors.
+         *         <li> The number of pressed highlight colors is different than the number of
+         *         pressed shadow colors.
+         *         <li> Any of the highlight and shadow colors are set to <code>null</code>
+         *         <li> Any of the pressed highlight and shadow colors are set to
+         *         <code>null</code>
+         * </ul>
+         * This is done so that the entire region under the figure is properly covered.
+         *
+         * @return  The opaque state of this border
+         * @since 2.0
+         */
+        protected boolean calculateOpaque() {
+            if (!super.calculateOpaque())
+                return false;
+            if (getHighlight().length != getShadowPressed().length)
+                return false;
+            if (getShadow().length != getHighlightPressed().length)
+                return false;
+            Color [] colors = getHighlightPressed();
+            for (int i = 0; i < colors.length; i++)
+                if (colors[i] == null)
+                    return false;
+            colors = getShadowPressed();
+            for (int i = 0; i < colors.length; i++)
+                if (colors[i] == null)
+                    return false;
+            return true;
+        }
 
-	class ButtonEventHandler extends MouseMotionListener.Stub
-		implements
-			MouseListener,
-			KeyListener,
-			FocusListener
-	{
+        /**
+         * Returns the pressed highlight colors of this border.
+         *
+         * @return  Colors as an array of Colors
+         * @since 2.0
+         */
+        protected Color[] getHighlightPressed() {
+            return highlightPressed;
+        }
 
-		private int mouseState;
-		public void focusGained(FocusEvent fe) {
-			repaint();
-		}
+        /**
+         * Returns the pressed highlight colors of this border.
+         *
+         * @return  Colors as an array of Colors
+         * @since 2.0
+         */
+        protected Color[] getHighlightReleased() {
+            return getHighlight();
+        }
 
-		public void focusLost(FocusEvent fe) {
-			repaint();
-			setArmed(false);
-			setMousePressed(false);
-			if(isToggleStyle())
-				setSelected(isToggled());
-			else
-				setSelected(false);
-		}
+        /**
+         * Returns the pressed shadow colors of this border.
+         *
+         * @return  Colors as an array of Colors
+         * @since 2.0
+         */
+        protected Color[] getShadowPressed() {
+            return shadowPressed;
+        }
 
-		public void keyPressed(KeyEvent ke) {
-			if (ke.character == ' ' || ke.character == '\r') {
-				setArmed(true);
-				setSelected(true);
-			}
-		}
+        /**
+         * Returns the pressed shadow colors of this border.
+         *
+         * @return  Colors as an array of Colors
+         * @since 2.0
+         */
+        protected Color[] getShadowReleased() {
+            return getShadow();
+        }
+    }
 
-		public void keyReleased(KeyEvent ke) {
-			if (ke.character == ' ' || ke.character == '\r') {
-				if(isArmed()){
-					if(isToggleStyle())
-						setToggled(!isToggled());
-					else
-						setSelected(false);
-					fireActionPerformed(0);
-				}
-				setArmed(false);
-			}
+     /**
+         * Regular button scheme
+     */
+    ButtonScheme BUTTON = new ButtonScheme(
+            new Color[] {buttonLightest},
+            new Color[] {buttonDarker}
+    );
+    /**
+     * Constructs a ButtonBorder with a predefined button scheme set as its default.
+     *
+     * @since 2.0
+     */
+    public ButtonBorder() {
+        setScheme(BUTTON);
+    }
 
-		}
 
-		public void mouseDoubleClicked(MouseEvent me) {}
+    /**
+     * Paints this border with the help of the set scheme, the model of the clickable figure,
+     * and other inputs. The scheme is used in conjunction with the state of the model to get
+     * the appropriate colors for the border.
+     *
+     * @param figure The Clickable that this border belongs to
+     * @param graphics The graphics used for painting
+     * @param insets The insets
+     */
+    public void paint(IFigure figure, Graphics graphics, Insets insets) {
 
-		public void mouseDragged(MouseEvent me) {
-			if (isArmed()) {
-				if(!containsPoint(me.getLocation())){
-					setArmed(false);
-					if(!isToggled())
-						setSelected(false);
-				}
-			}else if(containsPoint(me.getLocation())){
-				setArmed(true);
-				setSelected(true);
-			}
-		}
+        ButtonScheme colorScheme = (ButtonScheme)getScheme();
 
-		public void mousePressed(MouseEvent me) {
-			if (me.button != 1)
-				return;
-			mouseState = me.getState();
-			requestFocus();
-			setArmed(true);
-			setMousePressed(true);
-			setSelected(true);
-			me.consume();
-		}
+        Color tl[], br[];
+        if (isSelected()) {
+            tl = colorScheme.getShadowPressed();
+            br = colorScheme.getHighlightPressed();
+        } else {
+            tl = colorScheme.getHighlightReleased();
+            br = colorScheme.getShadowReleased();
+        }
 
-		public void mouseReleased(MouseEvent me) {
-			if (me.button != 1)
-				return;
-			if(isArmed()){
-				if(isToggleStyle()){
-					setToggled(!isToggled());
-				}
-				else
-					setSelected(false);
-				fireActionPerformed(mouseState);
-			}
-			setArmed(false);
-			setMousePressed(false);
+        paint(graphics, figure, insets, tl, br);
+    }
 
-			me.consume();
-		}
-		
-		@Override
-		public void mouseEntered(MouseEvent me) {
-				Color backColor = getBackgroundColor();
-				RGB darkColor = GraphicsUtil.mixColors(backColor.getRGB(),
-						new RGB(255, 255, 255), 0.5);
-				label.setBackgroundColor(CustomMediaFactory.getInstance()
-						.getColor(darkColor));
-		}
+    }
 
-		@Override
-		public void mouseExited(MouseEvent me) {
-				label.setBackgroundColor(getBackgroundColor());
-			
-		}
+    class ButtonEventHandler extends MouseMotionListener.Stub
+        implements
+            MouseListener,
+            KeyListener,
+            FocusListener
+    {
 
-	}
+        private int mouseState;
+        public void focusGained(FocusEvent fe) {
+            repaint();
+        }
+
+        public void focusLost(FocusEvent fe) {
+            repaint();
+            setArmed(false);
+            setMousePressed(false);
+            if(isToggleStyle())
+                setSelected(isToggled());
+            else
+                setSelected(false);
+        }
+
+        public void keyPressed(KeyEvent ke) {
+            if (ke.character == ' ' || ke.character == '\r') {
+                setArmed(true);
+                setSelected(true);
+            }
+        }
+
+        public void keyReleased(KeyEvent ke) {
+            if (ke.character == ' ' || ke.character == '\r') {
+                if(isArmed()){
+                    if(isToggleStyle())
+                        setToggled(!isToggled());
+                    else
+                        setSelected(false);
+                    fireActionPerformed(0);
+                }
+                setArmed(false);
+            }
+
+        }
+
+        public void mouseDoubleClicked(MouseEvent me) {}
+
+        public void mouseDragged(MouseEvent me) {
+            if (isArmed()) {
+                if(!containsPoint(me.getLocation())){
+                    setArmed(false);
+                    if(!isToggled())
+                        setSelected(false);
+                }
+            }else if(containsPoint(me.getLocation())){
+                setArmed(true);
+                setSelected(true);
+            }
+        }
+
+        public void mousePressed(MouseEvent me) {
+            if (me.button != 1)
+                return;
+            mouseState = me.getState();
+            requestFocus();
+            setArmed(true);
+            setMousePressed(true);
+            setSelected(true);
+            me.consume();
+        }
+
+        public void mouseReleased(MouseEvent me) {
+            if (me.button != 1)
+                return;
+            if(isArmed()){
+                if(isToggleStyle()){
+                    setToggled(!isToggled());
+                }
+                else
+                    setSelected(false);
+                fireActionPerformed(mouseState);
+            }
+            setArmed(false);
+            setMousePressed(false);
+
+            me.consume();
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent me) {
+                Color backColor = getBackgroundColor();
+                RGB darkColor = GraphicsUtil.mixColors(backColor.getRGB(),
+                        new RGB(255, 255, 255), 0.5);
+                label.setBackgroundColor(CustomMediaFactory.getInstance()
+                        .getColor(darkColor));
+        }
+
+        @Override
+        public void mouseExited(MouseEvent me) {
+                label.setBackgroundColor(getBackgroundColor());
+
+        }
+
+    }
 
 
 

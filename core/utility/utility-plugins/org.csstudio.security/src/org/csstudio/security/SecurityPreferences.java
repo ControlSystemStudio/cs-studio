@@ -25,13 +25,13 @@ public class SecurityPreferences
     {
         return getSetting("jaas_config_file", "platform:/plugin/org.csstudio.security/jaas.conf");
     }
-    
+
     /** @return JAAS config name */
     public static String getJaasConfigName()
     {
         return getSetting("jaas_config_name", "SNS_UCAMS");
     }
-    
+
     /** @return JAAS configuration (instead of file/name) */
     public static String getJaasConfig()
     {
@@ -43,7 +43,7 @@ public class SecurityPreferences
     {
         return getSetting("authorization_provider", "FileBased");
     }
-    
+
     /** @return Config file path for FileBased authorization */
     public static String getAuthorizationFile()
     {
@@ -57,17 +57,17 @@ public class SecurityPreferences
     }
 
     /** @return URL of LDAP for group-based authorization */
-	public static String getLDAPGroupURL()
-	{
+    public static String getLDAPGroupURL()
+    {
         return getSetting("ldap_group_url", "ldap://localhost/dc=test,dc=ics");
-	}
+    }
 
     /** @return LDAP Base for group-based authorization */
-	public static String getLDAPGroupBase()
-	{
+    public static String getLDAPGroupBase()
+    {
         return getSetting("ldap_group_base", "ou=Group");
-	}
-    
+    }
+
     /** @return {@link SecurePreferences} location type */
     public static SecurePreferences.Type getSecurePreferenceLocation()
     {
@@ -84,7 +84,7 @@ public class SecurityPreferences
         return SecurePreferences.Type.Default;
     }
 
-    
+
     /** @param key Preference key
      *  @param value Default value
      *  @return Preference setting

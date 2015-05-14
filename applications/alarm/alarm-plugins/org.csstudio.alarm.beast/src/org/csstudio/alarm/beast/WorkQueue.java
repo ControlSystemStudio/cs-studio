@@ -30,7 +30,7 @@ public class WorkQueue implements Executor
 {
     /** Task queue */
     final Queue<Runnable> tasks = new LinkedList<Runnable>();
-    
+
     // Compared these data structures for 'tasks':
     //
     // final Queue<Runnable> tasks = new LinkedList<Runnable>();
@@ -70,7 +70,7 @@ public class WorkQueue implements Executor
             return tasks.size();
         }
     }
-    
+
     /** Add a command to the queue
      *  @param command Command to be executed
      *  @see Executor#execute(Runnable)
@@ -82,17 +82,17 @@ public class WorkQueue implements Executor
         {
             // Hash: Use dummy key to add a new element
             // tasks.put(new Object(), command);
-            
+
             // Queue:
             tasks.add(command);
-            
+
             tasks.notifyAll();
         }
     }
-    
+
     /** Add a command to the queue but only if that same command is not already in the queue.
      *  If it is, do nothing.
-     * 
+     *
      *  @param command the command to be added to the queue
      */
     public void executeIfNotPending(final Runnable command)
@@ -121,7 +121,7 @@ public class WorkQueue implements Executor
             //    return result;
             //}
             //return null;
-            
+
             // Queue was designed for this
             return tasks.poll();
         }

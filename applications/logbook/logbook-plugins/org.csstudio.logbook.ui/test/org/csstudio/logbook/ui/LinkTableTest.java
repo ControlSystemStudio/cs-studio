@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -39,139 +39,139 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LinkTableTest extends ApplicationWindow {
 
     private LinkTable linkTable;
 
     public LinkTableTest() {
-	super(null);
-	addToolBar(SWT.FLAT | SWT.WRAP);
-	addMenuBar();
-	addStatusLine();
+    super(null);
+    addToolBar(SWT.FLAT | SWT.WRAP);
+    addMenuBar();
+    addStatusLine();
     }
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
     protected Control createContents(Composite parent) {
-	Composite container = new Composite(parent, SWT.NONE);
-	container.setLayout(new GridLayout(1, false));
-	linkTable = new LinkTable(container, SWT.NONE);
-	linkTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
-		1));
+    Composite container = new Composite(parent, SWT.NONE);
+    container.setLayout(new GridLayout(1, false));
+    linkTable = new LinkTable(container, SWT.NONE);
+    linkTable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+        1));
 
-	Button btnNewButton = new Button(container, SWT.NONE);
-	btnNewButton.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		try {
-		    List<Attachment> files = new ArrayList<Attachment>();
-		    files.add(AttachmentBuilder.attachment("first.txt").build());
-		    files.add(AttachmentBuilder.attachment("build.properties")
-			    .build());
-		    files.add(AttachmentBuilder.attachment("plugin.xml")
-			    .build());
-		    linkTable.setFiles(files);
-		} catch (IOException e1) {
-		    e1.printStackTrace();
-		}
-	    }
-	});
-	linkTable.addPropertyChangeListener(new PropertyChangeListener() {
+    Button btnNewButton = new Button(container, SWT.NONE);
+    btnNewButton.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+        try {
+            List<Attachment> files = new ArrayList<Attachment>();
+            files.add(AttachmentBuilder.attachment("first.txt").build());
+            files.add(AttachmentBuilder.attachment("build.properties")
+                .build());
+            files.add(AttachmentBuilder.attachment("plugin.xml")
+                .build());
+            linkTable.setFiles(files);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        }
+    });
+    linkTable.addPropertyChangeListener(new PropertyChangeListener() {
 
-	    @Override
-	    public void propertyChange(PropertyChangeEvent evt) {
-		StringBuffer sb = new StringBuffer();
-		for (Attachment selectedAttachment : linkTable.getSelection()) {
-		    sb.append(selectedAttachment.getFileName());
-		}
-		System.out.println("Selected Files: " + sb.toString());
-	    }
-	});
-	btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 1, 1));
-	btnNewButton.setText("Add Test Files");
+        @Override
+        public void propertyChange(PropertyChangeEvent evt) {
+        StringBuffer sb = new StringBuffer();
+        for (Attachment selectedAttachment : linkTable.getSelection()) {
+            sb.append(selectedAttachment.getFileName());
+        }
+        System.out.println("Selected Files: " + sb.toString());
+        }
+    });
+    btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+        false, 1, 1));
+    btnNewButton.setText("Add Test Files");
 
-	Button btnNewButton_2 = new Button(container, SWT.NONE);
-	btnNewButton_2.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		try {
-		    List<Attachment> files = new ArrayList<Attachment>();
-		    final File folder = new File("icons");
-		    for (final File fileEntry : folder.listFiles()) {
-			if (!fileEntry.isDirectory()) {
-			    files.add(AttachmentBuilder.attachment(
-				    fileEntry.getName()).build());
-			}
-		    }
-		    linkTable.setFiles(files);
-		} catch (IOException e1) {
-		    e1.printStackTrace();
-		}
-	    }
-	});
-	btnNewButton_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 1, 1));
-	btnNewButton_2.setText("Add Test Images");
+    Button btnNewButton_2 = new Button(container, SWT.NONE);
+    btnNewButton_2.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+        try {
+            List<Attachment> files = new ArrayList<Attachment>();
+            final File folder = new File("icons");
+            for (final File fileEntry : folder.listFiles()) {
+            if (!fileEntry.isDirectory()) {
+                files.add(AttachmentBuilder.attachment(
+                    fileEntry.getName()).build());
+            }
+            }
+            linkTable.setFiles(files);
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        }
+    });
+    btnNewButton_2.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+        false, 1, 1));
+    btnNewButton_2.setText("Add Test Images");
 
-	Button btnNewButton_1 = new Button(container, SWT.NONE);
-	btnNewButton_1.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		final FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
+    Button btnNewButton_1 = new Button(container, SWT.NONE);
+    btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+        final FileDialog dlg = new FileDialog(getShell(), SWT.OPEN);
 
-		final String filename = dlg.open();
-		if (filename != null) {
-		    List<Attachment> files = new ArrayList<Attachment>(
-			    linkTable.getFiles());
-		    try {
-			files.add(AttachmentBuilder.attachment(filename)
-				.build());
-		    } catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		    }
-		    linkTable.setFiles(files);
-		}
-	    }
-	});
-	btnNewButton_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 1, 1));
-	btnNewButton_1.setText("Add File");
-	return container;
+        final String filename = dlg.open();
+        if (filename != null) {
+            List<Attachment> files = new ArrayList<Attachment>(
+                linkTable.getFiles());
+            try {
+            files.add(AttachmentBuilder.attachment(filename)
+                .build());
+            } catch (IOException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+            }
+            linkTable.setFiles(files);
+        }
+        }
+    });
+    btnNewButton_1.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+        false, 1, 1));
+    btnNewButton_1.setText("Add File");
+    return container;
     }
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
-	try {
-	    LinkTableTest window = new LinkTableTest();
-	    window.setBlockOnOpen(true);
-	    window.open();
-	    Display.getCurrent().dispose();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+    try {
+        LinkTableTest window = new LinkTableTest();
+        window.setBlockOnOpen(true);
+        window.open();
+        Display.getCurrent().dispose();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override
     protected void configureShell(Shell newShell) {
-	super.configureShell(newShell);
-	newShell.setText("LinkTableTest");
+    super.configureShell(newShell);
+    newShell.setText("LinkTableTest");
     }
 
     /**
@@ -179,6 +179,6 @@ public class LinkTableTest extends ApplicationWindow {
      */
     @Override
     protected Point getInitialSize() {
-	return new Point(473, 541);
+    return new Point(473, 541);
     }
 }

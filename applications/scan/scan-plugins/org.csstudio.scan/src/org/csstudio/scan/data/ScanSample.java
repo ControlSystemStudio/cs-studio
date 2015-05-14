@@ -42,8 +42,8 @@ import java.util.Date;
  */
 abstract public class ScanSample
 {
-	final private Date timestamp;
-	final private long serial;
+    final private Date timestamp;
+    final private long serial;
 
     /** Initialize
      *  @param timestamp Time stamp
@@ -55,28 +55,28 @@ abstract public class ScanSample
         this.serial = serial;
     }
 
-	/** @return Time when this sample was obtained */
-	public Date getTimestamp()
+    /** @return Time when this sample was obtained */
+    public Date getTimestamp()
     {
-    	return timestamp;
+        return timestamp;
     }
 
-	/** @return Serial number of this sample */
-	public long getSerial()
-	{
-		return serial;
-	}
+    /** @return Serial number of this sample */
+    public long getSerial()
+    {
+        return serial;
+    }
 
-	/** Get raw values of the sample
-	 *  <p>Derived classes can implement access to
-	 *  the value by other means
-	 *  @return Values of the sample. Will be an array of {@link Number} or ...
-	 */
-	abstract public Object[] getValues();
+    /** Get raw values of the sample
+     *  <p>Derived classes can implement access to
+     *  the value by other means
+     *  @return Values of the sample. Will be an array of {@link Number} or ...
+     */
+    abstract public Object[] getValues();
 
-	@Override
-	public String toString()
-	{
-	    return ScanSampleFormatter.format(timestamp) + " [" + serial + "]";
-	}
+    @Override
+    public String toString()
+    {
+        return ScanSampleFormatter.format(timestamp) + " [" + serial + "]";
+    }
 }

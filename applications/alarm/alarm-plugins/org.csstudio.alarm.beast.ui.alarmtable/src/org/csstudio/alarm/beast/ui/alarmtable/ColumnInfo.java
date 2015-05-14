@@ -3,7 +3,7 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 import org.csstudio.alarm.beast.ui.Messages;
 
 /** Description of one column in the alarm table
- * 
+ *
  *  @author Kay Kasemir
  *  @author Jaka Bobnar - Extracted inner class of AlarmTableLabelProvider
  */

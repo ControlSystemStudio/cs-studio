@@ -109,17 +109,17 @@ public class AlarmTreePV extends AlarmTreeLeaf
     }
 
     /** Set filter expression for enablement
-	 *  @param filter New filter
-	 */
-	public synchronized void setFilter(final String filter)
-	{
-		if (filter == null)
-			this.filter = ""; //$NON-NLS-1$
-		else
-			this.filter = filter;
-	}
+     *  @param filter New filter
+     */
+    public synchronized void setFilter(final String filter)
+    {
+        if (filter == null)
+            this.filter = ""; //$NON-NLS-1$
+        else
+            this.filter = filter;
+    }
 
-	/** @param enable Enable the PV? */
+    /** @param enable Enable the PV? */
     public synchronized void setEnabled(final boolean enable)
     {
         enabled = enable;
@@ -128,10 +128,10 @@ public class AlarmTreePV extends AlarmTreeLeaf
     /** @return Filter expression for enablement (never <code>null</code>) */
     public synchronized String getFilter()
     {
-		return filter;
-	}
+        return filter;
+    }
 
-	/** @param annunciating New annunciating behavior */
+    /** @param annunciating New annunciating behavior */
     public synchronized void setAnnunciating(final boolean annunciating)
     {
         this.annunciating = annunciating;
@@ -203,14 +203,14 @@ public class AlarmTreePV extends AlarmTreeLeaf
             final String value,
             final Timestamp timestamp)
     {
-    	// Changing the alarm state will eventually recurse up to the root
-    	// to maximize the severities.
-    	// To prevent deadlock, first lock the root, then this and other affected items
-    	final AlarmTreeRoot root = getRoot();
-    	final boolean parent_changed;
-    	synchronized (root)
+        // Changing the alarm state will eventually recurse up to the root
+        // to maximize the severities.
+        // To prevent deadlock, first lock the root, then this and other affected items
+        final AlarmTreeRoot root = getRoot();
+        final boolean parent_changed;
+        synchronized (root)
         {
-        	synchronized (this)
+            synchronized (this)
             {
                 if (setAlarmState(current_severity, severity, message, timestamp)  ||
                     ! current_message.equals(this.current_message) )
@@ -223,8 +223,8 @@ public class AlarmTreePV extends AlarmTreeLeaf
                     parent_changed = false;
             }
         }
-    	// Send events outside of lock
-    	root.notifyListeners(this, parent_changed);
+        // Send events outside of lock
+        root.notifyListeners(this, parent_changed);
     }
 
     /** Called either directly or recursively from parent item.
@@ -243,9 +243,9 @@ public class AlarmTreePV extends AlarmTreeLeaf
         return XMLTags.PV;
     }
 
-	/** Add PV config detail.
-	 *  @see AlarmTree#writeConfigXML(PrintWriter, String)
-	 */
+    /** Add PV config detail.
+     *  @see AlarmTree#writeConfigXML(PrintWriter, String)
+     */
     @Override
     protected synchronized void writeConfigXML(final PrintWriter out, final int level)
     {

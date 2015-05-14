@@ -37,7 +37,7 @@ public class PathStreamTool
 
     /** Open stream for a location, using multiple search paths
      *  @param paths Search paths, may start with "platform:/plugin/some.plugin.name/path/file.ext" or plain file path
-     *  @param filename File name  
+     *  @param filename File name
      *  @return InputStream for the file
      *  @throws Exception
      */
@@ -59,7 +59,7 @@ public class PathStreamTool
                     return openStream(path + filename);
                 else
                     return openStream(path + "/" + filename);
-                   
+
             }
             catch (Exception ex)
             {

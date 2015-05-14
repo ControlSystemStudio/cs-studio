@@ -75,13 +75,13 @@ public class AnnunciationMessage implements Comparable<AnnunciationMessage>
     /** Compare by Severity
      *  {@inheritDoc}
      */
-	@Override
+    @Override
     public boolean equals(Object obj)
     {
-		if (! (obj instanceof AnnunciationMessage))
-			return false;
-	    AnnunciationMessage other = (AnnunciationMessage) obj;
-	    return other.getSeverity().equals(severity);
+        if (! (obj instanceof AnnunciationMessage))
+            return false;
+        AnnunciationMessage other = (AnnunciationMessage) obj;
+        return other.getSeverity().equals(severity);
     }
 
     /** Compare by Severity
@@ -90,10 +90,10 @@ public class AnnunciationMessage implements Comparable<AnnunciationMessage>
     @Override
     public int hashCode()
     {
-    	return severity.hashCode();
+        return severity.hashCode();
     }
 
-	/** @return String representation for debugging */
+    /** @return String representation for debugging */
     @SuppressWarnings("nls")
     @Override
     public String toString()

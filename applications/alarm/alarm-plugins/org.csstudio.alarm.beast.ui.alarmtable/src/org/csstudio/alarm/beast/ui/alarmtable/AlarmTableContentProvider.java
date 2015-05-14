@@ -28,11 +28,11 @@ import org.eclipse.osgi.util.NLS;
  */
 public class AlarmTableContentProvider implements ILazyContentProvider
 {
-	final private int alarm_table_row_limit = Preferences.getAlarmTableRowLimit();
+    final private int alarm_table_row_limit = Preferences.getAlarmTableRowLimit();
     private TableViewer table_viewer;
     private AlarmTreePV[] alarms;
     private Comparator<AlarmTreePV> comparator = AlarmComparator.getComparator(ColumnInfo.SEVERITY, false);
-	
+
     /** Update the list of alarms to display.
      *  @param alarms
      */
@@ -40,27 +40,27 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     {
         if (alarms == null)
         {
-        	this.alarms = null;
+            this.alarms = null;
             table_viewer.setItemCount(0);
         }
         else if (alarms.length > alarm_table_row_limit)
-    	{	// Use only a subset of actual alarms
-    		this.alarms = new AlarmTreePV[alarm_table_row_limit + 1];
-    		System.arraycopy(alarms, 0, this.alarms, 0, alarm_table_row_limit);
-    		// Add explanatory entry to end
-    		final AlarmTreePV info = new AlarmTreePV(null, Messages.AlarmTableRowLimitMessage, -1);
-    		info.setDescription(NLS.bind(Messages.AlarmTableRowLimitInfoFmt, alarm_table_row_limit));
-			this.alarms[alarm_table_row_limit] = info;
-			// Sort all but that explanatory entry
+        {    // Use only a subset of actual alarms
+            this.alarms = new AlarmTreePV[alarm_table_row_limit + 1];
+            System.arraycopy(alarms, 0, this.alarms, 0, alarm_table_row_limit);
+            // Add explanatory entry to end
+            final AlarmTreePV info = new AlarmTreePV(null, Messages.AlarmTableRowLimitMessage, -1);
+            info.setDescription(NLS.bind(Messages.AlarmTableRowLimitInfoFmt, alarm_table_row_limit));
+            this.alarms[alarm_table_row_limit] = info;
+            // Sort all but that explanatory entry
             Arrays.sort(this.alarms, 0, alarm_table_row_limit, comparator);
             table_viewer.setItemCount(alarm_table_row_limit + 1);
-    	}
-    	else
-    	{	// Use alarms as received
+        }
+        else
+        {    // Use alarms as received
             this.alarms = alarms;
             Arrays.sort(this.alarms, comparator);
             table_viewer.setItemCount(alarms.length);
-    	}
+        }
         table_viewer.refresh();
     }
 

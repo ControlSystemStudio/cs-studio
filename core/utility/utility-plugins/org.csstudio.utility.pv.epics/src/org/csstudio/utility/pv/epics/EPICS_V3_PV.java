@@ -139,11 +139,11 @@ public class EPICS_V3_PV extends PlatformObject
             // Subscribe, but outside of callback (JCA deadlocks)
             PVContext.scheduleCommand(new Runnable()
             {
-            	@Override
+                @Override
                 public void run()
-            	{
+                {
                     subscribe();
-            	}
+                }
             });
         }
     };
@@ -160,7 +160,7 @@ public class EPICS_V3_PV extends PlatformObject
                 if (state == State.GettingMetadata)
                     state = State.GotMetaData;
                 if(!isRunning())
-                	return;
+                    return;
                 final DBR dbr = event.getDBR();
                 if (dbr == null)
                     return;
@@ -317,8 +317,8 @@ public class EPICS_V3_PV extends PlatformObject
                 throw new Exception("PV " + name + " connection timeout");
             synchronized (this)
             {
-            	this.wait(remain);
-			}
+                this.wait(remain);
+            }
         }
         // Reset the callback data
         get_callback.reset();
@@ -355,16 +355,16 @@ public class EPICS_V3_PV extends PlatformObject
     @Override
     public void addListener(final PVListener listener)
     {
-    	listeners.add(listener);
-    	 if (running && isConnected())
-    		listener.pvValueUpdate(this);
+        listeners.add(listener);
+         if (running && isConnected())
+            listener.pvValueUpdate(this);
     }
 
     /** {@inheritDoc} */
     @Override
     public void removeListener(final PVListener listener)
     {
-    	listeners.remove(listener);
+        listeners.remove(listener);
     }
 
     /** Try to connect to the PV.
@@ -378,7 +378,7 @@ public class EPICS_V3_PV extends PlatformObject
         {
             if (channel_ref == null)
                 channel_ref = PVContext.getChannel(name, EPICS_V3_PV.this);
-		}
+        }
         if (channel_ref.getChannel().getConnectionState()
             == ConnectionState.CONNECTED)
         {
@@ -392,24 +392,24 @@ public class EPICS_V3_PV extends PlatformObject
      */
     private void disconnect()
     {
-    	// Releasing the _last_ channel will close the context,
-    	// which waits for the JCA Command thread to exit.
-    	// If a connection or update for the channel happens at that time,
-    	// the JCA command thread will send notifications to this PV,
-    	// which had resulted in dead lock:
-    	// This code locked the PV, then tried to join the JCA Command thread.
-    	// JCA Command thread tried to lock the PV, so it could not exit.
-    	// --> Don't lock while calling into the PVContext.
- 		RefCountedChannel channel_ref_copy;
-    	synchronized (this)
-    	{
-	        // Never attempted a connection?
-			if (channel_ref == null)
+        // Releasing the _last_ channel will close the context,
+        // which waits for the JCA Command thread to exit.
+        // If a connection or update for the channel happens at that time,
+        // the JCA command thread will send notifications to this PV,
+        // which had resulted in dead lock:
+        // This code locked the PV, then tried to join the JCA Command thread.
+        // JCA Command thread tried to lock the PV, so it could not exit.
+        // --> Don't lock while calling into the PVContext.
+         RefCountedChannel channel_ref_copy;
+        synchronized (this)
+        {
+            // Never attempted a connection?
+            if (channel_ref == null)
                 return;
-			channel_ref_copy = channel_ref;
-	        channel_ref = null;
-	        connected = false;
-    	}
+            channel_ref_copy = channel_ref;
+            channel_ref = null;
+            connected = false;
+        }
         try
         {
             PVContext.releaseChannel(channel_ref_copy, this);
@@ -424,8 +424,8 @@ public class EPICS_V3_PV extends PlatformObject
     /** Subscribe for value updates. */
     private void subscribe()
     {
-    	synchronized (this)
-    	{
+        synchronized (this)
+        {
             // Prevent multiple subscriptions.
             if (subscription != null)
                 return;
@@ -433,17 +433,17 @@ public class EPICS_V3_PV extends PlatformObject
             final RefCountedChannel ch_ref = channel_ref;
             if (ch_ref == null)
                 return;
-    		final Channel channel = ch_ref.getChannel();
+            final Channel channel = ch_ref.getChannel();
             final Logger logger = Activator.getLogger();
             final DBRType type;
             try
             {
-            	// TODO Instead of another channel.addMonitor(),
-            	//      the RefCountedChannel should maintain a single
-            	//      subscription to the underlying CAJ/JCA channel.
-            	//      So even with N PVs for the same channel, it's
-            	//      only one subscription on the network instead of
-            	//      N subscriptions.
+                // TODO Instead of another channel.addMonitor(),
+                //      the RefCountedChannel should maintain a single
+                //      subscription to the underlying CAJ/JCA channel.
+                //      So even with N PVs for the same channel, it's
+                //      only one subscription on the network instead of
+                //      N subscriptions.
                 type = DBR_Helper.getTimeType(plain,
                                         channel.getFieldType());
                 final MonitorMask mask = PVContext.monitor_mask;
@@ -470,7 +470,7 @@ public class EPICS_V3_PV extends PlatformObject
                 {
                     final DBRType meta_type = DBR_Helper.getCtrlType(false, type);
                     meta_subscription = channel.addMonitor(
-                    			meta_type, channel.getElementCount(), Monitor.PROPERTY, meta_update_listener);
+                                meta_type, channel.getElementCount(), Monitor.PROPERTY, meta_update_listener);
                 }
                 catch (final Exception ex)
                 {
@@ -478,31 +478,31 @@ public class EPICS_V3_PV extends PlatformObject
                     return;
                 }
             }
-		}
+        }
     }
 
     /** Unsubscribe from value updates. */
     private void unsubscribe()
     {
-    	final Monitor sub_copy, meta_copy;
-    	// Atomic access
-    	synchronized (this)
-    	{
-    		sub_copy = subscription;
-    		subscription = null;
-    		meta_copy = meta_subscription;
-    		meta_subscription = null;
-		}
-    	try
-    	{
-    		if (sub_copy != null)
-    		{
-    			sub_copy.clear();
-    			channel_ref.getChannel().removeAccessRightsListener(this);
-    		}
-    		if (meta_copy != null)
-    		    meta_copy.clear();
-    	}
+        final Monitor sub_copy, meta_copy;
+        // Atomic access
+        synchronized (this)
+        {
+            sub_copy = subscription;
+            subscription = null;
+            meta_copy = meta_subscription;
+            meta_subscription = null;
+        }
+        try
+        {
+            if (sub_copy != null)
+            {
+                sub_copy.clear();
+                channel_ref.getChannel().removeAccessRightsListener(this);
+            }
+            if (meta_copy != null)
+                meta_copy.clear();
+        }
         catch (final Exception ex)
         {
             Activator.getLogger().log(Level.SEVERE, name + " unsubscribe error", ex);
@@ -605,15 +605,15 @@ public class EPICS_V3_PV extends PlatformObject
             channel.put(val);
         }
         else if (new_value instanceof int[])
-        	channel.put((int[])new_value);
+            channel.put((int[])new_value);
         else if (new_value instanceof double[])
-        	channel.put((double[])new_value);
+            channel.put((double[])new_value);
         else if (new_value instanceof byte[])
-        	channel.put((byte[])new_value);
+            channel.put((byte[])new_value);
         else if (new_value instanceof short[])
-        	channel.put((short[])new_value);
+            channel.put((short[])new_value);
         else if (new_value instanceof float[])
-        	channel.put((float[])new_value);
+            channel.put((float[])new_value);
         else
             throw new Exception("Cannot handle type "
                                     + new_value.getClass().getName());
@@ -667,7 +667,7 @@ public class EPICS_V3_PV extends PlatformObject
     private void handleConnected(final Channel channel)
     {
         Activator.getLogger().log(Level.FINEST, "{0} connected ({1})", new Object[] { name, state.name() });
-    	if (state == State.Connected)
+        if (state == State.Connected)
             return;
         state = State.Connected;
 
@@ -736,7 +736,7 @@ public class EPICS_V3_PV extends PlatformObject
 
         if (ev == null)
         {
-        	log.warning(name + " MonitorEvent is null.");
+            log.warning(name + " MonitorEvent is null.");
             return;
         }
         if (! ev.getStatus().isSuccessful())
@@ -754,7 +754,7 @@ public class EPICS_V3_PV extends PlatformObject
                 log.warning(name + " monitor with null dbr");
                 return;
             }
-			value = DBR_Helper.decodeValue(plain, meta, dbr);
+            value = DBR_Helper.decodeValue(plain, meta, dbr);
             if (!connected)
                 connected = true;
             // Logging every received value is expensive and chatty.
@@ -769,24 +769,24 @@ public class EPICS_V3_PV extends PlatformObject
     }
 
     @Override
-	public void accessRightsChanged(final AccessRightsEvent ev)
+    public void accessRightsChanged(final AccessRightsEvent ev)
     {
-    	if (! running)
-    		return;
-    	// Access permission changes are treated like value updates:
-    	// Fire a value update.
-    	// The permission change actually already creates a value update,
-    	// so this separate AccessRightsListener simply doubles the value
-    	// updates, BUT:
-    	// In the plain value update, the write access sometimes still shows
-    	// the old state.
-    	// In this AccessRightsListener, the write access will always be correct.
+        if (! running)
+            return;
+        // Access permission changes are treated like value updates:
+        // Fire a value update.
+        // The permission change actually already creates a value update,
+        // so this separate AccessRightsListener simply doubles the value
+        // updates, BUT:
+        // In the plain value update, the write access sometimes still shows
+        // the old state.
+        // In this AccessRightsListener, the write access will always be correct.
         Activator.getLogger().log(Level.FINEST, "{0} write access: {1}",
                 new Object[] { name, ev.getWriteAccess() });
-    	fireValueUpdate();
+        fireValueUpdate();
     }
 
-	/** Notify all listeners. */
+    /** Notify all listeners. */
     private void fireValueUpdate()
     {
         for (final PVListener listener : listeners) {

@@ -46,7 +46,7 @@ public class ArchiveInfo
     {
         return key;
     }
-    
+
     /** @return Debug representation */
     @SuppressWarnings("nls")
     @Override

@@ -13,7 +13,7 @@
          </run>
       </application>
    </extension>
-     
+
    <extension
          point="org.csstudio.startup.module">
       <startupParameters
@@ -76,14 +76,14 @@
             value="CSS for EPICS"/>
       </product>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.intro">
       <introProductBinding
             introId="org.eclipse.ui.intro.universal"
             productId="org.csstudio.nsrrc.product.product"/>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.intro.configExtension">
       <configExtension
@@ -95,8 +95,8 @@
             configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
    </extension>
-   
-   
+
+
    <extension
          point="org.eclipse.help.toc">
       <toc
@@ -104,5 +104,5 @@
             primary="true">
       </toc>
    </extension>
-   
+
 </plugin>

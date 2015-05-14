@@ -25,77 +25,77 @@ import org.csstudio.opibuilder.converter.model.EdmException;
  */
 public class EdmParser {
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmParser");
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmParser");
 
-	private String fileName;
-	private EdmEntity root;
-	
-	protected StringBuilder edmData;
-	protected boolean robust;
+    private String fileName;
+    private EdmEntity root;
 
-	/**
-	 * Constructs an EdmParser instance. 
-	 * Reads data from file and stores it in object.
-	 *
-	 * @param fileName EDL file to parse.
-	 * @throws EdmException if error occurs when reading file.
-	 */
-	public EdmParser(String fileName) throws EdmException {
-		this.fileName = fileName;
+    protected StringBuilder edmData;
+    protected boolean robust;
 
-		this.edmData = readFile();
-		root = new EdmEntity(fileName);
+    /**
+     * Constructs an EdmParser instance.
+     * Reads data from file and stores it in object.
+     *
+     * @param fileName EDL file to parse.
+     * @throws EdmException if error occurs when reading file.
+     */
+    public EdmParser(String fileName) throws EdmException {
+        this.fileName = fileName;
 
-		robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
-	}
+        this.edmData = readFile();
+        root = new EdmEntity(fileName);
 
-	public EdmEntity getRoot() {
-		return root;
-	}
+        robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
+    }
 
-	/**
-	 * Reads input EDL file into one String. Omits data after # comment mark.
-	 *
-	 * @return Contents of file in a string.
-	 * @throws EdmException if error occurs when reading file.
-	 */
-	private StringBuilder readFile() throws EdmException {
+    public EdmEntity getRoot() {
+        return root;
+    }
 
-		log.debug("Parsing file: " + fileName);
+    /**
+     * Reads input EDL file into one String. Omits data after # comment mark.
+     *
+     * @return Contents of file in a string.
+     * @throws EdmException if error occurs when reading file.
+     */
+    private StringBuilder readFile() throws EdmException {
 
-		StringBuilder sb = new StringBuilder();
-		try {
-			FileInputStream fstream = new FileInputStream(fileName);
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        log.debug("Parsing file: " + fileName);
 
-			String line;
-			while ( (line = br.readLine()) != null ) {
+        StringBuilder sb = new StringBuilder();
+        try {
+            FileInputStream fstream = new FileInputStream(fileName);
+            DataInputStream in = new DataInputStream(fstream);
+            BufferedReader br = new BufferedReader(new InputStreamReader(in));
 
-				if (!line.contains("#"))
-					sb.append(line + "\r");
-				else {
-					if (!line.trim().startsWith("#")) {
-						String[] pieces = StringSplitter.splitIgnoreInQuotes(line, '#', false);
-						if (pieces.length > 0)
-							sb.append(pieces[0].trim() + "\r");
-					}
-					
-//					String appStr = line.substring(0, line.indexOf("#"));
-//					if (appStr.trim().length() != 0)
-//						sb.append(appStr + "\r");
-				}
-			}
+            String line;
+            while ( (line = br.readLine()) != null ) {
 
-			in.close();
-		}
-		catch (Exception e) {
-			if (e instanceof FileNotFoundException)
-				throw new EdmException(EdmException.FILE_NOT_FOUND, fileName, e);
-			else
-				e.printStackTrace();
-		}
+                if (!line.contains("#"))
+                    sb.append(line + "\r");
+                else {
+                    if (!line.trim().startsWith("#")) {
+                        String[] pieces = StringSplitter.splitIgnoreInQuotes(line, '#', false);
+                        if (pieces.length > 0)
+                            sb.append(pieces[0].trim() + "\r");
+                    }
 
-		return sb;
-	}
+//                    String appStr = line.substring(0, line.indexOf("#"));
+//                    if (appStr.trim().length() != 0)
+//                        sb.append(appStr + "\r");
+                }
+            }
+
+            in.close();
+        }
+        catch (Exception e) {
+            if (e instanceof FileNotFoundException)
+                throw new EdmException(EdmException.FILE_NOT_FOUND, fileName, e);
+            else
+                e.printStackTrace();
+        }
+
+        return sb;
+    }
 }

@@ -47,7 +47,7 @@ public class ArchiveVStatistics extends ArchiveVDisplayType implements VStatisti
              stats.getMin(), stats.getMax(),
              stats.getStdDev(), stats.getNSamples());
     }
-    
+
     @Override
     public Double getAverage()
     {

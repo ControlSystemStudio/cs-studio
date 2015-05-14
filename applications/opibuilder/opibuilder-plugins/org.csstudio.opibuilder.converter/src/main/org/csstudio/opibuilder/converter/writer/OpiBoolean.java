@@ -15,18 +15,18 @@ import org.csstudio.opibuilder.converter.model.EdmBoolean;
  */
 public class OpiBoolean extends OpiAttribute {
 
-	/**
-	 * Creates an element <name>booleanValue</name> with the given EdmBoolean value.
-	 */
-	public OpiBoolean(Context con, String name, EdmBoolean b) {
-		this(con, name, b.is());
-	}
-	
-	/**
-	 * Creates an element <name>booleanValue</name> with the given boolean value.
-	 */
-	public OpiBoolean(Context con, String name, boolean b) {
-		super(con, name);
-		propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(b)));
-	}
+    /**
+     * Creates an element <name>booleanValue</name> with the given EdmBoolean value.
+     */
+    public OpiBoolean(Context con, String name, EdmBoolean b) {
+        this(con, name, b.is());
+    }
+
+    /**
+     * Creates an element <name>booleanValue</name> with the given boolean value.
+     */
+    public OpiBoolean(Context con, String name, boolean b) {
+        super(con, name);
+        propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(b)));
+    }
 }

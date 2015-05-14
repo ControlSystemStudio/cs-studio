@@ -30,7 +30,7 @@ class ChannelListResponse extends AbstractResponse
     {
         super(model);
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
@@ -42,7 +42,7 @@ class ChannelListResponse extends AbstractResponse
             return;
         }
         final Pattern pattern = Pattern.compile(name);
-        
+
         // HTML table similar to group's list of channels
         final HTMLWriter html =
             new HTMLWriter(resp, "Archive Channels for pattern '" + name + "'");
@@ -58,7 +58,7 @@ class ChannelListResponse extends AbstractResponse
             Messages.HTTP_CurrentValue,
             Messages.HTTP_LastArchivedValue,
         });
-       
+
         for (int i=0; i<model.getChannelCount(); ++i)
         {
             final ArchiveChannel channel = model.getChannel(i);
@@ -85,7 +85,7 @@ class ChannelListResponse extends AbstractResponse
                 channel.getInternalState(),
                 channel.getMechanism(),
                 channel.isEnabled()
-                    ? Messages.HTTP_Enabled 
+                    ? Messages.HTTP_Enabled
                     : HTMLWriter.makeRedText(Messages.HTTP_Disabled),
                 channel.getCurrentValue(),
                 channel.getLastArchivedValue(),

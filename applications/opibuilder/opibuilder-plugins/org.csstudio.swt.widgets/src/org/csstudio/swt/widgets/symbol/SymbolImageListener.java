@@ -12,10 +12,10 @@ package org.csstudio.swt.widgets.symbol;
  */
 public interface SymbolImageListener {
 
-	public void symbolImageLoaded();
+    public void symbolImageLoaded();
 
-	public void repaintRequested();
+    public void repaintRequested();
 
-	public void sizeChanged();
+    public void sizeChanged();
 
 }

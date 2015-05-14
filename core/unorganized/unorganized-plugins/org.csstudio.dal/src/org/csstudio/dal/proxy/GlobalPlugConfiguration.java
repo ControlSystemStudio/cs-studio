@@ -32,48 +32,48 @@ import java.util.Properties;
  */
 public class GlobalPlugConfiguration extends Properties
 {
-	private static final long serialVersionUID = 4279325169774545009L;
+    private static final long serialVersionUID = 4279325169774545009L;
 
-	private static GlobalPlugConfiguration global;
+    private static GlobalPlugConfiguration global;
 
-	/** Global plug timeout property name */
-	public static final String GLOBAL_PLUG_TIMEOUT = "GlobalPlug.timeout";
+    /** Global plug timeout property name */
+    public static final String GLOBAL_PLUG_TIMEOUT = "GlobalPlug.timeout";
 
-	static final synchronized GlobalPlugConfiguration getGlobalPlugConfiguration()
-	{
-		if (global == null) {
-			global = new GlobalPlugConfiguration();
-		}
+    static final synchronized GlobalPlugConfiguration getGlobalPlugConfiguration()
+    {
+        if (global == null) {
+            global = new GlobalPlugConfiguration();
+        }
 
-		return global;
-	}
+        return global;
+    }
 
-	/**
-	 * Creates new global configuration with System properties as default.
-	 */
-	public GlobalPlugConfiguration()
-	{
-		super(System.getProperties());
-	}
+    /**
+     * Creates new global configuration with System properties as default.
+     */
+    public GlobalPlugConfiguration()
+    {
+        super(System.getProperties());
+    }
 
-	/**
-	 * Creates new global configuration with supplied properties as default
-	 * @param defaults Default configuration properties
-	 */
-	public GlobalPlugConfiguration(Properties defaults)
-	{
-		super(defaults);
-	}
+    /**
+     * Creates new global configuration with supplied properties as default
+     * @param defaults Default configuration properties
+     */
+    public GlobalPlugConfiguration(Properties defaults)
+    {
+        super(defaults);
+    }
 
-	/**
-	 * Returns default plug timeout
-	 *
-	 * @return Default plug timeout.
-	 */
-	public long getDefaultTimeout()
-	{
-		return Long.parseLong(getProperty(GLOBAL_PLUG_TIMEOUT, "60000"));
-	}
+    /**
+     * Returns default plug timeout
+     *
+     * @return Default plug timeout.
+     */
+    public long getDefaultTimeout()
+    {
+        return Long.parseLong(getProperty(GLOBAL_PLUG_TIMEOUT, "60000"));
+    }
 }
 
 /* __oOo__ */

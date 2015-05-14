@@ -84,10 +84,10 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         {
         case MySQL:
             sql = "{call " + stored_procedure + "(?, ?, ?, ?)}";
-        	break;
+            break;
         case PostgreSQL:
             sql = "{? = call " + stored_procedure + "(?, ?, ?, ?)}";
-        	break;
+            break;
         case Oracle:
             sql = "begin ? := " + stored_procedure + "(?, ?, ?, ?); end;";
             break;
@@ -101,24 +101,24 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         reader.addForCancellation(statement);
         try
         {
-        	final ResultSet result;
+            final ResultSet result;
 
-        	if (dialect == RDBUtil.Dialect.MySQL)
-        	{	 //MySQL
-        		 statement.setInt(1, channel_id);
+            if (dialect == RDBUtil.Dialect.MySQL)
+            {     //MySQL
+                 statement.setInt(1, channel_id);
                  statement.setTimestamp(2, TimestampHelper.toSQLTimestamp(start));
                  statement.setTimestamp(3, TimestampHelper.toSQLTimestamp(end));
                  statement.setInt(4, count);
                  result = statement.executeQuery();
-        	}
-        	else if(dialect == RDBUtil.Dialect.PostgreSQL) 
-        	{	//PostgreSQL
-        		boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
-        		// Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
-        		if (autoCommit) {
-        			reader.getRDB().getConnection().setAutoCommit(false);
-        		}
-        		statement.registerOutParameter(1, Types.OTHER);
+            }
+            else if(dialect == RDBUtil.Dialect.PostgreSQL)
+            {    //PostgreSQL
+                boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
+                // Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
+                if (autoCommit) {
+                    reader.getRDB().getConnection().setAutoCommit(false);
+                }
+                statement.registerOutParameter(1, Types.OTHER);
                 statement.setLong(2, channel_id);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -129,11 +129,11 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
                 statement.setFetchSize(1000);
                 statement.execute();
                 result = (ResultSet) statement.getObject(1);
-        	}
+            }
 
-        	else
-        	{	//ORACLE
-        		statement.registerOutParameter(1, OracleTypes.CURSOR);
+            else
+            {    //ORACLE
+                statement.registerOutParameter(1, OracleTypes.CURSOR);
                 statement.setInt(2, channel_id);
                 statement.setTimestamp(3, TimestampHelper.toSQLTimestamp(start));
                 statement.setTimestamp(4, TimestampHelper.toSQLTimestamp(end));
@@ -142,7 +142,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
                 statement.setFetchSize(1000);
                 statement.execute();
                 result = (ResultSet) statement.getObject(1);
-        	}
+            }
             result.setFetchSize(1000);
 
             // Determine result type: min/max/average table or
@@ -215,14 +215,14 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
             {   // Only one value within averaging bucket?
                 final int cnt = result.getInt(9);
                 final double val_or_avg = result.getDouble(7);
-				if (cnt == 1)
+                if (cnt == 1)
                     value = new ArchiveVNumber(time, severity, status, display, val_or_avg);
                 else // Decode min/max/average
                 {
                     final double min = result.getDouble(5);
-					final double max = result.getDouble(6);
-					final double stddev = 0.0; // not known
-					value = new ArchiveVStatistics(time, severity,
+                    final double max = result.getDouble(6);
+                    final double stddev = 0.0; // not known
+                    value = new ArchiveVStatistics(time, severity,
                             status, display,
                             val_or_avg, min, max, stddev, cnt);
                 }
@@ -274,12 +274,12 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         index = -1;
         values = null;
         if (reader.getRDB().getDialect() == Dialect.PostgreSQL) {
-        	// Restore default auto-commit on result set close 
-        	 try {
-     			reader.getRDB().getConnection().setAutoCommit(true);
-     		} catch (Exception e) {
-     			// Ignore
-     		}
+            // Restore default auto-commit on result set close
+             try {
+                 reader.getRDB().getConnection().setAutoCommit(true);
+             } catch (Exception e) {
+                 // Ignore
+             }
         }
 
     }

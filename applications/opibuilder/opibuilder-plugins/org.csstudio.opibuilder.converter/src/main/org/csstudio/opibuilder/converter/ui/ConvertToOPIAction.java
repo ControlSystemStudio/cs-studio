@@ -29,66 +29,66 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * Convert selected EDM filef to OPI files.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ConvertToOPIAction implements IObjectActionDelegate {
 
-	private List<IResource> selectedFiles;
+    private List<IResource> selectedFiles;
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// NOP
-	}
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        // NOP
+    }
 
-	public void run(IAction action) {
-		Job job = new Job("Converting EDM files to OPI files") {
+    public void run(IAction action) {
+        Job job = new Job("Converting EDM files to OPI files") {
 
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask("Converting", selectedFiles.size());
-				for (IResource selectedFile : selectedFiles) {
-					monitor.subTask("Converting " + selectedFile);
-					IPath convertedFilePath = selectedFile.getLocation().removeFileExtension()
-							.addFileExtension(OPIBuilderPlugin.OPI_FILE_EXTENSION);
-					convertFile(selectedFile, convertedFilePath);
-					monitor.worked(1);
-					if (monitor.isCanceled())
-						return Status.CANCEL_STATUS;
-				}
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                monitor.beginTask("Converting", selectedFiles.size());
+                for (IResource selectedFile : selectedFiles) {
+                    monitor.subTask("Converting " + selectedFile);
+                    IPath convertedFilePath = selectedFile.getLocation().removeFileExtension()
+                            .addFileExtension(OPIBuilderPlugin.OPI_FILE_EXTENSION);
+                    convertFile(selectedFile, convertedFilePath);
+                    monitor.worked(1);
+                    if (monitor.isCanceled())
+                        return Status.CANCEL_STATUS;
+                }
 
-				return Status.OK_STATUS;
-			}
-		};
-		job.schedule();
-	}
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
+    }
 
-	/**Convert an EDM file to OPI file
-	 * @param edlFile the edl file to be converted.
-	 * @param convertedFilePath local file system path of the converted file.
-	 * @return true if succeeded.
-	 */
-	public static boolean convertFile(IResource edlFile, IPath convertedFilePath) {
-		try {
-			OpiWriter writer = OpiWriter.getInstance();
-			writer.writeDisplayFile(edlFile.getLocation().toOSString(),
-					convertedFilePath.toOSString());
+    /**Convert an EDM file to OPI file
+     * @param edlFile the edl file to be converted.
+     * @param convertedFilePath local file system path of the converted file.
+     * @return true if succeeded.
+     */
+    public static boolean convertFile(IResource edlFile, IPath convertedFilePath) {
+        try {
+            OpiWriter writer = OpiWriter.getInstance();
+            writer.writeDisplayFile(edlFile.getLocation().toOSString(),
+                    convertedFilePath.toOSString());
 
-			IResource r = ResourcesPlugin.getWorkspace().getRoot();
-			r.refreshLocal(IResource.DEPTH_INFINITE, null);
-			return true;
-		} catch (Exception e) {
-			final String message = "Converting error in file " + edlFile;
-			EDM2OPIConverterPlugin.getLogger().log(Level.WARNING, message, e);
-			ConsoleService.getInstance().writeError(message + "\n" + e.getMessage()); //$NON-NLS-1$
-			return false;
-		}
-	}
+            IResource r = ResourcesPlugin.getWorkspace().getRoot();
+            r.refreshLocal(IResource.DEPTH_INFINITE, null);
+            return true;
+        } catch (Exception e) {
+            final String message = "Converting error in file " + edlFile;
+            EDM2OPIConverterPlugin.getLogger().log(Level.WARNING, message, e);
+            ConsoleService.getInstance().writeError(message + "\n" + e.getMessage()); //$NON-NLS-1$
+            return false;
+        }
+    }
 
-	@SuppressWarnings("unchecked")
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection
-				&& !((IStructuredSelection) selection).isEmpty())
-			selectedFiles = ((List<IResource>) ((IStructuredSelection) selection).toList());
-	}
+    @SuppressWarnings("unchecked")
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (selection instanceof IStructuredSelection
+                && !((IStructuredSelection) selection).isEmpty())
+            selectedFiles = ((List<IResource>) ((IStructuredSelection) selection).toList());
+    }
 }

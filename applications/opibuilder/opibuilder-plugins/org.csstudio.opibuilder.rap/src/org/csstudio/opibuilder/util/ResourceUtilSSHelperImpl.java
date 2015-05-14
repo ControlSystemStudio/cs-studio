@@ -31,38 +31,38 @@ import org.eclipse.ui.PlatformUI;
  *
  */
 public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
-	private static InputStream inputStream;
-	private static Object lock = new Boolean(true);
-	private static final String NOT_IMPLEMENTED = 
-			"This method has not been implemented yet for RAP";
+    private static InputStream inputStream;
+    private static Object lock = new Boolean(true);
+    private static final String NOT_IMPLEMENTED =
+            "This method has not been implemented yet for RAP";
 
-	@Override
-	public File getFile(IPath path) throws Exception {
-		File local_file = path.toFile();
+    @Override
+    public File getFile(IPath path) throws Exception {
+        File local_file = path.toFile();
         // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
             local_file = new File(local_file.getPath().substring(5));
-        
+
         return local_file.exists() ? local_file : null;
-	}
-	
-	/**
-	 * Return the {@link InputStream} of the file that is available on the
-	 * specified path.
-	 *
-	 * @param path
-	 *            The {@link IPath} to the file in the workspace, the local
-	 *            file system, or a URL (http:, https:, ftp:, file:, platform:)
-	 * @param runInUIJob
-	 * 				true if the task should run in UIJob, which will block UI responsiveness with a progress bar
-	 * on status line. Caller must be in UI thread if this is true.
-	 * @return The corresponding {@link InputStream}. Never <code>null</code>
-	 * @throws Exception
-	 */
-	@SuppressWarnings("nls")
+    }
+
+    /**
+     * Return the {@link InputStream} of the file that is available on the
+     * specified path.
+     *
+     * @param path
+     *            The {@link IPath} to the file in the workspace, the local
+     *            file system, or a URL (http:, https:, ftp:, file:, platform:)
+     * @param runInUIJob
+     *                 true if the task should run in UIJob, which will block UI responsiveness with a progress bar
+     * on status line. Caller must be in UI thread if this is true.
+     * @return The corresponding {@link InputStream}. Never <code>null</code>
+     * @throws Exception
+     */
+    @SuppressWarnings("nls")
     public InputStream pathToInputStream(final IPath path, boolean runInUIJob) throws Exception
     {
-	    // Not a workspace file. Try local file system
+        // Not a workspace file. Try local file system
         File local_file = path.toFile();
         // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
@@ -88,47 +88,47 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
         // Must be a URL
         final URL url = new URL(urlString);
         inputStream = null;
-        
-		if (runInUIJob) {
-			synchronized (lock) {
-				IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
 
-					public void run(IProgressMonitor monitor)
-							throws InvocationTargetException,
-							InterruptedException {
-						try {
-							monitor.beginTask("Connecting to " + url,
-									IProgressMonitor.UNKNOWN);
-							inputStream = openURLStream(url);
-						} catch (IOException e) {
-							throw new InvocationTargetException(e,
-									"Timeout while connecting to " + url);
-						} finally {
-							monitor.done();
-						}
-					}
+        if (runInUIJob) {
+            synchronized (lock) {
+                IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
 
-				};
-				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-						.run(true, false, openURLTask);
-			}
-		}else
-			return openURLStream(url);
-       
-		return inputStream;        
+                    public void run(IProgressMonitor monitor)
+                            throws InvocationTargetException,
+                            InterruptedException {
+                        try {
+                            monitor.beginTask("Connecting to " + url,
+                                    IProgressMonitor.UNKNOWN);
+                            inputStream = openURLStream(url);
+                        } catch (IOException e) {
+                            throw new InvocationTargetException(e,
+                                    "Timeout while connecting to " + url);
+                        } finally {
+                            monitor.done();
+                        }
+                    }
 
-	}
-	
-	private static InputStream openURLStream(final URL url) throws IOException {
-		URLConnection connection = url.openConnection();
-		connection.setReadTimeout(PreferencesHelper.getURLFileLoadingTimeout());
-		return connection.getInputStream();
-	}
-		
-	
-	
-	public boolean isExistingLocalFile(IPath path){
-		 // Not a workspace file. Try local file system
+                };
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+                        .run(true, false, openURLTask);
+            }
+        }else
+            return openURLStream(url);
+
+        return inputStream;
+
+    }
+
+    private static InputStream openURLStream(final URL url) throws IOException {
+        URLConnection connection = url.openConnection();
+        connection.setReadTimeout(PreferencesHelper.getURLFileLoadingTimeout());
+        return connection.getInputStream();
+    }
+
+
+
+    public boolean isExistingLocalFile(IPath path){
+         // Not a workspace file. Try local file system
         File local_file = path.toFile();
         // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
@@ -143,48 +143,48 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
             return false;
         }
         return true;
-        
-	}
 
-	/**
-	 * @return
-	 * @throws FileNotFoundException
-	 */
-	public IPath getPathInEditor(IEditorInput input){
-		if(input instanceof IPathEditorInput)
-			return ((IPathEditorInput)input).getPath();		
-		return null;
-	}
+    }
 
-	
+    /**
+     * @return
+     * @throws FileNotFoundException
+     */
+    public IPath getPathInEditor(IEditorInput input){
+        if(input instanceof IPathEditorInput)
+            return ((IPathEditorInput)input).getPath();
+        return null;
+    }
 
 
-	/** Check if a URL is actually a URL
-	 *  @param url Possible URL
-	 *  @return <code>true</code> if considered a URL
-	 */
-	@SuppressWarnings("nls")
+
+
+    /** Check if a URL is actually a URL
+     *  @param url Possible URL
+     *  @return <code>true</code> if considered a URL
+     */
+    @SuppressWarnings("nls")
 /*    public static boolean isURL(final String url){
-		return url.contains("://");  //$NON-NLS-1$
-	}*/
+        return url.contains("://");  //$NON-NLS-1$
+    }*/
 
-	@Override
-	public InputStream getInputStreamFromEditorInput(IEditorInput editorInput) {
-		return null;
-	}
+    @Override
+    public InputStream getInputStreamFromEditorInput(IEditorInput editorInput) {
+        return null;
+    }
 
-	@Override
-	public boolean isExistingWorkspaceFile(IPath path) {
-		return false;
-	}
+    @Override
+    public boolean isExistingWorkspaceFile(IPath path) {
+        return false;
+    }
 
-	@Override
-	public IPath workspacePathToSysPath(IPath path) {
-		return null;
-	}
+    @Override
+    public IPath workspacePathToSysPath(IPath path) {
+        return null;
+    }
 
-	@Override
-	public Image getScreenShotImage(GraphicalViewer viewer) {
-		throw new RuntimeException(NOT_IMPLEMENTED);
-	}	
+    @Override
+    public Image getScreenShotImage(GraphicalViewer viewer) {
+        throw new RuntimeException(NOT_IMPLEMENTED);
+    }
 }

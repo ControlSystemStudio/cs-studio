@@ -52,57 +52,57 @@ package org.csstudio.dal;
  */
 public interface HistoryIterator
 {
-	/**
-	 * Moves the iterator to the next chunk. The chunk will have size <code>length</code>.
-	 *
-	 * @param    length    the requested size of the next chunk; if 0 is specified, all data items will be
-	 *                     returned, values less than 0 are illegal
-	 * @throws    DataExchangeException
-	 *                     when the data acquisition of the next data chunk fails
-	 */
-	public void next(int length) throws DataExchangeException;
+    /**
+     * Moves the iterator to the next chunk. The chunk will have size <code>length</code>.
+     *
+     * @param    length    the requested size of the next chunk; if 0 is specified, all data items will be
+     *                     returned, values less than 0 are illegal
+     * @throws    DataExchangeException
+     *                     when the data acquisition of the next data chunk fails
+     */
+    public void next(int length) throws DataExchangeException;
 
-	/**
-	 * Returns <code>true</code> if at least one data item is still left in the iterator (i.e.
-	 * if at least one further chunk of size 1 must be requested).
-	 *
-	 * @return <code>true</code>    if more calls to <code>next()</code> are needed
-	 * @throws DataExchangeException
-	 *                                 if the query fails in the implementation
-	 */
-	public boolean hasNext() throws DataExchangeException;
+    /**
+     * Returns <code>true</code> if at least one data item is still left in the iterator (i.e.
+     * if at least one further chunk of size 1 must be requested).
+     *
+     * @return <code>true</code>    if more calls to <code>next()</code> are needed
+     * @throws DataExchangeException
+     *                                 if the query fails in the implementation
+     */
+    public boolean hasNext() throws DataExchangeException;
 
-	/**
-	 * Returns the timestamp data in the current chunk. The length of the array may not equal the length
-	 * requested with <code>next()</code>. This method may be called multiple times, but the
-	 * data acquisition should be done only for the first time.
-	 *
-	 * @return        array of timestamps
-	 * @throws DataExchangeException if the query fails in the implementation
-	 */
-	public long[] getTimestamps() throws DataExchangeException;
+    /**
+     * Returns the timestamp data in the current chunk. The length of the array may not equal the length
+     * requested with <code>next()</code>. This method may be called multiple times, but the
+     * data acquisition should be done only for the first time.
+     *
+     * @return        array of timestamps
+     * @throws DataExchangeException if the query fails in the implementation
+     */
+    public long[] getTimestamps() throws DataExchangeException;
 
-	/**
-	 * Returns the number of data items in the iterator, or at least an estimation of the size.
-	 * If the size is unknown, this method should return -1.
-	 *
-	 * @return        the estimation of the total data size
-	 * @throws    DataExchangeException
-	 *                 if the query for the complete data size fails
-	 */
-	public int size() throws DataExchangeException;
+    /**
+     * Returns the number of data items in the iterator, or at least an estimation of the size.
+     * If the size is unknown, this method should return -1.
+     *
+     * @return        the estimation of the total data size
+     * @throws    DataExchangeException
+     *                 if the query for the complete data size fails
+     */
+    public int size() throws DataExchangeException;
 
-	/**
-	 * Returns the data array as a Java <code>Object</code>. This object can be cast to the Java array type
-	 * of the data contained. This is used primarily by generic applications or browsers, but has otherwise
-	 * the same semantics as type-specific <code>getValues()</code>. This method always returns non-<code>null</code>,
-	 * even if there is no more data in the iterator (in which case it returns the array of 0 length). This is
-	 * useful for determining type of the element in the array.
-	 *
-	 * @return the values array as a Java <code>Object</code>
-	 * @throws DataExchangeException if the query fails in the implementation
-	 */
-	public Object getValuesAsObject() throws DataExchangeException;
+    /**
+     * Returns the data array as a Java <code>Object</code>. This object can be cast to the Java array type
+     * of the data contained. This is used primarily by generic applications or browsers, but has otherwise
+     * the same semantics as type-specific <code>getValues()</code>. This method always returns non-<code>null</code>,
+     * even if there is no more data in the iterator (in which case it returns the array of 0 length). This is
+     * useful for determining type of the element in the array.
+     *
+     * @return the values array as a Java <code>Object</code>
+     * @throws DataExchangeException if the query fails in the implementation
+     */
+    public Object getValuesAsObject() throws DataExchangeException;
 }
 
 /* __oOo__ */

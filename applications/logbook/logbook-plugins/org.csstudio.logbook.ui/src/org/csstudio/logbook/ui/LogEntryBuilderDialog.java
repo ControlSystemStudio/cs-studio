@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui;
 
@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class LogEntryBuilderDialog extends Dialog {
     private LogEntryBuilder logEntryBuilder;
@@ -41,171 +41,171 @@ public class LogEntryBuilderDialog extends Dialog {
     private UserCredentialsWidget userCredentialWidget;
 
     private final IPreferencesService service = Platform.getPreferencesService();
-    private boolean authenticate = true;    
+    private boolean authenticate = true;
     private String defaultLogbook = "";
     /** The default level. */
     private String defaultLevel;
     private ErrorBar errorBar;
-    
+
     /** The listeners. */
     final private CopyOnWriteArrayList<LogEntryBuilderListener> listeners =
     new CopyOnWriteArrayList<LogEntryBuilderListener>();
-    
-    
+
+
     public LogEntryBuilderDialog(Shell parentShell,
-	    LogEntryBuilder logEntryBuilder) {
-	super(parentShell);
-	setBlockOnOpen(false);
-	setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
-	this.logEntryBuilder = logEntryBuilder;
+        LogEntryBuilder logEntryBuilder) {
+    super(parentShell);
+    setBlockOnOpen(false);
+    setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
+    this.logEntryBuilder = logEntryBuilder;
     }
 
     @Override
     public Control createDialogArea(Composite parent) {
-	getShell().setText("Create Log Entry");
-	Composite container = (Composite) super.createDialogArea(parent);
-	GridLayout gridLayout = (GridLayout) container.getLayout();
-	gridLayout.marginWidth = 2;
-	gridLayout.marginHeight = 2;
-	errorBar = new ErrorBar(container, SWT.NONE);
+    getShell().setText("Create Log Entry");
+    Composite container = (Composite) super.createDialogArea(parent);
+    GridLayout gridLayout = (GridLayout) container.getLayout();
+    gridLayout.marginWidth = 2;
+    gridLayout.marginHeight = 2;
+    errorBar = new ErrorBar(container, SWT.NONE);
 
-	try {
-	    authenticate = service.getBoolean("org.csstudio.logbook.ui","Autenticate.user", true, null);
-	    defaultLogbook = service.getString("org.csstudio.logbook.ui","Default.logbook", "", null);
-	    defaultLevel = service.getString("org.csstudio.logbook.ui","Default.level", "", null);
-	} catch (Exception ex) {
-	    errorBar.setException(ex);
-	}
-	if (authenticate) {
-	    userCredentialWidget = new UserCredentialsWidget(container,
-		    SWT.NONE);
-	    userCredentialWidget.setLayoutData(new GridData(SWT.FILL,
-		    SWT.CENTER, true, false, 1, 1));
-	}
+    try {
+        authenticate = service.getBoolean("org.csstudio.logbook.ui","Autenticate.user", true, null);
+        defaultLogbook = service.getString("org.csstudio.logbook.ui","Default.logbook", "", null);
+        defaultLevel = service.getString("org.csstudio.logbook.ui","Default.level", "", null);
+    } catch (Exception ex) {
+        errorBar.setException(ex);
+    }
+    if (authenticate) {
+        userCredentialWidget = new UserCredentialsWidget(container,
+            SWT.NONE);
+        userCredentialWidget.setLayoutData(new GridData(SWT.FILL,
+            SWT.CENTER, true, false, 1, 1));
+    }
 
-	logEntryWidget = new LogEntryWidget(container, SWT.NONE, true, true);
-	GridData gd_logEntryWidget = new GridData(SWT.FILL, SWT.FILL, true,
-		true, 1, 1);
-	gd_logEntryWidget.heightHint = 450;
-	gd_logEntryWidget.widthHint = 450;
-	logEntryWidget.setLayoutData(gd_logEntryWidget);
-	if (this.logEntryBuilder != null) {
-	    try {
-		logEntryWidget.setLogEntry(logEntryBuilder.setLevel(defaultLevel).addLogbook(
-		    LogbookBuilder.logbook(defaultLogbook)).build());
-	    } catch (IOException e) {
-		errorBar.setException(e);
-	    }
-	}
+    logEntryWidget = new LogEntryWidget(container, SWT.NONE, true, true);
+    GridData gd_logEntryWidget = new GridData(SWT.FILL, SWT.FILL, true,
+        true, 1, 1);
+    gd_logEntryWidget.heightHint = 450;
+    gd_logEntryWidget.widthHint = 450;
+    logEntryWidget.setLayoutData(gd_logEntryWidget);
+    if (this.logEntryBuilder != null) {
+        try {
+        logEntryWidget.setLogEntry(logEntryBuilder.setLevel(defaultLevel).addLogbook(
+            LogbookBuilder.logbook(defaultLogbook)).build());
+        } catch (IOException e) {
+        errorBar.setException(e);
+        }
+    }
 
-	return container;
+    return container;
     }
 
     @Override
-	protected void createButtonsForButtonBar(Composite parent) {
-		// create OK and Cancel buttons by default
-		createButton(parent, IDialogConstants.OK_ID, "Submit", true);
-		createButton(parent, IDialogConstants.CANCEL_ID,
-				IDialogConstants.CANCEL_LABEL, false);
-	}
+    protected void createButtonsForButtonBar(Composite parent) {
+        // create OK and Cancel buttons by default
+        createButton(parent, IDialogConstants.OK_ID, "Submit", true);
+        createButton(parent, IDialogConstants.CANCEL_ID,
+                IDialogConstants.CANCEL_LABEL, false);
+    }
 
-	@Override
-	protected void okPressed() {
-		// Create the logEntry
-		// Create logbook client
-		final Cursor originalCursor = getShell().getCursor();
-		// Disable Submmit
-		getButton(IDialogConstants.OK_ID).setEnabled(false);
-		try {
-			// get logbook client
-			final LogbookClient logbookClient;
-			if (authenticate) {
-				logbookClient = LogbookClientManager.getLogbookClientFactory()
-						.getClient(userCredentialWidget.getUsername(),
-								userCredentialWidget.getPassword());
-				fireInitializeSave(userCredentialWidget.getUsername());
-			} else {
-				logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
-				fireInitializeSave("");
-			}
+    @Override
+    protected void okPressed() {
+        // Create the logEntry
+        // Create logbook client
+        final Cursor originalCursor = getShell().getCursor();
+        // Disable Submmit
+        getButton(IDialogConstants.OK_ID).setEnabled(false);
+        try {
+            // get logbook client
+            final LogbookClient logbookClient;
+            if (authenticate) {
+                logbookClient = LogbookClientManager.getLogbookClientFactory()
+                        .getClient(userCredentialWidget.getUsername(),
+                                userCredentialWidget.getPassword());
+                fireInitializeSave(userCredentialWidget.getUsername());
+            } else {
+                logbookClient = LogbookClientManager.getLogbookClientFactory().getClient();
+                fireInitializeSave("");
+            }
 
-			getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
+            getShell().setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_WAIT));
 
-			// Start save process
-			fireStartSave();
-			// create log entry
-			
-			Job job = new Job("Create Log Entry") {
+            // Start save process
+            fireStartSave();
+            // create log entry
 
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					try {
-						logbookClient.createLogEntry(logEntryWidget.getLogEntry());
-						return Status.OK_STATUS;
-					} catch (final Exception e) {
-						getShell().getDisplay().asyncExec(new Runnable() {
+            Job job = new Job("Create Log Entry") {
 
-							@Override
-							public void run() {
-								getShell().setCursor(originalCursor);
-								getButton(IDialogConstants.OK_ID).setEnabled(true);
-								errorBar.setException(e);
-							}
-						});
-						return Status.CANCEL_STATUS;
-					}
-				}
-			};
-			job.addJobChangeListener(new JobChangeAdapter() {
-				public void done(IJobChangeEvent event) {
-					if (event.getResult().isOK()) {
-						getShell().getDisplay().asyncExec(new Runnable() {
+                @Override
+                protected IStatus run(IProgressMonitor monitor) {
+                    try {
+                        logbookClient.createLogEntry(logEntryWidget.getLogEntry());
+                        return Status.OK_STATUS;
+                    } catch (final Exception e) {
+                        getShell().getDisplay().asyncExec(new Runnable() {
 
-							@Override
-							public void run() {
-								getShell().setCursor(originalCursor);
-								getButton(IDialogConstants.OK_ID).setEnabled(true);
-								setReturnCode(OK);
+                            @Override
+                            public void run() {
+                                getShell().setCursor(originalCursor);
+                                getButton(IDialogConstants.OK_ID).setEnabled(true);
+                                errorBar.setException(e);
+                            }
+                        });
+                        return Status.CANCEL_STATUS;
+                    }
+                }
+            };
+            job.addJobChangeListener(new JobChangeAdapter() {
+                public void done(IJobChangeEvent event) {
+                    if (event.getResult().isOK()) {
+                        getShell().getDisplay().asyncExec(new Runnable() {
 
-								// Stop save process
-								try {
-									fireStopSave();
-									close();
-								} catch (Exception e) {
-									errorBar.setException(e);
+                            @Override
+                            public void run() {
+                                getShell().setCursor(originalCursor);
+                                getButton(IDialogConstants.OK_ID).setEnabled(true);
+                                setReturnCode(OK);
 
-									// Cancel save process
-									fireCancelSave();
-								}
-							}
-						});
+                                // Stop save process
+                                try {
+                                    fireStopSave();
+                                    close();
+                                } catch (Exception e) {
+                                    errorBar.setException(e);
 
-					}
-				}
-			});
-			job.schedule();			
-		} catch (Exception ex) {
-			getShell().setCursor(originalCursor);
-			getButton(IDialogConstants.OK_ID).setEnabled(true);
-			errorBar.setException(ex);
+                                    // Cancel save process
+                                    fireCancelSave();
+                                }
+                            }
+                        });
 
-			// Cancel save process
-			fireCancelSave();
-		}
-	}
-	
-	
+                    }
+                }
+            });
+            job.schedule();
+        } catch (Exception ex) {
+            getShell().setCursor(originalCursor);
+            getButton(IDialogConstants.OK_ID).setEnabled(true);
+            errorBar.setException(ex);
+
+            // Cancel save process
+            fireCancelSave();
+        }
+    }
+
+
     /**
      * @param listener
-     * 				Listener to add
+     *                 Listener to add
      */
     public void addListener(final LogEntryBuilderListener listener) {
         listeners.add(listener);
     }
 
-    /** 
-     * @param listener 
-     * 				Listener to remove 
+    /**
+     * @param listener
+     *                 Listener to remove
      * */
     public void removeListener(final LogEntryBuilderListener listener) {
         listeners.remove(listener);
@@ -220,35 +220,35 @@ public class LogEntryBuilderDialog extends Dialog {
         for (LogEntryBuilderListener listener : listeners)
             listener.initializeSaveAction(userName);
     }
-    
+
     /**
      * Fire start save.
-     * @throws Exception 
+     * @throws Exception
      */
     void fireStartSave() throws Exception {
         for (LogEntryBuilderListener listener : listeners)
             listener.saveProcessStatus(LogEntryBuilderEnum.START_SAVE);
     }
-    
+
     /**
      * Fire cancel save.
      */
     void fireCancelSave()  {
         for (LogEntryBuilderListener listener : listeners) {
-			try {
-				listener.saveProcessStatus(LogEntryBuilderEnum.CANCEL_SAVE);
-			} catch (Exception e) {
-				continue;
-			};	
+            try {
+                listener.saveProcessStatus(LogEntryBuilderEnum.CANCEL_SAVE);
+            } catch (Exception e) {
+                continue;
+            };
         }
     }
-    
+
     /**
      * Fire finish save.
-     * @throws Exception 
+     * @throws Exception
      */
     void fireStopSave() throws Exception {
         for (LogEntryBuilderListener listener : listeners)
-        	   listener.saveProcessStatus(LogEntryBuilderEnum.STOP_SAVE);
+               listener.saveProcessStatus(LogEntryBuilderEnum.STOP_SAVE);
     }
 }

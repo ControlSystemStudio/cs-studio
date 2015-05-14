@@ -15,10 +15,10 @@ import org.csstudio.autocomplete.parser.ContentType;
  */
 public class LocalContentType extends ContentType {
 
-	public static LocalContentType LocalPV = new LocalContentType("LocalPV");
+    public static LocalContentType LocalPV = new LocalContentType("LocalPV");
 
-	private LocalContentType(String value) {
-		super(value);
-	}
+    private LocalContentType(String value) {
+        super(value);
+    }
 
 }

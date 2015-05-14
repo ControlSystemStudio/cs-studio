@@ -73,23 +73,23 @@ public class NDShapeUnitTest
     @Test
     public void testIterator()
     {
-    	final NDShape s = new NDShape(3, 2);
-    	final ShapeIterator iter = s.iterator();
-    	for (int i=0; i<3; ++i)
-        	for (int j=0; j<2; ++j)
-        	{
-        		assertTrue(iter.hasNext());
-        		final int[] pos = iter.getPosition();
-        		assertEquals(2, pos.length);
-        		assertEquals(i, pos[0]);
-        		assertEquals(j, pos[1]);
-        	}
-    	// Iteration ends
-		assertFalse(iter.hasNext());
-		// .. and wraps around
-		assertTrue(iter.hasNext());
-		final int[] pos = iter.getPosition();
-		assertEquals(0, pos[0]);
-		assertEquals(1, pos[1]);
+        final NDShape s = new NDShape(3, 2);
+        final ShapeIterator iter = s.iterator();
+        for (int i=0; i<3; ++i)
+            for (int j=0; j<2; ++j)
+            {
+                assertTrue(iter.hasNext());
+                final int[] pos = iter.getPosition();
+                assertEquals(2, pos.length);
+                assertEquals(i, pos[0]);
+                assertEquals(j, pos[1]);
+            }
+        // Iteration ends
+        assertFalse(iter.hasNext());
+        // .. and wraps around
+        assertTrue(iter.hasNext());
+        final int[] pos = iter.getPosition();
+        assertEquals(0, pos[0]);
+        assertEquals(1, pos[1]);
     }
 }

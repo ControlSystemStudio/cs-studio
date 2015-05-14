@@ -15,31 +15,31 @@ import org.csstudio.archive.config.SampleMode;
 @SuppressWarnings("nls")
 public class RDBSampleMode extends SampleMode
 {
-	final private int id;
+    final private int id;
 
-	/** Initialize
-	 *  @param id RDB ID
-	 *  @param monitor Monitor/subscription or active scan?
-	 *  @param delta Value change threshold
-	 *  @param period (Expected) update period in seconds
-	 */
+    /** Initialize
+     *  @param id RDB ID
+     *  @param monitor Monitor/subscription or active scan?
+     *  @param delta Value change threshold
+     *  @param period (Expected) update period in seconds
+     */
     public RDBSampleMode(final int id, final boolean monitor, final double delta, final double period)
     {
-    	super(monitor, delta, period);
-    	this.id = id;
+        super(monitor, delta, period);
+        this.id = id;
     }
 
     /** @param name Scan mode name
      *  @return <code>true</code> if it's the 'Monitor' mode
      */
-	public static boolean determineMonitor(final String name)
+    public static boolean determineMonitor(final String name)
     {
-	    return "Monitor".equalsIgnoreCase(name);
+        return "Monitor".equalsIgnoreCase(name);
     }
 
-	/** @return RDB ID */
-	public int getId()
+    /** @return RDB ID */
+    public int getId()
     {
-	    return id;
+        return id;
     }
 }

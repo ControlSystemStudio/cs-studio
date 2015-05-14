@@ -69,7 +69,7 @@ public class ScanMonitorView extends ViewPart
         // Toolbar actions (duplicating context menu actions)
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         final Shell shell = parent.getShell();
-		toolbar.add(new InfoAction(shell, model));
+        toolbar.add(new InfoAction(shell, model));
         toolbar.add(new ResumeAction(shell, model, null));
         toolbar.add(new PauseAction(shell, model, null));
         toolbar.add(new AbortAction(shell, model, null));

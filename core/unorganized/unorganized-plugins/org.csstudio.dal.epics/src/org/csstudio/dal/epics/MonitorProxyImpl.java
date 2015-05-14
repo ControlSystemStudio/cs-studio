@@ -51,348 +51,348 @@ import org.csstudio.dal.proxy.MonitorProxy;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
 public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
-		Runnable, MonitorListener, ExpertMonitor {
+        Runnable, MonitorListener, ExpertMonitor {
 
-	public static final String INVALID_VALUE = "Invalid value.";
+    public static final String INVALID_VALUE = "Invalid value.";
 
-	public static final String VALUE = "value";
+    public static final String VALUE = "value";
 
-	/**
-	 * Default timer trigger (in ms).
-	 */
-	protected static final long DEFAULT_TIMER_TRIGGER = 1000;
+    /**
+     * Default timer trigger (in ms).
+     */
+    protected static final long DEFAULT_TIMER_TRIGGER = 1000;
 
-	/**
-	 * Property (parent) proxy impl.
-	 */
-	protected PropertyProxyImpl<T> proxy;
+    /**
+     * Property (parent) proxy impl.
+     */
+    protected PropertyProxyImpl<T> proxy;
 
-	/**
-	 * Timer trigger (in ms).
-	 */
-	protected long timerTrigger = 1000;
+    /**
+     * Timer trigger (in ms).
+     */
+    protected long timerTrigger = 1000;
 
-	/**
-	 * Heartbeat flag.
-	 */
-	protected boolean heartbeat = false;
+    /**
+     * Heartbeat flag.
+     */
+    protected boolean heartbeat = false;
 
-	/**
-	 * Timer task.
-	 */
-	protected TimerTask task;
+    /**
+     * Timer task.
+     */
+    protected TimerTask task;
 
-	/**
-	 * Destroy flag.
-	 */
-	protected volatile boolean destroyed = false;
+    /**
+     * Destroy flag.
+     */
+    protected volatile boolean destroyed = false;
 
 
-	/**
-	 * CA monitor implementation.
-	 */
-	protected Monitor monitor;
+    /**
+     * CA monitor implementation.
+     */
+    protected Monitor monitor;
 
-	/**
-	 * EPICS plug.
-	 */
-	protected EPICSPlug plug;
+    /**
+     * EPICS plug.
+     */
+    protected EPICSPlug plug;
 
-	/**
-	 * Special parameters for expert monitor
-	 */
-	protected Map<String,Object> parameters;
+    /**
+     * Special parameters for expert monitor
+     */
+    protected Map<String,Object> parameters;
 
-	private ResponseImpl<T> lastResponse;
+    private ResponseImpl<T> lastResponse;
 
-	/**
-	 * Creates new instance.
-	 *
-	 * @param proxy parent proxy object
-	 * @param l listener for notifications
-	 */
-	public MonitorProxyImpl(final EPICSPlug plug, final PropertyProxyImpl<T> proxy, final ResponseListener<T> l, final Map<String,Object> param)
-			throws CAException {
-		super(proxy, l);
-		this.proxy = proxy;
-		this.plug = plug;
-		this.parameters=param;
+    /**
+     * Creates new instance.
+     *
+     * @param proxy parent proxy object
+     * @param l listener for notifications
+     */
+    public MonitorProxyImpl(final EPICSPlug plug, final PropertyProxyImpl<T> proxy, final ResponseListener<T> l, final Map<String,Object> param)
+            throws CAException {
+        super(proxy, l);
+        this.proxy = proxy;
+        this.plug = plug;
+        this.parameters=param;
 
-		int mask= plug.getDefaultMonitorMask();
+        int mask= plug.getDefaultMonitorMask();
 
-		if (param!=null && param.get(EPICSPlug.PARAMETER_MONITOR_MASK) instanceof Integer) {
-			mask= (Integer)param.get(EPICSPlug.PARAMETER_MONITOR_MASK);
-		}
+        if (param!=null && param.get(EPICSPlug.PARAMETER_MONITOR_MASK) instanceof Integer) {
+            mask= (Integer)param.get(EPICSPlug.PARAMETER_MONITOR_MASK);
+        }
 
-		monitor = proxy.getChannel().addMonitor(
-				PlugUtilities.toTimeDBRType(proxy.getType()),
-				proxy.getChannel().getElementCount(),
-				mask, this);
-		plug.flushIO();
+        monitor = proxy.getChannel().addMonitor(
+                PlugUtilities.toTimeDBRType(proxy.getType()),
+                proxy.getChannel().getElementCount(),
+                mask, this);
+        plug.flushIO();
 
-		proxy.addMonitor(this);
+        proxy.addMonitor(this);
 
-		resetTimer();
-	}
+        resetTimer();
+    }
 
-	/*
-	 * @see org.csstudio.dal.proxy.MonitorProxy#getRequest()
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.proxy.MonitorProxy#getRequest()
+     */
+    @Override
     public Request<T> getRequest() {
-		return this;
-	}
+        return this;
+    }
 
-	/*
-	 * @see org.csstudio.dal.SimpleMonitor#getTimerTrigger()
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.SimpleMonitor#getTimerTrigger()
+     */
+    @Override
     public long getTimerTrigger() throws DataExchangeException {
-		return timerTrigger;
-	}
+        return timerTrigger;
+    }
 
-	/*
-	 * @see org.csstudio.dal.SimpleMonitor#setTimerTrigger(long)
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.SimpleMonitor#setTimerTrigger(long)
+     */
+    @Override
     public void setTimerTrigger(final long trigger) throws DataExchangeException,
-			UnsupportedOperationException {
+            UnsupportedOperationException {
 
-		// valid trigger check
-		if (trigger <= 0) {
+        // valid trigger check
+        if (trigger <= 0) {
             throw new IllegalArgumentException("trigger < 0");
         }
 
-		// noop check
-		if (trigger == timerTrigger) {
+        // noop check
+        if (trigger == timerTrigger) {
             return;
         }
 
-		timerTrigger = trigger;
-		resetTimer();
-	}
+        timerTrigger = trigger;
+        resetTimer();
+    }
 
-	/*
-	 * @see org.csstudio.dal.SimpleMonitor#setHeartbeat(boolean)
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.SimpleMonitor#setHeartbeat(boolean)
+     */
+    @Override
     public void setHeartbeat(final boolean heartbeat) throws DataExchangeException,
-			UnsupportedOperationException {
+            UnsupportedOperationException {
 
-		// noop check
-		if (heartbeat == this.heartbeat) {
+        // noop check
+        if (heartbeat == this.heartbeat) {
             return;
         }
 
-		this.heartbeat = heartbeat;
-		resetTimer();
-	}
+        this.heartbeat = heartbeat;
+        resetTimer();
+    }
 
-	/*
-	 * @see org.csstudio.dal.SimpleMonitor#isHeartbeat()
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.SimpleMonitor#isHeartbeat()
+     */
+    @Override
     public boolean isHeartbeat() {
-		return heartbeat;
-	}
+        return heartbeat;
+    }
 
-	/*
-	 * @see org.csstudio.dal.SimpleMonitor#getDefaultTimerTrigger()
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.SimpleMonitor#getDefaultTimerTrigger()
+     */
+    @Override
     public long getDefaultTimerTrigger() throws DataExchangeException {
-		return DEFAULT_TIMER_TRIGGER;
-	}
+        return DEFAULT_TIMER_TRIGGER;
+    }
 
-	/*
-	 * @see org.csstudio.dal.SimpleMonitor#isDefault()
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.SimpleMonitor#isDefault()
+     */
+    @Override
     public boolean isDefault() {
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Fire value event.
-	 */
-	private void fireValueEvent(final ResponseImpl<T> response) {
+    /**
+     * Fire value event.
+     */
+    private void fireValueEvent(final ResponseImpl<T> response) {
 
-		// noop check
-		if (destroyed || proxy == null || response == null || response.getValue() == null
-				|| !proxy.getConnectionState().isConnected()) {
-			return;
-		}
+        // noop check
+        if (destroyed || proxy == null || response == null || response.getValue() == null
+                || !proxy.getConnectionState().isConnected()) {
+            return;
+        }
 
-		final ResponseImpl<T> r= response;
-		proxy.getExecutor().execute(new Runnable() {
-			@Override
+        final ResponseImpl<T> r= response;
+        proxy.getExecutor().execute(new Runnable() {
+            @Override
             public void run() {
-				addResponse(r);
-				proxy.updateValueReponse(r);
-			}
-		});
-	}
+                addResponse(r);
+                proxy.updateValueReponse(r);
+            }
+        });
+    }
 
-	/**
-	 * Fires value change event if monitor is not in heartbeat mode.
-	 */
-	public void fireValueChange(final ResponseImpl<T> response) {
-		lastResponse= response;
-		if (!heartbeat) {
-			fireValueEvent(response);
-		}
-	}
+    /**
+     * Fires value change event if monitor is not in heartbeat mode.
+     */
+    public void fireValueChange(final ResponseImpl<T> response) {
+        lastResponse= response;
+        if (!heartbeat) {
+            fireValueEvent(response);
+        }
+    }
 
-	/**
-	 * Run method executed at schedulet time intervals.
-	 */
-	@Override
+    /**
+     * Run method executed at schedulet time intervals.
+     */
+    @Override
     public void run() {
-		fireValueEvent(lastResponse);
-	}
+        fireValueEvent(lastResponse);
+    }
 
-	/**
-	 * Reset timer.
-	 */
-	private synchronized void resetTimer() {
+    /**
+     * Reset timer.
+     */
+    private synchronized void resetTimer() {
 
-		if (destroyed) {
+        if (destroyed) {
             throw new IllegalStateException("monitor destroyed");
         }
 
-		if (task != null) {
-			task.cancel();
-		}
+        if (task != null) {
+            task.cancel();
+        }
 
-		if (heartbeat) {
-			task = plug.schedule(this, 0, timerTrigger);
-		}
-	}
+        if (heartbeat) {
+            task = plug.schedule(this, 0, timerTrigger);
+        }
+    }
 
-	/*
-	 * @see org.csstudio.dal.SimpleMonitor#destroy()
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.SimpleMonitor#destroy()
+     */
+    @Override
     public synchronized void destroy() {
 
-		if (destroyed) {
+        if (destroyed) {
             return;
         }
 
-		if (task != null) {
-			task.cancel();
-		}
+        if (task != null) {
+            task.cancel();
+        }
 
-		proxy.removeMonitor(this);
+        proxy.removeMonitor(this);
 
-		// destroy remote instance
-		if (monitor != null) {
-			try {
-				monitor.clear();
-			} catch (final CAException e) {
-				// noop
-			} catch (final RuntimeException e) {
-				//might happen in the CA - disconnect monitor and it should eventually be gc
-				throw e;
-			} finally {
-				monitor.removeMonitorListener(this);
-				destroyed = true;
-			}
-		}
-		destroyed = true;
-	}
+        // destroy remote instance
+        if (monitor != null) {
+            try {
+                monitor.clear();
+            } catch (final CAException e) {
+                // noop
+            } catch (final RuntimeException e) {
+                //might happen in the CA - disconnect monitor and it should eventually be gc
+                throw e;
+            } finally {
+                monitor.removeMonitorListener(this);
+                destroyed = true;
+            }
+        }
+        destroyed = true;
+    }
 
-	/*
-	 * @see org.csstudio.dal.SimpleMonitor#isDestroyed()
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.SimpleMonitor#isDestroyed()
+     */
+    @Override
     public boolean isDestroyed() {
-		return destroyed;
-	}
+        return destroyed;
+    }
 
-	/*
-	 * @see gov.aps.jca.event.MonitorListener#monitorChanged(gov.aps.jca.event.MonitorEvent)
-	 */
-	@Override
+    /*
+     * @see gov.aps.jca.event.MonitorListener#monitorChanged(gov.aps.jca.event.MonitorEvent)
+     */
+    @Override
     public void monitorChanged(final MonitorEvent ev) {
 
-		final DBR dbr = ev.getDBR();
+        final DBR dbr = ev.getDBR();
 
-		//System.err.println("M "+dbr);
+        //System.err.println("M "+dbr);
 
-		if(dbr==null
-				|| dbr.getValue()==null
-				|| !ev.getStatus().isSuccessful()) {
+        if(dbr==null
+                || dbr.getValue()==null
+                || !ev.getStatus().isSuccessful()) {
 
-			proxy.updateConditionWithDBR(dbr);
+            proxy.updateConditionWithDBR(dbr);
 
-			final ResponseImpl<T> r= new ResponseImpl<T>(proxy, this, null,
-				        VALUE, false, new NullPointerException(INVALID_VALUE), proxy.getCondition(), new Timestamp(), false);
+            final ResponseImpl<T> r= new ResponseImpl<T>(proxy, this, null,
+                        VALUE, false, new NullPointerException(INVALID_VALUE), proxy.getCondition(), new Timestamp(), false);
 
-			proxy.getExecutor().execute(new Runnable() {
-				@Override
+            proxy.getExecutor().execute(new Runnable() {
+                @Override
                 public void run() {
-					addResponse(r);
-					proxy.updateValueReponse(r);
-				}
-			});
+                    addResponse(r);
+                    proxy.updateValueReponse(r);
+                }
+            });
 
-			return;
-		}
+            return;
+        }
 
-		proxy.updateConditionWithDBR(dbr);
-		// this has been moved to PropertyProxyImpl.updateWithDBR(DBR)
-//		if (dbr.isSTS()) {
-//			proxy.updateConditionWithDBRStatus((STS) dbr);
-//		}
+        proxy.updateConditionWithDBR(dbr);
+        // this has been moved to PropertyProxyImpl.updateWithDBR(DBR)
+//        if (dbr.isSTS()) {
+//            proxy.updateConditionWithDBRStatus((STS) dbr);
+//        }
 
-		final ResponseImpl<T> response= new ResponseImpl<T> (
-				proxy,
-				this,
-				proxy.toJavaValue(dbr),
-				VALUE,
-				true,
-				null,
-				proxy.getCondition(),
-				dbr.isTIME() && ((TIME) dbr).getTimeStamp() != null ?
-						PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp()):
-							new Timestamp(),
-				false);
+        final ResponseImpl<T> response= new ResponseImpl<T> (
+                proxy,
+                this,
+                proxy.toJavaValue(dbr),
+                VALUE,
+                true,
+                null,
+                proxy.getCondition(),
+                dbr.isTIME() && ((TIME) dbr).getTimeStamp() != null ?
+                        PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp()):
+                            new Timestamp(),
+                false);
 
-		// notify
-		fireValueChange(response);
-	}
+        // notify
+        fireValueChange(response);
+    }
 
-	/*
-	 * @see org.csstudio.dal.proxy.MonitorProxy#refresh()
-	 */
-	@Override
+    /*
+     * @see org.csstudio.dal.proxy.MonitorProxy#refresh()
+     */
+    @Override
     public void refresh() {
-		// noop
-	}
+        // noop
+    }
 
-	@Override
+    @Override
     public Map<String, Object> getParameters() {
-		return parameters;
-	}
+        return parameters;
+    }
 
-	@Override
+    @Override
     public void setParameters(final Map<String, Object> param) throws RemoteException {
-		// not really supported, can we change parameters of existing monitor?
-	}
+        // not really supported, can we change parameters of existing monitor?
+    }
 
-	protected void addFallbackResponse(final T defaultValue) {
+    protected void addFallbackResponse(final T defaultValue) {
 
-		final ResponseImpl<T> r= new ResponseImpl<T>(proxy, this, defaultValue,
-				VALUE, true, null, proxy.getCondition(), new Timestamp(), false);
+        final ResponseImpl<T> r= new ResponseImpl<T>(proxy, this, defaultValue,
+                VALUE, true, null, proxy.getCondition(), new Timestamp(), false);
 
-		proxy.getExecutor().execute(new Runnable() {
-			@Override
+        proxy.getExecutor().execute(new Runnable() {
+            @Override
             public void run() {
-				addResponse(r);
-			}
-		});
-	}
+                addResponse(r);
+            }
+        });
+    }
 
 }
 

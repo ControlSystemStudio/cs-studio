@@ -7,7 +7,7 @@
    <ignored_future>1</ignored_future>
    <max_repeat_count>120</max_repeat_count>
    <write_period>30</write_period>
-   
+
 
    <group>
       <name>HEBT_Diag:BLM_Mov01</name>

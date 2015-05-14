@@ -26,9 +26,9 @@ import org.junit.Before;
 public class TestHelper
 {
     final public AbstractPVFactory factory = new PVManagerPVFactory();
-    
+
     final public static int TIMEOUT_SECONDS = 5;
-    
+
     @Before
     public void setup()
     {
@@ -38,7 +38,7 @@ public class TestHelper
         sources.setDefaultDataSource("sim");
         PVManager.setDefaultDataSource(sources);
     }
-    
+
     public static void waitForConnection(final IPV pv) throws Exception
     {
         for (int seconds=TIMEOUT_SECONDS;  seconds>=0;  --seconds)

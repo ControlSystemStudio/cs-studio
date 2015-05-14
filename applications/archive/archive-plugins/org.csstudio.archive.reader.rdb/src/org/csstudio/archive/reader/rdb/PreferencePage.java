@@ -36,8 +36,8 @@ public class PreferencePage extends FieldEditorPreferencePage
         implements IWorkbenchPreferencePage
 {
     // Most of the preferences are in the o.c.archive.rdb plugin,
-	// so that is used as the overall preference store for this
-	// preference GUI page.
+    // so that is used as the overall preference store for this
+    // preference GUI page.
     //
     // The FieldEditorPreferencePage will automatically assign
     // FieldEditors to that preference store and also 'save'
@@ -47,7 +47,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     // plugin need special handling.
     private ScopedPreferenceStore reader_prefs;
 
-	/** Initialize to use 'instance' scope (install location)
+    /** Initialize to use 'instance' scope (install location)
      *  and not workspace!
      */
     public PreferencePage()
@@ -56,12 +56,12 @@ public class PreferencePage extends FieldEditorPreferencePage
 
         final IScopeContext scope = InstanceScope.INSTANCE;
         // 'main' pref. store for most of the settings
-		setPreferenceStore(new ScopedPreferenceStore(scope,
+        setPreferenceStore(new ScopedPreferenceStore(scope,
                 org.csstudio.archive.rdb.Activator.ID));
 
-		// Separate store for archive.reader.rdb
-		reader_prefs = new ScopedPreferenceStore(scope,
-		        org.csstudio.archive.reader.rdb.Activator.ID);
+        // Separate store for archive.reader.rdb
+        reader_prefs = new ScopedPreferenceStore(scope,
+                org.csstudio.archive.reader.rdb.Activator.ID);
     }
 
     /** {@inheritDoc} */

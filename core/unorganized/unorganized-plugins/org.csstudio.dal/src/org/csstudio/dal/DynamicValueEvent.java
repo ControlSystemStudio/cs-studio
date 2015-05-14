@@ -33,147 +33,147 @@ import org.csstudio.dal.simple.AnyData;
  */
 public class DynamicValueEvent<T, P extends SimpleProperty<T>> extends SystemEvent<T, DataAccess<T>>
 {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	protected P property = null;
-	protected DynamicValueCondition condition;
+    protected P property = null;
+    protected DynamicValueCondition condition;
 
-	/**
-	 * Creates a new instance of this event and initializes both the event
-	 * source and the property that the event source belongs to. Parameter
-	 * <code>souce</code> must be one of the data renderings issued by the
-	 * parameter <code>property</code>. <code>condition</code> is the condition
-	 * of the property and may be <code>null</code>. <code>Timestamp</code> is the timestamp
-	 * of the event. If it's 0, current time will be used for <code>timestamp</code>. Parameter
-	 * <code>message</code> is used for the event message. It may be <code>null</code>.
-	 * Parameter <code>Exception</code> is the event exception and may be <code>null</code>.
-	 * The event identification tag parameter <code>type</code> may be null.
-	 *
-	 * @param source the source that generated the event
-	 * @param property the property that the source belongs to
-	 * @param value the event value
-	 * @param condition the condition of the property
-	 * @param timestamp the timestamp of the event
-	 * @param message event message
-	 * @param error event exception
-	 * @param type the event identification tag
-	 */
-	public DynamicValueEvent(final DataAccess<T> source, final P property, final T value,
-	    final DynamicValueCondition condition, final Timestamp timestamp, final String message,
-	    final Exception error, final Object type)
-	{
-		super(source, value, timestamp, message, error, type);
+    /**
+     * Creates a new instance of this event and initializes both the event
+     * source and the property that the event source belongs to. Parameter
+     * <code>souce</code> must be one of the data renderings issued by the
+     * parameter <code>property</code>. <code>condition</code> is the condition
+     * of the property and may be <code>null</code>. <code>Timestamp</code> is the timestamp
+     * of the event. If it's 0, current time will be used for <code>timestamp</code>. Parameter
+     * <code>message</code> is used for the event message. It may be <code>null</code>.
+     * Parameter <code>Exception</code> is the event exception and may be <code>null</code>.
+     * The event identification tag parameter <code>type</code> may be null.
+     *
+     * @param source the source that generated the event
+     * @param property the property that the source belongs to
+     * @param value the event value
+     * @param condition the condition of the property
+     * @param timestamp the timestamp of the event
+     * @param message event message
+     * @param error event exception
+     * @param type the event identification tag
+     */
+    public DynamicValueEvent(final DataAccess<T> source, final P property, final T value,
+        final DynamicValueCondition condition, final Timestamp timestamp, final String message,
+        final Exception error, final Object type)
+    {
+        super(source, value, timestamp, message, error, type);
 
-		if (property == null) {
-			throw new NullPointerException("property");
-		}
+        if (property == null) {
+            throw new NullPointerException("property");
+        }
 
-		// TODO for the time being we allow null conditions
-		/*
-		if (condition==null) {
-		    throw new NullPointerException("condition");
-		}
-		*/
-		if (timestamp == null) {
-			this.timestamp = new Timestamp();
-		} else {
-			this.timestamp = timestamp;
-		}
+        // TODO for the time being we allow null conditions
+        /*
+        if (condition==null) {
+            throw new NullPointerException("condition");
+        }
+        */
+        if (timestamp == null) {
+            this.timestamp = new Timestamp();
+        } else {
+            this.timestamp = timestamp;
+        }
 
-		this.condition = condition;
-		this.property = property;
-	}
+        this.condition = condition;
+        this.property = property;
+    }
 
-	/**
-	 * Convenience constructor.
-	 *
-	 * @see DynamicValueEvent#EventSystemEvent(DataAccess, P, Object, DynamicValueCondition, long, String, Exception, Object)
-	 *
-	 *
-	 * @param source the source that generated the event
-	 * @param property the property that the source belongs to
-	 * @param condition the condition of the property
-	 * @param timestamp the timestamp of the event
-	 * @param message event message
-	 */
-	public DynamicValueEvent(final DataAccess<T> source, final P property, final T value,
-	    final DynamicValueCondition condition, final Timestamp timestamp, final String message)
-	{
-		this(source, property, value, condition, timestamp, message, null, null);
-	}
+    /**
+     * Convenience constructor.
+     *
+     * @see DynamicValueEvent#EventSystemEvent(DataAccess, P, Object, DynamicValueCondition, long, String, Exception, Object)
+     *
+     *
+     * @param source the source that generated the event
+     * @param property the property that the source belongs to
+     * @param condition the condition of the property
+     * @param timestamp the timestamp of the event
+     * @param message event message
+     */
+    public DynamicValueEvent(final DataAccess<T> source, final P property, final T value,
+        final DynamicValueCondition condition, final Timestamp timestamp, final String message)
+    {
+        this(source, property, value, condition, timestamp, message, null, null);
+    }
 
-	/**
-	 * Convenience constructor.
-	 *
-	 * @see DynamicValueEvent#EventSystemEvent(DataAccess, P, Object, DynamicValueCondition, long, String, Exception, Object)
-	 *
-	 *
-	 * @param source the source that generated the event
-	 * @param property the property that the source belongs to
-	 * @param condition the condition of the property
-	 * @param timestamp the timestamp of the event
-	 * @param message event message
-	 * @param error event exception
-	 */
-	public DynamicValueEvent(final DataAccess<T> source, final P property, final T value,
-	    final DynamicValueCondition condition, final Timestamp timestamp, final String message,
-	    final Exception error)
-	{
-		this(source, property, value, condition, timestamp, message, error, null);
-	}
+    /**
+     * Convenience constructor.
+     *
+     * @see DynamicValueEvent#EventSystemEvent(DataAccess, P, Object, DynamicValueCondition, long, String, Exception, Object)
+     *
+     *
+     * @param source the source that generated the event
+     * @param property the property that the source belongs to
+     * @param condition the condition of the property
+     * @param timestamp the timestamp of the event
+     * @param message event message
+     * @param error event exception
+     */
+    public DynamicValueEvent(final DataAccess<T> source, final P property, final T value,
+        final DynamicValueCondition condition, final Timestamp timestamp, final String message,
+        final Exception error)
+    {
+        this(source, property, value, condition, timestamp, message, error, null);
+    }
 
-	/**
-	 * Returns the property whose dynamic value has been updated.
-	 *
-	 * @return SimpleProperty the issuer of the data access specified as source
-	 *         of this event
-	 */
-	public P getProperty()
-	{
-		return property;
-	}
+    /**
+     * Returns the property whose dynamic value has been updated.
+     *
+     * @return SimpleProperty the issuer of the data access specified as source
+     *         of this event
+     */
+    public P getProperty()
+    {
+        return property;
+    }
 
-	/**
-	 * Returns the condition of the property.
-	 *
-	 * @return The condition of event's property
-	 */
-	public DynamicValueCondition getCondition()
-	{
-		return condition;
-	}
+    /**
+     * Returns the condition of the property.
+     *
+     * @return The condition of event's property
+     */
+    public DynamicValueCondition getCondition()
+    {
+        return condition;
+    }
 
-	/**
-	 * Returns event <code>value</value> if it's a number otherwise return <code>null</code>
-	 *
-	 * @return Returns event value
-	 */
-	public Number getNumber()
-	{
-		if (value instanceof Number) {
-			return (Number)value;
-		}
+    /**
+     * Returns event <code>value</value> if it's a number otherwise return <code>null</code>
+     *
+     * @return Returns event value
+     */
+    public Number getNumber()
+    {
+        if (value instanceof Number) {
+            return (Number)value;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public AnyData getData() {
-		return property.getData();
-	}
+    public AnyData getData() {
+        return property.getData();
+    }
 
-	@Override
-	public String toString() {
-		final StringBuilder sb= new StringBuilder(256);
-		sb.append(this.getClass().getName());
-		sb.append('{');
-		sb.append(property.getIdentifier().getUniqueName());
-		sb.append(", ");
-		sb.append(getValue());
-		sb.append(", ");
-		sb.append(getCondition());
-		sb.append('}');
-		return sb.toString();
-	}
+    @Override
+    public String toString() {
+        final StringBuilder sb= new StringBuilder(256);
+        sb.append(this.getClass().getName());
+        sb.append('{');
+        sb.append(property.getIdentifier().getUniqueName());
+        sb.append(", ");
+        sb.append(getValue());
+        sb.append(", ");
+        sb.append(getCondition());
+        sb.append('}');
+        return sb.toString();
+    }
 }
 
 /* __oOo__ */

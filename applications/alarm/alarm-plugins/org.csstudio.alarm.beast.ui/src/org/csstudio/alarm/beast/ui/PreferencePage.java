@@ -34,7 +34,7 @@ public class PreferencePage extends FieldEditorPreferencePage
 {
     private static final String PREF_QUALIFIER_ID = org.csstudio.alarm.beast.Activator.ID;
 
-	/** Constructor */
+    /** Constructor */
     public PreferencePage()
     {
         // This way, preference changes in the GUI end up in a file under
@@ -56,7 +56,7 @@ public class PreferencePage extends FieldEditorPreferencePage
     protected void createFieldEditors()
     {
         final Composite parent = getFieldEditorParent();
-        
+
         // Overall configuration name
         addField(new StringFieldEditor(Preferences.ROOT_COMPONENT, Messages.Preferences_RootComponent, parent));
 

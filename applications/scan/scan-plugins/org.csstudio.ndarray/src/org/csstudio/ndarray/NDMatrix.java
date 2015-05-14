@@ -31,9 +31,9 @@ public class NDMatrix
     {
         final ListNumber flat = NDArray.createDataArray(type, shape.getSize());
         // Array is already initialized to zero values, no need to set it:
-		// final int size = shape.getSize();
-		// for (int i=0; i<size; ++i)
-		//  	flat.setInt(i, 0);
+        // final int size = shape.getSize();
+        // for (int i=0; i<size; ++i)
+        //      flat.setInt(i, 0);
         return new NDArray(flat, shape, type == NDType.BOOL);
     }
 
@@ -50,8 +50,8 @@ public class NDMatrix
               flat.setInt(i, 1);
         return new NDArray(flat, shape, type == NDType.BOOL);
     }
-    
-	/** Create array for range
+
+    /** Create array for range
      *  @param start Initial value
      *  @param stop Next-to-end value, not included in result
      *  @param step Step size
@@ -59,10 +59,10 @@ public class NDMatrix
      */
     public static NDArray arange(final double start, final double stop, final double step)
     {
-    	return arange(start, stop, step, NDType.FLOAT64);
+        return arange(start, stop, step, NDType.FLOAT64);
     }
 
-	/** Create array for range
+    /** Create array for range
      *  @param start Initial value
      *  @param stop Next-to-end value, not included in result
      *  @param step Step size
@@ -77,7 +77,7 @@ public class NDMatrix
         return NDArray.create(data, type);
     }
 
-	/** Create array for linear range
+    /** Create array for linear range
      *  @param start Initial value
      *  @param end Final value
      *  @param count Number of elements
@@ -85,10 +85,10 @@ public class NDMatrix
      *  @return Array [start, ..., end] with count values
      */
     public static NDArray linspace(final double start, final double end, final int count,
-    		final NDType type)
+            final NDType type)
     {
-    	if (count < 2)
-    		return NDArray.create(new double[] { start }, type);
+        if (count < 2)
+            return NDArray.create(new double[] { start }, type);
         final double step = (end - start) / (count-1);
         final NDArray data = new NDArray(type, new NDShape(count));
         for (int i=0; i<count; ++i)
@@ -122,185 +122,185 @@ public class NDMatrix
     {
         if (array.getShape().getSize() != shape.getSize())
             throw new IllegalArgumentException("Cannot change shape from " +
-            		array.getShape() + " to " + shape);
+                    array.getShape() + " to " + shape);
         return new NDArray(array, shape, new NDStrides(shape));
     }
 
-	/** Transpose an array, "swapping" rows and columns for the 2-D case.
-	 *  For 1D, the original is returned
-	 *
-	 *  @param a N-dim array
-	 *  @param axes Desired sequence of axes, defaulting to reversing all axes
+    /** Transpose an array, "swapping" rows and columns for the 2-D case.
+     *  For 1D, the original is returned
+     *
+     *  @param a N-dim array
+     *  @param axes Desired sequence of axes, defaulting to reversing all axes
      *  @return View into original array with transposed shape and stride
      *  @throws IllegalArgumentException if axes are not valid
      */
-	public static NDArray transpose(final NDArray a, int... axes)
-	{
-		// Transpose simply swaps the shape, stride elements
-		//
-		// Example: Raw array 0 1 2 3 4 5
-		// Viewed as shape 3,2, strides 2, 1:
-		//   0 1
-		//   2 3
-		//   4 5
-		// Iterate indices 0, 1, 2, 3, 4, 5
-		//
-		// Transposed: shape 2,3,   strides 1, 2
-		//   0 2 4
-		//   1 3 5
-		// Iterate indices 0, 2, 4, 1, 3, 5
+    public static NDArray transpose(final NDArray a, int... axes)
+    {
+        // Transpose simply swaps the shape, stride elements
+        //
+        // Example: Raw array 0 1 2 3 4 5
+        // Viewed as shape 3,2, strides 2, 1:
+        //   0 1
+        //   2 3
+        //   4 5
+        // Iterate indices 0, 1, 2, 3, 4, 5
+        //
+        // Transposed: shape 2,3,   strides 1, 2
+        //   0 2 4
+        //   1 3 5
+        // Iterate indices 0, 2, 4, 1, 3, 5
 
-		final NDShape shape = a.getShape();
-		final int rank = shape.getDimensions();
-		if (rank <= 1)
-			return a;
+        final NDShape shape = a.getShape();
+        final int rank = shape.getDimensions();
+        if (rank <= 1)
+            return a;
 
-		if (axes.length <= 0)
-		{	// If no axes specified, use default that reverses them
-			axes = new int[rank];
-			for (int i = 0; i < rank; ++i)
-				axes[i] = rank - 1 - i;
-		}
-		else
-		{	// Check requested axis assignments
-			if (axes.length != rank)
-				throw new IllegalArgumentException(
-						"Axes " + Arrays.toString(axes) + " don't match array shape " + shape);
-			for (int ax : axes)
-				if (ax < 0  ||  ax >= rank)
-					throw new IllegalArgumentException(
-							"Invalid axis " + ax + " for array shape " + shape);
-		}
+        if (axes.length <= 0)
+        {    // If no axes specified, use default that reverses them
+            axes = new int[rank];
+            for (int i = 0; i < rank; ++i)
+                axes[i] = rank - 1 - i;
+        }
+        else
+        {    // Check requested axis assignments
+            if (axes.length != rank)
+                throw new IllegalArgumentException(
+                        "Axes " + Arrays.toString(axes) + " don't match array shape " + shape);
+            for (int ax : axes)
+                if (ax < 0  ||  ax >= rank)
+                    throw new IllegalArgumentException(
+                            "Invalid axis " + ax + " for array shape " + shape);
+        }
 
-		// Determine transposed view of array
-		final NDStrides stride = a.getStrides();
-		final int[] n_shape = new int[rank];
-		final int[] n_stride = new int[rank];
-    	for (int i=0; i<rank; ++i)
-    	{
-    		n_shape[i] = shape.getSize(axes[i]);
-    		n_stride[i] = stride.getStride(axes[i]);
-    	}
-    	return new NDArray(a, new NDShape(n_shape), new NDStrides(n_stride));
+        // Determine transposed view of array
+        final NDStrides stride = a.getStrides();
+        final int[] n_shape = new int[rank];
+        final int[] n_stride = new int[rank];
+        for (int i=0; i<rank; ++i)
+        {
+            n_shape[i] = shape.getSize(axes[i]);
+            n_stride[i] = stride.getStride(axes[i]);
+        }
+        return new NDArray(a, new NDShape(n_shape), new NDStrides(n_stride));
     }
 
-	/** Perform matrix multiplication of arrays
-	 *  @param a N-dim array
+    /** Perform matrix multiplication of arrays
+     *  @param a N-dim array
      *  @param b N-dim array
      *  @return Result a * b in the matrix sense
      *  @throws IllegalArgumentException array shapes are not supported
      */
-	public static NDArray dot(final NDArray a, final NDArray b)
-	{
-    	final NDShape shape_a = a.getShape();
-    	final NDShape shape_b = b.getShape();
+    public static NDArray dot(final NDArray a, final NDArray b)
+    {
+        final NDShape shape_a = a.getShape();
+        final NDShape shape_b = b.getShape();
 
-    	if (shape_a.getDimensions() == 2  &&  shape_b.getDimensions() == 2)
-    		return dot2x2(a, b, shape_a, shape_b);
-    	else if (shape_a.getDimensions() == 2  &&  shape_b.getDimensions() == 1)
-    		return dot2x1(a, b, shape_a);
-    	else if (shape_a.getDimensions() == 1  &&  shape_b.getDimensions() == 1)
-    		return inner(a, b);
+        if (shape_a.getDimensions() == 2  &&  shape_b.getDimensions() == 2)
+            return dot2x2(a, b, shape_a, shape_b);
+        else if (shape_a.getDimensions() == 2  &&  shape_b.getDimensions() == 1)
+            return dot2x1(a, b, shape_a);
+        else if (shape_a.getDimensions() == 1  &&  shape_b.getDimensions() == 1)
+            return inner(a, b);
 
-		throw new IllegalArgumentException(
-			"Matrix multiplication not supported for arrays " +
-			"with shapes " + shape_a + " and " + shape_b);
+        throw new IllegalArgumentException(
+            "Matrix multiplication not supported for arrays " +
+            "with shapes " + shape_a + " and " + shape_b);
     }
 
-	/** Perform matrix multiplication of arrays 2x2 arrays
-	 *  @param a 2-dim array
+    /** Perform matrix multiplication of arrays 2x2 arrays
+     *  @param a 2-dim array
      *  @param b 2-dim array
      *  @param shape_a Shape of a
      *  @param shape_b Shape of b
      *
      *  @return Result a * b in the matrix sense
      */
-	private static NDArray dot2x2(final NDArray a, final NDArray b,
-			final NDShape shape_a, final NDShape shape_b)
-	{
-    	final NDType type = NDType.determineSuperType(a.getType(), b.getType());
-    	final int a_rows = shape_a.getSize(0);
-    	final int a_cols = shape_a.getSize(1);
+    private static NDArray dot2x2(final NDArray a, final NDArray b,
+            final NDShape shape_a, final NDShape shape_b)
+    {
+        final NDType type = NDType.determineSuperType(a.getType(), b.getType());
+        final int a_rows = shape_a.getSize(0);
+        final int a_cols = shape_a.getSize(1);
 
-    	if (a_cols != shape_b.getSize(0))
-    		throw new IllegalArgumentException(
-				"For matrix multiplication, number of columns in first array must match number of rows in second array," +
-				" but got shapes " + shape_a + " and " + shape_b);
+        if (a_cols != shape_b.getSize(0))
+            throw new IllegalArgumentException(
+                "For matrix multiplication, number of columns in first array must match number of rows in second array," +
+                " but got shapes " + shape_a + " and " + shape_b);
 
-		final int b_cols = shape_b.getSize(1);
-		final NDShape shape_r = new NDShape(a_rows, b_cols);
-    	final NDArray result = zeros(type, shape_r);
-    	for (int i=0; i<a_rows; ++i)
-        	for (int j=0; j<b_cols; ++j)
-        	{
-        		double sum = 0.0;
-            	for (int k=0; k<a_cols; ++k)
-					sum += a.getDouble(i, k) * b.getDouble(k, j);
-            	result.setDouble(sum, i, j);
-        	}
-    	return result;
+        final int b_cols = shape_b.getSize(1);
+        final NDShape shape_r = new NDShape(a_rows, b_cols);
+        final NDArray result = zeros(type, shape_r);
+        for (int i=0; i<a_rows; ++i)
+            for (int j=0; j<b_cols; ++j)
+            {
+                double sum = 0.0;
+                for (int k=0; k<a_cols; ++k)
+                    sum += a.getDouble(i, k) * b.getDouble(k, j);
+                result.setDouble(sum, i, j);
+            }
+        return result;
     }
 
-	/** Perform matrix multiplication of arrays 2x1 arrays
-	 *  @param a 2-dim array
+    /** Perform matrix multiplication of arrays 2x1 arrays
+     *  @param a 2-dim array
      *  @param b 1-dim array
      *  @param shape_a Shape of a
      *
      *  @return Result a * b in the matrix sense
      */
-	private static NDArray dot2x1(final NDArray a, final NDArray b,
-			final NDShape shape)
-	{
-    	final NDType type = NDType.determineSuperType(a.getType(), b.getType());
-    	final int a_rows = shape.getSize(0);
-    	final int a_cols = shape.getSize(1);
+    private static NDArray dot2x1(final NDArray a, final NDArray b,
+            final NDShape shape)
+    {
+        final NDType type = NDType.determineSuperType(a.getType(), b.getType());
+        final int a_rows = shape.getSize(0);
+        final int a_cols = shape.getSize(1);
 
-    	if (a_cols != b.getSize())
-    		throw new IllegalArgumentException(
-				"For matrix multiplication, number of columns in first array must match number of rows in second array," +
-				" but got shapes " + shape + " and " + b.getShape());
+        if (a_cols != b.getSize())
+            throw new IllegalArgumentException(
+                "For matrix multiplication, number of columns in first array must match number of rows in second array," +
+                " but got shapes " + shape + " and " + b.getShape());
 
-    	final NDArray result = zeros(type, new NDShape(a_cols));
-    	for (int i=0; i<a_rows; ++i)
-    	{
-    		double sum = 0.0;
-        	for (int k=0; k<a_cols; ++k)
-				sum += a.getDouble(i, k) * b.getFlatDouble(k);
-        	result.setDouble(sum, i);
-    	}
-    	return result;
+        final NDArray result = zeros(type, new NDShape(a_cols));
+        for (int i=0; i<a_rows; ++i)
+        {
+            double sum = 0.0;
+            for (int k=0; k<a_cols; ++k)
+                sum += a.getDouble(i, k) * b.getFlatDouble(k);
+            result.setDouble(sum, i);
+        }
+        return result;
     }
 
-	/** Perform matrix multiplication of arrays 1x1 arrays
-	 *  @param a 1-dim array
+    /** Perform matrix multiplication of arrays 1x1 arrays
+     *  @param a 1-dim array
      *  @param b 1-dim array
      *  @param len_a Length of a
      *  @param len_b Length of b
      *
      *  @return Result a * b in the matrix sense
      */
-	public static NDArray inner(final NDArray a, final NDArray b)
-	{
-    	final NDShape shape_a = a.getShape();
-    	final NDShape shape_b = b.getShape();
+    public static NDArray inner(final NDArray a, final NDArray b)
+    {
+        final NDShape shape_a = a.getShape();
+        final NDShape shape_b = b.getShape();
 
-    	if (shape_a.getDimensions() != shape_b.getDimensions())
-			throw new IllegalArgumentException(
-				"Inner product only supported for 1-D arrays, " +
-				"not for shapes " + shape_a + " and " + shape_b);
+        if (shape_a.getDimensions() != shape_b.getDimensions())
+            throw new IllegalArgumentException(
+                "Inner product only supported for 1-D arrays, " +
+                "not for shapes " + shape_a + " and " + shape_b);
 
-    	final int len = shape_a.getSize();
-		if (len != shape_b.getSize())
-			throw new IllegalArgumentException(
-				"Inner product arrays must have same size, " +
-				"not shapes " + shape_a + " and " + shape_b);
+        final int len = shape_a.getSize();
+        if (len != shape_b.getSize())
+            throw new IllegalArgumentException(
+                "Inner product arrays must have same size, " +
+                "not shapes " + shape_a + " and " + shape_b);
 
-    	final NDType type = NDType.determineSuperType(a.getType(), b.getType());
-    	final NDArray result = zeros(type, new NDShape(1));
-    	double sum = 0.0;
-    	for (int i=0; i<len; ++i)
-			sum += a.getDouble(i) * b.getDouble(i);
-    	result.setDouble(sum, 0);
-    	return result;
+        final NDType type = NDType.determineSuperType(a.getType(), b.getType());
+        final NDArray result = zeros(type, new NDShape(1));
+        double sum = 0.0;
+        for (int i=0; i<len; ++i)
+            sum += a.getDouble(i) * b.getDouble(i);
+        result.setDouble(sum, 0);
+        return result;
     }
 }

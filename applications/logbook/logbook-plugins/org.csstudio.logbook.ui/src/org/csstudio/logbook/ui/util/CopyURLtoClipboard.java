@@ -25,21 +25,21 @@ public class CopyURLtoClipboard extends AbstractHandler {
 
         final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
         final URL[] urls = AdapterUtil.convert(selection, URL.class);
-        
-	if (urls == null || urls.length == 0) {
-	    MessageDialog.openError(null, "Empty URL",
-		    "URL is empty! Nothing will be copied.");
-	    return null;
-	}
-        
-	// Copy as text to clipboard
-	final Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench()
-		.getDisplay());
-	// Use the first URL from the array of selected URLs
-	clipboard.setContents(new String[] { urls[0].toString() },
-		new Transfer[] { TextTransfer.getInstance() });
-        
-	return null;
+
+    if (urls == null || urls.length == 0) {
+        MessageDialog.openError(null, "Empty URL",
+            "URL is empty! Nothing will be copied.");
+        return null;
+    }
+
+    // Copy as text to clipboard
+    final Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench()
+        .getDisplay());
+    // Use the first URL from the array of selected URLs
+    clipboard.setContents(new String[] { urls[0].toString() },
+        new Transfer[] { TextTransfer.getInstance() });
+
+    return null;
     }
 
 }

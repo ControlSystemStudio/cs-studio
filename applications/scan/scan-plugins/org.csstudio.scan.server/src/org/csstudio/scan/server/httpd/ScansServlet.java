@@ -62,7 +62,7 @@ public class ScansServlet extends HttpServlet
             ex.printStackTrace();
         }
     }
-    
+
     /** DELETE scans/completed: Remove completed scans
      *  Returns basic HTTP OK (200) on success, otherwise error
      */

@@ -12,28 +12,28 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RedirectServletFilter implements javax.servlet.Filter {
 
-	public void doFilter(ServletRequest req, ServletResponse res,
-			FilterChain chain) throws ServletException, IOException {
+    public void doFilter(ServletRequest req, ServletResponse res,
+            FilterChain chain) throws ServletException, IOException {
 
-		try {
-			HttpServletRequest request = (HttpServletRequest) req;
-			HttpServletResponse response = (HttpServletResponse) res;
+        try {
+            HttpServletRequest request = (HttpServletRequest) req;
+            HttpServletResponse response = (HttpServletResponse) res;
 
-			if ("/".equals(request.getPathInfo())) {
-				response.sendRedirect(response
-						.encodeRedirectURL(WebDataBrowserConstants.MAIN_SERVELET_NAME));
-			} else {
-				chain.doFilter(request, response);
-			}
-		} catch (ClassCastException e) {
-			throw new ServletException("non-HTTP request or response");
-		}
+            if ("/".equals(request.getPathInfo())) {
+                response.sendRedirect(response
+                        .encodeRedirectURL(WebDataBrowserConstants.MAIN_SERVELET_NAME));
+            } else {
+                chain.doFilter(request, response);
+            }
+        } catch (ClassCastException e) {
+            throw new ServletException("non-HTTP request or response");
+        }
 
-	}
+    }
 
-	public void init(FilterConfig filterConfig) {
-	}
+    public void init(FilterConfig filterConfig) {
+    }
 
-	public void destroy() {
-	}
+    public void destroy() {
+    }
 }

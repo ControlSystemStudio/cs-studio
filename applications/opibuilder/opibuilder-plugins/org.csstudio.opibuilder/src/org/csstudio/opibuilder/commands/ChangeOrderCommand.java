@@ -19,43 +19,43 @@ import org.eclipse.gef.commands.Command;
  */
 public class ChangeOrderCommand extends Command {
 
-	private int newIndex;
-	
-	private int oldIndex;
-	
-	private AbstractContainerModel container;
-	
-	private AbstractWidgetModel widget;
+    private int newIndex;
 
-	public ChangeOrderCommand(int newIndex, AbstractContainerModel container,
-			AbstractWidgetModel widget) {
-		Assert.isNotNull(container);
-		Assert.isNotNull(widget);
-		this.newIndex = newIndex;
-		this.container = container;
-		this.widget = widget;		
-	}
-	
-	
-	@Override
-	public boolean canExecute() {
-		return newIndex != container.getIndexOf(widget);
-	}
-	
-	@Override
-	public void execute() {
-		oldIndex = container.getIndexOf(widget);
-		container.changeChildOrder(widget, newIndex);
-		container.selectWidget(widget, true);
-	}
-	
-	
-	@Override
-	public void undo() {
-		container.changeChildOrder(widget, oldIndex);
-	}
-	
-	
-	
-	
+    private int oldIndex;
+
+    private AbstractContainerModel container;
+
+    private AbstractWidgetModel widget;
+
+    public ChangeOrderCommand(int newIndex, AbstractContainerModel container,
+            AbstractWidgetModel widget) {
+        Assert.isNotNull(container);
+        Assert.isNotNull(widget);
+        this.newIndex = newIndex;
+        this.container = container;
+        this.widget = widget;
+    }
+
+
+    @Override
+    public boolean canExecute() {
+        return newIndex != container.getIndexOf(widget);
+    }
+
+    @Override
+    public void execute() {
+        oldIndex = container.getIndexOf(widget);
+        container.changeChildOrder(widget, newIndex);
+        container.selectWidget(widget, true);
+    }
+
+
+    @Override
+    public void undo() {
+        container.changeChildOrder(widget, oldIndex);
+    }
+
+
+
+
 }

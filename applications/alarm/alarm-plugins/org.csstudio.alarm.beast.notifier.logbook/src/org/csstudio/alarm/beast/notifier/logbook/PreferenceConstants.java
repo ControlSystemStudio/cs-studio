@@ -12,7 +12,7 @@ package org.csstudio.alarm.beast.notifier.logbook;
  */
 public class PreferenceConstants {
 
-	public static final String Default_logbook = "Default.logbook";
-	public static final String Default_level = "Default.level";
+    public static final String Default_logbook = "Default.logbook";
+    public static final String Default_level = "Default.level";
 
 }

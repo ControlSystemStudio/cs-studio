@@ -13,5 +13,5 @@ package org.csstudio.utility.pv;
 public class Activator
 {
     /** Plugin ID defined in MANIFEST.MF */
-	public final static String ID = "org.csstudio.utility.pv"; //$NON-NLS-1$
+    public final static String ID = "org.csstudio.utility.pv"; //$NON-NLS-1$
 }

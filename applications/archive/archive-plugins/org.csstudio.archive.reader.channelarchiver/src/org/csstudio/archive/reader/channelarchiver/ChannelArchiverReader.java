@@ -170,7 +170,7 @@ public class ChannelArchiverReader implements ArchiveReader
             final Timestamp start, final Timestamp end,
             final boolean optimized, final int count) throws Exception
     {
-    	final ValueRequest request;
+        final ValueRequest request;
         synchronized (this)
         {
             current_request =

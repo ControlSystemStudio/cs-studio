@@ -32,7 +32,7 @@ public class Messages extends NLS
     public static String Filter_ValueTT;
     public static String MessageDetail;
     public static String MessageHistory;
-	public static String Pref_MaxProperties;
+    public static String Pref_MaxProperties;
     public static String Pref_Password;
     public static String Pref_Schema;
     public static String Pref_Starttime;

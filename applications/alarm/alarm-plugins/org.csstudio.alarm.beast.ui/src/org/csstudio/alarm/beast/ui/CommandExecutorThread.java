@@ -95,7 +95,7 @@ abstract public class CommandExecutorThread extends Thread
         final Process process;
         try
         {
-   	     	final String[] cmd = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
+                final String[] cmd = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
             process = new ProcessBuilder(cmd).directory(dir).start();
         }
         catch (Throwable ex)

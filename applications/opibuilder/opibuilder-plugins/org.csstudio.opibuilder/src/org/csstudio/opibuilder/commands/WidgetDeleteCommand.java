@@ -21,69 +21,69 @@ import org.eclipse.gef.commands.Command;
  */
 public class WidgetDeleteCommand extends Command {
 
-	private final AbstractContainerModel container;
-	
-	private int index;
-	
-	private final AbstractWidgetModel widget;
-	
-	private List<ConnectionModel> sourceConnections, targetConnections;
+    private final AbstractContainerModel container;
 
-	public WidgetDeleteCommand(AbstractContainerModel container,
-			AbstractWidgetModel widget) {
-		assert container != null;
-		assert widget != null;		
-		this.container = container;
-		this.widget = widget;
-	}
-	
-	
-	@Override
-	public void execute() {
-		sourceConnections = getAllConnections(widget, true);
-		targetConnections = getAllConnections(widget, false);
-		redo();
-	}
-	
-	private List<ConnectionModel> getAllConnections(AbstractWidgetModel widget, boolean source){
-			List<ConnectionModel> result = new ArrayList<ConnectionModel>();
-			result.addAll(source ? widget.getSourceConnections() : widget.getTargetConnections());
-			if(widget instanceof AbstractContainerModel){
-				for(AbstractWidgetModel child : 
-					((AbstractContainerModel)widget).getAllDescendants()){
-					result.addAll(
-							source ? child.getSourceConnections() : 
-								child.getTargetConnections());
-				}
-			}
-			return result;
-	}
-	
-	@Override
-	public void redo() {		
-		index = container.getIndexOf(widget);
-		container.removeChild(widget);
-		removeConnections(sourceConnections);
-		removeConnections(targetConnections);
-	}
-	
-	@Override
-	public void undo() {
-		container.addChild(index, widget);
-		addConnections(sourceConnections);
-		addConnections(targetConnections);
-	}
-	
-	private void removeConnections(List<ConnectionModel> connections){
-		for(ConnectionModel conn : connections){
-			conn.disconnect();
-		}
-	}
-	
-	private void addConnections(List<ConnectionModel> connections){
-		for(ConnectionModel conn: connections){
-			conn.reconnect();
-		}
-	}
-	
+    private int index;
+
+    private final AbstractWidgetModel widget;
+
+    private List<ConnectionModel> sourceConnections, targetConnections;
+
+    public WidgetDeleteCommand(AbstractContainerModel container,
+            AbstractWidgetModel widget) {
+        assert container != null;
+        assert widget != null;
+        this.container = container;
+        this.widget = widget;
+    }
+
+
+    @Override
+    public void execute() {
+        sourceConnections = getAllConnections(widget, true);
+        targetConnections = getAllConnections(widget, false);
+        redo();
+    }
+
+    private List<ConnectionModel> getAllConnections(AbstractWidgetModel widget, boolean source){
+            List<ConnectionModel> result = new ArrayList<ConnectionModel>();
+            result.addAll(source ? widget.getSourceConnections() : widget.getTargetConnections());
+            if(widget instanceof AbstractContainerModel){
+                for(AbstractWidgetModel child :
+                    ((AbstractContainerModel)widget).getAllDescendants()){
+                    result.addAll(
+                            source ? child.getSourceConnections() :
+                                child.getTargetConnections());
+                }
+            }
+            return result;
+    }
+
+    @Override
+    public void redo() {
+        index = container.getIndexOf(widget);
+        container.removeChild(widget);
+        removeConnections(sourceConnections);
+        removeConnections(targetConnections);
+    }
+
+    @Override
+    public void undo() {
+        container.addChild(index, widget);
+        addConnections(sourceConnections);
+        addConnections(targetConnections);
+    }
+
+    private void removeConnections(List<ConnectionModel> connections){
+        for(ConnectionModel conn : connections){
+            conn.disconnect();
+        }
+    }
+
+    private void addConnections(List<ConnectionModel> connections){
+        for(ConnectionModel conn: connections){
+            conn.reconnect();
+        }
+    }
+
 }

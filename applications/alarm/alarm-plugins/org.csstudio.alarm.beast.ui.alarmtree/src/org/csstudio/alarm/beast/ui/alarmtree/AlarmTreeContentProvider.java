@@ -46,12 +46,12 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
         // tree with new content
         final int count;
         if (newInput == null)
-        	// Empty input
-        	count = 0;
+            // Empty input
+            count = 0;
         else
             // The 'root' node is one element
-        	count = 1;
-    	tree_viewer.getTree().setItemCount(count);
+            count = 1;
+        tree_viewer.getTree().setItemCount(count);
     }
 
     /** TreeViewer calls this to request model item
@@ -81,15 +81,15 @@ public class AlarmTreeContentProvider implements ILazyTreeContentProvider
      *  @see ILazyTreeContentProvider
      */
     @Override
-	public void updateChildCount(final Object element, final int currentChildCount)
-	{
-		final AlarmTreeItem item = (AlarmTreeItem) element;
-		final int count = gui.getAlarmDisplayMode()
-			? item.getAlarmChildCount()
-	        : item.getChildCount();
-		if (count != currentChildCount)
-		    tree_viewer.setChildCount(element, count);
-	}
+    public void updateChildCount(final Object element, final int currentChildCount)
+    {
+        final AlarmTreeItem item = (AlarmTreeItem) element;
+        final int count = gui.getAlarmDisplayMode()
+            ? item.getAlarmChildCount()
+            : item.getChildCount();
+        if (count != currentChildCount)
+            tree_viewer.setChildCount(element, count);
+    }
 
     /** @see ILazyTreeContentProvider */
     @Override

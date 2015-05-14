@@ -66,7 +66,7 @@ public class Filter extends PVListenerAdapter
             variables = new VariableNode[0];
         else
             variables = vars;
-        
+
         pvs = new PV[variables.length];
     }
 
@@ -90,7 +90,7 @@ public class Filter extends PVListenerAdapter
             pvs[i] = null;
         }
     }
-    
+
     /** @param pv PV used by the formula
      *  @return Associated variable node
      */

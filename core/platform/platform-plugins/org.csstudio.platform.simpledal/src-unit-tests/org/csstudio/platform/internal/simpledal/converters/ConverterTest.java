@@ -50,7 +50,7 @@ public class ConverterTest {
         assertEquals(0, doubleConverter.convert("0"), 0.0001);
         assertEquals(1234567890, doubleConverter.convert("1234567890"), 0.0001);
         assertEquals(-1234567890, doubleConverter.convert("-1234567890"), 0.0001);
-        
+
         // Float as String
         assertEquals(12345.67890, doubleConverter.convert("12345.67890"), 0.0001);
         assertEquals(-12345.67890, doubleConverter.convert("-12345.67890"), 0.0001);
@@ -64,7 +64,7 @@ public class ConverterTest {
         assertNuberFormatExeption(doubleConverter, "+12.34e+12.3");
         assertEquals(-.01234, doubleConverter.convert("-12.34e-3"), 0.0001);
         assertNuberFormatExeption(doubleConverter, "-12.34e-12.3");
-        
+
         // Hex as String
         assertNuberFormatExeption(doubleConverter, "1af");
         assertNuberFormatExeption(doubleConverter, "AF");
@@ -131,7 +131,7 @@ public class ConverterTest {
         assertEquals(0, longConverter.convert("0"), 0.0001);
         assertEquals(1234567890, longConverter.convert("1234567890"), 0.0001);
         assertEquals(-1234567890, longConverter.convert("-1234567890"), 0.0001);
-        
+
         // Float as String
         assertNuberFormatExeption(longConverter, "12345.67890");
         assertNuberFormatExeption(longConverter, "-12345.67890");

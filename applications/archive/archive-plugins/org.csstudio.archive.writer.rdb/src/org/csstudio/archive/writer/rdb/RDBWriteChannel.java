@@ -15,49 +15,49 @@ import org.csstudio.archive.writer.WriteChannel;
 @SuppressWarnings("nls")
 public class RDBWriteChannel implements WriteChannel
 {
-	final private String name;
-	final private int id;
-	private Object meta = null;
-	
-	/** Initialize
-	 *  @param name Channel name
-	 *  @param id Channel ID in RDB
-	 */
-	public RDBWriteChannel(final String name, final int id)
-	{
-		this.name = name;
-		this.id = id;
-	}
+    final private String name;
+    final private int id;
+    private Object meta = null;
 
-	/** {@inheritDoc} */
-	@Override
-	public String getName()
-	{
-		return name;
-	}
-	
-	/** @return RDB ID of channel */
-	public int getId()
-	{
-		return id;
-	}
+    /** Initialize
+     *  @param name Channel name
+     *  @param id Channel ID in RDB
+     */
+    public RDBWriteChannel(final String name, final int id)
+    {
+        this.name = name;
+        this.id = id;
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-		return "RDBWriteChannel '" + name + "' (" + id + ")";
-	}
+    /** {@inheritDoc} */
+    @Override
+    public String getName()
+    {
+        return name;
+    }
 
-	/** @return Meta data or <code>null</code> */
-	public Object getMetadata()
-	{
-		return meta;
-	}
-	
-	/** @param meta Current meta data of channel */
-	public void setMetaData(final Object meta)
-	{
-		this.meta = meta;
-	}
+    /** @return RDB ID of channel */
+    public int getId()
+    {
+        return id;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString()
+    {
+        return "RDBWriteChannel '" + name + "' (" + id + ")";
+    }
+
+    /** @return Meta data or <code>null</code> */
+    public Object getMetadata()
+    {
+        return meta;
+    }
+
+    /** @param meta Current meta data of channel */
+    public void setMetaData(final Object meta)
+    {
+        this.meta = meta;
+    }
 }

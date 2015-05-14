@@ -23,28 +23,28 @@
 package org.epics.css.dal.directory;
 
 public class DeviceDescriptorImpl extends DALDescriptorImpl
-	implements DeviceDescriptor
+    implements DeviceDescriptor
 {
-	private static final long serialVersionUID = 9222784948005894431L;
+    private static final long serialVersionUID = 9222784948005894431L;
 
-	/**
-	 * Creates new descriptor with descriptor type set to DEVICE.
-	 */
-	public DeviceDescriptorImpl()
-	{
-		super();
-		putAttributeValue(DESCRIPTOR_TYPE, DescriptorType.DEVICE);
-	}
+    /**
+     * Creates new descriptor with descriptor type set to DEVICE.
+     */
+    public DeviceDescriptorImpl()
+    {
+        super();
+        putAttributeValue(DESCRIPTOR_TYPE, DescriptorType.DEVICE);
+    }
 
-	/**
-	 * Creates new descriptor with descriptor type set to DEVICE.
-	 * @param name descritor name
-	 * @param ctype described class type
-	 */
-	public DeviceDescriptorImpl(String name, Class ctype)
-	{
-		super(DescriptorType.DEVICE, name, ctype);
-	}
+    /**
+     * Creates new descriptor with descriptor type set to DEVICE.
+     * @param name descritor name
+     * @param ctype described class type
+     */
+    public DeviceDescriptorImpl(String name, Class ctype)
+    {
+        super(DescriptorType.DEVICE, name, ctype);
+    }
 }
 
 /* __oOo__ */

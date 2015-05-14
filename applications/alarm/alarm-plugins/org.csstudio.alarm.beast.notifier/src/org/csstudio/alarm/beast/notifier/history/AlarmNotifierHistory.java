@@ -23,54 +23,54 @@ import org.csstudio.alarm.beast.notifier.PVSnapshot;
  */
 public class AlarmNotifierHistory {
 
-	private static AlarmNotifierHistory instance = new AlarmNotifierHistory();
+    private static AlarmNotifierHistory instance = new AlarmNotifierHistory();
 
-	private final Map<ActionID, ActionHistoryEntry> actions;
-	// map PV path (unique) => PVHistoryEntry
-	private Map<String, PVHistoryEntry> pvs;
+    private final Map<ActionID, ActionHistoryEntry> actions;
+    // map PV path (unique) => PVHistoryEntry
+    private Map<String, PVHistoryEntry> pvs;
 
-	private AlarmNotifierHistory() {
-		actions = new ConcurrentHashMap<ActionID, ActionHistoryEntry>();
-		pvs = new ConcurrentHashMap<String, PVHistoryEntry>();
-	}
+    private AlarmNotifierHistory() {
+        actions = new ConcurrentHashMap<ActionID, ActionHistoryEntry>();
+        pvs = new ConcurrentHashMap<String, PVHistoryEntry>();
+    }
 
-	public static AlarmNotifierHistory getInstance() {
-		return instance;
-	}
+    public static AlarmNotifierHistory getInstance() {
+        return instance;
+    }
 
-	public void addSnapshot(PVSnapshot s) {
-		// For optimization purpose, we do not store the snapshot if alarm severity is OK
-		if (s.getSeverity().equals(SeverityLevel.OK)) {
-			pvs.remove(s.getPath());
-			return;
-		}
-		if (pvs.get(s.getPath()) != null) {
-			pvs.get(s.getPath()).update(s);
-		} else {
-			pvs.put(s.getPath(), PVHistoryEntry.fromSnapshot(s));
-		}
-	}
+    public void addSnapshot(PVSnapshot s) {
+        // For optimization purpose, we do not store the snapshot if alarm severity is OK
+        if (s.getSeverity().equals(SeverityLevel.OK)) {
+            pvs.remove(s.getPath());
+            return;
+        }
+        if (pvs.get(s.getPath()) != null) {
+            pvs.get(s.getPath()).update(s);
+        } else {
+            pvs.put(s.getPath(), PVHistoryEntry.fromSnapshot(s));
+        }
+    }
 
-	public void addAction(AlarmHandler task) {
-		final ActionHistoryEntry entry = new ActionHistoryEntry(task.getID(), task.getStatus());
-		actions.put(task.getID(), entry);
-	}
+    public void addAction(AlarmHandler task) {
+        final ActionHistoryEntry entry = new ActionHistoryEntry(task.getID(), task.getStatus());
+        actions.put(task.getID(), entry);
+    }
 
-	public PVHistoryEntry getPV(String path) {
-		return pvs.get(path);
-	}
+    public PVHistoryEntry getPV(String path) {
+        return pvs.get(path);
+    }
 
-	public ActionHistoryEntry getAction(ActionID id) {
-		return actions.get(id);
-	}
+    public ActionHistoryEntry getAction(ActionID id) {
+        return actions.get(id);
+    }
 
-	public void clear(PVSnapshot s) {
-		pvs.remove(s.getPath());
-	}
+    public void clear(PVSnapshot s) {
+        pvs.remove(s.getPath());
+    }
 
-	public void clearAll() {
-		this.actions.clear();
-		this.pvs.clear();
-	}
+    public void clearAll() {
+        this.actions.clear();
+        this.pvs.clear();
+    }
 
 }

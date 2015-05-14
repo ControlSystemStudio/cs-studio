@@ -14,7 +14,7 @@ public interface JMSAnnunciatorListener
 {
     /** @param annunciation Message that was just annunciated */
     public void performedAnnunciation(AnnunciationMessage annunciation);
-    
+
     /** @param ex Error detail */
     public void annunciatorError(Throwable ex);
 }

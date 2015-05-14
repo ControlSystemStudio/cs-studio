@@ -38,213 +38,213 @@ import org.epics.vtype.VType;
  */
 public final class ComboEditPart extends AbstractPVWidgetEditPart {
 
-	private IPVListener loadItemsFromPVListener;
+    private IPVListener loadItemsFromPVListener;
 
-	private Combo combo;
-	private SelectionListener comboSelectionListener;
+    private Combo combo;
+    private SelectionListener comboSelectionListener;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		final ComboModel model = getWidgetModel();
-		updatePropSheet(model.isItemsFromPV());
-		ComboFigure comboFigure = new ComboFigure(this);
-		combo = comboFigure.getSWTWidget();
-		
-		List<String> items = getWidgetModel().getItems();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        final ComboModel model = getWidgetModel();
+        updatePropSheet(model.isItemsFromPV());
+        ComboFigure comboFigure = new ComboFigure(this);
+        combo = comboFigure.getSWTWidget();
 
-		updateCombo(items);
+        List<String> items = getWidgetModel().getItems();
 
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
+        updateCombo(items);
 
-		return comboFigure;
-	}
+        markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 
-	/**
-	 * @param items
-	 */
-	private void updateCombo(List<String> items) {
-		if(items !=null && getExecutionMode() == ExecutionMode.RUN_MODE){
-			combo.removeAll();
+        return comboFigure;
+    }
 
-			for(String item : items){
-				combo.add(item);
-			}
+    /**
+     * @param items
+     */
+    private void updateCombo(List<String> items) {
+        if(items !=null && getExecutionMode() == ExecutionMode.RUN_MODE){
+            combo.removeAll();
 
-			//write value to pv if pv name is not empty
-			if(getWidgetModel().getPVName().trim().length() > 0){
-				if(comboSelectionListener !=null)
-					combo.removeSelectionListener(comboSelectionListener);
-				comboSelectionListener = new SelectionAdapter(){
-						@Override
-						public void widgetSelected(SelectionEvent e) {
-							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, combo.getText());
-						}
-				};
-				combo.addSelectionListener(comboSelectionListener);
-			}
+            for(String item : items){
+                combo.add(item);
+            }
 
-		}
-	}
+            //write value to pv if pv name is not empty
+            if(getWidgetModel().getPVName().trim().length() > 0){
+                if(comboSelectionListener !=null)
+                    combo.removeSelectionListener(comboSelectionListener);
+                comboSelectionListener = new SelectionAdapter(){
+                        @Override
+                        public void widgetSelected(SelectionEvent e) {
+                            setPVValue(AbstractPVWidgetModel.PROP_PVNAME, combo.getText());
+                        }
+                };
+                combo.addSelectionListener(comboSelectionListener);
+            }
 
-	@Override
-	public ComboModel getWidgetModel() {
-		return (ComboModel)getModel();
-	}
+        }
+    }
 
-	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadItemsListener();
-	}
+    @Override
+    public ComboModel getWidgetModel() {
+        return (ComboModel)getModel();
+    }
 
-	/**
-	 *
-	 */
-	private void registerLoadItemsListener() {
-		//load items from PV
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			if(getWidgetModel().isItemsFromPV()){
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if(pv != null){
-					if(loadItemsFromPVListener == null)
-						loadItemsFromPVListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								if (value != null && value instanceof VEnum){
-									List<String> items = ((VEnum)value).getLabels();									
-										getWidgetModel().setPropertyValue(
-												ComboModel.PROP_ITEMS, items);
-									}								
-							}							
-						};
-					pv.addListener(loadItemsFromPVListener);
-				}
-			}
-		}
-	}
+    @Override
+    protected void doActivate() {
+        super.doActivate();
+        registerLoadItemsListener();
+    }
 
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if(getWidgetModel().isItemsFromPV()){
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null && loadItemsFromPVListener !=null){
-				pv.removeListener(loadItemsFromPVListener);
-			}
-		}
-//		((ComboFigure)getFigure()).dispose();
-	}
+    /**
+     *
+     */
+    private void registerLoadItemsListener() {
+        //load items from PV
+        if(getExecutionMode() == ExecutionMode.RUN_MODE){
+            if(getWidgetModel().isItemsFromPV()){
+                IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+                if(pv != null){
+                    if(loadItemsFromPVListener == null)
+                        loadItemsFromPVListener = new IPVListener.Stub() {
+                            public void valueChanged(IPV pv) {
+                                VType value = pv.getValue();
+                                if (value != null && value instanceof VEnum){
+                                    List<String> items = ((VEnum)value).getLabels();
+                                        getWidgetModel().setPropertyValue(
+                                                ComboModel.PROP_ITEMS, items);
+                                    }
+                            }
+                        };
+                    pv.addListener(loadItemsFromPVListener);
+                }
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+    @Override
+    protected void doDeActivate() {
+        super.doDeActivate();
+        if(getWidgetModel().isItemsFromPV()){
+            IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+            if(pv != null && loadItemsFromPVListener !=null){
+                pv.removeListener(loadItemsFromPVListener);
+            }
+        }
+//        ((ComboFigure)getFigure()).dispose();
+    }
 
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				registerLoadItemsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
-
-		autoSizeWidget((ComboFigure) getFigure());
-		// PV_Value
-		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				if(newValue != null){
-					String stringValue = VTypeHelper.getString((VType)newValue);
-					if(Arrays.asList(combo.getItems()).contains(stringValue))
-						combo.setText(stringValue);
-					else
-						combo.deselectAll();
-//					
-//					if(getWidgetModel().isBorderAlarmSensitve())
-//							autoSizeWidget((ComboFigure) refreshableFigure);
-				}
-
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ComboModel.PROP_PVVALUE, pvhandler);
-
-		// Items
-		IWidgetPropertyChangeHandler itemsHandler = new IWidgetPropertyChangeHandler() {
-			@SuppressWarnings("unchecked")
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				if(newValue != null && newValue instanceof List){
-					updateCombo((List<String>)newValue);
-					if(getWidgetModel().isItemsFromPV())
-						combo.setText(VTypeHelper.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
-				}
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ComboModel.PROP_ITEMS, itemsHandler);
-
-		final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				updatePropSheet((Boolean) newValue);
-				return false;
-			}
-		};
-		getWidgetModel().getProperty(ComboModel.PROP_ITEMS_FROM_PV).
-			addPropertyChangeListener(new PropertyChangeListener(){
-				public void propertyChange(PropertyChangeEvent evt) {
-					handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
-				}
-		});
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                registerLoadItemsListener();
+                return false;
+            }
+        };
+        setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 
 
-		//size change handlers--always apply the default height
-		IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue, final Object newValue,
-					final IFigure figure) {
-				autoSizeWidget((ComboFigure)figure);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_WIDTH, handle);
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT, handle);
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handle);
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handle);
-		setPropertyChangeHandler(ComboModel.PROP_FONT, handle);
-	}
+        autoSizeWidget((ComboFigure) getFigure());
+        // PV_Value
+        IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                if(newValue != null){
+                    String stringValue = VTypeHelper.getString((VType)newValue);
+                    if(Arrays.asList(combo.getItems()).contains(stringValue))
+                        combo.setText(stringValue);
+                    else
+                        combo.deselectAll();
+//
+//                    if(getWidgetModel().isBorderAlarmSensitve())
+//                            autoSizeWidget((ComboFigure) refreshableFigure);
+                }
 
-		/**
-		* @param actionsFromPV
-		*/
-	private void updatePropSheet(final boolean itemsFromPV) {
-		getWidgetModel().setPropertyVisible(
-				ComboModel.PROP_ITEMS, !itemsFromPV);
-	}
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ComboModel.PROP_PVVALUE, pvhandler);
 
-	private void autoSizeWidget(ComboFigure comboFigure) {
-		Dimension d = comboFigure.getAutoSizeDimension();
-		getWidgetModel().setSize(getWidgetModel().getWidth(), d.height);
-	}
+        // Items
+        IWidgetPropertyChangeHandler itemsHandler = new IWidgetPropertyChangeHandler() {
+            @SuppressWarnings("unchecked")
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                if(newValue != null && newValue instanceof List){
+                    updateCombo((List<String>)newValue);
+                    if(getWidgetModel().isItemsFromPV())
+                        combo.setText(VTypeHelper.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
+                }
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ComboModel.PROP_ITEMS, itemsHandler);
 
-	@Override
-	public String getValue() {
-		return combo.getText();
-	}
+        final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                updatePropSheet((Boolean) newValue);
+                return false;
+            }
+        };
+        getWidgetModel().getProperty(ComboModel.PROP_ITEMS_FROM_PV).
+            addPropertyChangeListener(new PropertyChangeListener(){
+                public void propertyChange(PropertyChangeEvent evt) {
+                    handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
+                }
+        });
 
-	@Override
-	public void setValue(Object value) {
-		if(value instanceof String)
-			combo.setText((String) value);
-		else if (value instanceof Number)
-			combo.select(((Number)value).intValue());
-		else
-			super.setValue(value);
-	}
+
+        //size change handlers--always apply the default height
+        IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue, final Object newValue,
+                    final IFigure figure) {
+                autoSizeWidget((ComboFigure)figure);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractWidgetModel.PROP_WIDTH, handle);
+        setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT, handle);
+        setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_STYLE, handle);
+        setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH, handle);
+        setPropertyChangeHandler(ComboModel.PROP_FONT, handle);
+    }
+
+        /**
+        * @param actionsFromPV
+        */
+    private void updatePropSheet(final boolean itemsFromPV) {
+        getWidgetModel().setPropertyVisible(
+                ComboModel.PROP_ITEMS, !itemsFromPV);
+    }
+
+    private void autoSizeWidget(ComboFigure comboFigure) {
+        Dimension d = comboFigure.getAutoSizeDimension();
+        getWidgetModel().setSize(getWidgetModel().getWidth(), d.height);
+    }
+
+    @Override
+    public String getValue() {
+        return combo.getText();
+    }
+
+    @Override
+    public void setValue(Object value) {
+        if(value instanceof String)
+            combo.setText((String) value);
+        else if (value instanceof Number)
+            combo.select(((Number)value).intValue());
+        else
+            super.setValue(value);
+    }
 
 }

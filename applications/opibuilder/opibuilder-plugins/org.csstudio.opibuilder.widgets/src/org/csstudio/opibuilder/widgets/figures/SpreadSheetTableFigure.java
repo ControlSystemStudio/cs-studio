@@ -18,12 +18,12 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class SpreadSheetTableFigure extends AbstractSWTWidgetFigure<SpreadSheetTable> {
 
-	public SpreadSheetTableFigure(AbstractBaseEditPart editpart) {
-		super(editpart);
-	}
+    public SpreadSheetTableFigure(AbstractBaseEditPart editpart) {
+        super(editpart);
+    }
 
-	@Override
-	protected SpreadSheetTable createSWTWidget(Composite parent, int style) {
-		return new SpreadSheetTable(parent);
-	}	
+    @Override
+    protected SpreadSheetTable createSWTWidget(Composite parent, int style) {
+        return new SpreadSheetTable(parent);
+    }
 }

@@ -76,7 +76,7 @@ public class IncludeCommand extends ScanCommand
     {
         this.macros = macros;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public void addXMLElements(final Document dom, final Element command_element)
@@ -88,7 +88,7 @@ public class IncludeCommand extends ScanCommand
         element = dom.createElement("macros");
         element.appendChild(dom.createTextNode(getMacros()));
         command_element.appendChild(element);
-        
+
         super.addXMLElements(dom, command_element);
     }
 

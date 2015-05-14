@@ -25,7 +25,7 @@ abstract public class ConnectJob extends Job
     final private String url;
     private ArchiveReader reader;
     private ArchiveInfo infos[];
-    
+
     /** Create job that connects to given URL, then notifies view when done. */
     public ConnectJob(final String url)
     {

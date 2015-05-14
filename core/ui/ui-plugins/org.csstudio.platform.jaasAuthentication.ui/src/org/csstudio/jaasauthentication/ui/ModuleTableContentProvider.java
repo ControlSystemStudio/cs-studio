@@ -20,33 +20,33 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class ModuleTableContentProvider implements IStructuredContentProvider
 {
-	/** Magic number for the final 'add' element */
-	final public static Integer ADD_ELEMENT = new Integer(-1);
-	private List<?> items;
+    /** Magic number for the final 'add' element */
+    final public static Integer ADD_ELEMENT = new Integer(-1);
+    private List<?> items;
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void inputChanged(final Viewer viewer, final Object old, final Object new_input)
-	{
-		items = (List<?>) new_input;
-	}
+    {
+        items = (List<?>) new_input;
+    }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public Object[] getElements(Object arg0)
-	{
-		int N = items.size();
-		final Integer result[] = new Integer[N+1];
-		for (int i=0; i<N; ++i)
-			result[i] = i;
-		result[N] = ADD_ELEMENT;
-		return result;
-	}
+    {
+        int N = items.size();
+        final Integer result[] = new Integer[N+1];
+        for (int i=0; i<N; ++i)
+            result[i] = i;
+        result[N] = ADD_ELEMENT;
+        return result;
+    }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void dispose()
-	{
-		// NOP
-	}
+    {
+        // NOP
+    }
 }

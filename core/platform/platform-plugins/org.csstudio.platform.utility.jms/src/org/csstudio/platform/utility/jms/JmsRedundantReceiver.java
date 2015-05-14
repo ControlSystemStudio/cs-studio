@@ -38,58 +38,58 @@ import javax.jms.Topic;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 /**
- * 
+ *
  * This class handles the redundant connections to JMS servers. It uses queues
  * to store messages if two or more servers holds messages for a consumer. They will be stored chronological. The
  * oldest message will be returned first to a client.
- * 
+ *
  * @author Markus Moeller
  * @version 1.1
  * @since 08.01.2009
- * 
+ *
  */
 
 public class JmsRedundantReceiver implements IJmsRedundantReceiver
 {
     /** Client id */
     private String clientId = null;
-    
+
     /** Array of factories */
     private ActiveMQConnectionFactory[] factory = null;
-    
+
     /** Array of JMS connections */
     private Connection[] connection  = null;
-    
+
     /** Array of JMS sessions */
     private Session[] session = null;
-    
+
     /** Message consumers. Key -> name, Value -> Array of message consumers */
     private Hashtable<String, MessageConsumer[]> subscriber = null;
-    
+
     /** Queues for the messages */
     // private Hashtable<String, ConcurrentLinkedQueue<Message>> messages = null;
     private Hashtable<String, TreeSet<Message>> messages = null;
-    
+
     /** Array of URL strings */
     private String[] urlList = null;
-    
+
     /** Number of redundant connections */
     private int connectionCount;
 
     /** Flag that indicates whether or not the connections are established. */
     private boolean connected = false;
-    
+
     public JmsRedundantReceiver(String id, String[] urls)
     {
         Vector<String> tempList = null;
-        
+
         if(urls == null)
         {
             return;
         }
-        
+
         tempList = new Vector<String>();
-        
+
         for(String s : urls)
         {
             // Count the valid url entries
@@ -101,11 +101,11 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 }
             }
         }
-        
+
         connectionCount = tempList.size();
         urlList = new String[connectionCount];
-        tempList.toArray(urlList);        
-        
+        tempList.toArray(urlList);
+
         clientId = id;
 
         factory = new ActiveMQConnectionFactory[connectionCount];
@@ -113,16 +113,16 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         session = new Session[connectionCount];
 
         for(int i = 0;i < connectionCount;i++)
-        {            
+        {
             try
             {
                 factory[i] = new ActiveMQConnectionFactory(urlList[i]);
                 connection[i] = factory[i].createConnection();
                 connection[i].setClientID(clientId);
                 session[i] = connection[i].createSession(false, Session.CLIENT_ACKNOWLEDGE);
-                
+
                 connection[i].start();
-                
+
                 connected = true;
             }
             catch(JMSException jmse)
@@ -131,9 +131,9 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
             }
         }
     }
-    
+
     /**
-     * 
+     *
      * @param id - The client Id used by the connection object.
      * @param url1 - URL of the first JMS Server
      * @param url2 - URL of the second JMS Server
@@ -142,7 +142,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
     {
         this(id, new String[] { url1, url2 });
     }
-    
+
     /* (non-Javadoc)
      * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String, java.lang.String, boolean)
      */
@@ -152,25 +152,25 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         MessageConsumer[] sub = null;
         Topic topic = null;
         boolean result = false;
-        
+
         if(subscriber == null)
         {
             subscriber = new Hashtable<String, MessageConsumer[]>();
         }
-        
+
         if(subscriber.containsKey(name))
         {
             return false;
         }
-        
+
         sub = new MessageConsumer[connectionCount];
-        
+
         try
         {
             for(int i = 0;i < connectionCount;i++)
             {
                 topic = session[i].createTopic(destination);
-                
+
                 if((durable == true) && (durableName != null))
                 {
                     sub[i] = session[i].createDurableSubscriber(topic, durableName);
@@ -179,19 +179,19 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 {
                     sub[i] = session[i].createConsumer(topic);
                 }
-                
+
                 Logger.getLogger(this.getClass().getName()).log(Level.INFO, name + " -> Topic: " + destination + " " + urlList[i]);
             }
-            
+
             subscriber.put(name, sub);
-            
+
             if(messages == null)
             {
                 messages = new Hashtable<String, TreeSet<Message>>();
             }
-            
+
             messages.put(name, new TreeSet<Message>(new MessageComparator()));
-            
+
             result = true;
         }
         catch(JMSException jmse)
@@ -202,32 +202,32 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         {
             result = false;
         }
-        
+
         return result;
     }
 
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
-	 */
-    
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#createRedundantSubscriber(java.lang.String, java.lang.String)
+     */
+
     @Override
     public boolean createRedundantSubscriber(String name, String destination)
     {
         return createRedundantSubscriber(name, destination, null, false);
     }
-    
+
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String)
-	 */
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String)
+     */
     @Override
     public Message receive(String name)
     {
         return receive(name, 0);
     }
-    
+
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String, long)
-	 */   
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#receive(java.lang.String, long)
+     */
     @Override
     public Message receive(String name, long waitTime)
     {
@@ -235,13 +235,13 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         MessageConsumer[] c = null;
         Message m = null;
         Message result = null;
-        
+
         // First check the internal subscriber message queue
         if(messages.containsKey(name))
         {
             // Get the message queue for the subscriber
             subscriberQueue = messages.get(name);
-            
+
             // If we have a message in this queue, deliver it first!
             if(!subscriberQueue.isEmpty())
             {
@@ -256,13 +256,13 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
         {
             return result;
         }
-        
+
         // Do we have a subscriber with the given name?
         if(subscriber.containsKey(name))
         {
             // Get the MessageConsumer objects for all hosts
             c = subscriber.get(name);
-                        
+
             // Receive the next message from all hosts
             for(int i = 0;i < c.length;i++)
             {
@@ -284,10 +284,10 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 {
                     m = null;
                 }
-                
+
                 m = null;
             }
-            
+
             // Get the first message. It is the oldest one. Maybe we just have one message.
             if(!subscriberQueue.isEmpty())
             {
@@ -295,22 +295,22 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 subscriberQueue.remove(result);
             }
         }
-        
+
         return result;
     }
-    
+
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#isConnected()
-	 */
-    
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#isConnected()
+     */
+
     @Override
     public boolean isConnected() {
         return connected;
     }
-    
+
     /**
      * The client has to acknowledge the received message
-     * 
+     *
      * @param msg
      * @return True, if everything works fine
      */
@@ -325,8 +325,8 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
     }
 
     /* (non-Javadoc)
-	 * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#closeAll()
-	 */
+     * @see org.csstudio.platform.libs.jms.IjmsRedundantReceiver#closeAll()
+     */
     @Override
     public void closeAll()
     {
@@ -339,21 +339,21 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 if(connection[i] != null){try{connection[i].stop();}catch(JMSException jmse){System.err.println(jmse.getMessage());}}
             }
         }
-        
+
         if(subscriber != null)
         {
             Enumeration<MessageConsumer[]> list = subscriber.elements();
-            
+
             while(list.hasMoreElements())
             {
                 c = list.nextElement();
-                
+
                 for(int i = 0;i < c.length;i++)
                 {
                     try{c[i].close();}catch(JMSException jmse){System.err.println(jmse.getMessage());}
                 }
             }
-            
+
             subscriber.clear();
             subscriber = null;
         }
@@ -368,7 +368,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                     session[i] = null;
                 }
             }
-            
+
             if(connection != null)
             {
                 if(connection[i] != null)
@@ -377,12 +377,12 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                     connection[i] = null;
                 }
             }
-            
-            if(factory != null){factory[i]=null;}            
+
+            if(factory != null){factory[i]=null;}
         }
-        
+
         factory = null;
         connection = null;
         session = null;
-    }   
+    }
 }

@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public abstract class AbstractGUIAction extends Action
 {
-	final protected Shell shell;
+    final protected Shell shell;
     final protected ScanInfoModel model;
     final protected ScanInfo[] infos;
 
@@ -57,7 +57,7 @@ public abstract class AbstractGUIAction extends Action
         }
         catch (Exception ex)
         {
-        	ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
+            ExceptionDetailsErrorDialog.openError(shell, Messages.Error, ex);
         }
     }
 

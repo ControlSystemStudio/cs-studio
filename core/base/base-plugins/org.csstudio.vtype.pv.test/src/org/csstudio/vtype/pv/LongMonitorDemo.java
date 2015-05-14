@@ -17,11 +17,11 @@ import org.epics.vtype.VType;
 import org.junit.Before;
 
 /** JUnit demo
- * 
+ *
  *  <p>On IOC, watch "casr 2" output for number of connections
  *  when removing network cable, awaiting disconnect,
  *  re-connecting and awaiting reconnect
- *  
+ *
  *  @author Kay Kasemir
  */
 public class LongMonitorDemo implements PVListener
@@ -39,7 +39,7 @@ public class LongMonitorDemo implements PVListener
         }
         PVPool.addPVFactory(new JCA_PVFactory());
     }
-    
+
     public void run() throws Exception
     {
         final PV pv = PVPool.getPV("ramp");
@@ -49,7 +49,7 @@ public class LongMonitorDemo implements PVListener
         {
             wait(); // forever...
         }
-        
+
         pv.removeListener(this);
         PVPool.releasePV(pv);
         System.out.println("Done.");
@@ -58,7 +58,7 @@ public class LongMonitorDemo implements PVListener
     @Override
     public void permissionsChanged(PV pv, boolean readonly)
     {
-        System.out.println("Permissions");        
+        System.out.println("Permissions");
     }
 
     @Override
@@ -72,7 +72,7 @@ public class LongMonitorDemo implements PVListener
     {
         System.out.println("Disconnected");
     }
-    
+
     public static void main(String[] args) throws Exception
     {
         new LongMonitorDemo().run();

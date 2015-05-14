@@ -37,36 +37,36 @@ import org.csstudio.dal.impl.ResponseImpl;
  */
 public class GetRequest<T> extends RequestImpl<T> implements GetListener
 {
-	/**
-	 * Proxy of this request.
-	 */
-	protected PropertyProxyImpl<T> proxy;
+    /**
+     * Proxy of this request.
+     */
+    protected PropertyProxyImpl<T> proxy;
 
-	/**
-	 * Construcor.
+    /**
+     * Construcor.
      * @param proxy proxy of this request.
      * @param l listener to notify.
      */
-	public GetRequest(final PropertyProxyImpl<T> proxy, final ResponseListener<T> l)
-	{
-		super(proxy, l, 1);
-		this.proxy = proxy;
-	}
+    public GetRequest(final PropertyProxyImpl<T> proxy, final ResponseListener<T> l)
+    {
+        super(proxy, l, 1);
+        this.proxy = proxy;
+    }
 
-	/* (non-Javadoc)
-	 * @see gov.aps.jca.event.GetListener#getCompleted(gov.aps.jca.event.GetEvent)
-	 */
-	@Override
+    /* (non-Javadoc)
+     * @see gov.aps.jca.event.GetListener#getCompleted(gov.aps.jca.event.GetEvent)
+     */
+    @Override
     public void getCompleted(final GetEvent ev)
-	{
-		if (ev.getDBR()==null || ev.getStatus() == null || !ev.getStatus().isSuccessful()) {
-			addResponse(new ResponseImpl<T>(proxy, this, null,
-			        "value", false, null, proxy.getCondition(), null, true));
-		} else {
-			addResponse(new ResponseImpl<T>(proxy, this, proxy.toJavaValue(ev.getDBR()),
-		        "value", true, null, proxy.getCondition(), null, true));
-		}
-	}
+    {
+        if (ev.getDBR()==null || ev.getStatus() == null || !ev.getStatus().isSuccessful()) {
+            addResponse(new ResponseImpl<T>(proxy, this, null,
+                    "value", false, null, proxy.getCondition(), null, true));
+        } else {
+            addResponse(new ResponseImpl<T>(proxy, this, proxy.toJavaValue(ev.getDBR()),
+                "value", true, null, proxy.getCondition(), null, true));
+        }
+    }
 }
 
 /* __oOo__ */

@@ -33,7 +33,7 @@ package org.csstudio.dal;
  */
 public interface LongAccess extends DataAccess<Long>
 {
-	//
+    //
 }
 
 /* __oOo__ */

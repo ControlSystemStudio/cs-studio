@@ -18,69 +18,69 @@ import org.csstudio.alarm.beast.notifier.PVSnapshot;
  */
 public class PVHistoryEntry {
 
-	private final String name, path;
-	private SeverityLevel currentSeverity, severity;
-	private boolean acknowledged = false;
-	private boolean recovredWithinDelay = false;
+    private final String name, path;
+    private SeverityLevel currentSeverity, severity;
+    private boolean acknowledged = false;
+    private boolean recovredWithinDelay = false;
 
-	public static PVHistoryEntry fromSnapshot(PVSnapshot snapshot) {
-		PVHistoryEntry pvhe = new PVHistoryEntry(snapshot.getName(),
-				snapshot.getPath());
-		pvhe.update(snapshot);
-		return pvhe;
-	}
+    public static PVHistoryEntry fromSnapshot(PVSnapshot snapshot) {
+        PVHistoryEntry pvhe = new PVHistoryEntry(snapshot.getName(),
+                snapshot.getPath());
+        pvhe.update(snapshot);
+        return pvhe;
+    }
 
-	public PVHistoryEntry(final String name, final String path) {
-		this.name = name;
-		this.path = path;
-	}
+    public PVHistoryEntry(final String name, final String path) {
+        this.name = name;
+        this.path = path;
+    }
 
-	public void update(PVSnapshot snapshot) {
-	    // Does this un-acknowledge a previous acknowledgement?
-		if (severity != null                  &&
-		    snapshot.getSeverity().isActive() &&
-		    severity.isActive() == false      &&
-		    severity.name().startsWith(snapshot.getSeverity().name()) )
-			this.acknowledged = false;
-		if (!acknowledged && snapshot.isAcknowledge())
-			this.acknowledged = true;
-		this.currentSeverity = snapshot.getCurrentSeverity();
-		this.severity = snapshot.getSeverity();
-	}
+    public void update(PVSnapshot snapshot) {
+        // Does this un-acknowledge a previous acknowledgement?
+        if (severity != null                  &&
+            snapshot.getSeverity().isActive() &&
+            severity.isActive() == false      &&
+            severity.name().startsWith(snapshot.getSeverity().name()) )
+            this.acknowledged = false;
+        if (!acknowledged && snapshot.isAcknowledge())
+            this.acknowledged = true;
+        this.currentSeverity = snapshot.getCurrentSeverity();
+        this.severity = snapshot.getSeverity();
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public String getPath() {
+        return path;
+    }
 
-	public SeverityLevel getCurrentSeverity() {
-		return currentSeverity;
-	}
+    public SeverityLevel getCurrentSeverity() {
+        return currentSeverity;
+    }
 
-	public SeverityLevel getSeverity() {
-		return severity;
-	}
+    public SeverityLevel getSeverity() {
+        return severity;
+    }
 
-	public boolean isAcknowledged() {
-		return acknowledged;
-	}
+    public boolean isAcknowledged() {
+        return acknowledged;
+    }
 
-	public boolean hasRecovredWithinDelay() {
-		return recovredWithinDelay;
-	}
+    public boolean hasRecovredWithinDelay() {
+        return recovredWithinDelay;
+    }
 
-	public void setRecovredWithinDelay(boolean recovredWithinDelay) {
-		this.recovredWithinDelay = recovredWithinDelay;
-	}
+    public void setRecovredWithinDelay(boolean recovredWithinDelay) {
+        this.recovredWithinDelay = recovredWithinDelay;
+    }
 
-	@SuppressWarnings("nls")
+    @SuppressWarnings("nls")
     @Override
-	public String toString() {
-		return "PVHistoryEntry [currentSeverity=" + currentSeverity
-				+ ", severity=" + severity + ", acknowledged=" + acknowledged
-				+ "]";
-	}
+    public String toString() {
+        return "PVHistoryEntry [currentSeverity=" + currentSeverity
+                + ", severity=" + severity + ", acknowledged=" + acknowledged
+                + "]";
+    }
 }

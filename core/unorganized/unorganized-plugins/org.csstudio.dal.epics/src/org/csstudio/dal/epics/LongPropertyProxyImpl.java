@@ -32,15 +32,15 @@ import org.csstudio.dal.RemoteException;
  */
 public class LongPropertyProxyImpl extends PropertyProxyImpl<Long> {
 
-	/**
-	 * Constructor.
-	 * @param plug plug handling this property.
-	 * @param name property name.
-	 * @throws RemoteException
-	 */
-	public LongPropertyProxyImpl(final EPICSPlug plug, final String name)
-			throws RemoteException {
-		super(plug, name, Long.class, DBRType.INT);
-	}
+    /**
+     * Constructor.
+     * @param plug plug handling this property.
+     * @param name property name.
+     * @throws RemoteException
+     */
+    public LongPropertyProxyImpl(final EPICSPlug plug, final String name)
+            throws RemoteException {
+        super(plug, name, Long.class, DBRType.INT);
+    }
 
 }

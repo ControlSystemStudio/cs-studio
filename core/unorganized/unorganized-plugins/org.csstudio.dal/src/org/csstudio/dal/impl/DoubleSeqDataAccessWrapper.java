@@ -29,66 +29,66 @@ import org.csstudio.dal.SequenceAccess;
 
 
 public class DoubleSeqDataAccessWrapper extends AbstractDataAccessWrapper<double[]>
-	implements DoubleSeqAccess
+    implements DoubleSeqAccess
 {
-	private static final int NUMBER_TO_DOUBLE = 1;
+    private static final int NUMBER_TO_DOUBLE = 1;
 
-	public DoubleSeqDataAccessWrapper(DataAccess sourceDA)
-	{
-		super(double[].class, sourceDA);
-	}
+    public DoubleSeqDataAccessWrapper(DataAccess sourceDA)
+    {
+        super(double[].class, sourceDA);
+    }
 
-	protected int getConversion()
-	{
-		if (valClass.equals(double[].class)) {
-			if (sourceDA.getDataType().equals(long[].class)) {
-				return NUMBER_TO_DOUBLE;
-			}
-		}
+    protected int getConversion()
+    {
+        if (valClass.equals(double[].class)) {
+            if (sourceDA.getDataType().equals(long[].class)) {
+                return NUMBER_TO_DOUBLE;
+            }
+        }
 
-		return UNKNOWN;
-	}
+        return UNKNOWN;
+    }
 
-	@Override
-	protected Object convertToOriginal(double[] value, DataAccess dataAccess)
-	{
-		if (value == null) {
-			return null;
-		}
+    @Override
+    protected Object convertToOriginal(double[] value, DataAccess dataAccess)
+    {
+        if (value == null) {
+            return null;
+        }
 
-		long[] l= new long[value.length];
-		
-		for (int i = 0; i < l.length; i++) {
-			l[i]=(long)value[i];
-		}
-		
-		return l;
-	}
+        long[] l= new long[value.length];
 
-	@Override
-	protected double[] convertFromOriginal(Object value, DataAccess dataAccess)
-	{
-		if (value == null) {
-			return null;
-		}
-		
-		if (value instanceof long[]) {
-			long[] l= (long[])value;
-			
-			double[] d= new double[l.length];
-			
-			for (int i = 0; i < l.length; i++) {
-				d[i]=(double)l[i];
-			}
-			return d;
-		}
+        for (int i = 0; i < l.length; i++) {
+            l[i]=(long)value[i];
+        }
 
-		return null;
-	}
-	
-	public int getSequenceLength() throws DataExchangeException {
-		return ((SequenceAccess<?>)sourceDA).getSequenceLength();
-	}
+        return l;
+    }
+
+    @Override
+    protected double[] convertFromOriginal(Object value, DataAccess dataAccess)
+    {
+        if (value == null) {
+            return null;
+        }
+
+        if (value instanceof long[]) {
+            long[] l= (long[])value;
+
+            double[] d= new double[l.length];
+
+            for (int i = 0; i < l.length; i++) {
+                d[i]=(double)l[i];
+            }
+            return d;
+        }
+
+        return null;
+    }
+
+    public int getSequenceLength() throws DataExchangeException {
+        return ((SequenceAccess<?>)sourceDA).getSequenceLength();
+    }
 }
 
 /* __oOo__ */

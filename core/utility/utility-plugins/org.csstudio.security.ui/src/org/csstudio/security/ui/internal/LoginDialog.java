@@ -24,10 +24,10 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /** Log in dialog
- * 
+ *
  *  <p>Uses Eclipse {@link ILoginContext} to perform
  *  a JAAS-based login.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls") // TODO Externalize strings
@@ -38,7 +38,7 @@ public class LoginDialog extends Dialog
     private Text password;
     private Label message;
     private Job job;
-    
+
     /** JAAS {@link CallbackHandler} that
      *  fetches name, password from dialog
      *  and displays errors in dialog as well.
@@ -82,7 +82,7 @@ public class LoginDialog extends Dialog
             });
         }
     };
-    
+
     /** Initialize
      *  @param shell Parent shell
      */
@@ -107,7 +107,7 @@ public class LoginDialog extends Dialog
     {
         return true;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     protected Control createDialogArea(final Composite parent)
@@ -124,7 +124,7 @@ public class LoginDialog extends Dialog
         user = new Text(composite, SWT.BORDER);
         user.setToolTipText("Enter user name");
         user.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         l = new Label(composite, 0);
         l.setText("Password:");
         l.setLayoutData(new GridData());
@@ -132,11 +132,11 @@ public class LoginDialog extends Dialog
         password = new Text(composite, SWT.BORDER | SWT.PASSWORD);
         password.setToolTipText("Enter password");
         password.setLayoutData(new GridData(SWT.FILL, 0, true, false));
-        
+
         message = new Label(composite, 0);
         message.setForeground(composite.getDisplay().getSystemColor(SWT.COLOR_RED));
         message.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
-        
+
         return composite;
     }
 

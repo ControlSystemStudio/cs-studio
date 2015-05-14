@@ -24,97 +24,97 @@ import org.eclipse.ui.IPersistableElement;
 @SuppressWarnings("nls")
 public class ScanInfoEditorInput implements IEditorInput, IPersistableElement
 {
-	/** Memento IDs */
+    /** Memento IDs */
     final public static String TAG_NAME = "name",
-			                   TAG_ID = "id";
+                               TAG_ID = "id";
 
-	final private long scan_id;
-	final private String name;
+    final private long scan_id;
+    final private String name;
 
-	/** Initialize
-	 *  @param scan {@link ScanInfo}
-	 */
-	public ScanInfoEditorInput(final ScanInfo scan)
+    /** Initialize
+     *  @param scan {@link ScanInfo}
+     */
+    public ScanInfoEditorInput(final ScanInfo scan)
     {
-		this(scan.getId(), scan.getName());
+        this(scan.getId(), scan.getName());
     }
 
-	/** Initialize
-	 *  @param scan_id Scan ID
-	 *  @param name Scan name
-	 */
-	public ScanInfoEditorInput(final long scan_id, final String name)
+    /** Initialize
+     *  @param scan_id Scan ID
+     *  @param name Scan name
+     */
+    public ScanInfoEditorInput(final long scan_id, final String name)
     {
-		this.scan_id = scan_id;
-		this.name = name;
+        this.scan_id = scan_id;
+        this.name = name;
     }
 
-	// IEditorInput
+    // IEditorInput
 
-	/** @return Scan ID */
-	public long getScanID()
+    /** @return Scan ID */
+    public long getScanID()
     {
-    	return scan_id;
+        return scan_id;
     }
 
-	/** {@inheritDoc} */
-	@SuppressWarnings("rawtypes")
+    /** {@inheritDoc} */
+    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(final Class adapter)
     {
-	    return null;
+        return null;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public boolean exists()
     {
-	    return true;
+        return true;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public ImageDescriptor getImageDescriptor()
     {
-	    return null;
+        return null;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public String getName()
     {
-	    return NLS.bind(Messages.ScanEditorTTFmt, name, scan_id);
+        return NLS.bind(Messages.ScanEditorTTFmt, name, scan_id);
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public IPersistableElement getPersistable()
     {
-	    return this;
+        return this;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public String getToolTipText()
     {
-	    return getName();
+        return getName();
     }
 
-	// IPersistableElement
+    // IPersistableElement
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public String getFactoryId()
     {
-	    return ScanInfoEditorInputFactory.ID;
+        return ScanInfoEditorInputFactory.ID;
     }
 
-	/** {@inheritDoc} */
-	@Override
-	public void saveState(final IMemento memento)
-	{
-		// Saving Long ID as String because IMemento only offers Integer
-		memento.putString(TAG_ID, Long.toString(scan_id));
-		memento.putString(TAG_NAME, name);
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void saveState(final IMemento memento)
+    {
+        // Saving Long ID as String because IMemento only offers Integer
+        memento.putString(TAG_ID, Long.toString(scan_id));
+        memento.putString(TAG_NAME, name);
+    }
 }

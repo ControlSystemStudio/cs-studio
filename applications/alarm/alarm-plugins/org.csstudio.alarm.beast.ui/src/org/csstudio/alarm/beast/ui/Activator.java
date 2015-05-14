@@ -19,8 +19,8 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin
 {
-	/** Plug-in ID defined in MANIFEST.MF */
-	public static final String ID = "org.csstudio.alarm.beast.ui"; //$NON-NLS-1$
+    /** Plug-in ID defined in MANIFEST.MF */
+    public static final String ID = "org.csstudio.alarm.beast.ui"; //$NON-NLS-1$
 
     /** Singleton instance */
     private static Activator plugin;

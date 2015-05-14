@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -15,7 +15,7 @@ import static gov.bnl.channelfinder.api.Property.Builder.property;
 import static gov.bnl.channelfinder.api.Tag.Builder.tag;
 /**
  * A UI testing class to observe the behavior of the ChannelEditDialog
- * 
+ *
  * @author Kunal Shroff
  *
  */

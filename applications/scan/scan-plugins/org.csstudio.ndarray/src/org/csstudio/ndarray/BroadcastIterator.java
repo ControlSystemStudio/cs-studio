@@ -58,9 +58,9 @@ public class BroadcastIterator
         pos_b = new int[b.getDimensions()];
     }
 
-	/** @return Shape of the result from broadcasting
-	 *          the two input arrays against each other
-	 */
+    /** @return Shape of the result from broadcasting
+     *          the two input arrays against each other
+     */
     public NDShape getBroadcastShape()
     {
         return broadcast;
@@ -78,27 +78,27 @@ public class BroadcastIterator
      */
     private NDShape computeBroadcastShape(final NDShape a, final NDShape b)
     {
-		// Compare sizes from the 'end'
-    	int dim_a = a.getDimensions();
-    	int dim_b = b.getDimensions();
-    	// Resulting shape has maximum rank
-    	int i = Math.max(dim_a, dim_b);
-    	final int[] result = new int[i];
-    	// Each dimension uses the maximum length of the original shapes
-    	while (--i >= 0)
-    	{
-    		// Original shapes may have smaller rank, so check dim < 0
-    		--dim_a;
-    		--dim_b;
-    		final int len_a = dim_a < 0 ? 1 : a.getSize(dim_a);
-    		final int len_b = dim_b < 0 ? 1 : b.getSize(dim_b);
-    		if (len_a != len_b  &&          // Lengths differ?
-				len_a != 1  &&  len_b != 1) // ... and are not 1?
+        // Compare sizes from the 'end'
+        int dim_a = a.getDimensions();
+        int dim_b = b.getDimensions();
+        // Resulting shape has maximum rank
+        int i = Math.max(dim_a, dim_b);
+        final int[] result = new int[i];
+        // Each dimension uses the maximum length of the original shapes
+        while (--i >= 0)
+        {
+            // Original shapes may have smaller rank, so check dim < 0
+            --dim_a;
+            --dim_b;
+            final int len_a = dim_a < 0 ? 1 : a.getSize(dim_a);
+            final int len_b = dim_b < 0 ? 1 : b.getSize(dim_b);
+            if (len_a != len_b  &&          // Lengths differ?
+                len_a != 1  &&  len_b != 1) // ... and are not 1?
                throw new IllegalArgumentException("Array of shape " + a +
-            		   " is not compatible with array of shape " + b);
+                       " is not compatible with array of shape " + b);
            result[i] = Math.max(len_a,  len_b);
-    	}
-    	return new NDShape(result);
+        }
+        return new NDShape(result);
     }
 
     /** Position on the next element for both inputs as well as the result
@@ -126,18 +126,18 @@ public class BroadcastIterator
      */
     private void broadcastPosition(final int[] broadcast, final int[] pos, final NDShape shape)
     {
-    	// Start with the 'rightmost' dimension
-    	int dim_b = broadcast.length - 1;
-    	int dim = pos.length - 1;
-    	while (dim >= 0)
-    	{
-    		if (shape.getSize(dim) > 1)
-    			pos[dim] = broadcast[dim_b];
-    		else // 'stretch' if shape is only 1 element long in this dimension
-    			pos[dim] = 0;
-    		--dim_b;
-    		--dim;
-    	}
+        // Start with the 'rightmost' dimension
+        int dim_b = broadcast.length - 1;
+        int dim = pos.length - 1;
+        while (dim >= 0)
+        {
+            if (shape.getSize(dim) > 1)
+                pos[dim] = broadcast[dim_b];
+            else // 'stretch' if shape is only 1 element long in this dimension
+                pos[dim] = 0;
+            --dim_b;
+            --dim;
+        }
     }
 
     /** @return Current position within first input shape */

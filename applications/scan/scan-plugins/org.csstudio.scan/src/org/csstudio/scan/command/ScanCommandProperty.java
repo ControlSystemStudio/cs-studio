@@ -42,7 +42,7 @@ public class ScanCommandProperty
 
     final public static ScanCommandProperty COMPLETION =
             new ScanCommandProperty(TAG_COMPLETION, "Wait for completion", Boolean.class);
-    
+
     final public static ScanCommandProperty WAIT =
             new ScanCommandProperty(TAG_WAIT, "Wait for readback", Boolean.class);
 

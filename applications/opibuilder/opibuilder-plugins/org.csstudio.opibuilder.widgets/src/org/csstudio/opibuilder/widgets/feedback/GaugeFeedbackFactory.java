@@ -15,9 +15,9 @@ import org.csstudio.opibuilder.widgets.model.GaugeModel;
  */
 public class GaugeFeedbackFactory extends AbstractFixRatioSizeFeedbackFactory {
 
-	@Override
-	public int getMinimumWidth() {
-		return GaugeModel.MINIMUM_SIZE;
-	}
-	
+    @Override
+    public int getMinimumWidth() {
+        return GaugeModel.MINIMUM_SIZE;
+    }
+
 }

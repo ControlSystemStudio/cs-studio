@@ -25,64 +25,64 @@ import org.eclipse.swt.widgets.Composite;
 @SuppressWarnings("nls")
 public class Bar extends Canvas implements PaintListener
 {
-	final private static int CRITICAL_PERCENTAGE = 75;
-	private float percentage = 0.0f;
+    final private static int CRITICAL_PERCENTAGE = 75;
+    private float percentage = 0.0f;
     private String text = "";
-	private GC gc;
+    private GC gc;
 
-	/** Initialize
-	 *  @param parent
-	 *  @param style
-	 */
-	public Bar(final Composite parent, final int style)
+    /** Initialize
+     *  @param parent
+     *  @param style
+     */
+    public Bar(final Composite parent, final int style)
     {
-	    super(parent, style);
-	    addPaintListener(this);
+        super(parent, style);
+        addPaintListener(this);
     }
 
-	/** Update values to show
-	 *  @param text Text to show
-	 *  @param percentage 0..100
-	 */
-	public void update(final String text, final double percentage)
-	{
-		this.text = text;
-		this.percentage = (float) percentage;
-		redraw();
-	}
+    /** Update values to show
+     *  @param text Text to show
+     *  @param percentage 0..100
+     */
+    public void update(final String text, final double percentage)
+    {
+        this.text = text;
+        this.percentage = (float) percentage;
+        redraw();
+    }
 
-	/** Adjust height to match height of text */
-	@Override
+    /** Adjust height to match height of text */
+    @Override
     public Point computeSize(final int wHint, final int hHint, boolean changed)
     {
-	    final Point size = super.computeSize(wHint, hHint, changed);
-	    gc = new GC(getDisplay());
-	    size.y = gc.getFontMetrics().getHeight();
-	    gc.dispose();
-		return size;
+        final Point size = super.computeSize(wHint, hHint, changed);
+        gc = new GC(getDisplay());
+        size.y = gc.getFontMetrics().getHeight();
+        gc.dispose();
+        return size;
     }
 
-	/** Custom painting */
-	@Override
+    /** Custom painting */
+    @Override
     public void paintControl(final PaintEvent e)
     {
-		final GC gc = e.gc;
-		final Rectangle area = getClientArea();
+        final GC gc = e.gc;
+        final Rectangle area = getClientArea();
 
-		// Bar
-		gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
-		gc.fillRectangle(area);
-		if (percentage > CRITICAL_PERCENTAGE)
-			gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
-		else
-			gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
-		gc.fillRectangle(0, 0, Math.round((area.width-1) * percentage / 100), area.height-1);
+        // Bar
+        gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_GRAY));
+        gc.fillRectangle(area);
+        if (percentage > CRITICAL_PERCENTAGE)
+            gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_RED));
+        else
+            gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_GREEN));
+        gc.fillRectangle(0, 0, Math.round((area.width-1) * percentage / 100), area.height-1);
 
-		// Using default foreground
-		gc.drawRectangle(0, 0, area.width-1, area.height-1);
+        // Using default foreground
+        gc.drawRectangle(0, 0, area.width-1, area.height-1);
 
-		// Text
-		final Point size = gc.stringExtent(text);
-		gc.drawText(text, (area.width - size.x)/2, (area.height - size.y)/2, true);
-	}
+        // Text
+        final Point size = gc.stringExtent(text);
+        gc.drawText(text, (area.width - size.x)/2, (area.height - size.y)/2, true);
+    }
 }

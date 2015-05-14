@@ -32,7 +32,7 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.alarm.beast.ui.globaltable.view">
-            </parameter> 
+            </parameter>
          </command>
       </menuContribution>
    </extension>

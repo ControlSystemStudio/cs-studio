@@ -5,17 +5,17 @@ import org.csstudio.utility.pvmanager.widgets.VImageWidget;
 import org.eclipse.swt.widgets.Composite;
 
 public class VImageDisplayFigure extends AbstractSelectionWidgetFigure<VImageWidget> {
-    
-	public VImageDisplayFigure(AbstractBaseEditPart editPart) {
-    	super(editPart);
+
+    public VImageDisplayFigure(AbstractBaseEditPart editPart) {
+        super(editPart);
     }
 
     @Override
     protected VImageWidget createSWTWidget(Composite parent, int style) {
-    	return new VImageWidget(parent);
+        return new VImageWidget(parent);
     }
 
     public boolean isRunMode() {
-    	return runmode;
+        return runmode;
     }
 }

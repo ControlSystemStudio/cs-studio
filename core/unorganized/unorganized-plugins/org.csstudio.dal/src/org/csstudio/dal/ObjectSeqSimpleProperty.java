@@ -33,18 +33,18 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.SimpleProperty
  */
 public interface ObjectSeqSimpleProperty extends ObjectSeqAccess,
-	SequencePropertyCharacteristics, SimpleProperty<Object[]>
+    SequencePropertyCharacteristics, SimpleProperty<Object[]>
 {
-	/**
-	 * Name of the sequenceTypes characteristic. This characteristic
-	 * should, if the data source can provide it, contain a
-	 * <code>Class[]</code> containing the types of the objects contained in
-	 * the dynamic value, in their correct order. <br/
-	 * > This characteristic, along with the <i>sequenceNames</i>
-	 * characteristic, can be used to define <b>structured types</b> in the
-	 * data source.
-	 */
-	public static final String C_SEQUENCE_TYPES = "sequenceTypes";
+    /**
+     * Name of the sequenceTypes characteristic. This characteristic
+     * should, if the data source can provide it, contain a
+     * <code>Class[]</code> containing the types of the objects contained in
+     * the dynamic value, in their correct order. <br/
+     * > This characteristic, along with the <i>sequenceNames</i>
+     * characteristic, can be used to define <b>structured types</b> in the
+     * data source.
+     */
+    public static final String C_SEQUENCE_TYPES = "sequenceTypes";
 }
 
 /* __oOo__ */

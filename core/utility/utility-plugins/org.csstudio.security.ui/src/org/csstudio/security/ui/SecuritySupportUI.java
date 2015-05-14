@@ -25,17 +25,17 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /** UI support for security.
- * 
+ *
  *  <p>Actions can register to be enabled/disabled based on authorization.
- *  
+ *
  *  @see #registerAction(IAction, String)
- *  
+ *
  *  @author Kay Kasemir
  */
 public class SecuritySupportUI implements BundleActivator, SecurityListener
 {
     private static final String RUNTIME_PLATFORM = "org.csstudio.runtime.platform"; //$NON-NLS-1$
-	/** Map of authorizations and actions that require them */
+    /** Map of authorizations and actions that require them */
     final private static Map<String, Collection<WeakReference<IAction>>> authorized_actions = new HashMap<>();
 
     /** {@inheritDoc} */
@@ -44,7 +44,7 @@ public class SecuritySupportUI implements BundleActivator, SecurityListener
     {
         SecuritySupport.addListener(this);
         System.setProperty(RUNTIME_PLATFORM,
-        		SWT.getPlatform().startsWith("rap")?"rap":"rcp"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+                SWT.getPlatform().startsWith("rap")?"rap":"rcp"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
     }
 
@@ -54,9 +54,9 @@ public class SecuritySupportUI implements BundleActivator, SecurityListener
     {
         SecuritySupport.removeListener(this);
     }
-    
+
     /** Register action to be enabled/disabled based on current authorization
-     *  
+     *
      *  <p>Ideally, actions should be unregistered when this behavior is no
      *  longer required.
      *  Omitting the de-registration will "work" since a weak reference is used,
@@ -117,7 +117,7 @@ public class SecuritySupportUI implements BundleActivator, SecurityListener
             {
                 // Is it enabled?
                 final boolean enabled = authorizations != null  &&  authorizations.haveAuthorization(authorization);
-                
+
                 // Loop over actions that need to be updated for this authorization
                 final Iterator<WeakReference<IAction>> action_refs = authorized_actions.get(authorization).iterator();
                 while (action_refs.hasNext())

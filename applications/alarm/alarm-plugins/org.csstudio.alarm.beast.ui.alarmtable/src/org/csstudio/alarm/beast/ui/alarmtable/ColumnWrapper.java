@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 
+ *
  * <code>ColumnWrapper</code> is a wrapper around {@link ColumnInfo}, which contains also
  * information if the column is visible or not.
  *
@@ -24,12 +24,12 @@ public final class ColumnWrapper {
         }
         return wrappers;
     }
-    
+
     /**
      * Generates a clone of the source. The clone has exactly the same number of elements
      * in the same order and the method guarantees that clone[i].equals(source[i]) but not
      * clone[i] == source[i].
-     * 
+     *
      * @param source wrappers to clone
      * @return cloned array
      */
@@ -41,11 +41,11 @@ public final class ColumnWrapper {
         }
         return w;
     }
-    
+
     /**
      * Converts the array of wrappers into an array of string, where string is the name
      * of the column info. Only the visible wrappers are included.
-     * 
+     *
      * @param columns the source data
      * @return array of visible column info names
      */
@@ -58,12 +58,12 @@ public final class ColumnWrapper {
         }
         return list.toArray(new String[list.size()]);
     }
-    
+
     /**
      * Converts the array of column info names to an array of column wrappers. The return array
-     * always contains wrappers for all column infos. The wrapper of those infos that are included 
+     * always contains wrappers for all column infos. The wrapper of those infos that are included
      * in the <code>columns</code> parameter are visible, the others are not.
-     *  
+     *
      * @param columns visible column info names
      * @return array of wrappers for all column infos
      */
@@ -88,28 +88,28 @@ public final class ColumnWrapper {
         }
         return list.toArray(new ColumnWrapper[list.size()]);
     }
-    
+
     private final ColumnInfo info;
     private boolean visible = true;
-    
+
     /**
      * Constructs a new ColumnWrapper for the given info.
-     * 
+     *
      * @param info the column info
      */
     private ColumnWrapper(ColumnInfo info) {
         this.info = info;
     }
-    
+
     /**
      * Sets this column visible or invisible. The GUI should make the effort to obey this setting.
-     * 
+     *
      * @param visible true if the column should be visible or false if it should be hidden
      */
     public void setVisible(boolean visible) {
         this.visible = visible;
     }
-    
+
     /**
      * @see {@link #setVisible(boolean)}
      * @return the visible flag for this column
@@ -117,7 +117,7 @@ public final class ColumnWrapper {
     public boolean isVisible() {
         return visible;
     }
-    
+
     /**
      * @return the column info wrapped into this wrapper
      */

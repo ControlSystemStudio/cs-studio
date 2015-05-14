@@ -25,24 +25,24 @@ import java.util.List;
  */
 final public class NDShape
 {
-	final private int[] shape;
+    final private int[] shape;
 
-	/** Initialize
+    /** Initialize
      *  @param shape Array shape, e.g. [2, 3]
-	 */
-	public NDShape(final int... shape)
+     */
+    public NDShape(final int... shape)
     {
         this.shape = shape.clone();
     }
 
-	/** Initialize
+    /** Initialize
      *  @param shape Array shape, e.g. [2, 3]
-	 */
-	public NDShape(final List<Integer> shape)
+     */
+    public NDShape(final List<Integer> shape)
     {
         this.shape = new int[shape.size()];
         for (int i=0; i<this.shape.length; ++i)
-        	this.shape[i] = shape.get(i);
+            this.shape[i] = shape.get(i);
     }
 
     /** @return Number of dimensions, e.g. 2 for an array of shape [4, 3] */
@@ -63,22 +63,22 @@ final public class NDShape
     /** @return Number of elements in flattened array */
     public int getSize()
     {
-    	int result = 1;
-    	for (final int s : shape)
-    		result *= s;
+        int result = 1;
+        for (final int s : shape)
+            result *= s;
         return result;
     }
 
     /** @return Sizes of all dimensions */
     public int[] getSizes()
     {
-    	return shape.clone();
+        return shape.clone();
     }
 
     /** @return Iterator over all positions */
     public ShapeIterator iterator()
     {
-    	return new ShapeIterator(this);
+        return new ShapeIterator(this);
     }
 
     /** Adjust negative index to allow access from 'end' of array
@@ -88,9 +88,9 @@ final public class NDShape
      */
     int adjustIndex(final int dim, final int index)
     {
-    	if (index >= 0)
-    		return index;
-    	return shape[dim] + index;
+        if (index >= 0)
+            return index;
+        return shape[dim] + index;
     }
 
     /** Check shape compatibility according to NumPy broadcasting rule
@@ -105,18 +105,18 @@ final public class NDShape
      */
     public boolean isBroadcastCompatible(final NDShape other)
     {
-    	// Compare sizes from the 'end'
-    	int dim = getDimensions();
-    	int dim_o = other.getDimensions();
-    	while (--dim >= 0  &&  --dim_o >= 0)
-    	{
-    		final int len = getSize(dim);
-    		final int len_o = other.getSize(dim_o);
-    		if (len != len_o  &&          // Lengths differ?
-    			len != 1  &&  len_o != 1) // ... and are not 1?
-    			return false;
-    	}
-    	return true;
+        // Compare sizes from the 'end'
+        int dim = getDimensions();
+        int dim_o = other.getDimensions();
+        while (--dim >= 0  &&  --dim_o >= 0)
+        {
+            final int len = getSize(dim);
+            final int len_o = other.getSize(dim_o);
+            if (len != len_o  &&          // Lengths differ?
+                len != 1  &&  len_o != 1) // ... and are not 1?
+                return false;
+        }
+        return true;
     }
 
     /** Check shape compatibility according to NumPy broadcasting rule
@@ -133,15 +133,15 @@ final public class NDShape
      */
     public static boolean haveEqualEnds(final NDShape a, final NDShape b)
     {
-    	// Compare sizes from the 'end'
-    	int dim_a = a.getDimensions();
-    	int dim_b = b.getDimensions();
-    	while (--dim_a >= 0  &&  --dim_b >= 0)
-    	{
-    		if (a.getSize(dim_a) != b.getSize(dim_b)) // Lengths differ?
-    			return false;
-    	}
-    	return true;
+        // Compare sizes from the 'end'
+        int dim_a = a.getDimensions();
+        int dim_b = b.getDimensions();
+        while (--dim_a >= 0  &&  --dim_b >= 0)
+        {
+            if (a.getSize(dim_a) != b.getSize(dim_b)) // Lengths differ?
+                return false;
+        }
+        return true;
     }
 
     /** For shapes that have the same end, return the combined
@@ -154,31 +154,31 @@ final public class NDShape
      */
     public static NDShape combine(final NDShape a, final NDShape b)
     {
-    	if (haveEqualEnds(a, b))
-    		return a.getDimensions() > b.getDimensions() ? a : b;
-		return null;
+        if (haveEqualEnds(a, b))
+            return a.getDimensions() > b.getDimensions() ? a : b;
+        return null;
     }
 
     /** {@inheritDoc} */
     @Override
     public int hashCode()
     {
-    	return Arrays.hashCode(shape);
+        return Arrays.hashCode(shape);
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public boolean equals(final Object other)
     {
-		if (! (other instanceof NDShape))
-			return false;
-	    return Arrays.equals(shape, ((NDShape)other).shape);
+        if (! (other instanceof NDShape))
+            return false;
+        return Arrays.equals(shape, ((NDShape)other).shape);
     }
 
-	/** @return String representation */
+    /** @return String representation */
     @Override
     public String toString()
     {
-    	return Arrays.toString(shape);
+        return Arrays.toString(shape);
     }
 }

@@ -12,29 +12,29 @@ import junit.framework.TestSuite;
 
 public class AllTests {
 
-	public static Test suite() {
-		TestSuite suite = new TestSuite("Test for org.csstudio.opibuilder.converter.model");
-		//$JUnit-BEGIN$
-		suite.addTestSuite(EdmModelTest.class);
-		suite.addTestSuite(EdmEntityTest.class);
-		suite.addTestSuite(EdmIntTest.class);
-		suite.addTestSuite(Edm_TextupdateClassTest.class);
-		suite.addTestSuite(EdmFontTest.class);
-		suite.addTestSuite(EdmComparator.class);
-		suite.addTestSuite(EdmColorTest.class);
-		suite.addTestSuite(EdmDoubleTest.class);
-		suite.addTestSuite(EdmDisplayTest.class);
-		suite.addTestSuite(EdmWidgetTest.class);
-		suite.addTestSuite(Edm_activeXTextClassTest.class);
-		suite.addTestSuite(Edm_activeGroupClassTest.class);
-		suite.addTestSuite(Edm_activeRectangleClassTest.class);
-		suite.addTestSuite(EdmStringTest.class);
-		suite.addTestSuite(EdmColorsListTest.class);
-		suite.addTestSuite(EdmBooleanTest.class);
-		suite.addTestSuite(EdmAttributeTest.class);
-		suite.addTestSuite(EdmLineStyleTest.class);
-		//$JUnit-END$
-		return suite;
-	}
+    public static Test suite() {
+        TestSuite suite = new TestSuite("Test for org.csstudio.opibuilder.converter.model");
+        //$JUnit-BEGIN$
+        suite.addTestSuite(EdmModelTest.class);
+        suite.addTestSuite(EdmEntityTest.class);
+        suite.addTestSuite(EdmIntTest.class);
+        suite.addTestSuite(Edm_TextupdateClassTest.class);
+        suite.addTestSuite(EdmFontTest.class);
+        suite.addTestSuite(EdmComparator.class);
+        suite.addTestSuite(EdmColorTest.class);
+        suite.addTestSuite(EdmDoubleTest.class);
+        suite.addTestSuite(EdmDisplayTest.class);
+        suite.addTestSuite(EdmWidgetTest.class);
+        suite.addTestSuite(Edm_activeXTextClassTest.class);
+        suite.addTestSuite(Edm_activeGroupClassTest.class);
+        suite.addTestSuite(Edm_activeRectangleClassTest.class);
+        suite.addTestSuite(EdmStringTest.class);
+        suite.addTestSuite(EdmColorsListTest.class);
+        suite.addTestSuite(EdmBooleanTest.class);
+        suite.addTestSuite(EdmAttributeTest.class);
+        suite.addTestSuite(EdmLineStyleTest.class);
+        //$JUnit-END$
+        return suite;
+    }
 
 }

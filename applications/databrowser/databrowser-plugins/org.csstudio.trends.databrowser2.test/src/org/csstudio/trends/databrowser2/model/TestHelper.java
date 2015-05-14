@@ -35,7 +35,7 @@ public class TestHelper
         sources.putDataSource("loc", new LocalDataSource());
         sources.putDataSource("sim", new SimulationDataSource());
         PVManager.setDefaultDataSource(sources);
-        
+
         // Logging
         final Level level = Level.FINE;
         Logger logger = Logger.getLogger("");
@@ -43,7 +43,7 @@ public class TestHelper
         for (Handler handler : logger.getHandlers())
             handler.setLevel(level);
     }
-    
+
     /** @param i Numeric value as well as pseudo-timestamp
      *  @return Sample that has value and time based on input parameter
      */
@@ -51,7 +51,7 @@ public class TestHelper
     {
         return ValueFactory.newVDouble(Double.valueOf(i), ValueFactory.newTime(Timestamp.of(i, 0)));
     }
-    
+
     /**@param ts timestamp
      * @param vals array
      * @return Sample that has waveform and time based on input parameter
@@ -97,5 +97,5 @@ public class TestHelper
         return result;
     }
 }
-   
- 
+
+

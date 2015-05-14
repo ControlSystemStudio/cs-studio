@@ -17,31 +17,31 @@ import org.epics.util.time.Timestamp;
 @SuppressWarnings("nls")
 public class RDBChannelConfig extends ChannelConfig
 {
-	final private int id;
-	
-	/** Initialize
-	 *  @param id Channel ID in RDB
-	 *  @param name Channel name
-	 *  @param sample_mode Sample mode
-	 *  @param last_sample_time Time stamp of last sample in archive or <code>null</code>
-	 */
-	public RDBChannelConfig(final int id, final String name, final SampleMode sample_mode,
-			final Timestamp last_sample_time)
+    final private int id;
+
+    /** Initialize
+     *  @param id Channel ID in RDB
+     *  @param name Channel name
+     *  @param sample_mode Sample mode
+     *  @param last_sample_time Time stamp of last sample in archive or <code>null</code>
+     */
+    public RDBChannelConfig(final int id, final String name, final SampleMode sample_mode,
+            final Timestamp last_sample_time)
     {
-	    super(name, sample_mode, last_sample_time);
-	    this.id = id;
+        super(name, sample_mode, last_sample_time);
+        this.id = id;
     }
 
-	/** @return RDB id of channel */
-	public int getId()
-	{
-		return id;
-	}
-	
-	/** @return Debug representation */
+    /** @return RDB id of channel */
+    public int getId()
+    {
+        return id;
+    }
+
+    /** @return Debug representation */
     @Override
     public String toString()
     {
-	    return super.toString() + " (" + id + ")";
+        return super.toString() + " (" + id + ")";
     }
 }

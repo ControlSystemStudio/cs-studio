@@ -1,45 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
-
 <toc label="CSS Applications" topic="html/applications/index.html">
-	<topic label="Display" href="html/applications/display.html">
-		<anchor id="display"/>
-	</topic>
-	
-	<topic label="Alarm" href="html/applications/alarm.html">
-		<anchor id="alarm"/>
-	</topic>
-	
-	<topic label="Trends" href="html/applications/trends.html">
-		<anchor id="trends"/>
-	</topic>
-	
-	<topic label="Diagnostic Tools" href="html/applications/diagnostics.html">
-		<anchor id="diag"/>
-	</topic>
-	
-	<topic label="Debugging" href="html/applications/debugging.html">
-		<anchor id="debugging"/>
-	</topic>			
-	
-	
-	<topic label="Management" href="html/applications/management.html">
-		<anchor id="management"/>
-	</topic>	
-	
-	<topic label="Editors" href="html/applications/editors.html">
-		<anchor id="editors"/>
-	</topic>	
-	
-	<topic label="Utilities" href="html/applications/utilities.html">
-		<anchor id="utility"/>
-	</topic>	
-	
-	<topic label="Test" href="html/applications/test.html">
-		<anchor id="test"/>
-	</topic>	
-	
-	<topic label="Other" href="html/applications/other.html">
-		<anchor id="other"/>
-	</topic>	
+  <topic label="Display" href="html/applications/display.html">
+    <anchor id="display"/>
+  </topic>
+  <topic label="Alarm" href="html/applications/alarm.html">
+    <anchor id="alarm"/>
+  </topic>
+  <topic label="Trends" href="html/applications/trends.html">
+    <anchor id="trends"/>
+  </topic>
+  <topic label="Diagnostic Tools" href="html/applications/diagnostics.html">
+    <anchor id="diag"/>
+  </topic>
+  <topic label="Debugging" href="html/applications/debugging.html">
+    <anchor id="debugging"/>
+  </topic>
+  <topic label="Management" href="html/applications/management.html">
+    <anchor id="management"/>
+  </topic>
+  <topic label="Editors" href="html/applications/editors.html">
+    <anchor id="editors"/>
+  </topic>
+  <topic label="Utilities" href="html/applications/utilities.html">
+    <anchor id="utility"/>
+  </topic>
+  <topic label="Test" href="html/applications/test.html">
+    <anchor id="test"/>
+  </topic>
+  <topic label="Other" href="html/applications/other.html">
+    <anchor id="other"/>
+  </topic>
 </toc>

@@ -13,61 +13,61 @@ package org.csstudio.archive.config;
 @SuppressWarnings("nls")
 public class SampleMode
 {
-	final private boolean monitor;
-	
-	final private double delta;
-	
-	final private double period;
+    final private boolean monitor;
 
-	/** Initialize
-	 *  @param monitor Monitor/subscription or active scan?
-	 *  @param delta Value change threshold
-	 *  @param period (Expected) update period in seconds
-	 */
-	public SampleMode(final boolean monitor, final double delta, final double period)
+    final private double delta;
+
+    final private double period;
+
+    /** Initialize
+     *  @param monitor Monitor/subscription or active scan?
+     *  @param delta Value change threshold
+     *  @param period (Expected) update period in seconds
+     */
+    public SampleMode(final boolean monitor, final double delta, final double period)
     {
-	    this.monitor = monitor;
-	    this.delta = delta;
-	    // Enforce minimum sample period.
-	    // Must be >0 to avoid divide-by-0 and other errors
-	    // in engine sample buffer computation.
-	    // For now 0.1 is the fixed minimum
-	    if (period <= 0.0)
-	    	this.period = 0.1;
-	    else
-	    	this.period = period;
+        this.monitor = monitor;
+        this.delta = delta;
+        // Enforce minimum sample period.
+        // Must be >0 to avoid divide-by-0 and other errors
+        // in engine sample buffer computation.
+        // For now 0.1 is the fixed minimum
+        if (period <= 0.0)
+            this.period = 0.1;
+        else
+            this.period = period;
     }
 
-	/** @return <code>true</code> for monitored mode, otherwise scan */
-	public boolean isMonitor()
+    /** @return <code>true</code> for monitored mode, otherwise scan */
+    public boolean isMonitor()
     {
-    	return monitor;
+        return monitor;
     }
 
-	/** @return Sample delta for monitored mode */
-	public double getDelta()
+    /** @return Sample delta for monitored mode */
+    public double getDelta()
     {
-    	return delta;
+        return delta;
     }
 
-	/** @return Scan period resp. expected monitor period in seconds */
-	public double getPeriod()
+    /** @return Scan period resp. expected monitor period in seconds */
+    public double getPeriod()
     {
-    	return period;
+        return period;
     }
 
-	/** @return Debug representation */
+    /** @return Debug representation */
     @Override
     public String toString()
     {
-    	if (monitor)
-    	{
-    		if (delta > 0.0)
-    			return "Monitor [threshold " + delta + "] @ min. period " + period + " sec";
-    		else
-    			return "Monitor @ min. period " + period + " sec";
-    	}
-    	else
-    		return "Scan @ " + period + " sec";
+        if (monitor)
+        {
+            if (delta > 0.0)
+                return "Monitor [threshold " + delta + "] @ min. period " + period + " sec";
+            else
+                return "Monitor @ min. period " + period + " sec";
+        }
+        else
+            return "Scan @ " + period + " sec";
     }
 }

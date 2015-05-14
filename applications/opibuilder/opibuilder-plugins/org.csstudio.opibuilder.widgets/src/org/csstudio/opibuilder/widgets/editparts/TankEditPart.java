@@ -18,102 +18,102 @@ import org.epics.vtype.AlarmSeverity;
 /**
  * EditPart controller for the tank widget. The controller mediates between
  * {@link TankModel} and {@link TankFigure}.
- * 
+ *
  * @author Xihui Chen
  * @author Takashi Nakamoto - support for "FillColor Alarm Sensitive" property
  */
 public final class TankEditPart extends AbstractMarkedWidgetEditPart {
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		TankModel model = getWidgetModel();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        TankModel model = getWidgetModel();
 
-		TankFigure tank = new TankFigure();
-		
-		initializeCommonFigureProperties(tank, model);		
-		tank.setFillColor(model.getFillColor());
-		tank.setEffect3D(model.isEffect3D());	
-		tank.setFillBackgroundColor(model.getFillbackgroundColor());
-		return tank;
+        TankFigure tank = new TankFigure();
 
-	}
+        initializeCommonFigureProperties(tank, model);
+        tank.setFillColor(model.getFillColor());
+        tank.setEffect3D(model.isEffect3D());
+        tank.setFillBackgroundColor(model.getFillbackgroundColor());
+        return tank;
 
-	@Override
-	public TankModel getWidgetModel() {
-		return (TankModel)getModel();
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		registerCommonPropertyChangeHandlers();
-		
-		//fillColor
-		IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				TankFigure tank = (TankFigure) refreshableFigure;
-				tank.setFillColor(((OPIColor) newValue).getSWTColor());
-				return false;
-			}
-		};
-		setPropertyChangeHandler(TankModel.PROP_FILL_COLOR, fillColorHandler);	
-		
-		//fillBackgroundColor
-		IWidgetPropertyChangeHandler fillBackColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				TankFigure tank = (TankFigure) refreshableFigure;
-				tank.setFillBackgroundColor(((OPIColor) newValue).getSWTColor());
-				return false;
-			}
-		};
-		setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);	
-		
-		//effect 3D
-		IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				TankFigure tank = (TankFigure) refreshableFigure;
-				tank.setEffect3D((Boolean) newValue);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(TankModel.PROP_EFFECT3D, effect3DHandler);	
+    }
 
-		// Change fill color when "FillColor Alarm Sensitive" property changes.
-		IWidgetPropertyChangeHandler fillColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
-				TankFigure figure = (TankFigure) refreshableFigure;
-				boolean sensitive = (Boolean)newValue;
-				figure.setFillColor(
-						delegate.calculateAlarmColor(sensitive,
-													 getWidgetModel().getFillColor()));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(TankModel.PROP_FILLCOLOR_ALARM_SENSITIVE, fillColorAlarmSensitiveHandler);
-		
-		// Change fill color when alarm severity changes.
-		delegate.addAlarmSeverityListener(new AlarmSeverityListener() {			
+    @Override
+    public TankModel getWidgetModel() {
+        return (TankModel)getModel();
+    }
 
-			@Override
-			public boolean severityChanged(AlarmSeverity severity, IFigure figure) {
-				if (!getWidgetModel().isFillColorAlarmSensitive())
-					return false;
-				TankFigure tank = (TankFigure) figure;
-				tank.setFillColor(
-						delegate.calculateAlarmColor(getWidgetModel().isFillColorAlarmSensitive(),
-													 getWidgetModel().getFillColor()));
-				return true;
-			}
-		});
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        registerCommonPropertyChangeHandlers();
+
+        //fillColor
+        IWidgetPropertyChangeHandler fillColorHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                TankFigure tank = (TankFigure) refreshableFigure;
+                tank.setFillColor(((OPIColor) newValue).getSWTColor());
+                return false;
+            }
+        };
+        setPropertyChangeHandler(TankModel.PROP_FILL_COLOR, fillColorHandler);
+
+        //fillBackgroundColor
+        IWidgetPropertyChangeHandler fillBackColorHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                TankFigure tank = (TankFigure) refreshableFigure;
+                tank.setFillBackgroundColor(((OPIColor) newValue).getSWTColor());
+                return false;
+            }
+        };
+        setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);
+
+        //effect 3D
+        IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                TankFigure tank = (TankFigure) refreshableFigure;
+                tank.setEffect3D((Boolean) newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(TankModel.PROP_EFFECT3D, effect3DHandler);
+
+        // Change fill color when "FillColor Alarm Sensitive" property changes.
+        IWidgetPropertyChangeHandler fillColorAlarmSensitiveHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
+                TankFigure figure = (TankFigure) refreshableFigure;
+                boolean sensitive = (Boolean)newValue;
+                figure.setFillColor(
+                        delegate.calculateAlarmColor(sensitive,
+                                                     getWidgetModel().getFillColor()));
+                return true;
+            }
+        };
+        setPropertyChangeHandler(TankModel.PROP_FILLCOLOR_ALARM_SENSITIVE, fillColorAlarmSensitiveHandler);
+
+        // Change fill color when alarm severity changes.
+        delegate.addAlarmSeverityListener(new AlarmSeverityListener() {
+
+            @Override
+            public boolean severityChanged(AlarmSeverity severity, IFigure figure) {
+                if (!getWidgetModel().isFillColorAlarmSensitive())
+                    return false;
+                TankFigure tank = (TankFigure) figure;
+                tank.setFillColor(
+                        delegate.calculateAlarmColor(getWidgetModel().isFillColorAlarmSensitive(),
+                                                     getWidgetModel().getFillColor()));
+                return true;
+            }
+        });
+    }
 }

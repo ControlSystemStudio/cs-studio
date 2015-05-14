@@ -31,33 +31,33 @@ public class NumberScanSample extends ScanSample
      *  @param serial Serial to identify when the sample was taken
      *  @param number Number
      */
-	public NumberScanSample(final Date timestamp,
-	        final long serial, final Number... values)
-	{
-		super(timestamp, serial);
-		this.values = values;
-	}
-
-	/** @return Array size */
-	public int size()
-	{
-	    return values.length;
-	}
-
-	/** @param index Array index
-	 *  @return Number for that array index
-	 */
-	public Number getNumber(final int index)
+    public NumberScanSample(final Date timestamp,
+            final long serial, final Number... values)
     {
-    	return values[index];
+        super(timestamp, serial);
+        this.values = values;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** @return Array size */
+    public int size()
+    {
+        return values.length;
+    }
+
+    /** @param index Array index
+     *  @return Number for that array index
+     */
+    public Number getNumber(final int index)
+    {
+        return values[index];
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Object[] getValues()
-	{
-		return values;
-	}
+    {
+        return values;
+    }
 
     @Override
     public String toString()

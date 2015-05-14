@@ -67,20 +67,20 @@ public class WaitCommand extends ScanCommand
      *  @param tolerance Numeric tolerance when checking value
      *  @param timeout Timeout in seconds, 0 as "forever"
      */
-	public WaitCommand(final String device_name,
-	        final Comparison comparison, final Object desired_value,
-	        final double tolerance, final double timeout)
+    public WaitCommand(final String device_name,
+            final Comparison comparison, final Object desired_value,
+            final double tolerance, final double timeout)
     {
-	    if (device_name == null)
-	        throw new NullPointerException();
+        if (device_name == null)
+            throw new NullPointerException();
         this.device_name = device_name;
         this.desired_value = desired_value;
-	    this.comparison = comparison;
-	    this.tolerance = tolerance;
-	    this.timeout = timeout;
+        this.comparison = comparison;
+        this.tolerance = tolerance;
+        this.timeout = timeout;
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     protected void configureProperties(final List<ScanCommandProperty> properties)
     {
@@ -92,8 +92,8 @@ public class WaitCommand extends ScanCommand
         super.configureProperties(properties);
     }
 
-	/** @return Device name (may be "" but not <code>null</code>) */
-	public String getDeviceName()
+    /** @return Device name (may be "" but not <code>null</code>) */
+    public String getDeviceName()
     {
         return device_name;
     }
@@ -106,7 +106,7 @@ public class WaitCommand extends ScanCommand
         this.device_name = device_name;
     }
 
-	/** @return Desired value */
+    /** @return Desired value */
     public Object getDesiredValue()
     {
         return desired_value;
@@ -172,7 +172,7 @@ public class WaitCommand extends ScanCommand
         element = dom.createElement("comparison");
         element.appendChild(dom.createTextNode(comparison.name()));
         command_element.appendChild(element);
-        
+
         if (tolerance > 0.0)
         {
             element = dom.createElement("tolerance");
@@ -185,7 +185,7 @@ public class WaitCommand extends ScanCommand
             element.appendChild(dom.createTextNode(Double.toString(timeout)));
             command_element.appendChild(element);
         }
-        
+
         super.addXMLElements(dom, command_element);
     }
 
@@ -209,16 +209,16 @@ public class WaitCommand extends ScanCommand
     }
 
     /** {@inheritDoc} */
-	@Override
-	public String toString()
-	{
-	    final StringBuilder buf = new StringBuilder();
-	    buf.append("Wait for '").append(device_name).append("' ").append(comparison).append(" ");
-	    buf.append(StringOrDouble.quote(desired_value));
-	    if (comparison == Comparison.EQUALS)
-	        buf.append(" (+-").append(tolerance).append(")");
-	    if (timeout > 0)
+    @Override
+    public String toString()
+    {
+        final StringBuilder buf = new StringBuilder();
+        buf.append("Wait for '").append(device_name).append("' ").append(comparison).append(" ");
+        buf.append(StringOrDouble.quote(desired_value));
+        if (comparison == Comparison.EQUALS)
+            buf.append(" (+-").append(tolerance).append(")");
+        if (timeout > 0)
             buf.append(" (").append(timeout).append(" sec timeout)");
         return buf.toString();
-	}
+    }
 }

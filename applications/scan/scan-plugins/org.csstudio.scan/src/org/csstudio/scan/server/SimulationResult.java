@@ -15,28 +15,28 @@ public class SimulationResult
 {
     final private double simulation_seconds;
 
-	final private String simulation_log;
+    final private String simulation_log;
 
-	/** Initialize
-	 *
-	 *  @param simulation_seconds Duration of simulation in seconds
-	 *  @param simulation_log Human-readable log of the simulation
-	 */
-	public SimulationResult(final double simulation_seconds, final String simulation_log)
+    /** Initialize
+     *
+     *  @param simulation_seconds Duration of simulation in seconds
+     *  @param simulation_log Human-readable log of the simulation
+     */
+    public SimulationResult(final double simulation_seconds, final String simulation_log)
     {
-	    this.simulation_seconds = simulation_seconds;
-	    this.simulation_log = simulation_log;
+        this.simulation_seconds = simulation_seconds;
+        this.simulation_log = simulation_log;
     }
 
-	/** @return Duration of simulation in seconds */
-	public double getSimulationSeconds()
-	{
-		return simulation_seconds;
-	}
-
-	/** @return Human-readable log of the simulation */
-	public String getSimulationLog()
+    /** @return Duration of simulation in seconds */
+    public double getSimulationSeconds()
     {
-    	return simulation_log;
+        return simulation_seconds;
+    }
+
+    /** @return Human-readable log of the simulation */
+    public String getSimulationLog()
+    {
+        return simulation_log;
     }
 }

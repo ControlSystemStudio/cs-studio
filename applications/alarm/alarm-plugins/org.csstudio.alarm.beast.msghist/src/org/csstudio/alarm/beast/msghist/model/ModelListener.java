@@ -13,20 +13,20 @@ package org.csstudio.alarm.beast.msghist.model;
  */
 public interface ModelListener
 {
-	/** Invoked when the model changed in some way.
-	 *  <p>
-	 *  <b>Note:</b> Call can originate from non-GUI thread.
-	 *  
-	 *  @param model Model that has new data or is somehow different
-	 */
+    /** Invoked when the model changed in some way.
+     *  <p>
+     *  <b>Note:</b> Call can originate from non-GUI thread.
+     *
+     *  @param model Model that has new data or is somehow different
+     */
     public void modelChanged(Model model);
-    
+
     /**
      * Listener on error model.
      *
      * @param errorMsg the error msg
      */
     public void onErrorModel(final String errorMsg);
-    
-    
+
+
 }

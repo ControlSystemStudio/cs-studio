@@ -62,9 +62,9 @@ public class SearchView extends ViewPart
     final public static String ID = "org.csstudio.trends.databrowser.archiveview.ArchiveView"; //$NON-NLS-1$
 
     /** Memento tags */
-	private static final String TAG_REGEX = "regex", //$NON-NLS-1$
-			TAG_REPLACE = "replace"; //$NON-NLS-1$
-	// TAG_CHANNELS = "channels"; //$NON-NLS-1$
+    private static final String TAG_REGEX = "regex", //$NON-NLS-1$
+            TAG_REPLACE = "replace"; //$NON-NLS-1$
+    // TAG_CHANNELS = "channels"; //$NON-NLS-1$
 
     /** Archive URL and list of archives */
     private ArchiveListGUI archive_gui;
@@ -169,21 +169,21 @@ public class SearchView extends ViewPart
         pattern.setToolTipText(Messages.SearchPatternTT);
         pattern.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         pattern.setEnabled(false);
-		pattern.addListener(SWT.DefaultSelection, new Listener()
-		{
-			@Override
+        pattern.addListener(SWT.DefaultSelection, new Listener()
+        {
+            @Override
             public void handleEvent(Event e) {
-				searchForChannels();
-			}
-		});
-		AutoCompleteWidget acw = new AutoCompleteWidget(pattern, AutoCompleteTypes.PV);
+                searchForChannels();
+            }
+        });
+        AutoCompleteWidget acw = new AutoCompleteWidget(pattern, AutoCompleteTypes.PV);
 
         search = new Button(parent, SWT.PUSH);
         search.setText(Messages.Search);
         search.setToolTipText(Messages.SearchTT);
         search.setLayoutData(new GridData());
         search.setEnabled(false);
-		AutoCompleteUIHelper.handleSelectEvent(search, acw);
+        AutoCompleteUIHelper.handleSelectEvent(search, acw);
 
         // ( ) Add  (*) Replace   [ ] Reg.Exp.
         final Button result_append = new Button(parent, SWT.RADIO);
@@ -223,10 +223,10 @@ public class SearchView extends ViewPart
         });
         new TableColumnSortHelper<ChannelInfo>(channel_table, col)
         {
-			@Override
+            @Override
             public int compare(final ChannelInfo item1, final ChannelInfo item2)
             {
-				return item1.getProcessVariable().getName().compareTo(item2.getProcessVariable().getName());
+                return item1.getProcessVariable().getName().compareTo(item2.getProcessVariable().getName());
             }
         };
         col = TableHelper.createColumn(table_layout, channel_table, Messages.ArchiveName, 50, 100);
@@ -241,10 +241,10 @@ public class SearchView extends ViewPart
         });
         new TableColumnSortHelper<ChannelInfo>(channel_table, col)
         {
-			@Override
+            @Override
             public int compare(final ChannelInfo item1, final ChannelInfo item2)
             {
-				return item1.getArchiveDataSource().getName().compareTo(item2.getArchiveDataSource().getName());
+                return item1.getArchiveDataSource().getName().compareTo(item2.getArchiveDataSource().getName());
             }
         };
         final Table table = channel_table.getTable();
@@ -254,9 +254,9 @@ public class SearchView extends ViewPart
         // searchForChannels() relies on non-null content
         channel_table.setInput(new ChannelInfo[0]);
 
-		// Load previously entered patterns
-		// pattern_history.loadSettings();
-		// Restore settings from memento
+        // Load previously entered patterns
+        // pattern_history.loadSettings();
+        // Restore settings from memento
         if (memento != null)
         {
             if (memento.getBoolean(TAG_REGEX) != null)
@@ -343,14 +343,14 @@ public class SearchView extends ViewPart
 
         // Warn when searching ALL channels
         if (pattern_txt.length() <= 0)
-    	{
+        {
             MessageDialog.openInformation(pattern.getShell(),
                     Messages.Search,
                     Messages.SearchPatternEmptyMessage);
             // Aborted, move focus to search pattern
             pattern.setFocus();
             return;
-    	}
+        }
 
         final ArchiveReader reader = archive_gui.getArchiveReader();
         new SearchJob(reader, archives, pattern_txt, !regex.getSelection())

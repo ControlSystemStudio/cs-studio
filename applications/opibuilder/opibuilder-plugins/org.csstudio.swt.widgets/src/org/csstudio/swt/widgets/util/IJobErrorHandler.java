@@ -12,10 +12,10 @@ package org.csstudio.swt.widgets.util;
  *
  */
 public interface IJobErrorHandler {
-	
-	/**Handle the exception.
-	 * @param exception the exception to be handled
-	 */
-	public void handleError(Exception exception);
+
+    /**Handle the exception.
+     * @param exception the exception to be handled
+     */
+    public void handleError(Exception exception);
 
 }

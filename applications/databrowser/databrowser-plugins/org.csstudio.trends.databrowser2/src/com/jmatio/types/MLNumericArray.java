@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 /**
  * Abstract class for numeric arrays.
- * 
+ *
  * @author Wojciech Gradkowski <wgradkowski@gmail.com>
  *
  * @param <T>
@@ -15,7 +15,7 @@ import java.util.Arrays;
  *
  * @param <T>
  */
-public abstract class MLNumericArray<T extends Number> extends MLArray 
+public abstract class MLNumericArray<T extends Number> extends MLArray
                                                        implements GenericArrayCreator<T>,
                                                                   ByteStorageSupport<T>
 {
@@ -23,10 +23,10 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     private ByteBuffer imaginary;
     /** The buffer for creating Number from bytes */
     private byte[] bytes;
-    
+
     /**
      * Normally this constructor is used only by MatFileReader and MatFileWriter
-     * 
+     *
      * @param name - array name
      * @param dims - array dimensions
      * @param type - array type
@@ -36,9 +36,9 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     {
         super(name, dims, type, attributes);
         allocate();
-        
+
     }
-    
+
     protected void allocate( )
     {
         real = ByteBuffer.allocate( getSize()*getBytesAllocated());
@@ -48,12 +48,12 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
         }
         bytes = new byte[ getBytesAllocated() ];
     }
-    
-    
+
+
     /**
-     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style: 
+     * <a href="http://math.nist.gov/javanumerics/jama/">Jama</a> [math.nist.gov] style:
      * construct a 2D real matrix from a one-dimensional packed array
-     * 
+     *
      * @param name - array name
      * @param type - array type
      * @param vals - One-dimensional array of doubles, packed by columns (ala Fortran).
@@ -70,7 +70,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     }
     /**
      * Gets single real array element of A(m,n).
-     * 
+     *
      * @param m - row index
      * @param n - column index
      * @return - array element
@@ -79,7 +79,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     {
         return getReal( getIndex(m,n) );
     }
-    
+
     /**
      * @param index
      * @return
@@ -88,10 +88,10 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     {
         return _get(real, index);
     }
-    
+
     /**
      * Sets single real array element.
-     * 
+     *
      * @param value - element value
      * @param m - row index
      * @param n - column index
@@ -102,7 +102,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     }
     /**
      * Sets single real array element.
-     * 
+     *
      * @param value - element value
      * @param index - column-packed vector index
      */
@@ -112,7 +112,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     }
     /**
      * Sets real part of matrix
-     * 
+     *
      * @param vector - column-packed vector of elements
      */
     public void setReal( T[] vector )
@@ -125,7 +125,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     }
     /**
      * Sets single imaginary array element.
-     * 
+     *
      * @param value - element value
      * @param m - row index
      * @param n - column index
@@ -136,7 +136,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     }
     /**
      * Sets single real array element.
-     * 
+     *
      * @param value - element value
      * @param index - column-packed vector index
      */
@@ -149,7 +149,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     }
     /**
      * Gets single imaginary array element of A(m,n).
-     * 
+     *
      * @param m - row index
      * @param n - column index
      * @return - array element
@@ -166,10 +166,10 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     {
         return _get( imaginary, index );
     }
-    
+
     /**
      * Exports column-packed vector of real elements
-     * 
+     *
      * @return - column-packed vector of real elements
      */
 //    public T[] exportReal()
@@ -178,7 +178,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
 //    }
     /**
      * Exports column-packed vector of imaginary elements
-     * 
+     *
      * @return - column-packed vector of imaginary elements
      */
 //    public T[] exportImaginary()
@@ -187,7 +187,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
 //    }
     /**
      * Does the same as <code>setReal</code>.
-     * 
+     *
      * @param value - element value
      * @param m - row index
      * @param n - column index
@@ -202,7 +202,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     }
     /**
      * Does the same as <code>setReal</code>.
-     * 
+     *
      * @param value - element value
      * @param index - column-packed vector index
      */
@@ -216,7 +216,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     }
     /**
      * Does the same as <code>getReal</code>.
-     * 
+     *
      * @param m - row index
      * @param n - column index
      * @return - array element
@@ -256,20 +256,20 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     {
         return index*getBytesAllocated();
     }
-    
+
     protected T _get( ByteBuffer buffer, int index )
     {
         buffer.position( getByteOffset(index) );
         buffer.get( bytes, 0, bytes.length );
         return buldFromBytes( bytes );
     }
-    
+
     protected void _set( ByteBuffer buffer, T value, int index )
     {
         buffer.position( getByteOffset(index) );
         buffer.put( getByteArray( value ) );
     }
-    
+
     public void putImaginaryByteBuffer( ByteBuffer buff )
     {
         if ( !isComplex() )
@@ -279,23 +279,23 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
         imaginary.rewind();
         imaginary.put( buff );
     }
-    
+
     public ByteBuffer getImaginaryByteBuffer()
     {
         return imaginary;
     }
-    
+
     public void putRealByteBuffer( ByteBuffer buff )
     {
         real.rewind();
         real.put( buff );
     }
-    
+
     public ByteBuffer getRealByteBuffer()
     {
         return real;
     }
-    
+
     /* (non-Javadoc)
      * @see com.jmatio.types.MLArray#contentToString()
      */
@@ -303,7 +303,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
     {
         StringBuffer sb = new StringBuffer();
         sb.append(name + " = \n");
-        
+
         if ( getSize() > 1000 )
         {
             sb.append("Cannot display variables with more than 1000 elements.");
@@ -343,10 +343,10 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
         }
         return super.equals( o );
     }
-    
+
     /**
      * Equals implementation for direct <code>ByteBuffer</code>
-     * 
+     *
      * @param buffa the source buffer to be compared
      * @param buffb the destination buffer to be compared
      * @return <code>true</code> if buffers are equal in terms of content
@@ -357,22 +357,22 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
         {
             return true;
         }
-        
+
         if ( buffa ==null || buffb == null )
         {
             return false;
         }
-        
+
         buffa.rewind();
         buffb.rewind();
-        
+
         int length = buffa.remaining();
-        
+
         if ( buffb.remaining() != length )
         {
             return false;
         }
-        
+
         for ( int i = 0; i < length; i++ )
         {
             if ( buffa.get() != buffb.get() )
@@ -383,7 +383,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
 
         return true;
     }
-    
+
     public void dispose()
     {
         if ( real != null )
@@ -394,7 +394,7 @@ public abstract class MLNumericArray<T extends Number> extends MLArray
         {
             real.clear();
         }
-        
+
     }
-    
+
 }

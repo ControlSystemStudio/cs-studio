@@ -365,5 +365,4 @@ public class SVGSymbolImage extends AbstractSymbolImage {
 		svgHandler.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL,
 				RenderingHints.VALUE_STROKE_PURE);
 	}
-
 }

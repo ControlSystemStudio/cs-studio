@@ -156,7 +156,7 @@ public class SampleView extends DataBrowserAwareView
             @Override
             public void widgetSelected(final SelectionEvent e)
             {   // Trigger GUI update
-            	update(false);
+                update(false);
             }
         });
 
@@ -278,8 +278,8 @@ public class SampleView extends DataBrowserAwareView
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
-            	if (model != null)
-            		model.removeListener(model_listener);
+                if (model != null)
+                    model.removeListener(model_listener);
             }
         });
     }
@@ -288,16 +288,16 @@ public class SampleView extends DataBrowserAwareView
     @Override
     protected void updateModel(final Model old_model, final Model model)
     {
-    	this.model = model;
-    	if (old_model != model)
-    	{
-    		if (old_model != null)
-    			old_model.removeListener(model_listener);
+        this.model = model;
+        if (old_model != model)
+        {
+            if (old_model != null)
+                old_model.removeListener(model_listener);
 
-    		if (model != null)
-    			model.addListener(model_listener);
-    	}
-    	update(old_model != model);
+            if (model != null)
+                model.addListener(model_listener);
+        }
+        update(old_model != model);
     }
 
     /** Update combo box of this view.
@@ -328,20 +328,20 @@ public class SampleView extends DataBrowserAwareView
         if (!model_changed  &&  items.getSelectionIndex() > 0)
         {
             // Is the previously selected item still valid?
-        	if (sample_table.getInput() instanceof ModelItem)
-        	{
-        		final ModelItem selected_item = (ModelItem) sample_table.getInput();
-        		if (model_items.indexOf(selected_item) != -1)
-        		{   // Show same PV name again in combo box
-        			items.setItems(names);
-        			items.select(model_items.indexOf(selected_item) + 1);
-        			items.setEnabled(true);
-        			// Update sample table size. Not locking for size()
-        			sample_table.setItemCount(selected_item.getSamples().size());
-        			sample_table.refresh();
-        			return;
-        		}
-        	}
+            if (sample_table.getInput() instanceof ModelItem)
+            {
+                final ModelItem selected_item = (ModelItem) sample_table.getInput();
+                if (model_items.indexOf(selected_item) != -1)
+                {   // Show same PV name again in combo box
+                    items.setItems(names);
+                    items.select(model_items.indexOf(selected_item) + 1);
+                    items.setEnabled(true);
+                    // Update sample table size. Not locking for size()
+                    sample_table.setItemCount(selected_item.getSamples().size());
+                    sample_table.refresh();
+                    return;
+                }
+            }
         }
         // Previously selected item no longer valid.
         // Show new items, clear rest

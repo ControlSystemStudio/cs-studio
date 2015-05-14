@@ -6,7 +6,7 @@
    <topic href="html/BOY_Introduction.html" label="Introduction">
    </topic>
    <topic href="html/ChangeLog.html" label="What&apos;s new">
-   </topic> 
+   </topic>
   <topic label="Install Examples" href="html/Install_Examples.html"></topic>
   <topic href="html/Getting_Started.html" label="Getting Started">
   </topic>
@@ -20,7 +20,7 @@
   <topic href="html/Widgets_Overview.html" label="Widgets">
      <topic label="Widget Properties" href="html/Widget_Properties.html"> </topic>
      <topic href="html/widgets/PVWidgets.html" label="PV Widgets"> </topic>
-     
+
      <topic href="html/widgets/ShapeWidgets.html" label="Shape Widgets">
         <topic href="html/widgets/Arc.html" label="Arc"> </topic>
         <topic href="html/widgets/Polyline.html" label="Polyline"> </topic>
@@ -48,7 +48,7 @@
         <topic href="html/widgets/Thermometer.html" label="Thermometer"></topic>
         <topic href="html/widgets/Tank.html" label="Tank"></topic>
         <topic href="html/widgets/ScaledSlider.html" label="Scaled Slider"></topic>
-        <topic href="html/widgets/Knob.html" label="Knob"></topic>        
+        <topic href="html/widgets/Knob.html" label="Knob"></topic>
      </topic>
      <topic href="html/widgets/XYGraph.html" label="XY Graph"></topic>
      <topic href="html/widgets/IntensityGraph.html" label="Intensity Graph"></topic>
@@ -63,9 +63,9 @@
      <topic href="html/widgets/ChoiceWidgets.html" label="Choice Widgets">
         <topic href="html/widgets/Combo.html" label="Combo Box"></topic>
         <topic href="html/widgets/RadioBox.html" label="Radio Box"></topic>
-         <topic href="html/widgets/ChoiceButton.html" label="Choice Button"></topic>         
+         <topic href="html/widgets/ChoiceButton.html" label="Choice Button"></topic>
      </topic>
-    
+
         <topic href="html/widgets/Table.html" label="Table">
         </topic>
         <topic href="html/widgets/WebBrowser.html" label="Web Brower">
@@ -77,11 +77,11 @@
          </topic>
         <topic href="html/widgets/GroupingContainer.html" label="Grouping Container"></topic>
         <topic href="html/widgets/LinkingContainer.html" label="Linking Container"></topic>
-         <topic href="html/widgets/Tab.html" label="Tabbed Container"></topic>         
-     </topic> 
+         <topic href="html/widgets/Tab.html" label="Tabbed Container"></topic>
+     </topic>
      <topic href="html/widgets/GridLayout.html" label="Grid Layout"></topic>
      <anchor id="thirdPartyWidgets"/>
-     
+
   </topic>
   <topic label="Color and Font" href="html/ColorFont.html"></topic>
   <topic label="PV Connectivity" href="html/PV_Connectivity.html"></topic>
@@ -126,7 +126,7 @@
   </topic>
     <topic href="html/OPI_Probe.html" label="OPI Probe">
     </topic>
-    
+
     <topic href="html/CreateWidgets.html" label="Creating Customized Widget">
     </topic>
     <topic href="html/Architecture.html" label="BOY Architecture">

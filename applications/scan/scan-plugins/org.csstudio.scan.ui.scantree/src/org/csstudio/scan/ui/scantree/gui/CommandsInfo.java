@@ -77,13 +77,13 @@ public class CommandsInfo
         }
         // Sort by command class name to get predicatable order
         Collections.sort(commands, new Comparator<ScanCommand>()
-		{
-			@Override
+        {
+            @Override
             public int compare(final ScanCommand cmd1, final ScanCommand cmd2)
             {
-	            return cmd1.getCommandName().compareTo(cmd2.getCommandName());
+                return cmd1.getCommandName().compareTo(cmd2.getCommandName());
             }
-		});
+        });
         this.commands = commands.toArray(new ScanCommand[commands.size()]);
     }
 

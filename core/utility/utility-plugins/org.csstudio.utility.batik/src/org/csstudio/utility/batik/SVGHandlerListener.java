@@ -25,5 +25,4 @@ public interface SVGHandlerListener {
 	 * @param image, new image to display.
 	 */
 	public void newImage(Image image);
-
 }

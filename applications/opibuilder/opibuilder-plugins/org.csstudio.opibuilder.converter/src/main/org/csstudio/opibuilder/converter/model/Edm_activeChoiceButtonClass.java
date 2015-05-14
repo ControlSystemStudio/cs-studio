@@ -13,29 +13,29 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeChoiceButtonClass extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String controlPv;
-	@EdmAttributeAn @EdmOptionalAn private String orientation;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor selectColor;
+    @EdmAttributeAn @EdmOptionalAn private String controlPv;
+    @EdmAttributeAn @EdmOptionalAn private String orientation;
+    @EdmAttributeAn @EdmOptionalAn private EdmColor selectColor;
 
 
-	public Edm_activeChoiceButtonClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
-	
+    public Edm_activeChoiceButtonClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
-	public String getOrientation() {
-		return orientation;
-	}
-	public EdmColor getSelectColor() {
-		return selectColor;
-	}
-	
-	/**
-	 * @return the lineAlarm
-	 */
-	public final String getControlPv() {
-		return controlPv;
-	}
+
+    public String getOrientation() {
+        return orientation;
+    }
+    public EdmColor getSelectColor() {
+        return selectColor;
+    }
+
+    /**
+     * @return the lineAlarm
+     */
+    public final String getControlPv() {
+        return controlPv;
+    }
 
 
 }

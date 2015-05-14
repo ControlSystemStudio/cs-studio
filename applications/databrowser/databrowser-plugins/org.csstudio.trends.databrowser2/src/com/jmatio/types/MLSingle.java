@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 public class MLSingle extends MLNumericArray<Float>
 {
-    
+
     public MLSingle(String name, Float[] vals, int m)
     {
         super(name, MLArray.mxSINGLE_CLASS, vals, m);
@@ -24,8 +24,8 @@ public class MLSingle extends MLNumericArray<Float>
     {
         if ( bytes.length != getBytesAllocated() )
         {
-            throw new IllegalArgumentException( 
-                        "To build from byte array I need array of size: " 
+            throw new IllegalArgumentException(
+                        "To build from byte array I need array of size: "
                                 + getBytesAllocated() );
         }
         return ByteBuffer.wrap( bytes ).getFloat();

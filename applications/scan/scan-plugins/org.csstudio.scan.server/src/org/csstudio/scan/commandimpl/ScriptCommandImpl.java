@@ -34,7 +34,7 @@ import org.python.core.PyException;
 @SuppressWarnings("nls")
 public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
 {
-	final private ScanScript script_object;
+    final private ScanScript script_object;
 
     /** {@inheritDoc} */
     public ScriptCommandImpl(final ScriptCommand command, final JythonSupport jython) throws Exception
@@ -68,20 +68,20 @@ public class ScriptCommandImpl extends ScanCommandImpl<ScriptCommand>
     }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void execute(final ScanContext context) throws Exception
     {
         try
         {
-        	final ScanScriptContext script_context = new ScriptCommandContextImpl(context);
-        	script_object.run(script_context);
+            final ScanScriptContext script_context = new ScriptCommandContextImpl(context);
+            script_object.run(script_context);
         }
         catch (PyException ex)
         {
-        	throw new Exception(command.getScript() + ":" + JythonSupport.getExceptionMessage(ex), ex);
+            throw new Exception(command.getScript() + ":" + JythonSupport.getExceptionMessage(ex), ex);
         }
 
-		context.workPerformed(1);
+        context.workPerformed(1);
     }
 
 }

@@ -44,202 +44,202 @@ import de.desy.tine.definitions.TAccess;
 import de.desy.tine.definitions.TMode;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy, TCallback {
 
-	public static final int DEFAULT_TIME_TRIGGER = 1000;
-	private long timeTrigger = MonitorProxyImpl.DEFAULT_TIME_TRIGGER;
-	private boolean heartbeat = true;
-	private boolean destroyed = false;
-	private PropertyProxyImpl<T> proxy;
-	private TLink tLink;
-	private T oldData;
-	private Object dataObject;
-	private boolean normal=false;
-	
-	public MonitorProxyImpl(PropertyProxyImpl<T> source, ResponseListener<T> l) {
-		super(source, l);
-		this.proxy = source;
-		proxy.addMonitor(this);
-	}
-		
-	public void initialize(final Object data) throws RemoteException {
-		try {	        	
-        	if (this.tLink != null) {
-	        	this.tLink.close();
-	        }
-			
-			this.dataObject = data;
-			TDataType dout = PropertyProxyUtilities.toTDataType(dataObject,PropertyProxyUtilities.getObjectSize(data),true);
-			TDataType din = new TDataType();
-			short access = TAccess.CA_READ;
-	        	        
-	        this.tLink = new TLink(this.proxy.getDeviceName(),this.proxy.getDissector().getDeviceProperty(),dout,din,access);
-	        	        
-	        short mode;
-	        if (this.heartbeat) {
-	        	mode = TMode.CM_POLL;
-	        } else {
-	        	mode = TMode.CM_REFRESH;
-	        }
-	        
-	        int handle = 0;
-        	handle = this.tLink.attach(mode,this,(int)this.timeTrigger);
-        	
-        	
-        	if (handle < 0) {
-        		throw new ConnectionFailed(this.tLink.getError(-handle));
-        	}
-        	
+    public static final int DEFAULT_TIME_TRIGGER = 1000;
+    private long timeTrigger = MonitorProxyImpl.DEFAULT_TIME_TRIGGER;
+    private boolean heartbeat = true;
+    private boolean destroyed = false;
+    private PropertyProxyImpl<T> proxy;
+    private TLink tLink;
+    private T oldData;
+    private Object dataObject;
+    private boolean normal=false;
+
+    public MonitorProxyImpl(PropertyProxyImpl<T> source, ResponseListener<T> l) {
+        super(source, l);
+        this.proxy = source;
+        proxy.addMonitor(this);
+    }
+
+    public void initialize(final Object data) throws RemoteException {
+        try {
+            if (this.tLink != null) {
+                this.tLink.close();
+            }
+
+            this.dataObject = data;
+            TDataType dout = PropertyProxyUtilities.toTDataType(dataObject,PropertyProxyUtilities.getObjectSize(data),true);
+            TDataType din = new TDataType();
+            short access = TAccess.CA_READ;
+
+            this.tLink = new TLink(this.proxy.getDeviceName(),this.proxy.getDissector().getDeviceProperty(),dout,din,access);
+
+            short mode;
+            if (this.heartbeat) {
+                mode = TMode.CM_POLL;
+            } else {
+                mode = TMode.CM_REFRESH;
+            }
+
+            int handle = 0;
+            handle = this.tLink.attach(mode,this,(int)this.timeTrigger);
+
+
+            if (handle < 0) {
+                throw new ConnectionFailed(this.tLink.getError(-handle));
+            }
+
         } catch (Exception e) {
-        	DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
-			this.proxy.setCondition(condition);
-			throw new RemoteException(this.proxy,"Cannot create monitor.",e);
+            DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
+            this.proxy.setCondition(condition);
+            throw new RemoteException(this.proxy,"Cannot create monitor.",e);
         }
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.MonitorProxy#getRequest()
-	 */
-	public Request getRequest() {
-		return this;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.MonitorProxy#getRequest()
+     */
+    public Request getRequest() {
+        return this;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.MonitorProxy#refresh()
-	 */
-	public void refresh() {
-		
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.MonitorProxy#refresh()
+     */
+    public void refresh() {
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.SimpleMonitor#destroy()
-	 */
-	public synchronized void destroy() {
-		if (this.tLink != null) {
-			this.tLink.close();
-			this.tLink=null;
-		}
-		this.destroyed = true;
-		this.proxy.removeMonitor(this);
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.SimpleMonitor#getDefaultTimerTrigger()
-	 */
-	public long getDefaultTimerTrigger() throws DataExchangeException {
-		return MonitorProxyImpl.DEFAULT_TIME_TRIGGER;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.SimpleMonitor#destroy()
+     */
+    public synchronized void destroy() {
+        if (this.tLink != null) {
+            this.tLink.close();
+            this.tLink=null;
+        }
+        this.destroyed = true;
+        this.proxy.removeMonitor(this);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.SimpleMonitor#getTimerTrigger()
-	 */
-	public long getTimerTrigger() throws DataExchangeException {
-		return this.timeTrigger;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.SimpleMonitor#getDefaultTimerTrigger()
+     */
+    public long getDefaultTimerTrigger() throws DataExchangeException {
+        return MonitorProxyImpl.DEFAULT_TIME_TRIGGER;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.SimpleMonitor#isDefault()
-	 */
-	public boolean isDefault() {
-		return true;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.SimpleMonitor#getTimerTrigger()
+     */
+    public long getTimerTrigger() throws DataExchangeException {
+        return this.timeTrigger;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.SimpleMonitor#isDestroyed()
-	 */
-	public boolean isDestroyed() {
-		return this.destroyed;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.SimpleMonitor#isDefault()
+     */
+    public boolean isDefault() {
+        return true;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.SimpleMonitor#isHeartbeat()
-	 */
-	public boolean isHeartbeat() {
-		return this.heartbeat;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.SimpleMonitor#isDestroyed()
+     */
+    public boolean isDestroyed() {
+        return this.destroyed;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.SimpleMonitor#setHeartbeat(boolean)
-	 */
-	public void setHeartbeat(boolean heartbeat) throws DataExchangeException, UnsupportedOperationException {
-		if (this.heartbeat == heartbeat) {
-			return;
-		}
-		this.heartbeat = heartbeat;
-		try {
-			initialize(this.dataObject);
-		} catch (RemoteException e) {
-			throw new DataExchangeException(getSource(), "Cannot set heartbeat", e);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.SimpleMonitor#isHeartbeat()
+     */
+    public boolean isHeartbeat() {
+        return this.heartbeat;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.SimpleMonitor#setTimerTrigger(long)
-	 */
-	public void setTimerTrigger(long trigger) throws DataExchangeException, UnsupportedOperationException {
-		if (this.timeTrigger == trigger) {
-			return;
-		}
-		this.timeTrigger = trigger;		
-		try {
-			initialize(this.dataObject);
-		} catch (RemoteException e) {
-			throw new DataExchangeException(getSource(), "Cannot set timer trigger", e);
-		}
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.tine.client.TCallback#callback(int, int)
-	 */
-	public void callback(int linkIndex, int linkStatus) {
-		int statusCode = this.tLink.getLinkStatus();
-		Exception e = null;
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.SimpleMonitor#setHeartbeat(boolean)
+     */
+    public void setHeartbeat(boolean heartbeat) throws DataExchangeException, UnsupportedOperationException {
+        if (this.heartbeat == heartbeat) {
+            return;
+        }
+        this.heartbeat = heartbeat;
+        try {
+            initialize(this.dataObject);
+        } catch (RemoteException e) {
+            throw new DataExchangeException(getSource(), "Cannot set heartbeat", e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.SimpleMonitor#setTimerTrigger(long)
+     */
+    public void setTimerTrigger(long trigger) throws DataExchangeException, UnsupportedOperationException {
+        if (this.timeTrigger == trigger) {
+            return;
+        }
+        this.timeTrigger = trigger;
+        try {
+            initialize(this.dataObject);
+        } catch (RemoteException e) {
+            throw new DataExchangeException(getSource(), "Cannot set timer trigger", e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.tine.client.TCallback#callback(int, int)
+     */
+    public void callback(int linkIndex, int linkStatus) {
+        int statusCode = this.tLink.getLinkStatus();
+        Exception e = null;
         if (statusCode > 0 || linkStatus > 0) {
-        	e = new RemoteException(this.proxy,this.tLink.getLastError());
-        	this.normal=false;
-        	this.proxy.setConnectionState(ConnectionState.CONNECTION_LOST,e);
+            e = new RemoteException(this.proxy,this.tLink.getLastError());
+            this.normal=false;
+            this.proxy.setConnectionState(ConnectionState.CONNECTION_LOST,e);
         } else {
-        	this.proxy.setConnectionState(ConnectionState.CONNECTED);
+            this.proxy.setConnectionState(ConnectionState.CONNECTED);
         }
-        
+
         TDataType dout = this.tLink.getOutputDataObject();
         T data = this.proxy.extractData(dout);
         Timestamp timestamp = new Timestamp(this.tLink.getLastTimeStamp(),0);
         ResponseImpl<T> response = new ResponseImpl<T>(getSource(),this,data,"",true, e,null,timestamp,false);
 
         this.proxy.updateValueReponse(response);
-        
+
         if (this.heartbeat) {
-			addResponse(response);
-			if (e == null && !this.normal) {
-				this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp,"Value updated."));
-				this.normal=true;
-			}
-		} else {
-			//only if value has changed!
-			if (!(data instanceof Object[] && this.oldData instanceof Object[] && Arrays.equals((Object[])data, (Object[])this.oldData)) || (this.oldData==null || !data.equals(this.oldData))) {
-				addResponse(response);
-				if (e == null && !this.normal) {
-					this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp,"Value updated."));
-					this.normal=true;
-				}
-			}
-			this.oldData = data;
-		}
-	}
+            addResponse(response);
+            if (e == null && !this.normal) {
+                this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp,"Value updated."));
+                this.normal=true;
+            }
+        } else {
+            //only if value has changed!
+            if (!(data instanceof Object[] && this.oldData instanceof Object[] && Arrays.equals((Object[])data, (Object[])this.oldData)) || (this.oldData==null || !data.equals(this.oldData))) {
+                addResponse(response);
+                if (e == null && !this.normal) {
+                    this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),timestamp,"Value updated."));
+                    this.normal=true;
+                }
+            }
+            this.oldData = data;
+        }
+    }
 }

@@ -15,12 +15,12 @@ import java.util.logging.Logger;
 @SuppressWarnings("nls")
 public class Activator
 {
-	/** Plugin ID defined in MANIFEST.MF */
+    /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.alarm.beast.ui.areapanel";
-    
+
     /** @return Logger for the plugin ID */
     public static Logger getLogger()
     {
-    	return Logger.getLogger(ID);
+        return Logger.getLogger(ID);
     }
 }

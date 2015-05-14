@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /**
- * 
+ *
  */
 package org.csstudio.dal.tine;
 
@@ -29,29 +29,29 @@ import com.cosylab.util.CommonException;
 
 /**
  * This exception signals that connection to remote system has failed for some reason.
- * 
+ *
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  *
  */
 public class ConnectionFailed extends CommonException {
-	
-	private static final long serialVersionUID = 1L;
-	/**
-	 * Creates new instance of ConnectionFailed.
-	 */
-	public ConnectionFailed() {
-		super("Failure","Connection failed for unknown reason.");
-	}
-	/**
-	 * Creates new instance of ConnectionFailed.
-	 */
-	public ConnectionFailed(String name) {
-		super(name,"Connection to '"+name+"' failed for unknown reason.");
-	}
-	/**
-	 * Creates new instance of ConnectionFailed.
-	 */
-	public ConnectionFailed(String message,Throwable t) {
-		super("Failure",message,t);
-	}
+
+    private static final long serialVersionUID = 1L;
+    /**
+     * Creates new instance of ConnectionFailed.
+     */
+    public ConnectionFailed() {
+        super("Failure","Connection failed for unknown reason.");
+    }
+    /**
+     * Creates new instance of ConnectionFailed.
+     */
+    public ConnectionFailed(String name) {
+        super(name,"Connection to '"+name+"' failed for unknown reason.");
+    }
+    /**
+     * Creates new instance of ConnectionFailed.
+     */
+    public ConnectionFailed(String message,Throwable t) {
+        super("Failure",message,t);
+    }
 }

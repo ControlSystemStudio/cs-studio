@@ -11,12 +11,12 @@ import java.util.Collections;
 import java.util.Set;
 
 /** Authorizations that a user has
- * 
+ *
  *  <p>Each authorization is a string.
  *  The meaning is defined by the application that uses it.
  *  For example, "alarm_config" may be an authorization that
  *  the alarm system requires to permit changes.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -24,10 +24,10 @@ public class Authorizations
 {
     /** Special authorization that allows subject to do anything */
     final public static String FULL = "FULL";
-    
+
     /** What the user is allowed to do */
     final private Set<String> authorizations;
-    
+
     /** Initialize
      *  @param authorizations Authorizations held by the user
      */
@@ -35,15 +35,15 @@ public class Authorizations
     {
         this.authorizations = Collections.unmodifiableSet(authorizations);
     }
-    
+
     /** @return Authorizations held by a user */
     public Set<String> getAuthorizations()
     {
         return authorizations;
     }
-    
+
     /** Check if user may do something
-     * 
+     *
      *  @param authorization Authorization to check
      *  @return <code>true</code> if user has authorization
      */

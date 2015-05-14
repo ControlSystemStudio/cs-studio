@@ -24,237 +24,237 @@ import org.eclipse.ui.model.IWorkbenchAdapter;
  * @author Xihui Chen
  *
  */
-public class ScriptData implements IAdaptable {	
+public class ScriptData implements IAdaptable {
 
-	/**
-	 * The path of the script.
-	 */
-	private IPath path;
-	
-	/**
-	 * The input PVs of the script. Which can be accessed in the script and trigger the script execution.
-	 */
-	protected List<PVTuple> pvList;
-	
-	/**
-	 * Check PVs connectivity before executing the script. 
-	 */
-	private boolean checkConnectivity = true;
-	
-	/**
-	 * Skip the executions triggered by PVs first connection.
-	 */
-	private boolean skipPVsFirstConnection = false;
-	
-	/**
-	 * Stop to execute the script if error is detected in script.
-	 */
-	private boolean stopExecuteOnError = false;
-	
-	private ScriptType scriptType;
-	
-	private boolean isEmbedded = false;
-	
-	private String scriptText;
-	
-	private String scriptName;
-	
-	
-	public ScriptData() {
-		path = new Path("");
-		pvList = new ArrayList<PVTuple>();
-	}
-	
-	public ScriptData(IPath path) {
-		this.path = path;
-		pvList = new ArrayList<PVTuple>();
-	}
-	
-	/**Set the script path.
-	 * @param path the file path of the script.
-	 * @return true if successful. false if the input is not a javascript file.
-	 */
-	public boolean setPath(IPath path){
-		if(path.getFileExtension() != null){
-			this.path = path; 
-			return true;
-		}
-		return false;		
-	}
-	
-	/**Get the path of the script.
-	 * @return the file path.
-	 */
-	public IPath getPath() {
-		return path;
-	}
-	
-	/**Get the input PVs of the script 
-	 * @return
-	 */
-	public List<PVTuple> getPVList() {
-		return pvList;
-	}
-	
-	public void addPV(PVTuple pvTuple){
-		if(!pvList.contains(pvTuple)){
-			pvList.add(pvTuple);
-		}			
-	}
-	
-	public void removePV(PVTuple pvTuple){
-		pvList.remove(pvTuple);
-	}	
-	
-	public void setCheckConnectivity(boolean checkConnectivity) {
-		this.checkConnectivity = checkConnectivity;
-	}
+    /**
+     * The path of the script.
+     */
+    private IPath path;
 
-	public boolean isCheckConnectivity() {
-		return checkConnectivity;
-	}
-	
-	public ScriptData getCopy(){
-		ScriptData copy = new ScriptData();
-		copy.setPath(path);
-		copy.setCheckConnectivity(checkConnectivity);
-		copy.setSkipPVsFirstConnection(skipPVsFirstConnection);
-		copy.setStopExecuteOnError(stopExecuteOnError);
-		copy.setEmbedded(isEmbedded);
-		copy.setScriptName(scriptName);
-		copy.setScriptText(scriptText);
-		copy.setScriptType(scriptType);
-		for(PVTuple pv : pvList){
-			copy.addPV(new PVTuple(pv.pvName, pv.trigger));
-		}
-		return copy;
-	}
+    /**
+     * The input PVs of the script. Which can be accessed in the script and trigger the script execution.
+     */
+    protected List<PVTuple> pvList;
+
+    /**
+     * Check PVs connectivity before executing the script.
+     */
+    private boolean checkConnectivity = true;
+
+    /**
+     * Skip the executions triggered by PVs first connection.
+     */
+    private boolean skipPVsFirstConnection = false;
+
+    /**
+     * Stop to execute the script if error is detected in script.
+     */
+    private boolean stopExecuteOnError = false;
+
+    private ScriptType scriptType;
+
+    private boolean isEmbedded = false;
+
+    private String scriptText;
+
+    private String scriptName;
 
 
-	@SuppressWarnings("rawtypes")
-	public Object getAdapter(Class adapter) {
-		if(adapter == IWorkbenchAdapter.class)
-			return new IWorkbenchAdapter() {
-				
-				public Object getParent(Object o) {
-					return null;
-				}
-				
-				public String getLabel(Object o) {
-					if(isEmbedded)
-						return getScriptName();
-					return path.toString();
-				}
-				
-				public ImageDescriptor getImageDescriptor(Object object) {
-					String icon;
-					if(isEmbedded){
-						if(getScriptType() == ScriptType.PYTHON )
-							icon = "icons/pyEmbedded.gif";
-						else
-							icon = "icons/jsEmbedded.gif";						
-					}else if(path != null && !path.isEmpty() 
-							&& path.getFileExtension().equals(ScriptService.PY)){
-						icon = "icons/python_file.gif"; //$NON-NLS-1$
-					}else
-						icon = "icons/js.gif"; //$NON-NLS-1$
-					return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-							OPIBuilderPlugin.PLUGIN_ID, icon);
-				}
-				
-				public Object[] getChildren(Object o) {
-					return new Object[0];
-				}
-			};
-		
-		return null;
-	}
+    public ScriptData() {
+        path = new Path("");
+        pvList = new ArrayList<PVTuple>();
+    }
 
-	/**
-	 * @param skipPVsFirstConnection Skip the executions triggered by PVs first connection.
-	 */
-	public void setSkipPVsFirstConnection(boolean skipPVsFirstConnection) {
-		this.skipPVsFirstConnection = skipPVsFirstConnection;
-	}
+    public ScriptData(IPath path) {
+        this.path = path;
+        pvList = new ArrayList<PVTuple>();
+    }
 
-	/**
-	 * @return Skip the executions triggered by PVs first connection if it is true.
-	 */
-	public boolean isSkipPVsFirstConnection() {
-		return skipPVsFirstConnection;
-	}
-	
-	/**
-	 * @param stopExecuteOnError
-	 *  If true, stop to execute the script if error is detected in script.
-	 */
-	public void setStopExecuteOnError(
-			boolean stopExecuteOnError) {
-		this.stopExecuteOnError = stopExecuteOnError;
-	}
-	
-	/**
-	 * @return true if stop to execute the script if error is detected in script..
-	 */
-	public boolean isStopExecuteOnError() {
-		return stopExecuteOnError;
-	}
+    /**Set the script path.
+     * @param path the file path of the script.
+     * @return true if successful. false if the input is not a javascript file.
+     */
+    public boolean setPath(IPath path){
+        if(path.getFileExtension() != null){
+            this.path = path;
+            return true;
+        }
+        return false;
+    }
 
-	/**
-	 * @return the scriptType
-	 */
-	public ScriptType getScriptType() {
-		return scriptType;
-	}
+    /**Get the path of the script.
+     * @return the file path.
+     */
+    public IPath getPath() {
+        return path;
+    }
 
-	/**
-	 * @param scriptType the scriptType to set
-	 */
-	public void setScriptType(ScriptType scriptType) {
-		this.scriptType = scriptType;
-	}
+    /**Get the input PVs of the script
+     * @return
+     */
+    public List<PVTuple> getPVList() {
+        return pvList;
+    }
 
-	/**
-	 * @return the isEmbedded
-	 */
-	public boolean isEmbedded() {
-		return isEmbedded;
-	}
+    public void addPV(PVTuple pvTuple){
+        if(!pvList.contains(pvTuple)){
+            pvList.add(pvTuple);
+        }
+    }
 
-	/**
-	 * @param isEmbedded the isEmbedded to set
-	 */
-	public void setEmbedded(boolean isEmbedded) {
-		this.isEmbedded = isEmbedded;
-	}
+    public void removePV(PVTuple pvTuple){
+        pvList.remove(pvTuple);
+    }
 
-	/**
-	 * @return the scriptText
-	 */
-	public String getScriptText() {
-		return scriptText;
-	}
+    public void setCheckConnectivity(boolean checkConnectivity) {
+        this.checkConnectivity = checkConnectivity;
+    }
 
-	/**
-	 * @param scriptText the scriptText to set
-	 */
-	public void setScriptText(String scriptText) {
-		this.scriptText = scriptText;
-	}
+    public boolean isCheckConnectivity() {
+        return checkConnectivity;
+    }
 
-	/**
-	 * @return the scriptName
-	 */
-	public String getScriptName() {
-		return scriptName;
-	}
+    public ScriptData getCopy(){
+        ScriptData copy = new ScriptData();
+        copy.setPath(path);
+        copy.setCheckConnectivity(checkConnectivity);
+        copy.setSkipPVsFirstConnection(skipPVsFirstConnection);
+        copy.setStopExecuteOnError(stopExecuteOnError);
+        copy.setEmbedded(isEmbedded);
+        copy.setScriptName(scriptName);
+        copy.setScriptText(scriptText);
+        copy.setScriptType(scriptType);
+        for(PVTuple pv : pvList){
+            copy.addPV(new PVTuple(pv.pvName, pv.trigger));
+        }
+        return copy;
+    }
 
-	/**
-	 * @param scriptName the scriptName to set
-	 */
-	public void setScriptName(String scriptName) {
-		this.scriptName = scriptName;
-	}
 
-	
+    @SuppressWarnings("rawtypes")
+    public Object getAdapter(Class adapter) {
+        if(adapter == IWorkbenchAdapter.class)
+            return new IWorkbenchAdapter() {
+
+                public Object getParent(Object o) {
+                    return null;
+                }
+
+                public String getLabel(Object o) {
+                    if(isEmbedded)
+                        return getScriptName();
+                    return path.toString();
+                }
+
+                public ImageDescriptor getImageDescriptor(Object object) {
+                    String icon;
+                    if(isEmbedded){
+                        if(getScriptType() == ScriptType.PYTHON )
+                            icon = "icons/pyEmbedded.gif";
+                        else
+                            icon = "icons/jsEmbedded.gif";
+                    }else if(path != null && !path.isEmpty()
+                            && path.getFileExtension().equals(ScriptService.PY)){
+                        icon = "icons/python_file.gif"; //$NON-NLS-1$
+                    }else
+                        icon = "icons/js.gif"; //$NON-NLS-1$
+                    return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                            OPIBuilderPlugin.PLUGIN_ID, icon);
+                }
+
+                public Object[] getChildren(Object o) {
+                    return new Object[0];
+                }
+            };
+
+        return null;
+    }
+
+    /**
+     * @param skipPVsFirstConnection Skip the executions triggered by PVs first connection.
+     */
+    public void setSkipPVsFirstConnection(boolean skipPVsFirstConnection) {
+        this.skipPVsFirstConnection = skipPVsFirstConnection;
+    }
+
+    /**
+     * @return Skip the executions triggered by PVs first connection if it is true.
+     */
+    public boolean isSkipPVsFirstConnection() {
+        return skipPVsFirstConnection;
+    }
+
+    /**
+     * @param stopExecuteOnError
+     *  If true, stop to execute the script if error is detected in script.
+     */
+    public void setStopExecuteOnError(
+            boolean stopExecuteOnError) {
+        this.stopExecuteOnError = stopExecuteOnError;
+    }
+
+    /**
+     * @return true if stop to execute the script if error is detected in script..
+     */
+    public boolean isStopExecuteOnError() {
+        return stopExecuteOnError;
+    }
+
+    /**
+     * @return the scriptType
+     */
+    public ScriptType getScriptType() {
+        return scriptType;
+    }
+
+    /**
+     * @param scriptType the scriptType to set
+     */
+    public void setScriptType(ScriptType scriptType) {
+        this.scriptType = scriptType;
+    }
+
+    /**
+     * @return the isEmbedded
+     */
+    public boolean isEmbedded() {
+        return isEmbedded;
+    }
+
+    /**
+     * @param isEmbedded the isEmbedded to set
+     */
+    public void setEmbedded(boolean isEmbedded) {
+        this.isEmbedded = isEmbedded;
+    }
+
+    /**
+     * @return the scriptText
+     */
+    public String getScriptText() {
+        return scriptText;
+    }
+
+    /**
+     * @param scriptText the scriptText to set
+     */
+    public void setScriptText(String scriptText) {
+        this.scriptText = scriptText;
+    }
+
+    /**
+     * @return the scriptName
+     */
+    public String getScriptName() {
+        return scriptName;
+    }
+
+    /**
+     * @param scriptName the scriptName to set
+     */
+    public void setScriptName(String scriptName) {
+        this.scriptName = scriptName;
+    }
+
+
 }

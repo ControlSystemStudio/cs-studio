@@ -28,10 +28,10 @@ import org.csstudio.security.SecuritySupport;
 import com.sun.security.auth.module.LdapLoginModule;
 
 /** AuthorizationProvider based on LDAP group membership.
- * 
+ *
  *  <p>Performs an LDAP lookup of the user's group membership.
  *  The LDAP directory must support the <code>posixGroup</code> schema.
- *  
+ *
  *  <p>Example LDAP entry:
  *  <pre>
  *  dn: cn=archive_config,ou=Groups,dc=example,dc=com
@@ -43,20 +43,20 @@ import com.sun.security.auth.module.LdapLoginModule;
  *  memberUid: fred
  *  memberUid: jane
  *  </pre>
- *  
+ *
  *  <p>The above entry defines a group "archive_config" with members
  *  "fred" and "jane".
  *  The {@link LDAPGroupAuthorizationProvider} will treat that
  *  as granting the "archive_config" authorization to users
  *  "fred" and "jane".
- *  
+ *
  *  <p>Note that members must specifically be listed via <code>memberUid</code>.
  *  In the above example, there may be a user with primary group ID <code>1234</code>
  *  that Linux would also consider to be a member of the "archive_config"
  *  Linux group, but for authorization purposes such a user must also be
  *  listed via <code>memberUid</code>. The numeric group ID is not used
  *  for authorization.
- *  
+ *
  *  <p>See comments in {@link LdapLoginModule} for Certificate Issues.
  *
  *  @author Kay Kasemir
@@ -66,12 +66,12 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
 {
     final private String ldap_url;
     final private String group_base;
-    
+
     /** Initialize based on Eclipse preferences */
     public LDAPGroupAuthorizationProvider()
     {
-    	this(SecurityPreferences.getLDAPGroupURL(),
-    	     SecurityPreferences.getLDAPGroupBase());
+        this(SecurityPreferences.getLDAPGroupURL(),
+             SecurityPreferences.getLDAPGroupBase());
     }
 
     /** Initialize
@@ -122,7 +122,7 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
         }
         return new Authorizations(authorizations);
     }
-    
+
     /** Connect to LDAP
      *  @return DirContext
      *  @throws Exception on error
@@ -135,7 +135,7 @@ public class LDAPGroupAuthorizationProvider implements AuthorizationProvider
         settings.put(Context.SECURITY_AUTHENTICATION, "none");
         // settings.put(Context.SECURITY_PRINCIPAL, ldap_user);
         // settings.put(Context.SECURITY_CREDENTIALS, ldap_password);
-        
+
         return new InitialDirContext(settings);
     }
 }

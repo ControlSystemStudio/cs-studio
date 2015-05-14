@@ -20,22 +20,22 @@ public class Preferences
 {
     /** Preference and dialog tag for combined vs. separate alarm tables */
     final public static String ALARM_TABLE_GROUP_SETTING = "combined_alarm_table";
-    
+
     /** Preference and dialog tag for column names */
     final public static String ALARM_TABLE_COLUMN_SETTING = "alarm_table_columns";
-    
+
     /** @return Alarm table row limit */
-	public static int getAlarmTableRowLimit()
+    public static int getAlarmTableRowLimit()
     {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getInt(Activator.ID, "alarm_table_row_limit", 2500, null);
     }
-	
-	public static boolean isCombinedAlarmTable()
-	{
+
+    public static boolean isCombinedAlarmTable()
+    {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(Activator.ID, ALARM_TABLE_GROUP_SETTING, false, null);
-	}
+    }
 
     public static String[] getColumns()
     {

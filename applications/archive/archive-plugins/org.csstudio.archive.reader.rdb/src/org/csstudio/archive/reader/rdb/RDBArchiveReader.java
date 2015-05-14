@@ -80,7 +80,7 @@ public class RDBArchiveReader implements ArchiveReader
     {
         this(url, user, password, schema, stored_procedure, RDBArchivePreferences.useArrayBlob());
     }
-        
+
     /** Initialize
      *  @param url Database URL
      *  @param user .. user
@@ -104,14 +104,14 @@ public class RDBArchiveReader implements ArchiveReader
         rdb = RDBUtil.connect(url, user, password, false);
         // Read-only allows MySQL to use load balancing
         rdb.getConnection().setReadOnly(true);
-        
+
         final Dialect dialect = rdb.getDialect();
         switch (dialect)
         {
         case MySQL:
             is_oracle = false;
-        	this.stored_procedure = stored_procedure;
-        	break;
+            this.stored_procedure = stored_procedure;
+            break;
         case PostgreSQL:
             is_oracle = false;
             this.stored_procedure = stored_procedure;
@@ -127,7 +127,7 @@ public class RDBArchiveReader implements ArchiveReader
         stati = getStatusValues();
         severities = getSeverityValues();
     }
-    
+
     /** @return <code>true</code> when using Oracle, i.e. no 'nanosec'
      *          because that is included in the 'smpl_time'
      */
@@ -135,7 +135,7 @@ public class RDBArchiveReader implements ArchiveReader
     {
         return is_oracle;
     }
-    
+
     /** @return <code>true</code> if array samples are stored in BLOB */
     public boolean useArrayBlob()
     {
@@ -153,8 +153,8 @@ public class RDBArchiveReader implements ArchiveReader
             final Statement statement = rdb.getConnection().createStatement();
         )
         {
-        	if (timeout > 0)
-        		statement.setQueryTimeout(timeout);
+            if (timeout > 0)
+                statement.setQueryTimeout(timeout);
             statement.setFetchSize(100);
             final ResultSet result = statement.executeQuery(sql.sel_stati);
             while (result.next())
@@ -174,36 +174,36 @@ public class RDBArchiveReader implements ArchiveReader
             final Statement statement = rdb.getConnection().createStatement();
         )
         {
-        	if (timeout > 0)
-        		statement.setQueryTimeout(timeout);
+            if (timeout > 0)
+                statement.setQueryTimeout(timeout);
             statement.setFetchSize(100);
             final ResultSet result = statement.executeQuery(sql.sel_severities);
             while (result.next())
             {
-            	final int id = result.getInt(1);
+                final int id = result.getInt(1);
                 final String text = result.getString(2);
                 AlarmSeverity severity = null;
                 for (AlarmSeverity s : AlarmSeverity.values())
                 {
-                	if (text.startsWith(s.name()))
-                	{
-                		severity = s;
-                		break;
-                	}
-                	if	("OK".equalsIgnoreCase(text) || "".equalsIgnoreCase(text))
-                	{
-                		severity = AlarmSeverity.NONE;
-                		break;
-                	}
+                    if (text.startsWith(s.name()))
+                    {
+                        severity = s;
+                        break;
+                    }
+                    if    ("OK".equalsIgnoreCase(text) || "".equalsIgnoreCase(text))
+                    {
+                        severity = AlarmSeverity.NONE;
+                        break;
+                    }
                 }
                 if (severity == null)
-            	{
+                {
                     Activator.getLogger().log(Level.FINE,
                         "Undefined severity level {0}", text);
-            		severities.put(id, AlarmSeverity.UNDEFINED);     
-            	}
+                    severities.put(id, AlarmSeverity.UNDEFINED);
+                }
                 else
-                	severities.put(id, severity);
+                    severities.put(id, severity);
             }
             return severities;
         }
@@ -239,7 +239,7 @@ public class RDBArchiveReader implements ArchiveReader
     {
         final AlarmSeverity severity = severities.get(severity_id);
         if (severity != null)
-        	return severity;
+            return severity;
         Activator.getLogger().log(Level.WARNING, "Undefined alarm severity ID {0}", severity_id);
         severities.put(severity_id, AlarmSeverity.UNDEFINED);
         return AlarmSeverity.UNDEFINED;
@@ -264,8 +264,8 @@ public class RDBArchiveReader implements ArchiveReader
     public String getDescription()
     {
         return "RDB Archive V" + getVersion() + " (" + rdb.getDialect() + ")\n" +
-        	   "User: " + user + "\n" +
-        	   "Password: " + password + " characters";
+               "User: " + user + "\n" +
+               "Password: " + password + " characters";
     }
 
     /** {@inheritDoc} */
@@ -361,17 +361,17 @@ public class RDBArchiveReader implements ArchiveReader
     {
         return new RawSampleIterator(this, channel_id, start, end);
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
             final Timestamp start, final Timestamp end, int count) throws UnknownChannelException, Exception
     {
         // MySQL version of the stored proc. requires count > 1
-    	if (count <= 1)
+        if (count <= 1)
             throw new Exception("Count must be > 1");
         final int channel_id = getChannelID(name);
-        
+
         // Use stored procedure in RDB server?
         if (stored_procedure.length() > 0)
             return new StoredProcedureValueIterator(this, stored_procedure, channel_id, start, end, count);
@@ -384,21 +384,21 @@ public class RDBArchiveReader implements ArchiveReader
                     sql.sample_count_by_id_start_end);
         )
         {
-	        count_samples.setInt(1, channel_id);
-	        count_samples.setTimestamp(2, TimestampHelper.toSQLTimestamp(start));
-	        count_samples.setTimestamp(3, TimestampHelper.toSQLTimestamp(end));
-	        final ResultSet result = count_samples.executeQuery();
-	        if (! result.next())
-	        	throw new Exception("Cannot count samples");
-	        counted = result.getInt(1);
+            count_samples.setInt(1, channel_id);
+            count_samples.setTimestamp(2, TimestampHelper.toSQLTimestamp(start));
+            count_samples.setTimestamp(3, TimestampHelper.toSQLTimestamp(end));
+            final ResultSet result = count_samples.executeQuery();
+            if (! result.next())
+                throw new Exception("Cannot count samples");
+            counted = result.getInt(1);
         }
         // Fetch raw data and perform averaging
         final ValueIterator raw_data = getRawValues(channel_id, start, end);
-        
+
         // If there weren't that many, that's it
         if (counted < count)
-        	return raw_data;
-        
+            return raw_data;
+
         // Else: Perform averaging to reduce sample count
         final double seconds = end.durationFrom(start).toSeconds() / count;
         return new AveragedValueIterator(raw_data, seconds);
@@ -418,8 +418,8 @@ public class RDBArchiveReader implements ArchiveReader
                 rdb.getConnection().prepareStatement(sql.channel_sel_by_name);
         )
         {
-        	if (timeout > 0)
-        		statement.setQueryTimeout(timeout);
+            if (timeout > 0)
+                statement.setQueryTimeout(timeout);
             statement.setString(1, name);
             final ResultSet result = statement.executeQuery();
             if (!result.next())

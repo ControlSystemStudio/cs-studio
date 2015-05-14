@@ -53,76 +53,76 @@ package org.csstudio.dal;
 public interface ValueUpdateable<T>
 {
 
-	/**
-	 * Returns the latest value change timestamp. The change is defined
-	 * by the implementation, but should normally follow the criterion that
-	 * <code>!newvalue.equals(oldvalue)</code>.
-	 *
-	 * @return the timestamp in Java <code>System.currentTimeMillis</code>
-	 *         format of the latest change in dynamic value
-	 */
-	public Timestamp getLatestValueChangeTimestamp();
+    /**
+     * Returns the latest value change timestamp. The change is defined
+     * by the implementation, but should normally follow the criterion that
+     * <code>!newvalue.equals(oldvalue)</code>.
+     *
+     * @return the timestamp in Java <code>System.currentTimeMillis</code>
+     *         format of the latest change in dynamic value
+     */
+    public Timestamp getLatestValueChangeTimestamp();
 
-	/**
-	 * This is a convenience method implemented in the underlying layer
-	 * that examines the latest response and determines if all data quality
-	 * parameters in the response indicate that the dynamic value update is
-	 * error-free, alarm-free and in general without any warning condition.
-	 * The users of Datatypes may conclude that, if this method returns
-	 * <code>true</code>, no further examination of
-	 * <code>latestValueResponse</code> or <code>latestValueRequest</code> is
-	 * necessary.<p>Note: this method returns <code>true</code> if no
-	 * request has been submitted or no response has arrived.</p>
-	 *
-	 * @return boolean <code>true</code> iff the latetst dynamic value update
-	 *         is error-free
-	 */
-	public boolean getLatestValueSuccess();
+    /**
+     * This is a convenience method implemented in the underlying layer
+     * that examines the latest response and determines if all data quality
+     * parameters in the response indicate that the dynamic value update is
+     * error-free, alarm-free and in general without any warning condition.
+     * The users of Datatypes may conclude that, if this method returns
+     * <code>true</code>, no further examination of
+     * <code>latestValueResponse</code> or <code>latestValueRequest</code> is
+     * necessary.<p>Note: this method returns <code>true</code> if no
+     * request has been submitted or no response has arrived.</p>
+     *
+     * @return boolean <code>true</code> iff the latetst dynamic value update
+     *         is error-free
+     */
+    public boolean getLatestValueSuccess();
 
-	/**
-	 * Returns the time of the latest dynamic value update. An update
-	 * is either a change in dynamic value or the confirmation from the
-	 * primary data source that the value and its quality are still the same.
-	 * The timestamp must be that provided by the underlying implementation
-	 * or, if that is unavailable, it must be the local timestamp. This
-	 * definition also implies that the
-	 * <code>latestValueUpdateTimestamp</code> must be necessarily equal to or
-	 * later than the <code>latestValueChangeTimestamp</code>, since the value
-	 * may be updated without being changed, but not vice versa.
-	 *
-	 * @return a Java <code>System.currentTimeMillis</code> style
-	 *         timestamp of the latest update
-	 */
-	public Timestamp getLatestValueUpdateTimestamp();
+    /**
+     * Returns the time of the latest dynamic value update. An update
+     * is either a change in dynamic value or the confirmation from the
+     * primary data source that the value and its quality are still the same.
+     * The timestamp must be that provided by the underlying implementation
+     * or, if that is unavailable, it must be the local timestamp. This
+     * definition also implies that the
+     * <code>latestValueUpdateTimestamp</code> must be necessarily equal to or
+     * later than the <code>latestValueChangeTimestamp</code>, since the value
+     * may be updated without being changed, but not vice versa.
+     *
+     * @return a Java <code>System.currentTimeMillis</code> style
+     *         timestamp of the latest update
+     */
+    public Timestamp getLatestValueUpdateTimestamp();
 
-	/**
-	 * Returns common monitor which controls all dynamic value
-	 * listeners, which has been registered at property with
-	 * <code>addDynamicValueListener</code> method.
-	 *
-	 * @return common monitor for all listeners without special monitor
-	 */
-	public DynamicValueMonitor getDefaultMonitor();
+    /**
+     * Returns common monitor which controls all dynamic value
+     * listeners, which has been registered at property with
+     * <code>addDynamicValueListener</code> method.
+     *
+     * @return common monitor for all listeners without special monitor
+     */
+    public DynamicValueMonitor getDefaultMonitor();
 
-	/**
-	 * Returns all by this property created monitors.
-	 *
-	 * @return common all created or active monitors
-	 */
-	public DynamicValueMonitor[] getMonitors();
+    /**
+     * Returns all by this property created monitors.
+     *
+     * @return common all created or active monitors
+     */
+    public DynamicValueMonitor[] getMonitors();
 
-	/**
-	 * Creates new monitor which controls updates for single value
-	 * listener independantly from default monitor.
-	 *
-	 * @param listener
-	 *
-	 * @return particular monitor with single listener
-	 *
-	 * @throws RemoteException DOCUMENT ME!
-	 */
-	public <E extends SimpleProperty<T>> DynamicValueMonitor createNewMonitor(DynamicValueListener<T, E> listener)
-		throws RemoteException;
+    /**
+     * Creates new monitor which controls updates for single value
+     * listener independantly from default monitor.
+     *
+     * @param listener
+     *
+     * @return particular monitor with single listener
+     *
+     * @throws RemoteException DOCUMENT ME!
+     */
+    public <E extends SimpleProperty<T>> DynamicValueMonitor createNewMonitor(DynamicValueListener<T, E> listener)
+        throws RemoteException;
 }
 
 /* __oOo__ */

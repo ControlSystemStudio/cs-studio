@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.test;
 
@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class AutoCompleteSearchProviderView extends ViewPart {
     private Text text;
@@ -27,20 +27,20 @@ public class AutoCompleteSearchProviderView extends ViewPart {
 
     @Override
     public void createPartControl(Composite parent) {
-	parent.setLayout(new GridLayout(1, false));
+    parent.setLayout(new GridLayout(1, false));
 
-	Label lblNewLabel = new Label(parent, SWT.NONE);
-	lblNewLabel.setText("Search:");
+    Label lblNewLabel = new Label(parent, SWT.NONE);
+    lblNewLabel.setText("Search:");
 
-	text = new Text(parent, SWT.BORDER);
-	text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-	// TODO Auto-generated method stub
-	new AutoCompleteWidget(text, "LogentrySearch");
+    text = new Text(parent, SWT.BORDER);
+    text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+    // TODO Auto-generated method stub
+    new AutoCompleteWidget(text, "LogentrySearch");
     }
 
     @Override
     public void setFocus() {
-	// TODO Auto-generated method stub
+    // TODO Auto-generated method stub
 
     }
 

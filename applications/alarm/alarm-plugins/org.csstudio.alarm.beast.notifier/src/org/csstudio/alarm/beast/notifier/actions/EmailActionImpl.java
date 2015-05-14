@@ -27,37 +27,37 @@ import org.csstudio.email.JavaxMailSender;
 @SuppressWarnings("nls")
 public class EmailActionImpl extends AbstractMailActionImpl {
 
-	/** {@inheritDoc} */
-	@Override
-	public void init(ItemInfo item, AAData auto_action, IActionHandler handler)
-			throws Exception {
-		this.item = item;
-		this.manuallyExecuted = auto_action.isManual();
-		mailSender = new JavaxMailSender();
-		EMailCommandHandler emailCmdHandler = (EMailCommandHandler) handler;
-		mailSender.setTo(emailCmdHandler.getTo());
-		mailSender.setCc(emailCmdHandler.getCc());
-		mailSender.setCci(emailCmdHandler.getCci());
-		mailSender.setSubject(emailCmdHandler.getSubject());
-		mailSender.setBody(emailCmdHandler.getBody());
-	}
-	
-	/** {@inheritDoc} */
-	@Override
-	public void execute(List<PVSnapshot> pvs) throws Exception {
-		this.pvs = pvs;
-		mailSender.setSubject(buildSubject());
-		mailSender.setBody(buildBody());
-		mailSender.send();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void init(ItemInfo item, AAData auto_action, IActionHandler handler)
+            throws Exception {
+        this.item = item;
+        this.manuallyExecuted = auto_action.isManual();
+        mailSender = new JavaxMailSender();
+        EMailCommandHandler emailCmdHandler = (EMailCommandHandler) handler;
+        mailSender.setTo(emailCmdHandler.getTo());
+        mailSender.setCc(emailCmdHandler.getCc());
+        mailSender.setCci(emailCmdHandler.getCci());
+        mailSender.setSubject(emailCmdHandler.getSubject());
+        mailSender.setBody(emailCmdHandler.getBody());
+    }
 
-	public void dump() {
-		System.out.println("EmailActionImpl [\n\tto= " + mailSender.getTo()
-				+ "\n\tcc= " + mailSender.getCc()
-				+ "\n\tcci= " + mailSender.getCci()
-				+ "\n\tsubject= " + mailSender.getSubject()
-				+ "\n\tbody= " + mailSender.getBody()
-				+ "\n]");
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void execute(List<PVSnapshot> pvs) throws Exception {
+        this.pvs = pvs;
+        mailSender.setSubject(buildSubject());
+        mailSender.setBody(buildBody());
+        mailSender.send();
+    }
+
+    public void dump() {
+        System.out.println("EmailActionImpl [\n\tto= " + mailSender.getTo()
+                + "\n\tcc= " + mailSender.getCc()
+                + "\n\tcci= " + mailSender.getCci()
+                + "\n\tsubject= " + mailSender.getSubject()
+                + "\n\tbody= " + mailSender.getBody()
+                + "\n]");
+    }
 
 }

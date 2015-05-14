@@ -19,36 +19,36 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  *
  */
 public class ComplexDataPropertyDescriptor extends TextPropertyDescriptor {
-	
-	
-	private String dialogTitle;
-	
-	/**
-	 * Creates an property descriptor with the given id and display name.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 * @param dialogTitle 
-	 * 			  title of the dialog.
-	 */
-	public ComplexDataPropertyDescriptor(final Object id, 
-			final String displayName, final String dialogTitle) {
-		super(id, displayName);
-		this.dialogTitle = dialogTitle;
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new ComplexDataCellEditor(parent, dialogTitle);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
+
+    private String dialogTitle;
+
+    /**
+     * Creates an property descriptor with the given id and display name.
+     *
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     * @param dialogTitle
+     *               title of the dialog.
+     */
+    public ComplexDataPropertyDescriptor(final Object id,
+            final String displayName, final String dialogTitle) {
+        super(id, displayName);
+        this.dialogTitle = dialogTitle;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new ComplexDataCellEditor(parent, dialogTitle);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+
 }

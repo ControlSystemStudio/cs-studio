@@ -28,101 +28,101 @@ import org.eclipse.ui.internal.UIPlugin;
 @SuppressWarnings({ "restriction" })
 public class AboutWebOPIAction extends Action {
 
-	
-	public AboutWebOPIAction() {
-		setText("About WebOPI...");
-	}
-	
-	@Override
-	public void run() {
-		new AboutDialog(null).open();
-	}
 
-	
-	class AboutDialog extends Dialog {
+    public AboutWebOPIAction() {
+        setText("About WebOPI...");
+    }
 
-		/**
-		 * Create the dialog.
-		 * @param parentShell
-		 */
-		public AboutDialog(Shell parentShell) {
-			super(parentShell);
-			
-		}
+    @Override
+    public void run() {
+        new AboutDialog(null).open();
+    }
 
-		
-		
-		/**
-		 * Create contents of the dialog.
-		 * @param parent
-		 */
-		@Override
-		protected Control createDialogArea(Composite parent) {
-			getShell().setText("About WebOPI");
-			String version = "v" + OPIBuilderPlugin. //$NON-NLS-1$
-					getDefault().getBundle().getVersion().toString();
-			Composite container = (Composite) super.createDialogArea(parent);
-			GridLayout gl_container = new GridLayout(1, false);
-			container.setLayout(gl_container);
-			GridData gd = new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1);
-			Label emptyLabel = new Label(container, SWT.NONE);
-			gd.heightHint=10;
-			emptyLabel.setLayoutData(gd);
-			
-			Label lblNewLabel = new Label(container, SWT.NONE);
-			gd = new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1);
-			gd.heightHint = 20;
-			lblNewLabel.setLayoutData(gd);
-			lblNewLabel.setFont(CustomMediaFactory.getInstance().getFont("Verdana", 16, SWT.BOLD));
-			lblNewLabel.setText("WebOPI " + version); //$NON-NLS-1$
-			
-			Label lblCompatibleWithBoy = new Label(container, SWT.NONE);
-			GridData gd_lblCompatibleWithBoy = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-			gd_lblCompatibleWithBoy.heightHint = 20;
-			lblCompatibleWithBoy.setLayoutData(gd_lblCompatibleWithBoy);
-			lblCompatibleWithBoy.setText("Compatible with BOY " + version);
-			
-			Label rapLabel = new Label(container, SWT.NONE);
-			gd_lblCompatibleWithBoy = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-			gd_lblCompatibleWithBoy.heightHint = 20;
-			rapLabel.setLayoutData(gd_lblCompatibleWithBoy);
-			rapLabel.setText("Built on RAP " + "v" + UIPlugin. //$NON-NLS-2$
-					getDefault().getBundle().getVersion().toString());
-			
-			if(PreferencesHelper.isAboutShowLinks()) {
-				Link link = new Link(container, SWT.NONE);
-				GridData gd_link = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
-				gd_link.heightHint = 20;
-				link.setLayoutData(gd_link);
-				link.setText("<a>Visit WebOPI home page</a>");
-				link.addSelectionListener(new SelectionAdapter() {
-					
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						FileUtil.openWebPage("http://sourceforge.net/apps/trac/cs-studio/wiki/webopi"); //$NON-NLS-1$
-					}
-				});
-				Link link_1 = new Link(container, 0);
-				link_1.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
-				link_1.setText("WebOPI is a subproject of <a>Control System Studio (CSS)</a>");
-				link_1.addSelectionListener(new SelectionAdapter() {
-	
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						FileUtil.openWebPage("http://cs-studio.sourceforge.net/"); //$NON-NLS-1$
-					}
-				});
-			}
-			return container;
-		}
 
-		protected void createButtonsForButtonBar(Composite parent) {
-			// create OK and Cancel buttons by default
-			createButton(parent, IDialogConstants.OK_ID, JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY),
-					true);			
-		}
+    class AboutDialog extends Dialog {
 
-	}
+        /**
+         * Create the dialog.
+         * @param parentShell
+         */
+        public AboutDialog(Shell parentShell) {
+            super(parentShell);
+
+        }
+
+
+
+        /**
+         * Create contents of the dialog.
+         * @param parent
+         */
+        @Override
+        protected Control createDialogArea(Composite parent) {
+            getShell().setText("About WebOPI");
+            String version = "v" + OPIBuilderPlugin. //$NON-NLS-1$
+                    getDefault().getBundle().getVersion().toString();
+            Composite container = (Composite) super.createDialogArea(parent);
+            GridLayout gl_container = new GridLayout(1, false);
+            container.setLayout(gl_container);
+            GridData gd = new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1);
+            Label emptyLabel = new Label(container, SWT.NONE);
+            gd.heightHint=10;
+            emptyLabel.setLayoutData(gd);
+
+            Label lblNewLabel = new Label(container, SWT.NONE);
+            gd = new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1);
+            gd.heightHint = 20;
+            lblNewLabel.setLayoutData(gd);
+            lblNewLabel.setFont(CustomMediaFactory.getInstance().getFont("Verdana", 16, SWT.BOLD));
+            lblNewLabel.setText("WebOPI " + version); //$NON-NLS-1$
+
+            Label lblCompatibleWithBoy = new Label(container, SWT.NONE);
+            GridData gd_lblCompatibleWithBoy = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+            gd_lblCompatibleWithBoy.heightHint = 20;
+            lblCompatibleWithBoy.setLayoutData(gd_lblCompatibleWithBoy);
+            lblCompatibleWithBoy.setText("Compatible with BOY " + version);
+
+            Label rapLabel = new Label(container, SWT.NONE);
+            gd_lblCompatibleWithBoy = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+            gd_lblCompatibleWithBoy.heightHint = 20;
+            rapLabel.setLayoutData(gd_lblCompatibleWithBoy);
+            rapLabel.setText("Built on RAP " + "v" + UIPlugin. //$NON-NLS-2$
+                    getDefault().getBundle().getVersion().toString());
+
+            if(PreferencesHelper.isAboutShowLinks()) {
+                Link link = new Link(container, SWT.NONE);
+                GridData gd_link = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
+                gd_link.heightHint = 20;
+                link.setLayoutData(gd_link);
+                link.setText("<a>Visit WebOPI home page</a>");
+                link.addSelectionListener(new SelectionAdapter() {
+
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        FileUtil.openWebPage("http://sourceforge.net/apps/trac/cs-studio/wiki/webopi"); //$NON-NLS-1$
+                    }
+                });
+                Link link_1 = new Link(container, 0);
+                link_1.setLayoutData(new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1));
+                link_1.setText("WebOPI is a subproject of <a>Control System Studio (CSS)</a>");
+                link_1.addSelectionListener(new SelectionAdapter() {
+
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        FileUtil.openWebPage("http://cs-studio.sourceforge.net/"); //$NON-NLS-1$
+                    }
+                });
+            }
+            return container;
+        }
+
+        protected void createButtonsForButtonBar(Composite parent) {
+            // create OK and Cancel buttons by default
+            createButton(parent, IDialogConstants.OK_ID, JFaceResources.getString(IDialogLabelKeys.OK_LABEL_KEY),
+                    true);
+        }
+
+    }
 }
 
 

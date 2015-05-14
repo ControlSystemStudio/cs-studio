@@ -34,130 +34,130 @@ import org.eclipse.swt.widgets.Display;
  */
 public class WritePVAction extends AbstractWidgetAction {
 
-	public static final String PROP_PVNAME = "pv_name";//$NON-NLS-1$
-	public static final String PROP_VALUE = "value";//$NON-NLS-1$
-	public static final String PROP_TIMEOUT = "timeout";//$NON-NLS-1$
-	public static final String PROP_CONFIRM_MESSAGE = "confirm_message"; //$NON-NLS-1$
-	private Display display;
+    public static final String PROP_PVNAME = "pv_name";//$NON-NLS-1$
+    public static final String PROP_VALUE = "value";//$NON-NLS-1$
+    public static final String PROP_TIMEOUT = "timeout";//$NON-NLS-1$
+    public static final String PROP_CONFIRM_MESSAGE = "confirm_message"; //$NON-NLS-1$
+    private Display display;
 
-	@Override
-	protected void configureProperties() {
-		addProperty(new PVNameProperty(PROP_PVNAME, "PV Name",
-				WidgetPropertyCategory.Basic, "$(pv_name)")); //$NON-NLS-1$
-		addProperty(new StringProperty(PROP_VALUE, "Value",
-				WidgetPropertyCategory.Basic, "")); //$NON-NLS-1$
-		addProperty(new IntegerProperty(PROP_TIMEOUT, "Timeout (second)",
-				WidgetPropertyCategory.Basic, 10, 1, 3600));
-		addProperty(new StringProperty(PROP_CONFIRM_MESSAGE, "Confirm Message",
-				WidgetPropertyCategory.Basic, "")); //$NON-NLS-1$
-	}
+    @Override
+    protected void configureProperties() {
+        addProperty(new PVNameProperty(PROP_PVNAME, "PV Name",
+                WidgetPropertyCategory.Basic, "$(pv_name)")); //$NON-NLS-1$
+        addProperty(new StringProperty(PROP_VALUE, "Value",
+                WidgetPropertyCategory.Basic, "")); //$NON-NLS-1$
+        addProperty(new IntegerProperty(PROP_TIMEOUT, "Timeout (second)",
+                WidgetPropertyCategory.Basic, 10, 1, 3600));
+        addProperty(new StringProperty(PROP_CONFIRM_MESSAGE, "Confirm Message",
+                WidgetPropertyCategory.Basic, "")); //$NON-NLS-1$
+    }
 
-	@Override
-	public ActionType getActionType() {
-		return ActionType.WRITE_PV;
-	}
+    @Override
+    public ActionType getActionType() {
+        return ActionType.WRITE_PV;
+    }
 
-	public String getPVName() {
-		return (String) getPropertyValue(PROP_PVNAME);
-	}
+    public String getPVName() {
+        return (String) getPropertyValue(PROP_PVNAME);
+    }
 
-	public String getValue() {
-		return (String) getPropertyValue(PROP_VALUE);
-	}
+    public String getValue() {
+        return (String) getPropertyValue(PROP_VALUE);
+    }
 
-	public int getTimeout() {
-		return (Integer) getPropertyValue(PROP_TIMEOUT);
-	}
+    public int getTimeout() {
+        return (Integer) getPropertyValue(PROP_TIMEOUT);
+    }
 
-	public String getConfirmMessage() {
-		return (String) getPropertyValue(PROP_CONFIRM_MESSAGE);
-	}
+    public String getConfirmMessage() {
+        return (String) getPropertyValue(PROP_CONFIRM_MESSAGE);
+    }
 
-	@Override
-	public void run() {
-		display = null;
-		if(getWidgetModel() !=null){
-			display = getWidgetModel().getRootDisplayModel().getViewer().getControl()
-			.getDisplay();
-		}else{
-			display = DisplayUtils.getDisplay();
-		}
+    @Override
+    public void run() {
+        display = null;
+        if(getWidgetModel() !=null){
+            display = getWidgetModel().getRootDisplayModel().getViewer().getControl()
+            .getDisplay();
+        }else{
+            display = DisplayUtils.getDisplay();
+        }
 
-		if (!getConfirmMessage().isEmpty())
-			if (!GUIUtil.openConfirmDialog("PV Name: " + getPVName()
-					+ "\nNew Value: " + getValue() + "\n\n"
-					+ getConfirmMessage()))
-				return;
+        if (!getConfirmMessage().isEmpty())
+            if (!GUIUtil.openConfirmDialog("PV Name: " + getPVName()
+                    + "\nNew Value: " + getValue() + "\n\n"
+                    + getConfirmMessage()))
+                return;
 
-		// If it has the same nave as widget PV name, use it.
-		if (getWidgetModel() instanceof IPVWidgetModel) {
-			String mainPVName = ((IPVWidgetModel) getWidgetModel()).getPVName();
-			if (getPVName().equals(mainPVName)) {
-				Object o = getWidgetModel().getRootDisplayModel().getViewer()
-						.getEditPartRegistry().get(getWidgetModel());
-				if (o instanceof IPVWidgetEditpart) {
-					((IPVWidgetEditpart) o).setPVValue(
-							IPVWidgetModel.PROP_PVNAME, getValue().trim());
-					return;
-				}
-			}
-		}
+        // If it has the same nave as widget PV name, use it.
+        if (getWidgetModel() instanceof IPVWidgetModel) {
+            String mainPVName = ((IPVWidgetModel) getWidgetModel()).getPVName();
+            if (getPVName().equals(mainPVName)) {
+                Object o = getWidgetModel().getRootDisplayModel().getViewer()
+                        .getEditPartRegistry().get(getWidgetModel());
+                if (o instanceof IPVWidgetEditpart) {
+                    ((IPVWidgetEditpart) o).setPVValue(
+                            IPVWidgetModel.PROP_PVNAME, getValue().trim());
+                    return;
+                }
+            }
+        }
 
-		Job job = new Job(getDescription()) {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-					return writePVInSync();
-			}
+        Job job = new Job(getDescription()) {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                    return writePVInSync();
+            }
 
-		};
+        };
 
-		job.schedule();
-	}
-
-
-	private IStatus writePVInSync(){
-		String text = getValue().trim();
-		try	{
-			IPV pv = BOYPVFactory.createPV(getPVName());
-			pv.start();
-			try
-			{
-    			if (!pv.setValue(text, getTimeout()*1000))
-    				throw new Exception("Write Failed!");
-			}
-			finally
-			{
-			    pv.stop();
-			}
-		} catch (Exception e) {
-			popErrorDialog(e);
-			return Status.CANCEL_STATUS;
-		}
-		return Status.OK_STATUS;
-
-	}
+        job.schedule();
+    }
 
 
-	/**
-	 * @param pv
-	 * @param e
-	 */
-	private void popErrorDialog(final Exception e) {
-		UIBundlingThread.getInstance().addRunnable(
-				display, new Runnable() {
+    private IStatus writePVInSync(){
+        String text = getValue().trim();
+        try    {
+            IPV pv = BOYPVFactory.createPV(getPVName());
+            pv.start();
+            try
+            {
+                if (!pv.setValue(text, getTimeout()*1000))
+                    throw new Exception("Write Failed!");
+            }
+            finally
+            {
+                pv.stop();
+            }
+        } catch (Exception e) {
+            popErrorDialog(e);
+            return Status.CANCEL_STATUS;
+        }
+        return Status.OK_STATUS;
+
+    }
+
+
+    /**
+     * @param pv
+     * @param e
+     */
+    private void popErrorDialog(final Exception e) {
+        UIBundlingThread.getInstance().addRunnable(
+                display, new Runnable() {
                     public void run() {
-						String message = "Failed to write PV:" + getPVName()
-								+ "\n" +
-								(e.getCause() != null? e.getCause().getMessage():e.getMessage());
-						ErrorHandlerUtil.handleError(message, e, true, true);
-						// ConsoleService.getInstance().writeError(message);
-					}
-				});
-	}
+                        String message = "Failed to write PV:" + getPVName()
+                                + "\n" +
+                                (e.getCause() != null? e.getCause().getMessage():e.getMessage());
+                        ErrorHandlerUtil.handleError(message, e, true, true);
+                        // ConsoleService.getInstance().writeError(message);
+                    }
+                });
+    }
 
-	@Override
-	public String getDefaultDescription() {
-		return "Write " + getValue() + " to " + getPVName();
-	}
+    @Override
+    public String getDefaultDescription() {
+        return "Write " + getValue() + " to " + getPVName();
+    }
 
 }

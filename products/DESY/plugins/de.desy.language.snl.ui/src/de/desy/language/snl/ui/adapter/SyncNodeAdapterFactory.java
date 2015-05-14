@@ -7,48 +7,48 @@ import de.desy.language.snl.parser.nodes.SyncStatementNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link SyncStatementNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class SyncNodeAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Object adaptableObject,
+            final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
 
-		if (adaptableObject instanceof SyncStatementNode) {
-			final SyncStatementNode node = (SyncStatementNode) adaptableObject;
+        if (adaptableObject instanceof SyncStatementNode) {
+            final SyncStatementNode node = (SyncStatementNode) adaptableObject;
 
-			if (adapterType == IWorkbenchAdapter.class) {
-				return new AbstractSNLWorkbenchAdapter<SyncStatementNode>(node) {
-					@Override
-					public String getImageName(final SyncStatementNode nodeToRender) {
-						return "sync.gif";
-					}
+            if (adapterType == IWorkbenchAdapter.class) {
+                return new AbstractSNLWorkbenchAdapter<SyncStatementNode>(node) {
+                    @Override
+                    public String getImageName(final SyncStatementNode nodeToRender) {
+                        return "sync.gif";
+                    }
 
-					@Override
-					protected String doGetLabel(final SyncStatementNode nodeToRender) {
-						return nodeToRender.getSourceIdentifier() + " => "
-								+ nodeToRender.getContent();
-					}
-				};
-			}
-		}
-		return null;
-	}
+                    @Override
+                    protected String doGetLabel(final SyncStatementNode nodeToRender) {
+                        return nodeToRender.getSourceIdentifier() + " => "
+                                + nodeToRender.getContent();
+                    }
+                };
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return new Class[] { SyncStatementNode.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        return new Class[] { SyncStatementNode.class };
+    }
 
 }

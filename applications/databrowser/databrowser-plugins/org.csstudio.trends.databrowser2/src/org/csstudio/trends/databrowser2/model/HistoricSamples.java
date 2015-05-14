@@ -101,7 +101,7 @@ public class HistoricSamples extends PlotSamples
      * @return the number of samples, ignoring the border time
      */
     public int getRawSize() {
-    	return samples.length;
+        return samples.length;
     }
 
     /**
@@ -111,7 +111,7 @@ public class HistoricSamples extends PlotSamples
      * @return the plot sample
      */
     public PlotSample getRawSample(int i) {
-    	return samples[i];
+        return samples[i];
     }
 
     /** Merge newly received archive data into historic samples

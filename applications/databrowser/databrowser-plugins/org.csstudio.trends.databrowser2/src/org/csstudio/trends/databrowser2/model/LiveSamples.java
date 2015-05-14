@@ -56,7 +56,7 @@ public class LiveSamples extends PlotSamples
     /** @param sample Sample to add to ring buffer */
     void add(final PlotSample sample)
     {
-    	sample.setWaveformIndex(waveform_index);
+        sample.setWaveformIndex(waveform_index);
         samples.add(sample);
         have_new_samples.set(true);
     }

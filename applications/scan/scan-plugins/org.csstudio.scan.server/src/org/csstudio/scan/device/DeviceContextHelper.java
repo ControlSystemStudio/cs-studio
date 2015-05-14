@@ -32,7 +32,7 @@ public class DeviceContextHelper
             for (String name : command.getDeviceNames(macros))
                 addDevice(devices, aliases, name);
     }
-    
+
     /** @param devices Existing {@link DeviceContext}
      *  @param aliases Aliases to use
      *  @param name
@@ -52,7 +52,7 @@ public class DeviceContextHelper
         {
             // Not found, need to add
         }
-        
+
         // Is name an alias?
         for (DeviceInfo alias : aliases)
             if (alias.getAlias().equals(name))

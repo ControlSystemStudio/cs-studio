@@ -19,35 +19,35 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator implements BundleActivator {
 
-	private static BundleContext context;
-	
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.simplepv.pvmanager"; //$NON-NLS-1$
-	
-	final private static Logger logger = Logger.getLogger(PLUGIN_ID);
+    private static BundleContext context;
 
-	static BundleContext getContext() {
-		return context;
-	}
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.csstudio.simplepv.pvmanager"; //$NON-NLS-1$
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
-	 */
-	public void start(BundleContext bundleContext) throws Exception {
-		Activator.context = bundleContext;
-	}
+    final private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
-	 */
-	public void stop(BundleContext bundleContext) throws Exception {
-		Activator.context = null;
-	}
-	
-	public static Logger getLogger() {
-		return logger;
-	}
+    static BundleContext getContext() {
+        return context;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+     */
+    public void start(BundleContext bundleContext) throws Exception {
+        Activator.context = bundleContext;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+     */
+    public void stop(BundleContext bundleContext) throws Exception {
+        Activator.context = null;
+    }
+
+    public static Logger getLogger() {
+        return logger;
+    }
 
 }

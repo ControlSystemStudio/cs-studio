@@ -34,83 +34,83 @@ import org.csstudio.dal.context.Identifiable;
  */
 public interface Response<T>
 {
-	/**
-	 * Returns <code>Request</code> object, which initiated this
-	 * response.
-	 *
-	 * @return initial <code>Request</code>
-	 */
-	public Request<T> getRequest();
+    /**
+     * Returns <code>Request</code> object, which initiated this
+     * response.
+     *
+     * @return initial <code>Request</code>
+     */
+    public Request<T> getRequest();
 
-	/**
-	 * Returns <code>true</code> if this is last response in series of
-	 * responses.
-	 *
-	 * @return <code>true</code> if it is last response
-	 */
-	public boolean isLast();
+    /**
+     * Returns <code>true</code> if this is last response in series of
+     * responses.
+     *
+     * @return <code>true</code> if it is last response
+     */
+    public boolean isLast();
 
-	/**
-	 * Returns <code>true</code> if the request was successfully completed.
-	 *
-	 * @return returns true if response is a success
-	 */
-	public boolean success();
+    /**
+     * Returns <code>true</code> if the request was successfully completed.
+     *
+     * @return returns true if response is a success
+     */
+    public boolean success();
 
-	/**
-	 * Returns a value if the request caused a value change. Otherwise it should
-	 * return <code>null</code>.
-	 *
-	 * @return a value;
-	 */
-	public T getValue();
+    /**
+     * Returns a value if the request caused a value change. Otherwise it should
+     * return <code>null</code>.
+     *
+     * @return a value;
+     */
+    public T getValue();
 
-	/**
-	 * Optional identification tag of the response. Interpretation depends on asynchronus methods
-	 * which generated this response.
-	 *
-	 * @return identification tag.
-	 */
-	public Object getIdTag();
+    /**
+     * Optional identification tag of the response. Interpretation depends on asynchronus methods
+     * which generated this response.
+     *
+     * @return identification tag.
+     */
+    public Object getIdTag();
 
-	/**
-	 * This is a convenience method that returns a number if value is a number.
-	 * Otherwise it should return <code>null</code>
-	 *
-	 * @return a number
-	 */
-	public Number getNumber();
+    /**
+     * This is a convenience method that returns a number if value is a number.
+     * Otherwise it should return <code>null</code>
+     *
+     * @return a number
+     */
+    public Number getNumber();
 
-	/**
-	 * If result of the request is an error this method will return it. Otherwise it
-	 * will return <code>null</code>
-	 *
-	 * @return error
-	 */
-	public Exception getError();
+    /**
+     * If result of the request is an error this method will return it. Otherwise it
+     * will return <code>null</code>
+     *
+     * @return error
+     */
+    public Exception getError();
 
-	/**
-	 * Returns the source of the response, same as in associated Request.
-	 *
-	 * @see Request#getSource()
-	 *
-	 * @return response source
-	 */
-	public Identifiable getSource();
+    /**
+     * Returns the source of the response, same as in associated Request.
+     *
+     * @see Request#getSource()
+     *
+     * @return response source
+     */
+    public Identifiable getSource();
 
-	/**
-	 * Returns the condition of the response
-	 *
-	 * @return response condition
-	 */
-	public DynamicValueCondition getCondition();
+    /**
+     * Returns the condition of the response
+     *
+     * @return response condition
+     */
+    public DynamicValueCondition getCondition();
 
-	/**
-	 * Returns the timestamp of the response
-	 *
-	 * @return timestamp of response
-	 */
-	public Timestamp getTimestamp();
+    /**
+     * Returns the timestamp of the response
+     *
+     * @return timestamp of response
+     */
+    public Timestamp getTimestamp();
 }
 
 /* __oOo__ */

@@ -16,55 +16,55 @@ public class ServiceButtonEditPart extends AbstractWidgetEditPart {
      */
     @Override
     protected ServiceButtonFigure doCreateFigure() {
-	ServiceButtonFigure figure = new ServiceButtonFigure(this);
-	configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
-	return figure;
+    ServiceButtonFigure figure = new ServiceButtonFigure(this);
+    configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
+    return figure;
     }
 
     private static void configure(ServiceButton widget,
-	    ServiceButtonModel model, boolean runMode) {
-	if (runMode) {
-	    widget.setLabel(model.getLabel());
-	    ServiceMethodDescription serviceMethodDescription = model.getServiceMethodDescription();
-	    widget.setServiceName(serviceMethodDescription.getService() + "/"
-		    + serviceMethodDescription.getMethod());
-	    widget.configureArgumentMap(serviceMethodDescription.getArgumentPvs());
-	    widget.configureResultMap(serviceMethodDescription.getResultPvs());
-	}
+        ServiceButtonModel model, boolean runMode) {
+    if (runMode) {
+        widget.setLabel(model.getLabel());
+        ServiceMethodDescription serviceMethodDescription = model.getServiceMethodDescription();
+        widget.setServiceName(serviceMethodDescription.getService() + "/"
+            + serviceMethodDescription.getMethod());
+        widget.configureArgumentMap(serviceMethodDescription.getArgumentPvs());
+        widget.configureResultMap(serviceMethodDescription.getResultPvs());
+    }
     }
 
     @Override
     public ServiceButtonModel getWidgetModel() {
-	ServiceButtonModel widgetModel = (ServiceButtonModel) super.getWidgetModel();
-	return widgetModel;
+    ServiceButtonModel widgetModel = (ServiceButtonModel) super.getWidgetModel();
+    return widgetModel;
     }
 
     @Override
     protected void registerPropertyChangeHandlers() {
-	// The handler when PV value changed.
-	IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
-	    @SuppressWarnings("unchecked")
-	    public boolean handleChange(final Object oldValue,
-		    final Object newValue, final IFigure figure) {
-		configure(
-			((AbstractSWTWidgetFigure<ServiceButton>) getFigure())
-				.getSWTWidget(),
-			getWidgetModel(), ((ServiceButtonFigure) getFigure())
-				.isRunMode());
-		return true;
-	    }
-	};
-	setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
-	// label
-	IWidgetPropertyChangeHandler updateLabel = new IWidgetPropertyChangeHandler() {
-	    public boolean handleChange(final Object oldValue,
-		    final Object newValue, final IFigure figure) {
-		((AbstractSWTWidgetFigure<ServiceButton>) getFigure())
-		.getSWTWidget().setLabel(getWidgetModel().getLabel());
-		return true;
-	    }
-	};
-	setPropertyChangeHandler(CheckBoxModel.PROP_LABEL, updateLabel);
+    // The handler when PV value changed.
+    IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
+        @SuppressWarnings("unchecked")
+        public boolean handleChange(final Object oldValue,
+            final Object newValue, final IFigure figure) {
+        configure(
+            ((AbstractSWTWidgetFigure<ServiceButton>) getFigure())
+                .getSWTWidget(),
+            getWidgetModel(), ((ServiceButtonFigure) getFigure())
+                .isRunMode());
+        return true;
+        }
+    };
+    setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
+    // label
+    IWidgetPropertyChangeHandler updateLabel = new IWidgetPropertyChangeHandler() {
+        public boolean handleChange(final Object oldValue,
+            final Object newValue, final IFigure figure) {
+        ((AbstractSWTWidgetFigure<ServiceButton>) getFigure())
+        .getSWTWidget().setLabel(getWidgetModel().getLabel());
+        return true;
+        }
+    };
+    setPropertyChangeHandler(CheckBoxModel.PROP_LABEL, updateLabel);
     }
 
 }

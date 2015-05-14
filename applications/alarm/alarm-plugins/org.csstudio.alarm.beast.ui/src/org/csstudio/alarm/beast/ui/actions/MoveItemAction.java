@@ -46,14 +46,14 @@ public class MoveItemAction extends Action
         this.model = model;
         this.items = items;
 
-    	//authorization
+        //authorization
         SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
-	@Override
-	public void run()
-	{
-		if (items.size() <= 0)
+    @Override
+    public void run()
+    {
+        if (items.size() <= 0)
             return;
 
         if (!MessageDialog.openConfirm(shell, Messages.MoveItem,
@@ -81,5 +81,5 @@ public class MoveItemAction extends Action
                 break;
             }
         }
-	}
+    }
 }

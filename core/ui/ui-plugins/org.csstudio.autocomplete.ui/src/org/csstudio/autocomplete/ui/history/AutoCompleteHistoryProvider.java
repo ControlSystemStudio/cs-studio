@@ -27,66 +27,66 @@ import org.csstudio.autocomplete.ui.AutoCompleteUIPlugin;
  * History proposal provider. Retrieves matching proposals from history. Always
  * handles the full auto-completed content by using {@link ContentDescriptor}
  * originalValue and ignore wildcards.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class AutoCompleteHistoryProvider implements IAutoCompleteProvider {
 
-	public static final String NAME = "History";
+    public static final String NAME = "History";
 
-	@Override
-	public boolean accept(final ContentType type) {
-		return true;
-	}
+    @Override
+    public boolean accept(final ContentType type) {
+        return true;
+    }
 
-	@Override
-	public AutoCompleteResult listResult(final ContentDescriptor desc,
-			final int limit) {
-		String content = desc.getOriginalContent();
-		int startIndex = 0;
-		if (desc.getContentType().equals(ContentType.PVName)) {
-			content = desc.getValue();
-			startIndex = desc.getStartIndex();
-		}
-		AutoCompleteResult result = new AutoCompleteResult();
-		String cleanedName = AutoCompleteHelper.trimWildcards(content);
-		Pattern namePattern = AutoCompleteHelper.convertToPattern(cleanedName);
-		if (namePattern == null)
-			return result;
+    @Override
+    public AutoCompleteResult listResult(final ContentDescriptor desc,
+            final int limit) {
+        String content = desc.getOriginalContent();
+        int startIndex = 0;
+        if (desc.getContentType().equals(ContentType.PVName)) {
+            content = desc.getValue();
+            startIndex = desc.getStartIndex();
+        }
+        AutoCompleteResult result = new AutoCompleteResult();
+        String cleanedName = AutoCompleteHelper.trimWildcards(content);
+        Pattern namePattern = AutoCompleteHelper.convertToPattern(cleanedName);
+        if (namePattern == null)
+            return result;
 
-		String entryType = AutoCompleteTypes.PV;
-		if (content.startsWith("="))
-			entryType = AutoCompleteTypes.Formula;
+        String entryType = AutoCompleteTypes.PV;
+        if (content.startsWith("="))
+            entryType = AutoCompleteTypes.Formula;
 
-		LinkedList<String> fifo = new LinkedList<String>();
-		fifo.addAll(AutoCompleteUIPlugin.getDefault().getHistory(entryType));
-		if (fifo.isEmpty())
-			return result; // Empty result
+        LinkedList<String> fifo = new LinkedList<String>();
+        fifo.addAll(AutoCompleteUIPlugin.getDefault().getHistory(entryType));
+        if (fifo.isEmpty())
+            return result; // Empty result
 
-		int count = 0;
-		for (String entry : fifo) {
-			Matcher m = namePattern.matcher(entry);
-			if (m.find()) {
-				if (count < limit) {
-					Proposal proposal = new Proposal(entry, false);
-					proposal.addStyle(ProposalStyle.getDefault(m.start(), m.end() - 1));
-					proposal.setInsertionPos(startIndex);
-					result.addProposal(proposal);
-				}
-				count++;
-			}
-		}
-		result.setCount(count);
+        int count = 0;
+        for (String entry : fifo) {
+            Matcher m = namePattern.matcher(entry);
+            if (m.find()) {
+                if (count < limit) {
+                    Proposal proposal = new Proposal(entry, false);
+                    proposal.addStyle(ProposalStyle.getDefault(m.start(), m.end() - 1));
+                    proposal.setInsertionPos(startIndex);
+                    result.addProposal(proposal);
+                }
+                count++;
+            }
+        }
+        result.setCount(count);
 
-		TopProposalFinder trf = new TopProposalFinder(Preferences.getSeparators());
-		for (Proposal p : trf.getTopProposals(Pattern.quote(cleanedName), fifo))
-			result.addTopProposal(p);
+        TopProposalFinder trf = new TopProposalFinder(Preferences.getSeparators());
+        for (Proposal p : trf.getTopProposals(Pattern.quote(cleanedName), fifo))
+            result.addTopProposal(p);
 
-		return result;
-	}
+        return result;
+    }
 
-	@Override
-	public void cancel() {
-	}
+    @Override
+    public void cancel() {
+    }
 
 }

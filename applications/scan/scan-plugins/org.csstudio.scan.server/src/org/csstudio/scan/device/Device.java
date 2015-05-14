@@ -31,83 +31,83 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 public class Device extends DeviceInfo
 {
-	final private List<DeviceListener> listeners = new CopyOnWriteArrayList<DeviceListener>();
+    final private List<DeviceListener> listeners = new CopyOnWriteArrayList<DeviceListener>();
 
-	/** Initialize
-	 *  @param info {@link DeviceInfo}
-	 */
-	public Device(final DeviceInfo info)
-	{
-	    super(info.getName(), info.getAlias());
-	}
+    /** Initialize
+     *  @param info {@link DeviceInfo}
+     */
+    public Device(final DeviceInfo info)
+    {
+        super(info.getName(), info.getAlias());
+    }
 
-	/** @param listener Listener to add */
-	public void addListener(final DeviceListener listener)
-	{
-	    listeners.add(listener);
-	    // Initial update
-	    if (isReady())
-	        listener.deviceChanged(this);
-	}
+    /** @param listener Listener to add */
+    public void addListener(final DeviceListener listener)
+    {
+        listeners.add(listener);
+        // Initial update
+        if (isReady())
+            listener.deviceChanged(this);
+    }
 
-	/** @param listener Listener to remove */
-	public void removeListener(final DeviceListener listener)
+    /** @param listener Listener to remove */
+    public void removeListener(final DeviceListener listener)
     {
         listeners.remove(listener);
     }
 
-	/** Notify listeners that this device changed */
-	protected void fireDeviceUpdate()
-	{
-	    for (DeviceListener listener : listeners)
-	        listener.deviceChanged(this);
-    }
-
-	/** Will be called by scan engine before the scan
-	 *  so that device can start whatever it needs to start
-	 *  @throws Exception in case of error that should prohibit the scan
-	 */
-	public void start() throws Exception
-	{
-		// NOP
-	}
-
-	/** Check if the device is ready.
-	 *  <p>Usually this means it has been started
-	 *  and is connected to whatever resources it needs
-	 *  (network, ...)
-	 *  @return <code>true</code> if ready
-	 */
-	public boolean isReady()
-	{
-	    return true;
-	}
-
-	/** Will be called by scan engine at end of the scan
-	 *  so that device can perform whatever shutdown operation
-	 *  it needs
-	 */
-	public void stop()
-	{
-		// NOP
-	}
-
-	/** Get current value from the device
-	 *  @return Current value of the device
-	 *  @throws Exception on error: Cannot read, ...
-	 */
-	public VType read() throws Exception
+    /** Notify listeners that this device changed */
+    protected void fireDeviceUpdate()
     {
-		throw new Exception("Device '" + getName() + "' does not support reading");
+        for (DeviceListener listener : listeners)
+            listener.deviceChanged(this);
     }
 
-	/** Read a value from the device.
-	 * 
-	 *  <p>In contrast to <code>read()</code>, this
-	 *  will actively perform a read request to assert
-	 *  that we have the current value, not the last
-	 *  value that was received over the network.
-	 *  
+    /** Will be called by scan engine before the scan
+     *  so that device can start whatever it needs to start
+     *  @throws Exception in case of error that should prohibit the scan
+     */
+    public void start() throws Exception
+    {
+        // NOP
+    }
+
+    /** Check if the device is ready.
+     *  <p>Usually this means it has been started
+     *  and is connected to whatever resources it needs
+     *  (network, ...)
+     *  @return <code>true</code> if ready
+     */
+    public boolean isReady()
+    {
+        return true;
+    }
+
+    /** Will be called by scan engine at end of the scan
+     *  so that device can perform whatever shutdown operation
+     *  it needs
+     */
+    public void stop()
+    {
+        // NOP
+    }
+
+    /** Get current value from the device
+     *  @return Current value of the device
+     *  @throws Exception on error: Cannot read, ...
+     */
+    public VType read() throws Exception
+    {
+        throw new Exception("Device '" + getName() + "' does not support reading");
+    }
+
+    /** Read a value from the device.
+     *
+     *  <p>In contrast to <code>read()</code>, this
+     *  will actively perform a read request to assert
+     *  that we have the current value, not the last
+     *  value that was received over the network.
+     *
      *  @param timeout Timeout for awaiting the callback, <code>null</code> to wait "forever"
      *  @return Current value of the device
      *  @throws Exception on error: Cannot read, ...
@@ -116,12 +116,12 @@ public class Device extends DeviceInfo
     {
         throw new Exception("Device '" + getName() + "' does not support active reading");
     }
-	
-	/** Write a value to the device
-	 *  @param value Value to write (Double, String)
-	 *  @throws Exception on error: Cannot write, ...
-	 */
-	public void write(final Object value) throws Exception
+
+    /** Write a value to the device
+     *  @param value Value to write (Double, String)
+     *  @throws Exception on error: Cannot write, ...
+     */
+    public void write(final Object value) throws Exception
     {
         throw new Exception("Device '" + getName() + "' does not support writing");
     }

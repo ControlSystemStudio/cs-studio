@@ -41,7 +41,7 @@ public class AlarmTreeActionIcon extends CompositeImageDescriptor
 
     final private ImageData base_image;
     final private String decorator_image_path;
-    
+
     private AlarmTreeActionIcon(final String base_image_path,
                                   final String decorator_image_path)
     {
@@ -49,7 +49,7 @@ public class AlarmTreeActionIcon extends CompositeImageDescriptor
             Activator.getImageDescriptor(base_image_path).getImageData();
         this.decorator_image_path = decorator_image_path;
     }
-    
+
     @Override
     protected void drawCompositeImage(int width, int height)
     {

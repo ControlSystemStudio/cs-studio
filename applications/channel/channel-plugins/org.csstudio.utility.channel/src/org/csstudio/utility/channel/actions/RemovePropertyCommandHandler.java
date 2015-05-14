@@ -32,7 +32,7 @@ public class RemovePropertyCommandHandler extends
 
         selectProperties.setMessage("Select the Properties to be removed (* = any string, ? = any char):");
         selectProperties.setMultipleSelection(true);
-        
+
         Collection<String> existingPropertyNames = ChannelUtil.getPropertyNames(channels);
         selectProperties.setElements(existingPropertyNames.toArray(new String[existingPropertyNames.size()]));
         selectProperties.setBlockOnOpen(true);

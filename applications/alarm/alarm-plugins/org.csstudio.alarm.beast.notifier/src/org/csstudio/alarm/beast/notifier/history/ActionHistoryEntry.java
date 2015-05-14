@@ -12,26 +12,26 @@ import org.csstudio.alarm.beast.notifier.EActionStatus;
 
 /**
  * History entry of an automated action identified by its {@link ActionID}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class ActionHistoryEntry {
 
-	private final ActionID actionId;
-	private final EActionStatus status;
+    private final ActionID actionId;
+    private final EActionStatus status;
 
-	public ActionHistoryEntry(ActionID actionId, EActionStatus status) {
-		this.actionId = actionId;
-		this.status = status;
-	}
+    public ActionHistoryEntry(ActionID actionId, EActionStatus status) {
+        this.actionId = actionId;
+        this.status = status;
+    }
 
-	public ActionID getActionId() {
-		return actionId;
-	}
+    public ActionID getActionId() {
+        return actionId;
+    }
 
-	public EActionStatus getStatus() {
-		return status;
-	}
+    public EActionStatus getStatus() {
+        return status;
+    }
 
 }

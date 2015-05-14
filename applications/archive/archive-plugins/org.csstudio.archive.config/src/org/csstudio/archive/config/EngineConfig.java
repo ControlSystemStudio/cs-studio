@@ -16,54 +16,54 @@ import java.net.URISyntaxException;
 @SuppressWarnings("nls")
 public class EngineConfig
 {
-	final private String name;
-	final private String description;
-	final private URI url;
+    final private String name;
+    final private String description;
+    final private URI url;
 
-	/** Initialize
-	 *  @param name Engine name
-	 *  @param description .. description
-	 *  @param url Engine's web server URL
-	 *  @throws Exception if URL is malformed
-	 */
-	public EngineConfig(final String name, final String description, final String url) throws Exception
+    /** Initialize
+     *  @param name Engine name
+     *  @param description .. description
+     *  @param url Engine's web server URL
+     *  @throws Exception if URL is malformed
+     */
+    public EngineConfig(final String name, final String description, final String url) throws Exception
     {
-	    this.name = name;
-	    this.description = description;
-	    
-	    // Catch invalid URLs, create exception that mentions the affected engine
-	    try
-	    {
-	        this.url = new URI(url);
-	    }
-	    catch (URISyntaxException ex)
-	    {
-	        throw new Exception("Engine '" + name + "' has malformed URL '" + url + "'", ex);
-	    }
-    }
+        this.name = name;
+        this.description = description;
 
-	/** @return Engine name */
-	public String getName()
-    {
-    	return name;
+        // Catch invalid URLs, create exception that mentions the affected engine
+        try
+        {
+            this.url = new URI(url);
+        }
+        catch (URISyntaxException ex)
+        {
+            throw new Exception("Engine '" + name + "' has malformed URL '" + url + "'", ex);
+        }
     }
 
-	/** @return Engine Description */
-	public String getDescription()
+    /** @return Engine name */
+    public String getName()
     {
-    	return description;
+        return name;
     }
-	
-	/** @return Engine's web server URL */
-	public URI getURL()
+
+    /** @return Engine Description */
+    public String getDescription()
     {
-    	return url;
+        return description;
     }
-	
-	/** @return Debug representation */
+
+    /** @return Engine's web server URL */
+    public URI getURL()
+    {
+        return url;
+    }
+
+    /** @return Debug representation */
     @Override
     public String toString()
-	{
-		return "Engine '" + name + "' (" + description + ") at " + url;
-	}
+    {
+        return "Engine '" + name + "' (" + description + ") at " + url;
+    }
 }

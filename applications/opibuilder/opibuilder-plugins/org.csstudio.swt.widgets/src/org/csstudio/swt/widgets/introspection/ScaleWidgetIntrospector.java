@@ -14,14 +14,14 @@ import org.csstudio.swt.widgets.figures.AbstractScaledWidgetFigure;
  *
  */
 public class ScaleWidgetIntrospector extends DefaultWidgetIntrospector {
-	public static String[] SCALE_WIDGET_NON_PROPERTIES = new String[]{
-		"scale",
-		"opaque"
-	};
-	@Override
-	public String[] getNonProperties() {
-	
-		return concatenateStringArrays(super.getNonProperties(), SCALE_WIDGET_NON_PROPERTIES);
-	}
-	
+    public static String[] SCALE_WIDGET_NON_PROPERTIES = new String[]{
+        "scale",
+        "opaque"
+    };
+    @Override
+    public String[] getNonProperties() {
+
+        return concatenateStringArrays(super.getNonProperties(), SCALE_WIDGET_NON_PROPERTIES);
+    }
+
 }

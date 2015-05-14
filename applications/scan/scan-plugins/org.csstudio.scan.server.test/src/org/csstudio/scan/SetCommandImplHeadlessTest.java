@@ -131,7 +131,7 @@ public class SetCommandImplHeadlessTest
         VType value = context.getDevice(command.getDeviceName()).read();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(7.0));
-        
+
         // Writing 6 should reach 6
         impl.getCommand().setValue(6.0);
         System.out.println("Writing " + command);
@@ -140,7 +140,7 @@ public class SetCommandImplHeadlessTest
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(6.0));
 
-    
+
         // Writing 3 should fail and instead result in 0
         impl.getCommand().setValue(3.0);
         System.out.println("Writing " + command);

@@ -207,22 +207,22 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
 
         // Update 'dirty' state from operations history.
         operations.addOperationHistoryListener(new IOperationHistoryListener()
-		{
-			@Override
-			public void historyNotification(final OperationHistoryEvent event)
-			{
-				switch (event.getEventType())
-				{
-				case OperationHistoryEvent.OPERATION_ADDED:
-				case OperationHistoryEvent.OPERATION_REMOVED:
-				case OperationHistoryEvent.UNDONE:
-				case OperationHistoryEvent.REDONE:
-					// dirty == anything on the 'undo' list?
-					is_dirty = operations.canUndo(undo_context);
-					firePropertyChange(IEditorPart.PROP_DIRTY);
-				}
-			}
-		});
+        {
+            @Override
+            public void historyNotification(final OperationHistoryEvent event)
+            {
+                switch (event.getEventType())
+                {
+                case OperationHistoryEvent.OPERATION_ADDED:
+                case OperationHistoryEvent.OPERATION_REMOVED:
+                case OperationHistoryEvent.UNDONE:
+                case OperationHistoryEvent.REDONE:
+                    // dirty == anything on the 'undo' list?
+                    is_dirty = operations.canUndo(undo_context);
+                    firePropertyChange(IEditorPart.PROP_DIRTY);
+                }
+            }
+        });
     }
 
     /** {@inheritDoc} */
@@ -278,13 +278,13 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         // Job keeps trying until successful, or is stoped when closing the editor.
         final Job fetch_devices = startDeviceFetchJob();
         parent.addDisposeListener(new DisposeListener()
-		{
-			@Override
-			public void widgetDisposed(DisposeEvent e)
-			{
-				fetch_devices.cancel();
-			}
-		});
+        {
+            @Override
+            public void widgetDisposed(DisposeEvent e)
+            {
+                fetch_devices.cancel();
+            }
+        });
     }
 
     /** @return {@link Job} that reads device list from server (already started) */
@@ -301,10 +301,10 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                     devices = client.getScanDevices(-1);
                 }
                 catch (Exception ex)
-                {	// Connected, but still error: Give up
+                {    // Connected, but still error: Give up
                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
                             Messages.DeviceListFetchError, ex);
-            	}
+                }
                 return Status.OK_STATUS;
             }
         };
@@ -521,14 +521,14 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         });
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public void scanServerUpdate(final ScanServerInfo server_info)
     {
-	    // Ignore
+        // Ignore
     }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
@@ -650,8 +650,8 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
      */
     public static String getScanNameFromFile(final String file_path)
     {
-    	final IPath path = new Path(file_path);
-    	final String last = path.lastSegment();
+        final IPath path = new Path(file_path);
+        final String last = path.lastSegment();
         final int sep = last.lastIndexOf('.');
         if (sep > 0)
             return last.substring(0, sep);

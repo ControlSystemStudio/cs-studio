@@ -33,23 +33,23 @@ import org.csstudio.dal.DataExchangeException;
  */
 public interface ValueProvider<T>
 {
-	/**
-	 * Returns simulated value.
-	 *
-	 * @return simulated value
-	 *
-	 * @throws DataExchangeException simulated exception
-	 */
-	public T get() throws DataExchangeException;
+    /**
+     * Returns simulated value.
+     *
+     * @return simulated value
+     *
+     * @throws DataExchangeException simulated exception
+     */
+    public T get() throws DataExchangeException;
 
-	/**
-	 * Sets value to simulator.
-	 *
-	 * @param value values for simulator
-	 *
-	 * @throws DataExchangeException simulated exception
-	 */
-	public void set(T value) throws DataExchangeException;
+    /**
+     * Sets value to simulator.
+     *
+     * @param value values for simulator
+     *
+     * @throws DataExchangeException simulated exception
+     */
+    public void set(T value) throws DataExchangeException;
 }
 
 /* __oOo__ */

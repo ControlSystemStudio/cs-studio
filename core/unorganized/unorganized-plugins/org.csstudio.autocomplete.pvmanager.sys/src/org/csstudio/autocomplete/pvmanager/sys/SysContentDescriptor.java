@@ -16,29 +16,29 @@ import org.csstudio.autocomplete.parser.ContentDescriptor;
 
 /**
  * @author Fred Arnaud (Sopra Group) - ITER
- * 
+ *
  */
 public class SysContentDescriptor extends ContentDescriptor {
 
-	private static Map<String, String> functions = new TreeMap<String, String>();
-	static {
-		functions.put("time", "Local date and time");
-		functions.put("free_mb", "Free Java VM memory in MB");
-		functions.put("used_mb", "Used Java VM memory in MB");
-		functions.put("max_mb", "Maximum available Java VM memory in MB");
-		functions.put("user", "User Name");
-		functions.put("host_name", "Host name");
-		functions.put("qualified_host_name", "Full Host Name");
-		functions.put("system", "Any system property, e.g. \"sys://system.user.name\"");
-		functions = Collections.unmodifiableMap(functions);
-	}
+    private static Map<String, String> functions = new TreeMap<String, String>();
+    static {
+        functions.put("time", "Local date and time");
+        functions.put("free_mb", "Free Java VM memory in MB");
+        functions.put("used_mb", "Used Java VM memory in MB");
+        functions.put("max_mb", "Maximum available Java VM memory in MB");
+        functions.put("user", "User Name");
+        functions.put("host_name", "Host name");
+        functions.put("qualified_host_name", "Full Host Name");
+        functions.put("system", "Any system property, e.g. \"sys://system.user.name\"");
+        functions = Collections.unmodifiableMap(functions);
+    }
 
-	public static Collection<String> listFunctions() {
-		return functions.keySet();
-	}
+    public static Collection<String> listFunctions() {
+        return functions.keySet();
+    }
 
-	public static String getDescription(String function) {
-		return functions.get(function);
-	}
+    public static String getDescription(String function) {
+        return functions.get(function);
+    }
 
 }

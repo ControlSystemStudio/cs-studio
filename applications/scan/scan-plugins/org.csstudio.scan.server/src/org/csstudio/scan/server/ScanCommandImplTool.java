@@ -57,7 +57,7 @@ public class ScanCommandImplTool
     private ScanCommandImplTool() throws Exception
     {
         // Locate all commands
-    	final IExtensionRegistry registry = RegistryFactory.getRegistry();
+        final IExtensionRegistry registry = RegistryFactory.getRegistry();
         final IExtensionPoint point = registry.getExtensionPoint("org.csstudio.scan.server.scancommandimpl");
         final IConfigurationElement[] configs = point.getConfigurationElements();
 

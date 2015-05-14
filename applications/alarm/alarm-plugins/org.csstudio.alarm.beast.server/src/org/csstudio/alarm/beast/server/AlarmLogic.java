@@ -297,7 +297,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
              // Alarm state was INVALID, INVALID_ACK, UNDEFINED, UNDEFINED_ACK
              alarm_state.getSeverity().getAlarmUpdatePriority()
                           >= SeverityLevel.INVALID.getAlarmUpdatePriority();
-            
+
             return_to_ok = alarm_cleared  ||  maint_leaving_invalid;
             if (return_to_ok)
                 alarm_state = AlarmState.createClearState(received_state.getValue(), received_state.getTime());

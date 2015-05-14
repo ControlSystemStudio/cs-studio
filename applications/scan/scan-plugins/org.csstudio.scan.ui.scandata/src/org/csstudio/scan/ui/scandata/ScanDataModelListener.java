@@ -14,9 +14,9 @@ import org.csstudio.scan.data.ScanData;
  */
 public interface ScanDataModelListener
 {
-	/** Invoked when scan has new data
-	 *  @param data Current data of the scan
-	 */
-	void updateScanData(ScanData data);
+    /** Invoked when scan has new data
+     *  @param data Current data of the scan
+     */
+    void updateScanData(ScanData data);
 
 }

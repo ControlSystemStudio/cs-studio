@@ -52,252 +52,252 @@ import de.desy.tine.definitions.TMode;
 
 /**
  * Implementation of PropertyProxy for Tine DAL plugin.
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  * @param <T>
  */
-public abstract class PropertyProxyImpl<T> 
-	extends AbstractPropertyProxyImpl<T,TINEPlug,MonitorProxyImpl<T>> 
-	implements PropertyProxy<T,TINEPlug>, SyncPropertyProxy<T,TINEPlug>, DirectoryProxy<TINEPlug> 
+public abstract class PropertyProxyImpl<T>
+    extends AbstractPropertyProxyImpl<T,TINEPlug,MonitorProxyImpl<T>>
+    implements PropertyProxy<T,TINEPlug>, SyncPropertyProxy<T,TINEPlug>, DirectoryProxy<TINEPlug>
 {
-	
-	private PropertyNameDissector dissector;
-	private String deviceName; 
-	private int timeOut = 1000;
-	protected TFormat dataFormat;
-	
-	public PropertyProxyImpl(String name, TINEPlug plug) {
-		super(name, plug);
-		this.dissector = new PropertyNameDissector(name);
-		this.deviceName = PropertyProxyUtilities.makeDeviceName(this.dissector);
-		setConnectionState(ConnectionState.CONNECTED);
-		initializeCharacteristics();
-		try {
-			this.dataFormat= (TFormat)getCharacteristic("dataFormat");
-		} catch (DataExchangeException e) {
-			Logger.getLogger(this.getClass()).error("Initializing data format failed.", e);
-		}
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#createMonitor(org.csstudio.dal.ResponseListener)
-	 */
-	public synchronized MonitorProxy createMonitor(ResponseListener<T> callback, Map<String,Object> param) throws RemoteException {
-		MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(this,callback);
-		m.initialize(getDataObject());
-		return m;
-	}
+    private PropertyNameDissector dissector;
+    private String deviceName;
+    private int timeOut = 1000;
+    protected TFormat dataFormat;
 
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#getValueAsync(org.csstudio.dal.ResponseListener)
-	 */
-	public Request<T> getValueAsync(ResponseListener<T> callback) throws DataExchangeException {
-		if (getConnectionState() != ConnectionState.CONNECTED) {
-			return null;
-		}
-		try {
-			Object data = getDataObject();
-	        TDataType dout = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),true);
-	        TDataType din = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),false);
-	        short access = TAccess.CA_READ;
-	        TLink tLink = new TLink(this.deviceName,this.dissector.getDeviceProperty(),dout,din,access);
-	        short mode = TMode.CM_SINGLE;
-	        int handle = 0;
-	        TINERequestImpl<T> request = new TINERequestImpl<T>(this, callback, tLink);
-        	handle = tLink.attach(mode, request, this.timeOut);
-        	if (handle < 0) {
-        		tLink.close();
-        		throw new ConnectionFailed(tLink.getError(-handle));
-        	}
-        	return request;
-        } catch (Exception e) {
-        	DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
-			setCondition(condition);
-			throw new DataExchangeException(this,"Exception on async getting value '"+this.name+"'.",e);
+    public PropertyProxyImpl(String name, TINEPlug plug) {
+        super(name, plug);
+        this.dissector = new PropertyNameDissector(name);
+        this.deviceName = PropertyProxyUtilities.makeDeviceName(this.dissector);
+        setConnectionState(ConnectionState.CONNECTED);
+        initializeCharacteristics();
+        try {
+            this.dataFormat= (TFormat)getCharacteristic("dataFormat");
+        } catch (DataExchangeException e) {
+            Logger.getLogger(this.getClass()).error("Initializing data format failed.", e);
         }
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#setValueAsync(java.lang.Object, org.csstudio.dal.ResponseListener)
-	 */
-	public Request<T> setValueAsync(T value, ResponseListener<T> callback) throws DataExchangeException {
-		//if not connected async call makes a mess and monitors needs to be reset
-		if (getConnectionState() != ConnectionState.CONNECTED || !isSettable()) {
-			return null;
-		}
-		try {
-			Object data = convertDataToObject(value);
-	        TDataType din = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),true);
-	        TDataType dout = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),false);
-	        short access = TAccess.CA_READ | TAccess.CA_WRITE;
-	        TLink tLink = new TLink(this.deviceName,this.dissector.getDeviceProperty(),dout,din,access);
-	        short mode = TMode.CM_SINGLE;
-	        int handle = 0;
-	        TINERequestImpl<T> request = new TINERequestImpl<T>(this, callback, tLink);
-        	handle = tLink.attach(mode, request, this.timeOut);
-        	
-        	if (handle < 0) {
-        		tLink.close();
-        		throw new ConnectionFailed(tLink.getError(-handle));
-        	}
-        	return request;
-        } catch (Exception e) {
-        	DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
-			setCondition(condition);
-			throw new DataExchangeException(this,"Exception on async setting value '"+this.name+"'.",e);
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#createMonitor(org.csstudio.dal.ResponseListener)
+     */
+    public synchronized MonitorProxy createMonitor(ResponseListener<T> callback, Map<String,Object> param) throws RemoteException {
+        MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(this,callback);
+        m.initialize(getDataObject());
+        return m;
+    }
+
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#getValueAsync(org.csstudio.dal.ResponseListener)
+     */
+    public Request<T> getValueAsync(ResponseListener<T> callback) throws DataExchangeException {
+        if (getConnectionState() != ConnectionState.CONNECTED) {
+            return null;
         }
-	}
+        try {
+            Object data = getDataObject();
+            TDataType dout = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),true);
+            TDataType din = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),false);
+            short access = TAccess.CA_READ;
+            TLink tLink = new TLink(this.deviceName,this.dissector.getDeviceProperty(),dout,din,access);
+            short mode = TMode.CM_SINGLE;
+            int handle = 0;
+            TINERequestImpl<T> request = new TINERequestImpl<T>(this, callback, tLink);
+            handle = tLink.attach(mode, request, this.timeOut);
+            if (handle < 0) {
+                tLink.close();
+                throw new ConnectionFailed(tLink.getError(-handle));
+            }
+            return request;
+        } catch (Exception e) {
+            DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
+            setCondition(condition);
+            throw new DataExchangeException(this,"Exception on async getting value '"+this.name+"'.",e);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.SyncPropertyProxy#getValueSync()
-	 */
-	public T getValueSync() {
-		TDataType dout = PropertyProxyUtilities.toTDataType(getDataObject(),PropertyProxyUtilities.getObjectSize(getDataObject()),true);
-		TDataType din = PropertyProxyUtilities.toTDataType(getDataObject(),PropertyProxyUtilities.getObjectSize(getDataObject()),false);
-		TLink tl = new TLink(this.deviceName,this.dissector.getDeviceProperty(),dout,din,TAccess.CA_READ);
-	    try
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#setValueAsync(java.lang.Object, org.csstudio.dal.ResponseListener)
+     */
+    public Request<T> setValueAsync(T value, ResponseListener<T> callback) throws DataExchangeException {
+        //if not connected async call makes a mess and monitors needs to be reset
+        if (getConnectionState() != ConnectionState.CONNECTED || !isSettable()) {
+            return null;
+        }
+        try {
+            Object data = convertDataToObject(value);
+            TDataType din = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),true);
+            TDataType dout = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),false);
+            short access = TAccess.CA_READ | TAccess.CA_WRITE;
+            TLink tLink = new TLink(this.deviceName,this.dissector.getDeviceProperty(),dout,din,access);
+            short mode = TMode.CM_SINGLE;
+            int handle = 0;
+            TINERequestImpl<T> request = new TINERequestImpl<T>(this, callback, tLink);
+            handle = tLink.attach(mode, request, this.timeOut);
+
+            if (handle < 0) {
+                tLink.close();
+                throw new ConnectionFailed(tLink.getError(-handle));
+            }
+            return request;
+        } catch (Exception e) {
+            DynamicValueCondition condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,"Error initializing proxy");
+            setCondition(condition);
+            throw new DataExchangeException(this,"Exception on async setting value '"+this.name+"'.",e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.SyncPropertyProxy#getValueSync()
+     */
+    public T getValueSync() {
+        TDataType dout = PropertyProxyUtilities.toTDataType(getDataObject(),PropertyProxyUtilities.getObjectSize(getDataObject()),true);
+        TDataType din = PropertyProxyUtilities.toTDataType(getDataObject(),PropertyProxyUtilities.getObjectSize(getDataObject()),false);
+        TLink tl = new TLink(this.deviceName,this.dissector.getDeviceProperty(),dout,din,TAccess.CA_READ);
+        try
         {
-		    int statusCode = tl.execute(this.timeOut);
-			if (statusCode > 0) {
-				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,tl.getLastError()));
-			} else {
-				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL)));
-			}
-		    dout = tl.getOutputDataObject();
-		    tl.cancel();
+            int statusCode = tl.execute(this.timeOut);
+            if (statusCode > 0) {
+                setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,tl.getLastError()));
+            } else {
+                setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL)));
+            }
+            dout = tl.getOutputDataObject();
+            tl.cancel();
         } catch (Exception e) {
-        	setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null, tl.getLastError()));
+            setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null, tl.getLastError()));
         }
-	    return extractData(dout);
-	}
-	
-	/**
-	 * Extracts data of type T from the TDataType and returns the data.
-	 * @param out
-	 * @return
-	 * @throws DataExchangeException 
-	 */
-	protected abstract T extractData(TDataType out);
-	
-	/**
-	 * Sets the data to an object which can be sent to Tine. This object is usually 
-	 * an array of certain type.
-	 * 
-	 * @param data
-	 * @return
-	 */
-	protected abstract Object convertDataToObject(T data);
-	
-	/**
-	 * Returns the data object which receives data from Tine. This object is usually
-	 * an array. This object is encapsulated to TDataType and sent to TLink.
-	 * @return
-	 */
-	protected abstract Object getDataObject();
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.SyncPropertyProxy#setValueSync(java.lang.Object)
-	 */
-	public void setValueSync(T value) {
-		if (! isSettable()) {
-			return;
-		}
-		Object data = convertDataToObject(value);
+        return extractData(dout);
+    }
+
+    /**
+     * Extracts data of type T from the TDataType and returns the data.
+     * @param out
+     * @return
+     * @throws DataExchangeException
+     */
+    protected abstract T extractData(TDataType out);
+
+    /**
+     * Sets the data to an object which can be sent to Tine. This object is usually
+     * an array of certain type.
+     *
+     * @param data
+     * @return
+     */
+    protected abstract Object convertDataToObject(T data);
+
+    /**
+     * Returns the data object which receives data from Tine. This object is usually
+     * an array. This object is encapsulated to TDataType and sent to TLink.
+     * @return
+     */
+    protected abstract Object getDataObject();
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.SyncPropertyProxy#setValueSync(java.lang.Object)
+     */
+    public void setValueSync(T value) {
+        if (! isSettable()) {
+            return;
+        }
+        Object data = convertDataToObject(value);
         TDataType din = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),true);
         TDataType dout = PropertyProxyUtilities.toTDataType(data,PropertyProxyUtilities.getObjectSize(data),false);
         TLink tl = new TLink(this.deviceName,this.dissector.getDeviceProperty(),dout,din,(short)(TAccess.CA_READ | TAccess.CA_WRITE));
-        
+
         try
         {
-        	int statusCode = tl.execute(this.timeOut);
-        	if (statusCode > 0) {
-				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,tl.getLastError()));
-			} else {
-				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL)));
-			}
-        	tl.cancel();
+            int statusCode = tl.execute(this.timeOut);
+            if (statusCode > 0) {
+                setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null,tl.getLastError()));
+            } else {
+                setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL)));
+            }
+            tl.cancel();
         }
         catch (Exception e)
         {
-        	setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null, tl.getLastError()));
+            setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),null, tl.getLastError()));
         }
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#isSettable()
-	 */
-	public boolean isSettable() {
-		try {
-			return (Boolean) getCharacteristic("editable");
-		} catch (DataExchangeException e) {
-			Logger.getLogger(this.getClass()).error("Characteristics failed.", e);
-			return false;
-		}
-	}
+    }
 
-	private void initializeCharacteristics() {
-		try {
-			getCharacteristics().putAll(TINEPlug.getInstance().getCharacteristics(this.dissector.getRemoteName(),getNumericType()));
-			
-			// notify DAL that metadata has been initialized
-			updateConditionWith(null, DynamicValueState.HAS_METADATA);
-//				characteristics = PropertyProxyUtilities.getCharacteristics(dissector,getNumericType());
-		} catch (ConnectionFailed e) {
-			setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR)));
-			Logger.getLogger(this.getClass()).error("Characteristics failed.", e);
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#isSettable()
+     */
+    public boolean isSettable() {
+        try {
+            return (Boolean) getCharacteristic("editable");
+        } catch (DataExchangeException e) {
+            Logger.getLogger(this.getClass()).error("Characteristics failed.", e);
+            return false;
+        }
+    }
 
-	/**
-	 * Returns number type of value. Eg if it si array of doubles, then double is return.
-	 * @return number type of value
-	 */
-	protected abstract Class getNumericType();
+    private void initializeCharacteristics() {
+        try {
+            getCharacteristics().putAll(TINEPlug.getInstance().getCharacteristics(this.dissector.getRemoteName(),getNumericType()));
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.DirectoryProxy#getCharacteristicNames()
-	 */
-	public synchronized String[] getCharacteristicNames() {
-		Set<String> set = getCharacteristics().keySet();
-		String[] names = new String[set.size()];
-		return set.toArray(names);
-	}
+            // notify DAL that metadata has been initialized
+            updateConditionWith(null, DynamicValueState.HAS_METADATA);
+//                characteristics = PropertyProxyUtilities.getCharacteristics(dissector,getNumericType());
+        } catch (ConnectionFailed e) {
+            setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR)));
+            Logger.getLogger(this.getClass()).error("Characteristics failed.", e);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.DirectoryProxy#refresh()
-	 */
-	public synchronized void refresh() {
-		initializeCharacteristics();
-	}
-	
-	String getDeviceName() {
-		return this.deviceName;
-	}
+    /**
+     * Returns number type of value. Eg if it si array of doubles, then double is return.
+     * @return number type of value
+     */
+    protected abstract Class getNumericType();
 
-	PropertyNameDissector getDissector() {
-		return this.dissector;
-	}
-	
-	@Override
-	protected Object processCharacteristicAfterCache(Object value,
-			String characteristicName) {
-		return value;
-	}
-	
-	@Override
-	protected Object processCharacteristicBeforeCache(Object value,
-			String characteristicName) {
-		return value;
-	}
-	
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.DirectoryProxy#getCharacteristicNames()
+     */
+    public synchronized String[] getCharacteristicNames() {
+        Set<String> set = getCharacteristics().keySet();
+        String[] names = new String[set.size()];
+        return set.toArray(names);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.proxy.DirectoryProxy#refresh()
+     */
+    public synchronized void refresh() {
+        initializeCharacteristics();
+    }
+
+    String getDeviceName() {
+        return this.deviceName;
+    }
+
+    PropertyNameDissector getDissector() {
+        return this.dissector;
+    }
+
+    @Override
+    protected Object processCharacteristicAfterCache(Object value,
+            String characteristicName) {
+        return value;
+    }
+
+    @Override
+    protected Object processCharacteristicBeforeCache(Object value,
+            String characteristicName) {
+        return value;
+    }
+
 }

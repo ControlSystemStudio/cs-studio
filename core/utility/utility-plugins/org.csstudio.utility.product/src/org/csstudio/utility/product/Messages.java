@@ -18,7 +18,7 @@ public class Messages extends NLS
     public static String StartupAuthenticationHelper_Login;
     public static String StartupAuthenticationHelper_LoginTip;
     public static String Window_Title;
-    
+
     static
     {
         // initialize resource bundle

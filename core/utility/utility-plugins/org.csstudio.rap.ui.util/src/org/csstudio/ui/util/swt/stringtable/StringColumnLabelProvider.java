@@ -19,26 +19,26 @@ import org.eclipse.jface.viewers.ViewerCell;
  */
 class StringColumnLabelProvider extends CellLabelProvider
 {
-	private static final long serialVersionUID = -1213331960584407244L;
-	final private TableViewer viewer;
+    private static final long serialVersionUID = -1213331960584407244L;
+    final private TableViewer viewer;
 
-	/** Initialize
-	 *  @param items It
-	 */
-	public StringColumnLabelProvider(final TableViewer viewer)
-	{
-		this.viewer = viewer;
-	}
+    /** Initialize
+     *  @param items It
+     */
+    public StringColumnLabelProvider(final TableViewer viewer)
+    {
+        this.viewer = viewer;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void update(final ViewerCell cell)
-	{
-		final List<String> items = (List<String>)viewer.getInput();
-		final int index = ((Integer)cell.getElement()).intValue();
-		if (index < 0)
-			cell.setText(Messages.StringTableEditor_AddRowText);
-		else
-			cell.setText(items.get(index));
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public void update(final ViewerCell cell)
+    {
+        final List<String> items = (List<String>)viewer.getInput();
+        final int index = ((Integer)cell.getElement()).intValue();
+        if (index < 0)
+            cell.setText(Messages.StringTableEditor_AddRowText);
+        else
+            cell.setText(items.get(index));
+    }
 }

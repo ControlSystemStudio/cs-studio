@@ -31,9 +31,9 @@ import org.csstudio.dal.DynamicValueProperty;
  * @author <a href="mailto:igor.kriznar@cosylab.com">Igor Kriznar</a>
  */
 public interface PropertyGroup<P extends DynamicValueProperty<?>>
-	extends PropertyCollection<P>, GroupDataAccessProvider
+    extends PropertyCollection<P>, GroupDataAccessProvider
 {
-	//	
+    //
 } /* __oOo__ */
 
 

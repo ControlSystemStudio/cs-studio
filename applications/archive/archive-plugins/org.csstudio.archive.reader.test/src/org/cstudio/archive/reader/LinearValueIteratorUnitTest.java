@@ -37,7 +37,7 @@ public class LinearValueIteratorUnitTest
     {
         return new ArchiveVNumber(Timestamp.of(secs, 0), severity, message, ValueFactory.displayNone(), value);
     }
-    
+
     /** Create test value */
     private VType testValue(final long secs, final double value)
     {
@@ -46,7 +46,7 @@ public class LinearValueIteratorUnitTest
         else
             return testValue(secs, value, AlarmSeverity.NONE, "peachy");
     }
-    
+
     /** Have some samples, ask for linear values in between */
     @Test
     public void testNiceCase() throws Exception
@@ -64,7 +64,7 @@ public class LinearValueIteratorUnitTest
             // Last value as is
         };
         final ValueIterator raw = new DemoDataIterator(data);
-        
+
         final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofSeconds(10));
 
         // Linr.  10, 1.0
@@ -80,17 +80,17 @@ public class LinearValueIteratorUnitTest
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(2.0));
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(20l));
-        
+
         // Last value as is
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(2.1));
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(21l));
-        
+
         // No more
         assertThat(linear.hasNext(), equalTo(false));
-        
+
         linear.close();
     }
 
@@ -102,7 +102,7 @@ public class LinearValueIteratorUnitTest
         final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofSeconds(10));
 
         assertThat(linear.hasNext(), equalTo(false));
-        
+
         linear.close();
     }
 
@@ -123,7 +123,7 @@ public class LinearValueIteratorUnitTest
             testValue(81, 8.1),
         };
         final ValueIterator raw = new DemoDataIterator(data);
-        
+
         final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofSeconds(10));
 
         // Linr.  10, 1.0
@@ -132,7 +132,7 @@ public class LinearValueIteratorUnitTest
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(1.0));
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(10l));
-        
+
         // The next interpolation bins for 20, ..., are skipped
 
         // Linr.  80, 8.0
@@ -145,7 +145,7 @@ public class LinearValueIteratorUnitTest
         // Dump the rest
         while (linear.hasNext())
             System.out.println(linear.next());
-        
+
         linear.close();
     }
 
@@ -172,7 +172,7 @@ public class LinearValueIteratorUnitTest
             testValue(35, 3.5),
         };
         final ValueIterator raw = new DemoDataIterator(data);
-        
+
         final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofSeconds(10));
 
         // Linr.  10, 1.0
@@ -200,7 +200,7 @@ public class LinearValueIteratorUnitTest
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(30l));
         assertThat(VTypeHelper.getSeverity(value), equalTo(AlarmSeverity.INVALID));
         assertThat(VTypeHelper.getMessage(value), equalTo("NaN"));
-        
+
         // End of interpolation, final value as-is
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
@@ -209,10 +209,10 @@ public class LinearValueIteratorUnitTest
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(35l));
 
         assertThat(linear.hasNext(), equalTo(false));
-        
+
         linear.close();
-    }    
-    
+    }
+
     /** Have 'archive off' interruption, interpolation jumps over it */
     @Test
     public void testInterruption() throws Exception
@@ -226,7 +226,7 @@ public class LinearValueIteratorUnitTest
             testValue( 7, 0.7),
             // Linr.  10, 1.0
             testValue(15, 1.5),
-            
+
             testValue(18, 1.5, AlarmSeverity.UNDEFINED, "Write_Error"),
             new ArchiveVString(Timestamp.of(17L, 0), AlarmSeverity.UNDEFINED, "Archive_Off", "Turned off"),
             // Reported with time stamp 20, UNDEFINED, Archive_Off
@@ -237,7 +237,7 @@ public class LinearValueIteratorUnitTest
             testValue(105, 10.5),
         };
         final ValueIterator raw = new DemoDataIterator(data);
-        
+
         final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofSeconds(10));
 
         // Linr.  10, 1.0
@@ -246,7 +246,7 @@ public class LinearValueIteratorUnitTest
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(1.0));
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(10l));
-        
+
         // Want to see the last UNDEFINED value in interval
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
@@ -262,11 +262,11 @@ public class LinearValueIteratorUnitTest
         System.out.println(value);
         assertThat(VTypeHelper.toDouble(value), equalTo(10.0));
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(100l));
-        
+
         // Dump the rest
         while (linear.hasNext())
             System.out.println(linear.next());
-        
+
         linear.close();
     }
 
@@ -286,7 +286,7 @@ public class LinearValueIteratorUnitTest
             testValue(20*ten_min + 5, 2.0),
         };
         final ValueIterator raw = new DemoDataIterator(data);
-        
+
         final ValueIterator linear = new LinearValueIterator(raw, TimeDuration.ofMinutes(10));
 
         // Interp at 10 minutes
@@ -300,17 +300,17 @@ public class LinearValueIteratorUnitTest
         value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(2*ten_min));
-        
+
         // Jump to 11 * 10min
         assertThat(linear.hasNext(), equalTo(true));
         value = linear.next();
         System.out.println(value);
         assertThat(VTypeHelper.getTimestamp(value).getSec(), equalTo(11*ten_min));
-        
+
         // Dump the rest
         while (linear.hasNext())
             System.out.println(linear.next());
-        
+
         linear.close();
     }
 

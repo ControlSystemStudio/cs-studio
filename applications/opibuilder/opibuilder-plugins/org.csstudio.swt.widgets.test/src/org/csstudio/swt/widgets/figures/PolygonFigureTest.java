@@ -15,28 +15,28 @@ import org.eclipse.draw2d.Figure;
  */
 public class PolygonFigureTest extends AbstractPolyWidgetTest{
 
-	@Override
-	public Figure createTestWidget() {
-		return new PolygonFigure();
-	}
-	
-	
-	@Override
-	public String[] getPropertyNames() {
-		String[] superProps =  super.getPropertyNames();
-		String[] myProps = new String[]{
-				"antiAlias",
-				"horizontalFill",
-				"lineColor",
-				"fill",
-				"transparent"
-		};
-		
-		return concatenateStringArrays(superProps, myProps);
-	}
-	
-	@Override
-	public boolean isAutoTest() {
-		return true;
-	}		
+    @Override
+    public Figure createTestWidget() {
+        return new PolygonFigure();
+    }
+
+
+    @Override
+    public String[] getPropertyNames() {
+        String[] superProps =  super.getPropertyNames();
+        String[] myProps = new String[]{
+                "antiAlias",
+                "horizontalFill",
+                "lineColor",
+                "fill",
+                "transparent"
+        };
+
+        return concatenateStringArrays(superProps, myProps);
+    }
+
+    @Override
+    public boolean isAutoTest() {
+        return true;
+    }
 }

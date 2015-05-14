@@ -39,150 +39,150 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Open top OPIs in run mode.
- * 
+ *
  * @author Xihui Chen
  */
 public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 
-	private static final String TOP_OPI_POSITION_KEY = "Position"; //$NON-NLS-1$
-	private static final String ALIAS_KEY = "Alias"; //$NON-NLS-1$
-	private Menu opiListMenu;
-	private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance()
-			.getImageFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
+    private static final String TOP_OPI_POSITION_KEY = "Position"; //$NON-NLS-1$
+    private static final String ALIAS_KEY = "Alias"; //$NON-NLS-1$
+    private Menu opiListMenu;
+    private static Image OPI_RUNTIME_IMAGE = CustomMediaFactory.getInstance()
+            .getImageFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png"); //$NON-NLS-1$
 
-	public Menu getMenu(Control parent) {
-		dispose();
-		opiListMenu = new Menu(parent);
-		final Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
-		if (topOPIs == null)
-			return null;
-		
-		fillMenu(topOPIs, opiListMenu);
-		return opiListMenu;
-	}
+    public Menu getMenu(Control parent) {
+        dispose();
+        opiListMenu = new Menu(parent);
+        final Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
+        if (topOPIs == null)
+            return null;
 
-	public static void fillMenu(final Map<IPath, MacrosInput> topOPIs, Menu menu) {
-		for (final IPath path : topOPIs.keySet()) {
-			if (path != null) {
-				MenuItem item = new MenuItem(menu, SWT.PUSH);
-				String alias = topOPIs.get(path).getMacrosMap().get(ALIAS_KEY);
-				if (alias != null)
-					item.setText(alias);
-				else
-					item.setText(path.lastSegment());
-				if(path.getFileExtension().toLowerCase().equals("opi")) //$NON-NLS-1$
-					item.setImage(OPI_RUNTIME_IMAGE);
-				else{
-					final Image image = PlatformUI.getWorkbench().getEditorRegistry().
-							getImageDescriptor(path.toOSString()).createImage();
-					item.setImage(image);
-					item.addDisposeListener(new DisposeListener() {						
-						@Override
-						public void widgetDisposed(DisposeEvent e) {
-							image.dispose();
-						}
-					});
-				}
-				item.addSelectionListener(new SelectionAdapter() {
-					@Override
-					public void widgetSelected(SelectionEvent e) {
-						if (path != null) {
-							if (path.getFileExtension().toLowerCase().equals("opi")) { //$NON-NLS-1$
-								runOPI(topOPIs.get(path), path);
-							} else {
-								runOther(path);
-							}
-						}
-					}
-				});
-			}
-		}
-	}
+        fillMenu(topOPIs, opiListMenu);
+        return opiListMenu;
+    }
 
-	public static void runOPI(final MacrosInput macrosInput, final IPath path) {
-		String position = null;
-		if (macrosInput != null) {
-			position = macrosInput.getMacrosMap().get(TOP_OPI_POSITION_KEY);
-		}
-		if (position != null) {
-			Position pos = null;
-			for (Position p : Position.values()) {
-				if (p.name().equals(position.toUpperCase())) {
-					pos = p;
-					break;
-				}
-			}
-			if (pos != null) {
-				RunModeService.runOPIInView(path, null, macrosInput, pos);
-				return;
-			}
-		}
-		RunModeService.getInstance().runOPI(path, TargetWindow.SAME_WINDOW,
-				null, macrosInput);
-	}
+    public static void fillMenu(final Map<IPath, MacrosInput> topOPIs, Menu menu) {
+        for (final IPath path : topOPIs.keySet()) {
+            if (path != null) {
+                MenuItem item = new MenuItem(menu, SWT.PUSH);
+                String alias = topOPIs.get(path).getMacrosMap().get(ALIAS_KEY);
+                if (alias != null)
+                    item.setText(alias);
+                else
+                    item.setText(path.lastSegment());
+                if(path.getFileExtension().toLowerCase().equals("opi")) //$NON-NLS-1$
+                    item.setImage(OPI_RUNTIME_IMAGE);
+                else{
+                    final Image image = PlatformUI.getWorkbench().getEditorRegistry().
+                            getImageDescriptor(path.toOSString()).createImage();
+                    item.setImage(image);
+                    item.addDisposeListener(new DisposeListener() {
+                        @Override
+                        public void widgetDisposed(DisposeEvent e) {
+                            image.dispose();
+                        }
+                    });
+                }
+                item.addSelectionListener(new SelectionAdapter() {
+                    @Override
+                    public void widgetSelected(SelectionEvent e) {
+                        if (path != null) {
+                            if (path.getFileExtension().toLowerCase().equals("opi")) { //$NON-NLS-1$
+                                runOPI(topOPIs.get(path), path);
+                            } else {
+                                runOther(path);
+                            }
+                        }
+                    }
+                });
+            }
+        }
+    }
 
-	public static void runOther(final IPath path) {
-		IWorkbenchPage page = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage();
-		try {
-			SingleSourceHelper.openEditor(page, path);
-		} catch (Exception e) {
-			String message = NLS.bind("Failed to open the editor. \n {0}", e);
-			MessageDialog.openError(null, "Error in opening OPI", message);
-		}
-	}
+    public static void runOPI(final MacrosInput macrosInput, final IPath path) {
+        String position = null;
+        if (macrosInput != null) {
+            position = macrosInput.getMacrosMap().get(TOP_OPI_POSITION_KEY);
+        }
+        if (position != null) {
+            Position pos = null;
+            for (Position p : Position.values()) {
+                if (p.name().equals(position.toUpperCase())) {
+                    pos = p;
+                    break;
+                }
+            }
+            if (pos != null) {
+                RunModeService.runOPIInView(path, null, macrosInput, pos);
+                return;
+            }
+        }
+        RunModeService.getInstance().runOPI(path, TargetWindow.SAME_WINDOW,
+                null, macrosInput);
+    }
 
-	/**
-	 * @return the top OPIs from preference settings
-	 */
-	public static Map<IPath, MacrosInput> loadTopOPIs() {
-		final Map<IPath, MacrosInput> topOPIs;
-		try {
-			topOPIs = PreferencesHelper.getTopOPIs();
-			if (topOPIs == null || topOPIs.keySet().size() == 0) {
-				return null;
-			}
-		} catch (Exception e) {
-			String message = NLS.bind(
-					"Failed to load top OPIs from preference settings. \n {0}", e);
-			MessageDialog.openError(null, "Error in loading top OPIs", message);
-			OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
-			return null;
-		}
-		return topOPIs;
-	}
+    public static void runOther(final IPath path) {
+        IWorkbenchPage page = PlatformUI.getWorkbench()
+                .getActiveWorkbenchWindow().getActivePage();
+        try {
+            SingleSourceHelper.openEditor(page, path);
+        } catch (Exception e) {
+            String message = NLS.bind("Failed to open the editor. \n {0}", e);
+            MessageDialog.openError(null, "Error in opening OPI", message);
+        }
+    }
 
-	public void dispose() {
-		if (opiListMenu != null && !opiListMenu.isDisposed()) {
-			for (MenuItem m : opiListMenu.getItems())
-				m.dispose();
-			opiListMenu.dispose();
-			opiListMenu = null;
-		}
-	}
+    /**
+     * @return the top OPIs from preference settings
+     */
+    public static Map<IPath, MacrosInput> loadTopOPIs() {
+        final Map<IPath, MacrosInput> topOPIs;
+        try {
+            topOPIs = PreferencesHelper.getTopOPIs();
+            if (topOPIs == null || topOPIs.keySet().size() == 0) {
+                return null;
+            }
+        } catch (Exception e) {
+            String message = NLS.bind(
+                    "Failed to load top OPIs from preference settings. \n {0}", e);
+            MessageDialog.openError(null, "Error in loading top OPIs", message);
+            OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
+            return null;
+        }
+        return topOPIs;
+    }
 
-	public void init(IWorkbenchWindow window) {
-		// NOP
-	}
+    public void dispose() {
+        if (opiListMenu != null && !opiListMenu.isDisposed()) {
+            for (MenuItem m : opiListMenu.getItems())
+                m.dispose();
+            opiListMenu.dispose();
+            opiListMenu = null;
+        }
+    }
 
-	public void run(IAction action) {
-		Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
-		if (topOPIs == null || topOPIs.keySet().size() == 0) {
-			MessageDialog.openWarning(null, "Warning",
-					"No top OPIs were set in preference settings.");
-		} else {
-			IPath path = (IPath) topOPIs.keySet().toArray()[0];
-			if (path != null) {
-				if (path.getFileExtension().toLowerCase().equals("opi")) {
-					runOPI(topOPIs.get(path), path);
-				} else {
-					runOther(path);
-				}
-			}
-		}
-	}
+    public void init(IWorkbenchWindow window) {
+        // NOP
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		// NOP
-	}
+    public void run(IAction action) {
+        Map<IPath, MacrosInput> topOPIs = loadTopOPIs();
+        if (topOPIs == null || topOPIs.keySet().size() == 0) {
+            MessageDialog.openWarning(null, "Warning",
+                    "No top OPIs were set in preference settings.");
+        } else {
+            IPath path = (IPath) topOPIs.keySet().toArray()[0];
+            if (path != null) {
+                if (path.getFileExtension().toLowerCase().equals("opi")) {
+                    runOPI(topOPIs.get(path), path);
+                } else {
+                    runOther(path);
+                }
+            }
+        }
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
+        // NOP
+    }
 }

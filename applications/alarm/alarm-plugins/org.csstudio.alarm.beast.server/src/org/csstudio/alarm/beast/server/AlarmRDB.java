@@ -333,7 +333,7 @@ public class AlarmRDB
         {
             throw new Exception("Failed to map alarm message " + message + ": " + ex.getMessage(), ex);
         }
-        
+
         updateStateStatement.setInt(1, current_severity_id);
         updateStateStatement.setInt(2, current_message_id);
         updateStateStatement.setInt(3, severity_id);
@@ -363,14 +363,14 @@ public class AlarmRDB
     /** Persists all the updates into DB.
      *  @param updates the updates to persist
      *  @param batchSize maximum batch size
-     * 
+     *
      *  @throws Exception
      */
     public void persistAllStates(final Update[] updates, final int batchSize) throws Exception
-    {    
+    {
         final Connection actual_connection = rdb.getConnection();
         actual_connection.setAutoCommit(false);
-     
+
         // New or changed connection?
         if (actual_connection != connection  ||  updateStateStatement == null)
         {
@@ -382,7 +382,7 @@ public class AlarmRDB
         {
             int count = 0;
             for (Update u : updates)
-            {            
+            {
                 try
                 {
                     writeStateUpdate(u.pv, u.currentSeverity, u.currentMessage, u.alarmSeverity,
@@ -392,14 +392,14 @@ public class AlarmRDB
                 catch (Exception ex)
                 {
                     //this is about 4-times faster than StringBuilder
-                    String s = "Error updating state: current severity=" + u.currentSeverity + 
+                    String s = "Error updating state: current severity=" + u.currentSeverity +
                                 "; current message=" + u.currentMessage + "; severity=" + u.alarmSeverity +
                                 "; message=" + u.alarmMessage + "; value=" + u.value + "; timestamp=" + u.timestamp +
                                 "; pv=" + u.pv.getName() + '(' + u.pv.getID() + "). Message skipped.";
                     Activator.getLogger().log(Level.SEVERE, s, ex);
                 }
                 if (count == batchSize)
-                {	// Periodically submit as batch
+                {    // Periodically submit as batch
                     updateStateStatement.executeBatch();
                     actual_connection.commit();
                     count = 0;
@@ -410,7 +410,7 @@ public class AlarmRDB
             {
                 updateStateStatement.executeBatch();
                 actual_connection.commit();
-            }            
+            }
         }
         catch (Exception e)
         {
@@ -424,17 +424,17 @@ public class AlarmRDB
     }
 
     /** Persists all the global updates in batches of the given size.
-     * 
+     *
      *  @param updates the updates to persist
      *  @param batchSize maximum batch size
-     * 
+     *
      *  @throws Exception
      */
     public void persistGlobalUpdates(final Update[] updates, final int batchSize) throws Exception
     {
         final Connection actual_connection = rdb.getConnection();
         actual_connection.setAutoCommit(false);
-            
+
         try
         {
             int count = 0;
@@ -444,7 +444,7 @@ public class AlarmRDB
                 updateGlobalStatement = null;
                 updateGlobalStatement = connection.prepareStatement(sql.update_global_state);
             }
-            
+
             for (Update u : updates)
             {
                 try
@@ -457,7 +457,7 @@ public class AlarmRDB
                 catch (Exception ex)
                 {
                     //this is about 4-times faster than StringBuilder
-                    String s = "Error updating global state: current severity=" + u.currentSeverity + 
+                    String s = "Error updating global state: current severity=" + u.currentSeverity +
                                 "; current message=" + u.currentMessage + "; severity=" + u.alarmSeverity +
                                 "; message=" + u.alarmMessage + "; value=" + u.value + "; timestamp=" + u.timestamp +
                                 "; pv=" + u.pv.getName() + '(' + u.pv.getID() + "). Message skipped.";
@@ -468,7 +468,7 @@ public class AlarmRDB
                     updateGlobalStatement.executeBatch();
                     actual_connection.commit();
                     count = 0;
-                } 
+                }
             }
             // Submit remaining batch
             if (count > 0)

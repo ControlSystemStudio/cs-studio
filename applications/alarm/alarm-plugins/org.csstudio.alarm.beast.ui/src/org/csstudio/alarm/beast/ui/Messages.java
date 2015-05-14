@@ -87,12 +87,12 @@ public class Messages extends NLS
     public static String Config_Message;
     public static String Config_Title;
     public static String ConfigureItem;
-	public static String CopyToClipboard;
+    public static String CopyToClipboard;
     public static String CurrentAlarmsFmt;
     public static String DefaultEMailBodyStart;
-	public static String DefaultEMailTitle;
-	public static String Detail;
-	public static String Delay;
+    public static String DefaultEMailTitle;
+    public static String Detail;
+    public static String Delay;
     public static String DisableAlarms;
     public static String DisableAlarmsFmt;
     public static String DuplicatePV;
@@ -109,7 +109,7 @@ public class Messages extends NLS
     public static String EnablementErrorFmt;
     public static String Error;
     public static String ErrorInFilter;
-	public static String Filter;
+    public static String Filter;
     public static String FilterTT;
     public static String GlobalAlarm_ToolTipFmt;
     public static String MaintenanceMode;
@@ -127,7 +127,7 @@ public class Messages extends NLS
     public static String NormalModeTT;
     public static String Preferences_CommandDirectory;
     public static String Preferences_ConfigSelection;
-	public static String Preferences_JMS_IdleTimeout;
+    public static String Preferences_JMS_IdleTimeout;
     public static String Preferences_JMS_URL;
     public static String Preferences_JMS_User;
     public static String Preferences_JMS_Password;
@@ -161,7 +161,7 @@ public class Messages extends NLS
     public static String Unselect;
     public static String UnselectTT;
     public static String WaitingForServer;
-	static
+    static
     {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

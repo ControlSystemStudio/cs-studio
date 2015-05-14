@@ -32,66 +32,66 @@ import javax.naming.NamingException;
 
 public class NameClassEnumeration implements NamingEnumeration<NameClassPair>
 {
-	private Map<String, ?> data;
-	private Iterator<String> iterator;
+    private Map<String, ?> data;
+    private Iterator<String> iterator;
 
-	/**
-	 * Creates a new NameClassEnumeration object.
-	 *
-	 * @param map
-	 */
-	public NameClassEnumeration(Map<String, ?> rawData)
-	{
-		data = rawData;
-		iterator = data.keySet().iterator();
-	}
+    /**
+     * Creates a new NameClassEnumeration object.
+     *
+     * @param map
+     */
+    public NameClassEnumeration(Map<String, ?> rawData)
+    {
+        data = rawData;
+        iterator = data.keySet().iterator();
+    }
 
-	/*
-	 * @see javax.naming.NamingEnumeration#close()
-	 */
-	public void close() throws NamingException
-	{
-		data.clear();
-	}
+    /*
+     * @see javax.naming.NamingEnumeration#close()
+     */
+    public void close() throws NamingException
+    {
+        data.clear();
+    }
 
-	/*
-	 * @see javax.naming.NamingEnumeration#hasMore()
-	 */
-	public boolean hasMore() throws NamingException
-	{
-		return hasMoreElements();
-	}
+    /*
+     * @see javax.naming.NamingEnumeration#hasMore()
+     */
+    public boolean hasMore() throws NamingException
+    {
+        return hasMoreElements();
+    }
 
-	/*
-	 * @see javax.naming.NamingEnumeration#next()
-	 */
-	public NameClassPair next() throws NamingException
-	{
-		return nextElement();
-	}
+    /*
+     * @see javax.naming.NamingEnumeration#next()
+     */
+    public NameClassPair next() throws NamingException
+    {
+        return nextElement();
+    }
 
-	/*
-	 * @see java.util.Enumeration#hasMoreElements()
-	 */
-	public boolean hasMoreElements()
-	{
-		return iterator.hasNext();
-	}
+    /*
+     * @see java.util.Enumeration#hasMoreElements()
+     */
+    public boolean hasMoreElements()
+    {
+        return iterator.hasNext();
+    }
 
-	/*
-	 * @see java.util.Enumeration#nextElement()
-	 */
-	public NameClassPair nextElement()
-	{
-		String key = iterator.next();
-		Object o = data.get(key);
+    /*
+     * @see java.util.Enumeration#nextElement()
+     */
+    public NameClassPair nextElement()
+    {
+        String key = iterator.next();
+        Object o = data.get(key);
 
-		if (o == null) {
-			return new NameClassPair(key, null);
-		} else {
-			return new NameClassPair(key, o.getClass().getName());
-		}
-	}
+        if (o == null) {
+            return new NameClassPair(key, null);
+        } else {
+            return new NameClassPair(key, o.getClass().getName());
+        }
+    }
 }
 
 /* __oOo__ */

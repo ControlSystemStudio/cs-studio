@@ -56,5 +56,4 @@ public class Activator extends AbstractUIPlugin {
 	public static Logger getLogger() {
 		return LOGGER;
 	}
-
 }

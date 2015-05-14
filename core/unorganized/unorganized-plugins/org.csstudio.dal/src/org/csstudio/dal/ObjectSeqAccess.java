@@ -33,7 +33,7 @@ package org.csstudio.dal;
  */
 public interface ObjectSeqAccess extends SequenceAccess<Object[]>
 {
-	//
+    //
 }
 
 /* __oOo__ */

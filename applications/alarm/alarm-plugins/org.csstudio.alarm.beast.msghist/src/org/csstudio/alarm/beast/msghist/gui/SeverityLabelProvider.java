@@ -19,30 +19,30 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class SeverityLabelProvider extends PropertyLabelProvider
 {
-	/** Mapping of severities to colors */
-	final private SeverityColumnPreference color_prefs;
-	
-	/** Constructor
-	 *  @param property Message property to display in column
-	 *  @param parent Parent widget, used to register DisposeListener
-	 *                because we need to dispose the colors
-	 *  @throws Exception
-	 */
-	public SeverityLabelProvider(final String property,
-			final Composite parent) throws Exception
-	{
-		super(property);
-		color_prefs = new SeverityColumnPreference(parent);
-	}
+    /** Mapping of severities to colors */
+    final private SeverityColumnPreference color_prefs;
+
+    /** Constructor
+     *  @param property Message property to display in column
+     *  @param parent Parent widget, used to register DisposeListener
+     *                because we need to dispose the colors
+     *  @throws Exception
+     */
+    public SeverityLabelProvider(final String property,
+            final Composite parent) throws Exception
+    {
+        super(property);
+        color_prefs = new SeverityColumnPreference(parent);
+    }
 
     @Override
     public void update(ViewerCell cell)
     {
         final Message message = (Message) cell.getElement();
         final String severity = message.getProperty(property);
-		cell.setText(severity);
-		final Color color = color_prefs.getColor(severity);
-		if (color != null)
-			cell.setBackground(color);
+        cell.setText(severity);
+        final Color color = color_prefs.getColor(severity);
+        if (color != null)
+            cell.setBackground(color);
     }
 }

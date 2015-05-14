@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
@@ -11,25 +10,25 @@
   <artifactId>org.csstudio.pvmanager.pva.feature</artifactId>
   <version>3.3.2-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
-    <build>
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho.extras</groupId>
-				<artifactId>tycho-source-feature-plugin</artifactId>
-				<version>${tycho-extras.version}</version>
-				<executions>
-					<execution>
-						<id>source-feature</id>
-						<phase>package</phase>
-						<goals>
-							<goal>source-feature</goal>
-						</goals>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho.extras</groupId>
+        <artifactId>tycho-source-feature-plugin</artifactId>
+        <version>${tycho-extras.version}</version>
+        <executions>
+          <execution>
+            <id>source-feature</id>
+            <phase>package</phase>
+            <goals>
+              <goal>source-feature</goal>
+            </goals>
+            <configuration>
+              <skip>true</skip>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>

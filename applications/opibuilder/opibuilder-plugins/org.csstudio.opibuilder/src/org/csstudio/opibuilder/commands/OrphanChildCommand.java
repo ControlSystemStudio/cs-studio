@@ -17,31 +17,31 @@ import org.eclipse.gef.commands.Command;
  *
  */
 public class OrphanChildCommand extends Command {
-	
-	private AbstractContainerModel parent;
-	private AbstractWidgetModel child;
-	
-	private int index;
+
+    private AbstractContainerModel parent;
+    private AbstractWidgetModel child;
+
+    private int index;
 
 
-	public OrphanChildCommand(AbstractContainerModel parent,
-			AbstractWidgetModel child) {
-		super("Orphan Widget");		
-		this.parent = parent;
-		this.child = child;
-	}
-	
-	@Override
-	public void execute() {
-		index = parent.getIndexOf(child);
-		parent.removeChild(child);
-	}
-	
-	@Override
-	public void undo() {
-		parent.addChild(index, child);
-	}
-	
-	
+    public OrphanChildCommand(AbstractContainerModel parent,
+            AbstractWidgetModel child) {
+        super("Orphan Widget");
+        this.parent = parent;
+        this.child = child;
+    }
+
+    @Override
+    public void execute() {
+        index = parent.getIndexOf(child);
+        parent.removeChild(child);
+    }
+
+    @Override
+    public void undo() {
+        parent.addChild(index, child);
+    }
+
+
 
 }

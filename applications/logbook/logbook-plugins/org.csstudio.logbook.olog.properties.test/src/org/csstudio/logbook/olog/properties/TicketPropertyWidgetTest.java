@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.olog.properties;
 
@@ -21,91 +21,91 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class TicketPropertyWidgetTest extends ApplicationWindow {
 
     private Button btnEditable;
 
     public TicketPropertyWidgetTest() {
-	super(null);
-	addToolBar(SWT.FLAT | SWT.WRAP);
-	addMenuBar();
-	addStatusLine();
+    super(null);
+    addToolBar(SWT.FLAT | SWT.WRAP);
+    addMenuBar();
+    addStatusLine();
     }
 
     /**
      * Create contents of the application window.
-     * 
+     *
      * @param parent
      */
     @Override
     protected Control createContents(Composite parent) {
-	Composite container = new Composite(parent, SWT.NONE);
-	container.setLayout(new GridLayout(1, false));
-	final LogEntryChangeset logEntrychangeset = new LogEntryChangeset();
+    Composite container = new Composite(parent, SWT.NONE);
+    container.setLayout(new GridLayout(1, false));
+    final LogEntryChangeset logEntrychangeset = new LogEntryChangeset();
 
-	final TicketPropertyWidget tracPropertyWidget = new TicketPropertyWidget(
-		container, SWT.NONE, logEntrychangeset, true);
-	tracPropertyWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-		true, 1, 1));
+    final TicketPropertyWidget tracPropertyWidget = new TicketPropertyWidget(
+        container, SWT.NONE, logEntrychangeset, true);
+    tracPropertyWidget.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+        true, 1, 1));
 
-	Button btnNewButton = new Button(container, SWT.NONE);
-	btnNewButton.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		logEntrychangeset.setLogEntryBuilder(LogEntryBuilder
-			.withText("test")
-			.owner("test")
-			.addProperty(
-				PropertyBuilder
-					.property("Ticket")
-					.attribute("TicketId", "12345")
-					.attribute("TicketURL",
-						"http://localhost.com")));
-	    }
-	});
-	btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
-		false, 1, 1));
-	btnNewButton.setText("Add Test Trac Property");
+    Button btnNewButton = new Button(container, SWT.NONE);
+    btnNewButton.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+        logEntrychangeset.setLogEntryBuilder(LogEntryBuilder
+            .withText("test")
+            .owner("test")
+            .addProperty(
+                PropertyBuilder
+                    .property("Ticket")
+                    .attribute("TicketId", "12345")
+                    .attribute("TicketURL",
+                        "http://localhost.com")));
+        }
+    });
+    btnNewButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
+        false, 1, 1));
+    btnNewButton.setText("Add Test Trac Property");
 
-	btnEditable = new Button(container, SWT.CHECK);
-	btnEditable.addSelectionListener(new SelectionAdapter() {
-	    @Override
-	    public void widgetSelected(SelectionEvent e) {
-		tracPropertyWidget.setEditable(btnEditable.getSelection());
-	    }
-	});
-	btnEditable.setText("Editable");
+    btnEditable = new Button(container, SWT.CHECK);
+    btnEditable.addSelectionListener(new SelectionAdapter() {
+        @Override
+        public void widgetSelected(SelectionEvent e) {
+        tracPropertyWidget.setEditable(btnEditable.getSelection());
+        }
+    });
+    btnEditable.setText("Editable");
 
-	return container;
+    return container;
     }
 
     /**
      * Launch the application.
-     * 
+     *
      * @param args
      */
     public static void main(String args[]) {
-	try {
-	    TicketPropertyWidgetTest window = new TicketPropertyWidgetTest();
-	    window.setBlockOnOpen(true);
-	    window.open();
-	    Display.getCurrent().dispose();
-	} catch (Exception e) {
-	    e.printStackTrace();
-	}
+    try {
+        TicketPropertyWidgetTest window = new TicketPropertyWidgetTest();
+        window.setBlockOnOpen(true);
+        window.open();
+        Display.getCurrent().dispose();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
     }
 
     /**
      * Configure the shell.
-     * 
+     *
      * @param newShell
      */
     @Override
     protected void configureShell(Shell newShell) {
-	super.configureShell(newShell);
-	newShell.setText("Test ImageStackWidgetTest");
+    super.configureShell(newShell);
+    newShell.setText("Test ImageStackWidgetTest");
     }
 
     /**
@@ -113,6 +113,6 @@ public class TicketPropertyWidgetTest extends ApplicationWindow {
      */
     @Override
     protected Point getInitialSize() {
-	return new Point(473, 541);
+    return new Point(473, 541);
     }
 }

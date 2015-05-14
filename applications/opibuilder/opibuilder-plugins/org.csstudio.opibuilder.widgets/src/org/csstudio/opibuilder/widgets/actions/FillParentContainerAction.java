@@ -24,30 +24,30 @@ import org.eclipse.jface.action.IAction;
 public class FillParentContainerAction extends AbstractWidgetTargetAction{
 
 
-	public void run(IAction action) {
+    public void run(IAction action) {
 
-		AbstractBaseEditPart widget = (AbstractBaseEditPart)selection.getFirstElement();
-		
-		AbstractContainerEditpart containerEditpart = getParentContainerEditpart();
-		
-		Dimension size = null;
-		if(containerEditpart instanceof DisplayEditpart)
-			size = ((DisplayEditpart)containerEditpart).getWidgetModel().getSize();
-		else
-			size= containerEditpart.getFigure().getClientArea().getSize();
-		
-		
-		Command cmd = new SetBoundsCommand(widget.getWidgetModel(), 
-				new Rectangle(0, 0, size.width, size.height));		
-		
-		execute(cmd);			
-	
-	}
+        AbstractBaseEditPart widget = (AbstractBaseEditPart)selection.getFirstElement();
+
+        AbstractContainerEditpart containerEditpart = getParentContainerEditpart();
+
+        Dimension size = null;
+        if(containerEditpart instanceof DisplayEditpart)
+            size = ((DisplayEditpart)containerEditpart).getWidgetModel().getSize();
+        else
+            size= containerEditpart.getFigure().getClientArea().getSize();
 
 
-	protected final AbstractContainerEditpart getParentContainerEditpart() {
-		return (AbstractContainerEditpart) (
-				(AbstractBaseEditPart)selection.getFirstElement()).getParent();
-	}
-		
+        Command cmd = new SetBoundsCommand(widget.getWidgetModel(),
+                new Rectangle(0, 0, size.width, size.height));
+
+        execute(cmd);
+
+    }
+
+
+    protected final AbstractContainerEditpart getParentContainerEditpart() {
+        return (AbstractContainerEditpart) (
+                (AbstractBaseEditPart)selection.getFirstElement()).getParent();
+    }
+
 }

@@ -478,5 +478,4 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 		ResourceUtil.pathToInputStreamInJob(imagePath, uiTask,
 				"Loading GIF Image...", errorHandler);
 	}
-
 }

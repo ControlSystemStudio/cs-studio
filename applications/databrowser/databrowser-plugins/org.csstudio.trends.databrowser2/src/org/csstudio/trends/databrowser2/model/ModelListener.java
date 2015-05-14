@@ -70,7 +70,7 @@ public interface ModelListener
 
     /**
      * The item requested to refresh its history.
-     * 
+     *
      * @param item the item to refresh the history data for
      */
     void itemRefreshRequested(PVItem item);

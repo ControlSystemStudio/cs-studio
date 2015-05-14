@@ -16,40 +16,40 @@ import org.eclipse.swt.widgets.Event;
 
 public class RAPSSTextLayout extends SSTextLayout {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void init(Display display, String text) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void init(Display display, String text) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void addStyle(Font font, Color color, int x, int y) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void addStyle(Font font, Color color, int x, int y) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handlePaintItemEvent(Event event, int offsetX, int offsetY) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handlePaintItemEvent(Event event, int offsetX, int offsetY) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void handleMeasureItemEvent(Event event) {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void handleMeasureItemEvent(Event event) {
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Rectangle getBounds() {
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Rectangle getBounds() {
+        return null;
+    }
 
 }

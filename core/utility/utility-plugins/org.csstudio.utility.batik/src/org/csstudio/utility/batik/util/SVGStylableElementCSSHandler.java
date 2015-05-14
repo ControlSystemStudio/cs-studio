@@ -22,45 +22,45 @@ import org.eclipse.swt.graphics.Color;
  */
 public class SVGStylableElementCSSHandler implements ICSSHandler {
 
-	private final CSSEngine cssEngine;
-	private final SVGStylableElement element;
-	private final CloneableStyleDeclaration originalStyle;
-	private final String originalCSSText;
+    private final CSSEngine cssEngine;
+    private final SVGStylableElement element;
+    private final CloneableStyleDeclaration originalStyle;
+    private final String originalCSSText;
 
-	public SVGStylableElementCSSHandler(CSSEngine cssEngine,
-			SVGStylableElement element) {
-		this.cssEngine = cssEngine;
-		this.element = element;
-		this.originalCSSText = element.getStyle().getCssText();
-		SVGStylableElement.StyleDeclaration embedStyle = (SVGStylableElement.StyleDeclaration) element.getStyle();
-		this.originalStyle = new CloneableStyleDeclaration(embedStyle.getStyleDeclaration());
-	}
+    public SVGStylableElementCSSHandler(CSSEngine cssEngine,
+            SVGStylableElement element) {
+        this.cssEngine = cssEngine;
+        this.element = element;
+        this.originalCSSText = element.getStyle().getCssText();
+        SVGStylableElement.StyleDeclaration embedStyle = (SVGStylableElement.StyleDeclaration) element.getStyle();
+        this.originalStyle = new CloneableStyleDeclaration(embedStyle.getStyleDeclaration());
+    }
 
-	public void updateCSSColor(Color colorToChange, Color newColor) {
-		if (colorToChange == null || newColor == null
-				|| colorToChange.equals(newColor)) {
-			return;
-		}
+    public void updateCSSColor(Color colorToChange, Color newColor) {
+        if (colorToChange == null || newColor == null
+                || colorToChange.equals(newColor)) {
+            return;
+        }
 
-		FloatValue newRedValue = new FloatValue((short) 1, (float) newColor.getRed());
-		FloatValue newGreenValue = new FloatValue((short) 1, (float) newColor.getGreen());
-		FloatValue newBlueValue = new FloatValue((short) 1, (float) newColor.getBlue());
-		RGBColorValue newRGBColorValue = new RGBColorValue(newRedValue, newGreenValue, newBlueValue);
+        FloatValue newRedValue = new FloatValue((short) 1, (float) newColor.getRed());
+        FloatValue newGreenValue = new FloatValue((short) 1, (float) newColor.getGreen());
+        FloatValue newBlueValue = new FloatValue((short) 1, (float) newColor.getBlue());
+        RGBColorValue newRGBColorValue = new RGBColorValue(newRedValue, newGreenValue, newBlueValue);
 
-		StyleDeclaration sd = originalStyle.clone();
-		int sdlen = sd.size();
-		for (int sdindex = 0; sdindex < sdlen; sdindex++) {
-			Value val = sd.getValue(sdindex);
-			if (val instanceof RGBColorValue) {
-				RGBColorValue colorVal = (RGBColorValue) val;
-				if (isSameColor(colorVal, colorToChange)) {
-					sd.put(sdindex, newRGBColorValue, sd.getIndex(sdindex),
-							sd.getPriority(sdindex));
-				}
-			}
-		}
-		element.getStyle().setCssText(sd.toString(cssEngine));
-	}
+        StyleDeclaration sd = originalStyle.clone();
+        int sdlen = sd.size();
+        for (int sdindex = 0; sdindex < sdlen; sdindex++) {
+            Value val = sd.getValue(sdindex);
+            if (val instanceof RGBColorValue) {
+                RGBColorValue colorVal = (RGBColorValue) val;
+                if (isSameColor(colorVal, colorToChange)) {
+                    sd.put(sdindex, newRGBColorValue, sd.getIndex(sdindex),
+                            sd.getPriority(sdindex));
+                }
+            }
+        }
+        element.getStyle().setCssText(sd.toString(cssEngine));
+    }
 
 	private boolean isSameColor(RGBColorValue colorVal, Color swtColor) {
 		if (colorVal.getCssText().contains("%")) {
@@ -81,33 +81,33 @@ public class SVGStylableElementCSSHandler implements ICSSHandler {
 		return false;
 	}
 
-	@Override
-	public void resetCSSStyle() {
-		element.getStyle().setCssText(originalCSSText);
-	}
+    @Override
+    public void resetCSSStyle() {
+        element.getStyle().setCssText(originalCSSText);
+    }
 
-	protected class CloneableStyleDeclaration extends StyleDeclaration {
+    protected class CloneableStyleDeclaration extends StyleDeclaration {
 
-		public CloneableStyleDeclaration(StyleDeclaration sd) {
-			this.count = sd.size();
-			this.values = new Value[count];
-			for (int idx = 0; idx < count; idx++) {
-				this.values[idx] = sd.getValue(idx);
-			}
-			this.indexes = new int[count];
-			for (int idx = 0; idx < count; idx++) {
-				this.indexes[idx] = sd.getIndex(idx);
-			}
-			this.priorities = new boolean[count];
-			for (int idx = 0; idx < count; idx++) {
-				this.priorities[idx] = sd.getPriority(idx);
-			}
-		}
+        public CloneableStyleDeclaration(StyleDeclaration sd) {
+            this.count = sd.size();
+            this.values = new Value[count];
+            for (int idx = 0; idx < count; idx++) {
+                this.values[idx] = sd.getValue(idx);
+            }
+            this.indexes = new int[count];
+            for (int idx = 0; idx < count; idx++) {
+                this.indexes[idx] = sd.getIndex(idx);
+            }
+            this.priorities = new boolean[count];
+            for (int idx = 0; idx < count; idx++) {
+                this.priorities[idx] = sd.getPriority(idx);
+            }
+        }
 
-		public CloneableStyleDeclaration clone() {
-			return new CloneableStyleDeclaration(this);
-		}
+        public CloneableStyleDeclaration clone() {
+            return new CloneableStyleDeclaration(this);
+        }
 
-	}
+    }
 
 }

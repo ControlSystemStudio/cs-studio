@@ -25,16 +25,16 @@ public class ArchiveWriterFactory
      *  @throws Exception on error: No implementation found, or error initializing it
      */
     public static ArchiveWriter getArchiveWriter() throws Exception
-	{
+    {
         final IConfigurationElement[] configs = Platform.getExtensionRegistry()
-        	.getConfigurationElementsFor(EXTENSION_ID);
-		// Need exactly one implementation
-		if (configs.length != 1)
-			throw new Exception("Need 1 extension to " + EXTENSION_ID + ", found " + configs.length);
-		
-		final IConfigurationElement config = configs[0];
-		// final String plugin = config.getContributor().getName();
-		final ArchiveWriter writer = (ArchiveWriter)config.createExecutableExtension("class");
-		return writer;
-	}
+            .getConfigurationElementsFor(EXTENSION_ID);
+        // Need exactly one implementation
+        if (configs.length != 1)
+            throw new Exception("Need 1 extension to " + EXTENSION_ID + ", found " + configs.length);
+
+        final IConfigurationElement config = configs[0];
+        // final String plugin = config.getContributor().getName();
+        final ArchiveWriter writer = (ArchiveWriter)config.createExecutableExtension("class");
+        return writer;
+    }
 }

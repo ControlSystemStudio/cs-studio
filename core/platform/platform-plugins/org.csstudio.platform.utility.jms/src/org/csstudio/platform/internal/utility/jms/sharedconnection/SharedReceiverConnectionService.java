@@ -36,81 +36,81 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * Service which manages shared connections for receiving JMS messages. The
  * settings for the connection are read from the preferences of the JMS Utility
  * plug-in.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class SharedReceiverConnectionService {
-	
-	/*
-	 * The current implementation is hard-coded to use two connections.
-	 * TODO: implement 1..n connections.
-	 */
-	
-	private final MonitorableSharedConnection _connection1;
-	private final MonitorableSharedConnection _connection2;
-	
-	/**
-	 * Creates the service.
-	 */
-	public SharedReceiverConnectionService() {
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String jmsUrl1 = prefs.getString(Activator.PLUGIN_ID,
-				PreferenceConstants.RECEIVER_BROKER_URL_1,
-				"", null);
-		String jmsUrl2 = prefs.getString(Activator.PLUGIN_ID,
-				PreferenceConstants.RECEIVER_BROKER_URL_2,
-				"", null);
-		_connection1 = new MonitorableSharedConnection(jmsUrl1);
-		_connection2 = new MonitorableSharedConnection(jmsUrl2);
-	}
 
-	/**
-	 * Returns handles to the shared connections.
-	 * 
-	 * @return handles to the shared connections.
-	 * @throws JMSException
-	 *             if one of the underlying shared connections could not be
-	 *             created or started due to an internal error.
-	 */
-	public ISharedConnectionHandle[] sharedConnections() throws JMSException {
-		ISharedConnectionHandle[] result = new ISharedConnectionHandle[2];
-		result[0] = _connection1.createHandle();
-		try {
-			result[1] = _connection2.createHandle();
-		} catch (JMSException e) {
-			// An exception occured when trying to create the second connection.
-			// Clean up the first connection, then rethrow the exception.
-			result[0].release();
-			throw e;
-		}
-		return result;
-	}
+    /*
+     * The current implementation is hard-coded to use two connections.
+     * TODO: implement 1..n connections.
+     */
 
-	/**
-	 * Starts a message listener that will listen on the shared receiver
-	 * connections.
-	 * 
-	 * @param listener
-	 *            the listener.
-	 * @param topics
-	 *            the topics to subscribe to.
-	 * @param acknowledgeMode
-	 *            the JMS session acknowledgement mode. Legal values are
-	 *            <code>Session.AUTO_ACKNOWLEDGE</code>,
-	 *            <code>Session.CLIENT_ACKNOWLEDGE</code>, and
-	 *            <code>Session.DUPS_OK_ACKNOWLEDGE</code>.
-	 * @return An <code>IMessageListenerSession</code> which can be used to
-	 *         control the listener session.
-	 * @throws JMSException
-	 *             if an internal error occured in the underlying JMS provider.
-	 */
-	public IMessageListenerSession startSharedConnectionMessageListener(
-			MessageListener listener, String[] topics, int acknowledgeMode)
-			throws JMSException {
-		return MultiConnectionReceiver.createListenerSession(
-				sharedConnections(), listener, topics, acknowledgeMode);
-		// TODO: The shared connection handles used by the listener session are
-		// never released. That should be changed.
-	}
+    private final MonitorableSharedConnection _connection1;
+    private final MonitorableSharedConnection _connection2;
+
+    /**
+     * Creates the service.
+     */
+    public SharedReceiverConnectionService() {
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String jmsUrl1 = prefs.getString(Activator.PLUGIN_ID,
+                PreferenceConstants.RECEIVER_BROKER_URL_1,
+                "", null);
+        String jmsUrl2 = prefs.getString(Activator.PLUGIN_ID,
+                PreferenceConstants.RECEIVER_BROKER_URL_2,
+                "", null);
+        _connection1 = new MonitorableSharedConnection(jmsUrl1);
+        _connection2 = new MonitorableSharedConnection(jmsUrl2);
+    }
+
+    /**
+     * Returns handles to the shared connections.
+     *
+     * @return handles to the shared connections.
+     * @throws JMSException
+     *             if one of the underlying shared connections could not be
+     *             created or started due to an internal error.
+     */
+    public ISharedConnectionHandle[] sharedConnections() throws JMSException {
+        ISharedConnectionHandle[] result = new ISharedConnectionHandle[2];
+        result[0] = _connection1.createHandle();
+        try {
+            result[1] = _connection2.createHandle();
+        } catch (JMSException e) {
+            // An exception occured when trying to create the second connection.
+            // Clean up the first connection, then rethrow the exception.
+            result[0].release();
+            throw e;
+        }
+        return result;
+    }
+
+    /**
+     * Starts a message listener that will listen on the shared receiver
+     * connections.
+     *
+     * @param listener
+     *            the listener.
+     * @param topics
+     *            the topics to subscribe to.
+     * @param acknowledgeMode
+     *            the JMS session acknowledgement mode. Legal values are
+     *            <code>Session.AUTO_ACKNOWLEDGE</code>,
+     *            <code>Session.CLIENT_ACKNOWLEDGE</code>, and
+     *            <code>Session.DUPS_OK_ACKNOWLEDGE</code>.
+     * @return An <code>IMessageListenerSession</code> which can be used to
+     *         control the listener session.
+     * @throws JMSException
+     *             if an internal error occured in the underlying JMS provider.
+     */
+    public IMessageListenerSession startSharedConnectionMessageListener(
+            MessageListener listener, String[] topics, int acknowledgeMode)
+            throws JMSException {
+        return MultiConnectionReceiver.createListenerSession(
+                sharedConnections(), listener, topics, acknowledgeMode);
+        // TODO: The shared connection handles used by the listener session are
+        // never released. That should be changed.
+    }
 
 }

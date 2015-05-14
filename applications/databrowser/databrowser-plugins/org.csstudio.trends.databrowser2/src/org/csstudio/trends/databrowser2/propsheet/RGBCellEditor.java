@@ -31,9 +31,9 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class RGBCellEditor extends CellEditor
 {
-	final private Shell shell;
-	private RGB value;
-	
+    final private Shell shell;
+    private RGB value;
+
     /** Creates a new color cell editor parented under the given control.
      *  The cell editor value is an SWT RGB value.
      *  @param parent The parent table.
@@ -53,7 +53,7 @@ public class RGBCellEditor extends CellEditor
             dialog.setRGB(value);
         value = dialog.open();
         if (value != null)
-        	fireApplyEditorValue();
+            fireApplyEditorValue();
     }
 
     /** NOP */

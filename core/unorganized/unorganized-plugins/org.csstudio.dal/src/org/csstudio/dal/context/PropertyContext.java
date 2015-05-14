@@ -37,75 +37,75 @@ import org.csstudio.dal.DynamicValueProperty;
  */
 public interface PropertyContext
 {
-	/**
-	 * Returns <tt>true</tt> if this collection contains the specified
-	 * element.  More formally, returns <tt>true</tt> if and only if this
-	 * collection contains at least one element <tt>e</tt> such that
-	 * <tt>(o==null ? e==null : o.equals(e))</tt>.
-	 *
-	 * @param property element whose presence in this collection is to be
-	 *        tested.
-	 *
-	 * @return <tt>true</tt> if this collection contains the specified element
-	 */
-	public boolean containsProperty(Object property);
+    /**
+     * Returns <tt>true</tt> if this collection contains the specified
+     * element.  More formally, returns <tt>true</tt> if and only if this
+     * collection contains at least one element <tt>e</tt> such that
+     * <tt>(o==null ? e==null : o.equals(e))</tt>.
+     *
+     * @param property element whose presence in this collection is to be
+     *        tested.
+     *
+     * @return <tt>true</tt> if this collection contains the specified element
+     */
+    public boolean containsProperty(Object property);
 
-	/**
-	 * Returns an array containing all of the elements in this
-	 * collection.  If the collection makes any guarantees as to what order
-	 * its elements are returned by its iterator, this method must return the
-	 * elements in the same order.<p>The returned array will be "safe"
-	 * in that no references to it are maintained by this collection.  (In
-	 * other words, this method must allocate a new array even if this
-	 * collection is backed by an array). The caller is thus free to modify
-	 * the returned array.</p>
-	 *  <p>This method acts as bridge between array-based and
-	 * collection-based APIs.</p>
-	 *
-	 * @return an array containing all of the elements in this collection
-	 */
-	public DynamicValueProperty[] toPropertyArray();
+    /**
+     * Returns an array containing all of the elements in this
+     * collection.  If the collection makes any guarantees as to what order
+     * its elements are returned by its iterator, this method must return the
+     * elements in the same order.<p>The returned array will be "safe"
+     * in that no references to it are maintained by this collection.  (In
+     * other words, this method must allocate a new array even if this
+     * collection is backed by an array). The caller is thus free to modify
+     * the returned array.</p>
+     *  <p>This method acts as bridge between array-based and
+     * collection-based APIs.</p>
+     *
+     * @return an array containing all of the elements in this collection
+     */
+    public DynamicValueProperty[] toPropertyArray();
 
-	/**
-	 * Returns <tt>true</tt> if this collection contains property,
-	 * whose unique name equals the specified name.
-	 *
-	 * @param name name of the typeless property depends on the context of the collection
-	 *
-	 * @return <tt>true</tt> if this collection contains property with the
-	 *         specified unique name.
-	 */
-	public boolean containsProperty(String name);
+    /**
+     * Returns <tt>true</tt> if this collection contains property,
+     * whose unique name equals the specified name.
+     *
+     * @param name name of the typeless property depends on the context of the collection
+     *
+     * @return <tt>true</tt> if this collection contains property with the
+     *         specified unique name.
+     */
+    public boolean containsProperty(String name);
 
-	/**
-	 * Returns <code>TypelessProperty</code> element whose unique name
-	 * equals the specified name. If property with specified name is not
-	 * present in collection, <code>null</code> is returned.
-	 *
-	 * @param name unique name of typless property
-	 *
-	 * @return <tt>true</tt> if this collection contains property with the
-	 *         specified unique name.
-	 */
-	public DynamicValueProperty getProperty(String name);
+    /**
+     * Returns <code>TypelessProperty</code> element whose unique name
+     * equals the specified name. If property with specified name is not
+     * present in collection, <code>null</code> is returned.
+     *
+     * @param name unique name of typless property
+     *
+     * @return <tt>true</tt> if this collection contains property with the
+     *         specified unique name.
+     */
+    public DynamicValueProperty getProperty(String name);
 
-	/**
-	 * Returns names of properties in this collection. Name may be or
-	 * proper unique name or relative name, which is valid only in context of
-	 * this collection.
-	 *
-	 * @return names of properties in this collection
-	 */
-	public String[] getPropertyNames();
-	
-	/**
-	 * Returns plug type string, which is distinguishing for plug which
-	 * creates  proxies for particular communication layer.<p>For
-	 * example plug that connects to EPICS device my return string "EPICS".</p>
-	 *
-	 * @return plug destingushing type name
-	 */
-	public String getPlugType();
+    /**
+     * Returns names of properties in this collection. Name may be or
+     * proper unique name or relative name, which is valid only in context of
+     * this collection.
+     *
+     * @return names of properties in this collection
+     */
+    public String[] getPropertyNames();
+
+    /**
+     * Returns plug type string, which is distinguishing for plug which
+     * creates  proxies for particular communication layer.<p>For
+     * example plug that connects to EPICS device my return string "EPICS".</p>
+     *
+     * @return plug destingushing type name
+     */
+    public String getPlugType();
 
 } /* __oOo__ */
 

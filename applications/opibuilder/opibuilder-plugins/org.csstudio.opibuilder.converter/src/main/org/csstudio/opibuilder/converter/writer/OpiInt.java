@@ -15,18 +15,18 @@ import org.csstudio.opibuilder.converter.model.EdmInt;
  */
 public class OpiInt extends OpiAttribute {
 
-	/**
-	 * Creates an element <name>intValue</name> with the given EdmInt value.
-	 */
-	public OpiInt(Context con, String name, EdmInt i) {
-		this(con, name, i.get());
-	}
-	
-	/**
-	 * Creates an element <name>intValue</name> with the given int value.
-	 */
-	public OpiInt(Context con, String name, int i) {
-		super(con, name);
-		propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(i)));
-	}
+    /**
+     * Creates an element <name>intValue</name> with the given EdmInt value.
+     */
+    public OpiInt(Context con, String name, EdmInt i) {
+        this(con, name, i.get());
+    }
+
+    /**
+     * Creates an element <name>intValue</name> with the given int value.
+     */
+    public OpiInt(Context con, String name, int i) {
+        super(con, name);
+        propertyContext.getElement().appendChild(con.getDocument().createTextNode(String.valueOf(i)));
+    }
 }

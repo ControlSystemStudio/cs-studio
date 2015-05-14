@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.opiwidgets;
 
@@ -16,19 +16,19 @@ import org.eclipse.swt.widgets.Control;
  */
 public class TunerFigure extends AbstractChannelWidgetFigure<TunerWidget> {
 
-	/**
-	 * @param editPart
-	 */
-	public TunerFigure(AbstractBaseEditPart editPart) {
-		super(editPart);
-	}
+    /**
+     * @param editPart
+     */
+    public TunerFigure(AbstractBaseEditPart editPart) {
+        super(editPart);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure#createSWTWidget(org.eclipse.swt.widgets.Composite, int)
-	 */
-	@Override
-	protected TunerWidget createSWTWidget(Composite parent, int style) {
-		return new TunerWidget(parent, SWT.NONE);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.opibuilder.widgets.figures.AbstractSWTWidgetFigure#createSWTWidget(org.eclipse.swt.widgets.Composite, int)
+     */
+    @Override
+    protected TunerWidget createSWTWidget(Composite parent, int style) {
+        return new TunerWidget(parent, SWT.NONE);
+    }
 
 }

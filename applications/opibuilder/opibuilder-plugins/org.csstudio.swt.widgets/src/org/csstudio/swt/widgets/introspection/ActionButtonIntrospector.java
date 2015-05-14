@@ -14,17 +14,17 @@ import org.csstudio.swt.widgets.figures.AbstractScaledWidgetFigure;
  *
  */
 public class ActionButtonIntrospector extends DefaultWidgetIntrospector {
-	public static String[] NON_PROPERTIES = new String[]{
-		"armed",
-		"toggled",
-		"mousePressed",
-		"opaque",
-		"selected"
-	};
-	@Override
-	public String[] getNonProperties() {
-	
-		return concatenateStringArrays(super.getNonProperties(), NON_PROPERTIES);
-	}
-	
+    public static String[] NON_PROPERTIES = new String[]{
+        "armed",
+        "toggled",
+        "mousePressed",
+        "opaque",
+        "selected"
+    };
+    @Override
+    public String[] getNonProperties() {
+
+        return concatenateStringArrays(super.getNonProperties(), NON_PROPERTIES);
+    }
+
 }

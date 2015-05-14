@@ -19,7 +19,7 @@ import org.eclipse.jface.viewers.ViewerCell;
  *  @author Kay Kasemir
  */
 public class AlarmTableLabelProvider extends CellLabelProvider
-{    
+{
     /** Mapping of severities to colors */
     final private SeverityColorProvider color_provider;
     
@@ -27,7 +27,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
 
     /** Column handled by this label provider */
     final private ColumnInfo column;
-    
+
     /** Initialize
      *  @param icon_provider icon provider provides icons for the ICON column
      *  @param color_provider Color provider for severity values
@@ -63,7 +63,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         switch (column)
         {
         case ACK:
-            cell.setImage(alarm.getSeverity().isActive() 
+            cell.setImage(alarm.getSeverity().isActive()
                     ? CheckBoxImages.getInstance(cell.getControl()).getImage(false)
                     : CheckBoxImages.getInstance(cell.getControl()).getImage(true));
             break;

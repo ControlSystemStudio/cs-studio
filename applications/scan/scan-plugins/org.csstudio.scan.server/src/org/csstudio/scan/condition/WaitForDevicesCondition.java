@@ -35,8 +35,8 @@ public class WaitForDevicesCondition implements DeviceCondition, DeviceListener
         this.devices = devices;
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void await() throws Exception
     {
         for (Device device : devices)
@@ -45,35 +45,35 @@ public class WaitForDevicesCondition implements DeviceCondition, DeviceListener
         synchronized (this)
         {
             all_ready = allReady(devices);
-    		while (! all_ready)
-    		{   // Wait for update from device
+            while (! all_ready)
+            {   // Wait for update from device
                 wait();
             }
-		}
+        }
 
         for (Device device : devices)
             device.removeListener(this);
     }
 
-	@Override
+    @Override
     public void deviceChanged(final Device device)
     {
-	    synchronized (this)
+        synchronized (this)
         {
-	        all_ready = allReady(devices);
-	        // Notify execute() to check all devices again
-	        notifyAll();
+            all_ready = allReady(devices);
+            // Notify execute() to check all devices again
+            notifyAll();
         }
     }
 
     /** @param devices Devices to check
-	 *  @return <code>true</code> if all devices are 'ready'
-	 */
-	private boolean allReady(final Device[] devices)
+     *  @return <code>true</code> if all devices are 'ready'
+     */
+    private boolean allReady(final Device[] devices)
     {
-	    for (Device device : devices)
-	        if (! device.isReady())
-	            return false;
+        for (Device device : devices)
+            if (! device.isReady())
+                return false;
         return true;
     }
 
@@ -82,16 +82,16 @@ public class WaitForDevicesCondition implements DeviceCondition, DeviceListener
     @Override
     public String toString()
     {
-		final StringBuilder pending = new StringBuilder();
-	    for (Device device : devices)
-	        if (! device.isReady())
-	        {
-	        	if (pending.length() > 0)
-	        		pending.append(", ");
-	        	pending.append(device);
-	        }
-	    if (pending.length() <= 0)
-	    	return "All devices ready";
+        final StringBuilder pending = new StringBuilder();
+        for (Device device : devices)
+            if (! device.isReady())
+            {
+                if (pending.length() > 0)
+                    pending.append(", ");
+                pending.append(device);
+            }
+        if (pending.length() <= 0)
+            return "All devices ready";
         return "Waiting for device " + pending.toString();
     }
 }

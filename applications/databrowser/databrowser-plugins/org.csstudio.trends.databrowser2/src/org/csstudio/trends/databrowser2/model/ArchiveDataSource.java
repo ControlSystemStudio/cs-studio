@@ -98,13 +98,13 @@ public class ArchiveDataSource implements Serializable
     @Override
     public int hashCode()
     {
-	    final int prime = 31;
-	    int result = prime + key;
-	    result = prime * result + url.hashCode();
-	    return result;
+        final int prime = 31;
+        int result = prime + key;
+        result = prime * result + url.hashCode();
+        return result;
     }
 
-	/** Debug string representation */
+    /** Debug string representation */
     @SuppressWarnings("nls")
     @Override
     public final String toString()

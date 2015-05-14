@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
-
 <toc label="CSS Core" topic="html/core/index.html">
-	<topic label="User Interface" href="html/core/userinterface.html"/>
-	<topic label="Preferences" href="html/core/preference.html">
+  <topic label="User Interface" href="html/core/userinterface.html"/>
+  <topic label="Preferences" href="html/core/preference.html">
     <anchor id="preference"/>
-	</topic>
- <anchor id="core"/>
+  </topic>
+  <anchor id="core"/>
 </toc>

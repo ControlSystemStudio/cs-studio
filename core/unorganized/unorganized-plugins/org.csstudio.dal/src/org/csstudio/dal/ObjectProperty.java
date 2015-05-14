@@ -34,9 +34,9 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.DynamicValueProperty
  */
 public interface ObjectProperty extends DynamicValueProperty<Object>,
-	ObjectSimpleProperty
+    ObjectSimpleProperty
 {
-	//
+    //
 }
 
 /* __oOo__ */

@@ -17,9 +17,9 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class PreferencePage extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage
+    implements IWorkbenchPreferencePage
 {
-	/** Constructor */
+    /** Constructor */
     public PreferencePage()
     {
         // This way, preference changes in the GUI end up in a file under

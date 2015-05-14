@@ -23,28 +23,28 @@
 package org.epics.css.dal.directory;
 
 public class PropertyDescriptorImpl extends DALDescriptorImpl
-	implements PropertyDescriptor
+    implements PropertyDescriptor
 {
-	private static final long serialVersionUID = 3271274949376419871L;
+    private static final long serialVersionUID = 3271274949376419871L;
 
-	/**
-	 * Creates new descriptor with descriptor type set to PROPERTY.
-	 */
-	public PropertyDescriptorImpl()
-	{
-		super();
-		putAttributeValue(DESCRIPTOR_TYPE, DescriptorType.PROPERTY);
-	}
+    /**
+     * Creates new descriptor with descriptor type set to PROPERTY.
+     */
+    public PropertyDescriptorImpl()
+    {
+        super();
+        putAttributeValue(DESCRIPTOR_TYPE, DescriptorType.PROPERTY);
+    }
 
-	/**
-	 * Creates new descriptor with descriptor type set to PROPERTY.
-	 * @param name descritor name
-	 * @param ctype described class type
-	 */
-	public PropertyDescriptorImpl(String name, Class ctype)
-	{
-		super(DescriptorType.PROPERTY, name, ctype);
-	}
+    /**
+     * Creates new descriptor with descriptor type set to PROPERTY.
+     * @param name descritor name
+     * @param ctype described class type
+     */
+    public PropertyDescriptorImpl(String name, Class ctype)
+    {
+        super(DescriptorType.PROPERTY, name, ctype);
+    }
 }
 
 /* __oOo__ */

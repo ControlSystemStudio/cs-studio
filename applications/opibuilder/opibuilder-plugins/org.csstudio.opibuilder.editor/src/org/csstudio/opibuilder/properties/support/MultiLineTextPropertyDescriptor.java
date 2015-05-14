@@ -20,28 +20,28 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  */
 public class MultiLineTextPropertyDescriptor extends TextPropertyDescriptor {
 
-	public MultiLineTextPropertyDescriptor(Object id, String displayName) {
-		super(id, displayName);
-		setLabelProvider(new MultiLineLabelProvider());
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-	    final String title = NLS.bind("Edit {0}", getDisplayName());
-		CellEditor editor = new MultiLineTextCellEditor(parent, title);
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
-	static class MultiLineLabelProvider extends LabelProvider{
-		@Override
-		public String getText(Object element) {
-			return element == null ? "" : element.toString().replaceAll("\n", " / ");//$NON-NLS-1$
-		}
-	}
+    public MultiLineTextPropertyDescriptor(Object id, String displayName) {
+        super(id, displayName);
+        setLabelProvider(new MultiLineLabelProvider());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        final String title = NLS.bind("Edit {0}", getDisplayName());
+        CellEditor editor = new MultiLineTextCellEditor(parent, title);
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+
+    static class MultiLineLabelProvider extends LabelProvider{
+        @Override
+        public String getText(Object element) {
+            return element == null ? "" : element.toString().replaceAll("\n", " / ");//$NON-NLS-1$
+        }
+    }
 }

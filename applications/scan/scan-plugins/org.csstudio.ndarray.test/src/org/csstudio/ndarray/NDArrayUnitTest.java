@@ -66,7 +66,7 @@ public class NDArrayUnitTest
         assertEquals(new NDShape(3, 2), a.getShape());
 
         a = NDArray.create(new byte[][][] { { {1}, {2}, {3} },
-        		                            { {4}, {5}, {6}} });
+                                            { {4}, {5}, {6}} });
         System.out.println(a);
         assertSame(NDType.INT8, a.getType());
         assertSame(NDType.INT8, a.clone().getType());
@@ -143,12 +143,12 @@ public class NDArrayUnitTest
     @Test
     public void testSlice()
     {
-    	// 0 1 2 4 5   Strides 5, 1
-    	// 5 6 7 8 9
-    	NDArray orig = NDMatrix.arange(0, 10, 1);
+        // 0 1 2 4 5   Strides 5, 1
+        // 5 6 7 8 9
+        NDArray orig = NDMatrix.arange(0, 10, 1);
 
         // orig[2:9:3] ->  2 5 8
-    	NDArray slice = orig.getSlice(new int[] { 2 }, new int[] { 9 }, new int[] { 3 });
+        NDArray slice = orig.getSlice(new int[] { 2 }, new int[] { 9 }, new int[] { 3 });
         assertEquals(new NDShape(3), slice.getShape());
         assertEquals(new NDStrides(3), slice.getStrides());
         System.out.println(slice);
@@ -162,12 +162,12 @@ public class NDArrayUnitTest
         assertEquals(42.0, orig.getDouble(5), 0.01);
 
         // Slice of re-shaped array
-    	NDArray shaped = NDMatrix.reshape(orig, 2, 5);
+        NDArray shaped = NDMatrix.reshape(orig, 2, 5);
         assertEquals(new NDStrides(5, 1), shaped.getStrides());
         System.out.println(shaped);
 
         // shaped[:, ::2] = shaped[0:2:1, 0:5:2]
-    	// 0 2 4    Strides 5, 2
+        // 0 2 4    Strides 5, 2
         slice = shaped.getSlice(new int[] { 0, 0 }, new int[] { 2, 5 }, new int[] { 1, 2 });
         assertEquals(new NDShape(2, 3), slice.getShape());
         assertEquals(new NDStrides(5, 2), slice.getStrides());
@@ -181,10 +181,10 @@ public class NDArrayUnitTest
         assertEquals(666.0, orig.getDouble(7), 0.01);
 
         // Shaped: [ [ [0, 1],
-		//             [2, 3]],
-		//
-		//           [ [4, 5],
-		//             [6, 7]]
+        //             [2, 3]],
+        //
+        //           [ [4, 5],
+        //             [6, 7]]
         //         ]
         // shaped[1,1] = shaped[1, 1, 0:2:1]
         //  6, 7    Strides 1
@@ -200,9 +200,9 @@ public class NDArrayUnitTest
         assertEquals(666.0, slice.getDouble(1), 0.01);
         assertEquals(666.0, orig.getDouble(7), 0.01);
 
-		// shaped[1, :, 1] shaped[1:2:1, 0:2:1, 1:2:1]
-		//   [[[5],
-		//     [666]]]
+        // shaped[1, :, 1] shaped[1:2:1, 0:2:1, 1:2:1]
+        //   [[[5],
+        //     [666]]]
         slice = shaped.getSlice(new int[] { 1, 0, 1 }, new int[] { 2, 2, 2 }, new int[] { 1, 1, 1 });
         System.out.println(slice);
         assertEquals(new NDShape(1, 2, 1), slice.getShape());
@@ -218,16 +218,16 @@ public class NDArrayUnitTest
     @Test
     public void testFormatting()
     {
-    	final NDArray a = NDMatrix.arange(0, 6, 1);
-    	System.out.println(a);
+        final NDArray a = NDMatrix.arange(0, 6, 1);
+        System.out.println(a);
 
-    	final NDArray b = NDMatrix.reshape(a, 3, 2);
-    	for (int i=0; i<3; ++i)
-        	for (int j=0; j<2; ++j)
-        		b.setDouble(i+j*0.1, i, j);
-    	System.out.println(b);
+        final NDArray b = NDMatrix.reshape(a, 3, 2);
+        for (int i=0; i<3; ++i)
+            for (int j=0; j<2; ++j)
+                b.setDouble(i+j*0.1, i, j);
+        System.out.println(b);
 
-    	final NDArray c = NDMatrix.reshape(NDMatrix.arange(0, 6, 1), 3, 2, 1);
-    	System.out.println(c);
+        final NDArray c = NDMatrix.reshape(NDMatrix.arange(0, 6, 1), 3, 2, 1);
+        System.out.println(c);
     }
 }

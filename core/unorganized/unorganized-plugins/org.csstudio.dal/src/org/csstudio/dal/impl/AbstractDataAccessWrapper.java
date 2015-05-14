@@ -32,250 +32,250 @@ import com.cosylab.util.ListenerList;
 
 public abstract class AbstractDataAccessWrapper<T> implements DataAccess<T>
 {
-	protected static final int UNKNOWN = -1;
-	protected DataAccess sourceDA;
-	protected Class<T> valClass;
-	private ListenerList dvListeners;
-	//protected T lastValue;
-	protected int conversion = UNKNOWN;
+    protected static final int UNKNOWN = -1;
+    protected DataAccess sourceDA;
+    protected Class<T> valClass;
+    private ListenerList dvListeners;
+    //protected T lastValue;
+    protected int conversion = UNKNOWN;
 
-	public class DADynamicValueListener implements DynamicValueListener
-	{
-		private void fireEvent(DynamicValueEvent event, int id)
-		{
-			if (!hasDynamicValueListeners()) {
-				return;
-			}
-			//this event violates generics usage - Property is of different type than
-			//value
-			DynamicValueEvent newEvent = 
-				new DynamicValueEvent(
-					AbstractDataAccessWrapper.this,
-				    event.getProperty(),
-				    convertFromOriginal(event.getValue(),
-				        (DataAccess)event.getSource()), event.getCondition(),
-				    event.getTimestamp(), event.getMessage(), event.getError(),
-				    event.getEventID());
+    public class DADynamicValueListener implements DynamicValueListener
+    {
+        private void fireEvent(DynamicValueEvent event, int id)
+        {
+            if (!hasDynamicValueListeners()) {
+                return;
+            }
+            //this event violates generics usage - Property is of different type than
+            //value
+            DynamicValueEvent newEvent =
+                new DynamicValueEvent(
+                    AbstractDataAccessWrapper.this,
+                    event.getProperty(),
+                    convertFromOriginal(event.getValue(),
+                        (DataAccess)event.getSource()), event.getCondition(),
+                    event.getTimestamp(), event.getMessage(), event.getError(),
+                    event.getEventID());
 
-			DynamicValueListener<T, SimpleProperty<T>>[] listeners = (DynamicValueListener<T, SimpleProperty<T>>[])getDvListeners()
-				.toArray();
+            DynamicValueListener<T, SimpleProperty<T>>[] listeners = (DynamicValueListener<T, SimpleProperty<T>>[])getDvListeners()
+                .toArray();
 
-			for (int i = 0; i < listeners.length; i++) {
-				switch (id) {
-				case 0:
-					listeners[i].valueUpdated(newEvent);
-					//lastValue = (T)newEvent.getValue();
+            for (int i = 0; i < listeners.length; i++) {
+                switch (id) {
+                case 0:
+                    listeners[i].valueUpdated(newEvent);
+                    //lastValue = (T)newEvent.getValue();
 
-					break;
+                    break;
 
-				case 1:
-					listeners[i].valueChanged(newEvent);
-					//lastValue = (T)newEvent.getValue();
+                case 1:
+                    listeners[i].valueChanged(newEvent);
+                    //lastValue = (T)newEvent.getValue();
 
-					break;
+                    break;
 
-				case 2:
-					listeners[i].timeoutStarts(newEvent);
+                case 2:
+                    listeners[i].timeoutStarts(newEvent);
 
-					break;
+                    break;
 
-				case 3:
-					listeners[i].timeoutStops(newEvent);
+                case 3:
+                    listeners[i].timeoutStops(newEvent);
 
-					break;
+                    break;
 
-				case 4:
-					listeners[i].timelagStarts(newEvent);
+                case 4:
+                    listeners[i].timelagStarts(newEvent);
 
-					break;
+                    break;
 
-				case 5:
-					listeners[i].timelagStops(newEvent);
+                case 5:
+                    listeners[i].timelagStops(newEvent);
 
-					break;
+                    break;
 
-				case 6:
-					listeners[i].errorResponse(newEvent);
+                case 6:
+                    listeners[i].errorResponse(newEvent);
 
-					break;
+                    break;
 
-				case 7:
-					listeners[i].conditionChange(newEvent);
+                case 7:
+                    listeners[i].conditionChange(newEvent);
 
-					break;
-				}
-			}
-		}
+                    break;
+                }
+            }
+        }
 
-		public void valueUpdated(DynamicValueEvent event)
-		{
-			fireEvent(event, 0);
-		}
+        public void valueUpdated(DynamicValueEvent event)
+        {
+            fireEvent(event, 0);
+        }
 
-		public void valueChanged(DynamicValueEvent event)
-		{
-			fireEvent(event, 1);
-		}
+        public void valueChanged(DynamicValueEvent event)
+        {
+            fireEvent(event, 1);
+        }
 
-		public void timeoutStarts(DynamicValueEvent event)
-		{
-			fireEvent(event, 2);
-		}
+        public void timeoutStarts(DynamicValueEvent event)
+        {
+            fireEvent(event, 2);
+        }
 
-		public void timeoutStops(DynamicValueEvent event)
-		{
-			fireEvent(event, 3);
-		}
+        public void timeoutStops(DynamicValueEvent event)
+        {
+            fireEvent(event, 3);
+        }
 
-		public void timelagStarts(DynamicValueEvent event)
-		{
-			fireEvent(event, 4);
-		}
+        public void timelagStarts(DynamicValueEvent event)
+        {
+            fireEvent(event, 4);
+        }
 
-		public void timelagStops(DynamicValueEvent event)
-		{
-			fireEvent(event, 5);
-		}
+        public void timelagStops(DynamicValueEvent event)
+        {
+            fireEvent(event, 5);
+        }
 
-		public void errorResponse(DynamicValueEvent event)
-		{
-			fireEvent(event, 6);
-		}
+        public void errorResponse(DynamicValueEvent event)
+        {
+            fireEvent(event, 6);
+        }
 
-		public void conditionChange(DynamicValueEvent event)
-		{
-			fireEvent(event, 7);
-		}
-	}
+        public void conditionChange(DynamicValueEvent event)
+        {
+            fireEvent(event, 7);
+        }
+    }
 
-	public AbstractDataAccessWrapper(Class<T> valClass, DataAccess sourceDA)
-	{
-		this.sourceDA = sourceDA;
-		this.valClass = valClass;
-		conversion = getConversion();
+    public AbstractDataAccessWrapper(Class<T> valClass, DataAccess sourceDA)
+    {
+        this.sourceDA = sourceDA;
+        this.valClass = valClass;
+        conversion = getConversion();
 
-		if (conversion == UNKNOWN) {
-			throw new IllegalArgumentException();
-		}
+        if (conversion == UNKNOWN) {
+            throw new IllegalArgumentException();
+        }
 
-		sourceDA.addDynamicValueListener(new DADynamicValueListener());
-	}
+        sourceDA.addDynamicValueListener(new DADynamicValueListener());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#addDynamicValueListener(org.csstudio.dal.DynamicValueListener)
-	 */
-	public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l)
-	{
-		getDvListeners().add(l);
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#addDynamicValueListener(org.csstudio.dal.DynamicValueListener)
+     */
+    public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l)
+    {
+        getDvListeners().add(l);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#removeDynamicValueListener(org.csstudio.dal.DynamicValueListener)
-	 */
-	public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l)
-	{
-		getDvListeners().remove(l);
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#removeDynamicValueListener(org.csstudio.dal.DynamicValueListener)
+     */
+    public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l)
+    {
+        getDvListeners().remove(l);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#getDynamicValueListeners()
-	 */
-	public DynamicValueListener<T, SimpleProperty<T>>[] getDynamicValueListeners()
-	{
-		if (hasDynamicValueListeners()) {
-			return (DynamicValueListener<T, SimpleProperty<T>>[])
-			getDvListeners().toArray(
-					new DynamicValueListener[getDvListeners().size()]);
-		}
-		return new DynamicValueListener[0];
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#getDynamicValueListeners()
+     */
+    public DynamicValueListener<T, SimpleProperty<T>>[] getDynamicValueListeners()
+    {
+        if (hasDynamicValueListeners()) {
+            return (DynamicValueListener<T, SimpleProperty<T>>[])
+            getDvListeners().toArray(
+                    new DynamicValueListener[getDvListeners().size()]);
+        }
+        return new DynamicValueListener[0];
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#getDataType()
-	 */
-	public Class<T> getDataType()
-	{
-		return valClass;
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#getDataType()
+     */
+    public Class<T> getDataType()
+    {
+        return valClass;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#isSettable()
-	 */
-	public boolean isSettable()
-	{
-		return sourceDA.isSettable();
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#isSettable()
+     */
+    public boolean isSettable()
+    {
+        return sourceDA.isSettable();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#setValue(java.lang.Object)
-	 */
-	public void setValue(T value) throws DataExchangeException
-	{
-		Object newVal = convertToOriginal(value, sourceDA);
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#setValue(java.lang.Object)
+     */
+    public void setValue(T value) throws DataExchangeException
+    {
+        Object newVal = convertToOriginal(value, sourceDA);
 
-		if (newVal != null) {
-			sourceDA.setValue(newVal);
-		}
-	}
+        if (newVal != null) {
+            sourceDA.setValue(newVal);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#getValue()
-	 */
-	public T getValue() throws DataExchangeException
-	{
-		T value = convertFromOriginal(sourceDA.getValue(), sourceDA);
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#getValue()
+     */
+    public T getValue() throws DataExchangeException
+    {
+        T value = convertFromOriginal(sourceDA.getValue(), sourceDA);
 
-		if (value != null) {
-			return value;
-		}
+        if (value != null) {
+            return value;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#getLatestReceivedValue()
-	 */
-	public T getLatestReceivedValue()
-	{
-		T value = convertFromOriginal(sourceDA.getLatestReceivedValue(), sourceDA);
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#getLatestReceivedValue()
+     */
+    public T getLatestReceivedValue()
+    {
+        T value = convertFromOriginal(sourceDA.getLatestReceivedValue(), sourceDA);
 
-		if (value != null) {
-			return value;
-		}
+        if (value != null) {
+            return value;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	protected abstract int getConversion();
+    protected abstract int getConversion();
 
-	protected abstract Object convertToOriginal(T value,
-	    DataAccess dataAccess);
+    protected abstract Object convertToOriginal(T value,
+        DataAccess dataAccess);
 
-	protected abstract T convertFromOriginal(Object value,
-	    DataAccess dataAccess);
+    protected abstract T convertFromOriginal(Object value,
+        DataAccess dataAccess);
 
-	protected ListenerList getDvListeners() {
-		if (dvListeners==null) {
-			synchronized (this) {
-				if (dvListeners==null) {
-					 dvListeners= new ListenerList(DynamicValueListener.class);
-				}
-			}
-		}
-		return dvListeners;
-	}
-	
-	public boolean hasDynamicValueListeners() {
-		return dvListeners!=null && dvListeners.size()>0;
-	}
+    protected ListenerList getDvListeners() {
+        if (dvListeners==null) {
+            synchronized (this) {
+                if (dvListeners==null) {
+                     dvListeners= new ListenerList(DynamicValueListener.class);
+                }
+            }
+        }
+        return dvListeners;
+    }
+
+    public boolean hasDynamicValueListeners() {
+        return dvListeners!=null && dvListeners.size()>0;
+    }
 }
 
 /* __oOo__ */

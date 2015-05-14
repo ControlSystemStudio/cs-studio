@@ -14,16 +14,16 @@ package org.csstudio.swt.widgets.datadefinition;
  */
 public interface IPrimaryArrayWrapper {
 
-	/**Get the array element value at index i. 
-	 * @param i index
-	 * @return the value at index i.
-	 */
-	public double get(int i);
-	
-	/**Get size of the array.
-	 * @return size of the array.
-	 */
-	public int getSize();
-	
-	
+    /**Get the array element value at index i.
+     * @param i index
+     * @return the value at index i.
+     */
+    public double get(int i);
+
+    /**Get size of the array.
+     * @return size of the array.
+     */
+    public int getSize();
+
+
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
@@ -18,7 +18,7 @@ import org.epics.pvmanager.service.ServiceMethod;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ServiceTreeContentProvider implements ITreeContentProvider {
 
@@ -26,7 +26,7 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.viewers.IContentProvider#dispose()
      */
     @Override
@@ -35,7 +35,7 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.viewers.IContentProvider#inputChanged(org.eclipse.jface
      * .viewers.Viewer, java.lang.Object, java.lang.Object)
@@ -43,57 +43,57 @@ public class ServiceTreeContentProvider implements ITreeContentProvider {
     @SuppressWarnings("unchecked")
     @Override
     public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-	this.services = (List<Service>) newInput;
+    this.services = (List<Service>) newInput;
     }
 
     @Override
     public Object[] getElements(Object inputElement) {
-	return services.toArray();
+    return services.toArray();
     }
 
     @Override
     public Object[] getChildren(Object parentElement) {
-	if (parentElement instanceof Service) {
-	    List<ServiceMethod> serviceMethods = new ArrayList<ServiceMethod>(
-		    ((Service) parentElement).getServiceMethods().values());
-	    Collections.sort(serviceMethods, new Comparator<ServiceMethod>() {
+    if (parentElement instanceof Service) {
+        List<ServiceMethod> serviceMethods = new ArrayList<ServiceMethod>(
+            ((Service) parentElement).getServiceMethods().values());
+        Collections.sort(serviceMethods, new Comparator<ServiceMethod>() {
 
-		@Override
-		public int compare(ServiceMethod o1, ServiceMethod o2) {
-		    return o1.getName().compareTo(o2.getName());
-		}
-	    });
-	    return serviceMethods.toArray();
-	} else if (parentElement instanceof ServiceMethod) {
-	    SortedMap<String, String> argumentDescriptionMap = new TreeMap<String, String>();
-	    argumentDescriptionMap.putAll(((ServiceMethod) parentElement)
-		    .getArgumentDescriptions());
-	    SortedMap<String, String> resultDescriptionMap = new TreeMap<String, String>();
-	    resultDescriptionMap.putAll(((ServiceMethod) parentElement)
-		    .getResultDescriptions());
-	    List<Entry<String, String>> descriptionList = new ArrayList<Entry<String, String>>();
-	    descriptionList.addAll(argumentDescriptionMap.entrySet());
-	    descriptionList.addAll(resultDescriptionMap.entrySet());
-	    return descriptionList.toArray();
-	}
-	return null;
+        @Override
+        public int compare(ServiceMethod o1, ServiceMethod o2) {
+            return o1.getName().compareTo(o2.getName());
+        }
+        });
+        return serviceMethods.toArray();
+    } else if (parentElement instanceof ServiceMethod) {
+        SortedMap<String, String> argumentDescriptionMap = new TreeMap<String, String>();
+        argumentDescriptionMap.putAll(((ServiceMethod) parentElement)
+            .getArgumentDescriptions());
+        SortedMap<String, String> resultDescriptionMap = new TreeMap<String, String>();
+        resultDescriptionMap.putAll(((ServiceMethod) parentElement)
+            .getResultDescriptions());
+        List<Entry<String, String>> descriptionList = new ArrayList<Entry<String, String>>();
+        descriptionList.addAll(argumentDescriptionMap.entrySet());
+        descriptionList.addAll(resultDescriptionMap.entrySet());
+        return descriptionList.toArray();
+    }
+    return null;
     }
 
     @Override
     public Object getParent(Object element) {
-	return null;
+    return null;
     }
 
     @Override
     public boolean hasChildren(Object element) {
-	if (element instanceof Service) {
-	    return !((Service) element).getServiceMethods().values().isEmpty();
-	} else if (element instanceof ServiceMethod) {
-	    return !((ServiceMethod) element).getArgumentDescriptions()
-		    .isEmpty()
-		    || !((ServiceMethod) element).getResultDescriptions()
-			    .isEmpty();
-	}
-	return false;
+    if (element instanceof Service) {
+        return !((Service) element).getServiceMethods().values().isEmpty();
+    } else if (element instanceof ServiceMethod) {
+        return !((ServiceMethod) element).getArgumentDescriptions()
+            .isEmpty()
+            || !((ServiceMethod) element).getResultDescriptions()
+                .isEmpty();
+    }
+    return false;
     }
 }

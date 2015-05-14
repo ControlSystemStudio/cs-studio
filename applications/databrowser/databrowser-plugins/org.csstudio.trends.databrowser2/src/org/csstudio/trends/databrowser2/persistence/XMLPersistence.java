@@ -67,7 +67,7 @@ public class XMLPersistence
     final public static String TAG_AXES = "axes";
     final public static String TAG_ANNOTATIONS = "annotations";
     final public static String TAG_PVLIST = "pvlist";
-    
+
     final public static String TAG_SHOW_TOOLBAR = "show_toolbar";
     final public static String TAG_SHOW_LEGEND = "show_legend";
 

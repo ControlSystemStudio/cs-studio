@@ -22,16 +22,16 @@ import org.epics.vtype.ValueFactory;
 @SuppressWarnings("nls")
 public class TestHelper
 {
-	final public static Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "Eggs", NumberFormats.format(2), 8.0, 9.0, 10.0, 0.0, 10.0);
+    final public static Display display = ValueFactory.newDisplay(0.0, 1.0, 2.0, "Eggs", NumberFormats.format(2), 8.0, 9.0, 10.0, 0.0, 10.0);
 
-	/** @param value Value
-	 *  @return VType for that value
-	 */
+    /** @param value Value
+     *  @return VType for that value
+     */
     public static VType newValue(final double value)
     {
-    	return new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, value);
+        return new ArchiveVNumber(Timestamp.now(), AlarmSeverity.NONE, "OK", display, value);
     }
-    
+
     /** @param samples {@link SampleBuffer} to dump
      *  @return Sample count
      */

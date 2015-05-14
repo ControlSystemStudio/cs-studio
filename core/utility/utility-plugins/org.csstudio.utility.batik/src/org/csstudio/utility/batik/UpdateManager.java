@@ -18,31 +18,31 @@ import org.w3c.dom.Document;
  */
 public class UpdateManager extends org.apache.batik.bridge.UpdateManager {
 
-	public UpdateManager(BridgeContext ctx, GraphicsNode gn, Document doc) {
-		super(ctx, gn, doc);
-	}
+    public UpdateManager(BridgeContext ctx, GraphicsNode gn, Document doc) {
+        super(ctx, gn, doc);
+    }
 
-	// FIXME: the SVG display freeze when this part is enabled
-	// private long lastRepaintTime = 0;
-	// private long maxRepaintTime = 200; // milliseconds
-	//
-	// /**
-	// * Repaints the dirty areas, if needed.
-	// */
-	// protected void repaint() {
-	// long cTime = System.currentTimeMillis();
-	// if (cTime - lastRepaintTime > maxRepaintTime) {
-	// lastRepaintTime = cTime;
-	// super.repaint();
-	// }
-	// }
-	//
-	// public void setMaxRepaintTime(long maxRepaintTime) {
-	// this.maxRepaintTime = maxRepaintTime;
-	// }
+    // FIXME: the SVG display freeze when this part is enabled
+    // private long lastRepaintTime = 0;
+    // private long maxRepaintTime = 200; // milliseconds
+    //
+    // /**
+    // * Repaints the dirty areas, if needed.
+    // */
+    // protected void repaint() {
+    // long cTime = System.currentTimeMillis();
+    // if (cTime - lastRepaintTime > maxRepaintTime) {
+    // lastRepaintTime = cTime;
+    // super.repaint();
+    // }
+    // }
+    //
+    // public void setMaxRepaintTime(long maxRepaintTime) {
+    // this.maxRepaintTime = maxRepaintTime;
+    // }
 
-	public void setGVTRoot(GraphicsNode newRoot) {
-		this.graphicsNode = newRoot;
-	}
+    public void setGVTRoot(GraphicsNode newRoot) {
+        this.graphicsNode = newRoot;
+    }
 
 }

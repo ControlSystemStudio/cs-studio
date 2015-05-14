@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat;
 public class TimestampHelper
 {
     final private static DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
-   
+
     /** Format EPICS time stamp as string
      *  @param timestamp {@link org.epics.util.time.Timestamp}
      *  @return {@link String}
@@ -29,7 +29,7 @@ public class TimestampHelper
             return format.format(timestamp.toDate());
         }
     }
-    
+
     /** Convert EPICS time stamp into SQL time stamp
      *  @param timestamp {@link org.epics.util.time.Timestamp}
      *  @return {@link java.sql.Timestamp}

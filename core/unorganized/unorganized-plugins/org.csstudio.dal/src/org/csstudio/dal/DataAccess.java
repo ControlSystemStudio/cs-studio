@@ -53,90 +53,90 @@ package org.csstudio.dal;
  */
 public interface DataAccess<T>
 {
-	/**
-	 * Adds a dynamic value listener. In response, the data access will
-	 * immediately dispatch an event with the current dynamic value (even if
-	 * it is <code>UNINITIALIZED</code>). Afterwards, if the implementation
-	 * allows, the event delivery may be controlled by the listener.
-	 *
-	 * @param l the listener object
-	 */
-	public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l);
+    /**
+     * Adds a dynamic value listener. In response, the data access will
+     * immediately dispatch an event with the current dynamic value (even if
+     * it is <code>UNINITIALIZED</code>). Afterwards, if the implementation
+     * allows, the event delivery may be controlled by the listener.
+     *
+     * @param l the listener object
+     */
+    public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l);
 
-	/**
-	 * Removes a dynamic value listener. No further notifications will
-	 * be sent. The implementation may release the resources connected to the
-	 * subscription if this is necessary.
-	 *
-	 * @param l the listener object
-	 */
-	public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l);
+    /**
+     * Removes a dynamic value listener. No further notifications will
+     * be sent. The implementation may release the resources connected to the
+     * subscription if this is necessary.
+     *
+     * @param l the listener object
+     */
+    public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l);
 
-	/**
-	 * Returns a list of all dynamic value listeners.
-	 *
-	 * @return DynamicValueListener[] a list of all active listeners
-	 */
-	public DynamicValueListener<T, ? extends SimpleProperty<T>>[] getDynamicValueListeners();
+    /**
+     * Returns a list of all dynamic value listeners.
+     *
+     * @return DynamicValueListener[] a list of all active listeners
+     */
+    public DynamicValueListener<T, ? extends SimpleProperty<T>>[] getDynamicValueListeners();
 
-	/**
-	 * Returns <code>true</code> if has any registered dynamic value listener.
-	 * This is optimization method, faster then calling up array of listeners an checking if 0. 
-	 *
-	 * @return <code>true</code> if has any registered dynamic value listener
-	 */
-	public boolean hasDynamicValueListeners();
+    /**
+     * Returns <code>true</code> if has any registered dynamic value listener.
+     * This is optimization method, faster then calling up array of listeners an checking if 0.
+     *
+     * @return <code>true</code> if has any registered dynamic value listener
+     */
+    public boolean hasDynamicValueListeners();
 
-	/**
-	 * Returns the type of the dynamic value accessible through this
-	 * data access.
-	 *
-	 * @return dynamic value type
-	 */
-	public Class<T> getDataType();
+    /**
+     * Returns the type of the dynamic value accessible through this
+     * data access.
+     *
+     * @return dynamic value type
+     */
+    public Class<T> getDataType();
 
-	/**
-	 * Returns whether the value can be set. If false, all methods that
-	 * perform set may be ignored.
-	 *
-	 * @return True if value can be set.
-	 */
-	boolean isSettable();
+    /**
+     * Returns whether the value can be set. If false, all methods that
+     * perform set may be ignored.
+     *
+     * @return True if value can be set.
+     */
+    boolean isSettable();
 
-	/**
-	 * Sets the value in the data source. This method executes
-	 * synchronously, i.e. after its completion, the value must be set in the
-	 * primary data source.
-	 *
-	 * @param value the new value to set
-	 *
-	 * @exception DataExchangeException if the set operation fails for
-	 *            whichever reason
-	 */
-	public void setValue(T value) throws DataExchangeException;
+    /**
+     * Sets the value in the data source. This method executes
+     * synchronously, i.e. after its completion, the value must be set in the
+     * primary data source.
+     *
+     * @param value the new value to set
+     *
+     * @exception DataExchangeException if the set operation fails for
+     *            whichever reason
+     */
+    public void setValue(T value) throws DataExchangeException;
 
-	/**
-	 * Returns the value in the data source. This method executes
-	 * synchronously by its definition.
-	 *
-	 * @return double the value in the data source
-	 *
-	 * @exception DataExchangeException if the get operation fails for
-	 *            whichever reason
-	 */
-	public T getValue() throws DataExchangeException;
+    /**
+     * Returns the value in the data source. This method executes
+     * synchronously by its definition.
+     *
+     * @return double the value in the data source
+     *
+     * @exception DataExchangeException if the get operation fails for
+     *            whichever reason
+     */
+    public T getValue() throws DataExchangeException;
 
-	/**
-	 * Returns the latest known value in the data source, obtained
-	 * implicitly by whatever means. The latest received value is updated
-	 * whenever a get is requested or when a new subscription notification is
-	 * available for this data access. Methods in <code>Updateable</code>
-	 * interface further define this value (by its latest timestamp and
-	 * response).
-	 *
-	 * @return double the latest known dynamic value
-	 */
-	public T getLatestReceivedValue();
+    /**
+     * Returns the latest known value in the data source, obtained
+     * implicitly by whatever means. The latest received value is updated
+     * whenever a get is requested or when a new subscription notification is
+     * available for this data access. Methods in <code>Updateable</code>
+     * interface further define this value (by its latest timestamp and
+     * response).
+     *
+     * @return double the latest known dynamic value
+     */
+    public T getLatestReceivedValue();
 } /* __oOo__ */
 
 

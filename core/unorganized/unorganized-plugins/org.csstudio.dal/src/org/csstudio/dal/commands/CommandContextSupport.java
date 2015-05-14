@@ -36,56 +36,56 @@ import java.util.List;
  */
 public class CommandContextSupport implements CommandContext
 {
-	private List<Command> commands = new ArrayList<Command>();
-	private List<String> names = new ArrayList<String>();
+    private List<Command> commands = new ArrayList<Command>();
+    private List<String> names = new ArrayList<String>();
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.commands.CommandContext#getCommands()
-	 */
-	public Command[] getCommands()
-	{
-		return commands.toArray(new Command[commands.size()]);
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.commands.CommandContext#getCommands()
+     */
+    public Command[] getCommands()
+    {
+        return commands.toArray(new Command[commands.size()]);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.CommandContext#getCommand(java.lang.String)
-	 */
-	public Command getCommand(String name)
-	{
-		Iterator<Command> ite = commands.iterator();
-		Command com;
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.CommandContext#getCommand(java.lang.String)
+     */
+    public Command getCommand(String name)
+    {
+        Iterator<Command> ite = commands.iterator();
+        Command com;
 
-		while (ite.hasNext()) {
-			com = ite.next();
+        while (ite.hasNext()) {
+            com = ite.next();
 
-			if (name.equals(com.getName())) {
-				return com;
-			}
-		}
+            if (name.equals(com.getName())) {
+                return com;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	/**
-	 * Creates new command, based on specified method, and adds it to context.
-	 *
-	 * @param host on it, method will be called.
-	 * @param method new command will call it.
-	 */
-	public void addCommand(Object host, Method method)
-	{
-		commands.add(new CommandSupport(this, host, method));
-		names.add(method.getName());
-	}
+    /**
+     * Creates new command, based on specified method, and adds it to context.
+     *
+     * @param host on it, method will be called.
+     * @param method new command will call it.
+     */
+    public void addCommand(Object host, Method method)
+    {
+        commands.add(new CommandSupport(this, host, method));
+        names.add(method.getName());
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.CommandContext#getCommandNames()
-	 */
-	public String[] getCommandNames()
-	{
-		return names.toArray(new String[names.size()]);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.CommandContext#getCommandNames()
+     */
+    public String[] getCommandNames()
+    {
+        return names.toArray(new String[names.size()]);
+    }
 }
 
 /* __oOo__ */

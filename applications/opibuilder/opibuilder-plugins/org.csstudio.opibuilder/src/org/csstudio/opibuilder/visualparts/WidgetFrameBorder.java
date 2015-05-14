@@ -16,24 +16,24 @@ import org.eclipse.draw2d.TitleBarBorder;
 import org.eclipse.swt.graphics.Font;
 
 /**
- * Provides for a frame-like border which contains a title bar for holding the title of a 
+ * Provides for a frame-like border which contains a title bar for holding the title of a
  * Figure.
  * @author Xihui Chen
  */
 public class WidgetFrameBorder
-	extends CompoundBorder
-	implements LabeledBorder
+    extends CompoundBorder
+    implements LabeledBorder
 {
 
 
 {
-	createBorders();
+    createBorders();
 }
 
 /**
  * Constructs a FrameBorder with its label set to the name of the {@link TitleBarBorder}
  * class.
- * 
+ *
  * @since 2.0
  */
 public WidgetFrameBorder() { }
@@ -45,36 +45,36 @@ public WidgetFrameBorder() { }
  * @since 2.0
  */
 public WidgetFrameBorder(String label) {
-	setLabel(label);
+    setLabel(label);
 }
 
 /**
- * Creates the necessary borders for this FrameBorder. The inner border is a 
+ * Creates the necessary borders for this FrameBorder. The inner border is a
  * {@link TitleBarBorder}. The outer border is a {@link SchemeBorder}.
- * 
+ *
  * @since 2.0
  */
 protected void createBorders() {
-	inner = new TitleBarBorder();
-	outer = new VersatileLineBorder(ColorConstants.black, 1, SWTConstants.LINE_SOLID);
+    inner = new TitleBarBorder();
+    outer = new VersatileLineBorder(ColorConstants.black, 1, SWTConstants.LINE_SOLID);
 }
 
 /**
- * Returns the inner border of this FrameBorder, which contains the label for the 
+ * Returns the inner border of this FrameBorder, which contains the label for the
  * FrameBorder.
  *
  * @return  the border holding the label.
  * @since 2.0
  */
 protected LabeledBorder getLabeledBorder() {
-	return (LabeledBorder)inner;
+    return (LabeledBorder)inner;
 }
 
 /**
  * @return the label for this border
  */
 public String getLabel() {
-	return getLabeledBorder().getLabel();
+    return getLabeledBorder().getLabel();
 }
 
 /**
@@ -82,7 +82,7 @@ public String getLabel() {
  * @param label the label
  */
 public void setLabel(String label) {
-	getLabeledBorder().setLabel(label);
+    getLabeledBorder().setLabel(label);
 }
 
 /**
@@ -90,7 +90,7 @@ public void setLabel(String label) {
  * @param font the font
  */
 public void setFont(Font font) {
-	getLabeledBorder().setFont(font);
+    getLabeledBorder().setFont(font);
 }
 
 }

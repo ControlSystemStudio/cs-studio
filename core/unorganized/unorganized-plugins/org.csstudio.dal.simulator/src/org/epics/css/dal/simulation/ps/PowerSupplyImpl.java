@@ -64,178 +64,178 @@ import com.cosylab.util.BitCondition;
  */
 public class PowerSupplyImpl extends AbstractDeviceImpl implements PowerSupply
 {
-	private static BitSet statusOff;
-	private static BitSet statusOn;
+    private static BitSet statusOff;
+    private static BitSet statusOn;
 
-	public PowerSupplyImpl(String name, DeviceFamily deviceFamily)
-	{
-		super(name,deviceFamily);
-	}
+    public PowerSupplyImpl(String name, DeviceFamily deviceFamily)
+    {
+        super(name,deviceFamily);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.impl.AbstractDeviceImpl#initialize(org.epics.css.dal.proxy.DeviceProxy, org.epics.css.dal.proxy.DirectoryProxy)
-	 */
-	public void initialize(DeviceProxy devp, DirectoryProxy dirp)
-	{
-		super.initialize(devp, dirp);
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.impl.AbstractDeviceImpl#initialize(org.epics.css.dal.proxy.DeviceProxy, org.epics.css.dal.proxy.DirectoryProxy)
+     */
+    public void initialize(DeviceProxy devp, DirectoryProxy dirp)
+    {
+        super.initialize(devp, dirp);
 
-		if (devp instanceof PSDeviceProxy) {
-			CommandProxyImpl[] commands = null;
+        if (devp instanceof PSDeviceProxy) {
+            CommandProxyImpl[] commands = null;
 
-			try {
-				commands = new CommandProxyImpl[]{
-						new CommandProxyImpl(devp, this,
-						    this.getClass().getMethod("turnOn", null)),
-						new CommandProxyImpl(devp, this,
-						    this.getClass().getMethod("turnOff", null))
-					};
-			} catch (Exception e) {
-				Logger.getLogger(this.getClass()).warn("Simulator error.", e);
-			}
+            try {
+                commands = new CommandProxyImpl[]{
+                        new CommandProxyImpl(devp, this,
+                            this.getClass().getMethod("turnOn", null)),
+                        new CommandProxyImpl(devp, this,
+                            this.getClass().getMethod("turnOff", null))
+                    };
+            } catch (Exception e) {
+                Logger.getLogger(this.getClass()).warn("Simulator error.", e);
+            }
 
-			((PSDeviceProxy)devp).initalizeCommands(commands);
+            ((PSDeviceProxy)devp).initalizeCommands(commands);
 
-			statusOff = new BitSet(1);
-			statusOff.clear();
+            statusOff = new BitSet(1);
+            statusOff.clear();
 
-			statusOn = new BitSet(1);
-			statusOn.set(0);
+            statusOn = new BitSet(1);
+            statusOn.set(0);
 
-			String[] names = { "current", "readback", "status" };
-			Class[] propTypes = {
-					DoubleProperty.class, DoubleProperty.class,
-					PatternProperty.class
-				};
-			Class[] proxyTypes = {
-					DoublePropertyProxyImpl.class, DoublePropertyProxyImpl.class,
-					PatternPropertyProxyImpl.class
-				};
+            String[] names = { "current", "readback", "status" };
+            Class[] propTypes = {
+                    DoubleProperty.class, DoubleProperty.class,
+                    PatternProperty.class
+                };
+            Class[] proxyTypes = {
+                    DoublePropertyProxyImpl.class, DoublePropertyProxyImpl.class,
+                    PatternPropertyProxyImpl.class
+                };
 
-			((PSDeviceProxy)devp).initalizeProperties(names, propTypes,
-			    proxyTypes);
-		}
-	}
+            ((PSDeviceProxy)devp).initalizeProperties(names, propTypes,
+                proxyTypes);
+        }
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.device.PowerSupply#getCurrent()
-	 */
-	public DoubleProperty getCurrent()
-	{
-		return (DoubleProperty)getProperty("current");
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.device.PowerSupply#getCurrent()
+     */
+    public DoubleProperty getCurrent()
+    {
+        return (DoubleProperty)getProperty("current");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.device.PowerSupply#getReadback()
-	 */
-	public DoubleProperty getReadback()
-	{
-		return (DoubleProperty)getProperty("readback");
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.device.PowerSupply#getReadback()
+     */
+    public DoubleProperty getReadback()
+    {
+        return (DoubleProperty)getProperty("readback");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.device.PowerSupply#getStatus()
-	 */
-	public PatternProperty getStatus()
-	{
-		return (PatternProperty)getProperty("status");
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.device.PowerSupply#getStatus()
+     */
+    public PatternProperty getStatus()
+    {
+        return (PatternProperty)getProperty("status");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.impl.AbstractDeviceImpl#createProperty(java.lang.String)
-	 */
-	protected DynamicValueProperty<?> createProperty(String name)
-		throws RemoteException, IllegalAccessException, InstantiationException,
-			InvocationTargetException, NoSuchMethodException
-	{
-		DynamicValueProperty p = super.createProperty(name);
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.impl.AbstractDeviceImpl#createProperty(java.lang.String)
+     */
+    protected DynamicValueProperty<?> createProperty(String name)
+        throws RemoteException, IllegalAccessException, InstantiationException,
+            InvocationTargetException, NoSuchMethodException
+    {
+        DynamicValueProperty p = super.createProperty(name);
 
-		if (name.equals("status")) {
-			String[] bitDescriptions = new String[]{ "Power" };
+        if (name.equals("status")) {
+            String[] bitDescriptions = new String[]{ "Power" };
 
-			BitCondition[] conditionsWhenCleared = new BitCondition[1];
-			BitCondition[] conditionsWhenSet = new BitCondition[1];
+            BitCondition[] conditionsWhenCleared = new BitCondition[1];
+            BitCondition[] conditionsWhenSet = new BitCondition[1];
 
-			for (int i = 0; i < conditionsWhenCleared.length; i++) {
-				conditionsWhenCleared[i] = BitCondition.UNUSED;
-				conditionsWhenSet[i] = BitCondition.OK;
-			}
+            for (int i = 0; i < conditionsWhenCleared.length; i++) {
+                conditionsWhenCleared[i] = BitCondition.UNUSED;
+                conditionsWhenSet[i] = BitCondition.OK;
+            }
 
-			BitSet bitMask = new BitSet(1);
-			bitMask.set(0, 1);
+            BitSet bitMask = new BitSet(1);
+            bitMask.set(0, 1);
 
-			try {
-				DirContext ctx = SimulatorPlug.getInstance()
-					.getDefaultDirectory();
-				URIName uri = new URIName(null,
-					    SimulatorPlug.DEFAULT_AUTHORITY, p.getUniqueName(), null);
-				Attributes attr = new Attributes();
-				attr.put(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS,
-				    bitDescriptions);
-				attr.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_CLEARED,
-				    conditionsWhenCleared);
-				attr.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_SET,
-				    conditionsWhenSet);
-				attr.put(PatternPropertyCharacteristics.C_BIT_MASK, bitMask);
-				ctx.bind(uri, new PatternPropertyProxyImpl(p.getUniqueName(),SimulatorPlug.getInstance()),
-				    attr);
-			} catch (NamingException e) {
-				Logger.getLogger(this.getClass()).error("Simulator error.", e);
-			}
+            try {
+                DirContext ctx = SimulatorPlug.getInstance()
+                    .getDefaultDirectory();
+                URIName uri = new URIName(null,
+                        SimulatorPlug.DEFAULT_AUTHORITY, p.getUniqueName(), null);
+                Attributes attr = new Attributes();
+                attr.put(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS,
+                    bitDescriptions);
+                attr.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_CLEARED,
+                    conditionsWhenCleared);
+                attr.put(PatternPropertyCharacteristics.C_CONDITION_WHEN_SET,
+                    conditionsWhenSet);
+                attr.put(PatternPropertyCharacteristics.C_BIT_MASK, bitMask);
+                ctx.bind(uri, new PatternPropertyProxyImpl(p.getUniqueName(),SimulatorPlug.getInstance()),
+                    attr);
+            } catch (NamingException e) {
+                Logger.getLogger(this.getClass()).error("Simulator error.", e);
+            }
 
-			PropertyProxy proxy = deviceProxy.getPropertyProxy(name);
-			((PropertyProxyImpl)proxy).setSettable(false);
-		}
+            PropertyProxy proxy = deviceProxy.getPropertyProxy(name);
+            ((PropertyProxyImpl)proxy).setSettable(false);
+        }
 
-		LinkBlocker.blockUntillConnected(p,
-		    Plugs.getConnectionTimeout(null, 30000) * 2, true);
+        LinkBlocker.blockUntillConnected(p,
+            Plugs.getConnectionTimeout(null, 30000) * 2, true);
 
-		return p;
-	}
+        return p;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.device.PowerSupply#off()
-	 */
-	public void off() throws RemoteException
-	{
-		getCommand("turnOff").execute();
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.device.PowerSupply#off()
+     */
+    public void off() throws RemoteException
+    {
+        getCommand("turnOff").execute();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.epics.css.dal.device.PowerSupply#on()
-	 */
-	public void on() throws RemoteException
-	{
-		getCommand("turnOn").execute();
-	}
+    /*
+     * (non-Javadoc)
+     * @see org.epics.css.dal.device.PowerSupply#on()
+     */
+    public void on() throws RemoteException
+    {
+        getCommand("turnOn").execute();
+    }
 
-	/*
-	 * do not call this two methods (turnOff and turnOn)
-	 * they are here to allow use of commands and CommandProxyImpl
-	 */
-	public void turnOff() throws RemoteException
-	{
-		if (getStatus().getValue().equals(statusOff)) {
-			return;
-		}
+    /*
+     * do not call this two methods (turnOff and turnOn)
+     * they are here to allow use of commands and CommandProxyImpl
+     */
+    public void turnOff() throws RemoteException
+    {
+        if (getStatus().getValue().equals(statusOff)) {
+            return;
+        }
 
-		getStatus().setValue(statusOff);
-	}
+        getStatus().setValue(statusOff);
+    }
 
-	public void turnOn() throws RemoteException
-	{
-		if (getStatus().getValue().equals(statusOn)) {
-			return;
-		}
+    public void turnOn() throws RemoteException
+    {
+        if (getStatus().getValue().equals(statusOn)) {
+            return;
+        }
 
-		getStatus().setValue(statusOn);
-	}
+        getStatus().setValue(statusOn);
+    }
 }
 
 /* __oOo__ */

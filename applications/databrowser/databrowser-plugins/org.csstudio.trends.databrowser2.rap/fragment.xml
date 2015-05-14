@@ -28,7 +28,7 @@
             name="WebDatabrowserTheme">
       </theme>
    </extension>
-   
+
    <extension
          point="org.eclipse.equinox.http.registry.resources">
       <resource
@@ -36,7 +36,7 @@
             base-name="html/loading.gif">
       </resource>
    </extension>
-   
+
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
@@ -52,7 +52,7 @@
             load-on-startup="true">
       </filter>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -66,7 +66,7 @@
          </command>
       </menuContribution>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.commands">
       <command
@@ -75,5 +75,5 @@
             name="%AboutTitle">
       </command>
    </extension>
-   
+
 </fragment>

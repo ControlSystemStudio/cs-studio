@@ -43,8 +43,7 @@ import org.eclipse.swt.graphics.Font;
 /**
  * @author Fred Arnaud (Sopra Group)
  */
-public abstract class CommonMultiSymbolFigure extends Figure implements
-		SymbolImageListener {
+public abstract class CommonMultiSymbolFigure extends Figure implements	SymbolImageListener {
 
 	protected String baseImagePath;
 	protected Map<Integer, String> statesMap;
@@ -727,5 +726,4 @@ public abstract class CommonMultiSymbolFigure extends Figure implements
 	public void sizeChanged() {
 		imageListener.imageResized(this);
 	}
-
 }

@@ -39,49 +39,49 @@ import de.desy.tine.client.TLink;
 import de.desy.tine.dataUtils.TDataType;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class TINERequestImpl<T> extends RequestImpl<T> implements TCallback {
-	
-	private PropertyProxyImpl<T> proxy;
-	private TLink tLink;
-	
-	public TINERequestImpl(Identifiable source, ResponseListener<T> l) {
-		super(source, l);
-	}
-	
-	public TINERequestImpl(PropertyProxyImpl<T> source, ResponseListener<T> l, TLink tLink) {
-		super(source, l);
-		this.proxy = source;
-		this.tLink = tLink;
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.tine.client.TCallback#callback(int, int)
-	 */
-	public void callback(int linkIndex, int linkStatus) {
-		int statusCode = this.tLink.getLinkStatus();  
-		Exception e = null;
+
+    private PropertyProxyImpl<T> proxy;
+    private TLink tLink;
+
+    public TINERequestImpl(Identifiable source, ResponseListener<T> l) {
+        super(source, l);
+    }
+
+    public TINERequestImpl(PropertyProxyImpl<T> source, ResponseListener<T> l, TLink tLink) {
+        super(source, l);
+        this.proxy = source;
+        this.tLink = tLink;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.tine.client.TCallback#callback(int, int)
+     */
+    public void callback(int linkIndex, int linkStatus) {
+        int statusCode = this.tLink.getLinkStatus();
+        Exception e = null;
         if (statusCode > 0 || linkStatus > 0) {
-        	e = new RemoteException(this.proxy,this.tLink.getLastError());
-        	this.proxy.setConnectionState(ConnectionState.CONNECTION_LOST,e);
+            e = new RemoteException(this.proxy,this.tLink.getLastError());
+            this.proxy.setConnectionState(ConnectionState.CONNECTION_LOST,e);
         } else {
-        	this.proxy.setConnectionState(ConnectionState.CONNECTED);
+            this.proxy.setConnectionState(ConnectionState.CONNECTED);
         }
-              
+
         TDataType dout = this.tLink.getOutputDataObject();
-        
+
         T data = this.proxy.extractData(dout);
         Timestamp timestamp = new Timestamp(this.tLink.getLastTimeStamp(),0);
         ResponseImpl<T> response = new ResponseImpl<T>(getSource(),this,data,"",true, e,null,timestamp,true);
-        
+
         addResponse(response);
         if (e == null) {
-        	this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),null,"Value updated."));
+            this.proxy.setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.NORMAL),null,"Value updated."));
         }
-		this.tLink.close();
-	}	
+        this.tLink.close();
+    }
 }

@@ -59,12 +59,12 @@ public class ModelListenerAdapter implements ModelListener
     @Override
     public void scrollEnabled(boolean scroll_enabled) { /* NOP */}
 
-	@Override
-	public void changedAnnotations() { /* NOP */}
+    @Override
+    public void changedAnnotations() { /* NOP */}
 
-	@Override
-	public void itemRefreshRequested(PVItem item) { /* NOP */}
+    @Override
+    public void itemRefreshRequested(PVItem item) { /* NOP */}
 
-	@Override
-	public void selectedSamplesChanged() { /* NOP */}
+    @Override
+    public void selectedSamplesChanged() { /* NOP */}
 }

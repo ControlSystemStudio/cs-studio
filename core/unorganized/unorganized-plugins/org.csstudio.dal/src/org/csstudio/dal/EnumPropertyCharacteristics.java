@@ -33,19 +33,19 @@ package org.csstudio.dal;
  *
  */
 public interface EnumPropertyCharacteristics
-	extends NumericPropertyCharacteristics
+    extends NumericPropertyCharacteristics
 {
-	/**
-	 * Characteristic name for array of enumerated objects. Characteristic type
-	 * is <code>Object[]</code>.
-	 */
-	public final static String C_ENUM_VALUES = CharacteristicInfo.C_ENUM_VALUES.getName();
+    /**
+     * Characteristic name for array of enumerated objects. Characteristic type
+     * is <code>Object[]</code>.
+     */
+    public final static String C_ENUM_VALUES = CharacteristicInfo.C_ENUM_VALUES.getName();
 
-	/**
-	 * Characteristic name for array of descriptions for enumerated objects.
-	 * Characteristic type is <code>String[]</code>.
-	 */
-	public final static String C_ENUM_DESCRIPTIONS = CharacteristicInfo.C_ENUM_DESCRIPTIONS.getName();
+    /**
+     * Characteristic name for array of descriptions for enumerated objects.
+     * Characteristic type is <code>String[]</code>.
+     */
+    public final static String C_ENUM_DESCRIPTIONS = CharacteristicInfo.C_ENUM_DESCRIPTIONS.getName();
 }
 
 /* __oOo__ */

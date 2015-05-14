@@ -37,35 +37,35 @@ import org.csstudio.dal.DynamicValueProperty;
  */
 public interface GroupDataAccessProvider
 {
-	/**
-	 * Returns data access for all properties contained by this group access provider, which can be
-	 * casted to provided type and data access flavor.
-	 *
-	 * @param <T> exact data type
-	 * @param <P> exact property type
-	 * @param dataType exact data type
-	 * @param propertyType exact property type
-	 *
-	 * @return data access for all properties contained by this group access provider
-	 */
-	public <T, P extends DynamicValueProperty<?>> GroupDataAccess<T, P> getGroupDataAccess(
-	    Class<T> dataType, Class<P> propertyType);
+    /**
+     * Returns data access for all properties contained by this group access provider, which can be
+     * casted to provided type and data access flavor.
+     *
+     * @param <T> exact data type
+     * @param <P> exact property type
+     * @param dataType exact data type
+     * @param propertyType exact property type
+     *
+     * @return data access for all properties contained by this group access provider
+     */
+    public <T, P extends DynamicValueProperty<?>> GroupDataAccess<T, P> getGroupDataAccess(
+        Class<T> dataType, Class<P> propertyType);
 
-	/**
-	 * Returns data access for all properties contained by this group access provider, which can be
-	 * casted to provided type and data access flavor and match constrained.
-	 *
-	 * @param <T> exact data type
-	 * @param <P> exact property type
-	 * @param dataType exact data type
-	 * @param propertyType exact property type
-	 * @param constrain the constrains which filter returned properties in group access
-	 *
-	 * @return data access for all properties contained by this group access provider
-	 */
-	public <T, P extends DynamicValueProperty<T>> GroupDataAccess<T, P> getGroupDataAccess(
-	    Class<T> dataType, Class<P> propertyType,
-	    PropertyGroupConstrain constrain);
+    /**
+     * Returns data access for all properties contained by this group access provider, which can be
+     * casted to provided type and data access flavor and match constrained.
+     *
+     * @param <T> exact data type
+     * @param <P> exact property type
+     * @param dataType exact data type
+     * @param propertyType exact property type
+     * @param constrain the constrains which filter returned properties in group access
+     *
+     * @return data access for all properties contained by this group access provider
+     */
+    public <T, P extends DynamicValueProperty<T>> GroupDataAccess<T, P> getGroupDataAccess(
+        Class<T> dataType, Class<P> propertyType,
+        PropertyGroupConstrain constrain);
 }
 
 /* __oOo__ */

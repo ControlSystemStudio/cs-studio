@@ -14,18 +14,18 @@ import org.eclipse.draw2d.Label;
  *
  */
 public class LabelWidgetIntrospector extends DefaultWidgetIntrospector {
-	public static String[] LABEL_WIDGET_NON_PROPERTIES = new String[]{
-		"icon",
-		"iconAlignment",
-		"iconTextGap",
-		"labelAlignment",
-		"textAlignment",
-		"textPlacement"
-	};
-	@Override
-	public String[] getNonProperties() {
-	
-		return concatenateStringArrays(super.getNonProperties(), LABEL_WIDGET_NON_PROPERTIES);
-	}
-	
+    public static String[] LABEL_WIDGET_NON_PROPERTIES = new String[]{
+        "icon",
+        "iconAlignment",
+        "iconTextGap",
+        "labelAlignment",
+        "textAlignment",
+        "textPlacement"
+    };
+    @Override
+    public String[] getNonProperties() {
+
+        return concatenateStringArrays(super.getNonProperties(), LABEL_WIDGET_NON_PROPERTIES);
+    }
+
 }

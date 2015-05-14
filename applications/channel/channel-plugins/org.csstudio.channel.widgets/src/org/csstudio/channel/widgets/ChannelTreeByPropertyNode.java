@@ -16,180 +16,180 @@ import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidgetAdaptable;
 
 public class ChannelTreeByPropertyNode implements ConfigurableWidgetAdaptable, ChannelQueryAdaptable {
-	
-	// The model that contains the node, used to access all data
-	// common to all nodes
-	private ChannelTreeByPropertyModel model;
-	
-	// Channels represented by this node and down
-	private List<Channel> nodeChannels;
-	// 0 for root, 1 for children, 2 for grandchildren...
-	private final int depth;
-	// null for root, first property value for children, second property value
-	// for grandchildren,
-	// channelName for leaf
-	private final String displayName;
-	// Next property value for root and descendents, names of channels for first
-	// to last node,
-	// null for leaf
-	private final List<String> childrenNames;
-	// Parent of the node, or null if root
-	private final ChannelTreeByPropertyNode parentNode;
 
-	ChannelTreeByPropertyNode(ChannelTreeByPropertyModel model, ChannelTreeByPropertyNode parentNode, String displayName) {
-		this.model = model;
-		this.parentNode = parentNode;
-		
-		// Calculate depth
-		if (parentNode == null) {
-			depth = 0;
-		} else {
-			depth = parentNode.depth + 1;
-		}
+    // The model that contains the node, used to access all data
+    // common to all nodes
+    private ChannelTreeByPropertyModel model;
 
-		this.displayName = displayName;
+    // Channels represented by this node and down
+    private List<Channel> nodeChannels;
+    // 0 for root, 1 for children, 2 for grandchildren...
+    private final int depth;
+    // null for root, first property value for children, second property value
+    // for grandchildren,
+    // channelName for leaf
+    private final String displayName;
+    // Next property value for root and descendents, names of channels for first
+    // to last node,
+    // null for leaf
+    private final List<String> childrenNames;
+    // Parent of the node, or null if root
+    private final ChannelTreeByPropertyNode parentNode;
 
-		// Construct the Channel list
-		if (parentNode == null) {
-			// Node is root, get all channels
-			nodeChannels = model.allChannels;
-		} else if (getPropertyName() == null) {
-			// leaf node, channels that match the name
-			nodeChannels = new ArrayList<Channel>();
-			for (Channel channel : parentNode.nodeChannels) {
-				if (this.displayName.equals(channel.getName())) {
-					nodeChannels.add(channel);
-				}
-			}
-		} else {
-			// Filter the channels that match the property name
-			nodeChannels = new ArrayList<Channel>();
-			for (Channel channel : parentNode.nodeChannels) {
-				if (this.displayName.equals(channel.getProperty(
-						getPropertyName()).getValue())) {
-					nodeChannels.add(channel);
-				}
-			}
-		}
+    ChannelTreeByPropertyNode(ChannelTreeByPropertyModel model, ChannelTreeByPropertyNode parentNode, String displayName) {
+        this.model = model;
+        this.parentNode = parentNode;
 
-		if (depth < model.properties.size()) {
-			// Children will be property values
-			childrenNames = new ArrayList<String>(ChannelUtil.getPropValues(
-					nodeChannels, model.properties.get(depth)));
-			Collections.sort(childrenNames);
-		} else if (depth == model.properties.size()) {
-			// Children will be channels
-			if (model.isShowChannelNames()) {
-				childrenNames = new ArrayList<String>(
-						ChannelUtil.getChannelNames(nodeChannels));
-				Collections.sort(childrenNames);
-			} else {
-				childrenNames = null;
-			}
-		} else {
-			childrenNames = null;
-		}
-	}
+        // Calculate depth
+        if (parentNode == null) {
+            depth = 0;
+        } else {
+            depth = parentNode.depth + 1;
+        }
 
-	/**
-	 * The property name at this level
-	 * 
-	 * @return property name or null if leaf node
-	 */
-	public String getPropertyName() {
-		// Root node does not have any property associated with it
-		if (depth == 0)
-			return null;
+        this.displayName = displayName;
 
-		int index = depth - 1;
-		// We are at the channel level
-		if (index >= model.properties.size())
-			return null;
+        // Construct the Channel list
+        if (parentNode == null) {
+            // Node is root, get all channels
+            nodeChannels = model.allChannels;
+        } else if (getPropertyName() == null) {
+            // leaf node, channels that match the name
+            nodeChannels = new ArrayList<Channel>();
+            for (Channel channel : parentNode.nodeChannels) {
+                if (this.displayName.equals(channel.getName())) {
+                    nodeChannels.add(channel);
+                }
+            }
+        } else {
+            // Filter the channels that match the property name
+            nodeChannels = new ArrayList<Channel>();
+            for (Channel channel : parentNode.nodeChannels) {
+                if (this.displayName.equals(channel.getProperty(
+                        getPropertyName()).getValue())) {
+                    nodeChannels.add(channel);
+                }
+            }
+        }
 
-		return model.properties.get(index);
-	}
+        if (depth < model.properties.size()) {
+            // Children will be property values
+            childrenNames = new ArrayList<String>(ChannelUtil.getPropValues(
+                    nodeChannels, model.properties.get(depth)));
+            Collections.sort(childrenNames);
+        } else if (depth == model.properties.size()) {
+            // Children will be channels
+            if (model.isShowChannelNames()) {
+                childrenNames = new ArrayList<String>(
+                        ChannelUtil.getChannelNames(nodeChannels));
+                Collections.sort(childrenNames);
+            } else {
+                childrenNames = null;
+            }
+        } else {
+            childrenNames = null;
+        }
+    }
 
-	public String getDisplayName() {
-		return displayName;
-	}
+    /**
+     * The property name at this level
+     *
+     * @return property name or null if leaf node
+     */
+    public String getPropertyName() {
+        // Root node does not have any property associated with it
+        if (depth == 0)
+            return null;
 
-	public List<String> getChildrenNames() {
-		return childrenNames;
-	}
+        int index = depth - 1;
+        // We are at the channel level
+        if (index >= model.properties.size())
+            return null;
 
-	public ChannelTreeByPropertyNode getChild(int index) {
-		return new ChannelTreeByPropertyNode(model, this, childrenNames.get(index));
-	}
-	
-	public List<Channel> getNodeChannels() {
-		return Collections.unmodifiableList(nodeChannels);
-	}
-	
-	public ConfigurableWidget getConfigurableWidget() {
-		return model.getWidget();
-	}
-	
-	/**
-	 * True if the node represents a sub-query and not a single channel.
-	 * @return
-	 */
-	public boolean isSubQuery() {
-		int index = depth - 1;
-		// We are at the channel level
-		if (index >= model.properties.size())
-			return false;
-		
-		return true;
-	}
-	
-	public String getSubQuery() {
-		// If it's not a sub-query, return the channel name (i.e. the display name)
-		if (!isSubQuery()) {
-			return getDisplayName();
-		}
-		
-		if (parentNode == null) {
-			return model.query;
-		}
-		
-		return parentNode.getSubQuery() + " " + getPropertyName() + "=" + getDisplayName();
-	}
-	
-	private void includePropertyAndValue(Map<String, String> map) {
-		if (getPropertyName() != null) {
-			map.put(getPropertyName(), getDisplayName());
-		}
-		if (parentNode != null) {
-			parentNode.includePropertyAndValue(map);
-		}
-	}
-	
-	public Map<String, String> getPropertiesAndValues() {
-		Map<String, String> map = new HashMap<String, String>();
-		includePropertyAndValue(map);
-		return map;
-	}
+        return model.properties.get(index);
+    }
 
-	@Override
-	public Collection<Channel> toChannels() {
-		return getNodeChannels();
-	}
+    public String getDisplayName() {
+        return displayName;
+    }
 
-	@Override
-	public Collection<ProcessVariable> toProcessVariables() {
-		return AdaptableUtilities.toProcessVariables(toChannels());
-	}
+    public List<String> getChildrenNames() {
+        return childrenNames;
+    }
 
-	@Override
-	public Collection<ChannelQuery> toChannelQueries() {
-		if (!isSubQuery())
-			return null;
-		return Collections.singleton(ChannelQuery.query(getSubQuery()).result(getNodeChannels(), null).build());
-	}
+    public ChannelTreeByPropertyNode getChild(int index) {
+        return new ChannelTreeByPropertyNode(model, this, childrenNames.get(index));
+    }
 
-	@Override
-	public ConfigurableWidget toConfigurableWidget() {
-		return model.getWidget();
-	}
+    public List<Channel> getNodeChannels() {
+        return Collections.unmodifiableList(nodeChannels);
+    }
+
+    public ConfigurableWidget getConfigurableWidget() {
+        return model.getWidget();
+    }
+
+    /**
+     * True if the node represents a sub-query and not a single channel.
+     * @return
+     */
+    public boolean isSubQuery() {
+        int index = depth - 1;
+        // We are at the channel level
+        if (index >= model.properties.size())
+            return false;
+
+        return true;
+    }
+
+    public String getSubQuery() {
+        // If it's not a sub-query, return the channel name (i.e. the display name)
+        if (!isSubQuery()) {
+            return getDisplayName();
+        }
+
+        if (parentNode == null) {
+            return model.query;
+        }
+
+        return parentNode.getSubQuery() + " " + getPropertyName() + "=" + getDisplayName();
+    }
+
+    private void includePropertyAndValue(Map<String, String> map) {
+        if (getPropertyName() != null) {
+            map.put(getPropertyName(), getDisplayName());
+        }
+        if (parentNode != null) {
+            parentNode.includePropertyAndValue(map);
+        }
+    }
+
+    public Map<String, String> getPropertiesAndValues() {
+        Map<String, String> map = new HashMap<String, String>();
+        includePropertyAndValue(map);
+        return map;
+    }
+
+    @Override
+    public Collection<Channel> toChannels() {
+        return getNodeChannels();
+    }
+
+    @Override
+    public Collection<ProcessVariable> toProcessVariables() {
+        return AdaptableUtilities.toProcessVariables(toChannels());
+    }
+
+    @Override
+    public Collection<ChannelQuery> toChannelQueries() {
+        if (!isSubQuery())
+            return null;
+        return Collections.singleton(ChannelQuery.query(getSubQuery()).result(getNodeChannels(), null).build());
+    }
+
+    @Override
+    public ConfigurableWidget toConfigurableWidget() {
+        return model.getWidget();
+    }
 
 }

@@ -10,40 +10,40 @@ package org.csstudio.opibuilder.widgets.model;
 
 /**
  * Model for native button widget.
- * 
+ *
  * @author Xihui Chen
  * @deprecated the native button is not used anymore. Instead use Style property of Action Button.
- * 
+ *
  */
 public final class NativeButtonModel extends ActionButtonModel{
-	
-	
-	/**
-	 * The ID of this widget model.
-	 */
-	public static final String ID = "org.csstudio.opibuilder.widgets.NativeButton"; //$NON-NLS-1$
 
 
-	@Override
-	protected void configureProperties() {
-		super.configureProperties();
-		removeProperty(PROP_BACKCOLOR_ALARMSENSITIVE);
-		removeProperty(PROP_COLOR_BACKGROUND);
-		removeProperty(PROP_ALARM_PULSING);
-	}
-	
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
+    /**
+     * The ID of this widget model.
+     */
+    public static final String ID = "org.csstudio.opibuilder.widgets.NativeButton"; //$NON-NLS-1$
 
 
-	
-	
-	
+    @Override
+    protected void configureProperties() {
+        super.configureProperties();
+        removeProperty(PROP_BACKCOLOR_ALARMSENSITIVE);
+        removeProperty(PROP_COLOR_BACKGROUND);
+        removeProperty(PROP_ALARM_PULSING);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
+
+
+
+
+
 
 }

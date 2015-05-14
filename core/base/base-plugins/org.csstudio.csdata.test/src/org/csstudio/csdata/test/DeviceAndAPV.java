@@ -9,26 +9,26 @@ public class DeviceAndAPV implements Serializable
 {
     /** @see Serializable */
     final private static long serialVersionUID = 1L;
-    
-	private final Device device;
-	private final ProcessVariable pv;
 
-	public DeviceAndAPV(String device, String pv) {
-		this.device = new Device(device);
-		this.pv = new ProcessVariable(pv);
-	}
+    private final Device device;
+    private final ProcessVariable pv;
 
-	public DeviceAndAPV(Device device, ProcessVariable pv) {
-		this.device = device;
-		this.pv = pv;
-	}
+    public DeviceAndAPV(String device, String pv) {
+        this.device = new Device(device);
+        this.pv = new ProcessVariable(pv);
+    }
 
-	public Device getDevice() {
-		return device;
-	}
+    public DeviceAndAPV(Device device, ProcessVariable pv) {
+        this.device = device;
+        this.pv = pv;
+    }
 
-	public ProcessVariable getPv() {
-		return pv;
-	}
+    public Device getDevice() {
+        return device;
+    }
+
+    public ProcessVariable getPv() {
+        return pv;
+    }
 
 }

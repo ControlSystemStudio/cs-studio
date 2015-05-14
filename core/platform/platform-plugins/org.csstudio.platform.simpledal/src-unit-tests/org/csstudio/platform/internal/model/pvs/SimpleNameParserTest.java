@@ -39,52 +39,52 @@ import org.junit.Test;
  *
  */
 public class SimpleNameParserTest {
-	private SimpleNameParser _epicsParser;
+    private SimpleNameParser _epicsParser;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		_epicsParser = new SimpleNameParser(ControlSystemEnum.EPICS);
-	}
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        _epicsParser = new SimpleNameParser(ControlSystemEnum.EPICS);
+    }
 
-	/**
-	 * Test method for
-	 * {@link org.csstudio.platform.internal.model.pvs.DalNameParser#doParse(java.lang.String, java.lang.String)}.
-	 */
-	@Test
-	public void testParse() {
-		test("abc", ControlSystemEnum.EPICS, null, null, "abc");
-		test("epics://abc", ControlSystemEnum.EPICS, null, null, "abc");
-		test("epics://abc[cde]", ControlSystemEnum.EPICS, null, null,
-				"abc[cde]");
-		test("", ControlSystemEnum.UNKNOWN, null, null, "");
-	}
+    /**
+     * Test method for
+     * {@link org.csstudio.platform.internal.model.pvs.DalNameParser#doParse(java.lang.String, java.lang.String)}.
+     */
+    @Test
+    public void testParse() {
+        test("abc", ControlSystemEnum.EPICS, null, null, "abc");
+        test("epics://abc", ControlSystemEnum.EPICS, null, null, "abc");
+        test("epics://abc[cde]", ControlSystemEnum.EPICS, null, null,
+                "abc[cde]");
+        test("", ControlSystemEnum.UNKNOWN, null, null, "");
+    }
 
-	/**
-	 * Tests the specified raw name and checks whether the returned pv does
-	 * match the requirements.
-	 *
-	 * @param rawName
-	 *            the raw name, which is used as input for the parser
-	 * @param expectedCharacteristics
-	 *            the expected characteristic part
-	 * @param expectedDevice
-	 *            the expected device part
-	 * @param expectedProperty
-	 *            the expected property part
-	 */
-	private void test(final String rawName, final ControlSystemEnum expectedControlSystem,
-			final String expectedCharacteristics, final String expectedDevice,
-			final String expectedProperty) {
-		final IProcessVariableAddress pv = _epicsParser.parseRawName(rawName);
+    /**
+     * Tests the specified raw name and checks whether the returned pv does
+     * match the requirements.
+     *
+     * @param rawName
+     *            the raw name, which is used as input for the parser
+     * @param expectedCharacteristics
+     *            the expected characteristic part
+     * @param expectedDevice
+     *            the expected device part
+     * @param expectedProperty
+     *            the expected property part
+     */
+    private void test(final String rawName, final ControlSystemEnum expectedControlSystem,
+            final String expectedCharacteristics, final String expectedDevice,
+            final String expectedProperty) {
+        final IProcessVariableAddress pv = _epicsParser.parseRawName(rawName);
 
-		assertNotNull(pv);
-		assertEquals(expectedControlSystem, pv.getControlSystem());
-		assertEquals(expectedProperty, pv.getProperty());
-		assertEquals(expectedCharacteristics, pv.getCharacteristic());
-		assertEquals(expectedDevice, pv.getDevice());
-	}
+        assertNotNull(pv);
+        assertEquals(expectedControlSystem, pv.getControlSystem());
+        assertEquals(expectedProperty, pv.getProperty());
+        assertEquals(expectedCharacteristics, pv.getCharacteristic());
+        assertEquals(expectedDevice, pv.getDevice());
+    }
 
 }

@@ -25,10 +25,10 @@ import org.eclipse.core.runtime.jobs.Job;
 @SuppressWarnings("nls")
 abstract public class GetMessagesJob extends Job
 {
-	final private String url;
-	final private String user;
-	final private String password;
-	final private String schema;
+    final private String url;
+    final private String user;
+    final private String password;
+    final private String schema;
     final private Calendar start;
     final private Calendar end;
     final private MessagePropertyFilter[] filters;
@@ -77,7 +77,7 @@ abstract public class GetMessagesJob extends Job
         }
         catch (final Exception ex)
         {
-        	handleError("Message Database Error", ex);
+            handleError("Message Database Error", ex);
         }
         if (rdb != null)
             rdb.close();
@@ -91,8 +91,8 @@ abstract public class GetMessagesJob extends Job
      * @param ex the ex
      */
     abstract void handleError(final String message, final Exception ex);
-    
-    
+
+
     /** Derived class must implement to handle received messages */
     abstract void gotMessages(final Message[] messages);
 }

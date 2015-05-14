@@ -16,11 +16,11 @@ import org.junit.Test;
  */
 public class NDCompatibilityUnitTest
 {
-	@Test
+    @Test
     public void testCompatibility()
     {
-	    NDArray a, b, c;
-	    // Same layout
+        NDArray a, b, c;
+        // Same layout
         a = NDMatrix.zeros(NDType.INT8, new NDShape(10));
         b = NDMatrix.zeros(NDType.INT8, new NDShape(10));
         assertEquals(NDCompatibility.FLAT_ITERATION, NDCompatibility.forArrays(a, b));

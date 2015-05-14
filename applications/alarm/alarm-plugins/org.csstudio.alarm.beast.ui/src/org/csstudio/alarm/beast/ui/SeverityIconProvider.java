@@ -49,9 +49,8 @@ public class SeverityIconProvider
     {
         final Display display = parent.getDisplay();
 
-        final  BufferedImage awtImage = new BufferedImage(ICON_SIZE, ICON_SIZE,
-        				BufferedImage.TYPE_INT_ARGB);
-		Graphics g = awtImage.getGraphics();
+        final  BufferedImage awtImage = new BufferedImage(ICON_SIZE, ICON_SIZE,BufferedImage.TYPE_INT_ARGB);
+        Graphics g = awtImage.getGraphics();
 
         // Left rectangle for 'latched', right for 'current' indicator
         g.setColor(new Color(GRAY, GRAY, GRAY));
@@ -84,7 +83,7 @@ public class SeverityIconProvider
      * @return
      */
 	private static Image makeSWTImage(final Display display, final BufferedImage awtImage) {
-		return new Image(display,AWT2SWTImageConverter.convertToSWT(awtImage));
+        return new Image(display,AWT2SWTImageConverter.convertToSWT(awtImage));
 	}
 
     /** @return Array of icons */
@@ -105,10 +104,9 @@ public class SeverityIconProvider
 						severities[s].getRed(),
 						severities[s].getGreen(),
 						severities[s].getBlue());
-				final BufferedImage awtImage = new BufferedImage(ICON_SIZE,
-						ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
-        		final Graphics g = awtImage.getGraphics();
-        		((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                final BufferedImage awtImage = new BufferedImage(ICON_SIZE,ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
+                final Graphics g = awtImage.getGraphics();
+                ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
                 // Left rectangle for 'latched', right for 'current' indicator
                 g.setColor(s_col);

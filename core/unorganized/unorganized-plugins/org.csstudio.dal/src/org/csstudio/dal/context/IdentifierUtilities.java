@@ -36,63 +36,63 @@ import org.csstudio.dal.proxy.Proxy;
  */
 public final class IdentifierUtilities
 {
-	private IdentifierUtilities()
-	{
-		super();
-	}
+    private IdentifierUtilities()
+    {
+        super();
+    }
 
-	/**
-	 * Creates new instance of <code>Identifier</code>.
-	 *
-	 * @param p implementation of <code>Identifeable</code>
-	 *
-	 * @return new instance of <code>Identifier</code>
-	 */
-	public static Identifier createIdentifier(SimpleProperty<?> p)
-	{
-		return new IdentifierImpl(p.getName(), p.getUniqueName(),
-		    p.getUniqueName(), Type.PROPERTY);
-	}
+    /**
+     * Creates new instance of <code>Identifier</code>.
+     *
+     * @param p implementation of <code>Identifeable</code>
+     *
+     * @return new instance of <code>Identifier</code>
+     */
+    public static Identifier createIdentifier(SimpleProperty<?> p)
+    {
+        return new IdentifierImpl(p.getName(), p.getUniqueName(),
+            p.getUniqueName(), Type.PROPERTY);
+    }
 
-	/**
-	 * Creates new instance of <code>Identifier</code>.
-	 *
-	 * @param p implementation of <code>Identifeable</code>
-	 *
-	 * @return new instance of <code>Identifier</code>
-	 */
-	public static Identifier createIdentifier(Proxy p)
-	{
-		return new IdentifierImpl(p.getUniqueName(), p.getUniqueName(),
-		    p.getUniqueName(), Type.PROXY);
-	}
+    /**
+     * Creates new instance of <code>Identifier</code>.
+     *
+     * @param p implementation of <code>Identifeable</code>
+     *
+     * @return new instance of <code>Identifier</code>
+     */
+    public static Identifier createIdentifier(Proxy p)
+    {
+        return new IdentifierImpl(p.getUniqueName(), p.getUniqueName(),
+            p.getUniqueName(), Type.PROXY);
+    }
 
-	/**
-	 * Creates new instance of <code>Identifier</code>.
-	 *
-	 * @param p implementation of <code>Identifeable</code>
-	 *
-	 * @return new instance of <code>Identifier</code>
-	 */
-	public static Identifier createIdentifier(PlugContext p)
-	{
-		String n = "DAL-Plug/" + p.getPlugType();
+    /**
+     * Creates new instance of <code>Identifier</code>.
+     *
+     * @param p implementation of <code>Identifeable</code>
+     *
+     * @return new instance of <code>Identifier</code>
+     */
+    public static Identifier createIdentifier(PlugContext p)
+    {
+        String n = "DAL-Plug/" + p.getPlugType();
 
-		return new IdentifierImpl(n, n, n, Type.PLUG);
-	}
+        return new IdentifierImpl(n, n, n, Type.PLUG);
+    }
 
-	/**
-	 * Creates new instance of <code>Identifier</code>.
-	 *
-	 * @param p implementation of <code>Identifeable</code>
-	 *
-	 * @return new instance of <code>Identifier</code>
-	 */
-	public static Identifier createIdentifier(AbstractDevice d)
-	{
-		return new IdentifierImpl(d.getUniqueName(), d.getUniqueName(),
-		    d.getUniqueName(), Type.DEVICE);
-	}
+    /**
+     * Creates new instance of <code>Identifier</code>.
+     *
+     * @param p implementation of <code>Identifeable</code>
+     *
+     * @return new instance of <code>Identifier</code>
+     */
+    public static Identifier createIdentifier(AbstractDevice d)
+    {
+        return new IdentifierImpl(d.getUniqueName(), d.getUniqueName(),
+            d.getUniqueName(), Type.DEVICE);
+    }
 }
 
 /* __oOo__ */

@@ -14,10 +14,10 @@ public class Throttle
 {
     /** Minimum period between events [millis] */
     final private long period;
-    
+
     /** Time of the last event [millis] */
     private long last;
-    
+
     /** Construct throttle that only allows one event in every time slot.
      *  @param seconds_between_messages
      */
@@ -26,13 +26,13 @@ public class Throttle
         period = (long)(seconds_between_messages * 1000);
         last = 0;
     }
-    
+
     /** @return Event period [seconds] */
     public double getPeriod()
     {
         return period / 1000.0;
     }
-    
+
     /** @return <code>true</code> if another event is permitted "right now" */
     synchronized public boolean isPermitted()
     {

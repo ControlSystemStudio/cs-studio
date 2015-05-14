@@ -36,13 +36,13 @@ public class ConnectJob extends Job
         super("Connect Annunciator");
         this.view = view;
     }
-    
+
     @Override
     protected IStatus run(final IProgressMonitor monitor)
     {
         final String url = Preferences.getURL();
         monitor.beginTask("URL '" + url + "'", IProgressMonitor.UNKNOWN);
-        
+
         try
         {
             final Connection connection = JMSConnectionFactory.connect(url);
@@ -61,12 +61,12 @@ public class ConnectJob extends Job
             // so it's actually not displayed, which is OK.
             view.annunciatorError(ex);
         }
-        
+
         monitor.done();
         return Status.OK_STATUS;
     }
 
-	/** When Job is asked to cancel, interrupt the underlying thread */
+    /** When Job is asked to cancel, interrupt the underlying thread */
     @Override
     protected void canceling()
     {

@@ -55,21 +55,21 @@ public class RDBUtil
     private static final String JDBC_ORACLE = "jdbc:oracle:";
 
     /** Database URL */
-	final private String url;
+    final private String url;
 
     /** Database User */
-	final private String user;
+    final private String user;
 
-	/** Database Password */
-	final private String password;
+    /** Database Password */
+    final private String password;
 
     /** Whether reconnect to RDB automatically in case of connection lost */
     private boolean autoReconnect;
 
     /** Connection to the SQL server */
-	private Connection connection;
+    private Connection connection;
 
-	/** Database dialect.
+    /** Database dialect.
      *  For starters, the connection mechanisms vary, and since
      *  SQL isn't fully normed, there might be more differences
      *  that we need to handle, so we keep track of the dialect.
@@ -142,7 +142,7 @@ public class RDBUtil
         Activator.getLogger().log(Level.FINE, "RDBUtil connects to {0}", url);
         return new RDBUtil(url, user, password, getRDBImpl(url), autoReconnect);
     }
-    
+
     /** Obtain RDB implementation based on URL
      *  @param url RDB URL, used to determine the RDB {@link Dialect}
      *  @return {@link RDBImpl}
@@ -171,13 +171,13 @@ public class RDBUtil
     private RDBUtil(final String url, final String user, final String password,
                     final RDBImpl impl, final boolean autoReconnect) throws Exception
     {
-    	this.url = url;
-    	this.user = user;
-    	this.password = password;
-    	this.autoReconnect = autoReconnect;
-    	this.impl = impl;
-    	this.connection = impl.connect(url, user, password);
-    	// Auto-commit is the default, but just to make sure:
+        this.url = url;
+        this.user = user;
+        this.password = password;
+        this.autoReconnect = autoReconnect;
+        this.impl = impl;
+        this.connection = impl.connect(url, user, password);
+        // Auto-commit is the default, but just to make sure:
         connection.setAutoCommit(true);
         if(autoReconnect)
             test_query = connection.prepareStatement(impl.getConnectionTestQuery());
@@ -186,7 +186,7 @@ public class RDBUtil
     /** @return Dialect info. */
     public Dialect getDialect()
     {
-    	return impl.getDialect();
+        return impl.getDialect();
     }
 
     /** Temporarily disable or later re-enable the auto-reconnect feature.
@@ -201,64 +201,64 @@ public class RDBUtil
     }
 
     /** Get the JDBC connection.
-	 *  This method will try to return a connection that's
-	 *  valid after network errors or RDB timeouts by checking
-	 *  the validity of the connection and re-connecting if
-	 *  necessary.
-	 *  <p>
-	 *  It cannot really distinguish between a connection that
-	 *  was closed on purpose, or one that happens to be closed
-	 *  because of a previous network error that caused this
-	 *  very routine to close the connection and then attempt
-	 *  a re-connect - which failed and left the connection as null.
-	 *
-	 *  @return SQL connection. In auto-reconnect mode this should never be
-	 *          <code>null</code>: Either a valid connection or an exception.
-	 *  @throws Exception when necessary re-connection fails
-	 */
-	public Connection getConnection() throws Exception
-	{
-	    if (autoReconnect)
-	    {
-	        if ((connection != null) && isConnected())
+     *  This method will try to return a connection that's
+     *  valid after network errors or RDB timeouts by checking
+     *  the validity of the connection and re-connecting if
+     *  necessary.
+     *  <p>
+     *  It cannot really distinguish between a connection that
+     *  was closed on purpose, or one that happens to be closed
+     *  because of a previous network error that caused this
+     *  very routine to close the connection and then attempt
+     *  a re-connect - which failed and left the connection as null.
+     *
+     *  @return SQL connection. In auto-reconnect mode this should never be
+     *          <code>null</code>: Either a valid connection or an exception.
+     *  @throws Exception when necessary re-connection fails
+     */
+    public Connection getConnection() throws Exception
+    {
+        if (autoReconnect)
+        {
+            if ((connection != null) && isConnected())
                 return connection; // All OK
-	        Activator.getLogger().log(Level.FINE, "Connection Lost! Reconnect to {0}", url);
-	        if (connection != null)
+            Activator.getLogger().log(Level.FINE, "Connection Lost! Reconnect to {0}", url);
+            if (connection != null)
                 close();
             connection = impl.connect(url, user, password);
             connection.setAutoCommit(false);
             test_query = connection.prepareStatement(impl.getConnectionTestQuery());
-	    }
+        }
         return connection;
-	}
+    }
 
-	/** Close the RDB connection. */
-	public void close()
-	{
+    /** Close the RDB connection. */
+    public void close()
+    {
         Activator.getLogger().log(Level.FINE, "RDBUtil closes {0}", url);
-		try
-		{
-		    if (autoReconnect)
+        try
+        {
+            if (autoReconnect)
                 test_query.close();
-			connection.close();
-		}
-		catch (final SQLException ex)
-		{
-			//simply discard this exception since in most cases,
-			//this method is called due to connection lost.
-		}
-		finally
-		{
+            connection.close();
+        }
+        catch (final SQLException ex)
+        {
+            //simply discard this exception since in most cases,
+            //this method is called due to connection lost.
+        }
+        finally
+        {
             test_query = null;
             connection = null;
-		}
-	}
+        }
+    }
 
-	/** Determine if the connection is still usable by executing a simple
-	 *  statement.
-	 *  @return <code>true</code> if connection still OK
-	 *  @see #getConnectionTestQuery()
-	 */
+    /** Determine if the connection is still usable by executing a simple
+     *  statement.
+     *  @return <code>true</code> if connection still OK
+     *  @see #getConnectionTestQuery()
+     */
     private boolean isConnected()
     {
         try

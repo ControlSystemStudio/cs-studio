@@ -15,22 +15,22 @@ import org.eclipse.ui.IPersistableElement;
 
 public interface IRunnerInput extends IPathEditorInput, IPersistableElement {
 
-	/**
-	 * @param displayOpenManager the displayOpenManager to set
-	 */
-	public void setDisplayOpenManager(
-			DisplayOpenManager displayOpenManager);
+    /**
+     * @param displayOpenManager the displayOpenManager to set
+     */
+    public void setDisplayOpenManager(
+            DisplayOpenManager displayOpenManager);
 
-	/**
-	 * @return the displayOpenManager
-	 */
-	public DisplayOpenManager getDisplayOpenManager();
+    /**
+     * @return the displayOpenManager
+     */
+    public DisplayOpenManager getDisplayOpenManager();
 
-	/**
-	 * @return the macrosInput
-	 */
-	public MacrosInput getMacrosInput();
+    /**
+     * @return the macrosInput
+     */
+    public MacrosInput getMacrosInput();
 
-	public InputStream getInputStream() throws Exception;
-	
+    public InputStream getInputStream() throws Exception;
+
 }

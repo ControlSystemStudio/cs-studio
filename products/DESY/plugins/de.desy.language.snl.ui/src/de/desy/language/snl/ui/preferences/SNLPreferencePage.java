@@ -16,51 +16,51 @@ import de.desy.language.snl.configurationservice.PreferenceConstants;
 import de.desy.language.snl.ui.SNLUiActivator;
 
 public class SNLPreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	public SNLPreferencePage() {
-		super(FieldEditorPreferencePage.GRID);
-		this.setPreferenceStore(SNLUiActivator.getDefault()
-				.getPreferenceStore());
-	}
+    public SNLPreferencePage() {
+        super(FieldEditorPreferencePage.GRID);
+        this.setPreferenceStore(SNLUiActivator.getDefault()
+                .getPreferenceStore());
+    }
 
-	@Override
-	protected void createFieldEditors() {
-		String preferenceID = SNLUiActivator.PLUGIN_ID
-				+ PreferenceConstants.TARGET_PLATFORM;
-		String[][] labelAndValues = createLabelAndValues();
-		FieldEditor editor = new RadioGroupFieldEditor(preferenceID,
-				"Choose target platform", 1, labelAndValues,
-				getFieldEditorParent(), true);
-		addField(editor);
+    @Override
+    protected void createFieldEditors() {
+        String preferenceID = SNLUiActivator.PLUGIN_ID
+                + PreferenceConstants.TARGET_PLATFORM;
+        String[][] labelAndValues = createLabelAndValues();
+        FieldEditor editor = new RadioGroupFieldEditor(preferenceID,
+                "Choose target platform", 1, labelAndValues,
+                getFieldEditorParent(), true);
+        addField(editor);
 
-		editor = new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID
-				+ PreferenceConstants.SAVE_AND_COMPILE_POST_FIX,
-				"Start compilation after saving", getFieldEditorParent());
-		addField(editor);
-		
-		editor = new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID
-				+ PreferenceConstants.KEEP_GENERATED_FILES_POST_FIX,
-				"Keep temporary compilation results", getFieldEditorParent());
-		addField(editor);
-	}
+        editor = new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID
+                + PreferenceConstants.SAVE_AND_COMPILE_POST_FIX,
+                "Start compilation after saving", getFieldEditorParent());
+        addField(editor);
 
-	private String[][] createLabelAndValues() {
-		ConfigurationService service = ConfigurationService.getInstance();
-		Set<String> allIDs = service.getAllIDs();
-		List<String[]> labelsAndValues = new ArrayList<String[]>();
-		labelsAndValues.add(new String[] { "None", "none" });
+        editor = new BooleanFieldEditor(SNLUiActivator.PLUGIN_ID
+                + PreferenceConstants.KEEP_GENERATED_FILES_POST_FIX,
+                "Keep temporary compilation results", getFieldEditorParent());
+        addField(editor);
+    }
 
-		for (String id : allIDs) {
-			String description = service.getFullDescription(id);
-			labelsAndValues.add(new String[] { description, id });
-		}
+    private String[][] createLabelAndValues() {
+        ConfigurationService service = ConfigurationService.getInstance();
+        Set<String> allIDs = service.getAllIDs();
+        List<String[]> labelsAndValues = new ArrayList<String[]>();
+        labelsAndValues.add(new String[] { "None", "none" });
 
-		return labelsAndValues.toArray(new String[0][0]);
-	}
+        for (String id : allIDs) {
+            String description = service.getFullDescription(id);
+            labelsAndValues.add(new String[] { description, id });
+        }
 
-	public void init(final IWorkbench workbench) {
-		this.noDefaultAndApplyButton();
-	}
+        return labelsAndValues.toArray(new String[0][0]);
+    }
+
+    public void init(final IWorkbench workbench) {
+        this.noDefaultAndApplyButton();
+    }
 
 }

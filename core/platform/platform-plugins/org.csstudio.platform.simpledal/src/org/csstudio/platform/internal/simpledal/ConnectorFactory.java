@@ -8,23 +8,23 @@ import org.csstudio.platform.model.pvs.ValueType;
 
 /**
  * Standard implementation of {@link IConnectorFactory}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public class ConnectorFactory implements IConnectorFactory {
-	/**
-	 * {@inheritDoc}
-	 */
-	public AbstractConnector createConnector(IProcessVariableAddress pv, ValueType valueType) {
-		AbstractConnector connector = null;
+    /**
+     * {@inheritDoc}
+     */
+    public AbstractConnector createConnector(IProcessVariableAddress pv, ValueType valueType) {
+        AbstractConnector connector = null;
 
-		if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
-			connector = new LocalConnector(pv, valueType);
-		} else {
-			connector = new DalConnector(pv, valueType);
-		}
+        if (pv.getControlSystem() == ControlSystemEnum.LOCAL) {
+            connector = new LocalConnector(pv, valueType);
+        } else {
+            connector = new DalConnector(pv, valueType);
+        }
 
-		return connector;
-	}
+        return connector;
+    }
 }

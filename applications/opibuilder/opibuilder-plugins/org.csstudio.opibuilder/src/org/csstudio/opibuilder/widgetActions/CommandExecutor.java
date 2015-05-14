@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.opibuilder.widgetActions;
@@ -46,7 +46,7 @@ import org.eclipse.osgi.util.NLS;
  *  finishes, and calls back in case of an error.
  *  When the command finishes right away OK or runs longer,
  *  we leave it be.
- *  
+ *
  * @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
@@ -76,7 +76,7 @@ public final class CommandExecutor
         }, "CommandExecutor");
         t.start();
     }
-    
+
     /** Derived class must implement this callback that's invoked
      *  in case of an error within the 'wait' time.
      *  <p>
@@ -85,8 +85,8 @@ public final class CommandExecutor
      *  @param stderr Standard error output of program
      */
      public void error(final int exit_code, final String stderr){
-    	 ConsoleService.getInstance().writeError(stderr);
-    	 	
+         ConsoleService.getInstance().writeError(stderr);
+
     }
 
     private void runAndCheckCommand()
@@ -96,73 +96,73 @@ public final class CommandExecutor
         final Process process;
         try
         {
-   	     	final String[] cmd = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
+                final String[] cmd = StringSplitter.splitIgnoreInQuotes(command, ' ', true);
             process = Runtime.getRuntime().exec(cmd, null, dir);
         }
         catch (Throwable ex)
         {
-        	error(-1, ex.getMessage());
-        	ConsoleService.getInstance().writeInfo(NLS.bind(
-        			"Command \"{0}\" executing finished with exit code: FAILED", command));
-            
+            error(-1, ex.getMessage());
+            ConsoleService.getInstance().writeInfo(NLS.bind(
+                    "Command \"{0}\" executing finished with exit code: FAILED", command));
+
             return;
         }
-        
-        //create a thread for listening on error output 
+
+        //create a thread for listening on error output
         Thread errorThread = new Thread(new Runnable() {
-			
-			@Override
-			public void run() {
-				// .. with error; check error output
-		        BufferedReader br = null;
-		        try
-		        {
-		            final InputStream is = process.getErrorStream();
-		            final InputStreamReader isr = new InputStreamReader(is);
-		            br = new BufferedReader(isr);
-		            String line;
-		            while ((line = br.readLine()) != null){
-						ConsoleService.getInstance().writeString(
-								command + " error: ",
-								CustomMediaFactory.COLOR_PURPLE);
-						ConsoleService.getInstance()
-								.writeString(line + "\n", CustomMediaFactory.COLOR_RED);
-		            }
-		        }
-		        catch (IOException e)
-		        {
-		        	ErrorHandlerUtil.handleError("Command Executing error" , e);
-		            return;
-		        }finally{
-		        	if(br != null)
-						try {
-							br.close();
-						} catch (IOException e) {
-							ErrorHandlerUtil.handleError("Command Executing error" , e);				
-						}
-		        }
-			}
-		});
+
+            @Override
+            public void run() {
+                // .. with error; check error output
+                BufferedReader br = null;
+                try
+                {
+                    final InputStream is = process.getErrorStream();
+                    final InputStreamReader isr = new InputStreamReader(is);
+                    br = new BufferedReader(isr);
+                    String line;
+                    while ((line = br.readLine()) != null){
+                        ConsoleService.getInstance().writeString(
+                                command + " error: ",
+                                CustomMediaFactory.COLOR_PURPLE);
+                        ConsoleService.getInstance()
+                                .writeString(line + "\n", CustomMediaFactory.COLOR_RED);
+                    }
+                }
+                catch (IOException e)
+                {
+                    ErrorHandlerUtil.handleError("Command Executing error" , e);
+                    return;
+                }finally{
+                    if(br != null)
+                        try {
+                            br.close();
+                        } catch (IOException e) {
+                            ErrorHandlerUtil.handleError("Command Executing error" , e);
+                        }
+                }
+            }
+        });
         errorThread.start();
-        
+
         //write output to console
         try {
-			int c = 0;
-			while(c != -1){
-				c = process.getInputStream().read();			
-				if(c!=-1)
-					ConsoleService.getInstance().writeString(""+(char)c);
-			}
-		} catch (IOException e1) {
-			ErrorHandlerUtil.handleError("Command Executing error" , e1);
-		}
-        
-        
+            int c = 0;
+            while(c != -1){
+                c = process.getInputStream().read();
+                if(c!=-1)
+                    ConsoleService.getInstance().writeString(""+(char)c);
+            }
+        } catch (IOException e1) {
+            ErrorHandlerUtil.handleError("Command Executing error" , e1);
+        }
+
+
         // Poll exit code during 'wait' time
         Integer exit_code = null;
         for (int w=0; w<wait; ++w)
         {
-            
+
             try
             {
                 exit_code = process.exitValue();
@@ -170,7 +170,7 @@ public final class CommandExecutor
             }
             catch (IllegalThreadStateException ex)
             {  //still running...
-            	try
+                try
                 {
                     Thread.sleep(1000);
                 }
@@ -179,20 +179,20 @@ public final class CommandExecutor
                 }
             }
         }
-        
+
         ConsoleService.getInstance().writeInfo(NLS.bind(
-    			"Command \"{0}\" executing finished with exit code: ", command) 
-        		+ (exit_code == null ? "NULL" : (exit_code ==0 ? "OK" : "FAILED")));
+                "Command \"{0}\" executing finished with exit code: ", command)
+                + (exit_code == null ? "NULL" : (exit_code ==0 ? "OK" : "FAILED")));
         // Process runs so long that we no longer care
         if (exit_code == null)
             return;
-        
+
         // Process ended
         if (exit_code == 0)
             return;
-        
-        
-      
-        
+
+
+
+
     }
 }

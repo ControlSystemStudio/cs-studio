@@ -13,11 +13,11 @@ import java.util.Arrays;
 import org.eclipse.core.runtime.IPath;
 
 /** Path that supports URLs
- * 
+ *
  *  <p>The default <code>org.eclipse.code.runtime.Path</code>
  *  collapses multiple '//' into '/', which turns
  *  "http://host" into an invalid "http:/host".
- *   
+ *
  *  @author Xihui Chen - Original org.csstudio.opibuilder.persistence.URLPath
  *  @author Kay Kasemir
  */
@@ -29,12 +29,12 @@ public class URLPath implements IPath
 
     /** Host name, may include ":port" */
     final private String host;
-    
+
     /** Segments of the path from host on: /some/path?query */
     final private String[] segments;
-    
+
     final private boolean trailing_separator;
-    
+
     public URLPath(final String path) throws Exception
     {
         // Locate protocol
@@ -42,18 +42,18 @@ public class URLPath implements IPath
         if (sep < 0)
             throw new Exception("Missing URL protocol");
         protocol = path.substring(0, sep);
-        
+
         // Locate host
         final String[] sections = path.substring(sep + 3).split("/+");
         if (sections.length <= 0)
             throw new Exception("Missing URL host");
-        
+
         // Locate sections
         host = sections[0];
         segments = checkPathElements(sections, 1, sections.length-1);
         trailing_separator = path.endsWith("/");
     }
-    
+
     public URLPath(final String protocol, final String host,
             final String[] segments,
             final boolean trailing_separator)
@@ -63,7 +63,7 @@ public class URLPath implements IPath
         this.segments = checkPathElements(segments, 0, segments.length);
         this.trailing_separator = trailing_separator;
     }
-    
+
     /** Check path elements, handling ".."
      *  @param elements Path elements, may include ".." elements
      *  @param start First element to use
@@ -260,10 +260,10 @@ public class URLPath implements IPath
     {
         if (! getDevice().equals(anotherPath.getDevice()))
             return false;
-        
+
         if (segmentCount() > anotherPath.segmentCount())
             return false;
-        
+
         for (int i=0; i<segments.length; ++i)
             if(! segments[i].equals(anotherPath.segment(i)))
                 return false;
@@ -416,7 +416,7 @@ public class URLPath implements IPath
             return null;
         }
     }
-    
+
     /** @return Full URL */
     @Override
     public String toString()

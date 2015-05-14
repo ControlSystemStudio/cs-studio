@@ -19,46 +19,46 @@ import org.csstudio.opibuilder.properties.ScriptProperty;
  */
 public class ScriptsInput {
 
-	private List<ScriptData> scriptList;
-	
-	public ScriptsInput(List<ScriptData> scriptDataList) {
-		scriptList = scriptDataList;
-	}
-	
-	public ScriptsInput() {
-		scriptList = new ArrayList<ScriptData>();
-	}
+    private List<ScriptData> scriptList;
 
-	/**
-	 * @return the scriptList
-	 */
-	public List<ScriptData> getScriptList() {
-		return scriptList;
-	}
-	
-	/**
-	 * @return a total contents copy of this ScriptsInput.
-	 */
-	public ScriptsInput getCopy(){
-		ScriptsInput copy = new ScriptsInput();
-		for(ScriptData data : scriptList){
-			copy.getScriptList().add(data.getCopy());
-		}
-		return copy;
-	}
-	
-	@Override
-	public String toString() {
-		if(scriptList.size() ==0){
-			return "no script attached";
-		}
-		if(scriptList.size() == 1){
-			if(scriptList.get(0).isEmbedded())
-				return scriptList.get(0).getScriptName();
-			return scriptList.get(0).getPath().toString();
-		}
-		return scriptList.size() + " scripts attached";
-	}
-	
-	
+    public ScriptsInput(List<ScriptData> scriptDataList) {
+        scriptList = scriptDataList;
+    }
+
+    public ScriptsInput() {
+        scriptList = new ArrayList<ScriptData>();
+    }
+
+    /**
+     * @return the scriptList
+     */
+    public List<ScriptData> getScriptList() {
+        return scriptList;
+    }
+
+    /**
+     * @return a total contents copy of this ScriptsInput.
+     */
+    public ScriptsInput getCopy(){
+        ScriptsInput copy = new ScriptsInput();
+        for(ScriptData data : scriptList){
+            copy.getScriptList().add(data.getCopy());
+        }
+        return copy;
+    }
+
+    @Override
+    public String toString() {
+        if(scriptList.size() ==0){
+            return "no script attached";
+        }
+        if(scriptList.size() == 1){
+            if(scriptList.get(0).isEmbedded())
+                return scriptList.get(0).getScriptName();
+            return scriptList.get(0).getPath().toString();
+        }
+        return scriptList.size() + " scripts attached";
+    }
+
+
 }

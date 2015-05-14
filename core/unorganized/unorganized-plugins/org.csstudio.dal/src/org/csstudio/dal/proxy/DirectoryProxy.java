@@ -37,90 +37,90 @@ import org.csstudio.dal.SimpleProperty;
  */
 public interface DirectoryProxy<P extends AbstractPlug> extends Proxy<P>
 {
-	/**
-	 * Returns the unique name. This name is used to initiate
-	 * connection to remote object and can be regardes as remote name.
-	 *
-	 * @return String unique remote name for this property
-	 */
-	public String getUniqueName();
+    /**
+     * Returns the unique name. This name is used to initiate
+     * connection to remote object and can be regardes as remote name.
+     *
+     * @return String unique remote name for this property
+     */
+    public String getUniqueName();
 
-	/**
-	 * Destroys object and releases all remote and local allocated resources.
-	 * <p><b>NOTE</b></br>
-	 * Only plug which created this proxy can call this method since lifecycle is controled by the plug.
-	 * </p>
-	 */
-	public void destroy();
+    /**
+     * Destroys object and releases all remote and local allocated resources.
+     * <p><b>NOTE</b></br>
+     * Only plug which created this proxy can call this method since lifecycle is controled by the plug.
+     * </p>
+     */
+    public void destroy();
 
-	/**
-	 * Returns names of all characteristics for this proxy. Return value will
-	 * be an array of non-null characteristic names.
-	 * @return an array of non-null characteristic names
-	 * @throws DataExchangeException if operation fails
-	 */
-	public String[] getCharacteristicNames() throws DataExchangeException;
+    /**
+     * Returns names of all characteristics for this proxy. Return value will
+     * be an array of non-null characteristic names.
+     * @return an array of non-null characteristic names
+     * @throws DataExchangeException if operation fails
+     */
+    public String[] getCharacteristicNames() throws DataExchangeException;
 
-	/**
-	 * Returns available command names, if this proxy represents device.
-	 * @return all available command names
-	 * @throws DataExchangeException if remote request fails
-	 */
-	public String[] getCommandNames() throws DataExchangeException;
+    /**
+     * Returns available command names, if this proxy represents device.
+     * @return all available command names
+     * @throws DataExchangeException if remote request fails
+     */
+    public String[] getCommandNames() throws DataExchangeException;
 
-	/**
-	 * Accesses asynchronously the complete map of characteristics for this proxy.
-	 * This asynchronous request is considered as multiple request where each characteristic
-	 * name can be treated as separate single request. As consequence, responses to this
-	 * request are returned independantly. For each charactetistic name one response is returned,
-	 * where characteristic name is defined by ID tag of response and response value is value of
-	 * characteristic. Last response is marked as last (isLast() method returns true).
-	 *
-	 * @param characteristics list of requested characteristics names.
-	 * @param callback a callback listener, which will receive all responses
-	 *
-	 * @return a Request, which identifies incoming responses.
-	 *
-	 * @throws DataExchangeException if operation failes
-	 */
-	public Request<? extends Object> getCharacteristics(String[] characteristics,
-	    ResponseListener<? extends Object> callback) throws DataExchangeException;
+    /**
+     * Accesses asynchronously the complete map of characteristics for this proxy.
+     * This asynchronous request is considered as multiple request where each characteristic
+     * name can be treated as separate single request. As consequence, responses to this
+     * request are returned independantly. For each charactetistic name one response is returned,
+     * where characteristic name is defined by ID tag of response and response value is value of
+     * characteristic. Last response is marked as last (isLast() method returns true).
+     *
+     * @param characteristics list of requested characteristics names.
+     * @param callback a callback listener, which will receive all responses
+     *
+     * @return a Request, which identifies incoming responses.
+     *
+     * @throws DataExchangeException if operation failes
+     */
+    public Request<? extends Object> getCharacteristics(String[] characteristics,
+        ResponseListener<? extends Object> callback) throws DataExchangeException;
 
-	/**
-	 * Returns the value of the characteristic. If the characteristic with such name does not
-	 * exist this method returns <code>null</code>. If the characteristic exists but the
-	 * value is unknown, <code>CharacteristicContext.UNINITIALIZED</code> is returned.
-	 *
-	 * @param characteristicName the name of the characteristic, may not be <code>null</code> or an
-	 *            empty string
-	 * @return Object the value of the characteristic or <code>null</code> if unknown
-	 * @exception DataExchangeException when the query for the characteristic value on the
-	 *                 data source fails
-	 */
-	public Object getCharacteristic(String characteristicName)
-		throws DataExchangeException;
+    /**
+     * Returns the value of the characteristic. If the characteristic with such name does not
+     * exist this method returns <code>null</code>. If the characteristic exists but the
+     * value is unknown, <code>CharacteristicContext.UNINITIALIZED</code> is returned.
+     *
+     * @param characteristicName the name of the characteristic, may not be <code>null</code> or an
+     *            empty string
+     * @return Object the value of the characteristic or <code>null</code> if unknown
+     * @exception DataExchangeException when the query for the characteristic value on the
+     *                 data source fails
+     */
+    public Object getCharacteristic(String characteristicName)
+        throws DataExchangeException;
 
-	/**
-	 * Returns names of properties if this proxy represents device proxy. Names are relative name,
-	 * which are valid only in context of this device proxy.
-	 *
-	 * @return names of properties in this device proxy
-	 * @throws RemoteException if remote request was issued and was not successfull
-	 */
-	public String[] getPropertyNames() throws RemoteException;
+    /**
+     * Returns names of properties if this proxy represents device proxy. Names are relative name,
+     * which are valid only in context of this device proxy.
+     *
+     * @return names of properties in this device proxy
+     * @throws RemoteException if remote request was issued and was not successfull
+     */
+    public String[] getPropertyNames() throws RemoteException;
 
-	/**
-	 * Returns data access interface class (extended from SimpleProperty interface) of property in device.
-	 * Valid only if this directory proxy represents device proxy. Name is relative,
-	 * valid only in context of this device proxy.
-	 *
-	 * @param propertyName name of the property
-	 * @return data access inerface class
-	 * @throws RemoteException if remote request was issued and was not successfull
-	 */
-	public Class<? extends SimpleProperty<?>> getPropertyType(String propertyName) throws RemoteException;
+    /**
+     * Returns data access interface class (extended from SimpleProperty interface) of property in device.
+     * Valid only if this directory proxy represents device proxy. Name is relative,
+     * valid only in context of this device proxy.
+     *
+     * @param propertyName name of the property
+     * @return data access inerface class
+     * @throws RemoteException if remote request was issued and was not successfull
+     */
+    public Class<? extends SimpleProperty<?>> getPropertyType(String propertyName) throws RemoteException;
 
-	public void refresh();
+    public void refresh();
 }
 
 /* __oOo__ */

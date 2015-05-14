@@ -25,63 +25,63 @@ package org.csstudio.dal.tine;
 import de.desy.tine.dataUtils.TDataType;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double>{
-	
-	private double[] value;
-	
-	/**
-	 * Constructs a new DoublePropertyProxy.
-	 * @param name
-	 */
-	public DoublePropertyProxyImpl(String name, TINEPlug plug) {
-		super(name, plug);
-//		value = new double[(Integer)getCharacteristic("sequenceLength")];
-		this.value = new double[1];
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
-	 */
-	@Override
-	protected Double extractData(TDataType out) {
-		out.getData(this.value);
-		if (this.value != null && this.value.length > 0) {
-			return this.value[0];
-		} else {
-			return Double.NaN;
-		}
-		
-	}
+    private double[] value;
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
-	 */
-	@Override
-	protected Object getDataObject() {
-		return this.value;
-	}
+    /**
+     * Constructs a new DoublePropertyProxy.
+     * @param name
+     */
+    public DoublePropertyProxyImpl(String name, TINEPlug plug) {
+        super(name, plug);
+//        value = new double[(Integer)getCharacteristic("sequenceLength")];
+        this.value = new double[1];
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#setDataToObject(java.lang.Object)
-	 */
-	@Override
-	protected Object convertDataToObject(Double data) {
-		return new double[]{data};
-	}
-	
-	/* (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
-	 */
-	@Override
-	protected Class getNumericType() {
-		return Double.class;
-	}
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
+     */
+    @Override
+    protected Double extractData(TDataType out) {
+        out.getData(this.value);
+        if (this.value != null && this.value.length > 0) {
+            return this.value[0];
+        } else {
+            return Double.NaN;
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
+     */
+    @Override
+    protected Object getDataObject() {
+        return this.value;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#setDataToObject(java.lang.Object)
+     */
+    @Override
+    protected Object convertDataToObject(Double data) {
+        return new double[]{data};
+    }
+
+    /* (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
+     */
+    @Override
+    protected Class getNumericType() {
+        return Double.class;
+    }
 
 }

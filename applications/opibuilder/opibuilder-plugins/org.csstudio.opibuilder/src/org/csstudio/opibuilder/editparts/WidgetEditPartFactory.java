@@ -23,39 +23,39 @@ import org.eclipse.gef.EditPartFactory;
  */
 public class WidgetEditPartFactory implements EditPartFactory {
 
-	private ExecutionMode executionMode;
+    private ExecutionMode executionMode;
 
-	public WidgetEditPartFactory(ExecutionMode executionMode) {
-		this.executionMode = executionMode;
-	}
+    public WidgetEditPartFactory(ExecutionMode executionMode) {
+        this.executionMode = executionMode;
+    }
 
-	public EditPart createEditPart(EditPart context, Object model) {
-		EditPart part = getPartForModel(model);
-		if(part != null){
-			part.setModel(model);
-			if(part instanceof AbstractBaseEditPart)
-				((AbstractBaseEditPart)part).setExecutionMode(executionMode);
-			else if(part instanceof WidgetConnectionEditPart)
-				((WidgetConnectionEditPart)part).setExecutionMode(executionMode);
-		}
-		return part;
-	}
+    public EditPart createEditPart(EditPart context, Object model) {
+        EditPart part = getPartForModel(model);
+        if(part != null){
+            part.setModel(model);
+            if(part instanceof AbstractBaseEditPart)
+                ((AbstractBaseEditPart)part).setExecutionMode(executionMode);
+            else if(part instanceof WidgetConnectionEditPart)
+                ((WidgetConnectionEditPart)part).setExecutionMode(executionMode);
+        }
+        return part;
+    }
 
-	@SuppressWarnings("nls")
+    @SuppressWarnings("nls")
     private EditPart getPartForModel(Object model){
-		if(model instanceof DisplayModel)
-			return new DisplayEditpart();
-		if(model instanceof ConnectionModel)
-			return new WidgetConnectionEditPart();
-		if(model instanceof AbstractWidgetModel){
-			AbstractBaseEditPart editpart =
-				WidgetsService.getInstance().getWidgetDescriptor(
-					((AbstractWidgetModel)model).getTypeID()).getWidgetEditpart();
-			return editpart;
-		}
+        if(model instanceof DisplayModel)
+            return new DisplayEditpart();
+        if(model instanceof ConnectionModel)
+            return new WidgetConnectionEditPart();
+        if(model instanceof AbstractWidgetModel){
+            AbstractBaseEditPart editpart =
+                WidgetsService.getInstance().getWidgetDescriptor(
+                    ((AbstractWidgetModel)model).getTypeID()).getWidgetEditpart();
+            return editpart;
+        }
         OPIBuilderPlugin.getLogger().log(Level.WARNING,
                 "Cannot create editpart for model object {0}",
                 model == null ? "null" : model.getClass().getName());
-		return null;
-	}
+        return null;
+    }
 }

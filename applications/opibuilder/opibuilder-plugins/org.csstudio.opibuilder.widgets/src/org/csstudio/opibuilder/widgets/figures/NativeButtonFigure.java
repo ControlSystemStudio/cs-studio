@@ -29,58 +29,58 @@ import org.eclipse.swt.widgets.Composite;
  *
  */
 public class NativeButtonFigure extends AbstractSWTWidgetFigure<Button> implements ITextFigure{
-	
-	private Button button;
-	private Image image;
-	
-	public NativeButtonFigure(AbstractBaseEditPart editPart, int buttonStyle) {
-		super(editPart, buttonStyle);	
-	}
-	
-	@Override
-	protected Button createSWTWidget(Composite parent, int style) {
-		button= new Button(parent, style);	
-		button.setCursor(Cursors.HAND);
-		return button;
-	}	
-	
-	@Override
-	public void setBackgroundColor(Color bg) {
-	}
 
-	@SuppressWarnings("nls")
+    private Button button;
+    private Image image;
+
+    public NativeButtonFigure(AbstractBaseEditPart editPart, int buttonStyle) {
+        super(editPart, buttonStyle);
+    }
+
+    @Override
+    protected Button createSWTWidget(Composite parent, int style) {
+        button= new Button(parent, style);
+        button.setCursor(Cursors.HAND);
+        return button;
+    }
+
+    @Override
+    public void setBackgroundColor(Color bg) {
+    }
+
+    @SuppressWarnings("nls")
     public void setImagePath(final IPath path){
-		if(image != null){
-			image.dispose();
-			image = null;
-			button.setImage(null);
-		}
-		AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
-			@Override
-			public void runWithInputStream(InputStream stream) {
-				image = new Image(null, stream);
-				try {
-					stream.close();
-				} catch (IOException e) {
-				}				
-				button.setImage(image);
-			}
-		};
-		if(path != null && !path.isEmpty()){
-			ResourceUtil.pathToInputStreamInJob(path, uiTask,
-					"Load Button Icon...", new IJobErrorHandler() {
-				
-				public void handleError(Exception exception) {
-					image = null;
-					ErrorHandlerUtil.handleError("Failed to load button icon.", exception);
-				}
-			});			
-		}		
-	}
-	
-	@Override
-	public String getText() {
-		return button.getText();
-	}
+        if(image != null){
+            image.dispose();
+            image = null;
+            button.setImage(null);
+        }
+        AbstractInputStreamRunnable uiTask = new AbstractInputStreamRunnable() {
+            @Override
+            public void runWithInputStream(InputStream stream) {
+                image = new Image(null, stream);
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                }
+                button.setImage(image);
+            }
+        };
+        if(path != null && !path.isEmpty()){
+            ResourceUtil.pathToInputStreamInJob(path, uiTask,
+                    "Load Button Icon...", new IJobErrorHandler() {
+
+                public void handleError(Exception exception) {
+                    image = null;
+                    ErrorHandlerUtil.handleError("Failed to load button icon.", exception);
+                }
+            });
+        }
+    }
+
+    @Override
+    public String getText() {
+        return button.getText();
+    }
 
 }

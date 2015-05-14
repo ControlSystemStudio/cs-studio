@@ -21,12 +21,12 @@ import org.csstudio.security.authorization.Authorizations;
 /** Security context,
  *  maintains current authentication and authorization info
  *  and notifies listeners on change.
- * 
+ *
  *  <p>The plugin activator fetches the initial instance,
  *  i.e. creates this, and the activator also sets the
  *  AuthorizationProvider based on preferences and
  *  extension points.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -37,19 +37,19 @@ public class SecurityContext
 
     /** Subject that describes the authenticated user */
     private Subject subject = null;
-    
+
     /** Is it the current, OS-authenticated user? */
     private boolean is_current_user = false;
-    
+
     private AuthorizationProvider authorization_provider = null;
     private Authorizations authorizations;
-    
+
     /** @return Singleton instance */
     public static SecurityContext getInstance()
     {
         return instance;
     }
-    
+
     /** Define authorization provider
      *  @param authorization
      */
@@ -63,7 +63,7 @@ public class SecurityContext
     {
         listeners.add(listener);
     }
-    
+
     /** @param listener Listener to remove */
     public void removeListener(final SecurityListener listener)
     {
@@ -81,7 +81,7 @@ public class SecurityContext
     {
         return is_current_user;
     }
-    
+
     /** @param subject Currently logged-in Subject or <code>null</code>
      *  @param is_current_user Is it the current, OS-authenticated user?
      */
@@ -115,9 +115,9 @@ public class SecurityContext
     {
         return authorizations;
     }
-    
+
     /** Check if user may do something
-     * 
+     *
      *  @param authorization Authorization to check
      *  @return <code>true</code> if user has authorization
      */
@@ -125,4 +125,4 @@ public class SecurityContext
     {
         return authorizations != null  &&  authorizations.haveAuthorization(authorization);
     }
-}   
+}

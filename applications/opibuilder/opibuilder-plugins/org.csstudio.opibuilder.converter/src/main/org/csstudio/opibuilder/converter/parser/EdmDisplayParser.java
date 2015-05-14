@@ -20,449 +20,449 @@ import org.csstudio.opibuilder.converter.model.EdmException;
 
 /**
  * Parser class which parses EdmDisplay data.
- * 
+ *
  * @author Matevz
  *
  */
 public class EdmDisplayParser extends EdmParser{
-	
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmDisplayParser");
 
-	private static final String[] reservedWords = {"beginObjectProperties", "beginGroup",
-		"beginScreenProperties", "endScreenProperties", "endObjectProperties", "endGroup"};
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.parser.EdmDisplayParser");
 
-	/**
-	 * Parses 
-	 * @param m Matcher, which iterates through each line of data.
-	 * @param entity Entity which will contain parsed attributes.
-	 * @throws EdmException if there is nesting error, or if attribute already exists.
-	 */
-	private void parseProperty(Matcher m, EdmEntity entity) throws EdmException {
-		EdmAttribute a = new EdmAttribute();
-		String line = m.group();
+    private static final String[] reservedWords = {"beginObjectProperties", "beginGroup",
+        "beginScreenProperties", "endScreenProperties", "endObjectProperties", "endGroup"};
 
-		if (line.length() > 0)
-			log.debug("Parse attribute from string: \"" + line + "\"");
-		else
-			return;
+    /**
+     * Parses
+     * @param m Matcher, which iterates through each line of data.
+     * @param entity Entity which will contain parsed attributes.
+     * @throws EdmException if there is nesting error, or if attribute already exists.
+     */
+    private void parseProperty(Matcher m, EdmEntity entity) throws EdmException {
+        EdmAttribute a = new EdmAttribute();
+        String line = m.group();
 
-		boolean isCompound = false;
-		int bracePos = line.indexOf("{"); 	// position of "{"
-		if (bracePos > -1) {
-			// checks whether "{" is a part of a string attribute
-			if ( ! line.substring(0, bracePos).contains("\""))
-				isCompound = true;
-		}
-		
-		if (isCompound) {
-			String attName = line.substring(0, line.indexOf("{") - 1);
-			entity.addAttribute(attName, a);
-			log.debug("Added attribute: " + attName);
+        if (line.length() > 0)
+            log.debug("Parse attribute from string: \"" + line + "\"");
+        else
+            return;
 
-			parseCompoundProperty(m, a);
-		}
-		else {
-			Pattern p1 = Pattern.compile("\\S+"); // each word
-			Matcher m1 = p1.matcher(line);
+        boolean isCompound = false;
+        int bracePos = line.indexOf("{");     // position of "{"
+        if (bracePos > -1) {
+            // checks whether "{" is a part of a string attribute
+            if ( ! line.substring(0, bracePos).contains("\""))
+                isCompound = true;
+        }
 
-			int i = 0;
-			StringBuilder value = new StringBuilder();
+        if (isCompound) {
+            String attName = line.substring(0, line.indexOf("{") - 1);
+            entity.addAttribute(attName, a);
+            log.debug("Added attribute: " + attName);
 
-			// first word = attribute name. Other words = attribute value
-			while (m1.find()) {
-				if (i == 0) {
-					String attName = m1.group();
-					entity.addAttribute(attName, a);
-					log.debug("Added attribute: " + attName);
-				}
-				else
-					value.append(m1.group() + " ");
-				i = i + 1;
-			}
+            parseCompoundProperty(m, a);
+        }
+        else {
+            Pattern p1 = Pattern.compile("\\S+"); // each word
+            Matcher m1 = p1.matcher(line);
 
-			String finalValue;
-			if (i > 1)
-				// remove last space if there were more words
-				finalValue = value.substring(0, value.length() - 1);
-			else //if (i > 1)
-				finalValue = value.toString();
-			
-			log.debug("Added value: \"" + a.appendValue(finalValue) + "\"");
-		}
-	}
+            int i = 0;
+            StringBuilder value = new StringBuilder();
 
-	/**
-	 * Parses values of a nested attribute. Attribute must already be instantiated.
-	 *
-	 * @param m	Matcher that iterates through each line of data.
-	 * @param a	Already instantiated attribute.
-	 * @throws EdmException	if attribute's values are not properly nested.
-	 */
-	private void parseCompoundProperty(Matcher m, EdmAttribute a) throws EdmException {
-		/* PARSES LINE - whole line except for "{" is attr name */
+            // first word = attribute name. Other words = attribute value
+            while (m1.find()) {
+                if (i == 0) {
+                    String attName = m1.group();
+                    entity.addAttribute(attName, a);
+                    log.debug("Added attribute: " + attName);
+                }
+                else
+                    value.append(m1.group() + " ");
+                i = i + 1;
+            }
 
-		String line = "";
+            String finalValue;
+            if (i > 1)
+                // remove last space if there were more words
+                finalValue = value.substring(0, value.length() - 1);
+            else //if (i > 1)
+                finalValue = value.toString();
 
-		// parses another lines - until line contains "}" char
-		while (!line.contains("}")) {
-			m.find();
-			line = m.group();
-			if (!line.contains("}") & line.length() > 0) {
-				String val = line.trim();
-				log.debug("Added value: \"" + a.appendValue(val) + "\"");
-			}
+            log.debug("Added value: \"" + a.appendValue(finalValue) + "\"");
+        }
+    }
 
-			boolean nestError = false;
-			for (int c = 0; c < reservedWords.length; c ++) {
-				if (line.contains(reservedWords[c])) {
-					nestError = true;
-					break;
-				}
-			}
-			if (line.contains("{"))
-				nestError = true;
-			if (nestError)
-				throw new EdmException(EdmException.NESTING_ERROR,
-						"Nesting error at attribute: " + line, null);
-		}
-	}
+    /**
+     * Parses values of a nested attribute. Attribute must already be instantiated.
+     *
+     * @param m    Matcher that iterates through each line of data.
+     * @param a    Already instantiated attribute.
+     * @throws EdmException    if attribute's values are not properly nested.
+     */
+    private void parseCompoundProperty(Matcher m, EdmAttribute a) throws EdmException {
+        /* PARSES LINE - whole line except for "{" is attr name */
 
-	/**
-	 * Parses the beginScreenProperties tag and returns data without this tag.
-	 *
-	 * @param data Data with screen properties to parse.
-	 * @return Data without screen properties.
-	 * @throws EdmException if parsing error occurs.
-	 */
-	private StringBuilder parseDisplayProperties(StringBuilder data) throws EdmException {
+        String line = "";
 
-		Pattern pattern = Pattern.compile("(beginScreenProperties(.*?)endScreenProperties)",
-				Pattern.DOTALL);	// everything between beginScr... and endScr...
-		Matcher matcher = pattern.matcher(data.toString());
+        // parses another lines - until line contains "}" char
+        while (!line.contains("}")) {
+            m.find();
+            line = m.group();
+            if (!line.contains("}") & line.length() > 0) {
+                String val = line.trim();
+                log.debug("Added value: \"" + a.appendValue(val) + "\"");
+            }
 
-		int i = 0;
-		while (matcher.find()) {
-			
-			String matchData = matcher.group(2);
-			int start = matcher.start();
-			int end = matcher.end();
+            boolean nestError = false;
+            for (int c = 0; c < reservedWords.length; c ++) {
+                if (line.contains(reservedWords[c])) {
+                    nestError = true;
+                    break;
+                }
+            }
+            if (line.contains("{"))
+                nestError = true;
+            if (nestError)
+                throw new EdmException(EdmException.NESTING_ERROR,
+                        "Nesting error at attribute: " + line, null);
+        }
+    }
 
-			Pattern p = Pattern.compile(".*");	// whole line
-			Matcher m = p.matcher(matchData);
+    /**
+     * Parses the beginScreenProperties tag and returns data without this tag.
+     *
+     * @param data Data with screen properties to parse.
+     * @return Data without screen properties.
+     * @throws EdmException if parsing error occurs.
+     */
+    private StringBuilder parseDisplayProperties(StringBuilder data) throws EdmException {
 
-			while (m.find()) {
-				parseProperty(m, getRoot());
-			}
-			if (i > 0)
-				log.warn("More than one display file headers found.");
-			i++;
-			
-			data.delete(start, end);
-		}
-		
-		return data;
-	}
+        Pattern pattern = Pattern.compile("(beginScreenProperties(.*?)endScreenProperties)",
+                Pattern.DOTALL);    // everything between beginScr... and endScr...
+        Matcher matcher = pattern.matcher(data.toString());
 
-	/**
-	 * Iterates through data and determines which data is relevant
-	 * to current group.
-	 *
-	 * @param data	Data to parse.
-	 * @return		Returns the array of integers that describe three positions:
-	 * 					[0]	Data start position.
-	 * 					[1]	Data end position.
-	 * 					[2]	Position of data closing (end) expression.
-	 * @throws EdmException	Throws exception where there is nesting problem.
-	 */
-	private int[] getGroupData(StringBuilder data) throws EdmException {
+        int i = 0;
+        while (matcher.find()) {
 
-		/*example:
-			[0]object activeGroupClass
-			beginObjectProperties
-			:::::data:::::
-			beginGroup
-			:::::objects:::::
-			[1]endGroup
-			:::::data:::::
-			endObjectProperties[2]
-		*/
-		
-		Vector<Integer> begins = new Vector<Integer>();
-		Vector<Integer> ends = new Vector<Integer>();
-		Vector<Integer> finalEnds = new Vector<Integer>();
+            String matchData = matcher.group(2);
+            int start = matcher.start();
+            int end = matcher.end();
 
-		// searching for positions of group nesting start expressions
-		Pattern pattern = Pattern.compile("object\\s+?activeGroupClass",
-				Pattern.DOTALL);
-		Matcher matcher = pattern.matcher(data.toString());
-		while (matcher.find())
-			begins.add(matcher.start());
-		// searching for positions of group nesting end expressions
-		pattern = Pattern.compile(
-				"endGroup.+?endObjectProperties",
-				Pattern.DOTALL);
-		matcher = pattern.matcher(data.toString());
-		while (matcher.find()) {
-			ends.add(matcher.start());
-			finalEnds.add(matcher.end());
-		}
-		// if opening and closing expressions count does not match, something is wrong
-		if (begins.size() != ends.size())
-			throw new EdmException(EdmException.NESTING_ERROR,
-					"Open and close expressions count do not match: open = " + begins.size() + 
-					" close = " + ends.size() + ".", null);
+            Pattern p = Pattern.compile(".*");    // whole line
+            Matcher m = p.matcher(matchData);
 
-		// returns the position of closing expression that is relevant to current group
-		int[] endPos = getClosingPosition(begins, ends);
-		int end = endPos[0];		// end --> the position where data in interest finishes
-		int finalEnd = endPos[1];	// finalEnd --> index of closing expression in array
+            while (m.find()) {
+                parseProperty(m, getRoot());
+            }
+            if (i > 0)
+                log.warn("More than one display file headers found.");
+            i++;
 
-		if (begins.size() == 0)
-			return null;
+            data.delete(start, end);
+        }
 
-		int[] result = { begins.get(0), end, finalEnds.get(finalEnd-1) };
+        return data;
+    }
 
-		return result;
-	}
+    /**
+     * Iterates through data and determines which data is relevant
+     * to current group.
+     *
+     * @param data    Data to parse.
+     * @return        Returns the array of integers that describe three positions:
+     *                     [0]    Data start position.
+     *                     [1]    Data end position.
+     *                     [2]    Position of data closing (end) expression.
+     * @throws EdmException    Throws exception where there is nesting problem.
+     */
+    private int[] getGroupData(StringBuilder data) throws EdmException {
 
-	/**
-	 * Returns the closing position relevant to the first data start expression.
-	 *
-	 * @param begins	Array of positions of begin expressions.
-	 * @param ends		Array of positions of closing (end) expressions.
-	 * @return			Array of two integers:
-	 * 						[0]	Last (closing) position of data of interest.
-	 * 						[1]	Index of closing expression in array that closed current data nest.
-	 * @throws EdmException	Throws exception if data is not properly nested.
-	 */
-	private int[] getClosingPosition(Vector<Integer> begins,
-			Vector<Integer> ends) throws EdmException {
+        /*example:
+            [0]object activeGroupClass
+            beginObjectProperties
+            :::::data:::::
+            beginGroup
+            :::::objects:::::
+            [1]endGroup
+            :::::data:::::
+            endObjectProperties[2]
+        */
 
-		Vector<Integer> all = new Vector<Integer>();
-		all.addAll(begins);
-		all.addAll(ends);
-		Collections.sort(all);
+        Vector<Integer> begins = new Vector<Integer>();
+        Vector<Integer> ends = new Vector<Integer>();
+        Vector<Integer> finalEnds = new Vector<Integer>();
 
-		int level = 0;
-		int end = 0;
-		int endIndex = 0;
-		for (int x = 0; x < all.size(); x++) {
-			if (begins.contains(all.get(x)))
-				level = level + 1;
-			if (ends.contains(all.get(x))) {
-				level = level - 1;
-				endIndex = endIndex + 1;
-			}
+        // searching for positions of group nesting start expressions
+        Pattern pattern = Pattern.compile("object\\s+?activeGroupClass",
+                Pattern.DOTALL);
+        Matcher matcher = pattern.matcher(data.toString());
+        while (matcher.find())
+            begins.add(matcher.start());
+        // searching for positions of group nesting end expressions
+        pattern = Pattern.compile(
+                "endGroup.+?endObjectProperties",
+                Pattern.DOTALL);
+        matcher = pattern.matcher(data.toString());
+        while (matcher.find()) {
+            ends.add(matcher.start());
+            finalEnds.add(matcher.end());
+        }
+        // if opening and closing expressions count does not match, something is wrong
+        if (begins.size() != ends.size())
+            throw new EdmException(EdmException.NESTING_ERROR,
+                    "Open and close expressions count do not match: open = " + begins.size() +
+                    " close = " + ends.size() + ".", null);
 
-			if (level == 0) {
-				end = all.get(x);
-				break;
-			}
-		}
+        // returns the position of closing expression that is relevant to current group
+        int[] endPos = getClosingPosition(begins, ends);
+        int end = endPos[0];        // end --> the position where data in interest finishes
+        int finalEnd = endPos[1];    // finalEnd --> index of closing expression in array
 
-		if (level < 0)
-			throw new EdmException(EdmException.NESTING_ERROR, "Tree depth has fallen below zero.", null);
+        if (begins.size() == 0)
+            return null;
 
-		int[] result = { end, endIndex};
-		return result;
-	}
+        int[] result = { begins.get(0), end, finalEnds.get(finalEnd-1) };
 
-	/**
-	 * Parses group header data.
-	 *
-	 * @param group EdmEntity representing group.
-	 * @param groupData Group data to parse.
-	 * @param endGroupPosition Position where "endGroup" statement is. Used for parsing data between "endGroup" and "endObjectProperties"
-	 * @return Data without parsed section.
-	 * @throws EdmException if an error occurs.
-	 */
-	private StringBuilder parseGroupHeader(EdmEntity group, StringBuilder groupData, int endGroupPosition) throws EdmException {
+        return result;
+    }
 
-		// group data between "endGroup" and "endObjectProperties" declaration
-		int afterDataStart = endGroupPosition + 8; // 8 = "endGroup".length
-		int afterDataEnd = groupData.length() - 19; // 19 = "endObjectProperties".length
-		String afterData = groupData.substring(afterDataStart, afterDataEnd);
-		// removes afterData from groupData
-		groupData.delete(endGroupPosition, groupData.length());
-		
-		
-		// group data between "beginObjectProperties" and "beginGroup" declaration
-		Pattern p = Pattern.compile(
-				"(object\\s+activeGroupClass.*?beginObjectProperties(.*?)beginGroup)",
-				Pattern.DOTALL);
-		Matcher m = p.matcher(groupData);
-		m.find();
-		int start = m.start();
-		int end = m.end();
-		String matchData = m.group(2);
-		
-		// append afterData
-		matchData = matchData + afterData;		
-		
-		Pattern p1 = Pattern.compile(".*");
-		Matcher m1 = p1.matcher(matchData);
+    /**
+     * Returns the closing position relevant to the first data start expression.
+     *
+     * @param begins    Array of positions of begin expressions.
+     * @param ends        Array of positions of closing (end) expressions.
+     * @return            Array of two integers:
+     *                         [0]    Last (closing) position of data of interest.
+     *                         [1]    Index of closing expression in array that closed current data nest.
+     * @throws EdmException    Throws exception if data is not properly nested.
+     */
+    private int[] getClosingPosition(Vector<Integer> begins,
+            Vector<Integer> ends) throws EdmException {
 
-		while (m1.find())
-			parseProperty(m1, group);
+        Vector<Integer> all = new Vector<Integer>();
+        all.addAll(begins);
+        all.addAll(ends);
+        Collections.sort(all);
 
-		groupData.delete(start, end);
-		return groupData;
-	}
-	
-	/**
-	 * Parses the group data enclosed with regexp:
-	 * "(object activeGroupClass(.*?)endGroup.*?endObjectProperties)",
-	 *
-	 * Inside this, objects as well as possible other groups are parsed
-	 * and added into hierarchical data tree.
-	 *
-	 * @param parent Parent EdmEntity, which will contain all objects.
-	 * @param data Group data to parse.
-	 * @return Remaining data without already parsed data.
-	 * @throws EdmException if error occurs. Parsing is continued only when
-	 * 		objects contain invalid data. In this case, they are ignored. 
-	 */
-	private StringBuilder parseGroup(EdmEntity parent, StringBuilder data) throws EdmException {
+        int level = 0;
+        int end = 0;
+        int endIndex = 0;
+        for (int x = 0; x < all.size(); x++) {
+            if (begins.contains(all.get(x)))
+                level = level + 1;
+            if (ends.contains(all.get(x))) {
+                level = level - 1;
+                endIndex = endIndex + 1;
+            }
 
-		// get boundaries of group data with nesting algorithm
-		int[] boundaries = getGroupData(data);
-		if (boundaries == null)
-			return data;
+            if (level == 0) {
+                end = all.get(x);
+                break;
+            }
+        }
 
-		StringBuilder groupData = new StringBuilder();
-		groupData.append(data.substring(boundaries[0], boundaries[2]));
-		data.delete(boundaries[0], boundaries[2]);
+        if (level < 0)
+            throw new EdmException(EdmException.NESTING_ERROR, "Tree depth has fallen below zero.", null);
 
-		log.debug("******** Parsing group.");
+        int[] result = { end, endIndex};
+        return result;
+    }
 
-		EdmEntity groupEntity = new EdmEntity("activeGroupClass");
-		parent.addSubEntity(groupEntity);
+    /**
+     * Parses group header data.
+     *
+     * @param group EdmEntity representing group.
+     * @param groupData Group data to parse.
+     * @param endGroupPosition Position where "endGroup" statement is. Used for parsing data between "endGroup" and "endObjectProperties"
+     * @return Data without parsed section.
+     * @throws EdmException if an error occurs.
+     */
+    private StringBuilder parseGroupHeader(EdmEntity group, StringBuilder groupData, int endGroupPosition) throws EdmException {
 
-		groupData = parseGroupHeader(groupEntity, groupData, boundaries[1] - boundaries[0]);
+        // group data between "endGroup" and "endObjectProperties" declaration
+        int afterDataStart = endGroupPosition + 8; // 8 = "endGroup".length
+        int afterDataEnd = groupData.length() - 19; // 19 = "endObjectProperties".length
+        String afterData = groupData.substring(afterDataStart, afterDataEnd);
+        // removes afterData from groupData
+        groupData.delete(endGroupPosition, groupData.length());
 
-		boolean isMatch = true;
-		while (isMatch) {
-			Pattern p = Pattern.compile(
-					"(object(.*?)beginObjectProperties(.*?)endObjectProperties)",
-					Pattern.DOTALL);
-			Matcher m = p.matcher(groupData);
 
-			isMatch = m.find();
+        // group data between "beginObjectProperties" and "beginGroup" declaration
+        Pattern p = Pattern.compile(
+                "(object\\s+activeGroupClass.*?beginObjectProperties(.*?)beginGroup)",
+                Pattern.DOTALL);
+        Matcher m = p.matcher(groupData);
+        m.find();
+        int start = m.start();
+        int end = m.end();
+        String matchData = m.group(2);
 
-			if (isMatch) {
-				String objType = m.group(2).trim();
-				String objData = m.group(3);
+        // append afterData
+        matchData = matchData + afterData;
 
-				if (objType.equals("activeGroupClass")) {
-					groupData = parseGroup(groupEntity, groupData);
-				}
-				else {
-					int start = m.start();
-					int end = m.end();
-					parseObject(groupEntity, objType, objData);
-					
-					groupData.delete(start, end);
-				}
-			}
-		}
-		
-		return data;
-	}
-	
-	/**
-	 * Parses object data. If edm2xml.robustParsing system property is set to "true",
-	 * parsing is not interrupted in case of erroneous object data. In such case, object is
-	 * skipped at robust parsing. 
-	 * 
-	 * @param parent Parent EdmEntity, which will contain parsed object.
-	 * @param objType Object type string.
-	 * @param objData Object data string, containing all properties.
-	 * @return True if object was correctly parsed.
-	 * @throws EdmException in case of error. When parsing is robust, it skips the object,
-	 * 		otherwise parsing is terminated.
-	 */
-	private boolean parseObject(EdmEntity parent, String objType, String objData) throws EdmException {
+        Pattern p1 = Pattern.compile(".*");
+        Matcher m1 = p1.matcher(matchData);
 
-		boolean error = false;
+        while (m1.find())
+            parseProperty(m1, group);
 
-		log.debug("");
-		log.debug("******** Parsing object: " + objType);
+        groupData.delete(start, end);
+        return groupData;
+    }
 
-		EdmEntity object = new EdmEntity(objType);			
+    /**
+     * Parses the group data enclosed with regexp:
+     * "(object activeGroupClass(.*?)endGroup.*?endObjectProperties)",
+     *
+     * Inside this, objects as well as possible other groups are parsed
+     * and added into hierarchical data tree.
+     *
+     * @param parent Parent EdmEntity, which will contain all objects.
+     * @param data Group data to parse.
+     * @return Remaining data without already parsed data.
+     * @throws EdmException if error occurs. Parsing is continued only when
+     *         objects contain invalid data. In this case, they are ignored.
+     */
+    private StringBuilder parseGroup(EdmEntity parent, StringBuilder data) throws EdmException {
 
-		Pattern p1 = Pattern.compile(".*");
-		Matcher m1 = p1.matcher(objData);
+        // get boundaries of group data with nesting algorithm
+        int[] boundaries = getGroupData(data);
+        if (boundaries == null)
+            return data;
 
-		if (robust) {
-			while (m1.find()) {
-				try {
-					parseProperty(m1, object);
-				}
-				catch (Exception e) {
-					log.error("Object parsing skipped due to parsing error.");
-					error = true;
-					break;					
-				}
-			}
+        StringBuilder groupData = new StringBuilder();
+        groupData.append(data.substring(boundaries[0], boundaries[2]));
+        data.delete(boundaries[0], boundaries[2]);
 
-			if (!error)
-				parent.addSubEntity(object);
-		}
-		else {
-			while (m1.find()) {
-				parseProperty(m1, object);
-			}
+        log.debug("******** Parsing group.");
 
-			parent.addSubEntity(object);
-		}
+        EdmEntity groupEntity = new EdmEntity("activeGroupClass");
+        parent.addSubEntity(groupEntity);
 
-		return !error;
-	}
-	
-	/**
-	 * Constructor. Reads the file and parses its data.
-	 * First, display file header is parsed. Then all group hierarchy is parsed,
-	 * together with objects.
-	 * 
-	 * @param fileName EDL file to parse.
-	 * @throws EdmException if a parsing error occurs.
-	 */
-	public EdmDisplayParser(String fileName) throws EdmException {
-		super(fileName);
+        groupData = parseGroupHeader(groupEntity, groupData, boundaries[1] - boundaries[0]);
 
-		edmData = parseDisplayProperties(edmData);
-		
-		boolean isMatch = true;
-		while (isMatch) {
-			Pattern p = Pattern.compile(
-					"(object(.*?)beginObjectProperties(.*?)endObjectProperties)",
-					Pattern.DOTALL);
-			Matcher m = p.matcher(edmData);
+        boolean isMatch = true;
+        while (isMatch) {
+            Pattern p = Pattern.compile(
+                    "(object(.*?)beginObjectProperties(.*?)endObjectProperties)",
+                    Pattern.DOTALL);
+            Matcher m = p.matcher(groupData);
 
-			isMatch = m.find();
-			
-			if (isMatch) {
-				String objType = m.group(2).trim();
-				String objData = m.group(3);
+            isMatch = m.find();
 
-				if (objType.equals("activeGroupClass")) {
-					edmData = parseGroup(getRoot(), edmData);
-				}
-				else {
-					int start = m.start();
-					int end = m.end();
-					if(objType.contains(":")){
-						objType=objType.replace(":", "_");
-					}
-					parseObject(getRoot(), objType, objData);
-					
-					edmData.delete(start, end);
-				}
-			}
-		}
-		
-		if (edmData.toString().trim().length() > 0) {
-			log.warn("Remaining data not parsed: " + edmData);
-		}
-	}
+            if (isMatch) {
+                String objType = m.group(2).trim();
+                String objData = m.group(3);
+
+                if (objType.equals("activeGroupClass")) {
+                    groupData = parseGroup(groupEntity, groupData);
+                }
+                else {
+                    int start = m.start();
+                    int end = m.end();
+                    parseObject(groupEntity, objType, objData);
+
+                    groupData.delete(start, end);
+                }
+            }
+        }
+
+        return data;
+    }
+
+    /**
+     * Parses object data. If edm2xml.robustParsing system property is set to "true",
+     * parsing is not interrupted in case of erroneous object data. In such case, object is
+     * skipped at robust parsing.
+     *
+     * @param parent Parent EdmEntity, which will contain parsed object.
+     * @param objType Object type string.
+     * @param objData Object data string, containing all properties.
+     * @return True if object was correctly parsed.
+     * @throws EdmException in case of error. When parsing is robust, it skips the object,
+     *         otherwise parsing is terminated.
+     */
+    private boolean parseObject(EdmEntity parent, String objType, String objData) throws EdmException {
+
+        boolean error = false;
+
+        log.debug("");
+        log.debug("******** Parsing object: " + objType);
+
+        EdmEntity object = new EdmEntity(objType);
+
+        Pattern p1 = Pattern.compile(".*");
+        Matcher m1 = p1.matcher(objData);
+
+        if (robust) {
+            while (m1.find()) {
+                try {
+                    parseProperty(m1, object);
+                }
+                catch (Exception e) {
+                    log.error("Object parsing skipped due to parsing error.");
+                    error = true;
+                    break;
+                }
+            }
+
+            if (!error)
+                parent.addSubEntity(object);
+        }
+        else {
+            while (m1.find()) {
+                parseProperty(m1, object);
+            }
+
+            parent.addSubEntity(object);
+        }
+
+        return !error;
+    }
+
+    /**
+     * Constructor. Reads the file and parses its data.
+     * First, display file header is parsed. Then all group hierarchy is parsed,
+     * together with objects.
+     *
+     * @param fileName EDL file to parse.
+     * @throws EdmException if a parsing error occurs.
+     */
+    public EdmDisplayParser(String fileName) throws EdmException {
+        super(fileName);
+
+        edmData = parseDisplayProperties(edmData);
+
+        boolean isMatch = true;
+        while (isMatch) {
+            Pattern p = Pattern.compile(
+                    "(object(.*?)beginObjectProperties(.*?)endObjectProperties)",
+                    Pattern.DOTALL);
+            Matcher m = p.matcher(edmData);
+
+            isMatch = m.find();
+
+            if (isMatch) {
+                String objType = m.group(2).trim();
+                String objData = m.group(3);
+
+                if (objType.equals("activeGroupClass")) {
+                    edmData = parseGroup(getRoot(), edmData);
+                }
+                else {
+                    int start = m.start();
+                    int end = m.end();
+                    if(objType.contains(":")){
+                        objType=objType.replace(":", "_");
+                    }
+                    parseObject(getRoot(), objType, objData);
+
+                    edmData.delete(start, end);
+                }
+            }
+        }
+
+        if (edmData.toString().trim().length() > 0) {
+            log.warn("Remaining data not parsed: " + edmData);
+        }
+    }
 }

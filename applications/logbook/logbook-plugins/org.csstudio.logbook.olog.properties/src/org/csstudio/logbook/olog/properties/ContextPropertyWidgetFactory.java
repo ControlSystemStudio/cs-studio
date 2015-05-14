@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.olog.properties;
 
@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ContextPropertyWidgetFactory implements PropertyWidgetFactory {
 
@@ -23,8 +23,8 @@ public class ContextPropertyWidgetFactory implements PropertyWidgetFactory {
 
     @Override
     public AbstractPropertyWidget create(Composite parent, int SWT,
-	    LogEntryChangeset logEntryChangeset, boolean editable) {
-	return new ContextPropertyWidget(parent, SWT, logEntryChangeset, editable);
+        LogEntryChangeset logEntryChangeset, boolean editable) {
+    return new ContextPropertyWidget(parent, SWT, logEntryChangeset, editable);
     }
 
 }

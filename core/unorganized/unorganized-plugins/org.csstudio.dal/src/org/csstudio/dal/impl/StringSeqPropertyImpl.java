@@ -29,44 +29,44 @@ import org.csstudio.dal.context.PropertyContext;
 
 
 public class StringSeqPropertyImpl extends DynamicValuePropertyImpl<String[]>
-	implements StringSeqProperty
+    implements StringSeqProperty
 {
-	private int sequenceLength;
-	private boolean chInitialized = false;
-	/**
-	 * Creates a new StringSeqPropertyImpl object.
-	 *
-	 * @param name property name
-	 * @param propertyContext property context
-	 */
-	public StringSeqPropertyImpl(String name, PropertyContext propertyContext)
-	{
-		super(String[].class, name, propertyContext);
-	}
+    private int sequenceLength;
+    private boolean chInitialized = false;
+    /**
+     * Creates a new StringSeqPropertyImpl object.
+     *
+     * @param name property name
+     * @param propertyContext property context
+     */
+    public StringSeqPropertyImpl(String name, PropertyContext propertyContext)
+    {
+        super(String[].class, name, propertyContext);
+    }
 
-	
-	private void readCharacteristics() throws DataExchangeException
-	{
-		if (chInitialized)
-			return;
-	
-		Integer length = null;
-		length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
-		sequenceLength = length.intValue();
-		chInitialized = true;
 
-	}
-	
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.SequenceAccess#getSequenceLength()
-	 */
-	public int getSequenceLength() throws DataExchangeException
-	{
-		if (!chInitialized)
-			readCharacteristics();
-		return sequenceLength;
-	}
+    private void readCharacteristics() throws DataExchangeException
+    {
+        if (chInitialized)
+            return;
+
+        Integer length = null;
+        length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
+        sequenceLength = length.intValue();
+        chInitialized = true;
+
+    }
+
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.SequenceAccess#getSequenceLength()
+     */
+    public int getSequenceLength() throws DataExchangeException
+    {
+        if (!chInitialized)
+            readCharacteristics();
+        return sequenceLength;
+    }
 }
 
 /* __oOo__ */

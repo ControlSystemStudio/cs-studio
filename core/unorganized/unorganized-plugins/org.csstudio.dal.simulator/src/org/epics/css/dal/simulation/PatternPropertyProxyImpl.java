@@ -34,21 +34,21 @@ import org.apache.log4j.Logger;
  */
 public class PatternPropertyProxyImpl extends PropertyProxyImpl<BitSet>
 {
-	/**
-	 * Creates a new LongPropertyProxyImpl object.
-	 *
-	 * @param name Proxy name
-	 */
-	public PatternPropertyProxyImpl(String name, SimulatorPlug plug)
-	{
-		super(name,plug,BitSet.class);
+    /**
+     * Creates a new LongPropertyProxyImpl object.
+     *
+     * @param name Proxy name
+     */
+    public PatternPropertyProxyImpl(String name, SimulatorPlug plug)
+    {
+        super(name,plug,BitSet.class);
 
-		try {
-			valueProvider.set(new BitSet());
-		} catch (Exception e) {
-			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
-		}
-	}
+        try {
+            valueProvider.set(new BitSet());
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass()).warn("Simulator error.", e);
+        }
+    }
 }
 
 /* __oOo__ */

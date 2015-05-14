@@ -17,22 +17,22 @@ package org.csstudio.opibuilder.converter.model;
 public class EdmMultiDoubles extends AbstractEdmMultiAttributes<EdmDouble> {
 
 
-	/**
-	 * Constructor which parses EdmColor from general EdmAttribute value.
-	 *
-	 * @param genericEntity EdmAttribute containing general EdmColor data.
-	 * @param required false if this attribute is optional, else true
-	 * @throws EdmException if EdmAttribute contains invalid data.
-	 */
-	public EdmMultiDoubles(EdmAttribute genericEntity, boolean required) throws EdmException {
-		super(genericEntity, required);
+    /**
+     * Constructor which parses EdmColor from general EdmAttribute value.
+     *
+     * @param genericEntity EdmAttribute containing general EdmColor data.
+     * @param required false if this attribute is optional, else true
+     * @throws EdmException if EdmAttribute contains invalid data.
+     */
+    public EdmMultiDoubles(EdmAttribute genericEntity, boolean required) throws EdmException {
+        super(genericEntity, required);
 
-	}
-	
-    @Override
-    protected EdmDouble createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
-    	return new EdmDouble(genericEntity, false);
     }
 
-	
+    @Override
+    protected EdmDouble createEdmAttribute(EdmAttribute genericEntity) throws EdmException{
+        return new EdmDouble(genericEntity, false);
+    }
+
+
 }

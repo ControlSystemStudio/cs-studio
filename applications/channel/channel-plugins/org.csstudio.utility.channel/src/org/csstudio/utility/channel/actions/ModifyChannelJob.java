@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -21,13 +21,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
- * 
+ *
  * TODO need to improve the update/modify method which currently updates the
  * channel one tag/property at a time in order to accommodate for authorization
  * restrictions.
- * 
+ *
  * A better method would be to make a single call with the entire modified channel
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -36,7 +36,7 @@ public class ModifyChannelJob extends Job{
     private static Logger logger = Logger.getLogger(ModifyChannelJob.class.getName());
     private final Channel orginalChannel;
     private final Channel newChannel;
-    
+
     public ModifyChannelJob(String name, Channel orginalChannel, Channel newChannel) {
         super(name);
         this.orginalChannel = orginalChannel;
@@ -44,7 +44,7 @@ public class ModifyChannelJob extends Job{
     }
 
     /**
-     * 
+     *
      */
     @Override
     protected IStatus run(IProgressMonitor monitor) {
@@ -57,7 +57,7 @@ public class ModifyChannelJob extends Job{
             logger.info(() -> "add tag:" + tag );
             client.update(tag(tag), channelName);
         }
-        
+
         // tags removed from the channel
         Set<String> removedTags = new HashSet<String>(orginalChannel.getTagNames());
         removedTags.removeAll(newChannel.getTagNames());
@@ -65,7 +65,7 @@ public class ModifyChannelJob extends Job{
             logger.info(() -> "removed tag: "+ tag);
             client.delete(tag(tag), channelName);
         }
-        
+
         Collection<String> allProperties = new HashSet<String>();
         allProperties.addAll(orginalChannel.getPropertyNames());
         allProperties.addAll(newChannel.getPropertyNames());

@@ -40,105 +40,105 @@ import org.osgi.framework.Bundle;
  * The action to install BOY symbol images library.
  */
 public class InstallLibraryAction extends Action implements
-		IWorkbenchWindowActionDelegate {
+        IWorkbenchWindowActionDelegate {
 
-	public static final String PROJECT_NAME = "BOY Image Library";
-	private static final String SRC_FOLDER_TOCOPY = "./SymbolLibrary/";
-	private static final String JOB_NAME = "Import BOY image library";
-	private static final String TASK_NAME = "Copying BOY image library";
+    public static final String PROJECT_NAME = "BOY Image Library";
+    private static final String SRC_FOLDER_TOCOPY = "./SymbolLibrary/";
+    private static final String JOB_NAME = "Import BOY image library";
+    private static final String TASK_NAME = "Copying BOY image library";
 
-	public void dispose() {
-		// NOP
-	}
+    public void dispose() {
+        // NOP
+    }
 
-	public void init(IWorkbenchWindow window) {
-		// NOP
-	}
+    public void init(IWorkbenchWindow window) {
+        // NOP
+    }
 
-	public void run(IAction action) {
-		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		if (root.getProject(PROJECT_NAME).exists()) {
-			MessageDialog.openError(
-							null,
-							"Failed",
-							NLS.bind(
-									"There is already a project named \"{0}\"."
-											+ "Please make sure there is no project named {0} in the workspace.",
-									PROJECT_NAME));
-			return;
-		}
-		Job job = new Job(JOB_NAME) {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				try {
-					// copy the sample displays
-					IProject project = root.getProject(PROJECT_NAME);
-					project.create(new NullProgressMonitor());
-					project.open(new NullProgressMonitor());
-					Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
-					URL url = FileLocator.find(bundle, new Path(SRC_FOLDER_TOCOPY), null);
-					try {
-						File directory = new File(FileLocator.toFileURL(url)
-								.getPath());
-						if (directory.isDirectory()) {
-							File[] files = directory.listFiles();
-							monitor.beginTask(TASK_NAME, count(files));
-							copy(files, project, monitor);
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				} catch (CoreException e) {
-					e.printStackTrace();
-				}
-				return Status.OK_STATUS;
-			}
-		};
-		job.schedule();
-	}
+    public void run(IAction action) {
+        final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        if (root.getProject(PROJECT_NAME).exists()) {
+            MessageDialog.openError(
+                            null,
+                            "Failed",
+                            NLS.bind(
+                                    "There is already a project named \"{0}\"."
+                                            + "Please make sure there is no project named {0} in the workspace.",
+                                    PROJECT_NAME));
+            return;
+        }
+        Job job = new Job(JOB_NAME) {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                try {
+                    // copy the sample displays
+                    IProject project = root.getProject(PROJECT_NAME);
+                    project.create(new NullProgressMonitor());
+                    project.open(new NullProgressMonitor());
+                    Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+                    URL url = FileLocator.find(bundle, new Path(SRC_FOLDER_TOCOPY), null);
+                    try {
+                        File directory = new File(FileLocator.toFileURL(url)
+                                .getPath());
+                        if (directory.isDirectory()) {
+                            File[] files = directory.listFiles();
+                            monitor.beginTask(TASK_NAME, count(files));
+                            copy(files, project, monitor);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } catch (CoreException e) {
+                    e.printStackTrace();
+                }
+                return Status.OK_STATUS;
+            }
+        };
+        job.schedule();
+    }
 
-	private int count(File[] files) {
-		int result = 0;
-		for (File file : files) {
-			if (file.isDirectory()) {
-				result += count(file.listFiles());
-			} else {
-				result++;
-			}
-		}
-		return result;
-	}
+    private int count(File[] files) {
+        int result = 0;
+        for (File file : files) {
+            if (file.isDirectory()) {
+                result += count(file.listFiles());
+            } else {
+                result++;
+            }
+        }
+        return result;
+    }
 
-	private void copy(File[] files, IContainer container,
-			IProgressMonitor monitor) {
-		try {
-			for (File file : files) {
-				monitor.subTask("Copying " + file.getName());
-				if (file.isDirectory()) {
-					if (!file.getName().equals("CVS")) {//$NON-NLS-1$
-						IFolder folder = container.getFolder(new Path(file
-								.getName()));
-						if (!folder.exists()) {
-							folder.create(true, true, null);
-							copy(file.listFiles(), folder, monitor);
-						}
-					}
-				} else {
-					IFile pFile = container.getFile(new Path(file.getName()));
-					if (!pFile.exists()) {
-						pFile.create(new FileInputStream(file), true,
-								new NullProgressMonitor());
-					}
-					monitor.internalWorked(1);
-				}
-			}
-		} catch (Exception e) {
-			MessageDialog.openError(null, "Error",
-					NLS.bind("Error happened during copy: \n{0}.", e));
-		}
-	}
+    private void copy(File[] files, IContainer container,
+            IProgressMonitor monitor) {
+        try {
+            for (File file : files) {
+                monitor.subTask("Copying " + file.getName());
+                if (file.isDirectory()) {
+                    if (!file.getName().equals("CVS")) {//$NON-NLS-1$
+                        IFolder folder = container.getFolder(new Path(file
+                                .getName()));
+                        if (!folder.exists()) {
+                            folder.create(true, true, null);
+                            copy(file.listFiles(), folder, monitor);
+                        }
+                    }
+                } else {
+                    IFile pFile = container.getFile(new Path(file.getName()));
+                    if (!pFile.exists()) {
+                        pFile.create(new FileInputStream(file), true,
+                                new NullProgressMonitor());
+                    }
+                    monitor.internalWorked(1);
+                }
+            }
+        } catch (Exception e) {
+            MessageDialog.openError(null, "Error",
+                    NLS.bind("Error happened during copy: \n{0}.", e));
+        }
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		// NOP
-	}
+    public void selectionChanged(IAction action, ISelection selection) {
+        // NOP
+    }
 }

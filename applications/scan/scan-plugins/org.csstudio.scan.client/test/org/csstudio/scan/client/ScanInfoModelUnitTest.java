@@ -55,7 +55,7 @@ public class ScanInfoModelUnitTest implements ScanInfoModelListener
         System.out.println("\n-- Scan Info: " + server_info);
     }
 
-	@Override
+    @Override
     public void scanUpdate(final List<ScanInfo> infos)
     {
         System.out.println("\n-- Scan Update --");

@@ -35,66 +35,66 @@ import org.csstudio.dal.proxy.CommandProxy;
  */
 public class CommandImpl implements Command
 {
-	protected CommandProxy proxy;
-	protected AbstractDeviceImpl owner;
+    protected CommandProxy proxy;
+    protected AbstractDeviceImpl owner;
 
-	/**
-	 * Creates a new CommandImpl object.
-	 *
-	 * @param p Command proxy
-	 * @param ctx Device
-	 */
-	public CommandImpl(CommandProxy p, AbstractDeviceImpl ctx)
-	{
-		super();
-		proxy = p;
-		owner = ctx;
-	}
+    /**
+     * Creates a new CommandImpl object.
+     *
+     * @param p Command proxy
+     * @param ctx Device
+     */
+    public CommandImpl(CommandProxy p, AbstractDeviceImpl ctx)
+    {
+        super();
+        proxy = p;
+        owner = ctx;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getName()
-	 */
-	public String getName()
-	{
-		return proxy.getName();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getName()
+     */
+    public String getName()
+    {
+        return proxy.getName();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#execute(java.lang.Object...)
-	 */
-	public Object execute(Object... parameters) throws RemoteException
-	{
-		return proxy.execute(parameters);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#execute(java.lang.Object...)
+     */
+    public Object execute(Object... parameters) throws RemoteException
+    {
+        return proxy.execute(parameters);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getParameterTypes()
-	 */
-	public Class[] getParameterTypes()
-	{
-		return proxy.getParameterTypes();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getParameterTypes()
+     */
+    public Class[] getParameterTypes()
+    {
+        return proxy.getParameterTypes();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getOwner()
-	 */
-	public CommandContext getOwner()
-	{
-		return owner;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getOwner()
+     */
+    public CommandContext getOwner()
+    {
+        return owner;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.commands.Command#getReturnedType()
-	 */
-	public Class getReturnedType()
-	{
-		return proxy.getReturnedType();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.commands.Command#getReturnedType()
+     */
+    public Class getReturnedType()
+    {
+        return proxy.getReturnedType();
+    }
 
-	public boolean isAsynchronous()
-	{
-		return false;
-	}
+    public boolean isAsynchronous()
+    {
+        return false;
+    }
 }
 
 /* __oOo__ */

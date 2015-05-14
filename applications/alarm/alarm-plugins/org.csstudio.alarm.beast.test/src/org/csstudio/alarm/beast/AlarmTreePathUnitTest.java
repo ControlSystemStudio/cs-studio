@@ -43,7 +43,7 @@ public class AlarmTreePathUnitTest
         assertThat(path.length, equalTo(4));
         assertThat(path[1], equalTo("to"));
 
-        
+
         // Sub-path
         final String new_path = AlarmTreePath.makePath(path, 2);
         assertThat(new_path, equalTo("/path/to"));
@@ -81,31 +81,31 @@ public class AlarmTreePathUnitTest
     @Test
     public void testSpecialChars()
     {
-    	String path = AlarmTreePath.makePath("path", "to");
-    	assertThat(path, equalTo("/path/to"));
+        String path = AlarmTreePath.makePath("path", "to");
+        assertThat(path, equalTo("/path/to"));
 
-    	// First element already contains '/'
-    	path = AlarmTreePath.makePath("/path", "to");
-    	assertThat(path, equalTo("/path/to"));
+        // First element already contains '/'
+        path = AlarmTreePath.makePath("/path", "to");
+        assertThat(path, equalTo("/path/to"));
 
-    	path = AlarmTreePath.makePath(path, "sim://sine");
-    	// String is really "/path/to/sim:\/\/sine",
-    	// but to get the '\' into the string,
-    	// it itself needs to be escaped
-    	assertThat(path, equalTo("/path/to/sim:\\/\\/sine"));
+        path = AlarmTreePath.makePath(path, "sim://sine");
+        // String is really "/path/to/sim:\/\/sine",
+        // but to get the '\' into the string,
+        // it itself needs to be escaped
+        assertThat(path, equalTo("/path/to/sim:\\/\\/sine"));
 
-    	// Split
-    	final String[] items = AlarmTreePath.splitPath(path);
-    	assertThat(items.length, equalTo(3));
-    	assertThat(items[0], equalTo("path"));
-    	assertThat(items[1], equalTo("to"));
-    	assertThat(items[2], equalTo("sim://sine"));
+        // Split
+        final String[] items = AlarmTreePath.splitPath(path);
+        assertThat(items.length, equalTo(3));
+        assertThat(items[0], equalTo("path"));
+        assertThat(items[1], equalTo("to"));
+        assertThat(items[2], equalTo("sim://sine"));
 
-    	// Re-assemble
-    	path = AlarmTreePath.makePath(items, items.length);
-    	assertThat(path, equalTo("/path/to/sim:\\/\\/sine"));
+        // Re-assemble
+        path = AlarmTreePath.makePath(items, items.length);
+        assertThat(path, equalTo("/path/to/sim:\\/\\/sine"));
     }
-    
+
     @Test
     public void testPathUpdate()
     {

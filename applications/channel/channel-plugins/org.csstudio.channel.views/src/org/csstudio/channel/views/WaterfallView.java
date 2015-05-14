@@ -9,25 +9,25 @@ import org.eclipse.ui.IMemento;
  */
 public class WaterfallView extends AbstractChannelQueryView<WaterfallWidget> {
 
-	/**
-	 * The ID of the view as specified by the extension.
-	 */
-	public static final String ID = "org.csstudio.channel.views.WaterfallView";
+    /**
+     * The ID of the view as specified by the extension.
+     */
+    public static final String ID = "org.csstudio.channel.views.WaterfallView";
 
-	@Override
-	public void saveWidgetState(WaterfallWidget widget, IMemento memento) {
-		widget.saveState(memento);
-	}
+    @Override
+    public void saveWidgetState(WaterfallWidget widget, IMemento memento) {
+        widget.saveState(memento);
+    }
 
-	@Override
-	public void loadWidgetState(WaterfallWidget widget, IMemento memento) {
-		widget.loadState(memento);
-	}
+    @Override
+    public void loadWidgetState(WaterfallWidget widget, IMemento memento) {
+        widget.loadState(memento);
+    }
 
-	@Override
-	protected WaterfallWidget createChannelQueryWidget(Composite parent,
-			int style) {
-		return new WaterfallWidget(parent, style);
-	}
+    @Override
+    protected WaterfallWidget createChannelQueryWidget(Composite parent,
+            int style) {
+        return new WaterfallWidget(parent, style);
+    }
 
 }

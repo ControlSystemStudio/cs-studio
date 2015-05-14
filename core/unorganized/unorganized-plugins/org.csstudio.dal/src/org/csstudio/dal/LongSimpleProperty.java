@@ -33,9 +33,9 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.SimpleProperty
  */
 public interface LongSimpleProperty extends NumericSimpleProperty<Long,Long>,
-	LongAccess
+    LongAccess
 {
-	//
+    //
 }
 
 /* __oOo__ */

@@ -21,137 +21,137 @@ import org.csstudio.autocomplete.parser.ContentDescriptor;
  */
 public class LocalContentDescriptor extends ContentDescriptor {
 
-	private static Map<String, String> vTypes = new TreeMap<String, String>();
-	static {
-		vTypes.put("VString", "Creates a text PV");
-		vTypes.put("VStringArray", "Creates a text array PV");
-		vTypes.put("VDouble", "Creates a numeric PV");
-		vTypes.put("VDoubleArray", "Creates a numeric array PV");
-		vTypes.put("VTable", "Creates a table PV");
-		vTypes = Collections.unmodifiableMap(vTypes);
-	}
+    private static Map<String, String> vTypes = new TreeMap<String, String>();
+    static {
+        vTypes.put("VString", "Creates a text PV");
+        vTypes.put("VStringArray", "Creates a text array PV");
+        vTypes.put("VDouble", "Creates a numeric PV");
+        vTypes.put("VDoubleArray", "Creates a numeric array PV");
+        vTypes.put("VTable", "Creates a table PV");
+        vTypes = Collections.unmodifiableMap(vTypes);
+    }
 
-	private String vType;
-	private String pvName;
-	private List<String> initialValues = new LinkedList<String>();
-	private List<Class<?>> initialValuesTypes = new LinkedList<Class<?>>();
+    private String vType;
+    private String pvName;
+    private List<String> initialValues = new LinkedList<String>();
+    private List<Class<?>> initialValuesTypes = new LinkedList<Class<?>>();
 
-	private boolean completingVType = false;
-	private boolean completingInitialValue = false;
-	private boolean complete = false;
+    private boolean completingVType = false;
+    private boolean completingInitialValue = false;
+    private boolean complete = false;
 
-	public String getInitialValueTooltip() {
-		if(vType != null) {
-			switch (vType) {
-			case "VString": return "\"string\"";
-			case "VStringArray": return "\"string\",...";
-			case "VDouble": return "number";
-			case "VDoubleArray": return "number,...";
-			case "VTable": break;
-			default: return "initialValue";
-			}
-		}
-		if (initialValuesTypes.isEmpty())
-			return "initialValue";
-		if (initialValuesTypes.get(0).equals(String.class))
-			return initialValuesTypes.size() == 1 ? "\"string\"" : "\"string\",...";
-		if (initialValuesTypes.get(0).equals(Double.class))
-			return initialValuesTypes.size() == 1 ? "number" : "number,...";
-		return "initialValue";
-	}
-	
-	public boolean checkParameters() {
-		if (initialValues.size() == 0 || vType == null)
-			return true;
-		switch (vType) {
-		case "VString":
-			return initialValues.size() == 1
-					&& initialValuesTypes.get(0).equals(String.class);
-		case "VStringArray":
-			return initialValues.size() >= 1
-					&& initialValuesTypes.get(0).equals(String.class);
-		case "VDouble":
-			return initialValues.size() == 1
-					&& initialValuesTypes.get(0).equals(Double.class);
-		case "VDoubleArray":
-			return initialValues.size() >= 1
-					&& initialValuesTypes.get(0).equals(Double.class);
-		case "VTable":
-			return true;
-		default:
-			return false;
-		}
-	}
+    public String getInitialValueTooltip() {
+        if(vType != null) {
+            switch (vType) {
+            case "VString": return "\"string\"";
+            case "VStringArray": return "\"string\",...";
+            case "VDouble": return "number";
+            case "VDoubleArray": return "number,...";
+            case "VTable": break;
+            default: return "initialValue";
+            }
+        }
+        if (initialValuesTypes.isEmpty())
+            return "initialValue";
+        if (initialValuesTypes.get(0).equals(String.class))
+            return initialValuesTypes.size() == 1 ? "\"string\"" : "\"string\",...";
+        if (initialValuesTypes.get(0).equals(Double.class))
+            return initialValuesTypes.size() == 1 ? "number" : "number,...";
+        return "initialValue";
+    }
 
-	public static Collection<String> listVTypes() {
-		return vTypes.keySet();
-	}
+    public boolean checkParameters() {
+        if (initialValues.size() == 0 || vType == null)
+            return true;
+        switch (vType) {
+        case "VString":
+            return initialValues.size() == 1
+                    && initialValuesTypes.get(0).equals(String.class);
+        case "VStringArray":
+            return initialValues.size() >= 1
+                    && initialValuesTypes.get(0).equals(String.class);
+        case "VDouble":
+            return initialValues.size() == 1
+                    && initialValuesTypes.get(0).equals(Double.class);
+        case "VDoubleArray":
+            return initialValues.size() >= 1
+                    && initialValuesTypes.get(0).equals(Double.class);
+        case "VTable":
+            return true;
+        default:
+            return false;
+        }
+    }
 
-	public static String getVTypeDescription(String vType) {
-		return vTypes.get(vType);
-	}
+    public static Collection<String> listVTypes() {
+        return vTypes.keySet();
+    }
 
-	public void addInitialvalue(String value, Class<?> type) {
-		initialValues.add(value);
-		initialValuesTypes.add(type);
-	}
+    public static String getVTypeDescription(String vType) {
+        return vTypes.get(vType);
+    }
 
-	public String getPvName() {
-		return pvName;
-	}
+    public void addInitialvalue(String value, Class<?> type) {
+        initialValues.add(value);
+        initialValuesTypes.add(type);
+    }
 
-	public void setPvName(String pvName) {
-		this.pvName = pvName;
-	}
+    public String getPvName() {
+        return pvName;
+    }
 
-	public String getvType() {
-		return vType;
-	}
+    public void setPvName(String pvName) {
+        this.pvName = pvName;
+    }
 
-	public void setvType(String vType) {
-		this.vType = vType;
-	}
+    public String getvType() {
+        return vType;
+    }
 
-	public List<String> getInitialValues() {
-		return initialValues;
-	}
+    public void setvType(String vType) {
+        this.vType = vType;
+    }
 
-	public List<Class<?>> getInitialValuesTypes() {
-		return initialValuesTypes;
-	}
+    public List<String> getInitialValues() {
+        return initialValues;
+    }
 
-	public boolean isCompletingVType() {
-		return completingVType;
-	}
+    public List<Class<?>> getInitialValuesTypes() {
+        return initialValuesTypes;
+    }
 
-	public void setCompletingVType(boolean completingVType) {
-		this.completingVType = completingVType;
-	}
+    public boolean isCompletingVType() {
+        return completingVType;
+    }
 
-	public boolean isCompletingInitialValue() {
-		return completingInitialValue;
-	}
+    public void setCompletingVType(boolean completingVType) {
+        this.completingVType = completingVType;
+    }
 
-	public void setCompletingInitialValue(boolean completingInitialValue) {
-		this.completingInitialValue = completingInitialValue;
-	}
+    public boolean isCompletingInitialValue() {
+        return completingInitialValue;
+    }
 
-	public boolean isComplete() {
-		return complete;
-	}
+    public void setCompletingInitialValue(boolean completingInitialValue) {
+        this.completingInitialValue = completingInitialValue;
+    }
 
-	public void setComplete(boolean complete) {
-		this.complete = complete;
-	}
+    public boolean isComplete() {
+        return complete;
+    }
 
-	@Override
-	public String toString() {
-		return "LocalContentDescriptor [vType=" + vType + ", pvName=" + pvName
-				+ ", initialValues=" + initialValues + ", initialValuesTypes="
-				+ initialValuesTypes + ", completingVType=" + completingVType
-				+ ", completingInitialValue=" + completingInitialValue
-				+ ", complete=" + complete + ", toString()=" + super.toString()
-				+ "]";
-	}
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
+
+    @Override
+    public String toString() {
+        return "LocalContentDescriptor [vType=" + vType + ", pvName=" + pvName
+                + ", initialValues=" + initialValues + ", initialValuesTypes="
+                + initialValuesTypes + ", completingVType=" + completingVType
+                + ", completingInitialValue=" + completingInitialValue
+                + ", complete=" + complete + ", toString()=" + super.toString()
+                + "]";
+    }
 
 }

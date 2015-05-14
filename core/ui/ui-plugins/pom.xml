@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -10,20 +11,20 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
-  	<module>org.csstudio.ui.util</module>
-  	<module>org.csstudio.ui.util.test</module>
-  	<module>org.csstudio.ui.help</module>
-  	<module>org.csstudio.ui.menu</module>
-  	<module>org.csstudio.ui.menu.app</module>
-  	<module>org.csstudio.ui.preferences</module>
+    <module>org.csstudio.ui.util</module>
+    <module>org.csstudio.ui.util.test</module>
+    <module>org.csstudio.ui.help</module>
+    <module>org.csstudio.ui.menu</module>
+    <module>org.csstudio.ui.menu.app</module>
+    <module>org.csstudio.ui.preferences</module>
     <module>org.csstudio.ui.resources</module>
-<!--   	<module>org.csstudio.ui.menu.test</module> -->
-  	<module>org.csstudio.autocomplete</module>
-  	<module>org.csstudio.autocomplete.test</module>
-  	<module>org.csstudio.autocomplete.ui</module>
-  	<module>org.csstudio.autocomplete.ui.rap</module>
-  	<module>org.csstudio.autocomplete.ui.rcp</module>
-  	<module>org.csstudio.platform.jaasAuthentication.ui</module>
-  	<module>org.csstudio.platform.ldapAuthorization.ui</module>
+    <!--     <module>org.csstudio.ui.menu.test</module> -->
+    <module>org.csstudio.autocomplete</module>
+    <module>org.csstudio.autocomplete.test</module>
+    <module>org.csstudio.autocomplete.ui</module>
+    <module>org.csstudio.autocomplete.ui.rap</module>
+    <module>org.csstudio.autocomplete.ui.rcp</module>
+    <module>org.csstudio.platform.jaasAuthentication.ui</module>
+    <module>org.csstudio.platform.ldapAuthorization.ui</module>
   </modules>
 </project>

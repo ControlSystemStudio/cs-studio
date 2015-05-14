@@ -22,40 +22,40 @@ import org.eclipse.swt.widgets.Shell;
  */
 @SuppressWarnings("serial")
 public abstract class AbstractLoginDialog extends Dialog implements
-		CallbackHandler {
+        CallbackHandler {
 
-	Callback[] callbackArray;
+    Callback[] callbackArray;
 
-	protected final Callback[] getCallbacks() {
-		return this.callbackArray;
-	}
+    protected final Callback[] getCallbacks() {
+        return this.callbackArray;
+    }
 
-	protected AbstractLoginDialog(Shell parentShell) {
-		super(parentShell);
-	}
+    protected AbstractLoginDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.security.auth.callback.CallbackHandler#handle(javax.security.auth
-	 * .callback.Callback[])
-	 */
-	public void handle(final Callback[] callbacks) throws IOException {
-		this.callbackArray = callbacks;
-		final Display display = Display.getDefault();
-		display.syncExec(new Runnable() {
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * javax.security.auth.callback.CallbackHandler#handle(javax.security.auth
+     * .callback.Callback[])
+     */
+    public void handle(final Callback[] callbacks) throws IOException {
+        this.callbackArray = callbacks;
+        final Display display = Display.getDefault();
+        display.syncExec(new Runnable() {
 
-			public void run() {
-				setBlockOnOpen(true);
-				open();
-			}
-		});
+            public void run() {
+                setBlockOnOpen(true);
+                open();
+            }
+        });
 
-	}
+    }
 
-	protected void configureShell(Shell shell) {
-		super.configureShell(shell);
-		shell.setText("Login");
-	}
+    protected void configureShell(Shell shell) {
+        super.configureShell(shell);
+        shell.setText("Login");
+    }
 }

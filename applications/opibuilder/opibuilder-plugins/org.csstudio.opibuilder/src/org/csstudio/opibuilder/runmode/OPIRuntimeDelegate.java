@@ -57,10 +57,10 @@ import org.eclipse.ui.PartInitException;
 
 /**
  * The delegate to run an OPI in an editor or view.
- * 
+ *
  * @author Xihui Chen
  * @author Takashi Nakamoto @ Cosylab (Enhanced to calculate frame rate)
- * 
+ *
  */
 public class OPIRuntimeDelegate implements IAdaptable{
 
@@ -73,16 +73,16 @@ public class OPIRuntimeDelegate implements IAdaptable{
     private PatchedScrollingGraphicalViewer viewer;
 
     private ActionRegistry actionRegistry;
-    
+
     private IEditorInput editorInput;
-    
+
     private static AtomicInteger displayID = new AtomicInteger(0);
 
     /**
      * The workbench part where the OPI is running on.
-     */    
+     */
     private IOPIRuntime opiRuntime;
-    
+
     private PaintListener errorMessagePaintListener = new PaintListener() {
 
         public void paintControl(PaintEvent e) {
@@ -102,21 +102,21 @@ public class OPIRuntimeDelegate implements IAdaptable{
         }
 
     };
-    
-    
+
+
 
     private ZoomManager zoomManager;
-    
+
     public OPIRuntimeDelegate(IOPIRuntime opiRuntime){
-        this.opiRuntime = opiRuntime;        
+        this.opiRuntime = opiRuntime;
     }
-    
+
     public void init(final IWorkbenchPartSite site, final IEditorInput input) throws PartInitException
     {
         setEditorInput(input);
         if (viewer != null)
             SingleSourceHelper.removePaintListener(viewer.getControl(),errorMessagePaintListener);
- 
+
         displayModel = new DisplayModel(getOPIFilePath());
         displayModel.setOpiRuntime(opiRuntime);
         displayModel.setDisplayID(displayID.incrementAndGet());
@@ -153,29 +153,29 @@ public class OPIRuntimeDelegate implements IAdaptable{
         catch (Exception e)
         {
             if (SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
-                OPIBuilderPlugin.getLogger().log(Level.WARNING,    
+                OPIBuilderPlugin.getLogger().log(Level.WARNING,
                         "Failed to open OPI file: " + input + "\n" + e.getMessage()); //$NON-NLS-2$
             else
                 ErrorHandlerUtil.handleError("Failed to open opi file: " + input, e, true, true);
             throw new PartInitException("Failed to run OPI file: " + input, e);
         }
-        
+
         // if it was an opened editor
         if (viewer != null && displayModelFilled)
-        {            
+        {
             viewer.setContents(displayModel);
             updateEditorTitle();
             displayModel.setViewer(viewer);
             displayModel.setOpiRuntime(opiRuntime);
         }
-        
+
         getActionRegistry().registerAction(new RefreshOPIAction(opiRuntime));
         SingleSourceHelper.registerRCPRuntimeActions(getActionRegistry(), opiRuntime);
 
         // hide close button
-        hideCloseButton(site);      
+        hideCloseButton(site);
     }
-    
+
     public void createGUI(Composite parent) {
         viewer = new PatchedScrollingGraphicalViewer();
         if(displayModel!=null){
@@ -195,7 +195,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
             public boolean isSelectable() {
                 return false;
             }
-        };        
+        };
         // set clipping strategy for connection layer of connection can be hide
         // when its source or target is not showing.
         ConnectionLayer connectionLayer = (ConnectionLayer) root
@@ -230,7 +230,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
                 viewer, opiRuntime);
         viewer.setContextMenu(cmProvider);
 
-        opiRuntime.getSite().registerContextMenu(cmProvider, viewer);        
+        opiRuntime.getSite().registerContextMenu(cmProvider, viewer);
         if(displayModelFilled){
             viewer.setContents(displayModel);
             displayModel.setViewer(viewer);
@@ -238,14 +238,14 @@ public class OPIRuntimeDelegate implements IAdaptable{
             updateEditorTitle();
         }
 
-        
+
         zoomManager = root.getZoomManager();
 
         if (zoomManager != null) {
             List<String> zoomLevels = new ArrayList<String>(3);
-			zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
-			zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_WIDTH);
-			zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_HEIGHT);
+            zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
+            zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_WIDTH);
+            zoomLevels.add(Draw2dSingletonUtil.ZoomManager_FIT_HEIGHT);
             zoomManager.setZoomLevelContributions(zoomLevels);
 
             zoomManager.setZoomLevels(createZoomLevels());
@@ -264,14 +264,14 @@ public class OPIRuntimeDelegate implements IAdaptable{
          * When Figure instance which corresponds to RootEditPart is updated,
          * calculate the frame rate and set the measured rate to "frame_rate"
          * property of the corresponding DisplayModel instance.
-         * 
+         *
          * By default, org.eclipse.draw2d.DeferredUpdateManager is used. This update
          * manager queues update requests from figures and others, and it repaints
          * requested figures at once when GUI thread is ready to repaint. notifyPainting()
          * method of UpdateLister is called when it repaints. The frame rate is
          * calculated based on the timing of notifyPainting().
          *
-         * Note that the update manager repaints only requested figures. It does not 
+         * Note that the update manager repaints only requested figures. It does not
          * repaint all figures at once. For example, if there are only two widgets
          * in one display, these widgets might be repainted alternately. In that case,
          * the frame rate indicates the inverse of the time between the repainting of one
@@ -311,7 +311,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
         }
     }
 
-    
+
     private void updateEditorTitle() {
         if (displayModel.getName() != null
                 && displayModel.getName().trim().length() > 0)
@@ -319,13 +319,13 @@ public class OPIRuntimeDelegate implements IAdaptable{
         else
             opiRuntime.setWorkbenchPartName(getEditorInput().getName());
     }
-    
+
     public IPath getOPIFilePath() {
-        IEditorInput editorInput = getEditorInput();        
+        IEditorInput editorInput = getEditorInput();
         return ResourceUtil.getPathInEditor(editorInput);
     }
-    
-    
+
+
     private void hideCloseButton(final IWorkbenchPartSite site) {
         if (!displayModel.isShowCloseButton()) {
             Display.getCurrent().asyncExec(new Runnable() {
@@ -335,22 +335,22 @@ public class OPIRuntimeDelegate implements IAdaptable{
             });
         }
     }
-    
+
     public void setEditorInput(IEditorInput editorInput) {
         this.editorInput = editorInput;
     }
-    
+
     public IEditorInput getEditorInput() {
         return editorInput;
     }
-    
+
     public DisplayModel getDisplayModel() {
         return displayModel;
     }
-    
+
     /**
      * Lazily creates and returns the action registry.
-     * 
+     *
      * @return the action registry
      */
     protected ActionRegistry getActionRegistry() {
@@ -358,10 +358,10 @@ public class OPIRuntimeDelegate implements IAdaptable{
             actionRegistry = new ActionRegistry();
         return actionRegistry;
     }
-    
+
     /**
      * Create a double array that contains the pre-defined zoom levels.
-     * 
+     *
      * @return A double array that contains the pre-defined zoom levels.
      */
     private double[] createZoomLevels() {
@@ -393,7 +393,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
         return result;
     }
 
-    
+
     private void addRunnerInputMacros(final IEditorInput input) {
         MacrosInput macrosInput = ((IRunnerInput) input).getMacrosInput();
         if (macrosInput != null) {
@@ -401,13 +401,13 @@ public class OPIRuntimeDelegate implements IAdaptable{
             macrosInput.getMacrosMap().putAll(
                     displayModel.getMacrosInput().getMacrosMap());
             displayModel.setPropertyValue(
-                    AbstractContainerModel.PROP_MACROS, macrosInput);        
+                    AbstractContainerModel.PROP_MACROS, macrosInput);
         }
     }
-    
+
     private void fillDisplayModelInJob(final IEditorInput input,
             final Display display, final IWorkbenchPartSite site) {
-        Job job = new Job("Loading OPI...") {                        
+        Job job = new Job("Loading OPI...") {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                 monitor.beginTask("Connecting to " + input,
@@ -417,12 +417,12 @@ public class OPIRuntimeDelegate implements IAdaptable{
                         public void run() {
                             if(viewer != null){
                                 SingleSourceHelper.addPaintListener(
-                                        viewer.getControl(),loadingMessagePaintListener);    
+                                        viewer.getControl(),loadingMessagePaintListener);
                                 viewer.getControl().redraw();
                             }
                         }
                     });
-                    
+
                     final InputStream stream = ((IRunnerInput) input)
                             .getInputStream();
                     display.asyncExec(new Runnable() {
@@ -431,16 +431,16 @@ public class OPIRuntimeDelegate implements IAdaptable{
                                     try {
                                         if(viewer != null){
                                             SingleSourceHelper.removePaintListener(
-                                                    viewer.getControl(), loadingMessagePaintListener);                                    
-                                        }                                                    
+                                                    viewer.getControl(), loadingMessagePaintListener);
+                                        }
                                         XMLUtil.fillDisplayModelFromInputStream(
-                                                stream, displayModel);    
+                                                stream, displayModel);
                                         displayModel.setOpiRuntime(opiRuntime);
                                         displayModelFilled = true;
-                                        addRunnerInputMacros(input);                                                    
+                                        addRunnerInputMacros(input);
                                         if(viewer != null){
                                             viewer.setContents(displayModel);
-                                            displayModel.setViewer(viewer);                                            
+                                            displayModel.setViewer(viewer);
                                         }
                                         updateEditorTitle();
                                         hideCloseButton(site);
@@ -452,27 +452,27 @@ public class OPIRuntimeDelegate implements IAdaptable{
                                 }
                             });
 
-                } catch (final Exception e) {                                
+                } catch (final Exception e) {
                     display.asyncExec(new Runnable() {
                         public void run() {
-                            if (viewer != null && viewer.getControl() !=null) {                                            
+                            if (viewer != null && viewer.getControl() !=null) {
                                 SingleSourceHelper.removePaintListener(
-                                        viewer.getControl(), loadingMessagePaintListener);                
+                                        viewer.getControl(), loadingMessagePaintListener);
                                 SingleSourceHelper.addPaintListener(viewer.getControl(),
                                         errorMessagePaintListener);
                                 viewer.getControl().redraw();
                             }
                             if(OPIBuilderPlugin.isRAP()){
-                                String message = 
+                                String message =
                                         "Failed to open OPI file: " + input+ "\n" + //$NON-NLS-2$
                                         "Please check if the file exists."
                                         + "\n" + e.getMessage(); //$NON-NLS-1$
                                 OPIBuilderPlugin.getLogger().log(Level.WARNING,    message);
-                                MessageDialog.openError(null, "Open File Error",message);        
+                                MessageDialog.openError(null, "Open File Error",message);
                             }
                             else
                                 ErrorHandlerUtil.handleError("Failed to open opi file: " + input, e, true, true);
-                            
+
                         }
                     });
 
@@ -503,14 +503,14 @@ public class OPIRuntimeDelegate implements IAdaptable{
                     .getZoomManager();
         return null;
     }
-    
+
     /**
      * Dispose of all resources.
      */
     public void dispose() {
         getActionRegistry().dispose();
         if (displayOpenManager != null) {
-        	displayOpenManager.dispose();
+            displayOpenManager.dispose();
             displayOpenManager = null;
         }
     }
