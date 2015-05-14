@@ -11,6 +11,8 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
+    <module>org.csstudio.display.pace</module>
+    <module>org.csstudio.display.pace.test</module>
     <module>org.csstudio.display.pvtable</module>
     <module>org.csstudio.display.pvtable.test</module>
   </modules>

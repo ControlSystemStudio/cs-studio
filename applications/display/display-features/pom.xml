@@ -9,6 +9,7 @@
   <artifactId>display-features</artifactId>
   <packaging>pom</packaging>
   <modules>
+    <module>org.csstudio.display.pace.feature</module>
     <module>org.csstudio.display.pvtable.feature</module>
   </modules>
 </project>
