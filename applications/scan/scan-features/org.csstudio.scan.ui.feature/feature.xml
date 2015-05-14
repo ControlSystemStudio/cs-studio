@@ -73,12 +73,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          unpack="false"/>
 
    <plugin
-         id="org.python.jython"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.csstudio.scan.ui.scandata"
          download-size="0"
          install-size="0"
