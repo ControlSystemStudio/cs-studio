@@ -51,7 +51,8 @@ public class SeverityIconProvider
 
         final  BufferedImage awtImage = new BufferedImage(ICON_SIZE, ICON_SIZE,BufferedImage.TYPE_INT_ARGB);
         Graphics g = awtImage.getGraphics();
-
+        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        
         // Left rectangle for 'latched', right for 'current' indicator
         g.setColor(new Color(GRAY, GRAY, GRAY));
         g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
