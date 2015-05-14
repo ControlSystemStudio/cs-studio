@@ -44,293 +44,291 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * An image figure.
+ * 
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
-public final class ImageFigure extends Figure implements Introspectable,
-		SymbolImageListener {
+public final class ImageFigure extends Figure implements Introspectable, SymbolImageListener {
 
-	/**
-	 * The {@link IPath} to the image.
-	 */
-	private IPath filePath = new Path("");
-	/**
-	 * The image itself.
-	 */
-	private SymbolImage image;
+    /**
+     * The {@link IPath} to the image.
+     */
+    private IPath filePath = new Path("");
+    /**
+     * The image itself.
+     */
+    private SymbolImage image;
 
-	private SymbolImageProperties symbolProperties;
+    private SymbolImageProperties symbolProperties;
 
-	private AtomicInteger remainingImagesToLoad = new AtomicInteger(0);
+    private AtomicInteger remainingImagesToLoad = new AtomicInteger(0);
 
-	private boolean animationDisabled = false;
+    private boolean animationDisabled = false;
 
-	private IImageListener imageListener;
+    private IImageListener imageListener;
 
-	/**
-	 * dispose the resources used by this figure
-	 */
-	public void dispose() {
-		if (image != null && !image.isDisposed()) {
-			image.dispose();
-			image = null;
-		}
-	}
+    /**
+     * dispose the resources used by this figure
+     */
+    public void dispose() {
+        if (image != null && !image.isDisposed()) {
+            image.dispose();
+            image = null;
+        }
+    }
 
-	public void setSymbolProperties(SymbolImageProperties symbolProperties) {
-		this.symbolProperties = symbolProperties;
-	}
+    public void setSymbolProperties(SymbolImageProperties symbolProperties) {
+        this.symbolProperties = symbolProperties;
+    }
 
-	/**
-	 * Sets the path to the image.
-	 * 
-	 * @param newval The path to the image
-	 */
-	public void setFilePath(final IPath newval) {
-		if (newval == null) {
-			return;
-		}
-		this.filePath = newval;
-		if (image != null) {
-			image.dispose();
-			image = null;
-		}
-		if (filePath != null && !filePath.isEmpty()) {
-			incrementLoadingCounter();
-		}
-		image = SymbolImageFactory.asynCreateSymbolImage(filePath, true,
-				symbolProperties, this);
-	}
+    /**
+     * Sets the path to the image.
+     * 
+     * @param newval The path to the image
+     */
+    public void setFilePath(final IPath newval) {
+        if (newval == null) {
+            return;
+        }
+        this.filePath = newval;
+        if (image != null) {
+            image.dispose();
+            image = null;
+        }
+        if (filePath != null && !filePath.isEmpty()) {
+            incrementLoadingCounter();
+        }
+        image = SymbolImageFactory.asynCreateSymbolImage(filePath, true, symbolProperties, this);
+    }
 
-	public boolean isLoadingImage() {
-		return remainingImagesToLoad.get() > 0;
-	}
+    public boolean isLoadingImage() {
+        return remainingImagesToLoad.get() > 0;
+    }
 
-	public void decrementLoadingCounter() {
-		remainingImagesToLoad.decrementAndGet();
-	}
+    public void decrementLoadingCounter() {
+        remainingImagesToLoad.decrementAndGet();
+    }
 
-	public void incrementLoadingCounter() {
-		remainingImagesToLoad.incrementAndGet();
-	}
+    public void incrementLoadingCounter() {
+        remainingImagesToLoad.incrementAndGet();
+    }
 
-	@Override
-	protected void paintClientArea(Graphics gfx) {
-		if (isLoadingImage()) {
-			return;
-		}
-		ImageUtils.crop(bounds, this.getInsets());
-		if (bounds.width <= 0 || bounds.height <= 0) {
-			return;
-		}
-		if (image == null || image.isEmpty()) {
-			if (!filePath.isEmpty()) {
-				gfx.setBackgroundColor(getBackgroundColor());
-				gfx.setForegroundColor(getForegroundColor());
-				gfx.fillRectangle(bounds);
-				gfx.translate(bounds.getLocation());
-				TextPainter.drawText(gfx, "ERROR in loading image\n" + filePath,
-								bounds.width / 2, bounds.height / 2, TextPainter.CENTER);
-			}
-			return;
-		}
-		image.setBounds(bounds);
-		image.setAbsoluteScale(gfx.getAbsoluteScale());
-		image.setBackgroundColor(getBackgroundColor());
-		image.paintFigure(gfx);
-		super.paintClientArea(gfx);
-	}
+    @Override
+    protected void paintClientArea(Graphics gfx) {
+        if (isLoadingImage()) {
+            return;
+        }
+        ImageUtils.crop(bounds, this.getInsets());
+        if (bounds.width <= 0 || bounds.height <= 0) {
+            return;
+        }
+        if (image == null || image.isEmpty()) {
+            if (!filePath.isEmpty()) {
+                gfx.setBackgroundColor(getBackgroundColor());
+                gfx.setForegroundColor(getForegroundColor());
+                gfx.fillRectangle(bounds);
+                gfx.translate(bounds.getLocation());
+                TextPainter.drawText(gfx, "ERROR in loading image\n" + filePath, bounds.width / 2, bounds.height / 2,
+                        TextPainter.CENTER);
+            }
+            return;
+        }
+        image.setBounds(bounds);
+        image.setAbsoluteScale(gfx.getAbsoluteScale());
+        image.setBackgroundColor(getBackgroundColor());
+        image.paintFigure(gfx);
+        super.paintClientArea(gfx);
+    }
 
-	// ************************************************************
-	// Image size calculation delegation
-	// ************************************************************
+    // ************************************************************
+    // Image size calculation delegation
+    // ************************************************************
 
-	public void resizeImage() {
-		Rectangle bounds = getBounds().getCopy();
-		if (image != null) {
-			image.setBounds(bounds);
-		}
-		repaint();
-	}
+    public void resizeImage() {
+        Rectangle bounds = getBounds().getCopy();
+        if (image != null) {
+            image.setBounds(bounds);
+        }
+        repaint();
+    }
 
-	public void setAutoSize(final boolean autoSize) {
-		if (symbolProperties != null) {
-			symbolProperties.setAutoSize(autoSize);
-		}
-		if (image != null) {
-			image.setAutoSize(autoSize);
-		}
-		repaint();
-	}
+    public void setAutoSize(final boolean autoSize) {
+        if (symbolProperties != null) {
+            symbolProperties.setAutoSize(autoSize);
+        }
+        if (image != null) {
+            image.setAutoSize(autoSize);
+        }
+        repaint();
+    }
 
-	/**
-	 * @return the auto sized widget dimension according to the static imageSize
-	 */
-	public Dimension getAutoSizedDimension() {
-		// Widget dimension = Symbol Image + insets
-		if (image == null) {
-			return null;
-		}
-		Dimension dim = image.getAutoSizedDimension();
-		if (dim == null) {
-			return null;
-		}
-		return new Dimension(dim.width + getInsets().getWidth(), dim.height
-				+ getInsets().getHeight());
-	}
+    /**
+     * @return the auto sized widget dimension according to the static imageSize
+     */
+    public Dimension getAutoSizedDimension() {
+        // Widget dimension = Symbol Image + insets
+        if (image == null) {
+            return null;
+        }
+        Dimension dim = image.getAutoSizedDimension();
+        if (dim == null) {
+            return null;
+        }
+        return new Dimension(dim.width + getInsets().getWidth(), dim.height + getInsets().getHeight());
+    }
 
-	// ************************************************************
-	// Image crop calculation delegation
-	// ************************************************************
+    // ************************************************************
+    // Image crop calculation delegation
+    // ************************************************************
 
-	public void setLeftCrop(final int newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setLeftCrop(newval);
-		}
-		if (image != null) {
-			image.setLeftCrop(newval);
-		}
-		repaint();
-	}
+    public void setLeftCrop(final int newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setLeftCrop(newval);
+        }
+        if (image != null) {
+            image.setLeftCrop(newval);
+        }
+        repaint();
+    }
 
-	public void setRightCrop(final int newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setRightCrop(newval);
-		}
-		if (image != null) {
-			image.setRightCrop(newval);
-		}
-		repaint();
-	}
+    public void setRightCrop(final int newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setRightCrop(newval);
+        }
+        if (image != null) {
+            image.setRightCrop(newval);
+        }
+        repaint();
+    }
 
-	public void setBottomCrop(final int newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setBottomCrop(newval);
-		}
-		if (image != null) {
-			image.setBottomCrop(newval);
-		}
-		repaint();
-	}
+    public void setBottomCrop(final int newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setBottomCrop(newval);
+        }
+        if (image != null) {
+            image.setBottomCrop(newval);
+        }
+        repaint();
+    }
 
-	public void setTopCrop(final int newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setTopCrop(newval);
-		}
-		if (image != null) {
-			image.setTopCrop(newval);
-		}
-		repaint();
-	}
+    public void setTopCrop(final int newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setTopCrop(newval);
+        }
+        if (image != null) {
+            image.setTopCrop(newval);
+        }
+        repaint();
+    }
 
-	// ************************************************************
-	// Image flip & degree & stretch calculation delegation
-	// ************************************************************
+    // ************************************************************
+    // Image flip & degree & stretch calculation delegation
+    // ************************************************************
 
-	public void setStretch(final boolean newval) {
-		if (symbolProperties != null) {
-			symbolProperties.setStretch(newval);
-		}
-		if (image != null) {
-			image.setStretch(newval);
-		}
-		repaint();
-	}
+    public void setStretch(final boolean newval) {
+        if (symbolProperties != null) {
+            symbolProperties.setStretch(newval);
+        }
+        if (image != null) {
+            image.setStretch(newval);
+        }
+        repaint();
+    }
 
-	public void setPermutationMatrix(PermutationMatrix permutationMatrix) {
-		if (symbolProperties != null) {
-			symbolProperties.setMatrix(permutationMatrix);
-		}
-		if (image != null) {
-			image.setPermutationMatrix(permutationMatrix);
-		}
-		repaint();
-	}
+    public void setPermutationMatrix(PermutationMatrix permutationMatrix) {
+        if (symbolProperties != null) {
+            symbolProperties.setMatrix(permutationMatrix);
+        }
+        if (image != null) {
+            image.setPermutationMatrix(permutationMatrix);
+        }
+        repaint();
+    }
 
-	public PermutationMatrix getPermutationMatrix() {
-		if (image == null) {
-			return PermutationMatrix.generateIdentityMatrix();
-		}
-		return image.getPermutationMatrix();
-	}
+    public PermutationMatrix getPermutationMatrix() {
+        if (image == null) {
+            return PermutationMatrix.generateIdentityMatrix();
+        }
+        return image.getPermutationMatrix();
+    }
 
-	@Override
-	public void setVisible(boolean visible) {
-		super.setVisible(visible);
-		if (image != null) {
-			image.setVisible(visible);
-		}
-	}
+    @Override
+    public void setVisible(boolean visible) {
+        super.setVisible(visible);
+        if (image != null) {
+            image.setVisible(visible);
+        }
+    }
 
-	/**
-	 * We want to have local coordinates here.
-	 * 
-	 * @return True if here should used local coordinates
-	 */
-	@Override
-	protected boolean useLocalCoordinates() {
-		return true;
-	}
+    /**
+     * We want to have local coordinates here.
+     * 
+     * @return True if here should used local coordinates
+     */
+    @Override
+    protected boolean useLocalCoordinates() {
+        return true;
+    }
 
-	public BeanInfo getBeanInfo() throws IntrospectionException {
-		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
-	}
+    public BeanInfo getBeanInfo() throws IntrospectionException {
+        return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
+    }
 
-	// ************************************************************
-	// Animated images
-	// ************************************************************
+    // ************************************************************
+    // Animated images
+    // ************************************************************
 
-	/**
-	 * @return the animationDisabled
-	 */
-	public boolean isAnimationDisabled() {
-		return animationDisabled;
-	}
+    /**
+     * @return the animationDisabled
+     */
+    public boolean isAnimationDisabled() {
+        return animationDisabled;
+    }
 
-	public void setAnimationDisabled(final boolean stop) {
-		if (animationDisabled == stop) {
-			return;
-		}
-		animationDisabled = stop;
-		if (symbolProperties != null) {
-			symbolProperties.setAnimationDisabled(stop);
-		}
-		if (image != null) {
-			image.setAnimationDisabled(stop);
-		}
-		repaint();
-	}
+    public void setAnimationDisabled(final boolean stop) {
+        if (animationDisabled == stop) {
+            return;
+        }
+        animationDisabled = stop;
+        if (symbolProperties != null) {
+            symbolProperties.setAnimationDisabled(stop);
+        }
+        if (image != null) {
+            image.setAnimationDisabled(stop);
+        }
+        repaint();
+    }
 
-	public void setAlignedToNearestSecond(final boolean aligned) {
-		if (symbolProperties != null) {
-			symbolProperties.setAlignedToNearestSecond(aligned);
-		}
-		if (image != null) {
-			image.setAlignedToNearestSecond(aligned);
-		}
-		repaint();
-	}
+    public void setAlignedToNearestSecond(final boolean aligned) {
+        if (symbolProperties != null) {
+            symbolProperties.setAlignedToNearestSecond(aligned);
+        }
+        if (image != null) {
+            image.setAlignedToNearestSecond(aligned);
+        }
+        repaint();
+    }
 
-	// ************************************************************
-	// Symbol Image Listener
-	// ************************************************************
+    // ************************************************************
+    // Symbol Image Listener
+    // ************************************************************
 
-	public void setImageLoadedListener(IImageListener listener) {
-		this.imageListener = listener;
-	}
+    public void setImageLoadedListener(IImageListener listener) {
+        this.imageListener = listener;
+    }
 
-	public void symbolImageLoaded() {
-		decrementLoadingCounter();
-		sizeChanged();
-		revalidate();
-		repaint();
-	}
+    public void symbolImageLoaded() {
+        decrementLoadingCounter();
+        sizeChanged();
+        revalidate();
+        repaint();
+    }
 
-	public void repaintRequested() {
-		repaint();
-	}
+    public void repaintRequested() {
+        repaint();
+    }
 
-	public void sizeChanged() {
-		if (imageListener != null)
-			imageListener.imageResized(this);
-	}
+    public void sizeChanged() {
+        if (imageListener != null)
+            imageListener.imageResized(this);
+    }
 }
