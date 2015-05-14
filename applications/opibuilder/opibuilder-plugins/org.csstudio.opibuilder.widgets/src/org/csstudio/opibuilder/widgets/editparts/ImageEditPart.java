@@ -19,19 +19,20 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.opibuilder.widgets.editparts;
-
+package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.swt.widgets.figures.ImageFigure;
+import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
+import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
-import org.csstudio.swt.widgets.util.IImageLoadedListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -42,13 +43,11 @@ import org.eclipse.swt.widgets.Display;
  */
 public final class ImageEditPart extends AbstractWidgetEditPart {
 
-
-
     private int maxAttempts;
 
     /**
      * Returns the casted model. This is just for convenience.
-     *
+     * 
      * @return the casted {@link ImageModel}
      */
     public ImageModel getWidgetModel() {
@@ -65,44 +64,42 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         final ImageFigure figure = new ImageFigure();
 
         // Resize when new image is loaded
-        figure.setImageLoadedListener(new IImageLoadedListener() {
+        figure.setImageLoadedListener(new IImageListener() {
 
             @Override
-            public void imageLoaded(IFigure figure) {
+            public void imageResized(IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 autoSizeWidget(imageFigure);
             }
         });
 
+        // Image default parameters
+        SymbolImageProperties sip = new SymbolImageProperties();
+        sip.setTopCrop(model.getTopCrop());
+        sip.setBottomCrop(model.getBottomCrop());
+        sip.setLeftCrop(model.getLeftCrop());
+        sip.setRightCrop(model.getRightCrop());
+        sip.setStretch(model.getStretch());
+        sip.setAutoSize(model.isAutoSize());
+        sip.setMatrix(model.getPermutationMatrix());
+        sip.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
+        sip.setBackgroundColor(new Color(Display.getDefault(), model.getBackgroundColor()));
+        sip.setAnimationDisabled(model.isStopAnimation());
+        figure.setSymbolProperties(sip);
+
         figure.setFilePath(model.getFilename());
-        figure.setStretch(model.getStretch());
-        figure.setAutoSize(model.isAutoSize());
-        figure.setAnimationDisabled(model.isStopAnimation());
-        figure.setTopCrop(model.getTopCrop());
-        figure.setBottomCrop(model.getBottomCrop());
-        figure.setLeftCrop(model.getLeftCrop());
-        figure.setRightCrop(model.getRightCrop());
-        figure.setPermutationMatrix(model.getPermutationMatrix());
-        figure.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
         return figure;
     }
 
-    @Override
-    public void activate() {
-        super.activate();
-        if(((ImageModel)getModel()).isVisible() && !((ImageModel)getModel()).isStopAnimation())
-            ((ImageFigure) getFigure()).startAnimation();
-    }
     /**
      * Register change handlers for the four crop properties.
      */
     protected void registerCropPropertyHandlers() {
         // top
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setTopCrop((Integer)newValue);
+                imageFigure.setTopCrop((Integer) newValue);
                 autoSizeWidget(imageFigure);
                 return false;
             }
@@ -111,10 +108,9 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // bottom
         handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setBottomCrop((Integer)newValue);
+                imageFigure.setBottomCrop((Integer) newValue);
                 autoSizeWidget(imageFigure);
                 return false;
             }
@@ -123,10 +119,9 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // left
         handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setLeftCrop((Integer)newValue);
+                imageFigure.setLeftCrop((Integer) newValue);
                 autoSizeWidget(imageFigure);
                 return false;
             }
@@ -135,10 +130,9 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // right
         handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setRightCrop((Integer)newValue);
+                imageFigure.setRightCrop((Integer) newValue);
                 autoSizeWidget(imageFigure);
                 return false;
             }
@@ -153,28 +147,24 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
     protected void registerPropertyChangeHandlers() {
         // changes to the filename property
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                IPath absolutePath = (IPath)newValue;
-                if(!absolutePath.isAbsolute())
-                    absolutePath = ResourceUtil.buildAbsolutePath(
-                            getWidgetModel(), absolutePath);
+                IPath absolutePath = (IPath) newValue;
+                if (!absolutePath.isAbsolute())
+                    absolutePath = ResourceUtil.buildAbsolutePath(getWidgetModel(), absolutePath);
                 imageFigure.setFilePath(absolutePath);
                 autoSizeWidget(imageFigure);
                 return false;
             }
-
 
         };
         setPropertyChangeHandler(ImageModel.PROP_IMAGE_FILE, handle);
 
         // changes to the stretch property
         handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setStretch((Boolean)newValue);
+                imageFigure.setStretch((Boolean) newValue);
                 autoSizeWidget(imageFigure);
                 return false;
             }
@@ -183,26 +173,23 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // changes to the autosize property
         handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setAutoSize((Boolean)newValue);
-                ImageModel model = (ImageModel)getModel();
+                imageFigure.setAutoSize((Boolean) newValue);
+                ImageModel model = (ImageModel) getModel();
                 Dimension d = imageFigure.getAutoSizedDimension();
-                if((Boolean) newValue && !model.getStretch() && d != null)
+                if ((Boolean) newValue && !model.getStretch() && d != null)
                     model.setSize(d.width, d.height);
                 return false;
             }
         };
         setPropertyChangeHandler(ImageModel.PROP_AUTOSIZE, handle);
 
-
         // changes to the stop animation property
         handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
-                imageFigure.setAnimationDisabled((Boolean)newValue);
+                imageFigure.setAnimationDisabled((Boolean) newValue);
                 return false;
             }
         };
@@ -210,8 +197,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // changes to the align to nearest second property
         handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue,
-                    final Object newValue, final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.setAlignedToNearestSecond((Boolean) newValue);
                 return false;
@@ -221,8 +207,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // changes to the border width property
         handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.resizeImage();
                 autoSizeWidget(imageFigure);
@@ -232,10 +217,9 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         setPropertyChangeHandler(ImageModel.PROP_BORDER_WIDTH, handle);
         setPropertyChangeHandler(ImageModel.PROP_BORDER_STYLE, handle);
 
-        //size change handlers - so we can stretch accordingly
+        // size change handlers - so we can stretch accordingly
         handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue,
-                    final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 imageFigure.resizeImage();
                 autoSizeWidget(imageFigure);
@@ -249,8 +233,6 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         registerImageRotationPropertyHandlers();
     }
 
-
-
     @Override
     public void deactivate() {
         super.deactivate();
@@ -258,19 +240,19 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
     }
 
     private void autoSizeWidget(final ImageFigure imageFigure) {
-        if(!getWidgetModel().isAutoSize())
+        if (!getWidgetModel().isAutoSize())
             return;
         maxAttempts = 10;
         Runnable task = new Runnable() {
             public void run() {
-                if(maxAttempts-- > 0 && imageFigure.isLoadingImage()){
+                if (maxAttempts-- > 0 && imageFigure.isLoadingImage()) {
                     Display.getDefault().timerExec(100, this);
                     return;
                 }
-                ImageModel model = (ImageModel)getModel();
+                ImageModel model = (ImageModel) getModel();
                 imageFigure.setAutoSize(model.isAutoSize());
                 Dimension d = imageFigure.getAutoSizedDimension();
-                if(model.isAutoSize() && !model.getStretch() && d != null)
+                if (model.isAutoSize() && !model.getStretch() && d != null)
                     model.setSize(d.width, d.height);
 
             }
@@ -280,19 +262,18 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
     }
 
     /**
-     * Registers image rotation property change handlers for the properties
-     * defined in {@link MonitorBoolSymbolModel}.
+     * Registers image rotation property change handlers for the properties defined in {@link MonitorBoolSymbolModel}.
      */
     public void registerImageRotationPropertyHandlers() {
         // degree rotation property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue,
-                    final Object newValue, final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 int newDegree = getWidgetModel().getDegree((Integer) newValue);
                 int oldDegree = getWidgetModel().getDegree((Integer) oldValue);
 
-                PermutationMatrix oldMatrix = new PermutationMatrix((double[][]) getPropertyValue(ImageModel.PERMUTATION_MATRIX));
+                PermutationMatrix oldMatrix = new PermutationMatrix(
+                        (double[][]) getPropertyValue(ImageModel.PERMUTATION_MATRIX));
                 PermutationMatrix newMatrix = PermutationMatrix.generateRotationMatrix(newDegree - oldDegree);
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
 
@@ -312,8 +293,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // flip horizontal rotation property
         handler = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue,
-                    final Object newValue, final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 // imageFigure.setFlipH((Boolean) newValue);
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipHMatrix();
@@ -335,8 +315,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
         // flip vertical rotation property
         handler = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue,
-                    final Object newValue, final IFigure figure) {
+            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure figure) {
                 ImageFigure imageFigure = (ImageFigure) figure;
                 // imageFigure.setFlipV((Boolean) newValue);
                 PermutationMatrix newMatrix = PermutationMatrix.generateFlipVMatrix();

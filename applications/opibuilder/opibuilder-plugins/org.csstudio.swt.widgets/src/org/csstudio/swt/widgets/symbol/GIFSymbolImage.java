@@ -68,9 +68,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
      * The index in image data array
      */
     private int showIndex = 0;
-
-    private Image offScreenImage;
-    private GC offScreenImageGC;
+    private Image[] imageArray;
 
     public GIFSymbolImage(SymbolImageProperties sip, boolean runMode) {
         super(sip, runMode);
@@ -80,20 +78,21 @@ public class GIFSymbolImage extends AbstractSymbolImage {
     public void dispose() {
         super.dispose();
         stopAnimation();
-        if (offScreenImage != null && !offScreenImage.isDisposed()) {
-            offScreenImage.dispose();
-            offScreenImage = null;
-        }
-        if (offScreenImageGC != null && !offScreenImageGC.isDisposed()) {
-            offScreenImageGC.dispose();
-            offScreenImage = null;
+        if (imageArray != null) {
+            for (Image image : imageArray) {
+                if (image != null && !image.isDisposed()) {
+                    image.dispose();
+                }
+            }
         }
     }
 
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        if (visible) startAnimation();
-        else  stopAnimation();
+        if (visible)
+            startAnimation();
+        else
+            stopAnimation();
     }
 
     // ************************************************************
@@ -110,22 +109,26 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                 image.dispose();
                 image = null;
             }
-            if(animated)
+            if (imageArray != null) {
+                for (Image image : imageArray) {
+                    if (image != null && !image.isDisposed()) {
+                        image.dispose();
+                    }
+                }
+                imageArray = null;
+            }
+            if (animated) {
                 startAnimation();
+            }
         }
         // Create image
         if (image == null) {
             image = new Image(Display.getDefault(), imageData);
-            if (animated) {
-                if (offScreenImage != null && !offScreenImage.isDisposed())
-                    offScreenImage.dispose();
-                offScreenImage = new Image(Display.getDefault(),
-                        image.getBounds().width, image.getBounds().height);
-
-                if (offScreenImageGC != null && !offScreenImageGC.isDisposed())
-                    offScreenImageGC.dispose();
-                offScreenImageGC = SingleSourceHelper
-                        .getImageGC(offScreenImage);// new GC(offScreenImage);
+            if (animated && imageArray == null) {
+                imageArray = new Image[imageDataArray.length];
+                for (int index = 0; index < imageDataArray.length; index++) {
+                    imageArray[index] = generateImage(index);
+                }
             }
         }
         // Calculate areas
@@ -139,37 +142,13 @@ public class GIFSymbolImage extends AbstractSymbolImage {
         }
         // Draw graphic image
         if (animated) { // draw refreshing image
-            if (startAnimationRequested)
+            if (startAnimationRequested) {
                 realStartAnimation();
-            ImageData imageData = imageDataArray[showIndex];
-            Image refresh_image = new Image(Display.getDefault(), imageData);
-            switch (imageData.disposalMethod) {
-            case SWT.DM_FILL_BACKGROUND:
-                /* Fill with the background color before drawing. */
-                if (backgroundColor != null)
-                    offScreenImageGC.setBackground(backgroundColor);
-                offScreenImageGC.fillRectangle(imageData.x, imageData.y,
-                        imageData.width, imageData.height);
-                break;
-            case SWT.DM_FILL_PREVIOUS:
-                /* Restore the previous image before drawing. */
-                Image startImage = new Image(Display.getDefault(), imageDataArray[0]);
-                offScreenImageGC.drawImage(startImage, 0, 0, imageData.width,
-                        imageData.height, imageData.x, imageData.y,
-                        imageData.width, imageData.height);
-                startImage.dispose();
-                break;
             }
-            offScreenImageGC.drawImage(refresh_image, 0, 0, imageData.width,
-                    imageData.height, imageData.x, imageData.y,
-                    imageData.width, imageData.height);
-
-            gfx.drawImage(offScreenImage, srcArea, destArea);
-            refresh_image.dispose();
+            gfx.drawImage(imageArray[showIndex], srcArea, destArea);
         } else { // draw static image
-            if (animated && animationDisabled && offScreenImage != null
-                    && showIndex != 0) {
-                gfx.drawImage(offScreenImage, srcArea, destArea);
+            if (animated && animationDisabled && imageArray != null && showIndex != 0) {
+                gfx.drawImage(imageArray[showIndex], srcArea, destArea);
             } else if (image != null) {
                 gfx.drawImage(image, srcArea, destArea);
             }
@@ -179,6 +158,35 @@ public class GIFSymbolImage extends AbstractSymbolImage {
     @Override
     public void resetData() {
         imageData = null;
+    }
+
+    private Image generateImage(int index) {
+        Image offScreenImage = new Image(Display.getDefault(), image.getBounds().width, image.getBounds().height);
+        GC offScreenImageGC = SingleSourceHelper.getImageGC(offScreenImage);
+
+        ImageData imageData = imageDataArray[index];
+        Image refresh_image = new Image(Display.getDefault(), imageData);
+        switch (imageData.disposalMethod) {
+            case SWT.DM_FILL_BACKGROUND:
+                /* Fill with the background color before drawing. */
+                if (backgroundColor != null) {
+                    offScreenImageGC.setBackground(backgroundColor);
+                }
+                offScreenImageGC.fillRectangle(imageData.x, imageData.y, imageData.width, imageData.height);
+                break;
+            case SWT.DM_FILL_PREVIOUS:
+                /* Restore the previous image before drawing. */
+                Image startImage = new Image(Display.getDefault(), imageDataArray[0]);
+                offScreenImageGC.drawImage(startImage, 0, 0, imageData.width, imageData.height, imageData.x,
+                        imageData.y, imageData.width, imageData.height);
+                startImage.dispose();
+                break;
+        }
+        offScreenImageGC.drawImage(refresh_image, 0, 0, imageData.width, imageData.height, imageData.x, imageData.y,
+                imageData.width, imageData.height);
+        refresh_image.dispose();
+        offScreenImageGC.dispose();
+        return offScreenImage;
     }
 
     private void generateAnimatedData() {
@@ -193,8 +201,8 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                     imageDataArray[i] = ImageUtils.changeImageColor(currentColor, imageDataArray[i]);
                 imageDataArray[i] = ImageUtils.applyMatrix(imageDataArray[i], permutationMatrix);
                 if (stretch && bounds != null) {
-                    imageDataArray[i] = imageDataArray[i].scaledTo(bounds.width + leftCrop + rightCrop,
-                            bounds.height + topCrop + bottomCrop);
+                    imageDataArray[i] = imageDataArray[i].scaledTo(bounds.width + leftCrop + rightCrop, bounds.height
+                            + topCrop + bottomCrop);
                 }
             }
             imageData = imageDataArray[0];
@@ -204,8 +212,8 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                 imageData = ImageUtils.changeImageColor(currentColor, imageData);
             imageData = ImageUtils.applyMatrix(imageData, permutationMatrix);
             if (stretch && bounds != null) {
-                imageData = imageData.scaledTo(bounds.width + leftCrop + rightCrop,
-                        bounds.height + topCrop + bottomCrop);
+                imageData = imageData.scaledTo(bounds.width + leftCrop + rightCrop, bounds.height + topCrop
+                        + bottomCrop);
             }
         }
         int imgWidth = imageData.width;
@@ -267,8 +275,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
     }
 
     /**
-     * Start animation. The request will be pended until figure painted for the
-     * first time.
+     * Start animation. The request will be pended until figure painted for the first time.
      */
     public void startAnimation() {
         startAnimationRequested = true;
@@ -304,8 +311,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
 
                         public void run() {
                             synchronized (GIFSymbolImage.this) {
-                                if (refreshing
-                                        && (loader.repeatCount == 0 || repeatCount > 0)) {
+                                if (refreshing && (loader.repeatCount == 0 || repeatCount > 0)) {
                                     long currentTime = System.currentTimeMillis();
                                     // use Math.abs() to ensure that the system
                                     // time adjust won't cause problem
@@ -314,20 +320,20 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                                         lastUpdateTime = currentTime;
                                         int ms = originalImageDataArray[animationIndex].delayTime * 10;
                                         animationIndex = (animationIndex + 1) % originalImageDataArray.length;
-                                        if (ms < 20) ms += 30;
-                                        if (ms < 30) ms += 10;
+                                        if (ms < 20)
+                                            ms += 30;
+                                        if (ms < 30)
+                                            ms += 10;
                                         interval_ms = ms;
                                         /*
-                                         * If we have just drawn the last image,
-                                         * decrement the repeat count and start
+                                         * If we have just drawn the last image, decrement the repeat count and start
                                          * again.
                                          */
                                         if (loader.repeatCount > 0
                                                 && animationIndex == originalImageDataArray.length - 1)
                                             repeatCount--;
                                     }
-                                } else if (loader.repeatCount > 0
-                                        && repeatCount <= 0) {
+                                } else if (loader.repeatCount > 0 && repeatCount <= 0) {
                                     // stop thread when animation finished
                                     if (scheduledFuture != null) {
                                         scheduledFuture.cancel(true);
@@ -344,16 +350,14 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                 scheduledFuture = null;
             }
             long initialDelay = 100;
-            if(alignedToNearestSecond) {
+            if (alignedToNearestSecond) {
                 Date now = new Date();
                 Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
                 initialDelay = nearestSecond.getTime() - now.getTime();
                 if (initialDelay < 0)
                     initialDelay = MILLISEC_IN_SEC + initialDelay;
             }
-            scheduledFuture = ExecutionService
-                    .getInstance()
-                    .getScheduledExecutorService()
+            scheduledFuture = ExecutionService.getInstance().getScheduledExecutorService()
                     .scheduleAtFixedRate(animationTask, initialDelay, 10, TimeUnit.MILLISECONDS);
         }
     }
@@ -389,10 +393,10 @@ public class GIFSymbolImage extends AbstractSymbolImage {
             originalImageData = originalImageDataArray[0];
             if (SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
                 animated = false;
-            else animated = originalImageDataArray.length > 1;
+            else
+                animated = originalImageDataArray.length > 1;
         } catch (Exception e) {
-            Activator.getLogger().log(Level.WARNING,
-                    "ERROR in loading PNG image " + imagePath, e);
+            Activator.getLogger().log(Level.WARNING, "ERROR in loading PNG image " + imagePath, e);
         } finally {
             try {
                 if (stream != null)
@@ -400,8 +404,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                 if (tempImage != null && !tempImage.isDisposed())
                     tempImage.dispose();
             } catch (IOException e) {
-                Activator.getLogger().log(Level.WARNING,
-                        "ERROR in closing GIF image stream ", e);
+                Activator.getLogger().log(Level.WARNING, "ERROR in closing GIF image stream ", e);
             }
         }
         loadingImage = false;
@@ -434,8 +437,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                 }
                 loadingImage = false;
                 // fireSymbolImageLoaded();
-                Activator.getLogger().log(Level.WARNING,
-                        "ERROR in loading GIF image " + imagePath, e);
+                Activator.getLogger().log(Level.WARNING, "ERROR in loading GIF image " + imagePath, e);
             }
         });
     }
@@ -453,7 +455,8 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                     originalImageData = originalImageDataArray[0];
                     if (SWT.getPlatform().startsWith("rap")) //$NON-NLS-1$
                         animated = false;
-                    else animated = originalImageDataArray.length > 1;
+                    else
+                        animated = originalImageDataArray.length > 1;
                     loadingImage = false;
                     resetData();
                     if (animated)
@@ -466,8 +469,6 @@ public class GIFSymbolImage extends AbstractSymbolImage {
                 }
             }
         };
-        ResourceUtil.pathToInputStreamInJob(imagePath, uiTask,
-                "Loading GIF Image...", errorHandler);
+        ResourceUtil.pathToInputStreamInJob(imagePath, uiTask, "Loading GIF Image...", errorHandler);
     }
-
 }

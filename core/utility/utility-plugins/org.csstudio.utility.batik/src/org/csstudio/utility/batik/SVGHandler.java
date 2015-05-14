@@ -16,13 +16,13 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import org.apache.batik.anim.timing.TimedDocumentRoot;
 import org.apache.batik.bridge.BridgeContext;
 import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.DynamicGVTBuilder;
@@ -32,7 +32,6 @@ import org.apache.batik.bridge.UpdateManagerListener;
 import org.apache.batik.bridge.UserAgent;
 import org.apache.batik.bridge.UserAgentAdapter;
 import org.apache.batik.bridge.ViewBox;
-import org.apache.batik.bridge.svg12.SVG12BridgeContext;
 import org.apache.batik.css.engine.CSSStyleSheetNode;
 import org.apache.batik.css.engine.SVGCSSEngine;
 import org.apache.batik.css.engine.StyleSheet;
@@ -48,11 +47,14 @@ import org.apache.batik.gvt.renderer.ImageRenderer;
 import org.apache.batik.gvt.renderer.ImageRendererFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.commons.lang.time.DateUtils;
-import org.csstudio.java.thread.ExecutionService;
 import org.csstudio.utility.batik.util.ICSSHandler;
+import org.csstudio.utility.batik.util.SVGAnimationEngine;
 import org.csstudio.utility.batik.util.SVGStylableElementCSSHandler;
 import org.csstudio.utility.batik.util.StyleSheetCSSHandler;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.widgets.Display;
 import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -63,6 +65,7 @@ import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * {@link SVGDocument} handler. Handles render and animation of SVG files.
+ * 
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class SVGHandler {
@@ -101,10 +104,18 @@ public class SVGHandler {
      */
     protected DocumentLoader loader;
 
+    protected GraphicsNode gvtRoot;
+
     /**
      * The update manager.
      */
     protected UpdateManager updateManager;
+
+    protected TimedDocumentRoot timedDocumentRoot;
+
+    protected SVGAnimationEngine svgAnimationEngine;
+
+    protected AnimatedSVGCache cache;
 
     /**
      * The current SVG document.
@@ -144,7 +155,17 @@ public class SVGHandler {
     private boolean started = false;
     private boolean suspended = true;
 
-    public SVGHandler(final SVGDocument doc) {
+    private final Display swtDisplay;
+    private boolean useCache = false;
+    private List<Image> imageBuffer;
+    private int maxBufferSize;
+
+    public SVGHandler(final SVGDocument doc, final Display display) {
+        swtDisplay = display;
+        useCache = Preferences.getUseCache();
+        imageBuffer = Collections.synchronizedList(new ArrayList<Image>());
+        maxBufferSize = Preferences.getCacheMaxSize();
+
         listener = new Listener();
         userAgent = createUserAgent();
         renderingHints = new RenderingHints(null);
@@ -157,32 +178,32 @@ public class SVGHandler {
         bridgeContext.setDynamicState(BridgeContext.DYNAMIC);
         builder = new DynamicGVTBuilder();
         // Build to calculate original dimension
-        GraphicsNode gvtRoot = builder.build(bridgeContext, originalSVGDocument);
+        gvtRoot = builder.build(bridgeContext, originalSVGDocument);
         originalDimension = bridgeContext.getDocumentSize();
 
         svgDocument = (SVGDocument) createWrapper(originalSVGDocument);
         builder.build(bridgeContext, svgDocument);
         buildElementsToUpdateList(bridgeContext, svgDocument);
-        if (isDynamicDocument) {
-            updateManager = new UpdateManager(bridgeContext, gvtRoot, svgDocument);
-            updateManager.addUpdateManagerListener(listener);
-        }
         setAnimationLimitingFPS(10);
     }
 
     public void dispose() {
         disposed = true;
         if (updateManager != null) {
+            updateManager.removeUpdateManagerListener(listener);
             updateManager.interrupt();
+            updateManager = null;
+        } else if (bridgeContext != null) {
+            bridgeContext.dispose();
+            bridgeContext = null;
         }
-        updateManager = null;
         if (renderer != null) {
             renderer.dispose();
             renderer = null;
         }
-        if (bridgeContext != null) {
-            bridgeContext.dispose();
-            bridgeContext = null;
+        if (cache != null && !cache.isDisposed()) {
+            cache.dispose();
+            cache = null;
         }
     }
 
@@ -202,9 +223,9 @@ public class SVGHandler {
         }
         BridgeContext result = null;
         if (doc.isSVG12()) {
-            result = new SVG12BridgeContext(userAgent, loader);
+            result = new org.csstudio.utility.batik.util.SVG12BridgeContext(userAgent, loader);
         } else {
-            result = new BridgeContext(userAgent, loader);
+            result = new org.csstudio.utility.batik.util.BridgeContext(userAgent, loader);
         }
         return result;
     }
@@ -277,8 +298,7 @@ public class SVGHandler {
     }
 
     public void setTransformMatrix(double[][] newMatrix) {
-        if ((newMatrix == null && this.matrix == null)
-                || (this.matrix != null && this.matrix.equals(newMatrix))) {
+        if ((newMatrix == null && this.matrix == null) || (this.matrix != null && this.matrix.equals(newMatrix))) {
             return;
         }
         this.matrix = newMatrix;
@@ -304,8 +324,7 @@ public class SVGHandler {
         Shape aoi = calculateShape();
         double docWidth = aoi.getBounds().getWidth();
         double docHeight = aoi.getBounds().getHeight();
-        return new Dimension((int) Math.round(docWidth),
-                (int) Math.round(docHeight));
+        return new Dimension((int) Math.round(docWidth), (int) Math.round(docHeight));
     }
 
     public void setAlignedToNearestSecond(boolean alignedToNearestSecond) {
@@ -313,10 +332,11 @@ public class SVGHandler {
             return;
         }
         this.alignedToNearestSecond = alignedToNearestSecond;
+        if (cache != null) {
+            cache.setAlignedToNearestSecond(alignedToNearestSecond);
+        }
         if (alignedToNearestSecond && isDynamicDocument && started) {
             alignTimeToNearestSecond();
-            refreshContent();
-            render();
         }
     }
 
@@ -326,19 +346,31 @@ public class SVGHandler {
                 if (disposed) {
                     return;
                 }
-                // reset document time
-                updateManager.getBridgeContext().getAnimationEngine()
-                        .setCurrentTime(0);
+                Date now = new Date();
+                Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
+                long initialDelay = nearestSecond.getTime() - now.getTime();
+                if (initialDelay < 0) {
+                    initialDelay = MILLISEC_IN_SEC + initialDelay;
+                }
+                try {
+                    Thread.sleep(initialDelay);
+                } catch (InterruptedException e) {
+                    Activator.getLogger().log(Level.WARNING, "SVG animation FAILED to align to nearest second");
+                }
+                resetDocumentTime();
+                // restart/reset cache
+                if (useCache && cache.isRunning()) {
+                    cache.restartProcessing();
+                }
             }
         };
-        Date now = new Date();
-        Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
-        long initialDelay = nearestSecond.getTime() - now.getTime();
-        if (initialDelay < 0) {
-            initialDelay = MILLISEC_IN_SEC + initialDelay;
+        new Thread(startTask).start();
+    }
+
+    private void resetDocumentTime() {
+        if (svgAnimationEngine != null && timedDocumentRoot.getDocumentBeginTime() != null) {
+            svgAnimationEngine.setCurrentTime(0);
         }
-        ExecutionService.getInstance().getScheduledExecutorService()
-                .schedule(startTask, initialDelay, TimeUnit.MILLISECONDS);
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -349,9 +381,15 @@ public class SVGHandler {
      * Resumes the processing of the current document.
      */
     public void resumeProcessing() {
-        if (updateManager != null && started) {
-            updateManager.manageUpdates(renderer);
+        if (updateManager != null && started && suspended) {
+            if (useCache && cache.isFilled() && !cache.isRunning()) {
+                cache.startProcessing();
+            } else if (svgAnimationEngine.isPaused()) {
+                updateManager.manageUpdates(renderer);
+                svgAnimationEngine.unpause();
+            }
             suspended = false;
+            Activator.getLogger().log(Level.FINE, "SVG animation RESUMED");
         }
     }
 
@@ -360,8 +398,13 @@ public class SVGHandler {
      */
     public void suspendProcessing() {
         if (updateManager != null && started) {
+            svgAnimationEngine.pause();
             updateManager.suspend();
+            if (useCache) {
+                cache.stopProcessing();
+            }
             suspended = true;
+            Activator.getLogger().log(Level.FINE, "SVG animation SUSPENDED");
         }
     }
 
@@ -385,35 +428,44 @@ public class SVGHandler {
                     if (disposed) {
                         return;
                     }
+                    updateManager = new UpdateManager(bridgeContext, gvtRoot, svgDocument);
+                    updateManager.addUpdateManagerListener(listener);
+                    updateManager.manageUpdates(renderer);
+                    svgAnimationEngine = (SVGAnimationEngine) bridgeContext.getAnimationEngine();
+                    timedDocumentRoot = svgAnimationEngine.getTimedDocumentRoot();
+                    if (useCache) {
+                        resetCache();
+                    }
+                    long initialDelay = 0;
+                    if (alignedToNearestSecond) {
+                        Date now = new Date();
+                        Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
+                        initialDelay = nearestSecond.getTime() - now.getTime();
+                        if (initialDelay < 0) {
+                            initialDelay = MILLISEC_IN_SEC + initialDelay;
+                        }
+                    }
+                    try {
+                        Thread.sleep(initialDelay);
+                    } catch (InterruptedException e) {
+                        Activator.getLogger().log(Level.WARNING, "SVG animation FAILED to align to nearest second");
+                    }
                     // This will call SVGAnimationEngine.start(long documentStartTime)
                     // with System.currentTimeMillis()
                     updateManager.dispatchSVGLoadEvent();
-                    updateManager.manageUpdates(renderer);
                     started = true;
                     suspended = false;
+                    Activator.getLogger().log(Level.FINE, "SVG animation STARTED");
                 } catch (Exception e) {
                     handleException(e);
+                    return;
+                } catch (OutOfMemoryError e) {
+                    Activator.getLogger().log(Level.SEVERE, "ERROR starting SVG animation: " + e.getMessage());
                     return;
                 }
             }
         };
-        long initialDelay = 100;
-        if (alignedToNearestSecond) {
-            Date now = new Date();
-            Date nearestSecond = DateUtils.round(now, Calendar.SECOND);
-            initialDelay = nearestSecond.getTime() - now.getTime();
-            if (initialDelay < 0) {
-                initialDelay = MILLISEC_IN_SEC + initialDelay;
-            }
-        }
-        ScheduledFuture<?> handle = ExecutionService.getInstance()
-                .getScheduledExecutorService()
-                .schedule(startTask, initialDelay, TimeUnit.MILLISECONDS);
-        try {
-            handle.get();
-        } catch (Exception e) {
-            handleException(e);
-        }
+        new Thread(startTask).start();
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -432,7 +484,7 @@ public class SVGHandler {
 
     /**
      * Sets the animation limiting mode to a percentage of CPU.
-     *
+     * 
      * @param pc the maximum percentage of CPU to use (0 &lt; pc ≤ 1)
      */
     public void setAnimationLimitingCPU(float pc) {
@@ -445,7 +497,7 @@ public class SVGHandler {
 
     /**
      * Sets the animation limiting mode to a number of frames per second.
-     *
+     * 
      * @param fps the maximum number of frames per second (fps &gt; 0)
      */
     public void setAnimationLimitingFPS(float fps) {
@@ -464,15 +516,15 @@ public class SVGHandler {
             return;
         }
         switch (animationLimitingMode) {
-        case 0: // unlimited
-            bridgeContext.setAnimationLimitingNone();
-            break;
-        case 1: // %cpu
-            bridgeContext.setAnimationLimitingCPU(animationLimitingAmount);
-            break;
-        case 2: // fps
-            bridgeContext.setAnimationLimitingFPS(animationLimitingAmount);
-            break;
+            case 0: // unlimited
+                bridgeContext.setAnimationLimitingNone();
+                break;
+            case 1: // %cpu
+                bridgeContext.setAnimationLimitingCPU(animationLimitingAmount);
+                break;
+            case 2: // fps
+                bridgeContext.setAnimationLimitingFPS(animationLimitingAmount);
+                break;
         }
     }
 
@@ -499,7 +551,11 @@ public class SVGHandler {
             if (isRunning) {
                 suspendProcessing();
             }
+            if (cache != null) {
+                cache.flush();
+            }
             doRender();
+            // resetDocumentTime();
             if (isRunning) {
                 resumeProcessing();
             }
@@ -514,7 +570,7 @@ public class SVGHandler {
         }
         updateMatrix();
         changeColor(colorToChange, colorToApply);
-        GraphicsNode gvtRoot = builder.build(bridgeContext, svgDocument);
+        gvtRoot = builder.build(bridgeContext, svgDocument);
 
         // get the 'width' and 'height' attributes of the SVG document
         float width = 400, height = 400;
@@ -540,10 +596,8 @@ public class SVGHandler {
         SVGSVGElement root = svgDocument.getRootElement();
         String viewBox = root.getAttributeNS(null, SVGConstants.SVG_VIEW_BOX_ATTRIBUTE);
         if (viewBox != null && viewBox.length() != 0) {
-            String aspectRatio = root.getAttributeNS(null,
-                    SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
-            Px = ViewBox.getPreserveAspectRatioTransform(root, viewBox,
-                    aspectRatio, width, height, bridgeContext);
+            String aspectRatio = root.getAttributeNS(null, SVGConstants.SVG_PRESERVE_ASPECT_RATIO_ATTRIBUTE);
+            Px = ViewBox.getPreserveAspectRatioTransform(root, viewBox, aspectRatio, width, height, bridgeContext);
         } else {
             // no viewBox has been specified, create a scale transform
             float xscale = width / docWidth;
@@ -560,7 +614,6 @@ public class SVGHandler {
             renderingTransform = Px;
         }
 
-        // FIXME re-create renderer to avoid NullPointerException in repaint
         if (renderer != null) {
             renderer.dispose();
             renderer = null;
@@ -576,7 +629,7 @@ public class SVGHandler {
         renderer.clearOffScreen();
         renderer.repaint(curAOI);
 
-        if (isDynamicDocument) {
+        if (updateManager != null) {
             updateManager.setGVTRoot(gvtRoot);
         }
         needRender = false;
@@ -625,12 +678,87 @@ public class SVGHandler {
 
         @Override
         public void updateCompleted(UpdateManagerEvent e) {
-            if (handlerListener != null && e.getImage() != null)
-                handlerListener.newImage(e.getImage());
+            if (e.getImage() == null) {
+                return;
+            }
+            if (useCache && cache != null) {
+                Image newImage = cache.addImage(e.getImage());
+                if (cache.isFilled()) {
+                    Activator.getLogger().log(Level.FINE, "SVG cache FILLED with " + cache.getSize() + " images");
+                    svgAnimationEngine.pause();
+                    updateManager.suspend();
+                    updateManager.getScriptingEnvironment().interrupt();
+                    if (!suspended) {
+                        cache.startProcessing();
+                    }
+                } else {
+                    notifyNewImage(newImage);
+                }
+            } else if (!suspended) {
+                ImageData imageData = SVGUtils.toSWT(swtDisplay, e.getImage());
+                Image newImage = new Image(swtDisplay, imageData);
+                notifyNewImage(newImage);
+            }
         }
 
         @Override
         public void updateFailed(UpdateManagerEvent e) {
+        }
+
+    }
+
+    protected void resetCache() {
+        final AnimatedSVGCache copy;
+        synchronized (this) {
+            copy = cache;
+            cache = new AnimatedSVGCache(swtDisplay, timedDocumentRoot,
+                    new AnimatedSVGCache.AnimatedSVGCacheListener() {
+                        @Override
+                        public void newImage(Image newImage) {
+                            notifyNewImage(newImage);
+                        }
+                    }, Preferences.getCacheMaxSize());
+        }
+        if (copy != null && !copy.isDisposed()) {
+            copy.dispose();
+        }
+    }
+
+    protected void addToBuffer(Image image) {
+        if (imageBuffer.size() == maxBufferSize) {
+            final List<Image> entriesCopy = new ArrayList<Image>(imageBuffer);
+            imageBuffer.clear();
+            Runnable flushTask = new Runnable() {
+                public void run() {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                    }
+                    for (Image entry : entriesCopy) {
+                        entry.dispose();
+                    }
+                    entriesCopy.clear();
+                    Activator.getLogger().log(Level.FINE, "SVG image buffer FLUSHED");
+                }
+            };
+            new Thread(flushTask).start();
+        }
+        imageBuffer.add(image);
+    }
+
+    protected void notifyNewImage(final Image newImage) {
+        if (handlerListener != null && newImage != null && !suspended) {
+            swtDisplay.asyncExec(new Runnable() {
+                public void run() {
+                    if (suspended) {
+                        return;
+                    }
+                    handlerListener.newImage(newImage);
+                    if (!useCache) {
+                        addToBuffer(newImage);
+                    }
+                }
+            });
         }
     }
 
@@ -653,8 +781,7 @@ public class SVGHandler {
             return;
         }
         elementsToUpdate.clear();
-        SVGCSSEngine cssEngine = (SVGCSSEngine) ctx.getCSSEngineForElement(
-                doc.getDocumentElement());
+        SVGCSSEngine cssEngine = (SVGCSSEngine) ctx.getCSSEngineForElement(doc.getDocumentElement());
         if (cssEngine == null) {
             return;
         }
@@ -683,8 +810,7 @@ public class SVGHandler {
             }
         }
         if (elmt instanceof SVGStylableElement) {
-            elementsToUpdate.add(new SVGStylableElementCSSHandler(cssEngine,
-                    (SVGStylableElement) elmt));
+            elementsToUpdate.add(new SVGStylableElementCSSHandler(cssEngine, (SVGStylableElement) elmt));
         }
     }
 
@@ -713,9 +839,7 @@ public class SVGHandler {
         double width = originalDimension.getWidth();
         double height = originalDimension.getHeight();
 
-        double[] flatmatrix = new double[] {
-                matrix[0][0], matrix[1][0],
-                matrix[0][1], matrix[1][1] };
+        double[] flatmatrix = new double[] { matrix[0][0], matrix[1][0], matrix[0][1], matrix[1][1] };
         AffineTransform at = new AffineTransform(flatmatrix);
         Shape curAOI = new Rectangle2D.Double(0, 0, width, height);
         return at.createTransformedShape(curAOI);
@@ -736,10 +860,7 @@ public class SVGHandler {
         svgRootNode.setAttributeNS(null, "preserveAspectRatio", "none");
 
         // current Transformation Matrix
-        double[][] CTM = {
-                { matrix[0][0], matrix[0][1], 0 },
-                { matrix[1][0], matrix[1][1], 0 },
-                { 0, 0, 1 } };
+        double[][] CTM = { { matrix[0][0], matrix[0][1], 0 }, { matrix[1][0], matrix[1][1], 0 }, { 0, 0, 1 } };
         // create the transform matrix
         StringBuilder sb = new StringBuilder();
         sb.append("matrix(");
@@ -752,5 +873,4 @@ public class SVGHandler {
 
         mainGraphicNode.setAttributeNS(null, "transform", sb.toString());
     }
-
 }
