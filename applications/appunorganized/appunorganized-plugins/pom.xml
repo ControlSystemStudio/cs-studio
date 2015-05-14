@@ -17,9 +17,6 @@
     <module>org.csstudio.debugging.rdbshell</module>
     <module>org.csstudio.desy.logging.ui</module>
     <module>org.csstudio.diag.pvfields.test</module>
-    <module>org.csstudio.display.pace</module>
-    <module>org.csstudio.display.pace.test</module>
-    <module>org.csstudio.display.rdbtable</module>
     <module>org.csstudio.dummyauthorization</module>
     <module>org.csstudio.email</module>
     <module>org.csstudio.email.test</module>
@@ -27,7 +24,6 @@
     <module>org.csstudio.examples</module>
     <module>org.csstudio.graphene</module>
     <module>org.csstudio.graphene.opiwidgets</module>
-    <module>org.csstudio.logging.jms2rdb</module>
     <!--<module>org.csstudio.pretune</module>-->
     <module>org.csstudio.rap.rtplot</module>
     
@@ -67,7 +63,6 @@
     <module>org.csstudio.systemopen.mac</module>
     <module>org.csstudio.systemopen.win</module>
     <module>org.csstudio.testsuite</module>
-    <module>org.csstudio.ui.menu.pvscript</module>
     <module>org.csstudio.unitconversion.ui</module>
     <!--<module>org.csstudio.utility.adlConverter</module>
   <module>org.csstudio.utility.adlConverter.test</module>-->
