@@ -139,7 +139,7 @@
                 <id>upload-repo</id>
                 <phase>install</phase>
                 <goals>
-                  <goal>upload</goal>
+                  <goal>verify</goal>
                 </goals>
                 <configuration>
                   <fromDir>target/centralrepository</fromDir>
