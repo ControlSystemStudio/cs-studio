@@ -6,6 +6,9 @@
    <feature id="org.csstudio.applications.casnooperui.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.applications.utility.menu.pvscript.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <feature id="org.csstudio.applications.utility.navigator.applaunch.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
