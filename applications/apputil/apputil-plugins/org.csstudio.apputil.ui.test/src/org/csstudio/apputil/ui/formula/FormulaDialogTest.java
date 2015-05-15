@@ -34,6 +34,6 @@ public class FormulaDialogTest
         for (final InputItem input : dialog.getInputs())
             Assert.assertEquals(input.getVariableName(), input.getInputName());
 
-//        dialog.open();
+        dialog.open();
     }
 }
