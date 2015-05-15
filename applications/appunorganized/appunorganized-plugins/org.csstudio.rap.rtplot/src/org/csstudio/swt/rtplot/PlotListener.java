@@ -31,5 +31,5 @@ public interface PlotListener<XTYPE extends Comparable<XTYPE>>
     public void changedToolbar(boolean visible);
 
     /** Invoked when legend displayed/hidden */
-    public void changedLegend(boolean visible);    
+    public void changedLegend(boolean visible);
 }

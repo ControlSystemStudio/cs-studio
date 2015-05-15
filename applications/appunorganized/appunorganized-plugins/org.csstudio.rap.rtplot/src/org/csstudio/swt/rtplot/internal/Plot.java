@@ -378,7 +378,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     /** @return Count the number of traces */
     public int getTraceCount(){
-	return traces.size();
+    return traces.size();
     }
 
     /** Remove trace from plot
@@ -539,7 +539,6 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         // Title on top, as high as desired
         final int title_height = title_part.getDesiredHeight(gc, title_font);
-
         title_part.setBounds(0, 0, bounds.width, title_height);
 
         // Legend on bottom, as high as desired
