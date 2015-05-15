@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="cs-studio" sequenceNumber="24">
+<?pde version="3.8"?><target name="cs-studio" sequenceNumber="25">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.rap.examples.feature.feature.group" version="2.2.0.20131204-1358"/>
@@ -738,6 +738,20 @@
 <unit id="org.epics.pvdata.source" version="4.0.3"/>
 <unit id="javax.json-api" version="1.0.0"/>
 <repository location="http://download.controlsystemstudio.org/updates/4.1"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.gef.examples.source.feature.group" version="3.9.100.201408150207"/>
+<unit id="org.eclipse.gef.all.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.draw2d.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.draw2d.sdk.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.gef.examples.source.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.gef.examples.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.gef.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.gef.sdk.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.gef.source.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.draw2d.source.feature.group" version="3.9.100.201405261516"/>
+<unit id="org.eclipse.gef.examples.feature.group" version="3.9.100.201408150207"/>
+<repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
 </location>
 </locations>
 <environment>
