@@ -2,3 +2,6 @@
 # Ignore Tycho/Maven build directory
 target/
 
+# ignore the .settings folder
+.settings/
+
