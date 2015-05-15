@@ -155,7 +155,7 @@ public class OPIRunnerPerspective implements IPerspectiveFactory
             top.addView(PlaceHolderView.ID + ":TOP");
             bottom.addView(PlaceHolderView.ID + ":BOTTOM");
         }
-        
+
         if (!OPIBuilderPlugin.isRAP())
         {
             bottom.addPlaceholder(ID_CONSOLE_VIEW);

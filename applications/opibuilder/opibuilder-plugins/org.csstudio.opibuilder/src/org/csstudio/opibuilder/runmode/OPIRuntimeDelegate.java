@@ -74,7 +74,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
     private ActionRegistry actionRegistry;
 
     private IEditorInput editorInput;
-    
+
 
     /**
      * The workbench part where the OPI is running on.

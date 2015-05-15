@@ -41,27 +41,27 @@ public class RunModeService
     {
         /** Replace current view or shell with new display content */
         REPLACE("Replace Current"),
-        
+
         /** New view part within existing workbench */
         NEW_TAB("Workbench Tab"),
-        
+
         /** .. in desired location, if possible */
         NEW_TAB_LEFT("Workbench Tab (Left)"),
         NEW_TAB_RIGHT("Workbench Tab (Right)"),
         NEW_TAB_TOP("Workbench Tab (Top)"),
         NEW_TAB_BOTTOM("Workbench Tab (Bottom)"),
-        
+
         /** .. detached */
         NEW_TAB_DETACHED("Detached Tab"),
-        
+
         /** New view part in new workbench window */
         NEW_WINDOW("New workbench"),
-        
+
         /** New standalone Shell */
         NEW_SHELL("Standalone window");
 
         private String description;
-        
+
         private DisplayMode(String desc)
         {
             this.description = desc;
@@ -78,7 +78,7 @@ public class RunModeService
     }
 
     /** Open a display in runtime
-     * 
+     *
      *  @param path Path to the display file
      *  @param macros Optional macros
      *  @param mode {@link DisplayMode}
@@ -166,7 +166,7 @@ public class RunModeService
         }
         return window.getActivePage();
     }
-    
+
     /** Display a view on a specific workbench page
      *  @param page Page to use
      *  @param input {@link RunnerInput}
@@ -197,7 +197,7 @@ public class RunModeService
                             OPIBuilderPlugin.getLogger().log(Level.WARNING,
                                 "Found view " + view.getTitle() + " but its type is " + view.getClass().getName());
                     }
-                
+
                 // Open new View
                 // View will receive input from us, should ignore previous memento.
                 // No need to revert back to "use memento" because that is only

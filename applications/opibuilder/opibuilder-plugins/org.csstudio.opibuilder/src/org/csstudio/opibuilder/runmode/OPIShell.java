@@ -173,18 +173,18 @@ public class OPIShell implements IOPIRuntime {
     public MacrosInput getMacrosInput() {
         return macrosInput;
     }
-    
+
     public IPath getPath() {
         return path;
     }
-    
+
     public void raiseToTop() {
         shell.forceFocus();
         shell.forceActive();
         shell.setFocus();
         shell.setActive();
     }
-    
+
     @Override
     public  boolean equals(Object o) {
         if (o instanceof OPIShell) {
@@ -230,7 +230,7 @@ public class OPIShell implements IOPIRuntime {
     /** Search the cache of open OPIShells to find a match for the
      *  input Shell object.
      *
-     * 	Return associated OPIShell or Null if none found
+     *     Return associated OPIShell or Null if none found
      */
     public static OPIShell getOPIShellForShell(final Shell target) {
         OPIShell foundShell = null;

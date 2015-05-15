@@ -38,11 +38,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
 /** Action to launch OPI runtime from editor.
- * 
+ *
  *  <p>Maintains a workbench window to allow testing displays
  *  in their own top-level workbench, separate from the one that
  *  holds the editor.
- *  
+ *
  *  @author Xihui Chen - Original author.
  *  @author Kay Kasemir
  */
@@ -51,7 +51,7 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
 {
     public static String ID = "org.csstudio.opibuilder.editor.run";
     public static String ACITON_DEFINITION_ID = "org.csstudio.opibuilder.runopi";
-    
+
     private static IWorkbenchPage runtime_page = null;
 
     public RunOPIAction()
@@ -66,18 +66,18 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
     {
         // NOP
     }
-    
+
     @Override
     public boolean isEnabled()
     {
         return true;
     }
-    
+
     public void selectionChanged(IAction action, ISelection selection)
     {
         // NOP
     }
-    
+
     public void run(IAction action)
     {
         run();
@@ -92,13 +92,13 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
             final IEditorPart activeEditor = page.getActiveEditor();
             if (! (activeEditor instanceof OPIEditor))
                 return;
-            
+
             // TODO: Should perform the 'save' in background, then return to UI thread when done..
             if (PreferencesHelper.isAutoSaveBeforeRunning() && activeEditor.isDirty())
                 activeEditor.doSave(null);
-    
+
             final DisplayModel displayModel = ((OPIEditor)activeEditor).getDisplayModel();
-            
+
             if (runtime_page == null)
             {   //  (Re-)create runtime window
                 final Rectangle bounds = new Rectangle(displayModel.getLocation(), displayModel.getSize());
@@ -112,13 +112,13 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
                         if (page == runtime_page)
                             runtime_page = null;
                     }
-    
+
                     @Override
                     public void pageActivated(IWorkbenchPage page)
                     {
                         // NOP
                     }
-    
+
                     @Override
                     public void pageOpened(IWorkbenchPage page)
                     {
@@ -126,16 +126,16 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
                     }
                 });
             }
-            
-            final IEditorInput input = activeEditor.getEditorInput();    
+
+            final IEditorInput input = activeEditor.getEditorInput();
             IPath path = ResourceUtil.getPathInEditor(input);
             final RunnerInput new_input = new RunnerInput(path, null);
-    
+
             // If this display is already executing, update it to the new content,
             // because RunModeService would only pop old content back to the front.
             for (IViewReference view_ref : runtime_page.getViewReferences())
                 if (view_ref.getId().startsWith(OPIView.ID))
-                {   
+                {
                     final IViewPart view = view_ref.getView(true);
                     if (view instanceof OPIView)
                     {
@@ -155,7 +155,7 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
                         }
                     }
                 }
-                    
+
             RunModeService.openDisplayInView(runtime_page, new_input, DisplayMode.NEW_TAB);
         }
         catch (Exception ex)

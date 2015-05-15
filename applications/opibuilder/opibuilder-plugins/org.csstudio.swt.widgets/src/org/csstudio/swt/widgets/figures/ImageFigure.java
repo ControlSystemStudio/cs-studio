@@ -44,7 +44,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * An image figure.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public final class ImageFigure extends Figure implements Introspectable, SymbolImageListener {
@@ -82,7 +82,7 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
 
     /**
      * Sets the path to the image.
-     * 
+     *
      * @param newval The path to the image
      */
     public void setFilePath(final IPath newval) {
@@ -261,7 +261,7 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
 
     /**
      * We want to have local coordinates here.
-     * 
+     *
      * @return True if here should used local coordinates
      */
     @Override

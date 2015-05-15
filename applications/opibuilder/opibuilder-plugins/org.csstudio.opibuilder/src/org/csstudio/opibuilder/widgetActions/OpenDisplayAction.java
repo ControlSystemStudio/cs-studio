@@ -35,18 +35,18 @@ import org.jdom.Element;
  *  <p>Properties, configured when the action is added to a widget,
  *  suggest how the display should be opened:
  *  Replace existing display, or open new standalone shell, or ..
- *  
+ *
  *  <p>User can override via key modifiers:
  *  <ul>
  *  <li>Ctrl - Opens a new view in existing workbench window
  *  <li>Shift - Open a new view in new workbench window
  *  <li>Ctrl + Shift - Open a new standalone shell
  *  </ul>
- *  
+ *
  *  These key modifiers need to be passed by the context menu or
  *  whatever usually invokes the 'run()' method by calling the specialized
  *  runWithModifiers()
- * 
+ *
  *  @author Xihui Chen - Original author
  *  @author Will Rogers - Shell support
  *  @author Kay Kasemir
@@ -76,7 +76,7 @@ public class OpenDisplayAction extends AbstractWidgetAction
                     new LinkedHashMap<String, String>(), true)));
         addProperty(new ComboProperty(PROP_MODE, "Mode",
                     WidgetPropertyCategory.Basic, DisplayMode.stringValues(),
-                    DisplayMode.REPLACE.ordinal()));        
+                    DisplayMode.REPLACE.ordinal()));
     }
 
     protected void handleLegacySettings(final Element path_element)
@@ -84,7 +84,7 @@ public class OpenDisplayAction extends AbstractWidgetAction
         // Original OpenDisplayAction had property "replace".
         // True  - Replace existing display
         // False - Open new display
-        
+
         // Later OpenDisplayAction had property "replace" with options
         // 0 - NEW_TAB,
         // 1 - REPLACE,
@@ -93,7 +93,7 @@ public class OpenDisplayAction extends AbstractWidgetAction
         // (and 0/1 were swapped, but we ignore that
         //  because it's incompatible with older displays):
         // 3 - NEW_SHELL
-        
+
         // Original OpenOPIInViewAction had property "Position"
         // 0 - LEFT,
         // 1 - RIGHT,
@@ -101,13 +101,13 @@ public class OpenDisplayAction extends AbstractWidgetAction
         // 3 - BOTTOM,
         // 4 - DETACHED,
         // 5 - DEFAULT_VIEW
-        
+
         // This OpenDisplayAction has a property "mode" that combines all of the above.
         // For legacy displays, hook into loading the "path" property which was found
         // in all versions and navigate the XML for older properties.
         final Element action_element = path_element.getParentElement();
         // action_element.getName() should be "action"
-        
+
         Element legacy = action_element.getChild("Position");
         if (legacy != null)
         {
@@ -180,7 +180,7 @@ public class OpenDisplayAction extends AbstractWidgetAction
     }
 
     /** Run the action, i.e. open display, with optional modifiers
-     * 
+     *
      *  @param ctrlPressed True if Ctrl was pressed while invoking the action
      *  @param shiftPressed True if Shift was held while invoking the action
      */
@@ -238,7 +238,7 @@ public class OpenDisplayAction extends AbstractWidgetAction
         result.getMacrosMap().putAll(macrosInput.getMacrosMap());
         return result;
     }
-    
+
     protected DisplayMode getDisplayMode()
     {
         return DisplayMode.values()[(Integer)getPropertyValue(PROP_MODE)];

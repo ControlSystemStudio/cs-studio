@@ -83,28 +83,28 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
             RelatedDisplayItem rdDisplay) {
         OpenDisplayAction odAction = new OpenDisplayAction();
 
-		// Try to add macros
-		addMacrosToOpenDisplayAction(rdDisplay, odAction);
-		if (rdDisplay.getLabel() != null) {
-			odAction.setPropertyValue(OpenDisplayAction.PROP_DESCRIPTION,
-					rdDisplay.getLabel().replaceAll("\"", ""));
-		}
-		if ((rdDisplay.getPolicy() != null)) { // policy is present
-			if (rdDisplay.getPolicy().replaceAll("\"", "").equals("replace display")) { // replace
-																	// the
-																	// display
-				odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.REPLACE);
-			} else { // don't replace the display
-				odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB);
-			}
-		} else { // policy not present go to default
-			odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB); // don't
-																				// replace
-																				// the
-																				// display
-		}
-		return odAction;
-	}
+        // Try to add macros
+        addMacrosToOpenDisplayAction(rdDisplay, odAction);
+        if (rdDisplay.getLabel() != null) {
+            odAction.setPropertyValue(OpenDisplayAction.PROP_DESCRIPTION,
+                    rdDisplay.getLabel().replaceAll("\"", ""));
+        }
+        if ((rdDisplay.getPolicy() != null)) { // policy is present
+            if (rdDisplay.getPolicy().replaceAll("\"", "").equals("replace display")) { // replace
+                                                                    // the
+                                                                    // display
+                odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.REPLACE);
+            } else { // don't replace the display
+                odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB);
+            }
+        } else { // policy not present go to default
+            odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB); // don't
+                                                                                // replace
+                                                                                // the
+                                                                                // display
+        }
+        return odAction;
+    }
 
         // Try to add macros
         addMacrosToOpenDisplayAction(rdDisplay, odAction);

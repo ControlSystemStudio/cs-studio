@@ -32,38 +32,38 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
     @Override
     public void postWindowCreate() {
-    	super.postWindowCreate();
-    	IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
-    	Shell shell = configurer.getWindow().getShell();
-    	shell.setText("WebOPI");
-    	shell.setMaximized(true);
-    	RunnerInput runnerInput = RequestUtil.getOPIPathFromRequest();
-		
-		if(runnerInput == null){
-			IPath path = null;
-			String s = RWT.getRequest().getServletPath();
-			if(s.contains(WebOPIConstants.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
-				path = PreferencesHelper.getMobileStartupOPI();
-			else
-				path = PreferencesHelper.getStartupOPI();
-			if(path == null)
-				return;
-			if (path.getFileExtension().toLowerCase().equals("opi")) {
-				RunModeService.openDisplay(path, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
-			} else {
-				runOther(path);
-			}
-		} else {
-			IPath path = runnerInput.getPath();
-			if (path != null) {
-				if (path.getFileExtension().toLowerCase().equals("opi")) {
-					RunModeService.openDisplay(path, Optional.ofNullable(runnerInput.getMacrosInput()), DisplayMode.NEW_TAB, Optional.empty());
-				} else {
-					runOther(path);
-				}
-			}
-		}
-	}
+        super.postWindowCreate();
+        IWorkbenchWindowConfigurer configurer = getWindowConfigurer();
+        Shell shell = configurer.getWindow().getShell();
+        shell.setText("WebOPI");
+        shell.setMaximized(true);
+        RunnerInput runnerInput = RequestUtil.getOPIPathFromRequest();
+
+        if(runnerInput == null){
+            IPath path = null;
+            String s = RWT.getRequest().getServletPath();
+            if(s.contains(WebOPIConstants.MOBILE_SERVELET_NAME)) //$NON-NLS-1$
+                path = PreferencesHelper.getMobileStartupOPI();
+            else
+                path = PreferencesHelper.getStartupOPI();
+            if(path == null)
+                return;
+            if (path.getFileExtension().toLowerCase().equals("opi")) {
+                RunModeService.openDisplay(path, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
+            } else {
+                runOther(path);
+            }
+        } else {
+            IPath path = runnerInput.getPath();
+            if (path != null) {
+                if (path.getFileExtension().toLowerCase().equals("opi")) {
+                    RunModeService.openDisplay(path, Optional.ofNullable(runnerInput.getMacrosInput()), DisplayMode.NEW_TAB, Optional.empty());
+                } else {
+                    runOther(path);
+                }
+            }
+        }
+    }
 
     public void preWindowOpen() {
 

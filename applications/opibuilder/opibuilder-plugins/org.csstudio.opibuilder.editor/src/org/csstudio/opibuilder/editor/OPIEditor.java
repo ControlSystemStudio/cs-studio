@@ -189,456 +189,456 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
  */
 public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
-	/**
-	 * The file extension for OPI files.
-	 */
-	public static final String OPI_FILE_EXTENSION = "opi"; //$NON-NLS-1$
-	public static final String ID = "org.csstudio.opibuilder.OPIEditor"; //$NON-NLS-1$
-
-	private PaletteRoot paletteRoot;
-
-	/** the undoable <code>IPropertySheetPage</code> */
-	private PropertySheetPage undoablePropertySheetPage;
-
-	private DisplayModel displayModel;
-
-	private RulerComposite rulerComposite;
-
-	private KeyHandler sharedKeyHandler;
-
-	private OverviewOutlinePage overviewOutlinePage;
-
-	private OutlinePage outlinePage;
-
-	private Clipboard clipboard;
-
-	private SelectionSynchronizer synchronizer;
-	
-	private OPIHelpContextProvider helpContextProvider;
-
-
-	public OPIEditor() {
-		if(getPalettePreferences().getPaletteState() <= 0)
-			getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
-		setEditDomain(new DefaultEditDomain(this));
-	}
-
-	@Override
-	public void init(final IEditorSite site, final IEditorInput input)
-			throws PartInitException {
-		//in the mode of "no edit", open OPI in runtime and close this editor immediately.
-		if(PreferencesHelper.isNoEdit()){
-		    setSite(site);
-		    setInput(input);
-		    final IPath path = ResourceUtil.getPathInEditor(input);
-		    RunModeService.openDisplayInView(site.getPage(), new RunnerInput(path, null), DisplayMode.NEW_TAB);
-
-			Display.getDefault().asyncExec(new Runnable(){
-				public void run() {
-
-					getSite().getPage().closeEditor(OPIEditor.this, false);
-
-				}
-			});
-
-		}
-		else
-			super.init(site, input instanceof NoResourceEditorInput ? input : new NoResourceEditorInput(input)); 
-	}
-
-	@Override
-	public void commandStackChanged(EventObject event) {
-		firePropertyChange(IEditorPart.PROP_DIRTY);
-		super.commandStackChanged(event);
-	}
-
-
-	@Override
-	protected void configureGraphicalViewer() {
-		super.configureGraphicalViewer();
-		ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer)getGraphicalViewer();
-		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.EDIT_MODE));
-		ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart() {
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
-			public Object getAdapter(@SuppressWarnings("rawtypes") final Class key) {
-				if (key == AutoexposeHelper.class) {
-					return new ViewportAutoexposeHelper(this);
-				}
-				return super.getAdapter(key);
-			}
-		};
-		
-		// set clipping strategy for connection layer of connection can be hide
-		// when its source or target is not showing.
-		ConnectionLayer connectionLayer = (ConnectionLayer) root
-				.getLayer(LayerConstants.CONNECTION_LAYER);
-		connectionLayer.setClippingStrategy(new PatchedConnectionLayerClippingStrategy(
-				connectionLayer));
-
-		viewer.setRootEditPart(root);
-		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer).setParent(getCommonKeyHandler()));
-		ContextMenuProvider cmProvider =
-			new OPIEditorContextMenuProvider(viewer, getActionRegistry());
-		viewer.setContextMenu(cmProvider);
-		getSite().registerContextMenu(cmProvider, viewer);
-		
-		// Grid Action
-		IAction action = new ToggleGridAction(getGraphicalViewer()){
-			@Override
-			public boolean isChecked() {
-				return getDisplayModel().isShowGrid();
-			}
-			@Override
-			public void run() {
-				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
-						DisplayModel.PROP_SHOW_GRID, !isChecked()));
-			}
-		};
-
-		getActionRegistry().registerAction(action);
-
-		// Ruler Action
-		configureRuler();
-		action = new ToggleRulerVisibilityAction(getGraphicalViewer()){
-			@Override
-			public boolean isChecked() {
-				return getDisplayModel().isShowRuler();
-			}
-
-			@Override
-			public void run() {
-				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
-						DisplayModel.PROP_SHOW_RULER, !isChecked()));
-			}
-
-		};
-		getActionRegistry().registerAction(action);
-
-		// Snap to Geometry Action
-		IAction geometryAction = new ToggleSnapToGeometryAction(getGraphicalViewer()){
-			@Override
-			public boolean isChecked() {
-				return getDisplayModel().isSnapToGeometry();
-			}
-			@Override
-			public void run() {
-				getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
-						DisplayModel.PROP_SNAP_GEOMETRY, !isChecked()));
-			}
-
-		};
-		getActionRegistry().registerAction(geometryAction);
-
-		// configure zoom actions
-		ZoomManager zm = root.getZoomManager();
-		if (zm != null) {
-
-			List<String> zoomLevels = new ArrayList<String>(3);
-			zoomLevels.add(ZoomManager.FIT_ALL);
-			zoomLevels.add(ZoomManager.FIT_WIDTH);
-			zoomLevels.add(ZoomManager.FIT_HEIGHT);
-			zm.setZoomLevelContributions(zoomLevels);
-			zm.setZoomLevels(createZoomLevels());
-			IAction zoomIn = new ZoomInAction(zm);
-			IAction zoomOut = new ZoomOutAction(zm);
-			getActionRegistry().registerAction(zoomIn);
-			getActionRegistry().registerAction(zoomOut);
-		}
-
-		/* scroll-wheel zoom */
-		getGraphicalViewer().setProperty(
-				MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
-				MouseWheelZoomHandler.SINGLETON);
-
-		// status line listener
-		getGraphicalViewer().addSelectionChangedListener(new ISelectionChangedListener() {
-			private IStatusLineManager statusLine =
-					((ActionBarContributor)getEditorSite().getActionBarContributor()).
-					getActionBars().getStatusLineManager();
-			public void selectionChanged(SelectionChangedEvent event) {
-				updateStatusLine(statusLine);
-			}
-		});
-	}
-	private void updateStatusLine(IStatusLineManager statusLine) {
-				List<AbstractBaseEditPart> selectedWidgets = new ArrayList<AbstractBaseEditPart>();
-				for(Object editpart : getGraphicalViewer().getSelectedEditParts()){
-					if(editpart instanceof AbstractBaseEditPart && !(editpart instanceof DisplayEditpart))
-						selectedWidgets.add((AbstractBaseEditPart) editpart);
-				}
-				if(selectedWidgets.size() == 1)
-					statusLine.setMessage(selectedWidgets.get(0).getWidgetModel().getName() + "(" //$NON-NLS-1$
-							+ selectedWidgets.get(0).getWidgetModel().getType() + ")"); //$NON-NLS-1$
-				else if (selectedWidgets.size() >=1)
-					statusLine.setMessage(selectedWidgets.size() + " widgets were selected");
-				else
-					statusLine.setMessage("No widget was selected");
-			}
-	/**
-	 * Configure the properties for the rulers.
-	 */
-	private void configureRuler() {
-		// Ruler properties
-		RulerProvider hprovider = new OPIEditorRulerProvider(new RulerModel(true));
-		RulerProvider vprovider = new OPIEditorRulerProvider(new RulerModel(false));
-		getGraphicalViewer().setProperty(
-				RulerProvider.PROPERTY_HORIZONTAL_RULER, hprovider);
-		getGraphicalViewer().setProperty(
-				RulerProvider.PROPERTY_VERTICAL_RULER, vprovider);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	protected void createActions() {
-		super.createActions();
-
-		((IContextService)getEditorSite().getService(IContextService.class)).
-		activateContext("org.csstudio.opibuilder.opiEditor"); //$NON-NLS-1$
-
-		ActionRegistry registry = getActionRegistry();
-		IAction action;
-
-		action = new CopyTemplateAction(this);
-		registry.registerAction(action);
-
-		action = new MatchWidthAction(this);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		action = new MatchHeightAction(this);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		action = new DirectEditAction((IWorkbenchPart) this);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		String id = ActionFactory.DELETE.getId();
-		action = getActionRegistry().getAction(id);
-		action.setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
-
-		action = new PasteWidgetsAction(this);
-		registry.registerAction(action);
-
-		action = new CopyWidgetsAction(this);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		action = new CutWidgetsAction(this,
-				(DeleteAction) registry.getAction(ActionFactory.DELETE.getId()));
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		action = new PrintDisplayAction(this);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		id = ActionFactory.SELECT_ALL.getId();
-		action = getActionRegistry().getAction(id);
-		action.setActionDefinitionId("org.eclipse.ui.edit.selectAll");//$NON-NLS-1$
-
-		id = ActionFactory.UNDO.getId();
-		action = getActionRegistry().getAction(id);
-		action.setActionDefinitionId("org.eclipse.ui.edit.undo");//$NON-NLS-1$
-
-		id = ActionFactory.REDO.getId();
-		action = getActionRegistry().getAction(id);
-		action.setActionDefinitionId("org.eclipse.ui.edit.redo");//$NON-NLS-1$
-
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.LEFT);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.RIGHT);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.TOP);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.BOTTOM);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.CENTER);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.MIDDLE);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-
-		for(DistributeType dt : DistributeType.values()){
-			action = new DistributeWidgetsAction((IWorkbenchPart) this,
-				dt);
-			registry.registerAction(action);
-			getSelectionActions().add(action.getId());
-		}
-
-		for(OrderType orderType : OrderType.values()){
-			action = new ChangeOrderAction((IWorkbenchPart)this, orderType);
-			registry.registerAction(action);
-			getSelectionActions().add(action.getId());
-		}
-
-		for(OrientationType orientationType : OrientationType.values()){
-			action = new ChangeOrientationAction(this, orientationType);
-			registry.registerAction(action);
-			getSelectionActions().add(action.getId());
-		}
-
-		action = new RunOPIAction();
-		registry.registerAction(action);
-
-		PastePropertiesAction pastePropAction = new PastePropertiesAction(this);
-		registry.registerAction(pastePropAction);
-		getSelectionActions().add(pastePropAction.getId());
-
-		action = new CopyPropertiesAction(this);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-		
-		action = new ReplaceWidgetsAction(this);
-		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
-	}
-
-	@Override
-	protected void createGraphicalViewer(Composite parent) {
-		initDisplayModel();
-
-		rulerComposite = new RulerComposite(parent, SWT.NONE);
-
-		GraphicalViewer viewer = new PatchedScrollingGraphicalViewer();
-		viewer.createControl(rulerComposite);
-		setGraphicalViewer(viewer);
-		configureGraphicalViewer();
-		hookGraphicalViewer();
-		initializeGraphicalViewer();
-
-		rulerComposite
-				.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
-
-	}
-
-	@Override
-	protected PaletteViewerProvider createPaletteViewerProvider() {
-		return new PaletteViewerProvider(getEditDomain()) {
-			protected void configurePaletteViewer(PaletteViewer viewer) {
-				super.configurePaletteViewer(viewer);
-				// create a drag source listener for this palette viewer
-				// together with an appropriate transfer drop target listener, this will enable
-				// model element creation by dragging a CombinatedTemplateCreationEntries
-				// from the palette into the editor
-				// @see ShapesEditor#createTransferDropTargetListener()
-				viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));
-			}
-		};
-	}
-
-	/**
-	 * Create a transfer drop target listener. When using a CombinedTemplateCreationEntry
-	 * tool in the palette, this will enable model element creation by dragging from the palette.
-	 * @see #createPaletteViewerProvider()
-	 */
-	private TransferDropTargetListener createTransferDropTargetListener() {
-		return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
-			protected CreationFactory getFactory(Object template) {
-				return (WidgetCreationFactory)template;
-			}
-		};
-	}
-
-	/**
-	 * Create a double array that contains the pre-defined zoom levels.
-	 *
-	 * @return A double array that contains the pre-defined zoom levels.
-	 */
-	private double[] createZoomLevels() {
-		List<Double> zoomLevelList = new ArrayList<Double>();
-
-		double level = 0.1;
-		while (level < 1.0) {
-			zoomLevelList.add(level);
-			level = level + 0.05;
-		}
-
-		zoomLevelList.add(1.0);
-		zoomLevelList.add(1.1);
-		zoomLevelList.add(1.2);
-		zoomLevelList.add(1.3);
-		zoomLevelList.add(1.5);
-		zoomLevelList.add(2.0);
-		zoomLevelList.add(2.5);
-		zoomLevelList.add(3.0);
-		zoomLevelList.add(3.5);
-		zoomLevelList.add(4.0);
-		zoomLevelList.add(4.5);
-		zoomLevelList.add(5.0);
-
-		double[] result = new double[zoomLevelList.size()];
-		for (int i = 0; i < zoomLevelList.size(); i++) {
-			result[i] = zoomLevelList.get(i);
-		}
-
-		return result;
-	}
-
-
-	@Override
-	public void doSave(IProgressMonitor monitor) {
-		if (getOriginEditorInput() instanceof FileEditorInput
-				|| getOriginEditorInput() instanceof FileStoreEditorInput) {
-			performSave();
-		} else {
-			doSaveAs();
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void doSaveAs() {
-		SaveAsDialog saveAsDialog = new SaveAsDialog(getEditorSite().getShell());
-		if(getOriginEditorInput() instanceof FileEditorInput)
-			saveAsDialog.setOriginalFile(((FileEditorInput)getOriginEditorInput()).getFile());
-		else if(getOriginEditorInput() instanceof FileStoreEditorInput)
-			saveAsDialog.setOriginalName(((FileStoreEditorInput)getOriginEditorInput()).getName());
-
-		int ret = saveAsDialog.open();
-
-		try {
-			if (ret == Window.OK) {
-				IPath targetPath = saveAsDialog.getResult();
-				IFile targetFile = ResourcesPlugin.getWorkspace().getRoot()
-						.getFile(targetPath);
-
-				if (!targetFile.exists()) {
-					targetFile.create(null, true, null);
-				}
-
-				FileEditorInput editorInput = new FileEditorInput(targetFile);
-
-				setInput(editorInput);
-
-				setPartName(targetFile.getName());
-
-				performSave();
-			}
-		} catch (CoreException e) {
-			MessageDialog.openError(getSite().getShell(), "IO Error", e
-					.getMessage());
+    /**
+     * The file extension for OPI files.
+     */
+    public static final String OPI_FILE_EXTENSION = "opi"; //$NON-NLS-1$
+    public static final String ID = "org.csstudio.opibuilder.OPIEditor"; //$NON-NLS-1$
+
+    private PaletteRoot paletteRoot;
+
+    /** the undoable <code>IPropertySheetPage</code> */
+    private PropertySheetPage undoablePropertySheetPage;
+
+    private DisplayModel displayModel;
+
+    private RulerComposite rulerComposite;
+
+    private KeyHandler sharedKeyHandler;
+
+    private OverviewOutlinePage overviewOutlinePage;
+
+    private OutlinePage outlinePage;
+
+    private Clipboard clipboard;
+
+    private SelectionSynchronizer synchronizer;
+
+    private OPIHelpContextProvider helpContextProvider;
+
+
+    public OPIEditor() {
+        if(getPalettePreferences().getPaletteState() <= 0)
+            getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
+        setEditDomain(new DefaultEditDomain(this));
+    }
+
+    @Override
+    public void init(final IEditorSite site, final IEditorInput input)
+            throws PartInitException {
+        //in the mode of "no edit", open OPI in runtime and close this editor immediately.
+        if(PreferencesHelper.isNoEdit()){
+            setSite(site);
+            setInput(input);
+            final IPath path = ResourceUtil.getPathInEditor(input);
+            RunModeService.openDisplayInView(site.getPage(), new RunnerInput(path, null), DisplayMode.NEW_TAB);
+
+            Display.getDefault().asyncExec(new Runnable(){
+                public void run() {
+
+                    getSite().getPage().closeEditor(OPIEditor.this, false);
+
+                }
+            });
+
+        }
+        else
+            super.init(site, input instanceof NoResourceEditorInput ? input : new NoResourceEditorInput(input));
+    }
+
+    @Override
+    public void commandStackChanged(EventObject event) {
+        firePropertyChange(IEditorPart.PROP_DIRTY);
+        super.commandStackChanged(event);
+    }
+
+
+    @Override
+    protected void configureGraphicalViewer() {
+        super.configureGraphicalViewer();
+        ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer)getGraphicalViewer();
+        viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.EDIT_MODE));
+        ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public Object getAdapter(@SuppressWarnings("rawtypes") final Class key) {
+                if (key == AutoexposeHelper.class) {
+                    return new ViewportAutoexposeHelper(this);
+                }
+                return super.getAdapter(key);
+            }
+        };
+
+        // set clipping strategy for connection layer of connection can be hide
+        // when its source or target is not showing.
+        ConnectionLayer connectionLayer = (ConnectionLayer) root
+                .getLayer(LayerConstants.CONNECTION_LAYER);
+        connectionLayer.setClippingStrategy(new PatchedConnectionLayerClippingStrategy(
+                connectionLayer));
+
+        viewer.setRootEditPart(root);
+        viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer).setParent(getCommonKeyHandler()));
+        ContextMenuProvider cmProvider =
+            new OPIEditorContextMenuProvider(viewer, getActionRegistry());
+        viewer.setContextMenu(cmProvider);
+        getSite().registerContextMenu(cmProvider, viewer);
+
+        // Grid Action
+        IAction action = new ToggleGridAction(getGraphicalViewer()){
+            @Override
+            public boolean isChecked() {
+                return getDisplayModel().isShowGrid();
+            }
+            @Override
+            public void run() {
+                getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
+                        DisplayModel.PROP_SHOW_GRID, !isChecked()));
+            }
+        };
+
+        getActionRegistry().registerAction(action);
+
+        // Ruler Action
+        configureRuler();
+        action = new ToggleRulerVisibilityAction(getGraphicalViewer()){
+            @Override
+            public boolean isChecked() {
+                return getDisplayModel().isShowRuler();
+            }
+
+            @Override
+            public void run() {
+                getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
+                        DisplayModel.PROP_SHOW_RULER, !isChecked()));
+            }
+
+        };
+        getActionRegistry().registerAction(action);
+
+        // Snap to Geometry Action
+        IAction geometryAction = new ToggleSnapToGeometryAction(getGraphicalViewer()){
+            @Override
+            public boolean isChecked() {
+                return getDisplayModel().isSnapToGeometry();
+            }
+            @Override
+            public void run() {
+                getCommandStack().execute(new SetWidgetPropertyCommand(displayModel,
+                        DisplayModel.PROP_SNAP_GEOMETRY, !isChecked()));
+            }
+
+        };
+        getActionRegistry().registerAction(geometryAction);
+
+        // configure zoom actions
+        ZoomManager zm = root.getZoomManager();
+        if (zm != null) {
+
+            List<String> zoomLevels = new ArrayList<String>(3);
+            zoomLevels.add(ZoomManager.FIT_ALL);
+            zoomLevels.add(ZoomManager.FIT_WIDTH);
+            zoomLevels.add(ZoomManager.FIT_HEIGHT);
+            zm.setZoomLevelContributions(zoomLevels);
+            zm.setZoomLevels(createZoomLevels());
+            IAction zoomIn = new ZoomInAction(zm);
+            IAction zoomOut = new ZoomOutAction(zm);
+            getActionRegistry().registerAction(zoomIn);
+            getActionRegistry().registerAction(zoomOut);
+        }
+
+        /* scroll-wheel zoom */
+        getGraphicalViewer().setProperty(
+                MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
+                MouseWheelZoomHandler.SINGLETON);
+
+        // status line listener
+        getGraphicalViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+            private IStatusLineManager statusLine =
+                    ((ActionBarContributor)getEditorSite().getActionBarContributor()).
+                    getActionBars().getStatusLineManager();
+            public void selectionChanged(SelectionChangedEvent event) {
+                updateStatusLine(statusLine);
+            }
+        });
+    }
+    private void updateStatusLine(IStatusLineManager statusLine) {
+                List<AbstractBaseEditPart> selectedWidgets = new ArrayList<AbstractBaseEditPart>();
+                for(Object editpart : getGraphicalViewer().getSelectedEditParts()){
+                    if(editpart instanceof AbstractBaseEditPart && !(editpart instanceof DisplayEditpart))
+                        selectedWidgets.add((AbstractBaseEditPart) editpart);
+                }
+                if(selectedWidgets.size() == 1)
+                    statusLine.setMessage(selectedWidgets.get(0).getWidgetModel().getName() + "(" //$NON-NLS-1$
+                            + selectedWidgets.get(0).getWidgetModel().getType() + ")"); //$NON-NLS-1$
+                else if (selectedWidgets.size() >=1)
+                    statusLine.setMessage(selectedWidgets.size() + " widgets were selected");
+                else
+                    statusLine.setMessage("No widget was selected");
+            }
+    /**
+     * Configure the properties for the rulers.
+     */
+    private void configureRuler() {
+        // Ruler properties
+        RulerProvider hprovider = new OPIEditorRulerProvider(new RulerModel(true));
+        RulerProvider vprovider = new OPIEditorRulerProvider(new RulerModel(false));
+        getGraphicalViewer().setProperty(
+                RulerProvider.PROPERTY_HORIZONTAL_RULER, hprovider);
+        getGraphicalViewer().setProperty(
+                RulerProvider.PROPERTY_VERTICAL_RULER, vprovider);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void createActions() {
+        super.createActions();
+
+        ((IContextService)getEditorSite().getService(IContextService.class)).
+        activateContext("org.csstudio.opibuilder.opiEditor"); //$NON-NLS-1$
+
+        ActionRegistry registry = getActionRegistry();
+        IAction action;
+
+        action = new CopyTemplateAction(this);
+        registry.registerAction(action);
+
+        action = new MatchWidthAction(this);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new MatchHeightAction(this);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new DirectEditAction((IWorkbenchPart) this);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        String id = ActionFactory.DELETE.getId();
+        action = getActionRegistry().getAction(id);
+        action.setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
+
+        action = new PasteWidgetsAction(this);
+        registry.registerAction(action);
+
+        action = new CopyWidgetsAction(this);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new CutWidgetsAction(this,
+                (DeleteAction) registry.getAction(ActionFactory.DELETE.getId()));
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new PrintDisplayAction(this);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        id = ActionFactory.SELECT_ALL.getId();
+        action = getActionRegistry().getAction(id);
+        action.setActionDefinitionId("org.eclipse.ui.edit.selectAll");//$NON-NLS-1$
+
+        id = ActionFactory.UNDO.getId();
+        action = getActionRegistry().getAction(id);
+        action.setActionDefinitionId("org.eclipse.ui.edit.undo");//$NON-NLS-1$
+
+        id = ActionFactory.REDO.getId();
+        action = getActionRegistry().getAction(id);
+        action.setActionDefinitionId("org.eclipse.ui.edit.redo");//$NON-NLS-1$
+
+        action = new AlignmentAction((IWorkbenchPart) this,
+                PositionConstants.LEFT);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new AlignmentAction((IWorkbenchPart) this,
+                PositionConstants.RIGHT);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new AlignmentAction((IWorkbenchPart) this,
+                PositionConstants.TOP);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new AlignmentAction((IWorkbenchPart) this,
+                PositionConstants.BOTTOM);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new AlignmentAction((IWorkbenchPart) this,
+                PositionConstants.CENTER);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new AlignmentAction((IWorkbenchPart) this,
+                PositionConstants.MIDDLE);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        for(DistributeType dt : DistributeType.values()){
+            action = new DistributeWidgetsAction((IWorkbenchPart) this,
+                dt);
+            registry.registerAction(action);
+            getSelectionActions().add(action.getId());
+        }
+
+        for(OrderType orderType : OrderType.values()){
+            action = new ChangeOrderAction((IWorkbenchPart)this, orderType);
+            registry.registerAction(action);
+            getSelectionActions().add(action.getId());
+        }
+
+        for(OrientationType orientationType : OrientationType.values()){
+            action = new ChangeOrientationAction(this, orientationType);
+            registry.registerAction(action);
+            getSelectionActions().add(action.getId());
+        }
+
+        action = new RunOPIAction();
+        registry.registerAction(action);
+
+        PastePropertiesAction pastePropAction = new PastePropertiesAction(this);
+        registry.registerAction(pastePropAction);
+        getSelectionActions().add(pastePropAction.getId());
+
+        action = new CopyPropertiesAction(this);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+
+        action = new ReplaceWidgetsAction(this);
+        registry.registerAction(action);
+        getSelectionActions().add(action.getId());
+    }
+
+    @Override
+    protected void createGraphicalViewer(Composite parent) {
+        initDisplayModel();
+
+        rulerComposite = new RulerComposite(parent, SWT.NONE);
+
+        GraphicalViewer viewer = new PatchedScrollingGraphicalViewer();
+        viewer.createControl(rulerComposite);
+        setGraphicalViewer(viewer);
+        configureGraphicalViewer();
+        hookGraphicalViewer();
+        initializeGraphicalViewer();
+
+        rulerComposite
+                .setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
+
+    }
+
+    @Override
+    protected PaletteViewerProvider createPaletteViewerProvider() {
+        return new PaletteViewerProvider(getEditDomain()) {
+            protected void configurePaletteViewer(PaletteViewer viewer) {
+                super.configurePaletteViewer(viewer);
+                // create a drag source listener for this palette viewer
+                // together with an appropriate transfer drop target listener, this will enable
+                // model element creation by dragging a CombinatedTemplateCreationEntries
+                // from the palette into the editor
+                // @see ShapesEditor#createTransferDropTargetListener()
+                viewer.addDragSourceListener(new TemplateTransferDragSourceListener(viewer));
+            }
+        };
+    }
+
+    /**
+     * Create a transfer drop target listener. When using a CombinedTemplateCreationEntry
+     * tool in the palette, this will enable model element creation by dragging from the palette.
+     * @see #createPaletteViewerProvider()
+     */
+    private TransferDropTargetListener createTransferDropTargetListener() {
+        return new TemplateTransferDropTargetListener(getGraphicalViewer()) {
+            protected CreationFactory getFactory(Object template) {
+                return (WidgetCreationFactory)template;
+            }
+        };
+    }
+
+    /**
+     * Create a double array that contains the pre-defined zoom levels.
+     *
+     * @return A double array that contains the pre-defined zoom levels.
+     */
+    private double[] createZoomLevels() {
+        List<Double> zoomLevelList = new ArrayList<Double>();
+
+        double level = 0.1;
+        while (level < 1.0) {
+            zoomLevelList.add(level);
+            level = level + 0.05;
+        }
+
+        zoomLevelList.add(1.0);
+        zoomLevelList.add(1.1);
+        zoomLevelList.add(1.2);
+        zoomLevelList.add(1.3);
+        zoomLevelList.add(1.5);
+        zoomLevelList.add(2.0);
+        zoomLevelList.add(2.5);
+        zoomLevelList.add(3.0);
+        zoomLevelList.add(3.5);
+        zoomLevelList.add(4.0);
+        zoomLevelList.add(4.5);
+        zoomLevelList.add(5.0);
+
+        double[] result = new double[zoomLevelList.size()];
+        for (int i = 0; i < zoomLevelList.size(); i++) {
+            result[i] = zoomLevelList.get(i);
+        }
+
+        return result;
+    }
+
+
+    @Override
+    public void doSave(IProgressMonitor monitor) {
+        if (getOriginEditorInput() instanceof FileEditorInput
+                || getOriginEditorInput() instanceof FileStoreEditorInput) {
+            performSave();
+        } else {
+            doSaveAs();
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void doSaveAs() {
+        SaveAsDialog saveAsDialog = new SaveAsDialog(getEditorSite().getShell());
+        if(getOriginEditorInput() instanceof FileEditorInput)
+            saveAsDialog.setOriginalFile(((FileEditorInput)getOriginEditorInput()).getFile());
+        else if(getOriginEditorInput() instanceof FileStoreEditorInput)
+            saveAsDialog.setOriginalName(((FileStoreEditorInput)getOriginEditorInput()).getName());
+
+        int ret = saveAsDialog.open();
+
+        try {
+            if (ret == Window.OK) {
+                IPath targetPath = saveAsDialog.getResult();
+                IFile targetFile = ResourcesPlugin.getWorkspace().getRoot()
+                        .getFile(targetPath);
+
+                if (!targetFile.exists()) {
+                    targetFile.create(null, true, null);
+                }
+
+                FileEditorInput editorInput = new FileEditorInput(targetFile);
+
+                setInput(editorInput);
+
+                setPartName(targetFile.getName());
+
+                performSave();
+            }
+        } catch (CoreException e) {
+            MessageDialog.openError(getSite().getShell(), "IO Error", e
+                    .getMessage());
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "File save error", e); //$NON-NLS-1$
         }
     }

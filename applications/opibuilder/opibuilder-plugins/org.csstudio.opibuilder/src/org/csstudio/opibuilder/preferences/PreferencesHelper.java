@@ -32,42 +32,42 @@ import org.osgi.service.prefs.BackingStoreException;
  */
 public class PreferencesHelper {
 
-	public enum ConsolePopupLevel {
-		NO_POP,
-		ONLY_INFO,
-		ALL;
-	}
+    public enum ConsolePopupLevel {
+        NO_POP,
+        ONLY_INFO,
+        ALL;
+    }
 
-	public enum PVConnectionLayer {
-		PV_MANAGER,
-		UTILITY_PV;
-	}
+    public enum PVConnectionLayer {
+        PV_MANAGER,
+        UTILITY_PV;
+    }
 
-	public static final String COLOR_FILE = "color_file"; //$NON-NLS-1$
-	public static final String FONT_FILE = "font_file"; //$NON-NLS-1$
-	public static final String RUN_MACROS= "macros"; //$NON-NLS-1$
-	public static final String AUTOSAVE= "auto_save"; //$NON-NLS-1$
-	public static final String OPI_GUI_REFRESH_CYCLE = "opi_gui_refresh_cycle"; //$NON-NLS-1$
-	public static final String NO_EDIT = "no_edit"; //$NON-NLS-1$
-	public static final String TOP_OPIS = "top_opis"; //$NON-NLS-1$
-	public static final String DISABLE_ADVANCED_GRAPHICS = "disable_advanced_graphics"; //$NON-NLS-1$
-	public static final String POPUP_CONSOLE = "popup_console"; //$NON-NLS-1$
-	public static final String PROBE_OPI = "probe_opi"; //$NON-NLS-1$
-	public static final String SCHEMA_OPI = "schema_opi"; //$NON-NLS-1$
-	public static final String PYTHON_PATH = "python_path"; //$NON-NLS-1$
-	public static final String DISPLAY_SYSTEM_OUTPUT = "display_system_output"; //$NON-NLS-1$
-	public static final String SHOW_COMPACT_MODE_DIALOG = "show_compact_mode_dialog";//$NON-NLS-1$
-	public static final String SHOW_FULLSCREEN_DIALOG = "show_fullscreen_dialog";//$NON-NLS-1$
-	public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
-	public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
-	public static final String PULSING_ALARM_MINOR_PERIOD = "pulsing_alarm_minor_period";//$NON-NLS-1$
-	public static final String PULSING_ALARM_MAJOR_PERIOD = "pulsing_alarm_major_period";//$NON-NLS-1$
-	public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
-	public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
+    public static final String COLOR_FILE = "color_file"; //$NON-NLS-1$
+    public static final String FONT_FILE = "font_file"; //$NON-NLS-1$
+    public static final String RUN_MACROS= "macros"; //$NON-NLS-1$
+    public static final String AUTOSAVE= "auto_save"; //$NON-NLS-1$
+    public static final String OPI_GUI_REFRESH_CYCLE = "opi_gui_refresh_cycle"; //$NON-NLS-1$
+    public static final String NO_EDIT = "no_edit"; //$NON-NLS-1$
+    public static final String TOP_OPIS = "top_opis"; //$NON-NLS-1$
+    public static final String DISABLE_ADVANCED_GRAPHICS = "disable_advanced_graphics"; //$NON-NLS-1$
+    public static final String POPUP_CONSOLE = "popup_console"; //$NON-NLS-1$
+    public static final String PROBE_OPI = "probe_opi"; //$NON-NLS-1$
+    public static final String SCHEMA_OPI = "schema_opi"; //$NON-NLS-1$
+    public static final String PYTHON_PATH = "python_path"; //$NON-NLS-1$
+    public static final String DISPLAY_SYSTEM_OUTPUT = "display_system_output"; //$NON-NLS-1$
+    public static final String SHOW_COMPACT_MODE_DIALOG = "show_compact_mode_dialog";//$NON-NLS-1$
+    public static final String SHOW_FULLSCREEN_DIALOG = "show_fullscreen_dialog";//$NON-NLS-1$
+    public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
+    public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
+    public static final String PULSING_ALARM_MINOR_PERIOD = "pulsing_alarm_minor_period";//$NON-NLS-1$
+    public static final String PULSING_ALARM_MAJOR_PERIOD = "pulsing_alarm_major_period";//$NON-NLS-1$
+    public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
+    public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
     public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style";
-	
-	//The widgets that are hidden from palette.
-	public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
+
+    //The widgets that are hidden from palette.
+    public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
 
 //WebOPI preferences
 
@@ -323,8 +323,8 @@ public class PreferencesHelper {
     }
 
     public static boolean isStartWindowInCompactMode(){
-    	final IPreferencesService service = Platform.getPreferencesService();
-    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, START_WINDOW_IN_COMPACT_MODE, false, null);
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, START_WINDOW_IN_COMPACT_MODE, false, null);
     }
 
     private static void putBoolean(String name, boolean value){

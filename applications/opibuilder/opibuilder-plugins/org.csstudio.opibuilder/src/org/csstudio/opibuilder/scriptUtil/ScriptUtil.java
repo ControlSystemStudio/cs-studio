@@ -34,7 +34,7 @@ public class ScriptUtil {
 
     /**
      * Open an OPI.
-     * 
+     *
      * @param widget
      *            the widget to which the script is attached.
      * @param opiPath
@@ -50,7 +50,7 @@ public class ScriptUtil {
     public final static void openOPI(AbstractBaseEditPart widget,
             String opiPath, int target, MacrosInput macrosInput) {
         final OpenDisplayAction action = new OpenDisplayAction();
-        
+
         // Map target IDs of this API to DisplayMode
         final DisplayMode mode;
         switch (target)
@@ -88,16 +88,16 @@ public class ScriptUtil {
         action.setPropertyValue(OpenDisplayAction.PROP_MODE, mode.ordinal());
         action.run();
     }
-    
+
     /**
      * Close current active OPI.
      */
     public static void closeCurrentOPI(){
         try {
-            IWorkbenchPage activePage = 
+            IWorkbenchPage activePage =
                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
             IWorkbenchPart activePart = activePage.getActivePart();
-            
+
             if(activePart instanceof IEditorPart){
                 activePage.closeEditor((IEditorPart) activePart, false);
             }else if(activePart instanceof IViewPart){
@@ -107,8 +107,8 @@ public class ScriptUtil {
 
         }
     }
-    
-    
+
+
     /**
      * Close OPI associated with the provided widget.
      */
@@ -121,16 +121,16 @@ public class ScriptUtil {
             closeCurrentOPI();
         }
     }
-    
+
     /**{@link Deprecated} see {@link #makeLogbookEntry(String, String)}
      * @param filePath
      */
     public final static void makeElogEntry(final String filePath) {
         makeLogbookEntry("", filePath);
     }
-    /**     
+    /**
      * Pop up a logbook dialog to make a logbook entry.
-     * 
+     *
      * @param text text of the log entry.
      * @param filePath
      *            path of a file to attach or null. It could be either a local
@@ -147,7 +147,7 @@ public class ScriptUtil {
 
     /**
      * Execute an Eclipse command.
-     * 
+     *
      * @param commandId
      *            the command id.
      */
@@ -164,7 +164,7 @@ public class ScriptUtil {
         }
 
     }
-    
+
     /** Executing a system or shell command.
      *  On Unix, that could be anything in the PATH.
      *  <p>
@@ -178,7 +178,7 @@ public class ScriptUtil {
      *  finishes, and calls back in case of an error.
      *  When the command finishes right away OK or runs longer,
      *  we leave it be. Command output will be printed on BOY console.
-     *  
+     *
      *  @param command Command to run. Format depends on OS.
      *  @param wait Time to wait for completion in seconds
      */
@@ -188,23 +188,23 @@ public class ScriptUtil {
         action.setPropertyValue(ExecuteCommandAction.PROP_WAIT_TIME, wait);
         action.run();
     }
-    
+
     /**Execute a runnable in UI thread.
      * @param runnable the runnable to be executed.
      * @param widget any widget. It is referred to get the UI thread.
      */
-    public final static void execInUI(Runnable runnable, 
+    public final static void execInUI(Runnable runnable,
             AbstractBaseEditPart widget){
         widget.getViewer().getControl().getDisplay().asyncExec(runnable);
     }
-    
+
     /**
      * @return true if it the OPI is running in WebOPI.
      */
     public final static boolean isWebOPI(){
         return OPIBuilderPlugin.isRAP();
     }
-    
+
     /**If the current OPI is running on Mobile device. This method can only be called in UI thread.
      * @return true if it the OPI is running in mobile device such as Android, iphone, iPad, iPod and blackberry.
      */
@@ -213,16 +213,16 @@ public class ScriptUtil {
     }
 
     /**If the current OPI is running on Mobile device. This method can be called in non-UI thread.
-     * @param widget the widget on which the script is attached to. 
+     * @param widget the widget on which the script is attached to.
      * @return true if it the OPI is running in mobile device such as Android, iphone, iPad, iPod and blackberry.
      */
     public final static boolean isMobile(AbstractBaseEditPart widget){
         return OPIBuilderPlugin.isMobile(widget.getViewer().getControl().getDisplay());
     }
-    
+
     public final static Version getBOYVersion(){
         return OPIBuilderPlugin.getDefault().getBundle().getVersion();
     }
-    
-    
+
+
 }

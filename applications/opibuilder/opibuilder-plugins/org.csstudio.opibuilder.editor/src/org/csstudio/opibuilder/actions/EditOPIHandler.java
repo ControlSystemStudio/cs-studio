@@ -96,7 +96,7 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
         // required return value
         return null;
     }
-    
+
     /** Extract the workbench part from an evaluation context (this
      *  is equivalent to HandleUtils.getActivePart() for the
      *  IEvaluationContext argument)

@@ -11,10 +11,10 @@ import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.eclipse.jface.action.Action;
 
 /** Context menu wrapper for {@link OpenDisplayAction}.
- * 
+ *
  *  <p>On a simple click, the underlying OpenDisplayAction
  *  is executed.
- *  
+ *
  *  <p>When opening the context menu on a widget
  *  with actions, instances of this class will be listed,
  *  all referring to the same OpenDisplayAction, but allowing
@@ -25,41 +25,41 @@ import org.eclipse.jface.action.Action;
  */
 public class OpenRelatedDisplayAction extends Action
 {
-	public enum OpenDisplayTarget
-	{
-		DEFAULT("Open"),
-		NEW_TAB("Open in Workbench Tab"),
-		NEW_WINDOW("Open in New Workbench"),
-		NEW_SHELL("Open in Standalone Window");
+    public enum OpenDisplayTarget
+    {
+        DEFAULT("Open"),
+        NEW_TAB("Open in Workbench Tab"),
+        NEW_WINDOW("Open in New Workbench"),
+        NEW_SHELL("Open in Standalone Window");
 
-		final private String description;
-		
-		private OpenDisplayTarget(final String desc)
-		{
-			description = desc;
-		}
-		
-		public String toString()
-		{
-		    return description;
-		}
-	}
+        final private String description;
 
-	final private OpenDisplayAction openDisplayAction;
-	
-	final private OpenDisplayTarget  target;
+        private OpenDisplayTarget(final String desc)
+        {
+            description = desc;
+        }
 
-	public OpenRelatedDisplayAction(final OpenDisplayAction openDisplayAction,
-			final OpenDisplayTarget target)
-	{
-		this.openDisplayAction = openDisplayAction;
-		this.target = target;
-		setText(target.toString());
-	}
-	
-	@Override
-	public void run()
-	{
+        public String toString()
+        {
+            return description;
+        }
+    }
+
+    final private OpenDisplayAction openDisplayAction;
+
+    final private OpenDisplayTarget  target;
+
+    public OpenRelatedDisplayAction(final OpenDisplayAction openDisplayAction,
+            final OpenDisplayTarget target)
+    {
+        this.openDisplayAction = openDisplayAction;
+        this.target = target;
+        setText(target.toString());
+    }
+
+    @Override
+    public void run()
+    {
         switch (target)
         {
         case NEW_TAB:
@@ -75,5 +75,5 @@ public class OpenRelatedDisplayAction extends Action
             openDisplayAction.run();
             break;
         }
-	}
+    }
 }

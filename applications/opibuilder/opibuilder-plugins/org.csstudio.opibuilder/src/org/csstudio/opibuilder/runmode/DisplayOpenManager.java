@@ -25,68 +25,68 @@ import org.eclipse.ui.PartInitException;
  *
  */
 public class DisplayOpenManager {
-	private SizeLimitedStack<IRunnerInput> backStack;
-	private SizeLimitedStack<IRunnerInput> forwardStack;
-	private List<IDisplayOpenManagerListener> listeners;
-	private static int STACK_SIZE = 10;
-	private IOPIRuntime opiRuntime;
-	public DisplayOpenManager(IOPIRuntime opiRuntime) {
-		backStack =  new SizeLimitedStack<IRunnerInput>(STACK_SIZE);
-		forwardStack = new SizeLimitedStack<IRunnerInput>(STACK_SIZE);
-		listeners = new ArrayList<IDisplayOpenManagerListener>();
-		this.opiRuntime = opiRuntime;
-	}
+    private SizeLimitedStack<IRunnerInput> backStack;
+    private SizeLimitedStack<IRunnerInput> forwardStack;
+    private List<IDisplayOpenManagerListener> listeners;
+    private static int STACK_SIZE = 10;
+    private IOPIRuntime opiRuntime;
+    public DisplayOpenManager(IOPIRuntime opiRuntime) {
+        backStack =  new SizeLimitedStack<IRunnerInput>(STACK_SIZE);
+        forwardStack = new SizeLimitedStack<IRunnerInput>(STACK_SIZE);
+        listeners = new ArrayList<IDisplayOpenManagerListener>();
+        this.opiRuntime = opiRuntime;
+    }
 
-	public void openNewDisplay(){
-		IRunnerInput input = getCurrentRunnerInputInEditor();
-		if(input !=null)
-			backStack.push(input);
-		forwardStack.clear();
-		fireOperationsHistoryChanged();
-	}
+    public void openNewDisplay(){
+        IRunnerInput input = getCurrentRunnerInputInEditor();
+        if(input !=null)
+            backStack.push(input);
+        forwardStack.clear();
+        fireOperationsHistoryChanged();
+    }
 
-	public void goBack(){
-		if(backStack.size() ==0)
-			return;
+    public void goBack(){
+        if(backStack.size() ==0)
+            return;
 
-		IRunnerInput input = getCurrentRunnerInputInEditor();
-		if(input !=null)
-			forwardStack.push(input);
+        IRunnerInput input = getCurrentRunnerInputInEditor();
+        if(input !=null)
+            forwardStack.push(input);
 
-		openOPI(backStack.pop());
+        openOPI(backStack.pop());
 
-	}
+    }
 
-	private IRunnerInput getCurrentRunnerInputInEditor() {
+    private IRunnerInput getCurrentRunnerInputInEditor() {
 
-		IEditorInput input = opiRuntime.getOPIInput();
+        IEditorInput input = opiRuntime.getOPIInput();
 
-		if(input instanceof IRunnerInput){
-			if(((IRunnerInput)input).getDisplayOpenManager() == null)
-				((IRunnerInput)input).setDisplayOpenManager(
-					(DisplayOpenManager)opiRuntime.getAdapter(DisplayOpenManager.class));
-			return (IRunnerInput)input;
-		}
+        if(input instanceof IRunnerInput){
+            if(((IRunnerInput)input).getDisplayOpenManager() == null)
+                ((IRunnerInput)input).setDisplayOpenManager(
+                    (DisplayOpenManager)opiRuntime.getAdapter(DisplayOpenManager.class));
+            return (IRunnerInput)input;
+        }
 
-		else
-			return new RunnerInput(getCurrentPathInEditor(),
-					(DisplayOpenManager)opiRuntime.getAdapter(DisplayOpenManager.class));
-
-
-	}
-
-	private IPath getCurrentPathInEditor() {
-		return ResourceUtil.getPathInEditor(
-				opiRuntime.getOPIInput());
+        else
+            return new RunnerInput(getCurrentPathInEditor(),
+                    (DisplayOpenManager)opiRuntime.getAdapter(DisplayOpenManager.class));
 
 
-	}
+    }
 
-	/** @param input */
-	private void openOPI(final IRunnerInput input) {
-		try {
-		    opiRuntime.setOPIInput(input);
-		} catch (PartInitException e) {
+    private IPath getCurrentPathInEditor() {
+        return ResourceUtil.getPathInEditor(
+                opiRuntime.getOPIInput());
+
+
+    }
+
+    /** @param input */
+    private void openOPI(final IRunnerInput input) {
+        try {
+            opiRuntime.setOPIInput(input);
+        } catch (PartInitException e) {
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to go back", e);
             MessageDialog.openError(Display.getDefault().getActiveShell(), "Open file error",
                     "Failed to go back");
