@@ -53,13 +53,19 @@ public class WidgetActionFactory {
 			return null;		
 		}
 
-        private ImageDescriptor iconImage;
-        private String description;
-        private ActionType(String description,
-                ImageDescriptor iconImage) {
-            this.description = description;
-            this.iconImage = iconImage;
-        }
+		/**
+		 * @return the iconImageData
+		 */
+		public ImageDescriptor getIconImage() {
+			return iconImage;
+		}
+		
+		/**
+		 * @return the description
+		 */
+		public String getDescription() {
+			return description;
+		}
 
 		
 		private static ImageDescriptor createImage(String path) {			
