@@ -70,16 +70,36 @@
       <feature id="org.csstudio.core.ui.feature"/>
       <feature id="org.csstudio.product.feature"/>
       <feature id="org.csstudio.pvmanager.feature"/>
-      <feature id="org.csstudio.pvmanager.ca.feature"/>
       <feature id="org.csstudio.pvmanager.jdbc.feature"/>
       <feature id="org.csstudio.pvmanager.exec.feature"/>
       <feature id="org.csstudio.pvmanager.extra.feature"/>
       <feature id="org.csstudio.pvmanager.pva.feature"/>
-      <feature id="org.csstudio.utilities.feature"/>
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
       <feature id="org.csstudio.product.configuration.feature"/>
-      <feature id="org.eclipse.fx.target.feature"/>
-      <feature id="org.csstudio.applications.opibuilder.feature"/>
+      <feature id="org.eclipse.gef" version="3.9.100.201405261516"/>
+      <feature id="org.csstudio.applications.opibuilder.feature" version="4.0.107.201505142114"/>
+      <feature id="org.csstudio.pvmanager.ca.feature" version="3.2.2.201505142208"/>
+      <feature id="org.csstudio.applications.utility.feature" version="1.0.0.201505151548"/>
+      <feature id="org.eclipse.fx.target.rcp.feature" version="1.2.0.201501301037"/>
+      <feature id="org.eclipse.help" version="2.0.103.v20150204-1700"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
+      <feature id="org.eclipse.emf.common"/>
+      <feature id="org.eclipse.ecf.core.ssl.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
+      <feature id="org.eclipse.draw2d"/>
+      <feature id="org.eclipse.emf.ecore"/>
+      <feature id="org.eclipse.fx.runtime.e4fx.feature"/>
+      <feature id="org.eclipse.ecf.core.feature"/>
+      <feature id="org.eclipse.ecf.filetransfer.feature"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.csstudio.applications.logbook.feature" version="1.0.0.201505150156"/>
+      <feature id="org.csstudio.applications.diag.feature" version="1.0.0.201505142114"/>
+      <feature id="org.csstudio.utilities.feature" version="3.2.1.201505142208"/>
+      <feature id="org.eclipse.platform" version="4.4.2.v20150204-1700"/>
+      <feature id="org.csstudio.thirdparty.all.feature" version="1.0.1.201412102118"/>
+      <feature id="org.csstudio.product.ide.dependencies.feature" version="1.0.0.qualifier"/>
+      <feature id="org.csstudio.email.feature" version="1.0.0.201505142208"/>
    </features>
 
    <configurations>
