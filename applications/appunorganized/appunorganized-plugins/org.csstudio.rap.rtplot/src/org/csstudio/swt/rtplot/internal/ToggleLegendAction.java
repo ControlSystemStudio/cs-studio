@@ -7,7 +7,7 @@ import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.eclipse.jface.action.Action;
 
 /** Action to hide/show legend.
- * 
+ *
  *  @param <XTYPE> Data type used for the {@link PlotDataItem}
  *  @author Kunal Shroff - Original authos
  *  @author Kay Kasemir

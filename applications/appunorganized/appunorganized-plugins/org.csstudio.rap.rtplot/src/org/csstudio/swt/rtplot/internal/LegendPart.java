@@ -18,9 +18,9 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 
 /** Plot part for legend.
- * 
+ *
  *  <p>Lists trace names.
- *  
+ *
  *  @param <XTYPE> Data type used for the {@link PlotDataItem}
  *  @author Kunal Shroff - Original Composite/Label based LegendHandler
  *  @author Kay Kasemir
@@ -30,7 +30,7 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
     private volatile boolean visible = true;
 
     private volatile int grid_x = 100, grid_y = 15;
-    
+
     public LegendPart(String name, PlotPartListener listener)
     {
         super(name, listener);
@@ -47,7 +47,7 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
     {
         visible = show;
     }
-    
+
     /** Compute height
      *  @param gc
      *  @param bounds_width
@@ -60,7 +60,7 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
     {
         if (! visible)
             return 0;
-        
+
         // Determine largest legend entry
         final Font orig_font = gc.getFont();
         gc.setFont(font);
@@ -77,15 +77,15 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
         // Arrange in grid with some extra space
         grid_x = max_width + max_height / 2;
         grid_y = max_height;
-        
+
         gc.setFont(orig_font);
-        
+
         final int items = traces.size();
         final int items_per_row = Math.max(1, bounds_width / grid_x); // Round down, counting full items
         final int rows = (items + items_per_row-1) / items_per_row;   // Round up
         return rows * grid_y;
     }
-    
+
     /** Paint the legend
      *  @param gc
      *  @param media
@@ -97,7 +97,7 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
     {
         if (! visible)
             return;
-        
+
         super.paint(gc, media);
 
         final Font orig_font = gc.getFont();
