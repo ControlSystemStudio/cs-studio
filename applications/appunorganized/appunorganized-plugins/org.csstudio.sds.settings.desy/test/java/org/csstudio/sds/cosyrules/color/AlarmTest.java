@@ -59,7 +59,7 @@ public class AlarmTest {
     @Test
     public void nullArgument(){
         final Object out = _alarm.evaluate(null);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class AlarmTest {
         final Long[] three = new Long[]{3l};
 
         Object out = _alarm.evaluate(minusOne);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
         out = _alarm.evaluate(zero);
         assertEquals(Alarm.NORMAL, out);
@@ -98,7 +98,7 @@ public class AlarmTest {
         final Double[] three = new Double[]{3d};
 
         Object out = _alarm.evaluate(minusOne);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
         out = _alarm.evaluate(zero);
         assertEquals(Alarm.NORMAL, out);
@@ -124,7 +124,7 @@ public class AlarmTest {
         final String[] alarm = new String[]{"ALARM"};
 
         Object out = _alarm.evaluate(dirty);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
         out = _alarm.evaluate(noAlarm);
         assertEquals(Alarm.NORMAL, out);
@@ -169,16 +169,16 @@ public class AlarmTest {
         assertEquals(Alarm.ERROR, out);
 
         out = _alarm.evaluate(linkNotAvailable);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
         out = _alarm.evaluate(timelag);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
         out = _alarm.evaluate(timeout);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
         out = _alarm.evaluate(noValue);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
     }
 
     @Test
@@ -274,19 +274,19 @@ public class AlarmTest {
         //UNKWON
         misc = new Object[]{new Long(0l),new Double(1.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.HAS_METADATA)};
         out = _alarm.evaluate(misc);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
         misc = new Object[]{new Long(1l),new Double(0.0d),"BLABLUP", new DynamicValueCondition(DynamicValueState.NORMAL)};
         out = _alarm.evaluate(misc);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
         misc = new Object[]{new Long(0l),new Double(-08.15d),"MINOR", new DynamicValueCondition(DynamicValueState.NORMAL)};
         out = _alarm.evaluate(misc);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
         misc = new Object[]{new Long(4711l),new Double(0.0d),"NO_ALARM", new DynamicValueCondition(DynamicValueState.WARNING)};
         out = _alarm.evaluate(misc);
-        assertEquals(Alarm.UNKNOWN out);
+        assertEquals(Alarm.UNKNOWN, out);
 
     }
 

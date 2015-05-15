@@ -331,4 +331,5 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
         if (imageListener != null)
             imageListener.imageResized(this);
     }
+
 }

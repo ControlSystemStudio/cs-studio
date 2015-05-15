@@ -12,36 +12,33 @@ import org.apache.batik.bridge.DocumentLoader;
 import org.apache.batik.bridge.UserAgent;
 
 /**
- * Extension of standard
- * {@link org.apache.batik.bridge.svg12.SVG12BridgeContext} which uses the
- * extended {@link SVGAnimationEngine} in order to access
- * {@link TimedDocumentRoot}.
+ * Extension of standard {@link org.apache.batik.bridge.svg12.SVG12BridgeContext} which uses the extended
+ * {@link SVGAnimationEngine} in order to access {@link TimedDocumentRoot}.
  * 
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
-public class SVG12BridgeContext extends
-		org.apache.batik.bridge.svg12.SVG12BridgeContext {
+public class SVG12BridgeContext extends org.apache.batik.bridge.svg12.SVG12BridgeContext {
 
-	/**
-	 * Constructs a new bridge context.
-	 * @param userAgent the user agent
-	 * @param loader document loader
-	 */
-	public SVG12BridgeContext(UserAgent userAgent, DocumentLoader loader) {
-		super(userAgent, loader);
-	}
+    /**
+     * Constructs a new bridge context.
+     * 
+     * @param userAgent the user agent
+     * @param loader document loader
+     */
+    public SVG12BridgeContext(UserAgent userAgent, DocumentLoader loader) {
+        super(userAgent, loader);
+    }
 
-	/**
-	 * Returns the AnimationEngine for the document. Creates one if it doesn't
-	 * exist.
-	 */
-	@Override
-	public org.apache.batik.bridge.SVGAnimationEngine getAnimationEngine() {
-		if (animationEngine == null) {
-			animationEngine = new SVGAnimationEngine(document, this);
-			setAnimationLimitingMode();
-		}
-		return (org.apache.batik.bridge.SVGAnimationEngine) animationEngine;
-	}
+    /**
+     * Returns the AnimationEngine for the document. Creates one if it doesn't exist.
+     */
+    @Override
+    public org.apache.batik.bridge.SVGAnimationEngine getAnimationEngine() {
+        if (animationEngine == null) {
+            animationEngine = new SVGAnimationEngine(document, this);
+            setAnimationLimitingMode();
+        }
+        return (org.apache.batik.bridge.SVGAnimationEngine) animationEngine;
+    }
 
 }

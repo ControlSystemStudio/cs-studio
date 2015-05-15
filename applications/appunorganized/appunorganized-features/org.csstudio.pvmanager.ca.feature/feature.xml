@@ -33,18 +33,4 @@
          version="0.0.0"
          unpack="false"/>
 
-   <plugin
-         id="org.csstudio.platform.libs.epics.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.diag.epics.pvmanager.pvtree"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
 </feature>

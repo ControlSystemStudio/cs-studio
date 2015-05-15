@@ -47,8 +47,8 @@
     <module>org.csstudio.service.jdbcsample</module>
     <module>org.csstudio.service.math</module>
     <module>org.csstudio.service.unitconversion</module>
-    <module>org.csstudio.simplepv.utilitypv</module>
-    <module>org.csstudio.simplepv.utilitypv.test</module>
+    
+    
     <module>org.csstudio.simplepv.vtypepv</module>
     <module>org.csstudio.snl.intro</module>
     <module>org.csstudio.swt.chart</module>

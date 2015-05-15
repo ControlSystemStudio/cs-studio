@@ -45,13 +45,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.diag.pvmanager.probe"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.systemopen.linux"
          os="linux"
          download-size="0"
@@ -76,13 +69,6 @@
 
    <plugin
          id="org.epics.graphene"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.display.pvtable"
          download-size="0"
          install-size="0"
          version="0.0.0"

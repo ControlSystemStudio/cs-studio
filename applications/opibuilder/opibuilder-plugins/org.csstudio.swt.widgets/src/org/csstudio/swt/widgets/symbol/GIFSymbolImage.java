@@ -167,20 +167,20 @@ public class GIFSymbolImage extends AbstractSymbolImage {
         ImageData imageData = imageDataArray[index];
         Image refresh_image = new Image(Display.getDefault(), imageData);
         switch (imageData.disposalMethod) {
-        case SWT.DM_FILL_BACKGROUND:
-            /* Fill with the background color before drawing. */
-            if (backgroundColor != null) {
-                offScreenImageGC.setBackground(backgroundColor);
-            }
-            offScreenImageGC.fillRectangle(imageData.x, imageData.y, imageData.width, imageData.height);
-            break;
-        case SWT.DM_FILL_PREVIOUS:
-            /* Restore the previous image before drawing. */
-            Image startImage = new Image(Display.getDefault(), imageDataArray[0]);
-            offScreenImageGC.drawImage(startImage, 0, 0, imageData.width, imageData.height, imageData.x, imageData.y,
-                    imageData.width, imageData.height);
-            startImage.dispose();
-            break;
+            case SWT.DM_FILL_BACKGROUND:
+                /* Fill with the background color before drawing. */
+                if (backgroundColor != null) {
+                    offScreenImageGC.setBackground(backgroundColor);
+                }
+                offScreenImageGC.fillRectangle(imageData.x, imageData.y, imageData.width, imageData.height);
+                break;
+            case SWT.DM_FILL_PREVIOUS:
+                /* Restore the previous image before drawing. */
+                Image startImage = new Image(Display.getDefault(), imageDataArray[0]);
+                offScreenImageGC.drawImage(startImage, 0, 0, imageData.width, imageData.height, imageData.x,
+                        imageData.y, imageData.width, imageData.height);
+                startImage.dispose();
+                break;
         }
         offScreenImageGC.drawImage(refresh_image, 0, 0, imageData.width, imageData.height, imageData.x, imageData.y,
                 imageData.width, imageData.height);

@@ -330,23 +330,25 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
     private void loadImageFromFile(final IPath imagePath, final Integer stateIndex) {
         if (imagePath != null && !imagePath.isEmpty()) {
             switch (executionMode) {
-            case RUN_MODE:
-                if (stateIndex != null) {
-                    SymbolImage img = SymbolImageFactory.asynCreateSymbolImage(imagePath, true, symbolProperties, this);
-                    if (stateIndex != currentStateIndex)
-                        img.setVisible(false);
-                    if (images != null)
-                        images.put(stateIndex, img);
-                } else {
+                case RUN_MODE:
+                    if (stateIndex != null) {
+                        SymbolImage img = SymbolImageFactory.asynCreateSymbolImage(imagePath, true, symbolProperties,
+                                this);
+                        if (stateIndex != currentStateIndex)
+                            img.setVisible(false);
+                        if (images != null)
+                            images.put(stateIndex, img);
+                    } else {
+                        disposeCurrent();
+                        currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, true,
+                                symbolProperties, this);
+                    }
+                    break;
+                case EDIT_MODE:
                     disposeCurrent();
-                    currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, true, symbolProperties,
+                    currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, false, symbolProperties,
                             this);
-                }
-                break;
-            case EDIT_MODE:
-                disposeCurrent();
-                currentSymbolImage = SymbolImageFactory.asynCreateSymbolImage(imagePath, false, symbolProperties, this);
-                break;
+                    break;
             }
         }
     }
@@ -458,35 +460,35 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         int x = 0;
         if (textArea.width > textSize.width) {
             switch (labelPosition) {
-            case CENTER:
-            case TOP:
-            case BOTTOM:
-                x = (textArea.width - textSize.width) / 2;
-                break;
-            case RIGHT:
-            case TOP_RIGHT:
-            case BOTTOM_RIGHT:
-                x = textArea.width - textSize.width;
-                break;
-            default:
-                break;
+                case CENTER:
+                case TOP:
+                case BOTTOM:
+                    x = (textArea.width - textSize.width) / 2;
+                    break;
+                case RIGHT:
+                case TOP_RIGHT:
+                case BOTTOM_RIGHT:
+                    x = textArea.width - textSize.width;
+                    break;
+                default:
+                    break;
             }
         }
         int y = 0;
         if (textArea.height > textSize.height) {
             switch (labelPosition) {
-            case CENTER:
-            case LEFT:
-            case RIGHT:
-                y = (textArea.height - textSize.height) / 2;
-                break;
-            case BOTTOM:
-            case BOTTOM_LEFT:
-            case BOTTOM_RIGHT:
-                y = textArea.height - textSize.height;
-                break;
-            default:
-                break;
+                case CENTER:
+                case LEFT:
+                case RIGHT:
+                    y = (textArea.height - textSize.height) / 2;
+                    break;
+                case BOTTOM:
+                case BOTTOM_LEFT:
+                case BOTTOM_RIGHT:
+                    y = textArea.height - textSize.height;
+                    break;
+                default:
+                    break;
             }
         }
         if (useLocalCoordinates())
@@ -719,4 +721,5 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
     public void sizeChanged() {
         imageListener.imageResized(this);
     }
+
 }
