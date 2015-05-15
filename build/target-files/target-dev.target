@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="cs-studio" sequenceNumber="27">
+<?pde version="3.8"?><target name="cs-studio" sequenceNumber="36">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.fx.target.feature.feature.group" version="1.2.0.201501301037"/>
@@ -743,12 +743,6 @@
 <repository location="http://download.eclipse.org/tools/gef/updates/releases/"/>
 </location>
 </locations>
-<environment>
-<os>win32</os>
-<ws>win32</ws>
-<arch>x86_64</arch>
-<nl>en_US</nl>
-</environment>
 <launcherArgs>
 <vmArgs>-Dosgi.requiredJavaVersion=1.7 -Xms40m -Xmx1024m</vmArgs>
 </launcherArgs>
