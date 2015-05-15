@@ -12,16 +12,16 @@ package org.csstudio.opibuilder.converter.model;
  *
  */
 public class Edm_activeMotifSliderClass extends Edm_activeSliderClass {
-	
-	@EdmAttributeAn @EdmOptionalAn private String orientation;
 
-	public Edm_activeMotifSliderClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
-	
-	public String getOrientation() {
-		return orientation;
-	}
-	
+    @EdmAttributeAn @EdmOptionalAn private String orientation;
+
+    public Edm_activeMotifSliderClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
+
+    public String getOrientation() {
+        return orientation;
+    }
+
 
 }

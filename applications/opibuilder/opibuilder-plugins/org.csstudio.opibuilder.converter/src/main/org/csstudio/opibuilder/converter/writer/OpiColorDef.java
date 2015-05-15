@@ -24,36 +24,36 @@ import org.csstudio.opibuilder.converter.model.EdmException;
 */
 public class OpiColorDef {
 
-	/**
-	 * Receives the EdmColorsList object and outputs the color.def data in specified file name.
-	 */
-	public static void writeDefFile(EdmColorsList cList, String fileName) throws EdmException {
-		
-		File colorDefFile = new File(fileName);
-		
-		try {
-			
-			OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(colorDefFile));
-			
-			for (int colorInd = 0; colorInd < cList.getMenuColorCount(); colorInd++) {
-				EdmColor color = cList.getMenuColor(colorInd);
-				
-				out.write(color.getName());
-				out.write(" = " + OpiColor.colorComponentTo8Bits(color.getRed()));
-				out.write(", " + OpiColor.colorComponentTo8Bits(color.getGreen()));
-				out.write(", " + OpiColor.colorComponentTo8Bits(color.getBlue()));
-				out.write("\r\n");
-			}
-		
-			out.close();
-			
-		} catch (FileNotFoundException e) {
-			throw new EdmException(EdmException.FILE_NOT_FOUND, colorDefFile.getName(), e);
-		} catch (UnsupportedEncodingException e) {
-			throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Unsupported encoding.",e);
-		} catch (IOException e) {
-			throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error when writing color.def file.",e);
-		}
-	}
-	
+    /**
+     * Receives the EdmColorsList object and outputs the color.def data in specified file name.
+     */
+    public static void writeDefFile(EdmColorsList cList, String fileName) throws EdmException {
+
+        File colorDefFile = new File(fileName);
+
+        try {
+
+            OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(colorDefFile));
+
+            for (int colorInd = 0; colorInd < cList.getMenuColorCount(); colorInd++) {
+                EdmColor color = cList.getMenuColor(colorInd);
+
+                out.write(color.getName());
+                out.write(" = " + OpiColor.colorComponentTo8Bits(color.getRed()));
+                out.write(", " + OpiColor.colorComponentTo8Bits(color.getGreen()));
+                out.write(", " + OpiColor.colorComponentTo8Bits(color.getBlue()));
+                out.write("\r\n");
+            }
+
+            out.close();
+
+        } catch (FileNotFoundException e) {
+            throw new EdmException(EdmException.FILE_NOT_FOUND, colorDefFile.getName(), e);
+        } catch (UnsupportedEncodingException e) {
+            throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Unsupported encoding.",e);
+        } catch (IOException e) {
+            throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error when writing color.def file.",e);
+        }
+    }
+
 }

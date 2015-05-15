@@ -56,7 +56,7 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.SimpleMonitor
  */
 public interface DynamicValueMonitor extends CharacteristicContext,
-	DynamicValueMonitorCharacteristics, SimpleMonitor, Suspendable
+    DynamicValueMonitorCharacteristics, SimpleMonitor, Suspendable
 {
 }
 

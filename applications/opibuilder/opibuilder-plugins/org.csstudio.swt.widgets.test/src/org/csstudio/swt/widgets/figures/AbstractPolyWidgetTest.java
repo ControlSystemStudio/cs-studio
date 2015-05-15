@@ -18,35 +18,35 @@ import org.eclipse.draw2d.geometry.PointList;
  */
 public abstract class AbstractPolyWidgetTest extends AbstractShapeWidgetTest {
 
-	@Override
-	public String[] getPropertyNames() {
-		String[] superProps =  super.getPropertyNames();	
-		String[] shapeProps = new String[]{
-				"points",
-				
-		};
-		return concatenateStringArrays(superProps, shapeProps);
-	}
-	
-	
-	@Override
-	public Object generateTestData(PropertyDescriptor pd, Object seed) {				
-		if(pd.getName().equals("points")){
-				if(seed !=null && seed instanceof Integer){	
-					int size = (Integer)seed;
-					PointList pl = new PointList();
-					for(int i=0; i<size%50; i++){
-						pl.addPoint((int) (Math.random()*300),(int) (Math.random()*300));
-					}
-					return pl;
-				}else
-					return new PointList(new int[]{12,23,32,12,45,32,109,67,89,65});
-		}else if(pd.getName().equals("transparent"))
-				if(seed !=null && seed instanceof Integer){
-					return super.generateTestData(pd, (Integer)seed  +1);
-		}
-		
-		return super.generateTestData(pd, seed);
-	}
-	
+    @Override
+    public String[] getPropertyNames() {
+        String[] superProps =  super.getPropertyNames();
+        String[] shapeProps = new String[]{
+                "points",
+
+        };
+        return concatenateStringArrays(superProps, shapeProps);
+    }
+
+
+    @Override
+    public Object generateTestData(PropertyDescriptor pd, Object seed) {
+        if(pd.getName().equals("points")){
+                if(seed !=null && seed instanceof Integer){
+                    int size = (Integer)seed;
+                    PointList pl = new PointList();
+                    for(int i=0; i<size%50; i++){
+                        pl.addPoint((int) (Math.random()*300),(int) (Math.random()*300));
+                    }
+                    return pl;
+                }else
+                    return new PointList(new int[]{12,23,32,12,45,32,109,67,89,65});
+        }else if(pd.getName().equals("transparent"))
+                if(seed !=null && seed instanceof Integer){
+                    return super.generateTestData(pd, (Integer)seed  +1);
+        }
+
+        return super.generateTestData(pd, seed);
+    }
+
 }

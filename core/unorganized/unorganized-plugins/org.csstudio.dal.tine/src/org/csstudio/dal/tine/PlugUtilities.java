@@ -33,32 +33,32 @@ import org.csstudio.dal.spi.Plugs;
 import org.csstudio.dal.spi.PropertyFactoryService;
 
 public class PlugUtilities {
-	
-	public static void configureTINEPlug(Properties p)
-	{
-		String[] s = Plugs.getPlugNames(p);
-		Set<String> set = new HashSet<String>(Arrays.asList(s));
 
-		if (!set.contains(TINEPlug.PLUG_TYPE)) {
-			set.add(TINEPlug.PLUG_TYPE);
+    public static void configureTINEPlug(Properties p)
+    {
+        String[] s = Plugs.getPlugNames(p);
+        Set<String> set = new HashSet<String>(Arrays.asList(s));
 
-			StringBuffer sb = new StringBuffer();
+        if (!set.contains(TINEPlug.PLUG_TYPE)) {
+            set.add(TINEPlug.PLUG_TYPE);
 
-			for (Iterator iter = set.iterator(); iter.hasNext();) {
-				if (sb.length() > 0) {
-					sb.append(',');
-				}
+            StringBuffer sb = new StringBuffer();
 
-				sb.append(iter.next());
-			}
+            for (Iterator iter = set.iterator(); iter.hasNext();) {
+                if (sb.length() > 0) {
+                    sb.append(',');
+                }
 
-			p.put(Plugs.PLUGS, sb.toString());
-		}
+                sb.append(iter.next());
+            }
 
-		p.put(Plugs.PLUGS_DEFAULT, TINEPlug.PLUG_TYPE);
-		p.setProperty(DeviceFactoryService.DEFAULT_APPLICATION_CONTEXT,TINEApplicationContext.class.getName());
-		p.setProperty(PropertyFactoryService.DEFAULT_FACTORY_IMPL, PropertyFactoryImpl.class.getName());
-		p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + TINEPlug.PLUG_TYPE, PropertyFactoryImpl.class.getName());
-		System.getProperties().setProperty(DeviceFactoryService.DEFAULT_APPLICATION_CONTEXT,TINEApplicationContext.class.getName());
-	}
+            p.put(Plugs.PLUGS, sb.toString());
+        }
+
+        p.put(Plugs.PLUGS_DEFAULT, TINEPlug.PLUG_TYPE);
+        p.setProperty(DeviceFactoryService.DEFAULT_APPLICATION_CONTEXT,TINEApplicationContext.class.getName());
+        p.setProperty(PropertyFactoryService.DEFAULT_FACTORY_IMPL, PropertyFactoryImpl.class.getName());
+        p.put(Plugs.PLUG_PROPERTY_FACTORY_CLASS + TINEPlug.PLUG_TYPE, PropertyFactoryImpl.class.getName());
+        System.getProperties().setProperty(DeviceFactoryService.DEFAULT_APPLICATION_CONTEXT,TINEApplicationContext.class.getName());
+    }
 }

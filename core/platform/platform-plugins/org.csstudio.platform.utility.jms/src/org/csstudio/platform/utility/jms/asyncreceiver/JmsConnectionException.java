@@ -24,26 +24,26 @@ package org.csstudio.platform.utility.jms.asyncreceiver;
 
 /**
  * Thrown when errors occur in trying to connect to a JMS broker.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class JmsConnectionException extends Exception {
 
-	/**
-	 * Serial version UID.
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Creates a new <code>JmsConnectionException</code>.
-	 * 
-	 * @param message
-	 *            an error message.
-	 * @param cause
-	 *            the cause.
-	 */
-	public JmsConnectionException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Creates a new <code>JmsConnectionException</code>.
+     *
+     * @param message
+     *            an error message.
+     * @param cause
+     *            the cause.
+     */
+    public JmsConnectionException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
 }

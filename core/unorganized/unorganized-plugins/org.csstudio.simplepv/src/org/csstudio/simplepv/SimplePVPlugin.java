@@ -15,16 +15,16 @@ import org.osgi.framework.BundleContext;
  *
  */
 public class SimplePVPlugin implements BundleActivator {
-	
-	public static final String PLUGIN_ID = "org.csstudio.simplepv";
 
-	public void start(BundleContext context) throws Exception {
+    public static final String PLUGIN_ID = "org.csstudio.simplepv";
 
-	}
+    public void start(BundleContext context) throws Exception {
 
-	public void stop(BundleContext context) throws Exception {
-		if(AbstractPVFactory.SIMPLE_PV_THREAD!=null)
-			AbstractPVFactory.SIMPLE_PV_THREAD.shutdown();
-	}
+    }
+
+    public void stop(BundleContext context) throws Exception {
+        if(AbstractPVFactory.SIMPLE_PV_THREAD!=null)
+            AbstractPVFactory.SIMPLE_PV_THREAD.shutdown();
+    }
 
 }

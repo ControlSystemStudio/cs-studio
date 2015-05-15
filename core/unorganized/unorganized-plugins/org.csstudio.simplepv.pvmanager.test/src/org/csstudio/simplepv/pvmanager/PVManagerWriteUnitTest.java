@@ -22,7 +22,7 @@ import org.epics.vtype.VType;
 import org.junit.Test;
 
 /** JUnit test for writing with PVManagerPVFactory
- * 
+ *
  *  <p>Directly accesses PVManagerPVFactory to run as plain JUnit test.
  *  CSS code should use {@link SimplePVLayer}
  *  @author Kay Kasemir
@@ -34,14 +34,14 @@ public class PVManagerWriteUnitTest extends TestHelper
     {
         final private IPV pv;
         private VType value = null;
-        
+
         public TestReader(final String name) throws Exception
         {
             pv = factory.createPV(name);
             pv.addListener(this);
             pv.start();
         }
-        
+
         @Override
         public synchronized void valueChanged(IPV pv)
         {
@@ -49,7 +49,7 @@ public class PVManagerWriteUnitTest extends TestHelper
             System.out.println(pv.getName() + " = " + value);
             notifyAll();
         }
-        
+
         public synchronized void waitFor(final double desired_value) throws Exception
         {
             for (int seconds=5;  seconds>=0;  --seconds)
@@ -78,17 +78,17 @@ public class PVManagerWriteUnitTest extends TestHelper
         readback.waitFor(3.0);
 
         final IPV pv = factory.createPV("loc://pv(3)");
-        
+
         pv.start();
         TestHelper.waitForConnection(pv);
-        
+
         pv.setValue(4.0);
         readback.waitFor(4.0);
-        
+
         pv.stop();
         readback.stop();
     }
-    
+
     /** Check read-only state */
     @Test
     public void testReadonly() throws Exception
@@ -111,12 +111,12 @@ public class PVManagerWriteUnitTest extends TestHelper
     public void testWriteListener() throws Exception
     {
         final IPV pv = factory.createPV("loc://pv(3)");
-        
+
         // Expect one 'write' confirmation
         final CountDownLatch written = new CountDownLatch(1);
         // Expect initial value and the written update
         final CountDownLatch updates = new CountDownLatch(2);
-        
+
         pv.addListener(new IPVListener()
         {
             @Override
@@ -155,7 +155,7 @@ public class PVManagerWriteUnitTest extends TestHelper
         });
         pv.start();
         TestHelper.waitForConnection(pv);
-        
+
         // Await initial value
         for (int seconds=TIMEOUT_SECONDS;  seconds>=0;  --seconds)
         {
@@ -164,11 +164,11 @@ public class PVManagerWriteUnitTest extends TestHelper
             TimeUnit.SECONDS.sleep(1);
         }
         assertThat(updates.getCount(), equalTo(1L));
-        
+
         pv.setValue(4.0);
         assertThat(written.await(TIMEOUT_SECONDS, TimeUnit.SECONDS), equalTo(true));
         assertThat(updates.await(TIMEOUT_SECONDS, TimeUnit.SECONDS), equalTo(true));
-        
+
         pv.stop();
     }
 }

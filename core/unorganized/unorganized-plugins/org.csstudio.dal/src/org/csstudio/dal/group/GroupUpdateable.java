@@ -32,52 +32,52 @@ import org.csstudio.dal.DynamicValueMonitor;
  */
 public interface GroupUpdateable extends AsynchronousContext
 {
-	/**
-	 * Returns the last known dynamic value in object rendering. This
-	 * method does not cause the implementation to query the primary data
-	 * source and so the data that this method returns <b>must</b> be local. A
-	 * call to this method does not cause the latest timestamps to change. In
-	 * a way, this method provides a single (latest) value buffer for the
-	 * dynamic value. The "latest" is defined with respect to the timestamp
-	 * provided by the underlying implementation, or, if that is unavailable,
-	 * to the local timestamp of the data.
-	 *
-	 * @return Object the latest dynamic value in object rendering
-	 */
-	public Object[] getLatestReceivedValuesAsObjects();
+    /**
+     * Returns the last known dynamic value in object rendering. This
+     * method does not cause the implementation to query the primary data
+     * source and so the data that this method returns <b>must</b> be local. A
+     * call to this method does not cause the latest timestamps to change. In
+     * a way, this method provides a single (latest) value buffer for the
+     * dynamic value. The "latest" is defined with respect to the timestamp
+     * provided by the underlying implementation, or, if that is unavailable,
+     * to the local timestamp of the data.
+     *
+     * @return Object the latest dynamic value in object rendering
+     */
+    public Object[] getLatestReceivedValuesAsObjects();
 
-	/**
-	 * Returns the latest value change timestamp. The change is defined
-	 * by the implementation, but should normally follow the criterion that
-	 * <code>!newvalue.equals(oldvalue)</code>.
-	 *
-	 * @return long the timestamp in Java <code>System.currentTimeMillis</code>
-	 *         format of the latest change in dynamic value
-	 */
-	public long[] getLatestValuesChangeTimestamps();
+    /**
+     * Returns the latest value change timestamp. The change is defined
+     * by the implementation, but should normally follow the criterion that
+     * <code>!newvalue.equals(oldvalue)</code>.
+     *
+     * @return long the timestamp in Java <code>System.currentTimeMillis</code>
+     *         format of the latest change in dynamic value
+     */
+    public long[] getLatestValuesChangeTimestamps();
 
-	/**
-	 * Returns the time of the latest dynamic value update. An update
-	 * is either a change in dynamic value or the confirmation from the
-	 * primary data source that the value and its quality are still the same.
-	 * The timestamp must be that provided by the underlying implementation
-	 * or, if that is unavailable, it must be the local timestamp. This
-	 * definition also implies that the
-	 * <code>latestValueUpdateTimestamp</code> must be necessarily equal to or
-	 * later than the <code>latestValueChangeTimestamp</code>, since the value
-	 * may be updated without being changed, but not vice versa.
-	 *
-	 * @return long a Java <code>System.currentTimeMillis</code> style
-	 *         timestamp of the latest update
-	 */
-	public long[] getLatestValuesUpdateTimestamps();
+    /**
+     * Returns the time of the latest dynamic value update. An update
+     * is either a change in dynamic value or the confirmation from the
+     * primary data source that the value and its quality are still the same.
+     * The timestamp must be that provided by the underlying implementation
+     * or, if that is unavailable, it must be the local timestamp. This
+     * definition also implies that the
+     * <code>latestValueUpdateTimestamp</code> must be necessarily equal to or
+     * later than the <code>latestValueChangeTimestamp</code>, since the value
+     * may be updated without being changed, but not vice versa.
+     *
+     * @return long a Java <code>System.currentTimeMillis</code> style
+     *         timestamp of the latest update
+     */
+    public long[] getLatestValuesUpdateTimestamps();
 
-	/**
-	 * Returns monitor which controls remote value subscriptions.
-	 *
-	 * @return monitor which controls remote value subscriptions
-	 */
-	public DynamicValueMonitor getDefaultMonitor();
+    /**
+     * Returns monitor which controls remote value subscriptions.
+     *
+     * @return monitor which controls remote value subscriptions
+     */
+    public DynamicValueMonitor getDefaultMonitor();
 }
 
 /* __oOo__ */

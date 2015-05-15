@@ -28,11 +28,11 @@ import org.osgi.framework.Version;
 
 /**
  * The root model for an OPI Display.
- * 
+ *
  * @author Alexander Will, Sven Wende, Kai Meyer (class of same name in SDS)
  * @author Xihui Chen
  * @author Takashi Nakamoto @ Cosylab (Property for frame rate)
- * 
+ *
  */
 public class DisplayModel extends AbstractContainerModel {
 

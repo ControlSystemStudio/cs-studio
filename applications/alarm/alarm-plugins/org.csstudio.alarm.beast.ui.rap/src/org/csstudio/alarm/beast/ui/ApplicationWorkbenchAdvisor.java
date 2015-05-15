@@ -11,12 +11,12 @@ import org.eclipse.ui.application.WorkbenchWindowAdvisor;
  */
 public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor {
 
-	public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
-			IWorkbenchWindowConfigurer configurer) {
-		return new ApplicationWorkbenchWindowAdvisor(configurer);
-	}
+    public WorkbenchWindowAdvisor createWorkbenchWindowAdvisor(
+            IWorkbenchWindowConfigurer configurer) {
+        return new ApplicationWorkbenchWindowAdvisor(configurer);
+    }
 
-	public String getInitialWindowPerspectiveId() {
-		return StandalonePerspective.ID;
-	}
+    public String getInitialWindowPerspectiveId() {
+        return StandalonePerspective.ID;
+    }
 }

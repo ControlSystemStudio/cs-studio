@@ -14,36 +14,36 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
 /**
  * The property descriptor for PV Name which supports auto complete.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class PVNamePropertyDescriptor extends TextPropertyDescriptor {
 
 
-	/**
-	 * @param id
-	 *            id of the property
-	 * @param displayName
-	 *            the display name in property sheet entry
-	 * @param detailedDescription
-	 *            the detailed description on tooltip and status line.
-	 */
-	public PVNamePropertyDescriptor(Object id, String displayName, String detailedDescription) {
-		super(id, displayName);
-		setDescription(detailedDescription);
-	}
+    /**
+     * @param id
+     *            id of the property
+     * @param displayName
+     *            the display name in property sheet entry
+     * @param detailedDescription
+     *            the detailed description on tooltip and status line.
+     */
+    public PVNamePropertyDescriptor(Object id, String displayName, String detailedDescription) {
+        super(id, displayName);
+        setDescription(detailedDescription);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
 
-		final PVNameTextCellEditor editor = new PVNameTextCellEditor(parent);			
-		editor.getControl().setToolTipText(getDescription());
-		return editor;
-	}
+        final PVNameTextCellEditor editor = new PVNameTextCellEditor(parent);
+        editor.getControl().setToolTipText(getDescription());
+        return editor;
+    }
 
-  
+
 }

@@ -9,12 +9,12 @@ public class Activator extends Plugin
 {
     final public static String ID = "org.csstudio.platform.workspace";  //$NON-NLS-1$
     private static Activator plugin = null;
-    
+
     public Activator()
     {
         plugin = this;
     }
-    
+
     public static Activator getInstance()
     {
         return plugin;

@@ -15,7 +15,7 @@ import java.io.InputStream;
  *  The output of an external command must be read, otherwise
  *  the external command could block.
  *  This class can be used to read but ignore the output.
- *  
+ *
  *  @see StreamSwallowThread
  *  @author Kay Kasemir
  */
@@ -29,7 +29,7 @@ class StreamSwallowThread extends Thread
         super("StreamSwallower");
         this.stream = stream;
     }
-    
+
     @Override
     public void run()
     {

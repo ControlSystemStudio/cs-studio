@@ -34,14 +34,14 @@ package org.csstudio.dal;
  */
 public interface SequenceAccess<T> extends DataAccess<T>
 {
-	/**
-	 * Return length of array provided by this data access interface.
-	 *
-	 * @return length of array provided by this data access interface
-	 *
-	 * @throws DataExchangeException if remote layer is not operational
-	 */
-	public int getSequenceLength() throws DataExchangeException;
+    /**
+     * Return length of array provided by this data access interface.
+     *
+     * @return length of array provided by this data access interface
+     *
+     * @throws DataExchangeException if remote layer is not operational
+     */
+    public int getSequenceLength() throws DataExchangeException;
 }
 
 /* __oOo__ */

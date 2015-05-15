@@ -29,7 +29,7 @@ public class FileBasedAuthorizationUnitTest
     public void testFileBasedAuthorization() throws Exception
     {
         final AuthorizationProvider auth = new FileBasedAuthorizationProvider("../org.csstudio.security/authorization.conf");
-        
+
         // "fred" is listed for full alarm access
         Subject user = new Subject();
         user.getPrincipals().add(new UserPrincipal("fred"));

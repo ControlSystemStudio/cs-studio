@@ -15,34 +15,34 @@ import org.csstudio.dal.RemoteException;
  *  the UI thread to prevent possible deadlocks.
  *  (The JNI CA client has deadlocked when both UI and non-UI
  *   threads called into it at the 'same' time).
- *  
+ *
  *  @author Kay Kasemir, Igor Kriznar
  */
 public interface AnyDataChannel
-{	
-    /** 
+{
+    /**
      * @return Returns the name.
      */
     public String getUniqueName();
-    
+
     /**
      * Add a new channel listener.
-     * 
+     *
      * @param listener listener to add
      * @see ChannelListener
      */
     public void addListener(ChannelListener listener);
 
-    /** 
+    /**
      * Remove a listener.
-     * 
+     *
      * @param listener the listener to be removed
      */
     public void removeListener(ChannelListener listener);
-    
+
     /**
      * Returns the array of all registered channel listeners.
-     * 
+     *
      * @return registered channel listeners
      */
     public ChannelListener[] getListeners();
@@ -54,8 +54,8 @@ public interface AnyDataChannel
      *  @see #stop()
      */
     public void start() throws Exception;
-    
-    /** 
+
+    /**
      * Start the channel: connect, get meta data, subscribe to updates,
      *  invoke {@link ChannelListener} for incoming values, ...
      *  Method will not return until channel is connected or connection has failed.
@@ -72,10 +72,10 @@ public interface AnyDataChannel
      *  but we might still be disconnected, at least temporarily.
      */
     public boolean isConnected();
-    
+
     /** @return <code>true</code> if we have write access to the PV */
     public boolean isWriteAllowed();
-    
+
     /** Internal state information on the PV.
      *  <p>
      *  Especially when <code>isConnected()</code> is <code>false</code>,
@@ -84,7 +84,7 @@ public interface AnyDataChannel
      *  Was it once connected, but some error occured?
      *  @return Some human readable state info */
     public String getStateInfo();
-    
+
     /** Stop the PV: disconnect, ...
      *  When the PV is no longer needed, one should 'stop' it
      *  to release resources.
@@ -96,7 +96,7 @@ public interface AnyDataChannel
      *  This is the most recent value.
      *  Check isConnected() to see if this is valid,
      *  or use inside a PV listener's value update.
-     *  
+     *
      *  @see ChannelListener
      *  @see #isConnected()
      *  @return Returns the most recent value,
@@ -112,13 +112,13 @@ public interface AnyDataChannel
      *  @throws Exception on error
      */
     public void setValueAsObject(Object new_value) throws RemoteException;
-    
+
     /**
      * Gets the <code>DynamicValueProperty</code> this channel is associated with.
      * @return the <code>DynamicValueProperty</code>
      */
     public DynamicValueProperty<?> getProperty();
-    
+
     /**
      * Returns <code>true</code> if meta data has been initialized and
      * <code>false</code> otherwise

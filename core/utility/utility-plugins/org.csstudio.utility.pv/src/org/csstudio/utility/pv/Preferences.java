@@ -18,7 +18,7 @@ public class Preferences
 {
     /** Preference ID of the default PV type */
     final public static String DEFAULT_TYPE = "default_type";
-    
+
     /** @return Default PV type from preferences */
     public static String getDefaultType()
     {

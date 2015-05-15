@@ -11,15 +11,15 @@ import org.csstudio.opibuilder.widgets.editparts.TextDirectEditPolicy;
 
 /**
  * The model for widgets have text property,
- *  so the widget can be directly edited by installing {@link TextDirectEditPolicy}. 
+ *  so the widget can be directly edited by installing {@link TextDirectEditPolicy}.
  * @author Xihui Chen
  *
  */
 public interface ITextModel {
 
-	public void setText(String text);
-	
-	public String getText();
-	
-	
+    public void setText(String text);
+
+    public String getText();
+
+
 }

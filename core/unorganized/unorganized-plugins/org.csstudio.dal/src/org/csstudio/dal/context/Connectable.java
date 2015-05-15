@@ -40,113 +40,113 @@ import org.csstudio.dal.simple.RemoteInfo;
  */
 public interface Connectable extends Linkable, ContextBean
 {
-	/**
-	 * Adds a listener object that will receive notifications about the
-	 * life cycle state of this <code>Connectable</code>.
-	 *
-	 * @param l a listener object
-	 */
-	void addConnectionListener(ConnectionListener l);
+    /**
+     * Adds a listener object that will receive notifications about the
+     * life cycle state of this <code>Connectable</code>.
+     *
+     * @param l a listener object
+     */
+    void addConnectionListener(ConnectionListener l);
 
-	/**
-	 * Synchronously connects this <code>Connectable</code> to remote
-	 * data source.  Method does not return untill connection is established
-	 * or failed. If this call fails,  should restore the
-	 * <code>Connectable</code> to <code>CONNECTABLE_INITIAL</code>.
-	 *
-	 * @exception ConnectionException when the connection has begun but an
-	 *            error has occured before the proxy implementation could be
-	 *            passed to <code>initialize</code>.
-	 * @exception IllegalStateException when the connection was attempted but
-	 *            the connectable was not in <code>CONNECTABLE_READY</code>
-	 *            state.
-	 */
-	void connect() throws ConnectionException, IllegalStateException;
+    /**
+     * Synchronously connects this <code>Connectable</code> to remote
+     * data source.  Method does not return untill connection is established
+     * or failed. If this call fails,  should restore the
+     * <code>Connectable</code> to <code>CONNECTABLE_INITIAL</code>.
+     *
+     * @exception ConnectionException when the connection has begun but an
+     *            error has occured before the proxy implementation could be
+     *            passed to <code>initialize</code>.
+     * @exception IllegalStateException when the connection was attempted but
+     *            the connectable was not in <code>CONNECTABLE_READY</code>
+     *            state.
+     */
+    void connect() throws ConnectionException, IllegalStateException;
 
-	/**
-	 * Forces asynchronous connect, does not wait (block) for
-	 * comlpetion. Listen to <code>ConnectionListener</code> or
-	 * <code>ResponseListener</code> events to check resutl of operation.
-	 *
-	 * @exception ConnectionException when the connection has begun but an
-	 *            error has occured before the proxy implementation could be
-	 *            passed to <code>initialize</code>.
-	 * @exception IllegalStateException when the connection was attempted but
-	 *            the connectable was not in <code>CONNECTABLE_READY</code>
-	 *            state.
-	 *
-	 * @see #connect()
-	 */
-	void asyncConnect() throws ConnectionException, IllegalStateException;
+    /**
+     * Forces asynchronous connect, does not wait (block) for
+     * comlpetion. Listen to <code>ConnectionListener</code> or
+     * <code>ResponseListener</code> events to check resutl of operation.
+     *
+     * @exception ConnectionException when the connection has begun but an
+     *            error has occured before the proxy implementation could be
+     *            passed to <code>initialize</code>.
+     * @exception IllegalStateException when the connection was attempted but
+     *            the connectable was not in <code>CONNECTABLE_READY</code>
+     *            state.
+     *
+     * @see #connect()
+     */
+    void asyncConnect() throws ConnectionException, IllegalStateException;
 
-	/**
-	 * Disconnects the connectable. The connectable will switch to
-	 * state <code>CONNECTABLE_DISCONNECTED</code>.
-	 */
-	void disconnect();
+    /**
+     * Disconnects the connectable. The connectable will switch to
+     * state <code>CONNECTABLE_DISCONNECTED</code>.
+     */
+    void disconnect();
 
-	/**
-	 * Irrevocably destroys the connectable. The connectable will
-	 * switch to state <code>CONNECTABLE_DESTROYED</code> and will be unusable
-	 * (every remote call will throw an exception, as well as any attempt to
-	 * connect).
-	 */
-	void destroy();
+    /**
+     * Irrevocably destroys the connectable. The connectable will
+     * switch to state <code>CONNECTABLE_DESTROYED</code> and will be unusable
+     * (every remote call will throw an exception, as well as any attempt to
+     * connect).
+     */
+    void destroy();
 
-	/**
-	 * Returns the current life cycle state of this
-	 * <code>Connectable</code>. Possible values are constants defined in
-	 * <code>ConnectableConstants</code> starting with
-	 * <code>CONNECTABLE_</code>.
-	 *
-	 * @return connection status
-	 */
-	ConnectionState getConnectionState();
+    /**
+     * Returns the current life cycle state of this
+     * <code>Connectable</code>. Possible values are constants defined in
+     * <code>ConnectableConstants</code> starting with
+     * <code>CONNECTABLE_</code>.
+     *
+     * @return connection status
+     */
+    ConnectionState getConnectionState();
 
-	/**
-	 * Returns the <code>RemoteInfo</code> for <code>this</code>.
-	 *
-	 * @return connection parameters
-	 */
-	RemoteInfo getRemoteInfo();
+    /**
+     * Returns the <code>RemoteInfo</code> for <code>this</code>.
+     *
+     * @return connection parameters
+     */
+    RemoteInfo getRemoteInfo();
 
-	/**
-	 * Removes connection listener.
-	 *
-	 * @param l a listener object
-	 */
-	void removeConnectionListener(ConnectionListener l);
+    /**
+     * Removes connection listener.
+     *
+     * @param l a listener object
+     */
+    void removeConnectionListener(ConnectionListener l);
 
-	/**
-	 * Sets the <code>RemoteInfo</code> of <code>this</code>. Throws an
-	 * <code>IllegalArgumentException</code> if the parameters are invalid
-	 * (plug type does not exist or some other inconsistency). In response to
-	 * this call, the <code>Connectable</code> can issue
-	 * <code>CONNECTABLE_READY</code> message.
-	 *
-	 * @param rinfo parameters to set
-	 *
-	 * @exception IllegalArgumentException if, in response
-	 *            to<code>CONNECTABLE_READY</code> a connection was attemped
-	 *            by calling <code>connect()</code> and failed
-	 */
-	void setRemoteInfo(RemoteInfo rinfo) throws IllegalArgumentException;
+    /**
+     * Sets the <code>RemoteInfo</code> of <code>this</code>. Throws an
+     * <code>IllegalArgumentException</code> if the parameters are invalid
+     * (plug type does not exist or some other inconsistency). In response to
+     * this call, the <code>Connectable</code> can issue
+     * <code>CONNECTABLE_READY</code> message.
+     *
+     * @param rinfo parameters to set
+     *
+     * @exception IllegalArgumentException if, in response
+     *            to<code>CONNECTABLE_READY</code> a connection was attemped
+     *            by calling <code>connect()</code> and failed
+     */
+    void setRemoteInfo(RemoteInfo rinfo) throws IllegalArgumentException;
 
-	/**
-	 * @see {@link #setAutoConnect(boolean)} 
-	 */
-	public boolean isAutoConnect();
+    /**
+     * @see {@link #setAutoConnect(boolean)}
+     */
+    public boolean isAutoConnect();
 
-	/**
-	 * If autoConnect is true, Device is automatically connected when all requirements
-	 * are provided. Default value is <code>true</code>.
-	 */
-	public void setAutoConnect(boolean autoConnect);
-	
-	/**
-	 * Returns true, if {@link #getConnectionState()} is {@link ConnectionState#CONNECTING}.
-	 */
-	public boolean isConnecting();
+    /**
+     * If autoConnect is true, Device is automatically connected when all requirements
+     * are provided. Default value is <code>true</code>.
+     */
+    public void setAutoConnect(boolean autoConnect);
+
+    /**
+     * Returns true, if {@link #getConnectionState()} is {@link ConnectionState#CONNECTING}.
+     */
+    public boolean isConnecting();
 
 }
 

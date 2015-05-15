@@ -61,310 +61,310 @@ import org.epics.vtype.VEnum;
 import org.epics.vtype.VType;
 
 /**
- * 
+ *
  * @author Helge Rickens, Kai Meyer, Xihui Chen
- * 
+ *
  */
 public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
-	
-	class MenuButtonFigure extends Label implements ITextFigure{
-		
-	}
 
-	private IPVListener loadActionsFromPVListener;
+    class MenuButtonFigure extends Label implements ITextFigure{
 
-	private List<String>  meta = null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		final MenuButtonModel model = (MenuButtonModel) getWidgetModel();
-		updatePropSheet(model.isActionsFromPV());
-		final MenuButtonFigure label = new MenuButtonFigure();
-		label.setOpaque(!model.isTransparent());
-		label.setText(model.getLabel());
-		if (getExecutionMode() == ExecutionMode.RUN_MODE)
-			label.addMouseListener(new MouseListener() {
-				public void mouseDoubleClicked(final MouseEvent me) {
-				}
+    private IPVListener loadActionsFromPVListener;
 
-				public void mousePressed(final MouseEvent me) {
-					if (me.button == 1) {
-						me.consume();
-					}
-				}
+    private List<String>  meta = null;
 
-				public void mouseReleased(final MouseEvent me) {
-					if (me.button == 1
-							&& getExecutionMode()
-									.equals(ExecutionMode.RUN_MODE)) {
-						final org.eclipse.swt.graphics.Point cursorLocation = Display
-								.getCurrent().getCursorLocation();
-						showMenu(me.getLocation(), cursorLocation.x,
-								cursorLocation.y);
-					}
-				}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        final MenuButtonModel model = (MenuButtonModel) getWidgetModel();
+        updatePropSheet(model.isActionsFromPV());
+        final MenuButtonFigure label = new MenuButtonFigure();
+        label.setOpaque(!model.isTransparent());
+        label.setText(model.getLabel());
+        if (getExecutionMode() == ExecutionMode.RUN_MODE)
+            label.addMouseListener(new MouseListener() {
+                public void mouseDoubleClicked(final MouseEvent me) {
+                }
 
-			});
-		label.addMouseMotionListener(new MouseMotionListener.Stub() {
-			@Override
-			public void mouseEntered(MouseEvent me) {
-				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-					Color backColor = label.getBackgroundColor();
-					RGB darkColor = GraphicsUtil.mixColors(backColor.getRGB(),
-							new RGB(0, 0, 0), 0.9);
-					label.setBackgroundColor(CustomMediaFactory.getInstance()
-							.getColor(darkColor));
-				}
+                public void mousePressed(final MouseEvent me) {
+                    if (me.button == 1) {
+                        me.consume();
+                    }
+                }
 
-			}
+                public void mouseReleased(final MouseEvent me) {
+                    if (me.button == 1
+                            && getExecutionMode()
+                                    .equals(ExecutionMode.RUN_MODE)) {
+                        final org.eclipse.swt.graphics.Point cursorLocation = Display
+                                .getCurrent().getCursorLocation();
+                        showMenu(me.getLocation(), cursorLocation.x,
+                                cursorLocation.y);
+                    }
+                }
 
-			@Override
-			public void mouseExited(MouseEvent me) {
-				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-					label.setBackgroundColor(CustomMediaFactory.getInstance()
-							.getColor(getWidgetModel().getBackgroundColor()));
-				}
-			}
-		});
+            });
+        label.addMouseMotionListener(new MouseMotionListener.Stub() {
+            @Override
+            public void mouseEntered(MouseEvent me) {
+                if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+                    Color backColor = label.getBackgroundColor();
+                    RGB darkColor = GraphicsUtil.mixColors(backColor.getRGB(),
+                            new RGB(0, 0, 0), 0.9);
+                    label.setBackgroundColor(CustomMediaFactory.getInstance()
+                            .getColor(darkColor));
+                }
 
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
-		return label;
-	}
+            }
 
-	@Override
-	protected void createEditPolicies() {
-		super.createEditPolicies();
-		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
-			installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
-	}	
-	
+            @Override
+            public void mouseExited(MouseEvent me) {
+                if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+                    label.setBackgroundColor(CustomMediaFactory.getInstance()
+                            .getColor(getWidgetModel().getBackgroundColor()));
+                }
+            }
+        });
 
-	@Override
-	public void performRequest(Request request){
-		if (getExecutionMode() == ExecutionMode.EDIT_MODE &&(
-				request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
-				request.getType() == RequestConstants.REQ_OPEN))
-			new TextEditManager(this, 
-					new LabelCellEditorLocator(getFigure()), false).show();
-	}
-	
-	@Override
-	public MenuButtonModel getWidgetModel() {
-		return (MenuButtonModel) getModel();
-	}
+        markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
+        return label;
+    }
 
-	/**
-	 * Show Menu
-	 * 
-	 * @param point
-	 *            the location of the mouse-event
-	 * @param absolutX
-	 *            The x coordinate of the mouse in the display
-	 * @param absolutY
-	 *            The y coordinate of the mouse in the display
-	 */
-	private void showMenu(final Point point, final int absolutX,
-			final int absolutY) {
-		if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-			final Shell shell = PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getShell();
-			MenuManager menuManager = new MenuManager();
-			for (AbstractWidgetAction action : getWidgetModel()
-					.getActionsInput().getActionsList()) {
-				menuManager.add(new WidgetActionMenuAction(action));
-			}
-			Menu menu = menuManager.createContextMenu(shell);
+    @Override
+    protected void createEditPolicies() {
+        super.createEditPolicies();
+        if(getExecutionMode() == ExecutionMode.EDIT_MODE)
+            installEditPolicy(EditPolicy.DIRECT_EDIT_ROLE, new TextDirectEditPolicy());
+    }
 
-			int x = absolutX;
-			int y = absolutY;
-			x = x - point.x + getWidgetModel().getLocation().x;
-			y = y - point.y + getWidgetModel().getLocation().y
-					+ getWidgetModel().getSize().height;
 
-			menu.setLocation(x, y);
-			menu.setVisible(true);
+    @Override
+    public void performRequest(Request request){
+        if (getExecutionMode() == ExecutionMode.EDIT_MODE &&(
+                request.getType() == RequestConstants.REQ_DIRECT_EDIT ||
+                request.getType() == RequestConstants.REQ_OPEN))
+            new TextEditManager(this,
+                    new LabelCellEditorLocator(getFigure()), false).show();
+    }
 
-		}
-	}
+    @Override
+    public MenuButtonModel getWidgetModel() {
+        return (MenuButtonModel) getModel();
+    }
 
-	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadActionsListener();
-	}
+    /**
+     * Show Menu
+     *
+     * @param point
+     *            the location of the mouse-event
+     * @param absolutX
+     *            The x coordinate of the mouse in the display
+     * @param absolutY
+     *            The y coordinate of the mouse in the display
+     */
+    private void showMenu(final Point point, final int absolutX,
+            final int absolutY) {
+        if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
+            final Shell shell = PlatformUI.getWorkbench()
+                    .getActiveWorkbenchWindow().getShell();
+            MenuManager menuManager = new MenuManager();
+            for (AbstractWidgetAction action : getWidgetModel()
+                    .getActionsInput().getActionsList()) {
+                menuManager.add(new WidgetActionMenuAction(action));
+            }
+            Menu menu = menuManager.createContextMenu(shell);
 
-	/**
-	 *
-	 */
-	private void registerLoadActionsListener() {
-		if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-			if (getWidgetModel().isActionsFromPV()) {
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if (pv != null) {
-					if (loadActionsFromPVListener == null)
-						loadActionsFromPVListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								if (value != null
-										&& value instanceof VEnum) {
-									List<String> new_meta = ((VEnum) value).getLabels();
-									if (meta == null || !meta.equals(new_meta)) {
-										meta = new_meta;
-										ActionsInput actionsInput = new ActionsInput();
-										for (String writeValue : meta) {
-											WritePVAction action = new WritePVAction();
-											action.setPropertyValue(
-													WritePVAction.PROP_PVNAME,
-													getWidgetModel()
-															.getPVName());
-											action.setPropertyValue(
-													WritePVAction.PROP_VALUE,
-													writeValue);
-											action.setPropertyValue(
-													WritePVAction.PROP_DESCRIPTION,
-													writeValue);
-											actionsInput.getActionsList().add(
-													action);
-										}
-										getWidgetModel()
-												.setPropertyValue(
-														AbstractWidgetModel.PROP_ACTIONS,
-														actionsInput);
+            int x = absolutX;
+            int y = absolutY;
+            x = x - point.x + getWidgetModel().getLocation().x;
+            y = y - point.y + getWidgetModel().getLocation().y
+                    + getWidgetModel().getSize().height;
 
-									}
-								}
-							}
-						
-						};
-					pv.addListener(loadActionsFromPVListener);
-				}
-			}
-		}
-	}
+            menu.setLocation(x, y);
+            menu.setVisible(true);
 
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if (getWidgetModel().isActionsFromPV()) {
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if (pv != null && loadActionsFromPVListener != null) {
-				pv.removeListener(loadActionsFromPVListener);
-			}
-		}
+        }
+    }
 
-	}
+    @Override
+    protected void doActivate() {
+        super.doActivate();
+        registerLoadActionsListener();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+    /**
+     *
+     */
+    private void registerLoadActionsListener() {
+        if (getExecutionMode() == ExecutionMode.RUN_MODE) {
+            if (getWidgetModel().isActionsFromPV()) {
+                IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+                if (pv != null) {
+                    if (loadActionsFromPVListener == null)
+                        loadActionsFromPVListener = new IPVListener.Stub() {
+                            public void valueChanged(IPV pv) {
+                                VType value = pv.getValue();
+                                if (value != null
+                                        && value instanceof VEnum) {
+                                    List<String> new_meta = ((VEnum) value).getLabels();
+                                    if (meta == null || !meta.equals(new_meta)) {
+                                        meta = new_meta;
+                                        ActionsInput actionsInput = new ActionsInput();
+                                        for (String writeValue : meta) {
+                                            WritePVAction action = new WritePVAction();
+                                            action.setPropertyValue(
+                                                    WritePVAction.PROP_PVNAME,
+                                                    getWidgetModel()
+                                                            .getPVName());
+                                            action.setPropertyValue(
+                                                    WritePVAction.PROP_VALUE,
+                                                    writeValue);
+                                            action.setPropertyValue(
+                                                    WritePVAction.PROP_DESCRIPTION,
+                                                    writeValue);
+                                            actionsInput.getActionsList().add(
+                                                    action);
+                                        }
+                                        getWidgetModel()
+                                                .setPropertyValue(
+                                                        AbstractWidgetModel.PROP_ACTIONS,
+                                                        actionsInput);
 
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				registerLoadActionsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
-				pvNameHandler);
+                                    }
+                                }
+                            }
 
-		// PV_Value
-		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				if (newValue != null)
-					((Label) refreshableFigure).setText(VTypeHelper
-							.getString((VType) newValue));
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MenuButtonModel.PROP_PVVALUE, pvhandler);
+                        };
+                    pv.addListener(loadActionsFromPVListener);
+                }
+            }
+        }
+    }
 
-		// label
-		IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				((Label) refreshableFigure).setText(newValue.toString());
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MenuButtonModel.PROP_LABEL, labelHandler);
+    @Override
+    protected void doDeActivate() {
+        super.doDeActivate();
+        if (getWidgetModel().isActionsFromPV()) {
+            IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+            if (pv != null && loadActionsFromPVListener != null) {
+                pv.removeListener(loadActionsFromPVListener);
+            }
+        }
 
-		// Transparent
-		IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				((Label) refreshableFigure).setOpaque(!(Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(MenuButtonModel.PROP_TRANSPARENT,
-				transparentHandler);
+    }
 
-		final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				updatePropSheet((Boolean) newValue);
-				return false;
-			}
-		};
-		getWidgetModel().getProperty(MenuButtonModel.PROP_ACTIONS_FROM_PV)
-				.addPropertyChangeListener(new PropertyChangeListener() {
-					public void propertyChange(PropertyChangeEvent evt) {
-						handler.handleChange(evt.getOldValue(),
-								evt.getNewValue(), getFigure());
-					}
-				});
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
-		/*
-		 * // text alignment IWidgetPropertyChangeHandler alignmentHandler = new
-		 * IWidgetPropertyChangeHandler() { public boolean handleChange(final
-		 * Object oldValue, final Object newValue, final IFigure
-		 * refreshableFigure) {
-		 * ((Label)refreshableFigure).setTextAlignment((Integer) newValue);
-		 * return true; } };
-		 * setPropertyChangeHandler(MenuButtonModel.PROP_TEXT_ALIGNMENT,
-		 * alignmentHandler);
-		 */
-	}
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                registerLoadActionsListener();
+                return false;
+            }
+        };
+        setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME,
+                pvNameHandler);
 
-	/**
-	 * @param actionsFromPV
-	 */
-	private void updatePropSheet(final boolean actionsFromPV) {
-		getWidgetModel().setPropertyVisible(MenuButtonModel.PROP_ACTIONS,
-				!actionsFromPV);
-	}
+        // PV_Value
+        IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                if (newValue != null)
+                    ((Label) refreshableFigure).setText(VTypeHelper
+                            .getString((VType) newValue));
+                return true;
+            }
+        };
+        setPropertyChangeHandler(MenuButtonModel.PROP_PVVALUE, pvhandler);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public int size() {
-		// always one sample
-		return 1;
-	}
+        // label
+        IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                ((Label) refreshableFigure).setText(newValue.toString());
+                return true;
+            }
+        };
+        setPropertyChangeHandler(MenuButtonModel.PROP_LABEL, labelHandler);
 
-	@Override
-	public String getValue() {
-		return ((Label) getFigure()).getText();
-	}
+        // Transparent
+        IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                ((Label) refreshableFigure).setOpaque(!(Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(MenuButtonModel.PROP_TRANSPARENT,
+                transparentHandler);
 
-	@Override
-	public void setValue(Object value) {
-		((Label) getFigure()).setText(value.toString());
-	}
-	
-	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
-		if(key == ITextFigure.class)
-			return getFigure();
+        final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                updatePropSheet((Boolean) newValue);
+                return false;
+            }
+        };
+        getWidgetModel().getProperty(MenuButtonModel.PROP_ACTIONS_FROM_PV)
+                .addPropertyChangeListener(new PropertyChangeListener() {
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        handler.handleChange(evt.getOldValue(),
+                                evt.getNewValue(), getFigure());
+                    }
+                });
 
-		return super.getAdapter(key);
-	}
+        /*
+         * // text alignment IWidgetPropertyChangeHandler alignmentHandler = new
+         * IWidgetPropertyChangeHandler() { public boolean handleChange(final
+         * Object oldValue, final Object newValue, final IFigure
+         * refreshableFigure) {
+         * ((Label)refreshableFigure).setTextAlignment((Integer) newValue);
+         * return true; } };
+         * setPropertyChangeHandler(MenuButtonModel.PROP_TEXT_ALIGNMENT,
+         * alignmentHandler);
+         */
+    }
+
+    /**
+     * @param actionsFromPV
+     */
+    private void updatePropSheet(final boolean actionsFromPV) {
+        getWidgetModel().setPropertyVisible(MenuButtonModel.PROP_ACTIONS,
+                !actionsFromPV);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public int size() {
+        // always one sample
+        return 1;
+    }
+
+    @Override
+    public String getValue() {
+        return ((Label) getFigure()).getText();
+    }
+
+    @Override
+    public void setValue(Object value) {
+        ((Label) getFigure()).setText(value.toString());
+    }
+
+    @Override
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
+        if(key == ITextFigure.class)
+            return getFigure();
+
+        return super.getAdapter(key);
+    }
 
 }

@@ -13,9 +13,9 @@ package org.csstudio.opibuilder.editparts;
  * @author Xihui Chen
  *
  */
-public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart {	
+public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart {
 
-	
-	
+
+
 
 }

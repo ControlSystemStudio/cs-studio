@@ -32,19 +32,19 @@ import org.csstudio.dal.context.PropertyContext;
  *
  */
 public class DoublePropertyImpl extends NumericPropertyImpl<Double,Double>
-	implements DoubleProperty
+    implements DoubleProperty
 {
-	/**
-	 * Creates a new DoublePropertyImpl object.
-	 *
-	 * @param name PropertyName
-	 * @param propertyContext PropertyContext
-	 */
-	public DoublePropertyImpl(String name, PropertyContext propertyContext)
-	{
-		super(Double.class, name, propertyContext);
-		addDataAccessType(LongAccess.class, LongDataAccessWrapper.class);
-	}
+    /**
+     * Creates a new DoublePropertyImpl object.
+     *
+     * @param name PropertyName
+     * @param propertyContext PropertyContext
+     */
+    public DoublePropertyImpl(String name, PropertyContext propertyContext)
+    {
+        super(Double.class, name, propertyContext);
+        addDataAccessType(LongAccess.class, LongDataAccessWrapper.class);
+    }
 }
 
 /* __oOo__ */

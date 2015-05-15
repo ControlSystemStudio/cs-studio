@@ -26,36 +26,36 @@ import org.eclipse.jface.action.IAction;
 public class RemoveGroupAction extends AbstractWidgetTargetAction{
 
 
-	public void run(IAction action) {
-		CompoundCommand compoundCommand = new CompoundCommand("Remove Group");	
-		
-		GroupingContainerModel containerModel = getSelectedContainer();
-		
-		//Orphan order should be reversed so that undo operation has the correct order.
-		AbstractWidgetModel[] widgetsArray = containerModel.getChildren().toArray(
-				new AbstractWidgetModel[containerModel.getChildren().size()]);		
-		for(int i = widgetsArray.length -1; i>=0; i--){
-			compoundCommand.add(new OrphanChildCommand(containerModel, widgetsArray[i]));
-		}
-		
-		Point leftCorner = containerModel.getLocation();
-		for(AbstractWidgetModel widget : containerModel.getChildren()){			
-			compoundCommand.add(new AddWidgetCommand(containerModel.getParent(), widget,
-					new Rectangle(widget.getLocation(), widget.getSize()).translate(leftCorner)));	
-		}		
-		compoundCommand.add(new WidgetDeleteCommand(containerModel.getParent(), containerModel));
-		execute(compoundCommand);
-		
-	}
+    public void run(IAction action) {
+        CompoundCommand compoundCommand = new CompoundCommand("Remove Group");
 
-	
-	/**
-	 * Gets the widget models of all currently selected EditParts.
-	 * 
-	 * @return a list with all widget models that are currently selected
-	 */
-	protected final GroupingContainerModel getSelectedContainer() {
-		return ((GroupingContainerEditPart)selection.getFirstElement()).getWidgetModel();
-	}
+        GroupingContainerModel containerModel = getSelectedContainer();
+
+        //Orphan order should be reversed so that undo operation has the correct order.
+        AbstractWidgetModel[] widgetsArray = containerModel.getChildren().toArray(
+                new AbstractWidgetModel[containerModel.getChildren().size()]);
+        for(int i = widgetsArray.length -1; i>=0; i--){
+            compoundCommand.add(new OrphanChildCommand(containerModel, widgetsArray[i]));
+        }
+
+        Point leftCorner = containerModel.getLocation();
+        for(AbstractWidgetModel widget : containerModel.getChildren()){
+            compoundCommand.add(new AddWidgetCommand(containerModel.getParent(), widget,
+                    new Rectangle(widget.getLocation(), widget.getSize()).translate(leftCorner)));
+        }
+        compoundCommand.add(new WidgetDeleteCommand(containerModel.getParent(), containerModel));
+        execute(compoundCommand);
+
+    }
+
+
+    /**
+     * Gets the widget models of all currently selected EditParts.
+     *
+     * @return a list with all widget models that are currently selected
+     */
+    protected final GroupingContainerModel getSelectedContainer() {
+        return ((GroupingContainerEditPart)selection.getFirstElement()).getWidgetModel();
+    }
 
 }

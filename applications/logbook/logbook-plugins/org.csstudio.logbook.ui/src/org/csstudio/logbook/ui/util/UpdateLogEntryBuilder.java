@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.logbook.ui.util;
 
@@ -11,17 +11,17 @@ import org.csstudio.logbook.LogEntryBuilder;
 import static org.csstudio.logbook.LogEntryBuilder.logEntry;
 
 /**
- * A wrapper around the LogEntryBuilder explicitly meant of updating/modifying an existing log entries. 
- * 
+ * A wrapper around the LogEntryBuilder explicitly meant of updating/modifying an existing log entries.
+ *
  * @author shroffk
- * 
+ *
  */
 public class UpdateLogEntryBuilder {
 
     private final LogEntryBuilder logEntryBuilder;
 
     /**
-     * 
+     *
      * @param logEntry
      * @throws IOException
      */
@@ -29,9 +29,9 @@ public class UpdateLogEntryBuilder {
         logEntryBuilder = logEntry(logEntry);
 
     }
-   
+
     /**
-     * 
+     *
      * @param logEntry
      * @return
      * @throws IOException
@@ -41,7 +41,7 @@ public class UpdateLogEntryBuilder {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public LogEntryBuilder getLogEntryBuilder(){

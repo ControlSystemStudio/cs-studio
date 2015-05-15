@@ -15,14 +15,14 @@ import static org.eclipse.core.runtime.Platform.getPreferencesService;
  */
 public class Activator
 {
-	/** Plugin ID defined in MANIFEST.MF */
-	final public static String PLUGIN_ID = getPreferencesService().getString("org.csstudio.utility.product","branding_plugin_id","org.csstudio.utility.product",null);
+    /** Plugin ID defined in MANIFEST.MF */
+    final public static String PLUGIN_ID = getPreferencesService().getString("org.csstudio.utility.product","branding_plugin_id","org.csstudio.utility.product",null);
 
-	/** @param path Image file path within plugin
-	 *  @return {@link ImageDescriptor}
-	 */
-	public static ImageDescriptor getImageDescriptor(final String path)
-	{
-		return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
+    /** @param path Image file path within plugin
+     *  @return {@link ImageDescriptor}
+     */
+    public static ImageDescriptor getImageDescriptor(final String path)
+    {
+        return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
+    }
 }

@@ -26,21 +26,21 @@ import org.apache.log4j.Logger;
 
 public class EnumPropertyProxyImpl extends PropertyProxyImpl<Long>
 {
-	/**
-	 * Creates a new LongPropertyProxyImpl object.
-	 *
-	 * @param name Proxy name
-	 */
-	public EnumPropertyProxyImpl(String name, SimulatorPlug plug)
-	{
-		super(name,plug,Long.class);
+    /**
+     * Creates a new LongPropertyProxyImpl object.
+     *
+     * @param name Proxy name
+     */
+    public EnumPropertyProxyImpl(String name, SimulatorPlug plug)
+    {
+        super(name,plug,Long.class);
 
-		try {
-			valueProvider.set(0L);
-		} catch (Exception e) {
-			Logger.getLogger(this.getClass()).warn("Simulator error.", e);
-		}
-	}
+        try {
+            valueProvider.set(0L);
+        } catch (Exception e) {
+            Logger.getLogger(this.getClass()).warn("Simulator error.", e);
+        }
+    }
 }
 
 /* __oOo__ */

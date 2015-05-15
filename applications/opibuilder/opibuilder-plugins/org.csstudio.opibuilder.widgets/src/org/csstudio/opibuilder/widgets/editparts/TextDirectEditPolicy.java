@@ -17,53 +17,53 @@ import org.eclipse.gef.requests.DirectEditRequest;
  * @author Xihui Chen
  *
  */
-public class TextDirectEditPolicy 
-	extends DirectEditPolicy {
+public class TextDirectEditPolicy
+    extends DirectEditPolicy {
 
-	/**
-	 * @see DirectEditPolicy#getDirectEditCommand(DirectEditRequest)
-	 */
-	protected Command getDirectEditCommand(DirectEditRequest edit) {
-		String labelText = (String)edit.getCellEditor().getValue();
-		LabelEditCommand command = new LabelEditCommand(
-				(ITextModel)getHost().getModel(),labelText);
-		return command;
-	}
-	
-	/**
-	 * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
-	 */
-	protected void showCurrentEditValue(DirectEditRequest request) {
-		//String value = (String)request.getCellEditor().getValue();
-		//((LabelFigure)getHostFigure()).setText(value);
-		//hack to prevent async layout from placing the cell editor twice.
-		//getHostFigure().getUpdateManager().performUpdate();
-		
-	
-	}
+    /**
+     * @see DirectEditPolicy#getDirectEditCommand(DirectEditRequest)
+     */
+    protected Command getDirectEditCommand(DirectEditRequest edit) {
+        String labelText = (String)edit.getCellEditor().getValue();
+        LabelEditCommand command = new LabelEditCommand(
+                (ITextModel)getHost().getModel(),labelText);
+        return command;
+    }
+
+    /**
+     * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
+     */
+    protected void showCurrentEditValue(DirectEditRequest request) {
+        //String value = (String)request.getCellEditor().getValue();
+        //((LabelFigure)getHostFigure()).setText(value);
+        //hack to prevent async layout from placing the cell editor twice.
+        //getHostFigure().getUpdateManager().performUpdate();
 
 
-static class LabelEditCommand extends Command	{
-	
-	private String newText, oldText;
-	private ITextModel textModel;
-	
-	public LabelEditCommand(ITextModel l, String s) {
-	textModel = l;
-	if (s != null)
-		newText = s;
-	else
-		newText = "";  //$NON-NLS-1$
-	}
-	
-	public void execute() {
-		oldText = textModel.getText();
-		textModel.setText(newText);
-	}
-	
-	public void undo() {
-		textModel.setText(oldText);
-	}
+    }
+
+
+static class LabelEditCommand extends Command    {
+
+    private String newText, oldText;
+    private ITextModel textModel;
+
+    public LabelEditCommand(ITextModel l, String s) {
+    textModel = l;
+    if (s != null)
+        newText = s;
+    else
+        newText = "";  //$NON-NLS-1$
+    }
+
+    public void execute() {
+        oldText = textModel.getText();
+        textModel.setText(newText);
+    }
+
+    public void undo() {
+        textModel.setText(oldText);
+    }
 
 }
 

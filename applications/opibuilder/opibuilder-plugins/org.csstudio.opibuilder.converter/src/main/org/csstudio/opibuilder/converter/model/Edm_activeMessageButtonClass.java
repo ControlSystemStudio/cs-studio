@@ -13,75 +13,75 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activeMessageButtonClass extends EdmWidget {
 
-	
-	@EdmAttributeAn @EdmOptionalAn private EdmColor onColor;
-	@EdmAttributeAn @EdmOptionalAn private EdmColor offColor;
-	
-	@EdmAttributeAn @EdmOptionalAn private String controlPv;
-	@EdmAttributeAn @EdmOptionalAn private String onLabel;
-	@EdmAttributeAn @EdmOptionalAn private String offLabel;
-	
-	@EdmAttributeAn @EdmOptionalAn private String pressValue;
-	@EdmAttributeAn @EdmOptionalAn private String releaseValue;
-	@EdmAttributeAn @EdmOptionalAn private String password;
-	
-	@EdmAttributeAn @EdmOptionalAn private boolean toggle;
-	
-	
-	
-	
 
-	public Edm_activeMessageButtonClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    @EdmAttributeAn @EdmOptionalAn private EdmColor onColor;
+    @EdmAttributeAn @EdmOptionalAn private EdmColor offColor;
 
-		
-	public String getPressValue() {
-		return pressValue;
-	}
+    @EdmAttributeAn @EdmOptionalAn private String controlPv;
+    @EdmAttributeAn @EdmOptionalAn private String onLabel;
+    @EdmAttributeAn @EdmOptionalAn private String offLabel;
+
+    @EdmAttributeAn @EdmOptionalAn private String pressValue;
+    @EdmAttributeAn @EdmOptionalAn private String releaseValue;
+    @EdmAttributeAn @EdmOptionalAn private String password;
+
+    @EdmAttributeAn @EdmOptionalAn private boolean toggle;
 
 
 
 
-	public String getReleaseValue() {
-		return releaseValue;
-	}
+
+    public Edm_activeMessageButtonClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
+
+
+    public String getPressValue() {
+        return pressValue;
+    }
 
 
 
 
-	public String getPassword() {
-		return password;
-	}
+    public String getReleaseValue() {
+        return releaseValue;
+    }
 
 
 
 
-	public boolean isToggle() {
-		return toggle;
-	}
+    public String getPassword() {
+        return password;
+    }
 
 
 
 
-	public EdmColor getOnColor() {
-		return onColor;
-	}
-	public EdmColor getOffColor() {
-		return offColor;
-	}
-	
+    public boolean isToggle() {
+        return toggle;
+    }
 
-	public final String getControlPv() {
-		return controlPv;
-	}	
 
-	public final String getOnLabel() {
-		return onLabel;
-	}	
-	public final String getOffLabel() {
-		return offLabel;
-	}	
+
+
+    public EdmColor getOnColor() {
+        return onColor;
+    }
+    public EdmColor getOffColor() {
+        return offColor;
+    }
+
+
+    public final String getControlPv() {
+        return controlPv;
+    }
+
+    public final String getOnLabel() {
+        return onLabel;
+    }
+    public final String getOffLabel() {
+        return offLabel;
+    }
 
 
 }

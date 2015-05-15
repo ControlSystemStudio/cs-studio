@@ -11,26 +11,26 @@ package org.csstudio.logbook.ui;
  * method is invoked.
  *
  * @see LogEntryBuilderEvent
- * 
+ *
  * @author ITER-CSS
  */
 public interface LogEntryBuilderListener {
 
-	
-		/**
-		 * Initialize save action.
-		 *
-		 * @param userName the user name
-		 */
-		public void initializeSaveAction(String userName); 
-	
-	    /**
-    	 * Save process status.
-    	 *
-    	 * @param state the state
-	     * @throws Exception 
-    	 */
-    	public void saveProcessStatus(LogEntryBuilderEnum state) throws Exception;
-	
-	    
+
+        /**
+         * Initialize save action.
+         *
+         * @param userName the user name
+         */
+        public void initializeSaveAction(String userName);
+
+        /**
+         * Save process status.
+         *
+         * @param state the state
+         * @throws Exception
+         */
+        public void saveProcessStatus(LogEntryBuilderEnum state) throws Exception;
+
+
 }

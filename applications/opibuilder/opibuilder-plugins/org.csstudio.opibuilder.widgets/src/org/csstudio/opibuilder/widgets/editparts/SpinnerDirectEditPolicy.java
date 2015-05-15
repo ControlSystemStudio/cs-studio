@@ -18,53 +18,53 @@ import org.eclipse.gef.requests.DirectEditRequest;
  * @author Xihui Chen
  *
  */
-public class SpinnerDirectEditPolicy 
-	extends DirectEditPolicy {
+public class SpinnerDirectEditPolicy
+    extends DirectEditPolicy {
 
-	/**
-	 * @see DirectEditPolicy#getDirectEditCommand(DirectEditRequest)
-	 */
-	protected Command getDirectEditCommand(DirectEditRequest edit) {
-		String labelText = (String)edit.getCellEditor().getValue();
-		SpinnerEditpart spinner = (SpinnerEditpart)getHost();
-		SpinnerEditCommand command = new SpinnerEditCommand((LabelModel)spinner.getModel(),labelText);
-		return command;
-	}
-	
-	/**
-	 * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
-	 */
-	protected void showCurrentEditValue(DirectEditRequest request) {
-		//String value = (String)request.getCellEditor().getValue();
-		//((LabelFigure)getHostFigure()).setText(value);
-		//hack to prevent async layout from placing the cell editor twice.
-		//getHostFigure().getUpdateManager().performUpdate();
-		
-	
-	}
+    /**
+     * @see DirectEditPolicy#getDirectEditCommand(DirectEditRequest)
+     */
+    protected Command getDirectEditCommand(DirectEditRequest edit) {
+        String labelText = (String)edit.getCellEditor().getValue();
+        SpinnerEditpart spinner = (SpinnerEditpart)getHost();
+        SpinnerEditCommand command = new SpinnerEditCommand((LabelModel)spinner.getModel(),labelText);
+        return command;
+    }
+
+    /**
+     * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
+     */
+    protected void showCurrentEditValue(DirectEditRequest request) {
+        //String value = (String)request.getCellEditor().getValue();
+        //((LabelFigure)getHostFigure()).setText(value);
+        //hack to prevent async layout from placing the cell editor twice.
+        //getHostFigure().getUpdateManager().performUpdate();
 
 
-static class SpinnerEditCommand extends Command	{
-	
-	private String newText, oldText;
-	private LabelModel label;
-	
-	public SpinnerEditCommand(LabelModel l, String s) {
-	label = l;
-	if (s != null)
-		newText = s;
-	else
-		newText = "";  //$NON-NLS-1$
-	}
-	
-	public void execute() {
-		oldText = label.getText();
-		label.setPropertyValue(TextUpdateModel.PROP_TEXT, newText, true);
-	}
-	
-	public void undo() {
-		label.setText(oldText);
-	}
+    }
+
+
+static class SpinnerEditCommand extends Command    {
+
+    private String newText, oldText;
+    private LabelModel label;
+
+    public SpinnerEditCommand(LabelModel l, String s) {
+    label = l;
+    if (s != null)
+        newText = s;
+    else
+        newText = "";  //$NON-NLS-1$
+    }
+
+    public void execute() {
+        oldText = label.getText();
+        label.setPropertyValue(TextUpdateModel.PROP_TEXT, newText, true);
+    }
+
+    public void undo() {
+        label.setText(oldText);
+    }
 
 }
 

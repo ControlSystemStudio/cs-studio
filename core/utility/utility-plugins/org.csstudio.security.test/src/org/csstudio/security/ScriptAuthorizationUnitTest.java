@@ -22,7 +22,7 @@ import org.junit.Test;
 import com.sun.security.auth.UserPrincipal;
 
 /** JUnit demo of the {@link ScriptAuthorizationProvider}
- * 
+ *
  *  <p>Depends on specific user and groups.
  *  @author Kay Kasemir
  */
@@ -34,7 +34,7 @@ public class ScriptAuthorizationUnitTest
     {
         final AuthorizationProvider auth =
             new ScriptAuthorizationProvider(new File("id_auth").getAbsolutePath());
-        
+
         Subject user = new Subject();
         user.getPrincipals().add(new UserPrincipal("ky9"));
         Authorizations authorizations = auth.getAuthorizations(user);

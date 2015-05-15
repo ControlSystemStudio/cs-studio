@@ -29,7 +29,7 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
- * 
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -39,7 +39,7 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
         IWorkbenchPreferencePage {
 
     @SuppressWarnings("unused")
-	private final class ListEditorExtension extends ListEditor {
+    private final class ListEditorExtension extends ListEditor {
         private final String _titel;
         private final String _desc;
 
@@ -56,12 +56,12 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
 
         @Override
         protected String getNewInputObject() {
-            InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(), 
-                    _titel, 
-                    _desc, 
-                    "", 
+            InputDialog inputDialog = new InputDialog(getFieldEditorParent().getShell(),
+                    _titel,
+                    _desc,
+                    "",
                     null);
-            if (inputDialog.open() == Window.OK) 
+            if (inputDialog.open() == Window.OK)
             {
                 return inputDialog.getValue();
             }
@@ -77,7 +77,7 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
 
     public HibernatePreferencePage() {
         super(GRID);
-        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE, 
+        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(InstanceScope.INSTANCE,
                 Activator.PLUGIN_ID);
         setPreferenceStore(prefStore);
         setDescription("Settings for the IO Configurator.");
@@ -91,10 +91,10 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
     public void createFieldEditors() {
         TabFolder tabs = new TabFolder(getFieldEditorParent(), SWT.NONE);
         tabs.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-        
+
         makeHibernateDBTab(tabs);
     }
-    
+
     private void makeHibernateDBTab(TabFolder tabs) {
         // database settings
         TabItem tabDb = new TabItem(tabs, SWT.NONE);
@@ -103,7 +103,7 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
         dbComposite.setLayout(new GridLayout(1, true));
         dbComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         tabDb.setControl(dbComposite);
-        
+
         new Label(dbComposite, SWT.NONE);
         Label descLabel = new Label(dbComposite, SWT.NONE);
         descLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
@@ -127,7 +127,7 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     public void init(IWorkbench workbench) {

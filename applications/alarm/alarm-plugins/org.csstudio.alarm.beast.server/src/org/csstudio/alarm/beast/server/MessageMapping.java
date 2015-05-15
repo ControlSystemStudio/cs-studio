@@ -21,13 +21,13 @@ public class MessageMapping
 {
     /** Helper for Message-to-ID mapping in RDB */
     final private StringIDHelper helper;
-    
+
     /** Cash of Messages by ID to limit RDB lookups */
     final private Map<Integer, String> cache_by_id = new HashMap<Integer, String>();
 
     /** Cash of Messages by ID to limit RDB lookups */
     final private Map<String, Integer> cache_by_message = new HashMap<String, Integer>();
-    
+
     /** Initialize
      *  @param rdb RDBUtil
      *  @param sql SQL statements

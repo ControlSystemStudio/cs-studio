@@ -16,21 +16,21 @@ import org.jdom.Element;
  */
 public class VersionProperty extends UnchangableStringProperty{
 
-	public VersionProperty(String prop_id, String description,
-			WidgetPropertyCategory category, String defaultValue) {
-		super(prop_id, description, category, defaultValue);
-	}
-	
-	@Override
-	public void writeToXML(Element propElement) {			
-		setPropertyValue(OPIBuilderPlugin.getDefault().getBundle().getVersion().toString());
-		super.writeToXML(propElement);
-	}
-	
-	@Override
-	public boolean configurableByRule() {
-		return false;
-	}	
-		
+    public VersionProperty(String prop_id, String description,
+            WidgetPropertyCategory category, String defaultValue) {
+        super(prop_id, description, category, defaultValue);
+    }
+
+    @Override
+    public void writeToXML(Element propElement) {
+        setPropertyValue(OPIBuilderPlugin.getDefault().getBundle().getVersion().toString());
+        super.writeToXML(propElement);
+    }
+
+    @Override
+    public boolean configurableByRule() {
+        return false;
+    }
+
 
 }

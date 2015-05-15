@@ -19,23 +19,23 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class TooltipLabel extends Figure {
-	
-	private AbstractWidgetModel widgetModel;
-	
-	public TooltipLabel(AbstractWidgetModel widgetModel) {
-		this.widgetModel = widgetModel;
-	}
-	
-	@Override
-	protected void paintClientArea(Graphics graphics) {		
-		super.paintClientArea(graphics);
-		graphics.drawText(widgetModel.getTooltip(),1, 1);
-	}
-	
-	@Override
-	public Dimension getPreferredSize(int wHint, int hHint) {
-		return FigureUtilities.getTextExtents(
-				widgetModel.getTooltip(), Display.getDefault().getSystemFont()).expand(2,2);
-	}
-	
+
+    private AbstractWidgetModel widgetModel;
+
+    public TooltipLabel(AbstractWidgetModel widgetModel) {
+        this.widgetModel = widgetModel;
+    }
+
+    @Override
+    protected void paintClientArea(Graphics graphics) {
+        super.paintClientArea(graphics);
+        graphics.drawText(widgetModel.getTooltip(),1, 1);
+    }
+
+    @Override
+    public Dimension getPreferredSize(int wHint, int hHint) {
+        return FigureUtilities.getTextExtents(
+                widgetModel.getTooltip(), Display.getDefault().getSystemFont()).expand(2,2);
+    }
+
 }

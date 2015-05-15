@@ -16,31 +16,31 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 public class OpiFontTest extends TestCase {
-	
+
     //<font fontName="Arial" height="14" style="0" />
-	
-	/*style conversion definition:
-	0 - medium, reg
-	1 - bold, reg
-	2 - medui, italic
-	3 - b, i
-	*/
-	
-	public void testOpiFont() throws EdmException {
-		
-		// init document
-		Document doc = XMLFileHandler.createDomDocument();
-		
-		String val = "helvetica-bold-r-14.0";
-		EdmFont f = new EdmFont(new EdmAttribute(val), true);
-		Element parent = doc.createElement("root");
-		doc.appendChild(parent);
-		Context context = new Context(doc, parent, null, 0, 0);
-		new OpiFont(context, "font", f);
-		
-		XMLFileHandler.isFontElementEqual(val, "font", parent);
-		
-		//XMLFileHandler.writeXML(doc);
-		
-	}
+
+    /*style conversion definition:
+    0 - medium, reg
+    1 - bold, reg
+    2 - medui, italic
+    3 - b, i
+    */
+
+    public void testOpiFont() throws EdmException {
+
+        // init document
+        Document doc = XMLFileHandler.createDomDocument();
+
+        String val = "helvetica-bold-r-14.0";
+        EdmFont f = new EdmFont(new EdmAttribute(val), true);
+        Element parent = doc.createElement("root");
+        doc.appendChild(parent);
+        Context context = new Context(doc, parent, null, 0, 0);
+        new OpiFont(context, "font", f);
+
+        XMLFileHandler.isFontElementEqual(val, "font", parent);
+
+        //XMLFileHandler.writeXML(doc);
+
+    }
 }

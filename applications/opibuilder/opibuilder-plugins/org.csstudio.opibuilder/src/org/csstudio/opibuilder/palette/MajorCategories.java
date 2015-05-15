@@ -12,23 +12,23 @@ package org.csstudio.opibuilder.palette;
  *
  */
 public enum MajorCategories {
-	
-	GRAPHICS("Graphics"),
-	
-	MONITORS("Monitors"),
-	
-	CONTROLS("Controls"),
-	
-	OTHERS("Others");
-	
-	private String description;
-	
-	private MajorCategories(String description){
-		this.description = description;
-	}
-	
-	@Override
-	public String toString() {
-		return description;
-	}
+
+    GRAPHICS("Graphics"),
+
+    MONITORS("Monitors"),
+
+    CONTROLS("Controls"),
+
+    OTHERS("Others");
+
+    private String description;
+
+    private MajorCategories(String description){
+        this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return description;
+    }
 }

@@ -32,84 +32,84 @@ import java.util.Map;
  */
 public interface EventSystemContext<E extends SystemEvent<?,?>>
 {
-	/**
-	 * Registers general listener for events from EventSystem.
-	 * Paramaters in map provide information under which events and under
-	 * which condition listner wants to receive events from EventSystm. This
-	 * is generic apporach, at the moment parameters are not specified.<p>Same
-	 * listner instance can be registered under everal different events
-	 * defined with parameters. To unregister listener, it must be
-	 * unregistered with same parameters as registered.</p>
-	 *
-	 * @param parameters the paramaters for EventSystem
-	 * @param l EventSystem listener
-	 *
-	 * @throws RemoteException if creation with remote system fails
-	 */
-	public void addEventSystemListener(EventSystemListener<E> l,
-	    Map<String, Object> parameters) throws RemoteException;
+    /**
+     * Registers general listener for events from EventSystem.
+     * Paramaters in map provide information under which events and under
+     * which condition listner wants to receive events from EventSystm. This
+     * is generic apporach, at the moment parameters are not specified.<p>Same
+     * listner instance can be registered under everal different events
+     * defined with parameters. To unregister listener, it must be
+     * unregistered with same parameters as registered.</p>
+     *
+     * @param parameters the paramaters for EventSystem
+     * @param l EventSystem listener
+     *
+     * @throws RemoteException if creation with remote system fails
+     */
+    public void addEventSystemListener(EventSystemListener<E> l,
+        Map<String, Object> parameters) throws RemoteException;
 
-	/**
-	 * Registers general listener for all events from EventSystem.
-	 *
-	 * @param l EventSystem listener
-	 *
-	 * @throws RemoteException if creation with remote system fails
-	 */
-	public void addEventSystemListener(EventSystemListener<E> l)
-		throws RemoteException;
+    /**
+     * Registers general listener for all events from EventSystem.
+     *
+     * @param l EventSystem listener
+     *
+     * @throws RemoteException if creation with remote system fails
+     */
+    public void addEventSystemListener(EventSystemListener<E> l)
+        throws RemoteException;
 
-	/**
-	 * Removes general listener for events from EventSystem. Paramaters
-	 * in map must be same as when  listener was registered. If listener was
-	 * registered several times with different parameters, than  for each
-	 * registration listener must be unregisterd with same parameters as were
-	 * use for registeration. If parameter are <code>null</code> than listener
-	 * is unregistered from ALL events for which was registered  with differnt
-	 * parameters.
-	 *
-	 * @param parameters the paramaters for EventSystem, if <code>null</code>
-	 *        it is unregistered for ALL events
-	 * @param l EventSystem listener
-	 */
-	public void removeEventSystemListener(EventSystemListener<E> l,
-	    Map<String, Object> parameters);
+    /**
+     * Removes general listener for events from EventSystem. Paramaters
+     * in map must be same as when  listener was registered. If listener was
+     * registered several times with different parameters, than  for each
+     * registration listener must be unregisterd with same parameters as were
+     * use for registeration. If parameter are <code>null</code> than listener
+     * is unregistered from ALL events for which was registered  with differnt
+     * parameters.
+     *
+     * @param parameters the paramaters for EventSystem, if <code>null</code>
+     *        it is unregistered for ALL events
+     * @param l EventSystem listener
+     */
+    public void removeEventSystemListener(EventSystemListener<E> l,
+        Map<String, Object> parameters);
 
-	/**
-	 * Removes general listener for all events from EventSystem.
-	 *
-	 * @param l EventSystem listener
-	 */
-	public void removeEventSystemListener(EventSystemListener<E> l);
+    /**
+     * Removes general listener for all events from EventSystem.
+     *
+     * @param l EventSystem listener
+     */
+    public void removeEventSystemListener(EventSystemListener<E> l);
 
-	/**
-	 * Returns array with all registered event system listeners. If listener is registered several times,
-	 * only one instance is returned.
-	 *
-	 * @return array with all registered event system listeners
-	 */
-	public EventSystemListener<E>[] getEventSystemListeners();
+    /**
+     * Returns array with all registered event system listeners. If listener is registered several times,
+     * only one instance is returned.
+     *
+     * @return array with all registered event system listeners
+     */
+    public EventSystemListener<E>[] getEventSystemListeners();
 
-	/**
-	 * Returns map with supported parameters for event system listeners, may be <code>null</code>.
-	 * Key value pairs may be in following combinations:
-	 *
-	 * <ul>
-	 * <li>If key is defined and value is <code>null</code> it means that it is enough to provide
-	 * key with <code>null</code> valeu in parameter in order to acctivate specific event parameter.</li>
-	 * <li>If value is of tyle <code>Class</code>, this means that only values of specified type
-	 * are supported for this key.</li>
-	 * <li>If value is array, than only elements in array are supported as parameters for this key.</li>
-	 * <li>If value is Java 1.5 enum class, than only enum elements are supported as parameters
-	 * for this key.</li>
-	 * </ul>
-	 *
-	 * <p>If returned map is <code>null</code> or empty, than no special parameters are supported
-	 * and they have no efect.</p>
-	 *
-	 * @return map with supported parameters.
-	 */
-	public Map<String, Object> getSupportedEventSystemParameters();
+    /**
+     * Returns map with supported parameters for event system listeners, may be <code>null</code>.
+     * Key value pairs may be in following combinations:
+     *
+     * <ul>
+     * <li>If key is defined and value is <code>null</code> it means that it is enough to provide
+     * key with <code>null</code> valeu in parameter in order to acctivate specific event parameter.</li>
+     * <li>If value is of tyle <code>Class</code>, this means that only values of specified type
+     * are supported for this key.</li>
+     * <li>If value is array, than only elements in array are supported as parameters for this key.</li>
+     * <li>If value is Java 1.5 enum class, than only enum elements are supported as parameters
+     * for this key.</li>
+     * </ul>
+     *
+     * <p>If returned map is <code>null</code> or empty, than no special parameters are supported
+     * and they have no efect.</p>
+     *
+     * @return map with supported parameters.
+     */
+    public Map<String, Object> getSupportedEventSystemParameters();
 }
 
 /* __oOo__ */

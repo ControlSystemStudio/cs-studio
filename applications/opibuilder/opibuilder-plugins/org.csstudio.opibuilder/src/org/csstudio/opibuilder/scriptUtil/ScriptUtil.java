@@ -26,9 +26,9 @@ import org.osgi.framework.Version;
 
 /**
  * The utility class to facilitate BOY script programming.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class ScriptUtil {
 

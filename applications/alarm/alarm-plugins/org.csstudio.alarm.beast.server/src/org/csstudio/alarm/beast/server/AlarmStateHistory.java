@@ -47,7 +47,7 @@ public class AlarmStateHistory
     {
         history.add(state);
     }
-    
+
     /** Check if we received 'count' alarms within the given number of seconds
      *  @param seconds Time range to check
      *  @return <code>true</code> if there were 'count' alarms received and

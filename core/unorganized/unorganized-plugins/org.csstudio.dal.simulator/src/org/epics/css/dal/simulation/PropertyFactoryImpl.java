@@ -31,24 +31,24 @@ import org.csstudio.dal.spi.AbstractPropertyFactory;
  */
 public class PropertyFactoryImpl extends AbstractPropertyFactory
 {
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.spi.AbstractFactorySupport#getPlugClass()
-	 */
-	@Override
-	protected Class<?extends AbstractPlug> getPlugClass()
-	{
-		return SimulatorPlug.class;
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.spi.AbstractFactorySupport#getPlugClass()
+     */
+    @Override
+    protected Class<?extends AbstractPlug> getPlugClass()
+    {
+        return SimulatorPlug.class;
+    }
 
-	/**
-	 * Creates a new PropertyFactoryImpl object.
-	 */
-	public PropertyFactoryImpl()
-	{
-		super();
-	}
-	
-	
+    /**
+     * Creates a new PropertyFactoryImpl object.
+     */
+    public PropertyFactoryImpl()
+    {
+        super();
+    }
+
+
 }
 
 /* __oOo__ */

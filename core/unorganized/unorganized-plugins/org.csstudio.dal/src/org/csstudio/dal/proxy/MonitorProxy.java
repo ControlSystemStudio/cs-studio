@@ -33,14 +33,14 @@ import org.csstudio.dal.SimpleMonitor;
  */
 public interface MonitorProxy extends SimpleMonitor
 {
-	/**
-	 * Returns request object asociated with this value response subscritpion.
-	 *
-	 * @return a Request, which identifies incoming responses.
-	 */
-	public Request getRequest();
+    /**
+     * Returns request object asociated with this value response subscritpion.
+     *
+     * @return a Request, which identifies incoming responses.
+     */
+    public Request getRequest();
 
-	public void refresh();
+    public void refresh();
 }
 
 /* __oOo__ */

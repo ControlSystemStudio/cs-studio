@@ -81,19 +81,19 @@ public class AlarmTreeView extends ViewPart
 
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         if (Preferences.isConfigSelectionAllowed())
-    	{
-    		toolbar.add(new SelectConfigurationAction(parent, model));
-    		toolbar.add(new Separator());
-    	}
+        {
+            toolbar.add(new SelectConfigurationAction(parent, model));
+            toolbar.add(new Separator());
+        }
         if (model.isWriteAllowed())
         {
             toolbar.add(new MaintenanceModeAction(model));
             toolbar.add(new Separator());
         }
-        
+
         final Shell shell = parent.getShell();
-		toolbar.add(new InfoAction(shell, model));
-		
+        toolbar.add(new InfoAction(shell, model));
+
         if (model.isWriteAllowed())
         {
             // TODO Toolbar layout problems on some OS/WS.
@@ -114,13 +114,13 @@ public class AlarmTreeView extends ViewPart
         getSite().setSelectionProvider(gui.getTreeViewer());
     }
 
-    
-    
-    
+
+
+
     /** {@inheritDoc} */
-    
+
     @Override
-    
+
     public void setFocus()
     {
         if (gui != null)
@@ -128,7 +128,7 @@ public class AlarmTreeView extends ViewPart
     }
 
     /** @param item Alarm tree item to focus, i.e. to select and show */
-	public void setFocus(final AlarmTreeItem item)
+    public void setFocus(final AlarmTreeItem item)
     {
         if (gui != null)
             gui.getTreeViewer().setSelection(new StructuredSelection(item));

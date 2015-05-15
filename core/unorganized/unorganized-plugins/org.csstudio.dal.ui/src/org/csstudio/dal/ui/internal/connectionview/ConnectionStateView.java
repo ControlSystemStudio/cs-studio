@@ -74,336 +74,336 @@ import org.eclipse.ui.progress.UIJob;
  *
  */
 public final class ConnectionStateView extends ViewPart {
-	/**
-	 * The view´s ID.
-	 */
-	public static final String VIEW_ID = "org.csstudio.platform.ui.ConnectionStateView";
+    /**
+     * The view´s ID.
+     */
+    public static final String VIEW_ID = "org.csstudio.platform.ui.ConnectionStateView";
 
-	/**
-	 * The viewer.
-	 */
-	private TableViewer _viewer;
+    /**
+     * The viewer.
+     */
+    private TableViewer _viewer;
 
-	/**
-	 * A UI job used to refresh the view at a fixed delay.
-	 */
-	private UIJob _updateJob;
+    /**
+     * A UI job used to refresh the view at a fixed delay.
+     */
+    private UIJob _updateJob;
 
-	private SortDirection _sortDirection = SortDirection.BY_NAME;
+    private SortDirection _sortDirection = SortDirection.BY_NAME;
 
-	class FilterByConnectionStateMouseListener extends MouseAdapter {
-		private final Set<ConnectionState> _connectionStates;
+    class FilterByConnectionStateMouseListener extends MouseAdapter {
+        private final Set<ConnectionState> _connectionStates;
 
-		public FilterByConnectionStateMouseListener(
-				final Set<ConnectionState> connectionStates) {
-			assert connectionStates != null;
-			_connectionStates = connectionStates;
-		}
+        public FilterByConnectionStateMouseListener(
+                final Set<ConnectionState> connectionStates) {
+            assert connectionStates != null;
+            _connectionStates = connectionStates;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void mouseUp(final MouseEvent e) {
-			final ViewerFilter filter = new ViewerFilter() {
-				@Override
-				public boolean select(final Viewer viewer, final Object parentElement,
-						final Object element) {
-					final IConnector s = (IConnector) element;
-					return _connectionStates.contains(s
-							.getLatestConnectionState());
-				}
-			};
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void mouseUp(final MouseEvent e) {
+            final ViewerFilter filter = new ViewerFilter() {
+                @Override
+                public boolean select(final Viewer viewer, final Object parentElement,
+                        final Object element) {
+                    final IConnector s = (IConnector) element;
+                    return _connectionStates.contains(s
+                            .getLatestConnectionState());
+                }
+            };
 
-			_viewer.setFilters(new ViewerFilter[] { filter });
-		}
-	}
+            _viewer.setFilters(new ViewerFilter[] { filter });
+        }
+    }
 
-	// private Button createFilterButton(Composite parent, String label,
-	// ConnectionState... connectionStates) {
-	//
-	// Button button = new Button(parent, SWT.NONE);
-	// button.setText(label);
-	// button
-	// .addMouseListener(new FilterByConnectionStateMouseListener(
-	// states));
-	//
-	// return button;
-	// }
+    // private Button createFilterButton(Composite parent, String label,
+    // ConnectionState... connectionStates) {
+    //
+    // Button button = new Button(parent, SWT.NONE);
+    // button.setText(label);
+    // button
+    // .addMouseListener(new FilterByConnectionStateMouseListener(
+    // states));
+    //
+    // return button;
+    // }
 
-	class FilterButton {
-		private final Button _swtButton;
-		private final Set<ConnectionState> _connectionStates;
-		private final String _baseLabel;
+    class FilterButton {
+        private final Button _swtButton;
+        private final Set<ConnectionState> _connectionStates;
+        private final String _baseLabel;
 
-		public FilterButton(final Composite parent, final int style, final String label,
-				final ConnectionState... connectionStates) {
-			_swtButton = new Button(parent, style);
-			assert connectionStates != null;
-			assert label != null;
+        public FilterButton(final Composite parent, final int style, final String label,
+                final ConnectionState... connectionStates) {
+            _swtButton = new Button(parent, style);
+            assert connectionStates != null;
+            assert label != null;
 
-			// remember label
-			_baseLabel = label;
+            // remember label
+            _baseLabel = label;
 
-			// remember connection states
-			_connectionStates = new HashSet<ConnectionState>();
-			for (final ConnectionState s : connectionStates) {
-				_connectionStates.add(s);
-			}
+            // remember connection states
+            _connectionStates = new HashSet<ConnectionState>();
+            for (final ConnectionState s : connectionStates) {
+                _connectionStates.add(s);
+            }
 
-			// add action listener
-			_swtButton.addMouseListener(new FilterByConnectionStateMouseListener(
-					_connectionStates));
+            // add action listener
+            _swtButton.addMouseListener(new FilterByConnectionStateMouseListener(
+                    _connectionStates));
 
-			// initialize label
-			refreshLabel(Collections.EMPTY_LIST);
+            // initialize label
+            refreshLabel(Collections.EMPTY_LIST);
 
-		}
+        }
 
-		public void refreshLabel(final List<IConnector> statistics) {
-			assert statistics != null;
+        public void refreshLabel(final List<IConnector> statistics) {
+            assert statistics != null;
 
-			int count = 0;
+            int count = 0;
 
-			if (statistics != null) {
-				for (final IConnector s : statistics) {
-					if (_connectionStates
-							.contains(s.getLatestConnectionState())) {
-						count++;
-					}
-				}
-			}
-			_swtButton.setText(_baseLabel + " (" + count + ")");
-		}
+            if (statistics != null) {
+                for (final IConnector s : statistics) {
+                    if (_connectionStates
+                            .contains(s.getLatestConnectionState())) {
+                        count++;
+                    }
+                }
+            }
+            _swtButton.setText(_baseLabel + " (" + count + ")");
+        }
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void createPartControl(final Composite parent) {
-		// layout
-		parent.setLayout(new GridLayout());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createPartControl(final Composite parent) {
+        // layout
+        parent.setLayout(new GridLayout());
 
-		// create button panel
-		final Composite buttons = new Composite(parent, SWT.NONE);
-		buttons.setLayout(new FillLayout());
-		buttons.setLayoutData(LayoutUtil
-				.createGridDataForHorizontalFillingCell());
+        // create button panel
+        final Composite buttons = new Composite(parent, SWT.NONE);
+        buttons.setLayout(new FillLayout());
+        buttons.setLayoutData(LayoutUtil
+                .createGridDataForHorizontalFillingCell());
 
-		final FilterButton buttonAll = new FilterButton(buttons, SWT.FLAT, "all",
-				ConnectionState.values());
-		final FilterButton buttonConnected = new FilterButton(buttons, SWT.FLAT,
-				"connected", ConnectionState.CONNECTED);
-		final FilterButton buttonNotConnected = new FilterButton(buttons, SWT.FLAT,
-				"not connected", ConnectionState.CONNECTION_LOST,
-				ConnectionState.INITIAL, ConnectionState.CONNECTION_FAILED,
-				ConnectionState.DISCONNECTED, ConnectionState.UNKNOWN);
+        final FilterButton buttonAll = new FilterButton(buttons, SWT.FLAT, "all",
+                ConnectionState.values());
+        final FilterButton buttonConnected = new FilterButton(buttons, SWT.FLAT,
+                "connected", ConnectionState.CONNECTED);
+        final FilterButton buttonNotConnected = new FilterButton(buttons, SWT.FLAT,
+                "not connected", ConnectionState.CONNECTION_LOST,
+                ConnectionState.INITIAL, ConnectionState.CONNECTION_FAILED,
+                ConnectionState.DISCONNECTED, ConnectionState.UNKNOWN);
 
-		// create the viewer and ...
-		_viewer = createChannelTable(parent);
+        // create the viewer and ...
+        _viewer = createChannelTable(parent);
 
-		// .. initialize layout
-		_viewer.getControl().setLayoutData(
-				LayoutUtil.createGridDataForFillingCell());
+        // .. initialize layout
+        _viewer.getControl().setLayoutData(
+                LayoutUtil.createGridDataForFillingCell());
 
-		// .. initialize content provider
-		_viewer.setContentProvider(new IStructuredContentProvider(){
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
+        // .. initialize content provider
+        _viewer.setContentProvider(new IStructuredContentProvider(){
+            /**
+             * {@inheritDoc}
+             */
+            @Override
             public void inputChanged(final Viewer viewer, final Object oldInput,
-					final Object newInput) {
+                    final Object newInput) {
 
-			}
+            }
 
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
+            /**
+             * {@inheritDoc}
+             */
+            @Override
             public Object[] getElements(final Object parent) {
-				final List<IConnector> statistics =((IProcessVariableConnectionService) parent)
-						.getConnectors();
+                final List<IConnector> statistics =((IProcessVariableConnectionService) parent)
+                        .getConnectors();
 
-				// refresh the filter button states
-				buttonAll.refreshLabel(statistics);
-				buttonConnected.refreshLabel(statistics);
-				buttonNotConnected.refreshLabel(statistics);
+                // refresh the filter button states
+                buttonAll.refreshLabel(statistics);
+                buttonConnected.refreshLabel(statistics);
+                buttonNotConnected.refreshLabel(statistics);
 
-				return statistics.toArray();
-			}
+                return statistics.toArray();
+            }
 
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
+            /**
+             * {@inheritDoc}
+             */
+            @Override
             public void dispose() {
 
-			}
+            }
 
-		});
+        });
 
-		// ... initialize label provider
-		_viewer.setLabelProvider(new LabelProvider());
-		_viewer.setInput(ProcessVariableConnectionServiceFactory.getDefault()
-				.getProcessVariableConnectionService());
+        // ... initialize label provider
+        _viewer.setLabelProvider(new LabelProvider());
+        _viewer.setInput(ProcessVariableConnectionServiceFactory.getDefault()
+                .getProcessVariableConnectionService());
 
-		// ... initialize comparators (important for sorting)
-		_viewer.setComparator(new ViewerComparator() {
-			@Override
-			public int compare(final Viewer viewer, final Object e1, final Object e2) {
-				return _sortDirection.getComparator().compare(
-						(IConnector) e1, (IConnector) e2);
-			}
-		});
+        // ... initialize comparators (important for sorting)
+        _viewer.setComparator(new ViewerComparator() {
+            @Override
+            public int compare(final Viewer viewer, final Object e1, final Object e2) {
+                return _sortDirection.getComparator().compare(
+                        (IConnector) e1, (IConnector) e2);
+            }
+        });
 
-		// ... initialize tooltip support
-		ColumnViewerToolTipSupport.enableFor(_viewer, ToolTip.NO_RECREATE);
+        // ... initialize tooltip support
+        ColumnViewerToolTipSupport.enableFor(_viewer, ToolTip.NO_RECREATE);
 
-		// ... initialize context menu
-		final MenuManager menuManager = new MenuManager();
-		// menuManager.addMenuListener(new IMenuListener() {
-		//
-		// public void menuAboutToShow(final IMenuManager manager) {
-		// manager.add(new GroupMarker(
-		// IWorkbenchActionConstants.MB_ADDITIONS));
-		// }
-		// });
+        // ... initialize context menu
+        final MenuManager menuManager = new MenuManager();
+        // menuManager.addMenuListener(new IMenuListener() {
+        //
+        // public void menuAboutToShow(final IMenuManager manager) {
+        // manager.add(new GroupMarker(
+        // IWorkbenchActionConstants.MB_ADDITIONS));
+        // }
+        // });
 
-		menuManager
-				.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+        menuManager
+                .add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 
-		_viewer.getControl().setMenu(
-				menuManager.createContextMenu(_viewer.getControl()));
+        _viewer.getControl().setMenu(
+                menuManager.createContextMenu(_viewer.getControl()));
 
-		getViewSite().registerContextMenu(menuManager, _viewer);
-		getViewSite().setSelectionProvider(_viewer);
+        getViewSite().registerContextMenu(menuManager, _viewer);
+        getViewSite().setSelectionProvider(_viewer);
 
-		// initialize the update job
-		_updateJob = new UIJob("Update Connector State View") {
-			@Override
-			public IStatus runInUIThread(final IProgressMonitor monitor) {
-				_viewer.refresh();
-				if (!monitor.isCanceled()) {
-					_updateJob.schedule(2000);
-					return Status.OK_STATUS;
-				} else {
-					return Status.CANCEL_STATUS;
-				}
-			}
-		};
+        // initialize the update job
+        _updateJob = new UIJob("Update Connector State View") {
+            @Override
+            public IStatus runInUIThread(final IProgressMonitor monitor) {
+                _viewer.refresh();
+                if (!monitor.isCanceled()) {
+                    _updateJob.schedule(2000);
+                    return Status.OK_STATUS;
+                } else {
+                    return Status.CANCEL_STATUS;
+                }
+            }
+        };
 
-		_updateJob.schedule(5000);
+        _updateJob.schedule(5000);
 
-	}
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void dispose() {
-		_updateJob.cancel();
-		super.dispose();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void dispose() {
+        _updateJob.cancel();
+        super.dispose();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setFocus() {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFocus() {
+    }
 
-	private TableViewer createChannelTable(final Composite parent) {
-		// define column names
-		final String[] columnNames = new String[] {
-				"PROP_DESCRIPTION", "PROP_NAME", "PROP_VALUE" }; //$NON-NLS-1$ //$NON-NLS-2$
+    private TableViewer createChannelTable(final Composite parent) {
+        // define column names
+        final String[] columnNames = new String[] {
+                "PROP_DESCRIPTION", "PROP_NAME", "PROP_VALUE" }; //$NON-NLS-1$ //$NON-NLS-2$
 
-		// create table
-		final Table table = new Table(parent, SWT.FULL_SELECTION | SWT.MULTI
-				| SWT.HIDE_SELECTION | SWT.DOUBLE_BUFFERED | SWT.SCROLL_PAGE);
+        // create table
+        final Table table = new Table(parent, SWT.FULL_SELECTION | SWT.MULTI
+                | SWT.HIDE_SELECTION | SWT.DOUBLE_BUFFERED | SWT.SCROLL_PAGE);
 
-		table.setLinesVisible(true);
-		table.setLayoutData(LayoutUtil.createGridDataForFillingCell());
-		table.setHeaderVisible(true);
+        table.setLinesVisible(true);
+        table.setLayoutData(LayoutUtil.createGridDataForFillingCell());
+        table.setHeaderVisible(true);
 
-		// create viewer
-		final TableViewer viewer = new TableViewer(table);
+        // create viewer
+        final TableViewer viewer = new TableViewer(table);
 
-		TableViewerColumn tvColumn;
-		tvColumn = new TableViewerColumn(viewer, SWT.NONE);
-		tvColumn.getColumn().setText("Channel");
-		tvColumn.getColumn().setMoveable(false);
-		tvColumn.getColumn().setWidth(300);
+        TableViewerColumn tvColumn;
+        tvColumn = new TableViewerColumn(viewer, SWT.NONE);
+        tvColumn.getColumn().setText("Channel");
+        tvColumn.getColumn().setMoveable(false);
+        tvColumn.getColumn().setWidth(300);
 
-		tvColumn = new TableViewerColumn(viewer, SWT.NONE);
-		tvColumn.getColumn().setText("Connection State");
-		tvColumn.getColumn().setMoveable(false);
-		tvColumn.getColumn().setWidth(200);
+        tvColumn = new TableViewerColumn(viewer, SWT.NONE);
+        tvColumn.getColumn().setText("Connection State");
+        tvColumn.getColumn().setMoveable(false);
+        tvColumn.getColumn().setWidth(200);
 
-		tvColumn = new TableViewerColumn(viewer, SWT.NONE);
-		tvColumn.getColumn().setText("Latest Value");
-		tvColumn.getColumn().setMoveable(false);
-		tvColumn.getColumn().setWidth(200);
+        tvColumn = new TableViewerColumn(viewer, SWT.NONE);
+        tvColumn.getColumn().setText("Latest Value");
+        tvColumn.getColumn().setMoveable(false);
+        tvColumn.getColumn().setWidth(200);
 
-		viewer.setUseHashlookup(true);
+        viewer.setUseHashlookup(true);
 
-		// define column properties
-		viewer.setColumnProperties(columnNames);
+        // define column properties
+        viewer.setColumnProperties(columnNames);
 
-		// DnD
-		ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(viewer
-				.getControl(), DND.DROP_MOVE | DND.DROP_COPY,
-				new IProcessVariableAdressProvider() {
-					@Override
+        // DnD
+        ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(viewer
+                .getControl(), DND.DROP_MOVE | DND.DROP_COPY,
+                new IProcessVariableAdressProvider() {
+                    @Override
                     public List<IProcessVariableAddress> getProcessVariableAdresses() {
-						final List<IProcessVariableAddress> result = new ArrayList<IProcessVariableAddress>();
+                        final List<IProcessVariableAddress> result = new ArrayList<IProcessVariableAddress>();
 
-						final IStructuredSelection sel = (IStructuredSelection) viewer
-								.getSelection();
-						final Iterator<IProcessVariableAdressProvider> it = sel
-								.iterator();
+                        final IStructuredSelection sel = (IStructuredSelection) viewer
+                                .getSelection();
+                        final Iterator<IProcessVariableAdressProvider> it = sel
+                                .iterator();
 
-						while (it.hasNext()) {
-							result.add(it.next().getPVAdress());
-						}
+                        while (it.hasNext()) {
+                            result.add(it.next().getPVAdress());
+                        }
 
-						return result;
-					}
+                        return result;
+                    }
 
-					@Override
+                    @Override
                     public IProcessVariableAddress getPVAdress() {
-						final IStructuredSelection sel = (IStructuredSelection) viewer
-								.getSelection();
-						final IProcessVariableAdressProvider pvProvider = (IProcessVariableAdressProvider) sel
-								.getFirstElement();
-						return pvProvider != null ? pvProvider.getPVAdress()
-								: null;
-					}
+                        final IStructuredSelection sel = (IStructuredSelection) viewer
+                                .getSelection();
+                        final IProcessVariableAdressProvider pvProvider = (IProcessVariableAdressProvider) sel
+                                .getFirstElement();
+                        return pvProvider != null ? pvProvider.getPVAdress()
+                                : null;
+                    }
 
-				});
+                });
 
-		return viewer;
-	}
+        return viewer;
+    }
 
-	class ChangeSortDirectionListener implements SelectionListener {
-		private final SortDirection _sortDirection;
+    class ChangeSortDirectionListener implements SelectionListener {
+        private final SortDirection _sortDirection;
 
-		public ChangeSortDirectionListener(final SortDirection sortDirection) {
-			assert sortDirection != null;
-			_sortDirection = sortDirection;
-		}
+        public ChangeSortDirectionListener(final SortDirection sortDirection) {
+            assert sortDirection != null;
+            _sortDirection = sortDirection;
+        }
 
-		@Override
+        @Override
         public void widgetDefaultSelected(final SelectionEvent e) {
 
-		}
+        }
 
-		@Override
+        @Override
         public void widgetSelected(final SelectionEvent e) {
-			ConnectionStateView.this._sortDirection = this._sortDirection;
-		}
-	}
+            ConnectionStateView.this._sortDirection = this._sortDirection;
+        }
+    }
 
 }

@@ -38,29 +38,29 @@ import org.csstudio.dal.group.GroupDataAccessProvider;
  * @author <a href="mailto:igor.kriznar@cosylab.com">Igor Kriznar</a>
  */
 public interface DeviceFamily<T extends AbstractDevice> extends DeviceCollection<T>,
-	GroupDataAccessProvider
+    GroupDataAccessProvider
 {
-	/**
-	 * Destroys and releases all properties and remote respurces and
-	 * removes itself from paretn application context.
-	 */
-	public void destroyAll();
+    /**
+     * Destroys and releases all properties and remote respurces and
+     * removes itself from paretn application context.
+     */
+    public void destroyAll();
 
-	/**
-	 * If this family is owner of property, then destroys the property
-	 * and releases all properties and remote respurces and removes it from
-	 * itself.
-	 *
-	 * @param prop property
-	 */
-	public void destroy(T prop);
+    /**
+     * If this family is owner of property, then destroys the property
+     * and releases all properties and remote respurces and removes it from
+     * itself.
+     *
+     * @param prop property
+     */
+    public void destroy(T prop);
 
-	/**
-	 * Parent application context.
-	 *
-	 * @return parent application context
-	 */
-	public AbstractApplicationContext getApplicationContext();
+    /**
+     * Parent application context.
+     *
+     * @return parent application context
+     */
+    public AbstractApplicationContext getApplicationContext();
 } /* __oOo__ */
 
 

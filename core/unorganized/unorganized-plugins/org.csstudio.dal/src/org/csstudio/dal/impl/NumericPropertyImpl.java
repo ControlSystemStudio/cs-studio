@@ -32,54 +32,54 @@ import org.csstudio.dal.context.PropertyContext;
  *
  */
 public class NumericPropertyImpl<T,Ts> extends DynamicValuePropertyImpl<T>
-	implements NumericProperty<T,Ts>
+    implements NumericProperty<T,Ts>
 {
-	/**
-	 * Creates a new NumericPropertyImpl object.
-	 *
-	 * @param valClass value datatype class
-	 * @param name property name
-	 * @param propertyContext property context
-	 */
-	public NumericPropertyImpl(Class<T> valClass, String name,
-	    PropertyContext propertyContext)
-	{
-		super(valClass, name, propertyContext);
-	}
+    /**
+     * Creates a new NumericPropertyImpl object.
+     *
+     * @param valClass value datatype class
+     * @param name property name
+     * @param propertyContext property context
+     */
+    public NumericPropertyImpl(Class<T> valClass, String name,
+        PropertyContext propertyContext)
+    {
+        super(valClass, name, propertyContext);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.NumericSimpleProperty#getFormat()
-	 */
-	public String getFormat() throws DataExchangeException
-	{
-		return (String)directoryProxy.getCharacteristic(C_FORMAT);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.NumericSimpleProperty#getFormat()
+     */
+    public String getFormat() throws DataExchangeException
+    {
+        return (String)directoryProxy.getCharacteristic(C_FORMAT);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.NumericSimpleProperty#getMaximum()
-	 */
-	public Ts getMaximum() throws DataExchangeException
-	{
-		// Override this method is <Ts> in not same as <T>
-		return (Ts)directoryProxy.getCharacteristic(C_MAXIMUM);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.NumericSimpleProperty#getMaximum()
+     */
+    public Ts getMaximum() throws DataExchangeException
+    {
+        // Override this method is <Ts> in not same as <T>
+        return (Ts)directoryProxy.getCharacteristic(C_MAXIMUM);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.NumericSimpleProperty#getMinimum()
-	 */
-	public Ts getMinimum() throws DataExchangeException
-	{
-		// Override this method is <Ts> in not same as <T>
-		return (Ts)directoryProxy.getCharacteristic(C_MINIMUM);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.NumericSimpleProperty#getMinimum()
+     */
+    public Ts getMinimum() throws DataExchangeException
+    {
+        // Override this method is <Ts> in not same as <T>
+        return (Ts)directoryProxy.getCharacteristic(C_MINIMUM);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.NumericSimpleProperty#getUnits()
-	 */
-	public String getUnits() throws DataExchangeException
-	{
-		return (String)directoryProxy.getCharacteristic(C_UNITS);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.NumericSimpleProperty#getUnits()
+     */
+    public String getUnits() throws DataExchangeException
+    {
+        return (String)directoryProxy.getCharacteristic(C_UNITS);
+    }
 }
 
 /* __oOo__ */

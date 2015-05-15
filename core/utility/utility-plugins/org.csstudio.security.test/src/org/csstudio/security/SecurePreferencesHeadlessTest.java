@@ -19,7 +19,7 @@ import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.junit.Test;
 
 /** JUnit Plug-in test of secure preferences
- * 
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -43,17 +43,17 @@ public class SecurePreferencesHeadlessTest
         }
         assertThat(found, equalTo(true));
     }
-    
+
     @Test
     public void testSecurePreferences() throws Exception
     {
-    	final Type type = SecurePreferences.Type.Instance;
-		ISecurePreferences prefs = SecurePreferences.getSecurePreferences(type);
+        final Type type = SecurePreferences.Type.Instance;
+        ISecurePreferences prefs = SecurePreferences.getSecurePreferences(type);
         ISecurePreferences node = prefs.node(SecuritySupport.ID);
-        
+
         // See if there's a value written by previous run
         System.out.println("Previous value: " + node.get("test_setting", "nothing"));
-        
+
         // Write a value
         node.put("test_setting", "secret_value", true);
         prefs.flush();
@@ -69,9 +69,9 @@ public class SecurePreferencesHeadlessTest
                 found = true;
         }
         assertThat(found, equalTo(true));
-        
+
         // Start over, read
-		prefs = SecurePreferences.getSecurePreferences(type);
+        prefs = SecurePreferences.getSecurePreferences(type);
         node = prefs.node(SecuritySupport.ID);
         String value = node.get("test_setting", null);
         assertThat(value, equalTo("secret_value"));

@@ -18,24 +18,24 @@ import org.eclipse.swt.widgets.Event;
  */
 public class SSTextLayout {
 
-	public void init(Display display, String text) {
-		return;
-	}
+    public void init(Display display, String text) {
+        return;
+    }
 
-	public void addStyle(Font font, Color color, int x, int y) {
-		return;
-	}
+    public void addStyle(Font font, Color color, int x, int y) {
+        return;
+    }
 
-	public void handlePaintItemEvent(Event event, int offsetX, int offsetY) {
-		return;
-	}
+    public void handlePaintItemEvent(Event event, int offsetX, int offsetY) {
+        return;
+    }
 
-	public void handleMeasureItemEvent(Event event) {
-		return;
-	}
+    public void handleMeasureItemEvent(Event event) {
+        return;
+    }
 
-	public Rectangle getBounds() {
-		return new Rectangle(0, 0, 0, 0);
-	}
+    public Rectangle getBounds() {
+        return new Rectangle(0, 0, 0, 0);
+    }
 
 }

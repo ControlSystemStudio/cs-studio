@@ -29,250 +29,250 @@ import org.epics.vtype.VType;
 public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart#getValue()
-	 */
-	@Override
-	public Object getValue() {
-		return ((ByteMonitorFigure)getFigure()).getValue();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart#getValue()
+     */
+    @Override
+    public Object getValue() {
+        return ((ByteMonitorFigure)getFigure()).getValue();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart#setValue(java.lang.Object)
-	 */
-	@Override
-	public void setValue(Object value) {
-		if(value instanceof Integer)
-			((ByteMonitorFigure)getFigure()).setValue((Integer)value);
-		else if (value instanceof Long)
-			((ByteMonitorFigure)getFigure()).setValue((Long)value);
-		else if (value instanceof Double)
-			((ByteMonitorFigure)getFigure()).setValue((Double)value);
-		else if (value instanceof Number)
-			((ByteMonitorFigure)getFigure()).setValue(((Number)value).longValue());
-		else
-			super.setValue(value);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart#setValue(java.lang.Object)
+     */
+    @Override
+    public void setValue(Object value) {
+        if(value instanceof Integer)
+            ((ByteMonitorFigure)getFigure()).setValue((Integer)value);
+        else if (value instanceof Long)
+            ((ByteMonitorFigure)getFigure()).setValue((Long)value);
+        else if (value instanceof Double)
+            ((ByteMonitorFigure)getFigure()).setValue((Double)value);
+        else if (value instanceof Number)
+            ((ByteMonitorFigure)getFigure()).setValue(((Number)value).longValue());
+        else
+            super.setValue(value);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#doCreateFigure()
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		ByteMonitorModel model = (ByteMonitorModel) getWidgetModel();
+    /* (non-Javadoc)
+     * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#doCreateFigure()
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        ByteMonitorModel model = (ByteMonitorModel) getWidgetModel();
 
-		ByteMonitorFigure fig = new ByteMonitorFigure();
-		setModel(model);
-		setFigure(fig);
-		fig.setStartBit(((Integer)model.getPropertyValue(ByteMonitorModel.PROP_START_BIT)) );
-		fig.setNumBits(((Integer)model.getPropertyValue(ByteMonitorModel.PROP_NUM_BITS)) );
-		fig.setHorizontal(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_HORIZONTAL)) );
-		fig.setReverseBits(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_BIT_REVERSE)) );
-		fig.setSquareLED(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_SQUARE_LED)) );
-		fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getSWTColor() );
-		fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getSWTColor() );
-		fig.setEffect3D((Boolean)getPropertyValue(ByteMonitorModel.PROP_EFFECT3D));
-		fig.setLabels(model.getLabels());
-		fig.setValue(0x1111);
-		fig.drawValue();
+        ByteMonitorFigure fig = new ByteMonitorFigure();
+        setModel(model);
+        setFigure(fig);
+        fig.setStartBit(((Integer)model.getPropertyValue(ByteMonitorModel.PROP_START_BIT)) );
+        fig.setNumBits(((Integer)model.getPropertyValue(ByteMonitorModel.PROP_NUM_BITS)) );
+        fig.setHorizontal(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_HORIZONTAL)) );
+        fig.setReverseBits(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_BIT_REVERSE)) );
+        fig.setSquareLED(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_SQUARE_LED)) );
+        fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getSWTColor() );
+        fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getSWTColor() );
+        fig.setEffect3D((Boolean)getPropertyValue(ByteMonitorModel.PROP_EFFECT3D));
+        fig.setLabels(model.getLabels());
+        fig.setValue(0x1111);
+        fig.drawValue();
 
-		return fig;
-	}
+        return fig;
+    }
 
-	@Override
-	public ByteMonitorModel getWidgetModel() {
-		return (ByteMonitorModel) super.getWidgetModel();
-	}
+    @Override
+    public ByteMonitorModel getWidgetModel() {
+        return (ByteMonitorModel) super.getWidgetModel();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#registerPropertyChangeHandlers()
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		super.registerBasePropertyChangeHandlers();
-		getFigure().setEnabled(getWidgetModel().isEnabled() &&
-				(getExecutionMode() == ExecutionMode.RUN_MODE));
+    /* (non-Javadoc)
+     * @see org.csstudio.opibuilder.editparts.AbstractBaseEditPart#registerPropertyChangeHandlers()
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        super.registerBasePropertyChangeHandlers();
+        getFigure().setEnabled(getWidgetModel().isEnabled() &&
+                (getExecutionMode() == ExecutionMode.RUN_MODE));
 
-		removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_ENABLED);
+        removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_ENABLED);
 
-		//enable
-		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				if(getExecutionMode() == ExecutionMode.RUN_MODE)
-					figure.setEnabled((Boolean)newValue);
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
+        //enable
+        IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler(){
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                if(getExecutionMode() == ExecutionMode.RUN_MODE)
+                    figure.setEnabled((Boolean)newValue);
+                return false;
+            }
+        };
+        setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED, enableHandler);
 
-		// PV_Value
-		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				boolean succeed = true;
-				if((newValue != null) && (newValue instanceof VType) ){					
-					Number number = VTypeHelper.getNumber(((VType) newValue));
-					if (number != null) {
-						setValue(number);
-					} else
-						succeed = false;
-					
-				}
-				else {
-		            succeed = false;
-				}
-				if(!succeed){
-					setValue(0);
-					ConsoleUtil.writeError(NLS.bind(
-							"{0} does not accept non-numeric value.",
-							getWidgetModel().getName()));
-				}
-				return false;
-			}
-		};
-		setPropertyChangeHandler(ByteMonitorModel.PROP_PVVALUE, pvhandler);
+        // PV_Value
+        IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                boolean succeed = true;
+                if((newValue != null) && (newValue instanceof VType) ){
+                    Number number = VTypeHelper.getNumber(((VType) newValue));
+                    if (number != null) {
+                        setValue(number);
+                    } else
+                        succeed = false;
 
-		// on color
-		IWidgetPropertyChangeHandler colorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ByteMonitorFigure figure = (ByteMonitorFigure) refreshableFigure;
-				figure.setOnColor(((OPIColor) newValue).getSWTColor());
-				figure.drawValue();
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ByteMonitorModel.PROP_ON_COLOR, colorHandler);
+                }
+                else {
+                    succeed = false;
+                }
+                if(!succeed){
+                    setValue(0);
+                    ConsoleUtil.writeError(NLS.bind(
+                            "{0} does not accept non-numeric value.",
+                            getWidgetModel().getName()));
+                }
+                return false;
+            }
+        };
+        setPropertyChangeHandler(ByteMonitorModel.PROP_PVVALUE, pvhandler);
 
-		// off color
-		colorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ByteMonitorFigure figure = (ByteMonitorFigure) refreshableFigure;
-				figure.setOffColor(((OPIColor) newValue).getSWTColor());
-				figure.drawValue();
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ByteMonitorModel.PROP_OFF_COLOR, colorHandler);
+        // on color
+        IWidgetPropertyChangeHandler colorHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                ByteMonitorFigure figure = (ByteMonitorFigure) refreshableFigure;
+                figure.setOnColor(((OPIColor) newValue).getSWTColor());
+                figure.drawValue();
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ByteMonitorModel.PROP_ON_COLOR, colorHandler);
+
+        // off color
+        colorHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                ByteMonitorFigure figure = (ByteMonitorFigure) refreshableFigure;
+                figure.setOffColor(((OPIColor) newValue).getSWTColor());
+                figure.drawValue();
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ByteMonitorModel.PROP_OFF_COLOR, colorHandler);
 
 
-		//change orientation of the bit display
-		IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
+        //change orientation of the bit display
+        IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
 
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure refreshableFigure) {
-				ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
-				figure.setHorizontal((Boolean)newValue);
-				ByteMonitorModel model = getWidgetModel();
-				if((Boolean) newValue) //from vertical to horizontal
-					model.setLocation(model.getLocation().x - model.getSize().height/2 + model.getSize().width/2,
-						model.getLocation().y + model.getSize().height/2 - model.getSize().width/2);
-				else  //from horizontal to vertical
-					model.setLocation(model.getLocation().x + model.getSize().width/2 - model.getSize().height/2,
-						model.getLocation().y - model.getSize().width/2 + model.getSize().height/2);
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure refreshableFigure) {
+                ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
+                figure.setHorizontal((Boolean)newValue);
+                ByteMonitorModel model = getWidgetModel();
+                if((Boolean) newValue) //from vertical to horizontal
+                    model.setLocation(model.getLocation().x - model.getSize().height/2 + model.getSize().width/2,
+                        model.getLocation().y + model.getSize().height/2 - model.getSize().width/2);
+                else  //from horizontal to vertical
+                    model.setLocation(model.getLocation().x + model.getSize().width/2 - model.getSize().height/2,
+                        model.getLocation().y - model.getSize().width/2 + model.getSize().height/2);
 
-				model.setSize(model.getSize().height, model.getSize().width);
+                model.setSize(model.getSize().height, model.getSize().width);
 
-				figure.drawValue();
-				return true;
-			}
-		};
+                figure.drawValue();
+                return true;
+            }
+        };
 
-		setPropertyChangeHandler(ByteMonitorModel.PROP_HORIZONTAL, horizontalHandler);
+        setPropertyChangeHandler(ByteMonitorModel.PROP_HORIZONTAL, horizontalHandler);
 
-		//change the display order of the bits
-		IWidgetPropertyChangeHandler reverseBitsHandler = new IWidgetPropertyChangeHandler() {
+        //change the display order of the bits
+        IWidgetPropertyChangeHandler reverseBitsHandler = new IWidgetPropertyChangeHandler() {
 
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure refreshableFigure) {
-				ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
-				figure.setReverseBits((Boolean)newValue);
-				figure.drawValue();
-				return true;
-			}
-		};
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure refreshableFigure) {
+                ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
+                figure.setReverseBits((Boolean)newValue);
+                figure.drawValue();
+                return true;
+            }
+        };
 
-		setPropertyChangeHandler(ByteMonitorModel.PROP_BIT_REVERSE, reverseBitsHandler);
+        setPropertyChangeHandler(ByteMonitorModel.PROP_BIT_REVERSE, reverseBitsHandler);
 
-		//Set the bit to use as a starting point
-		IWidgetPropertyChangeHandler startBitHandler = new IWidgetPropertyChangeHandler() {
+        //Set the bit to use as a starting point
+        IWidgetPropertyChangeHandler startBitHandler = new IWidgetPropertyChangeHandler() {
 
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure refreshableFigure) {
-				ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
-//				int maxBits = figure.getMAX_BITS();
-//				int numBits = figure.getNumBits();
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure refreshableFigure) {
+                ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
+//                int maxBits = figure.getMAX_BITS();
+//                int numBits = figure.getNumBits();
 /*
- * 				if ((Integer)newValue < maxBits && ((Integer)newValue + numBits) < maxBits){
+ *                 if ((Integer)newValue < maxBits && ((Integer)newValue + numBits) < maxBits){
  */
-					figure.setStartBit((Integer)newValue);
-/*				}
-				else {
-					((ByteMonitorFigure)figure).setInvalidBits();
-				}
-				*/
-				figure.drawValue();
-					return true;
-			}
-		};
+                    figure.setStartBit((Integer)newValue);
+/*                }
+                else {
+                    ((ByteMonitorFigure)figure).setInvalidBits();
+                }
+                */
+                figure.drawValue();
+                    return true;
+            }
+        };
 
-		setPropertyChangeHandler(ByteMonitorModel.PROP_START_BIT, startBitHandler);
+        setPropertyChangeHandler(ByteMonitorModel.PROP_START_BIT, startBitHandler);
 
-		//Set the number of bits to display
-		IWidgetPropertyChangeHandler numBitsHandler = new IWidgetPropertyChangeHandler() {
+        //Set the number of bits to display
+        IWidgetPropertyChangeHandler numBitsHandler = new IWidgetPropertyChangeHandler() {
 
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure refreshableFigure) {
-				ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
-				figure.setNumBits((Integer)newValue);
-				figure.drawValue();
-				return true;
-			}
-		};
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure refreshableFigure) {
+                ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
+                figure.setNumBits((Integer)newValue);
+                figure.drawValue();
+                return true;
+            }
+        };
 
-		setPropertyChangeHandler(ByteMonitorModel.PROP_NUM_BITS, numBitsHandler);
+        setPropertyChangeHandler(ByteMonitorModel.PROP_NUM_BITS, numBitsHandler);
 
-		//Sqaure LED
-		IWidgetPropertyChangeHandler squareLEDHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ByteMonitorFigure bm = (ByteMonitorFigure) refreshableFigure;
-				bm.setSquareLED((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ByteMonitorModel.PROP_SQUARE_LED, squareLEDHandler);
+        //Sqaure LED
+        IWidgetPropertyChangeHandler squareLEDHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                ByteMonitorFigure bm = (ByteMonitorFigure) refreshableFigure;
+                bm.setSquareLED((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ByteMonitorModel.PROP_SQUARE_LED, squareLEDHandler);
 
 
-		//effect 3D
-		IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ByteMonitorFigure bmFig = (ByteMonitorFigure) refreshableFigure;
-				bmFig.setEffect3D((Boolean) newValue);
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ByteMonitorModel.PROP_EFFECT3D, effect3DHandler);
+        //effect 3D
+        IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                ByteMonitorFigure bmFig = (ByteMonitorFigure) refreshableFigure;
+                bmFig.setEffect3D((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ByteMonitorModel.PROP_EFFECT3D, effect3DHandler);
 
-		// labels
-		IWidgetPropertyChangeHandler labelsHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue,
-					final IFigure refreshableFigure) {
-				ByteMonitorFigure bmFig = (ByteMonitorFigure) refreshableFigure;
-				ByteMonitorModel model = getWidgetModel();
-				bmFig.setLabels(model.getLabels());
-				return true;
-			}
-		};
-		setPropertyChangeHandler(ByteMonitorModel.PROP_LABELS, labelsHandler);
-	}
+        // labels
+        IWidgetPropertyChangeHandler labelsHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue,
+                    final IFigure refreshableFigure) {
+                ByteMonitorFigure bmFig = (ByteMonitorFigure) refreshableFigure;
+                ByteMonitorModel model = getWidgetModel();
+                bmFig.setLabels(model.getLabels());
+                return true;
+            }
+        };
+        setPropertyChangeHandler(ByteMonitorModel.PROP_LABELS, labelsHandler);
+    }
 
 }

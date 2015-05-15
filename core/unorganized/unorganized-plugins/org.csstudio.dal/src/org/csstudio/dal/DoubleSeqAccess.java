@@ -33,7 +33,7 @@ package org.csstudio.dal;
  */
 public interface DoubleSeqAccess extends SequenceAccess<double[]>
 {
-	//
+    //
 }
 
 /* __oOo__ */

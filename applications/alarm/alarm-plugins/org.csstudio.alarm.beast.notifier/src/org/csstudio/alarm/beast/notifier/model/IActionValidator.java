@@ -14,19 +14,19 @@ import org.csstudio.alarm.beast.client.AADataStructure;
  * @author Fred Arnaud (Sopra Group)
  *
  */
-public interface IActionValidator 
+public interface IActionValidator
 {
-	/**
-	 * Initialize the validator with automated action details
-	 * @param details from {@link AADataStructure}
-	 */
-	public void init(String details);
-	
-	/** @return <code>true</code> if the command is valid.
-	 * @throws Exception
-	 */
-	public boolean validate() throws Exception;
-	
-	/** Get the {@link IActionHandler} used to parse details */
-	public IActionHandler getHandler();
+    /**
+     * Initialize the validator with automated action details
+     * @param details from {@link AADataStructure}
+     */
+    public void init(String details);
+
+    /** @return <code>true</code> if the command is valid.
+     * @throws Exception
+     */
+    public boolean validate() throws Exception;
+
+    /** Get the {@link IActionHandler} used to parse details */
+    public IActionHandler getHandler();
 }

@@ -17,10 +17,10 @@ import org.csstudio.swt.widgets.figures.RadioBoxFigure;
  */
 public class RadioBoxEditpart extends AbstractChoiceEditPart {
 
-	@Override
-	protected AbstractChoiceFigure createChoiceFigure() {
-		return new RadioBoxFigure(
-				getExecutionMode() == ExecutionMode.RUN_MODE);
-	}
+    @Override
+    protected AbstractChoiceFigure createChoiceFigure() {
+        return new RadioBoxFigure(
+                getExecutionMode() == ExecutionMode.RUN_MODE);
+    }
 
 }

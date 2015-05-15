@@ -25,7 +25,7 @@ public class RemovePropertiesJob extends Job {
     /**
      * create a job to remove a set of properties from a set of channels in
      * channelfinder
-     * 
+     *
      * @param name
      *            - job name
      * @param channels
@@ -53,7 +53,7 @@ public class RemovePropertiesJob extends Job {
                         // TODO this is not enough, need to AllowEncodedSlashes to support channel names like sim://noise..
                         return URLEncoder.encode(name, "UTF-8");
                     } catch (Exception e) {
-                        
+
                     }
                     return null;
                 }).collect(Collectors.toList());

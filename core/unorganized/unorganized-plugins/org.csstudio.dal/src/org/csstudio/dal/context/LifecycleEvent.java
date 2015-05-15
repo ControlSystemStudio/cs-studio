@@ -32,42 +32,42 @@ import java.util.EventObject;
  */
 public class LifecycleEvent extends EventObject
 {
-	private static final long serialVersionUID = 5970470075593327956L;
-	private LifecycleState state;
+    private static final long serialVersionUID = 5970470075593327956L;
+    private LifecycleState state;
 
-	/**
-	     * Event constructor.
-	     *
-	     * @param source source of the event, non-<code>null</code>
-	     * @param state the phase indicated by this event
-	     */
-	public LifecycleEvent(LifecycleReporter source, LifecycleState state)
-	{
-		super(source);
-		this.state = state;
-	}
+    /**
+         * Event constructor.
+         *
+         * @param source source of the event, non-<code>null</code>
+         * @param state the phase indicated by this event
+         */
+    public LifecycleEvent(LifecycleReporter source, LifecycleState state)
+    {
+        super(source);
+        this.state = state;
+    }
 
-	/**
-	 * Returns the current phase of the initialization or destruction
-	 * process.
-	 *
-	 * @return the current phase of the process
-	 */
-	public LifecycleState getState()
-	{
-		return state;
-	}
+    /**
+     * Returns the current phase of the initialization or destruction
+     * process.
+     *
+     * @return the current phase of the process
+     */
+    public LifecycleState getState()
+    {
+        return state;
+    }
 
-	/**
-	 * Returns a short summary about this instance.
-	 *
-	 * @return internal state of this
-	 */
-	public String toString()
-	{
-		return "LifecycleEvent = { source='" + source + "' state='" + state
-		+ "' }";
-	}
+    /**
+     * Returns a short summary about this instance.
+     *
+     * @return internal state of this
+     */
+    public String toString()
+    {
+        return "LifecycleEvent = { source='" + source + "' state='" + state
+        + "' }";
+    }
 } /* __oOo__ */
 
 

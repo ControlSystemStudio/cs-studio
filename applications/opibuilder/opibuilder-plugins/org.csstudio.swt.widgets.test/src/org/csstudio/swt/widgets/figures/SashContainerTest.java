@@ -20,42 +20,42 @@ import org.eclipse.draw2d.LineBorder;
  */
 public class SashContainerTest extends AbstractWidgetTest {
 
-	@Override
-	public Figure createTestWidget() {
-		final SashContainerFigure sashContainer = new SashContainerFigure();
-		sashContainer.setForegroundColor(ColorConstants.buttonDarker);
-		sashContainer.setBackgroundColor(ColorConstants.lightBlue);
-		sashContainer.setBorder(new LineBorder());
-		sashContainer.setSashWidth(3);
-		sashContainer.setHorizontal(true);
-		sashContainer.setSashPosition(0.2);
-		sashContainer.setSashStyle(SashStyle.RIDGED);
-		sashContainer
-				.addLayoutListener(new LayoutListener.Stub(){
-		
-					@Override
-					public void postLayout(IFigure container) {
-						System.out.println(sashContainer.getSashPosition()
-								+ " " + sashContainer.getSubPanelsBounds()[0]
-								+ sashContainer.getSubPanelsBounds()[1]);
-					}
-						
-				});
-		return sashContainer;
-	}
+    @Override
+    public Figure createTestWidget() {
+        final SashContainerFigure sashContainer = new SashContainerFigure();
+        sashContainer.setForegroundColor(ColorConstants.buttonDarker);
+        sashContainer.setBackgroundColor(ColorConstants.lightBlue);
+        sashContainer.setBorder(new LineBorder());
+        sashContainer.setSashWidth(3);
+        sashContainer.setHorizontal(true);
+        sashContainer.setSashPosition(0.2);
+        sashContainer.setSashStyle(SashStyle.RIDGED);
+        sashContainer
+                .addLayoutListener(new LayoutListener.Stub(){
 
-	@Override
-	public String[] getPropertyNames() {
-		String[] superProps = super.getPropertyNames();
-		String[] myProps = new String[] { "sashPosition", "horizontal",
-				"sashWidth", "sashStyle" };
+                    @Override
+                    public void postLayout(IFigure container) {
+                        System.out.println(sashContainer.getSashPosition()
+                                + " " + sashContainer.getSubPanelsBounds()[0]
+                                + sashContainer.getSubPanelsBounds()[1]);
+                    }
 
-		return concatenateStringArrays(superProps, myProps);
-	}
+                });
+        return sashContainer;
+    }
 
-	@Override
-	public boolean isAutoTest() {
-		return false;
-	}
+    @Override
+    public String[] getPropertyNames() {
+        String[] superProps = super.getPropertyNames();
+        String[] myProps = new String[] { "sashPosition", "horizontal",
+                "sashWidth", "sashStyle" };
+
+        return concatenateStringArrays(superProps, myProps);
+    }
+
+    @Override
+    public boolean isAutoTest() {
+        return false;
+    }
 
 }

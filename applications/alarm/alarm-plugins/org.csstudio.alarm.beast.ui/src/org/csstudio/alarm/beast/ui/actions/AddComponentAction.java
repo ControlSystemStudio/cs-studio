@@ -41,16 +41,16 @@ public class AddComponentAction extends Action
         this.shell = shell;
         this.model = model;
         this.parent = parent;
-    	//authorization
+        //authorization
         SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
     /** Prompt for PV name, add it to model.
      *  @see AbstractUserDependentAction
      */
-	@Override
-	public void run()
-	{
+    @Override
+    public void run()
+    {
         new AddComponentDialog(shell, model, parent).open();
-	}
+    }
 }

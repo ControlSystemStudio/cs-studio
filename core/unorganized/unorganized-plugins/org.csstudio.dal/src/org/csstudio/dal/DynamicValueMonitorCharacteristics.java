@@ -29,66 +29,66 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.CharacteristicContext
  */
 public interface DynamicValueMonitorCharacteristics
-	extends CharacteristicContext
+    extends CharacteristicContext
 {
-	/**
-	 * A name constant for the dynamic monitor characteristic
-	 * defaultTimerTrigger. This characteristic expresses, in long
-	 * milliseconds, the default time  interval between monitor notifications.
-	 * If such characteristic exists, it must have this name.
-	 */
-	public static final String C_DEFAULT_TIMER_TRIGGER = "defaultTimerTrigger";
+    /**
+     * A name constant for the dynamic monitor characteristic
+     * defaultTimerTrigger. This characteristic expresses, in long
+     * milliseconds, the default time  interval between monitor notifications.
+     * If such characteristic exists, it must have this name.
+     */
+    public static final String C_DEFAULT_TIMER_TRIGGER = "defaultTimerTrigger";
 
-	/**
-	 * A name constant for the dynamic monitor characteristic
-	 * heartbeat. Heartbeat is a boolean characteristic, denoting if the
-	 * monitor sends value updates even if the value has not changed, just to
-	 * confirm that the link to the underlying data source layer is still
-	 * open.
-	 */
-	public static final String C_HEARTBEAT = "heartbeat";
+    /**
+     * A name constant for the dynamic monitor characteristic
+     * heartbeat. Heartbeat is a boolean characteristic, denoting if the
+     * monitor sends value updates even if the value has not changed, just to
+     * confirm that the link to the underlying data source layer is still
+     * open.
+     */
+    public static final String C_HEARTBEAT = "heartbeat";
 
-	/**
-	 * A name constant for the dynamic monitor characteristic timer
-	 * trigger. Timer trigger is a settable characteristic, specifying the
-	 * time interval in milliseconds, that must elapse before a new monitor
-	 * notification is dispatched.
-	 */
-	public static final String C_TIMER_TRIGGER = "timerTrigger";
+    /**
+     * A name constant for the dynamic monitor characteristic timer
+     * trigger. Timer trigger is a settable characteristic, specifying the
+     * time interval in milliseconds, that must elapse before a new monitor
+     * notification is dispatched.
+     */
+    public static final String C_TIMER_TRIGGER = "timerTrigger";
 
-	/**
-	 * A name constant for the dynamic monitor characteristic
-	 * expressing, in long milliseconds, the minimal supported timer trigger.
-	 *
-	 * <p> Monitor may support or array of suppoted discreet timer triggers
-	 * (C_SUPPORTED_TIMER_TRIGGERS) or min and max timer trigger on continuous value interval
-	 * (C_MINIMUM_TIMER_TRIGGER and C_MINIMUM_TIMER_TRIGGER) or none of above, if there are no
-	 * special limitations.</p>
-	 */
-	public static final String C_MINIMUM_TIMER_TRIGGER = "minimumTimerTrigger";
+    /**
+     * A name constant for the dynamic monitor characteristic
+     * expressing, in long milliseconds, the minimal supported timer trigger.
+     *
+     * <p> Monitor may support or array of suppoted discreet timer triggers
+     * (C_SUPPORTED_TIMER_TRIGGERS) or min and max timer trigger on continuous value interval
+     * (C_MINIMUM_TIMER_TRIGGER and C_MINIMUM_TIMER_TRIGGER) or none of above, if there are no
+     * special limitations.</p>
+     */
+    public static final String C_MINIMUM_TIMER_TRIGGER = "minimumTimerTrigger";
 
-	/**
-	 * A name constant for the dynamic monitor characteristic
-	 * expressing, in long milliseconds, the maximal supported timer trigger.
-	 *
-	 * <p> Monitor may support or array of suppoted discreet timer triggers
-	 * (C_SUPPORTED_TIMER_TRIGGERS) or min and max timer trigger on continuous value interval
-	 * (C_MINIMUM_TIMER_TRIGGER and C_MINIMUM_TIMER_TRIGGER) or none of above, if there are no
-	 * special limitations.</p>
-	 */
-	public static final String C_MAXIMUM_TIMER_TRIGGER = "maximumTimerTrigger";
+    /**
+     * A name constant for the dynamic monitor characteristic
+     * expressing, in long milliseconds, the maximal supported timer trigger.
+     *
+     * <p> Monitor may support or array of suppoted discreet timer triggers
+     * (C_SUPPORTED_TIMER_TRIGGERS) or min and max timer trigger on continuous value interval
+     * (C_MINIMUM_TIMER_TRIGGER and C_MINIMUM_TIMER_TRIGGER) or none of above, if there are no
+     * special limitations.</p>
+     */
+    public static final String C_MAXIMUM_TIMER_TRIGGER = "maximumTimerTrigger";
 
-	/**
-	 * A name constant for the dynamic monitor characteristic
-	 * expressing set of supported timer triggers. Characcteristic vallue is array of
-	 * long values in milliseconds.
-	 *
-	 * <p> Monitor may support or array of suppoted discreet timer triggers
-	 * (C_SUPPORTED_TIMER_TRIGGERS) or min and max timer trigger on continuous value interval
-	 * (C_MINIMUM_TIMER_TRIGGER and C_MINIMUM_TIMER_TRIGGER) or none of above, if there are no
-	 * special limitations.</p>
-	 */
-	public static final String C_SUPPORTED_TIMER_TRIGGERS = "supportedTimerTriggers";
+    /**
+     * A name constant for the dynamic monitor characteristic
+     * expressing set of supported timer triggers. Characcteristic vallue is array of
+     * long values in milliseconds.
+     *
+     * <p> Monitor may support or array of suppoted discreet timer triggers
+     * (C_SUPPORTED_TIMER_TRIGGERS) or min and max timer trigger on continuous value interval
+     * (C_MINIMUM_TIMER_TRIGGER and C_MINIMUM_TIMER_TRIGGER) or none of above, if there are no
+     * special limitations.</p>
+     */
+    public static final String C_SUPPORTED_TIMER_TRIGGERS = "supportedTimerTriggers";
 }
 
 /* __oOo__ */

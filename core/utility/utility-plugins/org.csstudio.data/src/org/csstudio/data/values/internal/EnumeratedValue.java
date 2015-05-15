@@ -27,49 +27,49 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
     final private int values[];
 
     /** Constructor from pieces. */
-	public EnumeratedValue(final ITimestamp time, final ISeverity severity, final String status,
+    public EnumeratedValue(final ITimestamp time, final ISeverity severity, final String status,
                     final IEnumeratedMetaData meta_data, final Quality quality,
                     final int values[])
-	{
-		super(time, severity, status, meta_data, quality);
-		this.values = values;
-	}
+    {
+        super(time, severity, status, meta_data, quality);
+        this.values = values;
+    }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     final public int[] getValues()
-	{	return values;	}
+    {    return values;    }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     final public int getValue()
-	{	return values[0];  }
+    {    return values[0];  }
 
     /** {@inheritDoc} */
-	@Override
-	final public String format(final Format how, final int precision)
-	{
-	    final IEnumeratedMetaData enum_meta = getMetaData();
-	    final StringBuffer buf = new StringBuffer();
-		if (getSeverity().hasValue())
-		{
-			if(how == Format.Default || how == Format.String){
-				buf.append(enum_meta.getState(values[0]));
-				for (int i = 1; i < values.length; i++)
-				{
-					buf.append(Messages.ArrayElementSeparator);
-		            buf.append(enum_meta.getState(values[i]));
-				}
-			}else if (how == Format.Decimal){
-				buf.append(values[0]);
-				for (int i = 1; i < values.length; i++)
-				{
-					buf.append(Messages.ArrayElementSeparator);
-		            buf.append(values[i]);
-				}
-			}else if (how == Format.Exponential){
-				// Is there a better way to get this silly format?
-			 	NumberFormat fmt;
+    @Override
+    final public String format(final Format how, final int precision)
+    {
+        final IEnumeratedMetaData enum_meta = getMetaData();
+        final StringBuffer buf = new StringBuffer();
+        if (getSeverity().hasValue())
+        {
+            if(how == Format.Default || how == Format.String){
+                buf.append(enum_meta.getState(values[0]));
+                for (int i = 1; i < values.length; i++)
+                {
+                    buf.append(Messages.ArrayElementSeparator);
+                    buf.append(enum_meta.getState(values[i]));
+                }
+            }else if (how == Format.Decimal){
+                buf.append(values[0]);
+                for (int i = 1; i < values.length; i++)
+                {
+                    buf.append(Messages.ArrayElementSeparator);
+                    buf.append(values[i]);
+                }
+            }else if (how == Format.Exponential){
+                // Is there a better way to get this silly format?
+                 NumberFormat fmt;
                 final StringBuffer pattern = new StringBuffer(10);
                 pattern.append("0."); //$NON-NLS-1$
                 for (int i=0; i<precision; ++i) {
@@ -79,52 +79,52 @@ public class EnumeratedValue extends Value implements IEnumeratedValue
                 fmt = new DecimalFormat(pattern.toString());
                 buf.append(fmt.format(values[0]));
                 for (int i = 1; i < values.length; i++)
-	        	 {
-	        		 buf.append(Messages.ArrayElementSeparator);
-	        		 buf.append(buf.append(fmt.format(values[i])));
-	        	 }
-			}
+                 {
+                     buf.append(Messages.ArrayElementSeparator);
+                     buf.append(buf.append(fmt.format(values[i])));
+                 }
+            }
 
-		} else {
+        } else {
             buf.append(Messages.NoValue);
         }
-		return buf.toString();
-	}
+        return buf.toString();
+    }
 
     /** {@inheritDoc} */
-	@Override
-	final public boolean equals(final Object obj)
-	{
-		if (! (obj instanceof EnumeratedValue)) {
+    @Override
+    final public boolean equals(final Object obj)
+    {
+        if (! (obj instanceof EnumeratedValue)) {
             return false;
         }
-		final EnumeratedValue rhs = (EnumeratedValue) obj;
-		if (rhs.values.length != values.length) {
+        final EnumeratedValue rhs = (EnumeratedValue) obj;
+        if (rhs.values.length != values.length) {
             return false;
         }
-		for (int i=0; i<values.length; ++i) {
+        for (int i=0; i<values.length; ++i) {
             if (rhs.values[i] != values[i]) {
                 return false;
             }
         }
-		return super.equals(obj);
-	}
+        return super.equals(obj);
+    }
 
     /** {@inheritDoc} */
-	@Override
-	final public int hashCode()
-	{
-		int h = super.hashCode();
-		for (int i=0; i<values.length; ++i) {
+    @Override
+    final public int hashCode()
+    {
+        int h = super.hashCode();
+        for (int i=0; i<values.length; ++i) {
             h += values[i];
         }
-		return h;
-	}
+        return h;
+    }
 
 
-	/** {@inheritDoc} */
-	@Override
-	public IEnumeratedMetaData getMetaData() {
-	    return (IEnumeratedMetaData) super.getMetaData();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public IEnumeratedMetaData getMetaData() {
+        return (IEnumeratedMetaData) super.getMetaData();
+    }
 }

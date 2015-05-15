@@ -14,25 +14,25 @@ import org.eclipse.swt.graphics.RGB;
 
 public class Byte2Model extends AbstractADL2Model {
 
-	public Byte2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
-		super(adlWidget, colorMap, parentModel);
-	}
+    public Byte2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
+        super(adlWidget, colorMap, parentModel);
+    }
 
-	@Override
-	public void processWidget(ADLWidget adlWidget) {
-		ByteMonitor byteWidget = new ByteMonitor(adlWidget);
-		if (byteWidget != null) {
-			setADLObjectProps(byteWidget, widgetModel);
-			setADLMonitorProps(byteWidget, widgetModel);
-		}
-		//TODO many things
-		TranslatorUtils.printNotHandledWarning(className, "many things");
-	}
+    @Override
+    public void processWidget(ADLWidget adlWidget) {
+        ByteMonitor byteWidget = new ByteMonitor(adlWidget);
+        if (byteWidget != null) {
+            setADLObjectProps(byteWidget, widgetModel);
+            setADLMonitorProps(byteWidget, widgetModel);
+        }
+        //TODO many things
+        TranslatorUtils.printNotHandledWarning(className, "many things");
+    }
 
-	@Override
-	public void makeModel(ADLWidget adlWidget,
-			AbstractContainerModel parentModel) {
-		widgetModel = new ByteMonitorModel();
-		parentModel.addChild(widgetModel, true);
-	}
+    @Override
+    public void makeModel(ADLWidget adlWidget,
+            AbstractContainerModel parentModel) {
+        widgetModel = new ByteMonitorModel();
+        parentModel.addChild(widgetModel, true);
+    }
 }

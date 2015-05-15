@@ -12,31 +12,31 @@ import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
 public class TestPVAction implements IObjectActionDelegate {
-	
-	private Shell shell;
-	private ISelection selection;
 
-	public TestPVAction() {
-		// TODO Auto-generated constructor stub
-	}
+    private Shell shell;
+    private ISelection selection;
 
-	@Override
-	public void run(IAction action) {
-		MessageDialog.openInformation(
-				shell,
-				"PV Action",
-				"PVs: " + Arrays.toString(AdapterUtil.convert(selection,
-						ProcessVariable.class)));
-	}
+    public TestPVAction() {
+        // TODO Auto-generated constructor stub
+    }
 
-	@Override
-	public void selectionChanged(IAction action, ISelection selection) {
-		this.selection = selection;
-	}
+    @Override
+    public void run(IAction action) {
+        MessageDialog.openInformation(
+                shell,
+                "PV Action",
+                "PVs: " + Arrays.toString(AdapterUtil.convert(selection,
+                        ProcessVariable.class)));
+    }
 
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		shell = targetPart.getSite().getShell();
-	}
+    @Override
+    public void selectionChanged(IAction action, ISelection selection) {
+        this.selection = selection;
+    }
+
+    @Override
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        shell = targetPart.getSite().getShell();
+    }
 
 }

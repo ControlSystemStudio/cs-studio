@@ -31,73 +31,73 @@ import org.eclipse.jface.action.IAction;
 public class PerformAutoSizeAction extends AbstractWidgetTargetAction{
 
 
-	public void run(IAction action) {
-		if(getContainerEditpart().getChildren().size() <=0){
-			return;
-		}
-		CompoundCommand compoundCommand = new CompoundCommand("Perform AutoSize");	
-		
-		AbstractContainerEditpart containerEditpart = getContainerEditpart();
-		AbstractContainerModel containerModel = containerEditpart.getWidgetModel();
-		
-		
-		//temporary unlock children so children will not be resized.
-		if(containerEditpart instanceof GroupingContainerEditPart){				
-			compoundCommand.add(new SetWidgetPropertyCommand(containerModel, 
-					GroupingContainerModel.PROP_LOCK_CHILDREN, false));
-		}			
-		
-		IFigure figure = getContainerFigure();
+    public void run(IAction action) {
+        if(getContainerEditpart().getChildren().size() <=0){
+            return;
+        }
+        CompoundCommand compoundCommand = new CompoundCommand("Perform AutoSize");
 
-		Rectangle childrenRange = GeometryUtil.getChildrenRange(containerEditpart);
-		
-		Point tranlateSize = new Point(childrenRange.x, childrenRange.y);
-		
-		compoundCommand.add(new SetBoundsCommand(containerModel, 
-				new Rectangle(containerModel.getLocation().translate(tranlateSize), new Dimension(
-						childrenRange.width + figure.getInsets().left + figure.getInsets().right,
-						childrenRange.height + figure.getInsets().top + figure.getInsets().bottom))));
-		
-
-		for(Object editpart : containerEditpart.getChildren()){
-			AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
-			compoundCommand.add(new SetBoundsCommand(widget, new Rectangle(
-					widget.getLocation().translate(tranlateSize.getNegated()), 
-					widget.getSize())));
-		}	
-		
-		//recover lock
-		if(containerEditpart instanceof GroupingContainerEditPart){			
-			Object oldvalue = containerEditpart.getWidgetModel()
-			.getPropertyValue(GroupingContainerModel.PROP_LOCK_CHILDREN);
-			compoundCommand.add(new SetWidgetPropertyCommand(containerModel,
-					GroupingContainerModel.PROP_LOCK_CHILDREN, oldvalue));
-		}
-		
-		execute(compoundCommand);	
-		
-	
-	}
+        AbstractContainerEditpart containerEditpart = getContainerEditpart();
+        AbstractContainerModel containerModel = containerEditpart.getWidgetModel();
 
 
-	/**
-	 * Gets the widget models of all currently selected EditParts.
-	 * 
-	 * @return a list with all widget models that are currently selected
-	 */
-	protected final AbstractContainerEditpart getContainerEditpart() {
-		return (AbstractContainerEditpart)selection.getFirstElement();
-	}
+        //temporary unlock children so children will not be resized.
+        if(containerEditpart instanceof GroupingContainerEditPart){
+            compoundCommand.add(new SetWidgetPropertyCommand(containerModel,
+                    GroupingContainerModel.PROP_LOCK_CHILDREN, false));
+        }
 
-	/**
-	 * Gets the widget models of all currently selected EditParts.
-	 * 
-	 * @return a list with all widget models that are currently selected
-	 */
-	protected final IFigure getContainerFigure() {
-		return ((AbstractContainerEditpart)selection.getFirstElement()).getFigure();
-	}
-		
-		
-		
+        IFigure figure = getContainerFigure();
+
+        Rectangle childrenRange = GeometryUtil.getChildrenRange(containerEditpart);
+
+        Point tranlateSize = new Point(childrenRange.x, childrenRange.y);
+
+        compoundCommand.add(new SetBoundsCommand(containerModel,
+                new Rectangle(containerModel.getLocation().translate(tranlateSize), new Dimension(
+                        childrenRange.width + figure.getInsets().left + figure.getInsets().right,
+                        childrenRange.height + figure.getInsets().top + figure.getInsets().bottom))));
+
+
+        for(Object editpart : containerEditpart.getChildren()){
+            AbstractWidgetModel widget = ((AbstractBaseEditPart)editpart).getWidgetModel();
+            compoundCommand.add(new SetBoundsCommand(widget, new Rectangle(
+                    widget.getLocation().translate(tranlateSize.getNegated()),
+                    widget.getSize())));
+        }
+
+        //recover lock
+        if(containerEditpart instanceof GroupingContainerEditPart){
+            Object oldvalue = containerEditpart.getWidgetModel()
+            .getPropertyValue(GroupingContainerModel.PROP_LOCK_CHILDREN);
+            compoundCommand.add(new SetWidgetPropertyCommand(containerModel,
+                    GroupingContainerModel.PROP_LOCK_CHILDREN, oldvalue));
+        }
+
+        execute(compoundCommand);
+
+
+    }
+
+
+    /**
+     * Gets the widget models of all currently selected EditParts.
+     *
+     * @return a list with all widget models that are currently selected
+     */
+    protected final AbstractContainerEditpart getContainerEditpart() {
+        return (AbstractContainerEditpart)selection.getFirstElement();
+    }
+
+    /**
+     * Gets the widget models of all currently selected EditParts.
+     *
+     * @return a list with all widget models that are currently selected
+     */
+    protected final IFigure getContainerFigure() {
+        return ((AbstractContainerEditpart)selection.getFirstElement()).getFigure();
+    }
+
+
+
 }

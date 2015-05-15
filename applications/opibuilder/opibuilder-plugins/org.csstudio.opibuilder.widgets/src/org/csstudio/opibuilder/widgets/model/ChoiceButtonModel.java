@@ -15,16 +15,16 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class ChoiceButtonModel extends AbstractChoiceModel {
 
-	public final String ID = "org.csstudio.opibuilder.widgets.choiceButton";
+    public final String ID = "org.csstudio.opibuilder.widgets.choiceButton";
 
-	public ChoiceButtonModel() {
-		setBackgroundColor(new RGB(240,240,240));
-	}
-	
-	@Override
-	public String getTypeID() {
-		return ID;
-	}
-	
+    public ChoiceButtonModel() {
+        setBackgroundColor(new RGB(240,240,240));
+    }
+
+    @Override
+    public String getTypeID() {
+        return ID;
+    }
+
 
 }

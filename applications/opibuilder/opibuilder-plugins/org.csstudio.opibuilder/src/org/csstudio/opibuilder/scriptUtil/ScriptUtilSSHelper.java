@@ -9,30 +9,30 @@ import org.csstudio.opibuilder.util.ImplementationLoader;
  *
  */
 public abstract class ScriptUtilSSHelper {
-	
-	private static final ScriptUtilSSHelper IMPL =
-			(ScriptUtilSSHelper)ImplementationLoader.newInstance(
-				ScriptUtilSSHelper.class, false);
-	
-	
-	public static ScriptUtilSSHelper getIMPL(){
-		return IMPL;
-	}
 
-	public abstract void writeTextFile(String filePath, boolean inWorkspace, 
-			AbstractBaseEditPart widget, String text, 
-			boolean append) throws Exception;
-	
-	public abstract String openFileDialog(boolean inWorkspace);
-	
-	public abstract String openFileDialog(String startingFolder);
-	
-	public abstract String saveFileDialog(boolean inWorkspace);
-	
-	public abstract String saveFileDialog(String startingFolder);
-	
-	public abstract void makeElogEntry(final String text, final String filePath);
+    private static final ScriptUtilSSHelper IMPL =
+            (ScriptUtilSSHelper)ImplementationLoader.newInstance(
+                ScriptUtilSSHelper.class, false);
 
-	
-	
+
+    public static ScriptUtilSSHelper getIMPL(){
+        return IMPL;
+    }
+
+    public abstract void writeTextFile(String filePath, boolean inWorkspace,
+            AbstractBaseEditPart widget, String text,
+            boolean append) throws Exception;
+
+    public abstract String openFileDialog(boolean inWorkspace);
+
+    public abstract String openFileDialog(String startingFolder);
+
+    public abstract String saveFileDialog(boolean inWorkspace);
+
+    public abstract String saveFileDialog(String startingFolder);
+
+    public abstract void makeElogEntry(final String text, final String filePath);
+
+
+
 }

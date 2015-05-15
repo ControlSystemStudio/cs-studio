@@ -102,9 +102,9 @@ abstract public class AbstractExecuteAction extends Action
             return;
         }
 
-		SingleSourcePlugin.getUIHelper().writeToConsole(CONSOLE_NAME,
-				getImageDescriptor(),
-				getText() + ": (" + dir + ") '" + command + "'");
+        SingleSourcePlugin.getUIHelper().writeToConsole(CONSOLE_NAME,
+                getImageDescriptor(),
+                getText() + ": (" + dir + ") '" + command + "'");
 
         new ExecuteActionThread(dir).start();
     }

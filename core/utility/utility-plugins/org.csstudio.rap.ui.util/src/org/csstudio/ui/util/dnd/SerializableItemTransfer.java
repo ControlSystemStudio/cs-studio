@@ -34,12 +34,12 @@ import org.eclipse.swt.dnd.TransferData;
 @SuppressWarnings("nls")
 public class SerializableItemTransfer extends ByteArrayTransfer
 {
-	private static final long serialVersionUID = 3949214963066488960L;
+    private static final long serialVersionUID = 3949214963066488960L;
 
-	/** Type handled by this Transfer */
-	final private String className;
+    /** Type handled by this Transfer */
+    final private String className;
 
-	/** Name of the type handled by this Transfer ('java:' + class name) */
+    /** Name of the type handled by this Transfer ('java:' + class name) */
     final private String typeName;
 
     /** Drag-and-Drop type ID for the <code>typeName</code> */
@@ -55,37 +55,37 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Transfer[] getTransfers(Class[] classes)
     {
-    	final Transfer[] transfers = new Transfer[classes.length];
-    	for (int i = 0; i < classes.length ; i++)
-    	{
-    		Transfer transfer = getTransfer(classes[i]);
-    		transfers[i] = transfer;
-    	}
-    	return transfers;
+        final Transfer[] transfers = new Transfer[classes.length];
+        for (int i = 0; i < classes.length ; i++)
+        {
+            Transfer transfer = getTransfer(classes[i]);
+            transfers[i] = transfer;
+        }
+        return transfers;
     }
 
     public static Collection<Transfer> getTransfers(Collection<String> classeNames) {
-    	Collection<Transfer> transfers = new ArrayList<Transfer>();
-    	for (String className : classeNames) {
-    		transfers.add(getTransfer(className));
-    	}
-    	return transfers;
+        Collection<Transfer> transfers = new ArrayList<Transfer>();
+        for (String className : classeNames) {
+            transfers.add(getTransfer(className));
+        }
+        return transfers;
     }
 
     public static SerializableItemTransfer getTransfer(Class<? extends Serializable> clazz) {
-    	return getTransfer(clazz.getName());
+        return getTransfer(clazz.getName());
     }
 
     /** @param clazz Type to be transferred
      *  @return Transfer for that type
      */
     public static SerializableItemTransfer getTransfer(String className) {
-    	SerializableItemTransfer transfer = instances.get(className);
-    	if (transfer == null) {
-    		transfer = new SerializableItemTransfer(className);
-    		instances.put(className, transfer);
-    	}
-    	return transfer;
+        SerializableItemTransfer transfer = instances.get(className);
+        if (transfer == null) {
+            transfer = new SerializableItemTransfer(className);
+            instances.put(className, transfer);
+        }
+        return transfer;
     }
 
     /** Initialize
@@ -93,9 +93,9 @@ public class SerializableItemTransfer extends ByteArrayTransfer
      */
     private SerializableItemTransfer(final String className)
     {
-    	this.className = className;
-    	typeName = "java:" + className;
-    	typeId = registerType(typeName);
+        this.className = className;
+        typeName = "java:" + className;
+        typeId = registerType(typeName);
     }
 
     /** {@inheritDoc} */
@@ -113,8 +113,8 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     }
 
     public String getClassName() {
-		return className;
-	}
+        return className;
+    }
 
     /** Serialize item
      *  {@inheritDoc}
@@ -122,9 +122,9 @@ public class SerializableItemTransfer extends ByteArrayTransfer
     @Override
     public void javaToNative (final Object object, final TransferData transferData)
     {
-    	// Check that it's an object of the right type
-    	if (!ReflectUtil.isInstance(object, getClassName())) {
-    		throw new IllegalArgumentException("Trying to serialize and object of the wrong type");
+        // Check that it's an object of the right type
+        if (!ReflectUtil.isInstance(object, getClassName())) {
+            throw new IllegalArgumentException("Trying to serialize and object of the wrong type");
         }
 
         try

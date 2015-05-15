@@ -9,7 +9,7 @@ package org.csstudio.platform.workspace;
  *  <code>IPlatformRunnable.EXIT_RELAUNCH</code>,
  *  in which case the exit data property is supposed to contain the command
  *  line for the relaunch.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -25,19 +25,19 @@ public interface RelaunchConstants
      *  Bugzilla 175140:
      *  It's "eclipse.exitdata".
      *  javadoc for IPlatformRunnable.EXIT_RELAUNCH is wrong.
-     *  
+     *
      *  @see #PROP_EXIT_CODE
      */
     final public static String PROP_EXIT_DATA = "eclipse.exitdata";
-    
+
     /** Property that holds all commands passed on command line. */
     final public static String PROP_COMMANDS  = "eclipse.commands";
-    
+
     /** Property for VM, copied from the "-vm /usr/bin/java" command-line
      *  arg that the product magically defines.
      */
     final public static String PROP_VM        = "eclipse.vm";
- 
+
     /** Property that contains the VM -"-vmargs ..." arguments */
     final public static String PROP_VMARGS    = "eclipse.vmargs";
 }

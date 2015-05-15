@@ -5,10 +5,10 @@ import gov.bnl.channelfinder.api.ChannelQuery;
 import java.util.Collection;
 
 /**
- * 
+ *
  * @author shroffk
- * 
+ *
  */
 public interface ChannelQueryAdaptable extends ChannelAdaptable {
-	public Collection<ChannelQuery> toChannelQueries();
+    public Collection<ChannelQuery> toChannelQueries();
 }

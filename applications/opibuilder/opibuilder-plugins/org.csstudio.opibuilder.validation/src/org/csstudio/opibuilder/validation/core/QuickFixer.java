@@ -39,12 +39,13 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator2;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.views.markers.WorkbenchMarkerResolution;
 import org.eclipse.wst.validation.internal.ValType;
 import org.eclipse.wst.validation.internal.ValidationRunner;
 
 /**
- * 
+ *
  * <code>QuickFixer</code> is a resolution implementation that fixes the OPI validation failures, by replacing the
  * actual value with the expected value. It only works for the markers which represent a read-only validation failure.
  *
@@ -53,13 +54,13 @@ import org.eclipse.wst.validation.internal.ValidationRunner;
  */
 @SuppressWarnings("restriction")
 public class QuickFixer implements IMarkerResolutionGenerator2 {
-    
+
     private static final Logger LOGGER = Logger.getLogger(QuickFixer.class.getName());
 
     private static class Resolution extends WorkbenchMarkerResolution {
-        
+
         private final IMarker marker;
-        
+
         Resolution(IMarker marker) {
             this.marker = marker;
         }
@@ -100,13 +101,29 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
         public void run(IMarker marker) {
             throw new UnsupportedOperationException("Run with a single marker should never be called.");
         }
-        
+
         /*
          * (non-Javadoc)
          * @see org.eclipse.ui.views.markers.WorkbenchMarkerResolution#run(org.eclipse.core.resources.IMarker[], org.eclipse.core.runtime.IProgressMonitor)
          */
         @Override
-        public void run(IMarker[] markers, IProgressMonitor monitor) {
+        public void run(final IMarker[] markers, final IProgressMonitor monitor) {
+            Set<IResource> resources = new HashSet<>();
+            for (IMarker m : markers) {
+                resources.add(m.getResource());
+            }
+            try {
+                if(!Utilities.shouldContinueIfFileOpen("quick fix",
+                        resources.toArray(new IResource[resources.size()]))) {
+                    monitor.setCanceled(true);
+                    return;
+                }
+            } catch (PartInitException e) {
+                LOGGER.log(Level.SEVERE, "Could not obtain editor inputs.", e);
+                monitor.setCanceled(true);
+                return;
+            }
+
             final boolean doBackup;
             if (Activator.getInstance().isShowBackupDialog()) {
                 doBackup = MessageDialog.openQuestion(Display.getCurrent().getActiveShell(), "Backup",
@@ -114,9 +131,9 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
             } else {
                 doBackup = Activator.getInstance().isDoBackup();
             }
-            
+
             Job job = Job.create("OPI Validation Quick Fix", new IJobFunction() {
-                
+
                 @Override
                 public IStatus run(IProgressMonitor monitor) {
                     try {
@@ -131,16 +148,16 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                                 list = new ArrayList<>();
                                 toFix.put(f.getPath(), list);
                             }
-                            list.add(f); 
+                            list.add(f);
                         }
                         monitor.beginTask("OPI Validation Quick Fix", toFix.size() + 3);
                         monitor.worked(1);
-                        
+
                         //if requested to do backup, copy all quick-fixed files to <file>~
                         if (doBackup) {
                             for (IPath path : toFix.keySet()) {
                                 IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-                                File file = ifile.getLocation().toFile(); 
+                                File file = ifile.getLocation().toFile();
                                 String bck = file.getAbsolutePath();
                                 bck = bck + "~";
                                 File backup = new File(bck);
@@ -163,21 +180,21 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                         return Status.OK_STATUS;
                     } catch (CoreException | IOException e) {
                         LOGGER.log(Level.WARNING, "Unexpected error trying to quick fix the OPIs.", e);
-                        Display.getDefault().asyncExec(() -> 
-                            MessageDialog.openError(Display.getDefault().getActiveShell(), "Error Fixing OPI Problem", 
+                        Display.getDefault().asyncExec(() ->
+                            MessageDialog.openError(Display.getDefault().getActiveShell(), "Error Fixing OPI Problem",
                                     "There was an unexpected error while trying to quick fix the OPI: " + e.getMessage()));
                         return new Status(IStatus.ERROR,Activator.ID,
                                 "There was an unexpected error while trying to quick fix the OPIs.",e);
                     }
                 }
             });
-            
+
             job.schedule();
         }
-        
+
         /**
          * Revalidated all opis defined by the given markers. This method is called after successful quick fix.
-         * 
+         *
          * @param markers the markers that define the OPI files that will be validated
          * @param monitor the monitor to report progress to
          * @throws CoreException if resource could not be extracted from the marker
@@ -224,11 +241,11 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
                     //ignore
                 }
             }
-            
+
             return list.toArray(new IMarker[list.size()]);
         }
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.IMarkerResolutionGenerator#getResolutions(org.eclipse.core.resources.IMarker)
@@ -237,7 +254,7 @@ public class QuickFixer implements IMarkerResolutionGenerator2 {
     public IMarkerResolution[] getResolutions(IMarker marker) {
         return new IMarkerResolution[]{new Resolution(marker)};
     }
-    
+
     /*
      * (non-Javadoc)
      * @see org.eclipse.ui.IMarkerResolutionGenerator2#hasResolutions(org.eclipse.core.resources.IMarker)

@@ -8,8 +8,8 @@
 package org.csstudio.opibuilder.validation.core;
 
 /**
- * 
- * <code>ValidationRule</code> defines the possible rules how to treat properties: read/write, read only, obligatory 
+ *
+ * <code>ValidationRule</code> defines the possible rules how to treat properties: read/write, read only, obligatory
  * write.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>

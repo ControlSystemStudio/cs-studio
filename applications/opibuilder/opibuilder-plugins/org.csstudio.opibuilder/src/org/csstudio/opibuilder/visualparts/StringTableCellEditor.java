@@ -21,85 +21,85 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class StringTableCellEditor extends AbstractDialogCellEditor {
-	
-	private String[][] data;
 
-	private TitlesProvider columnTitles;
+    private String[][] data;
 
-	private CellEditorType[] cellEditorTypes;
+    private TitlesProvider columnTitles;
 
-	private Object[] cellEditorDatas;
-	
-	public StringTableCellEditor(Composite parent, String title, TitlesProvider columnTitles,
-			CellEditorType[] cellEditorTypes, Object[] cellEditorDatas) {
-		super(parent, title);
-		this.columnTitles = columnTitles;
-		this.cellEditorTypes = cellEditorTypes;
-		this.cellEditorDatas = cellEditorDatas;
-	}
+    private CellEditorType[] cellEditorTypes;
 
-	@Override
-	protected void openDialog(Shell parentShell, String dialogTitle) {
-			
-		StringTableEditDialog dialog = 
-			new StringTableEditDialog(parentShell, arrayToList(data), dialogTitle,
-					columnTitles.getTitles(), cellEditorTypes, cellEditorDatas);
-		if(dialog.open() == Window.OK){
-			data = listToArray(dialog.getResult());			
-		}
-	}
+    private Object[] cellEditorDatas;
 
-	@Override
-	protected boolean shouldFireChanges() {
-		return data != null;
-	}
+    public StringTableCellEditor(Composite parent, String title, TitlesProvider columnTitles,
+            CellEditorType[] cellEditorTypes, Object[] cellEditorDatas) {
+        super(parent, title);
+        this.columnTitles = columnTitles;
+        this.cellEditorTypes = cellEditorTypes;
+        this.cellEditorDatas = cellEditorDatas;
+    }
 
-	@Override
-	protected Object doGetValue() {
-		return data;
-	}
+    @Override
+    protected void openDialog(Shell parentShell, String dialogTitle) {
 
-	@Override
-	protected void doSetValue(Object value) {
-		if(value == null || !(value instanceof String[][]))
-			data = new String[0][0];
-		else
-			data = (String[][])value;			
-	}
-	
-	private List<String[]> arrayToList(String[][] content){
-		List<String[]> input = new ArrayList<String[]>();
-		if (content.length <= 0) {
-			return input;
-		}
-		int col = columnTitles.getTitles().length;
-		for (int i = 0; i < content.length; i++) {
-			String[] row = new String[col];
-			for (int j = 0; j < col; j++) {
-				if(j < content[i].length)
-					row[j]=content[i][j];
-				else 
-					row[j]="";
-			}
-			input.add(row);
-		}
-		return input;
-	}
-	
-	private String[][] listToArray(List<String[]> list){
-		int col = 0;
-		if(list.size() >0){
-			col = list.get(0).length;
-		}
-		String[][] result = new String[list.size()][col];
-		for (int i = 0; i < list.size(); i++) {
-			for (int j = 0; j < col; j++) {
-				result[i][j] = list.get(i)[j];
-			}
-		}
-		return result;
-	}
-	
-	
+        StringTableEditDialog dialog =
+            new StringTableEditDialog(parentShell, arrayToList(data), dialogTitle,
+                    columnTitles.getTitles(), cellEditorTypes, cellEditorDatas);
+        if(dialog.open() == Window.OK){
+            data = listToArray(dialog.getResult());
+        }
+    }
+
+    @Override
+    protected boolean shouldFireChanges() {
+        return data != null;
+    }
+
+    @Override
+    protected Object doGetValue() {
+        return data;
+    }
+
+    @Override
+    protected void doSetValue(Object value) {
+        if(value == null || !(value instanceof String[][]))
+            data = new String[0][0];
+        else
+            data = (String[][])value;
+    }
+
+    private List<String[]> arrayToList(String[][] content){
+        List<String[]> input = new ArrayList<String[]>();
+        if (content.length <= 0) {
+            return input;
+        }
+        int col = columnTitles.getTitles().length;
+        for (int i = 0; i < content.length; i++) {
+            String[] row = new String[col];
+            for (int j = 0; j < col; j++) {
+                if(j < content[i].length)
+                    row[j]=content[i][j];
+                else
+                    row[j]="";
+            }
+            input.add(row);
+        }
+        return input;
+    }
+
+    private String[][] listToArray(List<String[]> list){
+        int col = 0;
+        if(list.size() >0){
+            col = list.get(0).length;
+        }
+        String[][] result = new String[list.size()][col];
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < col; j++) {
+                result[i][j] = list.get(i)[j];
+            }
+        }
+        return result;
+    }
+
+
 
 }

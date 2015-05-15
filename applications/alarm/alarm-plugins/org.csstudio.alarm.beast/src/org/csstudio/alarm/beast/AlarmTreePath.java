@@ -40,7 +40,7 @@ public class AlarmTreePath
         {
             if (! isPath(path))
                 result.append(PATH_SEP);
-            // Skip path it it's only '/' 
+            // Skip path it it's only '/'
             if (!PATH_SEP.equals(path))
                 result.append(path);
         }
@@ -69,7 +69,7 @@ public class AlarmTreePath
         for (int i=0; i<N; ++i)
         {
             path.append(PATH_SEP);
-        	// Escape any path-seps inside item with backslashes
+            // Escape any path-seps inside item with backslashes
             path.append(path_items[i].replace(PATH_SEP, "\\/"));
         }
         return path.toString();
@@ -81,10 +81,10 @@ public class AlarmTreePath
      */
     public static String[] splitPath(final String path)
     {
-    	// Split on '/', but only those that are NOT preceded by '\'.
-    	// '(?<!x)' means 'not preceded by x',
-    	// and in this case the x=\ must be escaped twice:
-    	// Once to get into the Java string, once more to pass to the regex.
+        // Split on '/', but only those that are NOT preceded by '\'.
+        // '(?<!x)' means 'not preceded by x',
+        // and in this case the x=\ must be escaped twice:
+        // Once to get into the Java string, once more to pass to the regex.
         // Also skip the initial '/'
         final List<String> items = new ArrayList<>();
         for (String item : path.split("(?<!\\\\)/+"))
@@ -95,7 +95,7 @@ public class AlarmTreePath
             // Un-escape any PATH_SEP that's inside each item
             items.add(item.replace("\\/", PATH_SEP));
         }
-		return items.toArray(new String[items.size()]);
+        return items.toArray(new String[items.size()]);
     }
 
     /** Get last path element
@@ -107,7 +107,7 @@ public class AlarmTreePath
         final String elements[] = splitPath(path);
         return elements[elements.length-1];
     }
-    
+
     /** Determine modified path
      *  @param path Original path
      *  @param modifier Path modifier: "segments/to/add", "/absolute/new/path", ".."

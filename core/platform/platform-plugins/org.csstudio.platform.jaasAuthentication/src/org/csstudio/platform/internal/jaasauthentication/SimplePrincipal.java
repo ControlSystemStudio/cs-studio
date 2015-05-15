@@ -11,17 +11,17 @@ import java.security.Principal;
 public class SimplePrincipal implements Principal
 {
     final private String username;
-        
+
     public SimplePrincipal(final String username)
     {
         this.username = username;
     }
-        
+
     public String getName()
     {
         return username;
     }
-        
+
     @Override
     public boolean equals(Object o)
     {
@@ -30,7 +30,7 @@ public class SimplePrincipal implements Principal
         else
             return false;
     }
-    
+
     @Override
     public int hashCode() {
         return username.hashCode();

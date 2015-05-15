@@ -32,19 +32,19 @@ import org.csstudio.dal.context.PropertyContext;
  *
   */
 public class LongPropertyImpl extends NumericPropertyImpl<Long,Long>
-	implements LongProperty
+    implements LongProperty
 {
-	/**
-	 * Creates a new LongPropertyImpl object.
-	 *
-	 * @param name property name
-	 * @param propertyContext property context
-	 */
-	public LongPropertyImpl(String name, PropertyContext propertyContext)
-	{
-		super(Long.class, name, propertyContext);
-		addDataAccessType(DoubleAccess.class, DoubleDataAccessWrapper.class);
-	}
+    /**
+     * Creates a new LongPropertyImpl object.
+     *
+     * @param name property name
+     * @param propertyContext property context
+     */
+    public LongPropertyImpl(String name, PropertyContext propertyContext)
+    {
+        super(Long.class, name, propertyContext);
+        addDataAccessType(DoubleAccess.class, DoubleDataAccessWrapper.class);
+    }
 }
 
 /* __oOo__ */

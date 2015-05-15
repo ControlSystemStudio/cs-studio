@@ -18,67 +18,67 @@ import org.csstudio.opibuilder.adl2boy.ADL2BOYPlugin;
  */
 
 public class adl2boyPreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	private StringFieldEditor colorPrefix;
-	private StringFieldEditor fontPrefix;
+    private StringFieldEditor colorPrefix;
+    private StringFieldEditor fontPrefix;
 
-	public adl2boyPreferencePage() {
-		super(GRID);
-		setPreferenceStore(ADL2BOYPlugin.getDefault().getPreferenceStore());
-		setDescription("Set Prefix to be used to create color and font maps");
-	}
+    public adl2boyPreferencePage() {
+        super(GRID);
+        setPreferenceStore(ADL2BOYPlugin.getDefault().getPreferenceStore());
+        setDescription("Set Prefix to be used to create color and font maps");
+    }
 
-	/**
-	 * Creates the field editors. Field editors are abstractions of the common
-	 * GUI blocks needed to manipulate various types of preferences. Each field
-	 * editor knows how to save and restore itself.
-	 */
-	public void createFieldEditors() {
-		colorPrefix = new StringFieldEditor(PreferenceConstants.P_COLOR_PREFIX,
-				"Color Map Prefix:", getFieldEditorParent());
-		addField(colorPrefix);
-		fontPrefix = new StringFieldEditor(PreferenceConstants.P_FONT_PREFIX,
-				"Font Map Prefix:", getFieldEditorParent());
-		addField(fontPrefix);
-	}
+    /**
+     * Creates the field editors. Field editors are abstractions of the common
+     * GUI blocks needed to manipulate various types of preferences. Each field
+     * editor knows how to save and restore itself.
+     */
+    public void createFieldEditors() {
+        colorPrefix = new StringFieldEditor(PreferenceConstants.P_COLOR_PREFIX,
+                "Color Map Prefix:", getFieldEditorParent());
+        addField(colorPrefix);
+        fontPrefix = new StringFieldEditor(PreferenceConstants.P_FONT_PREFIX,
+                "Font Map Prefix:", getFieldEditorParent());
+        addField(fontPrefix);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-	 */
-	public void init(IWorkbench workbench) {
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     */
+    public void init(IWorkbench workbench) {
+    }
 
-	@Override
-	protected void checkState() {
-		super.checkState();
-		if (!isValid()) {
-			return;
-		}
-		String colorPrefixText = colorPrefix.getStringValue();
-		String fontPrefixText = fontPrefix.getStringValue();
-		if (!(colorPrefixText.trim().matches("[a-zA-Z0-9_]+"))
-				|| !(fontPrefixText.trim().matches("[a-zA-Z0-9_]+"))) {
-			setErrorMessage("Valid prefixes contain alphanumerics and _ with no white space");
-			setValid(false);
-		} else {
-			setErrorMessage(null);
-			setValid(true);
+    @Override
+    protected void checkState() {
+        super.checkState();
+        if (!isValid()) {
+            return;
+        }
+        String colorPrefixText = colorPrefix.getStringValue();
+        String fontPrefixText = fontPrefix.getStringValue();
+        if (!(colorPrefixText.trim().matches("[a-zA-Z0-9_]+"))
+                || !(fontPrefixText.trim().matches("[a-zA-Z0-9_]+"))) {
+            setErrorMessage("Valid prefixes contain alphanumerics and _ with no white space");
+            setValid(false);
+        } else {
+            setErrorMessage(null);
+            setValid(true);
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public void propertyChange(PropertyChangeEvent event) {
-		super.propertyChange(event);
-		if (event.getProperty().equals(FieldEditor.VALUE)) {
-			if (event.getSource() == colorPrefix
-					|| event.getSource() == fontPrefix) {
-				checkState();
-			}
-		}
-	}
+    @Override
+    public void propertyChange(PropertyChangeEvent event) {
+        super.propertyChange(event);
+        if (event.getProperty().equals(FieldEditor.VALUE)) {
+            if (event.getSource() == colorPrefix
+                    || event.getSource() == fontPrefix) {
+                checkState();
+            }
+        }
+    }
 }

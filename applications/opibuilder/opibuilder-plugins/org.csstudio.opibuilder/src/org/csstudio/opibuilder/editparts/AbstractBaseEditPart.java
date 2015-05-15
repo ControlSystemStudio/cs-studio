@@ -85,10 +85,10 @@ import org.eclipse.ui.progress.UIJob;
 
 /**
  * The editpart for {@link AbstractWidgetModel}
- * 
+ *
  * @author Sven Wende (similar class in SDS)
  * @author Xihui Chen
- * 
+ *
  */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart implements NodeEditPart{
 

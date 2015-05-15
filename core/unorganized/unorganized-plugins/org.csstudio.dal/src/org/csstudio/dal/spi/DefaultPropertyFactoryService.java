@@ -35,122 +35,122 @@ import org.csstudio.dal.context.LifecycleState;
  */
 public class DefaultPropertyFactoryService implements PropertyFactoryService
 {
-	private static DefaultPropertyFactoryService service;
+    private static DefaultPropertyFactoryService service;
 
-	/**
-	 * Returns the PropertyFactoryService object
-	 *
-	 * @return PropertyFactoryService object
-	 */
-	public static final synchronized PropertyFactoryService getPropertyFactoryService()
-	{
-		if (service == null) {
-			service = new DefaultPropertyFactoryService();
-		}
+    /**
+     * Returns the PropertyFactoryService object
+     *
+     * @return PropertyFactoryService object
+     */
+    public static final synchronized PropertyFactoryService getPropertyFactoryService()
+    {
+        if (service == null) {
+            service = new DefaultPropertyFactoryService();
+        }
 
-		return service;
-	}
+        return service;
+    }
 
-	private ArrayList<AbstractApplicationContext> ctxList = new ArrayList<AbstractApplicationContext>();
+    private ArrayList<AbstractApplicationContext> ctxList = new ArrayList<AbstractApplicationContext>();
 
-	protected DefaultPropertyFactoryService()
-	{
-		super();
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-				public void run()
-				{
-					shutdown();
-				}
-				;
-			});
-	}
+    protected DefaultPropertyFactoryService()
+    {
+        super();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+                public void run()
+                {
+                    shutdown();
+                }
+                ;
+            });
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.spi.PropertyFactoryService#getPropertyFactory(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.context.PropertyFamily, org.csstudio.dal.spi.PropertyFactory.LinkPolicy)
-	 */
-	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
-	    LinkPolicy linkPolicy)
-	{
-		return getPropertyFactory(ctx, linkPolicy, null);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.spi.PropertyFactoryService#getPropertyFactory(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.context.PropertyFamily, org.csstudio.dal.spi.PropertyFactory.LinkPolicy)
+     */
+    public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+        LinkPolicy linkPolicy)
+    {
+        return getPropertyFactory(ctx, linkPolicy, null);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.spi.PropertyFactoryService#getPropertyFactory(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.spi.LinkPolicy, java.lang.String)
-	 */
-	public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
-	    LinkPolicy linkPolicy, String plugName)
-	{
-		if (linkPolicy == null)
-			linkPolicy = LinkPolicy.SYNC_LINK_POLICY;
-		
-		if (plugName == null) {
-			Class cl = null;
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.spi.PropertyFactoryService#getPropertyFactory(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.spi.LinkPolicy, java.lang.String)
+     */
+    public PropertyFactory getPropertyFactory(AbstractApplicationContext ctx,
+        LinkPolicy linkPolicy, String plugName)
+    {
+        if (linkPolicy == null)
+            linkPolicy = LinkPolicy.SYNC_LINK_POLICY;
 
-			try {
-				cl = Plugs.getDefaultPropertyFactory(ctx.getConfiguration());
-			} catch (Throwable t) {
-				throw new IllegalArgumentException(
-				    "Could not load factory implementation: " + t);
-			}
+        if (plugName == null) {
+            Class cl = null;
 
-			if (cl != null) {
-				try {
-					PropertyFactory df = (PropertyFactory)cl.newInstance();
-					df.initialize(ctx, linkPolicy);
+            try {
+                cl = Plugs.getDefaultPropertyFactory(ctx.getConfiguration());
+            } catch (Throwable t) {
+                throw new IllegalArgumentException(
+                    "Could not load factory implementation: " + t);
+            }
 
-					return df;
-				} catch (Throwable t) {
-					throw new IllegalArgumentException(
-					    "Could not instantiate '" + cl.getName()
-					    + "' factory implementation: " + t);
-				}
-			} else {
-				throw new IllegalArgumentException(
-			    "Could not find factory implementation information in configuration.");
-			}
+            if (cl != null) {
+                try {
+                    PropertyFactory df = (PropertyFactory)cl.newInstance();
+                    df.initialize(ctx, linkPolicy);
 
-			//PropertyFactoryImpl simulator = new PropertyFactoryImpl();
-			//simulator.initialize(ctx, linkPolicy);
-			//return simulator;
-		}
+                    return df;
+                } catch (Throwable t) {
+                    throw new IllegalArgumentException(
+                        "Could not instantiate '" + cl.getName()
+                        + "' factory implementation: " + t);
+                }
+            } else {
+                throw new IllegalArgumentException(
+                "Could not find factory implementation information in configuration.");
+            }
 
-		Class cl;
+            //PropertyFactoryImpl simulator = new PropertyFactoryImpl();
+            //simulator.initialize(ctx, linkPolicy);
+            //return simulator;
+        }
 
-		try {
-			cl = Plugs.getPropertyFactoryClassForPlug(plugName,
-				    ctx.getConfiguration());
-		} catch (Throwable t) {
-			throw new IllegalArgumentException(
-			    "Failed to load factory implementation: " + t);
-		}
+        Class cl;
 
-		try {
-			PropertyFactory df = (PropertyFactory)cl.newInstance();
-			df.initialize(ctx, linkPolicy);
+        try {
+            cl = Plugs.getPropertyFactoryClassForPlug(plugName,
+                    ctx.getConfiguration());
+        } catch (Throwable t) {
+            throw new IllegalArgumentException(
+                "Failed to load factory implementation: " + t);
+        }
 
-			return df;
-		} catch (Throwable t) {
-			throw new IllegalArgumentException("Could not instantiate '"
-			    + cl.getName() + "' factory implementation: " + t);
-		}
-	}
+        try {
+            PropertyFactory df = (PropertyFactory)cl.newInstance();
+            df.initialize(ctx, linkPolicy);
 
-	/*
-	 * This method is called when JVM is shuting down and service is celaning all it's
-	 * resources.
-	 */
-	private void shutdown()
-	{
-		AbstractApplicationContext[] l = (AbstractApplicationContext[])ctxList
-			.toArray(new AbstractApplicationContext[0]);
+            return df;
+        } catch (Throwable t) {
+            throw new IllegalArgumentException("Could not instantiate '"
+                + cl.getName() + "' factory implementation: " + t);
+        }
+    }
 
-		for (int i = 0; i < l.length; i++) {
-			if (l[i].getLifecycleState() != LifecycleState.DESTROYING
-			    && l[i].getLifecycleState() != LifecycleState.DESTROYED) {
-				l[i].destroy();
-			}
-		}
-	}
+    /*
+     * This method is called when JVM is shuting down and service is celaning all it's
+     * resources.
+     */
+    private void shutdown()
+    {
+        AbstractApplicationContext[] l = (AbstractApplicationContext[])ctxList
+            .toArray(new AbstractApplicationContext[0]);
+
+        for (int i = 0; i < l.length; i++) {
+            if (l[i].getLifecycleState() != LifecycleState.DESTROYING
+                && l[i].getLifecycleState() != LifecycleState.DESTROYED) {
+                l[i].destroy();
+            }
+        }
+    }
 }
 
 /* __oOo__ */

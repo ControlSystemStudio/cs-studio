@@ -9,16 +9,16 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.ui.PartInitException;
 
 public class OpenChannelTreeByProperty extends AbstractAdaptedHandler<ChannelQuery> {
-	
-	public OpenChannelTreeByProperty() {
-		super(ChannelQuery.class);
-	}
-	
-	@Override
-	protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
-		if (!queries.isEmpty()) {
-			findView(ChannelTreeByPropertyView.class, ChannelTreeByPropertyView.ID)
-					.setChannelQuery(queries.get(0));
-		}
-	}
+
+    public OpenChannelTreeByProperty() {
+        super(ChannelQuery.class);
+    }
+
+    @Override
+    protected void execute(List<ChannelQuery> queries, ExecutionEvent event) throws PartInitException {
+        if (!queries.isEmpty()) {
+            findView(ChannelTreeByPropertyView.class, ChannelTreeByPropertyView.ID)
+                    .setChannelQuery(queries.get(0));
+        }
+    }
 }

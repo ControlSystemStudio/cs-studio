@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Shell;
 @SuppressWarnings("nls")
 public class DebugAction extends Action
 {
-	final private Shell shell;
+    final private Shell shell;
     final private AlarmClientModel model;
 
     public DebugAction(final Shell shell, final AlarmClientModel model)
@@ -32,7 +32,7 @@ public class DebugAction extends Action
     @Override
     public void run()
     {
-    	if (MessageDialog.openConfirm(shell, "Send debug trigger", "Send 'debug' trigger to alarm server?"))
-    		model.triggerDebug();
+        if (MessageDialog.openConfirm(shell, "Send debug trigger", "Send 'debug' trigger to alarm server?"))
+            model.triggerDebug();
     }
 }

@@ -48,148 +48,148 @@ import org.eclipse.ui.PlatformUI;
  */
 public class PrintPvsAction extends ProcessVariablePopupAction {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void handlePvs(final Set<IProcessVariableAddress> pvs) {
-		final StringBuffer sb = new StringBuffer();
-		for (final IProcessVariableAddress pv : pvs) {
-			final String fullName = pv.getFullName();
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void handlePvs(final Set<IProcessVariableAddress> pvs) {
+        final StringBuffer sb = new StringBuffer();
+        for (final IProcessVariableAddress pv : pvs) {
+            final String fullName = pv.getFullName();
 
-			if (fullName != null && fullName.length() > 0) {
-				sb.append(fullName);
-				sb.append("\r\n");
-			}
-		}
+            if (fullName != null && fullName.length() > 0) {
+                sb.append(fullName);
+                sb.append("\r\n");
+            }
+        }
 
-		final CopyToClipboardDialog dialog = new CopyToClipboardDialog(Display
-				.getCurrent().getActiveShell(), sb.toString());
+        final CopyToClipboardDialog dialog = new CopyToClipboardDialog(Display
+                .getCurrent().getActiveShell(), sb.toString());
 
-		final int result = dialog.open();
+        final int result = dialog.open();
 
-		if (result == CopyToClipboardDialog.COPY_TO_CLIPBOARD_ID) {
-			final Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench()
-					.getDisplay());
-			clipboard.setContents(new String[] { dialog.getTextToCopy() },
-					new Transfer[] { TextTransfer.getInstance() });
-		}
-	}
+        if (result == CopyToClipboardDialog.COPY_TO_CLIPBOARD_ID) {
+            final Clipboard clipboard = new Clipboard(PlatformUI.getWorkbench()
+                    .getDisplay());
+            clipboard.setContents(new String[] { dialog.getTextToCopy() },
+                    new Transfer[] { TextTransfer.getInstance() });
+        }
+    }
 
-	/**
-	 * Dialog that displays a specified text in a simple textbox and provides
-	 * the ability to store the text on the clipboard.
-	 *
-	 * @author swende
-	 *
-	 */
-	class CopyToClipboardDialog extends Dialog {
-		public static final int COPY_TO_CLIPBOARD_ID = 111119;
+    /**
+     * Dialog that displays a specified text in a simple textbox and provides
+     * the ability to store the text on the clipboard.
+     *
+     * @author swende
+     *
+     */
+    class CopyToClipboardDialog extends Dialog {
+        public static final int COPY_TO_CLIPBOARD_ID = 111119;
 
-		private String _text;
+        private String _text;
 
-		private Text _textField;
+        private Text _textField;
 
-		/**
-		 * Constructor.
-		 *
-		 * @param parentShell
-		 *            The parent of the dialog.
-		 * @param text
-		 *            the text that should be displayed
-		 */
-		public CopyToClipboardDialog(final Shell parentShell, final String text) {
-			super(parentShell);
-			this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
-					| SWT.BORDER | SWT.RESIZE);
-			assert text != null;
-			_text = text;
-		}
+        /**
+         * Constructor.
+         *
+         * @param parentShell
+         *            The parent of the dialog.
+         * @param text
+         *            the text that should be displayed
+         */
+        public CopyToClipboardDialog(final Shell parentShell, final String text) {
+            super(parentShell);
+            this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
+                    | SWT.BORDER | SWT.RESIZE);
+            assert text != null;
+            _text = text;
+        }
 
-		/**
-		 *
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void configureShell(final Shell shell) {
-			super.configureShell(shell);
-			shell.setText("Selected Process Variables");
-		}
+        /**
+         *
+         * {@inheritDoc}
+         */
+        @Override
+        protected void configureShell(final Shell shell) {
+            super.configureShell(shell);
+            shell.setText("Selected Process Variables");
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected Control createDialogArea(final Composite parent) {
-			final Composite c = (Composite) super.createDialogArea(parent);
-			_textField = new Text(c, SWT.MULTI | SWT.V_SCROLL);
-			_textField.setLayoutData(LayoutUtil
-					.createGridDataForFillingCell(300, 150));
-			_textField.setText(_text);
-			return c;
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected Control createDialogArea(final Composite parent) {
+            final Composite c = (Composite) super.createDialogArea(parent);
+            _textField = new Text(c, SWT.MULTI | SWT.V_SCROLL);
+            _textField.setLayoutData(LayoutUtil
+                    .createGridDataForFillingCell(300, 150));
+            _textField.setText(_text);
+            return c;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void okPressed() {
-			super.okPressed();
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void okPressed() {
+            super.okPressed();
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected Control createButtonBar(final Composite parent) {
-			// TODO Auto-generated method stub
-			return super.createButtonBar(parent);
-		}
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected Control createButtonBar(final Composite parent) {
+            // TODO Auto-generated method stub
+            return super.createButtonBar(parent);
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void createButtonsForButtonBar(final Composite parent) {
-			super.createButtonsForButtonBar(parent);
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void createButtonsForButtonBar(final Composite parent) {
+            super.createButtonsForButtonBar(parent);
 
-			createButton(parent, COPY_TO_CLIPBOARD_ID, "Copy to Clipboard",
-					false);
-		}
+            createButton(parent, COPY_TO_CLIPBOARD_ID, "Copy to Clipboard",
+                    false);
+        }
 
-		/**
-		 * Updates the text to be copied based on the current selection in the
-		 * text field.
-		 */
-		private void updateTextToCopy() {
-			if (_textField.getSelectionCount() != 0) {
-				_text = _textField.getSelectionText();
-			}
-		}
+        /**
+         * Updates the text to be copied based on the current selection in the
+         * text field.
+         */
+        private void updateTextToCopy() {
+            if (_textField.getSelectionCount() != 0) {
+                _text = _textField.getSelectionText();
+            }
+        }
 
-		/**
-		 * Returns the text to be copied into the clipboard.
-		 *
-		 * @return the text to be copied into the clipboard.
-		 */
-		public String getTextToCopy() {
-			return _text;
-		}
+        /**
+         * Returns the text to be copied into the clipboard.
+         *
+         * @return the text to be copied into the clipboard.
+         */
+        public String getTextToCopy() {
+            return _text;
+        }
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		protected void buttonPressed(final int buttonId) {
-			super.buttonPressed(buttonId);
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        protected void buttonPressed(final int buttonId) {
+            super.buttonPressed(buttonId);
 
-			if (buttonId == COPY_TO_CLIPBOARD_ID) {
-				updateTextToCopy();
-				setReturnCode(COPY_TO_CLIPBOARD_ID);
-				close();
-			}
-		}
+            if (buttonId == COPY_TO_CLIPBOARD_ID) {
+                updateTextToCopy();
+                setReturnCode(COPY_TO_CLIPBOARD_ID);
+                close();
+            }
+        }
 
-	}
+    }
 
 }

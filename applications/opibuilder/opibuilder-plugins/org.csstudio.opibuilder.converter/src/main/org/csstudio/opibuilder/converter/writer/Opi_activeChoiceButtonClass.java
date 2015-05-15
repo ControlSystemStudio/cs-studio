@@ -12,38 +12,38 @@ import org.csstudio.opibuilder.converter.model.Edm_activeChoiceButtonClass;
 
 /**
  * XML conversion class for Edm_activeRectangleClass
- * 
+ *
  * @author Matevz
  */
 public class Opi_activeChoiceButtonClass extends OpiWidget {
 
-	private static Logger log = Logger
-			.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeChoiceButtonClass");
-	private static final String typeId = "choiceButton";
-	private static final String name = "EDM choice  Button";
-	private static final String version = "1.0";
+    private static Logger log = Logger
+            .getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeChoiceButtonClass");
+    private static final String typeId = "choiceButton";
+    private static final String name = "EDM choice  Button";
+    private static final String version = "1.0";
 
-	/**
-	 * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
-	 */
-	public Opi_activeChoiceButtonClass(Context con, Edm_activeChoiceButtonClass r) {
-		super(con, r);
-		setTypeId(typeId);
-		setName(name);
-		setVersion(version);
+    /**
+     * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
+     */
+    public Opi_activeChoiceButtonClass(Context con, Edm_activeChoiceButtonClass r) {
+        super(con, r);
+        setTypeId(typeId);
+        setName(name);
+        setVersion(version);
 
-		if (r.getAttribute("controlPv").isExistInEDL()) {
-			new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
-			new OpiBoolean(widgetContext, "items_from_pv", true);
-		}
+        if (r.getAttribute("controlPv").isExistInEDL()) {
+            new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
+            new OpiBoolean(widgetContext, "items_from_pv", true);
+        }
 
-		new OpiBoolean(widgetContext, "horizontal", r.getOrientation() != null
-				&& r.getOrientation().equals("horizontal"));
-		
-		new OpiColor(widgetContext, "selected_color", r.getSelectColor(), r);
+        new OpiBoolean(widgetContext, "horizontal", r.getOrientation() != null
+                && r.getOrientation().equals("horizontal"));
 
-		log.debug("Edm_activeChoiceButtonClass written.");
+        new OpiColor(widgetContext, "selected_color", r.getSelectColor(), r);
 
-	}
+        log.debug("Edm_activeChoiceButtonClass written.");
+
+    }
 
 }

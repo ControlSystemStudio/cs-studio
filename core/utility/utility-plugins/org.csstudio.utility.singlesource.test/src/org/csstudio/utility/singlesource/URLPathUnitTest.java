@@ -43,11 +43,11 @@ public class URLPathUnitTest
         // Handle :.."
         path = new URLPath("http://host:80/some/other/../page");
         assertThat(path.toString(), equalTo("http://host:80/some/page"));
-        
+
         assertThat(path.segmentCount(), equalTo(2));
         assertThat(path.segment(0), equalTo("some"));
         assertThat(path.lastSegment(), equalTo("page"));
-        
+
         // Remove segments
         assertThat(path.removeFirstSegments(1).toString(), equalTo("http://host:80/page"));
         assertThat(path.removeLastSegments(1).toString(), equalTo("http://host:80/some"));
@@ -71,10 +71,10 @@ public class URLPathUnitTest
         path = helper.newPath("http://host:80/page");
         assertThat(path, instanceOf(URLPath.class));
         assertThat(path.toString(), equalTo("http://host:80/page"));
-        
+
         // "Device"
         assertThat(path.getDevice(), equalTo("http://host:80"));
-        
+
         // End
         path = new Path("/path/to/file");
         path = path.addTrailingSeparator();
@@ -87,7 +87,7 @@ public class URLPathUnitTest
         assertThat(path.toString(), equalTo("ftp://host/file/"));
         path = path.removeTrailingSeparator();
         assertThat(path.toString(), equalTo("ftp://host/file"));
-        
+
         // File extensions
         path = new Path("/path/to/file");
         path = path.addFileExtension("ext");
@@ -110,16 +110,16 @@ public class URLPathUnitTest
         path = new URLPath("file://path/to/file.ext");
         assertThat(path.toFile().getAbsolutePath(), equalTo("/path/to/file.ext"));
     }
-    
+
     @Test
     public void testURLCombinations() throws Exception
     {
         IPath path = new URLPath("http://host:80/some/page");
-        
+
         IPath other = new URLPath("http://host:80/some");
         assertThat(other.isPrefixOf(path), equalTo(true));
         assertThat(other.matchingFirstSegments(path), equalTo(1));
-        
+
         IPath combined = other.makeRelativeTo(path);
         assertThat(combined.toString(), equalTo("http://host:80/some/page/some"));
     }

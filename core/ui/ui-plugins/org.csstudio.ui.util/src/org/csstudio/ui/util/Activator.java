@@ -13,54 +13,54 @@ public class Activator extends Plugin implements BundleActivator {
     final public static String ID = "org.csstudio.ui.util";
 
     // The shared instance
-	private static Activator plugin;
+    private static Activator plugin;
 
-	private BundleContext context;
+    private BundleContext context;
 
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-		plugin = this;
-	}
+    /**
+     * The constructor
+     */
+    public Activator() {
+        plugin = this;
+    }
 
-	@Override
+    @Override
     public void start(BundleContext context) throws Exception
     {
-	    super.start(context);
-		setPlugin(this);
-		this.context = context;
+        super.start(context);
+        setPlugin(this);
+        this.context = context;
     }
 
-	@Override
+    @Override
     public void stop(BundleContext context) throws Exception
     {
-		setPlugin(this);
-	    super.stop(context);
+        setPlugin(this);
+        super.stop(context);
     }
 
-	public BundleContext getContext() {
-		return context;
-	}
+    public BundleContext getContext() {
+        return context;
+    }
 
-	/** Static setter to avoid FindBugs warning */
-	private static void setPlugin(final Activator the_plugin)
-	{
-		plugin = the_plugin;
-	}
-
-	/** @eturn The shared instance. */
-	public static Activator getDefault()
+    /** Static setter to avoid FindBugs warning */
+    private static void setPlugin(final Activator the_plugin)
     {
-		return plugin;
-	}
+        plugin = the_plugin;
+    }
 
-	/** Obtain image descriptor for image in plugin
-	 *  @param path Path to image within plugin
-	 *  @return {@link ImageDescriptor}
-	 */
-	public static ImageDescriptor getImageDescriptor(final String path)
-	{
-	    return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
-	}
+    /** @eturn The shared instance. */
+    public static Activator getDefault()
+    {
+        return plugin;
+    }
+
+    /** Obtain image descriptor for image in plugin
+     *  @param path Path to image within plugin
+     *  @return {@link ImageDescriptor}
+     */
+    public static ImageDescriptor getImageDescriptor(final String path)
+    {
+        return AbstractUIPlugin.imageDescriptorFromPlugin(ID, path);
+    }
 }

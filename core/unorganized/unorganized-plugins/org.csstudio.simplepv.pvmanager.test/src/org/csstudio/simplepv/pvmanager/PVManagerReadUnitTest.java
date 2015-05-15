@@ -27,7 +27,7 @@ import org.epics.vtype.VType;
 import org.junit.Test;
 
 /** JUnit test for reading with PVManagerPVFactory
- * 
+ *
  *  <p>Directly accesses PVManagerPVFactory to run as plain JUnit test.
  *  CSS code should use {@link SimplePVLayer}
  *  @author Kay Kasemir
@@ -37,7 +37,7 @@ public class PVManagerReadUnitTest extends TestHelper
     final private AtomicInteger connections = new AtomicInteger();
     final private AtomicInteger changes = new AtomicInteger();
     private volatile Exception error = null;
-    
+
     /** Read 'latest' value */
     @Test
     public void testBasicReading() throws Exception
@@ -83,7 +83,7 @@ public class PVManagerReadUnitTest extends TestHelper
                 error = new Exception("Received write permission change");
             }
         });
-        
+
         assertThat(pv.isStarted(), equalTo(false));
         pv.start();
         assertThat(pv.isStarted(), equalTo(true));
@@ -125,9 +125,9 @@ public class PVManagerReadUnitTest extends TestHelper
         final boolean buffer = true;
         final IPV pv = factory.createPV("sim://ramp", readonly, (int)TimeUnit.SECONDS.toMillis(2),
                     buffer, AbstractPVFactory.getDefaultPVNotificationThread(), null);
-        
+
         final AtomicBoolean got_multiples = new AtomicBoolean();
-        
+
         final List<VType> values = new ArrayList<>();
         pv.addListener(new IPVListener()
         {
@@ -173,12 +173,12 @@ public class PVManagerReadUnitTest extends TestHelper
                 error = new Exception("Received write permission change");
             }
         });
-        
+
         pv.start();
 
         // Expect about 1 update per second, so wait for ~5 values
         TimeUnit.SECONDS.sleep(5);
-        
+
         // Should have connected and received a bunch of values...
         assertThat(pv.isConnected(), equalTo(true));
         synchronized (values)

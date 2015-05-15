@@ -60,7 +60,7 @@ public class ContextMenuHelper
             final boolean allow_write)
     {
         // Determine how many PVs, with and w/o alarm we have.
-    	// Alarm PVs
+        // Alarm PVs
         final List<AlarmTreeLeaf> alarm_pvs = new ArrayList<AlarmTreeLeaf>();
         // Items with active alarm
         final List<AlarmTreeItem> alarms = new ArrayList<AlarmTreeItem>();
@@ -93,9 +93,9 @@ public class ContextMenuHelper
         // Add one menu entry for each related display
         for (AlarmTreeItem item : items)
             addRelatedDisplays(manager, shell, item);
-		// Add one menu entry for each related automated action
-		for (AlarmTreeItem item : items)
-			addAutomatedActions(manager, shell, item);
+        // Add one menu entry for each related automated action
+        for (AlarmTreeItem item : items)
+            addAutomatedActions(manager, shell, item);
         if (allow_write)
         {
             // Add one menu entry for each command
@@ -106,25 +106,25 @@ public class ContextMenuHelper
         // add action to acknowledge/un-acknowledge them
         if (alarm_pvs.size() > 0)
         {
-        	manager.add(new CopyToClipboardAction(alarm_pvs));
-        	// TODO Copy to clipboard
-        	if (EMailSender.isEmailSupported())
-        		manager.add(new SendEMailAction(shell, alarm_pvs));
+            manager.add(new CopyToClipboardAction(alarm_pvs));
+            // TODO Copy to clipboard
+            if (EMailSender.isEmailSupported())
+                manager.add(new SendEMailAction(shell, alarm_pvs));
         }
-        
+
         if (allow_write)
         {
             if (alarms.size() > 0)
             {
                 final AcknowledgeAction action = new AcknowledgeAction(true, alarms);
                 action.clearSelectionOnAcknowledgement(viewer);
-				manager.add(action);
+                manager.add(action);
             }
             if (ack_alarms.size() > 0)
             {
                 final AcknowledgeAction action = new AcknowledgeAction(false, ack_alarms);
                 action.clearSelectionOnAcknowledgement(viewer);
-				manager.add(action);
+                manager.add(action);
             }
         }
     }
@@ -141,19 +141,19 @@ public class ContextMenuHelper
             return;
         addGuidanceMessages(manager, shell, item.getParent());
         for (GDCDataStructure guidance_entry : item.getGuidance())
-        {	// avoid duplicates
-        	if (addedGuidance.contains(guidance_entry))
-        	    continue;
-    		manager.add(new GuidanceAction(shell, item.getPosition(),
+        {    // avoid duplicates
+            if (addedGuidance.contains(guidance_entry))
+                continue;
+            manager.add(new GuidanceAction(shell, item.getPosition(),
                                        guidance_entry));
-    		addedGuidance.add(guidance_entry);
-    		if (addedGuidance.size() > max_context_entries)
-    		{
+            addedGuidance.add(guidance_entry);
+            if (addedGuidance.size() > max_context_entries)
+            {
                 manager.add(new GuidanceAction(shell, null,
                         new GDCDataStructure(Messages.MoreTag, Messages.MoreGuidanceInfo)));
-    		    break;
-    		}
-    	}
+                break;
+            }
+        }
     }
 
     /** Recursively add related displays
@@ -169,11 +169,11 @@ public class ContextMenuHelper
         addRelatedDisplays(manager, shell, item.getParent());
         for (GDCDataStructure display : item.getDisplays())
         {   // avoid duplicates
-        	if (addedDisplays.contains(display))
-        	    continue;
-    		manager.add(new RelatedDisplayAction(shell, item.getPosition(),
+            if (addedDisplays.contains(display))
+                continue;
+            manager.add(new RelatedDisplayAction(shell, item.getPosition(),
                     display));
-    		addedDisplays.add(display);
+            addedDisplays.add(display);
             if (addedDisplays.size() > max_context_entries)
             {   // Using RelatedDisplayAction here would give a better icon,
                 // but then it would try to execute the info as a display
@@ -183,7 +183,7 @@ public class ContextMenuHelper
                         new GDCDataStructure(Messages.MoreTag, Messages.MoreDisplaysInfo)));
                 break;
             }
-    	}
+        }
     }
 
     /** Recursively add commands
@@ -199,19 +199,19 @@ public class ContextMenuHelper
         addCommands(manager, shell, item.getParent());
         for (GDCDataStructure command : item.getCommands())
         {   // avoid duplicates
-        	if (addedCommands.contains(command))
-        	    continue;
-    		 manager.add(new CommandAction(shell, item.getPosition(), command));
-    		 addedCommands.add(command);
+            if (addedCommands.contains(command))
+                continue;
+             manager.add(new CommandAction(shell, item.getPosition(), command));
+             addedCommands.add(command);
              if (addedCommands.size() > max_context_entries)
              {  // See comment in addRelatedDisplays
                  manager.add(new GuidanceAction(shell, null,
                          new GDCDataStructure(Messages.MoreTag, Messages.MoreCommandsInfo)));
                  break;
              }
-    	}
+        }
     }
-    
+
     /** Recursively add automated actions
      *  @param manager Menu to which to add related display action
      *  @param shell Shell to use
@@ -225,16 +225,16 @@ public class ContextMenuHelper
         addAutomatedActions(manager, shell, item.getParent());
         for (AADataStructure action : item.getAutomatedActions())
         {   // avoid duplicates
-        	if (addedAutoActions.contains(action))
-        	    continue;
-    		 manager.add(new AutomatedAction(shell, item, action));
-    		 addedAutoActions.add(action);
+            if (addedAutoActions.contains(action))
+                continue;
+             manager.add(new AutomatedAction(shell, item, action));
+             addedAutoActions.add(action);
              if (addedAutoActions.size() > max_context_entries)
              {  // See comment in addRelatedDisplays
                  manager.add(new GuidanceAction(shell, null,
                          new GDCDataStructure(Messages.MoreTag, Messages.MoreAutoActionsInfo)));
                  break;
              }
-    	}
+        }
     }
 }

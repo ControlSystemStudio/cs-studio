@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?NLS TYPE="org.eclipse.help.toc"?>
-
 <toc link_to="../org.csstudio.ui.help/tocCore.xml#core" label="PV Manager">
-    <topic label="Process Variables"  href="html/pvs.html">
-       <anchor id="pvsyntax"/>
-	</topic>
-    <topic label="Services"  href="html/services.html">
-       <anchor id="servicesyntax"/>
-	</topic>
+  <topic label="Process Variables" href="html/pvs.html">
+    <anchor id="pvsyntax"/>
+  </topic>
+  <topic label="Services" href="html/services.html">
+    <anchor id="servicesyntax"/>
+  </topic>
 </toc>

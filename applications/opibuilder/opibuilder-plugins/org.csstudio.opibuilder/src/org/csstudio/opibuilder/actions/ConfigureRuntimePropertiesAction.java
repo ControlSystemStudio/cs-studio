@@ -22,26 +22,26 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ConfigureRuntimePropertiesAction extends Action {
 
-	private AbstractWidgetModel widgetModel;
-	private Shell shell;
+    private AbstractWidgetModel widgetModel;
+    private Shell shell;
 
-	public ConfigureRuntimePropertiesAction(Shell shell, AbstractWidgetModel widgetModel) {
-		setText("Configure Runtime Properties...");
-		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-				OPIBuilderPlugin.PLUGIN_ID, "icons/settingRuntimeProperty.gif"));
-		this.widgetModel = widgetModel;
-		this.shell = shell;
-	}
-	
-	@Override
-	public void run() {
-		RuntimePropertiesEditDialog dialog = new RuntimePropertiesEditDialog(shell, widgetModel);
-		if(dialog.open() == Window.OK){
-			for(PropertyData p: dialog.getOutput()){
-				widgetModel.setPropertyValue(p.property.getPropertyID(), p.tmpValue);
-			}
-		}
-	}
-	
-	
+    public ConfigureRuntimePropertiesAction(Shell shell, AbstractWidgetModel widgetModel) {
+        setText("Configure Runtime Properties...");
+        setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+                OPIBuilderPlugin.PLUGIN_ID, "icons/settingRuntimeProperty.gif"));
+        this.widgetModel = widgetModel;
+        this.shell = shell;
+    }
+
+    @Override
+    public void run() {
+        RuntimePropertiesEditDialog dialog = new RuntimePropertiesEditDialog(shell, widgetModel);
+        if(dialog.open() == Window.OK){
+            for(PropertyData p: dialog.getOutput()){
+                widgetModel.setPropertyValue(p.property.getPropertyID(), p.tmpValue);
+            }
+        }
+    }
+
+
 }

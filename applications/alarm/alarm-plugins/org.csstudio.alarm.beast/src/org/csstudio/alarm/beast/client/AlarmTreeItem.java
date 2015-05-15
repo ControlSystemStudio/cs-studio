@@ -299,17 +299,17 @@ public class AlarmTreeItem extends TreeItem
      */
     public void acknowledge(final boolean acknowledge)
     {
-    	// Acknowledging alarms will recurse to the PVs,
-    	// then call up to the root to send a notification
-    	// to JMS (for the AlarmClientModelRoot)
-    	// To prevent deadlocks, first lock the root,
-    	// then this and other affected tree items
+        // Acknowledging alarms will recurse to the PVs,
+        // then call up to the root to send a notification
+        // to JMS (for the AlarmClientModelRoot)
+        // To prevent deadlocks, first lock the root,
+        // then this and other affected tree items
         final AlarmTreeRoot root = getRoot();
         synchronized (root)
         {
-        	synchronized (this)
+            synchronized (this)
             {
-            	final int n = getChildCount();
+                final int n = getChildCount();
                 for (int i=0; i<n; ++i)
                     getChild(i).acknowledge(acknowledge);
             }
@@ -321,14 +321,14 @@ public class AlarmTreeItem extends TreeItem
      *  Recursively updates parent items.
      *
      *  @return <code>true</code> if the severity of this item or any of its parents changed after
-     *  		this method is executed, or <code>false</code> if the severity remained the same
+     *          this method is executed, or <code>false</code> if the severity remained the same
      */
     public synchronized boolean maximizeSeverity()
     {
-    	boolean changed = false;
-    	// Get maximum child severity and its status
-    	SeverityLevel new_current_severity = SeverityLevel.OK;
-    	SeverityLevel new_severity = SeverityLevel.OK;
+        boolean changed = false;
+        // Get maximum child severity and its status
+        SeverityLevel new_current_severity = SeverityLevel.OK;
+        SeverityLevel new_severity = SeverityLevel.OK;
         String new_message = SeverityLevel.OK.getDisplayName();
         alarm_children.clear();
         disabled_children = 0;
@@ -338,7 +338,7 @@ public class AlarmTreeItem extends TreeItem
             final AlarmTreeItem child = getChild(i);
             // Maximize 'current' severity
             if (child.getCurrentSeverity().ordinal() > new_current_severity.ordinal())
-            	new_current_severity = child.getCurrentSeverity();
+                new_current_severity = child.getCurrentSeverity();
             // Maximize latched severity/status
             final SeverityLevel child_sevr = child.getSeverity();
             final int level = child_sevr.ordinal();
@@ -346,8 +346,8 @@ public class AlarmTreeItem extends TreeItem
                 alarm_children.add(child);
             if (level > new_severity.ordinal())
             {
-            	new_severity = child_sevr;
-            	new_message = child.getMessage();
+                new_severity = child_sevr;
+                new_message = child.getMessage();
             }
             if (child instanceof AlarmTreePV)
             {
@@ -384,40 +384,40 @@ public class AlarmTreeItem extends TreeItem
         out.println(indent + "* " + toString());
         if (guidance.length > 0)
         {
-	        for (GDCDataStructure guide : guidance)
-	        {
-	        	out.println(indent1 + "Guidance:");
-	        	out.println(indent1 + "- Title: " + guide.getTitle());
-	        	out.println(indent1 + "- Details: " + guide.getDetails());
-	        }
+            for (GDCDataStructure guide : guidance)
+            {
+                out.println(indent1 + "Guidance:");
+                out.println(indent1 + "- Title: " + guide.getTitle());
+                out.println(indent1 + "- Details: " + guide.getDetails());
+            }
         }
         if (displays.length > 0)
         {
-	        for (GDCDataStructure display : displays)
-	        {
-	        	out.println(indent1 + "Display:");
-	        	out.println(indent1 + "- Title: " + display.getTitle());
-	        	out.println(indent1 + "- Details: " + display.getDetails());
-	        }
+            for (GDCDataStructure display : displays)
+            {
+                out.println(indent1 + "Display:");
+                out.println(indent1 + "- Title: " + display.getTitle());
+                out.println(indent1 + "- Details: " + display.getDetails());
+            }
         }
         if (commands.length > 0)
         {
-	        for (GDCDataStructure command : commands)
-	        {
-	        	out.println(indent1 + "Command:");
-	        	out.println(indent1 + "- Title: " + command.getTitle());
-	        	out.println(indent1 + "- Details: " + command.getDetails());
-	        }
+            for (GDCDataStructure command : commands)
+            {
+                out.println(indent1 + "Command:");
+                out.println(indent1 + "- Title: " + command.getTitle());
+                out.println(indent1 + "- Details: " + command.getDetails());
+            }
         }
         if (automated_actions.length > 0)
         {
-	        for (AADataStructure aa : automated_actions)
-	        {
-	        	out.println(indent1 + "Command:");
-	        	out.println(indent1 + "- Title: " + aa.getTitle());
-	        	out.println(indent1 + "- Details: " + aa.getDetails());
-	        	out.println(indent1 + "- Delay: " + aa.getDelay());
-	        }
+            for (AADataStructure aa : automated_actions)
+            {
+                out.println(indent1 + "Command:");
+                out.println(indent1 + "- Title: " + aa.getTitle());
+                out.println(indent1 + "- Details: " + aa.getDetails());
+                out.println(indent1 + "- Delay: " + aa.getDelay());
+            }
         }
     }
 
@@ -488,20 +488,20 @@ public class AlarmTreeItem extends TreeItem
      *  @param tag XML Tag
      *  @param aa The data
      */
-	private void writeAA_XML(final PrintWriter out, final int level,
-			final String tag, final AADataStructure aads[]) {
-		if (aads == null || aads.length <= 0)
-			return;
-		for (AADataStructure data : aads) {
-			XMLWriter.start(out, level, tag);
-			out.println();
-			XMLWriter.XML(out, level + 1, XMLTags.TITLE, data.getTitle());
-			XMLWriter.XML(out, level + 1, XMLTags.DETAILS, data.getDetails());
-			XMLWriter.XML(out, level + 1, XMLTags.DELAY, data.getDelay());
-			XMLWriter.end(out, level, tag);
-			out.println();
-		}
-	}
+    private void writeAA_XML(final PrintWriter out, final int level,
+            final String tag, final AADataStructure aads[]) {
+        if (aads == null || aads.length <= 0)
+            return;
+        for (AADataStructure data : aads) {
+            XMLWriter.start(out, level, tag);
+            out.println();
+            XMLWriter.XML(out, level + 1, XMLTags.TITLE, data.getTitle());
+            XMLWriter.XML(out, level + 1, XMLTags.DETAILS, data.getDetails());
+            XMLWriter.XML(out, level + 1, XMLTags.DELAY, data.getDelay());
+            XMLWriter.end(out, level, tag);
+            out.println();
+        }
+    }
 
     /** @return Short string representation for debugging */
     @SuppressWarnings("nls")

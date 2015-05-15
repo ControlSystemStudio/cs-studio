@@ -20,91 +20,91 @@ import org.eclipse.swt.widgets.Control;
 
 public class AutoCompleteTextCellEditor extends TextCellEditor {
 
-	private ContentProposalAdapter contentProposalAdapter;
-	private boolean popupOpen = false; // true, if popup is currently open
+    private ContentProposalAdapter contentProposalAdapter;
+    private boolean popupOpen = false; // true, if popup is currently open
 
-	public AutoCompleteTextCellEditor(Composite parent, String type) {
-		super(parent);
+    public AutoCompleteTextCellEditor(Composite parent, String type) {
+        super(parent);
 
-		AutoCompleteProposalProvider provider = new AutoCompleteProposalProvider(type);
-		contentProposalAdapter = new ContentProposalAdapter(text,
-				new TextContentAdapter(), provider,
-				AutoCompleteWidget.getActivationKeystroke(),
-				AutoCompleteWidget.getAutoactivationChars());
-		enableContentProposal(provider,
-				AutoCompleteWidget.getActivationKeystroke(),
-				AutoCompleteWidget.getAutoactivationChars());
-	}
+        AutoCompleteProposalProvider provider = new AutoCompleteProposalProvider(type);
+        contentProposalAdapter = new ContentProposalAdapter(text,
+                new TextContentAdapter(), provider,
+                AutoCompleteWidget.getActivationKeystroke(),
+                AutoCompleteWidget.getAutoactivationChars());
+        enableContentProposal(provider,
+                AutoCompleteWidget.getActivationKeystroke(),
+                AutoCompleteWidget.getAutoactivationChars());
+    }
 
-	public AutoCompleteTextCellEditor(Composite parent, String type,
-			List<Control> historyHandlers) {
-		this(parent, type);
-		if (historyHandlers != null) {
-			for (Control handler : historyHandlers) {
-				getHistory().installListener(handler);
-			}
-		}
-	}
+    public AutoCompleteTextCellEditor(Composite parent, String type,
+            List<Control> historyHandlers) {
+        this(parent, type);
+        if (historyHandlers != null) {
+            for (Control handler : historyHandlers) {
+                getHistory().installListener(handler);
+            }
+        }
+    }
 
-	private void enableContentProposal(AutoCompleteProposalProvider provider,
-			KeyStroke keyStroke, char[] autoActivationCharacters) {
-		// Listen for popup open/close events to be able to handle focus events
-		// correctly
-		contentProposalAdapter
-				.addContentProposalListener(new IContentProposalListener2() {
+    private void enableContentProposal(AutoCompleteProposalProvider provider,
+            KeyStroke keyStroke, char[] autoActivationCharacters) {
+        // Listen for popup open/close events to be able to handle focus events
+        // correctly
+        contentProposalAdapter
+                .addContentProposalListener(new IContentProposalListener2() {
 
-					public void proposalPopupClosed(
-							ContentProposalAdapter adapter) {
-						popupOpen = false;
-					}
+                    public void proposalPopupClosed(
+                            ContentProposalAdapter adapter) {
+                        popupOpen = false;
+                    }
 
-					public void proposalPopupOpened(
-							ContentProposalAdapter adapter) {
-						popupOpen = true;
-					}
-				});
-	}
+                    public void proposalPopupOpened(
+                            ContentProposalAdapter adapter) {
+                        popupOpen = true;
+                    }
+                });
+    }
 
-	/**
-	 * Return the {@link ContentProposalAdapter} of this cell editor.
-	 * 
-	 * @return the {@link ContentProposalAdapter}
-	 */
-	public ContentProposalAdapter getContentProposalAdapter() {
-		return contentProposalAdapter;
-	}
+    /**
+     * Return the {@link ContentProposalAdapter} of this cell editor.
+     *
+     * @return the {@link ContentProposalAdapter}
+     */
+    public ContentProposalAdapter getContentProposalAdapter() {
+        return contentProposalAdapter;
+    }
 
-	@Override
-	protected void focusLost() {
-		if (!popupOpen) {
-			// Focus lost deactivates the cell editor.
-			// This must not happen if focus lost was caused by activating
-			// the completion proposal popup.
-			super.focusLost();
-		}
-	}
+    @Override
+    protected void focusLost() {
+        if (!popupOpen) {
+            // Focus lost deactivates the cell editor.
+            // This must not happen if focus lost was caused by activating
+            // the completion proposal popup.
+            super.focusLost();
+        }
+    }
 
-	@Override
-	protected boolean dependsOnExternalFocusListener() {
-		// Always return false;
-		// Otherwise, the ColumnViewerEditor will install an additional focus
-		// listener
-		// that cancels cell editing on focus lost, even if focus gets lost due
-		// to
-		// activation of the completion proposal popup. See also bug 58777.
-		return false;
-	}
+    @Override
+    protected boolean dependsOnExternalFocusListener() {
+        // Always return false;
+        // Otherwise, the ColumnViewerEditor will install an additional focus
+        // listener
+        // that cancels cell editing on focus lost, even if focus gets lost due
+        // to
+        // activation of the completion proposal popup. See also bug 58777.
+        return false;
+    }
 
-	public AutoCompleteHistory getHistory() {
-		return contentProposalAdapter.getHistory();
-	}
+    public AutoCompleteHistory getHistory() {
+        return contentProposalAdapter.getHistory();
+    }
 
-	@Override
-	protected void fireApplyEditorValue() {
-		if (getValue() != null) {
-			getHistory().addEntry(getValue().toString());
-		}
-		getContentProposalAdapter().getHelper().close(false);
-		super.fireApplyEditorValue();
-	}
+    @Override
+    protected void fireApplyEditorValue() {
+        if (getValue() != null) {
+            getHistory().addEntry(getValue().toString());
+        }
+        getContentProposalAdapter().getHelper().close(false);
+        super.fireApplyEditorValue();
+    }
 }

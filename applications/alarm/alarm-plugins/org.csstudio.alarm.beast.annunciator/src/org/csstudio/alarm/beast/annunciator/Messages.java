@@ -21,7 +21,7 @@ public class Messages extends NLS
     public static String ClearTT;
     public static String ConnectMsg;
     public static String Message;
-	public static String MoreMessagesFmt;
+    public static String MoreMessagesFmt;
     public static String Prefs_History;
     public static String Prefs_Severities;
     public static String Prefs_Threshold;

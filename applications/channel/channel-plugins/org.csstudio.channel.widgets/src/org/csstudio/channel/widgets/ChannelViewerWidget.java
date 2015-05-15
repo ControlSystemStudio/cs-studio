@@ -36,295 +36,295 @@ import org.eclipse.swt.widgets.TableColumn;
 import com.swtdesigner.TableViewerColumnSorter;
 
 public class ChannelViewerWidget extends AbstractChannelQueryResultWidget
-		implements ISelectionProvider, ConfigurableWidget {
+        implements ISelectionProvider, ConfigurableWidget {
 
-	private Table table;
-	private TableViewer tableViewer;
-	private ErrorBar errorBar;
+    private Table table;
+    private TableViewer tableViewer;
+    private ErrorBar errorBar;
 
-	// Simple Model
-	private Collection<Channel> channels = new ArrayList<Channel>();
-	private AbstractSelectionProviderWrapper selectionProvider;
+    // Simple Model
+    private Collection<Channel> channels = new ArrayList<Channel>();
+    private AbstractSelectionProviderWrapper selectionProvider;
 
-	private List<String> properties;
-	private List<String> tags;
+    private List<String> properties;
+    private List<String> tags;
 
-	public Collection<Channel> getChannels() {
-		return channels;
-	}
+    public Collection<Channel> getChannels() {
+        return channels;
+    }
 
-	private void setChannels(Collection<Channel> channels) {
-		Collection<Channel> oldChannels = this.channels;
-		this.channels = channels;
-		if (channels != null) {
-			this.properties = new ArrayList<String>(
-					ChannelUtil.getPropertyNames(channels));
-			this.tags = new ArrayList<String>(ChannelUtil.getAllTagNames(channels));
-		} else {
-			this.properties = Collections.emptyList();
-			this.tags = Collections.emptyList();
-		}
-		changeSupport.firePropertyChange("channels", oldChannels, channels);
-	}
+    private void setChannels(Collection<Channel> channels) {
+        Collection<Channel> oldChannels = this.channels;
+        this.channels = channels;
+        if (channels != null) {
+            this.properties = new ArrayList<String>(
+                    ChannelUtil.getPropertyNames(channels));
+            this.tags = new ArrayList<String>(ChannelUtil.getAllTagNames(channels));
+        } else {
+            this.properties = Collections.emptyList();
+            this.tags = Collections.emptyList();
+        }
+        changeSupport.firePropertyChange("channels", oldChannels, channels);
+    }
 
-	public Collection<String> getProperties() {
-		return properties;
-	}
+    public Collection<String> getProperties() {
+        return properties;
+    }
 
-	public void setProperties(List<String> properties) {
-		List<String> oldProperties = this.properties;
-		this.properties = properties;
-		changeSupport.firePropertyChange("properties", oldProperties,
-				properties);
-	}
+    public void setProperties(List<String> properties) {
+        List<String> oldProperties = this.properties;
+        this.properties = properties;
+        changeSupport.firePropertyChange("properties", oldProperties,
+                properties);
+    }
 
-	public Collection<String> getTags() {
-		return tags;
-	}
+    public Collection<String> getTags() {
+        return tags;
+    }
 
-	public void setTags(List<String> tags) {
-		List<String> oldTags = this.tags;
-		this.tags = tags;
-		changeSupport.firePropertyChange("tags", oldTags, tags);
-	}
+    public void setTags(List<String> tags) {
+        List<String> oldTags = this.tags;
+        this.tags = tags;
+        changeSupport.firePropertyChange("tags", oldTags, tags);
+    }
 
-	private void updateTable() {
-		// Remove all old columns
-		// TODO add the additional columns in the correct sorted order.
-		while (tableViewer.getTable().getColumnCount() > 2) {
-			tableViewer.getTable().getColumn(table.getColumnCount() - 1)
-					.dispose();
-		}
-		// Add a new column for each property
-		for (String propertyName : properties) {
-			// Property Column
-			TableViewerColumn channelPropertyColumn = new TableViewerColumn(
-					tableViewer, SWT.NONE);
-			channelPropertyColumn
-					.setLabelProvider(new ChannelPropertyCellLabelProvider(
-							propertyName));
-			new TableViewerChannelPropertySorter(channelPropertyColumn,
-					propertyName);
-			TableColumn tblclmnNumericprop = channelPropertyColumn.getColumn();
+    private void updateTable() {
+        // Remove all old columns
+        // TODO add the additional columns in the correct sorted order.
+        while (tableViewer.getTable().getColumnCount() > 2) {
+            tableViewer.getTable().getColumn(table.getColumnCount() - 1)
+                    .dispose();
+        }
+        // Add a new column for each property
+        for (String propertyName : properties) {
+            // Property Column
+            TableViewerColumn channelPropertyColumn = new TableViewerColumn(
+                    tableViewer, SWT.NONE);
+            channelPropertyColumn
+                    .setLabelProvider(new ChannelPropertyCellLabelProvider(
+                            propertyName));
+            new TableViewerChannelPropertySorter(channelPropertyColumn,
+                    propertyName);
+            TableColumn tblclmnNumericprop = channelPropertyColumn.getColumn();
 
-			tblclmnNumericprop.setText(propertyName);
-		}
-		// Add a new column for each Tag
-		for (String tagName : tags) {
-			// Tag Column
-			TableViewerColumn channelTagColumn = new TableViewerColumn(
-					tableViewer, SWT.NONE);
-			channelTagColumn.setLabelProvider(new ChannelTagCellLabelProvider(
-					tagName));
-			new TableViewerChannelTagSorter(channelTagColumn, tagName);
-			TableColumn tblclmnNumericprop = channelTagColumn.getColumn();
-			tblclmnNumericprop.setText(tagName);
-		}
-		
-		resetTableLayout();
-		
-		// Clear the channel list;
-		if (channels != null) {
-			tableViewer.setInput(channels.toArray());
-			tableViewer.setItemCount(channels.size());
-		} else {
-			tableViewer.setInput(new Object[0]);
-			tableViewer.setItemCount(0);
-		}
-	}
-	
-	private void resetTableLayout() {
-		int tableWidth = table.getSize().x;
-		int nColumn = table.getColumnCount();
-		int size = 100;
-		if (100 * nColumn < tableWidth) {
-			size = tableWidth / nColumn;
-		}
-		for (int i = 0; i < table.getColumnCount(); i++) {
-			table.getColumn(i).setWidth(size);
-		}
-	}
+            tblclmnNumericprop.setText(propertyName);
+        }
+        // Add a new column for each Tag
+        for (String tagName : tags) {
+            // Tag Column
+            TableViewerColumn channelTagColumn = new TableViewerColumn(
+                    tableViewer, SWT.NONE);
+            channelTagColumn.setLabelProvider(new ChannelTagCellLabelProvider(
+                    tagName));
+            new TableViewerChannelTagSorter(channelTagColumn, tagName);
+            TableColumn tblclmnNumericprop = channelTagColumn.getColumn();
+            tblclmnNumericprop.setText(tagName);
+        }
 
-	public ChannelViewerWidget(Composite parent, int style) {
-		super(parent, style);
+        resetTableLayout();
 
-		GridLayout gridLayout = new GridLayout(1, false);
-		gridLayout.verticalSpacing = 0;
-		gridLayout.marginWidth = 0;
-		gridLayout.marginHeight = 0;
-		setLayout(gridLayout);
+        // Clear the channel list;
+        if (channels != null) {
+            tableViewer.setInput(channels.toArray());
+            tableViewer.setItemCount(channels.size());
+        } else {
+            tableViewer.setInput(new Object[0]);
+            tableViewer.setItemCount(0);
+        }
+    }
 
-		errorBar = new ErrorBar(this, SWT.NONE);
-		errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
-				1, 1));
-		errorBar.setMarginBottom(5);
+    private void resetTableLayout() {
+        int tableWidth = table.getSize().x;
+        int nColumn = table.getColumnCount();
+        int size = 100;
+        if (100 * nColumn < tableWidth) {
+            size = tableWidth / nColumn;
+        }
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumn(i).setWidth(size);
+        }
+    }
 
-		tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION |
-				SWT.MULTI);
-		table = tableViewer.getTable();
-		
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		TableViewerColumn channelNameColumn = new TableViewerColumn(
-				tableViewer, SWT.NONE);
-		channelNameColumn.setLabelProvider(new CellLabelProvider() {
-			@Override
-			public void update(ViewerCell cell) {
-				cell.setText(((Channel) cell.getElement()).getName());
-			}
-		});
-		new TableViewerColumnSorter(channelNameColumn) {
-			@Override
-			protected Object getValue(Object o) {
-				return ((Channel) o).getName();
-			}
-		};
-		TableColumn tblclmnChannelName = channelNameColumn.getColumn();
-		tblclmnChannelName.setText("Name");
+    public ChannelViewerWidget(Composite parent, int style) {
+        super(parent, style);
 
-		TableViewerColumn channelOwnerColumn = new TableViewerColumn(
-				tableViewer, SWT.NONE);
-		channelOwnerColumn.setLabelProvider(new CellLabelProvider() {
+        GridLayout gridLayout = new GridLayout(1, false);
+        gridLayout.verticalSpacing = 0;
+        gridLayout.marginWidth = 0;
+        gridLayout.marginHeight = 0;
+        setLayout(gridLayout);
 
-			@Override
-			public void update(ViewerCell cell) {
-				cell.setText(((Channel) cell.getElement()).getOwner());
-			}
-		});
-		new TableViewerColumnSorter(channelOwnerColumn) {
-			@Override
-			protected Object getValue(Object o) {
-				return ((Channel) o).getOwner();
-			}
-		};
-		TableColumn tblclmnOwner = channelOwnerColumn.getColumn();
-		tblclmnOwner.setText("Owner");
-		tableViewer.setContentProvider(new IStructuredContentProvider() {
+        errorBar = new ErrorBar(this, SWT.NONE);
+        errorBar.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false,
+                1, 1));
+        errorBar.setMarginBottom(5);
 
-			@Override
-			public void inputChanged(Viewer viewer, Object oldInput,
-					Object newInput) {
+        tableViewer = new TableViewer(this, SWT.BORDER | SWT.FULL_SELECTION |
+                SWT.MULTI);
+        table = tableViewer.getTable();
 
-			}
+        table.setLinesVisible(true);
+        table.setHeaderVisible(true);
+        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 
-			@Override
-			public void dispose() {
+        TableViewerColumn channelNameColumn = new TableViewerColumn(
+                tableViewer, SWT.NONE);
+        channelNameColumn.setLabelProvider(new CellLabelProvider() {
+            @Override
+            public void update(ViewerCell cell) {
+                cell.setText(((Channel) cell.getElement()).getName());
+            }
+        });
+        new TableViewerColumnSorter(channelNameColumn) {
+            @Override
+            protected Object getValue(Object o) {
+                return ((Channel) o).getName();
+            }
+        };
+        TableColumn tblclmnChannelName = channelNameColumn.getColumn();
+        tblclmnChannelName.setText("Name");
 
-			}
+        TableViewerColumn channelOwnerColumn = new TableViewerColumn(
+                tableViewer, SWT.NONE);
+        channelOwnerColumn.setLabelProvider(new CellLabelProvider() {
 
-			@Override
-			public Object[] getElements(Object inputElement) {
-				return (Object[]) inputElement;
-			}
-		});
+            @Override
+            public void update(ViewerCell cell) {
+                cell.setText(((Channel) cell.getElement()).getOwner());
+            }
+        });
+        new TableViewerColumnSorter(channelOwnerColumn) {
+            @Override
+            protected Object getValue(Object o) {
+                return ((Channel) o).getOwner();
+            }
+        };
+        TableColumn tblclmnOwner = channelOwnerColumn.getColumn();
+        tblclmnOwner.setText("Owner");
+        tableViewer.setContentProvider(new IStructuredContentProvider() {
 
-		selectionProvider = new AbstractSelectionProviderWrapper(tableViewer,
-				this) {
-			@SuppressWarnings("unchecked")
-			@Override
-			protected ISelection transform(IStructuredSelection selection) {
-				if (selection != null)
-					return new StructuredSelection(new ChannelViewerAdaptable(
-							selection.toList(), ChannelViewerWidget.this));
-				else
-					return new StructuredSelection();
-			}
-		};
+            @Override
+            public void inputChanged(Viewer viewer, Object oldInput,
+                    Object newInput) {
 
-		addPropertyChangeListener(new PropertyChangeListener() {
+            }
 
-			List<String> properties = Arrays.asList("channels", "properties",
-					"tags");
+            @Override
+            public void dispose() {
 
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (properties.contains(evt.getPropertyName())) {
-					updateTable();
-				}
-			}
+            }
 
-		});
-		resetTableLayout();
-	}
+            @Override
+            public Object[] getElements(Object inputElement) {
+                return (Object[]) inputElement;
+            }
+        });
 
-	@Override
-	public void setMenu(Menu menu) {
-		super.setMenu(menu);
-		table.setMenu(menu);
-	}
+        selectionProvider = new AbstractSelectionProviderWrapper(tableViewer,
+                this) {
+            @SuppressWarnings("unchecked")
+            @Override
+            protected ISelection transform(IStructuredSelection selection) {
+                if (selection != null)
+                    return new StructuredSelection(new ChannelViewerAdaptable(
+                            selection.toList(), ChannelViewerWidget.this));
+                else
+                    return new StructuredSelection();
+            }
+        };
 
-	@Override
-	protected void queryCleared() {
-		this.channels = null;
-		this.errorBar.setException(null);
-		setChannels(null);
-	}
+        addPropertyChangeListener(new PropertyChangeListener() {
 
-	@Override
-	protected void queryExecuted(Result result) {
-		Exception e = result.exception;
-		errorBar.setException(e);
-		if (e == null) {
-			setChannels(result.channels);
-		}
-	}
+            List<String> properties = Arrays.asList("channels", "properties",
+                    "tags");
 
-	@Override
-	public void addSelectionChangedListener(ISelectionChangedListener listener) {
-		selectionProvider.addSelectionChangedListener(listener);
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (properties.contains(evt.getPropertyName())) {
+                    updateTable();
+                }
+            }
 
-	}
+        });
+        resetTableLayout();
+    }
 
-	@Override
-	public ISelection getSelection() {
-		return selectionProvider.getSelection();
-	}
+    @Override
+    public void setMenu(Menu menu) {
+        super.setMenu(menu);
+        table.setMenu(menu);
+    }
 
-	@Override
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
-		selectionProvider.removeSelectionChangedListener(listener);
-	}
+    @Override
+    protected void queryCleared() {
+        this.channels = null;
+        this.errorBar.setException(null);
+        setChannels(null);
+    }
 
-	@Override
-	public void setSelection(ISelection selection) {
-		selectionProvider.setSelection(selection);
-	}
+    @Override
+    protected void queryExecuted(Result result) {
+        Exception e = result.exception;
+        errorBar.setException(e);
+        if (e == null) {
+            setChannels(result.channels);
+        }
+    }
 
-	private boolean configurable = true;
+    @Override
+    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+        selectionProvider.addSelectionChangedListener(listener);
 
-	private ChannelViewerConfigurationDialog dialog;
+    }
 
-	public void openConfigurationDialog() {
-		if (dialog != null)
-			return;
-		dialog = new ChannelViewerConfigurationDialog(this);
-		dialog.open();
-	}
+    @Override
+    public ISelection getSelection() {
+        return selectionProvider.getSelection();
+    }
 
-	@Override
-	public boolean isConfigurable() {
-		return configurable;
-	}
+    @Override
+    public void removeSelectionChangedListener(
+            ISelectionChangedListener listener) {
+        selectionProvider.removeSelectionChangedListener(listener);
+    }
 
-	@Override
-	public void setConfigurable(boolean configurable) {
-		boolean oldConfigurable = configurable;
-		this.configurable = configurable;
-		changeSupport.firePropertyChange("configurable", oldConfigurable,
-				configurable);
-	}
+    @Override
+    public void setSelection(ISelection selection) {
+        selectionProvider.setSelection(selection);
+    }
 
-	@Override
-	public boolean isConfigurationDialogOpen() {
-		return dialog != null;
-	}
+    private boolean configurable = true;
 
-	@Override
-	public void configurationDialogClosed() {
-		dialog = null;
-	}
+    private ChannelViewerConfigurationDialog dialog;
+
+    public void openConfigurationDialog() {
+        if (dialog != null)
+            return;
+        dialog = new ChannelViewerConfigurationDialog(this);
+        dialog.open();
+    }
+
+    @Override
+    public boolean isConfigurable() {
+        return configurable;
+    }
+
+    @Override
+    public void setConfigurable(boolean configurable) {
+        boolean oldConfigurable = configurable;
+        this.configurable = configurable;
+        changeSupport.firePropertyChange("configurable", oldConfigurable,
+                configurable);
+    }
+
+    @Override
+    public boolean isConfigurationDialogOpen() {
+        return dialog != null;
+    }
+
+    @Override
+    public void configurationDialogClosed() {
+        dialog = null;
+    }
 
 }

@@ -44,203 +44,203 @@ import javax.naming.directory.Attribute;
  */
 public class Attributes implements javax.naming.directory.Attributes
 {
-	private static final long serialVersionUID = 4747575955857437856L;
-	protected Map<String, Object> elements;
+    private static final long serialVersionUID = 4747575955857437856L;
+    protected Map<String, Object> elements;
 
-	/**
-	 * Default constructor.
-	 */
-	public Attributes()
-	{
-		super();
-		elements = new HashMap<String, Object>();
-	}
+    /**
+     * Default constructor.
+     */
+    public Attributes()
+    {
+        super();
+        elements = new HashMap<String, Object>();
+    }
 
-	/**
-	 * Default constructor.
-	 */
-	private Attributes(Map<String, Object> elements)
-	{
-		super();
-		this.elements = new HashMap<String, Object>(elements);
-	}
+    /**
+     * Default constructor.
+     */
+    private Attributes(Map<String, Object> elements)
+    {
+        super();
+        this.elements = new HashMap<String, Object>(elements);
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attributes#isCaseIgnored()
-	 */
-	public boolean isCaseIgnored()
-	{
-		return false;
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attributes#isCaseIgnored()
+     */
+    public boolean isCaseIgnored()
+    {
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attributes#size()
-	 */
-	public int size()
-	{
-		return elements.size();
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attributes#size()
+     */
+    public int size()
+    {
+        return elements.size();
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attributes#get(java.lang.String)
-	 */
-	public Attribute get(String attrID)
-	{
-		Object o = elements.get(attrID);
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attributes#get(java.lang.String)
+     */
+    public Attribute get(String attrID)
+    {
+        Object o = elements.get(attrID);
 
-		if (o == null) {
-			return null;
-		}
+        if (o == null) {
+            return null;
+        }
 
-		if (o instanceof Attribute) {
-			return (Attribute)o;
-		}
+        if (o instanceof Attribute) {
+            return (Attribute)o;
+        }
 
-		Attribute a = new SingleValueAttribute(attrID, o);
-		elements.put(attrID, a);
+        Attribute a = new SingleValueAttribute(attrID, o);
+        elements.put(attrID, a);
 
-		return a;
-	}
+        return a;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attributes#getAll()
-	 */
-	public NamingEnumeration<?extends Attribute> getAll()
-	{
-		return new NamingEnumeration<Attribute>() {
-				Iterator<String> it = elements.keySet().iterator();
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attributes#getAll()
+     */
+    public NamingEnumeration<?extends Attribute> getAll()
+    {
+        return new NamingEnumeration<Attribute>() {
+                Iterator<String> it = elements.keySet().iterator();
 
-				public Attribute nextElement()
-				{
-					return get(it.next());
-				}
+                public Attribute nextElement()
+                {
+                    return get(it.next());
+                }
 
-				public boolean hasMoreElements()
-				{
-					return it.hasNext();
-				}
+                public boolean hasMoreElements()
+                {
+                    return it.hasNext();
+                }
 
-				public void close() throws NamingException
-				{
-					it = null;
-				}
+                public void close() throws NamingException
+                {
+                    it = null;
+                }
 
-				public boolean hasMore() throws NamingException
-				{
-					return it.hasNext();
-				}
+                public boolean hasMore() throws NamingException
+                {
+                    return it.hasNext();
+                }
 
-				public Attribute next() throws NamingException
-				{
-					return get(it.next());
-				}
-			};
-	}
+                public Attribute next() throws NamingException
+                {
+                    return get(it.next());
+                }
+            };
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attributes#getIDs()
-	 */
-	public NamingEnumeration<String> getIDs()
-	{
-		return new NamingEnumeration<String>() {
-				Iterator<String> it = elements.keySet().iterator();
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attributes#getIDs()
+     */
+    public NamingEnumeration<String> getIDs()
+    {
+        return new NamingEnumeration<String>() {
+                Iterator<String> it = elements.keySet().iterator();
 
-				public String nextElement()
-				{
-					return it.next();
-				}
+                public String nextElement()
+                {
+                    return it.next();
+                }
 
-				public boolean hasMoreElements()
-				{
-					return it.hasNext();
-				}
+                public boolean hasMoreElements()
+                {
+                    return it.hasNext();
+                }
 
-				public void close() throws NamingException
-				{
-					it = null;
-				}
+                public void close() throws NamingException
+                {
+                    it = null;
+                }
 
-				public boolean hasMore() throws NamingException
-				{
-					return it.hasNext();
-				}
+                public boolean hasMore() throws NamingException
+                {
+                    return it.hasNext();
+                }
 
-				public String next() throws NamingException
-				{
-					return it.next();
-				}
-			};
-	}
+                public String next() throws NamingException
+                {
+                    return it.next();
+                }
+            };
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attributes#put(java.lang.String, java.lang.Object)
-	 */
-	public Attribute put(String attrID, Object val)
-	{
-		Attribute a = get(attrID);
-		elements.put(attrID, val);
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attributes#put(java.lang.String, java.lang.Object)
+     */
+    public Attribute put(String attrID, Object val)
+    {
+        Attribute a = get(attrID);
+        elements.put(attrID, val);
 
-		return a;
-	}
+        return a;
+    }
 
-	public Object putAttributeValue(String attrID, Object val)
-	{
-		Object a = getAttributeValue(attrID);
-		elements.put(attrID, val);
+    public Object putAttributeValue(String attrID, Object val)
+    {
+        Object a = getAttributeValue(attrID);
+        elements.put(attrID, val);
 
-		return a;
-	}
+        return a;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attributes#put(javax.naming.directory.Attribute)
-	 */
-	public Attribute put(Attribute attr)
-	{
-		Attribute a = get(attr.getID());
-		elements.put(attr.getID(), attr);
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attributes#put(javax.naming.directory.Attribute)
+     */
+    public Attribute put(Attribute attr)
+    {
+        Attribute a = get(attr.getID());
+        elements.put(attr.getID(), attr);
 
-		return a;
-	}
+        return a;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attributes#remove(java.lang.String)
-	 */
-	public Attribute remove(String attrID)
-	{
-		Attribute a = get(attrID);
-		elements.remove(attrID);
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attributes#remove(java.lang.String)
+     */
+    public Attribute remove(String attrID)
+    {
+        Attribute a = get(attrID);
+        elements.remove(attrID);
 
-		return a;
-	}
+        return a;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Object clone()
-	{
-		return new Attributes(elements);
-	}
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone()
+    {
+        return new Attributes(elements);
+    }
 
-	/**
-	 * Return attibute value.
-	 * @param id
-	 * @return attribute value if exists
-	 */
-	public Object getAttributeValue(String id)
-	{
-		Object o = elements.get(id);
+    /**
+     * Return attibute value.
+     * @param id
+     * @return attribute value if exists
+     */
+    public Object getAttributeValue(String id)
+    {
+        Object o = elements.get(id);
 
-		if (o instanceof Attribute) {
-			try {
-				return ((Attribute)o).get();
-			} catch (NamingException n) {
-				return null;
-			}
-		}
+        if (o instanceof Attribute) {
+            try {
+                return ((Attribute)o).get();
+            } catch (NamingException n) {
+                return null;
+            }
+        }
 
-		return o;
-	}
+        return o;
+    }
 }
 
 /* __oOo__ */

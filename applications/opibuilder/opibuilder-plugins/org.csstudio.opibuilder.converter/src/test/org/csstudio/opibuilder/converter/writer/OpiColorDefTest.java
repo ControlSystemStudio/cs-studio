@@ -14,12 +14,12 @@ import org.csstudio.opibuilder.converter.model.EdmModel;
 
 public class OpiColorDefTest extends TestCase {
 
-	public void testOpiColorDef() throws EdmException {
-		
-		System.setProperty("edm2xml.robustParsing", "false");
-		System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
-		EdmModel.getInstance();
-		
-		OpiColorDef.writeDefFile(EdmModel.getColorsList(), "src/test/resources/color.def");
-	}
+    public void testOpiColorDef() throws EdmException {
+
+        System.setProperty("edm2xml.robustParsing", "false");
+        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        EdmModel.getInstance();
+
+        OpiColorDef.writeDefFile(EdmModel.getColorsList(), "src/test/resources/color.def");
+    }
 }

@@ -41,261 +41,261 @@ import org.eclipse.ui.part.ViewPart;
  */
 public class View extends ViewPart implements AreaAlarmModelListener
 {
-	/** Model */
-	private AreaAlarmModel model;
-	
-	/** Colors for alarm severities */
-	private SeverityColorProvider color_provider;
+    /** Model */
+    private AreaAlarmModel model;
 
-	/** Display */
-	private Display display;
+    /** Colors for alarm severities */
+    private SeverityColorProvider color_provider;
 
-	/** Error display (server disconnect) */
-	private Label error_message;
-	
-	private volatile boolean have_error_message = true;
-	
-	/** GUI box that holds the {@link AlarmPanelItem}s */
-	private Composite panel_box;
-	
-	/** List of panels in display */
-	final private List<AlarmPanelItem> panels = new ArrayList<AlarmPanelItem>();
+    /** Display */
+    private Display display;
 
-	/** Throttle for panel_box updates */
-	private GUIUpdateThrottle throttle;
+    /** Error display (server disconnect) */
+    private Label error_message;
 
-	
-	/** {@inheritDoc} */
-	@SuppressWarnings("nls")
+    private volatile boolean have_error_message = true;
+
+    /** GUI box that holds the {@link AlarmPanelItem}s */
+    private Composite panel_box;
+
+    /** List of panels in display */
+    final private List<AlarmPanelItem> panels = new ArrayList<AlarmPanelItem>();
+
+    /** Throttle for panel_box updates */
+    private GUIUpdateThrottle throttle;
+
+
+    /** {@inheritDoc} */
+    @SuppressWarnings("nls")
     @Override
-	public void createPartControl(final Composite parent)
-	{
-		// Connect to alarms
-		try
-		{
-			model = new AreaAlarmModel(this);
-		}
-		catch (Exception ex)
-		{
-			Activator.getLogger().log(Level.WARNING, "Error initializing area alarm model", ex);
-
-			Label l = new Label(parent, 0);
-			l.setText("Error: " + ex.getMessage());
-			return;
-		}
-		
-		// Dispose model when done
-		parent.addDisposeListener(new DisposeListener()
-		{
-			@Override
-			public void widgetDisposed(DisposeEvent e)
-			{
-				model.close();
-			}
-		});
-
-		// Create GUI
-		createAlarmPanelGUI(parent);
-
-		// Schedule updates
-		throttle = new GUIUpdateThrottle()
-		{
-			@Override
-	        protected void fire()
-	        {
-				if (panel_box.isDisposed())
-					return;
-				display.syncExec(new Runnable()
-				{
-					@Override
-		            public void run()
-		            {
-						if (panel_box.isDisposed())
-							return;
-			            // Remove existing alarm panels
-						for (AlarmPanelItem panel : panels)
-							panel.updateAlarmState();
-						setErrorMessage(null);
-		            }
-				});
-	        }
-		};
-		throttle.start();
-	}
-
-	/** Create panel layout
-	 *  @param parent
-	 */
-	private void createAlarmPanelGUI(final Composite parent)
+    public void createPartControl(final Composite parent)
     {
-		display = parent.getDisplay();
-		color_provider = new SeverityColorProvider(parent);
-		parent.setLayout(new FormLayout());
-		
-		error_message = new Label(parent, 0);
-		FormData fd = new FormData();
-		fd.right = new FormAttachment(100);
-		fd.top = new FormAttachment(0);
-		error_message.setLayoutData(fd);
-		
-		panel_box = new Composite(parent, 0);
-		fd = new FormData();
-		fd.left = new FormAttachment(0);
-		fd.top = new FormAttachment(error_message);
-		fd.right = new FormAttachment(100);
-		fd.bottom = new FormAttachment(100);
-		panel_box.setLayoutData(fd);
+        // Connect to alarms
+        try
+        {
+            model = new AreaAlarmModel(this);
+        }
+        catch (Exception ex)
+        {
+            Activator.getLogger().log(Level.WARNING, "Error initializing area alarm model", ex);
+
+            Label l = new Label(parent, 0);
+            l.setText("Error: " + ex.getMessage());
+            return;
+        }
+
+        // Dispose model when done
+        parent.addDisposeListener(new DisposeListener()
+        {
+            @Override
+            public void widgetDisposed(DisposeEvent e)
+            {
+                model.close();
+            }
+        });
+
+        // Create GUI
+        createAlarmPanelGUI(parent);
+
+        // Schedule updates
+        throttle = new GUIUpdateThrottle()
+        {
+            @Override
+            protected void fire()
+            {
+                if (panel_box.isDisposed())
+                    return;
+                display.syncExec(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if (panel_box.isDisposed())
+                            return;
+                        // Remove existing alarm panels
+                        for (AlarmPanelItem panel : panels)
+                            panel.updateAlarmState();
+                        setErrorMessage(null);
+                    }
+                });
+            }
+        };
+        throttle.start();
+    }
+
+    /** Create panel layout
+     *  @param parent
+     */
+    private void createAlarmPanelGUI(final Composite parent)
+    {
+        display = parent.getDisplay();
+        color_provider = new SeverityColorProvider(parent);
+        parent.setLayout(new FormLayout());
+
+        error_message = new Label(parent, 0);
+        FormData fd = new FormData();
+        fd.right = new FormAttachment(100);
+        fd.top = new FormAttachment(0);
+        error_message.setLayoutData(fd);
+
+        panel_box = new Composite(parent, 0);
+        fd = new FormData();
+        fd.left = new FormAttachment(0);
+        fd.top = new FormAttachment(error_message);
+        fd.right = new FormAttachment(100);
+        fd.bottom = new FormAttachment(100);
+        panel_box.setLayoutData(fd);
 
         if (model.isServerAlive()) {
             setErrorMessage(null);
         } else {
             setErrorMessage(Messages.WaitingForServer);
         }
-        
-		fillPanelBox();
 
-		final MenuManager manager = new MenuManager();
-		manager.setRemoveAllWhenShown(true);
-		manager.addMenuListener(new IMenuListener()
-		{
-			@Override
-			public void menuAboutToShow(IMenuManager manager)
-			{
+        fillPanelBox();
+
+        final MenuManager manager = new MenuManager();
+        manager.setRemoveAllWhenShown(true);
+        manager.addMenuListener(new IMenuListener()
+        {
+            @Override
+            public void menuAboutToShow(IMenuManager manager)
+            {
                 manager.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
-			}
-		});
-		panel_box.setMenu(manager.createContextMenu(panel_box));
+            }
+        });
+        panel_box.setMenu(manager.createContextMenu(panel_box));
 
-		// Allow extensions to add to the context menu
-		getSite().registerContextMenu(manager, new ISelectionProvider() {
-			// Null selection provider
-			@Override
-			public void setSelection(ISelection selection) {
-			}
-			@Override
-			public void removeSelectionChangedListener(
-					ISelectionChangedListener listener) {
-			}
-			@Override
-			public ISelection getSelection() {
-				return null;
-			}
-			@Override
-			public void addSelectionChangedListener(ISelectionChangedListener listener) {
-			}
-		});
+        // Allow extensions to add to the context menu
+        getSite().registerContextMenu(manager, new ISelectionProvider() {
+            // Null selection provider
+            @Override
+            public void setSelection(ISelection selection) {
+            }
+            @Override
+            public void removeSelectionChangedListener(
+                    ISelectionChangedListener listener) {
+            }
+            @Override
+            public ISelection getSelection() {
+                return null;
+            }
+            @Override
+            public void addSelectionChangedListener(ISelectionChangedListener listener) {
+            }
+        });
     }
-	
-	/** Update the error messages
-	 *  @param text Message to show or <code>null</code> to clear/hide the message
-	 */
-	private void setErrorMessage(final String text)
-	{
-		if (text == null  &&  ! have_error_message)
-				return;
-		if (error_message.isDisposed())
-			return;
-		if (have_error_message && text == null)
-		{	// Clear and hide the error message label
-			error_message.setText(""); //$NON-NLS-1$
-	        error_message.setBackground(null);
-	        have_error_message = false;
-	        final FormData fd = (FormData)panel_box.getLayoutData();
-	        fd.top = new FormAttachment(0);
-	        panel_box.getParent().layout();
-	        return;
-		}
-		else if (text != null)
-		{	// Set message
-			error_message.setText(text);
-	        error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
-	        if (! have_error_message)
-	        {	// Display the associated label
-		        final FormData fd = (FormData)panel_box.getLayoutData();
-		        fd.top = new FormAttachment(error_message);
-		        have_error_message = true;
-	        }
-	        panel_box.getParent().layout();
-		}
-	}
 
-	/** Fill <code>panel_box</code> with items for model */
-	private void fillPanelBox()
+    /** Update the error messages
+     *  @param text Message to show or <code>null</code> to clear/hide the message
+     */
+    private void setErrorMessage(final String text)
     {
-	    final int columns = Preferences.getColumns();
-		final AlarmTreeItem[] items = model.getItems();
-		panel_box.setLayout(new GridLayout(columns, false));
-
-		for (AlarmTreeItem item : items)
-		{
-			final AlarmPanelItem panel = new AlarmPanelItem(panel_box, color_provider, item);
-			panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-			panels.add(panel);
-		}
+        if (text == null  &&  ! have_error_message)
+                return;
+        if (error_message.isDisposed())
+            return;
+        if (have_error_message && text == null)
+        {    // Clear and hide the error message label
+            error_message.setText(""); //$NON-NLS-1$
+            error_message.setBackground(null);
+            have_error_message = false;
+            final FormData fd = (FormData)panel_box.getLayoutData();
+            fd.top = new FormAttachment(0);
+            panel_box.getParent().layout();
+            return;
+        }
+        else if (text != null)
+        {    // Set message
+            error_message.setText(text);
+            error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
+            if (! have_error_message)
+            {    // Display the associated label
+                final FormData fd = (FormData)panel_box.getLayoutData();
+                fd.top = new FormAttachment(error_message);
+                have_error_message = true;
+            }
+            panel_box.getParent().layout();
+        }
     }
 
-	/** {@inheritDoc} */
-	@Override
-	public void setFocus()
-	{
-		// NOP
-	}
+    /** Fill <code>panel_box</code> with items for model */
+    private void fillPanelBox()
+    {
+        final int columns = Preferences.getColumns();
+        final AlarmTreeItem[] items = model.getItems();
+        panel_box.setLayout(new GridLayout(columns, false));
 
-	/** Re-populate the display with alarm panels
-	 *  because the model has changed
-	 *  {@inheritDoc}
-	 */
-	@Override
+        for (AlarmTreeItem item : items)
+        {
+            final AlarmPanelItem panel = new AlarmPanelItem(panel_box, color_provider, item);
+            panel.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            panels.add(panel);
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setFocus()
+    {
+        // NOP
+    }
+
+    /** Re-populate the display with alarm panels
+     *  because the model has changed
+     *  {@inheritDoc}
+     */
+    @Override
     public void areaModelChanged()
     {
-		if (panel_box.isDisposed())
-			return;
-		display.asyncExec(new Runnable()
-		{
-			@Override
+        if (panel_box.isDisposed())
+            return;
+        display.asyncExec(new Runnable()
+        {
+            @Override
             public void run()
             {
-				if (panel_box.isDisposed())
-					return;
-				
-				if (model.isServerAlive()) {
-		            setErrorMessage(null);
-		        } else {
-		            setErrorMessage(Messages.WaitingForServer);
-		        }
-				
-	            // Remove existing alarm panels
-				for (AlarmPanelItem panel : panels)
-					panel.dispose();
-				panels.clear();
-				// Create new alarm panels
-				fillPanelBox();
-				// Force re-layout
-				panel_box.layout(true, true);
+                if (panel_box.isDisposed())
+                    return;
+
+                if (model.isServerAlive()) {
+                    setErrorMessage(null);
+                } else {
+                    setErrorMessage(Messages.WaitingForServer);
+                }
+
+                // Remove existing alarm panels
+                for (AlarmPanelItem panel : panels)
+                    panel.dispose();
+                panels.clear();
+                // Create new alarm panels
+                fillPanelBox();
+                // Force re-layout
+                panel_box.layout(true, true);
             }
-		});
+        });
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void alarmsChanged()
     {
-		throttle.trigger();
+        throttle.trigger();
     }
 
-	/** {@inheritDoc} */
-	@Override
+    /** {@inheritDoc} */
+    @Override
     public void serverTimeout()
     {
-		if (display.isDisposed())
-			return;
-		display.asyncExec(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				setErrorMessage(Messages.ServerTimeout);
-			}
-		});
+        if (display.isDisposed())
+            return;
+        display.asyncExec(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                setErrorMessage(Messages.ServerTimeout);
+            }
+        });
     }
 }

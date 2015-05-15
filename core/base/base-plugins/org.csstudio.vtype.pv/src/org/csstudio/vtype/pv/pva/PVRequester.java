@@ -40,6 +40,6 @@ class PVRequester implements Requester
             break;
         default:
             logger.log(Level.INFO, message);
-        }  
+        }
     }
 }

@@ -17,19 +17,19 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.csstudio.platform.utility.rdb.internal.RDBImpl;
 
 /** Database (RDB) connection cache
- *  
+ *
  *  <p>Provide RDB connection that is kept open for some time
  *  after its last access.
  *  After a timeout, the connection is closed.
  *  On next access, it is re-opened.
- *  
+ *
  *  <p>In Sept. 2013, <code>releaseConnection()</code>
  *  was added, and must be called.
  *  Before, the connection would simply be closed after the timeout,
  *  even if the user of the connection was still within an operation.
  *  Now, the user of the connection needs to release it, and only
  *  then will the timeout start.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -37,35 +37,35 @@ public class RDBCache
 {
     /** Name of this cache (used for timer thread) */
     final private String name;
-    
+
     /** RDB Implementation (Oracle, MySQL, PostgreSQL) */
     final private RDBImpl impl;
-    
+
     /** Database URL */
-	final private String url;
+    final private String url;
 
     /** Database User */
-	final private String user;
+    final private String user;
 
-	/** Database Password */
-	final private String password;
-	
+    /** Database Password */
+    final private String password;
+
     /** Duration for keeping the connection cached */
     final private long milli_duration;
 
     /** Timer used to handle expirations */
     private Timer timeout = null;
-    
+
     /** Timer task that expires the RDBUtil */
     private TimerTask expire = null;
 
     /** Connection to the SQL server */
-	private Connection connection;
+    private Connection connection;
 
     /** Initialize
-     * 
+     *
      *  <p>URL format depends on the database dialect.
-     * 
+     *
      *  <p>For MySQL resp. Oracle, the formats are:
      *  <pre>
      *     jdbc:mysql://[host]:[port]/[database]?user=[user]&password=[password]
@@ -100,15 +100,15 @@ public class RDBCache
     /** @return Dialect info. */
     public Dialect getDialect()
     {
-    	return impl.getDialect();
+        return impl.getDialect();
     }
-    
+
     /** Obtain database connection.
-     * 
+     *
      *  <p>This may be a cached connection,
      *  or a new one is created after the cached connection
      *  has expired
-     *  
+     *
      *  @return JDBC {@link Connection}
      *  @throws Exception on error connecting to the RDB
      */
@@ -144,7 +144,7 @@ public class RDBCache
             timeout = new Timer(name, true);
         timeout.schedule(expire, milli_duration);
     }
-    
+
     /** Close RDB, no longer cache it */
     private synchronized void handleExpiration()
     {

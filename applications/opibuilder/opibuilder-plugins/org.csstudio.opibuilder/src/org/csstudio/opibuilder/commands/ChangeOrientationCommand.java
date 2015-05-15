@@ -17,54 +17,54 @@ import org.eclipse.gef.commands.Command;
  */
 public class ChangeOrientationCommand extends Command {
 
-	private AbstractWidgetModel widgetModel;	
-	
-	private OrientationType orientationType;
-	
-	public ChangeOrientationCommand(AbstractWidgetModel widgetModel, 
-			OrientationType orientationType) {
-		this.widgetModel = widgetModel;
-		this.orientationType = orientationType;
-	}
+    private AbstractWidgetModel widgetModel;
 
-	@Override
-	public void execute() {
-		switch (orientationType) {
-		case FLIP_HORIZONTAL:
-			widgetModel.flipHorizontally();
-			break;
-		case FLIP_VERTICAL:
-			widgetModel.flipVertically();
-			break;
-		case ROTATE_CLOCKWISE:
-			widgetModel.rotate90(true);
-			break;
-		case ROTATE_COUNTERCLOCKWISE:
-			widgetModel.rotate90(false);
-			break;
-		default:
-			break;
-		}
-		
-	}
-	
-	@Override
-	public void undo() {
-		switch (orientationType) {
-		case FLIP_HORIZONTAL:
-			widgetModel.flipHorizontally();
-			break;
-		case FLIP_VERTICAL:
-			widgetModel.flipVertically();
-			break;
-		case ROTATE_CLOCKWISE:
-			widgetModel.rotate90(false);
-			break;
-		case ROTATE_COUNTERCLOCKWISE:
-			widgetModel.rotate90(true);
-			break;
-		default:
-			break;
-		}	}
-	
+    private OrientationType orientationType;
+
+    public ChangeOrientationCommand(AbstractWidgetModel widgetModel,
+            OrientationType orientationType) {
+        this.widgetModel = widgetModel;
+        this.orientationType = orientationType;
+    }
+
+    @Override
+    public void execute() {
+        switch (orientationType) {
+        case FLIP_HORIZONTAL:
+            widgetModel.flipHorizontally();
+            break;
+        case FLIP_VERTICAL:
+            widgetModel.flipVertically();
+            break;
+        case ROTATE_CLOCKWISE:
+            widgetModel.rotate90(true);
+            break;
+        case ROTATE_COUNTERCLOCKWISE:
+            widgetModel.rotate90(false);
+            break;
+        default:
+            break;
+        }
+
+    }
+
+    @Override
+    public void undo() {
+        switch (orientationType) {
+        case FLIP_HORIZONTAL:
+            widgetModel.flipHorizontally();
+            break;
+        case FLIP_VERTICAL:
+            widgetModel.flipVertically();
+            break;
+        case ROTATE_CLOCKWISE:
+            widgetModel.rotate90(false);
+            break;
+        case ROTATE_COUNTERCLOCKWISE:
+            widgetModel.rotate90(true);
+            break;
+        default:
+            break;
+        }    }
+
 }

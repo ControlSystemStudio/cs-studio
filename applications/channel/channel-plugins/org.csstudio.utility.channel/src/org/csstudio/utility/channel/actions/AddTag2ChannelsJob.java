@@ -16,37 +16,37 @@ import org.eclipse.core.runtime.jobs.Job;
 
 public class AddTag2ChannelsJob extends Job {
 
-	private Tag.Builder tag;
-	private Collection<Channel> channels;
-	
-	/**
-	 * create a job to add a tag _tag_ to a group of channels
-	 * 
-	 * @param name - job name
-	 * @param channels - collection of channels to which the tag is to be added
-	 * @param tag - builder of the the tag to be added
-	 */
-	public AddTag2ChannelsJob(String name, Collection<Channel> channels, Tag.Builder tag) {
-		super(name);
-		this.channels = channels;
-		this.tag = tag;
-	}
+    private Tag.Builder tag;
+    private Collection<Channel> channels;
 
-	@Override
-	protected IStatus run(IProgressMonitor monitor) {
-		monitor.beginTask("Adding Tags to channels", IProgressMonitor.UNKNOWN);		
-		try {
-			ChannelFinder.getClient().update(tag, ChannelUtil.getChannelNames(channels));
-		} catch (ChannelFinderException e) {
-			return new Status(Status.ERROR,
-					Activator.PLUGIN_ID,
-					((ChannelFinderException) e)
-							.getStatus()
-							.getStatusCode(), e
-							.getMessage(), e.getCause());
-		}		
-		monitor.done();
+    /**
+     * create a job to add a tag _tag_ to a group of channels
+     *
+     * @param name - job name
+     * @param channels - collection of channels to which the tag is to be added
+     * @param tag - builder of the the tag to be added
+     */
+    public AddTag2ChannelsJob(String name, Collection<Channel> channels, Tag.Builder tag) {
+        super(name);
+        this.channels = channels;
+        this.tag = tag;
+    }
+
+    @Override
+    protected IStatus run(IProgressMonitor monitor) {
+        monitor.beginTask("Adding Tags to channels", IProgressMonitor.UNKNOWN);
+        try {
+            ChannelFinder.getClient().update(tag, ChannelUtil.getChannelNames(channels));
+        } catch (ChannelFinderException e) {
+            return new Status(Status.ERROR,
+                    Activator.PLUGIN_ID,
+                    ((ChannelFinderException) e)
+                            .getStatus()
+                            .getStatusCode(), e
+                            .getMessage(), e.getCause());
+        }
+        monitor.done();
         return Status.OK_STATUS;
-	}
+    }
 
 }

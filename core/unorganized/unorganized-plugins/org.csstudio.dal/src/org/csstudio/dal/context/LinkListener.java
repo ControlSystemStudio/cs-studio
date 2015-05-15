@@ -32,66 +32,66 @@ import java.util.EventListener;
  */
 public interface LinkListener<C extends Linkable> extends EventListener
 {
-	/**
-	 * Linkable was resumed after suspend operation.
-	 *
-	 * @param e dispatched event object
-	 */
-	public void resumed(ConnectionEvent<C> e);
+    /**
+     * Linkable was resumed after suspend operation.
+     *
+     * @param e dispatched event object
+     */
+    public void resumed(ConnectionEvent<C> e);
 
-	/**
-	 * Linkable was suspended.
-	 *
-	 * @param e dispatched event object
-	 */
-	public void suspended(ConnectionEvent<C> e);
+    /**
+     * Linkable was suspended.
+     *
+     * @param e dispatched event object
+     */
+    public void suspended(ConnectionEvent<C> e);
 
-	/**
-	 * Linkable was successfully connected to remote object.
-	 *
-	 * @param e dispatched event object
-	 */
-	public void connected(ConnectionEvent<C> e);
+    /**
+     * Linkable was successfully connected to remote object.
+     *
+     * @param e dispatched event object
+     */
+    public void connected(ConnectionEvent<C> e);
 
-	/**
-	 * Linkable was successfully connected to remote object and got all initial data.
-	 *
-	 * @param e dispatched event object
-	 */
-	public void operational(ConnectionEvent<C> e);
+    /**
+     * Linkable was successfully connected to remote object and got all initial data.
+     *
+     * @param e dispatched event object
+     */
+    public void operational(ConnectionEvent<C> e);
 
-	/**
-	 * Linkable was disconnected from remote object.
-	 *
-	 * @param e dispatched event object
-	 */
-	public void disconnected(ConnectionEvent<C> e);
+    /**
+     * Linkable was disconnected from remote object.
+     *
+     * @param e dispatched event object
+     */
+    public void disconnected(ConnectionEvent<C> e);
 
-	/**
-	 * Linkable has lost connection to remote object, while internal state
-	 * of linkable signals, that has not been disconnected locally.
-	 *
-	 * @param e dispatched event object
-	 */
-	public void connectionLost(ConnectionEvent<C> e);
+    /**
+     * Linkable has lost connection to remote object, while internal state
+     * of linkable signals, that has not been disconnected locally.
+     *
+     * @param e dispatched event object
+     */
+    public void connectionLost(ConnectionEvent<C> e);
 
-	/**
-	 * Invoked after the connectable has been destroyed. Destroying
-	 * releases remote resources and resources allocated by connectable.
-	 * Destroyed objects cannot be reused.
-	 *
-	 * @param e event object
-	 */
-	void destroyed(ConnectionEvent<C> e);
+    /**
+     * Invoked after the connectable has been destroyed. Destroying
+     * releases remote resources and resources allocated by connectable.
+     * Destroyed objects cannot be reused.
+     *
+     * @param e event object
+     */
+    void destroyed(ConnectionEvent<C> e);
 
-	/**
-	 * Invoked when, during the connection, a plug or connectable
-	 * detected an error and aborted the connection. The connectable will
-	 * attempt to switch to initial state as soon as possible.
-	 *
-	 * @param e event object
-	 */
-	void connectionFailed(ConnectionEvent<C> e);
+    /**
+     * Invoked when, during the connection, a plug or connectable
+     * detected an error and aborted the connection. The connectable will
+     * attempt to switch to initial state as soon as possible.
+     *
+     * @param e event object
+     */
+    void connectionFailed(ConnectionEvent<C> e);
 }
 
 /* __oOo__ */

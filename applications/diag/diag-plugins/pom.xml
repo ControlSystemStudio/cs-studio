@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>diag</artifactId>
+    <version>4.1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>diag-plugins</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>org.csstudio.diag.epics.pvmanager.pvtree</module>
+    <module>org.csstudio.diag.epics.pvmanager.pvtree.test</module>
+    <module>org.csstudio.diag.epics.pvtree</module>
+    <module>org.csstudio.diag.epics.pvtree.test</module>
+    <module>org.csstudio.diag.postanalyser</module>
+    <module>org.csstudio.diag.postanalyser.test</module>
+    <module>org.csstudio.diag.probe</module>
+    <module>org.csstudio.diag.pvfields</module>
+    <module>org.csstudio.diag.pvmanager.probe</module>
+  </modules>
+</project>

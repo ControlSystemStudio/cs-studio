@@ -448,8 +448,8 @@ public class ResourceUtil {
 
 	@SuppressWarnings("nls")
     public static String getScreenshotFile(GraphicalViewer viewer) throws Exception{
-		File file;
-		 // Get name for snapshot file
+        File file;
+         // Get name for snapshot file
         try
         {
             file = File.createTempFile("opi", ".png"); //$NON-NLS-1$ //$NON-NLS-2$

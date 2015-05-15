@@ -17,34 +17,34 @@ import org.eclipse.gef.commands.Command;
  *
  */
 public class ChangeTabIndexCommand extends Command {
-	private int newIndex, oldIndex;
-	private TabModel tabModel;
-	private TabItem tabItem;
-	
-	public ChangeTabIndexCommand(TabEditPart tabEditPart, int newIndex) {
-		this.tabModel = tabEditPart.getWidgetModel();
-		this.oldIndex = tabEditPart.getActiveTabIndex();
-		this.newIndex = newIndex;
-		
-		this.tabItem = tabEditPart.getTabItem(oldIndex);
-			
-		setLabel("Change Tab Index");
-	}
-	
-	@Override
-	public void execute() {
-		tabModel.removeTab(oldIndex);
-		tabModel.addTab(newIndex, tabItem);
-	}
-	
-	@Override
-	public void undo() {
-		tabModel.removeTab(newIndex);
-		tabModel.addTab(oldIndex, tabItem);
-	}
-	
-	
-	
-	
-	
+    private int newIndex, oldIndex;
+    private TabModel tabModel;
+    private TabItem tabItem;
+
+    public ChangeTabIndexCommand(TabEditPart tabEditPart, int newIndex) {
+        this.tabModel = tabEditPart.getWidgetModel();
+        this.oldIndex = tabEditPart.getActiveTabIndex();
+        this.newIndex = newIndex;
+
+        this.tabItem = tabEditPart.getTabItem(oldIndex);
+
+        setLabel("Change Tab Index");
+    }
+
+    @Override
+    public void execute() {
+        tabModel.removeTab(oldIndex);
+        tabModel.addTab(newIndex, tabItem);
+    }
+
+    @Override
+    public void undo() {
+        tabModel.removeTab(newIndex);
+        tabModel.addTab(oldIndex, tabItem);
+    }
+
+
+
+
+
 }

@@ -32,11 +32,11 @@ public class FilterDialog extends TitleAreaDialog
 
     /** Available properties */
     final private String[] properties;
-    
+
     // GUI Elements
     final private Combo property_combo[];
     final private Text value_text[];
-    
+
     /** Filter settings: Initial values; updated in <code>okPressed</code> */
     private MessagePropertyFilter filters[];
 
@@ -55,34 +55,34 @@ public class FilterDialog extends TitleAreaDialog
         value_text = new Text[FILTER_COUNT];
         filters = current_filters;
     }
-    
+
     /** Allow resize */
     @Override
     protected boolean isResizable()
     {
-	    return true;
+        return true;
     }
 
-	/** {@inhericDoc} */
+    /** {@inhericDoc} */
     @Override
     protected Control createDialogArea(final Composite parent)
     {
         final Composite area = (Composite) super.createDialogArea(parent);
-        
+
         setMessage(Messages.Filter_Message);
-        
+
         final Composite outer_box = new Composite(area, 0);
         outer_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         outer_box.setLayout(new GridLayout(1, false));
-        
+
         final Composite box = new Composite(outer_box, SWT.BORDER);
         box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-        
+
         final GridLayout layout = new GridLayout();
         layout.numColumns = 4;
         box.setLayout(layout);
         GridData gd;
-        
+
         // Property: ____property____  Value: ___value___
         Label l;
         for (int i=0; i<property_combo.length; ++i)
@@ -100,7 +100,7 @@ public class FilterDialog extends TitleAreaDialog
             l = new Label(box, 0);
             l.setText(Messages.Filter_Property);
             l.setLayoutData(new GridData());
-            
+
             property_combo[i] = new Combo(box, SWT.DROP_DOWN | SWT.READ_ONLY);
             property_combo[i].setToolTipText(Messages.Filter_PropertyTT);
             property_combo[i].add(Messages.Filter_NoFilter);
@@ -108,11 +108,11 @@ public class FilterDialog extends TitleAreaDialog
                 property_combo[i].add(prop);
             property_combo[i].setLayoutData(new GridData(SWT.FILL, 0, true, false));
             property_combo[i].select(0);
-            
+
             l = new Label(box, 0);
             l.setText(Messages.Filter_Value);
             l.setLayoutData(new GridData());
-            
+
             value_text[i] = new Text(box, SWT.BORDER);
             value_text[i].setToolTipText(Messages.Filter_ValueTT);
             value_text[i].setLayoutData(new GridData(SWT.FILL, 0, true, false));
@@ -125,9 +125,9 @@ public class FilterDialog extends TitleAreaDialog
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.RIGHT;
         l.setLayoutData(gd);
-        
+
         displayCurrentFilterSettings();
-        
+
         return area;
     }
 
@@ -171,10 +171,10 @@ public class FilterDialog extends TitleAreaDialog
         // Turn into array
         filters = new MessagePropertyFilter[valid_filters.size()];
         valid_filters.toArray(filters);
-        
+
         super.okPressed();
     }
-    
+
     /** @return Array of user-configured filters (not <code>null</code>) */
     public MessagePropertyFilter[] getFilters()
     {

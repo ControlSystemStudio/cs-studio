@@ -37,7 +37,7 @@ package org.csstudio.dal;
  */
 public interface EnumProperty extends NumericProperty<Long,Long>, EnumSimpleProperty
 {
-	//
+    //
 }
 
 /* __oOo__ */

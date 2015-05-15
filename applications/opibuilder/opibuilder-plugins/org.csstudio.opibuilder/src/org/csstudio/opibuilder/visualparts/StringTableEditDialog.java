@@ -25,65 +25,65 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class StringTableEditDialog extends Dialog {
-	
-	private String title;	
-	private String[] columnTitles;
-	private List<String[]> contents;
-	
-	private StringTableEditor tableEditor;
-	private Object[] cellEditorDatas;
-	private CellEditorType[] cellEditorTypes;
 
-	public StringTableEditDialog(Shell parentShell, List<String[]> inputData, 
-			String dialogTitle, String[] columnTitles, CellEditorType[] cellEditorTypes, Object[] cellEditorDatas) {
-		super(parentShell);
-		this.title = dialogTitle;
-		this.columnTitles = columnTitles;
-		this.cellEditorTypes = cellEditorTypes;
-		this.cellEditorDatas = cellEditorDatas;
-		this.contents = new ArrayList<String[]>();
-		for(String[] item : inputData){
-			this.contents.add(item);
-		}
-		// Allow resize
+    private String title;
+    private String[] columnTitles;
+    private List<String[]> contents;
+
+    private StringTableEditor tableEditor;
+    private Object[] cellEditorDatas;
+    private CellEditorType[] cellEditorTypes;
+
+    public StringTableEditDialog(Shell parentShell, List<String[]> inputData,
+            String dialogTitle, String[] columnTitles, CellEditorType[] cellEditorTypes, Object[] cellEditorDatas) {
+        super(parentShell);
+        this.title = dialogTitle;
+        this.columnTitles = columnTitles;
+        this.cellEditorTypes = cellEditorTypes;
+        this.cellEditorDatas = cellEditorDatas;
+        this.contents = new ArrayList<String[]>();
+        for(String[] item : inputData){
+            this.contents.add(item);
+        }
+        // Allow resize
         setShellStyle(getShellStyle() | SWT.RESIZE);
-	}
+    }
 
-	@Override
-	protected Control createDialogArea(Composite parent) {
-		final Composite container = (Composite) super.createDialogArea(parent);
-		// Table editor should stretch to fill the dialog space, but
-		// at least on OS X, it has some minimum size below which it
-		// doesn't properly shrink.
-		int[] columnWidths = new int[columnTitles.length];
-		Arrays.fill(columnWidths, 80);
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
-		gd.heightHint=200;
-		tableEditor = new StringTableEditor(container,columnTitles, 
-				null, contents, null, columnWidths, cellEditorTypes, cellEditorDatas);
-		tableEditor.setLayoutData(gd);	
-	
-		return container;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureShell(final Shell shell) {
-		super.configureShell(shell);
-		if (title != null) {
-			shell.setText(title);
-		}
-	}
+    @Override
+    protected Control createDialogArea(Composite parent) {
+        final Composite container = (Composite) super.createDialogArea(parent);
+        // Table editor should stretch to fill the dialog space, but
+        // at least on OS X, it has some minimum size below which it
+        // doesn't properly shrink.
+        int[] columnWidths = new int[columnTitles.length];
+        Arrays.fill(columnWidths, 80);
+        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gd.heightHint=200;
+        tableEditor = new StringTableEditor(container,columnTitles,
+                null, contents, null, columnWidths, cellEditorTypes, cellEditorDatas);
+        tableEditor.setLayoutData(gd);
 
-	public List<String[]> getResult() {		
-		return contents;
-	}
-	
-	@Override
-	protected void okPressed() {
-		tableEditor.forceFocus();
-		super.okPressed();
-	}
+        return container;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureShell(final Shell shell) {
+        super.configureShell(shell);
+        if (title != null) {
+            shell.setText(title);
+        }
+    }
+
+    public List<String[]> getResult() {
+        return contents;
+    }
+
+    @Override
+    protected void okPressed() {
+        tableEditor.forceFocus();
+        super.okPressed();
+    }
 }

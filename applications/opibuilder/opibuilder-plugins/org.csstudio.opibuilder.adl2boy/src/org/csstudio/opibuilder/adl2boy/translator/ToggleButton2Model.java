@@ -12,21 +12,21 @@ import org.eclipse.swt.graphics.RGB;
 
 public class ToggleButton2Model extends AbstractADL2Model {
 
-	public ToggleButton2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
-		super(adlWidget, colorMap, parentModel);
-	}
+    public ToggleButton2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
+        super(adlWidget, colorMap, parentModel);
+    }
 
-	@Override
-	public void processWidget(ADLWidget adlWidget) {
-		// TODO Auto-generated method stub
-		
-	}
+    @Override
+    public void processWidget(ADLWidget adlWidget) {
+        // TODO Auto-generated method stub
 
-	@Override
-	public void makeModel(ADLWidget adlWidget,
-			AbstractContainerModel parentModel) {
-		// TODO Auto-generated method stub
-		
-	}
+    }
+
+    @Override
+    public void makeModel(ADLWidget adlWidget,
+            AbstractContainerModel parentModel) {
+        // TODO Auto-generated method stub
+
+    }
 
 }

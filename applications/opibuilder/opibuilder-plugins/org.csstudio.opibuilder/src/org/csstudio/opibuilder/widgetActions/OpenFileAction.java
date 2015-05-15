@@ -20,35 +20,35 @@ import org.eclipse.core.runtime.Path;
  */
 public class OpenFileAction extends AbstractWidgetAction {
 
-	public static final String PROP_PATH = "path";//$NON-NLS-1$
+    public static final String PROP_PATH = "path";//$NON-NLS-1$
 
-	@Override
-	protected void configureProperties() {
-		addProperty(new FilePathProperty(
-				PROP_PATH, "File Path", WidgetPropertyCategory.Basic, new Path(""),
-				new String[]{"*"}));
+    @Override
+    protected void configureProperties() {
+        addProperty(new FilePathProperty(
+                PROP_PATH, "File Path", WidgetPropertyCategory.Basic, new Path(""),
+                new String[]{"*"}));
 
-	}
+    }
 
-	@Override
-	public ActionType getActionType() {
-		return ActionType.OPEN_FILE;
-	}
+    @Override
+    public ActionType getActionType() {
+        return ActionType.OPEN_FILE;
+    }
 
-	@Override
-	public void run() {
-		SingleSourceHelper.openFileActionRun(this);
-	}
+    @Override
+    public void run() {
+        SingleSourceHelper.openFileActionRun(this);
+    }
 
-	public IPath getPath(){
-		return (IPath)getPropertyValue(PROP_PATH);
-	}
+    public IPath getPath(){
+        return (IPath)getPropertyValue(PROP_PATH);
+    }
 
 
 
-	@Override
-	public String getDefaultDescription() {
-		return super.getDefaultDescription() + " " + getPath(); //$NON-NLS-1$
-	}
+    @Override
+    public String getDefaultDescription() {
+        return super.getDefaultDescription() + " " + getPath(); //$NON-NLS-1$
+    }
 
 }

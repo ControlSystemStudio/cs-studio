@@ -15,10 +15,10 @@ import org.csstudio.autocomplete.parser.ContentType;
  */
 public class SysContentType extends ContentType {
 
-	public static SysContentType SysFunction = new SysContentType("SysFunction");
+    public static SysContentType SysFunction = new SysContentType("SysFunction");
 
-	private SysContentType(String value) {
-		super(value);
-	}
+    private SysContentType(String value) {
+        super(value);
+    }
 
 }

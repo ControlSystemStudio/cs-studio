@@ -42,61 +42,61 @@ import javax.naming.NamingException;
  */
 public class BindingEnumeration implements NamingEnumeration<Binding>
 {
-	private Map<String, ?> data;
-	private Iterator<String> iterator;
+    private Map<String, ?> data;
+    private Iterator<String> iterator;
 
-	/**
-	 * Creates a new BindingEnumeration object.
-	 *
-	 * @param en DOCUMENT ME!
-	 */
-	public BindingEnumeration(Map<String, ?> rawData)
-	{
-		this.data = rawData;
-		iterator = data.keySet().iterator();
-	}
+    /**
+     * Creates a new BindingEnumeration object.
+     *
+     * @param en DOCUMENT ME!
+     */
+    public BindingEnumeration(Map<String, ?> rawData)
+    {
+        this.data = rawData;
+        iterator = data.keySet().iterator();
+    }
 
-	/*
-	 * @see javax.naming.NamingEnumeration#close()
-	 */
-	public void close() throws NamingException
-	{
-		data.clear();
-	}
+    /*
+     * @see javax.naming.NamingEnumeration#close()
+     */
+    public void close() throws NamingException
+    {
+        data.clear();
+    }
 
-	/*
-	 * @see javax.naming.NamingEnumeration#hasMore()
-	 */
-	public boolean hasMore() throws NamingException
-	{
-		return hasMoreElements();
-	}
+    /*
+     * @see javax.naming.NamingEnumeration#hasMore()
+     */
+    public boolean hasMore() throws NamingException
+    {
+        return hasMoreElements();
+    }
 
-	/*
-	 * @see javax.naming.NamingEnumeration#next()
-	 */
-	public Binding next() throws NamingException
-	{
-		return nextElement();
-	}
+    /*
+     * @see javax.naming.NamingEnumeration#next()
+     */
+    public Binding next() throws NamingException
+    {
+        return nextElement();
+    }
 
-	/*
-	 * @see java.util.Enumeration#hasMoreElements()
-	 */
-	public boolean hasMoreElements()
-	{
-		return iterator.hasNext();
-	}
+    /*
+     * @see java.util.Enumeration#hasMoreElements()
+     */
+    public boolean hasMoreElements()
+    {
+        return iterator.hasNext();
+    }
 
-	/*
-	 * @see java.util.Enumeration#nextElement()
-	 */
-	public Binding nextElement()
-	{
-		String key = iterator.next();
+    /*
+     * @see java.util.Enumeration#nextElement()
+     */
+    public Binding nextElement()
+    {
+        String key = iterator.next();
 
-		return new Binding(key, data.get(key));
-	}
+        return new Binding(key, data.get(key));
+    }
 }
 
 /* __oOo__ */

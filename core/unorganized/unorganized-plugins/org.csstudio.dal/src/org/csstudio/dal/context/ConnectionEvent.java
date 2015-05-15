@@ -35,84 +35,84 @@ import java.util.EventObject;
  */
 public class ConnectionEvent<C extends Linkable> extends EventObject
 {
-	private static final long serialVersionUID = 6050731671839362554L;
-	protected ConnectionState state;
-	private Throwable error = null;
+    private static final long serialVersionUID = 6050731671839362554L;
+    protected ConnectionState state;
+    private Throwable error = null;
 
-	/**
-	 * Creates a new <code>ConnectionEvent</code>.
-	 *
-	 * @param source the <code>Connectable</code> instance reporting its change
-	 *        in status
-	 */
-	public ConnectionEvent(C source, ConnectionState state)
-	{
-		this(source, state, null);
-	}
+    /**
+     * Creates a new <code>ConnectionEvent</code>.
+     *
+     * @param source the <code>Connectable</code> instance reporting its change
+     *        in status
+     */
+    public ConnectionEvent(C source, ConnectionState state)
+    {
+        this(source, state, null);
+    }
 
-	/**
-	     * Creates a new <code>ConnectionEvent</code> with error.
-	     *
-	     * @param source the <code>Connectable</code> instance reporting its change
-	     *        in status
-	     * @param error an error which migth occured during connection process, can
-	     *        be <code>null</code>
-	     */
-	public ConnectionEvent(C source, ConnectionState state, Throwable error)
-	{
-		super(source);
+    /**
+         * Creates a new <code>ConnectionEvent</code> with error.
+         *
+         * @param source the <code>Connectable</code> instance reporting its change
+         *        in status
+         * @param error an error which migth occured during connection process, can
+         *        be <code>null</code>
+         */
+    public ConnectionEvent(C source, ConnectionState state, Throwable error)
+    {
+        super(source);
 
-		this.error = error;
-		this.state = state;
+        this.error = error;
+        this.state = state;
 
-		if (state == null) {
-			throw new NullPointerException("state");
-		}
-	}
+        if (state == null) {
+            throw new NullPointerException("state");
+        }
+    }
 
-	/**
-	 * Returns source as <code>Connectable</code>.
-	 *
-	 * @return source as <code>Connectable</code>
-	 */
-	@SuppressWarnings("unchecked")
-	public C getConnectable()
-	{	
-		return (C)getSource();
-	}
+    /**
+     * Returns source as <code>Connectable</code>.
+     *
+     * @return source as <code>Connectable</code>
+     */
+    @SuppressWarnings("unchecked")
+    public C getConnectable()
+    {
+        return (C)getSource();
+    }
 
-	/**
-	 * Exception which migth occured during connection process,
-	 * <code>null</code> if no exception.
-	 *
-	 * @return na exception which migth occured during connection process
-	 */
-	public Throwable getError()
-	{
-		return error;
-	}
+    /**
+     * Exception which migth occured during connection process,
+     * <code>null</code> if no exception.
+     *
+     * @return na exception which migth occured during connection process
+     */
+    public Throwable getError()
+    {
+        return error;
+    }
 
-	/**
-	 * Returns state published by this event.
-	 *
-	 * @return new state
-	 */
-	public ConnectionState getState()
-	{
-		return state;
-	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb= new StringBuilder(128);
-		sb.append(this.getClass().getName());
-		sb.append('{');
-		sb.append(getConnectable().getIdentifier().getUniqueName());
-		sb.append(", ");
-		sb.append(getState());
-		sb.append('}');
-		return sb.toString();
-	}
+    /**
+     * Returns state published by this event.
+     *
+     * @return new state
+     */
+    public ConnectionState getState()
+    {
+        return state;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb= new StringBuilder(128);
+        sb.append(this.getClass().getName());
+        sb.append('{');
+        sb.append(getConnectable().getIdentifier().getUniqueName());
+        sb.append(", ");
+        sb.append(getState());
+        sb.append('}');
+        return sb.toString();
+    }
 }
 
 /* __oOo__ */

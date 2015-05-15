@@ -26,122 +26,122 @@ import org.eclipse.swt.widgets.Table;
  */
 class StringMultiColumnsEditor extends EditingSupport {
 
-	private static final long serialVersionUID = 5729798308622621422L;
-	final private TableViewer table_viewer;
-	final private int columnNo;
-	final private int numOfColumns;
-	private CellEditorType cellEditorType;
-	private Object cellEditorData;
+    private static final long serialVersionUID = 5729798308622621422L;
+    final private TableViewer table_viewer;
+    final private int columnNo;
+    final private int numOfColumns;
+    private CellEditorType cellEditorType;
+    private Object cellEditorData;
 
-	public StringMultiColumnsEditor(final TableViewer viewer,
-			final int numOfColumns, final int columnNo, final CellEditorType cellEditorType, final Object cellData) {
-		super(viewer);
-		this.table_viewer = viewer;
-		this.columnNo = columnNo;
-		this.numOfColumns = numOfColumns;
-		this.cellEditorType = cellEditorType;		
-		this.cellEditorData = cellData;
-		if(cellEditorType == CellEditorType.CHECKBOX){
-			if(cellEditorData==null || !(cellEditorData instanceof String[]) || ((String[])cellEditorData).length<2)
-				cellEditorData = new String[]{"Yes", "No"};
-		}
-	}
+    public StringMultiColumnsEditor(final TableViewer viewer,
+            final int numOfColumns, final int columnNo, final CellEditorType cellEditorType, final Object cellData) {
+        super(viewer);
+        this.table_viewer = viewer;
+        this.columnNo = columnNo;
+        this.numOfColumns = numOfColumns;
+        this.cellEditorType = cellEditorType;
+        this.cellEditorData = cellData;
+        if(cellEditorType == CellEditorType.CHECKBOX){
+            if(cellEditorData==null || !(cellEditorData instanceof String[]) || ((String[])cellEditorData).length<2)
+                cellEditorData = new String[]{"Yes", "No"};
+        }
+    }
 
-	@Override
-	protected boolean canEdit(Object element) {
-		return true;
-	}
-
-	@Override
-	protected CellEditor getCellEditor(Object element) {
-		final Table parent = (Table) getViewer().getControl();
-		switch (cellEditorType) {
-		case CHECKBOX:
-			return new CheckboxCellEditor(parent){
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 3284307131124279645L;
-				protected Object doGetValue() {
-					return (Boolean) super.doGetValue()?((String[])cellEditorData)[1]:((String[])cellEditorData)[0];
-				};
-				@Override
-				protected void doSetValue(Object value) {
-					if(value.toString().toLowerCase().equals(((String[])cellEditorData)[1].toLowerCase()))
-						super.doSetValue(true);
-					else
-						super.doSetValue(false);
-				}
-			};
-		case DROPDOWN: 
-			return new ComboBoxCellEditor(parent,
-					(String[])cellEditorData,SWT.NONE){
-				/**
-						 * 
-						 */
-						private static final long serialVersionUID = 4196165158838137091L;
-
-				@Override
-				protected Object doGetValue() {
-					return ((CCombo)getControl()).getText();
-				}
-				
-				@Override
-				protected void doSetValue(Object value) {
-					((CCombo)getControl()).setText(value.toString());
-				}
-			};
-
-		default:
-			return new TextCellEditor(parent);
-		}
-		
-	}
-
-	@SuppressWarnings("unchecked")
     @Override
-	protected Object getValue(Object element) {
+    protected boolean canEdit(Object element) {
+        return true;
+    }
 
-		if (element == StringTableContentProvider.ADD_ELEMENT)
-			return ""; //$NON-NLS-1$
-		final int index = ((Integer)element).intValue();
-		final List<String[]> items = (List<String[]>) table_viewer.getInput();
-		if (columnNo < items.get(index).length)
-			return items.get(index)[columnNo];
-		else
-			return "";
-	}
+    @Override
+    protected CellEditor getCellEditor(Object element) {
+        final Table parent = (Table) getViewer().getControl();
+        switch (cellEditorType) {
+        case CHECKBOX:
+            return new CheckboxCellEditor(parent){
+                /**
+                 *
+                 */
+                private static final long serialVersionUID = 3284307131124279645L;
+                protected Object doGetValue() {
+                    return (Boolean) super.doGetValue()?((String[])cellEditorData)[1]:((String[])cellEditorData)[0];
+                };
+                @Override
+                protected void doSetValue(Object value) {
+                    if(value.toString().toLowerCase().equals(((String[])cellEditorData)[1].toLowerCase()))
+                        super.doSetValue(true);
+                    else
+                        super.doSetValue(false);
+                }
+            };
+        case DROPDOWN:
+            return new ComboBoxCellEditor(parent,
+                    (String[])cellEditorData,SWT.NONE){
+                /**
+                         *
+                         */
+                        private static final long serialVersionUID = 4196165158838137091L;
+
+                @Override
+                protected Object doGetValue() {
+                    return ((CCombo)getControl()).getText();
+                }
+
+                @Override
+                protected void doSetValue(Object value) {
+                    ((CCombo)getControl()).setText(value.toString());
+                }
+            };
+
+        default:
+            return new TextCellEditor(parent);
+        }
+
+    }
 
     @SuppressWarnings("unchecked")
-	@Override
-	protected void setValue(Object element, Object value) {
+    @Override
+    protected Object getValue(Object element) {
+
+        if (element == StringTableContentProvider.ADD_ELEMENT)
+            return ""; //$NON-NLS-1$
+        final int index = ((Integer)element).intValue();
         final List<String[]> items = (List<String[]>) table_viewer.getInput();
-		String[] rowData;
-		if (element == StringTableContentProvider.ADD_ELEMENT)
-		{
-			rowData = new String[numOfColumns];
-			Arrays.fill(rowData, ""); //$NON-NLS-1$
-			rowData[columnNo] = value.toString();
-			items.add(rowData);
-			getViewer().refresh();
-			return;
-		}
-		// else
-		final int index = ((Integer)element).intValue();
-		rowData = items.get(index);
-		if (columnNo >= rowData.length) {
-			String [] newRowData = new String[columnNo + 1];
-			int i = 0;
-			for (; i<rowData.length; i++) {
-				newRowData[i] = rowData[i];
-			}
-			for (; i<newRowData.length; i++) {
-				newRowData[i] = "";
-			}
-			rowData = newRowData;
-		}
-		rowData[columnNo] = value.toString();
-		items.set(index, rowData);
-		getViewer().refresh(element);
-	}
+        if (columnNo < items.get(index).length)
+            return items.get(index)[columnNo];
+        else
+            return "";
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    protected void setValue(Object element, Object value) {
+        final List<String[]> items = (List<String[]>) table_viewer.getInput();
+        String[] rowData;
+        if (element == StringTableContentProvider.ADD_ELEMENT)
+        {
+            rowData = new String[numOfColumns];
+            Arrays.fill(rowData, ""); //$NON-NLS-1$
+            rowData[columnNo] = value.toString();
+            items.add(rowData);
+            getViewer().refresh();
+            return;
+        }
+        // else
+        final int index = ((Integer)element).intValue();
+        rowData = items.get(index);
+        if (columnNo >= rowData.length) {
+            String [] newRowData = new String[columnNo + 1];
+            int i = 0;
+            for (; i<rowData.length; i++) {
+                newRowData[i] = rowData[i];
+            }
+            for (; i<newRowData.length; i++) {
+                newRowData[i] = "";
+            }
+            rowData = newRowData;
+        }
+        rowData[columnNo] = value.toString();
+        items.set(index, rowData);
+        getViewer().refresh(element);
+    }
 }

@@ -20,11 +20,11 @@ public class SeqProvider extends CellLabelProvider
 {
     /** Show "Sequence: ..." as tool-tip */
     @Override
-	public String getToolTipText(final Object element)
+    public String getToolTipText(final Object element)
     {
         final Message message = (Message) element;
         return NLS.bind(Messages.SeqProvider_TTFmt, message.getSequence());
-	}
+    }
 
     @Override
     public void update(ViewerCell cell)

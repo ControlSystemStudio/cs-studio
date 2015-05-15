@@ -30,8 +30,8 @@ import org.eclipse.osgi.util.NLS;
  */
 public class DisplayUtil
 {
-	private static final Logger log = Logger.getLogger(DisplayUtil.class.getName());
-	
+    private static final Logger log = Logger.getLogger(DisplayUtil.class.getName());
+
     /** Singleton instance */
     final private static DisplayUtil instance = new DisplayUtil();
 
@@ -57,13 +57,13 @@ public class DisplayUtil
             }
             catch (CoreException ex)
             {
-            	log.log(Level.SEVERE, "Error locating IOpenDisplayActions", ex); //$NON-NLS-1$
+                log.log(Level.SEVERE, "Error locating IOpenDisplayActions", ex); //$NON-NLS-1$
             }
         }
     }
-    
+
     public boolean isExtensionSupported(String ext){
-    	return actions.containsKey(ext);
+        return actions.containsKey(ext);
     }
 
     /** @return Singleton instance */
@@ -72,23 +72,23 @@ public class DisplayUtil
         return instance;
     }
 
-	/**Open display with corresponding runtime.
-	 * @param path the path of display file.
-	 * @param data the input data. set as null if it is not needed.
-	 * @see IOpenDisplayAction
-	 * @throws Exception on error: Unknown file type, error while trying to open the file
-	 */
-	public void openDisplay(final String path, final String data) throws Exception
-	{
-	    final int delim = path.lastIndexOf('.');
-	    if (delim < 0)
+    /**Open display with corresponding runtime.
+     * @param path the path of display file.
+     * @param data the input data. set as null if it is not needed.
+     * @see IOpenDisplayAction
+     * @throws Exception on error: Unknown file type, error while trying to open the file
+     */
+    public void openDisplay(final String path, final String data) throws Exception
+    {
+        final int delim = path.lastIndexOf('.');
+        if (delim < 0)
             throw new Exception(Messages.DisplayUtil_ErrorEmptyExt);
         final String ext = path.substring(delim+1);
-		if (ext == null || ext.trim().length() == 0)
-			throw new Exception(Messages.DisplayUtil_ErrorEmptyExt);
-		final IOpenDisplayAction action = actions.get(ext);
-		if (action == null)
-	        throw new Exception(NLS.bind(Messages.DisplayUtil_ErrorUnknownExtFmt, ext));
-		action.openDisplay(path, data);
-	}
+        if (ext == null || ext.trim().length() == 0)
+            throw new Exception(Messages.DisplayUtil_ErrorEmptyExt);
+        final IOpenDisplayAction action = actions.get(ext);
+        if (action == null)
+            throw new Exception(NLS.bind(Messages.DisplayUtil_ErrorUnknownExtFmt, ext));
+        action.openDisplay(path, data);
+    }
 }

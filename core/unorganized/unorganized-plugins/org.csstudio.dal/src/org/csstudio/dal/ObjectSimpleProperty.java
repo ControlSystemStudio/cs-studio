@@ -33,9 +33,9 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.SimpleProperty
  */
 public interface ObjectSimpleProperty extends ObjectAccess,
-	SimpleProperty<Object>
+    SimpleProperty<Object>
 {
-	//
+    //
 }
 
 /* __oOo__ */

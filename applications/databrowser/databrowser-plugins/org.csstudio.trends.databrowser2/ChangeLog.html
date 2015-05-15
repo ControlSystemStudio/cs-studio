@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Data Browser Changelog</title>
+	<link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"></link>
+</head>
+<body>
+<h1>Data Browser Changelog</h1>
+
+<p>Version numbers in here refer to the plugin org.csstudio.trends.databrowser2.</p>
+
+<h2>Version 4.1.3 - 2015-05-05</h2>
+<ul>
+  <li>Plot has Legend.</li>
+</ul>
+
+<h2>Version 4.1.2 - 2015-03-19</h2>
+<ul>
+  <li>Context menu action to save snapshot as file.</li>
+  <li>Instead of waiting for next regular redraw, update plot right away
+      when trace shown/hidden/removed/added, trace color or name changed,
+      axis name changed, axis left/right changed. 
+  </li>
+  <li>Items can be moved up/down within list of traces.</li>
+  <li>Plot has title.</li>
+</ul>
+
+<h2>Version 4.1.1 - 2015-01-05</h2>
+<ul>
+  <li>Better tick mark selection for log axis.</li>
+  <li>Linear axis switches to exponential notation when range to large/small.</li>
+</ul>
+
+<h2>Version 4.1.0 - 2014-15-01</h2>
+Replaced plot package, updated configuration save/load, fixing several bugs.
+<ul>
+  <li>Plot more compact, replacing legend with trace names on axes.</li>
+  <li>Toolbar more compact.</li>
+  <li>Streamlined zoom/pan options with better visual feedback.</li>
+  <li>Each added trace starts with a new color, reducing likelihood of plots where users cannot determine which trace corresponds to what item (#213).</li>
+  <li>Annotation content with place holders for name, position, value.</li>
+  <li>Annotation removal dialog right away lists annotations to remove.</li>
+  <li>'Color' property of trace or axis is always visible, even if that 'row' of the table is selected.</li>
+  <li>Tables no longer have "vanishing columns" on Linux; enforcing minimum column width (#838).</li>
+  <li>Dropping of several PVs works (used to drop "[PV1", "PV2,", "LastPV]")</li>
+  <li>Most drawing performed in background threads, no longer delaying the UI thread.</li>
+  <li>'Autoscale' performed in parallel background threads, using all CPUs to determine range of traces.</li>
+  <li>Cursor values determined in background thread via binary search (Not in UI thread, not via linear search. Also fixes #536).</li>
+  <li>All configuration options now in 'Properties' view, no plot config that allows corrupting time axis settings.</li>
+  <li>All configurable plot options now saved/restored (#428, #632).</li>
+  <li>Consistently persisting configuration of 'Model', instead of separating and then diverging the 'Model' and 'XYGraph' settings (#694, #755).</li>  
+  <li>Provide DataBrowserSchema.xsd for current *.plt file format.</li>
+  <li>Using Java 8 'Instant' for all time operations.</li>
+  <li>"Edit Items" dialog (for multiple items) has icon, consistent layout.</li>
+  <li>Plot can show VStatistics std. deviation as well as min/max (#764).</li>
+  <li>Can "Remove Archive Data Source" even if source has no name (just Key and URL)</li>
+  <li>Time Axis tab offers shortcuts to select common time ranges, configurable via preferences (#512).</li>
+  <li>"Save Changes" option: If de-selected, changes will not mark the config as 'dirty', so no Do-you-want-to-save prompt.
+      Allows users to zoom, pan, then simply close *.plt. Can still "Save As".
+  </li>
+</ul>
+
+<h2>Version 4.0.0 - 2014-06-20</h2>
+<ul>
+  <li>Bugfix: Option "When archived data arrives: Perform auto-zoom", in addition to the value axes, also zoomed the time axis. This prevented any time range adjustments.</li>
+  <li>Bugfix: NullPointerException when removing an item.</li>
+</ul>
+
+<h2>Version 3.2.17 - 2014-03-06</h2>
+<ul>
+  <li>Added an option to automatically reload the history data when the live buffer fills up.</li>
+  <li>Added an option to set the future buffer for the trend. This is the amount of time from now to the right side of the chart.</li>
+  <li>Display the values at the cursor position in the Properties table.</li>
+  <li>Do not reset the trend appearance when the buffer size is changed.</li>
+  <li>Columns exported to VTable are now called Timestamp and Value instead of X and Y.</li>
+  <li>Bugfix: Do not apply XYGraphSettings when a new trend is open.</li>
+  <li>Bugfix: Do not apply the axis title font to the axis scale.</li>
+  <li>Warning elimination: removed unused variable in the EditItemsCommand.</li>
+</ul>
+
+<h2>Version 3.2.16 - 2014-02-14</h2>
+<ul>
+  <li>Fixed some bugs with .plt files loading.</li>
+</ul>
+
+<h2>Version 3.2.15 - 2014-02-06</h2>
+<ul>
+  <li>Separated the presentation of the X and Y labels from the axis trace. Each option can be (de)activated independently.</li>
+  <li>Exported the value at mouse position to the PV Manager (dependency to plug-in org.csstudio.swt.xygraph.pvmanager added).</li>
+</ul>
+
+<h2>Version 3.2.14 - 2014-01-28</h2>
+<ul>
+  <li>Skip printer check on GTK to avoid hangups.</li>
+</ul>
+
+<h2>Version 3.2.13 - 2013-12-26</h2>
+<ul>
+  <li>Data Browser Plot XYGraph Settings are now ALL saved within the configuration file.</li>
+</ul>
+
+<h2>Version 3.2.12 - 2013-11-22</h2>
+<ul>
+  <li>Add X and Y labels on the axis when the Show value labels option is activated. </li>
+  <li>Fix Archive Search: On error, the search pattern and button were disabled, requiring close/re-open of the search panel.</li>
+</ul>
+
+<h2>Version 3.2.11 - 2013-11-06</h2>
+<ul>
+  <li>Fix zoom bug:
+      When scrolling, zooming into 'left' area of plot such that the
+      scrolling gets disabled because 'end' is no longer close to 'now', the
+      start/end times were wrong, using start of the zoomed area as the end. </li>
+  <li>'Trace Type' includes "direct" option for Area and Single line that uses a linear connection from sample to sample, no stair-step.</li>
+</ul>
+
+<h2>Version 3.2.2  - 2013-09-23</h2>
+<ul>
+  <li>Fix: 'Export' failed with multiple data sources unless <i>every</i> source knew the channel.</li>
+</ul>
+
+<h2>Version 3.2.1 (KEK  3.2.0) - 2013-06-13</h2>
+<ul>
+  <li>Supports alias name of Archive Data Source URLs to recognize Data Source more easily in Archive Search view.
+  <p><img src="doc/ArchiverURLs_with_Alias.png" /></p>
+  <p><img src="doc/ArchiverURLs_with_Alias2.png" /></p>
+  </li>
+  <li><img src="icons/refresh_remote.gif"/> 'Refresh' option in plot's context menu to re-fetch archived data.</li>
+</ul>
+
+<h2>Version 3.2.0 - 2013-01-31</h2>
+<ul>
+  <li>Export with linear interpolation.</li>
+  <li>PVManager instead of utility.pv.</li>
+</ul>
+
+<h2>Version 3.1.3 - 2012-12-07</h2>
+<ul>
+  <li>CSV File import can import from exported single-channel data file.</li>
+</ul>
+
+<h2>Version 3.1.2 - 2012-08-23</h2>
+<ul>
+  <li>When retrieval from one archive data source fails, continue with others (used to stop retrieving).</li>
+  <li>CSV File import from context menu failed on empty plot (no value axis).</li>
+  <li>Enabled double buffering by default for all platforms.</li>
+</ul>
+
+<h2>Version 3.1.1 - 2012-07-20</h2>
+<ul>
+  <li>Menu File/Open can open out-of-workspace files. To save, enforces SaveAs to select workspace file.</li>
+  <li>More of the plot settings are saved: Title, legend on/off, grid lines, ...</li>
+  <li>For waveform PVs, the array element to plot can be selected. Same waveform PV can be displayed multiple times to show different array elements.</li>
+  <li>Import data from CSV File as data source (rows must match  <code>YYYY-MM-DD HH:MM:SS.SSS   number</code>).</li>
+  <li>Spreadsheet export presents min/max of "optimized" data in columns suitable for error bar display.</li>
+  <li>Matlab Export can use binary <code>*.mat</code> files in addition to <code>*.m</code> text files.</li>
+</ul>
+
+<h2>Version 3.1.0 - 2012-01-30</h2>
+<ul>
+  <li>Search with empty channel name pattern gives info dialog, no channels.</li>
+  <li>New option to always use 'default' archive data sources, ignoring sources from (old) *.plt.</li>
+  <li>New option to log archive access errors instead of prompting in dialog.</li>
+</ul>
+
+<h2>Version 3.0.2 - 2011-08-25</h2>
+<ul>
+  <li>swt.xygraph - Fix for horizontal zoom that would 'invert' traces</li>
+</ul>
+
+
+<h2>Product History</h2>
+<p>
+At LANL, Craig McChesney and Sergei Chevtsov with contributions by Peregrine
+McGehee implemented the Java Archive Viewer for displaying Channel Archiver
+data (2004).
+</p>
+<p>
+The first CSS Data Browser was based on Archive Viewer ideas but added
+live data handling as well as CSS integration and pluggable support for more than
+one type of historic data source (2007)
+</p>
+
+</body>
+</html>

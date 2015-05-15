@@ -4,51 +4,51 @@ import de.desy.language.libraries.utils.contract.Contract;
 
 /**
  * The root node of an SNL program outline.
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class ProgramNode extends AbstractSNLNode {
 
-	private String _programName;
+    private String _programName;
 
-	public ProgramNode(final String programName, final int startOffset,
-			final int endOffset) {
-		Contract.requireNotNull("programName", programName);
+    public ProgramNode(final String programName, final int startOffset,
+            final int endOffset) {
+        Contract.requireNotNull("programName", programName);
 
-		this.setStatementOffsets(startOffset, endOffset);
+        this.setStatementOffsets(startOffset, endOffset);
 
-		this._programName = programName;
-	}
+        this._programName = programName;
+    }
 
-	@Override
-	public String humanReadableRepresentation() {
-		return this.getNodeTypeName()
-				+ " "
-				+ (this._programName != null ? this._programName
-						: "(name not avail)");
-	}
+    @Override
+    public String humanReadableRepresentation() {
+        return this.getNodeTypeName()
+                + " "
+                + (this._programName != null ? this._programName
+                        : "(name not avail)");
+    }
 
-	/**
-	 * Gives the program name, may null.
-	 */
-	public String getProgramName() {
-		return this._programName;
-	}
+    /**
+     * Gives the program name, may null.
+     */
+    public String getProgramName() {
+        return this._programName;
+    }
 
-	public void setProgramName(final String programName) {
-		Contract.requireNotNull("programName", programName);
+    public void setProgramName(final String programName) {
+        Contract.requireNotNull("programName", programName);
 
-		this._programName = programName;
-	}
+        this._programName = programName;
+    }
 
-	@Override
-	public String getNodeTypeName() {
-		return "Program";
-	}
+    @Override
+    public String getNodeTypeName() {
+        return "Program";
+    }
 
-	@Override
-	protected String doGetSourceIdentifier() {
-		return this._programName;
-	}
+    @Override
+    protected String doGetSourceIdentifier() {
+        return this._programName;
+    }
 
 }

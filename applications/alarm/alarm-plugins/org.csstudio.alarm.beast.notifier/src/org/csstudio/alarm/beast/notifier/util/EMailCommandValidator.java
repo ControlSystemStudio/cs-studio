@@ -19,31 +19,31 @@ import org.csstudio.alarm.beast.notifier.model.IActionValidator;
 @SuppressWarnings("nls")
 public class EMailCommandValidator implements IActionValidator {
 
-	private String details;
-	private EMailCommandHandler handler;
+    private String details;
+    private EMailCommandHandler handler;
 
-	@Override
+    @Override
     public void init(String details) {
-		this.details = details == null ? null : details.trim();
-		handler = new EMailCommandHandler(details);
-	}
+        this.details = details == null ? null : details.trim();
+        handler = new EMailCommandHandler(details);
+    }
 
-	/** @return handler for EMail command */
-	@Override
+    /** @return handler for EMail command */
+    @Override
     public EMailCommandHandler getHandler() {
-		return handler;
-	}
+        return handler;
+    }
 
-	@Override
-	public boolean validate() throws Exception {
-		if (details == null || "".equals(details)) {
-			throw new Exception("Missing automated action details");
-		}
-		handler.parse();
-		if (handler.getTo() == null || handler.getTo().isEmpty()) {
-			throw new Exception("Missing email command recipient");
-		}
-		return true;
-	}
+    @Override
+    public boolean validate() throws Exception {
+        if (details == null || "".equals(details)) {
+            throw new Exception("Missing automated action details");
+        }
+        handler.parse();
+        if (handler.getTo() == null || handler.getTo().isEmpty()) {
+            throw new Exception("Missing email command recipient");
+        }
+        return true;
+    }
 
 }

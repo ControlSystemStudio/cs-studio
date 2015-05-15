@@ -2,15 +2,23 @@
 <?compositeArtifactRepository version='1.0.0'?>
 <repository name="CS Studio Application Composite Repository" type="org.eclipse.equinox.internal.p2.artifact.repository.CompositeArtifactRepository" version="1.0.0">
   <properties size="3">
-	  <property name="p2.compressed" value="true"/>
-	  <property name='p2.atomic.composite.loading' value='false'/>
+    <property name="p2.compressed" value="true"/>
+    <property name="p2.atomic.composite.loading" value="false"/>
     <!-- get new time w/ `date +%s000` -->
     <property name="p2.timestamp" value="1395756034000"/>
   </properties>
-  <children size="4">
-	  <child location="../channel/channel-repository/target/repository"/>
-	  <child location="../alarm/alarm-repository/target/repository"/>
-	  <child location="../logbook/logbook-repository/target/repository"/>
-	  <child location="../repository/target/repository"/>
+  <children size="12">
+    <child location="../alarm/alarm-repository/target/repository"/>
+    <child location="../appunorganized/appunorganized-repository/target/repository"/>
+    <child location="../apputil/apputil-repository/target/repository"/>
+    <child location="../archive/archive-repository/target/repository"/>
+    <child location="../display/display-repository/target/repository"/>
+    <child location="../channel/channel-repository/target/repository"/>
+    <child location="../databrowser/databrowser-repository/target/repository"/>
+    <child location="../diag/diag-repository/target/repository"/>
+    <child location="../logbook/logbook-repository/target/repository"/>
+    <child location="../opibuilder/opibuilder-repository/target/repository"/>
+    <child location="../scan/scan-repository/target/repository"/>
+    <child location="../shift/shift-repository/target/repository"/>
   </children>
 </repository>

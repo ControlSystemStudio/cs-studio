@@ -34,25 +34,25 @@ public class FilterUnitTest implements FilterListener
     // Most recent value from filter.
     // SYNC on this
     private double last_value = Double.NaN;
- 
+
     @Before
     public void setup()
-    {	// Running as plain unit tests, so PVPool is not
-    	// initialized from extension point registry
-    	PVPool.addPVFactory(new LocalPVFactory());
-    	PVPool.addPVFactory(new JCA_PVFactory());
+    {    // Running as plain unit tests, so PVPool is not
+        // initialized from extension point registry
+        PVPool.addPVFactory(new LocalPVFactory());
+        PVPool.addPVFactory(new JCA_PVFactory());
         PVPool.setDefaultType(LocalPVFactory.TYPE);
-        
+
         // Configure logging to show 'all'
         final Logger logger = Logger.getLogger("");
         logger.setLevel(Level.ALL);
         for (Handler handler : logger.getHandlers())
             handler.setLevel(Level.ALL);
-        
+
         // Disable some messages
         Logger.getLogger("com.cosylab.epics").setLevel(Level.SEVERE);
     }
-    
+
     @Override
     public void filterChanged(final double value)
     {
@@ -74,7 +74,7 @@ public class FilterUnitTest implements FilterListener
         // Set initial value because another test may already have used those vars..
         x.write(1.0);
         y.write(2.0);
-        
+
         final Filter filter = new Filter("'loc://x(1.0)' + 'loc://y(2.0)'", this);
         filter.start();
 
@@ -85,7 +85,7 @@ public class FilterUnitTest implements FilterListener
                 wait();
         }
         System.err.println("Received " + updates.get() + " updates");
-        
+
         // May get update for this.. (2 or 3), or not
         x.write(4.0);
         // Definite update for both values: Anything from 2 to 4
@@ -97,7 +97,7 @@ public class FilterUnitTest implements FilterListener
                 wait();
         }
         System.err.println("Received " + updates.get() + " updates");
-        
+
         filter.stop();
     }
 
@@ -108,7 +108,7 @@ public class FilterUnitTest implements FilterListener
         final PV x = PVPool.getPV("loc://x(1.0)");
         // Set initial value because another test may already have used those vars..
         x.write(1.0);
-        
+
         final Filter filter = new Filter("'loc://x(1.0)' < 5 ? 1 : 2", this);
         filter.start();
 
@@ -125,7 +125,7 @@ public class FilterUnitTest implements FilterListener
         x.write(2.0);
         TimeUnit.SECONDS.sleep(2);
         assertThat(updates.get(), equalTo(received_updates));
-        
+
         // Once the value changes, there should be another update
         x.write(6.0);
         synchronized (this)
@@ -135,7 +135,7 @@ public class FilterUnitTest implements FilterListener
         }
         System.err.println("Received " + updates.get() + " updates");
         assertThat(updates.get(), equalTo(received_updates + 1));
-        
+
         filter.stop();
     }
 
@@ -144,9 +144,9 @@ public class FilterUnitTest implements FilterListener
     {
         synchronized (this)
         {
-        	last_value = Double.NaN;
-		}
-        
+            last_value = Double.NaN;
+        }
+
         final Filter filter = new Filter("'ca://bogus_pv_name' * 2", this);
         filter.start();
 
@@ -158,10 +158,10 @@ public class FilterUnitTest implements FilterListener
         assertThat(updates.get(), equalTo(0));
 
         synchronized (this)
-        {	// Last value should remain unchanged
-        	assertThat(last_value, notANumber());
+        {    // Last value should remain unchanged
+            assertThat(last_value, notANumber());
         }
-        
+
         filter.stop();
     }
 }

@@ -17,44 +17,43 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.apache.batik"; //$NON-NLS-1$
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.csstudio.utility.batik"; //$NON-NLS-1$
 
-	// The shared instance
-	private static Activator plugin;
-	
-	// The logger
-	private static final Logger LOGGER = Logger.getLogger(PLUGIN_ID);
+    // The shared instance
+    private static Activator plugin;
 
-	public Activator() {
-	}
+    // The logger
+    private static final Logger LOGGER = Logger.getLogger(PLUGIN_ID);
 
-	public void start(BundleContext context) throws Exception {
-		super.start(context);
-		plugin = this;
-	}
+    public Activator() {
+    }
 
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
-		super.stop(context);
-	}
+    public void start(BundleContext context) throws Exception {
+        super.start(context);
+        plugin = this;
+    }
 
-	/**
-	 * Returns the shared instance
-	 * 
-	 * @return the shared instance
-	 */
-	public static Activator getDefault() {
-		return plugin;
-	}
-	
-	/**
-	 * Get the logger for Symbol plug-in.
-	 * 
-	 * @return the logger
-	 */
-	public static Logger getLogger() {
-		return LOGGER;
-	}
+    public void stop(BundleContext context) throws Exception {
+        plugin = null;
+        super.stop(context);
+    }
 
+    /**
+     * Returns the shared instance
+     * 
+     * @return the shared instance
+     */
+    public static Activator getDefault() {
+        return plugin;
+    }
+
+    /**
+     * Get the logger for Symbol plug-in.
+     * 
+     * @return the logger
+     */
+    public static Logger getLogger() {
+        return LOGGER;
+    }
 }

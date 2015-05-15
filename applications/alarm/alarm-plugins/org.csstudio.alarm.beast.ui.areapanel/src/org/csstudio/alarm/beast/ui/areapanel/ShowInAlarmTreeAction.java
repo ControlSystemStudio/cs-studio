@@ -18,24 +18,24 @@ import org.eclipse.ui.IViewPart;
 @SuppressWarnings("nls")
 public class ShowInAlarmTreeAction extends OpenViewAction
 {
-	final private AlarmTreeItem item;
+    final private AlarmTreeItem item;
 
-	public ShowInAlarmTreeAction(final AlarmTreeItem item)
+    public ShowInAlarmTreeAction(final AlarmTreeItem item)
     {
-		super(AlarmTreeView.ID,
-		      Messages.ShowInAlarmTree,
-			  org.csstudio.alarm.beast.ui.alarmtree.Activator.getImageDescriptor("icons/alarmtree.gif"));
-		this.item = item;
+        super(AlarmTreeView.ID,
+              Messages.ShowInAlarmTree,
+              org.csstudio.alarm.beast.ui.alarmtree.Activator.getImageDescriptor("icons/alarmtree.gif"));
+        this.item = item;
     }
 
     @Override
-	public void run()
-	{
+    public void run()
+    {
         final IViewPart view = doShowView();
         if (view instanceof AlarmTreeView)
         {
             final AlarmTreeView alarm_view = (AlarmTreeView) view;
             alarm_view.setFocus(item);
         }
- 	}
+     }
 }

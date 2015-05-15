@@ -35,22 +35,22 @@ import org.csstudio.dal.DynamicValueProperty;
  */
 public interface PropertyGroupListener<T extends DynamicValueProperty<?>> extends EventListener
 {
-	/**
-	 * Notifies listeners that a property has been added to the source
-	 * group.
-	 *
-	 * @param event The event which holds the group and the added property.
-	 */
-	public void membersAdded(PropertyGroupEvent<T> event);
+    /**
+     * Notifies listeners that a property has been added to the source
+     * group.
+     *
+     * @param event The event which holds the group and the added property.
+     */
+    public void membersAdded(PropertyGroupEvent<T> event);
 
-	/**
-	 * Notifies listeners that a property has been removed from the
-	 * source group.
-	 *
-	 * @param event The event which holds the source group and the removed
-	 *        property.
-	 */
-	public void membersRemoved(PropertyGroupEvent<T> event);
+    /**
+     * Notifies listeners that a property has been removed from the
+     * source group.
+     *
+     * @param event The event which holds the source group and the removed
+     *        property.
+     */
+    public void membersRemoved(PropertyGroupEvent<T> event);
 }
 
 /* __oOo__ */

@@ -19,45 +19,45 @@ import org.w3c.dom.Element;
 
 public class Opi_activeRectangleClassTest extends TestCase {
 
-	public void testOpi_activeRectangleClass() throws EdmException {
+    public void testOpi_activeRectangleClass() throws EdmException {
 
-		System.setProperty("edm2xml.robustParsing", "false");
-		System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.robustParsing", "false");
+        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
 
-		Document doc = XMLFileHandler.createDomDocument();
-		Element root = doc.createElement("root");
-		doc.appendChild(root);
+        Document doc = XMLFileHandler.createDomDocument();
+        Element root = doc.createElement("root");
+        doc.appendChild(root);
 
-		String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
-		EdmModel.getInstance();
-		EdmDisplay d = EdmModel.getDisplay(edlFile);
-		assertTrue(d.getSubEntity(0) instanceof Edm_activeRectangleClass);
-		Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getSubEntity(0);
+        String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
+        EdmModel.getInstance();
+        EdmDisplay d = EdmModel.getDisplay(edlFile);
+        assertTrue(d.getSubEntity(0) instanceof Edm_activeRectangleClass);
+        Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getSubEntity(0);
 
-		Context context = new Context(doc, root, d, 0, 0);
-		Opi_activeRectangleClass o = new Opi_activeRectangleClass(context, r);
-		assertTrue(o instanceof OpiWidget);
+        Context context = new Context(doc, root, d, 0, 0);
+        Opi_activeRectangleClass o = new Opi_activeRectangleClass(context, r);
+        assertTrue(o instanceof OpiWidget);
 
-		Element e = (Element)doc.getElementsByTagName("widget").item(0);
-		assertEquals("org.csstudio.opibuilder.widgets.Rectangle", e.getAttribute("typeId"));
-		assertEquals("1.0", e.getAttribute("version"));
+        Element e = (Element)doc.getElementsByTagName("widget").item(0);
+        assertEquals("org.csstudio.opibuilder.widgets.Rectangle", e.getAttribute("typeId"));
+        assertEquals("1.0", e.getAttribute("version"));
 
-		XMLFileHandler.isElementEqual("EDM Rectangle", "name", e);
-		
-		XMLFileHandler.isElementEqual("4", "x", e);
-		XMLFileHandler.isElementEqual("45", "y", e);
-		XMLFileHandler.isElementEqual("111", "width", e);
-		XMLFileHandler.isElementEqual("42", "height", e);
+        XMLFileHandler.isElementEqual("EDM Rectangle", "name", e);
 
-		XMLFileHandler.isColorElementEqual(new EdmColor(7), "border_color", e);
-		XMLFileHandler.isColorElementEqual(new EdmColor(0), "color_background", e);
+        XMLFileHandler.isElementEqual("4", "x", e);
+        XMLFileHandler.isElementEqual("45", "y", e);
+        XMLFileHandler.isElementEqual("111", "width", e);
+        XMLFileHandler.isElementEqual("42", "height", e);
 
-		XMLFileHandler.isElementEqual("9", "border_style", e);
-		XMLFileHandler.isElementEqual("2", "border_width", e);
+        XMLFileHandler.isColorElementEqual(new EdmColor(7), "border_color", e);
+        XMLFileHandler.isColorElementEqual(new EdmColor(0), "color_background", e);
 
-		XMLFileHandler.isElementEqual("false", "visible", e);
-		
-		//XMLFileHandler.writeXML(doc);
-	}
+        XMLFileHandler.isElementEqual("9", "border_style", e);
+        XMLFileHandler.isElementEqual("2", "border_width", e);
+
+        XMLFileHandler.isElementEqual("false", "visible", e);
+
+        //XMLFileHandler.writeXML(doc);
+    }
 
 }

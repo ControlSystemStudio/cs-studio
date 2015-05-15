@@ -25,155 +25,155 @@ import org.eclipse.ui.internal.WorkbenchWindow;
 
 /**
  * The action to make CSS full screen.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 @SuppressWarnings("restriction")
 public class CompactModeAction extends Action implements
-		IWorkbenchWindowActionDelegate {
+        IWorkbenchWindowActionDelegate {
 
-	private static final String COMPACT_MODE = "Compact Mode";
+    private static final String COMPACT_MODE = "Compact Mode";
 
-	private static final String EXIT_COMPACT_MODE = "Exit Compact Mode";
+    private static final String EXIT_COMPACT_MODE = "Exit Compact Mode";
 
-	public static final String ID = "org.csstudio.opibuilder.actions.compactMode"; //$NON-NLS-1$
+    public static final String ID = "org.csstudio.opibuilder.actions.compactMode"; //$NON-NLS-1$
 
-	private Menu menuBar;
-	private boolean inCompactMode = false;
-	private Shell shell;
-	private ImageDescriptor compactModeImage = CustomMediaFactory.getInstance()
-			.getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
-					"icons/compact_mode.png");
-	private ImageDescriptor exitCompactModeImage = CustomMediaFactory
-			.getInstance().getImageDescriptorFromPlugin(
-					OPIBuilderPlugin.PLUGIN_ID, "icons/exit_compact_mode.gif");
-	private IWorkbenchWindow window;
-	private boolean toolbarWasInvisible;
+    private Menu menuBar;
+    private boolean inCompactMode = false;
+    private Shell shell;
+    private ImageDescriptor compactModeImage = CustomMediaFactory.getInstance()
+            .getImageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID,
+                    "icons/compact_mode.png");
+    private ImageDescriptor exitCompactModeImage = CustomMediaFactory
+            .getInstance().getImageDescriptorFromPlugin(
+                    OPIBuilderPlugin.PLUGIN_ID, "icons/exit_compact_mode.gif");
+    private IWorkbenchWindow window;
+    private boolean toolbarWasInvisible;
 
-	/**
-	 * Constructor.
-	 * 
-	 * @param part
-	 *            The workbench part associated with this PrintAction
-	 */
-	public CompactModeAction() {
-		setActionDefinitionId(ID);
-		setText(COMPACT_MODE);
-		setImageDescriptor(compactModeImage);
-	}
+    /**
+     * Constructor.
+     *
+     * @param part
+     *            The workbench part associated with this PrintAction
+     */
+    public CompactModeAction() {
+        setActionDefinitionId(ID);
+        setText(COMPACT_MODE);
+        setImageDescriptor(compactModeImage);
+    }
 
-	/**
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	public void run() {
-		//Do nothing if in full screen
-		FullScreenAction fullScreenAction = WorkbenchWindowService.getInstance().
-				getFullScreenAction(window);
-		if( fullScreenAction != null && fullScreenAction.isInFullScreen()){
-			MessageDialog.openWarning(shell, "Warning", 
-					"This operation does not work in full screen. \n" +
-					"Please exit full screen (press F11) and try again.");
-			return;
-		}
-		if (inCompactMode) {
-			if (!toolbarWasInvisible){
-				WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, true);
-			}
-				//toggleToolbarAction.run();
-			shell.setMenuBar(menuBar);
-			inCompactMode = false;
-			WorkbenchWindowService.setInCompactMode(false);
-			setText(COMPACT_MODE);
-			setImageDescriptor(compactModeImage);
-		} else {			
-			if(PreferencesHelper.isShowCompactModeDialog()){
-				TipDialog dialog = new TipDialog(shell, "Tip", "Press F8 to exit compact mode.");
-				dialog.open();
-				if(!dialog.isShowThisDialogAgain())
-					PreferencesHelper.setShowCompactModeDialog(false);
-			}
-			
-			if (window instanceof WorkbenchWindow
-					&& !((WorkbenchWindow) window).getCoolBarVisible()) {
-				toolbarWasInvisible = true;
-			} else {
-				toolbarWasInvisible = false;
-				WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, false);
-				
-				//toggleToolbarAction.run();
-			}
-			shell.setMenuBar(null);
-			inCompactMode = true;
-			WorkbenchWindowService.setInCompactMode(true);
+    /**
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    public void run() {
+        //Do nothing if in full screen
+        FullScreenAction fullScreenAction = WorkbenchWindowService.getInstance().
+                getFullScreenAction(window);
+        if( fullScreenAction != null && fullScreenAction.isInFullScreen()){
+            MessageDialog.openWarning(shell, "Warning",
+                    "This operation does not work in full screen. \n" +
+                    "Please exit full screen (press F11) and try again.");
+            return;
+        }
+        if (inCompactMode) {
+            if (!toolbarWasInvisible){
+                WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, true);
+            }
+                //toggleToolbarAction.run();
+            shell.setMenuBar(menuBar);
+            inCompactMode = false;
+            WorkbenchWindowService.setInCompactMode(false);
+            setText(COMPACT_MODE);
+            setImageDescriptor(compactModeImage);
+        } else {
+            if(PreferencesHelper.isShowCompactModeDialog()){
+                TipDialog dialog = new TipDialog(shell, "Tip", "Press F8 to exit compact mode.");
+                dialog.open();
+                if(!dialog.isShowThisDialogAgain())
+                    PreferencesHelper.setShowCompactModeDialog(false);
+            }
 
-			setText(EXIT_COMPACT_MODE);
-			setImageDescriptor(exitCompactModeImage);
-		}
-	}
+            if (window instanceof WorkbenchWindow
+                    && !((WorkbenchWindow) window).getCoolBarVisible()) {
+                toolbarWasInvisible = true;
+            } else {
+                toolbarWasInvisible = false;
+                WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, false);
 
-	public void run(IAction action) {
-		run();
-	}
+                //toggleToolbarAction.run();
+            }
+            shell.setMenuBar(null);
+            inCompactMode = true;
+            WorkbenchWindowService.setInCompactMode(true);
 
-	public void selectionChanged(IAction action, ISelection selection) {
+            setText(EXIT_COMPACT_MODE);
+            setImageDescriptor(exitCompactModeImage);
+        }
+    }
 
-	}
+    public void run(IAction action) {
+        run();
+    }
 
-	public void init(IWorkbenchWindow window) {
-		
-		if(WorkbenchWindowService.getInstance().getCompactModeAction(window) != null){
-			copyFrom(WorkbenchWindowService.getInstance().getCompactModeAction(window));
-			WorkbenchWindowService.getInstance().registerCompactModeAction(this, window);
-			return;
-		}
-		
-		setId(ID);
-		this.window = window;
-		//if already registered
-		
-		shell = window.getShell();
-		
-		menuBar = shell.getMenuBar();
-		if(menuBar == null &&
-				WorkbenchWindowService.getInstance().getCompactModeAction(window) != null)
-			menuBar = WorkbenchWindowService.getInstance().getCompactModeAction(window).getMenuBar();
-		
-		WorkbenchWindowService.getInstance().registerCompactModeAction(this, window);
+    public void selectionChanged(IAction action, ISelection selection) {
 
-//		if (WorkbenchWindowService.isInCompactMode()) {
-//			inCompactMode = true;
-//			WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, false);
-//			shell.setMenuBar(null);
-//			setImageDescriptor(exitCompactModeImage);
-//			setText(EXIT_COMPACT_MODE);
+    }
+
+    public void init(IWorkbenchWindow window) {
+
+        if(WorkbenchWindowService.getInstance().getCompactModeAction(window) != null){
+            copyFrom(WorkbenchWindowService.getInstance().getCompactModeAction(window));
+            WorkbenchWindowService.getInstance().registerCompactModeAction(this, window);
+            return;
+        }
+
+        setId(ID);
+        this.window = window;
+        //if already registered
+
+        shell = window.getShell();
+
+        menuBar = shell.getMenuBar();
+        if(menuBar == null &&
+                WorkbenchWindowService.getInstance().getCompactModeAction(window) != null)
+            menuBar = WorkbenchWindowService.getInstance().getCompactModeAction(window).getMenuBar();
+
+        WorkbenchWindowService.getInstance().registerCompactModeAction(this, window);
+
+//        if (WorkbenchWindowService.isInCompactMode()) {
+//            inCompactMode = true;
+//            WorkbenchWindowService.setToolbarVisibility((WorkbenchWindow) window, false);
+//            shell.setMenuBar(null);
+//            setImageDescriptor(exitCompactModeImage);
+//            setText(EXIT_COMPACT_MODE);
 //
-//		} else {
-//			setText(COMPACT_MODE);
-//			setImageDescriptor(compactModeImage);
-//		}
-	}
+//        } else {
+//            setText(COMPACT_MODE);
+//            setImageDescriptor(compactModeImage);
+//        }
+    }
 
-	public void dispose() {
-		WorkbenchWindowService.getInstance().unregisterCompactModeAction(window);
-	}
+    public void dispose() {
+        WorkbenchWindowService.getInstance().unregisterCompactModeAction(window);
+    }
 
-	protected Menu getMenuBar() {
-		return menuBar;
-	}	
-	
-	public boolean isInCompactMode() {
-		return inCompactMode;
-	}
-	
-	public void copyFrom(CompactModeAction action){
-		this.shell=action.shell;
-		this.window=action.window;
-		this.menuBar = action.getMenuBar();
-		this.inCompactMode = action.inCompactMode;
-		this.toolbarWasInvisible=action.toolbarWasInvisible;
-		setText(action.getText());
-		setImageDescriptor(action.getImageDescriptor());
-	}
-	
+    protected Menu getMenuBar() {
+        return menuBar;
+    }
+
+    public boolean isInCompactMode() {
+        return inCompactMode;
+    }
+
+    public void copyFrom(CompactModeAction action){
+        this.shell=action.shell;
+        this.window=action.window;
+        this.menuBar = action.getMenuBar();
+        this.inCompactMode = action.inCompactMode;
+        this.toolbarWasInvisible=action.toolbarWasInvisible;
+        setText(action.getText());
+        setImageDescriptor(action.getImageDescriptor());
+    }
+
 }

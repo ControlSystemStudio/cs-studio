@@ -53,131 +53,131 @@ import org.csstudio.dal.simple.RemoteInfo;
  */
 public interface PropertyFactory extends AbstractFactory
 {
-	/**
-	 * Return property with defined name. Linking of the property
-	 * depends on the linking policy of the factory. Name is first converted to
-	 * <code>RemoteInfo</code> in order to determine actual property creation
-	 * parameters from <code>DistributedDirectory</code> service.
-	 *
-	 * @param uniqueName remote unique name
-	 *
-	 * @return new or cached property
-	 *
-	 * @throws InstantiationException if instantiation fails
-	 * @throws RemoteException if connection fails
-	 */
-	public DynamicValueProperty<?> getProperty(String uniqueName)
-		throws InstantiationException, RemoteException;
+    /**
+     * Return property with defined name. Linking of the property
+     * depends on the linking policy of the factory. Name is first converted to
+     * <code>RemoteInfo</code> in order to determine actual property creation
+     * parameters from <code>DistributedDirectory</code> service.
+     *
+     * @param uniqueName remote unique name
+     *
+     * @return new or cached property
+     *
+     * @throws InstantiationException if instantiation fails
+     * @throws RemoteException if connection fails
+     */
+    public DynamicValueProperty<?> getProperty(String uniqueName)
+        throws InstantiationException, RemoteException;
 
-	/**
-	 * Return property with defined <code>RemoteInfo</code>. Linking of the property
-	 * depends on the linking policy of the factory.
-	 *
-	 * @param ri remote info of requested property
-	 *
-	 * @return new or cached property
-	 *
-	 * @throws InstantiationException if instantiation fails
-	 * @throws RemoteException if connection fails
-	 */
-	public DynamicValueProperty<?> getProperty(RemoteInfo ri)
-		throws InstantiationException, RemoteException;
+    /**
+     * Return property with defined <code>RemoteInfo</code>. Linking of the property
+     * depends on the linking policy of the factory.
+     *
+     * @param ri remote info of requested property
+     *
+     * @return new or cached property
+     *
+     * @throws InstantiationException if instantiation fails
+     * @throws RemoteException if connection fails
+     */
+    public DynamicValueProperty<?> getProperty(RemoteInfo ri)
+        throws InstantiationException, RemoteException;
 
-	/**
-	 * Return property with specified name and implementation class. Linking of the property
-	 * depends on the linking policy of the factory. Name is first converted
-	 * to <code>RemoteInfo</code> in order to determine actual property
-	 * creation parameters from <code>DistributedDirectory</code> service.
-	 *
-	 * @param uniqueName an unique remote name
-	 * @param type implementation type of returned property, if <code>null</code> then factory tries to
-	 *        guess type which best match the remote property
-	 * @param l link listener, which is registered at property after property
-	 *        is created and receives link events, when property is linked
-	 *
-	 * @return new or cached property
-	 *
-	 * @throws InstantiationException if instantiation fails or property can
-	 *         not be cast to provided implementation type
-	 * @throws RemoteException if connection fails
-	 */
-	public <P extends DynamicValueProperty<?>> P getProperty(String uniqueName,
-	    Class<P> type, LinkListener<?> l)
-		throws InstantiationException, RemoteException;
+    /**
+     * Return property with specified name and implementation class. Linking of the property
+     * depends on the linking policy of the factory. Name is first converted
+     * to <code>RemoteInfo</code> in order to determine actual property
+     * creation parameters from <code>DistributedDirectory</code> service.
+     *
+     * @param uniqueName an unique remote name
+     * @param type implementation type of returned property, if <code>null</code> then factory tries to
+     *        guess type which best match the remote property
+     * @param l link listener, which is registered at property after property
+     *        is created and receives link events, when property is linked
+     *
+     * @return new or cached property
+     *
+     * @throws InstantiationException if instantiation fails or property can
+     *         not be cast to provided implementation type
+     * @throws RemoteException if connection fails
+     */
+    public <P extends DynamicValueProperty<?>> P getProperty(String uniqueName,
+        Class<P> type, LinkListener<?> l)
+        throws InstantiationException, RemoteException;
 
-	/**
-	 * Return property with defined <code>RemoteInfo</code> and implementation
-	 * class. Linking of the property depends on the linking policy of the factory.
-	 *
-	 * @param ri remote info of requested property
-	 * @param type implementation type of returned property, if <code>null</code> then factory tries to
-	 *        guess type which best match the remote property
-	 * @param l link listener, which is registered at property after property
-	 *        is created and receives link events, when property is linked
-	 *
-	 * @return new or cached property
-	 *
-	 * @throws InstantiationException if instantiation fails or property can
-	 *         not be cast to provided implementation type
-	 * @throws RemoteException if connection fails
-	 */
-	public <P extends DynamicValueProperty<?>> P getProperty(RemoteInfo ri,
-	    Class<P> type, LinkListener<?> l)
-		throws InstantiationException, RemoteException;
+    /**
+     * Return property with defined <code>RemoteInfo</code> and implementation
+     * class. Linking of the property depends on the linking policy of the factory.
+     *
+     * @param ri remote info of requested property
+     * @param type implementation type of returned property, if <code>null</code> then factory tries to
+     *        guess type which best match the remote property
+     * @param l link listener, which is registered at property after property
+     *        is created and receives link events, when property is linked
+     *
+     * @return new or cached property
+     *
+     * @throws InstantiationException if instantiation fails or property can
+     *         not be cast to provided implementation type
+     * @throws RemoteException if connection fails
+     */
+    public <P extends DynamicValueProperty<?>> P getProperty(RemoteInfo ri,
+        Class<P> type, LinkListener<?> l)
+        throws InstantiationException, RemoteException;
 
-	/**
-	 * Asynchronously starts property creation and linking. When property is
-	 * created and linked an <code>LinkEstablished</code> event dispatched to
-	 * link listeners registered at this property factory and to provided link
-	 * listener.
-	 *
-	 * @param name <code>RemoteInfo</code> to which property is linked
-	 * @param type implementation type of returned property, if <code>null</code> then factory tries to
-	 *        guess type which best match the remote property
-	 * @param l link listener, which is registered at property after property
-	 *        is created and receives link events, when property is linked
-	 *
-	 * @return <code>RemoteInfo</code> which for which property is created. Can
-	 *         be used to distinguish which link event from this factory is
-	 *         associated with requested property
-	 *
-	 * @throws InstantiationException if creation fails
-	 * @throws RemoteException if connection fails
-	 */
-	public RemoteInfo asyncLinkProperty(RemoteInfo name,
-	    Class<? extends DynamicValueProperty<?>> type, LinkListener<?> l)
-		throws InstantiationException, RemoteException;
+    /**
+     * Asynchronously starts property creation and linking. When property is
+     * created and linked an <code>LinkEstablished</code> event dispatched to
+     * link listeners registered at this property factory and to provided link
+     * listener.
+     *
+     * @param name <code>RemoteInfo</code> to which property is linked
+     * @param type implementation type of returned property, if <code>null</code> then factory tries to
+     *        guess type which best match the remote property
+     * @param l link listener, which is registered at property after property
+     *        is created and receives link events, when property is linked
+     *
+     * @return <code>RemoteInfo</code> which for which property is created. Can
+     *         be used to distinguish which link event from this factory is
+     *         associated with requested property
+     *
+     * @throws InstantiationException if creation fails
+     * @throws RemoteException if connection fails
+     */
+    public RemoteInfo asyncLinkProperty(RemoteInfo name,
+        Class<? extends DynamicValueProperty<?>> type, LinkListener<?> l)
+        throws InstantiationException, RemoteException;
 
-	/**
-	 * Asynchronously starts property creation and linking. When property is
-	 * created and linked an <code>LinkEstablished</code> event dispatched to
-	 * link listeners registered at this property factory and to provided link
-	 * listener.
-	 *
-	 * @param name unique name which can be transformated to RI and property
-	 *        linked to
-	 * @param l link listener, which is registered at property after property
-	 *        is created and receives link events, when property is linked
-	 *
-	 * @return <code>RemoteInfo</code> which for which property is created. Can
-	 *         be used to distinguish which link event from this factory is
-	 *         associated with requested property
-	 *
-	 * @throws InstantiationException if creation fails
-	 * @throws RemoteException if connection fails
-	 */
-	public RemoteInfo asyncLinkProperty(String name,
-	    Class<?extends DynamicValueProperty<?>> type, LinkListener<?> l)
-		throws InstantiationException, RemoteException;
+    /**
+     * Asynchronously starts property creation and linking. When property is
+     * created and linked an <code>LinkEstablished</code> event dispatched to
+     * link listeners registered at this property factory and to provided link
+     * listener.
+     *
+     * @param name unique name which can be transformated to RI and property
+     *        linked to
+     * @param l link listener, which is registered at property after property
+     *        is created and receives link events, when property is linked
+     *
+     * @return <code>RemoteInfo</code> which for which property is created. Can
+     *         be used to distinguish which link event from this factory is
+     *         associated with requested property
+     *
+     * @throws InstantiationException if creation fails
+     * @throws RemoteException if connection fails
+     */
+    public RemoteInfo asyncLinkProperty(String name,
+        Class<?extends DynamicValueProperty<?>> type, LinkListener<?> l)
+        throws InstantiationException, RemoteException;
 
-	/**
-	 * All properties created by this factory are automatically added to this family.
-	 * If factory is requested property, it first searches it inside this family,
-	 * before creating new one. Family binds lifecycle of propeties with lifecycle of
-	 * application context.
-	 * @return default family for all created properties
-	 */
-	public PropertyFamily getPropertyFamily();
+    /**
+     * All properties created by this factory are automatically added to this family.
+     * If factory is requested property, it first searches it inside this family,
+     * before creating new one. Family binds lifecycle of propeties with lifecycle of
+     * application context.
+     * @return default family for all created properties
+     */
+    public PropertyFamily getPropertyFamily();
 }
 
 /* __oOo__ */

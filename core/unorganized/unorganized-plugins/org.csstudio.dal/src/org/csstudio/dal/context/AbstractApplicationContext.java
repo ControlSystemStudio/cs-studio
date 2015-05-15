@@ -33,44 +33,44 @@ import java.util.Properties;
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
 public interface AbstractApplicationContext extends LifecycleReporter,
-	Identifiable
+    Identifiable
 {
-	/**
-	 * Returns application configuration. Must not be null. If
-	 * implementation can not provide own  configuration, then
-	 * <code>System.getProperties()</code> must be returned.
-	 *
-	 * @return application configuration or <code>System.getProperties()</code>
-	 */
-	public Properties getConfiguration();
+    /**
+     * Returns application configuration. Must not be null. If
+     * implementation can not provide own  configuration, then
+     * <code>System.getProperties()</code> must be returned.
+     *
+     * @return application configuration or <code>System.getProperties()</code>
+     */
+    public Properties getConfiguration();
 
-	/**
-	 * Name of the application.
-	 *
-	 * @return application name
-	 */
-	public String getName();
+    /**
+     * Name of the application.
+     *
+     * @return application name
+     */
+    public String getName();
 
-	/**
-	 * Destroys application and finishes it's lifecycle. Must fire
-	 * lifecycle event.
-	 */
-	public void destroy();
+    /**
+     * Destroys application and finishes it's lifecycle. Must fire
+     * lifecycle event.
+     */
+    public void destroy();
 
-	/**
-	 * Returns value from arbitrary key/value storage for this application context.
-	 * @param keyName name of property
-	 * @return prioperty value if exists, otherwise <code>null</code>
-	 */
-	public Object getApplicationProperty(String keyName);
+    /**
+     * Returns value from arbitrary key/value storage for this application context.
+     * @param keyName name of property
+     * @return prioperty value if exists, otherwise <code>null</code>
+     */
+    public Object getApplicationProperty(String keyName);
 
-	/**
-	 * Stores named value to arbitrary key/value storage for this application context.
-	 * This may be used for application to store additional configuration parameters.
-	 * @param keyName the name of stored property
-	 * @param value the value of the property
-	 */
-	public void putApplicationProperty(String keyName, Object value);
+    /**
+     * Stores named value to arbitrary key/value storage for this application context.
+     * This may be used for application to store additional configuration parameters.
+     * @param keyName the name of stored property
+     * @param value the value of the property
+     */
+    public void putApplicationProperty(String keyName, Object value);
 }
 
 /* __oOo__ */

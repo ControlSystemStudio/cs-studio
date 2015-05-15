@@ -17,9 +17,9 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /** API for obtaining single-source helper
- * 
+ *
  *  <p>Acts as plugin activator
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -27,56 +27,56 @@ public class SingleSourcePlugin implements BundleActivator
 {
     /** Extension point ID for providing the helpers */
     final public static String EXT_ID = "org.csstudio.utility.singlesource.helpers";
-    
+
     private static ResourceHelper resources;
-    
+
     private static UIHelper ui;
 
     /** {@inheritDoc} */
     public void start(final BundleContext context) throws Exception
-	{
-	    // Registry lookup
-	    final IExtensionRegistry registry = RegistryFactory.getRegistry();
-	    final IConfigurationElement[] configs = registry.getConfigurationElementsFor(EXT_ID);
-	    if (configs.length > 1)
-	        throw new Exception("Found " + configs.length +
-	                " Single Source Helper implementations, expecting at most one");
-	    if (configs.length == 1)
-	    {   // Use implementations from extension point
-	        Logger.getLogger(getClass().getName()).config("ResourceHelper provided by " + configs[0].getContributor().getName());
-	        SingleSourcePlugin.resources = (ResourceHelper)
-	            configs[0].createExecutableExtension("resources");
+    {
+        // Registry lookup
+        final IExtensionRegistry registry = RegistryFactory.getRegistry();
+        final IConfigurationElement[] configs = registry.getConfigurationElementsFor(EXT_ID);
+        if (configs.length > 1)
+            throw new Exception("Found " + configs.length +
+                    " Single Source Helper implementations, expecting at most one");
+        if (configs.length == 1)
+        {   // Use implementations from extension point
+            Logger.getLogger(getClass().getName()).config("ResourceHelper provided by " + configs[0].getContributor().getName());
+            SingleSourcePlugin.resources = (ResourceHelper)
+                configs[0].createExecutableExtension("resources");
             SingleSourcePlugin.ui = (UIHelper)
                     configs[0].createExecutableExtension("ui");
-	    }
-	    else
-	    {   // Use default implementations
-	        SingleSourcePlugin.resources = new ResourceHelper();
-	        SingleSourcePlugin.ui = new UIHelper();
-	    }
-	}
+        }
+        else
+        {   // Use default implementations
+            SingleSourcePlugin.resources = new ResourceHelper();
+            SingleSourcePlugin.ui = new UIHelper();
+        }
+    }
 
-	/** {@inheritDoc} */
-	public void stop(final BundleContext context) throws Exception
-	{
-	    SingleSourcePlugin.resources = null;
-	}
-	
-	/** @return {@link ResourceHelper} */
-	public static ResourceHelper getResourceHelper()
-	{
-	    return SingleSourcePlugin.resources;
-	}
+    /** {@inheritDoc} */
+    public void stop(final BundleContext context) throws Exception
+    {
+        SingleSourcePlugin.resources = null;
+    }
+
+    /** @return {@link ResourceHelper} */
+    public static ResourceHelper getResourceHelper()
+    {
+        return SingleSourcePlugin.resources;
+    }
 
     /** @return {@link UIHelper} */
     public static UIHelper getUIHelper()
     {
         return SingleSourcePlugin.ui;
     }
-    
-	/** @return <code>true</code> if this is running in RAP */
-	public static boolean isRAP()
-	{
-		return SingleSourcePlugin.ui.getUI() == UI.RAP;
-	}
+
+    /** @return <code>true</code> if this is running in RAP */
+    public static boolean isRAP()
+    {
+        return SingleSourcePlugin.ui.getUI() == UI.RAP;
+    }
 }

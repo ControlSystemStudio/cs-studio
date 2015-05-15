@@ -48,117 +48,117 @@ import org.csstudio.dal.RemoteException;
  */
 public interface Linkable extends Identifiable
 {
-	/**
-	 * Adds a link listener which will be notified about the changes in
-	 * the state of <code>this</code>.
-	 *
-	 * @param l a listener object
-	 */
-	void addLinkListener(LinkListener<? extends Linkable> l);
+    /**
+     * Adds a link listener which will be notified about the changes in
+     * the state of <code>this</code>.
+     *
+     * @param l a listener object
+     */
+    void addLinkListener(LinkListener<? extends Linkable> l);
 
-	/**
-	 * Returns <code>true</code> if this <code>Linkable</code> has been
-	 * successfully connected with remote object. This state can be only
-	 * changed by  Connectable responsible for this linkable. If remote
-	 * connection is temporary or permanently (in any case linkable or
-	 * connectable  this can not know),  than this linkable is regarded as
-	 * connected until connectable is disconnected.
-	 *
-	 * @return boolean linked flag
-	 */
-	boolean isConnected();
+    /**
+     * Returns <code>true</code> if this <code>Linkable</code> has been
+     * successfully connected with remote object. This state can be only
+     * changed by  Connectable responsible for this linkable. If remote
+     * connection is temporary or permanently (in any case linkable or
+     * connectable  this can not know),  than this linkable is regarded as
+     * connected until connectable is disconnected.
+     *
+     * @return boolean linked flag
+     */
+    boolean isConnected();
 
-	/**
-	 * Returns <code>true</code> if this <code>Linkable</code> has been
-	 * successfully connected with remote object and has received meta-data and
-	 * is receiving live updates. This state can be only
-	 * changed by  Connectable responsible for this linkable. If remote
-	 * connection is temporary or permanently (in any case linkable or
-	 * connectable  this can not know),  than this linkable is regarded as
-	 * connected until connectable is disconnected.
-	 *
-	 * @return boolean linked flag
-	 */
-	boolean isOperational();
+    /**
+     * Returns <code>true</code> if this <code>Linkable</code> has been
+     * successfully connected with remote object and has received meta-data and
+     * is receiving live updates. This state can be only
+     * changed by  Connectable responsible for this linkable. If remote
+     * connection is temporary or permanently (in any case linkable or
+     * connectable  this can not know),  than this linkable is regarded as
+     * connected until connectable is disconnected.
+     *
+     * @return boolean linked flag
+     */
+    boolean isOperational();
 
-	/**
-	 * Returns <code>true</code> if this <code>Linkable</code> has been
-	 * destroyed and connection with remote object lost.
-	 *
-	 * @return boolean destroyed flag
-	 */
-	boolean isDestroyed();
+    /**
+     * Returns <code>true</code> if this <code>Linkable</code> has been
+     * destroyed and connection with remote object lost.
+     *
+     * @return boolean destroyed flag
+     */
+    boolean isDestroyed();
 
-	/**
-	 * Returns <code>true</code> iff this <code>Linkable</code> is
-	 * suspended and in link established state.
-	 *
-	 * @return boolean suspended flag
-	 */
-	boolean isSuspended();
+    /**
+     * Returns <code>true</code> iff this <code>Linkable</code> is
+     * suspended and in link established state.
+     *
+     * @return boolean suspended flag
+     */
+    boolean isSuspended();
 
-	/**
-	 * Returns <code>true</code> if connection to remote object is
-	 * alive and  functioning.
-	 *
-	 * @return <code>true</code> if connection is alive
-	 */
-	boolean isConnectionAlive();
+    /**
+     * Returns <code>true</code> if connection to remote object is
+     * alive and  functioning.
+     *
+     * @return <code>true</code> if connection is alive
+     */
+    boolean isConnectionAlive();
 
-	/**
-	 * Returns <code>true</code> if connection process failed.
-	 *
-	 * @return <code>true</code> if connection process failed
-	 */
-	boolean isConnectionFailed();
+    /**
+     * Returns <code>true</code> if connection process failed.
+     *
+     * @return <code>true</code> if connection process failed
+     */
+    boolean isConnectionFailed();
 
-	/**
-	 * If this <code>Linkable</code> has access to data items of the
-	 * remote object for which it knows that they are of the static nature
-	 * (for instance read from the database and knwon not to change during the
-	 * normal operation of the remote) and such data items are buffered by
-	 * this <code>Linkable</code>, this method forces <code>this</code> to
-	 * flag this data items in such a manner, that the next query will read
-	 * them from the remote source and not from this <code>Linkable's</code>
-	 * buffer.
-	 *
-	 * @throws RemoteException if remote operation fails
-	 */
-	void refresh() throws RemoteException;
+    /**
+     * If this <code>Linkable</code> has access to data items of the
+     * remote object for which it knows that they are of the static nature
+     * (for instance read from the database and knwon not to change during the
+     * normal operation of the remote) and such data items are buffered by
+     * this <code>Linkable</code>, this method forces <code>this</code> to
+     * flag this data items in such a manner, that the next query will read
+     * them from the remote source and not from this <code>Linkable's</code>
+     * buffer.
+     *
+     * @throws RemoteException if remote operation fails
+     */
+    void refresh() throws RemoteException;
 
-	/**
-	 * Removes a link listener.
-	 *
-	 * @param l a listener object
-	 */
-	void removeLinkListener(LinkListener<? extends Linkable> l);
+    /**
+     * Removes a link listener.
+     *
+     * @param l a listener object
+     */
+    void removeLinkListener(LinkListener<? extends Linkable> l);
 
-	/**
-	 * If this <code>Linkable</code> is in suspended state, switch it
-	 * into the normal (resumed) state. Else do nothing. As general rule
-	 * if suspend has been called X times, than also resume must be called x times, before
-	 * linkable is moved from suspended mode to resumed.
-	 *
-	 * @throws RemoteException if remote operation fails
-	 */
-	void resume() throws RemoteException;
+    /**
+     * If this <code>Linkable</code> is in suspended state, switch it
+     * into the normal (resumed) state. Else do nothing. As general rule
+     * if suspend has been called X times, than also resume must be called x times, before
+     * linkable is moved from suspended mode to resumed.
+     *
+     * @throws RemoteException if remote operation fails
+     */
+    void resume() throws RemoteException;
 
-	/**
-	 * Switch this <code>Linkable</code> in such a state, that it
-	 * conserves as much network resources as possible without breaking the
-	 * connection. Do nothing if this is not possible.
-	 *
-	 * @throws RemoteException if remote operation fails
-	 */
-	void suspend() throws RemoteException;
-	
-	/**
-	 * Returns the current life cycle state of this
-	 * <code>Linkable</code>. 
-	 * 
-	 * @return connection status
-	 */
-	ConnectionState getConnectionState();
+    /**
+     * Switch this <code>Linkable</code> in such a state, that it
+     * conserves as much network resources as possible without breaking the
+     * connection. Do nothing if this is not possible.
+     *
+     * @throws RemoteException if remote operation fails
+     */
+    void suspend() throws RemoteException;
+
+    /**
+     * Returns the current life cycle state of this
+     * <code>Linkable</code>.
+     *
+     * @return connection status
+     */
+    ConnectionState getConnectionState();
 
 } /* __oOo__ */
 

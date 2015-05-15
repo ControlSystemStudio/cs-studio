@@ -7,40 +7,40 @@ import java.util.HashSet;
 
 
 public class ChannelTreeModel {
-	private ChannelTreeModel parent;
-	private Collection<Channel> child = new HashSet<Channel>();
-	private int counter;
+    private ChannelTreeModel parent;
+    private Collection<Channel> child = new HashSet<Channel>();
+    private int counter;
 
-	public ChannelTreeModel(Collection<Channel> child) {
-		this.child = child;
-	}
+    public ChannelTreeModel(Collection<Channel> child) {
+        this.child = child;
+    }
 
-	public ChannelTreeModel(int counter, ChannelTreeModel parent) {
-		this.parent = parent;
-		this.counter= counter;
-	}
-	
-	public ChannelTreeModel getParent() {
-		return parent;
-	}
+    public ChannelTreeModel(int counter, ChannelTreeModel parent) {
+        this.parent = parent;
+        this.counter= counter;
+    }
 
-	public void setParent(ChannelTreeModel parent) {
-		this.parent = parent;
-	}
+    public ChannelTreeModel getParent() {
+        return parent;
+    }
 
-	public Collection<Channel> getChild() {
-		return child;
-	}
+    public void setParent(ChannelTreeModel parent) {
+        this.parent = parent;
+    }
 
-	public void setChild(Collection<Channel> child) {
-		this.child = child;
-	}
+    public Collection<Channel> getChild() {
+        return child;
+    }
 
-	public int getCounter() {
-		return counter;
-	}
+    public void setChild(Collection<Channel> child) {
+        this.child = child;
+    }
 
-	public void setCounter(int counter) {
-		this.counter = counter;
-	}
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
 }

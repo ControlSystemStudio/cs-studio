@@ -20,28 +20,28 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  */
 public class NewPythonScriptWizardPage extends WizardNewFileCreationPage {
 
-	public NewPythonScriptWizardPage(String pageName, IStructuredSelection selection) {
-		super(pageName, selection);
-		setTitle("Create a new Python script");
-		setDescription("Create a new python script in the selected project or folder.");
-	}
-	
-	@Override
-	protected InputStream getInitialContents() {
-		String s = ScriptService.DEFAULT_PYTHONSCRIPT_HEADER; 
-		InputStream result = new ByteArrayInputStream(s.getBytes());
-		return result;
-	}
-	
-	
-	@Override
-	protected String getNewFileLabel() {
-		return "Python script File Name:";
-	}
-	
-	@Override
-	public String getFileExtension() {
-		return ScriptService.PY; //$NON-NLS-1$
-	}
+    public NewPythonScriptWizardPage(String pageName, IStructuredSelection selection) {
+        super(pageName, selection);
+        setTitle("Create a new Python script");
+        setDescription("Create a new python script in the selected project or folder.");
+    }
+
+    @Override
+    protected InputStream getInitialContents() {
+        String s = ScriptService.DEFAULT_PYTHONSCRIPT_HEADER;
+        InputStream result = new ByteArrayInputStream(s.getBytes());
+        return result;
+    }
+
+
+    @Override
+    protected String getNewFileLabel() {
+        return "Python script File Name:";
+    }
+
+    @Override
+    public String getFileExtension() {
+        return ScriptService.PY; //$NON-NLS-1$
+    }
 
 }

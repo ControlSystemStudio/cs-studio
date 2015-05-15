@@ -54,27 +54,27 @@ public class SystemPVFactory implements IPVFactory
             else if (name.equals("max_mb"))
                 value = new MaxMemValue(name);
             else if (name.startsWith("system.")){
-            	String prop = name.substring(7);
-            	String prop_value = System.getProperty(prop);
-            	if(prop_value != null)
-            		value = new TextValue(name, prop_value);
-            	else
-            		value = new TextValue(name,
+                String prop = name.substring(7);
+                String prop_value = System.getProperty(prop);
+                if(prop_value != null)
+                    value = new TextValue(name, prop_value);
+                else
+                    value = new TextValue(name,
                         "Unknown system property '" + prop + "'", false);
             }
             else if (name.equals("host_name"))
-				try {
-					value = new TextValue(name, InetAddress.getLocalHost().getHostName());
-				} catch (UnknownHostException e) {
-					value = new TextValue(name, "Unknown Host", false);
-				}
-			else if (name.equals("qualified_host_name"))
-				try {
-					value = new TextValue(name, InetAddress.getLocalHost().getCanonicalHostName());
-				} catch (UnknownHostException e) {
-					value = new TextValue(name, "Unknown Host", false);
-				}
-			else
+                try {
+                    value = new TextValue(name, InetAddress.getLocalHost().getHostName());
+                } catch (UnknownHostException e) {
+                    value = new TextValue(name, "Unknown Host", false);
+                }
+            else if (name.equals("qualified_host_name"))
+                try {
+                    value = new TextValue(name, InetAddress.getLocalHost().getCanonicalHostName());
+                } catch (UnknownHostException e) {
+                    value = new TextValue(name, "Unknown Host", false);
+                }
+            else
                 value = new TextValue(name,
                         "Unknown system PV '" + name + "'", false);
             values.put(name, value);

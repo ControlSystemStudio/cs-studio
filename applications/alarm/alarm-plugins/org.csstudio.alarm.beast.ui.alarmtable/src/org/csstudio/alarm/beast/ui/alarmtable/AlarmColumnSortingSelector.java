@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
-import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -45,7 +44,7 @@ public class AlarmColumnSortingSelector extends SelectionAdapter
     public void widgetSelected(final SelectionEvent event)
     {
         final Table table = table_viewer.getTable();
-        
+
         // Initial sort for newly selected columns: up
         boolean up = true;
         // Was this column already used for sorting?
@@ -56,7 +55,7 @@ public class AlarmColumnSortingSelector extends SelectionAdapter
         }
         setSortDirection(up);
     }
-    
+
     public void setSortDirection(final boolean up)
     {
         final Table table = table_viewer.getTable();

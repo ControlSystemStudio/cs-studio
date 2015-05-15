@@ -33,59 +33,59 @@ import org.csstudio.dal.RemoteException;
  */
 public interface DeviceProxy<P extends AbstractPlug> extends Proxy<P>
 {
-	/**
-	 * Retus command if exists, othervise <code>null</code>.
-	 *
-	 * @param name command name
-	 *
-	 * @return command or <code>null</code>
-	 *
-	 * @throws RemoteException if operation fails
-	 */
-	public CommandProxy getCommand(String name) throws RemoteException;
+    /**
+     * Retus command if exists, othervise <code>null</code>.
+     *
+     * @param name command name
+     *
+     * @return command or <code>null</code>
+     *
+     * @throws RemoteException if operation fails
+     */
+    public CommandProxy getCommand(String name) throws RemoteException;
 
-	/**
-	 * Returns <code>PropertyProxy</code> element whose partial name
-	 * equals the specified name. Name of property is calculated relative to
-	 * the device proxy,  that is unique name of property is combination of
-	 * unique name of device plus partial  name of the property. If property
-	 * with specified name is not present <code>null</code> is returned.
-	 *
-	 * WARNING:
-	 *
-	 * If LinkPolicy for the device is <code>LinkPolicy.ASYNC_LINK_POLICY</code> all properties that
-	 * are created before the device gets connected must be be connected too before connection status
-	 * of the device becomes <code>ConnectionStatus.CONNECTED.</code>
-	 *
-	 * If LinkPolicy for the device is <code>LinkPolicy.SYNC_LINK_POLICY</code> then property creation should block
-	 * untill the property gets connected and all the properties that are returned by the device
-	 * must have <code>ConnectionStatus.CONNECTED</code>.
-	 * @param name unique name of typless property
-	 *
-	 * @return property proxy
-	 *
-	 * @throws RemoteException if remote operation fails
-	 */
-	public PropertyProxy<?,P> getPropertyProxy(String name)
-		throws RemoteException;
+    /**
+     * Returns <code>PropertyProxy</code> element whose partial name
+     * equals the specified name. Name of property is calculated relative to
+     * the device proxy,  that is unique name of property is combination of
+     * unique name of device plus partial  name of the property. If property
+     * with specified name is not present <code>null</code> is returned.
+     *
+     * WARNING:
+     *
+     * If LinkPolicy for the device is <code>LinkPolicy.ASYNC_LINK_POLICY</code> all properties that
+     * are created before the device gets connected must be be connected too before connection status
+     * of the device becomes <code>ConnectionStatus.CONNECTED.</code>
+     *
+     * If LinkPolicy for the device is <code>LinkPolicy.SYNC_LINK_POLICY</code> then property creation should block
+     * untill the property gets connected and all the properties that are returned by the device
+     * must have <code>ConnectionStatus.CONNECTED</code>.
+     * @param name unique name of typless property
+     *
+     * @return property proxy
+     *
+     * @throws RemoteException if remote operation fails
+     */
+    public PropertyProxy<?,P> getPropertyProxy(String name)
+        throws RemoteException;
 
-	/**
-	 * Returns <code>DirectoryProxy</code> element whose partial name
-	 * equals the specified name. Name of property is calculated relative to
-	 * the device proxy,  that is unique name of property is combination of
-	 * unique name of device plus partial  name of the property. If property
-	 * with specified name is not present <code>null</code> is returned.
-	 *
-	 * @param name unique name of typless property
-	 *
-	 * @return directory proxy
-	 *
-	 * @throws RemoteException if remote operation fails
-	 */
-	public DirectoryProxy<P> getDirectoryProxy(String name)
-		throws RemoteException;
+    /**
+     * Returns <code>DirectoryProxy</code> element whose partial name
+     * equals the specified name. Name of property is calculated relative to
+     * the device proxy,  that is unique name of property is combination of
+     * unique name of device plus partial  name of the property. If property
+     * with specified name is not present <code>null</code> is returned.
+     *
+     * @param name unique name of typless property
+     *
+     * @return directory proxy
+     *
+     * @throws RemoteException if remote operation fails
+     */
+    public DirectoryProxy<P> getDirectoryProxy(String name)
+        throws RemoteException;
 
-	public void refresh();
+    public void refresh();
 
 }
 

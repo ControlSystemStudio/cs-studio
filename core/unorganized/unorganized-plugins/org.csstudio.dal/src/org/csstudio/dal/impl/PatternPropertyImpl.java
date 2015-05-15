@@ -37,55 +37,55 @@ import java.util.BitSet;
  *
  */
 public class PatternPropertyImpl extends DynamicValuePropertyImpl<BitSet>
-	implements PatternProperty
+    implements PatternProperty
 {
-	/**
-	 * Creates a new PatternPropertyImpl object.
-	 *
-	 * @param name property name
-	 * @param propertyContext property context
-	 */
-	public PatternPropertyImpl(String name, PropertyContext propertyContext)
-	{
-		super(BitSet.class, name, propertyContext);
-	}
+    /**
+     * Creates a new PatternPropertyImpl object.
+     *
+     * @param name property name
+     * @param propertyContext property context
+     */
+    public PatternPropertyImpl(String name, PropertyContext propertyContext)
+    {
+        super(BitSet.class, name, propertyContext);
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.PatternSimpleProperty#getBitDescriptions()
-	 */
-	public String[] getBitDescriptions() throws DataExchangeException
-	{
-		return (String[])directoryProxy.getCharacteristic(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS);
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.PatternSimpleProperty#getBitDescriptions()
+     */
+    public String[] getBitDescriptions() throws DataExchangeException
+    {
+        return (String[])directoryProxy.getCharacteristic(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS);
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.PatternSimpleProperty#getConditionWhenCleared()
-	 */
-	public BitCondition[] getConditionWhenCleared()
-		throws DataExchangeException
-	{
-		return (BitCondition[])directoryProxy.getCharacteristic(PatternPropertyCharacteristics.C_CONDITION_WHEN_CLEARED);
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.PatternSimpleProperty#getConditionWhenCleared()
+     */
+    public BitCondition[] getConditionWhenCleared()
+        throws DataExchangeException
+    {
+        return (BitCondition[])directoryProxy.getCharacteristic(PatternPropertyCharacteristics.C_CONDITION_WHEN_CLEARED);
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.PatternSimpleProperty#getConditionWhenSet()
-	 */
-	public BitCondition[] getConditionWhenSet() throws DataExchangeException
-	{
-		return (BitCondition[])directoryProxy.getCharacteristic(PatternPropertyCharacteristics.C_CONDITION_WHEN_SET);
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.PatternSimpleProperty#getConditionWhenSet()
+     */
+    public BitCondition[] getConditionWhenSet() throws DataExchangeException
+    {
+        return (BitCondition[])directoryProxy.getCharacteristic(PatternPropertyCharacteristics.C_CONDITION_WHEN_SET);
+    }
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.PatternSimpleProperty#getBitMask()
-	 */
-	public BitSet getBitMask() throws DataExchangeException
-	{
-		return (BitSet)directoryProxy.getCharacteristic(PatternPropertyCharacteristics.C_BIT_MASK);
-	}
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.PatternSimpleProperty#getBitMask()
+     */
+    public BitSet getBitMask() throws DataExchangeException
+    {
+        return (BitSet)directoryProxy.getCharacteristic(PatternPropertyCharacteristics.C_BIT_MASK);
+    }
 } /* __oOo__ */
 
 

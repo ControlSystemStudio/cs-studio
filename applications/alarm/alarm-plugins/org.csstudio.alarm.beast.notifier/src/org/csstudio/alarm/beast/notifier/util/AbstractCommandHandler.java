@@ -16,92 +16,92 @@ import org.csstudio.alarm.beast.notifier.model.IActionHandler;
 @SuppressWarnings("nls")
 public abstract class AbstractCommandHandler implements IActionHandler {
 
-	protected final static String DELIMITERS = ",;";
-	final protected static Pattern NLSPattern = Pattern.compile("\\{\\ *[01]\\ *\\}");
+    protected final static String DELIMITERS = ",;";
+    final protected static Pattern NLSPattern = Pattern.compile("\\{\\ *[01]\\ *\\}");
 
-	protected enum ParamType {
-		To("to", 0), Cc("cc", 1), Cci("cci", 2), Bcc("bcc", 3), Subject("subject", 4), Body("body", 5);
+    protected enum ParamType {
+        To("to", 0), Cc("cc", 1), Cci("cci", 2), Bcc("bcc", 3), Subject("subject", 4), Body("body", 5);
 
-		private final int type;
-		private final String name;
+        private final int type;
+        private final String name;
 
-		ParamType(String name, int type) {
-			this.name = name;
-			this.type = type;
-		}
+        ParamType(String name, int type) {
+            this.name = name;
+            this.type = type;
+        }
 
-		public String getName() {
-			return name;
-		}
-		public int getType() {
-			return type;
-		}
+        public String getName() {
+            return name;
+        }
+        public int getType() {
+            return type;
+        }
 
-		public static ParamType valueOf(int type) {
-			switch (type) {
-			case 0: return To;
-			case 1: return Cc;
-			case 2: return Cci;
-			case 3: return Bcc;
-			case 4: return Subject;
-			case 5: return Body;
-			}
-			return null;
-		}
-	}
+        public static ParamType valueOf(int type) {
+            switch (type) {
+            case 0: return To;
+            case 1: return Cc;
+            case 2: return Cci;
+            case 3: return Bcc;
+            case 4: return Subject;
+            case 5: return Body;
+            }
+            return null;
+        }
+    }
 
-	private final String scheme;
-	private final String details;
+    private final String scheme;
+    private final String details;
 
-	public AbstractCommandHandler(String details, String scheme) {
-		this.details = details;
-		this.scheme = scheme;
-	}
+    public AbstractCommandHandler(String details, String scheme) {
+        this.details = details;
+        this.scheme = scheme;
+    }
 
-	@Override
+    @Override
     public void parse() throws Exception {
-		parseDataType(details, null);
-	}
+        parseDataType(details, null);
+    }
 
-	protected abstract void handleParameter(String data, ParamType type) throws Exception;
+    protected abstract void handleParameter(String data, ParamType type) throws Exception;
 
-	// Recursive method to retrieve pattern parameters
-	private void parseDataType(String data, ParamType type) throws Exception {
-		if (data == null || "".equals(data))
-			return;
+    // Recursive method to retrieve pattern parameters
+    private void parseDataType(String data, ParamType type) throws Exception {
+        if (data == null || "".equals(data))
+            return;
 
-		Matcher mainMatcher = Pattern.compile("^" + scheme + ":(.*)$").matcher(data);
-		if (type == null && mainMatcher.matches())
-			parseDataType(mainMatcher.group(1).trim(), ParamType.To);
+        Matcher mainMatcher = Pattern.compile("^" + scheme + ":(.*)$").matcher(data);
+        if (type == null && mainMatcher.matches())
+            parseDataType(mainMatcher.group(1).trim(), ParamType.To);
 
-		boolean found = false;
-		for (ParamType param : ParamType.values()) {
-			Matcher matcher = Pattern.compile("^(.*)(?:\\?|&)(?i:" + param.getName() + ")=(.*)$").matcher(data);
-			if (matcher.matches()) {
-				found = true;
-				parseDataType(matcher.group(1).trim(), type);
-				parseDataType(matcher.group(2).trim(), param);
-			}
-		}
-		// no pattern found => final data
-		if (!found) handleParameter(data, type);
-	}
+        boolean found = false;
+        for (ParamType param : ParamType.values()) {
+            Matcher matcher = Pattern.compile("^(.*)(?:\\?|&)(?i:" + param.getName() + ")=(.*)$").matcher(data);
+            if (matcher.matches()) {
+                found = true;
+                parseDataType(matcher.group(1).trim(), type);
+                parseDataType(matcher.group(2).trim(), param);
+            }
+        }
+        // no pattern found => final data
+        if (!found) handleParameter(data, type);
+    }
 
-	protected void validateNSF(String data) throws Exception {
-		String dataCopy = new String(data);
-		int beginIndex = 0, endIndex = 0;
-		while (true) {
-			beginIndex = dataCopy.indexOf('{');
-			if (beginIndex == -1) break;
-			endIndex = dataCopy.indexOf('}');
-			if (endIndex == -1)
-				throw new Exception("Invalid field: "
-						+ dataCopy.substring(beginIndex));
-			String nls = dataCopy.substring(beginIndex, endIndex + 1);
-			Matcher nlsMatcher = NLSPattern.matcher(nls);
-			if (!nlsMatcher.matches())
-				throw new Exception("Invalid field: " + nls);
-			dataCopy = dataCopy.substring(endIndex + 1);
-		}
-	}
+    protected void validateNSF(String data) throws Exception {
+        String dataCopy = new String(data);
+        int beginIndex = 0, endIndex = 0;
+        while (true) {
+            beginIndex = dataCopy.indexOf('{');
+            if (beginIndex == -1) break;
+            endIndex = dataCopy.indexOf('}');
+            if (endIndex == -1)
+                throw new Exception("Invalid field: "
+                        + dataCopy.substring(beginIndex));
+            String nls = dataCopy.substring(beginIndex, endIndex + 1);
+            Matcher nlsMatcher = NLSPattern.matcher(nls);
+            if (!nlsMatcher.matches())
+                throw new Exception("Invalid field: " + nls);
+            dataCopy = dataCopy.substring(endIndex + 1);
+        }
+    }
 }

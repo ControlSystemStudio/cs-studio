@@ -8,7 +8,7 @@
             locationURI="menu:org.eclipse.ui.main.menu?after=additions">
          <menu
                id="css"
-               label="%CSS"
+               label="%CSStudio"
                mnemonic="C">
             <menu
                   id="display"

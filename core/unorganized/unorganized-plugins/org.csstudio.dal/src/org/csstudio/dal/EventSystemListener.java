@@ -31,24 +31,24 @@ import java.util.EventListener;
  *
  */
 public interface EventSystemListener<E extends SystemEvent<?,?>>
-	extends EventListener
+    extends EventListener
 {
-	/**
-	 * This event method is invoked on listener if event has arrived
-	 * from EventSystm within  expected condition.
-	 *
-	 * @param e event from EventSystem
-	 */
-	public void eventArrived(E e);
+    /**
+     * This event method is invoked on listener if event has arrived
+     * from EventSystm within  expected condition.
+     *
+     * @param e event from EventSystem
+     */
+    public void eventArrived(E e);
 
-	/**
-	 * This event method is invoked on listener if event has not
-	 * arrived within  expected condition. Eg. error has occured in
-	 * communication layer.
-	 *
-	 * @param e event from EventSystem
-	 */
-	public void errorArrived(E e);
+    /**
+     * This event method is invoked on listener if event has not
+     * arrived within  expected condition. Eg. error has occured in
+     * communication layer.
+     *
+     * @param e event from EventSystem
+     */
+    public void errorArrived(E e);
 }
 
 /* __oOo__ */

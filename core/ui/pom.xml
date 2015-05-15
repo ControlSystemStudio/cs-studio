@@ -1,3 +1,4 @@
+<?xml version="1.0"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -8,8 +9,40 @@
   <artifactId>ui</artifactId>
   <packaging>pom</packaging>
   <modules>
-  	<module>ui-plugins</module>
-  	<module>ui-repository</module>
-  	<module>ui-features</module>
+    <module>ui-plugins</module>
+    <module>ui-repository</module>
+    <module>ui-features</module>
   </modules>
+  <profiles>
+    <profile>
+      <id>checkstyle</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>2.15</version>
+            <executions>
+              <execution>
+                <id>validate</id>
+                <phase>validate</phase>
+                <configuration>
+                  <configLocation>../../build/cs-studio-jenkins-checkstyle</configLocation>
+                  <encoding>UTF-8</encoding>
+                  <consoleOutput>true</consoleOutput>
+                  <outputFile>checkstyle-output.xml</outputFile>
+                  <sourceDirectory>.</sourceDirectory>
+                  <failsOnError>true</failsOnError>
+                  <linkXRef>false</linkXRef>
+                </configuration>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 </project>

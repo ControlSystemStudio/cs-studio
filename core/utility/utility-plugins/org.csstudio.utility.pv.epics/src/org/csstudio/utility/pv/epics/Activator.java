@@ -21,18 +21,18 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends Plugin
 {
-	/** Plug-in ID registered in MANIFEST.MF */
-	public static final String ID = "org.csstudio.utility.pv.epics"; //$NON-NLS-1$
+    /** Plug-in ID registered in MANIFEST.MF */
+    public static final String ID = "org.csstudio.utility.pv.epics"; //$NON-NLS-1$
 
-	/** Logger */
-	private static Logger logger = Logger.getLogger(ID);
+    /** Logger */
+    private static Logger logger = Logger.getLogger(ID);
 
     /** The singleton instance */
-	private static Activator plugin;
+    private static Activator plugin;
 
-	/** Constructor */
-	public Activator()
-    {	plugin = this;	}
+    /** Constructor */
+    public Activator()
+    {    plugin = this;    }
 
     /** @see AbstractCssPlugin */
     @SuppressWarnings("nls")
@@ -54,20 +54,20 @@ public class Activator extends Plugin
         }
     }
 
-	/** @return the shared instance */
-	public static Activator getDefault()
+    /** @return the shared instance */
+    public static Activator getDefault()
     {
-		return plugin;
-	}
+        return plugin;
+    }
 
-	/** Log levels:
-	 *  CONFIG - Config info,
-	 *  FINE   - JCA start/stop,
-	 *  FINER  - PV create/dispose,
-	 *  FINER  - Value traffic.
-	 *  @return Logger associated with the plugin */
-	public static Logger getLogger()
-	{
-	    return logger;
-	}
+    /** Log levels:
+     *  CONFIG - Config info,
+     *  FINE   - JCA start/stop,
+     *  FINER  - PV create/dispose,
+     *  FINER  - Value traffic.
+     *  @return Logger associated with the plugin */
+    public static Logger getLogger()
+    {
+        return logger;
+    }
 }

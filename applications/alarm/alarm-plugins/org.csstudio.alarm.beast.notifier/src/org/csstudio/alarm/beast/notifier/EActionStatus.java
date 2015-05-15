@@ -13,33 +13,33 @@ package org.csstudio.alarm.beast.notifier;
  *
  */
 public enum EActionStatus {
-	
-	PENDING(Messages.Status_PENDING, 0),
-	NO_DELAY(Messages.Status_NO_DELAY, 1),
-	EXECUTED(Messages.Status_EXECUTED, 2),
-	FORCED(Messages.Status_FORCED, 3),
-	CANCELED(Messages.Status_CANCELED, 4),
-	CANCELED_NO_DELAY(Messages.Status_CANCELED_NO_DELAY, 5),
-	FAILED(Messages.Status_FAILED, 6);
 
-	final private String display_name;
+    PENDING(Messages.Status_PENDING, 0),
+    NO_DELAY(Messages.Status_NO_DELAY, 1),
+    EXECUTED(Messages.Status_EXECUTED, 2),
+    FORCED(Messages.Status_FORCED, 3),
+    CANCELED(Messages.Status_CANCELED, 4),
+    CANCELED_NO_DELAY(Messages.Status_CANCELED_NO_DELAY, 5),
+    FAILED(Messages.Status_FAILED, 6);
+
+    final private String display_name;
     final private int priority;
-	
-	EActionStatus(final String display_name, final int priority) {
-		this.display_name = display_name;
-		this.priority = priority;
-	}
 
-	public String getDisplay_name() {
-		return display_name;
-	}
+    EActionStatus(final String display_name, final int priority) {
+        this.display_name = display_name;
+        this.priority = priority;
+    }
 
-	public int getPriority() {
-		return priority;
-	}
+    public String getDisplay_name() {
+        return display_name;
+    }
 
-	@Override
-	public String toString() {
-		return display_name;
-	}
+    public int getPriority() {
+        return priority;
+    }
+
+    @Override
+    public String toString() {
+        return display_name;
+    }
 }

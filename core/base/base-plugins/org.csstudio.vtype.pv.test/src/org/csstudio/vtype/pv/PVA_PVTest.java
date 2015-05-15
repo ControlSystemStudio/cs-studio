@@ -67,24 +67,24 @@ public class PVA_PVTest
         for (String type_name[] : new String[][]
             {
                 { "Double", "pvdouble" },
-        		{ "Long",   "pvdouble.RVAL" },
-        		{ "Enum",   "pvdouble.SCAN" },
-        		{ "String", "pvdouble.DESC" },
-        		{ "Byte",   "pvdouble.UDF" },
-        		{ "String", "pvdouble.RTYP" },
-        		{ "Enum",   "pvdouble.DTYP" },
+                { "Long",   "pvdouble.RVAL" },
+                { "Enum",   "pvdouble.SCAN" },
+                { "String", "pvdouble.DESC" },
+                { "Byte",   "pvdouble.UDF" },
+                { "String", "pvdouble.RTYP" },
+                { "Enum",   "pvdouble.DTYP" },
                 { "Double Array",  "pvdoubleArray" },
                 { "String Array",  "pvstringArray" },
 
-        		// Fails in C++ 'pvget -m' as well with
-        		// "can not monitor a link field".
-        		// TODO Issue initial get?
-        		// { "String", "pvcounter.INPA" },
+                // Fails in C++ 'pvget -m' as well with
+                // "can not monitor a link field".
+                // TODO Issue initial get?
+                // { "String", "pvcounter.INPA" },
             })
         {
-        	final String type = type_name[0];
-        	final String name = type_name[1];
-        	System.out.println("Testing updates for type " + type + " PV " + name + ":");
+            final String type = type_name[0];
+            final String name = type_name[1];
+            System.out.println("Testing updates for type " + type + " PV " + name + ":");
             final CountDownLatch updates = new CountDownLatch(1);
             final PV pv = factory.createPV(name, name);
             final PVListener listener = new PVListenerAdapter()

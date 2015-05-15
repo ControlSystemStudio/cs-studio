@@ -26,7 +26,7 @@ public class SeverityMapping
      *  severity_ids[SeverityLevel.ordinal] = severity ID in RDB
      */
     final private int severity_ids[];
-    
+
     public SeverityMapping(final RDBUtil rdb, final SQL sql) throws Exception
     {
         final PreparedStatement statement =
@@ -63,7 +63,7 @@ public class SeverityMapping
     }
 
     /** Map severity ID in RDB to SeverityLevel
-     *  @param id ID in RDB 
+     *  @param id ID in RDB
      *  @return SeverityLevel
      *  @throws Exception on error
      */
@@ -91,7 +91,7 @@ public class SeverityMapping
             rdb.getConnection().prepareStatement(sql.insert_severity);
         try
         {
-        	rdb.getConnection().setAutoCommit(false);
+            rdb.getConnection().setAutoCommit(false);
             statement.setInt(1, id);
             statement.setString(2, name);
             statement.executeUpdate();
@@ -99,8 +99,8 @@ public class SeverityMapping
         }
         catch(Exception ex)
         {
-        	rdb.getConnection().rollback();
-        	throw new Exception("Failed to add severity '" + name + "'", ex);
+            rdb.getConnection().rollback();
+            throw new Exception("Failed to add severity '" + name + "'", ex);
         }
         finally
         {

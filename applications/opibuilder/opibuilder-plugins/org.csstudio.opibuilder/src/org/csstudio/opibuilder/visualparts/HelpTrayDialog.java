@@ -18,47 +18,47 @@ import org.eclipse.ui.help.IWorkbenchHelpSystem;
  */
 public abstract class HelpTrayDialog extends TrayDialog {
 
-	protected HelpTrayDialog(IShellProvider parentShell) {
-		super(parentShell);
-		setHelpAvailable(true);
-	}
-	
-	protected HelpTrayDialog(Shell shell) {
-		super(shell);
-		setHelpAvailable(true);
-	}
-	
-	@Override
-	protected Control createHelpControl(Composite parent) {
-		Control control = super.createHelpControl(parent);
-		if(control instanceof ToolBar){
-			((ToolBar)control).getItem(0).addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					openHelp();
-				}
-			});
-		}else if(control instanceof Link){
-			((Link)control).addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					openHelp();
-				}
-			});
-		}
-	
-		return control;
-	}
-	
-	protected void openHelp(){
-		if(getHelpResourcePath() != null)
-			PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(getHelpResourcePath());
-	}
-	
-	/**@see IWorkbenchHelpSystem#displayHelpResource(String)
-	 * @return the help resource path. Return null or empty string will not open the help window.
-	 */
-	protected abstract String getHelpResourcePath();
-	
+    protected HelpTrayDialog(IShellProvider parentShell) {
+        super(parentShell);
+        setHelpAvailable(true);
+    }
+
+    protected HelpTrayDialog(Shell shell) {
+        super(shell);
+        setHelpAvailable(true);
+    }
+
+    @Override
+    protected Control createHelpControl(Composite parent) {
+        Control control = super.createHelpControl(parent);
+        if(control instanceof ToolBar){
+            ((ToolBar)control).getItem(0).addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    openHelp();
+                }
+            });
+        }else if(control instanceof Link){
+            ((Link)control).addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    openHelp();
+                }
+            });
+        }
+
+        return control;
+    }
+
+    protected void openHelp(){
+        if(getHelpResourcePath() != null)
+            PlatformUI.getWorkbench().getHelpSystem().displayHelpResource(getHelpResourcePath());
+    }
+
+    /**@see IWorkbenchHelpSystem#displayHelpResource(String)
+     * @return the help resource path. Return null or empty string will not open the help window.
+     */
+    protected abstract String getHelpResourcePath();
+
 
 }

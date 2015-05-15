@@ -16,7 +16,7 @@
             name="%AlarmTree">
       </view>
    </extension>
-   
+
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
@@ -33,7 +33,7 @@
             <parameter
                   name="org.eclipse.ui.views.showView.viewId"
                   value="org.csstudio.alarm.beast.ui.alarmtree.View">
-            </parameter> 
+            </parameter>
          </command>
       </menuContribution>
    </extension>

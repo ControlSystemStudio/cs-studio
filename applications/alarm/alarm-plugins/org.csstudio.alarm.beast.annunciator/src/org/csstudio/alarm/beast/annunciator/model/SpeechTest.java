@@ -17,12 +17,12 @@ import org.csstudio.utility.speech.AnnunciatorFactory;
 public class SpeechTest
 {
     public static void main(String[] args) throws Exception
-	{
+    {
         for (int i=0; i<10; ++i)
         {
-    		final Annunciator speech = AnnunciatorFactory.getAnnunciator();
-    		speech.say("Hello, this is a test.");
-    		speech.close();
+            final Annunciator speech = AnnunciatorFactory.getAnnunciator();
+            speech.say("Hello, this is a test.");
+            speech.close();
         }
-	}
+    }
 }

@@ -38,9 +38,9 @@ import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * ContextMenuProvider implementation for the OPI Runner.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 	

@@ -23,26 +23,26 @@ public class SQL
 
     final public String sel_configurations;
 
-	final public String sel_configuration_by_name;
-	final public String sel_guidance_by_id;
-	final public String sel_displays_by_id;
-	final public String sel_commands_by_id;
-	final public String sel_auto_actions_by_id;
+    final public String sel_configuration_by_name;
+    final public String sel_guidance_by_id;
+    final public String sel_displays_by_id;
+    final public String sel_commands_by_id;
+    final public String sel_auto_actions_by_id;
     final public String sel_items_by_parent;
     final public String sel_item_by_parent_and_name;
     final public String sel_last_item_id;
     final public String insert_item;
 
-	final public String delete_guidance_by_id;
-	final public String insert_guidance;
-	final public String delete_displays_by_id;
-	final public String insert_display;
-	final public String delete_commands_by_id;
-	final public String insert_command;
-	final public String delete_auto_actions_by_id;
-	final public String insert_auto_action;
+    final public String delete_guidance_by_id;
+    final public String insert_guidance;
+    final public String delete_displays_by_id;
+    final public String insert_display;
+    final public String delete_commands_by_id;
+    final public String insert_command;
+    final public String delete_auto_actions_by_id;
+    final public String insert_auto_action;
 
-	final public String update_item_config_time;
+    final public String update_item_config_time;
 
     final public String delete_component_by_id;
 
@@ -73,9 +73,9 @@ public class SQL
     final public String message_name_col = "NAME";
 
 
-	/** Initialize
+    /** Initialize
      *  @param rdb RDBUtil
-	 *  @param schema 
+     *  @param schema
      */
     public SQL(final RDBUtil rdb, final String schema) throws Exception
     {
@@ -84,7 +84,7 @@ public class SQL
         else if (rdb.getDialect() == Dialect.Oracle)
             schema_prefix = schema + ".";
         else
-        	throw new Exception("This database is not supported");
+            throw new Exception("This database is not supported");
 
         sel_configurations = "SELECT NAME FROM "+ schema_prefix + "ALARM_TREE WHERE PARENT_CMPNT_ID IS NULL";
 
@@ -162,7 +162,7 @@ public class SQL
                 "DELETE FROM " + schema_prefix + "AUTOMATED_ACTION WHERE COMPONENT_ID=?";
         insert_auto_action =
                 "INSERT INTO " + schema_prefix + "AUTOMATED_ACTION(COMPONENT_ID, AUTO_ACTION_ORDER, TITLE, DETAIL, DELAY) VALUES(?,?,?,?,?)";
-        
+
         update_item_config_time =
             "UPDATE " + schema_prefix + "ALARM_TREE SET CONFIG_TIME=? WHERE COMPONENT_ID=?";
 
@@ -185,10 +185,10 @@ public class SQL
         sel_item_by_id = "SELECT PARENT_CMPNT_ID, NAME FROM " + schema_prefix + "ALARM_TREE WHERE COMPONENT_ID=?";
 
         if (rdb.getDialect() == Dialect.PostgreSQL)
-        	insert_pv =
+            insert_pv =
             "INSERT INTO " + schema_prefix + "PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND,ENABLED_IND) VALUES (?,?,?,?,true)";
         else
-        	insert_pv =
+            insert_pv =
             "INSERT INTO " + schema_prefix + "PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND,ENABLED_IND) VALUES (?,?,?,?,1)";
 
         update_pv_config =

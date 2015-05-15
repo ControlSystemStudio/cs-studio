@@ -90,14 +90,14 @@ abstract public class DynamicValue extends Value implements Runnable
             }
             catch (Throwable ex)
             {   // Number parse error
-            	useDefault();
+                useDefault();
             }
         }
         else
         {   // Parse "name(min, max, update_seconds)"
-        	name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
-        	matcher = name_pattern.matcher(name);
-        	 if (matcher.matches())
+            name_pattern = Pattern.compile("\\w+\\(\\s*([-0-9.]+)\\s*,\\s*([-0-9.]+)\\s*,\\s*([0-9.]+)\\s*\\)");
+            matcher = name_pattern.matcher(name);
+             if (matcher.matches())
              {
                  try
                  {
@@ -111,7 +111,7 @@ abstract public class DynamicValue extends Value implements Runnable
                      useDefault();
                  }
              }else{
-	            useDefault();
+                useDefault();
              }
         }
         // Enforce minimum period delay
@@ -121,15 +121,15 @@ abstract public class DynamicValue extends Value implements Runnable
         meta = ValueFactory.createNumericMetaData(min, max, min+0.3*range, min+0.7*range, min+0.1*range, min+0.9*range, 3, "a.u.");
     }
 
-	/**
-	 * use default settings.
-	 */
-	private void useDefault() {
-		    min = DEFAULT_MIN;
-		    max = DEFAULT_MAX;
-		    step = DEFAULT_STEP;
-		    update_period = DEFAULT_UPDATE;
-	}
+    /**
+     * use default settings.
+     */
+    private void useDefault() {
+            min = DEFAULT_MIN;
+            max = DEFAULT_MAX;
+            step = DEFAULT_STEP;
+            update_period = DEFAULT_UPDATE;
+    }
 
     /** {@inheritDoc} */
     public synchronized void start() throws Exception
@@ -161,8 +161,8 @@ abstract public class DynamicValue extends Value implements Runnable
         // set update_thread != null and then the 'old' thread
         // would continue to run.
         try
-        {	if(running_thread != null)
-            	running_thread.join();
+        {    if(running_thread != null)
+                running_thread.join();
         }
         catch (InterruptedException ex)
         {
@@ -200,7 +200,7 @@ abstract public class DynamicValue extends Value implements Runnable
     }
 
     protected void setValue(final double[] doubleArray){
-    	 final ITimestamp time = TimestampFactory.now();
+         final ITimestamp time = TimestampFactory.now();
          final ISeverity severity;
          final String status;
          severity = ValueFactory.createOKSeverity();

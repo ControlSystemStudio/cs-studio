@@ -24,60 +24,60 @@ package org.epics.css.dal.directory;
 
 public class DALDescriptorImpl extends Attributes implements DALDescriptor
 {
-	private static final long serialVersionUID = 8667590130691133207L;
+    private static final long serialVersionUID = 8667590130691133207L;
 
-	public DALDescriptorImpl()
-	{
-		super();
-	}
+    public DALDescriptorImpl()
+    {
+        super();
+    }
 
-	public DALDescriptorImpl(DescriptorType type, String name, Class ctype)
-	{
-		super();
-		putAttributeValue(DESCRIPTOR_TYPE, type);
-		putAttributeValue(NAME, name);
-		putAttributeValue(CLASS_TYPE, ctype);
-	}
+    public DALDescriptorImpl(DescriptorType type, String name, Class ctype)
+    {
+        super();
+        putAttributeValue(DESCRIPTOR_TYPE, type);
+        putAttributeValue(NAME, name);
+        putAttributeValue(CLASS_TYPE, ctype);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.directory.DALDescriptor#getName()
-	 */
-	public String getName()
-	{
-		return (String)getAttributeValue(NAME);
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.directory.DALDescriptor#getName()
+     */
+    public String getName()
+    {
+        return (String)getAttributeValue(NAME);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.directory.DALDescriptor#getClassType()
-	 */
-	public Class getClassType()
-	{
-		return (Class)getAttributeValue(CLASS_TYPE);
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.directory.DALDescriptor#getClassType()
+     */
+    public Class getClassType()
+    {
+        return (Class)getAttributeValue(CLASS_TYPE);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.directory.DALDescriptor#getDescriptorType()
-	 */
-	public DescriptorType getDescriptorType()
-	{
-		return (DescriptorType)getAttributeValue(DESCRIPTOR_TYPE);
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.directory.DALDescriptor#getDescriptorType()
+     */
+    public DescriptorType getDescriptorType()
+    {
+        return (DescriptorType)getAttributeValue(DESCRIPTOR_TYPE);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.directory.DALDescriptor#setName(java.lang.String)
-	 */
-	public void setName(String name)
-	{
-		put(NAME, name);
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.directory.DALDescriptor#setName(java.lang.String)
+     */
+    public void setName(String name)
+    {
+        put(NAME, name);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.epics.css.dal.directory.DALDescriptor#setClassType(java.lang.Class)
-	 */
-	public void setClassType(Class type)
-	{
-		put(CLASS_TYPE, type);
-	}
+    /* (non-Javadoc)
+     * @see org.epics.css.dal.directory.DALDescriptor#setClassType(java.lang.Class)
+     */
+    public void setClassType(Class type)
+    {
+        put(CLASS_TYPE, type);
+    }
 }
 
 /* __oOo__ */

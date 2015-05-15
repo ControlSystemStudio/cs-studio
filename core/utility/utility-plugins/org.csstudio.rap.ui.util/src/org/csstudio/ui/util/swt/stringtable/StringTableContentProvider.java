@@ -21,32 +21,32 @@ import org.eclipse.jface.viewers.Viewer;
  */
 class StringTableContentProvider<T> implements IStructuredContentProvider
 {
-	private static final long serialVersionUID = 8338633557950338463L;
-	/** Magic number for the final 'add' element */
-	final public static Integer ADD_ELEMENT = new Integer(-1);
-	private List<T> items;
+    private static final long serialVersionUID = 8338633557950338463L;
+    /** Magic number for the final 'add' element */
+    final public static Integer ADD_ELEMENT = new Integer(-1);
+    private List<T> items;
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     public void inputChanged(final Viewer viewer, final Object old, final Object new_input)
-	{
-		items = (List<T>) new_input;
-	}
+    {
+        items = (List<T>) new_input;
+    }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     public Object[] getElements(Object arg0)
-	{
-		int N = items.size();
-		final Integer result[] = new Integer[N+1];
-		for (int i=0; i<N; ++i)
-			result[i] = i;
-		result[N] = ADD_ELEMENT;
-		return result;
-	}
+    {
+        int N = items.size();
+        final Integer result[] = new Integer[N+1];
+        for (int i=0; i<N; ++i)
+            result[i] = i;
+        result[N] = ADD_ELEMENT;
+        return result;
+    }
 
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     public void dispose()
-	{
-		// NOP
-	}
+    {
+        // NOP
+    }
 }

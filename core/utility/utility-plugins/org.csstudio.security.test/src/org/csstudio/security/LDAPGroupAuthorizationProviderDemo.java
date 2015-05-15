@@ -28,7 +28,7 @@ import com.sun.security.auth.UserPrincipal;
 /** Demo of {@link LDAPGroupAuthorizationProvider}
  *
  *  <p>Requires LDAP server with specific entries.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -41,17 +41,17 @@ public class LDAPGroupAuthorizationProviderDemo
         Logger.getLogger("").setLevel(Level.ALL);
         for (Handler handler : Logger.getLogger("").getHandlers())
             handler.setLevel(Level.ALL);
-        
+
         final String url = "ldap://localhost/dc=test,dc=ics";
         final String group_base = "ou=Group";
-        
+
         final AuthorizationProvider ldap =
             new LDAPGroupAuthorizationProvider(url, group_base);
-        
+
         final Subject subject = new Subject();
         subject.getPrincipals().add(new UserPrincipal("fred"));
         final Authorizations authorizations = ldap.getAuthorizations(subject);
-        
+
         assertThat(authorizations, not(nullValue()));
         assertThat(authorizations.haveAuthorization("archive_config"), equalTo(true));
     }

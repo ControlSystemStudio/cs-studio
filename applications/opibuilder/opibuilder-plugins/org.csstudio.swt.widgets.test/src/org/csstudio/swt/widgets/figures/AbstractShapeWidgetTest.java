@@ -18,42 +18,42 @@ import org.eclipse.swt.SWT;
  */
 public abstract class AbstractShapeWidgetTest extends AbstractWidgetTest {
 
-	@Override
-	public String[] getPropertyNames() {
-		String[] superProps =  super.getPropertyNames();	
-		String[] shapeProps = new String[]{
-				"alpha",
-				"lineCap",
-				"lineStyle",
-				"lineWidth"
-		};
-		return concatenateStringArrays(superProps, shapeProps);
-	}
-	
-	
-	@Override
-	public Object generateTestData(PropertyDescriptor pd, Object seed) {				
-		if(pd.getName().equals("lineCap")){
-				if(seed !=null && seed instanceof Integer){	
-					if(((Integer)seed)%3 == 0)
-						return SWT.CAP_FLAT;
-					else if((((Integer)seed)%3 == 1))
-						return SWT.CAP_ROUND;
-					else if((((Integer)seed)%3 == 2))
-						return SWT.CAP_SQUARE;
-				}else
-					return SWT.CAP_FLAT;
-		}else if(pd.getName().equals("lineStyle")){
-			if(seed !=null && seed instanceof Integer){	
-				return (Integer)seed%5+1;		
-			}else
-				return SWT.LINE_SOLID;
-		}else if(pd.getName().equals("lineWidth")){
-			if(seed !=null && seed instanceof Integer){	
-				return (Integer)seed%20;		
-			}
-		}
-		
-		return super.generateTestData(pd, seed);
-	}
+    @Override
+    public String[] getPropertyNames() {
+        String[] superProps =  super.getPropertyNames();
+        String[] shapeProps = new String[]{
+                "alpha",
+                "lineCap",
+                "lineStyle",
+                "lineWidth"
+        };
+        return concatenateStringArrays(superProps, shapeProps);
+    }
+
+
+    @Override
+    public Object generateTestData(PropertyDescriptor pd, Object seed) {
+        if(pd.getName().equals("lineCap")){
+                if(seed !=null && seed instanceof Integer){
+                    if(((Integer)seed)%3 == 0)
+                        return SWT.CAP_FLAT;
+                    else if((((Integer)seed)%3 == 1))
+                        return SWT.CAP_ROUND;
+                    else if((((Integer)seed)%3 == 2))
+                        return SWT.CAP_SQUARE;
+                }else
+                    return SWT.CAP_FLAT;
+        }else if(pd.getName().equals("lineStyle")){
+            if(seed !=null && seed instanceof Integer){
+                return (Integer)seed%5+1;
+            }else
+                return SWT.LINE_SOLID;
+        }else if(pd.getName().equals("lineWidth")){
+            if(seed !=null && seed instanceof Integer){
+                return (Integer)seed%20;
+            }
+        }
+
+        return super.generateTestData(pd, seed);
+    }
 }

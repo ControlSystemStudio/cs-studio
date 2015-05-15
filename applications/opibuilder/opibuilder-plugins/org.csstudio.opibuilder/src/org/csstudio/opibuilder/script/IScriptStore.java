@@ -14,10 +14,10 @@ package org.csstudio.opibuilder.script;
  */
 public interface IScriptStore {
 
-	/**
-	 * Remove listeners from PV. Dispose related resource if needed.
-	 */
-	public void unRegister();
-	
-	
+    /**
+     * Remove listeners from PV. Dispose related resource if needed.
+     */
+    public void unRegister();
+
+
 }

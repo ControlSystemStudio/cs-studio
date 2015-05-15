@@ -24,7 +24,7 @@ public class ValueUtil
     /** @return Array length of the value. <code>1</code> for scalars. */
     public static int getSize(final VType value)
     {
-    	return VTypeHelper.getSize(value);
+        return VTypeHelper.getSize(value);
     }
 
     /** Try to get a double number from the Value.
@@ -55,8 +55,8 @@ public class ValueUtil
      */
     public static double getDouble(final VType value, final int index)
     {
-    	return VTypeHelper.getDouble(value, index);
-       
+        return VTypeHelper.getDouble(value, index);
+
     }
 
     /** Try to get a double-typed array from the Value.
@@ -69,9 +69,9 @@ public class ValueUtil
      */
     public static double[] getDoubleArray(final VType value)
     {
-    	return VTypeHelper.getDoubleArray(value);
+        return VTypeHelper.getDoubleArray(value);
     }
-    
+
     /**
      * Converts the given value into a string representation. For string values,
      * returns the value. For numeric (double and long) values, returns a
@@ -85,7 +85,7 @@ public class ValueUtil
      */
     @SuppressWarnings("nls")
     public static String getString(final VType value)
-    {    	
-    	return VTypeHelper.getString(value);
+    {
+        return VTypeHelper.getString(value);
     }
 }

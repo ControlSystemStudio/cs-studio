@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -42,7 +42,7 @@ public class ModifyCommandHandler extends AbstractAdaptedHandler<Channel> {
         final Shell shell = HandlerUtil.getActiveShell(event);
         Collection<String> existingTagNames = Collections.emptyList();
         Collection<String> existingTagProperties = Collections.emptyList();
-        
+
         GetAllTags getAllTags = new GetAllTags();
         getAllTags.addExceptionListener(exceptionListener);
         GetAllProperties getAllProperties = new GetAllProperties();
@@ -64,7 +64,7 @@ public class ModifyCommandHandler extends AbstractAdaptedHandler<Channel> {
             }
         };
         channelEditDialog.open();
-        
+
         exceptionListener = new ExceptionListener() {
 
             @Override

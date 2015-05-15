@@ -16,57 +16,57 @@ import static org.epics.pvmanager.ExpressionLanguage.*;
 
 public class VTableDisplayEditPart extends AbstractSelectionWidgetEditpart<VTableDisplayFigure, VTableDisplayModel> {
 
-	/**
-	 * Create and initialize figure.
-	 */
-	@Override
-	protected VTableDisplayFigure doCreateFigure() {
-		VTableDisplayFigure figure = new VTableDisplayFigure(this);
-		configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
-		return figure;
-	}
+    /**
+     * Create and initialize figure.
+     */
+    @Override
+    protected VTableDisplayFigure doCreateFigure() {
+        VTableDisplayFigure figure = new VTableDisplayFigure(this);
+        configure(figure.getSWTWidget(), getWidgetModel(), figure.isRunMode());
+        return figure;
+    }
 
-	private static void configure(final VTableWidget widget, VTableDisplayModel model,
-			boolean runMode) {
-		if (runMode) {
-			widget.setPvFormula(model.getPvFormula());
-			if (model.getSelectionPv() != null && !model.getSelectionPv().trim().isEmpty()) {
-				final PVWriter<Object> pvWriter = PVManager.write(channel(model.getSelectionPv()))
-						.async();
-				widget.addDisposeListener(new DisposeListener() {
-					
-					@Override
-					public void widgetDisposed(DisposeEvent e) {
-						pvWriter.close();
-					}
-				});
-				widget.addPropertyChangeListener(new PropertyChangeListener() {
-					
-					@Override
-					public void propertyChange(PropertyChangeEvent evt) {
-						if ("selectionValue".equals(evt.getPropertyName())) {
-							pvWriter.write(widget.getSelectionValue());
-						}
-					}
-				});
-			}
-		}
-	}
+    private static void configure(final VTableWidget widget, VTableDisplayModel model,
+            boolean runMode) {
+        if (runMode) {
+            widget.setPvFormula(model.getPvFormula());
+            if (model.getSelectionPv() != null && !model.getSelectionPv().trim().isEmpty()) {
+                final PVWriter<Object> pvWriter = PVManager.write(channel(model.getSelectionPv()))
+                        .async();
+                widget.addDisposeListener(new DisposeListener() {
 
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		// The handler when PV value changed.
-		IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure figure) {
-				configure(getFigure().getSWTWidget(), getWidgetModel(),
-						getFigure().isRunMode());
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
-		registerCommonProperties();
-	}
+                    @Override
+                    public void widgetDisposed(DisposeEvent e) {
+                        pvWriter.close();
+                    }
+                });
+                widget.addPropertyChangeListener(new PropertyChangeListener() {
+
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        if ("selectionValue".equals(evt.getPropertyName())) {
+                            pvWriter.write(widget.getSelectionValue());
+                        }
+                    }
+                });
+            }
+        }
+    }
+
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        // The handler when PV value changed.
+        IWidgetPropertyChangeHandler reconfigure = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure figure) {
+                configure(getFigure().getSWTWidget(), getWidgetModel(),
+                        getFigure().isRunMode());
+                return false;
+            }
+        };
+        setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, reconfigure);
+        registerCommonProperties();
+    }
 
 
 }

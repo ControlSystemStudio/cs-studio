@@ -18,17 +18,17 @@ import org.csstudio.swt.widgets.figures.ChoiceButtonFigure;
  */
 public class ChoiceButtonEditpart extends AbstractChoiceEditPart {
 
-	@Override
-	protected AbstractChoiceFigure createChoiceFigure() {
-		ChoiceButtonFigure figure = new ChoiceButtonFigure(
-				getExecutionMode() == ExecutionMode.RUN_MODE);
-		return figure;
-	}
-	
-	@Override
-	public ChoiceButtonModel getWidgetModel() {
-		return (ChoiceButtonModel)getModel();
-	}
-	
+    @Override
+    protected AbstractChoiceFigure createChoiceFigure() {
+        ChoiceButtonFigure figure = new ChoiceButtonFigure(
+                getExecutionMode() == ExecutionMode.RUN_MODE);
+        return figure;
+    }
+
+    @Override
+    public ChoiceButtonModel getWidgetModel() {
+        return (ChoiceButtonModel)getModel();
+    }
+
 
 }

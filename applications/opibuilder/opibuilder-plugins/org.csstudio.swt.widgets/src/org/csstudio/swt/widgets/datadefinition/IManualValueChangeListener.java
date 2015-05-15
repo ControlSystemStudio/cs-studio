@@ -11,16 +11,16 @@ import java.util.EventListener;
 
 /**
  * Definition of listeners that react on manual value change events.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public interface IManualValueChangeListener extends EventListener{
-	/**
-	 * React on a knob event.
-	 * 
-	 * @param newValue
-	 *            The new slider value.
-	 */
-	void manualValueChanged(double newValue);
+    /**
+     * React on a knob event.
+     *
+     * @param newValue
+     *            The new slider value.
+     */
+    void manualValueChanged(double newValue);
 }

@@ -17,24 +17,24 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class AlarmRDBUnitTest
 {
-	@Test
-	public void readAlarmConfiguration() throws Exception
-	{
-		final TestProperties settings = new TestProperties();
+    @Test
+    public void readAlarmConfiguration() throws Exception
+    {
+        final TestProperties settings = new TestProperties();
         final String alarm_root = settings.getString("alarm_root");
         if (alarm_root == null)
         {
-        	System.out.println("Skipped, no configuration.");
-        	return;
+            System.out.println("Skipped, no configuration.");
+            return;
         }
 
-		final AlarmRDB rdb = new AlarmRDB(null,
-				settings.getString("alarm_rdb_url"),
-				settings.getString("alarm_rdb_user"),
-				settings.getString("alarm_rdb_password"),
-				"ALARM",
-				alarm_root);
-		final TreeItem root = rdb.readConfiguration();
-		root.dump(System.out);
-	}
+        final AlarmRDB rdb = new AlarmRDB(null,
+                settings.getString("alarm_rdb_url"),
+                settings.getString("alarm_rdb_user"),
+                settings.getString("alarm_rdb_password"),
+                "ALARM",
+                alarm_root);
+        final TreeItem root = rdb.readConfiguration();
+        root.dump(System.out);
+    }
 }

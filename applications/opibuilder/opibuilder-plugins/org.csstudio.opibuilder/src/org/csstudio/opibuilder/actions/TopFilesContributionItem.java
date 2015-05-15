@@ -16,29 +16,29 @@ import org.eclipse.swt.widgets.Menu;
 
 /**
  * The contribution item that creates the <code>File/Top Files</code> submenu.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class TopFilesContributionItem extends ContributionItem {
 
-	public TopFilesContributionItem() {
-	}
+    public TopFilesContributionItem() {
+    }
 
-	public TopFilesContributionItem(String id) {
-		super(id);
-	}
+    public TopFilesContributionItem(String id) {
+        super(id);
+    }
 
-	@Override
-	public void fill(Menu menu, int index) {
-		Map<IPath, MacrosInput> topOPIs = OpenTopOPIsAction.loadTopOPIs();
-		if (topOPIs == null)
-			return;
-		OpenTopOPIsAction.fillMenu(topOPIs, menu);
-	}
+    @Override
+    public void fill(Menu menu, int index) {
+        Map<IPath, MacrosInput> topOPIs = OpenTopOPIsAction.loadTopOPIs();
+        if (topOPIs == null)
+            return;
+        OpenTopOPIsAction.fillMenu(topOPIs, menu);
+    }
 
-	@Override
-	public boolean isDynamic() {
-		return true;
-	}
+    @Override
+    public boolean isDynamic() {
+        return true;
+    }
 }

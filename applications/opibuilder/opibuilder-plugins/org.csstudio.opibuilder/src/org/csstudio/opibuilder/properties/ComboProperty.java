@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -31,76 +31,76 @@ import org.jdom.Element;
  *
  */
 public class ComboProperty extends AbstractWidgetProperty {
-	
-	private String[] labelsArray;
 
-	/**Combo Property Constructor. The property value type is integer.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param labelsArray the array of labels in combo's drop box.
-	 * @param defaultValue the default value when the widget is first created.
-	 */
-	public ComboProperty(String prop_id, String description,
-			WidgetPropertyCategory category, String[] labelsArray,
-			int defaultValue) {		
-		super(prop_id, description, category, Integer.valueOf(defaultValue));
-		this.labelsArray = labelsArray;
-		
-	}
+    private String[] labelsArray;
 
-	@Override
-	public Object checkValue(Object value) {
-		if(value == null)
-			return null;
-		Integer acceptedValue = null;
+    /**Combo Property Constructor. The property value type is integer.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param labelsArray the array of labels in combo's drop box.
+     * @param defaultValue the default value when the widget is first created.
+     */
+    public ComboProperty(String prop_id, String description,
+            WidgetPropertyCategory category, String[] labelsArray,
+            int defaultValue) {
+        super(prop_id, description, category, Integer.valueOf(defaultValue));
+        this.labelsArray = labelsArray;
 
-		// check type
-		if (!(value instanceof Number)) {			
-			try {
-				acceptedValue = Integer.parseInt(value.toString());
-			} catch (NumberFormatException e) {
-				acceptedValue = null;
-			}
-		} else {
-			acceptedValue = ((Number) value).intValue();
-		}
+    }
 
-		// check range
-		if (acceptedValue != null) {
-			if (acceptedValue < 0) {
-				acceptedValue = 0;
-			} else if (acceptedValue >= labelsArray.length) {
-				acceptedValue = labelsArray.length-1;
-			}
-		}
+    @Override
+    public Object checkValue(Object value) {
+        if(value == null)
+            return null;
+        Integer acceptedValue = null;
 
-		return acceptedValue;
-	}
+        // check type
+        if (!(value instanceof Number)) {
+            try {
+                acceptedValue = Integer.parseInt(value.toString());
+            } catch (NumberFormatException e) {
+                acceptedValue = null;
+            }
+        } else {
+            acceptedValue = ((Number) value).intValue();
+        }
 
-	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {		
-		return new ComboBoxPropertyDescriptor(
-				prop_id, description, labelsArray);
-	}
+        // check range
+        if (acceptedValue != null) {
+            if (acceptedValue < 0) {
+                acceptedValue = 0;
+            } else if (acceptedValue >= labelsArray.length) {
+                acceptedValue = labelsArray.length-1;
+            }
+        }
 
-	@Override
-	public void writeToXML(Element propElement) {
-		propElement.setText(getPropertyValue().toString());
-	}
-	
-	@Override
-	public Object readValueFromXML(Element propElement) {
-		 try {
-			return Integer.parseInt(propElement.getValue());
-		} catch (NumberFormatException e) {
-			return Boolean.parseBoolean(propElement.getValue())? 1 : 0;
-		}			
-	}
+        return acceptedValue;
+    }
 
-	@Override
-	public boolean configurableByRule() {
-		return true;
-	}
+    @Override
+    protected PropertyDescriptor createPropertyDescriptor() {
+        return new ComboBoxPropertyDescriptor(
+                prop_id, description, labelsArray);
+    }
+
+    @Override
+    public void writeToXML(Element propElement) {
+        propElement.setText(getPropertyValue().toString());
+    }
+
+    @Override
+    public Object readValueFromXML(Element propElement) {
+         try {
+            return Integer.parseInt(propElement.getValue());
+        } catch (NumberFormatException e) {
+            return Boolean.parseBoolean(propElement.getValue())? 1 : 0;
+        }
+    }
+
+    @Override
+    public boolean configurableByRule() {
+        return true;
+    }
 }

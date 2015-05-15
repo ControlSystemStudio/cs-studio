@@ -23,30 +23,30 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  */
 public class NewOPIFileWizardPage extends WizardNewFileCreationPage {
 
-	public NewOPIFileWizardPage(String pageName, IStructuredSelection selection) {
-		super(pageName, selection);
-		setTitle("Create a new OPI File");
-		setDescription("Create a new OPI file in the selected project or folder.");
-	}
-	
-	@Override
-	protected InputStream getInitialContents() {
-		DisplayModel displayModel = new DisplayModel();
-		SchemaService.getInstance().applySchema(displayModel);
-		String s = XMLUtil.widgetToXMLString(displayModel, true);
-		InputStream result = new ByteArrayInputStream(s.getBytes());
-		return result;
-	}
-	
-	
-	@Override
-	protected String getNewFileLabel() {
-		return "OPI File Name:";
-	}
-	
-	@Override
-	public String getFileExtension() {
-		return OPIBuilderPlugin.OPI_FILE_EXTENSION;
-	}
+    public NewOPIFileWizardPage(String pageName, IStructuredSelection selection) {
+        super(pageName, selection);
+        setTitle("Create a new OPI File");
+        setDescription("Create a new OPI file in the selected project or folder.");
+    }
+
+    @Override
+    protected InputStream getInitialContents() {
+        DisplayModel displayModel = new DisplayModel();
+        SchemaService.getInstance().applySchema(displayModel);
+        String s = XMLUtil.widgetToXMLString(displayModel, true);
+        InputStream result = new ByteArrayInputStream(s.getBytes());
+        return result;
+    }
+
+
+    @Override
+    protected String getNewFileLabel() {
+        return "OPI File Name:";
+    }
+
+    @Override
+    public String getFileExtension() {
+        return OPIBuilderPlugin.OPI_FILE_EXTENSION;
+    }
 
 }

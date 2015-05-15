@@ -35,26 +35,26 @@ import com.cosylab.naming.URIName;
  */
 public final class URINameParser implements NameParser
 {
-	/**
-	 *
-	 */
-	public URINameParser()
-	{
-		super();
-	}
+    /**
+     *
+     */
+    public URINameParser()
+    {
+        super();
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.NameParser#parse(java.lang.String)
-	 */
-	public Name parse(String name) throws NamingException
-	{
-		try {
-			return new URIName(name);
-		} catch (Exception e) {
-			throw new NamingException("URI failed to parse name '" + name
-			    + "': '" + e + "'");
-		}
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.NameParser#parse(java.lang.String)
+     */
+    public Name parse(String name) throws NamingException
+    {
+        try {
+            return new URIName(name);
+        } catch (Exception e) {
+            throw new NamingException("URI failed to parse name '" + name
+                + "': '" + e + "'");
+        }
+    }
 }
 
 /* __oOo__ */

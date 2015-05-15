@@ -21,31 +21,31 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
  */
 public class OPIColorPropertyDescriptor extends PropertyDescriptor {
 
-	public OPIColorPropertyDescriptor(Object id, String displayName) {
-		super(id, displayName);
-		setLabelProvider(new OPIColorLabelProvider());
-	}
+    public OPIColorPropertyDescriptor(Object id, String displayName) {
+        super(id, displayName);
+        setLabelProvider(new OPIColorLabelProvider());
+    }
 
-	@Override
-	public CellEditor createPropertyEditor(Composite parent) {
-		OPIColorCellEditor editor = new OPIColorCellEditor(parent, "Choose Color");
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
-	
-	private final static class OPIColorLabelProvider extends LabelProvider{
-		
-		@Override
-		public Image getImage(Object element) {
-			if(element !=null && element instanceof OPIColor){
-				return ((OPIColor)element).getImage();
-			}
-			return null;
-		}		
-	}
-	
-	
+    @Override
+    public CellEditor createPropertyEditor(Composite parent) {
+        OPIColorCellEditor editor = new OPIColorCellEditor(parent, "Choose Color");
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+
+
+    private final static class OPIColorLabelProvider extends LabelProvider{
+
+        @Override
+        public Image getImage(Object element) {
+            if(element !=null && element instanceof OPIColor){
+                return ((OPIColor)element).getImage();
+            }
+            return null;
+        }
+    }
+
+
 }

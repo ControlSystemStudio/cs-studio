@@ -31,18 +31,18 @@ import org.csstudio.dal.context.PropertyContext;
  *
   */
 public class ObjectPropertyImpl extends DynamicValuePropertyImpl<Object>
-	implements ObjectProperty
+    implements ObjectProperty
 {
-	/**
-	 * Creates a new ObjectPropertyImpl object.
-	 *
-	 * @param name property name
-	 * @param propertyContext property context
-	 */
-	public ObjectPropertyImpl(String name, PropertyContext propertyContext)
-	{
-		super(Object.class, name, propertyContext);
-	}
+    /**
+     * Creates a new ObjectPropertyImpl object.
+     *
+     * @param name property name
+     * @param propertyContext property context
+     */
+    public ObjectPropertyImpl(String name, PropertyContext propertyContext)
+    {
+        super(Object.class, name, propertyContext);
+    }
 }
 
 /* __oOo__ */

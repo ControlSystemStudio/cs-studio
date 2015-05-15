@@ -20,12 +20,12 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /** Helper for accessing UI.
- * 
+ *
  *  <p>This implementation provides the common support.
  *  Derived classes can add support that is specific to RCP or RAP.
- *  
+ *
  *  <p>Client code should obtain a {@link UIHelper} via the {@link SingleSourcePlugin}
- *  
+ *
  *  @author Kay Kasemir
  *  @author Xihui Chen - Similar code in BOY/WebOPI
  */
@@ -37,14 +37,14 @@ public class UIHelper
     {
         /** Rich Client Platform: SWT */
         RCP,
-        
+
         /** Remote Application Platform: RWT */
         RAP
     };
-    
+
     final private UI ui;
 
-    /** Initialize */ 
+    /** Initialize */
     public UIHelper()
     {
         if (SWT.getPlatform().startsWith("rap"))
@@ -58,20 +58,20 @@ public class UIHelper
     {
         return ui;
     }
-    
+
     /**
      * Open the file into the default editor
      * @param page Target page
      * @param path Path of the file to open
-     * @throws Exception 
+     * @throws Exception
      */
-	public void openEditor(final IWorkbenchPage page, IPath path)
-			throws Exception {
-		return;
-	}
-    
+    public void openEditor(final IWorkbenchPage page, IPath path)
+            throws Exception {
+        return;
+    }
+
     /** Prompt for file name to save data
-     * 
+     *
      *  @param shell Parent shell
      *  @param original Original file name, may be <code>null</code>
      *  @param extension Extension to enforce, without ".". May be <code>null</code>
@@ -83,106 +83,106 @@ public class UIHelper
     }
 
     /** Prompt for file name
-     * 
+     *
      *  @param shell Parent shell
      *  @param style Style of window
      *  @param original Original file name, may be <code>null</code>
      *  @param extension Extension to enforce, without ".". May be <code>null</code>
      *  @return
      */
-	public IPath openDialog(final Shell shell, final int style,
-			final IPath original, final String extension) {
-		return openDialog(shell, style, original, extension, null);
-	}
+    public IPath openDialog(final Shell shell, final int style,
+            final IPath original, final String extension) {
+        return openDialog(shell, style, original, extension, null);
+    }
 
-	/**
-	 * Prompt for file name
-     * 
+    /**
+     * Prompt for file name
+     *
      * @param shell Parent shell
      * @param style Style of window
      * @param original Original file name, may be <code>null</code>
      * @param extension Extension to enforce, without ".". May be <code>null</code>
-	 * @param title dialog tile
-	 * @return
-	 */
-	public IPath openDialog(final Shell shell, final int style,
-			final IPath original, final String extension, final String title) {
-		return null;
-	}
+     * @param title dialog tile
+     * @return
+     */
+    public IPath openDialog(final Shell shell, final int style,
+            final IPath original, final String extension, final String title) {
+        return null;
+    }
 
-	/**
-	 * Prompt for file name
-	 * 
-	 * @param shell Parent shell
-	 * @param style open dialog style
-	 * @param original Original file name, may be <code>null</code>
-	 * @param extension Extension to enforce, without ".". May be <code>null</code>
-	 * @return
-	 */
-	public String openOutsideWorkspaceDialog(final Shell shell,
-			final int style, final IPath original, final String extension) {
-		return null;
-	}
-    
+    /**
+     * Prompt for file name
+     *
+     * @param shell Parent shell
+     * @param style open dialog style
+     * @param original Original file name, may be <code>null</code>
+     * @param extension Extension to enforce, without ".". May be <code>null</code>
+     * @return
+     */
+    public String openOutsideWorkspaceDialog(final Shell shell,
+            final int style, final IPath original, final String extension) {
+        return null;
+    }
+
     /**
      * Copy contents to clipboard
      * @param contents
      */
     public void copyToClipboard(String[] contents) {
-	}
-
-	/**
-	 * Write the message into console named consoleName
-	 * 
-	 * @param consoleName Console name
-	 * @param imageDescriptor
-	 * @param message Message to write
-	 */
-	public void writeToConsole(final String consoleName,
-			final ImageDescriptor imageDescriptor, final String message) {
-		return;
     }
-	
-	/** @param display Display
-	 *  @param drawable Drawable
-	 *  @param bounds bounds of that drawable
-	 *  @return Image with screenshot of the drawable
-	 */
-	public Image getScreenshot(
-			final Display display,
-			final Drawable drawable,
-			final Rectangle bounds) {
-        
+
+    /**
+     * Write the message into console named consoleName
+     *
+     * @param consoleName Console name
+     * @param imageDescriptor
+     * @param message Message to write
+     */
+    public void writeToConsole(final String consoleName,
+            final ImageDescriptor imageDescriptor, final String message) {
+        return;
+    }
+
+    /** @param display Display
+     *  @param drawable Drawable
+     *  @param bounds bounds of that drawable
+     *  @return Image with screenshot of the drawable
+     */
+    public Image getScreenshot(
+            final Display display,
+            final Drawable drawable,
+            final Rectangle bounds) {
+
         return null;
     }
-	
-	/**Popup login dialog to authenticate user with the registered login module. 
-	 * This method must be called in UI thread.
-	 * @param display display of the session.
-	 * @param retry the allowed number of retries.
-	 * @return true if login successfully.
-	 */
-	public boolean rapAuthenticate(Display display){		
-		return false;		
-	}		
-	
-	/**Check if current RAP session is logged in.
-	 * @param display
-	 * @return
-	 */
-	public boolean rapIsLoggedIn(Display display){		
-		return false;
-	}
 
-	/** @param site Site on which to enable/disable closing
-	 *  @param enable_close Enable the close button, allow closing the part?
-	 */
-	public void enableClose(IWorkbenchPartSite site, boolean enable_close) {
-		// By default, this is not supported
-	}
-	
-	/** @param view View to 'detach' */
-	public void detachView(IViewPart view) {
-		// By default, this is not supported
-	}
+    /**Popup login dialog to authenticate user with the registered login module.
+     * This method must be called in UI thread.
+     * @param display display of the session.
+     * @param retry the allowed number of retries.
+     * @return true if login successfully.
+     */
+    public boolean rapAuthenticate(Display display){
+        return false;
+    }
+
+    /**Check if current RAP session is logged in.
+     * @param display
+     * @return
+     */
+    public boolean rapIsLoggedIn(Display display){
+        return false;
+    }
+
+    /** @param site Site on which to enable/disable closing
+     *  @param enable_close Enable the close button, allow closing the part?
+     */
+    public void enableClose(IWorkbenchPartSite site, boolean enable_close) {
+        // By default, this is not supported
+    }
+
+    /** @param view View to 'detach' */
+    public void detachView(IViewPart view) {
+        // By default, this is not supported
+    }
 }

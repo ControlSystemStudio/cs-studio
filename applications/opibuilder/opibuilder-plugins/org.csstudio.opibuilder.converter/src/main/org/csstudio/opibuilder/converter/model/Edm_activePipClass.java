@@ -15,60 +15,60 @@ package org.csstudio.opibuilder.converter.model;
  */
 public class Edm_activePipClass extends EdmWidget {
 
-	@EdmAttributeAn @EdmOptionalAn private String displaySource;
-	@EdmAttributeAn @EdmOptionalAn private String file;
-	@EdmAttributeAn @EdmOptionalAn private String filePv;
-	
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings displayFileName;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings menuLabel;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiStrings symbols;
-	@EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans replaceSymbols;
-	
-	
-	public Edm_activePipClass(EdmEntity genericEntity) throws EdmException {
-		super(genericEntity);
-	}
+    @EdmAttributeAn @EdmOptionalAn private String displaySource;
+    @EdmAttributeAn @EdmOptionalAn private String file;
+    @EdmAttributeAn @EdmOptionalAn private String filePv;
 
-	
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings displayFileName;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings menuLabel;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiStrings symbols;
+    @EdmAttributeAn @EdmOptionalAn private EdmMultiBooleans replaceSymbols;
 
-	public EdmMultiStrings getDisplayFileName() {
-		return displayFileName;
-	}
+
+    public Edm_activePipClass(EdmEntity genericEntity) throws EdmException {
+        super(genericEntity);
+    }
 
 
 
-	public EdmMultiStrings getMenuLabel() {
-		return menuLabel;
-	}
+    public EdmMultiStrings getDisplayFileName() {
+        return displayFileName;
+    }
 
 
 
-	public EdmMultiStrings getSymbols() {
-		return symbols;
-	}
+    public EdmMultiStrings getMenuLabel() {
+        return menuLabel;
+    }
 
 
 
-	public EdmMultiBooleans getReplaceSymbols() {
-		return replaceSymbols;
-	}
+    public EdmMultiStrings getSymbols() {
+        return symbols;
+    }
 
 
 
-	/**
-	 * @return the alarmPv
-	 */
-	public final String getDisplaySource() {
-		return displaySource;
-	}
+    public EdmMultiBooleans getReplaceSymbols() {
+        return replaceSymbols;
+    }
 
-	public final String getFile() {
-		return file;
-	}
 
-	public String getFilePv() {
-		return filePv;
-	}
+
+    /**
+     * @return the alarmPv
+     */
+    public final String getDisplaySource() {
+        return displaySource;
+    }
+
+    public final String getFile() {
+        return file;
+    }
+
+    public String getFilePv() {
+        return filePv;
+    }
 
 
 }

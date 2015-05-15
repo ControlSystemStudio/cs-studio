@@ -53,11 +53,11 @@ import org.epics.vtype.AlarmSeverity;
  *  6-INVALID_ACK,
  *  7-UNDEFINED,
  *  8-UNDEFINED_ACK.
- *   
+ *
  *  @author Kay Kasemir
  */
 public enum SeverityLevel
-{    
+{
     /** OK/NO_ALARM/normal/good */
     OK(AlarmSeverity.NONE, false, Messages.SeverityLevel_OK, Preferences.COLOR_OK, 0),
 
@@ -72,7 +72,7 @@ public enum SeverityLevel
 
     /** Acknowledged undefined condition */
     UNDEFINED_ACK(AlarmSeverity.UNDEFINED, false, Messages.SeverityLevel_UNDEFINED_ACK, Preferences.COLOR_INVALID_ACK, 8),
-    
+
     /** Minor issue */
     MINOR(AlarmSeverity.MINOR, true, Messages.SeverityLevel_MINOR, Preferences.COLOR_MINOR, 1),
 
@@ -84,16 +84,16 @@ public enum SeverityLevel
 
     /** Unknown states, potentially very bad */
     UNDEFINED(AlarmSeverity.UNDEFINED, true, Messages.SeverityLevel_UNDEFINED, Preferences.COLOR_INVALID, 7);
-    
+
     /** Underlying alarm severity */
     final private AlarmSeverity severity;
-    
+
     /** Active alarm (not OK, not acknowledged?) */
     final private boolean active;
 
     /** End-user display name */
     final private String display_name;
-    
+
     /** Color.
      *  Would be neat to use SWT RGB here, but don't want to add SWT
      *  dependency to plugin that's otherwise non-GUI.
@@ -102,8 +102,8 @@ public enum SeverityLevel
 
     /** Priority used for alarm state updates in the alarm server */
     final private int alarm_update_priority;
-    
-    
+
+
     /** Initialize severity level
      *  @param severity {@link AlarmSeverity}
      *  @param active <code>true</code> for active alarm severity,
@@ -126,7 +126,7 @@ public enum SeverityLevel
         this.rgb = Preferences.getColor(pref);
         this.alarm_update_priority = alarm_update_priority;
     }
-    
+
     /** @return {@link AlarmSeverity} */
     public AlarmSeverity getAlarmSeverity()
     {
@@ -174,7 +174,7 @@ public enum SeverityLevel
     {
         return alarm_update_priority;
     }
-    
+
     /** Parse severity level from string
      *  @param severity String to parse
      *  @return SeverityLevel
@@ -194,7 +194,7 @@ public enum SeverityLevel
         // Handle all unknown severities as INVALID, i.e. the worst case
         return INVALID;
     }
-    
+
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override

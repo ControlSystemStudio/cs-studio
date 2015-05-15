@@ -18,47 +18,47 @@ import org.eclipse.jface.viewers.ViewerCell;
  *  @author Xihui Chen
  */
 class StringMultiColumnsLabelProvider extends CellLabelProvider {
-	private static final long serialVersionUID = 4446281839503966653L;
-	final private TableViewer tableViewer;
-	final private boolean editable;
+    private static final long serialVersionUID = 4446281839503966653L;
+    final private TableViewer tableViewer;
+    final private boolean editable;
 
-	/**
-	 * @param tableViewer
-	 * @param editable whether this column is editable
-	 */
-	public StringMultiColumnsLabelProvider(final TableViewer tableViewer,
-			final boolean editable) {
-		super();
-		this.tableViewer = tableViewer;
-		this.editable = editable;
-	}
+    /**
+     * @param tableViewer
+     * @param editable whether this column is editable
+     */
+    public StringMultiColumnsLabelProvider(final TableViewer tableViewer,
+            final boolean editable) {
+        super();
+        this.tableViewer = tableViewer;
+        this.editable = editable;
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public void update(ViewerCell cell) {
-		final List<String[]> items = (List<String[]>)tableViewer.getInput();
-		final int index = ((Integer) cell.getElement()).intValue();
-		//if this is the extra row
-		if (index < 0)
-			if(editable)
-				cell.setText(Messages.StringTableEditor_AddRowText);
-			else
-				cell.setText(""); //$NON-NLS-1$
-		//if not
-		else
-		{
-		    // For multi-line text, only show the first line
-			final int column = cell.getColumnIndex();
-			String text = "";
-			if (column < items.get(index).length)
-				text = items.get(index)[column];
-			// Not sure whether to look for '\r' or '\n'. Try both
-			int nl = text.indexOf('\r');
-			if (nl < 0)
-			    nl = text.indexOf('\n');
-			if (nl > 0)
-			    text = text.substring(0, nl) + "..."; //$NON-NLS-1$
+    @SuppressWarnings("unchecked")
+    @Override
+    public void update(ViewerCell cell) {
+        final List<String[]> items = (List<String[]>)tableViewer.getInput();
+        final int index = ((Integer) cell.getElement()).intValue();
+        //if this is the extra row
+        if (index < 0)
+            if(editable)
+                cell.setText(Messages.StringTableEditor_AddRowText);
+            else
+                cell.setText(""); //$NON-NLS-1$
+        //if not
+        else
+        {
+            // For multi-line text, only show the first line
+            final int column = cell.getColumnIndex();
+            String text = "";
+            if (column < items.get(index).length)
+                text = items.get(index)[column];
+            // Not sure whether to look for '\r' or '\n'. Try both
+            int nl = text.indexOf('\r');
+            if (nl < 0)
+                nl = text.indexOf('\n');
+            if (nl > 0)
+                text = text.substring(0, nl) + "..."; //$NON-NLS-1$
             cell.setText(text);
-		}
-	}
+        }
+    }
 }

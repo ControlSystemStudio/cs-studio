@@ -24,7 +24,7 @@ import org.eclipse.osgi.util.NLS;
 public class ExternalOpenDisplayAction implements IOpenDisplayAction
 {
     /** Open OPI file.
-     *  @param path the path of the OPI file, it can be a workspace path, file system path, URL 
+     *  @param path the path of the OPI file, it can be a workspace path, file system path, URL
      *         or a opi file in opi search path.
      *  @param data the input macros in format of {@code "macro1 = hello", "macro2 = hello2"}
      *  @throws Exception on error
@@ -48,7 +48,7 @@ public class ExternalOpenDisplayAction implements IOpenDisplayAction
             originPath = ResourceUtil.getFileOnSearchPath(originPath, false);
             if (originPath == null)
                 throw new FileNotFoundException(NLS.bind("File {0} doesn't exist on search path.", path));
-        }        
+        }
         OpenTopOPIsAction.runOPI(macrosInput, originPath);
     }
 }

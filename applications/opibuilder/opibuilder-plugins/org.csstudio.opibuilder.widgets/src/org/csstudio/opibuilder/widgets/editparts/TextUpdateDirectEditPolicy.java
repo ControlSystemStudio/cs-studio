@@ -17,54 +17,54 @@ import org.eclipse.gef.requests.DirectEditRequest;
  * @author Xihui Chen
  *
  */
-public class TextUpdateDirectEditPolicy 
-	extends DirectEditPolicy {
+public class TextUpdateDirectEditPolicy
+    extends DirectEditPolicy {
 
-	/**
-	 * @see DirectEditPolicy#getDirectEditCommand(DirectEditRequest)
-	 */
-	protected Command getDirectEditCommand(DirectEditRequest edit) {
-		String labelText = (String)edit.getCellEditor().getValue();
-		TextUpdateEditPart label = (TextUpdateEditPart)getHost();
-		TextIndicatorEditCommand command = 
-			new TextIndicatorEditCommand((TextUpdateModel)label.getModel(),labelText);
-		return command;
-	}
-	
-	/**
-	 * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
-	 */
-	protected void showCurrentEditValue(DirectEditRequest request) {
-		//String value = (String)request.getCellEditor().getValue();
-		//((LabelFigure)getHostFigure()).setText(value);
-		//hack to prevent async layout from placing the cell editor twice.
-		//getHostFigure().getUpdateManager().performUpdate();
-		
-	
-	}
+    /**
+     * @see DirectEditPolicy#getDirectEditCommand(DirectEditRequest)
+     */
+    protected Command getDirectEditCommand(DirectEditRequest edit) {
+        String labelText = (String)edit.getCellEditor().getValue();
+        TextUpdateEditPart label = (TextUpdateEditPart)getHost();
+        TextIndicatorEditCommand command =
+            new TextIndicatorEditCommand((TextUpdateModel)label.getModel(),labelText);
+        return command;
+    }
+
+    /**
+     * @see DirectEditPolicy#showCurrentEditValue(DirectEditRequest)
+     */
+    protected void showCurrentEditValue(DirectEditRequest request) {
+        //String value = (String)request.getCellEditor().getValue();
+        //((LabelFigure)getHostFigure()).setText(value);
+        //hack to prevent async layout from placing the cell editor twice.
+        //getHostFigure().getUpdateManager().performUpdate();
 
 
-static class TextIndicatorEditCommand extends Command	{
-	
-	private String newText, oldText;
-	private TextUpdateModel label;
-	
-	public TextIndicatorEditCommand(TextUpdateModel l, String s) {
-	label = l;
-	if (s != null)
-		newText = s;
-	else
-		newText = "";  //$NON-NLS-1$
-	}
-	
-	public void execute() {
-		oldText = label.getText();
-		label.setPropertyValue(TextUpdateModel.PROP_TEXT, newText, true);//setText(newText);
-	}
-	
-	public void undo() {
-		label.setText(oldText);
-	}
+    }
+
+
+static class TextIndicatorEditCommand extends Command    {
+
+    private String newText, oldText;
+    private TextUpdateModel label;
+
+    public TextIndicatorEditCommand(TextUpdateModel l, String s) {
+    label = l;
+    if (s != null)
+        newText = s;
+    else
+        newText = "";  //$NON-NLS-1$
+    }
+
+    public void execute() {
+        oldText = label.getText();
+        label.setPropertyValue(TextUpdateModel.PROP_TEXT, newText, true);//setText(newText);
+    }
+
+    public void undo() {
+        label.setText(oldText);
+    }
 
 }
 

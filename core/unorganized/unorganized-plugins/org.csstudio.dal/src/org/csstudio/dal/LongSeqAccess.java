@@ -33,7 +33,7 @@ package org.csstudio.dal;
  */
 public interface LongSeqAccess extends SequenceAccess<long[]>
 {
-	//
+    //
 }
 
 /* __oOo__ */

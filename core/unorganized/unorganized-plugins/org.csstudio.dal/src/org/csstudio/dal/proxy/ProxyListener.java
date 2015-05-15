@@ -33,25 +33,25 @@ import java.util.EventListener;
  */
 public interface ProxyListener<T> extends EventListener
 {
-	/**
-	 * Called when new characteristics are added or characteristics values
-	 * have changed.
-	 * @param e property change event
-	 */
-	public void characteristicsChange(PropertyChangeEvent  e);
-	/**
-	 * Called when value conditions ahs changed.
-	 *
-	 * @param e event with new condition
-	 */
-	public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T,?>> e);
+    /**
+     * Called when new characteristics are added or characteristics values
+     * have changed.
+     * @param e property change event
+     */
+    public void characteristicsChange(PropertyChangeEvent  e);
+    /**
+     * Called when value conditions ahs changed.
+     *
+     * @param e event with new condition
+     */
+    public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T,?>> e);
 
-	/**
-	 * Called when connection state changes.
-	 *
-	 * @param e event with new connection state
-	 */
-	public void connectionStateChange(ProxyEvent<Proxy<?>> e);
+    /**
+     * Called when connection state changes.
+     *
+     * @param e event with new connection state
+     */
+    public void connectionStateChange(ProxyEvent<Proxy<?>> e);
 }
 
 /* __oOo__ */

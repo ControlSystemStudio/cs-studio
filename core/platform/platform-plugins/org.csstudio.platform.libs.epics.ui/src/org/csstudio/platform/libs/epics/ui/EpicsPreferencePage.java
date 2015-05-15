@@ -56,22 +56,22 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  *  @author Kay Kasemir
  */
 public class EpicsPreferencePage
-	extends FieldEditorPreferencePage
-	implements IWorkbenchPreferencePage
+    extends FieldEditorPreferencePage
+    implements IWorkbenchPreferencePage
 {
-	public EpicsPreferencePage()
+    public EpicsPreferencePage()
     {
-		super(GRID);
+        super(GRID);
 
-		final IPreferenceStore pref_store =
-		    new ScopedPreferenceStore(InstanceScope.INSTANCE, EpicsPlugin.ID);
-		setPreferenceStore(pref_store);
-	}
+        final IPreferenceStore pref_store =
+            new ScopedPreferenceStore(InstanceScope.INSTANCE, EpicsPlugin.ID);
+        setPreferenceStore(pref_store);
+    }
 
-	/** Creates the field editors.
-	 *  Each field editor knows how to save and restore itself.
-	 */
-	@Override
+    /** Creates the field editors.
+     *  Each field editor knows how to save and restore itself.
+     */
+    @Override
     public void createFieldEditors()
     {
         final String sep = ":";  //$NON-NLS-1$
@@ -113,14 +113,14 @@ public class EpicsPreferencePage
                         PreferenceConstants.SERVER_PORT + sep, parent));
         addField(new StringFieldEditor(PreferenceConstants.MAX_ARRAY_BYTES,
                         PreferenceConstants.MAX_ARRAY_BYTES + sep, parent));
-        
+
         addField(new BooleanFieldEditor(PreferenceConstants.DBE_PROPERTY_SUPPORTED,
-        		Messages.EpicsPreferencePage_DBE_PROPERTY_SUPPORTED, parent));
+                Messages.EpicsPreferencePage_DBE_PROPERTY_SUPPORTED, parent));
         addField(new BooleanFieldEditor(PreferenceConstants.HONOR_ZERO_PRECISION,
-        		Messages.EpicsPreferencePage_HONOR_ZERO_PRECISION, parent));
+                Messages.EpicsPreferencePage_HONOR_ZERO_PRECISION, parent));
         addField(new BooleanFieldEditor(PreferenceConstants.RTYP_VALUE_ONLY,
-        		Messages.EpicsPreferencePage_RTYP_VALUE_ONLY, parent));
-        
+                Messages.EpicsPreferencePage_RTYP_VALUE_ONLY, parent));
+
         final String varArrayOptions[][] =
         {
             { Messages.EpicsPreferencePage_VAR_ARRAY_SUPPORT_AUTO, "Auto"  },
@@ -134,25 +134,25 @@ public class EpicsPreferencePage
                 parent));
     }
 
-	@Override
+    @Override
     public boolean performOk()
     {
-		boolean ret = super.performOk();
-		EpicsPlugin.getDefault().installPreferences();
-		return ret;
-	}
+        boolean ret = super.performOk();
+        EpicsPlugin.getDefault().installPreferences();
+        return ret;
+    }
 
     /** {@inheritDoc} */
-	@Override
+    @Override
     public void init(IWorkbench workbench)
     { /* NOP */ }
 
-	/** {@inheritDoc} */
-	@Override
-	public final void propertyChange(final PropertyChangeEvent event)
+    /** {@inheritDoc} */
+    @Override
+    public final void propertyChange(final PropertyChangeEvent event)
     {
-		setMessage(Messages.EpicsPreferencePage_RESTART_MESSAGE,
-		           IMessageProvider.INFORMATION);
-		super.propertyChange(event);
-	}
+        setMessage(Messages.EpicsPreferencePage_RESTART_MESSAGE,
+                   IMessageProvider.INFORMATION);
+        super.propertyChange(event);
+    }
 }

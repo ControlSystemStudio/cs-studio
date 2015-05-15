@@ -38,38 +38,38 @@ public class StandalonePerspective implements IPerspectiveFactory
         //      |
         //      +-------------
         //      | bottom
-    	
-    	final String editor = layout.getEditorArea();
+
+        final String editor = layout.getEditorArea();
         layout.setFixed(true);
-    	layout.setEditorAreaVisible(false);
-    	
+        layout.setEditorAreaVisible(false);
+
         final IFolderLayout left = layout.createFolder("left",
                         IPageLayout.LEFT, 0.25f, editor);
         final IFolderLayout top = layout.createFolder("top",
                 IPageLayout.TOP, 0.66f, editor);
         final IFolderLayout bottom = layout.createFolder("bottom",
                 IPageLayout.BOTTOM, 0.66f, editor);
-        
-        
+
+
         // Stuff for 'left'
         if (isViewAvailable(ID_ALARM_PANEL))
         {
-        	final IFolderLayout topleft = layout.createFolder("topleft", IPageLayout.TOP, 0.4f, "left");
-        	topleft.addView(ID_ALARM_PANEL);
+            final IFolderLayout topleft = layout.createFolder("topleft", IPageLayout.TOP, 0.4f, "left");
+            topleft.addView(ID_ALARM_PANEL);
         }
         left.addView(ID_ALARM_TREE);
         left.addPlaceholder(IPageLayout.ID_PROP_SHEET);
 
         // Stuff for 'top'
         top.addView(ID_ALARM_TABLE);
-        
+
         // Stuff for 'bottom'
         bottom.addView(ID_MSG_HIST);
     }
 
     /** Check if view is available, i.e. suitable plugin was included in product */
-	private boolean isViewAvailable(final String view)
+    private boolean isViewAvailable(final String view)
     {
-		return PlatformUI.getWorkbench().getViewRegistry().find(view) != null;
+        return PlatformUI.getWorkbench().getViewRegistry().find(view) != null;
     }
 }

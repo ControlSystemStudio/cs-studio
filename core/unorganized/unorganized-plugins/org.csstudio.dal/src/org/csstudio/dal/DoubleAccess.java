@@ -33,7 +33,7 @@ package org.csstudio.dal;
  */
 public interface DoubleAccess extends DataAccess<Double>
 {
-	//
+    //
 }
 
 /* __oOo__ */

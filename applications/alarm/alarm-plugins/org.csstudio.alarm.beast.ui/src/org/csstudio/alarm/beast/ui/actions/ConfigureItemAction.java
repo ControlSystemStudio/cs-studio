@@ -46,7 +46,7 @@ public class ConfigureItemAction extends Action
         this.model = model;
         this.item = item;
 
-    	//authorization
+        //authorization
         SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
@@ -66,40 +66,40 @@ public class ConfigureItemAction extends Action
             @Override
             public void selectionChanged(final SelectionChangedEvent event)
             {
-            	final boolean oneSelected = (((IStructuredSelection)event.getSelection()).size() == 1);
-            	if (oneSelected)
-                	//authorization
-                	setEnabled(SecuritySupport.havePermission(AuthIDs.CONFIGURE));
+                final boolean oneSelected = (((IStructuredSelection)event.getSelection()).size() == 1);
+                if (oneSelected)
+                    //authorization
+                    setEnabled(SecuritySupport.havePermission(AuthIDs.CONFIGURE));
                 else
-                	setEnabled(false);
+                    setEnabled(false);
             }
         });
         SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
     }
 
 
-	@Override
-	public void run()
-	{
-		if (selection_provider != null)
+    @Override
+    public void run()
+    {
+        if (selection_provider != null)
             item =
                 (AlarmTreeItem) ((IStructuredSelection)selection_provider.getSelection()).getFirstElement();
         // else: Fixed item passed into constructor
-		performItemConfiguration(shell, model, item);
-	}
+        performItemConfiguration(shell, model, item);
+    }
 
-	/** Interactively configure an item
-	 *
-	 *  <p>Can also be called from outside of the {@link ConfigureItemAction}
-	 *
-	 *  @param shell Parent shell for dialog
-	 *  @param model Model to configure
-	 *  @param item Item to configure
-	 */
-	public static void performItemConfiguration(final Shell shell,
-	        final AlarmClientModel model, final AlarmTreeItem item)
-	{
-	    final ItemConfigDialog dlg = new ItemConfigDialog(shell, item, model, false);	
-	    dlg.open();
-	}
+    /** Interactively configure an item
+     *
+     *  <p>Can also be called from outside of the {@link ConfigureItemAction}
+     *
+     *  @param shell Parent shell for dialog
+     *  @param model Model to configure
+     *  @param item Item to configure
+     */
+    public static void performItemConfiguration(final Shell shell,
+            final AlarmClientModel model, final AlarmTreeItem item)
+    {
+        final ItemConfigDialog dlg = new ItemConfigDialog(shell, item, model, false);
+        dlg.open();
+    }
 }

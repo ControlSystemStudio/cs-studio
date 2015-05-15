@@ -38,16 +38,16 @@ import org.csstudio.dal.DynamicValueProperty;
  */
 public interface PropertyGroupConstrain
 {
-	/**
-	 * Tests if property in parameter is acceptable by this constrained
-	 * or not/
-	 *
-	 * @param prop the property to be tested
-	 *
-	 * @return <code>true</code> if this property is acceptable by this
-	 *         constrains, otherwise <code>false</code>
-	 */
-	public boolean isAcceptible(DynamicValueProperty<?> prop);
+    /**
+     * Tests if property in parameter is acceptable by this constrained
+     * or not/
+     *
+     * @param prop the property to be tested
+     *
+     * @return <code>true</code> if this property is acceptable by this
+     *         constrains, otherwise <code>false</code>
+     */
+    public boolean isAcceptible(DynamicValueProperty<?> prop);
 } /* __oOo__ */
 
 

@@ -21,17 +21,17 @@ public class OPIEditorPerspective implements IPerspectiveFactory
 
     private static final String ID_LEFT_BOTTOM = "leftBottom";  //$NON-NLS-1$
     private static final String ID_BOTTOM = "bottom";//$NON-NLS-1$
-	private static final String ID_RIGHT = "right";//$NON-NLS-1$
-	private static final String ID_LEFT = "left";//$NON-NLS-1$
-	private static final String ID_CONSOLE_VIEW =
-		"org.eclipse.ui.console.ConsoleView";//$NON-NLS-1$
-	private static final String ID_HELP_VIEW =
-		"org.eclipse.help.ui.HelpView";//$NON-NLS-1$
-	/** ID of navigator view.
+    private static final String ID_RIGHT = "right";//$NON-NLS-1$
+    private static final String ID_LEFT = "left";//$NON-NLS-1$
+    private static final String ID_CONSOLE_VIEW =
+        "org.eclipse.ui.console.ConsoleView";//$NON-NLS-1$
+    private static final String ID_HELP_VIEW =
+        "org.eclipse.help.ui.HelpView";//$NON-NLS-1$
+    /** ID of navigator view.
      *  This one is deprecated, but don't know what else to use.
      */
     @SuppressWarnings("deprecation")
-	final static String ID_NAVIGATOR = IPageLayout.ID_RES_NAV;
+    final static String ID_NAVIGATOR = IPageLayout.ID_RES_NAV;
 
     /** Create suggested OPI Editor layout:
      *  <pre>Navigator | Editor | Properties</pre>
@@ -47,7 +47,7 @@ public class OPIEditorPerspective implements IPerspectiveFactory
         final IFolderLayout bottom = layout.createFolder(ID_BOTTOM,
                 IPageLayout.BOTTOM, 0.75f, editor);
         final IFolderLayout leftBottom = layout.createFolder(ID_LEFT_BOTTOM,
-        		IPageLayout.BOTTOM, 0.7f, ID_LEFT);
+                IPageLayout.BOTTOM, 0.7f, ID_LEFT);
 
         // Stuff for 'left'
         left.addView(ID_NAVIGATOR);

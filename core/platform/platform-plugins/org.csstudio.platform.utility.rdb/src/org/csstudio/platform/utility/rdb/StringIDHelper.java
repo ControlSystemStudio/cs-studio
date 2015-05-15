@@ -44,14 +44,14 @@ public class StringIDHelper
         this.rdb = rdb;
         try
         {
-			this.connection = rdb.getConnection();
-		}
+            this.connection = rdb.getConnection();
+        }
         catch (Exception e)
-		{
-		    // OK to not have an initial connection.
-		    // Will throw exception in find() if it's
-		    // still a problem there.
-		}
+        {
+            // OK to not have an initial connection.
+            // Will throw exception in find() if it's
+            // still a problem there.
+        }
         this.table = table;
         this.id_column = id_column;
         this.name_column = name_column;
@@ -90,13 +90,13 @@ public class StringIDHelper
         final Connection tempConnection = rdb.getConnection();
         try
         {
-        	if (sel_by_name == null || connection != tempConnection)
-        	{
-        		connection = tempConnection;
+            if (sel_by_name == null || connection != tempConnection)
+            {
+                connection = tempConnection;
                 sel_by_name = connection.prepareStatement(
                     "SELECT " + id_column + " FROM " + table +
                     " WHERE "+ name_column + "=?");
-        	}
+            }
             sel_by_name.setString(1, name);
             final ResultSet result = sel_by_name.executeQuery();
             if (result.next())
@@ -124,9 +124,9 @@ public class StringIDHelper
     public StringID find(final int id) throws Exception
     {
         final Connection tempConnection = rdb.getConnection();
-    	if (sel_by_id == null || connection != tempConnection)
-    	{
-        	connection = tempConnection;
+        if (sel_by_id == null || connection != tempConnection)
+        {
+            connection = tempConnection;
             sel_by_id = connection.prepareStatement(
                     "SELECT " + name_column + " FROM " + table +
                     " WHERE "+ id_column + "=?");
@@ -140,11 +140,11 @@ public class StringIDHelper
                 final String text = result.getString(1);
                 return new StringID(id, text);
             }
-    	}
-    	finally
-    	{
-    	    result.close();
-    	}
+        }
+        finally
+        {
+            result.close();
+        }
         return null;
     }
 
@@ -161,7 +161,7 @@ public class StringIDHelper
         entry = new StringID(getNextID(), name);
         final boolean autocommitState = rdb.getConnection().getAutoCommit();
         if (autocommitState == true)
-        	rdb.getConnection().setAutoCommit(false);
+            rdb.getConnection().setAutoCommit(false);
         final PreparedStatement insert = rdb.getConnection().prepareStatement(
                 "INSERT INTO " + table +
                 "(" + id_column + "," + name_column + ") VALUES (?,?)");
@@ -178,21 +178,21 @@ public class StringIDHelper
         }
         catch(Exception e)
         {
-        	rdb.getConnection().rollback();
-        	throw e;
+            rdb.getConnection().rollback();
+            throw e;
         }
         finally
         {
             insert.close();
             if(autocommitState == true)
-            	rdb.getConnection().setAutoCommit(true);
+                rdb.getConnection().setAutoCommit(true);
         }
     }
 
     private int getNextID() throws Exception
     {
         final Connection tempConnection = rdb.getConnection();
-    	final Statement statement = tempConnection.createStatement();
+        final Statement statement = tempConnection.createStatement();
         try
         {
             final ResultSet res = statement.executeQuery(

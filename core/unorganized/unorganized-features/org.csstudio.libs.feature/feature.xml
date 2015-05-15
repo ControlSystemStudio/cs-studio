@@ -18,7 +18,7 @@
        Each library uses its own license.
    </license>
 
-   
+
    <plugin
          id="com.google.common"
          download-size="0"

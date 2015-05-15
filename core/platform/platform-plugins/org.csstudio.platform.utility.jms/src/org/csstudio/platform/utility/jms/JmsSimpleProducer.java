@@ -41,14 +41,14 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 /**
- * TODO (Markus Moeller) : 
- * 
+ * TODO (Markus Moeller) :
+ *
  * @author Markus Moeller
  * @version 1.0
  * @since 22.07.2011
  */
 public class JmsSimpleProducer {
-        
+
     private Hashtable<String, String> properties;
     private Context context;
     private ConnectionFactory factory;
@@ -59,45 +59,45 @@ public class JmsSimpleProducer {
     private String clientId;
     private String jmsUrl;
     private String jmsTopic;
-    
+
     private SimpleDateFormat dateFormater;
-    
+
     public JmsSimpleProducer(String id, String url, String f, String t) {
-        
+
         clientId = id;
         jmsUrl = url;
         jmsTopic = t;
 
         dateFormater = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        
+
         properties = new Hashtable<String, String>();
-        
+
         // Set the properties for the context
         properties.put(Context.INITIAL_CONTEXT_FACTORY, f);
         properties.put(Context.PROVIDER_URL, jmsUrl);
-                
+
         try {
-            
+
             // Create a context
             context = new InitialContext(properties);
-           
+
             // Create a connection factory
             factory = (ConnectionFactory) context.lookup("ConnectionFactory");
-            
+
             // Create a connection
             connection = factory.createConnection();
-            
+
             // Set client id
             connection.setClientID(clientId);
-            
+
             // Start the connection
             connection.start();
-            
+
             // Create a session
             session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-            
+
             topic = session.createTopic(jmsTopic);
-            
+
             // Create a message producer
             producer = session.createProducer(topic);
             producer.setDeliveryMode(DeliveryMode.PERSISTENT);
@@ -108,11 +108,11 @@ public class JmsSimpleProducer {
         } catch(JMSException jmse) {
             // logger.info(" *** JMSException *** : " + jmse.getMessage());
             closeAll();
-        }   
+        }
     }
 
     /**
-     * 
+     *
      * @return The fresh MapMessage
      */
     public MapMessage createMapMessage() throws JMSException {
@@ -123,7 +123,7 @@ public class JmsSimpleProducer {
     public String getCurrentDateAsString() {
         return dateFormater.format(Calendar.getInstance().getTime());
     }
-    
+
     /**
      * Sends a message to a different topic by creating a temporary publisher
      * @param topicName
@@ -133,9 +133,9 @@ public class JmsSimpleProducer {
 
         Topic localTopic = null;
         MessageProducer localProducer = null;
-        
+
         if (this.isConnected()) {
-            
+
             try {
                 localTopic = session.createTopic(topicName);
                 localProducer = session.createProducer(localTopic);
@@ -151,28 +151,28 @@ public class JmsSimpleProducer {
             throw new JMSException("Publisher is not connected.");
         }
     }
-    
+
     /**
-     * 
+     *
      * @param message
      * @return True if the message has been sent, otherwise false
-     * @throws JMSException 
+     * @throws JMSException
      */
     public boolean sendMessage(Message message) throws JMSException {
-        
+
         boolean success = false;
- 
+
         // TODO: producer.send(message, DeliveryMode.PERSISTENT, 1, 0);
         producer.send(message);
         success = true;
-        
+
         return success;
     }
 
     public boolean isConnected() {
         return (connection != null);
     }
-    
+
     public void closeAll() {
         if(producer!=null){try{producer.close();}catch(Exception e){/*Can be ignored*/}producer=null;}
         topic = null;

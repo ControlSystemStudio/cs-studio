@@ -19,41 +19,41 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class AutoSizeTableColumnsAction implements IObjectActionDelegate {
-	
 
 
-	private IStructuredSelection selection;
-	
-	public AutoSizeTableColumnsAction() {
-	}
-	
 
-	public void run(IAction action) {
-		TableEditPart tableEditPart = getSelectedWidget();
-		
-		tableEditPart.getTable().autoSizeColumns();
-		
-		
-		
-	}
+    private IStructuredSelection selection;
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			this.selection = (IStructuredSelection) selection;
-		}
-	}
-	
-	private TableEditPart getSelectedWidget(){ 
-		if(selection.getFirstElement() instanceof TableEditPart){
-			return (TableEditPart)selection.getFirstElement();
-		}else
-			return null;
-	}
+    public AutoSizeTableColumnsAction() {
+    }
 
 
-	@Override
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		
-	}
+    public void run(IAction action) {
+        TableEditPart tableEditPart = getSelectedWidget();
+
+        tableEditPart.getTable().autoSizeColumns();
+
+
+
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            this.selection = (IStructuredSelection) selection;
+        }
+    }
+
+    private TableEditPart getSelectedWidget(){
+        if(selection.getFirstElement() instanceof TableEditPart){
+            return (TableEditPart)selection.getFirstElement();
+        }else
+            return null;
+    }
+
+
+    @Override
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+
+    }
 
 }

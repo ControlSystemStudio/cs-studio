@@ -14,7 +14,7 @@ import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 /** Persistable editor input based on path
- * 
+ *
  *  <p>Uses an {@link IPath}, which is supported by both RCP and RAP,
  *  as the persisted identifier of an editor input.
  *  @author Kay Kasemir
@@ -39,7 +39,7 @@ public class PathEditorInput implements IPathEditorInput, IPersistableElement
     {
         return path;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public int hashCode()

@@ -5,111 +5,111 @@ import org.csstudio.dal.simple.MetaData;
 
 @Deprecated
 public final class NumericMetaDataImpl implements MetaData {
-	
-	private final double alarmHigh;
-	private final double alarmLow;
-	private final double displayHigh;
-	private final double displayLow;
-	private final double warnHigh;
-	private final double warnLow;
-	private final int precision;
-	private final String units;
-	
-	public NumericMetaDataImpl(double displayLow, double displayHigh, double warnLow, double warnHigh, double alarmLow, double alarmHigh, int precision, String units) {
-		this.alarmHigh = alarmHigh;
-		this.alarmLow = alarmLow;
-		this.displayHigh = displayHigh;
-		this.displayLow = displayLow;
-		this.warnHigh = warnHigh;
-		this.warnLow = warnLow;
-		this.precision = precision;
-		this.units = units;
-	}
 
-	public double getAlarmHigh() {
-		return alarmHigh;
-	}
+    private final double alarmHigh;
+    private final double alarmLow;
+    private final double displayHigh;
+    private final double displayLow;
+    private final double warnHigh;
+    private final double warnLow;
+    private final int precision;
+    private final String units;
 
-	public double getAlarmLow() {
-		return alarmLow;
-	}
+    public NumericMetaDataImpl(double displayLow, double displayHigh, double warnLow, double warnHigh, double alarmLow, double alarmHigh, int precision, String units) {
+        this.alarmHigh = alarmHigh;
+        this.alarmLow = alarmLow;
+        this.displayHigh = displayHigh;
+        this.displayLow = displayLow;
+        this.warnHigh = warnHigh;
+        this.warnLow = warnLow;
+        this.precision = precision;
+        this.units = units;
+    }
 
-	public double getDisplayHigh() {
-		return displayHigh;
-	}
+    public double getAlarmHigh() {
+        return alarmHigh;
+    }
 
-	public double getDisplayLow() {
-		return displayLow;
-	}
+    public double getAlarmLow() {
+        return alarmLow;
+    }
 
-	public int getPrecision() {
-		return precision;
-	}
+    public double getDisplayHigh() {
+        return displayHigh;
+    }
 
-	public String getState(int state) {
-		// default value
-		return null;
-	}
+    public double getDisplayLow() {
+        return displayLow;
+    }
 
-	public String[] getStates() {
-		return new String[0];
-	}
-	
-	public Object getStateValue(int state) {
-		//default value
-		return null;
-	}
-	
-	public Object[] getStateValues() {
-		return new Object[0];
-	}
-	
+    public int getPrecision() {
+        return precision;
+    }
 
-	public String getUnits() {
-		return units;
-	}
+    public String getState(int state) {
+        // default value
+        return null;
+    }
 
-	public double getWarnHigh() {
-		return warnHigh;
-	}
+    public String[] getStates() {
+        return new String[0];
+    }
 
-	public double getWarnLow() {
-		return warnLow;
-	}
+    public Object getStateValue(int state) {
+        //default value
+        return null;
+    }
 
-	public AccessType getAccessType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public Object[] getStateValues() {
+        return new Object[0];
+    }
 
-	public String getDataType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getUnits() {
+        return units;
+    }
 
-	public String getFormat() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public double getWarnHigh() {
+        return warnHigh;
+    }
 
-	public String getHostname() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public double getWarnLow() {
+        return warnLow;
+    }
 
-	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public AccessType getAccessType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	public int getSequenceLength() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+    public String getDataType() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getDescription() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getFormat() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getHostname() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getName() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public int getSequenceLength() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 
 }

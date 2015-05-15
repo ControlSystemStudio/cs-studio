@@ -17,16 +17,16 @@ import org.eclipse.jface.action.IAction;
  */
 public class LayoutWidgetsAction extends AbstractWidgetTargetAction {
 
-	public void run(IAction action) {
+    public void run(IAction action) {
 
-		AbstractLayoutEditpart layoutWidget = getLayoutWidget();
-		
-		LayoutWidgetsImp.run(layoutWidget, getCommandStack());
-		
-	}
+        AbstractLayoutEditpart layoutWidget = getLayoutWidget();
 
-	protected AbstractLayoutEditpart getLayoutWidget(){
-		return (AbstractLayoutEditpart)selection.getFirstElement();
-	}
-	
+        LayoutWidgetsImp.run(layoutWidget, getCommandStack());
+
+    }
+
+    protected AbstractLayoutEditpart getLayoutWidget(){
+        return (AbstractLayoutEditpart)selection.getFirstElement();
+    }
+
 }

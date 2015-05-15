@@ -23,22 +23,22 @@
 package org.csstudio.dal.spi;
 
 public enum LinkPolicy {
-	/**
-	     * Constant for factory policy in which <code>getDevice</code> returns
-	     * device without trying to link them. This only makes sense, if returned
-	     * device or property is implementing <code>Connectable</code> interface.
-	     * By default this interface is not provided.
-	     */
-	NO_LINK_POLICY, 
-	/**
-	     * Constant for factory policy in which <code>getDevice</code> returns
-	     * device already synchronously linked.
-	     */
-	SYNC_LINK_POLICY, 
-	/**
-	     * Constant for factory policy in which <code>getDevice</code> returns
-	     * device with initiated asynchronous link procedure.
-	     */
-	ASYNC_LINK_POLICY;
+    /**
+         * Constant for factory policy in which <code>getDevice</code> returns
+         * device without trying to link them. This only makes sense, if returned
+         * device or property is implementing <code>Connectable</code> interface.
+         * By default this interface is not provided.
+         */
+    NO_LINK_POLICY,
+    /**
+         * Constant for factory policy in which <code>getDevice</code> returns
+         * device already synchronously linked.
+         */
+    SYNC_LINK_POLICY,
+    /**
+         * Constant for factory policy in which <code>getDevice</code> returns
+         * device with initiated asynchronous link procedure.
+         */
+    ASYNC_LINK_POLICY;
 }
 /* __oOo__ */

@@ -640,589 +640,589 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 			MessageDialog.openError(getSite().getShell(), "IO Error", e
 					.getMessage());
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "File save error", e); //$NON-NLS-1$
-		}
-	}
+        }
+    }
 
-	@Override
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
-		if(type == IPropertySheetPage.class)
-			return getPropertySheetPage();
-		else if (type == ZoomManager.class)
-			return ((ScalableFreeformRootEditPart) getGraphicalViewer()
-				.getRootEditPart()).getZoomManager();
-//		else if (type == IContentOutlinePage.class)
-//			return getOverviewOutlinePage();
-		else if (type == IContentOutlinePage.class) {
-			outlinePage = new OutlinePage(new TreeViewer());
-			return outlinePage;
-		}else if (type.equals(IContextProvider.class)){
-			if(helpContextProvider == null)
-				helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
-			return helpContextProvider;
-		} else if (type.equals(IGotoMarker.class)) {
-			return new IGotoMarker() {
-				@Override
-				public void gotoMarker(IMarker marker) {
-					try {
-					    String wuid = (String) marker.getAttribute(AbstractWidgetModel.PROP_WIDGET_UID);
-					    if (wuid == null) {
-					        //if wuid is not stored in the marker try to find it based on character 
-    						Integer charStart = (Integer) marker.getAttribute(IMarker.CHAR_START);
-    						if (charStart == null) {
-    							return;
-    						}
-    	                    // Get the closest widget to charStart position
-    						wuid = XMLUtil.findClosestWidgetUid(getInputStream(), charStart);
-    						if (wuid == null) {
+    @Override
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
+        if(type == IPropertySheetPage.class)
+            return getPropertySheetPage();
+        else if (type == ZoomManager.class)
+            return ((ScalableFreeformRootEditPart) getGraphicalViewer()
+                .getRootEditPart()).getZoomManager();
+//        else if (type == IContentOutlinePage.class)
+//            return getOverviewOutlinePage();
+        else if (type == IContentOutlinePage.class) {
+            outlinePage = new OutlinePage(new TreeViewer());
+            return outlinePage;
+        }else if (type.equals(IContextProvider.class)){
+            if(helpContextProvider == null)
+                helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
+            return helpContextProvider;
+        } else if (type.equals(IGotoMarker.class)) {
+            return new IGotoMarker() {
+                @Override
+                public void gotoMarker(IMarker marker) {
+                    try {
+                        String wuid = (String) marker.getAttribute(AbstractWidgetModel.PROP_WIDGET_UID);
+                        if (wuid == null) {
+                            //if wuid is not stored in the marker try to find it based on character
+                            Integer charStart = (Integer) marker.getAttribute(IMarker.CHAR_START);
+                            if (charStart == null) {
                                 return;
                             }
-					    }
-						AbstractWidgetModel widget = getDisplayModel().getWidgetFromWUID(wuid);
-						if (widget == null) {
-							return;
-						}
-						// Get the widget editPart 
-						Object obj = getGraphicalViewer().getEditPartRegistry().get(widget);
-						if (obj != null && obj instanceof AbstractBaseEditPart) {
-							EditPart widgetEditPart = (AbstractBaseEditPart) obj;
-							
-							// Reveal the widget
-							getGraphicalViewer().reveal(widgetEditPart);
-							
-							// Find the closest selectable part
-							while (widgetEditPart!=null && !widgetEditPart.isSelectable()) {
-								widgetEditPart = widgetEditPart.getParent();
-							}
-							if(widgetEditPart!=null) {
-								// Select the widget in OPI
-								SelectionManager selectionManager = getGraphicalViewer().getSelectionManager();
-								selectionManager.deselectAll();
-								selectionManager.appendSelection(widgetEditPart);
-							}
-						}
-					} catch (IOException e) {
-						MessageDialog.openError(getSite().getShell(),
-								"IO Error", e.getMessage());
-						OPIBuilderPlugin.getLogger().log(Level.WARNING,
-								"File open error", e); //$NON-NLS-1$
-					} catch (CoreException e) {
-						MessageDialog.openError(getSite().getShell(),
-								"Core Error", e.getMessage());
-						OPIBuilderPlugin.getLogger().log(Level.WARNING,
-								"File open error", e); //$NON-NLS-1$
-					}
-				}
-			};
-		}
-		return super.getAdapter(type);
-	}
+                            // Get the closest widget to charStart position
+                            wuid = XMLUtil.findClosestWidgetUid(getInputStream(), charStart);
+                            if (wuid == null) {
+                                return;
+                            }
+                        }
+                        AbstractWidgetModel widget = getDisplayModel().getWidgetFromWUID(wuid);
+                        if (widget == null) {
+                            return;
+                        }
+                        // Get the widget editPart
+                        Object obj = getGraphicalViewer().getEditPartRegistry().get(widget);
+                        if (obj != null && obj instanceof AbstractBaseEditPart) {
+                            EditPart widgetEditPart = (AbstractBaseEditPart) obj;
 
-	public Clipboard getClipboard() {
-		if(clipboard == null)
-			clipboard = new Clipboard(getSite().getShell().getDisplay());
-		return clipboard;
-	}
+                            // Reveal the widget
+                            getGraphicalViewer().reveal(widgetEditPart);
 
+                            // Find the closest selectable part
+                            while (widgetEditPart!=null && !widgetEditPart.isSelectable()) {
+                                widgetEditPart = widgetEditPart.getParent();
+                            }
+                            if(widgetEditPart!=null) {
+                                // Select the widget in OPI
+                                SelectionManager selectionManager = getGraphicalViewer().getSelectionManager();
+                                selectionManager.deselectAll();
+                                selectionManager.appendSelection(widgetEditPart);
+                            }
+                        }
+                    } catch (IOException e) {
+                        MessageDialog.openError(getSite().getShell(),
+                                "IO Error", e.getMessage());
+                        OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                                "File open error", e); //$NON-NLS-1$
+                    } catch (CoreException e) {
+                        MessageDialog.openError(getSite().getShell(),
+                                "Core Error", e.getMessage());
+                        OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                                "File open error", e); //$NON-NLS-1$
+                    }
+                }
+            };
+        }
+        return super.getAdapter(type);
+    }
 
-	/**
-	 * Returns the KeyHandler with common bindings for both the Outline and Graphical Views.
-	 * For example, delete is a common action.
-	 */
-	protected KeyHandler getCommonKeyHandler(){
-		if (sharedKeyHandler == null){
-			sharedKeyHandler = new KeyHandler();
-			sharedKeyHandler.put(
-				KeyStroke.getPressed(SWT.F2, 0),
-				getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
-		}
-		return sharedKeyHandler;
-	}
-
-	/**
-	 * Returns the Point, which is the center of the Display.
-	 *
-	 * @return Point The Point, which is the center of the Display
-	 */
-	public Point getDisplayCenterPosition() {
-		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer()
-				.getRootEditPart();
-
-		ZoomManager m = root.getZoomManager();
-
-		Point center = m.getViewport().getBounds().getCenter();
-
-		Rectangle x = new Rectangle(center.x, center.y, 10, 10);
-
-		x.translate(m.getViewport().getViewLocation());
-		m.getScalableFigure().translateFromParent(x);
-
-		Point result = x.getLocation();
-
-		return result;
-	}
-
-	public DisplayModel getDisplayModel(){
-		return displayModel;
-	}
-
-	@Override
-	protected Control getGraphicalControl() {
-		return rulerComposite;
-	}	
-	
-	/**
-	 * @return the origin editor input before wrapped by {@link NoResourceEditorInput}.
-	 */
-	public IEditorInput getOriginEditorInput() {
-		IEditorInput editorInput = super.getEditorInput();
-		if(editorInput instanceof NoResourceEditorInput){
-			return ((NoResourceEditorInput)editorInput).getOriginEditorInput();
-		}
-		return editorInput;
-	}
-
-	/**
-	 * Returns a stream which can be used to read this editors input data.
-	 *
-	 * @return a stream which can be used to read this editors input data
-	 */
-	private InputStream getInputStream() {
-		InputStream result = null;
-
-		IEditorInput editorInput = getOriginEditorInput();
-
-		if (editorInput instanceof FileEditorInput) {
-			try {
-				result = ((FileEditorInput) editorInput).getFile()
-						.getContents();
-			} catch (CoreException e) {
-				e.printStackTrace();
-			}
-		} else if (editorInput instanceof FileStoreEditorInput) {
-			IPath path = URIUtil.toPath(((FileStoreEditorInput) editorInput)
-					.getURI());
-			try {
-				result = new FileInputStream(path.toFile());
-			} catch (FileNotFoundException e) {
-				result = null;
-			}
-		}
-
-		return result;
-	}
+    public Clipboard getClipboard() {
+        if(clipboard == null)
+            clipboard = new Clipboard(getSite().getShell().getDisplay());
+        return clipboard;
+    }
 
 
+    /**
+     * Returns the KeyHandler with common bindings for both the Outline and Graphical Views.
+     * For example, delete is a common action.
+     */
+    protected KeyHandler getCommonKeyHandler(){
+        if (sharedKeyHandler == null){
+            sharedKeyHandler = new KeyHandler();
+            sharedKeyHandler.put(
+                KeyStroke.getPressed(SWT.F2, 0),
+                getActionRegistry().getAction(GEFActionConstants.DIRECT_EDIT));
+        }
+        return sharedKeyHandler;
+    }
+
+    /**
+     * Returns the Point, which is the center of the Display.
+     *
+     * @return Point The Point, which is the center of the Display
+     */
+    public Point getDisplayCenterPosition() {
+        ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer()
+                .getRootEditPart();
+
+        ZoomManager m = root.getZoomManager();
+
+        Point center = m.getViewport().getBounds().getCenter();
+
+        Rectangle x = new Rectangle(center.x, center.y, 10, 10);
+
+        x.translate(m.getViewport().getViewLocation());
+        m.getScalableFigure().translateFromParent(x);
+
+        Point result = x.getLocation();
+
+        return result;
+    }
+
+    public DisplayModel getDisplayModel(){
+        return displayModel;
+    }
+
+    @Override
+    protected Control getGraphicalControl() {
+        return rulerComposite;
+    }
+
+    /**
+     * @return the origin editor input before wrapped by {@link NoResourceEditorInput}.
+     */
+    public IEditorInput getOriginEditorInput() {
+        IEditorInput editorInput = super.getEditorInput();
+        if(editorInput instanceof NoResourceEditorInput){
+            return ((NoResourceEditorInput)editorInput).getOriginEditorInput();
+        }
+        return editorInput;
+    }
+
+    /**
+     * Returns a stream which can be used to read this editors input data.
+     *
+     * @return a stream which can be used to read this editors input data
+     */
+    private InputStream getInputStream() {
+        InputStream result = null;
+
+        IEditorInput editorInput = getOriginEditorInput();
+
+        if (editorInput instanceof FileEditorInput) {
+            try {
+                result = ((FileEditorInput) editorInput).getFile()
+                        .getContents();
+            } catch (CoreException e) {
+                e.printStackTrace();
+            }
+        } else if (editorInput instanceof FileStoreEditorInput) {
+            IPath path = URIUtil.toPath(((FileStoreEditorInput) editorInput)
+                    .getURI());
+            try {
+                result = new FileInputStream(path.toFile());
+            } catch (FileNotFoundException e) {
+                result = null;
+            }
+        }
+
+        return result;
+    }
 
 
 
-	/**
-	* Returns the overview for the outline view.
-	*
-	* @return the overview
-	*/
-	protected OverviewOutlinePage getOverviewOutlinePage()
-	{
-		if (null == overviewOutlinePage && null != getGraphicalViewer())
-		{
-			RootEditPart rootEditPart = getGraphicalViewer().getRootEditPart();
-			if (rootEditPart instanceof ScalableFreeformRootEditPart)
-			{
-				overviewOutlinePage =
-					new OverviewOutlinePage(
-							(ScalableFreeformRootEditPart) rootEditPart);
-			}
-		}
-		return overviewOutlinePage;
-	}
-
-	@Override
-	protected PaletteRoot getPaletteRoot() {
-		if(paletteRoot == null)
-			paletteRoot = OPIEditorPaletteFactory.createPalette();
-		return paletteRoot;
-	}
-
-	/**
-	 * Returns the main composite of the editor.
-	 *
-	 * @return the main composite of the editor
-	 */
-	public Composite getParentComposite() {
-		return rulerComposite;
-	}
 
 
-	/**
-	* Returns the undoable <code>PropertySheetPage</code> for
-	* this editor.
-	*
-	* @return the undoable <code>PropertySheetPage</code>
-	*/
-	protected PropertySheetPage getPropertySheetPage(){
-		if(undoablePropertySheetPage == null){
-			undoablePropertySheetPage = new PropertySheetPage();
-			undoablePropertySheetPage.setRootEntry(
-					new UndoablePropertySheetEntry(getCommandStack()));
-		}
-		return undoablePropertySheetPage;
-	}
+    /**
+    * Returns the overview for the outline view.
+    *
+    * @return the overview
+    */
+    protected OverviewOutlinePage getOverviewOutlinePage()
+    {
+        if (null == overviewOutlinePage && null != getGraphicalViewer())
+        {
+            RootEditPart rootEditPart = getGraphicalViewer().getRootEditPart();
+            if (rootEditPart instanceof ScalableFreeformRootEditPart)
+            {
+                overviewOutlinePage =
+                    new OverviewOutlinePage(
+                            (ScalableFreeformRootEditPart) rootEditPart);
+            }
+        }
+        return overviewOutlinePage;
+    }
 
-	//Override this to make unselectable widgets won't be selected.
-	@Override
-	protected SelectionSynchronizer getSelectionSynchronizer() {
-		if (synchronizer == null)
-			synchronizer = new SelectionSynchronizer(){
-			protected EditPart convert(EditPartViewer viewer,  EditPart part) {
-				EditPart editPart = super.convert(viewer, part);
-				if(editPart != null && editPart.isSelectable()){
-					return editPart;
-				}
-				return null;
-			};
-		};
-		return synchronizer;
-	}
+    @Override
+    protected PaletteRoot getPaletteRoot() {
+        if(paletteRoot == null)
+            paletteRoot = OPIEditorPaletteFactory.createPalette();
+        return paletteRoot;
+    }
 
-	/**
-	 *
-	 */
-	private void initDisplayModel() {
+    /**
+     * Returns the main composite of the editor.
+     *
+     * @return the main composite of the editor
+     */
+    public Composite getParentComposite() {
+        return rulerComposite;
+    }
 
-		displayModel = new DisplayModel();
-		displayModel.setOpiFilePath(getOPIFilePath());
-		try {
-			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
-		} catch (Exception e) {
-			String message = "Error happened when loading the OPI file!\n";
-			ErrorHandlerUtil.handleError(message, e, true, true);
-			getEditorSite().getPage().closeEditor(this, false);
-		}
-		
-	}
 
-	private IPath getOPIFilePath() {
-		IEditorInput editorInput = getOriginEditorInput();
-		if (editorInput instanceof FileEditorInput) {
+    /**
+    * Returns the undoable <code>PropertySheetPage</code> for
+    * this editor.
+    *
+    * @return the undoable <code>PropertySheetPage</code>
+    */
+    protected PropertySheetPage getPropertySheetPage(){
+        if(undoablePropertySheetPage == null){
+            undoablePropertySheetPage = new PropertySheetPage();
+            undoablePropertySheetPage.setRootEntry(
+                    new UndoablePropertySheetEntry(getCommandStack()));
+        }
+        return undoablePropertySheetPage;
+    }
 
-			return ((FileEditorInput) editorInput).getFile().getFullPath();
+    //Override this to make unselectable widgets won't be selected.
+    @Override
+    protected SelectionSynchronizer getSelectionSynchronizer() {
+        if (synchronizer == null)
+            synchronizer = new SelectionSynchronizer(){
+            protected EditPart convert(EditPartViewer viewer,  EditPart part) {
+                EditPart editPart = super.convert(viewer, part);
+                if(editPart != null && editPart.isSelectable()){
+                    return editPart;
+                }
+                return null;
+            };
+        };
+        return synchronizer;
+    }
 
-		} else if (editorInput instanceof FileStoreEditorInput) {
-			return URIUtil.toPath(((FileStoreEditorInput) editorInput)
-					.getURI());
-		}
-		return null;
-	}
+    /**
+     *
+     */
+    private void initDisplayModel() {
 
-	@Override
-	protected void initializeGraphicalViewer() {
-		super.initializeGraphicalViewer();
-		GraphicalViewer viewer = getGraphicalViewer();
-		
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(), 
-				"org.csstudio.opibuilder.opi_editor"); //$NON-NLS-1$
-		
-		viewer.setContents(displayModel);
-		displayModel.setViewer(viewer);
-		
-		viewer.addDropTargetListener(createTransferDropTargetListener());
-		viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
-		viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
-		setPartName(getOriginEditorInput().getName());
+        displayModel = new DisplayModel();
+        displayModel.setOpiFilePath(getOPIFilePath());
+        try {
+            XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
+        } catch (Exception e) {
+            String message = "Error happened when loading the OPI file!\n";
+            ErrorHandlerUtil.handleError(message, e, true, true);
+            getEditorSite().getPage().closeEditor(this, false);
+        }
 
-	}
+    }
 
-	@Override
-	public boolean isSaveAsAllowed() {
-		return true;
-	}
-	private void performSave() {
+    private IPath getOPIFilePath() {
+        IEditorInput editorInput = getOriginEditorInput();
+        if (editorInput instanceof FileEditorInput) {
 
-		try {
-			String content = XMLUtil.XML_HEADER + XMLUtil.widgetToXMLString(displayModel, true);
-			if (getOriginEditorInput() instanceof FileEditorInput) {
-				InputStream in = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
-				try {
-					IFile file = ((FileEditorInput) getOriginEditorInput()).getFile();					
-					file.setContents(
-						in, false, false, null);
-					in.close();
-				} catch (Exception e) {
-					in.close();
-					processSaveFailedError(e);
-					return;
-				}
+            return ((FileEditorInput) editorInput).getFile().getFullPath();
 
-			} else if (getOriginEditorInput() instanceof FileStoreEditorInput) {
-					try {
-						File file = URIUtil.toPath(
-							((FileStoreEditorInput) getOriginEditorInput()).getURI())
-							.toFile();
+        } else if (editorInput instanceof FileStoreEditorInput) {
+            return URIUtil.toPath(((FileStoreEditorInput) editorInput)
+                    .getURI());
+        }
+        return null;
+    }
 
-						BufferedWriter writer = new BufferedWriter(
-								new OutputStreamWriter(new FileOutputStream(file), "UTF-8")); //$NON-NLS-1$
-						writer.write(content);
-						writer.flush();
-						writer.close();
-					} catch (Exception e) {
-						processSaveFailedError(e);
-						return;
-					}
+    @Override
+    protected void initializeGraphicalViewer() {
+        super.initializeGraphicalViewer();
+        GraphicalViewer viewer = getGraphicalViewer();
 
-			}
-		} catch (Exception e) {
-				processSaveFailedError(e);
-				return;
-		}
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(viewer.getControl(),
+                "org.csstudio.opibuilder.opi_editor"); //$NON-NLS-1$
 
-		getCommandStack().markSaveLocation();
+        viewer.setContents(displayModel);
+        displayModel.setViewer(viewer);
 
-		firePropertyChange(IEditorPart.PROP_DIRTY);
+        viewer.addDropTargetListener(createTransferDropTargetListener());
+        viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
+        viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
+        setPartName(getOriginEditorInput().getName());
 
-	}
+    }
 
-	/**
-	 * @param e
-	 */
-	private void processSaveFailedError(Exception e) {
-		MessageDialog.openError(getSite().getShell(),
-				"Save Failed!", e.getMessage() +
-				"\nThe original file might be deleted, moved or renamed. " +
-				"Please use File->Save as... to save this file.");
+    @Override
+    public boolean isSaveAsAllowed() {
+        return true;
+    }
+    private void performSave() {
+
+        try {
+            String content = XMLUtil.XML_HEADER + XMLUtil.widgetToXMLString(displayModel, true);
+            if (getOriginEditorInput() instanceof FileEditorInput) {
+                InputStream in = new ByteArrayInputStream(content.getBytes("UTF-8")); //$NON-NLS-1$
+                try {
+                    IFile file = ((FileEditorInput) getOriginEditorInput()).getFile();
+                    file.setContents(
+                        in, false, false, null);
+                    in.close();
+                } catch (Exception e) {
+                    in.close();
+                    processSaveFailedError(e);
+                    return;
+                }
+
+            } else if (getOriginEditorInput() instanceof FileStoreEditorInput) {
+                    try {
+                        File file = URIUtil.toPath(
+                            ((FileStoreEditorInput) getOriginEditorInput()).getURI())
+                            .toFile();
+
+                        BufferedWriter writer = new BufferedWriter(
+                                new OutputStreamWriter(new FileOutputStream(file), "UTF-8")); //$NON-NLS-1$
+                        writer.write(content);
+                        writer.flush();
+                        writer.close();
+                    } catch (Exception e) {
+                        processSaveFailedError(e);
+                        return;
+                    }
+
+            }
+        } catch (Exception e) {
+                processSaveFailedError(e);
+                return;
+        }
+
+        getCommandStack().markSaveLocation();
+
+        firePropertyChange(IEditorPart.PROP_DIRTY);
+
+    }
+
+    /**
+     * @param e
+     */
+    private void processSaveFailedError(Exception e) {
+        MessageDialog.openError(getSite().getShell(),
+                "Save Failed!", e.getMessage() +
+                "\nThe original file might be deleted, moved or renamed. " +
+                "Please use File->Save as... to save this file.");
         OPIBuilderPlugin.getLogger().log(Level.WARNING, "File save failed", e); //$NON-NLS-1$
-	}
+    }
 
 
-	protected FigureCanvas getFigureCanvas(){
-		return (FigureCanvas)getGraphicalViewer().getControl();
-	}
+    protected FigureCanvas getFigureCanvas(){
+        return (FigureCanvas)getGraphicalViewer().getControl();
+    }
 
-	/**The outline page provide both tree view and overview.
-	 * @author Xihui Chen
-	 *
-	 */
-class OutlinePage 	extends ContentOutlinePage 	implements IAdaptable{
+    /**The outline page provide both tree view and overview.
+     * @author Xihui Chen
+     *
+     */
+class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
 
-	private PageBook pageBook;
-	private Control outline;
-	private Canvas overview;
-	private IAction showOutlineAction, showOverviewAction;
-	static final int ID_OUTLINE  = 0;
-	static final int ID_OVERVIEW = 1;
-	private Thumbnail thumbnail;
-	private DisposeListener disposeListener;
+    private PageBook pageBook;
+    private Control outline;
+    private Canvas overview;
+    private IAction showOutlineAction, showOverviewAction;
+    static final int ID_OUTLINE  = 0;
+    static final int ID_OVERVIEW = 1;
+    private Thumbnail thumbnail;
+    private DisposeListener disposeListener;
 
-	public OutlinePage(EditPartViewer viewer){
-		super(viewer);
-	}
-	public void init(IPageSite pageSite) {
-		super.init(pageSite);
-		ActionRegistry registry = getActionRegistry();
-		IActionBars bars = pageSite.getActionBars();
-		String id = ActionFactory.UNDO.getId();
-		bars.setGlobalActionHandler(id, registry.getAction(id));
-		id = ActionFactory.REDO.getId();
-		bars.setGlobalActionHandler(id, registry.getAction(id));
-		id = ActionFactory.DELETE.getId();
-		bars.setGlobalActionHandler(id, registry.getAction(id));
-		id = ActionFactory.COPY.getId();
-		bars.setGlobalActionHandler(id, registry.getAction(id));
-		id = ActionFactory.PASTE.getId();
-		bars.setGlobalActionHandler(id, registry.getAction(id));
-		id = ActionFactory.PRINT.getId();
-		bars.setGlobalActionHandler(id, registry.getAction(id));
+    public OutlinePage(EditPartViewer viewer){
+        super(viewer);
+    }
+    public void init(IPageSite pageSite) {
+        super.init(pageSite);
+        ActionRegistry registry = getActionRegistry();
+        IActionBars bars = pageSite.getActionBars();
+        String id = ActionFactory.UNDO.getId();
+        bars.setGlobalActionHandler(id, registry.getAction(id));
+        id = ActionFactory.REDO.getId();
+        bars.setGlobalActionHandler(id, registry.getAction(id));
+        id = ActionFactory.DELETE.getId();
+        bars.setGlobalActionHandler(id, registry.getAction(id));
+        id = ActionFactory.COPY.getId();
+        bars.setGlobalActionHandler(id, registry.getAction(id));
+        id = ActionFactory.PASTE.getId();
+        bars.setGlobalActionHandler(id, registry.getAction(id));
+        id = ActionFactory.PRINT.getId();
+        bars.setGlobalActionHandler(id, registry.getAction(id));
 
-		bars.updateActionBars();
-	}
+        bars.updateActionBars();
+    }
 
-	protected void configureOutlineViewer(){
-		getViewer().setEditDomain(getEditDomain());
-		getViewer().setEditPartFactory(new WidgetTreeEditpartFactory());
-		final ShowIndexInTreeViewAction showIndexInTreeViewAction =
-				new ShowIndexInTreeViewAction(getViewer());
-			ContextMenuProvider provider = new OPIEditorContextMenuProvider(
-				OPIEditor.this.getGraphicalViewer(), getActionRegistry()){
-			@Override
-			public void buildContextMenu(IMenuManager menu) {
-				super.buildContextMenu(menu);
-				menu.appendToGroup(
-						GEFActionConstants.GROUP_EDIT,
-						showIndexInTreeViewAction);
-			}
-		};
-		getViewer().setContextMenu(provider);
-		getSite().registerContextMenu(
-			"org.csstudio.opibuilder.outline.contextmenu", //$NON-NLS-1$
-			provider, this);
-		getSite().setSelectionProvider(getViewer());
-		getViewer().setKeyHandler(getCommonKeyHandler());
-		getViewer().addDropTargetListener((TransferDropTargetListener)
-			new TemplateTransferDropTargetListener(getViewer()));
+    protected void configureOutlineViewer(){
+        getViewer().setEditDomain(getEditDomain());
+        getViewer().setEditPartFactory(new WidgetTreeEditpartFactory());
+        final ShowIndexInTreeViewAction showIndexInTreeViewAction =
+                new ShowIndexInTreeViewAction(getViewer());
+            ContextMenuProvider provider = new OPIEditorContextMenuProvider(
+                OPIEditor.this.getGraphicalViewer(), getActionRegistry()){
+            @Override
+            public void buildContextMenu(IMenuManager menu) {
+                super.buildContextMenu(menu);
+                menu.appendToGroup(
+                        GEFActionConstants.GROUP_EDIT,
+                        showIndexInTreeViewAction);
+            }
+        };
+        getViewer().setContextMenu(provider);
+        getSite().registerContextMenu(
+            "org.csstudio.opibuilder.outline.contextmenu", //$NON-NLS-1$
+            provider, this);
+        getSite().setSelectionProvider(getViewer());
+        getViewer().setKeyHandler(getCommonKeyHandler());
+        getViewer().addDropTargetListener((TransferDropTargetListener)
+            new TemplateTransferDropTargetListener(getViewer()));
 
-		// status line listener
-		addSelectionChangedListener(new ISelectionChangedListener() {
-			private IStatusLineManager statusLine =getSite().getActionBars().getStatusLineManager();
-			public void selectionChanged(SelectionChangedEvent event) {
-				Display.getCurrent().asyncExec(new Runnable() {
+        // status line listener
+        addSelectionChangedListener(new ISelectionChangedListener() {
+            private IStatusLineManager statusLine =getSite().getActionBars().getStatusLineManager();
+            public void selectionChanged(SelectionChangedEvent event) {
+                Display.getCurrent().asyncExec(new Runnable() {
 
-					public void run() {
-						updateStatusLine(statusLine);
+                    public void run() {
+                        updateStatusLine(statusLine);
 
-					}
-				});
-			}
-		});
+                    }
+                });
+            }
+        });
 
-		IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
-		showOutlineAction = new Action() {
-			public void run() {
-				showPage(ID_OUTLINE);
-			}
-		};
-		showOutlineAction.setImageDescriptor(
-				OPIBuilderPlugin.imageDescriptorFromPlugin(
-						OPIBuilderPlugin.PLUGIN_ID, "icons/tree_mode.gif")); //$NON-NLS-1$
-		showOutlineAction.setToolTipText("Show Tree View ");
-		tbm.add(showOutlineAction);
-		showOverviewAction = new Action() {
-			public void run() {
-				showPage(ID_OVERVIEW);
-			}
-		};
-		showOverviewAction.setImageDescriptor(
-				OPIBuilderPlugin.imageDescriptorFromPlugin(
-				OPIBuilderPlugin.PLUGIN_ID, "icons/overview.gif")); //$NON-NLS-1$
-		showOverviewAction.setToolTipText("Show Overview");
-		tbm.add(showOverviewAction);
-		showPage(ID_OUTLINE);
-	}
+        IToolBarManager tbm = getSite().getActionBars().getToolBarManager();
+        showOutlineAction = new Action() {
+            public void run() {
+                showPage(ID_OUTLINE);
+            }
+        };
+        showOutlineAction.setImageDescriptor(
+                OPIBuilderPlugin.imageDescriptorFromPlugin(
+                        OPIBuilderPlugin.PLUGIN_ID, "icons/tree_mode.gif")); //$NON-NLS-1$
+        showOutlineAction.setToolTipText("Show Tree View ");
+        tbm.add(showOutlineAction);
+        showOverviewAction = new Action() {
+            public void run() {
+                showPage(ID_OVERVIEW);
+            }
+        };
+        showOverviewAction.setImageDescriptor(
+                OPIBuilderPlugin.imageDescriptorFromPlugin(
+                OPIBuilderPlugin.PLUGIN_ID, "icons/overview.gif")); //$NON-NLS-1$
+        showOverviewAction.setToolTipText("Show Overview");
+        tbm.add(showOverviewAction);
+        showPage(ID_OUTLINE);
+    }
 
-	public void createControl(Composite parent){
-		pageBook = new PageBook(parent, SWT.NONE);
-		outline = getViewer().createControl(pageBook);
-		//a hack to make unselectable widgets in editor unselectable too in the tree viewer.
-		Tree tree = ((Tree)getViewer().getControl());
-		tree.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ISelection selection = getViewer().getSelection();
-				if(selection instanceof IStructuredSelection){
-					for(Object o : ((IStructuredSelection)selection).toArray()){
-						if(o instanceof EditPart){
-							EditPart editPart =
-								(EditPart) getGraphicalViewer().getEditPartRegistry().get(((EditPart)o).getModel());
-							if(editPart != null && !(editPart.isSelectable())){
-								getViewer().deselect((EditPart)o);
-							}
-						}
-					}
-				}
-			}
-		});
+    public void createControl(Composite parent){
+        pageBook = new PageBook(parent, SWT.NONE);
+        outline = getViewer().createControl(pageBook);
+        //a hack to make unselectable widgets in editor unselectable too in the tree viewer.
+        Tree tree = ((Tree)getViewer().getControl());
+        tree.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                ISelection selection = getViewer().getSelection();
+                if(selection instanceof IStructuredSelection){
+                    for(Object o : ((IStructuredSelection)selection).toArray()){
+                        if(o instanceof EditPart){
+                            EditPart editPart =
+                                (EditPart) getGraphicalViewer().getEditPartRegistry().get(((EditPart)o).getModel());
+                            if(editPart != null && !(editPart.isSelectable())){
+                                getViewer().deselect((EditPart)o);
+                            }
+                        }
+                    }
+                }
+            }
+        });
 
-		overview = new Canvas(pageBook, SWT.NONE);
-		pageBook.showPage(outline);
-		configureOutlineViewer();
-		hookOutlineViewer();
-		initializeOutlineViewer();
-	}
+        overview = new Canvas(pageBook, SWT.NONE);
+        pageBook.showPage(outline);
+        configureOutlineViewer();
+        hookOutlineViewer();
+        initializeOutlineViewer();
+    }
 
-	public void dispose(){
-		unhookOutlineViewer();
-		if (thumbnail != null) {
-			thumbnail.deactivate();
-			thumbnail = null;
-		}
-		super.dispose();
-		OPIEditor.this.outlinePage = null;
-		outlinePage = null;
-	}
+    public void dispose(){
+        unhookOutlineViewer();
+        if (thumbnail != null) {
+            thumbnail.deactivate();
+            thumbnail = null;
+        }
+        super.dispose();
+        OPIEditor.this.outlinePage = null;
+        outlinePage = null;
+    }
 
-	public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
-		if (type == ZoomManager.class)
-			return getGraphicalViewer().getProperty(ZoomManager.class.toString());
-		else if (type == CommandStack.class)
-			return getCommandStack();
-		else if (type.equals(IContextProvider.class)){
-			if(helpContextProvider == null)
-				helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
-			return helpContextProvider;
-		}			
-		return OPIEditor.this.getAdapter(type);
-	}
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
+        if (type == ZoomManager.class)
+            return getGraphicalViewer().getProperty(ZoomManager.class.toString());
+        else if (type == CommandStack.class)
+            return getCommandStack();
+        else if (type.equals(IContextProvider.class)){
+            if(helpContextProvider == null)
+                helpContextProvider =new OPIHelpContextProvider(getGraphicalViewer());
+            return helpContextProvider;
+        }
+        return OPIEditor.this.getAdapter(type);
+    }
 
-	public Control getControl() {
-		return pageBook;
-	}
+    public Control getControl() {
+        return pageBook;
+    }
 
-	protected void hookOutlineViewer(){
-		getSelectionSynchronizer().addViewer(getViewer());
-	}
+    protected void hookOutlineViewer(){
+        getSelectionSynchronizer().addViewer(getViewer());
+    }
 
-	protected void initializeOutlineViewer(){
-		setContents(getDisplayModel());
-	}
+    protected void initializeOutlineViewer(){
+        setContents(getDisplayModel());
+    }
 
-	protected void initializeOverview() {
-		LightweightSystem lws = new LightweightSystem(overview);
-		RootEditPart rep = getGraphicalViewer().getRootEditPart();
-		if (rep instanceof ScalableFreeformRootEditPart) {
-			ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart)rep;
-			thumbnail = new ScrollableThumbnail((Viewport)root.getFigure());
-			thumbnail.setBorder(new MarginBorder(3));
-			thumbnail.setSource(root.getLayer(LayerConstants.PRINTABLE_LAYERS));
-			lws.setContents(thumbnail);
-			disposeListener = new DisposeListener() {
-				public void widgetDisposed(DisposeEvent e) {
-					if (thumbnail != null) {
-						thumbnail.deactivate();
-						thumbnail = null;
-					}
-				}
-			};
-			getFigureCanvas().addDisposeListener(disposeListener);
-		}
-	}
+    protected void initializeOverview() {
+        LightweightSystem lws = new LightweightSystem(overview);
+        RootEditPart rep = getGraphicalViewer().getRootEditPart();
+        if (rep instanceof ScalableFreeformRootEditPart) {
+            ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart)rep;
+            thumbnail = new ScrollableThumbnail((Viewport)root.getFigure());
+            thumbnail.setBorder(new MarginBorder(3));
+            thumbnail.setSource(root.getLayer(LayerConstants.PRINTABLE_LAYERS));
+            lws.setContents(thumbnail);
+            disposeListener = new DisposeListener() {
+                public void widgetDisposed(DisposeEvent e) {
+                    if (thumbnail != null) {
+                        thumbnail.deactivate();
+                        thumbnail = null;
+                    }
+                }
+            };
+            getFigureCanvas().addDisposeListener(disposeListener);
+        }
+    }
 
-	public void setContents(Object contents) {
-		getViewer().setContents(contents);
-	}
+    public void setContents(Object contents) {
+        getViewer().setContents(contents);
+    }
 
-	protected void showPage(int id) {
-		if (id == ID_OUTLINE) {
-			showOutlineAction.setChecked(true);
-			showOverviewAction.setChecked(false);
-			pageBook.showPage(outline);
-			if (thumbnail != null)
-				thumbnail.setVisible(false);
-		} else if (id == ID_OVERVIEW) {
-			if (thumbnail == null)
-				initializeOverview();
-			showOutlineAction.setChecked(false);
-			showOverviewAction.setChecked(true);
-			pageBook.showPage(overview);
-			thumbnail.setVisible(true);
-		}
-	}
+    protected void showPage(int id) {
+        if (id == ID_OUTLINE) {
+            showOutlineAction.setChecked(true);
+            showOverviewAction.setChecked(false);
+            pageBook.showPage(outline);
+            if (thumbnail != null)
+                thumbnail.setVisible(false);
+        } else if (id == ID_OVERVIEW) {
+            if (thumbnail == null)
+                initializeOverview();
+            showOutlineAction.setChecked(false);
+            showOverviewAction.setChecked(true);
+            pageBook.showPage(overview);
+            thumbnail.setVisible(true);
+        }
+    }
 
-	protected void unhookOutlineViewer(){
-		getSelectionSynchronizer().removeViewer(getViewer());
-		if (disposeListener != null && getFigureCanvas() != null && !getFigureCanvas().isDisposed())
-			getFigureCanvas().removeDisposeListener(disposeListener);
-	}
+    protected void unhookOutlineViewer(){
+        getSelectionSynchronizer().removeViewer(getViewer());
+        if (disposeListener != null && getFigureCanvas() != null && !getFigureCanvas().isDisposed())
+            getFigureCanvas().removeDisposeListener(disposeListener);
+    }
 
-	public GraphicalViewer getGraphicalViewer(){
-		return OPIEditor.this.getGraphicalViewer();
-	}
+    public GraphicalViewer getGraphicalViewer(){
+        return OPIEditor.this.getGraphicalViewer();
+    }
 
-		/* Override this function, so the selection if actually provided by OPIEditor graphical viewer.
-		 * (non-Javadoc)
-		 * @see org.eclipse.gef.ui.parts.ContentOutlinePage#getSelection()
-		 */
-		@Override
-		public ISelection getSelection() {
-		if (getGraphicalViewer() == null)
-			return StructuredSelection.EMPTY;
-		return getGraphicalViewer().getSelection();
-		}
+        /* Override this function, so the selection if actually provided by OPIEditor graphical viewer.
+         * (non-Javadoc)
+         * @see org.eclipse.gef.ui.parts.ContentOutlinePage#getSelection()
+         */
+        @Override
+        public ISelection getSelection() {
+        if (getGraphicalViewer() == null)
+            return StructuredSelection.EMPTY;
+        return getGraphicalViewer().getSelection();
+        }
 }
 }

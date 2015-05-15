@@ -28,296 +28,296 @@ import org.eclipse.swt.graphics.RGB;
 
 /**
  * This class defines a common model for Boolean Symbol Image widget.
- * 
+ *
  * @author SOPRA Group
- * 
+ *
  */
 public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
 
-	/**
-	 * File path of the image.
-	 */
-	public static final String PROP_SYMBOL_IMAGE_FILE = "image_file";
-	/**
-	 * Crop part (in pixels) on top side of the image.
-	 */
-	public static final String PROP_TOPCROP = "crop_top";
-	/**
-	 * Crop part (in pixels) on bottom side of the image.
-	 */
-	public static final String PROP_BOTTOMCROP = "crop_bottom";
-	/**
-	 * Crop part (in pixels) on left side of the image.
-	 */
-	public static final String PROP_LEFTCROP = "crop_left";
-	/**
-	 * Crop part (in pixels) on right side of the image.
-	 */
-	public static final String PROP_RIGHTCROP = "crop_right";
-	/**
-	 * True if the image should be stretched to the widget size.
-	 */
-	public static final String PROP_STRETCH = "stretch_to_fit";
-	/**
-	 * True if the widget size is automatically adjusted to the size of the
-	 * image.
-	 */
-	public static final String PROP_AUTOSIZE = "auto_size";
-	/**
-	 * Degree value of the image.
-	 */
-	public static final String PROP_DEGREE = "degree";
-	/**
-	 * Horizontal flip applied on the image.
-	 */
-	public static final String PROP_FLIP_HORIZONTAL = "flip_horizontal";
-	/**
-	 * Vertical flip applied on the image.
-	 */
-	public static final String PROP_FLIP_VERTICAL = "flip_vertical";
-	/**
-	 * Image disposition (permutation matrix)
-	 */
-	public static final String PERMUTATION_MATRIX = "permutation_matrix";
-	// Obsolete property
-	public static final String IMAGE_DISPOSITION = "image_disposition";
+    /**
+     * File path of the image.
+     */
+    public static final String PROP_SYMBOL_IMAGE_FILE = "image_file";
+    /**
+     * Crop part (in pixels) on top side of the image.
+     */
+    public static final String PROP_TOPCROP = "crop_top";
+    /**
+     * Crop part (in pixels) on bottom side of the image.
+     */
+    public static final String PROP_BOTTOMCROP = "crop_bottom";
+    /**
+     * Crop part (in pixels) on left side of the image.
+     */
+    public static final String PROP_LEFTCROP = "crop_left";
+    /**
+     * Crop part (in pixels) on right side of the image.
+     */
+    public static final String PROP_RIGHTCROP = "crop_right";
+    /**
+     * True if the image should be stretched to the widget size.
+     */
+    public static final String PROP_STRETCH = "stretch_to_fit";
+    /**
+     * True if the widget size is automatically adjusted to the size of the
+     * image.
+     */
+    public static final String PROP_AUTOSIZE = "auto_size";
+    /**
+     * Degree value of the image.
+     */
+    public static final String PROP_DEGREE = "degree";
+    /**
+     * Horizontal flip applied on the image.
+     */
+    public static final String PROP_FLIP_HORIZONTAL = "flip_horizontal";
+    /**
+     * Vertical flip applied on the image.
+     */
+    public static final String PROP_FLIP_VERTICAL = "flip_vertical";
+    /**
+     * Image disposition (permutation matrix)
+     */
+    public static final String PERMUTATION_MATRIX = "permutation_matrix";
+    // Obsolete property
+    public static final String IMAGE_DISPOSITION = "image_disposition";
 
-	/** The default string of the on label property. */
-	private static final String DEFAULT_ON_LABEL = "ON";
-	/** The default string of the off label property. */
-	private static final String DEFAULT_OFF_LABEL = "OFF";
-	/** The default color of the on color property. */
-	private static final RGB DEFAULT_ON_COLOR = new RGB(0, 255, 0);
-	/** The default color of the off color property. */
-	private static final RGB DEFAULT_OFF_COLOR = new RGB(255, 0, 0);
+    /** The default string of the on label property. */
+    private static final String DEFAULT_ON_LABEL = "ON";
+    /** The default string of the off label property. */
+    private static final String DEFAULT_OFF_LABEL = "OFF";
+    /** The default color of the on color property. */
+    private static final RGB DEFAULT_ON_COLOR = new RGB(0, 255, 0);
+    /** The default color of the off color property. */
+    private static final RGB DEFAULT_OFF_COLOR = new RGB(255, 0, 0);
 
-	/**
-	 * True if the widget doesn't show animation even it is a animated image
-	 * file.
-	 */
-	public static final String PROP_NO_ANIMATION = "no_animation";
-	public static final String PROP_ALIGN_TO_NEAREST_SECOND = "align_to_nearest_second";
+    /**
+     * True if the widget doesn't show animation even it is a animated image
+     * file.
+     */
+    public static final String PROP_NO_ANIMATION = "no_animation";
+    public static final String PROP_ALIGN_TO_NEAREST_SECOND = "align_to_nearest_second";
 
-	@Override
-	public void configureProperties() {
-		super.configureProperties();
+    @Override
+    public void configureProperties() {
+        super.configureProperties();
 
-		// Override On/Off label and color default values
-		addProperty(new StringProperty(PROP_ON_LABEL, "On Label",
-				WidgetPropertyCategory.Display, DEFAULT_ON_LABEL));
-		addProperty(new StringProperty(PROP_OFF_LABEL, "Off Label",
-				WidgetPropertyCategory.Display, DEFAULT_OFF_LABEL));
-		addProperty(new ColorProperty(PROP_ON_COLOR, "On Color",
-				WidgetPropertyCategory.Display, DEFAULT_ON_COLOR));
-		addProperty(new ColorProperty(PROP_OFF_COLOR, "Off Color",
-				WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));
+        // Override On/Off label and color default values
+        addProperty(new StringProperty(PROP_ON_LABEL, "On Label",
+                WidgetPropertyCategory.Display, DEFAULT_ON_LABEL));
+        addProperty(new StringProperty(PROP_OFF_LABEL, "Off Label",
+                WidgetPropertyCategory.Display, DEFAULT_OFF_LABEL));
+        addProperty(new ColorProperty(PROP_ON_COLOR, "On Color",
+                WidgetPropertyCategory.Display, DEFAULT_ON_COLOR));
+        addProperty(new ColorProperty(PROP_OFF_COLOR, "Off Color",
+                WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));
 
-		addProperty(new FilePathPropertyWithFilter(PROP_SYMBOL_IMAGE_FILE,
-				"Symbol Image", WidgetPropertyCategory.Display, new Path(""),
-				SymbolUtils.IMAGE_EXTENSIONS));
-		addProperty(new IntegerProperty(PROP_TOPCROP, "Crop Top",
-				WidgetPropertyCategory.Image, 0));
-		addProperty(new IntegerProperty(PROP_BOTTOMCROP, "Crop Bottom",
-				WidgetPropertyCategory.Image, 0));
-		addProperty(new IntegerProperty(PROP_LEFTCROP, "Crop Left",
-				WidgetPropertyCategory.Image, 0));
-		addProperty(new IntegerProperty(PROP_RIGHTCROP, "Crop Right",
-				WidgetPropertyCategory.Image, 0));
-		addProperty(new BooleanProperty(PROP_STRETCH, "Stretch to Fit",
-				WidgetPropertyCategory.Image, false));
-		addProperty(new BooleanProperty(PROP_NO_ANIMATION, "No Animation",
-				WidgetPropertyCategory.Image, false));
-		addProperty(new BooleanProperty(PROP_ALIGN_TO_NEAREST_SECOND, "Animation aligned to the nearest second",
-				WidgetPropertyCategory.Image, false));
-		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size",
-				WidgetPropertyCategory.Image, true));
+        addProperty(new FilePathPropertyWithFilter(PROP_SYMBOL_IMAGE_FILE,
+                "Symbol Image", WidgetPropertyCategory.Display, new Path(""),
+                SymbolUtils.IMAGE_EXTENSIONS));
+        addProperty(new IntegerProperty(PROP_TOPCROP, "Crop Top",
+                WidgetPropertyCategory.Image, 0));
+        addProperty(new IntegerProperty(PROP_BOTTOMCROP, "Crop Bottom",
+                WidgetPropertyCategory.Image, 0));
+        addProperty(new IntegerProperty(PROP_LEFTCROP, "Crop Left",
+                WidgetPropertyCategory.Image, 0));
+        addProperty(new IntegerProperty(PROP_RIGHTCROP, "Crop Right",
+                WidgetPropertyCategory.Image, 0));
+        addProperty(new BooleanProperty(PROP_STRETCH, "Stretch to Fit",
+                WidgetPropertyCategory.Image, false));
+        addProperty(new BooleanProperty(PROP_NO_ANIMATION, "No Animation",
+                WidgetPropertyCategory.Image, false));
+        addProperty(new BooleanProperty(PROP_ALIGN_TO_NEAREST_SECOND, "Animation aligned to the nearest second",
+                WidgetPropertyCategory.Image, false));
+        addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size",
+                WidgetPropertyCategory.Image, true));
 
-		addProperty(new IntegerProperty(PROP_DEGREE, "Rotation Angle",
-				WidgetPropertyCategory.Image, 0));
-		addProperty(new BooleanProperty(PROP_FLIP_HORIZONTAL,
-				"Flip Horizontal", WidgetPropertyCategory.Image, false));
-		addProperty(new BooleanProperty(PROP_FLIP_VERTICAL, "Flip Vertical",
-				WidgetPropertyCategory.Image, false));
-//		setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
-//		setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
-//		setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
-		
-		addProperty(new MatrixProperty(PERMUTATION_MATRIX,
-				"Permutation Matrix", WidgetPropertyCategory.Image,
-				PermutationMatrix.generateIdentityMatrix().getMatrix()));
-		setPropertyVisibleAndSavable(PERMUTATION_MATRIX, false, true);
-		// Obsolete property
-		addProperty(new StringProperty(IMAGE_DISPOSITION, "Image Disposition",
-				WidgetPropertyCategory.Image, "1234"));
-		setPropertyVisibleAndSavable(IMAGE_DISPOSITION, false, false);
-	}
+        addProperty(new IntegerProperty(PROP_DEGREE, "Rotation Angle",
+                WidgetPropertyCategory.Image, 0));
+        addProperty(new BooleanProperty(PROP_FLIP_HORIZONTAL,
+                "Flip Horizontal", WidgetPropertyCategory.Image, false));
+        addProperty(new BooleanProperty(PROP_FLIP_VERTICAL, "Flip Vertical",
+                WidgetPropertyCategory.Image, false));
+//        setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
+//        setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
+//        setPropertyVisibleAndSavable(PROP_FLIP_VERTICAL, false, true);
 
-	/**
-	 * Get the path to the specified file.
-	 * 
-	 * @return The path to the specified file
-	 */
-	public IPath getSymbolImagePath() {
-		IPath absolutePath = (IPath) getProperty(PROP_SYMBOL_IMAGE_FILE)
-				.getPropertyValue();
-		if (!absolutePath.isAbsolute()) {
-			absolutePath = ResourceUtil.buildAbsolutePath(this, absolutePath);
-		}
-		return absolutePath;
-	}
+        addProperty(new MatrixProperty(PERMUTATION_MATRIX,
+                "Permutation Matrix", WidgetPropertyCategory.Image,
+                PermutationMatrix.generateIdentityMatrix().getMatrix()));
+        setPropertyVisibleAndSavable(PERMUTATION_MATRIX, false, true);
+        // Obsolete property
+        addProperty(new StringProperty(IMAGE_DISPOSITION, "Image Disposition",
+                WidgetPropertyCategory.Image, "1234"));
+        setPropertyVisibleAndSavable(IMAGE_DISPOSITION, false, false);
+    }
 
-	/**
-	 * Get the amount of pixels, which should be cropped from the top edge of
-	 * the image.
-	 * 
-	 * @return The amount of pixels
-	 */
-	public int getTopCrop() {
-		return (Integer) getProperty(PROP_TOPCROP).getPropertyValue();
-	}
+    /**
+     * Get the path to the specified file.
+     *
+     * @return The path to the specified file
+     */
+    public IPath getSymbolImagePath() {
+        IPath absolutePath = (IPath) getProperty(PROP_SYMBOL_IMAGE_FILE)
+                .getPropertyValue();
+        if (!absolutePath.isAbsolute()) {
+            absolutePath = ResourceUtil.buildAbsolutePath(this, absolutePath);
+        }
+        return absolutePath;
+    }
 
-	/**
-	 * Get the amount of pixels, which should be cropped from the bottom edge of
-	 * the image.
-	 * 
-	 * @return The amount of pixels
-	 */
-	public int getBottomCrop() {
-		return (Integer) getProperty(PROP_BOTTOMCROP).getPropertyValue();
-	}
+    /**
+     * Get the amount of pixels, which should be cropped from the top edge of
+     * the image.
+     *
+     * @return The amount of pixels
+     */
+    public int getTopCrop() {
+        return (Integer) getProperty(PROP_TOPCROP).getPropertyValue();
+    }
 
-	/**
-	 * Get the amount of pixels, which should be cropped from the left edge of
-	 * the image.
-	 * 
-	 * @return The amount of pixels
-	 */
-	public int getLeftCrop() {
-		return (Integer) getProperty(PROP_LEFTCROP).getPropertyValue();
-	}
+    /**
+     * Get the amount of pixels, which should be cropped from the bottom edge of
+     * the image.
+     *
+     * @return The amount of pixels
+     */
+    public int getBottomCrop() {
+        return (Integer) getProperty(PROP_BOTTOMCROP).getPropertyValue();
+    }
 
-	/**
-	 * Get the amount of pixels, which should be cropped from the right edge of
-	 * the image.
-	 * 
-	 * @return The amount of pixels
-	 */
-	public int getRightCrop() {
-		return (Integer) getProperty(PROP_RIGHTCROP).getPropertyValue();
-	}
+    /**
+     * Get the amount of pixels, which should be cropped from the left edge of
+     * the image.
+     *
+     * @return The amount of pixels
+     */
+    public int getLeftCrop() {
+        return (Integer) getProperty(PROP_LEFTCROP).getPropertyValue();
+    }
 
-	/**
-	 * Check if the image should be stretched.
-	 * 
-	 * @return True if stretched, false otherwise
-	 */
-	public boolean getStretch() {
-		return (Boolean) getProperty(PROP_STRETCH).getPropertyValue();
-	}
+    /**
+     * Get the amount of pixels, which should be cropped from the right edge of
+     * the image.
+     *
+     * @return The amount of pixels
+     */
+    public int getRightCrop() {
+        return (Integer) getProperty(PROP_RIGHTCROP).getPropertyValue();
+    }
 
-	/**
-	 * Check if the widget should be auto sized according the image size.
-	 * 
-	 * @return True if auto sized, false otherwise
-	 */
-	public boolean isAutoSize() {
-		return (Boolean) getProperty(PROP_AUTOSIZE).getPropertyValue();
-	}
+    /**
+     * Check if the image should be stretched.
+     *
+     * @return True if stretched, false otherwise
+     */
+    public boolean getStretch() {
+        return (Boolean) getProperty(PROP_STRETCH).getPropertyValue();
+    }
 
-	/**
-	 * Get the current degree of the image.
-	 * 
-	 * @return The degree value
-	 */
-	public int getDegree() {
-		return (Integer) getProperty(PROP_DEGREE).getPropertyValue();
-	}
+    /**
+     * Check if the widget should be auto sized according the image size.
+     *
+     * @return True if auto sized, false otherwise
+     */
+    public boolean isAutoSize() {
+        return (Boolean) getProperty(PROP_AUTOSIZE).getPropertyValue();
+    }
 
-	/**
-	 * Check if an horizontal flip was applied.
-	 * 
-	 * @return True if horizontal flip, false otherwise
-	 */
-	public boolean isFlipHorizontal() {
-		return (Boolean) getProperty(PROP_FLIP_HORIZONTAL).getPropertyValue();
-	}
+    /**
+     * Get the current degree of the image.
+     *
+     * @return The degree value
+     */
+    public int getDegree() {
+        return (Integer) getProperty(PROP_DEGREE).getPropertyValue();
+    }
 
-	/**
-	 * Check if an vertical flip was applied.
-	 * 
-	 * @return True if vertical flip, false otherwise
-	 */
-	public boolean isFlipVertical() {
-		return (Boolean) getProperty(PROP_FLIP_VERTICAL).getPropertyValue();
-	}
-	
-	/**
-	 * Get the current disposition of the image.
-	 * 
-	 * @return The permutation matrix
-	 */
-	public PermutationMatrix getPermutationMatrix() {
-		return new PermutationMatrix((double[][]) getProperty(
-				PERMUTATION_MATRIX).getPropertyValue());
-	}
+    /**
+     * Check if an horizontal flip was applied.
+     *
+     * @return True if horizontal flip, false otherwise
+     */
+    public boolean isFlipHorizontal() {
+        return (Boolean) getProperty(PROP_FLIP_HORIZONTAL).getPropertyValue();
+    }
 
-	@Override
-	public void rotate90(boolean clockwise) {
-		int degree = (Integer) getPropertyValue(MonitorBoolSymbolModel.PROP_DEGREE);
-		switch (degree) {
-		case 0:
-			degree = clockwise ? 90 : 270;
-			break;
-		case 90:
-			degree = clockwise ? 180 : 0;
-			break;
-		case 180:
-			degree = clockwise ? 270 : 90;
-			break;
-		case 270:
-			degree = clockwise ? 0 : 180;
-			break;
-		default:
-			Activator.getLogger().log(Level.WARNING,
-					"ERROR in value of degree " + degree);
-		}
-		setPropertyValue(MonitorBoolSymbolModel.PROP_DEGREE, degree);
-	}
+    /**
+     * Check if an vertical flip was applied.
+     *
+     * @return True if vertical flip, false otherwise
+     */
+    public boolean isFlipVertical() {
+        return (Boolean) getProperty(PROP_FLIP_VERTICAL).getPropertyValue();
+    }
 
-	@Override
-	public void flipHorizontally() {
-		boolean oldValue = (Boolean) getPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_HORIZONTAL);
-		setPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_HORIZONTAL, !oldValue);
-	}
+    /**
+     * Get the current disposition of the image.
+     *
+     * @return The permutation matrix
+     */
+    public PermutationMatrix getPermutationMatrix() {
+        return new PermutationMatrix((double[][]) getProperty(
+                PERMUTATION_MATRIX).getPropertyValue());
+    }
 
-	@Override
-	public void flipVertically() {
-		boolean oldValue = (Boolean) getPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL);
-		setPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL, !oldValue);
-	}
-	
-	@Override
-	public void setPropertyValue(Object id, Object value) {
-		// Override obsolete properties
-		if (id != null && id instanceof String) {
-			if (((String) id).equals(IMAGE_DISPOSITION)) {
-				id = PERMUTATION_MATRIX;
-				value = ImagePermuter.getMatrix((String) value);
-			}
-		}
-		super.setPropertyValue(id, value);
-	}
+    @Override
+    public void rotate90(boolean clockwise) {
+        int degree = (Integer) getPropertyValue(MonitorBoolSymbolModel.PROP_DEGREE);
+        switch (degree) {
+        case 0:
+            degree = clockwise ? 90 : 270;
+            break;
+        case 90:
+            degree = clockwise ? 180 : 0;
+            break;
+        case 180:
+            degree = clockwise ? 270 : 90;
+            break;
+        case 270:
+            degree = clockwise ? 0 : 180;
+            break;
+        default:
+            Activator.getLogger().log(Level.WARNING,
+                    "ERROR in value of degree " + degree);
+        }
+        setPropertyValue(MonitorBoolSymbolModel.PROP_DEGREE, degree);
+    }
 
-	/**
-	 * @return True if the animation is stopped.
-	 */
-	public boolean isStopAnimation() {
-		return (Boolean) getProperty(PROP_NO_ANIMATION).getPropertyValue();
-	}
+    @Override
+    public void flipHorizontally() {
+        boolean oldValue = (Boolean) getPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_HORIZONTAL);
+        setPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_HORIZONTAL, !oldValue);
+    }
 
-	public boolean isAlignedToNearestSecond() {
-		return (Boolean) getProperty(PROP_ALIGN_TO_NEAREST_SECOND)
-				.getPropertyValue();
-	}
+    @Override
+    public void flipVertically() {
+        boolean oldValue = (Boolean) getPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL);
+        setPropertyValue(MonitorBoolSymbolModel.PROP_FLIP_VERTICAL, !oldValue);
+    }
+
+    @Override
+    public void setPropertyValue(Object id, Object value) {
+        // Override obsolete properties
+        if (id != null && id instanceof String) {
+            if (((String) id).equals(IMAGE_DISPOSITION)) {
+                id = PERMUTATION_MATRIX;
+                value = ImagePermuter.getMatrix((String) value);
+            }
+        }
+        super.setPropertyValue(id, value);
+    }
+
+    /**
+     * @return True if the animation is stopped.
+     */
+    public boolean isStopAnimation() {
+        return (Boolean) getProperty(PROP_NO_ANIMATION).getPropertyValue();
+    }
+
+    public boolean isAlignedToNearestSecond() {
+        return (Boolean) getProperty(PROP_ALIGN_TO_NEAREST_SECOND)
+                .getPropertyValue();
+    }
 
 }

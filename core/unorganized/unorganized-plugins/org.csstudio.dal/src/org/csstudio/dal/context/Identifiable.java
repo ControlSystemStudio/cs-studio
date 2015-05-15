@@ -34,33 +34,33 @@ package org.csstudio.dal.context;
  */
 public interface Identifiable
 {
-	/**
-	 * The constant defining the name of <code>debug</code> property.
-	 * Useful when the value of the property is stored in a map of some sort,
-	 * such as a configuration or the like.
-	 */
-	public static final String DEBUG = "debug";
+    /**
+     * The constant defining the name of <code>debug</code> property.
+     * Useful when the value of the property is stored in a map of some sort,
+     * such as a configuration or the like.
+     */
+    public static final String DEBUG = "debug";
 
-	/**
-	 * Returns an object instance implementing the
-	 * <code>Identifier</code> interface. This object should be constrcuted as
-	 * described in <code>Identifier</code> documentation. The implementation
-	 * is allowed (and encouraged) to return the same instance to conserve
-	 * memory allocation costs.
-	 *
-	 * @return an identifier for <code>this</code>
-	 */
-	Identifier getIdentifier();
+    /**
+     * Returns an object instance implementing the
+     * <code>Identifier</code> interface. This object should be constrcuted as
+     * described in <code>Identifier</code> documentation. The implementation
+     * is allowed (and encouraged) to return the same instance to conserve
+     * memory allocation costs.
+     *
+     * @return an identifier for <code>this</code>
+     */
+    Identifier getIdentifier();
 
-	/**
-	 * The <code>debug</code> policy of this identifier. If this flag
-	 * is enabled and if loggin service enoconters this identifeable,  than
-	 * service should generate message logs with FINE, FINER  and FINEST
-	 * levels.
-	 *
-	 * @return debug policy
-	 */
-	boolean isDebug();
+    /**
+     * The <code>debug</code> policy of this identifier. If this flag
+     * is enabled and if loggin service enoconters this identifeable,  than
+     * service should generate message logs with FINE, FINER  and FINEST
+     * levels.
+     *
+     * @return debug policy
+     */
+    boolean isDebug();
 }
 
 /* __oOo__ */

@@ -184,12 +184,12 @@ public class AlarmState
     @Override
     public int hashCode()
     {
-	    final int prime = 31;
-	    int result = message.hashCode();
-	    result = prime * result + severity.hashCode();
-	    result = prime * result + time.hashCode();
-	    result = prime * result + value.hashCode();
-	    return result;
+        final int prime = 31;
+        int result = message.hashCode();
+        result = prime * result + severity.hashCode();
+        result = prime * result + time.hashCode();
+        result = prime * result + value.hashCode();
+        return result;
     }
 
     @Override

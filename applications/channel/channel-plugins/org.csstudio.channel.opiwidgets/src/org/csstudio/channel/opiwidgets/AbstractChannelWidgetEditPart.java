@@ -14,7 +14,7 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModel;
  * all channel based widgets, some of which may in the future be pushed to the BOY base classes.
  * <p>
  * Generics is used to avoid casting figures and widgets.
- * 
+ *
  * @author carcassi
  *
  * @param <F> the figure type
@@ -23,14 +23,14 @@ import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModel;
 public abstract class AbstractChannelWidgetEditPart<F extends AbstractChannelWidgetFigure<?>,
     M extends AbstractSelectionWidgetModel> extends AbstractSelectionWidgetEditpart<F, M>
     implements ChannelQueryAdaptable {
-	
-	@Override
-	public Collection<ChannelQuery> toChannelQueries() {
-		return selectionToTypeCollection(ChannelQuery.class);
-	}
-	
-	@Override
-	public Collection<Channel> toChannels() {
-		return selectionToTypeCollection(Channel.class);
-	}
+
+    @Override
+    public Collection<ChannelQuery> toChannelQueries() {
+        return selectionToTypeCollection(ChannelQuery.class);
+    }
+
+    @Override
+    public Collection<Channel> toChannels() {
+        return selectionToTypeCollection(Channel.class);
+    }
 }

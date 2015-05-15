@@ -22,50 +22,50 @@ import org.eclipse.swt.widgets.Text;
  */
 public class EditModuleOptionDialog extends RowEditDialog {
 
-	private Text titleText, detailsText;
+    private Text titleText, detailsText;
 
 
-	protected EditModuleOptionDialog(Shell parentShell) {
-		super(parentShell);
-	}
+    protected EditModuleOptionDialog(Shell parentShell) {
+        super(parentShell);
+    }
 
-	@Override
-	protected Control createDialogArea(Composite parent) {
+    @Override
+    protected Control createDialogArea(Composite parent) {
         final Composite parent_composite = (Composite) super.createDialogArea(parent);
         final Composite composite = new Composite(parent_composite, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		composite.setLayout(new GridLayout(2, false));
-		GridData gd;
+        composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        composite.setLayout(new GridLayout(2, false));
+        GridData gd;
 
-		final Label titleLable = new Label(composite, 0);
-		titleLable.setText(Messages.EditModuleOptionDialog_option);
-		titleLable.setLayoutData(new GridData());
+        final Label titleLable = new Label(composite, 0);
+        titleLable.setText(Messages.EditModuleOptionDialog_option);
+        titleLable.setLayoutData(new GridData());
 
-		titleText = new Text(composite, SWT.BORDER | SWT.SINGLE);
+        titleText = new Text(composite, SWT.BORDER | SWT.SINGLE);
 
-		titleText.setText(rowData[0]);
-		gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-		gd.widthHint = 400;
-		titleText.setLayoutData(gd);
+        titleText.setText(rowData[0]);
+        gd = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+        gd.widthHint = 400;
+        titleText.setLayoutData(gd);
 
-		final Label detailsLable = new Label(composite, SWT.NONE);
-		detailsLable.setText(Messages.EditModuleOptionDialog_value);
-		detailsLable.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
+        final Label detailsLable = new Label(composite, SWT.NONE);
+        detailsLable.setText(Messages.EditModuleOptionDialog_value);
+        detailsLable.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, false, false));
 
-		detailsText = new Text(composite, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
-		gd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
-		gd.widthHint = 400;
-		detailsText.setLayoutData(gd);
-		detailsText.setText(rowData[1]);
+        detailsText = new Text(composite, SWT.BORDER | SWT.SINGLE | SWT.V_SCROLL | SWT.H_SCROLL);
+        gd = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
+        gd.widthHint = 400;
+        detailsText.setLayoutData(gd);
+        detailsText.setText(rowData[1]);
 
-		return parent_composite;
-	}
+        return parent_composite;
+    }
 
-	@Override
-	protected void okPressed() {
-		rowData[0] = titleText == null ? "" : titleText.getText().trim(); //$NON-NLS-1$
-		rowData[1] = detailsText == null ? "" : detailsText.getText().trim(); //$NON-NLS-1$
-		super.okPressed();
-	}
+    @Override
+    protected void okPressed() {
+        rowData[0] = titleText == null ? "" : titleText.getText().trim(); //$NON-NLS-1$
+        rowData[1] = detailsText == null ? "" : detailsText.getText().trim(); //$NON-NLS-1$
+        super.okPressed();
+    }
 
 }

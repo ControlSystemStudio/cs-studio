@@ -15,31 +15,31 @@ import org.eclipse.swt.graphics.RGB;
 
 public class Polygon2Model extends AbstractADL2Model {
 
-	public Polygon2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
-		super(adlWidget, colorMap, parentModel);
-	}
+    public Polygon2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
+        super(adlWidget, colorMap, parentModel);
+    }
 
-	@Override
-	public void processWidget(ADLWidget adlWidget) {
-		ADLAbstractWidget polygonWidget = new Polygon(adlWidget);
-		if (polygonWidget != null) {
-			setADLObjectProps(polygonWidget, widgetModel);
-			setADLBasicAttributeProps(polygonWidget, widgetModel, true);
-			setADLDynamicAttributeProps(polygonWidget, widgetModel);
-		}
-		((PolygonModel)widgetModel).setPoints(polygonWidget.getAdlPoints().getPointsList(), true);
+    @Override
+    public void processWidget(ADLWidget adlWidget) {
+        ADLAbstractWidget polygonWidget = new Polygon(adlWidget);
+        if (polygonWidget != null) {
+            setADLObjectProps(polygonWidget, widgetModel);
+            setADLBasicAttributeProps(polygonWidget, widgetModel, true);
+            setADLDynamicAttributeProps(polygonWidget, widgetModel);
+        }
+        ((PolygonModel)widgetModel).setPoints(polygonWidget.getAdlPoints().getPointsList(), true);
 
-		//check fill parameters
-		if ( polygonWidget.hasADLBasicAttribute() ) {
-			setShapesColorFillLine(polygonWidget);
-			
-		}
-	}
+        //check fill parameters
+        if ( polygonWidget.hasADLBasicAttribute() ) {
+            setShapesColorFillLine(polygonWidget);
 
-	@Override
-	public void makeModel(ADLWidget adlWidget,
-			AbstractContainerModel parentModel) {
-		widgetModel = new PolygonModel();
-		parentModel.addChild(widgetModel, true);
-	}
+        }
+    }
+
+    @Override
+    public void makeModel(ADLWidget adlWidget,
+            AbstractContainerModel parentModel) {
+        widgetModel = new PolygonModel();
+        parentModel.addChild(widgetModel, true);
+    }
 }

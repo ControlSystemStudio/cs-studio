@@ -34,9 +34,9 @@ package org.csstudio.dal;
  * @see org.csstudio.dal.DynamicValueProperty
  */
 public interface LongSeqProperty extends NumericProperty<long[],Long>,
-	LongSeqSimpleProperty
+    LongSeqSimpleProperty
 {
-	//
+    //
 }
 
 /* __oOo__ */

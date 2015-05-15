@@ -9,39 +9,39 @@ package org.csstudio.alarm.beast.notifier;
 
 /**
  * Details about an automated action.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
- * 
+ *
  */
 public class AAData {
 
-	/**
-	 * The details text under the title. You must use empty string ("") not null
-	 * if there is no details under the title.
-	 */
-	final private String details;
+    /**
+     * The details text under the title. You must use empty string ("") not null
+     * if there is no details under the title.
+     */
+    final private String details;
 
-	/** The delay for the action. */
-	final private int delay;
+    /** The delay for the action. */
+    final private int delay;
 
-	final private boolean manual;
+    final private boolean manual;
 
-	public AAData(final String details, final int delay, final boolean manual) {
-		this.details = details;
-		this.delay = delay;
-		this.manual = manual;
-	}
+    public AAData(final String details, final int delay, final boolean manual) {
+        this.details = details;
+        this.delay = delay;
+        this.manual = manual;
+    }
 
-	public String getDetails() {
-		return details;
-	}
+    public String getDetails() {
+        return details;
+    }
 
-	public int getDelay() {
-		return delay;
-	}
+    public int getDelay() {
+        return delay;
+    }
 
-	public boolean isManual() {
-		return manual;
-	}
+    public boolean isManual() {
+        return manual;
+    }
 
 }

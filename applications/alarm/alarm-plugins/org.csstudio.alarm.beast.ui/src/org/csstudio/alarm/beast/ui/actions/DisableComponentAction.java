@@ -60,10 +60,10 @@ public class DisableComponentAction extends Action
         return false;
     }
 
-	@Override
-	public void run()
-	{   // Locate PVs
-	    final List<AlarmTreePV> pvs = new ArrayList<>();
+    @Override
+    public void run()
+    {   // Locate PVs
+        final List<AlarmTreePV> pvs = new ArrayList<>();
         for (AlarmTreeItem item : items)
             addPVs(pvs, item);
         if (pvs.size() > 0)
@@ -85,11 +85,11 @@ public class DisableComponentAction extends Action
                     NLS.bind(Messages.EnablementErrorFmt, pv.getPathName()), ex);
             }
         }
-	}
+    }
 
-	/** @param pvs List where PVs to enable/disable will be added
-	 *  @param item Item for which to locate PVs, recursively
-	 */
+    /** @param pvs List where PVs to enable/disable will be added
+     *  @param item Item for which to locate PVs, recursively
+     */
     protected void addPVs(final List<AlarmTreePV> pvs, final AlarmTreeItem item)
     {
         if (item instanceof AlarmTreePV)

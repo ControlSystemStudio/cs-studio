@@ -35,199 +35,199 @@ import org.epics.vtype.VType;
  */
 public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 
-	private IPVListener loadItemsFromPVListener;
+    private IPVListener loadItemsFromPVListener;
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected IFigure doCreateFigure() {
-		final AbstractChoiceModel model = getWidgetModel();
-		updatePropSheet(model.isItemsFromPV());
-		AbstractChoiceFigure choiceFigure = createChoiceFigure();
-		choiceFigure.setSelectedColor(
-				getWidgetModel().getSelectedColor().getSWTColor());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected IFigure doCreateFigure() {
+        final AbstractChoiceModel model = getWidgetModel();
+        updatePropSheet(model.isItemsFromPV());
+        AbstractChoiceFigure choiceFigure = createChoiceFigure();
+        choiceFigure.setSelectedColor(
+                getWidgetModel().getSelectedColor().getSWTColor());
 
-		choiceFigure.setFont(CustomMediaFactory.getInstance().getFont(
-						model.getFont().getFontData()));
+        choiceFigure.setFont(CustomMediaFactory.getInstance().getFont(
+                        model.getFont().getFontData()));
 
-		choiceFigure.setHorizontal((Boolean)(model.getPropertyValue(AbstractChoiceModel.PROP_HORIZONTAL)));
-		if(!model.isItemsFromPV() || getExecutionMode() == ExecutionMode.EDIT_MODE){
-			List<String> items = getWidgetModel().getItems();
-			if(items != null)
-				choiceFigure.setStates(items);
-		}
+        choiceFigure.setHorizontal((Boolean)(model.getPropertyValue(AbstractChoiceModel.PROP_HORIZONTAL)));
+        if(!model.isItemsFromPV() || getExecutionMode() == ExecutionMode.EDIT_MODE){
+            List<String> items = getWidgetModel().getItems();
+            if(items != null)
+                choiceFigure.setStates(items);
+        }
 
-		choiceFigure.addChoiceButtonListener(new IChoiceButtonListener() {
+        choiceFigure.addChoiceButtonListener(new IChoiceButtonListener() {
 
-			public void buttonPressed(int index, String value) {
-				setPVValue(AbstractChoiceModel.PROP_PVNAME, value);
-			}
-		});
+            public void buttonPressed(int index, String value) {
+                setPVValue(AbstractChoiceModel.PROP_PVNAME, value);
+            }
+        });
 
-		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
+        markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 
-		return choiceFigure;
-	}
+        return choiceFigure;
+    }
 
-	protected abstract AbstractChoiceFigure createChoiceFigure();
+    protected abstract AbstractChoiceFigure createChoiceFigure();
 
 
 
-	@Override
-	public AbstractChoiceModel getWidgetModel() {
-		return (AbstractChoiceModel)getModel();
-	}
+    @Override
+    public AbstractChoiceModel getWidgetModel() {
+        return (AbstractChoiceModel)getModel();
+    }
 
-	@Override
-	protected void doActivate() {
-		super.doActivate();
-		registerLoadItemsListener();
-	}
+    @Override
+    protected void doActivate() {
+        super.doActivate();
+        registerLoadItemsListener();
+    }
 
-	/**
-	 *
-	 */
-	private void registerLoadItemsListener() {
-		//load items from PV
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			if(getWidgetModel().isItemsFromPV()){
-				IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-				if(pv != null){
-					if(loadItemsFromPVListener == null)
-						loadItemsFromPVListener = new IPVListener.Stub() {
-							public void valueChanged(IPV pv) {
-								VType value = pv.getValue();
-								if (value != null && value instanceof VEnum){
-									List<String> new_meta = ((VEnum)value).getLabels();
-									getWidgetModel().setPropertyValue(
-												AbstractChoiceModel.PROP_ITEMS, new_meta);									
-								}
-							}
-						};
-					pv.addListener(loadItemsFromPVListener);
-				}
-			}
-		}
-	}
+    /**
+     *
+     */
+    private void registerLoadItemsListener() {
+        //load items from PV
+        if(getExecutionMode() == ExecutionMode.RUN_MODE){
+            if(getWidgetModel().isItemsFromPV()){
+                IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+                if(pv != null){
+                    if(loadItemsFromPVListener == null)
+                        loadItemsFromPVListener = new IPVListener.Stub() {
+                            public void valueChanged(IPV pv) {
+                                VType value = pv.getValue();
+                                if (value != null && value instanceof VEnum){
+                                    List<String> new_meta = ((VEnum)value).getLabels();
+                                    getWidgetModel().setPropertyValue(
+                                                AbstractChoiceModel.PROP_ITEMS, new_meta);
+                                }
+                            }
+                        };
+                    pv.addListener(loadItemsFromPVListener);
+                }
+            }
+        }
+    }
 
-	@Override
-	protected void doDeActivate() {
-		super.doDeActivate();
-		if(getWidgetModel().isItemsFromPV()){
-			IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null && loadItemsFromPVListener != null){
-				pv.removeListener(loadItemsFromPVListener);
-			}
-		}
-	}
+    @Override
+    protected void doDeActivate() {
+        super.doDeActivate();
+        if(getWidgetModel().isItemsFromPV()){
+            IPV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+            if(pv != null && loadItemsFromPVListener != null){
+                pv.removeListener(loadItemsFromPVListener);
+            }
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void registerPropertyChangeHandlers() {
-		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void registerPropertyChangeHandlers() {
+        IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
 
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				registerLoadItemsListener();
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
-		
-		// PV_Value
-		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				if(newValue != null && newValue instanceof VType){
-					String stringValue = VTypeHelper.getString((VType)newValue);
-					((AbstractChoiceFigure)refreshableFigure).setState(stringValue);
-				}
-				return false;
-			}
-		};
-		setPropertyChangeHandler(AbstractChoiceModel.PROP_PVVALUE, pvhandler);
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                registerLoadItemsListener();
+                return false;
+            }
+        };
+        setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 
-		// Items
-		IWidgetPropertyChangeHandler itemsHandler = new IWidgetPropertyChangeHandler() {
-			@SuppressWarnings("unchecked")
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				if(newValue != null && newValue instanceof List){
-					((AbstractChoiceFigure)refreshableFigure).setStates(
-							((List<String>)newValue));
-					if(getWidgetModel().isItemsFromPV())
-						((AbstractChoiceFigure)refreshableFigure).
-							setState(VTypeHelper.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
-				}
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractChoiceModel.PROP_ITEMS, itemsHandler);
+        // PV_Value
+        IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                if(newValue != null && newValue instanceof VType){
+                    String stringValue = VTypeHelper.getString((VType)newValue);
+                    ((AbstractChoiceFigure)refreshableFigure).setState(stringValue);
+                }
+                return false;
+            }
+        };
+        setPropertyChangeHandler(AbstractChoiceModel.PROP_PVVALUE, pvhandler);
 
-		IWidgetPropertyChangeHandler selectedColorHandler = new IWidgetPropertyChangeHandler() {
+        // Items
+        IWidgetPropertyChangeHandler itemsHandler = new IWidgetPropertyChangeHandler() {
+            @SuppressWarnings("unchecked")
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                if(newValue != null && newValue instanceof List){
+                    ((AbstractChoiceFigure)refreshableFigure).setStates(
+                            ((List<String>)newValue));
+                    if(getWidgetModel().isItemsFromPV())
+                        ((AbstractChoiceFigure)refreshableFigure).
+                            setState(VTypeHelper.getString(getPVValue(AbstractPVWidgetModel.PROP_PVNAME)));
+                }
+                return true;
+            }
+        };
+        setPropertyChangeHandler(AbstractChoiceModel.PROP_ITEMS, itemsHandler);
 
-			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((AbstractChoiceFigure)figure).setSelectedColor(((OPIColor)newValue).getSWTColor());
-				return false;
-			}
-		};
+        IWidgetPropertyChangeHandler selectedColorHandler = new IWidgetPropertyChangeHandler() {
 
-		setPropertyChangeHandler(ChoiceButtonModel.PROP_SELECTED_COLOR, selectedColorHandler);
+            public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+                ((AbstractChoiceFigure)figure).setSelectedColor(((OPIColor)newValue).getSWTColor());
+                return false;
+            }
+        };
 
-		IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
+        setPropertyChangeHandler(ChoiceButtonModel.PROP_SELECTED_COLOR, selectedColorHandler);
 
-			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {
-				((AbstractChoiceFigure)figure).setHorizontal((Boolean)newValue);
-				return true;
-			}
-		};
+        IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
 
-		setPropertyChangeHandler(AbstractChoiceModel.PROP_HORIZONTAL, horizontalHandler);
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure figure) {
+                ((AbstractChoiceFigure)figure).setHorizontal((Boolean)newValue);
+                return true;
+            }
+        };
 
-		final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				if(!(Boolean)newValue)
-					((AbstractChoiceFigure)refreshableFigure).setStates(
-							(getWidgetModel().getItems()));
-				updatePropSheet((Boolean) newValue);
-				return false;
-			}
-		};
-		getWidgetModel().getProperty(AbstractChoiceModel.PROP_ITEMS_FROM_PV).
-			addPropertyChangeListener(new PropertyChangeListener(){
-				public void propertyChange(PropertyChangeEvent evt) {
-					handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
-				}
-		});
+        setPropertyChangeHandler(AbstractChoiceModel.PROP_HORIZONTAL, horizontalHandler);
 
-	}
+        final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                if(!(Boolean)newValue)
+                    ((AbstractChoiceFigure)refreshableFigure).setStates(
+                            (getWidgetModel().getItems()));
+                updatePropSheet((Boolean) newValue);
+                return false;
+            }
+        };
+        getWidgetModel().getProperty(AbstractChoiceModel.PROP_ITEMS_FROM_PV).
+            addPropertyChangeListener(new PropertyChangeListener(){
+                public void propertyChange(PropertyChangeEvent evt) {
+                    handler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
+                }
+        });
 
-		/**
-		* @param actionsFromPV
-		*/
-	private void updatePropSheet(final boolean itemsFromPV) {
-		getWidgetModel().setPropertyVisible(
-				AbstractChoiceModel.PROP_ITEMS, !itemsFromPV);
-	}
+    }
 
-	@Override
-	public String getValue() {
-		return ((AbstractChoiceFigure)getFigure()).getState();
-	}
+        /**
+        * @param actionsFromPV
+        */
+    private void updatePropSheet(final boolean itemsFromPV) {
+        getWidgetModel().setPropertyVisible(
+                AbstractChoiceModel.PROP_ITEMS, !itemsFromPV);
+    }
 
-	@Override
-	public void setValue(Object value) {
-		if(value instanceof String)
-			((AbstractChoiceFigure)getFigure()).setState((String)value);
-		else if (value instanceof Number)
-			((AbstractChoiceFigure)getFigure()).setState(((Number)value).intValue());
-		else 
-			super.setValue(value);
-	}
+    @Override
+    public String getValue() {
+        return ((AbstractChoiceFigure)getFigure()).getState();
+    }
+
+    @Override
+    public void setValue(Object value) {
+        if(value instanceof String)
+            ((AbstractChoiceFigure)getFigure()).setState((String)value);
+        else if (value instanceof Number)
+            ((AbstractChoiceFigure)getFigure()).setState(((Number)value).intValue());
+        else
+            super.setValue(value);
+    }
 
 }

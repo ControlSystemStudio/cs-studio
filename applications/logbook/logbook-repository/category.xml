@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
+   <feature id="org.csstudio.applications.logbook.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <feature id="org.csstudio.logbook.viewer.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>

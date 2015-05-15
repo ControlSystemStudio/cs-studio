@@ -12,17 +12,17 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class TestPVCommandHandler extends AbstractAdaptedHandler<ProcessVariable> {
 
-	public TestPVCommandHandler() {
-		super(ProcessVariable.class);
-	}
-	
-	@Override
-	protected void execute(List<ProcessVariable> data, ExecutionEvent event) throws ExecutionException {
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-		MessageDialog.openInformation(
-		window.getShell(),
-		"PV Command",
-		"PVs: " + data);
-	}
+    public TestPVCommandHandler() {
+        super(ProcessVariable.class);
+    }
+
+    @Override
+    protected void execute(List<ProcessVariable> data, ExecutionEvent event) throws ExecutionException {
+        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+        MessageDialog.openInformation(
+        window.getShell(),
+        "PV Command",
+        "PVs: " + data);
+    }
 
 }

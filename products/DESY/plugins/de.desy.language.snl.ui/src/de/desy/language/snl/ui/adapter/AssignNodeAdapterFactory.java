@@ -7,54 +7,54 @@ import de.desy.language.snl.parser.nodes.AssignStatementNode;
 
 /**
  * The specialized {@link IAdapterFactory} for {@link AssignStatementNode}s.
- * 
+ *
  * @author C1 WPS / KM, MZ
- * 
+ *
  */
 class AssignNodeAdapterFactory implements IAdapterFactory {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		assert adaptableObject != null;
-		assert adapterType != null;
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Object getAdapter(final Object adaptableObject,
+            final Class adapterType) {
+        assert adaptableObject != null;
+        assert adapterType != null;
 
-		if (adaptableObject instanceof AssignStatementNode) {
-			final AssignStatementNode node = (AssignStatementNode) adaptableObject;
+        if (adaptableObject instanceof AssignStatementNode) {
+            final AssignStatementNode node = (AssignStatementNode) adaptableObject;
 
-			if (adapterType == IWorkbenchAdapter.class) {
-				return new AbstractSNLWorkbenchAdapter<AssignStatementNode>(
-						node) {
-					@Override
-					public String getImageName(
-							final AssignStatementNode nodeToRender) {
-						if (nodeToRender.containsWarnings()) {
-							return "assign_warning.gif";
-						}
-						return "assign.gif";
-					}
+            if (adapterType == IWorkbenchAdapter.class) {
+                return new AbstractSNLWorkbenchAdapter<AssignStatementNode>(
+                        node) {
+                    @Override
+                    public String getImageName(
+                            final AssignStatementNode nodeToRender) {
+                        if (nodeToRender.containsWarnings()) {
+                            return "assign_warning.gif";
+                        }
+                        return "assign.gif";
+                    }
 
-					@Override
-					protected String doGetLabel(
-							final AssignStatementNode nodeToRender) {
-						return nodeToRender.getSourceIdentifier() + " => "
-								+ nodeToRender.getContent();
-					}
-				};
-			}
-		}
-		return null;
-	}
+                    @Override
+                    protected String doGetLabel(
+                            final AssignStatementNode nodeToRender) {
+                        return nodeToRender.getSourceIdentifier() + " => "
+                                + nodeToRender.getContent();
+                    }
+                };
+            }
+        }
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@SuppressWarnings("unchecked")
-	public Class[] getAdapterList() {
-		return new Class[] { AssignStatementNode.class };
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    public Class[] getAdapterList() {
+        return new Class[] { AssignStatementNode.class };
+    }
 
 }

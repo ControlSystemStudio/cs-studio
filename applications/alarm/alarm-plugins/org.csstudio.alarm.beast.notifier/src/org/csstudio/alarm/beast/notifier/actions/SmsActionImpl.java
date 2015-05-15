@@ -26,42 +26,42 @@ import org.csstudio.email.JavaxMailSender;
 @SuppressWarnings("nls")
 public class SmsActionImpl extends AbstractMailActionImpl {
 
-	/** {@inheritDoc} */
-	@Override
-	public void init(ItemInfo item, AAData auto_action, IActionHandler handler)
-			throws Exception {
-		this.item = item;
-		this.manuallyExecuted = auto_action.isManual();
-		mailSender = new JavaxMailSender();
-		SmsCommandHandler smsCmdHandler = (SmsCommandHandler) handler;
-		List<String> phoneNumbers = smsCmdHandler.getTo();
-		StringBuilder sb = new StringBuilder();
-		sb.append("[sms:");
-		for (int index = 0; index < phoneNumbers.size(); index++) {
-			String number = phoneNumbers.get(index);
-			sb.append(PhoneUtils.format(number));
-			if (index < phoneNumbers.size() - 1)
-				sb.append(",");
-		}
-		sb.append("]");
-		phoneNumbers.clear();
-		phoneNumbers.add(sb.toString());
-		mailSender.setTo(phoneNumbers);
-		mailSender.setSubject("<NONE>");
-		mailSender.setBody(smsCmdHandler.getBody());
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void init(ItemInfo item, AAData auto_action, IActionHandler handler)
+            throws Exception {
+        this.item = item;
+        this.manuallyExecuted = auto_action.isManual();
+        mailSender = new JavaxMailSender();
+        SmsCommandHandler smsCmdHandler = (SmsCommandHandler) handler;
+        List<String> phoneNumbers = smsCmdHandler.getTo();
+        StringBuilder sb = new StringBuilder();
+        sb.append("[sms:");
+        for (int index = 0; index < phoneNumbers.size(); index++) {
+            String number = phoneNumbers.get(index);
+            sb.append(PhoneUtils.format(number));
+            if (index < phoneNumbers.size() - 1)
+                sb.append(",");
+        }
+        sb.append("]");
+        phoneNumbers.clear();
+        phoneNumbers.add(sb.toString());
+        mailSender.setTo(phoneNumbers);
+        mailSender.setSubject("<NONE>");
+        mailSender.setBody(smsCmdHandler.getBody());
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public void execute(List<PVSnapshot> pvs) throws Exception {
-		this.pvs = pvs;
-		mailSender.setBody(buildBody());
-		mailSender.send();
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void execute(List<PVSnapshot> pvs) throws Exception {
+        this.pvs = pvs;
+        mailSender.setBody(buildBody());
+        mailSender.send();
+    }
 
-	public void dump() {
-		System.out.println("SmsActionImpl [\n\tto= " + mailSender.getTo()
-				+ "\n\tsubject= " + mailSender.getSubject() + "\n]");
-	}
+    public void dump() {
+        System.out.println("SmsActionImpl [\n\tto= " + mailSender.getTo()
+                + "\n\tsubject= " + mailSender.getSubject() + "\n]");
+    }
 
 }

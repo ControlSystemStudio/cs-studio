@@ -18,7 +18,7 @@ import org.csstudio.security.SecurityPreferences;
 import org.csstudio.security.SecuritySupport;
 
 /** AuthorizationProvider that invokes external command (script) to determine authorizations.
- * 
+ *
  *  <p>See <code>id_auth.sh</code> for example.
  *  @author Kay Kasemir
  */
@@ -26,7 +26,7 @@ import org.csstudio.security.SecuritySupport;
 public class ScriptAuthorizationProvider implements AuthorizationProvider
 {
     final private String script;
-    
+
     /** Thread that reads stream into buffer */
     static class StreamReaderThread extends Thread
     {
@@ -72,7 +72,7 @@ public class ScriptAuthorizationProvider implements AuthorizationProvider
     {
         this(SecurityPreferences.getAuthorizationScript());
     }
-    
+
     /** Initialize
      *  @param config_file_path Path to authentication file
      *  @throws Exception on error
@@ -87,7 +87,7 @@ public class ScriptAuthorizationProvider implements AuthorizationProvider
     public Authorizations getAuthorizations(final Subject user) throws Exception
     {
         final Set<String> authorizations = new HashSet<>();
-        
+
         // Execute script
         final Process process = Runtime.getRuntime().exec(
             new String[]
@@ -95,7 +95,7 @@ public class ScriptAuthorizationProvider implements AuthorizationProvider
                 script,
                 SecuritySupport.getSubjectName(user)
             });
-        
+
         // Read output
         final StreamReaderThread result_reader =
             new StreamReaderThread(process.getInputStream());
@@ -103,13 +103,13 @@ public class ScriptAuthorizationProvider implements AuthorizationProvider
             new StreamReaderThread(process.getErrorStream());
         result_reader.start();
         error_reader.start();
-        
+
         // Wait for script to finish
         result_reader.join();
         error_reader.join();
         final String result = result_reader.toString();
         final String error = error_reader.toString();
-        
+
         // Error output or error code?
         if (!error.isEmpty())
             throw new Exception(error);
@@ -119,7 +119,7 @@ public class ScriptAuthorizationProvider implements AuthorizationProvider
         // Treat each space-separated text as an authorization
         for (String authorization : result.split(" +"))
             authorizations.add(authorization);
-        
+
         return new Authorizations(authorizations);
     }
 }

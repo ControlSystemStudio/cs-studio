@@ -15,67 +15,67 @@ import org.csstudio.autocomplete.proposals.ProposalStyle;
 
 /**
  * Handles a list of {@link TooltipData} to provide a {@link TooltipContent}.
- * 
+ *
  * @author Fred Arnaud (Sopra Group) - ITER
  */
 public class TooltipDataHandler {
 
-	private List<TooltipData> tooltipDataList;
+    private List<TooltipData> tooltipDataList;
 
-	public TooltipDataHandler() {
-		this.tooltipDataList = Collections
-				.synchronizedList(new ArrayList<TooltipData>());
-	}
+    public TooltipDataHandler() {
+        this.tooltipDataList = Collections
+                .synchronizedList(new ArrayList<TooltipData>());
+    }
 
-	public void addData(TooltipData data) {
-		tooltipDataList.add(data);
-	}
+    public void addData(TooltipData data) {
+        tooltipDataList.add(data);
+    }
 
-	public void clearData() {
-		tooltipDataList.clear();
-	}
+    public void clearData() {
+        tooltipDataList.clear();
+    }
 
-	public TooltipContent generateTooltipContent(String fieldContent) {
-		if (tooltipDataList.isEmpty() || fieldContent == null
-				|| fieldContent.trim().isEmpty())
-			return null; // no content
+    public TooltipContent generateTooltipContent(String fieldContent) {
+        if (tooltipDataList.isEmpty() || fieldContent == null
+                || fieldContent.trim().isEmpty())
+            return null; // no content
 
-		// build content
-		int offset = 0, maxLineLength = 0, numberOfLines = 0;
-		StringBuilder sb = new StringBuilder();
-		List<ProposalStyle> styleList = new ArrayList<ProposalStyle>();
-		synchronized (tooltipDataList) {
-			for (TooltipData data : tooltipDataList) {
-				int startLength = sb.length();
-				sb.append(data.value);
-				sb.append("\n");
-				if (data.styles != null) {
-					for (ProposalStyle style : data.styles) {
-						ProposalStyle ps = new ProposalStyle(style);
-						ps.from += offset;
-						ps.to += offset;
-						styleList.add(ps);
-					}
-				}
-				offset += sb.length() - startLength;
-				maxLineLength = Math.max(maxLineLength, sb.length() - startLength);
-				numberOfLines++;
-			}
-		}
+        // build content
+        int offset = 0, maxLineLength = 0, numberOfLines = 0;
+        StringBuilder sb = new StringBuilder();
+        List<ProposalStyle> styleList = new ArrayList<ProposalStyle>();
+        synchronized (tooltipDataList) {
+            for (TooltipData data : tooltipDataList) {
+                int startLength = sb.length();
+                sb.append(data.value);
+                sb.append("\n");
+                if (data.styles != null) {
+                    for (ProposalStyle style : data.styles) {
+                        ProposalStyle ps = new ProposalStyle(style);
+                        ps.from += offset;
+                        ps.to += offset;
+                        styleList.add(ps);
+                    }
+                }
+                offset += sb.length() - startLength;
+                maxLineLength = Math.max(maxLineLength, sb.length() - startLength);
+                numberOfLines++;
+            }
+        }
 
-		if (sb.length() == 0) {
-			return null; // no content
-		}
+        if (sb.length() == 0) {
+            return null; // no content
+        }
 
-		// delete last \n
-		sb.deleteCharAt(sb.length() - 1);
+        // delete last \n
+        sb.deleteCharAt(sb.length() - 1);
 
-		TooltipContent tc = new TooltipContent();
-		tc.value = sb.toString();
-		tc.styles = styleList.toArray(new ProposalStyle[styleList.size()]);
-		tc.numberOfLines = numberOfLines;
-		tc.maxLineLength = maxLineLength;
-		return tc;
-	}
+        TooltipContent tc = new TooltipContent();
+        tc.value = sb.toString();
+        tc.styles = styleList.toArray(new ProposalStyle[styleList.size()]);
+        tc.numberOfLines = numberOfLines;
+        tc.maxLineLength = maxLineLength;
+        return tc;
+    }
 
 }

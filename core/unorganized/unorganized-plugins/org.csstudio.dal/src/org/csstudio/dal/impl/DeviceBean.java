@@ -59,305 +59,305 @@ import com.cosylab.util.CommonException;
  */
 public class DeviceBean extends AbstractDeviceImpl implements Connectable
 {
-	protected AbstractApplicationContext ctx;
-	protected RemoteInfo rinfo;
-	protected DeviceFactory deviceFactory;
-	private boolean autoConnect = true;
-	
-	/**
-	     * Creates new named instance of device bean.
-	     */
-	public DeviceBean()
-	{
-		super(null,null);
-	}
+    protected AbstractApplicationContext ctx;
+    protected RemoteInfo rinfo;
+    protected DeviceFactory deviceFactory;
+    private boolean autoConnect = true;
 
-	/**
-	     * Creates new named instance of device bean.
-	     * @param name device name
-	     */
-	public DeviceBean(String name, DeviceFamily deviceFamily)
-	{
-		super(name,deviceFamily);
-	}
+    /**
+         * Creates new named instance of device bean.
+         */
+    public DeviceBean()
+    {
+        super(null,null);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Connectable#addConnectionListener(org.csstudio.dal.context.ConnectionListener)
-	 */
-	public void addConnectionListener(ConnectionListener l)
-	{
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented yet.");
-	}
+    /**
+         * Creates new named instance of device bean.
+         * @param name device name
+         */
+    public DeviceBean(String name, DeviceFamily deviceFamily)
+    {
+        super(name,deviceFamily);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Connectable#asyncConnect()
-	 */
-	public synchronized void asyncConnect()
-		throws ConnectionException, IllegalStateException
-	{
-		checkInitialized();
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Connectable#addConnectionListener(org.csstudio.dal.context.ConnectionListener)
+     */
+    public void addConnectionListener(ConnectionListener l)
+    {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented yet.");
+    }
 
-		if (!connectionStateMachine.isTransitionAllowed(ConnectionState.CONNECTING)) {
-			throw new IllegalStateException("Connectable '" + getUniqueName()
-			    + "' is not in DISCONNECTED or READY state but in "
-			    + getConnectionState() + ".");
-		}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Connectable#asyncConnect()
+     */
+    public synchronized void asyncConnect()
+        throws ConnectionException, IllegalStateException
+    {
+        checkInitialized();
 
-		setConnectionState(ConnectionState.CONNECTING);
-		deviceFactory.reconnectDevice(this);
-		
-		reinitializePropertyProxies();
-	}
+        if (!connectionStateMachine.isTransitionAllowed(ConnectionState.CONNECTING)) {
+            throw new IllegalStateException("Connectable '" + getUniqueName()
+                + "' is not in DISCONNECTED or READY state but in "
+                + getConnectionState() + ".");
+        }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Connectable#connect()
-	 */
-	public void connect() throws ConnectionException, IllegalStateException
-	{
-		asyncConnect();
-		LinkBlocker.blockUntillConnected(this,
-		    Plugs.getConnectionTimeout(ctx.getConfiguration(),30000), true);
-	}
+        setConnectionState(ConnectionState.CONNECTING);
+        deviceFactory.reconnectDevice(this);
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Connectable#destroy()
-	 */
-	public void destroy()
-	{
-		if (getConnectionState() == ConnectionState.DESTROYED) return; // TODO throw an exception?
-		
-		if (deviceFactory != null && deviceFactory.getDeviceFamily() != null)
-			deviceFactory.getDeviceFamily().destroy(this);
-	}
+        reinitializePropertyProxies();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Connectable#disconnect()
-	 */
-	public void disconnect()
-	{
-		if (!connectionStateMachine.isTransitionAllowed(ConnectionState.DISCONNECTING)) {
-				throw new IllegalStateException("Connectable '" + getUniqueName()
-				    + "' is not in CONNECTED or CONNECTING state but in "
-				    + getConnectionState() + ".");
-			}
-		
-		setConnectionState(ConnectionState.DISCONNECTING);
-		
-		Proxy[] proxy= releaseProxy(false);
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Connectable#connect()
+     */
+    public void connect() throws ConnectionException, IllegalStateException
+    {
+        asyncConnect();
+        LinkBlocker.blockUntillConnected(this,
+            Plugs.getConnectionTimeout(ctx.getConfiguration(),30000), true);
+    }
 
-		if (proxy != null && proxy[0]!=null) {
-			((AbstractPlug)deviceFactory.getPlug()).releaseProxy(proxy[0]);
-		}
-		if (proxy != null && proxy[1]!=null && proxy[1]!=proxy[0]) {
-			((AbstractPlug)deviceFactory.getPlug()).releaseProxy(proxy[1]);
-		}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Connectable#destroy()
+     */
+    public void destroy()
+    {
+        if (getConnectionState() == ConnectionState.DESTROYED) return; // TODO throw an exception?
 
-		setConnectionState(ConnectionState.DISCONNECTED);
-	}
-	
-	//TODO override refresh method to also call refresh on all properties? like Abean.refresh?
+        if (deviceFactory != null && deviceFactory.getDeviceFamily() != null)
+            deviceFactory.getDeviceFamily().destroy(this);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Connectable#getRemoteInfo()
-	 */
-	public org.csstudio.dal.simple.RemoteInfo getRemoteInfo()
-	{
-		return rinfo;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Connectable#disconnect()
+     */
+    public void disconnect()
+    {
+        if (!connectionStateMachine.isTransitionAllowed(ConnectionState.DISCONNECTING)) {
+                throw new IllegalStateException("Connectable '" + getUniqueName()
+                    + "' is not in CONNECTED or CONNECTING state but in "
+                    + getConnectionState() + ".");
+            }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Connectable#removeConnectionListener(org.csstudio.dal.context.ConnectionListener)
-	 */
-	public void removeConnectionListener(ConnectionListener l)
-	{
-		// TODO Auto-generated method stub
-	}
+        setConnectionState(ConnectionState.DISCONNECTING);
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Connectable#setRemoteInfo(org.csstudio.dal.context.RemoteInfo)
-	 */
-	public void setRemoteInfo(org.csstudio.dal.simple.RemoteInfo rinfo) throws IllegalArgumentException
-	{
-		if (getConnectionState() != ConnectionState.DISCONNECTED
-		    && getConnectionState() != ConnectionState.READY
-		    && getConnectionState() != ConnectionState.INITIAL) {
-			throw new IllegalStateException("Connectable '" + getUniqueName()
-			    + "' is not in DISCONNECTED, INITIAL or READY state but in "
-			    + getConnectionState() + ".");
-		}
+        Proxy[] proxy= releaseProxy(false);
 
-		if (rinfo == null) {
-			this.rinfo = null;
-			this.name = null;
-			setConnectionState(ConnectionState.INITIAL);
+        if (proxy != null && proxy[0]!=null) {
+            ((AbstractPlug)deviceFactory.getPlug()).releaseProxy(proxy[0]);
+        }
+        if (proxy != null && proxy[1]!=null && proxy[1]!=proxy[0]) {
+            ((AbstractPlug)deviceFactory.getPlug()).releaseProxy(proxy[1]);
+        }
 
-			return;
-		}
+        setConnectionState(ConnectionState.DISCONNECTED);
+    }
 
-		this.rinfo = rinfo;
-		this.name = rinfo.getRemoteName();
-		
-		if (ctx!=null && deviceFactory!=null && rinfo!=null) {
-			setConnectionState(ConnectionState.READY);
-		}
-		
-		tryConnect();
-	}
+    //TODO override refresh method to also call refresh on all properties? like Abean.refresh?
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.ContextBean#getApplicationContext()
-	 */
-	public AbstractApplicationContext getApplicationContext()
-	{
-		return ctx;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Connectable#getRemoteInfo()
+     */
+    public org.csstudio.dal.simple.RemoteInfo getRemoteInfo()
+    {
+        return rinfo;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.ContextBean#initialize(org.csstudio.dal.context.AbstractApplicationContext)
-	 */
-	public void initialize(AbstractApplicationContext ctx)
-		throws CommonException
-	{
-		// TODO: at some point this initialization must be changed. 
-		// device factory should be obtained only after RemoteInfo is set and correct plug type is known, 
-		// now it is used default plug type from ctx
-		deviceFactory = DefaultDeviceFactoryService.getDeviceFactoryService()
-			.getDeviceFactory(ctx, null);
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Connectable#removeConnectionListener(org.csstudio.dal.context.ConnectionListener)
+     */
+    public void removeConnectionListener(ConnectionListener l)
+    {
+        // TODO Auto-generated method stub
+    }
 
-		if (deviceFactory == null) {
-			throw new CommonException(this, "Failed to create device factory");
-		}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Connectable#setRemoteInfo(org.csstudio.dal.context.RemoteInfo)
+     */
+    public void setRemoteInfo(org.csstudio.dal.simple.RemoteInfo rinfo) throws IllegalArgumentException
+    {
+        if (getConnectionState() != ConnectionState.DISCONNECTED
+            && getConnectionState() != ConnectionState.READY
+            && getConnectionState() != ConnectionState.INITIAL) {
+            throw new IllegalStateException("Connectable '" + getUniqueName()
+                + "' is not in DISCONNECTED, INITIAL or READY state but in "
+                + getConnectionState() + ".");
+        }
 
-		this.ctx = ctx;
-		
-		if (ctx!=null && deviceFactory!=null && rinfo!=null) {
-			setConnectionState(ConnectionState.READY);
-		}
-		tryConnect();
-	}
-	
-	/**
-	 * Performs initialization the other way around.
-	 */
-	public void initialize(DeviceFactory devFact){
-		this.deviceFactory = devFact;
-		this.ctx = devFact.getApplicationContext();
+        if (rinfo == null) {
+            this.rinfo = null;
+            this.name = null;
+            setConnectionState(ConnectionState.INITIAL);
 
-		if (ctx!=null && deviceFactory!=null && rinfo!=null) {
-			setConnectionState(ConnectionState.READY);
-		}
-		
-		tryConnect();
-	}
+            return;
+        }
 
-	/**
-	 * Checks if device is properly initialized.
-	 *
-	 * @throws IllegalStateException if it is not initialized
-	 *
-	 * @see #initialize(AbstractApplicationContext)
-	 */
-	protected void checkInitialized() throws IllegalStateException
-	{
-		if (deviceFactory == null) {
-			throw new IllegalStateException("Device '" + getUniqueName()
-			    + "' is not initialized.");
-		}
-	}
-	
-	/**
-	 * Reinitializes all already existing properties. Usually only happens when device is initialized
-	 * second time. 
-	 */
-	protected void reinitializePropertyProxies(){
-		if (properties != null){
-			String[] pns = properties.keySet().toArray(new String[0]);
-			for (int i=0; i<pns.length; i++){
-				try {
-					PropertyProxy pp = deviceProxy.getPropertyProxy(pns[i]);
-					DirectoryProxy dp = deviceProxy.getDirectoryProxy(pns[i]);
-		
-					DynamicValuePropertyImpl<?> prop = ((DynamicValuePropertyImpl<?>)getProperty(pns[i]));
-					prop.initialize(pp, dp);
-					prop.refresh();
-				} catch (Exception e) {
-					Logger.getLogger(DeviceBean.class).warn("Problem on re-initializing property " + pns[i]+".",e);
-				}
-			}
-		}
-	}
-	
-	@Override
-	protected DynamicValueProperty<?> createProperty(String name)
-	throws RemoteException, IllegalAccessException, InstantiationException,
-		InvocationTargetException, NoSuchMethodException
-	{
-		Class<? extends SimpleProperty<?>> type = getPropertyType(name);
-	
-		// Creates property implementation
-		Class<?> impClass = PropertyUtilities.getImplementationClass(type);
-		DynamicValuePropertyImpl<?> property = (DynamicValuePropertyImpl<?>)impClass.getConstructor(String.class,
-			    PropertyContext.class).newInstance(name, this);
-	
-		if (deviceProxy != null){
-			PropertyProxy pp = deviceProxy.getPropertyProxy(name);
-			DirectoryProxy dp = deviceProxy.getDirectoryProxy(name);
-	
-			property.initialize(pp, dp);
-		}
-		property.addPropertyChangeListener(propertyInterceptor);
-		
-//		if (deviceProxy != null){
-//			if (property.getConnectionState() != ConnectionState.CONNECTED) {
-//				Logger.getLogger(DeviceBean.class.getName()).info("Property '" + name +"' is not connected. Waiting for connection to be established...");
-//			}
-//			LinkBlocker.blockUntillConnected(property,Plugs.getConnectionTimeout(null, 30000) * 2, true);
-//		}
-	
-		return property;
-	}
-	
-	protected Class<? extends SimpleProperty<?>> getPropertyType(String name){
-		return (Class<? extends SimpleProperty<?>>)DynamicValueProperty.class;
-	}
-	
-	/**
-	 * Sets connection state and fires event.
-	 *
-	 * @param s new state
-	 */
-	protected void setConnectionState(ConnectionState s)
-	{
-		super.setConnectionState(s);
+        this.rinfo = rinfo;
+        this.name = rinfo.getRemoteName();
 
-		// TODO: should fire event here to connection listeners
-	}
-	
-	/**
-	 * @see {@link #setAutoConnect(boolean)} 
-	 */
-	public boolean isAutoConnect() {
-		return autoConnect;
-	}
+        if (ctx!=null && deviceFactory!=null && rinfo!=null) {
+            setConnectionState(ConnectionState.READY);
+        }
 
-	/**
-	 * If autoConnect is true, Device is automatically connected when all requirements
-	 * are provided (RemoteInfo, DeviceFactory). Default value is <code>true</code>.
-	 */
-	public void setAutoConnect(boolean autoConnect) {
-		this.autoConnect = autoConnect;
-		tryConnect();
-	}
-	
-	protected void tryConnect(){
-		if (autoConnect && (getConnectionState() == ConnectionState.READY  || getConnectionState() == ConnectionState.DISCONNECTED ) && deviceFactory != null)
-			try {
-				asyncConnect();
-			} catch (Exception e) {
-				deviceFactory.getPlug().getLogger().info("'"+getUniqueName()+"' failed to autoconnect.",e);
-			}
-	}
+        tryConnect();
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.ContextBean#getApplicationContext()
+     */
+    public AbstractApplicationContext getApplicationContext()
+    {
+        return ctx;
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.ContextBean#initialize(org.csstudio.dal.context.AbstractApplicationContext)
+     */
+    public void initialize(AbstractApplicationContext ctx)
+        throws CommonException
+    {
+        // TODO: at some point this initialization must be changed.
+        // device factory should be obtained only after RemoteInfo is set and correct plug type is known,
+        // now it is used default plug type from ctx
+        deviceFactory = DefaultDeviceFactoryService.getDeviceFactoryService()
+            .getDeviceFactory(ctx, null);
+
+        if (deviceFactory == null) {
+            throw new CommonException(this, "Failed to create device factory");
+        }
+
+        this.ctx = ctx;
+
+        if (ctx!=null && deviceFactory!=null && rinfo!=null) {
+            setConnectionState(ConnectionState.READY);
+        }
+        tryConnect();
+    }
+
+    /**
+     * Performs initialization the other way around.
+     */
+    public void initialize(DeviceFactory devFact){
+        this.deviceFactory = devFact;
+        this.ctx = devFact.getApplicationContext();
+
+        if (ctx!=null && deviceFactory!=null && rinfo!=null) {
+            setConnectionState(ConnectionState.READY);
+        }
+
+        tryConnect();
+    }
+
+    /**
+     * Checks if device is properly initialized.
+     *
+     * @throws IllegalStateException if it is not initialized
+     *
+     * @see #initialize(AbstractApplicationContext)
+     */
+    protected void checkInitialized() throws IllegalStateException
+    {
+        if (deviceFactory == null) {
+            throw new IllegalStateException("Device '" + getUniqueName()
+                + "' is not initialized.");
+        }
+    }
+
+    /**
+     * Reinitializes all already existing properties. Usually only happens when device is initialized
+     * second time.
+     */
+    protected void reinitializePropertyProxies(){
+        if (properties != null){
+            String[] pns = properties.keySet().toArray(new String[0]);
+            for (int i=0; i<pns.length; i++){
+                try {
+                    PropertyProxy pp = deviceProxy.getPropertyProxy(pns[i]);
+                    DirectoryProxy dp = deviceProxy.getDirectoryProxy(pns[i]);
+
+                    DynamicValuePropertyImpl<?> prop = ((DynamicValuePropertyImpl<?>)getProperty(pns[i]));
+                    prop.initialize(pp, dp);
+                    prop.refresh();
+                } catch (Exception e) {
+                    Logger.getLogger(DeviceBean.class).warn("Problem on re-initializing property " + pns[i]+".",e);
+                }
+            }
+        }
+    }
+
+    @Override
+    protected DynamicValueProperty<?> createProperty(String name)
+    throws RemoteException, IllegalAccessException, InstantiationException,
+        InvocationTargetException, NoSuchMethodException
+    {
+        Class<? extends SimpleProperty<?>> type = getPropertyType(name);
+
+        // Creates property implementation
+        Class<?> impClass = PropertyUtilities.getImplementationClass(type);
+        DynamicValuePropertyImpl<?> property = (DynamicValuePropertyImpl<?>)impClass.getConstructor(String.class,
+                PropertyContext.class).newInstance(name, this);
+
+        if (deviceProxy != null){
+            PropertyProxy pp = deviceProxy.getPropertyProxy(name);
+            DirectoryProxy dp = deviceProxy.getDirectoryProxy(name);
+
+            property.initialize(pp, dp);
+        }
+        property.addPropertyChangeListener(propertyInterceptor);
+
+//        if (deviceProxy != null){
+//            if (property.getConnectionState() != ConnectionState.CONNECTED) {
+//                Logger.getLogger(DeviceBean.class.getName()).info("Property '" + name +"' is not connected. Waiting for connection to be established...");
+//            }
+//            LinkBlocker.blockUntillConnected(property,Plugs.getConnectionTimeout(null, 30000) * 2, true);
+//        }
+
+        return property;
+    }
+
+    protected Class<? extends SimpleProperty<?>> getPropertyType(String name){
+        return (Class<? extends SimpleProperty<?>>)DynamicValueProperty.class;
+    }
+
+    /**
+     * Sets connection state and fires event.
+     *
+     * @param s new state
+     */
+    protected void setConnectionState(ConnectionState s)
+    {
+        super.setConnectionState(s);
+
+        // TODO: should fire event here to connection listeners
+    }
+
+    /**
+     * @see {@link #setAutoConnect(boolean)}
+     */
+    public boolean isAutoConnect() {
+        return autoConnect;
+    }
+
+    /**
+     * If autoConnect is true, Device is automatically connected when all requirements
+     * are provided (RemoteInfo, DeviceFactory). Default value is <code>true</code>.
+     */
+    public void setAutoConnect(boolean autoConnect) {
+        this.autoConnect = autoConnect;
+        tryConnect();
+    }
+
+    protected void tryConnect(){
+        if (autoConnect && (getConnectionState() == ConnectionState.READY  || getConnectionState() == ConnectionState.DISCONNECTED ) && deviceFactory != null)
+            try {
+                asyncConnect();
+            } catch (Exception e) {
+                deviceFactory.getPlug().getLogger().info("'"+getUniqueName()+"' failed to autoconnect.",e);
+            }
+    }
 
 }
 

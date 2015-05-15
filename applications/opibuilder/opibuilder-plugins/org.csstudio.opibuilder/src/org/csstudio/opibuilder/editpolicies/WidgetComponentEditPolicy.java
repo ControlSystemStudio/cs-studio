@@ -20,17 +20,17 @@ import org.eclipse.gef.requests.GroupRequest;
  */
 public class WidgetComponentEditPolicy extends ComponentEditPolicy {
 
-	
-	@Override
-	protected Command createDeleteCommand(GroupRequest deleteRequest) {
-		Object containerModel = getHost().getParent().getModel();
-		Object widget = getHost().getModel();
-		
-		if(containerModel instanceof AbstractContainerModel && 
-				widget instanceof AbstractWidgetModel)
-			return new WidgetDeleteCommand((AbstractContainerModel)containerModel,
-					(AbstractWidgetModel)widget);				
-		return super.createDeleteCommand(deleteRequest);
-	}
-	
+
+    @Override
+    protected Command createDeleteCommand(GroupRequest deleteRequest) {
+        Object containerModel = getHost().getParent().getModel();
+        Object widget = getHost().getModel();
+
+        if(containerModel instanceof AbstractContainerModel &&
+                widget instanceof AbstractWidgetModel)
+            return new WidgetDeleteCommand((AbstractContainerModel)containerModel,
+                    (AbstractWidgetModel)widget);
+        return super.createDeleteCommand(deleteRequest);
+    }
+
 }

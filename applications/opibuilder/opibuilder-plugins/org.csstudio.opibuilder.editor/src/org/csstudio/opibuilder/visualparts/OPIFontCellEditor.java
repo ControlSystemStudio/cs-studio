@@ -19,37 +19,37 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class OPIFontCellEditor extends AbstractDialogCellEditor {
 
-	private OPIFont opiFont;
-	
-	
-	public OPIFontCellEditor(Composite parent, String title) {
-		super(parent, title);
-	}
+    private OPIFont opiFont;
 
-	@Override
-	protected void openDialog(Shell parentShell, String dialogTitle) {
-		OPIFontDialog dialog = 
-			new OPIFontDialog(parentShell, opiFont, dialogTitle);
-		if(dialog.open() == Window.OK)
-			opiFont = dialog.getOutput();
-	}
 
-	@Override
-	protected boolean shouldFireChanges() {
-		return opiFont != null;
-	}
+    public OPIFontCellEditor(Composite parent, String title) {
+        super(parent, title);
+    }
 
-	@Override
-	protected Object doGetValue() {
-		return opiFont;
-	}
+    @Override
+    protected void openDialog(Shell parentShell, String dialogTitle) {
+        OPIFontDialog dialog =
+            new OPIFontDialog(parentShell, opiFont, dialogTitle);
+        if(dialog.open() == Window.OK)
+            opiFont = dialog.getOutput();
+    }
 
-	@Override
-	protected void doSetValue(Object value) {
-		if(value == null || !(value instanceof OPIFont))
-			opiFont = new OPIFont("unknown");
-		else
-			opiFont = (OPIFont)value;
-	}
+    @Override
+    protected boolean shouldFireChanges() {
+        return opiFont != null;
+    }
+
+    @Override
+    protected Object doGetValue() {
+        return opiFont;
+    }
+
+    @Override
+    protected void doSetValue(Object value) {
+        if(value == null || !(value instanceof OPIFont))
+            opiFont = new OPIFont("unknown");
+        else
+            opiFont = (OPIFont)value;
+    }
 
 }

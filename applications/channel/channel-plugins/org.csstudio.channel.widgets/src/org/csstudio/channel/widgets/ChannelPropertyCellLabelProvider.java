@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.channel.widgets;
 
@@ -11,31 +11,31 @@ import org.eclipse.jface.viewers.ViewerCell;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ChannelPropertyCellLabelProvider extends CellLabelProvider {
 
-	private String propertyName;
+    private String propertyName;
 
-	public ChannelPropertyCellLabelProvider(String propertyName) {
-		super();
-		this.propertyName = propertyName;
-	}
+    public ChannelPropertyCellLabelProvider(String propertyName) {
+        super();
+        this.propertyName = propertyName;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.
-	 * viewers.ViewerCell)
-	 */
-	@Override
-	public void update(ViewerCell cell) {
-		Property property = ((Channel) cell.getElement()).getProperty(propertyName);
-		if(property == null)
-			cell.setText("");
-		else
-			cell.setText(property.getValue());
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * org.eclipse.jface.viewers.CellLabelProvider#update(org.eclipse.jface.
+     * viewers.ViewerCell)
+     */
+    @Override
+    public void update(ViewerCell cell) {
+        Property property = ((Channel) cell.getElement()).getProperty(propertyName);
+        if(property == null)
+            cell.setText("");
+        else
+            cell.setText(property.getValue());
+    }
 
 }

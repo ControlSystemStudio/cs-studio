@@ -45,143 +45,143 @@ import org.csstudio.dal.context.Identifier;
  */
 public class PropertyProxyWrapper<T,P extends AbstractPlug> implements SyncPropertyProxy<T,P>
 {
-	private PropertyProxy<T,P> proxy;
+    private PropertyProxy<T,P> proxy;
 
-	public P getPlug() {
-		return proxy.getPlug();
-	}
-	
-	/**
-	 * Creates a new PropertyProxyWrapper object.
-	 *
-	 * @param proxy Proxy to wrap
-	 */
-	public PropertyProxyWrapper(PropertyProxy<T,P> proxy)
-	{
-		this.proxy = proxy;
-	}
+    public P getPlug() {
+        return proxy.getPlug();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.SyncPropertyProxy#getValueSync()
-	 */
-	public T getValueSync() throws DataExchangeException
-	{
-		return new GetValueInterceptor<T>().executeAndWait(proxy);
-	}
+    /**
+     * Creates a new PropertyProxyWrapper object.
+     *
+     * @param proxy Proxy to wrap
+     */
+    public PropertyProxyWrapper(PropertyProxy<T,P> proxy)
+    {
+        this.proxy = proxy;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.SyncPropertyProxy#setValueSync(T)
-	 */
-	public void setValueSync(T value) throws DataExchangeException
-	{
-		new SetValueInterceptor<T>().executeAndWait(proxy, value);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.SyncPropertyProxy#getValueSync()
+     */
+    public T getValueSync() throws DataExchangeException
+    {
+        return new GetValueInterceptor<T>().executeAndWait(proxy);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#destroy()
-	 */
-	public void destroy()
-	{
-		proxy.destroy();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.SyncPropertyProxy#setValueSync(T)
+     */
+    public void setValueSync(T value) throws DataExchangeException
+    {
+        new SetValueInterceptor<T>().executeAndWait(proxy, value);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#getValueAsync(java.lang.String, org.csstudio.dal.ResponseListener)
-	 */
-	public Request<T> getValueAsync(ResponseListener<T> callback)
-		throws DataExchangeException
-	{
-		return proxy.getValueAsync(callback);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#destroy()
+     */
+    public void destroy()
+    {
+        proxy.destroy();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#setValueAsync(java.lang.String, T, org.csstudio.dal.ResponseListener)
-	 */
-	public Request<T> setValueAsync(T value, ResponseListener<T> callback)
-		throws DataExchangeException
-	{
-		return proxy.setValueAsync(value, callback);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#getValueAsync(java.lang.String, org.csstudio.dal.ResponseListener)
+     */
+    public Request<T> getValueAsync(ResponseListener<T> callback)
+        throws DataExchangeException
+    {
+        return proxy.getValueAsync(callback);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#getUniqueName()
-	 */
-	public String getUniqueName()
-	{
-		return proxy.getUniqueName();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#setValueAsync(java.lang.String, T, org.csstudio.dal.ResponseListener)
+     */
+    public Request<T> setValueAsync(T value, ResponseListener<T> callback)
+        throws DataExchangeException
+    {
+        return proxy.setValueAsync(value, callback);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#isSettable()
-	 */
-	public boolean isSettable()
-	{
-		return proxy.isSettable();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#getUniqueName()
+     */
+    public String getUniqueName()
+    {
+        return proxy.getUniqueName();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#createMonitor(org.csstudio.dal.ResponseListener)
-	 */
-	public MonitorProxy createMonitor(ResponseListener<T> callback,
-			Map<String, Object> parameters) throws RemoteException {
-		return proxy.createMonitor(callback,parameters);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#isSettable()
+     */
+    public boolean isSettable()
+    {
+        return proxy.isSettable();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.Proxy#addProxyListener(org.csstudio.dal.proxy.ProxyListener)
-	 */
-	public void addProxyListener(ProxyListener<?> l)
-	{
-		proxy.addProxyListener(l);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#createMonitor(org.csstudio.dal.ResponseListener)
+     */
+    public MonitorProxy createMonitor(ResponseListener<T> callback,
+            Map<String, Object> parameters) throws RemoteException {
+        return proxy.createMonitor(callback,parameters);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.Proxy#removeProxyListener(org.csstudio.dal.proxy.ProxyListener)
-	 */
-	public void removeProxyListener(ProxyListener<?> l)
-	{
-		proxy.removeProxyListener(l);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.Proxy#addProxyListener(org.csstudio.dal.proxy.ProxyListener)
+     */
+    public void addProxyListener(ProxyListener<?> l)
+    {
+        proxy.addProxyListener(l);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.PropertyProxy#getCondition()
-	 */
-	public DynamicValueCondition getCondition()
-	{
-		return proxy.getCondition();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.Proxy#removeProxyListener(org.csstudio.dal.proxy.ProxyListener)
+     */
+    public void removeProxyListener(ProxyListener<?> l)
+    {
+        proxy.removeProxyListener(l);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.proxy.Proxy#getConnectionState()
-	 */
-	public ConnectionState getConnectionState()
-	{
-		return proxy.getConnectionState();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.PropertyProxy#getCondition()
+     */
+    public DynamicValueCondition getCondition()
+    {
+        return proxy.getCondition();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Identifiable#getIdentifier()
-	 */
-	public Identifier getIdentifier()
-	{
-		return proxy.getIdentifier();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.proxy.Proxy#getConnectionState()
+     */
+    public ConnectionState getConnectionState()
+    {
+        return proxy.getConnectionState();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.context.Identifiable#isDebug()
-	 */
-	public boolean isDebug()
-	{
-		return proxy.isDebug();
-	}
-	
-	public Response<T> getLatestValueResponse() {
-		return proxy.getLatestValueResponse();
-	}
-	
-	public String getConnectionInfo() {
-		return proxy.getConnectionInfo();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Identifiable#getIdentifier()
+     */
+    public Identifier getIdentifier()
+    {
+        return proxy.getIdentifier();
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.context.Identifiable#isDebug()
+     */
+    public boolean isDebug()
+    {
+        return proxy.isDebug();
+    }
+
+    public Response<T> getLatestValueResponse() {
+        return proxy.getLatestValueResponse();
+    }
+
+    public String getConnectionInfo() {
+        return proxy.getConnectionInfo();
+    }
 }
 
 /* __oOo__ */

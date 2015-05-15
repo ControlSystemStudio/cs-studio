@@ -29,57 +29,57 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * Preference Page, registered in plugin.xml
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
  */
 public class PreferencePage extends FieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+        IWorkbenchPreferencePage {
 
-	/** Initialize */
-	public PreferencePage() {
-		super(FieldEditorPreferencePage.GRID);
-		setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
-				AutoCompleteUIPlugin.PLUGIN_ID));
-		setMessage(Messages.PrefPage_Title);
-	}
+    /** Initialize */
+    public PreferencePage() {
+        super(FieldEditorPreferencePage.GRID);
+        setPreferenceStore(new ScopedPreferenceStore(InstanceScope.INSTANCE,
+                AutoCompleteUIPlugin.PLUGIN_ID));
+        setMessage(Messages.PrefPage_Title);
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	public void init(IWorkbench workbench) {
-		// NOP
-	}
+    /** {@inheritDoc} */
+    @Override
+    public void init(IWorkbench workbench) {
+        // NOP
+    }
 
-	/** {@inheritDoc} */
-	@Override
-	protected void createFieldEditors() {
-		final Composite parent = getFieldEditorParent();
+    /** {@inheritDoc} */
+    @Override
+    protected void createFieldEditors() {
+        final Composite parent = getFieldEditorParent();
 
-		addField(new StringFieldEditor(Preferences.HISTORY_SIZE,
-				Messages.PrefPage_HistorySize, parent));
+        addField(new StringFieldEditor(Preferences.HISTORY_SIZE,
+                Messages.PrefPage_HistorySize, parent));
 
-		final Button clearHistory = new Button(parent, SWT.PUSH);
-		clearHistory.setText(Messages.PrefPage_ClearHistory);
-		clearHistory.setLayoutData(new GridData());
-		clearHistory.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(final SelectionEvent e) {
-				AutoCompleteUIPlugin.getDefault().clearSettings();
-			}
-		});
+        final Button clearHistory = new Button(parent, SWT.PUSH);
+        clearHistory.setText(Messages.PrefPage_ClearHistory);
+        clearHistory.setLayoutData(new GridData());
+        clearHistory.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(final SelectionEvent e) {
+                AutoCompleteUIPlugin.getDefault().clearSettings();
+            }
+        });
 
-		final Composite noteWrapper = new Composite(parent, SWT.NONE);
-		noteWrapper.setLayoutData(new GridData());
-		noteWrapper.setLayout(new GridLayout(2, false));
+        final Composite noteWrapper = new Composite(parent, SWT.NONE);
+        noteWrapper.setLayoutData(new GridData());
+        noteWrapper.setLayout(new GridLayout(2, false));
 
-		final Label noteLabel = new Label(noteWrapper, SWT.NONE);
-		FontData fontData = noteLabel.getFont().getFontData()[0];
-		fontData.setStyle(SWT.BOLD);
-		noteLabel.setFont(new Font(parent.getDisplay(), fontData));
-		noteLabel.setText("Note: ");
+        final Label noteLabel = new Label(noteWrapper, SWT.NONE);
+        FontData fontData = noteLabel.getFont().getFontData()[0];
+        fontData.setStyle(SWT.BOLD);
+        noteLabel.setFont(new Font(parent.getDisplay(), fontData));
+        noteLabel.setText("Note: ");
 
-		final Text note = new Text(noteWrapper, SWT.MULTI | SWT.READ_ONLY);
-		note.setBackground(parent.getBackground());
-		note.setText("The 'History size' value is the maximum number of entries in the History.\nEach entry is stored only once and the entries of the History are sorted \naccording to their occurrence.");
-	}
+        final Text note = new Text(noteWrapper, SWT.MULTI | SWT.READ_ONLY);
+        note.setBackground(parent.getBackground());
+        note.setText("The 'History size' value is the maximum number of entries in the History.\nEach entry is stored only once and the entries of the History are sorted \naccording to their occurrence.");
+    }
 
 }

@@ -16,7 +16,7 @@ import org.eclipse.ui.IPersistableElement;
 public class EmptyEditorInput implements IEditorInput
 {
     final private ImageDescriptor icon;
-    
+
     /** Initialize
      *  @param icon Desired icon
      */
@@ -24,13 +24,13 @@ public class EmptyEditorInput implements IEditorInput
     {
         this.icon = icon;
     }
- 
+
     /** Initialize */
     public EmptyEditorInput()
     {
         this(null);
     }
- 
+
     /** Cause application title to reflect the 'not saved' state. */
     @Override
     public String getName()

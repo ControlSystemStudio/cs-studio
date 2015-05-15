@@ -23,25 +23,25 @@ import org.eclipse.swt.widgets.Display;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  */
 public class DesyServicesStartup implements ServicesStartupExtPoint {
-	/** {@inheritDoc} */
+    /** {@inheritDoc} */
     public Object startServices(Display display, IApplicationContext context, Map<String, Object> parameters) throws Exception {
-		ServiceProxy[] proxies = StartupServiceEnumerator.getServices();
-		List<ServiceProxy> lowPriorityProxy = new ArrayList<ServiceProxy>();
+        ServiceProxy[] proxies = StartupServiceEnumerator.getServices();
+        List<ServiceProxy> lowPriorityProxy = new ArrayList<ServiceProxy>();
 
-		for(ServiceProxy proxy : proxies) {
-			if(proxy.isHighPriority()) {
-				proxy.run();
-			} else {
-				lowPriorityProxy.add(proxy);
-			}
-		}
+        for(ServiceProxy proxy : proxies) {
+            if(proxy.isHighPriority()) {
+                proxy.run();
+            } else {
+                lowPriorityProxy.add(proxy);
+            }
+        }
 
-		// TODO: implement this so that each low priority proxy
-		// is created and ran in a separate thread
-		for(ServiceProxy proxy : lowPriorityProxy) {
-			// TODO: add thread creation code here!
-			proxy.run();
-		}
-		return null;
-	}
+        // TODO: implement this so that each low priority proxy
+        // is created and ran in a separate thread
+        for(ServiceProxy proxy : lowPriorityProxy) {
+            // TODO: add thread creation code here!
+            proxy.run();
+        }
+        return null;
+    }
 }

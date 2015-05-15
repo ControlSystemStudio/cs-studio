@@ -21,31 +21,31 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
 @SuppressWarnings("nls")
 public class ItemInfo {
 
-	final int id;
-	final private String name, path, description;
-	final private boolean enabled, isPV, latching;
+    final int id;
+    final private String name, path, description;
+    final private boolean enabled, isPV, latching;
 
     private static Pattern IMPPattern = Pattern.compile("^\\ *\\*?\\!.*");
 
-	public static ItemInfo fromItem(final AlarmTreeItem item)
+    public static ItemInfo fromItem(final AlarmTreeItem item)
     {
-		final int id = item.getID();
-		final String name = item.getName();
-		final String path = item.getPathName();
-		if (item instanceof AlarmTreePV) {
-			AlarmTreePV pv = (AlarmTreePV) item;
-			final String description = pv.getDescription();
-			final boolean enabled = pv.isEnabled();
-			final boolean latching = pv.isLatching();
-			return new ItemInfo(id, name, path, description, true, enabled, latching);
-		} else {
-			return new ItemInfo(id, name, path, null, false, false, false);
-		}
+        final int id = item.getID();
+        final String name = item.getName();
+        final String path = item.getPathName();
+        if (item instanceof AlarmTreePV) {
+            AlarmTreePV pv = (AlarmTreePV) item;
+            final String description = pv.getDescription();
+            final boolean enabled = pv.isEnabled();
+            final boolean latching = pv.isLatching();
+            return new ItemInfo(id, name, path, description, true, enabled, latching);
+        } else {
+            return new ItemInfo(id, name, path, null, false, false, false);
+        }
     }
 
-	public ItemInfo(final int id,
-			final String name,
-			final String path,
+    public ItemInfo(final int id,
+            final String name,
+            final String path,
             final String description,
             final boolean isPV,
             final boolean enabled,
@@ -60,35 +60,35 @@ public class ItemInfo {
         this.latching = latching;
     }
 
-	public boolean isImportant() {
-		if (description == null || "".equals(description))
-			return false;
-		Matcher IMPMatcher = IMPPattern.matcher(description);
-		if (IMPMatcher.matches())
-			return true;
-		return false;
-	}
+    public boolean isImportant() {
+        if (description == null || "".equals(description))
+            return false;
+        Matcher IMPMatcher = IMPPattern.matcher(description);
+        if (IMPMatcher.matches())
+            return true;
+        return false;
+    }
 
-	public int getId() {
-		return id;
-	}
-	public String getName() {
-		return name;
-	}
-	public String getPath() {
-		return path;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public boolean isEnabled() {
-		return enabled;
-	}
-	public boolean isPV() {
-		return isPV;
-	}
-	public boolean isLatching() {
-		return latching;
-	}
+    public int getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+    public String getPath() {
+        return path;
+    }
+    public String getDescription() {
+        return description;
+    }
+    public boolean isEnabled() {
+        return enabled;
+    }
+    public boolean isPV() {
+        return isPV;
+    }
+    public boolean isLatching() {
+        return latching;
+    }
 
 }

@@ -18,7 +18,7 @@ import org.epics.vtype.VTypeToString;
  *  <p>Based on ideas from org.epics.pvmanager.jca, Gabriele Carcassi
  *  @author Kay Kasemir
  */
-public class VTypeForDouble extends DBRAlarmTimeDisplayWrapper<DBR_TIME_Double> implements VDouble 
+public class VTypeForDouble extends DBRAlarmTimeDisplayWrapper<DBR_TIME_Double> implements VDouble
 {
     public VTypeForDouble(final GR metadata, final DBR_TIME_Double dbr)
     {

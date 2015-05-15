@@ -18,29 +18,29 @@ import org.csstudio.alarm.beast.notifier.model.IAutomatedAction;
 
 public class AutomatedActionSequence implements IAutomatedAction {
 
-	private List<IAutomatedAction> actions = null;
+    private List<IAutomatedAction> actions = null;
 
-	public AutomatedActionSequence() {
-		actions = new LinkedList<IAutomatedAction>();
-	}
+    public AutomatedActionSequence() {
+        actions = new LinkedList<IAutomatedAction>();
+    }
 
-	public void add(IAutomatedAction action) {
-		actions.add(action);
-	}
-	
-	public int size() {
-		return actions.size();
-	}
+    public void add(IAutomatedAction action) {
+        actions.add(action);
+    }
 
-	@Override
-	public void init(ItemInfo item, AAData data, IActionHandler handler)
-			throws Exception { }
+    public int size() {
+        return actions.size();
+    }
 
-	@Override
-	public void execute(List<PVSnapshot> pvs) throws Exception {
-		for (IAutomatedAction action : actions) {
-			action.execute(pvs);
-		}
-	}
+    @Override
+    public void init(ItemInfo item, AAData data, IActionHandler handler)
+            throws Exception { }
+
+    @Override
+    public void execute(List<PVSnapshot> pvs) throws Exception {
+        for (IAutomatedAction action : actions) {
+            action.execute(pvs);
+        }
+    }
 
 }

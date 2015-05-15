@@ -22,53 +22,53 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public abstract class AbstractWidgetTargetAction  implements IObjectActionDelegate {
 
-	protected IWorkbenchPart targetPart;
-	/**
-	 * The current selection.
-	 */
-	protected IStructuredSelection selection;
+    protected IWorkbenchPart targetPart;
+    /**
+     * The current selection.
+     */
+    protected IStructuredSelection selection;
 
-	public AbstractWidgetTargetAction() {
-		super();
-	}
+    public AbstractWidgetTargetAction() {
+        super();
+    }
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
-	}
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        this.targetPart = targetPart;
+    }
 
-	/**
-	 * Executes the given {@link Command} using the command stack.  The stack is obtained by
-	 * calling {@link #getCommandStack()}, which uses <code>IAdapatable</code> to retrieve the
-	 * stack from the workbench part.
-	 * @param command the command to execute
-	 */
-	protected void execute(Command command) {
-		if (command == null || !command.canExecute() || getCommandStack() == null)
-			return;
-		getCommandStack().execute(command);
-	}
+    /**
+     * Executes the given {@link Command} using the command stack.  The stack is obtained by
+     * calling {@link #getCommandStack()}, which uses <code>IAdapatable</code> to retrieve the
+     * stack from the workbench part.
+     * @param command the command to execute
+     */
+    protected void execute(Command command) {
+        if (command == null || !command.canExecute() || getCommandStack() == null)
+            return;
+        getCommandStack().execute(command);
+    }
 
-	/**
-	 * Returns the editor's command stack. This is done by asking the workbench part for its
-	 * CommandStack via 
-	 * {@link org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)}.
-	 * @return the command stack
-	 */
-	protected CommandStack getCommandStack() {
-		return (CommandStack)targetPart.getAdapter(CommandStack.class);
-	}
+    /**
+     * Returns the editor's command stack. This is done by asking the workbench part for its
+     * CommandStack via
+     * {@link org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)}.
+     * @return the command stack
+     */
+    protected CommandStack getCommandStack() {
+        return (CommandStack)targetPart.getAdapter(CommandStack.class);
+    }
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			this.selection = (IStructuredSelection) selection;
-		}
-	}
-	
-	protected IStructuredSelection getSelection(){
-		if(selection !=null)
-			return selection;
-		else
-			 return  StructuredSelection.EMPTY;
-	}
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            this.selection = (IStructuredSelection) selection;
+        }
+    }
+
+    protected IStructuredSelection getSelection(){
+        if(selection !=null)
+            return selection;
+        else
+             return  StructuredSelection.EMPTY;
+    }
 
 }

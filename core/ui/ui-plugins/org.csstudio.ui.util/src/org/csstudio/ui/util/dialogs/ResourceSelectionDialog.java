@@ -40,144 +40,144 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * This class represents a Dialog to choose a file in the workspace.
- * 
+ *
  * @author Kai Meyer, Joerg Rathlev
  */
 //TODO: Copied from org.csstudio.platform.ui. Review is needed.
 public final class ResourceSelectionDialog extends Dialog implements Listener {
-	/**
-	 * The message to display, or <code>null</code> if none.
-	 */
-	private String _message;
-	
-	/**
-	 * The {@link WorkspaceTreeComposite} for this dialog.
-	 */
-	private ResourceSelectionGroup _resourceSelectionGroup;
-	
-	/**
-	 * The file extensions of files that will be shown for selection.
-	 */
-	private String[] _fileExtensions;
-	
-	/**
-	 * The path of the selected resource.
-	 */
-	private IPath _path;
+    /**
+     * The message to display, or <code>null</code> if none.
+     */
+    private String _message;
+
+    /**
+     * The {@link WorkspaceTreeComposite} for this dialog.
+     */
+    private ResourceSelectionGroup _resourceSelectionGroup;
+
+    /**
+     * The file extensions of files that will be shown for selection.
+     */
+    private String[] _fileExtensions;
+
+    /**
+     * The path of the selected resource.
+     */
+    private IPath _path;
 
     private Text _resourcePathText;
 
-	/**
-	 * Creates an input dialog with OK and Cancel buttons. Note that the dialog
-	 * will have no visual representation (no widgets) until it is told to open.
-	 * <p>
-	 * Note that the <code>open</code> method blocks for input dialogs.
-	 * </p>
-	 * 
-	 * @param parentShell
-	 *            the parent shell, or <code>null</code> to create a top-level
-	 *            shell
-	 * @param dialogMessage
-	 *            the dialog message, or <code>null</code> if none
-	 * @param fileExtensions
-	 *            the file extensions of files to show in the dialog. Use an
-	 *            empty array or <code>null</code> to show only containers
-	 *            (folders).
-	 */
-	public ResourceSelectionDialog(final Shell parentShell,
-			final String dialogMessage, final String[] fileExtensions) {
-		super(parentShell);
-		this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
-				| SWT.BORDER | SWT.RESIZE);
-		_message = dialogMessage;
-		_fileExtensions = fileExtensions;
-	}
-	
-	/**
-	 * Sets the initially selected resource. Must be called before the dialog is
-	 * displayed.
-	 * 
-	 * @param path
-	 *            the path to the initially selected resource.
-	 */
-	public void setSelectedResource(final IPath path) {
-		_path = path;
-	}
+    /**
+     * Creates an input dialog with OK and Cancel buttons. Note that the dialog
+     * will have no visual representation (no widgets) until it is told to open.
+     * <p>
+     * Note that the <code>open</code> method blocks for input dialogs.
+     * </p>
+     *
+     * @param parentShell
+     *            the parent shell, or <code>null</code> to create a top-level
+     *            shell
+     * @param dialogMessage
+     *            the dialog message, or <code>null</code> if none
+     * @param fileExtensions
+     *            the file extensions of files to show in the dialog. Use an
+     *            empty array or <code>null</code> to show only containers
+     *            (folders).
+     */
+    public ResourceSelectionDialog(final Shell parentShell,
+            final String dialogMessage, final String[] fileExtensions) {
+        super(parentShell);
+        this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
+                | SWT.BORDER | SWT.RESIZE);
+        _message = dialogMessage;
+        _fileExtensions = fileExtensions;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void configureShell(final Shell shell) {
-		super.configureShell(shell);
-		shell.setText("Resources");
-	}
+    /**
+     * Sets the initially selected resource. Must be called before the dialog is
+     * displayed.
+     *
+     * @param path
+     *            the path to the initially selected resource.
+     */
+    public void setSelectedResource(final IPath path) {
+        _path = path;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Control createDialogArea(final Composite parent) {
-		Composite composite = (Composite) super.createDialogArea(parent);
-		composite.setLayout(new GridLayout(1, false));
-		if (_message != null) {
-			Label label = new Label(composite, SWT.WRAP);
-			label.setText(_message);
-			GridData data = new GridData(GridData.GRAB_HORIZONTAL
-					| GridData.HORIZONTAL_ALIGN_FILL
-					| GridData.VERTICAL_ALIGN_CENTER);
-			data.horizontalSpan = 2;
-			data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-			label.setLayoutData(data);
-		}
-		
-		// The New Project and New Folder actions will be shown if there are
-		// no file extensions, i.e. if the dialog is opened to select a folder.
-		boolean showNewContainerActions = (_fileExtensions == null 
-				|| _fileExtensions.length == 0);
-		
-		_resourceSelectionGroup = new ResourceSelectionGroup(composite, this,
-				_fileExtensions, showNewContainerActions);
-		new Label(composite, SWT.NONE).setText("Resource Path:");
-		_resourcePathText = new Text(composite, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void configureShell(final Shell shell) {
+        super.configureShell(shell);
+        shell.setText("Resources");
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Control createDialogArea(final Composite parent) {
+        Composite composite = (Composite) super.createDialogArea(parent);
+        composite.setLayout(new GridLayout(1, false));
+        if (_message != null) {
+            Label label = new Label(composite, SWT.WRAP);
+            label.setText(_message);
+            GridData data = new GridData(GridData.GRAB_HORIZONTAL
+                    | GridData.HORIZONTAL_ALIGN_FILL
+                    | GridData.VERTICAL_ALIGN_CENTER);
+            data.horizontalSpan = 2;
+            data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
+            label.setLayoutData(data);
+        }
+
+        // The New Project and New Folder actions will be shown if there are
+        // no file extensions, i.e. if the dialog is opened to select a folder.
+        boolean showNewContainerActions = (_fileExtensions == null
+                || _fileExtensions.length == 0);
+
+        _resourceSelectionGroup = new ResourceSelectionGroup(composite, this,
+                _fileExtensions, showNewContainerActions);
+        new Label(composite, SWT.NONE).setText("Resource Path:");
+        _resourcePathText = new Text(composite, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
         _resourcePathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         if (_path != null && !_path.isEmpty()) {
             _resourcePathText.setText(_path.toString());
             _resourceSelectionGroup.setSelectedResource(_path);
         }
-		return composite;
-	}
+        return composite;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void okPressed() {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void okPressed() {
 //      _path = _resourceSelectionGroup.getFullPath();
         _path = new Path(_resourcePathText.getText());
 
-		super.okPressed();
-	}
+        super.okPressed();
+    }
 
-	/**
-	 * Returns the path to the selected resource.
-	 * 
-	 * @return the path to the selected resource, or <code>null</code> if no
-	 *         resource was selected.
-	 */
-	public IPath getSelectedResource() {
-		return _path;
-	}
+    /**
+     * Returns the path to the selected resource.
+     *
+     * @return the path to the selected resource, or <code>null</code> if no
+     *         resource was selected.
+     */
+    public IPath getSelectedResource() {
+        return _path;
+    }
 
-    public void handleEvent(Event event) {    	
+    public void handleEvent(Event event) {
        if(event != null){
-    	   ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
-    	   if(widget != null &&  widget.getFullPath() != null ){
-    		   _resourcePathText.setText(widget.getFullPath().toString());
-    	   }
+           ResourceSelectionGroup widget = (ResourceSelectionGroup) event.widget;
+           if(widget != null &&  widget.getFullPath() != null ){
+               _resourcePathText.setText(widget.getFullPath().toString());
+           }
        }
        if(SWT.MouseDoubleClick == event.type ){
-        	okPressed();
+            okPressed();
        }
     }
 }

@@ -66,28 +66,28 @@ package org.csstudio.dal.context;
  */
 public interface LifecycleReporter
 {
-	/**
-	 * Adds a lifecycle listener.
-	 *
-	 * @param l a listener object
-	 */
-	void addLifecycleListener(LifecycleListener l);
+    /**
+     * Adds a lifecycle listener.
+     *
+     * @param l a listener object
+     */
+    void addLifecycleListener(LifecycleListener l);
 
-	/**
-	 * Remove a lifecycle listener.
-	 *
-	 * @param l a listener object
-	 */
-	void removeLifecycleListener(LifecycleListener l);
+    /**
+     * Remove a lifecycle listener.
+     *
+     * @param l a listener object
+     */
+    void removeLifecycleListener(LifecycleListener l);
 
-	LifecycleListener[] getLifecycleListeners();
+    LifecycleListener[] getLifecycleListeners();
 
-	/**
-	 * Returns class which defines reporter's phase.
-	 *
-	 * @return LifecyclePhase lifecycle phase of this reporter
-	 */
-	LifecycleState getLifecycleState();
+    /**
+     * Returns class which defines reporter's phase.
+     *
+     * @return LifecyclePhase lifecycle phase of this reporter
+     */
+    LifecycleState getLifecycleState();
 }
 
 /* __oOo__ */

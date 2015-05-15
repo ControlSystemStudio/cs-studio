@@ -34,62 +34,62 @@ import org.csstudio.dal.context.PropertyContext;
  *
   */
 public class LongSeqPropertyImpl extends NumericPropertyImpl<long[],Long>
-	implements LongSeqProperty
+    implements LongSeqProperty
 {
-	private int sequenceLength;
-	private boolean chInitialized = false;
-	/**
-	 * Creates a new LongSeqPropertyImpl object.
-	 *
-	 * @param name property name
-	 * @param propertyContext property context
-	 */
-	public LongSeqPropertyImpl(String name, PropertyContext propertyContext)
-	{
-		super(long[].class, name, propertyContext);
-		addDataAccessType(DoubleSeqAccess.class, DoubleSeqDataAccessWrapper.class);
-	}
-
-	
-	private void readCharacteristics() throws DataExchangeException
-	{
-		if (chInitialized)
-			return;
-	
-		Integer length = null;
-		length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
-		sequenceLength = length.intValue();
-		chInitialized = true;
-
-	}
+    private int sequenceLength;
+    private boolean chInitialized = false;
+    /**
+     * Creates a new LongSeqPropertyImpl object.
+     *
+     * @param name property name
+     * @param propertyContext property context
+     */
+    public LongSeqPropertyImpl(String name, PropertyContext propertyContext)
+    {
+        super(long[].class, name, propertyContext);
+        addDataAccessType(DoubleSeqAccess.class, DoubleSeqDataAccessWrapper.class);
+    }
 
 
-	/*
-	 *  (non-Javadoc)
-	 * @see org.csstudio.dal.SequenceAccess#getSequenceLength()
-	 */
-	public int getSequenceLength() throws DataExchangeException
-	{
-		if (!chInitialized)
-			readCharacteristics();
-		return sequenceLength;
-	}
-	
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.NumericSimpleProperty#getMinimum()
-	 */
-	@Override
-	public Long getMinimum() throws DataExchangeException {
-		return (Long)getCharacteristic(C_MINIMUM);
-	}
+    private void readCharacteristics() throws DataExchangeException
+    {
+        if (chInitialized)
+            return;
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.NumericSimpleProperty#getMaximum()
-	 */
-	@Override
-	public Long getMaximum() throws DataExchangeException {
-		return (Long)getCharacteristic(C_MAXIMUM);
-	}
+        Integer length = null;
+        length = (Integer)getCharacteristic(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH);
+        sequenceLength = length.intValue();
+        chInitialized = true;
+
+    }
+
+
+    /*
+     *  (non-Javadoc)
+     * @see org.csstudio.dal.SequenceAccess#getSequenceLength()
+     */
+    public int getSequenceLength() throws DataExchangeException
+    {
+        if (!chInitialized)
+            readCharacteristics();
+        return sequenceLength;
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.NumericSimpleProperty#getMinimum()
+     */
+    @Override
+    public Long getMinimum() throws DataExchangeException {
+        return (Long)getCharacteristic(C_MINIMUM);
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.NumericSimpleProperty#getMaximum()
+     */
+    @Override
+    public Long getMaximum() throws DataExchangeException {
+        return (Long)getCharacteristic(C_MAXIMUM);
+    }
 }
 
 /* __oOo__ */

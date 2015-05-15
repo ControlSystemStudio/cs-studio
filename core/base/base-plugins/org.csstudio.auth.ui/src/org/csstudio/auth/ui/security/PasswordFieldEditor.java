@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Text;
  *  In fact when 'encrypted', the field editor never reads
  *  the original value, it will only write a new value in case
  *  one was entered.
- *  
+ *
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
@@ -49,18 +49,18 @@ public class PasswordFieldEditor extends FieldEditor
      * Cached valid state.
      */
     private boolean isValid;
-    
+
     /**
-     * whether the data should be encrypted or not in displaying and storage 
+     * whether the data should be encrypted or not in displaying and storage
      */
     private boolean encrypt = true;
-    
+
     /**
-    * Absolute or relative path to the preference node. It must be unique in the 
+    * Absolute or relative path to the preference node. It must be unique in the
     * secure storage.
     */
     private String nodePath;
-    
+
     /**
      * Old text value.
      * @since 3.4 this field is protected.
@@ -87,21 +87,21 @@ public class PasswordFieldEditor extends FieldEditor
      * Fake password to be displayed or copied.
      */
     private static final String FAKE_PASSWORD = "*********"; //$NON-NLS-1$
-    
+
     private boolean loadFromDefault = false;
-    
-	private static final Logger log = Logger.getLogger(PasswordFieldEditor.class.getName());
-    
+
+    private static final Logger log = Logger.getLogger(PasswordFieldEditor.class.getName());
+
     /**
      * Creates a string field editor of unlimited width.
      * Use the method <code>setTextLimit</code> to limit the text.
      * The data in this field will be encrypted in displaying and storage.
-     * 
+     *
      * @param name the name of the preference this field editor works on
      * @param labelText the label text of the field editor
      * @param parent the parent of the field editor's control
-     * @param nodePath absolute or relative path to the preference node. It must be unique in the 
-     * 		  secure storage. It is recommended to use your plugin ID.
+     * @param nodePath absolute or relative path to the preference node. It must be unique in the
+     *           secure storage. It is recommended to use your plugin ID.
      */
     public PasswordFieldEditor(String name, String labelText, Composite parent, String nodePath)
     {
@@ -111,14 +111,14 @@ public class PasswordFieldEditor extends FieldEditor
     /**
      * Creates a string field editor of unlimited width.
      * Use the method <code>setTextLimit</code> to limit the text.
-     * 
+     *
      * @param name the name of the preference this field editor works on
      * @param labelText the label text of the field editor
      * @param parent the parent of the field editor's control
      * @param qualifier absolute or relative path to the preference node. It must be unique
-     * 		  in the secure storage. It must be same as the qualifier of the 
-     * 		  preference store of the preference page which including this field editor. 
-     * @param encrypt true if value is to be encrypted, false value does not need to be encrypted 
+     *           in the secure storage. It must be same as the qualifier of the
+     *           preference store of the preference page which including this field editor.
+     * @param encrypt true if value is to be encrypted, false value does not need to be encrypted
      */
     public PasswordFieldEditor(String name, String labelText, Composite parent, String qualifier, boolean encrypt)
     {
@@ -130,7 +130,7 @@ public class PasswordFieldEditor extends FieldEditor
                 .getString("StringFieldEditor.errorMessage");//$NON-NLS-1$
         createControl(parent);
     }
-    
+
     /* (non-Javadoc)
      * Method declared on FieldEditor.
      */
@@ -180,7 +180,7 @@ public class PasswordFieldEditor extends FieldEditor
      * Hook for subclasses to do specific state checks.
      * <p>
      * The default implementation of this framework method does
-     * nothing and returns <code>true</code>.  Subclasses should 
+     * nothing and returns <code>true</code>.  Subclasses should
      * override this method to specific state checks.
      * </p>
      *
@@ -220,25 +220,25 @@ public class PasswordFieldEditor extends FieldEditor
     {
         if (textField == null)
             return;
-    	String value = null;
-    	if(!encrypt) {	        	
-         	try
-         	{
-				value = SecureStorage.getNode(nodePath).get(getPreferenceName(), null);
-				if(value == null)
-					value = getPreferenceStore().getString(getPreferenceName());
-         	}
-         	catch (Exception e)
-         	{
-	        	log.log(Level.SEVERE, "Error in retrieving data from secure storage. " +
-						"The default preference value of _" +
-						getPreferenceName()+ "_ will be loaded.", e);
-				value = getPreferenceStore().getString(getPreferenceName());
-			}        	
-    	} else
-    		value = FAKE_PASSWORD;
-		textField.setText(value);
-		oldValue = value;
+        String value = null;
+        if(!encrypt) {
+             try
+             {
+                value = SecureStorage.getNode(nodePath).get(getPreferenceName(), null);
+                if(value == null)
+                    value = getPreferenceStore().getString(getPreferenceName());
+             }
+             catch (Exception e)
+             {
+                log.log(Level.SEVERE, "Error in retrieving data from secure storage. " +
+                        "The default preference value of _" +
+                        getPreferenceName()+ "_ will be loaded.", e);
+                value = getPreferenceStore().getString(getPreferenceName());
+            }
+        } else
+            value = FAKE_PASSWORD;
+        textField.setText(value);
+        oldValue = value;
     }
 
     /* (non-Javadoc)
@@ -247,14 +247,14 @@ public class PasswordFieldEditor extends FieldEditor
     @Override
     protected void doLoadDefault() {
         if (textField != null) {
-        	if(!encrypt){
-	            String value = getPreferenceStore().getDefaultString(
-	                    getPreferenceName());
-	            textField.setText(value);
-        	} else {
-        		textField.setText(FAKE_PASSWORD);
-        		loadFromDefault = true;
-        	}
+            if(!encrypt){
+                String value = getPreferenceStore().getDefaultString(
+                        getPreferenceName());
+                textField.setText(value);
+            } else {
+                textField.setText(FAKE_PASSWORD);
+                loadFromDefault = true;
+            }
         }
         valueChanged();
     }
@@ -264,31 +264,31 @@ public class PasswordFieldEditor extends FieldEditor
      */
     @Override
     protected void doStore()
-    {    	
+    {
         final boolean encrypted_pw_changed =
-            !textField.getText().equals(FAKE_PASSWORD); 
+            !textField.getText().equals(FAKE_PASSWORD);
 
-    	try
-    	{ 
-    	    if (!encrypt || encrypted_pw_changed)
-    	    {  		
-				final ISecurePreferences node = SecureStorage.getNode(nodePath);
-	            node.put(getPreferenceName(), textField.getText(), encrypt);
-				node.flush();
-	    	}
-    	    else if (encrypt && loadFromDefault && !encrypted_pw_changed)
-    	    {
-    			final ISecurePreferences node = SecureStorage.getNode(nodePath);
-	            node.put(getPreferenceName(), getPreferenceStore().getDefaultString(
-	                    getPreferenceName()), encrypt);
-				node.flush();
-				loadFromDefault = false;
-    		}
-		}
-    	catch (Exception e)
-    	{
-        	log.log(Level.SEVERE, "Error writing data from secure storage.", e);
-		}
+        try
+        {
+            if (!encrypt || encrypted_pw_changed)
+            {
+                final ISecurePreferences node = SecureStorage.getNode(nodePath);
+                node.put(getPreferenceName(), textField.getText(), encrypt);
+                node.flush();
+            }
+            else if (encrypt && loadFromDefault && !encrypted_pw_changed)
+            {
+                final ISecurePreferences node = SecureStorage.getNode(nodePath);
+                node.put(getPreferenceName(), getPreferenceStore().getDefaultString(
+                        getPreferenceName()), encrypt);
+                node.flush();
+                loadFromDefault = false;
+            }
+        }
+        catch (Exception e)
+        {
+            log.log(Level.SEVERE, "Error writing data from secure storage.", e);
+        }
     }
 
     /* (non-Javadoc)
@@ -311,11 +311,11 @@ public class PasswordFieldEditor extends FieldEditor
      */
     private Text getTextControl(Composite parent) {
         if (textField == null) {
-        	if(encrypt) {
-        		textField = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
-        	}
-        	else
-        		textField = new Text(parent, SWT.SINGLE | SWT.BORDER);   		
+            if(encrypt) {
+                textField = new Text(parent, SWT.SINGLE | SWT.BORDER | SWT.PASSWORD);
+            }
+            else
+                textField = new Text(parent, SWT.SINGLE | SWT.BORDER);
             textField.setFont(parent.getFont());
             // Note: On OS X with Eclipse 3.5, i.e. using Cocoa,
             // the SWT.PASSWORD text box doesn't seem to send out
@@ -379,11 +379,11 @@ public class PasswordFieldEditor extends FieldEditor
      * to the value (<code>VALUE</code> property) provided that the old and
      * new values are different.
      * <p>
-     * This hook is <em>not</em> called when the text is initialized 
+     * This hook is <em>not</em> called when the text is initialized
      * (or reset to the default value) from the preference store.
      * </p>
      */
-    protected void valueChanged() {    	   	
+    protected void valueChanged() {
         setPresentsDefaultValue(false);
         boolean oldState = isValid;
         refreshValidState();
@@ -406,6 +406,6 @@ public class PasswordFieldEditor extends FieldEditor
     public void setEnabled(boolean enabled, Composite parent) {
         super.setEnabled(enabled, parent);
         getTextControl(parent).setEnabled(enabled);
-    }    
-   
+    }
+
 }

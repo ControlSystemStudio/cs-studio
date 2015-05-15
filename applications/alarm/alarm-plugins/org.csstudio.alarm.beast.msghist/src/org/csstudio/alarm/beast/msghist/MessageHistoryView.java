@@ -24,7 +24,7 @@ public class MessageHistoryView extends ViewPart
 {
     /** ID under which this view is registered in plugin.xml */
     final public static String ID = "org.csstudio.alarm.beast.msghist.MessageHistoryView"; //$NON-NLS-1$
-    
+
     @SuppressWarnings("nls")
     @Override
     public void createPartControl(final Composite parent)
@@ -36,19 +36,19 @@ public class MessageHistoryView extends ViewPart
             final String url =
                 service.getString(Activator.ID, "rdb_url", null, null);
             final String user =
-                SecurePreferences.get(Activator.ID, "rdb_user", null);           
+                SecurePreferences.get(Activator.ID, "rdb_user", null);
             final String password =
-            		SecurePreferences.get(Activator.ID, "rdb_password", null);          
+                    SecurePreferences.get(Activator.ID, "rdb_password", null);
             final String schema =
                 service.getString(Activator.ID, "rdb_schema", null, null);
-            
-			final Model model = new Model(url, user, password, schema,
-					Preferences.getMaxProperties(), getSite().getShell());
+
+            final Model model = new Model(url, user, password, schema,
+                    Preferences.getMaxProperties(), getSite().getShell());
             final GUI gui = new GUI(getSite(), parent, model);
 
             // Trigger update
             model.setTimerange(model.getStartSpec(), model.getEndSpec());
-            
+
             getSite().setSelectionProvider(gui.getSelectionProvider());
         }
         catch (Throwable ex)

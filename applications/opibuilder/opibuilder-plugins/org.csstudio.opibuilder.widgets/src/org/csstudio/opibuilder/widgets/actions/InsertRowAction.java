@@ -30,98 +30,98 @@ import org.eclipse.ui.IWorkbenchPart;
  *
  */
 public class InsertRowAction implements IObjectActionDelegate {
-	
-	private class InsertRowDialog extends Dialog {
-		private boolean isBefore;
 
-		/**
-		 * Create the dialog.
-		 * @param parentShell
-		 */
-		public InsertRowDialog(Shell parentShell) {
-			super(parentShell);
-		}
+    private class InsertRowDialog extends Dialog {
+        private boolean isBefore;
 
-		/**
-		 * Create contents of the dialog.
-		 * @param parent
-		 */
-		@Override
-		protected Control createDialogArea(Composite parent) {
-			getShell().setText("Insert Row");
-			Composite container = (Composite) super.createDialogArea(parent);
-			
-			Group grpPosition = new Group(container, SWT.NONE);
-			grpPosition.setText("Insert");
-			GridData gd_grpPosition = new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1);
-			grpPosition.setLayoutData(gd_grpPosition);
-			FillLayout fillLayout = new FillLayout(SWT.VERTICAL);
-			fillLayout.marginHeight=5;
-			fillLayout.marginWidth = 5;
-			fillLayout.spacing = 5;
-			grpPosition.setLayout(fillLayout);
-			
-			final Button beforeRadio = new Button(grpPosition, SWT.RADIO);
-			beforeRadio.setText("Before this row");
-			beforeRadio.setSelection(true);
-			isBefore = true;
-			
-			beforeRadio.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					isBefore = beforeRadio.getSelection();
-				}
-			});
-			
-			Button afterRadio = new Button(grpPosition, SWT.RADIO);
-			afterRadio.setText("After this row");
-			
-			return container;
-		}
+        /**
+         * Create the dialog.
+         * @param parentShell
+         */
+        public InsertRowDialog(Shell parentShell) {
+            super(parentShell);
+        }
 
-		public boolean isBefore(){
-			return isBefore;
-		}
-	}
+        /**
+         * Create contents of the dialog.
+         * @param parent
+         */
+        @Override
+        protected Control createDialogArea(Composite parent) {
+            getShell().setText("Insert Row");
+            Composite container = (Composite) super.createDialogArea(parent);
 
-	private IStructuredSelection selection;
-	private IWorkbenchPart targetPart;
-	
-	public InsertRowAction() {
-	}
+            Group grpPosition = new Group(container, SWT.NONE);
+            grpPosition.setText("Insert");
+            GridData gd_grpPosition = new GridData(SWT.CENTER, SWT.CENTER, true, false, 1, 1);
+            grpPosition.setLayoutData(gd_grpPosition);
+            FillLayout fillLayout = new FillLayout(SWT.VERTICAL);
+            fillLayout.marginHeight=5;
+            fillLayout.marginWidth = 5;
+            fillLayout.spacing = 5;
+            grpPosition.setLayout(fillLayout);
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
-	}
+            final Button beforeRadio = new Button(grpPosition, SWT.RADIO);
+            beforeRadio.setText("Before this row");
+            beforeRadio.setSelection(true);
+            isBefore = true;
 
-	public void run(IAction action) {
-		TableEditPart tableEditPart = getSelectedWidget();
-		if(tableEditPart.getTable().isEmpty()){
-			if(tableEditPart.getTable().getColumnCount() ==0)
-				tableEditPart.getTable().insertColumn(0);
-			tableEditPart.getTable().insertRow(0);
-			return;
-		}
-		
-		InsertRowDialog dialog = new InsertRowDialog(targetPart.getSite().getShell());
-		if (dialog.open() == Dialog.OK){
-			boolean before = dialog.isBefore();
-			tableEditPart.getTable().insertRow(tableEditPart.getMenuTriggeredCell().x + (before? 0:1));
-		}
-		
-	}
+            beforeRadio.addSelectionListener(new SelectionAdapter() {
+                @Override
+                public void widgetSelected(SelectionEvent e) {
+                    isBefore = beforeRadio.getSelection();
+                }
+            });
 
-	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			this.selection = (IStructuredSelection) selection;
-		}
-	}
-	
-	private TableEditPart getSelectedWidget(){ 
-		if(selection.getFirstElement() instanceof TableEditPart){
-			return (TableEditPart)selection.getFirstElement();
-		}else
-			return null;
-	}
+            Button afterRadio = new Button(grpPosition, SWT.RADIO);
+            afterRadio.setText("After this row");
+
+            return container;
+        }
+
+        public boolean isBefore(){
+            return isBefore;
+        }
+    }
+
+    private IStructuredSelection selection;
+    private IWorkbenchPart targetPart;
+
+    public InsertRowAction() {
+    }
+
+    public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+        this.targetPart = targetPart;
+    }
+
+    public void run(IAction action) {
+        TableEditPart tableEditPart = getSelectedWidget();
+        if(tableEditPart.getTable().isEmpty()){
+            if(tableEditPart.getTable().getColumnCount() ==0)
+                tableEditPart.getTable().insertColumn(0);
+            tableEditPart.getTable().insertRow(0);
+            return;
+        }
+
+        InsertRowDialog dialog = new InsertRowDialog(targetPart.getSite().getShell());
+        if (dialog.open() == Dialog.OK){
+            boolean before = dialog.isBefore();
+            tableEditPart.getTable().insertRow(tableEditPart.getMenuTriggeredCell().x + (before? 0:1));
+        }
+
+    }
+
+    public void selectionChanged(IAction action, ISelection selection) {
+        if (selection instanceof IStructuredSelection) {
+            this.selection = (IStructuredSelection) selection;
+        }
+    }
+
+    private TableEditPart getSelectedWidget(){
+        if(selection.getFirstElement() instanceof TableEditPart){
+            return (TableEditPart)selection.getFirstElement();
+        }else
+            return null;
+    }
 
 }

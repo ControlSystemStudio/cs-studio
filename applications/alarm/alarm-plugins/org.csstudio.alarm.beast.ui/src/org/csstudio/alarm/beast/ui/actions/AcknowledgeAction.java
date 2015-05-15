@@ -29,37 +29,37 @@ import org.eclipse.jface.viewers.Viewer;
 public class AcknowledgeAction extends Action
 {
     final private boolean acknowledge;
-	private Viewer viewer = null;
-	private ISelectionProvider selection_provider;
+    private Viewer viewer = null;
+    private ISelectionProvider selection_provider;
     private List<AlarmTreeItem> alarms;
-    
+
     /** Initialize action
      *  @param acknowledge Acknowledge, or un-acknowledge?
      *  @param selection_provider Selection provider that must give
      *                            {@link AlarmTreeItem} elements
      */
     public AcknowledgeAction(final boolean acknowledge,
-    		final ISelectionProvider selection_provider)
+            final ISelectionProvider selection_provider)
     {
-    	super(acknowledge ? Messages.Acknowledge_Action
-    			          : Messages.UnacknowledgeAction,
+        super(acknowledge ? Messages.Acknowledge_Action
+                          : Messages.UnacknowledgeAction,
               acknowledge ? Activator.getImageDescriptor("icons/acknowledge.gif") //$NON-NLS-1$
-            		      : Activator.getImageDescriptor("icons/unacknowledge.gif")); //$NON-NLS-1$
-    	this.acknowledge = acknowledge;
-    	this.selection_provider = selection_provider;
+                          : Activator.getImageDescriptor("icons/unacknowledge.gif")); //$NON-NLS-1$
+        this.acknowledge = acknowledge;
+        this.selection_provider = selection_provider;
         selection_provider.addSelectionChangedListener(new ISelectionChangedListener()
         {
             @Override
             public void selectionChanged(SelectionChangedEvent event)
             {
-            	final boolean isEmpty = event.getSelection().isEmpty();
+                final boolean isEmpty = event.getSelection().isEmpty();
                 //authorization
                 if(!isEmpty)
-                	setEnabled(SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE));
+                    setEnabled(SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE));
                 else
-                	setEnabled(false);
+                    setEnabled(false);
             }
-        });        
+        });
         SecuritySupportUI.registerAction(this, AuthIDs.ACKNOWLEDGE);
     }
 
@@ -69,11 +69,11 @@ public class AcknowledgeAction extends Action
      */
     public AcknowledgeAction(final boolean acknowledge, final List<AlarmTreeItem> alarms)
     {
-    	super(acknowledge ? Messages.Acknowledge_Action
-		                  : Messages.UnacknowledgeAction,
+        super(acknowledge ? Messages.Acknowledge_Action
+                          : Messages.UnacknowledgeAction,
               acknowledge ? Activator.getImageDescriptor("icons/acknowledge.gif") //$NON-NLS-1$
-  		                  : Activator.getImageDescriptor("icons/unacknowledge.gif")); //$NON-NLS-1$
-    	this.acknowledge = acknowledge;
+                            : Activator.getImageDescriptor("icons/unacknowledge.gif")); //$NON-NLS-1$
+        this.acknowledge = acknowledge;
         this.alarms = alarms;
 
         //authorization
@@ -85,17 +85,17 @@ public class AcknowledgeAction extends Action
      */
     public void clearSelectionOnAcknowledgement(final Viewer viewer)
     {
-    	this.viewer = viewer;
+        this.viewer = viewer;
     }
 
     /** {@inheritDoc} */
     @Override
-	public void run()
+    public void run()
     {
-    	if (alarms != null)
+        if (alarms != null)
         {
-        	if (viewer != null)
-        		viewer.setSelection(null);
+            if (viewer != null)
+                viewer.setSelection(null);
             for (AlarmTreeItem item : alarms)
                 item.acknowledge(acknowledge);
         }
@@ -103,8 +103,8 @@ public class AcknowledgeAction extends Action
         {
             final Object items[] =
              ((IStructuredSelection)selection_provider.getSelection()).toArray();
-        	if (viewer != null)
-        		viewer.setSelection(null);
+            if (viewer != null)
+                viewer.setSelection(null);
             for (Object item : items)
                 if (item instanceof AlarmTreeItem)
                     ((AlarmTreeItem)item).acknowledge(acknowledge);

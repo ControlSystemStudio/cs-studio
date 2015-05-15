@@ -31,72 +31,72 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
  *
  */
 public class OverviewOutlinePage extends Page implements IContentOutlinePage
-	{
-		
-		private Canvas overview;
-		private Thumbnail thumbnail;
-		private DisposeListener disposeListener;
-		private ScalableFreeformRootEditPart rootEP;
-		
-		
-		public OverviewOutlinePage(ScalableFreeformRootEditPart root){			
-			rootEP = root;
-		}
-		
-		public void createControl(Composite parent){
-			overview = new Canvas(parent, SWT.NONE);			
-			LightweightSystem lws = new LightweightSystem(overview);
+    {
 
-			thumbnail = new ScrollableThumbnail((Viewport)rootEP.getFigure());
-			thumbnail.setBorder(new MarginBorder(3));
-			thumbnail.setSource(rootEP.getLayer(LayerConstants.PRINTABLE_LAYERS));
-			lws.setContents(thumbnail);
-			
-			disposeListener = new DisposeListener() {
-					public void widgetDisposed(DisposeEvent e) {
-						if (thumbnail != null) {
-							thumbnail.deactivate();
-							thumbnail = null;
-						}
-					}
-			};
-			rootEP.getViewer().getControl().addDisposeListener(disposeListener);
-		}
-		
-		public void dispose(){
-			if (thumbnail != null) {
-				thumbnail.deactivate();
-				thumbnail = null;
-			}
-			super.dispose();
-		}
-		
-		public Control getControl() {
-			return overview;
-		}
-		
-		public void setFocus() {
-			if(getControl() != null)
-				getControl().setFocus();
-		}
+        private Canvas overview;
+        private Thumbnail thumbnail;
+        private DisposeListener disposeListener;
+        private ScalableFreeformRootEditPart rootEP;
 
 
-		public void addSelectionChangedListener(
-				ISelectionChangedListener listener) {
-			
-		}
+        public OverviewOutlinePage(ScalableFreeformRootEditPart root){
+            rootEP = root;
+        }
 
-		public ISelection getSelection() {
-			return StructuredSelection.EMPTY;
-		}
+        public void createControl(Composite parent){
+            overview = new Canvas(parent, SWT.NONE);
+            LightweightSystem lws = new LightweightSystem(overview);
 
-		public void removeSelectionChangedListener(
-				ISelectionChangedListener listener) {
-			
-		}
+            thumbnail = new ScrollableThumbnail((Viewport)rootEP.getFigure());
+            thumbnail.setBorder(new MarginBorder(3));
+            thumbnail.setSource(rootEP.getLayer(LayerConstants.PRINTABLE_LAYERS));
+            lws.setContents(thumbnail);
 
-		public void setSelection(ISelection selection) {
-			
-		}
-	}
-	
+            disposeListener = new DisposeListener() {
+                    public void widgetDisposed(DisposeEvent e) {
+                        if (thumbnail != null) {
+                            thumbnail.deactivate();
+                            thumbnail = null;
+                        }
+                    }
+            };
+            rootEP.getViewer().getControl().addDisposeListener(disposeListener);
+        }
+
+        public void dispose(){
+            if (thumbnail != null) {
+                thumbnail.deactivate();
+                thumbnail = null;
+            }
+            super.dispose();
+        }
+
+        public Control getControl() {
+            return overview;
+        }
+
+        public void setFocus() {
+            if(getControl() != null)
+                getControl().setFocus();
+        }
+
+
+        public void addSelectionChangedListener(
+                ISelectionChangedListener listener) {
+
+        }
+
+        public ISelection getSelection() {
+            return StructuredSelection.EMPTY;
+        }
+
+        public void removeSelectionChangedListener(
+                ISelectionChangedListener listener) {
+
+        }
+
+        public void setSelection(ISelection selection) {
+
+        }
+    }
+

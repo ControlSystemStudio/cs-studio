@@ -18,7 +18,7 @@
        Each library uses its own license.
    </license>
 
-   
+
 
    <plugin
          id="javax.servlet.jsp"
@@ -785,13 +785,6 @@
          unpack="false"/>
 
    <plugin
-         id="javax.mail"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.activation"
          download-size="0"
          install-size="0"
@@ -835,13 +828,6 @@
 
    <plugin
          id="org.apache.commons.lang"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.antlr.runtime"
          download-size="0"
          install-size="0"
          version="0.0.0"

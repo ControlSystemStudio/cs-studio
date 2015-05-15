@@ -38,15 +38,15 @@ import org.csstudio.dal.RemoteException;
  *
  */
 public interface AsynchronousCommandContext extends CommandContext,
-	AsynchronousContext
+    AsynchronousContext
 {
-	/**
-	 * If command exists, it is returned, otherwise <code>null</code> is returned
-	 * @param name the name of the command
-	 * @return asynchronous command with requested name or <code>null</code>
-	 * @throws RemoteException
-	 */
-	public AsynchronousCommand getCommandAsync(String name) throws RemoteException;
+    /**
+     * If command exists, it is returned, otherwise <code>null</code> is returned
+     * @param name the name of the command
+     * @return asynchronous command with requested name or <code>null</code>
+     * @throws RemoteException
+     */
+    public AsynchronousCommand getCommandAsync(String name) throws RemoteException;
 }
 
 /* __oOo__ */

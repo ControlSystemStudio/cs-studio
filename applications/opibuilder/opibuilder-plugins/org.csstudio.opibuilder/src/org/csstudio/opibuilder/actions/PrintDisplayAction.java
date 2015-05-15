@@ -27,110 +27,110 @@ import org.eclipse.ui.actions.ActionFactory;
 
 /**
  * The action to print display.
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class PrintDisplayAction extends WorkbenchPartAction {
 
-	public static final String ID = "org.csstudio.opibuilder.actions.print";
+    public static final String ID = "org.csstudio.opibuilder.actions.print";
 
-	/**
-	 * Constructor for PrintAction.
-	 * 
-	 * @param part
-	 *            The workbench part associated with this PrintAction
-	 */
-	public PrintDisplayAction(IWorkbenchPart part) {
-		super(part);
-	}
+    /**
+     * Constructor for PrintAction.
+     *
+     * @param part
+     *            The workbench part associated with this PrintAction
+     */
+    public PrintDisplayAction(IWorkbenchPart part) {
+        super(part);
+    }
 
-	/**
-	 * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
-	 */
-	protected boolean calculateEnabled() {
-		return true;
-	}
+    /**
+     * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
+     */
+    protected boolean calculateEnabled() {
+        return true;
+    }
 
-	/**
-	 * @see org.eclipse.gef.ui.actions.EditorPartAction#init()
-	 */
-	protected void init() {
-		super.init();
-		setText("Print...");
-		setToolTipText("Print Display");
-		setId(ActionFactory.PRINT.getId());
-		setActionDefinitionId("org.eclipse.ui.file.print"); //$NON-NLS-1$
-		ISharedImages sharedImages = getWorkbenchPart().getSite()
-				.getWorkbenchWindow().getWorkbench().getSharedImages();
-		setImageDescriptor(sharedImages
-				.getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT));
-	}
+    /**
+     * @see org.eclipse.gef.ui.actions.EditorPartAction#init()
+     */
+    protected void init() {
+        super.init();
+        setText("Print...");
+        setToolTipText("Print Display");
+        setId(ActionFactory.PRINT.getId());
+        setActionDefinitionId("org.eclipse.ui.file.print"); //$NON-NLS-1$
+        ISharedImages sharedImages = getWorkbenchPart().getSite()
+                .getWorkbenchWindow().getWorkbench().getSharedImages();
+        setImageDescriptor(sharedImages
+                .getImageDescriptor(ISharedImages.IMG_ETOOL_PRINT_EDIT));
+    }
 
-	/**
-	 * @see org.eclipse.jface.action.Action#run()
-	 */
-	public void run() {
-		final GraphicalViewer viewer;
-		viewer = (GraphicalViewer) getWorkbenchPart().getAdapter(
-				GraphicalViewer.class);
+    /**
+     * @see org.eclipse.jface.action.Action#run()
+     */
+    public void run() {
+        final GraphicalViewer viewer;
+        viewer = (GraphicalViewer) getWorkbenchPart().getAdapter(
+                GraphicalViewer.class);
 
-		viewer.getControl().getDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				final ImageLoader loader = new ImageLoader();
-				ImageData[] imageData;
-				try {
+        viewer.getControl().getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                final ImageLoader loader = new ImageLoader();
+                ImageData[] imageData;
+                try {
 
-					imageData = loader.load(ResourceUtil
-							.getScreenshotFile(viewer));
-				} catch (Exception e) {
-					ErrorHandlerUtil.handleError("Failed to print OPI", e);
-					return;
-				}
-				PrintDialog dialog = new PrintDialog(viewer.getControl()
-						.getShell(), SWT.NULL);
-				final PrinterData data = dialog.open();
-				if (data == null)
-					return;
-				Printer printer = new Printer(data);
-				if (printer.startJob("Printing OPI")) {
-					Rectangle trim = printer.computeTrim(0, 0, 0, 0);
-					// Calculate the scale factor between the screen resolution
-					// and printer
-					// resolution in order to correctly size the image for the
-					// printer
-					Point screenDPI = viewer.getControl().getDisplay().getDPI();
-					Point printerDPI = printer.getDPI();
-					int scaleFactor = printerDPI.x / screenDPI.x;
+                    imageData = loader.load(ResourceUtil
+                            .getScreenshotFile(viewer));
+                } catch (Exception e) {
+                    ErrorHandlerUtil.handleError("Failed to print OPI", e);
+                    return;
+                }
+                PrintDialog dialog = new PrintDialog(viewer.getControl()
+                        .getShell(), SWT.NULL);
+                final PrinterData data = dialog.open();
+                if (data == null)
+                    return;
+                Printer printer = new Printer(data);
+                if (printer.startJob("Printing OPI")) {
+                    Rectangle trim = printer.computeTrim(0, 0, 0, 0);
+                    // Calculate the scale factor between the screen resolution
+                    // and printer
+                    // resolution in order to correctly size the image for the
+                    // printer
+                    Point screenDPI = viewer.getControl().getDisplay().getDPI();
+                    Point printerDPI = printer.getDPI();
+                    int scaleFactor = printerDPI.x / screenDPI.x;
 
-					if (printer.startPage()) {
-						GC gc = new GC(printer);
-						// Load the image
-						Image printerImage = new Image(printer, imageData[0]);
-						Rectangle printArea = printer.getClientArea();
+                    if (printer.startPage()) {
+                        GC gc = new GC(printer);
+                        // Load the image
+                        Image printerImage = new Image(printer, imageData[0]);
+                        Rectangle printArea = printer.getClientArea();
 
-						if (imageData[0].width * scaleFactor <= printArea.width) {
-							printArea.width = imageData[0].width * scaleFactor;
-							printArea.height = imageData[0].height
-									* scaleFactor;
-						} else {
-							printArea.height = printArea.width
-									* imageData[0].height / imageData[0].width;
-						}
-						gc.drawImage(printerImage, 0, 0, imageData[0].width,
-								imageData[0].height, -trim.x, -trim.y,
-								printArea.width, printArea.height);
-						printerImage.dispose();
-						gc.dispose();
-						printer.endPage();
-					}
-					printer.endJob();
-				}
-				printer.dispose();
-			}
-		});
+                        if (imageData[0].width * scaleFactor <= printArea.width) {
+                            printArea.width = imageData[0].width * scaleFactor;
+                            printArea.height = imageData[0].height
+                                    * scaleFactor;
+                        } else {
+                            printArea.height = printArea.width
+                                    * imageData[0].height / imageData[0].width;
+                        }
+                        gc.drawImage(printerImage, 0, 0, imageData[0].width,
+                                imageData[0].height, -trim.x, -trim.y,
+                                printArea.width, printArea.height);
+                        printerImage.dispose();
+                        gc.dispose();
+                        printer.endPage();
+                    }
+                    printer.endJob();
+                }
+                printer.dispose();
+            }
+        });
 
-	}
+    }
 
 }

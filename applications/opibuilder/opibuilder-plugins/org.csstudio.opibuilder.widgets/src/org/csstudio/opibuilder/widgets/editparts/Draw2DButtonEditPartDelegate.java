@@ -28,7 +28,7 @@ import org.eclipse.swt.SWT;
  * between {@link ActionButtonModel} and {@link ActionButtonFigure2}.
  * @author Sven Wende (class of same name in SDS)
  * @author Xihui Chen
- * 
+ *
  */
 public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
 	  

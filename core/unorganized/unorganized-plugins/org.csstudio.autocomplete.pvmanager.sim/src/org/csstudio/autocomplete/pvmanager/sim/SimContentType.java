@@ -14,10 +14,10 @@ import org.csstudio.autocomplete.parser.ContentType;
  */
 public class SimContentType extends ContentType {
 
-	public static SimContentType SimFunction = new SimContentType("SimFunction");
+    public static SimContentType SimFunction = new SimContentType("SimFunction");
 
-	private SimContentType(String value) {
-		super(value);
-	}
+    private SimContentType(String value) {
+        super(value);
+    }
 
 }

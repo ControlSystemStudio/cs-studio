@@ -13,7 +13,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IPath;
 
 /**
- * 
+ *
  * <code>ValidationFailure</code> represents a single validation failure, which is a result of validating the OPI
  * content against the schema.
  *
@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.IPath;
  *
  */
 public class ValidationFailure implements Comparable<ValidationFailure> {
-    
+
     private final String widgetType;
     private final String widgetName;
     private final String property;
@@ -36,14 +36,14 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
     private final boolean isFixable;
     private final String forcedMessage;
     private final boolean usingNonDefinedValue;
-    
+
     private int lineNumber;
-    
+
     private final List<SubValidationFailure> subFailures = new ArrayList<>();
-    
+
     /**
      * Constructs a new validation failure.
-     * 
+     *
      * @param path the path to the file, in which the failure originates
      * @param wuid the widget unique id
      * @param widgetType the type of the widget
@@ -56,11 +56,11 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
      *          using a non-predefined value)
      * @param isFixable true if the failure can be fixed automatically or false otherwise
      * @param forcedMessage the forced message to be returned by {@link #getMessage()}. If null, it will be composed
-     *          when the {@link #getMessage()} is called 
+     *          when the {@link #getMessage()} is called
      * @param lineNumber the line number at which the failure occurred
      * @param usingNonDefinedValue true if this failure is due to a font or color using one of the non defined values
      */
-    ValidationFailure(IPath path, String wuid, String widgetType, String widgetName, 
+    ValidationFailure(IPath path, String wuid, String widgetType, String widgetName,
             String property, Object expected, Object actual, ValidationRule rule, boolean isCritical,
             boolean isFixable, String forcedMessage, int lineNumber, boolean usingNonDefinedValue) {
         this.widgetType = widgetType;
@@ -79,10 +79,10 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
         this.lineNumber = lineNumber;
         this.usingNonDefinedValue = usingNonDefinedValue;
     }
-    
+
     /**
      * Constructs the message describing this validation failure. The message is used for the contents of the marker.
-     * 
+     *
      * @return the message describing the failure
      */
     public String getMessage() {
@@ -103,30 +103,30 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
             if (expectedValue != null) {
                 return new StringBuilder(property.length() + 11).append(property).append(" is not set").toString();
             }
-        } 
+        }
         //should not happen
         return null;
     }
-    
+
     /**
      * Constructs the location message containing the line number and widget name.
-     * 
+     *
      * @return the location
      */
     public String getLocation() {
         return "line " + lineNumber + " (Widget: " + widgetName + ")";
     }
-    
+
     /**
      * @return the line number at which the failure was recorder
      */
     public int getLineNumber() {
         return lineNumber;
     }
-    
+
     /**
      * Sets the lin number at which this failure was recorded.
-     * 
+     *
      * @param lineNumber the line number
      */
     void setLineNumber(int lineNumber) {
@@ -173,40 +173,40 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
      */
     public IPath getPath() {
         return path;
-    }   
-    
+    }
+
     /**
      * @return the expected property value as a real property object
      */
     public Object getExpectedValue() {
         return expectedValue;
     }
-    
+
     /**
      * @return the actual property value as a real property object
      */
     public Object getActualValue() {
         return actualValue;
     }
-    
+
     /**
      * @return the violated validation rule
      */
     public ValidationRule getRule() {
         return rule;
     }
-    
+
     /**
      * @return true if this validation represents a critical failure (error) or false if not critical (warning)
      */
     public boolean isCritical() {
         return isCritical;
     }
-    
+
     /**
      * Adds sub failures to this validation failure. Sub failure is a failure that is a failure in the sub property,
      * such as the property of action, script, or rule.
-     * 
+     *
      * @param failures the list of failures to add
      */
     public void addSubFailure(List<SubValidationFailure> failures) {
@@ -215,42 +215,42 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
         }
         subFailures.addAll(failures);
     }
-    
+
     /**
      * @return the list of all sub failures
      */
     public SubValidationFailure[] getSubFailures() {
         return subFailures.toArray(new SubValidationFailure[subFailures.size()]);
     }
-    
+
     /**
      * @return true if this failure has sub failures
      */
     public boolean hasSubFailures() {
         return !subFailures.isEmpty();
     }
-    
+
     /**
      * @return the widget unique ID
      */
     public String getWUID() {
         return wuid;
     }
-    
+
     /**
      * @return true if the failure can be fixed automatically or false otherwise
      */
     public boolean isFixable() {
         return isFixable;
     }
-    
+
     /**
      * @return true if an undefined value is being used or false otherwise (this is a hint for the quick fix)
      */
     public boolean isUsingUndefinedValue() {
         return usingNonDefinedValue;
     }
-    
+
     /*
      * (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -259,19 +259,19 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
     public String toString() {
         return getMessage();
     }
-    
+
     @Override
     public int compareTo(ValidationFailure o) {
         int c = this.lineNumber - o.lineNumber;
         if (c != 0) return c;
         if (this.wuid != null) {
             c = this.wuid.compareTo(o.wuid);
-        } 
-        if (c != 0) return c;    
-        
+        }
+        if (c != 0) return c;
+
         if (this.widgetName != null) {
             c = this.widgetName.compareTo(o.widgetName);
-        } 
+        }
         if (c != 0) return c;
         return this.widgetType.compareTo(o.widgetType);
     }

@@ -9,53 +9,53 @@ import java.util.List;
  */
 public class SNLDiagram extends SNLElement {
 
-	private static final long serialVersionUID = 1;
-	private List<SNLModel> _snlModels = new ArrayList<SNLModel>();
+    private static final long serialVersionUID = 1;
+    private List<SNLModel> _snlModels = new ArrayList<SNLModel>();
 
-	/**
-	 * Add a shape to this diagram.
-	 * 
-	 * @param child
-	 *            a non-null shape instance
-	 * @return true, if the shape was added, false otherwise
-	 */
-	public boolean addChild(SNLModel child) {
-		if (child != null && _snlModels.add(child)) {
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Add a shape to this diagram.
+     *
+     * @param child
+     *            a non-null shape instance
+     * @return true, if the shape was added, false otherwise
+     */
+    public boolean addChild(SNLModel child) {
+        if (child != null && _snlModels.add(child)) {
+            return true;
+        }
+        return false;
+    }
 
-	/**
-	 * Return a List of Shapes in this diagram. The returned List should not be
-	 * modified.
-	 */
-	public List<SNLModel> getChildren() {
-		return _snlModels;
-	}
+    /**
+     * Return a List of Shapes in this diagram. The returned List should not be
+     * modified.
+     */
+    public List<SNLModel> getChildren() {
+        return _snlModels;
+    }
 
-	/**
-	 * Remove a shape from this diagram.
-	 * 
-	 * @param child
-	 *            a non-null shape instance;
-	 * @return true, if the shape was removed, false otherwise
-	 */
-	public boolean removeChild(SNLModel child) {
-		if (child != null && _snlModels.remove(child)) {
-			return true;
-		}
-		return false;
-	}
+    /**
+     * Remove a shape from this diagram.
+     *
+     * @param child
+     *            a non-null shape instance;
+     * @return true, if the shape was removed, false otherwise
+     */
+    public boolean removeChild(SNLModel child) {
+        if (child != null && _snlModels.remove(child)) {
+            return true;
+        }
+        return false;
+    }
 
-	@Override
-	protected boolean canHaveChildren() {
-		return true;
-	}
+    @Override
+    protected boolean canHaveChildren() {
+        return true;
+    }
 
-	@Override
-	public String getIdentifier() {
-		return "SNL-Diagram";
-	}
+    @Override
+    public String getIdentifier() {
+        return "SNL-Diagram";
+    }
 
 }

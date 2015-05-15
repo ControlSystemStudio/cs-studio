@@ -30,11 +30,11 @@ public class AlarmLogicUnitTest
     /** Alarm logic listener that remembers update/annunc. actions */
     static class AlarmLogicDemo implements AlarmLogicListener
     {
-    	final private AlarmLogic logic;
-    	private boolean fired_enablement = false;
-    	private boolean fired_update = false;
-    	private boolean annunciated = false;
-    	final private AtomicInteger global_updates = new AtomicInteger();
+        final private AlarmLogic logic;
+        private boolean fired_enablement = false;
+        private boolean fired_update = false;
+        private boolean annunciated = false;
+        final private AtomicInteger global_updates = new AtomicInteger();
         private AtomicReference<AlarmState> global_alarm = new AtomicReference<AlarmState>();
 
         AlarmLogicDemo(final boolean latching, final boolean annunciating)
@@ -51,13 +51,13 @@ public class AlarmLogicUnitTest
         AlarmLogicDemo(final boolean latching, final boolean annunciating,
                        final int delay, final int count)
         {
-        	this(latching, annunciating, delay, count, 0);
+            this(latching, annunciating, delay, count, 0);
         }
 
         AlarmLogicDemo(final boolean latching, final boolean annunciating,
                 final int delay, final int count, final int global_delay)
         {
-        	logic = new AlarmLogic(this, latching, annunciating, delay, count,
+            logic = new AlarmLogic(this, latching, annunciating, delay, count,
                     AlarmState.createClearState(""),
                     AlarmState.createClearState(""),
                     global_delay);
@@ -67,7 +67,7 @@ public class AlarmLogicUnitTest
         @Override
         public void alarmEnablementChanged(final boolean is_enabled)
         {
-        	System.out.println(is_enabled ? "enabled" : "disabled");
+            System.out.println(is_enabled ? "enabled" : "disabled");
             fired_enablement = true;
         }
 
@@ -89,12 +89,12 @@ public class AlarmLogicUnitTest
         @Override
         public void globalStateChanged(final AlarmState alarm)
         {
-        	System.out.println(new Date() + ": Global alarm state: " + alarm);
-        	global_alarm.set(alarm);
-        	global_updates.incrementAndGet();
+            System.out.println(new Date() + ": Global alarm state: " + alarm);
+            global_alarm.set(alarm);
+            global_updates.incrementAndGet();
         }
 
-		/** Check logic
+        /** Check logic
          *  @param update Did we expect an update?
          *  @param annunciate Did we expect an annunciation?
          *  @param current_sevr Expected 'current' severity
@@ -130,7 +130,7 @@ public class AlarmLogicUnitTest
 
         void checkGlobalUpdates(final int expected)
         {
-        	assertEquals(expected, global_updates.get());
+            assertEquals(expected, global_updates.get());
         }
 
         AlarmState getGlobalAlarm()
@@ -141,47 +141,47 @@ public class AlarmLogicUnitTest
         public void computeNewState(final String value, final SeverityLevel sevr,
                 final String msg)
         {
-        	logic.computeNewState(new AlarmState(sevr, msg, value, Timestamp.now()));
+            logic.computeNewState(new AlarmState(sevr, msg, value, Timestamp.now()));
         }
 
-		public AlarmState getAlarmState()
+        public AlarmState getAlarmState()
         {
-	        return logic.getAlarmState();
+            return logic.getAlarmState();
         }
 
-		public int getGlobalUpdates()
-		{
-		    return global_updates.get();
-		}
-
-		public void acknowledge(final boolean acknowledge)
+        public int getGlobalUpdates()
         {
-			logic.acknowledge(acknowledge);
+            return global_updates.get();
         }
 
-		public void computeNewState(final AlarmState received_state)
+        public void acknowledge(final boolean acknowledge)
         {
-			logic.computeNewState(received_state);
+            logic.acknowledge(acknowledge);
         }
 
-		public void setCount(final int count)
+        public void computeNewState(final AlarmState received_state)
         {
-			logic.setCount(count);
+            logic.computeNewState(received_state);
         }
 
-		public boolean isEnabled()
+        public void setCount(final int count)
         {
-	        return logic.isEnabled();
+            logic.setCount(count);
         }
 
-		public void setEnabled(final boolean enable)
+        public boolean isEnabled()
         {
-			logic.setEnabled(enable);
+            return logic.isEnabled();
         }
 
-		public void setPriority()
+        public void setEnabled(final boolean enable)
         {
-			logic.setPriority(true);
+            logic.setEnabled(enable);
+        }
+
+        public void setPriority()
+        {
+            logic.setPriority(true);
         }
     }
 
@@ -300,7 +300,7 @@ public class AlarmLogicUnitTest
         logic.computeNewState("f", SeverityLevel.OK, "OK");
         logic.check(true, false, SeverityLevel.OK, "OK", SeverityLevel.OK, "OK");
     }
-    
+
     @Test
     public void testLatchedAnnunciatedMajMinMajAckMinOK()
     {

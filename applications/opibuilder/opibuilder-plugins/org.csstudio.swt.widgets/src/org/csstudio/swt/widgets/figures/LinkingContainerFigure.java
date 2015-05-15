@@ -30,111 +30,111 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class LinkingContainerFigure extends Figure implements Introspectable {
-	
-	private ScalableFreeformLayeredPane pane;
-	
-	private ScrollPane scrollPane;
-	
-	private ZoomManager zoomManager;
-	
-	private boolean zoomToFitAll;
-	
-	@SuppressWarnings("deprecation")
-	public LinkingContainerFigure() {
-		scrollPane = new ScrollPane();
-		pane = new ScalableFreeformLayeredPane();
-		pane.setLayoutManager(new FreeformLayout());
-		setLayoutManager(new StackLayout());
-		add(scrollPane);
-		FreeformViewport viewPort = new FreeformViewport();
-		scrollPane.setViewport(viewPort);
-		scrollPane.setContents(pane);	
-		
-		zoomManager = new ZoomManager(pane, viewPort){
-			@Override
-			protected double getFitPageZoomLevel() {
-				double fitPageZoomLevel = super.getFitPageZoomLevel();
-				if(fitPageZoomLevel<=0){
-					fitPageZoomLevel = 0.1;					
-				}
-				return fitPageZoomLevel;
-				
-			}
-		};
-		
-		addFigureListener(new FigureListener(){
-			public void figureMoved(IFigure source) {
-				Display.getDefault().asyncExec(new Runnable(){
-					public void run() {
-						updateZoom();
-					}
-				});
-				
-			}
-		});
-		
-		
-		updateZoom();
-	}
-	
-	public IFigure getContentPane(){
-		return pane;
-	}
-	
-	public boolean isZoomToFitAll() {
-		return zoomToFitAll;
-	}
-	
-	@Override
-	public void setBorder(Border border) {
-		super.setBorder(border);
-		Display.getDefault().asyncExec(new Runnable(){
-			public void run() {
-				updateZoom();
-			}
-		});
-	}
 
-	public void setZoomToFitAll(boolean zoomToFitAll) {
-		this.zoomToFitAll = zoomToFitAll;
-		Display.getDefault().asyncExec(new Runnable(){
-			public void run() {
-				updateZoom();
-			}
-		});
-	}
-	
-	/**
-	 * Refreshes the zoom.
-	 */
-	public void updateZoom() {		
+    private ScalableFreeformLayeredPane pane;
 
-		if (zoomToFitAll) {
-			zoomManager.setZoomAsText(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
-		}else
-			zoomManager.setZoom(1.0);
-	}
-	
-	public ZoomManager getZoomManager() {
-		return zoomManager;
-	}
+    private ScrollPane scrollPane;
 
-	public BeanInfo getBeanInfo() throws IntrospectionException {
-		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
-	}
+    private ZoomManager zoomManager;
 
-	public void setShowScrollBars(boolean showScrollBars) {
-		if(showScrollBars) {
-			scrollPane.setHorizontalScrollBarVisibility(ScrollPane.AUTOMATIC);
-			scrollPane.setVerticalScrollBarVisibility(ScrollPane.AUTOMATIC);
-		} else {
-			scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
-			scrollPane.setVerticalScrollBarVisibility(ScrollPane.NEVER);
-		}
-	}
-	
+    private boolean zoomToFitAll;
 
-	
-	
-	
+    @SuppressWarnings("deprecation")
+    public LinkingContainerFigure() {
+        scrollPane = new ScrollPane();
+        pane = new ScalableFreeformLayeredPane();
+        pane.setLayoutManager(new FreeformLayout());
+        setLayoutManager(new StackLayout());
+        add(scrollPane);
+        FreeformViewport viewPort = new FreeformViewport();
+        scrollPane.setViewport(viewPort);
+        scrollPane.setContents(pane);
+
+        zoomManager = new ZoomManager(pane, viewPort){
+            @Override
+            protected double getFitPageZoomLevel() {
+                double fitPageZoomLevel = super.getFitPageZoomLevel();
+                if(fitPageZoomLevel<=0){
+                    fitPageZoomLevel = 0.1;
+                }
+                return fitPageZoomLevel;
+
+            }
+        };
+
+        addFigureListener(new FigureListener(){
+            public void figureMoved(IFigure source) {
+                Display.getDefault().asyncExec(new Runnable(){
+                    public void run() {
+                        updateZoom();
+                    }
+                });
+
+            }
+        });
+
+
+        updateZoom();
+    }
+
+    public IFigure getContentPane(){
+        return pane;
+    }
+
+    public boolean isZoomToFitAll() {
+        return zoomToFitAll;
+    }
+
+    @Override
+    public void setBorder(Border border) {
+        super.setBorder(border);
+        Display.getDefault().asyncExec(new Runnable(){
+            public void run() {
+                updateZoom();
+            }
+        });
+    }
+
+    public void setZoomToFitAll(boolean zoomToFitAll) {
+        this.zoomToFitAll = zoomToFitAll;
+        Display.getDefault().asyncExec(new Runnable(){
+            public void run() {
+                updateZoom();
+            }
+        });
+    }
+
+    /**
+     * Refreshes the zoom.
+     */
+    public void updateZoom() {
+
+        if (zoomToFitAll) {
+            zoomManager.setZoomAsText(Draw2dSingletonUtil.ZoomManager_FIT_ALL);
+        }else
+            zoomManager.setZoom(1.0);
+    }
+
+    public ZoomManager getZoomManager() {
+        return zoomManager;
+    }
+
+    public BeanInfo getBeanInfo() throws IntrospectionException {
+        return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
+    }
+
+    public void setShowScrollBars(boolean showScrollBars) {
+        if(showScrollBars) {
+            scrollPane.setHorizontalScrollBarVisibility(ScrollPane.AUTOMATIC);
+            scrollPane.setVerticalScrollBarVisibility(ScrollPane.AUTOMATIC);
+        } else {
+            scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
+            scrollPane.setVerticalScrollBarVisibility(ScrollPane.NEVER);
+        }
+    }
+
+
+
+
+
 }

@@ -51,9 +51,9 @@ public class RenameItemAction extends Action
     /** Open rename dialog
      *  @see org.eclipse.jface.action.Action#run()
      */
-	public void run()
-	{
-		final InputDialog dlg = new InputDialog(shell, Messages.RenameItem,
+    public void run()
+    {
+        final InputDialog dlg = new InputDialog(shell, Messages.RenameItem,
                 Messages.RenameItemMsg, item.getName(), null);
         if (dlg.open() != Window.OK)
             return;
@@ -67,5 +67,5 @@ public class RenameItemAction extends Action
                     NLS.bind(Messages.CannotUpdateConfigurationErrorFmt,
                             item.getName(), ex.getMessage()));
         }
-	}
+    }
 }

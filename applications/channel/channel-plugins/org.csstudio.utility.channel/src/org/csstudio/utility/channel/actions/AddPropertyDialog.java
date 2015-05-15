@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.channel.actions;
 
@@ -43,7 +43,7 @@ public class AddPropertyDialog extends TitleAreaDialog {
 
     /**
      * Creates the dialog's contents
-     * 
+     *
      * @param parent the parent composite
      * @return Control
      */
@@ -59,7 +59,7 @@ public class AddPropertyDialog extends TitleAreaDialog {
 
       return contents;
     }
-    
+
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
@@ -89,13 +89,13 @@ public class AddPropertyDialog extends TitleAreaDialog {
 
         Label propertyValueLabel = new Label(composite, SWT.NONE);
         propertyValueLabel.setText("Property Value:");
-        
+
         text = new Text(composite, SWT.NONE);
         text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
         text.addModifyListener((ModifyEvent e) -> {
             propertyValue = text.getText();
         });
-        
+
         return super.createDialogArea(parent);
     }
 

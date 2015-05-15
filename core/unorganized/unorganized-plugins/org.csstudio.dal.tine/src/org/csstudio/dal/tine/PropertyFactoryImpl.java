@@ -26,26 +26,26 @@ import org.csstudio.dal.proxy.AbstractPlug;
 import org.csstudio.dal.spi.AbstractPropertyFactory;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class PropertyFactoryImpl extends AbstractPropertyFactory
 {
-	/**
-	 * Creates a new PropertyFactoryImpl object.
-	 */
-	public PropertyFactoryImpl() {
-		super();
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.spi.AbstractFactorySupport#getPlugClass()
-	 */
-	@Override
-	protected Class<? extends AbstractPlug> getPlugClass() {
-		return TINEPlug.class;
-	}
+    /**
+     * Creates a new PropertyFactoryImpl object.
+     */
+    public PropertyFactoryImpl() {
+        super();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.spi.AbstractFactorySupport#getPlugClass()
+     */
+    @Override
+    protected Class<? extends AbstractPlug> getPlugClass() {
+        return TINEPlug.class;
+    }
 
 }

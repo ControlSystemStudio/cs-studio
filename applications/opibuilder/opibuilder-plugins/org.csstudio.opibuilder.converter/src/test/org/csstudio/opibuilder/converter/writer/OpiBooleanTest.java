@@ -17,32 +17,32 @@ import org.w3c.dom.Element;
 
 public class OpiBooleanTest extends TestCase {
 
-	public void testOpiBoolean() throws EdmException {
-	
-		// init document
-		Document doc = XMLFileHandler.createDomDocument();
-		
-		// OpiBoolean data 
-		String name = "someBooleanElement";
-		EdmBoolean bT = new EdmBoolean(new EdmAttribute(), false);	//[TRUE]
-		EdmBoolean bF = new EdmBoolean(null, false);				//[FALSE]
-		
-		// instantiating OpiBoolean
-		Element parent = doc.createElement("root");
-		doc.appendChild(parent);
-		Context context = new Context(doc, parent, null, 0, 0);
-		OpiBoolean o = new OpiBoolean(context, name, bT);
-		assertTrue(o instanceof OpiAttribute);
-		new OpiBoolean(context, name, bF);
-		
-		// testing
-		Element x = (Element)doc.getElementsByTagName(name).item(0);
-		assertEquals("true", x.getTextContent());
-		x = (Element)doc.getElementsByTagName(name).item(1);
-		assertEquals("false", x.getTextContent());
-		
-		//XMLFileHandler.writeXML(doc);
-		
-	}
-	
+    public void testOpiBoolean() throws EdmException {
+
+        // init document
+        Document doc = XMLFileHandler.createDomDocument();
+
+        // OpiBoolean data
+        String name = "someBooleanElement";
+        EdmBoolean bT = new EdmBoolean(new EdmAttribute(), false);    //[TRUE]
+        EdmBoolean bF = new EdmBoolean(null, false);                //[FALSE]
+
+        // instantiating OpiBoolean
+        Element parent = doc.createElement("root");
+        doc.appendChild(parent);
+        Context context = new Context(doc, parent, null, 0, 0);
+        OpiBoolean o = new OpiBoolean(context, name, bT);
+        assertTrue(o instanceof OpiAttribute);
+        new OpiBoolean(context, name, bF);
+
+        // testing
+        Element x = (Element)doc.getElementsByTagName(name).item(0);
+        assertEquals("true", x.getTextContent());
+        x = (Element)doc.getElementsByTagName(name).item(1);
+        assertEquals("false", x.getTextContent());
+
+        //XMLFileHandler.writeXML(doc);
+
+    }
+
 }

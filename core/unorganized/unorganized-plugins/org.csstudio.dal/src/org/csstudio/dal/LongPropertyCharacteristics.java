@@ -30,26 +30,26 @@ package org.csstudio.dal;
  * characteristics.
  */
 public interface LongPropertyCharacteristics
-	extends NumericPropertyCharacteristics
+    extends NumericPropertyCharacteristics
 {
-	/**
-	 * Optional characteristic for those long properties, for which long value
-	 * can be interpreted as state with own arbitrary value. Property migth
-	 * define sequence of characteristics from "stateValue&lt;minimum&gt;" up
-	 * to "stateValue&lt;maximum&gt;" where &lt;minimum&gt; and
-	 * &lt;maximum&gt; are boudaries for long value as state.
-	 */
-	public final static String C_STATE_VALUE = "stateValue";
+    /**
+     * Optional characteristic for those long properties, for which long value
+     * can be interpreted as state with own arbitrary value. Property migth
+     * define sequence of characteristics from "stateValue&lt;minimum&gt;" up
+     * to "stateValue&lt;maximum&gt;" where &lt;minimum&gt; and
+     * &lt;maximum&gt; are boudaries for long value as state.
+     */
+    public final static String C_STATE_VALUE = "stateValue";
 
-	/**
-	 * Optional characteristic for those long properties, for which long value
-	 * can be interpreted as state with own arbitrary description. Property
-	 * migth define sequence of characteristics from
-	 * "stateDescription&lt;minimum&gt;" up to
-	 * "stateDescription&lt;maximum&gt;" where &lt;minimum&gt; and
-	 * &lt;maximum&gt; are boudaries for long value as state.
-	 */
-	public final static String C_STATE_DESCRIPTION = "stateDescription";
+    /**
+     * Optional characteristic for those long properties, for which long value
+     * can be interpreted as state with own arbitrary description. Property
+     * migth define sequence of characteristics from
+     * "stateDescription&lt;minimum&gt;" up to
+     * "stateDescription&lt;maximum&gt;" where &lt;minimum&gt; and
+     * &lt;maximum&gt; are boudaries for long value as state.
+     */
+    public final static String C_STATE_DESCRIPTION = "stateDescription";
 }
 
 /* __oOo__ */

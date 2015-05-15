@@ -12,17 +12,17 @@ import de.desy.language.snl.configuration.linux.configurations.SNCompilerConfigu
 import de.desy.language.snl.configurationservice.ICompilerOptionsService;
 
 public class LinuxTargetConfigurationProvider extends
-		AbstractTargetConfigurationProvider {
+        AbstractTargetConfigurationProvider {
 
-	@Override
-	public List<AbstractCompilerConfiguration> getConfigurations(ICompilerOptionsService service) {
-		List<AbstractCompilerConfiguration> configurations = new ArrayList<AbstractCompilerConfiguration>();
-		
-		configurations.add(new PreCompilerConfiguration(service));
-		configurations.add(new SNCompilerConfiguration(service));
-		configurations.add(new CCompilerConfiguration(service));
-		configurations.add(new ApplicationCompilerConfiguration(service));
-		return configurations;
-	}
+    @Override
+    public List<AbstractCompilerConfiguration> getConfigurations(ICompilerOptionsService service) {
+        List<AbstractCompilerConfiguration> configurations = new ArrayList<AbstractCompilerConfiguration>();
+
+        configurations.add(new PreCompilerConfiguration(service));
+        configurations.add(new SNCompilerConfiguration(service));
+        configurations.add(new CCompilerConfiguration(service));
+        configurations.add(new ApplicationCompilerConfiguration(service));
+        return configurations;
+    }
 
 }

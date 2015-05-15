@@ -7,5 +7,5 @@
          ui="org.csstudio.autocomplete.ui.rcp.RCPUIHelper">
       </helpers>
    </extension>
-   
+
 </plugin>

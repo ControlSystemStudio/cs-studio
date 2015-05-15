@@ -36,20 +36,20 @@ import java.util.Map;
  */
 public interface ExpertMonitor extends SimpleMonitor
 {
-	/**
-	 * Returns currently acctive parameters. They are system implementation dependant.
-	 * May be <code>null</code>.
-	 * @return currently acctive parameters
-	 */
-	public Map<String, Object> getParameters();
+    /**
+     * Returns currently acctive parameters. They are system implementation dependant.
+     * May be <code>null</code>.
+     * @return currently acctive parameters
+     */
+    public Map<String, Object> getParameters();
 
-	/**
-	 * Sets parameters to monitor.
-	 * @param param parameters
-	 * @throws RemoteException if operation is not supported or not possible
-	 */
-	public void setParameters(Map<String, Object> param)
-		throws RemoteException;
+    /**
+     * Sets parameters to monitor.
+     * @param param parameters
+     * @throws RemoteException if operation is not supported or not possible
+     */
+    public void setParameters(Map<String, Object> param)
+        throws RemoteException;
 }
 
 /* __oOo__ */

@@ -37,15 +37,15 @@ public class RelatedDisplayAction extends AbstractExecuteAction
             final AlarmTreePosition tree_position,
             final GDCDataStructure related_display)
     {
-    	super(shell,
+        super(shell,
               AlarmTreeActionIcon.createIcon("icons/related_display.gif",  //$NON-NLS-1$
                         tree_position),
               related_display.getTeaser(), related_display.getDetails());
-    	
-		// Related display actions are disabled in RAP version
-		if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
-			setEnabled(false);
-		}
+
+        // Related display actions are disabled in RAP version
+        if (SingleSourcePlugin.getUIHelper().getUI().equals(UI.RAP)) {
+            setEnabled(false);
+        }
     }
 
     /** {@inheritDoc} */
@@ -76,18 +76,18 @@ public class RelatedDisplayAction extends AbstractExecuteAction
         {
             // Use text after "file:" as filename
             final String name = command.substring(5).trim();
-    		final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-    		IPath path = SingleSourcePlugin.getResourceHelper().newPath(name);
+            final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+            IPath path = SingleSourcePlugin.getResourceHelper().newPath(name);
             try
             {
-            	SingleSourcePlugin.getUIHelper().openEditor(page, path);
+                SingleSourcePlugin.getUIHelper().openEditor(page, path);
             }
-	    	catch (Throwable ex)
-		    {
-		        MessageDialog.openError(page.getWorkbenchWindow().getShell(),
-		            Messages.Error,
-		            NLS.bind("Error opening {0}:\n{1}", path, ex.getMessage()));
-		    }
+            catch (Throwable ex)
+            {
+                MessageDialog.openError(page.getWorkbenchWindow().getShell(),
+                    Messages.Error,
+                    NLS.bind("Error opening {0}:\n{1}", path, ex.getMessage()));
+            }
             return;
         }
 

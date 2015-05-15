@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.applications.utility.navigator.applaunch.feature"
+      label="Navigator Applaunch"
+      version="1.0.0.qualifier">
+
+   <description url="http://www.example.com/description">
+      Launch applications from Navigator
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+   </copyright>
+
+   <license url="http://www.example.com/license">
+   </license>
+
+   <plugin
+         id="org.csstudio.navigator.applaunch"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

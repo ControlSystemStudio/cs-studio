@@ -20,32 +20,32 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  *
  */
 public class ScriptPropertyDescriptor extends TextPropertyDescriptor {
-	
-	private AbstractWidgetModel widgetModel;
-	
-	/**
-	 * Creates an property descriptor with the given id and display name.
-	 * 
-	 * @param id
-	 *            the id of the property
-	 * @param displayName
-	 *            the name to display for the property
-	 */
-	public ScriptPropertyDescriptor(final Object id, final AbstractWidgetModel widgetModel, final String displayName) {
-		super(id, displayName);
-		this.widgetModel = widgetModel;
-	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public CellEditor createPropertyEditor(final Composite parent) {
-		CellEditor editor = new ScriptsInputCellEditor(parent, widgetModel, "Attach Scripts");
-		if (getValidator() != null) {
-			editor.setValidator(getValidator());
-		}
-		return editor;
-	}
-	
+    private AbstractWidgetModel widgetModel;
+
+    /**
+     * Creates an property descriptor with the given id and display name.
+     *
+     * @param id
+     *            the id of the property
+     * @param displayName
+     *            the name to display for the property
+     */
+    public ScriptPropertyDescriptor(final Object id, final AbstractWidgetModel widgetModel, final String displayName) {
+        super(id, displayName);
+        this.widgetModel = widgetModel;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CellEditor createPropertyEditor(final Composite parent) {
+        CellEditor editor = new ScriptsInputCellEditor(parent, widgetModel, "Attach Scripts");
+        if (getValidator() != null) {
+            editor.setValidator(getValidator());
+        }
+        return editor;
+    }
+
 }

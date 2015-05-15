@@ -34,43 +34,43 @@ package org.csstudio.dal;
  *
  */
 public interface EnumSimpleProperty extends NumericSimpleProperty<Long,Long>,
-	EnumPropertyCharacteristics
+    EnumPropertyCharacteristics
 {
-	/**
-	 * Returns all allowed enumeration values.
-	 *
-	 * @return all enumerated values
-	 * 
-	 * @throws DataExchangeException if remote layer is not operational
-	 */
-	public Object[] getEnumValues() throws DataExchangeException;
+    /**
+     * Returns all allowed enumeration values.
+     *
+     * @return all enumerated values
+     *
+     * @throws DataExchangeException if remote layer is not operational
+     */
+    public Object[] getEnumValues() throws DataExchangeException;
 
-	/**
-	 * Returns descriptions strings for enumerated values.
-	 *
-	 * @return descriptions for enumerated values
-	 * 
-	 * @throws DataExchangeException if remote layer is not operational
-	 */
-	public String[] getEnumDescriptions() throws DataExchangeException;
+    /**
+     * Returns descriptions strings for enumerated values.
+     *
+     * @return descriptions for enumerated values
+     *
+     * @throws DataExchangeException if remote layer is not operational
+     */
+    public String[] getEnumDescriptions() throws DataExchangeException;
 
-	/**
-	 * Returns index of enumerated value.
-	 *
-	 * @param enumerated enumerated values
-	 *
-	 * @return index
-	 */
-	public long indexOf(Object enumerated);
+    /**
+     * Returns index of enumerated value.
+     *
+     * @param enumerated enumerated values
+     *
+     * @return index
+     */
+    public long indexOf(Object enumerated);
 
-	/**
-	 * Returns enumerated value for provided index.
-	 *
-	 * @param index the index of enumerated value
-	 *
-	 * @return enumerated value for the index
-	 */
-	public Object valueOf(long index);
+    /**
+     * Returns enumerated value for provided index.
+     *
+     * @param index the index of enumerated value
+     *
+     * @return enumerated value for the index
+     */
+    public Object valueOf(long index);
 }
 
 /* __oOo__ */

@@ -34,15 +34,15 @@ import org.csstudio.dal.RemoteException;
  */
 public class PatternPropertyProxyImpl extends PropertyProxyImpl<BitSet> {
 
-	/**
-	 * Constructor.
-	 * @param plug plug handling this property.
-	 * @param name property name.
-	 * @throws RemoteException
-	 */
-	public PatternPropertyProxyImpl(final EPICSPlug plug, final String name)
-			throws RemoteException {
-		super(plug, name, BitSet.class, DBRType.ENUM);
-	}
+    /**
+     * Constructor.
+     * @param plug plug handling this property.
+     * @param name property name.
+     * @throws RemoteException
+     */
+    public PatternPropertyProxyImpl(final EPICSPlug plug, final String name)
+            throws RemoteException {
+        super(plug, name, BitSet.class, DBRType.ENUM);
+    }
 
 }

@@ -21,7 +21,7 @@
  */
 
 /**
- * 
+ *
  */
 package org.csstudio.dal.tine;
 
@@ -43,117 +43,117 @@ import de.desy.tine.types.TCompoundDataObject;
  */
 public class StringPropertyProxyImpl extends PropertyProxyImpl<String> {
 
-	private Object value;
-	private int length;
-	
-	/**
-	 * Constructs a new StringPropertyProxy.
-	 * @param name
-	 */
-	public StringPropertyProxyImpl(String name, TINEPlug plug) {
-		super(name, plug);
-		try {
-			this.length = (Integer)getCharacteristic("sequenceLength");
-		} catch (DataExchangeException e) {
-			Logger.getLogger(this.getClass()).error("Getting characteristic failed.", e);
-		}
-		switch (TINEPlug.getInstance().getTFormat(getUniqueName()).getValue()) {
-			case TFormat.CF_TEXT: {
-				this.value = new char[this.length]; 
-				break;
-			}
-			case TFormat.CF_NAME8 : {
-				this.value= new NAME8[]{new NAME8()};
-				break;
-			}
-			case TFormat.CF_NAME16 : {
-				this.value= new NAME16[]{new NAME16()};
-				break;
-			}
-			case TFormat.CF_NAME32 : {
-				this.value= new NAME32[]{new NAME32()};
-				break;
-			}
-			case TFormat.CF_NAME48 : {
-				this.value= new NAME48[]{new NAME48()};
-				break;
-			}
-			case TFormat.CF_NAME64 : {
-				this.value= new NAME64[]{new NAME64()};
-				break;
-			}
-			default: {
-				this.value = new StringBuffer(this.length);
-			}
-		}
-	}
+    private Object value;
+    private int length;
 
-	/* (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#convertDataToObject(java.lang.Object)
-	 */
-	@Override
-	protected Object convertDataToObject(String data) {
-		switch (this.dataFormat.getValue()) {
-			case TFormat.CF_TEXT: {
-				return data.toCharArray();
-			}
-			case TFormat.CF_NAME8 : {
-				return new NAME8[]{new NAME8(data)};
-			}
-			case TFormat.CF_NAME16 : {
-				return new NAME16[]{new NAME16(data)};
-			}
-			case TFormat.CF_NAME32 : {
-				return new NAME32[]{new NAME32(data)};
-			}
-			case TFormat.CF_NAME48 : {
-				return new NAME48[]{new NAME48(data)};
-			}
-			case TFormat.CF_NAME64 : {
-				return new NAME64[]{new NAME64(data)};
-			}
-			default: {
-				return new StringBuffer(data);
-			}
-		}
-	}
+    /**
+     * Constructs a new StringPropertyProxy.
+     * @param name
+     */
+    public StringPropertyProxyImpl(String name, TINEPlug plug) {
+        super(name, plug);
+        try {
+            this.length = (Integer)getCharacteristic("sequenceLength");
+        } catch (DataExchangeException e) {
+            Logger.getLogger(this.getClass()).error("Getting characteristic failed.", e);
+        }
+        switch (TINEPlug.getInstance().getTFormat(getUniqueName()).getValue()) {
+            case TFormat.CF_TEXT: {
+                this.value = new char[this.length];
+                break;
+            }
+            case TFormat.CF_NAME8 : {
+                this.value= new NAME8[]{new NAME8()};
+                break;
+            }
+            case TFormat.CF_NAME16 : {
+                this.value= new NAME16[]{new NAME16()};
+                break;
+            }
+            case TFormat.CF_NAME32 : {
+                this.value= new NAME32[]{new NAME32()};
+                break;
+            }
+            case TFormat.CF_NAME48 : {
+                this.value= new NAME48[]{new NAME48()};
+                break;
+            }
+            case TFormat.CF_NAME64 : {
+                this.value= new NAME64[]{new NAME64()};
+                break;
+            }
+            default: {
+                this.value = new StringBuffer(this.length);
+            }
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
-	 */
-	@Override
-	protected String extractData(TDataType out) {
-		if (this.value instanceof StringBuffer) {
-			this.value= new StringBuffer(out.getArrayLength());
-		}
-		out.getData(this.value);
-		if (this.value instanceof char[]) {
-			return new String((char[])this.value).trim();
-		}
-		if (this.value instanceof StringBuffer) {
-			return new String(this.value.toString().trim());
-		}
-		if (this.value == null || !this.value.getClass().isArray()) {
-			return null;
-		}
-		TCompoundDataObject tcdo= ((TCompoundDataObject[])this.value)[0];
-		return tcdo.toString();
-	}
+    /* (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#convertDataToObject(java.lang.Object)
+     */
+    @Override
+    protected Object convertDataToObject(String data) {
+        switch (this.dataFormat.getValue()) {
+            case TFormat.CF_TEXT: {
+                return data.toCharArray();
+            }
+            case TFormat.CF_NAME8 : {
+                return new NAME8[]{new NAME8(data)};
+            }
+            case TFormat.CF_NAME16 : {
+                return new NAME16[]{new NAME16(data)};
+            }
+            case TFormat.CF_NAME32 : {
+                return new NAME32[]{new NAME32(data)};
+            }
+            case TFormat.CF_NAME48 : {
+                return new NAME48[]{new NAME48(data)};
+            }
+            case TFormat.CF_NAME64 : {
+                return new NAME64[]{new NAME64(data)};
+            }
+            default: {
+                return new StringBuffer(data);
+            }
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
-	 */
-	@Override
-	protected Object getDataObject() {
-		return this.value;
-	}
+    /* (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#extractData(de.desy.tine.dataUtils.TDataType)
+     */
+    @Override
+    protected String extractData(TDataType out) {
+        if (this.value instanceof StringBuffer) {
+            this.value= new StringBuffer(out.getArrayLength());
+        }
+        out.getData(this.value);
+        if (this.value instanceof char[]) {
+            return new String((char[])this.value).trim();
+        }
+        if (this.value instanceof StringBuffer) {
+            return new String(this.value.toString().trim());
+        }
+        if (this.value == null || !this.value.getClass().isArray()) {
+            return null;
+        }
+        TCompoundDataObject tcdo= ((TCompoundDataObject[])this.value)[0];
+        return tcdo.toString();
+    }
 
-	/* (non-Javadoc)
-	 * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
-	 */
-	@Override
-	protected Class getNumericType() {
-		return String.class;
-	}
-	
+    /* (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getDataObject()
+     */
+    @Override
+    protected Object getDataObject() {
+        return this.value;
+    }
+
+    /* (non-Javadoc)
+     * @see de.desy.css.dal.tine.PropertyProxyImpl#getNumericType()
+     */
+    @Override
+    protected Class getNumericType() {
+        return String.class;
+    }
+
 }

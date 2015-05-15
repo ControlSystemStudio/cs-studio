@@ -14,11 +14,11 @@ import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
  *
  */
 public class PropertyData{
-	public AbstractWidgetProperty property;
-	public Object tmpValue;
-	public PropertyData(AbstractWidgetProperty property, Object value) {
-		this.property = property;
-		this.tmpValue = value;
-	}
+    public AbstractWidgetProperty property;
+    public Object tmpValue;
+    public PropertyData(AbstractWidgetProperty property, Object value) {
+        this.property = property;
+        this.tmpValue = value;
+    }
 
 }

@@ -56,215 +56,215 @@ import org.eclipse.ui.part.ViewPart;
  */
 public final class ContainerView extends ViewPart {
 
-	private static String[] _sampleStrings;
-	private static IProcessVariableAddress[] _samplePvAdresses;
+    private static String[] _sampleStrings;
+    private static IProcessVariableAddress[] _samplePvAdresses;
 
-	static {
-		_sampleStrings = new String[] { "a", "b" };
+    static {
+        _sampleStrings = new String[] { "a", "b" };
 
-		final ProcessVariableAdressFactory f = ProcessVariableAdressFactory
-				.getInstance();
+        final ProcessVariableAdressFactory f = ProcessVariableAdressFactory
+                .getInstance();
 
-		_samplePvAdresses = new IProcessVariableAddress[] {
-				f.createProcessVariableAdress("epics://cryo/pump1"),
-				f.createProcessVariableAdress("epics://cryo/pump2"),
-				f.createProcessVariableAdress("epics://cryo/pump3"),
-				f.createProcessVariableAdress("tine://cryo/pump1"),
-				f.createProcessVariableAdress("tine://cryo/pump2"),
-				f.createProcessVariableAdress("tine://cryo/pump3"),
-				f.createProcessVariableAdress("tango://cryo/pump1"),
-				f.createProcessVariableAdress("tango://cryo/pump2"),
-				f.createProcessVariableAdress("tango://cryo/pump3"),
-				f.createProcessVariableAdress("dal-epics://cryo/pump1"),
-				f.createProcessVariableAdress("dal-epics://cryo/pump2"),
-				f.createProcessVariableAdress("dal-epics://cryo/pump3"),
-				f.createProcessVariableAdress("dal-tine://cryo/pump1"),
-				f.createProcessVariableAdress("dal-tine://cryo/pump2"),
-				f.createProcessVariableAdress("dal-tine://cryo/pump3"),
-				f.createProcessVariableAdress("dal-tango://cryo/pump1"),
-				f.createProcessVariableAdress("dal-tango://cryo/pump2"),
-				f.createProcessVariableAdress("dal-tango://cryo/pump3") };
-	}
-	/**
-	 * The ID of this view as configured in the plugin manifest.
-	 */
-	public static final String ID = "org.csstudio.platform.developmentsupport.util.ui.ContainerView"; //$NON-NLS-1$
+        _samplePvAdresses = new IProcessVariableAddress[] {
+                f.createProcessVariableAdress("epics://cryo/pump1"),
+                f.createProcessVariableAdress("epics://cryo/pump2"),
+                f.createProcessVariableAdress("epics://cryo/pump3"),
+                f.createProcessVariableAdress("tine://cryo/pump1"),
+                f.createProcessVariableAdress("tine://cryo/pump2"),
+                f.createProcessVariableAdress("tine://cryo/pump3"),
+                f.createProcessVariableAdress("tango://cryo/pump1"),
+                f.createProcessVariableAdress("tango://cryo/pump2"),
+                f.createProcessVariableAdress("tango://cryo/pump3"),
+                f.createProcessVariableAdress("dal-epics://cryo/pump1"),
+                f.createProcessVariableAdress("dal-epics://cryo/pump2"),
+                f.createProcessVariableAdress("dal-epics://cryo/pump3"),
+                f.createProcessVariableAdress("dal-tine://cryo/pump1"),
+                f.createProcessVariableAdress("dal-tine://cryo/pump2"),
+                f.createProcessVariableAdress("dal-tine://cryo/pump3"),
+                f.createProcessVariableAdress("dal-tango://cryo/pump1"),
+                f.createProcessVariableAdress("dal-tango://cryo/pump2"),
+                f.createProcessVariableAdress("dal-tango://cryo/pump3") };
+    }
+    /**
+     * The ID of this view as configured in the plugin manifest.
+     */
+    public static final String ID = "org.csstudio.platform.developmentsupport.util.ui.ContainerView"; //$NON-NLS-1$
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void createPartControl(final Composite parent) {
-		createPvProviderTree(parent);
-		createTextProviderTree(parent);
-		createPvConsumerTree(parent);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void createPartControl(final Composite parent) {
+        createPvProviderTree(parent);
+        createTextProviderTree(parent);
+        createPvConsumerTree(parent);
+    }
 
-	private final List<IProcessVariableAddress> _modelForPvConsumer = new ArrayList<IProcessVariableAddress>();
+    private final List<IProcessVariableAddress> _modelForPvConsumer = new ArrayList<IProcessVariableAddress>();
 
-	private void createPvConsumerTree(final Composite parent) {
-		final TreeViewer tv = new TreeViewer(parent);
+    private void createPvConsumerTree(final Composite parent) {
+        final TreeViewer tv = new TreeViewer(parent);
 
-		tv.setContentProvider(new BaseWorkbenchContentProvider() {
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
-			public Object[] getElements(final Object element) {
-				return ((List) element).toArray();
-			}
-		});
+        tv.setContentProvider(new BaseWorkbenchContentProvider() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public Object[] getElements(final Object element) {
+                return ((List) element).toArray();
+            }
+        });
 
-		tv.setLabelProvider(new WorkbenchLabelProvider());
-		tv.setInput(_modelForPvConsumer);
+        tv.setLabelProvider(new WorkbenchLabelProvider());
+        tv.setInput(_modelForPvConsumer);
 
-		getViewSite().setSelectionProvider(tv);
+        getViewSite().setSelectionProvider(tv);
 
-		// add drag support
-		ProcessVariableExchangeUtil.addProcessVariableAddressDropSupport(tv
-				.getControl(), DND.DROP_MOVE | DND.DROP_COPY,
-				new IProcessVariableAdressReceiver() {
-					@Override
+        // add drag support
+        ProcessVariableExchangeUtil.addProcessVariableAddressDropSupport(tv
+                .getControl(), DND.DROP_MOVE | DND.DROP_COPY,
+                new IProcessVariableAdressReceiver() {
+                    @Override
                     public void receive(final IProcessVariableAddress[] pvs,
-							final DropTargetEvent event) {
-						for (final IProcessVariableAddress pv : pvs) {
-							_modelForPvConsumer.add(pv);
-						}
+                            final DropTargetEvent event) {
+                        for (final IProcessVariableAddress pv : pvs) {
+                            _modelForPvConsumer.add(pv);
+                        }
 
-						tv.refresh();
-					}
-				});
+                        tv.refresh();
+                    }
+                });
 
-		// create context menu
-		configureContextMenu(tv);
-	}
+        // create context menu
+        configureContextMenu(tv);
+    }
 
-	private void createPvProviderTree(final Composite parent) {
-		final TreeViewer tv = new TreeViewer(parent);
+    private void createPvProviderTree(final Composite parent) {
+        final TreeViewer tv = new TreeViewer(parent);
 
-		tv.setContentProvider(new BaseWorkbenchContentProvider() {
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
-			public Object[] getElements(final Object element) {
-				return (Object[]) element;
-			}
-		});
+        tv.setContentProvider(new BaseWorkbenchContentProvider() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public Object[] getElements(final Object element) {
+                return (Object[]) element;
+            }
+        });
 
-		tv.setLabelProvider(new WorkbenchLabelProvider());
-		tv.setInput(_samplePvAdresses);
+        tv.setLabelProvider(new WorkbenchLabelProvider());
+        tv.setInput(_samplePvAdresses);
 
-		getViewSite().setSelectionProvider(tv);
+        getViewSite().setSelectionProvider(tv);
 
-		// add drag support
-		ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(tv
-				.getTree(), DND.DROP_MOVE | DND.DROP_COPY,
-				new IProcessVariableAdressProvider() {
-					@Override
+        // add drag support
+        ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(tv
+                .getTree(), DND.DROP_MOVE | DND.DROP_COPY,
+                new IProcessVariableAdressProvider() {
+                    @Override
                     public IProcessVariableAddress getPVAdress() {
-						final List<IProcessVariableAddress> l = getProcessVariableAdresses();
-						if (l.size() > 0) {
-							return l.get(0);
-						}
-						return null;
-					}
+                        final List<IProcessVariableAddress> l = getProcessVariableAdresses();
+                        if (l.size() > 0) {
+                            return l.get(0);
+                        }
+                        return null;
+                    }
 
-					@Override
+                    @Override
                     public List<IProcessVariableAddress> getProcessVariableAdresses() {
-						final IStructuredSelection sel = (IStructuredSelection) tv
-								.getSelection();
+                        final IStructuredSelection sel = (IStructuredSelection) tv
+                                .getSelection();
 
-						final List<IProcessVariableAddress> list = sel
-								.toList();
-						return list;
-					}
-				});
+                        final List<IProcessVariableAddress> list = sel
+                                .toList();
+                        return list;
+                    }
+                });
 
-		// create context menu
-		configureContextMenu(tv);
-	}
+        // create context menu
+        configureContextMenu(tv);
+    }
 
-	private void createTextProviderTree(final Composite parent) {
-		final TreeViewer tv = new TreeViewer(parent);
+    private void createTextProviderTree(final Composite parent) {
+        final TreeViewer tv = new TreeViewer(parent);
 
-		tv.setContentProvider(new BaseWorkbenchContentProvider() {
-			/**
-			 * {@inheritDoc}
-			 */
-			@Override
-			public Object[] getElements(final Object element) {
-				return (Object[]) element;
-			}
-		});
+        tv.setContentProvider(new BaseWorkbenchContentProvider() {
+            /**
+             * {@inheritDoc}
+             */
+            @Override
+            public Object[] getElements(final Object element) {
+                return (Object[]) element;
+            }
+        });
 
-		tv.setLabelProvider(new WorkbenchLabelProvider());
-		tv.setInput(_sampleStrings);
+        tv.setLabelProvider(new WorkbenchLabelProvider());
+        tv.setInput(_sampleStrings);
 
-		getViewSite().setSelectionProvider(tv);
+        getViewSite().setSelectionProvider(tv);
 
-		// add drag support
-		// FIXME: nur Text-Support anbieten
-		// ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(
-		// pvAdressesTv.getTree(), DND.DROP_MOVE | DND.DROP_COPY, this);
+        // add drag support
+        // FIXME: nur Text-Support anbieten
+        // ProcessVariableExchangeUtil.addProcessVariableAdressDragSupport(
+        // pvAdressesTv.getTree(), DND.DROP_MOVE | DND.DROP_COPY, this);
 
-		final DragSource dragSource = new DragSource(tv.getControl(), DND.DROP_MOVE
-				| DND.DROP_COPY);
+        final DragSource dragSource = new DragSource(tv.getControl(), DND.DROP_MOVE
+                | DND.DROP_COPY);
 
-		final Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
+        final Transfer[] types = new Transfer[] { TextTransfer.getInstance() };
 
-		dragSource.setTransfer(types);
+        dragSource.setTransfer(types);
 
-		dragSource.addDragListener(new DragSourceAdapter() {
+        dragSource.addDragListener(new DragSourceAdapter() {
 
-			@Override
-			public void dragSetData(final DragSourceEvent event) {
-				if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
-					final IStructuredSelection sel = (IStructuredSelection) tv
-							.getSelection();
-					final List<String> list = sel.toList();
+            @Override
+            public void dragSetData(final DragSourceEvent event) {
+                if (TextTransfer.getInstance().isSupportedType(event.dataType)) {
+                    final IStructuredSelection sel = (IStructuredSelection) tv
+                            .getSelection();
+                    final List<String> list = sel.toList();
 
-					final StringBuffer sb = new StringBuffer();
+                    final StringBuffer sb = new StringBuffer();
 
-					for (final String s : list) {
-						sb.append(s);
-						sb.append("\n"); //$NON-NLS-1$
-					}
-					event.data = sb.toString();
-				}
-			}
+                    for (final String s : list) {
+                        sb.append(s);
+                        sb.append("\n"); //$NON-NLS-1$
+                    }
+                    event.data = sb.toString();
+                }
+            }
 
-		});
+        });
 
-		// create context menu
-		configureContextMenu(tv);
-	}
+        // create context menu
+        configureContextMenu(tv);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setFocus() {
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setFocus() {
+    }
 
-	/**
-	 * Configures all listeners for the TreeViewer.
-	 */
-	private void configureContextMenu(final TreeViewer tv) {
-		final MenuManager menuMgr = new MenuManager("", ID); //$NON-NLS-1$
-//		menuMgr.add(new GroupMarker(IWorkbenchIds.GROUP_CSS_MB3));
-		menuMgr.add(new Separator());
-		menuMgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
+    /**
+     * Configures all listeners for the TreeViewer.
+     */
+    private void configureContextMenu(final TreeViewer tv) {
+        final MenuManager menuMgr = new MenuManager("", ID); //$NON-NLS-1$
+//        menuMgr.add(new GroupMarker(IWorkbenchIds.GROUP_CSS_MB3));
+        menuMgr.add(new Separator());
+        menuMgr.add(new GroupMarker(IWorkbenchActionConstants.MB_ADDITIONS));
 
-		menuMgr.setRemoveAllWhenShown(true);
+        menuMgr.setRemoveAllWhenShown(true);
 
-		final Menu contextMenu = menuMgr.createContextMenu(tv.getTree());
-		tv.getTree().setMenu(contextMenu);
+        final Menu contextMenu = menuMgr.createContextMenu(tv.getTree());
+        tv.getTree().setMenu(contextMenu);
 
-		// Register viewer with site. This has to be done before making the
-		// actions.
-		getViewSite().registerContextMenu(menuMgr, tv);
-		getViewSite().setSelectionProvider(tv);
-	}
+        // Register viewer with site. This has to be done before making the
+        // actions.
+        getViewSite().registerContextMenu(menuMgr, tv);
+        getViewSite().setSelectionProvider(tv);
+    }
 
 }

@@ -5,10 +5,10 @@ import org.eclipse.core.runtime.preferences.IScope;
 
 public class ServerPreferenceFactory implements IScope{
 
-	public IEclipsePreferences create(IEclipsePreferences parent, String name) {
-		return new ServerPreferenceNode(parent, name);
-	}
+    public IEclipsePreferences create(IEclipsePreferences parent, String name) {
+        return new ServerPreferenceNode(parent, name);
+    }
 
-	
-	
+
+
 }

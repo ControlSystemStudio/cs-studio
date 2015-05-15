@@ -25,60 +25,60 @@ import org.eclipse.draw2d.StackLayout;
  *
  */
 public class GroupingContainerFigure extends Figure implements Introspectable{
-	
-	private IFigure pane;
-	
-	private boolean transparent = false;
 
-	private ScrollPane scrollPane;
+    private IFigure pane;
 
-	private boolean showScrollbar = false;
-	
-	public GroupingContainerFigure() {
-		scrollPane = new ScrollPane(){
-			@Override
-			public boolean isOpaque() {
-				return !transparent;
-			}
-		};
-		pane = new FreeformLayer();
-		pane.setLayoutManager(new FreeformLayout());
-		setLayoutManager(new StackLayout());
-		add(scrollPane);
-		scrollPane.setViewport(new FreeformViewport());
-		scrollPane.setContents(pane);		
-		setShowScrollBar(true);
-	}
-	
-	public BeanInfo getBeanInfo() throws IntrospectionException {
-		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
-	}
-	
-	public IFigure getContentPane(){
-		return pane;
-	}
-	
-	public boolean isShowScrollBar(){
-		return showScrollbar;
-	}
-	
-	@Override
-	public void setOpaque(boolean opaque) {		
-		transparent =!opaque;
-		pane.setOpaque(opaque);
-		super.setOpaque(opaque);
-	}
+    private boolean transparent = false;
 
-	public void setShowScrollBar(boolean show){
-		if(this.showScrollbar == show)
-			return;
-		this.showScrollbar = show;
-		scrollPane.setScrollBarVisibility(show ? ScrollPane.AUTOMATIC : ScrollPane.NEVER);
-	}
-	
-	
+    private ScrollPane scrollPane;
 
-	
-	
-	
+    private boolean showScrollbar = false;
+
+    public GroupingContainerFigure() {
+        scrollPane = new ScrollPane(){
+            @Override
+            public boolean isOpaque() {
+                return !transparent;
+            }
+        };
+        pane = new FreeformLayer();
+        pane.setLayoutManager(new FreeformLayout());
+        setLayoutManager(new StackLayout());
+        add(scrollPane);
+        scrollPane.setViewport(new FreeformViewport());
+        scrollPane.setContents(pane);
+        setShowScrollBar(true);
+    }
+
+    public BeanInfo getBeanInfo() throws IntrospectionException {
+        return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
+    }
+
+    public IFigure getContentPane(){
+        return pane;
+    }
+
+    public boolean isShowScrollBar(){
+        return showScrollbar;
+    }
+
+    @Override
+    public void setOpaque(boolean opaque) {
+        transparent =!opaque;
+        pane.setOpaque(opaque);
+        super.setOpaque(opaque);
+    }
+
+    public void setShowScrollBar(boolean show){
+        if(this.showScrollbar == show)
+            return;
+        this.showScrollbar = show;
+        scrollPane.setScrollBarVisibility(show ? ScrollPane.AUTOMATIC : ScrollPane.NEVER);
+    }
+
+
+
+
+
+
 }

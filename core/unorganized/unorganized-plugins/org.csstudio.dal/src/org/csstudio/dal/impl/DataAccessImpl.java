@@ -44,167 +44,167 @@ import com.cosylab.util.ListenerList;
  */
 public abstract class DataAccessImpl<T> implements DataAccess<T>
 {
-	protected PropertyProxy<T,?> proxy=null;
-	protected SyncPropertyProxy<T,?> sproxy=null;
-	protected Class<T> valClass=null;
-	private ListenerList dvListeners=null;
-	protected T lastValue=null;
+    protected PropertyProxy<T,?> proxy=null;
+    protected SyncPropertyProxy<T,?> sproxy=null;
+    protected Class<T> valClass=null;
+    private ListenerList dvListeners=null;
+    protected T lastValue=null;
 
-	/**
-	     * Constructor.
-	     * @param valClass datatype class
-	     */
-	protected DataAccessImpl(Class<T> valClass)
-	{
-		this.valClass = valClass;
-	}
+    /**
+         * Constructor.
+         * @param valClass datatype class
+         */
+    protected DataAccessImpl(Class<T> valClass)
+    {
+        this.valClass = valClass;
+    }
 
-	/**
-	 * Initializes this instance. Before data access is initialized, it
-	 * will throw exceptions if used.
-	 *
-	 * @param proxy the proxy which presents remote connection
-	 *
-	 * @throws NullPointerException is thrown if supplied proxy is null
-	 */
-	protected void initialize(PropertyProxy<T,?> proxy)
-	{
-		if (proxy == null) {
-			throw new NullPointerException("proxy");
-		}
+    /**
+     * Initializes this instance. Before data access is initialized, it
+     * will throw exceptions if used.
+     *
+     * @param proxy the proxy which presents remote connection
+     *
+     * @throws NullPointerException is thrown if supplied proxy is null
+     */
+    protected void initialize(PropertyProxy<T,?> proxy)
+    {
+        if (proxy == null) {
+            throw new NullPointerException("proxy");
+        }
 
-		this.proxy = proxy;
+        this.proxy = proxy;
 
-		if (proxy instanceof SyncPropertyProxy) {
-			sproxy = (SyncPropertyProxy<T,?>)proxy;
-		} else {
-			sproxy = new PropertyProxyWrapper<T, AbstractPlug>((PropertyProxy<T, AbstractPlug>) proxy);
-		}
-	}
+        if (proxy instanceof SyncPropertyProxy) {
+            sproxy = (SyncPropertyProxy<T,?>)proxy;
+        } else {
+            sproxy = new PropertyProxyWrapper<T, AbstractPlug>((PropertyProxy<T, AbstractPlug>) proxy);
+        }
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#addDynamicValueListener(org.csstudio.dal.DynamicValueListener)
-	 */
-	public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l)
-	{
-		getDvListeners().add(l);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#addDynamicValueListener(org.csstudio.dal.DynamicValueListener)
+     */
+    public <P extends SimpleProperty<T>> void addDynamicValueListener(DynamicValueListener<T, P> l)
+    {
+        getDvListeners().add(l);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#removeDynamicValueListener(org.csstudio.dal.DynamicValueListener)
-	 */
-	public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l)
-	{
-		getDvListeners().remove(l);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#removeDynamicValueListener(org.csstudio.dal.DynamicValueListener)
+     */
+    public <P extends SimpleProperty<T>> void removeDynamicValueListener(DynamicValueListener<T, P> l)
+    {
+        getDvListeners().remove(l);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#getDynamicValueListeners()
-	 */
-	public DynamicValueListener<T, SimpleProperty<T>>[] getDynamicValueListeners()
-	{
-		if (hasDynamicValueListeners()) {
-			return (DynamicValueListener<T, SimpleProperty<T>>[])getDvListeners().toArray(new DynamicValueListener[getDvListeners()
-			                                                                                                       .size()]);
-		}
-		return new DynamicValueListener[0];
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#getDynamicValueListeners()
+     */
+    public DynamicValueListener<T, SimpleProperty<T>>[] getDynamicValueListeners()
+    {
+        if (hasDynamicValueListeners()) {
+            return (DynamicValueListener<T, SimpleProperty<T>>[])getDvListeners().toArray(new DynamicValueListener[getDvListeners()
+                                                                                                                   .size()]);
+        }
+        return new DynamicValueListener[0];
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#getDataType()
-	 */
-	public Class<T> getDataType()
-	{
-		//by now, Java does not support geting class object out of type parameter
-		//this is the only solution
-		return valClass;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#getDataType()
+     */
+    public Class<T> getDataType()
+    {
+        //by now, Java does not support geting class object out of type parameter
+        //this is the only solution
+        return valClass;
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#isSettable()
-	 */
-	public boolean isSettable()
-	{
-		if (proxy == null) throw new IllegalStateException("Proxy is null");
-		return proxy.isSettable();
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#isSettable()
+     */
+    public boolean isSettable()
+    {
+        if (proxy == null) throw new IllegalStateException("Proxy is null");
+        return proxy.isSettable();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#setValue(T)
-	 */
-	public void setValue(T value) throws DataExchangeException
-	{
-		if (sproxy == null || !sproxy.getConnectionState().isConnected()) {
-			throw new DataExchangeException(this, "Proxy not connected");
-		}
-		sproxy.setValueSync(value);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#setValue(T)
+     */
+    public void setValue(T value) throws DataExchangeException
+    {
+        if (sproxy == null || !sproxy.getConnectionState().isConnected()) {
+            throw new DataExchangeException(this, "Proxy not connected");
+        }
+        sproxy.setValueSync(value);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#getValue()
-	 */
-	public T getValue() throws DataExchangeException
-	{
-		if (sproxy == null || !sproxy.getConnectionState().isConnected()) {
-			throw new DataExchangeException(this, "Proxy not connected");
-		}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#getValue()
+     */
+    public T getValue() throws DataExchangeException
+    {
+        if (sproxy == null || !sproxy.getConnectionState().isConnected()) {
+            throw new DataExchangeException(this, "Proxy not connected");
+        }
 
-		return lastValue=sproxy.getValueSync();
-	}
+        return lastValue=sproxy.getValueSync();
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.DataAccess#getLatestReceivedValue()
-	 */
-	public T getLatestReceivedValue()
-	{
-		return lastValue;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.DataAccess#getLatestReceivedValue()
+     */
+    public T getLatestReceivedValue()
+    {
+        return lastValue;
+    }
 
-	/**
-	 * Returns the PropertyProxy which represents the remote connection of this 
-	 * DataAccess.
-	 * 
-	 * @return the property proxy
-	 */
-	public PropertyProxy<T,?> getProxy()
-	{
-		return proxy;
-	}
-	
-	/**
-	 * Releases the PropertyProxy which represents remote connection of this
-	 * DataAccess and disconnects all listeners and monitors. But it does not call destroy on proxy itself
-	 * 
-	 *  @param boolean if <code>true</code> then if possible property should do also final 
-	 *  cleanup and destroy for internal structure, if <code>false</code> only proxies are release and 
-	 *  property is prepared for connection to new proxy.
-	 * 
-	 * @return the property proxy
-	 */
-	public Proxy<?>[] releaseProxy(boolean destroy) {
-		Proxy<?>[] temp = new Proxy<?>[]{proxy};
-		proxy = null;
-		sproxy = null;
-		if (destroy && hasDynamicValueListeners()) {
-			getDvListeners().clear();
-		}
-		return temp;
-	}
+    /**
+     * Returns the PropertyProxy which represents the remote connection of this
+     * DataAccess.
+     *
+     * @return the property proxy
+     */
+    public PropertyProxy<T,?> getProxy()
+    {
+        return proxy;
+    }
 
-	protected ListenerList getDvListeners() {
-		if (dvListeners==null) {
-			synchronized (this) {
-				if (dvListeners==null) {
-					dvListeners= new ListenerList(DynamicValueListener.class);
-				}
-			}
-		}
-		return dvListeners;
-	}
-	
-	public boolean hasDynamicValueListeners() {
-		return dvListeners!=null && dvListeners.size()>0;
-	}
+    /**
+     * Releases the PropertyProxy which represents remote connection of this
+     * DataAccess and disconnects all listeners and monitors. But it does not call destroy on proxy itself
+     *
+     *  @param boolean if <code>true</code> then if possible property should do also final
+     *  cleanup and destroy for internal structure, if <code>false</code> only proxies are release and
+     *  property is prepared for connection to new proxy.
+     *
+     * @return the property proxy
+     */
+    public Proxy<?>[] releaseProxy(boolean destroy) {
+        Proxy<?>[] temp = new Proxy<?>[]{proxy};
+        proxy = null;
+        sproxy = null;
+        if (destroy && hasDynamicValueListeners()) {
+            getDvListeners().clear();
+        }
+        return temp;
+    }
+
+    protected ListenerList getDvListeners() {
+        if (dvListeners==null) {
+            synchronized (this) {
+                if (dvListeners==null) {
+                    dvListeners= new ListenerList(DynamicValueListener.class);
+                }
+            }
+        }
+        return dvListeners;
+    }
+
+    public boolean hasDynamicValueListeners() {
+        return dvListeners!=null && dvListeners.size()>0;
+    }
 }
 
 /* __oOo__ */

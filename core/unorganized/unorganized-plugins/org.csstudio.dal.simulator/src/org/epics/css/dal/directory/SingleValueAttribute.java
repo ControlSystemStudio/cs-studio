@@ -39,225 +39,225 @@ import javax.naming.directory.DirContext;
  */
 public class SingleValueAttribute implements Attribute
 {
-	private static final long serialVersionUID = -4819918493510359133L;
-	private String id;
-	private Object value;
+    private static final long serialVersionUID = -4819918493510359133L;
+    private String id;
+    private Object value;
 
-	/**
-	 * Creates a SingleValueAttribute object.
+    /**
+     * Creates a SingleValueAttribute object.
 
-	 * @param id    Attribute name
-	 * @param value    Attribute value
-	 */
-	public SingleValueAttribute(String id, Object value)
-	{
-		super();
-		this.id = id;
-		this.value = value;
-	}
+     * @param id    Attribute name
+     * @param value    Attribute value
+     */
+    public SingleValueAttribute(String id, Object value)
+    {
+        super();
+        this.id = id;
+        this.value = value;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#size()
-	 */
-	public int size()
-	{
-		return 1;
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#size()
+     */
+    public int size()
+    {
+        return 1;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#clear()
-	 */
-	public void clear()
-	{
-		value = null;
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#clear()
+     */
+    public void clear()
+    {
+        value = null;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#isOrdered()
-	 */
-	public boolean isOrdered()
-	{
-		return true;
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#isOrdered()
+     */
+    public boolean isOrdered()
+    {
+        return true;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#get()
-	 */
-	public Object get() throws NamingException
-	{
-		return value;
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#get()
+     */
+    public Object get() throws NamingException
+    {
+        return value;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#get(int)
-	 */
-	public Object get(int ix) throws NamingException
-	{
-		if (ix > 0) {
-			throw new IllegalArgumentException();
-		}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#get(int)
+     */
+    public Object get(int ix) throws NamingException
+    {
+        if (ix > 0) {
+            throw new IllegalArgumentException();
+        }
 
-		return value;
-	}
+        return value;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#remove(int)
-	 */
-	public Object remove(int ix)
-	{
-		if (ix > 0) {
-			throw new IllegalArgumentException();
-		}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#remove(int)
+     */
+    public Object remove(int ix)
+    {
+        if (ix > 0) {
+            throw new IllegalArgumentException();
+        }
 
-		Object o = value;
-		value = null;
+        Object o = value;
+        value = null;
 
-		return o;
-	}
+        return o;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#add(int, java.lang.Object)
-	 */
-	public void add(int ix, Object attrVal)
-	{
-		if (ix > 0) {
-			throw new IllegalArgumentException();
-		}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#add(int, java.lang.Object)
+     */
+    public void add(int ix, Object attrVal)
+    {
+        if (ix > 0) {
+            throw new IllegalArgumentException();
+        }
 
-		value = attrVal;
-	}
+        value = attrVal;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#add(java.lang.Object)
-	 */
-	public boolean add(Object attrVal)
-	{
-		if (value == null) {
-			value = attrVal;
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#add(java.lang.Object)
+     */
+    public boolean add(Object attrVal)
+    {
+        if (value == null) {
+            value = attrVal;
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#contains(java.lang.Object)
-	 */
-	public boolean contains(Object attrVal)
-	{
-		return attrVal == value;
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#contains(java.lang.Object)
+     */
+    public boolean contains(Object attrVal)
+    {
+        return attrVal == value;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#remove(java.lang.Object)
-	 */
-	public boolean remove(Object attrval)
-	{
-		if (attrval == value) {
-			value = null;
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#remove(java.lang.Object)
+     */
+    public boolean remove(Object attrval)
+    {
+        if (attrval == value) {
+            value = null;
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#getID()
-	 */
-	public String getID()
-	{
-		return id;
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#getID()
+     */
+    public String getID()
+    {
+        return id;
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#getAll()
-	 */
-	public NamingEnumeration<?> getAll() throws NamingException
-	{
-		return new NamingEnumeration() {
-				Object val = value;
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#getAll()
+     */
+    public NamingEnumeration<?> getAll() throws NamingException
+    {
+        return new NamingEnumeration() {
+                Object val = value;
 
-				public Object nextElement()
-				{
-					Object o = val;
-					val = null;
+                public Object nextElement()
+                {
+                    Object o = val;
+                    val = null;
 
-					return o;
-				}
+                    return o;
+                }
 
-				public boolean hasMoreElements()
-				{
-					return val != null;
-				}
+                public boolean hasMoreElements()
+                {
+                    return val != null;
+                }
 
-				public void close() throws NamingException
-				{
-					val = null;
-				}
+                public void close() throws NamingException
+                {
+                    val = null;
+                }
 
-				public boolean hasMore() throws NamingException
-				{
-					return val != null;
-				}
+                public boolean hasMore() throws NamingException
+                {
+                    return val != null;
+                }
 
-				public Object next() throws NamingException
-				{
-					Object o = val;
-					val = null;
+                public Object next() throws NamingException
+                {
+                    Object o = val;
+                    val = null;
 
-					return o;
-				}
-			};
-	}
+                    return o;
+                }
+            };
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#getAttributeDefinition()
-	 */
-	public DirContext getAttributeDefinition() throws NamingException
-	{
-		throw new OperationNotSupportedException();
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#getAttributeDefinition()
+     */
+    public DirContext getAttributeDefinition() throws NamingException
+    {
+        throw new OperationNotSupportedException();
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#getAttributeSyntaxDefinition()
-	 */
-	public DirContext getAttributeSyntaxDefinition() throws NamingException
-	{
-		throw new OperationNotSupportedException();
-	}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#getAttributeSyntaxDefinition()
+     */
+    public DirContext getAttributeSyntaxDefinition() throws NamingException
+    {
+        throw new OperationNotSupportedException();
+    }
 
-	/* (non-Javadoc)
-	 * @see javax.naming.directory.Attribute#set(int, java.lang.Object)
-	 */
-	public Object set(int ix, Object attrVal)
-	{
-		if (ix > 0) {
-			throw new IllegalArgumentException();
-		}
+    /* (non-Javadoc)
+     * @see javax.naming.directory.Attribute#set(int, java.lang.Object)
+     */
+    public Object set(int ix, Object attrVal)
+    {
+        if (ix > 0) {
+            throw new IllegalArgumentException();
+        }
 
-		Object o = value;
-		value = attrVal;
+        Object o = value;
+        value = attrVal;
 
-		return o;
-	}
+        return o;
+    }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
-	public Object clone()
-	{
-		SingleValueAttribute attr;
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
+    public Object clone()
+    {
+        SingleValueAttribute attr;
 
-		try {
-			attr = (SingleValueAttribute)super.clone();
-		} catch (CloneNotSupportedException e) {
-			attr = new SingleValueAttribute(id, value);
-		}
+        try {
+            attr = (SingleValueAttribute)super.clone();
+        } catch (CloneNotSupportedException e) {
+            attr = new SingleValueAttribute(id, value);
+        }
 
-		return attr;
-	}
+        return attr;
+    }
 }
 
 /* __oOo__ */

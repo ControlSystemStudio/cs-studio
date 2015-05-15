@@ -11,33 +11,33 @@ import org.eclipse.draw2d.Figure;
 
 public class ArrayTest extends AbstractWidgetTest{
 
-	@Override
-	public Figure createTestWidget() {
-		ArrayFigure figure = new ArrayFigure();
-		figure.setHorizontal(false);
-		figure.setShowSpinner(false);
-//		figure.setShowScrollbar(false);
-		return figure;
-	}
-	
-	
-	@Override
-	public String[] getPropertyNames() {
-		String[] superProps =  super.getPropertyNames();
-		String[] myProps = new String[]{
-				"showIndexSpinner",
-				"showScrollbar",
-				"horizontal",
-				"index",
-				"arrayLength",
-				"visibleElementsCount",
-		};
-		
-		return concatenateStringArrays(superProps, myProps);
-	}
-	
-	@Override
-	public boolean isAutoTest() {
-		return false;
-	}		
+    @Override
+    public Figure createTestWidget() {
+        ArrayFigure figure = new ArrayFigure();
+        figure.setHorizontal(false);
+        figure.setShowSpinner(false);
+//        figure.setShowScrollbar(false);
+        return figure;
+    }
+
+
+    @Override
+    public String[] getPropertyNames() {
+        String[] superProps =  super.getPropertyNames();
+        String[] myProps = new String[]{
+                "showIndexSpinner",
+                "showScrollbar",
+                "horizontal",
+                "index",
+                "arrayLength",
+                "visibleElementsCount",
+        };
+
+        return concatenateStringArrays(superProps, myProps);
+    }
+
+    @Override
+    public boolean isAutoTest() {
+        return false;
+    }
 }

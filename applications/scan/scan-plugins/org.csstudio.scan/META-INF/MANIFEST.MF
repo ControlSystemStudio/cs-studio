@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scan API
+Bundle-SymbolicName: org.csstudio.scan;singleton:=true
+Bundle-Version: 4.2.1.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.csstudio.scan,
+ org.csstudio.scan.command,
+ org.csstudio.scan.data,
+ org.csstudio.scan.device,
+ org.csstudio.scan.server,
+ org.csstudio.scan.util
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.csstudio.java;bundle-version="3.1.0",
+ org.csstudio.ndarray;bundle-version="1.0.0",
+ org.epics.util;bundle-version="0.3.2",
+ org.python.jython
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.scan.Activator
+Eclipse-RegisterBuddy: org.python.jython

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alarm Table UI
 Bundle-SymbolicName: org.csstudio.alarm.beast.ui.alarmtable;singleton:=true
-Bundle-Version: 4.0.0.qualifier
+Bundle-Version: 4.1.0.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen - SNS
 Bundle-Description: BEAST Alarm Table
@@ -20,7 +20,9 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.alarm.beast.ui;bundle-version="3.2.0",
  org.csstudio.utility.singlesource;bundle-version="1.0.0",
  org.csstudio.apputil,
- org.epics.util
+ org.epics.util,
+ org.epics.vtype;bundle-version="2.9.1",
+ org.csstudio.ui.resources;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Activator: org.csstudio.alarm.beast.ui.alarmtable.Activator

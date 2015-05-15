@@ -23,13 +23,13 @@
 package org.csstudio.dal.tine;
 
 /**
- * 
+ *
  * @author Jaka Bobnar, Cosylab
  *
  */
 public class PropertyNameDissector
 {
- 
+
   private String accessProtocol;
   private String deviceContext;
   private String deviceGroup;
@@ -38,7 +38,7 @@ public class PropertyNameDissector
 
   /**
    * Creates new instance of ConnectionParameters.
-   * 
+   *
    * @param remoteName
    * @param accessMode
    * @param accessRate
@@ -47,33 +47,33 @@ public class PropertyNameDissector
   {
     super();
     if (!remoteName.startsWith("TINE/")) {
-    	remoteName = "TINE/" + remoteName;
+        remoteName = "TINE/" + remoteName;
     }
     String[] s = remoteName.split("/");
-    
+
     this.accessProtocol = (s.length>0 && s[0]!=null) ? s[0] : "";
     this.deviceContext = (s.length>1 && s[1]!=null) ? s[1] : "";
     this.deviceGroup = (s.length>2 && s[2]!=null) ? s[2] : "";
     this.deviceProperty = (s.length>4 && s[s.length-1]!=null) ? s[s.length-1] : "";
-    
+
     StringBuilder sb= new StringBuilder(128);
 
     if (s.length>3 && s[3]!=null) {
-    	sb.append(s[3]);
+        sb.append(s[3]);
     }
     for (int i = 4; i < s.length-1; i++) {
-		sb.append('/');
-		if (s[i]!=null) {
-			sb.append(s[i]);
-		}
-	}
-    
+        sb.append('/');
+        if (s[i]!=null) {
+            sb.append(s[i]);
+        }
+    }
+
     this.deviceName = sb.toString();
   }
- 
+
   /**
    * Returns the deviceContext.
-   * 
+   *
    * @return Returns the deviceContext.
    */
   public String getDeviceContext()
@@ -82,7 +82,7 @@ public class PropertyNameDissector
   }
   /**
    * Returns the deviceGroup.
-   * 
+   *
    * @return Returns the deviceGroup.
    */
   public String getDeviceGroup()
@@ -91,7 +91,7 @@ public class PropertyNameDissector
   }
   /**
    * Returns the deviceName.
-   * 
+   *
    * @return Returns the deviceName.
    */
   public String getDeviceName()
@@ -100,17 +100,17 @@ public class PropertyNameDissector
   }
   /**
    * Returns the deviceProperty.
-   * 
+   *
    * @return Returns the deviceProperty.
    */
   public String getDeviceProperty()
   {
     return this.deviceProperty;
   }
-  
+
   /**
    * Return URI ready name for remote TINE property.
-   * 
+   *
    * @return remote TINE name delimeted with / characters
    */
   public String getRemoteName()

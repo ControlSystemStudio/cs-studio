@@ -74,11 +74,11 @@ public class MessageReceiver {
     /**
      * A JMS Topic.
      */
-    private Topic		                _destination = null;  // if ! topic: Destination
+    private Topic                        _destination = null;  // if ! topic: Destination
     /**
      * ???.
      */
-	private String[] _queues;
+    private String[] _queues;
     /**
      * The listener of the Messages.
      */
@@ -86,16 +86,16 @@ public class MessageReceiver {
     /**
      * The Connection Job.
      */
-	private ConnectionJob _connectionJob;
-	/**
-	 * the Job Change Listener.
-	 */
-	private IJobChangeListener _jobChangeListener;
-    
-    
+    private ConnectionJob _connectionJob;
+    /**
+     * the Job Change Listener.
+     */
+    private IJobChangeListener _jobChangeListener;
+
+
 
     /**
-     * 
+     *
      * @author hrickens
      * @author $Author$
      * @version $Revision$
@@ -112,13 +112,13 @@ public class MessageReceiver {
 
         /**
          * @see org.eclipse.core.runtime.jobs.Job#run(org.eclipse.core.runtime.IProgressMonitor)
-         * @param monitor The Progress Monitor. 
+         * @param monitor The Progress Monitor.
          * @return the Prozess ending Status.
          */
         @Override
         protected IStatus run(final IProgressMonitor monitor) {
             try {
-               
+
                 if ( (_properties.get(PreferenceConstants.INITIAL_CONTEXT_FACTORY) != null) && _properties.get(PreferenceConstants.INITIAL_CONTEXT_FACTORY).toUpperCase().equals("ACTIVEMQ")) {
                     _factory = new ActiveMQConnectionFactory(_properties.get(PreferenceConstants.URL));
 
@@ -127,7 +127,7 @@ public class MessageReceiver {
                      */
                     // Create a Connection
                     _connection = _factory.createConnection();
-                    
+
                     /*
                      * Mit Cast's
                      */
@@ -175,34 +175,34 @@ public class MessageReceiver {
             return Status.OK_STATUS;
 //            return Job.ASYNC_FINISH;
         }
-        
+
     }
 
     /**
-     * 
+     *
      * @throws NamingException Throws an JMS NamingException.
      */
     public MessageReceiver() throws NamingException{
         _properties = new Hashtable<String, String>();
         _properties.put(Context.INITIAL_CONTEXT_FACTORY,
-        		Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.INITIAL_CONTEXT_FACTORY));
+                Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.INITIAL_CONTEXT_FACTORY));
         String url = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.URL);
         ActiveMQURL uri = new ActiveMQURL(url);
-        
+
         if(uri.getPrefix()!=null){
             if(uri.getMaxReconnectAttempts()==null){
                 uri.setMaxReconnectAttempts("maxReconnectAttempts=3");
             }
         }
-        
+
         _properties.put(Context.PROVIDER_URL,uri.getURL());
         _context = new InitialContext(_properties);
         _queues = Activator.getDefault().getPluginPreferences().getString(PreferenceConstants.QUEUE).split(",");
     }
 
     /**
-     * 
-     * @param initialContextFactory the Initial Context Factory. 
+     *
+     * @param initialContextFactory the Initial Context Factory.
      * @param providerURL The URL from Provider.
      * @param queues A Queue
      * @throws NamingException Throws an JMS NamingException.
@@ -210,9 +210,9 @@ public class MessageReceiver {
     public MessageReceiver(final String initialContextFactory, final String providerURL, final String[] queues)throws NamingException{
         _properties = new Hashtable<String, String>();
         _properties.put(Context.INITIAL_CONTEXT_FACTORY,initialContextFactory);
-        
+
         ActiveMQURL uri = new ActiveMQURL(providerURL);
-       
+
         if(uri.getPrefix()!=null){
             if(uri.getMaxReconnectAttempts()==null){
                 uri.setMaxReconnectAttempts("maxReconnectAttempts=3");
@@ -228,10 +228,10 @@ public class MessageReceiver {
     /**
      * Parameter is listener, the one to be notified.
      * @param listener of Message.
-     * 
+     *
      */
-	public final void startListener(final MessageListener listener) {
-	    _listener = listener;
+    public final void startListener(final MessageListener listener) {
+        _listener = listener;
         _connectionJob = new ConnectionJob("JMS Connection");
         _jobChangeListener = new IJobChangeListener(){
             public void done(final IJobChangeEvent event) {
@@ -242,49 +242,49 @@ public class MessageReceiver {
                     ActiveMQURL aURL = new ActiveMQURL(_properties.get(Context.PROVIDER_URL));
                     aURL.setMaxReconnectAttempts("maxReconnectAttempts=0");
                     if(aURL.getInitialReconnectDelay()==null){
-                    	aURL.setInitialReconnectDelay("InitialReconnectDelay=10000");
+                        aURL.setInitialReconnectDelay("InitialReconnectDelay=10000");
                     }
                     _properties.put(Context.PROVIDER_URL,aURL.getURL());
                     System.out.println(" Retry with "+_properties.get(Context.PROVIDER_URL));
                     try {
-						_context = new InitialContext(_properties);
-					} catch (NamingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						System.out.println(e.getMessage());
-					}
+                        _context = new InitialContext(_properties);
+                    } catch (NamingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                        System.out.println(e.getMessage());
+                    }
                     startListener(listener);
                 }
             }
 
             public void running(final IJobChangeEvent event) {
-                System.out.println("JMS Connecting to \r\n"+_properties+"\r\n"); 
+                System.out.println("JMS Connecting to \r\n"+_properties+"\r\n");
             }
             // do nothing
             public void aboutToRun(final IJobChangeEvent event) {}
             public void awake(final IJobChangeEvent event) {}
             public void scheduled(final IJobChangeEvent event) {}
             public void sleeping(final IJobChangeEvent event) {}
-            
+
         };
         _connectionJob.addJobChangeListener(_jobChangeListener);
         _connectionJob.setSystem(true);
         _connectionJob.schedule();
-        
-	}
 
-	/**
-	 * Cleans up resources.
-     * @throws Exception ___. 
-     * 
-	 */
-	public final void stopListening() throws Exception{
-		_connectionJob.removeJobChangeListener(_jobChangeListener);
-		_connectionJob.cancel();
-		for (MessageConsumer r: _receiver) {
-			r.close();
-			r=null;
-		}
+    }
+
+    /**
+     * Cleans up resources.
+     * @throws Exception ___.
+     *
+     */
+    public final void stopListening() throws Exception{
+        _connectionJob.removeJobChangeListener(_jobChangeListener);
+        _connectionJob.cancel();
+        for (MessageConsumer r: _receiver) {
+            r.close();
+            r=null;
+        }
         _session.close();
         _connection.stop();
         _connection.close();
@@ -295,8 +295,8 @@ public class MessageReceiver {
         _session     = null;
         _receiver    = null;
         _destination = null;
-        
-	}
+
+    }
 
 
 

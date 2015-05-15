@@ -52,10 +52,10 @@ public class RemoveComponentAction extends Action
     /** Prompt for PV name, add it to model
      *  @see org.eclipse.jface.action.Action#run()
      */
-	@Override
-	public void run()
-	{
-		final StringBuilder names = new StringBuilder();
+    @Override
+    public void run()
+    {
+        final StringBuilder names = new StringBuilder();
         for (AlarmTreeItem item : items)
         {
             if (names.length() > 0)
@@ -79,5 +79,5 @@ public class RemoveComponentAction extends Action
                               item.getName(), ex.getMessage()));
             }
         }
-	}
+    }
 }

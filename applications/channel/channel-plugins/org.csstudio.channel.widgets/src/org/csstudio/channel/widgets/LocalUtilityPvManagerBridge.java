@@ -15,28 +15,28 @@ import org.epics.pvmanager.PVWriter;
  */
 @Deprecated
 public class LocalUtilityPvManagerBridge {
-	
-	private PVWriter<Object> selectionWriter;
-	
-	public LocalUtilityPvManagerBridge(String pvName) {
-		selectionWriter = PVManager.write(channel(pvName)).async();
-		write("");
-	}
-	
-	private static Executor executor = Executors.newSingleThreadExecutor();
-	
-	public void write(final Object obj) {
-		if (selectionWriter != null) {
-			selectionWriter.write(obj);
-		}
-	}
-	
-	
-	public void close() {
-		if (selectionWriter != null) {
-			selectionWriter.close();
-			selectionWriter = null;
-		}
-	}
+
+    private PVWriter<Object> selectionWriter;
+
+    public LocalUtilityPvManagerBridge(String pvName) {
+        selectionWriter = PVManager.write(channel(pvName)).async();
+        write("");
+    }
+
+    private static Executor executor = Executors.newSingleThreadExecutor();
+
+    public void write(final Object obj) {
+        if (selectionWriter != null) {
+            selectionWriter.write(obj);
+        }
+    }
+
+
+    public void close() {
+        if (selectionWriter != null) {
+            selectionWriter.close();
+            selectionWriter = null;
+        }
+    }
 
 }

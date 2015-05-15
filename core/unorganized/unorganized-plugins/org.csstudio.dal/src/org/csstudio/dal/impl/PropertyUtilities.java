@@ -40,119 +40,119 @@ import org.csstudio.dal.simple.impl.DataUtil;
  */
 public class PropertyUtilities
 {
-	private PropertyUtilities()
-	{
-		super();
-	}
+    private PropertyUtilities()
+    {
+        super();
+    }
 
-	/**
-	 * Returns class, which implements requested
-	 *
-	 * @param interfaceClass    the interface who's implementation is requested
-	 *
-	 * @return class implementing requested interface
-	 *
-	 * @throws NullPointerException is thrown if interfaceClass is <code>null</code>
-	 * @throws IllegalArgumentException is thrown if interfaceClass is not an interface
-	 */
-	public static Class<? extends SimpleProperty<?>> getImplementationClass(
-	    Class<?extends SimpleProperty<?>> interfaceClass)
-	{
-		if (interfaceClass == null) {
-			throw new NullPointerException("interfaceClass");
-		}
+    /**
+     * Returns class, which implements requested
+     *
+     * @param interfaceClass    the interface who's implementation is requested
+     *
+     * @return class implementing requested interface
+     *
+     * @throws NullPointerException is thrown if interfaceClass is <code>null</code>
+     * @throws IllegalArgumentException is thrown if interfaceClass is not an interface
+     */
+    public static Class<? extends SimpleProperty<?>> getImplementationClass(
+        Class<?extends SimpleProperty<?>> interfaceClass)
+    {
+        if (interfaceClass == null) {
+            throw new NullPointerException("interfaceClass");
+        }
 
-		if (!interfaceClass.isInterface()) {
-			throw new IllegalArgumentException("Class '"
-			    + interfaceClass.getName() + "' does not represent interface.");
-		}
+        if (!interfaceClass.isInterface()) {
+            throw new IllegalArgumentException("Class '"
+                + interfaceClass.getName() + "' does not represent interface.");
+        }
 
-		// TODO: lines below should be unnecesary
-		if (interfaceClass == PatternProperty.class) {
-			return PatternPropertyImpl.class;
-		}
+        // TODO: lines below should be unnecesary
+        if (interfaceClass == PatternProperty.class) {
+            return PatternPropertyImpl.class;
+        }
 
-		// default implementation
-		if (interfaceClass == DynamicValueProperty.class
-		    || interfaceClass == SimpleProperty.class) {
-			return DoublePropertyImpl.class;
-		}
+        // default implementation
+        if (interfaceClass == DynamicValueProperty.class
+            || interfaceClass == SimpleProperty.class) {
+            return DoublePropertyImpl.class;
+        }
 
-		// first we make wild guess from class name only
-		if (DynamicValueProperty.class.isAssignableFrom(interfaceClass)) {
-			String iname = interfaceClass.getName();
-			int i = iname.lastIndexOf('.');
-			String cname = iname.substring(0, i) + ".impl" + iname.substring(i)
-				+ "Impl";
+        // first we make wild guess from class name only
+        if (DynamicValueProperty.class.isAssignableFrom(interfaceClass)) {
+            String iname = interfaceClass.getName();
+            int i = iname.lastIndexOf('.');
+            String cname = iname.substring(0, i) + ".impl" + iname.substring(i)
+                + "Impl";
 
-			try {
-				Class c =  Class.forName(cname);
+            try {
+                Class c =  Class.forName(cname);
 
-				return c;
-			} catch (Throwable e) {
-				Logger.getLogger(PropertyUtilities.class).debug("Heuristic lookup failed.", e);
-			}
-		}
+                return c;
+            } catch (Throwable e) {
+                Logger.getLogger(PropertyUtilities.class).debug("Heuristic lookup failed.", e);
+            }
+        }
 
-		String iname = interfaceClass.getName();
-		int i = iname.lastIndexOf('.');
-		int j = iname.lastIndexOf("SimpleProperty");
+        String iname = interfaceClass.getName();
+        int i = iname.lastIndexOf('.');
+        int j = iname.lastIndexOf("SimpleProperty");
 
-		if (j > 0) {
-			String cname = iname.substring(0, i) + ".impl"
-				+ iname.substring(i, j) + "PropertyImpl";
+        if (j > 0) {
+            String cname = iname.substring(0, i) + ".impl"
+                + iname.substring(i, j) + "PropertyImpl";
 
-			try {
-				Class c = Class.forName(cname);
+            try {
+                Class c = Class.forName(cname);
 
-				return c;
-			} catch (Throwable e) {
-				Logger.getLogger(PropertyUtilities.class).debug("Heuristic lookup failed.", e);
-			}
-		}
+                return c;
+            } catch (Throwable e) {
+                Logger.getLogger(PropertyUtilities.class).debug("Heuristic lookup failed.", e);
+            }
+        }
 
-		if (DoubleProperty.class.isAssignableFrom(interfaceClass)) {
-			return DoublePropertyImpl.class;
-		}
+        if (DoubleProperty.class.isAssignableFrom(interfaceClass)) {
+            return DoublePropertyImpl.class;
+        }
 
-		throw new IllegalArgumentException("Class '" + interfaceClass.getName()
-		    + "' does not have declared implementation class.");
-	}
-	
-	/**
-	 * As conveinece method, meant to fix common characteristic aliases. 
-	 * @param proxy
-	 * @param characteristicName
-	 * @param value
-	 * @return
-	 * @throws DataExchangeException 
-	 */
-	public static final Object verifyCharacteristic(DirectoryProxy proxy, String characteristicName, Object value) throws DataExchangeException {
-		
-		if (value==null && characteristicName!=null) {
-			if (characteristicName.equals(CharacteristicInfo.C_DISPLAY_NAME.getName())) {
-				return proxy.getUniqueName();
-			}
-			if (characteristicName.equals(CharacteristicInfo.C_ALARM_MAX.getName())) {
-				return proxy.getCharacteristic(CharacteristicInfo.C_MAXIMUM.getName());
-			}
-			if (characteristicName.equals(CharacteristicInfo.C_ALARM_MIN.getName())) {
-				return proxy.getCharacteristic(CharacteristicInfo.C_MINIMUM.getName());
-			}
-			if (characteristicName.equals(CharacteristicInfo.C_WARNING_MAX.getName())) {
-				return proxy.getCharacteristic(CharacteristicInfo.C_MAXIMUM.getName());
-			}
-			if (characteristicName.equals(CharacteristicInfo.C_WARNING_MIN.getName())) {
-				return proxy.getCharacteristic(CharacteristicInfo.C_MINIMUM.getName());
-			}
-			if (characteristicName.equals(CharacteristicInfo.C_META_DATA.getName())) {
-				return DataUtil.createMetaData(proxy);
-			}
-		}
-		
-		return value;
-		
-	}
+        throw new IllegalArgumentException("Class '" + interfaceClass.getName()
+            + "' does not have declared implementation class.");
+    }
+
+    /**
+     * As conveinece method, meant to fix common characteristic aliases.
+     * @param proxy
+     * @param characteristicName
+     * @param value
+     * @return
+     * @throws DataExchangeException
+     */
+    public static final Object verifyCharacteristic(DirectoryProxy proxy, String characteristicName, Object value) throws DataExchangeException {
+
+        if (value==null && characteristicName!=null) {
+            if (characteristicName.equals(CharacteristicInfo.C_DISPLAY_NAME.getName())) {
+                return proxy.getUniqueName();
+            }
+            if (characteristicName.equals(CharacteristicInfo.C_ALARM_MAX.getName())) {
+                return proxy.getCharacteristic(CharacteristicInfo.C_MAXIMUM.getName());
+            }
+            if (characteristicName.equals(CharacteristicInfo.C_ALARM_MIN.getName())) {
+                return proxy.getCharacteristic(CharacteristicInfo.C_MINIMUM.getName());
+            }
+            if (characteristicName.equals(CharacteristicInfo.C_WARNING_MAX.getName())) {
+                return proxy.getCharacteristic(CharacteristicInfo.C_MAXIMUM.getName());
+            }
+            if (characteristicName.equals(CharacteristicInfo.C_WARNING_MIN.getName())) {
+                return proxy.getCharacteristic(CharacteristicInfo.C_MINIMUM.getName());
+            }
+            if (characteristicName.equals(CharacteristicInfo.C_META_DATA.getName())) {
+                return DataUtil.createMetaData(proxy);
+            }
+        }
+
+        return value;
+
+    }
 }
 
 /* __oOo__ */

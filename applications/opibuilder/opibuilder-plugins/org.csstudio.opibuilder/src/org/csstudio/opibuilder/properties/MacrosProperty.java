@@ -21,87 +21,87 @@ import org.jdom.Element;
  *
  */
 public class MacrosProperty extends AbstractWidgetProperty {
-	
-	/**
-	 * XML ELEMENT name <code>INCLUDE_PARENT_MACROS</code>.
-	 */
-	public static final String XML_ELEMENT_INCLUDE_PARENT_MACROS = "include_parent_macros"; //$NON-NLS-1$
-	
-	/**Macros Property Constructor. The property value type is {@link MacrosInput}.
-	 * @param prop_id the property id which should be unique in a widget model.
-	 * @param description the description of the property,
-	 * which will be shown as the property name in property sheet.
-	 * @param category the category of the widget.
-	 * @param default_macros the default macros when the widget is first created.
-	 */
-	public MacrosProperty(String prop_id, String description,
-			WidgetPropertyCategory category, MacrosInput default_macros) {
-		super(prop_id, description, category, default_macros);
-		
-	}
 
-	@Override
-	public Object checkValue(Object value) {
-		if(value == null)
-			return null;
-		MacrosInput acceptableValue = null;
-		if(value instanceof MacrosInput){
-			acceptableValue = (MacrosInput)value;			
-		}
-		
-		return acceptableValue;
-	}
+    /**
+     * XML ELEMENT name <code>INCLUDE_PARENT_MACROS</code>.
+     */
+    public static final String XML_ELEMENT_INCLUDE_PARENT_MACROS = "include_parent_macros"; //$NON-NLS-1$
 
-	
-	@Override
-	public Object getPropertyValue() {
-		if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null){
-			MacrosInput value = ((MacrosInput) super.getPropertyValue()).getCopy();
-			for(String key : value.getMacrosMap().keySet()){
-					String newS = OPIBuilderMacroUtil.replaceMacros(widgetModel, value.getMacrosMap().get(key));
-					if(!newS.equals(value.getMacrosMap().get(key))){
-						value.getMacrosMap().put(key, newS);
-					}
-				}			
-			return value;
-		}else
-			return super.getPropertyValue();
-	}
-	
-	
-	@Override
-	protected PropertyDescriptor createPropertyDescriptor() {
-		if(PropertySSHelper.getIMPL() == null)
-			return null;
-		return PropertySSHelper.getIMPL().getMacrosPropertyDescriptor(prop_id, description);
-	}
+    /**Macros Property Constructor. The property value type is {@link MacrosInput}.
+     * @param prop_id the property id which should be unique in a widget model.
+     * @param description the description of the property,
+     * which will be shown as the property name in property sheet.
+     * @param category the category of the widget.
+     * @param default_macros the default macros when the widget is first created.
+     */
+    public MacrosProperty(String prop_id, String description,
+            WidgetPropertyCategory category, MacrosInput default_macros) {
+        super(prop_id, description, category, default_macros);
 
-	@Override
-	public MacrosInput readValueFromXML(Element propElement) {
-		LinkedHashMap<String, String> macros = new LinkedHashMap<String, String>();
-		boolean b = true;
-		for(Object oe : propElement.getChildren()){
-			Element se = (Element)oe;
-			if(se.getName().equals(XML_ELEMENT_INCLUDE_PARENT_MACROS))
-				b = Boolean.parseBoolean(se.getText());
-			else
-				macros.put(se.getName(), se.getText());
-		}		
-		return new MacrosInput(macros, b);
-		
-	}
+    }
 
-	@Override
-	public void writeToXML(Element propElement) {
-		MacrosInput macros = (MacrosInput)propertyValue;
-		Element be = new Element(XML_ELEMENT_INCLUDE_PARENT_MACROS);
-		be.setText("" + macros.isInclude_parent_macros()); //$NON-NLS-1$
-		propElement.addContent(be);
-		for(String key : macros.getMacrosMap().keySet()){
-			Element newElement = new Element(key);
-			newElement.setText(macros.getMacrosMap().get(key));
-			propElement.addContent(newElement);
-		}
-	}
+    @Override
+    public Object checkValue(Object value) {
+        if(value == null)
+            return null;
+        MacrosInput acceptableValue = null;
+        if(value instanceof MacrosInput){
+            acceptableValue = (MacrosInput)value;
+        }
+
+        return acceptableValue;
+    }
+
+
+    @Override
+    public Object getPropertyValue() {
+        if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null){
+            MacrosInput value = ((MacrosInput) super.getPropertyValue()).getCopy();
+            for(String key : value.getMacrosMap().keySet()){
+                    String newS = OPIBuilderMacroUtil.replaceMacros(widgetModel, value.getMacrosMap().get(key));
+                    if(!newS.equals(value.getMacrosMap().get(key))){
+                        value.getMacrosMap().put(key, newS);
+                    }
+                }
+            return value;
+        }else
+            return super.getPropertyValue();
+    }
+
+
+    @Override
+    protected PropertyDescriptor createPropertyDescriptor() {
+        if(PropertySSHelper.getIMPL() == null)
+            return null;
+        return PropertySSHelper.getIMPL().getMacrosPropertyDescriptor(prop_id, description);
+    }
+
+    @Override
+    public MacrosInput readValueFromXML(Element propElement) {
+        LinkedHashMap<String, String> macros = new LinkedHashMap<String, String>();
+        boolean b = true;
+        for(Object oe : propElement.getChildren()){
+            Element se = (Element)oe;
+            if(se.getName().equals(XML_ELEMENT_INCLUDE_PARENT_MACROS))
+                b = Boolean.parseBoolean(se.getText());
+            else
+                macros.put(se.getName(), se.getText());
+        }
+        return new MacrosInput(macros, b);
+
+    }
+
+    @Override
+    public void writeToXML(Element propElement) {
+        MacrosInput macros = (MacrosInput)propertyValue;
+        Element be = new Element(XML_ELEMENT_INCLUDE_PARENT_MACROS);
+        be.setText("" + macros.isInclude_parent_macros()); //$NON-NLS-1$
+        propElement.addContent(be);
+        for(String key : macros.getMacrosMap().keySet()){
+            Element newElement = new Element(key);
+            newElement.setText(macros.getMacrosMap().get(key));
+            propElement.addContent(newElement);
+        }
+    }
 
 }

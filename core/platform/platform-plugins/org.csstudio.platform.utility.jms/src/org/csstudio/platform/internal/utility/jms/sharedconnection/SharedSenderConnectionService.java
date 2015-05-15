@@ -34,33 +34,33 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * Service which manages a shared connection for sending JMS messages. The
  * settings for the connection are read from the preferences of the JMS Utility
  * plug-in.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class SharedSenderConnectionService {
-	
-	private final MonitorableSharedConnection _connection;
-	
-	/**
-	 * Creates the service.
-	 */
-	public SharedSenderConnectionService() {
-		IPreferencesService prefs = Platform.getPreferencesService();
-		String jmsUrl = prefs.getString(Activator.PLUGIN_ID,
-				PreferenceConstants.SENDER_BROKER_URL,
-				"", null);
-		_connection = new MonitorableSharedConnection(jmsUrl);
-	}
 
-	/**
-	 * Returns a handle to the shared connection.
-	 * 
-	 * @return a handle to the shared connection.
-	 * @throws JMSException
-	 *             if the underlying shared connection could not be created or
-	 *             started due to an internal error.
-	 */
-	public ISharedConnectionHandle sharedConnection() throws JMSException {
-		return _connection.createHandle();
-	}
+    private final MonitorableSharedConnection _connection;
+
+    /**
+     * Creates the service.
+     */
+    public SharedSenderConnectionService() {
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String jmsUrl = prefs.getString(Activator.PLUGIN_ID,
+                PreferenceConstants.SENDER_BROKER_URL,
+                "", null);
+        _connection = new MonitorableSharedConnection(jmsUrl);
+    }
+
+    /**
+     * Returns a handle to the shared connection.
+     *
+     * @return a handle to the shared connection.
+     * @throws JMSException
+     *             if the underlying shared connection could not be created or
+     *             started due to an internal error.
+     */
+    public ISharedConnectionHandle sharedConnection() throws JMSException {
+        return _connection.createHandle();
+    }
 }

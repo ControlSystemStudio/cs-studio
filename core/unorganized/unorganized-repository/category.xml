@@ -3,10 +3,10 @@
    <!--<feature url="URL" id="org.csstudio.dmtest" version="X.Y.Z.qualifier">
       <category name="CATEGORY"/>
    </feature>-->
-   <feature id="org.csstudio.core.unorganized.feature">
+   <feature id="org.csstudio.dal.feature">
       <category name="org.csstudio.category.core"/>
    </feature>
-   <feature id="org.csstudio.core.unorganized.feature.source">
+   <feature id="org.csstudio.dal.feature.source">
       <category name="org.csstudio.category.core"/>
    </feature>
    <feature id="org.csstudio.pvmanager.autocomplete.feature">

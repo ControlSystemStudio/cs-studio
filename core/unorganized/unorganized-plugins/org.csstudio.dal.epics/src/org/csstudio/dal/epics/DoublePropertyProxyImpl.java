@@ -32,15 +32,15 @@ import org.csstudio.dal.RemoteException;
  */
 public class DoublePropertyProxyImpl extends PropertyProxyImpl<Double> {
 
-	/**
-	 * Constructor.
-	 * @param plug plug handling this property.
-	 * @param name property name.
-	 * @throws RemoteException
-	 */
-	public DoublePropertyProxyImpl(final EPICSPlug plug, final String name)
-			throws RemoteException {
-		super(plug, name, Double.class, DBRType.DOUBLE);
-	}
+    /**
+     * Constructor.
+     * @param plug plug handling this property.
+     * @param name property name.
+     * @throws RemoteException
+     */
+    public DoublePropertyProxyImpl(final EPICSPlug plug, final String name)
+            throws RemoteException {
+        super(plug, name, Double.class, DBRType.DOUBLE);
+    }
 
 }

@@ -25,9 +25,9 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Button;
 
 /**
- * EditPart controller delegate for Native Button widget. 
+ * EditPart controller delegate for Native Button widget.
  * @author Xihui Chen
- * 
+ *
  */
 public final class NativeButtonEditPartDelegate implements IButtonEditPartDelegate{
 	  

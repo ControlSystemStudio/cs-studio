@@ -38,146 +38,146 @@ import org.csstudio.dal.impl.DefaultApplicationContext;
  */
 public class DefaultDeviceFactoryService implements DeviceFactoryService
 {
-	private static DefaultDeviceFactoryService service;
+    private static DefaultDeviceFactoryService service;
 
-	/**
-	 * Returns the DeviceFactoryService object.
-	 *
-	 * @return DeviceFactoryService object.
-	 */
-	public static final synchronized DeviceFactoryService getDeviceFactoryService()
-	{
-		if (service == null) {
-			service = new DefaultDeviceFactoryService();
-		}
+    /**
+     * Returns the DeviceFactoryService object.
+     *
+     * @return DeviceFactoryService object.
+     */
+    public static final synchronized DeviceFactoryService getDeviceFactoryService()
+    {
+        if (service == null) {
+            service = new DefaultDeviceFactoryService();
+        }
 
-		return service;
-	}
+        return service;
+    }
 
-	private ArrayList<AbstractApplicationContext> ctxList = new ArrayList<AbstractApplicationContext>();
+    private ArrayList<AbstractApplicationContext> ctxList = new ArrayList<AbstractApplicationContext>();
 
-	protected DefaultDeviceFactoryService()
-	{
-		super();
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-				public void run()
-				{
-					shutdown();
-				}
-				;
-			});
-	}
+    protected DefaultDeviceFactoryService()
+    {
+        super();
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+                public void run()
+                {
+                    shutdown();
+                }
+                ;
+            });
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.spi.PropertyFactoryService#getPropertyFactory(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.context.PropertyFamily, org.csstudio.dal.spi.PropertyFactory.LinkPolicy)
-	 */
-	public DeviceFactory getDeviceFactory(AbstractApplicationContext ctx,
-	    LinkPolicy linkPolicy)
-	{
-		return getDeviceFactory(ctx, linkPolicy, null);
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.spi.PropertyFactoryService#getPropertyFactory(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.context.PropertyFamily, org.csstudio.dal.spi.PropertyFactory.LinkPolicy)
+     */
+    public DeviceFactory getDeviceFactory(AbstractApplicationContext ctx,
+        LinkPolicy linkPolicy)
+    {
+        return getDeviceFactory(ctx, linkPolicy, null);
+    }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.dal.spi.DeviceFactoryService#getDeviceFactory(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.spi.LinkPolicy, java.lang.String)
-	 */
-	public DeviceFactory getDeviceFactory(AbstractApplicationContext ctx,
-	    LinkPolicy linkPolicy, String plugName)
-	{
-		ctxList.add(ctx);
+    /* (non-Javadoc)
+     * @see org.csstudio.dal.spi.DeviceFactoryService#getDeviceFactory(org.csstudio.dal.context.AbstractApplicationContext, org.csstudio.dal.spi.LinkPolicy, java.lang.String)
+     */
+    public DeviceFactory getDeviceFactory(AbstractApplicationContext ctx,
+        LinkPolicy linkPolicy, String plugName)
+    {
+        ctxList.add(ctx);
 
-		if (plugName == null) {
-			Class cl = null;
+        if (plugName == null) {
+            Class cl = null;
 
-			try {
-				cl = Plugs.getDefaultDeviceFactory(ctx.getConfiguration());
-			} catch (Throwable t) {
-				throw new IllegalArgumentException(
-				    "Could not load factory implementation: " + t);
-			}
-			
-			if (cl != null) {
-				try {
-					DeviceFactory df = (DeviceFactory)cl.newInstance();
-					df.initialize(ctx, linkPolicy);
+            try {
+                cl = Plugs.getDefaultDeviceFactory(ctx.getConfiguration());
+            } catch (Throwable t) {
+                throw new IllegalArgumentException(
+                    "Could not load factory implementation: " + t);
+            }
 
-					return df;
-				} catch (Throwable t) {
-					throw new IllegalArgumentException(
-					    "Could not instantiate '" + cl.getName()
-					    + "' factory implementation: " + t);
-				}
-			} else {
-				throw new IllegalArgumentException(
-					    "Could not find factory implementation information in configuration.");
-			}
+            if (cl != null) {
+                try {
+                    DeviceFactory df = (DeviceFactory)cl.newInstance();
+                    df.initialize(ctx, linkPolicy);
 
-			//DeviceFactoryImpl simulator = new DeviceFactoryImpl();
-			//simulator.initialize(ctx, linkPolicy);
-			//return simulator;
-		}
+                    return df;
+                } catch (Throwable t) {
+                    throw new IllegalArgumentException(
+                        "Could not instantiate '" + cl.getName()
+                        + "' factory implementation: " + t);
+                }
+            } else {
+                throw new IllegalArgumentException(
+                        "Could not find factory implementation information in configuration.");
+            }
 
-		Class cl;
+            //DeviceFactoryImpl simulator = new DeviceFactoryImpl();
+            //simulator.initialize(ctx, linkPolicy);
+            //return simulator;
+        }
 
-		try {
-			cl = Plugs.getDeviceFactoryClassForPlug(plugName,
-				    ctx.getConfiguration());
-		} catch (Throwable t) {
-			throw new IllegalArgumentException(
-			    "Failed to load factory implementation: " + t);
-		}
+        Class cl;
 
-		try {
-			DeviceFactory df = (DeviceFactory)cl.newInstance();
-			df.initialize(ctx, linkPolicy);
+        try {
+            cl = Plugs.getDeviceFactoryClassForPlug(plugName,
+                    ctx.getConfiguration());
+        } catch (Throwable t) {
+            throw new IllegalArgumentException(
+                "Failed to load factory implementation: " + t);
+        }
 
-			return df;
-		} catch (Throwable t) {
-			throw new IllegalArgumentException("Could not instantiate '"
-			    + cl.getName() + "' factory implementation: " + t);
-		}
-	}
+        try {
+            DeviceFactory df = (DeviceFactory)cl.newInstance();
+            df.initialize(ctx, linkPolicy);
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.csstudio.dal.spi.DeviceFactoryService#getDefaultDeviceFactory()
-	 */
-	public DeviceFactory getDefaultDeviceFactory()
-	{
-		String defaultCtx = System.getProperty(DEFAULT_APPLICATION_CONTEXT);
-		AbstractApplicationContext context = null;
+            return df;
+        } catch (Throwable t) {
+            throw new IllegalArgumentException("Could not instantiate '"
+                + cl.getName() + "' factory implementation: " + t);
+        }
+    }
 
-		if (defaultCtx != null) {
-			try {
-				Class appContextClass = Class.forName(defaultCtx);
-				context = (AbstractApplicationContext)appContextClass.getConstructor(String.class)
-					.newInstance("DefaultContext");
-			} catch (Exception e) {
-				Logger.getLogger(this.getClass()).info("System defined context '"+defaultCtx+"' failed to instantiate, internal defautl will be used instead.", e);
-			}
-		}
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.dal.spi.DeviceFactoryService#getDefaultDeviceFactory()
+     */
+    public DeviceFactory getDefaultDeviceFactory()
+    {
+        String defaultCtx = System.getProperty(DEFAULT_APPLICATION_CONTEXT);
+        AbstractApplicationContext context = null;
 
-		if (context == null) {
-			context = new DefaultApplicationContext("DefaultContext");
-		}
+        if (defaultCtx != null) {
+            try {
+                Class appContextClass = Class.forName(defaultCtx);
+                context = (AbstractApplicationContext)appContextClass.getConstructor(String.class)
+                    .newInstance("DefaultContext");
+            } catch (Exception e) {
+                Logger.getLogger(this.getClass()).info("System defined context '"+defaultCtx+"' failed to instantiate, internal defautl will be used instead.", e);
+            }
+        }
 
-		return getDeviceFactory(context, null);
-	}
+        if (context == null) {
+            context = new DefaultApplicationContext("DefaultContext");
+        }
 
-	/*
-	 * This method is called when JVM is shuting down and service is celaning all it's
-	 * resources.
-	 */
-	private void shutdown()
-	{
-		AbstractApplicationContext[] l = ctxList.toArray(new AbstractApplicationContext[0]);
+        return getDeviceFactory(context, null);
+    }
 
-		for (int i = 0; i < l.length; i++) {
-			if (l[i].getLifecycleState() != LifecycleState.DESTROYING
-			    && l[i].getLifecycleState() != LifecycleState.DESTROYED) {
-				l[i].destroy();
-			}
-		}
-	}
+    /*
+     * This method is called when JVM is shuting down and service is celaning all it's
+     * resources.
+     */
+    private void shutdown()
+    {
+        AbstractApplicationContext[] l = ctxList.toArray(new AbstractApplicationContext[0]);
+
+        for (int i = 0; i < l.length; i++) {
+            if (l[i].getLifecycleState() != LifecycleState.DESTROYING
+                && l[i].getLifecycleState() != LifecycleState.DESTROYED) {
+                l[i].destroy();
+            }
+        }
+    }
 } /* __oOo__ */
 
 

@@ -11,14 +11,14 @@ import java.util.logging.Logger;
 
 public class Activator {
 
-	/** Plugin ID defined in MANIFEST.MF */
-	final public static String PLUGIN_ID = "org.csstudio.alarm.beast.notifier.logbook";
+    /** Plugin ID defined in MANIFEST.MF */
+    final public static String PLUGIN_ID = "org.csstudio.alarm.beast.notifier.logbook";
 
-	final private static Logger logger = Logger.getLogger(PLUGIN_ID);
+    final private static Logger logger = Logger.getLogger(PLUGIN_ID);
 
-	/** @return Logger for plugin ID */
-	public static Logger getLogger() {
-		return logger;
-	}
+    /** @return Logger for plugin ID */
+    public static Logger getLogger() {
+        return logger;
+    }
 
 }

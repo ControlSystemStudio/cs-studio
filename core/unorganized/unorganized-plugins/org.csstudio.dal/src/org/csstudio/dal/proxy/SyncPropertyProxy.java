@@ -34,23 +34,23 @@ import org.csstudio.dal.DataExchangeException;
  */
 public interface SyncPropertyProxy<T,P extends AbstractPlug> extends PropertyProxy<T,P>
 {
-	/**
-	 * Synchronous get of value.
-	 *
-	 * @return returned values
-	 *
-	 * @throws DataExchangeException if remote operation fails
-	 */
-	public T getValueSync() throws DataExchangeException;
+    /**
+     * Synchronous get of value.
+     *
+     * @return returned values
+     *
+     * @throws DataExchangeException if remote operation fails
+     */
+    public T getValueSync() throws DataExchangeException;
 
-	/**
-	 * Synchronous set of new value.
-	 *
-	 * @param value new value to set
-	 *
-	 * @throws DataExchangeException if remote operation fails
-	 */
-	public void setValueSync(T value) throws DataExchangeException;
+    /**
+     * Synchronous set of new value.
+     *
+     * @param value new value to set
+     *
+     * @throws DataExchangeException if remote operation fails
+     */
+    public void setValueSync(T value) throws DataExchangeException;
 }
 
 /* __oOo__ */

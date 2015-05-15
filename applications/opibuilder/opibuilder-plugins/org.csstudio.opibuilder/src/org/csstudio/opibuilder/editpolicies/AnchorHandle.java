@@ -23,40 +23,40 @@ import org.eclipse.swt.graphics.Color;
  *
  */
 public class AnchorHandle extends SquareHandle {
-	
-	public AnchorHandle(final GraphicalEditPart owner, final ConnectionAnchor anchor) {
-	
-		setOwner(owner);
-		setLocator(new Locator() {
-			
-			@Override
-			public void relocate(IFigure target) {
-				Point center = anchor.getLocation(null);
-				target.translateToRelative(center);
-				target.setBounds(new Rectangle(
-						center.x - DEFAULT_HANDLE_SIZE/2,
-						center.y - DEFAULT_HANDLE_SIZE/2,
-						DEFAULT_HANDLE_SIZE,
-						DEFAULT_HANDLE_SIZE
-						));
-			}
-		});
-	
-	}
 
-	@Override
-	protected DragTracker createDragTracker() {
-		return null;
-	}
-	
-	@Override
-	protected Color getBorderColor() {
-		return ColorConstants.darkGray;
-	}
-	
-	@Override
-	protected Color getFillColor() {
-		return ColorConstants.red;
-	}
+    public AnchorHandle(final GraphicalEditPart owner, final ConnectionAnchor anchor) {
+
+        setOwner(owner);
+        setLocator(new Locator() {
+
+            @Override
+            public void relocate(IFigure target) {
+                Point center = anchor.getLocation(null);
+                target.translateToRelative(center);
+                target.setBounds(new Rectangle(
+                        center.x - DEFAULT_HANDLE_SIZE/2,
+                        center.y - DEFAULT_HANDLE_SIZE/2,
+                        DEFAULT_HANDLE_SIZE,
+                        DEFAULT_HANDLE_SIZE
+                        ));
+            }
+        });
+
+    }
+
+    @Override
+    protected DragTracker createDragTracker() {
+        return null;
+    }
+
+    @Override
+    protected Color getBorderColor() {
+        return ColorConstants.darkGray;
+    }
+
+    @Override
+    protected Color getFillColor() {
+        return ColorConstants.red;
+    }
 
 }

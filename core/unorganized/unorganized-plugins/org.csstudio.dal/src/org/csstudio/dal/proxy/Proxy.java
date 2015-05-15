@@ -34,54 +34,54 @@ import org.csstudio.dal.context.Identifiable;
  */
 public interface Proxy<P extends AbstractPlug> extends Identifiable
 {
-	/**
-	 * Returns the unique name. This name is used to initiate
-	 * connection to remote object and can be regardes as remote name.
-	 *
-	 * @return String unique remote name for this property
-	 */
-	public String getUniqueName();
+    /**
+     * Returns the unique name. This name is used to initiate
+     * connection to remote object and can be regardes as remote name.
+     *
+     * @return String unique remote name for this property
+     */
+    public String getUniqueName();
 
-	/**
-	 * Destroys object and releases all remote and local allocated resources.
-	 * <p><b>NOTE</b></br>
-	 * Only plug which created this proxy can call this method since lifecycle is controled by the plug.
-	 * </p>
-	 */
-	public void destroy();
+    /**
+     * Destroys object and releases all remote and local allocated resources.
+     * <p><b>NOTE</b></br>
+     * Only plug which created this proxy can call this method since lifecycle is controled by the plug.
+     * </p>
+     */
+    public void destroy();
 
-	/**
-	 * Registers new listener of proxy events.
-	 * @param l new listener
-	 */
-	public void addProxyListener(ProxyListener<?> l);
+    /**
+     * Registers new listener of proxy events.
+     * @param l new listener
+     */
+    public void addProxyListener(ProxyListener<?> l);
 
-	/**
-	 * Deregisters listener from proxy events.
-	 * @param l new listener
-	 */
-	public void removeProxyListener(ProxyListener<?> l);
+    /**
+     * Deregisters listener from proxy events.
+     * @param l new listener
+     */
+    public void removeProxyListener(ProxyListener<?> l);
 
-	/**
-	 * Return connection state enum of the remote object.
-	 * @return state of connection to remote object
-	 */
-	public ConnectionState getConnectionState();
-	
-	/**
-	 * Returns plug instance which governs this proxy object.
-	 * Plug implementation decided how plug reference is provided to the 
-	 * proxy implementation. Preferred way is trough constructor.
-	 * @return
-	 */
-	public P getPlug();
-	
-	/**
-	 * Returns short description of connection to remote host.
-	 * For example: CHANNEL_A@PROTOCOL/HOST:PORT  
-	 * @return
-	 */
-	public String getConnectionInfo();
+    /**
+     * Return connection state enum of the remote object.
+     * @return state of connection to remote object
+     */
+    public ConnectionState getConnectionState();
+
+    /**
+     * Returns plug instance which governs this proxy object.
+     * Plug implementation decided how plug reference is provided to the
+     * proxy implementation. Preferred way is trough constructor.
+     * @return
+     */
+    public P getPlug();
+
+    /**
+     * Returns short description of connection to remote host.
+     * For example: CHANNEL_A@PROTOCOL/HOST:PORT
+     * @return
+     */
+    public String getConnectionInfo();
 }
 
 /* __oOo__ */

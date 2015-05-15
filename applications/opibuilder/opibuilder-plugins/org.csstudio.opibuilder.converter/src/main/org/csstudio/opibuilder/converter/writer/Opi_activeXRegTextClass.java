@@ -14,18 +14,18 @@ import org.csstudio.opibuilder.converter.model.Edm_activeXRegTextClass;
  * @author Xihui Chen
  */
 public class Opi_activeXRegTextClass extends Opi_activeXTextClass {
-	
 
-	private static final String name = "EDM RegText";
-	
-	/**
-	 * Converts the Edm_activeXTextClass to OPI Label widget XML.  
-	 */
-	public Opi_activeXRegTextClass(Context con, Edm_activeXRegTextClass t) {
-		super(con,t);
-		
-		setName(name);		
-		
-	}
+
+    private static final String name = "EDM RegText";
+
+    /**
+     * Converts the Edm_activeXTextClass to OPI Label widget XML.
+     */
+    public Opi_activeXRegTextClass(Context con, Edm_activeXRegTextClass t) {
+        super(con,t);
+
+        setName(name);
+
+    }
 
 }

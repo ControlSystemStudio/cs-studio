@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class StartupParameters implements StartupParametersExtPoint
 {
-	 /** Command-line switch for help */
+     /** Command-line switch for help */
     private static final String HELP = "-help"; //$NON-NLS-1$
 
     /** Command-line switch to show login dialog */
@@ -74,15 +74,15 @@ public class StartupParameters implements StartupParametersExtPoint
     /** Parameter tag defines the shared link. The value is stored in the returned map. */
     public static final String SHARE_LINK_PARAM = "css.shareLink"; //$NON-NLS-1$
 
-	/** {@inheritDoc} */
-	@SuppressWarnings("nls")
+    /** {@inheritDoc} */
+    @SuppressWarnings("nls")
     @Override
     public Map<String, Object> readStartupParameters(final Display display,
-    		final IApplicationContext context) throws Exception
-	{
-		final Map<String, Object> parameters = new HashMap<String, Object>();
-		 // Check command-line arguments
-		final String args[] =
+            final IApplicationContext context) throws Exception
+    {
+        final Map<String, Object> parameters = new HashMap<String, Object>();
+         // Check command-line arguments
+        final String args[] =
             (String []) context.getArguments().get("application.args"); //$NON-NLS-1$
 
         boolean force_workspace_prompt = false;
@@ -145,7 +145,7 @@ public class StartupParameters implements StartupParametersExtPoint
             }
             else if (arg.equalsIgnoreCase(USER))
             {
-            	if ((i + 1) < args.length)
+                if ((i + 1) < args.length)
                 {
                     final String next = args[i+1];
                     if (!next.startsWith("-")) //$NON-NLS-1$
@@ -166,7 +166,7 @@ public class StartupParameters implements StartupParametersExtPoint
             }
             else if (arg.equalsIgnoreCase(PASSWORD))
             {
-            	if ((i + 1) < args.length)
+                if ((i + 1) < args.length)
                 {
                     final String next = args[i+1];
                     if (!next.startsWith("-")) //$NON-NLS-1$
@@ -202,7 +202,7 @@ public class StartupParameters implements StartupParametersExtPoint
                     System.exit(0);
                 }
                 System.out.println("Setting plugin " + path_key[0] + " setting " + path_key[1]);
-                
+
                 final ISecurePreferences sec_prefs = SecurePreferences.getSecurePreferences();
                 sec_prefs.node(path_key[0]).put(path_key[1], password, true);
                 sec_prefs.flush();
@@ -225,7 +225,7 @@ public class StartupParameters implements StartupParametersExtPoint
         parameters.put(SHARE_LINK_PARAM, share_link);
 
         return parameters;
-	}
+    }
 
     /**
      * Prints the help to system output.

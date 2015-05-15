@@ -17,67 +17,67 @@ import org.csstudio.opibuilder.converter.model.Edm_activeCircleClass;
  */
 public class Opi_activeCircleClass extends OpiWidget {
 
-	private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeCircleClass");
-	private static final String typeId = "Ellipse";
-	private static final String name = "EDM Ellipse";
-	private static final String version = "1.0";
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_activeCircleClass");
+    private static final String typeId = "Ellipse";
+    private static final String name = "EDM Ellipse";
+    private static final String version = "1.0";
 
-	/**
-	 * Converts the Edm_activeCircleClasss to OPI Rectangle widget XML.  
-	 */
-	public Opi_activeCircleClass(Context con, Edm_activeCircleClass r) {
-		super(con, r);
-		setTypeId(typeId);
+    /**
+     * Converts the Edm_activeCircleClasss to OPI Rectangle widget XML.
+     */
+    public Opi_activeCircleClass(Context con, Edm_activeCircleClass r) {
+        super(con, r);
+        setTypeId(typeId);
 
-		widgetContext.getElement().setAttribute("version", version);
-		
-		new OpiString(widgetContext, "name", name);
-		new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
-		
-		new OpiBoolean(widgetContext, "transparent", !r.isFill());
-		
-		if (r.getFillColor().isExistInEDL()) {
-			new OpiColor(widgetContext, "background_color", r.getFillColor(), r);
-		}
-		
-		if (r.getAlarmPv() != null) {
-			// line color alarm rule.
-			if (r.isLineAlarm())
-				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color",
-						"lineColorAlarmRule", false);
-			if (r.isFillAlarm())
-				createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
-						"backColorAlarmRule", false);
-		}
-				
-		int line_width = 1;
-		if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
-			line_width = r.getLineWidth();
-		new OpiInt(widgetContext, "line_width", line_width);
+        widgetContext.getElement().setAttribute("version", version);
 
-		int lineStyle = 0;
-		if (r.getLineStyle().isExistInEDL()) {
+        new OpiString(widgetContext, "name", name);
+        new OpiColor(widgetContext, "line_color", r.getLineColor(), r);
 
-			switch (r.getLineStyle().get()) {
-			case EdmLineStyle.SOLID: {
-				lineStyle = 0;
-			} break;
-			case EdmLineStyle.DASH: {
-				lineStyle = 1;
-			} break;
-			}
+        new OpiBoolean(widgetContext, "transparent", !r.isFill());
 
-		}
-		new OpiInt(widgetContext, "line_style", lineStyle);
-		
+        if (r.getFillColor().isExistInEDL()) {
+            new OpiColor(widgetContext, "background_color", r.getFillColor(), r);
+        }
 
-		log.debug("Edm_activeCircleClass written.");
+        if (r.getAlarmPv() != null) {
+            // line color alarm rule.
+            if (r.isLineAlarm())
+                createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "line_color",
+                        "lineColorAlarmRule", false);
+            if (r.isFillAlarm())
+                createColorAlarmRule(r, convertPVName(r.getAlarmPv()), "background_color",
+                        "backColorAlarmRule", false);
+        }
 
-	}
-	
-	protected void setDefaultPropertyValue(){
-		super.setDefaultPropertyValue();		
-		new OpiBoolean(widgetContext, "transparent", true);
-	}
+        int line_width = 1;
+        if(r.getAttribute("lineWidth").isExistInEDL() && (r.getLineWidth() != 0 || r.isFill()))
+            line_width = r.getLineWidth();
+        new OpiInt(widgetContext, "line_width", line_width);
+
+        int lineStyle = 0;
+        if (r.getLineStyle().isExistInEDL()) {
+
+            switch (r.getLineStyle().get()) {
+            case EdmLineStyle.SOLID: {
+                lineStyle = 0;
+            } break;
+            case EdmLineStyle.DASH: {
+                lineStyle = 1;
+            } break;
+            }
+
+        }
+        new OpiInt(widgetContext, "line_style", lineStyle);
+
+
+        log.debug("Edm_activeCircleClass written.");
+
+    }
+
+    protected void setDefaultPropertyValue(){
+        super.setDefaultPropertyValue();
+        new OpiBoolean(widgetContext, "transparent", true);
+    }
 
 }

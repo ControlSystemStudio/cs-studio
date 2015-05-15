@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.opibuilder.properties;
 
@@ -32,60 +32,60 @@ import static org.csstudio.opibuilder.properties.ServiceMethodDescription.create
 public class ServiceTreeDialog extends Dialog{
 
     private ServiceTreeWidget serviceTreeWidget;
-    
+
     private ServiceMethodDescription serviceMethodDescription;
-    
+
     protected ServiceTreeDialog(Shell parentShell) {
-	super(parentShell);
-	setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
+    super(parentShell);
+    setShellStyle(getShellStyle() | SWT.RESIZE | SWT.MAX);
     }
 
     @Override
     protected Control createDialogArea(Composite parent) {
-	final Composite container = (Composite) super.createDialogArea(parent);      
-	      container.setLayout(new FormLayout());  
-	      
-	serviceTreeWidget = new ServiceTreeWidget(container, SWT.NONE);
-	FormData fd_serviceTreeWidget = new FormData();
-	fd_serviceTreeWidget.bottom = new FormAttachment(100);
-	fd_serviceTreeWidget.top = new FormAttachment(0);
-	fd_serviceTreeWidget.left = new FormAttachment(0);
-	fd_serviceTreeWidget.right = new FormAttachment(100);
-	serviceTreeWidget.setLayoutData(fd_serviceTreeWidget);
-	List<String> serviceNames = new ArrayList<String>(ServiceRegistry
-		.getDefault().listServices());
-	Collections.sort(serviceNames);
-	List<Service> services = new ArrayList<Service>();
-	for (String serviceName : serviceNames) {
-	    services.add(ServiceRegistry.getDefault().findService(serviceName));
-	}	
-	serviceTreeWidget.setServiceNames(services);	
-	serviceTreeWidget.addSelectionChangedListener(new ISelectionChangedListener() {
-	    
-	    @Override
-	    public void selectionChanged(SelectionChangedEvent event) {
-		if(event.getSelection() instanceof TreeSelection){		    
-		    TreePath[] treeSelection = ((TreeSelection) event.getSelection()).getPaths();
-		    if(treeSelection[0].getSegmentCount() == 2){
-			serviceMethodDescription = createServiceMethodDescription(
-				((Service)treeSelection[0].getFirstSegment()).getName(), 
-				(ServiceMethod)treeSelection[0].getLastSegment());
-		    }
-		}
-		getShell().pack();		
-	    }
-	});
-	return container;
+    final Composite container = (Composite) super.createDialogArea(parent);
+          container.setLayout(new FormLayout());
+
+    serviceTreeWidget = new ServiceTreeWidget(container, SWT.NONE);
+    FormData fd_serviceTreeWidget = new FormData();
+    fd_serviceTreeWidget.bottom = new FormAttachment(100);
+    fd_serviceTreeWidget.top = new FormAttachment(0);
+    fd_serviceTreeWidget.left = new FormAttachment(0);
+    fd_serviceTreeWidget.right = new FormAttachment(100);
+    serviceTreeWidget.setLayoutData(fd_serviceTreeWidget);
+    List<String> serviceNames = new ArrayList<String>(ServiceRegistry
+        .getDefault().listServices());
+    Collections.sort(serviceNames);
+    List<Service> services = new ArrayList<Service>();
+    for (String serviceName : serviceNames) {
+        services.add(ServiceRegistry.getDefault().findService(serviceName));
     }
-   
+    serviceTreeWidget.setServiceNames(services);
+    serviceTreeWidget.addSelectionChangedListener(new ISelectionChangedListener() {
+
+        @Override
+        public void selectionChanged(SelectionChangedEvent event) {
+        if(event.getSelection() instanceof TreeSelection){
+            TreePath[] treeSelection = ((TreeSelection) event.getSelection()).getPaths();
+            if(treeSelection[0].getSegmentCount() == 2){
+            serviceMethodDescription = createServiceMethodDescription(
+                ((Service)treeSelection[0].getFirstSegment()).getName(),
+                (ServiceMethod)treeSelection[0].getLastSegment());
+            }
+        }
+        getShell().pack();
+        }
+    });
+    return container;
+    }
+
     /**
-     * 
+     *
      * @return
      */
     public ServiceMethodDescription getSelectedServiceMethodDescription() {
-	return serviceMethodDescription;
+    return serviceMethodDescription;
     }
-    
-    
-    
+
+
+
 }
