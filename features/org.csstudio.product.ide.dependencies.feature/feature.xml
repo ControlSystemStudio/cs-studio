@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.product.ide.dependencies.feature"
       label="IDE dependencies"
-      version="1.0.0.qualifier">
+      version="4.1.0.qualifier">
 
    <description url="http://www.example.com/description">
       Include the maven dependencies for the common product not avaiable in any existing features.
@@ -138,6 +138,41 @@
 
    <plugin
          id="javax.mail"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.gson"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.inject"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.google.protobuf"
          download-size="0"
          install-size="0"
          version="0.0.0"
