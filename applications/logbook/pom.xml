@@ -15,36 +15,4 @@
     <module>logbook-features</module>
     <module>logbook-repository</module>
   </modules>
-  <profiles>
-    <profile>
-      <id>checkstyle</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.15</version>
-            <executions>
-              <execution>
-                <id>validate</id>
-                <phase>validate</phase>
-                <configuration>
-                  <configLocation>../../build/cs-studio-jenkins-checkstyle</configLocation>
-                  <encoding>UTF-8</encoding>
-                  <consoleOutput>true</consoleOutput>
-                  <outputFile>checkstyle-output.xml</outputFile>
-                  <sourceDirectory>.</sourceDirectory>
-                  <failsOnError>true</failsOnError>
-                  <linkXRef>false</linkXRef>
-                </configuration>
-                <goals>
-                  <goal>check</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
