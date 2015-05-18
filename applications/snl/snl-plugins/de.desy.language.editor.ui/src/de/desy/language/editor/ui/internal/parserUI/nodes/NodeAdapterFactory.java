@@ -7,7 +7,7 @@ import de.desy.language.editor.core.parser.RootNode;
 
 public class NodeAdapterFactory implements IAdapterFactory {
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Object getAdapter(Object adaptableObject, Class adapterType) {
         assert adaptableObject != null;
         assert adapterType != null;
@@ -28,7 +28,7 @@ public class NodeAdapterFactory implements IAdapterFactory {
         };
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Class[] getAdapterList() {
         return new Class[] {RootNode.class};
     }

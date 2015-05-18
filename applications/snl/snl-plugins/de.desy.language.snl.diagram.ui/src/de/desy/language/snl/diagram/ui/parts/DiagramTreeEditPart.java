@@ -97,6 +97,7 @@ class DiagramTreeEditPart extends AbstractTreeEditPart implements
      *
      * @see org.eclipse.gef.editparts.AbstractEditPart#getModelChildren()
      */
+    @SuppressWarnings("rawtypes")
     @Override
     protected List getModelChildren() {
         return getCastedModel().getChildren(); // a list of shapes

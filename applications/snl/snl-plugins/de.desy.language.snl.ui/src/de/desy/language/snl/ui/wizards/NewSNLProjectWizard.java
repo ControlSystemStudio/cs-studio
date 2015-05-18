@@ -1,6 +1,8 @@
 package de.desy.language.snl.ui.wizards;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
@@ -236,7 +238,8 @@ public class NewSNLProjectWizard extends BasicNewProjectResourceWizard {
         try {
             newProjectHandle = this.mainPage.getProjectHandle();
         } catch (final UnsupportedOperationException e) {
-            e.printStackTrace();
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error creating a new project.", e);
+            return null;
         }
 
         // get a project descriptor

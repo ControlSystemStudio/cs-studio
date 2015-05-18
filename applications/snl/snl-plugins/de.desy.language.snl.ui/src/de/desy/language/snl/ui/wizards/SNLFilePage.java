@@ -30,8 +30,6 @@ public class SNLFilePage extends WizardNewFileCreationPage {
     private String defaultSuffix = new String(".st");
     private String[] availableSuffixes = {".st", ".stt"};
 
-    private static int nameCounter = 1;
-
     public SNLFilePage(final IWorkbench workbench,
             final IStructuredSelection selection) {
         super("File Creation Page", selection);
@@ -135,7 +133,6 @@ public class SNLFilePage extends WizardNewFileCreationPage {
             e.printStackTrace();
             return false;
         }
-        SNLFilePage.nameCounter++;
         return true;
     }
 

@@ -62,14 +62,6 @@ public class CustomFanRouter extends AutomaticRouter {
             _target = target;
         }
 
-        public ConnectionAnchor getTarget() {
-            return _target;
-        }
-
-        public ConnectionAnchor getSource() {
-            return _source;
-        }
-
         /**
          * {@inheritDoc}
          */

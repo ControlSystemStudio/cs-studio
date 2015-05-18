@@ -15,7 +15,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
     @Override
     public void initializeDefaultPreferences() {
-        final IEclipsePreferences node = new DefaultScope()
+        final IEclipsePreferences node = DefaultScope.INSTANCE
                 .getNode(SNLUiActivator.PLUGIN_ID);
         for (final SNLCodeElementTextAttributeConstants constant : SNLCodeElementTextAttributeConstants
                 .values()) {
