@@ -87,6 +87,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Font to use for scale */
     private volatile Font scale_font;
 
+    /** Font to use for legend */
+    private volatile Font legend_font;
+
     /** Area of this canvas */
     private volatile Rectangle area = new Rectangle(0, 0, 0, 0);
 
@@ -102,6 +105,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     final private PlotPart plot_area;
     final private TracePainter<XTYPE> trace_painter = new TracePainter<XTYPE>();
     final private List<AnnotationImpl<XTYPE>> annotations = new CopyOnWriteArrayList<>();
+    final private LegendPart<XTYPE> legend;
 
     final private PlotProcessor<XTYPE> plot_processor;
 
@@ -183,6 +187,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         title_font = parent.getFont();
         label_font = parent.getFont();
         scale_font = parent.getFont();
+        legend_font = parent.getFont();
 
         media = new SWTMediaPool(parent.getDisplay());
         display = parent.getDisplay();
@@ -203,6 +208,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         addYAxis("Value 1");
         title_part = new TitlePart("", plot_part_listener);
         plot_area = new PlotPart("main", plot_part_listener);
+        legend = new LegendPart<XTYPE>("legend", plot_part_listener);
 
         setMouseMode(MouseMode.PAN);
 
@@ -285,6 +291,30 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         requestUpdate();
     }
 
+    /** @return <code>true</code> if legend is visible */
+    public boolean isLegendVisible()
+    {
+        return legend.isVisible();
+    }
+
+    /** @param show <code>true</code> if legend should be displayed */
+    public void showLegend(final boolean show)
+    {
+        legend.setVisible(show);
+        need_layout.set(true);
+        requestUpdate();
+        for (PlotListener<XTYPE> listener : listeners)
+            listener.changedLegend(show);
+    }
+
+    /** @param font Font to use for scale */
+    public void setLegendFont(final FontData font)
+    {
+        legend_font = media.get(font);
+        need_layout.set(true);
+        requestUpdate();
+    }
+
     /** @return X/Time axis */
     public AxisPart<XTYPE> getXAxis()
     {
@@ -344,6 +374,11 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     public Iterable<Trace<XTYPE>> getTraces()
     {
         return traces;
+    }
+
+    /** @return Count the number of traces */
+    public int getTraceCount(){
+    return traces.size();
     }
 
     /** Remove trace from plot
@@ -502,12 +537,17 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Compute layout of plot components */
     private void computeLayout(final GC gc, final Rectangle bounds)
     {
+        // Title on top, as high as desired
         final int title_height = title_part.getDesiredHeight(gc, title_font);
-
         title_part.setBounds(0, 0, bounds.width, title_height);
 
+        // Legend on bottom, as high as desired
+        final int legend_height = legend.getDesiredHeight(gc, bounds.width, legend_font, traces);
+        legend.setBounds(0,  bounds.height-legend_height, bounds.width, legend_height);
+
+        // X Axis as high as desired. Width will depend on Y axes.
         final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc, label_font, scale_font);
-        final int y_axis_height = bounds.height - title_height - x_axis_height;
+        final int y_axis_height = bounds.height - title_height - x_axis_height - legend_height;
 
         // Ask each Y Axis for its widths, which changes based on number of labels
         // and how they are laid out
@@ -558,6 +598,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         gc.fillRectangle(area_copy);
 
         title_part.paint(gc, media, title_font);
+        legend.paint(gc, media, legend_font, traces);
 
         // Fetch x_axis transformation and use that to paint all traces,
         // because X Axis tends to change from scrolling
@@ -566,7 +607,6 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         final ScreenTransform<XTYPE> x_transform = x_axis.getScreenTransform();
         for (YAxisImpl<XTYPE> y_axis : y_axes)
             y_axis.paint(gc, media, label_font, scale_font, plot_bounds);
-
         plot_area.paint(gc, media);
 
         for (YAxisImpl<XTYPE> y_axis : y_axes)
@@ -1083,5 +1123,12 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     {
         for (PlotListener<XTYPE> listener : listeners)
             listener.changedCursors();
+    }
+
+    /** Notify listeners */
+    public void fireToolbarChange(final boolean show)
+    {
+        for (PlotListener<XTYPE> listener : listeners)
+            listener.changedToolbar(show);
     }
 }
