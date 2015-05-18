@@ -9,6 +9,7 @@
   <artifactId>snl-features</artifactId>
   <packaging>pom</packaging>
   <modules>
+    <module>org.csstudio.desy.language.core.feature</module>
     <module>org.csstudio.desy.snl.feature</module>
   </modules>
 </project>
