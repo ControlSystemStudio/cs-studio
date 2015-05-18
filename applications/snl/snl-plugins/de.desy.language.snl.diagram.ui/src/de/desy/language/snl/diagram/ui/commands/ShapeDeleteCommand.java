@@ -20,9 +20,9 @@ public class ShapeDeleteCommand extends Command {
     /** ShapeDiagram to remove from. */
     private final SNLDiagram parent;
     /** Holds a copy of the outgoing connections of child. */
-    private List sourceConnections;
+    private List<WhenConnection> sourceConnections;
     /** Holds a copy of the incoming connections of child. */
-    private List targetConnections;
+    private List<WhenConnection> targetConnections;
     /** True, if child was removed from its parent. */
     private boolean wasRemoved;
 
@@ -51,10 +51,9 @@ public class ShapeDeleteCommand extends Command {
      * @param connections
      *            a non-null List of connections
      */
-    private void addConnections(final List connections) {
-        for (final Iterator iter = connections.iterator(); iter.hasNext();) {
-            final WhenConnection conn = (WhenConnection) iter.next();
-            conn.reconnect();
+    private void addConnections(final List<WhenConnection> connections) {
+        for (final Iterator<WhenConnection> iter = connections.iterator(); iter.hasNext();) {
+            iter.next().reconnect();
         }
     }
 
@@ -102,10 +101,9 @@ public class ShapeDeleteCommand extends Command {
      * @param connections
      *            a non-null List of connections
      */
-    private void removeConnections(final List connections) {
-        for (final Iterator iter = connections.iterator(); iter.hasNext();) {
-            final WhenConnection conn = (WhenConnection) iter.next();
-            conn.disconnect();
+    private void removeConnections(final List<WhenConnection> connections) {
+        for (final Iterator<WhenConnection> iter = connections.iterator(); iter.hasNext();) {
+            iter.next().disconnect();
         }
     }
 

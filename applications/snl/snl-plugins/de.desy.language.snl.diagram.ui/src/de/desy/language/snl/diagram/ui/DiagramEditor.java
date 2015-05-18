@@ -184,7 +184,7 @@ public class DiagramEditor extends GraphicalEditor {
     // return false;
     // }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(final Class type) {
         if (type == IContentOutlinePage.class)
@@ -266,7 +266,7 @@ public class DiagramEditor extends GraphicalEditor {
             final Node rootNode = this.getLanguageParser().parse(
                     document.get(), sourceRessource, new NullProgressMonitor());
 
-            if (rootNode.hasChildren()) {
+            if (rootNode.hasChildren() && sourceRessource != null) {
                 Map<String, StateLayoutData> stateData = new HashMap<String, StateLayoutData>();
                 Map<String, List<Point>> connectionData = new HashMap<String, List<Point>>();
                 try {

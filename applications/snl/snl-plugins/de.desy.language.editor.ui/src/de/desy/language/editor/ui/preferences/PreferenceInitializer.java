@@ -12,7 +12,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 
     @Override
     public void initializeDefaultPreferences() {
-        final IEclipsePreferences node = new DefaultScope()
+        final IEclipsePreferences node = DefaultScope.INSTANCE
                 .getNode(EditorUIActivator.PLUGIN_ID);
 
         String value = StringConverter.asString(new RGB(230,230,255));

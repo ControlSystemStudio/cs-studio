@@ -59,6 +59,6 @@ public class Contract {
      *            The result not to be null.
      */
     public static void ensureResultNotNull(final Object object) {
-        Assert.isNotNull(object, "Postcondition unsatisfied: §result != null");
+        Assert.isNotNull(object, "Postcondition unsatisfied: result != null");
     }
 }

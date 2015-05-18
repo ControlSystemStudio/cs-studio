@@ -16,7 +16,7 @@ class MonitorNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
         assert adaptableObject != null;
@@ -41,7 +41,7 @@ class MonitorNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Class[] getAdapterList() {
         return new Class[] { MonitorStatementNode.class };
     }

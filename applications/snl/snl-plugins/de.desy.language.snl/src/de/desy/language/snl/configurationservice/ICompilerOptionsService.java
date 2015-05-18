@@ -49,6 +49,13 @@ public interface ICompilerOptionsService {
      * @return The Path as String or null if no valid path is avail.
      */
     public abstract String getEpicsFolder();
+    
+    /**
+     * Returns the path (directory) to the EPICS scratch folder if exists, null otherwise.
+     * 
+     * @return The Path as String or null if no valid path is avail.
+     */
+    public abstract String getScratchFolder();
 
     /**
      * Returns the path (directory) to an additional folder (the SEQ folder) for

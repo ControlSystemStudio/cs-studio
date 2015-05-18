@@ -46,6 +46,16 @@ public class SNLEPICSPreferencePage extends FieldEditorPreferencePage implements
         this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID
                 + PreferenceConstants.EPICS_SEQ_LOCATION_POST_FIX, "",
                 seqGroup));
+        
+        Group scratchGroup = new Group(getFieldEditorParent(),
+                SWT.NONE);
+        scratchGroup
+                .setText("Location of \"scratch\" folder in the EPICS environment");
+        scratchGroup.setLayoutData(new GridData(
+                GridData.FILL_HORIZONTAL));
+        this.addField(new DirectoryFieldEditor(SNLUiActivator.PLUGIN_ID
+                + PreferenceConstants.EPICS_SCRATCH_LOCATION_POST_FIX, "",
+                scratchGroup));
     }
 
     @Override

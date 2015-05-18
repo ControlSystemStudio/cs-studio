@@ -61,8 +61,8 @@ public boolean canExecute() {
         return false;
     }
     // return false, if the source -> target connection exists already
-    for (final Iterator iter = source.getSourceConnections().iterator(); iter.hasNext();) {
-        final WhenConnection conn = (WhenConnection) iter.next();
+    for (final Iterator<WhenConnection> iter = source.getSourceConnections().iterator(); iter.hasNext();) {
+        final WhenConnection conn = iter.next();
         if (conn.getTarget().equals(target)) {
             return false;
         }

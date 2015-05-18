@@ -82,8 +82,8 @@ private boolean checkSourceReconnection() {
         return false;
     }
     // return false, if the connection exists already
-    for (final Iterator iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
-        final WhenConnection conn = (WhenConnection) iter.next();
+    for (final Iterator<WhenConnection> iter = newSource.getSourceConnections().iterator(); iter.hasNext();) {
+        final WhenConnection conn = iter.next();
         // return false if a newSource -> oldTarget connection exists already
         // and it is a different instance than the connection-field
         if (conn.getTarget().equals(oldTarget) &&  !conn.equals(connection)) {
@@ -102,7 +102,7 @@ private boolean checkTargetReconnection() {
         return false;
     }
     // return false, if the connection exists already
-    for (final Iterator iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
+    for (final Iterator<WhenConnection> iter = newTarget.getTargetConnections().iterator(); iter.hasNext();) {
         final WhenConnection conn = (WhenConnection) iter.next();
         // return false if a oldSource -> newTarget connection exists already
         // and it is a differenct instance that the connection-field

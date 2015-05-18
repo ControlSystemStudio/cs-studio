@@ -22,8 +22,7 @@ public class SNLNodeAdapterFactory implements IAdapterFactory {
     /**
      * The known specialized factories.
      */
-    @SuppressWarnings("unchecked")
-    private final Map<Class, IAdapterFactory> _adapterMap = new HashMap<Class, IAdapterFactory>();
+    private final Map<Class<?>, IAdapterFactory> _adapterMap = new HashMap<Class<?>, IAdapterFactory>();
 
     /**
      * Constructor.
@@ -76,10 +75,9 @@ public class SNLNodeAdapterFactory implements IAdapterFactory {
      * @param factory The {@link IAdapterFactory} to be added
      * @param adapterMap The {@link Map} to add the factory
      */
-    @SuppressWarnings("unchecked")
     private void addAdapterFactoryToMap(final IAdapterFactory factory,
-            final Map<Class, IAdapterFactory> adapterMap) {
-        for (final Class clazz : factory.getAdapterList()) {
+            final Map<Class<?>, IAdapterFactory> adapterMap) {
+        for (final Class<?> clazz : factory.getAdapterList()) {
             adapterMap.put(clazz, factory);
         }
     }
@@ -87,7 +85,7 @@ public class SNLNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Object getAdapter(final Object adaptableObject,
             final Class adapterType) {
         assert adaptableObject != null;
@@ -126,7 +124,7 @@ public class SNLNodeAdapterFactory implements IAdapterFactory {
     /**
      * {@inheritDoc}
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Class[] getAdapterList() {
         Class[] classes = this._adapterMap.keySet().toArray(
                 new Class[this._adapterMap.keySet().size() + 1]);

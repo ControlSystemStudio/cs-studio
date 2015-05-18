@@ -34,6 +34,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -601,8 +602,7 @@ public class SNLEditor extends LanguageEditor {
         if (targetPlatform == null || targetPlatform.trim().length() < 1) {
             String errorDetail = "Target Platform not valid";
             errorMessages.add(errorDetail);
-        }
-        if (!targetPlatform.equals("none")) {
+        } else if (!targetPlatform.equals("none")) {
             errorMessages.addAll(checkPreferenceConfiguration(_compilerOptionService));
             errorMessages.addAll(checkDirectories(baseDirectory, progressMonitor));
             if (!errorMessages.isEmpty()) {
@@ -611,6 +611,12 @@ public class SNLEditor extends LanguageEditor {
         }
 
         return error;
+    }
+    
+    @Override
+    public void dispose() {
+        _preferenceStore = null;
+        super.dispose();
     }
 
 //    private String extractFileName(IFile sourceRessource) {
@@ -696,7 +702,7 @@ public class SNLEditor extends LanguageEditor {
         if (!folder.exists()) {
             try {
                 createDirs(folder, monitor);
-                folder.setDerived(true);
+                folder.setDerived(true, new NullProgressMonitor());
             } catch (CoreException e) {
                 result.add("Not able to create " + SNLConstants.GENERATED_FOLDER.getValue()
                         + " folder:\n" + e.getLocalizedMessage());
@@ -707,7 +713,7 @@ public class SNLEditor extends LanguageEditor {
         if (!folder.exists()) {
             try {
                 createDirs(folder, monitor);
-                folder.setDerived(true);
+                folder.setDerived(true, new NullProgressMonitor());
             } catch (CoreException e) {
                 result.add("Not able to create " + SNLConstants.BIN_FOLDER.getValue()
                         + " folder:\n" + e.getLocalizedMessage());
