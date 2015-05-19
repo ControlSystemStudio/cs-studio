@@ -7,8 +7,6 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-rules validationRules.def -schema IOSchema.opi -opilocation g:/resources -results g:/temp.log
-      </programArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts
       </vmArgsMac>
    </launcherArgs>
