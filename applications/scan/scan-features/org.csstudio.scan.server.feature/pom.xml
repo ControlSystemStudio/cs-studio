@@ -8,6 +8,6 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>org.csstudio.scan.server.feature</artifactId>
-  <version>4.0.204-SNAPSHOT</version>
+  <version>4.0.205-SNAPSHOT</version>
   <packaging>eclipse-feature</packaging>
 </project>
