@@ -63,7 +63,9 @@ public class NativeButtonFigure extends AbstractSWTWidgetFigure<Button> implemen
                     stream.close();
                 } catch (IOException e) {
                 }
-                button.setImage(image);
+                if (!button.isDisposed()) {
+                    button.setImage(image);
+                }
             }
         };
         if(path != null && !path.isEmpty()){
