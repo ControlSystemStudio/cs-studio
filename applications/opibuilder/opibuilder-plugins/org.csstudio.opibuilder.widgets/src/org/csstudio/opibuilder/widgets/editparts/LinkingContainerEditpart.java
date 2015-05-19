@@ -20,12 +20,10 @@ import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
 import org.csstudio.opibuilder.editparts.AbstractLinkingContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.AbstractLinkingContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
-import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.GeometryUtil;
@@ -108,7 +106,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                     if(!absolutePath.isAbsolute())
                         absolutePath = ResourceUtil.buildAbsolutePath(
                                 getWidgetModel(), absolutePath);
-                    DisplayModel displayModel = new DisplayModel(widgetModel.getDisplayModel().getOpiFilePath());
+                    DisplayModel displayModel = new DisplayModel(absolutePath);
                     widgetModel.setDisplayModel(displayModel);
                     loadWidgets(getWidgetModel(),true);
                     configureDisplayModel();
@@ -183,8 +181,10 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
      */
     private synchronized void configureDisplayModel() {
         //This need to be executed after GUI created.
-        if(getWidgetModel().getDisplayModel() == null)
-            getWidgetModel().setDisplayModel(new DisplayModel());
+        if(getWidgetModel().getDisplayModel() == null) {
+            IPath path = getWidgetModel().getOPIFilePath();
+            getWidgetModel().setDisplayModel(new DisplayModel(path));
+        }
 
 
         LinkingContainerModel widgetModel = getWidgetModel();
