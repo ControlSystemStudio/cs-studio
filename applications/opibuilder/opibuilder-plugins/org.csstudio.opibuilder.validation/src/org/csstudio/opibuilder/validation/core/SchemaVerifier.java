@@ -322,8 +322,14 @@ public class SchemaVerifier {
             }
         }
         this.validatedPath = validatedPath;
-        IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(this.validatedPath);
-        File file = ifile.getLocation().toFile();
+        File file = null;
+        try {
+            IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(this.validatedPath);
+            file = ifile.getLocation().toFile();
+        } catch (Exception e) {
+            //maybe it is already a file
+            file = this.validatedPath.toFile();
+        }
         List<ValidationFailure> failures = new ArrayList<>();
         if (file.isFile()) {
             failures.addAll(check(this.validatedPath));
@@ -530,13 +536,10 @@ public class SchemaVerifier {
         if (original != null) {
             Set<String> properties = model.getAllPropertyIDs() ;
             for (String p : properties) {
-                if (model instanceof DisplayModel && "background_color".equals(p)) {
-                    System.out.println("ffdfds");
-                }
                 rule = getRuleForProperty(p, widgetType);
                 modelVal = model.getPropertyValue(p);
                 orgVal = original.getPropertyValue(p);
-                //if the checked property is not savable (e.g. background color for action button), ignore it
+                //if the checked property is not saveable (e.g. background colour for action button), ignore it
                 if (!model.getProperty(p).isVisibleInPropSheet()) {
                     continue;
                 }
