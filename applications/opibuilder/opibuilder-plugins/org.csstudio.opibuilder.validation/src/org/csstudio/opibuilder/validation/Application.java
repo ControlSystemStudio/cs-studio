@@ -31,7 +31,7 @@ public class Application implements IApplication {
 
     private static final char SEPARATOR = ';';
     private static final String HEADER = "PATH;WIDGET_NAME;WIDGET_TYPE;LINE_NUMBER;PROPERTY;VALUE;EXPECTED_VALUE"; 
-    private static final Integer EXIT_ERROR = -1;
+//    private static final Integer EXIT_ERROR = -1;
 
     private static final String VALIDATION_RULES = "-rules";
     private static final String SCHEMA = "-schema";
@@ -77,11 +77,11 @@ public class Application implements IApplication {
         if (rules == null) {
             System.err.println("Validation Rules file is not defined!");
             printHelp();
-            return EXIT_ERROR;
+            return EXIT_OK;
         } else if (schema == null) {
             System.err.println("OPI Schema is not defined!");
             printHelp();
-            return EXIT_ERROR;
+            return EXIT_OK;
         } else if (location == null) {
             location = new File(".").getParentFile().getAbsolutePath();
         }
@@ -92,7 +92,7 @@ public class Application implements IApplication {
         File file = new File(location);
         if (!file.exists()) {
             System.err.println("The path '" + location + "' does not exist.");
-            return EXIT_ERROR;
+            return EXIT_OK;
         }
         check(verifier, file);
         ValidationFailure[] failures = verifier.getValidationFailures();
