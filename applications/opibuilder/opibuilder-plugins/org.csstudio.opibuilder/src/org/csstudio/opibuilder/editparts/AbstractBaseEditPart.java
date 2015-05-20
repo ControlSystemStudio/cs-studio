@@ -210,6 +210,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
 
                     UIBundlingThread.getInstance().addRunnable(new Runnable() {
                         public void run() {
+                            if (!isActive()) {
+                                //already deactivated
+                                return;
+                            }
                             for (IPV pv : pvArray)
                                 if (pv != null && !pv.isStarted())
                                     try {
@@ -290,6 +294,10 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     public void deactivate() {
         if (isActive()) {
             doDeActivate();
+            ActionsInput input = getWidgetModel().getActionsInput();
+            for (AbstractWidgetAction a : input.getActionsList()) {
+                a.dispose();
+            }
             super.deactivate();
             // remove listener from all properties.
             for (String id : getWidgetModel().getAllPropertyIDs()) {
@@ -409,6 +417,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
      * @return the external object. null if no such an object was set before.
      * @deprecated Use {@link #getVar(String)} instead.
      */
+    @Deprecated
     public synchronized Object getExternalObject(String name) {
         return getVar(name);
     }
@@ -768,6 +777,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
      * @deprecated use {@link #setVar(String, Object)} instead.
      *
      */
+    @Deprecated
     public synchronized void setExternalObject(String name, Object var) {
         setVar(name, var);
     }

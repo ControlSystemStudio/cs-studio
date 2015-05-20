@@ -28,7 +28,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.swt.widgets.Display;
 import org.python.core.PyCode;
+import org.python.core.PyObject;
 import org.python.core.PyString;
+import org.python.core.PyStringMap;
 import org.python.core.PySystemState;
 
 /**The action executing python script.
@@ -39,9 +41,10 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 
     private PyCode code;
     private PythonInterpreter interpreter;
+    private PySystemState state;
     private DisplayEditpart displayEditpart;
     private AbstractBaseEditPart widgetEditPart;
-
+    
     @Override
     public ActionType getActionType() {
         return ActionType.EXECUTE_PYTHONSCRIPT;
@@ -154,6 +157,25 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
         return ScriptService.DEFAULT_PYTHONSCRIPT_HEADER;
     }
 
-
+    @Override
+    public void dispose() {
+        if (interpreter != null) {
+            PyObject o = interpreter.getLocals();
+            if (o != null && o instanceof PyStringMap) {
+                ((PyStringMap)o).clear();
+            }
+            o = state.getDict();
+            if (o != null && o instanceof PyStringMap) {
+                ((PyStringMap)o).clear();
+            }
+            state.close();
+            state.cleanup();
+            interpreter.close();
+            interpreter.cleanup();
+            interpreter = null;
+            state = null;
+        }
+        super.dispose();
+    }
 
 }

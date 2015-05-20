@@ -95,6 +95,21 @@ public class OPIView extends ViewPart implements IOPIRuntime
             return Integer.toString(++instance);
         }
     }
+    
+    @Override
+    public void dispose() {
+        if (opiRuntimeDelegate != null) 
+        {
+            opiRuntimeDelegate.dispose();
+            opiRuntimeDelegate = null;
+        }
+        if (opiRuntimeToolBarDelegate != null)
+        {
+            opiRuntimeToolBarDelegate.dispose();
+            opiRuntimeToolBarDelegate = null;
+        }
+        super.dispose();
+    }
 
     @Override
     public void init(final IViewSite site, final IMemento memento) throws PartInitException

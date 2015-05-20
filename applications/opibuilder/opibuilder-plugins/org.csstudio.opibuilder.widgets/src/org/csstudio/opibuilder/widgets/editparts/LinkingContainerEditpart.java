@@ -56,7 +56,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
     private List<ConnectionModel> connectionList;
     private Map<ConnectionModel, PointList> originalPoints;
-
+    
     @Override
     protected IFigure doCreateFigure() {
         LinkingContainerFigure f = new LinkingContainerFigure();
@@ -157,7 +157,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
      * @param path the path of the OPI file
      */
     private synchronized void loadWidgets(LinkingContainerModel model, final boolean checkSelf) {
-        try {
+        try {           
             model.removeAllChildren();
             XMLUtil.fillLinkingContainer(model);
         } catch (Exception e) {

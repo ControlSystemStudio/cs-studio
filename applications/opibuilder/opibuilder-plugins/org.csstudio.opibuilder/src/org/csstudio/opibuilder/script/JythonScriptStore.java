@@ -14,7 +14,9 @@ import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.simplepv.IPV;
 import org.eclipse.core.runtime.IPath;
 import org.python.core.PyCode;
+import org.python.core.PyObject;
 import org.python.core.PyString;
+import org.python.core.PyStringMap;
 import org.python.core.PySystemState;
 
 /**
@@ -25,6 +27,7 @@ import org.python.core.PySystemState;
 public class JythonScriptStore extends AbstractScriptStore{
 
     private PythonInterpreter interpreter;
+    private PySystemState state;
 
     private PyCode code;
 
@@ -38,7 +41,7 @@ public class JythonScriptStore extends AbstractScriptStore{
     protected void initScriptEngine() {
         IPath scriptPath = getAbsoluteScriptPath();
         //Add the path of script to python module search path
-        PySystemState state = new PySystemState();
+        state = new PySystemState();
         if(scriptPath != null && !scriptPath.isEmpty()){
 
             //If it is a workspace file.
@@ -51,7 +54,6 @@ public class JythonScriptStore extends AbstractScriptStore{
                 state.path.append(new PyString(folderPath.toOSString()));
             }
         }
-
         interpreter = new PythonInterpreter(null, state);
     }
 
@@ -76,5 +78,29 @@ public class JythonScriptStore extends AbstractScriptStore{
         interpreter.exec(code);
     }
 
-
+    @Override
+    protected void dispose() {
+        if (interpreter != null) {
+            PyObject o = interpreter.getLocals();
+            if (o != null && o instanceof PyStringMap) {
+                ((PyStringMap)o).clear();
+            }
+//            o = state.getBuiltins();
+//            if (o != null && o instanceof PyStringMap) {
+//                ((PyStringMap)o).clear();
+//            }
+            o = state.getDict();
+            if (o != null && o instanceof PyStringMap) {
+                ((PyStringMap)o).clear();
+            }
+            state.close();
+            state.cleanup();
+            interpreter.close();
+            interpreter.cleanup();
+            interpreter = null;
+            state = null;
+        }
+        code = null;
+        super.dispose();
+    }
 }
