@@ -32,7 +32,7 @@ public class ActionsInput {
     }
 
     public ActionsInput() {
-        actionsList = new LinkedList<AbstractWidgetAction>();
+        this(new LinkedList<AbstractWidgetAction>());
     }
 
     /**
