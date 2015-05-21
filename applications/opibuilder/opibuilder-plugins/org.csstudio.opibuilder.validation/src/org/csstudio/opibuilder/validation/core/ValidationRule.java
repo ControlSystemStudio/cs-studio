@@ -16,5 +16,5 @@ package org.csstudio.opibuilder.validation.core;
  *
  */
 public enum ValidationRule {
-    RO, RW, WRITE
+    RO, RW, WRITE, DEPRECATED
 }
