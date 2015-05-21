@@ -219,7 +219,8 @@ public class Validator extends AbstractValidator {
                             sv.getNumberOfWRITEProperties(),
                             sv.getNumberOfWRITEFailures(),
                             sv.getNumberOfRWProperties(),
-                            sv.getNumberOfRWFailures())
+                            sv.getNumberOfRWFailures(),
+                            sv.getNumberOfDeprecatedFailures())
                         .open();
                 });
             }

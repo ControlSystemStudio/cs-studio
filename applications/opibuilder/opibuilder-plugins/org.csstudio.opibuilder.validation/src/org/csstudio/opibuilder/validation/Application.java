@@ -107,7 +107,8 @@ public class Application implements IApplication {
         sb.append("Validated WRITE properties: ").append(verifier.getNumberOfWRITEProperties()).append('\n');
         sb.append("WRITE failures: ").append(verifier.getNumberOfWRITEFailures()).append('\n');
         sb.append("Validated RW properties: ").append(verifier.getNumberOfRWProperties()).append('\n');
-        sb.append("RW failures: ").append(verifier.getNumberOfRWFailures());
+        sb.append("RW failures: ").append(verifier.getNumberOfRWFailures()).append('\n');
+        sb.append("Deprecated properties used: ").append(verifier.getNumberOfDeprecatedFailures());
         
         if (printResults) {
             System.out.println(HEADER);

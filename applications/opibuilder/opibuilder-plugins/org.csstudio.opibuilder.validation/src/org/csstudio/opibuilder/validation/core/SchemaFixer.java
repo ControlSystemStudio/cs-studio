@@ -103,6 +103,8 @@ public class SchemaFixer {
                     if (f.isUsingUndefinedValue()) {
                         model.setPropertyValue(f.getProperty(), f.getExpectedValue());
                     }
+                } else if (f.getRule() == ValidationRule.DEPRECATED) {
+                    //should be self fixing
                 }
                 if (f.hasSubFailures()) {
                     SubValidationFailure[] subs = f.getSubFailures();

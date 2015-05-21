@@ -51,7 +51,6 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public final class Utilities {
 
-    static final String TAG_NAME = "name";
     static final String PROP_ACTION_HOOK_ALL = "hook_all";
     static final String PROP_ACTION_HOOK = "hook";
 
