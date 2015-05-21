@@ -129,6 +129,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     private List<ScriptData> scriptDataList;
 
     protected Map<String, ConnectionAnchor> anchorMap;
+    
+    private boolean hasStartedPVs = false;
 
     public AbstractBaseEditPart() {
         propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();
@@ -214,6 +216,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                                 //already deactivated
                                 return;
                             }
+                            hasStartedPVs = true;
                             for (IPV pv : pvArray)
                                 if (pv != null && !pv.isStarted())
                                     try {
@@ -309,8 +312,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
                 for (ScriptData scriptData : scriptDataList) {
                     ScriptService.getInstance().unRegisterScript(scriptData);
                 }
-                for (Object pv : pvMap.values().toArray()){
-                    ((IPV) pv).stop();
+                if (hasStartedPVs) {
+                    //this is just a guard statement
+                    //if the widget was deactivated before it became fully active (and connected its pv),
+                    //we should not attempt to stop those pvs; this can happen with linking container
+                    for (Object pv : pvMap.values().toArray()){
+                        ((IPV) pv).stop();
+                    }
                 }
             }
             propertyListenerMap.clear();
