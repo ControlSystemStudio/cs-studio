@@ -167,6 +167,9 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     /** Disconnect from control system */
     public void stop()
     {
+        //the alarm pv has been stopped already
+        if (pv == null) 
+            return; 
         if (connection_timeout_task != null)
         {
             connection_timeout_task.cancel();
