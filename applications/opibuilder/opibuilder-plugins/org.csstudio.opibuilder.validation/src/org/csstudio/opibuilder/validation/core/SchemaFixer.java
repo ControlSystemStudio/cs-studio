@@ -188,13 +188,15 @@ public class SchemaFixer {
 
     private static AbstractWidgetModel findWidgetInternal(AbstractContainerModel parent, ValidationFailure failure,
                 boolean useWuid) {
+        AbstractWidgetModel m = doesWidgetMatch(parent, failure, useWuid);
+        if (m != null) return m;
         for (AbstractWidgetModel model : parent.getChildren()) {
-            AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
+            m = doesWidgetMatch(model, failure, useWuid);
             if (m != null) return m;
         }
         if (failure.getWidgetType().equals(ConnectionModel.ID) && parent instanceof DisplayModel) {
             for (ConnectionModel model : ((DisplayModel)parent).getConnectionList()) {
-                AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
+                m = doesWidgetMatch(model, failure, useWuid);
                 if (m != null) return m;
             }
         }
