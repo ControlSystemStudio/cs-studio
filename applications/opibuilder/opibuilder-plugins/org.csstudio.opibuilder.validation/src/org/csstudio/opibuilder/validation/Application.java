@@ -83,7 +83,7 @@ public class Application implements IApplication {
             printHelp();
             return EXIT_OK;
         } else if (location == null) {
-            location = new File(".").getParentFile().getAbsolutePath();
+            location = new File(".").getAbsoluteFile().getParentFile().getAbsolutePath();
         }
 
         Path schemaPath = new Path(new File(schema).getAbsolutePath());
