@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>snl</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>org.csstudio</groupId>
+  <artifactId>snl-plugins</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <packaging>pom</packaging>
+  <modules>
+    <module>de.desy.language.editor.core</module>
+    <module>de.desy.language.editor.details</module>
+    <module>de.desy.language.editor.ui</module>
+    <module>de.desy.language.libraries</module>
+    <module>de.desy.language.snl</module>
+    <module>de.desy.language.snl.test</module>
+    <module>de.desy.language.snl.configuration.linux</module>
+    <module>de.desy.language.snl.diagram</module>
+    <module>de.desy.language.snl.diagram.ui</module>
+    <module>de.desy.language.snl.ui</module>
+    <module>de.desy.language.snl.ui.test</module>
+  </modules>
+</project>

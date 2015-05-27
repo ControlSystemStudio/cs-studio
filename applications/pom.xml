@@ -267,6 +267,7 @@
     <module>diag</module>
     <module>apputil</module>
     <module>appunorganized</module>
+    <module>snl</module>
     <module>p2repo</module>
   </modules>
   <build>
