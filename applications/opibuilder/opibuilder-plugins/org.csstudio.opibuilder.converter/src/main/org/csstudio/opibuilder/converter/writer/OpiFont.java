@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmFont;
 import org.w3c.dom.Element;
 
@@ -62,7 +62,7 @@ public class OpiFont extends OpiAttribute {
         fontElement.setAttribute("height", height);
         fontElement.setAttribute("style", style);
 
-        log.debug("Written font property with attributes: " + fontName + ", " + height + ", " + style);
+        log.config("Written font property with attributes: " + fontName + ", " + height + ", " + style);
     }
 
 }

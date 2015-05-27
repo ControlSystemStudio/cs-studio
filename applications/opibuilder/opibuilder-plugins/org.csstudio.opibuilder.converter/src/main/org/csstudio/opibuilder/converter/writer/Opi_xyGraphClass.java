@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.converter.writer;
 
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmBoolean;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmInt;
@@ -283,7 +283,7 @@ public class Opi_xyGraphClass extends OpiWidget {
 
 
 
-        log.debug("Edm_xyGraphClass written.");
+        log.config("Edm_xyGraphClass written.");
 
     }
 

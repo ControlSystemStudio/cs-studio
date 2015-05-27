@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeXTextClass;
 
 /**
@@ -74,7 +74,7 @@ public class Opi_activeXTextClass extends OpiWidget {
         }
 
 
-        log.debug("Edm_activeXTextClass written.");
+        log.config("Edm_activeXTextClass written.");
     }
 
 }

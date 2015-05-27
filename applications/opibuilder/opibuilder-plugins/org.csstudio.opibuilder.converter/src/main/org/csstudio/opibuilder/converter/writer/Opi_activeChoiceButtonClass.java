@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeChoiceButtonClass;
 
 /**
@@ -42,7 +42,7 @@ public class Opi_activeChoiceButtonClass extends OpiWidget {
 
         new OpiColor(widgetContext, "selected_color", r.getSelectColor(), r);
 
-        log.debug("Edm_activeChoiceButtonClass written.");
+        log.config("Edm_activeChoiceButtonClass written.");
 
     }
 

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_TextupdateClass;
 
 /**
@@ -75,7 +75,7 @@ public class Opi_TextupdateClass extends OpiWidget {
 
         new OpiColor(widgetContext, "foreground_color", t.getFgColor(), t);
 
-        log.debug("Edm_TextupdateClass written.");
+        log.config("Edm_TextupdateClass written.");
     }
 
 }

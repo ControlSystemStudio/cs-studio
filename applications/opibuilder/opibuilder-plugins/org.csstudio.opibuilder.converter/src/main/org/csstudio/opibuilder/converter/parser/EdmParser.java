@@ -13,7 +13,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
@@ -61,7 +61,7 @@ public class EdmParser {
      */
     private StringBuilder readFile() throws EdmException {
 
-        log.debug("Parsing file: " + fileName);
+        log.config("Parsing file: " + fileName);
 
         StringBuilder sb = new StringBuilder();
         try {

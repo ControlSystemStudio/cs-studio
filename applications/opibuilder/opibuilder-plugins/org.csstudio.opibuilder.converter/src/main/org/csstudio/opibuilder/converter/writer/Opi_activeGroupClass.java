@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeGroupClass;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -51,6 +51,6 @@ public class Opi_activeGroupClass extends OpiWidget {
 
         OpiWriter.writeWidgets(widgetContext, g.getWidgets());
 
-        log.debug("Edm_activeGroupClass written.");
+        log.config("Edm_activeGroupClass written.");
     }
 }
