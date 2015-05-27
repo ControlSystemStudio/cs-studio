@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.converter.parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmColor;
@@ -88,7 +88,7 @@ public class EdmColorsListParser extends EdmParser {
 
         while (m.find()) {
             String colorData = m.group(1);
-            log.debug("Parsing color from data: " + m.group());
+            log.config("Parsing color from data: " + m.group());
 
             Pattern p1 = Pattern.compile("\\S+");  // each word
             Matcher m1 = p1.matcher(colorData);
@@ -171,7 +171,7 @@ public class EdmColorsListParser extends EdmParser {
                     }
                 }
                 else
-                    log.error("Error when parsing color attribute. Attribute skipped.");
+                    log.severe("Error when parsing color attribute. Attribute skipped.");
             }
         }
     }
@@ -196,7 +196,7 @@ public class EdmColorsListParser extends EdmParser {
                 parent.addSubEntity(new EdmEntity(nameMatcher.group(1)));
             }
         } else {
-            log.warn("Warning: no menumap found in colors definition file.");
+            log.warning("Warning: no menumap found in colors definition file.");
         }
     }
 }

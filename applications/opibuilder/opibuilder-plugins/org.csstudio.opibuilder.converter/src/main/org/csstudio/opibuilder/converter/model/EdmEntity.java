@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
@@ -72,7 +72,7 @@ public class EdmEntity extends Object {
 
         String className = this.getClass().getName();
         Logger log = Logger.getLogger(className);
-        log.debug("Parsing specific " + className + ".");
+        log.config("Parsing specific " + className + ".");
 
         try {
             Class<?> entitySubClass = this.getClass();
@@ -89,11 +89,11 @@ public class EdmEntity extends Object {
 
                         boolean required = true;
                         if (f.isAnnotationPresent(EdmOptionalAn.class)) {
-                            log.debug("Parsing optional property: " + name);
+                            log.config("Parsing optional property: " + name);
                             required = false;
                         }
                         else {
-                            log.debug("Parsing required property: " + name);
+                            log.config("Parsing required property: " + name);
                         }
 
                         f.setAccessible(true);
@@ -149,7 +149,7 @@ public class EdmEntity extends Object {
 
                         } else {
                             isEdmAttribute = false;
-                            log.warn("Property type not mapped!");
+                            log.warning("Property type not mapped!");
                         }
 
 
@@ -275,7 +275,7 @@ public class EdmEntity extends Object {
 
         Vector<EdmEntity> w = new Vector<EdmEntity>();
 
-        log.debug("Parsing specific widgets.");
+        log.config("Parsing specific widgets.");
 
         String packageName = EdmWidget.class.getPackage().getName();
 
@@ -283,7 +283,7 @@ public class EdmEntity extends Object {
             EdmEntity subE = subEntities.get(i);
             String wType = "Edm_" + subE.getType();
 
-            log.debug("Parsing specific widget: " + wType);
+            log.config("Parsing specific widget: " + wType);
             wType = wType.replace(":", "_");
             Object o;
             try {
@@ -293,7 +293,7 @@ public class EdmEntity extends Object {
                     subEntities.set(i, (EdmEntity)o);
                     w.add((EdmEntity)o);
                 } else {
-                    log.warn("Class not declared: " + wType);
+                    log.warning("Class not declared: " + wType);
                 }
             }catch (Exception e) {
                     if(e instanceof ClassNotFoundException){

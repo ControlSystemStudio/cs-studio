@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.converter.model;
 
 import java.util.LinkedHashMap;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Abstract class for multi-attribute EDM property.
@@ -38,9 +38,9 @@ public abstract class AbstractEdmMultiAttributes<T extends EdmAttribute> extends
 
         if (genericEntity == null || getValueCount() == 0) {
             if (isRequired()) {
-                log.warn("Missing required property.");
+                log.warning("Missing required property.");
             } else {
-                log.warn("Missing optional property.");
+                log.warning("Missing optional property.");
                 return;
             }
         }

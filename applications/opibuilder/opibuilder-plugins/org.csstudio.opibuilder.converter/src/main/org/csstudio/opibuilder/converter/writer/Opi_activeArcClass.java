@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeArcClass;
 
@@ -75,7 +75,7 @@ public class Opi_activeArcClass extends OpiWidget {
         new OpiDouble(widgetContext, "total_angle",
                     r.getAttribute("totalAngle").isExistInEDL()?r.getTotalAngle():180);
 
-        log.debug("Edm_activeArcClass written.");
+        log.config("Edm_activeArcClass written.");
 
     }
 

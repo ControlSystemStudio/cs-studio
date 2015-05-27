@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_TwoDProfileMonitorClass;
 
 /**
@@ -50,7 +50,7 @@ public class Opi_TwoDProfileMonitorClass extends OpiWidget {
             new OpiInt(widgetContext, "data_height", Integer.parseInt(r.getHeightPvStr()));
         }
 
-        log.debug("Edm_activeRectangleClass written.");
+        log.config("Edm_activeRectangleClass written.");
 
     }
 

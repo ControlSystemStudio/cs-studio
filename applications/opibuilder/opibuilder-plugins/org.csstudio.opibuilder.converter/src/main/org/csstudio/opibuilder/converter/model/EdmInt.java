@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Specific class representing EdmInt property.
@@ -35,10 +35,10 @@ public class EdmInt extends EdmAttribute {
 
         if (genericAttribute == null || getValueCount() == 0) {
             if (isRequired()) {
-                log.warn("Missing required property.");
+                log.warning("Missing required property.");
             }
             else {
-                log.warn("Missing optional property.");
+                log.warning("Missing optional property.");
                 return;
             }
         }
@@ -50,7 +50,7 @@ public class EdmInt extends EdmAttribute {
             }else
                 val = Integer.parseInt(stringInt);
             setInitialized(true);
-            log.debug("Parsed " + this.getClass().getName() +
+            log.config("Parsed " + this.getClass().getName() +
                     " = " + val);
         }
         catch (Exception e) {

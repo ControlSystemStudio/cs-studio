@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Specific class representing lineStyle property.
@@ -56,9 +56,9 @@ public class EdmLineStyle extends EdmAttribute {
 
         } else {
             if (isRequired()) {
-                log.warn("Missing required property.");
+                log.warning("Missing required property.");
             } else {
-                log.warn("Missing optional property.");
+                log.warning("Missing optional property.");
             }
         }
     }

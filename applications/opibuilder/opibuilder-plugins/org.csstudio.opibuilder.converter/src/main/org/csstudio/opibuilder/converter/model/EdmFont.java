@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.converter.model;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Specific class representing EdmFont property.
@@ -41,9 +41,9 @@ public class EdmFont extends EdmAttribute {
 
         if (genericAttribute == null || getValueCount() == 0) {
             if (isRequired())
-                log.warn("Missing required property.");
+                log.warning("Missing required property.");
             else {
-                log.warn("Missing optional property.");
+                log.warning("Missing optional property.");
                 return;
             }
         }

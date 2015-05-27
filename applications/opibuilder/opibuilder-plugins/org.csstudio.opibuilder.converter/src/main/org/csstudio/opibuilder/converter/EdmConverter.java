@@ -9,7 +9,7 @@ package org.csstudio.opibuilder.converter;
 
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.writer.OpiWriter;
 
@@ -80,7 +80,7 @@ public class EdmConverter {
                 opiFileName = argument;
             } else {
                 String errorMessage = "Too many arguments: '" + argument + "'.";
-                log.error(errorMessage);
+                log.severe(errorMessage);
                 System.err.println("Error: " + errorMessage);
                 System.out.println("Type " + EdmConverter.class.getSimpleName() + " -help for command arguments.");
 
@@ -98,7 +98,7 @@ public class EdmConverter {
             colorDefOutput = true;
         } else {
             String errorMessage = "Unknown option -" + option + ".";
-            log.error(errorMessage);
+            log.severe(errorMessage);
 
             System.err.println("Error: " + errorMessage);
             System.out.println("Type " + EdmConverter.class.getSimpleName()
@@ -111,7 +111,7 @@ public class EdmConverter {
     private static void validateEdlFileName() {
         if (edlFileName == null) {
             String errorMessage = "EDL input file not specified.";
-            log.error(errorMessage);
+            log.severe(errorMessage);
             System.err.println("Error: " + errorMessage);
             System.exit(1);
         }
@@ -119,7 +119,7 @@ public class EdmConverter {
         File edlFile = new File(edlFileName);
         if (!edlFile.exists()) {
             String errorMessage = "File " + edlFileName + " does not exist.";
-            log.error(errorMessage);
+            log.severe(errorMessage);
             System.err.println("Error: " + errorMessage);
             System.exit(1);
         }
@@ -169,7 +169,7 @@ public class EdmConverter {
 
         if (!colorsFile.exists()) {
             String errorMessage = "File " + colorsFileName + " does not exist.";
-            log.error(errorMessage);
+            log.severe(errorMessage);
             System.err.println("Error: " + errorMessage);
             System.exit(1);
         }

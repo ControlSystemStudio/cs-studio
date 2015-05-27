@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Specific class representing EdmDouble property.
@@ -35,9 +35,9 @@ public class EdmDouble extends EdmAttribute {
 
         if (genericAttribute == null || getValueCount() == 0) {
             if (isRequired())
-                log.warn("Missing required property.");
+                log.warning("Missing required property.");
             else {
-                log.warn("Missing optional property.");
+                log.warning("Missing optional property.");
                 return;
             }
         }
@@ -53,7 +53,7 @@ public class EdmDouble extends EdmAttribute {
                 else
                     val = Double.parseDouble(ds);
                 setInitialized(true);
-                log.debug("Parsed " + this.getClass().getName() +
+                log.config("Parsed " + this.getClass().getName() +
                         " = " + val);
             }
             catch (Exception e) {

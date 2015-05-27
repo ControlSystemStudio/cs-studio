@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Specific class representing EdmBoolean property.
@@ -40,7 +40,7 @@ public class EdmBoolean extends EdmAttribute {
             val = false;
         }
         setInitialized(true);
-        log.debug("Parsed " + this.getClass().getName() + " = " + val);
+        log.config("Parsed " + this.getClass().getName() + " = " + val);
     }
 
     /**

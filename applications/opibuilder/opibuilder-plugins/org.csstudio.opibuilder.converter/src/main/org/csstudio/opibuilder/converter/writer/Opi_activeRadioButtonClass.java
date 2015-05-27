@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeRadioButtonClass;
 
 /**
@@ -38,7 +38,7 @@ public class Opi_activeRadioButtonClass extends OpiWidget {
         new OpiColor(widgetContext, "background_color", r.getButtonColor(), r);
         new OpiColor(widgetContext, "selected_color", r.getSelectColor(), r);
 
-        log.debug("Edm_activeRadioButtonClass written.");
+        log.config("Edm_activeRadioButtonClass written.");
 
     }
 
