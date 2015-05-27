@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
+import org.epics.util.array.ListNumber;
 import org.epics.vtype.Display;
 import org.epics.vtype.VEnum;
 import org.epics.vtype.VNumber;
@@ -14,7 +15,6 @@ import org.epics.vtype.VNumberArray;
 import org.epics.vtype.VStatistics;
 import org.epics.vtype.VString;
 import org.epics.vtype.VType;
-import org.epics.util.array.ListNumber;
 
 /** Formatter for {@link VType} values
  *  @author Kay Kasemir
@@ -27,6 +27,25 @@ abstract public class VTypeFormat
 
     final public static String NOT_A_NUMBER = "NaN";
     final public static String INFINITE = "Inf";
+
+    private int max_array_elements = MAX_ARRAY_ELEMENTS;
+
+    /** Configure the number of array elements to print.
+     *
+     *  <p>As the number of array elements exceeds this number,
+     *  an ellipsis is shown.
+     *
+     *  <p>Default is <code>MAX_ARRAY_ELEMENTS</code>.
+     *
+     *  <p>Values smaller than 1 will disable the maximum
+     *  and print all array elements.
+     *
+     *  @param max_array_elements Number of array elements, &le;0 to disable
+     */
+    public void setMaxArray(int max_array_elements)
+    {
+        this.max_array_elements = max_array_elements;
+    }
 
     /** Format just the value of a {@link VType} as string (not timestamp, ..)
      *  @param value Value
@@ -73,8 +92,8 @@ abstract public class VTypeFormat
             final Display display = (Display) array;
             final ListNumber list = array.getData();
             final int N = list.size();
-            if (N <= MAX_ARRAY_ELEMENTS)
-            {
+            if (max_array_elements <= 0  ||  N <= max_array_elements)
+            {   // Print all array elements
                 if (N > 0)
                     format(list.getDouble(0), display, buf);
                 for (int i=1; i<N; ++i)
@@ -84,15 +103,15 @@ abstract public class VTypeFormat
                 }
             }
             else
-            {
+            {   // Suppress array elements, show ellipsis
                 format(list.getDouble(0), display, buf);
-                for (int i=1; i<MAX_ARRAY_ELEMENTS/2; ++i)
+                for (int i=1; i<max_array_elements/2; ++i)
                 {
                     buf.append(", ");
                     format(list.getDouble(i), display, buf);
                 }
                 buf.append(", ... (total ").append(N).append(" elements) ...");
-                for (int i = N - MAX_ARRAY_ELEMENTS/2;  i<N;  ++i)
+                for (int i = N - max_array_elements/2;  i<N;  ++i)
                 {
                     buf.append(", ");
                     format(list.getDouble(i), display, buf);
