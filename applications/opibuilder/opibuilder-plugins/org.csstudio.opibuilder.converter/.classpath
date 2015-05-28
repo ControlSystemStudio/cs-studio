@@ -2,9 +2,8 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="src" path="prototypes/"/>
-	<classpathentry kind="src" path="src/main/"/>
+	<classpathentry kind="src" path="prototypes"/>
+	<classpathentry kind="src" path="src/main"/>
 	<classpathentry exported="true" kind="lib" path="src/test/resources" sourcepath="src/test/resources"/>
-	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.14.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.converter.writer;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmString;
 import org.csstudio.opibuilder.converter.model.Edm_activePipClass;
@@ -110,7 +110,7 @@ public class Opi_activePipClass extends OpiWidget {
 
         new OpiString(widgetContext, "resize_behaviour", "2");
 
-        log.debug("Edm_activePipClass written.");
+        log.config("Edm_activePipClass written.");
 
     }
 
