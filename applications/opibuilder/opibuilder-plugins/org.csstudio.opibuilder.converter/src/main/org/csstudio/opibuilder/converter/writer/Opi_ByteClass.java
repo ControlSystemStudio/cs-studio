@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_ByteClass;
 
 /**
@@ -53,7 +53,7 @@ public class Opi_ByteClass extends OpiWidget {
 
         new OpiInt(widgetContext, "startBit", r.getShift());
 
-        log.debug("Edm_ByteClass written.");
+        log.config("Edm_ByteClass written.");
 
     }
 

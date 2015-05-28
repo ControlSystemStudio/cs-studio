@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeXTextDspClass_noedit;
 
 /**
@@ -69,7 +69,7 @@ public class Opi_activeXTextDspClass_noedit extends OpiWidget {
         new OpiBoolean(widgetContext, "transparent", r.isTransparent());
 
 
-        log.debug("Edm_activeXTextDspClass written.");
+        log.config("Edm_activeXTextDspClass written.");
 
     }
 

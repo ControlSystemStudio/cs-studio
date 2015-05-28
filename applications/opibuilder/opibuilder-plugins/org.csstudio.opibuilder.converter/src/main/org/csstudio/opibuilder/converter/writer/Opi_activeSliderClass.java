@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeSliderClass;
 
 /**
@@ -51,7 +51,7 @@ public class Opi_activeSliderClass extends OpiWidget {
 
         new OpiBoolean(widgetContext, "limits_from_pv", r.isLimitsFromDb());
 
-        log.debug("Edm_activeSliderClass written.");
+        log.config("Edm_activeSliderClass written.");
 
     }
 

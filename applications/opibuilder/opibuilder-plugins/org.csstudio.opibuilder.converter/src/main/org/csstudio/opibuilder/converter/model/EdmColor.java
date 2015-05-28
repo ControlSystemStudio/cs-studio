@@ -12,7 +12,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.util.ConsoleService;
 
@@ -73,9 +73,9 @@ public class EdmColor extends EdmAttribute {
 
         if (genericEntity == null || getValueCount() == 0) {
             if (isRequired()) {
-                log.warn("Missing required property.");
+                log.warning("Missing required property.");
             } else {
-                log.warn("Missing optional property.");
+                log.warning("Missing optional property.");
                 return;
             }
         }
@@ -129,7 +129,7 @@ public class EdmColor extends EdmAttribute {
             throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "", exception);
         }
 
-        log.debug("Parsed colorsList definition.");
+        log.config("Parsed colorsList definition.");
     }
 
     private void parseDynamicColorListDefinition() throws EdmException {
@@ -154,7 +154,7 @@ public class EdmColor extends EdmAttribute {
             throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "", exception);
         }
 
-        log.debug("Parsed colorsList definition.");
+        log.config("Parsed colorsList definition.");
     }
 
     private void parseRGBColor() throws EdmException {
@@ -173,7 +173,7 @@ public class EdmColor extends EdmAttribute {
             blue = Integer.valueOf(m.group(4)).intValue();
             blinking = false;
 
-            log.debug("Parsed RGB color.");
+            log.config("Parsed RGB color.");
         }
         catch (Exception e) {
             throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "Invalid RGB color format.",e);
@@ -200,7 +200,7 @@ public class EdmColor extends EdmAttribute {
         dynamic = color.isDynamic();
         ruleMap = color.getRuleMap();
 
-        log.debug("Parsed static color.");
+        log.config("Parsed static color.");
     }
 
 

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Specific class representing EdmString property.
@@ -35,9 +35,9 @@ public class EdmString extends EdmAttribute {
 
         if (genericAttribute == null || getValueCount() == 0) {
             if (isRequired())
-                log.warn("Missing required property.");
+                log.warning("Missing required property.");
             else {
-                log.warn("Missing optional property.");
+                log.warning("Missing optional property.");
                 return;
             }
         }
@@ -47,7 +47,7 @@ public class EdmString extends EdmAttribute {
         else
             val = "";
 
-        log.debug("Parsed " + this.getClass().getName() +
+        log.config("Parsed " + this.getClass().getName() +
                 " = " + val);
         setInitialized(true);
     }

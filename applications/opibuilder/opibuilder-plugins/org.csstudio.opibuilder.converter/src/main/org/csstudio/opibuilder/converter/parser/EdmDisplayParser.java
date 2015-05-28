@@ -12,7 +12,7 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
@@ -42,7 +42,7 @@ public class EdmDisplayParser extends EdmParser{
         String line = m.group();
 
         if (line.length() > 0)
-            log.debug("Parse attribute from string: \"" + line + "\"");
+            log.config("Parse attribute from string: \"" + line + "\"");
         else
             return;
 
@@ -57,7 +57,7 @@ public class EdmDisplayParser extends EdmParser{
         if (isCompound) {
             String attName = line.substring(0, line.indexOf("{") - 1);
             entity.addAttribute(attName, a);
-            log.debug("Added attribute: " + attName);
+            log.config("Added attribute: " + attName);
 
             parseCompoundProperty(m, a);
         }
@@ -73,7 +73,7 @@ public class EdmDisplayParser extends EdmParser{
                 if (i == 0) {
                     String attName = m1.group();
                     entity.addAttribute(attName, a);
-                    log.debug("Added attribute: " + attName);
+                    log.config("Added attribute: " + attName);
                 }
                 else
                     value.append(m1.group() + " ");
@@ -87,7 +87,7 @@ public class EdmDisplayParser extends EdmParser{
             else //if (i > 1)
                 finalValue = value.toString();
 
-            log.debug("Added value: \"" + a.appendValue(finalValue) + "\"");
+            log.config("Added value: \"" + a.appendValue(finalValue) + "\"");
         }
     }
 
@@ -109,7 +109,7 @@ public class EdmDisplayParser extends EdmParser{
             line = m.group();
             if (!line.contains("}") & line.length() > 0) {
                 String val = line.trim();
-                log.debug("Added value: \"" + a.appendValue(val) + "\"");
+                log.config("Added value: \"" + a.appendValue(val) + "\"");
             }
 
             boolean nestError = false;
@@ -154,7 +154,7 @@ public class EdmDisplayParser extends EdmParser{
                 parseProperty(m, getRoot());
             }
             if (i > 0)
-                log.warn("More than one display file headers found.");
+                log.warning("More than one display file headers found.");
             i++;
 
             data.delete(start, end);
@@ -333,7 +333,7 @@ public class EdmDisplayParser extends EdmParser{
         groupData.append(data.substring(boundaries[0], boundaries[2]));
         data.delete(boundaries[0], boundaries[2]);
 
-        log.debug("******** Parsing group.");
+        log.config("******** Parsing group.");
 
         EdmEntity groupEntity = new EdmEntity("activeGroupClass");
         parent.addSubEntity(groupEntity);
@@ -385,8 +385,8 @@ public class EdmDisplayParser extends EdmParser{
 
         boolean error = false;
 
-        log.debug("");
-        log.debug("******** Parsing object: " + objType);
+        log.config("");
+        log.config("******** Parsing object: " + objType);
 
         EdmEntity object = new EdmEntity(objType);
 
@@ -399,7 +399,7 @@ public class EdmDisplayParser extends EdmParser{
                     parseProperty(m1, object);
                 }
                 catch (Exception e) {
-                    log.error("Object parsing skipped due to parsing error.");
+                    log.severe("Object parsing skipped due to parsing error.");
                     error = true;
                     break;
                 }
@@ -462,7 +462,7 @@ public class EdmDisplayParser extends EdmParser{
         }
 
         if (edmData.toString().trim().length() > 0) {
-            log.warn("Remaining data not parsed: " + edmData);
+            log.warning("Remaining data not parsed: " + edmData);
         }
     }
 }
