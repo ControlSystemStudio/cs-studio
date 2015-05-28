@@ -89,9 +89,18 @@ public class RuntimePatchedSelectionTool extends SelectionTool {
                 if (pvName != "" && pvName != null) {
                     Display display = Display.getCurrent();
                     Clipboard clipboard = new Clipboard(display);
+
+                    // Copies to middle button paste buffer,
+                    // to be pasted via another middle-button click
                     clipboard.setContents(new Object[] { pvName },
                             new Transfer[] { TextTransfer.getInstance() },
                             DND.SELECTION_CLIPBOARD);
+
+                    // Copies to normal clipboard,
+                    // to be pasted via Ctrl-V or Edit/Paste
+                    clipboard.setContents(new String[] { pvName },
+                            new Transfer[] { TextTransfer.getInstance() });
+
                     clipboard.dispose();
                     IFigure figure = apvwep.getFigure();
                     figure.setCursor(copyPvCursor);
