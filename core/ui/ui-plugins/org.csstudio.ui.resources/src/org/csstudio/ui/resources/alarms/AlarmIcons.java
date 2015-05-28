@@ -15,7 +15,7 @@ import org.csstudio.ui.resources.Activator;
 import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
- * 
+ *
  * <code>AlarmIcons</code> provides access to icons that can be used by the alarm system in order to more clearly
  * present the state of an individual alarm.
  *
