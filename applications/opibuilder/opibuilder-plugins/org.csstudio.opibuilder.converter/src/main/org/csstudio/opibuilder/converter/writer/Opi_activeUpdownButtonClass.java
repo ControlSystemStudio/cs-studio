@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeUpdownButtonClass;
 
 /**
@@ -44,7 +44,7 @@ public class Opi_activeUpdownButtonClass extends OpiWidget {
         new OpiDouble(widgetContext, "maximum", r.getScaleMax());
 
 
-        log.debug("Opi_activeUpdownButtonClass written.");
+        log.config("Opi_activeUpdownButtonClass written.");
 
     }
 

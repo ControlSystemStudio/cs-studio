@@ -19,7 +19,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
@@ -106,20 +106,20 @@ public class OpiWriter {
 
         boolean robust = Boolean.parseBoolean(System.getProperty("edm2xml.robustParsing"));
 
-        log.debug("Generating XML model for widgets.");
+        log.config("Generating XML model for widgets.");
 
         for (EdmEntity e : entities) {
             Class<? extends EdmEntity> edmClass = e.getClass();
             String opiClassName = edmClass.getName().replaceFirst("model", "writer")
                 .replaceFirst("Edm_", "Opi_");
 
-            log.debug("Generating XML model for widget: " + opiClassName);
+            log.config("Generating XML model for widget: " + opiClassName);
             try {
                 Class<?> opiClass = Class.forName(opiClassName);
                 Constructor<?> opiConstructor = opiClass.getConstructor(Context.class, edmClass);
                 opiConstructor.newInstance(context, e);
             } catch (ClassNotFoundException exception) {
-                log.warn("Class not declared: " + opiClassName);
+                log.warning("Class not declared: " + opiClassName);
             } catch (Exception exception) {
                 ErrorHandlerUtil.handleError("Error in converting " + e, exception);
             }
@@ -150,7 +150,7 @@ public class OpiWriter {
      */
     private void writeXML(Document doc, String fileName) throws EdmException {
 
-        log.debug("Writing XML file: " + fileName);
+        log.config("Writing XML file: " + fileName);
 
         try {
 
@@ -170,7 +170,7 @@ public class OpiWriter {
             output.write(xmlString);
             output.close();
 
-            log.debug("Completed.");
+            log.config("Completed.");
         } catch (Exception e) {
             throw new EdmException(EdmException.OPI_WRITER_EXCEPTION, "Error writing to file " + fileName, e);
         }

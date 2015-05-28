@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.converter.parser;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
@@ -57,7 +57,7 @@ public class EdmFontsListParser extends EdmParser {
                 a.appendValue(style);
                 a.appendValue(size);
 
-                log.debug("Added attribute " + name + " with values: " + weight + " and " +
+                log.config("Added attribute " + name + " with values: " + weight + " and " +
                         style + " and " + size);
             }
             catch (Exception e) {

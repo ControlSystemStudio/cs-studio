@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeBarClass;
 
 /**
@@ -60,7 +60,7 @@ public class Opi_activeBarClass extends OpiWidget {
 
 
 
-        log.debug("Edm_activeBarClass written.");
+        log.config("Edm_activeBarClass written.");
 
     }
 

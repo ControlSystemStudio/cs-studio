@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Class handling exceptions when handling general and specific data in Edm data model.
@@ -64,7 +65,7 @@ public class EdmException extends Exception {
             this.message = this.message + "\n"+throwable.getMessage();
         }
 
-        log.error(getMessage(), this);
+        log.log(Level.SEVERE, getMessage(), this);
     }
 
     public String getType() {

@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.converter.writer;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmWidget;
 import org.csstudio.opibuilder.converter.model.Edm_activeButtonClass;
@@ -66,7 +66,7 @@ public class Opi_activeButtonClass extends OpiWidget {
         new OpiBoolean(widgetContext, "show_led", false);
         new OpiBoolean(widgetContext, "square_button", true);
 
-        log.debug("Edm_activeButtonClass written.");
+        log.config("Edm_activeButtonClass written.");
 
     }
 

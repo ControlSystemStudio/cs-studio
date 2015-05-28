@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_cfcf6c8a_dbeb_11d2_8a97_00104b8742df;
 
 /**
@@ -34,7 +34,7 @@ public class Opi_cfcf6c8a_dbeb_11d2_8a97_00104b8742df extends OpiWidget {
         if(r.getAttribute("file").isExistInEDL())
             new OpiString(widgetContext, "image_file", r.getFile());
 
-        log.debug("Edm_activePngClass written.");
+        log.config("Edm_activePngClass written.");
 
     }
 

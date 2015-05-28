@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.model.EdmWidget;
@@ -53,7 +53,7 @@ public class OpiColor extends OpiAttribute {
 
         if (colorName != null && colorName.length() > 0) {
             colorElement.setAttribute("name", colorName);
-            log.debug("Written color: " + colorName);
+            log.config("Written color: " + colorName);
         }
         String red = String.valueOf(colorComponentTo8Bits(c.getRed()));
         String green = String.valueOf(colorComponentTo8Bits(c.getGreen()));
@@ -63,7 +63,7 @@ public class OpiColor extends OpiAttribute {
         colorElement.setAttribute("green", green);
         colorElement.setAttribute("blue", blue);
 
-        log.debug("Written color property with attributes: " + red + ", " + green + ", " + blue);
+        log.config("Written color property with attributes: " + red + ", " + green + ", " + blue);
 
     }
 

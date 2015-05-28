@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * Specific class containing a list of EdmColor instances, parsed from
@@ -84,12 +84,12 @@ public class EdmColorsList extends EdmEntity {
                 nonMenuColors.remove(color);
                 menuInd++;
             } else  {
-                log.warn("Menumap contains an undefined color: " + colorName);
+                log.warning("Menumap contains an undefined color: " + colorName);
             }
         }
 
         if (!nonMenuColors.isEmpty()) {
-            log.warn("Color definitions exist that are not in menumap. Adding them at the end.");
+            log.warning("Color definitions exist that are not in menumap. Adding them at the end.");
             Iterator<EdmColor> iterator = nonMenuColors.iterator();
             while (iterator.hasNext()) {
                 menuColorsMap.put(menuInd, iterator.next());
