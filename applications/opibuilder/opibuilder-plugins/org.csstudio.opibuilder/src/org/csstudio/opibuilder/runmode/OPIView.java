@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
+import java.io.StringWriter;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -14,7 +15,10 @@ import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.e4.core.contexts.IEclipseContext;
+import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlAdapter;
@@ -28,6 +32,7 @@ import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.XMLMemento;
 import org.eclipse.ui.part.ViewPart;
 
 /** RCP 'View' for display runtime
@@ -51,6 +56,9 @@ public class OPIView extends ViewPart implements IOPIRuntime
      */
     public static final String ID = "org.csstudio.opibuilder.opiView";
 
+    /** Debug option, see .options file at plugin root */
+    public static final boolean debug = "true".equalsIgnoreCase(Platform.getDebugOption(OPIBuilderPlugin.PLUGIN_ID + "/views"));
+
     /** Memento tags */
     private static final String TAG_INPUT = "input",
                                 TAG_FACTORY_ID = "factory_id";
@@ -64,6 +72,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
     private boolean detached = false;
 
     /** SYNC on class for access
+     *  TODO Use AtomicLong instead of sync?
+     *  TODO Does this need to be a GUID instead of 'counting up'?
      *  @see #createSecondaryID()
      */
     private static int instance = 0;
@@ -130,6 +140,15 @@ public class OPIView extends ViewPart implements IOPIRuntime
             }
         }
 
+        if (debug)
+        {
+            System.out.print(site.getId() + ":" + site.getSecondaryId() + " opened, ");
+            if (memento == null)
+                System.out.println("no memento");
+            else
+                System.out.println(ignoreMemento ? "ignoring memento" : "with memento");
+        }
+
         if (ignoreMemento  ||  memento == null)
             return;
 
@@ -149,7 +168,7 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
         final IAdaptable element = factory.createElement(inputMem);
         if (!(element instanceof IEditorInput))
-            throw new PartInitException("Instead of OPIView, " + factoryID + " returned " + element);
+            throw new PartInitException("Instead of IEditorInput, " + factoryID + " returned " + element);
         setOPIInput((IEditorInput)element);
     }
 
@@ -157,14 +176,22 @@ public class OPIView extends ViewPart implements IOPIRuntime
     @Override
     public void setOPIInput(final IEditorInput input) throws PartInitException
     {
-        // IViewSite view = getViewSite();
-        // System.out.println(view.getId() + ":" + view.getSecondaryId() + " for " + input.getName());
-
+        if (debug)
+        {
+            final IViewSite view = getViewSite();
+            System.out.println(view.getId() + ":" + view.getSecondaryId() + " - " + input.getName());
+        }
         this.input = input;
         setTitleToolTip(input.getToolTipText());
         opiRuntimeDelegate.init(site, input);
         if (opiRuntimeToolBarDelegate != null)
             opiRuntimeToolBarDelegate.setActiveOPIRuntime(this);
+
+        // Persist _now_.
+        // Framework only saves memento on exit.
+        // If view happens to be hidden on exit, its input won't be saved,
+        // so when it's later restored, you get an empty view.
+        persist();
     }
 
     @Override
@@ -221,6 +248,44 @@ public class OPIView extends ViewPart implements IOPIRuntime
         opiRuntimeToolBarDelegate.setActiveOPIRuntime(this);
     }
 
+    /** Persist the view's input "on demand".
+     *
+     *  <p>To allow saving the memento at any time.
+     *
+     *  <p>Memento is saved in the
+     *  .metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
+     *  inside a "persistedState" element of the E4 model element.
+     *
+     *  <p>This method places it in the model just as the framework
+     *  does by calling saveState() on shutdown,
+     *  but allows saving the state at any time.
+     */
+    private void persist()
+    {
+        // Obtain E4 model element for E3 view,
+        // based on http://www.vogella.com/tutorials/EclipsePlugIn/article.html#eclipsecontext
+        final IEclipseContext context = (IEclipseContext) getViewSite().getService(IEclipseContext.class);
+        final MPart model = context.get(MPart.class);
+
+        // Based on org.eclipse.ui.internal.ViewReference#persist():
+        //
+        // XML version of memento is written to E4 model.
+        // If compatibility layer changes its memento persistence,
+        // this will break...
+        final XMLMemento root = XMLMemento.createWriteRoot("view"); //$NON-NLS-1$
+        saveState(root);
+        final StringWriter writer = new StringWriter();
+        try
+        {
+            root.save(writer);
+            model.getPersistedState().put("memento", writer.toString());
+        }
+        catch (Exception ex)
+        {
+            OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                    toString() + " failed to persist input", ex);
+        }
+    }
 
     @Override
     public void saveState(IMemento memento) {
@@ -245,18 +310,32 @@ public class OPIView extends ViewPart implements IOPIRuntime
 //            memento.putString(IWorkbenchConstants.TAG_NAME, input.getName());
 //            memento.putString(IWorkbenchConstants.TAG_TOOLTIP,
 //                    input.getToolTipText());
+            if (debug)
+                System.out.println(this + " saved to memento");
         }
     }
 
     @Override
     public void setFocus() {
-
+        // NOP
     }
 
     @Override
     public void setWorkbenchPartName(String name) {
         setPartName(name);
         setTitleToolTip(getOPIInput().getToolTipText());
+    }
+
+    // In debug mode, include view ID in tool tip
+    @Override
+    protected void setTitleToolTip(String tool_tip)
+    {
+        if (debug)
+        {
+             final IViewSite view = getViewSite();
+             tool_tip = view.getId() + ":" + view.getSecondaryId() + " - " + tool_tip;
+        }
+        super.setTitleToolTip(tool_tip);
     }
 
     public OPIRuntimeDelegate getOPIRuntimeDelegate() {
