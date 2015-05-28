@@ -143,6 +143,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     private boolean isAlarmPulsing = false;
     private ScheduledFuture<?> scheduledFuture;
 
+    private boolean pvsHaveBeenStarted = false;
+    
     /**
      * @param editpart the editpart to be delegated.
      * It must implemented {@link IPVWidgetEditpart}
@@ -191,6 +193,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
      * This should be called as the last step in editpart.activate().
      */
     public void startPVs() {
+        pvsHaveBeenStarted = true;
         //the pv should be started at the last minute
         for(String pvPropId : pvMap.keySet()){
             IPV pv = pvMap.get(pvPropId);
@@ -204,9 +207,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     }
 
     public void doDeActivate() {
+        if (pvsHaveBeenStarted) {
             for(IPV pv : pvMap.values())
                 pv.stop();
-
+            pvsHaveBeenStarted = false;
+        }
             for(String pvPropID : pvListenerMap.keySet()){
                 pvMap.get(pvPropID).removeListener(pvListenerMap.get(pvPropID));
             }
