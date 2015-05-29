@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.runmode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.part.ViewPart;
 
@@ -27,8 +27,11 @@ public class PlaceHolderView extends ViewPart
     {
         final IViewSite site = getViewSite();
         parent.setLayout(new FillLayout());
-        final Label text = new Label(parent, SWT.NONE);
-        text.setText(site.getId() + ":" + site.getSecondaryId());
+
+        final Text text = new Text(parent, SWT.MULTI | SWT.WRAP | SWT.READ_ONLY);
+        text.setText("Placeholder for displays that should appear in this location.\n" +
+                     "Close after all displays have been arranged.");
+        setPartName(site.getSecondaryId());
     }
 
     @Override

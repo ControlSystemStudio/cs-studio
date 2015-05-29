@@ -8,7 +8,7 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.eclipse.core.runtime.Platform;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -146,8 +146,8 @@ public class OPIRunnerPerspective implements IPerspectiveFactory
         ((org.eclipse.ui.internal.e4.compatibility.ModeledPageLayout)layout).setEditorAreaVisible(false);
 
 
-        // Placeholder views show location of folders for debugging purposes
-        if ("true".equalsIgnoreCase(Platform.getDebugOption(OPIBuilderPlugin.PLUGIN_ID + "/runtime_perspective")))
+        // Placeholder views show location of folders
+        if (PreferencesHelper.showOpiRuntimeStacks())
         {
             center.addView(PlaceHolderView.ID + ":CENTER");
             left.addView(PlaceHolderView.ID + ":LEFT");

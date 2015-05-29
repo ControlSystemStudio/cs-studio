@@ -64,7 +64,8 @@ public class PreferencesHelper {
     public static final String PULSING_ALARM_MAJOR_PERIOD = "pulsing_alarm_major_period";//$NON-NLS-1$
     public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
     public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
-    public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style";
+    public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style"; //$NON-NLS-1$
+    public static final String SHOW_OPI_RUNTIME_STACKS = "show_opi_runtime_stacks"; //$NON-NLS-1$
 
     //The widgets that are hidden from palette.
     public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
@@ -164,6 +165,11 @@ public class PreferencesHelper {
     public static boolean isDefaultStyleClassic() {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DEFAULT_TO_CLASSIC_STYLE, true, null);
+    }
+
+    public static boolean showOpiRuntimeStacks() {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SHOW_OPI_RUNTIME_STACKS, false, null);
     }
 
     public static boolean isAdvancedGraphicsDisabled(){

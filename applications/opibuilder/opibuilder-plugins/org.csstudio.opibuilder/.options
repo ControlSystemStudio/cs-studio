@@ -6,8 +6,5 @@
 #
 # Command line: -debug /path/to/my.options
 
-# Show 'PlaceHolderView' in runtime
-org.csstudio.opibuilder/runtime_perspective
-
 # Show View ID etc.
 org.csstudio.opibuilder/views
