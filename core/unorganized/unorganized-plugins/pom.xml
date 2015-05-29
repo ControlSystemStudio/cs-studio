@@ -10,6 +10,7 @@
   <packaging>pom</packaging>
   <name>Unorganized plugins</name>
   <modules>
+    <module>org.csstudio.autocomplete.pvmanager.ca</module>
     <module>org.csstudio.autocomplete.pvmanager.formula</module>
     <module>org.csstudio.autocomplete.pvmanager.formula.test</module>
     <module>org.csstudio.autocomplete.pvmanager.loc</module>

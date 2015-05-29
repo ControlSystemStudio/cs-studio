@@ -13,6 +13,7 @@ import org.csstudio.autocomplete.parser.ContentDescriptor;
 import org.csstudio.autocomplete.parser.ContentType;
 import org.csstudio.autocomplete.proposals.Proposal;
 import org.csstudio.autocomplete.proposals.ProposalStyle;
+import org.csstudio.autocomplete.tooltips.TooltipData;
 
 /**
  * Channel Access Data Source content provider. Provides options syntax
@@ -73,6 +74,28 @@ public class CAContentProvider implements IAutoCompleteProvider {
                 result.addTopProposal(topProposal);
         }
         result.setCount(count);
+
+        // handle tooltip
+        TooltipData td = null;
+        if (caDesc.isCompletingOption()) {
+            td = new TooltipData();
+            td.value = "pvname {option}"; //$NON-NLS-1$
+            td.styles = new ProposalStyle[1];
+            td.styles[0] = ProposalStyle.getDefault(7, 15);
+            result.addTooltipData(td);
+        } else {
+            td = new TooltipData();
+            td.value = "pvname"; //$NON-NLS-1$
+            td.styles = new ProposalStyle[1];
+            td.styles[0] = ProposalStyle.getDefault(0, 6);
+            result.addTooltipData(td);
+
+            td = new TooltipData();
+            td.value = "pvname {option}"; //$NON-NLS-1$
+            td.styles = new ProposalStyle[1];
+            td.styles[0] = ProposalStyle.getDefault(0, 6);
+            result.addTooltipData(td);
+        }
 
         return result;
     }
