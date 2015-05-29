@@ -109,8 +109,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
         this.site = site;
 
         if (debug)
-            System.out.println(site.getId() + ":" + site.getSecondaryId() + " opened, " +
-                               (memento == null ? "no memento" : "with memento"));
+            System.out.println(site.getId() + ":" + site.getSecondaryId() + " opened " +
+                               (memento == null ? ", no memento" : "with memento"));
 
         if (memento == null)
             return;
@@ -132,17 +132,19 @@ public class OPIView extends ViewPart implements IOPIRuntime
         final IAdaptable element = factory.createElement(inputMem);
         if (!(element instanceof IEditorInput))
             throw new PartInitException("Instead of IEditorInput, " + factoryID + " returned " + element);
-        setOPIInput((IEditorInput)element);
+        // Set input, but don't persist to memento because we just read it from memento
+        setOPIInput((IEditorInput)element, false);
     }
 
-    /** @param input Display file that this view should execute */
-    @Override
-    public void setOPIInput(final IEditorInput input) throws PartInitException
+    /** @param input Display file that this view should execute
+     *  @param persist Persist the input to memento?
+     */
+    public void setOPIInput(final IEditorInput input, final boolean persist) throws PartInitException
     {
         if (debug)
         {
             final IViewSite view = getViewSite();
-            System.out.println(view.getId() + ":" + view.getSecondaryId() + " - " + input.getName());
+            System.out.println(view.getId() + ":" + view.getSecondaryId() + " displays " + input.getName());
         }
         this.input = input;
         setTitleToolTip(input.getToolTipText());
@@ -150,11 +152,19 @@ public class OPIView extends ViewPart implements IOPIRuntime
         if (opiRuntimeToolBarDelegate != null)
             opiRuntimeToolBarDelegate.setActiveOPIRuntime(this);
 
+        if (persist)
+            persist();
+    }
+
+    /** @param input Display file that this view should execute */
+    @Override
+    public void setOPIInput(final IEditorInput input) throws PartInitException
+    {
         // Persist _now_.
         // Framework only saves memento on exit.
         // If view happens to be hidden on exit, its input won't be saved,
         // so when it's later restored, you get an empty view.
-        persist();
+        setOPIInput(input, true);
     }
 
     @Override
@@ -345,10 +355,10 @@ public class OPIView extends ViewPart implements IOPIRuntime
         OPIView.openedByUser = openedByUser;
     }
 
-    /** @return Debug info for view, shows location and *.opi file */
+    /** @return Debug info for view, shows ID and input */
     @Override
     public String toString()
     {
-        return "OPIView " + getViewSite().getId() + ":" + getViewSite().getSecondaryId() + ", " + input;
+        return getViewSite().getId() + ":" + getViewSite().getSecondaryId() + ", " + input;
     }
 }
