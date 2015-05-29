@@ -73,6 +73,9 @@ public class CommonPreferencePage extends FieldEditorPreferencePage
         BooleanFieldEditor showOpiRuntimeStacks =
                 new BooleanFieldEditor(PreferencesHelper.SHOW_OPI_RUNTIME_STACKS,
                         "Show OPI Runtime Stacks", parent);
+        showOpiRuntimeStacks.getDescriptionControl(parent).setToolTipText(
+                "Enable to add placeholders to new OPI Runtime perspective " +
+                "as an aid to positioning displays");
         addField(showOpiRuntimeStacks);
 
         BooleanFieldEditor advanceGraphicsEditor =
