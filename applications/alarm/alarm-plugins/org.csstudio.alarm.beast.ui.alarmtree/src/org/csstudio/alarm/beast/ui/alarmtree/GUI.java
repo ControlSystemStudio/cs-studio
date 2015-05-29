@@ -105,7 +105,13 @@ public class GUI implements AlarmClientModelListener
         throttle = new GUIUpdateThrottle() {
             @Override
             protected void fire() {
-                display.syncExec(() -> tree_viewer.refresh());
+                display.syncExec(() -> 
+                { 
+                    if (!tree_viewer.getTree().isDisposed()) 
+                    {
+                        tree_viewer.refresh();
+                    }
+                });
             }
         };
         throttle.start();
