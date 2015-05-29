@@ -9,7 +9,6 @@ package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
-import org.csstudio.opibuilder.runmode.OPIView;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
@@ -40,7 +39,6 @@ public class RefreshOPIAction extends Action {
     @Override
     public void run() {
         try {
-            OPIView.ignoreMemento();
             opiRuntime.setOPIInput(opiRuntime.getOPIInput());
         } catch (PartInitException e) {
             ErrorHandlerUtil.handleError("Failed to refresh OPI", e);

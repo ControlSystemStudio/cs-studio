@@ -199,11 +199,6 @@ public class RunModeService
                     }
 
                 // Open new View
-                // View will receive input from us, should ignore previous memento.
-                // No need to revert back to "use memento" because that is only
-                // applicable at CSS restart, loading saved state.
-                // Once the user opens a new view, all mementos need to be ignored.
-                OPIView.ignoreMemento();
                 // Create view ID that - when used with OPIRunnerPerspective -
                 // causes view to appear in desired location
                 final String secondID =  OPIView.createSecondaryID();

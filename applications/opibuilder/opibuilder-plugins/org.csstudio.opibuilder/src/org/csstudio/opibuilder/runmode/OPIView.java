@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.runmode;
 
 import java.io.StringWriter;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -42,6 +43,19 @@ import org.eclipse.ui.part.ViewPart;
  *
  *  <p>Being a 'View' allows save/restore within a 'Perspective'.
  *
+ *  <p>RCP distinguishes instances via their secondary view ID.
+ *  Each instances has a memento for storing arbitrary data,
+ *  which we use for the 'input' (*.opi path and macros).
+ *
+ *  <p>Secondary view IDs must be unique, they can't simply increment
+ *  from "1" each time CSS is started because then a view with a previously
+ *  used secondary ID will show the old content.
+ *
+ *  <p>RCP only triggers <code>saveState</code> for views that are currently
+ *  visible, typically on exit.
+ *  This view will write the memento info directly to the underlying E4 model
+ *  whenever the input changes.
+ *
  *  @author Xihui Chen - Original author
  *  @author Kay Kasemir
  */
@@ -71,35 +85,11 @@ public class OPIView extends ViewPart implements IOPIRuntime
     /** For views that should be detached, tracks if that has been done */
     private boolean detached = false;
 
-    /** SYNC on class for access
-     *  TODO Use AtomicLong instead of sync?
-     *  TODO Does this need to be a GUID instead of 'counting up'?
-     *  @see #createSecondaryID()
-     */
-    private static int instance = 0;
-
     private OPIRuntimeToolBarDelegate opiRuntimeToolBarDelegate;
-
-    /** See {@link #ignoreMemento()} */
-    private static boolean ignoreMemento = false;
 
     private static boolean openFromPerspective = false;
 
     private static boolean openedByUser = false;
-
-    /** When application starts up, restored views use the memento
-     *  provided by RCP to restore their original content.
-     *
-     *  When displays are later opened by the user, from actions etc.,
-     *  those views may use instance IDs that match a previously used
-     *  view instance, but they should not use that old memento
-     *  because they will receive the desired input by whatever code
-     *  created them.
-     */
-    public static void ignoreMemento()
-    {
-        OPIView.ignoreMemento = true;
-    }
 
     public OPIView()
     {
@@ -109,10 +99,7 @@ public class OPIView extends ViewPart implements IOPIRuntime
     /** @return Unique secondary view ID for this instance of CSS */
     public static String createSecondaryID()
     {
-        synchronized (OPIView.class)
-        {
-            return Integer.toString(++instance);
-        }
+        return UUID.randomUUID().toString();
     }
 
     @Override
@@ -121,35 +108,11 @@ public class OPIView extends ViewPart implements IOPIRuntime
         super.init(site, memento);
         this.site = site;
 
-        // When RCP restores Views on CSS restart, the view ID is already set.
-        // Adjust instance to not conflict with such restored views.
-        synchronized (OPIView.class)
-        {
-            final String secondary = site.getSecondaryId();
-            if (secondary != null)
-            {
-                int digits = 0;
-                while (digits < secondary.length()  &&   "0123456789".contains(secondary.substring(digits, digits+1)))
-                    ++digits;
-                if (digits > 0)
-                {
-                    int id = Integer.parseInt(secondary.substring(0, digits));
-                    if (instance < id)
-                        instance = id;
-                }
-            }
-        }
-
         if (debug)
-        {
-            System.out.print(site.getId() + ":" + site.getSecondaryId() + " opened, ");
-            if (memento == null)
-                System.out.println("no memento");
-            else
-                System.out.println(ignoreMemento ? "ignoring memento" : "with memento");
-        }
+            System.out.println(site.getId() + ":" + site.getSecondaryId() + " opened, " +
+                               (memento == null ? "no memento" : "with memento"));
 
-        if (ignoreMemento  ||  memento == null)
+        if (memento == null)
             return;
 
         // Load previously displayed input from memento
