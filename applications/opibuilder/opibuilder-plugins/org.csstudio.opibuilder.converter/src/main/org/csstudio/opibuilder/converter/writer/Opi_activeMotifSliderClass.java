@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeMotifSliderClass;
 
 /**
@@ -33,7 +33,7 @@ public class Opi_activeMotifSliderClass extends Opi_activeSliderClass {
 
 
 
-        log.debug("Edm_activeMotifSliderClass written.");
+        log.config("Edm_activeMotifSliderClass written.");
 
     }
 

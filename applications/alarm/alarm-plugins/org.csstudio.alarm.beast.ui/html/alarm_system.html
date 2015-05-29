@@ -656,10 +656,15 @@ Each active alarm has several properties:
 <li><b>Severity</b>: The severity of the PV remembered by alarm server. When the PV is configured to "latch", the alarm server remembers the highest alarm severity of the PV until it is manually acknowledged. Current severity of the PV might differ from alarm severity when the underlying alarm PV already recovered but the alarm server was configured to "latch" the alarm until operator acknowledgement.</li>
 <li><b>Status</b>: alarm status message like HIGH_ALARM or STATE_ALARM.</li> 
 <li><b>Value</b>: Value of the PV that triggered this alarm.</li>
+<li><b>Ack</b>: Checkbox for quick acknowledge or unacknowledge of alarms.</li>
+<li><b>Icon</b>: Icon representing the combination of latched and current severities.</li>
+<li><b>Action</b>: The first alarm guidance message.</li>
+<li><b>ID</b>: The first alarm guidance title.</li>
 </ul>
 <p>
 The CSS Alarm Table allows sorting by any of the above properties by clicking
-the corresponded property name on the column header.
+the corresponded property name on the column header. The sorting order (ascending/descending)
+can be toggled by clicking on the header again.
 </p>
 
 <a name=#current_alarm>
@@ -682,11 +687,26 @@ please refer to the <a href="#AlarmState">Alarm Severity States Diagram</a>
 
 <h3>Alarm Table Toolbar</h3>
 <p>
-The toolbar on top of Alarm Table provides the functions of
+The toolbar on top of Alarm Table provides the functions of 
+"Normal/Maintenance Mode Switch" <img src= icons/operate.gif>,
 "Acknowledge" <img src= icons/acknowledge.gif> and
 "Un-Acknowledge" <img src= icons/unacknowledge.gif>
-for the selected items in the table.
+for the selected items in the table. A menu (downward arrow) 
+with commands to "Combine" and "Separate" tables and to 
+"Configure Columns" is also provided.
 </p>
+<p>
+The tables for acknowledged and un-acknowledged alarms can either be 
+separate or they can be combined into a single table. Use can choose
+the presentation from the toolbar menu.
+</p>
+<p>
+The contents of both tables can be refined by configuring the columns.
+The toolbar menu provides "Configure Columns" command. The command open
+the Column Configuration Dialog, through which it can be selected, 
+which columns are visible in the table and in what order.
+</p>
+<img class="float" src="column_configurator.png" alt="Column Configuration Dialog" width="525" height="329"></img>
 
 <h3>Select PVs based on name or description</h3>
 <p>

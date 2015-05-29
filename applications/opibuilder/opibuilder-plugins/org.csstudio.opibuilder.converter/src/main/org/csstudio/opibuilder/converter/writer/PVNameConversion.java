@@ -12,7 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.java.string.StringSplitter;
 
 public class PVNameConversion {
@@ -54,13 +54,13 @@ public class PVNameConversion {
      */
     public static String convertPVName(String pvName) {
         if (pvName.startsWith("LOC")) {
-            log.debug("EDM local PV: " + pvName);
+            log.config("EDM local PV: " + pvName);
             pvName = parseLocPV(pvName);
-            log.debug("Converted local PV: " + pvName);
+            log.config("Converted local PV: " + pvName);
         } else if (pvName.startsWith("CALC")) {
-            log.debug("EDM calc PV: " + pvName);
+            log.config("EDM calc PV: " + pvName);
             pvName = parseCalcPV(pvName);
-            log.debug("Converted calc PV: " + pvName);
+            log.config("Converted calc PV: " + pvName);
         }
         return pvName;
     }

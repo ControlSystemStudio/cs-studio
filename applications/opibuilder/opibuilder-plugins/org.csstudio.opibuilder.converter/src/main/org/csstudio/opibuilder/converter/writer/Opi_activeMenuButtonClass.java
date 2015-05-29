@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeMenuButtonClass;
 
 /**
@@ -36,7 +36,7 @@ public class Opi_activeMenuButtonClass extends OpiWidget {
             new OpiBoolean(widgetContext, "actions_from_pv", true);
         }
 
-        log.debug("Edm_activeMenuButtonClass written.");
+        log.config("Edm_activeMenuButtonClass written.");
 
     }
 

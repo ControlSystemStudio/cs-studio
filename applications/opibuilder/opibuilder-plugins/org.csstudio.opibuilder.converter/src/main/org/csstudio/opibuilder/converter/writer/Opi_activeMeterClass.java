@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.Edm_activeMeterClass;
 
 /**
@@ -40,7 +40,7 @@ public class Opi_activeMeterClass extends OpiWidget {
 
         if(r.isShowScale())
             new OpiBoolean(widgetContext, "show_scale", r.isShowScale());
-        log.debug("Edm_activeMeterClass written.");
+        log.config("Edm_activeMeterClass written.");
 
     }
 

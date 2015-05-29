@@ -35,7 +35,8 @@ public class ValueFormatter
      */
     public ValueFormatter(final Style style, final int precision)
     {
-        this.format = Style.getFormat(style, precision);
+        format = Style.getFormat(style, precision);
+        format.setMaxArray(-1);
     }
 
     /** @param min_max_column Display min/max info in separate column? */

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmLineStyle;
 import org.csstudio.opibuilder.converter.model.Edm_activeRectangleClass;
 
@@ -79,7 +79,7 @@ public class Opi_activeRectangleClass extends OpiWidget {
         }
         new OpiInt(widgetContext, "line_style", lineStyle);
 
-        log.debug("Edm_activeRectangleClass written.");
+        log.config("Edm_activeRectangleClass written.");
 
     }
 

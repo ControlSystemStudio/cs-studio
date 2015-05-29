@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.eclipse.core.runtime,
- org.eclipse.rap.ui;resolution:=optional
+ org.eclipse.rap.ui;resolution:=optional,
+ org.eclipse.help
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.ui.resources.alarms
