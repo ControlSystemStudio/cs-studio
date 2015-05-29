@@ -12,4 +12,3 @@ Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.csstudio.autocomplete.pvmanager.ca
 Service-Component: OSGI-INF/*.xml
-Bundle-ClassPath: .
