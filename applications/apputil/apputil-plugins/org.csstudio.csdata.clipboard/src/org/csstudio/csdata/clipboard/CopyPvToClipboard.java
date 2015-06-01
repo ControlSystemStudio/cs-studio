@@ -53,7 +53,7 @@ public class CopyPvToClipboard extends AbstractHandler
             PlatformUI.getWorkbench().getDisplay());
         clipboard.setContents(new String[] { pvs.toString() },
             new Transfer[] { TextTransfer.getInstance() });
-
+        clipboard.dispose();
         return null;
     }
 }
