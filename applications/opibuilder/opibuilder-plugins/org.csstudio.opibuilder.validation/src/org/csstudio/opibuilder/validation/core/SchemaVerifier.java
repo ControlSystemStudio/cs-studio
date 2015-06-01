@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 
 
+
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
@@ -71,6 +72,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.widgets.Display;
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.filter.ElementFilter;
@@ -468,7 +470,16 @@ public class SchemaVerifier {
                 AbstractWidgetModel model = e.getKey();
                 for (LineAwareElement w : widgets) {
                     Element n = w.getChild(AbstractWidgetModel.PROP_WIDGET_TYPE);
-                    if (model.getWidgetType().equals(n.getValue())) {
+                    boolean correct = false;
+                    if (n == null) {
+                        Attribute attr = w.getAttribute(XMLUtil.XMLATTR_TYPEID);
+                        String fullt = attr.getValue();
+                        String t = fullt.substring(fullt.lastIndexOf('.'));
+                        correct = model.getWidgetType().equals(t) || model.getWidgetType().equals(fullt);
+                    } else {
+                        correct = model.getWidgetType().equals(n.getValue());
+                    }
+                    if (correct) {
                         for (String d : e.getValue()) {
                             LineAwareElement node = (LineAwareElement)w.getChild(d);
                             if (node != null) {
@@ -568,7 +579,7 @@ public class SchemaVerifier {
 
     private static LineAwareElement findPropertyElement(Element node, String name, String property) {
         Element n = node.getChild(AbstractWidgetModel.PROP_NAME);
-        if (n.getValue().equals(name)) {
+        if (n != null && n.getValue().equals(name)) {
             return (LineAwareElement)node.getChild(property);
         }
         return null;
