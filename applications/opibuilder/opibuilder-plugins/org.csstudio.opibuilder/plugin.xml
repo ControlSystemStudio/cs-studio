@@ -257,24 +257,6 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.openRuntimePerspective"
-            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
-         <action
-               class="org.csstudio.opibuilder.actions.OpenOPIRuntimePerspectiveAction"
-               icon="icons/OPIRunner.png"
-               id="org.csstudio.opibuilder.openRuntimePerspective"
-               label="OPI Runtime Perspective"
-               menubarPath="ui">
-         </action>
-         <visibility>
-            <objectState
-                  name="executionMode"
-                  value="RUN_MODE">
-            </objectState>
-         </visibility>
-      </objectContribution>
-      <objectContribution
-            adaptable="false"
             id="org.csstudio.opibuilder.showNavigator"
             objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
          <action

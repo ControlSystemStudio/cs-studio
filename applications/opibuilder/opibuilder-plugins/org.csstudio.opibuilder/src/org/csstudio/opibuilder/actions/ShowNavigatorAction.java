@@ -21,13 +21,14 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.WorkbenchException;
 
-/**The action that opens the OPI Runtime perspective
+/**The action that opens the Navigator
  * @author Xihui Chen
  */
 public class ShowNavigatorAction implements IObjectActionDelegate {
 
     private IWorkbenchWindow window;
 
+    @Override
     @SuppressWarnings("deprecation")
     public void run(IAction action) {
         try {
@@ -44,6 +45,7 @@ public class ShowNavigatorAction implements IObjectActionDelegate {
         }
     }
 
+    @Override
     public void selectionChanged(IAction action, ISelection selection) {
     }
 
