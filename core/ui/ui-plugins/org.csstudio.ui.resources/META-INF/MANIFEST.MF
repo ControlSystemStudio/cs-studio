@@ -2,9 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: CSStudio UI Resources
 Bundle-SymbolicName: org.csstudio.ui.resources;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.1.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime
+Require-Bundle: org.eclipse.ui;resolution:=optional,
+ org.eclipse.core.runtime,
+ org.eclipse.rap.ui;resolution:=optional
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.ui.resources.alarms

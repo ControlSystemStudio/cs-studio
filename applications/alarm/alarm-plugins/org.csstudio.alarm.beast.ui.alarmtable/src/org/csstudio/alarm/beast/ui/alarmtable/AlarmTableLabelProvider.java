@@ -8,16 +8,12 @@
 package org.csstudio.alarm.beast.ui.alarmtable;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
-import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.apputil.ui.swt.CheckBoxImages;
-import org.csstudio.ui.resources.alarms.AlarmIcons;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Composite;
 
 /** Provider of label/color/... for the alarm table.
  *  @author Kay Kasemir
@@ -26,18 +22,21 @@ public class AlarmTableLabelProvider extends CellLabelProvider
 {
     /** Mapping of severities to colors */
     final private SeverityColorProvider color_provider;
+    
+    final private SeverityIconProvider icon_provider;
 
     /** Column handled by this label provider */
     final private ColumnInfo column;
 
     /** Initialize
-     *  @param parent Parent widget (for dispose listener)
+     *  @param icon_provider icon provider provides icons for the ICON column
      *  @param color_provider Color provider for severity values
      *  @param column Column for which this label provider should give labels etc.
      */
-    public AlarmTableLabelProvider(final Composite parent,
+    public AlarmTableLabelProvider(final SeverityIconProvider icon_provider,
             final SeverityColorProvider color_provider, final ColumnInfo column)
     {
+        this.icon_provider = icon_provider;
         this.color_provider = color_provider;
         this.column = column;
     }
@@ -69,7 +68,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
                     : CheckBoxImages.getInstance(cell.getControl()).getImage(true));
             break;
         case ICON:
-            cell.setImage(getIcon(alarm));
+            cell.setImage(icon_provider.getIcon(alarm));
             break;
         case PV:
             cell.setText(alarm.getName());
@@ -125,43 +124,6 @@ public class AlarmTableLabelProvider extends CellLabelProvider
             break;
         default:
             break;
-        }
-    }
-
-    /** Returns an icon representing the severity/state of the given alarm.
-     *  There are 7 different icons: one for disconnected alarms, and two (major/minor) icons
-     *  for each of the following: alarm, alarm acknowledged, alarm cleared but not acknowledged.
-     *
-     *  @param pv the alarm for which the icon should be returned
-     *  @return the icon representing the alarm severity
-     */
-    private static Image getIcon(final AlarmTreePV pv)
-    {
-        final SeverityLevel severity = pv.getSeverity();
-        final SeverityLevel currentSeverity = pv.getCurrentSeverity();
-        final AlarmIcons icons = AlarmIcons.getInstance();
-        switch(severity)
-        {
-            case UNDEFINED_ACK:
-            case INVALID_ACK:
-                return icons.getInvalidAcknowledged();
-            case UNDEFINED:
-            case INVALID:
-                return currentSeverity == SeverityLevel.OK ?
-                       icons.getInvalidClearedNotAcknowledged() : icons.getInvalidNotAcknowledged();
-            case MAJOR:
-                return currentSeverity == SeverityLevel.OK ?
-                       icons.getMajorClearedNotAcknowledged() : icons.getMajorNotAcknowledged();
-            case MAJOR_ACK:
-                return icons.getMajorAcknowledged();
-            case MINOR:
-                return currentSeverity == SeverityLevel.OK ?
-                       icons.getMinorClearedNotAcknowledged() : icons.getMinorNotAcknowledged();
-            case MINOR_ACK:
-                return icons.getMinorAcknowledged();
-            case OK:
-            default:
-                return null;
         }
     }
 }

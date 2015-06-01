@@ -18,8 +18,9 @@ import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.swt.graphics.RGB;
 
 /**
- * A converter between AWT BufferedImage and SWT ImageData.
- * By taking use of this converter, it is possible to use Java2D in SWT or Draw2D.
+ * A converter between AWT BufferedImage and SWT ImageData. By taking use of this converter, it is possible to use
+ * Java2D in SWT or Draw2D.
+ * 
  * @author Xihui Chen
  *
  */
@@ -30,12 +31,13 @@ public class AWT2SWTImageConverter {
         PaletteData palette = data.palette;
         if (palette.isDirect) {
             colorModel = new DirectColorModel(data.depth, palette.redMask, palette.greenMask, palette.blueMask);
-            BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
+            BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(
+                    data.width, data.height), false, null);
             for (int y = 0; y < data.height; y++) {
                 for (int x = 0; x < data.width; x++) {
                     int pixel = data.getPixel(x, y);
                     RGB rgb = palette.getRGB(pixel);
-                    bufferedImage.setRGB(x, y,  rgb.red << 16 | rgb.green << 8 | rgb.blue);
+                    bufferedImage.setRGB(x, y, rgb.red << 16 | rgb.green << 8 | rgb.blue);
                 }
             }
             return bufferedImage;
@@ -46,16 +48,17 @@ public class AWT2SWTImageConverter {
             byte[] blue = new byte[rgbs.length];
             for (int i = 0; i < rgbs.length; i++) {
                 RGB rgb = rgbs[i];
-                red[i] = (byte)rgb.red;
-                green[i] = (byte)rgb.green;
-                blue[i] = (byte)rgb.blue;
+                red[i] = (byte) rgb.red;
+                green[i] = (byte) rgb.green;
+                blue[i] = (byte) rgb.blue;
             }
             if (data.transparentPixel != -1) {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue, data.transparentPixel);
             } else {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue);
             }
-            BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
+            BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(
+                    data.width, data.height), false, null);
             WritableRaster raster = bufferedImage.getRaster();
             int[] pixelArray = new int[1];
             for (int y = 0; y < data.height; y++) {
@@ -71,19 +74,25 @@ public class AWT2SWTImageConverter {
 
     static ImageData convertToSWT(BufferedImage bufferedImage) {
         if (bufferedImage.getColorModel() instanceof DirectColorModel) {
-            DirectColorModel colorModel = (DirectColorModel)bufferedImage.getColorModel();
-            PaletteData palette = new PaletteData(colorModel.getRedMask(), colorModel.getGreenMask(), colorModel.getBlueMask());
-            ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(), colorModel.getPixelSize(), palette);
+            DirectColorModel colorModel = (DirectColorModel) bufferedImage.getColorModel();
+            PaletteData palette = new PaletteData(colorModel.getRedMask(), colorModel.getGreenMask(),
+                    colorModel.getBlueMask());
+            ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(),
+                    colorModel.getPixelSize(), palette);
+            boolean alpha = colorModel.hasAlpha();
             for (int y = 0; y < data.height; y++) {
                 for (int x = 0; x < data.width; x++) {
                     int rgb = bufferedImage.getRGB(x, y);
                     int pixel = palette.getPixel(new RGB((rgb >> 16) & 0xFF, (rgb >> 8) & 0xFF, rgb & 0xFF));
                     data.setPixel(x, y, pixel);
+                    if (alpha) {
+                        data.setAlpha(x, y, (rgb >> 24) & 0xFF);
+                    }
                 }
             }
             return data;
         } else if (bufferedImage.getColorModel() instanceof IndexColorModel) {
-            IndexColorModel colorModel = (IndexColorModel)bufferedImage.getColorModel();
+            IndexColorModel colorModel = (IndexColorModel) bufferedImage.getColorModel();
             int size = colorModel.getMapSize();
             byte[] reds = new byte[size];
             byte[] greens = new byte[size];
@@ -96,7 +105,8 @@ public class AWT2SWTImageConverter {
                 rgbs[i] = new RGB(reds[i] & 0xFF, greens[i] & 0xFF, blues[i] & 0xFF);
             }
             PaletteData palette = new PaletteData(rgbs);
-            ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(), colorModel.getPixelSize(), palette);
+            ImageData data = new ImageData(bufferedImage.getWidth(), bufferedImage.getHeight(),
+                    colorModel.getPixelSize(), palette);
             data.transparentPixel = colorModel.getTransparentPixel();
             WritableRaster raster = bufferedImage.getRaster();
             int[] pixelArray = new int[1];
@@ -110,6 +120,4 @@ public class AWT2SWTImageConverter {
         }
         return null;
     }
-
-
 }
