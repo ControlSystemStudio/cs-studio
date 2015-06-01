@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
+import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SelectionHelper;
@@ -24,6 +25,7 @@ import org.csstudio.alarm.beast.ui.actions.DisableComponentAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.apputil.text.RegExHelper;
+import org.csstudio.security.SecuritySupport;
 import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
@@ -109,6 +111,7 @@ public class GUI implements AlarmClientModelListener
     private Button unselect;
 
     private SeverityColorProvider color_provider;
+    private SeverityIconProvider icon_provider;
 
     /** Is something displayed in <code>error_message</code>? */
     private volatile boolean have_error_message = false;
@@ -174,9 +177,12 @@ public class GUI implements AlarmClientModelListener
         @Override
         protected void setValue(final Object element, final Object value)
         {
+            if (getViewer().isBusy()) return;
             if (value instanceof Boolean)
             {
-                ((AlarmTreePV) element).acknowledge(!(Boolean) value);
+                if (SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE)) {
+                    ((AlarmTreePV) element).acknowledge(!(Boolean) value);
+                }
             }
         }
 
@@ -304,6 +310,7 @@ public class GUI implements AlarmClientModelListener
             baseComposite = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
             baseComposite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(baseComposite);
+            icon_provider = new SeverityIconProvider(baseComposite);
             // TODO Sync the table's sorting
             // Tables are currently separate. Sorting one table by 'time' should
             // probably cause both tables to sort by time.
@@ -317,6 +324,7 @@ public class GUI implements AlarmClientModelListener
             baseComposite = new Composite(parent, SWT.NONE);
             baseComposite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(baseComposite);
+            icon_provider = new SeverityIconProvider(baseComposite);
             addActiveAlarmSashElement(baseComposite, sort_column, sort_up);
         }
         // Update selection in active & ack'ed alarm table
@@ -528,7 +536,7 @@ public class GUI implements AlarmClientModelListener
                 table_col.setText(col_info.getTitle());
             table_col.setMoveable(true);
             // Tell column how to display the model elements
-            view_col.setLabelProvider(new AlarmTableLabelProvider(table, color_provider, col_info));
+            view_col.setLabelProvider(new AlarmTableLabelProvider(icon_provider, color_provider, col_info));
             // Sort support
             final AlarmColumnSortingSelector sel_listener = new AlarmColumnSortingSelector(table_viewer, table_col,
                     col_info);

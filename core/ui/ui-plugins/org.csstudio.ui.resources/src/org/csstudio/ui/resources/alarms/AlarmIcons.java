@@ -1,9 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2010-2015 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
+
 package org.csstudio.ui.resources.alarms;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.csstudio.ui.resources.Activator;
-import org.eclipse.jface.resource.ImageRegistry;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.jface.resource.ImageDescriptor;
 
 /**
  *
@@ -25,17 +34,30 @@ public final class AlarmIcons {
     private static final String MINOR_NOTACKNOWLEDGED = "minor_notack.png";
     private static final String MINOR_CLEARED_NOTACKNOWLEDGED = "minor_cleared_notack.png";
 
+    private static final String INVALID_ACKNOWLEDGED_DISABLED = "invalid_ack_disabled.png";
+    private static final String INVALID_NOTACKNOWLEDGED_DISABLED = "invalid_notack_disabled.png";
+    private static final String INVALID_CLEARED_NOTACKNOWLEDGED_DISABLED = "invalid_cleared_notack_disabled.png";
+    private static final String MAJOR_ACKNOWLEDGED_DISABLED = "major_ack_disabled.png";
+    private static final String MAJOR_NOTACKNOWLEDGED_DISABLED = "major_notack_disabled.png";
+    private static final String MAJOR_CLEARED_NOTACKNOWLEDGED_DISABLED = "major_cleared_notack_disabled.png";
+    private static final String MINOR_ACKNOWLEDGED_DISABLED = "minor_ack_disabled.png";
+    private static final String MINOR_NOTACKNOWLEDGED_DISABLED = "minor_notack_disabled.png";
+    private static final String MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED = "minor_cleared_notack_disabled.png";
+
     private static final String ICONS = "icons/";
 
     private static final AlarmIcons INSTANCE = new AlarmIcons();
-    private final ImageRegistry registry;
+    private final Map<String, ImageDescriptor> registry;
 
+    /**
+     * @return the singleton instance of this class
+     */
     public static AlarmIcons getInstance() {
         return INSTANCE;
     }
 
     private AlarmIcons() {
-        registry = new ImageRegistry(Display.getDefault());
+        registry = new HashMap<String, ImageDescriptor>();
         registry.put(INVALID_NOTACKNOWLEDGED, Activator.getImageDescriptor(ICONS + INVALID_NOTACKNOWLEDGED));
         registry.put(INVALID_ACKNOWLEDGED, Activator.getImageDescriptor(ICONS + INVALID_ACKNOWLEDGED));
         registry.put(INVALID_CLEARED_NOTACKNOWLEDGED,
@@ -46,68 +68,95 @@ public final class AlarmIcons {
         registry.put(MINOR_ACKNOWLEDGED, Activator.getImageDescriptor(ICONS + MINOR_ACKNOWLEDGED));
         registry.put(MINOR_NOTACKNOWLEDGED, Activator.getImageDescriptor(ICONS + MINOR_NOTACKNOWLEDGED));
         registry.put(MINOR_CLEARED_NOTACKNOWLEDGED, Activator.getImageDescriptor(ICONS + MINOR_CLEARED_NOTACKNOWLEDGED));
+
+        registry.put(INVALID_NOTACKNOWLEDGED_DISABLED,
+                Activator.getImageDescriptor(ICONS + INVALID_NOTACKNOWLEDGED_DISABLED));
+        registry.put(INVALID_ACKNOWLEDGED_DISABLED, Activator.getImageDescriptor(ICONS + INVALID_ACKNOWLEDGED_DISABLED));
+        registry.put(INVALID_CLEARED_NOTACKNOWLEDGED_DISABLED,
+                Activator.getImageDescriptor(ICONS + INVALID_CLEARED_NOTACKNOWLEDGED_DISABLED));
+        registry.put(MAJOR_ACKNOWLEDGED_DISABLED, Activator.getImageDescriptor(ICONS + MAJOR_ACKNOWLEDGED_DISABLED));
+        registry.put(MAJOR_NOTACKNOWLEDGED_DISABLED,
+                Activator.getImageDescriptor(ICONS + MAJOR_NOTACKNOWLEDGED_DISABLED));
+        registry.put(MAJOR_CLEARED_NOTACKNOWLEDGED_DISABLED,
+                Activator.getImageDescriptor(ICONS + MAJOR_CLEARED_NOTACKNOWLEDGED_DISABLED));
+        registry.put(MINOR_ACKNOWLEDGED_DISABLED, Activator.getImageDescriptor(ICONS + MINOR_ACKNOWLEDGED_DISABLED));
+        registry.put(MINOR_NOTACKNOWLEDGED_DISABLED,
+                Activator.getImageDescriptor(ICONS + MINOR_NOTACKNOWLEDGED_DISABLED));
+        registry.put(MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED,
+                Activator.getImageDescriptor(ICONS + MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED));
     }
 
     /**
-     * @return the icon representing invalid or disconnected alarm, which has not been acknowledged
+     * @return icon descriptor representing invalid or disconnected alarm, which has not been acknowledged
      */
-    public Image getInvalidNotAcknowledged() {
-        return registry.get(INVALID_NOTACKNOWLEDGED);
+    public ImageDescriptor getInvalidNotAcknowledged(boolean disabled) {
+        return disabled ? registry.get(INVALID_NOTACKNOWLEDGED_DISABLED) : registry.get(INVALID_NOTACKNOWLEDGED);
     }
 
     /**
-     * @return the icon representing invalid or disconnected alarm, which has been cleared but not acknowledged
+     * @param disabled true if the disabled icon should be returned or false if enabled instance is requested
+     * @return icon descriptor representing invalid or disconnected alarm, which has been cleared but not acknowledged
      */
-    public Image getInvalidClearedNotAcknowledged() {
-        return registry.get(INVALID_CLEARED_NOTACKNOWLEDGED);
+    public ImageDescriptor getInvalidClearedNotAcknowledged(boolean disabled) {
+        return disabled ? registry.get(INVALID_CLEARED_NOTACKNOWLEDGED_DISABLED) : registry
+                .get(INVALID_CLEARED_NOTACKNOWLEDGED);
     }
 
     /**
-     * @return the icon representing invalid or disconnected alarm, which has been acknowledged
+     * @param disabled true if the disabled icon should be returned or false if enabled instance is requested
+     * @return icon descriptor representing invalid or disconnected alarm, which has been acknowledged
      */
-    public Image getInvalidAcknowledged() {
-        return registry.get(INVALID_ACKNOWLEDGED);
+    public ImageDescriptor getInvalidAcknowledged(boolean disabled) {
+        return disabled ? registry.get(INVALID_ACKNOWLEDGED_DISABLED) : registry.get(INVALID_ACKNOWLEDGED);
     }
 
     /**
-     * @return icon representing a major acknowledged alarm
+     * @param disabled true if the disabled icon should be returned or false if enabled instance is requested
+     * @return icon descriptor representing a major acknowledged alarm
      */
-    public Image getMajorAcknowledged() {
-        return registry.get(MAJOR_ACKNOWLEDGED);
+    public ImageDescriptor getMajorAcknowledged(boolean disabled) {
+        return disabled ? registry.get(MAJOR_ACKNOWLEDGED_DISABLED) : registry.get(MAJOR_ACKNOWLEDGED);
     }
 
     /**
-     * @return icon representing a minor acknowledged alarm
+     * @param disabled true if the disabled icon should be returned or false if enabled instance is requested
+     * @return icon descriptor representing a minor acknowledged alarm
      */
-    public Image getMinorAcknowledged() {
-        return registry.get(MINOR_ACKNOWLEDGED);
+    public ImageDescriptor getMinorAcknowledged(boolean disabled) {
+        return disabled ? registry.get(MINOR_ACKNOWLEDGED_DISABLED) : registry.get(MINOR_ACKNOWLEDGED);
     }
 
     /**
-     * @return icon representing a major not acknowledged alarm
+     * @param disabled true if the disabled icon should be returned or false if enabled instance is requested
+     * @return icon descriptor representing a major not acknowledged alarm
      */
-    public Image getMajorNotAcknowledged() {
-        return registry.get(MAJOR_NOTACKNOWLEDGED);
+    public ImageDescriptor getMajorNotAcknowledged(boolean disabled) {
+        return disabled ? registry.get(MAJOR_NOTACKNOWLEDGED_DISABLED) : registry.get(MAJOR_NOTACKNOWLEDGED);
     }
 
     /**
-     * @return icon representing a minor not acknowledged alarm
+     * @param disabled true if the disabled icon should be returned or false if enabled instance is requested
+     * @return icon descriptor representing a minor not acknowledged alarm
      */
-    public Image getMinorNotAcknowledged() {
-        return registry.get(MINOR_NOTACKNOWLEDGED);
+    public ImageDescriptor getMinorNotAcknowledged(boolean disabled) {
+        return disabled ? registry.get(MINOR_NOTACKNOWLEDGED_DISABLED) : registry.get(MINOR_NOTACKNOWLEDGED);
     }
 
     /**
-     * @return icon representing a major cleared and not yet acknowledged alarm
+     * @param disabled true if the disabled icon should be returned or false if enabled instance is requested
+     * @return icon descriptor representing a major cleared and not yet acknowledged alarm
      */
-    public Image getMajorClearedNotAcknowledged() {
-        return registry.get(MAJOR_CLEARED_NOTACKNOWLEDGED);
+    public ImageDescriptor getMajorClearedNotAcknowledged(boolean disabled) {
+        return disabled ? registry.get(MAJOR_CLEARED_NOTACKNOWLEDGED_DISABLED) : registry
+                .get(MAJOR_CLEARED_NOTACKNOWLEDGED);
     }
 
     /**
-     * @return icon representing a minor cleared and not yet acknowledged alarm
+     * @param disabled true if the disabled icon should be returned or false if enabled instance is requested
+     * @return icon descriptor representing a minor cleared and not yet acknowledged alarm
      */
-    public Image getMinorClearedNotAcknowledged() {
-        return registry.get(MINOR_CLEARED_NOTACKNOWLEDGED);
+    public ImageDescriptor getMinorClearedNotAcknowledged(boolean disabled) {
+        return disabled ? registry.get(MINOR_CLEARED_NOTACKNOWLEDGED_DISABLED) : registry
+                .get(MINOR_CLEARED_NOTACKNOWLEDGED);
     }
 }
