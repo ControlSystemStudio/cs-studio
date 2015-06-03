@@ -132,10 +132,10 @@ public class Model
     private volatile ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
 
     /** Show toolbar*/
-    private boolean show_toolbar;
+    private boolean show_toolbar = true;
 
     /** Show legend*/
-    private boolean show_legend;
+    private boolean show_legend = false;
 
     public Model()
     {

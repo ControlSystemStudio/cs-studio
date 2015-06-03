@@ -85,7 +85,7 @@ public class Application implements IApplication {
         } else if (location == null) {
             location = new File(".").getAbsoluteFile().getParentFile().getAbsolutePath();
         }
-
+        
         Path schemaPath = new Path(new File(schema).getAbsolutePath());
         Path rulesPath = new Path(new File(rules).getAbsolutePath());
         SchemaVerifier verifier = Validator.createVerifier(schemaPath, rulesPath, null);
@@ -172,11 +172,9 @@ public class Application implements IApplication {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             for (File f : files) {
-                if (f.getAbsolutePath().toLowerCase().endsWith(".opi")) {
-                    check(verifier, f);
-                }
+                check(verifier, f);
             }
-        } else {
+        } else if (file.getAbsolutePath().toLowerCase().endsWith(".opi")) {
             System.out.println("Validating file: " + file.getAbsolutePath());
             verifier.validate(new Path(file.getAbsolutePath()));
         }
