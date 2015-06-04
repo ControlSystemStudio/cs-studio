@@ -89,10 +89,10 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.csstudio.opibuilder.validation.application"
-            name="OPI Validation">
+            name="OPIValidation">
          <property
                name="appName"
-               value="OPI Validation">
+               value="OPIValidation">
          </property>
       </product>
    </extension>
