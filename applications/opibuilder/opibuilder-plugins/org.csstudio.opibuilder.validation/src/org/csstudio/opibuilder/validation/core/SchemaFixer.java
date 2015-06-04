@@ -191,6 +191,10 @@ public class SchemaFixer {
         AbstractWidgetModel m = doesWidgetMatch(parent, failure, useWuid);
         if (m != null) return m;
         for (AbstractWidgetModel model : parent.getChildren()) {
+            if (model instanceof AbstractContainerModel) {
+                m = findWidgetInternal((AbstractContainerModel)model, failure, useWuid);
+                if (m != null) return m;
+            }
             m = doesWidgetMatch(model, failure, useWuid);
             if (m != null) return m;
         }
@@ -219,10 +223,6 @@ public class SchemaFixer {
             if (equals(obj, failure.getActualValue())) {
                 return model;
             }
-        }
-        if (model instanceof AbstractContainerModel) {
-            AbstractWidgetModel result = findWidgetInternal((AbstractContainerModel)model, failure, useWuid);
-            if (result != null) return result;
         }
         return null;
     }
