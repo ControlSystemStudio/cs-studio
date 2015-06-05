@@ -6,14 +6,14 @@ import org.csstudio.diag.pvfields.model.PVFieldListener;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PVFieldTest implements PVFieldListener
+public class PVFieldDemo implements PVFieldListener
 {
     final private CountDownLatch updates = new CountDownLatch(1);
 
     @Before
     public void setup() throws Exception
     {
-        TestSetup.setup();
+        SetupHelper.setup();
     }
 
     @Override
@@ -26,7 +26,7 @@ public class PVFieldTest implements PVFieldListener
     @Test
     public void testPVField() throws Exception
     {
-        final PVField field = new PVField(TestSetup.CHANNEL_NAME + ".VAL", "test");
+        final PVField field = new PVField(SetupHelper.CHANNEL_NAME + ".VAL", "test");
         field.start(this);
         updates.await();
         field.stop();

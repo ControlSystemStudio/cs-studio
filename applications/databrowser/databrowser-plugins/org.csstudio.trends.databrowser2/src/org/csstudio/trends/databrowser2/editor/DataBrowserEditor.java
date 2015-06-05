@@ -500,30 +500,35 @@ public class DataBrowserEditor extends EditorPart
         final Shell shell = getSite().getShell();
         final ResourceHelper resources = SingleSourcePlugin.getResourceHelper();
         final IPath original = resources.getPath(getEditorInput());
-        final IPath file = SingleSourcePlugin.getUIHelper()
-            .openSaveDialog(shell, original, Model.FILE_EXTENSION);
-        if (file == null)
-            return;
-        try
+        // Prompt & save until success or cancel
+        while (true)
         {
-            final PathEditorInput new_input = new PathEditorInput(file);
+            final IPath file = SingleSourcePlugin.getUIHelper()
+                    .openSaveDialog(shell, original, Model.FILE_EXTENSION);
+            if (file == null)
+                return;
             try
-            (
-                final OutputStream stream = resources.getOutputStream(new_input);
-            )
             {
-                save(new NullProgressMonitor(), stream);
+                final PathEditorInput new_input = new PathEditorInput(file);
+                try
+                (
+                    final OutputStream stream = resources.getOutputStream(new_input);
+                )
+                {
+                    save(new NullProgressMonitor(), stream);
+                }
+                // Set that file as editor's input, so that just 'save' instead of
+                // 'save as' is possible from now on
+                final DataBrowserModelEditorInput db_input = new DataBrowserModelEditorInput(new_input, model);
+                setInput(db_input);
+                setPartName(db_input.getName());
+                setTitleToolTip(db_input.getToolTipText());
+                return;
             }
-            // Set that file as editor's input, so that just 'save' instead of
-            // 'save as' is possible from now on
-            final DataBrowserModelEditorInput db_input = new DataBrowserModelEditorInput(new_input, model);
-            setInput(db_input);
-            setPartName(db_input.getName());
-            setTitleToolTip(db_input.getToolTipText());
-        }
-        catch (Exception ex)
-        {
-            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
+            catch (Exception ex)
+            {
+                ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
+            }
         }
     }
 
@@ -539,11 +544,18 @@ public class DataBrowserEditor extends EditorPart
         try
         {
             new XMLPersistence().write(model, stream);
+            setDirty(false);
+            return;
+        }
+        catch (Exception ex)
+        {
+            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
+            // Writing failed, prompt for different name or 'cancel'
+            doSaveAs();
         }
         finally
         {
             monitor.done();
         }
-        setDirty(false);
     }
 }
