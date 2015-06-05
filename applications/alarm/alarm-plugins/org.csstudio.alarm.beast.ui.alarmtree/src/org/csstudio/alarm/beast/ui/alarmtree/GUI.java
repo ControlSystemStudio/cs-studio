@@ -105,10 +105,12 @@ public class GUI implements AlarmClientModelListener
         throttle = new GUIUpdateThrottle() {
             @Override
             protected void fire() {
-                display.syncExec(() -> 
-                { 
-                    if (!tree_viewer.getTree().isDisposed()) 
+                display.syncExec(() ->
+                {
+                    if (!tree_viewer.getTree().isDisposed())
                     {
+                        if (model.isServerAlive())
+                            setErrorMessage(null);
                         tree_viewer.refresh();
                     }
                 });
@@ -116,15 +118,15 @@ public class GUI implements AlarmClientModelListener
         };
         throttle.start();
 
+        // Subscribe to model updates, arrange to un-subscribe
+        model.addListener(this);
+        parent.addDisposeListener(e -> {throttle.dispose(); model.removeListener(GUI.this);});
+
         if (model.isServerAlive()) {
             setErrorMessage(null);
         } else {
             setErrorMessage(Messages.WaitingForServer);
         }
-
-        // Subscribe to model updates, arrange to un-subscribe
-        model.addListener(this);
-        parent.addDisposeListener(e -> {throttle.dispose(); model.removeListener(GUI.this);});
 
         connectContextMenu(site);
 
