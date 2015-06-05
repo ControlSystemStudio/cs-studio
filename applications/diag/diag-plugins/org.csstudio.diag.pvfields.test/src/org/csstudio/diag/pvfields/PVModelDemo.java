@@ -14,7 +14,7 @@ import org.csstudio.diag.pvfields.model.PVModelListener;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PVModelUnitTest implements PVModelListener
+public class PVModelDemo implements PVModelListener
 {
     // Expect updates on properties, fields overall and at least two individual fields
     final private CountDownLatch updates = new CountDownLatch(4);
@@ -22,7 +22,7 @@ public class PVModelUnitTest implements PVModelListener
     @Before
     public void setup() throws Exception
     {
-        TestSetup.setup();
+        SetupHelper.setup();
     }
 
     @Override
@@ -53,10 +53,10 @@ public class PVModelUnitTest implements PVModelListener
     @Test
     public void testPVModel() throws Exception
     {
-        final PVModel model = new PVModel(TestSetup.CHANNEL_NAME, this);
+        final PVModel model = new PVModel(SetupHelper.CHANNEL_NAME, this);
         updates.await();
 
-        assertThat(TestSetup.CHANNEL_NAME, equalTo(model.getPVName()));
+        assertThat(SetupHelper.CHANNEL_NAME, equalTo(model.getPVName()));
 
         final Map<String, String> properties = model.getProperties();
         assertTrue(properties.size() > 0);

@@ -8,19 +8,19 @@ import org.junit.Test;
  *
  *  @author Kay Kasemir
  */
-public class EPICSDataProviderUnitTest
+public class EPICSDataProviderDemo
 {
     @Before
     public void setup() throws Exception
     {
-        TestSetup.setup();
+        SetupHelper.setup();
     }
 
     @Test
     public void testEPICSDataProvider() throws Exception
     {
         final DataProvider provider = new EPICSDataProvider();
-        final PVInfo info = provider.lookup(TestSetup.CHANNEL_NAME);
+        final PVInfo info = provider.lookup(SetupHelper.CHANNEL_NAME);
         System.out.println(info);
     }
 }
