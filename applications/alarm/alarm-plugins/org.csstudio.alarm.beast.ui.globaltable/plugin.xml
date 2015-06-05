@@ -36,4 +36,23 @@
          </command>
       </menuContribution>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.alarm.beast.ui.perspective">
+         <view
+               closeable="true"
+               id="org.csstudio.alarm.beast.ui.globaltable.view"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.ui.console.ConsoleView"
+               showTitle="true"
+               visible="false">
+         </view>
+         <viewShortcut
+               id="org.csstudio.alarm.beast.ui.globaltable.view">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
 </plugin>

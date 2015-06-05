@@ -69,5 +69,24 @@
             name="%Annunciator">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.alarm.beast.ui.perspective">
+         <view
+               closeable="true"
+               id="org.csstudio.alarm.beast.annunciator.view"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.ui.views.PropertySheet"
+               showTitle="true"
+               visible="false">
+         </view>
+         <viewShortcut
+               id="org.csstudio.alarm.beast.annunciator.view">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>
