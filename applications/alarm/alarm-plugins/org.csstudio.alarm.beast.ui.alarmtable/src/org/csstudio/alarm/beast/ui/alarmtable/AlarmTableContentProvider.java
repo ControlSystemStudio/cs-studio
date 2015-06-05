@@ -44,7 +44,8 @@ public class AlarmTableContentProvider implements ILazyContentProvider
             table_viewer.setItemCount(0);
         }
         else if (alarms.length > alarm_table_row_limit)
-        {    // Use only a subset of actual alarms
+        { // Use only a subset of actual alarms
+            Arrays.sort(alarms, comparator);
             this.alarms = new AlarmTreePV[alarm_table_row_limit + 1];
             System.arraycopy(alarms, 0, this.alarms, 0, alarm_table_row_limit);
             // Add explanatory entry to end
@@ -52,7 +53,6 @@ public class AlarmTableContentProvider implements ILazyContentProvider
             info.setDescription(NLS.bind(Messages.AlarmTableRowLimitInfoFmt, alarm_table_row_limit));
             this.alarms[alarm_table_row_limit] = info;
             // Sort all but that explanatory entry
-            Arrays.sort(this.alarms, 0, alarm_table_row_limit, comparator);
             table_viewer.setItemCount(alarm_table_row_limit + 1);
         }
         else
@@ -100,4 +100,4 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     {
         // Nothing to dispose
     }
- }
+}
