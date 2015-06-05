@@ -23,6 +23,7 @@ import org.epics.util.time.Timestamp;
  */
 public class AlarmTreePV extends AlarmTreeLeaf
 {
+    private static final long serialVersionUID = 5262966990320748429L;
     private boolean enabled = true;
     private boolean latching = true;
     private boolean annunciating = false;

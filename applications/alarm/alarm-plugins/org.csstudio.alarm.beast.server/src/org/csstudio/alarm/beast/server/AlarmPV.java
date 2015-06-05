@@ -29,31 +29,33 @@ import org.epics.vtype.VType;
 @SuppressWarnings("nls")
 public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListener, PVListener
 {
+    private static final long serialVersionUID = -1467537752626320944L;
+
     /** Timer used to check for connections at some delay after 'start */
     final private static Timer connection_timer =
         new Timer("Connection Check", true);
 
-    final private AlarmLogic logic;
+    final private transient AlarmLogic logic;
 
     /** Alarm server that handles this PV */
-    final private AlarmServer server;
+    final private transient AlarmServer server;
 
     /** Description of alarm, will be used to annunciation */
     private volatile String description;
 
     /** Control system PV */
-    private volatile PV pv = null;
+    private volatile transient PV pv = null;
 
     /** Track connection state */
     private volatile boolean is_connected = false;
 
     /** Started when pv is created to check if it ever connects */
-    private TimerTask connection_timeout_task = null;
+    private transient TimerTask connection_timeout_task = null;
 
     /** Filter that might be used to compute 'enabled' state;
      *  can be <code>null</code>
      */
-    private volatile Filter filter;
+    private volatile transient Filter filter;
 
     /** Initialize alarm PV
      *  @param server Alarm server that handles this PV. Within JUnit tests, this may be <code>null</code>.
@@ -167,6 +169,9 @@ public class AlarmPV extends TreeItem implements AlarmLogicListener, FilterListe
     /** Disconnect from control system */
     public void stop()
     {
+        //the alarm pv has been stopped already
+        if (pv == null)
+            return;
         if (connection_timeout_task != null)
         {
             connection_timeout_task.cancel();

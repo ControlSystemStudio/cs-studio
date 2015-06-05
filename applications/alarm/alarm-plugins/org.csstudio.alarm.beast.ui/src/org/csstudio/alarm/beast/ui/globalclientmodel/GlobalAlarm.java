@@ -32,6 +32,8 @@ import org.epics.util.time.Timestamp;
  */
 public class GlobalAlarm extends AlarmTreeLeaf
 {
+    private static final long serialVersionUID = 3755987841035146999L;
+
     /** Create global alarm with path and alarm info,
      *  but without GUI detail (guidance,..) nor valid RDB ID.
      *  If possible, uses alarm tree elements from existing configurations.

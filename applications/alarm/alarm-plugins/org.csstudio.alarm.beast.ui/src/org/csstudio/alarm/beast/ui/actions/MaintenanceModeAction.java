@@ -22,13 +22,13 @@ import org.eclipse.swt.widgets.Display;
 /** Action to control the "maintenance" mode
  *  @author Kay Kasemir
  */
-public class MaintenanceModeAction extends Action
+public class MaintenanceModeAction extends Action implements AlarmClientModelListener
 {
     /** Images for button icon */
     private static ImageDescriptor image_on = null, image_off = null;
 
     /** Model who's Mode we control */
-    final private AlarmClientModel model;
+    private AlarmClientModel model;
 
     /** Initialize
      *  @param model Model who's Mode we control
@@ -37,36 +37,24 @@ public class MaintenanceModeAction extends Action
     {
         super(Messages.MaintenanceMode);
         getIcons();
-        this.model = model;
 
         //authorization
         SecuritySupportUI.registerAction(this, AuthIDs.CONFIGURE);
 
-        // Reflect mode of model right now, then monitor for mode changes
-        reflectModelMode(model.inMaintenanceMode());
-        model.addListener(new AlarmClientModelListener()
-        {
-            @Override
-            public void serverModeUpdate(final AlarmClientModel model, final boolean maintenance_mode)
-            {
-                Display.getDefault().asyncExec(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        reflectModelMode(maintenance_mode);
-                    }
-                });
-            }
+        setModel(model);
+    }
 
-            @Override
-            public void serverTimeout(AlarmClientModel model) { /* Ignore */ }
-            @Override
-            public void newAlarmConfiguration(AlarmClientModel model) { /* Ignore */ }
-            @Override
-            public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed)
-            { /* Ignore */ }
-        });
+    public void setModel(AlarmClientModel model)
+    {
+        if (this.model != null)
+            this.model.removeListener(this);
+        // Reflect mode of model right now, then monitor for mode changes
+        this.model = model;
+        if (this.model != null)
+        {
+            reflectModelMode(this.model.inMaintenanceMode());
+            this.model.addListener(this);
+        }
     }
 
     /** Assert that icons are loaded */
@@ -103,4 +91,17 @@ public class MaintenanceModeAction extends Action
             model.requestMaintenanceMode(true);
         }
     }
+
+    @Override
+    public void serverModeUpdate(final AlarmClientModel model, final boolean maintenance_mode)
+    {
+        Display.getDefault().asyncExec(() -> reflectModelMode(maintenance_mode));
+    }
+    @Override
+    public void serverTimeout(AlarmClientModel model) { /* Ignore */ }
+    @Override
+    public void newAlarmConfiguration(AlarmClientModel model) { /* Ignore */ }
+    @Override
+    public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed)
+    { /* Ignore */ }
 }
