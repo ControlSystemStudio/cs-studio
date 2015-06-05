@@ -7,11 +7,16 @@
 ******************************************************************************/
 package org.csstudio.alarm.beast.client;
 
+import java.io.Serializable;
+
 /**
  * The data structure for Automated Actions
  * @author Fred Arnaud (Sopra Group)
  */
-public class AADataStructure {
+public class AADataStructure implements Serializable {
+
+    private static final long serialVersionUID = 3770129937824271211L;
+
     /** Maximum length of title used for the 'teaser' */
     final private static int MAX_TEASER = 30;
 

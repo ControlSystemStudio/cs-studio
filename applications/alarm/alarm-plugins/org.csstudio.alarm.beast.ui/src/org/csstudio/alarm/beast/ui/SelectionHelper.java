@@ -10,7 +10,7 @@ package org.csstudio.alarm.beast.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 /** Helper for locating alarm model items in a selection
@@ -21,16 +21,16 @@ public class SelectionHelper
     /** @param selection Selection that might contain alarm tree PVs
      *  @return All selected alarm tree PVs or <code>null</code>
      */
-    public static AlarmTreePV[] getAlarmPVs(final IStructuredSelection selection)
+    public static AlarmTreeItem[] getAlarmPVs(final IStructuredSelection selection)
     {
-        final List<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
+        final List<AlarmTreeItem> pvs = new ArrayList<>();
         final Object[] sel = selection.toArray();
         for (Object obj : sel)
-            if (obj instanceof AlarmTreePV)
-                pvs.add((AlarmTreePV) obj);
+            if (obj instanceof AlarmTreeItem)
+                pvs.add((AlarmTreeItem) obj);
         if (pvs.size() <= 0)
             return null;
-        return pvs.toArray(new AlarmTreePV[pvs.size()]);
+        return pvs.toArray(new AlarmTreeItem[pvs.size()]);
     }
 
     /** @param selection Selection that might contain alarm tree PVs
@@ -39,7 +39,7 @@ public class SelectionHelper
      */
     public static Object getAlarmTreePVsForDragging(final IStructuredSelection selection)
     {
-        final AlarmTreePV[] pvs = getAlarmPVs(selection);
+        final AlarmTreeItem[] pvs = getAlarmPVs(selection);
         if (pvs != null  &&  pvs.length == 1)
             return pvs[0];
         return pvs;
