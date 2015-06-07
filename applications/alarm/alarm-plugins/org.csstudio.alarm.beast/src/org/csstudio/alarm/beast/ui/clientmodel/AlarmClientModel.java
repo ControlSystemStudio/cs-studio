@@ -200,6 +200,16 @@ public class AlarmClientModel
     {
         if (references.decrementAndGet() > 0)
             return;
+        internalRelease();
+        synchronized(INSTANCES) {
+            if (this == default_instance) {
+                default_instance = null;
+            }
+        }
+    }
+
+    private void internalRelease()
+    {
         try
         {
             Activator.getLogger().fine("AlarmClientModel closed.");
@@ -231,11 +241,13 @@ public class AlarmClientModel
         {
             Activator.getLogger().log(Level.WARNING, "Model release failed", ex);
         }
-        synchronized(INSTANCES) {
-            if (this == default_instance) {
-                default_instance = null;
-            }
-        }
+    }
+
+    @Override
+    protected void finalize() throws Throwable
+    {
+        internalRelease();
+        super.finalize();
     }
 
     /** List all configuration 'root' element names, i.e. names
