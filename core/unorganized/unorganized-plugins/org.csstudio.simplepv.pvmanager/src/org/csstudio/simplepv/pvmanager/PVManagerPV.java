@@ -48,18 +48,19 @@ import org.epics.vtype.VType;
  */
 public class PVManagerPV implements IPV {
 
-    //Keep the exception handler separate from the PVManagerPV, to avoid 
+    //Keep the exception handler separate from the PVManagerPV, to avoid
     //memory leaks in case the client doesn't close this PV.
     private static class ExHandler extends ExceptionHandler {
         private final org.csstudio.simplepv.ExceptionHandler exceptionHandler;
         ExHandler(org.csstudio.simplepv.ExceptionHandler exceptionHandler) {
             this.exceptionHandler = exceptionHandler;
         }
+        @Override
         public void handleException(Exception ex) {
             exceptionHandler.handleException(ex);
         }
     }
-    
+
     private String name;
     private boolean valueBuffered;
     private List<IPVListener> listeners;
@@ -383,6 +384,7 @@ public class PVManagerPV implements IPV {
                     stop();
                 }
             });
+            return;
         };
         if (pvReader != null){
             pvReader.close();
