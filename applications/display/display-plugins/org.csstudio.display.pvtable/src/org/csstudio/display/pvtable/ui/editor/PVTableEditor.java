@@ -174,17 +174,19 @@ public class PVTableEditor extends EditorPart
         final ResourceHelper resources = SingleSourcePlugin.getResourceHelper();
         try
         {
-            if (resources.isWritable(input))
+            if (input.exists())
             {
                 final PVTablePersistence persistence = PVTablePersistence.forFilename(input.getName());
                 saveToStream(monitor, persistence, resources.getOutputStream(input));
             }
-            else
+            else // First save of Editor with empty input, prompt for name
                 doSaveAs();
         }
         catch (Exception ex)
         {
             ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
+            // Save failed, allow saving under a different name, or cancel
+            doSaveAs();
         }
     }
 
@@ -200,6 +202,9 @@ public class PVTableEditor extends EditorPart
         try
         {
             persistence.write(model, stream);
+            // Mark as clean
+            is_dirty = false;
+            firePropertyChange(IEditorPart.PROP_DIRTY);
         }
         catch (Exception ex)
         {
@@ -207,9 +212,6 @@ public class PVTableEditor extends EditorPart
         }
         if (monitor != null)
             monitor.done();
-        // Mark as clean
-        is_dirty = false;
-        firePropertyChange(IEditorPart.PROP_DIRTY);
     }
 
     @Override
@@ -220,36 +222,41 @@ public class PVTableEditor extends EditorPart
         // If there is an original file name, try to display it
         final IPath original = resources.getPath(getEditorInput());
         IPath path = null;
-        boolean valid = false;
-        while (! valid)
+        // Prompt for file name, attempt saving until success or cancel
+        while (true)
         {
-            path = SingleSourcePlugin.getUIHelper()
-                    .openSaveDialog(getEditorSite().getShell(), original, null);
-            if (path == null)
-                return;
-            final String ext = path.getFileExtension();
-            valid = ext != null  &&
-                    (ext.equals(PVTableXMLPersistence.FILE_EXTENSION)  ||
-                     ext.equals(PVTableAutosavePersistence.FILE_EXTENSION));
-            if (! valid)
-                MessageDialog.openError(getSite().getShell(), Messages.Error, Messages.InvalidFileExtension);
-        }
+            boolean valid = false;
+            while (! valid)
+            {
+                path = SingleSourcePlugin.getUIHelper()
+                        .openSaveDialog(getEditorSite().getShell(), original, null);
+                if (path == null)
+                    return; // User chose to cancel
+                final String ext = path.getFileExtension();
+                valid = ext != null  &&
+                        (ext.equals(PVTableXMLPersistence.FILE_EXTENSION)  ||
+                         ext.equals(PVTableAutosavePersistence.FILE_EXTENSION));
+                if (! valid)
+                    MessageDialog.openError(getSite().getShell(), Messages.Error, Messages.InvalidFileExtension);
+            }
 
-        // Get file for the new resource's path.
-        final IEditorInput new_input = new PathEditorInput(path);
-        try
-        {
-            final OutputStream stream = resources.getOutputStream(new_input);
-            final PVTablePersistence persistence = PVTablePersistence.forFilename(path.getFileExtension());
-            saveToStream(null, persistence, stream);
+            // Get file for the new resource's path.
+            final IEditorInput new_input = new PathEditorInput(path);
+            try
+            {
+                final OutputStream stream = resources.getOutputStream(new_input);
+                final PVTablePersistence persistence = PVTablePersistence.forFilename(path.getFileExtension());
+                saveToStream(null, persistence, stream);
+                // Success: Update input and title
+                setInput(new_input);
+                updateTitle();
+                return;
+            }
+            catch (Exception ex)
+            {
+                ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
+            }
         }
-        catch (Exception ex)
-        {
-            ExceptionDetailsErrorDialog.openError(getSite().getShell(), Messages.Error, ex);
-        }
-        // Update input and title
-        setInput(new_input);
-        updateTitle();
     }
 
     @Override

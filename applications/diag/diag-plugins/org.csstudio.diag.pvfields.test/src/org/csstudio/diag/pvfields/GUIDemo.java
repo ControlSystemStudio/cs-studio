@@ -14,7 +14,7 @@ public class GUIDemo
     @Before
     public void setup() throws Exception
     {
-        TestSetup.setup();
+        SetupHelper.setup();
     }
 
     @Test
@@ -38,7 +38,7 @@ public class GUIDemo
 
         final GUI gui = new GUI(shell, null, null);
         gui.setFocus();
-        gui.setPVName(TestSetup.CHANNEL_NAME);
+        gui.setPVName(SetupHelper.CHANNEL_NAME);
 
         shell.open();
         while (!shell.isDisposed())
