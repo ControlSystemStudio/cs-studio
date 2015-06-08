@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.singlesource.rcp;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
@@ -14,13 +15,18 @@ import java.io.PipedOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 
 /** Resource Helper for RCP
@@ -129,8 +135,17 @@ public class RCPResourceHelper extends ResourceHelper
             return super.getOutputStream(input);
 
         // Have workspace file
+        // Check write access.
         if (ws_file.isReadOnly())
-            throw new Exception(ws_file.getName() + " is read-only");
+            throw new Exception("File " + ws_file.getName() + " is read-only");
+        // isReadOnly() only tests the file itself,
+        // but parent directory can still prohibit writing.
+        // --> Test by actually writing
+        final InputStream dummy_data = new ByteArrayInputStream(new byte[0]);
+        if (ws_file.exists())
+            ws_file.setContents(dummy_data, IResource.FORCE, new NullProgressMonitor());
+        else
+            ws_file.create(dummy_data, IResource.FORCE, new NullProgressMonitor());
 
         // Caller of this method receives an output stream,
         // but IFile doesn't offer an output stream API.
@@ -142,25 +157,33 @@ public class RCPResourceHelper extends ResourceHelper
         final PipedInputStream pipein = new PipedInputStream(pipeout);
 
         // To avoid deadlock, create thread that handles the IFile
-        final Thread writer = new Thread(input.getName() + " Writer")
-        {
-            @Override
-            public void run()
+        final Job writer = Job.create("Write " + input.getName(),
+            (final IProgressMonitor monitor) ->
             {
                 try
                 {
-                    if (ws_file.exists())
-                        ws_file.setContents(pipein, IResource.FORCE, new NullProgressMonitor());
-                    else
-                        ws_file.create(pipein, IResource.FORCE, new NullProgressMonitor());
+                    ws_file.setContents(pipein, IResource.FORCE, monitor);
                 }
                 catch (Exception ex)
-                {
+                {   // Cannot directly notify the code which uses `pipeout`,
+                    // but closing pipes so writing code gets Exception when
+                    // it tries to write more.
+                    try
+                    {
+                        pipeout.close();
+                        pipein.close();
+                    }
+                    catch (Throwable ignored) {}
+                    // Notify user
                     Logger.getLogger(getClass().getName()).log(Level.SEVERE, "Error writing " + input.getName(), ex);
+                    Display.getDefault().asyncExec(() ->
+                    {
+                        ExceptionDetailsErrorDialog.openError(null, "Error Writing File", ex);
+                    });
                 }
-            }
-        };
-        writer.start();
+                return Status.OK_STATUS;
+            });
+        writer.schedule();
 
         return pipeout;
     }

@@ -14,7 +14,7 @@ import org.epics.pvmanager.jca.JCADataSource;
  *
  *  @author Kay Kasemir
  */
-public class TestSetup
+public class SetupHelper
 {
     private static final String ADDR_LIST = "127.0.0.1 160.91.228.17";
     final public static String CHANNEL_NAME = "DTL_LLRF:IOC1:Load";
