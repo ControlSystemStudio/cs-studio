@@ -8,6 +8,9 @@
 package org.csstudio.opibuilder.script;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -26,8 +29,18 @@ import org.python.core.PySystemState;
  */
 public class JythonScriptStore extends AbstractScriptStore{
 
+    private static class InterpreterHolder {
+        final PythonInterpreter intepreter;
+        AtomicInteger counter = new AtomicInteger(0);
+        InterpreterHolder(PythonInterpreter interpreter) {
+            this.intepreter = interpreter;
+        }
+    }
+
+    private static final Map<String, InterpreterHolder> interpreters = new HashMap<>();
     private PythonInterpreter interpreter;
-    private PySystemState state;
+    private String interpreterKey;
+    private static final String EMPTY_KEY = "emptyKey";
 
     private PyCode code;
 
@@ -41,20 +54,36 @@ public class JythonScriptStore extends AbstractScriptStore{
     protected void initScriptEngine() {
         IPath scriptPath = getAbsoluteScriptPath();
         //Add the path of script to python module search path
-        state = new PySystemState();
+        InterpreterHolder holder = null;
         if(scriptPath != null && !scriptPath.isEmpty()){
-
-            //If it is a workspace file.
-            if(ResourceUtil.isExistingWorkspaceFile(scriptPath)){
-                IPath folderPath = scriptPath.removeLastSegments(1);
-                String sysLocation = ResourceUtil.workspacePathToSysPath(folderPath).toOSString();
-                state.path.append(new PyString(sysLocation));
-            }else if(ResourceUtil.isExistingLocalFile(scriptPath)){
-                IPath folderPath = scriptPath.removeLastSegments(1);
-                state.path.append(new PyString(folderPath.toOSString()));
+            interpreterKey = scriptPath.toString();
+            holder = interpreters.get(interpreterKey);
+            if (holder == null) {
+                PySystemState state = new PySystemState();
+                //If it is a workspace file.
+                if(ResourceUtil.isExistingWorkspaceFile(scriptPath)){
+                    IPath folderPath = scriptPath.removeLastSegments(1);
+                    String sysLocation = ResourceUtil.workspacePathToSysPath(folderPath).toOSString();
+                    state.path.append(new PyString(sysLocation));
+                }else if(ResourceUtil.isExistingLocalFile(scriptPath)){
+                    IPath folderPath = scriptPath.removeLastSegments(1);
+                    state.path.append(new PyString(folderPath.toOSString()));
+                }
+                interpreter = new PythonInterpreter(null, state);
+                holder = new InterpreterHolder(interpreter);
+                interpreters.put(interpreterKey, holder);
+            }
+        } else {
+            interpreterKey = EMPTY_KEY;
+            holder = interpreters.get(interpreterKey);
+            if (holder == null) {
+                interpreter = new PythonInterpreter(null, new PySystemState());
+                holder = new InterpreterHolder(interpreter);
+                interpreters.put(interpreterKey, holder);
             }
         }
-        interpreter = new PythonInterpreter(null, state);
+        holder.counter.incrementAndGet();
+        interpreter = holder.intepreter;
     }
 
     @Override
@@ -81,24 +110,27 @@ public class JythonScriptStore extends AbstractScriptStore{
     @Override
     protected void dispose() {
         if (interpreter != null) {
-            PyObject o = interpreter.getLocals();
-            if (o != null && o instanceof PyStringMap) {
-                ((PyStringMap)o).clear();
+            InterpreterHolder holder = interpreters.get(interpreterKey);
+            if (holder.counter.decrementAndGet() == 0) {
+                PyObject o = interpreter.getLocals();
+                if (o != null && o instanceof PyStringMap)
+                {
+                    ((PyStringMap) o).clear();
+                }
+                PySystemState state = interpreter.getSystemState();
+                o = state.getDict();
+                if (o != null && o instanceof PyStringMap)
+                {
+                    ((PyStringMap) o).clear();
+                }
+                state.close();
+                state.cleanup();
+                interpreter.close();
+                interpreter.cleanup();
+                interpreter = null;
+                state = null;
+                interpreters.remove(interpreterKey);
             }
-//            o = state.getBuiltins();
-//            if (o != null && o instanceof PyStringMap) {
-//                ((PyStringMap)o).clear();
-//            }
-            o = state.getDict();
-            if (o != null && o instanceof PyStringMap) {
-                ((PyStringMap)o).clear();
-            }
-            state.close();
-            state.cleanup();
-            interpreter.close();
-            interpreter.cleanup();
-            interpreter = null;
-            state = null;
         }
         code = null;
         super.dispose();
