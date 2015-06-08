@@ -514,7 +514,7 @@ public class AlarmTableView extends ViewPart
      */
     public AlarmClientModel getModel()
     {
-        return model;
+        return filterType == FilterType.TREE ? defaultModel : model;
     }
 
     /**
