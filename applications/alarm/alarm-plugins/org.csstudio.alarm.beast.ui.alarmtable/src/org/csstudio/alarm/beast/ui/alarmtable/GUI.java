@@ -858,7 +858,7 @@ public class GUI extends Composite implements AlarmClientModelListener
             current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmtAll, alarms.length));
         else
             current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, new Object[]
-                        { alarms.length, rawAlarms.length, filter_item_parent.getName() }));
+                        { alarms.length, rawAlarms.length, filter_item_parent.getPathName() }));
 
         if (alarms.length != rawAlarms.length)
             current_alarms.setForeground(current_alarms.getDisplay().getSystemColor(SWT.COLOR_RED));
@@ -872,7 +872,7 @@ public class GUI extends Composite implements AlarmClientModelListener
             acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmtAll, ackalarms.length));
         else
             acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, new Object[]
-                    { ackalarms.length, rawAlarms.length, filter_item_parent.getName() }));
+                    { ackalarms.length, rawAlarms.length, filter_item_parent.getPathName() }));
 
         if (ackalarms.length != rawAlarms.length)
             acknowledged_alarms.setForeground(acknowledged_alarms.getDisplay().getSystemColor(SWT.COLOR_RED));
