@@ -41,16 +41,14 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class ColumnConfigurer extends TitleAreaDialog
-{
+public class ColumnConfigurer extends TitleAreaDialog {
 
     private static final String LEFT = "Back24.gif"; //$NON-NLS-1$
     private static final String RIGHT = "Forward24.gif"; //$NON-NLS-1$
     private static final String UP = "Up24.gif"; //$NON-NLS-1$
     private static final String DOWN = "Down24.gif"; //$NON-NLS-1$
     private static final ImageRegistry IMAGES = new ImageRegistry(Display.getDefault());
-    static
-    {
+    static {
         String ICONS = "icons/"; //$NON-NLS-1$
         IMAGES.put(LEFT, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, ICONS + LEFT));
         IMAGES.put(RIGHT, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, ICONS + RIGHT));
@@ -58,32 +56,26 @@ public class ColumnConfigurer extends TitleAreaDialog
         IMAGES.put(DOWN, AbstractUIPlugin.imageDescriptorFromPlugin(Activator.ID, ICONS + DOWN));
     }
 
-    private static class ContentProvider implements IStructuredContentProvider
-    {
+    private static class ContentProvider implements IStructuredContentProvider {
         @Override
-        public Object[] getElements(Object inputElement)
-        {
+        public Object[] getElements(Object inputElement) {
             List<?> list = (List<?>) inputElement;
             return list.toArray(new ColumnWrapper[list.size()]);
         }
 
         @Override
-        public void inputChanged(Viewer viewer, Object oldInput, Object newInput)
-        {
+        public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
 
         @Override
-        public void dispose()
-        {
+        public void dispose() {
         }
     }
 
-    private CellLabelProvider labelProvider = new CellLabelProvider()
-    {
+    private CellLabelProvider labelProvider = new CellLabelProvider() {
 
         @Override
-        public void update(ViewerCell cell)
-        {
+        public void update(ViewerCell cell) {
             ColumnWrapper cw = (ColumnWrapper) cell.getElement();
             String name = cw.getName();
             cell.setText(name == null || name.isEmpty() ? cw.getColumnInfo().name() : name);
@@ -110,8 +102,7 @@ public class ColumnConfigurer extends TitleAreaDialog
      * @param parentShell the parent window
      * @param columns the columns that will be manipulated
      */
-    public ColumnConfigurer(Shell parentShell, ColumnWrapper[] columns, String timeFormat)
-    {
+    public ColumnConfigurer(Shell parentShell, ColumnWrapper[] columns, String timeFormat) {
         super(parentShell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         this.columns = columns;
@@ -121,25 +112,21 @@ public class ColumnConfigurer extends TitleAreaDialog
     /**
      * @return the columns as they were set by this configurator
      */
-    public ColumnWrapper[] getColumns()
-    {
+    public ColumnWrapper[] getColumns() {
         return columns;
     }
 
     /**
      * @return the time format specified in the dialog
      */
-    public String getTimeFormat()
-    {
+    public String getTimeFormat() {
         return timeFormat;
     }
 
     @Override
-    protected Button createButton(Composite parent, int id, String label, boolean defaultButton)
-    {
+    protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {
         Button b = super.createButton(parent, id, label, defaultButton);
-        if (id == IDialogConstants.OK_ID)
-        {
+        if (id == IDialogConstants.OK_ID) {
             okButton = b;
         }
         return b;
@@ -147,17 +134,14 @@ public class ColumnConfigurer extends TitleAreaDialog
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void okPressed()
-    {
+    protected void okPressed() {
         List<ColumnWrapper> hidden = (List<ColumnWrapper>) hiddenList.getInput();
         List<ColumnWrapper> shown = (List<ColumnWrapper>) shownList.getInput();
         int i = 0;
-        for (ColumnWrapper cw : shown)
-        {
+        for (ColumnWrapper cw : shown) {
             columns[i++] = cw;
         }
-        for (ColumnWrapper cw : hidden)
-        {
+        for (ColumnWrapper cw : hidden) {
             columns[i++] = cw;
         }
         timeFormat = timeFormatField.getText();
@@ -165,15 +149,13 @@ public class ColumnConfigurer extends TitleAreaDialog
     }
 
     @Override
-    protected void configureShell(Shell newShell)
-    {
+    protected void configureShell(Shell newShell) {
         super.configureShell(newShell);
         newShell.setText(Messages.ColumnConfigTitle);
     }
 
     @Override
-    protected Control createDialogArea(Composite parent)
-    {
+    protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
 
         setTitle(Messages.ColumnConfigTitle);
@@ -199,11 +181,9 @@ public class ColumnConfigurer extends TitleAreaDialog
         hiddenList.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         hiddenList.setLabelProvider(labelProvider);
         hiddenList.setContentProvider(new ContentProvider());
-        hiddenList.getTable().addMouseListener(new MouseAdapter()
-        {
+        hiddenList.getTable().addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseDoubleClick(MouseEvent e)
-            {
+            public void mouseDoubleClick(MouseEvent e) {
                 moveLeftRight(true);
             }
         });
@@ -215,34 +195,28 @@ public class ColumnConfigurer extends TitleAreaDialog
         rightButton = new Button(leftRight, SWT.PUSH);
         rightButton.setToolTipText("Show");
         rightButton.setImage(IMAGES.get(RIGHT));
-        rightButton.addSelectionListener(new SelectionListener()
-        {
+        rightButton.addSelectionListener(new SelectionListener() {
             @Override
-            public void widgetSelected(SelectionEvent e)
-            {
+            public void widgetSelected(SelectionEvent e) {
                 moveLeftRight(true);
             }
 
             @Override
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
+            public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         rightButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
         leftButton = new Button(leftRight, SWT.PUSH);
         leftButton.setToolTipText("Hide");
         leftButton.setImage(IMAGES.get(LEFT));
-        leftButton.addSelectionListener(new SelectionListener()
-        {
+        leftButton.addSelectionListener(new SelectionListener() {
             @Override
-            public void widgetSelected(SelectionEvent e)
-            {
+            public void widgetSelected(SelectionEvent e) {
                 moveLeftRight(false);
             }
 
             @Override
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
+            public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         leftButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
@@ -261,11 +235,9 @@ public class ColumnConfigurer extends TitleAreaDialog
         shownList.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
         shownList.setLabelProvider(labelProvider);
         shownList.setContentProvider(new ContentProvider());
-        shownList.getTable().addMouseListener(new MouseAdapter()
-        {
+        shownList.getTable().addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseDoubleClick(MouseEvent e)
-            {
+            public void mouseDoubleClick(MouseEvent e) {
                 moveLeftRight(false);
             }
         });
@@ -275,34 +247,28 @@ public class ColumnConfigurer extends TitleAreaDialog
         upButton = new Button(upDown, SWT.PUSH);
         upButton.setToolTipText("Up");
         upButton.setImage(IMAGES.get(UP));
-        upButton.addSelectionListener(new SelectionListener()
-        {
+        upButton.addSelectionListener(new SelectionListener() {
             @Override
-            public void widgetSelected(SelectionEvent e)
-            {
+            public void widgetSelected(SelectionEvent e) {
                 moveUpDown(true);
             }
 
             @Override
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
+            public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         upButton.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
         downButton = new Button(upDown, SWT.PUSH);
         downButton.setToolTipText("Down");
         downButton.setImage(IMAGES.get(DOWN));
-        downButton.addSelectionListener(new SelectionListener()
-        {
+        downButton.addSelectionListener(new SelectionListener() {
             @Override
-            public void widgetSelected(SelectionEvent e)
-            {
+            public void widgetSelected(SelectionEvent e) {
                 moveUpDown(false);
             }
 
             @Override
-            public void widgetDefaultSelected(SelectionEvent e)
-            {
+            public void widgetDefaultSelected(SelectionEvent e) {
             }
         });
         downButton.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, false, 1, 1));
@@ -310,13 +276,10 @@ public class ColumnConfigurer extends TitleAreaDialog
 
         List<ColumnWrapper> hidden = new LinkedList<>();
         List<ColumnWrapper> shown = new LinkedList<>();
-        for (ColumnWrapper c : columns)
-        {
-            if (c.isVisible())
-            {
+        for (ColumnWrapper c : columns) {
+            if (c.isVisible()) {
                 hidden.add(c);
-            } else
-            {
+            } else {
                 shown.add(c);
             }
         }
@@ -344,26 +307,20 @@ public class ColumnConfigurer extends TitleAreaDialog
         data = new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1);
         data.widthHint = 180;
         timeFormatField.setLayoutData(data);
-        timeFormatField.addModifyListener(new ModifyListener()
-        {
+        timeFormatField.addModifyListener(new ModifyListener() {
             @Override
-            public void modifyText(ModifyEvent e)
-            {
+            public void modifyText(ModifyEvent e) {
                 String text = timeFormatField.getText();
-                if (text.isEmpty())
-                {
+                if (text.isEmpty()) {
                     if (okButton != null)
                         okButton.setEnabled(true);
-                } else
-                {
-                    try
-                    {
+                } else {
+                    try {
                         // try to convert
                         new SimpleDateFormat(text);
                         if (okButton != null)
                             okButton.setEnabled(true);
-                    } catch (Exception ex)
-                    {
+                    } catch (Exception ex) {
                         if (okButton != null)
                             okButton.setEnabled(false);
                     }
@@ -375,57 +332,45 @@ public class ColumnConfigurer extends TitleAreaDialog
 
     }
 
-    private void moveLeftRight(boolean right)
-    {
+    private void moveLeftRight(boolean right) {
         IStructuredSelection selection;
-        if (right)
-        {
+        if (right) {
             selection = (IStructuredSelection) hiddenList.getSelection();
-        } else
-        {
+        } else {
             selection = (IStructuredSelection) shownList.getSelection();
         }
         Iterator<?> it = selection.iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             ((ColumnWrapper) it.next()).setVisible(right);
         }
         updateTables();
     }
 
-    private void moveUpDown(boolean up)
-    {
+    private void moveUpDown(boolean up) {
         IStructuredSelection selection = (IStructuredSelection) shownList.getSelection();
 
         @SuppressWarnings("unchecked")
         List<ColumnWrapper> shown = (List<ColumnWrapper>) shownList.getInput();
         Iterator<?> it = selection.iterator();
-        while (it.hasNext())
-        {
+        while (it.hasNext()) {
             ColumnWrapper wrapper = ((ColumnWrapper) it.next());
             int idx = -1;
             Iterator<ColumnWrapper> shownIt = shown.iterator();
-            while (shownIt.hasNext())
-            {
+            while (shownIt.hasNext()) {
                 idx++;
-                if (shownIt.next() == wrapper)
-                {
+                if (shownIt.next() == wrapper) {
                     break;
                 }
             }
 
-            if (up)
-            {
-                if (idx > 0)
-                {
+            if (up) {
+                if (idx > 0) {
                     ColumnWrapper w = shown.get(idx - 1);
                     shown.set(idx - 1, wrapper);
                     shown.set(idx, w);
                 }
-            } else
-            {
-                if (idx < shown.size() - 1)
-                {
+            } else {
+                if (idx < shown.size() - 1) {
                     ColumnWrapper w = shown.get(idx + 1);
                     shown.set(idx + 1, wrapper);
                     shown.set(idx, w);
@@ -437,28 +382,23 @@ public class ColumnConfigurer extends TitleAreaDialog
     }
 
     @SuppressWarnings("unchecked")
-    private void updateTables()
-    {
+    private void updateTables() {
         List<ColumnWrapper> hidden = (List<ColumnWrapper>) hiddenList.getInput();
         List<ColumnWrapper> shown = (List<ColumnWrapper>) shownList.getInput();
 
         ListIterator<ColumnWrapper> hi = hidden.listIterator();
-        while (hi.hasNext())
-        {
+        while (hi.hasNext()) {
             ColumnWrapper w = hi.next();
-            if (w.isVisible())
-            {
+            if (w.isVisible()) {
                 hi.remove();
                 shown.add(w);
             }
         }
 
         ListIterator<ColumnWrapper> si = shown.listIterator();
-        while (si.hasNext())
-        {
+        while (si.hasNext()) {
             ColumnWrapper w = si.next();
-            if (!w.isVisible())
-            {
+            if (!w.isVisible()) {
                 si.remove();
                 hidden.add(w);
             }
