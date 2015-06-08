@@ -1,5 +1,7 @@
 package org.csstudio.alarm.beast.ui.alarmtable.actions;
 
+import java.util.Arrays;
+
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableView;
@@ -40,6 +42,25 @@ public class ShowFilterAction extends Action {
                 }
                 AlarmTreeItem item = rootItem.getItemByPath(newText);
                 if (item == null) {
+                    //the item does not exist, check if at the root exists
+                    String configName = newText;
+                    if (configName.charAt(0) == '/') {
+                        configName = configName.substring(1);
+                    }
+                    int idx = configName.indexOf('/');
+                    String rootName = configName;
+                    if (idx > 0) {
+                        rootName = configName.substring(0, idx);
+                        if (rootName.equals(rootItem.getName())) {
+                            //root exists and is the same as current, which means that the item really does not exist
+                            return NLS.bind(Messages.SelectFilterItemNonExisting, newText);
+                        }
+                    }
+                    String[] availableRoots = view.getModel().getConfigurationNames();
+                    if (Arrays.asList(availableRoots).contains(rootName)) {
+                        //if the item belongs to a root that exists, accept it
+                        return null;
+                    }
                     return NLS.bind(Messages.SelectFilterItemNonExisting, newText);
                 }
                 return null;
@@ -48,7 +69,7 @@ public class ShowFilterAction extends Action {
 
         if (dialog.open() == Window.OK) {
             String newValue = dialog.getValue();
-            if (newValue == null || newValue.isEmpty() || newValue.equals(rootItem.getPathName())) {
+            if (!(newValue == null || newValue.isEmpty() || newValue.equals(rootItem.getPathName()))) {
                 try {
                     view.setFilterItemPath(newValue);
                 } catch (Exception e) {
