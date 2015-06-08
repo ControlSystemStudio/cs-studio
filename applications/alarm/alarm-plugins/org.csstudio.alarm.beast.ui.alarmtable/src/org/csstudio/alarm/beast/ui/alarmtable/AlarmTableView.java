@@ -391,7 +391,7 @@ public class AlarmTableView extends ViewPart
         String s = memento == null ? null : memento.getString(Preferences.ALARM_TABLE_SORT_COLUMN);
         ColumnInfo sorting = s == null ? ColumnInfo.PV : ColumnInfo.valueOf(s);
         boolean sortUp = false;
-        if (memento == null) {
+        if (memento != null) {
             Boolean b = memento.getBoolean(Preferences.ALARM_TABLE_SORT_UP);
             sortUp = b == null ? false : b;
         }
