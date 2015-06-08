@@ -25,15 +25,19 @@ import org.csstudio.alarm.beast.ui.alarmtable.actions.SeparateCombineTablesActio
 import org.csstudio.alarm.beast.ui.alarmtable.actions.ShowFilterAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
+import org.csstudio.alarm.beast.ui.alarmtable.Preferences;
+import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewPart;
@@ -112,22 +116,6 @@ public class AlarmTableView extends ViewPart
 
     private ColumnWrapper[] columns = ColumnWrapper.getNewWrappers();
 
-    private DropListener dropListener = new DropListener()
-    {
-        @Override
-        public void handleDrop(AlarmTreeItem item)
-        {
-            try
-            {
-                setFilterItemPath(item.getPathName());
-            }
-            catch (Exception e)
-            {
-                throw new IllegalArgumentException(e);
-            }
-        }
-    };
-
     @Override
     public void init(IViewSite site, IMemento memento) throws PartInitException
     {
@@ -151,6 +139,7 @@ public class AlarmTableView extends ViewPart
     public void createPartControl(final Composite parent)
     {
         this.parent = parent;
+        parent.setLayout(new FillLayout());
         try
         {
             defaultModel = AlarmClientModel.getInstance();
@@ -235,7 +224,12 @@ public class AlarmTableView extends ViewPart
         IMemento columnsMemento = memento.createChild(Preferences.ALARM_TABLE_COLUMN_SETTING);
         ColumnWrapper.saveColumns(columnsMemento, getUpdatedColumns());
         if (gui != null)
-            gui.saveState(memento);
+        {
+            ColumnInfo info = gui.getSortingColumn();
+            if (info != null)
+                memento.putString(Preferences.ALARM_TABLE_SORT_COLUMN, info.name());
+            memento.putBoolean(Preferences.ALARM_TABLE_SORT_UP, gui.isSortingUp());
+        }
     }
 
     private void createToolbar()
@@ -394,18 +388,55 @@ public class AlarmTableView extends ViewPart
     {
         if (parent.isDisposed())
             return false;
+        String s = memento == null ? null : memento.getString(Preferences.ALARM_TABLE_SORT_COLUMN);
+        ColumnInfo sorting = s == null ? ColumnInfo.PV : ColumnInfo.valueOf(s);
+        boolean sortUp = false;
+        if (memento == null) {
+            Boolean b = memento.getBoolean(Preferences.ALARM_TABLE_SORT_UP);
+            sortUp = b == null ? false : b;
+        }
         if (gui != null)
         {
-            gui.saveState(memento);
+            sorting = gui.getSortingColumn();
+            sortUp = gui.isSortingUp();
             gui.dispose();
         }
-        gui = new GUI(parent, getSite(), dropListener, defaultModel.isWriteAllowed(),
-                !combinedTables, columns, memento);
+        gui = new GUI(parent, getSite(), defaultModel.isWriteAllowed(),
+                !combinedTables, columns, sorting, sortUp);
         gui.setBlinking(blinkingIcons);
         gui.setTimeFormat(timeFormat);
+        setUpDrop(gui.getActiveAlarmTable().getTable());
+        setUpDrop(gui.getAcknowledgedAlarmTable().getTable());
         updateFilterItem();
 
         return true;
+    }
+
+    private void setUpDrop(Control control)
+    {
+        if (control == null || control.getData(DND.DROP_TARGET_KEY) != null)
+            return;
+        new ControlSystemDropTarget(control, AlarmTreeItem.class, AlarmTreeItem[].class,
+                AlarmTreePV.class, AlarmTreePV[].class)
+        {
+            @Override
+            public void handleDrop(Object item)
+            {
+                try
+                {
+                    if (item instanceof AlarmTreeItem[])
+                        setFilterItemPath(((AlarmTreeItem[])item)[0].getPathName());
+                    else if (item instanceof AlarmTreeItem || item instanceof AlarmTreePV)
+                        setFilterItemPath(((AlarmTreeItem)item).getPathName());
+                    else if (item instanceof AlarmTreePV[])
+                        setFilterItemPath(((AlarmTreePV[])item)[0].getPathName());
+                }
+                catch (Exception e)
+                {
+                    throw new IllegalArgumentException(e);
+                }
+            }
+        };
     }
 
     private void redoGUI()

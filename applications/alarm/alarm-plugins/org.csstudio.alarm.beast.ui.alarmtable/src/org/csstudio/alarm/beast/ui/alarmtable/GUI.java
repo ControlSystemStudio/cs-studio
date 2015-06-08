@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -28,7 +29,6 @@ import org.csstudio.apputil.text.RegExHelper;
 import org.csstudio.security.SecuritySupport;
 import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
-import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.csstudio.ui.util.helpers.ComboHistoryHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.csstudio.utility.singlesource.UIHelper.UI;
@@ -68,7 +68,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
@@ -77,15 +76,8 @@ import org.eclipse.ui.IWorkbenchPartSite;
  *  @author Kay Kasemir
  *  @author Jaka Bobnar - Combined/split alarm tables, configurable columns, filtering, blinking
  */
-public class GUI implements AlarmClientModelListener
+public class GUI extends Composite implements AlarmClientModelListener
 {
-    /**
-     * Persistence: Tags within the memento settings, actually written to
-     * WORKSPACE/.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
-     */
-    final private static String ALARM_TABLE_SORT_COLUMN = "alarm_table_sort_column"; //$NON-NLS-1$
-    final private static String ALARM_TABLE_SORT_UP = "alarm_table_sort_up"; //$NON-NLS-1$
-
     /**
      * Initial place holder for display of alarm counts to allocate enough screen space
      */
@@ -128,9 +120,11 @@ public class GUI implements AlarmClientModelListener
     private AlarmTreeItem filter_item_parent;
     /** Model with all the alarm information */
     private AlarmClientModel model;
-
+    /** Flag indicating if unacknowledged alarms should blink */
     private boolean blink_unacknowledged;
+    /** The blinking period */
     private final int blink_period = Preferences.getBlinkingPeriod();
+    /** Are the models writable or not */
     private final boolean writable;
 
     /** GUI updates are throttled to reduce flicker */
@@ -205,22 +199,23 @@ public class GUI implements AlarmClientModelListener
      *
      * @param parent Parent widget
      * @param site Workbench site or <code>null</code>
-     * @param dropListener listener which is notified whenever an alarm tree item is dropped on one of the tables
      * @param writable indicates if this GUI is used in a writable or read only environment
-     * @param separateTables true if two tables should be created (one for acked and one for unacked alarms) or false if
+     * @param separate_tables true if two tables should be created (one for acked and one for unacked alarms) or false if
      *            only one table should be created
      * @param columns column configuration for the tables
-     * @param memento memento that provides the persisted settings (sorting)
+     * @param sorting_column default sorting column
+     * @param sort_up default sorting direction
      */
-    public GUI(final Composite parent, final IWorkbenchPartSite site, final DropListener dropListener,
-            final boolean writable, final boolean separateTables, final ColumnWrapper[] columns,
-            final IMemento memento)
+    public GUI(final Composite parent, final IWorkbenchPartSite site,
+            final boolean writable, final boolean separate_tables, final ColumnWrapper[] columns,
+            final ColumnInfo sorting_column, boolean sort_up)
     {
+        super(parent,SWT.NONE);
         this.display = parent.getDisplay();
-        this.separate_tables = separateTables;
+        this.separate_tables = separate_tables;
         this.columns = columns;
         this.writable = writable;
-        createComponents(parent, memento);
+        createComponents(sorting_column, sort_up);
 
         base_composite.addDisposeListener(new DisposeListener()
         {
@@ -233,7 +228,7 @@ public class GUI implements AlarmClientModelListener
             }
         });
         connectContextMenu(active_table_viewer, site);
-        if (separateTables)
+        if (separate_tables)
             connectContextMenu(acknowledged_table_viewer, site);
 
 
@@ -247,21 +242,8 @@ public class GUI implements AlarmClientModelListener
                         .getSelection());
             }
         };
-        new ControlSystemDropTarget(active_table_viewer.getTable(), AlarmTreeItem.class, AlarmTreeItem[].class,
-                AlarmTreePV.class, AlarmTreePV[].class){
-            @Override
-            public void handleDrop(Object item) {
-                if (item instanceof AlarmTreeItem[])
-                    dropListener.handleDrop(((AlarmTreeItem[])item)[0]);
-                else if (item instanceof AlarmTreeItem || item instanceof AlarmTreePV)
-                    dropListener.handleDrop((AlarmTreeItem)item);
-                else if (item instanceof AlarmTreePV[])
-                    dropListener.handleDrop(((AlarmTreePV[])item)[0]);
 
-            }
-        };
-
-        if (separateTables)
+        if (separate_tables)
         {
             new ControlSystemDragSource(acknowledged_table_viewer.getTable())
             {
@@ -305,25 +287,13 @@ public class GUI implements AlarmClientModelListener
      * @param parent Parent widget
      * @param memento the memento that provides the sorting information
      */
-    private void createComponents(final Composite parent, IMemento memento)
+    private void createComponents(ColumnInfo sorting_column, boolean sort_up)
     {
-        parent.setLayout(new FillLayout());
-
-        ColumnInfo sortColumn = ColumnInfo.SEVERITY;
-        boolean sortUp = false;
-        if (memento != null)
-        {
-            String sort = memento.getString(ALARM_TABLE_SORT_COLUMN);
-            if (sort != null)
-                sortColumn = ColumnInfo.valueOf(sort);
-            Boolean sortDirect = memento.getBoolean(ALARM_TABLE_SORT_UP);
-            if (sortDirect != null)
-                sortUp = sortDirect;
-        }
+        setLayout(new FillLayout());
 
         if (separate_tables)
         {
-            base_composite = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
+            base_composite = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
             base_composite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(base_composite);
             icon_provider = new SeverityIconProvider(base_composite);
@@ -334,15 +304,15 @@ public class GUI implements AlarmClientModelListener
         }
         else
         {
-            base_composite = new Composite(parent, SWT.NONE);
+            base_composite = new Composite(this, SWT.NONE);
             base_composite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(base_composite);
             icon_provider = new SeverityIconProvider(base_composite);
             table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, ColumnInfo.TIME);
             addActiveAlarmSashElement(base_composite);
         }
-        syncTables(active_table_viewer, acknowledged_table_viewer, sortColumn, sortUp);
-        syncTables(acknowledged_table_viewer, active_table_viewer, sortColumn, sortUp);
+        syncTables(active_table_viewer, acknowledged_table_viewer, sorting_column, sort_up);
+        syncTables(acknowledged_table_viewer, active_table_viewer, sorting_column, sort_up);
 
         // Update selection in active & ack'ed alarm table
         // in response to filter changes
@@ -500,7 +470,6 @@ public class GUI implements AlarmClientModelListener
     private void blink()
     {
         if (blink_unacknowledged)
-        {
             display.timerExec(blink_period, () ->
             {
                 icon_provider.toggle();
@@ -515,25 +484,19 @@ public class GUI implements AlarmClientModelListener
 
                 }
             });
-        }
         else
             icon_provider.reset();
     }
 
     /**
-     * Save table settings into the given memento. The method stores the selected filter item and sorting parameters.
-     *
-     * @param memento the destination for the settings
+     * @return the column info of the column that is currently used as the sorting key in the table
      */
-    public void saveState(IMemento memento)
+    public ColumnInfo getSortingColumn()
     {
-        if (memento == null)
-            return;
-
         final Table table = active_table_viewer.getTable();
         final TableColumn sort_column = table.getSortColumn();
         if (sort_column == null)
-            return;
+            return null;
 
         final int col_count = table.getColumnCount();
         for (int column = 0; column < col_count; ++column)
@@ -547,16 +510,23 @@ public class GUI implements AlarmClientModelListener
                     {
                         if (count == column)
                         {
-                            memento.putString(ALARM_TABLE_SORT_COLUMN, columns[i].getColumnInfo().name());
-                            break;
+                            return columns[i].getColumnInfo();
                         }
                         count++;
                     }
                 }
-                memento.putBoolean(ALARM_TABLE_SORT_UP, table.getSortDirection() == SWT.UP);
-                break;
             }
         }
+        return null;
+    }
+
+    /**
+     * @return true if sorting direction is equals to {@link SWT#UP} or false otherwise
+     */
+    public boolean isSortingUp()
+    {
+        final Table table = active_table_viewer.getTable();
+        return table.getSortDirection() == SWT.UP;
     }
 
     /**
@@ -924,12 +894,15 @@ public class GUI implements AlarmClientModelListener
         }
     }
 
-    void dispose()
-    {
-        base_composite.dispose();
-    }
-
-    void setFilterItem(AlarmTreeItem filterItemParent, AlarmClientModel model)
+    /**
+     * Sets the model and the filter item to use. Only the alarms that are blow the filter
+     * item parent will be displayed, providing that the filter item parent is from the
+     * given model.
+     *
+     * @param filterItemParent the item used for filtering alarms
+     * @param model the model to show events for
+     */
+    public void setFilterItem(AlarmTreeItem filterItemParent, AlarmClientModel model)
     {
         this.filter_item_parent = filterItemParent;
         if (this.model != null)
@@ -939,8 +912,14 @@ public class GUI implements AlarmClientModelListener
         updateGUI();
     }
 
-    void setBlinking(boolean blinking)
+    /**
+     * Enables or disables the blinking of unacknowledged alarms icons.
+     *
+     * @param blinking true if icons should blink or stop otherwise
+     */
+    public void setBlinking(boolean blinking)
     {
+        if (this.blink_unacknowledged == blinking) return;
         this.blink_unacknowledged = blinking;
         if (this.blink_unacknowledged)
             blink();
@@ -953,7 +932,13 @@ public class GUI implements AlarmClientModelListener
         }
     }
 
-    void setTimeFormat(String timeFormat)
+    /**
+     * Sets the format used for formatting the date and time column. The format has
+     * to be acceptable by the {@link SimpleDateFormat}.
+     *
+     * @param timeFormat the format string
+     */
+    public void setTimeFormat(String timeFormat)
     {
         table_label_provider.setTimeFormat(timeFormat);
     }

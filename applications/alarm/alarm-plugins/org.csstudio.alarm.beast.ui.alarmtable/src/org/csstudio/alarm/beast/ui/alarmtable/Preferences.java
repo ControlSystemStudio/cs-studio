@@ -40,6 +40,12 @@ public class Preferences
     /** Preference and memento tag for the time format in the time column */
     final public static String ALARM_TABLE_TIME_FORMAT = "time_format"; //$NON-NLS-1$
 
+    /** Memento tag for the sorting column name */
+    final public static String ALARM_TABLE_SORT_COLUMN = "alarm_table_sort_column"; //$NON-NLS-1$
+
+    /** Memento tag for the sorting direction */
+    final public static String ALARM_TABLE_SORT_UP = "alarm_table_sort_up"; //$NON-NLS-1$
+
     /** @return Alarm table row limit */
     public static int getAlarmTableRowLimit()
     {

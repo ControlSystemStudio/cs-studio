@@ -17,8 +17,7 @@ import org.eclipse.swt.widgets.Display;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SeverityIconProvider
-{
+public class SeverityIconProvider {
 
     private final Image[][][] icons;
     private int dis = 0;
@@ -28,24 +27,21 @@ public class SeverityIconProvider
      *
      * @param parent the parent that owns the icons and is used to dispose of them where not needed anymore
      */
-    public SeverityIconProvider(Composite parent)
-    {
+    public SeverityIconProvider(Composite parent) {
         icons = createIcons(parent);
     }
 
     /**
      * Toggle between colour and grey icons.
      */
-    public void toggle()
-    {
+    public void toggle() {
         dis ^= 1;
     }
 
     /**
      * Resets the provider to the colored state.
      */
-    public void reset()
-    {
+    public void reset() {
         dis = 0;
     }
 
@@ -56,48 +52,45 @@ public class SeverityIconProvider
      * @param pv the pv for which the icon is requested
      * @return icon that matches the severities of the PV
      */
-    public Image getIcon(AlarmTreePV pv)
-    {
+    public Image getIcon(AlarmTreePV pv) {
         if (pv == null)
             return null;
         SeverityLevel s = pv.getSeverity();
         int c = pv.getCurrentSeverity().ordinal();
-        if (s.isActive())
+        if (s.isActive()) {
             return icons[s.ordinal()][c][dis];
-        else
+        } else {
             return icons[s.ordinal()][c][0];
+        }
     }
 
-    private Image[][][] createIcons(Composite parent)
-    {
+    private Image[][][] createIcons(Composite parent) {
         SeverityLevel[] levels = SeverityLevel.values();
         Image[][][] icons = new Image[levels.length][levels.length][2];
         Display display = parent.getDisplay();
-        for (int i = 0; i < levels.length; i++)
-        {
-            for (int j = 0; j < levels.length; j++)
-            {
+        for (int i = 0; i < levels.length; i++) {
+            for (int j = 0; j < levels.length; j++) {
                 ImageDescriptor desc = getImageDescriptor(levels[i], levels[j], false);
-                if (desc != null)
+                if (desc != null) {
                     icons[i][j][0] = desc.createImage(display);
+                }
                 desc = getImageDescriptor(levels[i], levels[j], true);
-                if (desc != null)
+                if (desc != null) {
                     icons[i][j][1] = desc.createImage(display);
+                }
             }
         }
-        parent.addDisposeListener(new DisposeListener()
-        {
+        parent.addDisposeListener(new DisposeListener() {
             @Override
-            public void widgetDisposed(DisposeEvent e)
-            {
-                for (int i = 0; i < icons.length; i++)
-                {
-                    for (int j = 0; j < icons.length; j++)
-                    {
-                        if (icons[i][j][0] != null)
+            public void widgetDisposed(DisposeEvent e) {
+                for (int i = 0; i < icons.length; i++) {
+                    for (int j = 0; j < icons.length; j++) {
+                        if (icons[i][j][0] != null) {
                             icons[i][j][0].dispose();
-                        if (icons[i][j][1] != null)
+                        }
+                        if (icons[i][j][1] != null) {
                             icons[i][j][1].dispose();
+                        }
                     }
                 }
             }
@@ -114,11 +107,9 @@ public class SeverityIconProvider
      * @return the icon representing the alarm severity
      */
     private static ImageDescriptor getImageDescriptor(SeverityLevel severity, SeverityLevel currentSeverity,
-            boolean disabled)
-    {
+            boolean disabled) {
         AlarmIcons icons = AlarmIcons.getInstance();
-        switch (severity)
-        {
+        switch (severity) {
             case UNDEFINED_ACK:
             case INVALID_ACK:
                 return icons.getInvalidAcknowledged(disabled);

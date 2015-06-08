@@ -14,8 +14,7 @@ import org.eclipse.ui.IMemento;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public final class ColumnWrapper
-{
+public final class ColumnWrapper {
 
     /** The memento tag name of the visible property */
     private static final String M_VISIBLE = "visible"; //$NON-NLS-1$
@@ -31,12 +30,10 @@ public final class ColumnWrapper
     /**
      * @return a set of new wrappers (all visible) for all available column infos
      */
-    public static ColumnWrapper[] getNewWrappers()
-    {
+    public static ColumnWrapper[] getNewWrappers() {
         ColumnInfo[] infos = ColumnInfo.values();
         ColumnWrapper[] wrappers = new ColumnWrapper[infos.length];
-        for (int i = 0; i < wrappers.length; i++)
-        {
+        for (int i = 0; i < wrappers.length; i++) {
             wrappers[i] = new ColumnWrapper(infos[i]);
         }
         return wrappers;
@@ -49,11 +46,9 @@ public final class ColumnWrapper
      * @param source wrappers to clone
      * @return cloned array
      */
-    public static ColumnWrapper[] getCopy(ColumnWrapper[] source)
-    {
+    public static ColumnWrapper[] getCopy(ColumnWrapper[] source) {
         ColumnWrapper[] w = new ColumnWrapper[source.length];
-        for (int i = 0; i < w.length; i++)
-        {
+        for (int i = 0; i < w.length; i++) {
             w[i] = new ColumnWrapper(source[i].info);
             w[i].setVisible(source[i].visible);
             w[i].name = source[i].name;
@@ -70,13 +65,10 @@ public final class ColumnWrapper
      * @param columns the source data
      * @return array of visible column info names
      */
-    public static String[] toSaveArray(ColumnWrapper[] columns)
-    {
+    public static String[] toSaveArray(ColumnWrapper[] columns) {
         List<String> list = new ArrayList<>(columns.length);
-        for (ColumnWrapper cw : columns)
-        {
-            if (cw.isVisible())
-            {
+        for (ColumnWrapper cw : columns) {
+            if (cw.isVisible()) {
                 list.add(cw.info.name());
             }
         }
@@ -91,32 +83,26 @@ public final class ColumnWrapper
      * @param columns visible column info names
      * @return array of wrappers for all column infos
      */
-    public static ColumnWrapper[] fromSaveArray(String[] columns)
-    {
+    public static ColumnWrapper[] fromSaveArray(String[] columns) {
         ColumnWrapper[] wrappers = getNewWrappers();
         List<ColumnWrapper> list = new ArrayList<>(wrappers.length);
-        for (String s : columns)
-        {
+        for (String s : columns) {
             String[] col = s.split("\\,", -1); //$NON-NLS-1$
             String id = null;
             String name = null;
             int minWidth = -1;
             int weight = -1;
-            if (col.length > 2)
-            {
+            if (col.length > 2) {
                 id = col[0];
                 minWidth = Integer.parseInt(col[1]);
                 weight = Integer.parseInt(col[2]);
-                if (col.length > 3)
-                {
+                if (col.length > 3) {
                     name = col[3];
                 }
             }
             ColumnInfo info = ColumnInfo.valueOf(id);
-            for (int i = 0; i < wrappers.length; i++)
-            {
-                if (wrappers[i] != null && wrappers[i].info.equals(info))
-                {
+            for (int i = 0; i < wrappers.length; i++) {
+                if (wrappers[i] != null && wrappers[i].info.equals(info)) {
                     list.add(wrappers[i]);
                     wrappers[i].weight = weight;
                     wrappers[i].minWidth = minWidth;
@@ -126,10 +112,8 @@ public final class ColumnWrapper
                 }
             }
         }
-        for (ColumnWrapper w : wrappers)
-        {
-            if (w != null)
-            {
+        for (ColumnWrapper w : wrappers) {
+            if (w != null) {
                 list.add(w);
                 w.setVisible(false);
             }
@@ -143,42 +127,31 @@ public final class ColumnWrapper
      * @param memento the source
      * @return columns restored from the memento with all parameters properly set
      */
-    public static ColumnWrapper[] restoreColumns(IMemento memento)
-    {
-        if (memento == null)
-        {
+    public static ColumnWrapper[] restoreColumns(IMemento memento) {
+        if (memento == null) {
             return ColumnWrapper.fromSaveArray(Preferences.getColumns());
         }
         ColumnInfo[] infos = ColumnInfo.values();
         ColumnWrapper[] wrappers = new ColumnWrapper[infos.length];
-        for (ColumnInfo ci : ColumnInfo.values())
-        {
+        for (ColumnInfo ci : ColumnInfo.values()) {
             IMemento m = memento.getChild(ci.name());
-            if (m == null)
-            {
-                for (int i = wrappers.length - 1; i >= -1; i--)
-                {
-                    if (wrappers[i] == null)
-                    {
+            if (m == null) {
+                for (int i = wrappers.length - 1; i >= -1; i--) {
+                    if (wrappers[i] == null) {
                         wrappers[i] = new ColumnWrapper(ci, false);
                         break;
                     }
                 }
-            } else
-            {
+            } else {
                 Boolean visible = m.getBoolean(M_VISIBLE);
                 Integer order = m.getInteger(M_ORDER_KEY);
                 ColumnWrapper w = null;
-                if (wrappers[order] == null)
-                {
+                if (wrappers[order] == null) {
                     wrappers[order] = new ColumnWrapper(ci, visible);
                     w = wrappers[order];
-                } else
-                {
-                    for (int i = 0; i < wrappers.length; i++)
-                    {
-                        if (wrappers[i] == null)
-                        {
+                } else {
+                    for (int i = 0; i < wrappers.length; i++) {
+                        if (wrappers[i] == null) {
                             wrappers[i] = new ColumnWrapper(ci, visible);
                             w = wrappers[i];
                             break;
@@ -188,8 +161,7 @@ public final class ColumnWrapper
 
                 Integer minWidth = m.getInteger(M_MIN_WIDTH);
                 Integer weight = m.getInteger(M_WEIGHT);
-                if (w != null)
-                {
+                if (w != null) {
                     w.name = m.getString(M_NAME);
                     w.minWidth = minWidth == null ? Integer.valueOf(-1) : minWidth;
                     w.weight = weight == null ? Integer.valueOf(-1) : weight;
@@ -206,15 +178,12 @@ public final class ColumnWrapper
      * @param memento the destination memento
      * @param columns the column to store
      */
-    public static void saveColumns(IMemento memento, ColumnWrapper[] columns)
-    {
-        if (memento == null)
-        {
+    public static void saveColumns(IMemento memento, ColumnWrapper[] columns) {
+        if (memento == null) {
             return;
         }
 
-        for (int i = 0; i < columns.length; i++)
-        {
+        for (int i = 0; i < columns.length; i++) {
             IMemento m = memento.createChild(columns[i].getColumnInfo().name());
             m.putBoolean(M_VISIBLE, columns[i].isVisible());
             m.putInteger(M_ORDER_KEY, i);
@@ -235,8 +204,7 @@ public final class ColumnWrapper
      *
      * @param info the column info
      */
-    private ColumnWrapper(ColumnInfo info)
-    {
+    private ColumnWrapper(ColumnInfo info) {
         this.info = info;
     }
 
@@ -246,8 +214,7 @@ public final class ColumnWrapper
      * @param info the column info
      * @param visible the default visible property value
      */
-    private ColumnWrapper(ColumnInfo info, boolean visible)
-    {
+    private ColumnWrapper(ColumnInfo info, boolean visible) {
         this.info = info;
         setVisible(visible);
     }
@@ -257,8 +224,7 @@ public final class ColumnWrapper
      *
      * @param visible true if the column should be visible or false if it should be hidden
      */
-    public void setVisible(boolean visible)
-    {
+    public void setVisible(boolean visible) {
         this.visible = visible;
     }
 
@@ -266,40 +232,35 @@ public final class ColumnWrapper
      * @see {@link #setVisible(boolean)}
      * @return the visible flag for this column
      */
-    public boolean isVisible()
-    {
+    public boolean isVisible() {
         return visible;
     }
 
     /**
      * @return the column info wrapped into this wrapper
      */
-    public ColumnInfo getColumnInfo()
-    {
+    public ColumnInfo getColumnInfo() {
         return info;
     }
 
     /**
      * @return the visible name of the column
      */
-    public String getName()
-    {
+    public String getName() {
         return name == null ? info.getTitle() : name;
     }
 
     /**
      * @return resize weight of the column
      */
-    public int getWeight()
-    {
+    public int getWeight() {
         return weight < 0 ? info.getWeight() : weight;
     }
 
     /**
      * @return minimum width of the column
      */
-    public int getMinWidth()
-    {
+    public int getMinWidth() {
         return minWidth <= 0 ? info.getMinWidth() : minWidth;
     }
 
@@ -308,32 +269,29 @@ public final class ColumnWrapper
      *
      * @param minWidth the new minimum width
      */
-    public void setMinWidth(int minWidth)
-    {
+    public void setMinWidth(int minWidth) {
         this.minWidth = minWidth;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return info.toString();
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         return Objects.hash(info, name, visible, weight, minWidth);
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if (this == obj)
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        } else if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        } else if (getClass() != obj.getClass()) {
             return false;
+        }
         ColumnWrapper other = (ColumnWrapper) obj;
         return visible == other.visible && weight == other.weight && minWidth == other.minWidth && info == other.info
                 && Objects.equals(name, other.name);
