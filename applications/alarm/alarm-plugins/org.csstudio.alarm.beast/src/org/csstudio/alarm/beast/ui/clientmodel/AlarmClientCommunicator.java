@@ -8,6 +8,8 @@
 package org.csstudio.alarm.beast.ui.clientmodel;
 
 import java.net.InetAddress;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
 import javax.jms.MapMessage;
@@ -43,6 +45,9 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
 {
     /** Application name used when sending JMS messages */
     final private static String APPLICATION = "CSS";
+
+    /** The date format for converting the received timestamp info into a Date object */
+    private final DateFormat date_format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
 
     /** The model */
     final private AlarmClientModel model;
@@ -360,13 +365,13 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             {
                 // Received a state update from server, reset timeout
                 timeout_timer.reset();
-                action = new UpdateAction(AlarmUpdateInfo.fromMapMessage(message));
+                action = new UpdateAction(AlarmUpdateInfo.fromMapMessage(message,date_format));
                 model.updateServerState(false);
             }
             else if (JMSAlarmMessage.TEXT_STATE_MAINTENANCE.equals(text))
             {
                 timeout_timer.reset();
-                action = new UpdateAction(AlarmUpdateInfo.fromMapMessage(message));
+                action = new UpdateAction(AlarmUpdateInfo.fromMapMessage(message,date_format));
                 model.updateServerState(true);
             }
             // Idle messages in absence of 'real' traffic?
