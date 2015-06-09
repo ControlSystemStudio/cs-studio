@@ -393,8 +393,12 @@ public final class ResourceSelectionGroup extends Composite {
                             final SelectionChangedEvent event) {
                         IStructuredSelection selection = (IStructuredSelection) event
                                 .getSelection();
-                        containerSelectionChanged((IResource) selection
-                                .getFirstElement()); // allow null
+                        if (selection == null) {
+                            containerSelectionChanged(null);
+                        } else {
+                            containerSelectionChanged((IResource) selection
+                                    .getFirstElement()); // allow null
+                        }
                         if (_newFolderAction != null) {
                             _newFolderAction.setEnabled(selection != null);
                         }
