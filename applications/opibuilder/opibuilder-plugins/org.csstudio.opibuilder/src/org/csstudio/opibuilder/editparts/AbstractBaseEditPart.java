@@ -487,13 +487,23 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         return (AbstractWidgetModel) getModel();
     }
 
+    /*
+    * Change cursor to hand if PV has an action available.
+    +        */
+    @Override
+    public void showTargetFeedback(org.eclipse.gef.Request request) {
+        final List<AbstractWidgetAction> actions = getHookedActions();
+        if (getWidgetModel().isEnabled() && actions != null) {
+            figure.setCursor(Cursors.HAND);
+        }
+    }
+
     /**
      * Hook the default {@link AbstractOpenOPIAction} with mouse click.
      */
     protected void hookMouseClickAction() {
         final List<AbstractWidgetAction> actions = getHookedActions();
         if (getWidgetModel().isEnabled() && actions != null) {
-            figure.setCursor(Cursors.HAND);
             figure.addMouseListener(new MouseListener.Stub() {
                 @Override
                 public void mousePressed(MouseEvent me) {
