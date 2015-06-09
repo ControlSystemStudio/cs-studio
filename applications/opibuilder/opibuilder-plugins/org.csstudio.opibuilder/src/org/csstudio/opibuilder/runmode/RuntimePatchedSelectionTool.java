@@ -103,6 +103,7 @@ public class RuntimePatchedSelectionTool extends SelectionTool {
 
                     clipboard.dispose();
                     IFigure figure = apvwep.getFigure();
+                    oldCursor = figure.getCursor();
                     figure.setCursor(copyPvCursor);
                     cursorChanged = true;
                 }
