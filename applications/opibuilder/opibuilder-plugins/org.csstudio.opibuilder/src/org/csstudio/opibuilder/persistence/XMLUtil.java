@@ -465,6 +465,7 @@ public class XMLUtil {
             IPath path = container.getOPIFilePath();
             if(path != null && !path.isEmpty()) {
                 final DisplayModel inside = new DisplayModel(path);
+                inside.setDisplayID(container.getRootDisplayModel(false).getDisplayID());
 
                 fillDisplayModelFromInputStreamSub(ResourceUtil.pathToInputStream(path), inside, Display.getCurrent(), trace);
 
