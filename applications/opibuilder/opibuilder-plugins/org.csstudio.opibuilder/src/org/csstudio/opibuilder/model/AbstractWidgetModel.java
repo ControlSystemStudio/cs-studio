@@ -921,7 +921,16 @@ public abstract class AbstractWidgetModel implements IAdaptable,
     /**
      * @return the root display model for this widget. null if its parent is not set yet.
      */
-    public DisplayModel getRootDisplayModel(){
+    public DisplayModel getRootDisplayModel() {
+        return getRootDisplayModel(true);
+    }
+
+    /**
+     * @param useLinkingContainersDisplayModel if one of the parents of this widget is
+     *          a linking container use its display model
+     * @return the root display model for this widget. null if its parent is not set yet.
+     */
+    public DisplayModel getRootDisplayModel(boolean useLinkingContainersDisplayModel){
         AbstractContainerModel parent = getParent();
         if(parent == null){
             if(this instanceof DisplayModel)
@@ -934,7 +943,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
         {
             // If parent is a linking container,
             // use the display model of that
-            if (parent instanceof AbstractLinkingContainerModel) {
+            if (useLinkingContainersDisplayModel && parent instanceof AbstractLinkingContainerModel) {
                 DisplayModel m = ((AbstractLinkingContainerModel)parent).getDisplayModel();
                 if (m != null) return m;
             }
