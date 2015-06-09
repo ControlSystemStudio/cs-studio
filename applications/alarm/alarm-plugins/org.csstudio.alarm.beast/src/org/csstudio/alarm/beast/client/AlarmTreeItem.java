@@ -38,10 +38,12 @@ import org.epics.util.time.Timestamp;
  */
 public class AlarmTreeItem extends TreeItem
 {
+    private static final long serialVersionUID = -8597126519675742036L;
+
     private int disabled_children = 0;
 
     /** Sub-tree elements of this item which are currently in alarm */
-    final private List<AlarmTreeItem> alarm_children = new ArrayList<AlarmTreeItem>();
+    final private transient List<AlarmTreeItem> alarm_children = new ArrayList<AlarmTreeItem>();
 
     // Using arrays for guidance, ..., commands to be thread-safe
 
@@ -67,7 +69,7 @@ public class AlarmTreeItem extends TreeItem
     private String message = SeverityLevel.OK.getDisplayName();
 
     /** Time of last configuration change */
-    private Timestamp config_time;
+    private transient Timestamp config_time; //it would be nice if Timestamp implemented Serializable
 
     /** Initialize alarm tree item
      *  @param parent Parent item or <code>null</code>

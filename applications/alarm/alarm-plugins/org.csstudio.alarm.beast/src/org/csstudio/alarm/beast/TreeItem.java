@@ -8,6 +8,7 @@
 package org.csstudio.alarm.beast;
 
 import java.io.PrintStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +20,10 @@ import java.util.List;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class TreeItem
+public class TreeItem implements Serializable
 {
+    private static final long serialVersionUID = -1006218834678042080L;
+
     /** RDB ID
      *  @see #setID(int)
      */
@@ -30,7 +33,7 @@ public class TreeItem
     final private String name;
 
     /** Parent node */
-    private TreeItem parent;
+    private transient TreeItem parent;
 
     /** Sub-tree elements of this item */
     final private List<TreeItem> children = new ArrayList<TreeItem>();

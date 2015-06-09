@@ -8,15 +8,18 @@
 package org.csstudio.alarm.beast.ui.alarmtable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.regex.Pattern;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.client.GUIUpdateThrottle;
 import org.csstudio.alarm.beast.ui.AuthIDs;
 import org.csstudio.alarm.beast.ui.ContextMenuHelper;
-import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.alarm.beast.ui.SelectionHelper;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.alarm.beast.ui.actions.AlarmPerspectiveAction;
@@ -36,7 +39,6 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CheckboxCellEditor;
@@ -51,6 +53,8 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -72,16 +76,77 @@ import org.eclipse.ui.IWorkbenchPartSite;
 /** Alarm table GUI
  *
  *  @author Kay Kasemir
- *  @author Jaka Bobnar - Combined/split alarm tables, configurable columns
+ *  @author Jaka Bobnar - Combined/split alarm tables, configurable columns, filtering, blinking
  */
-public class GUI implements AlarmClientModelListener
+public class GUI extends Composite implements AlarmClientModelListener
 {
     /**
-     * Persistence: Tags within dialog settings, actually written to
-     * WORKSPACE/.metadata/.plugins/org.csstudio.alarm.beast.ui.alarmtable/dialog_settings.xml
+     * <code>Blinker</code> is a singleton responsible for synchronous blinking of icons
+     * on all existing alarm tables.
+     *
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+     *
      */
-    final private static String ALARM_TABLE_SORT_COLUMN = "alarm_table_sort_column", //$NON-NLS-1$
-            ALARM_TABLE_SORT_UP = "alarm_table_sort_up"; //$NON-NLS-1$
+    private static enum Blinker
+    {
+        INSTANCE;
+
+        private final int period = Preferences.getBlinkingPeriod();
+        private final Set<GUI> guis = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
+        private final Display display = Display.getDefault();
+        private boolean active = false;
+
+        void blink()
+        {
+            display.timerExec(period, ()->
+            {
+                if (active)
+                {
+                    for (GUI g : guis)
+                    {
+                        //if the GUI thread is this thread, blink on this thread,
+                        //otherwise delegate to the GUI's thread and wait for it to finish
+                        if (display == g.display)
+                            g.blink();
+                        else
+                            g.display.syncExec(() -> blink());
+                    }
+                    blink();
+                }
+            });
+        }
+        void reset()
+        {
+            display.syncExec(() ->
+            {
+                for (GUI g : guis)
+                    g.icon_provider.reset();
+            });
+        }
+        void add(GUI gui)
+        {
+            display.syncExec(() ->
+            {
+                guis.add(gui);
+                //when a new gui is added, always reset everything so that all tables are synchronised
+                reset();
+                if (!active)
+                {
+                    active = true;
+                    blink();
+                }
+            });
+        }
+        void remove(GUI gui)
+        {
+            display.syncExec(() ->
+            {
+                guis.remove(gui);
+                if (guis.isEmpty())
+                    active = false;
+            });
+        }
+    }
 
     /**
      * Initial place holder for display of alarm counts to allocate enough screen space
@@ -89,11 +154,6 @@ public class GUI implements AlarmClientModelListener
     final private static String ALARM_COUNT_PLACEHOLDER = "999999"; //$NON-NLS-1$
 
     final private Display display;
-
-    /** Model with all the alarm information */
-    final private AlarmClientModel model;
-
-    final private IDialogSettings settings;
 
     /** Labels to show alarm counts */
     private Label current_alarms, acknowledged_alarms;
@@ -112,6 +172,7 @@ public class GUI implements AlarmClientModelListener
 
     private SeverityColorProvider color_provider;
     private SeverityIconProvider icon_provider;
+    private AlarmTableLabelProvider table_label_provider;
 
     /** Is something displayed in <code>error_message</code>? */
     private volatile boolean have_error_message = false;
@@ -119,11 +180,20 @@ public class GUI implements AlarmClientModelListener
     /** Error message (no server...) */
     private Label error_message;
 
-    private Composite baseComposite;
+    private Composite base_composite;
 
-    private final boolean group;
+    private final boolean separate_tables;
 
     private final ColumnWrapper[] columns;
+
+    /** The item used for filtering the alarms */
+    private AlarmTreeItem filter_item_parent;
+    /** Model with all the alarm information */
+    private AlarmClientModel model;
+    /** Flag indicating if unacknowledged alarms should blink */
+    private boolean blink_unacknowledged;
+    /** Are the models writable or not */
+    private final boolean writable;
 
     /** GUI updates are throttled to reduce flicker */
     final private GUIUpdateThrottle gui_update = new GUIUpdateThrottle()
@@ -133,6 +203,23 @@ public class GUI implements AlarmClientModelListener
         {
             if (display.isDisposed())
                 return;
+
+            AlarmTreePV[] rawAlarms = model.getActiveAlarms();
+            final AlarmTreePV[] filteredAlarms = filter(rawAlarms);
+            final int rawAlarmsLength = rawAlarms.length;
+            rawAlarms = model.getAcknowledgedAlarms();
+            final AlarmTreePV[] filteredAcknowledged = filter(rawAlarms);
+            final int rawAcknowledgedAlarmsLength = rawAlarms.length;
+            final AlarmTreePV[] combinedAlarms;
+            if (separate_tables)
+                combinedAlarms = null;
+            else
+            {
+                combinedAlarms = new AlarmTreePV[filteredAlarms.length + filteredAcknowledged.length];
+                System.arraycopy(filteredAlarms, 0, combinedAlarms, 0, filteredAlarms.length);
+                System.arraycopy(filteredAcknowledged, 0, combinedAlarms, filteredAlarms.length,
+                        filteredAcknowledged.length);
+            }
             display.syncExec(() ->
             {
                 if (current_alarms.isDisposed())
@@ -147,7 +234,8 @@ public class GUI implements AlarmClientModelListener
                 // Instead, tell ModelInstanceProvider about the data,
                 // which then updates the table with setItemCount(), refresh(),
                 // as that happens to not flicker.
-                updateGUI();
+                updateGUI(rawAlarmsLength,filteredAlarms,rawAcknowledgedAlarmsLength,
+                        filteredAcknowledged,combinedAlarms);
             });
         }
     };
@@ -180,9 +268,8 @@ public class GUI implements AlarmClientModelListener
             if (getViewer().isBusy()) return;
             if (value instanceof Boolean)
             {
-                if (SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE)) {
+                if (SecuritySupport.havePermission(AuthIDs.ACKNOWLEDGE))
                     ((AlarmTreePV) element).acknowledge(!(Boolean) value);
-                }
             }
         }
 
@@ -196,52 +283,40 @@ public class GUI implements AlarmClientModelListener
     /**
      * Initialize GUI
      *
-     * @param parent
-     *            Parent widget
-     * @param model
-     *            Alarm model
-     * @param site
-     *            Workbench site or <code>null</code>
-     * @param settings
-     * @param group
-     *            true if two tables should be created (one for acked and one for unacked alarms) or false if only one
-     *            table should be created
-     * @param columns
-     *            column configuration for the tables
+     * @param parent Parent widget
+     * @param site Workbench site or <code>null</code>
+     * @param writable indicates if this GUI is used in a writable or read only environment
+     * @param separate_tables true if two tables should be created (one for acked and one for unacked alarms) or false if
+     *            only one table should be created
+     * @param columns column configuration for the tables
+     * @param sorting_column default sorting column
+     * @param sort_up default sorting direction
      */
-    public GUI(final Composite parent, final AlarmClientModel model, final IWorkbenchPartSite site,
-            final IDialogSettings settings, boolean group, ColumnWrapper[] columns)
+    public GUI(final Composite parent, final IWorkbenchPartSite site,
+            final boolean writable, final boolean separate_tables, final ColumnWrapper[] columns,
+            final ColumnInfo sorting_column, boolean sort_up)
     {
-        display = parent.getDisplay();
-        this.group = group;
-        this.model = model;
-        this.settings = settings;
+        super(parent,SWT.NONE);
+        this.display = parent.getDisplay();
+        this.separate_tables = separate_tables;
         this.columns = columns;
-        createComponents(parent);
+        this.writable = writable;
+        createComponents(sorting_column, sort_up);
 
-        if (model.isServerAlive())
-            setErrorMessage(null);
-        else
-            setErrorMessage(Messages.WaitingForServer);
-
-        // Subscribe to model updates, arrange to un-subscribe
-        model.addListener(this);
-        baseComposite.addDisposeListener(new DisposeListener()
+        base_composite.addDisposeListener(new DisposeListener()
         {
             @Override
             public void widgetDisposed(DisposeEvent e)
             {
-                saveSettings();
-                model.removeListener(GUI.this);
+                if (model != null)
+                    model.removeListener(GUI.this);
                 gui_update.dispose();
             }
         });
-
         connectContextMenu(active_table_viewer, site);
-        if (group)
-        {
+        if (separate_tables)
             connectContextMenu(acknowledged_table_viewer, site);
-        }
+
 
         // Allow 'drag' of alarm info as text
         new ControlSystemDragSource(active_table_viewer.getTable())
@@ -253,7 +328,8 @@ public class GUI implements AlarmClientModelListener
                         .getSelection());
             }
         };
-        if (group)
+
+        if (separate_tables)
         {
             new ControlSystemDragSource(acknowledged_table_viewer.getTable())
             {
@@ -265,7 +341,24 @@ public class GUI implements AlarmClientModelListener
                 }
             };
         }
-        updateGUI();
+        gui_update.trigger();
+    }
+
+    @Override
+    public void dispose() {
+        Blinker.INSTANCE.remove(this);
+        super.dispose();
+    }
+
+    private void setUpModel()
+    {
+        if (model == null) return;
+        if (model.isServerAlive())
+            setErrorMessage(null);
+        else
+            setErrorMessage(org.csstudio.alarm.beast.ui.Messages.WaitingForServer);
+        // Subscribe to model updates, arrange to un-subscribe
+        model.addListener(this);
     }
 
     /** @return Table of active alarms */
@@ -277,56 +370,42 @@ public class GUI implements AlarmClientModelListener
     /** @return Table of acknowledged alarms */
     public TableViewer getAcknowledgedAlarmTable()
     {
-        return group ? acknowledged_table_viewer : active_table_viewer;
+        return separate_tables ? acknowledged_table_viewer : active_table_viewer;
     }
 
     /**
      * Create GUI elements
      *
-     * @param parent
-     *            Parent widget
+     * @param parent Parent widget
+     * @param memento the memento that provides the sorting information
      */
-    private void createComponents(final Composite parent)
+    private void createComponents(ColumnInfo sorting_column, boolean sort_up)
     {
-        parent.setLayout(new FillLayout());
+        setLayout(new FillLayout());
 
-        int sort_column = ColumnInfo.SEVERITY.ordinal();
-        boolean sort_up = false;
-        if (settings != null)
+        if (separate_tables)
         {
-            try
-            {
-                sort_column = settings.getInt(ALARM_TABLE_SORT_COLUMN);
-                sort_up = settings.getBoolean(ALARM_TABLE_SORT_UP);
-            }
-            catch (NumberFormatException ex)
-            {
-                // Ignore, use default
-            }
-        }
-
-        if (group)
-        {
-            baseComposite = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
-            baseComposite.setLayout(new FillLayout());
-            color_provider = new SeverityColorProvider(baseComposite);
-            icon_provider = new SeverityIconProvider(baseComposite);
-            // TODO Sync the table's sorting
-            // Tables are currently separate. Sorting one table by 'time' should
-            // probably cause both tables to sort by time.
-            addActiveAlarmSashElement(baseComposite, sort_column, sort_up);
-            addAcknowledgedAlarmSashElement(baseComposite, sort_column, sort_up);
-            ((SashForm) baseComposite).setWeights(new int[]
-            { 80, 20 });
+            base_composite = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
+            base_composite.setLayout(new FillLayout());
+            color_provider = new SeverityColorProvider(base_composite);
+            icon_provider = new SeverityIconProvider(base_composite);
+            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, ColumnInfo.TIME);
+            addActiveAlarmSashElement(base_composite);
+            addAcknowledgedAlarmSashElement(base_composite);
+            ((SashForm) base_composite).setWeights(new int[]{ 80, 20 });
         }
         else
         {
-            baseComposite = new Composite(parent, SWT.NONE);
-            baseComposite.setLayout(new FillLayout());
-            color_provider = new SeverityColorProvider(baseComposite);
-            icon_provider = new SeverityIconProvider(baseComposite);
-            addActiveAlarmSashElement(baseComposite, sort_column, sort_up);
+            base_composite = new Composite(this, SWT.NONE);
+            base_composite.setLayout(new FillLayout());
+            color_provider = new SeverityColorProvider(base_composite);
+            icon_provider = new SeverityIconProvider(base_composite);
+            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, ColumnInfo.TIME);
+            addActiveAlarmSashElement(base_composite);
         }
+        syncTables(active_table_viewer, acknowledged_table_viewer, sorting_column, sort_up);
+        syncTables(acknowledged_table_viewer, active_table_viewer, sorting_column, sort_up);
+
         // Update selection in active & ack'ed alarm table
         // in response to filter changes
         final ComboHistoryHelper filter_history = new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
@@ -340,8 +419,10 @@ public class GUI implements AlarmClientModelListener
                 final Pattern pattern = Pattern.compile(RegExHelper.fullRegexFromGlob(filter_text),
                         Pattern.CASE_INSENSITIVE);
                 selectFilteredPVs(pattern, active_table_viewer);
-                if (group)
+                if (separate_tables)
+                {
                     selectFilteredPVs(pattern, acknowledged_table_viewer);
+                }
             }
         };
         filter_history.loadSettings();
@@ -354,115 +435,248 @@ public class GUI implements AlarmClientModelListener
             {
                 filter.setText(""); //$NON-NLS-1$
                 active_table_viewer.setSelection(null, true);
-                if (group)
+                if (separate_tables)
+                {
                     acknowledged_table_viewer.setSelection(null, true);
+                }
             }
         });
 
         gui_update.start();
+        blink();
     }
 
-    /** Save table settings */
-    private void saveSettings()
+    /**
+     * Synchronise the UI actions between the two tables. When a sorting column is selected in the primary table the
+     * same column should be selected in the secondary table. Similarly, the moving and resizing of columns is also
+     * synchronised.
+     *
+     * @param primary the table, which is the source of the actions
+     * @param secondary the table that is synchronised with the primary table
+     * @param sortColumn the column that is being sorted by default
+     * @param sortUp default sorting direction
+     */
+    private void syncTables(final TableViewer primary, final TableViewer secondary, ColumnInfo sortColumn,
+            boolean sortUp)
     {
-        if (settings == null)
+        if (primary == null)
             return;
+        TableColumn[] priColumns = primary.getTable().getColumns();
+        TableColumn[] secColumns = secondary == null ? priColumns : secondary.getTable().getColumns();
+        boolean applied = false;
+        AlarmColumnSortingSelector defaultListener = null;
+        for (int i = 0; i < priColumns.length; i++)
+        {
+            final TableColumn c = priColumns[i];
+            final TableColumn s = secColumns[i];
+            final ColumnWrapper w = getColumnWrapper(i);
+            AlarmColumnSortingSelector listener = new AlarmColumnSortingSelector(primary, secondary, c, s,
+                    w.getColumnInfo());
+            c.addSelectionListener(listener);
+            if (secondary != null)
+            {
+                c.addControlListener(new ControlAdapter()
+                {
+                    @Override
+                    public void controlResized(ControlEvent e)
+                    {
+                        s.setWidth(c.getWidth());
+                        w.setMinWidth(c.getWidth());
+                    }
 
+                    @Override
+                    public void controlMoved(ControlEvent e)
+                    {
+                        secondary.getTable().setColumnOrder(primary.getTable().getColumnOrder());
+                    }
+                });
+            }
+            if (w.getColumnInfo() == sortColumn)
+            {
+                listener.setSortDirection(sortUp);
+                applied = true;
+            }
+            else if (defaultListener == null && w.getColumnInfo() != ColumnInfo.ACK)
+            {
+                defaultListener = listener;
+            }
+        }
+        if (!applied && defaultListener != null)
+        {
+            defaultListener.setSortDirection(sortUp);
+        }
+    }
+
+    /**
+     * Return the column wrapper that represents the table column at the given index.
+     *
+     * @param tableColumnIndex the table column index
+     * @return the column wrapper that matches the table column (the n-th visible wrapper)
+     */
+    private ColumnWrapper getColumnWrapper(int tableColumnIndex)
+    {
+        int idx = -1;
+        for (ColumnWrapper cw : columns)
+        {
+            if (cw.isVisible())
+                idx++;
+            if (tableColumnIndex == idx)
+                return cw;
+        }
+        return null;
+    }
+
+    /**
+     * Updates the given columns with the order that is currently applied to the tables. Most of the time the orders are
+     * the same, unless user moved the columns around by dragging their headers to a different position.
+     *
+     * @param columns the columns to update with the order
+     */
+    public void updateColumnOrder(ColumnWrapper[] columns)
+    {
+        if (active_table_viewer.getTable().isDisposed())
+            return;
+        int[] order = active_table_viewer.getTable().getColumnOrder();
+        ColumnWrapper[] ret = new ColumnWrapper[columns.length];
+        for (int i = 0; i < order.length; i++)
+            ret[i] = columns[order[i]];
+        int j = 0;
+        for (int i = 0; i < columns.length; i++)
+        {
+            if (!columns[i].isVisible())
+            {
+                for (; j < ret.length; j++)
+                {
+                    if (ret[j] == null)
+                    {
+                        ret[j] = columns[i];
+                        break;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < columns.length; i++)
+            columns[i] = ret[i];
+    }
+
+    private void blink()
+    {
+        if (blink_unacknowledged)
+        {
+            icon_provider.toggle();
+            if (!active_table_viewer.getTable().isDisposed())
+            {
+                // because of lazy label provider refresh is faster than updating individual cells
+                if (!active_table_viewer.isBusy())
+                    active_table_viewer.refresh();
+                if (acknowledged_table_viewer != null && !acknowledged_table_viewer.isBusy())
+                    acknowledged_table_viewer.refresh();
+            }
+        }
+    }
+
+    /**
+     * @return the column info of the column that is currently used as the sorting key in the table
+     */
+    public ColumnInfo getSortingColumn()
+    {
         final Table table = active_table_viewer.getTable();
         final TableColumn sort_column = table.getSortColumn();
         if (sort_column == null)
-            return;
+            return null;
 
         final int col_count = table.getColumnCount();
         for (int column = 0; column < col_count; ++column)
         {
             if (table.getColumn(column) == sort_column)
             {
-                settings.put(ALARM_TABLE_SORT_COLUMN, column);
-                settings.put(ALARM_TABLE_SORT_UP, table.getSortDirection() == SWT.UP);
-                return;
+                int count = 0;
+                for (int i = 0; i < columns.length; i++)
+                {
+                    if (columns[i].isVisible())
+                    {
+                        if (count == column)
+                        {
+                            return columns[i].getColumnInfo();
+                        }
+                        count++;
+                    }
+                }
             }
         }
+        return null;
+    }
+
+    /**
+     * @return true if sorting direction is equals to {@link SWT#UP} or false otherwise
+     */
+    public boolean isSortingUp()
+    {
+        final Table table = active_table_viewer.getTable();
+        return table.getSortDirection() == SWT.UP;
     }
 
     /**
      * Add the sash element for active alarms
      *
-     * @param sash
-     *            SashForm
-     * @param sort_column
-     * @param sort_up
+     * @param parent the parent composite
      */
-    private void addActiveAlarmSashElement(final Composite sash, final int sort_column, final boolean sort_up)
+    private void addActiveAlarmSashElement(final Composite parent)
     {
-        final Composite box = new Composite(sash, SWT.BORDER);
-        final GridLayout layout = new GridLayout();
-        layout.numColumns = group ? 5 : 6;
-        box.setLayout(layout);
+        final Composite box = new Composite(parent, SWT.BORDER);
+        box.setLayout(new GridLayout(5,false));
 
-        current_alarms = new Label(box, 0);
-        current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
-        current_alarms.setLayoutData(new GridData());
+        current_alarms = new Label(box, SWT.NONE);
+        current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, new Object[]
+        { ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER }));
+        current_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
 
-        if (!group)
-        {
-            acknowledged_alarms = new Label(box, 0);
-            acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
-            acknowledged_alarms.setLayoutData(new GridData());
-        }
+        error_message = new Label(box, SWT.NONE);
+        error_message.setLayoutData(new GridData(SWT.END,SWT.CENTER,false,false));
 
-        error_message = new Label(box, 0);
-        GridData gd = new GridData();
-        gd.horizontalAlignment = SWT.RIGHT;
-        gd.grabExcessHorizontalSpace = true;
-        error_message.setLayoutData(gd);
-
-        Label l = new Label(box, 0);
+        Label l = new Label(box, SWT.NONE);
         l.setText(Messages.Filter);
         l.setLayoutData(new GridData());
 
         filter = new Combo(box, SWT.BORDER);
         filter.setToolTipText(Messages.FilterTT);
-        gd = new GridData();
-        gd.grabExcessHorizontalSpace = true;
-        gd.horizontalAlignment = SWT.FILL;
-        filter.setLayoutData(gd);
+        filter.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
 
         unselect = new Button(box, SWT.PUSH);
         unselect.setText(Messages.Unselect);
         unselect.setToolTipText(Messages.UnselectTT);
-        gd = new GridData();
-        gd.horizontalAlignment = SWT.RIGHT;
-        unselect.setLayoutData(gd);
+        unselect.setLayoutData(new GridData(SWT.END,SWT.CENTER,false,false));
+
+        if (!separate_tables)
+        {
+            acknowledged_alarms = new Label(box, SWT.NONE);
+            acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, new Object[]
+            { ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER }));
+            acknowledged_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false,5,1));
+        }
 
         // Table w/ active alarms
-        active_table_viewer = createAlarmTable(box, sort_column, sort_up, true);
+        active_table_viewer = createAlarmTable(box, true);
         active_table_viewer.setInput(null);
-        ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(model.getActiveAlarms());
     }
 
     /**
      * Add the sash element for acknowledged alarms
      *
-     * @param sash
-     *            SashForm
-     * @param sort_column
-     * @param sort_up
+     * @param parent the parent composite
      */
-    private void addAcknowledgedAlarmSashElement(final Composite sash, final int sort_column, final boolean sort_up)
+    private void addAcknowledgedAlarmSashElement(final Composite parent)
     {
-        final Composite box = new Composite(sash, SWT.BORDER);
-        box.setLayout(new GridLayout());
+        final Composite box = new Composite(parent, SWT.BORDER);
+        box.setLayout(new GridLayout(1,false));
 
-        acknowledged_alarms = new Label(box, 0);
+        acknowledged_alarms = new Label(box, SWT.NONE);
         acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
-        acknowledged_alarms.setLayoutData(new GridData());
+        acknowledged_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
 
         // Table w/ ack'ed alarms
-        acknowledged_table_viewer = createAlarmTable(box, sort_column, sort_up, false);
+        acknowledged_table_viewer = createAlarmTable(box, false);
         acknowledged_table_viewer.setInput(null);
-        ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(model
-                .getAcknowledgedAlarms());
     }
 
     /**
@@ -488,16 +702,12 @@ public class GUI implements AlarmClientModelListener
     /**
      * Create a table viewer for displaying alarms
      *
-     * @param parent
-     *            Parent widget, uses GridLayout
-     * @param sort_column
-     * @param sort_up
-     * @param is_active_alarm_table
-     *            true if the table is for the active alarms or false if for acknowledged alarms
+     * @param parent Parent widget, uses GridLayout
+     * @param is_active_alarm_table true if the table is for the active alarms or false if for acknowledged alarms
+     *
      * @return TableViewer, still needs input
      */
-    private TableViewer createAlarmTable(final Composite parent, final int sort_column, final boolean sort_up,
-            final boolean is_active_alarm_table)
+    private TableViewer createAlarmTable(final Composite parent, final boolean is_active_alarm_table)
     {
         // TableColumnLayout requires the TableViewer to be in its own Composite
         final GridLayout parent_layout = (GridLayout) parent.getLayout();
@@ -522,36 +732,32 @@ public class GUI implements AlarmClientModelListener
         table_viewer.setContentProvider(new AlarmTableContentProvider());
 
         // Create the columns of the table, using a fixed initial width.
-        int column_number = 0;
         for (ColumnWrapper cw : columns)
         {
             if (!cw.isVisible())
                 continue;
-            ColumnInfo col_info = cw.getColumnInfo();
+
             // Create auto-size column
             final TableViewerColumn view_col = new TableViewerColumn(table_viewer, 0);
             final TableColumn table_col = view_col.getColumn();
-            table_layout.setColumnData(table_col, new ColumnWeightData(col_info.getWeight(), col_info.getMinWidth()));
-            if (col_info != ColumnInfo.ICON)
-                table_col.setText(col_info.getTitle());
+            table_layout.setColumnData(table_col, new ColumnWeightData(cw.getWeight(), cw.getMinWidth()));
+            table_col.setText(cw.getName());
             table_col.setMoveable(true);
+
+            ColumnInfo col_info = cw.getColumnInfo();
             // Tell column how to display the model elements
-            view_col.setLabelProvider(new AlarmTableLabelProvider(icon_provider, color_provider, col_info));
-            // Sort support
-            final AlarmColumnSortingSelector sel_listener = new AlarmColumnSortingSelector(table_viewer, table_col,
-                    col_info);
-            table_col.addSelectionListener(sel_listener);
-            // Sort on severity right away
-            if (column_number == sort_column)
-                sel_listener.setSortDirection(sort_up);
-            ++column_number;
+
+            if (col_info == ColumnInfo.TIME)
+                view_col.setLabelProvider(table_label_provider);
+            else
+                view_col.setLabelProvider(new AlarmTableLabelProvider(icon_provider, color_provider, col_info));
 
             if (col_info == ColumnInfo.ACK)
             {
-                if (model.isWriteAllowed())
+                if (writable)
                     view_col.setEditingSupport(new AcknowledgeEditingSupport(table_viewer));
-                table_col.setToolTipText(Messages.AcknowledgeColumnHeaderTooltip);
             }
+            table_col.setToolTipText(col_info.getTooltip());
         }
 
         return table_viewer;
@@ -582,15 +788,15 @@ public class GUI implements AlarmClientModelListener
                 final Shell shell = table.getShell();
                 final List<AlarmTreeItem> items = ((IStructuredSelection) table_viewer.getSelection()).toList();
 
-                new ContextMenuHelper(table_viewer, manager, shell, items, model.isWriteAllowed());
+                new ContextMenuHelper(table_viewer, manager, shell, items, writable);
                 manager.add(new Separator());
                 // Add edit items
-                if (items.size() == 1 && model.isWriteAllowed())
+                if (items.size() == 1 && writable && model != null)
                 {
                     final AlarmTreeItem item = items.get(0);
                     manager.add(new ConfigureItemAction(shell, model, item));
                 }
-                if (items.size() >= 1 && model.isWriteAllowed())
+                if (items.size() >= 1 && writable && model != null)
                     manager.add(new DisableComponentAction(shell, model, items));
                 manager.add(new Separator());
                 if (isRcp)
@@ -617,7 +823,7 @@ public class GUI implements AlarmClientModelListener
      * @param error
      *            Error message or <code>null</code> to clear error
      */
-    public void setErrorMessage(final String error)
+    private void setErrorMessage(final String error)
     {
         final Table act_table = active_table_viewer.getTable();
         if (act_table.isDisposed())
@@ -628,8 +834,10 @@ public class GUI implements AlarmClientModelListener
                 return; // msg already cleared, GUI already enabled
             error_message.setText(""); //$NON-NLS-1$
             error_message.setBackground(null);
+            error_message.setVisible(false);
+            error_message.getParent().layout();
             act_table.setEnabled(true);
-            if (group)
+            if (separate_tables)
                 acknowledged_table_viewer.getTable().setEnabled(true);
             have_error_message = false;
         }
@@ -638,11 +846,12 @@ public class GUI implements AlarmClientModelListener
             // Update the message
             error_message.setText(error);
             error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
+            error_message.setVisible(true);
             error_message.getParent().layout();
             if (have_error_message)
                 return; // GUI already disabled
             act_table.setEnabled(false);
-            if (group)
+            if (separate_tables)
                 acknowledged_table_viewer.getTable().setEnabled(false);
             have_error_message = true;
         }
@@ -659,7 +868,7 @@ public class GUI implements AlarmClientModelListener
     @Override
     public void serverTimeout(final AlarmClientModel model)
     {
-        display.asyncExec(() -> setErrorMessage(Messages.ServerTimeout));
+        display.asyncExec(() -> setErrorMessage(org.csstudio.alarm.beast.ui.Messages.ServerTimeout));
     }
 
     // For now, the table responds to any changes with a full update
@@ -671,13 +880,9 @@ public class GUI implements AlarmClientModelListener
         display.asyncExec(() ->
         {
             if (model.isServerAlive())
-            {
                 setErrorMessage(null);
-            }
             else
-            {
-                setErrorMessage(Messages.WaitingForServer);
-            }
+                setErrorMessage(org.csstudio.alarm.beast.ui.Messages.WaitingForServer);
         });
     }
 
@@ -694,31 +899,130 @@ public class GUI implements AlarmClientModelListener
         }
     }
 
-    private void updateGUI()
+    private AlarmTreePV[] filter(AlarmTreePV[] alarms)
     {
-        AlarmTreePV[] alarms = model.getActiveAlarms();
-        current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, alarms.length));
-        current_alarms.pack();
-
-        AlarmTreePV[] ackalarms = model.getAcknowledgedAlarms();
-        acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ackalarms.length));
-        acknowledged_alarms.pack();
-        if (group)
-        {
-            ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(alarms);
-            ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(ackalarms);
-        }
+        if (filter_item_parent == null || filter_item_parent instanceof AlarmTreeRoot || alarms.length == 0)
+            return alarms;
         else
         {
-            AlarmTreePV[] items = new AlarmTreePV[alarms.length + ackalarms.length];
-            System.arraycopy(alarms, 0, items, 0, alarms.length);
-            System.arraycopy(ackalarms, 0, items, alarms.length, ackalarms.length);
-            ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(items);
+            List<AlarmTreePV> items = new ArrayList<>(alarms.length);
+            AlarmTreeItem item;
+            for (AlarmTreePV pv : alarms)
+            {
+                item = pv;
+                do
+                {
+                    if (item == filter_item_parent)
+                    {
+                        items.add(pv);
+                        break;
+                    }
+                    item = item.getParent();
+                } while (item != null && !(item instanceof AlarmTreeRoot));
+
+            }
+            return items.toArray(new AlarmTreePV[items.size()]);
         }
     }
 
-    void dispose()
+    private void updateGUI(int numberOfRawAlarms, AlarmTreePV[] filteredAlarms,
+            int numberOfRawAcknowledgedAlarms, AlarmTreePV[] filteredAcknowledgedAlarms,
+            AlarmTreePV[] combinedAlarms)
     {
-        baseComposite.dispose();
+        if (model == null) return;
+        if (current_alarms.isDisposed())
+            return;
+
+        String text = null;
+        if (filter_item_parent == null || filter_item_parent instanceof AlarmTreeRoot)
+            text = NLS.bind(Messages.CurrentAlarmsFmtAll, filteredAlarms.length);
+        else
+            text = NLS.bind(Messages.CurrentAlarmsFmt, new Object[]
+                        { filteredAlarms.length, numberOfRawAlarms, filter_item_parent.getPathName() });
+        current_alarms.setText(text);
+        current_alarms.setToolTipText(text);
+
+        if (filteredAlarms.length != numberOfRawAlarms)
+            current_alarms.setForeground(current_alarms.getDisplay().getSystemColor(SWT.COLOR_RED));
+        else
+            current_alarms.setForeground(null);
+        current_alarms.pack();
+
+
+        if (filter_item_parent == null || filter_item_parent instanceof AlarmTreeRoot)
+            text = NLS.bind(Messages.AcknowledgedAlarmsFmtAll, filteredAcknowledgedAlarms.length);
+        else
+            text = NLS.bind(Messages.AcknowledgedAlarmsFmt, new Object[]
+                    { filteredAcknowledgedAlarms.length, numberOfRawAcknowledgedAlarms,
+                      filter_item_parent.getPathName() });
+        acknowledged_alarms.setText(text);
+        acknowledged_alarms.setToolTipText(text);
+
+        if (filteredAcknowledgedAlarms.length != numberOfRawAcknowledgedAlarms)
+            acknowledged_alarms.setForeground(acknowledged_alarms.getDisplay().getSystemColor(SWT.COLOR_RED));
+        else
+            acknowledged_alarms.setForeground(null);
+        acknowledged_alarms.pack();
+
+        if (separate_tables)
+        {
+            ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(filteredAlarms);
+            ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setAlarms(
+                    filteredAcknowledgedAlarms);
+        }
+        else
+        {
+            ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(combinedAlarms);
+        }
+    }
+
+    /**
+     * Sets the model and the filter item to use. Only the alarms that are blow the filter
+     * item parent will be displayed, providing that the filter item parent is from the
+     * given model.
+     *
+     * @param filterItemParent the item used for filtering alarms
+     * @param model the model to show events for
+     */
+    public void setFilterItem(AlarmTreeItem filterItemParent, AlarmClientModel model)
+    {
+        this.filter_item_parent = filterItemParent;
+        if (this.model != null)
+            this.model.removeListener(this);
+        this.model = model;
+        setUpModel();
+        gui_update.trigger();
+    }
+
+    /**
+     * Enables or disables the blinking of unacknowledged alarms icons.
+     *
+     * @param blinking true if icons should blink or stop otherwise
+     */
+    public void setBlinking(boolean blinking)
+    {
+        if (this.blink_unacknowledged == blinking) return;
+        this.blink_unacknowledged = blinking;
+        if (this.blink_unacknowledged)
+            Blinker.INSTANCE.add(this);
+        else
+        {
+            Blinker.INSTANCE.remove(this);
+            icon_provider.reset();
+            active_table_viewer.refresh();
+            if (acknowledged_table_viewer != null)
+                acknowledged_table_viewer.refresh();
+        }
+    }
+
+    /**
+     * Sets the format used for formatting the date and time column. The format has
+     * to be acceptable by the {@link SimpleDateFormat}.
+     *
+     * @param timeFormat the format string
+     */
+    public void setTimeFormat(String timeFormat)
+    {
+        table_label_provider.setTimeFormat(timeFormat);
     }
 }

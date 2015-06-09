@@ -68,5 +68,21 @@
          </adapter>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.alarm.beast.ui.perspective">
+         <view
+               closeable="true"
+               id="org.csstudio.diag.pvfields.view.PVFieldsView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.ui.views.PropertySheet"
+               showTitle="true"
+               visible="false">
+         </view>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>

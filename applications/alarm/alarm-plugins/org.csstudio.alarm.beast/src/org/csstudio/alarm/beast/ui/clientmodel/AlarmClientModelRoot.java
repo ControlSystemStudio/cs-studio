@@ -18,7 +18,8 @@ import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 @SuppressWarnings("nls")
 public class AlarmClientModelRoot extends AlarmTreeRoot
 {
-    final private AlarmClientModel model;
+    private static final long serialVersionUID = -7837435840098360307L;
+    final private transient AlarmClientModel model;
 
     /** Initialize alarm tree root
      *  @param id RDB ID of root element

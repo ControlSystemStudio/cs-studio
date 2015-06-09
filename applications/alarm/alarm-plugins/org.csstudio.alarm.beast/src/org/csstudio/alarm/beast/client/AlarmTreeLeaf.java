@@ -21,11 +21,13 @@ import org.epics.util.time.Timestamp;
  */
 public class AlarmTreeLeaf extends AlarmTreeItem
 {
+    private static final long serialVersionUID = -2107556902460644540L;
+
     /** Description of alarm */
     private String description = ""; //$NON-NLS-1$
 
     /** Timestamp of last alarm update */
-    private Timestamp timestamp = null;
+    private transient Timestamp timestamp = null;
 
     /** Initialize
      *  @param parent Parent item

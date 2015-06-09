@@ -630,6 +630,9 @@ For example, one can drag alarms into most email tools or
 the web interface to an elog system. The dragged text will include
 the alarm PV, description, and its current state.
 </p>
+<p>
+Dragging the tree items into an Alarm Table will set the filtering parameters on that alarm table.
+</p> 
 
 
 
@@ -656,10 +659,15 @@ Each active alarm has several properties:
 <li><b>Severity</b>: The severity of the PV remembered by alarm server. When the PV is configured to "latch", the alarm server remembers the highest alarm severity of the PV until it is manually acknowledged. Current severity of the PV might differ from alarm severity when the underlying alarm PV already recovered but the alarm server was configured to "latch" the alarm until operator acknowledgement.</li>
 <li><b>Status</b>: alarm status message like HIGH_ALARM or STATE_ALARM.</li> 
 <li><b>Value</b>: Value of the PV that triggered this alarm.</li>
+<li><b>Ack</b>: Checkbox for quick acknowledge or unacknowledge of alarms.</li>
+<li><b>Icon</b>: Icon representing the combination of latched and current severities.</li>
+<li><b>Action</b>: The first alarm guidance message.</li>
+<li><b>ID</b>: The first alarm guidance title.</li>
 </ul>
 <p>
 The CSS Alarm Table allows sorting by any of the above properties by clicking
-the corresponded property name on the column header.
+the corresponded property name on the column header. The sorting order (ascending/descending)
+can be toggled by clicking on the header again.
 </p>
 
 <a name=#current_alarm>
@@ -682,10 +690,72 @@ please refer to the <a href="#AlarmState">Alarm Severity States Diagram</a>
 
 <h3>Alarm Table Toolbar</h3>
 <p>
-The toolbar on top of Alarm Table provides the functions of
+The toolbar on top of Alarm Table provides the functions of 
+"Normal/Maintenance Mode Switch" <img src= icons/operate.gif>,
 "Acknowledge" <img src= icons/acknowledge.gif> and
 "Un-Acknowledge" <img src= icons/unacknowledge.gif>
-for the selected items in the table.
+for the selected items in the table. The next three icons are
+related to filtering: show alarms of the configuration selected in
+the tree <img src= icons/sync.gif>, show all alarms of the selected
+root <img src= icons/root.gif>, show alarms that belong to selected
+item <img src= icons/item.gif>.
+</p>
+<p>
+A menu (downward arrow) with commands to create a new table view,
+combine and separate tables, configure and reset columns and to
+select a filter is also provided.
+</p>
+<p>
+The tables for acknowledged and un-acknowledged alarms can either be 
+separate or they can be combined into a single table. Use can choose
+the presentation from the toolbar menu.
+</p>
+<p>
+The contents of both tables can be refined by configuring the columns.
+The toolbar menu provides "Configure Columns" command. The command open
+the Column Configuration Dialog, through which it can be selected, 
+which columns are visible in the table and in what order. It is also
+possible to define the time format used for the Alarm Time column in the table. 
+</p>
+<img class="float" src="column_configurator.png" alt="Column Configuration Dialog" width="531" height="400"></img>
+
+<h3>Filtering</h3>
+<p>
+By default alarm table will show all alarms that belong to the configuration
+root selected in the alarm tree. This is shown in the table with the toolbar
+button <img src= icons/sync.gif> being pushed and the title of the table
+displayes the name of the configuration.
+</p> 
+<p>
+If you wish to filter the alarms and show only a subset drag a node from the
+tree and drop it into the table. The table will display only those alarms
+which are equal or are descendants of the dropped item. This is shown by
+the toolbar button <img src= icons/item.gif> being pushed in, the alarm
+table title displays the name of the item and at the top of the table the
+full path of the selected node is displayed. 
+</p>
+<p>
+After a node is dropped on the table that table will stay locked on that 
+particular node. Even if another configuration is selected in the alarm tree,
+the table will still display the alarms that belong to the selected node.
+By pressing the toolbar buttons <img src= icons/root.gif> or <img src= icons/sync.gif>
+all alarms belonging to the root of the selected node or to the root selected
+in the alarm tree can be displayed. 
+</p>
+<p>
+In addition to drag and drop, selecting a filter node is also possible by clicking
+the "Select Filter..." item in the toolbar menu. A dialog will popup, where
+a full path of the item can be entered. If an invalid path is selected, it will
+be shown in the alarm table title.
+</p>
+
+<h3>New Alarm Table</h3>
+<p>
+Additional alarm tables can be open by selecting the "New Table View" from
+the toolbar drop down menu. Each table can be configured separately to show 
+different alarms or different columns (see previous sections). The number of
+tables is not limited. When CSS is closed the settings are stored and are
+restored the next time CSS is started.
 </p>
 
 <h3>Select PVs based on name or description</h3>
