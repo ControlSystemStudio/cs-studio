@@ -1,6 +1,6 @@
 package org.csstudio.alarm.beast.ui.alarmtable.actions;
 
-import org.csstudio.alarm.beast.ui.alarmtable.Activator;
+import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableView;
 import org.csstudio.alarm.beast.ui.alarmtable.FilterType;
 import org.csstudio.alarm.beast.ui.alarmtable.Messages;

@@ -8,6 +8,6 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>org.csstudio.alarm.beast.ui.alarmtree</artifactId>
-  <version>3.0.1-SNAPSHOT</version>
+  <version>3.0.2-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
