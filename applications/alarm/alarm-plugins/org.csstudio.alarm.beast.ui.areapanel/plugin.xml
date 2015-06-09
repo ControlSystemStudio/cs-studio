@@ -42,5 +42,26 @@
             name="%AreaPanel">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.alarm.beast.ui.perspective">
+         <view
+               closeable="true"
+               id="org.csstudio.alarm.beast.ui.areapanel"
+               minimized="false"
+               moveable="true"
+               ratio="0.4"
+               relationship="top"
+               relative="org.eclipse.ui.views.PropertySheet"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+         <viewShortcut
+               id="org.csstudio.alarm.beast.ui.areapanel">
+         </viewShortcut>
+      </perspectiveExtension>
+   </extension>
 
 </plugin>

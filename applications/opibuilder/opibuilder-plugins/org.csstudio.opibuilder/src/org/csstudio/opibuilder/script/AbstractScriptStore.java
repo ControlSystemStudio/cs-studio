@@ -26,6 +26,8 @@ import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.gef.EditPart;
+import org.eclipse.gef.EditPartListener;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
 
@@ -67,7 +69,33 @@ public abstract class AbstractScriptStore implements IScriptStore{
         this.scriptData = scriptData;
         this.editPart = editpart;
         this.pvArray = pvArray;
-
+        
+        editPart.addEditPartListener(new EditPartListener.Stub(){
+            @Override
+            public void partDeactivated(EditPart editpart) {
+                dispose();
+                editPart.removeEditPartListener(this);
+            }
+        });
+        if (editPart.isActive()) {       
+            init();
+        } else {
+            editPart.addEditPartListener(new EditPartListener.Stub(){
+                @Override
+                public void partDeactivated(EditPart editpart) {
+                    try {
+                        init();
+                        editPart.removeEditPartListener(this);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Cannot initialize script store.",e);
+                    }
+                }
+            });
+        }
+        
+    }
+    
+    private void init() throws Exception {
         if(!(scriptData instanceof RuleScriptData) && !scriptData.isEmbedded()){
             absoluteScriptPath = scriptData.getPath();
             if(!absoluteScriptPath.isAbsolute()){
@@ -87,7 +115,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
                 //
                 // TODO Understand & redo the whole widget model and its quirks for linking containers,
                 //      so all the recently added (.. instanceof ..Linking..) can be removed.
-                final AbstractWidgetModel model = editpart.getWidgetModel();
+                final AbstractWidgetModel model = editPart.getWidgetModel();
                 final DisplayModel root;
                 if (model instanceof AbstractLinkingContainerModel)
                     root = ((AbstractLinkingContainerModel) model).getDisplayModel();
@@ -110,7 +138,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
         errorSource =(scriptData instanceof RuleScriptData ?
                 ((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString())
                 + " on " +
-                        editpart.getWidgetModel().getName() ;
+                        editPart.getWidgetModel().getName() ;
 
 
         if(scriptData instanceof RuleScriptData){
@@ -283,6 +311,11 @@ public abstract class AbstractScriptStore implements IScriptStore{
         return absoluteScriptPath;
     }
 
-
+    /**
+     * Dispose of all resources allocated by this script store.
+     */
+    protected void dispose() {
+        
+    }
 
 }

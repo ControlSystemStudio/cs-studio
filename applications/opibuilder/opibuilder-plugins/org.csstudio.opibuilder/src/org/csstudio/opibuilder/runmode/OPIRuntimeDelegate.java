@@ -510,5 +510,13 @@ public class OPIRuntimeDelegate implements IAdaptable{
             displayOpenManager.dispose();
             displayOpenManager = null;
         }
+        if (displayModel != null) {
+            displayModel.setViewer(null);
+            displayModel = null;
+        }
+        if (viewer != null) {
+            viewer.setContents(null);
+            viewer = null;
+        }
     }
 }

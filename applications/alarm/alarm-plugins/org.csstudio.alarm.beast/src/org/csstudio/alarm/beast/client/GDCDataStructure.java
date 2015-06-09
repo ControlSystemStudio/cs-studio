@@ -7,11 +7,16 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.client;
 
+import java.io.Serializable;
+
 /**
  * The common data structure for Guidance/Display/Command
  * @author Xihui Chen, Kay Kasemir
  */
-public class GDCDataStructure {
+public class GDCDataStructure implements Serializable {
+
+    private static final long serialVersionUID = 8031395326183673090L;
+
     /** Maximum length of title used for the 'teaser' */
     final private static int MAX_TEASER = 30;
 

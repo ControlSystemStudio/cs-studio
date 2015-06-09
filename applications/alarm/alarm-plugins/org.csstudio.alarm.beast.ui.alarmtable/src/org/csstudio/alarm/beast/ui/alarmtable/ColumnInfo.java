@@ -1,7 +1,5 @@
 package org.csstudio.alarm.beast.ui.alarmtable;
 
-import org.csstudio.alarm.beast.ui.Messages;
-
 /** Description of one column in the alarm table
  *
  *  @author Kay Kasemir
@@ -9,29 +7,31 @@ import org.csstudio.alarm.beast.ui.Messages;
  */
 public enum ColumnInfo
 {
-    ACK(Messages.AcknowledgeColumnHeader,35,0),
-    ICON(Messages.AlarmIconColumnHeader,20,0),
-    PV(Messages.AlarmPV, 80, 50),
-    DESCRIPTION(Messages.AlarmDescription, 80, 100),
-    TIME(Messages.AlarmTime, 80, 70),
-    CURRENT_SEVERITY(Messages.AlarmCurrentSeverity, 50, 30),
-    CURRENT_STATUS(Messages.AlarmCurrentMessage, 45, 30),
-    SEVERITY(Messages.AlarmSeverity, 50, 30),
-    STATUS(Messages.AlarmMessage, 45, 30),
-    VALUE(Messages.AlarmValue, 45, 30),
-    ACTION(Messages.AlarmAction,45,30),
-    ID(Messages.AlarmID,45,30);
+    ACK(Messages.ColumnHeaderAcknowledge, Messages.ColumnHeaderAcknowledgeTooltip ,35, 0),
+    ICON(Messages.ColumnHeaderIcon, Messages.ColumnHeaderIconTooltip, 20, 0),
+    PV(Messages.ColumnHeaderPV, Messages.ColumnHeaderPVTooltip, 80, 50),
+    DESCRIPTION(Messages.ColumnHeaderDescription, Messages.ColumnHeaderDescriptionTooltip, 80, 100),
+    TIME(Messages.ColumnHeaderAlarmTime, Messages.ColumnHeaderAlarmTimeTooltip, 80, 70),
+    CURRENT_SEVERITY(Messages.ColumnHeaderCurrentSeverity, Messages.ColumnHeaderCurrentSeverityTooltip, 50, 30),
+    CURRENT_STATUS(Messages.ColumnHeaderCurrentStatus, Messages.ColumnHeaderCurrentStatusTooltip, 45, 30),
+    SEVERITY(Messages.ColumnHeaderSeverity, Messages.ColumnHeaderSeverityTooltip, 50, 30),
+    STATUS(Messages.ColumnHeaderStatus, Messages.ColumnHeaderStatusTooltip, 45, 30),
+    VALUE(Messages.ColumnHeaderValue, Messages.ColumnHeaderValueTooltip, 45, 30),
+    ACTION(Messages.ColumnHeaderAction, Messages.ColumnHeaderActionTooltip, 45, 30),
+    ID(Messages.ColumnHeaderAlarmID, Messages.ColumnHeaderAlarmIDTooltip, 45, 30);
 
     final private String title;
+    final private String tooltip;
 
     final private int width, weight;
 
     /** Initialize Column
      *  @param title Column title
      */
-    ColumnInfo(final String title, final int widths, final int weight)
+    ColumnInfo(final String title, final String tooltip, final int widths, final int weight)
     {
         this.title = title;
+        this.tooltip = tooltip;
         this.width = widths;
         this.weight = weight;
     }
@@ -52,5 +52,11 @@ public enum ColumnInfo
     public int getWeight()
     {
         return weight;
+    }
+
+    /** @return column header tooltip */
+    public String getTooltip()
+    {
+        return tooltip;
     }
 }

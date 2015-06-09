@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.ChangeOrderAction;
@@ -189,6 +190,8 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
  */
 public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
+    private static final Logger LOGGER = Logger.getLogger(OPIEditor.class.getName());
+    
     /**
      * The file extension for OPI files.
      */
@@ -222,6 +225,24 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
         setEditDomain(new DefaultEditDomain(this));
     }
+    
+    @Override
+    public void dispose() {
+        if (outlinePage != null) {
+            outlinePage.dispose();
+            outlinePage = null;
+        }
+        if (overviewOutlinePage != null) {
+            overviewOutlinePage.dispose();
+            overviewOutlinePage = null;
+        }
+        if (undoablePropertySheetPage != null) {
+            undoablePropertySheetPage.dispose();
+            undoablePropertySheetPage = null;
+        }
+        displayModel = null;
+        super.dispose();
+    }
 
     @Override
     public void init(final IEditorSite site, final IEditorInput input)
@@ -233,13 +254,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             final IPath path = ResourceUtil.getPathInEditor(input);
             RunModeService.openDisplayInView(site.getPage(), new RunnerInput(path, null), DisplayMode.NEW_TAB);
 
-            Display.getDefault().asyncExec(new Runnable(){
-                public void run() {
-
-                    getSite().getPage().closeEditor(OPIEditor.this, false);
-
-                }
-            });
+            Display.getDefault().asyncExec(() -> getSite().getPage().closeEditor(OPIEditor.this, false));
 
         }
         else
@@ -270,7 +285,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
                 return super.getAdapter(key);
             }
         };
-
+        
         // set clipping strategy for connection layer of connection can be hide
         // when its source or target is not showing.
         ConnectionLayer connectionLayer = (ConnectionLayer) root
@@ -297,7 +312,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
                         DisplayModel.PROP_SHOW_GRID, !isChecked()));
             }
         };
-
+        
         getActionRegistry().registerAction(action);
 
         // Ruler Action
@@ -796,7 +811,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
                 result = ((FileEditorInput) editorInput).getFile()
                         .getContents();
             } catch (CoreException e) {
-                e.printStackTrace();
+                LOGGER.log(Level.WARNING, "Error reading file.", e);
             }
         } else if (editorInput instanceof FileStoreEditorInput) {
             IPath path = URIUtil.toPath(((FileStoreEditorInput) editorInput)
@@ -804,7 +819,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             try {
                 result = new FileInputStream(path.toFile());
             } catch (FileNotFoundException e) {
-                result = null;
+                LOGGER.log(Level.WARNING, "Error reading file.", e);
             }
         }
 

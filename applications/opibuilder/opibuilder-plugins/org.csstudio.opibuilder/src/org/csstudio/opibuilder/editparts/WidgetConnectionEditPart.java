@@ -98,6 +98,9 @@ public class WidgetConnectionEditPart extends AbstractConnectionEditPart {
                     .addPropertyChangeListener(new PropertyChangeListener() {
                         @Override
                         public void propertyChange(final PropertyChangeEvent evt) {
+                            if (getViewer() == null || getViewer().getControl() == null) {
+                                return;
+                            }
                             Runnable runnable = new Runnable() {
 
                                 @Override

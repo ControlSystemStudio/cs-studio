@@ -20,12 +20,10 @@ import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
 import org.csstudio.opibuilder.editparts.AbstractLinkingContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.model.AbstractLinkingContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
-import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.GeometryUtil;
@@ -100,6 +98,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
     @Override
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if(newValue != null && newValue instanceof IPath){
@@ -108,7 +107,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                     if(!absolutePath.isAbsolute())
                         absolutePath = ResourceUtil.buildAbsolutePath(
                                 getWidgetModel(), absolutePath);
-                    DisplayModel displayModel = new DisplayModel(widgetModel.getDisplayModel().getOpiFilePath());
+                    DisplayModel displayModel = new DisplayModel(absolutePath);
                     widgetModel.setDisplayModel(displayModel);
                     loadWidgets(getWidgetModel(),true);
                     configureDisplayModel();
@@ -121,6 +120,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
         //load from group
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 loadWidgets(getWidgetModel(),true);
                 configureDisplayModel();
@@ -131,6 +131,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         setPropertyChangeHandler(LinkingContainerModel.PROP_GROUP_NAME, handler);
 
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
                 if((int)newValue == LinkingContainerModel.ResizeBehaviour.SIZE_OPI_TO_CONTAINER.ordinal()) {
                     ((LinkingContainerFigure)figure).setZoomToFitAll(true);
@@ -183,21 +184,23 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
      */
     private synchronized void configureDisplayModel() {
         //This need to be executed after GUI created.
-        if(getWidgetModel().getDisplayModel() == null)
-            getWidgetModel().setDisplayModel(new DisplayModel());
+        if(getWidgetModel().getDisplayModel() == null) {
+            IPath path = getWidgetModel().getOPIFilePath();
+            getWidgetModel().setDisplayModel(new DisplayModel(path));
+        }
 
 
         LinkingContainerModel widgetModel = getWidgetModel();
         DisplayModel displayModel = widgetModel.getDisplayModel();
         widgetModel.setDisplayModelViewer((GraphicalViewer) getViewer());
-        widgetModel.setDisplayModelDisplayID(widgetModel.getRootDisplayModel().getDisplayID());
+        widgetModel.setDisplayModelDisplayID(widgetModel.getRootDisplayModel(false).getDisplayID());
 
         UIBundlingThread.getInstance().addRunnable(new Runnable() {
             @Override
             public void run() {
                 LinkingContainerModel widgetModel = getWidgetModel();
                 widgetModel.setDisplayModelExecutionMode(getExecutionMode());
-                widgetModel.setDisplayModelOpiRuntime(widgetModel.getRootDisplayModel().getOpiRuntime());
+                widgetModel.setDisplayModelOpiRuntime(widgetModel.getRootDisplayModel(false).getOpiRuntime());
             }
         });
 
@@ -257,7 +260,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         //Load system macro
         if(displayModel.getMacrosInput().isInclude_parent_macros()){
             map.putAll(
-                    (LinkedHashMap<String, String>) displayModel.getParentMacroMap());
+                    displayModel.getParentMacroMap());
         }
         //Load macro from its macrosInput
         map.putAll(displayModel.getMacrosInput().getMacrosMap());
@@ -276,6 +279,9 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
         DisplayModel parentDisplay = widgetModel.getRootDisplayModel();
         parentDisplay.syncConnections();
+        DisplayModel parentDisplay2 = widgetModel.getRootDisplayModel(false);
+        if (parentDisplay != parentDisplay2)
+            parentDisplay2.syncConnections();
     }
 
 

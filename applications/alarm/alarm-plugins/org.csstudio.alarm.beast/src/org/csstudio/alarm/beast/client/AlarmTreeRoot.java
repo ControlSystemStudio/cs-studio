@@ -18,6 +18,8 @@ import org.csstudio.apputil.xml.XMLWriter;
  */
 public class AlarmTreeRoot extends AlarmTreeItem
 {
+    private static final long serialVersionUID = 2919387134278720733L;
+
     /** Initialize alarm tree root
      * @param name Name of root element
      * @param id RDB ID of root element

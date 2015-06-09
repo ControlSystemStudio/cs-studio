@@ -48,6 +48,19 @@ import org.epics.vtype.VType;
  */
 public class PVManagerPV implements IPV {
 
+    //Keep the exception handler separate from the PVManagerPV, to avoid
+    //memory leaks in case the client doesn't close this PV.
+    private static class ExHandler extends ExceptionHandler {
+        private final org.csstudio.simplepv.ExceptionHandler exceptionHandler;
+        ExHandler(org.csstudio.simplepv.ExceptionHandler exceptionHandler) {
+            this.exceptionHandler = exceptionHandler;
+        }
+        @Override
+        public void handleException(Exception ex) {
+            exceptionHandler.handleException(ex);
+        }
+    }
+
     private String name;
     private boolean valueBuffered;
     private List<IPVListener> listeners;
@@ -97,18 +110,12 @@ public class PVManagerPV implements IPV {
         this.valueBuffered = bufferAllValues;
         this.minUpdatePeriod = (int) minUpdatePeriodInMs;
 
-
         this.readOnly = readOnly;
         listeners = new CopyOnWriteArrayList<>();
 
         this.notificationThread = notificationThread;
         if (exceptionHandler != null) {
-            this.exceptionHandler = new ExceptionHandler() {
-                @Override
-                public void handleException(Exception ex) {
-                    exceptionHandler.handleException(ex);
-                }
-            };
+            this.exceptionHandler = new ExHandler(exceptionHandler);
         }
 
         String singleChannel = channelFromFormula(name); // null means formula
@@ -225,7 +232,6 @@ public class PVManagerPV implements IPV {
                 }
             }
         };
-
         if (valueBuffered) {
             PVReaderConfiguration<List<VType>> pvReaderConfiguration = PVManager.read(
                     newValuesOf(channel(name, VType.class, VType.class))).notifyOn(notificationThread);
@@ -378,6 +384,7 @@ public class PVManagerPV implements IPV {
                     stop();
                 }
             });
+            return;
         };
         if (pvReader != null){
             pvReader.close();
@@ -389,6 +396,7 @@ public class PVManagerPV implements IPV {
             pvWriter.close();
         pvReader = null;
         pvWriter = null;
+        exceptionHandler = null;
         startFlag.set(false);
     }
 

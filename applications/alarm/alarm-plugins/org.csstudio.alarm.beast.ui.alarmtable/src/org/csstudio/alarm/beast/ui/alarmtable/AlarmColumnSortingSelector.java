@@ -19,21 +19,27 @@ import org.eclipse.swt.widgets.TableColumn;
  */
 public class AlarmColumnSortingSelector extends SelectionAdapter
 {
-    final protected TableViewer table_viewer;
-    final protected TableColumn column;
-    final protected ColumnInfo col_info;
+    final private TableViewer table_viewer;
+    final private TableColumn column;
+    final private ColumnInfo col_info;
+    final private TableViewer second_table;
+    final private TableColumn secondary_column;
 
     /** Initialize
      *  @param table_viewer Table viewer
+     *  @param second_table the secondary table to sync with the table_viewer
      *  @param column SWT Table column on which to sort
+     *  @param secondary_column the column in the secondary table on which to sort
      *  @param col_info Info about the column (which piece of the alarm is in there?)
      */
-    public AlarmColumnSortingSelector(final TableViewer table_viewer,
-            final TableColumn column, final ColumnInfo col_info)
+    public AlarmColumnSortingSelector(final TableViewer table_viewer, final TableViewer second_table,
+            final TableColumn column, final TableColumn secondary_column, final ColumnInfo col_info)
     {
         this.table_viewer = table_viewer;
+        this.second_table = second_table;
         this.column = column;
         this.col_info = col_info;
+        this.secondary_column = secondary_column;
     }
 
     /** React to column selection
@@ -63,5 +69,14 @@ public class AlarmColumnSortingSelector extends SelectionAdapter
         table.setSortColumn(column);
         ((AlarmTableContentProvider)table_viewer.getContentProvider())
             .setComparator(AlarmComparator.getComparator(col_info, up));
+
+        if (second_table != null)
+        {
+            Table stable = second_table.getTable();
+            stable.setSortDirection(up ? SWT.UP : SWT.DOWN);
+            stable.setSortColumn(secondary_column);
+            ((AlarmTableContentProvider)second_table.getContentProvider())
+                .setComparator(AlarmComparator.getComparator(col_info, up));
+        }
     }
 }
