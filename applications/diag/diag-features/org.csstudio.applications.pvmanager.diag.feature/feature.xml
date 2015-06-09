@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.applications.diag.feature"
-      label="Diagnostic Applications Feature"
+      id="org.csstudio.applications.pvmanager.diag.feature"
+      label="Pvmanager Diagnostic tools"
       version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
@@ -17,21 +17,14 @@
    </license>
 
    <plugin
-         id="org.csstudio.diag.epics.pvtree"
+         id="org.csstudio.diag.epics.pvmanager.pvtree"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.diag.probe"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.diag.pvfields"
+         id="org.csstudio.diag.pvmanager.probe"
          download-size="0"
          install-size="0"
          version="0.0.0"
