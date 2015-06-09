@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 
 import javax.jms.MapMessage;
@@ -19,6 +21,7 @@ import org.csstudio.alarm.beast.JMSCommunicationThread;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
+import org.csstudio.logging.JMSLogMessage;
 
 /** JMS communicator that receives 'global' alarm updates
  *  @author Kay Kasemir
@@ -26,6 +29,9 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmUpdateInfo;
 @SuppressWarnings("nls")
 abstract public class GlobalAlarmCommunicator extends JMSCommunicationThread
 {
+    /** The date format for converting the received timestamp info into a Date object */
+    private final DateFormat date_format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
+
     private MessageConsumer consumer;
 
     public GlobalAlarmCommunicator(final String url)
@@ -65,7 +71,7 @@ abstract public class GlobalAlarmCommunicator extends JMSCommunicationThread
     {
         try
         {
-            final AlarmUpdateInfo info = AlarmUpdateInfo.fromMapMessage(message);
+            final AlarmUpdateInfo info = AlarmUpdateInfo.fromMapMessage(message,date_format);
             if (AlarmTreePath.isPath(info.getNameOrPath()))
                 handleAlarmUpdate(info);
             else

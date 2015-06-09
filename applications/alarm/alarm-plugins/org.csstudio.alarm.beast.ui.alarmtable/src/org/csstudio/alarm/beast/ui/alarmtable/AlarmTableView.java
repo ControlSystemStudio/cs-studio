@@ -25,7 +25,6 @@ import org.csstudio.alarm.beast.ui.alarmtable.actions.SeparateCombineTablesActio
 import org.csstudio.alarm.beast.ui.alarmtable.actions.ShowFilterAction;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
-import org.csstudio.alarm.beast.ui.alarmtable.Preferences;
 import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -65,7 +64,8 @@ public class AlarmTableView extends ViewPart
      */
     public static String newSecondaryID(IViewPart part)
     {
-        while (part.getSite().getPage().findViewReference(part.getSite().getId(), String.valueOf(secondaryId.get())) != null)
+        while (part.getSite().getPage().findViewReference(part.getSite().getId(),
+                String.valueOf(secondaryId.get())) != null)
         {
             secondaryId.incrementAndGet();
         }
@@ -168,7 +168,9 @@ public class AlarmTableView extends ViewPart
             public void widgetDisposed(DisposeEvent e)
             {
                 releaseModel(defaultModel);
+                defaultModel = null;
                 releaseModel(model);
+                model = null;;
             }
         });
 
@@ -194,10 +196,11 @@ public class AlarmTableView extends ViewPart
             this.combinedTables = groupSet == null ? Preferences.isCombinedAlarmTable() : groupSet;
 
             String filterTypeSet = memento.getString(Preferences.ALARM_TABLE_FILTER_TYPE);
-            this.filterType = filterTypeSet == null ? FilterType.TREE : FilterType.valueOf(filterTypeSet.toUpperCase());
+            this.filterType = filterTypeSet == null || filterTypeSet.isEmpty() ?
+                    FilterType.TREE : FilterType.valueOf(filterTypeSet.toUpperCase());
 
             this.timeFormat = memento.getString(Preferences.ALARM_TABLE_TIME_FORMAT);
-            if (site.getSecondaryId() != null && this.timeFormat == null)
+            if (site.getSecondaryId() != null && (this.timeFormat == null || this.timeFormat.isEmpty()))
                 this.timeFormat = Preferences.getTimeFormat();
 
             this.columns = ColumnWrapper.restoreColumns(memento.getChild(Preferences.ALARM_TABLE_COLUMN_SETTING));
@@ -267,11 +270,10 @@ public class AlarmTableView extends ViewPart
     }
 
     private void releaseModel(AlarmClientModel model) {
-        if (this.model != null)
+        if (model != null)
         {
-            this.model.removeListener(modelListener);
-            this.model.release();
-            this.model = null;
+            model.removeListener(modelListener);
+            model.release();
         }
     }
 
@@ -290,6 +292,7 @@ public class AlarmTableView extends ViewPart
         if (filterItemPath == null || filterItemPath.isEmpty())
         {
             releaseModel(model);
+            model = null;
             setFilterType(FilterType.TREE);
         }
         else

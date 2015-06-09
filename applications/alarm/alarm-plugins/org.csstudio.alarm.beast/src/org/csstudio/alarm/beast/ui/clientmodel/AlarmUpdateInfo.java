@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.clientmodel;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -26,10 +27,6 @@ import org.epics.util.time.Timestamp;
 @SuppressWarnings("nls")
 public class AlarmUpdateInfo
 {
-    /** Parser for received time stamp */
-    final protected static SimpleDateFormat date_format =
-        new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
-
     final private SeverityLevel current_severity, severity;
     final private String name_or_path, current_message, message, value;
     final private Timestamp timestamp;
@@ -38,8 +35,22 @@ public class AlarmUpdateInfo
      *  @param message Message that must contain alarm info
      *  @return {@link AlarmUpdateInfo}
      *  @throws Exception on error in JMS access or parsing of received data
+     *
+     *  @deprecated replaced by {@link #fromMapMessage(MapMessage, DateFormat)}
      */
-    public static AlarmUpdateInfo fromMapMessage(final MapMessage message)
+    @Deprecated
+    public static AlarmUpdateInfo fromMapMessage(final MapMessage message) throws Exception
+    {
+        return fromMapMessage(message, new SimpleDateFormat(JMSLogMessage.DATE_FORMAT));
+    }
+
+    /** Initialize from JMS MapMessage
+     *  @param message Message that must contain alarm info
+     *  @param date_format the date format used for parsing the received time stamp
+     *  @return {@link AlarmUpdateInfo}
+     *  @throws Exception on error in JMS access or parsing of received data
+     */
+    public static AlarmUpdateInfo fromMapMessage(final MapMessage message, DateFormat date_format)
             throws Exception
     {
         final String name = message.getString(JMSLogMessage.NAME);
