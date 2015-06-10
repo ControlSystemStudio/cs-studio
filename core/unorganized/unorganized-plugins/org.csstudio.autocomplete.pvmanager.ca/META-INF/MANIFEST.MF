@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: CA DataSource AutoComplete
+Bundle-SymbolicName: org.csstudio.autocomplete.pvmanager.ca;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.autocomplete.pvmanager.ca.Activator
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager.epics,
+ org.csstudio.autocomplete
+Bundle-Vendor: Fred Arnaud <frederic.arnaud@iter.org> - ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.csstudio.autocomplete.pvmanager.ca
+Service-Component: OSGI-INF/*.xml
