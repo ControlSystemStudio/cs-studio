@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="CA DataSource Parser">
+   <implementation class="org.csstudio.autocomplete.pvmanager.ca.CAContentParser"/>
+   <service>
+      <provide interface="org.csstudio.autocomplete.parser.IContentParser"/>
+   </service>
+</scr:component>
