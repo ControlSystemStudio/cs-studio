@@ -175,11 +175,13 @@
 									<id>org.mockito:mockito-core:1.9.5</id>
 								</artifact>
 								<artifact>
-									<id>org.python:jython-standalone:2.7-b3</id>
+									<id>org.python:jython-standalone:2.7.0</id>
+									<source>true</source>
 									<instructions>
 										<Bundle-Name>org.python.jython</Bundle-Name>
 										<Bundle-SymbolicName>org.python.jython</Bundle-SymbolicName>
-										<Bundle-Version>2.7.0.b3</Bundle-Version>
+										<Eclipse-BundleShape>dir</Eclipse-BundleShape>
+										<Bundle-Version>2.7.0</Bundle-Version>
 										<Export-Package>org.python.*,</Export-Package>
 										<Eclipse-BuddyPolicy>registered</Eclipse-BuddyPolicy>
 									</instructions>	
