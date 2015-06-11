@@ -169,4 +169,13 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     public boolean isPVControlWidget() {
         return delegate.isPVControlWidget();
     }
+
+    /**
+     * Set whether the editpart is enabled for control.
+     */
+    @Override
+    public void setControlEnabled(boolean enabled) {
+        delegate.setControlEnabled(enabled);
+    }
+
 }
