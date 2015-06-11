@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.script;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ResourceUtil;
@@ -19,6 +20,7 @@ import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.core.PyStringMap;
 import org.python.core.PySystemState;
+import org.python.util.PythonInterpreter;
 
 /**
  * This is the implementation of {@link AbstractScriptStore} for Jython PythonInterpreter.
@@ -55,8 +57,7 @@ public class JythonScriptStore extends AbstractScriptStore{
                 state.path.append(new PyString(folderPath.toOSString()));
             }
         }
-        interp = JythonInit.getInstance();
-        //interpreter = new PythonInterpreter(null, state);
+        interp = JythonInit.getInstance(state.getDict());
     }
 
     @Override
@@ -66,7 +67,7 @@ public class JythonScriptStore extends AbstractScriptStore{
 
     @Override
     protected void compileInputStream(InputStream s) throws Exception {
-        code = interp.compile(s);
+        code = interp.compile(new InputStreamReader(s));
     }
 
     @Override

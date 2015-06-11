@@ -8,13 +8,13 @@
 package org.csstudio.opibuilder.widgetActions;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.script.JythonInit;
-import org.csstudio.opibuilder.script.PythonInterpreter;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptStoreFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
@@ -34,6 +34,7 @@ import org.python.core.PyObject;
 import org.python.core.PyString;
 import org.python.core.PyStringMap;
 import org.python.core.PySystemState;
+import org.python.util.PythonInterpreter;
 
 /**The action executing python script.
  * @author Xihui Chen
@@ -79,7 +80,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
                 }
             }
 
-            interp = JythonInit.getInstance();
+            interp = JythonInit.getInstance(state.path.getDict());
 
             GraphicalViewer viewer = getWidgetModel().getRootDisplayModel().getViewer();
             if(viewer != null){
@@ -119,7 +120,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
                     code = interp.compile(getScriptText());
                 else{
                     InputStream inputStream = getInputStream();
-                    code = interp.compile(inputStream);
+                    code = interp.compile(new InputStreamReader(inputStream));
                     inputStream.close();
                 }
             }
