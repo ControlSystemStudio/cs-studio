@@ -7,27 +7,12 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.editparts;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
 import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
-import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.simplepv.IPV;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.Border;
-import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.widgets.Display;
 import org.epics.vtype.VType;
-import org.osgi.framework.Bundle;
 
 /**The abstract edit part for all PV armed widgets.
  * Widgets inheritate this class will have the CSS context menu on it.
@@ -37,24 +22,6 @@ import org.osgi.framework.Bundle;
 public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart implements IPVWidgetEditpart{
 
     protected PVWidgetEditpartDelegate delegate;
-
-    private static final String CURSOR_PATH = "icons/delete.gif";
-    private static Cursor readOnlyCursor;
-    /*
-     * Set up cursor icon.
-     */
-    static {
-        Bundle bundle = Platform.getBundle(OPIBuilderPlugin.PLUGIN_ID);
-        IPath path = new Path(CURSOR_PATH);
-        URL url = FileLocator.find(bundle, path, null);
-        try {
-            InputStream inputStream = url.openConnection().getInputStream();
-            readOnlyCursor = new Cursor(Display.getCurrent(), new ImageData(
-                    inputStream), 0, 0);
-        } catch (IOException e) {
-            readOnlyCursor = Cursors.HELP;
-        }
-    }
 
     public AbstractPVWidgetEditPart() {
         delegate = new PVWidgetEditpartDelegate(this);
@@ -202,20 +169,4 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     public boolean isPVControlWidget() {
         return delegate.isPVControlWidget();
     }
-
-    /**
-     * Change cursor if PV is read-only.
-     */
-    @Override
-    public void showTargetFeedback(org.eclipse.gef.Request request) {
-        super.showTargetFeedback(request);
-        AbstractPVWidgetModel apvwm = (AbstractPVWidgetModel) getModel();
-        if (delegate.getControlPV() != null) {
-            if (apvwm.getExecutionMode() == ExecutionMode.RUN_MODE &&
-                        !delegate.getControlPV().isWriteAllowed()) {
-                getFigure().setCursor(readOnlyCursor);
-            }
-        }
-    }
-
 }
