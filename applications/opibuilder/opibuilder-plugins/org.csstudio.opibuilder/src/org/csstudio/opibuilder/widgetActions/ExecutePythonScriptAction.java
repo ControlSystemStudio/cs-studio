@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
-import org.csstudio.opibuilder.script.JythonInit;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptStoreFactory;
 import org.csstudio.opibuilder.util.ConsoleService;
@@ -80,7 +79,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
                 }
             }
 
-            interp = JythonInit.getInstance(state.path.getDict());
+            interp = PythonInterpreter.threadLocalStateInterpreter(state.path.getDict());
 
             GraphicalViewer viewer = getWidgetModel().getRootDisplayModel().getViewer();
             if(viewer != null){

@@ -57,7 +57,7 @@ public class JythonScriptStore extends AbstractScriptStore{
                 state.path.append(new PyString(folderPath.toOSString()));
             }
         }
-        interp = JythonInit.getInstance(state.getDict());
+        interp = PythonInterpreter.threadLocalStateInterpreter(state.getDict());
     }
 
     @Override
