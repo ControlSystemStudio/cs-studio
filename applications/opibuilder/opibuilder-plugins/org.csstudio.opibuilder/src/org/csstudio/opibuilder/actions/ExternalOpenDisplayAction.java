@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
 
 /** Run OPI from external program, such as alarm GUI, data browser...
  *  @author Xihui Chen
