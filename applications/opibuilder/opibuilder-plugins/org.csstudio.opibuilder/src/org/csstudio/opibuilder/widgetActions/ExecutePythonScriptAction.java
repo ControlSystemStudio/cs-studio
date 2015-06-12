@@ -44,7 +44,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
     private PySystemState state;
     private DisplayEditpart displayEditpart;
     private AbstractBaseEditPart widgetEditPart;
-    
+
     @Override
     public ActionType getActionType() {
         return ActionType.EXECUTE_PYTHONSCRIPT;
@@ -62,7 +62,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
             }
             //read file
             IPath absolutePath = getAbsolutePath();
-            PySystemState state = new PySystemState();
+            state = new PySystemState();
 
             //Add the path of script to python module search path
             if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){
