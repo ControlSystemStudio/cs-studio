@@ -544,8 +544,10 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
                 break;
             if(dataProvider.isConcatenate_data()){
                 IPV pv = getPV(xPVPropID);
-                for(VType o:pv.getAllBufferedValues()){
-                    setXValue(dataProvider, o);
+                if (pv != null) {
+                    for (VType o : pv.getAllBufferedValues()) {
+                        setXValue(dataProvider, o);
+                    }
                 }
             }else
                 setXValue(dataProvider, (VType) newValue);
