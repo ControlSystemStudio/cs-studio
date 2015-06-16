@@ -385,7 +385,7 @@ public class GIFSymbolImage extends AbstractSymbolImage {
         InputStream stream = null;
         Image tempImage = null;
         try {
-            stream = ResourceUtil.pathToInputStream(imagePath);
+            stream = ResourceUtil.pathToInputStream(imagePath.toPortableString());
             ImageData[] dataArray = loader.load(stream);
             if (dataArray == null || dataArray.length < 1)
                 return;
