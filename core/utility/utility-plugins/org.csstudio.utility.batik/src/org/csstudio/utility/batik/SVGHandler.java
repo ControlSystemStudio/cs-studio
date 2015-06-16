@@ -48,6 +48,7 @@ import org.apache.batik.gvt.renderer.ImageRendererFactory;
 import org.apache.batik.util.SVGConstants;
 import org.apache.commons.lang.time.DateUtils;
 import org.csstudio.utility.batik.util.ICSSHandler;
+import org.csstudio.utility.batik.util.SVGAnimateElementValuesHandler;
 import org.csstudio.utility.batik.util.SVGAnimationEngine;
 import org.csstudio.utility.batik.util.SVGStylableElementCSSHandler;
 import org.csstudio.utility.batik.util.StyleSheetCSSHandler;
@@ -60,6 +61,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.w3c.dom.svg.SVGAnimateElement;
 import org.w3c.dom.svg.SVGDocument;
 import org.w3c.dom.svg.SVGSVGElement;
 
@@ -804,13 +806,17 @@ public class SVGHandler {
         if (styleList != null) {
             for (int i = 0; i < styleList.getLength(); i++) {
                 Node child = styleList.item(i);
-                if (child instanceof SVGStylableElement) {
+                if (child instanceof Element) {
                     rBuidElementsList(cssEngine, (Element) child);
                 }
             }
         }
         if (elmt instanceof SVGStylableElement) {
-            elementsToUpdate.add(new SVGStylableElementCSSHandler(cssEngine, (SVGStylableElement) elmt));
+            elementsToUpdate.add(new SVGStylableElementCSSHandler(cssEngine,
+                    (SVGStylableElement) elmt));
+        } else if (elmt instanceof SVGAnimateElement) {
+            elementsToUpdate.add(new SVGAnimateElementValuesHandler(cssEngine,
+                    (SVGAnimateElement) elmt));
         }
     }
 
