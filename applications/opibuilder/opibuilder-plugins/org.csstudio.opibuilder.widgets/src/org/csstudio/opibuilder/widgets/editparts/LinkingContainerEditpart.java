@@ -109,7 +109,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                                 getWidgetModel(), absolutePath);
                     DisplayModel displayModel = new DisplayModel(absolutePath);
                     widgetModel.setDisplayModel(displayModel);
-                    loadWidgets(getWidgetModel(),true);
+                    //loadWidgets(getWidgetModel(),true);
                     configureDisplayModel();
                 }
                 return true;
@@ -122,7 +122,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         handler = new IWidgetPropertyChangeHandler() {
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                loadWidgets(getWidgetModel(),true);
+                //loadWidgets(getWidgetModel(),true);
                 configureDisplayModel();
                 return false;
             }
@@ -147,7 +147,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             }
         };
         setPropertyChangeHandler(LinkingContainerModel.PROP_RESIZE_BEHAVIOUR, handler);
-        loadWidgets(getWidgetModel(),true);
+        //loadWidgets(getWidgetModel(),true);
         configureDisplayModel();
     }
 
@@ -158,10 +158,14 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
     /**
      * @param path the path of the OPI file
+     * 
+     * Removing this call because the add remove children in fillLinkingContainer overlap
+     * with the add remove in configureDisplayModel, and cause pv connection issues.
+     * This reverts some of the work from #912
      */
     private synchronized void loadWidgets(LinkingContainerModel model, final boolean checkSelf) {
         try {
-            model.removeAllChildren();
+          //  model.removeAllChildren();
             XMLUtil.fillLinkingContainer(model);
         } catch (Exception e) {
             //log first
@@ -248,9 +252,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                             .getScriptList());
         }
         // tempDisplayModel.removeAllChildren();
-        if (widgetModel.isAutoSize()) {
-            performAutosize();
-        }
+
         LinkedHashMap<String,String> map = new LinkedHashMap<>();
         AbstractContainerModel loadTarget = displayModel;
         // Load "LCID" macro whose value is unique to this instance of Linking Container.
@@ -272,9 +274,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         widgetModel.setMacroMap(map);
 
         widgetModel.removeAllChildren();
-        for (AbstractWidgetModel w : loadTarget.getChildren()){
-            widgetModel.addChild(w, true);
-        }
+        widgetModel.addChildren(loadTarget.getChildren(), true);
         widgetModel.setDisplayModel(displayModel);
 
         DisplayModel parentDisplay = widgetModel.getRootDisplayModel();
@@ -282,6 +282,9 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         DisplayModel parentDisplay2 = widgetModel.getRootDisplayModel(false);
         if (parentDisplay != parentDisplay2)
             parentDisplay2.syncConnections();
+        if (widgetModel.isAutoSize()) {
+            performAutosize();
+        }
     }
 
 
