@@ -44,6 +44,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ZoomListener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionFilter;
 
 /**The Editpart Controller for a linking Container
@@ -207,6 +208,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                 widgetModel.setDisplayModelOpiRuntime(widgetModel.getRootDisplayModel(false).getOpiRuntime());
             }
         });
+        
 
         connectionList = displayModel.getConnectionList();
         if(connectionList !=null && !connectionList.isEmpty()){
@@ -255,6 +257,15 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
         LinkedHashMap<String,String> map = new LinkedHashMap<>();
         AbstractContainerModel loadTarget = displayModel;
+        
+        if(!widgetModel.getGroupName().trim().equals("")){ //$NON-NLS-1$
+            AbstractWidgetModel group =
+                displayModel.getChildByName(widgetModel.getGroupName());
+            if(group != null && group instanceof AbstractContainerModel){
+                loadTarget = (AbstractContainerModel) group;
+            }
+        }
+        
         // Load "LCID" macro whose value is unique to this instance of Linking Container.
         if (widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE) {
             map.put("LCID", "LCID_" + getLinkingContainerID());
