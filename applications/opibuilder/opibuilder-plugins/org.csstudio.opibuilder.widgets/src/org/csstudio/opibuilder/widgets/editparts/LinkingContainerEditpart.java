@@ -191,9 +191,18 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         //This need to be executed after GUI created.
         if(getWidgetModel().getDisplayModel() == null) {
             IPath path = getWidgetModel().getOPIFilePath();
-            getWidgetModel().setDisplayModel(new DisplayModel(path));
+           
+            final DisplayModel tempDisplayModel = new DisplayModel(path);
+            getWidgetModel().setDisplayModel(tempDisplayModel);
+            try {
+                XMLUtil.fillDisplayModelFromInputStream(
+                        ResourceUtil.pathToInputStream(path), tempDisplayModel,
+                        getViewer().getControl().getDisplay());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-
 
         LinkingContainerModel widgetModel = getWidgetModel();
         DisplayModel displayModel = widgetModel.getDisplayModel();
@@ -243,8 +252,6 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             ((LinkingContainerFigure)getFigure()).updateZoom();
         });
 
-        getWidgetModel().setDisplayModel(displayModel);
-
         //Add scripts on display model
         if (getExecutionMode() == ExecutionMode.RUN_MODE) {
             widgetModel
@@ -254,7 +261,6 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                             .getScriptList());
         }
         // tempDisplayModel.removeAllChildren();
-
         LinkedHashMap<String,String> map = new LinkedHashMap<>();
         AbstractContainerModel loadTarget = displayModel;
         
@@ -293,7 +299,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         DisplayModel parentDisplay2 = widgetModel.getRootDisplayModel(false);
         if (parentDisplay != parentDisplay2)
             parentDisplay2.syncConnections();
-        if (widgetModel.isAutoSize()) {
+        if(getWidgetModel().isAutoSize()){
             performAutosize();
         }
     }
