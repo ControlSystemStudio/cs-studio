@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.swt.widgets.util;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.TimeUnit;
 
 import org.csstudio.swt.widgets.Preferences;
 import org.eclipse.core.runtime.IPath;
@@ -24,6 +26,11 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.io.ByteStreams;
+
 /**Utility functions for resources.
  * @author Xihui Chen
  *
@@ -31,11 +38,23 @@ import org.eclipse.swt.widgets.Display;
 public class ResourceUtil {
 
     private static final ResourceUtilSSHelper IMPL;
-
     static {
         IMPL = (ResourceUtilSSHelper) ImplementationLoader
                 .newInstance(ResourceUtilSSHelper.class);
     }
+
+    private static final LoadingCache<String, byte[]> cache = CacheBuilder.newBuilder()
+            .recordStats()
+            .expireAfterWrite(2, TimeUnit.MINUTES)
+            .maximumSize(1000)
+            .build(new CacheLoader<String, byte[]>() {
+                @Override
+                public byte[] load(String file) throws IOException, Exception {
+                    return ByteStreams.toByteArray(pathToInputStream(file));
+            }
+        });
+
+
 
     /**
      * Convert workspace path to OS system path.
@@ -59,12 +78,18 @@ public class ResourceUtil {
             final IJobErrorHandler errorHandler){
         final Display display = Display.getCurrent() != null ? Display.getCurrent() : Display.getDefault();
         Job job = new Job(jobName) {
-
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                 monitor.beginTask("Connecting to " + path, IProgressMonitor.UNKNOWN);
                 try {
-                    final InputStream inputStream = pathToInputStream(path);
+                    InputStream inputStream = SingleSourceHelper.workspaceFileToInputStream(path);
+                    if(inputStream == null){
+                        inputStream = new ByteArrayInputStream(cache.getUnchecked(path.toPortableString()));
+//                        System.out.println("hit: "+cache.stats().hitCount()+
+//                            ", miss: "+cache.stats().missCount()+
+//                            ", load time: "+cache.stats().totalLoadTime()+
+//                            ", entries: "+cache.asMap().size());
+                    }
                     uiTask.setInputStream(inputStream);
                     display.asyncExec(uiTask);
                 } catch (Exception e) {
@@ -83,41 +108,33 @@ public class ResourceUtil {
      * Return the {@link InputStream} of the file that is available on the
      * specified path. The caller is responsible for closing inputstream.
      *
-     * @param path
-     *            The {@link IPath} to the file in the workspace, the local
-     *            file system, or a URL (http:, https:, ftp:, file:, platform:)
+     * @param path Path in local file system, or a URL (http:, https:, ftp:, file:, platform:)
      * @return The corresponding {@link InputStream}. Never <code>null</code>
      * @throws Exception
      */
     @SuppressWarnings("nls")
-    public static InputStream pathToInputStream(final IPath path) throws Exception
+    public static InputStream pathToInputStream(final String path) throws Exception
     {
-       InputStream inputStream = SingleSourceHelper.workspaceFileToInputStream(path);
-
-       if(inputStream != null)
-           return inputStream;
-
         // Not a workspace file. Try local file system
-        File local_file = path.toFile();
+        File local_file = new File(path);
         // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
             local_file = new File(local_file.getPath().substring(5));
         String urlString;
-        try
-        {
+        try {
             return new FileInputStream(local_file);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             // Could not open as local file.
             // Does it look like a URL?
-            //TODO:
-            // Eclipse Path collapses "//" into "/", revert that: Is this true? Need test on Mac.
+            // TODO:
+            // Eclipse Path collapses "//" into "/", revert that: Is this true?
+            // Need test on Mac.
             urlString = path.toString();
-//            if(!urlString.startsWith("platform") && !urlString.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
-//                urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
-            // Does it now look like a URL? If not, report the original local file problem
-            if (! isURL(urlString))
+            //                    if(!urlString.startsWith("platform") && !urlString.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
+            //                        urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
+            // Does it now look like a URL? If not, report the original local
+            // file problem
+            if (!isURL(urlString))
                 throw new Exception("Cannot open " + ex.getMessage(), ex);
         }
 
@@ -126,7 +143,7 @@ public class ResourceUtil {
         urlString = urlString.replaceAll(" ", "%20");
         URI uri = new URI(urlString);
         final URL url = uri.toURL();
-        return  openURLStream(url);
+        return openURLStream(url);
     }
 
     private static InputStream openURLStream(final URL url) throws IOException {

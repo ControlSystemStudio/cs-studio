@@ -130,7 +130,7 @@ public class PNGSymbolImage extends AbstractSymbolImage {
         InputStream stream = null;
         Image tempImage = null;
         try {
-            stream = ResourceUtil.pathToInputStream(imagePath);
+            stream = ResourceUtil.pathToInputStream(imagePath.toPortableString());
             tempImage = new Image(Display.getDefault(), stream);
             ImageData imgData = tempImage.getImageData();
             setOriginalImageData(imgData);
