@@ -42,17 +42,17 @@ public class ResourceUtil {
         IMPL = (ResourceUtilSSHelper) ImplementationLoader
                 .newInstance(ResourceUtilSSHelper.class);
     }
-    
+
     private static final LoadingCache<String, byte[]> cache = CacheBuilder.newBuilder()
-	    .recordStats()
-	    .expireAfterWrite(2, TimeUnit.MINUTES)
-	    .maximumSize(1000)
-	    .build(new CacheLoader<String, byte[]>() {
-	        @Override
-	        public byte[] load(String file) throws IOException, Exception {
-	            return ByteStreams.toByteArray(pathToInputStream(file));
-	    }
-	});
+            .recordStats()
+            .expireAfterWrite(2, TimeUnit.MINUTES)
+            .maximumSize(1000)
+            .build(new CacheLoader<String, byte[]>() {
+                @Override
+                public byte[] load(String file) throws IOException, Exception {
+                    return ByteStreams.toByteArray(pathToInputStream(file));
+            }
+        });
 
 
 
@@ -84,11 +84,11 @@ public class ResourceUtil {
                 try {
                     InputStream inputStream = SingleSourceHelper.workspaceFileToInputStream(path);
                     if(inputStream == null){
-                	inputStream = new ByteArrayInputStream(cache.getUnchecked(path.toPortableString()));
-//                	System.out.println("hit: "+cache.stats().hitCount()+
-//                	    ", miss: "+cache.stats().missCount()+
-//                	    ", load time: "+cache.stats().totalLoadTime()+
-//                	    ", entries: "+cache.asMap().size());
+                        inputStream = new ByteArrayInputStream(cache.getUnchecked(path.toPortableString()));
+//                        System.out.println("hit: "+cache.stats().hitCount()+
+//                            ", miss: "+cache.stats().missCount()+
+//                            ", load time: "+cache.stats().totalLoadTime()+
+//                            ", entries: "+cache.asMap().size());
                     }
                     uiTask.setInputStream(inputStream);
                     display.asyncExec(uiTask);
@@ -108,44 +108,42 @@ public class ResourceUtil {
      * Return the {@link InputStream} of the file that is available on the
      * specified path. The caller is responsible for closing inputstream.
      *
-     * @param path
-     *            The {@link IPath} to the file in the workspace, the local
-     *            file system, or a URL (http:, https:, ftp:, file:, platform:)
+     * @param path Path in local file system, or a URL (http:, https:, ftp:, file:, platform:)
      * @return The corresponding {@link InputStream}. Never <code>null</code>
      * @throws Exception
      */
     @SuppressWarnings("nls")
     public static InputStream pathToInputStream(final String path) throws Exception
     {
-	// Not a workspace file. Try local file system
-	File local_file = new File(path);
-	// Path URL for "file:..." so that it opens as FileInputStream
-	if (local_file.getPath().startsWith("file:"))
-	    local_file = new File(local_file.getPath().substring(5));
-	String urlString;
-	try {
-	    return new FileInputStream(local_file);
-	} catch (Exception ex) {
-	    // Could not open as local file.
-	    // Does it look like a URL?
-	    // TODO:
-	    // Eclipse Path collapses "//" into "/", revert that: Is this true?
-	    // Need test on Mac.
-	    urlString = path.toString();
-	    //	            if(!urlString.startsWith("platform") && !urlString.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
-	    //	                urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
-	    // Does it now look like a URL? If not, report the original local
-	    // file problem
-	    if (!isURL(urlString))
-		throw new Exception("Cannot open " + ex.getMessage(), ex);
-	}
+        // Not a workspace file. Try local file system
+        File local_file = new File(path);
+        // Path URL for "file:..." so that it opens as FileInputStream
+        if (local_file.getPath().startsWith("file:"))
+            local_file = new File(local_file.getPath().substring(5));
+        String urlString;
+        try {
+            return new FileInputStream(local_file);
+        } catch (Exception ex) {
+            // Could not open as local file.
+            // Does it look like a URL?
+            // TODO:
+            // Eclipse Path collapses "//" into "/", revert that: Is this true?
+            // Need test on Mac.
+            urlString = path.toString();
+            //                    if(!urlString.startsWith("platform") && !urlString.contains("://")) //$NON-NLS-1$ //$NON-NLS-2$
+            //                        urlString = urlString.replaceFirst(":/", "://"); //$NON-NLS-1$ //$NON-NLS-2$
+            // Does it now look like a URL? If not, report the original local
+            // file problem
+            if (!isURL(urlString))
+                throw new Exception("Cannot open " + ex.getMessage(), ex);
+        }
 
-	// Must be a URL
-	// Allow URLs with spaces. Ideally, the URL class would handle this?
-	urlString = urlString.replaceAll(" ", "%20");
-	URI uri = new URI(urlString);
-	final URL url = uri.toURL();
-	return openURLStream(url);
+        // Must be a URL
+        // Allow URLs with spaces. Ideally, the URL class would handle this?
+        urlString = urlString.replaceAll(" ", "%20");
+        URI uri = new URI(urlString);
+        final URL url = uri.toURL();
+        return openURLStream(url);
     }
 
     private static InputStream openURLStream(final URL url) throws IOException {
