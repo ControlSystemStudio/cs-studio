@@ -78,6 +78,26 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
         }
 
     }
+    
+    public synchronized void addChildren(List<AbstractWidgetModel> children, boolean changeParent){
+	ArrayList<AbstractWidgetModel> oldList = new ArrayList<AbstractWidgetModel>(childrenList);
+	for(AbstractWidgetModel child : children){
+	    if(child != null && !childrenList.contains(child)){
+	            int newIndex = -1;
+	            if(layoutWidget != null){
+	                newIndex = childrenList.size() -1;
+	                childrenList.add(newIndex, child);
+	            }
+	            else
+	                childrenList.add(child);
+	            if(child instanceof AbstractLayoutModel)
+	                layoutWidget = (AbstractLayoutModel) child;
+	            if(changeParent)
+	                child.setParent(this);
+	        }
+	}
+	childrenProperty.firePropertyChange(oldList, children);
+    }
 
     public void addChild(AbstractWidgetModel child){
         addChild(child, true);

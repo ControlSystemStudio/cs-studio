@@ -241,7 +241,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
         svgHandler = null;
         failedToLoadDocument = false;
         try {
-            final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath);
+            final InputStream inputStream = ResourceUtil.pathToInputStream(imagePath.toPortableString());
             loadDocument(inputStream);
         } catch (Exception e) {
             Activator.getLogger().log(Level.WARNING, "Error loading SVG image " + imagePath, e);

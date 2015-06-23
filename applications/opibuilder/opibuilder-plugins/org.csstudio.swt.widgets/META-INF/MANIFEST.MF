@@ -23,7 +23,8 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.csstudio.rap.ui.util;resolution:=optional,
  org.apache.batik.dom.svg,
  org.apache.batik.util,
- org.apache.batik.dom
+ org.apache.batik.dom,
+ com.google.guava
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.swt.widgets.datadefinition,

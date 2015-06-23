@@ -90,7 +90,7 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
      * The geographical size of the children.
      */
     private Dimension childrenGeoSize = null;
-
+    
     public LinkingContainerModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setBorderStyle(BorderStyle.LOWERED);
@@ -98,7 +98,6 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
 
     @Override
     protected void configureProperties() {
-
         addProperty(new BooleanProperty(PROP_ZOOMTOFITALL, "Zoom to Fit", WidgetPropertyCategory.Display, true));
         setPropertyVisibleAndSavable(PROP_ZOOMTOFITALL, false, false);
 
@@ -168,16 +167,16 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
     @Override
     public void processVersionDifference(org.osgi.framework.Version boyVersionOnFile) {
         super.processVersionDifference(boyVersionOnFile);
-        if(boyVersionOnFile.compareTo(VERSION_CHANGE_OF_RESIZE_BEHAVIOUR) < 0) {
-            Activator.getLogger().log(Level.CONFIG, "Converting linking container to new style of resizing behaviour.");
-            if((Boolean)getPropertyValue(PROP_AUTO_SIZE)) {
-                setPropertyValue(PROP_RESIZE_BEHAVIOUR, ResizeBehaviour.SIZE_CONTAINER_TO_OPI.ordinal());
-            } else if((Boolean)getPropertyValue(PROP_ZOOMTOFITALL)) {
-                setPropertyValue(PROP_RESIZE_BEHAVIOUR, ResizeBehaviour.SIZE_OPI_TO_CONTAINER.ordinal());
-            } else {
-                setPropertyValue(PROP_RESIZE_BEHAVIOUR, ResizeBehaviour.SCROLL_OPI.ordinal());
-            }
-        }
+//        if(boyVersionOnFile.compareTo(VERSION_CHANGE_OF_RESIZE_BEHAVIOUR) < 0) {
+//            Activator.getLogger().log(Level.CONFIG, "Converting linking container to new style of resizing behaviour.");
+//            if((Boolean)getPropertyValue(PROP_AUTO_SIZE)) {
+//                setPropertyValue(PROP_RESIZE_BEHAVIOUR, ResizeBehaviour.SIZE_CONTAINER_TO_OPI.ordinal());
+//            } else if((Boolean)getPropertyValue(PROP_ZOOMTOFITALL)) {
+//                setPropertyValue(PROP_RESIZE_BEHAVIOUR, ResizeBehaviour.SIZE_OPI_TO_CONTAINER.ordinal());
+//            } else {
+//                setPropertyValue(PROP_RESIZE_BEHAVIOUR, ResizeBehaviour.SCROLL_OPI.ordinal());
+//            }
+//        }
     };
 
     /**

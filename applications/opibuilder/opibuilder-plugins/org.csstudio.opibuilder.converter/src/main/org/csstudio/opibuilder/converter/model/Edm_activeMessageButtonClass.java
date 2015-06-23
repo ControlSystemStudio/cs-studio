@@ -24,6 +24,7 @@ public class Edm_activeMessageButtonClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private String pressValue;
     @EdmAttributeAn @EdmOptionalAn private String releaseValue;
     @EdmAttributeAn @EdmOptionalAn private String password;
+    @EdmAttributeAn @EdmOptionalAn private boolean invisible;
 
     @EdmAttributeAn @EdmOptionalAn private boolean toggle;
 
@@ -47,8 +48,9 @@ public class Edm_activeMessageButtonClass extends EdmWidget {
         return releaseValue;
     }
 
-
-
+    public boolean isInvisible() {
+        return invisible;
+    }
 
     public String getPassword() {
         return password;
