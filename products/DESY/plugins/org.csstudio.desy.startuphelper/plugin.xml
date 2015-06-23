@@ -3,5 +3,5 @@
 <plugin>
    <extension-point id="startupListener" name="Startup Listener" schema="schema/startupListener.exsd"/>
     <extension-point id="striptool" name="StripTool" schema="schema/striptool.exsd"/>
-   
+
 </plugin>

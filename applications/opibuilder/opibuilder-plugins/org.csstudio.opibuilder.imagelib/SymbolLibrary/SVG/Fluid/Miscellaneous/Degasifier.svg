@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="99pt" height="210pt" viewBox="0 0 99 210" version="1.1">
+<defs>
+<image id="image6" width="8" height="8" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAIAAABLbSncAAAABmJLR0QA/wD/AP+gvaeTAAAANElEQVQImWMQFRXdv3//fySwf/9+UVFRBggFl4NzGZA5yIoYkBUia2ViwAVwGoXTclzOBQDE+nB37wOTgAAAAABJRU5ErkJggg=="/>
+<clipPath id="clip1">
+  <rect width="11" height="11"/>
+</clipPath>
+<g id="surface8" clip-path="url(#clip1)">
+<use xlink:href="#image6" transform="matrix(1.375,0,0,1.375,0,0)"/>
+</g>
+<pattern id="pattern0" patternUnits="userSpaceOnUse" width="11" height="11" patternTransform="matrix(0.545455,0,0,0.545455,0.000000000000000064,0.000000000000002789)">
+<use xlink:href="#surface8"/>
+</pattern>
+</defs>
+<g id="surface2">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.875 177.265625 L 1.875 33.753906 L 97.539063 33.753906 L 97.539063 177.265625 Z "/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.00000748129 35.73196 L 51.020808 35.73196 L 51.020808 112.271516 L -0.00000748129 112.271516 Z " transform="matrix(1.875001,0,0,1.875001,1.875014,-33.239637)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 51.020808 112.269888 L -0.00000748129 112.269888 " transform="matrix(1.875001,0,0,1.875001,1.875014,-144.857677)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000403125 112.270395 L 8.5004 103.770398 L 8.5004 112.270395 " transform="matrix(1.875001,0,0,1.875001,33.768775,-97.026597)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.00000748129 95.270401 L 25.5104 95.270401 L 25.5104 103.770398 L 34.020814 112.270395 " transform="matrix(1.875001,0,0,1.875001,1.875014,-97.026597)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00000949032 112.269377 L 0.00000949032 98.669382 C 0.00000949032 96.790216 1.904175 95.265216 4.254175 95.265216 C 6.604174 95.265216 8.510423 96.790216 8.510423 98.669382 " transform="matrix(1.875001,0,0,1.875001,17.812482,-176.75125)"/>
+<path style="fill-rule:evenodd;fill:url(#pattern0);stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.0000930887 95.262795 L 51.022992 95.262795 L 51.022992 112.271123 L 0.0000930887 112.271123 Z " transform="matrix(1.875001,0,0,1.875001,1.874825,-49.184211)"/>
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000303374 112.269338 C 3.137802 112.269338 6.035718 110.596422 7.602384 107.879756 C 9.171133 105.163091 9.16905 101.815175 7.600301 99.100593 C 6.029468 101.815175 6.029468 105.163091 7.596134 107.879756 C 9.164883 110.596422 12.062799 112.269338 15.200298 112.269338 C 13.631549 109.554756 10.735716 107.883923 7.600301 107.883923 C 4.464885 107.883923 1.569053 109.554756 0.000303374 112.269338 Z " transform="matrix(1.875001,0,0,1.875001,35.456462,-148.454303)"/>
+</g>
+</svg>

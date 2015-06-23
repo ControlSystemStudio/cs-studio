@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Scan UI support
+Bundle-SymbolicName: org.csstudio.scan.ui;singleton:=true
+Bundle-Version: 4.2.1.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
+ org.eclipse.core.resources;bundle-version="3.7.0",
+ org.eclipse.ui;bundle-version="3.6.0",
+ org.eclipse.help;bundle-version="3.5.100",
+ org.csstudio.ui.menu;bundle-version="3.1.0",
+ org.csstudio.ui.help;bundle-version="3.1.0",
+ org.csstudio.scan;bundle-version="4.2.0",
+ org.csstudio.scan.client;bundle-version="1.0.0",
+ org.python.jython;bundle-version="2.7.0"
+Export-Package: org.csstudio.scan.ui
+Import-Package: org.csstudio.ui.util.wizards,
+ org.eclipse.ui.part
+Eclipse-RegisterBuddy: org.python.jython

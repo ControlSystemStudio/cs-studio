@@ -27,21 +27,21 @@ import org.eclipse.swt.widgets.Display;
  */
 public class DesyLoginPrompt implements LoginExtPoint {
     /** {@inheritDoc} */
-	@Override
+    @Override
     public Object login(Display display, IApplicationContext context, Map<String, Object> parameters) throws Exception {
-		SecurityFacade sf = SecurityFacade.getInstance();
-//		String lastUser = Platform.getPreferencesService().getString(CSSPlatformPlugin.ID,SecurityFacade.LOGIN_LAST_USER_NAME , "", null); //$NON-NLS-1$
-//		LoginDialog dialog = new LoginDialog(null,lastUser);
-		LoginDialog dialog = new LoginDialog(null, null);
-		sf.setLoginCallbackHandler(dialog);
-		if (sf.isLoginOnStartupEnabled()) {
-			sf.authenticateApplicationUser();
-		}
-		Credentials credentials = dialog.getLoginCredentials();
-		if (credentials != null) {
-			parameters.put(USERNAME, credentials.getUsername());
-			parameters.put(PASSWORD, credentials.getPassword());
-		}
-		return null;
-	}
+        SecurityFacade sf = SecurityFacade.getInstance();
+//        String lastUser = Platform.getPreferencesService().getString(CSSPlatformPlugin.ID,SecurityFacade.LOGIN_LAST_USER_NAME , "", null); //$NON-NLS-1$
+//        LoginDialog dialog = new LoginDialog(null,lastUser);
+        LoginDialog dialog = new LoginDialog(null, null);
+        sf.setLoginCallbackHandler(dialog);
+        if (sf.isLoginOnStartupEnabled()) {
+            sf.authenticateApplicationUser();
+        }
+        Credentials credentials = dialog.getLoginCredentials();
+        if (credentials != null) {
+            parameters.put(USERNAME, credentials.getUsername());
+            parameters.put(PASSWORD, credentials.getPassword());
+        }
+        return null;
+    }
 }

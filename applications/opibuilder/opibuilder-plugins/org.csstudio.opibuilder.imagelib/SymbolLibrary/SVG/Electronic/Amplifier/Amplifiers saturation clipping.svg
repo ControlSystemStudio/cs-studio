@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="72pt" height="72pt" viewBox="0 0 72 72" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000000421052 2 L 35.999984 2 L 35.999984 37.999984 L -0.000000421052 37.999984 Z " transform="matrix(1.875001,0,0,1.875001,1.875001,-1.875001)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000638803 36.796246 L 27.536328 36.79442 L 27.535892 38.000202 L -0.000335877 38.000016 Z " transform="matrix(-0.485286,1.811112,-1.811112,-0.485286,110.986172,28.086012)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00000705263 36.874247 L 10.125003 36.874247 L 10.125003 37.999246 L 0.00000705263 37.999246 Z " transform="matrix(-1.875001,0.00000000000000023,-0.00000000000000023,-1.875001,31.406263,129.240804)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.25;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000013921 36.875353 L 10.687509 36.875353 L 10.687509 38.000352 L 0.000013921 38.000352 Z " transform="matrix(-1.875001,0.00000000000000023,-0.00000000000000023,-1.875001,61.992214,80.895222)"/>
+</g>
+</svg>

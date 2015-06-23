@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="52pt" viewBox="0 0 51 52" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 25.509495 14.909557 C 25.563661 10.31791 23.144911 6.050181 19.17616 3.736479 C 15.20741 1.42488 10.301159 1.42488 6.332408 3.736479 C 2.363658 6.050181 -0.0550925 10.31791 -0.000925834 14.909557 C -0.0550925 19.503308 2.363658 23.771037 6.332408 26.082636 C 10.301159 28.396338 15.20741 28.396338 19.17616 26.082636 C 23.144911 23.771037 25.563661 19.503308 25.509495 14.909557 Z " transform="matrix(1.875,0,0,1.857143,1.876736,-1.857143)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000507333 27.809172 L 12.749495 15.060672 " transform="matrix(1.875,0,0,1.857143,25.801732,-2.149503)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000507333 15.049528 L 12.749495 27.810647 " transform="matrix(1.875,0,0,1.857143,25.801732,-25.828025)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000893826 27.809792 L 8.50091 27.809792 " transform="matrix(0.000000000000000115,1.857143,-1.875,0.000000000000000114,63.596477,17.650097)"/>
+</g>
+</svg>

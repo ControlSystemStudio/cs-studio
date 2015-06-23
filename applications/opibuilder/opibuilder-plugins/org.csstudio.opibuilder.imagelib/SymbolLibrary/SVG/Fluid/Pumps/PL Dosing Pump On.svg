@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="52pt" viewBox="0 0 51 52" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(65.098039%,65.098039%,65.098039%);fill-opacity:1;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 26.510395 13.909557 C 26.564561 9.31791 24.145811 5.050181 20.17706 2.736479 C 16.20831 0.42488 11.302059 0.42488 7.333308 2.736479 C 3.364558 5.050181 0.945807 9.31791 0.999974 13.909557 C 0.945807 18.503308 3.364558 22.771037 7.333308 25.082636 C 11.302059 27.396338 16.20831 27.396338 20.17706 25.082636 C 24.145811 22.771037 26.564561 18.503308 26.510395 13.909557 Z " transform="matrix(1.875,0,0,1.857143,0.0000487091,0)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 13.760393 26.651747 L 26.510395 13.903247 " transform="matrix(1.875,0,0,1.857143,0.0000487091,0)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 13.760393 1.142128 L 26.510395 13.903247 " transform="matrix(1.875,0,0,1.857143,0.0000487091,0)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 6.108308 9.503006 L 6.108308 18.00481 " transform="matrix(1.875,0,0,1.857143,0.0000487091,0)"/>
+</g>
+</svg>

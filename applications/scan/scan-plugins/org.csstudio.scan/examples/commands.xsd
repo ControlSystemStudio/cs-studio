@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+
+<!--
+Basic schema for command sequence submitted to the scan server.
+
+Since site-specific commands can be added to the scan system,
+this schema can not list all allowed commands.
+
+Ideally, this schema would be extended with such local commands
+and then placed on a local file server.
+
+To link an *.scn file to this schema, declare its like this:
+<commands
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:noNamespaceSchemaLocation="commands.xsd">
+  
+Or run standalone validation  (use double'-', can't show that in XML comment):
+  xmllint -valid -schema commands.xsd scan_to_test.scn
+ -->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="commands" type="command_sequence"/>
+
+<xs:complexType name="command_sequence">
+  <xs:sequence>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="config_log" type="config_log_command"/>
+      <xs:element name="comment" type="comment_command"/>
+      <xs:element name="delay" type="delay_command"/>
+      <xs:element name="log" type="log_command"/>
+      <xs:element name="loop" type="loop_command"/>
+      <xs:element name="parallel" type="parallel_command"/>
+      <xs:element name="script" type="script_command"/>
+      <xs:element name="sequence" type="sequence_command"/>
+      <xs:element name="set" type="set_command"/>
+      <xs:element name="wait" type="wait_command"/>
+      <xs:element name="include" type="include_command"/>
+    </xs:choice>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="config_log_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="automatic" type="xs:boolean" />
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="comment_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="text" type="xs:string"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="delay_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="seconds" type="xs:string"/>
+    <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="log_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="devices">
+      <xs:complexType>
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="device" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="loop_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="device" type="xs:string"/>
+    <xs:element name="start" type="xs:string"/>
+    <xs:element name="end" type="xs:string"/>
+    <xs:element name="step" type="xs:string"/>
+    <xs:element name="completion" type="xs:boolean" minOccurs="0"/>
+    <xs:element name="wait" type="xs:boolean" minOccurs="0"/>
+    <xs:element name="readback" type="xs:string" minOccurs="0"/>
+    <xs:element name="tolerance" type="xs:string" minOccurs="0"/>
+    <xs:element name="timeout" type="xs:string" minOccurs="0"/>
+    <xs:element name="body" type="command_sequence"/>
+    <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="parallel_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="timeout" type="xs:string" minOccurs="0"/>
+    <xs:element name="body" type="command_sequence" minOccurs="0"/>
+    <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="script_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="path" type="xs:string"/>
+    <xs:element name="arguments" minOccurs="0">
+      <xs:complexType>
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="argument" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+    <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="sequence_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="body" type="command_sequence" minOccurs="0"/>
+    <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="set_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="device" type="xs:string"/>
+    <xs:element name="value" type="xs:string"/>
+    <xs:element name="completion" type="xs:boolean" minOccurs="0"/>
+    <xs:element name="wait" type="xs:boolean" minOccurs="0"/>
+    <xs:element name="readback" type="xs:string" minOccurs="0"/>
+    <xs:element name="tolerance" type="xs:string" minOccurs="0"/>
+    <xs:element name="timeout" type="xs:string" minOccurs="0"/>
+    <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="wait_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="device" type="xs:string"/>
+    <xs:element name="value" type="xs:string"/>
+    <xs:element name="comparison" type="comparison"/>
+    <xs:element name="tolerance" type="xs:string" minOccurs="0"/>
+    <xs:element name="timeout" type="xs:string" minOccurs="0"/>
+    <xs:element name="error_handler" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="include_command">
+  <xs:sequence>
+    <xs:element name="address" type="xs:integer" minOccurs="0" />
+    <xs:element name="scan_file" type="xs:string"/>
+    <xs:element name="macros" type="xs:string" minOccurs="0"/>
+  </xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="comparison">
+  <xs:restriction base="xs:string">
+    <xs:enumeration value="EQUALS"/>
+    <xs:enumeration value="ABOVE"/>
+    <xs:enumeration value="AT_LEAST"/>
+    <xs:enumeration value="BELOW"/>
+    <xs:enumeration value="AT_MOST"/>
+    <xs:enumeration value="INCREASE_BY"/>
+    <xs:enumeration value="DECREASE_BY"/>
+  </xs:restriction>
+</xs:simpleType>
+
+</xs:schema>

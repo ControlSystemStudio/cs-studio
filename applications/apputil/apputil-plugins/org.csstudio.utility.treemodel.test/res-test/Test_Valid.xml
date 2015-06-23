@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ou [
+    <!ELEMENT ou (efan)*>
+    <!ELEMENT efan (ecom)*>
+    <!ELEMENT ecom (econ)*>
+    <!ELEMENT econ (eren)*>
+    <!ELEMENT eren (#PCDATA)>
+
+    <!ATTLIST ou name CDATA #REQUIRED>
+    <!ATTLIST efan name CDATA #REQUIRED>
+    <!ATTLIST ecom name CDATA #REQUIRED>
+    <!ATTLIST econ name CDATA #REQUIRED>
+    <!ATTLIST eren name CDATA #REQUIRED>
+]>
+<ou name="TestOu">
+  <efan name="EFAN_1">
+    <ecom name="ECOM_1">
+      <econ name="ECON_1">
+        <eren name="EREN_1" />
+        <eren name="EREN_2" />
+        <eren name="EREN_3" />
+        <eren name="EREN_4" />
+      </econ>
+      <econ name="ECON_2">
+          <eren name="EREN_5" />
+          <eren name="EREN_6" />
+          <eren name="EREN_7" />
+          <eren name="EREN_8" />
+      </econ>
+    </ecom>
+    <ecom name="ECOM_2">
+      <econ name="ECON_3">
+          <eren name="EREN_9" />
+      </econ>
+    </ecom>
+  </efan>
+  <efan name="EFAN_2">
+    <ecom name="ECOM_3">
+      <econ name="ECON_4">
+          <eren name="EREN_10" />
+          <eren name="EREN_11" />
+          <eren name="EREN_12" />
+          <eren name="EREN_13" />
+      </econ>
+      <econ name="ECON_5">
+          <eren name="EREN_14" />
+          <eren name="EREN_15" />
+          <eren name="EREN_16" />
+          <eren name="EREN_17" />
+      </econ>
+    </ecom>
+  </efan>
+</ou>
+

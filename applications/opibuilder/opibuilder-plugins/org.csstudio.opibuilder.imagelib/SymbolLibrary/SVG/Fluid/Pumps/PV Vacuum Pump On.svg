@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="66pt" viewBox="0 0 51 66" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.875 1.351563 L 1.90625 1.351563 L 1.90625 1.390625 L 1.875 1.390625 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.679688 65.089844 L 49.710938 65.089844 L 49.710938 65.128906 L 49.679688 65.128906 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.851563 1.457031 L 1.902344 1.457031 L 1.902344 1.507813 L 1.851563 1.507813 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.683594 65.078125 L 49.738281 65.078125 L 49.738281 65.128906 L 49.683594 65.128906 Z "/>
+<path style="fill-rule:evenodd;fill:rgb(65.098039%,65.098039%,65.098039%);fill-opacity:1;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 26.510413 17.783307 C 26.564579 13.189558 24.14583 8.922892 20.17708 6.610392 C 16.208331 4.297893 11.302082 4.297893 7.333332 6.610392 C 3.364583 8.922892 0.945833 13.189558 1 17.783307 C 0.945833 22.377057 3.364583 26.643723 7.333332 28.956222 C 11.302082 31.268722 16.208331 31.268722 20.17708 28.956222 C 24.14583 26.643723 26.564579 22.377057 26.510413 17.783307 Z " transform="matrix(1.875,0,0,1.875,0,0.0000439172)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 7.381249 6.745809 L 24.799996 11.416642 " transform="matrix(1.875,0,0,1.875,0,0.0000439172)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 7.381249 28.835389 L 24.799996 24.16664 " transform="matrix(1.875,0,0,1.875,0,0.0000439172)"/>
+</g>
+</svg>

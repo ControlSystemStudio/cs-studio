@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="66pt" viewBox="0 0 51 66" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.351563 1.351563 L 1.378906 1.351563 L 1.378906 1.390625 L 1.351563 1.390625 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.15625 65.089844 L 49.183594 65.089844 L 49.183594 65.128906 L 49.15625 65.128906 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.351563 1.351563 L 1.402344 1.351563 L 1.402344 1.402344 L 1.351563 1.402344 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.183594 64.96875 L 49.238281 64.96875 L 49.238281 65.023438 L 49.183594 65.023438 Z "/>
+<path style="fill-rule:evenodd;fill:rgb(65.098039%,65.098039%,65.098039%);fill-opacity:1;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 24.529207 11.349964 C 21.008368 5.252037 13.210438 3.16245 7.110428 6.681206 Z M 13.489605 14.531219 L 7.110428 14.531219 L 7.110428 20.910396 L 13.489605 20.910396 Z M 7.110428 28.770825 L 24.529207 24.099984 C 26.806294 20.156228 26.806294 15.295803 24.529207 11.349964 L 7.110428 6.681206 C 3.164588 8.960376 0.735418 13.168717 0.735418 17.724974 C 0.735418 22.281231 3.164588 26.491655 7.110428 28.770825 Z M 13.489605 14.531219 L 13.489605 20.910396 L 7.110428 20.910396 L 7.110428 14.531219 Z M 7.110428 28.770825 C 13.210438 32.289581 21.008368 30.199994 24.529207 24.099984 Z " transform="matrix(1.874997,0,0,1.874997,0,0.000102958)"/>
+</g>
+</svg>

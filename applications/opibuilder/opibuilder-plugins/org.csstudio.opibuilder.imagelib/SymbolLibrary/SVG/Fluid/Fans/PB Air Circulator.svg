@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="51pt" viewBox="0 0 51 51" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 25.511253 14.194985 C 25.511253 7.151234 19.800835 1.440816 12.755001 1.440816 C 5.71125 1.440816 0.00083244 7.151234 0.00083244 14.194985 C 0.00083244 21.240819 5.71125 26.951237 12.755001 26.951237 C 19.800835 26.951237 25.511253 21.240819 25.511253 14.194985 Z " transform="matrix(1.875,0,0,1.875,1.350002,-1.349968)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000780233 26.949883 L 19.319533 26.949883 " transform="matrix(0.000000000000000115,-1.875,1.875,0.000000000000000115,-40.894305,43.376463)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000766768 26.950468 L 23.19057 26.949992 " transform="matrix(-1.704722,-0.780735,0.780735,-1.704722,28.141123,71.215896)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.0000493125 26.950139 L 23.189492 26.949748 " transform="matrix(-1.704722,0.780735,-0.780735,-1.704722,70.228491,71.215896)"/>
+</g>
+</svg>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="51pt" viewBox="0 0 51 51" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(65.098039%,65.098039%,65.098039%);fill-opacity:1;" d="M 49.183594 25.265625 C 49.183594 12.058594 38.476563 1.351563 25.265625 1.351563 C 12.058594 1.351563 1.351563 12.058594 1.351563 25.265625 C 1.351563 38.476563 12.058594 49.183594 25.265625 49.183594 C 38.476563 49.183594 49.183594 38.476563 49.183594 25.265625 Z "/>
+<path style="fill-rule:evenodd;fill:rgb(65.098039%,65.098039%,65.098039%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 13.479151 26.229136 C 9.466655 23.220806 7.102075 18.497895 7.099992 13.479151 C 7.099992 8.460407 9.462489 3.731246 13.479151 0.720832 L 26.229136 13.479151 Z M 13.479151 26.229136 C 20.520809 26.227052 26.227052 20.520809 26.229136 13.479151 C 26.233302 6.435409 20.524976 0.722916 13.479151 0.720832 C 6.431242 0.718749 0.718749 6.431242 0.720832 13.479151 C 0.722916 20.524976 6.435409 26.233302 13.479151 26.229136 Z " transform="matrix(1.875002,0,0,1.875002,0,0)"/>
+</g>
+</svg>

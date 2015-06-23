@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: RAP Rtplot
+Bundle-SymbolicName: org.csstudio.rap.rtplot
+Bundle-Version: 1.1.0.qualifier
+Bundle-Vendor: ITER
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.osgi;bundle-version="3.10.1",
+ org.eclipse.core.runtime;bundle-version="3.10.0",
+ org.eclipse.rap.jface;bundle-version="2.3.0",
+ org.eclipse.rap.rwt;bundle-version="2.3.0",
+ org.junit;bundle-version="4.11.0"
+Export-Package: org.csstudio.swt.rtplot,
+ org.csstudio.swt.rtplot.data,
+ org.csstudio.swt.rtplot.undo,
+ org.csstudio.swt.rtplot.util,
+ org.eclipse.jface.viewers
+Import-Package: javax.servlet,
+ javax.servlet.http

@@ -7,7 +7,7 @@ public class Messages extends NLS {
     public static String PreferenceTitle;
     public static String Host;
     public static String Port;
-    
+
     static
     {
         // initialize resource bundle

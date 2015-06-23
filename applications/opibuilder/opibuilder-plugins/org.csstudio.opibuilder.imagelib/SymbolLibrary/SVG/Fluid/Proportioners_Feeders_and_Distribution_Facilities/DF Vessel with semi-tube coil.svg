@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="194pt" height="194pt" viewBox="0 0 194 194" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.351563 1.355469 L 1.382813 1.355469 L 1.382813 1.382813 L 1.351563 1.382813 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 193.1875 193.253906 L 193.214844 193.253906 L 193.214844 193.285156 L 193.1875 193.285156 Z "/>
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 8.499719 52.520584 L 8.499719 35.510351 C 3.803515 35.510351 -0.00539764 39.317186 -0.00539764 44.015468 C -0.00539764 48.711672 3.803515 52.520584 8.499719 52.520584 Z M 76.540648 35.510351 C 81.236852 35.510351 85.045764 31.701439 85.045764 27.005235 C 85.045764 22.306953 81.236852 18.500119 76.540648 18.500119 Z M 8.499719 86.530659 L 8.499719 69.520426 C 3.803515 69.520426 -0.00539764 73.327261 -0.00539764 78.025543 C -0.00539764 82.721746 3.803515 86.530659 8.499719 86.530659 Z M 8.499719 103.540891 L 76.540648 103.540891 L 76.540648 1.489887 L 8.499719 1.489887 Z M 76.540648 69.520426 C 81.132954 69.379125 84.786018 65.615928 84.786018 61.019466 C 84.786018 56.425083 81.132954 52.659808 76.540648 52.520584 Z " transform="matrix(1.879843,0,0,1.879843,17.369522,-1.382784)"/>
+</g>
+</svg>

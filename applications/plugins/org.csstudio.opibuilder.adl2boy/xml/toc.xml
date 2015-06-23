@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<?NLS TYPE="org.eclipse.help.toc"?>
-
-<toc label="adl2boy Converter" link_to="../org.csstudio.ui.help/tocApps.xml#display">
-	<topic label="adl2Boy - Converter"  href="html/adl2boy-main.html"> 
-		<topic label="Sub Topic" href="html/subtopic.html"/> 
-	</topic>
-</toc>

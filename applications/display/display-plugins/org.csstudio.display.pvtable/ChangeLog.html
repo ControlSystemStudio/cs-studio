@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>PV Table System</title>
+	<link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"></link>
+</head>
+<body>
+<h1>PV Table Changelog</h1>
+
+<p>Version numbers in here refer to the plugin org.csstudio.display.pvtable.</p>
+
+<h2>Version 4.1.1 - 2015-06-03</h2>
+<ul>
+  <li>Detect write error.</li>
+</ul>
+
+<h2>Version 4.1.0 - 2015-01-09</h2>
+<ul>
+  <li>VType PV fix to restore 'long' typed data.</li>
+  <li>Indicate changed values even when row is highlighted.</li>
+  <li>Context menu can take snapshot or restore for the selected (vs. all checked) rows.</li>
+</ul>
+
+<h2>Version 4.0.102 - 2014-10-13</h2>
+<ul>
+  <li>'Selected' column state was not saved to XML file.</li>
+  <li>Allow 'dropping' multiple PVs.</li>
+  <li>Support Enum arrays.</li>
+  <li>Add preference 'treat_byte_array_as_string'.</li>
+  <li>Use vtype PV. Profiled for database and table created by org.csstudio.display.pvtable.test/lib/mk_test_*.pl.
+      With 1000 10Hz PVs, CPU use splits into 50% in CAJ code down to PVTableModel adding item to changed set of PVs, other 50% in main UI thread updating the table.
+      With 10000 10Hz PVs, CPU use is 78% in CAJ, 22% in UI updating the table.
+      Overall, non-UI threads that handle the data use more CPU, UI remains responsive.
+  </li>
+</ul>
+
+<h2>Version 4.0.101 - 2014-10-08</h2>
+<ul>
+  <li>Support for entering new values, written to PV.</li>
+  <li>Support for array PVs.</li>
+</ul>
+
+<h2>Version 4.0.0 - 2014-09-02</h2>
+<ul>
+<li>Support *.sav autosave/restore file format.</li>
+</ul>
+
+<h2>Version 3.2.1 - 2013-12-05</h2>
+<ul>
+<li>Context menu entries to select/de-select all rows.</li>
+<li>Changing the 'tolerance' can be done for currently selected table rows, or whole model if nothing selected.</li>
+<li>Changing the 'tolerance' marks table as changed, so it can be saved.</li>
+<li>Changing an item name marks table as changed, so it can be saved.</li>
+</ul>
+
+<h2>Version 3.2.0 - 2012-12-05</h2>
+<p>
+Ported to PVManager, including simpler GUI based on Kunal Schroff's pvmanager.pvtable,
+but still supporting snapshot/restore:
+</p>
+<ul>
+<li>No more need to start/stop, always updating current value.</li>
+<li>No more 'add' via context menu, simply enter new name to end of table.</li>
+<li>PV Names can be edited.</li>
+</ul>
+
+<h2>Original, ca. 2006</h2>
+<p>
+Started as a demo for something similar to XAL 'score'.
+</p>
+
+</body>
+</html>

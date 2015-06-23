@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="opi"
+         name="OPI Validator"
+         point="org.eclipse.wst.validation.validatorV2">
+      <validator
+            build="true"
+            class="org.csstudio.opibuilder.validation.core.Validator"
+            manual="true"
+            markerId="org.csstudio.opibuilder.validation.opiValidationProblem">
+         <include>
+            <rules>
+               <fileext
+                     caseSensitive="false"
+                     ext="opi">
+               </fileext>
+            </rules>
+         </include>
+      </validator>
+   </extension>
+   <extension
+         id="opiValidationProblem"
+         name="OPI Validation Problem"
+         point="org.eclipse.core.resources.markers">
+         <super type="org.eclipse.wst.validation.problemmarker"/>
+         <persistent value="false"/>
+         <attribute
+               name="validationFailure">
+         </attribute>
+         <attribute
+               name="wuid">
+         </attribute>
+   </extension>
+   <extension
+         id="opiLoadingError"
+         name="OPI Loading Error"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.wst.validation.problemmarker">
+      </super>
+      <persistent
+            value="false">
+      </persistent>
+   </extension>
+   <extension
+         point="org.eclipse.ui.ide.markerResolution">
+      <markerResolutionGenerator
+            class="org.csstudio.opibuilder.validation.core.QuickFixer"
+            markerType="org.csstudio.opibuilder.validation.opiValidationProblem">
+      </markerResolutionGenerator>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.opibuilder.preferences"
+            class="org.csstudio.opibuilder.validation.ui.PreferencesPage"
+            id="org.csstudio.opibuilder.validation.opiValidationPreference"
+            name="OPI Validation">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.csstudio.opibuilder.opieditor">
+         <view
+               closeable="true"
+               id="org.eclipse.ui.views.ProblemView"
+               minimized="false"
+               moveable="true"
+               relationship="stack"
+               relative="org.eclipse.ui.console.ConsoleView"
+               showTitle="true"
+               standalone="false"
+               visible="true">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+       point="org.eclipse.help.toc">
+    <toc
+          file="toc.xml"
+          primary="false">
+    </toc>
+ </extension>
+
+</plugin>

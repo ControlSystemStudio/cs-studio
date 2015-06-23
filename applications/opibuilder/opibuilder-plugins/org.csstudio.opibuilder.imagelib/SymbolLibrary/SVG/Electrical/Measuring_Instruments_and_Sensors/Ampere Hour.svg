@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="68pt" height="99pt" viewBox="0 0 68 99" version="1.1">
+<defs>
+<g>
+<symbol overflow="visible" id="glyph0-0">
+<path style="stroke:none;" d="M 1.511719 0 L 1.511719 -7.5 L 7.554688 -7.5 L 7.554688 0 Z M 1.699219 -0.1875 L 7.367188 -0.1875 L 7.367188 -7.3125 L 1.699219 -7.3125 Z "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-1">
+<path style="stroke:none;" d="M -0.0195313 0 L 3.304688 -8.589844 L 4.539063 -8.589844 L 8.082031 0 L 6.777344 0 L 5.765625 -2.601563 L 2.148438 -2.601563 L 1.199219 0 Z M 2.480469 -3.527344 L 5.414063 -3.527344 L 4.507813 -5.90625 C 4.230469 -6.625 4.027344 -7.21875 3.894531 -7.6875 C 3.78125 -7.132813 3.625 -6.585938 3.429688 -6.046875 Z "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-2">
+<path style="stroke:none;" d="M 0.796875 0 L 0.796875 -8.589844 L 1.859375 -8.589844 L 1.859375 -5.507813 C 2.351563 -6.078125 2.976563 -6.363281 3.734375 -6.363281 C 4.195313 -6.363281 4.601563 -6.269531 4.945313 -6.089844 C 5.289063 -5.902344 5.53125 -5.652344 5.679688 -5.335938 C 5.824219 -5.011719 5.898438 -4.546875 5.902344 -3.941406 L 5.902344 0 L 4.839844 0 L 4.839844 -3.941406 C 4.839844 -4.46875 4.722656 -4.851563 4.492188 -5.09375 C 4.261719 -5.328125 3.9375 -5.449219 3.519531 -5.453125 C 3.203125 -5.449219 2.90625 -5.367188 2.628906 -5.210938 C 2.351563 -5.046875 2.152344 -4.828125 2.035156 -4.550781 C 1.914063 -4.273438 1.855469 -3.890625 1.859375 -3.402344 L 1.859375 0 Z "/>
+</symbol>
+</g>
+</defs>
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000887684 2 L 34.015588 2 L 34.015588 53.022909 L 0.000887684 53.022909 Z " transform="matrix(1.888889,0,0,1.875,1.888948,-1.875)"/>
+<g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
+  <use xlink:href="#glyph0-1" x="20.15625" y="76.539797"/>
+  <use xlink:href="#glyph0-2" x="28.219077" y="76.539797"/>
+</g>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000887684 53.019864 L 34.019724 53.019864 " transform="matrix(1.888889,0,0,1.875,1.888948,-65.654447)"/>
+</g>
+</svg>

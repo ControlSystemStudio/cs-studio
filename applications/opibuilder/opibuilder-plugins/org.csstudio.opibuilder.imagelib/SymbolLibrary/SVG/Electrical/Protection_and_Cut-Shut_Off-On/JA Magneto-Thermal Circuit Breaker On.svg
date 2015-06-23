@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="147pt" viewBox="0 0 51 147" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.351563 1.765625 L 1.378906 1.765625 L 1.378906 1.855469 L 1.351563 1.855469 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.15625 145.179688 L 49.183594 145.179688 L 49.183594 145.269531 L 49.15625 145.269531 Z "/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.00000350935 78.530639 L 17.010404 78.530639 " transform="matrix(0.000000000000000115,1.875001,-1.875001,0.000000000000000115,172.518461,1.875007)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000434049 78.529743 L 12.029214 78.529743 " transform="matrix(1.325826,1.325826,-1.325826,1.325826,121.418123,-78.338847)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000364039 78.529583 L 12.030012 78.529583 " transform="matrix(-1.325826,1.325826,-1.325826,-1.325826,137.363131,129.905134)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-dasharray:2.88,1.44;stroke-miterlimit:3;" d="M 1.4197 78.530823 L 0.000950586 78.530823 L 0.000950586 38.399593 L 6.342614 38.399593 " transform="matrix(1.875001,0,0,1.875001,13.291186,-20.530524)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 7.099553 72.860864 L 2.839138 72.860864 C 1.274556 72.860864 0.00580652 74.129613 0.00580652 75.694196 C 0.00580652 77.260862 1.274556 78.529611 2.839138 78.529611 L 7.099553 78.529611 C 8.666219 78.529611 9.934968 77.260862 9.934968 75.694196 C 9.934968 74.129613 8.666219 72.860864 7.099553 72.860864 Z " transform="matrix(1.875001,0,0,1.875001,15.961769,-15.161065)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 8.486411 57.238521 L 8.500994 74.290596 L 8.500994 78.530177 " transform="matrix(1.875001,0,0,1.875001,9.326253,-73.626969)"/>
+<path style="fill:none;stroke-width:0.999997;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000862667 70.020027 L 8.499133 70.020027 L 8.499133 78.530439 L -0.000862667 78.530439 " transform="matrix(1.875001,0,0,1.875001,25.271149,-57.682149)"/>
+<path style="fill:none;stroke-width:0.999994;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 4.250739 70.020867 C 1.900741 70.020867 -0.00134183 71.925033 -0.00134183 74.275032 C -0.00134183 76.62503 1.900741 78.529196 4.250739 78.529196 " transform="matrix(-1.875001,0.00000000000000023,-0.00000000000000023,-1.875001,33.243578,244.78138)"/>
+<path style="fill:none;stroke-width:0.999994;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000722669 78.529356 L 4.250721 78.529356 " transform="matrix(0.000000000000000115,1.875001,-1.875001,0.000000000000000115,172.402774,89.565051)"/>
+<path style="fill:none;stroke-width:0.999994;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.00101716 78.530639 L 17.009391 78.530639 " transform="matrix(0.000000000000000115,1.875001,-1.875001,0.000000000000000115,172.518461,113.482376)"/>
+</g>
+</svg>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35pt" height="35pt" viewBox="0 0 35 35" version="1.1">
+<g id="surface1">
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000805916 18.449779 L 0.000805916 14.759499 L 17.010593 14.759499 L 17.010593 18.449779 " transform="matrix(1.902168,0,0,1.902168,1.369561,-26.711761)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000639803 18.450386 L -0.000639803 14.760107 L 17.009148 14.760107 L 17.009148 18.450386 " transform="matrix(-1.902168,0.000000000000000233,-0.000000000000000233,-1.902168,33.721439,61.802761)"/>
+</g>
+</svg>

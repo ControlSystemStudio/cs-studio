@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Probe Plug-in
+Bundle-SymbolicName: org.csstudio.diag.probe; singleton:=true
+Bundle-Version: 1.1.0.qualifier
+Bundle-Activator: org.csstudio.diag.probe.Activator
+Bundle-Description: Display value of one PV
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.help,
+ org.eclipse.help.base,
+ org.eclipse.help.ui,
+ org.eclipse.help.webapp,
+ org.eclipse.core.resources,
+ org.eclipse.ui.views,
+ org.csstudio.csdata;bundle-version="3.0.0",
+ org.csstudio.ui.util;bundle-version="3.0.0",
+ org.csstudio.apputil.ui;bundle-version="1.1.5",
+ org.csstudio.autocomplete.ui,
+ org.epics.util;bundle-version="0.3.2",
+ org.epics.vtype;bundle-version="2.8.0",
+ org.csstudio.vtype.pv;bundle-version="4.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8

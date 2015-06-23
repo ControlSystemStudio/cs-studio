@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="82pt" viewBox="0 0 51 82" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 41.210938 25.121094 C 41.210938 16.367188 34.074219 9.273438 25.265625 9.273438 C 16.457031 9.273438 9.320313 16.367188 9.320313 25.121094 C 9.320313 33.875 16.457031 40.972656 25.265625 40.972656 C 34.074219 40.972656 41.210938 33.875 41.210938 25.121094 Z "/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 25.509159 31.200583 L 12.759151 43.959166 L 0.000809209 31.200583 " transform="matrix(1.874999,0,0,1.863635,1.350045,-1.341817)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000809209 31.200583 L 0.000809209 1.441037 L 25.509159 1.441037 L 25.509159 31.200583 " transform="matrix(1.874999,0,0,1.863635,1.350045,-1.341817)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 21.259156 14.19962 C 21.259156 9.502399 17.452904 5.695994 12.754984 5.695994 C 8.057064 5.695994 4.250812 9.502399 4.250812 14.19962 C 4.250812 18.896841 8.057064 22.705342 12.754984 22.705342 C 17.452904 22.705342 21.259156 18.896841 21.259156 14.19962 " transform="matrix(1.874999,0,0,1.863635,1.350045,-1.341817)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 8.500815 8.240584 L 9.679982 6.270308 L 7.369564 6.270308 " transform="matrix(1.874999,0,0,1.863635,1.350045,-1.341817)"/>
+</g>
+</svg>

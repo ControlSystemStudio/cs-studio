@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.csstudio</groupId>
+    <artifactId>opibuilder</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <groupId>org.csstudio</groupId>
+  <artifactId>opibuilder-plugins</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>org.csstudio.opibuilder</module>
+    <module>org.csstudio.opibuilder.validation</module>
+    <module>org.csstudio.opibuilder.adl2boy</module>
+    <module>org.csstudio.opibuilder.alarm</module>
+    <module>org.csstudio.opibuilder.converter</module>
+    <module>org.csstudio.opibuilder.editor</module>
+    <module>org.csstudio.opibuilder.examples</module>
+    <module>org.csstudio.opibuilder.imagelib</module>
+    <module>org.csstudio.opibuilder.rap</module>
+    <module>org.csstudio.opibuilder.rcp</module>
+    <module>org.csstudio.opibuilder.test</module>
+    <module>org.csstudio.opibuilder.tools</module>
+    <module>org.csstudio.opibuilder.widgets</module>
+    <module>org.csstudio.opibuilder.widgets.extra</module>
+    <module>org.csstudio.opibuilder.widgets.rap</module>
+    <module>org.csstudio.opibuilder.widgets.rcp</module>
+    <module>org.csstudio.opibuilder.widgets.symbol</module>
+    <module>org.csstudio.swt.widgets</module>
+    <module>org.csstudio.swt.widgets.rcp</module>
+    <!--module>org.csstudio.swt.widgets.test</module--><!-- Graphic test that does not follow naming convention for tests-->
+  </modules>
+</project>

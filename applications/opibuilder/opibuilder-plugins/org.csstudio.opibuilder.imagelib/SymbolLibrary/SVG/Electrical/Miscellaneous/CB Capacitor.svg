@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36pt" height="67pt" viewBox="0 0 36 67" version="1.1">
+<g id="surface1">
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00000231483 35.869545 L 17.010458 35.869545 " transform="matrix(1.874996,0,0,1.861107,1.874996,-29.557835)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.00000231483 35.869112 L 17.010458 35.869112 " transform="matrix(1.874996,0,0,1.861107,1.874996,-37.154687)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000972044 35.869645 L 14.880126 35.869645 " transform="matrix(0.000000000000000115,1.861107,-1.874996,0.000000000000000114,85.083553,1.861184)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000257557 35.869645 L 14.88084 35.869645 " transform="matrix(0.000000000000000115,1.861107,-1.874996,0.000000000000000114,85.083553,37.207511)"/>
+</g>
+</svg>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="65pt" height="81pt" viewBox="0 0 65 81" version="1.1">
+<g id="surface1">
+<path style="fill:none;stroke-width:0.01;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000319387 43.213835 L 0.0292617 43.213835 L 0.0292617 43.240918 L 0.000319387 43.240918 Z " transform="matrix(1.889536,0,0,1.875001,0.0189278,-81.006469)"/>
+<path style="fill:none;stroke-width:0.01;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000567302 43.212587 L 0.028375 43.212587 L 0.028375 43.241753 L -0.000567302 43.241753 Z " transform="matrix(1.889536,0,0,1.875001,64.239353,-1.453347)"/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 48.21875 73.742188 L 64.296875 73.742188 L 64.296875 61.78125 L 48.21875 61.78125 Z "/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000147186 43.240802 L 0.000147186 36.859557 L 8.50091 36.859557 " transform="matrix(1.889536,0,0,1.875001,32.155972,-1.350001)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 8.50091 40.049138 L 17.009942 40.049138 L 17.009942 33.669976 L 8.50091 33.669976 L 8.50091 40.049138 " transform="matrix(1.889536,0,0,1.875001,32.155972,-1.350001)"/>
+</g>
+</svg>

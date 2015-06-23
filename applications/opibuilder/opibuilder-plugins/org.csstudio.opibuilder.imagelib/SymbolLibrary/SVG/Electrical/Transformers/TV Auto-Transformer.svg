@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="162pt" height="226pt" viewBox="0 0 162 226" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.351563 1.871094 L 1.449219 1.871094 L 1.449219 2.011719 L 1.351563 2.011719 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 160.695313 224.464844 L 160.796875 224.464844 L 160.796875 224.605469 L 160.695313 224.605469 Z "/>
+<path style="fill:none;stroke-width:0.999988;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000627521 121.06061 L 17.009874 121.06061 " transform="matrix(0.000000000000000115,-1.870857,1.874996,0.000000000000000115,-145.917881,33.694138)"/>
+<path style="fill:none;stroke-width:0.999988;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 51.023611 95.543598 C 51.023611 81.454134 39.600671 70.033066 25.51106 70.033066 C 11.421449 70.033066 0.000592866 81.454134 0.000592866 95.543598 C 0.000592866 109.633061 11.421449 121.056217 25.51106 121.056217 C 39.600671 121.056217 51.023611 109.633061 51.023611 95.543598 Z " transform="matrix(1.874996,0,0,1.870857,33.342638,-33.689836)"/>
+<path style="fill:none;stroke-width:0.999988;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000930497 121.06061 L 17.009571 121.06061 " transform="matrix(0.000000000000000115,-1.870857,1.874996,0.000000000000000115,-145.917881,224.607634)"/>
+<path style="fill:none;stroke-width:1.19999;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 25.449827 121.059582 C 25.653994 119.138672 25.789411 117.211497 25.860245 115.280146 C 25.281077 94.607387 15.901892 75.112229 -0.000223205 61.530136 " transform="matrix(1.874996,0,0,1.870857,81.195731,-80.903162)"/>
+</g>
+</svg>

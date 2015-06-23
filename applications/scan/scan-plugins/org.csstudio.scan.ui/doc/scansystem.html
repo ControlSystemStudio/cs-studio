@@ -1,0 +1,854 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+  <title>Scan System</title>
+  <link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"></link>
+</head>
+<body>
+
+<h1>Scan System</h1>
+
+<h2><a name="overview">Overview</a></h2> 
+
+<p>The scan system can automate experiments.
+For example, it can move a motor from some start
+position to an end position in certain steps,
+waiting at each step until experiment data has been taken.
+</p>
+
+<p>A scan can consist of several nested loops.
+For example, at each step of moving the "horizontal"
+position of a sample, an inner loop can vary the
+"vertical" position of the sample to perform a
+2-dimensional scan of the sample surface.
+As another example, an outer loop may vary the sample
+temperature while inner loops vary the sample position.
+</p>
+
+<p>It is important to understand that the scan system
+uses separate tools to define a scan, to execute a scan
+and to monitor it:
+</p>
+
+<ol>
+<li>Scans are configured via a control system panel,
+a scan editor, or a script.
+</li>
+<li>The commands of a scan are then submitted
+to a Scan Server for execution.
+</li>
+<li>You can monitor the execution of a scan in various ways.
+</li>
+</ol>
+
+<p>This design allows scans to execute even if the
+original control system panel has been closed.
+Scans can be monitored, paused or aborted 
+independent from the computer that submitted the scans.
+</p>
+
+<h2><a name="logging">Logging</a></h2> 
+
+<p>The scan system includes a simple logging system that
+can for example log the position of motors that are operated
+by a scan. By monitoring this log, you can track the progress
+of running scans, or verify the operation of completed scans by
+inspecting their saved log data.
+</p>
+
+<p>To add samples to the log, you place <a href="#LogCommand">Log Commands</a>
+in your scan. The <a href="#LogConfig">Log Mode</a> commands can further influence
+how samples are logged.
+</p>
+
+<p>To view logged data, use the
+<a href="scansystem.html#plot">Scan Plot</a>
+or
+<a href="scansystem.html#scan_data">Scan Data Display</a>.
+</p>
+
+<p>The scan log is <u>not</u> a complete data acquisition system
+but a tool to monitor the progress of a scan.
+Commands in a scan can instruct a data acquisition system to start taking data,
+or to stop data acquisition at the end of a scan.
+This way, the scan system can interact with a data acquisition
+system, but each can also be used independently:
+You can automate an experiment without acquiring data,
+or acquire data while manually operating the experiment.
+</p>
+
+
+<h2><a name="commands">Commands</a></h2> 
+
+<img alt="Example Scan" src="scan_example.png"/>
+
+<p>The picture above shows a scan with two nested loops
+as it would appear in the <a href="#editor">Scan Editor</a>.
+What follows is a description of all available commands.
+</p>
+
+
+<h3><a name="SetCommand"><img alt="set" src="PLUGINS_ROOT/org.csstudio.scan/icons/setcommand.gif"/>&nbsp;Set Command</a></h3>
+<p>This command sets a device to a desired value.
+</p>
+<p>In addition to sending the desired value to the device,
+it can also wait for the device or an associated read-back device
+to actually reach the desired value.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Device: Name of the device to set.</li>
+<li>Value: Desired value of the device.</li>
+<li>Wait for completion: Wait for the write to be confirmed? For EPICS, this uses a 'put-callback', which indicates that processing of a record has completed.</li>
+<li>Wait for readback: By default, the command will wait until the device reaches the commanded value.</li>
+<li>Readback Device: By default, the Device where the value was written is also checked for reaching the commanded value.
+    Optionally, a different "read back" device can be used.</li>
+<li>Tolerance: Difference between the actual value of the device and the desired value
+    that is considered "good enough".</li>
+<li>Timeout: Time in seconds that the command will use when waiting for the completion and/or the readback.</li>
+</ul>
+<p>Example:</p>
+<p>
+<code>Set 'setpoint' = 1.0</code>
+will write the value 1.0 to the "setpoint" device.
+</p>
+<p>
+<code>Set 'setpoint' = 1.0 (wait for 'readback' +-0.1, 10.0 sec timeout)</code>
+will also write the value 1.0 to the "setpoint" device.
+In addition to the previous example the command will wait up to 10 seconds
+for the "readback" device to reach the value of 1.0 with a tolerance of 0.1,
+that is a value within 0.9 and 1.0.
+</p>
+<p>
+<code>Set 'setpoint' = 1.0 with completion in 10.0 sec</code>
+will write the value 1.0 to the "setpoint" device, and wait for the confirmation to be returned by the device.
+This can be useful for EPICS motor records, where it should indicate that the motor has finished moving.
+</p>
+<p>
+<code>Set 'setpoint' = 1.0 with completion in 10.0 sec (wait for 'readback' +-0.1, 10.0 sec timeout)</code>
+combines the last two examples:
+A value is written to the "setpoint" device, waiting for confirmation.
+Then, the command waits for the associated "readback" to match.
+The timeout is applied to both steps, so the today time out in this case could be 20 seconds.
+</p>
+
+
+
+
+<h3><a name="WaitCommand"><img alt="wait" src="PLUGINS_ROOT/org.csstudio.scan/icons/waitcommand.gif"/>&nbsp;Wait Command</a></h3>
+<p>This command waits for a device to reach a desired value.
+</p>
+<p>The Set command described above already contains similar functionality,
+but it can only wait for a device to reach the absolute value to which it
+has been commanded.
+The separate wait command can be used to wait for a <i>different</i>
+value, or to wait for a device to increase or decrease by a certain value.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Device: Name of the device to set.</li>
+<li>Comparison: How the current value of the device is compared to the desired value.
+    Options include equal, less than etc. as well as "increase by" or "decrease by"
+    for comparisons relative to the original value of the device at the time when
+    the command is becoming active.</li>
+<li>Desired Value: Desired value of the device.</li>
+<li>Tolerance: Difference between the actual value of the device and the desired value
+    that is considered "good enough".</li>
+<li>Timeout: Time in seconds that the command will wait for the device to reach
+    the desired value.</li>
+</ul>
+<p>Examples:
+</p>
+<p>
+<code>Wait for 'readback' = 1.0 (+-0.1)</code>
+will wait until the value of the "readback" device reaches the value 1.0+-0.1,
+i.e. is within the range of 0.9 ... 1.1.
+Because of rounding errors and control system noise you should never
+set the tolerance to 0.0 for the equality ('=') check,
+because your device might never reach the exact desired value.
+Configure a small tolerance like 0.001 to allow for rounding errors.
+</p>
+<p>
+<code>Wait for 'readback' > 5.0</code>
+will wait until the value of the "readback" device
+is above 5.0.
+</p>
+<p>
+<code>Wait for 'readback' to increase by 5.0</code>
+will wait until the value of the "readback" device
+increases by 5.0.
+Assuming that the value was 10.0 when we reached this
+wait command, the value would have to grow to at least
+15.0 for the wait command to finish.
+</p>
+
+
+<h3><a name="LoopCommand"><img alt="loop" src="PLUGINS_ROOT/org.csstudio.scan/icons/loopcommand.gif"/>&nbsp;Loop Command</a></h3>
+<p>This command changes a device from a start to an end value.
+It is at the core of most scans.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Device: Name of the device to set.</li>
+<li>Initial Value: Initial value of the device.</li>
+<li>Final Value: Final value of the device.</li>
+<li>Step Size: Step in which value of device should be changed.</li>
+<li>Wait for completion: Wait for the write to be confirmed? For EPICS, this uses a 'put-callback', which indicates that processing of a record has completed.</li>
+<li>Wait for readback: By default, the loop will wait until the device reaches the commanded value.</li>
+<li>Readback Device: By default, the loop device to which the loop writes is also checked for reaching the commanded value.
+    Optionally, a different "read back" device can be used.</li>
+<li>Tolerance: Difference between the actual value of the device and the desired value
+    that is considered "good enough".</li>
+<li>Timeout: Time in seconds that the command will wait for the device (or separate read back) to reach
+    the commanded value.</li>
+<li>Body: Commands to be executed at each step of the loop.</li>
+</ul>
+<p>Example:
+<code>Loop 'xpos' = 0.0 ... 5.0, step 1.0</code>
+will set the "xpos" device to 0.0, then 1.0, 2.0, 3.0, 4.0, 5.0.
+At each step it will execute the "body" of the loop.
+</p>
+<p>Loops can count "up" as well as "down".
+A loop from 0 to 5 in steps of 1 will operate as just mentioned.
+A loop from 5 to 0 in steps of -1 will assume values 5, 4, 3, 2, 1, 0.
+When specifying a step direction that does <u>not</u> match
+the loop direction, for example a loop from 0 to 5 in steps of -1,
+the loop will have a special behavior:
+It will toggle its direction each time it is executed.
+This can be useful for nested loops that are intended to scan a surface,
+as shown in the diagram below:
+</p>
+
+<img alt="Example for alternate scan" src="scan_alternate.png" width="90%"/>
+
+<p>The normal scan displayed in the left diagram was executed with nested loops</p>
+<p>
+<code>Loop 'xpos' = 0.0 ... 5.0, step 1.0</code><br/>
+&nbsp;&nbsp;&nbsp;<code>Loop 'ypos' = 0.0 ... 5.0, step 1.0</code>
+</p>
+
+<p>The alternating scan displayed to the right was executed with nested loops</p>
+<p>
+<code>Loop 'xpos' = 0.0 ... 5.0, step 1.0</code><br/>
+&nbsp;&nbsp;&nbsp;<code>Loop 'ypos' = 0.0 ... 5.0, step -1.0</code>
+</p>
+<p>causing the inner loop on "ypos" to alternate direction each time is is executed.
+If these "xpos" and "ypos" devices are for example connected to stepper motors,
+the alternating scan will be faster and reduce wear on the motors.
+</p>
+
+
+<h3><a name="ParallelCommand"><img alt="parallel" src="PLUGINS_ROOT/org.csstudio.scan/icons/parallelcommand.gif"/>&nbsp;Parallel Command</a></h3>
+<p>This command performs all commands in its body in parallel.
+Each of the individual commands in the body may wait for completion or a readback,
+and the parallel command completes when all the command in its body have completed.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Timeout: Time in seconds that the command will wait for all commands in ts body to complete.</li>
+<li>Body: Commands to be executed in parallel.</li>
+</ul>
+
+
+<h3><a name="SequenceCommand"><img alt="sequence" src="PLUGINS_ROOT/org.csstudio.scan/icons/sequencecommand.gif"/>&nbsp;Sequence Command</a></h3>
+<p>This command sequentially performs all commands in its body.
+
+Combined with the ParallelCommand,
+it allows executing several sequences of commands in parallel.
+
+This command can also be convenient for higher-level clients,
+for example a python scan client library, to create 'meta commands'
+which are composed of several basic commands.
+By packaging the basic commands in a SequenceCommand,
+they appear as one command.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Body: Commands to be executed.</li>
+</ul>
+
+
+<h3><a name="IncludeCommand"><img alt="include" src="PLUGINS_ROOT/org.csstudio.scan/icons/includecommand.gif"/>&nbsp;Include Command</a></h3>
+<p>Include another <code>*.scn</code> file in a scan.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Scan File: Name of the scan file</li>
+<li>Macros: Macros</li>
+</ul>
+<p>Example:
+<code>Include 'other.scn', macro1=value1,macro2=value2</code>
+will include the scan defined in <code>other.scn</code> and execute it with the given macros.
+</p>
+<p>The path to the scan file must either be a complete path within the file system,
+or - preferably - a file in one of the directories listed in the scan server
+search path preference.
+</p>
+<p>Macros specified in an include command are added to the existing macros.
+Macros of the same name as existing macros replace their value.
+</p>
+
+
+<h3><a name="LogCommand"><img alt="log" src="PLUGINS_ROOT/org.csstudio.scan/icons/logcommand.gif"/>&nbsp;Log Command</a></h3>
+<p>Send values of devices to the log.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Devices: List of devices</li>
+</ul>
+<p>Example:
+<code>Log 'ypos', 'readback'</code>
+will send the current value of the "ypos" and "readback"
+devices to the log.
+</p>
+<p>All devices listed in the same log command will be logged with the same "serial number" identifier
+to make it obvious that they were taken at the same time, even though their underlying time stamps
+obtained from the control system may differ because a value could for example have changed some time ago
+and was not modified since.
+</p>
+
+
+<h3><a name="LogConfig"><img alt="log" src="PLUGINS_ROOT/org.csstudio.scan/icons/configcommand.gif"/>&nbsp;Log Mode Configuration</a></h3>
+<p>This command can change the log mode.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Log automatically: yes or no</li>
+</ul>
+<p>Example:
+<code>Log Mode: automatically</code>
+changes the default, on-demand mode of logging to the automatic log mode.
+</p>
+<p>In the default, on-demand log mode, you can log the current value
+of devices as desired by adding <a href="#LogCommand">Log Commands</a> to the scan.
+You control exactly which device is logged and when.
+Below is an example scan and the resulting log.
+Note that there is one line of data for each iteration of the nested loop.
+</p>
+
+<img alt="on-demand logging" src="log_demand.png" width="412" height="322"/>
+
+<p>When enabling the automatic log mode,
+commands that modify the values of devices will automatically
+log the value. For example, the <a href="#SetCommand">Set</a>
+and <a href="#LoopCommand">Loop</a> Commands will write
+the value of their associated device after they set and optionally
+waited for them to reach the desired value.
+In automatic logging mode, you only need to add specific <a href="#LogCommand">Log</a> commands
+to your scan if you want to log additional devices which are not directly
+modified by the scan, for example temperature sensors or other read-back values.
+</p>
+
+<p>The automatic log mode may appear more convenient than the
+on-demand mode, but consider the following example scan and
+the resulting data as viewed in a table:
+</p>
+
+<img alt="automatic logging" src="log_auto.png" width="440" height="334"/>
+
+<p>When the outer loop sets the "xpos" to 1, that is logged automatically,
+but at that time we have not, yet logged a value for anything else, so
+the initial table line in the data log only shows "xpos".
+When a few milliseconds the inner loop sets the "ypos" to 1, that is also logged,
+and now the data log shows the previous value for "xpos" with the "ypos", but
+no "readback", yet.
+About a second later, the "readback" is logged specifically, and finally
+we see all of "xpos", "ypos" and "readback" in the log.
+</p>
+
+<p>Similarly, consider the log around 10:51:20.02.
+At this time, the outer loop advances "xpos" to 2 and then the inner loop
+reserts "ypos" to 1. These events happen at virtually the same time,
+but since the two loops log them automatically with their exact time stamp,
+they appear as two different events in the log table.
+</p>
+
+<p>In summary, the default, on-demand log mode is usually most straight-forward to use.
+It results in a compact data log that contains exactly what you want to see,
+for example one line of data within the inner loop of a nested scan.
+The automatic loop can provide more detail because it logs each change
+right away when a set or loop command modifies a device.
+</p>
+
+
+<h3><a name="ScriptCommand"><img alt="script" src="PLUGINS_ROOT/org.csstudio.scan/icons/scriptcommand.gif"/>&nbsp;Script Command</a></h3>
+<p>This command can execute Jython script code inside the scan server.
+The script code can read the scan log and the devices used by the scan.
+It can also write to devices, and add data to the scan log.
+A typical use would be simple data fitting or alignment:
+Analyze the log data that the scan has accumulated,
+perform a fit, add the fit data to the log for later review,
+and position devices to for example a 'peak' located in the fit.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Script: Jython class name</li>
+<li>Arguments: Arguments passed to the Jython class <code>__init__</code></li>
+</ul>
+<p>Example:
+<code>Script 'MyScriptClass'</code>
+will use the <code>MyScriptClass</code> class.
+</p>
+<p>The script that defines the class <code>MyScriptClass</code> must
+be in a file named <code>myscriptclass.py</code>,
+i.e. using lower case version of the class name.
+The scan server searches for scripts in a list of directories
+that is configured via its plugin customization file.
+</p>
+<p>All script classes must derive from
+<a href="java/org/csstudio/scan/command/ScanScript.html">the ScanScript class</a>,
+refer to its Javadoc for details.
+</p>
+<p>Example:
+<pre>
+# ScriptCommand class that fits a gaussian shape to pos and signal,
+# then moves pos to the center of the fit
+
+from org.csstudio.scan.command import ScanScript
+from numjy import *
+
+class MyScript(ScanScript):
+     def __init__(self, pos_device, sig_device):
+        self.pos_device = pos_device
+        self.sig_device = sig_device
+
+     def getDeviceNames(self):
+       """Return Device (alias) names used by the script
+       
+          Scan scripts that intend to access devices
+          need to list their names.
+          This allows the scan system to connect to the
+          required devices before starting the scan.
+
+          The default implementation returns an
+          empty list, meaning that the script cannot
+          access any 'live' devices.
+          Only data that the scan has logged by the time
+          when the script is invoked will be available.
+       """
+       return [ self.pos_device, self.sig_device ]
+
+    def run(self, context):
+        """Invoked by the scan server to execute the script.
+           Context parameter allows access to logged data, devices, ...
+        """
+      
+        # Turn raw python array into ndarray for easier math
+        data = array(context.getData(self.pos_device, self.sig_device))
+        x = data[0]
+        y = data[1]
+        
+        # Determine centroid
+        center = sum(x * y) / sum(y)
+        print "Center: ", center
+        
+        # Other parameters...
+        m = max(y)
+        print "Max: ", m
+        
+        width = sqrt( abs(sum((center-x)**2*y)/sum(y)) )
+        print "Width: ", width
+        
+        # Compute fit
+        fit = m*exp(-(x-center)**2/(2*width**2))
+        print fit
+        
+        # Log the 'fit' data for later comparison with raw data
+        context.logData("fit", fit.nda)
+        
+        # Set PVs with result
+        context.write(self.pos_device, center)
+</pre>
+</p>
+
+<p>While the script command can be very powerful, it can also be dangerous
+because errors in the script are beyond the control of the scan server.
+A script can not be paused like other scan commands, but scans with script
+commands can still be aborted.
+To debug a command script, <code>print</code> statements in the script
+can be viewed on the scan server console.
+</p>
+<p>The use of script commands should be limited to well-tested
+and reusable scripts.
+Rapidly changing scripts can be executed on the client side.
+They can submit scans to the server, fetch the result, perform
+computations, submit follow-up scans and so on.
+</p>
+
+
+<h3><a name="DelayCommand"><img alt="delay" src="PLUGINS_ROOT/org.csstudio.scan/icons/delaycommand.gif"/>&nbsp;Delay Command</a></h3>
+<p>This command simply delays the scan for a configurable
+number of seconds.
+</p>
+<p>Properties:</p>
+<ul>
+<li>Delay: Seconds</li>
+</ul>
+<p>Example:
+<code>Delay 1.0 sec</code>
+will delay the scan for 1 second.
+</p>
+<p>Note that you should <u>avoid using the delay command</u>.
+It is usually a bad idea to simply wait for a fixed amount of time,
+hoping that the experiment reached a desired state,
+for example a certain temperature or a certain amount
+of beam exposure.
+</p>
+<p>
+If the temperature is already at the desired value before
+the delay expires, you have wasted time.
+If the beam should turn off, a simply delay will not notice this.
+</p>
+<p>Instead of a delay, try to use the "Wait" command to wait
+for the desired state, for example for a readback to indicate the
+desired temperature, or for a beam current measurement device to
+indicate a certain amount of beam exposure.
+</p>
+
+
+
+<h2><a name="editor">Scan Editor</a></h2> 
+<p>The Scan Editor is a graphical editor for scan configurations.
+It shows the hierarchical structure of loops in a scan.
+</p>
+
+<img alt="Scan Editor" src="scan_edit.png" width="100%"/>
+
+<p>Basic Operation:</p>
+
+<ul>
+<li>Open new editor from menu <code>CSS/Scan/Scan Editor</code>, or open
+    existing <code>*.scn</code> scan file
+</li>
+<li>Open respectively reset the Scan Editor perspective via
+    the context menu.
+</li>
+<li>Drag new commands from the Scan Command Palette into the "tree"-type
+    display of the scan.
+</li>
+<li>Re-arrange commands by dragging them to a new position within the scan tree.
+    Holding the 'Alt' or 'Ctr' key (depending on the operating system)
+    while doing this will copy a command.
+</li>
+<li>Configure the properties of a command in the Properties view.
+</li>
+<li>Save the scan as a file for later re-use as a <code>*.scn</code> file
+    via the menu <code>File/Save</code>.
+</li>
+<li>Submit to scan server for execution via either the context menu
+or the toolbar button <img alt="Run" src="../icons/run.png"/>.
+</li>
+</ul>
+
+
+<h2><a name="macros">Macros</a></h2> 
+
+<p>Device names as for example used in the
+<a href="#SetCommand">Set</a>
+or
+<a href="#LoopCommand">Loop</a>
+commands can use macros.
+</p>
+
+<p>Instead of specifying a complete device name like
+"motor_x", macro expressions like "$(device)" or "motor_$(axis)"
+may be used, which would evaluate to the same "motor_x" if
+the macros were defined as follows:
+<code>device=motor_x, axis=x</code>
+</p>
+
+<p>Macros can be defined in the scan server preferences.
+They can also be provided in the
+<a href="#IncludeCommand">IncludeCommand</a>.
+</p>
+
+
+<h2><a name="monitor">Scan Monitor</a></h2> 
+<p>The Scan Monitor displays the current state of the Scan Server.
+</p>
+
+<img alt="Scan Monitor" src="scan_monitor.png"/>
+
+<p>Access the scan monitor via the menu <code>CSS/Scan/Scan Monitor</code>
+</p>
+<p>It lists which scans have been submitted to the server
+and their state:
+</p>
+<ul>
+<li>Finished - OK: Scan has been executed until it finished without errors.</li>
+<li>Aborted: The scan was aborted by the user.</li>
+<li>Running...: This scan is currently being executed. The "%" column displays the
+    progress, and the "Command" column shows the currently active command.
+</li>
+<li>Paused: This scan is currently being executed, but paused.</li>
+<li>Idle: The scan has been submitted to the scan server and will be executed
+    when previously queued scans have been handled.
+</li>
+<li>Logged: An older scan that ran before the scan server was started.
+    Scan log data is still available, but not the commands.
+</li>
+</ul>
+
+<p>The context menu and the toolbar buttons can be used to pause or abort the Running scan,
+and to remove completed scans from the server, i.e. scans that have either finished or have been aborted.
+</p>
+
+
+<h2><a name="plot">Scan Plot</a></h2> 
+<p>The Scan Plot can be used to track the progress of a scan.
+Data for devices that are "logged" is accessible to the plot.
+</p>
+
+<img alt="Scan Plot" src="scan_plot.png"/>
+
+<p>Access the scan plotmonitor via the menu <code>CSS/Scan/Scan Plot</code>
+</p>
+<p>Selectors in the toolbar of the plot allow selection of the following:
+</p>
+<ul>
+<li>Scan - Select from which scan on the server to retrieve data.</li>
+<li>X Axis - Select the device to display on the X axis.</li>
+<li>Value - Select the device to display on the Y axis.</li>
+<li>Add trace <img src="PLUGINS_ROOT/org.csstudio.scan.ui.plot/icons/add.gif"/> -
+    Add another value trace. You can display multiple value traces over the same X axis.
+</li>
+<li>Remove trace <img src="PLUGINS_ROOT/org.csstudio.scan.ui.plot/icons/delete.gif"/> -
+    If you added value traces, you can remove them with this button.
+</li>
+</ul>
+
+
+<h2><a name="scan_data">Scan Data Display</a></h2> 
+<p>The Scan Data Display can be used to track the progress of a scan
+similar to the plot, but it displays the data as a table.
+</p>
+
+<img alt="Scan Data Display" src="scan_data.png"/>
+
+<p>Open the data display from the <a href="#monitor">Scan Monitor</a>
+by right-clicking on the desired scan and selecting <code>Open Scan Data Display</code>.
+</p> 
+
+<p>You can save the displayed data to a file via the menu <code>File/Save As</code>
+or via the context menu of the data display table.
+</p>
+
+<p>The format of the generated file depends on the file extension:
+</p>
+<ul>
+<li>File name ending in ".csv": A comma-separated file is created.</li>
+<li>Other file name endings, for example ".dat": A text file with fixed-sized columns is created.</li>
+</ul>
+
+
+<h2><a name="errors">Error Handling</a></h2> 
+
+<p>Scan commands can fail:
+A <a href="#SetCommand">Set</a>
+or <a href="#LoopCommand">Loop Command</a>
+may not be able to write to a device,
+or there may be a time-out while waiting for the read-back to match
+the written value. 
+In fact such errors are almost to be expected.
+The Scan Server will not quit when one of its commands experiences
+an error.
+Instead, it will by default abort the affected scan, and continue to
+run the next submitted scan.
+</p>
+
+<p>In some cases it can be useful to change the default behavior
+by specifying a specific error handler:
+</p>
+
+<ul>
+<li>Set the command's "Error Handler" property to the name
+of the desired error handler, for example "OnErrorContinue".
+</li>
+<li>The error handler is implemented as a Jython class, derived from
+<a href="java/org/csstudio/scan/command/ScanErrorHandler.html">ScanErrorHandler</a>.
+The scan server searches for error handlers in the same list of directories that
+is configured via its plugin customization file for the 
+or <a href="#ScriptCommand">Script Command</a>.
+</li>
+</ul>
+
+<p>Example error handlers:</p> 
+
+<ol>
+<li>ScanErrorHandler that ignores any error
+<pre>from org.csstudio.scan.command import ScanErrorHandler
+
+class OnErrorContinue(ScanErrorHandler):
+    
+    def handleError(self, command, error, context):
+        print "Ignoring error from " + str(command)
+        return ScanErrorHandler.Result.Continue
+</pre>
+</li>
+<li>ScanErrorHandler that retries several times, then aborts:
+<pre>from org.csstudio.scan.command import ScanErrorHandler
+
+class OnErrorRetryThenAbort(ScanErrorHandler):
+    def __init__(self):
+        # Initialize the number of retries 
+        self.retries = 3
+    
+    def handleError(self, command, error, context):
+        self.retries -= 1
+        if self.retries > 0:
+            print "Retrying " + str(command) + " " + str(self.retries) + " more times ..."
+            return ScanErrorHandler.Result.Retry
+        else:    
+            return ScanErrorHandler.Result.Abort
+</pre>
+</li>
+</ol>
+
+
+<h2><a name="server">Scan Server</a></h2> 
+
+<p>The scan server is a program that executes submitted scans.
+There is typically one scan server instance per beam line.
+</p>
+<p>When multiple scans are submitted, they are executed in the order
+of submission. If a user submits a scan while the
+scan server is still executing a scan, this will not impact the
+ongoing scan. The new scan is simply queued for execution after
+the current scan finishes.
+This also allows users to plan ahead, submitting scans for several experiment
+runs in advance, and the scan server will then execute them one after the other.
+</p>
+<p>Users do not directly interact with the scan server.
+They use the <a href="#editor">Scan Editor</a> 
+or beamline-specific user interface panels to submit scans.
+Users can monitor the progress via directly monitoring the
+temperature, sample position or other experiment properties
+affected by the scan, or use the <a href="#monitor">Scan Monitor</a>
+to track the progress of a scan and potentially pause or abort it.
+</p>
+
+<h3><a name="server_setup">Scan Server Setup</a></h3>
+
+<p>The scan server is maintained by a system administrator,
+it should for example run as a Linux service and thus always be available.
+End users can submit scans to the scan server, monitor their
+progress and also abort scans, but end users will typically not
+start or stop the scan server itself.
+</p>
+<p>End users may have to know the host where the scan server is running
+so that they can connect to the scan server from scripts,
+or verify their CSS preference settings.
+The CSS menu <code>Edit/Preferences/Scan</code> shows
+the host name and port number for connecting to the scan server,
+and scripts use Java properties <code>ScanServerHost</code>
+and <code>ScanServerPort</code> for the respective settings.
+</p>
+<p>The scan server itself if configured via a plugin customization file,
+review the one included in the server for an example.
+</p>
+
+
+<h3><a name="server_log">Log Access</a></h3>
+
+<p>The scan server maintains the log.
+By default this is stored in a relational database (Derby).
+The storage location of the database as well as
+optional network access via JDBC or Derby tools
+is configured in the server's plugin customization file.
+</p>
+
+<p>The preferred way of accessing the log is via the network API
+of the scan server.
+For maintenance, see Readme.txt in the plugin <code>org.csstudio.scan.log.derby</code>.
+</p>
+
+
+<h3><a name="server_network">Network Details</a></h3>
+
+<p>The network communication between the scan server and clients like CSS
+is based on a RESTful web interface.
+</p>
+<ol>
+<li>The port number is configured via the Java system property
+    <code>ScanServerPort</code>.
+    For the CSS client GUI, this can be set via an Eclipse preference
+    which then (on CSS startup) sets the system property.
+    If not configured, the default port is 4810.
+</li>
+<li>The scan server runs on the host where it is started.
+    By default, clients will search for a scan server on the local host.
+    To connect to a scan server on a designated host,
+    configure the Java system property
+    <code>ScanServerHost</code> or, for the CSS GUI, the associated
+    Eclipse preference.
+</li>
+</ol>
+
+<p>Documentation for the REST web interface is available by
+pointing a web browser to the web URL of the scan server,
+for example
+<a href="http://localhost:4810/index.html">http://localhost:4810/index.html</a>.
+</p>
+
+<p>The scan server can also update PVs with basic status information.
+The base name of these PVs is configured via the scan server preferences.
+The PVs must be made available by an IOC on the network, for example using
+the <code>examples/scan.db</code>.
+The scan server will update the following PVs:
+</p>
+
+<ol>
+<li>{prefix}Active - Set to 1 when the scan server is actively executing a scan, else 0.
+</li>
+<li>{prefix}State - State of the last executed scan, with alarm severity to indicate "Failed".
+</li>
+<li>{prefix}Status - Set to the name of the active scan.
+</li>
+<li>{prefix}Progress - Set to 0...100 to indicate progress of active scan.
+</li>
+<li>{prefix}Finish - Updated to the (estimated) finish time of the active scan.
+</li>
+</ol>
+
+<h4>Firewalls</h4>
+
+<p>To allow access to a scan server through firewalls, the TCP port
+described in the previous section needs to be opened for access by clients.
+The default is 4810.
+</p>
+
+
+<h2><a name="programmatic">Programmatic Access</a></h2>
+
+<p>A key feature of the scan system is that scans can be submitted
+from various sources:
+</p>
+<ul>
+<li>Dedicated <a href="#editor">Scan editor</a>.
+</li>
+<li>CSS 'BOY' operator interface panels.
+</li>
+<li>Jython script, i.e. using the Python language,
+    either edited, executed and debugged from within CSS,
+    or from the command line.
+</li>
+<li>Any Java tool, including applications that interface to Java like Matlab.
+</li>
+</ul>
+
+<p>This provides a lot of options to programmers.
+At the same time, the details can be hidden behind
+for example a 'BOY' operator interface panel,
+so even users with no programming experience can
+then configure and execute scans for common beamline
+tasks that have prepared interface panels.
+</p>
+
+<p>For details refer to the examples
+and the 
+<a href="java/overview-summary.html">Java documentation</a>
+</p>
+
+</body>
+</html>

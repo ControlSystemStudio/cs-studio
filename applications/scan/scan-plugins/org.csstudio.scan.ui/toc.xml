@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc label="Scan System" topic="doc/scansystem.html">
+    <topic label="Overview" href="doc/scansystem.html#overview"/>
+    <topic label="Logging" href="doc/scansystem.html#logging"/>
+    <topic label="Commands" href="doc/scansystem.html#commands">
+        <topic label="Set" href="doc/scansystem.html#SetCommand"/>
+        <topic label="Wait" href="doc/scansystem.html#WaitCommand"/>
+        <topic label="Loop" href="doc/scansystem.html#LoopCommand"/>
+        <topic label="Parallel" href="doc/scansystem.html#ParallelCommand"/>
+        <topic label="Sequence" href="doc/scansystem.html#SequenceCommand"/>
+        <topic label="Include" href="doc/scansystem.html#IncludeCommand"/>
+        <topic label="Log" href="doc/scansystem.html#LogCommand"/>
+        <topic label="Log Mode" href="doc/scansystem.html#LogConfig"/>
+        <topic label="Script" href="doc/scansystem.html#ScriptCommand"/>
+        <topic label="Delay" href="doc/scansystem.html#DelayCommand"/>
+    </topic>
+    <topic label="Scan Editor" href="doc/scansystem.html#editor"/>
+    <topic label="Macros" href="doc/scansystem.html#macros"/>
+    <topic label="Scan Monitor" href="doc/scansystem.html#monitor"/>
+    <topic label="Scan Plot" href="doc/scansystem.html#plot"/>
+    <topic label="Scan Data Display" href="doc/scansystem.html#scan_data"/>
+    <topic label="Error Handling" href="doc/scansystem.html#errors"/>
+    <topic label="Scan Server" href="doc/scansystem.html#server">
+        <topic label="Setup" href="doc/scansystem.html#server_setup"/>
+        <topic label="Log Access" href="doc/scansystem.html#server_log"/>
+        <topic label="Network" href="doc/scansystem.html#server_network"/>
+    </topic>
+    <topic label="Programmatic Access" href="doc/scansystem.html#programmatic"/>
+</toc>

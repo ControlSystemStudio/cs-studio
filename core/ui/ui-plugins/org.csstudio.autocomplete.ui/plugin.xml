@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension-point id="helpers" name="Auto-Complete UI Helpers" schema="schema/autocomplete_ui.exsd"/>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.platform"
+            class="org.csstudio.autocomplete.ui.preferences.PreferencePage"
+            id="org.csstudio.autocomplete.ui.preferences"
+            name="Auto-Complete">
+      </page>
+   </extension>
+
+</plugin>

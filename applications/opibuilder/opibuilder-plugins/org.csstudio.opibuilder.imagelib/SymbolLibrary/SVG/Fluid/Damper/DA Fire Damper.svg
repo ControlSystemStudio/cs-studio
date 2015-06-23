@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="84pt" viewBox="0 0 51 84" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000000872354 1.999987 L 25.512523 1.999987 L 25.512523 44.518775 L 0.000000872354 44.518775 Z " transform="matrix(1.874998,0,0,1.874998,1.874998,-1.874973)"/>
+<path style="fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 4.251364 42.393939 C 4.251364 41.218938 3.29928 40.266854 2.126362 40.266854 C 0.951361 40.266854 -0.000723189 41.218938 -0.000723189 42.393939 C -0.000723189 43.566857 0.951361 44.518941 2.126362 44.518941 C 3.29928 44.518941 4.251364 43.566857 4.251364 42.393939 Z " transform="matrix(1.874998,0,0,1.874998,21.806043,-37.637005)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.0000413991 44.519144 L 43.780707 44.519651 " transform="matrix(-0.910591,1.639037,-1.639037,-0.910591,114.706775,42.413801)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.0000798328 44.518977 L 43.780828 44.519484 " transform="matrix(-0.910591,1.639037,-1.639037,-0.910591,122.679268,50.386106)"/>
+</g>
+</svg>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="66pt" viewBox="0 0 51 66" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.847656 1.351563 L 1.878906 1.351563 L 1.878906 1.390625 L 1.847656 1.390625 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.652344 65.089844 L 49.683594 65.089844 L 49.683594 65.128906 L 49.652344 65.128906 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.847656 1.351563 L 1.902344 1.351563 L 1.902344 1.402344 L 1.847656 1.402344 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.683594 64.96875 L 49.738281 64.96875 L 49.738281 65.023438 L 49.683594 65.023438 Z "/>
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 22.710389 30.679359 C 20.289558 33.700188 16.629147 35.458519 12.760402 35.460603 C 10.520821 35.460603 8.318741 34.87102 6.37916 33.750188 C 5.006245 32.958523 3.791663 31.916857 2.799998 30.679359 C -0.93333 26.018948 -0.93333 19.391874 2.799998 14.72938 C 3.791663 13.493965 5.006245 12.452299 6.37916 11.660634 C 8.318741 10.539802 10.520821 9.950219 12.760402 9.950219 C 16.629147 9.952303 20.289558 11.710634 22.710389 14.72938 C 23.112471 15.235629 23.477054 15.768962 23.799971 16.329378 C 24.918719 18.266875 25.508302 20.462706 25.510385 22.700203 C 25.510385 24.939783 24.920802 27.13978 23.799971 29.079361 C 23.477054 29.639777 23.112471 30.175193 22.710389 30.679359 Z " transform="matrix(1.875002,0,0,1.875002,1.874997,-9.320748)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000883341 35.460188 L 11.040452 32.499775 L 15.390447 31.33936 L 17.419611 30.789361 " transform="matrix(1.875002,0,0,1.875002,13.838187,-12.527002)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000371973 35.459349 C 4.193373 30.221856 11.730863 29.128107 17.239189 32.959352 C 17.857938 33.390602 18.437104 33.876018 18.970437 34.40935 " transform="matrix(1.875002,0,0,1.875002,7.125697,-18.283241)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000371973 30.799846 C 4.193373 36.039423 11.730863 37.131088 17.239189 33.299843 C 17.857938 32.868594 18.437104 32.383178 18.970437 31.849845 L 20.999601 32.399844 " transform="matrix(1.875002,0,0,1.875002,7.125697,-39.468538)"/>
+<path style="fill:none;stroke-width:0.719998;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 15.390447 35.459278 L 11.040452 34.300947 L 0.000883341 31.340534 " transform="matrix(1.875002,0,0,1.875002,13.838187,-46.220609)"/>
+</g>
+</svg>

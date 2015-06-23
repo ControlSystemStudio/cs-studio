@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="51pt" height="51pt" viewBox="0 0 51 51" version="1.1">
+<g id="surface1">
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 1.382813 1.351563 L 1.414063 1.351563 L 1.414063 1.378906 L 1.382813 1.378906 Z "/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;" d="M 49.1875 49.15625 L 49.21875 49.15625 L 49.21875 49.183594 L 49.1875 49.183594 Z "/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 25.51155 14.195044 C 25.51155 7.151295 19.801134 1.440879 12.755302 1.440879 C 5.711553 1.440879 -0.000946108 7.151295 -0.000946108 14.195044 C -0.000946108 21.240876 5.711553 26.951292 12.755302 26.951292 C 19.801134 26.951292 25.51155 21.240876 25.51155 14.195044 Z " transform="matrix(1.875,0,0,1.875,1.384586,-1.350086)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000157442 26.950315 L 25.510255 26.950315 " transform="matrix(1.875,0,0,1.875,1.39092,-23.676379)"/>
+<path style="fill:none;stroke-width:0.720001;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 0.000810228 26.949031 L 25.50914 26.949031 " transform="matrix(1.875,0,0,1.875,1.350043,-26.865379)"/>
+</g>
+</svg>

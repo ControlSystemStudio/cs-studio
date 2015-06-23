@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+  <link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
+<title>OPI Validation</title>
+</head>
+<body>
+
+<a name=top><h1>OPI Validation</h1></a>
+
+<h2><a name=overview>Overview</a></h2> 
+<p>
+OPI Validation tool built on the Eclipse's validation framework provides means to validate and quickly fix existing OPI files with regards to the OPI schema. 
+Validation can be invoked manually on an OPI file or group of OPI files by invoking the "Validate" context menu item. 
+Manually invoking validation will run validation in the background. When validation completes, a validation results dialog is displayed, and any problems found will be shown in the Problems view. 
+To open the Problems view, select Problems from the menu bar Window -> Show View -> Other... -> General -> Problems. 
+Double-clicking on an error/warning/info message in this view opens the respective editor (OPI Editor or OPI Runtime) and highlights the failing widget. 
+Finally, from the Problems view, fixes can be applied on one or many error/warning messages by invoking the "Quick fix" context menu item. 
+A confirmation is asked for making a backup before applying the fix. After the quick fix is completed, the modified OPI files are revalidated.
+</p>
+
+<h2><a name=started>Getting Started</a></h2> 
+<p>
+The validation plugin requires two input files <i>OPI Schema</i> and <i>Validation Rules</i> definition file.
+First make sure that you have a schema file well defined and that the properties of individual widgets in
+the schema are exactly like you want them. Then you need to compose the validation rules; for each property
+of a widget there can be exactly one defining how that property is validated - 
+read-only: the user is not allowed to change this property; write: the user has to specify this property; read/write: the user can overwrite the default property value.
+After you have the definition file ready, select it in the OPI Validation preferences page.
+</p>
+
+<h2><a name=started>Validation Rules Definition</a></h2> 
+<p>
+Validation rules definition file is a regular properties file with a <i>.def</i> extension. You should
+define every rule in a single line and use '#' or '!' for line comments. There are three general rules
+definitions that each property can have:
+</p>
+<ul>
+<li>RO: The property is read-only and should not be changed by the user. Only the values from the schema are valid.</li>
+<li>WRITE: The property has to be specified by the user, which means that it has to have a value that is not an empty string or other undefined value.</i>
+<li>RW: User can change the property value. This is the default rule for all properties.</li>
+</ul>
+<p>
+The rules should be defined for all properties of all widgets that should be validated.
+If the property is not listed here it is automatically assumed to be readable/writable.
+Each property can be either defined for all widget that have it, or for a specific widget.
+The widget specific definition will always have precedence over the general rule definition.
+</p>
+<p>
+Rules should be defined as <i>property=rule</i> pairs, where property is the name of the widget
+property (as it appears in the xml) and rule is one of the three options listed above. If you want
+to define a general rule (valid for all widgets), you should use only the property name. If you want
+to define a widget specific rule, you should prefix the property with the widget type and a dot. For
+example, if you wish to set the border color of all widgets to RO, you can write <i>border_color=RO</i>.
+If you wish to set it to RO only for the action button, you can write <i>actionbutton.border_color=RO</i>.
+Note that you can either use a full widget name (e.g. org.csstudio.opibuilder.widgets.ActionButton), or 
+just the simple name. The rules are case insensitive. The property can also be defined as a regular 
+expression; in this case any property that matches the regular expression will follow that rule (if there
+is no more specific rule for that property).    
+</p>
+<p>
+Examples:
+</p>
+<ul>
+<li><i>border_width=RO</i> - Border width of all widgets is defined by the schema.</li>
+<li><i>actionbutton.border_width=RW</i> - Border width of action button can be changed.</li>
+<li><i>trace_[0-9]+_trace_color=RO</i> - Trace color for any trace is defined by the schema.</li>
+<li><i>[a-z_0-9]*name=RO</i> - Any property ending with a 'name' is defined by schema.</li>
+</ul>
+<p>
+Fonts and colors specified by the user are checked against the BOY font and color definition files. 
+</p>
+<p>
+Rules can also specify additional acceptable values. These are the values that may or may be not
+identical to whatever is used in the OPI schema, but they are acceptable to be used for the
+specified property. For example: the OPI schema defined that the background color of a
+groupingContainer should be 'IO Background', however the value 'IO Area Background' is also
+acceptable. Acceptable values should be placed in rectangular brackets and separated by a semi-colon.
+</p>
+<p>
+<i>groupingContainer.background_color=RO [IO Background; IO Area Background]</i>
+</p>
+<p>
+Complex properties like rules, actions, and scripts can also have a rule, which states that certain
+sub property has to be removed if it is present. To apply such rule, append the name of that sub property
+to the rule definition in curly braces. 
+For example: we want to remove all rules named BorderRule and NoBorder
+</p>
+<p>
+<i>rules=RW {BorderRule; NoBorder}</i>
+</p>
+
+<h2><a name=started>Validation Failures Severity</a></h2> 
+<p>
+Each validation failure is assigned one of the three possible severities: error, warning or info. Any RO
+rule violation is considered to be an error, unless it is a font or color property and the value that is
+used is one of the predefined values. WRITE violations have info severity, unless it is a font or color
+property and the value that was used is not one of the predefined values.
+</p>
+
+<h2><a name=started>Preferences</a></h2> 
+<p>
+The Preferences page is available in <i>CSS Applications, Display, BOY, OPI Validation</i>.
+</p>
+<div class='figure'>
+   <img src="preferences.png"/>
+</div>
+<p>
+The following options are available:
+</p>
+<ul>
+<li>Path to the validation rules definition file.</li>
+<li>Prompt user to do a backup of the file before every quick fix.</li>
+<li>If the prompt for backup is turned off, user can select whether to make backup automatically or not.</li>
+<li>Show summary dialog with statistics after the end of each validation.</li>
+<li>Nest validation failures in the problems view or show all failures in a flat style. Some properties (e.g. rules)
+have sub properties. If a failure in such sub property is discovered it can be nested under the parent property
+failure marker in the problems view.</li>
+<li>On each validation request old markers can be cleared from the problems view or not. If checked, the
+problems view will only show marker for the resources involved in the last validation. If not checked,
+problems view will show markers until they are fixed or CSS exits.</li>
+<li>When double clicking a marker in the problems view the failure can be displayed in the default editor
+for that file (e.g. OPI Editor) or in a text/XML editor.</li>
+</ul>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="94pt" height="51pt" viewBox="0 0 94 51" version="1.1">
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 12.330572 20.785645 C 12.330572 17.38148 9.570135 14.621065 6.164618 14.621065 C 2.761196 14.621065 0.000758214 17.38148 0.000758214 20.785645 C 0.000758214 24.191893 2.761196 26.952308 6.164618 26.952308 C 9.570135 26.952308 12.330572 24.191893 12.330572 20.785645 Z " transform="matrix(1.86508,0,0,1.875001,21.564992,-5.734825)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 34.020041 26.949144 L 0.000478324 26.949144 C 0.000478324 17.555399 7.615767 9.94082 17.009212 9.94082 C 26.404752 9.94082 34.020041 17.555399 34.020041 26.949144 Z " transform="matrix(1.86508,0,0,1.875001,1.342858,-1.349985)"/>
+<path style="fill:none;stroke-width:0.72;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M -0.000782172 26.950803 L 19.029061 26.950803 " transform="matrix(1.86508,0,0,1.875001,33.063959,-33.239815)"/>
+<path style=" stroke:none;fill-rule:evenodd;fill:rgb(0%,0%,0%);fill-opacity:1;" d="M 68.554688 11.214844 L 80.640625 17.292969 L 68.554688 23.367188 L 68.554688 11.214844 "/>
+</g>
+</svg>

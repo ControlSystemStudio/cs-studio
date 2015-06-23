@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
+-->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="68pt" height="68pt" viewBox="0 0 68 68" version="1.1">
+<defs>
+<g>
+<symbol overflow="visible" id="glyph0-0">
+<path style="stroke:none;" d="M 1.5 0 L 1.5 -7.5 L 7.5 -7.5 L 7.5 0 Z M 1.6875 -0.1875 L 7.3125 -0.1875 L 7.3125 -7.3125 L 1.6875 -7.3125 Z "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-1">
+<path style="stroke:none;" d="M 0.925781 0 L 0.925781 -8.589844 L 4.164063 -8.589844 C 4.730469 -8.589844 5.167969 -8.5625 5.472656 -8.507813 C 5.894531 -8.4375 6.246094 -8.300781 6.53125 -8.105469 C 6.816406 -7.902344 7.046875 -7.625 7.21875 -7.273438 C 7.390625 -6.914063 7.476563 -6.527344 7.480469 -6.105469 C 7.476563 -5.371094 7.242188 -4.75 6.78125 -4.25 C 6.3125 -3.742188 5.476563 -3.492188 4.265625 -3.492188 L 2.0625 -3.492188 L 2.0625 0 Z M 2.0625 -4.503906 L 4.28125 -4.503906 C 5.011719 -4.5 5.53125 -4.636719 5.84375 -4.914063 C 6.148438 -5.183594 6.304688 -5.570313 6.308594 -6.070313 C 6.304688 -6.429688 6.214844 -6.734375 6.035156 -6.992188 C 5.855469 -7.242188 5.617188 -7.414063 5.320313 -7.5 C 5.125 -7.546875 4.769531 -7.570313 4.257813 -7.574219 L 2.0625 -7.574219 Z "/>
+</symbol>
+</g>
+</defs>
+<g id="surface1">
+<path style="fill-rule:evenodd;fill:rgb(100%,100%,100%);fill-opacity:1;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:3;" d="M 34.015559 19.008238 C 34.015559 9.615333 26.401143 2.000917 17.008238 2.000917 C 7.615333 2.000917 0.000917228 9.615333 0.000917228 19.008238 C 0.000917228 28.401143 7.615333 36.015559 17.008238 36.015559 C 26.401143 36.015559 34.015559 28.401143 34.015559 19.008238 Z " transform="matrix(1.888892,0,0,1.888892,1.888892,-1.888892)"/>
+<g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
+  <use xlink:href="#glyph0-1" x="26.464844" y="41.483638"/>
+</g>
+</g>
+</svg>

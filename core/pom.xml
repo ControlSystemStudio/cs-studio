@@ -1,391 +1,464 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying 
-	materials are made available under the terms of the Eclipse Distribution 
-	License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php 
-	Contributors: Jan Hatje - created the pom to build the plug-ins -->
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.csstudio</groupId>
-	<artifactId>core</artifactId>
-	<version>BUILD-VERSION</version>
-	<packaging>pom</packaging>
-
-	<!-- USE MAVEN 3.0 -->
-	<prerequisites>
-		<maven>3.0</maven>
-	</prerequisites>
-
-	<!-- PROPERTIES -->
-	<properties>
-		<!-- VERSIONS -->
-		<tycho.version>0.22.0</tycho.version>
-		<tycho-extras.version>0.22.0</tycho-extras.version>
-		<cs-studio-central.url>http://download.controlsystemstudio.org/core/4.1</cs-studio-central.url>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
-		<baselineMode>fail</baselineMode>
-		<skipTests>false</skipTests>
-
-		<!-- SonarQube configuration -->
-		<sonar.language>java</sonar.language>
-		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-		<sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-		<sonar.junit.reportsPath>
-			../${project.artifactId}.test/target/surefire-reports/
-		</sonar.junit.reportsPath>
-
-		<!--sonar.host.url>INSERT YOUR SONARQUBE URL</sonar.host.url -->
-		<!--sonar.jdbc.url>INSERT YOUR JDBC CONNECTION</sonar.jdbc.url -->
-		<!--sonar.jdbc.driver>INSERT YOUR JDBC DRIVER</sonar.jdbc.driver -->
-		<!--sonar.jdbc.username>username</sonar.jdbc.username! -->
-		<!--sonar.jdbc.password>password</sonar.jdbc.password -->
-	</properties>
-
-	<!-- PLUGIN REPOSITORIES -->
-	<pluginRepositories>
-		<pluginRepository>
-			<id>tycho</id>
-			<url>https://oss.sonatype.org/content/groups/public</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
-
-	<!-- Profiles -->
-	<profiles>
-		<profile>
-			<id>platform-default</id>
-			<activation>
-				<property>
-					<name>!platform-version-name</name>
-				</property>
-			</activation>
-			<properties>
-				<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
-				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
-				<rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
-				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>
-				<platform-version>[4.3,4.4)</platform-version>
-				<swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
-			</properties>
-		</profile>
-		<profile>
-			<id>platform-luna</id>
-			<activation>
-				<property>
-					<name>platform-version-name</name>
-					<value>luna</value>
-				</property>
-			</activation>
-			<properties>
-				<eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
-				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
-				<rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
-				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>
-				<platform-version>[4.3,4.4)</platform-version>
-				<swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
-			</properties>
-		</profile>
-		<profile>
-			<id>platform-kepler</id>
-			<activation>
-				<property>
-					<name>platform-version-name</name>
-					<value>kepler</value>
-				</property>
-			</activation>
-			<properties>
-				<eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
-				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.3</eclipse-update-site>
-				<rap-site>http://download.eclipse.org/rt/rap/2.2</rap-site>
-				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/2.2/gef</rap-incubator-site>
-				<platform-version>[4.2,4.3)</platform-version>
-				<swtbot-site>http://download.eclipse.org/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
-			</properties>
-		</profile>
-		<profile>
-			<id>csstudio-local-repo-enable</id>
-			<activation>
-				<file>
-					<exists>${csstudio.local.repo}/artifacts.jar</exists>
-				</file>
-			</activation>
-			<repositories>
-				<repository>
-					<id>csstudio-local-repo</id>
-					<url>file:${csstudio.local.repo}</url>
-					<layout>p2</layout>
-				</repository>
-			</repositories>
-		</profile>
-		<profile>
-			<id>csstudio-composite-repo-enable</id>
-			<activation>
-				<property>
-					<name>csstudio.composite.repo</name>
-				</property>
-			</activation>
-			<repositories>
-				<repository>
-					<id>csstudio-composite-repo</id>
-					<url>file:${csstudio.composite.repo}</url>
-					<layout>p2</layout>
-				</repository>
-			</repositories>
-		</profile>
-		<profile>
-			<id>local-dev</id>
-			<properties>
-				<jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
-				<baselineMode>warn</baselineMode>
-			</properties>
-			<repositories>
-			</repositories>
-			<pluginRepositories>
-			</pluginRepositories>
-		</profile>
-		<profile>
-			<id>cs-studio</id>
-			<activation>
-				<property>
-					<name>!cs-studio</name>
-				</property>
-			</activation>
-			<repositories>
-				<repository>
-					<id>csstudio-thirdparty</id>
-					<url>http://download.controlsystemstudio.org/thirdparty/4.1</url>
-					<layout>p2</layout>
-				</repository>
-				<repository>
-					<id>csstudio-maven-osgi-bundles</id>
-					<url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.1</url>
-					<layout>p2</layout>
-				</repository>
-			</repositories>
-		</profile>
-	</profiles>
-
-	<repositories>
-		<repository>
-			<id>eclipse</id>
-			<url>${eclipse-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>eclipse-updates</id>
-			<url>${eclipse-update-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>rap</id>
-			<url>${rap-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>rap-incubator</id>
-			<url>${rap-incubator-site}</url>
-			<layout>p2</layout>
-		</repository>
-		<repository>
-			<id>orbit</id>
-			<url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</url>
-			<layout>p2</layout>
-		</repository>
-	</repositories>
-
-	<!-- CHILD MODULES -->
-	<modules>
-		<module>plugins</module>
-		<module>features</module>
-		<module>repository</module>
-	</modules>
-
-
-	<build>
-		<!-- PLUGIN MANAGEMENT -->
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-packaging-plugin</artifactId>
-					<version>${tycho.version}</version>
-					<dependencies>
-						<dependency>
-							<groupId>org.eclipse.tycho.extras</groupId>
-							<artifactId>tycho-buildtimestamp-jgit</artifactId>
-							<version>${tycho-extras.version}</version>
-						</dependency>
-					</dependencies>
-					<configuration>
-						<timestampProvider>jgit</timestampProvider>
-						<!-- jgit.dirtyWorkingTree options: ignore, warning, error -->
-						<jgit.dirtyWorkingTree>${jgit.dirtyWorkingTree}</jgit.dirtyWorkingTree>
-						<jgit.ignore>
-							pom.xml
-						</jgit.ignore>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.eclipse.tycho</groupId>
-					<artifactId>tycho-p2-plugin</artifactId>
-					<version>${tycho.version}</version>
-					<configuration>
-						<!--baselineMode options: disable, warn, fail-->
-						<baselineMode>${baselineMode}</baselineMode>
-						<!--baselineReplace options: none, all-->
-						<baselineReplace>none</baselineReplace>
-						<baselineRepositories>
-							<repository>
-								<url>${cs-studio-central.url}</url>
-							</repository>
-						</baselineRepositories>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
-		<!-- PLUGIN CONFIGURATION -->
-		<plugins>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-maven-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<extensions>true</extensions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>target-platform-configuration</artifactId>
-				<version>${tycho.version}</version>
-				<configuration>
-					<dependency-resolution>
-						<extraRequirements>
-							<requirement>
-							<!-- com.google.*  import -->
-								<type>eclipse-plugin</type>
-								<id>com.google.guava</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-							<!-- Needed to satisfy the import packages javax.servlet and javax.servlet.http 
-								required by the plugin org.csstudio.rap.core -->
-							<requirement>
-								<type>eclipse-plugin</type>
-								<id>javax.servlet</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-							<!-- Needed to satisfy the import package org.eclipse.ui.parts required 
-								by the plugin org.csstudio.ui.util -->
-							<requirement>
-								<type>eclipse-plugin</type>
-								<id>org.eclipse.ui.ide</id>
-								<versionRange>0.0.0</versionRange>
-							</requirement>
-						</extraRequirements>
-						<!-- Default behavior is to resolve ALL dependencies. -->
-						<!--<optionalDependencies>ignore</optionalDependencies> -->
-					</dependency-resolution>
-					<environments>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>linux</os>
-							<ws>gtk</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86</arch>
-						</environment>
-						<environment>
-							<os>win32</os>
-							<ws>win32</ws>
-							<arch>x86_64</arch>
-						</environment>
-						<environment>
-							<os>macosx</os>
-							<ws>cocoa</ws>
-							<arch>x86</arch>
-						</environment>
-					</environments>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-compiler-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<configuration>
-					<!-- This is to avoid errors when using restricted API from sun.*: 
-						org.csstudio.rap.core, org.csstudio.security -->
-					<compilerArgument>-err:-forbidden</compilerArgument>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-packaging-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<configuration>
-					<!--Some project include things that no longer exists. This should be 
-						fixed, but for now this parameter lets the build continue. -->
-					<strictBinIncludes>false</strictBinIncludes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-source-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<executions>
-					<execution>
-						<id>plugin-source</id>
-						<goals>
-							<goal>plugin-source</goal>
-						</goals>
-						<configuration>
-							<!--Some project include things that no longer exists. This should 
-								be fixed, but for now this parameter lets the build continue. -->
-							<strictSrcIncludes>false</strictSrcIncludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.eclipse.tycho</groupId>
-				<artifactId>tycho-surefire-plugin</artifactId>
-				<version>${tycho.version}</version>
-				<configuration>
-					<skipTests>${skipTests}</skipTests>
-					<!--Some tests fail right now -->
-					<testFailureIgnore>true</testFailureIgnore>
-					<failIfNoTests>false</failIfNoTests>
-				</configuration>
-			</plugin>
-			<!-- Used for collecting tests results before sending them to Sonar. -->
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.5.3.201107060350</version>
-				<configuration>
-					<includes>*</includes>
-					<destFile>${project.basedir}/../target/jacoco.exec</destFile>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-
+<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying
+  materials are made available under the terms of the Eclipse Distribution
+  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php
+  Contributors: Jan Hatje - created the pom to build the plug-ins -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>org.csstudio</groupId>
+  <artifactId>core</artifactId>
+  <version>4.1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <!-- USE MAVEN 3.0 -->
+  <prerequisites>
+    <maven>3.0</maven>
+  </prerequisites>
+  <!-- PROPERTIES -->
+  <properties>
+    <!-- VERSIONS -->
+    <tycho.version>0.22.0</tycho.version>
+    <tycho-extras.version>0.22.0</tycho-extras.version>
+    <cs-studio.version>4.1</cs-studio.version>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/core/4.1</cs-studio-central.url>
+    <orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</orbit-site>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
+    <baselineMode>fail</baselineMode>
+    <skipTests>false</skipTests>
+    <!-- SonarQube configuration -->
+    <sonar.language>java</sonar.language>
+    <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+    <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+    <sonar.junit.reportsPath>
+      ../${project.artifactId}.test/target/surefire-reports/
+    </sonar.junit.reportsPath>
+    <!--sonar.host.url>INSERT YOUR SONARQUBE URL</sonar.host.url -->
+    <!--sonar.jdbc.url>INSERT YOUR JDBC CONNECTION</sonar.jdbc.url -->
+    <!--sonar.jdbc.driver>INSERT YOUR JDBC DRIVER</sonar.jdbc.driver -->
+    <!--sonar.jdbc.username>username</sonar.jdbc.username! -->
+    <!--sonar.jdbc.password>password</sonar.jdbc.password -->
+  </properties>
+  <!-- PLUGIN REPOSITORIES -->
+  <pluginRepositories>
+    <pluginRepository>
+      <id>tycho</id>
+      <url>https://oss.sonatype.org/content/groups/public</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+  <!-- Profiles -->
+  <profiles>
+    <profile>
+      <id>platform-default</id>
+      <activation>
+        <property>
+          <name>!platform-version-name</name>
+        </property>
+      </activation>
+      <properties>
+        <eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
+        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
+        <rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
+        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef/20150122-1538</rap-incubator-site>
+        <!--        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>    LATEST RAP HAS PROBLEMS -->
+        <platform-version>[4.3,4.4)</platform-version>
+        <swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
+      </properties>
+    </profile>
+    <profile>
+      <id>platform-luna</id>
+      <activation>
+        <property>
+          <name>platform-version-name</name>
+          <value>luna</value>
+        </property>
+      </activation>
+      <properties>
+        <eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
+        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
+        <rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
+        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef/20150122-1538</rap-incubator-site>
+        <!--        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>    LATEST RAP HAS PROBLEMS -->
+        <platform-version>[4.3,4.4)</platform-version>
+        <swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
+      </properties>
+    </profile>
+    <profile>
+      <id>platform-kepler</id>
+      <activation>
+        <property>
+          <name>platform-version-name</name>
+          <value>kepler</value>
+        </property>
+      </activation>
+      <properties>
+        <eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
+        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.3</eclipse-update-site>
+        <rap-site>http://download.eclipse.org/rt/rap/2.2</rap-site>
+        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/2.2/gef</rap-incubator-site>
+        <platform-version>[4.2,4.3)</platform-version>
+        <swtbot-site>http://download.eclipse.org/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
+      </properties>
+    </profile>
+    <profile>
+      <id>csstudio-local-repo-enable</id>
+      <activation>
+        <file>
+          <exists>${csstudio.local.repo}/artifacts.jar</exists>
+        </file>
+      </activation>
+      <repositories>
+        <repository>
+          <id>csstudio-local-repo</id>
+          <url>file:${csstudio.local.repo}</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
+      <id>csstudio-composite-repo-enable</id>
+      <activation>
+        <property>
+          <name>csstudio.composite.repo</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>csstudio-composite-repo</id>
+          <url>file:${csstudio.composite.repo}</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
+      <id>local-dev</id>
+      <properties>
+        <jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
+        <baselineMode>warn</baselineMode>
+      </properties>
+      <repositories>
+      </repositories>
+      <pluginRepositories>
+      </pluginRepositories>
+    </profile>
+    <profile>
+      <id>cs-studio-sites</id>
+      <activation>
+        <property>
+          <name>!cs-studio</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>csstudio-thirdparty</id>
+          <url>http://download.controlsystemstudio.org/thirdparty/4.1</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>csstudio-maven-osgi-bundles</id>
+          <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.1</url>
+          <layout>p2</layout>
+        </repository>
+        <!-- Adding the core to enable building the individual child modules which might depend on each other -->
+        <repository>
+          <id>csstudio-core</id>
+          <url>http://download.controlsystemstudio.org/core/4.1</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
+      <id>eclipse-sites</id>
+      <activation>
+        <property>
+          <name>!eclipse</name>
+        </property>
+      </activation>
+      <repositories>
+        <repository>
+          <id>eclipse</id>
+          <url>${eclipse-site}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>eclipse-updates</id>
+          <url>${eclipse-update-site}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>rap</id>
+          <url>${rap-site}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>rap-incubator</id>
+          <url>${rap-incubator-site}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>orbit</id>
+          <url>${orbit-site}</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
+          <id>efx</id>
+          <url>http://download.eclipse.org/efxclipse/runtime-released/1.2.0/site</url>
+          <layout>p2</layout>
+        </repository>
+      </repositories>
+    </profile>
+    <profile>
+      <id>checkstyle</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-checkstyle-plugin</artifactId>
+            <version>2.15</version>
+            <executions>
+              <execution>
+                <id>validate</id>
+                <phase>validate</phase>
+                <configuration>
+                  <configLocation>../build/cs-studio-jenkins-checkstyle</configLocation>
+                  <encoding>UTF-8</encoding>
+                  <consoleOutput>true</consoleOutput>
+                  <outputFile>checkstyle-output.xml</outputFile>
+                  <sourceDirectory>.</sourceDirectory>
+                  <failsOnError>true</failsOnError>
+                  <linkXRef>false</linkXRef>
+                </configuration>
+                <goals>
+                  <goal>check</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+  <distributionManagement>
+    <site>
+      <id>s3.site</id>
+      <url>s3://maven.controlsystemstudio.org/site</url>
+    </site>
+    <repository>
+      <id>s3.release</id>
+      <url>s3://maven.controlsystemstudio.org/release</url>
+    </repository>
+    <snapshotRepository>
+      <id>s3.snapshot</id>
+      <url>s3://maven.controlsystemstudio.org/snapshot</url>
+    </snapshotRepository>
+  </distributionManagement>
+  <!-- CHILD MODULES -->
+  <modules>
+    <module>utility</module>
+    <module>diirt</module>
+    <module>base</module>
+    <module>platform</module>
+    <module>ui</module>
+    <module>unorganized</module>
+    <module>p2repo</module>
+  </modules>
+  <build>
+    <extensions>
+      <extension>
+        <groupId>org.kuali.maven.wagons</groupId>
+        <artifactId>maven-s3-wagon</artifactId>
+        <version>1.2.1</version>
+      </extension>
+    </extensions>
+    <!-- PLUGIN MANAGEMENT -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.eclipse.tycho</groupId>
+          <artifactId>tycho-p2-plugin</artifactId>
+          <version>${tycho.version}</version>
+          <configuration>
+            <!--baselineMode options: disable, warn, fail-->
+            <baselineMode>${baselineMode}</baselineMode>
+            <!--baselineReplace options: none, all-->
+            <baselineReplace>none</baselineReplace>
+            <baselineRepositories>
+              <repository>
+                <url>${cs-studio-central.url}</url>
+              </repository>
+            </baselineRepositories>
+          </configuration>
+        </plugin>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+          <groupId>org.eclipse.m2e</groupId>
+          <artifactId>lifecycle-mapping</artifactId>
+          <version>1.0.0</version>
+          <configuration>
+            <lifecycleMappingMetadata>
+              <pluginExecutions>
+                <pluginExecution>
+                  <pluginExecutionFilter>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>
+                      jacoco-maven-plugin
+                    </artifactId>
+                    <versionRange>
+                      [0.5.3.201107060350,)
+                    </versionRange>
+                    <goals>
+                      <goal>prepare-agent</goal>
+                    </goals>
+                  </pluginExecutionFilter>
+                  <action>
+                    <ignore/>
+                  </action>
+                </pluginExecution>
+              </pluginExecutions>
+            </lifecycleMappingMetadata>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    <!-- PLUGIN CONFIGURATION -->
+    <plugins>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-maven-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <dependency-resolution>
+            <extraRequirements>
+              <requirement>
+                <!-- com.google.*  import -->
+                <type>eclipse-plugin</type>
+                <id>com.google.guava</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <!-- Needed to satisfy the import packages javax.servlet and javax.servlet.http
+                required by the plugin org.csstudio.rap.core -->
+              <requirement>
+                <type>eclipse-plugin</type>
+                <id>javax.servlet</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+              <!-- Needed to satisfy the import package org.eclipse.ui.parts required
+                by the plugin org.csstudio.ui.util -->
+              <requirement>
+                <type>eclipse-plugin</type>
+                <id>org.eclipse.ui.ide</id>
+                <versionRange>0.0.0</versionRange>
+              </requirement>
+            </extraRequirements>
+            <!-- Default behavior is to resolve ALL dependencies. -->
+            <!--<optionalDependencies>ignore</optionalDependencies> -->
+          </dependency-resolution>
+          <environments>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>linux</os>
+              <ws>gtk</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86</arch>
+            </environment>
+            <environment>
+              <os>win32</os>
+              <ws>win32</ws>
+              <arch>x86_64</arch>
+            </environment>
+            <environment>
+              <os>macosx</os>
+              <ws>cocoa</ws>
+              <arch>x86</arch>
+            </environment>
+          </environments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-compiler-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <!-- This is to avoid errors when using restricted API from sun.*:
+            org.csstudio.rap.core, org.csstudio.security -->
+          <compilerArgument>-err:-forbidden</compilerArgument>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-packaging-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <!--Some project include things that no longer exists. This should be
+            fixed, but for now this parameter lets the build continue. -->
+          <strictBinIncludes>false</strictBinIncludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <executions>
+          <execution>
+            <id>plugin-source</id>
+            <goals>
+              <goal>plugin-source</goal>
+            </goals>
+            <configuration>
+              <!--Some project include things that no longer exists. This should
+                be fixed, but for now this parameter lets the build continue. -->
+              <strictSrcIncludes>false</strictSrcIncludes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-surefire-plugin</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <skipTests>${skipTests}</skipTests>
+          <!--Some tests fail right now -->
+          <testFailureIgnore>true</testFailureIgnore>
+          <failIfNoTests>false</failIfNoTests>
+        </configuration>
+      </plugin>
+      <!-- Used for collecting tests results before sending them to Sonar. -->
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.5.3.201107060350</version>
+        <configuration>
+          <includes>*</includes>
+          <destFile>${project.basedir}/../target/jacoco.exec</destFile>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
