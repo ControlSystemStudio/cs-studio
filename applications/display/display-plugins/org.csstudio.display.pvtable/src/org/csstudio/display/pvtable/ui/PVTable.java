@@ -15,6 +15,7 @@ import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.Messages;
+import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
@@ -151,11 +152,11 @@ public class PVTable implements PVTableModelListener
             }
 
             @Override
-			protected CellEditor getCellEditor(final Object element)
+            protected CellEditor getCellEditor(final Object element)
             {
-				return AutoCompleteUIHelper
-						.createAutoCompleteTextCellEditor(table, AutoCompleteTypes.PV);
-			}
+                return AutoCompleteUIHelper
+                        .createAutoCompleteTextCellEditor(table, AutoCompleteTypes.PV);
+            }
 
             @Override
             protected void setValue(final Object element, final Object value)
@@ -212,27 +213,28 @@ public class PVTable implements PVTableModelListener
                 tab_item.setChecked(item.isSelected());
             }
         });
-        
-        // Add column to display item.getDescription()
-        createColumn(viewer, layout, Messages.Description, 50, 40,
-            new PVTableCellLabelProvider()
-            {
-                @Override
-                public void update(final ViewerCell cell)
+
+        // Optionally, add column to display item.getDescription()
+        if (Preferences.showDescription())
+            createColumn(viewer, layout, Messages.Description, 50, 40,
+                new PVTableCellLabelProvider()
                 {
-                    final PVTableItem item = (PVTableItem) cell.getElement();
-                    final String strDescr = item.getDescription();
-                    if (strDescr == null)
-                        cell.setText(""); //$NON-NLS-1$
-                    else
+                    @Override
+                    public void update(final ViewerCell cell)
                     {
-                    	//String	value.
-                        cell.setText( strDescr );
-                    	
+                        final PVTableItem item = (PVTableItem) cell.getElement();
+                        final String strDescr = item.getDescription();
+                        if (strDescr == null)
+                            cell.setText(""); //$NON-NLS-1$
+                        else
+                        {
+                        	//String	value.
+                            cell.setText( strDescr );
+
+                        }
                     }
-                }
-            });
-   
+                });
+
         // Read-only time stamp
         createColumn(viewer, layout, Messages.Time, 50, 100,
             new PVTableCellLabelProvider()
@@ -371,6 +373,7 @@ public class PVTable implements PVTableModelListener
         final TableColumn col = view_col.getColumn();
         col.setText(header);
         col.setResizable(true);
+        col.setMoveable(true);
         layout.setColumnData(col, new ColumnWeightData(weight, min_width));
         view_col.setLabelProvider(label_provider);
         return view_col;

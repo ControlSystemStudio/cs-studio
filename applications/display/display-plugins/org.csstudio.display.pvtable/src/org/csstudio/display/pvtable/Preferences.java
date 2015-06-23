@@ -43,4 +43,12 @@ public class Preferences
         return treat_byte_array_as_string;
     }
 
+    public static boolean showDescription()
+    {
+        boolean show_description = true;
+        final IPreferencesService service = Platform.getPreferencesService();
+        if (service != null)
+            show_description = service.getBoolean(Plugin.ID, "show_description", show_description, null);
+        return show_description;
+    }
 }
