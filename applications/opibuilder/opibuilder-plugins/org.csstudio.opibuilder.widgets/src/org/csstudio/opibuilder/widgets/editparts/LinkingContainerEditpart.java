@@ -44,6 +44,7 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ZoomListener;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionFilter;
 
 /**The Editpart Controller for a linking Container
@@ -109,7 +110,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                                 getWidgetModel(), absolutePath);
                     DisplayModel displayModel = new DisplayModel(absolutePath);
                     widgetModel.setDisplayModel(displayModel);
-                    loadWidgets(getWidgetModel(),true);
+                    //loadWidgets(getWidgetModel(),true);
                     configureDisplayModel();
                 }
                 return true;
@@ -122,7 +123,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         handler = new IWidgetPropertyChangeHandler() {
             @Override
             public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-                loadWidgets(getWidgetModel(),true);
+                //loadWidgets(getWidgetModel(),true);
                 configureDisplayModel();
                 return false;
             }
@@ -147,7 +148,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             }
         };
         setPropertyChangeHandler(LinkingContainerModel.PROP_RESIZE_BEHAVIOUR, handler);
-        loadWidgets(getWidgetModel(),true);
+        //loadWidgets(getWidgetModel(),true);
         configureDisplayModel();
     }
 
@@ -158,10 +159,14 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
     /**
      * @param path the path of the OPI file
+     * 
+     * Removing this call because the add remove children in fillLinkingContainer overlap
+     * with the add remove in configureDisplayModel, and cause pv connection issues.
+     * This reverts some of the work from #912
      */
     private synchronized void loadWidgets(LinkingContainerModel model, final boolean checkSelf) {
         try {
-            model.removeAllChildren();
+          //  model.removeAllChildren();
             XMLUtil.fillLinkingContainer(model);
         } catch (Exception e) {
             //log first
@@ -186,9 +191,18 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         //This need to be executed after GUI created.
         if(getWidgetModel().getDisplayModel() == null) {
             IPath path = getWidgetModel().getOPIFilePath();
-            getWidgetModel().setDisplayModel(new DisplayModel(path));
+           
+            final DisplayModel tempDisplayModel = new DisplayModel(path);
+            getWidgetModel().setDisplayModel(tempDisplayModel);
+            try {
+                XMLUtil.fillDisplayModelFromInputStream(
+                        ResourceUtil.pathToInputStream(path), tempDisplayModel,
+                        getViewer().getControl().getDisplay());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
-
 
         LinkingContainerModel widgetModel = getWidgetModel();
         DisplayModel displayModel = widgetModel.getDisplayModel();
@@ -203,6 +217,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                 widgetModel.setDisplayModelOpiRuntime(widgetModel.getRootDisplayModel(false).getOpiRuntime());
             }
         });
+        
 
         connectionList = displayModel.getConnectionList();
         if(connectionList !=null && !connectionList.isEmpty()){
@@ -237,8 +252,6 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
             ((LinkingContainerFigure)getFigure()).updateZoom();
         });
 
-        getWidgetModel().setDisplayModel(displayModel);
-
         //Add scripts on display model
         if (getExecutionMode() == ExecutionMode.RUN_MODE) {
             widgetModel
@@ -248,11 +261,17 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                             .getScriptList());
         }
         // tempDisplayModel.removeAllChildren();
-        if (widgetModel.isAutoSize()) {
-            performAutosize();
-        }
         LinkedHashMap<String,String> map = new LinkedHashMap<>();
         AbstractContainerModel loadTarget = displayModel;
+        
+        if(!widgetModel.getGroupName().trim().equals("")){ //$NON-NLS-1$
+            AbstractWidgetModel group =
+                displayModel.getChildByName(widgetModel.getGroupName());
+            if(group != null && group instanceof AbstractContainerModel){
+                loadTarget = (AbstractContainerModel) group;
+            }
+        }
+        
         // Load "LCID" macro whose value is unique to this instance of Linking Container.
         if (widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE) {
             map.put("LCID", "LCID_" + getLinkingContainerID());
@@ -272,9 +291,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         widgetModel.setMacroMap(map);
 
         widgetModel.removeAllChildren();
-        for (AbstractWidgetModel w : loadTarget.getChildren()){
-            widgetModel.addChild(w, true);
-        }
+        widgetModel.addChildren(loadTarget.getChildren(), true);
         widgetModel.setDisplayModel(displayModel);
 
         DisplayModel parentDisplay = widgetModel.getRootDisplayModel();
@@ -282,6 +299,9 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         DisplayModel parentDisplay2 = widgetModel.getRootDisplayModel(false);
         if (parentDisplay != parentDisplay2)
             parentDisplay2.syncConnections();
+        if(getWidgetModel().isAutoSize()){
+            performAutosize();
+        }
     }
 
 

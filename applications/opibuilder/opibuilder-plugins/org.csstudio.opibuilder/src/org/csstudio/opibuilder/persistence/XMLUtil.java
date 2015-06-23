@@ -474,7 +474,6 @@ public class XMLUtil {
                     for(ConnectionModel conn : w.getSourceConnections())
                         conn.setLoadedFromLinkedOpi(true);
 
-
                 AbstractContainerModel loadTarget = inside;
 
                 if(!container.getGroupName().trim().equals("")){ //$NON-NLS-1$
@@ -485,8 +484,7 @@ public class XMLUtil {
                     }
                 }
 
-                for (AbstractWidgetModel w : loadTarget.getChildren())
-                    container.addChild(w, true);
+//                container.addChildren(loadTarget.getChildren(), true);
 
                 container.setDisplayModel(inside);
             }
