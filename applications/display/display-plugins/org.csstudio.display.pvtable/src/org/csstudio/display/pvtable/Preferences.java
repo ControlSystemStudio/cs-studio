@@ -36,19 +36,25 @@ public class Preferences
 
     public static boolean treatByteArrayAsString()
     {
-        boolean treat_byte_array_as_string = true;
-        final IPreferencesService service = Platform.getPreferencesService();
-        if (service != null)
-            treat_byte_array_as_string = service.getBoolean(Plugin.ID, "treat_byte_array_as_string", treat_byte_array_as_string, null);
-        return treat_byte_array_as_string;
+        return getBoolOption("treat_byte_array_as_string");
     }
 
     public static boolean showDescription()
     {
-        boolean show_description = true;
+        return getBoolOption("show_description");
+    }
+
+    public static boolean showUnits()
+    {
+        return getBoolOption("show_units");
+    }
+
+    private static boolean getBoolOption(final String name)
+    {
+        boolean option = true;
         final IPreferencesService service = Platform.getPreferencesService();
         if (service != null)
-            show_description = service.getBoolean(Plugin.ID, "show_description", show_description, null);
-        return show_description;
+            option = service.getBoolean(Plugin.ID, name, option, null);
+        return option;
     }
 }

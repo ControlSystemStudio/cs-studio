@@ -41,7 +41,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -82,18 +81,13 @@ public class PVTable implements PVTableModelListener
 
         hookDragDrop();
 
-
         // Disconnect from model when disposed
-        parent.addDisposeListener(new DisposeListener()
+        parent.addDisposeListener((DisposeEvent e) ->
         {
-            @Override
-            public void widgetDisposed(DisposeEvent e)
+            if (model != null)
             {
-                if (model != null)
-                {
-                    model.removeListener(PVTable.this);
-                    model.dispose();
-                }
+                model.removeListener(PVTable.this);
+                model.dispose();
             }
         });
     }
@@ -486,14 +480,10 @@ public class PVTable implements PVTableModelListener
         final Table table = viewer.getTable();
         if (table.isDisposed())
             return;
-        table.getDisplay().asyncExec(new Runnable()
+        table.getDisplay().asyncExec(() ->
         {
-            @Override
-            public void run()
-            {
-                if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
-                    viewer.refresh(item);
-            }
+            if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
+                viewer.refresh(item);
         });
     }
 
@@ -504,14 +494,10 @@ public class PVTable implements PVTableModelListener
         final Table table = viewer.getTable();
         if (table.isDisposed())
             return;
-        table.getDisplay().asyncExec(new Runnable()
+        table.getDisplay().asyncExec(() ->
         {
-            @Override
-            public void run()
-            {
-                if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
-                    viewer.refresh();
-            }
+            if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
+                viewer.refresh();
         });
     }
 
