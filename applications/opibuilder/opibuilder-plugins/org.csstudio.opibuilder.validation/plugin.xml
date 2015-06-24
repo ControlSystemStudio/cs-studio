@@ -84,5 +84,29 @@
           primary="false">
     </toc>
  </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.opibuilder.validation.application"
+            name="OPIValidation">
+         <property
+               name="appName"
+               value="OPIValidation">
+         </property>
+      </product>
+   </extension>
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.opibuilder.validation.Application">
+         </run>
+      </application>
+   </extension>
 
 </plugin>

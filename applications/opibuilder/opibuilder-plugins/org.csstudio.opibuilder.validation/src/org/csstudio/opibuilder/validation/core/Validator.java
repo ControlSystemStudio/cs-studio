@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.validation.Activator;
 import org.csstudio.opibuilder.validation.core.ui.ContentProvider;
 import org.csstudio.opibuilder.validation.core.ui.TreeViewerListener;
@@ -188,80 +189,10 @@ public class Validator extends AbstractValidator {
             showView("org.eclipse.ui.views.ProgressView",false);
             //reload the rules, just in case they have been changed
             IPath rulesFile = Activator.getInstance().getRulesFile();
-            Map<String, ValidationRule> rules = new HashMap<>();
-            Map<Pattern, ValidationRule> rulePatterns = new HashMap<>();
-            Map<String, String[]> acceptableValues = new NonNullHashMap<>();
-            Map<Pattern, String[]> acceptableValuesPatterns = new NonNullHashMap<>();
-            Map<String, String[]> removedValues = new NonNullHashMap<>();
-            Map<Pattern, String[]> removedValuesPatterns = new NonNullHashMap<>();
-            if (rulesFile != null) {
-                Properties p = new Properties();
-                try (FileInputStream stream = new FileInputStream(rulesFile.toFile())) {
-                    p.load(stream);
-                } catch (IOException e) {
-                    LOGGER.log(Level.SEVERE, "Cannot read the rules definition file: " + rulesFile.toOSString(), e);
-                    monitor.setCanceled(true);
-                }
-                String ruleStr;
-                for (Entry<Object,Object> e : p.entrySet()) {
-                    String key = ((String)e.getKey()).toLowerCase();
-                    String value = (String)e.getValue();
-                    int idx = value.indexOf('[');
-                    int idxRem = value.indexOf('{');
-                    String[] acceptables = null;
-                    String[] removies = null;
-                    if (idx > 0 || idxRem > 0) {
-                        if (idx > 0 && idxRem > 0) {
-                            ruleStr = value.substring(0,Math.min(idx,idxRem)).trim();
-                        } else if (idx > 0) {
-                            ruleStr = value.substring(0,idx).trim();
-                        } else {
-                            ruleStr = value.substring(0,idxRem).trim();
-                        }
-                        try {
-                            if (idx > 0) {
-                                acceptables = value.substring(idx+1, value.indexOf(']')).split("\\;");
-                                for (int i = 0; i < acceptables.length; i++) {
-                                    acceptables[i] = acceptables[i].trim();
-                                }
-                            }
-                            if (idxRem > 0) {
-                                removies = value.substring(idxRem+1, value.indexOf('}')).split("\\;");
-                                for (int i = 0; i < removies.length; i++) {
-                                    removies[i] = removies[i].trim();
-                                }
-                            }
-                        } catch (Exception ex) {
-                            //in case that acceptables cannot be parsed, just ignore them
-                            LOGGER.log(Level.WARNING, "The rule for property '" + key + "' is incorrectly defined."
-                                    + " Check the alternative acceptable and removed values definition.");
-                        }
-                    } else {
-                        ruleStr = value;
-                    }
-
-                    try {
-                        ValidationRule rule = ValidationRule.valueOf(ruleStr.toUpperCase());
-                        if (TRUE_PROPERTY_PATTERN.matcher(key).matches()) {
-                            rules.put(key, rule);
-                            acceptableValues.put(key, acceptables);
-                            removedValues.put(key, removies);
-                        } else {
-                            Pattern ptrn = Pattern.compile(key);
-                            rulePatterns.put(ptrn, rule);
-                            acceptableValuesPatterns.put(ptrn, acceptables);
-                            removedValuesPatterns.put(ptrn, removies);
-                        }
-                    } catch(IllegalArgumentException ex) {
-                        LOGGER.log(Level.WARNING, e.getKey() + " is not defined correctly.");
-                    }
-                }
-            }
-            verifier = new SchemaVerifier(rules, rulePatterns, acceptableValues, acceptableValuesPatterns,
-                    removedValues, removedValuesPatterns);
+            verifier = createVerifier(PreferencesHelper.getSchemaOPIPath(),rulesFile,monitor);
         }
     }
-
+    
     /*
      * (non-Javadoc)
      *
@@ -288,7 +219,8 @@ public class Validator extends AbstractValidator {
                             sv.getNumberOfWRITEProperties(),
                             sv.getNumberOfWRITEFailures(),
                             sv.getNumberOfRWProperties(),
-                            sv.getNumberOfRWFailures())
+                            sv.getNumberOfRWFailures(),
+                            sv.getNumberOfDeprecatedFailures())
                         .open();
                 });
             }
@@ -362,5 +294,89 @@ public class Validator extends AbstractValidator {
             page = window.getPages()[0];
         }
         return page;
+    }
+    
+    /**
+     * Creates a verifier based on the schema and rules.
+     * 
+     * @param schema the path to the OPI schema against which the files will be verified
+     * @param rulesFile the file containing the validation rules 
+     * @param monitor a monitor which is cancelled in case of failure (can be null) 
+     * @return schema verifier
+     */
+    public static SchemaVerifier createVerifier(IPath schema, IPath rulesFile, IProgressMonitor monitor) {
+        Map<String, ValidationRule> rules = new HashMap<>();
+        Map<Pattern, ValidationRule> rulePatterns = new HashMap<>();
+        Map<String, String[]> acceptableValues = new NonNullHashMap<>();
+        Map<Pattern, String[]> acceptableValuesPatterns = new NonNullHashMap<>();
+        Map<String, String[]> removedValues = new NonNullHashMap<>();
+        Map<Pattern, String[]> removedValuesPatterns = new NonNullHashMap<>();
+        if (rulesFile != null) {
+            Properties p = new Properties();
+            try (FileInputStream stream = new FileInputStream(rulesFile.toFile())) {
+                p.load(stream);
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Cannot read the rules definition file: " + rulesFile.toOSString(), e);
+                if (monitor != null) {
+                    monitor.setCanceled(true);
+                }
+            }
+            String ruleStr;
+            for (Entry<Object,Object> e : p.entrySet()) {
+                String key = ((String)e.getKey()).toLowerCase();
+                String value = (String)e.getValue();
+                int idx = value.indexOf('[');
+                int idxRem = value.indexOf('{');
+                String[] acceptables = null;
+                String[] removies = null;
+                if (idx > 0 || idxRem > 0) {
+                    if (idx > 0 && idxRem > 0) {
+                        ruleStr = value.substring(0,Math.min(idx,idxRem)).trim();
+                    } else if (idx > 0) {
+                        ruleStr = value.substring(0,idx).trim();
+                    } else {
+                        ruleStr = value.substring(0,idxRem).trim();
+                    }
+                    try {
+                        if (idx > 0) {
+                            acceptables = value.substring(idx+1, value.indexOf(']')).split("\\;");
+                            for (int i = 0; i < acceptables.length; i++) {
+                                acceptables[i] = acceptables[i].trim();
+                            }
+                        }
+                        if (idxRem > 0) {
+                            removies = value.substring(idxRem+1, value.indexOf('}')).split("\\;");
+                            for (int i = 0; i < removies.length; i++) {
+                                removies[i] = removies[i].trim();
+                            }
+                        }
+                    } catch (Exception ex) {
+                        //in case that acceptables cannot be parsed, just ignore them
+                        LOGGER.log(Level.WARNING, "The rule for property '" + key + "' is incorrectly defined."
+                                + " Check the alternative acceptable and removed values definition.");
+                    }
+                } else {
+                    ruleStr = value;
+                }
+
+                try {
+                    ValidationRule rule = ValidationRule.valueOf(ruleStr.toUpperCase());
+                    if (TRUE_PROPERTY_PATTERN.matcher(key).matches()) {
+                        rules.put(key, rule);
+                        acceptableValues.put(key, acceptables);
+                        removedValues.put(key, removies);
+                    } else {
+                        Pattern ptrn = Pattern.compile(key);
+                        rulePatterns.put(ptrn, rule);
+                        acceptableValuesPatterns.put(ptrn, acceptables);
+                        removedValuesPatterns.put(ptrn, removies);
+                    }
+                } catch(IllegalArgumentException ex) {
+                    LOGGER.log(Level.WARNING, e.getKey() + " is not defined correctly.");
+                }
+            }
+        }
+        return new SchemaVerifier(schema,rules, rulePatterns, acceptableValues, acceptableValuesPatterns,
+                removedValues, removedValuesPatterns);
     }
 }
