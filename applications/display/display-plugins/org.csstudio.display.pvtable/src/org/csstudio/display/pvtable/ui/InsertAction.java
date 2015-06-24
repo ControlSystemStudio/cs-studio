@@ -16,7 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 
-/** {@link Action} to delete entries from table
+/** {@link Action} to insert new row into table
  *  @author Kay Kasemir
  */
 public class InsertAction extends PVTableAction
