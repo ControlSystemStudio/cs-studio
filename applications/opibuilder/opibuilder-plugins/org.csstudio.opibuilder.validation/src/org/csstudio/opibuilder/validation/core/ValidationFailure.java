@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.validation.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -22,6 +23,7 @@ import org.eclipse.core.runtime.IPath;
  */
 public class ValidationFailure implements Comparable<ValidationFailure> {
 
+    private final Class<? extends AbstractWidgetModel> modelClass;
     private final String widgetType;
     private final String widgetName;
     private final String property;
@@ -62,7 +64,8 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
      */
     ValidationFailure(IPath path, String wuid, String widgetType, String widgetName,
             String property, Object expected, Object actual, ValidationRule rule, boolean isCritical,
-            boolean isFixable, String forcedMessage, int lineNumber, boolean usingNonDefinedValue) {
+            boolean isFixable, String forcedMessage, int lineNumber, boolean usingNonDefinedValue,
+            Class<? extends AbstractWidgetModel> modelClass) {
         this.widgetType = widgetType;
         this.widgetName = widgetName;
         this.property = property;
@@ -78,6 +81,14 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
         this.forcedMessage = forcedMessage;
         this.lineNumber = lineNumber;
         this.usingNonDefinedValue = usingNonDefinedValue;
+        this.modelClass = modelClass;
+    }
+    
+    /**
+     * @return the class of the model that this failure belongs to
+     */
+    Class<? extends AbstractWidgetModel> getModelClass() {
+        return modelClass;
     }
 
     /**
@@ -103,6 +114,8 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
             if (expectedValue != null) {
                 return new StringBuilder(property.length() + 11).append(property).append(" is not set").toString();
             }
+        } else if (rule == ValidationRule.DEPRECATED) {
+            return new StringBuilder(property.length() + 14).append(property).append(" is deprecated").toString();
         }
         //should not happen
         return null;

@@ -46,6 +46,7 @@ public class ResultsDialog extends TitleAreaDialog {
     private final int noWRITEPropertiesWithFailures;
     private final int noValidatedRWProperties;
     private final int noRWPropertiesWithFailures;
+    private final int noDeprecatedProperties;
 
     private Font font;
 
@@ -62,12 +63,13 @@ public class ResultsDialog extends TitleAreaDialog {
      * @param noROPropertiesWithMajorFailures number of read-only properties that produced a major validation failure
      * @param noValidatedWRITEProperties number of validated write properties
      * @param noWRITEPropertiesWithFailures number of write properties that did not pass validation
+     * @param noDeprecatedProperties number of times deprecated properties usage was detected
      */
     public ResultsDialog(Shell parentShell, int noValidatedFiles, int noFilesWithFailures,
             int noValidatedWidgets, int noWidgetsWithFailures, int noValidatedROProperties,
             int noROPropertiesWithCriticalFailures, int noROPropertiesWithMajorFailures,
             int noValidatedWRITEProperties, int noWRITEPropertiesWithFailures,
-            int noValidatedRWProperties, int noRWPropertiesWithFailures) {
+            int noValidatedRWProperties, int noRWPropertiesWithFailures, int noDeprecatedProperties) {
         super(parentShell);
         this.noValidatedFiles = noValidatedFiles;
         this.noFilesWithFailures = noFilesWithFailures;
@@ -80,6 +82,7 @@ public class ResultsDialog extends TitleAreaDialog {
         this.noWRITEPropertiesWithFailures = noWRITEPropertiesWithFailures;
         this.noValidatedRWProperties = noValidatedRWProperties;
         this.noRWPropertiesWithFailures = noRWPropertiesWithFailures;
+        this.noDeprecatedProperties = noDeprecatedProperties;
     }
 
     /*
@@ -190,6 +193,10 @@ public class ResultsDialog extends TitleAreaDialog {
         l.setText("RW properties with errors: " + noRWPropertiesWithFailures + " (" + ratio + " %)");
         l.setLayoutData(createGridData(true));
         l.setFont(font);
+        
+        l = new Label(parent, SWT.HORIZONTAL);
+        l.setText("Deprecated properties: " + noDeprecatedProperties);
+        l.setLayoutData(createGridData(false));
     }
 
     private GridData createGridData(boolean indent) {

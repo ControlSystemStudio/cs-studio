@@ -103,6 +103,8 @@ public class SchemaFixer {
                     if (f.isUsingUndefinedValue()) {
                         model.setPropertyValue(f.getProperty(), f.getExpectedValue());
                     }
+                } else if (f.getRule() == ValidationRule.DEPRECATED) {
+                    //should be self fixing
                 }
                 if (f.hasSubFailures()) {
                     SubValidationFailure[] subs = f.getSubFailures();
@@ -186,13 +188,19 @@ public class SchemaFixer {
 
     private static AbstractWidgetModel findWidgetInternal(AbstractContainerModel parent, ValidationFailure failure,
                 boolean useWuid) {
+        AbstractWidgetModel m = doesWidgetMatch(parent, failure, useWuid);
+        if (m != null) return m;
         for (AbstractWidgetModel model : parent.getChildren()) {
-            AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
+            if (model instanceof AbstractContainerModel) {
+                m = findWidgetInternal((AbstractContainerModel)model, failure, useWuid);
+                if (m != null) return m;
+            }
+            m = doesWidgetMatch(model, failure, useWuid);
             if (m != null) return m;
         }
         if (failure.getWidgetType().equals(ConnectionModel.ID) && parent instanceof DisplayModel) {
             for (ConnectionModel model : ((DisplayModel)parent).getConnectionList()) {
-                AbstractWidgetModel m = doesWidgetMatch(model, failure, useWuid);
+                m = doesWidgetMatch(model, failure, useWuid);
                 if (m != null) return m;
             }
         }
@@ -215,10 +223,6 @@ public class SchemaFixer {
             if (equals(obj, failure.getActualValue())) {
                 return model;
             }
-        }
-        if (model instanceof AbstractContainerModel) {
-            AbstractWidgetModel result = findWidgetInternal((AbstractContainerModel)model, failure, useWuid);
-            if (result != null) return result;
         }
         return null;
     }

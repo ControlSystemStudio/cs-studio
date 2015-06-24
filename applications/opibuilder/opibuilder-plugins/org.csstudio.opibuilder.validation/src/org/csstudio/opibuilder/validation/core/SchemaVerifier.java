@@ -10,9 +10,12 @@ package org.csstudio.opibuilder.validation.core;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,6 +28,13 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
+
+
+
+
+
+
+
 
 
 
@@ -62,6 +72,7 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.swt.widgets.Display;
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.filter.ElementFilter;
@@ -101,6 +112,7 @@ public class SchemaVerifier {
     private List<ValidationFailure> validationFailures = new ArrayList<>();
     private IPath validatedPath;
     private Map<String, AbstractWidgetModel> schema;
+    private Map<AbstractWidgetModel,List<String>> deprecatedProperties;
     private OPIColor[] colors;
     private OPIFont[] fonts;
 
@@ -115,6 +127,7 @@ public class SchemaVerifier {
     private int numberOfCriticalROFailures = 0;
     private int numberOfMajorROFailures = 0;
     private int numberOfWRITEFailures = 0;
+    private int numberOfDeprecatedFailures = 0;
 
     private IPath schemaPath;
     private WidgetEditPartFactory editPartFactory;
@@ -207,6 +220,14 @@ public class SchemaVerifier {
         numberOfWRITEFailures = 0;
         numberOfFilesFailures = 0;
         numberOfWidgetsFailures = 0;
+        numberOfDeprecatedFailures = 0;
+    }
+    
+    /**
+     * @return number of deprecated properties used
+     */
+    public int getNumberOfDeprecatedFailures() {
+        return numberOfDeprecatedFailures;
     }
 
     /**
@@ -301,6 +322,20 @@ public class SchemaVerifier {
         }
         if (schema == null) {
             schema = Utilities.loadSchema(schemaPath);
+            deprecatedProperties = new HashMap<>();
+            for (AbstractWidgetModel model : schema.values()) {
+                List<String> deprecated = deprecatedProperties.get(model);
+                if (deprecated == null) {
+                    try {
+                        deprecated = getDeprecatedProperties(model.getClass());
+                        if (!deprecated.isEmpty()) {
+                            deprecatedProperties.put(model, deprecated);
+                        }
+                    } catch (Exception e) {
+                       //ignore
+                    }
+                }
+            }
             colors = MediaService.getInstance().getAllPredefinedColors();
             fonts = MediaService.getInstance().getAllPredefinedFonts();
             editPartFactory = new WidgetEditPartFactory(ExecutionMode.EDIT_MODE);
@@ -322,8 +357,14 @@ public class SchemaVerifier {
             }
         }
         this.validatedPath = validatedPath;
-        IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(this.validatedPath);
-        File file = ifile.getLocation().toFile();
+        File file = null;
+        try {
+            IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(this.validatedPath);
+            file = ifile.getLocation().toFile();
+        } catch (Exception e) {
+            //maybe it is already a file
+            file = this.validatedPath.toFile();
+        }
         List<ValidationFailure> failures = new ArrayList<>();
         if (file.isFile()) {
             failures.addAll(check(this.validatedPath));
@@ -353,7 +394,7 @@ public class SchemaVerifier {
         numberOfAnalyzedFiles++;
         List<ValidationFailure> failures = new NonNullArrayList<>();
         checkWidget(opi, displayModel, failures);
-        findCoordinates(failures.toArray(new ValidationFailure[failures.size()]), opi);
+        findCoordinates(failures, opi);
         if (!failures.isEmpty()) {
             numberOfFilesFailures++;
         }
@@ -366,11 +407,13 @@ public class SchemaVerifier {
      *
      * @param failures the list of failures, which are to be found in the file (should belong to the same path)
      * @param path the path to scan
+     * @return a new array of validation failures, which might include additional failures if some deprecated 
+     *          properties have been used
      * @throws IOException if there was an error opening the file
      */
-    private void findCoordinates(ValidationFailure[] failures, IPath path) throws IOException {
-        Arrays.sort(failures);
+    private void findCoordinates(List<ValidationFailure> failures, IPath path) throws IOException {
         try (InputStream stream = ResourceUtil.pathToInputStream(path, false)) {
+           
             SAXBuilder saxBuilder = LineAwareXMLParser.createBuilder();
             Document document = saxBuilder.build(stream);
 
@@ -391,25 +434,28 @@ public class SchemaVerifier {
             }
             LineAwareElement[] widgets = list.toArray(new LineAwareElement[list.size()]);
             Arrays.sort(widgets);
-
+            
+            Collections.sort(failures);
             Map<Integer,LineAwareElement> widgetElements = new HashMap<>();
             int i = 0;
             String name;
             int line;
             LineAwareElement widget;
-            for (int m = 0; m < failures.length; m++) {
-                name = failures[m].getWidgetName();
-                line = failures[m].getLineNumber();
+            for (int m = 0; m < failures.size(); m++) {
+                ValidationFailure failure = failures.get(m);
+                name = failure.getWidgetName();
+                line = failure.getLineNumber();
                 //for every failure find the widget that match the line number
                 widget = widgetElements.get(line);
                 if (widget == null) {
                     //widgets are sorted in the same way as failures
                     for (; i < widgets.length; i++) {
                         if (widgets[i].getLineNumber() == line) {
-                            widgetElements.put(failures[m].getLineNumber(), widgets[i]);
+                            widgetElements.put(failure.getLineNumber(), widgets[i]);
 
                             setPropertyLineNumber(widgets[i],name,failures,m);
-                            while(m < failures.length-1 && failures[m+1].getLineNumber() == failures[m].getLineNumber()) {
+                            while(m < failures.size()-1 
+                                    && failures.get(m+1).getLineNumber() == failures.get(m).getLineNumber()) {
                                 setPropertyLineNumber(widgets[i],name,failures,m+1);
                                 m++;
                             }
@@ -420,24 +466,64 @@ public class SchemaVerifier {
                     setPropertyLineNumber(widget, name, failures, m);
                 }
             }
+            for (Entry<AbstractWidgetModel,List<String>> e : deprecatedProperties.entrySet()) {
+                AbstractWidgetModel model = e.getKey();
+                for (LineAwareElement w : widgets) {
+                    Element n = w.getChild(AbstractWidgetModel.PROP_WIDGET_TYPE);
+                    boolean correct = false;
+                    if (n == null) {
+                        Attribute attr = w.getAttribute(XMLUtil.XMLATTR_TYPEID);
+                        String fullt = attr.getValue();
+                        String t = fullt.substring(fullt.lastIndexOf('.'));
+                        correct = model.getWidgetType().equals(t) || model.getWidgetType().equals(fullt);
+                    } else {
+                        correct = model.getWidgetType().equals(n.getValue());
+                    }
+                    if (correct) {
+                        for (String d : e.getValue()) {
+                            LineAwareElement node = (LineAwareElement)w.getChild(d);
+                            if (node != null) {
+                                String type = n.getValue();
+                                String widgetName = "";
+                                String wuid = null;
+                                n = w.getChild(AbstractWidgetModel.PROP_NAME);
+                                if (n != null) {
+                                    widgetName = n.getValue();
+                                }
+                                n = w.getChild(AbstractWidgetModel.PROP_WIDGET_UID);
+                                if (n != null) {
+                                    wuid = n.getValue();
+                                }
+                                ValidationFailure f = new ValidationFailure(path, wuid, type, widgetName, d, null, 
+                                        node.getValue(), ValidationRule.DEPRECATED, false, true, null, 
+                                        node.getLineNumber(), false, model.getClass());
+                                numberOfDeprecatedFailures++;
+                                failures.add(f);
+                            }
+                        }
+                    }
+                }
+            }
         } catch (Exception e) {
             throw new IOException("Unable to load opi '" + path + "'.",e);
         }
     }
 
-    private void setPropertyLineNumber(LineAwareElement widget, String name, ValidationFailure[] failures, int m) throws Exception {
+    private void setPropertyLineNumber(LineAwareElement widget, String name, List<ValidationFailure> failures, int m) 
+            throws Exception {
         //find the node describing the property, but only if the name of the widget matches the one in the failure
-        LineAwareElement node = findPropertyElement(widget,name,failures[m].getProperty());
+        LineAwareElement node = findPropertyElement(widget,name,failures.get(m).getProperty());
         if (node == null) {
             //if no such property is found, it is not defined in the XML, so mark the widget itself
             node = widget;
         }
 
         int line = node.getLineNumber();
-        failures[m].setLineNumber(line);
+        ValidationFailure failure = failures.get(m);
+        failure.setLineNumber(line);
         //check if there are subvalidation failures and find those as well
-        if (failures[m].hasSubFailures()) {
-            SubValidationFailure[] subs = failures[m].getSubFailures();
+        if (failure.hasSubFailures()) {
+            SubValidationFailure[] subs = failure.getSubFailures();
             for (SubValidationFailure s : subs) {
                 if (s.getActualValue() != null) {
                     LineAwareElement n = findSubNode(node, s.getSubPropertyTag(), s.getActualValue());
@@ -492,8 +578,8 @@ public class SchemaVerifier {
     }
 
     private static LineAwareElement findPropertyElement(Element node, String name, String property) {
-        Element n = node.getChild(Utilities.TAG_NAME);
-        if (n.getValue().equals(name)) {
+        Element n = node.getChild(AbstractWidgetModel.PROP_NAME);
+        if (n != null && n.getValue().equals(name)) {
             return (LineAwareElement)node.getChild(property);
         }
         return null;
@@ -517,6 +603,21 @@ public class SchemaVerifier {
             }
         }
     }
+        
+    private static List<String> getDeprecatedProperties(Class<? extends AbstractWidgetModel> model) 
+            throws IllegalArgumentException, IllegalAccessException {        
+        List<String> deprecated = new ArrayList<>();
+        Field[] fields = model.getFields();
+        for (Field f :fields) {
+            int mod = f.getModifiers();
+            if (Modifier.isFinal(mod) && Modifier.isStatic(mod)) {
+                if (f.getAnnotation(Deprecated.class) != null) {
+                    deprecated.add(String.valueOf(f.get(model)));
+                }
+            }
+        }
+        return deprecated;
+    }
 
     private void checkWidget(IPath pathToFile, AbstractWidgetModel model, List<ValidationFailure> failures) {
         numberOfAnalyzedWidgets++;
@@ -528,15 +629,12 @@ public class SchemaVerifier {
         int startingFailures = failures.size();
         initModel(model);
         if (original != null) {
-            Set<String> properties = model.getAllPropertyIDs() ;
+            Set<String> properties = model.getAllPropertyIDs();
             for (String p : properties) {
-                if (model instanceof DisplayModel && "background_color".equals(p)) {
-                    System.out.println("ffdfds");
-                }
                 rule = getRuleForProperty(p, widgetType);
                 modelVal = model.getPropertyValue(p);
                 orgVal = original.getPropertyValue(p);
-                //if the checked property is not savable (e.g. background color for action button), ignore it
+                //if the checked property is not saveable (e.g. background colour for action button), ignore it
                 if (!model.getProperty(p).isVisibleInPropSheet()) {
                     continue;
                 }
@@ -553,8 +651,8 @@ public class SchemaVerifier {
                     List<RuleData> modelRules = ((RulesInput)modelVal).getRuleDataList();
                     List<RuleData> originalRules = ((RulesInput)orgVal).getRuleDataList();
                     failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
-                            model.getName(), p, modelRules, originalRules, modelVal, orgVal, rule, lineNumber,
-                            (orgRule,modelRule) -> Utilities.areRulesIdentical(orgRule,modelRule),
+                            model.getName(), model.getClass(), p, modelRules, originalRules, modelVal, orgVal, rule,
+                            lineNumber, (orgRule,modelRule) -> Utilities.areRulesIdentical(orgRule,modelRule),
                             (theRule) -> RulesProperty.XML_ELEMENT_RULE,
                             (therule) -> therule.getName(),
                             (match) -> Utilities.ruleMatchValueToMessage(match),
@@ -563,7 +661,8 @@ public class SchemaVerifier {
                     List<ScriptData> modelScripts = ((ScriptsInput)modelVal).getScriptList();
                     List<ScriptData> originalScripts = ((ScriptsInput)orgVal).getScriptList();
                     failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
-                            model.getName(), p, modelScripts, originalScripts, modelVal, orgVal, rule, lineNumber,
+                            model.getName(), model.getClass(), p, modelScripts, originalScripts, modelVal, orgVal, 
+                            rule, lineNumber,
                             (orgScript,modelScript) -> Utilities.areScriptsIdentical(orgScript, modelScript),
                             (script) -> ScriptProperty.XML_ELEMENT_PATH,
                             (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString(),
@@ -577,7 +676,8 @@ public class SchemaVerifier {
                             //the failure is always critical, except for fonts and colors if a predefined value was used
                             boolean critical = !isPropertyDefined(modelVal);
                             failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType,
-                                model.getName(), p, orgVal, modelVal, rule, critical,true, null, lineNumber,false));
+                                model.getName(), p, orgVal, modelVal, rule, critical,true, null, lineNumber,false,
+                                model.getClass()));
                             if (critical) {
                                 numberOfCriticalROFailures++;
                             } else {
@@ -587,7 +687,7 @@ public class SchemaVerifier {
                             numberOfMajorROFailures++;
                             failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType,
                                     model.getName(), p, orgVal, modelVal, rule, false, true, null,
-                                    lineNumber,true));
+                                    lineNumber,true,model.getClass()));
                         }
                     } else if (rule == ValidationRule.WRITE) {
                         //write properties must be different and non null
@@ -595,13 +695,14 @@ public class SchemaVerifier {
                         if (modelVal == null || String.valueOf(modelVal).trim().isEmpty()) {
                             //simple write properties are never critical
                             failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType,
-                                model.getName(), p, orgVal, modelVal, rule, false, false, null, lineNumber, false));
+                                model.getName(), p, orgVal, modelVal, rule, false, false, null, lineNumber, false,
+                                model.getClass()));
                             numberOfWRITEFailures++;
                         } else if (!isFontColorPropertyDefined(modelVal)) {
                             numberOfWRITEFailures++;
                             failures.add(new ValidationFailure(pathToFile, model.getWUID(), widgetType,
                                     model.getName(), p, orgVal, modelVal, rule, false, true, null,
-                                    lineNumber, true));
+                                    lineNumber, true,model.getClass()));
                         }
                     }
                 }
@@ -698,7 +799,7 @@ public class SchemaVerifier {
         List<AbstractWidgetAction> modelActions = modelInput.getActionsList();
         List<AbstractWidgetAction> originalActions = originalInput.getActionsList();
         ValidationFailure f = handleActionsScriptsRules(pathToFile, model.getWUID(), model.getTypeID(),
-                model.getName(), AbstractWidgetModel.PROP_ACTIONS, modelActions, originalActions,
+                model.getName(), model.getClass(), AbstractWidgetModel.PROP_ACTIONS, modelActions, originalActions,
                 modelInput, originalInput, rule, model.getLineNumber(),
                 (orgAction,modelAction) -> Utilities.areActionsIdentical(orgAction, modelAction),
                 (action) -> ActionsProperty.XML_ELEMENT_ACTION,
@@ -713,7 +814,7 @@ public class SchemaVerifier {
                         AbstractWidgetModel.PROP_ACTIONS,
                         Utilities.PROP_ACTION_HOOK, originalInput.isFirstActionHookedUpToWidget(),
                         modelInput.isFirstActionHookedUpToWidget(), rule, true, true, null,
-                        model.getLineNumber()));
+                        model.getLineNumber(),model.getClass()));
             }
             if (modelInput.isHookUpAllActionsToWidget() != originalInput.isHookUpAllActionsToWidget()) {
                 ff.add(new SubValidationFailure(pathToFile, model.getWUID(),
@@ -721,7 +822,7 @@ public class SchemaVerifier {
                         AbstractWidgetModel.PROP_ACTIONS,
                         Utilities.PROP_ACTION_HOOK_ALL, originalInput.isHookUpAllActionsToWidget(),
                         modelInput.isHookUpAllActionsToWidget(), rule, true, true, null,
-                        model.getLineNumber()));
+                        model.getLineNumber(),model.getClass()));
             }
         }
         if (!ff.isEmpty()) {
@@ -730,7 +831,7 @@ public class SchemaVerifier {
                 f = new ValidationFailure(pathToFile, model.getWUID(), model.getTypeID(), model.getName(),
                         AbstractWidgetModel.PROP_ACTIONS, originalInput, modelInput, rule, true, true,
                         AbstractWidgetModel.PROP_ACTIONS + ": settings of a READ-ONLY property have been changed",
-                        model.getLineNumber(),false);
+                        model.getLineNumber(),false,model.getClass());
             }
             f.addSubFailure(ff);
         }
@@ -744,6 +845,7 @@ public class SchemaVerifier {
      * @param wuid the widget unique id that owns the stuff
      * @param widgetType the widget type
      * @param widgetName the widget name
+     * @param widgetModel the widget model
      * @param property the property (actions, scripts, rules)
      * @param model the list containing the stuff from the validated model
      * @param original the list containing the stuff from the schema
@@ -759,20 +861,21 @@ public class SchemaVerifier {
      * @return the validation failure if it was detected or null if everything is OK
      */
     private <T> ValidationFailure handleActionsScriptsRules(IPath resource, String wuid, String widgetType,
-            String widgetName, String property, List<T> model, List<T> original, Object modelVal, Object orgVal,
+            String widgetName, Class<? extends AbstractWidgetModel> widgetModel, String property, 
+            List<T> model, List<T> original, Object modelVal, Object orgVal,
             ValidationRule rule, int lineNumber, Comparator<T> comparator, Function<T,String> subPropertyTagger,
             Function<T,String> subPropDescriptor, Function<Integer,String> messageGenerator,
             Function<T,String> naming) {
 
         if (rule == ValidationRule.RW) {
-            List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName,
+            List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName,widgetModel,
                     property, model, rule, lineNumber,
                     subPropertyTagger, subPropDescriptor, messageGenerator, naming);
             if (!ffs.isEmpty()) {
                 numberOfRWFailures++;
                 ValidationFailure f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,orgVal,modelVal,rule,false,true,
-                        property +": unneeded sub property present", lineNumber, false);
+                        property +": unneeded sub property present", lineNumber, false, widgetModel);
                 f.addSubFailure(ffs);
                 return f;
             }
@@ -795,7 +898,8 @@ public class SchemaVerifier {
 
                     ff.add(new SubValidationFailure(resource,wuid,widgetType,widgetName,
                             property, subPropertyTagger.apply(stuff), subPropDescriptor.apply(stuff),
-                            stuff,null,rule,false,true,messageGenerator.apply(mostTightMatchValue), lineNumber));
+                            stuff,null,rule,false,true,messageGenerator.apply(mostTightMatchValue), lineNumber,
+                            widgetModel));
                 }
             }
             ValidationFailure f = null;
@@ -804,16 +908,18 @@ public class SchemaVerifier {
                 //if not all the originals are defined, it is a critical failure
                 f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,original,model,rule,true,true,
-                        property +": predefined items are missing in a WRITE property", lineNumber,false);
+                        property +": predefined items are missing in a WRITE property", lineNumber,false,
+                        widgetModel);
                 f.addSubFailure(ff);
             } else if (model.isEmpty()) {
                 numberOfWRITEFailures++;
                 //if nothing was changed at all, it is a non critical failure
                 f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,orgVal,modelVal,rule,false,false,
-                        property +": nothing has been defined for a WRITE property", lineNumber,false);
+                        property +": nothing has been defined for a WRITE property", lineNumber,false,
+                        widgetModel);
             }
-            List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName,
+            List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName, widgetModel,
                     property, model, rule, lineNumber,
                     subPropertyTagger, subPropDescriptor, messageGenerator, naming);
             if (!ffs.isEmpty()) {
@@ -821,7 +927,7 @@ public class SchemaVerifier {
                     numberOfWRITEFailures++;
                     f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                             property,orgVal,modelVal,rule,false,true,
-                            property +": unneeded sub property present", lineNumber,false);
+                            property +": unneeded sub property present", lineNumber,false,widgetModel);
                 }
                 f.addSubFailure(ffs);
             }
@@ -849,7 +955,8 @@ public class SchemaVerifier {
 
                     ff.add(new SubValidationFailure(resource,wuid,widgetType,widgetName,
                             property, subPropertyTagger.apply(stuff), subPropDescriptor.apply(stuff),
-                            stuff,null,rule,true,true,messageGenerator.apply(mostTightMatchValue), lineNumber));
+                            stuff,null,rule,true,true,messageGenerator.apply(mostTightMatchValue), lineNumber,
+                            widgetModel));
                 }
             }
 
@@ -858,7 +965,7 @@ public class SchemaVerifier {
                 for (T a : notInOriginalStuff) {
                     ff.add(new SubValidationFailure(resource,wuid,widgetType,widgetName,
                             property, subPropertyTagger.apply(a), subPropDescriptor.apply(a),
-                            null, a, rule,false,true,null, lineNumber));
+                            null, a, rule,false,true,null, lineNumber,widgetModel));
                 }
             }
 
@@ -866,7 +973,7 @@ public class SchemaVerifier {
                 numberOfCriticalROFailures++;
                 ValidationFailure f = new ValidationFailure(resource,wuid,widgetType,widgetName,
                         property,orgVal,modelVal,rule,true,true,
-                        property + ": READ-ONLY property was changed", lineNumber,false);
+                        property + ": READ-ONLY property was changed", lineNumber,false,widgetModel);
                 f.addSubFailure(ff);
                 return f;
             }
@@ -875,7 +982,7 @@ public class SchemaVerifier {
     }
 
     private <T> List<SubValidationFailure> checkRemovedValues(IPath resource, String wuid, String widgetType,
-            String widgetName, String property, List<T> model,
+            String widgetName, Class<? extends AbstractWidgetModel> widgetModel, String property, List<T> model,
             ValidationRule rule, int lineNumber, Function<T,String> subPropertyTagger,
             Function<T,String> subPropDescriptor, Function<Integer,String> messageGenerator,
             Function<T,String> naming) {
@@ -888,7 +995,7 @@ public class SchemaVerifier {
                     if (v.equals(name)) {
                         ffs.add(new SubValidationFailure(resource, wuid, widgetType, widgetName, property,
                                 subPropertyTagger.apply(m), subPropDescriptor.apply(m),
-                                null, m, rule, false, true, null, lineNumber, true));
+                                null, m, rule, false, true, null, lineNumber, true,widgetModel));
                         break;
                     }
                 }

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.validation.core;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -42,13 +43,15 @@ public class SubValidationFailure extends ValidationFailure {
      * @param rule the rule that was violated
      * @param isCritical true if this is a critical failure or false otherwise
      * @param isFixable true if the failure can be quick fixed
-     * @param lineNumber the line number at which the faiure occurred
+     * @param lineNumber the line number at which the failure occurred
+     * @param model the model class that this validation failure originates from
      */
     public SubValidationFailure(IPath path, String wuid, String widgetType, String widgetName, String property,
             String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule,
-            boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber) {
+            boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber,
+            Class<? extends AbstractWidgetModel> model) {
         this(path, wuid, widgetType, widgetName, property, subPropertyTag, subPropertyDesc, expected, actual, rule,
-                isCritical, isFixable, forcedMessage, lineNumber, false);
+                isCritical, isFixable, forcedMessage, lineNumber, false,model);
     }
 
     /**
@@ -68,13 +71,15 @@ public class SubValidationFailure extends ValidationFailure {
      * @param isFixable true if the failure can be quick fixed
      * @param lineNumber the line number at which the failure occurred
      * @param toRemove a flag indicating if this failure is about a sub property that should be removed
+     * @param model the model class that this validation failure originates from
      *
      */
     public SubValidationFailure(IPath path, String wuid, String widgetType, String widgetName, String property,
             String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule,
-            boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber, boolean toRemove) {
+            boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber, boolean toRemove,
+            Class<? extends AbstractWidgetModel> model) {
         super(path, wuid, widgetType, widgetName, property, expected, actual, rule,
-                isCritical, isFixable, forcedMessage, lineNumber,false);
+                isCritical, isFixable, forcedMessage, lineNumber,false,model);
         this.subPropertyTag = subPropertyTag;
         this.subPropertyDesc = subPropertyDesc;
         this.forcedMessage = forcedMessage;
