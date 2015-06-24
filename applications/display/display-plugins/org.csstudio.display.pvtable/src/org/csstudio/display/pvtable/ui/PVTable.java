@@ -7,9 +7,13 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
@@ -24,7 +28,7 @@ import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
-import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
+import org.csstudio.ui.util.dnd.SerializableItemTransfer;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -40,6 +44,12 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
@@ -133,8 +143,18 @@ public class PVTable implements PVTableModelListener
                 {
                     final TableItem tab_item = (TableItem) cell.getItem();
                     final PVTableItem item = (PVTableItem) cell.getElement();
-                    tab_item.setChecked(item.isSelected());
-                    cell.setText(item.getName());
+
+                    if (item.isComment())
+                    {
+                        cell.setText(item.getComment());
+                        cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+                    }
+                    else
+                    {
+                        tab_item.setChecked(item.isSelected());
+                        cell.setText(item.getName());
+                        cell.setForeground(null);
+                    }
                 }
             });
         pv_column.setEditingSupport(new EditingSupport(viewer)
@@ -190,16 +210,21 @@ public class PVTable implements PVTableModelListener
             @Override
             public void handleEvent(final Event event)
             {
+                final TableItem tab_item = (TableItem) event.item;
+                final PVTableItem item = (PVTableItem) tab_item.getData();
                 if (event.detail != SWT.CHECK)
                     return;
+                if (item.isComment())
+                {
+                    tab_item.setChecked(false);
+                    return;
+                }
                 // Toggle selection of PVTableItem, then update
                 // the TableItem to reflect current state.
                 // When instead updating the PVTableItem from the
                 // TableItem's check mark, the result was inconsistent
                 // behavior for selected rows: Could not un-check the
                 // checkbox for a selected row...
-                final TableItem tab_item = (TableItem) event.item;
-                final PVTableItem item = (PVTableItem) tab_item.getData();
                 if (item == PVTableModelContentProvider.NEW_ITEM)
                     item.setSelected(false);
                 else
@@ -217,15 +242,7 @@ public class PVTable implements PVTableModelListener
                     public void update(final ViewerCell cell)
                     {
                         final PVTableItem item = (PVTableItem) cell.getElement();
-                        final String strDescr = item.getDescription();
-                        if (strDescr == null)
-                            cell.setText(""); //$NON-NLS-1$
-                        else
-                        {
-                        	//String	value.
-                            cell.setText( strDescr );
-
-                        }
+                        cell.setText(item.getDescription());
                     }
                 });
 
@@ -238,7 +255,7 @@ public class PVTable implements PVTableModelListener
                 {
                     final PVTableItem item = (PVTableItem) cell.getElement();
                     final VType value = item.getValue();
-                    if (value == null)
+                    if (value == null  ||  item.isComment())
                         cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
@@ -267,7 +284,7 @@ public class PVTable implements PVTableModelListener
              *  When editing, the UI thread calls getCellEditor() for the row,
              *  then get/setValue().
              */
-            boolean need_index = false;
+            private boolean need_index = false;
 
             @Override
             protected boolean canEdit(final Object element)
@@ -322,8 +339,10 @@ public class PVTable implements PVTableModelListener
                     if (value == null)
                         cell.setText(""); //$NON-NLS-1$
                     else
+                    {
                         cell.setText(VTypeHelper.formatAlarm(value));
-                    cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
+                        cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
+                    }
                 }
             });
         createColumn(viewer, layout, Messages.Saved, 100, 50,
@@ -389,6 +408,8 @@ public class PVTable implements PVTableModelListener
         manager.add(new RestoreCurrentSelectionAction(viewer));
         manager.add(new Separator());
         manager.add(new ToleranceAction(viewer));
+        manager.add(new Separator());
+        manager.add(new InsertAction(viewer));
         manager.add(new DeleteAction(viewer));
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
@@ -400,47 +421,104 @@ public class PVTable implements PVTableModelListener
             site.registerContextMenu(manager, viewer);
     }
 
+    /** Set to currently dragged items to allow 'drop'
+     *  to move them instead of adding duplicates.
+     */
+    private final AtomicReference<List<PVTableItem>> dragged_items = new AtomicReference<>(Collections.emptyList());
+
     private void hookDragDrop()
     {
-        // Support 'dragging' PV names out
+        // Support 'dragging' ProcessVariable[]
+        // Tried to drag PVTableItem[] to ease accepting that within this or other table,
+        // but combination of ControlSystemDragSource and registered adapter from PVTableItem to ProcessVariable
+        // always resulted in receiving ProcessVariable[]
         new ControlSystemDragSource(viewer.getTable())
         {
             @Override
             public Object getSelection()
             {
+                final List<PVTableItem> items = new ArrayList<>();
                 final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
-                if (sel == null)
-                    return new Object[0];
-                final Iterator<?> iterator = sel.iterator();
-                final ProcessVariable[] pvs = new ProcessVariable[sel.size()];
-                int i = 0;
-                while (iterator.hasNext())
-                    pvs[i++] = new ProcessVariable(((PVTableItem)iterator.next()).getName());
+                if (sel != null)
+                {
+                    final Iterator<?> iterator = sel.iterator();
+                    while (iterator.hasNext())
+                        items.add((PVTableItem)iterator.next());
+                }
+                dragged_items.set(items);
+                final ProcessVariable[] pvs = new ProcessVariable[items.size()];
+                for (int i=0; i<pvs.length; ++i)
+                    pvs[i] = new ProcessVariable(items.get(i).getName());
                 return pvs;
             }
         };
 
         // Allow 'dropping' PV names
-        new ControlSystemDropTarget(viewer.getTable(), ProcessVariable[].class, ProcessVariable.class, String.class)
+        final DropTarget target = new DropTarget(viewer.getTable(), DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
+        target.setTransfer(new Transfer[]
+        {
+            // Tried also receiving PVTableItem[], but always got ProcessVariable[]
+            SerializableItemTransfer.getTransfer(ProcessVariable[].class.getName()),
+            SerializableItemTransfer.getTransfer(ProcessVariable.class.getName()),
+            TextTransfer.getInstance()
+        });
+        target.addDropListener(new DropTargetAdapter()
         {
             @Override
-            public void handleDrop(final Object item)
+            public void dragEnter(final DropTargetEvent event)
             {
-                if (item instanceof ProcessVariable)
-                    model.addItem(((ProcessVariable)item).getName());
-                else if (item instanceof String)
-                    model.addItem((String)item);
-                else if (item instanceof ProcessVariable[])
+                if ((event.operations & DND.DROP_COPY) != 0)
+                    event.detail = DND.DROP_COPY;
+                else
+                    event.detail = DND.DROP_NONE;
+            }
+
+            @Override
+            public void drop(final DropTargetEvent event)
+            {
+                // Dropping on a valid existing item?
+                PVTableItem existing = null;
+                if (event.item instanceof TableItem)
                 {
-                    for (ProcessVariable pv : (ProcessVariable[]) item)
-                        model.addItem(pv.getName());
+                    final TableItem tab_item = (TableItem) event.item;
+                    if (tab_item.getData() instanceof PVTableItem)
+                    {
+                        existing = (PVTableItem) tab_item.getData();
+                        if (existing == PVTableModelContentProvider.NEW_ITEM)
+                            existing = null;
+                    }
+                }
+
+                // Was this data dragged from the PV table?
+                final List<PVTableItem> moved = dragged_items.getAndSet(Collections.emptyList());
+                if (moved.size() > 0)
+                {   // Move items within the table
+                    for (PVTableItem item : moved)
+                    {
+                        System.out.println("Moving original " + item);
+                        model.removeItem(item);
+                        model.addItemAbove(existing, item);
+                    }
                 }
                 else
-                    return;
+                {   // Add items received from outside this table
+                    final Object item = event.data;
+                    if (item instanceof ProcessVariable)
+                        model.addItemAbove(existing, ((ProcessVariable)item).getName());
+                    else if (item instanceof String)
+                        model.addItemAbove(existing, (String)item);
+                    else if (item instanceof ProcessVariable[])
+                    {
+                        for (ProcessVariable pv : (ProcessVariable[]) item)
+                            model.addItemAbove(existing, pv.getName());
+                    }
+                    else
+                        return;
+                }
 
                 viewer.setInput(model);
             }
-        };
+        });
     }
 
     /** @return Table viewer */
