@@ -133,8 +133,18 @@ public class PVTable implements PVTableModelListener
                 {
                     final TableItem tab_item = (TableItem) cell.getItem();
                     final PVTableItem item = (PVTableItem) cell.getElement();
-                    tab_item.setChecked(item.isSelected());
-                    cell.setText(item.getName());
+
+                    if (item.isComment())
+                    {
+                        cell.setText(item.getComment());
+                        cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+                    }
+                    else
+                    {
+                        tab_item.setChecked(item.isSelected());
+                        cell.setText(item.getName());
+                        cell.setForeground(null);
+                    }
                 }
             });
         pv_column.setEditingSupport(new EditingSupport(viewer)
@@ -190,16 +200,21 @@ public class PVTable implements PVTableModelListener
             @Override
             public void handleEvent(final Event event)
             {
+                final TableItem tab_item = (TableItem) event.item;
+                final PVTableItem item = (PVTableItem) tab_item.getData();
                 if (event.detail != SWT.CHECK)
                     return;
+                if (item.isComment())
+                {
+                    tab_item.setChecked(false);
+                    return;
+                }
                 // Toggle selection of PVTableItem, then update
                 // the TableItem to reflect current state.
                 // When instead updating the PVTableItem from the
                 // TableItem's check mark, the result was inconsistent
                 // behavior for selected rows: Could not un-check the
                 // checkbox for a selected row...
-                final TableItem tab_item = (TableItem) event.item;
-                final PVTableItem item = (PVTableItem) tab_item.getData();
                 if (item == PVTableModelContentProvider.NEW_ITEM)
                     item.setSelected(false);
                 else
@@ -217,15 +232,7 @@ public class PVTable implements PVTableModelListener
                     public void update(final ViewerCell cell)
                     {
                         final PVTableItem item = (PVTableItem) cell.getElement();
-                        final String strDescr = item.getDescription();
-                        if (strDescr == null)
-                            cell.setText(""); //$NON-NLS-1$
-                        else
-                        {
-                        	//String	value.
-                            cell.setText( strDescr );
-
-                        }
+                        cell.setText(item.getDescription());
                     }
                 });
 
@@ -238,7 +245,7 @@ public class PVTable implements PVTableModelListener
                 {
                     final PVTableItem item = (PVTableItem) cell.getElement();
                     final VType value = item.getValue();
-                    if (value == null)
+                    if (value == null  ||  item.isComment())
                         cell.setText(""); //$NON-NLS-1$
                     else
                         cell.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
@@ -267,7 +274,7 @@ public class PVTable implements PVTableModelListener
              *  When editing, the UI thread calls getCellEditor() for the row,
              *  then get/setValue().
              */
-            boolean need_index = false;
+            private boolean need_index = false;
 
             @Override
             protected boolean canEdit(final Object element)
@@ -322,8 +329,10 @@ public class PVTable implements PVTableModelListener
                     if (value == null)
                         cell.setText(""); //$NON-NLS-1$
                     else
+                    {
                         cell.setText(VTypeHelper.formatAlarm(value));
-                    cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
+                        cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
+                    }
                 }
             });
         createColumn(viewer, layout, Messages.Saved, 100, 50,
