@@ -428,7 +428,10 @@ public class PVTable implements PVTableModelListener
 
     private void hookDragDrop()
     {
-        // Support 'dragging' PV names out
+        // Support 'dragging' ProcessVariable[]
+        // Tried to drag PVTableItem[] to ease accepting that within this or other table,
+        // but combination of ControlSystemDragSource and registered adapter from PVTableItem to ProcessVariable
+        // always resulted in receiving ProcessVariable[]
         new ControlSystemDragSource(viewer.getTable())
         {
             @Override
@@ -442,11 +445,10 @@ public class PVTable implements PVTableModelListener
                     while (iterator.hasNext())
                         items.add((PVTableItem)iterator.next());
                 }
-
+                dragged_items.set(items);
                 final ProcessVariable[] pvs = new ProcessVariable[items.size()];
                 for (int i=0; i<pvs.length; ++i)
                     pvs[i] = new ProcessVariable(items.get(i).getName());
-                dragged_items.set(items);
                 return pvs;
             }
         };
@@ -455,15 +457,13 @@ public class PVTable implements PVTableModelListener
         final DropTarget target = new DropTarget(viewer.getTable(), DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
         target.setTransfer(new Transfer[]
         {
+            // Tried also receiving PVTableItem[], but always got ProcessVariable[]
             SerializableItemTransfer.getTransfer(ProcessVariable[].class.getName()),
             SerializableItemTransfer.getTransfer(ProcessVariable.class.getName()),
             TextTransfer.getInstance()
         });
         target.addDropListener(new DropTargetAdapter()
         {
-            /** Used internally by the system when a DnD operation enters the control.
-             *  {@inheritDoc}
-             */
             @Override
             public void dragEnter(final DropTargetEvent event)
             {
@@ -473,18 +473,10 @@ public class PVTable implements PVTableModelListener
                     event.detail = DND.DROP_NONE;
             }
 
-            /** Data was dropped into the target.
-             *  Check the actual type, handle received data.
-             */
             @Override
             public void drop(final DropTargetEvent event)
             {
-                // Was this data dragged from the PV table?
-                // Delete original entries
-                final List<PVTableItem> to_delete = dragged_items.getAndSet(Collections.emptyList());
-                for (PVTableItem del : to_delete)
-                    model.removeItem(del);
-
+                // Dropping on a valid existing item?
                 PVTableItem existing = null;
                 if (event.item instanceof TableItem)
                 {
@@ -497,18 +489,32 @@ public class PVTable implements PVTableModelListener
                     }
                 }
 
-                final Object item = event.data;
-                if (item instanceof ProcessVariable)
-                    model.addItemAbove(existing, ((ProcessVariable)item).getName());
-                else if (item instanceof String)
-                    model.addItemAbove(existing, (String)item);
-                else if (item instanceof ProcessVariable[])
-                {
-                    for (ProcessVariable pv : (ProcessVariable[]) item)
-                        model.addItemAbove(existing, pv.getName());
+                // Was this data dragged from the PV table?
+                final List<PVTableItem> moved = dragged_items.getAndSet(Collections.emptyList());
+                if (moved.size() > 0)
+                {   // Move items within the table
+                    for (PVTableItem item : moved)
+                    {
+                        System.out.println("Moving original " + item);
+                        model.removeItem(item);
+                        model.addItemAbove(existing, item);
+                    }
                 }
                 else
-                    return;
+                {   // Add items received from outside this table
+                    final Object item = event.data;
+                    if (item instanceof ProcessVariable)
+                        model.addItemAbove(existing, ((ProcessVariable)item).getName());
+                    else if (item instanceof String)
+                        model.addItemAbove(existing, (String)item);
+                    else if (item instanceof ProcessVariable[])
+                    {
+                        for (ProcessVariable pv : (ProcessVariable[]) item)
+                            model.addItemAbove(existing, pv.getName());
+                    }
+                    else
+                        return;
+                }
 
                 viewer.setInput(model);
             }
