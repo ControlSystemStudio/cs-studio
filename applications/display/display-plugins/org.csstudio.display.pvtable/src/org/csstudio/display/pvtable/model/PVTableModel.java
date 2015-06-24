@@ -116,6 +116,23 @@ public class PVTableModel implements PVTableItemListener
         return item;
     }
 
+    /** Add a new item above an already existing item
+     *  @param item Existing item. <code>null</code> to add at bottom.
+     *  @param pv_name PV name (or comment) of new item
+     *  @return Added item
+     */
+    public PVTableItem addItemAbove(final PVTableItem item, final String pv_name)
+    {
+        if (item == null)
+            return addItem(pv_name);
+        final PVTableItem new_item = new PVTableItem(pv_name, Preferences.getTolerance(), null, this);
+        final int index = Math.max(0, items.indexOf(item));
+        items.add(index, new_item);
+        for (PVTableModelListener listener : listeners)
+            listener.modelChanged();
+        return new_item;
+    }
+
     /** Remove table item (also disposes it)
      *  @param item Item to remove from model
      */

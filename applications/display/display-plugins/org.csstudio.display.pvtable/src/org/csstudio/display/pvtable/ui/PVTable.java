@@ -7,9 +7,13 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
@@ -24,7 +28,7 @@ import org.csstudio.display.pvtable.model.TimestampHelper;
 import org.csstudio.display.pvtable.model.VTypeHelper;
 import org.csstudio.ui.util.MinSizeTableColumnLayout;
 import org.csstudio.ui.util.dnd.ControlSystemDragSource;
-import org.csstudio.ui.util.dnd.ControlSystemDropTarget;
+import org.csstudio.ui.util.dnd.SerializableItemTransfer;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.layout.TableColumnLayout;
@@ -40,6 +44,12 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
+import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.dnd.TextTransfer;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
@@ -398,6 +408,8 @@ public class PVTable implements PVTableModelListener
         manager.add(new RestoreCurrentSelectionAction(viewer));
         manager.add(new Separator());
         manager.add(new ToleranceAction(viewer));
+        manager.add(new Separator());
+        manager.add(new InsertAction(viewer));
         manager.add(new DeleteAction(viewer));
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
 
@@ -409,6 +421,11 @@ public class PVTable implements PVTableModelListener
             site.registerContextMenu(manager, viewer);
     }
 
+    /** Set to currently dragged items to allow 'drop'
+     *  to move them instead of adding duplicates.
+     */
+    private final AtomicReference<List<PVTableItem>> dragged_items = new AtomicReference<>(Collections.emptyList());
+
     private void hookDragDrop()
     {
         // Support 'dragging' PV names out
@@ -417,39 +434,85 @@ public class PVTable implements PVTableModelListener
             @Override
             public Object getSelection()
             {
+                final List<PVTableItem> items = new ArrayList<>();
                 final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
-                if (sel == null)
-                    return new Object[0];
-                final Iterator<?> iterator = sel.iterator();
-                final ProcessVariable[] pvs = new ProcessVariable[sel.size()];
-                int i = 0;
-                while (iterator.hasNext())
-                    pvs[i++] = new ProcessVariable(((PVTableItem)iterator.next()).getName());
+                if (sel != null)
+                {
+                    final Iterator<?> iterator = sel.iterator();
+                    while (iterator.hasNext())
+                        items.add((PVTableItem)iterator.next());
+                }
+
+                final ProcessVariable[] pvs = new ProcessVariable[items.size()];
+                for (int i=0; i<pvs.length; ++i)
+                    pvs[i] = new ProcessVariable(items.get(i).getName());
+                dragged_items.set(items);
                 return pvs;
             }
         };
 
         // Allow 'dropping' PV names
-        new ControlSystemDropTarget(viewer.getTable(), ProcessVariable[].class, ProcessVariable.class, String.class)
+        final DropTarget target = new DropTarget(viewer.getTable(), DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
+        target.setTransfer(new Transfer[]
         {
+            SerializableItemTransfer.getTransfer(ProcessVariable[].class.getName()),
+            SerializableItemTransfer.getTransfer(ProcessVariable.class.getName()),
+            TextTransfer.getInstance()
+        });
+        target.addDropListener(new DropTargetAdapter()
+        {
+            /** Used internally by the system when a DnD operation enters the control.
+             *  {@inheritDoc}
+             */
             @Override
-            public void handleDrop(final Object item)
+            public void dragEnter(final DropTargetEvent event)
             {
+                if ((event.operations & DND.DROP_COPY) != 0)
+                    event.detail = DND.DROP_COPY;
+                else
+                    event.detail = DND.DROP_NONE;
+            }
+
+            /** Data was dropped into the target.
+             *  Check the actual type, handle received data.
+             */
+            @Override
+            public void drop(final DropTargetEvent event)
+            {
+                // Was this data dragged from the PV table?
+                // Delete original entries
+                final List<PVTableItem> to_delete = dragged_items.getAndSet(Collections.emptyList());
+                for (PVTableItem del : to_delete)
+                    model.removeItem(del);
+
+                PVTableItem existing = null;
+                if (event.item instanceof TableItem)
+                {
+                    final TableItem tab_item = (TableItem) event.item;
+                    if (tab_item.getData() instanceof PVTableItem)
+                    {
+                        existing = (PVTableItem) tab_item.getData();
+                        if (existing == PVTableModelContentProvider.NEW_ITEM)
+                            existing = null;
+                    }
+                }
+
+                final Object item = event.data;
                 if (item instanceof ProcessVariable)
-                    model.addItem(((ProcessVariable)item).getName());
+                    model.addItemAbove(existing, ((ProcessVariable)item).getName());
                 else if (item instanceof String)
-                    model.addItem((String)item);
+                    model.addItemAbove(existing, (String)item);
                 else if (item instanceof ProcessVariable[])
                 {
                     for (ProcessVariable pv : (ProcessVariable[]) item)
-                        model.addItem(pv.getName());
+                        model.addItemAbove(existing, pv.getName());
                 }
                 else
                     return;
 
                 viewer.setInput(model);
             }
-        };
+        });
     }
 
     /** @return Table viewer */
