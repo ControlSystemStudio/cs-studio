@@ -23,6 +23,7 @@ import org.epics.vtype.VEnum;
 import org.epics.vtype.VEnumArray;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
@@ -31,23 +32,85 @@ import org.epics.vtype.ValueFactory;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PVTableItem implements PVListener
+public class PVTableItem
 {
     final private PVTableItemListener listener;
 
     private boolean selected = true;
 
-    private String name;
+    /** Primary PV name */
+    private String name = null;
 
+    /** Last known value of the PV */
     private volatile VType value;
 
+    /** Value of the PV's description */
+    private volatile String desc_value = "";
+
+    /** Saved (snapshot) value */
     private volatile Optional<SavedValue> saved = Optional.empty();
 
+    /** Does current value differ from saved value? */
     private volatile boolean has_changed;
 
+    /** Tolerance for comparing current and saved (if they're numeric) */
     private double tolerance;
 
+    /** Primary PV */
     final private AtomicReference<PV> pv = new AtomicReference<PV>(null);
+
+    /** Description PV */
+    final private AtomicReference<PV> desc_pv = new AtomicReference<PV>(null);
+
+    /** Listener to primary PV */
+    final private PVListener pv_listener = new PVListener()
+    {
+        @Override
+        public void permissionsChanged(final PV pv, final boolean readonly)
+        {
+            listener.tableItemChanged(PVTableItem.this);
+        }
+
+        @Override
+        public void valueChanged(final PV pv, final VType value)
+        {
+            updateValue(value);
+        }
+
+        @Override
+        public void disconnected(final PV pv)
+        {
+            updateValue(ValueFactory.newVString("Disconnected",
+                                                ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"),
+                                                ValueFactory.timeNow()));
+        }
+    };
+
+    /** Listener to description PV */
+    final private PVListener desc_pv_listener = new PVListener()
+    {
+        @Override
+        public void permissionsChanged(final PV pv, final boolean readonly)
+        {
+        }
+
+        @Override
+        public void valueChanged(final PV pv, final VType value)
+        {
+            if (value instanceof VString)
+                desc_value = ((VString) value).getValue();
+            else
+                desc_value = "";
+            listener.tableItemChanged(PVTableItem.this);
+        }
+
+        @Override
+        public void disconnected(final PV pv)
+        {
+            desc_value = "";
+        }
+    };
+
 
     /** Initialize
      *
@@ -58,7 +121,8 @@ public class PVTableItem implements PVListener
      */
     public PVTableItem(final String name, final double tolerance, final SavedValue saved, final PVTableItemListener listener)
     {
-        this(name, tolerance, saved, listener, ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
+        this(name, tolerance, saved, listener,
+            ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
     }
 
     /** Initialize
@@ -75,22 +139,29 @@ public class PVTableItem implements PVListener
         this.saved = Optional.ofNullable(saved);
         this.value = initial_value;
         determineIfChanged();
-        createPV(name);
+        createPVs(name);
     }
 
     /** Set PV name and create reader/writer
-     *  @param name PV name
+     *  @param name Primary PV name
      */
-    private void createPV(final String name)
+    private void createPVs(final String name)
     {
         this.name = name;
         if (! name.isEmpty())
         {
             try
             {
-                PV new_pv = PVPool.getPV(name);
-                new_pv.addListener(this);
+                final PV new_pv = PVPool.getPV(name);
+                new_pv.addListener(pv_listener);
                 pv.set(new_pv);
+
+                if (Preferences.showDescription()  &&  ! name.contains("."))
+                {
+                    final PV new_desc_pv = PVPool.getPV(name + ".DESC");
+                    new_desc_pv.addListener(desc_pv_listener);
+                    desc_pv.set(new_desc_pv);
+                }
             }
             catch (Exception ex)
             {
@@ -134,35 +205,8 @@ public class PVTableItem implements PVListener
         saved = Optional.empty();
         value = null;
         has_changed = false;
-        createPV(new_name);
+        createPVs(new_name);
         return true;
-    }
-
-    /** PVListener
-     *  {@inheritDoc}
-     */
-    @Override
-    public void permissionsChanged(final PV pv, final boolean readonly)
-    {
-        listener.tableItemChanged(this);
-    }
-
-    /** PVListener
-     *  {@inheritDoc}
-     */
-    @Override
-    public void valueChanged(final PV pv, final VType value)
-    {
-        updateValue(value);
-    }
-
-    /** PVListener
-     *  {@inheritDoc}
-     */
-    @Override
-    public void disconnected(final PV pv)
-    {
-        updateValue(ValueFactory.newVString("Disconnected", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"), ValueFactory.timeNow())); //$NON-NLS-1$
     }
 
     /** @param new_value New value of item */
@@ -177,6 +221,12 @@ public class PVTableItem implements PVListener
     public VType getValue()
     {
         return value;
+    }
+
+    /** @return  Description*/
+    public String getDescription()
+    {
+    	return desc_value;
     }
 
     /** @return Options for current value, not <code>null</code> if not enumerated */
@@ -331,10 +381,17 @@ public class PVTableItem implements PVListener
     /** Must be called to release resources when item no longer in use */
     public void dispose()
     {
-        final PV the_pv = pv.getAndSet(null);
+        PV the_pv = pv.getAndSet(null);
         if (the_pv != null)
         {
-            the_pv.removeListener(this);
+            the_pv.removeListener(pv_listener);
+            PVPool.releasePV(the_pv);
+        }
+
+        the_pv = desc_pv.getAndSet(null);
+        if (the_pv != null)
+        {
+            the_pv.removeListener(pv_listener);
             PVPool.releasePV(the_pv);
         }
     }

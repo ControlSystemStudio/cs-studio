@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.model;
 
+import java.text.NumberFormat;
+
 import org.csstudio.display.pvtable.Preferences;
 import org.epics.util.array.IteratorInt;
 import org.epics.util.array.IteratorNumber;
@@ -77,7 +79,22 @@ public class VTypeHelper
     final public static String toString(final VType value)
     {
         if (value instanceof VNumber)
-            return ((VNumber)value).getValue().toString();
+        {
+            final VNumber number = (VNumber) value;
+            final NumberFormat format = number.getFormat();
+            final String data;
+            if (format != null)
+                data = format.format(number.getValue().doubleValue());
+            else
+                data = number.getValue().toString();
+            if (Preferences.showUnits())
+            {
+                final String units = number.getUnits();
+                if (units.length() > 0)
+                    return data + " " + units;
+            }
+            return data;
+        }
         if (value instanceof VEnum)
         {
             final VEnum ev = (VEnum) value;

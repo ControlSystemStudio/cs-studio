@@ -15,6 +15,7 @@ public class Messages extends NLS
 
 
     public static String Alarm;
+    public static String Description;
     public static String CheckAll;
     public static String CheckAll_TT;
     public static String Delete;

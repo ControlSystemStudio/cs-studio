@@ -15,6 +15,7 @@ import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.Messages;
+import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
@@ -40,7 +41,6 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -81,18 +81,13 @@ public class PVTable implements PVTableModelListener
 
         hookDragDrop();
 
-
         // Disconnect from model when disposed
-        parent.addDisposeListener(new DisposeListener()
+        parent.addDisposeListener((DisposeEvent e) ->
         {
-            @Override
-            public void widgetDisposed(DisposeEvent e)
+            if (model != null)
             {
-                if (model != null)
-                {
-                    model.removeListener(PVTable.this);
-                    model.dispose();
-                }
+                model.removeListener(PVTable.this);
+                model.dispose();
             }
         });
     }
@@ -212,6 +207,28 @@ public class PVTable implements PVTableModelListener
                 tab_item.setChecked(item.isSelected());
             }
         });
+
+        // Optionally, add column to display item.getDescription()
+        if (Preferences.showDescription())
+            createColumn(viewer, layout, Messages.Description, 50, 40,
+                new PVTableCellLabelProvider()
+                {
+                    @Override
+                    public void update(final ViewerCell cell)
+                    {
+                        final PVTableItem item = (PVTableItem) cell.getElement();
+                        final String strDescr = item.getDescription();
+                        if (strDescr == null)
+                            cell.setText(""); //$NON-NLS-1$
+                        else
+                        {
+                        	//String	value.
+                            cell.setText( strDescr );
+
+                        }
+                    }
+                });
+
         // Read-only time stamp
         createColumn(viewer, layout, Messages.Time, 50, 100,
             new PVTableCellLabelProvider()
@@ -350,6 +367,7 @@ public class PVTable implements PVTableModelListener
         final TableColumn col = view_col.getColumn();
         col.setText(header);
         col.setResizable(true);
+        col.setMoveable(true);
         layout.setColumnData(col, new ColumnWeightData(weight, min_width));
         view_col.setLabelProvider(label_provider);
         return view_col;
@@ -462,14 +480,10 @@ public class PVTable implements PVTableModelListener
         final Table table = viewer.getTable();
         if (table.isDisposed())
             return;
-        table.getDisplay().asyncExec(new Runnable()
+        table.getDisplay().asyncExec(() ->
         {
-            @Override
-            public void run()
-            {
-                if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
-                    viewer.refresh(item);
-            }
+            if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
+                viewer.refresh(item);
         });
     }
 
@@ -480,14 +494,10 @@ public class PVTable implements PVTableModelListener
         final Table table = viewer.getTable();
         if (table.isDisposed())
             return;
-        table.getDisplay().asyncExec(new Runnable()
+        table.getDisplay().asyncExec(() ->
         {
-            @Override
-            public void run()
-            {
-                if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
-                    viewer.refresh();
-            }
+            if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
+                viewer.refresh();
         });
     }
 
