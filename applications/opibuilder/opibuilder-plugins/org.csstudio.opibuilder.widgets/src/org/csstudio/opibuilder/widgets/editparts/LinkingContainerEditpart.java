@@ -44,7 +44,6 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.editparts.ZoomListener;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionFilter;
 
 /**The Editpart Controller for a linking Container
@@ -159,7 +158,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
     /**
      * @param path the path of the OPI file
-     * 
+     *
      * Removing this call because the add remove children in fillLinkingContainer overlap
      * with the add remove in configureDisplayModel, and cause pv connection issues.
      * This reverts some of the work from #912
@@ -191,13 +190,14 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         //This need to be executed after GUI created.
         if(getWidgetModel().getDisplayModel() == null) {
             IPath path = getWidgetModel().getOPIFilePath();
-           
+
             final DisplayModel tempDisplayModel = new DisplayModel(path);
             getWidgetModel().setDisplayModel(tempDisplayModel);
             try {
-                XMLUtil.fillDisplayModelFromInputStream(
-                        ResourceUtil.pathToInputStream(path), tempDisplayModel,
-                        getViewer().getControl().getDisplay());
+                if (! path.isEmpty())
+                    XMLUtil.fillDisplayModelFromInputStream(
+                            ResourceUtil.pathToInputStream(path), tempDisplayModel,
+                            getViewer().getControl().getDisplay());
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -217,7 +217,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                 widgetModel.setDisplayModelOpiRuntime(widgetModel.getRootDisplayModel(false).getOpiRuntime());
             }
         });
-        
+
 
         connectionList = displayModel.getConnectionList();
         if(connectionList !=null && !connectionList.isEmpty()){
@@ -263,7 +263,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         // tempDisplayModel.removeAllChildren();
         LinkedHashMap<String,String> map = new LinkedHashMap<>();
         AbstractContainerModel loadTarget = displayModel;
-        
+
         if(!widgetModel.getGroupName().trim().equals("")){ //$NON-NLS-1$
             AbstractWidgetModel group =
                 displayModel.getChildByName(widgetModel.getGroupName());
@@ -271,7 +271,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                 loadTarget = (AbstractContainerModel) group;
             }
         }
-        
+
         // Load "LCID" macro whose value is unique to this instance of Linking Container.
         if (widgetModel.getExecutionMode() == ExecutionMode.RUN_MODE) {
             map.put("LCID", "LCID_" + getLinkingContainerID());
