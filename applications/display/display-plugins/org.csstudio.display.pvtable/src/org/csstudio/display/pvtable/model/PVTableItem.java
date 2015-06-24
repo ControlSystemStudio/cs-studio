@@ -148,39 +148,45 @@ public class PVTableItem
     private void createPVs(final String name)
     {
         this.name = name;
-        if (! name.isEmpty())
+        // Ignore empty PVs or comments
+        if (name.isEmpty()  ||  isComment())
+            return;
+        try
         {
-            try
-            {
-                final PV new_pv = PVPool.getPV(name);
-                new_pv.addListener(pv_listener);
-                pv.set(new_pv);
+            final PV new_pv = PVPool.getPV(name);
+            new_pv.addListener(pv_listener);
+            pv.set(new_pv);
 
-                if (Preferences.showDescription()  &&  ! name.contains("."))
-                {
-                    final PV new_desc_pv = PVPool.getPV(name + ".DESC");
-                    new_desc_pv.addListener(desc_pv_listener);
-                    desc_pv.set(new_desc_pv);
-                }
+            if (Preferences.showDescription())
+            {   // Determine DESC field.
+                // If name already includes a field,
+                // replace it with DESC field.
+                final int sep = name.lastIndexOf('.');
+                final String desc_name = sep >= 0
+                     ? name.substring(0, sep) + ".DESC"
+                     : name + ".DESC";
+                final PV new_desc_pv = PVPool.getPV(desc_name);
+                new_desc_pv.addListener(desc_pv_listener);
+                desc_pv.set(new_desc_pv);
             }
-            catch (Exception ex)
-            {
-                Plugin.getLogger().log(Level.WARNING, "Cannot create PV " + name, ex);
-                updateValue(ValueFactory.newVString("PV Error", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
-            }
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.WARNING, "Cannot create PV " + name, ex);
+            updateValue(ValueFactory.newVString("PV Error", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
         }
     }
 
     /** @return <code>true</code> if item is selected to be restored */
     public boolean isSelected()
     {
-        return selected;
+        return selected  &&  !isComment();
     }
 
     /** @param selected Should item be selected to be restored? */
     public void setSelected(final boolean selected)
     {
-        this.selected = selected;
+        this.selected = selected  &&  !isComment();
         listener.tableItemSelectionChanged(this);
     }
 
@@ -188,6 +194,13 @@ public class PVTableItem
     public String getName()
     {
         return name;
+    }
+
+    /** @return Returns the comment. */
+    public String getComment()
+    {
+        // Skip initial "#". Trim in case of another space from "# "
+        return name.substring(1).trim();
     }
 
     /** Update PV name
@@ -220,10 +233,10 @@ public class PVTableItem
     /** @return Value */
     public VType getValue()
     {
-        return value;
+        return isComment() ? null : value;
     }
 
-    /** @return  Description*/
+    /** @return Description*/
     public String getDescription()
     {
     	return desc_value;
@@ -243,7 +256,7 @@ public class PVTableItem
     public boolean isWritable()
     {
         final PV the_pv = pv.get();
-        return the_pv != null  &&  the_pv.isReadonly() == false;
+        return the_pv != null  &&  the_pv.isReadonly() == false  &&  !isComment();
     }
 
     /** @param new_value Value to write to the item's PV */
@@ -305,6 +318,8 @@ public class PVTableItem
     /** Save current value as saved value */
     public void save()
     {
+        if (isComment())
+            return;
         try
         {
             saved = Optional.of(SavedValue.forCurrentValue(value));
@@ -319,6 +334,8 @@ public class PVTableItem
     /** Write saved value back to PV */
     public void restore()
     {
+        if (isComment())
+            return;
         final PV the_pv = pv.get();
         final SavedValue the_value = saved.orElse(null);
         if (the_pv == null  ||  ! isWritable()  || the_value == null)
@@ -351,6 +368,12 @@ public class PVTableItem
         this.tolerance = tolerance;
         determineIfChanged();
         listener.tableItemChanged(this);
+    }
+
+    /** @return <code>true</code> if this item is a comment instead of a PV with name, value etc. */
+    public boolean isComment()
+    {
+        return name.startsWith("#");
     }
 
     /** @return <code>true</code> if value has changed from saved value */

@@ -109,12 +109,47 @@ public class PVTableModel implements PVTableItemListener
      */
     public PVTableItem addItem(final String pv_name, final double tolerance, final SavedValue saved)
     {
-        final PVTableItem item = new PVTableItem(pv_name, tolerance, saved, this);
+        return addItem(new PVTableItem(pv_name, tolerance, saved, this));
+    }
+
+    /** Add table item
+     *  @param item Item to add
+     *  @return Added item
+     */
+    public PVTableItem addItem(final PVTableItem item)
+    {
         items.add(item);
         for (PVTableModelListener listener : listeners)
             listener.modelChanged();
         return item;
     }
+
+    /** Add a new item above an already existing item
+     *  @param item Existing item. <code>null</code> to add at bottom.
+     *  @param pv_name PV name (or comment) of new item
+     *  @return Added item
+     */
+    public PVTableItem addItemAbove(final PVTableItem item, final String pv_name)
+    {
+        return addItemAbove(item, new PVTableItem(pv_name, Preferences.getTolerance(), null, this));
+    }
+
+    /** Add a new item above an already existing item
+     *  @param item Existing item. <code>null</code> to add at bottom.
+     *  @param new_item New item
+     *  @return Added item
+     */
+    public PVTableItem addItemAbove(final PVTableItem item, final PVTableItem new_item)
+    {
+        if (item == null)
+            return addItem(new_item);
+        final int index = Math.max(0, items.indexOf(item));
+        items.add(index, new_item);
+        for (PVTableModelListener listener : listeners)
+            listener.modelChanged();
+        return new_item;
+    }
+
 
     /** Remove table item (also disposes it)
      *  @param item Item to remove from model
