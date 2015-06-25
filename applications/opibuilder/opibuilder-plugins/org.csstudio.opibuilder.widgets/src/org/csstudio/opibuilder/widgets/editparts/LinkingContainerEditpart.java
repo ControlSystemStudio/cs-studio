@@ -114,7 +114,11 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                         widgetModel.setDisplayModel(null);
                     }else{
                         DisplayModel displayModel = new DisplayModel(absolutePath);
-                        widgetModel.setDisplayModel(displayModel);
+                        if (widgetModel.getMacroMap().equals(displayModel.getMacroMap())) {
+                            widgetModel.setDisplayModel(displayModel);
+                        } else {
+                            widgetModel.setDisplayModel(null);
+                        }
                     }
                     configureDisplayModel();
                 }
