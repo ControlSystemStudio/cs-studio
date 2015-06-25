@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractLayoutEditpart;
@@ -53,6 +54,7 @@ import org.eclipse.ui.IActionFilter;
 public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
 
     private static AtomicInteger linkingContainerID = new AtomicInteger();
+    private static Logger log = Logger.getLogger(LinkingContainerEditpart.class.getName());
 
     private List<ConnectionModel> connectionList;
     private Map<ConnectionModel, PointList> originalPoints;
@@ -98,6 +100,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
     @Override
     protected void registerPropertyChangeHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
+
             @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
@@ -107,9 +110,12 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                     if(!absolutePath.isAbsolute())
                         absolutePath = ResourceUtil.buildAbsolutePath(
                                 getWidgetModel(), absolutePath);
-                    DisplayModel displayModel = new DisplayModel(absolutePath);
-                    widgetModel.setDisplayModel(displayModel);
-                    //loadWidgets(getWidgetModel(),true);
+                    if(oldValue != null && oldValue instanceof IPath){
+                        widgetModel.setDisplayModel(null);
+                    }else{
+                        DisplayModel displayModel = new DisplayModel(absolutePath);
+                        widgetModel.setDisplayModel(displayModel);
+                    }
                     configureDisplayModel();
                 }
                 return true;
@@ -190,6 +196,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
         //This need to be executed after GUI created.
         if(getWidgetModel().getDisplayModel() == null) {
             IPath path = getWidgetModel().getOPIFilePath();
+            log.info(path.toString());
 
             final DisplayModel tempDisplayModel = new DisplayModel(path);
             getWidgetModel().setDisplayModel(tempDisplayModel);
