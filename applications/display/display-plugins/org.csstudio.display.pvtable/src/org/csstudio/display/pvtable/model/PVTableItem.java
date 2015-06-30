@@ -23,6 +23,7 @@ import org.epics.vtype.VEnum;
 import org.epics.vtype.VEnumArray;
 import org.epics.vtype.VNumber;
 import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VString;
 import org.epics.vtype.VType;
 import org.epics.vtype.ValueFactory;
 
@@ -31,23 +32,85 @@ import org.epics.vtype.ValueFactory;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PVTableItem implements PVListener
+public class PVTableItem
 {
     final private PVTableItemListener listener;
 
     private boolean selected = true;
 
-    private String name;
+    /** Primary PV name */
+    private String name = null;
 
+    /** Last known value of the PV */
     private volatile VType value;
 
+    /** Value of the PV's description */
+    private volatile String desc_value = "";
+
+    /** Saved (snapshot) value */
     private volatile Optional<SavedValue> saved = Optional.empty();
 
+    /** Does current value differ from saved value? */
     private volatile boolean has_changed;
 
+    /** Tolerance for comparing current and saved (if they're numeric) */
     private double tolerance;
 
+    /** Primary PV */
     final private AtomicReference<PV> pv = new AtomicReference<PV>(null);
+
+    /** Description PV */
+    final private AtomicReference<PV> desc_pv = new AtomicReference<PV>(null);
+
+    /** Listener to primary PV */
+    final private PVListener pv_listener = new PVListener()
+    {
+        @Override
+        public void permissionsChanged(final PV pv, final boolean readonly)
+        {
+            listener.tableItemChanged(PVTableItem.this);
+        }
+
+        @Override
+        public void valueChanged(final PV pv, final VType value)
+        {
+            updateValue(value);
+        }
+
+        @Override
+        public void disconnected(final PV pv)
+        {
+            updateValue(ValueFactory.newVString("Disconnected",
+                                                ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"),
+                                                ValueFactory.timeNow()));
+        }
+    };
+
+    /** Listener to description PV */
+    final private PVListener desc_pv_listener = new PVListener()
+    {
+        @Override
+        public void permissionsChanged(final PV pv, final boolean readonly)
+        {
+        }
+
+        @Override
+        public void valueChanged(final PV pv, final VType value)
+        {
+            if (value instanceof VString)
+                desc_value = ((VString) value).getValue();
+            else
+                desc_value = "";
+            listener.tableItemChanged(PVTableItem.this);
+        }
+
+        @Override
+        public void disconnected(final PV pv)
+        {
+            desc_value = "";
+        }
+    };
+
 
     /** Initialize
      *
@@ -58,7 +121,8 @@ public class PVTableItem implements PVListener
      */
     public PVTableItem(final String name, final double tolerance, final SavedValue saved, final PVTableItemListener listener)
     {
-        this(name, tolerance, saved, listener, ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
+        this(name, tolerance, saved, listener,
+            ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
     }
 
     /** Initialize
@@ -75,41 +139,54 @@ public class PVTableItem implements PVListener
         this.saved = Optional.ofNullable(saved);
         this.value = initial_value;
         determineIfChanged();
-        createPV(name);
+        createPVs(name);
     }
 
     /** Set PV name and create reader/writer
-     *  @param name PV name
+     *  @param name Primary PV name
      */
-    private void createPV(final String name)
+    private void createPVs(final String name)
     {
         this.name = name;
-        if (! name.isEmpty())
+        // Ignore empty PVs or comments
+        if (name.isEmpty()  ||  isComment())
+            return;
+        try
         {
-            try
-            {
-                PV new_pv = PVPool.getPV(name);
-                new_pv.addListener(this);
-                pv.set(new_pv);
+            final PV new_pv = PVPool.getPV(name);
+            new_pv.addListener(pv_listener);
+            pv.set(new_pv);
+
+            if (Preferences.showDescription())
+            {   // Determine DESC field.
+                // If name already includes a field,
+                // replace it with DESC field.
+                final int sep = name.lastIndexOf('.');
+                final String desc_name = sep >= 0
+                     ? name.substring(0, sep) + ".DESC"
+                     : name + ".DESC";
+                final PV new_desc_pv = PVPool.getPV(desc_name);
+                new_desc_pv.addListener(desc_pv_listener);
+                desc_pv.set(new_desc_pv);
             }
-            catch (Exception ex)
-            {
-                Plugin.getLogger().log(Level.WARNING, "Cannot create PV " + name, ex);
-                updateValue(ValueFactory.newVString("PV Error", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
-            }
+        }
+        catch (Exception ex)
+        {
+            Plugin.getLogger().log(Level.WARNING, "Cannot create PV " + name, ex);
+            updateValue(ValueFactory.newVString("PV Error", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "No PV"), ValueFactory.timeNow()));
         }
     }
 
     /** @return <code>true</code> if item is selected to be restored */
     public boolean isSelected()
     {
-        return selected;
+        return selected  &&  !isComment();
     }
 
     /** @param selected Should item be selected to be restored? */
     public void setSelected(final boolean selected)
     {
-        this.selected = selected;
+        this.selected = selected  &&  !isComment();
         listener.tableItemSelectionChanged(this);
     }
 
@@ -117,6 +194,13 @@ public class PVTableItem implements PVListener
     public String getName()
     {
         return name;
+    }
+
+    /** @return Returns the comment. */
+    public String getComment()
+    {
+        // Skip initial "#". Trim in case of another space from "# "
+        return name.substring(1).trim();
     }
 
     /** Update PV name
@@ -134,35 +218,8 @@ public class PVTableItem implements PVListener
         saved = Optional.empty();
         value = null;
         has_changed = false;
-        createPV(new_name);
+        createPVs(new_name);
         return true;
-    }
-
-    /** PVListener
-     *  {@inheritDoc}
-     */
-    @Override
-    public void permissionsChanged(final PV pv, final boolean readonly)
-    {
-        listener.tableItemChanged(this);
-    }
-
-    /** PVListener
-     *  {@inheritDoc}
-     */
-    @Override
-    public void valueChanged(final PV pv, final VType value)
-    {
-        updateValue(value);
-    }
-
-    /** PVListener
-     *  {@inheritDoc}
-     */
-    @Override
-    public void disconnected(final PV pv)
-    {
-        updateValue(ValueFactory.newVString("Disconnected", ValueFactory.newAlarm(AlarmSeverity.UNDEFINED, "Disconnected"), ValueFactory.timeNow())); //$NON-NLS-1$
     }
 
     /** @param new_value New value of item */
@@ -176,7 +233,13 @@ public class PVTableItem implements PVListener
     /** @return Value */
     public VType getValue()
     {
-        return value;
+        return isComment() ? null : value;
+    }
+
+    /** @return Description*/
+    public String getDescription()
+    {
+    	return desc_value;
     }
 
     /** @return Options for current value, not <code>null</code> if not enumerated */
@@ -193,7 +256,7 @@ public class PVTableItem implements PVListener
     public boolean isWritable()
     {
         final PV the_pv = pv.get();
-        return the_pv != null  &&  the_pv.isReadonly() == false;
+        return the_pv != null  &&  the_pv.isReadonly() == false  &&  !isComment();
     }
 
     /** @param new_value Value to write to the item's PV */
@@ -255,6 +318,8 @@ public class PVTableItem implements PVListener
     /** Save current value as saved value */
     public void save()
     {
+        if (isComment())
+            return;
         try
         {
             saved = Optional.of(SavedValue.forCurrentValue(value));
@@ -269,6 +334,8 @@ public class PVTableItem implements PVListener
     /** Write saved value back to PV */
     public void restore()
     {
+        if (isComment())
+            return;
         final PV the_pv = pv.get();
         final SavedValue the_value = saved.orElse(null);
         if (the_pv == null  ||  ! isWritable()  || the_value == null)
@@ -303,6 +370,12 @@ public class PVTableItem implements PVListener
         listener.tableItemChanged(this);
     }
 
+    /** @return <code>true</code> if this item is a comment instead of a PV with name, value etc. */
+    public boolean isComment()
+    {
+        return name.startsWith("#");
+    }
+
     /** @return <code>true</code> if value has changed from saved value */
     public boolean isChanged()
     {
@@ -331,10 +404,17 @@ public class PVTableItem implements PVListener
     /** Must be called to release resources when item no longer in use */
     public void dispose()
     {
-        final PV the_pv = pv.getAndSet(null);
+        PV the_pv = pv.getAndSet(null);
         if (the_pv != null)
         {
-            the_pv.removeListener(this);
+            the_pv.removeListener(pv_listener);
+            PVPool.releasePV(the_pv);
+        }
+
+        the_pv = desc_pv.getAndSet(null);
+        if (the_pv != null)
+        {
+            the_pv.removeListener(pv_listener);
             PVPool.releasePV(the_pv);
         }
     }
