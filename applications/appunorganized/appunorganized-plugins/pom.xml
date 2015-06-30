@@ -48,7 +48,6 @@
     <module>org.csstudio.service.unitconversion</module>
     
     
-    <module>org.csstudio.simplepv.vtypepv</module>
     <module>org.csstudio.snl.intro</module>
     <module>org.csstudio.swt.chart</module>
     <module>org.csstudio.swt.rtplot</module>

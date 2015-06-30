@@ -10,6 +10,11 @@
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <modules>
+    <module>org.csstudio.simplepv</module>
+    <module>org.csstudio.simplepv.pvmanager</module>
+    <module>org.csstudio.simplepv.pvmanager.test</module>
+    <module>org.csstudio.simplepv.testutil</module>
+    <module>org.csstudio.simplepv.vtypepv</module>
     <module>org.csstudio.opibuilder</module>
     <module>org.csstudio.opibuilder.validation</module>
     <module>org.csstudio.opibuilder.adl2boy</module>
