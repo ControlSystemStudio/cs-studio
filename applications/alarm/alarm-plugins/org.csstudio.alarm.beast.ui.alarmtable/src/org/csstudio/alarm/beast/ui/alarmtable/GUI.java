@@ -480,8 +480,11 @@ public class GUI extends Composite implements AlarmClientModelListener
                     @Override
                     public void controlResized(ControlEvent e)
                     {
-                        s.setWidth(c.getWidth());
-                        w.setMinWidth(c.getWidth());
+                        if (Math.abs(s.getWidth() - c.getWidth()) > 1)
+                        {
+                            s.setWidth(c.getWidth());
+                            w.setMinWidth(c.getWidth());
+                        }
                     }
 
                     @Override

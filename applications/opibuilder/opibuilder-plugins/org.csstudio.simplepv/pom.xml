@@ -4,11 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>appunorganized-plugins</artifactId>
+    <artifactId>opibuilder-plugins</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <groupId>org.csstudio</groupId>
-  <artifactId>org.csstudio.simplepv.vtypepv</artifactId>
+  <artifactId>org.csstudio.simplepv</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>
