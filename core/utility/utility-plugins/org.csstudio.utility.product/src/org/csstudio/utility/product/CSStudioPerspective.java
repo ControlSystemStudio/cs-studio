@@ -119,10 +119,10 @@ public class CSStudioPerspective implements IPerspectiveFactory
             }
 
             if (viewPlaceholderInfo[3].trim().equalsIgnoreCase("multiple")) {
-            viewPlaceholderMap.put(viewPlaceholderInfo[0].trim(), location);
-            viewPlaceholderMap.put(viewPlaceholderInfo[0].trim() + MULTIPLE, location);
+            viewPlaceholderMap.put(viewPlaceholderInfo[1].trim(), location);
+            viewPlaceholderMap.put(viewPlaceholderInfo[1].trim() + MULTIPLE, location);
             } else {
-            viewPlaceholderMap.put(viewPlaceholderInfo[0].trim(), location);
+            viewPlaceholderMap.put(viewPlaceholderInfo[1].trim(), location);
             }
         }
         }else{

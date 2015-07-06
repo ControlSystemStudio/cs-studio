@@ -261,7 +261,10 @@ public class Controller
             public void valueAxisChanged(final int index, final double lower, final double upper)
             {   // Update axis range in model, using UI thread because event may come from 'stagger' background thread
                 final AxisConfig axis = model.getAxis(index);
-                display.asyncExec(() -> axis.setRange(lower, upper));
+                if (axis != null) {
+                    //only update if the model has that axis. If the trend is empty, the model may not have that axis
+                    display.asyncExec(() -> axis.setRange(lower, upper));
+                }
             }
 
             @Override
