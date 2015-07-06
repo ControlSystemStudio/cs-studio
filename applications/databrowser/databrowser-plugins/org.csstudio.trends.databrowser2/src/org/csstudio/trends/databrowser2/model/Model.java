@@ -236,16 +236,23 @@ public class Model
         return axes.size();
     }
 
-    /** Get specific axis
+    /** Get specific axis. If the axis for the specified index does not exist, method returns null.
      *
      *  <p>Thread-safe access to multiple axes should use <code>getAxes()</code>
      *
      *  @param index Axis index
-     *  @return {@link AxisConfig}
+     *  @return {@link AxisConfig} or null if the config for the given index does not exist
      */
     public AxisConfig getAxis(final int index)
     {
-        return axes.get(index);
+        try
+        {
+            return axes.get(index);
+        }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            return null;
+        }
     }
 
     /** Locate index of value axis
