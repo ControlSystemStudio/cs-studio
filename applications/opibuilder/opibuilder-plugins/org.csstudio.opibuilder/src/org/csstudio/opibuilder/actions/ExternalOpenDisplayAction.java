@@ -22,17 +22,23 @@ import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
 
-/** Run OPI from external program, such as alarm GUI, data browser...
+/**
+ * Run OPI from external program, such as alarm GUI, data browser...
+ * Extra data may be provided to provide macros and update shared links
+ * before opening the OPI.
  *  @author Xihui Chen
  *  @author Kay Kasemir
+ *  @author Will Rogers
  */
 public class ExternalOpenDisplayAction implements IOpenDisplayAction
 {
-    private static final String SEPARATOR = "¬";
+    private static final String SEPARATOR = "-share_link";
+
     /** Open OPI file.
      *  @param path the path of the OPI file, it can be a workspace path, file system path, URL
      *         or a opi file in opi search path.
-     *  @param data the input macros in format of {@code "macro1 = hello", "macro2 = hello2"}
+     *  @param data the input macros and shared links in format of
+     *  {@code "macro1 = hello", "macro2 = hello2" -share_link /eclipse/path=/filesystem/path}
      *  @throws Exception on error
      */
     public void openDisplay(final String path, final String data) throws Exception
@@ -52,13 +58,21 @@ public class ExternalOpenDisplayAction implements IOpenDisplayAction
         }
         // Parse macros
         MacrosInput macrosInput = null;
-        if (data != null) {
+        if (data == null)
+        {
+            // No macros or links.
+            OpenTopOPIsAction.runOPI(null, originPath);
+        }
+        else
+        {
             String[] parts = data.split(SEPARATOR);
-            if (parts[0] != null && parts[0].trim().length() > 0) {
+            if (parts[0] != null && parts[0].trim().length() > 0)
+            {
                 // MacrosInput.recoverFromString(s) wants initial "true" for 'include_parent_macros'
                 macrosInput = MacrosInput.recoverFromString("\"true\"," + parts[0]);
             }
-            if (parts.length > 1 && parts[1] != null && parts[1].trim().length() > 0) {
+            if (parts.length > 1 && parts[1] != null && parts[1].trim().length() > 0)
+            {
                 // The logic for creating links is wrapped in this job.  However,
                 // we want the job to finish before continuing.
                 final MacrosInput finalMacrosInput = macrosInput;
@@ -84,6 +98,11 @@ public class ExternalOpenDisplayAction implements IOpenDisplayAction
                     }
                 });
                 job.schedule();
+            }
+            else
+            {
+                // We don't need to set up links.
+                OpenTopOPIsAction.runOPI(macrosInput, originPath);
             }
         }
     }
