@@ -160,7 +160,7 @@ public abstract class AbstractWidgetAction implements IAdaptable {
     public AbstractWidgetModel getWidgetModel() {
         return widgetModel;
     }
-    
+
     /**
      * Dispose of all resources allocated by this action.
      */

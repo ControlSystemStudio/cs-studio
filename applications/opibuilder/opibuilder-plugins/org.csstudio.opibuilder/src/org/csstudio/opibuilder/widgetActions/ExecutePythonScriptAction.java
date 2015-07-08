@@ -46,7 +46,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
     private PySystemState state;
     private DisplayEditpart displayEditpart;
     private AbstractBaseEditPart widgetEditPart;
-    
+
     @Override
     public ActionType getActionType() {
         return ActionType.EXECUTE_PYTHONSCRIPT;
