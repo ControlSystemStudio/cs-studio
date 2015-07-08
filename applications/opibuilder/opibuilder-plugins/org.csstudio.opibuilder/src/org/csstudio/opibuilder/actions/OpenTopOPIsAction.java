@@ -101,19 +101,29 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 
     public static void runOPI(final MacrosInput macrosInput, final IPath path)
     {
+        System.out.println("The macros: " + macrosInput);
         DisplayMode mode =  DisplayMode.NEW_TAB;
         if (macrosInput != null)
         {
+
             final String position = macrosInput.getMacrosMap().get(TOP_OPI_POSITION_KEY);
+            System.out.println("The position is " + position);
             if (position != null)
             {
-                try
+                if (position.toUpperCase().equals("NEW_SHELL"))
                 {
-                    mode = DisplayMode.valueOf("NEW_TAB_" + position.toUpperCase());
+                    mode = DisplayMode.NEW_SHELL;
                 }
-                catch (IllegalArgumentException ex)
+                else
                 {
-                    // Ignore
+                    try
+                    {
+                        mode = DisplayMode.valueOf("NEW_TAB_" + position.toUpperCase());
+                    }
+                    catch (IllegalArgumentException ex)
+                    {
+                        // Ignore
+                    }
                 }
             }
         }
