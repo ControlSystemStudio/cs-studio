@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import org.csstudio.opibuilder.converter.EdmConverterTest;
+
 import junit.framework.TestCase;
 
 public class Edm_activeGroupClassTest extends TestCase {
@@ -15,12 +17,11 @@ public class Edm_activeGroupClassTest extends TestCase {
 
         // Prepare a model.
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
-        String edlFile = "src/test/resources/group_example_spec.edl";
+        String edlFile = EdmConverterTest.RESOURCES_LOCATION + "group_example_spec.edl";
         EdmModel.getInstance();
         EdmDisplay d = EdmModel.getDisplay(edlFile);
-
 
         assertEquals("subentity_count", 2, d.getWidgets().size());
 

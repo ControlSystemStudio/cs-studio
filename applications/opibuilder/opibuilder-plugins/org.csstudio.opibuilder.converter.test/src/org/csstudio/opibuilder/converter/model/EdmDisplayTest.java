@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import org.csstudio.opibuilder.converter.EdmConverterTest;
+
 import junit.framework.TestCase;
 
 public class EdmDisplayTest extends TestCase {
@@ -14,9 +16,9 @@ public class EdmDisplayTest extends TestCase {
     public void testEdmDisplay() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
-        String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
+        String edlFile = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.edl";
         //String edlFile = "test/LLRF_AUTO.edl";
         EdmModel.getInstance();
         EdmDisplay d = EdmModel.getDisplay(edlFile);
@@ -216,9 +218,9 @@ public class EdmDisplayTest extends TestCase {
     public void testRobustness() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "true");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
-        String edlFile = "src/test/resources/EDM_error01.edl";
+        String edlFile = EdmConverterTest.RESOURCES_LOCATION + "EDM_error01.edl";
         EdmModel.getInstance();
         EdmDisplay d = EdmModel.getDisplay(edlFile);
 

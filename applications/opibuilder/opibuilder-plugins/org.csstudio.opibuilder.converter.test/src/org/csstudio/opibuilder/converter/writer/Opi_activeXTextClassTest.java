@@ -7,8 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import junit.framework.TestCase;
-
+import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
@@ -17,18 +16,20 @@ import org.csstudio.opibuilder.converter.model.Edm_activeXTextClass;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import junit.framework.TestCase;
+
 public class Opi_activeXTextClassTest extends TestCase {
 
     public void testOpi_activeXTextClass() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
         Document doc = XMLFileHandler.createDomDocument();
         Element root = doc.createElement("root");
         doc.appendChild(root);
 
-        String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
+        String edlFile = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.edl";
         EdmModel.getInstance();
         EdmDisplay d = EdmModel.getDisplay(edlFile);
 

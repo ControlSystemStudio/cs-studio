@@ -7,14 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import junit.framework.TestCase;
-
+import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import junit.framework.TestCase;
 
 public class OpiDisplayTest extends TestCase {
 
@@ -23,12 +24,12 @@ public class OpiDisplayTest extends TestCase {
     public void testOpiDisplay() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
         // init document
         Document doc = XMLFileHandler.createDomDocument();
 
-        String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
+        String edlFile = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.edl";
         EdmModel.getInstance();
         EdmDisplay display = EdmModel.getDisplay(edlFile);
 
@@ -69,12 +70,12 @@ public class OpiDisplayTest extends TestCase {
     public void testOptionality() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
         // init document
         Document doc = XMLFileHandler.createDomDocument();
 
-        String edlFile = "src/test/resources/EDMDisplay_optionals.edl";
+        String edlFile = EdmConverterTest.COLOR_LIST_FILE + "EDMDisplay_optionals.edl";
         EdmModel.getInstance();
         EdmDisplay d = EdmModel.getDisplay(edlFile);
 

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import org.csstudio.opibuilder.converter.EdmConverterTest;
+
 import junit.framework.TestCase;
 
 public class EdmColorTest extends TestCase {
@@ -56,7 +58,7 @@ public class EdmColorTest extends TestCase {
     public void testIndexEdmColor() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
         // generate EdmColor from index & list
         EdmModel.getInstance();
@@ -91,7 +93,7 @@ public class EdmColorTest extends TestCase {
     public void testOptionality() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
         EdmModel.getInstance();
         EdmColor testC = new EdmColor(new EdmAttribute("index 142"), false);

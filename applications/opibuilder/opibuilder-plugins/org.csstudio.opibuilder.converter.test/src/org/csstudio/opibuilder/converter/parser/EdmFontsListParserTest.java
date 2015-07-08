@@ -7,13 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.parser;
 
-import junit.framework.TestCase;
-
+import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmException;
+
+import junit.framework.TestCase;
 
 public class EdmFontsListParserTest extends TestCase {
 
-    private String fontsFile = "src/test/resources/fonts_example.list";
+    private String fontsFile = EdmConverterTest.RESOURCES_LOCATION + "fonts_example.list";
 
     public void testEdmFontsListParser() throws EdmException {
 

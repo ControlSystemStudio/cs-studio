@@ -7,8 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import junit.framework.TestCase;
-
+import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
@@ -16,6 +15,8 @@ import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.model.Edm_activeGroupClass;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import junit.framework.TestCase;
 
 public class Opi_activeGroupClassTest extends TestCase {
 
@@ -25,13 +26,13 @@ public class Opi_activeGroupClassTest extends TestCase {
 
         // Prepare DOM model.
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
         Document doc = XMLFileHandler.createDomDocument();
         Element root = doc.createElement("root");
         doc.appendChild(root);
 
-        String edlFile = "src/test/resources/group_example_spec.edl";
+        String edlFile = EdmConverterTest.RESOURCES_LOCATION + "group_example_spec.edl";
         EdmModel.getInstance();
         EdmDisplay d = EdmModel.getDisplay(edlFile);
 
