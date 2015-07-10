@@ -7,18 +7,19 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.parser;
 
-import junit.framework.TestCase;
-
+import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmException;
+
+import junit.framework.TestCase;
 
 public class EdmColorsListParserTest extends TestCase {
 
-    private String colorsFile = "src/test/resources/colors_example.list";
-    private String colorsError1 = "src/test/resources/colors_error1.list";
-    private String colorsError2 = "src/test/resources/colors_error2.list";
-    private String colorsError3 = "src/test/resources/colors_error3.list";
-    private String colorsError4 = "src/test/resources/colors_error4.list";
-    private String colorsRobust = "src/test/resources/colors_robust.list";
+    private String colorsFile = EdmConverterTest.RESOURCES_LOCATION + "colors_example.list";
+    private String colorsError1 = EdmConverterTest.RESOURCES_LOCATION + "colors_error1.list";
+    private String colorsError2 = EdmConverterTest.RESOURCES_LOCATION + "colors_error2.list";
+    private String colorsError3 = EdmConverterTest.RESOURCES_LOCATION + "colors_error3.list";
+    private String colorsError4 = EdmConverterTest.RESOURCES_LOCATION + "colors_error4.list";
+    private String colorsRobust = EdmConverterTest.RESOURCES_LOCATION + "colors_robust.list";
 
 
     public void testEdmColorsListParser() throws EdmException {

@@ -7,25 +7,26 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import junit.framework.TestCase;
-
 import org.csstudio.opibuilder.converter.EdmConverter;
+import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import junit.framework.TestCase;
+
 public class OpiWriterTest extends TestCase {
 
-    private String displayFile1 = "src/test/resources/EDMDisplayParser_example.edl";
-    private String xmlFile1 = "src/test/resources/EDMDisplayParser_example.opi";
-    private String displayFile2 = "src/test/resources/TextUpdate_example.edl";
-    private String xmlFile2 = "src/test/resources/TextUpdate_example.opi";
+    private String displayFile1 = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.edl";
+    private String xmlFile1 = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.opi";
+    private String displayFile2 = EdmConverterTest.RESOURCES_LOCATION + "TextUpdate_example.edl";
+    private String xmlFile2 = EdmConverterTest.RESOURCES_LOCATION + "TextUpdate_example.opi";
 
     public void testOpiWriter() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
         OpiWriter o = OpiWriter.getInstance();
         o.writeDisplayFile(displayFile1);
@@ -34,7 +35,7 @@ public class OpiWriterTest extends TestCase {
 
     public void testXMLMapping() throws EdmException {
 
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
         String[] args = { displayFile1 };
         EdmConverter.main(args);
         Document doc = XMLFileHandler.readXml(xmlFile1);
@@ -147,7 +148,7 @@ public class OpiWriterTest extends TestCase {
     public void testXMLMapping2() throws EdmException {
     // test for TextUpdate widget mapping
 
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
         String[] args = { displayFile2 };
         EdmConverter.main(args);
         Document doc = XMLFileHandler.readXml(xmlFile2);

@@ -7,9 +7,10 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
-
+import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.parser.EdmColorsListParser;
+
+import junit.framework.TestCase;
 
 public class EdmColorsListTest extends TestCase {
 
@@ -24,7 +25,7 @@ public class EdmColorsListTest extends TestCase {
 
     public void testEdmColorsList() throws EdmException {
 
-        String colorsFile = "src/test/resources/colors_example.list";
+        String colorsFile = EdmConverterTest.RESOURCES_LOCATION + "colors_example.list";
         EdmColorsListParser p = new EdmColorsListParser(colorsFile);
 
         EdmColorsList cList = new EdmColorsList(p.getRoot());

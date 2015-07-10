@@ -17,15 +17,16 @@ import org.csstudio.opibuilder.converter.model.EdmException;
  */
 public class EdmConverterTest extends TestCase {
 
-    private static final String edl1 = "src/test/resources/ArcTest.edl";
-    private static final String edl2 = "src/test/resources/LLRF_AUTO.edl";
-    private static final String edl3 = "src/test/resources/navwogif.edl";
-    private static final String edl4 = "src/test/resources/rccsWaterSkid.edl";
+    public static final String RESOURCES_LOCATION = "src/resources/";
+    private static final String edl1 = RESOURCES_LOCATION + "ArcTest.edl";
+    private static final String edl2 = RESOURCES_LOCATION + "LLRF_AUTO.edl";
+    private static final String edl3 = RESOURCES_LOCATION + "navwogif.edl";
+    private static final String edl4 = RESOURCES_LOCATION + "rccsWaterSkid.edl";
 
-    private static final String colorDefFile = "src/test/resources/colors.list";
+    public static final String COLOR_LIST_FILE = RESOURCES_LOCATION + "colors.list";
 
     private void setEnvironment() {
-        System.setProperty("edm2xml.colorsFile", colorDefFile);
+        System.setProperty("edm2xml.colorsFile", COLOR_LIST_FILE);
         /**
          * Enable fail-fast mode for stricter tests.
          * Set this to true for the partial conversion in case of exceptions.

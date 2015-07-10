@@ -5,21 +5,23 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.opibuilder.converter.writer;
+package org.csstudio.opibuilder.converter.model;
+
+import org.csstudio.opibuilder.converter.EdmConverterTest;
 
 import junit.framework.TestCase;
 
-import org.csstudio.opibuilder.converter.model.EdmException;
-import org.csstudio.opibuilder.converter.model.EdmModel;
+public class EdmModelTest extends TestCase {
 
-public class OpiColorDefTest extends TestCase {
+    private String displayFile2 = EdmConverterTest.RESOURCES_LOCATION + "LLRF_AUTO.edl";
 
-    public void testOpiColorDef() throws EdmException {
+    public void testEdmModel() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
-        System.setProperty("edm2xml.colorsFile", "src/test/resources/colors.list");
-        EdmModel.getInstance();
+        System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
-        OpiColorDef.writeDefFile(EdmModel.getColorsList(), "src/test/resources/color.def");
+        EdmModel.getInstance();
+        EdmModel.getDisplay(displayFile2);
+
     }
 }

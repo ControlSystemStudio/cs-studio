@@ -7,20 +7,21 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.parser;
 
-import junit.framework.TestCase;
-
+import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
+
+import junit.framework.TestCase;
 
 
 public class EdmDisplayParserTest extends TestCase {
 
-    private String edlFile = "src/test/resources/EDMDisplayParser_example.edl";
-    private String braceFile = "src/test/resources/brace_example.edl";
-    private String groupFile = "src/test/resources/group_example.edl";
-    private String braceErrorFile = "src/test/resources/brace_error.edl";
-    private String groupErrorFile = "src/test/resources/group_error.edl";
-    private String error1 = "src/test/resources/EDM_error01.edl";
+    private String edlFile = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.edl";
+    private String braceFile = EdmConverterTest.RESOURCES_LOCATION + "brace_example.edl";
+    private String groupFile = EdmConverterTest.RESOURCES_LOCATION + "group_example.edl";
+    private String braceErrorFile = EdmConverterTest.RESOURCES_LOCATION + "brace_error.edl";
+    private String groupErrorFile = EdmConverterTest.RESOURCES_LOCATION + "group_error.edl";
+    private String error1 = EdmConverterTest.RESOURCES_LOCATION + "EDM_error01.edl";
 
     public void testEdmDisplayParser() throws EdmException {
 
