@@ -5,14 +5,27 @@
    <extension-point id="graphicalFeedbackFactory" name="graphicalFeedbackFactory" schema="schema/graphicalFeedbackFactory.exsd"/>
    <extension
          point="org.eclipse.ui.editors">
+      <!-- Note regarding name:
+           In Navigator, the "Open With.." context menu lists *.opi 'editors'
+           in alphabetical order:
+           OPI Display (Workspace)
+           OPI Editor
+       -->
       <editor
-            class="org.csstudio.opibuilder.runmode.OPIRunner"
-            contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
             default="true"
             extensions="opi"
             icon="icons/OPIRunner.png"
-            id="org.csstudio.opibuilder.OPIRunner"
-            name="OPI Runtime">
+            id="org.csstudio.opibuilder.DisplayLauncher"
+            launcher="org.csstudio.opibuilder.runmode.DisplayLauncher"
+            name="OPI Display (Workbench)">
+      </editor>
+      <editor
+            default="false"
+            extensions="opi"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.ShellLauncher"
+            launcher="org.csstudio.opibuilder.runmode.ShellLauncher"
+            name="OPI Display (Standalone Window)">
       </editor>
    </extension>
    <extension
@@ -244,24 +257,6 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.openRuntimePerspective"
-            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
-         <action
-               class="org.csstudio.opibuilder.actions.OpenOPIRuntimePerspectiveAction"
-               icon="icons/OPIRunner.png"
-               id="org.csstudio.opibuilder.openRuntimePerspective"
-               label="OPI Runtime Perspective"
-               menubarPath="ui">
-         </action>
-         <visibility>
-            <objectState
-                  name="executionMode"
-                  value="RUN_MODE">
-            </objectState>
-         </visibility>
-      </objectContribution>
-      <objectContribution
-            adaptable="false"
             id="org.csstudio.opibuilder.showNavigator"
             objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
          <action
@@ -304,8 +299,52 @@
             fastViewWidthRatio="0.3"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.opiView"
-            name="OPI View"
-            restorable="true">
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiViewLEFT"
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiViewRIGHT"
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiViewTOP"
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.OPIView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.opiViewBOTTOM"
+            name="OPI View">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.opibuilder.views"
+            class="org.csstudio.opibuilder.runmode.PlaceHolderView"
+            fastViewWidthRatio="0.3"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.placeHolder"
+            name="OPI Placeholder">
       </view>
    </extension>
    <extension

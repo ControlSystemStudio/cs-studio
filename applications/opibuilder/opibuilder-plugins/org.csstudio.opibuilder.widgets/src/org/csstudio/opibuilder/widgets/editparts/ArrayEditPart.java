@@ -963,4 +963,8 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
         return r;
     }
 
+    public void setControlEnabled(boolean enabled) {
+        delegate.setControlEnabled(enabled);
+    }
+
 }

@@ -8,39 +8,71 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.IPlaceholderFolderLayout;
 
-/**The perspective for OPI running environment, which has no views.
- * @author Xihui Chen
+/** Perspective for display runtime
  *
+ *  <p>Allows opening views in "Left", "Right", ... location.
+ *  .. but RCP API doesn't really allow opening views in a specific location.
+ *  Instead, this perspective has folders / part stacks named
+ *  org.csstudio.opibuilder.opiViewLEFT:*,
+ *  org.csstudio.opibuilder.opiViewRIGHT:*,
+ *  etc.
+ *  and views with that ID will then appear in there.
+ *
+ *  <p>As long as this perspective is not dramatically rearranged,
+ *  all is fine, but the user is of course free to for example move
+ *  the part stack named org.csstudio.opibuilder.opiViewLEFT:* to the RIGHT,
+ *  and then this compromise breaks.
+ *
+ *  @author Xihui Chen - Original author
+ *  @author Kay Kasemir
  */
-public class OPIRunnerPerspective implements IPerspectiveFactory {
-
-
-    public enum Position {
-        LEFT("Left"),
-        RIGHT("Right"),
-        TOP("Top"),
-        BOTTOM("Bottom"),
-        DETACHED("Detached"),
-        DEFAULT_VIEW("Default View");
+public class OPIRunnerPerspective implements IPerspectiveFactory
+{
+    public enum Position
+    {
+        // Would like DEFAULT as, well, default, showing first in config UI etc.,
+        // but config files store by option's index.
+        // Changed order impacts existing display files.
+        LEFT("Left", OPIView.ID + "LEFT"),
+        RIGHT("Right", OPIView.ID + "RIGHT"),
+        TOP("Top", OPIView.ID + "TOP"),
+        BOTTOM("Bottom", OPIView.ID + "BOTTOM"),
+        DETACHED("Detached", OPIView.ID),
+        DEFAULT_VIEW("Default", OPIView.ID);
 
         private String description;
-        private Position(String description) {
+        private String view_id;
+
+        private Position(final String description, final String view_id)
+        {
              this.description = description;
+             this.view_id = view_id;
         }
-        @Override
-        public String toString() {
-            return description;
+
+        /** @return ID of view to be used for displaying in this location */
+        public String getOPIViewID()
+        {
+            return view_id;
         }
-        public static String[] stringValues(){
-            String[] sv = new String[values().length];
+
+        public static String[] stringValues()
+        {
+            final String[] sv = new String[values().length];
             int i=0;
-            for(Position p : values())
+            for (Position p : values())
                 sv[i++] = p.toString();
             return sv;
+        }
+
+        @Override
+        public String toString()
+        {
+            return description;
         }
     }
 
@@ -56,30 +88,76 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
     @SuppressWarnings("deprecation")
     final static String ID_NAVIGATOR = IPageLayout.ID_RES_NAV;
 
-    public void createInitialLayout(IPageLayout layout) {
-
+    @Override
+    public void createInitialLayout(final IPageLayout layout)
+    {
         final String editor = layout.getEditorArea();
 
-        final IPlaceholderFolderLayout left = layout.createPlaceholderFolder(Position.LEFT.name(),
+        // To debug layout: Install "Eclipse 4 Tools: Application Model Editor"
+        // The "E4 Model Spy" can then be started via Alt-Shift-F9.
+        // For css, add org.eclipse.e4.tools.emf.liveeditor and dependencies
+
+        final IFolderLayout left = layout.createFolder(Position.LEFT.name(),
                 IPageLayout.LEFT, 0.25f, editor);
-        left.addPlaceholder(OPIView.ID + SECOND_ID + Position.LEFT.name());
+        left.addPlaceholder(Position.LEFT.getOPIViewID() + SECOND_ID);
 
-        final IPlaceholderFolderLayout right = layout.createPlaceholderFolder(Position.RIGHT.name(),
+        final IFolderLayout right = layout.createFolder(Position.RIGHT.name(),
                 IPageLayout.RIGHT, 0.75f, editor);
-        right.addPlaceholder(OPIView.ID + SECOND_ID + Position.RIGHT.name());
+        right.addPlaceholder(Position.RIGHT.getOPIViewID() + SECOND_ID);
 
-        final IPlaceholderFolderLayout top = layout.createPlaceholderFolder(Position.TOP.name(),
+        final IFolderLayout top = layout.createFolder(Position.TOP.name(),
                 IPageLayout.TOP, 0.25f, editor);
-        top.addPlaceholder(OPIView.ID + SECOND_ID + Position.TOP.name());
+        top.addPlaceholder(Position.TOP.getOPIViewID() + SECOND_ID);
 
-
-        final IPlaceholderFolderLayout bottom = layout.createPlaceholderFolder(Position.BOTTOM.name(),
+        final IFolderLayout bottom = layout.createFolder(Position.BOTTOM.name(),
                 IPageLayout.BOTTOM, 0.75f, editor);
+        bottom.addPlaceholder(Position.BOTTOM.getOPIViewID() + SECOND_ID);
+
+        // Create ordinary view stack for 'DEFAULT_VIEW' close to editor area
+        // Alternative hack using internal API:
+        // Adds view stack in the editor area, so 'DEFAULT_VIEW' appears
+        // similar to editor
+        //
+        // ModeledPageLayout real_layout = (ModeledPageLayout) layout;
+        // real_layout.stackView(OPIView.ID + SECOND_ID, editor, false);
+        //
+        // .. but such OPIViews are then in the IPageLayout.ID_EDITOR_AREA="org.eclipse.ui.editorss"(!) part,
+        // which is linked to Shared Elements/Area, ignored by the perspective,
+        // since it's meant for "Editors".
+        final IFolderLayout center = layout.createFolder(Position.DEFAULT_VIEW.name(),
+                IPageLayout.RIGHT, 0.5f, editor);
+        center.addPlaceholder(OPIView.ID + SECOND_ID);
+
+        // Hide the "editor" part
+        // Public API, but does NOT hide the editor area?!
+//        final IWorkbench service_provider = PlatformUI.getWorkbench();
+//        final EModelService model_service = (EModelService) service_provider.getService(EModelService.class);
+//        final MApplication root = (MApplication) service_provider.getService(MApplication.class); // IEclipseContext.class?
+//        dump(root);
+//        final MPerspective this_perspective = (MPerspective) model_service.find(OPIRunnerPerspective.ID, root);
+//        // Tends to hold one "AreaImpl" and one "PlaceholderImpl", find only the latter
+//        final List<MPlaceholder> parts = model_service.findElements(this_perspective, IPageLayout.ID_EDITOR_AREA, MPlaceholder.class, null);
+//        if (parts.size() == 1)
+//            parts.get(0).setToBeRendered(false);
+//        else
+//            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot locate editor placeholder");
+
+        // Shorter, works, but internal API:
+        ((org.eclipse.ui.internal.e4.compatibility.ModeledPageLayout)layout).setEditorAreaVisible(false);
 
 
-        bottom.addPlaceholder(OPIView.ID + SECOND_ID + Position.BOTTOM.name());
+        // Placeholder views show location of folders
+        if (PreferencesHelper.showOpiRuntimeStacks())
+        {
+            center.addView(PlaceHolderView.ID + ":CENTER");
+            left.addView(PlaceHolderView.ID + ":LEFT");
+            right.addView(PlaceHolderView.ID + ":RIGHT");
+            top.addView(PlaceHolderView.ID + ":TOP");
+            bottom.addView(PlaceHolderView.ID + ":BOTTOM");
+        }
 
-        if(!OPIBuilderPlugin.isRAP()){ //$NON-NLS-1$
+        if (!OPIBuilderPlugin.isRAP())
+        {
             bottom.addPlaceholder(ID_CONSOLE_VIEW);
             layout.addShowViewShortcut(ID_CONSOLE_VIEW);
             left.addPlaceholder(ID_NAVIGATOR);
@@ -87,6 +165,23 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
         }
     }
 
+    /*
+    void dump(MUIElement element)
+    {
+        dump(0, element);
+    }
 
-
+    private void dump(int level, MUIElement element)
+    {
+        for (int i=0; i<level; ++i)
+            System.out.print("  ");
+        System.out.println(element);
+        if (element instanceof MElementContainer)
+        {
+            final MElementContainer<MUIElement> container = (MElementContainer) element;
+            for (MUIElement child : container.getChildren())
+                dump(level+1, child);
+        }
+    }
+    */
 }

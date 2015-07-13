@@ -21,14 +21,6 @@ public class NewDataBrowserHandler extends AbstractHandler
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         DataBrowserEditor.createInstance();
-        try
-        {
-            Perspective.showPerspective();
-        }
-        catch (Exception ex)
-        {
-            // never mind
-        }
         return null;
     }
 }

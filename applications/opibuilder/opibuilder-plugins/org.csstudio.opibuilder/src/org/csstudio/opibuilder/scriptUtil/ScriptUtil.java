@@ -9,13 +9,13 @@ package org.csstudio.opibuilder.scriptUtil;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.ExecuteCommandAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
-import org.csstudio.opibuilder.widgetActions.OpenOPIInViewAction;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -43,24 +43,49 @@ public class ScriptUtil {
      * @param target
      *            target place of the new OPI. 0: new tab; 1: replace current
      *            one; 2: new window; 3: view on left; 4: view on right; 5: view
-     *            on top; 6: view on bottom; 7: detached view
+     *            on top; 6: view on bottom; 7: detached view; 8: new shell
      * @param macrosInput
      *            the macrosInput. null if no macros needed.
      */
     public final static void openOPI(AbstractBaseEditPart widget,
             String opiPath, int target, MacrosInput macrosInput) {
-        AbstractOpenOPIAction action;
-        if (target < 3) {
-            action = new OpenDisplayAction();
-            action.setPropertyValue(OpenDisplayAction.PROP_REPLACE, target);
-        } else {
-            action = new OpenOPIInViewAction();
-            action.setPropertyValue(OpenOPIInViewAction.PROP_POSITION,
-                    target - 3);
+        final OpenDisplayAction action = new OpenDisplayAction();
+
+        // Map target IDs of this API to DisplayMode
+        final DisplayMode mode;
+        switch (target)
+        {
+        case 0:
+            mode = DisplayMode.NEW_TAB;
+            break;
+        case 2:
+            mode = DisplayMode.NEW_WINDOW;
+            break;
+        case 3:
+            mode = DisplayMode.NEW_TAB_LEFT;
+            break;
+        case 4:
+            mode = DisplayMode.NEW_TAB_RIGHT;
+            break;
+        case 5:
+            mode = DisplayMode.NEW_TAB_TOP;
+            break;
+        case 6:
+            mode = DisplayMode.NEW_TAB_BOTTOM;
+            break;
+        case 7:
+            mode = DisplayMode.NEW_TAB_DETACHED;
+            break;
+        case 8:
+            mode = DisplayMode.NEW_SHELL;
+            break;
+        default:
+            mode = DisplayMode.REPLACE;
         }
         action.setWidgetModel(widget.getWidgetModel());
         action.setPropertyValue(OpenDisplayAction.PROP_PATH, opiPath);
         action.setPropertyValue(OpenDisplayAction.PROP_MACROS, macrosInput);
+        action.setPropertyValue(OpenDisplayAction.PROP_MODE, mode.ordinal());
         action.run();
     }
 
@@ -84,6 +109,18 @@ public class ScriptUtil {
     }
 
 
+    /**
+     * Close OPI associated with the provided widget.
+     */
+    public static void closeAssociatedOPI(AbstractBaseEditPart widget) {
+        Shell widgetShell = widget.getWidgetModel().getRootDisplayModel().getViewer().getControl().getShell();
+        // Is the shell part of a workbench window, or its own OPIShell?
+        if(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell() != widgetShell) {
+            widgetShell.close();
+        } else {
+            closeCurrentOPI();
+        }
+    }
 
     /**{@link Deprecated} see {@link #makeLogbookEntry(String, String)}
      * @param filePath

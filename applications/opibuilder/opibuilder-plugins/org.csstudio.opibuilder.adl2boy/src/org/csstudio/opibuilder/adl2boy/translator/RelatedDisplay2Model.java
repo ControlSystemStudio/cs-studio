@@ -7,6 +7,7 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
@@ -36,6 +37,7 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
         super(colorMap);
     }
 
+    @Override
     public void makeModel(ADLWidget adlWidget, AbstractContainerModel parentModel){
         widgetModel = new MenuButtonModel();
         parentModel.addChild(widgetModel, true);
@@ -44,6 +46,7 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
     /**
      * @param adlWidget
      */
+    @Override
     public void processWidget(ADLWidget adlWidget) {
         RelatedDisplay rdWidget = new RelatedDisplay(adlWidget);
         if (rdWidget != null) {
@@ -96,18 +99,14 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
                     rdDisplay.getLabel().replaceAll("\"", ""));
         }
         if ((rdDisplay.getPolicy() != null)) { // policy is present
-            if (rdDisplay.getPolicy().replaceAll("\"", "").equals("replace display")) { // replace
-                                                                    // the
-                                                                    // display
-                odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, 1);
+            if (rdDisplay.getPolicy().replaceAll("\"", "").equals("replace display")) {
+                // replace the display
+                odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.REPLACE);
             } else { // don't replace the display
-                odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, 0);
+                odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB);
             }
-        } else { // policy not present go to default
-            odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, 0); // don't
-                                                                                // replace
-                                                                                // the
-                                                                                // display
+        } else { // policy not present go to default, i.e. don't replace, open new tab
+            odAction.setPropertyValue(OpenDisplayAction.PROP_MODE, DisplayMode.NEW_TAB);
         }
         return odAction;
     }

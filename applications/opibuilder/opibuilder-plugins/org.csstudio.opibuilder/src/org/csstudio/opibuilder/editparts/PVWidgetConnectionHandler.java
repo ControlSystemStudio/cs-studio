@@ -29,14 +29,14 @@ public class PVWidgetConnectionHandler extends ConnectionHandler{
     @Override
     protected void markWidgetAsDisconnected(IPV pv) {
         super.markWidgetAsDisconnected(pv);
-        final IPV controlPV = ((IPVWidgetEditpart)editPart).getControlPV();
+        IPVWidgetEditpart pvWidgetEditpart = (IPVWidgetEditpart) editPart;
+        final IPV controlPV = pvWidgetEditpart.getControlPV();
         if(controlPV != null && controlPV == pv){
         UIBundlingThread.getInstance().addRunnable(
                 editPart.getRoot().getViewer().getControl().getDisplay(),
                 new Runnable() {
-
             public void run() {
-                editPart.getFigure().setEnabled(false);
+                pvWidgetEditpart.setControlEnabled(false);
             }
         });
         }

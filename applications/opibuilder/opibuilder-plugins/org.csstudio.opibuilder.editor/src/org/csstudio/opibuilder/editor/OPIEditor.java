@@ -67,9 +67,12 @@ import org.csstudio.opibuilder.palette.OPIEditorPaletteFactory;
 import org.csstudio.opibuilder.palette.WidgetCreationFactory;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.csstudio.opibuilder.runmode.OPIRunner;
 import org.csstudio.opibuilder.runmode.PatchedConnectionLayerClippingStrategy;
+import org.csstudio.opibuilder.runmode.RunModeService;
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
+import org.csstudio.opibuilder.runmode.RunnerInput;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
@@ -172,7 +175,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.contexts.IContextService;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.ide.FileStoreEditorInput;
-import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.ide.IGotoMarker;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.part.IPageSite;
@@ -247,9 +249,10 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             throws PartInitException {
         //in the mode of "no edit", open OPI in runtime and close this editor immediately.
         if(PreferencesHelper.isNoEdit()){
-            IDE.openEditor(site.getPage(), input, OPIRunner.ID);
             setSite(site);
             setInput(input);
+            final IPath path = ResourceUtil.getPathInEditor(input);
+            RunModeService.openDisplayInView(site.getPage(), new RunnerInput(path, null), DisplayMode.NEW_TAB);
 
             Display.getDefault().asyncExec(() -> getSite().getPage().closeEditor(OPIEditor.this, false));
 

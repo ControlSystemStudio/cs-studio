@@ -53,9 +53,9 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.TooltipLabel;
-import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
@@ -495,26 +495,16 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
         if (getWidgetModel().isEnabled() && actions != null) {
             figure.setCursor(Cursors.HAND);
             figure.addMouseListener(new MouseListener.Stub() {
-
                 @Override
                 public void mousePressed(MouseEvent me) {
                     if (me.button != 1)
                         return;
                     for (AbstractWidgetAction action : actions) {
-                        if (action instanceof AbstractOpenOPIAction) {
-                            ((AbstractOpenOPIAction) action)
-                                    .setCtrlPressed(false);
-                            ((AbstractOpenOPIAction) action)
-                                    .setShiftPressed(false);
-                            if (me.getState() == SWT.CONTROL) {
-                                ((AbstractOpenOPIAction) action)
-                                        .setCtrlPressed(true);
-                            } else if (me.getState() == SWT.SHIFT) {
-                                ((AbstractOpenOPIAction) action)
-                                        .setShiftPressed(true);
-                            }
-                        }
-                        action.run();
+                        if (action instanceof OpenDisplayAction)
+                            ((OpenDisplayAction) action).runWithModifiers((me.getState() & SWT.CONTROL) != 0,
+                                                                          (me.getState() & SWT.SHIFT) != 0);
+                        else
+                            action.run();
                     }
                 }
             });

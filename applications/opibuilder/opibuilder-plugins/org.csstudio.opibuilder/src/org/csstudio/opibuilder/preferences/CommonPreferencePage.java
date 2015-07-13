@@ -70,6 +70,14 @@ public class CommonPreferencePage extends FieldEditorPreferencePage
                     "No-Editing mode", parent);
         addField(noEditModeEditor);
 
+        BooleanFieldEditor showOpiRuntimeStacks =
+                new BooleanFieldEditor(PreferencesHelper.SHOW_OPI_RUNTIME_STACKS,
+                        "Show OPI Runtime Stacks", parent);
+        showOpiRuntimeStacks.getDescriptionControl(parent).setToolTipText(
+                "Enable to add placeholders to new OPI Runtime perspective " +
+                "as an aid to positioning displays");
+        addField(showOpiRuntimeStacks);
+
         BooleanFieldEditor advanceGraphicsEditor =
             new BooleanFieldEditor(PreferencesHelper.DISABLE_ADVANCED_GRAPHICS,
                     "Disable Advanced Graphics", parent);
@@ -102,6 +110,7 @@ public class CommonPreferencePage extends FieldEditorPreferencePage
 
     }
 
+    @Override
     public void init(IWorkbench workbench) {
 
     }

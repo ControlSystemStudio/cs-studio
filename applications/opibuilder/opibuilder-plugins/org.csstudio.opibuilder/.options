@@ -1,0 +1,10 @@
+# Debug options.
+#
+# Enable in IDE:
+# 'Tracing' tab of the run configuration,
+# locate org.csstudio.opibuilder, set desired options to 'true'.
+#
+# Command line: -debug /path/to/my.options
+
+# Show View ID etc.
+org.csstudio.opibuilder/views

@@ -14,8 +14,8 @@ import java.util.List;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure.ButtonActionListener;
@@ -60,32 +60,21 @@ public class Draw2DButtonEditPartDelegate implements IButtonEditPartDelegate{
      */
     @Override
     public void hookMouseClickAction() {
-
         ((ActionButtonFigure)editpart.getFigure()).addActionListener(new ButtonActionListener(){
             public void actionPerformed(int mouseEventState) {
                 List<AbstractWidgetAction> actions = editpart.getHookedActions();
                 if(actions!= null){
                     for(AbstractWidgetAction action: actions){
-                        if(action instanceof AbstractOpenOPIAction){
-                            ((AbstractOpenOPIAction) action).setCtrlPressed(false);
-                            ((AbstractOpenOPIAction) action).setShiftPressed(false);
-                            if(mouseEventState == SWT.CONTROL){
-                                ((AbstractOpenOPIAction) action).setCtrlPressed(true);
-                            }else if (mouseEventState == SWT.SHIFT){
-                                ((AbstractOpenOPIAction) action).setShiftPressed(true);
-                            }
-                        }
-                        action.run();
+                        if (action instanceof OpenDisplayAction)
+                            ((OpenDisplayAction) action).runWithModifiers((mouseEventState & SWT.CONTROL) != 0,
+                                                                          (mouseEventState & SWT.SHIFT)   != 0);
+                        else
+                            action.run();
                     }
                 }
             }
         });
     }
-
-
-
-
-
 
 
     /* (non-Javadoc)
