@@ -8,6 +8,9 @@
 package org.csstudio.opibuilder.scriptUtil;
 
 
+import java.util.List;
+import java.util.Objects;
+
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.BOYPVFactory;
 import org.csstudio.opibuilder.util.DisplayUtils;
@@ -22,9 +25,16 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartListener;
 import org.eclipse.swt.widgets.Display;
+import org.epics.util.array.ListInt;
+import org.epics.util.array.ListNumber;
 import org.epics.util.time.Timestamp;
 import org.epics.util.time.TimestampFormat;
 import org.epics.vtype.AlarmSeverity;
+import org.epics.vtype.VDoubleArray;
+import org.epics.vtype.VEnumArray;
+import org.epics.vtype.VNumberArray;
+import org.epics.vtype.VStringArray;
+import org.epics.vtype.VType;
 
 /**The utility class to facilitate Javascript programming
  * for PV operation.
@@ -87,13 +97,16 @@ public class PVUtil{
      *          indicates that there happens to be no useful value.
      */
     public final static double getDouble(IPV pv){
-        checkPVValue(pv);
-        return VTypeHelper.getDouble(pv.getValue());
+        return VTypeHelper.getDouble(checkPVValue(pv));
     }
 
-    protected static void checkPVValue(IPV pv) {
-        if(pv.getValue() == null)
-            throw new RuntimeException("PV " + pv.getName() + " has no value.");
+    /** Check PV for value
+     *  @param pv PV
+     *  @return Value of PV
+     *  @throws NullPointerException if value is null
+     */
+    protected static VType checkPVValue(IPV pv) {
+        return Objects.requireNonNull(pv.getValue(), () -> "PV " + pv.getName() + " has no value.");
     }
 
      /** Try to get a long integer number from the PV.
@@ -105,8 +118,7 @@ public class PVUtil{
      *  @return A long integer.
      */
     public final static Long getLong(IPV pv){
-        checkPVValue(pv);
-        return VTypeHelper.getNumber(pv.getValue()).longValue();
+        return VTypeHelper.getNumber(checkPVValue(pv)).longValue();
     }
 
       /** Try to get a double-typed array element from the Value.
@@ -120,8 +132,7 @@ public class PVUtil{
      *          indicates that there happens to be no useful value.
      */
     public final static double getDouble(IPV pv, int index){
-        checkPVValue(pv);
-        return VTypeHelper.getDouble(pv.getValue(), index);
+        return VTypeHelper.getDouble(checkPVValue(pv), index);
     }
 
 
@@ -134,9 +145,60 @@ public class PVUtil{
      *          indicates that there happens to be no useful value.
      */
     public final static double[] getDoubleArray(IPV pv){
-        checkPVValue(pv);
-        return VTypeHelper.getDoubleArray(pv.getValue());
+        return VTypeHelper.getDoubleArray(checkPVValue(pv));
     }
+
+    /** Get string array from pv.
+     *  @param pv The PV.
+     *  @return String array.
+     *          For string array, it's the actual strings.
+     *          For numeric arrays, the numbers are formatted as strings.
+     *          For enum array, the labels are returned.
+     *          For scalar PVs, an array with a single string is returned.
+     */
+   public final static String[] getStringArray(IPV pv){
+       final VType value = checkPVValue(pv);
+
+
+       if (value instanceof VStringArray)
+       {
+           final List<String> list = ((VStringArray)value).getData();
+           return list.toArray(new String[list.size()]);
+       }
+       else if (value instanceof VDoubleArray)
+       {
+           final ListNumber list = ((VNumberArray)value).getData();
+           final String[] text = new String[list.size()];
+           for (int i=0; i<text.length; ++i)
+               text[i] = Double.toString(list.getDouble(i));
+           return text;
+       }
+       else if (value instanceof VNumberArray)
+       {
+           final ListNumber list = ((VNumberArray)value).getData();
+           final String[] text = new String[list.size()];
+           for (int i=0; i<text.length; ++i)
+               text[i] = Long.toString(list.getLong(i));
+           return text;
+       }
+       else if (value instanceof VEnumArray)
+       {
+           final List<String> labels = ((VEnumArray)value).getLabels();
+           final ListInt list = ((VEnumArray)value).getIndexes();
+           final String[] text = new String[list.size()];
+           for (int i=0; i<text.length; ++i)
+           {
+               final int index = list.getInt(i);
+               if (index >= 0  &&  index <= labels.size())
+                   text[i] = labels.get(index);
+               else
+                   text[i] = "<" + index + ">";
+           }
+           return text;
+       }
+       return new String[] { getString(pv) };
+   }
+
 
      /** Try to get an integer-typed array from the pv.
      *  @param pv the pv.
@@ -147,11 +209,11 @@ public class PVUtil{
      *          indicates that there happens to be no useful value.
      */
     public final static long[] getLongArray(IPV pv){
-        checkPVValue(pv);
-        Object wrappedArray = VTypeHelper.getWrappedArray(pv.getValue());
+        final VType value = checkPVValue(pv);
+        Object wrappedArray = VTypeHelper.getWrappedArray(value);
         if(wrappedArray != null && wrappedArray instanceof long[])
             return (long[]) wrappedArray;
-        double[] dblArray = VTypeHelper.getDoubleArray(pv.getValue());
+        double[] dblArray = VTypeHelper.getDoubleArray(value);
         long[] longArray = new long[dblArray.length];
         int i=0;
         for(double d : dblArray){
@@ -164,8 +226,7 @@ public class PVUtil{
      * @param pv the pv.
      * @return Array length of the pv value. <code>1</code> for scalars. */
     public final static double getSize(IPV pv){
-        checkPVValue(pv);
-        return VTypeHelper.getSize(pv.getValue());
+        return VTypeHelper.getSize(checkPVValue(pv));
     }
 
 
@@ -181,8 +242,7 @@ public class PVUtil{
      * @return a string representation of the value.
      */
     public final static String getString(IPV pv){
-        checkPVValue(pv);
-        return VTypeHelper.getString(pv.getValue());
+        return VTypeHelper.getString(checkPVValue(pv));
     }
 
     /**Get the full info from the pv in this format
@@ -191,8 +251,7 @@ public class PVUtil{
      * @return the full info string
      */
     public final static String getFullString(IPV pv){
-        checkPVValue(pv);
-        return pv.getValue().toString();
+        return checkPVValue(pv).toString();
     }
 
 
@@ -201,8 +260,7 @@ public class PVUtil{
      * @return the timestamp in string.
      */
     public final static String getTimeString(IPV pv){
-        checkPVValue(pv);
-        Timestamp time = VTypeHelper.getTimestamp(pv.getValue());
+        Timestamp time = VTypeHelper.getTimestamp(checkPVValue(pv));
         if(time != null)
             return timeFormat.format(time);
         return ""; //$NON-NLS-1$
@@ -218,8 +276,7 @@ public class PVUtil{
      *  @return milliseconds since 1970.
      */
     public final static double getTimeInMilliseconds(IPV pv){
-        checkPVValue(pv);
-        Timestamp time = VTypeHelper.getTimestamp(pv.getValue());
+        Timestamp time = VTypeHelper.getTimestamp(checkPVValue(pv));
         if(time != null)
             return time.getSec()*1000 + time.getNanoSec()/1000000;
         return 0;
@@ -231,8 +288,7 @@ public class PVUtil{
      * @return 0:OK; -1: Invalid or Undefined; 1: Major; 2:Minor.
      */
     public final static int getSeverity(IPV pv){
-        checkPVValue(pv);
-        AlarmSeverity severity = VTypeHelper.getAlarmSeverity(pv.getValue());
+        AlarmSeverity severity = VTypeHelper.getAlarmSeverity(checkPVValue(pv));
         if(severity == null)
             return -1;
         switch (severity) {
@@ -254,8 +310,7 @@ public class PVUtil{
      * @return The string representation of the severity.
      */
     public final static String getSeverityString(IPV pv){
-        checkPVValue(pv);
-        AlarmSeverity severity = VTypeHelper.getAlarmSeverity(pv.getValue());
+        AlarmSeverity severity = VTypeHelper.getAlarmSeverity(checkPVValue(pv));
         if(severity == null)
             return "No Severity Info.";
         return severity.toString();
@@ -266,8 +321,7 @@ public class PVUtil{
      * @return the status string.
      */
     public final static String getStatus(IPV pv){
-        checkPVValue(pv);
-        return VTypeHelper.getAlarmName(pv.getValue());
+        return VTypeHelper.getAlarmName(checkPVValue(pv));
     }
 
     /**Write a PV in a background job. It will first creates and connects to the PV. After
@@ -299,6 +353,7 @@ public class PVUtil{
                 } catch (final Exception e) {
                     UIBundlingThread.getInstance().addRunnable(
                             display, new Runnable() {
+                                @Override
                                 public void run() {
                                     String message = "Failed to write PV:" + pvName
                                             + "\n" +
