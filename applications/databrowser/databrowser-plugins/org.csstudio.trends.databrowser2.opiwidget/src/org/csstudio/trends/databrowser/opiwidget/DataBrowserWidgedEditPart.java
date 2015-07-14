@@ -18,8 +18,8 @@ import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.swt.rtplot.PlotListener;
-import org.csstudio.swt.rtplot.PlotListenerAdapter;
+import org.csstudio.swt.rtplot.RTPlotListener;
+import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.trends.databrowser2.model.TimeHelper;
@@ -66,7 +66,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
     /** Listener to plot, writing cursor data to pv.
      *  Only listening to plot if PV is defined
      */
-    final private PlotListener<Instant> plot_listener = new PlotListenerAdapter<Instant>()
+    final private RTPlotListener<Instant> plot_listener = new RTPlotListener<Instant>()
     {
         @Override
         public void changedCursors()

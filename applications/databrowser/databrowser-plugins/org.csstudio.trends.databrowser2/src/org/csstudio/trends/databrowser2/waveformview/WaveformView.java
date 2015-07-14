@@ -278,7 +278,7 @@ public class WaveformView extends DataBrowserAwareView
         waveform = new WaveformValueDataProvider();
 
         // Create trace for waveform
-        plot.addTrace(model_item.getDisplayName(), waveform, model_item.getColor(), TraceType.NONE, 1, PointType.CIRCLES, 5, 0);
+        plot.addTrace(model_item.getDisplayName(), model_item.getUnits(), waveform, model_item.getColor(), TraceType.NONE, 1, PointType.CIRCLES, 5, 0);
         // Enable waveform selection and update slider's range
         sample_index.setEnabled(true);
         showSelectedSample();

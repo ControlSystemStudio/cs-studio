@@ -16,7 +16,7 @@ import java.time.Instant;
  */
 public interface PlotDataItem<XTYPE extends Comparable<XTYPE>>
 {
-    /** Time stamp of the sample */
+    /** Numeric position or Time stamp of the sample */
     public XTYPE getPosition();
 
     /** @return Value */
