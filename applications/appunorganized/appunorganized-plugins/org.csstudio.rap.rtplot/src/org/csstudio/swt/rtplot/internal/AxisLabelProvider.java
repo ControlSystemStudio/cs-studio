@@ -94,7 +94,7 @@ public class AxisLabelProvider<XTYPE extends Comparable<XTYPE>>
         if (use_trace_names)
             for (TraceImpl<XTYPE> trace : axis.getTraces())
             {
-                labels.add(trace.getName());
+                labels.add(trace.getLabel());
                 colors.add(trace.getColor());
             }
     }

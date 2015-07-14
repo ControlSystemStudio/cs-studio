@@ -99,13 +99,13 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
     }
 
     /** @param listener Listener to add */
-    public void addListener(final PlotListener<XTYPE> listener)
+    public void addListener(final RTPlotListener<XTYPE> listener)
     {
         plot.addListener(listener);
     }
 
     /** @param listener Listener to remove */
-    public void removeListener(final PlotListener<XTYPE> listener)
+    public void removeListener(final RTPlotListener<XTYPE> listener)
     {
         plot.removeListener(listener);
     }
@@ -283,7 +283,8 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
         plot.removeYAxis(index);
     }
 
-    /** @param name
+    /** @param name Name, must not be <code>null</code>
+     *  @param units Units, may be <code>null</code>
      *  @param data
      *  @param color
      *  @param type
@@ -291,13 +292,14 @@ public class RTPlot<XTYPE extends Comparable<XTYPE>> extends Composite
      *  @param y_axis
      *  @return {@link Trace} that was added
      */
-    public Trace<XTYPE> addTrace(final String name, final PlotDataProvider<XTYPE> data,
+    public Trace<XTYPE> addTrace(final String name, final String units,
+            final PlotDataProvider<XTYPE> data,
             final RGB color,
             final TraceType type, final int width,
             final PointType point_type, final int size,
             final int y_axis)
     {
-        final TraceImpl<XTYPE> trace = new TraceImpl<XTYPE>(name, data, color, type, width, point_type, size, y_axis);
+        final TraceImpl<XTYPE> trace = new TraceImpl<XTYPE>(name, units, data, color, type, width, point_type, size, y_axis);
         plot.addTrace(trace);
         return trace;
     }

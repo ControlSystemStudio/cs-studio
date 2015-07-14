@@ -23,7 +23,7 @@ import org.csstudio.swt.rtplot.Activator;
 import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.AxisRange;
 import org.csstudio.swt.rtplot.Messages;
-import org.csstudio.swt.rtplot.PlotListener;
+import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.YAxis;
@@ -171,7 +171,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         }
     };
 
-    final private List<PlotListener<XTYPE>> listeners = new CopyOnWriteArrayList<>();
+    final private List<RTPlotListener<XTYPE>> listeners = new CopyOnWriteArrayList<>();
 
     private volatile Optional<List<CursorMarker>> cursor_markers = Optional.empty();
 
@@ -236,14 +236,14 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     }
 
     /** @param listener Listener to add */
-    public void addListener(final PlotListener<XTYPE> listener)
+    public void addListener(final RTPlotListener<XTYPE> listener)
     {
         Objects.requireNonNull(listener);
         listeners.add(listener);
     }
 
     /** @param listener Listener to remove */
-    public void removeListener(final PlotListener<XTYPE> listener)
+    public void removeListener(final RTPlotListener<XTYPE> listener)
     {
         Objects.requireNonNull(listener);
         listeners.remove(listener);
@@ -303,7 +303,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         legend.setVisible(show);
         need_layout.set(true);
         requestUpdate();
-        for (PlotListener<XTYPE> listener : listeners)
+        for (RTPlotListener<XTYPE> listener : listeners)
             listener.changedLegend(show);
     }
 
@@ -396,8 +396,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** @return {@link Image} of current plot. Caller must dispose */
     public Image getImage()
     {
-        //TODO
-
+        //TODO Buffer plot_image as in SWT version
+        
         return new Image(display, area.width, area.height);
     }
 
@@ -1100,35 +1100,35 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     /** Notify listeners */
     public void fireXAxisChange()
     {
-        for (PlotListener<XTYPE> listener : listeners)
+        for (RTPlotListener<XTYPE> listener : listeners)
             listener.changedXAxis(x_axis);
     }
 
     /** Notify listeners */
     public void fireYAxisChange(final YAxisImpl<XTYPE> axis)
     {
-        for (PlotListener<XTYPE> listener : listeners)
+        for (RTPlotListener<XTYPE> listener : listeners)
             listener.changedYAxis(axis);
     }
 
     /** Notify listeners */
     private void fireAnnotationsChanged()
     {
-        for (PlotListener<XTYPE> listener : listeners)
+        for (RTPlotListener<XTYPE> listener : listeners)
             listener.changedAnnotations();
     }
 
     /** Notify listeners */
     private void fireCursorsChanged()
     {
-        for (PlotListener<XTYPE> listener : listeners)
+        for (RTPlotListener<XTYPE> listener : listeners)
             listener.changedCursors();
     }
 
     /** Notify listeners */
     public void fireToolbarChange(final boolean show)
     {
-        for (PlotListener<XTYPE> listener : listeners)
+        for (RTPlotListener<XTYPE> listener : listeners)
             listener.changedToolbar(show);
     }
 }
