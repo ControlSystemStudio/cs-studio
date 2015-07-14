@@ -24,21 +24,21 @@ import org.epics.util.time.Timestamp;
 public class AlarmTreePV extends AlarmTreeLeaf
 {
     private static final long serialVersionUID = 5262966990320748429L;
-    private boolean enabled = true;
-    private boolean latching = true;
-    private boolean annunciating = false;
+    private volatile boolean enabled = true;
+    private volatile boolean latching = true;
+    private volatile boolean annunciating = false;
 
-    private int delay = 0;
+    private volatile int delay = 0;
 
     /* Alarm when PV != OK more often than this count within delay */
-    private int count = 0;
+    private volatile int count = 0;
 
-    private String filter = ""; //$NON-NLS-1$
+    private volatile String filter = ""; //$NON-NLS-1$
 
     /** Current message of this item/subtree */
-    private String current_message = SeverityLevel.OK.getDisplayName();
+    private volatile String current_message = SeverityLevel.OK.getDisplayName();
 
-    private String value = null;
+    private volatile String value = null;
 
     /** Initialize
      *  @param parent Parent component in hierarchy
@@ -60,7 +60,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
 
     /** {@inheritDoc} */
     @Override
-    public synchronized String getToolTipText()
+    public String getToolTipText()
     {
         return NLS.bind(Messages.AlarmPV_TT,
             new Object[]
@@ -78,33 +78,33 @@ public class AlarmTreePV extends AlarmTreeLeaf
 
     /** @return Current severity */
     @Override
-    public synchronized SeverityLevel getCurrentSeverity()
+    public SeverityLevel getCurrentSeverity()
     {
         return enabled ? super.getCurrentSeverity() : SeverityLevel.OK;
     }
 
     /** @return Current message */
-    public synchronized String getCurrentMessage()
+    public String getCurrentMessage()
     {
         return current_message;
     }
 
     /** @return Highest or latched severity */
     @Override
-    public synchronized SeverityLevel getSeverity()
+    public SeverityLevel getSeverity()
     {
         return enabled ? super.getSeverity() : SeverityLevel.OK;
     }
 
     /** @return Highest or latched alarm message */
     @Override
-    public synchronized String getMessage()
+    public String getMessage()
     {
         return enabled ? super.getMessage() : SeverityLevel.OK.getDisplayName();
     }
 
     /** @return <code>true</code> if alarms from PV are enabled */
-    public synchronized boolean isEnabled()
+    public boolean isEnabled()
     {
         return enabled;
     }
@@ -112,7 +112,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
     /** Set filter expression for enablement
      *  @param filter New filter
      */
-    public synchronized void setFilter(final String filter)
+    public void setFilter(final String filter)
     {
         if (filter == null)
             this.filter = ""; //$NON-NLS-1$
@@ -121,55 +121,55 @@ public class AlarmTreePV extends AlarmTreeLeaf
     }
 
     /** @param enable Enable the PV? */
-    public synchronized void setEnabled(final boolean enable)
+    public void setEnabled(final boolean enable)
     {
         enabled = enable;
     }
 
     /** @return Filter expression for enablement (never <code>null</code>) */
-    public synchronized String getFilter()
+    public String getFilter()
     {
         return filter;
     }
 
     /** @param annunciating New annunciating behavior */
-    public synchronized void setAnnunciating(final boolean annunciating)
+    public void setAnnunciating(final boolean annunciating)
     {
         this.annunciating = annunciating;
     }
 
     /** @return <code>true</code> if alarms get annunciated */
-    public synchronized boolean isAnnunciating()
+    public boolean isAnnunciating()
     {
         return annunciating;
     }
 
     /** @param latching New latching behavior */
-    public synchronized void setLatching(final boolean latching)
+    public void setLatching(final boolean latching)
     {
         this.latching = latching;
     }
 
     /** @return <code>true</code> if alarms latch for acknowledgment */
-    public synchronized boolean isLatching()
+    public boolean isLatching()
     {
         return latching;
     }
 
     /** @param seconds Alarm delay */
-    public synchronized void setDelay(final double seconds)
+    public void setDelay(final double seconds)
     {
         delay = (int) Math.round(seconds);
     }
 
     /** @return Alarm delay in seconds */
-    public synchronized int getDelay()
+    public int getDelay()
     {
         return delay;
     }
 
     /** @return count Alarm when PV != OK more often than this count within delay */
-    public synchronized int getCount()
+    public int getCount()
     {
         return count;
     }
@@ -177,13 +177,13 @@ public class AlarmTreePV extends AlarmTreeLeaf
     /** Alarm when PV != OK more often than this count within delay
      *  @param count New count
      */
-    public synchronized void setCount(final int count)
+    public void setCount(final int count)
     {
         this.count = count;
     }
 
     /** @return Value that triggered last status/severity update */
-    public synchronized String getValue()
+    public String getValue()
     {
         return value;
     }
@@ -248,7 +248,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
      *  @see AlarmTree#writeConfigXML(PrintWriter, String)
      */
     @Override
-    protected synchronized void writeConfigXML(final PrintWriter out, final int level)
+    protected void writeConfigXML(final PrintWriter out, final int level)
     {
         XMLWriter.XML(out, level, XMLTags.DESCRIPTION, getDescription());
         if (!enabled)
@@ -271,7 +271,7 @@ public class AlarmTreePV extends AlarmTreeLeaf
      *          meant for elog entry or usage as drag/drop text
      */
     @Override
-    public synchronized String getVerboseDescription()
+    public String getVerboseDescription()
     {
         return NLS.bind(Messages.VerboseAlarmPVDescriptionFmt,
                 new Object[]

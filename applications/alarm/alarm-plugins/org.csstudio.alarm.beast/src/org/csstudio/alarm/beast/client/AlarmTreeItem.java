@@ -9,9 +9,10 @@ package org.csstudio.alarm.beast.client;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.alarm.beast.Messages;
 import org.csstudio.alarm.beast.SeverityLevel;
@@ -40,36 +41,36 @@ public class AlarmTreeItem extends TreeItem
 {
     private static final long serialVersionUID = -8597126519675742036L;
 
-    private int disabled_children = 0;
+    private volatile int disabled_children = 0;
 
     /** Sub-tree elements of this item which are currently in alarm */
-    final private transient List<AlarmTreeItem> alarm_children = new ArrayList<AlarmTreeItem>();
+    final private transient List<AlarmTreeItem> alarm_children = new CopyOnWriteArrayList<>();
 
     // Using arrays for guidance, ..., commands to be thread-safe
 
     /** Guidance messages */
-    private GDCDataStructure guidance[] = new GDCDataStructure[0];
+    private volatile GDCDataStructure guidance[] = new GDCDataStructure[0];
 
     /** Related displays */
-    private GDCDataStructure displays[] = new GDCDataStructure[0];
+    private volatile GDCDataStructure displays[] = new GDCDataStructure[0];
 
     /** Commands */
-    private GDCDataStructure commands[] = new GDCDataStructure[0];
+    private volatile GDCDataStructure commands[] = new GDCDataStructure[0];
 
     /** Automated Actions */
-    private AADataStructure automated_actions[] = new AADataStructure[0];
+    private volatile AADataStructure automated_actions[] = new AADataStructure[0];
 
     /** Current severity of this item/subtree */
-    private SeverityLevel current_severity = SeverityLevel.OK;
+    private volatile SeverityLevel current_severity = SeverityLevel.OK;
 
     /** Highest/latched alarm severity of this item/subtree */
-    private SeverityLevel severity = SeverityLevel.OK;
+    private volatile SeverityLevel severity = SeverityLevel.OK;
 
     /**  Highest/latched alarm message of this item/subtree */
-    private String message = SeverityLevel.OK.getDisplayName();
+    private volatile String message = SeverityLevel.OK.getDisplayName();
 
     /** Time of last configuration change */
-    private transient Timestamp config_time; //it would be nice if Timestamp implemented Serializable
+    private volatile transient Timestamp config_time; //it would be nice if Timestamp implemented Serializable
 
     /** Initialize alarm tree item
      *  @param parent Parent item or <code>null</code>
@@ -85,7 +86,7 @@ public class AlarmTreeItem extends TreeItem
     /** @return Text (multi-line) that can be used as a tool-tip to
      *          describe this item and its current state
      */
-    public synchronized String getToolTipText()
+    public String getToolTipText()
     {
         return NLS.bind(Messages.Alarm_TT,
             new Object[]
@@ -123,7 +124,7 @@ public class AlarmTreeItem extends TreeItem
     }
 
     /** @return Number of child nodes */
-    final public synchronized int getDisabledChildCount()
+    final public int getDisabledChildCount()
     {
         return disabled_children;
     }
@@ -153,82 +154,80 @@ public class AlarmTreeItem extends TreeItem
     }
 
     /** @return Guidance messages */
-    public synchronized GDCDataStructure[] getGuidance()
+    public GDCDataStructure[] getGuidance()
     {
-        return Arrays.copyOf(guidance, guidance.length);
+        final GDCDataStructure[] safe_copy = guidance;
+        return Arrays.copyOf(safe_copy, safe_copy.length);
     }
 
     /** @param guidance Guidance messages */
-    synchronized void setGuidance(final GDCDataStructure guidance[])
+    void setGuidance(final GDCDataStructure guidance[])
     {
-        if (guidance == null)
-            throw new IllegalArgumentException();
-        this.guidance = guidance;
+        this.guidance = Objects.requireNonNull(guidance);
     }
 
     /** @return Related displays */
-    public synchronized GDCDataStructure[] getDisplays()
+    public GDCDataStructure[] getDisplays()
     {
-        return Arrays.copyOf(displays, displays.length);
+        final GDCDataStructure[] safe_copy = displays;
+        return Arrays.copyOf(safe_copy, safe_copy.length);
     }
 
     /** Add related display
      *  @param title
      *  @param display
      */
-    public synchronized void addDisplay(final String title, final String display)
+    public void addDisplay(final String title, final String display)
     {
-        final GDCDataStructure new_displays[] = Arrays.copyOf(displays, displays.length + 1);
+        final GDCDataStructure[] safe_copy = displays;
+        final GDCDataStructure[] new_displays = Arrays.copyOf(safe_copy, safe_copy.length + 1);
         new_displays[displays.length] = new GDCDataStructure(title, display);
         displays = new_displays;
     }
 
     /** @param displays Related displays */
-    synchronized void setDisplays(final GDCDataStructure displays[])
+    void setDisplays(final GDCDataStructure displays[])
     {
-        if (displays == null)
-            throw new IllegalArgumentException();
-        this.displays = displays;
+        this.displays = Objects.requireNonNull(displays);
     }
 
     /** @return Commands */
-    public synchronized GDCDataStructure[] getCommands()
+    public GDCDataStructure[] getCommands()
     {
-        return Arrays.copyOf(commands, commands.length);
+        final GDCDataStructure[] safe_copy = commands;
+        return Arrays.copyOf(safe_copy, safe_copy.length);
     }
 
     /** @param commands Commands */
-    synchronized void setCommands(final GDCDataStructure[] commands)
+    void setCommands(final GDCDataStructure[] commands)
     {
-        if (commands == null)
-            throw new IllegalArgumentException();
-        this.commands = commands;
+        this.commands = Objects.requireNonNull(commands);
     }
 
     /** @return Automated Actions */
-    public synchronized AADataStructure[] getAutomatedActions()
+    public AADataStructure[] getAutomatedActions()
     {
-        return Arrays.copyOf(automated_actions, automated_actions.length);
+        final AADataStructure[] safe_copy = automated_actions;
+        return Arrays.copyOf(safe_copy, safe_copy.length);
     }
 
     /** @param automated_actions Automated Actions */
-    synchronized void setAutomatedActions(final AADataStructure[] automated_actions)
+    void setAutomatedActions(final AADataStructure[] automated_actions)
     {
-        if (automated_actions == null)
-            throw new IllegalArgumentException();
-        this.automated_actions = automated_actions;
+        this.automated_actions = Objects.requireNonNull(automated_actions);
     }
 
     /** @return Time of last configuration change */
-    public synchronized String getConfigTime()
+    public String getConfigTime()
     {
-        if (config_time == null)
+        final Timestamp save_copy = config_time;
+        if (save_copy == null)
             return Messages.Unknown;
-        return TimestampHelper.format(config_time);
+        return TimestampHelper.format(save_copy);
     }
 
     /** @param config_time Time of last configuration change */
-    synchronized void setConfigTime(final Timestamp config_time)
+    void setConfigTime(final Timestamp config_time)
     {
         this.config_time = config_time;
     }
@@ -236,7 +235,7 @@ public class AlarmTreeItem extends TreeItem
     /** @return Number of sub-elements in configuration hierarchy
      *          which are currently in alarm
      */
-    public synchronized int getAlarmChildCount()
+    public int getAlarmChildCount()
     {
         return alarm_children.size();
     }
@@ -245,30 +244,34 @@ public class AlarmTreeItem extends TreeItem
      *  @param index Child element index 0 .. (getAlarmChildCount()-1)
      *  @return Sub-item in alarm hierarchy
      */
-    public synchronized AlarmTreeItem getAlarmChild(final int index)
+    public AlarmTreeItem getAlarmChild(final int index)
     {
         return alarm_children.get(index);
     }
 
     /** @return Current severity */
-    public synchronized SeverityLevel getCurrentSeverity()
+    public SeverityLevel getCurrentSeverity()
     {
         return current_severity;
     }
 
     /** @return Highest or latched severity */
-    public synchronized SeverityLevel getSeverity()
+    public SeverityLevel getSeverity()
     {
         return severity;
     }
 
     /** @return Highest or latched alarm message */
-    public synchronized String getMessage()
+    public String getMessage()
     {
         return message;
     }
 
     /** Update alarm state of this item, maximize alarm tree severities.
+     *
+     *  Ends up maximizing severity of parent chain,
+     *  so caller must lock root.
+     *
      *  @param current_severity Current severity of PV
      *  @param severity Alarm severity
      *  @param message Alarm message
@@ -320,7 +323,7 @@ public class AlarmTreeItem extends TreeItem
 
     /** Set severity/status of this item by maximizing over its child
      *  severities.
-     *  Recursively updates parent items.
+     *  Recursively updates parent items, so caller must have locked the root.
      *
      *  @return <code>true</code> if the severity of this item or any of its parents changed after
      *          this method is executed, or <code>false</code> if the severity remained the same
@@ -435,15 +438,18 @@ public class AlarmTreeItem extends TreeItem
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
-    final protected synchronized void writeItemXML(final PrintWriter out, final int level) throws Exception
+    final protected void writeItemXML(final PrintWriter out, final int level) throws Exception
     {
         final String tag = getXMLTag();
         XMLWriter.start(out, level, tag + " " + XMLTags.NAME + "=\"" + getName() + "\"");
         out.println();
         writeConfigXML(out, level+1);
-        final int n = getChildCount();
-        for (int i=0; i<n; ++i)
-            getChild(i).writeItemXML(out, level+1);
+        synchronized (this)
+        {
+            final int n = getChildCount();
+            for (int i=0; i<n; ++i)
+                getChild(i).writeItemXML(out, level+1);
+        }
         XMLWriter.end(out, level, tag);
         out.println();
     }
@@ -454,7 +460,7 @@ public class AlarmTreeItem extends TreeItem
      *  @param out PrintWriter to which to send XML output
      *  @param level Indentation level
      */
-    protected synchronized void writeConfigXML(final PrintWriter out, final int level)
+    protected void writeConfigXML(final PrintWriter out, final int level)
     {
         writeGCD_XML(out, level, XMLTags.GUIDANCE, guidance);
         writeGCD_XML(out, level, XMLTags.DISPLAY, displays);
@@ -508,7 +514,7 @@ public class AlarmTreeItem extends TreeItem
     /** @return Short string representation for debugging */
     @SuppressWarnings("nls")
     @Override
-    public synchronized String toString()
+    public String toString()
     {
         final StringBuilder buf = new StringBuilder();
         buf.append(super.toString());
