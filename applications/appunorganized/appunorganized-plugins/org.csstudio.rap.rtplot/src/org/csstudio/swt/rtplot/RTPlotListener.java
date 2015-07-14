@@ -13,23 +13,23 @@ import org.csstudio.swt.rtplot.data.PlotDataItem;
  *  @param <XTYPE> Data type used for the {@link PlotDataItem}
  *  @author Kay Kasemir
  */
-public interface PlotListener<XTYPE extends Comparable<XTYPE>>
+public interface RTPlotListener<XTYPE extends Comparable<XTYPE>>
 {
     /** Invoked when the X axis range has changed */
-    public void changedXAxis(Axis<XTYPE> x_axis);
+    default public void changedXAxis(Axis<XTYPE> x_axis) {};
 
     /** Invoked when the Y axis range has changed */
-    public void changedYAxis(YAxis<XTYPE> y_axis);
+    default public void changedYAxis(YAxis<XTYPE> y_axis) {};
 
     /** Invoked when Annotations have been changed */
-    public void changedAnnotations();
+    default public void changedAnnotations() {};
 
     /** Invoked when Cursors changed */
-    public void changedCursors();
+    default public void changedCursors() {};
 
     /** Invoked when toolbar displayed/hidden */
-    public void changedToolbar(boolean visible);
+    default public void changedToolbar(boolean visible) {};
 
     /** Invoked when legend displayed/hidden */
-    public void changedLegend(boolean visible);
+    default public void changedLegend(boolean visible) {};
 }
