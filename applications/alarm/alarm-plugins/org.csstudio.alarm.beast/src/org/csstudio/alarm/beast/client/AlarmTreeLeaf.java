@@ -24,10 +24,10 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     private static final long serialVersionUID = -2107556902460644540L;
 
     /** Description of alarm */
-    private String description = ""; //$NON-NLS-1$
+    private volatile String description = ""; //$NON-NLS-1$
 
     /** Timestamp of last alarm update */
-    private transient Timestamp timestamp = null;
+    private volatile transient Timestamp timestamp = null;
 
     /** Initialize
      *  @param parent Parent item
@@ -41,13 +41,13 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     }
 
     /** @param description New description */
-    public synchronized void setDescription(final String description)
+    public void setDescription(final String description)
     {
         this.description = description == null ? "" : description; //$NON-NLS-1$
     }
 
     /** @return Alarm description */
-    public synchronized String getDescription()
+    public String getDescription()
     {
         return description;
     }
@@ -55,7 +55,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     /** @return Verbose, multi-line description of the current alarm
      *          meant for elog entry or usage as drag/drop text
      */
-    public synchronized String getVerboseDescription()
+    public String getVerboseDescription()
     {
         return NLS.bind(Messages.VerboseAlarmDescriptionFmt,
                 new Object[]
@@ -70,28 +70,30 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     }
 
     /** @return Time stamp of last status/severity update */
-    public synchronized Timestamp getTimestamp()
+    public Timestamp getTimestamp()
     {
         return timestamp;
     }
 
     /** @return Duration of current alarm state or empty text */
-    public synchronized String getDuration()
+    public String getDuration()
     {
-        if (timestamp == null)
+        final Timestamp safe_copy = timestamp;
+        if (safe_copy == null)
             return ""; //$NON-NLS-1$
-        final TimeDuration duration = Timestamp.now().durationFrom(timestamp);
+        final TimeDuration duration = Timestamp.now().durationFrom(safe_copy);
         if (duration.isNegative())
             return ""; //$NON-NLS-1$
         return SecondsParser.formatSeconds(duration.toSeconds());
     }
 
     /** @return Time stamp of last status/severity update as text */
-    public synchronized String getTimestampText()
+    public String getTimestampText()
     {
-        if (timestamp == null)
+        final Timestamp safe_copy = timestamp;
+        if (safe_copy == null)
             return ""; //$NON-NLS-1$
-        return TimestampHelper.format(timestamp);
+        return TimestampHelper.format(safe_copy);
     }
 
     /** Update status/message/time stamp and maximize
@@ -107,7 +109,7 @@ public class AlarmTreeLeaf extends AlarmTreeItem
      *  @see #getTimestamp()
      *  @return <code>true</code> if alarm state actually changed
      */
-    protected synchronized boolean setAlarmState(final SeverityLevel current_severity,
+    protected boolean setAlarmState(final SeverityLevel current_severity,
             final SeverityLevel severity, final String message,
             final Timestamp timestamp)
     {
