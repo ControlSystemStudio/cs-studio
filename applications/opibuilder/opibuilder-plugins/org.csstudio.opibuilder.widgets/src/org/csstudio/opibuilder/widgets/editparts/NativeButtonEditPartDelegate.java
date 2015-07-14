@@ -13,8 +13,8 @@ import java.util.List;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.opibuilder.widgets.figures.NativeButtonFigure;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.eclipse.core.runtime.IPath;
@@ -60,22 +60,15 @@ public final class NativeButtonEditPartDelegate implements IButtonEditPartDelega
                 List<AbstractWidgetAction> actions = editpart.getHookedActions();
                 if(actions!= null){
                     for(AbstractWidgetAction action: actions){
-                        if(action instanceof AbstractOpenOPIAction){
-                            ((AbstractOpenOPIAction) action).setCtrlPressed(false);
-                            ((AbstractOpenOPIAction) action).setShiftPressed(false);
-                            if((e.stateMask & SWT.CTRL) !=0){
-                                ((AbstractOpenOPIAction) action).setCtrlPressed(true);
-                            }else if ((e.stateMask & SWT.SHIFT) !=0){
-                                ((AbstractOpenOPIAction) action).setShiftPressed(true);
-                            }
-                        }
-                        action.run();
+                        if(action instanceof OpenDisplayAction)
+                            ((OpenDisplayAction) action).runWithModifiers((e.stateMask & SWT.CTRL) !=0,
+                                                                          (e.stateMask & SWT.SHIFT) !=0);
+                        else
+                            action.run();
                     }
                 }
             }
         });
-
-
     }
 
     /**

@@ -34,13 +34,9 @@ public class ErrorHandlerUtil {
                         DisplayUtils.getDisplay().getActiveShell(),
                         "Error", message,
                         status);
-//                MessageDialog.openError(
-//                        DisplayUtils.getDisplay().getActiveShell(), "Error",    message);
             }
-
         }
     }
-
 
     /**This method will call {@link #handleError(String, Throwable, boolean, boolean)} with writeToConsole as true
      * and popErrorDialog as false.
@@ -51,5 +47,4 @@ public class ErrorHandlerUtil {
             final Throwable exception){
         handleError(message, exception, true, false);
     }
-
 }

@@ -1,9 +1,11 @@
 package org.csstudio.webopi;
 
+import java.util.Optional;
+
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.RunModeService;
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.runmode.RunnerInput;
-import org.csstudio.opibuilder.runmode.RunModeService.TargetWindow;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.webopi.util.RequestUtil;
 import org.eclipse.core.runtime.IPath;
@@ -47,7 +49,7 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
             if(path == null)
                 return;
             if (path.getFileExtension().toLowerCase().equals("opi")) {
-                RunModeService.getInstance().runOPI(path, TargetWindow.SAME_WINDOW, null);
+                RunModeService.openDisplay(path, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
             } else {
                 runOther(path);
             }
@@ -55,22 +57,11 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
             IPath path = runnerInput.getPath();
             if (path != null) {
                 if (path.getFileExtension().toLowerCase().equals("opi")) {
-                    RunModeService.getInstance().runOPI(path, TargetWindow.SAME_WINDOW, null, runnerInput.getMacrosInput());
+                    RunModeService.openDisplay(path, Optional.ofNullable(runnerInput.getMacrosInput()), DisplayMode.NEW_TAB, Optional.empty());
                 } else {
                     runOther(path);
                 }
             }
-        }
-    }
-
-    private void runOther(final IPath path) {
-        IWorkbenchPage page = PlatformUI.getWorkbench()
-                .getActiveWorkbenchWindow().getActivePage();
-        try {
-            SingleSourceHelper.openEditor(page, path);
-        } catch (Exception e) {
-            String message = NLS.bind("Failed to open the editor. \n {0}", e);
-            MessageDialog.openError(null, "Error in opening OPI", message);
         }
     }
 

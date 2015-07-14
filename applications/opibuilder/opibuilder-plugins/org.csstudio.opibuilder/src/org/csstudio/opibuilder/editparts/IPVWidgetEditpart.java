@@ -56,6 +56,7 @@ public interface IPVWidgetEditpart {
 
     public void addSetPVValueListener(ISetPVValueListener listener);
 
+    public void setControlEnabled(boolean enabled);
 
     public boolean isPVControlWidget();
 

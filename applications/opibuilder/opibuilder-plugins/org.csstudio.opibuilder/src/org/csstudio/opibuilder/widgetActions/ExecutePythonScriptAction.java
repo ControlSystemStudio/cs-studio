@@ -27,7 +27,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.swt.widgets.Display;
-import org.python.core.Py;
 import org.python.core.PyCode;
 import org.python.core.PyObject;
 import org.python.core.PyString;
@@ -42,7 +41,7 @@ import org.python.util.PythonInterpreter;
 public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 
     private PyCode code;
-    private PythonInterpreter interp;
+    private PythonInterpreter interpreter;
     private PySystemState state;
     private DisplayEditpart displayEditpart;
     private AbstractBaseEditPart widgetEditPart;
@@ -64,7 +63,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
             }
             //read file
             IPath absolutePath = getAbsolutePath();
-            PySystemState state = Py.getSystemState();
+            state = new PySystemState();
 
             //Add the path of script to python module search path
             if(!isEmbedded() && absolutePath != null && !absolutePath.isEmpty()){
@@ -79,7 +78,7 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
                 }
             }
 
-            interp = PythonInterpreter.threadLocalStateInterpreter(state.path.getDict());
+            interpreter = new PythonInterpreter(null,state);
 
             GraphicalViewer viewer = getWidgetModel().getRootDisplayModel().getViewer();
             if(viewer != null){
@@ -116,10 +115,10 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 
                 //compile
                 if(isEmbedded())
-                    code = interp.compile(getScriptText());
+                    code = interpreter.compile(getScriptText());
                 else{
                     InputStream inputStream = getInputStream();
-                    code = interp.compile(new InputStreamReader(inputStream));
+                    code = interpreter.compile(new InputStreamReader(inputStream));
                     inputStream.close();
                 }
             }
@@ -131,9 +130,9 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
                 public void run() {
 
                         try {
-                            interp.set(ScriptService.WIDGET, widgetEditPart);
-                            interp.set(ScriptService.DISPLAY, displayEditpart);
-                            interp.exec(code);
+                            interpreter.set(ScriptService.WIDGET, widgetEditPart);
+                            interpreter.set(ScriptService.DISPLAY, displayEditpart);
+                            interpreter.exec(code);
                         } catch (Exception e) {
                             final String message =  "Error exists in script " + getPath();
                             OPIBuilderPlugin.getLogger().log(Level.WARNING, message, e);
@@ -161,8 +160,8 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
 
     @Override
     public void dispose() {
-        if (interp != null) {
-            PyObject o = interp.getLocals();
+        if (interpreter != null) {
+            PyObject o = interpreter.getLocals();
             if (o != null && o instanceof PyStringMap) {
                 ((PyStringMap)o).clear();
             }
@@ -172,9 +171,9 @@ public class ExecutePythonScriptAction extends AbstractExecuteScriptAction {
             }
             state.close();
             state.cleanup();
-            interp.close();
-            interp.cleanup();
-            interp = null;
+            interpreter.close();
+            interpreter.cleanup();
+            interpreter = null;
             state = null;
         }
         super.dispose();

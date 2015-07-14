@@ -1,11 +1,12 @@
 package org.csstudio.opibuilder.actions;
 
 import java.util.LinkedHashMap;
+import java.util.Optional;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.runmode.RunModeService;
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.ui.util.AdapterUtil;
@@ -30,17 +31,8 @@ public class OpenOPIProbeHandler extends AbstractHandler {
         IPath probeOPIPath = PreferencesHelper.getProbeOPIPath();
 
         // When not defined, try built-in probe opi example
-        if(probeOPIPath == null || probeOPIPath.isEmpty()){
-//            URL url = FileLocator.find(OPIBuilderPlugin.getDefault().getBundle(),
-//                    new Path("opi/probe.opi"), null); //$NON-NLS-1$
-//            try {
-//                url = FileLocator.toFileURL(url);
-//            } catch (Throwable e) {
-//                MessageDialog.openError(shell, "No Probe OPI",
-//                        "Cannot open probe OPI.\nPlease define your probe OPI on BOY preference page.");
-//            }
+        if(probeOPIPath == null || probeOPIPath.isEmpty())
             probeOPIPath = ResourceUtil.getPathFromString("platform:/plugin/org.csstudio.opibuilder/opi/probe.opi");//$NON-NLS-1$
-        }
 
         LinkedHashMap<String, String> macros = new LinkedHashMap<String, String>();
         if(pvs.length >0)
@@ -52,12 +44,10 @@ public class OpenOPIProbeHandler extends AbstractHandler {
             i++;
         }
 
-        MacrosInput macrosInput = new MacrosInput(macros, true);
+        final MacrosInput macrosInput = new MacrosInput(macros, true);
 
         // Errors in here will show in dialog and error log
-        RunModeService.runOPIInView(probeOPIPath, null,macrosInput, Position.DETACHED);
+        RunModeService.openDisplay(probeOPIPath, Optional.of(macrosInput), DisplayMode.NEW_TAB_DETACHED, Optional.empty());
         return null;
     }
-
-
 }

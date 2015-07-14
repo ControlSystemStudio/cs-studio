@@ -47,7 +47,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 
     /**
      * Returns the casted model. This is just for convenience.
-     * 
+     *
      * @return the casted {@link ImageModel}
      */
     public ImageModel getWidgetModel() {

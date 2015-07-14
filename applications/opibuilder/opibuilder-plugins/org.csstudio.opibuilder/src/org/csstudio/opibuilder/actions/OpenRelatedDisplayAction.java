@@ -7,62 +7,73 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
-import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.eclipse.jface.action.Action;
 
-/** The action open default related display in different target.
+/** Context menu wrapper for {@link OpenDisplayAction}.
  *
- * @author Xihui Chen
+ *  <p>On a simple click, the underlying OpenDisplayAction
+ *  is executed.
  *
+ *  <p>When opening the context menu on a widget
+ *  with actions, instances of this class will be listed,
+ *  all referring to the same OpenDisplayAction, but allowing
+ *  user to open the display in different ways.
+ *
+ *  @author Xihui Chen - Original author
+ *  @author Kay Kasemir
  */
-public class OpenRelatedDisplayAction extends Action {
+public class OpenRelatedDisplayAction extends Action
+{
+    public enum OpenDisplayTarget
+    {
+        DEFAULT("Open"),
+        NEW_TAB("Open in Workbench Tab"),
+        NEW_WINDOW("Open in New Workbench"),
+        NEW_SHELL("Open in Standalone Window");
 
-    public enum OPEN_DISPLAY_TARGET {
-        DEFAULT,
-        TAB,
-        NEW_WINDOW
+        final private String description;
+
+        private OpenDisplayTarget(final String desc)
+        {
+            description = desc;
+        }
+
+        public String toString()
+        {
+            return description;
+        }
     }
 
-    private AbstractOpenOPIAction openDisplayAction;
+    final private OpenDisplayAction openDisplayAction;
 
-    private OPEN_DISPLAY_TARGET  target;
+    final private OpenDisplayTarget  target;
 
-    public OpenRelatedDisplayAction(AbstractOpenOPIAction openDisplayAction,
-            OPEN_DISPLAY_TARGET target) {
-        super();
+    public OpenRelatedDisplayAction(final OpenDisplayAction openDisplayAction,
+            final OpenDisplayTarget target)
+    {
         this.openDisplayAction = openDisplayAction;
         this.target = target;
-        switch (target) {
-        case TAB:
-            setText("Open in New Tab");
-            break;
-        case NEW_WINDOW:
-            setText("Open in New Window");
-            break;
-        default:
-            setText("Open");
-            break;
-        }
+        setText(target.toString());
     }
 
     @Override
-    public void run() {
-        openDisplayAction.setCtrlPressed(false);
-        openDisplayAction.setShiftPressed(false);
-
-        switch (target) {
-        case TAB:
-            openDisplayAction.setCtrlPressed(true);
+    public void run()
+    {
+        switch (target)
+        {
+        case NEW_TAB:
+            openDisplayAction.runWithModifiers(true, false);
             break;
         case NEW_WINDOW:
-            openDisplayAction.setShiftPressed(true);
+            openDisplayAction.runWithModifiers(false, true);
+            break;
+        case NEW_SHELL:
+            openDisplayAction.runWithModifiers(true, true);
             break;
         default:
+            openDisplayAction.run();
             break;
         }
-        openDisplayAction.run();
-
-
     }
-
 }

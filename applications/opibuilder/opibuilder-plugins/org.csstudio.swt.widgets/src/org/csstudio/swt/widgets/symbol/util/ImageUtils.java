@@ -134,7 +134,7 @@ public final class ImageUtils {
 
     /**
      * Apply color change on an image.
-     * 
+     *
      * @param color
      * @param imageData
      */
@@ -246,7 +246,7 @@ public final class ImageUtils {
 
     /**
      * Crop the given rectangle with the given insets.
-     * 
+     *
      * @param rect rectangle to crop.
      * @param insets
      */
@@ -365,11 +365,11 @@ public final class ImageUtils {
         ,redShift = palette.redShift
         ,greenShift = palette.greenShift
         ,blueShift = palette.blueShift;
-        
+
         float ratioR = ((shadedPixel & redMask) >> redShift) / 255f;
         float ratioG = ((shadedPixel & greenMask) >> greenShift) / 255f;
         float ratioB = ((shadedPixel & blueMask) >> blueShift) / 255f;
-        
+
         int r = (pixelToShade & redMask) >> redShift;
         int g = (pixelToShade & greenMask) >> greenShift;
         int b = (pixelToShade & blueMask) >> blueShift;
@@ -417,7 +417,7 @@ public final class ImageUtils {
                     RGB current = palette.getRGB(pixelValue);
                     if (current.blue == current.green
                             && current.blue == current.red
-                            && current.blue < 255) 
+                            && current.blue < 255)
                     {
                         float[] pixelHSB = new float[3];
                         java.awt.Color.RGBtoHSB(current.red, current.green, current.blue, pixelHSB);
