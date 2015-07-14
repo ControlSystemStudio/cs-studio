@@ -11,6 +11,7 @@ import java.util.Optional;
 
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.data.PlotDataProvider;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.graphics.RGB;
 
 /** Trace, i.e. data to be displayed on an axis.
@@ -24,6 +25,21 @@ public interface Trace<XTYPE extends Comparable<XTYPE>>
 
     /** @param name Name, i.e. label of this trace */
     public void setName(final String name);
+
+    /** @return Units, may be "" */
+    public String getUnits();
+
+    /** @param units Units, may be <code>null</code> */
+    public void setUnits(String units);
+
+    /** @return Label that combines trace name with units */
+    default public String getLabel()
+    {
+        final String units = getUnits();
+        if (units.isEmpty())
+            return getName();
+        return NLS.bind(Messages.NameUnitsFmt, getName(), units);
+    }
 
     /** @return {@link PlotDataProvider} */
     public PlotDataProvider<XTYPE> getData();
