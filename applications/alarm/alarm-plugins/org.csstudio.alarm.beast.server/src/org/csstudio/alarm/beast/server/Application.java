@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.args.ArgParser;
@@ -15,6 +16,8 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.logging.LogConfigurator;
 import org.csstudio.security.PasswordInput;
 import org.csstudio.security.preferences.SecurePreferences;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osgi.framework.console.CommandProvider;
@@ -116,6 +119,9 @@ public class Application implements IApplication
         System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name.get()));
         System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic(config_name.get()));
         System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
+        // Peek into Channel Access settings
+        final IPreferencesService service = Platform.getPreferencesService();
+        System.out.println("EPICS Addr. List:   " + service.getString("org.csstudio.platform.libs.epics", "addr_list", "", null));
 
         final WorkQueue work_queue = new WorkQueue();
         try
