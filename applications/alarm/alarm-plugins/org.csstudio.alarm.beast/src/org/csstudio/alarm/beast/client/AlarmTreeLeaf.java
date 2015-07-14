@@ -97,6 +97,9 @@ public class AlarmTreeLeaf extends AlarmTreeItem
     /** Update status/message/time stamp and maximize
      *  severities of parent entries.
      *
+     *  Ends up maximizing severity of parent chain,
+     *  so caller must lock root.
+     *
      *  @param current_severity Current severity of PV
      *  @param severity Alarm severity
      *  @param message Alarm message
