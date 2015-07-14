@@ -1,0 +1,21 @@
+The 'script' subdirectory contains Javadoc for the org.csstudio.opibuilder.scriptUtil package
+to document its API for use in scripts.
+
+To update the javadoc after changes to the Java code,
+right-click on package org.csstudio.opibuilder.scriptUtil,
+select 'Export', 'Java', 'javadoc'.
+
+In dialog, verify that only this subtree of the overall CS-Studio sources is selected.
+Set 'Destination' to for example /tmp/script_doc.
+Un-check 'Generate navigator bar'.
+
+Select 'No' when asked to
+   "..update the Javadoc location for 'org.csstudio.opibuilder'..."
+because we don't plan to use the exported doc inside the IDE.
+
+After the export, replace files under org.csstudio.opibuilder/html/script
+with the generated files.
+
+The Javadoc format tends to change with JDK updates, so even if only one method in one
+scriptUtil class was modified, the complete Javadoc can be different.
+You might thus decide to only update the *.html file of the modified *.java code.
