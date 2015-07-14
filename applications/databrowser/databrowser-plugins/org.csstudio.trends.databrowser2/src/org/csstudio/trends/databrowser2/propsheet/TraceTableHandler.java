@@ -117,7 +117,6 @@ public class TraceTableHandler implements IStructuredContentProvider
         @Override
         public void selectedSamplesChanged()
         {
-
             if (!editing)
                 trace_table.getTable().getDisplay().asyncExec(() ->
             {
@@ -373,7 +372,11 @@ public class TraceTableHandler implements IStructuredContentProvider
                 if (sample.isPresent())
                 {
                     final PlotSample plot_sample = (PlotSample) sample.get();
-                    cell.setText(DefaultVTypeFormat.get().format(plot_sample.getVType()));
+                    String text = DefaultVTypeFormat.get().format(plot_sample.getVType());
+                    final String units = item.getUnits();
+                    if (units != null)
+                        text += " " + units;
+                    cell.setText(text);
                 }
                 else
                     cell.setText(Messages.NotApplicable);

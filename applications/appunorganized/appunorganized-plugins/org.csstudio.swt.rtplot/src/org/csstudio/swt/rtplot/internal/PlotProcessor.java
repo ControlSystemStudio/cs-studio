@@ -270,7 +270,13 @@ public class PlotProcessor<XTYPE extends Comparable<XTYPE>>
                         continue;
                     final double value = sample.getValue();
                     if (Double.isFinite(value)  &&  axis.getValueRange().contains(value))
-                        markers.add(new CursorMarker(cursor_x, axis.getScreenCoord(value), trace.getColor(), axis.getTicks().format(value)));
+                    {
+                        String label = axis.getTicks().format(value);
+                        final String units = trace.getUnits();
+                        if (! units.isEmpty())
+                            label += " " + units;
+                        markers.add(new CursorMarker(cursor_x, axis.getScreenCoord(value), trace.getColor(), label));
+                    }
                 }
             Collections.sort(markers);
             callback.accept(markers);

@@ -126,12 +126,16 @@ public class AnnotationImpl<XTYPE extends Comparable<XTYPE>> extends Annotation<
         final int y = Double.isFinite(value) ? yaxis.getScreenCoord(value) : yaxis.getScreenRange().getLow();
         screen_pos = Optional.of(new Point(x, y));
 
+        String value_text = yaxis.getTicks().format(value);
+        final String units = trace.getUnits();
+        if (! units.isEmpty())
+            value_text += " " + units;
         final String label = NLS.bind(text,
                 new Object[]
                 {
                     trace.getName(),
                     xaxis.getTicks().format(position),
-                    yaxis.getTicks().format(value)
+                    value_text
                 });
 
         // Layout like this:
