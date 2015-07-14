@@ -29,6 +29,8 @@ public class TraceImpl<XTYPE extends Comparable<XTYPE>> implements Trace<XTYPE>
 
     private volatile String name;
 
+    private volatile String units;
+
     private volatile RGB color;
 
     private volatile TraceType type;
@@ -44,13 +46,16 @@ public class TraceImpl<XTYPE extends Comparable<XTYPE>> implements Trace<XTYPE>
     private volatile Optional<PlotDataItem<XTYPE>> selected_sample = Optional.empty();
 
 
-    public TraceImpl(final String name, final PlotDataProvider<XTYPE> data,
+    public TraceImpl(final String name,
+            final String units,
+            final PlotDataProvider<XTYPE> data,
             final RGB color,
             final TraceType type, final int width,
             final PointType point_type, final int size,
             final int y_axis)
     {
         this.name = Objects.requireNonNull(name);
+        this.units = units == null ? "" : units;
         this.data = Objects.requireNonNull(data);
         this.color = Objects.requireNonNull(color);
         this.type = Objects.requireNonNull(type);
@@ -72,6 +77,20 @@ public class TraceImpl<XTYPE extends Comparable<XTYPE>> implements Trace<XTYPE>
     public void setName(final String name)
     {
         this.name = Objects.requireNonNull(name);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getUnits()
+    {
+        return units;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setUnits(final String units)
+    {
+        this.units = units == null ? "" : units;
     }
 
     /** {@inheritDoc} */

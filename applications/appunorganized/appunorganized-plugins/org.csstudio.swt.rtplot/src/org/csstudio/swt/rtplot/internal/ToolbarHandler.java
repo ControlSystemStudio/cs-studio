@@ -9,7 +9,7 @@ package org.csstudio.swt.rtplot.internal;
 
 import org.csstudio.swt.rtplot.Activator;
 import org.csstudio.swt.rtplot.Messages;
-import org.csstudio.swt.rtplot.PlotListenerAdapter;
+import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
@@ -156,7 +156,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
         });
         // Enable if there are annotations to remove
         edit_annotation.setEnabled(! plot.getAnnotations().isEmpty());
-        plot.addListener(new PlotListenerAdapter<XTYPE>()
+        plot.addListener(new RTPlotListener<XTYPE>()
         {
             @Override
             public void changedAnnotations()

@@ -16,13 +16,12 @@ import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.StyledCellLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -108,14 +107,6 @@ public class AddAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialog
         trace_list.setLabelProvider(new MyLabelProvider());
         trace_list.setInput(traces);
         table.setToolTipText(Messages.AddAnnotation_Trace_TT);
-        table.addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseDoubleClick(MouseEvent e)
-            {
-                okPressed();
-            }
-        });
 
         label = new Label(composite, SWT.NONE);
         label.setText(Messages.AddAnnotation_Content);
@@ -132,14 +123,20 @@ public class AddAnnotationDialog<XTYPE extends Comparable<XTYPE>> extends Dialog
         info.setBackground(composite.getBackground());
         info.setText(Messages.AddAnnotation_Content_Help);
         info.setLayoutData(new GridData(SWT.FILL, 0, true, false, 2, 1));
-
         return composite;
     }
 
     @Override
     protected void okPressed()
     {
-        plot.addAnnotation(traces.get(trace_list.getTable().getSelectionIndex()), text.getText());
+        int selected = trace_list.getTable().getSelectionIndex();
+        if (selected < 0)
+            selected = 0;
+
+        if (traces.isEmpty())
+            MessageDialog.openInformation(getShell(), Messages.AddAnnotation, Messages.AddAnnotation_NoTraces);
+        else
+            plot.addAnnotation(traces.get(selected), text.getText());
         super.okPressed();
     }
 }

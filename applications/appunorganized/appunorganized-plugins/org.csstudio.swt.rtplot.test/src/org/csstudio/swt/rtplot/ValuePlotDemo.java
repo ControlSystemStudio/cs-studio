@@ -103,7 +103,7 @@ public class ValuePlotDemo
 
         final RGBFactory colors = new RGBFactory();
         final DemoData data = new DemoData();
-        plot.addTrace("Fred [socks]", data, colors.next(), TraceType.AREA, 3, PointType.NONE, 0, 0);
+        plot.addTrace("Fred", "socks", data, colors.next(), TraceType.AREA, 3, PointType.NONE, 0, 0);
 
         final AtomicBoolean run = new AtomicBoolean(true);
         // Update data at 50Hz
@@ -133,7 +133,7 @@ public class ValuePlotDemo
         menu_holder.setMenu(menu);
 
 
-        plot.addListener(new PlotListenerAdapter<Double>()
+        plot.addListener(new RTPlotListener<Double>()
         {
             @Override
             public void changedXAxis(Axis<Double> x_axis)
