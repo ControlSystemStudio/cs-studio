@@ -269,6 +269,10 @@ public class AlarmTreeItem extends TreeItem
     }
 
     /** Update alarm state of this item, maximize alarm tree severities.
+     *
+     *  Ends up maximizing severity of parent chain,
+     *  so caller must lock root.
+     *
      *  @param current_severity Current severity of PV
      *  @param severity Alarm severity
      *  @param message Alarm message
@@ -320,7 +324,7 @@ public class AlarmTreeItem extends TreeItem
 
     /** Set severity/status of this item by maximizing over its child
      *  severities.
-     *  Recursively updates parent items.
+     *  Recursively updates parent items, so caller must have locked the root.
      *
      *  @return <code>true</code> if the severity of this item or any of its parents changed after
      *          this method is executed, or <code>false</code> if the severity remained the same
