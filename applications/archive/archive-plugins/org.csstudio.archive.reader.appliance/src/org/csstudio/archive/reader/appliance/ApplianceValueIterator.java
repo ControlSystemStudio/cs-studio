@@ -263,12 +263,13 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 		String high = headers.get(ApplianceArchiveReaderConstants.HIGH);
 		String hihi = headers.get(ApplianceArchiveReaderConstants.HIHI);
 		String hopr = headers.get(ApplianceArchiveReaderConstants.HOPR);
+
 		return ValueFactory.newDisplay(
 				(lopr != null) ? Double.parseDouble(lopr) : Double.NaN, 
 				(low != null) ? Double.parseDouble(low) : Double.NaN, 
 				(lolo != null) ? Double.parseDouble(lolo) : Double.NaN, 
 				(egu != null) ? egu : "", 
-				(prec != null) ? NumberFormats.format(Integer.parseInt(prec)) : 
+				(prec != null) ? NumberFormats.format((int)Math.round(Double.parseDouble(prec))) : 
 					NumberFormats.toStringFormat(), 
 				(high != null) ? Double.parseDouble(high) : Double.NaN, 
 				(hihi != null) ? Double.parseDouble(hihi) : Double.NaN, 

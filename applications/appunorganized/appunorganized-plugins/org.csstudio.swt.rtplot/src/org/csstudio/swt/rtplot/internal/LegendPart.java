@@ -12,6 +12,7 @@ import java.util.List;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
@@ -68,7 +69,7 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
         int max_width = 1, max_height = 1; // Start with 1 pixel to avoid later div-by-0
         for (Trace<XTYPE> trace : traces)
         {
-            final Point size = gc.textExtent(trace.getName());
+            final Point size = gc.textExtent(trace.getLabel());
             if (size.x > max_width)
                 max_width = size.x;
             if (size.y > max_height)
@@ -100,6 +101,7 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
 
         super.paint(gc, media);
 
+        final Color orig_color = gc.getForeground();
         final Font orig_font = gc.getFont();
         gc.setFont(font);
 
@@ -108,7 +110,7 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
         for (Trace<XTYPE> trace : traces)
         {
             gc.setForeground(media.get(trace.getColor()));
-            gc.drawText(trace.getName(), x, y, true);
+            gc.drawText(trace.getLabel(), x, y, true);
             x += grid_x;
             if (x > bounds.width - grid_x)
             {
@@ -117,5 +119,6 @@ public class LegendPart<XTYPE extends Comparable<XTYPE>> extends PlotPart
             }
         }
         gc.setFont(orig_font);
+        gc.setForeground(orig_color);
     }
 }

@@ -19,7 +19,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.swt.rtplot.Annotation;
 import org.csstudio.swt.rtplot.Axis;
 import org.csstudio.swt.rtplot.AxisRange;
-import org.csstudio.swt.rtplot.PlotListenerAdapter;
+import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.RTTimePlot;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.YAxis;
@@ -88,7 +88,7 @@ public class ModelBasedPlot
         value_axis.setName(Messages.Plot_ValueAxisName);
 
         // Forward user changes to plot to model
-        plot.addListener(new PlotListenerAdapter<Instant>()
+        plot.addListener(new RTPlotListener<Instant>()
         {
             @Override
             public void changedXAxis(final Axis<Instant> x_axis)
@@ -272,7 +272,9 @@ public class ModelBasedPlot
      */
     public void addTrace(final ModelItem item)
     {
-        final Trace<Instant> trace = plot.addTrace(item.getResolvedDisplayName(), item.getSamples(),
+        final Trace<Instant> trace = plot.addTrace(item.getResolvedDisplayName(),
+                item.getUnits(),
+                item.getSamples(),
                 item.getColor(),
                 item.getTraceType(), item.getLineWidth(),
                 item.getPointType(), item.getPointSize(),
@@ -297,6 +299,7 @@ public class ModelBasedPlot
         // Update Trace with item's configuration
         if (!trace.getName().equals(item.getDisplayName()))
             trace.setName(item.getDisplayName());
+        trace.setUnits(item.getUnits());
         // These happen to not cause an immediate redraw, so
         // set even if no change
         trace.setColor(item.getColor());

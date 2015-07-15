@@ -918,12 +918,11 @@ public class AlarmClientModel
             {
                 config.closeStatements();
             }
+            // This could change the alarm tree after a PV was disabled or enabled.
+            final AlarmTreeItem parent = pv.getParent();
+            if (parent != null)
+                parent.maximizeSeverity();
         }
-
-        // This could change the alarm tree after a PV was disabled or enabled.
-        final AlarmTreeItem parent = pv.getParent();
-        if (parent != null)
-            parent.maximizeSeverity();
 
         // Note that this may actually be a new PV that this instance
         // of the client GUI has just added.
@@ -948,6 +947,8 @@ public class AlarmClientModel
     public void updateEnablement(final String name, final boolean enabled)
     {
         final AlarmTreePV pv;
+        // Lock model because complete tree is searched for PV,
+        // then severity maximized up to root.
         synchronized (this)
         {
             pv = findPV(name);
@@ -959,11 +960,11 @@ public class AlarmClientModel
                 return;
             }
             pv.setEnabled(enabled);
+            // This could change the alarm tree after a PV was disabled or enabled.
+            final AlarmTreeItem parent = pv.getParent();
+            if (parent != null)
+                parent.maximizeSeverity();
         }
-        // This could change the alarm tree after a PV was disabled or enabled.
-        final AlarmTreeItem parent = pv.getParent();
-        if (parent != null)
-            parent.maximizeSeverity();
         // Update alarm display
         fireNewAlarmState(pv, true);
     }

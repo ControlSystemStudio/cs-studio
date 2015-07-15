@@ -34,6 +34,7 @@ import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVReader;
 import org.epics.pvmanager.PVReaderEvent;
 import org.epics.pvmanager.PVReaderListener;
+import org.epics.vtype.Display;
 import org.epics.vtype.VType;
 import org.w3c.dom.Element;
 
@@ -374,11 +375,22 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
                     added = true;
                 }
             }
+            // Set units unless already defined
+            if (getUnits() == null)
+                updateUnits(current_value);
             if (automaticRefresh && added &&
                 model.isPresent() &&
                 samples.isHistoryRefreshNeeded(model.get().getStartTime(), model.get().getEndTime()))
                 model.get().fireItemRefreshRequested(this);
         }
+    }
+
+    private void updateUnits(final VType value)
+    {
+        if (! (value instanceof Display))
+            return;
+        final Display display = (Display) value;
+        setUnits(display.getUnits());
     }
 
     /** Scan, i.e. add 'current' value to live samples */

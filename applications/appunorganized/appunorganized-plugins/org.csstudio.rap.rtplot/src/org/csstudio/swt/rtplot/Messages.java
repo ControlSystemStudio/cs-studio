@@ -19,6 +19,7 @@ public class Messages extends NLS
     public static String AddAnnotation_Content;
     public static String AddAnnotation_Content_Help;
     public static String AddAnnotation_DefaultText;
+    public static String AddAnnotation_NoTraces;
     public static String AddAnnotation_Text_TT;
     public static String AddAnnotation_Trace;
     public static String AddAnnotation_Trace_TT;
@@ -29,6 +30,7 @@ public class Messages extends NLS
     public static String EditAnnotation_Info;
     public static String Legend_Hide;
     public static String Legend_Show;
+    public static String NameUnitsFmt;
     public static String Pan;
     public static String Pan_TT;
     public static String Pan_X;

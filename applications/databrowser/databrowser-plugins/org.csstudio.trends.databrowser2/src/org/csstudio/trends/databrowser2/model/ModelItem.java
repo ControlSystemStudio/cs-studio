@@ -9,6 +9,7 @@ package org.csstudio.trends.databrowser2.model;
 
 import java.io.PrintWriter;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.csstudio.apputil.xml.DOMHelper;
@@ -38,6 +39,9 @@ abstract public class ModelItem
 
     /** Preferred display name, used in plot legend */
     private volatile String display_name;
+
+    /** Units, may be <code>null</code> */
+    private volatile String units;
 
     /** Show item's samples? */
     private volatile boolean visible = true;
@@ -154,6 +158,21 @@ abstract public class ModelItem
             return;
         display_name = new_display_name;
         fireItemLookChanged();
+    }
+
+    /** @param units Units, may be <code>null</code> */
+    public void setUnits(final String units)
+    {
+        if (Objects.equals(this.units, units))
+            return;
+        this.units = units;
+        fireItemLookChanged();
+    }
+
+    /** @return Units, may be <code>null</code> */
+    public String getUnits()
+    {
+        return units;
     }
 
     /** @return <code>true</code> if item should be displayed */
