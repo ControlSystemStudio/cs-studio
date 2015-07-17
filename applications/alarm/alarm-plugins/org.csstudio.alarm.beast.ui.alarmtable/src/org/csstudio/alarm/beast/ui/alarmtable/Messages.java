@@ -37,6 +37,8 @@ public class Messages extends NLS
     public static String ToggleBlinking;
     public static String Unselect;
     public static String UnselectTT;
+    public static String WeightLabel;
+    public static String WidthLabel;
 
     public static String ColumnHeaderAcknowledge;
     public static String ColumnHeaderAcknowledgeTooltip;

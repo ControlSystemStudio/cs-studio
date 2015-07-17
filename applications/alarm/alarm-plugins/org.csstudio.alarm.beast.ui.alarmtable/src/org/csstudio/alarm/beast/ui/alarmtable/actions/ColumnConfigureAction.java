@@ -30,7 +30,8 @@ public class ColumnConfigureAction extends Action {
     public void run() {
         ColumnWrapper[] columns = view.getUpdatedColumns();
         String timeFormat = view.getTimeFormat();
-        ColumnConfigurer configurer = new ColumnConfigurer(view.getViewSite().getShell(), columns, timeFormat);
+        ColumnConfigurer configurer = new ColumnConfigurer(view.getViewSite().getShell(), columns, timeFormat,
+                true, false);
         if (configurer.open() == IDialogConstants.OK_ID) {
             view.setColumns(configurer.getColumns());
             view.setTimeFormat(configurer.getTimeFormat());

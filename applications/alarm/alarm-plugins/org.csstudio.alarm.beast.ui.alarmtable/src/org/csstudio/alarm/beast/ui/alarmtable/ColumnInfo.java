@@ -1,5 +1,6 @@
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+
 /** Description of one column in the alarm table
  *
  *  @author Kay Kasemir
@@ -58,5 +59,19 @@ public enum ColumnInfo
     public String getTooltip()
     {
         return tooltip;
+    }
+
+    /**
+     * Returns the array of all names of column info objects. These names can be used to create a column info object using
+     * {@link ColumnInfo#valueOf(String)}.
+     *
+     * @return the names of all column info objects
+     */
+    public static String[] stringValues(){
+        ColumnInfo[] vals = values();
+        String[] sv = new String[vals.length];
+        for(int i = 0; i < sv.length; i++)
+            sv[i] = vals[i].name();
+        return sv;
     }
 }

@@ -554,6 +554,7 @@ public class AlarmTableView extends ViewPart
         String name = path;
         if (name.charAt(0) == '/')
             name = name.substring(1);
-        return name.substring(0, name.indexOf('/'));
+        int idx = name.indexOf('/');
+        return idx > 0 ? name.substring(0, idx) : name;
     }
 }
