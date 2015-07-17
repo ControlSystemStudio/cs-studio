@@ -93,11 +93,11 @@
 							<target>
 								<mkdir dir="${project.build.directory}/centralrepository" />
 								<get
-									src="${cs-studio-central.url}/${project.parent.artifactId}/artifacts.jar"
+									src="${cs-studio-central.url}/artifacts.jar"
 									dest="${project.build.directory}/centralrepository" verbose="false"
 									ignoreerrors="true" usetimestamp="true" />
 								<get
-									src="${cs-studio-central.url}/${project.parent.artifactId}/content.jar"
+									src="${cs-studio-central.url}/content.jar"
 									dest="${project.build.directory}/centralrepository" verbose="false"
 									ignoreerrors="true" usetimestamp="true" />
 							</target>
