@@ -120,37 +120,45 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
                 }
             };
         case VALUE:
-            return new AlarmComparator(up) 
+            return new AlarmComparator(up)
             {
                 @Override
                 protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
                 {
-                    final int cmp = pv1.getValue().compareTo(pv2.getValue());
-                    if (cmp != 0)
-                        return cmp;
+                    if (pv1.getValue() != null && pv2.getValue() != null)
+                    {
+                        final int cmp = pv1.getValue().compareTo(pv2.getValue());
+                        if (cmp != 0)
+                            return cmp;
+                    }
+                    else if ((pv1.getValue() != null && pv2.getValue() == null)
+                            || (pv1.getValue() == null && pv2.getValue() != null))
+                    {
+                        return pv1.getValue() == null ? 1 : -1;
+                    }
                     return super.doCompare(pv1, pv2);
                 }
             };
         case ACTION:
-            return new AlarmComparator(up) 
+            return new AlarmComparator(up)
             {
                 @Override
                 protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
                 {
                     final int cmp = compareGuidance(pv1, pv2, false);
-                    if (cmp != 0) 
+                    if (cmp != 0)
                         return cmp;
                     return super.doCompare(pv1, pv2);
                 }
             };
         case ID:
-            return new AlarmComparator(up) 
+            return new AlarmComparator(up)
             {
                 @Override
                 protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
                 {
                     final int cmp = compareGuidance(pv1, pv2, true);
-                    if (cmp != 0) 
+                    if (cmp != 0)
                         return cmp;
                     return super.doCompare(pv1, pv2);
                 }
@@ -160,22 +168,22 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
             return new AlarmComparator(up);
         }
     }
-    
-    private static int compareGuidance(AlarmTreePV pv1, AlarmTreePV pv2, boolean title) 
+
+    private static int compareGuidance(AlarmTreePV pv1, AlarmTreePV pv2, boolean title)
     {
         GDCDataStructure[] g1 = pv1.getGuidance();
         GDCDataStructure[] g2 = pv2.getGuidance();
         if (g1.length != 0 && g2.length != 0)
-        {   
+        {
             int cmp = 0;
-            if (title) 
+            if (title)
                 cmp = g1[0].getTitle().toLowerCase().compareTo(g2[0].getTitle().toLowerCase());
-            else 
+            else
                 cmp = g1[0].getDetails().toLowerCase().compareTo(g2[0].getDetails().toLowerCase());
-            
-            if (cmp != 0) 
+
+            if (cmp != 0)
                 return cmp;
-        } 
+        }
         else if (g1.length == 0 && g2.length != 0)
             return 1;
         else if (g1.length != 0 && g2.length == 0)

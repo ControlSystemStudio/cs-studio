@@ -96,7 +96,7 @@
                   The editpart class of the widget.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="org.csstudio.opibuilder.editparts.AbstractWidgetEditpart:"/>
+                  <meta.attribute kind="java" basedOn="org.csstudio.opibuilder.editparts.AbstractWidgetEditPart:"/>
                </appinfo>
             </annotation>
          </attribute>

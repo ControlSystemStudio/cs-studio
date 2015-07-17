@@ -101,10 +101,10 @@ public class OPIView extends ViewPart implements IOPIRuntime
     {
         return UUID.randomUUID().toString();
     }
-    
+
     @Override
     public void dispose() {
-        if (opiRuntimeDelegate != null) 
+        if (opiRuntimeDelegate != null)
         {
             opiRuntimeDelegate.dispose();
             opiRuntimeDelegate = null;
@@ -343,6 +343,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
     @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(Class adapter) {
+        if (opiRuntimeDelegate == null)
+            return super.getAdapter(adapter);
         Object obj = opiRuntimeDelegate.getAdapter(adapter);
         if (obj != null)
             return obj;

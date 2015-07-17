@@ -35,5 +35,6 @@
     <module>org.csstudio.alarm.beast.ui.test</module>
     <module>org.csstudio.alarm.intro</module>
     <module>org.csstudio.logging.jms2rdb</module>
+    <module>org.csstudio.alarm.beast.ui.alarmtable.opiwidget</module>
   </modules>
 </project>
