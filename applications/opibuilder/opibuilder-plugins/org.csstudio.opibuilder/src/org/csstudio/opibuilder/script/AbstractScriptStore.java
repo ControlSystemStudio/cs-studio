@@ -69,7 +69,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
         this.scriptData = scriptData;
         this.editPart = editpart;
         this.pvArray = pvArray;
-        
+
         editPart.addEditPartListener(new EditPartListener.Stub(){
             @Override
             public void partDeactivated(EditPart editpart) {
@@ -77,7 +77,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
                 editPart.removeEditPartListener(this);
             }
         });
-        if (editPart.isActive()) {       
+        if (editPart.isActive()) {
             init();
         } else {
             editPart.addEditPartListener(new EditPartListener.Stub(){
@@ -92,9 +92,9 @@ public abstract class AbstractScriptStore implements IScriptStore{
                 }
             });
         }
-        
+
     }
-    
+
     private void init() throws Exception {
         if(!(scriptData instanceof RuleScriptData) && !scriptData.isEmbedded()){
             absoluteScriptPath = scriptData.getPath();
@@ -315,7 +315,7 @@ public abstract class AbstractScriptStore implements IScriptStore{
      * Dispose of all resources allocated by this script store.
      */
     protected void dispose() {
-        
+
     }
 
 }

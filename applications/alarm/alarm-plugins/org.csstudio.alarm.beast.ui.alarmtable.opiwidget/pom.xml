@@ -7,7 +7,7 @@
     <artifactId>alarm-plugins</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>org.csstudio.alarm.beast.ui</artifactId>
-  <version>4.0.1-SNAPSHOT</version>
+  <artifactId>org.csstudio.alarm.beast.ui.alarmtable.opiwidget</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

@@ -201,7 +201,7 @@ public class GUI extends Composite implements AlarmClientModelListener
         @Override
         protected void fire()
         {
-            if (display.isDisposed())
+            if (display.isDisposed() || model == null)
                 return;
 
             AlarmTreePV[] rawAlarms = model.getActiveAlarms();
@@ -480,8 +480,11 @@ public class GUI extends Composite implements AlarmClientModelListener
                     @Override
                     public void controlResized(ControlEvent e)
                     {
-                        s.setWidth(c.getWidth());
-                        w.setMinWidth(c.getWidth());
+                        if (Math.abs(s.getWidth() - c.getWidth()) > 1)
+                        {
+                            s.setWidth(c.getWidth());
+                            w.setMinWidth(c.getWidth());
+                        }
                     }
 
                     @Override
@@ -1024,5 +1027,30 @@ public class GUI extends Composite implements AlarmClientModelListener
     public void setTimeFormat(String timeFormat)
     {
         table_label_provider.setTimeFormat(timeFormat);
+    }
+
+    /**
+     * Set the maximum number of alarms displayed in the table.
+     *
+     * @param limit the maximum number of alarms
+     */
+    public void setNumberOfAlarmsLimit(int limit)
+    {
+        ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setNumberOfAlarmsLimit(limit);
+        if (acknowledged_table_viewer != null)
+            ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setNumberOfAlarmsLimit(limit);
+    }
+
+    /**
+     * Set the weights of the sash form used for displaying acknowledged and unacknowledged tables. If the
+     * GUI only shows one table, this method as no effect.
+     *
+     * @param ack the weight for the acknowledged table
+     * @param unack the weight for the unacknowledged table
+     */
+    public void setSashWeights(int ack, int unack)
+    {
+        if (base_composite instanceof SashForm)
+            ((SashForm) base_composite).setWeights(new int[]{ ack, unack });
     }
 }

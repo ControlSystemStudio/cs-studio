@@ -191,7 +191,7 @@ import org.eclipse.ui.views.properties.PropertySheetPage;
 public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
     private static final Logger LOGGER = Logger.getLogger(OPIEditor.class.getName());
-    
+
     /**
      * The file extension for OPI files.
      */
@@ -225,7 +225,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             getPalettePreferences().setPaletteState(FlyoutPaletteComposite.STATE_PINNED_OPEN);
         setEditDomain(new DefaultEditDomain(this));
     }
-    
+
     @Override
     public void dispose() {
         if (outlinePage != null) {
@@ -285,7 +285,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
                 return super.getAdapter(key);
             }
         };
-        
+
         // set clipping strategy for connection layer of connection can be hide
         // when its source or target is not showing.
         ConnectionLayer connectionLayer = (ConnectionLayer) root
@@ -312,7 +312,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
                         DisplayModel.PROP_SHOW_GRID, !isChecked()));
             }
         };
-        
+
         getActionRegistry().registerAction(action);
 
         // Ruler Action

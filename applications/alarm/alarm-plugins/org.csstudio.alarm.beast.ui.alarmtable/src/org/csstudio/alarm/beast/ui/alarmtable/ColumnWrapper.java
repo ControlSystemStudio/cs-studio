@@ -59,17 +59,19 @@ public final class ColumnWrapper {
     }
 
     /**
-     * Converts the array of wrappers into an array of string, where string is the name of the column info. Only the
-     * visible wrappers are included.
+     * Converts the array of wrappers into an array of string, where string is the name of the column info,
+     * its width and weight. Only the visible wrappers are included.
      *
      * @param columns the source data
-     * @return array of visible column info names
+     * @return array of visible column strings
      */
     public static String[] toSaveArray(ColumnWrapper[] columns) {
         List<String> list = new ArrayList<>(columns.length);
         for (ColumnWrapper cw : columns) {
             if (cw.isVisible()) {
-                list.add(cw.info.name());
+                StringBuilder sb = new StringBuilder(25);
+                sb.append(cw.info.name()).append(',').append(cw.minWidth).append(',').append(cw.weight);
+                list.add(sb.toString());
             }
         }
         return list.toArray(new String[list.size()]);
@@ -220,6 +222,21 @@ public final class ColumnWrapper {
     }
 
     /**
+     * Constructs a new ColumnWrapper for the given parameters.
+     *
+     * @param info the info
+     * @param visible true if the column should be visible or false otherwise
+     * @param minWidth minimum width
+     * @param weight columns resize weight
+     */
+    public ColumnWrapper(ColumnInfo info, boolean visible, int minWidth, int weight) {
+        this.info = info;
+        setWeight(weight);
+        setVisible(visible);
+        setMinWidth(minWidth);
+    }
+
+    /**
      * Sets this column visible or invisible. The GUI should make the effort to obey this setting.
      *
      * @param visible true if the column should be visible or false if it should be hidden
@@ -255,6 +272,15 @@ public final class ColumnWrapper {
      */
     public int getWeight() {
         return weight < 0 ? info.getWeight() : weight;
+    }
+
+    /**
+     * Set a new resize weight for the column.
+     *
+     * @param weight the resize weight
+     */
+    public void setWeight(int weight) {
+        this.weight = weight;
     }
 
     /**
