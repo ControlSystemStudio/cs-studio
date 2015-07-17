@@ -64,6 +64,17 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
             }
         }
     }
+    
+	private void runOther(final IPath path) {
+		IWorkbenchPage page = PlatformUI.getWorkbench()
+				.getActiveWorkbenchWindow().getActivePage();
+		try {
+			SingleSourceHelper.openEditor(page, path);
+		} catch (Exception e) {
+			String message = NLS.bind("Failed to open the editor. \n {0}", e);
+			MessageDialog.openError(null, "Error in opening OPI", message);
+		}
+	}
 
     public void preWindowOpen() {
 
