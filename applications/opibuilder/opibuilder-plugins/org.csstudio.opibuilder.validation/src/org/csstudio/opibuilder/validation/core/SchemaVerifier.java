@@ -222,7 +222,7 @@ public class SchemaVerifier {
         numberOfWidgetsFailures = 0;
         numberOfDeprecatedFailures = 0;
     }
-    
+
     /**
      * @return number of deprecated properties used
      */
@@ -407,13 +407,13 @@ public class SchemaVerifier {
      *
      * @param failures the list of failures, which are to be found in the file (should belong to the same path)
      * @param path the path to scan
-     * @return a new array of validation failures, which might include additional failures if some deprecated 
+     * @return a new array of validation failures, which might include additional failures if some deprecated
      *          properties have been used
      * @throws IOException if there was an error opening the file
      */
     private void findCoordinates(List<ValidationFailure> failures, IPath path) throws IOException {
         try (InputStream stream = ResourceUtil.pathToInputStream(path, false)) {
-           
+
             SAXBuilder saxBuilder = LineAwareXMLParser.createBuilder();
             Document document = saxBuilder.build(stream);
 
@@ -434,7 +434,7 @@ public class SchemaVerifier {
             }
             LineAwareElement[] widgets = list.toArray(new LineAwareElement[list.size()]);
             Arrays.sort(widgets);
-            
+
             Collections.sort(failures);
             Map<Integer,LineAwareElement> widgetElements = new HashMap<>();
             int i = 0;
@@ -454,7 +454,7 @@ public class SchemaVerifier {
                             widgetElements.put(failure.getLineNumber(), widgets[i]);
 
                             setPropertyLineNumber(widgets[i],name,failures,m);
-                            while(m < failures.size()-1 
+                            while(m < failures.size()-1
                                     && failures.get(m+1).getLineNumber() == failures.get(m).getLineNumber()) {
                                 setPropertyLineNumber(widgets[i],name,failures,m+1);
                                 m++;
@@ -483,7 +483,7 @@ public class SchemaVerifier {
                         for (String d : e.getValue()) {
                             LineAwareElement node = (LineAwareElement)w.getChild(d);
                             if (node != null) {
-                                String type = n.getValue();
+                                String type = n == null ? "" : n.getValue();
                                 String widgetName = "";
                                 String wuid = null;
                                 n = w.getChild(AbstractWidgetModel.PROP_NAME);
@@ -494,8 +494,8 @@ public class SchemaVerifier {
                                 if (n != null) {
                                     wuid = n.getValue();
                                 }
-                                ValidationFailure f = new ValidationFailure(path, wuid, type, widgetName, d, null, 
-                                        node.getValue(), ValidationRule.DEPRECATED, false, true, null, 
+                                ValidationFailure f = new ValidationFailure(path, wuid, type, widgetName, d, null,
+                                        node.getValue(), ValidationRule.DEPRECATED, false, true, null,
                                         node.getLineNumber(), false, model.getClass());
                                 numberOfDeprecatedFailures++;
                                 failures.add(f);
@@ -509,7 +509,7 @@ public class SchemaVerifier {
         }
     }
 
-    private void setPropertyLineNumber(LineAwareElement widget, String name, List<ValidationFailure> failures, int m) 
+    private void setPropertyLineNumber(LineAwareElement widget, String name, List<ValidationFailure> failures, int m)
             throws Exception {
         //find the node describing the property, but only if the name of the widget matches the one in the failure
         LineAwareElement node = findPropertyElement(widget,name,failures.get(m).getProperty());
@@ -603,9 +603,9 @@ public class SchemaVerifier {
             }
         }
     }
-        
-    private static List<String> getDeprecatedProperties(Class<? extends AbstractWidgetModel> model) 
-            throws IllegalArgumentException, IllegalAccessException {        
+
+    private static List<String> getDeprecatedProperties(Class<? extends AbstractWidgetModel> model)
+            throws IllegalArgumentException, IllegalAccessException {
         List<String> deprecated = new ArrayList<>();
         Field[] fields = model.getFields();
         for (Field f :fields) {
@@ -661,7 +661,7 @@ public class SchemaVerifier {
                     List<ScriptData> modelScripts = ((ScriptsInput)modelVal).getScriptList();
                     List<ScriptData> originalScripts = ((ScriptsInput)orgVal).getScriptList();
                     failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
-                            model.getName(), model.getClass(), p, modelScripts, originalScripts, modelVal, orgVal, 
+                            model.getName(), model.getClass(), p, modelScripts, originalScripts, modelVal, orgVal,
                             rule, lineNumber,
                             (orgScript,modelScript) -> Utilities.areScriptsIdentical(orgScript, modelScript),
                             (script) -> ScriptProperty.XML_ELEMENT_PATH,
@@ -861,7 +861,7 @@ public class SchemaVerifier {
      * @return the validation failure if it was detected or null if everything is OK
      */
     private <T> ValidationFailure handleActionsScriptsRules(IPath resource, String wuid, String widgetType,
-            String widgetName, Class<? extends AbstractWidgetModel> widgetModel, String property, 
+            String widgetName, Class<? extends AbstractWidgetModel> widgetModel, String property,
             List<T> model, List<T> original, Object modelVal, Object orgVal,
             ValidationRule rule, int lineNumber, Comparator<T> comparator, Function<T,String> subPropertyTagger,
             Function<T,String> subPropDescriptor, Function<Integer,String> messageGenerator,

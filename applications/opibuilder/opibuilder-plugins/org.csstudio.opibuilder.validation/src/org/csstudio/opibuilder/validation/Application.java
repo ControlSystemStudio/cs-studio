@@ -19,9 +19,9 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 /**
- * 
+ *
  * <code>Application</code> verifies the opi files provided by the parameters against the provided
- * schema and validation rules. The results of validation are either printed to the console or into 
+ * schema and validation rules. The results of validation are either printed to the console or into
  * a file specified by one of the parameters.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -30,7 +30,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 public class Application implements IApplication {
 
     private static final char SEPARATOR = ';';
-    private static final String HEADER = "PATH;WIDGET_NAME;WIDGET_TYPE;LINE_NUMBER;PROPERTY;VALUE;EXPECTED_VALUE"; 
+    private static final String HEADER = "PATH;WIDGET_NAME;WIDGET_TYPE;LINE_NUMBER;PROPERTY;VALUE;EXPECTED_VALUE";
 //    private static final Integer EXIT_ERROR = -1;
 
     private static final String VALIDATION_RULES = "-rules";
@@ -85,7 +85,7 @@ public class Application implements IApplication {
         } else if (location == null) {
             location = new File(".").getAbsoluteFile().getParentFile().getAbsolutePath();
         }
-        
+
         Path schemaPath = new Path(new File(schema).getAbsolutePath());
         Path rulesPath = new Path(new File(rules).getAbsolutePath());
         SchemaVerifier verifier = Validator.createVerifier(schemaPath, rulesPath, null);
@@ -109,7 +109,7 @@ public class Application implements IApplication {
         sb.append("Validated RW properties: ").append(verifier.getNumberOfRWProperties()).append('\n');
         sb.append("RW failures: ").append(verifier.getNumberOfRWFailures()).append('\n');
         sb.append("Deprecated properties used: ").append(verifier.getNumberOfDeprecatedFailures());
-        
+
         if (printResults) {
             System.out.println(HEADER);
             for (ValidationFailure f : failures) {
@@ -117,7 +117,7 @@ public class Application implements IApplication {
             }
             System.out.println(sb.toString());
         }
-        
+
         if (results != null) {
             System.out.println("Results printed to file '" + new File(results).getAbsolutePath() + "'.");
             PrintWriter pw = new PrintWriter(new File(results));
@@ -126,7 +126,7 @@ public class Application implements IApplication {
                 pw.println(toMessage(f));
             }
             pw.close();
-            
+
             int idx = results.lastIndexOf('.');
             String summaryFile = null;
             if (idx < 1) {
@@ -139,13 +139,13 @@ public class Application implements IApplication {
             pw.println(sb.toString());
             pw.close();
         }
-        
+
         return EXIT_OK;
     }
-    
+
     /**
      * Convert the validation failure into a csv format: file path; widget name; line number; property; message
-     * 
+     *
      * @param f the validation failure
      * @return the full message describing the failure
      */
@@ -161,7 +161,7 @@ public class Application implements IApplication {
     /**
      * Checks the given file. If the file is a directory all its children are checked. A file is only checked
      * if it is an opi file.
-     * 
+     *
      * @param verifier the verifier to use for checking
      * @param file the file to check
      * @throws IllegalStateException
@@ -171,8 +171,10 @@ public class Application implements IApplication {
             throws IllegalStateException, IOException {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
-            for (File f : files) {
-                check(verifier, f);
+            if (files != null) {
+                for (File f : files) {
+                    check(verifier, f);
+                }
             }
         } else if (file.getAbsolutePath().toLowerCase().endsWith(".opi")) {
             System.out.println("Validating file: " + file.getAbsolutePath());
