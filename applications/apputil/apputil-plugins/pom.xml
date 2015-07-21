@@ -14,7 +14,6 @@
     <module>org.csstudio.apputil.ui</module>
     <module>org.csstudio.apputil.ui.test</module>
     <module>org.csstudio.remote</module>
-    <module>org.csstudio.remote.test</module>
     <module>org.csstudio.utility.adlParser</module>
     <module>org.csstudio.utility.caSnooperUi</module>
     <module>org.csstudio.utility.clock</module>
@@ -41,7 +40,6 @@
     <module>org.csstudio.utility.treemodel</module>
     <module>org.csstudio.utility.treemodel.test</module>
     <module>org.csstudio.servicelocator</module>
-    <module>org.csstudio.servicelocator.test</module>
     <module>org.csstudio.domain.common</module>
     <module>org.csstudio.domain.common.test</module>
   </modules>
