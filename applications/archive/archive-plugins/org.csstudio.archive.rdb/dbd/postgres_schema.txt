@@ -73,10 +73,10 @@ CREATE DATABASE archive;
 CREATE SEQUENCE smpl_eng_engid_seq;
 
 DROP TABLE IF EXISTS archive_schema;
-create table archive_schema(
-	id serial primary key,
-	version varchar(10)
-)
+CREATE TABLE archive_schema(
+   id SERIAL PRIMARY KEY,
+   version VARCHAR(10)
+);
 
 DROP TABLE IF EXISTS smpl_eng;
 CREATE TABLE  smpl_eng
