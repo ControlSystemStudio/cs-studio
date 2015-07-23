@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.validation.core;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 
 /**
@@ -25,6 +26,7 @@ public class SubValidationFailure extends ValidationFailure {
     private final String subPropertyDesc;
     private final String forcedMessage;
     private final boolean toRemove;
+    private final IResource resource;
 
     private boolean isFixed = false;
 
@@ -51,7 +53,7 @@ public class SubValidationFailure extends ValidationFailure {
             boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber,
             Class<? extends AbstractWidgetModel> model) {
         this(path, wuid, widgetType, widgetName, property, subPropertyTag, subPropertyDesc, expected, actual, rule,
-                isCritical, isFixable, forcedMessage, lineNumber, false,model);
+                isCritical, isFixable, forcedMessage, lineNumber, false, model,null);
     }
 
     /**
@@ -77,13 +79,14 @@ public class SubValidationFailure extends ValidationFailure {
     public SubValidationFailure(IPath path, String wuid, String widgetType, String widgetName, String property,
             String subPropertyTag, String subPropertyDesc, Object expected, Object actual, ValidationRule rule,
             boolean isCritical, boolean isFixable, String forcedMessage, int lineNumber, boolean toRemove,
-            Class<? extends AbstractWidgetModel> model) {
+            Class<? extends AbstractWidgetModel> model, IResource resource) {
         super(path, wuid, widgetType, widgetName, property, expected, actual, rule,
                 isCritical, isFixable, forcedMessage, lineNumber,false,model);
         this.subPropertyTag = subPropertyTag;
         this.subPropertyDesc = subPropertyDesc;
         this.forcedMessage = forcedMessage;
         this.toRemove = toRemove;
+        this.resource = resource;
     }
 
     /**
@@ -123,15 +126,42 @@ public class SubValidationFailure extends ValidationFailure {
         return parent;
     }
 
+    /**
+     * Mark the failure as being fixed or not.
+     *
+     * @param fixed true if it is fixed or false otherwise
+     */
     void setFixed(boolean fixed) {
         this.isFixed = fixed;
     }
 
+    /**
+     * @return true if the failure has been fixed or false otherwise
+     */
     boolean isFixed() {
         return isFixed;
     }
 
+    /**
+     * Returns the resource on which the failure was detected. The resource is available only if different than the
+     * resource that is being validated.
+     *
+     * @return the resource that failures relates to
+     */
+    public IResource getResource() {
+        return resource;
+    }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.opibuilder.validation.core.ValidationFailure#setLineNumber(int)
+     */
+    @Override
+    void setLineNumber(int lineNumber) {
+        if (resource == null) {
+            super.setLineNumber(lineNumber);
+        }
+    }
 
     /*
      * (non-Javadoc)
