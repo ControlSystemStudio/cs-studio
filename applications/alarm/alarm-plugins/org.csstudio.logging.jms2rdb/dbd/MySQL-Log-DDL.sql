@@ -23,15 +23,6 @@
 #
 # kasemirk@ornl.gov
 
-# Create a 'log' user who can access the 'log' tables
-GRANT ALL ON log.* TO log IDENTIFIED BY '$log';
-# Check
-SELECT User, Host FROM user;
-SELECT User, Host, Db FROM db;
-
-#SET PASSWORD FOR root@localhost=PASSWORD('new-password');
-#SET PASSWORD FOR root@'titan-terrier'=PASSWORD('new-password');
-
 # Create database
 DROP DATABASE IF EXISTS log;
 CREATE DATABASE log;
@@ -129,5 +120,12 @@ SELECT m.id ID, m.datum Date, mpt.name as Property, mct.value Value
     AND m.id = mct.MESSAGE_ID
     AND m.datum >= '2008-06-23'
   ORDER BY mct.MESSAGE_ID, Property DESC;
-  
-  
+
+# Create a 'log' user who can access the 'log' tables
+GRANT ALL ON log.* TO log IDENTIFIED BY '$log';
+# Check
+SELECT User, Host FROM mysql.user;
+SELECT User, Host, Db FROM mysql.db;
+
+#SET PASSWORD FOR root@localhost=PASSWORD('new-password');
+#SET PASSWORD FOR root@'titan-terrier'=PASSWORD('new-password');
