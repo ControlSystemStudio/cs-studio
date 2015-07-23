@@ -13,6 +13,7 @@ import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmBoolean;
 import org.csstudio.opibuilder.converter.model.EdmString;
 import org.csstudio.opibuilder.converter.model.Edm_relatedDisplayClass;
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.w3c.dom.Element;
 
@@ -94,10 +95,11 @@ public class Opi_relatedDisplayClass extends OpiWidget {
             }
 
             // target
-            Element replaceElement = widgetContext.getDocument().createElement("replace");
+            Element modeElement = widgetContext.getDocument().createElement("mode");
             EdmBoolean closeDisplay = r.getCloseDisplay().getEdmAttributesMap().get("" + i);
-            replaceElement.setTextContent(""
-                    + ((closeDisplay != null && closeDisplay.is()) ? 1 : 0));
+            modeElement.setTextContent(""
+                    + ((closeDisplay != null && closeDisplay.is()) ?
+                            DisplayMode.REPLACE.ordinal() : DisplayMode.NEW_SHELL.ordinal()));
 
             // description
             Element descElement = widgetContext.getDocument().createElement("description");
@@ -105,7 +107,7 @@ public class Opi_relatedDisplayClass extends OpiWidget {
             descElement.setTextContent(menuLabel != null ? menuLabel.get() : "");
 
             new OpiAction(widgetContext, "OPEN_DISPLAY", Arrays.asList(pathNode, macrosNode,
-                    replaceElement, descElement), hookFirstAction, false);
+                    modeElement, descElement), hookFirstAction, false);
         }
         if (r.getButtonLabel() != null) {
             new OpiString(widgetContext, r.getNumDsps() == 1 ? "text" : "label", r.getButtonLabel());
