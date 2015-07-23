@@ -141,9 +141,10 @@ public class EdmColor extends EdmAttribute {
         }
         dynamic = true;
         ruleMap = new LinkedHashMap<String, String>();
+        Scanner scanner = null;
         try {
             String rule = getValue(2);
-            Scanner scanner = new Scanner(rule);
+            scanner = new Scanner(rule);
             while(scanner.hasNextLine()){
                 String[] pieces = StringSplitter.splitIgnoreInQuotes(scanner.nextLine(), ':', true);
                 if(pieces.length ==2)
@@ -152,6 +153,10 @@ public class EdmColor extends EdmAttribute {
 
         } catch (Exception exception) {
             throw new EdmException(EdmException.COLOR_FORMAT_ERROR, "", exception);
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
         }
 
         log.config("Parsed colorsList definition.");
