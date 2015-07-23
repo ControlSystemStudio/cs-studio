@@ -4,6 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="prototypes"/>
 	<classpathentry kind="src" path="src/main"/>
-	<classpathentry exported="true" kind="lib" path="src/test/resources" sourcepath="src/test/resources"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
