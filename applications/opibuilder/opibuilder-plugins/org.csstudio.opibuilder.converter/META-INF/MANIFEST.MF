@@ -4,8 +4,7 @@ Bundle-Name: EDM2BOY Converter
 Bundle-Description: EDM to BOY Converter
 Bundle-SymbolicName: org.csstudio.opibuilder.converter;singleton:=true
 Bundle-Version: 1.0.2.qualifier
-Bundle-ClassPath: converter.jar,
- src/test/resources
+Bundle-ClassPath: converter.jar
 Main-Class: org.csstudio.opibuilder.converter.EdmConverter
 Export-Package: org.csstudio.opibuilder.converter,
  org.csstudio.opibuilder.converter.model,
@@ -23,3 +22,4 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.4.1",
 Bundle-Activator: org.csstudio.opibuilder.converter.EDM2OPIConverterPlugin
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
