@@ -23,7 +23,7 @@ public class ToggleToolbarAction<XTYPE extends Comparable<XTYPE>> extends Action
     public ToggleToolbarAction(final RTPlot<XTYPE> plot, final boolean is_visible)
     {
         super(is_visible ? Messages.Toolbar_Hide : Messages.Toolbar_Show,
-              Activator.getIcon("toolbar"));
+              Activator.getDefault().getImageDescriptor("toolbar"));
         this.plot = plot;
     }
 
