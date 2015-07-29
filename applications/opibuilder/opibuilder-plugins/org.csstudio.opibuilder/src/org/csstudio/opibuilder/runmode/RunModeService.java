@@ -175,19 +175,19 @@ public class RunModeService
     public static void openDisplayInView(final IWorkbenchPage page, final RunnerInput input, final DisplayMode mode)
     {
         OPIView.setOpenedByUser(true);
-        if (OPIBuilderPlugin.isRAP())
+        UIBundlingThread.getInstance().addRunnable(() ->
         {
-            try
+            if (OPIBuilderPlugin.isRAP())
             {
-                page.openEditor(input, OPIRunner.ID);
-            }
-            catch (PartInitException e)
-            {
-                ErrorHandlerUtil.handleError(NLS.bind("Failed to open {0}.", input.getPath()), e);
-            }
-        } else {
-            UIBundlingThread.getInstance().addRunnable(() ->
-            {
+                try
+                {
+                    page.openEditor(input, OPIRunner.ID);
+                }
+                catch (PartInitException e)
+                {
+                    ErrorHandlerUtil.handleError(NLS.bind("Failed to open {0}.", input.getPath()), e);
+                }
+            } else {
                 try
                 {
                     // Check for existing view with same input.
@@ -239,7 +239,7 @@ public class RunModeService
                 {
                     ErrorHandlerUtil.handleError(NLS.bind("Failed to open {0} in view.", input.getPath()), e);
                 }
-            });
-        }
+            }
+        });
     }
 }
