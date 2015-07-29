@@ -418,14 +418,18 @@ public class PVManagerPV implements IPV {
                             }
                         }).sync();
         try {
-            if(latch.await(timeout, TimeUnit.SECONDS))
+            if(latch.await(timeout, TimeUnit.MILLISECONDS))
                 pvWriter.write(value);
             else
-                throw new Exception(NLS.bind("Failed to connect to the PV in {0} seconds.", timeout));
+                throw new Exception(NLS.bind("Failed to connect to the PV in {0} milliseconds.", timeout));
         }finally{
             pvWriter.close();
         }
         return result.get();
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

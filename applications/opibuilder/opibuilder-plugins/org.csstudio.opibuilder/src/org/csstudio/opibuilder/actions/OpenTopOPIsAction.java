@@ -86,12 +86,10 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
                 item.addSelectionListener(new SelectionAdapter() {
                     @Override
                     public void widgetSelected(SelectionEvent e) {
-                        if (path != null) {
-                            if (path.getFileExtension().toLowerCase().equals("opi")) { //$NON-NLS-1$
-                                runOPI(topOPIs.get(path), path);
-                            } else {
-                                runOther(path);
-                            }
+                        if (path.getFileExtension().toLowerCase().equals("opi")) { //$NON-NLS-1$
+                            runOPI(topOPIs.get(path), path);
+                        } else {
+                            runOther(path);
                         }
                     }
                 });
@@ -101,13 +99,10 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
 
     public static void runOPI(final MacrosInput macrosInput, final IPath path)
     {
-        System.out.println("The macros: " + macrosInput);
         DisplayMode mode =  DisplayMode.NEW_TAB;
         if (macrosInput != null)
         {
-
             final String position = macrosInput.getMacrosMap().get(TOP_OPI_POSITION_KEY);
-            System.out.println("The position is " + position);
             if (position != null)
             {
                 if (position.toUpperCase().equals("NEW_SHELL"))

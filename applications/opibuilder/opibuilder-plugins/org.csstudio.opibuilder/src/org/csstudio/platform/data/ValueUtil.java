@@ -19,6 +19,7 @@ import org.epics.vtype.VType;
  *  @deprecated this class is only for the compatibility of very old version BOY scripts.
  *  It should be not be used in new BOY scripts. Use {@link PVUtil} instead.
  */
+@Deprecated
 public class ValueUtil
 {
     /** @return Array length of the value. <code>1</code> for scalars. */

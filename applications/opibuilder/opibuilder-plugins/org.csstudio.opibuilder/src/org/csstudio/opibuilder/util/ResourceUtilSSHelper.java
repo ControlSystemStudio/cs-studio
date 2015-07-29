@@ -13,6 +13,7 @@ import java.io.InputStream;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 
@@ -20,6 +21,13 @@ import org.eclipse.ui.IEditorInput;
  * @author Xihui Chen
  */
 public abstract class ResourceUtilSSHelper {
+
+    /**
+     * Returns the cursor for the Copy PV action.
+     *
+     * @return the cursor
+     */
+    public abstract Cursor getCopyPvCursor();
 
     /**
      * Tries to return an absolute file represented by the given path.

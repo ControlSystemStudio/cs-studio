@@ -16,6 +16,7 @@ import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.IPlaceholderFolderLayout;
 
 /** Create a perspective that's convenient for Data Browser use.
  *  @author Kay Kasemir
@@ -45,6 +46,10 @@ public class Perspective implements IPerspectiveFactory
         if (rcp || !Preferences.hideSearchView()) {
             left = layout.createFolder("left", IPageLayout.LEFT,
                     0.25f, editor);
+        } else {
+            //for RAP
+            IPlaceholderFolderLayout folder = layout.createPlaceholderFolder("left", IPageLayout.LEFT,0.25f, editor);
+            folder.addPlaceholder(SearchView.ID);
         }
 
         if (left != null) {
@@ -59,6 +64,10 @@ public class Perspective implements IPerspectiveFactory
         if (rcp || !Preferences.hidePropertiesView()) {
             bottom = layout.createFolder("bottom",IPageLayout.BOTTOM, 0.66f, editor);
             bottom.addView(IPageLayout.ID_PROP_SHEET);
+        } else {
+            //for RAP
+            IPlaceholderFolderLayout folder = layout.createPlaceholderFolder("bottom",IPageLayout.BOTTOM, 0.66f, editor);
+            folder.addPlaceholder(IPageLayout.ID_PROP_SHEET);
         }
 
         if (bottom != null) {

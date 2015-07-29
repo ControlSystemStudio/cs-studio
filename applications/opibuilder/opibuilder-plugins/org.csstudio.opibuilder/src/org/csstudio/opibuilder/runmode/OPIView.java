@@ -250,6 +250,8 @@ public class OPIView extends ViewPart implements IOPIRuntime
      */
     private void persist()
     {
+        if (OPIBuilderPlugin.isRAP())
+            return;
         // Obtain E4 model element for E3 view,
         // based on http://www.vogella.com/tutorials/EclipsePlugIn/article.html#eclipsecontext
         final IEclipseContext context = (IEclipseContext) getViewSite().getService(IEclipseContext.class);
