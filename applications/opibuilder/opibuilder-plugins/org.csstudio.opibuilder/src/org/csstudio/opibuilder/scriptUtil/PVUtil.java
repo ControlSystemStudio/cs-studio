@@ -355,7 +355,7 @@ public class PVUtil{
                             display, new Runnable() {
                                 @Override
                                 public void run() {
-                                    String message = "Failed to write PV:" + pvName
+                                    String message = "Failed to write PV: " + pvName
                                             + "\n" +
                                             (e.getCause() != null? e.getCause().getMessage():e.getMessage());
                                     ErrorHandlerUtil.handleError(message, e, true, true);

@@ -15,5 +15,6 @@ Require-Bundle: org.eclipse.core.resources;bundle-version="3.4.0",
  org.csstudio.utility.singlesource;bundle-version="1.0.0",
  org.csstudio.email;bundle-version="1.2.0",
  org.csstudio.ui.util,
- org.csstudio.utility.file;bundle-version="1.0.0"
+ org.csstudio.utility.file;bundle-version="1.0.0",
+ org.csstudio.utility.product;bundle-version="1.2.2"
 Import-Package: org.eclipse.gef.ui.actions

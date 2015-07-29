@@ -19,23 +19,41 @@ import java.net.URLConnection;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.PlatformUI;
 
-/**RAP implementation of ResourceUtilHelper.
+/**
+ * RAP implementation of ResourceUtilHelper.
+ *
  * @author Xihui Chen
  *
  */
-public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
+public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
     private static InputStream inputStream;
     private static Object lock = new Boolean(true);
-    private static final String NOT_IMPLEMENTED =
-            "This method has not been implemented yet for RAP";
+    private static final String NOT_IMPLEMENTED = "This method has not been implemented yet for RAP";
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.opibuilder.util.ResourceUtilSSHelper#getCopyPvCursor()
+     */
+    @Override
+    public Cursor getCopyPvCursor() {
+        return Cursors.HELP;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.opibuilder.util.ResourceUtilSSHelper#getFile(org.eclipse .core.runtime.IPath)
+     */
     @Override
     public File getFile(IPath path) throws Exception {
         File local_file = path.toFile();
@@ -47,41 +65,37 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
     }
 
     /**
-     * Return the {@link InputStream} of the file that is available on the
-     * specified path.
+     * Return the {@link InputStream} of the file that is available on the specified path.
      *
      * @param path
-     *            The {@link IPath} to the file in the workspace, the local
-     *            file system, or a URL (http:, https:, ftp:, file:, platform:)
+     *            The {@link IPath} to the file in the workspace, the local file system, or a URL (http:, https:, ftp:,
+     *            file:, platform:)
      * @param runInUIJob
-     *                 true if the task should run in UIJob, which will block UI responsiveness with a progress bar
-     * on status line. Caller must be in UI thread if this is true.
+     *            true if the task should run in UIJob, which will block UI responsiveness with a progress bar on status
+     *            line. Caller must be in UI thread if this is true.
      * @return The corresponding {@link InputStream}. Never <code>null</code>
      * @throws Exception
      */
     @SuppressWarnings("nls")
-    public InputStream pathToInputStream(final IPath path, boolean runInUIJob) throws Exception
-    {
+    public InputStream pathToInputStream(final IPath path, boolean runInUIJob) throws Exception {
         // Not a workspace file. Try local file system
         File local_file = path.toFile();
         // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
             local_file = new File(local_file.getPath().substring(5));
         String urlString;
-        try
-        {
+        try {
             return new FileInputStream(local_file);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             // Could not open as local file.
             // Does it look like a URL?
             // Eclipse Path collapses "//" into "/", revert that:
             urlString = path.toString();
-//            if(!urlString.contains("://"))
-//                urlString = urlString.replaceFirst(":/", "://");
-            // Does it now look like a URL? If not, report the original local file problem
-            if (! ResourceUtil.isURL(urlString))
+            // if(!urlString.contains("://"))
+            // urlString = urlString.replaceFirst(":/", "://");
+            // Does it now look like a URL? If not, report the original local
+            // file problem
+            if (!ResourceUtil.isURL(urlString))
                 throw new Exception("Cannot open " + ex.getMessage(), ex);
         }
 
@@ -93,26 +107,21 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
             synchronized (lock) {
                 IRunnableWithProgress openURLTask = new IRunnableWithProgress() {
 
-                    public void run(IProgressMonitor monitor)
-                            throws InvocationTargetException,
-                            InterruptedException {
+                    public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
                         try {
-                            monitor.beginTask("Connecting to " + url,
-                                    IProgressMonitor.UNKNOWN);
+                            monitor.beginTask("Connecting to " + url, IProgressMonitor.UNKNOWN);
                             inputStream = openURLStream(url);
                         } catch (IOException e) {
-                            throw new InvocationTargetException(e,
-                                    "Timeout while connecting to " + url);
+                            throw new InvocationTargetException(e, "Timeout while connecting to " + url);
                         } finally {
                             monitor.done();
                         }
                     }
 
                 };
-                PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                        .run(true, false, openURLTask);
+                PlatformUI.getWorkbench().getActiveWorkbenchWindow().run(true, false, openURLTask);
             }
-        }else
+        } else
             return openURLStream(url);
 
         return inputStream;
@@ -125,21 +134,16 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
         return connection.getInputStream();
     }
 
-
-
-    public boolean isExistingLocalFile(IPath path){
-         // Not a workspace file. Try local file system
+    public boolean isExistingLocalFile(IPath path) {
+        // Not a workspace file. Try local file system
         File local_file = path.toFile();
         // Path URL for "file:..." so that it opens as FileInputStream
         if (local_file.getPath().startsWith("file:"))
             local_file = new File(local_file.getPath().substring(5));
-        try
-        {
+        try {
             InputStream inputStream = new FileInputStream(local_file);
             inputStream.close();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             return false;
         }
         return true;
@@ -150,24 +154,23 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper{
      * @return
      * @throws FileNotFoundException
      */
-    public IPath getPathInEditor(IEditorInput input){
-        if(input instanceof IPathEditorInput)
-            return ((IPathEditorInput)input).getPath();
+    public IPath getPathInEditor(IEditorInput input) {
+        if (input instanceof IPathEditorInput)
+            return ((IPathEditorInput) input).getPath();
         return null;
     }
 
-
-
-
-    /** Check if a URL is actually a URL
-     *  @param url Possible URL
-     *  @return <code>true</code> if considered a URL
+    /**
+     * Check if a URL is actually a URL
+     *
+     * @param url
+     *            Possible URL
+     * @return <code>true</code> if considered a URL
      */
     @SuppressWarnings("nls")
-/*    public static boolean isURL(final String url){
-        return url.contains("://");  //$NON-NLS-1$
-    }*/
-
+    /*
+     * public static boolean isURL(final String url){ return url.contains("://"); //$NON-NLS-1$ }
+     */
     @Override
     public InputStream getInputStreamFromEditorInput(IEditorInput editorInput) {
         return null;

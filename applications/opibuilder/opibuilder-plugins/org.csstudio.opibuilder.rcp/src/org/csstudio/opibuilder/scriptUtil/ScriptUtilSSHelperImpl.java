@@ -36,6 +36,7 @@ public class ScriptUtilSSHelperImpl extends ScriptUtilSSHelper {
 
     public static final String ID = "org.csstudio.opibuilder.scriptUtil.ScriptUtilSSHelper";
 
+    @SuppressWarnings("null")
     @Override
     public void writeTextFile(String filePath, boolean inWorkspace,
             AbstractBaseEditPart widget, String text, boolean append)

@@ -10,9 +10,13 @@ package org.csstudio.opibuilder.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
@@ -21,21 +25,48 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.draw2d.Cursors;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
+import org.osgi.framework.Bundle;
 
 /**
  * @author Xihui Chen
  *
  */
 public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
+
+    private static final Logger LOGGER = Logger.getLogger(ResourceUtilSSHelperImpl.class.getName());
+    private static final String CURSOR_PATH = "icons/copy.gif";
+    private Cursor copyPvCursor;
+
+    @Override
+    public Cursor getCopyPvCursor() {
+        if (copyPvCursor == null) {
+            Bundle bundle = Platform.getBundle(OPIBuilderPlugin.PLUGIN_ID);
+            IPath path = new Path(CURSOR_PATH);
+            URL url = FileLocator.find(bundle, path, null);
+            try {
+                InputStream inputStream = url.openConnection().getInputStream();
+                copyPvCursor = new Cursor(Display.getCurrent(), new ImageData(inputStream), 0, 0);
+            } catch (IOException e) {
+                copyPvCursor = Cursors.HELP;
+            }
+        }
+        return copyPvCursor;
+    }
 
     /*
      * (non-Javadoc)
@@ -114,6 +145,7 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
                 result = ((FileEditorInput) editorInput).getFile()
                         .getContents();
             } catch (CoreException e) {
+                LOGGER.log(Level.SEVERE, "Error while trying to access input stream of an editor.", e);
                 e.printStackTrace();
             }
         } else if (editorInput instanceof FileStoreEditorInput) {
@@ -122,7 +154,7 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
             try {
                 result = new FileInputStream(path.toFile());
             } catch (FileNotFoundException e) {
-                result = null;
+                //ignore
             }
         }
 
