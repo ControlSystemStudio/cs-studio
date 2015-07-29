@@ -389,10 +389,8 @@ public class DataBrowserEditor extends EditorPart
         manager.add(new RefreshAction(controller));
         manager.add(new Separator());
 
-        if (is_rcp  ||  ! Preferences.hidePropertiesView())
-            manager.add(new OpenPropertiesAction());
-        if (is_rcp  ||  ! Preferences.hideSearchView())
-            manager.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
+        manager.add(new OpenPropertiesAction());
+        manager.add(new OpenViewAction(SearchView.ID, Messages.OpenSearchView,
                     activator.getImageDescriptor("icons/search.gif")));
         if (is_rcp)
             manager.add(new OpenViewAction(ExportView.ID, Messages.OpenExportView,
