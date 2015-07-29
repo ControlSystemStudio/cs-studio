@@ -186,7 +186,8 @@ public class DataBrowserPropertySheetPage extends Page
         @Override
         public void changedItemLook(final ModelItem item)
         {
-            updateTracesTabDetailPanel();
+            // Change of 'units' can arrive on non-UI threads
+            control.getDisplay().asyncExec(DataBrowserPropertySheetPage.this::updateTracesTabDetailPanel);
         }
 
         /** {@inheritDoc} */
