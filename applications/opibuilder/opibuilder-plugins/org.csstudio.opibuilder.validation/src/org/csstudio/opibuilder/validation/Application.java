@@ -8,15 +8,27 @@
 package org.csstudio.opibuilder.validation;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.io.FileUtils;
 import org.csstudio.opibuilder.validation.core.SchemaVerifier;
 import org.csstudio.opibuilder.validation.core.ValidationFailure;
 import org.csstudio.opibuilder.validation.core.Validator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  *
@@ -40,6 +52,8 @@ public class Application implements IApplication {
     private static final String HELP = "-help";
     private static final String VERSION = "-version";
     private static final String PRINT_RESULTS = "-print";
+
+    private boolean deleteWhenFinished = false;
 
     /*
      * (non-Javadoc)
@@ -94,8 +108,12 @@ public class Application implements IApplication {
             System.err.println("The path '" + location + "' does not exist.");
             return EXIT_OK;
         }
+        file = setUpLocation(file);
         check(verifier, file);
         ValidationFailure[] failures = verifier.getValidationFailures();
+        if (deleteWhenFinished) {
+            FileUtils.deleteDirectory(file);
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("Validated files: ").append(verifier.getNumberOfAnalyzedFiles()).append('\n');
         sb.append("Files with failures: ").append(verifier.getNumberOfFilesFailures()).append('\n');
@@ -212,4 +230,111 @@ public class Application implements IApplication {
     public void stop() {
     }
 
+    ////////////////////////////////////////////////////////////
+
+    private static final String PROJECT_FILE = ".project";
+    private static final String XML_LINKED_RESOURCES = "linkedResources";
+    private static final String XML_LINK = "link";
+    private static final String XML_LOCATION = "location";
+    private static final String XML_NAME = "name";
+    private static final String XML_TYPE = "type";
+
+    private static class Resource {
+        final String location;
+        final String destination;
+        final int type;
+        Resource(String location, String destination, int type) {
+            this.location = location;
+            this.destination = destination;
+            this.type = type;
+        }
+    }
+
+    private File setUpLocation(File file) throws IOException {
+        if (file.isFile()) {
+            return file;
+        }
+        //if file is a directory, search for .project files.
+        //gather all .project files that contains a linked resource
+        Map<File, Resource[]> links = gatherLinkedResources(new HashMap<>(),file);
+        if (links.isEmpty()) {
+            return file;
+        }
+        //if .project exists and at least one contains a linked resource tag, copy everything to a temp folder and validate there
+        String tempFolder = System.getProperty("java.io.tmpdir");
+        File temp = new File(tempFolder, "opivalidation");
+        temp = new File(temp, file.getName());
+        if (temp.exists()) {
+            FileUtils.deleteDirectory(temp);
+        }
+        FileUtils.copyDirectory(file, temp);
+        deleteWhenFinished = true;
+
+        String absoluteLocation = file.getAbsolutePath();
+        for (Map.Entry<File,Resource[]> e : links.entrySet()) {
+            File project = e.getKey().getParentFile();
+            String absoluteProject = project.getAbsolutePath();
+            if (!absoluteProject.startsWith(absoluteLocation)) continue;
+            String path = absoluteProject.substring(absoluteLocation.length());
+            File destination = new File(temp, path);
+            for (Resource r : e.getValue()) {
+                File dest = new File(destination,r.destination);
+                if (r.type == 1) {
+                    FileUtils.copyFile(new File(r.location), dest);
+                } else {
+                    FileUtils.copyDirectory(new File(r.location), dest);
+                }
+            }
+        }
+        return temp;
+    }
+
+    private static Map<File,Resource[]> gatherLinkedResources(Map<File,Resource[]> links, File file) {
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File f : files) {
+                if (f.isDirectory()) {
+                    gatherLinkedResources(links, f);
+                }
+                if (PROJECT_FILE.equalsIgnoreCase(f.getName())) {
+                    try (FileInputStream stream = new FileInputStream(f)) {
+                        ArrayList<Resource> linkList = new ArrayList<>();
+                        Document d = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(stream);
+                        NodeList linkedResources = d.getElementsByTagName(XML_LINKED_RESOURCES);
+                        for (int i = 0; i < linkedResources.getLength(); i++) {
+                            NodeList linkItems = linkedResources.item(i).getChildNodes();
+                            for (int j = 0; j < linkItems.getLength(); j++) {
+                                Node node = linkItems.item(j);
+                                if (XML_LINK.equals(node.getNodeName())) {
+                                    NodeList linkChildren = node.getChildNodes();
+                                    String location = null;
+                                    String destination = null;
+                                    int type = 0;
+                                    for (int k = 0; k < linkChildren.getLength(); k++) {
+                                        node = linkChildren.item(k);
+                                        if (XML_LOCATION.equals(node.getNodeName())) {
+                                            location = node.getTextContent();
+                                        } else if (XML_NAME.equals(node.getNodeName())) {
+                                            destination = node.getTextContent();
+                                        } else if (XML_TYPE.equals(node.getNodeName())) {
+                                            type = Integer.parseInt(node.getTextContent());
+                                        }
+                                    }
+                                    if (location != null && destination != null && type != 0) {
+                                        linkList.add(new Resource(location,destination,type));
+                                    }
+                                }
+                            }
+                        }
+                        if (!linkList.isEmpty()) {
+                            links.put(f, linkList.toArray(new Resource[linkList.size()]));
+                        }
+                    } catch (IOException | SAXException | ParserConfigurationException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return links;
+    }
 }

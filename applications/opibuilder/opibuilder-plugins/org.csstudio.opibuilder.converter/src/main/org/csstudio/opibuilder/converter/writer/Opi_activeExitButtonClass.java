@@ -36,7 +36,7 @@ public class Opi_activeExitButtonClass extends OpiWidget {
         embedded.setTextContent("true");
         Element scriptText = widgetContext.getDocument().createElement("scriptText");
         scriptText.setTextContent("importPackage(Packages.org.csstudio.opibuilder.scriptUtil);"
-                + "ScriptUtil.closeCurrentOPI();");
+                + "ScriptUtil.closeAssociatedOPI(widget);");
         new OpiAction(widgetContext, "EXECUTE_JAVASCRIPT", Arrays.asList(embedded, scriptText),
                 false, false);
         if (r.getLabel() != null)

@@ -8,6 +8,6 @@
     <version>0.0.1-SNAPSHOT</version>
   </parent>
   <artifactId>org.csstudio.opibuilder</artifactId>
-  <version>4.0.103-SNAPSHOT</version>
+  <version>4.0.104-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

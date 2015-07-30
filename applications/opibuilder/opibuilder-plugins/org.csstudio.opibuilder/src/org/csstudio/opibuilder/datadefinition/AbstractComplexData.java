@@ -118,4 +118,15 @@ public abstract class AbstractComplexData {
         }
         return true;
     }
+
+    @Override
+    public int hashCode() {
+        AbstractWidgetProperty[] properties = getAllProperties();
+        int result = getClass().hashCode();
+        for (AbstractWidgetProperty p : properties) {
+            result = 31 * result + p.getPropertyID().hashCode();
+            result = 31 * result + (p.getPropertyValue() == null ? 0 : p.getPropertyValue().hashCode());
+        }
+        return result;
+    }
 }

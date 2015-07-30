@@ -83,7 +83,7 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
         this.usingNonDefinedValue = usingNonDefinedValue;
         this.modelClass = modelClass;
     }
-    
+
     /**
      * @return the class of the model that this failure belongs to
      */
@@ -227,6 +227,17 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
             f.setParent(this);
         }
         subFailures.addAll(failures);
+    }
+
+    /**
+     * Adds the sub failure to this validation failure.
+     *
+     * @see #addSubFailure(List)
+     * @param failure the failure to add
+     */
+    public void addSubFailure(SubValidationFailure failure) {
+        failure.setParent(this);
+        subFailures.add(failure);
     }
 
     /**

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: RAP fragment for opibuilder
 Bundle-SymbolicName: org.csstudio.opibuilder.rap;singleton:=true
-Bundle-Version: 3.2.10.qualifier
+Bundle-Version: 4.0.0.qualifier
 Fragment-Host: org.csstudio.opibuilder;bundle-version="3.2.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.csstudio.rap.core;bundle-version="1.0.0",

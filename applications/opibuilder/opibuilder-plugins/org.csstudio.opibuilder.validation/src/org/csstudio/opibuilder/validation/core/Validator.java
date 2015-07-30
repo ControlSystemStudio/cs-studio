@@ -139,6 +139,12 @@ public class Validator extends AbstractValidator {
     }
 
     private ValidatorMessage createMessage(ValidationFailure vf, IResource resource, boolean useDefaultEditor) {
+        if (vf instanceof SubValidationFailure) {
+            IResource res = ((SubValidationFailure)vf).getResource();
+            if (res != null) {
+                resource = res;
+            }
+        }
         ValidatorMessage message = ValidatorMessage.create(vf.getMessage(), resource);
         message.setType(MARKER_PROBLEM);
         if (vf.getRule() == ValidationRule.RO) {
@@ -192,7 +198,7 @@ public class Validator extends AbstractValidator {
             verifier = createVerifier(PreferencesHelper.getSchemaOPIPath(),rulesFile,monitor);
         }
     }
-    
+
     /*
      * (non-Javadoc)
      *
@@ -295,13 +301,13 @@ public class Validator extends AbstractValidator {
         }
         return page;
     }
-    
+
     /**
      * Creates a verifier based on the schema and rules.
-     * 
+     *
      * @param schema the path to the OPI schema against which the files will be verified
-     * @param rulesFile the file containing the validation rules 
-     * @param monitor a monitor which is cancelled in case of failure (can be null) 
+     * @param rulesFile the file containing the validation rules
+     * @param monitor a monitor which is cancelled in case of failure (can be null)
      * @return schema verifier
      */
     public static SchemaVerifier createVerifier(IPath schema, IPath rulesFile, IProgressMonitor monitor) {

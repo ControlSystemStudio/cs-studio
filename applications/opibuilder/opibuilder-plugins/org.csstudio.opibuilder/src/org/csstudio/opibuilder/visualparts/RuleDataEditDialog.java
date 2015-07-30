@@ -593,13 +593,11 @@ public class RuleDataEditDialog extends HelpTrayDialog {
                 if (columnIndex == 1 && !ruleData.isOutputExpValue() && element instanceof Expression) {
                     Expression expression = (Expression) element;
 
-                    if (expression != null) {
-                        if(ruleData.getProperty().getPropertyDescriptor() == null)
-                            return null;
-                        if (ruleData.getProperty().getPropertyDescriptor().getLabelProvider() != null)
-                            return ruleData.getProperty().getPropertyDescriptor().getLabelProvider().
-                                getImage(expression.getValue());
-                    }
+                    if(ruleData.getProperty().getPropertyDescriptor() == null)
+                        return null;
+                    if (ruleData.getProperty().getPropertyDescriptor().getLabelProvider() != null)
+                        return ruleData.getProperty().getPropertyDescriptor().getLabelProvider().
+                            getImage(expression.getValue());
                 }
                 return null;
             }

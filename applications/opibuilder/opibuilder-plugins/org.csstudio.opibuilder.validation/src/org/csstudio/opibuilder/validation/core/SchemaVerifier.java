@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.validation.core;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -29,19 +31,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-
-
-
-
-
-
-
-
-
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.AbstractLinkingContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.ConnectionModel;
 import org.csstudio.opibuilder.model.DisplayModel;
@@ -49,6 +43,7 @@ import org.csstudio.opibuilder.persistence.LineAwareXMLParser;
 import org.csstudio.opibuilder.persistence.LineAwareXMLParser.LineAwareElement;
 import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.ActionsProperty;
 import org.csstudio.opibuilder.properties.RulesProperty;
 import org.csstudio.opibuilder.properties.ScriptProperty;
@@ -57,6 +52,7 @@ import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.RulesInput;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptsInput;
+import org.csstudio.opibuilder.scriptUtil.FileUtil;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
@@ -67,6 +63,7 @@ import org.csstudio.opibuilder.widgets.editparts.ArrayEditPart;
 import org.csstudio.opibuilder.widgets.model.ArrayModel;
 import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.gef.EditPart;
@@ -526,7 +523,7 @@ public class SchemaVerifier {
             SubValidationFailure[] subs = failure.getSubFailures();
             for (SubValidationFailure s : subs) {
                 if (s.getActualValue() != null) {
-                    LineAwareElement n = findSubNode(node, s.getSubPropertyTag(), s.getActualValue());
+                    LineAwareElement n = findSubNode(node, s.getSubPropertyTag(), s.getActualValue(),s.getModelClass());
                     if (n != null) {
                         s.setLineNumber(n.getLineNumber());
                     }
@@ -537,14 +534,16 @@ public class SchemaVerifier {
         }
     }
 
-    private static LineAwareElement findSubNode(LineAwareElement parent, String tagName, Object actualValue) throws Exception {
+    private static LineAwareElement findSubNode(LineAwareElement parent, String tagName, Object actualValue,
+            Class<? extends AbstractWidgetModel> modelClass) throws Exception {
         if (parent.getName().equals(tagName)) return parent;
         List<?> children = parent.getChildren();
         try {
             if (actualValue instanceof RuleData) {
                 RulesProperty prop = new RulesProperty(AbstractWidgetModel.PROP_RULES, "Rules",
                         WidgetPropertyCategory.Behavior);
-                prop.setWidgetModel(new DisplayModel());
+                //TODO
+                prop.setWidgetModel(modelClass.newInstance());
                 List<RuleData> rules = prop.readValueFromXML(parent).getRuleDataList();
                 for (int i = 0; i < rules.size(); i++) {
                     if (Utilities.areRulesIdentical(rules.get(i), (RuleData)actualValue) == 0) {
@@ -592,8 +591,9 @@ public class SchemaVerifier {
      * @param pathToFile the path to the file that owns the model
      * @param containerModel the container model to check against the schema
      * @param failures the list into which all validation failures are stored
+     * @throws IOException
      */
-    private void check(IPath pathToFile, AbstractContainerModel containerModel, List<ValidationFailure> failures) {
+    private void check(IPath pathToFile, AbstractContainerModel containerModel, List<ValidationFailure> failures) throws IOException {
         for (AbstractWidgetModel model : containerModel.getChildren()) {
             checkWidget(pathToFile, model, failures);
         }
@@ -619,7 +619,7 @@ public class SchemaVerifier {
         return deprecated;
     }
 
-    private void checkWidget(IPath pathToFile, AbstractWidgetModel model, List<ValidationFailure> failures) {
+    private void checkWidget(IPath pathToFile, AbstractWidgetModel model, List<ValidationFailure> failures) throws IOException {
         numberOfAnalyzedWidgets++;
         ValidationRule rule;
         Object orgVal, modelVal;
@@ -650,24 +650,28 @@ public class SchemaVerifier {
                 } else if (AbstractWidgetModel.PROP_RULES.equals(p)) {
                     List<RuleData> modelRules = ((RulesInput)modelVal).getRuleDataList();
                     List<RuleData> originalRules = ((RulesInput)orgVal).getRuleDataList();
-                    failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
+                    ValidationFailure vf = handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
                             model.getName(), model.getClass(), p, modelRules, originalRules, modelVal, orgVal, rule,
                             lineNumber, (orgRule,modelRule) -> Utilities.areRulesIdentical(orgRule,modelRule),
                             (theRule) -> RulesProperty.XML_ELEMENT_RULE,
                             (therule) -> therule.getName(),
                             (match) -> Utilities.ruleMatchValueToMessage(match),
-                            (theRule) -> theRule.getName()));
+                            (theRule) -> theRule.getName());
+                    vf = checkWhatRulesDo(pathToFile, lineNumber, vf, (RulesInput)modelVal);
+                    failures.add(vf);
                 } else if (AbstractWidgetModel.PROP_SCRIPTS.equals(p)) {
                     List<ScriptData> modelScripts = ((ScriptsInput)modelVal).getScriptList();
                     List<ScriptData> originalScripts = ((ScriptsInput)orgVal).getScriptList();
-                    failures.add(handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
+                    ValidationFailure vf = handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
                             model.getName(), model.getClass(), p, modelScripts, originalScripts, modelVal, orgVal,
                             rule, lineNumber,
                             (orgScript,modelScript) -> Utilities.areScriptsIdentical(orgScript, modelScript),
                             (script) -> ScriptProperty.XML_ELEMENT_PATH,
                             (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString(),
                             (match) -> Utilities.scriptMatchValueToMessage(match),
-                            (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString()));
+                            (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString());
+                    vf = checkWhatScriptsDo(pathToFile, lineNumber, vf, modelScripts, model);
+                    failures.add(vf);
                 } else {
                     if (rule == ValidationRule.RO) {
                         //read-only properties must have identical values, otherwise it is a failure
@@ -995,13 +999,125 @@ public class SchemaVerifier {
                     if (v.equals(name)) {
                         ffs.add(new SubValidationFailure(resource, wuid, widgetType, widgetName, property,
                                 subPropertyTagger.apply(m), subPropDescriptor.apply(m),
-                                null, m, rule, false, true, null, lineNumber, true,widgetModel));
+                                null, m, rule, false, true, null, lineNumber, true,widgetModel, null));
                         break;
                     }
                 }
             }
         }
         return ffs;
+    }
+
+    private ValidationFailure checkWhatRulesDo(IPath pathToFile, int lineNumber, ValidationFailure vf,
+            RulesInput rules) {
+        for (RuleData rd : rules.getRuleDataList()) {
+            AbstractWidgetProperty property = rd.getProperty();
+            AbstractWidgetModel model = rd.getWidgetModel();
+            ValidationRule rule = getRuleForProperty(property.getPropertyID(), model.getTypeID());
+            if (rule == ValidationRule.RO) {
+                if (vf == null) {
+                    vf = new ValidationFailure(pathToFile, model.getWUID(), model.getTypeID(),
+                            model.getName(), AbstractWidgetModel.PROP_RULES,
+                            null, rules, rule, true, true, "rules: Read-only property changed by rule.",
+                            lineNumber, false, model.getClass());
+                }
+
+                vf.addSubFailure(new SubValidationFailure(pathToFile, model.getWUID(),
+                        model.getTypeID(), model.getName(), AbstractWidgetModel.PROP_RULES,
+                        RulesProperty.XML_ELEMENT_RULE, rd.getName(),
+                        null, rd, rule, true, true, "Modifying RO property " + property.getPropertyID() + ".",
+                        lineNumber, true, model.getClass(), null));
+            }
+        }
+        return vf;
+    }
+
+    private static final String SCRIPT_PROPERTY_MODIFICATION = "widget.setPropertyValue(\"";
+    private static final int SCRIPT_LENGTH = SCRIPT_PROPERTY_MODIFICATION.length();
+
+    private ValidationFailure checkWhatScriptsDo(IPath pathToFile, int lineNumber, ValidationFailure vf,
+            List<ScriptData> scripts, AbstractWidgetModel model) throws IOException {
+        if (scripts.isEmpty()) {
+            return vf;
+        }
+        List<SubValidationFailure> failures = new ArrayList<SubValidationFailure>();
+        for (ScriptData sd : scripts) {
+            String text = sd.getScriptText();
+            if (text != null) {
+                failures.addAll(checkScriptLine(sd,text,model,pathToFile,lineNumber,sd.getScriptName(),null));
+            } else if (sd.getPath() != null) {
+                failures.addAll(checkScript(sd, model, lineNumber));
+            }
+        }
+
+        if (!failures.isEmpty()) {
+            if (vf == null) {
+                vf = new ValidationFailure(pathToFile, model.getWUID(), model.getTypeID(),
+                      model.getName(), AbstractWidgetModel.PROP_SCRIPTS,
+                      null, null, ValidationRule.RO, true, false, "scripts: Read-only property changed by scripts",
+                      lineNumber, false, model.getClass());
+            }
+            vf.addSubFailure(failures);
+        }
+
+        return vf;
+    }
+
+    private List<SubValidationFailure> checkScriptLine(ScriptData sd, String text, AbstractWidgetModel model,
+            IPath pathToFile, int lineNumber, String scriptName, IResource resource) {
+        List<SubValidationFailure> failures = new ArrayList<>();
+        String widgetType = model.getTypeID();
+        int idx = 0;
+        while (idx >= 0) {
+            idx = text.indexOf(SCRIPT_PROPERTY_MODIFICATION,idx);
+            if (idx >= 0) {
+                String property = text.substring(idx + SCRIPT_LENGTH, text.indexOf('"',idx+SCRIPT_LENGTH));
+                ValidationRule rule = getRuleForProperty(property, widgetType);
+                if (rule == ValidationRule.RO) {
+                    failures.add(new SubValidationFailure(pathToFile, model.getWUID(),
+                          model.getTypeID(), model.getName(), AbstractWidgetModel.PROP_SCRIPTS,
+                          ScriptProperty.XML_ELEMENT_SCRIPT_TEXT, scriptName,
+                          null, sd, rule, true, false, "Modifying RO property " + property + ".",
+                          lineNumber, false, model.getClass(), resource));
+                }
+                idx++;
+            }
+        }
+        return failures;
+    }
+
+    private List<SubValidationFailure> checkScript(ScriptData data, AbstractWidgetModel model, int orgLineNumber)
+            throws IOException {
+        IPath absoluteScriptPath = data.getPath();
+        if(!absoluteScriptPath.isAbsolute()){
+            DisplayModel root = model instanceof AbstractLinkingContainerModel ?
+                ((AbstractLinkingContainerModel) model).getDisplayModel() : model.getRootDisplayModel();
+            absoluteScriptPath = root.getOpiFilePath().removeLastSegments(1).append(absoluteScriptPath);
+            if(!ResourceUtil.isExsitingFile(absoluteScriptPath, false)){
+                absoluteScriptPath = ResourceUtil.getFileOnSearchPath(data.getPath(), false);
+            }
+        }
+        List<SubValidationFailure> failures = new ArrayList<>();
+        try (InputStream inputStream = FileUtil.getInputStreamFromFile(absoluteScriptPath.toString(), null);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) { //$NON-NLS-1$
+            int lineNumber = 1;
+            String line;
+            String path = data.getPath().toString();
+            IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(absoluteScriptPath);
+            while (reader.ready()) {
+                line = reader.readLine();
+                if (!line.isEmpty()) {
+                    failures.addAll(checkScriptLine(data,line, model, absoluteScriptPath, lineNumber, path,
+                            resource));
+                }
+                lineNumber++;
+            }
+        } catch (Exception e) {
+            failures.add(new SubValidationFailure(data.getPath(), model.getWUID(), model.getTypeID(), model.getName(),
+                    AbstractWidgetModel.PROP_SCRIPTS, ScriptProperty.XML_ELEMENT_SCRIPT_TEXT, data.getPath().toString(),
+                    null, null, ValidationRule.WRITE, true, false, e.getMessage(), orgLineNumber, model.getClass()));
+        }
+        return failures;
     }
 
     /**
