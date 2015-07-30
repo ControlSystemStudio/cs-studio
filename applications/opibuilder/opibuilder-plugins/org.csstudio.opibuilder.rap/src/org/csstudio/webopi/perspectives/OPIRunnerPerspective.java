@@ -44,7 +44,7 @@ public class OPIRunnerPerspective implements IPerspectiveFactory {
 
     private static final String SECOND_ID = ":*"; //$NON-NLS-1$
 
-    public final static String ID = "org.csstudio.opibuilder.OPIRuntime"; //$NON-NLS-1$
+    public final static String ID = "org.csstudio.webopi.perspectives.OPIRuntime"; //$NON-NLS-1$
 //
 //    private static final String ID_CONSOLE_VIEW =
 //        "org.eclipse.ui.console.ConsoleView";//$NON-NLS-1$

@@ -44,6 +44,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
@@ -67,6 +68,15 @@ public class ResourceUtil {
     static {
         IMPL = (ResourceUtilSSHelper)ImplementationLoader.newInstance(
                 ResourceUtilSSHelper.class);
+    }
+
+    /**
+     * Returns the cursor used during pv copy action.
+     *
+     * @return the cursor
+     */
+    public static Cursor getCopyPvCursor() {
+        return IMPL.getCopyPvCursor();
     }
 
     /**

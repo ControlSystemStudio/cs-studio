@@ -33,6 +33,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -200,6 +201,15 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
             throw new Exception("No editor was found for this file " + path);
         String id = defaultEditor.getId();
         page.openEditor(new PathEditorInput(path), id);
+    }
+
+    @Override
+    protected void iOpenOPIShell(IPath path, MacrosInput input) {
+    }
+
+    @Override
+    protected IOPIRuntime iGetOPIShellForShell(Shell shell) {
+        return null;
     }
 
 }

@@ -74,7 +74,7 @@ public class Messages extends NLS
     static
     {
         // initialize resource bundle
-        NLS.initializeMessages(Activator.ID + ".messages", Messages.class);
+        NLS.initializeMessages("org.csstudio.swt.rtplot.messages", Messages.class);
     }
 
     private Messages()

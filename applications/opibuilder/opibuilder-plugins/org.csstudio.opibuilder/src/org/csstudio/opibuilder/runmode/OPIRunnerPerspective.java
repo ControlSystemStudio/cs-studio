@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
@@ -143,7 +142,7 @@ public class OPIRunnerPerspective implements IPerspectiveFactory
 //            Logger.getLogger(getClass().getName()).log(Level.WARNING, "Cannot locate editor placeholder");
 
         // Shorter, works, but internal API:
-        ((org.eclipse.ui.internal.e4.compatibility.ModeledPageLayout)layout).setEditorAreaVisible(false);
+        layout.setEditorAreaVisible(false);
 
 
         // Placeholder views show location of folders
@@ -156,13 +155,11 @@ public class OPIRunnerPerspective implements IPerspectiveFactory
             bottom.addView(PlaceHolderView.ID + ":BOTTOM");
         }
 
-        if (!OPIBuilderPlugin.isRAP())
-        {
-            bottom.addPlaceholder(ID_CONSOLE_VIEW);
-            layout.addShowViewShortcut(ID_CONSOLE_VIEW);
-            left.addPlaceholder(ID_NAVIGATOR);
-            layout.addShowViewShortcut(ID_NAVIGATOR);
-        }
+        bottom.addPlaceholder(ID_CONSOLE_VIEW);
+        layout.addShowViewShortcut(ID_CONSOLE_VIEW);
+        left.addPlaceholder(ID_NAVIGATOR);
+        layout.addShowViewShortcut(ID_NAVIGATOR);
+
     }
 
     /*

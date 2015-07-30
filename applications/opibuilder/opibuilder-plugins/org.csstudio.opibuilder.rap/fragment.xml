@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <fragment>
-<extension
+    <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.opibuilder.runmode.OPIRunner"
+            contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
+            default="true"
+            extensions="opi"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.OPIRunner"
+            name="OPI Runtime">
+      </editor>
+   </extension>
+   <extension
          point="org.eclipse.rap.ui.entrypoint">
       <entrypoint
             class="org.csstudio.webopi.WorkbenchOPIRuntimeEntryPoint"
@@ -36,6 +48,13 @@
             icon="icons/OPIRunner.png"
             id="org.csstudio.webopi.standaloneRuntime"
             name="Standalone OPI Runtime Perspective">
+      </perspective>
+      <perspective
+            class="org.csstudio.webopi.perspectives.OPIRunnerPerspective"
+            fixed="true"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.webopi.perspectives.OPIRuntime"
+            name="OPI Runtime Perspective">
       </perspective>
    </extension>
    <extension

@@ -203,10 +203,8 @@ class PropertyDataEditingSupport extends EditingSupport {
     protected void setValue(final Object element, final Object value) {
         if (element instanceof PropertyData) {
             PropertyData prop = (PropertyData) element;
-            if (prop != null) {
-                prop.tmpValue = value;
-                getViewer().refresh();
-            }
+            prop.tmpValue = value;
+            getViewer().refresh();
         }
     }
 }
