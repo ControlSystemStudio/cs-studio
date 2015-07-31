@@ -15,16 +15,20 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /** Not an actual Plugin Activator, but providing plugin-related helpers
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class Activator
+public class Activator extends AbstractUIPlugin
 {
     /** Plugin ID defined in MANIFEST.MF */
     final public static String ID = "org.csstudio.rap.rtplot";
+
+    private static Activator plugin;
 
     final private static Logger logger =  Logger.getLogger(ID);
 
@@ -33,6 +37,47 @@ public class Activator
         return logger;
     }
 
+    @Override
+    public void start(BundleContext context) throws Exception {
+        plugin = this;
+        super.start(context);
+    }
+
+    /** @return the shared instance */
+    public static Activator getDefault()
+    {
+        return plugin;
+    }
+
+    /** Obtain image descriptor from file within plugin.
+     *  @param iconName the icon file name (located in icons folder)
+     *  @return {@link ImageDescriptor}
+     */
+    public ImageDescriptor getImageDescriptor(String iconName)
+    {
+        String path = "icons/" + iconName.toLowerCase() + ".png";
+        return imageDescriptorFromPlugin(ID, path);
+    }
+
+    /** Obtain image from file within plugin.
+     *  Uses registry to avoid duplicates and for disposal
+     *  @param iconName the icon file name
+     *  @return {@link Image}
+     */
+    public Image getImage(String iconName)
+    {
+        String path = "icons/" + iconName.toLowerCase() + ".png";
+        Image image = getImageRegistry().get(path);
+        if (image == null)
+        {
+            ImageDescriptor desc = getImageDescriptor(iconName);
+            getImageRegistry().put(path, desc);
+            image = getImageRegistry().get(path);
+        }
+        return image;
+    }
+
+    @Deprecated
     public static ImageDescriptor getIcon(final String base_name)
     {
         String path = "icons/" + base_name + ".png";
