@@ -105,7 +105,8 @@ public class TraceTableHandler implements IStructuredContentProvider
         @Override
         public void changedItemLook(final ModelItem item)
         {
-            trace_table.refresh(item);
+            // Change of 'units' can arrive on non-UI threads
+            trace_table.getControl().getDisplay().asyncExec(() -> trace_table.refresh(item));
         }
 
         @Override
