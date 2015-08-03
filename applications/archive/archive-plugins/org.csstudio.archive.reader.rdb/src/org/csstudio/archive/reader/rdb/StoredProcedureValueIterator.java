@@ -8,18 +8,16 @@
 package org.csstudio.archive.reader.rdb;
 
 import java.sql.CallableStatement;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.sql.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import oracle.jdbc.OracleTypes;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVStatistics;
@@ -30,6 +28,8 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
 import org.epics.vtype.VType;
+
+import oracle.jdbc.OracleTypes;
 
 /** Value Iterator that provides 'optimized' data by calling
  *  a stored database procedure.
@@ -78,7 +78,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
             final int count) throws Exception
     {
         final String sql;
-        final Dialect dialect = reader.getRDB().getDialect();
+        final Dialect dialect = reader.getDialect();
 
         switch (dialect)
         {
@@ -97,7 +97,7 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         }
 
         final CallableStatement statement =
-                reader.getRDB().getConnection().prepareCall(sql);
+                reader.getConnection().prepareCall(sql);
         reader.addForCancellation(statement);
         try
         {
@@ -113,10 +113,10 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
             }
             else if(dialect == RDBUtil.Dialect.PostgreSQL)
             {    //PostgreSQL
-                boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
+                boolean autoCommit = reader.getConnection().getAutoCommit();
                 // Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
                 if (autoCommit) {
-                    reader.getRDB().getConnection().setAutoCommit(false);
+                    reader.getConnection().setAutoCommit(false);
                 }
                 statement.registerOutParameter(1, Types.OTHER);
                 statement.setLong(2, channel_id);
@@ -273,10 +273,10 @@ public class StoredProcedureValueIterator extends AbstractRDBValueIterator
         super.close();
         index = -1;
         values = null;
-        if (reader.getRDB().getDialect() == Dialect.PostgreSQL) {
+        if (reader.getDialect() == Dialect.PostgreSQL) {
             // Restore default auto-commit on result set close
              try {
-                 reader.getRDB().getConnection().setAutoCommit(true);
+                 reader.getConnection().setAutoCommit(true);
              } catch (Exception e) {
                  // Ignore
              }

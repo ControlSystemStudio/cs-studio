@@ -70,7 +70,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
 
         // Get time of initial sample
         final PreparedStatement statement =
-            reader.getRDB().getConnection().prepareStatement(reader.getSQL().sample_sel_initial_time);
+            reader.getConnection().prepareStatement(reader.getSQL().sample_sel_initial_time);
         reader.addForCancellation(statement);
         try
         {
@@ -82,7 +82,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
                 // System.out.print("Start time corrected from " + start_stamp);
                 start_stamp = result.getTimestamp(1);
                 // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column
-                if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
+                if (reader.getDialect() == Dialect.MySQL || reader.getDialect() == Dialect.PostgreSQL)
                     start_stamp.setNanos(result.getInt(2));
                 // System.out.println(" to " + start_stamp);
             }
@@ -93,18 +93,18 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             statement.close();
         }
 
-        boolean autoCommit = reader.getRDB().getConnection().getAutoCommit();
+        boolean autoCommit = reader.getConnection().getAutoCommit();
         // Disable auto-commit to determine sample with PostgreSQL when fetch direction is FETCH_FORWARD
-        if (reader.getRDB().getDialect() == Dialect.PostgreSQL && autoCommit) {
-            reader.getRDB().getConnection().setAutoCommit(false);
+        if (reader.getDialect() == Dialect.PostgreSQL && autoCommit) {
+            reader.getConnection().setAutoCommit(false);
         }
 
         // Fetch the samples
         if (reader.useArrayBlob())
-            sel_samples = reader.getRDB().getConnection().prepareStatement(
+            sel_samples = reader.getConnection().prepareStatement(
                     reader.getSQL().sample_sel_by_id_start_end_with_blob);
         else
-            sel_samples = reader.getRDB().getConnection().prepareStatement(
+            sel_samples = reader.getConnection().prepareStatement(
                     reader.getSQL().sample_sel_by_id_start_end);
         sel_samples.setFetchDirection(ResultSet.FETCH_FORWARD);
 
@@ -199,10 +199,10 @@ public class RawSampleIterator extends AbstractRDBValueIterator
             }
             sel_samples = null;
         }
-        if (reader.getRDB().getDialect() == Dialect.PostgreSQL) {
+        if (reader.getDialect() == Dialect.PostgreSQL) {
             // Restore default auto-commit on result set close
              try {
-                 reader.getRDB().getConnection().setAutoCommit(true);
+                 reader.getConnection().setAutoCommit(true);
              } catch (Exception e) {
                  // Ignore
              }
