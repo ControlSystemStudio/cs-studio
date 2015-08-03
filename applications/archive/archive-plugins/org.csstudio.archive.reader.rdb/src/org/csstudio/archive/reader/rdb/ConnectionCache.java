@@ -121,7 +121,7 @@ public class ConnectionCache
             Entry entry = find(id);
             if (entry == null)
             {
-                logger.log(Level.INFO, "Connecting to {0}", url);
+                logger.log(Level.FINE, "Connecting to {0}", url);
                 entry = new Entry(id, RDBUtil.connect(url, user, password, false));
                 // Read-only allows MySQL to use load balancing
                 entry.getConnection().setReadOnly(true);
@@ -143,6 +143,6 @@ public class ConnectionCache
             cache.remove(entry);
         }
         entry.rdb.close();
-        logger.log(Level.INFO, "Closed {0}", entry.id.url);
+        logger.log(Level.FINE, "Closed {0}", entry.id.url);
     }
 }
