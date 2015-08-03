@@ -94,7 +94,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     {
         // Try numeric meta data
         final PreparedStatement statement =
-            reader.getRDB().getConnection().prepareStatement(reader.getSQL().numeric_meta_sel_by_channel);
+            reader.getConnection().prepareStatement(reader.getSQL().numeric_meta_sel_by_channel);
         try
         {
             statement.setInt(1, channel_id);
@@ -131,7 +131,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
     {
         // Try enumerated meta data
         List<String> labels = null;
-        final PreparedStatement statement = reader.getRDB().getConnection().prepareStatement(
+        final PreparedStatement statement = reader.getConnection().prepareStatement(
                                 reader.getSQL().enum_sel_num_val_by_channel);
         try
         {
@@ -259,7 +259,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         // See if there are more array elements
         if (sel_array_samples == null)
         {   // Lazy initialization
-            sel_array_samples = reader.getRDB().getConnection().prepareStatement(
+            sel_array_samples = reader.getConnection().prepareStatement(
                     reader.getSQL().sample_sel_array_vals);
         }
         sel_array_samples.setInt(1, channel_id);

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.rdb;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -21,7 +22,6 @@ import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.AlarmSeverity;
@@ -51,7 +51,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** Name of stored procedure or "" */
     final private String stored_procedure;
 
-    final private RDBUtil rdb;
+    final private ConnectionCache.Entry rdb;
     final private SQL sql;
     final private boolean is_oracle;
 
@@ -101,7 +101,7 @@ public class RDBArchiveReader implements ArchiveReader
         this.password = (password == null) ? 0 : password.length();
         this.use_array_blob = use_array_blob;
         timeout = RDBArchivePreferences.getSQLTimeoutSecs();
-        rdb = RDBUtil.connect(url, user, password, false);
+        rdb = ConnectionCache.get(url, user, password);
         // Read-only allows MySQL to use load balancing
         rdb.getConnection().setReadOnly(true);
 
@@ -209,10 +209,17 @@ public class RDBArchiveReader implements ArchiveReader
         }
     }
 
-    /** @return RDBUtil with connection to RDB */
-    RDBUtil getRDB()
+    /** @return RDB connection
+     *  @throws Exception on error
+     */
+    Connection getConnection() throws Exception
     {
-        return rdb;
+        return rdb.getConnection();
+    }
+
+    Dialect getDialect()
+    {
+        return rdb.getDialect();
     }
 
     /** @return SQL statements */
@@ -505,6 +512,6 @@ public class RDBArchiveReader implements ArchiveReader
     public void close()
     {
         cancel();
-        rdb.close();
+        ConnectionCache.release(rdb);
     }
 }
