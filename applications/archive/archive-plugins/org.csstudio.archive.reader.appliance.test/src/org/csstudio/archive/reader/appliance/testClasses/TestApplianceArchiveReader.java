@@ -13,8 +13,8 @@ public class TestApplianceArchiveReader extends ApplianceArchiveReader{
     /**
      * Constructor.
      */
-    public TestApplianceArchiveReader(boolean useStatistics) {
-        super("aar://test",useStatistics);
+    public TestApplianceArchiveReader(boolean useStatistics, boolean useNewOptimizedOperator) {
+        super("aar://test",useStatistics,useNewOptimizedOperator);
     }
 
     /* (non-Javadoc)

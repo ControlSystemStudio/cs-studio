@@ -21,7 +21,8 @@ public class ApplianceArchiveReaderFactory implements ArchiveReaderFactory{
 
         ApplianceArchiveReader result = cache.get(url);
         if( result == null ) {
-            final ApplianceArchiveReader reader = new ApplianceArchiveReader(url, Activator.getDefault().isUseStatistics());
+            final ApplianceArchiveReader reader = new ApplianceArchiveReader(url,
+                    Activator.getDefault().isUseStatistics(), Activator.getDefault().isUseNewOptimizedOperator());
             result = cache.putIfAbsent(url, reader);
           if( result == null ) {
             result = reader;

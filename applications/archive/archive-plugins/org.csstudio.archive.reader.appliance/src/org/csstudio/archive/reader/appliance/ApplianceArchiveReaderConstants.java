@@ -8,47 +8,49 @@ package org.csstudio.archive.reader.appliance;
  */
 public interface ApplianceArchiveReaderConstants {
     /** The name of the archiver appliance reader as it appears in the preferences */
-    String ARCHIVER_NAME = "EPICS Archiver Appliance";
+    public static final String ARCHIVER_NAME = "EPICS Archiver Appliance";
     /** The description of the archiver appliance reader */
-    String ARCHIVER_DESCRIPTION = "http://epicsarchiverap.sourceforge.net/";
+    public static final String ARCHIVER_DESCRIPTION = "http://epicsarchiverap.sourceforge.net/";
     /** The version of the appliance reader */
-    int VERSION = 1;
+    public static final int VERSION = 1;
     /** The path from which the data is collected */
-    String RETRIEVAL_PATH = "/data/getData.raw";
+    public static final String RETRIEVAL_PATH = "/data/getData.raw";
     /** The path to retrieve the list of archived PVs from */
-    String SEARCH_PATH = "/bpl/searchForPVsRegex?regex=";
+    public static final String SEARCH_PATH = "/bpl/searchForPVsRegex?regex=";
     /** Lower operating limit field */
-    String LOPR = "LOPR";
+    public static final String LOPR = "LOPR";
     /** Minor alarm lower limit field */
-    String LOW = "LOW";
+    public static final String LOW = "LOW";
     /** Major alarm lower limit field */
-    String LOLO = "LOLO";
+    public static final String LOLO = "LOLO";
     /** Minor alarm upper limit field */
-    String HIGH = "HIGH";
+    public static final String HIGH = "HIGH";
     /** Major alarm upper limit field */
-    String HIHI = "HIHI";
+    public static final String HIHI = "HIHI";
     /** Upper operating limit field */
-    String HOPR = "HOPR";
+    public static final String HOPR = "HOPR";
     /** Engineering units field */
-    String EGU = "EGU";
+    public static final String EGU = "EGU";
     /** Precision field */
-    String PREC = "PREC";
+    public static final String PREC = "PREC";
     /** Val field */
-    String VAL = "val";
+    public static final String VAL = "val";
 
     /** Operator for every nth value in the archive */
-    String OP_NTH = "nth_";
+    public static final String OP_NTH = "nth_";
     /** Operator for counting number of samples in the archive */
-    String OP_NCOUNT = "ncount";
+    public static final String OP_NCOUNT = "ncount";
     /** Operator for the minimum bin value */
-    String OP_MIN = "min_";
+    public static final String OP_MIN = "min_";
     /** Operator for the maximum bin value */
-    String OP_MAX = "max_";
+    public static final String OP_MAX = "max_";
     /** Operator for the number of points in the bin */
-    String OP_COUNT = "count_";
+    public static final String OP_COUNT = "count_";
     /** Operator for the standard deviation in the bin */
-    String OP_STD = "std_";
+    public static final String OP_STD = "std_";
     /** Operator for the mean bin value */
-    String OP_MEAN = "mean_";
+    public static final String OP_MEAN = "mean_";
+    /** Operator for the optimized post processor */
+    public static final String OP_OPTIMIZED = "optimized_";
 
 }
