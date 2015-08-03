@@ -10,6 +10,7 @@ package org.csstudio.trends.databrowser2.archive;
 import java.util.ArrayList;
 
 import org.csstudio.archive.reader.ArchiveReader;
+import org.csstudio.archive.reader.ArchiveRepository;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser2.model.ChannelInfo;
@@ -24,17 +25,15 @@ import org.eclipse.osgi.util.NLS;
  */
 abstract public class SearchJob extends Job
 {
-    final private ArchiveReader reader;
     final private ArchiveDataSource archives[];
     final private String pattern;
     final boolean pattern_is_glob;
 
     /** Create job that connects to given URL, then notifies view when done. */
-    public SearchJob(final ArchiveReader reader, final ArchiveDataSource archives[],
+    public SearchJob(final ArchiveDataSource archives[],
             final String pattern, final boolean pattern_is_glob)
     {
         super(NLS.bind(Messages.SearchChannelFmt, pattern));
-        this.reader = reader;
         this.archives = archives;
         this.pattern = pattern;
         this.pattern_is_glob = pattern_is_glob;
@@ -44,11 +43,14 @@ abstract public class SearchJob extends Job
     @Override
     protected IStatus run(final IProgressMonitor monitor)
     {
-        final ArrayList<ChannelInfo> channels = new ArrayList<ChannelInfo>();
-        monitor.beginTask(reader.getServerName(), archives.length);
+        final ArrayList<ChannelInfo> channels = new ArrayList<>();
+        monitor.beginTask(Messages.Search, archives.length);
         for (ArchiveDataSource archive : archives)
         {
             try
+            (
+                final ArchiveReader reader = ArchiveRepository.getInstance().getArchiveReader(archive.getUrl());
+            )
             {
                 monitor.subTask(archive.getName());
                 final String[] names;
@@ -64,13 +66,13 @@ abstract public class SearchJob extends Job
             {
                 monitor.setCanceled(true);
                 monitor.done();
-                archiveServerError(reader.getURL(), ex);
+                archiveServerError(archive.getUrl(), ex);
                 return Status.CANCEL_STATUS;
             }
         }
-        monitor.done();
         receivedChannelInfos(
             (ChannelInfo[]) channels.toArray(new ChannelInfo[channels.size()]));
+        monitor.done();
         return Status.OK_STATUS;
     }
 
