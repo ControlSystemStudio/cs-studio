@@ -138,8 +138,6 @@ abstract public class ExportJob extends Job
             performExport(monitor, out);
             // ask thread to exit
             cancel_poll.exit = true;
-            for (ArchiveReader reader : archive_readers)
-                reader.close();
             if (out != null)
                 out.close();
             // Wait for poller to quit
@@ -149,6 +147,8 @@ abstract public class ExportJob extends Job
         {
             error_handler.handleExportError(ex);
         }
+        for (ArchiveReader reader : archive_readers)
+            reader.close();
         monitor.done();
         return Status.OK_STATUS;
     }

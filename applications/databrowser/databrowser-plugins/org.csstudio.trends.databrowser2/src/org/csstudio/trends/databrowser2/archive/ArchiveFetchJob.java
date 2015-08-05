@@ -92,6 +92,8 @@ public class ArchiveFetchJob extends Job
         public void run()
         {
             Activator.getLogger().log(Level.FINE, "Starting {0}", ArchiveFetchJob.this); //$NON-NLS-1$
+            final BenchmarkTimer timer = new BenchmarkTimer();
+            long samples = 0;
             final int bins = Preferences.getPlotBins();
             final ArchiveDataSource archives[] = item.getArchiveDataSources();
             for (int i=0; i<archives.length && !cancelled; ++i)
@@ -127,6 +129,7 @@ public class ArchiveFetchJob extends Job
                     final List<VType> result = new ArrayList<VType>();
                     while (value_iter.hasNext())
                         result.add(value_iter.next());
+                    samples += result.size();
                     item.mergeArchivedSamples(the_reader.getServerName(), result);
                     if (cancelled)
                         break;
@@ -148,9 +151,12 @@ public class ArchiveFetchJob extends Job
                     }
                 }
             }
+            timer.stop();
             if (!cancelled)
                 listener.fetchCompleted(ArchiveFetchJob.this);
-            Activator.getLogger().log(Level.FINE, "Ended {0}", ArchiveFetchJob.this); //$NON-NLS-1$
+            Activator.getLogger().log(Level.FINE,
+                    "Ended {0} with {1} samples in {2}",        //$NON-NLS-1$
+                    new Object[] { ArchiveFetchJob.this, samples, timer });
         }
 
         @SuppressWarnings("nls")
@@ -191,8 +197,6 @@ public class ArchiveFetchJob extends Job
     {
         if (item == null)
             return Status.OK_STATUS;
-        // System.out.println("Start: " + this);
-        BenchmarkTimer timer = new BenchmarkTimer();
 
         monitor.beginTask(Messages.ArchiveFetchStart, IProgressMonitor.UNKNOWN);
         final WorkerThread worker = new WorkerThread();
@@ -218,9 +222,6 @@ public class ArchiveFetchJob extends Job
                 worker.cancel();
         }
         monitor.done();
-
-        timer.stop();
-        // System.out.println(this + ": " + timer.toString());
 
         return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
     }

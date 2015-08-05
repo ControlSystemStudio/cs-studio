@@ -12,7 +12,6 @@ import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
 import org.csstudio.archive.reader.ArchiveInfo;
-import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.archive.ConnectJob;
 import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
@@ -57,11 +56,13 @@ public abstract class ArchiveListGUI
     private Button info;
     private TableViewer archive_table;
 
-    /** Most recently selected archive reader */
-    protected ArchiveReader reader;
+    private volatile String server_info = null;
+
+    /** Most recently selected archive URL */
+    private String url = null;
 
     /** Archive servers */
-    private ArchiveServerURL[] server_urls;
+    private final ArchiveServerURL[] server_urls;
 
     /** Initialize
      *  @param parent Parent widget
@@ -97,14 +98,10 @@ public abstract class ArchiveListGUI
             @Override
             public void widgetSelected(final SelectionEvent e)
             {
-                if (reader == null)
+                final String copy = server_info;
+                if (copy == null)
                     return;
-                final StringBuilder buf = new StringBuilder();
-                buf.append("Archive Data Server: " + reader.getServerName() + "\n\n");
-                buf.append("URL:\n" + reader.getURL() + "\n\n");
-                buf.append("Version: " + reader.getVersion() + "\n\n");
-                buf.append("Description:\n" + reader.getDescription() + "\n\n");
-                MessageDialog.openInformation(info.getShell(), "Archive Server Info", buf.toString());
+                MessageDialog.openInformation(info.getShell(), "Archive Server Info", copy);
             }
         });
 
@@ -248,9 +245,9 @@ public abstract class ArchiveListGUI
         new ConnectJob(url)
         {
             @Override
-            protected void archiveServerConnected(final ArchiveReader reader,
-                    final ArchiveInfo infos[])
+            protected void archiveServerConnected(final String server_info, final ArchiveInfo infos[])
             {
+                ArchiveListGUI.this.server_info = server_info;
                 if (urls.isDisposed())
                     return;
                 urls.getDisplay().asyncExec(new Runnable()
@@ -260,10 +257,10 @@ public abstract class ArchiveListGUI
                     {
                         if (info.isDisposed())
                             return;
-                        ArchiveListGUI.this.reader = reader;
+                        ArchiveListGUI.this.url = url;
                         final ArrayList<ArchiveDataSource> archives = new ArrayList<ArchiveDataSource>();
                         for (ArchiveInfo info : infos)
-                            archives.add(new ArchiveDataSource(reader.getURL(), info.getKey(), info.getName(), info.getDescription()));
+                            archives.add(new ArchiveDataSource(url, info.getKey(), info.getName(), info.getDescription()));
                         archive_table.setInput(archives);
                         // Enable operations on server resp. archives
                         info.setEnabled(true);
@@ -292,14 +289,6 @@ public abstract class ArchiveListGUI
         }.schedule();
     }
 
-    /** @return ArchiveReader that holds the list of archives or <code>null</code>
-     *          if no info available
-     */
-    public ArchiveReader getArchiveReader()
-    {
-        return reader;
-    }
-
     /** @return Selected archive data sources or 'all' when nothing selected.
      *          Returns <code>null</code> if user decided not to search 'all',
      *          or if connection to data server is not available.
@@ -307,7 +296,7 @@ public abstract class ArchiveListGUI
     @SuppressWarnings("unchecked")
     public ArchiveDataSource[] getSelectedArchives()
     {
-        if (reader == null)
+        if (url == null)
             return null;
         final ArrayList<ArchiveDataSource> archives;
         final IStructuredSelection sel = (IStructuredSelection) archive_table.getSelection();

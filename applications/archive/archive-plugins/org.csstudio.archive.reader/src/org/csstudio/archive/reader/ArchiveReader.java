@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.archive.reader;
 
+import java.io.Closeable;
+
 import org.epics.util.time.Timestamp;
 
 /** Interface to archive data retrieval.
@@ -49,7 +51,7 @@ import org.epics.util.time.Timestamp;
  *  @author Craig McChesney, Sergei Chevtsov, Peregrine McGehee:
  *          Created original Java archive viewer
  */
-public interface ArchiveReader
+public interface ArchiveReader extends Closeable
 {
     /** Server name information.
      *  <p>
@@ -171,5 +173,6 @@ public interface ArchiveReader
     public void cancel();
 
     /** Must be called when archive is no longer used to release resources */
+    @Override
     public void close();
 }
