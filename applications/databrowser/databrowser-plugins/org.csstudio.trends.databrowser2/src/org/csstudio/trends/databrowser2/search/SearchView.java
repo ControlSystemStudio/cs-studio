@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.csstudio.apputil.ui.swt.TableColumnSortHelper;
-import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.autocomplete.ui.AutoCompleteTypes;
 import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.autocomplete.ui.AutoCompleteWidget;
@@ -352,8 +351,7 @@ public class SearchView extends ViewPart
             return;
         }
 
-        final ArchiveReader reader = archive_gui.getArchiveReader();
-        new SearchJob(reader, archives, pattern_txt, !regex.getSelection())
+        new SearchJob(archives, pattern_txt, !regex.getSelection())
         {
             @Override
             protected void receivedChannelInfos(final ChannelInfo channels[])

@@ -20,7 +20,7 @@ public class ToggleLegendAction<XTYPE extends Comparable<XTYPE>> extends Action
     public ToggleLegendAction(final RTPlot<XTYPE> plot, final boolean is_visible)
     {
         super(is_visible ? Messages.Legend_Hide : Messages.Legend_Show,
-              Activator.getIcon("legend"));
+              Activator.getDefault().getImageDescriptor("legend"));
         this.plot = plot;
     }
 
