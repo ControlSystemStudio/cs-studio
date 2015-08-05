@@ -27,7 +27,7 @@ public class ApplianceArchiveReaderOptimizedWaveformTest extends AbstractArchive
 
     @Override
     protected ArchiveReader getReader() {
-        return new TestApplianceArchiveReader(false);
+        return new TestApplianceArchiveReader(false,false);
     }
 
     /**

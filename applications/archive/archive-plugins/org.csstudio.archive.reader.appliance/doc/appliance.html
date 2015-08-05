@@ -51,6 +51,13 @@ via preferences, the plugin can also provide the statistical data (mean, std, mi
 algorithm is used. To enable statistical data the property <code>org.csstudio.archive.reader.appliance/useStatisticsForOptimizedData</code>
 must be set to <code>true</code> (default setting); to disable this feature, set the property value to <code>false</code>.
 </p>
-
+<p>
+Appliance provides two mechanisms to load optimized data: the original one, where it first asks for the number of
+points in the interval and then decide whether to make a raw or average request; and the new one, where this decision
+is made on the server. The setting <code>useNewOptimizedOperator</code> specifies whether the new mechanism will be 
+used or not. If you know that your appliance installation supports the optimization, than set this preference to 
+<code>true</code>. If you have an older installation, set the preference to <code>false</code> in order not to waste 
+time and network bandwidth.
+</p>
 </body>
 </html>

@@ -23,6 +23,12 @@ public class TestDataRetrieval implements DataRetrieval{
                 name.startsWith(ApplianceArchiveReaderConstants.OP_MIN) || name.startsWith(ApplianceArchiveReaderConstants.OP_MAX) ||
                 name.startsWith(ApplianceArchiveReaderConstants.OP_COUNT) || name.startsWith(ApplianceArchiveReaderConstants.OP_NCOUNT)) {
             return new TestGenMsgIteratorOptimized(name, start, end);
+        } else if (name.startsWith(ApplianceArchiveReaderConstants.OP_OPTIMIZED)) {
+            if (name.contains("2000")) {
+                return new TestGenMsgIteratorOptimized(name, start, end);
+            } else {
+                return new TestGenMsgIteratorWaveform(name,start,end);
+            }
         } else {
             if (name.contains("wave")) {
                 return new TestGenMsgIteratorWaveform(name,start,end);

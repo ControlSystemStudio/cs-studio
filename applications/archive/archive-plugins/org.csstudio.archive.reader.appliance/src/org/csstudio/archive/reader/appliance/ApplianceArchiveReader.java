@@ -34,6 +34,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
     private final String httpURL;
     private final String pbrawURL;
     private final boolean useStatistics;
+    private final boolean useNewOptimizedOperator;
 
     private Map<ApplianceValueIterator, ApplianceArchiveReader> iterators = Collections.synchronizedMap(
                new WeakHashMap<ApplianceValueIterator, ApplianceArchiveReader>());
@@ -42,15 +43,32 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      * Constructor that sets appliance archiver reader url.
      *
      * @param url appliance archiver reader url (with specific prefix)
-     * @param useStatistics true if statistics type data should be returned
-     *             when optimized data is requested
+     * @param useStatistics true if statistics type data should be returned when optimized data is requested
+     * @deprecated use {@link ApplianceArchiveReader#ApplianceArchiveReader(String, boolean, boolean)}
      */
+    @Deprecated
     public ApplianceArchiveReader(String url, boolean useStatistics) {
+        this(url, useStatistics, true);
+    }
+
+    /**
+     * Constructor that sets appliance archiver reader url and other parameters that define how the data loading will
+     * be done.
+     *
+     * @param url appliance archiver reader url (with specific prefix)
+     * @param useStatistics true if statistics type data should be returned when optimized data is requested
+     * @param useNewOptimizedOperator true if the optimized operator should be used when fetching optimized data or
+     *              false the reader should use the old mechanism of loading the number of points and the data
+     *              separately (if true, the reader will try to use the optimized post processor, but if it fails
+     *              it will fall back to the old system)
+     */
+    public ApplianceArchiveReader(String url, boolean useStatistics, boolean useNewOptimizedOperator) {
         //if the url ends with /, strip the url of the last character
         if (url.charAt(url.length()-1) == '/') {
             url = url.substring(0,url.length()-1);
         }
         this.useStatistics = useStatistics;
+        this.useNewOptimizedOperator = useNewOptimizedOperator;
         this.pbrawURL = url;
         this.httpURL = pbrawURL.replace("pbraw://", "http://");
     }
@@ -137,30 +155,53 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      */
     @Override
     public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {
-        ApplianceValueIterator it;
-        try {
-            int points = getNumberOfPoints(name, start, end);
-            if (points <= count) {
-                it = new ApplianceRawValueIterator(this, name, start, end, this);
-            } else {
-                try {
-                    //try to bin the values using the mean and std etc. This will work for numeric scalar PVs
-                    if (useStatistics) {
-                        it = new ApplianceStatisticsValueIterator(this, name, start, end, count,this);
-                    } else {
-                        it = new ApplianceMeanValueIterator(this, name, start, end, count,this);
-                    }
-                } catch (ArchiverApplianceException e) {
-                    //if binning is not supported, try nth operator
-                    it = new ApplianceNonNumericOptimizedValueIterator(this, name, start, end, count, points,this);
-                }
-            }
-        } catch (ArchiverApplianceException e) {
-            //fallback for older archiver appliance, which didn't have the nth operator
+        boolean binningSupported = true;
+        ApplianceValueIterator it = null;
+        if (useNewOptimizedOperator) {
+            //try to fetch the data using the new optimized operator
             try {
-                it = new ApplianceRawValueIterator(this, name, start, end, this);
-            } catch (ArchiverApplianceException exc) {
-                throw new UnknownChannelException(name);
+                it = new ApplianceOptimizedValueIterator(this, name, start, end, count, useStatistics, this);
+            } catch (ArchiverApplianceInvalidTypeException e) {
+                //binning not supported
+                binningSupported = false;
+            } catch (ArchiverApplianceException e) {
+                //optimized operator not supported on the server, fall back to the old way
+            }
+        }
+
+        //if the optimized operator worked, we're done, otherwise fallback to the previous mechanism
+        if (it == null) {
+            try {
+                int points = getNumberOfPoints(name, start, end);
+                if (points <= count) {
+                    it = new ApplianceRawValueIterator(this, name, start, end, this);
+                } else {
+                    //only fetch if binning is "still" supported
+                    if (binningSupported) {
+                        try {
+                            //try to bin the values using the mean and std etc. This will work for numeric scalar PVs
+                            if (useStatistics) {
+                                it = new ApplianceStatisticsValueIterator(this, name, start, end, count,this);
+                            } else {
+                                it = new ApplianceMeanValueIterator(this, name, start, end, count,this);
+                            }
+                        } catch (ArchiverApplianceInvalidTypeException e) {
+                            binningSupported = false;
+                        }
+                    }
+
+                    if (!binningSupported) {
+                        //if binning is not supported (string, waveform type), try nth operator
+                        it = new ApplianceNonNumericOptimizedValueIterator(this, name, start, end, count, points,this);
+                    }
+                }
+            } catch (ArchiverApplianceException e) {
+                //fallback for older archiver appliance, which didn't have the nth operator
+                try {
+                    it = new ApplianceRawValueIterator(this, name, start, end, this);
+                } catch (ArchiverApplianceException exc) {
+                    throw new UnknownChannelException(name);
+                }
             }
         }
         iterators.put(it,this);
