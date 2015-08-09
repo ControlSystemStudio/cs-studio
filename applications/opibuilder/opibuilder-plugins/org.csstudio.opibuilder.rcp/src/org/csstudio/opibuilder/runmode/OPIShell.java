@@ -28,6 +28,8 @@ import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.parts.GraphicalViewerImpl;
+import org.eclipse.swt.events.DisposeEvent;
+import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
 import org.eclipse.swt.graphics.Image;
@@ -49,11 +51,12 @@ public class OPIShell implements IOPIRuntime {
     // Cache of open OPI shells.
     private static final Set<OPIShell> openShells = new HashSet<OPIShell>();
 
-    private Shell shell;
-    private IPath path;
+    private final Image icon;
+    private final Shell shell;
+    private final IPath path;
     // macrosInput should not be null.  If there are no macros it should
     // be an empty MacrosInput object.
-    private MacrosInput macrosInput;
+    private final MacrosInput macrosInput;
     private final ActionRegistry actionRegistry;
     private DisplayModel displayModel;
 
@@ -61,9 +64,12 @@ public class OPIShell implements IOPIRuntime {
     // it to the cache.
     private OPIShell(Display display, IPath path, MacrosInput macrosInput) {
 
+        this.icon = OPIBuilderPlugin.imageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png")
+                .createImage(display);
         this.path = path;
         this.macrosInput = macrosInput;
         this.shell = new Shell(display);
+        this.shell.setImage(icon);
         this.displayModel = new DisplayModel(path);
         this.displayModel.setOpiRuntime(this);
         this.actionRegistry = new ActionRegistry();
@@ -118,6 +124,13 @@ public class OPIShell implements IOPIRuntime {
                         shell.setFocus();
                         firstRun = false;
                     }
+                }
+            });
+            shell.addDisposeListener(new DisposeListener() {
+
+                @Override
+                public void widgetDisposed(DisposeEvent e) {
+                    if (!icon.isDisposed()) icon.dispose();
                 }
             });
             shell.pack();
