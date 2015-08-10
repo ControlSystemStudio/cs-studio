@@ -27,6 +27,7 @@ import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -98,6 +99,15 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 //        MenuManager cssMenu = new MenuManager("CSS", "css");
 //        cssMenu.add(new Separator("additions")); //$NON-NLS-1$
 //        menu.add(cssMenu);
+    }
+
+    @Override
+    protected boolean allowItem(IContributionItem itemToAdd) {
+        //org.eclipse.wst.sse.ui adds some junk, which we don't need
+        if ("sourceMenuId".equals(itemToAdd.getId())) { //$NON-NLS-1$
+            return false;
+        }
+        return super.allowItem(itemToAdd);
     }
 
     /**
