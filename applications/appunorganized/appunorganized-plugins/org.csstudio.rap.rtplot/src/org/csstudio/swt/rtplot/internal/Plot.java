@@ -614,6 +614,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         final ScreenTransform<XTYPE> x_transform = x_axis.getScreenTransform();
         for (YAxisImpl<XTYPE> y_axis : y_axes)
             y_axis.paint(gc, media, label_font, scale_font, plot_bounds);
+
+        gc.setClipping(plot_bounds);
         plot_area.paint(gc, media);
 
         for (YAxisImpl<XTYPE> y_axis : y_axes)
