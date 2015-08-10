@@ -33,7 +33,7 @@ public class RedirectServlet extends HttpServlet {
 
     static void redirect(HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        if (request != null && (request.getPathInfo() == null || request.getPathInfo().equals("/"))) {
+        if (request.getPathInfo() == null || request.getPathInfo().equals("/")) {
             response.sendRedirect(response
                     .encodeRedirectURL(WebDataBrowserConstants.MAIN_SERVELET_NAME)); //$NON-NLS-1$
         } else {
