@@ -6,6 +6,7 @@ import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.StartupParameters;
 
 /**
  * Utility for request related functions.
@@ -21,8 +22,11 @@ public class RequestUtil {
      */
     public static IPath getPltPathFromRequest() {
         HttpServletRequest request = RWT.getRequest();
-        String pltPath = request
-                .getParameter(WebDataBrowserConstants.PLT_PARAMETER); //$NON-NLS-1$
+        String pltPath = request.getParameter(WebDataBrowserConstants.PLT_PARAMETER);
+        if (pltPath == null) {
+            StartupParameters sp = RWT.getClient().getService(StartupParameters.class);
+            pltPath = sp == null ? null : sp.getParameter(WebDataBrowserConstants.PLT_PARAMETER);
+        }
         IPath path = null;
         if (pltPath != null && !pltPath.isEmpty()) {
             path = SingleSourcePlugin.getResourceHelper().newPath(pltPath);
