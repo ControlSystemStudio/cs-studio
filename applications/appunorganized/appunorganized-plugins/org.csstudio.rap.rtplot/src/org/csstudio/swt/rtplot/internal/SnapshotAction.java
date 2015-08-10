@@ -40,7 +40,7 @@ public class SnapshotAction<XTYPE extends Comparable<XTYPE>> extends Action
 
     public SnapshotAction(final RTPlot<XTYPE> plot)
     {
-        super(Messages.Snapshot, Activator.getIcon("camera"));
+        super(Messages.Snapshot, Activator.getDefault().getImageDescriptor("camera"));
         this.plot = plot;
     }
 

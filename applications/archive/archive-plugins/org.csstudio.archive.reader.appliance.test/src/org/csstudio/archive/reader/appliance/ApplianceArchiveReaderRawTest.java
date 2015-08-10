@@ -25,7 +25,7 @@ public class ApplianceArchiveReaderRawTest extends AbstractArchiverReaderTesting
 
     @Override
     protected ArchiveReader getReader() {
-        return new TestApplianceArchiveReader(false);
+        return new TestApplianceArchiveReader(false,false);
     }
 
     /**

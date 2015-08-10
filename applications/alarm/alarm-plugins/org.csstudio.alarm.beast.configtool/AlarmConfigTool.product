@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="AlarmConfigTool" id="org.csstudio.alarm.beast.configtool.product" application="org.csstudio.alarm.beast.configtool.application" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
+<product name="AlarmConfigTool" uid="alarm-config" id="org.csstudio.alarm.beast.configtool.product" application="org.csstudio.alarm.beast.configtool.application" version="4.0.0.qualifier" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -68,5 +68,12 @@
       <plugin id="org.junit"/>
    </plugins>
 
+   <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="4" />
+      <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="1" />
+   </configurations>
 
 </product>

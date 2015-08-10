@@ -29,7 +29,7 @@ public class ApplianceArchiveReaderOptimizedStatisticsTest extends AbstractArchi
 
     @Override
     protected ArchiveReader getReader() {
-        return new TestApplianceArchiveReader(true);
+        return new TestApplianceArchiveReader(true,false);
     }
 
     /**

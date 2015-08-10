@@ -31,7 +31,7 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
 
 /**
- * 
+ *
  * <code>ApplianceValueIterator</code> is the base class for different value iterators.
  * It provides the facilities to extract the common values.
  *
@@ -39,25 +39,25 @@ import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
  *
  */
 public abstract class ApplianceValueIterator implements ValueIterator {
-	
+
     protected Display display;
     protected GenMsgIterator mainStream;
     protected Iterator<EpicsMessage> mainIterator;
     private FieldDescriptor valDescriptor;
-    	
+
     protected final ApplianceArchiveReader reader;
     protected final String name;
     protected final Timestamp start;
     protected final Timestamp end;
-    
-    private final IteratorListener listener; 
-    
+
+    private final IteratorListener listener;
+
     protected boolean closed = false;
-    
+
     /**
      * Constructs a new ApplianceValueIterator.
-     * 
-     * @param reader the reader to use 
+     *
+     * @param reader the reader to use
      * @param name the name of the pv to load the data for
      * @param start the start of the time window of the data
      * @param end the end of the time window of the data
@@ -70,36 +70,36 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     	this.end = end;
     	this.listener = listener;
     }
-    
+
     /**
 	 * Fetches data from appliance archiver reader using the parameters provided to the constructor.
-	 *  
+	 *
 	 * @throws ArchiverApplianceException if the data for the pv could not be loaded
 	 */
     public void fetchData() throws ArchiverApplianceException {
     	fetchDataInternal(name);
     }
-    
+
 	/**
 	 * Fetches data from appliance archiver reader for the given pv name.
-	 * 
+	 *
 	 * @param pvName name of the PV as used in the request made to the server
-	 * 
+	 *
 	 * @throws ArchiverApplianceException if the data for the pv could not be loaded
 	 */
-	protected void fetchDataInternal(String pvName) throws ArchiverApplianceException {				
+	protected void fetchDataInternal(String pvName) throws ArchiverApplianceException {
 		java.sql.Timestamp sqlStartTimestamp = TimestampHelper.toSQLTimestamp(start);
 		java.sql.Timestamp sqlEndTimestamp = TimestampHelper.toSQLTimestamp(end);
-		
+
 		DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
 		mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp);
-		if (mainStream != null) { 
+		if (mainStream != null) {
 			mainIterator = mainStream.iterator();
 		} else {
 			throw new ArchiverApplianceException("Could not fetch data.");
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.csstudio.archive.reader.ValueIterator#hasNext()
 	 */
@@ -113,101 +113,112 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 	 */
 	@Override
 	public VType next() throws Exception {
-        EpicsMessage result;
+        EpicsMessage message;
         synchronized(this) {
             if (closed) return null;
-            result = mainIterator.next();
+            message = mainIterator.next();
         }
-        PayloadType type = mainStream.getPayLoadInfo().getType();
-        if (type == PayloadType.SCALAR_BYTE || 
-        		type == PayloadType.SCALAR_DOUBLE ||
-        		type == PayloadType.SCALAR_FLOAT ||
-        		type == PayloadType.SCALAR_INT ||
-        		type == PayloadType.SCALAR_SHORT) {
-			return new ArchiveVNumber(
-					TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
-					getSeverity(result.getSeverity()), 
-					String.valueOf(result.getStatus()), 
-					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
-					result.getNumberValue());
+        return extractData(message);
+	}
+
+	/**
+	 * Extracts the data from the given epics message based on the payload type.
+	 *
+	 * @param dataMessage source of data
+	 * @return the appropriate VType data object
+	 * @throws IOException
+	 */
+	protected VType extractData(EpicsMessage dataMessage) throws IOException {
+	    PayloadType type = mainStream.getPayLoadInfo().getType();
+        if (type == PayloadType.SCALAR_BYTE ||
+                type == PayloadType.SCALAR_DOUBLE ||
+                type == PayloadType.SCALAR_FLOAT ||
+                type == PayloadType.SCALAR_INT ||
+                type == PayloadType.SCALAR_SHORT) {
+            return new ArchiveVNumber(
+                    TimestampHelper.fromSQLTimestamp(dataMessage.getTimestamp()),
+                    getSeverity(dataMessage.getSeverity()),
+                    String.valueOf(dataMessage.getStatus()),
+                    display == null ? getDisplay(mainStream.getPayLoadInfo()) : display,
+                    dataMessage.getNumberValue());
         } else if (type == PayloadType.SCALAR_ENUM) {
-        	return new ArchiveVEnum(
-					TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
-					getSeverity(result.getSeverity()), 
-					String.valueOf(result.getStatus()), 
-					 null, //TODO get the labels from somewhere
-					result.getNumberValue().intValue());
+            return new ArchiveVEnum(
+                    TimestampHelper.fromSQLTimestamp(dataMessage.getTimestamp()),
+                    getSeverity(dataMessage.getSeverity()),
+                    String.valueOf(dataMessage.getStatus()),
+                     null, //TODO get the labels from somewhere
+                    dataMessage.getNumberValue().intValue());
         } else if (type == PayloadType.SCALAR_STRING) {
-        	if (valDescriptor == null) {
-        		valDescriptor = getValDescriptor(result);
-        	}        	
-        	return new ArchiveVString(
-					TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
-					getSeverity(result.getSeverity()), 
-					String.valueOf(result.getStatus()), 
-					String.valueOf(result.getMessage().getField(valDescriptor)));
+            if (valDescriptor == null) {
+                valDescriptor = getValDescriptor(dataMessage);
+            }
+            return new ArchiveVString(
+                    TimestampHelper.fromSQLTimestamp(dataMessage.getTimestamp()),
+                    getSeverity(dataMessage.getSeverity()),
+                    String.valueOf(dataMessage.getStatus()),
+                    String.valueOf(dataMessage.getMessage().getField(valDescriptor)));
         } else if (type == PayloadType.WAVEFORM_DOUBLE
-        		|| type == PayloadType.WAVEFORM_FLOAT){
-        	if (valDescriptor == null) {
-        		valDescriptor = getValDescriptor(result);
-        	}
-        	//we could load the data directly using result.getNumberAt(index), but this is faster
-        	List<?> o = (List<?>)result.getMessage().getField(valDescriptor);
-        	double[] val = new double[o.size()];
-        	if (type == PayloadType.WAVEFORM_DOUBLE) {
-        	    int i = 0;
-	        	for (Object d : o) {
-	        		val[i++] = ((Double)d).doubleValue();
-	        	}
-        	} else {
-        	    int i = 0;
+                || type == PayloadType.WAVEFORM_FLOAT){
+            if (valDescriptor == null) {
+                valDescriptor = getValDescriptor(dataMessage);
+            }
+            //we could load the data directly using result.getNumberAt(index), but this is faster
+            List<?> o = (List<?>)dataMessage.getMessage().getField(valDescriptor);
+            double[] val = new double[o.size()];
+            if (type == PayloadType.WAVEFORM_DOUBLE) {
+                int i = 0;
+                for (Object d : o) {
+                    val[i++] = ((Double)d).doubleValue();
+                }
+            } else {
+                int i = 0;
                 for (Object d : o) {
                     val[i++] = ((Float)d).doubleValue();
                 }
-        	}
-        	return new ArchiveVNumberArray(
-        			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
-					getSeverity(result.getSeverity()), 
-					String.valueOf(result.getStatus()), 
-					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
-					val);
+            }
+            return new ArchiveVNumberArray(
+                    TimestampHelper.fromSQLTimestamp(dataMessage.getTimestamp()),
+                    getSeverity(dataMessage.getSeverity()),
+                    String.valueOf(dataMessage.getStatus()),
+                    display == null ? getDisplay(mainStream.getPayLoadInfo()) : display,
+                    val);
         } else if (type == PayloadType.WAVEFORM_INT
-        		|| type == PayloadType.WAVEFORM_SHORT) {
-        	if (valDescriptor == null) {
-        		valDescriptor = getValDescriptor(result);
-        	}
-        	//we could load the data directly using result.getNumberAt(index), but this is faster
-        	List<?> o = (List<?>)result.getMessage().getField(valDescriptor);
-        	int[] val = new int[o.size()];
-        	int i = 0;
+                || type == PayloadType.WAVEFORM_SHORT) {
+            if (valDescriptor == null) {
+                valDescriptor = getValDescriptor(dataMessage);
+            }
+            //we could load the data directly using result.getNumberAt(index), but this is faster
+            List<?> o = (List<?>)dataMessage.getMessage().getField(valDescriptor);
+            int[] val = new int[o.size()];
+            int i = 0;
             for (Object d : o) {
                 val[i++] = ((Integer)d).intValue();
             }
-            
-        	return new ArchiveVNumberArray(
-        			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
-					getSeverity(result.getSeverity()), 
-					String.valueOf(result.getStatus()), 
-					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
-					val);
+
+            return new ArchiveVNumberArray(
+                    TimestampHelper.fromSQLTimestamp(dataMessage.getTimestamp()),
+                    getSeverity(dataMessage.getSeverity()),
+                    String.valueOf(dataMessage.getStatus()),
+                    display == null ? getDisplay(mainStream.getPayLoadInfo()) : display,
+                    val);
         } else if (type == PayloadType.WAVEFORM_BYTE) {
-        	if (valDescriptor == null) {
-        		valDescriptor = getValDescriptor(result);
-        	}
-        	//we could load the data directly using result.getNumberAt(index), but this is faster
-        	return new ArchiveVNumberArray(
-        			TimestampHelper.fromSQLTimestamp(result.getTimestamp()),
-					getSeverity(result.getSeverity()), 
-					String.valueOf(result.getStatus()), 
-					display == null ? getDisplay(mainStream.getPayLoadInfo()) : display, 
-					new ArrayByte(((ByteString)result.getMessage().getField(valDescriptor)).toByteArray()));
-        }         
+            if (valDescriptor == null) {
+                valDescriptor = getValDescriptor(dataMessage);
+            }
+            //we could load the data directly using result.getNumberAt(index), but this is faster
+            return new ArchiveVNumberArray(
+                    TimestampHelper.fromSQLTimestamp(dataMessage.getTimestamp()),
+                    getSeverity(dataMessage.getSeverity()),
+                    String.valueOf(dataMessage.getStatus()),
+                    display == null ? getDisplay(mainStream.getPayLoadInfo()) : display,
+                    new ArrayByte(((ByteString)dataMessage.getMessage().getField(valDescriptor)).toByteArray()));
+        }
         throw new UnsupportedOperationException("PV type " + type + " is not supported.");
 	}
-	
+
 	/**
 	 * Extracts the descriptor for the value field so it can be reused on each iteration.
-	 * 
+	 *
 	 * @param message the epics message to extract the descriptor from
 	 * @return the descriptor if it was found or null if not found
 	 */
@@ -240,10 +251,10 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 		}
 		listener.finished(this);
 	}
-			
+
 	/**
 	 * Extract the display properties (min, max, alarm limits) from the given payloadinfo.
-	 *  
+	 *
 	 * @param info the info to extract the limits from
 	 * @return the display
 	 */
@@ -254,7 +265,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 				headers.put(fieldValue.getName(), fieldValue.getVal());
 			}
 		}
-		
+
 		String lopr = headers.get(ApplianceArchiveReaderConstants.LOPR);
 		String low = headers.get(ApplianceArchiveReaderConstants.LOW);
 		String lolo = headers.get(ApplianceArchiveReaderConstants.LOLO);
@@ -265,26 +276,26 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 		String hopr = headers.get(ApplianceArchiveReaderConstants.HOPR);
 
 		return ValueFactory.newDisplay(
-				(lopr != null) ? Double.parseDouble(lopr) : Double.NaN, 
-				(low != null) ? Double.parseDouble(low) : Double.NaN, 
-				(lolo != null) ? Double.parseDouble(lolo) : Double.NaN, 
-				(egu != null) ? egu : "", 
-				(prec != null) ? NumberFormats.format((int)Math.round(Double.parseDouble(prec))) : 
-					NumberFormats.toStringFormat(), 
-				(high != null) ? Double.parseDouble(high) : Double.NaN, 
-				(hihi != null) ? Double.parseDouble(hihi) : Double.NaN, 
-				(hopr != null) ? Double.parseDouble(hopr) : Double.NaN, 
-				(lopr != null) ? Double.parseDouble(lopr) : Double.NaN, 
+				(lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
+				(low != null) ? Double.parseDouble(low) : Double.NaN,
+				(lolo != null) ? Double.parseDouble(lolo) : Double.NaN,
+				(egu != null) ? egu : "",
+				(prec != null) ? NumberFormats.format((int)Math.round(Double.parseDouble(prec))) :
+					NumberFormats.toStringFormat(),
+				(high != null) ? Double.parseDouble(high) : Double.NaN,
+				(hihi != null) ? Double.parseDouble(hihi) : Double.NaN,
+				(hopr != null) ? Double.parseDouble(hopr) : Double.NaN,
+				(lopr != null) ? Double.parseDouble(lopr) : Double.NaN,
 				(hopr != null) ? Double.parseDouble(hopr) : Double.NaN
 		);
 	}
-			
-	
+
+
 	/**
 	 * Determines alarm severity from the given numerical representation.
-	 * 
+	 *
 	 * @param severity numerical representation of alarm severity
-	 * 
+	 *
 	 * @return alarm severity
 	 */
 	protected static AlarmSeverity getSeverity(int severity) {

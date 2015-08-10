@@ -27,7 +27,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 
     @Override
     protected ArchiveReader getReader() {
-        return new TestApplianceArchiveReader(false);
+        return new TestApplianceArchiveReader(false,false);
     }
 
     /**

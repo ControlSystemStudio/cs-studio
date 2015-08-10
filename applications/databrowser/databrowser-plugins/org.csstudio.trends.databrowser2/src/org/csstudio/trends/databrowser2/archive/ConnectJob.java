@@ -23,15 +23,12 @@ import org.eclipse.core.runtime.jobs.Job;
 abstract public class ConnectJob extends Job
 {
     final private String url;
-    private ArchiveReader reader;
-    private ArchiveInfo infos[];
 
     /** Create job that connects to given URL, then notifies view when done. */
     public ConnectJob(final String url)
     {
         super(Messages.Connecting);
         this.url = url;
-        this.reader = null;
     }
 
     /** {@inheritDoc} */
@@ -39,12 +36,19 @@ abstract public class ConnectJob extends Job
     protected IStatus run(final IProgressMonitor monitor)
     {
         monitor.beginTask(url, IProgressMonitor.UNKNOWN);
+        monitor.subTask(url);
         try
+        (
+            final ArchiveReader reader = ArchiveRepository.getInstance().getArchiveReader(url);
+        )
         {
-            monitor.subTask(url);
-            reader = ArchiveRepository.getInstance().getArchiveReader(url);
-            infos = reader.getArchiveInfos();
-            archiveServerConnected(reader, infos);
+            final StringBuilder buf = new StringBuilder();
+            buf.append("Archive Data Server: " + reader.getServerName() + "\n\n");
+            buf.append("URL:\n" + reader.getURL() + "\n\n");
+            buf.append("Version: " + reader.getVersion() + "\n\n");
+            buf.append("Description:\n" + reader.getDescription());
+            final ArchiveInfo infos[] = reader.getArchiveInfos();
+            archiveServerConnected(buf.toString(), infos);
         }
         catch (final Exception ex)
         {
@@ -58,11 +62,10 @@ abstract public class ConnectJob extends Job
 
     /** Invoked when the job connected to the server and retrieved
      *  the available archives.
-     *  @param reader ArchiveReader
+     *  @param server_info Human-readable server info, multi-line
      *  @param infos List of archives on server
      */
-    abstract protected void archiveServerConnected(ArchiveReader reader,
-            ArchiveInfo infos[]);
+    abstract protected void archiveServerConnected(String server_info, ArchiveInfo infos[]);
 
     /** Invoked when the job failed
      *  @param url ArchiveServer URL that resulted in error

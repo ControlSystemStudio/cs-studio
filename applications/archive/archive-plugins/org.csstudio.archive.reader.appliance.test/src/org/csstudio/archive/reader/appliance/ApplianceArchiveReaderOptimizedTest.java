@@ -28,7 +28,7 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
 
     @Override
     protected ArchiveReader getReader() {
-        return new TestApplianceArchiveReader(false);
+        return new TestApplianceArchiveReader(false,false);
     }
 
     /**
@@ -51,8 +51,8 @@ public class ApplianceArchiveReaderOptimizedTest extends AbstractArchiverReaderT
             val = (ArchiveVNumber)vals[i];
             assertEquals("Value comparison", Double.valueOf(TestGenMsgIteratorRaw.VALUES_DOUBLE[i%TestGenMsgIteratorRaw.VALUES_DOUBLE.length]),(Double)val.getValue(),0.0001);
             assertEquals("Timestamp comparison", TimestampHelper.toMillisecs(start) + i,TimestampHelper.toMillisecs(val.getTimestamp()));
-            assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i]), val.getAlarmSeverity());
-            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i]), val.getAlarmName());
+            assertEquals("Severity", getSeverity(TestGenMsgIteratorRaw.SEVERITIES[i%TestGenMsgIteratorRaw.SEVERITIES.length]), val.getAlarmSeverity());
+            assertEquals("Status", String.valueOf(TestGenMsgIteratorRaw.STATUS[i%TestGenMsgIteratorRaw.SEVERITIES.length]), val.getAlarmName());
         }
     }
 
