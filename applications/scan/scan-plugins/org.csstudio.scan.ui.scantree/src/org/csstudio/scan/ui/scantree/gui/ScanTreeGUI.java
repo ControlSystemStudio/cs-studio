@@ -98,9 +98,11 @@ public class ScanTreeGUI
         public void commandsChanged()
         {
             tree_view.refresh();
-            // When there are many commands, the tree expansion is expensive
             final List<ScanCommand> commands = model.getCommands();
-            if (commands.size() < 1000)
+            // When there are many commands, the tree expansion is expensive:
+            // For 1000 commands, it can block the UI thread for many seconds.
+            // --> Only do this if all commands "fit on one page".
+            if (commands.size() < 100)
                 tree_view.expandAll();
             updateAddresses();
         }
