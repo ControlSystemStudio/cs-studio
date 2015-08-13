@@ -748,7 +748,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     @Override
     public void doSaveAs()
     {
-        final IFile file = promptForFile(null);
+        final IFile file = promptForFile(getSite().getShell(), null);
         if (file == null)
             return;
         if (saveToFile(new NullProgressMonitor(), file))
@@ -759,12 +759,15 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     }
 
     /** Prompt for file name
+     *
+     *  <p>Asserts that it's a *.scn file
+     *
      *  @param old_file Old file name or <code>null</code>
      *  @return IFile for new file name
      */
-    private IFile promptForFile(final IFile old_file)
+    public static IFile promptForFile(final Shell shell, final IFile old_file)
     {
-        final SaveAsDialog dlg = new SaveAsDialog(getSite().getShell());
+        final SaveAsDialog dlg = new SaveAsDialog(shell);
         dlg.setBlockOnOpen(true);
         if (old_file != null)
             dlg.setOriginalFile(old_file);
