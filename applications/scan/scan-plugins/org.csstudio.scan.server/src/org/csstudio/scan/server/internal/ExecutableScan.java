@@ -380,7 +380,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public Object call() throws Exception
     {
-        logger.log(Level.CONFIG, "Executing \"{0}\" [{1}]", new Object[] { getName(), new MemoryInfo()});
+        logger.log(Level.CONFIG, "Executing ID {0} \"{1}\" [{2}]", new Object[] { getId(), getName(), new MemoryInfo()});
 
         try
         (
