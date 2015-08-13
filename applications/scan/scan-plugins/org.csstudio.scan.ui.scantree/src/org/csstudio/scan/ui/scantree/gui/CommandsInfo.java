@@ -8,11 +8,11 @@
 package org.csstudio.scan.ui.scantree.gui;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.scan.command.ScanCommand;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -30,60 +30,56 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 public class CommandsInfo
 {
     /** Singleton instance */
-    private static CommandsInfo instance = null;
+    private final static CommandsInfo instance = new CommandsInfo();
 
     /** Default instances for each available command */
-    final private ScanCommand[] commands;
+    private final ScanCommand[] commands;
 
     /** Icon for each command, indexed by name of command class */
-    final private ImageRegistry registry = new ImageRegistry();
+    private final ImageRegistry registry = new ImageRegistry();
 
     /** GUI name for each command, indexed by command class */
-    final private Map<Class<?>, String> command_names = new HashMap<Class<?>, String>();
+    private final Map<Class<?>, String> command_names = new HashMap<>();
 
-    /** @return Singleton instance
-     *  @throws Exception on error creating the initial instance
-     */
-    public static synchronized CommandsInfo getInstance() throws Exception
+    /** @return Singleton instance */
+    public static CommandsInfo getInstance()
     {
-        if (instance == null)
-            instance = new CommandsInfo();
         return instance;
     }
 
     /** Initialize from extension point registry */
-    private CommandsInfo() throws Exception
+    private CommandsInfo()
     {
         // Locate all commands
         final IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.csstudio.scan.command");
         final IConfigurationElement[] configs = point.getConfigurationElements();
 
-        final List<ScanCommand> commands = new ArrayList<ScanCommand>();
+        final List<ScanCommand> commands = new ArrayList<>();
         for (IConfigurationElement config : configs)
         {
             final String plugin_id = config.getContributor().getName();
             final String name = config.getAttribute("name");
             final String icon_path = config.getAttribute("icon");
 
-            // Instantiate command
-            final ScanCommand command = (ScanCommand) config.createExecutableExtension("class");
-            commands.add(command);
-
-            command_names.put(command.getClass(), name);
-
-            // Get icon
-            final ImageDescriptor icon = AbstractUIPlugin.imageDescriptorFromPlugin(plugin_id, icon_path);
-            registry.put(command.getClass().getName(), icon);
-        }
-        // Sort by command class name to get predicatable order
-        Collections.sort(commands, new Comparator<ScanCommand>()
-        {
-            @Override
-            public int compare(final ScanCommand cmd1, final ScanCommand cmd2)
+            try
             {
-                return cmd1.getCommandName().compareTo(cmd2.getCommandName());
+                // Instantiate command
+                final ScanCommand command = (ScanCommand) config.createExecutableExtension("class");
+                commands.add(command);
+                command_names.put(command.getClass(), name);
+
+                // Get icon
+                final ImageDescriptor icon = AbstractUIPlugin.imageDescriptorFromPlugin(plugin_id, icon_path);
+                registry.put(command.getClass().getName(), icon);
             }
-        });
+            catch (Exception ex)
+            {
+                Logger.getLogger(getClass().getName())
+                      .log(Level.SEVERE, "Cannot initialize command '" + name + " from " + plugin_id, ex);
+            }
+        }
+        // Sort by command class name to get predictable order
+        commands.sort((cmd1, cmd2) -> cmd1.getCommandName().compareTo(cmd2.getCommandName()));
         this.commands = commands.toArray(new ScanCommand[commands.size()]);
     }
 
@@ -114,5 +110,4 @@ public class CommandsInfo
             return command_name;
         return "Scan Command";
     }
-
 }
