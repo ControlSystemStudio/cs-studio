@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.validation;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
@@ -50,6 +51,7 @@ public class Application implements IApplication {
     private static final String PRINT_RESULTS = "-print";
     private static final String INCLUDE_TARGET_FOLDER = "-includeTarget";
 
+    private File targetToDelete = null;
     private boolean deleteWhenFinished = false;
     private boolean skipTargetFolder = true;
 
@@ -116,7 +118,11 @@ public class Application implements IApplication {
         check(verifier, file);
         ValidationFailure[] failures = verifier.getValidationFailures();
         if (deleteWhenFinished) {
-            FileUtils.deleteDirectory(file);
+            try {
+                FileUtils.deleteDirectory(targetToDelete);
+            } catch (IOException e) {
+                System.err.println("WARNING: " + e.getMessage());
+            }
         }
         System.out.println("Validation finished.");
         StringBuilder sb = new StringBuilder();
@@ -252,27 +258,51 @@ public class Application implements IApplication {
 
     private static final String PROJECT_FILE = ".project";
 
+    /**
+     * Checks the file if it belongs to a project and if that project has any linked resources. If it does have linked
+     * resources, the entire structure is copied to a temp folder and the location of the file within the temp folder
+     * is returned. If there are no linked resources, the file itself is returned.
+     *
+     * @param file the file to check if it belongs to a project and if there are any linked resources
+     * @return the location that should be checked instead of the given file (could be the same)
+     * @throws IOException
+     * @throws URISyntaxException
+     */
     private File setUpLocation(File file) throws IOException, URISyntaxException {
-        if (file.isFile()) {
-            return file;
+        File projectFolder = traverseToProjectFolder(file.getAbsoluteFile());
+        Map<File, Link[]> links = null;
+        File rootToCopy = file;
+        if (projectFolder == null) {
+            //this is a standalone file/folder, which certainly doesn't have any linked resources
+            if (file.isFile()) {
+                return file;
+            }
+
+            //if file is a directory, search for .project files.
+            //gather all .project files that contains a linked resource
+            links = gatherLinkedResources(new HashMap<>(),file);
+            if (links.isEmpty()) {
+                return file;
+            }
+        } else {
+            links = gatherLinkedResources(new HashMap<>(),projectFolder);
+            if (links.isEmpty()) {
+                return file;
+            }
+            rootToCopy = projectFolder;
         }
-        //if file is a directory, search for .project files.
-        //gather all .project files that contains a linked resource
-        Map<File, Link[]> links = gatherLinkedResources(new HashMap<>(),file);
-        if (links.isEmpty()) {
-            return file;
-        }
+
         //if .project exists and at least one contains a linked resource tag, copy everything to a temp folder and validate there
         String tempFolder = System.getProperty("java.io.tmpdir");
         File temp = new File(tempFolder, "opivalidation");
-        temp = new File(temp, file.getName());
+        temp = new File(temp, rootToCopy.getName());
         if (temp.exists()) {
             FileUtils.deleteDirectory(temp);
         }
-        FileUtils.copyDirectory(file, temp);
+        FileUtils.copyDirectory(rootToCopy, temp);
         deleteWhenFinished = true;
 
-        String absoluteLocation = file.getAbsolutePath();
+        String absoluteLocation = rootToCopy.getAbsolutePath();
         for (Map.Entry<File,Link[]> e : links.entrySet()) {
             File project = e.getKey().getParentFile();
             String absoluteProject = project.getAbsolutePath();
@@ -281,24 +311,61 @@ public class Application implements IApplication {
             File destination = new File(temp, path);
             for (Link r : e.getValue()) {
                 File dest = new File(destination,r.getName());
-                if (r.getType() == 1) {
-                    FileUtils.copyFile(r.getFile(), dest);
-                } else {
-                    FileUtils.copyDirectory(r.getFile(), dest);
+                try {
+                    if (r.getType() == 1) {
+                        FileUtils.copyFile(r.getFile(), dest);
+                    } else {
+                        FileUtils.copyDirectory(r.getFile(), dest);
+                    }
+                } catch (FileNotFoundException ex) {
+                    System.err.println("ERROR: " + ex.getMessage());
                 }
             }
+        }
+        targetToDelete = temp;
+        if (projectFolder != null) {
+            String relative = file.getAbsolutePath().substring(projectFolder.getAbsolutePath().length());
+            temp = new File(temp,relative);
         }
         return temp;
     }
 
+    /**
+     * Find if this file belongs to a project structure. If yes, the project folder (folder that contains the .project
+     * file) is returned, otherwise null is returned.
+     *
+     * @param file the file to check if it belongs to a project
+     * @return the project folder if it exists
+     */
+    private static File traverseToProjectFolder(File file) {
+        if (file == null) {
+            return null;
+        } else if (file.isDirectory()) {
+            String[] children = file.list();
+            for (String s : children) {
+                if (PROJECT_FILE.equals(s)) {
+                    return file;
+                }
+            }
+        }
+        return traverseToProjectFolder(file.getParentFile());
+    }
+
+    /**
+     * Checks the file and all its children for .project files and linked resources defined in those files.
+     *
+     * @param links the map to receive the links and should also be returned
+     * @param file the base file to start the check with
+     * @return the map containing all linked resources; key is the .project file, value is the array of links defined
+     *          in that .project file
+     */
     private static Map<File,Link[]> gatherLinkedResources(Map<File,Link[]> links, File file) {
         if (file.isDirectory()) {
             File[] files = file.listFiles();
             for (File f : files) {
                 if (f.isDirectory()) {
                     gatherLinkedResources(links, f);
-                }
-                if (PROJECT_FILE.equalsIgnoreCase(f.getName())) {
+                } else if (PROJECT_FILE.equalsIgnoreCase(f.getName())) {
                     ArrayList<Link> linkList = new ArrayList<>();
                     ProjectDescription pd = JAXB.unmarshal(f, ProjectDescription.class);
                     Variable[] variables = pd.getVariables().toArray(new Variable[0]);

@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.validation;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -132,10 +133,10 @@ public class ProjectDescription {
 
     @XmlElement(name = "link")
     @XmlElementWrapper(name = "linkedResources")
-    private List<Link> links;
+    private List<Link> links = new ArrayList<>();
     @XmlElement(name = "variable")
     @XmlElementWrapper(name = "variableList")
-    private List<Variable> variables;
+    private List<Variable> variables = new ArrayList<>();
 
     /**
      * @return all links that are defined in the file
