@@ -15,26 +15,39 @@
  ******************************************************************************/
 package org.csstudio.scan.ui.scantree;
 
-import java.util.List;
+import java.io.ByteArrayInputStream;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.scan.client.ScanClient;
-import org.csstudio.scan.command.ScanCommand;
-import org.csstudio.scan.command.ScanCommandFactory;
-import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.ScanInfo;
+import org.eclipse.core.resources.IFile;
 
-/** Command handler that opens a scan in the tree editor
+/** Command handler that saves a downloaded scan as a file
  *  @author Kay Kasemir
  */
-public class OpenScanTreeHandler extends AbstractScanHandler
+public class SaveScanHandler extends AbstractScanHandler
 {
     @Override
     protected void handleScan(final ScanClient client, final ScanInfo info, final String xml_commands) throws Exception
     {
-        final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
-        final List<ScanCommand> commands = reader.readXMLString(xml_commands);
+        final AtomicReference<IFile> file_ref = new AtomicReference<>();
 
-        // Open in editor, which requires UI thread
-        shell.getDisplay().asyncExec(() ->  ScanEditor.createInstance(info, commands));
+        // Prompt for file name, which requires UI thread
+        shell.getDisplay().syncExec(() ->
+        {
+            file_ref.set(ScanEditor.promptForFile(shell, null));
+        });
+
+        final IFile file = file_ref.get();
+        if (file == null)
+            return;
+
+        // Write commands as XML to buffer
+        // Write the buffer to file
+        final ByteArrayInputStream stream = new ByteArrayInputStream(xml_commands.getBytes());
+        if (file.exists())
+            file.setContents(stream, IFile.FORCE, null);
+        else
+            file.create(stream, true, null);
     }
 }
