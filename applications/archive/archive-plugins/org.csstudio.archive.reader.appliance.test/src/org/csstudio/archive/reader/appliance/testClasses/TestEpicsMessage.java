@@ -23,6 +23,7 @@ public class TestEpicsMessage extends EpicsMessage{
     private final Number[] arrayValue;
     private final int severity;
     private final int status;
+    private final int elementCount;
 
     /**
      * Constructor.
@@ -34,6 +35,7 @@ public class TestEpicsMessage extends EpicsMessage{
         this.severity = severity;
         this.status = status;
         this.arrayValue = null;
+        this.elementCount = 1;
     }
 
     /**
@@ -41,6 +43,7 @@ public class TestEpicsMessage extends EpicsMessage{
      */
     public TestEpicsMessage(long time, Number[] value, int severity, int status, GeneratedMessage message, PayloadInfo info) {
         super(message, info);
+        this.elementCount = value.length;
         this.time = time;
         this.arrayValue = value;
         this.severity = severity;
@@ -53,7 +56,7 @@ public class TestEpicsMessage extends EpicsMessage{
      */
     @Override
     public int getElementCount() {
-        return 1;
+        return elementCount;
     }
 
     /* (non-Javadoc)

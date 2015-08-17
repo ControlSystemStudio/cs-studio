@@ -10,6 +10,8 @@ package org.csstudio.opibuilder.runmode;
 import java.util.Optional;
 
 import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
+import org.eclipse.core.resources.IWorkspaceRoot;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
@@ -27,6 +29,10 @@ public class DisplayLauncher implements IEditorLauncher
     @Override
     public void open(final IPath path)
     {
-        RunModeService.openDisplay(path, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
+        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+        IPath workspacePath = path.makeRelativeTo(root.getLocation());
+        workspacePath = workspacePath == null ? path : workspacePath.makeAbsolute();
+        //the view expects an absolute path within workspace, otherwise it doesn't find linked files
+        RunModeService.openDisplay(workspacePath, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
     }
 }
