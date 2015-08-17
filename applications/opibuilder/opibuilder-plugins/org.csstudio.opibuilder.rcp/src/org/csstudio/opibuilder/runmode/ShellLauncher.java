@@ -7,8 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
+import org.csstudio.opibuilder.util.ResourceUtilSSHelperImpl;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
@@ -27,10 +26,7 @@ public class ShellLauncher implements IEditorLauncher
     @Override
     public void open(final IPath path)
     {
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        IPath workspacePath = path.makeRelativeTo(root.getLocation());
-        workspacePath = workspacePath == null ? path : workspacePath.makeAbsolute();
-        //the OPIShell expects an absolute path within workspace, otherwise it doesn't find linked files
-        OPIShell.openOPIShell(workspacePath, null);
+        OPIShell.openOPIShell(ResourceUtilSSHelperImpl.absoluteSystemPathToAbsoluteWorkspacePath(path), null);
+
     }
 }
