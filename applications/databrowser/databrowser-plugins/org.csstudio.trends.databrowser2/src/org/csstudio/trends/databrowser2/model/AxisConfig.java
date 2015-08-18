@@ -61,7 +61,7 @@ public class AxisConfig
      */
     public AxisConfig(final String name)
     {
-        this(true, name, true, true, false, new RGB(0, 0, 0), 0.0, 10.0, false, Preferences.useAutoScale(), false);
+        this(true, name, true, Preferences.useTraceNames(), false, new RGB(0, 0, 0), 0.0, 10.0, false, Preferences.useAutoScale(), false);
     }
 
     /** Initialize
