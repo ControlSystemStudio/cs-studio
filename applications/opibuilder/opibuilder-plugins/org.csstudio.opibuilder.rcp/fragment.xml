@@ -10,19 +10,19 @@
            OPI Editor
        -->
       <editor
+            class="org.csstudio.opibuilder.runmode.DisplayLauncher"
             default="true"
             extensions="opi"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.DisplayLauncher"
-            launcher="org.csstudio.opibuilder.runmode.DisplayLauncher"
             name="OPI Display (Workbench)">
       </editor>
       <editor
+            class="org.csstudio.opibuilder.runmode.ShellLauncher"
             default="false"
             extensions="opi"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.ShellLauncher"
-            launcher="org.csstudio.opibuilder.runmode.ShellLauncher"
             name="OPI Display (Standalone Window)">
       </editor>
    </extension>
