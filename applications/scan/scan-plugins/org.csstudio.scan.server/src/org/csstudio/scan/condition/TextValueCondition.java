@@ -17,6 +17,7 @@ package org.csstudio.scan.condition;
 
 import java.util.concurrent.TimeoutException;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
@@ -33,6 +34,8 @@ import org.epics.util.time.TimeDuration;
 @SuppressWarnings("nls")
 public class TextValueCondition implements DeviceCondition, DeviceListener
 {
+    protected final static TimeDuration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
+
     /** Device to monitor */
     final private Device device;
 
@@ -81,6 +84,10 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
     public void await() throws TimeoutException, Exception
     {
         final WaitWithTimeout timeout = new WaitWithTimeout(this.timeout);
+
+        // Fetch initial value with get-callback
+        // (will be obtained by device.read() in listener)
+        device.read(value_check_timeout);
 
         device.addListener(this);
         try
