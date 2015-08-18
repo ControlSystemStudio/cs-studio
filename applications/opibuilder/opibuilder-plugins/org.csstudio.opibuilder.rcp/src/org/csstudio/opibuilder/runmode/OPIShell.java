@@ -213,7 +213,7 @@ public class OPIShell implements IOPIRuntime {
     /*
      * This is the only way to create an OPIShell
      */
-    public static void openOPIShell(IPath path, MacrosInput macrosInput) {
+    public static OPIShell openOPIShell(IPath path, MacrosInput macrosInput) {
         if (macrosInput == null) {
             macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), false);
         }
@@ -222,16 +222,18 @@ public class OPIShell implements IOPIRuntime {
             for (OPIShell opiShell : openShells) {
                 if (opiShell.getPath().equals(path) && opiShell.getMacrosInput().equals(macrosInput)) {
                     opiShell.raiseToTop();
-                    alreadyOpen = true;
+                    return opiShell;
                 }
             }
             if (!alreadyOpen) {
                 OPIShell os = new OPIShell(Display.getCurrent(), path, macrosInput);
                 openShells.add(os);
+                return os;
             }
         } catch (Exception e) {
-                e.printStackTrace();
+            e.printStackTrace();
         }
+        return null;
     }
 
     /**

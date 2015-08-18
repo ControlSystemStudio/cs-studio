@@ -10,7 +10,6 @@ package org.csstudio.opibuilder.runmode;
 import java.util.Optional;
 
 import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
-import org.csstudio.opibuilder.util.ResourceUtilSSHelperImpl;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
@@ -22,13 +21,13 @@ import org.eclipse.ui.IEditorLauncher;
  *  on the Eclipse registry.
  *
  *  @author Kay Kasemir
+ *  @author Jaka Bobnar
  */
-public class DisplayLauncher implements IEditorLauncher
-{
+public class DisplayLauncher extends AbstractOPISimulationEditor {
+
     @Override
-    public void open(final IPath path)
-    {
-        RunModeService.openDisplay(ResourceUtilSSHelperImpl.absoluteSystemPathToAbsoluteWorkspacePath(path),
-                Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
+    public Focusable run(IPath path) {
+        RunModeService.openDisplay(path,Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
+        return new Focusable(){public void focus() {}};
     }
 }

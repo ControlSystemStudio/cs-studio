@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
-import org.csstudio.opibuilder.util.ResourceUtilSSHelperImpl;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
@@ -20,13 +19,23 @@ import org.eclipse.ui.IEditorLauncher;
  *
  *  @author Kay Kasemir
  *  @author Will Rogers
+ *  @author Jaka Bobnar
  */
-public class ShellLauncher implements IEditorLauncher
-{
-    @Override
-    public void open(final IPath path)
-    {
-        OPIShell.openOPIShell(ResourceUtilSSHelperImpl.absoluteSystemPathToAbsoluteWorkspacePath(path), null);
+public class ShellLauncher extends AbstractOPISimulationEditor {
 
+    private static class ShellFocusable implements Focusable {
+        private final OPIShell shell;
+        ShellFocusable(OPIShell shell) {
+            this.shell = shell;
+        }
+        @Override
+        public void focus() {
+            shell.raiseToTop();
+        }
+    }
+
+    @Override
+    public Focusable run(IPath path) {
+        return new ShellFocusable(OPIShell.openOPIShell(path, null));
     }
 }
