@@ -106,7 +106,7 @@ to actually reach the desired value.
     Optionally, a different "read back" device can be used.</li>
 <li>Tolerance: Difference between the actual value of the device and the desired value
     that is considered "good enough".</li>
-<li>Timeout: Time in seconds that the command will use when waiting for the completion and/or the readback.</li>
+<li>Timeout: Time in seconds that the command will use when waiting for the completion or the readback.</li>
 </ul>
 <p>Example:</p>
 <p>
@@ -126,11 +126,14 @@ will write the value 1.0 to the "setpoint" device, and wait for the confirmation
 This can be useful for EPICS motor records, where it should indicate that the motor has finished moving.
 </p>
 <p>
-<code>Set 'setpoint' = 1.0 with completion in 10.0 sec (wait for 'readback' +-0.1, 10.0 sec timeout)</code>
+<code>Set 'setpoint' = 1.0 with completion in 10.0 sec (check for 'readback' +-0.1)</code>
 combines the last two examples:
 A value is written to the "setpoint" device, waiting for confirmation.
-Then, the command waits for the associated "readback" to match.
-The timeout is applied to both steps, so the today time out in this case could be 20 seconds.
+Then, the command checks if the associated "readback" matches the written value.
+Note that the timeout is only used when awaiting the completion.
+After the device confirms completion, the command expects the readback to match "right away".
+The command will fetch the current value from the device and compare that it to the desired value.
+In case of a mismatch, the command will not wait for further value updates but instead raise an error.
 </p>
 
 
@@ -208,6 +211,11 @@ It is at the core of most scans.
 <code>Loop 'xpos' = 0.0 ... 5.0, step 1.0</code>
 will set the "xpos" device to 0.0, then 1.0, 2.0, 3.0, 4.0, 5.0.
 At each step it will execute the "body" of the loop.
+</p>
+<p>
+As with the <a href="#SetCommand">Set</a> command,
+the loop can wait for completion, or wait for a readback to match,
+or wait for completion and then check for the readback to match.
 </p>
 <p>Loops can count "up" as well as "down".
 A loop from 0 to 5 in steps of 1 will operate as just mentioned.

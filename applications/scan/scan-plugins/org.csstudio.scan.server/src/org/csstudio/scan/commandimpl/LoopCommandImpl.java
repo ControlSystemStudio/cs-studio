@@ -185,10 +185,14 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             //  Wait for the device to reach the value?
             final NumericValueCondition condition;
             if (command.getWait())
+            {
+                // When using completion, readback needs to match "right away"
+                final double check_timeout = command.getCompletion() ? 1.0 : command.getTimeout();
                 condition = new NumericValueCondition(readback, Comparison.EQUALS,
                             command.getStart(),
                             command.getTolerance(),
-                            TimeDuration.ofSeconds(command.getTimeout()));
+                            TimeDuration.ofSeconds(check_timeout));
+            }
             else
                 condition = null;
 
