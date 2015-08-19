@@ -50,11 +50,13 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     /** Property for name of data browser configuration file */
     final public static String PROP_FILENAME = "filename";
 
-    /** Property to show/hide the toolbar */
-    public static final String PROP_SHOW_TOOLBAR = "show_toolbar";
-
-    /** Property to show/hide the legend */
-    public static final String PROP_SHOW_LEGEND = "show_legend";
+//    TODO Add these properties again when they can be correctly initialized form the .plt file
+//    
+//    /** Property to show/hide the toolbar */
+//    public static final String PROP_SHOW_TOOLBAR = "show_toolbar";
+//
+//    /** Property to show/hide the legend */
+//    public static final String PROP_SHOW_LEGEND = "show_legend";
 
     public static final IPath EMPTY_PATH = new Path("");
 
@@ -83,15 +85,6 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         {
             new XMLPersistence().load(model, input);
         }
-        // Set toolbar and legend visibility from the opi properties.
-        // Toolbar visibility is also in the *.plt config,
-        // but wasn't originally so opiwidget had its own
-        // property for this.
-        // Legend visibility was in the *.plt file from the start,
-        // but having an overriding opiwidget property allows using
-        // the same *.plt file in multiple opiwidgets, with and without legend.
-        model.setToolbarVisible(isToolbarVisible());
-        model.setLegendVisible(isLegendVisible());
         return model;
     }
 
@@ -133,10 +126,6 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
                     Model.FILE_EXTENSION,
                     Model.FILE_EXTENSION_OLD
                 }));
-        addProperty(new BooleanProperty(PROP_SHOW_TOOLBAR, Messages.ShowToolbar,
-                WidgetPropertyCategory.Display, false));
-        addProperty(new BooleanProperty(PROP_SHOW_LEGEND, Messages.ShowLegend,
-                WidgetPropertyCategory.Display, false));
         addProperty(new StringProperty(PROP_SELECTION_VALUE_PV,
                 "Selection Value PV (VTable)", WidgetPropertyCategory.Basic, ""));
         addProperty(new BooleanProperty(PROP_SHOW_VALUE_LABELS,
@@ -151,7 +140,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     }
 
     /** @return All macros of this widget, including optional parent settings */
-    private MacroTable getAllMacros()
+    MacroTable getAllMacros()
     {
         final Map<String, String> macros = new HashMap<String, String>();
         final MacrosInput macro_input = getMacrosInput();
@@ -176,18 +165,6 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
         }
 
         return path;
-    }
-
-    /** @return Tool bar visibility */
-    public boolean isToolbarVisible()
-    {
-        return getCastedPropertyValue(PROP_SHOW_TOOLBAR);
-    }
-
-    /** @return Legend visibility */
-    public boolean isLegendVisible()
-    {
-        return getCastedPropertyValue(PROP_SHOW_LEGEND);
     }
 
     /** @return Selection PV value. */
