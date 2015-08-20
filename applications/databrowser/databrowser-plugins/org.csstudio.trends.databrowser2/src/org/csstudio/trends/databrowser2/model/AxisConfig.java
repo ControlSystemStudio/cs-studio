@@ -312,7 +312,7 @@ public class AxisConfig
         final double min = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_MIN, 0.0);
         final double max = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_MAX, 10.0);
         final boolean show_grid = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_GRID, false);
-        final boolean auto_scale = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_AUTO_SCALE, Preferences.useTraceNames());
+        final boolean auto_scale = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_AUTO_SCALE, Preferences.useAutoScale());
         final boolean log_scale = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_LOG_SCALE, false);
         return new AxisConfig(visible, name, use_axis_name, use_trace_names, right, rgb, min, max, show_grid, auto_scale, log_scale);
     }
