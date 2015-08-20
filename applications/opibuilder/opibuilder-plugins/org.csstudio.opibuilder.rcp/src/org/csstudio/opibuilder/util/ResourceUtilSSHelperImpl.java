@@ -20,7 +20,6 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.ui.util.NoResourceEditorInput;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -241,43 +240,5 @@ public class ResourceUtilSSHelperImpl extends ResourceUtilSSHelper {
         gc.copyArea(image, 0, 0);
         gc.dispose();
         return image;
-    }
-
-    /**
-     * Transform the path to an absolute path within the workspace. The path is expected to be an absolute system
-     * path. The returned value is an absolute path within the workspace, correctly resolved against the project
-     * name.
-     *
-     * @param path the path to transform
-     * @return the absolute path
-     */
-    public static IPath absoluteSystemPathToAbsoluteWorkspacePath(IPath path) {
-        //the OPIShell expects an absolute path within workspace, otherwise it doesn't find linked files
-        IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-        String absPath = path.toFile().getAbsolutePath();
-        IPath workspacePath = null;
-        if (absPath.startsWith(root.getLocation().toFile().getAbsolutePath())) {
-            //file is a descendant of the workspace folder - just transform to absolute path within workspace
-            workspacePath = path.makeRelativeTo(root.getLocation());
-            workspacePath = workspacePath == null ? path : workspacePath.makeAbsolute();
-        } else {
-            IProject[] projects = root.getProjects();
-            IProject project = null;
-            for (IProject p : projects) {
-                IPath pp = p.getRawLocation();
-                if (pp == null) continue;
-                if (absPath.startsWith(pp.toFile().getAbsolutePath())) {
-                    project = p;
-                    break;
-                }
-            }
-            if (project == null) {
-                throw new RuntimeException("Cannot locate the source of file " + path);
-            }
-            String newPath = absPath.substring(project.getRawLocation().toFile().getAbsolutePath().length());
-            workspacePath = project.getFile(newPath).getFullPath();
-            workspacePath = workspacePath == null ? path : workspacePath.makeAbsolute();
-        }
-        return workspacePath;
     }
 }
