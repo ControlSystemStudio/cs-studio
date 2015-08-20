@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
-import org.csstudio.opibuilder.util.ResourceUtilSSHelperImpl;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
@@ -20,13 +19,16 @@ import org.eclipse.ui.IEditorLauncher;
  *
  *  @author Kay Kasemir
  *  @author Will Rogers
+ *  @author Jaka Bobnar
  */
 public class ShellLauncher implements IEditorLauncher
 {
     @Override
     public void open(final IPath path)
     {
-        OPIShell.openOPIShell(ResourceUtilSSHelperImpl.absoluteSystemPathToAbsoluteWorkspacePath(path), null);
+        //The path is an absolute system path, which needs to be transformed to workspace path
+        IPath workspacePath = LauncherHelper.systemPathToWorkspacePath(path);
+        OPIShell.openOPIShell(workspacePath, null);
 
     }
 }

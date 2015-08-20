@@ -10,7 +10,6 @@ package org.csstudio.opibuilder.runmode;
 import java.util.Optional;
 
 import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
-import org.csstudio.opibuilder.util.ResourceUtilSSHelperImpl;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
@@ -28,7 +27,7 @@ public class DisplayLauncher implements IEditorLauncher
     @Override
     public void open(final IPath path)
     {
-        RunModeService.openDisplay(ResourceUtilSSHelperImpl.absoluteSystemPathToAbsoluteWorkspacePath(path),
-                Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
+        IPath workspacePath = LauncherHelper.systemPathToWorkspacePath(path);
+        RunModeService.openDisplay(workspacePath, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
     }
 }
