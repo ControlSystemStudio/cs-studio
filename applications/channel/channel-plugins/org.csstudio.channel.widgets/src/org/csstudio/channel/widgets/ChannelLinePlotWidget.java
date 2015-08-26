@@ -1,11 +1,11 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumber;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArray;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArrayOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumbers;
-import static org.epics.util.time.TimeDuration.ofHertz;
+import static org.diirt.datasource.ExpressionLanguage.latestValueOf;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vNumber;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vNumberArray;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vNumberArrayOf;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vNumbers;
+import static org.diirt.util.time.TimeDuration.ofHertz;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
@@ -46,19 +46,19 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.AxisRanges;
-import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.LineGraph2DRendererUpdate;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.graphene.ExpressionLanguage;
-import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.GraphDataRange;
-import org.epics.pvmanager.graphene.LineGraph2DExpression;
-import org.epics.vtype.VNumberArray;
+import org.diirt.graphene.AxisRanges;
+import org.diirt.graphene.InterpolationScheme;
+import org.diirt.graphene.LineGraph2DRendererUpdate;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.expression.DesiredRateExpression;
+import org.diirt.datasource.graphene.ExpressionLanguage;
+import org.diirt.datasource.graphene.Graph2DResult;
+import org.diirt.datasource.graphene.GraphDataRange;
+import org.diirt.datasource.graphene.LineGraph2DExpression;
+import org.diirt.vtype.VNumberArray;
 
 public class ChannelLinePlotWidget extends AbstractChannelQueryResultWidget
     implements ISelectionProvider, ConfigurableWidget {
@@ -549,8 +549,8 @@ public class ChannelLinePlotWidget extends AbstractChannelQueryResultWidget
      */
     private void setRange(StartEndRangeWidget control,
             GraphDataRange plotDataRange) {
-        control.setRange(plotDataRange.getIntegratedRange().getMinimum().doubleValue(),
-            plotDataRange.getIntegratedRange().getMaximum().doubleValue());
+        control.setRange(Double.valueOf(plotDataRange.getIntegratedRange().getMinimum()),
+        Double.valueOf(plotDataRange.getIntegratedRange().getMaximum()));
     }
 
     private void resetRange(StartEndRangeWidget control) {

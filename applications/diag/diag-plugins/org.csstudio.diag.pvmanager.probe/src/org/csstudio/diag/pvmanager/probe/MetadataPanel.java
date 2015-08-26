@@ -8,9 +8,9 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.epics.vtype.Display;
-import org.epics.vtype.Enum;
-import org.epics.vtype.ValueUtil;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.Enum;
+import org.diirt.vtype.ValueUtil;
 
 /**
  * Probe panel that allows to show the metadata of thevalue.

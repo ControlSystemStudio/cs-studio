@@ -7,10 +7,10 @@ import java.util.Map;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.PVManager;
+import org.diirt.datasource.ChannelHandler;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.DataSource;
+import org.diirt.datasource.PVManager;
 
 public class DataSourceContentProvider implements IStructuredContentProvider {
 

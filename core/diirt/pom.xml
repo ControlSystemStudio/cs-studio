@@ -7,4 +7,8 @@
   </parent>
   <artifactId>diirt</artifactId>
   <packaging>pom</packaging>
+  <modules>
+    <module>diirt-features</module>
+    <module>diirt-repository</module>
+  </modules>
 </project>

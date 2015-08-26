@@ -2,10 +2,11 @@ package org.csstudio.graphene.opiwidgets.properties;
 
 import org.csstudio.graphene.AxisRangeEditorComposite;
 import org.csstudio.opibuilder.visualparts.HelpTrayDialog;
+import org.diirt.graphene.AxisRange;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.graphene.AxisRange;
+
 
 public class AxisRangePropertyDialog extends HelpTrayDialog {
 

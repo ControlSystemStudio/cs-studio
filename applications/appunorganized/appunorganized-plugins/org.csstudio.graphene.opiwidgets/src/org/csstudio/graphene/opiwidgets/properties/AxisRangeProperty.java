@@ -3,12 +3,12 @@ package org.csstudio.graphene.opiwidgets.properties;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
-import org.epics.graphene.AxisRange;
-import org.epics.graphene.AxisRanges;
-import org.epics.graphene.AxisRanges.Auto;
-import org.epics.graphene.AxisRanges.Data;
-import org.epics.graphene.AxisRanges.Display;
-import org.epics.graphene.AxisRanges.Fixed;
+import org.diirt.graphene.AxisRange;
+import org.diirt.graphene.AxisRanges;
+import org.diirt.graphene.AxisRanges.Auto;
+import org.diirt.graphene.AxisRanges.Data;
+import org.diirt.graphene.AxisRanges.Display;
+import org.diirt.graphene.AxisRanges.Fixed;
 import org.jdom.Element;
 
 /**
@@ -76,8 +76,8 @@ public class AxisRangeProperty extends AbstractWidgetProperty {
         } else if (value instanceof Fixed) {
             axisRangeElement.setAttribute(XML_ATTRIBUTE_TYPE, XML_VALUE_TYPE_ABSOLUTE);
             Fixed abs = (Fixed) value;
-            axisRangeElement.setAttribute(XML_ATTRIBUTE_MINFIXED, abs.getFixedRange().getMinimum().toString());
-            axisRangeElement.setAttribute(XML_ATTRIBUTE_MAXFIXED, abs.getFixedRange().getMaximum().toString());
+            axisRangeElement.setAttribute(XML_ATTRIBUTE_MINFIXED, Double.toString(abs.getFixedRange().getMinimum()));
+            axisRangeElement.setAttribute(XML_ATTRIBUTE_MAXFIXED, Double.toString(abs.getFixedRange().getMaximum()));
         }
         propElement.addContent(axisRangeElement);
     }
