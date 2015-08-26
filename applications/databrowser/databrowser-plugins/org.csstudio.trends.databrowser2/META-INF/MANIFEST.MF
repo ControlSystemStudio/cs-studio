@@ -2,20 +2,20 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Data Browser
 Bundle-SymbolicName: org.csstudio.trends.databrowser2;singleton:=true
-Bundle-Version: 4.1.5.qualifier
+Bundle-Version: 4.2.0.qualifier
 Bundle-Description: Strip chart type display of live and historic data
 Bundle-Activator: org.csstudio.trends.databrowser2.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.csstudio.utility.test;resolution:=optional,
  org.eclipse.ui;bundle-version="3.5.0";resolution:=optional,
- org.eclipse.rap.ui;bundle-version="1.4.1";resolution:=optional,
+ org.eclipse.rap.ui;resolution:=optional,
  org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.core.resources;bundle-version="3.5.0";resolution:=optional,
  org.eclipse.draw2d;bundle-version="3.5.0";resolution:=optional,
  org.eclipse.rap.draw2d;resolution:=optional,
  org.eclipse.rap.draw2d.compatibility;resolution:=optional,
  org.eclipse.ui.views;bundle-version="3.4.1";resolution:=optional,
- org.eclipse.rap.ui.views;bundle-version="1.4.1";resolution:=optional,
+ org.eclipse.rap.ui.views;resolution:=optional,
  org.eclipse.ui.cheatsheets;resolution:=optional,
  org.eclipse.rap.ui.cheatsheets;resolution:=optional,
  org.eclipse.ui.ide;bundle-version="3.6.0";resolution:=optional,
@@ -24,9 +24,9 @@ Require-Bundle: org.csstudio.utility.test;resolution:=optional,
  org.csstudio.apputil.ui;bundle-version="3.2.0",
  org.csstudio.ui.util;bundle-version="4.0.0";resolution:=optional,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
- org.csstudio.swt.rtplot;bundle-version="1.5.0";resolution:=optional,
+ org.csstudio.swt.rtplot;bundle-version="1.5.1";resolution:=optional,
  org.csstudio.rap.rtplot;bundle-version="1.2.0";resolution:=optional,
- org.csstudio.archive.reader;bundle-version="2.0.1",
+ org.csstudio.archive.reader;bundle-version="4.2.0",
  org.csstudio.logbook;bundle-version="1.0.2",
  org.csstudio.email.ui;bundle-version="1.0.0",
  org.csstudio.utility.singlesource;bundle-version="1.0.0",

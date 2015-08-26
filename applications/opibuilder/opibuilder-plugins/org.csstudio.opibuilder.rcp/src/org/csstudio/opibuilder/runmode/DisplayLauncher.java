@@ -7,10 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
+import java.util.Optional;
+
+import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.ui.IEditorLauncher;
 
-/** {@link IEditorLauncher} that opens display in new OPIShell.
+/** {@link IEditorLauncher} that opens display in runtime.
  *
  *  <p>Registered in plugin.xml as "Editor" for *.opi files,
  *  allowing users to launch displays from the Eclipse Navigator,
@@ -18,13 +21,13 @@ import org.eclipse.ui.IEditorLauncher;
  *  on the Eclipse registry.
  *
  *  @author Kay Kasemir
- *  @author Will Rogers
  */
-public class ShellLauncher implements IEditorLauncher
+public class DisplayLauncher implements IEditorLauncher
 {
     @Override
     public void open(final IPath path)
     {
-        OPIShell.openOPIShell(path, null);
+        IPath workspacePath = LauncherHelper.systemPathToWorkspacePath(path);
+        RunModeService.openDisplay(workspacePath, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
     }
 }

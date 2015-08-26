@@ -7,18 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.runmode;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.draw2d.Cursors;
+import org.csstudio.opibuilder.util.ResourceUtil;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.tools.SelectionTool;
@@ -27,9 +18,7 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
-import org.osgi.framework.Bundle;
 
 /**
  * Custom selection tool for OPI Runtime. Copies PV name to pastebuffer on
@@ -41,26 +30,8 @@ import org.osgi.framework.Bundle;
  */
 public class RuntimePatchedSelectionTool extends SelectionTool {
 
-    private static final String CURSOR_PATH = "icons/copy.gif";
-    private static Cursor copyPvCursor;
     private Cursor oldCursor = null;
     private boolean cursorChanged = false;
-
-    /*
-     * Set up cursor icon.
-     */
-    static {
-        Bundle bundle = Platform.getBundle(OPIBuilderPlugin.PLUGIN_ID);
-        IPath path = new Path(CURSOR_PATH);
-        URL url = FileLocator.find(bundle, path, null);
-        try {
-            InputStream inputStream = url.openConnection().getInputStream();
-            copyPvCursor = new Cursor(Display.getCurrent(), new ImageData(
-                    inputStream), 0, 0);
-        } catch (IOException e) {
-            copyPvCursor = Cursors.HELP;
-        }
-    }
 
     /**
      * Work around a bug in GEF: right click is recognized as mouse exit event
@@ -104,7 +75,7 @@ public class RuntimePatchedSelectionTool extends SelectionTool {
                     clipboard.dispose();
                     IFigure figure = apvwep.getFigure();
                     oldCursor = figure.getCursor();
-                    figure.setCursor(copyPvCursor);
+                    figure.setCursor(ResourceUtil.getCopyPvCursor());
                     cursorChanged = true;
                 }
             }

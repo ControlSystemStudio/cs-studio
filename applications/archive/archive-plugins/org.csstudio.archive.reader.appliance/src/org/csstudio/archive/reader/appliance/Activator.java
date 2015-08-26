@@ -17,6 +17,7 @@ public class Activator extends Plugin {
     private static Activator plugin;
 
     private Boolean useStatistics;
+    private Boolean useNewOptimizedOperator;
 
     /**
      * The constructor
@@ -54,7 +55,7 @@ public class Activator extends Plugin {
     }
 
     /**
-     * @return true if statistics type should be used for optimized data or false if normal type
+     * @return true if statistics type should be used for optimised data or false if normal type
      *             should be used
      */
     public boolean isUseStatistics() {
@@ -67,5 +68,22 @@ public class Activator extends Plugin {
             }
         }
         return useStatistics;
+    }
+
+    /**
+     * @return true if the new optimised operator should be used or false if not. If it is known in advance that the
+     *              appliance installation does not yet support the optimised post processing this property can be
+     *              set to false in order to reduce the number of queries
+     */
+    public boolean isUseNewOptimizedOperator() {
+        if (useNewOptimizedOperator == null) {
+            final IPreferencesService prefs = Platform.getPreferencesService();
+            if (prefs == null) {
+                useNewOptimizedOperator = true;
+            } else {
+                useNewOptimizedOperator = prefs.getBoolean(Activator.PLUGIN_ID, "useNewOptimizedOperator", true, null);
+            }
+        }
+        return useNewOptimizedOperator;
     }
 }

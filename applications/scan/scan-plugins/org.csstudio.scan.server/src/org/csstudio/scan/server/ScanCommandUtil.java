@@ -85,16 +85,18 @@ public class ScanCommandUtil
         final DeviceCondition condition;
         if (wait)
         {
+            // When using completion, readback needs to match "right away"
+            final TimeDuration check_timeout = completion ? TimeDuration.ofSeconds(1) : timeout;
             if (value instanceof Number)
             {
                 final double desired = ((Number)value).doubleValue();
                 condition = new NumericValueCondition(readback, Comparison.EQUALS, desired,
-                        tolerance, timeout);
+                        tolerance, check_timeout);
             }
             else
             {
                 final String desired = value.toString();
-                condition = new TextValueCondition(readback, Comparison.EQUALS, desired, timeout);
+                condition = new TextValueCondition(readback, Comparison.EQUALS, desired, check_timeout);
             }
         }
         else

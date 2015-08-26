@@ -9,21 +9,18 @@ package org.csstudio.swt.rtplot.internal;
 
 import org.csstudio.swt.rtplot.Activator;
 import org.csstudio.swt.rtplot.Messages;
-import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.RTPlot;
+import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.undo.UndoableActionManager;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
@@ -48,7 +45,6 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
     };
 
     final private RTPlot<XTYPE> plot;
-    private static ImageRegistry images = null;
 
     final private ToolBar toolbar;
     private ToolItem rubber, zoom_out, pan, pointer;
@@ -65,7 +61,6 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
     {
         this.plot = plot;
         toolbar = new ToolBar(plot, SWT.BORDER | SWT.WRAP);
-        initToolItemImages(plot.getDisplay());
         makeGUI();
     }
 
@@ -104,18 +99,6 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
         item.setImage(icon);
         item.setToolTipText(tool_tip);
         return item;
-    }
-
-    private void initToolItemImages(final Display display)
-    {
-        if (images != null)
-            return;
-        images = new ImageRegistry(display);
-        for (ToolIcons icon : ToolIcons.values())
-        {
-            final ImageDescriptor image = Activator.getIcon(icon.name().toLowerCase());
-            images.put(icon.name(), image);
-        }
     }
 
     private void makeGUI()
@@ -326,7 +309,7 @@ public class ToolbarHandler<XTYPE extends Comparable<XTYPE>>
     private ToolItem newToolItem(final int style, final ToolIcons icon, final String tool_tip)
     {
         final ToolItem item = new ToolItem(toolbar, style);
-        item.setImage(images.get(icon.name()));
+        item.setImage(Activator.getDefault().getImage(icon.name()));
         item.setToolTipText(tool_tip);
         return item;
     }

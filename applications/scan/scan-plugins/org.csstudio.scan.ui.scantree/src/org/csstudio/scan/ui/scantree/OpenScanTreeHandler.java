@@ -22,78 +22,19 @@ import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanCommandFactory;
 import org.csstudio.scan.command.XMLCommandReader;
 import org.csstudio.scan.server.ScanInfo;
-import org.csstudio.scan.server.ScanState;
-import org.csstudio.scan.ui.ScanHandlerUtil;
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.handlers.HandlerUtil;
 
 /** Command handler that opens a scan in the tree editor
  *  @author Kay Kasemir
  */
-public class OpenScanTreeHandler extends AbstractHandler
+public class OpenScanTreeHandler extends AbstractScanHandler
 {
-    /** {@inheritDoc} */
     @Override
-    public Object execute(final ExecutionEvent event) throws ExecutionException
+    protected void handleScan(final ScanClient client, final ScanInfo info, final String xml_commands) throws Exception
     {
-        final ScanInfo info = ScanHandlerUtil.getScanInfo(event);
-        if (info == null)
-            return null;
+        final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
+        final List<ScanCommand> commands = reader.readXMLString(xml_commands);
 
-        final Shell shell = HandlerUtil.getActiveShellChecked(event);
-        if (info.getState() == ScanState.Logged)
-        {
-            MessageDialog.openInformation(shell, Messages.OpenScanTreeError,
-                  NLS.bind(Messages.NoScanCommandsFmt, info.getName()));
-            return null;
-        }
-
-        final Display display = shell.getDisplay();
-
-        // Use Job to read commands from server
-        final Job job = new Job("Download Scan") //$NON-NLS-1$
-        {
-            @Override
-            protected IStatus run(final IProgressMonitor monitor)
-            {
-                try
-                {
-                    // Fetch commands from server
-                    final ScanClient client = new ScanClient();
-                    final String xml_commands = client.getScanCommands(info.getId());
-                    final XMLCommandReader reader = new XMLCommandReader(new ScanCommandFactory());
-                    final List<ScanCommand> commands = reader.readXMLString(xml_commands);
-
-                    // Open in editor, which requires UI thread
-                    display.asyncExec(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            ScanEditor.createInstance(info, commands);
-                        }
-                    });
-                }
-                catch (Exception ex)
-                {
-                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                            Messages.OpenScanTreeError, ex);
-                }
-                return Status.OK_STATUS;
-            }
-        };
-        job.schedule();
-
-        return null;
+        // Open in editor, which requires UI thread
+        shell.getDisplay().asyncExec(() ->  ScanEditor.createInstance(info, commands));
     }
 }

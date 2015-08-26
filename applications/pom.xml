@@ -23,6 +23,7 @@
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20140114142710/repository</orbit-site>
+    <rap-e4-site>${eclipse.central.url}/rt/rap/incubator/nightly/e4/target/site</rap-e4-site>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
@@ -65,9 +66,8 @@
       <properties>
         <eclipse-site>${eclipse.mirror.url}/releases/luna</eclipse-site>
         <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.4</eclipse-update-site>
-        <rap-site>${eclipse.mirror.url}/rt/rap/2.3</rap-site>
-        <rap-incubator-site>${eclipse.central.url}/rt/rap/incubator/nightly/gef/20150122-1538</rap-incubator-site>
-        <!--        <rap-incubator-site>${eclipse.central.url}/rt/rap/incubator/nightly/gef</rap-incubator-site>    LATEST RAP HAS PROBLEMS -->
+        <rap-site>${eclipse.mirror.url}/rt/rap/3.0</rap-site>
+        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/nightly/gef/20150122-1538</rap-gef-site>
         <platform-version>[4.3,4.4)</platform-version>
         <swtbot-site>${eclipse.central.url}/technology/swtbot/luna/dev-build/update-site</swtbot-site>
       </properties>
@@ -84,8 +84,7 @@
         <eclipse-site>${eclipse.mirror.url}/releases/luna</eclipse-site>
         <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.4</eclipse-update-site>
         <rap-site>${eclipse.mirror.url}/rt/rap/2.3</rap-site>
-        <rap-incubator-site>${eclipse.central.url}/rt/rap/incubator/nightly/gef/20150122-1538</rap-incubator-site>
-        <!--        <rap-incubator-site>${eclipse.central.url}/rt/rap/incubator/nightly/gef</rap-incubator-site>  LATEST RAP HAS PROBLEMS -->
+        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/nightly/gef/20150122-1538</rap-gef-site>
         <platform-version>[4.3,4.4)</platform-version>
         <swtbot-site>${eclipse.central.url}/technology/swtbot/luna/dev-build/update-site</swtbot-site>
       </properties>
@@ -102,7 +101,7 @@
         <eclipse-site>${eclipse.mirror.url}/releases/kepler</eclipse-site>
         <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.3</eclipse-update-site>
         <rap-site>${eclipse.mirror.url}/rt/rap/2.2</rap-site>
-        <rap-incubator-site>${eclipse.central.url}/rt/rap/incubator/2.2/gef</rap-incubator-site>
+        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/2.2/gef</rap-gef-site>
         <platform-version>[4.2,4.3)</platform-version>
         <swtbot-site>${eclipse.central.url}/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
       </properties>
@@ -227,8 +226,13 @@
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>rap-incubator</id>
-      <url>${rap-incubator-site}</url>
+      <id>rap-e4</id>
+      <url>${rap-e4-site}</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>rap-gef</id>
+      <url>${rap-gef-site}</url>
       <layout>p2</layout>
     </repository>
     <repository>

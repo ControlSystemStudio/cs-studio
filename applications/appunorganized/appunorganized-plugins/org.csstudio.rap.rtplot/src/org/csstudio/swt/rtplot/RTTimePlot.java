@@ -17,13 +17,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.swt.rtplot.undo.UpdateScrolling;
 import org.csstudio.swt.rtplot.util.NamedThreadFactory;
-import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolItem;
 
 /** Real-time plot using time stamps on the 'X' axis.
@@ -43,7 +41,6 @@ public class RTTimePlot extends RTPlot<Instant>
         SCROLL_ON,
         SCROLL_OFF
     }
-    private static ImageRegistry images = null;
 
     /** Steps to use when scrolling */
     private volatile Duration scroll_step = Duration.ofSeconds(10);
@@ -57,7 +54,6 @@ public class RTTimePlot extends RTPlot<Instant>
     public RTTimePlot(final Composite parent)
     {
         super(parent, Instant.class);
-        initToolItemImages(parent.getDisplay());
 
         scroll = addToolItem(SWT.CHECK, null, "");
         setScrolling(true);
@@ -96,19 +92,6 @@ public class RTTimePlot extends RTPlot<Instant>
         parent.addDisposeListener((final DisposeEvent e) -> handleDisposal());
    }
 
-    private void initToolItemImages(final Display display)
-    {
-        synchronized (RTTimePlot.class)
-        {
-            if (images != null)
-                return;
-            final ImageRegistry image_reg = new ImageRegistry(display);
-            for (Icons icon : Icons.values())
-                image_reg.put(icon.name(), Activator.getIcon(icon.name().toLowerCase()));
-            images = image_reg;
-        }
-    }
-
     /** @return <code>true</code> if scrolling is enabled */
     public boolean isScrolling()
     {
@@ -122,7 +105,7 @@ public class RTTimePlot extends RTPlot<Instant>
         final ScheduledFuture<?> was_scrolling;
         if (enabled)
         {   // Show that scrolling is 'on', and tool tip explains that it can be turned off
-            scroll.setImage(images.get(Icons.SCROLL_ON.name()));
+            scroll.setImage(Activator.getDefault().getImage(Icons.SCROLL_ON.name()));
             scroll.setToolTipText(Messages.Scroll_Off_TT);
             // Scroll once so that end of axis == 'now',
             // because otherwise one of the listeners might right away
@@ -133,7 +116,7 @@ public class RTTimePlot extends RTPlot<Instant>
         }
         else
         {   // Other way around
-            scroll.setImage(images.get(Icons.SCROLL_OFF.name()));
+            scroll.setImage(Activator.getDefault().getImage(Icons.SCROLL_OFF.name()));
             scroll.setToolTipText(Messages.Scroll_On_TT);
             was_scrolling = scrolling.getAndSet(null);
         }

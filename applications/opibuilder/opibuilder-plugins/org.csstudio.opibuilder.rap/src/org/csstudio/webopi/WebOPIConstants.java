@@ -22,6 +22,8 @@ public class WebOPIConstants{
 
     public static final String SIMPLE_ENTRY_POINT = "webopi_s"; //$NON-NLS-1$
 
+    public static final String STARTUP = "startup"; //$NON-NLS-1$
+
 
 
 }

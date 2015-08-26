@@ -1,10 +1,10 @@
 package org.csstudio.opibuilder.actions;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
-import org.csstudio.opibuilder.runmode.OPIShell;
 import org.csstudio.opibuilder.runmode.OPIView;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.perspective.PerspectiveHelper;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -44,7 +44,7 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
 
-        IOPIRuntime opiRuntime = OPIShell.getOPIShellForShell(HandlerUtil.getActiveShell(event));
+        IOPIRuntime opiRuntime = SingleSourceHelper.getOPIShellForShell(HandlerUtil.getActiveShell(event));
         if (opiRuntime == null) {
             // if the selected object isn't an OPIShell so grab the
             // OPIView or OPIRunner currently selected
@@ -135,11 +135,11 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
         if (!PreferencesHelper.isNoEdit()) {
             if (evaluationContext instanceof IEvaluationContext) {
                 IWorkbenchPart part = getActivePart((IEvaluationContext) evaluationContext);
-                OPIShell opiShell = OPIShell.getOPIShellForShell(
+                IOPIRuntime opiShell = SingleSourceHelper.getOPIShellForShell(
                         getActiveShell((IEvaluationContext) evaluationContext));
                 IPath path = null;
                 if (opiShell != null) {
-                    path = ((IOPIRuntime)opiShell).getDisplayModel().getOpiFilePath();
+                    path = opiShell.getDisplayModel().getOpiFilePath();
                 } else {
                     if (part instanceof OPIView) {
                         path = ((IOPIRuntime)part).getDisplayModel().getOpiFilePath();

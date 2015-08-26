@@ -54,7 +54,8 @@ public class ApplianceNonNumericOptimizedValueIterator extends ApplianceValueIte
         if (n == 1) {
             super.fetchDataInternal(pvName);
         } else {
-            String nth = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_NTH).append(n).append('(').append(pvName).append(')').toString();
+            String nth = new StringBuilder().append(ApplianceArchiveReaderConstants.OP_NTH).append(n).append('(')
+                    .append(pvName).append(')').toString();
             super.fetchDataInternal(nth);
         }
     }

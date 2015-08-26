@@ -4,31 +4,6 @@
    <extension-point id="widget" name="Widget" schema="schema/widget.exsd"/>
    <extension-point id="graphicalFeedbackFactory" name="graphicalFeedbackFactory" schema="schema/graphicalFeedbackFactory.exsd"/>
    <extension
-         point="org.eclipse.ui.editors">
-      <!-- Note regarding name:
-           In Navigator, the "Open With.." context menu lists *.opi 'editors'
-           in alphabetical order:
-           OPI Display (Workspace)
-           OPI Editor
-       -->
-      <editor
-            default="true"
-            extensions="opi"
-            icon="icons/OPIRunner.png"
-            id="org.csstudio.opibuilder.DisplayLauncher"
-            launcher="org.csstudio.opibuilder.runmode.DisplayLauncher"
-            name="OPI Display (Workbench)">
-      </editor>
-      <editor
-            default="false"
-            extensions="opi"
-            icon="icons/OPIRunner.png"
-            id="org.csstudio.opibuilder.ShellLauncher"
-            launcher="org.csstudio.opibuilder.runmode.ShellLauncher"
-            name="OPI Display (Standalone Window)">
-      </editor>
-   </extension>
-   <extension
          point="org.eclipse.ui.perspectives">
 
       <!-- Perspective used be have same ID as Editor (..OPIRunner),

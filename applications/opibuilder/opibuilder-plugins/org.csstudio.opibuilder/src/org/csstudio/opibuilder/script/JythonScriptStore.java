@@ -72,13 +72,13 @@ public class JythonScriptStore extends AbstractScriptStore{
 
     @Override
     protected void execScript(final IPV triggerPV) throws Exception {
-	interp.set(ScriptService.WIDGET, getEditPart());
-	interp.set(ScriptService.PVS, getPvArray());
-	interp.set(ScriptService.DISPLAY, getDisplayEditPart());
-	interp.set(ScriptService.WIDGET_CONTROLLER_DEPRECIATED, getEditPart());
-	interp.set(ScriptService.PV_ARRAY_DEPRECIATED, getPvArray());
-	interp.set(ScriptService.TRIGGER_PV, triggerPV);
-	interp.exec(code);
+        interp.set(ScriptService.WIDGET, getEditPart());
+        interp.set(ScriptService.PVS, getPvArray());
+        interp.set(ScriptService.DISPLAY, getDisplayEditPart());
+        interp.set(ScriptService.WIDGET_CONTROLLER_DEPRECIATED, getEditPart());
+        interp.set(ScriptService.PV_ARRAY_DEPRECIATED, getPvArray());
+        interp.set(ScriptService.TRIGGER_PV, triggerPV);
+        interp.exec(code);
     }
 
     @Override

@@ -19,6 +19,7 @@ import org.csstudio.webopi.WebOPIConstants;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.rap.rwt.RWT;
+import org.eclipse.rap.rwt.client.service.StartupParameters;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -29,10 +30,15 @@ import org.eclipse.swt.widgets.Display;
 public class RequestUtil {
 
 
+
     public static boolean isSimpleMode(){
         HttpServletRequest request = RWT.getRequest();
-        String mode = request.getParameter("startup"); //$NON-NLS-1$
-         if(mode!=null && mode.equals(WebOPIConstants.SIMPLE_ENTRY_POINT)) //$NON-NLS-1$
+        String mode = request.getParameter(WebOPIConstants.STARTUP);
+        if (mode == null) {
+            StartupParameters sp = RWT.getClient().getService(StartupParameters.class);
+            mode = sp == null ? null : sp.getParameter(WebOPIConstants.STARTUP);
+        }
+         if(mode!=null && mode.equals(WebOPIConstants.SIMPLE_ENTRY_POINT))
              return true;
          String s = request.getServletPath();
         if(s.contains(WebOPIConstants.MOBILE_S_SERVELET_NAME)
@@ -47,6 +53,10 @@ public class RequestUtil {
     public static RunnerInput getOPIPathFromRequest(){
         HttpServletRequest request = RWT.getRequest();
         String opiPath = request.getParameter(WebOPIConstants.OPI_PARAMETER ); //$NON-NLS-1$
+        if (opiPath == null) {
+            StartupParameters sp = RWT.getClient().getService(StartupParameters.class);
+            opiPath = sp == null ? null : sp.getParameter(WebOPIConstants.OPI_PARAMETER);
+        }
         if(opiPath == null){
             String referer = request.getHeader("Referer"); //$NON-NLS-1$
             if(referer != null && referer.contains("?opi=")){ //$NON-NLS-1$

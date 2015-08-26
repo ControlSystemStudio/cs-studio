@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -933,6 +934,10 @@ public class GUI extends Composite implements AlarmClientModelListener
             AlarmTreePV[] combinedAlarms)
     {
         if (model == null) return;
+        //if GUI is currently busy, do not update anything, just trigger another update
+        if (active_table_viewer.isBusy())
+            gui_update.trigger();
+
         if (current_alarms.isDisposed())
             return;
 
