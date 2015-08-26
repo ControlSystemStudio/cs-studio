@@ -21,9 +21,6 @@ import org.eclipse.ui.IEditorLauncher;
  *  @author Will Rogers
  *  @author Jaka Bobnar
  */
-<<<<<<< HEAD
-public class ShellLauncher extends AbstractOPISimulationEditor {
-=======
 public class ShellLauncher implements IEditorLauncher
 {
     @Override
@@ -32,21 +29,6 @@ public class ShellLauncher implements IEditorLauncher
         //The path is an absolute system path, which needs to be transformed to workspace path
         IPath workspacePath = LauncherHelper.systemPathToWorkspacePath(path);
         OPIShell.openOPIShell(workspacePath, null);
->>>>>>> branch 'master' of git://io-ls-git-css-trunk/cs-studio
 
-    private static class ShellFocusable implements Focusable {
-        private final OPIShell shell;
-        ShellFocusable(OPIShell shell) {
-            this.shell = shell;
-        }
-        @Override
-        public void focus() {
-            shell.raiseToTop();
-        }
-    }
-
-    @Override
-    public Focusable run(IPath path) {
-        return new ShellFocusable(OPIShell.openOPIShell(path, null));
     }
 }
