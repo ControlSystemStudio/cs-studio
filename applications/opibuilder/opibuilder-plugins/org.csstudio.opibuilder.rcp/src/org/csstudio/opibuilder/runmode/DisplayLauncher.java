@@ -26,8 +26,15 @@ import org.eclipse.ui.IEditorLauncher;
 public class DisplayLauncher extends AbstractOPISimulationEditor {
 
     @Override
+<<<<<<< HEAD
     public Focusable run(IPath path) {
         RunModeService.openDisplay(path,Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
         return new Focusable(){public void focus() {}};
+=======
+    public void open(final IPath path)
+    {
+        IPath workspacePath = LauncherHelper.systemPathToWorkspacePath(path);
+        RunModeService.openDisplay(workspacePath, Optional.empty(), DisplayMode.NEW_TAB, Optional.empty());
+>>>>>>> branch 'master' of git://io-ls-git-css-trunk/cs-studio
     }
 }

@@ -145,4 +145,13 @@ public class ConnectionCache
         entry.rdb.close();
         logger.log(Level.FINE, "Closed {0}", entry.id.url);
     }
+
+    /**
+     * Clear cache content
+     */
+	public static void clean() {
+		synchronized (cache) {
+			cache.clear();
+		}
+	}
 }

@@ -40,7 +40,8 @@ Require-Bundle: org.csstudio.utility.test;resolution:=optional,
  org.epics.vtype;bundle-version="2.7.1",
  org.epics.util;bundle-version="0.3.2",
  org.csstudio.archive.vtype;bundle-version="2.0.0",
- org.csstudio.email;bundle-version="1.2.0"
+ org.csstudio.email;bundle-version="1.2.0",
+ org.csstudio.archive.reader.rdb
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
@@ -52,5 +53,6 @@ Export-Package: org.csstudio.trends.databrowser2,
  org.csstudio.trends.databrowser2.persistence,
  org.csstudio.trends.databrowser2.preferences,
  org.csstudio.trends.databrowser2.propsheet,
+ org.csstudio.trends.databrowser2.archive,
  org.csstudio.trends.databrowser2.ui
 Bundle-ClassPath: .

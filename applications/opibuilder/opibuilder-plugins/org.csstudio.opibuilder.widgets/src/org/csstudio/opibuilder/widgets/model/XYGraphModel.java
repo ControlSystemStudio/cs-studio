@@ -8,6 +8,10 @@
 package org.csstudio.opibuilder.widgets.model;
 
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
@@ -18,6 +22,7 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.NameDefinedCategory;
 import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
+import org.csstudio.opibuilder.properties.StringListProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.MediaService;
@@ -29,8 +34,6 @@ import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.Version;
 
@@ -140,6 +143,15 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 
     /** The ID of the number of axes property. */
     public static final String PROP_TRACE_COUNT = "trace_count"; //$NON-NLS-1$
+    
+    /** The ID of the number of time span. */
+    public static final String PROP_TIME_SPAN = "time_span"; //$NON-NLS-1$
+    
+    /** The ID of the boolean value of plot data source. */
+    public static final String PROP_PLOT_DATA_SOURCE = "plt_data_source"; //$NON-NLS-1$
+
+    /** The ID of the items of archive data source. */
+    public static final String PROP_ARCHIVE_DATA_SOURCE = "archive_data_source"; //$NON-NLS-1$
 
     /** The ID of the show toolbar property. */
     public static final String PROP_SHOW_TOOLBAR = "show_toolbar"; //$NON-NLS-1$
@@ -191,11 +203,13 @@ public class XYGraphModel extends AbstractPVWidgetModel {
     /** The default value of the width property. */
     private static final int DEFAULT_WIDTH = 400;
 
+    /**default value of time span in second for the property*/
+	private static final int DEFAULT_TIME_SPAN = 3600;
+
     public XYGraphModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setForegroundColor(CustomMediaFactory.COLOR_BLUE);
         setTooltip("$(trace_0_y_pv)\n$(trace_0_y_pv_value)");
-
     }
 
     @Override
@@ -221,6 +235,21 @@ public class XYGraphModel extends AbstractPVWidgetModel {
                 WidgetPropertyCategory.Behavior,2,  2, MAX_AXES_AMOUNT));
         addProperty(new IntegerProperty(PROP_TRACE_COUNT, "Trace Count",
                 WidgetPropertyCategory.Behavior, 1, 0, MAX_TRACES_AMOUNT));
+        addProperty(new IntegerProperty(PROP_TIME_SPAN, "Time span",
+                WidgetPropertyCategory.Behavior, DEFAULT_TIME_SPAN, 0, Integer.MAX_VALUE));
+        addProperty(new BooleanProperty(PROP_PLOT_DATA_SOURCE, "Plot Data Source",
+                WidgetPropertyCategory.Behavior, true));
+        addProperty(new StringListProperty(PROP_ARCHIVE_DATA_SOURCE, "Archive Data Source",
+                WidgetPropertyCategory.Behavior, new ArrayList<>()));
+
+        //on change for property plot_data_source, we change the visibility of archive_data_source
+        getProperty(PROP_PLOT_DATA_SOURCE).addPropertyChangeListener(new PropertyChangeListener() {
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				setPropertyVisible(PROP_ARCHIVE_DATA_SOURCE, !(Boolean) evt.getNewValue());
+			}
+		});
+        setPropertyVisible(PROP_ARCHIVE_DATA_SOURCE, false);
         addAxisProperties();
         addTraceProperties();
         setPropertyVisible(PROP_FONT, false);
