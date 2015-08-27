@@ -7,12 +7,15 @@
  ******************************************************************************/
 package org.csstudio.utility.product;
 
+import java.util.logging.Logger;
+
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectDescription;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -28,6 +31,7 @@ import org.eclipse.core.runtime.jobs.Job;
 public class LinkedResourcesJob extends Job
 {
     final private String settings;
+    private static Logger log = Logger.getLogger("org.csstudio.utility.product.LinkedResourcesJob");
 
     /** Initialize
      *  @param settings "-share_link" settings, see {@link LinkedResource}
@@ -104,9 +108,14 @@ public class LinkedResourcesJob extends Job
             // Create linked folder
             folder_path = extendPath(folder_path, segments[segments.length-1]);
             final IFolder folder = project.getFolder(folder_path);
-            // if (folder.exists()) ...?
-            // No. Re-create in any case to assert that it has the correct link
-            folder.createLink(new Path(link.getFileSystemName()), IResource.REPLACE, new NullProgressMonitor());
+            try {
+                // if (folder.exists()) ...?
+                // No. Re-create in any case to assert that it has the correct link
+                folder.createLink(new Path(link.getFileSystemName()), IResource.REPLACE, new NullProgressMonitor());
+            } catch (CoreException ex) {
+                // createLink will raise an exception if the linked resource does not exist on the local filesystem
+                log.warning(ex.getMessage());
+            }
         }
     }
 
