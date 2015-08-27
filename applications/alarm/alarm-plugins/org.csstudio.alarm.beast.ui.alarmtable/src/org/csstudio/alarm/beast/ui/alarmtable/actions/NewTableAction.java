@@ -31,7 +31,7 @@ public class NewTableAction extends Action {
     public void run() {
         try {
             view.getViewSite().getPage().showView(view.getViewSite().getId(),
-                    AlarmTableView.newSecondaryID(view), IWorkbenchPage.VIEW_CREATE);
+                    AlarmTableView.newSecondaryID(view), IWorkbenchPage.VIEW_ACTIVATE);
         } catch (PartInitException e) {
             MessageDialog.openError(view.getViewSite().getShell(), Messages.AlarmTableOpenErrorTitle,
                     NLS.bind(Messages.AlarmTableOpenErrorMessage, e.getMessage()));
