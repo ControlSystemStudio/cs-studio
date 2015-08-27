@@ -9,50 +9,34 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
 
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
-import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgets.Activator;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.AxisProperty;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel.TraceProperty;
-import org.csstudio.opibuilder.widgets.util.DataSourceUrl;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.PlotMode;
 import org.csstudio.swt.xygraph.dataprovider.CircularBufferDataProvider.UpdateMode;
-import org.csstudio.swt.xygraph.dataprovider.ISample;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.figures.ToolbarArmedXYGraph;
 import org.csstudio.swt.xygraph.figures.Trace;
 import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
-import org.csstudio.trends.databrowser2.archive.ArchiveFetchJob;
-import org.csstudio.trends.databrowser2.archive.ArchiveFetchJobListener;
-import org.csstudio.trends.databrowser2.archive.XYArchiveFetchJob;
-import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
-import org.csstudio.trends.databrowser2.model.PVItem;
-import org.csstudio.trends.databrowser2.model.PVSamples;
-import org.csstudio.trends.databrowser2.model.RequestType;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
 import org.epics.util.time.Timestamp;
 import org.epics.vtype.VType;
-
 
 /**The XYGraph editpart
  * @author Xihui Chen
@@ -62,7 +46,6 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
     private List<Axis> axisList;
     private List<Trace> traceList;
-    private Map<Integer, List<VType>>cacheDuringLoad = new HashMap<>();
 
     @Override
     public XYGraphModel getWidgetModel() {
@@ -76,7 +59,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE,
                 new DropPVtoXYGraphEditPolicy());
     }
-    
+
     @Override
     protected IFigure doCreateFigure() {
         final XYGraphModel model = getWidgetModel();
@@ -116,9 +99,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         }
 
         //init all traces
-        for(int i=0; i<XYGraphModel.MAX_TRACES_AMOUNT; i++) {
-        	cacheDuringLoad.put(new Integer(i), new ArrayList<VType>());
-
+        for(int i=0; i<XYGraphModel.MAX_TRACES_AMOUNT; i++){
             traceList.add(new Trace("", xyGraph.primaryXAxis, xyGraph.primaryYAxis,
                     new  CircularBufferDataProvider(false)));
             if(i<model.getTracesAmount())
@@ -136,123 +117,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         }
         //all values should be buffered
         getPVWidgetEditpartDelegate().setAllValuesBuffered(true);
-
-        //add values from datasource if the execution is in run mode
-    	if (getExecutionMode() == ExecutionMode.RUN_MODE) {
-        	addValuesFromDatasource();
-        }
-        	
         return xyGraphFigure;
-    }
-
-    /**
-     * Method will add to each trace param with plot datasource the plot point from db.
-     */
-    private void addValuesFromDatasource() {
-    	for (int i = 0; i < getWidgetModel().getTracesAmount(); i++) {
-    		String pv = "";
-			try {
-				Boolean pltDataSource = (Boolean) getWidgetModel().getProperty(XYGraphModel.PROP_PLOT_DATA_SOURCE).getPropertyValue();
-
-				List < String > archiveDataSource = null;
-				if (pltDataSource) {
-					archiveDataSource = DataSourceUrl.getURLs();
-				} else {
-	                archiveDataSource = (List<String>) getWidgetModel().getProperty(XYGraphModel.PROP_ARCHIVE_DATA_SOURCE).getPropertyValue();
-				}
-                String propID = XYGraphModel.makeTracePropID(TraceProperty.YPV.propIDPre, i);
-                pv = (String) getWidgetModel().getProperty(propID).getPropertyValue();
-                
-                Integer timeSpan = (Integer) getWidgetModel().getProperty(XYGraphModel.PROP_TIME_SPAN).getPropertyValue();
-
-                //if one required data source is missing  
-                if (archiveDataSource == null || archiveDataSource.size() <= 0
-                		|| pv == null || pv.length() <= 0 || timeSpan <= 0) {
-                	Activator.getLogger().log(Level.INFO, "data source is missing");
-                	continue;
-                }
-                
-                //get back the pv on x 
-                boolean pvOnX = false;
-                if (pv == null || pv.length() <= 0) {
-                	propID = XYGraphModel.makeTracePropID(TraceProperty.XPV.propIDPre, i);
-                	pv = (String) getWidgetModel().getProperty(propID).getPropertyValue();
-                	
-                	pvOnX = (pv != null && pv.length() > 0);
-                }
-
-                //prepare the pv item for the job  
-				Instant end = Instant.now();
-				Instant start = end.minusSeconds(timeSpan);
-				PVItem pvItem = new PVItem(pv, 0);
-				pvItem.setRequestType(RequestType.RAW);
-
-				//add datasource
-				int j = 0;
-				for (String urlTmp : archiveDataSource) {
-					pvItem.addArchiveDataSource(new ArchiveDataSource(urlTmp, j, ""));
-				}
-
-				final Trace trace = traceList.get(i);
-				final CircularBufferDataProvider dataProvider = (CircularBufferDataProvider) trace.getDataProvider();
-				final Boolean pvOnXBln = pvOnX;
-				final Integer traceIndex = i;
-				
-				//launch the job
-				XYArchiveFetchJob job = new XYArchiveFetchJob(pvItem, start, end, new ArchiveFetchJobListener() {
-					@Override
-					public void archiveFetchFailed(ArchiveFetchJob job,
-							ArchiveDataSource archive, Exception error) {
-						Activator.getLogger().log(Level.WARNING, "Archive fetch failed for pv '" + pvItem.getName() + "' and url '" + archive.getUrl() + "'", error);
-					}
-					@Override
-					public void fetchCompleted(ArchiveFetchJob job) {
-						PVSamples pvSamples = job.getPVItem().getSamples();
-						if (pvSamples.size() <= 0) {
-							return;
-						}
-						//use UI thread to display (avoid to use a synchronize)
-						UIBundlingThread.getInstance().addRunnable(
-                                getViewer().getControl().getDisplay(), new Runnable() {
-	                                public void run() {
-	                                    if(isActive()) {
-	                                    	//clear the data
-	                                    	dataProvider.clearTrace();
-	                                    	//get from cache data load withou db
-	                                    	List <VType> listFinal = new ArrayList<VType>();
-
-	                                    	//add data from db
-	                                    	int sampleCount = pvSamples.size();
-	                                    	for (int cpt = 0; cpt < sampleCount; cpt++) {
-	                                    		listFinal.add(pvSamples.get(cpt).getVType());
-	                                    	}
-	                                    	
-	                                    	//add data from cache
-	                                    	List <VType> cacheTypeLoadTrace = cacheDuringLoad.get(traceIndex);
-	                                    	if (cacheTypeLoadTrace != null) {
-	                                    		listFinal.addAll(cacheTypeLoadTrace);
-	                                    	}
-	                                    	
-	                                    	for (VType vtype : listFinal) {
-	                                    		if (pvOnXBln) {
-	                                    			setXValue(dataProvider, vtype);
-	                                    		} else {
-	                                    			setYValue(trace, dataProvider, vtype);
-	                                    		}
-											}
-	                                    	
-	                                    	cacheDuringLoad.clear();
-	                                    }
-	                                }
-                                });
-						Activator.getLogger().log(Level.INFO, "Completed for " + job.getPVItem().getName() + " - size : " + pvSamples.size());
-					}
-				});
-				job.schedule();
-			} catch (Exception e) {
-				Activator.getLogger().log(Level.INFO, "Error while getting data from datasource for pv " + pv);
-			}
-		}
     }
 
     @Override
@@ -589,12 +454,11 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
                     getWidgetModel().getProperty(propID).addPropertyChangeListener(new PropertyChangeListener() {
                         public void propertyChange(final PropertyChangeEvent evt) {
                             UIBundlingThread.getInstance().addRunnable(
-                                getViewer().getControl().getDisplay(), new Runnable() {
-	                                public void run() {
-	                                    if(isActive()) {
-	                                        handler.handleChange(
-	                                            evt.getOldValue(), evt.getNewValue(), getFigure());
-	                                    }
+                                    getViewer().getControl().getDisplay(), new Runnable() {
+                                public void run() {
+                                    if(isActive())
+                                        handler.handleChange(
+                                            evt.getOldValue(), evt.getNewValue(), getFigure());
                                     }
                                 });
                         }
@@ -699,9 +563,8 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
                         setYValue(trace, dataProvider, o);
                     }
                 }
-            } else {
+            }else
                 setYValue(trace, dataProvider, (VType) newValue);
-            }
             break;
         case VISIBLE:
             trace.setVisible((Boolean)newValue);
@@ -720,33 +583,16 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
     private void setYValue(Trace trace,
             CircularBufferDataProvider dataProvider, VType y_value) {
-        if(VTypeHelper.getSize(y_value) == 1 && trace.getXAxis().isDateEnabled() && dataProvider.isChronological()) {
-        	long time = yValueTimeStampToLong(y_value);
-        	//verification that the last add is before the next that will be added
-        	int size = dataProvider.getSize() - 1;
-        	if (size > 0) {
-	        	ISample sample = dataProvider.getSample(size);
-	            if (sample.getXValue() > time) {
-	            	return;
-	            }
-            }
+        if(VTypeHelper.getSize(y_value) == 1 && trace.getXAxis().isDateEnabled() && dataProvider.isChronological()){
+            Timestamp timestamp = VTypeHelper.getTimestamp(y_value);
+            long time = timestamp.getSec() * 1000 + timestamp.getNanoSec()/1000000;
             dataProvider.setCurrentYData(VTypeHelper.getDouble(y_value), time);
         }else{
             if(VTypeHelper.getSize(y_value) > 1){
                 dataProvider.setCurrentYDataArray(VTypeHelper.getDoubleArray(y_value));
-            }else {
+            }else
                 dataProvider.setCurrentYData(VTypeHelper.getDouble(y_value));
-            }
         }
-    }
-    
-    
-    private long yValueTimeStampToLong(VType y_value) {
-    	if (y_value == null) {
-    		return Long.MAX_VALUE;
-    	}
-    	Timestamp timestamp = VTypeHelper.getTimestamp(y_value);
-        return timestamp.getSec() * 1000 + timestamp.getNanoSec()/1000000;
     }
 
     class AxisPropertyChangeHandler implements IWidgetPropertyChangeHandler {
@@ -778,12 +624,6 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         public boolean handleChange(Object oldValue, Object newValue,
                 IFigure refreshableFigure) {
             Trace trace = traceList.get(traceIndex);
-
-            List <VType> samples = cacheDuringLoad.get(new Integer(traceIndex));
-            if (samples != null) {
-            	samples.add((VType) newValue);
-            }
-
             setTraceProperty(trace, traceProperty, newValue, xPVPropID, yPVPropID);
             return false;
         }
