@@ -9,12 +9,12 @@ package org.csstudio.opibuilder.converter.writer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
+import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmString;
 import org.csstudio.opibuilder.converter.model.Edm_activePipClass;
-import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
 /**
  * XML conversion class for Edm_activePipClass
@@ -71,13 +71,13 @@ public class Opi_activePipClass extends OpiWidget {
                                             try {
                                                 sb.append("macroInput.put(\"" + rs[0] + "\", \"" + rs[1]+"\");\n");
                                             } catch (Exception e) {
-                                                ErrorHandlerUtil.handleError("Parse Macros Error on: "+s, e);
+                                                log.log(Level.WARNING, "Parse Macros Error on: " + s, e);
                                             }
                                         }
                                     }
                                 }
                             } catch (Exception e) {
-                                ErrorHandlerUtil.handleError("Parse Macros Error", e);
+                                log.log(Level.WARNING, "Parse Macros Error ", e);
                             }
                         }
                         sb.append("widget.setPropertyValue(\"macros\", macroInput);\n");
