@@ -45,7 +45,7 @@ import org.epics.vtype.VType;
 public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 
     private List<Axis> axisList;
-    private List<Trace> traceList;
+    protected List<Trace> traceList;
 
     @Override
     public XYGraphModel getWidgetModel() {
@@ -433,7 +433,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
     }
 
 
-    private void registerTracePropertyChangeHandlers(){
+    protected void registerTracePropertyChangeHandlers(){
         XYGraphModel model = (XYGraphModel)getModel();
         //set prop handlers and init all the potential axes
         for(int i=0; i<XYGraphModel.MAX_TRACES_AMOUNT; i++){
@@ -476,7 +476,7 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         }
     }
 
-    private void setTraceProperty(Trace trace, TraceProperty traceProperty, Object newValue, String xPVPropID, String yPVPropID){
+    protected void setTraceProperty(Trace trace, TraceProperty traceProperty, Object newValue, String xPVPropID, String yPVPropID){
         CircularBufferDataProvider dataProvider = (CircularBufferDataProvider)trace.getDataProvider();
         switch (traceProperty) {
         case ANTI_ALIAS:
@@ -574,14 +574,14 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
         }
     }
 
-    private void setXValue(CircularBufferDataProvider dataProvider, VType value) {
+    protected void setXValue(CircularBufferDataProvider dataProvider, VType value) {
         if(VTypeHelper.getSize(value) > 1){
             dataProvider.setCurrentXDataArray(VTypeHelper.getDoubleArray(value));
         }else
             dataProvider.setCurrentXData(VTypeHelper.getDouble(value));
     }
 
-    private void setYValue(Trace trace,
+    protected void setYValue(Trace trace,
             CircularBufferDataProvider dataProvider, VType y_value) {
         if(VTypeHelper.getSize(y_value) == 1 && trace.getXAxis().isDateEnabled() && dataProvider.isChronological()){
             Timestamp timestamp = VTypeHelper.getTimestamp(y_value);
