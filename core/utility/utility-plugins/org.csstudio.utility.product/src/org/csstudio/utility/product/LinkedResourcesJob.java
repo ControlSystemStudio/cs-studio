@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.utility.product;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.resources.IFolder;
@@ -114,7 +115,7 @@ public class LinkedResourcesJob extends Job
                 folder.createLink(new Path(link.getFileSystemName()), IResource.REPLACE, new NullProgressMonitor());
             } catch (CoreException ex) {
                 // createLink will raise an exception if the linked resource does not exist on the local filesystem
-                log.warning(ex.getMessage());
+                log.log(Level.WARNING, "Cannot create link " + folder_path, ex);
             }
         }
     }
