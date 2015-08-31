@@ -2,14 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>core</artifactId>
+    <artifactId>diirt</artifactId>
     <version>4.1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>diirt</artifactId>
+  <artifactId>diirt-plugins</artifactId>
   <packaging>pom</packaging>
-  <modules>
-    <module>diirt-features</module>
-    <module>diirt-repository</module>
-    <module>diirt-plugins</module>
-  </modules>
 </project>

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Util
+Bundle-SymbolicName: org.csstudio.diirt.util
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/ds_consumer.xml,OSGI-INF/ffd_consumer.xml,
+ OSGI-INF/s_consumer.xml
+Import-Package: org.diirt.datasource;version="3.0.1",
+ org.diirt.datasource.formula;version="3.0.1",
+ org.diirt.service;version="3.0.1",
+ org.eclipse.osgi.framework.console;version="1.0.0",
+ org.osgi.framework;version="1.3.0",
+ org.osgi.util.tracker;version="1.3.1"
+Bundle-ActivationPolicy: lazy
