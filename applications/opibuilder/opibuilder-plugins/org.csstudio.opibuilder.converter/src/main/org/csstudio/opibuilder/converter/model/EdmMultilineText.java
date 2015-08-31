@@ -40,7 +40,7 @@ public class EdmMultilineText extends EdmAttribute {
             if (isRequired()) {
                 log.warning("Missing required property.");
             } else {
-                log.warning("Missing optional property.");
+                log.fine("Missing optional property.");
                 return;
             }
         }

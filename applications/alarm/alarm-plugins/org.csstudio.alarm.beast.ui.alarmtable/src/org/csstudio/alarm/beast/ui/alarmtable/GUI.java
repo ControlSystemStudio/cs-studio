@@ -935,8 +935,10 @@ public class GUI extends Composite implements AlarmClientModelListener
     {
         if (model == null) return;
         //if GUI is currently busy, do not update anything, just trigger another update
-        if (active_table_viewer.isBusy())
+        if (active_table_viewer.isBusy()) {
             gui_update.trigger();
+            return;
+        }
 
         if (current_alarms.isDisposed())
             return;

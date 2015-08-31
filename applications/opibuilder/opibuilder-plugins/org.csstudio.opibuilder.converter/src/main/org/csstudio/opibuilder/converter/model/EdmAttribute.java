@@ -97,8 +97,6 @@ public class EdmAttribute {
      */
     public String appendValue(String value) {
         if(value.startsWith("\"")&&value.endsWith("\"")){
-            if(value.length() <3)
-                System.out.println(value);
             value=value.substring(1, value.length()-1);
         }
 
