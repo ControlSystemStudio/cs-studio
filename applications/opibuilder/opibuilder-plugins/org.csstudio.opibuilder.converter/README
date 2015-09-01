@@ -1,0 +1,10 @@
+It may be useful to build a jar file from this plugin for batch conversion of
+EDM files.  To do this, there is a build.xml file for ant.
+
+This is intended to be executed using the Maven command
+
+mvn verify -Dbuild.converter.jar
+
+Running ant directly will probably fail, since Maven is required to download
+required libraries into the target/ directory before ant can compile the jar
+file.
