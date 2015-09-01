@@ -19,7 +19,7 @@
   <!-- Map all environment variables XYZ to ${env.XYZ} -->
   <property environment="env"/>
   <!-- Build directory -->
-  <property name="build_dir" value="build_dir"/>
+  <property name="build_dir" value="target/antbuild"/>
   <property name="lib" value="target"/>
   <property name="classes" value="${build_dir}/classes"/>
   <!-- Remove all that might have been built previously -->
