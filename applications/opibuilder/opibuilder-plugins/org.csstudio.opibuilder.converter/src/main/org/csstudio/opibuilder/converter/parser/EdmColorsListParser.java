@@ -7,16 +7,16 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.parser;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import java.util.logging.Logger;
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
-import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
 
 /**
@@ -66,8 +66,8 @@ public class EdmColorsListParser extends EdmParser {
                 a.appendValue(colorName);
                 a.appendValue(colorValue);
                 parent.addAttribute(colorIndex, a);
-            }catch (Exception e) {
-                ErrorHandlerUtil.handleError("Error in parsing color rule: " + rule, e);
+            } catch (Exception e) {
+                log.log(Level.WARNING, "Error in parsing color rule: " + rule, e);
             }
 
         }
@@ -149,8 +149,7 @@ public class EdmColorsListParser extends EdmParser {
                         if (Pattern.matches("^\\d*$", word))
                             colorValue.append(" " + word);
                         else {
-                            ErrorHandlerUtil.handleError("Parsing color file error.", new EdmException(EdmException.COLOR_FORMAT_ERROR,
-                                        "Wrong color input at line: " + colorData, null));
+                            log.warning("Parsing color file error.  Wrong color input at line: " + colorData);
                         }
                     }
                     a.appendValue(colorValue.toString());
@@ -167,7 +166,7 @@ public class EdmColorsListParser extends EdmParser {
                         parent.addAttribute(colorName, a);
                     }
                     catch (Exception e) {
-                        ErrorHandlerUtil.handleError("Error when parsing color attribute. Attribute skipped.", e);
+                        log.log(Level.WARNING, "Error when parsing color attribute. Attribute skipped.", e);
                     }
                 }
                 else
