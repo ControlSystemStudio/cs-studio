@@ -89,8 +89,6 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
     private static boolean openFromPerspective = false;
 
-    private static boolean openedByUser = false;
-
     public OPIView()
     {
         opiRuntimeDelegate = new OPIRuntimeDelegate(this);
@@ -188,44 +186,55 @@ public class OPIView extends ViewPart implements IOPIRuntime
             SingleSourceHelper.rapOPIViewCreatePartControl(this, parent);
             return;
         }
-
         opiRuntimeDelegate.createGUI(parent);
         createToolbarButtons();
         parent.addControlListener(new ControlAdapter() {
             @Override
             public void controlResized(ControlEvent e) {
-                if(parent.getShell().getText().length() == 0){ //the only way to know it is detached.
-                    if(!detached){
+                // Resize to size from OPI file if the view has been newly detached.
+                if(parent.getShell().getText().length() == 0) { //the only way to know it is detached.
+                    if(!detached) {
                         detached = true;
                         UIBundlingThread.getInstance().addRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                final Rectangle bounds;
-                                if(opiRuntimeDelegate.getDisplayModel() != null)
-                                    bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
-                                else
-                                    bounds = new Rectangle(0, 0, 800, 600);
-                                if (openedByUser) {
-                                    if (bounds.x >= 0 && bounds.y > 1)
-                                        parent.getShell().setLocation(bounds.x, bounds.y);
-                                    else {
-                                        org.eclipse.swt.graphics.Rectangle winSize = getSite()
-                                                .getWorkbenchWindow().getShell().getBounds();
-                                        parent.getShell().setLocation(
-                                                winSize.x + winSize.width / 5
-                                                        + (int) (Math.random() * 100),
-                                                winSize.y + winSize.height / 8
-                                                        + (int) (Math.random() * 100));
-                                    }
-                                }
+                                final Rectangle bounds = getBounds();
                                 parent.getShell().setSize(bounds.width+45, bounds.height+65);
                             }
                         });
                     }
-                }else
+                } else {
                     detached = false;
+                }
             }
         });
+    }
+
+    private Rectangle getBounds() {
+        Rectangle bounds;
+        if(opiRuntimeDelegate.getDisplayModel() != null) {
+            bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
+            System.out.println("The bounds are " + bounds);
+        } else {
+            bounds = new Rectangle(0, 0, 800, 600);
+        }
+        return bounds;
+    }
+
+    public void positionFromModel() {
+        Composite parent = getSite().getShell();
+        final Rectangle bounds = getBounds();
+        if (bounds.x >= 0 && bounds.y > 1)
+            parent.getShell().setLocation(bounds.x, bounds.y);
+        else {
+            org.eclipse.swt.graphics.Rectangle winSize = getSite()
+                    .getWorkbenchWindow().getShell().getBounds();
+            parent.getShell().setLocation(
+                    winSize.x + winSize.width / 5
+                            + (int) (Math.random() * 100),
+                    winSize.y + winSize.height / 8
+                            + (int) (Math.random() * 100));
+        }
     }
 
     public void createToolbarButtons(){
@@ -361,17 +370,6 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
     public static void setOpenFromPerspective(boolean openFromPerspective) {
         OPIView.openFromPerspective = openFromPerspective;
-    }
-
-    /** Mark as opened by user, interactively
-     *
-     *  <p>Detached view, when opened by user, will be positioned
-     *  somewhere within the Workbench window, so user can find it.
-     *
-     *  @param openedByUser Mark as opened interactively?
-     */
-    public static void setOpenedByUser(boolean openedByUser) {
-        OPIView.openedByUser = openedByUser;
     }
 
     /** @return Debug info for view, shows ID and input */
