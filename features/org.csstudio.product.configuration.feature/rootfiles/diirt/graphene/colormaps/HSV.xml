@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Varies the hue component of the HSV color model.
+     The map is useful for displaying periodic functions. -->
+<colormap position="relative" colorNaN="BLACK">
+    <color position="0.0" value="RED"/>
+    <color position="0.1666667" value="YELLOW"/>
+    <color position="0.3333333" value="GREEN"/>
+    <color position="0.5" value="CYAN"/>
+    <color position="0.6666667" value="BLUE"/>
+    <color position="0.8333333" value="MAGENTA"/>
+    <color position="1.0" value="RED"/>
+</colormap>
