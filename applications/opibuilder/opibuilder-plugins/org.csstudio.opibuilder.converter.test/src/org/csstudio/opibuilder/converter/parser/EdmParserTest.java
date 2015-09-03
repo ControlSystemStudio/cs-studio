@@ -24,8 +24,7 @@ public class EdmParserTest extends TestCase {
             assertTrue(e instanceof EdmException);
             EdmException edmException = (EdmException)e;
             assertEquals(edmException.getType(), EdmException.FILE_NOT_FOUND);
-            assertEquals("FILE_NOT_FOUND exception: File " + fileName + " does not exist.",
-                    edmException.getMessage());
+            assertTrue(edmException.getMessage().contains(fileName));
         }
     }
 }
