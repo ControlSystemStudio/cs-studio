@@ -73,6 +73,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
             // Initialize state chooser widget
             symbolBrowser = new SymbolBrowser(composite, SWT.BORDER);
             symbolBrowser.addSelectionListener(new Listener() {
+                @Override
                 public void handleEvent(Event e) {
                     String value = symbolBrowser.getSelection();
                     if (!showConfirmDialog) {
@@ -177,6 +178,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
     // ************************************************************
 
     class ButtonPresser extends MouseListener.Stub {
+        @Override
         public void mousePressed(MouseEvent me) {
             if (me.button != 1)
                 return;
@@ -290,8 +292,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
         // confirm & password input dialog
         if (password == null || password.equals("")) {
             MessageBox mb = new MessageBox(Display.getCurrent()
-                    .getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO
-                    | SWT.CANCEL);
+                    .getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
             mb.setMessage(confirmTip);
             mb.setText("Confirm Dialog");
             int val = mb.open();
@@ -301,6 +302,7 @@ public class ControlMultiSymbolFigure extends CommonMultiSymbolFigure {
             InputDialog dlg = new InputDialog(Display.getCurrent()
                     .getActiveShell(), "Password Input Dialog",
                     "Please input the password", "", new IInputValidator() {
+                        @Override
                         public String isValid(String newText) {
                             if (newText.equals(password))
                                 return null;

@@ -57,6 +57,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 
     class ButtonPresser extends MouseListener.Stub {
         private boolean canceled = false;
+            @Override
             public void mousePressed(MouseEvent me) {
                 if (me.button != 1)
                     return;
@@ -112,6 +113,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                     repaint();
                 }
             }
+            @Override
             public void mouseReleased(MouseEvent me) {
                 if (me.button != 1)
                     return;
@@ -230,8 +232,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
         // confirm & password input dialog
         if (password == null || password.equals("")) {
             MessageBox mb = new MessageBox(Display.getCurrent()
-                    .getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO
-                    | SWT.CANCEL);
+                    .getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
             mb.setMessage(confirmTip);
             mb.setText("Confirm Dialog");
             int val = mb.open();
