@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter;
 
+import java.io.File;
+
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.junit.Before;
 
@@ -37,26 +39,51 @@ public class EdmConverterTest extends TestCase {
     }
 
     public void testExampleEDL1() throws EdmException {
-
-        String[] args = {edl1};
-        EdmConverter.main(args);
+        try {
+            String[] args = {edl1};
+            EdmConverter.main(args);
+        } finally {
+            deleteFile(edlToOpi(edl1));
+        }
     }
 
     public void testExampleEDL2() throws EdmException {
-
-        String[] args = {edl2};
-        EdmConverter.main(args);
+        try {
+            String[] args = {edl2};
+            EdmConverter.main(args);
+        } finally {
+            deleteFile(edlToOpi(edl2));
+        }
     }
 
     public void testExampleEDL3() throws EdmException {
-
-        String[] args = {edl3};
-        EdmConverter.main(args);
+        try {
+            String[] args = {edl3};
+            EdmConverter.main(args);
+        } finally {
+            deleteFile(edlToOpi(edl3));
+        }
     }
 
     public void testExampleEDL4() throws EdmException {
-
-        String[] args = {edl4};
-        EdmConverter.main(args);
+        try {
+            String[] args = {edl4};
+            EdmConverter.main(args);
+        } finally {
+            deleteFile(edlToOpi(edl4));
+        }
     }
+
+    public static String edlToOpi(String filename) {
+        if (filename.endsWith("edl")) {
+            return filename.substring(0, filename.length() -3 ) + "opi";
+        } else {
+            throw new IllegalArgumentException(filename + " is not an edl file.");
+        }
+    }
+
+   public static void deleteFile(String filename) {
+       File f = new File(filename);
+       f.delete();
+   }
 }
