@@ -19,14 +19,13 @@ public class EdmIntTest extends TestCase {
         assertEquals(true, i1.isRequired());
         assertEquals(true, i1.isInitialized());
 
-        // required null
+        // required but null; it now doesn't throw an exception if a required
+        // attribute is not present, but it does try to parse the integer and fail
         try {
-            EdmInt i2 = new EdmInt(null, true);
-            assertEquals(true, i2.isRequired());
-            assertEquals(false, i2.isInitialized());
+            new EdmInt(null, true);
         }
         catch (EdmException e) {
-            assertEquals(EdmException.REQUIRED_ATTRIBUTE_MISSING, e.getType());
+            assertEquals(EdmException.INTEGER_FORMAT_ERROR, e.getType());
         }
 
         // optional

@@ -7,10 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
+import java.io.File;
+
 import org.csstudio.opibuilder.converter.EdmConverter;
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmException;
+import org.junit.After;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -22,6 +25,15 @@ public class OpiWriterTest extends TestCase {
     private String xmlFile1 = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.opi";
     private String displayFile2 = EdmConverterTest.RESOURCES_LOCATION + "TextUpdate_example.edl";
     private String xmlFile2 = EdmConverterTest.RESOURCES_LOCATION + "TextUpdate_example.opi";
+
+    /**
+     * Remove temporary files created by test.
+     */
+    @After
+    public void tearDown() {
+        EdmConverterTest.deleteFile(xmlFile1);
+        EdmConverterTest.deleteFile(xmlFile2);
+    }
 
     public void testOpiWriter() throws EdmException {
 

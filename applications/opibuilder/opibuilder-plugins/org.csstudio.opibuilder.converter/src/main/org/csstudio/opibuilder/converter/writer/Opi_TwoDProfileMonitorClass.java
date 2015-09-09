@@ -36,8 +36,11 @@ public class Opi_TwoDProfileMonitorClass extends OpiWidget {
         new OpiInt(widgetContext, "minimum", 0);
         new OpiBoolean(widgetContext, "rgb_mode", false);
 
-        // No legend on the TwoDProfileMonitor
+        // No legend or axes on the TwoDProfileMonitor
         new OpiBoolean(widgetContext, "show_ramp", false);
+        new OpiBoolean(widgetContext, "x_axis_visible", false);
+        new OpiBoolean(widgetContext, "y_axis_visible", false);
+
 
         if(r.getDataPvStr()!=null)
             new OpiString(widgetContext, "pv_name", convertPVName(r.getDataPvStr()));

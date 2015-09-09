@@ -94,7 +94,7 @@ public class EdmDisplayParserTest extends TestCase {
         assertEquals("index 0", subE.getAttribute("fillColor").getValue(0));
 
         subE = p.getRoot().getSubEntity(3);
-        assertEquals("activeXTextDspClass:noedit", subE.getType());
+        assertEquals("activeXTextDspClass_noedit", subE.getType());
         assertEquals("attribute_count", 20, subE.getAttributeCount());
         assertEquals("4", subE.getAttribute("major").getValue(0));
         assertEquals("0", subE.getAttribute("minor").getValue(0));
@@ -610,7 +610,7 @@ public class EdmDisplayParserTest extends TestCase {
         assertEquals("index 0", subE.getAttribute("fillColor").getValue(0));
 
         subE = p.getRoot().getSubEntity(2);
-        assertEquals("activeXTextDspClass:noedit", subE.getType());
+        assertEquals("activeXTextDspClass_noedit", subE.getType());
         assertEquals("attribute_count", 20, subE.getAttributeCount());
         assertEquals("4", subE.getAttribute("major").getValue(0));
         assertEquals("0", subE.getAttribute("minor").getValue(0));
