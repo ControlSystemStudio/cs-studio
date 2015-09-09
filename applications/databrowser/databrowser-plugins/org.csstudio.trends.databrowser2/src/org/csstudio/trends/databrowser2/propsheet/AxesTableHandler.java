@@ -540,7 +540,7 @@ public class AxesTableHandler implements IStructuredContentProvider
             public void update(final ViewerCell cell)
             {
                 final AxisConfig axis = (AxisConfig) cell.getElement();
-                cell.setText(axis.getLabelFont().getName());
+                cell.setText(axis.getLabelFont().toString());
             }
         });
         col.setEditingSupport(new EditSupportBase(axes_table)
@@ -575,7 +575,7 @@ public class AxesTableHandler implements IStructuredContentProvider
             public void update(final ViewerCell cell)
             {
                 final AxisConfig axis = (AxisConfig) cell.getElement();
-                cell.setText(axis.getScaleFont().getName());
+                cell.setText(axis.getScaleFont().toString());
             }
         });
         col.setEditingSupport(new EditSupportBase(axes_table)
