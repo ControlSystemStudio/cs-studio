@@ -35,13 +35,13 @@ public class HorizontalNumericAxis extends NumericAxis
 
     /** {@inheritDoc} */
     @Override
-    public final int getDesiredPixelSize(final Rectangle region, final GC gc, final Font label_font, final Font scale_font)
+    public final int getDesiredPixelSize(final Rectangle region, final GC gc)
 
     {
         Activator.getLogger().log(Level.FINE,  "XAxis layout");
-        gc.setFont(label_font);
+        gc.setFont(getLabelFont());
         final int label_size = gc.getFontMetrics().getHeight();
-        gc.setFont(scale_font);
+        gc.setFont(getScaleFont());
         final int scale_size = gc.getFontMetrics().getHeight();
         // Need room for ticks, tick labels, and axis label
         return TICK_LENGTH + label_size + scale_size;
@@ -49,15 +49,14 @@ public class HorizontalNumericAxis extends NumericAxis
 
     /** {@inheritDoc} */
     @Override
-    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font,
-                      final Rectangle plot_bounds)
+    public void paint(final GC gc, final SWTMediaPool media, final Rectangle plot_bounds)
     {
         super.paint(gc, media);
         final Rectangle region = getBounds();
 
         final Color old_fg = gc.getForeground();
         gc.setForeground(media.get(getColor()));
-        gc.setFont(scale_font);
+        gc.setFont(getScaleFont());
 
         // Axis and Tick marks
         gc.drawLine(region.x, region.y, region.x + region.width-1, region.y);
@@ -104,7 +103,7 @@ public class HorizontalNumericAxis extends NumericAxis
             }
 
         // Label: centered at bottom of region
-        gc.setFont(label_font);
+        gc.setFont(getLabelFont());
         final Point label_size = gc.textExtent(getName());
         gc.drawString(getName(),
                 region.x + (region.width - label_size.x)/2,
