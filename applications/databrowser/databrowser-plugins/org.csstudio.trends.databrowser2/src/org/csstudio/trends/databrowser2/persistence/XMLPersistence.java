@@ -70,6 +70,7 @@ public class XMLPersistence
 
     final public static String TAG_SHOW_TOOLBAR = "show_toolbar";
     final public static String TAG_SHOW_LEGEND = "show_legend";
+    final public static String TAG_SHOW_TIME_AXIS_TITLE = "show_time_axis_title";
 
     final public static String TAG_COLOR = "color";
     final public static String TAG_RED = "red";
@@ -199,6 +200,7 @@ public class XMLPersistence
                 {
                     // First axis is 'X'
                     model.setGridVisible(DOMHelper.getSubelementBoolean(item, "showMajorGrid", false));
+                    model.setTimeAxisTitleVisible(DOMHelper.getSubelementBoolean(item, TAG_SHOW_TIME_AXIS_TITLE, true));
 
                     // Read 'Y' axes
                     item = DOMHelper.findNextElementNode(item, "axisSettingsList");
@@ -376,6 +378,8 @@ public class XMLPersistence
         // Visibility of toolbar and legend
         XMLWriter.XML(writer, 1, TAG_SHOW_LEGEND, model.isLegendVisible());
         XMLWriter.XML(writer, 1, TAG_SHOW_TOOLBAR, model.isToolbarVisible());
+        // Visibility of time axis title
+        XMLWriter.XML(writer, 1, TAG_SHOW_TIME_AXIS_TITLE, model.isTimeAxisTitleVisible());
 
         // Time axis
         XMLWriter.XML(writer, 1, TAG_GRID, model.isGridVisible());

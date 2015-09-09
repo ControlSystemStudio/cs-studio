@@ -180,6 +180,7 @@ public class DataBrowserPropertySheetPage extends Page
         public void changeTimeAxisConfig()
         {
             show_grid.setSelection(model.isGridVisible());
+            show_time_label.setSelection(model.isTimeAxisTitleVisible());
         }
 
         /** {@inheritDoc} */
@@ -206,6 +207,8 @@ public class DataBrowserPropertySheetPage extends Page
     };
 
     private Button legend_font;
+
+    private Button show_time_label;
 
     /** Initialize
      *  @param model Model to display/edit
@@ -664,6 +667,24 @@ public class DataBrowserPropertySheetPage extends Page
                 new ChangeTimeAxisConfigCommand(model, operations_manager, show_grid.getSelection());
             }
         });
+        
+        
+        label = new Label(parent, 0);
+        label.setText("Time Axis Label:");
+        label.setLayoutData(new GridData());
+        
+        show_time_label = new Button(parent, SWT.CHECK);
+        show_time_label.setToolTipText("Show Time Axis Label");
+        show_time_label.setLayoutData(new GridData(0, 0, false, false, 2, 1));
+        show_time_label.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(final SelectionEvent e)
+            {
+                new ChangeTimeAxisTitleConfigCommand(model, operations_manager, show_time_label.getSelection());
+            }
+        });
+        
         model_listener.changeTimeAxisConfig();
     }
 

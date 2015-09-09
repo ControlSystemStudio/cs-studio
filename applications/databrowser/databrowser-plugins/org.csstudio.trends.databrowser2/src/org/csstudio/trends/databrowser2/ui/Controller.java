@@ -430,6 +430,7 @@ public class Controller
             @Override
             public void changeTimeAxisConfig()
             {
+                plot.getPlot().getXAxis().setAxisNameVisible(model.isTimeAxisTitleVisible());
                 plot.getPlot().getXAxis().setGridVisible(model.isGridVisible());
             }
 
