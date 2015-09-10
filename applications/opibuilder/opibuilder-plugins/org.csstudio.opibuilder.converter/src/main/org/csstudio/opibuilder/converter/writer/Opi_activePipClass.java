@@ -68,6 +68,8 @@ public class Opi_activePipClass extends OpiWidget {
                                     for (String s : StringSplitter.splitIgnoreInQuotes(symbols.get(), ',', true)) {
                                         String[] rs = StringSplitter.splitIgnoreInQuotes(s, '=', true);
                                         if (rs.length == 2) {
+                                            // EDM treats '' as an empty string.
+                                            rs[1] = rs[1] == "''" ? "" : rs[1];
                                             try {
                                                 sb.append("macroInput.put(\"" + rs[0] + "\", \"" + rs[1]+"\");\n");
                                             } catch (Exception e) {

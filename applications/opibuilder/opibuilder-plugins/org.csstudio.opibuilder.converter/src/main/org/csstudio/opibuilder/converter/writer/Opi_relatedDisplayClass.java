@@ -82,6 +82,8 @@ public class Opi_relatedDisplayClass extends OpiWidget {
                         if (rs.length == 2) {
                             try {
                                 Element m = widgetContext.getDocument().createElement(rs[0]);
+                                // EDM treats '' as an empty string.
+                                rs[1] = rs[1] == "''" ? "" : rs[1];
                                 m.setTextContent(rs[1]);
                                 macrosNode.appendChild(m);
                             } catch (Exception e) {
