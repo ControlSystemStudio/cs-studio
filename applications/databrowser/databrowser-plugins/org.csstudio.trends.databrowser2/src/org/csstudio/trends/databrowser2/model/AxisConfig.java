@@ -16,6 +16,7 @@ import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
@@ -347,8 +348,8 @@ public class AxisConfig
         final boolean right = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_RIGHT, false);
         final RGB rgb = XMLPersistence.loadColorFromDocument(node).orElse(new RGB(0, 0, 0));
         Element root_node = node.getOwnerDocument().getDocumentElement();
-        FontData default_label_font = loadFontFromDocument(root_node, XMLPersistence.TAG_LABEL_FONT).orElse(new FontData("", 10, 0));
-        FontData default_scale_font = loadFontFromDocument(root_node, XMLPersistence.TAG_SCALE_FONT).orElse(new FontData("", 10, 0));
+        FontData default_label_font = loadFontFromDocument(root_node, XMLPersistence.TAG_LABEL_FONT).orElse(new FontData("", 10, SWT.BOLD));
+        FontData default_scale_font = loadFontFromDocument(root_node, XMLPersistence.TAG_SCALE_FONT).orElse(new FontData("", 10, SWT.BOLD));
         final FontData label_font = loadFontFromDocument(node, XMLPersistence.TAG_LABEL_FONT).orElse(default_label_font);
         final FontData scale_font = loadFontFromDocument(node, XMLPersistence.TAG_SCALE_FONT).orElse(default_scale_font);
         final double min = DOMHelper.getSubelementDouble(node, XMLPersistence.TAG_MIN, 0.0);

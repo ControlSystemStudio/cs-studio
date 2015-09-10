@@ -533,7 +533,7 @@ public class AxesTableHandler implements IStructuredContentProvider
         });
         
         // Label Font Column ----------
-        col = TableHelper.createColumn(table_layout, axes_table, "Axis Label Font", 40, 5);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisLabelFont, 40, 5);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
@@ -568,7 +568,7 @@ public class AxesTableHandler implements IStructuredContentProvider
         });
 
         // Scale Font Column ----------
-        col = TableHelper.createColumn(table_layout, axes_table, "Scale Font", 40, 5);
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisScaleFont, 40, 5);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
