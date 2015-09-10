@@ -41,9 +41,8 @@ public class FontCellEditor extends CellEditor
     public void activate()
     {
         final FontDialog dialog = new FontDialog(shell);
-//        if (value != null)
-//            //TODO set the current value
-//            dialog.setFontList(new FontData[] { model.getTitleFont() });
+        if (value != null)
+            dialog.setFontList(new FontData[] { value });
         value = dialog.open();
         if (value != null)
             fireApplyEditorValue();
