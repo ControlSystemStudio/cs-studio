@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -262,25 +264,44 @@ public class IFileUtil {
     }
     return null;
     }
+    
+    public IFile createFileResource(InputStream inputStream, String fileName) {
+        IWorkspace workspace = ResourcesPlugin.getWorkspace();
+        IProject project = workspace.getRoot().getProject("External Files");
+        IFile ifile = project.getFile(fileName);
+        try {
+            if (!project.exists())
+                project.create(null);
+            if (!project.isOpen())
+                project.open(null);
+            project.setHidden(true);
+            if (!ifile.exists())
+                ifile.create(inputStream, IResource.NONE, null);
+            map.putIfAbsent(ifile, new AtomicLong(0));
+            map.get(ifile).incrementAndGet();
+            return ifile;
+        } catch (CoreException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public IFile createURLFileResource(URI uri) throws IOException {
-    int slashIndex = uri.toString().lastIndexOf('/');
-    String fileName = uri.toString().substring(slashIndex + 1);
-    if (fileName != null && !fileName.isEmpty()) {
-        File file = new File(fileName);
-        InputStream ip = uri.toURL().openConnection().getInputStream();
-        OutputStream out = new FileOutputStream(file);
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = ip.read(buf)) > 0) {
-        out.write(buf, 0, len);
-        }
-        ip.close();
-        out.close();
-        return createFileResource(file);
-    } else
-        return null;
+        int slashIndex = uri.toString().lastIndexOf('/');
+        String fileName = uri.toString().substring(slashIndex + 1);
+        InputStream ip = openURLStream(uri);
+        if (fileName != null && !fileName.isEmpty()) {
+            return createFileResource(openURLStream(uri), fileName);
+        } else
+            return null;
+    }
+
+    private static InputStream openURLStream(final URI uri) throws IOException {
+        final URL url = uri.toURL();
+        URLConnection connection = url.openConnection();
+        int timeout = 20000;
+        connection.setReadTimeout(timeout);
+        return connection.getInputStream();
     }
 
     /**
@@ -328,3 +349,4 @@ public class IFileUtil {
     }
 
 }
+
