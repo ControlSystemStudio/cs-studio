@@ -136,9 +136,6 @@ public class Model
 
     /** Show legend*/
     private boolean show_legend = false;
-    
-    /** Show legend*/
-    private boolean show_time_axis_title = false;
 
     public Model()
     {
@@ -766,23 +763,6 @@ public class Model
         show_legend = legend;
         for (ModelListener listener : listeners)
             listener.changedLayout();
-    }
-    
-
-    /** @return <code>true</code> if time axis title is visible*/
-    public boolean isTimeAxisTitleVisible()
-    {
-        return show_time_axis_title;
-    }
-
-    /** @param visible Should time axis title be visible? */
-    public void setTimeAxisTitleVisible(final boolean legend)
-    {
-        if (show_time_axis_title == legend)
-            return;
-        show_time_axis_title = legend;
-        for (ModelListener listener : listeners)
-            listener.changeTimeAxisConfig();
     }
 
     /** @return <code>true</code> if grid lines are drawn */
