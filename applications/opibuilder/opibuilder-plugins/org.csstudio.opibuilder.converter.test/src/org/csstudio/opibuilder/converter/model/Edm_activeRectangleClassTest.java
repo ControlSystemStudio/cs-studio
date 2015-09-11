@@ -45,9 +45,9 @@ public class Edm_activeRectangleClassTest {
         assertEquals(42, r.getH());
         assertTrue(r.getAttribute("h") instanceof EdmInt);
 
-        EdmComparator.isColorEqual(r.getLineColor(), new EdmColor(7));
+        EdmComparatorTest.isColorEqual(r.getLineColor(), new EdmColor(7));
         assertTrue(r.getAttribute("lineColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(r.getFillColor(), new EdmColor(0));
+        EdmComparatorTest.isColorEqual(r.getFillColor(), new EdmColor(0));
         assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
         assertEquals(2, r.getLineWidth());

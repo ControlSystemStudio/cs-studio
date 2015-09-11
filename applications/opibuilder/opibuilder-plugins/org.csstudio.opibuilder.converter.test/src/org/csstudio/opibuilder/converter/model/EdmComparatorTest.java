@@ -12,7 +12,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-public class EdmComparator {
+public class EdmComparatorTest {
 
     public static void isColorEqual(EdmColor c1, EdmColor c2) throws EdmException {
 

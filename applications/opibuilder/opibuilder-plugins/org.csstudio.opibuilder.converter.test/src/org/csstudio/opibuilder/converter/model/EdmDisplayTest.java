@@ -41,30 +41,30 @@ public class EdmDisplayTest {
         assertEquals(177, d.getH());
         assertTrue(d.getAttribute("h") instanceof EdmInt);
 
-        EdmComparator.isFontEqual("helvetica-bold-r-14.0", d.getFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-14.0", d.getFont());
         assertTrue(d.getAttribute("font") instanceof EdmFont);
-        EdmComparator.isFontEqual("helvetica-bold-r-14.0", d.getCtlFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-14.0", d.getCtlFont());
         assertTrue(d.getAttribute("ctlFont") instanceof EdmFont);
-        EdmComparator.isFontEqual("helvetica-bold-r-14.0", d.getBtnFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-14.0", d.getBtnFont());
         assertTrue(d.getAttribute("btnFont") instanceof EdmFont);
 
-        EdmComparator.isColorEqual(d.getFgColor(), new EdmColor(14));
+        EdmComparatorTest.isColorEqual(d.getFgColor(), new EdmColor(14));
         assertTrue(d.getAttribute("fgColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getBgColor(), new EdmColor(3));
+        EdmComparatorTest.isColorEqual(d.getBgColor(), new EdmColor(3));
         assertTrue(d.getAttribute("bgColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getTextColor(), new EdmColor(14));
+        EdmComparatorTest.isColorEqual(d.getTextColor(), new EdmColor(14));
         assertTrue(d.getAttribute("textColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(new EdmColor(new EdmAttribute("rgb 256 512 65535"), true), d.getCtlFgColor1());
+        EdmComparatorTest.isColorEqual(new EdmColor(new EdmAttribute("rgb 256 512 65535"), true), d.getCtlFgColor1());
         assertTrue(d.getAttribute("ctlFgColor1") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getCtlFgColor2(), new EdmColor(30));
+        EdmComparatorTest.isColorEqual(d.getCtlFgColor2(), new EdmColor(30));
         assertTrue(d.getAttribute("ctlFgColor2") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getCtlBgColor1(), new EdmColor(3));
+        EdmComparatorTest.isColorEqual(d.getCtlBgColor1(), new EdmColor(3));
         assertTrue(d.getAttribute("ctlBgColor1") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getCtlBgColor2(), new EdmColor(3));
+        EdmComparatorTest.isColorEqual(d.getCtlBgColor2(), new EdmColor(3));
         assertTrue(d.getAttribute("ctlBgColor2") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getTopShadowColor(), new EdmColor(1));
+        EdmComparatorTest.isColorEqual(d.getTopShadowColor(), new EdmColor(1));
         assertTrue(d.getAttribute("topShadowColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getBotShadowColor(), new EdmColor(11));
+        EdmComparatorTest.isColorEqual(d.getBotShadowColor(), new EdmColor(11));
         assertTrue(d.getAttribute("botShadowColor") instanceof EdmColor);
 
         assertEquals("Motor control", d.getTitle());
@@ -101,9 +101,9 @@ public class EdmDisplayTest {
         assertEquals(42, r.getH());
         assertTrue(r.getAttribute("h") instanceof EdmInt);
 
-        EdmComparator.isColorEqual(r.getLineColor(), new EdmColor(7));
+        EdmComparatorTest.isColorEqual(r.getLineColor(), new EdmColor(7));
         assertTrue(r.getAttribute("lineColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(r.getFillColor(), new EdmColor(0));
+        EdmComparatorTest.isColorEqual(r.getFillColor(), new EdmColor(0));
         assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
         r = (Edm_activeRectangleClass)d.getWidgets().get(1);
@@ -123,9 +123,9 @@ public class EdmDisplayTest {
         assertEquals(42, r.getH());
         assertTrue(r.getAttribute("h") instanceof EdmInt);
 
-        EdmComparator.isColorEqual(r.getLineColor(), new EdmColor(7));
+        EdmComparatorTest.isColorEqual(r.getLineColor(), new EdmColor(7));
         assertTrue(r.getAttribute("lineColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(r.getFillColor(), new EdmColor(0));
+        EdmComparatorTest.isColorEqual(r.getFillColor(), new EdmColor(0));
         assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
 
@@ -146,9 +146,9 @@ public class EdmDisplayTest {
         assertEquals(80, r.getH());
         assertTrue(r.getAttribute("h") instanceof EdmInt);
 
-        EdmComparator.isColorEqual(r.getLineColor(), new EdmColor(7));
+        EdmComparatorTest.isColorEqual(r.getLineColor(), new EdmColor(7));
         assertTrue(r.getAttribute("lineColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(r.getFillColor(), new EdmColor(0));
+        EdmComparatorTest.isColorEqual(r.getFillColor(), new EdmColor(0));
         assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
 
@@ -169,12 +169,12 @@ public class EdmDisplayTest {
         assertEquals(13, t.getH());
         assertTrue(t.getAttribute("h") instanceof EdmInt);
 
-        EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
         assertTrue(t.getAttribute("font") instanceof EdmFont);
 
-        EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
         assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
         assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
         assertEquals("At low", t.getValue().get());
@@ -201,12 +201,12 @@ public class EdmDisplayTest {
             assertEquals(13, t.getH());
             assertTrue(t.getAttribute("h") instanceof EdmInt);
 
-            EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+            EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
             assertTrue(t.getAttribute("font") instanceof EdmFont);
 
-            EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+            EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
             assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-            EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+            EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
             assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
             assertEquals("Hello\rMulti-line\rWorld", t.getValue().toString());
@@ -242,29 +242,29 @@ public class EdmDisplayTest {
         assertTrue(d.getAttribute("w") instanceof EdmInt);
         assertEquals(177, d.getH());
         assertTrue(d.getAttribute("h") instanceof EdmInt);
-        EdmComparator.isFontEqual("helvetica-bold-r-14.0", d.getFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-14.0", d.getFont());
         assertTrue(d.getAttribute("font") instanceof EdmFont);
-        EdmComparator.isFontEqual("helvetica-bold-r-14.0", d.getCtlFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-14.0", d.getCtlFont());
         assertTrue(d.getAttribute("ctlFont") instanceof EdmFont);
-        EdmComparator.isFontEqual("helvetica-bold-r-14.0", d.getBtnFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-14.0", d.getBtnFont());
         assertTrue(d.getAttribute("btnFont") instanceof EdmFont);
-        EdmComparator.isColorEqual(d.getFgColor(), new EdmColor(14));
+        EdmComparatorTest.isColorEqual(d.getFgColor(), new EdmColor(14));
         assertTrue(d.getAttribute("fgColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getBgColor(), new EdmColor(3));
+        EdmComparatorTest.isColorEqual(d.getBgColor(), new EdmColor(3));
         assertTrue(d.getAttribute("bgColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getTextColor(), new EdmColor(14));
+        EdmComparatorTest.isColorEqual(d.getTextColor(), new EdmColor(14));
         assertTrue(d.getAttribute("textColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(new EdmColor(new EdmAttribute("rgb 256 512 65535"), true), d.getCtlFgColor1());
+        EdmComparatorTest.isColorEqual(new EdmColor(new EdmAttribute("rgb 256 512 65535"), true), d.getCtlFgColor1());
         assertTrue(d.getAttribute("ctlFgColor1") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getCtlFgColor2(), new EdmColor(30));
+        EdmComparatorTest.isColorEqual(d.getCtlFgColor2(), new EdmColor(30));
         assertTrue(d.getAttribute("ctlFgColor2") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getCtlBgColor1(), new EdmColor(3));
+        EdmComparatorTest.isColorEqual(d.getCtlBgColor1(), new EdmColor(3));
         assertTrue(d.getAttribute("ctlBgColor1") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getCtlBgColor2(), new EdmColor(3));
+        EdmComparatorTest.isColorEqual(d.getCtlBgColor2(), new EdmColor(3));
         assertTrue(d.getAttribute("ctlBgColor2") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getTopShadowColor(), new EdmColor(1));
+        EdmComparatorTest.isColorEqual(d.getTopShadowColor(), new EdmColor(1));
         assertTrue(d.getAttribute("topShadowColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(d.getBotShadowColor(), new EdmColor(11));
+        EdmComparatorTest.isColorEqual(d.getBotShadowColor(), new EdmColor(11));
         assertTrue(d.getAttribute("botShadowColor") instanceof EdmColor);
         assertEquals("Motor control", d.getTitle());
         assertTrue(d.getAttribute("title") instanceof EdmString);
@@ -293,9 +293,9 @@ public class EdmDisplayTest {
         assertTrue(r.getAttribute("w") instanceof EdmInt);
         assertEquals(80, r.getH());
         assertTrue(r.getAttribute("h") instanceof EdmInt);
-        EdmComparator.isColorEqual(r.getLineColor(), new EdmColor(7));
+        EdmComparatorTest.isColorEqual(r.getLineColor(), new EdmColor(7));
         assertTrue(r.getAttribute("lineColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(r.getFillColor(), new EdmColor(0));
+        EdmComparatorTest.isColorEqual(r.getFillColor(), new EdmColor(0));
         assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
         Edm_activeXTextClass t = (Edm_activeXTextClass)d.getWidgets().get(2);
@@ -313,11 +313,11 @@ public class EdmDisplayTest {
         assertTrue(t.getAttribute("w") instanceof EdmInt);
         assertEquals(13, t.getH());
         assertTrue(t.getAttribute("h") instanceof EdmInt);
-        EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
         assertTrue(t.getAttribute("font") instanceof EdmFont);
-        EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
         assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
         assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
         assertEquals("At low", t.getValue().get());
         assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
@@ -343,12 +343,12 @@ public class EdmDisplayTest {
             assertEquals(13, t.getH());
             assertTrue(t.getAttribute("h") instanceof EdmInt);
 
-            EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+            EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
             assertTrue(t.getAttribute("font") instanceof EdmFont);
 
-            EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+            EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
             assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-            EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+            EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
             assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
             assertEquals("Homed", t.getValue().get());

@@ -47,14 +47,14 @@ public class Edm_TextupdateClassTest {
         assertEquals("$(S)_LLRF:ResCtrl$(N):ResErr_Avg", t.getControlPv());
         assertTrue(t.getAttribute("controlPv") instanceof EdmString);
 
-        EdmComparator.isColorEqual(new EdmColor(112), t.getFgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(112), t.getFgColor());
         assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(new EdmColor(5), t.getBgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(5), t.getBgColor());
         assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
         assertEquals(true, t.isFill());
         assertTrue(t.getAttribute("fill") instanceof EdmBoolean);
 
-        EdmComparator.isFontEqual("courier-medium-r-16.0", t.getFont());
+        EdmComparatorTest.isFontEqual("courier-medium-r-16.0", t.getFont());
         assertTrue(t.getAttribute("font") instanceof EdmFont);
         assertEquals("right", t.getFontAlign());
         assertTrue(t.getAttribute("fontAlign") instanceof EdmString);
