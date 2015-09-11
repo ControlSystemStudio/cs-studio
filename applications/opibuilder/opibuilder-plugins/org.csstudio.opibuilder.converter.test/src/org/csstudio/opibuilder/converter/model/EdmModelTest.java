@@ -8,13 +8,13 @@
 package org.csstudio.opibuilder.converter.model;
 
 import org.csstudio.opibuilder.converter.EdmConverterTest;
+import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class EdmModelTest extends TestCase {
+public class EdmModelTest {
 
     private String displayFile2 = EdmConverterTest.RESOURCES_LOCATION + "LLRF_AUTO.edl";
 
+    @Test
     public void testEdmModel() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");

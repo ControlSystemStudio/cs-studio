@@ -7,19 +7,22 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.model.Edm_activeXTextClass;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
+public class Opi_activeXTextClassTest {
 
-public class Opi_activeXTextClassTest extends TestCase {
-
+    @Test
     public void testOpi_activeXTextClass() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");

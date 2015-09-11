@@ -7,12 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.parser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmException;
+import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class EdmColorsListParserTest extends TestCase {
+public class EdmColorsListParserTest {
 
     private String colorsFile = EdmConverterTest.RESOURCES_LOCATION + "colors_example.list";
     private String colorsError1 = EdmConverterTest.RESOURCES_LOCATION + "colors_error1.list";
@@ -21,7 +23,7 @@ public class EdmColorsListParserTest extends TestCase {
     private String colorsError4 = EdmConverterTest.RESOURCES_LOCATION + "colors_error4.list";
     private String colorsRobust = EdmConverterTest.RESOURCES_LOCATION + "colors_robust.list";
 
-
+    @Test
     public void testEdmColorsListParser() throws EdmException {
 
         EdmColorsListParser p = new EdmColorsListParser(colorsFile);
@@ -52,6 +54,7 @@ public class EdmColorsListParserTest extends TestCase {
         assertEquals("1 786 5", p.getRoot().getAttribute("155").getValue(2));
     }
 
+    @Test
     public void testNoStartQuoteError() {
         try {
             new EdmColorsListParser(colorsError1);
@@ -62,6 +65,7 @@ public class EdmColorsListParserTest extends TestCase {
         }
     }
 
+    @Test
     public void testNoFinalQuoteError() {
         try {
             new EdmColorsListParser(colorsError2);
@@ -72,6 +76,7 @@ public class EdmColorsListParserTest extends TestCase {
         }
     }
 
+    @Test
     public void testInvalidNumberFormat() {
         try {
             new EdmColorsListParser(colorsError3);
@@ -82,6 +87,7 @@ public class EdmColorsListParserTest extends TestCase {
         }
     }
 
+    @Test
     public void testInvalidColorFormat() {
         try {
             new EdmColorsListParser(colorsError4);
@@ -93,6 +99,7 @@ public class EdmColorsListParserTest extends TestCase {
     }
 
     // !!!!!!!!!!!! FOR THIS TEST TO PASS, SYSTEM PROPERTY "robustParsing" MUST BE SET TO "true"!
+    @Test
     public void testRobustness() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "true");

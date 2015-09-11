@@ -7,14 +7,17 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.parser;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
+import org.junit.Test;
 
-import junit.framework.TestCase;
 
-
-public class EdmDisplayParserTest extends TestCase {
+public class EdmDisplayParserTest {
 
     private String edlFile = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.edl";
     private String braceFile = EdmConverterTest.RESOURCES_LOCATION + "brace_example.edl";
@@ -23,6 +26,7 @@ public class EdmDisplayParserTest extends TestCase {
     private String groupErrorFile = EdmConverterTest.RESOURCES_LOCATION + "group_error.edl";
     private String error1 = EdmConverterTest.RESOURCES_LOCATION + "EDM_error01.edl";
 
+    @Test
     public void testEdmDisplayParser() throws EdmException {
 
         EdmDisplayParser p = new EdmDisplayParser(edlFile);
@@ -232,6 +236,7 @@ public class EdmDisplayParserTest extends TestCase {
         }
     }
 
+    @Test
     public void testBracedValues() throws EdmException {
         EdmDisplayParser p = new EdmDisplayParser(braceFile);
 
@@ -292,6 +297,7 @@ public class EdmDisplayParserTest extends TestCase {
         assertEquals("7 MRN", subE.getAttribute("symbol0").getValue(7));
     }
 
+    @Test
     public void testGroupNesting() throws EdmException {
         EdmDisplayParser p = new EdmDisplayParser(groupFile);
 
@@ -532,6 +538,7 @@ public class EdmDisplayParserTest extends TestCase {
         }
     }
 
+    @Test
     public void testBraceError() {
         try {
             new EdmDisplayParser(braceErrorFile);
@@ -542,6 +549,7 @@ public class EdmDisplayParserTest extends TestCase {
         }
     }
 
+    @Test
     public void testGroupError() {
         try {
             new EdmDisplayParser(groupErrorFile);
@@ -551,6 +559,7 @@ public class EdmDisplayParserTest extends TestCase {
         }
     }
 
+    @Test
     public void testObjectRobustness() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "true");

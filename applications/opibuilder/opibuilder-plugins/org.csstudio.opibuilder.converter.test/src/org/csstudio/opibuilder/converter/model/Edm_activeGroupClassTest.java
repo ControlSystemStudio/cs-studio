@@ -7,12 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class Edm_activeGroupClassTest {
 
-public class Edm_activeGroupClassTest extends TestCase {
-
+    @Test
     public void testEdm_activeGroupClass() throws EdmException {
 
         // Prepare a model.
@@ -47,9 +50,9 @@ public class Edm_activeGroupClassTest extends TestCase {
 
         assertEquals("$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR", subGroup0.getVisPv());
         assertTrue(subGroup0.getAttribute("visPv") instanceof EdmString);
-        assertEquals(-1.1, subGroup0.getVisMin());
+        assertEquals(-1.1, subGroup0.getVisMin(), 0.01);
         assertTrue(subGroup0.getAttribute("visMin") instanceof EdmDouble);
-        assertEquals(10.78, subGroup0.getVisMax());
+        assertEquals(10.78, subGroup0.getVisMax(), 0.01);
         assertTrue(subGroup0.getAttribute("visMax") instanceof EdmDouble);
 
 

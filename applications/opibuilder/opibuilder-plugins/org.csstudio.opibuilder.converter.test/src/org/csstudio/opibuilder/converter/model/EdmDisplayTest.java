@@ -7,12 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class EdmDisplayTest {
 
-public class EdmDisplayTest extends TestCase {
-
+    @Test
     public void testEdmDisplay() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
@@ -215,6 +218,7 @@ public class EdmDisplayTest extends TestCase {
 
     }
 
+    @Test
     public void testRobustness() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "true");
