@@ -11,14 +11,13 @@ import java.io.File;
 
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.junit.Before;
-
-import junit.framework.TestCase;
+import org.junit.Test;
 /**
  * This is a convenience operation test that transforms the example files.
  * It does not perform any assertions so it will only fail if an exception is thrown
  * during conversion.
  */
-public class EdmConverterTest extends TestCase {
+public class EdmConverterTest {
 
     public static final String RESOURCES_LOCATION = "src/resources/";
     private static final String edl1 = RESOURCES_LOCATION + "ArcTest.edl";
@@ -29,7 +28,7 @@ public class EdmConverterTest extends TestCase {
     public static final String COLOR_LIST_FILE = RESOURCES_LOCATION + "colors.list";
 
     @Before
-    private void setEnvironment() {
+    public void setEnvironment() {
         System.setProperty("edm2xml.colorsFile", COLOR_LIST_FILE);
         /**
          * Enable fail-fast mode for stricter tests.
@@ -38,6 +37,7 @@ public class EdmConverterTest extends TestCase {
         System.setProperty("edm2xml.robustParsing", "false");
     }
 
+    @Test
     public void testExampleEDL1() throws EdmException {
         try {
             String[] args = {edl1};
@@ -47,6 +47,7 @@ public class EdmConverterTest extends TestCase {
         }
     }
 
+    @Test
     public void testExampleEDL2() throws EdmException {
         try {
             String[] args = {edl2};
@@ -56,6 +57,7 @@ public class EdmConverterTest extends TestCase {
         }
     }
 
+    @Test
     public void testExampleEDL3() throws EdmException {
         try {
             String[] args = {edl3};
@@ -65,6 +67,7 @@ public class EdmConverterTest extends TestCase {
         }
     }
 
+    @Test
     public void testExampleEDL4() throws EdmException {
         try {
             String[] args = {edl4};
