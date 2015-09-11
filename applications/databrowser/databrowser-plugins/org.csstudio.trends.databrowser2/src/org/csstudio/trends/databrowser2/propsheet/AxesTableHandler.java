@@ -37,6 +37,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Table;
@@ -530,6 +531,78 @@ public class AxesTableHandler implements IStructuredContentProvider
                 command.rememberNewConfig();
             }
         });
+        
+        // Label Font Column ----------
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisLabelFont, 40, 5);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final AxisConfig axis = (AxisConfig) cell.getElement();
+                cell.setText(axis.getLabelFont().toString());
+            }
+        });
+        col.setEditingSupport(new EditSupportBase(axes_table)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new FontCellEditor(axes_table.getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((AxisConfig) element).getLabelFont();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command = new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.setLabelFont((FontData) value);
+                command.rememberNewConfig();
+            }
+        });
+
+        // Scale Font Column ----------
+        col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisScaleFont, 40, 5);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final AxisConfig axis = (AxisConfig) cell.getElement();
+                cell.setText(axis.getScaleFont().toString());
+            }
+        });
+        col.setEditingSupport(new EditSupportBase(axes_table)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new FontCellEditor(axes_table.getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((AxisConfig) element).getScaleFont();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                final AxisConfig axis = (AxisConfig)element;
+                final ChangeAxisConfigCommand command = new ChangeAxisConfigCommand(operations_manager, axis);
+                axis.setScaleFont((FontData) value);
+                command.rememberNewConfig();
+            }
+        });
+
+        
     }
 
     /** Add context menu to axes_table */
