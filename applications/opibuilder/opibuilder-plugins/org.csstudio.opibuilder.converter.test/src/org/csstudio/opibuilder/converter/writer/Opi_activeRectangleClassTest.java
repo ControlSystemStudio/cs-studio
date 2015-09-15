@@ -50,8 +50,8 @@ public class Opi_activeRectangleClassTest {
 
         XMLFileHandler.isElementEqual("4", "x", e);
         XMLFileHandler.isElementEqual("45", "y", e);
-        XMLFileHandler.isElementEqual("111", "width", e);
-        XMLFileHandler.isElementEqual("42", "height", e);
+        XMLFileHandler.isElementEqual("112", "width", e);
+        XMLFileHandler.isElementEqual("43", "height", e);
 
         XMLFileHandler.isColorElementEqual(new EdmColor(7), "border_color", e);
         XMLFileHandler.isColorElementEqual(new EdmColor(0), "color_background", e);

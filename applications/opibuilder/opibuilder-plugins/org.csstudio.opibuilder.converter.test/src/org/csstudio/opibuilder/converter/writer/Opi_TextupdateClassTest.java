@@ -49,8 +49,8 @@ public class Opi_TextupdateClassTest {
         XMLFileHandler.isElementEqual("EDM Text Update", "name", e);
         XMLFileHandler.isElementEqual("490", "x", e);
         XMLFileHandler.isElementEqual("400", "y", e);
-        XMLFileHandler.isElementEqual("110", "width", e);
-        XMLFileHandler.isElementEqual("20", "height", e);
+        XMLFileHandler.isElementEqual("111", "width", e);
+        XMLFileHandler.isElementEqual("21", "height", e);
 
         XMLFileHandler.isElementEqual("$(S)_LLRF:ResCtrl$(N):ResErr_Avg", "pv_name", e);
 

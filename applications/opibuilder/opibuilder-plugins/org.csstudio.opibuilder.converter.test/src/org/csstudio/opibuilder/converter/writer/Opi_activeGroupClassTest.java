@@ -59,8 +59,8 @@ public class Opi_activeGroupClassTest {
         assertEquals("1.0", subElement0.getAttribute("version"));
         XMLFileHandler.isElementEqual("8", "x", subElement0);
         XMLFileHandler.isElementEqual("120", "y", subElement0);
-        XMLFileHandler.isElementEqual("52", "width", subElement0);
-        XMLFileHandler.isElementEqual("11", "height", subElement0);
+        XMLFileHandler.isElementEqual("53", "width", subElement0);
+        XMLFileHandler.isElementEqual("12", "height", subElement0);
 
         assertEquals(groupAttributesCount + 2, subElement0.getChildNodes().getLength());
         {
