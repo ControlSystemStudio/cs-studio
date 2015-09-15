@@ -79,7 +79,7 @@ public class OpiDisplayTest {
         // init document
         Document doc = XMLFileHandler.createDomDocument();
 
-        String edlFile = EdmConverterTest.COLOR_LIST_FILE + "EDMDisplay_optionals.edl";
+        String edlFile = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplay_optionals.edl";
         EdmModel.getInstance();
         EdmDisplay d = EdmModel.getDisplay(edlFile);
 
