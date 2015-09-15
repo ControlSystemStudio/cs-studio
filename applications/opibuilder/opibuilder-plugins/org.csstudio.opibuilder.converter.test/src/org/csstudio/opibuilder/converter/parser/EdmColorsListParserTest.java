@@ -11,6 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.csstudio.opibuilder.converter.EdmConverterTest;
+import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.junit.Test;
 
@@ -30,28 +31,35 @@ public class EdmColorsListParserTest {
 
         assertEquals("attribute_count", 7, p.getRoot().getAttributeCount());
 
-        assertEquals("Disconn/Invalid", p.getRoot().getAttribute("0").getValue(0));
-        assertEquals("65535 65535 65535", p.getRoot().getAttribute("0").getValue(1));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("0").getValue(0));
+        assertEquals("Disconn/Invalid", p.getRoot().getAttribute("0").getValue(1));
+        assertEquals("65535 65535 65535", p.getRoot().getAttribute("0").getValue(2));
 
-        assertEquals("Top Shadow", p.getRoot().getAttribute("107").getValue(0));
-        assertEquals("60652 60652 60652", p.getRoot().getAttribute("107").getValue(1));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("107").getValue(0));
+        assertEquals("Top Shadow", p.getRoot().getAttribute("107").getValue(1));
+        assertEquals("60652 60652 60652", p.getRoot().getAttribute("107").getValue(2));
 
-        assertEquals("Wid-alt/Anno-sec", p.getRoot().getAttribute("5").getValue(0));
-        assertEquals("44718 44718 44718", p.getRoot().getAttribute("5").getValue(1));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("5").getValue(0));
+        assertEquals("Wid-alt/Anno-sec", p.getRoot().getAttribute("5").getValue(1));
+        assertEquals("44718 44718 44718", p.getRoot().getAttribute("5").getValue(2));
 
-        assertEquals("GLOBAL title", p.getRoot().getAttribute("6").getValue(0));
-        assertEquals("40606 40606 40606", p.getRoot().getAttribute("6").getValue(1));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("6").getValue(0));
+        assertEquals("GLOBAL title", p.getRoot().getAttribute("6").getValue(1));
+        assertEquals("40606 40606 40606", p.getRoot().getAttribute("6").getValue(2));
 
-        assertEquals("black", p.getRoot().getAttribute("112").getValue(0));
-        assertEquals("0 0 0", p.getRoot().getAttribute("112").getValue(1));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("112").getValue(0));
+        assertEquals("black", p.getRoot().getAttribute("112").getValue(1));
+        assertEquals("0 0 0", p.getRoot().getAttribute("112").getValue(2));
 
-        assertEquals("blinking purple", p.getRoot().getAttribute("142").getValue(0));
-        assertEquals("49344 0 49344", p.getRoot().getAttribute("142").getValue(1));
-        assertEquals("0 0 0", p.getRoot().getAttribute("142").getValue(2));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("142").getValue(0));
+        assertEquals("blinking purple", p.getRoot().getAttribute("142").getValue(1));
+        assertEquals("49344 0 49344", p.getRoot().getAttribute("142").getValue(2));
+        assertEquals("0 0 0", p.getRoot().getAttribute("142").getValue(3));
 
-        assertEquals("bl in ki ng purple", p.getRoot().getAttribute("155").getValue(0));
-        assertEquals("7852 4427 450", p.getRoot().getAttribute("155").getValue(1));
-        assertEquals("1 786 5", p.getRoot().getAttribute("155").getValue(2));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("155").getValue(0));
+        assertEquals("bl in ki ng purple", p.getRoot().getAttribute("155").getValue(1));
+        assertEquals("7852 4427 450", p.getRoot().getAttribute("155").getValue(2));
+        assertEquals("1 786 5", p.getRoot().getAttribute("155").getValue(3));
     }
 
     @Test
@@ -106,17 +114,20 @@ public class EdmColorsListParserTest {
 
         EdmColorsListParser p = new EdmColorsListParser(colorsRobust);
 
-        assertEquals("attribute_count", 3, p.getRoot().getAttributeCount());
+        assertEquals("attribute_count", 4, p.getRoot().getAttributeCount());
 
-        assertEquals("Disconn/Invalid", p.getRoot().getAttribute("0").getValue(0));
-        assertEquals("65535 65535 65535", p.getRoot().getAttribute("0").getValue(1));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("0").getValue(0));
+        assertEquals("Disconn/Invalid", p.getRoot().getAttribute("0").getValue(1));
+        assertEquals("65535 65535 65535", p.getRoot().getAttribute("0").getValue(2));
 
-        assertEquals("blinking purple", p.getRoot().getAttribute("142").getValue(0));
-        assertEquals("49344 0 49344", p.getRoot().getAttribute("142").getValue(1));
-        assertEquals("0 0 0", p.getRoot().getAttribute("142").getValue(2));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("142").getValue(0));
+        assertEquals("blinking purple", p.getRoot().getAttribute("142").getValue(1));
+        assertEquals("49344 0 49344", p.getRoot().getAttribute("142").getValue(2));
+        assertEquals("0 0 0", p.getRoot().getAttribute("142").getValue(3));
 
-        assertEquals("bl in ki ng purple", p.getRoot().getAttribute("155").getValue(0));
-        assertEquals("7852 4427 450", p.getRoot().getAttribute("155").getValue(1));
-        assertEquals("1 786 5", p.getRoot().getAttribute("155").getValue(2));
+        assertEquals(EdmColor.STATIC, p.getRoot().getAttribute("155").getValue(0));
+        assertEquals("bl in ki ng purple", p.getRoot().getAttribute("155").getValue(1));
+        assertEquals("7852 4427 450", p.getRoot().getAttribute("155").getValue(2));
+        assertEquals("1 786 5", p.getRoot().getAttribute("155").getValue(3));
     }
 }

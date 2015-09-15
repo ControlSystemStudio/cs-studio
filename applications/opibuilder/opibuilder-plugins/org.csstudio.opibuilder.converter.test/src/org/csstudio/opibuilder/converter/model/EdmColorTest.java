@@ -15,8 +15,8 @@ import org.junit.Test;
 public class EdmColorTest {
 
     private EdmAttribute initStaticAttribute() {
-
-        EdmAttribute a = new EdmAttribute("\"blinking purple\"");
+        EdmAttribute a = new EdmAttribute(EdmColor.STATIC);
+        a.appendValue("\"blinking purple\"");
         a.appendValue("49344 0 49344");
 
         return a;
@@ -24,7 +24,8 @@ public class EdmColorTest {
 
     private EdmAttribute initStaticBlinkAttribute() {
 
-        EdmAttribute a = new EdmAttribute("\"blinking purple\"");
+        EdmAttribute a = new EdmAttribute(EdmColor.STATIC);
+        a.appendValue("\"blinking purple\"");
         a.appendValue("49344 0 49344");
         a.appendValue("0 0 0");
 
