@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.vtype.AlarmSeverity;
 
 /** A severity level.
  *  <p>

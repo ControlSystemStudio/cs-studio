@@ -222,8 +222,8 @@ public class AlarmRDB
                     final String value = result.getString(15);
 
                     final Timestamp time = result.getTimestamp(16);
-                    final org.epics.util.time.Timestamp timestamp = result.wasNull()
-                        ? org.epics.util.time.Timestamp.now()
+                    final org.diirt.util.time.Timestamp timestamp = result.wasNull()
+                        ? org.diirt.util.time.Timestamp.now()
                         : TimestampHelper.toEPICSTime(time);
 
                     final int global_delay = AlarmServerPreferences.getGlobalAlarmDelay();
@@ -287,7 +287,7 @@ public class AlarmRDB
      */
     private void writeStateUpdate(final AlarmPV pv, final SeverityLevel current_severity,
             String current_message, final SeverityLevel severity, String message,
-            final String value, final org.epics.util.time.Timestamp timestamp) throws Exception
+            final String value, final org.diirt.util.time.Timestamp timestamp) throws Exception
     {
         // Message should not be empty because Oracle treats empty strings like null
         if (message == null  ||  message.isEmpty())

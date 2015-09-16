@@ -12,8 +12,8 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimestampHelper;
 import org.csstudio.apputil.time.SecondsParser;
 import org.eclipse.osgi.util.NLS;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.util.time.Timestamp;
 
 /** Alarm tree 'leaf' that has time of alarm, tool tip info,
  *  CSS PV name
