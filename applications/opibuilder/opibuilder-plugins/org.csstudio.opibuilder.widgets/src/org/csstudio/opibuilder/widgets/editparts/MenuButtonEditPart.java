@@ -57,8 +57,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 
 /**
  *

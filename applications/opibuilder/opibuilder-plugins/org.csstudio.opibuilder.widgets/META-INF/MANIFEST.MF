@@ -20,9 +20,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.opibuilder;bundle-version="3.2.16",
  org.csstudio.swt.xygraph;bundle-version="2.0.3",
  org.csstudio.swt.widgets,
- org.epics.vtype;bundle-version="2.7.1",
+ org.diirt.vtype;bundle-version="2.7.1",
  org.csstudio.simplepv;bundle-version="1.0.0",
- org.epics.util;bundle-version="0.3.2",
+ org.diirt.util;bundle-version="0.3.2",
  org.csstudio.csdata;bundle-version="3.2.0",
  org.jdom
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

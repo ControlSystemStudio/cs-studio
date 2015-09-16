@@ -35,8 +35,8 @@ import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.IFigure;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VType;
 
 /**The XYGraph editpart
  * @author Xihui Chen
