@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Time;
-import org.epics.vtype.VType;
-import org.epics.util.time.Timestamp;
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.Time;
+import org.diirt.vtype.VType;
+import org.diirt.util.time.Timestamp;
 
 /** Base of archive-derived {@link VType} implementations
  *  @author Kay Kasemir

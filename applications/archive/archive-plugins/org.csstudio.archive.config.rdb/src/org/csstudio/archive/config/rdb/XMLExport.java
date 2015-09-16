@@ -16,7 +16,7 @@ import org.csstudio.archive.config.EngineConfig;
 import org.csstudio.archive.config.GroupConfig;
 import org.csstudio.archive.config.SampleMode;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Export engine configuration as XML (to stdout)
  *  @author Kay Kasemir

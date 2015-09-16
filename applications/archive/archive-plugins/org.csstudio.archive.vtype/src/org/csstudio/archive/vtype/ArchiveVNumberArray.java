@@ -9,17 +9,17 @@ package org.csstudio.archive.vtype;
 
 import java.util.List;
 
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.ArrayDimensionDisplay;
-import org.epics.vtype.Display;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.ValueUtil;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ArrayLong;
-import org.epics.util.array.ListInt;
-import org.epics.util.array.ListNumber;
-import org.epics.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.ArrayDimensionDisplay;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.ValueUtil;
+import org.diirt.util.array.ArrayDouble;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.util.array.ArrayLong;
+import org.diirt.util.array.ListInt;
+import org.diirt.util.array.ListNumber;
+import org.diirt.util.time.Timestamp;
 
 /** Archive-derived {@link VNumberArray} implementation
  *  @author Kay Kasemir

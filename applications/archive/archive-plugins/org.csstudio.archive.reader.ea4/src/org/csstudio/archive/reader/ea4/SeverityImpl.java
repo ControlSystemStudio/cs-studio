@@ -8,7 +8,7 @@
  ******************************************************************************/
 package org.csstudio.archive.reader.ea4;
 
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.vtype.AlarmSeverity;
 
 /** Wrapper for {@link AlarmSeverity} that adds ChannelArchiver detail
  *  @author Kay Kasemir

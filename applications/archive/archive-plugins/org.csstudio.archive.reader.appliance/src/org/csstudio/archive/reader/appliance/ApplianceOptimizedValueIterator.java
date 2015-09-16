@@ -9,11 +9,11 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
-import org.epics.util.text.NumberFormats;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.Display;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.text.NumberFormats;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
