@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueUtil;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 import org.junit.Test;
 
 /** JUnit test for PVSamples

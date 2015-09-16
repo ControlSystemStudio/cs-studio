@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** Base for Eclipse Job for exporting data from Model to file
  *  @author Kay Kasemir

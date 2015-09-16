@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
-import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
-import static org.epics.util.time.TimeDuration.ofSeconds;
+import static org.diirt.datasource.ExpressionLanguage.newValuesOf;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vType;
+import static org.diirt.util.time.TimeDuration.ofSeconds;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -30,12 +30,12 @@ import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.imports.ImportArchiveReaderFactory;
 import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.Display;
-import org.epics.vtype.VType;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VType;
 import org.w3c.dom.Element;
 
 
