@@ -7,10 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-public class EdmIntTest extends TestCase {
+import org.junit.Test;
 
+public class EdmIntTest {
+
+    @Test
     public void testEdmInt() throws EdmException {
 
         // required
@@ -41,6 +45,7 @@ public class EdmIntTest extends TestCase {
         assertEquals(false, i4.isInitialized());
     }
 
+    @Test
     public void testWrongInput() throws EdmException {
         EdmAttribute a = new EdmAttribute("abc");
 
@@ -53,6 +58,7 @@ public class EdmIntTest extends TestCase {
         assertFalse(a.isInitialized());
     }
 
+    @Test
     public void testWrongInput2() throws EdmException {
         EdmAttribute a = new EdmAttribute("abc");
 

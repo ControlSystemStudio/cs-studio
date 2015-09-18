@@ -7,19 +7,18 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
 
 import org.csstudio.opibuilder.converter.EdmConverter;
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.junit.After;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
-
-public class OpiWriterTest extends TestCase {
+public class OpiWriterTest {
 
     private String displayFile1 = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.edl";
     private String xmlFile1 = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.opi";
@@ -35,6 +34,7 @@ public class OpiWriterTest extends TestCase {
         EdmConverterTest.deleteFile(xmlFile2);
     }
 
+    @Test
     public void testOpiWriter() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
@@ -45,6 +45,7 @@ public class OpiWriterTest extends TestCase {
         o.writeDisplayFile(displayFile2);
     }
 
+    @Test
     public void testXMLMapping() throws EdmException {
 
         System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
@@ -157,6 +158,7 @@ public class OpiWriterTest extends TestCase {
         }
     }
 
+    @Test
     public void testXMLMapping2() throws EdmException {
     // test for TextUpdate widget mapping
 
@@ -174,8 +176,8 @@ public class OpiWriterTest extends TestCase {
             XMLFileHandler.isElementEqual("EDM Text Update", "name", e);
             XMLFileHandler.isElementEqual("490", "x", e);
             XMLFileHandler.isElementEqual("400", "y", e);
-            XMLFileHandler.isElementEqual("110", "width", e);
-            XMLFileHandler.isElementEqual("20", "height", e);
+            XMLFileHandler.isElementEqual("111", "width", e);
+            XMLFileHandler.isElementEqual("21", "height", e);
 
             XMLFileHandler.isElementEqual("$(S)_LLRF:ResCtrl$(N):ResErr_Avg", "pv_name", e);
 

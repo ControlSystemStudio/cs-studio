@@ -11,10 +11,9 @@ import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.junit.After;
+import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class OpiColorDefTest extends TestCase {
+public class OpiColorDefTest {
 
     private static final String COLOR_DEF_FILE = EdmConverterTest.RESOURCES_LOCATION + "color.def";
 
@@ -23,6 +22,7 @@ public class OpiColorDefTest extends TestCase {
         EdmConverterTest.deleteFile(COLOR_DEF_FILE);
     }
 
+    @Test
     public void testOpiColorDef() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");

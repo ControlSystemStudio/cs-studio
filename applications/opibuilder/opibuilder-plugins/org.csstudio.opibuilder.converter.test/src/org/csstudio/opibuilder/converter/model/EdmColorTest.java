@@ -7,15 +7,16 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import static org.junit.Assert.assertEquals;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
+import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class EdmColorTest extends TestCase {
+public class EdmColorTest {
 
     private EdmAttribute initStaticAttribute() {
-
-        EdmAttribute a = new EdmAttribute("\"blinking purple\"");
+        EdmAttribute a = new EdmAttribute(EdmColor.STATIC);
+        a.appendValue("\"blinking purple\"");
         a.appendValue("49344 0 49344");
 
         return a;
@@ -23,13 +24,15 @@ public class EdmColorTest extends TestCase {
 
     private EdmAttribute initStaticBlinkAttribute() {
 
-        EdmAttribute a = new EdmAttribute("\"blinking purple\"");
+        EdmAttribute a = new EdmAttribute(EdmColor.STATIC);
+        a.appendValue("\"blinking purple\"");
         a.appendValue("49344 0 49344");
         a.appendValue("0 0 0");
 
         return a;
     }
 
+    @Test
     public void testStaticEdmColor() throws EdmException {
 
         EdmColor c = new EdmColor(initStaticBlinkAttribute(), true);
@@ -55,6 +58,7 @@ public class EdmColorTest extends TestCase {
         assertEquals(false, c.isBlinking());
     }
 
+    @Test
     public void testIndexEdmColor() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
@@ -77,6 +81,7 @@ public class EdmColorTest extends TestCase {
         assertEquals(0, testC.getBlinkBlue());
     }
 
+    @Test
     public void testRgbEdmColor() throws EdmException {
         //topShadowColor rgb 0 0 0
 
@@ -90,6 +95,7 @@ public class EdmColorTest extends TestCase {
         assertEquals(false, c.isBlinking());
     }
 
+    @Test
     public void testOptionality() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
