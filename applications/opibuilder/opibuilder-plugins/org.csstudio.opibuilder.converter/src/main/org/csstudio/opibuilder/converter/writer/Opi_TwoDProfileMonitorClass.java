@@ -7,8 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.logging.Logger;
+
 import org.csstudio.opibuilder.converter.model.Edm_TwoDProfileMonitorClass;
+import org.w3c.dom.Element;
 
 /**
  * XML conversion class for Edm_TwoDProfileMonitorClass.
@@ -45,6 +51,17 @@ public class Opi_TwoDProfileMonitorClass extends OpiWidget {
         if(r.getDataPvStr()!=null)
             new OpiString(widgetContext, "pv_name", convertPVName(r.getDataPvStr()));
 
+        if (r.getUseFalseColourPvStr() != null) {
+            String useFalseColourPvStr = r.getUseFalseColourPvStr();
+            if (useFalseColourPvStr.equals("0")) {
+                new OpiString(widgetContext, "color_map", "GrayScale");
+            } else if (useFalseColourPvStr.equals("1")) {
+                new OpiString(widgetContext, "color_map", "JET");
+            } else {
+                createColourMapRule(r);
+            }
+        }
+
         if(r.isPvBasedDataSize() && r.getWidthPvStr() != null && r.getHeightPvStr() != null){
             createPVOutputRule(r, convertPVName(r.getWidthPvStr()), "data_width", "pv0", "DataWidthRule");
             createPVOutputRule(r, convertPVName(r.getHeightPvStr()), "data_height", "pv0", "DataHeightRule");
@@ -57,4 +74,20 @@ public class Opi_TwoDProfileMonitorClass extends OpiWidget {
 
     }
 
+    /**
+     * Create a rule that switches colour map based on value of the PV
+     * specified in EDM.
+     * @param r EdmWidget for 2D profile monitor
+     */
+    private void createColourMapRule(Edm_TwoDProfileMonitorClass r) {
+        List<String> pvNames = Arrays.asList(convertPVName(r.getUseFalseColourPvStr()));
+        LinkedHashMap<String, Element> expressions = new LinkedHashMap<>();
+        Element jetNode = widgetContext.getDocument().createElement("value");
+        jetNode.setTextContent("\"JET\"");
+        expressions.put("pvInt0==1", jetNode);
+        Element grayScaleNode = widgetContext.getDocument().createElement("value");
+        grayScaleNode.setTextContent("\"GrayScale\"");
+        expressions.put("true", grayScaleNode);
+        new OpiRule(widgetContext, "ColourMapRule", "color_map", true, pvNames, expressions);
+    }
 }
