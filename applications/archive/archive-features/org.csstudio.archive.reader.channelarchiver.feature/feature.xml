@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.archive.reader.appliance.feature"
-      label="Appliance Archiver Reader"
-      version="1.0.0.qualifier"
-      provider-name="Miha Novak &lt;miha.novak@cosylab.com&gt;">
+      id="org.csstudio.archive.reader.channelarchiver.feature"
+      label="Channel archiver Feature"
+      version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
-      Appliance Archiver Reader
+      [Enter Feature Description here.]
    </description>
 
    <copyright url="http://www.example.com/copyright">
@@ -18,14 +17,14 @@
    </license>
 
    <plugin
-         id="org.csstudio.archive.reader.appliance"
+         id="org.csstudio.archive.reader"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.archive.reader"
+         id="org.csstudio.archive.reader.channelarchiver"
          download-size="0"
          install-size="0"
          version="0.0.0"
