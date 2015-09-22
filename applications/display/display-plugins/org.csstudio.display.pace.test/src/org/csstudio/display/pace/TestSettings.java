@@ -42,7 +42,6 @@ public class TestSettings
         sources.putDataSource("loc", new LocalDataSource());
         JCADataSourceConfiguration jcaConf = new JCADataSourceConfiguration().read(TestSettings.class.getResourceAsStream("ca.xml"));
         sources.putDataSource("ca", jcaConf.create());
-        InputStream test = TestSettings.class.getResourceAsStream("datasources.xml");
         CompositeDataSourceConfiguration conf = new CompositeDataSourceConfiguration(TestSettings.class.getResourceAsStream("datasource.xml"));
         sources.setConfiguration(conf);
         PVManager.setDefaultDataSource(sources);
