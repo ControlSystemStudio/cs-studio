@@ -15,15 +15,16 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.csdata;bundle-version="3.0.1",
  org.csstudio.utility.pvmanager,
  org.csstudio.utility.pvmanager.widgets,
- org.csstudio.utility.pvmanager.ui
+ org.csstudio.utility.pvmanager.ui,
+ org.diirt.datasource;bundle-version="3.0.1",
+ org.diirt.util;bundle-version="3.0.1",
+ org.diirt.vtype;bundle-version="3.0.1",
+ org.diirt.graphene;bundle-version="3.0.1",
+ org.diirt.datasource-extra;bundle-version="3.0.1",
+ org.diirt.datasource-graphene;bundle-version="3.0.1",
+ org.diirt.datasource-vtype;bundle-version="3.0.1"
 Export-Package: org.csstudio.channel.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.base,
- com.google.common.collect,
- org.diirt.util.time,
- org.diirt.graphene,
- org.diirt.vtype,
- org.diirt.datasource.graphene,
- org.diirt.datasource.vtype,
- org.diirt.datasource.extra
+ com.google.common.collect
