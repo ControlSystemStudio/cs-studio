@@ -1,5 +1,9 @@
 package org.csstudio.opibuilder.runmode;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -16,6 +20,8 @@ import org.eclipse.ui.PlatformUI;
  */
 public class OPIShellsChangedHandler extends AbstractHandler {
 
+    private static Logger log = OPIBuilderPlugin.getLogger();
+
     private static OPIShellSummary summaryView = null;
 
     @Override
@@ -25,7 +31,7 @@ public class OPIShellsChangedHandler extends AbstractHandler {
             try {
                 summaryView = (OPIShellSummary) page.showView(OPIShellSummary.ID);
             } catch (PartInitException e) {
-                e.printStackTrace();
+                log.log(Level.WARNING, "Failed to open OPI Shell Summary view", e);
             }
         }
         summaryView.update();

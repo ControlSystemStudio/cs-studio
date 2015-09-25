@@ -5,6 +5,7 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.RefreshOPIAction;
@@ -70,6 +71,7 @@ import org.eclipse.ui.services.IServiceLocator;
  */
 public class OPIShell implements IOPIRuntime {
 
+    private static Logger log = OPIBuilderPlugin.getLogger();
     public static final String OPI_SHELLS_CHANGED_ID = "org.csstudio.opibuilder.opiShellsChanged";
     // Cache of open OPI shells in order of opening.
     private static final Set<OPIShell> openShells = new LinkedHashSet<OPIShell>();
@@ -172,7 +174,7 @@ public class OPIShell implements IOPIRuntime {
             shell.setSize(displayModel.getSize().width + windowBorderX, displayModel.getSize().height + windowBorderY);
             shell.setVisible(true);
         } catch (Exception e) {
-            OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to create new OPIShell.", e);
+            log.log(Level.WARNING, "Failed to create new OPIShell.", e);
         }
     }
 
@@ -277,7 +279,7 @@ public class OPIShell implements IOPIRuntime {
                 sendUpdateCommand();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.log(Level.WARNING, "Failed to open OPI shell", e);
         }
 
     }
@@ -329,7 +331,7 @@ public class OPIShell implements IOPIRuntime {
             Command command = commandService.getCommand(OPI_SHELLS_CHANGED_ID);
             command.executeWithChecks(new ExecutionEvent());
         } catch (ExecutionException | NotHandledException | NotEnabledException | NotDefinedException e) {
-            e.printStackTrace();
+            log.log(Level.WARNING, "Failed to send OPI shells changed command", e);
         }
     }
 
