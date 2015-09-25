@@ -34,7 +34,9 @@ public class OPIShellsChangedHandler extends AbstractHandler {
                 log.log(Level.WARNING, "Failed to open OPI Shell Summary view", e);
             }
         }
-        summaryView.update();
+        if (summaryView != null) {
+            summaryView.update();
+        }
         return null;
     }
 
