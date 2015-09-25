@@ -61,34 +61,34 @@ public class OPIShellSummary extends FXViewPart {
 
     @Override
     protected javafx.scene.Scene createFxScene() {
-        VBox vbox = new VBox();
-        Button b = new Button("Close all OPI shells");
-        b.setOnAction(new EventHandler<ActionEvent>() {
+        VBox container = new VBox();
+        Button closeAllButton = new Button("Close all OPI shells");
+        closeAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
                 OPIShell.closeAll();
                 update();
             }
         });
-        vbox.getChildren().add(b);
+        container.getChildren().add(closeAllButton);
         grid = new GridPane();
-        ColumnConstraints column = new ColumnConstraints();
-        column.setPercentWidth(60);
-        column.setHalignment(HPos.LEFT);
-        grid.getColumnConstraints().add(column);
-        column = new ColumnConstraints();
-        column.setPercentWidth(20);
-        column.setHalignment(HPos.CENTER);
-        grid.getColumnConstraints().add(column);
-        column = new ColumnConstraints();
-        column.setPercentWidth(20);
-        column.setHalignment(HPos.CENTER);
-        grid.getColumnConstraints().add(column);
-        vbox.setPadding(new Insets(10, 10, 10, 10));
+        ColumnConstraints nameColumn = new ColumnConstraints();
+        nameColumn.setPercentWidth(60);
+        nameColumn.setHalignment(HPos.LEFT);
+        grid.getColumnConstraints().add(nameColumn);
+        ColumnConstraints showButtonColumn = new ColumnConstraints();
+        showButtonColumn.setPercentWidth(20);
+        showButtonColumn.setHalignment(HPos.CENTER);
+        grid.getColumnConstraints().add(showButtonColumn);
+        ColumnConstraints closeButtonColumn = new ColumnConstraints();
+        closeButtonColumn.setPercentWidth(20);
+        closeButtonColumn.setHalignment(HPos.CENTER);
+        grid.getColumnConstraints().add(closeButtonColumn);
+        container.setPadding(new Insets(10, 10, 10, 10));
         grid.setPadding(new Insets(10, 10, 10, 10));
         scrollpane = new ScrollPane();
-        vbox.getChildren().add(grid);
-        scrollpane.setContent(vbox);
+        container.getChildren().add(grid);
+        scrollpane.setContent(container);
         scene = new Scene(scrollpane);
         update();
         return scene;
@@ -106,29 +106,30 @@ public class OPIShellSummary extends FXViewPart {
             grid.add(emptyLabel, 0, 0);
         } else {
             int row = 0;
+            // Register right-click with any new shells.
             for (OPIShell shell : updatedShells) {
                 if ( ! cachedShells.contains(shell)) {
                     shell.registerWithView(this);
                 }
-                Button b = new Button("Close");
-                Label l = new Label(shell.getTitle());
-                b.setOnAction(new EventHandler<ActionEvent>() {
+                Button closeButton = new Button("Close");
+                Label titleLabel = new Label(shell.getTitle());
+                closeButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
                         shell.close();
                         setFxFocus();
                     }
                 });
-                Button bf = new Button("Show");
-                bf.setOnAction(new EventHandler<ActionEvent>() {
+                Button showButton = new Button("Show");
+                showButton.setOnAction(new EventHandler<ActionEvent>() {
                     @Override
                     public void handle(ActionEvent e) {
                         shell.raiseToTop();
                     }
                 });
-                grid.add(l, 0, row);
-                grid.add(bf, 1, row);
-                grid.add(b, 2, row);
+                grid.add(titleLabel, 0, row);
+                grid.add(showButton, 1, row);
+                grid.add(closeButton, 2, row);
                 row += 1;
             }
         }

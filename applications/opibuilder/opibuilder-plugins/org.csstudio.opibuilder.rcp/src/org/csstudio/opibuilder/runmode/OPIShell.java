@@ -77,7 +77,8 @@ public class OPIShell implements IOPIRuntime {
     // it to the cache.
     private OPIShell(Display display, IPath path, MacrosInput macrosInput) {
 
-        this.icon = OPIBuilderPlugin.imageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png")
+        this.icon = OPIBuilderPlugin
+                .imageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png")
                 .createImage(display);
         this.path = path;
         this.macrosInput = macrosInput;
@@ -194,13 +195,13 @@ public class OPIShell implements IOPIRuntime {
 
     @Override
     public boolean equals(Object o) {
+        boolean equal = false;
         if (o instanceof OPIShell) {
             OPIShell opiShell = (OPIShell) o;
-        return opiShell.getMacrosInput().equals(this.getMacrosInput())
-                && opiShell.getPath().equals(this.path);
-        } else {
-            return false;
+            equal = opiShell.getMacrosInput().equals(this.getMacrosInput());
+            equal &= opiShell.getPath().equals(this.path);
         }
+        return equal;
     }
 
     public void close() {
@@ -254,6 +255,7 @@ public class OPIShell implements IOPIRuntime {
                 if (opiShell.getPath().equals(path) && opiShell.getMacrosInput().equals(macrosInput)) {
                     opiShell.raiseToTop();
                     alreadyOpen = true;
+                    break;
                 }
             }
             if (!alreadyOpen) {
@@ -297,8 +299,7 @@ public class OPIShell implements IOPIRuntime {
 
     public static Set<OPIShell> getAllShells() {
         // Take a copy of the set to allow removing items during iteration.
-        LinkedHashSet<OPIShell> copy = new LinkedHashSet<OPIShell>(openShells);
-        return copy;
+        return new LinkedHashSet<OPIShell>(openShells);
     }
 
     /**
