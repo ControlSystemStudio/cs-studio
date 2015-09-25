@@ -7,6 +7,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 
+/**
+ * Handler to catch the OPIShellsChanged command and tell the
+ * OPIShellSummary view to update.
+ *
+ * @author Will Rogers
+ *
+ */
 public class OPIShellsChangedHandler extends AbstractHandler {
 
     private static OPIShellSummary summaryView = null;

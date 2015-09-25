@@ -29,6 +29,8 @@ import javafx.scene.layout.VBox;
 /**
  * RCP View summarising OPI shells.  Only one should be open
  * at any one time.
+ *
+ * @author Will Rogers
  */
 @SuppressWarnings("nls")
 public class OPIShellSummary extends FXViewPart {
@@ -98,6 +100,9 @@ public class OPIShellSummary extends FXViewPart {
     protected void setFxFocus() {
     }
 
+    /**
+     * Update the view with the currently open shells.
+     */
     public void update() {
         grid.getChildren().removeAll(grid.getChildren());
         Set<OPIShell> updatedShells = OPIShell.getAllShells();

@@ -54,7 +54,20 @@ import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.services.IServiceLocator;
 
-
+/**
+ * An OPIShell is a CS-Studio OPI presented in an SWT shell, which allows
+ * more free integration with the host operating system.  In most ways
+ * it behaves like an OPIView.
+ *
+ * All OPIShells are maintained in a static set within this class.
+ *
+ * In order for the OPIShell to be integrated with Eclipse functionality,
+ * in particular the right-click context menu, it needs to be registered
+ * against an existing IViewPart.
+ *
+ * @author Will Rogers, Matthew Furseman
+ *
+ */
 public class OPIShell implements IOPIRuntime {
 
     public static final String OPI_SHELLS_CHANGED_ID = "org.csstudio.opibuilder.opiShellsChanged";
@@ -297,8 +310,12 @@ public class OPIShell implements IOPIRuntime {
         return foundShell;
     }
 
+    /**
+     * Return a copy of the set of open shells.  Returning the same
+     * instance may lead to problems when closing shells.
+     * @return a copy of the set of open shells.
+     */
     public static Set<OPIShell> getAllShells() {
-        // Take a copy of the set to allow removing items during iteration.
         return new LinkedHashSet<OPIShell>(openShells);
     }
 
