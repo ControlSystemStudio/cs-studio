@@ -37,6 +37,12 @@ public class Preferences
     /** Preference tag for blinking period */
     final public static String ALARM_TABLE_BLINK_PERIOD = "blinking_period"; //$NON-NLS-1$
 
+    /** Preference tag for reversing message color of cleared (unacknowledged) alarms */
+    final public static String ALARM_TABLE_REVERSE_COLORS = "reverse_colors_cleared"; //$NON-NLS-1$
+
+    /** Preference tag for text colors of alarm message, per severity: Severity,R,G,B|... */
+    final public static String ALARM_TABLE_SEVERITY_PAIR_COLORS = "severity_pair_colors"; //$NON-NLS-1$
+
     /** Preference and memento tag for the time format in the time column */
     final public static String ALARM_TABLE_TIME_FORMAT = "time_format"; //$NON-NLS-1$
 
@@ -77,11 +83,26 @@ public class Preferences
         return service.getBoolean(Activator.ID, ALARM_TABLE_BLINK_UNACKNOWLEDGED, false, null);
     }
 
-    /** @return the blinking period in milliseconds */
+    /** @return  */
     public static int getBlinkingPeriod()
     {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getInt(Activator.ID, ALARM_TABLE_BLINK_PERIOD, 500, null);
+    }
+
+    /** @return use reverse colors for recovered unacknowledged alarms */
+    public static boolean isColorsReversed()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(Activator.ID, ALARM_TABLE_REVERSE_COLORS, false, null);
+    }
+    
+    /** @return use reverse colors for recovered unacknowledged alarms */
+    public static String[] getSeverityPairColors()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        final String pref = service.getString(Activator.ID, ALARM_TABLE_SEVERITY_PAIR_COLORS, "", null); //$NON-NLS-1$
+        return pref.split(" *\\| *"); // Vertical line-separated, allowing for spaces //$NON-NLS-1$
     }
 
     /** @return the time format */
