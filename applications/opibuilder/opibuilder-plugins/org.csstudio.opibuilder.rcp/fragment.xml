@@ -33,7 +33,7 @@
             class="org.csstudio.opibuilder.runmode.OPIShellSummary"
             fastViewWidthRatio="0.3"
             icon="icons/OPIRunner.png"
-            id="org.csstudio.opibuilder.runmode.OPIShellSummary"
+            id="org.csstudio.opibuilder.opiShellSummary"
             name="OPI Shell Summary">
       </view>
    </extension>

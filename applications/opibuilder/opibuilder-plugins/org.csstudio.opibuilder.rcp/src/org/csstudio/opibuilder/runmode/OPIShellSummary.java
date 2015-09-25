@@ -33,7 +33,7 @@ import javafx.scene.layout.VBox;
 @SuppressWarnings("nls")
 public class OPIShellSummary extends FXViewPart {
 
-    public static final String ID = "org.csstudio.opibuilder.runmode.OPIShellSummary";
+    public static final String ID = "org.csstudio.opibuilder.opiShellSummary";
 
     private ScrollPane scrollpane;
     private GridPane grid;
