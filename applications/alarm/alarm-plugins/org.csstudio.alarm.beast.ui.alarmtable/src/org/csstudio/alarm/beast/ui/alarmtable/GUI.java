@@ -172,6 +172,7 @@ public class GUI extends Composite implements AlarmClientModelListener
     private Button unselect;
 
     private SeverityColorProvider color_provider;
+    private SeverityColorPairProvider color_pair_provider;
     private SeverityIconProvider icon_provider;
     private AlarmTableLabelProvider table_label_provider;
 
@@ -389,8 +390,9 @@ public class GUI extends Composite implements AlarmClientModelListener
             base_composite = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
             base_composite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(base_composite);
+            color_pair_provider = new SeverityColorPairProvider(base_composite);
             icon_provider = new SeverityIconProvider(base_composite);
-            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, ColumnInfo.TIME);
+            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, color_pair_provider, ColumnInfo.TIME);
             addActiveAlarmSashElement(base_composite);
             addAcknowledgedAlarmSashElement(base_composite);
             ((SashForm) base_composite).setWeights(new int[]{ 80, 20 });
@@ -400,8 +402,9 @@ public class GUI extends Composite implements AlarmClientModelListener
             base_composite = new Composite(this, SWT.NONE);
             base_composite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(base_composite);
+            color_pair_provider = new SeverityColorPairProvider(base_composite);
             icon_provider = new SeverityIconProvider(base_composite);
-            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, ColumnInfo.TIME);
+            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, color_pair_provider, ColumnInfo.TIME);
             addActiveAlarmSashElement(base_composite);
         }
         syncTables(active_table_viewer, acknowledged_table_viewer, sorting_column, sort_up);
@@ -754,7 +757,7 @@ public class GUI extends Composite implements AlarmClientModelListener
             if (col_info == ColumnInfo.TIME)
                 view_col.setLabelProvider(table_label_provider);
             else
-                view_col.setLabelProvider(new AlarmTableLabelProvider(icon_provider, color_provider, col_info));
+                view_col.setLabelProvider(new AlarmTableLabelProvider(icon_provider, color_provider, color_pair_provider, col_info));
 
             if (col_info == ColumnInfo.ACK)
             {
