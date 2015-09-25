@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.runmode;
 
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.logging.Level;
@@ -17,6 +17,12 @@ import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.ExecutionEvent;
+import org.eclipse.core.commands.ExecutionException;
+import org.eclipse.core.commands.NotEnabledException;
+import org.eclipse.core.commands.NotHandledException;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -40,16 +46,22 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IPropertyListener;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.services.IServiceLocator;
 
 
 public class OPIShell implements IOPIRuntime {
 
-    // Cache of open OPI shells.
-    private static final Set<OPIShell> openShells = new HashSet<OPIShell>();
+    public static final String OPI_SHELLS_CHANGED_ID = "org.csstudio.opibuilder.opiShellsChanged";
+    // Cache of open OPI shells in order of opening.
+    private static final Set<OPIShell> openShells = new LinkedHashSet<OPIShell>();
+    // The view against which the context menu is registered.
+    private IViewPart view;
 
     private final Image icon;
     private final Shell shell;
@@ -58,6 +70,7 @@ public class OPIShell implements IOPIRuntime {
     // be an empty MacrosInput object.
     private final MacrosInput macrosInput;
     private final ActionRegistry actionRegistry;
+    private final GraphicalViewer viewer;
     private DisplayModel displayModel;
 
     // Private constructor means you can't open an OPIShell without adding
@@ -74,7 +87,7 @@ public class OPIShell implements IOPIRuntime {
         this.displayModel.setOpiRuntime(this);
         this.actionRegistry = new ActionRegistry();
 
-        final GraphicalViewer viewer = new GraphicalViewerImpl();
+        viewer = new GraphicalViewerImpl();
         viewer.createControl(shell);
         viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
         viewer.setRootEditPart(new ScalableFreeformRootEditPart() {
@@ -96,12 +109,6 @@ public class OPIShell implements IOPIRuntime {
         };
         editDomain.addViewer(viewer);
 
-        actionRegistry.registerAction(new RefreshOPIAction(this));
-        SingleSourceHelper.registerRCPRuntimeActions(actionRegistry, this);
-        OPIRunnerContextMenuProvider contextMenuProvider = new OPIRunnerContextMenuProvider(viewer, this);
-        getSite().registerContextMenu(contextMenuProvider, viewer);
-        viewer.setContextMenu(contextMenuProvider);
-
         try {
             displayModel = createDisplayModel(path, macrosInput, viewer);
             setTitle();
@@ -115,6 +122,7 @@ public class OPIShell implements IOPIRuntime {
                 public void shellClosed(ShellEvent e) {
                     // Remove this shell from the cache.
                     openShells.remove(OPIShell.this);
+                    sendUpdateCommand();
                 }
                 public void shellActivated(ShellEvent e) {
                     if (firstRun) {
@@ -154,6 +162,52 @@ public class OPIShell implements IOPIRuntime {
         }
     }
 
+    /**
+     * In order for the right-click menu to work, this shell must be registered
+     * with a view.  Register the context menu against the view.
+     * Make the view the default.
+     * @param view
+     */
+    public void registerWithView(IViewPart view) {
+        this.view = view;
+        actionRegistry.registerAction(new RefreshOPIAction(this));
+        SingleSourceHelper.registerRCPRuntimeActions(actionRegistry, this);
+        OPIRunnerContextMenuProvider contextMenuProvider = new OPIRunnerContextMenuProvider(viewer, this);
+        getSite().registerContextMenu(contextMenuProvider, viewer);
+        viewer.setContextMenu(contextMenuProvider);
+    }
+
+    public MacrosInput getMacrosInput() {
+        return macrosInput;
+    }
+
+    public IPath getPath() {
+        return path;
+    }
+
+    public void raiseToTop() {
+        shell.forceFocus();
+        shell.forceActive();
+        shell.setFocus();
+        shell.setActive();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof OPIShell) {
+            OPIShell opiShell = (OPIShell) o;
+        return opiShell.getMacrosInput().equals(this.getMacrosInput())
+                && opiShell.getPath().equals(this.path);
+        } else {
+            return false;
+        }
+    }
+
+    public void close() {
+        shell.close();
+        dispose();
+    }
+
     private DisplayModel createDisplayModel(IPath path, MacrosInput macrosInput, GraphicalViewer viewer)
             throws Exception {
         displayModel = new DisplayModel(path);
@@ -163,7 +217,6 @@ public class OPIShell implements IOPIRuntime {
             macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
             displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
         }
-
         viewer.setContents(displayModel);
         displayModel.setViewer(viewer);
         displayModel.setOpiRuntime(this);
@@ -184,33 +237,11 @@ public class OPIShell implements IOPIRuntime {
         shell.setSize(displayModel.getSize().width + frameX, displayModel.getSize().height + frameY);
     }
 
-    public MacrosInput getMacrosInput() {
-        return macrosInput;
-    }
+    /*************************************************************
+     * Static helper methods to manage open shells.
+     *************************************************************/
 
-    public IPath getPath() {
-        return path;
-    }
-
-    public void raiseToTop() {
-        shell.forceFocus();
-        shell.forceActive();
-        shell.setFocus();
-        shell.setActive();
-    }
-
-    @Override
-    public  boolean equals(Object o) {
-        if (o instanceof OPIShell) {
-            OPIShell opiShell = (OPIShell) o;
-        return opiShell.getMacrosInput().equals(this.getMacrosInput())
-                && opiShell.getPath().equals(this.path);
-        } else {
-            return false;
-        }
-    }
-
-    /*
+    /**
      * This is the only way to create an OPIShell
      */
     public static void openOPIShell(IPath path, MacrosInput macrosInput) {
@@ -228,17 +259,22 @@ public class OPIShell implements IOPIRuntime {
             if (!alreadyOpen) {
                 OPIShell os = new OPIShell(Display.getCurrent(), path, macrosInput);
                 openShells.add(os);
+                sendUpdateCommand();
             }
         } catch (Exception e) {
-                e.printStackTrace();
+            e.printStackTrace();
         }
+
     }
 
     /**
-     *  Getter for the Shell associated with this OPIShell
+     * Close all open OPIShells.  Use getAllShells() for a copy
+     * of the set, to avoid removing items during iteration.
      */
-    public Shell getShell() {
-        return this.shell;
+    public static void closeAll() {
+        for (OPIShell s : getAllShells()) {
+            s.close();
+        }
     }
 
     /** Search the cache of open OPIShells to find a match for the
@@ -249,14 +285,34 @@ public class OPIShell implements IOPIRuntime {
     public static OPIShell getOPIShellForShell(final Shell target) {
         OPIShell foundShell = null;
         if (target != null) {
-            for (OPIShell os : OPIShell.openShells) {
-                if (os.getShell() == target) {
+            for (OPIShell os : openShells) {
+                if (os.shell == target) {
                     foundShell = os;
                     break;
                 }
             }
         }
         return foundShell;
+    }
+
+    public static Set<OPIShell> getAllShells() {
+        // Take a copy of the set to allow removing items during iteration.
+        LinkedHashSet<OPIShell> copy = new LinkedHashSet<OPIShell>(openShells);
+        return copy;
+    }
+
+    /**
+     * Alert whoever is listening that a new OPIShell has been created.
+     */
+    private static void sendUpdateCommand() {
+        IServiceLocator serviceLocator = PlatformUI.getWorkbench();
+        ICommandService commandService = (ICommandService) serviceLocator.getService(ICommandService.class);
+        try {
+            Command command = commandService.getCommand(OPI_SHELLS_CHANGED_ID);
+            command.executeWithChecks(new ExecutionEvent());
+        } catch (ExecutionException | NotHandledException | NotEnabledException | NotDefinedException e) {
+            e.printStackTrace();
+        }
     }
 
     /********************************************
@@ -280,7 +336,11 @@ public class OPIShell implements IOPIRuntime {
 
     @Override
     public IWorkbenchPartSite getSite() {
-        return PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActivePart().getSite();
+        if (view != null) {
+            return view.getSite();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -356,4 +416,5 @@ public class OPIShell implements IOPIRuntime {
     public int hashCode() {
         return Objects.hash(OPIShell.class, macrosInput, path);
     }
+
 }
