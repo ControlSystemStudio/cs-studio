@@ -311,9 +311,10 @@ public class OPIShell implements IOPIRuntime {
     @SuppressWarnings("rawtypes")
     @Override
     public Object getAdapter(Class adapter) {
-        if(adapter == ActionRegistry.class)
+        if (adapter == ActionRegistry.class)
             return this.actionRegistry;
-
+        if (adapter == GraphicalViewer.class)
+            return this.viewer;
         return null;
     }
 
