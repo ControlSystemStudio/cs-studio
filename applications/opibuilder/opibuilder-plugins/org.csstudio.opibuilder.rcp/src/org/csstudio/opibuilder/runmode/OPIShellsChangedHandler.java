@@ -22,14 +22,13 @@ public class OPIShellsChangedHandler extends AbstractHandler {
 
     private static Logger log = OPIBuilderPlugin.getLogger();
 
-    private static OPIShellSummary summaryView = null;
-
     @Override
     public Object execute(ExecutionEvent ee) throws ExecutionException {
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        if (summaryView == null || ! page.isPartVisible(summaryView)) {
+        IWorkbenchPage activePage = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        OPIShellSummary summaryView = (OPIShellSummary) activePage.findView(OPIShellSummary.ID);
+        if (summaryView == null || summaryView.isDisposed()) {
             try {
-                summaryView = (OPIShellSummary) page.showView(OPIShellSummary.ID);
+                summaryView = (OPIShellSummary) activePage.showView(OPIShellSummary.ID);
             } catch (PartInitException e) {
                 log.log(Level.WARNING, "Failed to open OPI Shell Summary view", e);
             }

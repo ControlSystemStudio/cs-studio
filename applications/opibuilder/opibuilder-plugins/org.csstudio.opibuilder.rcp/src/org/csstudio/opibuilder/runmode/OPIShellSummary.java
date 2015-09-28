@@ -41,6 +41,7 @@ public class OPIShellSummary extends FXViewPart {
     private GridPane grid;
     private Scene scene;
     private Button closeAllButton;
+    private boolean disposed = false;
 
     private Set<OPIShell> cachedShells;
 
@@ -50,6 +51,11 @@ public class OPIShellSummary extends FXViewPart {
     @Override
     public void dispose() {
         super.dispose();
+        disposed = true;
+    }
+
+    public boolean isDisposed() {
+        return disposed;
     }
 
     @Override
