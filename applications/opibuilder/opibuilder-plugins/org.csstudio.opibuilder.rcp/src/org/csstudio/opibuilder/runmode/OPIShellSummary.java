@@ -59,8 +59,7 @@ public class OPIShellSummary extends FXViewPart {
     }
 
     @Override
-    public void init(final IViewSite site, final IMemento memento) throws PartInitException
-    {
+    public void init(final IViewSite site, final IMemento memento) throws PartInitException {
         super.init(site, memento);
         cachedShells = OPIShell.getAllShells();
         for (OPIShell shell : cachedShells) {
@@ -151,8 +150,7 @@ public class OPIShellSummary extends FXViewPart {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "OpiShell summary: " + getViewSite().getId();
     }
 
