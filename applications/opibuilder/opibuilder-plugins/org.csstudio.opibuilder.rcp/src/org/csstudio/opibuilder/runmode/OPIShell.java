@@ -60,7 +60,10 @@ import org.eclipse.ui.services.IServiceLocator;
  * more free integration with the host operating system.  In most ways
  * it behaves like an OPIView.
  *
- * All OPIShells are maintained in a static set within this class.
+ * All OPIShells are maintained in a static set within this class.  To
+ * maintain a cache of all shells, construction is limited to a static
+ * method.  The private constructor means that this class cannot be
+ * extended.
  *
  * In order for the OPIShell to be integrated with Eclipse functionality,
  * in particular the right-click context menu, it needs to be registered
@@ -69,7 +72,7 @@ import org.eclipse.ui.services.IServiceLocator;
  * @author Will Rogers, Matthew Furseman
  *
  */
-public class OPIShell implements IOPIRuntime {
+public final class OPIShell implements IOPIRuntime {
 
     private static Logger log = OPIBuilderPlugin.getLogger();
     public static final String OPI_SHELLS_CHANGED_ID = "org.csstudio.opibuilder.opiShellsChanged";
