@@ -40,6 +40,7 @@ public class OPIShellSummary extends FXViewPart {
     private ScrollPane scrollpane;
     private GridPane grid;
     private Scene scene;
+    private Button closeAllButton;
 
     private Set<OPIShell> cachedShells;
 
@@ -64,7 +65,7 @@ public class OPIShellSummary extends FXViewPart {
     @Override
     protected javafx.scene.Scene createFxScene() {
         VBox container = new VBox();
-        Button closeAllButton = new Button("Close all OPI shells");
+        closeAllButton = new Button("Close all OPI shells");
         closeAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -109,6 +110,7 @@ public class OPIShellSummary extends FXViewPart {
         if (updatedShells.isEmpty()) {
             Label emptyLabel = new Label("No OPI shells open.");
             grid.add(emptyLabel, 0, 0);
+            closeAllButton.setDisable(true);
         } else {
             int row = 0;
             // Register right-click with any new shells.
@@ -137,6 +139,7 @@ public class OPIShellSummary extends FXViewPart {
                 grid.add(closeButton, 2, row);
                 row += 1;
             }
+            closeAllButton.setDisable(false);
         }
         cachedShells = updatedShells;
     }
