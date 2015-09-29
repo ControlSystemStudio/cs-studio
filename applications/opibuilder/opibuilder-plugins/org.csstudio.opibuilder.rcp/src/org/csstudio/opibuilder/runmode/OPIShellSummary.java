@@ -18,12 +18,15 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 
 /**
@@ -40,6 +43,7 @@ public class OPIShellSummary extends FXViewPart {
     private ScrollPane scrollpane;
     private GridPane grid;
     private Scene scene;
+    private Label summaryLabel;
     private Button closeAllButton;
     private boolean disposed = false;
 
@@ -69,8 +73,14 @@ public class OPIShellSummary extends FXViewPart {
 
     @Override
     protected javafx.scene.Scene createFxScene() {
+
         VBox container = new VBox();
-        closeAllButton = new Button("Close all OPI shells");
+        HBox header = new HBox();
+        summaryLabel = new Label("No standalone OPIs open");
+        summaryLabel.setStyle("-fx-font-weight: bold");
+        summaryLabel.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(summaryLabel, Priority.ALWAYS);
+        closeAllButton = new Button("Close all standalone OPIs");
         closeAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -78,23 +88,25 @@ public class OPIShellSummary extends FXViewPart {
                 update();
             }
         });
-        container.getChildren().add(closeAllButton);
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.getChildren().add(summaryLabel);
+        header.getChildren().add(closeAllButton);
+        container.getChildren().add(header);
         grid = new GridPane();
         ColumnConstraints nameColumn = new ColumnConstraints();
-        nameColumn.setPercentWidth(60);
+        nameColumn.setHgrow(Priority.ALWAYS);
         nameColumn.setHalignment(HPos.LEFT);
         grid.getColumnConstraints().add(nameColumn);
         ColumnConstraints showButtonColumn = new ColumnConstraints();
-        showButtonColumn.setPercentWidth(20);
         showButtonColumn.setHalignment(HPos.CENTER);
         grid.getColumnConstraints().add(showButtonColumn);
         ColumnConstraints closeButtonColumn = new ColumnConstraints();
-        closeButtonColumn.setPercentWidth(20);
         closeButtonColumn.setHalignment(HPos.CENTER);
         grid.getColumnConstraints().add(closeButtonColumn);
         container.setPadding(new Insets(10, 10, 10, 10));
         grid.setPadding(new Insets(10, 10, 10, 10));
         scrollpane = new ScrollPane();
+        scrollpane.setFitToWidth(true);
         container.getChildren().add(grid);
         scrollpane.setContent(container);
         scene = new Scene(scrollpane);
@@ -113,11 +125,13 @@ public class OPIShellSummary extends FXViewPart {
         grid.getChildren().removeAll(grid.getChildren());
         Set<OPIShell> updatedShells = OPIShell.getAllShells();
         if (updatedShells.isEmpty()) {
-            Label emptyLabel = new Label("No OPI shells open.");
-            grid.add(emptyLabel, 0, 0);
+            summaryLabel.setText("No standalone OPIs open.");
             closeAllButton.setDisable(true);
         } else {
             int row = 0;
+            String plural = updatedShells.size() == 1 ? "" : "s";
+            String isAre = updatedShells.size() == 1 ? "is" : "are";
+            summaryLabel.setText("There " + isAre + " " + updatedShells.size() + " standalone OPI" + plural + " open.");
             // Register right-click with any new shells.
             for (OPIShell shell : updatedShells) {
                 if ( ! cachedShells.contains(shell)) {

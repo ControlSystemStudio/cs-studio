@@ -34,7 +34,7 @@
             fastViewWidthRatio="0.3"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.opiShellSummary"
-            name="OPI Shell Summary">
+            name="Standalone OPI Summary">
       </view>
    </extension>
    <extension
