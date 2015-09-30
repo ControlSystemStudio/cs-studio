@@ -76,19 +76,6 @@ public class WrappableTextFigure extends TextFigure{
     
     @Override
     public void setHorizontalAlignment(H_ALIGN hAlignment) {
-    	super.setHorizontalAlignment(hAlignment);
-    	if (hAlignment == H_ALIGN.CENTER) {
-    		flowPage.setHorizontalAligment(PositionConstants.CENTER);
-    		super.setHorizontalAlignment(H_ALIGN.LEFT);
-    	} else if (hAlignment == H_ALIGN.LEFT) {
-    		flowPage.setHorizontalAligment(PositionConstants.LEFT);
-    	} else if (hAlignment == H_ALIGN.RIGHT) {
-    		flowPage.setHorizontalAligment(PositionConstants.RIGHT);
-    	}
-    }
-
-    @Override
-    public void setHorizontalAlignment(H_ALIGN hAlignment) {
         super.setHorizontalAlignment(hAlignment);
         if (hAlignment == H_ALIGN.CENTER) {
             flowPage.setHorizontalAligment(PositionConstants.CENTER);
