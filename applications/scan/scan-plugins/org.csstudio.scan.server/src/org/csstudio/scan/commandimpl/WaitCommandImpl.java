@@ -28,7 +28,7 @@ import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** {@link ScanCommandImpl} that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
