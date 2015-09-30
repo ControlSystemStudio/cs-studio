@@ -47,9 +47,6 @@ public class ArchiveFetchJob extends Job
     /** throw an exception if an exception occur during fetching data from response */
     protected Boolean failedThrowExceptionGetData = true;
 
-    /** throw an exception if an exception occur during fetching data from response */
-    protected Boolean failedThrowExceptionGetData = true;
-
     /** display UnknownChannelException */
     protected boolean displayUnknowChannelException = true;
 
