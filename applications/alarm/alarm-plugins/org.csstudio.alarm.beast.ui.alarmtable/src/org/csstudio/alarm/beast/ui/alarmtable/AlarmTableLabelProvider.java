@@ -10,23 +10,29 @@ package org.csstudio.alarm.beast.ui.alarmtable;
 import java.text.SimpleDateFormat;
 
 import org.csstudio.alarm.beast.AnnunciationFormatter;
+import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
 import org.csstudio.alarm.beast.ui.SeverityColorProvider;
 import org.csstudio.apputil.ui.swt.CheckBoxImages;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ViewerCell;
+import org.eclipse.swt.graphics.Color;
 
 /** Provider of label/color/... for the alarm table.
  *  @author Kay Kasemir
+ *  @author Boris Versic - Alarm Description formatting, coloring
  */
 public class AlarmTableLabelProvider extends CellLabelProvider
 {
     /** Mapping of severities to colors */
     final private SeverityColorProvider color_provider;
-
+    final private SeverityColorPairProvider color_pair_provider;
     final private SeverityIconProvider icon_provider;
-
+    
+    /** Whether recovered (cleared) unacknowledged alarms should have their description drawn using reversed colors */
+    final private boolean reverse_colors = Preferences.isColorsReversed(); 
+    
     /** Column handled by this label provider */
     final private ColumnInfo column;
 
@@ -41,8 +47,22 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     public AlarmTableLabelProvider(final SeverityIconProvider icon_provider,
             final SeverityColorProvider color_provider, final ColumnInfo column)
     {
+    	this(icon_provider, color_provider, null, column);
+    }
+
+    /** Initialize
+     *  @param icon_provider icon provider
+     *  @param color_provider Color provider for severity values
+     *  @param color_pair_provider Color-pair provider for severity values
+     *  @param column Column for which this label provider should give labels etc.
+     */
+    public AlarmTableLabelProvider(final SeverityIconProvider icon_provider,
+            final SeverityColorProvider color_provider, final SeverityColorPairProvider color_pair_provider,
+            final ColumnInfo column)
+    {
         this.icon_provider = icon_provider;
         this.color_provider = color_provider;
+        this.color_pair_provider = color_pair_provider;
         this.column = column;
     }
 
@@ -99,9 +119,40 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         case DESCRIPTION:
             {
             final String annunciation = AnnunciationFormatter.format(alarm.getDescription(),
-                    alarm.getSeverity().getDisplayName(), alarm.getValue());
+                    alarm.getSeverity().getDisplayName(), alarm.getValue(), true);
             cell.setText(annunciation);
+            
+            // If enabled, reverse the background/text colors (message only) for unacknowledged cleared alarms
+            // (and also use colors for the Description column)
+            if (!reverse_colors) break;
+            
+            final SeverityLevel severity = alarm.getSeverity();
+            if (!severity.isActive())
+            {
+                // if OK or acknowledged, use default colors
+                cell.setBackground(null);
+                cell.setForeground(null);
+                break;
             }
+
+            final SeverityLevel current_severity = alarm.getCurrentSeverity();
+            final Color severity_color = color_provider.getColor(severity);
+            final Color color_pair = color_pair_provider == null ? null : color_pair_provider.getColor(severity);
+            
+            Color bg_color = null, fg_color = color_pair;
+            
+            if (current_severity != SeverityLevel.OK)
+            {
+            	bg_color = severity_color;
+            } else {
+            	bg_color = fg_color;
+            	fg_color = severity_color;
+            }
+
+            cell.setBackground(bg_color);
+    		cell.setForeground(fg_color);
+            }
+            
             break;
         case TIME:
             cell.setText(formatter == null ? alarm.getTimestampText()

@@ -47,10 +47,13 @@ public class ArchiveFetchJob extends Job
     /** throw an exception if an exception occur during fetching data from response */
     protected Boolean failedThrowExceptionGetData = true;
 
+    /** throw an exception if an exception occur during fetching data from response */
+    protected Boolean failedThrowExceptionGetData = true;
+
     /** display UnknownChannelException */
     protected boolean displayUnknowChannelException = true;
 
-	/** Item for which to fetch samples */
+    /** Item for which to fetch samples */
     final private PVItem item;
 
     /** Start/End time */
@@ -134,28 +137,29 @@ public class ArchiveFetchJob extends Job
                                                                    TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end), bins);
                     // Get samples into array
                     final List<VType> result = new ArrayList<VType>();
-                    while (value_iter.hasNext()) {
-                    	try {
-                    		result.add(value_iter.next());
-                    	} catch (Exception e) {
-                    		if (failedThrowExceptionGetData) {
-                    			throw e;
-                    		} else {
-	                    		Activator.getLogger().log(Level.WARNING, "error", e);
-	                    		break;
-                    		}
-                    	}
+                    try
+                    {
+                        while (value_iter.hasNext())
+                            result.add(value_iter.next());
                     }
+                    catch (Exception e)
+                    {
+                        if (failedThrowExceptionGetData)
+                            throw e;
+                        else
+                            Activator.getLogger().log(Level.WARNING, "error", e);
+                    }
+
                     samples += result.size();
                     item.mergeArchivedSamples(the_reader.getServerName(), result);
                     if (cancelled)
                         break;
                     value_iter.close();
                 }
-                catch (UnknownChannelException uce) {
-                	if (!cancelled && displayUnknowChannelException) {
-                		listener.archiveFetchFailed(ArchiveFetchJob.this, archive, uce);
-                	}
+                catch (UnknownChannelException uce)
+                {
+                    if (!cancelled && displayUnknowChannelException)
+                        listener.archiveFetchFailed(ArchiveFetchJob.this, archive, uce);
                 }
                 catch (Exception ex)
                 {   // Tell listener unless it's the result of a 'cancel'?
