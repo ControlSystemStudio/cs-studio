@@ -1,17 +1,13 @@
 package org.csstudio.diirt.util;
 
+import java.net.URL;
 import java.util.logging.Logger;
 
-import org.diirt.datasource.DataSource;
-import org.diirt.datasource.PVManager;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.prefs.Preferences;
-import org.osgi.service.prefs.PreferencesService;
 
 public class Activator implements BundleActivator {
 
@@ -21,28 +17,21 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(BundleContext context) throws Exception {
-        log.config("Starting diirt.util");
-        ServiceReference<PreferencesService> osgiPreferenceServiceRef = context.getServiceReference(PreferencesService.class);
-        PreferencesService t = context.getService(osgiPreferenceServiceRef);
-        log.config("Getting the osgi pref service : " + t.getUserPreferences(ID).get("diirt.home", "default"));
         
-        Preferences preferences = InstanceScope.INSTANCE.getNode(ID);
-        log.config("Getting the osgi preferefence : " + preferences.get("diirt.home", "default"));
+        final Location instanceLoc = Platform.getInstanceLocation();
+        final String defaultDiirtConfig = new URL(instanceLoc.getURL(), "diirt").toString();
         
+        log.info("Starting diirt.util");        
         IPreferencesService prefs = Platform.getPreferencesService();
-        log.config("Starting diirt.util ");
-        
         String diirtHome;
         try {
-            diirtHome = prefs.getString(ID, "diirt.home", "default", null);
-            log.config("Setting diirt.home to pref:" + diirtHome);
+            diirtHome = prefs.getString(ID, "diirt.home", defaultDiirtConfig, null);
+            log.config("Setting Diirt configuration folder to :" + diirtHome);
             System.setProperty("diirt.home", diirtHome);
         } catch (Exception e) {
             log.severe(e.getMessage());
             e.printStackTrace();
         }
-//        DataSource datasource = PVManager.getDefaultDataSource();
-//        log.warning("ACTIVATOR: getting default source" + datasource.toString());
     }
 
     @Override
