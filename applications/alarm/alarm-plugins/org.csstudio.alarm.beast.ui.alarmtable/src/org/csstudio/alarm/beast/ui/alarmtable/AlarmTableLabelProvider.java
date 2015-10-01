@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Color;
 
 /** Provider of label/color/... for the alarm table.
  *  @author Kay Kasemir
- *  @author Boris Versic - Alarm Description formatting, coloring
+ *  @author Boris Versic - Alarm Description formatting, row coloring
  */
 public class AlarmTableLabelProvider extends CellLabelProvider
 {
@@ -30,6 +30,8 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     final private SeverityColorPairProvider color_pair_provider;
     final private SeverityIconProvider icon_provider;
     
+    /** Whether rows' background should be painted with the alarm's severity color */
+    final private boolean background_color_alarm_sensitive = Preferences.isBackgroundColorAlarmSensitive(); 
     /** Whether recovered (cleared) unacknowledged alarms should have their description drawn using reversed colors */
     final private boolean reverse_colors = Preferences.isColorsReversed(); 
     
@@ -121,36 +123,6 @@ public class AlarmTableLabelProvider extends CellLabelProvider
             final String annunciation = AnnunciationFormatter.format(alarm.getDescription(),
                     alarm.getSeverity().getDisplayName(), alarm.getValue(), true);
             cell.setText(annunciation);
-            
-            // If enabled, reverse the background/text colors (message only) for unacknowledged cleared alarms
-            // (and also use colors for the Description column)
-            if (!reverse_colors) break;
-            
-            final SeverityLevel severity = alarm.getSeverity();
-            if (!severity.isActive())
-            {
-                // if OK or acknowledged, use default colors
-                cell.setBackground(null);
-                cell.setForeground(null);
-                break;
-            }
-
-            final SeverityLevel current_severity = alarm.getCurrentSeverity();
-            final Color severity_color = color_provider.getColor(severity);
-            final Color color_pair = color_pair_provider == null ? null : color_pair_provider.getColor(severity);
-            
-            Color bg_color = null, fg_color = color_pair;
-            
-            if (current_severity != SeverityLevel.OK)
-            {
-            	bg_color = severity_color;
-            } else {
-            	bg_color = fg_color;
-            	fg_color = severity_color;
-            }
-
-            cell.setBackground(bg_color);
-    		cell.setForeground(fg_color);
             }
             
             break;
@@ -200,5 +172,36 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         default:
             break;
         }
+        
+        if (column == ColumnInfo.ICON) return;
+
+    	// If enabled, the background color will reflect the severity of the alarm (when in alarm state).
+    	// If reverse_colors is also enabled, the background/text colors for unacknowledged cleared alarms will be reversed.    	
+    	if (!background_color_alarm_sensitive) return;
+        
+        final SeverityLevel severity = alarm.getSeverity();
+        if (!severity.isActive())
+        {
+            // if OK or acknowledged, use default colors
+            cell.setBackground(null);
+            cell.setForeground(null);
+            return;
+        }
+
+        final SeverityLevel current_severity = alarm.getCurrentSeverity();
+        final Color severity_color = color_provider.getColor(severity);
+        final Color color_pair = color_pair_provider == null ? null : color_pair_provider.getColor(severity);
+        
+        Color bg_color = severity_color, fg_color = color_pair;
+        
+        if (reverse_colors && current_severity == SeverityLevel.OK)
+        {
+        	// the alarm is currently cleared (recovered), and color reversal is enabled
+        	bg_color = fg_color;
+        	fg_color = severity_color;
+        }
+        
+        cell.setBackground(bg_color);
+        cell.setForeground(fg_color);
     }
 }
