@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * plugin_preferences.ini.
  *
  * @author Kay Kasemir
+ * @author Boris Versic - settings for Background colors
  */
 @SuppressWarnings("nls")
 public class Preferences
@@ -37,7 +38,10 @@ public class Preferences
     /** Preference tag for blinking period */
     final public static String ALARM_TABLE_BLINK_PERIOD = "blinking_period"; //$NON-NLS-1$
 
-    /** Preference tag for reversing message color of cleared (unacknowledged) alarms */
+    /** Preference tag for painting row background with the alarm's severity color */
+    final public static String ALARM_TABLE_BACKGROUND_ALARM_SENSITIVE = "background_alarm_sensitive"; //$NON-NLS-1$
+
+    /** Preference tag for reversing message color of cleared (unacknowledged) alarms (if background colors are enabled) */
     final public static String ALARM_TABLE_REVERSE_COLORS = "reverse_colors_cleared"; //$NON-NLS-1$
 
     /** Preference tag for text colors of alarm message, per severity: Severity,R,G,B|... */
@@ -91,6 +95,13 @@ public class Preferences
     }
 
     /** @return use reverse colors for recovered unacknowledged alarms */
+    public static boolean isBackgroundColorAlarmSensitive()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(Activator.ID, ALARM_TABLE_BACKGROUND_ALARM_SENSITIVE, false, null);
+    }
+    
+    /** @return use reverse colors for recovered unacknowledged alarms (if background colors are enabled) */
     public static boolean isColorsReversed()
     {
         final IPreferencesService service = Platform.getPreferencesService();
