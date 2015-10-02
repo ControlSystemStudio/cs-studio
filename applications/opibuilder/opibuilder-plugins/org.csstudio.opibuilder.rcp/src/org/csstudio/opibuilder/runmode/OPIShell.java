@@ -58,6 +58,7 @@ public class OPIShell implements IOPIRuntime {
     // be an empty MacrosInput object.
     private final MacrosInput macrosInput;
     private final ActionRegistry actionRegistry;
+    private final GraphicalViewer viewer;
     private DisplayModel displayModel;
 
     // Private constructor means you can't open an OPIShell without adding
@@ -74,7 +75,7 @@ public class OPIShell implements IOPIRuntime {
         this.displayModel.setOpiRuntime(this);
         this.actionRegistry = new ActionRegistry();
 
-        final GraphicalViewer viewer = new GraphicalViewerImpl();
+        viewer = new GraphicalViewerImpl();
         viewer.createControl(shell);
         viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
         viewer.setRootEditPart(new ScalableFreeformRootEditPart() {
