@@ -194,12 +194,22 @@ public class OPIView extends ViewPart implements IOPIRuntime
         return bounds;
     }
 
+    /**
+     * Position the view according to location and size from
+     * the model.
+     *
+     * If the model location has negative values or is (0, 0),
+     * position within the parent window.
+     */
     public void positionFromModel() {
         Composite parent = getSite().getShell();
         final Rectangle bounds = getBounds();
+        // Resize to that of model from OPI
+        parent.getShell().setSize(bounds.width+45, bounds.height+65);
+        // If OPI model specifies a location, honour it.  Otherwise
+        // place within parent window.
         if (bounds.x >= 0 && bounds.y > 1) {
             parent.getShell().setLocation(bounds.x, bounds.y);
-            parent.getShell().setSize(bounds.width+45, bounds.height+65);
         } else {
             org.eclipse.swt.graphics.Rectangle winSize = getSite()
                     .getWorkbenchWindow().getShell().getBounds();
