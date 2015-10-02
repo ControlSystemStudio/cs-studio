@@ -74,6 +74,11 @@ import org.eclipse.ui.services.IServiceLocator;
  */
 public final class OPIShell implements IOPIRuntime {
 
+    // Estimates for the size of a window border, for how much
+    // bigger to make a shell than the size of its contents.
+    private static final int WINDOW_BORDER_X = 30;
+    private static final int WINDOW_BORDER_Y = 30;
+
     private static Logger log = OPIBuilderPlugin.getLogger();
     public static final String OPI_SHELLS_CHANGED_ID = "org.csstudio.opibuilder.opiShellsChanged";
     // Cache of open OPI shells in order of opening.
@@ -95,18 +100,17 @@ public final class OPIShell implements IOPIRuntime {
 
     // Private constructor means you can't open an OPIShell without adding
     // it to the cache.
-    private OPIShell(Display display, IPath path, MacrosInput macrosInput) {
-
-        this.icon = OPIBuilderPlugin
-                .imageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png")
-                .createImage(display);
+    private OPIShell(Display display, IPath path, MacrosInput macrosInput) throws Exception {
         this.path = path;
         this.macrosInput = macrosInput;
-        this.shell = new Shell(display);
-        this.shell.setImage(icon);
-        this.displayModel = new DisplayModel(path);
-        this.displayModel.setOpiRuntime(this);
-        this.actionRegistry = new ActionRegistry();
+        icon = OPIBuilderPlugin.imageDescriptorFromPlugin(OPIBuilderPlugin.PLUGIN_ID, "icons/OPIRunner.png")
+                .createImage(display);
+
+        shell = new Shell(display);
+        shell.setImage(icon);
+        displayModel = new DisplayModel(path);
+        displayModel.setOpiRuntime(this);
+        actionRegistry = new ActionRegistry();
 
         viewer = new GraphicalViewerImpl();
         viewer.createControl(shell);
@@ -130,57 +134,47 @@ public final class OPIShell implements IOPIRuntime {
         };
         editDomain.addViewer(viewer);
 
-        try {
-            displayModel = createDisplayModel();
-            setTitle();
+        displayModel = createDisplayModel();
+        setTitle();
 
-            shell.setLayout(new FillLayout());
-            shell.addShellListener(new ShellListener() {
-                private boolean firstRun = true;
-                public void shellIconified(ShellEvent e) {}
-                public void shellDeiconified(ShellEvent e) {}
-                public void shellDeactivated(ShellEvent e) {}
-                public void shellClosed(ShellEvent e) {
-                    // Remove this shell from the cache.
-                    openShells.remove(OPIShell.this);
-                    sendUpdateCommand();
-                }
-                public void shellActivated(ShellEvent e) {
-                    if (firstRun) {
-                        // Resize the shell after it's open, so we can take into account different window borders.
-                        // Do this only the first time it's activated.
-                        resizeToContents();
-                        shell.setFocus();
-                        firstRun = false;
-                    }
-                }
-            });
-            shell.addDisposeListener(new DisposeListener() {
-
-                @Override
-                public void widgetDisposed(DisposeEvent e) {
-                    if (!icon.isDisposed()) icon.dispose();
-                }
-            });
-            shell.pack();
-            if (!displayModel.getLocation().equals(DisplayModel.NULL_LOCATION)) {
-                shell.setLocation(displayModel.getLocation().getSWTPoint());
+        shell.setLayout(new FillLayout());
+        shell.addShellListener(new ShellListener() {
+            private boolean firstRun = true;
+            public void shellIconified(ShellEvent e) {}
+            public void shellDeiconified(ShellEvent e) {}
+            public void shellDeactivated(ShellEvent e) {}
+            public void shellClosed(ShellEvent e) {
+                // Remove this shell from the cache.
+                openShells.remove(OPIShell.this);
             }
-            /*
-             * Don't open the Shell here, as it causes SWT to think the window is on top when it really isn't.
-             * Wait until the window is open, then call shell.setFocus() in the activated listener.
-             *
-             * Make some attempt at sizing the shell, sometimes a shell is not given focus and the shellActivated
-             * listener callback doesn't resize the window. It's better to have something a little too large as the
-             * default. Related to Eclipse bug 96700.
-             */
-            int windowBorderX = 30;
-            int windowBorderY = 30;
-            shell.setSize(displayModel.getSize().width + windowBorderX, displayModel.getSize().height + windowBorderY);
-            shell.setVisible(true);
-        } catch (Exception e) {
-            log.log(Level.WARNING, "Failed to create new OPIShell.", e);
-        }
+            public void shellActivated(ShellEvent e) {
+                if (firstRun) {
+                    // Resize the shell after it's open, so we can take into account different window borders.
+                    // Do this only the first time it's activated.
+                    resizeToContents();
+                    shell.setFocus();
+                    firstRun = false;
+                }
+            }
+        });
+        shell.addDisposeListener(new DisposeListener() {
+
+            @Override
+            public void widgetDisposed(DisposeEvent e) {
+                if (!icon.isDisposed()) icon.dispose();
+            }
+        });
+        /*
+         * Don't open the Shell here, as it causes SWT to think the window is on top when it really isn't.
+         * Wait until the window is open, then call shell.setFocus() in the activated listener.
+         *
+         * Make some attempt at sizing the shell, sometimes a shell is not given focus and the shellActivated
+         * listener callback doesn't resize the window. It's better to have something a little too large as the
+         * default. Related to Eclipse bug 96700.
+         */
+        shell.setSize(displayModel.getSize().width + WINDOW_BORDER_X, displayModel.getSize().height + WINDOW_BORDER_Y);
+        shell.setVisible(true);
+
     }
 
     /**
@@ -268,22 +262,25 @@ public final class OPIShell implements IOPIRuntime {
         if (macrosInput == null) {
             macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), false);
         }
-        try {
-            boolean alreadyOpen = false;
-            for (OPIShell opiShell : openShells) {
-                if (opiShell.getPath().equals(path) && opiShell.getMacrosInput().equals(macrosInput)) {
-                    opiShell.raiseToTop();
-                    alreadyOpen = true;
-                    break;
-                }
+        boolean alreadyOpen = false;
+        for (OPIShell opiShell : openShells) {
+            if (opiShell.getPath().equals(path) && opiShell.getMacrosInput().equals(macrosInput)) {
+                opiShell.raiseToTop();
+                alreadyOpen = true;
             }
-            if (!alreadyOpen) {
-                OPIShell os = new OPIShell(Display.getCurrent(), path, macrosInput);
+        }
+        if (!alreadyOpen) {
+            OPIShell os = null;
+            try {
+                os = new OPIShell(Display.getCurrent(), path, macrosInput);
                 openShells.add(os);
                 sendUpdateCommand();
-            }
-        } catch (Exception e) {
-            log.log(Level.WARNING, "Failed to open OPI shell", e);
+            } catch (Exception e) {
+                if (os != null) {
+                    os.dispose();
+                }
+                log.log(Level.WARNING, "Failed to create new OPIShell.", e);
+           }
         }
 
     }
