@@ -81,15 +81,17 @@ public final class OPIShell implements IOPIRuntime {
     // The view against which the context menu is registered.
     private IViewPart view;
 
+    // Variables that do not change for any shell.
     private final Image icon;
     private final Shell shell;
-    private final IPath path;
-    // macrosInput should not be null.  If there are no macros it should
-    // be an empty MacrosInput object.
-    private final MacrosInput macrosInput;
     private final ActionRegistry actionRegistry;
     private final GraphicalViewer viewer;
+    // Variables that change if OPI input is changed.
     private DisplayModel displayModel;
+    private IPath path;
+    // macrosInput should not be null.  If there are no macros it should
+    // be an empty MacrosInput object.
+    private MacrosInput macrosInput;
 
     // Private constructor means you can't open an OPIShell without adding
     // it to the cache.
@@ -129,7 +131,7 @@ public final class OPIShell implements IOPIRuntime {
         editDomain.addViewer(viewer);
 
         try {
-            displayModel = createDisplayModel(path, macrosInput, viewer);
+            displayModel = createDisplayModel();
             setTitle();
 
             shell.setLayout(new FillLayout());
@@ -227,11 +229,10 @@ public final class OPIShell implements IOPIRuntime {
         dispose();
     }
 
-    private DisplayModel createDisplayModel(IPath path, MacrosInput macrosInput, GraphicalViewer viewer)
-            throws Exception {
+    private DisplayModel createDisplayModel() throws Exception {
         displayModel = new DisplayModel(path);
         XMLUtil.fillDisplayModelFromInputStream(ResourceUtil.pathToInputStream(path), displayModel);
-        if(macrosInput != null) {
+        if (macrosInput != null) {
             macrosInput = macrosInput.getCopy();
             macrosInput.getMacrosMap().putAll(displayModel.getMacrosInput().getMacrosMap());
             displayModel.setPropertyValue(AbstractContainerModel.PROP_MACROS, macrosInput);
@@ -406,18 +407,19 @@ public final class OPIShell implements IOPIRuntime {
         throw new NotImplementedException();
     }
 
+    /**
+     * Render a new OPI in the same shell.  The file path
+     * changes but the macros remain the same.  Is this correct?
+     */
     @Override
     public void setOPIInput(IEditorInput input) throws PartInitException {
         try {
-            IPath path = null;
             if (input instanceof IFileEditorInput) {
-                path = ((IFileEditorInput) input).getFile().getFullPath();
+                this.path = ((IFileEditorInput) input).getFile().getFullPath();
             } else if (input instanceof RunnerInput) {
-                path = ((RunnerInput) input).getPath();
+                this.path = ((RunnerInput) input).getPath();
             }
-            MacrosInput macrosInput = displayModel.getMacrosInput();
-            GraphicalViewer viewer = displayModel.getViewer();
-            displayModel = createDisplayModel(path, macrosInput, viewer);
+            displayModel = createDisplayModel();
             setTitle();
             resizeToContents();
         } catch (Exception e) {
