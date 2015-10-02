@@ -25,7 +25,7 @@ public class DiirtPreferencePage extends FieldEditorPreferencePage implements
     @Override
     public void init(IWorkbench workbench) {
         final IPreferenceStore store = new ScopedPreferenceStore(
-                InstanceScope.INSTANCE, org.csstudio.diirt.util.Activator.ID);
+                InstanceScope.INSTANCE, "org.csstudio.diirt.util.preferences");
         store.addPropertyChangeListener((PropertyChangeEvent event) -> {
             if (event.getProperty() == "diirt.home") {
                 setMessage("Restart is needed", ERROR);

@@ -10,5 +10,11 @@
             name="Diirt preferences">
       </page>
    </extension>
+   <extension
+         point="org.csstudio.utility.product.module">
+      <workbench
+            class="org.csstudio.diirt.util.preferences.DiirtStartup">
+      </workbench>
+   </extension>
 
 </plugin>
