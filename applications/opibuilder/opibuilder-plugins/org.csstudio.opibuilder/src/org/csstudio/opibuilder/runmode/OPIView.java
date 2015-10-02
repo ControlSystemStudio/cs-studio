@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
-import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -22,8 +21,6 @@ import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.e4.ui.model.application.ui.basic.MPart;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ControlAdapter;
-import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
@@ -81,9 +78,6 @@ public class OPIView extends ViewPart implements IOPIRuntime
 
     private IViewSite site;
     private IEditorInput input;
-
-    /** For views that should be detached, tracks if that has been done */
-    private boolean detached = false;
 
     private OPIRuntimeToolBarDelegate opiRuntimeToolBarDelegate;
 
@@ -188,45 +182,35 @@ public class OPIView extends ViewPart implements IOPIRuntime
         }
         opiRuntimeDelegate.createGUI(parent);
         createToolbarButtons();
-        parent.addControlListener(new ControlAdapter() {
-            @Override
-            public void controlResized(ControlEvent e) {
-                // Resize to size from OPI file if the view has been newly detached.
-                if(parent.getShell().getText().length() == 0) { //the only way to know it is detached.
-                    if(!detached) {
-                        detached = true;
-                        UIBundlingThread.getInstance().addRunnable(new Runnable() {
-                            @Override
-                            public void run() {
-                                final Rectangle bounds = getBounds();
-                                parent.getShell().setSize(bounds.width+45, bounds.height+65);
-                            }
-                        });
-                    }
-                } else {
-                    detached = false;
-                }
-            }
-        });
     }
 
     private Rectangle getBounds() {
         Rectangle bounds;
         if(opiRuntimeDelegate.getDisplayModel() != null) {
             bounds = opiRuntimeDelegate.getDisplayModel().getBounds();
-            System.out.println("The bounds are " + bounds);
         } else {
             bounds = new Rectangle(0, 0, 800, 600);
         }
         return bounds;
     }
 
+    /**
+     * Position the view according to location and size from
+     * the model.
+     *
+     * If the model location has negative values or is (0, 0),
+     * position within the parent window.
+     */
     public void positionFromModel() {
         Composite parent = getSite().getShell();
         final Rectangle bounds = getBounds();
-        if (bounds.x >= 0 && bounds.y > 1)
+        // Resize to that of model from OPI
+        parent.getShell().setSize(bounds.width+45, bounds.height+65);
+        // If OPI model specifies a location, honour it.  Otherwise
+        // place within parent window.
+        if (bounds.x >= 0 && bounds.y > 1) {
             parent.getShell().setLocation(bounds.x, bounds.y);
-        else {
+        } else {
             org.eclipse.swt.graphics.Rectangle winSize = getSite()
                     .getWorkbenchWindow().getShell().getBounds();
             parent.getShell().setLocation(
