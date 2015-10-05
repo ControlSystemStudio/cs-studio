@@ -18,7 +18,7 @@ import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.ByteMonitorFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.osgi.util.NLS;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /**
  * This class implements the widget edit part for the Byte Monitor widget.  This

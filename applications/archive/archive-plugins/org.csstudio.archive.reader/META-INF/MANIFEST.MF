@@ -6,8 +6,8 @@ Bundle-Version: 4.2.0.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.archive.vtype;bundle-version="1.0.0",
- org.epics.vtype,
- org.epics.util
+ org.diirt.vtype,
+ org.diirt.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.archive.reader

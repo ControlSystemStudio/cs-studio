@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListenerAdapter;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** {@link IPVListener} that extracts text from value.
  *

@@ -20,8 +20,8 @@ import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VType;
 
 /** A PV with alarm state
  *  @author Kay Kasemir

@@ -12,10 +12,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.csstudio.display.pvtable.model.PVTableModel;
-import org.epics.vtype.VDouble;
-import org.epics.vtype.VLong;
-import org.epics.vtype.VString;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VDouble;
+import org.diirt.vtype.VLong;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VType;
 
 /** Base for persisting PVTableModel to/from file
  *  @author Kay Kasemir

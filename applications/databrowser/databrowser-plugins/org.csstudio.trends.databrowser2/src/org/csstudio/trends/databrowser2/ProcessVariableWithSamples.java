@@ -11,7 +11,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Transfer object that can be used in object contributions
  *  and for drag-and-drop to interface the data browser to

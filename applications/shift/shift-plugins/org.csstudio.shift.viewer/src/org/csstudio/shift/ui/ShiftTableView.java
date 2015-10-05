@@ -38,8 +38,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
-import org.epics.util.time.TimeInterval;
-import org.epics.util.time.TimeParser;
+import org.diirt.util.time.TimeInterval;
+import org.diirt.util.time.TimeParser;
 
 /**
  * A view to search for shifts and then display them in a tabluar form

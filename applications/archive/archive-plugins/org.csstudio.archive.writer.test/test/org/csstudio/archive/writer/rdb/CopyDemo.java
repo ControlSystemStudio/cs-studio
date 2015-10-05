@@ -20,8 +20,8 @@ import org.csstudio.archive.reader.rdb.RDBArchiveReader;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.archive.writer.ArchiveWriter;
 import org.csstudio.archive.writer.WriteChannel;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VType;
 import org.junit.Test;
 
 /** JUnit-based demo of copying data

@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VType;
-import org.epics.util.array.ListNumber;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VType;
+import org.diirt.util.array.ListNumber;
 
 /** Formatter for {@link VType} values that uses strings for some numeric arrays
  *  @author Kay Kasemir

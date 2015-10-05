@@ -25,9 +25,9 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VType;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 
 /**
  * Base edit part controller for a Boolean Symbol Image widget based on

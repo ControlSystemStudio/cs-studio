@@ -9,9 +9,9 @@ package org.cstudio.archive.reader;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVString;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
-import org.epics.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
+import org.diirt.util.time.Timestamp;
 
 /** Value iterator that produces demo samples 1 ... 10
  *  @author Kay Kasemir

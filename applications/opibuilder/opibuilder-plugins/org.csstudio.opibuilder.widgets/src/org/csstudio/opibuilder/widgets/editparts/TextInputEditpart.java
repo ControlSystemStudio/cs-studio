@@ -37,11 +37,11 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.tools.SelectEditPartTracker;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Display;
-import org.epics.vtype.Array;
-import org.epics.vtype.Scalar;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VType;
+import org.diirt.vtype.Array;
+import org.diirt.vtype.Scalar;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VType;
 
 /**
  * The editpart for text input widget.)
@@ -54,7 +54,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
     private static final char SPACE = ' '; //$NON-NLS-1$
     private static DecimalFormat DECIMAL_FORMAT = new DecimalFormat();
     private IPVListener pvLoadLimitsListener;
-    private org.epics.vtype.Display meta = null;
+    private org.diirt.vtype.Display meta = null;
 
     private ITextInputEditPartDelegate delegate;
 
@@ -140,7 +140,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
                                 VType value = pv.getValue();
                                 if (value != null
                                         && VTypeHelper.getDisplayInfo(value)!=null) {
-                                    org.epics.vtype.Display new_meta =VTypeHelper.getDisplayInfo(value);
+                                    org.diirt.vtype.Display new_meta =VTypeHelper.getDisplayInfo(value);
                                     if (meta == null || !meta.equals(new_meta)) {
                                         meta = new_meta;
                                         model.setPropertyValue(

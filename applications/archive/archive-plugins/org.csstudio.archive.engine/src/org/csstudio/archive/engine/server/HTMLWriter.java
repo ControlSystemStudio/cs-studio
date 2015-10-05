@@ -12,7 +12,7 @@ import java.io.PrintWriter;
 import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Helper for creating uniform HTML pages for a servlet response.
  *  @author Kay Kasemir
