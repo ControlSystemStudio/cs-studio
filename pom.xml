@@ -16,7 +16,7 @@
 	<properties>
 		<tycho.version>0.22.0</tycho.version>
 		<manifest-location>META-INF</manifest-location>
-		<cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.1</cs-studio-central.url>
+		<cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.2</cs-studio-central.url>
 		<pvmanager.version>2.9.1-SNAPSHOT</pvmanager.version>
 		<epics.util.version>0.3.2</epics.util.version>
 		<epics.caj.version>1.1.14</epics.caj.version>
@@ -24,7 +24,7 @@
 		<graphene.version>0.8.0</graphene.version>
 		<pvdata.version>4.0.3</pvdata.version>
 		<pvaccess.version>4.0.4</pvaccess.version>
-		<csstudio.version>4.1.0-SNAPSHOT</csstudio.version>
+		<csstudio.version>4.2.0-SNAPSHOT</csstudio.version>
 		<eclipse.runtime.version>3.10.0-v20140318-2214</eclipse.runtime.version>
 		<maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 		<cs-studio.timestamp>${maven.build.timestamp}</cs-studio.timestamp>
