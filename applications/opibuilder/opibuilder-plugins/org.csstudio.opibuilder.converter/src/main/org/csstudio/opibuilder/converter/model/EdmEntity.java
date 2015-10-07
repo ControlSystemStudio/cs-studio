@@ -13,10 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
-
+import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 
 /**
  * Generic data container for Edm widget or group.
@@ -295,12 +293,13 @@ public class EdmEntity extends Object {
                 } else {
                     log.warning("Class not declared: " + wType);
                 }
-            }catch (Exception e) {
-                    if(e instanceof ClassNotFoundException){
-                        ConsoleService.getInstance().writeWarning(wType + " is not convertible.");
-                    }else
-                        ErrorHandlerUtil.handleError("Parse widget error.",
-                            e instanceof InvocationTargetException? e.getCause():e);
+            } catch (Exception e) {
+                if(e instanceof ClassNotFoundException){
+                    log.warning(wType + " is not convertible.");
+                } else {
+                    log.log(Level.WARNING, "Parse widget error. ",
+                            e instanceof InvocationTargetException ? e.getCause() : e);
+                }
             }
         }
         return w;

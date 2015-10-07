@@ -12,6 +12,7 @@ import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.LogbookClientManager;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.PropertyBuilder;
+import org.csstudio.logbook.ui.util.UpdateLogEntryBuilder;
 import org.csstudio.security.SecuritySupport;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -35,7 +36,7 @@ import org.eclipse.swt.widgets.Text;
 
 public class ReviewSignDialog extends Dialog {
 
-    private List<LogEntryBuilder> logs;
+    private List<UpdateLogEntryBuilder> logs;
 
     private ErrorBar errorBar;
     private Label lblUsername;
@@ -43,10 +44,10 @@ public class ReviewSignDialog extends Dialog {
     private Label lblPassword;
     private Text password;
 
-    private final Collection<LogEntryBuilder> data;
+    private final Collection<UpdateLogEntryBuilder> data;
 
     protected ReviewSignDialog(Shell parentShell,
-        Collection<LogEntryBuilder> data) {
+        Collection<UpdateLogEntryBuilder> data) {
     super(parentShell);
     setBlockOnOpen(false);
     setShellStyle(SWT.RESIZE | SWT.DIALOG_TRIM);
@@ -116,7 +117,8 @@ public class ReviewSignDialog extends Dialog {
                     + System.getProperty("line.separator"));
 
             final Collection<LogEntry> logEntires = new ArrayList<LogEntry>();
-            for (LogEntryBuilder logEntryBuilder : data) {
+            for (UpdateLogEntryBuilder updateLogEntryBuilder : data) {
+                LogEntryBuilder logEntryBuilder = updateLogEntryBuilder.getLogEntryBuilder();
                 logEntryBuilder.addProperty(SignOffProperty);
                 sb.append("logEntry: " + logEntryBuilder
                         + System.getProperty("line.separator"));

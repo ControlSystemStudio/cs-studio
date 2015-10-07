@@ -38,11 +38,9 @@ public class PVNameConversion {
         operators.add("=");
     }
 
-
     private PVNameConversion() {
         // No instantiation.
     }
-
 
     /**
      * If pvName is a LOC or CALC EDM PV, attempt to convert it to a syntax
@@ -121,9 +119,10 @@ public class PVNameConversion {
      */
     private static List<String> parseExpression(String expr) {
         // expression contained within {}
-        assert (StringUtils.startsWith(expr, "\\{") &&
-                StringUtils.endsWith(expr, "\\}")):
-                    "Failed to parse CALC expression";
+        if  (!(StringUtils.startsWith(expr, "\\{") &&
+                StringUtils.endsWith(expr, "\\}"))) {
+            throw new IllegalArgumentException("Failed to parse CALC expression");
+        }
         expr = expr.substring(2, expr.length() - 2);
         List<String> parts = splitString(expr, operators, true);
         // The = in EDM expressions is == in CSS ones
@@ -204,7 +203,7 @@ public class PVNameConversion {
             }
             sb.append(")");
             return sb.toString();
-        } catch (AssertionError e) {
+        } catch (IllegalArgumentException e) {
             log.info("Failed to parse CALC PV: " + e);
             return pvName;
         }

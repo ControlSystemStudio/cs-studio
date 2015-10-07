@@ -7,15 +7,17 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter;
 
-import junit.framework.TestCase;
+import java.io.File;
 
 import org.csstudio.opibuilder.converter.model.EdmException;
+import org.junit.Before;
+import org.junit.Test;
 /**
  * This is a convenience operation test that transforms the example files.
  * It does not perform any assertions so it will only fail if an exception is thrown
  * during conversion.
  */
-public class EdmConverterTest extends TestCase {
+public class EdmConverterTest {
 
     public static final String RESOURCES_LOCATION = "src/resources/";
     private static final String edl1 = RESOURCES_LOCATION + "ArcTest.edl";
@@ -25,7 +27,8 @@ public class EdmConverterTest extends TestCase {
 
     public static final String COLOR_LIST_FILE = RESOURCES_LOCATION + "colors.list";
 
-    private void setEnvironment() {
+    @Before
+    public void setEnvironment() {
         System.setProperty("edm2xml.colorsFile", COLOR_LIST_FILE);
         /**
          * Enable fail-fast mode for stricter tests.
@@ -34,31 +37,56 @@ public class EdmConverterTest extends TestCase {
         System.setProperty("edm2xml.robustParsing", "false");
     }
 
+    @Test
     public void testExampleEDL1() throws EdmException {
-        setEnvironment();
-
-        String[] args = {edl1};
-        EdmConverter.main(args);
+        try {
+            String[] args = {edl1};
+            EdmConverter.main(args);
+        } finally {
+            deleteFile(edlToOpi(edl1));
+        }
     }
 
+    @Test
     public void testExampleEDL2() throws EdmException {
-        setEnvironment();
-
-        String[] args = {edl2};
-        EdmConverter.main(args);
+        try {
+            String[] args = {edl2};
+            EdmConverter.main(args);
+        } finally {
+            deleteFile(edlToOpi(edl2));
+        }
     }
 
+    @Test
     public void testExampleEDL3() throws EdmException {
-        setEnvironment();
-
-        String[] args = {edl3};
-        EdmConverter.main(args);
+        try {
+            String[] args = {edl3};
+            EdmConverter.main(args);
+        } finally {
+            deleteFile(edlToOpi(edl3));
+        }
     }
 
+    @Test
     public void testExampleEDL4() throws EdmException {
-        setEnvironment();
-
-        String[] args = {edl4};
-        EdmConverter.main(args);
+        try {
+            String[] args = {edl4};
+            EdmConverter.main(args);
+        } finally {
+            deleteFile(edlToOpi(edl4));
+        }
     }
+
+    public static String edlToOpi(String filename) {
+        if (filename.endsWith("edl")) {
+            return filename.substring(0, filename.length() -3 ) + "opi";
+        } else {
+            throw new IllegalArgumentException(filename + " is not an edl file.");
+        }
+    }
+
+   public static void deleteFile(String filename) {
+       File f = new File(filename);
+       f.delete();
+   }
 }

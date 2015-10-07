@@ -7,14 +7,16 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
 import org.csstudio.opibuilder.converter.model.EdmException;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class OpiAttributeTest extends TestCase {
+public class OpiAttributeTest {
 
+    @Test
     public void testOpiAttribute() throws EdmException {
 
         // init document

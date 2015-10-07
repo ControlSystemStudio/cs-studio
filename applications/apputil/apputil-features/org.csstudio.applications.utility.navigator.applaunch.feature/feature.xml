@@ -9,10 +9,8 @@
    </description>
 
    <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
    </copyright>
-
-   <license url="http://www.example.com/license">
-   </license>
 
    <plugin
          id="org.csstudio.navigator.applaunch"

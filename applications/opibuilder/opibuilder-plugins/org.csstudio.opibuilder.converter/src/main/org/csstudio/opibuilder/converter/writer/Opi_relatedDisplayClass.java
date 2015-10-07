@@ -8,13 +8,13 @@
 package org.csstudio.opibuilder.converter.writer;
 
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.converter.model.EdmBoolean;
 import org.csstudio.opibuilder.converter.model.EdmString;
 import org.csstudio.opibuilder.converter.model.Edm_relatedDisplayClass;
-import org.csstudio.opibuilder.runmode.RunModeService.DisplayMode;
-import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.w3c.dom.Element;
 
 /**
@@ -27,6 +27,7 @@ public class Opi_relatedDisplayClass extends OpiWidget {
     private static final String typeId = "ActionButton";
     private static final String name = "EDM related display";
     private static final String version = "1.0";
+    private static Logger log = Logger.getLogger("org.csstudio.opibuilder.converter.writer.Opi_ByteClass");
 
     /**
      * Converts the Edm_activeRectangleClass to OPI Rectangle widget XML.
@@ -81,25 +82,26 @@ public class Opi_relatedDisplayClass extends OpiWidget {
                         if (rs.length == 2) {
                             try {
                                 Element m = widgetContext.getDocument().createElement(rs[0]);
+                                // EDM treats '' as an empty string.
+                                rs[1] = rs[1].equals("''") ? "" : rs[1];
                                 m.setTextContent(rs[1]);
                                 macrosNode.appendChild(m);
                             } catch (Exception e) {
-                                ErrorHandlerUtil.handleError("Parse Macros Error on: "+s +
+                                log.log(Level.WARNING, "Parse Macros Error on: "+s +
                                         "(Macro name cannot be number in BOY)", e);
                             }
                         }
                     }
                 }
             } catch (Exception e) {
-                ErrorHandlerUtil.handleError("Parse Macros Error", e);
+                log.log(Level.WARNING, "Parse Macros Error ", e);
             }
 
             // target
             Element modeElement = widgetContext.getDocument().createElement("mode");
             EdmBoolean closeDisplay = r.getCloseDisplay().getEdmAttributesMap().get("" + i);
-            modeElement.setTextContent(""
-                    + ((closeDisplay != null && closeDisplay.is()) ?
-                            DisplayMode.REPLACE.ordinal() : DisplayMode.NEW_SHELL.ordinal()));
+            // 0 is DisplayMode.REPLACE; 8 is DisplayMode.NEW_SHELL.
+            modeElement.setTextContent((closeDisplay != null && closeDisplay.is()) ?  "0" : "8");
 
             // description
             Element descElement = widgetContext.getDocument().createElement("description");

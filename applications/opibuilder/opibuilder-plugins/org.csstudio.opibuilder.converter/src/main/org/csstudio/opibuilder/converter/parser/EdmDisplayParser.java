@@ -461,8 +461,18 @@ public class EdmDisplayParser extends EdmParser{
             }
         }
 
-        if (edmData.toString().trim().length() > 0) {
-            log.warning("Remaining data not parsed: " + edmData);
+        // EDM also adds a version number.  If we have extra data other than the
+        // version number, log a warning.
+        String remainingEdmData = edmData.toString().trim();
+        if (remainingEdmData.length() > 0) {
+            String versionRegex = "\\d \\d \\d";
+            Pattern versionPattern = Pattern.compile(versionRegex);
+            Matcher versionMatcher = versionPattern.matcher(remainingEdmData);
+            if (!versionMatcher.matches()) {
+                log.warning("Remaining data not parsed: " + remainingEdmData);
+            } else {
+                log.fine("Parsed EDM version number: " + remainingEdmData);
+            }
         }
     }
 }

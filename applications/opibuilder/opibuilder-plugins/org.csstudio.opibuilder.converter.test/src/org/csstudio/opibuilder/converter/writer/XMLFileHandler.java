@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import java.io.File;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -14,8 +17,6 @@ import java.io.Writer;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
-import junit.framework.TestCase;
 
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmColor;
@@ -29,13 +30,7 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 /** This is a helper class to for XML related test case classes.
  */
-public class XMLFileHandler extends TestCase {
-
-    /**
-     *  A dummy method to prevent a warning that this TestCase has no tests.
-     */
-    public void testDummy() {
-    }
+public class XMLFileHandler {
 
     public static Document createDomDocument() throws EdmException {
         try {

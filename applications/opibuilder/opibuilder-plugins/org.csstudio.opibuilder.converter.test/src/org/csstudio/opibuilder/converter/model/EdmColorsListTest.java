@@ -7,12 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import static org.junit.Assert.assertEquals;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.parser.EdmColorsListParser;
+import org.junit.Test;
 
-import junit.framework.TestCase;
-
-public class EdmColorsListTest extends TestCase {
+public class EdmColorsListTest {
 
     private EdmAttribute initStaticAttribute() {
 
@@ -23,6 +24,7 @@ public class EdmColorsListTest extends TestCase {
         return a;
     }
 
+    @Test
     public void testEdmColorsList() throws EdmException {
 
         String colorsFile = EdmConverterTest.RESOURCES_LOCATION + "colors_example.list";

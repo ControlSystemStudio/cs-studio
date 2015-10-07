@@ -76,7 +76,9 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 
         IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 
-        if(!OPIBuilderPlugin.isRAP()){ //$NON-NLS-1$
+        // Only show 'full screen' and 'compact mode' options for OPIView,
+        // not for OPIShell.
+        if (!OPIBuilderPlugin.isRAP() && opiRuntime instanceof OPIView) {
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
                 WorkbenchWindowService.getInstance().getFullScreenAction(activeWindow));
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT,

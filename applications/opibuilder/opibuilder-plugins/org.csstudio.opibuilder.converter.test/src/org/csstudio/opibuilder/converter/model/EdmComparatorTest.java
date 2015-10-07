@@ -7,9 +7,12 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-public class EdmComparator extends TestCase {
+import org.junit.Test;
+
+public class EdmComparatorTest {
 
     public static void isColorEqual(EdmColor c1, EdmColor c2) throws EdmException {
 
@@ -34,12 +37,13 @@ public class EdmComparator extends TestCase {
             assertEquals(ctrlFont.getName(), testFont.getName());
             assertEquals(ctrlFont.isBold(), testFont.isBold());
             assertEquals(ctrlFont.isItalic(), testFont.isItalic());
-            assertEquals(ctrlFont.getSize(), testFont.getSize());
+            assertEquals(ctrlFont.getSize(), testFont.getSize(), 0.01);
         } catch (EdmException e) {
             fail("Invalid control font format.");
         }
     }
 
+    @Test
     public void testIsColorEqual() throws EdmException {
         EdmAttribute a = new EdmAttribute("\"blinking purple\"");
         a.appendValue("49344 0 49344");
@@ -49,6 +53,7 @@ public class EdmComparator extends TestCase {
         isColorEqual(c, c);
     }
 
+    @Test
     public void testIsFontEqual() throws EdmException {
         String fontString = "helvetica-bold-r-14.0";
         EdmAttribute a = new EdmAttribute(fontString);

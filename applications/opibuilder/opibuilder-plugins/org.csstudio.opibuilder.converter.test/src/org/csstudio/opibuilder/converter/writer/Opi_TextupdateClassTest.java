@@ -7,19 +7,22 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.model.Edm_TextupdateClass;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
+public class Opi_TextupdateClassTest {
 
-public class Opi_TextupdateClassTest extends TestCase {
-
+    @Test
     public void testOpi_TextupdateClass() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
@@ -46,8 +49,8 @@ public class Opi_TextupdateClassTest extends TestCase {
         XMLFileHandler.isElementEqual("EDM Text Update", "name", e);
         XMLFileHandler.isElementEqual("490", "x", e);
         XMLFileHandler.isElementEqual("400", "y", e);
-        XMLFileHandler.isElementEqual("110", "width", e);
-        XMLFileHandler.isElementEqual("20", "height", e);
+        XMLFileHandler.isElementEqual("111", "width", e);
+        XMLFileHandler.isElementEqual("21", "height", e);
 
         XMLFileHandler.isElementEqual("$(S)_LLRF:ResCtrl$(N):ResErr_Avg", "pv_name", e);
 

@@ -7,18 +7,18 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import junit.framework.TestCase;
-
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmException;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class OpiColorTest extends TestCase {
+public class OpiColorTest {
 
     //<color red="255" green="255" blue="255" />
 
+    @Test
     public void testRgbOpiColor() throws EdmException {
 
         // init document
@@ -35,6 +35,7 @@ public class OpiColorTest extends TestCase {
         XMLFileHandler.isColorElementEqual("", 255, 2, 1, 0, 0, 0, "color", parent);
     }
 
+    @Test
     public void testDefinitionOpiColor() throws EdmException {
 
         // init document

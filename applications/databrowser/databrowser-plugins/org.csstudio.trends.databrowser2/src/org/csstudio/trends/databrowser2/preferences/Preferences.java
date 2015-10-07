@@ -64,7 +64,8 @@ public class Preferences
             RAP_HIDE_PROPERTIES_VIEW = "rap.hide_properties_view",
             SECURE_DATA_BROWSER = "secure_data_browser",
             AUTOMATIC_HISTORY_REFRESH = "automatic_history_refresh",
-            SCROLL_STEP = "scroll_step";
+            SCROLL_STEP = "scroll_step",
+            USE_TRACE_NAMES = "use_trace_names";
 
     public static boolean isAutomaticHistoryRefresh()
     {
@@ -325,5 +326,13 @@ public class Preferences
         if (prefs == null)
             return false;
         return prefs.getBoolean(Activator.PLUGIN_ID, SECURE_DATA_BROWSER, false, null);
+    }
+
+    public static boolean useTraceNames()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null) // Allow some JUnit tests without prefs
+            return Boolean.TRUE;
+        return prefs.getBoolean(Activator.PLUGIN_ID, USE_TRACE_NAMES, Boolean.TRUE, null);
     }
 }
