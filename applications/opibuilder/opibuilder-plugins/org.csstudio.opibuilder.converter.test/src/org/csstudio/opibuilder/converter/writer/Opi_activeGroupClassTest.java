@@ -7,21 +7,24 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
 import org.csstudio.opibuilder.converter.model.Edm_activeGroupClass;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
-
-public class Opi_activeGroupClassTest extends TestCase {
+public class Opi_activeGroupClassTest {
 
     private static final int groupAttributesCount = 4;
 
+    @Test
     public void testOpi_activeGroupClass() throws EdmException {
 
         // Prepare DOM model.
@@ -56,8 +59,8 @@ public class Opi_activeGroupClassTest extends TestCase {
         assertEquals("1.0", subElement0.getAttribute("version"));
         XMLFileHandler.isElementEqual("8", "x", subElement0);
         XMLFileHandler.isElementEqual("120", "y", subElement0);
-        XMLFileHandler.isElementEqual("52", "width", subElement0);
-        XMLFileHandler.isElementEqual("11", "height", subElement0);
+        XMLFileHandler.isElementEqual("53", "width", subElement0);
+        XMLFileHandler.isElementEqual("12", "height", subElement0);
 
         assertEquals(groupAttributesCount + 2, subElement0.getChildNodes().getLength());
         {
@@ -134,7 +137,7 @@ public class Opi_activeGroupClassTest extends TestCase {
                     XMLFileHandler.isElementEqual("true", "auto_size", subElement0110);
                     XMLFileHandler.isElementEqual("0", "border_style", subElement0110);
                     XMLFileHandler.isElementEqual("false", "transparency", subElement0110);
-}
+                }
 
                 Element subElement012 = (Element)subElement01.getChildNodes().item(groupAttributesCount + 2);
                 assertEquals("org.csstudio.opibuilder.widgets.groupingContainer", subElement012.getAttribute("typeId"));
@@ -162,7 +165,7 @@ public class Opi_activeGroupClassTest extends TestCase {
                     XMLFileHandler.isElementEqual("true", "auto_size", subElement0120);
                     XMLFileHandler.isElementEqual("0", "border_style", subElement0120);
                     XMLFileHandler.isElementEqual("false", "transparency", subElement0120);
-}
+                }
             }
         }
     }

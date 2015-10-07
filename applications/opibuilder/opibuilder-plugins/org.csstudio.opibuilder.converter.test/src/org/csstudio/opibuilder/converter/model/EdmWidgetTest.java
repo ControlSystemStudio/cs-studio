@@ -7,10 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-public class EdmWidgetTest extends TestCase {
+import org.junit.Test;
 
+public class EdmWidgetTest {
+
+    @Test
     public void testEdmWidget() throws EdmException {
 
         EdmEntity e = new EdmEntity("test");

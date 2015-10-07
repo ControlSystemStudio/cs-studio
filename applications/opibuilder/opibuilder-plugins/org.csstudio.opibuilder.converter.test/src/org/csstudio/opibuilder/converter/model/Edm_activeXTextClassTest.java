@@ -7,12 +7,16 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class Edm_activeXTextClassTest {
 
-public class Edm_activeXTextClassTest extends TestCase {
-
+    @Test
     public void testEdm_activeXTextClass() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
@@ -41,12 +45,12 @@ public class Edm_activeXTextClassTest extends TestCase {
         assertEquals(13, t.getH());
         assertTrue(t.getAttribute("h") instanceof EdmInt);
 
-        EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
         assertTrue(t.getAttribute("font") instanceof EdmFont);
 
-        EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
         assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
         assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
         assertEquals("At low", t.getValue().get());
@@ -63,9 +67,9 @@ public class Edm_activeXTextClassTest extends TestCase {
 
         assertEquals("$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR", t.getVisPv());
         assertTrue(t.getAttribute("visPv") instanceof EdmString);
-        assertEquals(-1.1, t.getVisMin());
+        assertEquals(-1.1, t.getVisMin(), 0.01);
         assertTrue(t.getAttribute("visMin") instanceof EdmDouble);
-        assertEquals(10.78, t.getVisMax());
+        assertEquals(10.78, t.getVisMax(), 0.01);
         assertTrue(t.getAttribute("visMax") instanceof EdmDouble);
         assertTrue(t.isVisInvert());
         assertTrue(t.getAttribute("visInvert") instanceof EdmBoolean);
@@ -89,12 +93,12 @@ public class Edm_activeXTextClassTest extends TestCase {
         assertEquals(13, t.getH());
         assertTrue(t.getAttribute("h") instanceof EdmInt);
 
-        EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+        EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
         assertTrue(t.getAttribute("font") instanceof EdmFont);
 
-        EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
         assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+        EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
         assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
 
         assertEquals("Hello\rMulti-line\rWorld", t.getValue().get());

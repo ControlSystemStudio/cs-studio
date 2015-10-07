@@ -10,4 +10,73 @@
   <artifactId>org.csstudio.opibuilder.converter</artifactId>
   <version>1.0.2-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
+  <profiles>
+    <!-- run maven with -Dbuild.converter.jar to build the standalone jar file. -->
+    <profile>
+      <id>build-converter-jar</id>
+      <activation>
+        <property>
+          <name>build.converter.jar</name>
+        </property>
+      </activation>
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-dependency-plugin</artifactId>
+          <version>2.10</version>
+          <executions>
+            <execution>
+              <id>copy</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>copy</goal>
+              </goals>
+              <configuration>
+                <artifactItems>
+                  <artifactItem>
+                    <groupId>commons-lang</groupId>
+                    <artifactId>commons-lang</artifactId>
+                    <version>2.6</version>
+                    <type>jar</type>
+                    <overWrite>false</overWrite>
+                    <outputDirectory>${project.build.directory}</outputDirectory>
+                  </artifactItem>
+                </artifactItems>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>ant-magic</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>run</goal>
+              </goals>
+              <configuration>
+                <tasks>
+                  <ant antfile="build.xml" target="all"/>
+                </tasks>
+              </configuration>
+            </execution>
+          </executions>
+          <dependencies>
+            <!-- This dependency is need to allow Ant to to see javac -->
+            <!-- http://stackoverflow.com/questions/2022622/java-home-gets-mangled-by-maven/31969775#31969775 -->
+            <dependency>
+              <groupId>com.sun</groupId>
+              <artifactId>tools</artifactId>
+              <version>1.5.0</version>
+              <scope>system</scope>
+              <systemPath>${java.home}/../lib/tools.jar</systemPath>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </build>
+    </profile>
+  </profiles>
 </project>

@@ -31,6 +31,8 @@ import org.diirt.util.array.ArrayDouble;
 import org.diirt.util.array.ListDouble;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.widgets.Control;

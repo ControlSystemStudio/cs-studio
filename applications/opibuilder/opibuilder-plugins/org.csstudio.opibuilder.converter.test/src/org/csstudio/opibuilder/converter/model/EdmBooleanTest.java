@@ -7,10 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class EdmBooleanTest extends TestCase {
+import org.junit.Test;
 
+public class EdmBooleanTest {
+
+    @Test
     public void testEdmBoolean() throws EdmException {
         EdmAttribute a = new EdmAttribute();
         EdmBoolean b = new EdmBoolean(a, false);
@@ -24,6 +27,7 @@ public class EdmBooleanTest extends TestCase {
         assertEquals(true, b.isInitialized());
     }
 
+    @Test
     public void testWrongInput() throws EdmException {
         EdmAttribute a = new EdmAttribute("aSDF");
 

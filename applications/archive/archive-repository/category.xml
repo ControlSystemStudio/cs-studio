@@ -3,6 +3,9 @@
    <feature id="org.csstudio.archive.reader.appliance.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.archive.reader.channelarchiver.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <feature id="org.csstudio.archive.reader.ea4.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
