@@ -180,9 +180,9 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     	if (!background_color_alarm_sensitive) return;
         
         final SeverityLevel severity = alarm.getSeverity();
-        if (!severity.isActive())
+        if (severity == SeverityLevel.OK)
         {
-            // if OK or acknowledged, use default colors
+            // if OK, use default colors
             cell.setBackground(null);
             cell.setForeground(null);
             return;
@@ -197,7 +197,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         if (reverse_colors && current_severity == SeverityLevel.OK)
         {
         	// the alarm is currently cleared (recovered), and color reversal is enabled
-        	bg_color = fg_color;
+        	bg_color = color_pair;
         	fg_color = severity_color;
         }
         
