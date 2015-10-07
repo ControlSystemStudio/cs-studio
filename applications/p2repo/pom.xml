@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>applications</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>applications-p2repo</artifactId>
   <packaging>pom</packaging>
