@@ -16,7 +16,6 @@ import org.csstudio.swt.rtplot.AxisRange;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.internal.util.TimeScreenTransform;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -50,17 +49,22 @@ public class TimeAxis extends AxisPart<Instant>
 
     /** {@inheritDoc} */
     @Override
-    public final int getDesiredPixelSize(final Rectangle region, final GC gc, final Font label_font, final Font scale_font)
+    public final int getDesiredPixelSize(final Rectangle region, final GC gc)
     {
         Activator.getLogger().log(Level.FINE, "TimeAxis({0}) layout for {1}", new Object[] { getName(),  region });
 
-        gc.setFont(label_font);
-        final int label_size = gc.getFontMetrics().getHeight();
-        gc.setFont(scale_font);
+        final int label_size;
+        if (isAxisNameVisible() && !getName().isEmpty()) {
+            gc.setFont(getLabelFont());
+            label_size = gc.getFontMetrics().getHeight();
+        } else {
+            label_size = 0;
+        }
+        gc.setFont(getScaleFont());
         final int scale_size = gc.getFontMetrics().getHeight();
         // Need room for ticks, two tick labels, and axis label
         // Plus a few pixels space at the bottom.
-        return TICK_LENGTH + 2*scale_size + (getName().isEmpty() ? 0 : label_size);
+        return TICK_LENGTH + 2*scale_size + label_size;
     }
 
     /** {@inheritDoc} */
@@ -100,8 +104,7 @@ public class TimeAxis extends AxisPart<Instant>
 
     /** {@inheritDoc} */
     @Override
-    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font,
-                      final Rectangle plot_bounds)
+    public void paint(final GC gc, final SWTMediaPool media, final Rectangle plot_bounds)
     {
         if (! isVisible())
             return;
@@ -113,7 +116,7 @@ public class TimeAxis extends AxisPart<Instant>
         final int old_width = gc.getLineWidth();
         final Color old_fg = gc.getForeground();
         gc.setForeground(media.get(getColor()));
-        gc.setFont(scale_font);
+        gc.setFont(getScaleFont());
 
         // Simple line for the axis
         gc.drawLine(region.x, region.y, region.x + region.width-1, region.y);
@@ -142,9 +145,9 @@ public class TimeAxis extends AxisPart<Instant>
             // Grid line
             if (show_grid)
             {
-//                gc.setLineStyle(SWT.LINE_DOT);
+                //gc.setLineStyle(SWT.LINE_DOT);
                 gc.drawLine(x, plot_bounds.y, x, region.y-1);
-//                gc.setLineStyle(SWT.LINE_SOLID);
+                //gc.setLineStyle(SWT.LINE_SOLID);
             }
 
             // Tick Label
@@ -163,9 +166,9 @@ public class TimeAxis extends AxisPart<Instant>
             gc.drawLine(minor_x, region.y, minor_x, region.y + MINOR_TICK_LENGTH);
         }
 
-        if (! getName().isEmpty())
+        if (! getName().isEmpty() && isAxisNameVisible())
         {   // Label: centered at bottom of region
-            gc.setFont(label_font);
+            gc.setFont(getLabelFont());
             final Point label_size = gc.textExtent(getName());
             gc.drawString(getName(),
                     region.x + (region.width - label_size.x)/2,
