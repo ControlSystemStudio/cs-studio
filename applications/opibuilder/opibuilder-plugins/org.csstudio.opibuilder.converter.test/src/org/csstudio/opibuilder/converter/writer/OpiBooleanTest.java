@@ -7,16 +7,19 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmBoolean;
 import org.csstudio.opibuilder.converter.model.EdmException;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class OpiBooleanTest extends TestCase {
+public class OpiBooleanTest {
 
+    @Test
     public void testOpiBoolean() throws EdmException {
 
         // init document

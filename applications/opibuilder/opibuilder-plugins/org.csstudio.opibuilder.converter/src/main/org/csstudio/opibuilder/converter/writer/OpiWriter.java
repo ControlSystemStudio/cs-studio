@@ -14,17 +14,17 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import java.util.logging.Logger;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmEntity;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
-import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.w3c.dom.Document;
 
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
@@ -121,7 +121,7 @@ public class OpiWriter {
             } catch (ClassNotFoundException exception) {
                 log.warning("Class not declared: " + opiClassName);
             } catch (Exception exception) {
-                ErrorHandlerUtil.handleError("Error in converting " + e, exception);
+                log.log(Level.WARNING, "Error in converting " + e, exception);
             }
         }
     }

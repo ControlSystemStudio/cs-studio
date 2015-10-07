@@ -7,12 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class Edm_activeRectangleClassTest {
 
-public class Edm_activeRectangleClassTest extends TestCase {
-
+    @Test
     public void testEdm_activeRectangleClass() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
@@ -42,9 +45,9 @@ public class Edm_activeRectangleClassTest extends TestCase {
         assertEquals(42, r.getH());
         assertTrue(r.getAttribute("h") instanceof EdmInt);
 
-        EdmComparator.isColorEqual(r.getLineColor(), new EdmColor(7));
+        EdmComparatorTest.isColorEqual(r.getLineColor(), new EdmColor(7));
         assertTrue(r.getAttribute("lineColor") instanceof EdmColor);
-        EdmComparator.isColorEqual(r.getFillColor(), new EdmColor(0));
+        EdmComparatorTest.isColorEqual(r.getFillColor(), new EdmColor(0));
         assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
         assertEquals(2, r.getLineWidth());
@@ -57,9 +60,9 @@ public class Edm_activeRectangleClassTest extends TestCase {
 
         assertEquals("$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR", r.getVisPv());
         assertTrue(r.getAttribute("visPv") instanceof EdmString);
-        assertEquals(-1.1, r.getVisMin());
+        assertEquals(-1.1, r.getVisMin(), 0.01);
         assertTrue(r.getAttribute("visMin") instanceof EdmDouble);
-        assertEquals(10.78, r.getVisMax());
+        assertEquals(10.78, r.getVisMax(), 0.01);
         assertTrue(r.getAttribute("visMax") instanceof EdmDouble);
         assertTrue(r.isVisInvert());
         assertTrue(r.getAttribute("visInvert") instanceof EdmBoolean);

@@ -7,15 +7,19 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-public class EdmDoubleTest extends TestCase {
+import org.junit.Test;
 
+public class EdmDoubleTest {
+
+    @Test
     public void testEdmDouble() throws EdmException {
 
         // required
         EdmDouble d1 = new EdmDouble(new EdmAttribute("13.14"), true);
-        assertEquals(13.14, d1.get());
+        assertEquals(13.14, d1.get(), 0.001);
         assertEquals(true, d1.isRequired());
         assertEquals(true, d1.isInitialized());
 
@@ -31,7 +35,7 @@ public class EdmDoubleTest extends TestCase {
 
         // optional
         EdmDouble d3 = new EdmDouble(new EdmAttribute("13.15"), false);
-        assertEquals(13.15, d3.get());
+        assertEquals(13.15, d3.get(), 0.001);
         assertEquals(false, d3.isRequired());
         assertEquals(true, d3.isInitialized());
 
@@ -42,6 +46,7 @@ public class EdmDoubleTest extends TestCase {
         assertEquals(false, d4.isInitialized());
     }
 
+    @Test
     public void testWrongInput() throws EdmException {
         EdmAttribute a = new EdmAttribute("abc");
 
@@ -54,6 +59,7 @@ public class EdmDoubleTest extends TestCase {
         assertFalse(a.isInitialized());
     }
 
+    @Test
     public void testWrongInput2() throws EdmException {
         EdmAttribute a = new EdmAttribute("abc");
 

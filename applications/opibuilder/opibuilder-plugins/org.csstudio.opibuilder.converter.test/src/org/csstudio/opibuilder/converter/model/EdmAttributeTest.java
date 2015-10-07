@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class EdmAttributeTest extends TestCase {
+import org.junit.Test;
+
+public class EdmAttributeTest {
 
     private EdmAttribute testAttribute;
     private static final String testVal = "TEST";
@@ -24,6 +26,7 @@ public class EdmAttributeTest extends TestCase {
         testAttribute = new EdmAttribute(testVal);
     }
 
+    @Test
     public void testAppendValue() {
 
         testAttribute = new EdmAttribute();
@@ -37,6 +40,7 @@ public class EdmAttributeTest extends TestCase {
                 testAttribute.getValue(testAttribute.getValueCount() - 1 ));
     }
 
+    @Test
     public void testAppendAndSetMoreValues() {
 
         setupAttribute();
@@ -62,6 +66,7 @@ public class EdmAttributeTest extends TestCase {
 
     }
 
+    @Test
     public void testToStringMethod() {
         setupAttribute();
 
@@ -74,6 +79,7 @@ public class EdmAttributeTest extends TestCase {
         assertEquals(concatenatedString, testAttribute.toString());
     }
 
+    @Test
     public void testCopyConstructor() {
 
         setupAttribute();

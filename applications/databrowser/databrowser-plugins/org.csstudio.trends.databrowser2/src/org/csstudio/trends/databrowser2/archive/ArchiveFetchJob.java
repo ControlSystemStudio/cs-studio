@@ -43,7 +43,7 @@ public class ArchiveFetchJob extends Job
 {
     /** Poll period in millisecs */
     private static final int POLL_PERIOD_MS = 1000;
-    
+
     /** throw an exception if an exception occur during fetching data from response */
     protected Boolean failedThrowExceptionGetData = true;
 
@@ -123,7 +123,7 @@ public class ArchiveFetchJob extends Job
                     final ArchiveReader the_reader;
                     synchronized (this)
                     {
-                		the_reader = reader = ArchiveRepository.getInstance().getArchiveReader(url);
+                        the_reader = reader = ArchiveRepository.getInstance().getArchiveReader(url);
                     }
                     final ValueIterator value_iter;
                     if (item.getRequestType() == RequestType.RAW)

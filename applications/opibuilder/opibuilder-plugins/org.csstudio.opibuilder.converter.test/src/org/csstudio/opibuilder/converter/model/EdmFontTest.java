@@ -7,10 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class EdmFontTest extends TestCase {
+import org.junit.Test;
 
+public class EdmFontTest {
+
+    @Test
     public void testEdmFont() throws EdmException {
         EdmAttribute a = new EdmAttribute("helvetica-bold-r-14.0");
 
@@ -18,12 +21,13 @@ public class EdmFontTest extends TestCase {
         assertEquals("helvetica", f.getName());
         assertEquals(true, f.isBold());
         assertEquals(false, f.isItalic());
-        assertEquals(14.0, f.getSize());
+        assertEquals(14.0, f.getSize(), 0.01);
 
         assertEquals(true, f.isRequired());
         assertEquals(true, f.isInitialized());
     }
 
+    @Test
     public void testWrongFormat() throws EdmException {
         EdmAttribute a = new EdmAttribute("helveticabold-r-14.0");
 
@@ -37,6 +41,7 @@ public class EdmFontTest extends TestCase {
         assertEquals(false, a.isInitialized());
     }
 
+    @Test
     public void testWrongData() throws EdmException {
         EdmAttribute a = new EdmAttribute("helvetica-boldd-r-14.0");
 
@@ -50,6 +55,7 @@ public class EdmFontTest extends TestCase {
         assertEquals(false, a.isInitialized());
     }
 
+    @Test
     public void testOptionality() throws EdmException {
         EdmFont f = new EdmFont(new EdmAttribute("helvetica-bold-r-14.0"), false);
         assertEquals(false, f.isRequired());

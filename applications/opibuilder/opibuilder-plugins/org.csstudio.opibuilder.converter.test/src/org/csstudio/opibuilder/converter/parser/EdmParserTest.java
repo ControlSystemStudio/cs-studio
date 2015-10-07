@@ -7,12 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.parser;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.csstudio.opibuilder.converter.model.EdmException;
+import org.junit.Test;
 
-public class EdmParserTest extends TestCase {
+public class EdmParserTest {
 
+    @Test
     public void testFileDoesNotExist() {
         String fileName = "test.edl";
 
@@ -24,8 +27,7 @@ public class EdmParserTest extends TestCase {
             assertTrue(e instanceof EdmException);
             EdmException edmException = (EdmException)e;
             assertEquals(edmException.getType(), EdmException.FILE_NOT_FOUND);
-            assertEquals("FILE_NOT_FOUND exception: File " + fileName + " does not exist.",
-                    edmException.getMessage());
+            assertTrue(edmException.getMessage().contains(fileName));
         }
     }
 }

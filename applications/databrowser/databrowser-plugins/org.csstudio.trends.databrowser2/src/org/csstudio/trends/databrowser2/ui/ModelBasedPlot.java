@@ -258,6 +258,8 @@ public class ModelBasedPlot
         axis.useAxisName(config.isUsingAxisName());
         axis.useTraceNames(config.isUsingTraceNames());
         axis.setColor(config.getColor());
+        axis.setLabelFont(config.getLabelFont());
+        axis.setScaleFont(config.getScaleFont());
         axis.setLogarithmic(config.isLogScale());
         axis.setGridVisible(config.isGridVisible());
         axis.setAutoscale(config.isAutoScale());

@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.opiwidget;
 
+import java.io.InputStream;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,9 +23,13 @@ import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
+import org.csstudio.trends.databrowser2.model.Model;
 import org.csstudio.trends.databrowser2.model.TimeHelper;
+import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.ModelBasedPlot;
+import org.csstudio.utility.singlesource.SingleSourcePlugin;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.widgets.Control;
@@ -130,8 +135,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
     protected IFigure doCreateFigure()
     {
         final DataBrowserWidgedModel model = getWidgetModel();
-        gui = new DataBrowserWidgetFigure(this, model.isToolbarVisible(), model.isLegendVisible(),
-                model.getSelectionValuePv(), model.isShowValueLabels());
+        gui = new DataBrowserWidgetFigure(this, model.getSelectionValuePv(), model.isShowValueLabels());
         return gui;
     }
 
@@ -139,20 +143,6 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
     @Override
     protected void registerPropertyChangeHandlers()
     {
-        // Tool bar
-        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_TOOLBAR,
-            (final Object oldValue, final Object newValue, final IFigure figure) ->
-            {
-                getWidgetFigure().setToolbarVisible((Boolean) newValue);
-                return false;
-            });
-        // Legend
-        setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_LEGEND,
-                (final Object oldValue, final Object newValue, final IFigure figure) ->
-            {
-                getWidgetFigure().setLegendVisible((Boolean) newValue);
-                return false;
-            });
         // Show hover value labels
         setPropertyChangeHandler(DataBrowserWidgedModel.PROP_SHOW_VALUE_LABELS,
             (Object oldValue, Object newValue, IFigure figure) ->
@@ -160,6 +150,7 @@ public class DataBrowserWidgedEditPart extends AbstractWidgetEditPart
                 getWidgetFigure().setShowValueLabels((boolean) newValue);
                 return false;
             });
+
 }
 
     /** {@inheritDoc}} */

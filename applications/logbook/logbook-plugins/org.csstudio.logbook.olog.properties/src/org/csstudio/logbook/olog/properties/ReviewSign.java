@@ -3,7 +3,9 @@ package org.csstudio.logbook.olog.properties;
 import java.util.Arrays;
 import java.util.List;
 
+import org.csstudio.logbook.LogEntry;
 import org.csstudio.logbook.LogEntryBuilder;
+import org.csstudio.logbook.ui.util.UpdateLogEntryBuilder;
 import org.csstudio.ui.util.AdapterUtil;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -28,8 +30,9 @@ public class ReviewSign extends AbstractHandler {
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException {
     ISelection selection = HandlerUtil.getActiveMenuSelection(event);
-    final List<LogEntryBuilder> data = Arrays.asList(AdapterUtil.convert(
-        selection, LogEntryBuilder.class));
+    final List<LogEntry> logEntries = Arrays.asList(AdapterUtil.convert(selection, LogEntry.class));
+    final List<UpdateLogEntryBuilder> data = Arrays.asList(AdapterUtil.convert(
+        selection, UpdateLogEntryBuilder.class));
     if (data == null || data.isEmpty()) {
         ErrorDialog.openError(HandlerUtil.getActiveWorkbenchWindow(event)
             .getShell(), "Error",

@@ -14,5 +14,6 @@
     <module>org.csstudio.archive.reader.pbraw.feature</module>
     <module>org.csstudio.archive.reader.rdb.feature</module>
     <module>org.csstudio.archive.tools.feature</module>
+    <module>org.csstudio.archive.reader.channelarchiver.feature</module>
   </modules>
 </project>

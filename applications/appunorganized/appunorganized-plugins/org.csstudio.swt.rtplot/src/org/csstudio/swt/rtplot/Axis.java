@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.swt.rtplot;
 
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -30,6 +32,18 @@ public interface Axis<T extends Comparable<T>>
 
     /** @param color Color to use for this axis */
     public void setColor(final RGB color);
+
+    /** @return Color to use for this axis */
+    public Font getLabelFont();
+
+    /** @param color Color to use for this axis */
+    public void setLabelFont(final FontData fontData);
+
+    /** @return Color to use for this axis */
+    public Font getScaleFont();
+
+    /** @param color Color to use for this axis */
+    public void setScaleFont(final FontData font);
 
     /** @return <code>true</code> if grid lines are drawn */
     public boolean isGridVisible();
@@ -65,4 +79,10 @@ public interface Axis<T extends Comparable<T>>
      *  @return <code>true</code> if this actually did something.
      */
     public boolean setValueRange(final T low, final T high);
+
+    /** @param visible Should axis name/title be visible? */
+    void setAxisNameVisible(boolean visible);
+
+    /** @return <code>true</code> if axis name/title is visible */
+    boolean isAxisNameVisible();
 }
