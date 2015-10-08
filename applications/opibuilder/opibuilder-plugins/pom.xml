@@ -26,6 +26,8 @@
     <module>org.csstudio.opibuilder.imagelib</module>
     <module>org.csstudio.opibuilder.rap</module>
     <module>org.csstudio.opibuilder.rcp</module>
+    <module>org.csstudio.opibuilder.rcp.opiruntime</module>
+    <module>org.csstudio.opibuilder.rcp.view</module>
     <module>org.csstudio.opibuilder.test</module>
     <module>org.csstudio.opibuilder.tools</module>
     <module>org.csstudio.opibuilder.widgets</module>
