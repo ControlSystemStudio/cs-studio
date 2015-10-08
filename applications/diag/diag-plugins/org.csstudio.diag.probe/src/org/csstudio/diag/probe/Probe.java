@@ -133,7 +133,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     /** Most recent value of the pv */
     private final ValueInfo value = new ValueInfo();
 
-    private final NumberFormat period_format;
+    private final NumberFormat period_format = NumberFormat.getNumberInstance();;
 
     /** Is this a new channel where we never received a value? */
     private boolean new_channel = true;
@@ -229,7 +229,6 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 
     public Probe()
     {
-        period_format = NumberFormat.getNumberInstance();
         period_format.setMinimumFractionDigits(2);
         period_format.setMaximumFractionDigits(2);
     }
