@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 import org.junit.Test;
 
 /** JUnit test of the {@link CSVSampleImporter}

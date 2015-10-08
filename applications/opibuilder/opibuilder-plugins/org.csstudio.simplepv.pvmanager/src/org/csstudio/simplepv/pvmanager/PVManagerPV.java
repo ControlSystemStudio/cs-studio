@@ -8,11 +8,11 @@
 
 package org.csstudio.simplepv.pvmanager;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.ExpressionLanguage.newValuesOf;
-import static org.epics.pvmanager.formula.ExpressionLanguage.channelFromFormula;
-import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
-import static org.epics.util.time.TimeDuration.ofMillis;
+import static org.diirt.datasource.ExpressionLanguage.channel;
+import static org.diirt.datasource.ExpressionLanguage.newValuesOf;
+import static org.diirt.datasource.formula.ExpressionLanguage.channelFromFormula;
+import static org.diirt.datasource.formula.ExpressionLanguage.formula;
+import static org.diirt.util.time.TimeDuration.ofMillis;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,18 +27,18 @@ import java.util.logging.Level;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
 import org.eclipse.osgi.util.NLS;
-import org.epics.pvmanager.ExceptionHandler;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderConfiguration;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.PVWriterConfiguration;
-import org.epics.pvmanager.PVWriterEvent;
-import org.epics.pvmanager.PVWriterListener;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VType;
+import org.diirt.datasource.ExceptionHandler;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderConfiguration;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.PVWriter;
+import org.diirt.datasource.PVWriterConfiguration;
+import org.diirt.datasource.PVWriterEvent;
+import org.diirt.datasource.PVWriterListener;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VType;
 
 /**
  * An implementation of {@link IPV} using PVManager.

@@ -15,7 +15,7 @@ import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.csstudio.vtype.pv.PVPool;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Filter that computes alarm enablement from expression.
  *  <p>

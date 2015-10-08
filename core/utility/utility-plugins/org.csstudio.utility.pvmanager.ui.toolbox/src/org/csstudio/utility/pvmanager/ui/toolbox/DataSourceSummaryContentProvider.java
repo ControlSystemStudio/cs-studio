@@ -3,13 +3,14 @@ package org.csstudio.utility.pvmanager.ui.toolbox;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.PVManager;
+import org.diirt.datasource.ChannelHandler;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.DataSource;
+import org.diirt.datasource.PVManager;
 
 public class DataSourceSummaryContentProvider implements IStructuredContentProvider {
 
@@ -41,7 +42,6 @@ public class DataSourceSummaryContentProvider implements IStructuredContentProvi
         }
     }
 
-    @SuppressWarnings("unused")
     private void addChannels(List<DataSourceChannel> channels, String dataSourceName, DataSource dataSource) {
         for (ChannelHandler channelHandler : dataSource.getChannels().values()) {
             channels.add(new DataSourceChannel(dataSourceName, channelHandler));

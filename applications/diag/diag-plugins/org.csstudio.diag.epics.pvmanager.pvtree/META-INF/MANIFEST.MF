@@ -9,12 +9,12 @@ Bundle-Description: Display EPICS record link hierarchy
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
- org.epics.util;bundle-version="0.1.0",
- org.epics.vtype,
  org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.autocomplete.ui,
- org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- org.csstudio.csdata;bundle-version="3.2.0",
- org.csstudio.utility.pvmanager;bundle-version="3.2.0"
+ org.csstudio.csdata;bundle-version="3.2.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.diirt.datasource,
+ org.diirt.datasource.vtype,
+ org.diirt.util.time;version="3.0.1",
+ org.diirt.vtype;version="3.0.1"

@@ -374,7 +374,7 @@ public class AlarmConfigurationReader
         final Timestamp sql_time = result.getTimestamp(16);
         if (!result.wasNull())
         {
-            final org.epics.util.time.Timestamp timestamp = TimestampHelper.toEPICSTime(sql_time);
+            final org.diirt.util.time.Timestamp timestamp = TimestampHelper.toEPICSTime(sql_time);
             pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
         }
     }

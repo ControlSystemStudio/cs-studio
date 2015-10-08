@@ -9,7 +9,7 @@ package org.csstudio.archive.config.rdb;
 
 import org.csstudio.archive.config.ChannelConfig;
 import org.csstudio.archive.config.SampleMode;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** RDB implementation of {@link ChannelConfig}
  *  @author Kay Kasemir

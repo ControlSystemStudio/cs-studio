@@ -2,7 +2,7 @@ package org.csstudio.archive.reader.appliance;
 
 import java.io.IOException;
 
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /**
  *

@@ -30,8 +30,8 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.logging;bundle-version="3.1.0",
  org.csstudio.utility.singlesource;bundle-version="1.0.0",
  org.csstudio.apputil,
- org.epics.util,
- org.csstudio.security
+ org.csstudio.security,
+ org.diirt.util;bundle-version="3.0.1"
 Export-Package: org.csstudio.alarm.beast.ui,
  org.csstudio.alarm.beast.ui.actions,
  org.csstudio.alarm.beast.ui.globalclientmodel

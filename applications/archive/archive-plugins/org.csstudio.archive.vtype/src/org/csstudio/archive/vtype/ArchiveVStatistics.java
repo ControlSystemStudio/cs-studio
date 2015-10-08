@@ -7,11 +7,11 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Display;
-import org.epics.vtype.Statistics;
-import org.epics.vtype.VStatistics;
-import org.epics.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.Statistics;
+import org.diirt.vtype.VStatistics;
+import org.diirt.util.time.Timestamp;
 
 /** Archive-derived {@link VStatistics} implementation
  *  @author Kay Kasemir

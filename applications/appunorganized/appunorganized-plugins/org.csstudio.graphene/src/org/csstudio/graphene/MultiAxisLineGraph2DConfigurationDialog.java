@@ -7,7 +7,7 @@ import java.beans.PropertyChangeEvent;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.graphene.InterpolationScheme;
+import org.diirt.graphene.InterpolationScheme;
 
 /**
  * @author shroffk

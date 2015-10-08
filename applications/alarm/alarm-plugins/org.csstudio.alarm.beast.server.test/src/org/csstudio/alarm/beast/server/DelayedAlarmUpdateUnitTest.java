@@ -13,7 +13,7 @@ import static org.junit.Assert.assertNull;
 import java.util.Date;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of the {@link DelayedAlarmUpdate}

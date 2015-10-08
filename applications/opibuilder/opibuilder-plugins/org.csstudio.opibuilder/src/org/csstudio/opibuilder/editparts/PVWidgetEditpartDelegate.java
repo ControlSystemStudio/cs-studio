@@ -44,8 +44,8 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
 
 public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 //    private interface AlarmSeverity extends ISeverity{

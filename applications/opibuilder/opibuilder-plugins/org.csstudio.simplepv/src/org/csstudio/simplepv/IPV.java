@@ -10,8 +10,8 @@ package org.csstudio.simplepv;
 
 import java.util.List;
 
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueUtil;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 
 /**
  * A simple PV interface for common UI applications. <p>

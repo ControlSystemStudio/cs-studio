@@ -3,25 +3,26 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Channel based SWT widgets
 Bundle-SymbolicName: org.csstudio.channel.widgets;singleton:=true
 Bundle-Version: 1.1.3.qualifier
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: Set of SWT widgets implemented on top of ChannelFinder and PVManager
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.utility.pvmanager;bundle-version="1.0.0",
- org.csstudio.utility.pvmanager.ui;bundle-version="3.1.0",
- org.csstudio.utility.pvmanager.widgets;bundle-version="3.1.0",
  org.csstudio.ui.util;bundle-version="3.1.0",
  org.csstudio.utility.channelfinder;bundle-version="1.1.0",
  org.eclipse.help,
  gov.bnl.channelfinder.api;bundle-version="2.0.0",
  org.csstudio.utility.channel;bundle-version="1.0.0",
  org.csstudio.csdata;bundle-version="3.0.1",
- org.epics.util;bundle-version="0.1.0",
- org.csstudio.utility.pvmanager.graphene;bundle-version="1.0.0",
- org.epics.graphene;bundle-version="0.1.0",
- org.csstudio.utility.pvmanager.extra;bundle-version="2.0.0",
- org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- org.epics.vtype;bundle-version="2.5.0"
+ org.csstudio.utility.pvmanager,
+ org.csstudio.utility.pvmanager.widgets,
+ org.csstudio.utility.pvmanager.ui,
+ org.diirt.datasource;bundle-version="3.0.1",
+ org.diirt.util;bundle-version="3.0.1",
+ org.diirt.vtype;bundle-version="3.0.1",
+ org.diirt.graphene;bundle-version="3.0.1",
+ org.diirt.datasource-extra;bundle-version="3.0.1",
+ org.diirt.datasource-graphene;bundle-version="3.0.1",
+ org.diirt.datasource-vtype;bundle-version="3.0.1"
 Export-Package: org.csstudio.channel.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Bundle-ActivationPolicy: lazy

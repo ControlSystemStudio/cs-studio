@@ -12,13 +12,17 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
  org.csstudio.utility.pvmanager.ui;bundle-version="3.0.0",
  org.csstudio.ui.util;bundle-version="3.0.0";resolution:=optional,
  org.csstudio.rap.ui.util;bundle-version="1.0.0";resolution:=optional,
- org.csstudio.utility.pvmanager.vtype;bundle-version="2.0.0",
- org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0",
- org.csstudio.utility.pvmanager;bundle-version="3.2.0",
- org.csstudio.csdata;bundle-version="3.2.0",
- org.epics.util;bundle-version="0.2.5",
- org.epics.vtype;bundle-version="2.5.0"
+ org.csstudio.csdata;bundle-version="3.2.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.csstudio.utility.pvmanager.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
+Import-Package: org.diirt.datasource;version="3.0.0",
+ org.diirt.datasource.expression;version="3.0.0",
+ org.diirt.datasource.formula;version="3.0.0",
+ org.diirt.service;version="3.0.0",
+ org.diirt.util.array;version="3.0.0",
+ org.diirt.util.time;version="3.0.0",
+ org.diirt.vtype;version="3.0.0",
+ org.diirt.vtype.io;version="3.0.0",
+ org.diirt.vtype.table;version="3.0.0"

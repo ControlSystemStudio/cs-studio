@@ -11,8 +11,8 @@ import static org.junit.Assert.*;
 import static org.hamcrest.CoreMatchers.*;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of the {@link AlarmStateHistory}

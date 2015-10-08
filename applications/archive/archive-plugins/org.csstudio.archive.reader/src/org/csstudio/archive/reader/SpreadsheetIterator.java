@@ -8,8 +8,8 @@
 package org.csstudio.archive.reader;
 
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.vtype.VType;
-import org.epics.util.time.Timestamp;
+import org.diirt.vtype.VType;
+import org.diirt.util.time.Timestamp;
 
 /** Iterates several <code>ValueIterator</code> instances 'in lockstep'
  *  as required to generate spreadsheet-type output.

@@ -18,8 +18,8 @@ import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.ScrollbarFigure;
 import org.eclipse.draw2d.IFigure;
-import org.epics.vtype.Display;
-import org.epics.vtype.VType;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VType;
 
 /**
  * The controller of scrollbar widget.

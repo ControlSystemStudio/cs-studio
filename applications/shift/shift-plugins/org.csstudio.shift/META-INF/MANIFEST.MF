@@ -10,5 +10,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.csstudio.shift,
  org.csstudio.shift.util
-Import-Package: org.csstudio.utility.shift,
- org.epics.util.time
+Import-Package: org.csstudio.utility.shift

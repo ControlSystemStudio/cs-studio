@@ -12,7 +12,7 @@ import java.util.Comparator;
 import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Comparator (= table sorter) that compares one column of an alarm.
  *  @author Kay Kasemir

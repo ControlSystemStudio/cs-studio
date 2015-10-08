@@ -16,8 +16,8 @@ import org.csstudio.archive.writer.ArchiveWriter;
 import org.csstudio.archive.writer.ArchiveWriterFactory;
 import org.csstudio.archive.writer.WriteChannel;
 import org.csstudio.util.stats.Average;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VType;
 
 /** Thread that writes values from multiple <code>SampleBuffer</code>s
  *  to an <code>RDBArchiveServer</code>.

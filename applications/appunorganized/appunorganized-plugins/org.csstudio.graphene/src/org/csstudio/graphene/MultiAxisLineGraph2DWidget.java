@@ -1,27 +1,28 @@
 /**
- *
+ * 
  */
 package org.csstudio.graphene;
 
-import static org.csstudio.graphene.PropertyConstants.*;
-import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
-import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
+import static org.csstudio.graphene.PropertyConstants.PROP_INTERPOLATION_SCHEME;
+import static org.csstudio.graphene.PropertyConstants.PROP_SEPARATE_AREAS;
+import static org.diirt.datasource.formula.ExpressionLanguage.formula;
+import static org.diirt.datasource.formula.ExpressionLanguage.formulaArg;
 
 import java.util.Objects;
 
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.diirt.datasource.graphene.ExpressionLanguage;
+import org.diirt.datasource.graphene.Graph2DResult;
+import org.diirt.datasource.graphene.MultiAxisLineGraph2DExpression;
+import org.diirt.graphene.InterpolationScheme;
+import org.diirt.graphene.MultiAxisLineGraph2DRenderer;
+import org.diirt.graphene.MultiAxisLineGraph2DRendererUpdate;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.MultiAxisLineGraph2DRenderer;
-import org.epics.graphene.MultiAxisLineGraph2DRendererUpdate;
-import org.epics.pvmanager.graphene.ExpressionLanguage;
-import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.MultiAxisLineGraph2DExpression;
 
 /**
  * A simple Line 2D plot which can handle both waveforms and a list of PVs

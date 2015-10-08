@@ -19,7 +19,7 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of the {@link GlobalAlarm}

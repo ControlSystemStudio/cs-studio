@@ -18,9 +18,9 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 import org.epics.archiverappliance.retrieval.client.RawDataRetrieval;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
 
 /*
  * @author Luofeng Li
@@ -135,13 +135,13 @@ public class EPICSArchiveReader implements ArchiveReader {
     @Override
     public VType next() throws Exception {
         EpicsMessage dbrevent = theIter.next();
-        return org.epics.vtype.ValueFactory.newVNumber(
+        return org.diirt.vtype.ValueFactory.newVNumber(
             dbrevent.getNumberValue(),
             transformToISeverity(dbrevent.getSeverity()),
-            org.epics.vtype.ValueFactory.newTime(org.epics.util.time.Timestamp
+            org.diirt.vtype.ValueFactory.newTime(org.diirt.util.time.Timestamp
                 .of(dbrevent.getTimestamp().getTime() / 1000,
                     dbrevent.getTimestamp().getNanos())),
-            org.epics.vtype.ValueFactory.displayNone());
+            org.diirt.vtype.ValueFactory.displayNone());
     }
 
     /* (non-Javadoc)
@@ -160,8 +160,8 @@ public class EPICSArchiveReader implements ArchiveReader {
 
     @Override
     public ValueIterator getRawValues(int key, String name,
-        org.epics.util.time.Timestamp start,
-        org.epics.util.time.Timestamp end) throws UnknownChannelException,
+        org.diirt.util.time.Timestamp start,
+        org.diirt.util.time.Timestamp end) throws UnknownChannelException,
         Exception {
 
     Timestamp start2 = new java.sql.Timestamp(start.getSec()*1000);
@@ -179,8 +179,8 @@ public class EPICSArchiveReader implements ArchiveReader {
 
     @Override
     public ValueIterator getOptimizedValues(int key, String name,
-        org.epics.util.time.Timestamp start,
-        org.epics.util.time.Timestamp end, int count)
+        org.diirt.util.time.Timestamp start,
+        org.diirt.util.time.Timestamp end, int count)
         throws UnknownChannelException, Exception {
 
     return getRawValues(key, "mean_600("+name+")", start, end);
@@ -197,7 +197,7 @@ public class EPICSArchiveReader implements ArchiveReader {
     }
 
     private static Alarm transformToISeverity(int severity) {
-    return org.epics.vtype.ValueFactory.newAlarm(
+    return org.diirt.vtype.ValueFactory.newAlarm(
         AlarmSeverity.values()[severity], "N/a");
 
     }

@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.ndarray;
 
-import org.epics.util.array.IteratorDouble;
+import org.diirt.util.array.IteratorDouble;
 
 /** Iterate over NDArray elements
  *

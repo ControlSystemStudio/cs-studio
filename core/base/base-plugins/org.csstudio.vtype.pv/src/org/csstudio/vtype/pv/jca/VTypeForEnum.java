@@ -13,8 +13,8 @@ import gov.aps.jca.dbr.LABELS;
 import java.util.Arrays;
 import java.util.List;
 
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VTypeToString;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VTypeToString;
 
 /** Wrap DBR as VType
  *

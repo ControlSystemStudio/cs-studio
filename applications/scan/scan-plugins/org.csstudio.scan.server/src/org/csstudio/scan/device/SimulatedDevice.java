@@ -7,9 +7,9 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /** Simulated device
  *  @author Kay Kasemir
