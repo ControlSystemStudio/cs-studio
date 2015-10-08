@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         point="org.eclipse.ui.editors">
+      <!-- Note regarding name:
+           In Navigator, the "Open With.." context menu lists *.opi 'editors'
+           in alphabetical order:
+           OPI Display (Workspace)
+           OPI Editor
+       -->
+      <editor
+            class="org.csstudio.opibuilder.runmode.OPIRunner"
+            contributorClass="org.csstudio.opibuilder.runmode.OPIRunnerToolBarContributor"
+            default="true"
+            extensions="opi"
+            icon="icons/OPIRunner.png"
+            id="org.csstudio.opibuilder.OPIRunner"
+            name="OPI Runtime">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            content="intro/firststeps.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
+   </extension>
+</fragment>
