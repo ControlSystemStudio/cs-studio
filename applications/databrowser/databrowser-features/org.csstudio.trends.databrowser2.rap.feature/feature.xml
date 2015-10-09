@@ -484,21 +484,21 @@
          id="org.eclipse.rap.draw2d"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.1.0.20150327-1849"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.rap.gef"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.1.0.20150214-1638"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.rap.draw2d.compatibility"
          download-size="0"
          install-size="0"
-         version="0.0.0"
+         version="0.1.0.20150213-1858"
          unpack="false"/>
 
    <plugin
