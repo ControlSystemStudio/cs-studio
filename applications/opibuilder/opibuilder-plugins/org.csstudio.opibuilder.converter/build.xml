@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!-- Ant file for building a standalone jar file
+     for the EDM converter.
+
+     It doesn't build any of the UI components,
+     meaning the only dependencies are org.csstudio.java
+     and org.apache.commons.lang.
+
+     This will generally be invoked by Maven, meaning
+     that Apache Commons Lang jar file will have been
+     copied to the target directory in advance.
+
+     I believe this means that the rest of applications
+     does not need building for this to work.
+
+     Will Rogers (with help from Kay Kasemir)
+  -->
+<project name="converter" default="all">
+  <!-- Map all environment variables XYZ to ${env.XYZ} -->
+  <property environment="env"/>
+  <!-- Build directory -->
+  <property name="build_dir" value="target/antbuild"/>
+  <property name="lib" value="target"/>
+  <property name="classes" value="${build_dir}/classes"/>
+  <!-- Remove all that might have been built previously -->
+  <target name="clean">
+    <delete dir="${build_dir}"/>
+    <delete file="${ant.project.name}.jar"/>
+  </target>
+  <!-- Create build directory structure -->
+  <target name="prepare">
+    <mkdir dir="${classes}"/>
+  </target>
+  <!-- Commons Lang should be put into target by Maven. -->
+  <path id="build.classpath">
+      <fileset dir="${lib}">
+      <include name="commons-lang*.jar"/>
+    </fileset>
+  </path>
+  <!-- Compile Java sources -->
+  <target name="compile" depends="prepare">
+    <!-- org.csstudio.java -->
+    <javac srcdir="../../../../core/platform/platform-plugins/org.csstudio.java/src" destdir="${classes}" includeantruntime="true" deprecation="on" debug="on">
+      <classpath>
+        <path refid="build.classpath"/>
+      </classpath>
+    </javac>
+    <!-- org.csstudio.opibuilder.converter -->
+    <javac srcdir="src" destdir="${classes}" excludes="**/org/csstudio/opibuilder/converter/ui/*.java, **/EDM2OPIConverterPlugin.java" includeantruntime="true" deprecation="on" debug="on">
+      <classpath>
+        <path refid="build.classpath"/>
+      </classpath>
+    </javac>
+  </target>
+  <!-- Create jar file with client code -->
+  <target name="zip" depends="compile">
+    <mkdir dir="${build_dir}"/>
+      <jar jarfile="${ant.project.name}.jar" basedir="${classes}" >
+      <manifest >
+        <attribute name="Main-Class" value="org.csstudio.opibuilder.converter.EdmConverter" />
+      </manifest>
+      <zipgroupfileset dir="${lib}" includes="commons-lang*.jar" />
+    </jar>
+  </target>
+  <!-- Run the whole chain -->
+  <target name="all" depends="compile,zip">
+    <echo>=== Completed building ${ant.project.name}.jar ===</echo>
+  </target>
+</project>

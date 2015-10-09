@@ -174,7 +174,6 @@ public class RunModeService
      */
     public static void openDisplayInView(final IWorkbenchPage page, final RunnerInput input, final DisplayMode mode)
     {
-        OPIView.setOpenedByUser(true);
         UIBundlingThread.getInstance().addRunnable(() ->
         {
             if (OPIBuilderPlugin.isRAP())
@@ -232,8 +231,10 @@ public class RunModeService
                     opiView.setOPIInput(input);
 
                     // Adjust position
-                    if (position == Position.DETACHED)
+                    if (position == Position.DETACHED) {
                         SingleSourcePlugin.getUIHelper().detachView(opiView);
+                        opiView.positionFromModel();
+                    }
                 }
                 catch (Exception e)
                 {

@@ -7,12 +7,15 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
+import org.junit.Test;
 
-import junit.framework.TestCase;
+public class Edm_activeGroupClassTest {
 
-public class Edm_activeGroupClassTest extends TestCase {
-
+    @Test
     public void testEdm_activeGroupClass() throws EdmException {
 
         // Prepare a model.
@@ -47,9 +50,9 @@ public class Edm_activeGroupClassTest extends TestCase {
 
         assertEquals("$(S)_LLRF:FCM$(N):cavAmpCheck.SEVR", subGroup0.getVisPv());
         assertTrue(subGroup0.getAttribute("visPv") instanceof EdmString);
-        assertEquals(-1.1, subGroup0.getVisMin());
+        assertEquals(-1.1, subGroup0.getVisMin(), 0.01);
         assertTrue(subGroup0.getAttribute("visMin") instanceof EdmDouble);
-        assertEquals(10.78, subGroup0.getVisMax());
+        assertEquals(10.78, subGroup0.getVisMax(), 0.01);
         assertTrue(subGroup0.getAttribute("visMax") instanceof EdmDouble);
 
 
@@ -74,11 +77,11 @@ public class Edm_activeGroupClassTest extends TestCase {
             assertTrue(t.getAttribute("w") instanceof EdmInt);
             assertEquals(13, t.getH());
             assertTrue(t.getAttribute("h") instanceof EdmInt);
-            EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+            EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
             assertTrue(t.getAttribute("font") instanceof EdmFont);
-            EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+            EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
             assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-            EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+            EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
             assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
             assertEquals("Homed", t.getValue().get());
             assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
@@ -125,11 +128,11 @@ public class Edm_activeGroupClassTest extends TestCase {
                 assertTrue(t.getAttribute("w") instanceof EdmInt);
                 assertEquals(13, t.getH());
                 assertTrue(t.getAttribute("h") instanceof EdmInt);
-                EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+                EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
                 assertTrue(t.getAttribute("font") instanceof EdmFont);
-                EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+                EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
                 assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-                EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+                EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
                 assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
                 assertEquals("Homed", t.getValue().get());
                 assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
@@ -176,11 +179,11 @@ public class Edm_activeGroupClassTest extends TestCase {
                     assertTrue(t.getAttribute("w") instanceof EdmInt);
                     assertEquals(13, t.getH());
                     assertTrue(t.getAttribute("h") instanceof EdmInt);
-                    EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+                    EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
                     assertTrue(t.getAttribute("font") instanceof EdmFont);
-                    EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+                    EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
                     assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-                    EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+                    EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
                     assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
                     assertEquals("Homed", t.getValue().get());
                     assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
@@ -244,11 +247,11 @@ public class Edm_activeGroupClassTest extends TestCase {
                     assertTrue(t.getAttribute("w") instanceof EdmInt);
                     assertEquals(13, t.getH());
                     assertTrue(t.getAttribute("h") instanceof EdmInt);
-                    EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+                    EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
                     assertTrue(t.getAttribute("font") instanceof EdmFont);
-                    EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+                    EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
                     assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-                    EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+                    EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
                     assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
                     assertEquals("Homed", t.getValue().get());
                     assertTrue(t.getAttribute("value") instanceof EdmMultilineText);
@@ -346,11 +349,11 @@ public class Edm_activeGroupClassTest extends TestCase {
             assertTrue(t.getAttribute("w") instanceof EdmInt);
             assertEquals(13, t.getH());
             assertTrue(t.getAttribute("h") instanceof EdmInt);
-            EdmComparator.isFontEqual("helvetica-bold-r-12.0", t.getFont());
+            EdmComparatorTest.isFontEqual("helvetica-bold-r-12.0", t.getFont());
             assertTrue(t.getAttribute("font") instanceof EdmFont);
-            EdmComparator.isColorEqual(new EdmColor(10), t.getFgColor());
+            EdmComparatorTest.isColorEqual(new EdmColor(10), t.getFgColor());
             assertTrue(t.getAttribute("fgColor") instanceof EdmColor);
-            EdmComparator.isColorEqual(new EdmColor(3), t.getBgColor());
+            EdmComparatorTest.isColorEqual(new EdmColor(3), t.getBgColor());
             assertTrue(t.getAttribute("bgColor") instanceof EdmColor);
             assertEquals("Homed", t.getValue().get());
             assertTrue(t.getAttribute("value") instanceof EdmMultilineText);

@@ -17,10 +17,15 @@
       [Enter License Description here.]
    </license>
 
-
-
    <plugin
          id="org.csstudio.archive.reader.appliance"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.archive.reader"
          download-size="0"
          install-size="0"
          version="0.0.0"

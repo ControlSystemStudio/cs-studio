@@ -7,15 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
-import junit.framework.TestCase;
-
 import org.csstudio.opibuilder.converter.model.EdmAttribute;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmFont;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class OpiFontTest extends TestCase {
+public class OpiFontTest {
 
     //<font fontName="Arial" height="14" style="0" />
 
@@ -26,6 +25,7 @@ public class OpiFontTest extends TestCase {
     3 - b, i
     */
 
+    @Test
     public void testOpiFont() throws EdmException {
 
         // init document

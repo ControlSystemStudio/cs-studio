@@ -10,6 +10,7 @@ package org.csstudio.scan.commandimpl;
 import java.util.Date;
 
 import org.csstudio.ndarray.NDArray;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.ScanScriptContext;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
@@ -33,6 +34,7 @@ import org.diirt.vtype.ValueUtil;
  */
 public class ScriptCommandContextImpl extends ScanScriptContext
 {
+    protected final static TimeDuration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
     final private ScanContext context;
 
     /** Initialize
@@ -87,7 +89,8 @@ public class ScriptCommandContextImpl extends ScanScriptContext
     public Object read(final String device_name) throws Exception
     {
         final Device device = context.getDevice(context.getMacros().resolveMacros(device_name));
-        final VType value = device.read();
+        // Active read of current value
+        final VType value = device.read(value_check_timeout);
         if (value instanceof VNumber)
             return ValueUtil.numericValueOf(value);
         if (value instanceof VNumberArray)

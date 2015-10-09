@@ -7,9 +7,11 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class EdmEntityTest extends TestCase {
+import org.junit.Test;
+
+public class EdmEntityTest {
 
     EdmEntity    entity;
     String        id1 = "ATT_ID1";
@@ -27,6 +29,7 @@ public class EdmEntityTest extends TestCase {
         return a;
     }
 
+    @Test
     public void testAddAttribute() throws EdmException {
 
         entity = new EdmEntity("example.edl");
@@ -51,6 +54,7 @@ public class EdmEntityTest extends TestCase {
         }
     }
 
+    @Test
     public void testAddSubEntity() throws EdmException {
 
         entity = new EdmEntity("example.edl");
@@ -68,6 +72,7 @@ public class EdmEntityTest extends TestCase {
         assertEquals("check_object", subE, checkSubE);
     }
 
+    @Test
     public void testSetAttribute() throws EdmException {
 
         entity = new EdmEntity("example.edl");
@@ -83,6 +88,7 @@ public class EdmEntityTest extends TestCase {
         assertEquals("check_new_value", a3, entity.getAttribute(id1));
     }
 
+    @Test
     public void testSetSubEntity() throws EdmException {
 
         entity = new EdmEntity("example.edl");
@@ -104,6 +110,7 @@ public class EdmEntityTest extends TestCase {
         assertEquals("check_new_object", subE2, entity.getSubEntity(0));
     }
 
+    @Test
     public void testCopyConstructor() throws EdmException {
 
         /* setting up an entity with 2 attr. and 1 subentity */

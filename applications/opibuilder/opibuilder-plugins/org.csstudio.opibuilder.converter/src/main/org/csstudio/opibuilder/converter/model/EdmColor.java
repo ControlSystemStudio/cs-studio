@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 import java.util.logging.Logger;
 import org.csstudio.java.string.StringSplitter;
-import org.csstudio.opibuilder.util.ConsoleService;
 
 /**
  * Specific class representing EdmColor property.
@@ -75,7 +74,7 @@ public class EdmColor extends EdmAttribute {
             if (isRequired()) {
                 log.warning("Missing required property.");
             } else {
-                log.warning("Missing optional property.");
+                log.fine("Missing optional property.");
                 return;
             }
         }
@@ -189,8 +188,7 @@ public class EdmColor extends EdmAttribute {
 
         EdmColor color = EdmModel.getColorsList().getColor(i);
         if (color == null) {
-            ConsoleService.getInstance().writeWarning(
-                    "Color index " + i + " is not in colors list file. Use black color instead.");
+            log.warning("Color index " + i + " is not in colors list file. Use black color instead.");
             color = new EdmColor(0);
         }
 

@@ -7,20 +7,23 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.writer;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import org.csstudio.opibuilder.converter.EdmConverterTest;
 import org.csstudio.opibuilder.converter.model.EdmColor;
 import org.csstudio.opibuilder.converter.model.EdmDisplay;
 import org.csstudio.opibuilder.converter.model.EdmException;
 import org.csstudio.opibuilder.converter.model.EdmModel;
+import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import junit.framework.TestCase;
-
-public class OpiDisplayTest extends TestCase {
+public class OpiDisplayTest {
 
     // <display typeId="org.csstudio.opibuilder.Display" ... >
 
+    @Test
     public void testOpiDisplay() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
@@ -67,6 +70,7 @@ public class OpiDisplayTest extends TestCase {
         //XMLFileHandler.writeXML(doc);
     }
 
+    @Test
     public void testOptionality() throws EdmException {
 
         System.setProperty("edm2xml.robustParsing", "false");
@@ -75,7 +79,7 @@ public class OpiDisplayTest extends TestCase {
         // init document
         Document doc = XMLFileHandler.createDomDocument();
 
-        String edlFile = EdmConverterTest.COLOR_LIST_FILE + "EDMDisplay_optionals.edl";
+        String edlFile = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplay_optionals.edl";
         EdmModel.getInstance();
         EdmDisplay d = EdmModel.getDisplay(edlFile);
 

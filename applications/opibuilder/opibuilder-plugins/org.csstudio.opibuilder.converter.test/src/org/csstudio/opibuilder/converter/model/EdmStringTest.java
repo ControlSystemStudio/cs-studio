@@ -7,10 +7,13 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
 
-public class EdmStringTest extends TestCase {
+import org.junit.Test;
 
+public class EdmStringTest {
+
+    @Test
     public void testEdmString() throws EdmException {
         EdmAttribute a = new EdmAttribute("abcd123.4");
         EdmString s = new EdmString(a, true);

@@ -40,31 +40,35 @@ public class CSStudioPerspective implements IPerspectiveFactory
     @Override
     public void createInitialLayout(IPageLayout layout)
     {
-        // left | editor
+        // left | editor/top
         //      |
         //      |
         //      +-------------
         //      | bottom
         String editor = layout.getEditorArea();
-        IFolderLayout left = layout.createFolder("left",
-                        IPageLayout.LEFT, 0.25f, editor);
+        IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT,
+                0.25f, editor);
         IFolderLayout bottom = layout.createFolder("bottom",
-                        IPageLayout.BOTTOM, 0.66f, editor);
+                IPageLayout.BOTTOM, 0.66f, editor);
+        IFolderLayout top = layout.createFolder("top", IPageLayout.TOP, 0.66f,
+                editor);
 
         left.addView("org.eclipse.ui.views.ResourceNavigator");
 
-    for (Entry<String, Integer> entry : findViews().entrySet()) {
-        switch (entry.getValue()) {
-        case IPageLayout.LEFT:
-        left.addPlaceholder(entry.getKey());
-        break;
-        case IPageLayout.BOTTOM:
-        bottom.addPlaceholder(entry.getKey());
-        break;
-        default:
-        break;
+        for (Entry<String, Integer> entry : findViews().entrySet()) {
+            switch (entry.getValue()) {
+            case IPageLayout.LEFT:
+                left.addPlaceholder(entry.getKey());
+                break;
+            case IPageLayout.BOTTOM:
+                bottom.addPlaceholder(entry.getKey());
+                break;
+            case IPageLayout.TOP:
+                top.addPlaceholder(entry.getKey());
+            default:
+                break;
+            }
         }
-    }
 
         // Populate the "Window/Perspectives..." menu with suggested persp.
 
@@ -98,36 +102,44 @@ public class CSStudioPerspective implements IPerspectiveFactory
                                    "cs_studio_perspective",
                                    "",
                                    null);
-    for (String viewPlaceholderInfoPref : Arrays.asList(csStudioPerspectivePreference.split(";"))) {
-        String[] viewPlaceholderInfo = viewPlaceholderInfoPref.split(":");
-        if(viewPlaceholderInfo.length == 4){
-        if (isPluginAvailable(viewPlaceholderInfo[0].trim())) {
-            int location;
-            switch (viewPlaceholderInfo[2].trim()) {
-            case "left":
-            location = IPageLayout.LEFT;
-            break;
-            case "bottom":
-            location = IPageLayout.BOTTOM;
-            break;
-            case "right":
-            location = IPageLayout.RIGHT;
-            break;
-            default:
-            location = IPageLayout.BOTTOM;
-            break;
-            }
+        for (String viewPlaceholderInfoPref : Arrays
+                .asList(csStudioPerspectivePreference.split(";"))) {
+            String[] viewPlaceholderInfo = viewPlaceholderInfoPref.split(":");
+            if (viewPlaceholderInfo.length == 4) {
+                if (isPluginAvailable(viewPlaceholderInfo[0].trim())) {
+                    int location;
+                    switch (viewPlaceholderInfo[2].trim()) {
+                    case "left":
+                        location = IPageLayout.LEFT;
+                        break;
+                    case "bottom":
+                        location = IPageLayout.BOTTOM;
+                        break;
+                    case "right":
+                        location = IPageLayout.RIGHT;
+                        break;
+                    case "center":
+                        location = IPageLayout.TOP;
+                        break;
+                    default:
+                        location = IPageLayout.BOTTOM;
+                        break;
+                    }
 
-            if (viewPlaceholderInfo[3].trim().equalsIgnoreCase("multiple")) {
-            viewPlaceholderMap.put(viewPlaceholderInfo[1].trim(), location);
-            viewPlaceholderMap.put(viewPlaceholderInfo[1].trim() + MULTIPLE, location);
+                    if (viewPlaceholderInfo[3].trim().equalsIgnoreCase(
+                            "multiple")) {
+                        viewPlaceholderMap.put(viewPlaceholderInfo[1].trim(),
+                                location);
+                        viewPlaceholderMap.put(viewPlaceholderInfo[1].trim()
+                                + MULTIPLE, location);
+                    } else {
+                        viewPlaceholderMap.put(viewPlaceholderInfo[1].trim(),
+                                location);
+                    }
+                }
             } else {
-            viewPlaceholderMap.put(viewPlaceholderInfo[1].trim(), location);
+                // syntax error in preference describing view placeholder
             }
-        }
-        }else{
-        // syntax error in preference describing view placeholder
-        }
     };
     return viewPlaceholderMap;
     }

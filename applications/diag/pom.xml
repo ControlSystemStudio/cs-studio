@@ -4,9 +4,10 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>applications</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>diag</artifactId>
+  <version>4.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <description>Diagnostic and Display applications</description>
   <modules>

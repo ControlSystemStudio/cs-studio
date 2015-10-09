@@ -7,10 +7,14 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-public class EdmIntTest extends TestCase {
+import org.junit.Test;
 
+public class EdmIntTest {
+
+    @Test
     public void testEdmInt() throws EdmException {
 
         // required
@@ -19,14 +23,13 @@ public class EdmIntTest extends TestCase {
         assertEquals(true, i1.isRequired());
         assertEquals(true, i1.isInitialized());
 
-        // required null
+        // required but null; it now doesn't throw an exception if a required
+        // attribute is not present, but it does try to parse the integer and fail
         try {
-            EdmInt i2 = new EdmInt(null, true);
-            assertEquals(true, i2.isRequired());
-            assertEquals(false, i2.isInitialized());
+            new EdmInt(null, true);
         }
         catch (EdmException e) {
-            assertEquals(EdmException.REQUIRED_ATTRIBUTE_MISSING, e.getType());
+            assertEquals(EdmException.INTEGER_FORMAT_ERROR, e.getType());
         }
 
         // optional
@@ -42,6 +45,7 @@ public class EdmIntTest extends TestCase {
         assertEquals(false, i4.isInitialized());
     }
 
+    @Test
     public void testWrongInput() throws EdmException {
         EdmAttribute a = new EdmAttribute("abc");
 
@@ -54,6 +58,7 @@ public class EdmIntTest extends TestCase {
         assertFalse(a.isInitialized());
     }
 
+    @Test
     public void testWrongInput2() throws EdmException {
         EdmAttribute a = new EdmAttribute("abc");
 
