@@ -52,7 +52,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** User interface of the post analyzer.
  *  <p>

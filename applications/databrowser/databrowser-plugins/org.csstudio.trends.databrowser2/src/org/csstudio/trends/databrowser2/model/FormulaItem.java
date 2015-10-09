@@ -21,12 +21,12 @@ import org.csstudio.archive.vtype.ArchiveVType;
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.trends.databrowser2.Messages;
 import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Display;
-import org.epics.vtype.VStatistics;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VStatistics;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 import org.w3c.dom.Element;
 
 /** A {@link Model} item that implements a formula.

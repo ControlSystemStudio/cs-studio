@@ -6,8 +6,10 @@ package org.csstudio.opibuilder.properties;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.epics.pvmanager.service.ServiceMethod;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceMethod.DataDescription;
 
 /**
  * @author shroffk
@@ -53,11 +55,16 @@ public class ServiceMethodDescription {
 
     public static ServiceMethodDescription createServiceMethodDescription(
         String service, ServiceMethod serviceMethod) {
+	HashMap<String, String> argumentDescriptions = new HashMap<String, String>();
+	for(Entry<String, DataDescription> argumentDescription: serviceMethod.getArgumentMap().entrySet()){
+	    argumentDescriptions.put(argumentDescription.getKey(), argumentDescription.getValue().getDescription());
+	}
+	HashMap<String, String> resultDescriptions = new HashMap<String, String>();
+	for(Entry<String, DataDescription> resultDescription: serviceMethod.getResultMap().entrySet()){
+	    resultDescriptions.put(resultDescription.getKey(), resultDescription.getValue().getDescription());
+	}
     return new ServiceMethodDescription(service, serviceMethod.getName(),
-        serviceMethod.getDescription(), new HashMap<String, String>(
-            serviceMethod.getArgumentDescriptions()),
-        new HashMap<String, String>(serviceMethod
-            .getResultDescriptions()));
+        serviceMethod.getDescription(), argumentDescriptions,resultDescriptions);
     }
 
     /**

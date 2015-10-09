@@ -1,6 +1,6 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /**
  * An object that can be adapted to a vType.

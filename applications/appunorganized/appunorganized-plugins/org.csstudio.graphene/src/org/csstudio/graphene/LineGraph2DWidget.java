@@ -1,10 +1,10 @@
 /**
- *
+ * 
  */
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
-import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
+import static org.diirt.datasource.formula.ExpressionLanguage.formula;
+import static org.diirt.datasource.formula.ExpressionLanguage.formulaArg;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -13,6 +13,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVWriter;
+import org.diirt.datasource.PVWriterEvent;
+import org.diirt.datasource.PVWriterListener;
+import org.diirt.datasource.graphene.ExpressionLanguage;
+import org.diirt.datasource.graphene.Graph2DResult;
+import org.diirt.datasource.graphene.LineGraph2DExpression;
+import org.diirt.graphene.InterpolationScheme;
+import org.diirt.graphene.LineGraph2DRendererUpdate;
+import org.diirt.util.array.ArrayDouble;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VTable;
+import org.diirt.vtype.ValueFactory;
+import org.diirt.vtype.table.VTableFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -21,20 +35,6 @@ import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.LineGraph2DRendererUpdate;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.PVWriterEvent;
-import org.epics.pvmanager.PVWriterListener;
-import org.epics.pvmanager.graphene.ExpressionLanguage;
-import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.LineGraph2DExpression;
-import org.epics.util.array.ArrayDouble;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VTable;
-import org.epics.vtype.ValueFactory;
-import org.epics.vtype.table.VTableFactory;
 
 /**
  * A simple Line 2D plot which can handle both waveforms and a list of PVs

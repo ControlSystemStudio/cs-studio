@@ -13,9 +13,9 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.ui.util;bundle-version="3.0.0",
  org.csstudio.swt.chart,
  org.csstudio.trends.databrowser2;bundle-version="3.0.0",
- org.epics.util;bundle-version="0.3.2",
  org.csstudio.archive.vtype;bundle-version="1.0.0",
- org.epics.vtype
+ org.diirt.vtype;bundle-version="3.0.1",
+ org.diirt.util;bundle-version="3.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

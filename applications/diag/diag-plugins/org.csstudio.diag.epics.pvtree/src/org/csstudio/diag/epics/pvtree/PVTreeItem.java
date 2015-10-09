@@ -15,8 +15,8 @@ import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.csstudio.vtype.pv.PVPool;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
 
 /** One item in the PV tree model.
  *  <p>

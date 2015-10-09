@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.widgets.util;
 
 import org.csstudio.swt.widgets.datadefinition.IPrimaryArrayWrapper;
-import org.epics.util.array.ListNumber;
+import org.diirt.util.array.ListNumber;
 
 /**An {@link IPrimaryArrayWrapper} for {@link ListNumber}
  * @author Xihui

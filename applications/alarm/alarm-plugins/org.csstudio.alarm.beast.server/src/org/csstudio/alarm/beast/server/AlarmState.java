@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimestampHelper;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Alarm state combines an alarm severity with its message info,
  *  value that triggered this state, time when it happened.

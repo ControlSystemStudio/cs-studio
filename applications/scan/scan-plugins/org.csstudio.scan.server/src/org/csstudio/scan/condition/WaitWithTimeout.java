@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.condition;
 
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** Helper for waiting with a time out
  *  <code>

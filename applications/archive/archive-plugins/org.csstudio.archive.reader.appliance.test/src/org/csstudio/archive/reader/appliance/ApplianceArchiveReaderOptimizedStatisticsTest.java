@@ -12,8 +12,8 @@ import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.ArchiveVType;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /**

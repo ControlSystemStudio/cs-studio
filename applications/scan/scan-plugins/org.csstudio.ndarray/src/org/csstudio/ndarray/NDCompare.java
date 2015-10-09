@@ -9,7 +9,7 @@
  ******************************************************************************/
 package org.csstudio.ndarray;
 
-import org.epics.util.array.IteratorNumber;
+import org.diirt.util.array.IteratorNumber;
 
 /** Compare operations for {@link NDArray}
  *

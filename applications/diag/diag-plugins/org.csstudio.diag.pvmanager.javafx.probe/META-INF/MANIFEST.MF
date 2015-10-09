@@ -1,0 +1,27 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: PvManager Probe
+Bundle-SymbolicName: org.csstudio.diag.pvmanager.javafx.probe; singleton:=true
+Bundle-Version: 2.0.0.qualifier
+Bundle-Activator: org.csstudio.diag.pvmanager.javafx.probe.Activator
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
+Bundle-Description: Simple diagnostic utility to connect to any channel
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.utility.pvmanager.ui,
+ org.csstudio.csdata;bundle-version="0.0.1",
+ org.csstudio.ui.util;bundle-version="0.0.1",
+ org.eclipse.ui.intro,
+ org.eclipse.ui.intro.universal,
+ org.eclipse.help,
+ org.csstudio.utility.pvmanager.widgets;bundle-version="3.2.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Import-Package: org.diirt.datasource;version="3.0.0",
+ org.diirt.datasource.expression;version="3.0.0",
+ org.diirt.datasource.formula;version="3.0.0",
+ org.diirt.javafx.tools;version="3.0.0",
+ org.diirt.util.time;version="3.0.0",
+ org.diirt.vtype,
+ org.diirt.vtype.io;version="3.0.0",
+ org.eclipse.fx.ui.workbench3

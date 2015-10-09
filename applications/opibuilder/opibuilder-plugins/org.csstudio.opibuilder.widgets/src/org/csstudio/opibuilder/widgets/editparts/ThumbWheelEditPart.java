@@ -39,8 +39,8 @@ import org.csstudio.swt.widgets.figures.ThumbWheelFigure.WheelListener;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
-import org.epics.vtype.Display;
-import org.epics.vtype.VType;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VType;
 
 /**
  * Controller for the ThumbWheel.

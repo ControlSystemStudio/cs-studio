@@ -19,10 +19,10 @@ public class TimestampHelper
     final private static DateFormat format = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 
     /** Format EPICS time stamp as string
-     *  @param timestamp {@link org.epics.util.time.Timestamp}
+     *  @param timestamp {@link org.diirt.util.time.Timestamp}
      *  @return {@link String}
      */
-    public static String format(org.epics.util.time.Timestamp timestamp)
+    public static String format(org.diirt.util.time.Timestamp timestamp)
     {
         synchronized (format)
         {
@@ -31,10 +31,10 @@ public class TimestampHelper
     }
 
     /** Convert EPICS time stamp into SQL time stamp
-     *  @param timestamp {@link org.epics.util.time.Timestamp}
+     *  @param timestamp {@link org.diirt.util.time.Timestamp}
      *  @return {@link java.sql.Timestamp}
      */
-    public static java.sql.Timestamp toSQLTime(org.epics.util.time.Timestamp timestamp)
+    public static java.sql.Timestamp toSQLTime(org.diirt.util.time.Timestamp timestamp)
     {
         final java.sql.Timestamp sql = new java.sql.Timestamp(timestamp.toDate().getTime());
         sql.setNanos(timestamp.getNanoSec());
@@ -43,10 +43,10 @@ public class TimestampHelper
 
     /** Convert SQL time stamp into EPICS time stamp
      *  @param timestamp{@link java.sql.Timestamp}
-     *  @return {@link org.epics.util.time.Timestamp}
+     *  @return {@link org.diirt.util.time.Timestamp}
      */
-    public static org.epics.util.time.Timestamp toEPICSTime(java.sql.Timestamp timestamp)
+    public static org.diirt.util.time.Timestamp toEPICSTime(java.sql.Timestamp timestamp)
     {
-        return org.epics.util.time.Timestamp.of(timestamp.getTime()/1000L, timestamp.getNanos());
+        return org.diirt.util.time.Timestamp.of(timestamp.getTime()/1000L, timestamp.getNanos());
     }
 }

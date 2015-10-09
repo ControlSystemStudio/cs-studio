@@ -14,7 +14,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.internal.ImmediateFuture;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Process Variable, API for accessing life control system data.
  *

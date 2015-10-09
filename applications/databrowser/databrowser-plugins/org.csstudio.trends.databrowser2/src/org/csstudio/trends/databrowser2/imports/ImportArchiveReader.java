@@ -16,8 +16,8 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.utility.singlesource.ResourceHelper;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VType;
 
 /** Archive reader that imports data from a file
  *

@@ -14,10 +14,10 @@ import java.util.concurrent.TimeUnit;
 
 import org.csstudio.simplepv.AbstractPVFactory;
 import org.csstudio.simplepv.IPV;
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.loc.LocalDataSource;
-import org.epics.pvmanager.sim.SimulationDataSource;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.loc.LocalDataSource;
+import org.diirt.datasource.sim.SimulationDataSource;
 import org.junit.Before;
 
 /** Helper for IPV tests

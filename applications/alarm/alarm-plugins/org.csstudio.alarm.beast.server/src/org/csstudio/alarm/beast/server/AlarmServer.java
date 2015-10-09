@@ -27,7 +27,7 @@ import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.logging.JMSLogMessage;
 import org.eclipse.osgi.util.NLS;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Alarm Server
  *

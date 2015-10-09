@@ -13,9 +13,9 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Date;
 
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
-import org.epics.util.time.TimestampFormat;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimestampFormat;
 import org.junit.Test;
 
 /** JUnit test of {@link TimestampHelper}
