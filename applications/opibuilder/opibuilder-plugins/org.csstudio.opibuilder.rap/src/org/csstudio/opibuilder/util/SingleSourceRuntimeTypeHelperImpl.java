@@ -18,7 +18,7 @@ public class SingleSourceRuntimeTypeHelperImpl extends SingleSourceRuntimeTypeHe
     }
 
     @Override
-    protected IOPIRuntime iGetOPIShellForShell(Shell shell) {
+    protected IOPIRuntime iGetOPIRuntimeForShell(Shell shell) {
         return null;
     }
 
