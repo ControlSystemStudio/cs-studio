@@ -25,14 +25,14 @@ import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.csstudio.vtype.pv.PVPool;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Time;
-import org.epics.vtype.VByteArray;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
-import org.epics.vtype.ValueUtil;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.Time;
+import org.diirt.vtype.VByteArray;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
+import org.diirt.vtype.ValueUtil;
 
 /** {@link Device} that is connected to a Process Variable,
  *  supporting read and write access to that PV.

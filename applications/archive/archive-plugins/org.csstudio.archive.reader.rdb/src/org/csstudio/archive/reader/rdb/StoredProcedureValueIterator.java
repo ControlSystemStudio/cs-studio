@@ -25,9 +25,9 @@ import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
 
 import oracle.jdbc.OracleTypes;
 

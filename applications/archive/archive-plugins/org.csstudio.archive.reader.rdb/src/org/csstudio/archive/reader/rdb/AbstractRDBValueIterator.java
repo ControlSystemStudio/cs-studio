@@ -22,12 +22,12 @@ import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.epics.util.text.NumberFormats;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Display;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.text.NumberFormats;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /** Base for ValueIterators that read from the RDB
  *  @author Kay Kasemir

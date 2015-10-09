@@ -2,11 +2,11 @@ package org.csstudio.utility.pvmanager.widgets;
 
 import java.util.List;
 
+import org.diirt.util.array.ListNumber;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VTable;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.epics.util.array.ListNumber;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VTable;
 
 public class VTableContentProvider implements IStructuredContentProvider {
 

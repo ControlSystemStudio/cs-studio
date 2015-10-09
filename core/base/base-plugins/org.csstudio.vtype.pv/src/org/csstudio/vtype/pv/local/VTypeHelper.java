@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.local;
 
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /** Local Process Variable
  *

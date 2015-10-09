@@ -9,4 +9,4 @@ Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.apputil;bundle-version="3.0.0",
  org.csstudio.archive.config;bundle-version="1.0.0",
  org.csstudio.archive.config.rdb;bundle-version="1.0.0",
- org.epics.util
+ org.diirt.util

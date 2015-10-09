@@ -10,23 +10,23 @@ package org.csstudio.display.pvtable.model;
 import java.text.NumberFormat;
 
 import org.csstudio.display.pvtable.Preferences;
-import org.epics.util.array.IteratorInt;
-import org.epics.util.array.IteratorNumber;
-import org.epics.util.array.ListByte;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Time;
-import org.epics.vtype.VByteArray;
-import org.epics.vtype.VDoubleArray;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VEnumArray;
-import org.epics.vtype.VFloatArray;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VString;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueUtil;
+import org.diirt.util.array.IteratorInt;
+import org.diirt.util.array.IteratorNumber;
+import org.diirt.util.array.ListByte;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.Time;
+import org.diirt.vtype.VByteArray;
+import org.diirt.vtype.VDoubleArray;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VEnumArray;
+import org.diirt.vtype.VFloatArray;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 
 /** Helper for handling {@link VType} data
  *  @author Kay Kasemir

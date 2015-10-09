@@ -29,7 +29,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osgi.util.NLS;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Eclipse Job for fetching archived data.
  *  <p>

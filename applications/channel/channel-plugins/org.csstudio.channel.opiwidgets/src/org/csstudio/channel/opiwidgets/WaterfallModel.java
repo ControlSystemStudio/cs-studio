@@ -8,7 +8,7 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
 import org.eclipse.swt.SWT;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 public class WaterfallModel extends AbstractChannelWidgetModel {
 
@@ -46,11 +46,11 @@ public class WaterfallModel extends AbstractChannelWidgetModel {
     private int[] scrollDirections = new int[] {SWT.UP, SWT.DOWN};
 
     public boolean isAdaptiveRange() {
-        return values[getCastedPropertyValue(VALUE_RANGE)];
+        return values[(int) getCastedPropertyValue(VALUE_RANGE)];
     }
 
     public int getScrollDirection() {
-        return scrollDirections[getCastedPropertyValue(SCROLL_DIRECTION)];
+        return scrollDirections[(int) getCastedPropertyValue(SCROLL_DIRECTION)];
     }
 
     public String getSortProperty() {

@@ -5,7 +5,7 @@ import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 public class ArchiveRecordReader implements ArchiveReader {
 

@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.scan.device;
 
-import org.epics.util.array.ListByte;
-import org.epics.vtype.VByteArray;
+import org.diirt.util.array.ListByte;
+import org.diirt.vtype.VByteArray;
 
 /** Helper for handling byte arrays
  *  @author Kay Kasemir

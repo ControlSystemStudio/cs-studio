@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Diirt Util
+Bundle-SymbolicName: org.csstudio.diirt.util;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/ds_consumer.xml,OSGI-INF/ffs_consumer.xml,
+ OSGI-INF/s_consumer.xml
+Import-Package: org.diirt.datasource;version="3.0.1",
+ org.diirt.datasource.formula;version="3.0.1",
+ org.diirt.service;version="3.0.1",
+ org.diirt.util.config;version="3.0.1",
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime;version="3.4.0",
+ org.epics.pvmanager.formula,
+ org.osgi.framework;version="1.8.0"
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.diirt.util.Activator
+Require-Bundle: org.eclipse.equinox.preferences;bundle-version="3.5.200",
+ org.eclipse.osgi
+Export-Package: org.csstudio.diirt.util

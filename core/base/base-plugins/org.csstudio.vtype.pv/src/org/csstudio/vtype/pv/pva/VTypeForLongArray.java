@@ -11,15 +11,15 @@ import java.util.List;
 
 import org.epics.pvdata.pv.PVScalarArray;
 import org.epics.pvdata.pv.PVStructure;
-import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ArrayLong;
-import org.epics.util.array.ListInt;
-import org.epics.util.array.ListLong;
-import org.epics.vtype.ArrayDimensionDisplay;
-import org.epics.vtype.VLongArray;
-import org.epics.vtype.VType;
-import org.epics.vtype.VTypeToString;
-import org.epics.vtype.ValueUtil;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.util.array.ArrayLong;
+import org.diirt.util.array.ListInt;
+import org.diirt.util.array.ListLong;
+import org.diirt.vtype.ArrayDimensionDisplay;
+import org.diirt.vtype.VLongArray;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.VTypeToString;
+import org.diirt.vtype.ValueUtil;
 
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir

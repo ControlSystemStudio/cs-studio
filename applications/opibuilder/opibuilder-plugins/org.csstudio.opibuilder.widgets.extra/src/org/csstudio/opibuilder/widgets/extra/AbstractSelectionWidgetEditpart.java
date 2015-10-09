@@ -22,10 +22,10 @@ import org.csstudio.utility.pvmanager.widgets.VTypeAdaptable;
 import org.eclipse.draw2d.Border;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueUtil;
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 
 /**
  * Base class for all edit parts that are based on SWT widgets that provides a selection.

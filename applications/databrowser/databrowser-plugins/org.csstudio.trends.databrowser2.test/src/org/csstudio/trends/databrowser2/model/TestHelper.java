@@ -11,15 +11,15 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.loc.LocalDataSource;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.loc.LocalDataSource;
 import org.epics.pvmanager.sim.SimulationDataSource;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.array.ArrayDouble;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /** Unit-test helper for creating samples
  *  @author Kay Kasemir

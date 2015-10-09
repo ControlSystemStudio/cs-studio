@@ -15,11 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.epics.pvdata.pv.PVString;
 import org.epics.pvdata.pv.PVStructure;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.Display;
-import org.epics.vtype.Time;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.Time;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /** Base {@link VType} that decodes {@link Time}, {@link Alarm} and {@link Display}
  *

@@ -9,7 +9,7 @@ package org.csstudio.archive.reader;
 
 import java.io.Closeable;
 
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Interface to archive data retrieval.
  *  <p>

@@ -19,7 +19,7 @@ import org.csstudio.alarm.beast.Activator;
 import org.csstudio.alarm.beast.JMSAlarmMessage;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.logging.JMSLogMessage;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Information about an alarm update
  *  @author Kay Kasemir

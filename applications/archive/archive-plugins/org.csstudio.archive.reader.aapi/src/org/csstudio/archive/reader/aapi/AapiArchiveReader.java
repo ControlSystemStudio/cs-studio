@@ -4,7 +4,7 @@ import org.csstudio.archive.reader.ArchiveInfo;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 import de.desy.aapi.AapiClient;
 import de.desy.aapi.AapiException;

@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.epics.vtype.Display;
+import org.diirt.vtype.Display;
 
 /**Show details information of widget's primary PV.
  * @author Xihui Chen

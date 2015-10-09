@@ -10,7 +10,7 @@ package org.csstudio.autocomplete.pvmanager.formula;
 import java.util.Arrays;
 import java.util.List;
 
-import org.epics.pvmanager.formula.FormulaFunction;
+import org.diirt.datasource.formula.FormulaFunction;
 
 /**
  * @author Fred Arnaud (Sopra Group) - ITER

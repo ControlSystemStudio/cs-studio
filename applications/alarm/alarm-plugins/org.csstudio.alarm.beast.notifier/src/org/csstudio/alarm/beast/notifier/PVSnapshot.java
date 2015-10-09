@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.logging.JMSLogMessage;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /**
  * Snapshot of an {@link AlarmTreePV}.

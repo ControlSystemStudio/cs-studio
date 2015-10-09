@@ -2,14 +2,14 @@ package org.csstudio.diag.pvmanager.probe;
 
 import org.csstudio.ui.util.widgets.MeterWidget;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VTable;
+import org.diirt.vtype.ValueUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.epics.vtype.Display;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VTable;
-import org.epics.vtype.ValueUtil;
 
 /**
  * Probe panel that allows to show the value.

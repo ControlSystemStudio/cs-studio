@@ -17,15 +17,15 @@ import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VByteArray;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VEnumArray;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VString;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VByteArray;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VEnumArray;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /** One item (row) in the PV table.
  *
