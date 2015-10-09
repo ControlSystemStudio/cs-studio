@@ -53,26 +53,6 @@
         <version>${tycho.version}</version>
         <executions>
           <execution>
-            <id>mirror-extras-to-repository</id>
-            <phase>prepare-package</phase>
-            <goals>
-                <goal>mirror</goal>
-            </goals>
-            <configuration>
-              <!-- Details: https://www.eclipse.org/tycho/sitedocs-extras/tycho-p2-extras-plugin/mirror-mojo.html -->
-              <source>
-                 <repository>
-                      <url>${project.baseUri}/../extras</url>
-                      <layout>p2</layout>
-                  </repository>
-              </source>
-              <append>true</append>
-              <compress>true</compress>
-              <mirrorMetadataOnly>false</mirrorMetadataOnly>
-              <destination>${project.build.directory}/repository</destination>
-            </configuration>
-          </execution>
-          <execution>
             <id>mirror-build-to-central-repository</id>
             <phase>package</phase>
             <goals>
