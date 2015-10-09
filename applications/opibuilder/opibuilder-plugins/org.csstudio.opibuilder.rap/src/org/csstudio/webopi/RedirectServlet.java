@@ -34,7 +34,7 @@ protected void doGet( HttpServletRequest request,
                         HttpServletResponse response )
     throws IOException
   {
-    if( request.getPathInfo().equals( "/" ) ) {
+    if(request.getPathInfo() == null ||  request.getPathInfo().equals( "/" ) ) {
       response.sendRedirect( response.encodeRedirectURL( WebOPIConstants.MAIN_SERVELET_NAME ) ); //$NON-NLS-1$
     } else {
       response.sendError( HttpServletResponse.SC_NOT_FOUND );
