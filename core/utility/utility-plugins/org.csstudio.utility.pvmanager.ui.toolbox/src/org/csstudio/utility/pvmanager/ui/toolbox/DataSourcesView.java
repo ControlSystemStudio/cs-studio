@@ -32,10 +32,10 @@ import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.wb.swt.ResourceManager;
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.PVManager;
+import org.diirt.datasource.ChannelHandler;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.DataSource;
+import org.diirt.datasource.PVManager;
 
 public class DataSourcesView extends ViewPart {
 

@@ -19,7 +19,7 @@ import org.csstudio.archive.engine.model.EngineModel;
 import org.csstudio.archive.engine.model.SampleBuffer;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.eclipse.core.runtime.Platform;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Provide web page with engine overview.
  *  @author Kay Kasemir

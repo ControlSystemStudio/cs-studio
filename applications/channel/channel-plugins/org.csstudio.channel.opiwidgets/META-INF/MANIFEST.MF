@@ -9,18 +9,18 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.channel.widgets;bundle-version="1.0.0";resolution:=optional,
  gov.bnl.channelfinder.api;bundle-version="2.1.0",
  org.csstudio.opibuilder.widgets.extra;bundle-version="1.0.0",
- org.epics.util,
  org.eclipse.jface;bundle-version="3.10.0",
  org.csstudio.opibuilder.widgets;bundle-version="3.4.0",
  org.eclipse.draw2d,
  org.eclipse.gef,
- org.epics.vtype,
  org.csstudio.csdata,
  org.csstudio.utility.pvmanager.widgets,
  org.eclipse.ui.views,
  junit
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Description: Set of BOY widgets that expose the channel based SWT widgets in org.csstudio.channel.widgets
 Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - BNL
 Export-Package: org.csstudio.channel.opiwidgets
+Import-Package: org.diirt.util.time,
+ org.diirt.vtype

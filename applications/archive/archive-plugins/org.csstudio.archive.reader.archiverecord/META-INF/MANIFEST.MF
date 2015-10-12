@@ -11,7 +11,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.archive.reader;bundle-version="2.0.2",
  org.junit;bundle-version="4.8.2",
  org.csstudio.data,
- org.epics.vtype,
- org.epics.util
+ org.diirt.vtype,
+ org.diirt.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy

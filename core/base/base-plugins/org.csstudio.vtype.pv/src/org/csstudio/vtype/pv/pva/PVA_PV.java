@@ -25,8 +25,8 @@ import org.epics.pvdata.pv.MessageType;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Status;
 import org.epics.pvdata.pv.Structure;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 
 /** pvAccess {@link PV}
  *

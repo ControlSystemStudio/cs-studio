@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv;
 
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Listener to a {@link PV}
  *  @author Kay Kasemir

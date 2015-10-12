@@ -12,6 +12,11 @@
       [Enter Copyright Description here.]
    </copyright>
 
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
    <plugin
          id="org.csstudio.ui.menu.pvscript"
          download-size="0"

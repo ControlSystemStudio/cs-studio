@@ -8,8 +8,8 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VType;
 
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
 

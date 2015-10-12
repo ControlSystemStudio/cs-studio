@@ -25,16 +25,16 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.EditPartListener;
 import org.eclipse.swt.widgets.Display;
-import org.epics.util.array.ListInt;
-import org.epics.util.array.ListNumber;
-import org.epics.util.time.Timestamp;
-import org.epics.util.time.TimestampFormat;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VDoubleArray;
-import org.epics.vtype.VEnumArray;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VStringArray;
-import org.epics.vtype.VType;
+import org.diirt.util.array.ListInt;
+import org.diirt.util.array.ListNumber;
+import org.diirt.util.time.Timestamp;
+import org.diirt.util.time.TimestampFormat;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VDoubleArray;
+import org.diirt.vtype.VEnumArray;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VType;
 
 /**The utility class to facilitate Javascript programming
  * for PV operation.

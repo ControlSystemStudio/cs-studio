@@ -12,8 +12,8 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
-import org.epics.graphene.InterpolationScheme;
-import org.epics.graphene.MultiAxisLineGraph2DRenderer;
+import org.diirt.graphene.InterpolationScheme;
+import org.diirt.graphene.MultiAxisLineGraph2DRenderer;
 
 
 /**

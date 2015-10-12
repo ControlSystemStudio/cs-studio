@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.epics.graphene.NumberColorMap;
-import org.epics.graphene.NumberColorMaps;
+import org.diirt.graphene.NumberColorMap;
+import org.diirt.graphene.NumberColorMaps;
 
 public class NumberColorMapUtil {
 

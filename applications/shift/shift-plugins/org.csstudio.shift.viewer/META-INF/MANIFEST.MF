@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  gov.bnl.shiftClient,
  org.csstudio.shift.ui,
  org.csstudio.autocomplete.shift;bundle-version="1.0.0",
- org.epics.util
+ org.diirt.util;bundle-version="3.0.1"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.shift.ui
 Import-Package: javax.ws.rs.core

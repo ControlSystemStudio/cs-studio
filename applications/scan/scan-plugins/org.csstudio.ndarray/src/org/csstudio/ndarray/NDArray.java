@@ -13,14 +13,14 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.epics.util.array.ArrayByte;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ArrayFloat;
-import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ArrayLong;
-import org.epics.util.array.ArrayShort;
-import org.epics.util.array.IteratorNumber;
-import org.epics.util.array.ListNumber;
+import org.diirt.util.array.ArrayByte;
+import org.diirt.util.array.ArrayDouble;
+import org.diirt.util.array.ArrayFloat;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.util.array.ArrayLong;
+import org.diirt.util.array.ArrayShort;
+import org.diirt.util.array.IteratorNumber;
+import org.diirt.util.array.ListNumber;
 
 /** N-dimensional array
  *

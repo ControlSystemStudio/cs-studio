@@ -22,7 +22,7 @@ import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
 import org.csstudio.scan.device.VTypeHelper;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** Condition that waits for a Device to reach a certain numeric value.
  *

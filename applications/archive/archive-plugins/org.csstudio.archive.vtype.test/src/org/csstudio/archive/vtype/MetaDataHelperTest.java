@@ -13,9 +13,9 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.List;
 
-import org.epics.util.text.NumberFormats;
-import org.epics.vtype.Display;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.text.NumberFormats;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.ValueFactory;
 import org.junit.Test;
 
 /** JUnit test of {@link MetaDataHelper}

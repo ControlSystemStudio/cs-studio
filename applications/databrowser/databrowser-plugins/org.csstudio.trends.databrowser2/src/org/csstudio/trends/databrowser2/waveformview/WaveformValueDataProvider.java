@@ -15,10 +15,10 @@ import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.swt.rtplot.data.PlotDataProvider;
 import org.csstudio.swt.rtplot.data.SimpleDataItem;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ListNumber;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VType;
+import org.diirt.util.array.ArrayDouble;
+import org.diirt.util.array.ListNumber;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VType;
 
 /** Data provider for the plot that shows waveform elements of a VNumberArray
  *  @author Kay Kasemir

@@ -8,7 +8,7 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Alarm handling logic.
  *  <p>

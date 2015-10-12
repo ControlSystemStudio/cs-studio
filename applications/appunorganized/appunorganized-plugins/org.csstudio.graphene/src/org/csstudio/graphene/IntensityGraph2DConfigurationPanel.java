@@ -6,14 +6,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.diirt.graphene.NumberColorMap;
+import org.diirt.graphene.NumberColorMaps;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
-import org.epics.graphene.NumberColorMap;
-import org.epics.graphene.NumberColorMaps;
-import org.eclipse.swt.widgets.Button;
 
 public class IntensityGraph2DConfigurationPanel extends
         AbstractGraph2DConfigurationPanel {

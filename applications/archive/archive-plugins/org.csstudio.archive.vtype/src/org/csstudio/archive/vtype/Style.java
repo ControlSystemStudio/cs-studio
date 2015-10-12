@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** User-selected style for formatting {@link VType}
  *  @author Kay Kasemir
