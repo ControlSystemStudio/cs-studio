@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.csstudio.simplepv.AbstractPVFactory;
 import org.csstudio.simplepv.IPV;
 import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.CompositeDataSourceConfiguration;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.loc.LocalDataSource;
 import org.diirt.datasource.sim.SimulationDataSource;
@@ -35,7 +36,8 @@ public class TestHelper
         final CompositeDataSource sources = new CompositeDataSource();
         sources.putDataSource("sim", new SimulationDataSource());
         sources.putDataSource("loc", new LocalDataSource());
-        sources.setDefaultDataSource("sim");
+        CompositeDataSourceConfiguration conf = new CompositeDataSourceConfiguration(TestHelper.class.getResourceAsStream("datasource.xml"));
+        sources.setConfiguration(conf);
         PVManager.setDefaultDataSource(sources);
     }
 
