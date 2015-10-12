@@ -20,10 +20,33 @@
       </editor>
    </extension>
    <extension
-         point="org.eclipse.ui.intro.configExtension">
-      <configExtension
-            content="intro/firststeps.xml"
-            configId="org.eclipse.ui.intro.universalConfig">
-      </configExtension>
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.opibuilder.runmode.OPIPerspective"
+            icon="icons/OPIBuilder.png"
+            id="org.csstudio.opibuilder.OPIRuntime.perspective"
+            name="OPI Runtime">
+      </perspective>
    </extension>
+   <!--extension
+         point="org.eclipse.ui.popupMenus">
+		<objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.openRuntimePerspective"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractBaseEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.OpenOPIRuntimePerspectiveAction"
+               icon="icons/OPIRunner.png"
+               id="org.csstudio.opibuilder.openRuntimePerspective"
+               label="OPI Runtime Perspective"
+               menubarPath="ui">
+         </action>
+         <visibility>
+            <objectState
+                  name="executionMode"
+                  value="RUN_MODE">
+            </objectState>
+         </visibility>
+      </objectContribution>
+   </extension-->
 </fragment>
