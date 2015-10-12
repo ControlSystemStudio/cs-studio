@@ -14,6 +14,5 @@
     <child location="../ui/ui-repository/target/repository"/>
     <child location="../unorganized/unorganized-repository/target/repository"/>
     <child location="../utility/utility-repository/target/repository"/>
-    <child location="../diirt/diirt-repository/target/repository"/>
   </children>
 </repository>
