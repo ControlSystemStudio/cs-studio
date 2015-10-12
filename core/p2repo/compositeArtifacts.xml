@@ -7,8 +7,9 @@
     <!-- get new time w/ `date +%s000` -->
     <property name="p2.timestamp" value="1395756034000"/>
   </properties>
-  <children size="5">
+  <children size="6">
     <child location="../base/base-repository/target/repository"/>
+    <child location="../diirt/diirt-repository/target/repository"/>
     <child location="../platform/platform-repository/target/repository"/>
     <child location="../ui/ui-repository/target/repository"/>
     <child location="../unorganized/unorganized-repository/target/repository"/>
