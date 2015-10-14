@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: CSS Widgets
 Bundle-Description: Widgets figure for draw2d and SWT applications.
 Bundle-SymbolicName: org.csstudio.swt.widgets
-Bundle-Version: 2.1.3.qualifier
+Bundle-Version: 2.1.4.qualifier
 Bundle-Activator: org.csstudio.swt.widgets.Activator
 Bundle-Vendor: Xihui Chen<chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.ui;resolution:=optional,
