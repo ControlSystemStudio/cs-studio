@@ -8,6 +8,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.junit;bundle-version="4.8.2",
  org.csstudio.utility.test
 Import-Package: org.csstudio.vtype.pv,
- org.epics.pvmanager.jca,
- org.epics.pvmanager.loc
+ org.diirt.datasource.loc,
+ org.diirt.support.ca;version="3.0.1"
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS

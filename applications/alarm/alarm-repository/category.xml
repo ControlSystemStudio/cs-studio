@@ -3,9 +3,6 @@
    <feature id="org.csstudio.alarm.beast.ui.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
-   <feature id="org.csstudio.alarm.beast.ui.rap.feature">
-      <category name="org.csstudio.category.applications"/>
-   </feature>
    <feature id="org.csstudio.alarm.beast.tools.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>

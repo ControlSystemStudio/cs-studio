@@ -9,8 +9,8 @@ package org.csstudio.archive.engine.model;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.vtype.ArchiveVNumber;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
 import org.junit.Test;
 
 /** [Headless] JUnit write thread tests, writing from a queue with fake samples.

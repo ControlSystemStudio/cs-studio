@@ -1,8 +1,8 @@
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
-import org.epics.pvmanager.ChannelHandler;
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.PVManager;
+import org.diirt.datasource.ChannelHandler;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.PVManager;
 
 public class DataSourceChannel implements Comparable<DataSourceChannel> {
     private final String dataSource;
@@ -22,7 +22,7 @@ public class DataSourceChannel implements Comparable<DataSourceChannel> {
     }
 
     private String getDelimiter() {
-        return ((CompositeDataSource) PVManager.getDefaultDataSource()).getDelimiter();
+        return ((CompositeDataSource) PVManager.getDefaultDataSource()).getConfiguration().getDelimiter();
     }
 
     public String getFullChannelName() {

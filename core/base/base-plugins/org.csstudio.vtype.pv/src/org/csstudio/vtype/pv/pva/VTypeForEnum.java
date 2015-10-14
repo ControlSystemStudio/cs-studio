@@ -11,9 +11,9 @@ import java.util.List;
 
 import org.epics.pvdata.pv.PVInt;
 import org.epics.pvdata.pv.PVStructure;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VType;
-import org.epics.vtype.VTypeToString;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.VTypeToString;
 
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir

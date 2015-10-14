@@ -8,12 +8,12 @@
 package org.csstudio.display.pvtable.model;
 
 import org.csstudio.vtype.pv.PV;
-import org.epics.vtype.VDouble;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VFloat;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VString;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VDouble;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VFloat;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VType;
 
 /** Saved value of a scalar table item
  *  @author Kay Kasemir

@@ -14,7 +14,7 @@ import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanDataIterator;
 import org.csstudio.scan.data.ScanSample;
 import org.csstudio.scan.data.ScanSampleFormatter;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** Context in which a {@link ScriptCommand}'s script is executed
  *

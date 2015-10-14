@@ -19,8 +19,8 @@ import org.csstudio.simplepv.IPVListener;
 import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.AbstractMarkedWidgetFigure;
 import org.eclipse.draw2d.IFigure;
-import org.epics.vtype.Display;
-import org.epics.vtype.VType;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VType;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractMarkedWidgetModel}.

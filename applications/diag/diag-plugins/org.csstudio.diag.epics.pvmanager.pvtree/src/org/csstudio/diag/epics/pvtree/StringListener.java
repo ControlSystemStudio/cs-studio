@@ -9,9 +9,9 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.util.logging.Level;
 
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.VType;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.vtype.VType;
 
 /** {@link IPVListener} that extracts text from value.
  *

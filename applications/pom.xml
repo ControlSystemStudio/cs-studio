@@ -16,14 +16,14 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>0.22.0</tycho.version>
-    <tycho-extras.version>0.22.0</tycho-extras.version>
+    <tycho.version>0.23.1</tycho.version>
+    <tycho-extras.version>0.23.1</tycho-extras.version>
     <cs-studio.version>4.2</cs-studio.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.2</cs-studio-central.url>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20140114142710/repository</orbit-site>
-    <rap-e4-site>${eclipse.central.url}/rt/rap/incubator/nightly/e4/target/site</rap-e4-site>
+    <rap-e4-site>${eclipse.central.url}/rt/rap/incubator/3.0/e4/target/site</rap-e4-site>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
@@ -67,7 +67,7 @@
         <eclipse-site>${eclipse.mirror.url}/releases/mars</eclipse-site>
         <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.5</eclipse-update-site>
         <rap-site>${eclipse.mirror.url}/rt/rap/3.0</rap-site>
-        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/nightly/gef/20150122-1538</rap-gef-site>
+        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/nightly/gef/20150327-1849</rap-gef-site>
         <platform-version>[4.4,4.5)</platform-version>
         <swtbot-site>${eclipse.central.url}/technology/swtbot/mars/dev-build/update-site</swtbot-site>
       </properties>
@@ -155,6 +155,11 @@
         </property>
       </activation>
       <repositories>
+        <repository>
+          <id>diirt</id>
+          <url>http://diirt.download.controlsystemstudio.org/diirt/3.0.1</url>
+          <layout>p2</layout>
+        </repository>
         <repository>
           <id>csstudio-thirdparty</id>
           <url>http://download.controlsystemstudio.org/thirdparty/4.2</url>

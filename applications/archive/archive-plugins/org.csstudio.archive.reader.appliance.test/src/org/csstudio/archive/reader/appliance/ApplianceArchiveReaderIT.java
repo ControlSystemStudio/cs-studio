@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.vtype.ArchiveVNumber;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /**

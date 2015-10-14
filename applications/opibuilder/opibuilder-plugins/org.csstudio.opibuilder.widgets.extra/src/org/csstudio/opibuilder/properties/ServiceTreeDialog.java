@@ -20,9 +20,9 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.pvmanager.service.Service;
-import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.pvmanager.service.ServiceRegistry;
+import org.diirt.service.Service;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceRegistry;
 
 import static org.csstudio.opibuilder.properties.ServiceMethodDescription.createServiceMethodDescription;
 /**
@@ -53,7 +53,7 @@ public class ServiceTreeDialog extends Dialog{
     fd_serviceTreeWidget.right = new FormAttachment(100);
     serviceTreeWidget.setLayoutData(fd_serviceTreeWidget);
     List<String> serviceNames = new ArrayList<String>(ServiceRegistry
-        .getDefault().listServices());
+        .getDefault().getRegisteredServiceNames());
     Collections.sort(serviceNames);
     List<Service> services = new ArrayList<Service>();
     for (String serviceName : serviceNames) {

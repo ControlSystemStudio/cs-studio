@@ -14,7 +14,7 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.eclipse.osgi.util.NLS;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Leaf item in the alarm configuration tree which refers to a PV,
  *  tracking the current and alarm state, value, timestamp info

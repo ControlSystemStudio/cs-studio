@@ -1,19 +1,19 @@
 package org.csstudio.diag.pvmanager.probe;
 
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.Enum;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.SimpleValueFormat;
+import org.diirt.vtype.Time;
+import org.diirt.vtype.ValueFormat;
+import org.diirt.vtype.ValueUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.epics.util.time.TimestampFormat;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Enum;
-import org.epics.vtype.SimpleValueFormat;
-import org.epics.vtype.Time;
-import org.epics.vtype.ValueFormat;
-import org.epics.vtype.ValueUtil;
+import org.diirt.util.time.TimestampFormat;
 
 /**
  * Probe panel that allows to show the value.

@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.epics.vtype.VTable;
+import org.diirt.vtype.VTable;
 
 /**
  * Basic ui component that can display a VTable on screen.

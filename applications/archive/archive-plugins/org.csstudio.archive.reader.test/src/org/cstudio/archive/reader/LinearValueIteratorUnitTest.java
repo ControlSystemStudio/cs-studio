@@ -18,12 +18,12 @@ import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VString;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 import org.junit.Test;
 
 /** JUnit test of the {@link LinearValueIterator}

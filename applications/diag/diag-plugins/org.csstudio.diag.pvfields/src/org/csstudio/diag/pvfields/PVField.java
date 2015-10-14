@@ -7,17 +7,17 @@
  ******************************************************************************/
 package org.csstudio.diag.pvfields;
 
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vType;
-import static org.epics.util.time.TimeDuration.ofMillis;
-import static org.epics.util.time.TimeDuration.ofSeconds;
+import static org.diirt.datasource.ExpressionLanguage.latestValueOf;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vType;
+import static org.diirt.util.time.TimeDuration.ofMillis;
+import static org.diirt.util.time.TimeDuration.ofSeconds;
 
 import org.csstudio.diag.pvfields.model.PVFieldListener;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.vtype.VType;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.vtype.VType;
 
 /** Field of a record, providing original and current value.
  *
