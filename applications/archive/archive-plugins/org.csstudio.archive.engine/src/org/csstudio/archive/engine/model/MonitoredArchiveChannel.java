@@ -11,7 +11,7 @@ import java.util.logging.Level;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine.Activator;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** An ArchiveChannel that stores each incoming value.
  *  @author Kay Kasemir

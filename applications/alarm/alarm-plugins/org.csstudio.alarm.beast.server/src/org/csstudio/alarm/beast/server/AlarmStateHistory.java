@@ -8,7 +8,7 @@
 package org.csstudio.alarm.beast.server;
 
 import org.csstudio.apputil.ringbuffer.RingBuffer;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Ring buffer of AlarmState entries with time stamp that
  *  can check for N errors within some time

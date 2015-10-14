@@ -19,7 +19,7 @@ import org.epics.pvdata.misc.BitSet;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Status;
 import org.epics.pvdata.pv.Structure;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** A {@link ChannelGetRequester} for reading a value from a {@link PVA_PV},
  *  indicating completion via a {@link Future}

@@ -1,27 +1,27 @@
 /**
- *
+ * 
  */
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
+import static org.diirt.datasource.formula.ExpressionLanguage.formula;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.List;
 
+import org.diirt.datasource.graphene.ExpressionLanguage;
+import org.diirt.datasource.graphene.Graph2DResult;
+import org.diirt.datasource.graphene.IntensityGraph2DExpression;
+import org.diirt.graphene.IntensityGraph2DRenderer;
+import org.diirt.graphene.IntensityGraph2DRendererUpdate;
+import org.diirt.graphene.NumberColorMap;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.IntensityGraph2DRenderer;
-import org.epics.graphene.IntensityGraph2DRendererUpdate;
-import org.epics.graphene.NumberColorMap;
-import org.epics.pvmanager.graphene.ExpressionLanguage;
-import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.IntensityGraph2DExpression;
 
 /**
  * @author shroffk

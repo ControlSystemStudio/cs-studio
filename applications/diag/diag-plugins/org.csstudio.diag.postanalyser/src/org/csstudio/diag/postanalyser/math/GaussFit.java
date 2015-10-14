@@ -2,7 +2,7 @@ package org.csstudio.diag.postanalyser.math;
 
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.diag.postanalyser.Messages;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 import org.teneighty.lm.CostFunction;
 import org.teneighty.lm.LevenbergMarquardt;
 

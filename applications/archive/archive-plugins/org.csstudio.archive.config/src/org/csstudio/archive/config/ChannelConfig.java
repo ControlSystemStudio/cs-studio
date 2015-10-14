@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.config;
 
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Configuration of a channel
  *  @author Kay Kasemir

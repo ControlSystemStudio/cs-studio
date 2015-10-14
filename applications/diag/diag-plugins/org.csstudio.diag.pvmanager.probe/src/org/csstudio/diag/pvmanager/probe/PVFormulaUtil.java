@@ -1,8 +1,8 @@
 package org.csstudio.diag.pvmanager.probe;
 
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.DataSource;
-import org.epics.pvmanager.PVManager;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.DataSource;
+import org.diirt.datasource.PVManager;
 
 public class PVFormulaUtil {
 
@@ -15,9 +15,9 @@ public class PVFormulaUtil {
         String pvName = channel;
         if (defaultDS instanceof CompositeDataSource) {
             CompositeDataSource composite = (CompositeDataSource) defaultDS;
-            if (!pvName.contains(composite.getDelimiter())) {
-                pvName = composite.getDefaultDataSource()
-                        + composite.getDelimiter() + pvName;
+            if (!pvName.contains(composite.getConfiguration().getDelimiter())) {
+                pvName = composite.getConfiguration().getDefaultDataSource()
+                        + composite.getConfiguration().getDelimiter() + pvName;
             }
         }
 

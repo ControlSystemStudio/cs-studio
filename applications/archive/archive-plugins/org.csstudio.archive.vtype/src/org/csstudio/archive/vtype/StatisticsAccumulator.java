@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.archive.vtype;
 
-import org.epics.vtype.Statistics;
+import org.diirt.vtype.Statistics;
 
 /** Accumulator that tracks the {@link Statistics} of received values
  *  @author Kay Kasemir

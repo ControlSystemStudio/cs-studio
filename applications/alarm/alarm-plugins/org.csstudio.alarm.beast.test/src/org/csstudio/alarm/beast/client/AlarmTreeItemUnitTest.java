@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit Test of AlarmTreeItem

@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** (Headless) JUnit Plug-in demo of Plot

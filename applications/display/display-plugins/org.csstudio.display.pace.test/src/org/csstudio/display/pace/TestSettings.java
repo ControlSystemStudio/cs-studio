@@ -7,10 +7,14 @@
  ******************************************************************************/
 package org.csstudio.display.pace;
 
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.jca.JCADataSource;
-import org.epics.pvmanager.loc.LocalDataSource;
+import java.io.InputStream;
+
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.CompositeDataSourceConfiguration;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.loc.LocalDataSource;
+import org.diirt.support.ca.JCADataSource;
+import org.diirt.support.ca.JCADataSourceConfiguration;
 
 /** Settings for unit tests
  *
@@ -36,8 +40,10 @@ public class TestSettings
 
         final CompositeDataSource sources = new CompositeDataSource();
         sources.putDataSource("loc", new LocalDataSource());
-        sources.putDataSource("ca", new JCADataSource());
-        sources.setDefaultDataSource("ca");
+        JCADataSourceConfiguration jcaConf = new JCADataSourceConfiguration().read(TestSettings.class.getResourceAsStream("ca.xml"));
+        sources.putDataSource("ca", jcaConf.create());
+        CompositeDataSourceConfiguration conf = new CompositeDataSourceConfiguration(TestSettings.class.getResourceAsStream("datasource.xml"));
+        sources.setConfiguration(conf);
         PVManager.setDefaultDataSource(sources);
     }
 }

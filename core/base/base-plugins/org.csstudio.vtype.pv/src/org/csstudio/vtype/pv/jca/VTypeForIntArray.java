@@ -12,12 +12,12 @@ import gov.aps.jca.dbr.GR;
 
 import java.util.List;
 
-import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ListInt;
-import org.epics.vtype.ArrayDimensionDisplay;
-import org.epics.vtype.VIntArray;
-import org.epics.vtype.VTypeToString;
-import org.epics.vtype.ValueUtil;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.util.array.ListInt;
+import org.diirt.vtype.ArrayDimensionDisplay;
+import org.diirt.vtype.VIntArray;
+import org.diirt.vtype.VTypeToString;
+import org.diirt.vtype.ValueUtil;
 
 /** Wrap DBR as VType
  *

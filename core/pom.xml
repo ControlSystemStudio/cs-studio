@@ -16,8 +16,8 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>0.22.0</tycho.version>
-    <tycho-extras.version>0.22.0</tycho-extras.version>
+    <tycho.version>0.23.1</tycho.version>
+    <tycho-extras.version>0.23.1</tycho-extras.version>
     <cs-studio.version>4.2</cs-studio.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/core/4.2</cs-studio-central.url>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
@@ -155,6 +155,11 @@
         </property>
       </activation>
       <repositories>
+        <repository>
+          <id>diirt</id>
+          <url>http://diirt.download.controlsystemstudio.org/diirt/3.0.1</url>
+          <layout>p2</layout>
+        </repository>
         <repository>
           <id>csstudio-thirdparty</id>
           <url>http://download.controlsystemstudio.org/thirdparty/4.2</url>

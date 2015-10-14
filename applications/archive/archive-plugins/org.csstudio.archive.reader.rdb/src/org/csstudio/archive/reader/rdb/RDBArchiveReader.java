@@ -23,8 +23,8 @@ import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
 
 /** ArchiveReader for RDB data
  *  @author Kay Kasemir

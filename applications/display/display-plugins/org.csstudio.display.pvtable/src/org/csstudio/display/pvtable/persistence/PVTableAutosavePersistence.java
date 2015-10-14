@@ -24,7 +24,7 @@ import org.csstudio.display.pvtable.model.SavedArrayValue;
 import org.csstudio.display.pvtable.model.SavedScalarValue;
 import org.csstudio.display.pvtable.model.SavedValue;
 import org.csstudio.display.pvtable.model.TimestampHelper;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Persist PVTableModel as EPICS Autosave file
  *  <p>

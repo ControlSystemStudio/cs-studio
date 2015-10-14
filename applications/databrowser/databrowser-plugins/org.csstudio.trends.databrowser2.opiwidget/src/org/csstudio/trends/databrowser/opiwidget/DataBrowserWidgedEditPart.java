@@ -20,7 +20,6 @@ import java.util.logging.Logger;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.swt.rtplot.RTPlotListener;
-import org.csstudio.swt.rtplot.RTPlotListener;
 import org.csstudio.swt.rtplot.Trace;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
 import org.csstudio.trends.databrowser2.model.Model;
@@ -30,17 +29,17 @@ import org.csstudio.trends.databrowser2.ui.Controller;
 import org.csstudio.trends.databrowser2.ui.ModelBasedPlot;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
+import org.diirt.datasource.ExpressionLanguage;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVWriter;
+import org.diirt.util.array.ArrayDouble;
+import org.diirt.util.array.ListDouble;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
-import org.epics.pvmanager.ExpressionLanguage;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ListDouble;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
 
 /** EditPart that interfaces between the {@link DataBrowserWidgetFigure} visible on the screen
  *  and the {@link DataBrowserWidgedModel} that stores the persistent configuration.

@@ -21,7 +21,7 @@ import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.eclipse.osgi.util.NLS;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Base class for items in the <u>client's</u> alarm configuration tree.
  *  <p>

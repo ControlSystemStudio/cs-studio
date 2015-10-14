@@ -68,7 +68,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /**
  * Main Eclipse ViewPart of the Probe plug-in.
@@ -133,7 +133,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     /** Most recent value of the pv */
     private final ValueInfo value = new ValueInfo();
 
-    private final NumberFormat period_format;
+    private final NumberFormat period_format = NumberFormat.getNumberInstance();
 
     /** Is this a new channel where we never received a value? */
     private boolean new_channel = true;
@@ -154,12 +154,12 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
         lbl_time.setText(value.getTimeText());
         new_value.setText(value.getValueString());
 
-        final Optional<org.epics.vtype.Display> display_info = value.getDisplayInfo();
+        final Optional<org.diirt.vtype.Display> display_info = value.getDisplayInfo();
         if (display_info.isPresent())
         {   // Configure on first value from new channel
             if (new_channel)
             {
-                final org.epics.vtype.Display meta = display_info.get();
+                final org.diirt.vtype.Display meta = display_info.get();
                 if (meta.getLowerDisplayLimit() < meta.getUpperDisplayLimit())
                 {
                     meter.configure(meta.getLowerDisplayLimit(),
@@ -229,7 +229,6 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
 
     public Probe()
     {
-        period_format = NumberFormat.getNumberInstance();
         period_format.setMinimumFractionDigits(2);
         period_format.setMaximumFractionDigits(2);
     }

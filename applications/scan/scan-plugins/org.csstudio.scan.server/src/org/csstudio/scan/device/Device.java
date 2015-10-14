@@ -18,8 +18,8 @@ package org.csstudio.scan.device;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VType;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VType;
 
 /** Base interface for all devices
  *

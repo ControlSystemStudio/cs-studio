@@ -33,9 +33,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
-import org.epics.pvmanager.service.Service;
-import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.pvmanager.service.ServiceRegistry;
+import org.diirt.service.Service;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceRegistry;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
@@ -408,7 +408,7 @@ public class ServiceMethodWidget extends BeanComposite {
     if (services == null) {
         services = new HashMap<String, Service>();
         ArrayList<String> serviceNames = new ArrayList<String>(
-            ServiceRegistry.getDefault().listServices());
+            ServiceRegistry.getDefault().getRegisteredServiceNames());
         Collections.sort(serviceNames);
         for (String serviceName : serviceNames) {
         services.put(serviceName, ServiceRegistry.getDefault()

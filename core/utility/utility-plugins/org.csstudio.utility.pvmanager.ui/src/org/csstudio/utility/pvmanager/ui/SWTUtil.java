@@ -10,7 +10,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Widget;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.WorkbenchPart;
-import org.epics.vtype.VImage;
+import org.diirt.vtype.VImage;
 
 public class SWTUtil {
     private SWTUtil() {
