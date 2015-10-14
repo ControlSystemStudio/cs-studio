@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
