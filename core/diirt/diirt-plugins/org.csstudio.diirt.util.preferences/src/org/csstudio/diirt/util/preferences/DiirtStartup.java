@@ -43,7 +43,7 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
     @Override
     public boolean preWindowShellClose() {
         log.fine("DIIRT: preWindowShellClose");
-        return false;
+        return true;
     }
 
     @Override

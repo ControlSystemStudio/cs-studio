@@ -133,11 +133,7 @@ public class Probe extends ViewPart implements PVListener, ISelectionProvider
     /** Most recent value of the pv */
     private final ValueInfo value = new ValueInfo();
 
-<<<<<<< HEAD
     private final NumberFormat period_format = NumberFormat.getNumberInstance();
-=======
-    private final NumberFormat period_format = NumberFormat.getNumberInstance();;
->>>>>>> refs/remotes/origin/master
 
     /** Is this a new channel where we never received a value? */
     private boolean new_channel = true;
