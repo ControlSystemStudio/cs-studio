@@ -8,4 +8,4 @@ Export-Package: org.csstudio.platform.utility.rdb
 Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Description: Helper for connecting to various RDB dialects
-Require-Bundle: com.mysql.jdbc;bundle-version="5.1.32"
+Require-Bundle: org.csstudio.platform.libs.jdbc;bundle-version="1.4.0"
