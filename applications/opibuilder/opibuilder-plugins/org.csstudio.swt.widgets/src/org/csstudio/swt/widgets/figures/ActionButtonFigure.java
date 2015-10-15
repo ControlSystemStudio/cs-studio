@@ -27,7 +27,7 @@ import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.SWTConstants;
 import org.csstudio.ui.util.Draw2dSingletonUtil;
 import org.eclipse.core.runtime.IPath;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FocusEvent;
@@ -643,8 +643,8 @@ public class ActionButtonFigure extends Figure implements Introspectable, ITextF
          * Regular button scheme
      */
     ButtonScheme BUTTON = new ButtonScheme(
-            new Color[] {buttonLightest},
-            new Color[] {buttonDarker}
+            new Color[] {ColorConstants.buttonLightest},
+            new Color[] {ColorConstants.buttonDarker}
     );
     /**
      * Constructs a ButtonBorder with a predefined button scheme set as its default.

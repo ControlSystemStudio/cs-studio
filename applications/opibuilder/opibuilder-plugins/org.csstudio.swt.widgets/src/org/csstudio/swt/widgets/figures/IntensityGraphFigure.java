@@ -32,7 +32,7 @@ import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.SWTConstants;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;

@@ -9,11 +9,11 @@ package org.csstudio.swt.widgets.figures;
 
 import org.csstudio.swt.widgets.Activator;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
+import org.csstudio.ui.util.ColorConstants;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ButtonModel;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
