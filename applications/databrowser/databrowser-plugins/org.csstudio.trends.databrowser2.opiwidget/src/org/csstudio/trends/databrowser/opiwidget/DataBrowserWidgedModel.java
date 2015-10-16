@@ -51,7 +51,7 @@ public class DataBrowserWidgedModel extends AbstractContainerModel
     final public static String PROP_FILENAME = "filename";
 
 //    TODO Add these properties again when they can be correctly initialized form the .plt file
-//    
+//
 //    /** Property to show/hide the toolbar */
 //    public static final String PROP_SHOW_TOOLBAR = "show_toolbar";
 //

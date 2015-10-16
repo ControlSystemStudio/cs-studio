@@ -129,7 +129,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart imp
     private List<ScriptData> scriptDataList;
 
     protected Map<String, ConnectionAnchor> anchorMap;
-    
+
     private boolean hasStartedPVs = false;
 
     public AbstractBaseEditPart() {

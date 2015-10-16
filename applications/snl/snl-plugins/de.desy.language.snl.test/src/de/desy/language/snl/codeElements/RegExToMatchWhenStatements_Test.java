@@ -11,16 +11,16 @@ import org.junit.Test;
 
 /**
  * A test to exam a pattern to match when statements.
- * 
+ *
  * Attention: This pattern does not match a statement with following chars
  * behind the statement.
- * 
+ *
  * The pattern:
- * 
+ *
  * <pre>
  * (when)(\\s*\\()([\\S\\s]*[0-9a-zA-Z]*)(\\)\\s*\\{)([\\S\\s]*)(\\}\\s*state\\s*)([\\S\\s]*[a-zA-Z][0-9a-zA-Z]*)([;]?)
  * </pre>
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class RegExToMatchWhenStatements_Test extends TestCase {
