@@ -6,23 +6,23 @@ import org.diirt.datasource.PVManager;
 
 public class PVFormulaUtil {
 
-	public static String channelWithDataSource(String channel) {
-		if (channel == null) {
-			return null;
-		}
+    public static String channelWithDataSource(String channel) {
+        if (channel == null) {
+            return null;
+        }
 
-		DataSource defaultDS = PVManager.getDefaultDataSource();
-		String pvName = channel;
-		if (defaultDS instanceof CompositeDataSource) {
-			CompositeDataSource composite = (CompositeDataSource) defaultDS;
-			if (!pvName.contains(composite.getConfiguration().getDelimiter())) {
-				pvName = composite.getConfiguration().getDefaultDataSource()
-						+ composite.getConfiguration().getDelimiter() + pvName;
-			}
-		}
+        DataSource defaultDS = PVManager.getDefaultDataSource();
+        String pvName = channel;
+        if (defaultDS instanceof CompositeDataSource) {
+            CompositeDataSource composite = (CompositeDataSource) defaultDS;
+            if (!pvName.contains(composite.getConfiguration().getDelimiter())) {
+                pvName = composite.getConfiguration().getDefaultDataSource()
+                        + composite.getConfiguration().getDelimiter() + pvName;
+            }
+        }
 
-		return pvName;
-	}
+        return pvName;
+    }
 
 
 }

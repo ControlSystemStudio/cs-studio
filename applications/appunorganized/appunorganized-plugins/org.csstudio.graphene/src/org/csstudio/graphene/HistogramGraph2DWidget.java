@@ -29,304 +29,304 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
 
 public class HistogramGraph2DWidget
-		extends
-		AbstractGraph2DWidget<AreaGraph2DRendererUpdate, HistogramGraph2DExpression>
-		implements ISelectionProvider {
+        extends
+        AbstractGraph2DWidget<AreaGraph2DRendererUpdate, HistogramGraph2DExpression>
+        implements ISelectionProvider {
 
-	private PVWriter<Object> selectionValueWriter;
+    private PVWriter<Object> selectionValueWriter;
 
-	private boolean highlightSelectionValue = false;
+    private boolean highlightSelectionValue = false;
 
-	private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
+    private static final String MEMENTO_HIGHLIGHT_SELECTION_VALUE = "highlightSelectionValue"; //$NON-NLS-1$
 
-	private MouseMoveListener hoverSelection = new MouseMoveListener() {
+    private MouseMoveListener hoverSelection = new MouseMoveListener() {
 
-		@Override
-		public void mouseMove(MouseEvent e) {
-			if (isHighlightSelectionValue() && getGraph() != null) {
-				getGraph().update(getGraph().newUpdate().focusPixel(e.x));
-			}
-		}
-	};
+        @Override
+        public void mouseMove(MouseEvent e) {
+            if (isHighlightSelectionValue() && getGraph() != null) {
+                getGraph().update(getGraph().newUpdate().focusPixel(e.x));
+            }
+        }
+    };
 
-	private ClickSelectionMethodListener clickSelection = new ClickSelectionMethodListener();
+    private ClickSelectionMethodListener clickSelection = new ClickSelectionMethodListener();
 
-	private class ClickSelectionMethodListener implements MouseListener, MouseMoveListener {
+    private class ClickSelectionMethodListener implements MouseListener, MouseMoveListener {
 
-		@Override
-		public void mouseMove(MouseEvent e) {
-			if ((e.stateMask & SWT.BUTTON1) != 0) {
-				if (isHighlightSelectionValue() && getGraph() != null) {
-					getGraph().update(getGraph().newUpdate().focusPixel(e.x));
-				}
-			}
+        @Override
+        public void mouseMove(MouseEvent e) {
+            if ((e.stateMask & SWT.BUTTON1) != 0) {
+                if (isHighlightSelectionValue() && getGraph() != null) {
+                    getGraph().update(getGraph().newUpdate().focusPixel(e.x));
+                }
+            }
 
-		}
+        }
 
-		@Override
-		public void mouseDoubleClick(MouseEvent e) {
-		}
+        @Override
+        public void mouseDoubleClick(MouseEvent e) {
+        }
 
-		@Override
-		public void mouseDown(MouseEvent e) {
-			if (isHighlightSelectionValue() && getGraph() != null && e.button == 1) {
-				getGraph().update(getGraph().newUpdate().focusPixel(e.x));
-			}
-		}
+        @Override
+        public void mouseDown(MouseEvent e) {
+            if (isHighlightSelectionValue() && getGraph() != null && e.button == 1) {
+                getGraph().update(getGraph().newUpdate().focusPixel(e.x));
+            }
+        }
 
-		@Override
-		public void mouseUp(MouseEvent e) {
-		}
+        @Override
+        public void mouseUp(MouseEvent e) {
+        }
 
-	}
+    }
 
 
     /**
      * Creates a new widget.
      *
      * @param parent
-     *            the parent
+     *        the parent
      * @param style
-     *            the style
+     *        the style
      */
     public HistogramGraph2DWidget(Composite parent, int style) {
-    	super(parent, style);
-		addPropertyChangeListener(new PropertyChangeListener() {
+    super(parent, style);
+        addPropertyChangeListener(new PropertyChangeListener() {
 
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
-					getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
-				}
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("highlightSelectionValue") && getGraph() != null) {
+                    getGraph().update(getGraph().newUpdate().highlightFocusValue((Boolean) evt.getNewValue()));
+                }
 
-			}
-		});
-		getImageDisplay().addMouseMoveListener(hoverSelection);
+            }
+        });
+        getImageDisplay().addMouseMoveListener(hoverSelection);
 
-		addPropertyChangeListener(new PropertyChangeListener() {
+        addPropertyChangeListener(new PropertyChangeListener() {
 
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals("selectionValuePv") && getGraph() != null) {
-					if (selectionValueWriter != null) {
-						selectionValueWriter.close();
-						selectionValueWriter = null;
-					}
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("selectionValuePv") && getGraph() != null) {
+                    if (selectionValueWriter != null) {
+                        selectionValueWriter.close();
+                        selectionValueWriter = null;
+                    }
 
-					if (getSelectionValuePv() == null || getSelectionValuePv().trim().isEmpty()) {
-						return;
-					}
+                    if (getSelectionValuePv() == null || getSelectionValuePv().trim().isEmpty()) {
+                        return;
+                    }
 
-					selectionValueWriter = PVManager.write(formula(getSelectionValuePv()))
-							.writeListener(new PVWriterListener<Object>() {
-								@Override
-								public void pvChanged(
-										PVWriterEvent<Object> event) {
-									if (event.isWriteFailed()) {
-										Logger.getLogger(BubbleGraph2DWidget.class.getName())
-										.log(Level.WARNING, "Line graph selection notification failed", event.getPvWriter().lastWriteException());
-									}
-								}
-							})
-							.async();
-					if (getSelectionValue() != null) {
-						selectionValueWriter.write(getSelectionValue());
-					}
+                    selectionValueWriter = PVManager.write(formula(getSelectionValuePv()))
+                            .writeListener(new PVWriterListener<Object>() {
+                                @Override
+                                public void pvChanged(
+                                        PVWriterEvent<Object> event) {
+                                    if (event.isWriteFailed()) {
+                                        Logger.getLogger(BubbleGraph2DWidget.class.getName())
+                                        .log(Level.WARNING, "Line graph selection notification failed", event.getPvWriter().lastWriteException());
+                                    }
+                                }
+                            })
+                            .async();
+                    if (getSelectionValue() != null) {
+                        selectionValueWriter.write(getSelectionValue());
+                    }
 
-				}
+                }
 
-			}
-		});
-		addPropertyChangeListener(new PropertyChangeListener() {
+            }
+        });
+        addPropertyChangeListener(new PropertyChangeListener() {
 
-			@Override
-			public void propertyChange(PropertyChangeEvent evt) {
-				if (evt.getPropertyName().equals("selectionValue") && selectionValueWriter != null) {
-					if (getSelectionValue() != null) {
-						selectionValueWriter.write(getSelectionValue());
-					}
-				}
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                if (evt.getPropertyName().equals("selectionValue") && selectionValueWriter != null) {
+                    if (getSelectionValue() != null) {
+                        selectionValueWriter.write(getSelectionValue());
+                    }
+                }
 
-			}
-		});
+            }
+        });
     }
 
-	protected HistogramGraph2DExpression createGraph() {
-		HistogramGraph2DExpression graph = histogramGraphOf(formula(getDataFormula()));
-		graph.update(graph.newUpdate().highlightFocusValue(isHighlightSelectionValue()));
-		return graph;
-	}
+    protected HistogramGraph2DExpression createGraph() {
+        HistogramGraph2DExpression graph = histogramGraphOf(formula(getDataFormula()));
+        graph.update(graph.newUpdate().highlightFocusValue(isHighlightSelectionValue()));
+        return graph;
+    }
 
-	public boolean isHighlightSelectionValue() {
-		return highlightSelectionValue;
-	}
+    public boolean isHighlightSelectionValue() {
+        return highlightSelectionValue;
+    }
 
-	public void setHighlightSelectionValue(boolean highlightSelectionValue) {
-		boolean oldValue = this.highlightSelectionValue;
-		this.highlightSelectionValue = highlightSelectionValue;
-		changeSupport.firePropertyChange("highlightSelectionValue", oldValue, this.highlightSelectionValue);
-	}
+    public void setHighlightSelectionValue(boolean highlightSelectionValue) {
+        boolean oldValue = this.highlightSelectionValue;
+        this.highlightSelectionValue = highlightSelectionValue;
+        changeSupport.firePropertyChange("highlightSelectionValue", oldValue, this.highlightSelectionValue);
+    }
 
-	public void saveState(IMemento memento) {
-		super.saveState(memento);
-		memento.putBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE, isHighlightSelectionValue());
-	}
+    public void saveState(IMemento memento) {
+        super.saveState(memento);
+        memento.putBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE, isHighlightSelectionValue());
+    }
 
-	public void loadState(IMemento memento) {
-		super.loadState(memento);
-		if (memento != null) {
-			if (memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE) != null) {
-				setHighlightSelectionValue(memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE));
-			}
-		}
-	}
+    public void loadState(IMemento memento) {
+        super.loadState(memento);
+        if (memento != null) {
+            if (memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE) != null) {
+                setHighlightSelectionValue(memento.getBoolean(MEMENTO_HIGHLIGHT_SELECTION_VALUE));
+            }
+        }
+    }
 
-	private VNumberArray selectionValue;
-	private String selectionValuePv;
-	private MouseSelectionMethod mouseSelectionMethod = MouseSelectionMethod.HOVER;
+    private VNumberArray selectionValue;
+    private String selectionValuePv;
+    private MouseSelectionMethod mouseSelectionMethod = MouseSelectionMethod.HOVER;
 
-	public String getSelectionValuePv() {
-		return selectionValuePv;
-	}
+    public String getSelectionValuePv() {
+        return selectionValuePv;
+    }
 
-	public void setSelectionValuePv(String selectionValuePv) {
-		String oldValue = this.selectionValuePv;
-		this.selectionValuePv = selectionValuePv;
-		changeSupport.firePropertyChange("selectionValuePv", oldValue, this.selectionValuePv);
-	}
+    public void setSelectionValuePv(String selectionValuePv) {
+        String oldValue = this.selectionValuePv;
+        this.selectionValuePv = selectionValuePv;
+        changeSupport.firePropertyChange("selectionValuePv", oldValue, this.selectionValuePv);
+    }
 
-	public VNumberArray getSelectionValue() {
-		return selectionValue;
-	}
+    public VNumberArray getSelectionValue() {
+        return selectionValue;
+    }
 
-	private void setSelectionValue(VNumberArray selectionValue) {
-		VNumberArray oldValue = this.selectionValue;
-		this.selectionValue = selectionValue;
-		if (oldValue != this.selectionValue) {
-			changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
-		}
-	}
+    private void setSelectionValue(VNumberArray selectionValue) {
+        VNumberArray oldValue = this.selectionValue;
+        this.selectionValue = selectionValue;
+        if (oldValue != this.selectionValue) {
+            changeSupport.firePropertyChange("selectionValue", oldValue, this.selectionValue);
+        }
+    }
 
-	public MouseSelectionMethod getMouseSelectionMethod() {
-		return mouseSelectionMethod;
-	}
+    public MouseSelectionMethod getMouseSelectionMethod() {
+        return mouseSelectionMethod;
+    }
 
-	public void setMouseSelectionMethod(
-			MouseSelectionMethod mouseSelectionMethod) {
-		MouseSelectionMethod oldValue = this.mouseSelectionMethod;
-		this.mouseSelectionMethod = mouseSelectionMethod;
-		if (oldValue != this.mouseSelectionMethod) {
-			// Remove old listener
-			switch(oldValue) {
-			case CLICK:
-				getImageDisplay().removeMouseListener(clickSelection);
-				getImageDisplay().removeMouseMoveListener(clickSelection);
-				break;
-			case HOVER:
-				getImageDisplay().removeMouseMoveListener(hoverSelection);
-				break;
-			default:
-				break;
-			}
-			// Add new listener
-			switch(mouseSelectionMethod) {
-			case CLICK:
-				getImageDisplay().addMouseListener(clickSelection);
-				getImageDisplay().addMouseMoveListener(clickSelection);
-				break;
-			case HOVER:
-				getImageDisplay().addMouseMoveListener(hoverSelection);
-				break;
-			default:
-				break;
-			}
-			changeSupport.firePropertyChange("mouseSelectionMethod", oldValue, this.mouseSelectionMethod);
-		}
-	}
+    public void setMouseSelectionMethod(
+            MouseSelectionMethod mouseSelectionMethod) {
+        MouseSelectionMethod oldValue = this.mouseSelectionMethod;
+        this.mouseSelectionMethod = mouseSelectionMethod;
+        if (oldValue != this.mouseSelectionMethod) {
+            // Remove old listener
+            switch(oldValue) {
+            case CLICK:
+                getImageDisplay().removeMouseListener(clickSelection);
+                getImageDisplay().removeMouseMoveListener(clickSelection);
+                break;
+            case HOVER:
+                getImageDisplay().removeMouseMoveListener(hoverSelection);
+                break;
+            default:
+                break;
+            }
+            // Add new listener
+            switch(mouseSelectionMethod) {
+            case CLICK:
+                getImageDisplay().addMouseListener(clickSelection);
+                getImageDisplay().addMouseMoveListener(clickSelection);
+                break;
+            case HOVER:
+                getImageDisplay().addMouseMoveListener(hoverSelection);
+                break;
+            default:
+                break;
+            }
+            changeSupport.firePropertyChange("mouseSelectionMethod", oldValue, this.mouseSelectionMethod);
+        }
+    }
 
-	@Override
-	protected void processInit() {
-		super.processInit();
-		processValue();
-	}
+    @Override
+    protected void processInit() {
+        super.processInit();
+        processValue();
+    }
 
-	@Override
-	protected void processValue() {
-		Graph2DResult result = getCurrentResult();
-		if (result == null || result.getData() == null) {
-			setSelectionValue(null);
-		} else {
-			int index = result.focusDataIndex();
-			if (index == -1) {
-				setSelectionValue(null);
-			} else {
-				if (result.getData() instanceof VNumberArray) {
-					VNumberArray data = (VNumberArray) result.getData();
-					VNumberArray selection = ValueUtil.subArray(data, index);
-					setSelectionValue(selection);
-					return;
-				}
-				setSelectionValue(null);
-			}
-		}
-	}
+    @Override
+    protected void processValue() {
+        Graph2DResult result = getCurrentResult();
+        if (result == null || result.getData() == null) {
+            setSelectionValue(null);
+        } else {
+            int index = result.focusDataIndex();
+            if (index == -1) {
+                setSelectionValue(null);
+            } else {
+                if (result.getData() instanceof VNumberArray) {
+                    VNumberArray data = (VNumberArray) result.getData();
+                    VNumberArray selection = ValueUtil.subArray(data, index);
+                    setSelectionValue(selection);
+                    return;
+                }
+                setSelectionValue(null);
+            }
+        }
+    }
 
-	@Override
-	public ISelection getSelection() {
-		if (getDataFormula() != null) {
-			return new StructuredSelection(new HistogramGraph2DSelection(this));
-		}
-		return null;
-	}
+    @Override
+    public ISelection getSelection() {
+        if (getDataFormula() != null) {
+            return new StructuredSelection(new HistogramGraph2DSelection(this));
+        }
+        return null;
+    }
 
-	@Override
-	public void addSelectionChangedListener(
-			final ISelectionChangedListener listener) {
-	}
+    @Override
+    public void addSelectionChangedListener(
+            final ISelectionChangedListener listener) {
+    }
 
-	@Override
-	public void removeSelectionChangedListener(
-			ISelectionChangedListener listener) {
-	}
+    @Override
+    public void removeSelectionChangedListener(
+            ISelectionChangedListener listener) {
+    }
 
-	@Override
-	public void setSelection(ISelection selection) {
-		throw new UnsupportedOperationException("Not implemented yet");
-	}
+    @Override
+    public void setSelection(ISelection selection) {
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
 
-	private boolean configurable = true;
+    private boolean configurable = true;
 
-	private HistogramGraph2DConfigurationDialog dialog;
+    private HistogramGraph2DConfigurationDialog dialog;
 
-	@Override
-	public boolean isConfigurable() {
-		return this.configurable;
-	}
+    @Override
+    public boolean isConfigurable() {
+        return this.configurable;
+    }
 
-	@Override
-	public void setConfigurable(boolean configurable) {
-		boolean oldValue = this.configurable;
-		this.configurable = configurable;
-		changeSupport.firePropertyChange("configurable", oldValue,
-				this.configurable);
-	}
+    @Override
+    public void setConfigurable(boolean configurable) {
+        boolean oldValue = this.configurable;
+        this.configurable = configurable;
+        changeSupport.firePropertyChange("configurable", oldValue,
+                this.configurable);
+    }
 
-	@Override
-	public void openConfigurationDialog() {
-		if (dialog != null)
-			return;
-		dialog = new HistogramGraph2DConfigurationDialog(this, "Configure Histogram");
-		dialog.open();
-	}
+    @Override
+    public void openConfigurationDialog() {
+        if (dialog != null)
+            return;
+        dialog = new HistogramGraph2DConfigurationDialog(this, "Configure Histogram");
+        dialog.open();
+    }
 
-	@Override
-	public boolean isConfigurationDialogOpen() {
-		return dialog != null;
-	}
+    @Override
+    public boolean isConfigurationDialogOpen() {
+        return dialog != null;
+    }
 
-	@Override
-	public void configurationDialogClosed() {
-		dialog = null;
-	}
+    @Override
+    public void configurationDialogClosed() {
+        dialog = null;
+    }
 
 }
