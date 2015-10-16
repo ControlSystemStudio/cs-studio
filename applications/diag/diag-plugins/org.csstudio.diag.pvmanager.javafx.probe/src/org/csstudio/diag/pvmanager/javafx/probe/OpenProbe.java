@@ -18,7 +18,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Command handler for opening probe on the current selection.
- * 
+ *
  * @author carcassi
  * @author Kay Kasemir
  */
@@ -36,7 +36,7 @@ public class OpenProbe extends AbstractHandler implements IHandler
 			final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
 			final ProcessVariable[] pvs = AdapterUtil.convert(selection,
                     ProcessVariable.class);
-			
+
 			final IWorkbenchPage page;
 			final IWorkbenchSite site = HandlerUtil.getActiveSite(event);
 			if (site != null)
@@ -56,7 +56,7 @@ public class OpenProbe extends AbstractHandler implements IHandler
 			                NLS.bind(Messages.MultipleInstancesFmt, pvs.length))
 	                )
 	                return null;
-			    
+
 			    for (ProcessVariable pv : pvs)
 			    {   // One instance per PV
 			        PVManagerProbe probe = openProbe(page);
@@ -71,7 +71,7 @@ public class OpenProbe extends AbstractHandler implements IHandler
 		}
 		return null;
 	}
-	
+
     /** @param page {@link IWorkbenchPage}on which to open Probe
      *  @return {@link PVManagerProbe} that was opened
      *  @throws Exception on error

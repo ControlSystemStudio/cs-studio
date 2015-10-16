@@ -13,9 +13,9 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Probe panel that allows to show the value.
- * 
+ *
  * @author carcassi
- * 
+ *
  */
 public class ViewerPanel extends Composite {
 
@@ -24,7 +24,7 @@ public class ViewerPanel extends Composite {
 
 	/**
 	 * Create the composite.
-	 * 
+	 *
 	 * @param parent
 	 * @param style
 	 */
@@ -70,7 +70,7 @@ public class ViewerPanel extends Composite {
 			needsDoLayout = needsDoLayout
 					|| ShowHideForGridLayout.hide(numericScalarSection);
 		}
-		
+
 		if (value instanceof VTable) {
 			needsDoLayout = needsDoLayout
 					|| ShowHideForGridLayout.show(tableSection);

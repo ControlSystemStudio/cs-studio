@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 
 public class ShowHideForGridLayout {
-	
+
 	public static boolean setShow(Composite section, boolean show) {
 		if (show) {
 			return show(section);
@@ -17,7 +17,7 @@ public class ShowHideForGridLayout {
 			return hide(section);
 		}
 	}
-	
+
 	public static boolean hide(Composite section) {
 		GridData data = (GridData) section.getLayoutData();
 		if (data.exclude == false || data.heightHint != 0 || section.getVisible()) {
@@ -28,7 +28,7 @@ public class ShowHideForGridLayout {
 		}
 		return false;
 	}
-	
+
 	public static boolean show(Composite section) {
 		GridData data = (GridData) section.getLayoutData();
 		if (data.exclude == true || data.heightHint != -1 || !section.getVisible()) {
@@ -56,6 +56,6 @@ public class ShowHideForGridLayout {
 		});
 		return menuItem;
 	}
-	
-	
+
+
 }

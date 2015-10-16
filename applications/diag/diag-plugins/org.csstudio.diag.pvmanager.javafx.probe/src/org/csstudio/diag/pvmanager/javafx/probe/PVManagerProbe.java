@@ -57,7 +57,7 @@ import org.eclipse.wb.swt.ResourceManager;
  * Probe view.
  */
 public class PVManagerProbe extends FXViewPart {
-	
+
 	public PVManagerProbe() {
 	}
 
@@ -66,7 +66,7 @@ public class PVManagerProbe extends FXViewPart {
 
 	// The ID of the view as specified by the extension point
 	public static final String VIEW_ID = "org.csstudio.diag.pvmanager.javafx.probe"; //$NON-NLS-1$
-	
+
 	// Next secondary view ID, i.e. next instance of probe should use this number.
 	// SYNC on PVManagerProbe.class for access
 	private static int next_instance = 1;
@@ -87,7 +87,7 @@ public class PVManagerProbe extends FXViewPart {
 	public void init(final IViewSite site, final IMemento memento)
 			throws PartInitException {
 		super.init(site, memento);
-		
+
 		// For new instances opened while CSS is running,
 		// createNewInstance() tracks the secondary view ID.
 		// But if this view was 'restored' from a saved workspace,
@@ -107,7 +107,7 @@ public class PVManagerProbe extends FXViewPart {
 			if (this_instance >= next_instance)
 				next_instance = this_instance + 1;
 		}
-		
+
 		// Save the memento
 		this.memento = memento;
 	}
@@ -142,13 +142,13 @@ public class PVManagerProbe extends FXViewPart {
 	@Override
 	protected void setFxFocus() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 
 	/**
 	 * Changes the PV currently displayed by probe.
-	 * 
+	 *
 	 * @param pvName
 	 *            the new pv name or null
 	 */

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -11,7 +11,7 @@ import org.eclipse.ui.IMemento;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendererUpdate<U>, T extends Graph2DExpression<U>>
 		extends AbstractGraph2DWidget<U,T> implements ConfigurableWidget {
@@ -19,7 +19,7 @@ public abstract class AbstractPointDatasetGraph2DWidget<U extends Graph2DRendere
 	public AbstractPointDatasetGraph2DWidget(Composite parent, int style) {
 		super(parent, style);
 	}
-	
+
 	private String xColumnFormula;
 	private String yColumnFormula;
 	private String tooltipColumnFormula;

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.graphene;
 
@@ -42,7 +42,7 @@ import org.eclipse.ui.IMemento;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, T extends Graph2DExpression<U>>
 		extends BeanComposite implements ConfigurableWidget {
@@ -154,8 +154,8 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 			@Override
 			public void rangeChanged() {
-			    if (graph != null && isResizableAxis() && !xRangeEditing) {     
-                    if (xRangeControl.isRangeSet()) {                     
+			    if (graph != null && isResizableAxis() && !xRangeEditing) {
+                    if (xRangeControl.isRangeSet()) {
                         if(xRangeControl.getSelectedMin() == xRangeControl.getMin() && xRangeControl.getSelectedMax() == xRangeControl.getMax()){
                             xRangeModified = false;
                             graph.update(graph.newUpdate().xAxisRange(getXAxisRange()));
@@ -206,7 +206,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
     private boolean yRangeModified = false;
     private boolean yRangeEditing = false;
 
-	
+
 	Graph2DResult getCurrentResult() {
 		if (pv == null) {
 			return null;
@@ -218,11 +218,11 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 	public T getGraph() {
 		return graph;
 	}
-	
+
 	protected U createUpdate() {
 		return graph.newUpdate();
 	}
-	
+
 	protected void updateGraph() {
 		if (getGraph() != null) {
 			getGraph().update(createUpdate().xAxisRange(getXAxisRange())
@@ -293,11 +293,11 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 
 				}).maxRate(ofHertz(50));
 	}
-	
+
 	protected void processInit() {
 		// To be extended if needed
 	}
-	
+
 	protected void processValue() {
 		// To be extended if needed
 	}
@@ -329,22 +329,22 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 		changeSupport.firePropertyChange("dataFormula", oldValue,
 				this.dataFormula);
 	}
-	
+
 	public AxisRange getXAxisRange() {
 		return xAxisRange;
 	}
-	
+
 	public void setXAxisRange(AxisRange xAxisRange) {
 		AxisRange oldValue = this.xAxisRange;
 		this.xAxisRange = xAxisRange;
 		changeSupport.firePropertyChange("xAxisRange", oldValue,
 				this.xAxisRange);
 	}
-	
+
 	public AxisRange getYAxisRange() {
 		return yAxisRange;
 	}
-	
+
 	public void setYAxisRange(AxisRange yAxisRange) {
 		AxisRange oldValue = this.yAxisRange;
 		this.yAxisRange = yAxisRange;
@@ -365,7 +365,7 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
 			}
 		}
 	}
-	
+
 	protected VImageDisplay getImageDisplay() {
 		return imageDisplay;
 	}

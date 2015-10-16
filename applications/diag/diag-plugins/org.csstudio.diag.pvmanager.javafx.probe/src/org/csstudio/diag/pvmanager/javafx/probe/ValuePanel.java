@@ -17,17 +17,17 @@ import org.diirt.util.time.TimestampFormat;
 
 /**
  * Probe panel that allows to show the value.
- * 
+ *
  * @author carcassi
  *
  */
 public class ValuePanel extends Composite {
-	
+
 	// TODO: we should take these from a default place
 	private ValueFormat valueFormat = new SimpleValueFormat(3);
 	private TimestampFormat timeFormat = new TimestampFormat(
 			"yyyy/MM/dd HH:mm:ss.N Z"); //$NON-NLS-1$
-	
+
 	private Text valueField;
 	private Text timestampField;
 	private Text labelsField;
@@ -52,7 +52,7 @@ public class ValuePanel extends Composite {
 		gridLayout.verticalSpacing = 0;
 		gridLayout.horizontalSpacing = 0;
 		setLayout(gridLayout);
-		
+
 		valueSection = new Composite(this, SWT.NONE);
 		GridLayout gl_valueSection = new GridLayout(2, false);
 		gl_valueSection.marginBottom = 5;
@@ -60,14 +60,14 @@ public class ValuePanel extends Composite {
 		gl_valueSection.marginHeight = 0;
 		valueSection.setLayout(gl_valueSection);
 		valueSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
+
 		valueLabel = new Label(valueSection, SWT.NONE);
 		valueLabel.setText(Messages.Probe_infoValue);
-		
+
 		valueField = new Text(valueSection, SWT.BORDER);
 		valueField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		valueField.setEditable(false);
-		
+
 		timestampSection = new Composite(this, SWT.NONE);
 		timestampSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		GridLayout gl_timestampSection = new GridLayout(2, false);
@@ -75,14 +75,14 @@ public class ValuePanel extends Composite {
 		gl_timestampSection.marginWidth = 0;
 		gl_timestampSection.marginHeight = 0;
 		timestampSection.setLayout(gl_timestampSection);
-		
+
 		timestampLabel = new Label(timestampSection, SWT.NONE);
 		timestampLabel.setText(Messages.Probe_infoTimestamp);
-		
+
 		timestampField = new Text(timestampSection, SWT.BORDER);
 		timestampField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		timestampField.setEditable(false);
-		
+
 		labelsSection = new Composite(this, SWT.NONE);
 		labelsSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		GridLayout gl_labelsSection = new GridLayout(2, false);
@@ -90,14 +90,14 @@ public class ValuePanel extends Composite {
 		gl_labelsSection.marginWidth = 0;
 		gl_labelsSection.marginHeight = 0;
 		labelsSection.setLayout(gl_labelsSection);
-		
+
 		labelsLabel = new Label(labelsSection, SWT.NONE);
 		labelsLabel.setText(Messages.Probe_infoLabels);
-		
+
 		labelsField = new Text(labelsSection, SWT.BORDER);
 		labelsField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		labelsField.setEditable(false);
-		
+
 		displaySection = new Composite(this, SWT.NONE);
 		GridLayout gl_displaySection = new GridLayout(2, false);
 		gl_displaySection.marginBottom = 5;
@@ -105,37 +105,37 @@ public class ValuePanel extends Composite {
 		gl_displaySection.marginWidth = 0;
 		displaySection.setLayout(gl_displaySection);
 		displaySection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
+
 		displayLabel = new Label(displaySection, SWT.NONE);
 		displayLabel.setText(Messages.Probe_infoDisplay);
-		
+
 		displayField = new Text(displaySection, SWT.BORDER);
 		displayField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		displayField.setEditable(false);
 
 	}
-	
+
 	private boolean needsDoLayout;
-	
+
 	public void changeValue(Object value, boolean connection) {
 		needsDoLayout = false;
-		
+
 		setValue(value, connection);
 		setTime(ValueUtil.timeOf(value));
-		
+
 		if (value instanceof Enum) {
 			setLabels((Enum) value);
 		} else {
 			setLabels(null);
 		}
-		
+
 		hideSection(displaySection);
-		
+
 		if (needsDoLayout) {
 			this.getParent().layout();
 		}
 	}
-	
+
 	private void setLabels(Enum vEnum) {
 		if (vEnum != null) {
 			labelsField.setText(vEnum.getLabels().toString());
@@ -145,7 +145,7 @@ public class ValuePanel extends Composite {
 			hideSection(labelsSection);
 		}
 	}
-	
+
 	private void setTime(Time time) {
 		if (time != null) {
 			timestampField.setText(timeFormat.format(time.getTimestamp()));
@@ -155,15 +155,15 @@ public class ValuePanel extends Composite {
 			hideSection(timestampSection);
 		}
 	}
-	
+
 	private void hideSection(Composite section) {
 		needsDoLayout = ShowHideForGridLayout.hide(section) || needsDoLayout;
 	}
-	
+
 	private void showSection(Composite section) {
 		needsDoLayout = ShowHideForGridLayout.show(section) || needsDoLayout;
 	}
-	
+
 	private void appendAlarm(StringBuilder builder, Alarm alarm) {
 		if (alarm == null || alarm.getAlarmSeverity().equals(AlarmSeverity.NONE)) {
 			return; //$NON-NLS-1$
@@ -178,17 +178,17 @@ public class ValuePanel extends Composite {
 			       .append(']');
 		}
 	}
-	
+
 	private void setValue(Object value, boolean connection) {
 		StringBuilder formattedValue = new StringBuilder();
-		
+
 		if (value != null) {
 			String valueString = valueFormat.format(value);
 			if (valueString != null) {
 				formattedValue.append(valueString);
 			}
 		}
-		
+
 		appendAlarm(formattedValue, ValueUtil.alarmOf(value, connection));
 
 		valueField.setText(formattedValue.toString());

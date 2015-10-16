@@ -33,9 +33,9 @@ public class Messages extends NLS
 	public static String Probe_infoDisplay;
 
 	public static String Probe_infoDisplayLimits;
-    
+
     public static String Probe_infoExpressionName;
-    
+
     public static String Probe_infoExpressionType;
 
 	public static String Probe_infoFormula;
@@ -81,7 +81,7 @@ public class Messages extends NLS
 	public static String Probe_statusSearching;
 
 	public static String Probe_statusWaitingForPV;
-    
+
     static
     {
         // initialize resource bundle

@@ -20,12 +20,12 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Probe panel that allows to show details of the channel.
- * 
+ *
  * @author carcassi
  *
  */
 public class DetailsPanel extends Composite {
-	
+
 	private Text channelHandlerNameField;
 	private Text usageCountField;
 	private Text expressionNameField;
@@ -45,7 +45,7 @@ public class DetailsPanel extends Composite {
 		gridLayout.verticalSpacing = 0;
 		gridLayout.horizontalSpacing = 0;
 		setLayout(gridLayout);
-		
+
 		typeSection = new Composite(this, SWT.NONE);
 		typeSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		GridLayout gl_typeSection = new GridLayout(2, false);
@@ -53,16 +53,16 @@ public class DetailsPanel extends Composite {
 		gl_typeSection.marginBottom = 5;
 		gl_typeSection.marginWidth = 0;
 		typeSection.setLayout(gl_typeSection);
-		
+
 		typeLabel = new Label(typeSection, SWT.NONE);
 		typeLabel.setText(Messages.Probe_infoExpressionType);
 		typeLabel.setBounds(0, 0, 45, 20);
-		
+
 		typeField = new Text(typeSection, SWT.BORDER);
 		typeField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		typeField.setEditable(false);
 		typeField.setBounds(0, 0, 390, 26);
-		
+
 		expressionSection = new Composite(this, SWT.NONE);
 		expressionSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		GridLayout gl_expressionSection = new GridLayout(2, false);
@@ -70,14 +70,14 @@ public class DetailsPanel extends Composite {
 		gl_expressionSection.marginWidth = 0;
 		gl_expressionSection.marginHeight = 0;
 		expressionSection.setLayout(gl_expressionSection);
-		
+
 		expressionNameLabel = new Label(expressionSection, SWT.NONE);
 		expressionNameLabel.setText(Messages.Probe_infoExpressionName);
-		
+
 		expressionNameField = new Text(expressionSection, SWT.BORDER);
 		expressionNameField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		expressionNameField.setEditable(false);
-		
+
 		channelSection = new Composite(this, SWT.NONE);
 		GridLayout gl_channelSection = new GridLayout(2, false);
 		gl_channelSection.marginBottom = 5;
@@ -85,61 +85,61 @@ public class DetailsPanel extends Composite {
 		gl_channelSection.marginHeight = 0;
 		channelSection.setLayout(gl_channelSection);
 		channelSection.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
-		
+
 		Label channelHandlerNameLabel = new Label(channelSection, SWT.NONE);
 		channelHandlerNameLabel.setText(Messages.Probe_infoChannelHandlerName);
-		
+
 		channelHandlerNameField = new Text(channelSection, SWT.BORDER);
 		channelHandlerNameField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		channelHandlerNameField.setEditable(false);
-		
+
 		Label usageCountLabel = new Label(channelSection, SWT.NONE);
 		usageCountLabel.setText(Messages.Probe_infoUsageCount);
-		
+
 		usageCountField = new Text(channelSection, SWT.BORDER);
 		usageCountField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		usageCountField.setEditable(false);
-		
+
 		Label connectionLabel = new Label(channelSection, SWT.NONE);
 		connectionLabel.setText(Messages.Probe_infoConnected);
-		
+
 		connectionField = new Text(channelSection, SWT.BORDER);
 		connectionField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		connectionField.setEditable(false);
-		
+
 		channelPropertiesLabel = new Label(channelSection, SWT.NONE);
 		channelPropertiesLabel.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, false, false, 2, 1));
 		channelPropertiesLabel.setText(Messages.Probe_infoChannelProperties);
-		
+
 		channelPropertiesField = new Text(channelSection, SWT.BORDER | SWT.MULTI);
 		channelPropertiesField.setEditable(false);
 		channelPropertiesField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
 
 	}
-	
+
 	private boolean needsDoLayout;
 	private Label channelPropertiesLabel;
 	private Text channelPropertiesField;
 	private Composite typeSection;
 	private Label typeLabel;
 	private Text typeField;
-	
+
 	public void changeValue(DesiredRateReadWriteExpression<?, ?> expression, String formula) {
 		needsDoLayout = false;
-		
+
 		setType(formula);
 		setExpression(expression);
 		setChannelProperties(formula);
-		
+
 		if (needsDoLayout) {
 			this.getParent().layout();
 		}
 	}
-	
+
 	private boolean isChannel(String formula) {
 		return ExpressionLanguage.channelFromFormula(formula) != null;
 	}
-	
+
 	private void setType(String formula) {
 		if (formula != null) {
 			if (isChannel(formula)) {
@@ -151,7 +151,7 @@ public class DetailsPanel extends Composite {
 			typeField.setText(""); //$NON-NLS-1$
 		}
 	}
-	
+
 	private void setExpression(DesiredRateReadWriteExpression<?, ?> expression) {
 		if (expression != null) {
 			expressionNameField.setText(expression.getName());
@@ -161,7 +161,7 @@ public class DetailsPanel extends Composite {
 			hideSection(expressionSection);
 		}
 	}
-	
+
 	private void setChannelProperties(String formula) {
 		ChannelHandler handler = null;
 		if (formula != null) {
@@ -176,19 +176,19 @@ public class DetailsPanel extends Composite {
 			refreshOff();
 		}
 	}
-	
+
 	private ScheduledFuture<?> future;
-	
+
 	private void refreshOn(final ChannelHandler handler) {
 		if (future != null) {
 			future.cancel(false);
 		}
 		future = PVManager.getReadScannerExecutorService().scheduleWithFixedDelay(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				getDisplay().asyncExec(new Runnable() {
-					
+
 					@Override
 					public void run() {
 						setChannelProperties(handler);
@@ -204,7 +204,7 @@ public class DetailsPanel extends Composite {
 		}
 		future = null;
 	}
-	
+
 	private int nRows = 0;
 	private void setChannelProperties(ChannelHandler handler) {
 		if (handler != null) {
@@ -237,11 +237,11 @@ public class DetailsPanel extends Composite {
 			nRows = 0;
 		}
 	}
-	
+
 	private void hideSection(Composite section) {
 		needsDoLayout = ShowHideForGridLayout.hide(section) || needsDoLayout;
 	}
-	
+
 	private void showSection(Composite section) {
 		needsDoLayout = ShowHideForGridLayout.show(section) || needsDoLayout;
 	}
