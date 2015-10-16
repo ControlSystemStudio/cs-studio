@@ -67,7 +67,7 @@ import org.w3c.dom.svg.SVGSVGElement;
 
 /**
  * {@link SVGDocument} handler. Handles render and animation of SVG files.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class SVGHandler {
@@ -486,7 +486,7 @@ public class SVGHandler {
 
     /**
      * Sets the animation limiting mode to a percentage of CPU.
-     * 
+     *
      * @param pc the maximum percentage of CPU to use (0 &lt; pc ≤ 1)
      */
     public void setAnimationLimitingCPU(float pc) {
@@ -499,7 +499,7 @@ public class SVGHandler {
 
     /**
      * Sets the animation limiting mode to a number of frames per second.
-     * 
+     *
      * @param fps the maximum number of frames per second (fps &gt; 0)
      */
     public void setAnimationLimitingFPS(float fps) {

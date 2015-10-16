@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  *
- * 
+ *
  * @author carcassi, shroffk
  */
 public class ServiceButton extends Composite {
@@ -45,7 +45,7 @@ public class ServiceButton extends Composite {
 
     /**
      * Creates a new display.
-     * 
+     *
      * @param parent
      */
     public ServiceButton(Composite parent) {
@@ -59,7 +59,7 @@ public class ServiceButton extends Composite {
 
 	errorBar = new ErrorBar(this, SWT.NONE);
 	errorBar.setMarginBottom(5);
-	
+
 	executeButton = new Button(this, SWT.NONE);
 	executeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 	executeButton.setEnabled(false);
@@ -169,7 +169,7 @@ public class ServiceButton extends Composite {
 	this.serviceName = serviceName;
 	reconnect();
     }
-    
+
     public void configureArgumentMap(Map<String, String> argumentPvs) {
 	if (serviceMethod == null) {
 	    return;
@@ -183,9 +183,9 @@ public class ServiceButton extends Composite {
 	}else{
 	    // raise exception, invalid arguments
 	}
-	
-    }   
-    
+
+    }
+
     public void configureResultMap(Map<String, String> resultPvs) {
 	if (serviceMethod == null) {
 	    return;
@@ -200,7 +200,7 @@ public class ServiceButton extends Composite {
 	} else {
 	    // raise exception, invalid arguments
 	}
-	
+
     }
 
     public void setLabel(String label) {

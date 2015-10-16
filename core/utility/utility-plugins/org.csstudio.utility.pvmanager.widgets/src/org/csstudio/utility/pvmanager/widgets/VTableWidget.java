@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Menu;
 
 /**
  * Widget that can display a formula that returns a VTable.
- * 
+ *
  * @author carcassi
  */
 public class VTableWidget extends SelectionBeanComposite implements AlarmProvider, ISelectionProvider {
@@ -40,7 +40,7 @@ public class VTableWidget extends SelectionBeanComposite implements AlarmProvide
 
 	/**
 	 * Creates a new display.
-	 * 
+	 *
 	 * @param parent
 	 */
 	public VTableWidget(Composite parent) {
@@ -70,7 +70,7 @@ public class VTableWidget extends SelectionBeanComposite implements AlarmProvide
 		forwardPropertyChange(tableDisplay, "vTable", "value");
 		forwardPropertyChangeToSelection("value");
 		addDisposeListener(new DisposeListener() {
-			
+
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
 				if (pv != null) {
@@ -80,7 +80,7 @@ public class VTableWidget extends SelectionBeanComposite implements AlarmProvide
 			}
 		});
 	}
-	
+
 	@Override
 	public void setMenu(Menu menu) {
 		super.setMenu(menu);
@@ -123,32 +123,32 @@ public class VTableWidget extends SelectionBeanComposite implements AlarmProvide
 				}).maxRate(TimeDuration.ofHertz(25));
 
 	}
-	
+
 	public String getPvFormula() {
 		return pvFormula;
 	}
-	
+
 	public void setPvFormula(String pvFormula) {
 		this.pvFormula = pvFormula;
 		reconnect();
 	}
-	
+
 	public VTable getValue() {
 		return tableDisplay.getVTable();
 	}
-	
+
 	private VTable selectionValue;
-	
+
 	public VTable getSelectionValue() {
 		return selectionValue;
 	}
-	
+
 	public void setSelectionValue(VTable selectionValue) {
 		VTable oldSelectionValue = this.selectionValue;
 		this.selectionValue = selectionValue;
 		changeSupport.firePropertyChange("selectionValue", oldSelectionValue, selectionValue);
 	}
-	
+
 	VTableDisplayCell getCell() {
 		if (tableDisplay.getSelection().isEmpty()) {
 			return null;
@@ -156,24 +156,24 @@ public class VTableWidget extends SelectionBeanComposite implements AlarmProvide
 			return (VTableDisplayCell) ((StructuredSelection) tableDisplay.getSelection()).getFirstElement();
 		}
 	}
-	
+
 	private Alarm alarm = calculateAlarm();
-	
+
 	@Override
 	public Alarm getAlarm() {
 		return alarm;
 	}
-	
+
 	public void setAlarm(Alarm alarm) {
 		if (VTypeValueEquals.alarmEquals(this.alarm, alarm)) {
 			return;
 		}
-		
+
 		Alarm oldAlarm = this.alarm;
 		this.alarm = alarm;
 		changeSupport.firePropertyChange("alarm", oldAlarm, alarm);
 	}
-	
+
 	private Alarm calculateAlarm() {
 		if (pv == null) {
 			return ValueFactory.alarmNone();

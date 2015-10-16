@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * Manages the update of CSS defined colors of {@link StyleSheet}. Always updates the original style.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class StyleSheetCSSHandler implements ICSSHandler {

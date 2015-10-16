@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.utility.pvmanager.ui.toolbox;
 
@@ -36,29 +36,29 @@ import com.google.common.base.Joiner;
 
 /**
  * @author shroffk
- * 
+ *
  */
 public class ServicesView extends ViewPart {
 
     public static final String ID = "org.csstudio.utility.pvmanager.ui.toolbox.ServicesView"; //$NON-NLS-1$
     private ServiceTreeWidget serviceTreeWidget;
-    
+
     /**
-     * 
+     *
      */
     public ServicesView() {
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
      * .Composite)
      */
     @Override
     public void createPartControl(Composite parent) {
-    	
+
     	serviceTreeWidget = new ServiceTreeWidget(parent, SWT.NONE);
 
 	List<String> serviceNames = new ArrayList<String>(ServiceRegistry
@@ -67,13 +67,13 @@ public class ServicesView extends ViewPart {
 	List<Service> services = new ArrayList<Service>();
 	for (String serviceName : serviceNames) {
 	    services.add(ServiceRegistry.getDefault().findService(serviceName));
-	}	
+	}
 	serviceTreeWidget.setServiceNames(services);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
      */
     @Override

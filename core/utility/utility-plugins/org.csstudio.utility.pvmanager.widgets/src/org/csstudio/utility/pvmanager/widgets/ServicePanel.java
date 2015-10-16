@@ -33,7 +33,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * Basic ui component that can display a VTable on screen.
- * 
+ *
  * @author carcassi
  */
 public class ServicePanel extends Composite {
@@ -47,7 +47,7 @@ public class ServicePanel extends Composite {
 
 	/**
 	 * Creates a new display.
-	 * 
+	 *
 	 * @param parent
 	 */
 	public ServicePanel(Composite parent) {

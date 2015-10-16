@@ -64,22 +64,22 @@ public class ToolboxView extends ViewPart {
 		fd_container.left = new FormAttachment(0, 10);
 		container.setLayoutData(fd_container);
 		//container.setLayout(new FillLayout(SWT.HORIZONTAL));
-		
+
 		tableViewer = new TableViewer(container, SWT.BORDER | SWT.FULL_SELECTION);
 		table = tableViewer.getTable();
 		table.setHeaderVisible(true);
 		table.setLinesVisible(true);
 		tableViewer.setContentProvider(new DataSourceContentProvider());
-		
+
 		// Connected column
-		
+
 		TableViewerColumn connectedViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		connectedViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			Image connected = ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/connected.png").createImage();
 			Image disconnected = ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/disconnected.png").createImage();
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				if (((DataSourceChannel) cell.getElement()).isConnected()) {
@@ -88,7 +88,7 @@ public class ToolboxView extends ViewPart {
 					cell.setImage(disconnected);
 				}
 			}
-			
+
 			@Override
 			public void dispose() {
 				connected.dispose();
@@ -98,12 +98,12 @@ public class ToolboxView extends ViewPart {
 		TableColumn connectedColumn = connectedViewerColumn.getColumn();
 		connectedColumn.setText("C");
 		connectedColumn.setToolTipText("Connected or disconnected");
-		
+
 		// PV Name column
 		TableViewerColumn pvNameViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		pvNameViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				cell.setText(((DataSourceChannel) cell.getElement()).getFullChannelName());
@@ -111,12 +111,12 @@ public class ToolboxView extends ViewPart {
 		});
 		TableColumn pvNameColumn = pvNameViewerColumn.getColumn();
 		pvNameColumn.setText("Channel name");
-		
+
 		// Total usage count column
 		TableViewerColumn totalUsageViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		totalUsageViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				cell.setText(Integer.toString(((DataSourceChannel) cell.getElement()).getTotalUsageCounter()));
@@ -125,12 +125,12 @@ public class ToolboxView extends ViewPart {
 		TableColumn totalUsageColumn = totalUsageViewerColumn.getColumn();
 		totalUsageColumn.setText("T");
 		totalUsageColumn.setToolTipText("Readers + Writers");
-		
+
 		// Read usage count column
 		TableViewerColumn readUsageViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		readUsageViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				cell.setText(Integer.toString(((DataSourceChannel) cell.getElement()).getReadUsageCounter()));
@@ -139,12 +139,12 @@ public class ToolboxView extends ViewPart {
 		TableColumn readUsageColumn = readUsageViewerColumn.getColumn();
 		readUsageColumn.setText("R");
 		readUsageColumn.setToolTipText("Readers");
-		
+
 		// Write usage count column
 		TableViewerColumn writeUsageViewerColumn = new TableViewerColumn(
 				tableViewer, SWT.NONE);
 		writeUsageViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				cell.setText(Integer.toString(((DataSourceChannel) cell.getElement()).getWriteUsageCounter()));
@@ -153,9 +153,9 @@ public class ToolboxView extends ViewPart {
 		TableColumn writeUsageColumn = writeUsageViewerColumn.getColumn();
 		writeUsageColumn.setText("W");
 		writeUsageColumn.setToolTipText("Writers");
-		
+
 		// Layout
-		
+
 		TableColumnLayout layout = new TableColumnLayout();
 		container.setLayout(layout);
 		layout.setColumnData(connectedViewerColumn.getColumn(), new ColumnWeightData(0, 24));
@@ -163,7 +163,7 @@ public class ToolboxView extends ViewPart {
 		layout.setColumnData(totalUsageViewerColumn.getColumn(), new ColumnWeightData(0, 30));
 		layout.setColumnData(readUsageViewerColumn.getColumn(), new ColumnWeightData(0, 30));
 		layout.setColumnData(writeUsageViewerColumn.getColumn(), new ColumnWeightData(0, 30));
-		
+
 		Composite summaryContainer = new Composite(parent, SWT.NONE);
 		fd_container.right = new FormAttachment(summaryContainer, 0, SWT.RIGHT);
 		fd_container.top = new FormAttachment(summaryContainer, 6);
@@ -179,12 +179,12 @@ public class ToolboxView extends ViewPart {
 		summaryTable.setLinesVisible(true);
 		summaryTableViewer.setContentProvider(new DataSourceSummaryContentProvider());
 
-		
+
 		// DataSource Name column
 		TableViewerColumn dataSourceNameViewerColumn = new TableViewerColumn(
 				summaryTableViewer, SWT.NONE);
 		dataSourceNameViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
@@ -199,12 +199,12 @@ public class ToolboxView extends ViewPart {
 		});
 		TableColumn dataSourceNameColumn = dataSourceNameViewerColumn.getColumn();
 		dataSourceNameColumn.setText("Data Source");
-		
+
 		// Total usage count column
 		TableViewerColumn totalChannelsViewerColumn = new TableViewerColumn(
 				summaryTableViewer, SWT.NONE);
 		totalChannelsViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
@@ -214,12 +214,12 @@ public class ToolboxView extends ViewPart {
 		TableColumn totalChannelsUsageColumn = totalChannelsViewerColumn.getColumn();
 		totalChannelsUsageColumn.setText("TC");
 		totalChannelsUsageColumn.setToolTipText("Connected + Disconnected channels");
-		
+
 		// Open channels column
 		TableViewerColumn connectedChannelsViewerColumn = new TableViewerColumn(
 				summaryTableViewer, SWT.NONE);
 		connectedChannelsViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
@@ -234,12 +234,12 @@ public class ToolboxView extends ViewPart {
 		TableColumn connectedChannelsUsageColumn = connectedChannelsViewerColumn.getColumn();
 		connectedChannelsUsageColumn.setText("CC");
 		connectedChannelsUsageColumn.setToolTipText("Connected channels");
-		
+
 		// Total usage column
 		TableViewerColumn totalViewerColumn = new TableViewerColumn(
 				summaryTableViewer, SWT.NONE);
 		totalViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
@@ -253,12 +253,12 @@ public class ToolboxView extends ViewPart {
 		TableColumn totalColumn = totalViewerColumn.getColumn();
 		totalColumn.setText("T");
 		totalColumn.setToolTipText("Readers + Writers");
-		
+
 		// Readers column
 		TableViewerColumn readersViewerColumn = new TableViewerColumn(
 				summaryTableViewer, SWT.NONE);
 		readersViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
@@ -272,12 +272,12 @@ public class ToolboxView extends ViewPart {
 		TableColumn readersColumn = readersViewerColumn.getColumn();
 		readersColumn.setText("R");
 		readersColumn.setToolTipText("Readers");
-		
+
 		// Writers column
 		TableViewerColumn writersViewerColumn = new TableViewerColumn(
 				summaryTableViewer, SWT.NONE);
 		writersViewerColumn.setLabelProvider(new CellLabelProvider() {
-			
+
 			@Override
 			public void update(ViewerCell cell) {
 				DataSource source = (DataSource) cell.getElement();
@@ -291,7 +291,7 @@ public class ToolboxView extends ViewPart {
 		TableColumn writersColumn = writersViewerColumn.getColumn();
 		writersColumn.setText("W");
 		writersColumn.setToolTipText("Writers");
-		
+
 		TableColumnLayout summaryLayout = new TableColumnLayout();
 		summaryContainer.setLayout(summaryLayout);
 		summaryLayout.setColumnData(dataSourceNameViewerColumn.getColumn(), new ColumnWeightData(10, 120));
@@ -300,7 +300,7 @@ public class ToolboxView extends ViewPart {
 		summaryLayout.setColumnData(totalViewerColumn.getColumn(), new ColumnWeightData(0, 60));
 		summaryLayout.setColumnData(readersViewerColumn.getColumn(), new ColumnWeightData(0, 60));
 		summaryLayout.setColumnData(writersViewerColumn.getColumn(), new ColumnWeightData(0, 60));
-		
+
 		tableViewer.setInput(DataSourceContentProvider.ALL);
 		summaryTableViewer.setInput(DataSourceContentProvider.ALL);
 
@@ -308,21 +308,21 @@ public class ToolboxView extends ViewPart {
 		initializeToolBar();
 		initializeMenu();
 	}
-	
+
 	private MenuItem createDataSourceMenuItem(Menu parent, final Object input) {
 		MenuItem item = new MenuItem(parent, SWT.RADIO);
 		item.setText(input.toString());
 		item.addSelectionListener(new SelectionListener() {
-			
+
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				tableViewer.setInput(input);
 			}
-			
+
 			@Override
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 		return item;
@@ -341,11 +341,11 @@ public class ToolboxView extends ViewPart {
 			allItem.setSelection(true);
 			List<String> dataSourceNames = new ArrayList<String>(((CompositeDataSource) PVManager.getDefaultDataSource()).getDataSources().keySet());
 			Collections.sort(dataSourceNames);
-			
+
 			for (String dataSourceName : dataSourceNames) {
 				MenuItem dataSourceItem = createDataSourceMenuItem(datasourceSelectionMenu, dataSourceName);
 			}
-			
+
 			selectDataSourceAction = new Action("Select Data Source", SWT.DROP_DOWN) {
 				@Override
 				public void runWithEvent(Event event) {
@@ -359,20 +359,20 @@ public class ToolboxView extends ViewPart {
 			selectDataSourceAction.setImageDescriptor(ResourceManager.getPluginImageDescriptor("org.csstudio.utility.pvmanager.ui.toolbox", "icons/source.png"));
 			selectDataSourceAction.setToolTipText("Select Data Source");
 			selectDataSourceAction.setMenuCreator(new IMenuCreator() {
-				
-				
-				
+
+
+
 				@Override
 				public Menu getMenu(Menu parent) {
 					return datasourceSelectionMenu;
 				}
-				
+
 				@Override
 				public Menu getMenu(Control parent) {
 					// TODO Auto-generated method stub
 					return datasourceSelectionMenu;
 				}
-				
+
 				@Override
 				public void dispose() {
 					datasourceSelectionMenu.dispose();

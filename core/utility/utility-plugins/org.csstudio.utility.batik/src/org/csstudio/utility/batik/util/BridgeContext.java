@@ -15,7 +15,7 @@ import org.apache.batik.script.InterpreterPool;
 /**
  * Extension of standard {@link org.apache.batik.bridge.BridgeContext} which uses the extended
  * {@link SVGAnimationEngine} in order to access {@link TimedDocumentRoot}.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class BridgeContext extends org.apache.batik.bridge.BridgeContext {
@@ -27,7 +27,7 @@ public class BridgeContext extends org.apache.batik.bridge.BridgeContext {
 
     /**
      * Constructs a new bridge context.
-     * 
+     *
      * @param userAgent the user agent
      * @param loader document loader
      */

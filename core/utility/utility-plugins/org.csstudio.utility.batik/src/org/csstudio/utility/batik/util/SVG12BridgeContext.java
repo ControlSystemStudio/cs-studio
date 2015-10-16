@@ -14,14 +14,14 @@ import org.apache.batik.bridge.UserAgent;
 /**
  * Extension of standard {@link org.apache.batik.bridge.svg12.SVG12BridgeContext} which uses the extended
  * {@link SVGAnimationEngine} in order to access {@link TimedDocumentRoot}.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class SVG12BridgeContext extends org.apache.batik.bridge.svg12.SVG12BridgeContext {
 
     /**
      * Constructs a new bridge context.
-     * 
+     *
      * @param userAgent the user agent
      * @param loader document loader
      */
