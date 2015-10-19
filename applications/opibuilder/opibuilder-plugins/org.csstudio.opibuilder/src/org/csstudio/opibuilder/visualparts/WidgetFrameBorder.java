@@ -8,7 +8,7 @@
 package org.csstudio.opibuilder.visualparts;
 
 import org.csstudio.ui.util.SWTConstants;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.CompoundBorder;
 import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.SchemeBorder;

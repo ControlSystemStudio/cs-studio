@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataSources version="1">
+    <!-- This file controls the configuration of how the different data sources
+        are combined and made accessible to DIIRT.
+
+        The composite data source allows multiple data sources to be
+        made available by breaking up the channel name into three parts:
+            [dataSourceName][delimiter][channelName]
+        It also allows to set a default data source so that names that do not
+        match the pattern are forwarded to the datasource. Effectively:
+            [umatchedChannelName] -> [defaultDataSource][delimiter][unmatchedChannelName]
+            
+        By default, the delimiter is ://
+        By default, there is no default data source. -->
+    <!--<compositeDataSource delimiter="://" />-->
+    
+    <!-- This changes the default data source to Channel Access, while leaving
+        the default delimiter to :// -->
+    <compositeDataSource defaultDataSource="ca" />
+</dataSources>

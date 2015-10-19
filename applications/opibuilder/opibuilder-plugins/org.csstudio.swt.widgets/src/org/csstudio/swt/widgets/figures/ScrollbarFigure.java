@@ -23,6 +23,8 @@ import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.OPITimer;
 import org.csstudio.swt.widgets.util.RapButtonModel;
+import org.csstudio.ui.util.CSSButtonBorder;
+import org.csstudio.ui.util.ColorConstants;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
@@ -32,7 +34,6 @@ import org.eclipse.draw2d.ButtonModel;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
 import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureUtilities;
 import org.eclipse.draw2d.FocusEvent;
@@ -198,7 +199,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
      */
     protected Clickable createDefaultDownButton() {
         Button buttonDown = new RapArrowButton();
-        buttonDown.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
+        buttonDown.setBorder(new ButtonBorder(CSSButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
         return buttonDown;
     }
 
@@ -214,7 +215,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         thumb.setMinimumSize(new Dimension(6, 6));
         thumb.setBackgroundColor(ColorConstants.button);
 
-        thumb.setBorder(new SchemeBorder(SchemeBorder.SCHEMES.BUTTON_CONTRAST));
+        thumb.setBorder(new SchemeBorder(CSSButtonBorder.SCHEMES.BUTTON_CONTRAST));
         return thumb;
     }
 
@@ -227,7 +228,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
      */
     protected Clickable createDefaultUpButton() {
         Button buttonUp = new RapArrowButton();
-        buttonUp.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
+        buttonUp.setBorder(new ButtonBorder(CSSButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
         return buttonUp;
     }
 

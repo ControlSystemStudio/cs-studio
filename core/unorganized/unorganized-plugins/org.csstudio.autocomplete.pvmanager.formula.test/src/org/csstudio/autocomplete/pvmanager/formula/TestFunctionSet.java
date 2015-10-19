@@ -7,8 +7,8 @@
  ******************************************************************************/
 package org.csstudio.autocomplete.pvmanager.formula;
 
-import org.epics.pvmanager.formula.FormulaFunctionSet;
-import org.epics.pvmanager.formula.FormulaFunctionSetDescription;
+import org.diirt.datasource.formula.FormulaFunctionSet;
+import org.diirt.datasource.formula.FormulaFunctionSetDescription;
 
 /**
  * @author Fred Arnaud (Sopra Group) - ITER

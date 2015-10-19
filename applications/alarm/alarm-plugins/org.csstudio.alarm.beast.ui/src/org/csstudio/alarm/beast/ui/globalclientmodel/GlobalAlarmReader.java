@@ -73,7 +73,7 @@ public class GlobalAlarmReader
                 final String status = result.getString(4);
                 // Not used: final String value = result.getString(5);
                 final Timestamp sql_time = result.getTimestamp(6);
-                org.epics.util.time.Timestamp alarm_time;
+                org.diirt.util.time.Timestamp alarm_time;
                 if (result.wasNull())
                     alarm_time = null;
                 else

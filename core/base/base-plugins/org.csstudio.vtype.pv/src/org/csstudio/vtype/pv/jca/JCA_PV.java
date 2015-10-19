@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.internal.Preferences;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Channel Access {@link PV}
  *  @author Kay Kasemir

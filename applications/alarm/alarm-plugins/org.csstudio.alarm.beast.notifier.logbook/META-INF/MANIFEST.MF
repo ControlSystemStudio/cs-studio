@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.alarm.beast.notifier,
  org.csstudio.alarm.beast,
  org.csstudio.logbook,
- org.epics.util,
- org.epics.vtype
+ org.diirt.util;bundle-version="3.0.1",
+ org.diirt.vtype;bundle-version="3.0.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

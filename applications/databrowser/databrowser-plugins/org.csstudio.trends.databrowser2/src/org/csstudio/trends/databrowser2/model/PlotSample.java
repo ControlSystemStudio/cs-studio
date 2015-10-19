@@ -13,12 +13,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.swt.rtplot.data.PlotDataItem;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Time;
-import org.epics.vtype.VStatistics;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.Time;
+import org.diirt.vtype.VStatistics;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /** Data Sample from control system ({@link VType})
  *  with interface for XYGraph ({@link ISample})

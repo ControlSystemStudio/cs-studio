@@ -10,7 +10,7 @@ import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
 import org.csstudio.data.values.TimestampFactory;
 import org.csstudio.data.values.ValueFactory;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 public class ArchiveRecordsValueIterator implements ValueIterator {
 

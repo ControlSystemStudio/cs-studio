@@ -9,8 +9,8 @@ import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.ArchiveVType;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
 
 /**
  *

@@ -10,7 +10,7 @@ package org.csstudio.vtype.pv;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /** Helper (base) for implementing a {@link PVListener}
  *  @author Kay Kasemir

@@ -9,8 +9,8 @@ package org.csstudio.archive.reader.ea4;
 
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VType;
 
 /** ValueIterator that runs subsequent ValuesRequests until
  *  reaching the end time.

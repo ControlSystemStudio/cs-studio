@@ -6,7 +6,7 @@ import java.util.List;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.data.values.ITimestamp;
 import org.csstudio.data.values.IValue;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 import de.desy.aapi.AapiClient;
 import de.desy.aapi.AapiReductionMethod;

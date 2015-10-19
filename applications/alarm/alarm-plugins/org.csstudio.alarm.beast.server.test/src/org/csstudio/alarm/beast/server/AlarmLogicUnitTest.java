@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /** JUnit test of AlarmLogic

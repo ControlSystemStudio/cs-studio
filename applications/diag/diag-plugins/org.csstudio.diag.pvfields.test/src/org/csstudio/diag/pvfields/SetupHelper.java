@@ -4,9 +4,10 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.jca.JCADataSource;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.CompositeDataSourceConfiguration;
+import org.diirt.datasource.PVManager;
+import org.diirt.support.ca.JCADataSourceConfiguration;
 
 /** Test settings
  *
@@ -36,8 +37,8 @@ public class SetupHelper
 
         // Use Channel Access as data source
         final CompositeDataSource sources = new CompositeDataSource();
-        sources.putDataSource("epics", new JCADataSource());
-        sources.setDefaultDataSource("epics");
+        sources.putDataSource("ca", new JCADataSourceConfiguration().read(SetupHelper.class.getResourceAsStream("ca.xml")).create());        
+        sources.setConfiguration(new CompositeDataSourceConfiguration(SetupHelper.class.getResourceAsStream("datasource.xml")));
         PVManager.setDefaultDataSource(sources);
     }
 }

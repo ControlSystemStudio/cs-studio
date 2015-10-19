@@ -28,7 +28,7 @@ import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.PolyWidgetIntrospector;
 import org.csstudio.swt.widgets.util.PointsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polygon;
 import org.eclipse.draw2d.geometry.PointList;

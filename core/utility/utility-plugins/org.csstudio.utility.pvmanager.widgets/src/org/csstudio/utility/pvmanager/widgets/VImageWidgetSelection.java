@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.csstudio.csdata.ProcessVariable;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 public class VImageWidgetSelection implements VTypeAdaptable, ProcessVariableAdaptable {
     private final VImageWidget vImageWidget;

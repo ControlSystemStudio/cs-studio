@@ -21,7 +21,7 @@
  */
 package org.csstudio.opibuilder.widgets.feedback;
 
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Polyline;
 import org.eclipse.gef.DragTracker;

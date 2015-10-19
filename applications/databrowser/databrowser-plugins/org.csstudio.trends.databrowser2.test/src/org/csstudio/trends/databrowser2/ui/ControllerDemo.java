@@ -28,8 +28,8 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.pvmanager.CompositeDataSource;
-import org.epics.pvmanager.PVManager;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.PVManager;
 import org.epics.pvmanager.sim.SimulationDataSource;
 import org.junit.Test;
 

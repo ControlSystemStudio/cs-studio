@@ -1,13 +1,13 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.extra.ExpressionLanguage.waterfallPlotOf;
-import static org.epics.pvmanager.extra.WaterfallPlotParameters.adaptiveRange;
-import static org.epics.pvmanager.extra.WaterfallPlotParameters.colorScheme;
-import static org.epics.pvmanager.extra.WaterfallPlotParameters.pixelDuration;
-import static org.epics.pvmanager.extra.WaterfallPlotParameters.scrollDown;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vDoubles;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vNumberArray;
-import static org.epics.util.time.TimeDuration.ofHertz;
+import static org.diirt.datasource.extra.ExpressionLanguage.waterfallPlotOf;
+import static org.diirt.datasource.extra.WaterfallPlotParameters.adaptiveRange;
+import static org.diirt.datasource.extra.WaterfallPlotParameters.colorScheme;
+import static org.diirt.datasource.extra.WaterfallPlotParameters.pixelDuration;
+import static org.diirt.datasource.extra.WaterfallPlotParameters.scrollDown;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vDoubles;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vNumberArray;
+import static org.diirt.util.time.TimeDuration.ofHertz;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
@@ -44,14 +44,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.extra.ColorScheme;
-import org.epics.pvmanager.extra.WaterfallPlot;
-import org.epics.pvmanager.extra.WaterfallPlotParameters;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VImage;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.extra.ColorScheme;
+import org.diirt.datasource.extra.WaterfallPlot;
+import org.diirt.datasource.extra.WaterfallPlotParameters;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VImage;
 
 public class WaterfallWidget extends AbstractChannelQueryResultWidget
 implements ConfigurableWidget, ISelectionProvider {
@@ -246,7 +247,7 @@ implements ConfigurableWidget, ISelectionProvider {
             pv = PVManager.read(plot)
                 .notifyOn(SWTUtil.swtThread(this))
                 .readListener(new PVReaderListener<VImage>() {
-                    public void pvChanged(org.epics.pvmanager.PVReaderEvent<VImage> event) {
+                    public void pvChanged(PVReaderEvent<VImage> event) {
                         setLastError(pv.lastException());
                         imageDisplay.setVImage(pv.getValue());
                     };
@@ -262,7 +263,7 @@ implements ConfigurableWidget, ISelectionProvider {
             pv = PVManager.read(plot)
                 .notifyOn(SWTUtil.swtThread(this))
                 .readListener(new PVReaderListener<VImage>() {
-                    public void pvChanged(org.epics.pvmanager.PVReaderEvent<VImage> event) {
+                    public void pvChanged(PVReaderEvent<VImage> event) {
                         setLastError(pv.lastException());
                         imageDisplay.setVImage(pv.getValue());
                     };

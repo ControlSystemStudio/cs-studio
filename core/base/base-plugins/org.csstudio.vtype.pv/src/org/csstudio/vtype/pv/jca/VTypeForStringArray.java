@@ -13,10 +13,10 @@ import gov.aps.jca.dbr.DBR_TIME_String;
 import java.util.Arrays;
 import java.util.List;
 
-import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ListInt;
-import org.epics.vtype.VStringArray;
-import org.epics.vtype.VTypeToString;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.util.array.ListInt;
+import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VTypeToString;
 
 /** Wrap DBR as VType
 *

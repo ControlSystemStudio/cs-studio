@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.editparts;
 
 import org.csstudio.simplepv.IPV;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 
 public interface IPVWidgetEditpart {

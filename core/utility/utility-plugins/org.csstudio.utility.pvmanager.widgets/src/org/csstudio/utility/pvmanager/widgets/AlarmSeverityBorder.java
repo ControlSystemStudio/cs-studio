@@ -4,8 +4,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.wb.swt.SWTResourceManager;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.ValueUtil;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.ValueUtil;
 
 public class AlarmSeverityBorder extends Composite {
     private AlarmSeverity alarmSeverity = AlarmSeverity.NONE;

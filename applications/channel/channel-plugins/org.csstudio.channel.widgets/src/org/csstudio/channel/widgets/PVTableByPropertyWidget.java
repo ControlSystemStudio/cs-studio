@@ -1,11 +1,11 @@
 package org.csstudio.channel.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channels;
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.column;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vStringConstants;
-import static org.epics.pvmanager.vtype.ExpressionLanguage.vTable;
-import static org.epics.util.time.TimeDuration.ofMillis;
+import static org.diirt.datasource.ExpressionLanguage.channels;
+import static org.diirt.datasource.ExpressionLanguage.latestValueOf;
+import static org.diirt.datasource.vtype.ExpressionLanguage.column;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vStringConstants;
+import static org.diirt.datasource.vtype.ExpressionLanguage.vTable;
+import static org.diirt.util.time.TimeDuration.ofMillis;
 import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelQuery;
 import gov.bnl.channelfinder.api.ChannelQuery.Result;
@@ -42,12 +42,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.ui.IMemento;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.vtype.VTableColumn;
-import org.epics.vtype.VTable;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.vtype.VTableColumn;
+import org.diirt.vtype.VTable;
 
 public class PVTableByPropertyWidget extends AbstractChannelQueryResultWidget implements ISelectionProvider,
     ConfigurableWidget {
