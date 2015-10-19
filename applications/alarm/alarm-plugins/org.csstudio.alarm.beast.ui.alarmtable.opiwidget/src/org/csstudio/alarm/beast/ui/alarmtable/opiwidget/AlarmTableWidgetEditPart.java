@@ -20,6 +20,7 @@ import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.osgi.util.NLS;
 
@@ -180,6 +181,19 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
         getWidgetModel().getProperty(AlarmTableWidgetModel.PROP_SORT_ASCENDING).addPropertyChangeListener(listener);
         getWidgetModel().getProperty(AlarmTableWidgetModel.PROP_SORTING_COLUMN).addPropertyChangeListener(listener);
         getWidgetModel().getProperty(AlarmTableWidgetModel.PROP_WRITABLE).addPropertyChangeListener(listener);
+        getWidgetModel().getProperty(AlarmTableWidgetModel.PROP_TABLE_HEADER_VISIBLE)
+                .addPropertyChangeListener(listener);
+        getWidgetModel().getProperty(AlarmTableWidgetModel.PROP_COLUMNS_HEADERS_VISIBLE)
+                .addPropertyChangeListener(new PropertyChangeListener() {
+                    @Override
+                    public void propertyChange(PropertyChangeEvent evt) {
+                        Object obj = evt.getNewValue();
+                        if (obj instanceof Boolean) {
+                            ((AlarmTableWidgetFigure) getFigure()).getAlarmTable()
+                                        .setTableColumnsHeadersVisible((Boolean)obj);
+                        }
+                    }
+                });
     }
 
     private void updateFilter(GUI gui) {
@@ -210,7 +224,17 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
      */
     @Override
     public void newAlarmConfiguration(AlarmClientModel model) {
-        getViewer().getControl().getDisplay().asyncExec(() -> updateFilter(getAlarmTable()));
+        getViewer().getControl().getDisplay().asyncExec(() -> {
+            updateFilter(getAlarmTable());
+            if (!getWidgetModel().isTableHeaderVisible()) {
+                if (model.isServerAlive()) {
+                    getViewer().getControl().getDisplay().asyncExec(() -> figure.setBorder(calculateBorder()));
+                } else {
+                    getViewer().getControl().getDisplay().asyncExec(() ->
+                        figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
+                }
+            }
+        });
     }
 
     /*
@@ -234,6 +258,10 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
     @Override
     public void serverTimeout(AlarmClientModel model) {
         // ignore
+        if (!getWidgetModel().isTableHeaderVisible()) {
+            getViewer().getControl().getDisplay().asyncExec(() ->
+                figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
+        }
     }
 
     /*
@@ -244,7 +272,9 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
      */
     @Override
     public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
-        // ignore
+        if (!getWidgetModel().isTableHeaderVisible()) {
+            getViewer().getControl().getDisplay().asyncExec(() -> figure.setBorder(calculateBorder()));
+        }
     }
 
 }
