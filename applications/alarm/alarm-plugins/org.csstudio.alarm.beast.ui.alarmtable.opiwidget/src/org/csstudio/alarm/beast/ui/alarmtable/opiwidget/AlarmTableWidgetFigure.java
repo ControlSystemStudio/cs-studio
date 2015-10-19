@@ -68,7 +68,7 @@ public class AlarmTableWidgetFigure extends AbstractSWTWidgetFigure<Composite> {
             AlarmTableWidgetModel model = ((AlarmTableWidgetEditPart) editPart).getWidgetModel();
 
             gui = new GUI(base, null, model.isWritable(), model.isSeparateTables(), model.getColumns(),
-                    model.getSortingColumn(), model.isSortAscending());
+                    model.getSortingColumn(), model.isSortAscending(),model.isTableHeaderVisible());
             gui.setNumberOfAlarmsLimit(model.getMaxNumberOfAlarms());
             gui.setBlinking(model.isUnacknowledgedBlinking());
             gui.setTimeFormat(model.getTimeFormat());
@@ -76,6 +76,7 @@ public class AlarmTableWidgetFigure extends AbstractSWTWidgetFigure<Composite> {
             int ack = model.getAcknowledgeTableWeight();
             int unack = model.getUnacknowledgeTableWeight();
             gui.setSashWeights(ack, unack);
+            gui.setTableColumnsHeadersVisible(model.isColumnsHeadersVisible());
             base.layout();
         }
     }

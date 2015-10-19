@@ -31,6 +31,8 @@ public final class Messages extends NLS {
     public static String MaxNumberOfAlarms;
     public static String AckTableWeight;
     public static String UnAckTableWeight;
+    public static String TableHeaderVisible;
+    public static String ColumnsHeadersVisible;
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);
