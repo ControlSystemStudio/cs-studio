@@ -13,4 +13,11 @@
             typeId="org.csstudio.alarm.beast.ui.alarmtable">
       </widget>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="false">
+      </toc>
+   </extension>
 </plugin>
