@@ -22,8 +22,8 @@ import org.csstudio.simplepv.IPVListener;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
-import org.epics.vtype.VByteArray;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VByteArray;
+import org.diirt.vtype.VType;
 
 /** Opibuilder {@link IPV} based on vtype {@link PV}
  *  @author Kay Kasemir

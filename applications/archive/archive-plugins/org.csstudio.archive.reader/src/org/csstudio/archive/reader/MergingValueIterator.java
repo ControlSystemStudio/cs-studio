@@ -8,8 +8,8 @@
 package org.csstudio.archive.reader;
 
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.vtype.VType;
-import org.epics.util.time.Timestamp;
+import org.diirt.vtype.VType;
+import org.diirt.util.time.Timestamp;
 
 /** Merge values from several <code>ValueIterator</code> based on time stamps
  *  @author Kay Kasemir

@@ -17,7 +17,7 @@ import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.AbstractScaledWidgetFigure;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale;
 import org.eclipse.draw2d.IFigure;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 /**
  * Base editPart controller for a widget based on {@link AbstractScaledWidgetModel}.

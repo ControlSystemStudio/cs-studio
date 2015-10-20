@@ -9,9 +9,9 @@ package org.csstudio.vtype.pv.pva;
 
 import org.epics.pvdata.pv.PVScalar;
 import org.epics.pvdata.pv.PVStructure;
-import org.epics.vtype.VByte;
-import org.epics.vtype.VType;
-import org.epics.vtype.VTypeToString;
+import org.diirt.vtype.VByte;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.VTypeToString;
 
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir

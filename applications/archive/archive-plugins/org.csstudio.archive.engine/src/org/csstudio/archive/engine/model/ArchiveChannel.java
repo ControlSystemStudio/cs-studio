@@ -17,11 +17,11 @@ import org.csstudio.archive.vtype.VTypeHelper;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVListenerAdapter;
 import org.csstudio.vtype.pv.PVPool;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.Time;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VType;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.Time;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VType;
 
 /** Base for archived channels.
  *

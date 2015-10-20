@@ -19,7 +19,7 @@ import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.eclipse.osgi.util.NLS;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** A 'global' alarm
  *  Similar to the AlarmTreePV, but doesn't track 'current' state, value,

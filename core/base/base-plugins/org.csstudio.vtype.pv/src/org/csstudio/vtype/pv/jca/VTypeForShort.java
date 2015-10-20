@@ -10,8 +10,8 @@ package org.csstudio.vtype.pv.jca;
 import gov.aps.jca.dbr.DBR_TIME_Short;
 import gov.aps.jca.dbr.GR;
 
-import org.epics.vtype.VShort;
-import org.epics.vtype.VTypeToString;
+import org.diirt.vtype.VShort;
+import org.diirt.vtype.VTypeToString;
 
 /** Wrap DBR as VType
  *

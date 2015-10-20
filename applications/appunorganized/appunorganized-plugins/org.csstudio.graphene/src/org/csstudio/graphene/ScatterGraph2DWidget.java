@@ -1,19 +1,20 @@
 /**
- *
+ * 
  */
 package org.csstudio.graphene;
 
-import static org.epics.pvmanager.formula.ExpressionLanguage.formula;
-import static org.epics.pvmanager.formula.ExpressionLanguage.formulaArg;
+import static org.diirt.datasource.formula.ExpressionLanguage.formula;
+import static org.diirt.datasource.formula.ExpressionLanguage.formulaArg;
 
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.widgets.Composite;
-import org.epics.graphene.ScatterGraph2DRendererUpdate;
-import org.epics.pvmanager.graphene.ExpressionLanguage;
-import org.epics.pvmanager.graphene.ScatterGraph2DExpression;
+import org.diirt.graphene.InterpolationScheme;
+import org.diirt.graphene.ScatterGraph2DRendererUpdate;
+import org.diirt.datasource.graphene.ExpressionLanguage;
+import org.diirt.datasource.graphene.ScatterGraph2DExpression;
 
 /**
  * @author shroffk

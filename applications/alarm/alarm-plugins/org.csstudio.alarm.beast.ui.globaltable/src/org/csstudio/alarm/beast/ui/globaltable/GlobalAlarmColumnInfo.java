@@ -12,7 +12,7 @@ import org.csstudio.alarm.beast.ui.globalclientmodel.GlobalAlarm;
 import org.eclipse.jface.viewers.CellLabelProvider;
 import org.eclipse.jface.viewers.ColumnLayoutData;
 import org.eclipse.jface.viewers.ColumnWeightData;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Helper that defines the columns for a table of global alarms
  *  @author Kay Kasemir

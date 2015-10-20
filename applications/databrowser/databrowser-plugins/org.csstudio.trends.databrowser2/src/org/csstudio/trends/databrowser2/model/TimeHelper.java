@@ -13,7 +13,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Helper for <code>java.time</code>
  *  @author Kay Kasemir

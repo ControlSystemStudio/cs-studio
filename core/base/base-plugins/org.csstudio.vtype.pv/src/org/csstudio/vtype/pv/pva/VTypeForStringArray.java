@@ -10,11 +10,11 @@ package org.csstudio.vtype.pv.pva;
 import java.util.List;
 
 import org.epics.pvdata.pv.PVStructure;
-import org.epics.util.array.ArrayInt;
-import org.epics.util.array.ListInt;
-import org.epics.vtype.VStringArray;
-import org.epics.vtype.VType;
-import org.epics.vtype.VTypeToString;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.util.array.ListInt;
+import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.VTypeToString;
 
 /** Hold/decode data of {@link PVStructure} in {@link VType}
  *  @author Kay Kasemir

@@ -22,7 +22,7 @@ import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
 import org.epics.archiverappliance.retrieval.client.RawDataRetrieval;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /**
  * Appliance archive reader which reads data from EPICS archiver appliance.
@@ -137,7 +137,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
     }
 
     /* (non-Javadoc)
-     * @see org.csstudio.archive.reader.ArchiveReader#getRawValues(int, java.lang.String, org.epics.util.time.Timestamp, org.epics.util.time.Timestamp)
+     * @see org.csstudio.archive.reader.ArchiveReader#getRawValues(int, java.lang.String, org.diirt.util.time.Timestamp, org.diirt.util.time.Timestamp)
      */
     @Override
     public ApplianceValueIterator getRawValues(int key, String name, Timestamp start, Timestamp end) throws UnknownChannelException, Exception {
@@ -151,7 +151,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
     }
 
     /* (non-Javadoc)
-     * @see org.csstudio.archive.reader.ArchiveReader#getOptimizedValues(int, java.lang.String, org.epics.util.time.Timestamp, org.epics.util.time.Timestamp, int)
+     * @see org.csstudio.archive.reader.ArchiveReader#getOptimizedValues(int, java.lang.String, org.diirt.util.time.Timestamp, org.diirt.util.time.Timestamp, int)
      */
     @Override
     public ValueIterator getOptimizedValues(int key, String name, Timestamp start, Timestamp end, int count) throws UnknownChannelException, Exception {

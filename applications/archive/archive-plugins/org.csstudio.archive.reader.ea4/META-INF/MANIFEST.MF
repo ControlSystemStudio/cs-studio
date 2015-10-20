@@ -10,6 +10,6 @@ Require-Bundle: org.csstudio.archive.reader;bundle-version="3.2.0",
  org.epics.pvaccess;bundle-version="3.0.0",
  org.epics.pvdata;bundle-version="3.0.0",
  org.csstudio.archive.vtype,
- org.epics.vtype,
- org.epics.util
+ org.diirt.vtype,
+ org.diirt.util
 Bundle-Vendor: Nikolay Malitsky <malitsky@bnl.gov>

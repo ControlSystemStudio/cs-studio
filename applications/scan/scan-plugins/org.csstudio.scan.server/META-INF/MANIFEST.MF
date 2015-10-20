@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Scan Server
 Bundle-SymbolicName: org.csstudio.scan.server;singleton:=true
-Bundle-Version: 4.2.3.qualifier
+Bundle-Version: 4.2.4.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
@@ -16,9 +16,9 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.csstudio.scan;bundle-version="4.2.1",
  org.csstudio.scan.log;bundle-version="3.2.2",
  org.csstudio.vtype.pv;bundle-version="1.0.0",
- org.epics.util;bundle-version="0.3.2",
- org.epics.vtype;bundle-version="2.7.1",
- org.csstudio.ndarray;bundle-version="1.0.0"
+ org.csstudio.ndarray;bundle-version="1.0.0",
+ org.diirt.util;bundle-version="3.0.1",
+ org.diirt.vtype;bundle-version="3.0.1"
 Bundle-ActivationPolicy: lazy
 Eclipse-RegisterBuddy: org.python.jython
 Export-Package: org.csstudio.scan.device,

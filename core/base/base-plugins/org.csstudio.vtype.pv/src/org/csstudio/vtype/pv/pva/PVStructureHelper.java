@@ -21,9 +21,9 @@ import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.Scalar;
 import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /** Helper for reading & writing PVStructure
  *

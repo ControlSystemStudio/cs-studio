@@ -27,8 +27,8 @@ import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VType;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VType;
 
 /** {@link ScanCommandImpl} that reads data from devices and logs it
  *  @author Kay Kasemir

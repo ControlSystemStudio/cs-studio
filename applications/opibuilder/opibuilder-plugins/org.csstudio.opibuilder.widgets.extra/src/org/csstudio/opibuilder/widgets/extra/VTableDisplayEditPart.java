@@ -9,10 +9,10 @@ import org.csstudio.utility.pvmanager.widgets.VTableWidget;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVWriter;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVWriter;
 
-import static org.epics.pvmanager.ExpressionLanguage.*;
+import static org.diirt.datasource.ExpressionLanguage.*;
 
 public class VTableDisplayEditPart extends AbstractSelectionWidgetEditpart<VTableDisplayFigure, VTableDisplayModel> {
 

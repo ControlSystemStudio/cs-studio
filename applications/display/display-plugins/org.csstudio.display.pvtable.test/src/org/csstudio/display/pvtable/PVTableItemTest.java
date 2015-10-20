@@ -14,9 +14,9 @@ import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableItemListener;
 import org.csstudio.vtype.pv.PV;
 import org.csstudio.vtype.pv.PVPool;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VType;
 import org.junit.Before;
 import org.junit.Test;
 

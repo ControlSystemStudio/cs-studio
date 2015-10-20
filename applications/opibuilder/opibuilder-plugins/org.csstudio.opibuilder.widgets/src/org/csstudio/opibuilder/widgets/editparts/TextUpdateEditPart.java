@@ -32,8 +32,8 @@ import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 
 /**The editor for text indicator widget.
  * @author Xihui Chen

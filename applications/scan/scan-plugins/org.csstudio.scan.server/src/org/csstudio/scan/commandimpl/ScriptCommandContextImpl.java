@@ -10,6 +10,7 @@ package org.csstudio.scan.commandimpl;
 import java.util.Date;
 
 import org.csstudio.ndarray.NDArray;
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.ScanScriptContext;
 import org.csstudio.scan.data.ScanData;
 import org.csstudio.scan.data.ScanSample;
@@ -18,12 +19,12 @@ import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
-import org.epics.util.array.IteratorNumber;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VNumberArray;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueUtil;
+import org.diirt.util.array.IteratorNumber;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 
 /** Implementation of the {@link ScanScriptContext}
  *
@@ -33,6 +34,7 @@ import org.epics.vtype.ValueUtil;
  */
 public class ScriptCommandContextImpl extends ScanScriptContext
 {
+    protected final static TimeDuration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
     final private ScanContext context;
 
     /** Initialize
@@ -87,7 +89,8 @@ public class ScriptCommandContextImpl extends ScanScriptContext
     public Object read(final String device_name) throws Exception
     {
         final Device device = context.getDevice(context.getMacros().resolveMacros(device_name));
-        final VType value = device.read();
+        // Active read of current value
+        final VType value = device.read(value_check_timeout);
         if (value instanceof VNumber)
             return ValueUtil.numericValueOf(value);
         if (value instanceof VNumberArray)
