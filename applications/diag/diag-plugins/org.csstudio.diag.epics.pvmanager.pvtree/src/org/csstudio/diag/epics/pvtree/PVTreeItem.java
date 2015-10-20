@@ -167,16 +167,23 @@ class PVTreeItem
                 @Override
                 public void handleText(final String text)
                 {
-                    // discard any alarm information, expect "xxx [alarm_data]"
-                    String type_text = text.split(" ")[0];
-                    // type should be a text.
                     // If it starts with a number, it's probably not an
                     // EPICS record type but a simulated PV
-                    final char first_char = type_text.charAt(0);
+                    final char first_char = text.charAt(0);
                     if (first_char >= 'a' && first_char <= 'z')
-                        type = type_text;
+                    {
+                        // discard any alarm information, the text may include
+                        // alarm data, i.e. "xxx [alarm_data]" not "xxx"
+                        final int spaceAt = text.indexOf(" ");
+                        if (spaceAt > -1)
+                            type = text.substring(0, spaceAt);
+                        else
+                            type = text;
+                    }
                     else
+                    {
                         type = Messages.UnknownPVType;
+                    }
                     updateType();
                 }
             };
