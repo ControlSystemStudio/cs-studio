@@ -37,7 +37,7 @@ public class SetupHelper
 
         // Use Channel Access as data source
         final CompositeDataSource sources = new CompositeDataSource();
-        sources.putDataSource("ca", new JCADataSourceConfiguration().read(SetupHelper.class.getResourceAsStream("ca.xml")).create());        
+        sources.putDataSource("ca", new JCADataSourceConfiguration().read(SetupHelper.class.getResourceAsStream("ca.xml")).create());
         sources.setConfiguration(new CompositeDataSourceConfiguration(SetupHelper.class.getResourceAsStream("datasource.xml")));
         PVManager.setDefaultDataSource(sources);
     }

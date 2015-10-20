@@ -193,7 +193,7 @@ public class ResultsDialog extends TitleAreaDialog {
         l.setText("RW properties with errors: " + noRWPropertiesWithFailures + " (" + ratio + " %)");
         l.setLayoutData(createGridData(true));
         l.setFont(font);
-        
+
         l = new Label(parent, SWT.HORIZONTAL);
         l.setText("Deprecated properties: " + noDeprecatedProperties);
         l.setLayoutData(createGridData(false));

@@ -13,7 +13,7 @@ import org.csstudio.autocomplete.parser.IContentParser;
 
 /**
  * Channel Access Data Source content parser.
- * 
+ *
  * @author Fred Arnaud (Sopra Group)
  */
 public class CAContentParser implements IContentParser {
@@ -31,7 +31,7 @@ public class CAContentParser implements IContentParser {
             return false;
         }
         if (desc.getValue().startsWith(CA_SOURCE)
-                || (desc.getValue().indexOf(AutoCompleteConstants.DATA_SOURCE_NAME_SEPARATOR) == -1 
+                || (desc.getValue().indexOf(AutoCompleteConstants.DATA_SOURCE_NAME_SEPARATOR) == -1
                     && CA_SOURCE.equals(desc.getDefaultDataSource()))) {
             return true;
         }

@@ -239,7 +239,7 @@ public class PVTableItem
     /** @return Description*/
     public String getDescription()
     {
-    	return desc_value;
+        return desc_value;
     }
 
     /** @return Options for current value, not <code>null</code> if not enumerated */

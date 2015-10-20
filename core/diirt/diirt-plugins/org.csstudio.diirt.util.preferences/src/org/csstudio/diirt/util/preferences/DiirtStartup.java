@@ -14,7 +14,7 @@ import org.eclipse.ui.WorkbenchException;
 /**
  * This class ensures that the diirt system.home is set from the eclipse
  * diirt.home preference before the diirt datasources/formulas/services are used.
- * 
+ *
  * @author Kunal Shroff
  *
  */

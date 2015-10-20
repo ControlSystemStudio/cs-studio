@@ -264,7 +264,7 @@ public class IFileUtil {
     }
     return null;
     }
-    
+
     public IFile createFileResource(InputStream inputStream, String fileName) {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         IProject project = workspace.getRoot().getProject("External Files");

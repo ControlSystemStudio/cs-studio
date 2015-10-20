@@ -94,7 +94,7 @@ public class CompilerOptionsService implements ICompilerOptionsService {
     public String getSeqFolder() {
         return getFolder(PreferenceConstants.EPICS_SEQ_LOCATION_POST_FIX);
     }
-    
+
     /**
      * {@inheritDoc}
      */
