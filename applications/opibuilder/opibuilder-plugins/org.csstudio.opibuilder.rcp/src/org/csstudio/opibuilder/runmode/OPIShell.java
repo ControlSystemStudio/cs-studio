@@ -146,6 +146,7 @@ public final class OPIShell implements IOPIRuntime {
             public void shellClosed(ShellEvent e) {
                 // Remove this shell from the cache.
                 openShells.remove(OPIShell.this);
+                sendUpdateCommand();
             }
             public void shellActivated(ShellEvent e) {
                 if (firstRun) {
