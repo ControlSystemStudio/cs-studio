@@ -37,9 +37,9 @@ import org.eclipse.swt.widgets.Text;
 public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
 
 
-    private TextInputEditpart editpart;
-    private TextInputModel model;
-    private Text text;
+    protected TextInputEditpart editpart;
+    protected TextInputModel model;
+    protected Text text;
 
 
 
@@ -110,13 +110,13 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                         outputText(text.getText());
                         switch (model.getFocusTraverse()) {
                         case LOSE:
-                             text.getShell().setFocus();
+                        	traverseLoseFocus();  
                              break;
                         case NEXT:
-                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_PREVIOUS);
+                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
                             break;
                         case PREVIOUS:
-                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
+                            SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_PREVIOUS);
                             break;
                         case KEEP:
                         default:
@@ -134,19 +134,27 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                     }
                 }
             });
-            text.addFocusListener(new FocusAdapter() {
-                @Override
-                public void focusLost(FocusEvent e) {
-                    //On mobile, lost focus should output text since there is not enter hit or ctrl key.
-                    if(editpart.getPV() != null && !OPIBuilderPlugin.isMobile(text.getDisplay()))
-                        text.setText(model.getText());
-                    else if(figure.isEnabled())
-                        outputText(text.getText());
-                }
-            });
+            text.addFocusListener(getTextFocusListener(figure));
         }
         return figure;
     }
+    
+    protected void traverseLoseFocus() {
+    	text.getShell().setFocus();
+    }
+    
+    protected FocusAdapter getTextFocusListener(NativeTextFigure figure){
+    	return new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                //On mobile, lost focus should output text since there is not enter hit or ctrl key.
+                if(editpart.getPV() != null && !OPIBuilderPlugin.isMobile(text.getDisplay()))
+                    text.setText(model.getText());
+                else if(figure.isEnabled())	
+                    outputText(text.getText());
+            }
+        };
+    };
 
     protected void outputText(String newValue) {
         if(editpart.getPV() == null){
