@@ -56,7 +56,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
     private IPVListener pvLoadLimitsListener;
     private org.diirt.vtype.Display meta = null;
 
-    private ITextInputEditPartDelegate delegate;
+    protected ITextInputEditPartDelegate delegate;
 
     @Override
     public TextInputModel getWidgetModel() {
@@ -86,7 +86,7 @@ public class TextInputEditpart extends TextUpdateEditPart {
     /**
      * @return true if it should use Draw2D {@link TextInputFigure}.
      */
-    private boolean shouldBeTextInputFigure(){
+    protected boolean shouldBeTextInputFigure(){
         TextInputModel model = getWidgetModel();
         if(model.getStyle() == Style.NATIVE)
             return false;
