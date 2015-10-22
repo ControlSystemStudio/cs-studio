@@ -40,7 +40,7 @@ public class AlarmTableWidgetModel extends AbstractWidgetModel {
     static final String PROP_ACK_TABLE_WEIGHT = "table_weight_acknowledge";
     static final String PROP_UNACK_TABLE_WEIGHT = "table_weight_unacknowledge";
     static final String PROP_TABLE_HEADER_VISIBLE = "table_header_visible";
-    static final String PROP_COLUMNS_HEADERS_VISIBLE = "column_headers_visible";
+    static final String PROP_COLUMNS_HEADERS_VISIBLE = "columns_headers_visible";
 
     /*
      * (non-Javadoc)
