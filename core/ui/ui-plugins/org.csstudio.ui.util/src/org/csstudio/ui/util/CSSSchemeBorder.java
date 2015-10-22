@@ -14,7 +14,7 @@ public class CSSSchemeBorder {
         public static Scheme LOWERED = SchemeBorder.SCHEMES.LOWERED;
         public static Scheme RAISED = SchemeBorder.SCHEMES.RAISED;
         public static Scheme ETCHED = SchemeBorder.SCHEMES.ETCHED;
-        public static Scheme RIDGED = SchemeBorder.SCHEMES.LOWERED;
+        public static Scheme RIDGED = SchemeBorder.SCHEMES.RIDGED;
         public static Scheme BUTTON_CONTRAST = SchemeBorder.SCHEMES.BUTTON_CONTRAST;
         public static Scheme BUTTON_PRESSED = SchemeBorder.SCHEMES.BUTTON_PRESSED;
         public static Scheme BUTTON_RAISED = SchemeBorder.SCHEMES.BUTTON_RAISED;
