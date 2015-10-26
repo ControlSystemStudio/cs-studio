@@ -12,9 +12,10 @@ import java.util.Map;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.OPIBuilderMacroUtil;
+import org.csstudio.opibuilder.visualparts.InfoDialog;
 import org.eclipse.gef.EditPart;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.MessageDialog;
+//import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
@@ -23,7 +24,7 @@ import org.eclipse.ui.IWorkbenchPart;
 
 /**Show the predefined macros of the selected widget in console and message dialog.
  * @author Xihui Chen
- *
+ * @author Boris Versic - use InfoDialog (MessageDialog shows behind fullscreen window on Linux)
  */
 public class ShowMacrosAction implements IObjectActionDelegate {
 
@@ -44,8 +45,10 @@ public class ShowMacrosAction implements IObjectActionDelegate {
         sb.append("Note: Macros are loaded during OPI opening, so this won't reflect the macro changes after opening." +
                 "To reflect the latest changes, please reopen the OPI and show macros again.");
         ConsoleService.getInstance().writeInfo(sb.toString());
-        MessageDialog.openInformation(targetPart.getSite().getShell(),
-                "Predefined Macros", sb.toString());
+//        MessageDialog.openInformation(targetPart.getSite().getShell(),
+//                "Predefined Macros", sb.toString());
+        
+        InfoDialog.open(targetPart.getSite().getShell(), "Predefined Macros", sb.toString());
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
