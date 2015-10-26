@@ -3,6 +3,9 @@
    <feature id="org.csstudio.trends.databrowser2.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.trends.databrowser2.rap.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <feature id="org.csstudio.trends.databrowser2.opiwidget.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>

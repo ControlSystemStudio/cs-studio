@@ -276,23 +276,24 @@ public class AlarmTreeItem extends TreeItem
      *  @param severity Alarm severity
      *  @param message Alarm message
      *  @param leaf PV that triggered this update
-     *  @return <code>true</code> if alarm state actually changed
+     *  @return NONE if this item already has the same severities and message, PV if only this item has changed,
+     *              or PV_AND_PARENT if both this item and its parent have changed
      */
-    protected synchronized boolean setAlarmState(final SeverityLevel current_severity,
+    protected synchronized ChangeLevel setAlarmState(final SeverityLevel current_severity,
             final SeverityLevel severity, final String message,
             final AlarmTreeLeaf pv)
     {
         if (getCurrentSeverity() == current_severity &&
             getSeverity() == severity  &&
             getMessage().equals(message))
-            return false;
+            return ChangeLevel.NONE;
         this.current_severity = current_severity;
         this.severity = severity;
         this.message = message;
         final AlarmTreeItem parent = getParent();
         if (parent != null)
-            return parent.maximizeSeverity();
-        return true;
+            return parent.maximizeSeverity() ? ChangeLevel.PV_AND_PARENT : ChangeLevel.PV;
+        return ChangeLevel.PV;
     }
 
     /** Acknowledge or un-acknowledge current alarms.
