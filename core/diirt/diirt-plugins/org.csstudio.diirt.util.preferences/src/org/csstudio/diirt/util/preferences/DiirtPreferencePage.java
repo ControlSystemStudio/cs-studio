@@ -1,9 +1,9 @@
 package org.csstudio.diirt.util.preferences;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.DirectoryFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -18,7 +18,7 @@ public class DiirtPreferencePage extends FieldEditorPreferencePage implements
 
     @Override
     protected void createFieldEditors() {
-        addField(new DirectoryFieldEditor("diirt.home",
+        addField(new StringFieldEditor("diirt.home",
                 "&Diirt configuration directory:", getFieldEditorParent()));
     }
 
