@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.RGB;
 /**
  * A converter between AWT BufferedImage and SWT ImageData. By taking use of this converter, it is possible to use
  * Java2D in SWT or Draw2D.
- * 
+ *
  * @author Xihui Chen
  *
  */

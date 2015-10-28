@@ -20,7 +20,7 @@ import org.w3c.dom.svg.SVGAnimateElement;
 /**
  * Manages the update of defined colors values of {@link SVGAnimateElement}.
  * Always updates the original values.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class SVGAnimateElementValuesHandler implements ICSSHandler {

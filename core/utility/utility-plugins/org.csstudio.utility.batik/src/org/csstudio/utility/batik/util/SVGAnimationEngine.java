@@ -14,7 +14,7 @@ import org.w3c.dom.Document;
 /**
  * Extension of standard {@link org.apache.batik.bridge.SVGAnimationEngine} which allows to access the
  * {@link TimedDocumentRoot}.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class SVGAnimationEngine extends org.apache.batik.bridge.SVGAnimationEngine {

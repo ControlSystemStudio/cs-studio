@@ -531,7 +531,7 @@ public class AxesTableHandler implements IStructuredContentProvider
                 command.rememberNewConfig();
             }
         });
-        
+
         // Label Font Column ----------
         col = TableHelper.createColumn(table_layout, axes_table, Messages.AxisLabelFont, 40, 5);
         col.setLabelProvider(new CellLabelProvider()
@@ -602,7 +602,7 @@ public class AxesTableHandler implements IStructuredContentProvider
             }
         });
 
-        
+
     }
 
     /** Add context menu to axes_table */

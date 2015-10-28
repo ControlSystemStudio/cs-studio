@@ -75,7 +75,7 @@ public class StateParser_Test {
 	@Test(timeout=1000)
 	public void testBUG2136() {
 	    final StateParser parser = new StateParser();
-	
+
 	    parser.findNext("state init ");
 	    Assert.assertFalse(parser.hasFoundElement());
 	}

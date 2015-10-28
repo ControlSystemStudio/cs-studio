@@ -18,7 +18,7 @@ import org.csstudio.autocomplete.tooltips.TooltipData;
 /**
  * Channel Access Data Source content provider. Provides options syntax
  * assistance.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class CAContentProvider implements IAutoCompleteProvider {

@@ -18,7 +18,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
  * Command handler for opening probe on the current selection.
- * 
+ *
  * @author carcassi
  * @author Kay Kasemir
  */
@@ -27,60 +27,59 @@ public class OpenProbe extends AbstractHandler implements IHandler
 {
     /** {@inheritDoc} */
     @Override
-	public Object execute(final ExecutionEvent event) throws ExecutionException
-	{
-	    final Shell shell = HandlerUtil.getActiveShell(event);
-		try
-		{
-			// Retrieve the selection and the current page
-			final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
-			final ProcessVariable[] pvs = AdapterUtil.convert(selection,
-                    ProcessVariable.class);
-			
-			final IWorkbenchPage page;
-			final IWorkbenchSite site = HandlerUtil.getActiveSite(event);
-			if (site != null)
-			    page = site.getPage();
-			else // When all panels are closed, the event's site would be null
-			    page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+        public Object execute(final ExecutionEvent event) throws ExecutionException
+        {
+            final Shell shell = HandlerUtil.getActiveShell(event);
+                try
+                {
+                    // Retrieve the selection and the current page
+                    final ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+                    final ProcessVariable[] pvs = AdapterUtil.convert(selection, ProcessVariable.class);
 
-			// Were PVs provided (opened from context menu?)
-			if (pvs == null  ||  pvs.length <= 0)
-			    openProbe(page);
-			else
-			{
-			    // Confirm if this could open many new probe instances
-			    if (pvs.length > 5 &&
-			        ! MessageDialog.openConfirm(shell,
-			                Messages.MultipleInstancesTitle,
-			                NLS.bind(Messages.MultipleInstancesFmt, pvs.length))
-	                )
-	                return null;
-			    
-			    for (ProcessVariable pv : pvs)
-			    {   // One instance per PV
-			        PVManagerProbe probe = openProbe(page);
-			        probe.setPVName(pv);
-			    }
-			}
-		}
-		catch (Exception ex)
-		{
-            ExceptionDetailsErrorDialog.openError(shell,
-	            Messages.Probe_errorOpenProbe, ex);
-		}
-		return null;
-	}
-	
+                    final IWorkbenchPage page;
+                    final IWorkbenchSite site = HandlerUtil.getActiveSite(event);
+                    if (site != null)
+                        page = site.getPage();
+                    else // When all panels are closed, the event's site would be null
+                        page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+
+                    // Were PVs provided (opened from context menu?)
+                    if (pvs == null  ||  pvs.length <= 0)
+                        openProbe(page);
+                    else
+                    {
+                        // Confirm if this could open many new probe instances
+                        if (pvs.length > 5 &&
+                            ! MessageDialog.openConfirm(shell,
+                                    Messages.MultipleInstancesTitle,
+                                    NLS.bind(Messages.MultipleInstancesFmt, pvs.length))
+                        )
+                        return null;
+
+                        for (ProcessVariable pv : pvs)
+                        {   // One instance per PV
+                            PVManagerProbe probe = openProbe(page);
+                            probe.setPVName(pv);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(shell,
+                            Messages.Probe_errorOpenProbe, ex);
+                }
+                return null;
+        }
+
     /** @param page {@link IWorkbenchPage}on which to open Probe
      *  @return {@link PVManagerProbe} that was opened
      *  @throws Exception on error
      */
-	private PVManagerProbe openProbe(final IWorkbenchPage page) throws Exception
-	{
-	    return (PVManagerProbe) page.showView(
-                PVManagerProbe.VIEW_ID,
-                PVManagerProbe.createNewInstance(),
-                IWorkbenchPage.VIEW_ACTIVATE);
-	}
+    private PVManagerProbe openProbe(final IWorkbenchPage page) throws Exception
+    {
+        return (PVManagerProbe) page.showView(
+                    PVManagerProbe.VIEW_ID,
+                    PVManagerProbe.createNewInstance(),
+                    IWorkbenchPage.VIEW_ACTIVATE);
+        }
 }

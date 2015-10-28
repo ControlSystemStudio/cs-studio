@@ -9,7 +9,7 @@ import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.DefineStatementNode;
 
 public class DefineFunctionStatementParser_Test extends TestCase {
-	
+
 	private final static String text = 	"//...\n" +
 										"#define OK 1\n" +
 										"#define DBG_D100 (DBG_D100_EIN|debugNextStep)\n" +
@@ -17,12 +17,12 @@ public class DefineFunctionStatementParser_Test extends TestCase {
 										"#define PV_SET_SYNC(pv, val) pv = val; pvPut (pv, SYNC);\n" +
 										"#define DBG_TTSTOP_EIN	FALSE //TRUE=aktiviert   FALSE=deaktiviert\n" +
 										"#define DBG_TTSTOP (DBG_TTSTOP_EIN|debugNextStep)\n" +
-										"// usw...\n"; 
+										"// usw...\n";
 
 	@Test
 	public void testParser() {
 		final DefineFunctionStatementParser parser = new DefineFunctionStatementParser(new Interval[0]);
-		
+
 		//SET_MAN(pv)
 		parser.findNext(text);
 		Assert.assertTrue(parser.hasFoundElement());
@@ -38,8 +38,8 @@ public class DefineFunctionStatementParser_Test extends TestCase {
 		Assert.assertEquals("pv = PID_MANUELL; pvPut(pv);", lastFoundAsNode.getValue());
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
-				.getStatementEndOffset());	
-		
+				.getStatementEndOffset());
+
 		//PV_SET_SYNC(pv, val)
 		parser.findNext(text, 132);
 		Assert.assertTrue(parser.hasFoundElement());
@@ -55,8 +55,8 @@ public class DefineFunctionStatementParser_Test extends TestCase {
 		Assert.assertEquals("pv = val; pvPut (pv, SYNC);", lastFoundAsNode.getValue());
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
-				.getStatementEndOffset());	
-		
+				.getStatementEndOffset());
+
 		//Rest
 		parser.findNext(text, 189);
 		Assert.assertFalse(parser.hasFoundElement());
