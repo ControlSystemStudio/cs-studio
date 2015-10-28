@@ -141,7 +141,17 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
     
     @Override
     public boolean performOk() {
-        diirtPathEditor.store();
+        try {
+            File lastDir = new File(diirtPathEditor.getStringValue());
+            if (lastDir.exists()) {
+                diirtPathEditor.store();
+                tv.setInput(store.getString("diirt.home"));
+            } else {
+                setErrorMessage("Invalid config location");
+            }
+        } catch (Exception e1) {
+            setErrorMessage(e1.getMessage());
+        }
         return super.performOk();
     }
 
