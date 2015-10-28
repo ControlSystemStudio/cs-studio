@@ -68,11 +68,15 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
 
             @Override
             protected String changePressed() {
-                DirectoryDialog dialog = new DirectoryDialog(getShell(),
-                        SWT.SHEET);
+                DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SHEET);
                 if (lastPath != null) {
                     if (new File(lastPath).exists()) {
-                        dialog.setFilterPath(lastPath);
+                        File lastDir = new File(lastPath);
+                        try {
+                            dialog.setFilterPath(lastDir.getCanonicalPath());
+                        } catch (IOException e) {
+                            dialog.setFilterPath(lastPath);
+                        }
                     }
                 }
                 String dir = dialog.open();
@@ -88,6 +92,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
                 return dir;
             }
         };
+        diirtPathEditor.setChangeButtonText("Browse");
         diirtPathEditor.setPage(this);
         diirtPathEditor.setPreferenceStore(getPreferenceStore());
         diirtPathEditor.load();
@@ -214,7 +219,11 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
          * @param arg2 the new input
          */
         public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-            root = new File((String)arg2);
+            try {
+                root = new File((String)arg2);
+            } catch (Exception e) {
+                root = new File("root");
+            }
         }
     }
 
