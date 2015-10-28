@@ -19,7 +19,11 @@ public class DiirtPreferencePage extends FieldEditorPreferencePage implements
     @Override
     protected void createFieldEditors() {
         addField(new DirectoryFieldEditor("diirt.home",
-                "&Diirt configuration directory:", getFieldEditorParent()));
+                "&Diirt configuration directory:", getFieldEditorParent()) {
+            public boolean doCheckState() {
+                return true;
+            }
+        });
     }
 
     @Override

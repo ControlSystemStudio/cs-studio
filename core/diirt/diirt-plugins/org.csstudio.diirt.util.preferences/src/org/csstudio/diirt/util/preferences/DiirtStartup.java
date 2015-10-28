@@ -1,9 +1,13 @@
 package org.csstudio.diirt.util.preferences;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 
 import org.csstudio.utility.product.IWorkbenchWindowAdvisorExtPoint;
+import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -21,6 +25,7 @@ import org.eclipse.ui.WorkbenchException;
 public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
 
     private Logger log = Logger.getLogger(DiirtStartup.ID);
+    private static final String PLATFORM_URI_PREFIX = "platform:";
 
     @Override
     public void preWindowOpen() {
@@ -31,7 +36,19 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
 
             IPreferencesService prefs = Platform.getPreferencesService();
             String diirtHome = prefs.getString("org.csstudio.diirt.util.preferences", "diirt.home", defaultDiirtConfig, null);
-            log.config("Setting Diirt configuration folder to :" + diirtHome);
+            // Allowing configuration to specify a location within a plugin.
+            if (diirtHome.startsWith(PLATFORM_URI_PREFIX)) {
+                try {
+                    URL url = FileLocator.resolve(new URL(diirtHome));
+                    IPath diirtHomeIpath = URIUtil.toPath(url.toURI());
+                    if (diirtHomeIpath != null) {
+                        diirtHome = diirtHomeIpath.toOSString();
+                    }
+                } catch (MalformedURLException e) {
+                    // leave diirtHome as is
+                }
+            }
+            log.config("Setting Diirt configuration folder to: " + diirtHome);
             System.setProperty("diirt.home", diirtHome);
         } catch (Exception e) {
             log.severe(e.getMessage());
