@@ -10,11 +10,12 @@ package org.csstudio.email.ui;
 import org.csstudio.email.Preferences;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /** Base class for Action that sends an email
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Boris Versic
  */
 abstract public class AbstractSendEMailAction extends Action
 {
@@ -80,14 +81,20 @@ abstract public class AbstractSendEMailAction extends Action
             public void run()
             {
                 final String image_filename = getImage();
-
                 final Dialog dlg;
+                // Create a new parent shell for the dialog. This ensures that the dialog will be shown on top of a fullscreen OPI on Linux.
+                // We will "ask" EMailSenderDialog to dispose of it for us.
+                final Shell dialogShell = new Shell(shell.getDisplay(), SWT.NO_TRIM);
+                dialogShell.setSize(20, 20);
+                
                 if (image_filename == null)
-                    dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
+                    dlg = new EMailSenderDialog(dialogShell, Preferences.getSMTP_Host(), from,
                             Messages.DefaultDestination, subject, body);
                 else
-                    dlg = new EMailSenderDialog(shell, Preferences.getSMTP_Host(), from,
+                    dlg = new EMailSenderDialog(dialogShell, Preferences.getSMTP_Host(), from,
                             Messages.DefaultDestination, subject, body, image_filename);
+                
+                ((EMailSenderDialog) dlg).cleanupShellOnClose(dialogShell);
                 dlg.open();
             }
         });

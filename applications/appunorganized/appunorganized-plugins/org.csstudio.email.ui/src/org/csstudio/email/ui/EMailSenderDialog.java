@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 /** Dialog for entering EMail and sending it.
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Boris Versic
  */
 public class EMailSenderDialog extends TitleAreaDialog
 {
@@ -38,6 +38,11 @@ public class EMailSenderDialog extends TitleAreaDialog
 
     private Text txt_from, txt_to, txt_subject, txt_body;
     private ImageTabFolder image_tabfolder;
+    
+    // AbstractSendEMailAction creates a new Shell as the parent for this dialog, because otherwise
+    // the dialog is opened in the background when running a fullscreen OPI.
+    // AbstractSendEMailAction stores this shell for EMailSenderDialog to dispose it on close.
+    private Shell cleanupShell;
 
     /** Initialize for plain-text entry
      *  @param shell
@@ -73,9 +78,25 @@ public class EMailSenderDialog extends TitleAreaDialog
         this.subject = subject;
         this.body = body;
         this.image_filename = image_filename;
+        this.cleanupShell = null;
     }
 
-    /** Allow resize */
+    /** Make EMail dialog dispose of this shell in onClose().
+     *  Only the last stored shell is disposed. 
+     * 
+     * @param shell
+     */
+    public void cleanupShellOnClose(final Shell shell) {
+    	this.cleanupShell = shell;
+    }
+    
+    @Override
+	public boolean close() {
+    	if (this.cleanupShell != null) this.cleanupShell.dispose();
+		return super.close();
+	}
+
+	/** Allow resize */
     @Override
     protected boolean isResizable()
     {

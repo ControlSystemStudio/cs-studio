@@ -112,8 +112,8 @@ public class DumpPVListAction implements IObjectActionDelegate {
         	parentShell.setSize(200, 20);
     		Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
     		// center horizontally, but place it over the upper portion of the window
-    		Point dialogCenter = new Point(windowBounds.x + windowBounds.width / 2, windowBounds.y + windowBounds.height * 3/4);
-    		Point location = new Point(dialogCenter.x - parentShell.getBounds().x / 2, dialogCenter.y - parentShell.getBounds().y / 2);
+    		Point location = new Point(windowBounds.x + windowBounds.width / 2 - parentShell.getBounds().x / 2,
+                                       windowBounds.y + 100 + parentShell.getBounds().y + parentShell.getBounds().height);
     		parentShell.setLocation(location);
         }
 
