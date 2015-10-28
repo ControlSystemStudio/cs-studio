@@ -85,7 +85,6 @@ abstract public class AbstractSendEMailAction extends Action
                 // Create a new parent shell for the dialog. This ensures that the dialog will be shown on top of a fullscreen OPI on Linux.
                 // We will "ask" EMailSenderDialog to dispose of it for us.
                 final Shell dialogShell = new Shell(shell.getDisplay(), SWT.NO_TRIM);
-                dialogShell.setSize(20, 20);
                 
                 if (image_filename == null)
                     dlg = new EMailSenderDialog(dialogShell, Preferences.getSMTP_Host(), from,
@@ -94,7 +93,7 @@ abstract public class AbstractSendEMailAction extends Action
                     dlg = new EMailSenderDialog(dialogShell, Preferences.getSMTP_Host(), from,
                             Messages.DefaultDestination, subject, body, image_filename);
                 
-                ((EMailSenderDialog) dlg).cleanupShellOnClose(dialogShell);
+                ((EMailSenderDialog) dlg).initializeOwnParentShell(dialogShell);
                 dlg.open();
             }
         });
