@@ -17,5 +17,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.diirt.datasource,
  org.diirt.datasource.expression;version="3.0.1",
  org.diirt.datasource.vtype,
+ org.diirt.util.array;version="3.0.1",
  org.diirt.util.time;version="3.0.1",
  org.diirt.vtype;version="3.0.1"
