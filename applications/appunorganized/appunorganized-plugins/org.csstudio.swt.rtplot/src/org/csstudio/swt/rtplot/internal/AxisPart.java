@@ -44,7 +44,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
     protected volatile boolean show_grid = false;
 
     private AtomicBoolean visible = new AtomicBoolean(true);
-    
+
     private AtomicBoolean axisNameVisible = new AtomicBoolean(true);
 
     private Font labelFont;
@@ -73,7 +73,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
     private volatile int high_screen = 1;
 
     final private SWTMediaPool media;
-    
+
     /** @param name Axis name
      *  @param listener {@link PlotPartListener}
      *  @param horizontal <code>true</code> if axis is horizontal
@@ -103,7 +103,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
         this.labelFont = media.get(font);
         requestLayout();
     };
-    
+
     /** {@inheritDoc} */
     @Override
     public Font getLabelFont() {
@@ -116,14 +116,14 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
         this.scaleFont = media.get(font);
         requestLayout();
     };
-    
+
     /** {@inheritDoc} */
     @Override
     public Font getScaleFont() {
         return scaleFont;
     };
 
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean isGridVisible()
@@ -159,7 +159,7 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
             requestRefresh();
         }
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public boolean isVisible()

@@ -11,17 +11,17 @@ import de.desy.language.snl.parser.nodes.VariableNode;
 public class VariableParser_Test extends TestCase {
 
 	private final String _source = "/*HAllo*/\nprogram sncExample;"
-			+ "double v;" 
+			+ "double v;"
 			+ "assign v to \"{user}:aiExample\";"
-			+ "monitor v;\n\n\n" 
+			+ "monitor v;\n\n\n"
 			+ "long l;\n\n"
 			+ "char text[40];\n"
 			+ "char text_Neu;\n"
 			+ "char text2 [40] ;\n"
 			+ "char text3[ 40 ];\n"
-			+ "%{\n" 
+			+ "%{\n"
 			+ "   Embedded C\n"
-			+ "}%\n" 
+			+ "}%\n"
 			+ "ss ss1 {" + "    state init {" + "	when (delay(0.1)) {"
 			+ "	    printf(\"sncExample: Startup delay over\n\");"
 			+ "	} state low" + "    }" + " /* Hallo Welt!*" + " ./. */"
@@ -35,7 +35,7 @@ public class VariableParser_Test extends TestCase {
 			+ "       } state high" + "   }" + "}";
 
 	@Test
-	public void testFindNextCharSequence() {		
+	public void testFindNextCharSequence() {
 		final VariableParser parser = new VariableParser(new Interval[0]);
 
 		// double v
@@ -64,7 +64,7 @@ public class VariableParser_Test extends TestCase {
 		Assert.assertTrue(lastFoundAsNode.hasOffsets());
 		Assert.assertEquals(82, lastFoundAsNode.getStatementStartOffset());
 		Assert.assertEquals(88, lastFoundAsNode.getStatementEndOffset());
-		
+
 		// char text[40]
 		parser.findNext(this._source, parser.getEndOffsetLastFound());
 		Assert.assertTrue(parser.hasFoundElement());
@@ -76,7 +76,7 @@ public class VariableParser_Test extends TestCase {
 		Assert.assertTrue(lastFoundAsNode.hasOffsets());
 		Assert.assertEquals(91, lastFoundAsNode.getStatementStartOffset());
 		Assert.assertEquals(104, lastFoundAsNode.getStatementEndOffset());
-		
+
 		// char text_Neu
 		parser.findNext(this._source, parser.getEndOffsetLastFound());
 		Assert.assertTrue(parser.hasFoundElement());
@@ -88,7 +88,7 @@ public class VariableParser_Test extends TestCase {
 		Assert.assertTrue(lastFoundAsNode.hasOffsets());
 		Assert.assertEquals(106, lastFoundAsNode.getStatementStartOffset());
 		Assert.assertEquals(119, lastFoundAsNode.getStatementEndOffset());
-		
+
 		// char text2[40]
 		parser.findNext(this._source, parser.getEndOffsetLastFound());
 		Assert.assertTrue(parser.hasFoundElement());
@@ -100,7 +100,7 @@ public class VariableParser_Test extends TestCase {
 		Assert.assertTrue(lastFoundAsNode.hasOffsets());
 		Assert.assertEquals(121, lastFoundAsNode.getStatementStartOffset());
 		Assert.assertEquals(137, lastFoundAsNode.getStatementEndOffset());
-		
+
 		// char text3[40]
 		parser.findNext(this._source, parser.getEndOffsetLastFound());
 		Assert.assertTrue(parser.hasFoundElement());

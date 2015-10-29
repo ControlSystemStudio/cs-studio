@@ -144,7 +144,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     private ScheduledFuture<?> scheduledFuture;
 
     private boolean pvsHaveBeenStarted = false;
-    
+
     /**
      * @param editpart the editpart to be delegated.
      * It must implemented {@link IPVWidgetEditpart}
@@ -744,7 +744,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     }
 
     /**
-     * Set whether the editpart is enabled for PV control.  Disabled 
+     * Set whether the editpart is enabled for PV control.  Disabled
      * editparts have greyed-out figures, and the cursor is set to a cross.
      */
     @Override

@@ -14,7 +14,7 @@ import org.eclipse.ui.WorkbenchException;
 /**
  * This class ensures that the diirt system.home is set from the eclipse
  * diirt.home preference before the diirt datasources/formulas/services are used.
- * 
+ *
  * @author Kunal Shroff
  *
  */
@@ -43,7 +43,7 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
     @Override
     public boolean preWindowShellClose() {
         log.fine("DIIRT: preWindowShellClose");
-        return false;
+        return true;
     }
 
     @Override

@@ -31,7 +31,7 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Cache that stores images until the simple time of all {@link TimedElement} of the current {@link TimedDocumentRoot}
  * has been reset.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class AnimatedSVGCache {

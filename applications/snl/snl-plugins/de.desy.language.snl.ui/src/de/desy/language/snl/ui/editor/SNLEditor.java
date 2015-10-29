@@ -612,7 +612,7 @@ public class SNLEditor extends LanguageEditor {
 
         return error;
     }
-    
+
     @Override
     public void dispose() {
         _preferenceStore = null;

@@ -11,20 +11,20 @@ import org.junit.Test;
 
 /**
  * A test to exam a pattern to match program statements.
- * 
+ *
  * Attention: This pattern does not match a statement with following chars
  * behind the statement close char (;), eg.
- * 
+ *
  * <pre>
  * program HalloWelt; daddel du da da! ;-)
  * </pre>
- * 
+ *
  * The pattern:
- * 
+ *
  * <pre>
  * (program)(\\s+)([a-zA-Z])([0-9a-zA-Z]*)(\\s*)([\\(][\\S\\s]*[\\)])?(\\s*)(;)
  * </pre>
- * 
+ *
  * @author C1 WPS / KM, MZ
  */
 public class RegExToMatchProgramStatement_Test extends TestCase {

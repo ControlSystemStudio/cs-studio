@@ -9,13 +9,16 @@ package org.csstudio.diag.epics.pvtree;
 
 import java.text.NumberFormat;
 
+import org.diirt.util.array.ListNumber;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VString;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueUtil;
+
 
 /** Helper for {@link VType} gymnastics
  *  @author Kay Kasemir
@@ -73,6 +76,24 @@ public class VTypeHelper
                 // PVManager doesn't handle enums that have no label. Ignore
             }
             buf.append("(").append(item.getIndex()).append(")");
+        }
+        else if (value instanceof VNumberArray)
+        {
+            final VNumberArray arrayVal = (VNumberArray) value;
+            final ListNumber data = arrayVal.getData();
+            final NumberFormat format = arrayVal.getFormat();
+
+            buf.append("[");
+            if (format == null)
+            {
+                buf.append(data.getDouble(0));
+            }
+            else
+            {
+                buf.append(format.format(data.getDouble(0)));
+            }
+            buf.append(", ...] ");
+            buf.append("(").append(data.size()).append(")");
         }
         else
             buf.append(value.getClass().getName());

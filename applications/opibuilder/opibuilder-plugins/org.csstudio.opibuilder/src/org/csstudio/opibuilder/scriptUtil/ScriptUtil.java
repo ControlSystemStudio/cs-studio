@@ -14,6 +14,10 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.widgetActions.ExecuteCommandAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.IParameter;
+import org.eclipse.core.commands.Parameterization;
+import org.eclipse.core.commands.ParameterizedCommand;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorPart;
@@ -21,6 +25,7 @@ import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.osgi.framework.Version;
 
@@ -146,23 +151,53 @@ public class ScriptUtil {
     }
 
     /**
-     * Execute an Eclipse command.
+     * Execute an Eclipse command with optional parameters.
+     * Any parameters must be defined along with the command in plugin.xml.
      *
-     * @param commandId
-     *            the command id.
+     * @param commandId the Eclipse command id
+     * @param parameters a list of further String arguments alternating key, value:
+     *         * executeEclipseCommand("id", ["pkey", "pvalue"])
      */
-    public final static void executeEclipseCommand(String commandId) {
+    public final static void executeEclipseCommand(String commandId, String[] parameters) {
         IHandlerService handlerService = (IHandlerService) PlatformUI
                 .getWorkbench().getActiveWorkbenchWindow()
                 .getService(IHandlerService.class);
-
         try {
-            handlerService.executeCommand(commandId, null);
+            if (parameters.length % 2 != 0) {
+                throw new IllegalArgumentException("Parameterized commands must have "
+                        + "an equal number of keys and values");
+            }
+
+            if (parameters.length == 0) {
+                handlerService.executeCommand(commandId, null);
+            } else {
+                ICommandService commandService = (ICommandService) PlatformUI.getWorkbench().
+                        getActiveWorkbenchWindow().getService(ICommandService.class);
+                Parameterization[] params = new Parameterization[parameters.length / 2];
+                Command c = commandService.getCommand(commandId);
+                for (int i = 0; i < parameters.length / 2; i++) {
+                    String key = parameters[2 * i];
+                    String value = parameters[2 * i + 1];
+                    IParameter p = c.getParameter(key);
+                    Parameterization pp = new Parameterization(p, value);
+                    params[i] = pp;
+                }
+                ParameterizedCommand pc = new ParameterizedCommand(c, params);
+                handlerService.executeCommand(pc, null);
+            }
         } catch (Exception e) {
             ErrorHandlerUtil.handleError("Failed to execute eclipse command: "
                     + commandId, e);
         }
+    }
 
+    /**
+     * Execute an Eclipse command.
+     *
+     * @param commandId the Eclipse command id
+     */
+    public final static void executeEclipseCommand(String commandId) {
+        executeEclipseCommand(commandId, new String[0]);
     }
 
     /** Executing a system or shell command.

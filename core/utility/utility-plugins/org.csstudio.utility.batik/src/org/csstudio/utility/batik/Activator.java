@@ -41,7 +41,7 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      * Returns the shared instance
-     * 
+     *
      * @return the shared instance
      */
     public static Activator getDefault() {
@@ -50,7 +50,7 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      * Get the logger for Symbol plug-in.
-     * 
+     *
      * @return the logger
      */
     public static Logger getLogger() {

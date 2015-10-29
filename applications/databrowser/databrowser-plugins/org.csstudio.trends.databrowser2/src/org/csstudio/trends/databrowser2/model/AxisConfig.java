@@ -49,7 +49,7 @@ public class AxisConfig
 
     /** Color */
     private RGB color;
-    
+
     /** Label Font */
     private FontData label_font;
 

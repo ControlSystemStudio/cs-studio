@@ -404,7 +404,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     public Image getImage()
     {
         //TODO Buffer plot_image as in SWT version
-        
+
         return new Image(display, area.width, area.height);
     }
 
