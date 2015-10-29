@@ -12,7 +12,7 @@ import org.eclipse.ui.PlatformUI;
  * Creates new shell, then a dialog with this shell as parent, because on Linux the MessageDialog (e.g. Show Macros) is
  * opened in the background when running a fullscreen OPI.
  * 
- * @author Boris Versic - use InfoDialog (MessageDialog shows behind fullscreen window on Linux)
+ * @author Boris Versic
  */
 public class InfoDialog extends MessageDialog {
 
