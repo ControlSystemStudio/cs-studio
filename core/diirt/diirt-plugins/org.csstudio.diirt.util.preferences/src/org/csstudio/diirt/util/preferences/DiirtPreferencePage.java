@@ -4,9 +4,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.InvalidPathException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -48,6 +52,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  *
  */
 public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+    private static final String PLATFORM_URI_PREFIX = "platform:";
     
     private ScopedPreferenceStore store;
     
@@ -70,13 +75,14 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
             protected String changePressed() {
                 DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SHEET);
                 if (lastPath != null) {
-                    if (new File(lastPath).exists()) {
-                        File lastDir = new File(lastPath);
-                        try {
+                    try {
+                        lastPath = getSubsitutedPath(lastPath);
+                        if (new File(lastPath).exists()) {
+                            File lastDir = new File(lastPath);
                             dialog.setFilterPath(lastDir.getCanonicalPath());
-                        } catch (IOException e) {
-                            dialog.setFilterPath(lastPath);
                         }
+                    } catch (IOException e) {
+                        dialog.setFilterPath(lastPath);
                     }
                 }
                 String dir = dialog.open();
@@ -107,7 +113,11 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
         tv.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
         tv.setContentProvider(new FileTreeContentProvider());
         tv.setLabelProvider(new FileTreeLabelProvider());
-        tv.setInput(store.getString("diirt.home"));
+        try {
+            tv.setInput(getSubsitutedPath(store.getString("diirt.home")));
+        } catch (IOException e1) {
+            setErrorMessage(e1.getMessage());
+        }
         tv.addDoubleClickListener(new IDoubleClickListener() {
             
             @Override
@@ -142,7 +152,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
     @Override
     public boolean performOk() {
         try {
-            File lastDir = new File(diirtPathEditor.getStringValue());
+            File lastDir = new File(getSubsitutedPath(diirtPathEditor.getStringValue()));
             if (lastDir.exists()) {
                 diirtPathEditor.store();
                 tv.setInput(store.getString("diirt.home"));
@@ -153,6 +163,27 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
             setErrorMessage(e1.getMessage());
         }
         return super.performOk();
+    }
+
+    /**
+     * handles the platform urls
+     * 
+     * @param path
+     * @return
+     * @throws MalformedURLException
+     * @throws IOException
+     */
+    private String getSubsitutedPath(String path) throws MalformedURLException, IOException{
+        if(path != null && !path.isEmpty()){
+            if(path.startsWith(PLATFORM_URI_PREFIX)){
+                return FileLocator.resolve(new URL(path)).getPath().toString();
+            }
+            else{
+                return path;
+            }
+        } else{
+            return "root";
+        }
     }
 
     @Override
