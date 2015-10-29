@@ -92,8 +92,14 @@ public class VTypeHelper
             {
                 buf.append(format.format(data.getDouble(0)));
             }
-            buf.append(", ...] ");
-            buf.append("(").append(data.size()).append(")");
+
+            if (data.size()>1)
+            {
+                buf.append(", ...");
+            }
+            buf.append(", size ");
+            buf.append(data.size());
+            buf.append("] ");
         }
         else
             buf.append(value.getClass().getName());
