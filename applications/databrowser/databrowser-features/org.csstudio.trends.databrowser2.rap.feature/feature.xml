@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.trends.databrowser2.rap.feature"
       label="Feature"
-      version="1.1.0.qualifier"
+      version="1.1.1.qualifier"
       provider-name="Jaka Bobnar (jaka.bobnar@cosylab.com)">
 
    <description>
@@ -581,6 +581,13 @@
 
    <plugin
          id="org.diirt.datasource-vtype"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.diirt.support.diirt-ca"
          download-size="0"
          install-size="0"
          version="0.0.0"
