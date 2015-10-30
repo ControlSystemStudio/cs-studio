@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 import org.junit.Before;
 
 /** JUnit demo

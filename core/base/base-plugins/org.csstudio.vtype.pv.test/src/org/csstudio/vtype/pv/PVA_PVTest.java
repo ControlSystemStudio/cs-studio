@@ -22,9 +22,9 @@ import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.pva.PVA_Context;
 import org.csstudio.vtype.pv.pva.PVA_PVFactory;
-import org.epics.vtype.VEnum;
-import org.epics.vtype.VString;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VType;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
