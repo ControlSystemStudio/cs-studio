@@ -48,13 +48,14 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
 
     private TreeViewer tv;
     private StringButtonFieldEditor diirtPathEditor;
+    private Composite top;
 
     public DiirtPreferencePage() {
     }
 
     @Override
     protected Control createContents(Composite parent) {
-        Composite top = new Composite(parent, SWT.LEFT);
+        top = new Composite(parent, SWT.LEFT);
         top.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         top.setLayout(new GridLayout());
 
@@ -132,7 +133,10 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
         store = new ScopedPreferenceStore(InstanceScope.INSTANCE, "org.csstudio.diirt.util.preferences");
         store.addPropertyChangeListener((PropertyChangeEvent event) -> {
             if (event.getProperty() == "diirt.home") {
-                setMessage("Restart is needed", ERROR);
+                if (!getControl().isDisposed()) {
+                    setMessage("Restart is needed", ERROR);
+                    tv.setInput(store.getString("diirt.home"));
+                }
             }
         });
         setPreferenceStore(store);
@@ -145,12 +149,11 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
             File lastDir = new File(getSubsitutedPath(diirtPathEditor.getStringValue()));
             if (lastDir.exists()) {
                 diirtPathEditor.store();
-                tv.setInput(store.getString("diirt.home"));
             } else {
-                setErrorMessage("Invalid config location");
+                setErrorMessage("Invalid config location : " + diirtPathEditor.getStringValue());
             }
         } catch (Exception e1) {
-            setErrorMessage(e1.getMessage());
+            setErrorMessage("Invalid config location : " + diirtPathEditor.getStringValue());
         }
         return super.performOk();
     }
