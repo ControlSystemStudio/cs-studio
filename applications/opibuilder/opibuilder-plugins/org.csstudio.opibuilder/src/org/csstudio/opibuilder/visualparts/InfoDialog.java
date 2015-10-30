@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.visualparts;
 
-import org.eclipse.jface.dialogs.IDialogConstants;
+import org.csstudio.ui.util.DialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
@@ -11,19 +11,19 @@ import org.eclipse.ui.PlatformUI;
 /** Information message dialog subclass.
  * Creates new shell, then a dialog with this shell as parent, because on Linux the MessageDialog (e.g. Show Macros) is
  * opened in the background when running a fullscreen OPI.
- * 
+ *
  * @author Boris Versic
  */
 public class InfoDialog extends MessageDialog {
 
 	public InfoDialog(Shell parent, String title, String message) {
-		super(parent, title, null, message, MessageDialog.INFORMATION, new String[] { IDialogConstants.OK_LABEL }, 0);
+		super(parent, title, null, message, MessageDialog.INFORMATION, new String[] { DialogConstants.OK_LABEL }, 0);
 	}
 
 	public static void open(Shell parent, String title, String message) {
-		
+
 		final Shell shell = new Shell(parent.getDisplay(), SWT.NO_TRIM);
-		
+
 		InfoDialog dialog = new InfoDialog(shell, title, message);
 		dialog.setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
 		/* Note:  Using SWT.ON_TOP for the dialog style forces the dialog to have the NO_TRIM style on Linux
@@ -40,7 +40,7 @@ public class InfoDialog extends MessageDialog {
 		shell.setLocation(location);
 		dialog.setBlockOnOpen(true);
 		dialog.open();
-		
+
 		shell.dispose();
-	}	
+	}
 }
