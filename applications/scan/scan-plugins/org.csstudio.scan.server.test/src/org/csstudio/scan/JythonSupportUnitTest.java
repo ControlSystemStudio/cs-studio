@@ -21,7 +21,7 @@ import org.csstudio.scan.data.ScanSampleFactory;
 import org.csstudio.scan.log.MemoryDataLog;
 import org.csstudio.scan.server.JythonSupport;
 import org.junit.Test;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** JUnit test of {@link JythonSupport}
  *  @author Kay Kasemir
