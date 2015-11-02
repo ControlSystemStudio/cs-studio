@@ -104,7 +104,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     @Override
     public void updateElement(final int row)
     {
-        if (row < alarms.length)
+        if (row < alarms.length && !table_viewer.isBusy())
             table_viewer.replace(alarms[row], row);
     }
 

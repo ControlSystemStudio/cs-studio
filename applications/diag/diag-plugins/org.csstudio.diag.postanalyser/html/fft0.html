@@ -5,8 +5,8 @@
 <!-- saved from url=(0041)http://www.desy.de/~kagarman/fft/fft.html -->
 
 <head><title>Discrete Fourier Transform</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
-	<meta content="MSHTML 6.00.2900.3059" name="GENERATOR" /> 
+    <meta http-equiv="Content-Type" content="text/html; charset=windows-1252" />
+    <meta content="MSHTML 6.00.2900.3059" name="GENERATOR" />
 </head>
 
 <body bgcolor="#ffffff">
@@ -14,12 +14,12 @@
 <!-- <hr /> -->
 
 <h1>An Introduction to Fourier Theory</h1>
-	<p>
-		<i>by 
-			<a href="mailto:kagarman@mail.desy.de">Albert Kagarmanov</a>, MKS-2 
-			<a href="http://www.desy.de/">DESY</a>
-		</i> 
-	</p>
+    <p>
+        <i>by
+            <a href="mailto:kagarman@mail.desy.de">Albert Kagarmanov</a>, MKS-2
+            <a href="http://www.desy.de/">DESY</a>
+        </i>
+    </p>
 
 <!-- obsolete :
 <hr />
@@ -29,21 +29,21 @@
 
 <h3>Introduction</h3>
 
-<p>Linear transforms, especially Fourier and Laplace transforms, are widely used 
-in solving problems in science and engineering. The Fourier transform is used in 
-linear systems analysis, antenna studies, optics, random process modeling, 
-probability theory, quantum physics, and boundary-value problems. The Fourier 
-transform, a pervasive and versatile tool, is used in many fields of science as 
-a mathematical or physical tool to alter a 
-problem into one that can be more 
-easily solved. 
+<p>Linear transforms, especially Fourier and Laplace transforms, are widely used
+in solving problems in science and engineering. The Fourier transform is used in
+linear systems analysis, antenna studies, optics, random process modeling,
+probability theory, quantum physics, and boundary-value problems. The Fourier
+transform, a pervasive and versatile tool, is used in many fields of science as
+a mathematical or physical tool to alter a
+problem into one that can be more
+easily solved.
 </p>
 
 <h3>Theory</h3>
 
 <p><b>Continuous</b></p>
-<p>For a continuous function of one variable f(t), the Fourier Transform F(f) 
-will be defined as: 
+<p>For a continuous function of one variable f(t), the Fourier Transform F(f)
+will be defined as:
 </p>
 
 <p>
@@ -57,7 +57,7 @@ will be defined as:
 <img height="50" alt="" src="fft0_files/dft2.gif" width="179" />
 </p>
 <p></p>
-<p align="justify">where j is the square root of -1 and e denotes the natural exponent 
+<p align="justify">where j is the square root of -1 and e denotes the natural exponent
 </p>
 <p>
 <img height="25" alt="" src="fft0_files/dft3.gif" width="142" />
@@ -72,9 +72,9 @@ will be defined as:
 <img height="17" alt="" src="fft0_files/dft5.gif" width="114" />
 </p>
 <p></p>
-<p align="justify">Further, assume that that the series outside the range 0, N-1 
-is extended N-periodic, that is, x<sub>k</sub> = x<sub>k+N</sub> for all k. The 
-FT of this series will be denoted X(k), it will also have N samples. The forward 
+<p align="justify">Further, assume that that the series outside the range 0, N-1
+is extended N-periodic, that is, x<sub>k</sub> = x<sub>k+N</sub> for all k. The
+FT of this series will be denoted X(k), it will also have N samples. The forward
 transform will be defined as </p>
 <p>
 <img height="54" alt="" src="fft0_files/dft6.gif" width="285" />
@@ -84,18 +84,18 @@ transform will be defined as </p>
 <img height="53" alt="" src="fft0_files/dft7.gif" width="266" />
 </p>
 <p></p>
-<p align="justify">Of course although the functions here are described as complex 
-series, real valued series can be represented by setting the imaginary part to 
-0. In general, the transform into the frequency domain will be a complex valued 
+<p align="justify">Of course although the functions here are described as complex
+series, real valued series can be represented by setting the imaginary part to
+0. In general, the transform into the frequency domain will be a complex valued
 function, that is, with magnitude and phase. </p>
 <p><img height="54" alt="" src="fft0_files/dft8.gif" width="311" /> </p>
-<p align="justify">The following diagrams show the relationship between the series 
+<p align="justify">The following diagrams show the relationship between the series
 index and the frequency domain sample index. </p>
 <p>
 <img height="76" alt="" src="fft0_files/dft9.gif" width="459" />
 </p>
 <p></p>
-<p align="justify">For example if the series represents a time sequence of length 
+<p align="justify">For example if the series represents a time sequence of length
 T then the following illustrates the values in the frequency domain. </p>
 <p>
 <img height="140" alt="" src="fft0_files/dft10.gif" width="471" />
@@ -106,51 +106,50 @@ T then the following illustrates the values in the frequency domain. </p>
 <p>&nbsp;</p>
 <ul>
   <li>
-  <p align="justify">Max Error for avoid member with i &gt; N&nbsp; 
+  <p align="justify">Max Error for avoid member with i &gt; N&nbsp;
   is&nbsp;&nbsp;&nbsp;&nbsp; PI/2*MAX(F')*log(N)/N </p></li>
 </ul>
 <ul>
   <li>
-  <p align="justify">The first sample X(0) of the transformed series is the DC 
+  <p align="justify">The first sample X(0) of the transformed series is the DC
   component, more commonly known as the average of the input series. </p>
   </li>
   <li>
-  <p align="justify">The DFT of a real series, ie: imaginary part of x(k) = 0, 
-  results in a symmetric series about the Nyquist ferequency. The negative 
+  <p align="justify">The DFT of a real series, ie: imaginary part of x(k) = 0,
+  results in a symmetric series about the Nyquist ferequency. The negative
   frequency samples are also the inverse of the positve frequency samples. </p>
   </li>
   <li>
-  <p align="justify">The highest positive (or negative) frequency sample is called 
-  the Nyquist frequency. This is the highest frequency component that should 
-  exist in the input series for the DFT to yield "uncorrupted" results. More 
-  specifically if there are no frequencies above Nyquist the original signal can 
+  <p align="justify">The highest positive (or negative) frequency sample is called
+  the Nyquist frequency. This is the highest frequency component that should
+  exist in the input series for the DFT to yield "uncorrupted" results. More
+  specifically if there are no frequencies above Nyquist the original signal can
   be <b>exactly</b> reconstructed from the samples. </p>
   </li>
   <li>
- <!-- a align="justify" -->  	
-  <a>The relationship between the harmonics returns by the 
-   DFT and the periodic component in the time domain is illustrated below.Note: 
+ <!-- a align="justify" -->
+  <a>The relationship between the harmonics returns by the
+   DFT and the periodic component in the time domain is illustrated below.Note:
    We don't show negative frequency here!!!! (so n&lt;=N/2).<br /><br />
-   <img height="640" alt="" src="fft0_files/dft0.gif" width="477" /> 
+   <img height="640" alt="" src="fft0_files/dft0.gif" width="477" />
   </a>
   </li>
 </ul>
-  	
-  	
+
 <h3>DFT and FFT algorithm.</h3>
 
-<p align="justify">While the DFT transform above can be applied to any complex 
-valued series, in practice for large series it can take considerable time to 
-compute, the time taken being proportional to the square of the number on points 
-in the series. A much faster algorithm has been developed by Cooley and Tukey 
-around 1965 called the FFT (Fast Fourier Transform). The only requirement of the 
-the most popular implementation of this algorithm (Radix-2 Cooley-Tukey) is that 
-the number of points in the series be a power of 2. The computing time for the 
-radix-2 FFT is proportional Nlog(N). S<!-- a align="justify"-->o for example a 
-transform on 1024 points using the DFT takes 10 times longer than using the FFT, 
-a significant speed increase. Note that in reality comparing speeds of various 
-FFT routines is problematic, many of the reported timings have more to do with 
-specific coding methods and their relationship to the hardware and operating 
+<p align="justify">While the DFT transform above can be applied to any complex
+valued series, in practice for large series it can take considerable time to
+compute, the time taken being proportional to the square of the number on points
+in the series. A much faster algorithm has been developed by Cooley and Tukey
+around 1965 called the FFT (Fast Fourier Transform). The only requirement of the
+the most popular implementation of this algorithm (Radix-2 Cooley-Tukey) is that
+the number of points in the series be a power of 2. The computing time for the
+radix-2 FFT is proportional Nlog(N). S<!-- a align="justify"-->o for example a
+transform on 1024 points using the DFT takes 10 times longer than using the FFT,
+a significant speed increase. Note that in reality comparing speeds of various
+FFT routines is problematic, many of the reported timings have more to do with
+specific coding methods and their relationship to the hardware and operating
 system.<!--/a--> </p>
 <!--p align="justify">We defined the FFT as: </p-->
 <p>We defined the FFT as: </p>
@@ -158,9 +157,9 @@ system.<!--/a--> </p>
 <p><a><img height="54" alt="equation"
 src="fft0_files/EQN57.gif" width="271" /></a> </p>
 <!-- p align="justify"><a align="justify">If <em>N</em> is even, the above sum can be     -->
-<p><a>If <em>N</em> is even, the above sum can be 
-split into 'even' (<i>n</i>=2<em>n</em>') and 'odd' (<i>n</i>=2<em>n</em>'+1) 
-halves, where <em>n</em>'=0..<em>N</em>/2-1, and re-arranged as follows:</a> 
+<p><a>If <em>N</em> is even, the above sum can be
+split into 'even' (<i>n</i>=2<em>n</em>') and 'odd' (<i>n</i>=2<em>n</em>'+1)
+halves, where <em>n</em>'=0..<em>N</em>/2-1, and re-arranged as follows:</a>
 </p>
 <!--p align="justify"><a align="justify"><img height="56" alt="equation"               -->
 <p><a><img height="56" alt="equation"
@@ -172,13 +171,13 @@ src="fft0_files/EQN58.gif" width="539" /> </p>
 <p>&nbsp;&nbsp;&nbsp; <img height="25" alt="equation"
 src="fft0_files/EQN60.gif" width="345" /> </p>
 <!--p align="justify">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img height="20"           -->
-<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img height="20" 
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <img height="20"
 alt="equation" src="fft0_files/EQN61.gif" width="470" /> </p>
 <!-- p align="justify">So we have RECURSION, see App. 2 for detailed. </p>               -->
 <p>So we have RECURSION, see App. 2 for detailed. </p>
 <!-- p align="justify">Nice picture you can find in <a                       -->
-<p>Nice picture you can find in <a 
-href="http://sepwww.stanford.edu/oldsep/hale/FftLab.html">http://sepwww.stanford.edu/oldsep/hale/FftLab.html</a> 
+<p>Nice picture you can find in <a
+href="http://sepwww.stanford.edu/oldsep/hale/FftLab.html">http://sepwww.stanford.edu/oldsep/hale/FftLab.html</a>
 </p>
 <!-- p align="justify"> </p -->
 <!-- p align="justify"> </p -->
@@ -190,13 +189,12 @@ href="http://sepwww.stanford.edu/oldsep/hale/FftLab.html">http://sepwww.stanford
   <li>The Fourier transform is linear, that is
   <p>
   <!--center-->
-  	a f(t) + b g(t) ---&gt; a F(f) + b G(f)
+      a f(t) + b g(t) ---&gt; a F(f) + b G(f)
   <!--/center-->
-</p>
-  	
+  </p>
   <p>
   <!--center-->
-  	a x<sub>k</sub> + b y<sub>k</sub> ---&gt; a X<sub>k</sub> + b Y<sub>k</sub> 
+      a x<sub>k</sub> + b y<sub>k</sub> ---&gt; a X<sub>k</sub> + b Y<sub>k</sub>
   <!--/center-->
   </p>#
   </li>
@@ -209,56 +207,56 @@ href="http://sepwww.stanford.edu/oldsep/hale/FftLab.html">http://sepwww.stanford
   <p> <!--center-->f(a t) ---&gt; F(f / a) / a<!--/center--> </p>
   <p></p>
   </li>
-  <li>Shifting   <p> <!--center-->f(t + a) ---&gt; F(f) e<sup>-j 2 pi a f</sup> <!--/center--> </p> <p></p> </li> 
-  <li>Modulation <p> <!--center-->f(t) e<sup>j 2 pi a t</sup> ---&gt; F(t - a) <!--/center--> </p> <p></p> </li> 
-  <li>Duality    <p> <!--center-->X<sub>k</sub> ---&gt; (1/N) x<sub>N-k</sub> <!--/center--></p> </li> 
-  <li> <p align="justify">Applying the DFT twice results in a scaled, time reversed 
-  	version of the original series. </p> </li>
+  <li>Shifting   <p> <!--center-->f(t + a) ---&gt; F(f) e<sup>-j 2 pi a f</sup> <!--/center--> </p> <p></p> </li>
+  <li>Modulation <p> <!--center-->f(t) e<sup>j 2 pi a t</sup> ---&gt; F(t - a) <!--/center--> </p> <p></p> </li>
+  <li>Duality    <p> <!--center-->X<sub>k</sub> ---&gt; (1/N) x<sub>N-k</sub> <!--/center--></p> </li>
+  <li> <p align="justify">Applying the DFT twice results in a scaled, time reversed
+      version of the original series. </p> </li>
   <li>The transform of a constant function is a DC value only.<br />
-  	<img height="58" alt="" src="fft0_files/dft15.gif" width="296" /> <p></p> </li>
+      <img height="58" alt="" src="fft0_files/dft15.gif" width="296" /> <p></p> </li>
   <li>The transform of a delta function is a constant<br />
-  	<img height="58" alt="" src="fft0_files/dft16.gif" width="296" /> <p></p> </li> 
-  <li> <p align="justify">The transform of an infinite train of delta functions spaced 
-  	by T is an infinite train of delta functions spaced by 1/T. </p> 
-	<img height="87" alt="" src="fft0_files/dft23.gif" width="303" /> <p></p> </li> 
-  <li> <p align="justify">The transform of a cos function is a positive delta at the 
-  	appropriate positive and negative frequency. </p>
-	<img height="80" alt="" src="fft0_files/dft17.gif" width="303" /> <p></p> </li>
-  <li> <p align="justify">The transform of a sin function is a negative complex delta 
-  	function at the appropriate positive frequency and a negative complex delta at 
-  	the appropriate negative frequency. </p> 
-	<img height="93" alt="" src="fft0_files/dft18.gif" width="303" /> <p></p> </li>
-  <li>	<p>The transform of a square pulse is a sinc function </p>
-  	<p> <img height="76" alt="" src="fft0_files/dft19.gif" width="302" /> </p>
-  	<p></p>
-  	<p align="justify">More precisely, if f(t) = 1 for |t| &lt; 0.5, and f(t) = 0 
-  	otherwise then F(f) = sin(pi f) / (pi f) </p> </li>
+      <img height="58" alt="" src="fft0_files/dft16.gif" width="296" /> <p></p> </li>
+  <li> <p align="justify">The transform of an infinite train of delta functions spaced
+      by T is an infinite train of delta functions spaced by 1/T. </p>
+    <img height="87" alt="" src="fft0_files/dft23.gif" width="303" /> <p></p> </li>
+  <li> <p align="justify">The transform of a cos function is a positive delta at the
+      appropriate positive and negative frequency. </p>
+    <img height="80" alt="" src="fft0_files/dft17.gif" width="303" /> <p></p> </li>
+  <li> <p align="justify">The transform of a sin function is a negative complex delta
+      function at the appropriate positive frequency and a negative complex delta at
+      the appropriate negative frequency. </p>
+    <img height="93" alt="" src="fft0_files/dft18.gif" width="303" /> <p></p> </li>
+  <li>    <p>The transform of a square pulse is a sinc function </p>
+      <p> <img height="76" alt="" src="fft0_files/dft19.gif" width="302" /> </p>
+      <p></p>
+      <p align="justify">More precisely, if f(t) = 1 for |t| &lt; 0.5, and f(t) = 0
+      otherwise then F(f) = sin(pi f) / (pi f) </p> </li>
   <li>Convolution
   <p> <!--center-->f(t) <b>x</b> g(t) ---&gt; F(f) G(f) <!--/center--> </p>
   <p>F(f) <b>x</b> G(f) ---&gt; f(t) g(t) </p>
   <p>x<sub>k</sub> <b>x</b> y<sub>k</sub> ---&gt; N X<sub>k</sub> Y<sub>k</sub> </p>
   <p>x<sub>k</sub> y<sub>k</sub> ---&gt; (1/N) X<sub>k</sub> <b>x</b> Y<sub>k</sub> </p>
-  <p align="justify">Multiplication in one domain is equivalent to convolution in 
-  the other domain and visa versa. For example the transform of a truncated sin 
-  function are two delta functions convolved with a sinc function, a truncated 
+  <p align="justify">Multiplication in one domain is equivalent to convolution in
+  the other domain and visa versa. For example the transform of a truncated sin
+  function are two delta functions convolved with a sinc function, a truncated
   sin function is a sin function multiplied by a square pulse. </p>
   </li>
   <li>
-  <p align="justify">The transform of a triangular pulse is a sinc<sup>2</sup> 
-  function. This can be derived from first principles but is more easily derived 
-  by decribing the triangular pulse as the convolution of two square pulses and 
-  using the convolution-multiplication relationship of the Fourier Transform. 
+  <p align="justify">The transform of a triangular pulse is a sinc<sup>2</sup>
+  function. This can be derived from first principles but is more easily derived
+  by decribing the triangular pulse as the convolution of two square pulses and
+  using the convolution-multiplication relationship of the Fourier Transform.
   </p>
   </li>
   </ul>
 <!--/object-->
-  
+
 <p align="justify"> </p>
 
 
 <h3>FFT-problems:</h3>
 
-<p align="justify">Some expiriments Signal with : 100Hz freq, and we have 2 FFT: 
+<p align="justify">Some expiriments Signal with : 100Hz freq, and we have 2 FFT:
 </p>
 <p align="justify">1. Samples are 91,94,...115 (Lucky) </p>
 <p align="justify">2) Samples are 90,93,...114 (Unlucky) </p>
@@ -326,7 +324,7 @@ href="http://sepwww.stanford.edu/oldsep/hale/FftLab.html">http://sepwww.stanford
 <p>&nbsp;</p>
 <p>One way to do this is to multiply the signal by a 'window' function:</p>
 <p><img height="173" alt="" src="fft0_files/3_window.gif" width="512" />&nbsp;</p>
-<p>Most popular window function is&nbsp; Welch -- Bartlett -- Hanning/Hamming -- 
+<p>Most popular window function is&nbsp; Welch -- Bartlett -- Hanning/Hamming --
 Kaiser</p>
 <p><img height="410" alt="" src="fft0_files/hanning1.gif" width="600" /></p>
 <div align="center">
@@ -388,35 +386,35 @@ Kaiser</p>
     <td align="center">0.0001</td></tr></tbody></table></div>
 <p>&nbsp;&nbsp;</p>
 <h3>Sampling theorem</h3>
-<p align="justify">The sampling theorem (often called "Shannons-Kotelnikov 
-Sampling Theorem") states that a continuous signal must be discretely sampled at 
+<p align="justify">The sampling theorem (often called "Shannons-Kotelnikov
+Sampling Theorem") states that a continuous signal must be discretely sampled at
 least twice the frequency of the highest frequency in the signal. </p>
-<p align="justify">More precisely, a continuous function f(t) is completely 
-defined by samples every 1/fs (fs is the sample frequency) if the frequency 
-spectrum F(f) is zero for f &gt; fs/2. fs/2 is called the Nyquist frequency and 
-places the limit on the minimum sampling frequency when digitising a continuous 
+<p align="justify">More precisely, a continuous function f(t) is completely
+defined by samples every 1/fs (fs is the sample frequency) if the frequency
+spectrum F(f) is zero for f &gt; fs/2. fs/2 is called the Nyquist frequency and
+places the limit on the minimum sampling frequency when digitising a continuous
 signal. </p>
-<p align="justify">If x(k) are the samples of f(t) every 1/fs then f(t) can be 
-<b>exactly</b> reconstructed from these samples, if the sampling theorem has 
+<p align="justify">If x(k) are the samples of f(t) every 1/fs then f(t) can be
+<b>exactly</b> reconstructed from these samples, if the sampling theorem has
 been satisfied, by </p>
 <p><!--center--><img height="49" alt="" src="fft0_files/dft12.gif" width="205" /><!--/center--></p>
 <p>where </p>
 <p> <!--center--><img height="35" alt="" src="fft0_files/dft13.gif" width="120" /><!--/center--> </p>
-<p align="justify">Normally the signal to be digitised would be appropriately 
-filtered before sampling to remove higher frequency components. If the sampling 
-frequency is not high enough the high frequency components will wrap around and 
+<p align="justify">Normally the signal to be digitised would be appropriately
+filtered before sampling to remove higher frequency components. If the sampling
+frequency is not high enough the high frequency components will wrap around and
 appear in other locations in the discrete spectrum, thus corrupting it. </p>
-<p align="justify">The key features and consequences of sampling a continuous 
+<p align="justify">The key features and consequences of sampling a continuous
 signal can be shown graphically as follows. </p>
 <p>Consider a continuous signal in the time and frequency domain. </p>
 <p> <!--center--><img height="124" alt="" src="fft0_files/dft20.gif" width="520" /><!--/center--></p>
-<p align="justify">Sample this signal with a sampling frequency f<sub>s</sub>, 
-time between samples is 1/f<sub>s</sub>. This is equivalent to convolving in the 
+<p align="justify">Sample this signal with a sampling frequency f<sub>s</sub>,
+time between samples is 1/f<sub>s</sub>. This is equivalent to convolving in the
 frequency domain by f<sub>s</sub>. </p>
 <p> <!--center--><img height="137" alt="" src="fft0_files/dft21.gif" width="520" /><!--/center--> </p>
 <p> </p>
 <p align="justify">If the sampling frequency is too low the frequency spectrum
-	overlaps, the high frequency components are added into the low frequency range. </p>
+    overlaps, the high frequency components are added into the low frequency range. </p>
 <p> <!--center--><img height="132" alt="" src="fft0_files/dft22.gif" width="523" /><!--/center--> </p>
 
 <hr />
@@ -426,25 +424,25 @@ frequency domain by f<sub>s</sub>. </p>
 <ul>
   <li> <p align="justify">1 FT provide (T,X) &lt;-&gt; (f,A) mapping! </p> </li>
   <li> <p align="justify">FFT is NOT "Some other" DFT it's absolutely the same DFT but calculates VERY faster. </p> </li>
-  <li> <p align="justify">FFT do NOT calculate frequency of function! It calculate some 
-	"own" frequency , which can be closed with frequency of function. </p> </li>
-  <li> <p align="justify">ONLY one&nbsp; is absolutely true InverseFFT*FFT = 1, It's 
-	useful for signal storage/compression, MP3, jpeg .... </p> </li>
+  <li> <p align="justify">FFT do NOT calculate frequency of function! It calculate some
+    "own" frequency , which can be closed with frequency of function. </p> </li>
+  <li> <p align="justify">ONLY one&nbsp; is absolutely true InverseFFT*FFT = 1, It's
+    useful for signal storage/compression, MP3, jpeg .... </p> </li>
   <li> <p align="justify">We can't calculate frequency &gt; 2/N using FFT </p> </li>
-  <!-- li> <p align="justify"><a align="justify">For avoid unlucky sampling we need to use                 -->
+  <!-- li> <p align="justify"><a align="justify">For avoid unlucky sampling we need to use -->
   <li> <p><a>For avoid unlucky sampling we need to use
-	window function. </a> </p> </li>
-  <li> <p align="justify">There a lot of FFT with n != 2**P, but it is more slow than 
-	radix-2 fft. If n&lt;2**p we can increase this n to 2**p adding 0.0 in tail of 
-	sampling.&nbsp; </p> </li>
-  <!-- li> <p align="justify"><a align="justify">&nbsp; Theorem of Shennon-Kotelnikov is                     -->
+    window function. </a> </p> </li>
+  <li> <p align="justify">There a lot of FFT with n != 2**P, but it is more slow than
+    radix-2 fft. If n&lt;2**p we can increase this n to 2**p adding 0.0 in tail of
+    sampling.&nbsp; </p> </li>
+  <!-- li> <p align="justify"><a align="justify">&nbsp; Theorem of Shennon-Kotelnikov is -->
   <li> <p><a>&nbsp; Theorem of Shennon-Kotelnikov is
-	"corner stone" of all information theory, and is analog of Heisenberg Theorem
-	in quantum theory. </a> </p> </li>
+    "corner stone" of all information theory, and is analog of Heisenberg Theorem
+    in quantum theory. </a> </p> </li>
   <!-- li> <p align="justify"> <a align="justify"> </a> </p> </li-->
   <li> <p> <a> </a> </p> </li>
 </ul>
-	
+
 <h3>Appendix A. DFT (Discrete Fourier Transform)</h3>
 
 <pre>
@@ -460,7 +458,7 @@ double *x2,*y2;
    long i,k;
    double arg;
    double cosarg,sinarg;
-   
+
    for (i=0;i&lt;m;i++) {
       x2[i] = 0;
       y2[i] = 0;
@@ -472,7 +470,7 @@ double *x2,*y2;
          y2[i] += (x1[k] * sinarg + y1[k] * cosarg);
       }
    }
-   
+
    /* Copy the data back */
    if (dir == 1) {
       for (i=0;i&lt;m;i++) {
@@ -485,7 +483,7 @@ double *x2,*y2;
          y1[i] = y2[i];
       }
    }
-   
+
    return(TRUE);
 }</pre>
 <hr />
@@ -494,10 +492,10 @@ double *x2,*y2;
 
 <pre>
 /*
-   This computes an in-place complex-to-complex FFT 
+   This computes an in-place complex-to-complex FFT
    x and y are the real and imaginary arrays of 2^m points.
    dir =  1 gives forward transform
-   dir = -1 gives reverse transform 
+   dir = -1 gives reverse transform
 */
 short FFT(dir,m,x,y)
 short dir;
@@ -509,7 +507,7 @@ double *x,*y;
 
    /* Calculate the number of points */
    n = 1;
-   for (i=0;i&lt;m;i++) 
+   for (i=0;i&lt;m;i++)
       n *= 2;
 
    /* Do the bit reversal */
@@ -533,20 +531,20 @@ double *x,*y;
    }
 
    /* Compute the FFT */
-   c1 = -1.0; 
+   c1 = -1.0;
    c2 = 0.0;
    l2 = 1;
    for (l=0;l&lt;m;l++) {
       l1 = l2;
       l2 &lt;&lt;= 1;
-      u1 = 1.0; 
+      u1 = 1.0;
       u2 = 0.0;
       for (j=0;j&lt;l1;j++) {
          for (i=j;i&lt;n;i+=l2) {
             i1 = i + l1;
             t1 = u1 * x[i1] - u2 * y[i1];
             t2 = u1 * y[i1] + u2 * x[i1];
-            x[i1] = x[i] - t1; 
+            x[i1] = x[i] - t1;
             y[i1] = y[i] - t2;
             x[i] += t1;
             y[i] += t2;
@@ -556,7 +554,7 @@ double *x,*y;
          u1 = z;
       }
       c2 = sqrt((1.0 - c1) / 2.0);
-      if (dir == 1) 
+      if (dir == 1)
          c2 = -c2;
       c1 = sqrt((1.0 + c1) / 2.0);
    }
@@ -568,7 +566,7 @@ double *x,*y;
          y[i] /= n;
       }
    }
-   
+
    return(TRUE);
 }
 </pre>
@@ -576,7 +574,7 @@ double *x,*y;
 <!--hr /-->
 
 <h3>References</h3>
-<p> <b>Fast Fourier Transforms</b><br />Walker, J.S.<br />CRC Press. 1996 </p> 
+<p> <b>Fast Fourier Transforms</b><br />Walker, J.S.<br />CRC Press. 1996 </p>
 <p> <b>Fast Fourier Transforms: Algorithms<br /></b>Elliot, D.F. and Rao, K.R.<br />Academic Press, New York, 1982 </p>
 <p> <b>Fast Fourier Transforms and Convolution Algorithms</b><br />Nussbaumer, H.J.<br />Springer, New York, 1982 </p>
 <p> <b>Digital Signal Processing</b><br />Oppenheimer, A.V. and Shaffer, R.W.<br />Prentice-Hall, Englewood Cliffs, NJ, 1975 </p>

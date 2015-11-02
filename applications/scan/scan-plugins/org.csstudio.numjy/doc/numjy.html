@@ -79,21 +79,21 @@ array([ [ 1, 2], [3, 4] ])
 
 <pre>
 >>> zeros( (2, 3) )
-array([ 
-  [ 0.0, 0.0, 0.0 ], 
+array([
+  [ 0.0, 0.0, 0.0 ],
   [ 0.0, 0.0, 0.0 ]
 ])
 >>> ones(( 3,2))
-array([ 
-  [ 1.0, 1.0 ], 
-  [ 1.0, 1.0 ], 
+array([
+  [ 1.0, 1.0 ],
+  [ 1.0, 1.0 ],
   [ 1.0, 1.0 ]
 ])
 >>> linspace(2, 10, 5)
 array([ 2.0, 4.0, 6.0, 8.0, 10.0 ])
 >>> arange(1, 5, 0.5)
 array([ 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5 ])
->>> arange(5, 1, -2)  
+>>> arange(5, 1, -2)
 array([ 5.0, 3.0 ])
 </pre>
 
@@ -117,30 +117,28 @@ as their overall size remains the same:
 
 <pre>
 >>> # 1-D array
->>> arange(6)  
+>>> arange(6)
 array([ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0 ])
->>> arange(6).shape        
-(6,)
+>>> arange(6).shape(6,)
 
 >>> # Change shape to 2x3
 >>> arange(6).reshape(2, 3)
-array([ 
-  [ 0.0, 1.0, 2.0 ], 
+array([
+  [ 0.0, 1.0, 2.0 ],
   [ 3.0, 4.0, 5.0 ]
 ])
->>> arange(6).reshape(2,3).shape
-(2, 3)
+>>> arange(6).reshape(2,3).shape(2, 3)
 
 >>> # Change shape to 3x2
 >>> arange(6).reshape(3, 2)
-array([ 
-  [ 0.0, 1.0 ], 
-  [ 2.0, 3.0 ], 
+array([
+  [ 0.0, 1.0 ],
+  [ 2.0, 3.0 ],
   [ 4.0, 5.0 ]
 ])
 
 >>> # Error when trying to change the overall size
->>> arange(6).reshape(7)   
+>>> arange(6).reshape(7)
 ...IllegalArgumentException: Cannot change shape from [6] to [7]
 </pre>
 
@@ -150,7 +148,7 @@ it has a rank of 2:
 </p>
 
 <pre>
->>> arange(6).ndim 
+>>> arange(6).ndim
 1
 >>> arange(6).reshape(3, 2).ndim
 2
@@ -164,7 +162,7 @@ of the array:
 </p>
 
 <pre>
->>> arange(6)[0]                
+>>> arange(6)[0]
 0.0
 >>> arange(6)[5]
 5.0
@@ -185,7 +183,7 @@ the same element as the index 5.
 
 <h2><a name="views">Views</a></h2>
 
-<p>Operations like <code>reshape()</code>, <code>transpose()</code> 
+<p>Operations like <code>reshape()</code>, <code>transpose()</code>
 or the slicing described in the following section create a new view of the original array.
 To preserve memory as well as to allow certain operations on the data,
 the underlying data is not copied!
@@ -197,14 +195,14 @@ the underlying data is not copied!
 >>> a=arange(6)
 >>> b=a.reshape(2, 3)
 >>> b
-array([ 
-  [ 0.0, 1.0, 2.0 ], 
+array([
+  [ 0.0, 1.0, 2.0 ],
   [ 3.0, 4.0, 5.0 ]
 ])
 >>> b[1,2]=666
 >>> b
-array([ 
-  [ 0.0, 1.0, 2.0 ], 
+array([
+  [ 0.0, 1.0, 2.0 ],
   [ 3.0, 4.0, 666.0 ]
 ])
 >>> a
@@ -217,8 +215,8 @@ array([ 0.0, 1.0, 2.0, 3.0, 4.0, 666.0 ])
 <pre>
 >>> b = arange(6).reshape(2, 3)
 >>> b
-array([ 
-  [ 0.0, 1.0, 2.0 ], 
+array([
+  [ 0.0, 1.0, 2.0 ],
   [ 3.0, 4.0, 5.0 ]
 ])
 >>> b.base
@@ -296,8 +294,8 @@ to the complete axis:
 <pre>
 >>> orig=arange(6).reshape(2, 3)
 >>> orig
-array([ 
-  [ 0.0, 1.0, 2.0 ], 
+array([
+  [ 0.0, 1.0, 2.0 ],
   [ 3.0, 4.0, 5.0 ]
 ])
 >>> # Using only [1] is the same as [1, :]
@@ -323,8 +321,8 @@ even if the slice addresses only a single element:
 
 <pre>
 >>> orig[:, 2:3:1]
-array([ 
-  [ 2.0 ], 
+array([
+  [ 2.0 ],
   [ 5.0 ]
 ])
 </pre>
@@ -340,8 +338,8 @@ data to N-dimensional slices, but the array shapes must match:
 >>> # In all rows, update every other column with a 2x2 data
 >>> orig[:, ::2] = array([ [ 40, 42], [ 43, 45 ]])
 >>> orig
-array([ 
-  [ 40.0, 1.0, 42.0 ], 
+array([
+  [ 40.0, 1.0, 42.0 ],
   [ 43.0, 4.0, 45.0 ]
 ])
 </pre>
@@ -357,7 +355,7 @@ When for example adding two vectors, their elements are added:
 </p>
 
 <pre>
->>> arange(6)  
+>>> arange(6)
 array([ 0.0, 1.0, 2.0, 3.0, 4.0, 5.0 ])
 >>> arange(6) + arange(6)
 array([ 0.0, 2.0, 4.0, 6.0, 8.0, 10.0 ])
@@ -367,7 +365,7 @@ array([ 0.0, 2.0, 4.0, 6.0, 8.0, 10.0 ])
 </p>
 
 <pre>
->>> arange(6) + 10 
+>>> arange(6) + 10
 array([ 10.0, 11.0, 12.0, 13.0, 14.0, 15.0 ])
 </pre>
 
@@ -410,21 +408,20 @@ of the corresponding dimension in the other array.
 
 <pre>
 >>> # Apply array of shape ( 1 ) to all elements of ( 2, 2 )
->>> array([                                
-...   [ 1.0, 2.0 ],                        
-...   [ 3.0, 4.0 ] ] ) + array( [ 10 ] )   
-array([ 
-  [ 11.0, 12.0 ], 
+>>> array([
+...   [ 1.0, 2.0 ],
+...   [ 3.0, 4.0 ] ] ) + array( [ 10 ] )
+array([
+  [ 11.0, 12.0 ],
   [ 13.0, 14.0 ]
 ])
 
 >>> # Apply 'column' array of shape ( 2, 1 ) to columns of ( 2, 2 )
->>> array([         
-...   [ 1.0, 2.0 ], 
-...   [ 3.0, 4.0 ] ] ) + array( [ [ 10 ],
-...                               [ 20 ] ])
-array([ 
-  [ 11.0, 12.0 ], 
+>>> array([
+...   [ 1.0, 2.0 ],
+...   [ 3.0, 4.0 ] ] ) + array( [ [ 10 ], [ 20 ] ])
+array([
+  [ 11.0, 12.0 ],
   [ 23.0, 24.0 ]
 ])
 </pre>
@@ -531,15 +528,15 @@ They are limited to arrays of certain shapes.
 
 >>> # Transpose a matrix
 >>> transpose(mat)
-array([ 
-  [ 1.0, 3.0 ], 
+array([
+  [ 1.0, 3.0 ],
   [ 2.0, 4.0 ]
 ])
 
 >>> # .. shortcut
 >>> mat.T
-array([ 
-  [ 1.0, 3.0 ], 
+array([
+  [ 1.0, 3.0 ],
   [ 2.0, 4.0 ]
 ])
 
@@ -548,8 +545,8 @@ array([
 array([ 50.0, 110.0 ])
 
 >>> dot(mat, mat)
-array([ 
-  [ 7.0, 10.0 ], 
+array([
+  [ 7.0, 10.0 ],
   [ 15.0, 22.0 ]
 ])
 </pre>
@@ -565,7 +562,7 @@ rotate = array( [ [ cos(angle), -sin(angle) ], [ sin(angle), cos(angle) ] ] )
 vec = array( [ 1, 0 ])
 
 # Results in [ 0, 1 ]
-result = dot(rotate, vec) 
+result = dot(rotate, vec)
 </pre>
 
 </body>
