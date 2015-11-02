@@ -96,7 +96,7 @@
 <pre>public class <span class="strong">ScanErrorHandler</span>
 extends java.lang.Object</pre>
 <div class="block">Base class for Jython scripts that handle scan errors
- 
+
   <p>Example:
   <pre>
   class MyErrorHandler(ScanErrorHandler):
@@ -222,10 +222,10 @@ extends java.lang.Object</pre>
                                   java.lang.Exception&nbsp;error,
                                   <a href="../../../../org/csstudio/scan/command/ScanScriptContext.html" title="class in org.csstudio.scan.command">ScanScriptContext</a>&nbsp;context)</pre>
 <div class="block">Invoked by the scan server when command generated an error
- 
+
   <p>Code within this method may inspect the command that generated
   an error as well as details of that error.
-  
+
   <p>It returns a code that instructs the scan server to either
   ignore the error or abort the scan.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>command</code> - Command that created the error</dd><dd><code>error</code> - Error created by command</dd><dd><code>context</code> - Access to logged data, devices, ...</dd></dl>

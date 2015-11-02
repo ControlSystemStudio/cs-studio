@@ -13,7 +13,7 @@ This package manifest contains three pretty much unrelated sections:
 
 <h2>Length and Dimension</h2>
 Every <code>LevenbergMarquardt</code> instance has an associated <i>length</i> and a <i>dimension</i>.
-<i>Length</i> specifies the number of points your input data has, while <i>dimension</i> 
+<i>Length</i> specifies the number of points your input data has, while <i>dimension</i>
 specifies the dimension of each point. An important note here: The dimension of the input data
 does <u>not</u> include the <i>values</i> of each data point. For example, suppose you
 have a series of (x,y) points, and you wish to fit a function of the x-points to the y-values.
@@ -22,11 +22,11 @@ This would be considered <i>one dimensional</i> data, because the function you w
 fit (i.e. something of the form <code>y=f(x)</code>) takes a vector of one dimension (each data
 point has only a single component - x.
 <p>
-Here's a slightly more complex example: Suppose you have space-time points, i.e. three 
+Here's a slightly more complex example: Suppose you have space-time points, i.e. three
 spatial coordinates and a time coordinate; basically, you data looks something like this:
 <br>
-[ {x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>, t<sub>0</sub>}, 
- {x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>, t<sub>1</sub>}, ... , 
+[ {x<sub>0</sub>, y<sub>0</sub>, z<sub>0</sub>, t<sub>0</sub>},
+ {x<sub>1</sub>, y<sub>1</sub>, z<sub>1</sub>, t<sub>1</sub>}, ... ,
  {x<sub>n-1</sub>, y<sub>n-1</sub>, z<sub>n-1</sub>, t<sub>n-1</sub>} ]
 <br>
 And you wish to fit a function <code>t=f(x,y,z)</code>. This would be considered data

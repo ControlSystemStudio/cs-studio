@@ -9,7 +9,7 @@
 
 <h1>Scan System</h1>
 
-<h2><a name="overview">Overview</a></h2> 
+<h2><a name="overview">Overview</a></h2>
 
 <p>The scan system can automate experiments.
 For example, it can move a motor from some start
@@ -44,11 +44,11 @@ to a Scan Server for execution.
 
 <p>This design allows scans to execute even if the
 original control system panel has been closed.
-Scans can be monitored, paused or aborted 
+Scans can be monitored, paused or aborted
 independent from the computer that submitted the scans.
 </p>
 
-<h2><a name="logging">Logging</a></h2> 
+<h2><a name="logging">Logging</a></h2>
 
 <p>The scan system includes a simple logging system that
 can for example log the position of motors that are operated
@@ -79,7 +79,7 @@ or acquire data while manually operating the experiment.
 </p>
 
 
-<h2><a name="commands">Commands</a></h2> 
+<h2><a name="commands">Commands</a></h2>
 
 <img alt="Example Scan" src="scan_example.png"/>
 
@@ -335,7 +335,6 @@ Below is an example scan and the resulting log.
 Note that there is one line of data for each iteration of the nested loop.
 </p>
 
-<img alt="on-demand logging" src="log_demand.png" width="412" height="322"/>
 
 <p>When enabling the automatic log mode,
 commands that modify the values of devices will automatically
@@ -353,7 +352,7 @@ on-demand mode, but consider the following example scan and
 the resulting data as viewed in a table:
 </p>
 
-<img alt="automatic logging" src="log_auto.png" width="440" height="334"/>
+<img alt="automatic logging" src="log_auto.png"/>
 
 <p>When the outer loop sets the "xpos" to 1, that is logged automatically,
 but at that time we have not, yet logged a value for anything else, so
@@ -423,7 +422,7 @@ class MyScript(ScanScript):
 
      def getDeviceNames(self):
        """Return Device (alias) names used by the script
-       
+
           Scan scripts that intend to access devices
           need to list their names.
           This allows the scan system to connect to the
@@ -441,30 +440,30 @@ class MyScript(ScanScript):
         """Invoked by the scan server to execute the script.
            Context parameter allows access to logged data, devices, ...
         """
-      
+
         # Turn raw python array into ndarray for easier math
         data = array(context.getData(self.pos_device, self.sig_device))
         x = data[0]
         y = data[1]
-        
+
         # Determine centroid
         center = sum(x * y) / sum(y)
         print "Center: ", center
-        
+
         # Other parameters...
         m = max(y)
         print "Max: ", m
-        
+
         width = sqrt( abs(sum((center-x)**2*y)/sum(y)) )
         print "Width: ", width
-        
+
         # Compute fit
         fit = m*exp(-(x-center)**2/(2*width**2))
         print fit
-        
+
         # Log the 'fit' data for later comparison with raw data
         context.logData("fit", fit.nda)
-        
+
         # Set PVs with result
         context.write(self.pos_device, center)
 </pre>
@@ -516,7 +515,7 @@ indicate a certain amount of beam exposure.
 
 
 
-<h2><a name="editor">Scan Editor</a></h2> 
+<h2><a name="editor">Scan Editor</a></h2>
 <p>The Scan Editor is a graphical editor for scan configurations.
 It shows the hierarchical structure of loops in a scan.
 </p>
@@ -550,7 +549,7 @@ or the toolbar button <img alt="Run" src="../icons/run.png"/>.
 </ul>
 
 
-<h2><a name="macros">Macros</a></h2> 
+<h2><a name="macros">Macros</a></h2>
 
 <p>Device names as for example used in the
 <a href="#SetCommand">Set</a>
@@ -572,7 +571,7 @@ They can also be provided in the
 </p>
 
 
-<h2><a name="monitor">Scan Monitor</a></h2> 
+<h2><a name="monitor">Scan Monitor</a></h2>
 <p>The Scan Monitor displays the current state of the Scan Server.
 </p>
 
@@ -603,7 +602,7 @@ and to remove completed scans from the server, i.e. scans that have either finis
 </p>
 
 
-<h2><a name="plot">Scan Plot</a></h2> 
+<h2><a name="plot">Scan Plot</a></h2>
 <p>The Scan Plot can be used to track the progress of a scan.
 Data for devices that are "logged" is accessible to the plot.
 </p>
@@ -627,7 +626,7 @@ Data for devices that are "logged" is accessible to the plot.
 </ul>
 
 
-<h2><a name="scan_data">Scan Data Display</a></h2> 
+<h2><a name="scan_data">Scan Data Display</a></h2>
 <p>The Scan Data Display can be used to track the progress of a scan
 similar to the plot, but it displays the data as a table.
 </p>
@@ -636,7 +635,7 @@ similar to the plot, but it displays the data as a table.
 
 <p>Open the data display from the <a href="#monitor">Scan Monitor</a>
 by right-clicking on the desired scan and selecting <code>Open Scan Data Display</code>.
-</p> 
+</p>
 
 <p>You can save the displayed data to a file via the menu <code>File/Save As</code>
 or via the context menu of the data display table.
@@ -650,14 +649,14 @@ or via the context menu of the data display table.
 </ul>
 
 
-<h2><a name="errors">Error Handling</a></h2> 
+<h2><a name="errors">Error Handling</a></h2>
 
 <p>Scan commands can fail:
 A <a href="#SetCommand">Set</a>
 or <a href="#LoopCommand">Loop Command</a>
 may not be able to write to a device,
 or there may be a time-out while waiting for the read-back to match
-the written value. 
+the written value.
 In fact such errors are almost to be expected.
 The Scan Server will not quit when one of its commands experiences
 an error.
@@ -676,19 +675,19 @@ of the desired error handler, for example "OnErrorContinue".
 <li>The error handler is implemented as a Jython class, derived from
 <a href="java/org/csstudio/scan/command/ScanErrorHandler.html">ScanErrorHandler</a>.
 The scan server searches for error handlers in the same list of directories that
-is configured via its plugin customization file for the 
+is configured via its plugin customization file for the
 or <a href="#ScriptCommand">Script Command</a>.
 </li>
 </ul>
 
-<p>Example error handlers:</p> 
+<p>Example error handlers:</p>
 
 <ol>
 <li>ScanErrorHandler that ignores any error
 <pre>from org.csstudio.scan.command import ScanErrorHandler
 
 class OnErrorContinue(ScanErrorHandler):
-    
+
     def handleError(self, command, error, context):
         print "Ignoring error from " + str(command)
         return ScanErrorHandler.Result.Continue
@@ -699,22 +698,22 @@ class OnErrorContinue(ScanErrorHandler):
 
 class OnErrorRetryThenAbort(ScanErrorHandler):
     def __init__(self):
-        # Initialize the number of retries 
+        # Initialize the number of retries
         self.retries = 3
-    
+
     def handleError(self, command, error, context):
         self.retries -= 1
         if self.retries > 0:
             print "Retrying " + str(command) + " " + str(self.retries) + " more times ..."
             return ScanErrorHandler.Result.Retry
-        else:    
+        else:
             return ScanErrorHandler.Result.Abort
 </pre>
 </li>
 </ol>
 
 
-<h2><a name="server">Scan Server</a></h2> 
+<h2><a name="server">Scan Server</a></h2>
 
 <p>The scan server is a program that executes submitted scans.
 There is typically one scan server instance per beam line.
@@ -728,7 +727,7 @@ This also allows users to plan ahead, submitting scans for several experiment
 runs in advance, and the scan server will then execute them one after the other.
 </p>
 <p>Users do not directly interact with the scan server.
-They use the <a href="#editor">Scan Editor</a> 
+They use the <a href="#editor">Scan Editor</a>
 or beamline-specific user interface panels to submit scans.
 Users can monitor the progress via directly monitoring the
 temperature, sample position or other experiment properties
@@ -854,7 +853,7 @@ tasks that have prepared interface panels.
 </p>
 
 <p>For details refer to the examples
-and the 
+and the
 <a href="java/overview-summary.html">Java documentation</a>
 </p>
 
