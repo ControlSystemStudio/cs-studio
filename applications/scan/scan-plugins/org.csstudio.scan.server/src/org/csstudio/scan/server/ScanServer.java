@@ -55,10 +55,11 @@ public interface ScanServer
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan
      *  @param commands_as_xml Commands to execute within the scan in XML format
+     *  @param queue Queue the scan, or execute as soon as possible?
      *  @return ID that uniquely identifies the scan
      *  @throws Exception on error
      */
-    public long submitScan(String scan_name, String commands_as_xml) throws Exception;
+    public long submitScan(String scan_name, String commands_as_xml, boolean queue) throws Exception;
 
     /** Query server for scans
      *  @return Info for each scan on the server, most recently submitted scan first

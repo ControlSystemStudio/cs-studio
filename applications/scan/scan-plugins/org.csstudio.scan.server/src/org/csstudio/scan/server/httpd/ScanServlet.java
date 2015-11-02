@@ -61,13 +61,22 @@ public class ScanServlet extends HttpServlet
         }
 
         // Determine name of scan
-        String scan_name = request.getPathInfo();
-        if (scan_name == null)
+        final String scan_name;
+        boolean queue = true;
+        final RequestPath path = new RequestPath(request);
+        if (path.size() <= 0  ||  path.size() == 0)
             scan_name = "Scan from " + request.getRemoteHost();
+        else if (path.size() == 1)
+            scan_name = path.getString(0);
+        else if (path.size() == 2)
+        {
+            scan_name = path.getString(0);
+            queue = ! "now".equals(path.getString(1));
+        }
         else
         {
-            if (scan_name.startsWith("/"))
-                scan_name = scan_name.substring(1);
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expecting '/name[/now]', got '" + request.getPathInfo() + "'");
+            return;
         }
 
         // Read scan commands
@@ -80,7 +89,7 @@ public class ScanServlet extends HttpServlet
         // Submit scan
         try
         {
-            final long scan_id = scan_server.submitScan(scan_name, scan_commands);
+            final long scan_id = scan_server.submitScan(scan_name, scan_commands, queue);
 
             // Return scan ID
             out.print("<id>");

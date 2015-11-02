@@ -178,8 +178,9 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public long submitScan(final String scan_name, final String commands_as_xml)
-            throws Exception
+    public long submitScan(final String scan_name,
+    		               final String commands_as_xml,
+    		               final boolean queue) throws Exception
     {
         cullScans();
 
@@ -211,7 +212,7 @@ public class ScanServerImpl implements ScanServer
 
             // Submit scan to engine for execution
             final ExecutableScan scan = new ExecutableScan(scan_name, devices, pre_impl, main_impl, post_impl);
-            scan_engine.submit(scan);
+            scan_engine.submit(scan, queue);
             return scan.getId();
         }
         catch (Exception ex)
