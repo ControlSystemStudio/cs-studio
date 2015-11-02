@@ -109,6 +109,7 @@ public class ScanServlet extends HttpServlet
     }
 
     /** 'Put' scan into new state
+     *  <p>PUT scan/{id}/next: Force transition to next command
      *  <p>PUT scan/{id}/pause: Pause running scan
      *  <p>PUT scan/{id}/resume: Resume paused scan
      *  <p>PUT scan/{id}/abort: Abort running or paused scan
@@ -137,6 +138,9 @@ public class ScanServlet extends HttpServlet
             final String command = path.getString(1);
             switch (command)
             {
+            case "next":
+                scan_server.next(id);
+                break;
             case "pause":
                 scan_server.pause(id);
                 break;

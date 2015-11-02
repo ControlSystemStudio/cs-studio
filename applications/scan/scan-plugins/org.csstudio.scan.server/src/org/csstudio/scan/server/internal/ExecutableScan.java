@@ -635,6 +635,16 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
         }
     }
 
+    /** Force transition to next command */
+    public void next()
+    {
+        final ScanCommandImpl<?> command = active_commands.peekLast();
+        if (command == null)
+            return;
+        logger.log(Level.INFO, "Forcing transition to next command");
+        command.next();
+    }
+
     /** Pause execution of a currently executing scan */
     public void pause()
     {
