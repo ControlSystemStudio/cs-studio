@@ -61,23 +61,19 @@ public class ScanServlet extends HttpServlet
         }
 
         // Determine name of scan
-        final String scan_name;
-        boolean queue = true;
-        final RequestPath path = new RequestPath(request);
-        if (path.size() <= 0  ||  path.size() == 0)
-            scan_name = "Scan from " + request.getRemoteHost();
-        else if (path.size() == 1)
-            scan_name = path.getString(0);
-        else if (path.size() == 2)
-        {
-            scan_name = path.getString(0);
-            queue = ! "now".equals(path.getString(1));
-        }
+        String scan_name = request.getPathInfo();
+        if (scan_name == null)
+        	scan_name = "Scan from " + request.getRemoteHost();
         else
         {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expecting '/name[/now]', got '" + request.getPathInfo() + "'");
-            return;
+            if (! scan_name.startsWith("/"))
+                throw new Error("Path does not start with '/'");
+            scan_name = scan_name.substring(1);
         }
+
+        // Queue unless "?queue=false"
+        final String queue_parm = request.getParameter("queue");
+        final boolean queue = ! "false".equalsIgnoreCase(queue_parm);
 
         // Read scan commands
         final String scan_commands = IOUtils.toString(request.getInputStream());
