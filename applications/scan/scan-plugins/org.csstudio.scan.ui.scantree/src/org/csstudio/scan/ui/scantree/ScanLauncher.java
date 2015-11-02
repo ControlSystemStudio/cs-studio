@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * Copyright (c) 2012-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,7 +59,7 @@ public class ScanLauncher implements IEditorLauncher
                     {
                         try
                         {
-                            model.getScanClient().submitScan(scan_name, scan);
+                            model.getScanClient().submitScan(scan_name, scan, true);
                         }
                         catch (Exception ex)
                         {

@@ -19,6 +19,6 @@ public class ResubmitScanHandler extends AbstractScanHandler
     @Override
     protected void handleScan(final ScanClient client, final ScanInfo info, final String xml_commands) throws Exception
     {
-        client.submitScan(info.getName(), xml_commands);
+        client.submitScan(info.getName(), xml_commands, true);
     }
 }

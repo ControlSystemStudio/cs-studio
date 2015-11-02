@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -658,8 +658,10 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         return last;
     }
 
-    /** Submit scan in GUI to server */
-    public void submitCurrentScan()
+    /** Submit scan in GUI to server
+     *  @param queue Submit to queue or for immediate execution?
+     */
+    public void submitCurrentScan(final boolean queue)
     {
         final List<ScanCommand> commands = model.getCommands();
         final String scan_name = getScanNameFromFile(getEditorInput().getName());
@@ -673,7 +675,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 try
                 {
                     final ScanClient client = scan_info.getScanClient();
-                    scan_id = client.submitScan(scan_name, XMLCommandWriter.toXMLString(commands));
+                    scan_id = client.submitScan(scan_name, XMLCommandWriter.toXMLString(commands), queue);
                 }
                 catch (Exception ex)
                 {
@@ -831,7 +833,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
      *  Provide the original PropertySheetPage, but keep a reference
      *  to it so that we can invoke its refresh()
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Object getAdapter(final Class adapter)
     {
