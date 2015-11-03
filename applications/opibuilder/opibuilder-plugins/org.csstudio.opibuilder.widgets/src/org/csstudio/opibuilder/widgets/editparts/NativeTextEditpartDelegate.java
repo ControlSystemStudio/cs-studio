@@ -49,9 +49,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
         this.model = model;
     }
 
-    @Override
-    public IFigure doCreateFigure() {
-
+    protected int getTextFigureStyle() {
         int style=SWT.NONE;
         if(model.isShowNativeBorder())
             style |= SWT.BORDER;
@@ -82,6 +80,13 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
         default:
             break;
         }
+        
+        return style;
+    }
+    
+    @Override
+    public IFigure doCreateFigure() {
+        int style = getTextFigureStyle();
 
         final NativeTextFigure figure = new NativeTextFigure(editpart, style);
         text = figure.getSWTWidget();
@@ -110,7 +115,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                         outputText(text.getText());
                         switch (model.getFocusTraverse()) {
                         case LOSE:
-                        	traverseLoseFocus();  
+                        	text.getShell().setFocus();
                              break;
                         case NEXT:
                             SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
@@ -137,10 +142,6 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
             text.addFocusListener(getTextFocusListener(figure));
         }
         return figure;
-    }
-    
-    protected void traverseLoseFocus() {
-    	text.getShell().setFocus();
     }
     
     protected FocusAdapter getTextFocusListener(NativeTextFigure figure){
