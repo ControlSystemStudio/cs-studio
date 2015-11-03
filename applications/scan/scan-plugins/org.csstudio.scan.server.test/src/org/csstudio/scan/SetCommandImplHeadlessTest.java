@@ -18,7 +18,7 @@ import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.internal.ExecutableScan;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

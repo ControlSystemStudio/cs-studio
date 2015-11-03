@@ -217,8 +217,8 @@ extends java.lang.Object</pre>
 <div class="block">Load the root element of an XML file. The element is a JDOM Element.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It must be an absolute path which can be either<br>
  a workspace path such as <code>/BOY Examples/Scripts/myfile.xml</code><br> a local file
- system path such as <code>C:\myfile.xml</code><br> or an URL path such as 
- <code>http://mysite.com/myfile.xml</code>.      *</dd>
+ system path such as <code>C:\myfile.xml</code><br> or an URL path such as
+ <code>http://mysite.com/myfile.xml</code>.*</dd>
 <dt><span class="strong">Returns:</span></dt><dd>root element of the XML file.</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - if the file does not exist or is not a correct XML file.</dd></dl>
@@ -234,11 +234,11 @@ extends java.lang.Object</pre>
                            org.csstudio.opibuilder.editparts.AbstractBaseEditPart&nbsp;widget)
                                     throws java.lang.Exception</pre>
 <div class="block">Load the root element of an XML file. The element is a JDOM Element.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to 
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to
  the OPI that contains the specified widget. If it is an absolute path, it can be either<br>
  a workspace path such as <code>/BOY Examples/Scripts/myfile.xml</code><br> a local file
- system path such as <code>C:\myfile.xml</code><br> or an URL path such as 
- <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It 
+ system path such as <code>C:\myfile.xml</code><br> or an URL path such as
+ <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It
  can be null if the path is an absolute path.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>root element of the XML file.</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -256,11 +256,11 @@ extends java.lang.Object</pre>
                                                   throws java.lang.Exception</pre>
 <div class="block">Return an <code>InputStream</code> of the file on the specified path.
  The client is responsible for closing the stream when finished.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to 
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to
  the OPI that contains the specified widget. If it is an absolute path, it can be either<br>
  a workspace path such as <code>/BOY Examples/Scripts/myfile.xml</code><br> a local file
- system path such as <code>C:\myfile.xml</code><br> or an URL path such as 
- <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It 
+ system path such as <code>C:\myfile.xml</code><br> or an URL path such as
+ <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It
  can be null if the path is an absolute path.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>java.io.InputStream of the file.</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -278,7 +278,7 @@ extends java.lang.Object</pre>
 <div class="block">Read a text file.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It must be an absolute path which can be either<br>
  a workspace path such as <code>/BOY Examples/Scripts/myfile.xml</code><br> a local file
- system path such as <code>C:\myfile.xml</code><br> or an URL path such as 
+ system path such as <code>C:\myfile.xml</code><br> or an URL path such as
  <code>http://mysite.com/myfile.xml</code>.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>a string of the text.</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -295,11 +295,11 @@ extends java.lang.Object</pre>
                             org.csstudio.opibuilder.editparts.AbstractBaseEditPart&nbsp;widget)
                                      throws java.lang.Exception</pre>
 <div class="block">Read a text file.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to 
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to
  the OPI that contains the specified widget. If it is an absolute path, it can be either<br>
  a workspace path such as <code>/BOY Examples/Scripts/myfile.xml</code><br> a local file
- system path such as <code>C:\myfile.xml</code><br> or an URL path such as 
- <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It 
+ system path such as <code>C:\myfile.xml</code><br> or an URL path such as
+ <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It
  can be null if the path is an absolute path.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>a string of the text.</dd>
 <dt><span class="strong">Throws:</span></dt>
@@ -320,7 +320,7 @@ extends java.lang.Object</pre>
 <div class="block">Write a text file.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It must be an absolute path which can be either<br>
  a workspace path such as <code>/BOY Examples/Scripts/myfile.xml</code><br> or a local file
- system path such as <code>C:\myfile.xml</code>.</dd><dd><code>inWorkspace</code> - true if the file path is a workspace file path. Otherwise, it will be 
+ system path such as <code>C:\myfile.xml</code>.</dd><dd><code>inWorkspace</code> - true if the file path is a workspace file path. Otherwise, it will be
  recognized as a local file system file.</dd><dd><code>text</code> - the text to be written to the file.</dd><dd><code>append</code> - true if the text should be appended to the end of the file.</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - if error happens.</dd></dl>
@@ -339,12 +339,12 @@ extends java.lang.Object</pre>
                  boolean&nbsp;append)
                           throws java.lang.Exception</pre>
 <div class="block">Write a text file.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to 
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to
  the OPI that contains the specified widget. If it is an absolute path, it can be either<br>
  a workspace path such as <code>/BOY Examples/Scripts/myfile.xml</code><br> a local file
- system path such as <code>C:\myfile.xml</code><br> or an URL path such as 
- <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>inWorkspace</code> - true if the file path is a workspace file path. Otherwise, it will be 
- recognized as a local file system file.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It 
+ system path such as <code>C:\myfile.xml</code><br> or an URL path such as
+ <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>inWorkspace</code> - true if the file path is a workspace file path. Otherwise, it will be
+ recognized as a local file system file.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It
  can be null if the path is an absolute path.</dd><dd><code>text</code> - the text to be written to the file.</dd><dd><code>append</code> - true if the text should be appended to the end of the file.</dd>
 <dt><span class="strong">Throws:</span></dt>
 <dd><code>java.lang.Exception</code> - if error happens.</dd></dl>
@@ -358,12 +358,12 @@ extends java.lang.Object</pre>
 <h4>openFile</h4>
 <pre>public static&nbsp;void&nbsp;openFile(java.lang.String&nbsp;filePath,
             org.csstudio.opibuilder.editparts.AbstractBaseEditPart&nbsp;widget)</pre>
-<div class="block">Open a file in default editor. If no such an editor for the type of file, OS 
+<div class="block">Open a file in default editor. If no such an editor for the type of file, OS
  default program will be called to open this file.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to 
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to
  the OPI that contains the specified widget. If it is an absolute path, it can be either
  a workspace path such as <br><code>/BOY Examples/Scripts/myfile.txt</code><br> or a local file
- system path such as <code>C:\myfile.txt</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It 
+ system path such as <code>C:\myfile.txt</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It
  can be null if the path is an absolute path.</dd></dl>
 </li>
 </ul>
@@ -387,11 +387,11 @@ extends java.lang.Object</pre>
 <pre>public static&nbsp;void&nbsp;playWavFile(java.lang.String&nbsp;filePath,
                org.csstudio.opibuilder.editparts.AbstractBaseEditPart&nbsp;widget)</pre>
 <div class="block">Play a .wav file.</div>
-<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to 
+<dl><dt><span class="strong">Parameters:</span></dt><dd><code>filePath</code> - path of the file. It can be an absolute path or a relative path to
  the OPI that contains the specified widget. If it is an absolute path, it can be either<br>
  a workspace path such as <code>/BOY Examples/Scripts/myfile.xml</code><br> a local file
- system path such as <code>C:\myfile.xml</code><br> or an URL path such as 
- <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It 
+ system path such as <code>C:\myfile.xml</code><br> or an URL path such as
+ <code>http://mysite.com/myfile.xml</code>.</dd><dd><code>widget</code> - a widget in the OPI, which is used to provide relative path reference. It
  can be null if the path is an absolute path.</dd></dl>
 </li>
 </ul>
@@ -429,7 +429,7 @@ extends java.lang.Object</pre>
 <h4>workspacePathToSysPath</h4>
 <pre>public static&nbsp;java.lang.String&nbsp;workspacePathToSysPath(java.lang.String&nbsp;workspacePath)
                                                throws java.lang.RuntimeException</pre>
-<div class="block">Convert a workspace path to system path. 
+<div class="block">Convert a workspace path to system path.
  If this resource is a project that does not exist in the workspace, or a file or folder below such a project, this method returns null.</div>
 <dl><dt><span class="strong">Parameters:</span></dt><dd><code>workspacePath</code> - path in workspace.</dd>
 <dt><span class="strong">Returns:</span></dt><dd>the system path on OS. Return an empty string if the path doesn't exist.</dd>

@@ -19,9 +19,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.local.LocalPVFactory;
-import org.epics.vtype.VString;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueUtil;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

@@ -10,7 +10,7 @@ package org.csstudio.ndarray;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import org.epics.util.array.IteratorNumber;
+import org.diirt.util.array.IteratorNumber;
 import org.junit.Test;
 
 /** JUnit tests of the {@link NDArrayIterator}

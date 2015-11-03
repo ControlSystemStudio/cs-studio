@@ -21,9 +21,9 @@ import org.csstudio.vtype.pv.PVListener;
 import org.csstudio.vtype.pv.PVPool;
 import org.csstudio.vtype.pv.jca.JCA_PV;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
-import org.epics.vtype.VEnumArray;
-import org.epics.vtype.VStringArray;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VEnumArray;
+import org.diirt.vtype.VStringArray;
+import org.diirt.vtype.VType;
 import org.junit.Before;
 import org.junit.Test;
 
