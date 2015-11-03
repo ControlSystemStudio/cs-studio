@@ -134,8 +134,17 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
         store.addPropertyChangeListener((PropertyChangeEvent event) -> {
             if (event.getProperty() == "diirt.home") {
                 if (!getControl().isDisposed()) {
-                    setMessage("Restart is needed", ERROR);
-                    tv.setInput(store.getString("diirt.home"));
+                    try {
+                        String fullPath = getSubsitutedPath(store.getString("diirt.home"));
+                        if (new File(fullPath).exists()) {
+                            setMessage("Restart is needed", ERROR);
+                            tv.setInput(fullPath);
+                        } else {
+                            setMessage("Diirt home not found", ERROR);
+                        }
+                    } catch (IOException e) {
+                        setMessage("Diirt home not understood", ERROR);
+                    }
                 }
             }
         });
