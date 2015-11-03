@@ -296,6 +296,15 @@ public final class OPIShell implements IOPIRuntime {
         }
     }
 
+    /**
+     * Show all open OPIShells.
+     */
+    public static void showAll() {
+        for (OPIShell s : getAllShells()) {
+            s.raiseToTop();
+        }
+    }
+
     /** Search the cache of open OPIShells to find a match for the
      *  input Shell object.
      *
