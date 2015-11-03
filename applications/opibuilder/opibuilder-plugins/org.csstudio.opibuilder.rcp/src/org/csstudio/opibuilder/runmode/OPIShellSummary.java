@@ -106,6 +106,8 @@ public class OPIShellSummary extends FXViewPart {
         container.getChildren().add(header);
 
         grid = new GridPane();
+        grid.setHgap(2.0);
+
         ColumnConstraints nameColumn = new ColumnConstraints();
         nameColumn.setHgrow(Priority.ALWAYS);
         nameColumn.setHalignment(HPos.LEFT);
