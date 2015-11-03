@@ -2,13 +2,10 @@ package org.csstudio.diirt.util.preferences;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
