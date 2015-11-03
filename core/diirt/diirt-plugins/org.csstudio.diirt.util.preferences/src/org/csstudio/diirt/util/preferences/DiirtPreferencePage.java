@@ -42,7 +42,6 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  *
  */
 public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
-    private static final String PLATFORM_URI_PREFIX = "platform:";
 
     private ScopedPreferenceStore store;
 
@@ -67,7 +66,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
                 DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SHEET);
                 if (lastPath != null) {
                     try {
-                        lastPath = getSubsitutedPath(lastPath);
+                        lastPath = DiirtStartup.getSubstitutedPath(lastPath);
                         if (new File(lastPath).exists()) {
                             File lastDir = new File(lastPath);
                             dialog.setFilterPath(lastDir.getCanonicalPath());
@@ -105,7 +104,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
         tv.setContentProvider(new FileTreeContentProvider());
         tv.setLabelProvider(new FileTreeLabelProvider());
         try {
-            tv.setInput(getSubsitutedPath(store.getString("diirt.home")));
+            tv.setInput(DiirtStartup.getSubstitutedPath(store.getString("diirt.home")));
         } catch (IOException e1) {
             setErrorMessage(e1.getMessage());
         }
@@ -135,7 +134,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
             if (event.getProperty() == "diirt.home") {
                 if (!getControl().isDisposed()) {
                     try {
-                        String fullPath = getSubsitutedPath(store.getString("diirt.home"));
+                        String fullPath = DiirtStartup.getSubstitutedPath(store.getString("diirt.home"));
                         if (new File(fullPath).exists()) {
                             setMessage("Restart is needed", ERROR);
                             tv.setInput(fullPath);
@@ -155,7 +154,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
     @Override
     public boolean performOk() {
         try {
-            File lastDir = new File(getSubsitutedPath(diirtPathEditor.getStringValue()));
+            File lastDir = new File(DiirtStartup.getSubstitutedPath(diirtPathEditor.getStringValue()));
             if (lastDir.exists()) {
                 diirtPathEditor.store();
             } else {
@@ -165,27 +164,6 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
             setErrorMessage("Invalid config location : " + diirtPathEditor.getStringValue());
         }
         return super.performOk();
-    }
-
-    /**
-     * handles the platform urls
-     *
-     * @param path
-     * @return
-     * @throws MalformedURLException
-     * @throws IOException
-     */
-    private String getSubsitutedPath(String path) throws MalformedURLException, IOException{
-        if(path != null && !path.isEmpty()){
-            if(path.startsWith(PLATFORM_URI_PREFIX)){
-                return FileLocator.resolve(new URL(path)).getPath().toString();
-            }
-            else{
-                return path;
-            }
-        } else{
-            return "root";
-        }
     }
 
     @Override
