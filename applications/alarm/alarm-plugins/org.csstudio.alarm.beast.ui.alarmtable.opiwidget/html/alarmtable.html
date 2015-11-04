@@ -14,46 +14,49 @@
     Alarm Table lists active and acknowledged alarms in a table-like structure. The table is identical to the table that
     is available in the Alarm Perspective.
     </p>
-    <img src="table.png"alt="">
+    <img src="table.png"alt=""/>
 
     <h3>Operations</h3>
     In OPI editing mode user is allowed to configure the alarm table to suit the requirements. It is possible to adjust
     the size of the table, columns, columns order, and many other properties common to BOY widgets. The filter item
-    also has to be set on the table in order to define the configuration (or its subsystem), which the table should 
+    also has to be set on the table in order to define the configuration (or its subsystem), which the table should
     display. In runtime mode, the table listens to live status obtained from the alarm server and displays the alarms
-    according to the defined policies. User is allowed to acknowledge and unacknowledge alarms and to do some minor 
-    layout tweaking (e.g. adjust the width of column, change sorting direction and criteria). All other properties 
+    according to the defined policies. User is allowed to acknowledge and unacknowledge alarms and to do some minor
+    layout tweaking (e.g. adjust the width of column, change sorting direction and criteria). All other properties
     are only accessible via rules and scripts.
 
     <a name="AlarmTableProperties"></a>
     <h3>Special Properties</h3>
-    <ul>   
-        <li>Filter Item <dl><dd>The parent item, which defines the alarms to be displayed. Only the alarms that are direct
-    or indirect descendants of this item will be displayed. The filter item has to be a complete item name, including 
-    the configuration name (e.g. to display configuration "Demo", enter "/Demo"; to display a subsystem "RFQ" of 
+    <ul>
+        <li>Filter Item (filter_item)<dl><dd>The parent item, which defines the alarms to be displayed. Only the alarms that are direct
+    or indirect descendants of this item will be displayed. The filter item has to be a complete item name, including
+    the configuration name (e.g. to display configuration "Demo", enter "/Demo"; to display a subsystem "RFQ" of
     configuration "Demo", enter "/Demo/RFQ".</dd></dl></li>
-        <li>Sort Ascending <dl><dd>Defines if default sorting of the alarms should be in ascending or descending order.</dd></dl></li>
-        <li>Sorting Column <dl><dd>Defines the column used for default sorting criteria.</dd></dl></li>
-        <li>Time Format <dl><dd>Specifies the time format used for the TIME column.</dd></dl></li>
-        <li>Unacknowledged Blink <dl><dd>If true all unacknowledged alarms icons will blink.</dd></dl></li>
-        <li>Writable <dl><dd>Specifies is user is allowed to acknowledge and unacknowledged alarms with this table.</dd></dl></li>
-        <li>Columns <dl><dd>Allows to specify the list and order of the table columns.</dd></dl></li>
-        <li>Max Number of Alarms <dl><dd>Defines the maximum number of alarms displayed in the table. If more alarms
+        <li>Sort Ascending (sort_ascending)<dl><dd>Defines if default sorting of the alarms should be in ascending or descending order.</dd></dl></li>
+        <li>Sorting Column (sorting_column)<dl><dd>Defines the column used for default sorting criteria.</dd></dl></li>
+        <li>Time Format (time_format)<dl><dd>Specifies the time format used for the TIME column.</dd></dl></li>
+        <li>Unacknowledged Blink (unacknowledged_blink)<dl><dd>If true all unacknowledged alarms icons will blink.</dd></dl></li>
+        <li>Writable (writable)<dl><dd>Specifies is user is allowed to acknowledge and unacknowledged alarms with this table.</dd></dl></li>
+        <li>Columns (columns)<dl><dd>Allows to specify the list and order of the table columns.</dd></dl></li>
+        <li>Max Number of Alarms (max_number_of_alarms)<dl><dd>Defines the maximum number of alarms displayed in the table. If more alarms
     exist for the selected filter item, they will be suppressed. Only the top N alarms that match the selected sorting
     criteria are displayed.</dd></dl></li>
-        <li>Separate Tables <dl><dd>Specifies whether the acknowledged and unacknowledged alarms tables should be 
+        <li>Separate Tables (separate_tables)<dl><dd>Specifies whether the acknowledged and unacknowledged alarms tables should be
     separated or combined.</dd></dl></li>
-        <li>Table Weight Acknowledge <dl><dd>Defines the sash element weight of the acknowledged table.</dd></dl></li>
-        <li>Table Weight Unacknowledge <dl><dd>Defines the sash element weight of the unacknowledged table.</dd></dl></li>
+        <li>Table Weight Acknowledge (table_weight_acknowledge)<dl><dd>Defines the sash element weight of the acknowledged table.</dd></dl></li>
+        <li>Table Weight Unacknowledge (table_weight_unacknowledge)<dl><dd>Defines the sash element weight of the unacknowledged table.</dd></dl></li>
+        <li>Table Header Visible (table_header_visible)<dl><dd>Defines whether the header displaying the number of all active and acknowledged
+    alarms, as well as the filter combo and button are displayed or hidden. If hidden the table will take over the space
+    otherwise occupied by those widgets.</dd></dl></li>
+        <li>Columns Headers Visible (columns_header_visible)<dl><dd>Defines if the headers of the table columns are visible or not.</dd></dl></li>
     </ul>
 
-   <h3>See Also</h3>
-   <ul>
-   <li><a href="PVWidgets.html">Properties Common to PV Widgets</a></li>
-   <li><a href="../Widget_Properties.html">Properties Common to All Widgets</a></li>
+    <h3>See Also</h3>
+    <ul>
+        <li><a href="../../org.csstudio.opibuilder/html/widgets/PVWidgets.html">Properties Common to PV Widgets</a></li>
+        <li><a href="../../org.csstudio.opibuilder/html/Widget_Properties.html">Properties Common to All Widgets</a></li>
    </ul>
 
 <br>
-
 </body>
 </html>

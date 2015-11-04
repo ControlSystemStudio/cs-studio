@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alarm Table OPI Widget
 Bundle-SymbolicName: org.csstudio.alarm.beast.ui.alarmtable.opiwidget;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-Vendor: ITER
 Bundle-Description: BEAST Alarm Table OPI Widget
 Require-Bundle: org.csstudio.alarm.beast.ui.alarmtable;bundle-version="4.1.0",
