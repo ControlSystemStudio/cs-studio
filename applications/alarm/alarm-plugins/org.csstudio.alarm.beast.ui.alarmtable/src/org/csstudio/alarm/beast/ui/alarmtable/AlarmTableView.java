@@ -406,9 +406,10 @@ public class AlarmTableView extends ViewPart
             gui.dispose();
         }
         gui = new GUI(parent, getSite(), defaultModel.isWriteAllowed(),
-                !combinedTables, columns, sorting, sortUp);
+                !combinedTables, columns, sorting, sortUp,true);
         gui.setBlinking(blinkingIcons);
         gui.setTimeFormat(timeFormat);
+        gui.setTableColumnsHeadersVisible(true);
         setUpDrop(gui.getActiveAlarmTable().getTable());
         setUpDrop(gui.getAcknowledgedAlarmTable().getTable());
         updateFilterItem();
