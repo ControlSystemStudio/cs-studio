@@ -109,6 +109,7 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
         context.workPerformed(1);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void next()
     {
