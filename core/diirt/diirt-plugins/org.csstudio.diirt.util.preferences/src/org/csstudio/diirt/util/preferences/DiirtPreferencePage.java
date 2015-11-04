@@ -184,8 +184,6 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
             final String lastDir = DiirtStartup.getSubstitutedPath(diirtPathEditor.getStringValue());
             if (verifyDiirtPath(lastDir)) {
                diirtPathEditor.store();
-            } else {
-                setErrorMessage("Invalid config location : " + diirtPathEditor.getStringValue());
             }
         } catch (Exception e1) {
             setErrorMessage("Invalid config location : " + diirtPathEditor.getStringValue());
