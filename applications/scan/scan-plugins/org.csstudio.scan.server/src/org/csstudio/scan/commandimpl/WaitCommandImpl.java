@@ -123,8 +123,14 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
         }
         else
             condition = new TextValueCondition(device, Comparison.EQUALS, desired.toString(), timeout);
-        condition.await();
-        condition = null;
+        try
+        {
+            condition.await();
+        }
+        finally
+        {
+            condition = null;
+        }
         context.workPerformed(1);
     }
 

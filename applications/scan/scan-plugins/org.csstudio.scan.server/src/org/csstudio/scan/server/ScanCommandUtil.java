@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * Copyright (c) 2012-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -7,15 +7,7 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
-import org.csstudio.scan.command.Comparison;
-import org.csstudio.scan.condition.DeviceCondition;
-import org.csstudio.scan.condition.NumericValueCondition;
-import org.csstudio.scan.condition.TextValueCondition;
-import org.csstudio.scan.device.Device;
-import org.csstudio.scan.device.VTypeHelper;
-import org.csstudio.scan.log.DataLog;
 import org.diirt.util.time.TimeDuration;
-import org.diirt.vtype.VType;
 
 /** Utilities for command implementations
  *
@@ -72,54 +64,7 @@ public class ScanCommandUtil
             final boolean wait,
             final String readback_name, final double tolerance, final TimeDuration timeout) throws Exception
     {
-        final Device device = context.getDevice(context.getMacros().resolveMacros(device_name));
-
-        // Separate read-back device, or use 'set' device?
-        final Device readback;
-        if (readback_name.isEmpty()  ||  !wait)
-            readback = device;
-        else
-            readback = context.getDevice(context.getMacros().resolveMacros(readback_name));
-
-        //  Wait for the device to reach the value?
-        final DeviceCondition condition;
-        if (wait)
-        {
-            // When using completion, readback needs to match "right away"
-            final TimeDuration check_timeout = completion ? TimeDuration.ofSeconds(1) : timeout;
-            if (value instanceof Number)
-            {
-                final double desired = ((Number)value).doubleValue();
-                condition = new NumericValueCondition(readback, Comparison.EQUALS, desired,
-                        tolerance, check_timeout);
-            }
-            else
-            {
-                final String desired = value.toString();
-                condition = new TextValueCondition(readback, Comparison.EQUALS, desired, check_timeout);
-            }
-        }
-        else
-            condition = null;
-
-        // Perform write
-        if (completion)
-            device.write(value, timeout);
-        else
-            device.write(value);
-
-        // Wait?
-        if (condition != null)
-            condition.await();
-
-        // Log the value?
-        if (context.isAutomaticLogMode())
-        {   // If we're waiting on the readback, log the readback.
-            // Otherwise readback == device, so log that one
-            final VType log_value = readback.read();
-            final DataLog log = context.getDataLog().get();
-            final long serial = log.getNextScanDataSerial();
-            log.log(readback.getAlias(), VTypeHelper.createSample(serial, log_value));
-        }
+        final WriteHelper write = new WriteHelper(context, device_name, value, completion, wait, readback_name, tolerance, timeout);
+        write.perform();
     }
 }
