@@ -2,10 +2,10 @@ package org.csstudio.diirt.util.preferences;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+
 
 /**
  * Preference page for configuring diirt preferences primarily the Location of
@@ -104,7 +105,10 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
         tv.setContentProvider(new FileTreeContentProvider());
         tv.setLabelProvider(new FileTreeLabelProvider());
         try {
-            tv.setInput(DiirtStartup.getSubstitutedPath(store.getString("diirt.home")));
+            final String configPath = DiirtStartup.getSubstitutedPath(store.getString("diirt.home"));
+            if (Files.exists(Paths.get(configPath))) {
+                tv.setInput(configPath);
+            }
         } catch (IOException e1) {
             setErrorMessage(e1.getMessage());
         }
@@ -135,11 +139,9 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
                 if (!getControl().isDisposed()) {
                     try {
                         String fullPath = DiirtStartup.getSubstitutedPath(store.getString("diirt.home"));
-                        if (new File(fullPath).exists()) {
-                            setMessage("Restart is needed", ERROR);
+                        if (verifyDiirtPath(fullPath)) {
                             tv.setInput(fullPath);
-                        } else {
-                            setMessage("Diirt home not found", ERROR);
+                            setMessage("Restart is needed", ERROR);
                         }
                     } catch (IOException e) {
                         setMessage("Diirt home not understood", ERROR);
@@ -151,14 +153,37 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
         setDescription("Diirt preference page");
     }
 
+    /**
+     * Verify the selected path is a valid location for DIIRT config:
+     * i) path exists
+     * ii) path contains the datasources.xml file
+     *
+     * @param configPath
+     * @return
+     */
+    private boolean verifyDiirtPath(String configPath) {
+        boolean isValid = true;
+
+        if (!Files.exists(Paths.get(configPath))) {
+            setErrorMessage("Diirt home not found");
+            isValid = false;
+        } else {
+            final Path datasourcePath = Paths.get(configPath, "datasources/datasources.xml");
+            isValid = Files.exists(datasourcePath);
+
+            if (!isValid) {
+                setErrorMessage("No Diirt configuration found");
+            }
+        }
+        return isValid;
+    }
+
     @Override
     public boolean performOk() {
         try {
-            File lastDir = new File(DiirtStartup.getSubstitutedPath(diirtPathEditor.getStringValue()));
-            if (lastDir.exists()) {
-                diirtPathEditor.store();
-            } else {
-                setErrorMessage("Invalid config location : " + diirtPathEditor.getStringValue());
+            final String lastDir = DiirtStartup.getSubstitutedPath(diirtPathEditor.getStringValue());
+            if (verifyDiirtPath(lastDir)) {
+               diirtPathEditor.store();
             }
         } catch (Exception e1) {
             setErrorMessage("Invalid config location : " + diirtPathEditor.getStringValue());
