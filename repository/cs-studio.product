@@ -69,11 +69,6 @@
       <feature id="org.csstudio.core.utility.feature"/>
       <feature id="org.csstudio.core.ui.feature"/>
       <feature id="org.csstudio.product.feature"/>
-      <feature id="org.csstudio.pvmanager.feature"/>
-      <feature id="org.csstudio.pvmanager.jdbc.feature"/>
-      <feature id="org.csstudio.pvmanager.exec.feature"/>
-      <feature id="org.csstudio.pvmanager.extra.feature"/>
-      <feature id="org.csstudio.pvmanager.pva.feature"/>
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
       <feature id="org.csstudio.product.configuration.feature"/>
       <feature id="org.eclipse.gef"/>
@@ -97,6 +92,8 @@
       <feature id="org.eclipse.platform"/>
       <feature id="org.csstudio.thirdparty.all.feature"/>
       <feature id="org.csstudio.email.feature"/>
+      <feature id="org.csstudio.core.diirt.feature"/>
+      <feature id="org.eclipse.e4.rcp"/>
    </features>
 
    <configurations>
