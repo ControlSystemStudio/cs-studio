@@ -474,6 +474,15 @@ public class ScanClient
         }
     }
 
+    /** Request transition to next command
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @throws Exception on error
+     */
+    public void nextCommand(final long id) throws Exception
+    {
+        sendScanCommand(id, "next");
+    }
+
     /** Put running scan into paused state
      *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
      *  @throws Exception on error

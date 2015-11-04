@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Scan Monitor
 Bundle-SymbolicName: org.csstudio.scan.ui.scanmonitor;singleton:=true
 Bundle-Localization: plugin
-Bundle-Version: 4.0.2.qualifier
+Bundle-Version: 4.2.5.qualifier
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Require-Bundle: org.junit;bundle-version="4.8.0",
  org.eclipse.ui,

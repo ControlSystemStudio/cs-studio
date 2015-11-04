@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanServerInfo;
 import org.csstudio.scan.server.ScanState;
 import org.csstudio.scan.ui.scanmonitor.actions.AbortAction;
+import org.csstudio.scan.ui.scanmonitor.actions.NextAction;
 import org.csstudio.scan.ui.scanmonitor.actions.PauseAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveAction;
 import org.csstudio.scan.ui.scanmonitor.actions.RemoveCompletedAction;
@@ -438,6 +439,7 @@ public class GUI implements ScanInfoModelListener
                     if (info.getState() == ScanState.Running)
                     {
                         manager.add(new PauseAction(shell, model, infos));
+                        manager.add(new NextAction(shell, model, infos));
                         break;
                     }
                 // Abort if anything is not done
