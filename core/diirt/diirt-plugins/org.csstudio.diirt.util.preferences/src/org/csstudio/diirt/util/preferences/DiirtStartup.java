@@ -1,9 +1,12 @@
 package org.csstudio.diirt.util.preferences;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
 
 import org.csstudio.utility.product.IWorkbenchWindowAdvisorExtPoint;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -20,6 +23,8 @@ import org.eclipse.ui.WorkbenchException;
  */
 public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
 
+    private static final String PLATFORM_URI_PREFIX = "platform:";
+    
     private Logger log = Logger.getLogger(DiirtStartup.ID);
 
     @Override
@@ -30,7 +35,7 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
             final String defaultDiirtConfig = new URL(instanceLoc.getURL(),"diirt").toURI().getPath();
 
             IPreferencesService prefs = Platform.getPreferencesService();
-            String diirtHome = prefs.getString("org.csstudio.diirt.util.preferences", "diirt.home", defaultDiirtConfig, null);
+            String diirtHome = getSubstitutedPath(prefs.getString("org.csstudio.diirt.util.preferences", "diirt.home", defaultDiirtConfig, null));
             log.config("Setting Diirt configuration folder to :" + diirtHome);
             System.setProperty("diirt.home", diirtHome);
         } catch (Exception e) {
@@ -74,6 +79,26 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
     @Override
     public IStatus restoreState(IMemento memento) {
         return null;
+    }
+
+    /**
+     * handles the platform urls
+     *
+     * @param path
+     * @return
+     * @throws MalformedURLException
+     * @throws IOException
+     */
+    static String getSubstitutedPath(String path) throws MalformedURLException, IOException {
+        if(path != null && !path.isEmpty()) {
+            if(path.startsWith(PLATFORM_URI_PREFIX)) {
+                return FileLocator.resolve(new URL(path)).getPath().toString();
+            } else {
+                return path;
+            }
+        } else {
+            return "root";
+        }
     }
 
 }
