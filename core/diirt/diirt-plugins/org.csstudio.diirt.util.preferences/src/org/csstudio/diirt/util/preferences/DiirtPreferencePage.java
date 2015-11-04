@@ -105,7 +105,10 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
         tv.setContentProvider(new FileTreeContentProvider());
         tv.setLabelProvider(new FileTreeLabelProvider());
         try {
-            tv.setInput(DiirtStartup.getSubstitutedPath(store.getString("diirt.home")));
+            final String configPath = DiirtStartup.getSubstitutedPath(store.getString("diirt.home"));
+            if (Files.exists(Paths.get(configPath))) {
+                tv.setInput(configPath);
+            }
         } catch (IOException e1) {
             setErrorMessage(e1.getMessage());
         }
