@@ -93,6 +93,11 @@ public class SequenceCommandImpl extends ScanCommandImpl<SequenceCommand>
             context.execute(body_command);
     }
 
+    // public void next()
+    // is not implemented because the 'next' command
+    // will be sent to the active body command.
+    // Once they have all been completed, the sequence completes.
+
     /** {@inheritDoc} */
     @Override
     public String toString()
