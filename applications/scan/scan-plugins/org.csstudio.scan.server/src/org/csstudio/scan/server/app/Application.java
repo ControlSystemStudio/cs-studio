@@ -112,7 +112,7 @@ public class Application implements IApplication
             final int port = ScanSystemPreferences.getServerPort();
             server = new ScanServerImpl();
             server.start();
-            log.config("Scan Server REST interface on http://localhost:" + port + "/index.html");
+            log.info("Scan Server REST interface on http://localhost:" + port + "/index.html");
             final ScanWebServer httpd = new ScanWebServer(bundle.getBundleContext(), server, port);
                 // TODO
             //final PVAccessServer pva = new PVAccessServer(server);

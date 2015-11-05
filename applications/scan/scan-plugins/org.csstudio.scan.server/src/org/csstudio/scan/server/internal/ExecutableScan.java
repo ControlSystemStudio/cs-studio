@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -633,6 +633,19 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 }
             }
         }
+    }
+
+    /** Force transition to next command */
+    public void next()
+    {   // Must be running
+        if (state.get() != ScanState.Running)
+            return;
+        // Must have active command
+        final ScanCommandImpl<?> command = active_commands.peekLast();
+        if (command == null)
+            return;
+        logger.log(Level.INFO, "Forcing transition to next command");
+        command.next();
     }
 
     /** Pause execution of a currently executing scan */

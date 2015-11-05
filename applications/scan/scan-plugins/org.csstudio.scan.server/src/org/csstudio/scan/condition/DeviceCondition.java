@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,18 @@ public interface DeviceCondition
      *  @throws Exception on error
      */
     public void await() throws Exception;
+
+    /** Force early completion.
+     *
+     *  <p>If one thread is currently inside <code>await</code>,
+     *  another thread can call <code>complete</code>
+     *  to trigger early return.
+     *
+     *  <p>If no thread is currently inside <code>await</code>,
+     *  this call has no effect.
+     */
+    public void complete();
+
     // toString should give human-readable description,
     // including why the condition is currently waiting
 }

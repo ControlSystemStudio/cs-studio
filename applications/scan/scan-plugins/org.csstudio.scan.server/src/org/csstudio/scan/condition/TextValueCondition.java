@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,11 +48,11 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
     /** Timeout in seconds, <code>null</code> to "wait forever" */
     final private TimeDuration timeout;
 
-    /** Updated by device listener */
-    private volatile boolean is_condition_met;
+    /** Updated by device listener or forced for early completion */
+    private boolean is_condition_met;
 
     /** Updated by device listener */
-    private volatile Exception error = null;
+    private Exception error = null;
 
     /** Initialize
      *  @param device {@link Device} where values should be read
@@ -149,13 +149,25 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
         {
             try
             {
-                is_condition_met = isConditionMet();
+                if (isConditionMet())
+                    is_condition_met = true;
             }
             catch (Exception ex)
             {
-                is_condition_met = false;
                 error = ex;
             }
+            // Notify await() so it can check again.
+            notifyAll();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void complete()
+    {
+        synchronized (this)
+        {
+            is_condition_met = true;
             // Notify await() so it can check again.
             notifyAll();
         }
