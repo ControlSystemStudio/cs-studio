@@ -47,7 +47,7 @@ public class SeverityColorPairProvider implements DisposeListener
                 
                 SeverityLevel level = SeverityLevel.parse(severity);
                 colors[level.ordinal()] = new Color(display, red, green, blue);
-                
+
                 // INVALID color pair is also used for UNDEFINED
                 if (level == SeverityLevel.INVALID)
                 	colors[SeverityLevel.UNDEFINED.ordinal()] = new Color(display, red, green, blue);
@@ -60,6 +60,15 @@ public class SeverityColorPairProvider implements DisposeListener
             }
 
         }
+
+        // If the *_ACK severity color pairs weren't specified, the 
+        // MAJOR, MINOR & INVALID color pair is used for them
+        if (colors[SeverityLevel.MINOR_ACK.ordinal()] == null && colors[SeverityLevel.MINOR.ordinal()] != null)
+        	colors[SeverityLevel.MINOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MINOR.ordinal()].getRGB());
+        if (colors[SeverityLevel.MAJOR_ACK.ordinal()] == null && colors[SeverityLevel.MAJOR.ordinal()] != null)
+        	colors[SeverityLevel.MAJOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MAJOR.ordinal()].getRGB());
+        if (colors[SeverityLevel.INVALID_ACK.ordinal()] == null && colors[SeverityLevel.INVALID.ordinal()] != null)
+        	colors[SeverityLevel.INVALID_ACK.ordinal()] = new Color(display, colors[SeverityLevel.INVALID.ordinal()].getRGB());
     }
 
     /** @see DisposeListener */
