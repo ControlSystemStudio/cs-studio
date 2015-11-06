@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * Copyright (c) 2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,14 +13,15 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 
 /** Command handler that submits scan from the current editor to the server
+ *  without queueing
  *  @author Kay Kasemir
  */
-public class SubmitScanHandler extends AbstractHandler
+public class SubmitUnqueuedScanHandler extends AbstractHandler
 {
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-        ScanEditorContributor.getCurrentScanEditor().submitCurrentScan(true);
+        ScanEditorContributor.getCurrentScanEditor().submitCurrentScan(false);
         return null;
     }
 }

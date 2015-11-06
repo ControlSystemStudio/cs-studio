@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.commandimpl;
 
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+
 import org.csstudio.scan.command.DelayCommand;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.ScanCommandImpl;
@@ -26,6 +29,9 @@ import org.csstudio.scan.server.SimulationContext;
  */
 public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
 {
+    /** Helper to await the delay while allowing 'next' */
+    final private Semaphore done = new Semaphore(1);
+
     /** {@inheritDoc} */
     public DelayCommandImpl(final DelayCommand command, final JythonSupport jython) throws Exception
     {
@@ -43,7 +49,20 @@ public class DelayCommandImpl extends ScanCommandImpl<DelayCommand>
     @Override
     public void execute(final ScanContext command_context) throws Exception
     {
-        Thread.sleep(Math.round(command.getSeconds() * 1000));
+        // Reset semaphore
+        done.tryAcquire();
+
+        // Wait for duration of delay. next() may release early
+        final long millis = Math.round(command.getSeconds()*1000);
+        done.tryAcquire(millis, TimeUnit.MILLISECONDS);
+
         command_context.workPerformed(1);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void next()
+    {
+        done.release();
     }
 }

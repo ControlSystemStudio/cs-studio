@@ -17,6 +17,11 @@ function putScanCommand(id, command)
     });
 }
 
+function nextCommand(id)
+{
+    putScanCommand(id, "next");
+}
+
 function pauseScan(id)
 {
     putScanCommand(id, "pause");
@@ -122,6 +127,7 @@ $(function()
                 if (item == 'Idle'  ||  item == 'Running')
                 {
                     item = "<font color='#090'>" + item + "</font>";
+                    item += "<button onclick='nextCommand(" + id + ")'>Next</button>";
                     item += "<button onclick='pauseScan(" + id + ")'>Pause</button>";
                     item += "<button onclick='abortScan(" + id + ")'>Abort</button>";
                 }

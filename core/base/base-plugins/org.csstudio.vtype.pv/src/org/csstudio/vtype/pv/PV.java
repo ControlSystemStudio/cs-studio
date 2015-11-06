@@ -8,12 +8,12 @@
 package org.csstudio.vtype.pv;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.csstudio.vtype.pv.internal.ImmediateFuture;
 import org.diirt.vtype.VType;
 
 /** Process Variable, API for accessing life control system data.
@@ -106,7 +106,7 @@ abstract public class PV
     public Future<VType> asyncRead() throws Exception
     {
         // Default: Return last known value
-        return new ImmediateFuture<VType>(last_value);
+        return CompletableFuture.completedFuture(last_value);
     }
 
     /** @return <code>true</code> if PV is read-only */
@@ -130,13 +130,13 @@ abstract public class PV
      *  but they will throw an error if the write failed.
      *
      *  @param new_value Value to write to the PV
-     *  @return {@link Future} for checking the result
+     *  @return {@link Future} for awaiting completion or exception
      *  @exception Exception on error
      */
     public Future<?> asyncWrite(final Object new_value) throws Exception
-    {
+    {   // Default: Normal write, declare 'done' right away
         write(new_value);
-        return new ImmediateFuture<Object>(null);
+        return CompletableFuture.completedFuture(null);
     }
 
     /** Helper for PV implementation to notify listeners */

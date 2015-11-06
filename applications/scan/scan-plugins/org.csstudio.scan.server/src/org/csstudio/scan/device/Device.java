@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -128,7 +128,7 @@ public class Device extends DeviceInfo
 
 
     /** Write a value to the device with callback.
-     *  @param value Value to write (Double, String)\
+     *  @param value Value to write (Double, String)
      *  @param timeout Timeout for awaiting the callback, <code>null</code> to wait "forever"
      *  @throws Exception on error: Cannot write, ...
      */
