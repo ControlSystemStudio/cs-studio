@@ -164,6 +164,11 @@ public class ParallelCommandImpl extends ScanCommandImpl<ParallelCommand>
         });
     }
 
+    // public void next()
+    // is not implemented because the 'next' command
+    // will be sent to one of the active body commands.
+    // Once they have all been completed, this command completes.
+
     /** {@inheritDoc} */
     @Override
     public String toString()

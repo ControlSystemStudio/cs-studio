@@ -15,6 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan.server;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.csstudio.scan.command.ScanCommand;
 import org.csstudio.scan.command.ScanErrorHandler;
 import org.csstudio.scan.command.ScanErrorHandler.Result;
@@ -145,6 +148,22 @@ abstract public class ScanCommandImpl<C extends ScanCommand>
      *  @see ScanContext#workPerformed(int)
      */
     abstract public void execute(ScanContext context) throws Exception;
+
+    /** Short-cut execution of the current command
+     *
+     *  <p>When a command is inside <code>execute()</code> awaiting some condition,
+     *  calling <code>next()</code> will break out of that condition
+     *  and end execution of the command.
+     *
+     *  <p>It does _not_ abort the scan but allows the following commands
+     *  to be executed.
+     */
+    public void next()
+    {
+        // Default implementation does not support this
+        Logger.getLogger(getClass().getName())
+              .log(Level.WARNING, "{0} does not support 'next'", command);
+    }
 
     /** Invoke the command's error handler
      *

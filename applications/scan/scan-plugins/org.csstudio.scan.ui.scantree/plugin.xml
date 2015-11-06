@@ -71,6 +71,11 @@
             name="%SubmitScan">
       </command>
       <command
+            defaultHandler="org.csstudio.scan.ui.scantree.operations.SubmitUnqueuedScanHandler"
+            id="org.csstudio.scan.ui.scantree.submitUnqueued"
+            name="%SubmitScanUnqueued">
+      </command>
+      <command
             defaultHandler="org.csstudio.scan.ui.scantree.OpenScanTreeHandler"
             id="org.csstudio.scan.ui.scantree.open"
             name="%OpenScanTree">
@@ -161,6 +166,10 @@
          </command>
          <command
                commandId="org.csstudio.scan.ui.scantree.submit"
+               icon="icons/run.png">
+         </command>
+         <command
+               commandId="org.csstudio.scan.ui.scantree.submitUnqueued"
                icon="icons/run.png">
          </command>
       </menuContribution>

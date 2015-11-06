@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -59,11 +59,11 @@ public class NumericValueCondition implements DeviceCondition, DeviceListener
     /** Initial value to await Comparison.INCREASE_BY/DECREASE_BY */
     private volatile double initial_value = Double.NaN;
 
-    /** Updated by device listener */
-    private volatile boolean is_condition_met;
+    /** Updated by device listener or forced for early completion */
+    private boolean is_condition_met;
 
     /** Updated by device listener */
-    private volatile Exception error = null;
+    private Exception error = null;
 
     /** Initialize
      *  @param device {@link Device} where values should be read
@@ -115,8 +115,8 @@ public class NumericValueCondition implements DeviceCondition, DeviceListener
                 while (! is_condition_met)
                 {   // Wait for update from device
                     if (timeout.waitUntilTimeout(this))
-                            throw new TimeoutException("Timeout while waiting for " + device
-                                    + " " + comparison + " " + desired_value);
+                        throw new TimeoutException("Timeout while waiting for " + device +
+                                                   " " + comparison + " " + desired_value);
                     if (error != null)
                         throw error;
                 }
@@ -169,13 +169,25 @@ public class NumericValueCondition implements DeviceCondition, DeviceListener
             {
                 if (Double.isNaN(initial_value))
                     initial_value = VTypeHelper.toDouble(device.read());
-                is_condition_met = isConditionMet();
+                if (isConditionMet())
+                    is_condition_met = true;
             }
             catch (Exception ex)
             {
-                is_condition_met = false;
                 error = ex;
             }
+            // Notify await() so it can check again.
+            notifyAll();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void complete()
+    {
+        synchronized (this)
+        {
+            is_condition_met = true;
             // Notify await() so it can check again.
             notifyAll();
         }
