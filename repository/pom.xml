@@ -201,7 +201,9 @@
 								<artifact>
 									<id>xmlunit:xmlunit:1.5</id>
 								</artifact>
-								
+								<artifact>
+									<id>org.apache.commons:commons-csv:1.2</id>
+								</artifact>
 								
 
 								<!-- pvmanager-plugins from reactor -->
