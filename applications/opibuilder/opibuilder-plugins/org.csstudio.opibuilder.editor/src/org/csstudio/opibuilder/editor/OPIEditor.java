@@ -168,6 +168,7 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -661,6 +662,9 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
     @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
+        if (type == ISaveablePart.class) {
+            System.out.println("tetet");
+        }
         if(type == IPropertySheetPage.class)
             return getPropertySheetPage();
         else if (type == ZoomManager.class)
@@ -876,7 +880,12 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
     */
     protected PropertySheetPage getPropertySheetPage(){
         if(undoablePropertySheetPage == null){
-            undoablePropertySheetPage = new PropertySheetPage();
+            undoablePropertySheetPage = new PropertySheetPage(){
+                @Override
+                protected ISaveablePart getSaveablePart() {
+                    return null;
+                }
+            };
             undoablePropertySheetPage.setRootEntry(
                     new UndoablePropertySheetEntry(getCommandStack()));
         }
@@ -1154,7 +1163,9 @@ class OutlinePage     extends ContentOutlinePage     implements IAdaptable{
     }
 
     public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
-        if (type == ZoomManager.class)
+        if (type == ISaveablePart.class)
+            return null; // we should not return the saveable part, because the outline itself is not saveable, the editor is
+        else if (type == ZoomManager.class)
             return getGraphicalViewer().getProperty(ZoomManager.class.toString());
         else if (type == CommandStack.class)
             return getCommandStack();
