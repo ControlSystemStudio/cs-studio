@@ -37,5 +37,6 @@
     <module>org.csstudio.logging.jms2rdb</module>
     <module>org.csstudio.debugging.jmsmonitor</module>
     <module>org.csstudio.alarm.beast.ui.alarmtable.opiwidget</module>
+    <module>org.csstudio.alarm.diirt.datasource</module>
   </modules>
 </project>
