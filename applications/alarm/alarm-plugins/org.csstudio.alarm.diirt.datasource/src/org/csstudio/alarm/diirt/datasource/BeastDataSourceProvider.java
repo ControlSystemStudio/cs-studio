@@ -12,9 +12,9 @@ import org.diirt.datasource.ConfigurableDataSourceProvider;
  * @author Kunal Shroff
  *
  */
-public class BeastDatasourceProvider extends ConfigurableDataSourceProvider<BeastDatasource, BeastDataSourceConfiguration> {
+public class BeastDataSourceProvider extends ConfigurableDataSourceProvider<BeastDataSource, BeastDataSourceConfiguration> {
 
-    public BeastDatasourceProvider() {
+    public BeastDataSourceProvider() {
         super(BeastDataSourceConfiguration.class);
     }
 

@@ -17,12 +17,12 @@ import org.diirt.datasource.DataSourceConfiguration;
 import org.w3c.dom.Document;
 
 /**
- * Configuration for {@link BeastDatasource}
+ * Configuration for {@link BeastDataSource}
  * 
  * @author Kunal Shroff
  *
  */
-public class BeastDataSourceConfiguration extends DataSourceConfiguration<BeastDatasource> {
+public class BeastDataSourceConfiguration extends DataSourceConfiguration<BeastDataSource> {
 
     private String brokerUrl = "tcp://localhost:61616?jms.prefetchPolicy.all=1000";
 
@@ -55,8 +55,8 @@ public class BeastDataSourceConfiguration extends DataSourceConfiguration<BeastD
     }
 
     @Override
-    public BeastDatasource create() {
-        return new BeastDatasource(this);
+    public BeastDataSource create() {
+        return new BeastDataSource(this);
     }
 
     public String getBrokerUrl() {

@@ -12,8 +12,14 @@ import javax.jms.Message;
  */
 public class BeastMessagePayload {
 
-    public BeastMessagePayload(Message message) {
+    private final Message message;
 
+    public BeastMessagePayload(Message message) {
+        this.message = message;
+    }
+
+    public Message getMessage() {
+        return message;
     }
 
 }

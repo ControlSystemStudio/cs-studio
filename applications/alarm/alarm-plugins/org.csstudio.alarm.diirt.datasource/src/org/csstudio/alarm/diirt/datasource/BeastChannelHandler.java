@@ -17,24 +17,25 @@ import javax.jms.TextMessage;
 
 import org.diirt.datasource.ChannelWriteCallback;
 import org.diirt.datasource.MultiplexedChannelHandler;
+import org.diirt.datasource.ValueCache;
 
 import static org.diirt.vtype.ValueFactory.*;
 /**
  * @author Kunal Shroff
  *
  */
-public class BeastChannelHandler extends MultiplexedChannelHandler<Object, Object> {
+public class BeastChannelHandler extends MultiplexedChannelHandler<BeastConnectionPayload, BeastMessagePayload> {
 
     private static final Logger log = Logger.getLogger(BeastChannelHandler.class.getName());
 
-    private BeastDatasource beastDatasource;
+    private BeastDataSource beastDatasource;
     private MessageConsumer consumer;
 
     private String selector; 
-    private Object readType;
-    private Object writeType;
+    private String readType;
+    private String writeType;
     
-    public BeastChannelHandler(String channelName, BeastDatasource jmsDatasource) {
+    public BeastChannelHandler(String channelName, BeastDataSource jmsDatasource) {
         super(channelName);
         this.beastDatasource = jmsDatasource;
     }
@@ -43,12 +44,20 @@ public class BeastChannelHandler extends MultiplexedChannelHandler<Object, Objec
         this.selector = selector;
     }
 
-    public void setReadType(Object readType) {
+    public void setReadType(String readType) {
         this.readType = readType;
     }
 
-    public void setWriteType(Object writeType) {
+    public String getReadType() {
+        return readType;
+    }
+
+    public void setWriteType(String writeType) {
         this.writeType = writeType;
+    }
+
+    public String getWriteType() {
+        return writeType;
     }
 
     @Override
@@ -67,23 +76,14 @@ public class BeastChannelHandler extends MultiplexedChannelHandler<Object, Objec
                 @Override
                 public void onMessage(Message message) {
                     log.info("message event: " + message.toString());
-                    Object newValue;
-                    try {
-                        log.fine("creating new values");
-                        newValue = newVString(message.toString(), alarmNone(), timeNow());
-                        log.fine("new Value: " + newValue);
-                        processMessage(newValue);
-                    } catch (Exception e) {
-                        reportExceptionToAllReadersAndWriters(e);
-                    }
-                    // processMessage(new JMSMessagePayload(message));
+                    processMessage(new BeastMessagePayload(message));
                 }
             });
         } catch (JMSException e) {
             reportExceptionToAllReadersAndWriters(e);
             e.printStackTrace();
         }
-        processConnection(new Object());
+        processConnection(new BeastConnectionPayload(this));
     }
 
     @Override
@@ -122,9 +122,16 @@ public class BeastChannelHandler extends MultiplexedChannelHandler<Object, Objec
     }
     
     @Override
-    protected boolean isWriteConnected(Object payload) {
+    protected boolean isWriteConnected(BeastConnectionPayload payload) {
         return true;
     }
 
+    @Override
+    protected BeastTypeAdapter findTypeAdapter(ValueCache<?> cache, BeastConnectionPayload connPayload) {
+        return beastDatasource.getTypeSupport().find(cache, connPayload);
+    }
 
+    public BeastDataSource getBeastDatasource() {
+        return beastDatasource;
+    }
 }

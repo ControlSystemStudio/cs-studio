@@ -26,11 +26,12 @@ import org.diirt.datasource.vtype.DataTypeSupport;
  * @author Kunal Shroff
  *
  */
-public class BeastDatasource extends DataSource {
+public class BeastDataSource extends DataSource {
 
-    private static final Logger log = Logger.getLogger(BeastDatasource.class.getName());
+    private static final Logger log = Logger.getLogger(BeastDataSource.class.getName());
 
     private final BeastDataSourceConfiguration configuration;
+    private final BeastTypeSupport typeSupport;
 
     private Connection connection;
     private Session session;
@@ -40,10 +41,12 @@ public class BeastDatasource extends DataSource {
         DataTypeSupport.install();
     }
 
-    public BeastDatasource(BeastDataSourceConfiguration configuration) {
+    public BeastDataSource(BeastDataSourceConfiguration configuration) {
         super(true);
         this.configuration = configuration;
 
+        typeSupport = new BeastTypeSupport();
+        
         // Create a ConnectionFactory
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
                 configuration.getBrokerUrl());
@@ -56,7 +59,6 @@ public class BeastDatasource extends DataSource {
             // Create a Session
             session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         } catch (JMSException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -93,8 +95,8 @@ public class BeastDatasource extends DataSource {
                 log.info("setting selection" + parsedTokens.get(1).toString());
                 channel.setSelectors(parsedTokens.get(1).toString());
             }
-            if (parsedTokens.get(2) != null){
-                channel.setReadType(parsedTokens.get(2));
+            if (parsedTokens.get(2) != null  && !parsedTokens.get(2).toString().isEmpty()){
+                channel.setReadType(parsedTokens.get(2).toString());
             }
         }
     }
@@ -115,8 +117,8 @@ public class BeastDatasource extends DataSource {
 
         BeastChannelHandler channel = (BeastChannelHandler) getChannels().get(channelHandlerLookupName(channelName));
         if (channel != null ) {
-            if (parsedTokens.get(3) != null) {
-                channel.setWriteType(parsedTokens.get(3));
+            if (parsedTokens.get(3) != null && !parsedTokens.get(3).toString().isEmpty()) {
+                channel.setWriteType(parsedTokens.get(3).toString());
             }else{
                 channel.setWriteType("VString");
             }
@@ -129,7 +131,7 @@ public class BeastDatasource extends DataSource {
         String nameAndTypeAndFilter = tokens.get(0).toString();
         String name = nameAndTypeAndFilter;
         String filter = null;
-        String type = null;
+        String type = "VString";
         int index = nameAndTypeAndFilter.lastIndexOf('{');
         if (nameAndTypeAndFilter.endsWith("}") && index != -1) {
             name = nameAndTypeAndFilter.substring(0, index);
@@ -146,7 +148,7 @@ public class BeastDatasource extends DataSource {
         newTokens.add(name);
         newTokens.add(filter);
         String readType = type;
-        String writeType = null;
+        String writeType = "VString";
         if (type != null && type.contains(",")) {
             String[] types = type.split(",");
             readType = types[0].trim();
@@ -172,6 +174,10 @@ public class BeastDatasource extends DataSource {
 
     public Session getSession() {
         return session;
+    }
+
+    public BeastTypeSupport getTypeSupport() {
+        return typeSupport;
     }
 
 }
