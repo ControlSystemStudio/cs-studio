@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.saverestore.periodictable.feature"
+      label="Feature"
+      version="1.0.0.qualifier"
+      provider-name="FRIB">
+
+   <description>
+      org.csstudio.saverestore.periodictable.feature provides the plugin that injects the PeriodicTable browser for the Save, Set, and Restore application.
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import feature="org.csstudio.saverestore.feature" version="1.0.0.qualifier"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.saverestore.ui.browser.periodictable"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

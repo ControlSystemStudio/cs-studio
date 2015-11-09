@@ -1,0 +1,215 @@
+package org.csstudio.saverestore.ui.browser.periodictable;
+
+import java.io.Serializable;
+
+import org.csstudio.saverestore.BaseLevel;
+
+/**
+ *
+ * <code>Isotope</code> describes a single isotope of an element with a specific charge.
+ *
+ * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+ *
+ */
+public class Isotope implements BaseLevel, Serializable {
+
+    private static final long serialVersionUID = -3119527921225304647L;
+
+    /** Element identifier */
+    public final Element element;
+    /** Number of neutrons of this isotope */
+    public final int neutrons;
+    /** Ion charge of this isotope */
+    public final int charge;
+    /** Styled name with super- and sub- script numbers for atomic number, mass number and charge */
+    private String niceName;
+    /** Name that does not contain any obscure characters */
+    private final String storageName;
+
+    /**
+     * Construct a new Isotope from pieces.
+     *
+     * @param element the element
+     * @param neutrons the number of neutrons
+     * @param charge the ion charge
+     * @return the isotope
+     */
+    public static final Isotope of(Element element, int neutrons, int charge) {
+        return new Isotope(element, neutrons, charge);
+    }
+
+    /**
+     * Constructs a new Isotope for the given element, using the most common number of neutrons and most common
+     * ion charge.
+     *
+     * @param element the element for which isotope is requested
+     * @return the isotope
+     */
+    public static final Isotope of(Element element) {
+        return new Isotope(element, element.commonNeutrons, element.commonCharge);
+    }
+
+    /**
+     * Construct a new isotope from the storage name which is expected to be in format
+     * <code>symbol_mass_chargep/n<code>, where <code>symbol</code> is a 1-3 letter chemical symbol,
+     * <code>mass</code> is the atomic mass (number of neutrons plus number of protons),
+     * <code>charge</code> is the absolute ion charge, followed by <code>p</code> for positive charge
+     * or <code>n</code> for negative charge. If charge is 0, the <code>charge</code> can be omitted.
+     * If charge is not provided, mass can also be omitted; in such case the most common isotope will be
+     * returned.
+     *
+     * @param storageName the storage name in format <code>symbol_mass_chargep/n</code>
+     * @return the isotope
+     */
+    public static final Isotope of(String storageName) {
+        String[] parts = storageName.split("\\_");
+        Element e = Element.valueOf(parts[0].toUpperCase());
+        int neutrons = e.commonNeutrons;
+        int charge = e.commonCharge;
+        if (parts.length > 1) {
+            neutrons = Integer.parseInt(parts[1]) - e.atomicNumber;
+        }
+        if (parts.length > 2) {
+            char pn = parts[2].charAt(parts[2].length()-1);
+            charge = Integer.parseInt(parts[2].substring(0, parts[2].length()-1));
+            charge *= (pn == 'n' ? -1 : pn == 'p' ? 1 : 0);
+        }
+        return new Isotope(e, neutrons, charge);
+    }
+
+    public static void main(String[] args) {
+      Element[] elements = Element.values();
+      for (int i = 0; i < 100; i++) {
+          Element e = elements[(int)(Math.random()*elements.length)];
+          int n = e.commonNeutrons + (int)(Math.random()*6)-3;
+          int c = e.commonCharge + (int)(Math.random()*2)-1;
+          Isotope is = Isotope.of(e,n,c);
+          System.out.print("\"" + is.getStorageName() + "\",");
+      }
+    }
+
+    private Isotope(Element element, int neutrons, int charge) {
+        this.element = element;
+        this.neutrons = neutrons;
+        this.charge = charge;
+        StringBuilder sb = new StringBuilder()
+                .append(element.symbol)
+                .append('_').append(element.atomicNumber + neutrons);
+        if (charge != 0) {
+            sb.append('_').append(Math.abs(charge))
+                .append(charge < 0 ? 'n' : 'p');
+        }
+        this.storageName = sb.toString();
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.BaseLevel#getCrossPlatformName()
+     */
+    @Override
+    public String getStorageName() {
+        return storageName;
+    }
+
+    /**
+     * @return styled name with super- and sub- script numbers for atomic number, mass number and charge
+     */
+    @Override
+    public String getPresentationName() {
+        if (niceName == null) {
+            StringBuilder s = new StringBuilder(11);
+            for (char c : String.valueOf(element.atomicNumber).toCharArray()) {
+                s.append(getUnicode(c, true));
+            }
+            s.append(element.symbol);
+            for (char c : String.valueOf(neutrons + element.atomicNumber).toCharArray()) {
+                s.append(getUnicode(c, false));
+            }
+            for (char c : String.valueOf(Math.abs(charge)).toCharArray()) {
+                s.append(getUnicode(c, true));
+            }
+            if (charge != 0) {
+                s.append(charge < 0 ? '\u207b' : '\u207a');
+            }
+            niceName = s.toString();
+        }
+        return niceName;
+    }
+
+    /**
+     * Returns the unicode character in superscript or subscript style for the given character. Only numeric characters
+     * are supported.
+     *
+     * @param c the one digit number as a character which needs to be styled
+     * @param superscript true if a superscript code or false if a subscript code is requested
+     * @return the character
+     */
+    private static char getUnicode(char c, boolean superscript) {
+        if (superscript) {
+            switch (c) {
+                case '0' : return '\u2070';
+                case '1' : return '\u00B9';
+                case '2' : return '\u00B2';
+                case '3' : return '\u00B3';
+                case '4' : return '\u2074';
+                case '5' : return '\u2075';
+                case '6' : return '\u2076';
+                case '7' : return '\u2077';
+                case '8' : return '\u2078';
+                case '9' : return '\u2079';
+            }
+        } else {
+            switch (c) {
+                case '0' : return '\u2080';
+                case '1' : return '\u2081';
+                case '2' : return '\u2082';
+                case '3' : return '\u2083';
+                case '4' : return '\u2084';
+                case '5' : return '\u2085';
+                case '6' : return '\u2086';
+                case '7' : return '\u2087';
+                case '8' : return '\u2088';
+                case '9' : return '\u2089';
+            }
+        }
+        return c;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + charge;
+        result = prime * result + ((element == null) ? 0 : element.hashCode());
+        result = prime * result + neutrons;
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Isotope other = (Isotope) obj;
+        if (charge != other.charge)
+            return false;
+        if (element != other.element)
+            return false;
+        if (neutrons != other.neutrons)
+            return false;
+        return true;
+    }
+
+
+}

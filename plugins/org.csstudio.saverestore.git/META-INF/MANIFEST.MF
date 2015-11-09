@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Save And Restore Git
+Bundle-SymbolicName: org.csstudio.saverestore.git;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: FRIB
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Require-Bundle: org.eclipse.jgit;bundle-version="4.0.0",
+ org.csstudio.saverestore.ui.browser;bundle-version="1.0.0",
+ org.diirt.vtype;bundle-version="3.0.1",
+ org.diirt.util;bundle-version="3.0.1",
+ org.csstudio.saverestore;bundle-version="1.0.0"
