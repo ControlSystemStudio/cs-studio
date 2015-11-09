@@ -13,7 +13,7 @@
 <h1>Submit Scan</h1>
 
 <form>
-<p>Name: <input type='text' name='name' value='Example'/></p>
+<p>Name: <input type='text' name='name' value='Example'/> </p>
 <p>Scan: <textarea class='scan' name='scan' rows='20'>
 <?xml version="1.0" encoding="UTF-8"?>
 <commands>
@@ -22,9 +22,12 @@
   <log><devices><device>xpos</device></devices></log>
   <set><device>xpos</device><value>2</value></set>
   <log><devices><device>xpos</device></devices></log>
+  <delay><seconds>10</seconds></delay>
 </commands>
 </textarea></p>
-<p><button type='button' id='submit'>Submit</button></p>
+<p><button type='button' id='submit'>Submit</button>
+   <input type='checkbox' name='queue' value='true' checked='yes'/> Queue  
+</p>
 </form>
 
 <hr/>

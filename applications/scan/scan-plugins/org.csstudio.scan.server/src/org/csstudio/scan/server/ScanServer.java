@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -55,10 +55,11 @@ public interface ScanServer
     /** Submit a sequence of commands as a 'scan' to be executed
      *  @param scan_name Name of the scan
      *  @param commands_as_xml Commands to execute within the scan in XML format
+     *  @param queue Queue the scan, or execute as soon as possible?
      *  @return ID that uniquely identifies the scan
      *  @throws Exception on error
      */
-    public long submitScan(String scan_name, String commands_as_xml) throws Exception;
+    public long submitScan(String scan_name, String commands_as_xml, boolean queue) throws Exception;
 
     /** Query server for scans
      *  @return Info for each scan on the server, most recently submitted scan first
@@ -108,7 +109,17 @@ public interface ScanServer
      */
     public void updateScanProperty(long id, long address, String property_id, Object value) throws Exception;
 
-    /** Ask server to pause a scan
+    /** Ask server to force transition to next command
+    *
+    *  <p>Has no effect if the scan is not running.
+    *
+    *  @param id ID that uniquely identifies a scan
+    *            -1 to force 'next' on all running scans
+    *  @throws Exception on error
+    */
+   public void next(long id) throws Exception;
+
+   /** Ask server to pause a scan
      *
      *  <p>Note that pausing has no effect if the scan is not running.
      *  It is specifically not possible to pause an idle scan, i.e.

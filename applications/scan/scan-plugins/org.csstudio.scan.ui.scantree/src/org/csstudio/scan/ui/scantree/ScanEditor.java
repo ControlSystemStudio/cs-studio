@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -146,10 +146,10 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     private volatile long scan_id = -1;
 
     /** Button icons */
-    private Image pause_icon = null, resume_icon = null, abort_icon = null;
+    private Image next_icon = null, pause_icon = null, resume_icon = null, abort_icon = null;
 
     /** Buttons */
-    private Button pause, resume, abort;
+    private Button next, pause, resume, abort;
 
     /** Property sheet page (if property view is open) */
     private PropertySheetPage property_page = null;
@@ -321,11 +321,29 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
 
         // 1) Info section
         info_section = new Composite(parent, 0);
-        info_section.setLayout(new GridLayout(4, false));
+        info_section.setLayout(new GridLayout(5, false));
 
         message = new Label(info_section, 0);
         message.setText(Messages.ServerDisconnected);
         message.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+
+        next_icon = ScanUIActivator.getImageDescriptor("icons/next.png").createImage();//$NON-NLS-1$
+        next = createInfoButton(Messages.NextTT, next_icon,
+                new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                try
+                {
+                    scan_info.getScanClient().nextCommand(scan_id);
+                }
+                catch (Exception ex)
+                {
+                    ExceptionDetailsErrorDialog.openError(parent.getShell(), Messages.Error, ex);
+                }
+            }
+        });
 
         resume_icon = ScanUIActivator.getImageDescriptor("icons/resume.gif").createImage();//$NON-NLS-1$
         resume = createInfoButton(Messages.ResumeTT, resume_icon,
@@ -338,6 +356,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 {
                     scan_info.getScanClient().resumeScan(scan_id);
                     resume.setEnabled(false);
+                    next.setEnabled(true);
                     pause.setEnabled(true);
                 }
                 catch (Exception ex)
@@ -357,6 +376,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 {
                     scan_info.getScanClient().pauseScan(scan_id);
                     resume.setEnabled(true);
+                    next.setEnabled(false);
                     pause.setEnabled(false);
                 }
                 catch (Exception ex)
@@ -507,18 +527,15 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
     {
         if (resume.isDisposed())
             return;
-        resume.getDisplay().asyncExec(new Runnable()
+        resume.getDisplay().asyncExec(() ->
         {
-            @Override
-            public void run()
-            {
-                if (resume.isDisposed())
-                    return;
-                resume.setEnabled(state == ScanState.Paused);
-                pause.setEnabled(state == ScanState.Running);
-                abort.setEnabled(state == ScanState.Idle  ||  state.isActive());
-            }
-        });
+            if (resume.isDisposed())
+                return;
+            next.setEnabled(state == ScanState.Running);
+            pause.setEnabled(state == ScanState.Running);
+            resume.setEnabled(state == ScanState.Paused);
+            abort.setEnabled(state == ScanState.Idle  ||  state.isActive());
+    });
     }
 
     /** {@inheritDoc} */
@@ -658,8 +675,10 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
         return last;
     }
 
-    /** Submit scan in GUI to server */
-    public void submitCurrentScan()
+    /** Submit scan in GUI to server
+     *  @param queue Submit to queue or for immediate execution?
+     */
+    public void submitCurrentScan(final boolean queue)
     {
         final List<ScanCommand> commands = model.getCommands();
         final String scan_name = getScanNameFromFile(getEditorInput().getName());
@@ -673,7 +692,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
                 try
                 {
                     final ScanClient client = scan_info.getScanClient();
-                    scan_id = client.submitScan(scan_name, XMLCommandWriter.toXMLString(commands));
+                    scan_id = client.submitScan(scan_name, XMLCommandWriter.toXMLString(commands), queue);
                 }
                 catch (Exception ex)
                 {
@@ -831,7 +850,7 @@ public class ScanEditor extends EditorPart implements ScanInfoModelListener, Sca
      *  Provide the original PropertySheetPage, but keep a reference
      *  to it so that we can invoke its refresh()
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Object getAdapter(final Class adapter)
     {
