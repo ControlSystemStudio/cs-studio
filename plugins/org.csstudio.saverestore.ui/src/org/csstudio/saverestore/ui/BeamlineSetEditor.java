@@ -3,16 +3,14 @@ package org.csstudio.saverestore.ui;
 import java.util.List;
 
 import org.csstudio.saverestore.BeamlineSetData;
+import org.csstudio.saverestore.ui.util.FXEditorPart;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 
 import javafx.application.Platform;
-import javafx.embed.swt.FXCanvas;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -34,7 +32,7 @@ import javafx.scene.text.Font;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class BeamlineSetEditor extends EditorPart {
+public class BeamlineSetEditor extends FXEditorPart {
 
     public static final String ID = "org.csstudio.saverestore.ui.editor.beamlineseteditor";
 
@@ -108,17 +106,13 @@ public class BeamlineSetEditor extends EditorPart {
         });
     }
 
+
     /*
      * (non-Javadoc)
-     * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     * @see org.csstudio.saverestore.ui.util.FXEditorPart#createFxScene()
      */
     @Override
-    public void createPartControl(Composite parent) {
-        FXCanvas canvas = new FXCanvas(parent, SWT.NONE);
-        canvas.setScene(createFxScene());
-    }
-
-    private Scene createFxScene() {
+    protected Scene createFxScene() {
         contentPane = new BorderPane();
         contentPane.setCenter(createCenterPane());
 //        GridPane topPane = new GridPane();
@@ -200,10 +194,10 @@ public class BeamlineSetEditor extends EditorPart {
 
     /*
      * (non-Javadoc)
-     * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+     * @see org.csstudio.saverestore.ui.util.FXEditorPart#setFxFocus()
      */
     @Override
-    public void setFocus() {
+    public void setFxFocus() {
     }
 
 }

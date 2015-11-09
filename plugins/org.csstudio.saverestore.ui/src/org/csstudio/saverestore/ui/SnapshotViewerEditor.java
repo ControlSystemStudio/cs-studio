@@ -9,6 +9,7 @@ import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.VNoData;
 import org.csstudio.saverestore.VSnapshot;
 import org.csstudio.saverestore.ui.util.ComboInputDialog;
+import org.csstudio.saverestore.ui.util.FXEditorPart;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.util.time.Timestamp;
@@ -17,18 +18,14 @@ import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.part.EditorPart;
 
 import javafx.animation.Animation.Status;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
-import javafx.embed.swt.FXCanvas;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -64,7 +61,7 @@ import javafx.util.StringConverter;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SnapshotViewerEditor extends EditorPart {
+public class SnapshotViewerEditor extends FXEditorPart {
 
     /**
      *
@@ -314,16 +311,10 @@ public class SnapshotViewerEditor extends EditorPart {
 
     /*
      * (non-Javadoc)
-     * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     * @see org.csstudio.saverestore.ui.util.FXEditorPart#createFxScene()
      */
     @Override
-    public void createPartControl(Composite parent) {
-        FXCanvas canvas = new FXCanvas(parent, SWT.NONE);
-        canvas.setScene(createFxScene());
-        init();
-    }
-
-    private Scene createFxScene() {
+    protected Scene createFxScene() {
         contentPane = new BorderPane();
         GridPane topPane = new GridPane();
         Node top = createTopPane();
@@ -337,6 +328,7 @@ public class SnapshotViewerEditor extends EditorPart {
         contentPane.setTop(topPane);
 //        contentPane.setBottom(createBottomPane());
         scene = new Scene(contentPane);
+        init();
         return scene;
     }
 
@@ -646,10 +638,10 @@ public class SnapshotViewerEditor extends EditorPart {
 
     /*
      * (non-Javadoc)
-     * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
+     * @see org.csstudio.saverestore.ui.util.FXEditorPart#setFxFocus()
      */
     @Override
-    public void setFocus() {
+    public void setFxFocus() {
         if (table != null) {
             table.requestFocus();
         }

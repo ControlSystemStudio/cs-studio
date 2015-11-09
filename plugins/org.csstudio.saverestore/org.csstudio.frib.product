@@ -81,6 +81,8 @@ of the distribution package.
       <feature id="org.csstudio.iter.batik.feature"/>
       <feature id="org.eclipse.jgit"/>
       <feature id="org.csstudio.frib.feature"/>
+      <feature id="org.csstudio.saverestore.git.feature"/>
+      <feature id="org.csstudio.saverestore.periodictable.feature"/>
    </features>
 
    <configurations>
