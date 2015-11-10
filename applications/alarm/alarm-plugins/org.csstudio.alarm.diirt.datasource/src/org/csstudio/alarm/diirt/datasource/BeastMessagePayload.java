@@ -13,13 +13,20 @@ import javax.jms.Message;
 public class BeastMessagePayload {
 
     private final Message message;
+    private final String filter;
 
-    public BeastMessagePayload(Message message) {
+    public BeastMessagePayload(Message message, String filter) {
         this.message = message;
+        this.filter = filter;
     }
 
     public Message getMessage() {
         return message;
     }
 
+    public String getFilter() {
+        return filter;
+    }
+
+    
 }

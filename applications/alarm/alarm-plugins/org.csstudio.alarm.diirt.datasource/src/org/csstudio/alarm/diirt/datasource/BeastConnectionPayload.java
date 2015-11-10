@@ -10,11 +10,13 @@ public class BeastConnectionPayload {
     // private final Channel channel;
     private final String readType;
     private final String writetype;
+    private final String filter;
 
     public BeastConnectionPayload(BeastChannelHandler channelHandle) {
         this.beastDataSource = channelHandle.getBeastDatasource();
         this.readType = channelHandle.getReadType();
         this.writetype = channelHandle.getWriteType();
+        this.filter = channelHandle.getSelector();
     }
 
     public String getReadType() {
@@ -23,5 +25,9 @@ public class BeastConnectionPayload {
 
     public String getWriteType() {
         return this.writetype;
+    }
+    
+    public String getFilter() {
+        return this.filter;
     }
 }

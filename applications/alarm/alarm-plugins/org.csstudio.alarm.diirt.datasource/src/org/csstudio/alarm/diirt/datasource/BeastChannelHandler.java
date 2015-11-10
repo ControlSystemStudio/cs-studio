@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
@@ -31,7 +32,7 @@ public class BeastChannelHandler extends MultiplexedChannelHandler<BeastConnecti
     private BeastDataSource beastDatasource;
     private MessageConsumer consumer;
 
-    private String selector; 
+    private String filter; 
     private String readType;
     private String writeType;
     
@@ -41,7 +42,11 @@ public class BeastChannelHandler extends MultiplexedChannelHandler<BeastConnecti
     }
 
     public void setSelectors(String selector) {
-        this.selector = selector;
+        this.filter = selector;
+    }
+
+    public String getSelector() {
+        return filter;
     }
 
     public void setReadType(String readType) {
@@ -66,23 +71,20 @@ public class BeastChannelHandler extends MultiplexedChannelHandler<BeastConnecti
             Destination destination = beastDatasource.getSession().createTopic(getChannelName());
             // Create a MessageConsumer from the Session to the Topic or
             // Queue
-            if (selector != null && !selector.isEmpty()) {
-                consumer = beastDatasource.getSession().createConsumer(destination, selector);
-            } else {
-                consumer = beastDatasource.getSession().createConsumer(destination);
-            }
+            consumer = beastDatasource.getSession().createConsumer(destination);
             consumer.setMessageListener(new MessageListener() {
 
                 @Override
                 public void onMessage(Message message) {
                     log.info("message event: " + message.toString());
-                    processMessage(new BeastMessagePayload(message));
+                    processMessage(new BeastMessagePayload(message, filter));
                 }
             });
         } catch (JMSException e) {
             reportExceptionToAllReadersAndWriters(e);
             e.printStackTrace();
         }
+        log.info("Prcoessing connection for " + getChannelName());
         processConnection(new BeastConnectionPayload(this));
     }
 
@@ -109,10 +111,27 @@ public class BeastChannelHandler extends MultiplexedChannelHandler<BeastConnecti
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
             // Create a messages
             String text = newValue.toString();
-            TextMessage message = beastDatasource.getSession().createTextMessage(text);
-            // Tell the producer to send the message
-            log.info("Sent message: " + message.hashCode() + " : " + Thread.currentThread().getName());
-            producer.send(message);
+            switch (getWriteType()) {
+            case "VTable":
+                String key = text.split(":")[0].trim();
+                String value = text.split(":")[1].trim();
+                MapMessage mapMessage = beastDatasource.getSession().createMapMessage();
+                mapMessage.setString(key, value);
+                if (filter != null) {
+                    mapMessage.setString("NAME", filter);
+                }
+                // Tell the producer to send the message
+                log.info("Sent table message: " + mapMessage.hashCode() + " : " + Thread.currentThread().getName());
+                producer.send(mapMessage);
+                break;
+            default:
+                TextMessage textMessage = beastDatasource.getSession().createTextMessage(text);
+                // Tell the producer to send the message
+                log.info("Sent string message: " + textMessage.hashCode() + " : " + Thread.currentThread().getName());
+                producer.send(textMessage);
+                break;
+            }
+           
             callback.channelWritten(null);
         } catch (JMSException e) {
             reportExceptionToAllReadersAndWriters(e);

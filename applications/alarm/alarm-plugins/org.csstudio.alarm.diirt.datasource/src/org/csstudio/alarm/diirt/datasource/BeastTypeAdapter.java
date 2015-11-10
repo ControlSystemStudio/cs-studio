@@ -27,3 +27,4 @@ public class BeastTypeAdapter implements DataSourceTypeAdapter<BeastConnectionPa
     }
 
 }
+

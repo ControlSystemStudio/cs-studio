@@ -46,10 +46,9 @@ public class BeastDataSource extends DataSource {
         this.configuration = configuration;
 
         typeSupport = new BeastTypeSupport();
-        
+
         // Create a ConnectionFactory
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(
-                configuration.getBrokerUrl());
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(configuration.getBrokerUrl());
 
         // Create a Connection
         try {
@@ -112,7 +111,7 @@ public class BeastDataSource extends DataSource {
 
     
     private void initializeWrite(String channelName) {
-        log.info("Initalizing Read :" + channelName);
+        log.info("Initalizing Write :" + channelName);
         List<Object> parsedTokens = parseName(channelName);
 
         BeastChannelHandler channel = (BeastChannelHandler) getChannels().get(channelHandlerLookupName(channelName));
@@ -126,8 +125,7 @@ public class BeastDataSource extends DataSource {
     }
 
     private List<Object> parseName(String channelName) {
-        List<Object> tokens = FunctionParser.parseFunctionAnyParameter(".+",
-                channelName);
+        List<Object> tokens = FunctionParser.parseFunctionAnyParameter(".+", channelName);
         String nameAndTypeAndFilter = tokens.get(0).toString();
         String name = nameAndTypeAndFilter;
         String filter = null;
