@@ -16,6 +16,7 @@ import java.util.logging.Level;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.reader.ArchiveReader;
 import org.csstudio.archive.reader.ArchiveRepository;
+import org.csstudio.archive.reader.UnknownChannelException;
 import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.trends.databrowser2.Activator;
 import org.csstudio.trends.databrowser2.Messages;
@@ -42,6 +43,12 @@ public class ArchiveFetchJob extends Job
 {
     /** Poll period in millisecs */
     private static final int POLL_PERIOD_MS = 1000;
+
+    /**to manage concurrency on postgresql*/
+    protected Boolean concurrency = false;
+
+    /** display UnknownChannelException */
+    protected boolean displayUnknowChannelException = true;
 
     /** Item for which to fetch samples */
     final private PVItem item;
@@ -118,6 +125,7 @@ public class ArchiveFetchJob extends Job
                     {
                         the_reader = reader = ArchiveRepository.getInstance().getArchiveReader(url);
                     }
+                    the_reader.enabledConcurrency(concurrency);
                     final ValueIterator value_iter;
                     if (item.getRequestType() == RequestType.RAW)
                         value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
@@ -127,13 +135,26 @@ public class ArchiveFetchJob extends Job
                                                                    TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end), bins);
                     // Get samples into array
                     final List<VType> result = new ArrayList<VType>();
-                    while (value_iter.hasNext())
-                        result.add(value_iter.next());
+                    try
+                    {
+                        while (value_iter.hasNext())
+                            result.add(value_iter.next());
+                    }
+                    catch (Exception e)
+                    {
+                            throw e;
+                    }
+
                     samples += result.size();
                     item.mergeArchivedSamples(the_reader.getServerName(), result);
                     if (cancelled)
                         break;
                     value_iter.close();
+                }
+                catch (UnknownChannelException uce)
+                {
+                    if (!cancelled && displayUnknowChannelException)
+                        listener.archiveFetchFailed(ArchiveFetchJob.this, archive, uce);
                 }
                 catch (Exception ex)
                 {   // Tell listener unless it's the result of a 'cancel'?
