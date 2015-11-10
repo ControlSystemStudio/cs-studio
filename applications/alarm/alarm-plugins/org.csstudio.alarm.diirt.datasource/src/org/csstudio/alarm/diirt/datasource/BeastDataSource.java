@@ -124,6 +124,16 @@ public class BeastDataSource extends DataSource {
         }
     }
 
+    /**
+     * This method parses the channel name and provides the respective components
+     * 1. the name of the channel - this is usually the topic
+     * 2. the filter
+     * 3. the read type
+     * 4. the write type
+     * 
+     * @param channelName
+     * @return
+     */
     private List<Object> parseName(String channelName) {
         List<Object> tokens = FunctionParser.parseFunctionAnyParameter(".+", channelName);
         String nameAndTypeAndFilter = tokens.get(0).toString();
@@ -136,17 +146,16 @@ public class BeastDataSource extends DataSource {
             filter = nameAndTypeAndFilter.substring(index + 1,
                     nameAndTypeAndFilter.length() - 1);
         }
-        index = nameAndTypeAndFilter.lastIndexOf('<');
-        if (nameAndTypeAndFilter.endsWith(">") && index != -1) {
-            name = nameAndTypeAndFilter.substring(0, index);
-            type = nameAndTypeAndFilter.substring(index + 1,
-                    nameAndTypeAndFilter.length() - 1);
+        index = name.lastIndexOf('<');
+        if (name.endsWith(">") && index != -1) {
+            type = name.substring(index + 1, name.length() - 1);
+            name = name.substring(0, index);
         }
         List<Object> newTokens = new ArrayList<>();
         newTokens.add(name);
         newTokens.add(filter);
         String readType = type;
-        String writeType = "VString";
+        String writeType = type;
         if (type != null && type.contains(",")) {
             String[] types = type.split(",");
             readType = types[0].trim();
