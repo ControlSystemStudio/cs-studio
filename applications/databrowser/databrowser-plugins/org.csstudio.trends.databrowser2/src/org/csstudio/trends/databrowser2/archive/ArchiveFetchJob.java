@@ -44,8 +44,8 @@ public class ArchiveFetchJob extends Job
     /** Poll period in millisecs */
     private static final int POLL_PERIOD_MS = 1000;
 
-    /** throw an exception if an exception occur during fetching data from response */
-    protected Boolean failedThrowExceptionGetData = true;
+    /**to manage concurrency on postgresql*/
+    protected Boolean concurrency = false;
 
     /** display UnknownChannelException */
     protected boolean displayUnknowChannelException = true;
@@ -125,6 +125,7 @@ public class ArchiveFetchJob extends Job
                     {
                         the_reader = reader = ArchiveRepository.getInstance().getArchiveReader(url);
                     }
+                    the_reader.enabledConcurrency(concurrency);
                     final ValueIterator value_iter;
                     if (item.getRequestType() == RequestType.RAW)
                         value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
@@ -141,10 +142,7 @@ public class ArchiveFetchJob extends Job
                     }
                     catch (Exception e)
                     {
-                        if (failedThrowExceptionGetData)
                             throw e;
-                        else
-                            Activator.getLogger().log(Level.WARNING, "error", e);
                     }
 
                     samples += result.size();
