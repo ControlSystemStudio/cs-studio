@@ -45,6 +45,7 @@ public class OPIShellSummary extends FXViewPart {
     private Scene scene;
     private Label summaryLabel;
     private Button closeAllButton;
+    private Button showAllButton;
     private boolean disposed = false;
 
     private Set<OPIShell> cachedShells;
@@ -80,7 +81,8 @@ public class OPIShellSummary extends FXViewPart {
         summaryLabel.setStyle("-fx-font-weight: bold");
         summaryLabel.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(summaryLabel, Priority.ALWAYS);
-        closeAllButton = new Button("Close all standalone OPIs");
+
+        closeAllButton = new Button("Close all");
         closeAllButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent e) {
@@ -88,28 +90,46 @@ public class OPIShellSummary extends FXViewPart {
                 update();
             }
         });
+        showAllButton = new Button("Show all");
+        showAllButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent e) {
+                OPIShell.showAll();
+                update();
+            }
+        });
+
         header.setAlignment(Pos.CENTER_LEFT);
         header.getChildren().add(summaryLabel);
+        header.getChildren().add(showAllButton);
         header.getChildren().add(closeAllButton);
         container.getChildren().add(header);
+
         grid = new GridPane();
+        grid.setHgap(2.0);
+
         ColumnConstraints nameColumn = new ColumnConstraints();
         nameColumn.setHgrow(Priority.ALWAYS);
         nameColumn.setHalignment(HPos.LEFT);
         grid.getColumnConstraints().add(nameColumn);
+
         ColumnConstraints showButtonColumn = new ColumnConstraints();
         showButtonColumn.setHalignment(HPos.CENTER);
         grid.getColumnConstraints().add(showButtonColumn);
+
         ColumnConstraints closeButtonColumn = new ColumnConstraints();
         closeButtonColumn.setHalignment(HPos.CENTER);
         grid.getColumnConstraints().add(closeButtonColumn);
+
         container.setPadding(new Insets(10, 10, 10, 10));
         grid.setPadding(new Insets(10, 10, 10, 10));
+
         scrollpane = new ScrollPane();
         scrollpane.setFitToWidth(true);
         container.getChildren().add(grid);
         scrollpane.setContent(container);
         scene = new Scene(scrollpane);
+
         update();
         return scene;
     }
@@ -126,6 +146,7 @@ public class OPIShellSummary extends FXViewPart {
         Set<OPIShell> updatedShells = OPIShell.getAllShells();
         if (updatedShells.isEmpty()) {
             summaryLabel.setText("No standalone OPIs open.");
+            showAllButton.setDisable(true);
             closeAllButton.setDisable(true);
         } else {
             int row = 0;
@@ -158,6 +179,7 @@ public class OPIShellSummary extends FXViewPart {
                 grid.add(closeButton, 2, row);
                 row += 1;
             }
+            showAllButton.setDisable(false);
             closeAllButton.setDisable(false);
         }
         cachedShells = updatedShells;
