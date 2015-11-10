@@ -37,7 +37,7 @@ import static org.hamcrest.CoreMatchers.*;
  *  and org.csstudio.vtype.pv.test/examples/test.db
  *  @author Kay Kasemir
  */
-public class JCAPVTest implements PVListener
+public class JCAPVDemo implements PVListener
 {
     private static final String NETWORK = "127.0.0.1 webopi.sns.gov:5066";
     private static final int MAX_ARRAY = 20000;
