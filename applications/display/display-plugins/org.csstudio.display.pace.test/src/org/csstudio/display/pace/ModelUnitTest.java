@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.display.pace;
 
-import static org.diirt.datasource.vtype.ExpressionLanguage.vType;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -17,6 +16,7 @@ import static org.junit.Assert.fail;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -24,17 +24,14 @@ import org.csstudio.display.pace.model.Cell;
 import org.csstudio.display.pace.model.Model;
 import org.csstudio.display.pace.model.ModelListener;
 import org.csstudio.display.pace.model.VTypeHelper;
-import org.diirt.datasource.PV;
-import org.diirt.datasource.PVManager;
-import org.diirt.datasource.PVReader;
-import org.diirt.datasource.PVReaderEvent;
-import org.diirt.datasource.PVReaderListener;
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.PVListenerAdapter;
+import org.csstudio.vtype.pv.PVPool;
 import org.diirt.vtype.VType;
-import org.diirt.util.time.TimeDuration;
 import org.junit.Before;
 import org.junit.Test;
 
-/** JUnit plug-in test of Model
+/** JUnit test of Model
  *
  *  @author Kay Kasemir
  */
@@ -182,36 +179,31 @@ public class ModelUnitTest
     public void testSaveRestore() throws Exception
     {
         final AtomicReference<String> pv_value = new AtomicReference<>("");
+        final Semaphore have_update = new Semaphore(0);
 
         // Get PV that we'll change via the Cell
-        final PV<VType, Object> pv = PVManager.readAndWrite(vType("loc://limit1(3.14)"))
-                .readListener(new PVReaderListener<VType>()
-                {
-                    @Override
-                    public void pvChanged(final PVReaderEvent<VType> event)
-                    {
-                        final PVReader<VType> pv = event.getPvReader();
-                        final Exception error = pv.lastException();
-                        if (error != null)
-                            error.printStackTrace();
-                        final String value = VTypeHelper.getString(pv.getValue());
-                        pv_value.set(value);
-                        System.out.println("PV update: " + value);
-                        synchronized (pv_value)
-                        {
-                            pv_value.notifyAll();
-                        }
-                    }
-                }).synchWriteAndMaxReadRate(TimeDuration.ofSeconds(0.1));
+        final PV pv = PVPool.getPV("loc://limit1");
+        pv.addListener(new PVListenerAdapter()
+        {
 
-        while (!pv.isConnected())
-            Thread.sleep(100);
+            @Override
+            public void valueChanged(final PV pv, final VType value)
+            {
+                final String text = VTypeHelper.getString(value);
+                pv_value.set(text);
+                System.out.println("PV update: " + text);
+                have_update.release();
+            }
+        });
+
+        pv.write(3.14);
+        have_update.drainPermits();
         System.out.println("PV is " + pv_value.get());
         assertThat(pv_value.get(), equalTo("3.14"));
 
         // Start model for that PV
         final Model model =
-            new Model(new FileInputStream("configFiles/localtest.pace"));
+            new Model(new FileInputStream("../org.csstudio.display.pace/configFiles/localtest.pace"));
         assertEquals("loc://limit1", model.getInstance(0).getCell(0).getName());
 
         model.addListener(listener);
@@ -233,7 +225,7 @@ public class ModelUnitTest
         assertThat(pv_value.get(), equalTo("3.14"));
         // .. until values get saved
         model.saveUserValues("test");
-        synchronized (pv_value) { pv_value.wait(1000); }
+        have_update.acquire();
         System.out.println("PV is " + pv_value.get());
         assertThat(pv_value.get(), equalTo("6.28"));
         // Model is still 'edited' because we didn't revert nor clear
@@ -241,7 +233,7 @@ public class ModelUnitTest
 
         // Revert
         model.revertOriginalValues();
-        synchronized (pv_value) { pv_value.wait(1000); }
+        have_update.acquire();
         assertThat(pv_value.get(), equalTo("3.14"));
 
         // We're back to having user-entered values, they're not written
@@ -259,10 +251,10 @@ public class ModelUnitTest
         model.saveUserValues("test");
         model.clearUserValues();
         assertFalse(model.isEdited());
-        synchronized (pv_value) { pv_value.wait(1000); }
+        have_update.acquire();
         assertThat(pv_value.get(), equalTo("10.0"));
 
         model.stop();
-        pv.close();
+        PVPool.releasePV(pv);
      }
 }
