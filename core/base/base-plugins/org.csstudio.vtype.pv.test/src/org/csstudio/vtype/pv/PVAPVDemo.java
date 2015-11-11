@@ -36,7 +36,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PVA_PVTest
+public class PVAPVDemo
 {
     private static PVFactory factory;
 
