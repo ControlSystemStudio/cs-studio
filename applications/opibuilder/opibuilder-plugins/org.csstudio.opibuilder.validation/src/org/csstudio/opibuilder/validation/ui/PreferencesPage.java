@@ -113,5 +113,9 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         BooleanFieldEditor saveResourcesEditor = new BooleanFieldEditor(Activator.PREF_SAVE_BEFORE_VALIDATION,
                 "Save all modified resources automatically prior to validation?", parent);
         addField(saveResourcesEditor);
+
+        BooleanFieldEditor warnAboutJythonScriptsEditor = new BooleanFieldEditor(Activator.PREF_WARN_ABOUT_JYTHON_SCRIPTS,
+                "Warn whenever a jython script is attached to a widget?", parent);
+        addField(warnAboutJythonScriptsEditor);
     }
 }

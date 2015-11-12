@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.validation.ui;
 
+import org.csstudio.opibuilder.validation.Activator;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -48,7 +49,16 @@ public class ResultsDialog extends TitleAreaDialog {
     private final int noRWPropertiesWithFailures;
     private final int noDeprecatedProperties;
 
+    private final int noWidgetsWithRules;
+    private final int noAllRules;
+    private final int noWidgetsWithScripts;
+    private final int noWidgetsWithPythonEmbedded;
+    private final int noWidgetsWithJavascriptEmbedded;
+    private final int noWidgetsWithPythonStandalone;
+    private final int noWidgetsWithJavascriptStandalone;
+
     private Font font;
+    private Font font2;
 
     /**
      * Constructs a new dialog.
@@ -64,12 +74,22 @@ public class ResultsDialog extends TitleAreaDialog {
      * @param noValidatedWRITEProperties number of validated write properties
      * @param noWRITEPropertiesWithFailures number of write properties that did not pass validation
      * @param noDeprecatedProperties number of times deprecated properties usage was detected
+     * @param noWidgetsWithRules number of widgets that have rules attached
+     * @param noAllRules number of all rules
+     * @param noWidgetsWithScripts number of widgets that have scripts attached
+     * @param noWidgetsWithPythonEmbedded number of widgets with embedded python scripts attached
+     * @param noWidgetsWithJavascriptEmbedded number of widgets with embedded javascripts attached
+     * @param noWidgetsWithPythonStandalone number of widgets with standalone python scripts attached
+     * @param noWidgetsWithJavascriptStandalone number of widgets with standalone javascripts attached
      */
     public ResultsDialog(Shell parentShell, int noValidatedFiles, int noFilesWithFailures,
             int noValidatedWidgets, int noWidgetsWithFailures, int noValidatedROProperties,
             int noROPropertiesWithCriticalFailures, int noROPropertiesWithMajorFailures,
             int noValidatedWRITEProperties, int noWRITEPropertiesWithFailures,
-            int noValidatedRWProperties, int noRWPropertiesWithFailures, int noDeprecatedProperties) {
+            int noValidatedRWProperties, int noRWPropertiesWithFailures, int noDeprecatedProperties,
+            int noWidgetsWithRules, int noAllRules, int noWidgetsWithScripts, int noWidgetsWithPythonEmbedded,
+            int noWidgetsWithJavascriptEmbedded, int noWidgetsWithPythonStandalone,
+            int noWidgetsWithJavascriptStandalone) {
         super(parentShell);
         this.noValidatedFiles = noValidatedFiles;
         this.noFilesWithFailures = noFilesWithFailures;
@@ -83,6 +103,13 @@ public class ResultsDialog extends TitleAreaDialog {
         this.noValidatedRWProperties = noValidatedRWProperties;
         this.noRWPropertiesWithFailures = noRWPropertiesWithFailures;
         this.noDeprecatedProperties = noDeprecatedProperties;
+        this.noWidgetsWithRules = noWidgetsWithRules;
+        this.noAllRules = noAllRules;
+        this.noWidgetsWithScripts = noWidgetsWithScripts;
+        this.noWidgetsWithPythonEmbedded = noWidgetsWithPythonEmbedded;
+        this.noWidgetsWithJavascriptEmbedded = noWidgetsWithJavascriptEmbedded;
+        this.noWidgetsWithPythonStandalone = noWidgetsWithPythonStandalone;
+        this.noWidgetsWithJavascriptStandalone = noWidgetsWithJavascriptStandalone;
     }
 
     /*
@@ -98,6 +125,9 @@ public class ResultsDialog extends TitleAreaDialog {
             public void widgetDisposed(DisposeEvent e) {
                 if (font != null) {
                     font.dispose();
+                }
+                if (font2 != null) {
+                    font2.dispose();
                 }
             }
         });
@@ -195,8 +225,54 @@ public class ResultsDialog extends TitleAreaDialog {
         l.setFont(font);
 
         l = new Label(parent, SWT.HORIZONTAL);
+        l.setText("Number of properties changed by rules: " + noAllRules);
+        l.setLayoutData(createGridData(false));
+
+        l = new Label(parent, SWT.HORIZONTAL);
+        ratio = (int)((noWidgetsWithRules/(double)noValidatedWidgets)*100);
+        l.setText("Widgets with predefined rules: " + noWidgetsWithRules + " (" + ratio + " %)");
+        l.setLayoutData(createGridData(false));
+
+        l = new Label(parent, SWT.HORIZONTAL);
+        l.setText("Number of widgets using scripts: " + noWidgetsWithScripts);
+        l.setLayoutData(createGridData(false));
+
+        l = new Label(parent, SWT.HORIZONTAL);
+        ratio = (int)((noWidgetsWithPythonEmbedded/(double)noValidatedWidgets)*100);
+        l.setText("Widgets using embedded python scripts: " + noWidgetsWithPythonEmbedded + " (" + ratio + " %)");
+        l.setLayoutData(createGridData(true));
+        l.setFont(font);
+
+        l = new Label(parent, SWT.HORIZONTAL);
+        ratio = (int)((noWidgetsWithPythonStandalone/(double)noValidatedWidgets)*100);
+        l.setText("Widgets using standalone python scripts: " + noWidgetsWithPythonStandalone + " (" + ratio + " %)");
+        l.setLayoutData(createGridData(true));
+        l.setFont(font);
+
+        l = new Label(parent, SWT.HORIZONTAL);
+        ratio = (int)((noWidgetsWithJavascriptEmbedded/(double)noValidatedWidgets)*100);
+        l.setText("Widgets using embedded javascripts: " + noWidgetsWithJavascriptEmbedded + " (" + ratio + " %)");
+        l.setLayoutData(createGridData(true));
+        l.setFont(font);
+
+        l = new Label(parent, SWT.HORIZONTAL);
+        ratio = (int)((noWidgetsWithJavascriptStandalone/(double)noValidatedWidgets)*100);
+        l.setText("Widgets using standalone javascripts: " + noWidgetsWithJavascriptStandalone + " (" + ratio + " %)");
+        l.setLayoutData(createGridData(true));
+        l.setFont(font);
+
+        l = new Label(parent, SWT.HORIZONTAL);
         l.setText("Deprecated properties: " + noDeprecatedProperties);
         l.setLayoutData(createGridData(false));
+
+        if (Activator.getInstance().isWarnAboutJythonScripts()) {
+            if (noWidgetsWithPythonEmbedded + noWidgetsWithPythonStandalone > 0) {
+                l = new Label(parent, SWT.HORIZONTAL);
+                l.setText("Jython sciprts are used!");
+                l.setLayoutData(createGridData(true));
+                l.setFont(font);
+            }
+        }
     }
 
     private GridData createGridData(boolean indent) {
