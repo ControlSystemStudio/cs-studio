@@ -48,6 +48,8 @@ public class Activator extends AbstractUIPlugin {
     public static final String PREF_SHOW_MARKERS_IN_DEFAULT_EDITOR = "showMarkersInDefaultEditor";
     /** Preference if resource should be saved before validating it */
     public static final String PREF_SAVE_BEFORE_VALIDATION = "saveResourcesBeforeValidation";
+    /** Preference if an info message should be issued when a jython script is used */
+    public static final String PREF_WARN_ABOUT_JYTHON_SCRIPTS = "warnAboutJythonScripts";
 
     private static Activator instance;
 
@@ -155,6 +157,13 @@ public class Activator extends AbstractUIPlugin {
      */
     public boolean isSaveBeforeValidation() {
         return getPreferenceStore().getBoolean(PREF_SAVE_BEFORE_VALIDATION);
+    }
+
+    /**
+     * @return true if a warning is raised whenever jython scripts are used or false otherwise
+     */
+    public boolean isWarnAboutJythonScripts() {
+        return getPreferenceStore().getBoolean(PREF_WARN_ABOUT_JYTHON_SCRIPTS);
     }
 
     private static IPath getExistFileInRepoAndSearchPath(String pathString){

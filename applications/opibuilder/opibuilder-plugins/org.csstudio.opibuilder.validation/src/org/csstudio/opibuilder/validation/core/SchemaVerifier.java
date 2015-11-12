@@ -51,12 +51,14 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.script.RuleData;
 import org.csstudio.opibuilder.script.RulesInput;
 import org.csstudio.opibuilder.script.ScriptData;
+import org.csstudio.opibuilder.script.ScriptService.ScriptType;
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.scriptUtil.FileUtil;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.validation.Activator;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgets.editparts.ArrayEditPart;
@@ -115,6 +117,13 @@ public class SchemaVerifier {
 
     private int numberOfAnalyzedWidgets = 0;
     private int numberOfWidgetsFailures = 0;
+    private int numberOfWidgetsWithRules = 0;
+    private int numberOfAllRules = 0;
+    private int numberOfWidgetsWithScripts = 0;
+    private int numberOfWidgetsWithPythonEmbedded = 0;
+    private int numberOfWidgetsWithJavascriptEmbedded = 0;
+    private int numberOfWidgetsWithPythonStandalone = 0;
+    private int numberOfWidgetsWithJavascriptStandalone = 0;
     private int numberOfAnalyzedFiles = 0;
     private int numberOfFilesFailures = 0;
     private int numberOfROProperties = 0;
@@ -139,6 +148,8 @@ public class SchemaVerifier {
     private final Map<Pattern, String[]> patternsAdditionalAcceptableValues;
     private final Map<String, String[]> removedValues;
     private final Map<Pattern, String[]> patternsRemovedValues;
+
+    private boolean warnAboutJythonScripts = Activator.getInstance().isWarnAboutJythonScripts();
 
     /**
      * Constructs a new schema verifier using the schema path defined in the preferences.
@@ -218,6 +229,55 @@ public class SchemaVerifier {
         numberOfFilesFailures = 0;
         numberOfWidgetsFailures = 0;
         numberOfDeprecatedFailures = 0;
+    }
+
+    /**
+     * @return the number of all rules
+     */
+    public int getNumberOfAllRules() {
+        return numberOfAllRules;
+    }
+
+    /**
+     * @return the number of all widgets that have embedded javascripts attached
+     */
+    public int getNumberOfWidgetsWithJavascriptEmbedded() {
+        return numberOfWidgetsWithJavascriptEmbedded;
+    }
+
+    /**
+     * @return the number of all widgets that have standalone javascripts attached
+     */
+    public int getNumberOfWidgetsWithJavascriptStandalone() {
+        return numberOfWidgetsWithJavascriptStandalone;
+    }
+
+    /**
+     * @return the number of all widgets that have embedded python scripts attached
+     */
+    public int getNumberOfWidgetsWithPythonEmbedded() {
+        return numberOfWidgetsWithPythonEmbedded;
+    }
+
+    /**
+     * @return the number of all widgets that have standalone python scripts attached
+     */
+    public int getNumberOfWidgetsWithPythonStandalone() {
+        return numberOfWidgetsWithPythonStandalone;
+    }
+
+    /**
+     * @return the number of all widgets that have rules attached
+     */
+    public int getNumberOfWidgetsWithRules() {
+        return numberOfWidgetsWithRules;
+    }
+
+    /**
+     * @return the number of all widgets that have scripts attached
+     */
+    public int getNumberOfWidgetsWithScripts() {
+        return numberOfWidgetsWithScripts;
     }
 
     /**
@@ -658,6 +718,10 @@ public class SchemaVerifier {
                             (match) -> Utilities.ruleMatchValueToMessage(match),
                             (theRule) -> theRule.getName());
                     vf = checkWhatRulesDo(pathToFile, lineNumber, vf, (RulesInput)modelVal);
+                    if (!modelRules.isEmpty()) {
+                        numberOfWidgetsWithRules++;
+                    }
+                    numberOfAllRules += modelRules.size();
                     failures.add(vf);
                 } else if (AbstractWidgetModel.PROP_SCRIPTS.equals(p)) {
                     List<ScriptData> modelScripts = ((ScriptsInput)modelVal).getScriptList();
@@ -671,6 +735,47 @@ public class SchemaVerifier {
                             (match) -> Utilities.scriptMatchValueToMessage(match),
                             (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString());
                     vf = checkWhatScriptsDo(pathToFile, lineNumber, vf, modelScripts, model);
+                    if (!modelScripts.isEmpty()) {
+                        numberOfWidgetsWithScripts++;
+                    }
+                    //check which scripts are used and increase the counters accordingly
+                    boolean[] vals = new boolean[4];
+                    List<ScriptData> jythonScripts = new ArrayList<>();
+                    for (ScriptData sd : modelScripts) {
+                        if (sd.getScriptType() == ScriptType.JAVASCRIPT) {
+                            vals[sd.isEmbedded() ? 0 : 1] = true;
+                        } else if (sd.getScriptType() == ScriptType.PYTHON) {
+                            vals[sd.isEmbedded() ? 2 : 3] = true;
+                            jythonScripts.add(sd);
+                        } else if (sd.getScriptType() == null) {
+                            String path = sd.getPath().toString().toLowerCase();
+                            if (path.endsWith(".js")) {
+                                vals[sd.isEmbedded() ? 0 : 1] = true;
+                            } else if (path.endsWith(".py")) {
+                                vals[sd.isEmbedded() ? 2 : 3] = true;
+                            }
+                        }
+                    }
+                    if (vals[0]) numberOfWidgetsWithJavascriptEmbedded++;
+                    if (vals[1]) numberOfWidgetsWithJavascriptStandalone++;
+                    if (vals[2]) numberOfWidgetsWithPythonEmbedded++;
+                    if (vals[3]) numberOfWidgetsWithPythonStandalone++;
+                    if (warnAboutJythonScripts) {
+                        //put jython scripts validation failure to the problems view
+                        if (vals[2] || vals [3]) {
+                            if (vf == null) {
+                                vf = new ValidationFailure(pathToFile, model.getWUID(), widgetType, model.getName(),
+                                        p, orgVal, modelVal, ValidationRule.WRITE, false, false, "Jython script used.",
+                                        lineNumber, false, model.getClass());
+                            }
+                            final ValidationFailure vff = vf;
+                            jythonScripts.forEach(e ->
+                                vff.addSubFailure(new SubValidationFailure(pathToFile, model.getWUID(), widgetType,
+                                    model.getName(), p, ScriptProperty.XML_ELEMENT_PATH, "Jython script used.",
+                                    e, null, ValidationRule.WRITE, false, false, e.getScriptName(),
+                                    lineNumber, model.getClass())));
+                        }
+                    }
                     failures.add(vf);
                 } else {
                     if (rule == ValidationRule.RO) {
