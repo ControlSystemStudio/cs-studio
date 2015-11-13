@@ -162,11 +162,6 @@
         </repository>
         <repository>
           <id>csstudio-thirdparty</id>
-          <url>http://diirt.download.controlsystemstudio.org/diirt/3.0.1</url>
-          <layout>p2</layout>
-        </repository>
-        <repository>
-          <id>csstudio-thirdparty</id>
           <url>http://download.controlsystemstudio.org/thirdparty/4.2</url>
           <layout>p2</layout>
         </repository>
