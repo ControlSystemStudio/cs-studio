@@ -6,6 +6,7 @@ import org.csstudio.saverestore.BaseLevel;
 import org.csstudio.saverestore.BeamlineSet;
 import org.csstudio.saverestore.BeamlineSetData;
 import org.csstudio.saverestore.DataProvider;
+import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.Engine;
 import org.csstudio.saverestore.Snapshot;
 import org.csstudio.saverestore.VSnapshot;
@@ -76,23 +77,28 @@ public class ActionManager {
         }
         final DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
         Engine.getInstance().execute(() -> {
-            final VSnapshot s = provider.getSnapshotContent(snapshot);
+            try {
+                final VSnapshot s = provider.getSnapshotContent(snapshot);
 
-            owner.getViewSite().getShell().getDisplay().asyncExec(()->{
-                try {
-                    if (newEditor) {
-                        owner.getViewSite().getPage().openEditor(
-                                new SnapshotEditorInput(s), SnapshotViewerEditor.ID);
-                    } else {
-                        IEditorPart part = owner.getViewSite().getPage().getActiveEditor();
-                        if (part instanceof SnapshotViewerEditor) {
-                            ((SnapshotViewerEditor) part).addSnapshot(s);
+                owner.getViewSite().getShell().getDisplay().asyncExec(()->{
+                    try {
+                        if (newEditor) {
+                            owner.getViewSite().getPage().openEditor(
+                                    new SnapshotEditorInput(s), SnapshotViewerEditor.ID);
+                        } else {
+                            IEditorPart part = owner.getViewSite().getPage().getActiveEditor();
+                            if (part instanceof SnapshotViewerEditor) {
+                                ((SnapshotViewerEditor) part).addSnapshot(s);
+                            }
                         }
+                    } catch (PartInitException e) {
+                        Engine.LOGGER.log(Level.SEVERE, "Could not find or instantiate a new snapshot editor.", e);
                     }
-                } catch (PartInitException e) {
-                    Engine.LOGGER.log(Level.SEVERE, "Could not find or instantiate a new snapshot editor.", e);
-                }
-            });
+                });
+            } catch (DataProviderException e) {
+                e.printStackTrace();
+                //TODO
+            }
         });
     }
 
@@ -106,15 +112,20 @@ public class ActionManager {
         }
         final DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
         Engine.getInstance().execute(() -> {
-            BeamlineSetData data = provider.getBeamlineSetContent(set);
-            owner.getViewSite().getShell().getDisplay().asyncExec(() -> {
-                try {
-                    owner.getViewSite().getPage().openEditor(
-                            new BeamlineSetEditorInput(data), BeamlineSetEditor.ID);
-                } catch (PartInitException e) {
-                    Engine.LOGGER.log(Level.SEVERE, "Could not find or instantiate a new snapshot editor.", e);
-                }
-            });
+            try {
+                BeamlineSetData data = provider.getBeamlineSetContent(set);
+                owner.getViewSite().getShell().getDisplay().asyncExec(() -> {
+                    try {
+                        owner.getViewSite().getPage().openEditor(
+                                new BeamlineSetEditorInput(data), BeamlineSetEditor.ID);
+                    } catch (PartInitException e) {
+                        Engine.LOGGER.log(Level.SEVERE, "Could not find or instantiate a new snapshot editor.", e);
+                    }
+                });
+            } catch (DataProviderException e) {
+                e.printStackTrace();
+                //TODO
+            }
         });
     }
 
@@ -128,16 +139,21 @@ public class ActionManager {
         }
         final DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
         Engine.getInstance().execute(() -> {
-            BeamlineSetData data = provider.getBeamlineSetContent(set);
-            final VSnapshot s = VSnapshot.of(set, data.getPVList());
-            owner.getViewSite().getShell().getDisplay().asyncExec(() -> {
-                try {
-                    owner.getViewSite().getPage().openEditor(
-                            new SnapshotEditorInput(s), SnapshotViewerEditor.ID);
-                } catch (PartInitException e) {
-                    Engine.LOGGER.log(Level.SEVERE, "Could not find or instantiate a new snapshot editor.", e);
-                }
-            });
+            try {
+                BeamlineSetData data = provider.getBeamlineSetContent(set);
+                final VSnapshot s = VSnapshot.of(set, data.getPVList());
+                owner.getViewSite().getShell().getDisplay().asyncExec(() -> {
+                    try {
+                        owner.getViewSite().getPage().openEditor(
+                                new SnapshotEditorInput(s), SnapshotViewerEditor.ID);
+                    } catch (PartInitException e) {
+                        Engine.LOGGER.log(Level.SEVERE, "Could not find or instantiate a new snapshot editor.", e);
+                    }
+                });
+            } catch (DataProviderException e) {
+                e.printStackTrace();
+                //TODO
+            }
         });
     }
 
@@ -153,8 +169,13 @@ public class ActionManager {
         final DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
         final String orgBranch = selector.selectedBranchProperty().get();
         Engine.getInstance().execute(() -> {
-            provider.createNewBranch(orgBranch, branchName);
-            selector.readBranches(branchName);
+            try {
+                provider.createNewBranch(orgBranch, branchName);
+                selector.readBranches(branchName);
+            } catch (DataProviderException e) {
+                e.printStackTrace();
+                //TODO
+            }
 
         });
     }
@@ -167,9 +188,14 @@ public class ActionManager {
         final String branch = selector.selectedBranchProperty().get();
         final DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
         Engine.getInstance().execute(() -> {
-            provider.synchronise();
-            if (isotope != null) {
-               selector.reloadBeamlineSets(isotope,branch);
+            try {
+                provider.synchronise();
+                if (isotope != null) {
+                   selector.reloadBeamlineSets(isotope,branch);
+                }
+            } catch (DataProviderException e) {
+                e.printStackTrace();
+                //TODO
             }
         });
     }

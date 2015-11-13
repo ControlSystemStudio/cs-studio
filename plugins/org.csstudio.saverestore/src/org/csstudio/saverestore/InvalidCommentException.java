@@ -8,7 +8,7 @@ package org.csstudio.saverestore;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class InvalidCommentException extends Exception {
+public class InvalidCommentException extends DataProviderException {
     private static final long serialVersionUID = 8892164207644948393L;
 
     /**

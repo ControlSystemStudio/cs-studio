@@ -10,6 +10,7 @@ import java.util.List;
 import org.csstudio.saverestore.BaseLevel;
 import org.csstudio.saverestore.BeamlineSet;
 import org.csstudio.saverestore.DataProvider;
+import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.Engine;
 import org.csstudio.saverestore.Snapshot;
 
@@ -50,23 +51,32 @@ public class Selector {
     }
 
     void reloadBeamlineSets(BaseLevel baseLevel, String branch) {
-        final BeamlineSet[] beamlineSets = Engine.getInstance().getSelectedDataProvider().provider
-                .getBeamlineSets(baseLevel, branch);
-        executeFX(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
+        try {
+            final BeamlineSet[] beamlineSets = Engine.getInstance().getSelectedDataProvider().provider
+                    .getBeamlineSets(baseLevel, branch);
+            executeFX(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
+                    .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
+        } catch (DataProviderException e) {
+            e.printStackTrace();
+            //TODO
+        }
     }
 
     public void readBranches(final String branchToSelect) {
         final DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
         if (provider.areBranchesSupported()) {
             Engine.getInstance().execute(() -> {
-                final String[] branches = provider.getBranches();
-                executeFX(() -> {
-                    ((ObjectProperty<List<String>>) branchesProperty())
-                            .set(Collections.unmodifiableList(Arrays.asList(branches)));
-                    selectedBranchProperty().set(branchToSelect);
-                });
-
+                try {
+                    final String[] branches = provider.getBranches();
+                    executeFX(() -> {
+                        ((ObjectProperty<List<String>>) branchesProperty())
+                                .set(Collections.unmodifiableList(Arrays.asList(branches)));
+                        selectedBranchProperty().set(branchToSelect);
+                    });
+                } catch (DataProviderException e) {
+                    e.printStackTrace();
+                    //TODO
+                }
             });
         } else {
             ((ObjectProperty<List<String>>) branchesProperty())
@@ -111,9 +121,14 @@ public class Selector {
         if (provider.areBaseLevelsSupported()) {
             final String branch = selectedBranchProperty().get();
             Engine.getInstance().execute(() -> {
-                final BaseLevel[] baseLevels = provider.getBaseLevels(branch);
-                executeFX(() -> ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
-                        .set(Collections.unmodifiableList(Arrays.asList(baseLevels))));
+                try {
+                    final BaseLevel[] baseLevels = provider.getBaseLevels(branch);
+                    executeFX(() -> ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
+                            .set(Collections.unmodifiableList(Arrays.asList(baseLevels))));
+                } catch (DataProviderException e) {
+                    e.printStackTrace();
+                    //TODO
+                }
             });
         } else {
             readBeamlineSets();
@@ -143,9 +158,14 @@ public class Selector {
         final String branch = selectedBranchProperty().get();
         final DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
         Engine.getInstance().execute(() -> {
-            final BeamlineSet[] beamlineSets = provider.getBeamlineSets(baseLevel,branch);
-            executeFX(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                    .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
+            try {
+                final BeamlineSet[] beamlineSets = provider.getBeamlineSets(baseLevel,branch);
+                executeFX(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
+                        .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
+            } catch (DataProviderException e) {
+                e.printStackTrace();
+                //TODO
+            }
         });
     }
 
@@ -174,9 +194,14 @@ public class Selector {
     private void readSnapshots() {
         final DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
         Engine.getInstance().execute(() -> {
-            final Snapshot[] snapshots = provider.getSnapshots(selectedBeamlineSetProperty().get());
-            executeFX(() -> ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
-                    .set(Collections.unmodifiableList(Arrays.asList(snapshots))));
+            try {
+                final Snapshot[] snapshots = provider.getSnapshots(selectedBeamlineSetProperty().get());
+                executeFX(() -> ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
+                        .set(Collections.unmodifiableList(Arrays.asList(snapshots))));
+            } catch (DataProviderException e) {
+                e.printStackTrace();
+                //TODO
+            }
         });
     }
 

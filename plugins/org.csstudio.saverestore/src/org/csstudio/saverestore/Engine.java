@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 
 /**
  *
- * <code>Engine</code> provides the common utilities used by save and restore, such as the list of available
- * data providers, selected data providers, executor, logger.
+ * <code>Engine</code> provides the common utilities used by save and restore, such as the list of available data
+ * providers, selected data providers, executor, logger.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -76,22 +76,21 @@ public class Engine {
      */
     public List<DataProviderWrapper> getDataProviders() {
         if (dataProviders == null) {
-            try {
-                List<DataProviderWrapper> dpw = new ArrayList<>();
-                IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
-                IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(DATA_PROVIDER_EXT_POINT);
-                for(IConfigurationElement element : confElements){
-                    String name = element.getAttribute("name");
+            List<DataProviderWrapper> dpw = new ArrayList<>();
+            IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
+            IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(DATA_PROVIDER_EXT_POINT);
+            for (IConfigurationElement element : confElements) {
+                String name = element.getAttribute("name");
+                try {
                     String id = element.getAttribute("id");
                     String description = element.getAttribute("description");
                     DataProvider provider = (DataProvider) element.createExecutableExtension("dataprovider");
                     dpw.add(new DataProviderWrapper(id, name, description, provider));
+                } catch (CoreException e) {
+                    Engine.LOGGER.log(Level.SEVERE, "Save and restore data provider '" + name + "' could not be loaded.", e);
                 }
-                dataProviders = Collections.unmodifiableList(dpw);
-            } catch (CoreException e) {
-                Engine.LOGGER.log(Level.SEVERE, "Save and restore data providers could not be loaded.", e);
-                dataProviders = Collections.unmodifiableList(new ArrayList<>());
             }
+            dataProviders = Collections.unmodifiableList(dpw);
             if (dataProviders.isEmpty()) {
                 Engine.LOGGER.log(Level.SEVERE, "Save and restore data providers not found.");
             }
@@ -124,7 +123,7 @@ public class Engine {
      * @param listener the listener to register
      */
     public void addPropertyChangeListener(String propertyName, PropertyChangeListener listener) {
-        support.addPropertyChangeListener(propertyName,listener);
+        support.addPropertyChangeListener(propertyName, listener);
         if (SELECTED_DATA_PROVIDER.equals(propertyName) && this.selectedDataProvider != null) {
             listener.propertyChange(new PropertyChangeEvent(this, propertyName, null, this.selectedDataProvider));
         }

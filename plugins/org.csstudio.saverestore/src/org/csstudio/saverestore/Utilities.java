@@ -14,6 +14,7 @@ import org.diirt.util.array.ArrayFloat;
 import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ArrayShort;
+import org.diirt.util.array.IteratorNumber;
 import org.diirt.util.array.ListBoolean;
 import org.diirt.util.array.ListInt;
 import org.diirt.util.array.ListNumber;
@@ -192,6 +193,118 @@ public class Utilities {
             return ((VString)type).getValue();
         } else if (type instanceof VBoolean) {
             return ((VBoolean)type).getValue();
+        }
+        return null;
+    }
+
+    /**
+     * Transforms the vtype to a string representing the raw value in the vtype. If the value is an array it is
+     * encapsulated into rectangular parenthesis and individual items are separated by semi-colon. In case of enums
+     * the value is followd by a tilda and another rectangular parenthesis containing all possible enumaration values.
+     *
+     * @param type the type to transform
+     * @return the string representing the raw value
+     */
+    public static String toRawStringValue(VType type) {
+        if (type instanceof VNumberArray) {
+            ListNumber list = ((VNumberArray)type).getData();
+            StringBuilder sb = new StringBuilder(list.size()*10);
+            sb.append('[');
+            IteratorNumber it = list.iterator();
+            if (type instanceof VDoubleArray) {
+                while (it.hasNext()) {
+                    String str = String.valueOf(it.nextDouble());
+                    sb.append(str.replaceAll("\\,", "\\.")).append(';');
+                }
+            } else if (type instanceof VFloatArray) {
+                while (it.hasNext()) {
+                    String str = String.valueOf(it.nextFloat());
+                    sb.append(str.replaceAll("\\,", "\\.")).append(';');
+                }
+            } else if (type instanceof VLongArray) {
+                while (it.hasNext()) {
+                    sb.append(it.nextLong()).append(';');
+                }
+            } else if (type instanceof VIntArray) {
+                while (it.hasNext()) {
+                    sb.append(it.nextInt()).append(';');
+                }
+            } else if (type instanceof VShortArray) {
+                while (it.hasNext()) {
+                    sb.append(it.nextShort()).append(';');
+                }
+            } else if (type instanceof VByteArray) {
+                while (it.hasNext()) {
+                    sb.append(it.nextByte()).append(';');
+                }
+            }
+            if (list.size() == 0) {
+                sb.append(']');
+            } else {
+                sb.setCharAt(list.size()-1, ']');
+            }
+            return sb.toString();
+        } else if (type instanceof VEnumArray) {
+            List<String> list = ((VEnumArray)type).getData();
+            List<String> labels = ((VEnumArray)type).getLabels();
+            final StringBuilder sb = new StringBuilder((list.size() + labels.size())*10);
+            sb.append('[');
+            list.forEach(s -> sb.append(s).append(';'));
+            if (list.isEmpty()) {
+                sb.append(']');
+            } else {
+                sb.setCharAt(sb.length()-1, ']');
+            }
+            sb.append('~').append('[');
+            labels.forEach(s -> sb.append(s).append(';'));
+            if (labels.isEmpty()) {
+                sb.append(']');
+            } else {
+                sb.setCharAt(sb.length()-1, ']');
+            }
+            return sb.toString();
+        } else if (type instanceof VStringArray) {
+            List<String> list = ((VStringArray)type).getData();
+            final StringBuilder sb = new StringBuilder(list.size()*20);
+            sb.append('[');
+            list.forEach(s -> sb.append(s).append(';'));
+            if (list.isEmpty()) {
+                sb.append(']');
+            } else {
+                sb.setCharAt(sb.length()-1, ']');
+            }
+            return sb.toString();
+        } else if (type instanceof VBooleanArray) {
+            ListBoolean list = ((VBooleanArray)type).getData();
+            final StringBuilder sb = new StringBuilder(list.size()*6);
+            sb.append('[');
+            for (int i = 0; i < list.size(); i++) {
+                sb.append(list.getBoolean(i)).append(';');
+            }
+            if (list.size() == 0) {
+                sb.append(']');
+            } else {
+                sb.setCharAt(sb.length()-1, ']');
+            }
+            return sb.toString();
+        } else if (type instanceof VNumber) {
+            return String.valueOf(((VNumber)type).getValue());
+        } else if (type instanceof VEnum) {
+            List<String> labels = ((VEnum)type).getLabels();
+            final StringBuilder sb = new StringBuilder((labels.size()+1)*10);
+            sb.append(((VEnum)type).getValue());
+            sb.append('~').append('[');
+            labels.forEach(s -> sb.append(s).append(';'));
+            if (labels.isEmpty()) {
+                sb.append(']');
+            } else {
+                sb.setCharAt(sb.length()-1, ']');
+            }
+            return sb.toString();
+        } else if (type instanceof VString) {
+            return ((VString)type).getValue();
+        } else if (type instanceof VBoolean) {
+            return String.valueOf(((VBoolean)type).getValue());
         }
         return null;
     }

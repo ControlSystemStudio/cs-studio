@@ -1,185 +1,214 @@
 package org.csstudio.saverestore.git;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.text.ParseException;
 import java.util.List;
+import java.util.Optional;
 
 import org.csstudio.saverestore.BaseLevel;
 import org.csstudio.saverestore.BeamlineSet;
 import org.csstudio.saverestore.BeamlineSetData;
 import org.csstudio.saverestore.DataProvider;
-import org.csstudio.saverestore.InvalidCommentException;
+import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.Snapshot;
 import org.csstudio.saverestore.VSnapshot;
-import org.diirt.util.time.Timestamp;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VType;
-import org.diirt.vtype.ValueFactory;
+import org.eclipse.jgit.api.errors.GitAPIException;
 
 public class GitDataProvider implements DataProvider {
 
+    private final GitResourceManager grm;
+
+    /**
+     * Constructs a new GitDataProvider.
+     */
     public GitDataProvider() {
-        // TODO Auto-generated constructor stub
-    }
-
-    @Override
-    public String[] getBranches() {
-        return new String[]{"master"};
-    }
-
-    @Override
-    public BaseLevel[] getBaseLevels(String branch) {
-        List<BaseLevel> isotopes = new ArrayList<>();
-//        Element[] elements = Element.values();
-//        for (int i = 0; i < 100; i++) {
-//            Element e = elements[(int)(Math.random()*elements.length)];
-//            int n = e.commonNeutrons + (int)(Math.random()*6)-3;
-//            int c = e.commonCharge + (int)(Math.random()*2)-1;
-//            Isotope is = Isotope.of(e,n,c);
-//            if (isotopes.contains(is)) continue;
-//            isotopes.add(is);
-//        }
-        return isotopes.toArray(new BaseLevel[isotopes.size()]);
-    }
-
-    @Override
-    public BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, String branch) {
-        List<BeamlineSet> beamlineSets = new ArrayList<>();
-//        if (baseLevel != null) {
-
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Front End","All PVs"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Linac Segments","Seg 1", "Correctors"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Linac Segments","Seg 1", "Quadrupoles"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Linac Segments","Seg 1", "Others"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Linac Segments","Seg 2", "Correctors"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Linac Segments","Seg 3", "Correctors"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Folding Segments","Seg 1"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Folding Segments","Seg 2"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Production Target Systems","Sys 1"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Production Target Systems","Sys 2"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Production Target Systems","Sys 3"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Fragment Separator","Set 1"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Fragment Separator","Set 2"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Fragment Separator","Set 3"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Fast Beam Area","All PVs"}));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[]{"Reaccelerated Beam Area","All PVs"}));
-
-//            for (int i = 0; i < 100; i++) {
-//                BeamlineSet set = new BeamlineSet(branch, isotope, new String[]{"Front End","Set" +i + " "
-//                            + isotope.element.symbol});
-//                beamlineSets.add(set);
-//            }
-//            beamlineSets.add(new BeamlineSet(branch, isotope, new String[]{"Set" + " " + isotope.element.symbol}));
-            Collections.sort(beamlineSets);
-//        }
-        return beamlineSets.toArray(new BeamlineSet[beamlineSets.size()]);
-    }
-
-    @Override
-    public Snapshot[] getSnapshots(BeamlineSet set) {
-        List<Snapshot> snapshots = new ArrayList<>();
-        if (set != null) {
-            long time = System.currentTimeMillis();
-            snapshots.add(new Snapshot(set,new Date(time), "Aw, the poor puddy tat! He fall down and go... BOOM!","Tweety"));
-            time -= 22400000;
-            snapshots.add(new Snapshot(set,new Date(time), "I did, I did taw a puddy tat","Tweety"));
-            time -= 33400000;
-            snapshots.add(new Snapshot(set,new Date(time), "Sufferin succotash","Sylvester"));
-            time -= 33400000;
-            snapshots.add(new Snapshot(set,new Date(time), "I taw I taw a puddy tat","Tweety"));
-            time -= 12400000;
-            snapshots.add(new Snapshot(set,new Date(time), "What's up, doc","Bugs Bunny"));
-            time -= 12400000;
-            snapshots.add(new Snapshot(set,new Date(time), "Wabbit Season!","Daffy Duck"));
-            time -= 12400000;
-            snapshots.add(new Snapshot(set,new Date(time), "Mine mine mine! It's all mine!","Daffy Duck"));
-            time -= 12400000;
-            snapshots.add(new Snapshot(set,new Date(time), "Be vewy vewy quiet, I'm hunting wabbits!, He-e-e-e-e!","Elmer Fudd"));
-
-
-            Collections.sort(snapshots);
+        URI rem = URI.create("https://github.com/jbobnar/ssrdemo.git");
+        File dest = new File("G:/temp/ssr");
+        try {
+            grm = new GitResourceManager(rem, dest);
+        } catch (GitAPIException e) {
+            throw new RuntimeException("Could not instantiate git data provider.",e);
         }
-        return snapshots.toArray(new Snapshot[snapshots.size()]);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#getBranches()
+     */
     @Override
-    public BeamlineSetData getBeamlineSetContent(BeamlineSet set) {
-        List<String> pvList = new ArrayList<>();
-        for (int i = 100; i < 200; i++) {
-            pvList.add("PV"+i);
+    public String[] getBranches() throws DataProviderException {
+        try {
+            List<String> branches = grm.getBranches();
+            return branches.toArray(new String[branches.size()]);
+        } catch (GitAPIException e) {
+            throw new DataProviderException("Error loading the branches list", e);
         }
-        return new BeamlineSetData(set, pvList, "One very special beamline set.");
-
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#getBaseLevels(java.lang.String)
+     */
     @Override
-    public void createNewBranch(String originalBranch, String newBranchName) {
-        System.out.println("Requested to create a new branch: " + newBranchName);
-
+    public BaseLevel[] getBaseLevels(String branch) throws DataProviderException {
+        assertOnBranch(branch);
+        List<BaseLevel> bls = grm.getBaseLevels();
+        return bls.toArray(new BaseLevel[bls.size()]);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#getBeamlineSets(org.csstudio.saverestore.BaseLevel, java.lang.String)
+     */
     @Override
-    public void saveBeamlineSet(BeamlineSetData set, String comment) throws InvalidCommentException {
-        System.out.println("Requested to save the beamline set: " + comment);
-
+    public BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, String branch) throws DataProviderException {
+        assertOnBranch(branch);
+        try {
+            List<BeamlineSet> sets = grm.getBeamlineSets(Optional.ofNullable(baseLevel));
+            return sets.toArray(new BeamlineSet[sets.size()]);
+        } catch (IOException e) {
+            throw new DataProviderException("Error loading the beamline set list", e);
+        }
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#getSnapshots(org.csstudio.saverestore.BeamlineSet)
+     */
     @Override
-    public void saveSnapshot(VSnapshot data, String comment) throws InvalidCommentException {
-        System.out.println("Successfully stored");
+    public Snapshot[] getSnapshots(BeamlineSet set) throws DataProviderException {
+        assertOnBranch(set.getBranch());
+        try {
+            List<Snapshot> snapshots = grm.getSnapshots(set);
+            return snapshots.toArray(new Snapshot[snapshots.size()]);
+        } catch (IOException | GitAPIException e) {
+            throw new DataProviderException("Error retrieving the snapshots list", e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#getBeamlineSetContent(org.csstudio.saverestore.BeamlineSet)
+     */
+    @Override
+    public BeamlineSetData getBeamlineSetContent(BeamlineSet set) throws DataProviderException {
+        assertOnBranch(set.getBranch());
+        try {
+            return grm.loadBeamlineSetData(set, Optional.empty());
+        } catch (IOException e) {
+            throw new DataProviderException("Error loading the beamline set data for " + set, e);
+        }
 
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#createNewBranch(java.lang.String, java.lang.String)
+     */
+    @Override
+    public void createNewBranch(String originalBranch, String newBranchName) throws DataProviderException {
+        assertOnBranch(originalBranch);
+        try {
+            grm.createBranch(newBranchName);
+        } catch (GitAPIException e) {
+            throw new DataProviderException("Error creating branch " + newBranchName,e);
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#saveBeamlineSet(org.csstudio.saverestore.BeamlineSetData, java.lang.String)
+     */
+    @Override
+    public void saveBeamlineSet(BeamlineSetData set, String comment) throws DataProviderException {
+        assertOnBranch(set.getDescriptor().getBranch());
+        MetaInfo meta = new MetaInfo(comment,null,null,null);
+        try {
+            grm.saveBeamlineSet(set, meta);
+        } catch (IOException | GitAPIException e) {
+            throw new DataProviderException("Error saving beamline set",e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#saveSnapshot(org.csstudio.saverestore.VSnapshot, java.lang.String)
+     */
+    @Override
+    public void saveSnapshot(VSnapshot data, String comment) throws DataProviderException {
+        assertOnBranch(data.getBeamlineSet().getBranch());
+        MetaInfo meta = new MetaInfo(comment,null,null,null);
+        try {
+            grm.saveSnapshot(data, meta);
+        } catch (IOException | GitAPIException e) {
+            throw new DataProviderException("Error saving snapshot set",e);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#tagSnapshot(org.csstudio.saverestore.Snapshot, java.lang.String, java.lang.String)
+     */
     @Override
     public void tagSnapshot(Snapshot snapshot, String tagName, String tagMessage) {
-        // TODO Auto-generated method stub
-
+        System.out.println("Snapshot tagged");
+        //TODO
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#getSnapshotContent(org.csstudio.saverestore.Snapshot)
+     */
     @Override
-    public VSnapshot getSnapshotContent(Snapshot snapshot) {
-        List<String> names = new ArrayList<>();
-        List<VType> values = new ArrayList<>();
-        for (int i = 100; i < 200; i++) {
-//            names.add("PV"+i);
-            names.add("demoChannel_" + i);
-            int v = (int)(Math.random()*AlarmSeverity.values().length);
-            values.add(ValueFactory.newVDouble(((int)(Math.random()*100))/100.,
-                    ValueFactory.newAlarm(AlarmSeverity.values()[v], "OK"),
-                    ValueFactory.newTime(Timestamp.of(new Date(System.currentTimeMillis()-(long)(Math.random()*10000)))),
-                    ValueFactory.displayNone()));
-
+    public VSnapshot getSnapshotContent(Snapshot snapshot) throws DataProviderException {
+        assertOnBranch(snapshot.getBeamlineSet().getBranch());
+        try {
+            return grm.loadSnapshotData(snapshot);
+        } catch (ParseException | IOException e) {
+            throw new DataProviderException("Error loading the snapshot content",e);
         }
-        return VSnapshot.of(snapshot, names, values, Timestamp.of(new Date()));
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#areBranchesSupported()
+     */
     @Override
     public boolean areBranchesSupported() {
         return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#areBaseLevelsSupported()
+     */
     @Override
     public boolean areBaseLevelsSupported() {
-        return false;
+        return true;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#synchronise()
+     */
     @Override
-    public void synchronise() {
-        pull();
-        push();
+    public void synchronise() throws DataProviderException {
+        try {
+            grm.synchronise();
+        } catch (GitAPIException e) {
+            throw new DataProviderException("Error synchronising local repository with remote.",e);
+        }
     }
 
-    private void pull() {
-        //TODO pull all changes from current branch
-    }
-
-    private void push() {
-        //TODO push all changes to the current branch
-    }
-
-    private void assureOnBranch(String branch) {
-        //TODO make sure that selected branch is checkedout
+    private void assertOnBranch(String branch) throws DataProviderException {
+        try {
+            grm.setBranch(branch);
+        } catch (GitAPIException | IOException e) {
+            throw new DataProviderException("Error during branch '" + branch + "' checkout",e);
+        }
     }
 
 }

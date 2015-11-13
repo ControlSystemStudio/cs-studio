@@ -17,8 +17,8 @@ import org.csstudio.saverestore.Snapshot;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.VNoData;
 import org.csstudio.saverestore.VSnapshot;
+import org.csstudio.saverestore.ui.util.FXTextAreaInputDialog;
 import org.csstudio.saverestore.ui.util.GUIUpdateThrottle;
-import org.csstudio.saverestore.ui.util.TextAreaInputDialog;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.PVReader;
 import org.diirt.datasource.PVReaderEvent;
@@ -27,7 +27,6 @@ import org.diirt.datasource.PVWriter;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 
 import javafx.application.Platform;
@@ -266,7 +265,7 @@ public class SnapshotViewerController {
             lock();
             if (snapshots.contains(snapshot)) {
                 if (snapshot.getSnapshot().isPresent()) {
-                    TextAreaInputDialog dialog = new TextAreaInputDialog(
+                    FXTextAreaInputDialog dialog = new FXTextAreaInputDialog(
                             owner.getSite().getShell(), "Snapshot Comment",
                             "Provide a short comment for the snapshot " + snapshot + ":", "", new IInputValidator() {
                                 @Override
@@ -277,8 +276,7 @@ public class SnapshotViewerController {
                                     return null;
                                 }
                             });
-                    if (dialog.open() == IDialogConstants.OK_ID) {
-                        final String c = dialog.getValue();
+                    dialog.openAndWait().ifPresent(c -> {
                         Engine.getInstance().execute(() -> {
                             DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
                             try {
@@ -287,16 +285,7 @@ public class SnapshotViewerController {
                                 Engine.LOGGER.log(Level.WARNING, "Could not save snapshot " + snapshot + ".", e);
                             }
                         });
-                    }
-
-//                  TextAreaDialog dialog = new TextAreaDialog();
-//                  dialog.initModality(Modality.APPLICATION_MODAL);
-//                  dialog.initOwner(owner.getWindow());
-//                  dialog.setTitle("Snapshot Comment");
-//                  dialog.setHeaderText("Provide a short comment for the snapshot " + snapshot + ":");
-//                  dialog.showAndWait();
-//                  Optional<String> comment = dialog.showAndWait();
-//                  comment.ifPresent(c -> {
+                    });
                 } else {
                     throw new IllegalArgumentException("Snapshot " + snapshot + " is invalid.");
                 }

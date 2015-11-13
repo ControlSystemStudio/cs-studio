@@ -42,5 +42,8 @@ public class DataProviderWrapper {
         return name + ": " + description;
     }
 
-
+    @Override
+    public String toString() {
+        return getPresentationName();
+    }
 }

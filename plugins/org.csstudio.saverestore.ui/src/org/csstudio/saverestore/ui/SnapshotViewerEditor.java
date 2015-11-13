@@ -1,14 +1,16 @@
 package org.csstudio.saverestore.ui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.Engine;
 import org.csstudio.saverestore.Snapshot;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.VNoData;
 import org.csstudio.saverestore.VSnapshot;
-import org.csstudio.saverestore.ui.util.ComboInputDialog;
+import org.csstudio.saverestore.ui.util.FXComboInputDialog;
 import org.csstudio.saverestore.ui.util.FXEditorPart;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
 import org.csstudio.saverestore.ui.util.VTypePair;
@@ -219,38 +221,24 @@ public class SnapshotViewerEditor extends FXEditorPart {
      */
     @Override
     public void doSave(IProgressMonitor monitor) {
-        List<VSnapshot> snapshots = null;
+        List<VSnapshot> snapshots = new ArrayList<>();
         do {
-            snapshots = model.getSnapshots(true);
+            snapshots.addAll(model.getSnapshots(true));
             if (snapshots.isEmpty()) {
                 break;
             } else if (snapshots.size() == 1) {
-                model.saveSnapshot(snapshots.get(0));
+                model.saveSnapshot(snapshots.remove(0));
             } else {
-                String[] items = new String[snapshots.size()];
-                for (int i = 0; i < snapshots.size(); i++) {
-                    items[i] = snapshots.get(i).toString();
-                }
-                ComboInputDialog dialog = new ComboInputDialog(getSite().getShell(),"Select Snapshot",
-                        "Select the snapshot that you wish to save:",items[0],items,null);
+                FXComboInputDialog<VSnapshot> dialog = new FXComboInputDialog<>(getSite().getShell(),
+                        "Select Snapshot", "Select the snapshot that you wish to save:",
+                        snapshots.get(0),snapshots);
                 if (dialog.open() == IDialogConstants.OK_ID) {
-                    final String val = dialog.getValue();
-                    snapshots.forEach(x -> {
-                        if (val.equals(x.toString())) {
-                            model.saveSnapshot(x);
-                        }
-                    });
+                    //TODO is save snapshot responds with cancel do something
+                    dialog.getValue().ifPresent(model::saveSnapshot);
+                    snapshots.remove(dialog.getValue().get());
                 } else {
                     break;
                 }
-
-    //            ChoiceDialog<VSnapshot> dialog = new ChoiceDialog<>(snapshots.get(snapshots.size()-1), snapshots);
-    //            dialog.initOwner(scene.getWindow());
-    //            dialog.initModality(Modality.APPLICATION_MODAL);
-    //            dialog.setTitle("Select Snapshot");
-    //            dialog.setHeaderText("Select the snapshot that you wish to save:");
-    //            Optional<VSnapshot> result = dialog.showAndWait();
-    //            result.ifPresent(p -> model.saveSnapshot(p));
             }
             firePropertyChange(PROP_DIRTY);
         } while(!snapshots.isEmpty());
@@ -396,27 +384,10 @@ public class SnapshotViewerEditor extends FXEditorPart {
             } else if (snapshots.size() == 1) {
                 model.restoreSnapshot(snapshots.get(0));
             } else {
-                String[] items = new String[snapshots.size()];
-                for (int i = 0; i < snapshots.size(); i++) {
-                    items[i] = snapshots.get(i).toString();
-                }
-                ComboInputDialog dialog = new ComboInputDialog(getSite().getShell(),"Select Snapshot",
-                        "Select the snapshot that you wish to use for restoring:",items[0],items,null);
-                if (dialog.open() == IDialogConstants.OK_ID) {
-                    final String val = dialog.getValue();
-                    snapshots.forEach(x -> {
-                        if (val.equals(x.toString())) {
-                            model.restoreSnapshot(x);
-                        }
-                    });
-                }
-//                ChoiceDialog<VSnapshot> dialog = new ChoiceDialog<>(snapshots.get(0), snapshots);
-//                dialog.initOwner(scene.getWindow());
-//                dialog.initModality(Modality.APPLICATION_MODAL);
-//                dialog.setTitle("Select Snapshot");
-//                dialog.setHeaderText("Select the snapshot that you wish to use for restoring:");
-//                Optional<VSnapshot> result = dialog.showAndWait();
-//                result.ifPresent(p -> model.restoreSnapshot(p));
+                FXComboInputDialog<VSnapshot> dialog = new FXComboInputDialog<>(getSite().getShell(),
+                        "Select Snapshot", "Select the snapshot that you wish to restore:",
+                        snapshots.get(0),snapshots);
+                dialog.openAndWait().ifPresent(model::restoreSnapshot);
             }
         });
         restoreSnapshotButton.disableProperty().bind(model.snapshotRestorableProperty().not());
@@ -528,8 +499,13 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 Snapshot s = (Snapshot) e.getDragboard().getContent(SnapshotDataFormat.INSTANCE);
                 if (s != null) {
                     Engine.getInstance().execute(() -> {
-                        VSnapshot vs = Engine.getInstance().getSelectedDataProvider().provider.getSnapshotContent(s);
-                        addSnapshot(vs);
+                        try {
+                            VSnapshot vs = Engine.getInstance().getSelectedDataProvider().provider.getSnapshotContent(s);
+                            addSnapshot(vs);
+                        } catch (DataProviderException ex) {
+                            ex.printStackTrace();
+                            //TODO
+                        }
                     });
                 }
             }

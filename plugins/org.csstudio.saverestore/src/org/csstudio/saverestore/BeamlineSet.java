@@ -28,8 +28,8 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
      * @param baseLevel the base level for which this set is valid
      * @param path the path on which the set is stored (the last element of the pat is the file name)
      */
-    public BeamlineSet(String branch, BaseLevel base, String[] path) {
-        this.baseLevel = base;
+    public BeamlineSet(String branch, Optional<BaseLevel> base, String[] path) {
+        this.baseLevel = base.orElse(null);
         this.branch = branch;
         this.path = path;
         if (this.path.length == 1) {

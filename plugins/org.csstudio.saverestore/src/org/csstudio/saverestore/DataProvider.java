@@ -15,8 +15,10 @@ public interface DataProvider {
      * not need to be implemented.
      *
      * @return the list of branch names
+     *
+     * @throws DataProviderException if the list of branches cannot be retrieved
      */
-    String[] getBranches();
+    String[] getBranches() throws DataProviderException;
 
     /**
      * Returns the list of base levels that have some beamline sets in the selected branch. The returned list is
@@ -29,8 +31,10 @@ public interface DataProvider {
      *
      * @param branch the branch for which the isotopes are requested
      * @return base levels for which some data exists
+     *
+     * @throws DataProviderException if the list of branches cannot be retrieved
      */
-    BaseLevel[] getBaseLevels(String branch);
+    BaseLevel[] getBaseLevels(String branch) throws DataProviderException;
 
     /**
      * Returns the beamline sets for the given base level and branch. Only the latest revision of each beamline set
@@ -39,8 +43,10 @@ public interface DataProvider {
      * @param baseLevel the base level for which the beamline sets should be loaded
      * @param branch the branch from which the data should be loaded
      * @return all available beamline sets
+     *
+     * @throws DataProviderException if the list of bealine sets cannot be retrieved
      */
-    BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, String branch);
+    BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, String branch) throws DataProviderException;
 
     /**
      * Returns the list of all available snapshot revisions for the given beamline set. The returned snapshots contain
@@ -48,24 +54,30 @@ public interface DataProvider {
      *
      * @param set the beamline set for which the snapshots are requested
      * @return the list of available snapshots
+     *
+     * @throws DataProviderException if the list of snapshots cannot be retrieved
      */
-    Snapshot[] getSnapshots(BeamlineSet set);
+    Snapshot[] getSnapshots(BeamlineSet set) throws DataProviderException;
 
     /**
      * Returns the content of one specific snapshot revision.
      *
      * @param snapshot the snapshot revision descriptor
      * @return the snapshot data
+     *
+     * @throws DataProviderException if there is an error during content reading
      */
-    VSnapshot getSnapshotContent(Snapshot snapshot);
+    VSnapshot getSnapshotContent(Snapshot snapshot) throws DataProviderException;
 
     /**
      * Returns the content of one specific beamline set.
      *
      * @param set the beamline set for which the content is requested
      * @return the data
+     *
+     * @throws DataProviderException if there is an error during content reading
      */
-    BeamlineSetData getBeamlineSetContent(BeamlineSet set);
+    BeamlineSetData getBeamlineSetContent(BeamlineSet set) throws DataProviderException;
 
     /**
      * @return true if the data provider supports branches or false if the structure is flat and the branch parameter
@@ -80,8 +92,10 @@ public interface DataProvider {
 
     /**
      * Synchronise the local repository with the remote.
+     *
+     * @throws DataProviderException if there is an error during synchronisation
      */
-    void synchronise();
+    void synchronise() throws DataProviderException;
 
     /**
      * Create a new branch with the given name. The content of the new branch is identical to the original one. If the
@@ -89,8 +103,10 @@ public interface DataProvider {
      *
      * @param originalBranch the name of the branch used as a starting point
      * @param newBranchName the name of the branch to create
+     *
+     * @throws DataProviderException if there was an error during branch creation
      */
-    void createNewBranch(String originalBranch, String newBranchName);
+    void createNewBranch(String originalBranch, String newBranchName) throws DataProviderException;
 
     /**
      * Save a new revision of the beamline set. The specifics (e.g. location) of the beamline set are specified by
@@ -104,7 +120,7 @@ public interface DataProvider {
      *
      * @throws InvalidCommentException if no comment or an invalid comment is provided
      */
-    void saveBeamlineSet(BeamlineSetData set, String comment) throws InvalidCommentException;
+    void saveBeamlineSet(BeamlineSetData set, String comment) throws InvalidCommentException, DataProviderException;
 
     /**
      * Save a new version of snapshot. The specifics of the snapshot are specified by <code>snapshot</code>
@@ -116,7 +132,7 @@ public interface DataProvider {
      *
      * @throws InvalidCommentException if no comment or an invalid comment is provided
      */
-    void saveSnapshot(VSnapshot data, String comment) throws InvalidCommentException;
+    void saveSnapshot(VSnapshot data, String comment) throws InvalidCommentException, DataProviderException;
 
     /**
      * Tag the given snapshot with a specific tag name and message.

@@ -1,21 +1,25 @@
 package org.csstudio.saverestore.ui.util;
 
+import java.util.Optional;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+
+import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 
 /**
  * An input dialog for soliciting an input from the user. This dialog offers a combo box and allows user to select one
@@ -24,55 +28,18 @@ import org.eclipse.swt.widgets.Text;
  * This dialog is a modified copy of the {@link InputDialog}.
  * </p>
  */
-public class ComboInputDialog extends Dialog {
-    /**
-     * The title of the dialog.
-     */
+public abstract class FXBaseDialog<T> extends Dialog {
+
     private String title;
-
-    /**
-     * The message to display, or <code>null</code> if none.
-     */
     private String message;
-
-    /**
-     * The input value; the empty string by default.
-     */
-    private String value = "";//$NON-NLS-1$
-
-    /**
-     * The input validator, or <code>null</code> if none.
-     */
+    private T value;
     private IInputValidator validator;
-
-    /**
-     * Ok button widget.
-     */
-    private Button okButton;
-
-    /**
-     * Input text widget.
-     */
-    private Combo text;
-
-    /**
-     * Error message label widget.
-     */
     private Text errorMessageText;
-
-    /**
-     * Error message string.
-     */
     private String errorMessage;
-
-    private String[] values;
 
     /**
      * Creates an input dialog with OK and Cancel buttons. Note that the dialog
      * will have no visual representation (no widgets) until it is told to open.
-     * <p>
-     * Note that the <code>open</code> method blocks for input dialogs.
-     * </p>
      *
      * @param parentShell
      *            the parent shell, or <code>null</code> to create a top-level
@@ -84,21 +51,15 @@ public class ComboInputDialog extends Dialog {
      * @param initialValue
      *            the initial input value, or <code>null</code> if none
      *            (equivalent to the empty string)
-     * @param values the list of a predefined values
      * @param validator
      *            an input validator, or <code>null</code> if none
      */
-    public ComboInputDialog(Shell parentShell, String dialogTitle,
-            String dialogMessage, String initialValue, String[] values, IInputValidator validator) {
+    public FXBaseDialog(Shell parentShell, String dialogTitle,
+            String dialogMessage, T initialValue, IInputValidator validator) {
         super(parentShell);
         this.title = dialogTitle;
-        message = dialogMessage;
-        if (initialValue == null) {
-            value = "";//$NON-NLS-1$
-        } else {
-            value = initialValue;
-        }
-        this.values = values;
+        this.message = dialogMessage;
+        this.value = initialValue;
         this.validator = validator;
         setBlockOnOpen(true);
     }
@@ -106,7 +67,7 @@ public class ComboInputDialog extends Dialog {
     @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
-            value = text.getText();
+            value = getValueFromComponent();
         } else {
             value = null;
         }
@@ -123,21 +84,15 @@ public class ComboInputDialog extends Dialog {
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        // create OK and Cancel buttons by default
-        okButton = createButton(parent, IDialogConstants.OK_ID,
+        createButton(parent, IDialogConstants.OK_ID,
                 IDialogConstants.OK_LABEL, true);
         createButton(parent, IDialogConstants.CANCEL_ID,
                 IDialogConstants.CANCEL_LABEL, false);
-        //do this here because setting the text will set enablement on the ok
-        // button
-        text.setFocus();
+        getNode().requestFocus();
         if (value != null) {
-            for (int i = 0; i < values.length; i++) {
-                if (values[i].equals(value)) {
-                    text.select(i);
-                }
-            }
+            setValueToComponent(value);
         }
+        validateInput();
     }
 
     @Override
@@ -155,74 +110,55 @@ public class ComboInputDialog extends Dialog {
             label.setLayoutData(data);
             label.setFont(parent.getFont());
         }
-        text = new Combo(composite, getInputTextStyle());
-        text.setItems(values);
-        text.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+        Composite fxComposite = new Composite(composite, SWT.NONE);
+        fxComposite.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
-        text.addModifyListener(new ModifyListener() {
+        fxComposite.setLayout(new GridLayout());
+        new FXCanvasMaker() {
             @Override
-            public void modifyText(ModifyEvent e) {
-                validateInput();
+            protected Scene createFxScene() {
+                return getScene();
             }
-        });
-        errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
-        errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL));
-        errorMessageText.setBackground(errorMessageText.getDisplay()
-                .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-        // Set the error message text
-        // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=66292
-        setErrorMessage(errorMessage);
+        }.createPartControl(fxComposite);
+
+        if (validator != null) {
+            errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
+            errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
+                    | GridData.HORIZONTAL_ALIGN_FILL));
+            errorMessageText.setBackground(errorMessageText.getDisplay()
+                    .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+            // Set the error message text
+            // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=66292
+            setErrorMessage(errorMessage);
+        }
 
         applyDialogFont(composite);
         return composite;
     }
 
-    /**
-     * Returns the error message label.
-     *
-     * @return the error message label
-     * @deprecated use setErrorMessage(String) instead
-     */
-    @Deprecated
-    protected Label getErrorMessageLabel() {
-        return null;
-    }
+    protected abstract Node getNode();
 
-    /**
-     * Returns the ok button.
-     *
-     * @return the ok button
-     */
-    protected Button getOkButton() {
-        return okButton;
-    }
+    protected abstract T getValueFromComponent();
 
-    /**
-     * Returns the text area.
-     *
-     * @return the text area
-     */
-    protected Combo getText() {
-        return text;
-    }
-
-    /**
-     * Returns the validator.
-     *
-     * @return the validator
-     */
-    protected IInputValidator getValidator() {
-        return validator;
-    }
+    protected abstract void setValueToComponent(T value);
 
     /**
      * Returns the string typed into this input dialog.
      *
      * @return the input string
      */
-    public String getValue() {
-        return value;
+    public Optional<T> getValue() {
+        return Optional.ofNullable(value);
+    }
+
+    /**
+     * Opens the dialog and returns the selected item if it exists.
+     *
+     * @return the selected item
+     */
+    public Optional<T> openAndWait() {
+        open();
+        return getValue();
     }
 
     /**
@@ -237,12 +173,12 @@ public class ComboInputDialog extends Dialog {
     protected void validateInput() {
         String errorMessage = null;
         if (validator != null) {
-            errorMessage = validator.isValid(text.getText());
+            errorMessage = validator.isValid(getValueFromComponent());
         }
-        // Bug 16256: important not to treat "" (blank error) the same as null
-        // (no error)
         setErrorMessage(errorMessage);
     }
+
+    protected abstract Scene getScene();
 
     /**
      * Sets or clears the error message.
@@ -271,19 +207,6 @@ public class ComboInputDialog extends Dialog {
                 button.setEnabled(errorMessage == null);
             }
         }
-    }
-
-    /**
-     * Returns the style bits that should be used for the input text field.
-     * Defaults to a single line entry. Subclasses may override.
-     *
-     * @return the integer style bits that should be used when creating the
-     *         input text
-     *
-     * @since 3.4
-     */
-    protected int getInputTextStyle() {
-        return SWT.SINGLE | SWT.BORDER;
     }
 }
 

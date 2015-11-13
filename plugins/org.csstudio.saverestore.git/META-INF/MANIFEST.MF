@@ -9,4 +9,6 @@ Require-Bundle: org.eclipse.jgit;bundle-version="4.0.0",
  org.csstudio.saverestore.ui.browser;bundle-version="1.0.0",
  org.diirt.vtype;bundle-version="3.0.1",
  org.diirt.util;bundle-version="3.0.1",
- org.csstudio.saverestore;bundle-version="1.0.0"
+ org.csstudio.saverestore;bundle-version="1.0.0",
+ org.slf4j.api;bundle-version="1.7.2",
+ com.jcraft.jsch;bundle-version="0.1.53"

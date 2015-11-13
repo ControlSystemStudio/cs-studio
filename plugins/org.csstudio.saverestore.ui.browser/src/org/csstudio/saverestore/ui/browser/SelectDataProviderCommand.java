@@ -1,11 +1,8 @@
 package org.csstudio.saverestore.ui.browser;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.Engine;
-import org.csstudio.saverestore.ui.util.ComboInputDialog;
+import org.csstudio.saverestore.ui.util.FXComboInputDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -27,24 +24,11 @@ public class SelectDataProviderCommand extends AbstractHandler implements IHandl
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
-            List<DataProviderWrapper> dataProviders = Engine.getInstance().getDataProviders();
-            List<String> names = new ArrayList<>(dataProviders.size());
-            dataProviders.forEach(d -> names.add(d.getPresentationName()));
-            DataProviderWrapper selected = Engine.getInstance().getSelectedDataProvider();
-            ComboInputDialog dialog = new ComboInputDialog(HandlerUtil.getActiveShell(event),
-                    "Select Data Provider", "Select the data provider you wish to user",
-                    selected == null ? null : selected.getPresentationName(),
-                            names.toArray(new String[names.size()]), null);
-            dialog.open();
-            String value = dialog.getValue();
-            if (value != null) {
-                for (DataProviderWrapper dpw : dataProviders) {
-                    if (dpw.getPresentationName().equals(value)) {
-                        Engine.getInstance().setSelectedDataProvider(dpw);
-                        break;
-                    }
-                }
-            }
+            FXComboInputDialog<DataProviderWrapper> dialog = new FXComboInputDialog<>(
+                  HandlerUtil.getActiveShell(event), "Select Data Provider",
+                  "Select the data provider you wish to use:", Engine.getInstance().getSelectedDataProvider(),
+                  Engine.getInstance().getDataProviders());
+            dialog.openAndWait().ifPresent(Engine.getInstance()::setSelectedDataProvider);
         }
         return null;
     }

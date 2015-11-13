@@ -1,8 +1,10 @@
 package org.csstudio.saverestore;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Optional;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -19,10 +21,11 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     private final BeamlineSet set;
     private final Date date;
     private final String comment;
-    private final String tag;
-    private final String tagMessage;
     private final String owner;
     private final String toString;
+
+    private Map<String,String> parameters;
+
 
     /**
      * Constructs a new snapshot, which belongs to the specific set. Snapshot that is read from the central storage,
@@ -31,7 +34,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param set the set to which the snapshot belongs
      */
     public Snapshot(BeamlineSet set) {
-        this(set,null,null,null,null,null);
+        this(set,null,null,null);
     }
 
     /**
@@ -43,7 +46,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param owner the person that created the snapshot
      */
     public Snapshot(BeamlineSet set, Date date, String comment, String owner) {
-        this(set,date,comment,owner,null,null);
+        this(set,date,comment,owner,new HashMap<>());
     }
 
     /**
@@ -53,16 +56,14 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param date the date when snapshot was taken
      * @param comment the comment provided when snapshot was stored
      * @param owner the person that created the snapshot
-     * @param tag optional tag of the snapshot
-     * @param tagMessage optional tag message
+     * @param parameters a set of optional parameters
      */
-    public Snapshot(BeamlineSet set, Date date, String comment, String owner, String tag, String tagMessage) {
+    public Snapshot(BeamlineSet set, Date date, String comment, String owner, Map<String,String> parameters) {
         this.set = set;
         this.date = date;
         this.comment = comment;
         this.owner = owner;
-        this.tag = tag;
-        this.tagMessage = tagMessage;
+        this.parameters = new HashMap<>(parameters);
         this.toString = this.date == null ? UNKNOWN
                 : (date.toString() + ":\t " + owner + "\n  " + comment.split("\\n")[0]);
     }
@@ -96,21 +97,10 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     }
 
     /**
-     * The snapshot can optionally contain a tag name.
-     *
-     * @return optional tag name
+     * @return unmodifiable map of parameters
      */
-    public Optional<String> getTag() {
-        return Optional.ofNullable(tag);
-    }
-
-    /**
-     * If the snapshot has a tag it may also have a tag message.
-     *
-     * @return the tag message
-     */
-    public Optional<String> getTagMessage() {
-        return Optional.ofNullable(tagMessage);
+    public Map<String,String> getParameters() {
+        return Collections.unmodifiableMap(parameters);
     }
 
     /*

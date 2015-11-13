@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
@@ -78,26 +79,37 @@ public class DemoDataProvider implements DataProvider {
         List<BeamlineSet> beamlineSets = new ArrayList<>();
         if (baseLevel != null) {
 
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Front End", "All PVs" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Front End", "All PVs" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Linac Segments", "Seg 1", "Correctors" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Linac Segments", "Seg 1", "Quadrupoles" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Linac Segments", "Seg 1", "Others" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Linac Segments", "Seg 2", "Correctors" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Linac Segments", "Seg 3", "Correctors" }));
             beamlineSets
-                    .add(new BeamlineSet(branch, baseLevel, new String[] { "Linac Segments", "Seg 1", "Correctors" }));
+                    .add(new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Folding Segments", "Seg 1" }));
             beamlineSets
-                    .add(new BeamlineSet(branch, baseLevel, new String[] { "Linac Segments", "Seg 1", "Quadrupoles" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Linac Segments", "Seg 1", "Others" }));
+                    .add(new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Folding Segments", "Seg 2" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Production Target Systems", "Sys 1" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Production Target Systems", "Sys 2" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Production Target Systems", "Sys 3" }));
+            beamlineSets.add(
+                    new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Fragment Separator", "Set 1" }));
+            beamlineSets.add(
+                    new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Fragment Separator", "Set 2" }));
+            beamlineSets.add(
+                    new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Fragment Separator", "Set 3" }));
             beamlineSets
-                    .add(new BeamlineSet(branch, baseLevel, new String[] { "Linac Segments", "Seg 2", "Correctors" }));
-            beamlineSets
-                    .add(new BeamlineSet(branch, baseLevel, new String[] { "Linac Segments", "Seg 3", "Correctors" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Folding Segments", "Seg 1" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Folding Segments", "Seg 2" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Production Target Systems", "Sys 1" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Production Target Systems", "Sys 2" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Production Target Systems", "Sys 3" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Fragment Separator", "Set 1" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Fragment Separator", "Set 2" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Fragment Separator", "Set 3" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Fast Beam Area", "All PVs" }));
-            beamlineSets.add(new BeamlineSet(branch, baseLevel, new String[] { "Reaccelerated Beam Area", "All PVs" }));
+                    .add(new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Fast Beam Area", "All PVs" }));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Reaccelerated Beam Area", "All PVs" }));
 
             // for (int i = 0; i < 100; i++) {
             // BeamlineSet set = new BeamlineSet(branch, isotope, new String[]{"Front End","Set" +i + " "
@@ -177,17 +189,14 @@ public class DemoDataProvider implements DataProvider {
         List<VType> values = new ArrayList<>();
         names.add("demoChannel_98");
         int v = (int) (Math.random() * AlarmSeverity.values().length);
-        values.add(ValueFactory.newVBoolean(true,
-                ValueFactory.newAlarm(AlarmSeverity.values()[v], "OK"),
-                ValueFactory.newTime(
-                        Timestamp.of(new Date(System.currentTimeMillis() - (long) (Math.random() * 10000))))));
+        values.add(ValueFactory.newVBoolean(true, ValueFactory.newAlarm(AlarmSeverity.values()[v], "OK"), ValueFactory
+                .newTime(Timestamp.of(new Date(System.currentTimeMillis() - (long) (Math.random() * 10000))))));
 
         names.add("demoChannel_99");
         v = (int) (Math.random() * AlarmSeverity.values().length);
         values.add(ValueFactory.newVEnum(1, Arrays.asList("Test", "Off", "On", "Active"),
-                ValueFactory.newAlarm(AlarmSeverity.values()[v], "OK"),
-                ValueFactory.newTime(
-                        Timestamp.of(new Date(System.currentTimeMillis() - (long) (Math.random() * 10000))))));
+                ValueFactory.newAlarm(AlarmSeverity.values()[v], "OK"), ValueFactory
+                        .newTime(Timestamp.of(new Date(System.currentTimeMillis() - (long) (Math.random() * 10000))))));
 
         for (int i = 100; i < 200; i++) {
             // names.add("PV"+i);

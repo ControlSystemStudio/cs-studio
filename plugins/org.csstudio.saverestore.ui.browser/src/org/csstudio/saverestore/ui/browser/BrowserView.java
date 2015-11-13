@@ -14,10 +14,9 @@ import org.csstudio.saverestore.Engine;
 import org.csstudio.saverestore.Snapshot;
 import org.csstudio.saverestore.ui.browser.logic.ActionManager;
 import org.csstudio.saverestore.ui.browser.logic.Selector;
+import org.csstudio.saverestore.ui.util.FXTaggingDialog;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
-import org.csstudio.saverestore.ui.util.TaggingDialog;
 import org.eclipse.fx.ui.workbench3.FXViewPart;
-import org.eclipse.jface.dialogs.IDialogConstants;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -44,6 +43,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.stage.Window;
 import javafx.util.Callback;
 
 /**
@@ -63,11 +63,9 @@ public class BrowserView extends FXViewPart {
 
         final BeamlineSet set;
         final String[] path;
-        final String name;
         BeamlineSetWrapper(BeamlineSet set, String name) {
             this.set = set;
             this.path = name != null ? name.split("\\/") : set.getPath();
-            this.name = set == null ? name : set.toString();
         }
 
         boolean isFolder() {
@@ -76,7 +74,7 @@ public class BrowserView extends FXViewPart {
 
         @Override
         public String toString() {
-            return name;
+            return path[path.length-1];
         }
 
     }
@@ -214,12 +212,13 @@ public class BrowserView extends FXViewPart {
         openButton.setTooltip(new Tooltip("Open selected Beamline Set in Snapshot Viewer"));
         openButton.disableProperty().bind(selector.selectedBeamlineSetProperty().isNull()
                 .or(beamlineSetsPane.expandedProperty().not()));
-        openButton.setOnAction((e) -> actionManager.openBeamlineSet(selector.selectedBeamlineSetProperty().get()));
+        openButton.setOnAction(e -> actionManager.openBeamlineSet(selector.selectedBeamlineSetProperty().get()));
         editButton.disableProperty().bind(selector.selectedBeamlineSetProperty().isNull()
                 .or(beamlineSetsPane.expandedProperty().not()));
-        editButton.setOnAction((e) -> actionManager.editBeamlineSet(selector.selectedBeamlineSetProperty().get()));
+        editButton.setOnAction(e -> actionManager.editBeamlineSet(selector.selectedBeamlineSetProperty().get()));
         newButton.disableProperty().bind(selector.selectedBaseLevelProperty().isNull()
                 .or(beamlineSetsPane.expandedProperty().not()));
+
         copyButton.disableProperty().bind(selector.selectedBaseLevelProperty().isNull()
                 .or(beamlineSetsPane.expandedProperty().not()));
 
@@ -258,7 +257,7 @@ public class BrowserView extends FXViewPart {
                 };
             }
         });
-        snapshotsList.setOnMouseClicked((e) -> {
+        snapshotsList.setOnMouseClicked(e -> {
            if (e.getClickCount() == 2) {
                Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
                if (snapshot != null) {
@@ -267,14 +266,13 @@ public class BrowserView extends FXViewPart {
            }
         });
 
-        snapshotsList.setOnDragDetected((e) -> {
+        snapshotsList.setOnDragDetected(e -> {
             Dragboard db = snapshotsList.startDragAndDrop(TransferMode.ANY);
             ClipboardContent cc = new ClipboardContent();
             Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
             snapshot.getBeamlineSet().updateBaseLevel();
             cc.put(SnapshotDataFormat.INSTANCE, snapshot);
             db.setContent(cc);
-
             e.consume();
         });
 
@@ -290,32 +288,22 @@ public class BrowserView extends FXViewPart {
         tagButton.setTooltip(new Tooltip("Tag selected snapshot"));
         tagButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty().isNull()
                 .or(snapshotsPane.expandedProperty().not()));
-        tagButton.setOnAction((e) -> {
-            Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
-            TaggingDialog dialog = new TaggingDialog(getSite().getShell());
-            if (dialog.open() == IDialogConstants.OK_ID) {
-                String tag = dialog.getValue();
-                String message = dialog.getMessage();
-                actionManager.tagSnapshot(snapshot,tag,message);
-            }
+        tagButton.setOnAction(e -> {
+            final Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
+            final FXTaggingDialog dialog = new FXTaggingDialog(getSite().getShell());
+            dialog.openAndWait().ifPresent(a -> actionManager.tagSnapshot(snapshot,a,dialog.getMessage()));
         });
         final Button openButton = new Button("Open");
         openButton.setTooltip(new Tooltip("Open selected snapshot in a new Snapshot Viewer"));
         openButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty().isNull()
                 .or(snapshotsPane.expandedProperty().not()));
-        openButton.setOnAction((e) -> {
-            Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
-            actionManager.openSnapshot(snapshot);
-        });
+        openButton.setOnAction(e -> actionManager.openSnapshot(snapshotsList.getSelectionModel().getSelectedItem()));
 
         final Button compareButton = new Button("Compare");
         compareButton.setTooltip(new Tooltip("Open selected snapshot the active Snapshot Viewer"));
         compareButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty().isNull()
                 .or(snapshotsPane.expandedProperty().not()));
-        compareButton.setOnAction((e) -> {
-            Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
-            actionManager.compareSnapshot(snapshot);
-        });
+        compareButton.setOnAction(e -> actionManager.compareSnapshot(snapshotsList.getSelectionModel().getSelectedItem()));
 
         setUpTitlePaneNode(titleText,true);
         setUpTitlePaneNode(tagButton,false);
@@ -459,5 +447,9 @@ public class BrowserView extends FXViewPart {
 
     @Override
     protected void setFxFocus() {
+    }
+
+    public Window getWindow() {
+        return scene.getWindow();
     }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <!--extension
+   <extension
          point="org.csstudio.saverestore.dataprovider">
       <dataprovider
             dataprovider="org.csstudio.saverestore.git.GitDataProvider"
@@ -9,7 +9,7 @@
             id="org.csstudio.saverestore.git.dataprovider"
             name="Git">
       </dataprovider>
-   </extension-->
+   </extension>
    <extension
          point="org.csstudio.saverestore.dataprovider">
       <dataprovider

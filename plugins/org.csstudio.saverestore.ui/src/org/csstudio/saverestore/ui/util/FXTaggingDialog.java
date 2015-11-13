@@ -1,21 +1,25 @@
 package org.csstudio.saverestore.ui.util;
 
+import java.util.Optional;
+
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+
+import javafx.scene.Scene;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 /**
  * An input dialog for soliciting an input from the user. This dialog offers a combo box and allows user to select one
@@ -24,51 +28,15 @@ import org.eclipse.swt.widgets.Text;
  * This dialog is a modified copy of the {@link InputDialog} and is intended for tagging the snapshots.
  * </p>
  */
-public class TaggingDialog extends Dialog {
+public class FXTaggingDialog extends Dialog {
 
-    /**
-     * The title of the dialog.
-     */
     private String title;
-
-    /**
-     * The message to display, or <code>null</code> if none.
-     */
     private String message;
-
-    /**
-     * The input value; the empty string by default.
-     */
     private String value = "";//$NON-NLS-1$
-
-    /**
-     * The input validator, or <code>null</code> if none.
-     */
     private IInputValidator validator;
-
-    /**
-     * Ok button widget.
-     */
-    private Button okButton;
-
-    /**
-     * Input text widget.
-     */
-    private Text tagName;
-
-    /**
-     * Input text widget.
-     */
-    private Text tagMessage;
-
-    /**
-     * Error message label widget.
-     */
+    private TextField tagName;
+    private TextArea tagMessage;
     private Text errorMessageText;
-
-    /**
-     * Error message string.
-     */
     private String errorMessage;
 
     /**
@@ -88,7 +56,7 @@ public class TaggingDialog extends Dialog {
      * @param validator
      *            an input validator, or <code>null</code> if none
      */
-    public TaggingDialog(Shell parentShell) {
+    public FXTaggingDialog(Shell parentShell) {
         super(parentShell);
         this.title= "Tag Snapshot";
         this.message = "Provide the name of the tag and an optional tag message for the selected snapshot:";
@@ -125,17 +93,15 @@ public class TaggingDialog extends Dialog {
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        // create OK and Cancel buttons by default
-        okButton = createButton(parent, IDialogConstants.OK_ID,
+        createButton(parent, IDialogConstants.OK_ID,
                 IDialogConstants.OK_LABEL, true);
         createButton(parent, IDialogConstants.CANCEL_ID,
                 IDialogConstants.CANCEL_LABEL, false);
-        //do this here because setting the text will set enablement on the ok
-        // button
-        tagName.setFocus();
+        tagName.requestFocus();
         if (value != null) {
             tagName.setText(value);
             tagName.selectAll();
+            validateInput();
         }
     }
 
@@ -152,32 +118,33 @@ public class TaggingDialog extends Dialog {
         label.setLayoutData(data);
         label.setFont(parent.getFont());
 
-        tagName = new Text(composite, SWT.BORDER | SWT.SINGLE);
-        tagName.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-        tagName.addModifyListener(new ModifyListener() {
+        new FXCanvasMaker(){
             @Override
-            public void modifyText(ModifyEvent e) {
-                validateInput();
+            protected Scene createFxScene() {
+                GridPane pane = new GridPane();
+                tagName = new TextField();
+                tagName.textProperty().addListener((a,o,n)->validateInput());
+                pane.add(tagName,0,0);
+                pane.add(new javafx.scene.control.Label("Tag message:"),0,1);
+                tagMessage = new TextArea();
+                tagMessage.setEditable(true);
+                GridPane.setFillHeight(tagMessage, true);
+                GridPane.setFillWidth(tagMessage, true);
+                GridPane.setFillHeight(tagName, true);
+                GridPane.setVgrow(tagMessage, Priority.ALWAYS);
+                GridPane.setHgrow(tagName, Priority.ALWAYS);
+                GridPane.setHgrow(tagMessage, Priority.ALWAYS);
+                pane.setVgap(3);
+                pane.add(tagMessage,0,2);
+                return new Scene(pane);
             }
-        });
-        label = new Label(composite, SWT.WRAP);
-        label.setText("Tag message:");
-        data = new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL
-                | GridData.VERTICAL_ALIGN_CENTER);
-        data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
-        label.setLayoutData(data);
-        label.setFont(parent.getFont());
-        tagMessage = new Text(composite, SWT.MULTI | SWT.BORDER | SWT.WRAP | SWT.V_SCROLL);
-        tagMessage.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
-                | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_VERTICAL));
+        }.createPartControl(composite);
 
         errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
         errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL
                 | GridData.HORIZONTAL_ALIGN_FILL));
         errorMessageText.setBackground(errorMessageText.getDisplay()
                 .getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-        // Set the error message text
-        // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=66292
         setErrorMessage(errorMessage);
 
         applyDialogFont(composite);
@@ -185,41 +152,13 @@ public class TaggingDialog extends Dialog {
     }
 
     /**
-     * Returns the error message label.
+     * Opens the dialog and returns the selected item if it exists.
      *
-     * @return the error message label
-     * @deprecated use setErrorMessage(String) instead
+     * @return the selected item
      */
-    @Deprecated
-    protected Label getErrorMessageLabel() {
-        return null;
-    }
-
-    /**
-     * Returns the ok button.
-     *
-     * @return the ok button
-     */
-    protected Button getOkButton() {
-        return okButton;
-    }
-
-    /**
-     * Returns the text area.
-     *
-     * @return the text area
-     */
-    protected Text getText() {
-        return tagName;
-    }
-
-    /**
-     * Returns the validator.
-     *
-     * @return the validator
-     */
-    protected IInputValidator getValidator() {
-        return validator;
+    public Optional<String> openAndWait() {
+        open();
+        return getValue();
     }
 
     /**
@@ -227,8 +166,8 @@ public class TaggingDialog extends Dialog {
      *
      * @return the input string
      */
-    public String getValue() {
-        return value;
+    public Optional<String> getValue() {
+        return Optional.ofNullable(value);
     }
 
     /**
@@ -286,17 +225,6 @@ public class TaggingDialog extends Dialog {
                 button.setEnabled(errorMessage == null);
             }
         }
-    }
-
-    protected void constrainShellSize() {
-        // limit the shell size to the display size
-        Shell shell = getShell();
-        Rectangle bounds = shell.getBounds();
-        Rectangle constrained = getConstrainedShellBounds(bounds);
-        if (!bounds.equals(constrained)) {
-            shell.setBounds(constrained);
-        }
-        shell.setSize(shell.getSize().x, shell.getSize().y + 50);
     }
 }
 

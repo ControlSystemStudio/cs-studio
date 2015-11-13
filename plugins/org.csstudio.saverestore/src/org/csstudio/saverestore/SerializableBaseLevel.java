@@ -24,8 +24,18 @@ public class SerializableBaseLevel implements BaseLevel {
      * @param level the source
      */
     public SerializableBaseLevel(BaseLevel level) {
-        this.storageName = level.getStorageName();
-        this.presentationName = level.getPresentationName();
+        this(level.getStorageName(), level.getPresentationName());
+    }
+
+    /**
+     * Constructs a new serializable base level.
+     *
+     * @param storagetname the storage name of the base level
+     * @param presentationName the presentation name of the base level
+     */
+    public SerializableBaseLevel(String storageName, String presentationName) {
+        this.storageName = storageName;
+        this.presentationName = presentationName;
     }
 
     /*
