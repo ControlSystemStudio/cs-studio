@@ -17,6 +17,9 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
 
     private static final String UNKNOWN = "Unknown";
 
+    public static final String TAG_NAME = "tagName";
+    public static final String TAG_MESSAGE = "tagMessage";
+
     private static final long serialVersionUID = 2377640937070572130L;
     private final BeamlineSet set;
     private final Date date;
@@ -64,8 +67,18 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
         this.comment = comment;
         this.owner = owner;
         this.parameters = new HashMap<>(parameters);
-        this.toString = this.date == null ? UNKNOWN
-                : (date.toString() + ":\t " + owner + "\n  " + comment.split("\\n")[0]);
+        if (this.date == null) {
+            toString = UNKNOWN;
+        } else {
+            StringBuilder sb = new StringBuilder(200).append(Utilities.timestampToBigEndianString(date,true))
+                    .append(":\t (").append(owner).append(")\n  ").append(comment.split("\\n")[0]);
+            String tagMessage = parameters.get(TAG_MESSAGE);
+            String tagName = parameters.get(TAG_NAME);
+            if (tagName != null) {
+                sb.append("\n  ").append("TAG: " + tagName).append(": ").append(tagMessage.split("\\n")[0]);
+            }
+            this.toString = sb.toString();
+        }
     }
 
     /**
@@ -117,6 +130,93 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
             return 1;
         }
         return 0;
+    }
+
+
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((comment == null) ? 0 : comment.hashCode());
+        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
+        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+        result = prime * result + ((set == null) ? 0 : set.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        Snapshot other = (Snapshot) obj;
+        if (comment == null) {
+            if (other.comment != null)
+                return false;
+        } else if (!comment.equals(other.comment))
+            return false;
+        if (date == null) {
+            if (other.date != null)
+                return false;
+        } else if (!date.equals(other.date))
+            return false;
+        if (owner == null) {
+            if (other.owner != null)
+                return false;
+        } else if (!owner.equals(other.owner))
+            return false;
+        if (parameters == null) {
+            if (other.parameters != null)
+                return false;
+        } else if (!parameters.equals(other.parameters))
+            return false;
+        if (set == null) {
+            if (other.set != null)
+                return false;
+        } else if (!set.equals(other.set))
+            return false;
+        return true;
+    }
+
+    /**
+     * Same as {@link #equals(Object)}, except that parameters are not compared.
+     *
+     * @param obj the object to compare to
+     * @return true if identical or false otherwise
+     */
+    public boolean almostEquals(Snapshot obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        if (comment == null) {
+            if (obj.comment != null)
+                return false;
+        } else if (!comment.equals(obj.comment))
+            return false;
+        if (date == null) {
+            if (obj.date != null)
+                return false;
+        } else if (!date.equals(obj.date))
+            return false;
+        if (owner == null) {
+            if (obj.owner != null)
+                return false;
+        } else if (!owner.equals(obj.owner))
+            return false;
+        if (set == null) {
+            if (obj.set != null)
+                return false;
+        } else if (!set.equals(obj.set))
+            return false;
+        return true;
     }
 
     /*

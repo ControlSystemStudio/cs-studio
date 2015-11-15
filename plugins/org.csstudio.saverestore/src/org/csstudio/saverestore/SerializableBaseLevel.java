@@ -11,7 +11,7 @@ import org.csstudio.saverestore.BaseLevel;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SerializableBaseLevel implements BaseLevel {
+public class SerializableBaseLevel extends BaseLevel {
 
     private static final long serialVersionUID = 7396901039726486878L;
 

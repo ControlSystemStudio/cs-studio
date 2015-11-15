@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Level;
 
+import javax.security.auth.Subject;
+
 import org.csstudio.saverestore.BaseLevel;
 import org.csstudio.saverestore.BeamlineSet;
 import org.csstudio.saverestore.BeamlineSetData;
@@ -30,6 +32,8 @@ import org.csstudio.saverestore.SerializableBaseLevel;
 import org.csstudio.saverestore.Snapshot;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.VSnapshot;
+import org.csstudio.saverestore.git.ui.UsernameAndPasswordDialog;
+import org.csstudio.security.SecuritySupport;
 import org.diirt.util.array.ArrayBoolean;
 import org.diirt.util.array.ArrayByte;
 import org.diirt.util.array.ArrayDouble;
@@ -55,7 +59,9 @@ import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CreateBranchCommand.SetupUpstreamMode;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.LogCommand;
+import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -68,6 +74,8 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.transport.FetchResult;
+import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.TagOpt;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
@@ -75,6 +83,7 @@ import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
 import org.eclipse.jgit.treewalk.filter.PathSuffixFilter;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * <code>GitResourceManager<code> is a GIT implementation of the <code>ResourceManager</code>
@@ -83,6 +92,19 @@ import org.eclipse.jgit.treewalk.filter.PathSuffixFilter;
  * @author <a href="mailto:miha.novak@cosylab.com">Miha Novak</a>
  */
 public class GitResourceManager {
+
+    public static enum ChangeType {
+        NONE, SAVE, PULL
+    }
+
+    public static class Result<T> {
+        final T data;
+        final ChangeType change;
+        Result(T data, ChangeType change) {
+            this.data = data;
+            this.change = change;
+        }
+    }
 
     private static class DescriptionDateData<T> {
         final List<T> data;
@@ -115,8 +137,6 @@ public class GitResourceManager {
     private static final int SNP_ENTRY_LENGTH = 500;
     private static final String GIT_PATH_DELIMITER = "/";
     private static final String PARAM_GIT_REVISION = "gitRevision";
-    private static final String PARAM_TAG_NAME = "tagName";
-    private static final String PARAM_TAG_MESSAGE = "tagMessage";
     private static final String PARAM_TAG_CREATOR = "tagCreator";
 
 
@@ -124,7 +144,7 @@ public class GitResourceManager {
     private Repository repository;
     private File repositoryPath;
     private boolean automatic = true;
-    private CredentialsProvider credentialsProvider = new UsernamePasswordCredentialsProvider("jbobnar", "Pasulj12!".toCharArray());
+    private boolean localOnly = false;
 
     public static void main(String[] args) throws IllegalStateException, GitAPIException, IOException, ParseException {
         URI rem = URI.create("https://github.com/jbobnar/ssrdemo.git");
@@ -151,6 +171,9 @@ public class GitResourceManager {
 //        rm.saveBeamlineSet(bb, meta);
     }
 
+    public GitResourceManager() {
+    }
+
     public GitResourceManager(URI remoteRepo, File destinationDirectory) throws GitAPIException {
         initialise(remoteRepo, destinationDirectory);
     }
@@ -162,28 +185,57 @@ public class GitResourceManager {
      * @param automatic true if automatic synchronisation should be enabled
      */
     public void setAutomaticSynchronisation(boolean automatic) {
+        if (localOnly && automatic) {
+            return;
+        }
         this.automatic = automatic;
     }
 
-    private void initialise(URI remoteRepository, File destinationDirectory)
+    public synchronized void initialise(URI remoteRepository, File destinationDirectory)
             throws GitAPIException {
-        if (destinationDirectory.exists()) {
-            try(Git git = Git.init().setDirectory(destinationDirectory).call()) {
+        repositoryPath = destinationDirectory;
+        if (repositoryPath.exists()) {
+            try(Git git = Git.init().setDirectory(repositoryPath).call()) {
                 this.git = git;
                 this.repository = git.getRepository();
-                git.pull().call();
+                try {
+                    Credentials credentials = getCredentials(Optional.empty());
+                    if (credentials != null) {
+                        pull(credentials);
+                    }
+                } catch (GitAPIException e) {
+                    Engine.LOGGER.log(Level.WARNING, "Git repository " + remoteRepository
+                            + " is not accessible.", e);
+                    localOnly = true;
+                    setAutomaticSynchronisation(false);
+                }
             }
         } else {
-            CloneCommand cloneCommand = Git.cloneRepository();
-            cloneCommand.setURI(remoteRepository.toString());
-            cloneCommand.setDirectory(destinationDirectory);
+            Credentials credentials = getCredentials(Optional.empty());
+            if (credentials == null) {
+                return;
+            }
+            CloneCommand cloneCommand = Git.cloneRepository().setURI(remoteRepository.toString())
+                    .setDirectory(repositoryPath);
 
-            try (Git git = cloneCommand.call()) {
-                this.git = git;
-                this.repository = git.getRepository();
+            while (true) {
+                cloneCommand.setCredentialsProvider(toCredentialsProvider(credentials));
+                try (Git git = cloneCommand.call()) {
+                    this.git = git;
+                    this.repository = git.getRepository();
+                    break;
+                } catch (TransportException e) {
+                    if (isNotAuthorized(e)) {
+                        credentials = getCredentials(Optional.ofNullable(credentials));
+                        if (credentials == null) {
+                            break;
+                        }
+                    } else {
+                        throw e;
+                    }
+                }
             }
         }
-        repositoryPath = destinationDirectory;
     }
 
     /**
@@ -194,7 +246,7 @@ public class GitResourceManager {
      * @throws GitAPIException if there was an exception during the checkout
      * @throws IOException if the current branch cannot be determined
      */
-    public void setBranch(String branch) throws GitAPIException, IOException {
+    public synchronized void setBranch(String branch) throws GitAPIException, IOException {
         if (!branch.equals(repository.getBranch())) {
             git.checkout().setName(branch).setUpstreamMode(SetupUpstreamMode.TRACK).call();
         }
@@ -206,7 +258,7 @@ public class GitResourceManager {
      * @return the list of branches
      * @throws GitAPIException if the branches could not be read
      */
-    public List<String> getBranches() throws GitAPIException {
+    public synchronized List<String> getBranches() throws GitAPIException {
         List<Ref> branchesRef = git.branchList().call();
         List<String> branches = new ArrayList<>(branchesRef.size());
         branchesRef.forEach(e -> branches.add(e.getName()));
@@ -216,11 +268,18 @@ public class GitResourceManager {
     /**
      * Pull all changes from remote repository and push all local changes to remote.
      *
+     * @param cp credentials provider, if not provided it will be retrieved via a UI
+     * @return true is changes in the local repository were made
      * @throws GitAPIException if there is an error during push or pull
      */
-    public void synchronise() throws GitAPIException {
-        pull();
-        push();
+    public synchronized boolean synchronise(Optional<Credentials> cp) throws GitAPIException {
+        Credentials c = cp.isPresent() ? cp.get() : getCredentials(Optional.empty());
+        if (c != null) {
+            Object[] obj = pull(c);
+            push((Credentials)obj[0]);
+            return (Boolean)obj[1];
+        }
+        return false;
     }
 
     /**
@@ -228,7 +287,7 @@ public class GitResourceManager {
      *
      * @return the list of base levels
      */
-    public List<BaseLevel> getBaseLevels() {
+    public synchronized List<BaseLevel> getBaseLevels() {
         File[] files = repositoryPath.listFiles();
         List<BaseLevel> baseLevels = new ArrayList<>();
         for (File f : files) {
@@ -247,7 +306,7 @@ public class GitResourceManager {
      * @return the list of beamline sets
      * @throws IOException if the current branch could not be retrieved
      */
-    public List<BeamlineSet> getBeamlineSets(Optional<BaseLevel> baseLevel) throws IOException {
+    public synchronized List<BeamlineSet> getBeamlineSets(Optional<BaseLevel> baseLevel) throws IOException {
         List<BeamlineSet> descriptorList = new ArrayList<>();
         File[] files = repositoryPath.listFiles();
         String base = baseLevel.isPresent() ? baseLevel.get().getStorageName() : null;
@@ -276,7 +335,7 @@ public class GitResourceManager {
         return descriptorList;
     }
 
-    private void gatherBeamlineSets(File file, List<File> sets) {
+    private synchronized void gatherBeamlineSets(File file, List<File> sets) {
         for (File f : file.listFiles()) {
             if (f.isDirectory()) {
                 gatherBeamlineSets(f, sets);
@@ -294,7 +353,7 @@ public class GitResourceManager {
      * @deprecated direct file system scanning is much faster
      */
     @Deprecated
-    public List<BeamlineSet> getBeamlineSets2(Optional<BaseLevel> baseLevel) throws IOException {
+    public synchronized List<BeamlineSet> getBeamlineSets2(Optional<BaseLevel> baseLevel) throws IOException {
         List<BeamlineSet> descriptorList = new ArrayList<>();
         RevCommit revCommit = getHeadCommit();
         try (TreeWalk treeWalk = new TreeWalk(repository.newObjectReader())) {
@@ -323,7 +382,7 @@ public class GitResourceManager {
      * @return the content of the beamline set file
      * @throws IOException if there was an error reading the contentof the file
      */
-    public BeamlineSetData loadBeamlineSetData(BeamlineSet descriptor, Optional<String> revision)
+    public synchronized BeamlineSetData loadBeamlineSetData(BeamlineSet descriptor, Optional<String> revision)
             throws IOException {
         String path = convertPathToString(descriptor, FileType.BEAMLINE_SET);
         try {
@@ -343,7 +402,7 @@ public class GitResourceManager {
      * @throws IOException if the commits could not be read
      * @throws GitAPIException if the commits could not be read
      */
-    public List<Snapshot> getSnapshots(BeamlineSet beamlineSet) throws IOException, GitAPIException {
+    public synchronized List<Snapshot> getSnapshots(BeamlineSet beamlineSet) throws IOException, GitAPIException {
         List<Snapshot> snapshots = new ArrayList<>();
 
         String path = convertPathToString(beamlineSet, FileType.SNAPSHOT);
@@ -359,11 +418,11 @@ public class GitResourceManager {
             parameters.put(PARAM_GIT_REVISION, revision);
             RevTag tag = tags.get(revision);
             if (tag != null) {
-                parameters.put(PARAM_TAG_NAME, tag.getTagName());
-                parameters.put(PARAM_TAG_MESSAGE, tag.getFullMessage());
+                parameters.put(Snapshot.TAG_NAME, tag.getTagName());
+                parameters.put(Snapshot.TAG_MESSAGE, tag.getFullMessage());
                 parameters.put(PARAM_TAG_CREATOR, tag.getTaggerIdent().getName());
             }
-            Snapshot snapshot = new Snapshot(beamlineSet,meta.getTimestamp(),meta.getComment(),meta.getCreator());
+            Snapshot snapshot = new Snapshot(beamlineSet,meta.timestamp,meta.comment,meta.creator,parameters);
             snapshots.add(snapshot);
         }
         return snapshots;
@@ -377,44 +436,73 @@ public class GitResourceManager {
      * @throws ParseException if
      * @throws IOException
      */
-    public VSnapshot loadSnapshotData(Snapshot snapshot) throws ParseException, IOException {
+    public synchronized VSnapshot loadSnapshotData(Snapshot snapshot) throws ParseException, IOException {
         String path = convertPathToString(snapshot.getBeamlineSet(),FileType.SNAPSHOT);
-        return loadFile(Optional.empty(), path, FileType.SNAPSHOT, VSnapshot.class,snapshot);
+        return loadFile(Optional.ofNullable(snapshot.getParameters().get(PARAM_GIT_REVISION)), path,
+                FileType.SNAPSHOT, VSnapshot.class, snapshot);
     }
 
     /**
      * Save the beamline set and commit it.
      *
      * @param data the contents of the beamline set file
-     * @param meta the meta information
+     * @param comment the commit comment
+     * @return the saved beamline set and change type describing what kind of updates were made
+     *          to the repository
      * @throws IOException if writing to the file failed
      * @throws GitAPIException if commiting the file failed
      */
-    public void saveBeamlineSet(BeamlineSetData data, MetaInfo meta) throws IOException, GitAPIException {
+    public synchronized Result<BeamlineSetData> saveBeamlineSet(BeamlineSetData data, String comment)
+            throws IOException, GitAPIException {
         String relativePath = convertPathToString(data.getDescriptor(),FileType.BEAMLINE_SET);
         writeToFile(relativePath, FileType.BEAMLINE_SET, data);
-        commit(relativePath,meta);
-        if (automatic) {
-            synchronise();
+        Credentials cp = getCredentials(Optional.empty());
+        if (cp != null) {
+            ChangeType change = ChangeType.SAVE;
+            if (automatic) {
+                Object[] obj = pull(cp);
+                cp = (Credentials)obj[0];
+                change = (Boolean)obj[1] ? ChangeType.PULL : change;
+            }
+            commit(relativePath,new MetaInfo(comment, cp.getUsername(), null, null));
+            if (automatic) {
+                change = synchronise(Optional.of(cp)) ? ChangeType.PULL : change;
+            }
+            return new Result<>(data,change);
         }
+        return new Result<>(null, ChangeType.NONE);
     }
 
     /**
      * Save the snapshot data and commit the file as a new revision.
      *
      * @param snapshot the snapshot data
-     * @param meta the meta information
+     * @param comment the comment for the commit
+     * @return saved snapshot and change type describing what kind of updates were made to the repository
      * @throws IOException if writing the file failed
      * @throws GitAPIException if committing the file failed
      */
-    public void saveSnapshot(VSnapshot snapshot, MetaInfo meta) throws IOException, GitAPIException {
+    public synchronized Result<VSnapshot> saveSnapshot(VSnapshot snapshot, String comment) throws IOException, GitAPIException {
         Snapshot descriptor = snapshot.getSnapshot().get();
         String relativePath = convertPathToString(descriptor.getBeamlineSet(),FileType.SNAPSHOT);
         writeToFile(relativePath, FileType.SNAPSHOT, snapshot);
-        commit(relativePath,meta);
-        if (automatic) {
-            synchronise();
+        Credentials cp = getCredentials(Optional.empty());
+        if (cp != null) {
+            ChangeType change = ChangeType.SAVE;
+            if (automatic) {
+                Object[] obj = pull(cp);
+                cp = (Credentials)obj[0];
+                change = (Boolean)obj[1] ? ChangeType.PULL : change;
+            }
+            MetaInfo info = commit(relativePath,new MetaInfo(comment, cp.getUsername(), null, null));
+            if (automatic) {
+                change = synchronise(Optional.of(cp)) ? ChangeType.PULL : change;
+            }
+            Snapshot snp = new Snapshot(descriptor.getBeamlineSet(),info.timestamp,info.comment,info.creator);
+            VSnapshot vsnp = VSnapshot.of(snp, snapshot.getNames(), snapshot.getValues(), snapshot.getTimestamp());
+            return new Result<>(vsnp,change);
         }
+        return new Result<>(null,ChangeType.NONE);
     }
 
     /**
@@ -423,10 +511,56 @@ public class GitResourceManager {
      * @param branch the branch to create
      * @throws GitAPIException in case of an error
      */
-    public void createBranch(String branch) throws GitAPIException {
+    public synchronized void createBranch(String branch) throws GitAPIException {
         git.branchCreate().setName(branch).call();
     }
 
+    /**
+     * Save the snapshot data and commit the file as a new revision.
+     *
+     * @param snapshot the snapshot (should contain the git revision number)
+     * @param name the name of the tag
+     * @param message the message for the tag
+     * @return tagged snapshot and change type describing what kind of updates were made to the repository
+     * @throws IOException if writing the file failed
+     * @throws GitAPIException if committing the file failed
+     */
+    public synchronized Result<Snapshot> tagSnapshot(Snapshot snapshot, String name, String message) throws IOException, GitAPIException {
+        Credentials cp = getCredentials(Optional.empty());
+        if (cp != null) {
+            ChangeType change = ChangeType.SAVE;
+            if (automatic) {
+                Object[] obj = pull(cp);
+                cp = (Credentials)obj[0];
+                change = (Boolean)obj[1] ? ChangeType.PULL : change;
+                if (cp == null) {
+                    return new Result<Snapshot>(null, ChangeType.NONE);
+                }
+            }
+            String revision = snapshot.getParameters().get(PARAM_GIT_REVISION);
+            RevCommit commit = getCommitFromRevision(revision);
+            RevTag existingTag = loadTagsForRevisions(Arrays.asList(revision)).get(revision);
+            if (existingTag != null) {
+                git.tagDelete().setTags(existingTag.getTagName()).call();
+                RefSpec refSpec = new RefSpec().setSource(null).setDestination("refs/tags/"+existingTag.getTagName());
+                git.push().setCredentialsProvider(toCredentialsProvider(cp)).setRefSpecs(refSpec).call();
+            }
+            PersonIdent tagger = new PersonIdent(cp.getUsername(), "UNKNOWN");
+            git.tag().setName(name).setMessage(message).setTagger(tagger).setObjectId(commit).call();
+            if (automatic) {
+                change = synchronise(Optional.of(cp)) ? ChangeType.PULL : change;
+            }
+            Map<String,String> parameters = new HashMap<>();
+            parameters.put(PARAM_GIT_REVISION, revision);
+            parameters.put(Snapshot.TAG_NAME, name);
+            parameters.put(Snapshot.TAG_MESSAGE, message);
+            parameters.put(PARAM_TAG_CREATOR, cp.getUsername());
+            Snapshot snp = new Snapshot(snapshot.getBeamlineSet(),
+                    snapshot.getDate(), snapshot.getComment(), snapshot.getOwner(),parameters);
+            return new Result<>(snp,change);
+        }
+        return new Result<>(null,ChangeType.NONE);
+    }
 
     // --------------------------------------------------------------------------------------------------
     //
@@ -455,30 +589,97 @@ public class GitResourceManager {
      *
      * @param relativePath the path to the file relative to the repository root
      * @param metaInfo meta information
+     *
+     * @return the actual meta information read back from the system
      * @throws GitAPIException if there is an error during commit
      */
-    private void commit(String relativePath, MetaInfo metaInfo) throws GitAPIException {
+    private MetaInfo commit(String relativePath, MetaInfo metaInfo) throws GitAPIException {
         git.add().addFilepattern(relativePath).call();
-        git.commit().setCommitter(metaInfo.getCreator(), metaInfo.getEmail()).setMessage(metaInfo.getComment()).call();
+        RevCommit commit = git.commit().setCommitter(metaInfo.creator, metaInfo.eMail)
+                .setMessage(metaInfo.comment).call();
+        return getMetaInfoFromCommit(commit);
     }
 
     /**
      * Push the local commits to remote repository.
      *
+     * @param cred credentials provider to use for pushing
+     * @return credentials that worked
      * @throws GitAPIException if there was an error during push
      */
-    public void push() throws GitAPIException {
-        git.push().setCredentialsProvider(credentialsProvider).setPushTags().call();
+    private synchronized Credentials push(Credentials cred) throws GitAPIException {
+        if (localOnly) {
+            return null;
+        }
+
+        while(true) {
+            try {
+                git.push().setCredentialsProvider(toCredentialsProvider(cred)).call();
+                break;
+            } catch (TransportException e) {
+                if (isNothingToPush(e)) {
+                    //if there are no changes the message is Nothing to push
+                    break;
+                } else if (isNotAuthorized(e)) {
+                    //if the authorization failed the message is not authorized, in that case repeat
+                    cred = getCredentials(Optional.ofNullable(cred));
+                    if (cred == null) {
+                        return null;
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
+        while(true) {
+            try {
+                git.push().setCredentialsProvider(toCredentialsProvider(cred)).setPushTags().call();
+                break;
+            } catch (TransportException e) {
+                if (isNothingToPush(e)) {
+                    break;
+                } else if (isNotAuthorized(e)) {
+                    cred = getCredentials(Optional.ofNullable(cred));
+                    if (cred == null) {
+                        return null;
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
+        return cred;
     }
 
     /**
      * Pull the changes from remote repository.
      *
+     * @param cred the credentials to use when fetching and pull from remote repository
+     * @return an array of size 2: credentials that worked or null if cancelled and a Boolean describing
+     *          if there were any changes pulled from the remote repo
      * @throws GitAPIException if there was an error during pull
      */
-    public void pull() throws GitAPIException {
-        git.fetch().setCredentialsProvider(credentialsProvider).setTagOpt(TagOpt.FETCH_TAGS).call();
-        git.pull().setCredentialsProvider(credentialsProvider).setStrategy(MergeStrategy.THEIRS).call();
+    private synchronized Object[] pull(Credentials cred) throws GitAPIException {
+        if (localOnly) {
+            return new Object[]{null,false};
+        }
+        while(true) {
+            try {
+                FetchResult fetch = git.fetch().setCredentialsProvider(toCredentialsProvider(cred)).setTagOpt(TagOpt.FETCH_TAGS).call();
+                PullResult pull = git.pull().setCredentialsProvider(toCredentialsProvider(cred)).setStrategy(MergeStrategy.THEIRS).call();
+                boolean changed = !fetch.getTrackingRefUpdates().isEmpty() || !pull.getFetchResult().getTrackingRefUpdates().isEmpty();
+                return new Object[]{cred,changed};
+            } catch (TransportException e) {
+                if (isNotAuthorized(e)) {
+                    cred = getCredentials(Optional.ofNullable(cred));
+                    if (cred == null) {
+                        return new Object[]{null,false};
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
     }
 
     /**
@@ -561,7 +762,7 @@ public class GitResourceManager {
         ObjectReader objectReader = repository.newObjectReader();
         try (TreeWalk treeWalk = new TreeWalk(objectReader)) {
             CanonicalTreeParser treeParser = new CanonicalTreeParser();
-            treeParser.reset(objectReader, getHeadCommit().getTree());
+            treeParser.reset(objectReader, revCommit.getTree());
             int treeIndex = treeWalk.addTree(treeParser);
             treeWalk.setFilter(PathFilter.create(path));
             treeWalk.setRecursive(true);
@@ -574,7 +775,7 @@ public class GitResourceManager {
                     try (InputStream stream = objectLoader.openStream()) {
                         DescriptionDateData<?> ddp = readFromBeamlineSet(stream);
                         BeamlineSetData bsd = new BeamlineSetData((BeamlineSet)descriptor,ddp.names,ddp.description,
-                                meta.getComment(),meta.getTimestamp());
+                                meta.comment,meta.timestamp);
                         return type.cast(bsd);
                     }
                 } else if (fileType == FileType.SNAPSHOT) {
@@ -665,7 +866,7 @@ public class GitResourceManager {
             } else if (header == null && line.charAt(0) == '#') {
                 int idx = line.indexOf(DATE_TAG);
                 if (idx > -1) {
-                    date = line.substring(idx,idx + DATE_TAG.length()).trim();
+                    date = line.substring(idx + DATE_TAG.length()).trim();
                 }
             } else if (header == null) {
                 header = line.split("\\,");
@@ -858,10 +1059,19 @@ public class GitResourceManager {
         String[] path = descriptor.getPath();
         descriptor.getBaseLevel().ifPresent(c -> sb.append(c.getStorageName()).append(GIT_PATH_DELIMITER));
         sb.append(fileType.directory).append(GIT_PATH_DELIMITER);
-        for (int i = 0; i < path.length; i++) {
+        for (int i = 0; i < path.length-1; i++) {
             sb.append(path[i]).append(GIT_PATH_DELIMITER);
         }
-        return sb.substring(0, sb.length()-1);
+        if (path.length > 0) {
+            String last = path[path.length-1];
+            if (fileType == FileType.BEAMLINE_SET) {
+                last = last.replace(FileType.SNAPSHOT.suffix, FileType.BEAMLINE_SET.suffix);
+            } else {
+                last = last.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
+            }
+            sb.append(last);
+        }
+        return sb.substring(0, sb.length());
     }
 
     /**
@@ -998,5 +1208,41 @@ public class GitResourceManager {
             }
         }
         throw new IllegalArgumentException("Unknown data type " + type.getClass() + ".");
+    }
+
+    private Credentials getCredentials(Optional<Credentials> previous) {
+        final Credentials[] provider = new Credentials[1];
+        Subject subj = SecuritySupport.getSubject();
+        final String currentUser = previous.isPresent() ? previous.get().getUsername() :
+                subj == null ? null : SecuritySupport.getSubjectName(subj);
+        org.eclipse.swt.widgets.Display.getDefault().syncExec(() -> {
+            String username = Activator.getInstance().getUsername(Optional.ofNullable(currentUser));
+            char[] password = Activator.getInstance().getPassword(Optional.ofNullable(currentUser),username);
+            if (username == null || password == null) {
+                UsernameAndPasswordDialog dialog = new UsernameAndPasswordDialog(
+                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), username);
+                dialog.openAndWat().ifPresent(e -> {
+                    provider[0] = e;
+                    if (e.isRemember()) {
+                        Activator.getInstance().storeCredentials(Optional.ofNullable(currentUser),e.getUsername(), e.getPassword());
+                    }
+                });
+            } else {
+                provider[0] = new Credentials(username, password, false);
+            }
+        });
+        return provider[0];
+    }
+
+    private static CredentialsProvider toCredentialsProvider(Credentials cred) {
+        return cred == null ? null : new UsernamePasswordCredentialsProvider(cred.getUsername(), cred.getPassword());
+    }
+
+    private static boolean isNotAuthorized(TransportException e) {
+        return e.getMessage().toLowerCase().contains("not authorized");
+    }
+
+    private static boolean isNothingToPush(TransportException e) {
+        return e.getMessage().toLowerCase().contains("nothing to push");
     }
 }

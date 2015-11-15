@@ -27,7 +27,7 @@ import org.diirt.vtype.VType;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public enum ValueType {
+enum ValueType {
     DOUBLE_ARRAY("double_array", VDoubleArray.class),
     FLOAT_ARRAY("float_array", VFloatArray.class),
     LONG_ARRAY("long_array", VLongArray.class),

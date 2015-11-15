@@ -5,7 +5,7 @@ package org.csstudio.saverestore.git;
  *
  * @author <a href="mailto:miha.novak@cosylab.com">Miha Novak</a>
  */
-public enum FileType {
+enum FileType {
 
     BEAMLINE_SET(".bms","BeamlineSets"),
     SNAPSHOT(".snp","Snapshots");

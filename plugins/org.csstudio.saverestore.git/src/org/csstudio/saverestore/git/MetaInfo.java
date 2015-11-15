@@ -8,13 +8,12 @@ import java.util.Date;
  *
  * @author <a href="mailto:miha.novak@cosylab.com">Miha Novak</a>
  */
-public class MetaInfo {
+class MetaInfo {
 
-    private String comment;
-    private String creator;
-    private Date timestamp;
-    private String eMail;
-
+    final String comment;
+    final String creator;
+    final Date timestamp;
+    final String eMail;
 
     /**
      * Constructs <code>GitMetaInfo</code> class.
@@ -24,27 +23,10 @@ public class MetaInfo {
      * @param email the email of the person that made the commit
      * @param timestamp timestamp of the commit
      */
-    public MetaInfo(String comment, String creator, String email, Date timestamp) {
+    MetaInfo(String comment, String creator, String email, Date timestamp) {
         this.comment = comment;
         this.creator = creator;
         this.timestamp = timestamp;
-        this.eMail = email;
+        this.eMail = email == null ? "unknown" : email;
     }
-
-    public String getEmail() {
-        return eMail;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public Date getTimestamp() {
-        return timestamp;
-    }
-
 }

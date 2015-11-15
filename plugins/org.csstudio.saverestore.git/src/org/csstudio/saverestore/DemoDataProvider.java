@@ -28,7 +28,8 @@ public class DemoDataProvider implements DataProvider {
             "Pr_142_2p", "Rb_85", "Tm_166_2p", "Ta_179_5p", "Ra_223_1p", "Mt_265_1n", "Fm_257_2p", "Hg_199_2p",
             "Si_27_4p", "Ne_17_1n", "Tc_101_4p", "Cf_249_2p" };
 
-    static class DemoBaseLevel implements BaseLevel {
+    static class DemoBaseLevel extends BaseLevel {
+        private static final long serialVersionUID = 5118314106136756595L;
         final String name;
 
         DemoBaseLevel(String name) {
@@ -161,26 +162,28 @@ public class DemoDataProvider implements DataProvider {
     }
 
     @Override
-    public void createNewBranch(String originalBranch, String newBranchName) {
+    public String createNewBranch(String originalBranch, String newBranchName) {
         System.out.println("Requested to create a new branch: " + newBranchName);
-
+        return newBranchName;
     }
 
     @Override
-    public void saveBeamlineSet(BeamlineSetData set, String comment) throws InvalidCommentException {
+    public BeamlineSetData saveBeamlineSet(BeamlineSetData set, String comment)  {
         System.out.println("Requested to save the beamline set: " + comment);
-
+        return set;
     }
 
     @Override
-    public void saveSnapshot(VSnapshot data, String comment) throws InvalidCommentException {
+    public VSnapshot saveSnapshot(VSnapshot data, String comment)  {
         System.out.println("Successfully stored");
+        return data;
 
     }
 
     @Override
-    public void tagSnapshot(Snapshot snapshot, String tagName, String tagMessage) {
+    public Snapshot tagSnapshot(Snapshot snapshot, String tagName, String tagMessage) {
         System.out.println("Snapshot tagged");
+        return snapshot;
     }
 
     @Override
@@ -223,9 +226,10 @@ public class DemoDataProvider implements DataProvider {
     }
 
     @Override
-    public void synchronise() {
+    public boolean synchronise() {
         pull();
         push();
+        return true;
     }
 
     private void pull() {
@@ -236,8 +240,15 @@ public class DemoDataProvider implements DataProvider {
         // TODO push all changes to the current branch
     }
 
-    private void assureOnBranch(String branch) {
-        // TODO make sure that selected branch is checkedout
+    @Override
+    public void addCompletionNotifier(CompletionNotifier notifier) {
+        // TODO Auto-generated method stub
+
     }
 
+    @Override
+    public void removeCompletionNotifier(CompletionNotifier notifier) {
+        // TODO Auto-generated method stub
+
+    }
 }

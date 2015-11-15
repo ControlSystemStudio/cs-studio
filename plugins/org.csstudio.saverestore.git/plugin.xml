@@ -18,5 +18,14 @@
             name="Demo">
       </dataprovider>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.saverestore.preferencespage"
+            class="org.csstudio.saverestore.git.ui.PreferencesPage"
+            id="org.csstudio.saverestore.git.preferencespage"
+            name="Git">
+      </page>
+   </extension>
 
 </plugin>

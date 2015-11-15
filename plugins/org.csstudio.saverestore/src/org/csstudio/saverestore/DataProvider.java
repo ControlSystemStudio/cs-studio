@@ -11,6 +11,21 @@ package org.csstudio.saverestore;
 public interface DataProvider {
 
     /**
+     * Adds a completion notifier which is notified every time when a specific action is completed. The notifiers
+     * can be used to refresh the data in the UI, whenever a specific action is triggered by another UI part.
+     *
+     * @param notifier the notifier
+     */
+    void addCompletionNotifier(CompletionNotifier notifier);
+
+    /**
+     * Remove the completion notifier.
+     *
+     * @param notifier the notifier to remove
+     */
+    void removeCompletionNotifier(CompletionNotifier notifier);
+
+    /**
      * Returns the list of all available branches. If {@link #areBranchesSupported()} returns false, this method does
      * not need to be implemented.
      *
@@ -93,9 +108,11 @@ public interface DataProvider {
     /**
      * Synchronise the local repository with the remote.
      *
+     * @return true if any changes were pulled from the remote repository or false otherwise
+     *
      * @throws DataProviderException if there is an error during synchronisation
      */
-    void synchronise() throws DataProviderException;
+    boolean synchronise() throws DataProviderException;
 
     /**
      * Create a new branch with the given name. The content of the new branch is identical to the original one. If the
@@ -104,9 +121,11 @@ public interface DataProvider {
      * @param originalBranch the name of the branch used as a starting point
      * @param newBranchName the name of the branch to create
      *
+     * @return the name of the new branch
+     *
      * @throws DataProviderException if there was an error during branch creation
      */
-    void createNewBranch(String originalBranch, String newBranchName) throws DataProviderException;
+    String createNewBranch(String originalBranch, String newBranchName) throws DataProviderException;
 
     /**
      * Save a new revision of the beamline set. The specifics (e.g. location) of the beamline set are specified by
@@ -118,9 +137,12 @@ public interface DataProvider {
      * @param set the data and set definition to save
      * @param comment the commit comment to use for this revision
      *
-     * @throws InvalidCommentException if no comment or an invalid comment is provided
+     * @return the saved object, which has identical data as the <code>set</code> parameter (can be a different
+     *          object) and in addition contains also the comment and other information
+     *
+     * @throws DataProviderException if there was an error during saving
      */
-    void saveBeamlineSet(BeamlineSetData set, String comment) throws InvalidCommentException, DataProviderException;
+    BeamlineSetData saveBeamlineSet(BeamlineSetData set, String comment) throws DataProviderException;
 
     /**
      * Save a new version of snapshot. The specifics of the snapshot are specified by <code>snapshot</code>
@@ -130,9 +152,11 @@ public interface DataProvider {
      * @param data the data to store
      * @param comment the revision comment
      *
-     * @throws InvalidCommentException if no comment or an invalid comment is provided
+     * @return the stored data, which is identical to the <code>data</code> parameter, and in addition it contains
+     *          the comment, date etc.
+     * @throws DataProviderException if there was an error during saving
      */
-    void saveSnapshot(VSnapshot data, String comment) throws InvalidCommentException, DataProviderException;
+    VSnapshot saveSnapshot(VSnapshot data, String comment) throws DataProviderException;
 
     /**
      * Tag the given snapshot with a specific tag name and message.
@@ -140,6 +164,10 @@ public interface DataProvider {
      * @param snapshot the snapshot to tag
      * @param tagName the name of the tag
      * @param tagMessage the tag message
+     *
+     * @return the tagged snapshot
+     *
+     * @throws DataProviderException if there was an error during tagging
      */
-    void tagSnapshot(Snapshot snapshot, String tagName, String tagMessage);
+    Snapshot tagSnapshot(Snapshot snapshot, String tagName, String tagMessage) throws DataProviderException;
 }

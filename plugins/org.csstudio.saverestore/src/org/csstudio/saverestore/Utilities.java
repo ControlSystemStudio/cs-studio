@@ -63,6 +63,7 @@ public class Utilities {
     private static final NumberFormat COMPARE_FORMAT = NumberFormats.format(2);
     private static final DateFormat LE_TIMESTAMP_FORMATTER = new SimpleDateFormat("HH:mm:ss.SSS MMM dd");
     private static final DateFormat BE_TIMESTAMP_FORMATTER = new SimpleDateFormat("MMM dd HH:mm:ss");
+    private static final DateFormat SBE_TIMESTAMP_FORMATTER = new SimpleDateFormat("yyyy MMM dd HH:mm:ss");
 
     static {
         FORMAT.setNumberFormat(NumberFormats.toStringFormat());
@@ -423,11 +424,11 @@ public class Utilities {
         return LE_TIMESTAMP_FORMATTER.format(t.toDate());
     }
 
-    public static String timestampToBigEndianString(Date t) {
+    public static String timestampToBigEndianString(Date t, boolean includeYear) {
         if (t == null) {
             return null;
         }
-        return BE_TIMESTAMP_FORMATTER.format(t);
+        return includeYear ? SBE_TIMESTAMP_FORMATTER.format(t) : BE_TIMESTAMP_FORMATTER.format(t);
     }
 
 }

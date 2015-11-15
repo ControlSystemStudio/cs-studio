@@ -2,5 +2,14 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="dataprovider" name="DataProvider" schema="schema/dataprovider.exsd"/>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.display"
+            class="org.csstudio.saverestore.PreferencesPage"
+            id="org.csstudio.saverestore.preferencespage"
+            name="Save &amp; Restore">
+      </page>
+   </extension>
 
 </plugin>

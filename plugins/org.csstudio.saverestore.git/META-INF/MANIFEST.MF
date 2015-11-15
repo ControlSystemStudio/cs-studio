@@ -5,10 +5,25 @@ Bundle-SymbolicName: org.csstudio.saverestore.git;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: FRIB
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: javafx.beans.property,
+ javafx.embed.swt,
+ javafx.scene,
+ javafx.scene.canvas,
+ javafx.scene.control,
+ javafx.scene.layout,
+ javafx.scene.text,
+ org.eclipse.fx.ui.workbench3
 Require-Bundle: org.eclipse.jgit;bundle-version="4.0.0",
- org.csstudio.saverestore.ui.browser;bundle-version="1.0.0",
  org.diirt.vtype;bundle-version="3.0.1",
  org.diirt.util;bundle-version="3.0.1",
  org.csstudio.saverestore;bundle-version="1.0.0",
- org.slf4j.api;bundle-version="1.7.2",
- com.jcraft.jsch;bundle-version="0.1.53"
+ org.eclipse.ui;bundle-version="3.107.0",
+ org.eclipse.core.runtime;bundle-version="3.11.1",
+ org.eclipse.core.resources;bundle-version="3.10.1",
+ org.csstudio.ui.util;bundle-version="4.0.2",
+ org.csstudio.saverestore.ui;bundle-version="1.0.0",
+ org.csstudio.security;bundle-version="1.1.1",
+ org.eclipse.equinox.security;bundle-version="1.2.100"
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.saverestore.git.Activator
+Export-Package: org.csstudio.saverestore.git.ui

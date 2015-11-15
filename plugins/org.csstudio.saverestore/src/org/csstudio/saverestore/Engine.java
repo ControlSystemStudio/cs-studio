@@ -6,17 +6,18 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.widgets.Display;
 
 /**
  *
@@ -33,8 +34,10 @@ public class Engine {
     public static final Logger LOGGER = Logger.getLogger(Engine.class.getName());
     /** The name of the selectedDataProvider property */
     public static final String SELECTED_DATA_PROVIDER = "selectedDataProvider";
+    /** The name of the is engine busy property */
+    public static final String BUSY = "busy";
 
-    private ThreadPoolExecutor executor;
+    private boolean busy = false;
     private List<DataProviderWrapper> dataProviders;
     private DataProviderWrapper selectedDataProvider;
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
@@ -49,26 +52,6 @@ public class Engine {
     }
 
     private Engine() {
-    }
-
-    private ExecutorService getExecutor() {
-        if (executor == null) {
-            executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.SECONDS, new LinkedBlockingQueue<>()) {
-                @Override
-                protected void afterExecute(Runnable r, Throwable t) {
-                    if (t != null) {
-                        Engine.LOGGER.log(Level.SEVERE, "Error during data retrieval for save and restore.", t);
-                    }
-                }
-            };
-            executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
-                @Override
-                public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-                    Engine.LOGGER.log(Level.WARNING, "Execution of save and restore data loading task rejected.");
-                }
-            });
-        }
-        return executor;
     }
 
     /**
@@ -130,11 +113,45 @@ public class Engine {
     }
 
     /**
+     * @return true if the engine is currently busy or false otherwise
+     */
+    public boolean isBusy() {
+        return busy;
+    }
+
+    /**
+     * Sets the busy flag for the engine.
+     *
+     * @param busy true if the engine is busy or false otherwise
+     */
+    private void setBusy(boolean busy) {
+        if (this.busy == busy) {
+            return;
+        }
+        this.busy = busy;
+        support.firePropertyChange(BUSY, !busy, busy);
+    }
+
+    /**
      * Execute the runnable task on the common save and restore executor.
      *
      * @param task the task to execute
      */
-    public void execute(Runnable task) {
-        getExecutor().execute(task);
+    public void execute(final String taskName, final Runnable task) {
+        Job job = new Job("Save & Restore: " + taskName) {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+                monitor.beginTask(taskName, 1);
+                try {
+                    setBusy(true);
+                    BusyIndicator.showWhile(Display.getCurrent(), task);
+                    return Status.OK_STATUS;
+                } finally {
+                    monitor.done();
+                    setBusy(false);
+                }
+            }
+        };
+        job.schedule();
     }
 }

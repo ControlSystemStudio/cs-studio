@@ -1,6 +1,7 @@
 package org.csstudio.saverestore;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -133,4 +134,40 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
         }
         return path.length < otherPath.length ? -1 : 1;
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((baseLevel == null) ? 0 : baseLevel.hashCode());
+        result = prime * result + ((branch == null) ? 0 : branch.hashCode());
+        result = prime * result + Arrays.hashCode(path);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        BeamlineSet other = (BeamlineSet) obj;
+        if (baseLevel == null) {
+            if (other.baseLevel != null)
+                return false;
+        } else if (!baseLevel.equals(other.baseLevel))
+            return false;
+        if (branch == null) {
+            if (other.branch != null)
+                return false;
+        } else if (!branch.equals(other.branch))
+            return false;
+        if (!Arrays.equals(path, other.path))
+            return false;
+        return true;
+    }
+
+
 }

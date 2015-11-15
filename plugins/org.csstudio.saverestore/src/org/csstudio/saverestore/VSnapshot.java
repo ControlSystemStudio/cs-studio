@@ -173,14 +173,58 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     @Override
     public String toString() {
         if (isSaved()) {
-            return Utilities.timestampToBigEndianString(snapshot.get().getDate());
+            return Utilities.timestampToBigEndianString(snapshot.get().getDate(),true);
         } else {
             if (snapshotTime == null) {
                 return beamlineSet.getName();
             }
-            return Utilities.timestampToBigEndianString(snapshotTime.toDate());
+            return Utilities.timestampToBigEndianString(snapshotTime.toDate(),true);
         }
-
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((beamlineSet == null) ? 0 : beamlineSet.hashCode());
+        result = prime * result + ((names == null) ? 0 : names.hashCode());
+        result = prime * result + ((snapshotTime == null) ? 0 : snapshotTime.hashCode());
+        result = prime * result + ((values == null) ? 0 : values.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        VSnapshot other = (VSnapshot) obj;
+        if (beamlineSet == null) {
+            if (other.beamlineSet != null)
+                return false;
+        } else if (!beamlineSet.equals(other.beamlineSet))
+            return false;
+        if (names == null) {
+            if (other.names != null)
+                return false;
+        } else if (!names.equals(other.names))
+            return false;
+        if (snapshotTime == null) {
+            if (other.snapshotTime != null)
+                return false;
+        } else if (!snapshotTime.equals(other.snapshotTime))
+            return false;
+        if (values == null) {
+            if (other.values != null)
+                return false;
+        } else if (!values.equals(other.values))
+            return false;
+        return true;
+    }
+
+
 
 }
