@@ -308,7 +308,7 @@
                         <executions>
                             <execution>
                                 <id>upload-repo</id>
-                                <phase>install</phase>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>upload</goal>
                                 </goals>
@@ -326,4 +326,3 @@
         </profile>
     </profiles>
 </project>
->>>>>>> a281aaa #1406 Creating a temp help plugin for diirt
