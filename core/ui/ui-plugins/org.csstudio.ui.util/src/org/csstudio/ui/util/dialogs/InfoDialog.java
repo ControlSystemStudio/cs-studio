@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.visualparts;
+package org.csstudio.ui.util.dialogs;
 
 import org.csstudio.ui.util.DialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 
 /** Information message dialog subclass.
- * Creates new shell, then a dialog with this shell as parent, because on Linux the MessageDialog (e.g. Show Macros) is
+ * Creates new shell, then a dialog with this shell as parent, because on Linux the MessageDialog is
  * opened in the background when running a fullscreen OPI.
  *
  * @author Boris Versic
