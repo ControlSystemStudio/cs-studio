@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.msghist.rdb;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -79,8 +80,10 @@ public class MessageRDB
         final ArrayList<Message> messages = new ArrayList<Message>();
         // Create new select statement
         final String sql_txt = sql.createSelect(rdb_util, filters);
+        final Connection connection = rdb_util.getConnection();
+        connection.setReadOnly(true);
         final PreparedStatement statement =
-            rdb_util.getConnection().prepareStatement(sql_txt);
+                connection.prepareStatement(sql_txt);
         try
         {
             int parm = 1;
