@@ -24,7 +24,6 @@
     <!-- <module>org.csstudio.archive.reader.archiverecord</module> Was used by DESY, not up to date -->
     <module>org.csstudio.archive.reader.channelarchiver</module>
     <module>org.csstudio.archive.reader.ea4</module>
-    <module>org.csstudio.archive.reader.pbraw</module>
     <module>org.csstudio.archive.reader.rdb</module>
     <module>org.csstudio.archive.reader.rdb.test</module>
     <module>org.csstudio.archive.reader.test</module>
