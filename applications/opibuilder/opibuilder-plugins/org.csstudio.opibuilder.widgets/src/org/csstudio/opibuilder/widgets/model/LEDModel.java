@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.NameDefinedCategory;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.swt.widgets.figures.LEDFigure;
@@ -24,18 +25,6 @@ import org.eclipse.swt.graphics.Color;
  */
 public class LEDModel extends AbstractBoolWidgetModel {
 
-
-    /** Generic category class. This could be used generally if the equivalent does not already exist. */
-    public class GenericCategory implements WidgetPropertyCategory {
-        public String label;
-        public GenericCategory(String label) {
-            this.label = label;
-        }
-        @Override
-        public String toString() {
-            return label;
-        }
-    }
 
     /** The ID of the effect 3D property. */
     public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
@@ -96,7 +85,7 @@ public class LEDModel extends AbstractBoolWidgetModel {
                 "State Count", WidgetPropertyCategory.Behavior, 2, 2, LEDFigure.MAX_NSTATES));
         setPropertyVisibleAndSavable(PROP_NSTATES, true, false);
 
-        WidgetPropertyCategory category = new GenericCategory("State Fallback");
+        WidgetPropertyCategory category = new NameDefinedCategory("State Fallback");
 
         addProperty(new StringProperty(PROP_STATE_FALLBACK_LABEL,
                 "Label", category, LEDFigure.DEFAULT_STATE_FALLBACK_LABAL));
@@ -108,7 +97,7 @@ public class LEDModel extends AbstractBoolWidgetModel {
 
         for(int state=0; state<LEDFigure.MAX_NSTATES; state++) {
 
-            category = new GenericCategory(String.format("State %02d", state+1));
+            category = new NameDefinedCategory(String.format("State %02d", state+1));
 
             addProperty(new StringProperty(String.format(PROP_STATE_LABEL, state),
                     "Label", category, LEDFigure.DEFAULT_STATE_LABELS[state]));
