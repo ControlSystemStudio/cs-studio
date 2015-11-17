@@ -21,6 +21,8 @@ import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that disables a PV or other Component and all of its children from the configuration.
@@ -67,12 +69,21 @@ public class DisableComponentAction extends Action
         for (AlarmTreeItem item : items)
             addPVs(pvs, item);
         if (pvs.size() > 0)
-            if (!MessageDialog.openConfirm(shell, getText(),
+        {
+            // Create a new parent shell for the dialog. This ensures that the dialog will be shown on top of a fullscreen OPI on Linux.
+            final Shell parentShell = new Shell(Display.getCurrent(), SWT.NO_TRIM);
+            parentShell.setSize(20, 20);
+        	
+            boolean shouldRun = MessageDialog.openConfirm(parentShell, getText(),
                 NLS.bind(doEnable()
                     ? Messages.EnableAlarmsFmt
                     : Messages.DisableAlarmsFmt,
-                    pvs.size())))
+                    pvs.size()));
+            parentShell.dispose();
+            
+			if (!shouldRun)
                 return;
+        }
         for (AlarmTreePV pv : pvs)
         {
             try
