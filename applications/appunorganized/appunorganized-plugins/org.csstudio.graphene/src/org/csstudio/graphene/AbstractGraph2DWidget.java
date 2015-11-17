@@ -3,7 +3,7 @@
  */
 package org.csstudio.graphene;
 
-import static org.epics.util.time.TimeDuration.ofHertz;
+import static org.diirt.util.time.TimeDuration.ofHertz;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -18,6 +18,16 @@ import org.csstudio.ui.util.widgets.StartEndRangeWidget.ORIENTATION;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
 import org.csstudio.utility.pvmanager.widgets.VImageDisplay;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.graphene.Graph2DExpression;
+import org.diirt.datasource.graphene.Graph2DResult;
+import org.diirt.datasource.graphene.GraphDataRange;
+import org.diirt.graphene.AxisRange;
+import org.diirt.graphene.AxisRanges;
+import org.diirt.graphene.Graph2DRendererUpdate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -29,16 +39,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.AxisRange;
-import org.epics.graphene.AxisRanges;
-import org.epics.graphene.Graph2DRendererUpdate;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.graphene.Graph2DExpression;
-import org.epics.pvmanager.graphene.Graph2DResult;
-import org.epics.pvmanager.graphene.GraphDataRange;
 
 /**
  * @author shroffk
@@ -88,33 +88,33 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
         fd_yRangeControl.right = new FormAttachment(0, 13);
         yRangeControl.setLayoutData(fd_yRangeControl);
         yRangeControl.setOrientation(ORIENTATION.VERTICAL);
-        yRangeControl.addRangeListener(new RangeListener() {
+    yRangeControl.addRangeListener(new RangeListener() {
 
-            @Override
-            public void rangeChanged() {
-                if (graph != null && isResizableAxis() && !yRangeEditing) {
-                    if (yRangeControl.isRangeSet()) {
-                        if (yRangeControl.getSelectedMin() == yRangeControl
-                                .getMin()
-                                && yRangeControl.getSelectedMax() == yRangeControl
-                                        .getMax()) {
-                            yRangeModified = false;
-                            graph.update(graph.newUpdate().yAxisRange(getYAxisRange()));
-                        } else {
-                            yRangeModified = true;
-                            double invert = yRangeControl.getMin() + yRangeControl.getMax();
-                            graph.update(graph.newUpdate().yAxisRange(
-                                    AxisRanges.fixed(
-                                            invert - yRangeControl.getSelectedMax(),
-                                            invert - yRangeControl.getSelectedMin())));
-                        }
-                    } else {
-                        graph.update(graph.newUpdate().yAxisRange(
-                                getYAxisRange()));
-                    }
-                }
+        @Override
+        public void rangeChanged() {
+        if (graph != null && isResizableAxis() && !yRangeEditing) {
+            if (yRangeControl.isRangeSet()) {
+            if (yRangeControl.getSelectedMin() == yRangeControl
+                .getMin()
+                && yRangeControl.getSelectedMax() == yRangeControl
+                    .getMax()) {
+                yRangeModified = false;
+                graph.update(graph.newUpdate().yAxisRange(getYAxisRange()));
+            } else {
+                yRangeModified = true;
+                double invert = yRangeControl.getMin() + yRangeControl.getMax();
+                graph.update(graph.newUpdate().yAxisRange(
+                    AxisRanges.fixed(
+                        invert - yRangeControl.getSelectedMax(),
+                        invert - yRangeControl.getSelectedMin())));
             }
-        });
+            } else {
+            graph.update(graph.newUpdate().yAxisRange(
+                getYAxisRange()));
+            }
+        }
+        }
+    });
         yRangeControl.setVisible(resizableAxis);
 
         imageDisplay = new VImageDisplay(this);
@@ -155,21 +155,21 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
             @Override
             public void rangeChanged() {
                 if (graph != null && isResizableAxis() && !xRangeEditing) {
-                    if (xRangeControl.isRangeSet()) {
-                        if(xRangeControl.getSelectedMin() == xRangeControl.getMin() && xRangeControl.getSelectedMax() == xRangeControl.getMax()){
-                            xRangeModified = false;
-                            graph.update(graph.newUpdate().xAxisRange(getXAxisRange()));
-                        }else{
-                            xRangeModified = true;
-                            graph.update(graph.newUpdate().xAxisRange(
-                                    AxisRanges.fixed(
-                                            xRangeControl.getSelectedMin(),
-                                            xRangeControl.getSelectedMax())));
-                        }
-                    } else {
-                        graph.update(graph.newUpdate().xAxisRange(getXAxisRange()));
-                    }
-                }
+            if (xRangeControl.isRangeSet()) {
+            if(xRangeControl.getSelectedMin() == xRangeControl.getMin() && xRangeControl.getSelectedMax() == xRangeControl.getMax()){
+                xRangeModified = false;
+                graph.update(graph.newUpdate().xAxisRange(getXAxisRange()));
+            }else{
+                xRangeModified = true;
+                graph.update(graph.newUpdate().xAxisRange(
+                    AxisRanges.fixed(
+                        xRangeControl.getSelectedMin(),
+                        xRangeControl.getSelectedMax())));
+            }
+            } else {
+            graph.update(graph.newUpdate().xAxisRange(getXAxisRange()));
+            }
+        }
             }
         });
         xRangeControl.setVisible(resizableAxis);
@@ -250,8 +250,8 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
             imageDisplay.setVImage(null);
             setLastError(null);
             graph = null;
-            xRangeControl.resetRange();
-            yRangeControl.resetRange();
+        xRangeControl.resetRange();
+        yRangeControl.resetRange();
             processInit();
         }
 
@@ -274,17 +274,17 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
                     public void pvChanged(PVReaderEvent<Graph2DResult> event) {
                         setLastError(pv.lastException());
                         if (pv.getValue() != null) {
-                            if (!xRangeModified) {
-                                xRangeEditing = true;
-                                setRange(xRangeControl, pv.getValue().getxRange());
-                                xRangeEditing = false;
-                            }
-                            if (!yRangeModified) {
-                                yRangeEditing = true;
-                                setRange(yRangeControl, pv.getValue().getyRange());
-                                yRangeEditing = false;
-                            }
-                              imageDisplay.setVImage(pv.getValue().getImage());
+                if (!xRangeModified) {
+                xRangeEditing = true;
+                setRange(xRangeControl, pv.getValue().getxRange());
+                xRangeEditing = false;
+                }
+                if (!yRangeModified) {
+                yRangeEditing = true;
+                setRange(yRangeControl, pv.getValue().getyRange());
+                yRangeEditing = false;
+                }
+                            imageDisplay.setVImage(pv.getValue().getImage());
                         } else {
                             imageDisplay.setVImage(null);
                         }
@@ -305,15 +305,13 @@ public abstract class AbstractGraph2DWidget<U extends Graph2DRendererUpdate<U>, 
     protected abstract T createGraph();
 
     private void setRange(StartEndRangeWidget control, GraphDataRange plotDataRange) {
-        if (isResizableAxis() && plotDataRange.getPlotRange() != null && control != null) {
-            control.setRange(plotDataRange.getPlotRange().getMinimum()
-                    .doubleValue(), plotDataRange.getPlotRange().getMaximum()
-                    .doubleValue());
-            control.setSelectedRange(plotDataRange.getPlotRange().getMinimum()
-                    .doubleValue(), plotDataRange.getPlotRange().getMaximum()
-                    .doubleValue());
-        }
-     }
+    if (isResizableAxis() && plotDataRange.getPlotRange() != null && control != null) {
+        control.setRange(plotDataRange.getPlotRange().getMinimum(),
+            plotDataRange.getPlotRange().getMaximum());
+        control.setSelectedRange(plotDataRange.getPlotRange().getMinimum(),
+            plotDataRange.getPlotRange().getMaximum());
+    }
+    }
 
     private String dataFormula;
     private AxisRange xAxisRange = AxisRanges.display();

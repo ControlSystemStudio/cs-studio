@@ -27,11 +27,10 @@ import org.eclipse.ui.part.EditorPart;
  * @author Xihui Chen
  *
  */
+//DO NOT REMOVE. RAP NEEDS THIS!
 public class OPIRunner extends EditorPart implements IOPIRuntime{
 
-
     public static final String ID = "org.csstudio.opibuilder.OPIRunner"; //$NON-NLS-1$
-
 
     private OPIRuntimeDelegate opiRuntimeDelegate;
 

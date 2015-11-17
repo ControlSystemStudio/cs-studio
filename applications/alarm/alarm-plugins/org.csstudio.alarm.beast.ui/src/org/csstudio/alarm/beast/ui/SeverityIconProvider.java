@@ -52,7 +52,7 @@ public class SeverityIconProvider
         final  BufferedImage awtImage = new BufferedImage(ICON_SIZE, ICON_SIZE,BufferedImage.TYPE_INT_ARGB);
         Graphics g = awtImage.getGraphics();
         ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        
+
         // Left rectangle for 'latched', right for 'current' indicator
         g.setColor(new Color(GRAY, GRAY, GRAY));
         g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
@@ -117,10 +117,10 @@ public class SeverityIconProvider
                 g.setColor(c_col);
                 g.setClip(ICON_SIZE/2, 0, ICON_SIZE/2, ICON_SIZE);
                 g.fillRoundRect(0, 0, ICON_SIZE, ICON_SIZE, ARC_SIZE, ARC_SIZE);
-                   
+
                 // Icon without indicator for any disabled alarms
-                icons[c][s][0] = makeSWTImage(display, awtImage);    
-                
+                icons[c][s][0] = makeSWTImage(display, awtImage);
+
                 // Add grey area to indicate disabled alarms
                 g.setClip(ICON_SIZE/2, 0, ICON_SIZE/2, ICON_SIZE/2);
                 g.setColor(new Color(GRAY, GRAY, GRAY));

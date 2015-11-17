@@ -67,6 +67,13 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
 
     private static final double ZOOM_FACTOR = 1.5;
 
+    /** When using 'rubberband' to zoom in, need to select a region
+     *  at least this wide resp. high.
+     *  Smaller regions are likely the result of an accidental
+     *  click-with-jerk, which would result into a huge zoom step.
+     */
+    private static final int ZOOM_PIXEL_THRESHOLD = 20;
+
     /** Support for un-do and re-do */
     final private UndoableActionManager undo = new UndoableActionManager();
 
@@ -397,7 +404,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
     public Image getImage()
     {
         //TODO Buffer plot_image as in SWT version
-        
+
         return new Image(display, area.width, area.height);
     }
 
@@ -607,6 +614,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         final ScreenTransform<XTYPE> x_transform = x_axis.getScreenTransform();
         for (YAxisImpl<XTYPE> y_axis : y_axes)
             y_axis.paint(gc, media, label_font, scale_font, plot_bounds);
+
+        gc.setClipping(plot_bounds);
         plot_area.paint(gc, media);
 
         for (YAxisImpl<XTYPE> y_axis : y_axes)
@@ -1009,7 +1018,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         }
         else if (mouse_mode == MouseMode.ZOOM_IN_X)
         {   // X axis increases going _right_ just like mouse 'x' coordinate
-            if (start.x != current.x)
+            if (Math.abs(start.x - current.x) > ZOOM_PIXEL_THRESHOLD)
             {
                 int low = Math.min(start.x, current.x);
                 int high = Math.max(start.x, current.x);
@@ -1021,7 +1030,7 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         }
         else if (mouse_mode == MouseMode.ZOOM_IN_Y)
         {   // Mouse 'y' increases going _down_ the screen
-            if (start.y != current.y)
+            if (Math.abs(start.y - current.y) > ZOOM_PIXEL_THRESHOLD)
             {
                 final int high = Math.min(start.y, current.y);
                 final int low = Math.max(start.y, current.y);
@@ -1035,7 +1044,8 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         }
         else if (mouse_mode == MouseMode.ZOOM_IN_PLOT)
         {
-            if (start.x != current.x  ||  start.y != current.y)
+            if (Math.abs(start.x - current.x) > ZOOM_PIXEL_THRESHOLD  ||
+                Math.abs(start.y - current.y) > ZOOM_PIXEL_THRESHOLD)
             {   // X axis increases going _right_ just like mouse 'x' coordinate
                 int low = Math.min(start.x, current.x);
                 int high = Math.max(start.x, current.x);

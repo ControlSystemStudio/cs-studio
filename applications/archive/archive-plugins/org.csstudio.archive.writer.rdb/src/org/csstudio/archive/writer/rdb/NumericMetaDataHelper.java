@@ -14,7 +14,7 @@ import java.sql.Types;
 import java.text.NumberFormat;
 
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.epics.vtype.Display;
+import org.diirt.vtype.Display;
 
 /** Helper for handling the numeric meta data table.
  *  @author Kay Kasemir

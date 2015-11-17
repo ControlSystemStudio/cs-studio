@@ -2,8 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"><head><!-- InstanceBegin template="/Templates/CSS Help.dwt" codeOutsideHTMLIsLocked="false" --><title>Core Changelog</title>
 
 
-	
-	<link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css" /></head><body>
+
+    <link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css" /></head><body>
 <h1>Core Changelog</h1>
 <h2>Version 4.2.0 - 2015-06-30</h2>
 <ul>
@@ -22,17 +22,18 @@
 </ul>
 <h2>Version 3.2.10 - 2013-09-28</h2>
 <ul>
-  <li>Auto-Complete improvements:</li>
+  <li>Auto-Complete improvements:
   <ul>
     <li>Proposal management and interface refactoring.</li>
     <li>Added helper management (tooltip).</li>
     <li>Implemented common Data Source prefix parser + provider.</li>
     <li>Implemented common PV parser (handles Channel Access Data Source).</li>
-    <li>Implemented formula functions, sim, sys and loc parsers + providers in dedicated plugins.</li>
+    <li>Implemented formula functions, sim, sys and loc parsers + providers in dedicated plugins.
     <ul>
       <li>New <i>Formula</i> auto-completion type added to BOY and Probe interfaced with PV Manager.</li>
       <li>Sim, Sys and Loc parsers/providers are available for both <i>Formula</i> and already existing <i>PV</i> fields.</li>
     </ul>
+    </li>
     <li>Handles <i>Default Process Variable Type</i> defined in <i>CSS Core -&gt; Process Variables</i>.</li>
     <li>Handles completion on cursor position.</li>
     <li>Improved management of pop-up size to better fit the displayed proposals.</li>
@@ -40,19 +41,19 @@
     <li>Added preference page for history size configuration + clear button in <i>CSS Core -&gt; Auto-Complete</i>.</li>
     <li>Added 1 line proposals description displayed close to the selected item.</li>
   </ul>
-  <li>pvmanager:</li>
+  </li>
+  <li>pvmanager:
   <ul>
     <li>formula: basic numeric math function return highest alarm and latest time of arguments; also handle null better</li>
     <li>exec: first draft for services that execute commands; if output is a CSV, it's parsed to a VTable</li>
     <li>vtype: add alarm and time compare, toString and other utility functions</li>
     <li>formula: significant refactoring in test code</li>
-  </ul>
+  </ul></li>
 </ul>
 <h2>Version 3.2.9 - 2013-08-30</h2>
 
 <ul>
   <li>pvmanager:<br />
-  </li>
   <ul>
     <li>vtype/file: adding temporary support for images in file; review VImage conversion routines</li>
     <li>jdbc: adding support for Timestamp/numeric/boolean/bit null,
@@ -61,11 +62,11 @@ temporary support for images in file; review VImage conversion routines</li>
     <li>jca: using the not sharing of channels to prevent concurrency issues</li>
     <li>jdbc: ability to create database services from XML descriptions</li>
   </ul>
+  </li>
 </ul>
 <h2>Version 3.2.8 - 2013-07-26</h2>
 <ul>
   <li>pvmanager:<br />
-  </li>
   <ul>
     <li>vtype: VBoolean support</li>
     <li>vtype: added color definitions for Alarm</li>
@@ -78,7 +79,7 @@ temporary support for images in file; review VImage conversion routines</li>
     <li>formula: support for stateful and dynamic functions<br />
     </li>
   </ul>
-
+  </li>
 </ul>
 
 <h2>Version 3.2.6 - 2013-05-31</h2>

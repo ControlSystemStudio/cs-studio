@@ -32,7 +32,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** Base for Eclipse Job for exporting data from Model to file
  *  @author Kay Kasemir
@@ -138,8 +138,6 @@ abstract public class ExportJob extends Job
             performExport(monitor, out);
             // ask thread to exit
             cancel_poll.exit = true;
-            for (ArchiveReader reader : archive_readers)
-                reader.close();
             if (out != null)
                 out.close();
             // Wait for poller to quit
@@ -149,6 +147,8 @@ abstract public class ExportJob extends Job
         {
             error_handler.handleExportError(ex);
         }
+        for (ArchiveReader reader : archive_readers)
+            reader.close();
         monitor.done();
         return Status.OK_STATUS;
     }

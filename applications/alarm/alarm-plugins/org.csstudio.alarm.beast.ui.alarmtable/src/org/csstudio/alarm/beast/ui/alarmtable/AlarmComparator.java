@@ -12,7 +12,7 @@ import java.util.Comparator;
 import org.csstudio.alarm.beast.AnnunciationFormatter;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.csstudio.alarm.beast.client.GDCDataStructure;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Comparator (= table sorter) that compares one column of an alarm.
  *  @author Kay Kasemir
@@ -99,9 +99,9 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
                 protected int doCompare(final AlarmTreePV pv1, final AlarmTreePV pv2)
                 {
                     final String desc1 = AnnunciationFormatter.format(pv1.getDescription(),
-                            pv1.getSeverity().getDisplayName(), pv1.getValue());
+                            pv1.getSeverity().getDisplayName(), pv1.getValue(), true);
                     final String desc2 = AnnunciationFormatter.format(pv2.getDescription(),
-                            pv2.getSeverity().getDisplayName(), pv2.getValue());
+                            pv2.getSeverity().getDisplayName(), pv2.getValue(), true);
                     final int cmp = desc1.compareTo(desc2);
                     return cmp != 0  ?  cmp  :  super.doCompare(pv1, pv2);
                 }
@@ -120,37 +120,45 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
                 }
             };
         case VALUE:
-            return new AlarmComparator(up) 
+            return new AlarmComparator(up)
             {
                 @Override
                 protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
                 {
-                    final int cmp = pv1.getValue().compareTo(pv2.getValue());
-                    if (cmp != 0)
-                        return cmp;
+                    if (pv1.getValue() != null && pv2.getValue() != null)
+                    {
+                        final int cmp = pv1.getValue().compareTo(pv2.getValue());
+                        if (cmp != 0)
+                            return cmp;
+                    }
+                    else if ((pv1.getValue() != null && pv2.getValue() == null)
+                            || (pv1.getValue() == null && pv2.getValue() != null))
+                    {
+                        return pv1.getValue() == null ? 1 : -1;
+                    }
                     return super.doCompare(pv1, pv2);
                 }
             };
         case ACTION:
-            return new AlarmComparator(up) 
+            return new AlarmComparator(up)
             {
                 @Override
                 protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
                 {
                     final int cmp = compareGuidance(pv1, pv2, false);
-                    if (cmp != 0) 
+                    if (cmp != 0)
                         return cmp;
                     return super.doCompare(pv1, pv2);
                 }
             };
         case ID:
-            return new AlarmComparator(up) 
+            return new AlarmComparator(up)
             {
                 @Override
                 protected int doCompare(AlarmTreePV pv1, AlarmTreePV pv2)
                 {
                     final int cmp = compareGuidance(pv1, pv2, true);
-                    if (cmp != 0) 
+                    if (cmp != 0)
                         return cmp;
                     return super.doCompare(pv1, pv2);
                 }
@@ -160,22 +168,22 @@ public class AlarmComparator implements Comparator<AlarmTreePV>
             return new AlarmComparator(up);
         }
     }
-    
-    private static int compareGuidance(AlarmTreePV pv1, AlarmTreePV pv2, boolean title) 
+
+    private static int compareGuidance(AlarmTreePV pv1, AlarmTreePV pv2, boolean title)
     {
         GDCDataStructure[] g1 = pv1.getGuidance();
         GDCDataStructure[] g2 = pv2.getGuidance();
         if (g1.length != 0 && g2.length != 0)
-        {   
+        {
             int cmp = 0;
-            if (title) 
+            if (title)
                 cmp = g1[0].getTitle().toLowerCase().compareTo(g2[0].getTitle().toLowerCase());
-            else 
+            else
                 cmp = g1[0].getDetails().toLowerCase().compareTo(g2[0].getDetails().toLowerCase());
-            
-            if (cmp != 0) 
+
+            if (cmp != 0)
                 return cmp;
-        } 
+        }
         else if (g1.length == 0 && g2.length != 0)
             return 1;
         else if (g1.length != 0 && g2.length == 0)

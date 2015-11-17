@@ -34,7 +34,7 @@ import org.w3c.dom.svg.SVGDocument;
 
 /**
  * Manages display of {@link SVGDocument} using {@link SVGHandler}.
- * 
+ *
  * @author Fred Arnaud (Sopra Steria Group) - ITER
  */
 public class SVGSymbolImage extends AbstractSymbolImage {
@@ -307,7 +307,7 @@ public class SVGSymbolImage extends AbstractSymbolImage {
         SAXSVGDocumentFactory factory = new SAXSVGDocumentFactory(parser);
         try {
             IPath workSpacePath = ResourceUtil.workspacePathToSysPath(new Path("/")); //$NON-NLS-1$
-            String uri = "file://" + (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$ 
+            String uri = "file://" + (workSpacePath == null ? "" : workSpacePath.toOSString()) //$NON-NLS-1$
                     + imagePath.toString();
             svgDocument = factory.createDocument(uri, inputStream);
             svgHandler = new SVGHandler((SVGDocument) svgDocument, Display.getCurrent());

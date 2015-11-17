@@ -25,7 +25,7 @@ import org.eclipse.jface.viewers.Viewer;
 
 /**
  *
- * <code>ContentProvider</code> is meant to replace the content provide of the problems view.
+ * <code>ContentProvider</code> is meant to replace the content provider of the problems view.
  * It provides elements in a 3-level tree like structure to be able to group the sub validation
  * failures below the parent failures.
  *

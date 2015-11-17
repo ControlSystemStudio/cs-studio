@@ -9,7 +9,7 @@ import de.desy.language.snl.parser.Interval;
 import de.desy.language.snl.parser.nodes.DefineStatementNode;
 
 public class DefineConstantStatementParser_Test extends TestCase {
-	
+
 	private final static String text = 	"//...\n" +
 										"#define OK 1\n" +
 										"#define NOT_OK 0\n" +
@@ -18,12 +18,12 @@ public class DefineConstantStatementParser_Test extends TestCase {
 										"#define SET_MAN(pv) pv = PID_MANUELL; pvPut(pv); // Test Kommentar\n" +
 										"#define DBG_TTSTOP_EIN	FALSE //TRUE=aktiviert   FALSE=deaktiviert\n" +
 										"#define DBG_TTSTOP (DBG_TTSTOP_EIN|debugNextStep)\n" +
-										"// usw...\n"; 
+										"// usw...\n";
 
 	@Test
 	public void testParser() {
 		final DefineConstantStatementParser parser = new DefineConstantStatementParser(new Interval[0]);
-		
+
 		//OK
 		parser.findNext(text);
 		Assert.assertTrue(parser.hasFoundElement());
@@ -40,7 +40,7 @@ public class DefineConstantStatementParser_Test extends TestCase {
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
 				.getStatementEndOffset());
-		
+
 		//NOT_OK
 		parser.findNext(text, 18);
 		Assert.assertTrue(parser.hasFoundElement());
@@ -57,7 +57,7 @@ public class DefineConstantStatementParser_Test extends TestCase {
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
 				.getStatementEndOffset());
-		
+
 		//R_KEINER
 		parser.findNext(text, 35);
 		Assert.assertTrue(parser.hasFoundElement());
@@ -74,7 +74,7 @@ public class DefineConstantStatementParser_Test extends TestCase {
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
 				.getStatementEndOffset());
-		
+
 		//DBG_D100
 		parser.findNext(text, 81);
 		Assert.assertTrue(parser.hasFoundElement());
@@ -91,7 +91,7 @@ public class DefineConstantStatementParser_Test extends TestCase {
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
 				.getStatementEndOffset());
-		
+
 		//DBG_TTSTOP_EIN
 		parser.findNext(text, 127);
 		Assert.assertTrue(parser.hasFoundElement());
@@ -108,7 +108,7 @@ public class DefineConstantStatementParser_Test extends TestCase {
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
 				.getStatementEndOffset());
-		
+
 		//DBG_TTSTOP
 		parser.findNext(text, 260);
 		Assert.assertTrue(parser.hasFoundElement());
@@ -125,10 +125,10 @@ public class DefineConstantStatementParser_Test extends TestCase {
 
 		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
 				.getStatementEndOffset());
-		
+
 		//Rest
 		parser.findNext(text, 310);
 		Assert.assertFalse(parser.hasFoundElement());
-		
+
 	}
 }

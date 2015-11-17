@@ -7,10 +7,10 @@ import org.csstudio.archive.vtype.TimestampHelper;
 import org.epics.archiverappliance.retrieval.client.DataRetrieval;
 import org.epics.archiverappliance.retrieval.client.EpicsMessage;
 import org.epics.archiverappliance.retrieval.client.GenMsgIterator;
-import org.epics.util.text.NumberFormats;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.Display;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.text.NumberFormats;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.ValueFactory;
 
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
@@ -39,6 +39,7 @@ public class ApplianceMeanValueIterator extends ApplianceValueIterator {
      *
      * @throws IOException if there was an error during the data fetch process
      * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
+     * @throws ArchiverApplianceInvalidTypeException if the type of data cannot be returned in optimized format
      */
     public ApplianceMeanValueIterator(ApplianceArchiveReader reader,
             String name, Timestamp start, Timestamp end, int points, IteratorListener listener)
@@ -68,9 +69,10 @@ public class ApplianceMeanValueIterator extends ApplianceValueIterator {
      *
      * @return the display
      * @throws IOException if there was an error reading data
-     * @throws ArchiverApplianceException if the data cannot be loaded with the optimized method
+     * @throws ArchiverApplianceInvalidTypeException if the data cannot be loaded with the optimized method
      */
-    private Display determineDisplay(ApplianceArchiveReader reader, String name, Timestamp time) throws ArchiverApplianceException,IOException {
+    private Display determineDisplay(ApplianceArchiveReader reader, String name, Timestamp time)
+            throws ArchiverApplianceInvalidTypeException,IOException {
         //to retrieve the display, request the raw data for the end timestamp
         java.sql.Timestamp timestamp = TimestampHelper.toSQLTimestamp(time);
         DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
@@ -83,7 +85,8 @@ public class ApplianceMeanValueIterator extends ApplianceValueIterator {
                     it.next();
                     payloadInfo = genMsgIterator.getPayLoadInfo();
                     if (!isDataTypeOKForOptimized(payloadInfo.getType())) {
-                        throw new ArchiverApplianceException("Cannot use optimized data on type " + payloadInfo.getType());
+                        throw new ArchiverApplianceInvalidTypeException("Cannot use optimized data on type "
+                                    + payloadInfo.getType(), name, payloadInfo.getType());
                     }
                     return getDisplay(payloadInfo);
                 }

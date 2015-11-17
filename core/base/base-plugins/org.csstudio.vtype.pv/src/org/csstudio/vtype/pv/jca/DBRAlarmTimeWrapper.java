@@ -7,14 +7,14 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.jca;
 
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.Time;
+import org.diirt.util.time.*;
+
 import gov.aps.jca.dbr.Severity;
 import gov.aps.jca.dbr.TIME;
 import gov.aps.jca.dbr.TimeStamp;
-
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Time;
 
 /** Implement VType Alarm and Time for a DBR
  *  @author Kay Kasemir

@@ -16,7 +16,7 @@ import org.csstudio.opibuilder.widgets.model.ScaledSliderModel;
 import org.csstudio.swt.widgets.figures.ProgressBarFigure;
 import org.csstudio.swt.widgets.figures.ScaledSliderFigure;
 import org.eclipse.draw2d.IFigure;
-import org.epics.vtype.AlarmSeverity;
+import org.diirt.vtype.AlarmSeverity;
 
 /**
  * EditPart controller for the scaled slider widget. The controller mediates between

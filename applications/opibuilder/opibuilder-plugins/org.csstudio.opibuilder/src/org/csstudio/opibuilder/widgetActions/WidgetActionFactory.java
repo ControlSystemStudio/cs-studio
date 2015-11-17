@@ -21,7 +21,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 public class WidgetActionFactory {
     public enum ActionType{
         OPEN_DISPLAY("Open OPI", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
-        OPEN_OPI_IN_VIEW("Open OPI in View", createImage("icons/OPIRunner.png")), //$NON-NLS-2$
         WRITE_PV("Write PV", createImage("icons/writePV.png")), //$NON-NLS-2$
         EXECUTE_CMD("Execute Command", createImage("icons/command.gif")), //$NON-NLS-2$
         EXECUTE_JAVASCRIPT("Execute Javascript", createImage("icons/exeJS.png")),//$NON-NLS-2$
@@ -44,6 +43,9 @@ public class WidgetActionFactory {
          * @return the ActionType. null if parse failed.
          */
         public static ActionType parseAction(String actionString){
+            // Map legacy actions
+            if ("OPEN_OPI_IN_VIEW".equals(actionString))
+                return OPEN_DISPLAY;
             for(ActionType type : values()){
                 if(actionString.equals(type.toString()))
                     return type;
@@ -79,8 +81,6 @@ public class WidgetActionFactory {
         switch (actionType) {
         case OPEN_DISPLAY:
             return new OpenDisplayAction();
-        case OPEN_OPI_IN_VIEW:
-            return new OpenOPIInViewAction();
         case WRITE_PV:
             return new WritePVAction();
         case OPEN_FILE:

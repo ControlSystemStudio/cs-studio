@@ -71,9 +71,24 @@
             name="%SubmitScan">
       </command>
       <command
+            defaultHandler="org.csstudio.scan.ui.scantree.operations.SubmitUnqueuedScanHandler"
+            id="org.csstudio.scan.ui.scantree.submitUnqueued"
+            name="%SubmitScanUnqueued">
+      </command>
+      <command
             defaultHandler="org.csstudio.scan.ui.scantree.OpenScanTreeHandler"
             id="org.csstudio.scan.ui.scantree.open"
             name="%OpenScanTree">
+      </command>
+      <command
+            defaultHandler="org.csstudio.scan.ui.scantree.ResubmitScanHandler"
+            id="org.csstudio.scan.ui.scantree.resubmit"
+            name="%ResubmitScan">
+      </command>
+      <command
+            defaultHandler="org.csstudio.scan.ui.scantree.SaveScanHandler"
+            id="org.csstudio.scan.ui.scantree.save_as"
+            name="%SaveScan">
       </command>
       <command
             defaultHandler="org.csstudio.scan.ui.scantree.operations.ShowSimulationHandler"
@@ -152,6 +167,58 @@
          <command
                commandId="org.csstudio.scan.ui.scantree.submit"
                icon="icons/run.png">
+         </command>
+         <command
+               commandId="org.csstudio.scan.ui.scantree.submitUnqueued"
+               icon="icons/run.png">
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=scan">
+         <command
+               commandId="org.csstudio.scan.ui.scantree.save_as"
+               icon="platform:/plugin/org.eclipse.ui/icons/full/etool16/saveas_edit.gif"
+               label="%SaveScan"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <!-- Enable on 1 ScanInfo, but if the 'active' scan updates,
+                       the selection will be empty, so look for 0 or 1
+                    -->
+                  <count value="+"/>
+                  <iterate>
+                     <instanceof
+                           value="org.csstudio.scan.server.ScanInfo">
+                     </instanceof>
+                  </iterate>
+               </with>
+            </visibleWhen>
+         </command>
+      </menuContribution>
+      <menuContribution
+            locationURI="popup:org.eclipse.ui.popup.any?after=scan">
+         <command
+               commandId="org.csstudio.scan.ui.scantree.resubmit"
+               icon="icons/run.png"
+               label="%ResubmitScan"
+               style="push">
+            <visibleWhen
+                  checkEnabled="false">
+               <with
+                     variable="selection">
+                  <!-- Enable on 1 ScanInfo, but if the 'active' scan updates,
+                       the selection will be empty, so look for 0 or 1
+                    -->
+                  <count value="+"/>
+                  <iterate>
+                     <instanceof
+                           value="org.csstudio.scan.server.ScanInfo">
+                     </instanceof>
+                  </iterate>
+               </with>
+            </visibleWhen>
          </command>
       </menuContribution>
       <menuContribution

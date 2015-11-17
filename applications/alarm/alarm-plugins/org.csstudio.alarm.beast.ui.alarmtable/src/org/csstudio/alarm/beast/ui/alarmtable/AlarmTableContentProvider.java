@@ -28,9 +28,10 @@ import org.eclipse.osgi.util.NLS;
  */
 public class AlarmTableContentProvider implements ILazyContentProvider
 {
-    final private int alarm_table_row_limit = Preferences.getAlarmTableRowLimit();
+    private int alarm_table_row_limit = Preferences.getAlarmTableRowLimit();
     private TableViewer table_viewer;
     private AlarmTreePV[] alarms;
+    private AlarmTreePV[] orgAlarms;
     private Comparator<AlarmTreePV> comparator = AlarmComparator.getComparator(ColumnInfo.SEVERITY, false);
 
     /** Update the list of alarms to display.
@@ -38,6 +39,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
      */
     public void setAlarms(final AlarmTreePV alarms[])
     {
+        this.orgAlarms = alarms;
         if (alarms == null)
         {
             this.alarms = null;
@@ -64,6 +66,18 @@ public class AlarmTableContentProvider implements ILazyContentProvider
         table_viewer.refresh();
     }
 
+    /**
+     * Set the limit for the number of alarms shown in the table.
+     *
+     * @see #setAlarms(AlarmTreePV[])
+     * @param limit the maximum number of alarms visible in the table
+     */
+    public void setNumberOfAlarmsLimit(int limit) {
+        this.alarm_table_row_limit = limit;
+        if (table_viewer != null)
+            setAlarms(orgAlarms);
+    }
+
     /** @return Alarms to be shown in table */
     public AlarmTreePV[] getAlarms()
     {
@@ -76,7 +90,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
         this.comparator = comparator;
         // trigger refresh
         if (table_viewer != null)
-            setAlarms(alarms);
+            setAlarms(orgAlarms);
     }
 
     /** {@inheritDoc} */
@@ -90,7 +104,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     @Override
     public void updateElement(final int row)
     {
-        if (row < alarms.length)
+        if (row < alarms.length && !table_viewer.isBusy())
             table_viewer.replace(alarms[row], row);
     }
 

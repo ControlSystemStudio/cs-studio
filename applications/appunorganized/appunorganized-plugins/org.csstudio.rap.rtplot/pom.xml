@@ -9,6 +9,6 @@
   </parent>
   <groupId>org.csstudio</groupId>
   <artifactId>org.csstudio.rap.rtplot</artifactId>
-  <version>1.2.0-SNAPSHOT</version>
+  <version>1.2.2-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
 </project>

@@ -34,7 +34,7 @@ public class AssignStatementParser_Test extends TestCase {
 				.getStatementEndOffset());
 		Assert.assertFalse(lastFoundAsNode.isArray());
 	}
-	
+
 	@Test
 	public void testArrayAssignment() {
 		final AssignStatementParser parser = new AssignStatementParser(new Interval[0]);

@@ -11,11 +11,11 @@ import org.csstudio.archive.vtype.ArchiveVStatistics;
 import org.csstudio.archive.vtype.StatisticsAccumulator;
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.archive.vtype.VTypeHelper;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.Display;
-import org.epics.vtype.VType;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.Display;
+import org.diirt.vtype.VType;
 
 /** {@link ValueIterator} that performs linear interpolation
  *

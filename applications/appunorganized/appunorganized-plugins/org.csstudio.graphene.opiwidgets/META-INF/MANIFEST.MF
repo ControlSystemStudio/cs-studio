@@ -8,17 +8,18 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.ui.views,
  org.csstudio.graphene,
- org.epics.pvmanager-graphene,
  org.csstudio.opibuilder.widgets.extra;bundle-version="1.0.0",
  org.csstudio.opibuilder.widgets;bundle-version="3.4.0",
  org.csstudio.opibuilder;bundle-version="3.2.0",
  org.epics.graphene,
  org.eclipse.gef;bundle-version="3.9.100",
  org.jdom,
- org.epics.util,
- org.epics.vtype,
  org.csstudio.csdata,
  org.csstudio.utility.pvmanager.widgets,
  org.csstudio.ui.util
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Import-Package: org.diirt.graphene,
+ org.diirt.datasource.graphene,
+ org.diirt.util.time,
+ org.diirt.vtype

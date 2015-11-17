@@ -5,11 +5,15 @@ $(function()
     {
         var name = $('input[name=name]').val();
         var commands = $('textarea').val();
+        var queue = $('input[name=queue]').prop('checked');
+        var url = '/scan/' + encodeURIComponent(name);
+        if (! queue)
+            url += "?queue=false";
         
         $.ajax(
         {
             type: 'POST',
-            url: '/scan/' + name,
+            url: url,
             processData: false,
             contentType: 'text/xml',
             data: commands,

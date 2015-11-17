@@ -16,10 +16,7 @@ import org.csstudio.utility.singlesource.UIHelper.UI;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
-import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
+import org.eclipse.ui.IPlaceholderFolderLayout;
 
 /** Create a perspective that's convenient for Data Browser use.
  *  @author Kay Kasemir
@@ -30,17 +27,6 @@ public class Perspective implements IPerspectiveFactory
 {
     /** Perspective ID (same ID as original Data Browser) registered in plugin.xml */
     final public static String ID = "org.csstudio.trends.databrowser.Perspective";
-
-
-    /** Try to switch to the DataBrowser perspective
-     *  @throws WorkbenchException on error
-     */
-    public static void showPerspective() throws WorkbenchException
-    {
-        final IWorkbench workbench = PlatformUI.getWorkbench();
-        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        workbench.showPerspective(Perspective.ID, window);
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -60,6 +46,10 @@ public class Perspective implements IPerspectiveFactory
         if (rcp || !Preferences.hideSearchView()) {
             left = layout.createFolder("left", IPageLayout.LEFT,
                     0.25f, editor);
+        } else {
+            //for RAP
+            IPlaceholderFolderLayout folder = layout.createPlaceholderFolder("left", IPageLayout.LEFT,0.25f, editor);
+            folder.addPlaceholder(SearchView.ID);
         }
 
         if (left != null) {
@@ -74,6 +64,10 @@ public class Perspective implements IPerspectiveFactory
         if (rcp || !Preferences.hidePropertiesView()) {
             bottom = layout.createFolder("bottom",IPageLayout.BOTTOM, 0.66f, editor);
             bottom.addView(IPageLayout.ID_PROP_SHEET);
+        } else {
+            //for RAP
+            IPlaceholderFolderLayout folder = layout.createPlaceholderFolder("bottom",IPageLayout.BOTTOM, 0.66f, editor);
+            folder.addPlaceholder(IPageLayout.ID_PROP_SHEET);
         }
 
         if (bottom != null) {

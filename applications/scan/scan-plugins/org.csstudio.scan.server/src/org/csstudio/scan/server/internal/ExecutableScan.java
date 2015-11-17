@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,7 @@ import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.ScanInfo;
 import org.csstudio.scan.server.ScanState;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** Scan that can be executed: Commands, device context, state
  *
@@ -380,7 +380,7 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
     @Override
     public Object call() throws Exception
     {
-        logger.log(Level.CONFIG, "Executing \"{0}\" [{1}]", new Object[] { getName(), new MemoryInfo()});
+        logger.log(Level.CONFIG, "Executing ID {0} \"{1}\" [{2}]", new Object[] { getId(), getName(), new MemoryInfo()});
 
         try
         (
@@ -633,6 +633,19 @@ public class ExecutableScan extends LoggedScan implements ScanContext, Callable<
                 }
             }
         }
+    }
+
+    /** Force transition to next command */
+    public void next()
+    {   // Must be running
+        if (state.get() != ScanState.Running)
+            return;
+        // Must have active command
+        final ScanCommandImpl<?> command = active_commands.peekLast();
+        if (command == null)
+            return;
+        logger.log(Level.INFO, "Forcing transition to next command");
+        command.next();
     }
 
     /** Pause execution of a currently executing scan */

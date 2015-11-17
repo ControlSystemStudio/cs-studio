@@ -107,7 +107,7 @@ public class SNLParser_Test extends TestCase {
 
 		IProgressMonitor progressMonitor = EasyMock.createNiceMock(IProgressMonitor.class);
 		EasyMock.replay(progressMonitor);
-		
+
 		final Node programNode = parser.parse(this._source, null, progressMonitor);
 
 		Assert.assertEquals(this._source, parser.getSequenceWorkingOn());
@@ -168,12 +168,12 @@ public class SNLParser_Test extends TestCase {
 		Assert.assertEquals("high",
 				((AbstractSNLNode) stateSetChildrenNodes[2])
 						.getSourceIdentifier());
-		
+
 		// double v;
 		node = programNode.getChildrenNodesAsArray()[1];
 		Assert.assertEquals(AllVariablesNode.class, node.getClass());
 		Assert.assertEquals(2, node.getChildrenNodes().size());
-		
+
 		VariableNode varNode = (VariableNode) node.getChildrenNodesAsArray()[0];
 		Assert.assertEquals("v", varNode.getSourceIdentifier());
 		Assert.assertTrue(varNode.isAssigned());
@@ -194,7 +194,7 @@ public class SNLParser_Test extends TestCase {
 		varNode = (VariableNode) node.getChildrenNodesAsArray()[1];
 		Assert.assertEquals(VariableNode.class, varNode.getClass());
 		Assert.assertEquals("l", varNode.getSourceIdentifier());
-		
+
 		// option +r;
 		node = programNode.getChildrenNodesAsArray()[3];
 		Assert.assertEquals(OptionStatementNode.class, node.getClass());
@@ -219,7 +219,7 @@ public class SNLParser_Test extends TestCase {
 		Assert.assertFalse(syncNode.hasChildren());
 		Assert.assertEquals("v", syncNode.getContent());
 
-		
+
 
 		// // assign v to "{user}:aiExample";
 		// assertTrue(node.getChildrenNodes().length > 1);
@@ -267,7 +267,7 @@ public class SNLParser_Test extends TestCase {
 
 		IProgressMonitor progressMonitor = EasyMock.createNiceMock(IProgressMonitor.class);
 		EasyMock.replay(progressMonitor);
-		
+
 		final Node programNode = parser.parse(this._source2, null, progressMonitor);
 
 		Assert.assertEquals(this._source2, parser.getSequenceWorkingOn());

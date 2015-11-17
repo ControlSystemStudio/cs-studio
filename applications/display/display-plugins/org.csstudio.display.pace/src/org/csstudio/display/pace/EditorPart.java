@@ -108,7 +108,8 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
 
     /** @return <code>true</code> if Model contains user changes */
     @Override
-    public boolean isDirty() {
+    public boolean isDirty()
+    {
         return is_dirty;
     }
 
@@ -198,13 +199,15 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
      * @see org.eclipse.ui.part.EditorPart#doSave(IProgressMonitor)
      */
     @Override
-    public void doSave(final IProgressMonitor monitor) {
+    public void doSave(final IProgressMonitor monitor)
+    {
         this.changes = createElogText();
         // Display ELog entry dialog
         this.shell = getSite().getShell();
 
         // "Normal" case with ELog support
-        try {
+        try
+        {
             final String title = NLS.bind(Messages.ELogTitleFmt,
                     model.getTitle());
             StringBuilder textContent = new StringBuilder();
@@ -216,7 +219,9 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             logEntryBuilderDialog.addListener(this);
             logEntryBuilderDialog.setBlockOnOpen(true);
             logEntryBuilderDialog.open();
-        } catch (Exception ex) {
+        }
+        catch (Exception ex)
+        {
             MessageDialog.openError(shell, Messages.SaveError,
                     NLS.bind(Messages.SaveErrorFmt, ex.getMessage()));
         }
@@ -226,13 +231,15 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
      *  but in case it is, we handle it like 'doSave'
      */
     @Override
-    public void doSaveAs() {
+    public void doSaveAs()
+    {
         doSave(new NullProgressMonitor());
     }
 
     /** @return <code>false</code> to prohibit 'save as' */
     @Override
-    public boolean isSaveAsAllowed() {
+    public boolean isSaveAsAllowed()
+    {
         return false;
     }
 
@@ -240,13 +247,16 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
      *  @see ModelListener
      */
     @Override
-    public void cellUpdate(final Cell cell) {
+    public void cellUpdate(final Cell cell)
+    {
         if (is_dirty == model.isEdited())
             return;
         is_dirty = model.isEdited();
-
-        updateContentDescription();
-        firePropertyChange(PROP_DIRTY);
+        getSite().getShell().getDisplay().asyncExec(() ->
+        {
+            updateContentDescription();
+            firePropertyChange(PROP_DIRTY);
+        });
     }
 
     /** Update the 'content description', i.e. a line just below
@@ -267,10 +277,10 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
      * {@inheritDoc}
      */
     @Override
-    public void initializeSaveAction(String userName) {
-        if (userName == null || userName.isEmpty()) {
+    public void initializeSaveAction(String userName)
+    {
+        if (userName == null || userName.isEmpty())
             userName = System.getenv("user.name");
-        }
         this.userName = userName;
     }
 
@@ -279,8 +289,10 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
      * @throws Exception
      */
     @Override
-    public void saveProcessStatus(LogEntryBuilderEnum state) throws Exception {
-        switch (state) {
+    public void saveProcessStatus(LogEntryBuilderEnum state) throws Exception
+    {
+        switch (state)
+        {
         case START_SAVE:
             saveUserValues();
             break;
@@ -288,7 +300,7 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
             finalizeSave();
             break;
         case CANCEL_SAVE:
-            reverOginalValues();
+            revertOriginalValues();
             break;
         default:
             break;
@@ -296,12 +308,16 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
     }
 
     /**
-     * Rever oginal values.
+     * Revert original values.
      */
-    private void reverOginalValues() {
-        try {
+    private void revertOriginalValues()
+    {
+        try
+        {
             model.revertOriginalValues();
-        } catch (Exception save_ex) {
+        }
+        catch (Exception save_ex)
+        {
             MessageDialog.openError(shell, Messages.SaveError,
                   NLS.bind(Messages.SaveErrorFmt, save_ex.getMessage()));
         }
@@ -310,7 +326,8 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
     /**
      * Finalize save.
      */
-    private void finalizeSave() {
+    private void finalizeSave()
+    {
         model.clearUserValues();
     }
 
@@ -318,18 +335,25 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
      * Save user values.
      * @throws Exception
      */
-    private void saveUserValues() throws Exception {
+    private void saveUserValues() throws Exception
+    {
         // The whole elog-and-pv-update should be handled
         // as a transaction that either succeeds or fails
         // as a whole.
 
         // Check if we can connect to the logbook (user, password)
-        try { // Change PVs.
+        try
+        { // Change PVs.
             model.saveUserValues(this.userName);
-        } catch (Exception ex) { // At least some saves failed, to revert
-            try {
+        }
+        catch (Exception ex)
+        { // At least some saves failed, to revert
+            try
+            {
                 model.revertOriginalValues();
-            } catch (Exception ignore) {
+            }
+            catch (Exception ignore)
+            {
                 // Since saving didn't work, restoral will also fail.
                 // Hopefully those initial PVs that did get updated will
                 // also be restored...
@@ -339,6 +363,4 @@ public class EditorPart extends org.eclipse.ui.part.EditorPart
                     ex.getMessage()));
         }
     }
-
-
 }

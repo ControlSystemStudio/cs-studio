@@ -11,8 +11,8 @@ import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorRaw;
 import org.csstudio.archive.reader.appliance.testClasses.TestGenMsgIteratorWaveform;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.TimestampHelper;
-import org.epics.util.time.TimeDuration;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.util.time.Timestamp;
 import org.junit.Test;
 
 /**
@@ -27,7 +27,7 @@ public class ApplianceArchiveReaderRawWaveformTest extends AbstractArchiverReade
 
     @Override
     protected ArchiveReader getReader() {
-        return new TestApplianceArchiveReader(false);
+        return new TestApplianceArchiveReader(false,false);
     }
 
     /**

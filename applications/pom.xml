@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.csstudio</groupId>
   <artifactId>applications</artifactId>
-  <version>4.1.0-SNAPSHOT</version>
+  <version>4.2.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <!-- USE MAVEN 3.0 -->
   <prerequisites>
@@ -16,10 +16,14 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>0.22.0</tycho.version>
-    <tycho-extras.version>0.22.0</tycho-extras.version>
-    <cs-studio.version>4.1</cs-studio.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.1</cs-studio-central.url>
+    <tycho.version>0.23.1</tycho.version>
+    <tycho-extras.version>0.23.1</tycho-extras.version>
+    <cs-studio.version>4.2</cs-studio.version>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.2</cs-studio-central.url>
+    <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
+    <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
+    <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20140114142710/repository</orbit-site>
+    <rap-e4-site>${eclipse.central.url}/rt/rap/incubator/nightly/e4/target/site</rap-e4-site>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
     <baselineMode>fail</baselineMode>
@@ -60,13 +64,12 @@
         </property>
       </activation>
       <properties>
-        <eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
-        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
-        <rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
-        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef/20150122-1538</rap-incubator-site>
-        <!--        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>    LATEST RAP HAS PROBLEMS -->
-        <platform-version>[4.3,4.4)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
+        <eclipse-site>${eclipse.mirror.url}/releases/mars</eclipse-site>
+        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.5</eclipse-update-site>
+        <rap-site>${eclipse.mirror.url}/rt/rap/3.0</rap-site>
+        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/nightly/gef/20150122-1538</rap-gef-site>
+        <platform-version>[4.4,4.5)</platform-version>
+        <swtbot-site>${eclipse.central.url}/technology/swtbot/mars/dev-build/update-site</swtbot-site>
       </properties>
     </profile>
     <profile>
@@ -78,13 +81,12 @@
         </property>
       </activation>
       <properties>
-        <eclipse-site>http://download.eclipse.org/releases/luna</eclipse-site>
-        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.4</eclipse-update-site>
-        <rap-site>http://download.eclipse.org/rt/rap/2.3</rap-site>
-        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef/20150122-1538</rap-incubator-site>
-        <!--        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef</rap-incubator-site>  LATEST RAP HAS PROBLEMS -->
+        <eclipse-site>${eclipse.mirror.url}/releases/luna</eclipse-site>
+        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.4</eclipse-update-site>
+        <rap-site>${eclipse.mirror.url}/rt/rap/2.3</rap-site>
+        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/nightly/gef/20150122-1538</rap-gef-site>
         <platform-version>[4.3,4.4)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/luna/dev-build/update-site</swtbot-site>
+        <swtbot-site>${eclipse.central.url}/technology/swtbot/luna/dev-build/update-site</swtbot-site>
       </properties>
     </profile>
     <profile>
@@ -96,12 +98,12 @@
         </property>
       </activation>
       <properties>
-        <eclipse-site>http://download.eclipse.org/releases/kepler</eclipse-site>
-        <eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.3</eclipse-update-site>
-        <rap-site>http://download.eclipse.org/rt/rap/2.2</rap-site>
-        <rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/2.2/gef</rap-incubator-site>
+        <eclipse-site>${eclipse.mirror.url}/releases/kepler</eclipse-site>
+        <eclipse-update-site>${eclipse.mirror.url}/eclipse/updates/4.3</eclipse-update-site>
+        <rap-site>${eclipse.mirror.url}/rt/rap/2.2</rap-site>
+        <rap-gef-site>${eclipse.mirror.url}/rt/rap/incubator/2.2/gef</rap-gef-site>
         <platform-version>[4.2,4.3)</platform-version>
-        <swtbot-site>http://download.eclipse.org/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
+        <swtbot-site>${eclipse.central.url}/technology/swtbot/kepler/dev-build/update-site</swtbot-site>
       </properties>
     </profile>
     <profile>
@@ -154,24 +156,29 @@
       </activation>
       <repositories>
         <repository>
+          <id>diirt</id>
+          <url>http://diirt.download.controlsystemstudio.org/diirt/3.0.1</url>
+          <layout>p2</layout>
+        </repository>
+        <repository>
           <id>csstudio-thirdparty</id>
-          <url>http://download.controlsystemstudio.org/thirdparty/4.1</url>
+          <url>http://download.controlsystemstudio.org/thirdparty/4.2</url>
           <layout>p2</layout>
         </repository>
         <repository>
           <id>csstudio-maven-osgi-bundles</id>
-          <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.1</url>
+          <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.2</url>
           <layout>p2</layout>
         </repository>
         <repository>
           <id>csstudio-core</id>
-          <url>http://download.controlsystemstudio.org/core/4.1</url>
+          <url>http://download.controlsystemstudio.org/core/4.2</url>
           <layout>p2</layout>
         </repository>
         <!-- Adding the applications repositories to allows child modules to depend on each other --> 
         <repository>
           <id>csstudio-applications</id>
-          <url>http://download.controlsystemstudio.org/applications/4.1</url>
+          <url>http://download.controlsystemstudio.org/applications/4.2</url>
           <layout>p2</layout>
         </repository>
       </repositories>
@@ -183,12 +190,14 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-checkstyle-plugin</artifactId>
-            <version>2.15</version>
+            <version>2.17</version>
             <executions>
               <execution>
                 <id>validate</id>
                 <phase>validate</phase>
                 <configuration>
+                  <includes>**/*</includes>
+                  <excludes>**/target/**</excludes>
                   <configLocation>../build/cs-studio-jenkins-checkstyle</configLocation>
                   <encoding>UTF-8</encoding>
                   <consoleOutput>true</consoleOutput>
@@ -224,18 +233,23 @@
       <layout>p2</layout>
     </repository>
     <repository>
-      <id>rap-incubator</id>
-      <url>${rap-incubator-site}</url>
+      <id>rap-e4</id>
+      <url>${rap-e4-site}</url>
+      <layout>p2</layout>
+    </repository>
+    <repository>
+      <id>rap-gef</id>
+      <url>${rap-gef-site}</url>
       <layout>p2</layout>
     </repository>
     <repository>
       <id>orbit</id>
-      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository</url>
+      <url>${orbit-site}</url>
       <layout>p2</layout>
     </repository>
     <repository>
       <id>efx</id>
-      <url>http://download.eclipse.org/efxclipse/runtime-released/1.2.0/site</url>
+      <url>${eclipse.mirror.url}/efxclipse/runtime-released/1.2.0/site</url>
       <layout>p2</layout>
     </repository>
   </repositories>
@@ -297,6 +311,35 @@
             </baselineRepositories>
           </configuration>
         </plugin>
+        <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+        <plugin>
+        	<groupId>org.eclipse.m2e</groupId>
+        	<artifactId>lifecycle-mapping</artifactId>
+        	<version>1.0.0</version>
+        	<configuration>
+        		<lifecycleMappingMetadata>
+        			<pluginExecutions>
+        				<pluginExecution>
+        					<pluginExecutionFilter>
+        						<groupId>org.jacoco</groupId>
+        						<artifactId>
+        							jacoco-maven-plugin
+        						</artifactId>
+        						<versionRange>
+        							[0.5.3.201107060350,)
+        						</versionRange>
+        						<goals>
+        							<goal>prepare-agent</goal>
+        						</goals>
+        					</pluginExecutionFilter>
+        					<action>
+        						<ignore></ignore>
+        					</action>
+        				</pluginExecution>
+        			</pluginExecutions>
+        		</lifecycleMappingMetadata>
+        	</configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
     <!-- PLUGIN CONFIGURATION -->
@@ -346,17 +389,7 @@
             <environment>
               <os>linux</os>
               <ws>gtk</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
               <arch>x86_64</arch>
-            </environment>
-            <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-              <arch>x86</arch>
             </environment>
             <environment>
               <os>win32</os>
@@ -366,7 +399,7 @@
             <environment>
               <os>macosx</os>
               <ws>cocoa</ws>
-              <arch>x86</arch>
+              <arch>x86_64</arch>
             </environment>
           </environments>
         </configuration>
@@ -392,17 +425,7 @@
             <environment>
               <os>linux</os>
               <ws>gtk</ws>
-              <arch>x86</arch>
-            </environment>
-            <environment>
-              <os>linux</os>
-              <ws>gtk</ws>
               <arch>x86_64</arch>
-            </environment>
-            <environment>
-              <os>win32</os>
-              <ws>win32</ws>
-              <arch>x86</arch>
             </environment>
             <environment>
               <os>win32</os>
@@ -412,7 +435,7 @@
             <environment>
               <os>macosx</os>
               <ws>cocoa</ws>
-              <arch>x86</arch>
+              <arch>x86_64</arch>
             </environment>
           </environments>
         </configuration>

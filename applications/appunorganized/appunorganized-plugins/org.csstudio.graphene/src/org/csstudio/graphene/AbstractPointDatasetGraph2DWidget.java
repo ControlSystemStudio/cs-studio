@@ -4,10 +4,10 @@
 package org.csstudio.graphene;
 
 import org.csstudio.utility.pvmanager.widgets.ConfigurableWidget;
+import org.diirt.datasource.graphene.Graph2DExpression;
+import org.diirt.graphene.Graph2DRendererUpdate;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IMemento;
-import org.epics.graphene.Graph2DRendererUpdate;
-import org.epics.pvmanager.graphene.Graph2DExpression;
 
 /**
  * @author shroffk

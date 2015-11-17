@@ -15,7 +15,9 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.csstudio.scan.command.LoopCommand;
@@ -49,6 +51,26 @@ public class CommandFormatUnitTest
     }
 
     @Test
+    public void testSetCommand()
+    {
+        SetCommand command = new SetCommand("device", 3.14, false, "nothing", false, 0.1, 0.0);
+        System.out.println(command);
+        assertThat(command.toString(), equalTo("Set 'device' = 3.14"));
+
+        command = new SetCommand("device", 3.14, false, "readback", true, 0.1, 10.0);
+        System.out.println(command);
+        assertThat(command.toString(), equalTo("Set 'device' = 3.14 (wait for 'readback' +-0.1, 10.0 sec timeout)"));
+
+        command = new SetCommand("device", 3.14, true, "nothing", false, 0.1, 10.0);
+        System.out.println(command);
+        assertThat(command.toString(), equalTo("Set 'device' = 3.14 with completion in 10.0 sec"));
+
+        command = new SetCommand("device", 3.14, true, "readback", true, 0.1, 10.0);
+        System.out.println(command);
+        assertThat(command.toString(), equalTo("Set 'device' = 3.14 with completion in 10.0 sec (check for 'readback' +-0.1)"));
+    }
+
+    @Test
     public void testLoopCommand()
     {
         final LoopCommand command = new LoopCommand("device", 1.0, 10.0, 0.5);
@@ -66,6 +88,13 @@ public class CommandFormatUnitTest
         command.setWait(false);
         System.out.println(command);
         assertFalse(command.toString().contains("wait"));
-    }
 
+        command.setCompletion(true);
+        System.out.println(command);
+        assertThat(command.toString(), equalTo("Loop 'device' = 1.0 ... 10.0, step 0.5 with completion in 2.0 sec"));
+
+        command.setWait(true);
+        System.out.println(command);
+        assertThat(command.toString(), equalTo("Loop 'device' = 1.0 ... 10.0, step 0.5 with completion in 2.0 sec (check for 'readback' +-0.05)"));
+    }
 }

@@ -26,7 +26,7 @@ public enum PreferenceConstants {
      * Post-fix of preference id for epics seq location.
      */
     EPICS_SEQ_LOCATION_POST_FIX(".epics.seq-location"),
-    
+
     /**
      * Post-fix of preference id for epics scratch location.
      */

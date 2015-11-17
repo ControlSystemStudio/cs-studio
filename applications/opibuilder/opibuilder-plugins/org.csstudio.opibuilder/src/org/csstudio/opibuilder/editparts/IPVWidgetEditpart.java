@@ -1,7 +1,7 @@
 package org.csstudio.opibuilder.editparts;
 
 import org.csstudio.simplepv.IPV;
-import org.epics.vtype.VType;
+import org.diirt.vtype.VType;
 
 
 public interface IPVWidgetEditpart {
@@ -56,6 +56,7 @@ public interface IPVWidgetEditpart {
 
     public void addSetPVValueListener(ISetPVValueListener listener);
 
+    public void setControlEnabled(boolean enabled);
 
     public boolean isPVControlWidget();
 

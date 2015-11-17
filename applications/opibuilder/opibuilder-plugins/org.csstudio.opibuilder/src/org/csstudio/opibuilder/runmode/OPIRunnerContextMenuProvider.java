@@ -13,20 +13,21 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.actions.AboutWebOPIAction;
 import org.csstudio.opibuilder.actions.ConfigureRuntimePropertiesAction;
 import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction;
-import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OPEN_DISPLAY_TARGET;
+import org.csstudio.opibuilder.actions.OpenRelatedDisplayAction.OpenDisplayTarget;
 import org.csstudio.opibuilder.actions.WidgetActionMenuAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.opibuilder.util.WorkbenchWindowService;
-import org.csstudio.opibuilder.widgetActions.AbstractOpenOPIAction;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
+import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -75,7 +76,9 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 
         IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
 
-        if(!OPIBuilderPlugin.isRAP()){ //$NON-NLS-1$
+        // Only show 'full screen' and 'compact mode' options for OPIView,
+        // not for OPIShell.
+        if (!OPIBuilderPlugin.isRAP() && opiRuntime instanceof OPIView) {
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
                 WorkbenchWindowService.getInstance().getFullScreenAction(activeWindow));
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
@@ -100,6 +103,15 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 //        menu.add(cssMenu);
     }
 
+    @Override
+    protected boolean allowItem(IContributionItem itemToAdd) {
+        //org.eclipse.wst.sse.ui adds some junk, which we don't need
+        if ("sourceMenuId".equals(itemToAdd.getId())) { //$NON-NLS-1$
+            return false;
+        }
+        return super.allowItem(itemToAdd);
+    }
+
     /**
      * Adds the defined {@link AbstractWidgetAction}s to the given {@link IMenuManager}.
      * @param menu The {@link IMenuManager}
@@ -116,13 +128,12 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 
                 if(hookedActions != null && hookedActions.size() == 1){
                     AbstractWidgetAction hookedAction = hookedActions.get(0);
-                    if(hookedAction != null && hookedAction instanceof AbstractOpenOPIAction){
-                        menu.add(new OpenRelatedDisplayAction(
-                                (AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.DEFAULT));
-                        menu.add(new OpenRelatedDisplayAction(
-                                (AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
-                        menu.add(new OpenRelatedDisplayAction(
-                                (AbstractOpenOPIAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));
+                    if (hookedAction instanceof OpenDisplayAction){
+                        final OpenDisplayAction original_action = (OpenDisplayAction)hookedAction;
+                        menu.add(new OpenRelatedDisplayAction(original_action, OpenDisplayTarget.DEFAULT));
+                        menu.add(new OpenRelatedDisplayAction(original_action, OpenDisplayTarget.NEW_TAB));
+                        menu.add(new OpenRelatedDisplayAction(original_action, OpenDisplayTarget.NEW_WINDOW));
+                        menu.add(new OpenRelatedDisplayAction(original_action, OpenDisplayTarget.NEW_SHELL));
                     }
                 }
 

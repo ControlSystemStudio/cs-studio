@@ -13,7 +13,6 @@
     <!--<module>org.csstudio.dct</module>
     <module>org.csstudio.dct.intro</module>
   <module>org.csstudio.dct.ui</module>-->
-    <module>org.csstudio.debugging.jmsmonitor</module>
     <module>org.csstudio.debugging.rdbshell</module>
     <module>org.csstudio.desy.logging.ui</module>
     <module>org.csstudio.dummyauthorization</module>

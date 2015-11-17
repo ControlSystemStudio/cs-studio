@@ -11,8 +11,8 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgets.extra.AbstractSelectionWidgetModelDescription;
-import org.epics.graphene.IntensityGraph2DRenderer;
-import org.epics.graphene.NumberColorMap;
+import org.diirt.graphene.IntensityGraph2DRenderer;
+import org.diirt.graphene.NumberColorMap;
 
 /**
  * @author shroffk

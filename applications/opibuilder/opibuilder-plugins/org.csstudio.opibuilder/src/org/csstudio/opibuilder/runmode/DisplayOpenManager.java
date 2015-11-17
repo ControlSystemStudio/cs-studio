@@ -82,13 +82,10 @@ public class DisplayOpenManager {
 
     }
 
-    /**
-     * @param file
-     *
-     */
-    private void openOPI(IRunnerInput input) {
+    /** @param input */
+    private void openOPI(final IRunnerInput input) {
         try {
-            RunModeService.replaceOPIRuntimeContent(opiRuntime, input);
+            opiRuntime.setOPIInput(input);
         } catch (PartInitException e) {
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to go back", e);
             MessageDialog.openError(Display.getDefault().getActiveShell(), "Open file error",

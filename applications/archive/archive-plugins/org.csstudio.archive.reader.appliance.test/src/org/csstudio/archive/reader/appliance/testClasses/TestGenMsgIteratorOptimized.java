@@ -73,6 +73,8 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
             step = Integer.parseInt(name.substring(6,index));
         } else if (name.startsWith(ApplianceArchiveReaderConstants.OP_NCOUNT)) {
             step = Integer.MAX_VALUE;
+        } else if (name.startsWith(ApplianceArchiveReaderConstants.OP_OPTIMIZED)) {
+            step = 1;
         }
 
         try {
@@ -138,6 +140,15 @@ public class TestGenMsgIteratorOptimized implements GenMsgIterator {
             payloadType = PayloadType.SCALAR_BYTE;
             for (int i = 0; i < size; i++) {
                 values[i] = VALUES_BYTE[i%VALUES_BYTE.length];
+            }
+        } else if (name.contains("optimized")) {
+            if (name.contains("2000")) {
+                size = 100;
+                payloadType = PayloadType.SCALAR_DOUBLE;
+                values = new Number[size];
+                for (int i = 0; i < size; i++) {
+                    values[i] = VALUES_DOUBLE[i%VALUES_DOUBLE.length];
+                }
             }
         }
 

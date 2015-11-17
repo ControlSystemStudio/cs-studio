@@ -275,14 +275,17 @@ public class SetCommand extends ScanCommand
         }
         if (wait)
         {
-            buf.append(" (wait for '");
+            if (completion)
+                buf.append(" (check for '");
+            else
+                buf.append(" (wait for '");
             if (readback.isEmpty())
                 buf.append(device_name);
             else
                 buf.append(readback);
             if (tolerance > 0)
                 buf.append("' +-").append(tolerance);
-            if (timeout > 0)
+            if (timeout > 0  &&  !completion)
                 buf.append(", ").append(timeout).append(" sec timeout");
             buf.append(")");
         }

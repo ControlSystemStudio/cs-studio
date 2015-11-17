@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,12 @@ package org.csstudio.scan.condition;
 
 import java.util.concurrent.TimeoutException;
 
+import org.csstudio.scan.ScanSystemPreferences;
 import org.csstudio.scan.command.Comparison;
 import org.csstudio.scan.device.Device;
 import org.csstudio.scan.device.DeviceListener;
 import org.csstudio.scan.device.VTypeHelper;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** Condition that waits for a Device to reach a certain string value.
  *
@@ -33,6 +34,8 @@ import org.epics.util.time.TimeDuration;
 @SuppressWarnings("nls")
 public class TextValueCondition implements DeviceCondition, DeviceListener
 {
+    protected final static TimeDuration value_check_timeout = TimeDuration.ofSeconds(ScanSystemPreferences.getValueCheckTimeout());
+
     /** Device to monitor */
     final private Device device;
 
@@ -45,11 +48,11 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
     /** Timeout in seconds, <code>null</code> to "wait forever" */
     final private TimeDuration timeout;
 
-    /** Updated by device listener */
-    private volatile boolean is_condition_met;
+    /** Updated by device listener or forced for early completion */
+    private boolean is_condition_met;
 
     /** Updated by device listener */
-    private volatile Exception error = null;
+    private Exception error = null;
 
     /** Initialize
      *  @param device {@link Device} where values should be read
@@ -81,6 +84,10 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
     public void await() throws TimeoutException, Exception
     {
         final WaitWithTimeout timeout = new WaitWithTimeout(this.timeout);
+
+        // Fetch initial value with get-callback
+        // (will be obtained by device.read() in listener)
+        device.read(value_check_timeout);
 
         device.addListener(this);
         try
@@ -142,13 +149,25 @@ public class TextValueCondition implements DeviceCondition, DeviceListener
         {
             try
             {
-                is_condition_met = isConditionMet();
+                if (isConditionMet())
+                    is_condition_met = true;
             }
             catch (Exception ex)
             {
-                is_condition_met = false;
                 error = ex;
             }
+            // Notify await() so it can check again.
+            notifyAll();
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void complete()
+    {
+        synchronized (this)
+        {
+            is_condition_met = true;
             // Notify await() so it can check again.
             notifyAll();
         }

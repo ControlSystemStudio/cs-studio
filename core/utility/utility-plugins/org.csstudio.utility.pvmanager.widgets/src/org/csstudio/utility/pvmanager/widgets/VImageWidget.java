@@ -2,6 +2,16 @@ package org.csstudio.utility.pvmanager.widgets;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.formula.ExpressionLanguage;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.VImage;
+import org.diirt.vtype.ValueFactory;
+import org.diirt.vtype.ValueUtil;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
@@ -10,16 +20,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.formula.ExpressionLanguage;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.VImage;
-import org.epics.vtype.ValueFactory;
-import org.epics.vtype.ValueUtil;
 
 /**
  * Widget that can display a formula that returns a VImage.

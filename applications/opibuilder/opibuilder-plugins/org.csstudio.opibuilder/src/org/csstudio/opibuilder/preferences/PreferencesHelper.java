@@ -58,15 +58,14 @@ public class PreferencesHelper {
     public static final String DISPLAY_SYSTEM_OUTPUT = "display_system_output"; //$NON-NLS-1$
     public static final String SHOW_COMPACT_MODE_DIALOG = "show_compact_mode_dialog";//$NON-NLS-1$
     public static final String SHOW_FULLSCREEN_DIALOG = "show_fullscreen_dialog";//$NON-NLS-1$
-    public static final String SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG = "show_opi_runtime_perspective_dialog";//$NON-NLS-1$
     public static final String START_WINDOW_IN_COMPACT_MODE = "start_window_in_compact_mode";//$NON-NLS-1$
     public static final String URL_FILE_LOADING_TIMEOUT = "url_file_loading_timeout";//$NON-NLS-1$
     public static final String PULSING_ALARM_MINOR_PERIOD = "pulsing_alarm_minor_period";//$NON-NLS-1$
     public static final String PULSING_ALARM_MAJOR_PERIOD = "pulsing_alarm_major_period";//$NON-NLS-1$
     public static final String OPI_SEARCH_PATH="opi_search_path"; //$NON-NLS-1$
     public static final String PV_CONNECTION_LAYER = "pv_connection_layer"; //$NON-NLS-1$
-    public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style";
-    public static final String OPEN_OPI_RUNTIME_PERSPECTIVE="open_opi_runtime_perspective"; //$NON-NLS-1$
+    public static final String DEFAULT_TO_CLASSIC_STYLE = "default_to_classic_style"; //$NON-NLS-1$
+    public static final String SHOW_OPI_RUNTIME_STACKS = "show_opi_runtime_stacks"; //$NON-NLS-1$
 
     //The widgets that are hidden from palette.
     public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
@@ -166,6 +165,11 @@ public class PreferencesHelper {
     public static boolean isDefaultStyleClassic() {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, DEFAULT_TO_CLASSIC_STYLE, true, null);
+    }
+
+    public static boolean showOpiRuntimeStacks() {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SHOW_OPI_RUNTIME_STACKS, false, null);
     }
 
     public static boolean isAdvancedGraphicsDisabled(){
@@ -324,16 +328,7 @@ public class PreferencesHelper {
         putBoolean(SHOW_FULLSCREEN_DIALOG, show);
     }
 
-    public static boolean isShowOpiRuntimePerspectiveDialog(){
-        final IPreferencesService service = Platform.getPreferencesService();
-        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG, true, null);
-    }
-
-    public static void setShowOpiRuntimePerspectiveDialog(boolean show){
-        putBoolean(SHOW_OPI_RUNTIME_PERSPECTIVE_DIALOG, show);
-    }
-
-     public static boolean isStartWindowInCompactMode(){
+    public static boolean isStartWindowInCompactMode(){
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, START_WINDOW_IN_COMPACT_MODE, false, null);
     }
@@ -469,22 +464,4 @@ public class PreferencesHelper {
           final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, ABOUT_SHOW_LINKS, true, null);
     }
-
-    /**
-     * Set if the OPI Runtime Perspective should be opened when a new view is requested.
-     * @param if the OPI Runtime Perspective should be opened.
-     */
-    public static void setSwitchToOpiRuntimePerspective(boolean b) {
-        putBoolean(OPEN_OPI_RUNTIME_PERSPECTIVE, b);
-    }
-
-    /**
-     * Should the OPI Runtime Perspective be opened when a new view is requested.
-     * @return if the OPI Runtime Perspective should be opened.
-     */
-    public static boolean isSwitchToOpiRuntimePerspective() {
-        final IPreferencesService service = Platform.getPreferencesService();
-        return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, OPEN_OPI_RUNTIME_PERSPECTIVE, false, null);
-    }
-
 }

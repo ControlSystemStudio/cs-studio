@@ -108,8 +108,8 @@ public class ScanEngineHeadlessTest
         final ScanEngine engine = new ScanEngine();
         engine.start(false);
 
-        engine.submit(scan_x);
-        engine.submit(scan_y);
+        engine.submit(scan_x, true);
+        engine.submit(scan_y, true);
 
         // List scans and their state
         List<ExecutableScan> scans = engine.getExecutableScans();
@@ -197,14 +197,14 @@ public class ScanEngineHeadlessTest
 
         final ScanEngine engine = new ScanEngine();
         engine.start(false);
-        engine.submit(scan);
+        engine.submit(scan, true);
 
         waitForState(scan, ScanState.Finished);
 
         // Submit same scan again, which causes error
         try
         {
-            engine.submit(scan);
+            engine.submit(scan, true);
             fail("Submit scan twice?");
         }
         catch (IllegalStateException ex)
@@ -232,7 +232,7 @@ public class ScanEngineHeadlessTest
 
         final ScanEngine engine = new ScanEngine();
         engine.start(false);
-        engine.submit(scan);
+        engine.submit(scan, true);
 
         // Wait for scan to start
         waitForState(scan, ScanState.Running);
@@ -267,7 +267,7 @@ public class ScanEngineHeadlessTest
 
         final ScanEngine engine = new ScanEngine();
         engine.start(false);
-        engine.submit(scan);
+        engine.submit(scan, true);
 
         // Wait for scan to start
         waitForState(scan, ScanState.Running);

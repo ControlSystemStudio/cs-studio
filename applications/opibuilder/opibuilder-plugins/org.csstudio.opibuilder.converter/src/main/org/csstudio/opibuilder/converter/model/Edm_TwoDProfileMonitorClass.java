@@ -18,6 +18,7 @@ public class Edm_TwoDProfileMonitorClass extends EdmWidget {
     @EdmAttributeAn @EdmOptionalAn private String dataPvStr;
     @EdmAttributeAn @EdmOptionalAn private String widthPvStr;
     @EdmAttributeAn @EdmOptionalAn private String heightPvStr;
+    @EdmAttributeAn @EdmOptionalAn private String useFalseColourPvStr;
     @EdmAttributeAn @EdmOptionalAn private int dataWidth;
     @EdmAttributeAn @EdmOptionalAn private boolean pvBasedDataSize;
     @EdmAttributeAn @EdmOptionalAn private int nBitsPerPixel;
@@ -38,6 +39,10 @@ public class Edm_TwoDProfileMonitorClass extends EdmWidget {
         return heightPvStr;
     }
 
+    public String getUseFalseColourPvStr() {
+        return useFalseColourPvStr;
+    }
+
     public int getDataWidth() {
         return dataWidth;
     }
@@ -49,6 +54,5 @@ public class Edm_TwoDProfileMonitorClass extends EdmWidget {
     public int getnBitsPerPixel() {
         return nBitsPerPixel;
     }
-
 
 }

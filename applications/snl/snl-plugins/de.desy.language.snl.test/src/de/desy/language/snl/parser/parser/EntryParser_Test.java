@@ -11,14 +11,14 @@ public class EntryParser_Test extends TestCase {
 
 	@Test
 	public void testFindNextCharSequence() {
-		final String source = "entry {\n" 
+		final String source = "entry {\n"
 				+ "    pvPut(str, \"hallo\"); \n    }";
 
 		final EntryParser entryParser = new EntryParser();
 		entryParser.findNext(source);
 
 		Assert.assertTrue(entryParser.hasFoundElement());
-		Assert.assertEquals("entry {\n" 
+		Assert.assertEquals("entry {\n"
 				+ "    pvPut(str, \"hallo\"); \n    }",
 				entryParser.getLastFoundStatement());
 		Assert.assertEquals(0, entryParser.getStartOffsetLastFound());

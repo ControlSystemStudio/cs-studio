@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -171,6 +172,7 @@ public class GUI extends Composite implements AlarmClientModelListener
     private Button unselect;
 
     private SeverityColorProvider color_provider;
+    private SeverityColorPairProvider color_pair_provider;
     private SeverityIconProvider icon_provider;
     private AlarmTableLabelProvider table_label_provider;
 
@@ -194,6 +196,8 @@ public class GUI extends Composite implements AlarmClientModelListener
     private boolean blink_unacknowledged;
     /** Are the models writable or not */
     private final boolean writable;
+    /** Should the labels with the number of alarms be displayed or not */
+    private final boolean show_header;
 
     /** GUI updates are throttled to reduce flicker */
     final private GUIUpdateThrottle gui_update = new GUIUpdateThrottle()
@@ -201,7 +205,7 @@ public class GUI extends Composite implements AlarmClientModelListener
         @Override
         protected void fire()
         {
-            if (display.isDisposed())
+            if (display.isDisposed() || model == null)
                 return;
 
             AlarmTreePV[] rawAlarms = model.getActiveAlarms();
@@ -222,9 +226,6 @@ public class GUI extends Composite implements AlarmClientModelListener
             }
             display.syncExec(() ->
             {
-                if (current_alarms.isDisposed())
-                    return;
-
                 // Display counts, update tables
 
                 // Don't use TableViewer.setInput(), it causes flicker on Linux!
@@ -286,21 +287,24 @@ public class GUI extends Composite implements AlarmClientModelListener
      * @param parent Parent widget
      * @param site Workbench site or <code>null</code>
      * @param writable indicates if this GUI is used in a writable or read only environment
-     * @param separate_tables true if two tables should be created (one for acked and one for unacked alarms) or false if
-     *            only one table should be created
+     * @param separate_tables true if two tables should be created (one for acked and one for unacked alarms) or false
+     *          if only one table should be created
      * @param columns column configuration for the tables
      * @param sorting_column default sorting column
      * @param sort_up default sorting direction
+     * @param show_header true if the header showing the number of all alarms and select field should be displayed or
+     *          false otherwise
      */
     public GUI(final Composite parent, final IWorkbenchPartSite site,
             final boolean writable, final boolean separate_tables, final ColumnWrapper[] columns,
-            final ColumnInfo sorting_column, boolean sort_up)
+            final ColumnInfo sorting_column, boolean sort_up, boolean show_header)
     {
         super(parent,SWT.NONE);
         this.display = parent.getDisplay();
         this.separate_tables = separate_tables;
         this.columns = columns;
         this.writable = writable;
+        this.show_header = show_header;
         createComponents(sorting_column, sort_up);
 
         base_composite.addDisposeListener(new DisposeListener()
@@ -388,8 +392,9 @@ public class GUI extends Composite implements AlarmClientModelListener
             base_composite = new SashForm(this, SWT.VERTICAL | SWT.SMOOTH);
             base_composite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(base_composite);
+            color_pair_provider = new SeverityColorPairProvider(base_composite);
             icon_provider = new SeverityIconProvider(base_composite);
-            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, ColumnInfo.TIME);
+            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, color_pair_provider, ColumnInfo.TIME);
             addActiveAlarmSashElement(base_composite);
             addAcknowledgedAlarmSashElement(base_composite);
             ((SashForm) base_composite).setWeights(new int[]{ 80, 20 });
@@ -399,49 +404,51 @@ public class GUI extends Composite implements AlarmClientModelListener
             base_composite = new Composite(this, SWT.NONE);
             base_composite.setLayout(new FillLayout());
             color_provider = new SeverityColorProvider(base_composite);
+            color_pair_provider = new SeverityColorPairProvider(base_composite);
             icon_provider = new SeverityIconProvider(base_composite);
-            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, ColumnInfo.TIME);
+            table_label_provider = new AlarmTableLabelProvider(icon_provider, color_provider, color_pair_provider, ColumnInfo.TIME);
             addActiveAlarmSashElement(base_composite);
         }
         syncTables(active_table_viewer, acknowledged_table_viewer, sorting_column, sort_up);
         syncTables(acknowledged_table_viewer, active_table_viewer, sorting_column, sort_up);
 
-        // Update selection in active & ack'ed alarm table
-        // in response to filter changes
-        final ComboHistoryHelper filter_history = new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
-                "FILTER", filter) //$NON-NLS-1$
-        {
-            @Override
-            public void itemSelected(final String selection)
+        if (show_header) {
+            // Update selection in active & ack'ed alarm table
+            // in response to filter changes
+            final ComboHistoryHelper filter_history = new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
+                    "FILTER", filter) //$NON-NLS-1$
             {
-                final String filter_text = filter.getText().trim();
-                // Turn glob-type filter into regex, then pattern
-                final Pattern pattern = Pattern.compile(RegExHelper.fullRegexFromGlob(filter_text),
-                        Pattern.CASE_INSENSITIVE);
-                selectFilteredPVs(pattern, active_table_viewer);
-                if (separate_tables)
+                @Override
+                public void itemSelected(final String selection)
                 {
-                    selectFilteredPVs(pattern, acknowledged_table_viewer);
+                    final String filter_text = filter.getText().trim();
+                    // Turn glob-type filter into regex, then pattern
+                    final Pattern pattern = Pattern.compile(RegExHelper.fullRegexFromGlob(filter_text),
+                            Pattern.CASE_INSENSITIVE);
+                    selectFilteredPVs(pattern, active_table_viewer);
+                    if (separate_tables)
+                    {
+                        selectFilteredPVs(pattern, acknowledged_table_viewer);
+                    }
                 }
-            }
-        };
-        filter_history.loadSettings();
+            };
+            filter_history.loadSettings();
 
-        // Clear filter, un-select all items
-        unselect.addSelectionListener(new SelectionAdapter()
-        {
-            @Override
-            public void widgetSelected(SelectionEvent e)
+            // Clear filter, un-select all items
+            unselect.addSelectionListener(new SelectionAdapter()
             {
-                filter.setText(""); //$NON-NLS-1$
-                active_table_viewer.setSelection(null, true);
-                if (separate_tables)
+                @Override
+                public void widgetSelected(SelectionEvent e)
                 {
-                    acknowledged_table_viewer.setSelection(null, true);
+                    filter.setText(""); //$NON-NLS-1$
+                    active_table_viewer.setSelection(null, true);
+                    if (separate_tables)
+                    {
+                        acknowledged_table_viewer.setSelection(null, true);
+                    }
                 }
-            }
-        });
-
+            });
+        }
         gui_update.start();
         blink();
     }
@@ -480,8 +487,11 @@ public class GUI extends Composite implements AlarmClientModelListener
                     @Override
                     public void controlResized(ControlEvent e)
                     {
-                        s.setWidth(c.getWidth());
-                        w.setMinWidth(c.getWidth());
+                        if (Math.abs(s.getWidth() - c.getWidth()) > 1)
+                        {
+                            s.setWidth(c.getWidth());
+                            w.setMinWidth(c.getWidth());
+                        }
                     }
 
                     @Override
@@ -626,34 +636,37 @@ public class GUI extends Composite implements AlarmClientModelListener
         final Composite box = new Composite(parent, SWT.BORDER);
         box.setLayout(new GridLayout(5,false));
 
-        current_alarms = new Label(box, SWT.NONE);
-        current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, new Object[]
-        { ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER }));
-        current_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
-
-        error_message = new Label(box, SWT.NONE);
-        error_message.setLayoutData(new GridData(SWT.END,SWT.CENTER,false,false));
-
-        Label l = new Label(box, SWT.NONE);
-        l.setText(Messages.Filter);
-        l.setLayoutData(new GridData());
-
-        filter = new Combo(box, SWT.BORDER);
-        filter.setToolTipText(Messages.FilterTT);
-        filter.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
-
-        unselect = new Button(box, SWT.PUSH);
-        unselect.setText(Messages.Unselect);
-        unselect.setToolTipText(Messages.UnselectTT);
-        unselect.setLayoutData(new GridData(SWT.END,SWT.CENTER,false,false));
-
-        if (!separate_tables)
-        {
-            acknowledged_alarms = new Label(box, SWT.NONE);
-            acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, new Object[]
+        if (show_header) {
+            current_alarms = new Label(box, SWT.NONE);
+            current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, new Object[]
             { ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER }));
-            acknowledged_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false,5,1));
+            current_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
+
+            error_message = new Label(box, SWT.NONE);
+            error_message.setLayoutData(new GridData(SWT.END,SWT.CENTER,false,false));
+
+            Label l = new Label(box, SWT.NONE);
+            l.setText(Messages.Filter);
+            l.setLayoutData(new GridData());
+
+            filter = new Combo(box, SWT.BORDER);
+            filter.setToolTipText(Messages.FilterTT);
+            filter.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
+
+            unselect = new Button(box, SWT.PUSH);
+            unselect.setText(Messages.Unselect);
+            unselect.setToolTipText(Messages.UnselectTT);
+            unselect.setLayoutData(new GridData(SWT.END,SWT.CENTER,false,false));
+
+            if (!separate_tables)
+            {
+                acknowledged_alarms = new Label(box, SWT.NONE);
+                acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, new Object[]
+                { ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER }));
+                acknowledged_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false,5,1));
+            }
         }
+
 
         // Table w/ active alarms
         active_table_viewer = createAlarmTable(box, true);
@@ -670,9 +683,11 @@ public class GUI extends Composite implements AlarmClientModelListener
         final Composite box = new Composite(parent, SWT.BORDER);
         box.setLayout(new GridLayout(1,false));
 
-        acknowledged_alarms = new Label(box, SWT.NONE);
-        acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
-        acknowledged_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
+        if (show_header) {
+            acknowledged_alarms = new Label(box, SWT.NONE);
+            acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, ALARM_COUNT_PLACEHOLDER));
+            acknowledged_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
+        }
 
         // Table w/ ack'ed alarms
         acknowledged_table_viewer = createAlarmTable(box, false);
@@ -750,7 +765,7 @@ public class GUI extends Composite implements AlarmClientModelListener
             if (col_info == ColumnInfo.TIME)
                 view_col.setLabelProvider(table_label_provider);
             else
-                view_col.setLabelProvider(new AlarmTableLabelProvider(icon_provider, color_provider, col_info));
+                view_col.setLabelProvider(new AlarmTableLabelProvider(icon_provider, color_provider, color_pair_provider, col_info));
 
             if (col_info == ColumnInfo.ACK)
             {
@@ -826,7 +841,7 @@ public class GUI extends Composite implements AlarmClientModelListener
     private void setErrorMessage(final String error)
     {
         final Table act_table = active_table_viewer.getTable();
-        if (act_table.isDisposed())
+        if (!show_header || act_table.isDisposed())
             return;
         if (error == null)
         {
@@ -930,40 +945,47 @@ public class GUI extends Composite implements AlarmClientModelListener
             AlarmTreePV[] combinedAlarms)
     {
         if (model == null) return;
-        if (current_alarms.isDisposed())
+        //if GUI is currently busy, do not update anything, just trigger another update
+        if (active_table_viewer.isBusy()) {
+            gui_update.trigger();
             return;
+        }
 
-        String text = null;
-        if (filter_item_parent == null || filter_item_parent instanceof AlarmTreeRoot)
-            text = NLS.bind(Messages.CurrentAlarmsFmtAll, filteredAlarms.length);
-        else
-            text = NLS.bind(Messages.CurrentAlarmsFmt, new Object[]
-                        { filteredAlarms.length, numberOfRawAlarms, filter_item_parent.getPathName() });
-        current_alarms.setText(text);
-        current_alarms.setToolTipText(text);
+        if (show_header) {
+            if (current_alarms.isDisposed())
+                return;
 
-        if (filteredAlarms.length != numberOfRawAlarms)
-            current_alarms.setForeground(current_alarms.getDisplay().getSystemColor(SWT.COLOR_RED));
-        else
-            current_alarms.setForeground(null);
-        current_alarms.pack();
+            String text = null;
+            if (filter_item_parent == null || filter_item_parent instanceof AlarmTreeRoot)
+                text = NLS.bind(Messages.CurrentAlarmsFmtAll, filteredAlarms.length);
+            else
+                text = NLS.bind(Messages.CurrentAlarmsFmt, new Object[]
+                            { filteredAlarms.length, numberOfRawAlarms, filter_item_parent.getPathName() });
+            current_alarms.setText(text);
+            current_alarms.setToolTipText(text);
+
+            if (filteredAlarms.length != numberOfRawAlarms)
+                current_alarms.setForeground(current_alarms.getDisplay().getSystemColor(SWT.COLOR_RED));
+            else
+                current_alarms.setForeground(null);
+            current_alarms.pack();
 
 
-        if (filter_item_parent == null || filter_item_parent instanceof AlarmTreeRoot)
-            text = NLS.bind(Messages.AcknowledgedAlarmsFmtAll, filteredAcknowledgedAlarms.length);
-        else
-            text = NLS.bind(Messages.AcknowledgedAlarmsFmt, new Object[]
-                    { filteredAcknowledgedAlarms.length, numberOfRawAcknowledgedAlarms,
-                      filter_item_parent.getPathName() });
-        acknowledged_alarms.setText(text);
-        acknowledged_alarms.setToolTipText(text);
+            if (filter_item_parent == null || filter_item_parent instanceof AlarmTreeRoot)
+                text = NLS.bind(Messages.AcknowledgedAlarmsFmtAll, filteredAcknowledgedAlarms.length);
+            else
+                text = NLS.bind(Messages.AcknowledgedAlarmsFmt, new Object[]
+                        { filteredAcknowledgedAlarms.length, numberOfRawAcknowledgedAlarms,
+                          filter_item_parent.getPathName() });
+            acknowledged_alarms.setText(text);
+            acknowledged_alarms.setToolTipText(text);
 
-        if (filteredAcknowledgedAlarms.length != numberOfRawAcknowledgedAlarms)
-            acknowledged_alarms.setForeground(acknowledged_alarms.getDisplay().getSystemColor(SWT.COLOR_RED));
-        else
-            acknowledged_alarms.setForeground(null);
-        acknowledged_alarms.pack();
-
+            if (filteredAcknowledgedAlarms.length != numberOfRawAcknowledgedAlarms)
+                acknowledged_alarms.setForeground(acknowledged_alarms.getDisplay().getSystemColor(SWT.COLOR_RED));
+            else
+                acknowledged_alarms.setForeground(null);
+            acknowledged_alarms.pack();
+        }
         if (separate_tables)
         {
             ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setAlarms(filteredAlarms);
@@ -1024,5 +1046,45 @@ public class GUI extends Composite implements AlarmClientModelListener
     public void setTimeFormat(String timeFormat)
     {
         table_label_provider.setTimeFormat(timeFormat);
+    }
+
+    /**
+     * Set the maximum number of alarms displayed in the table.
+     *
+     * @param limit the maximum number of alarms
+     */
+    public void setNumberOfAlarmsLimit(int limit)
+    {
+        ((AlarmTableContentProvider) active_table_viewer.getContentProvider()).setNumberOfAlarmsLimit(limit);
+        if (acknowledged_table_viewer != null)
+            ((AlarmTableContentProvider) acknowledged_table_viewer.getContentProvider()).setNumberOfAlarmsLimit(limit);
+    }
+
+    /**
+     * Set the weights of the sash form used for displaying acknowledged and unacknowledged tables. If the
+     * GUI only shows one table, this method as no effect.
+     *
+     * @param ack the weight for the acknowledged table
+     * @param unack the weight for the unacknowledged table
+     */
+    public void setSashWeights(int ack, int unack)
+    {
+        if (base_composite instanceof SashForm)
+            ((SashForm) base_composite).setWeights(new int[]{ ack, unack });
+    }
+
+    /**
+     * Toggles the visibility of both table column headers.
+     *
+     * @param visible true if headers should be visible or false if hidden
+     */
+    public void setTableColumnsHeadersVisible(boolean visible)
+    {
+        Table table = active_table_viewer.getTable();
+        if (table.isDisposed())
+            return;
+        table.setHeaderVisible(visible);
+        if (separate_tables)
+            acknowledged_table_viewer.getTable().setHeaderVisible(visible);
     }
 }

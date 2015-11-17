@@ -2,6 +2,19 @@ package org.csstudio.utility.pvmanager.widgets;
 
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.formula.ExpressionLanguage;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.Alarm;
+import org.diirt.vtype.VTable;
+import org.diirt.vtype.VTypeValueEquals;
+import org.diirt.vtype.ValueFactory;
+import org.diirt.vtype.ValueUtil;
+import org.diirt.vtype.table.VTableFactory;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
@@ -14,19 +27,6 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.formula.ExpressionLanguage;
-import org.epics.util.array.ArrayInt;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.Alarm;
-import org.epics.vtype.VTable;
-import org.epics.vtype.VTypeValueEquals;
-import org.epics.vtype.ValueFactory;
-import org.epics.vtype.ValueUtil;
-import org.epics.vtype.table.VTableFactory;
 
 /**
  * Widget that can display a formula that returns a VTable.
@@ -90,9 +90,9 @@ public class VTableWidget extends SelectionBeanComposite implements AlarmProvide
     @Override
     public void setFont(final Font font)
     {
-        super.setFont(font);
-        tableDisplay.setFont(font);
-        errorBar.setFont(font);
+    super.setFont(font);
+    tableDisplay.setFont(font);
+    errorBar.setFont(font);
     }
 
     private VTableDisplay tableDisplay;

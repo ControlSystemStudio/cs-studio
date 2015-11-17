@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 
 /** {@link ScanCommandImpl} that delays the scan until a device reaches a certain value
  *  @author Kay Kasemir
@@ -36,6 +36,9 @@ import org.epics.util.time.TimeDuration;
 @SuppressWarnings("nls")
 public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 {
+    /** Currently 'await'-ed condition or null when nobody's waiting*/
+    private volatile DeviceCondition condition = null;
+
     /** {@inheritDoc} */
     public WaitCommandImpl(final WaitCommand command, final JythonSupport jython) throws Exception
     {
@@ -112,7 +115,6 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
 
         final TimeDuration timeout = TimeDuration.ofSeconds(command.getTimeout());
         final Object desired = command.getDesiredValue();
-        final DeviceCondition condition;
         if (desired instanceof Number)
         {
             final double number = ((Number)desired).doubleValue();
@@ -121,7 +123,23 @@ public class WaitCommandImpl extends ScanCommandImpl<WaitCommand>
         }
         else
             condition = new TextValueCondition(device, Comparison.EQUALS, desired.toString(), timeout);
-        condition.await();
+        try
+        {
+            condition.await();
+        }
+        finally
+        {
+            condition = null;
+        }
         context.workPerformed(1);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void next()
+    {
+        final DeviceCondition safe_copy = condition;
+        if (safe_copy != null)
+            safe_copy.complete();
     }
 }

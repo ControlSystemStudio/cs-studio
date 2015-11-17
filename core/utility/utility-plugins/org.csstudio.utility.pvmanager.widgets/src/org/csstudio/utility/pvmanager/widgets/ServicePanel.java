@@ -1,13 +1,26 @@
 package org.csstudio.utility.pvmanager.widgets;
 
-import static org.epics.pvmanager.ExpressionLanguage.channel;
-import static org.epics.pvmanager.ExpressionLanguage.latestValueOf;
-import static org.epics.pvmanager.ExpressionLanguage.readMapOf;
-import static org.epics.pvmanager.ExpressionLanguage.writeMapOf;
+import static org.diirt.datasource.ExpressionLanguage.channel;
+import static org.diirt.datasource.ExpressionLanguage.latestValueOf;
+import static org.diirt.datasource.ExpressionLanguage.readMapOf;
+import static org.diirt.datasource.ExpressionLanguage.writeMapOf;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.PVWriter;
+import org.diirt.datasource.expression.DesiredRateExpression;
+import org.diirt.datasource.expression.ReadMap;
+import org.diirt.datasource.expression.WriteExpression;
+import org.diirt.datasource.expression.WriteMap;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceRegistry;
+import org.diirt.util.time.TimeDuration;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -17,19 +30,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.WriteFunction;
-import org.epics.pvmanager.expression.DesiredRateExpression;
-import org.epics.pvmanager.expression.ReadMap;
-import org.epics.pvmanager.expression.WriteExpression;
-import org.epics.pvmanager.expression.WriteMap;
-import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.pvmanager.service.ServiceRegistry;
-import org.epics.util.time.TimeDuration;
 
 /**
  * Basic ui component that can display a VTable on screen.
@@ -85,41 +85,34 @@ public class ServicePanel extends Composite {
             @Override
             public void widgetSelected(SelectionEvent e) {
                 Map<String, Object> args = argReader.getValue();
-                serviceMethod.execute(args,
-                        new WriteFunction<Map<String, Object>>() {
+                serviceMethod.executeAsync(args, new Consumer<Map<String, Object>>() {
+
+                    @Override
+                    public void accept(final Map<String, Object> newValue) {
+                        SWTUtil.swtThread(ServicePanel.this).execute(new Runnable() {
 
                             @Override
-                            public void writeValue(
-                                    final Map<String, Object> newValue) {
-                                SWTUtil.swtThread(ServicePanel.this).execute(
-                                        new Runnable() {
-
-                                            @Override
-                                            public void run() {
-                                                resultsField.setText(String
-                                                        .valueOf(newValue));
-                                            }
-                                        });
-                                resultWriter.write(newValue);
+                            public void run() {
+                                resultsField.setText(String.valueOf(newValue));
                             }
-                        }, new WriteFunction<Exception>() {
-
-                            @Override
-                            public void writeValue(final Exception newValue) {
-                                SWTUtil.swtThread(ServicePanel.this).execute(
-                                        new Runnable() {
-
-                                            @Override
-                                            public void run() {
-                                                resultsField.setText(String
-                                                        .valueOf(newValue
-                                                                .getMessage()));
-                                            }
-                                        });
-
-                            }
-
                         });
+                        resultWriter.write(newValue);
+                    }
+                }, new Consumer<Exception>() {
+
+                    @Override
+                    public void accept(final Exception newValue) {
+                        SWTUtil.swtThread(ServicePanel.this).execute(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                resultsField.setText(String.valueOf(newValue.getMessage()));
+                            }
+                        });
+
+                    }
+
+                });
             }
         });
         executeButton.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
@@ -219,7 +212,7 @@ public class ServicePanel extends Composite {
             return;
         }
         ReadMap<Object> map = readMapOf(Object.class);
-        for (String argumentName : serviceMethod.getArgumentDescriptions()
+        for (String argumentName : serviceMethod.getArgumentMap()
                 .keySet()) {
             map.add(latestValueOf(channel(argumentPrefix + argumentName)).as(
                     argumentName));
@@ -232,7 +225,7 @@ public class ServicePanel extends Composite {
             return;
         }
         WriteMap<Object> map = writeMapOf(Object.class);
-        for (String resultName : serviceMethod.getResultDescriptions().keySet()) {
+        for (String resultName : serviceMethod.getResultMap().keySet()) {
             map.add(channel(resultPrefix + resultName).as(resultName));
         }
         setResultExpression(map);

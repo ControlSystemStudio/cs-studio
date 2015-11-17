@@ -90,7 +90,7 @@ public class LinkingContainerModel extends AbstractLinkingContainerModel {
      * The geographical size of the children.
      */
     private Dimension childrenGeoSize = null;
-    
+
     public LinkingContainerModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
         setBorderStyle(BorderStyle.LOWERED);

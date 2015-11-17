@@ -13,11 +13,12 @@ import org.eclipse.osgi.util.NLS;
 
 /** Formatter for alarm system annunciations
  *
- *  <p>Used by the alarm server to create the annuncation,
+ *  <p>Used by the alarm server to create the annunciation,
  *  also used by the GUI to display what the annunciation
  *  should have been.
  *
  *  @author Kay Kasemir
+ *  @author Boris Versic - ability to force custom formatting of message even when it doesn't start with '*'
  */
 public class AnnunciationFormatter
 {
@@ -38,9 +39,11 @@ public class AnnunciationFormatter
      *                and {1} for the value
      *  @param severity Alarm severity
      *  @param value Alarm value
+     *  @param forceCustomFormat Custom-format the message even when format does not start
+     *  						 with '*' (instead of using the default message formatting) 
      *  @return Annunciation text
      */
-    public static String format(String format, final String severity, String value)
+    public static String format(String format, final String severity, String value, boolean forceCustomFormat)
     {
         // Priority flag at start of format?
         format = format.trim();
@@ -49,10 +52,12 @@ public class AnnunciationFormatter
             format = format.substring(Messages.PriorityAnnunciationPrefix.length()).trim();
 
         String message;
-        // Custom format?
-        if (format.startsWith(Messages.FormattedAnnunciationPrefix))
+        boolean customFormat = format.startsWith(Messages.FormattedAnnunciationPrefix);  
+        // Custom format ?
+        if (customFormat || forceCustomFormat)
         {
-            format = format.substring(Messages.FormattedAnnunciationPrefix.length()).trim();
+        	if (customFormat)
+        		format = format.substring(Messages.FormattedAnnunciationPrefix.length()).trim();
 
             // Priority flag at start of custom format?
             if (format.startsWith(Messages.PriorityAnnunciationPrefix))
@@ -74,5 +79,18 @@ public class AnnunciationFormatter
             message = Messages.PriorityAnnunciationPrefix + message;
 
         return message;
+    }
+    
+    /** Create message for annunciation
+     *  @param format Format to use, either the plain description or a format
+     *                that starts with '*' and may then include {0} for the severity
+     *                and {1} for the value
+     *  @param severity Alarm severity
+     *  @param value Alarm value
+     *  @return Annunciation text
+     */
+    public static String format(String format, final String severity, String value)
+    {
+    	return format(format, severity, value, false);
     }
 }

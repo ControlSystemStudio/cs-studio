@@ -14,7 +14,7 @@ import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.XMLTags;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.eclipse.osgi.util.NLS;
-import org.epics.util.time.Timestamp;
+import org.diirt.util.time.Timestamp;
 
 /** Leaf item in the alarm configuration tree which refers to a PV,
  *  tracking the current and alarm state, value, timestamp info
@@ -213,12 +213,12 @@ public class AlarmTreePV extends AlarmTreeLeaf
         {
             synchronized (this)
             {
-                if (setAlarmState(current_severity, severity, message, timestamp)  ||
-                    ! current_message.equals(this.current_message) )
+                ChangeLevel level = setAlarmState(current_severity, severity, message, timestamp);
+                if ( level != ChangeLevel.NONE || ! current_message.equals(this.current_message) )
                 {   // Alarm state or at least message changed
                     this.current_message = current_message;
                     this.value = value;
-                    parent_changed = true;
+                    parent_changed = level == ChangeLevel.PV_AND_PARENT;
                 }
                 else
                     parent_changed = false;

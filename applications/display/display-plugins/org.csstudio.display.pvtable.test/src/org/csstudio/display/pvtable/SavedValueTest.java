@@ -14,10 +14,10 @@ import java.util.Arrays;
 import org.csstudio.display.pvtable.model.SavedArrayValue;
 import org.csstudio.display.pvtable.model.SavedScalarValue;
 import org.csstudio.display.pvtable.model.SavedValue;
-import org.epics.util.array.ArrayDouble;
-import org.epics.util.array.ArrayInt;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueFactory;
+import org.diirt.util.array.ArrayDouble;
+import org.diirt.util.array.ArrayInt;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 import org.junit.Test;
 
 /** JUnit test of {@link SavedValue}

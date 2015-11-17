@@ -52,8 +52,8 @@ public class Opi_activeButtonClass extends OpiWidget {
             new OpiString(widgetContext, "off_label", r.getOffLabel());
         new OpiBoolean(widgetContext, "show_boolean_label", true);
 
-        new OpiBoolean(widgetContext, "toggle_button", r.getButtonType() != null
-                && r.getButtonType().equals("push"));
+        new OpiBoolean(widgetContext, "toggle_button", r.getButtonType() == null
+                || r.getButtonType().equals("toggle"));
         if (r.getAttribute("controlBitsPos").isExistInEDL()) {
             new OpiInt(widgetContext, "data_type", r.getControlBitsPos() < 0 ? 0
                     : r.getControlBitsPos());

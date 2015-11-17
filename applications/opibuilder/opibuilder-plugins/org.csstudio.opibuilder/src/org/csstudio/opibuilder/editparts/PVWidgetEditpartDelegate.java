@@ -44,8 +44,8 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
-import org.epics.vtype.AlarmSeverity;
-import org.epics.vtype.VType;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VType;
 
 public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 //    private interface AlarmSeverity extends ISeverity{
@@ -144,7 +144,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     private ScheduledFuture<?> scheduledFuture;
 
     private boolean pvsHaveBeenStarted = false;
-    
+
     /**
      * @param editpart the editpart to be delegated.
      * It must implemented {@link IPVWidgetEditpart}
@@ -729,27 +729,39 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 UIBundlingThread.getInstance().addRunnable(
                         editpart.getViewer().getControl().getDisplay(),new Runnable(){
                     public void run() {
-                        IFigure figure = editpart.getFigure();
-                        if(figure.getCursor() == Cursors.NO)
-                            figure.setCursor(savedCursor);
-                        figure.setEnabled(widgetModel.isEnabled());
-                        figure.repaint();
+                        setControlEnabled(true);
                     }
                 });
-            }else{
+            } else {
                 UIBundlingThread.getInstance().addRunnable(
                         editpart.getViewer().getControl().getDisplay(),new Runnable(){
                     public void run() {
-                        IFigure figure = editpart.getFigure();
-                        if(figure.getCursor() != Cursors.NO)
-                            savedCursor = figure.getCursor();
-                        figure.setEnabled(false);
-                        figure.setCursor(Cursors.NO);
-                        figure.repaint();
+                        setControlEnabled(false);
                     }
                 });
             }
+        }
+    }
 
+    /**
+     * Set whether the editpart is enabled for PV control.  Disabled
+     * editparts have greyed-out figures, and the cursor is set to a cross.
+     */
+    @Override
+    public void setControlEnabled(boolean enabled) {
+        if (enabled) {
+            IFigure figure = editpart.getFigure();
+            if(figure.getCursor() == Cursors.NO)
+                figure.setCursor(savedCursor);
+            figure.setEnabled(editpart.getWidgetModel().isEnabled());
+            figure.repaint();
+        } else {
+            IFigure figure = editpart.getFigure();
+            if(figure.getCursor() != Cursors.NO)
+                savedCursor = figure.getCursor();
+            figure.setEnabled(false);
+            figure.setCursor(Cursors.NO);
+            figure.repaint();
         }
     }
 

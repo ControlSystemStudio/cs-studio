@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>base</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.2.0-SNAPSHOT</version>
   </parent>
   <artifactId>base-plugins</artifactId>
   <packaging>pom</packaging>
@@ -14,7 +14,7 @@
     <module>org.csstudio.csdata</module>
     <!--     <module>org.csstudio.csdata.test</module> -->
     <module>org.csstudio.vtype.pv</module>
-    <!--    <module>org.csstudio.vtype.pv.test</module>  BLOCKS EXECUTION -->
+    <module>org.csstudio.vtype.pv.test</module>
     <module>org.csstudio.workspace</module>
   </modules>
   <groupId>org.csstudio</groupId>

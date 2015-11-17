@@ -14,8 +14,8 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VType;
 
 /** Eclipse ViewPart for the post analyzer Model and GUI.
  *  @author Albert Kagarmanov

@@ -1,7 +1,7 @@
 package org.csstudio.diag.pvmanager.probe;
 
 import java.io.Writer;
-import org.epics.vtype.io.CSVIO;
+import org.diirt.vtype.io.CSVIO;
 
 public class SimpleDataTextExport implements DataExportFormat {
 

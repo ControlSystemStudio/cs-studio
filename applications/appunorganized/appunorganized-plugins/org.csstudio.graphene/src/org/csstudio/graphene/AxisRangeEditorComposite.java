@@ -19,12 +19,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.epics.graphene.AxisRange;
-import org.epics.graphene.AxisRanges;
-import org.epics.graphene.AxisRanges.Fixed;
-import org.epics.graphene.AxisRanges.Data;
-import org.epics.graphene.AxisRanges.Display;
-import org.epics.graphene.AxisRanges.Auto;
+import org.diirt.graphene.AxisRange;
+import org.diirt.graphene.AxisRanges;
+import org.diirt.graphene.AxisRanges.Fixed;
+import org.diirt.graphene.AxisRanges.Data;
+import org.diirt.graphene.AxisRanges.Display;
+import org.diirt.graphene.AxisRanges.Auto;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.ModifyEvent;
 
@@ -156,14 +156,14 @@ public class AxisRangeEditorComposite extends Composite implements ISelectionPro
         fireSelectionChanged();
     }
 
-    private void update(AxisRange range)     {
+    private void update(AxisRange range)    {
         updating = true;
         clear();
         if (range instanceof Fixed) {
             Fixed abs = (Fixed) range;
             btnFixed.setSelection(true);
-            minFixed.setText(abs.getFixedRange().getMinimum().toString());
-            maxFixed.setText(abs.getFixedRange().getMaximum().toString());
+            minFixed.setText(Double.toString(abs.getFixedRange().getMinimum()));
+            maxFixed.setText(Double.toString(abs.getFixedRange().getMaximum()));
             minFixed.setEnabled(true);
             maxFixed.setEnabled(true);
         } else if (range instanceof Data) {

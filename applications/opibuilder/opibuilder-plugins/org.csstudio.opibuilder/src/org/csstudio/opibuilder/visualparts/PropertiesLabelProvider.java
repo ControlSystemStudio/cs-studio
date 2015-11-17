@@ -29,8 +29,8 @@ public class PropertiesLabelProvider extends LabelProvider implements
                 if (columnIndex == 1 && element instanceof AbstractWidgetProperty) {
                     AbstractWidgetProperty property = (AbstractWidgetProperty) element;
 
-                    if (property != null && property.isVisibleInPropSheet()) {
-                        if (property.getPropertyDescriptor().getLabelProvider() != null)
+                    if (property.isVisibleInPropSheet()
+                            && property.getPropertyDescriptor().getLabelProvider() != null) {
                             return property.getPropertyDescriptor().getLabelProvider().
                                 getImage(property.getPropertyValue());
                     }
@@ -49,7 +49,8 @@ public class PropertiesLabelProvider extends LabelProvider implements
                         return property.getDescription();
                     }
 
-                    if (property != null && property.isVisibleInPropSheet() && property.getPropertyDescriptor().getLabelProvider() != null) {
+                    if (property.isVisibleInPropSheet()
+                            && property.getPropertyDescriptor().getLabelProvider() != null) {
                         return property.getPropertyDescriptor().getLabelProvider().getText(
                                 property.getPropertyValue());
                     }

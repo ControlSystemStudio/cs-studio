@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Oak Ridge National Laboratory.
+ * Copyright (c) 2012-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -63,12 +63,17 @@ public class ScanServlet extends HttpServlet
         // Determine name of scan
         String scan_name = request.getPathInfo();
         if (scan_name == null)
-            scan_name = "Scan from " + request.getRemoteHost();
+        	scan_name = "Scan from " + request.getRemoteHost();
         else
         {
-            if (scan_name.startsWith("/"))
-                scan_name = scan_name.substring(1);
+            if (! scan_name.startsWith("/"))
+                throw new Error("Path does not start with '/'");
+            scan_name = scan_name.substring(1);
         }
+
+        // Queue unless "?queue=false"
+        final String queue_parm = request.getParameter("queue");
+        final boolean queue = ! "false".equalsIgnoreCase(queue_parm);
 
         // Read scan commands
         final String scan_commands = IOUtils.toString(request.getInputStream());
@@ -80,7 +85,7 @@ public class ScanServlet extends HttpServlet
         // Submit scan
         try
         {
-            final long scan_id = scan_server.submitScan(scan_name, scan_commands);
+            final long scan_id = scan_server.submitScan(scan_name, scan_commands, queue);
 
             // Return scan ID
             out.print("<id>");
@@ -104,6 +109,7 @@ public class ScanServlet extends HttpServlet
     }
 
     /** 'Put' scan into new state
+     *  <p>PUT scan/{id}/next: Force transition to next command
      *  <p>PUT scan/{id}/pause: Pause running scan
      *  <p>PUT scan/{id}/resume: Resume paused scan
      *  <p>PUT scan/{id}/abort: Abort running or paused scan
@@ -132,6 +138,9 @@ public class ScanServlet extends HttpServlet
             final String command = path.getString(1);
             switch (command)
             {
+            case "next":
+                scan_server.next(id);
+                break;
             case "pause":
                 scan_server.pause(id);
                 break;

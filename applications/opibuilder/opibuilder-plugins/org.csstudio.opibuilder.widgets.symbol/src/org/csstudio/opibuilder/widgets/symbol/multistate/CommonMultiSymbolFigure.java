@@ -223,7 +223,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
 
     /**
      * Set all the state string values.
-     * 
+     *
      * @param states the states
      */
     public void setStates(List<String> states) {
@@ -267,7 +267,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
 
     /**
      * Set user selected image path (edit mode)
-     * 
+     *
      * @param model
      * @param imagePath
      */
@@ -635,7 +635,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
 
     /**
      * We want to have local coordinates here.
-     * 
+     *
      * @return True if here should used local coordinates
      */
     @Override

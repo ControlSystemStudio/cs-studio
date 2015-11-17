@@ -7,9 +7,9 @@ import org.epics.pvaccess.server.rpc.RPCRequestException;
 import org.epics.pvdata.pv.PVStructure;
 import org.epics.pvdata.pv.PVStructureArray;
 import org.epics.pvdata.pv.StructureArrayData;
-import org.epics.util.time.Timestamp;
-import org.epics.vtype.VType;
-import org.epics.vtype.VTypeToString;
+import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.VTypeToString;
 
 import org.csstudio.archive.vtype.ArchiveVNumber;
 import org.csstudio.archive.vtype.ArchiveVNumberArray;

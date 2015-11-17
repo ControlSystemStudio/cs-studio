@@ -44,6 +44,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
@@ -67,6 +68,15 @@ public class ResourceUtil {
     static {
         IMPL = (ResourceUtilSSHelper)ImplementationLoader.newInstance(
                 ResourceUtilSSHelper.class);
+    }
+
+    /**
+     * Returns the cursor used during pv copy action.
+     *
+     * @return the cursor
+     */
+    public static Cursor getCopyPvCursor() {
+        return IMPL.getCopyPvCursor();
     }
 
     /**
@@ -148,6 +158,11 @@ public class ResourceUtil {
 
     }
 
+    // TODO Check handling of "absolute" path and search path.
+    //      Why is AbstractOpenOPIAction resolving a path,
+    //      and not the OPIRuntimeDelegate itself?
+    //      Resolve this after settling on use of "Editor" or "View" for runtime,
+    //      since that will result in less code that needs to be updated.
     /**Build the absolute path from the file path (without the file name part)
      * of the widget model and the relative path.
      * @param model the widget model
@@ -317,11 +332,14 @@ public class ResourceUtil {
             //The code to support https protocol is provided by Eric Berryman (eric.berryman@gmail.com) from Frib
             // Create a trust manager that does not validate certificate chains
             TrustManager[] trustAllCerts = new TrustManager[] {new X509TrustManager() {
+                    @Override
                     public java.security.cert.X509Certificate[] getAcceptedIssuers() {
                         return null;
                     }
+                    @Override
                     public void checkClientTrusted(X509Certificate[] certs, String authType) {
                     }
+                    @Override
                     public void checkServerTrusted(X509Certificate[] certs, String authType) {
                     }
                 }
@@ -344,6 +362,7 @@ public class ResourceUtil {
 
             // Create all-trusting host name verifier
             HostnameVerifier allHostsValid = new HostnameVerifier() {
+                @Override
                 public boolean verify(String hostname, SSLSession session) {
                     return true;
                 }
@@ -381,6 +400,7 @@ public class ResourceUtil {
         }
     }
 
+    // TODO Rename to isExistingFile, but that also affects editor, symbol widget, ..
     /**If the file on path is an existing file in workspace, local file system or available URL.
      * @param absolutePath
      * @param runInUIJob true if this method should run as an UI Job.
