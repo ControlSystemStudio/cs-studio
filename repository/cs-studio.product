@@ -60,40 +60,22 @@
 
    <features>
       <feature id="org.eclipse.rcp"/>
+      <feature id="org.eclipse.e4.rcp"/>
+      <feature id="org.eclipse.platform"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
       <feature id="org.eclipse.equinox.p2.core.feature"/>
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
-      <feature id="org.csstudio.core.base.feature"/>
-      <feature id="org.csstudio.core.platform.feature"/>
-      <feature id="org.csstudio.core.utility.feature"/>
-      <feature id="org.csstudio.core.ui.feature"/>
+      <feature id="org.eclipse.fx.target.rcp.feature"/>
       <feature id="org.csstudio.product.feature"/>
-      <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
       <feature id="org.csstudio.product.configuration.feature"/>
-      <feature id="org.eclipse.gef"/>
+      <feature id="org.csstudio.core.diirt.feature"/>
+      <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
       <feature id="org.csstudio.applications.opibuilder.feature"/>
       <feature id="org.csstudio.pvmanager.ca.feature"/>
-      <feature id="org.csstudio.applications.utility.feature"/>
-      <feature id="org.eclipse.fx.target.rcp.feature"/>
-      <feature id="org.eclipse.help"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient4.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature"/>
-      <feature id="org.eclipse.emf.common"/>
-      <feature id="org.eclipse.ecf.core.ssl.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.ssl.feature"/>
-      <feature id="org.eclipse.draw2d"/>
-      <feature id="org.eclipse.emf.ecore"/>
-      <feature id="org.eclipse.ecf.core.feature"/>
-      <feature id="org.eclipse.ecf.filetransfer.feature"/>
       <feature id="org.csstudio.applications.logbook.feature"/>
-      <feature id="org.csstudio.applications.diag.feature"/>
-      <feature id="org.csstudio.utilities.feature"/>
-      <feature id="org.eclipse.platform"/>
-      <feature id="org.csstudio.thirdparty.all.feature"/>
+      <feature id="org.csstudio.applications.pvmanager.diag.feature"/>
       <feature id="org.csstudio.email.feature"/>
-      <feature id="org.csstudio.core.diirt.feature"/>
-      <feature id="org.eclipse.e4.rcp"/>
    </features>
 
    <configurations>
