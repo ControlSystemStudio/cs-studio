@@ -15,10 +15,8 @@ import java.util.List;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.ui.util.CustomMediaFactory;
-import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 
@@ -71,9 +69,10 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         led.setShowBooleanLabel(false);
         led.setOnColor(getOnColor());
         led.setOffColor(getOffColor());
+        led.setLedBorderWidth(squareBorderWidth);
+        led.setBorderColor(squareBorderColor);
         led.setSquareLED(squareLED);
         led.setEffect3D(effect3D);
-        led.setBorder(createSquareBorder());
         return led;
     }
 
@@ -363,24 +362,12 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         this.squareLED = squareLED;
         for (LEDFigure bulb : ledFigures) {
             bulb.setSquareLED(this.squareLED);
-            bulb.setBorder(createSquareBorder());
         }
         for (TextFigure text : textFigures) {
             alignText(text);
         }
         revalidate();
         repaint();
-    }
-
-    /**
-     * Create a border for square LEDs
-     */
-    private Border createSquareBorder() {
-        Border ledBorder = null; // no border
-        if (squareBorderWidth > 0) {
-            ledBorder = new LineBorder(squareBorderColor, squareBorderWidth);
-        }
-        return ledBorder;
     }
 
     /**
@@ -415,13 +402,11 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 
         squareBorderWidth = value;
 
-        if (squareLED) {
-            for (LEDFigure bulb : ledFigures) {
-                bulb.setBorder(createSquareBorder());
-            }
-            revalidate();
-            repaint();
+        for (LEDFigure bulb : ledFigures) {
+            bulb.setLedBorderWidth(squareBorderWidth);
         }
+        revalidate();
+        repaint();
     }
 
 
@@ -434,13 +419,11 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 
         squareBorderColor = value;
 
-        if (squareLED) {
-            for (LEDFigure bulb : ledFigures) {
-                bulb.setBorder(createSquareBorder());
-            }
-            revalidate();
-            repaint();
+        for (LEDFigure bulb : ledFigures) {
+            bulb.setBorderColor(squareBorderColor);
         }
+        revalidate();
+        repaint();
     }
 
     /**
