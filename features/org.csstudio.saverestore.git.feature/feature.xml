@@ -18,7 +18,7 @@
    </license>
 
    <requires>
-      <import feature="org.csstudio.saverestore.feature" version="1.0.0.qualifier" match="greaterOrEqual"/>
+      <import feature="org.csstudio.saverestore.feature" version="1.0.0" match="greaterOrEqual"/>
       <import feature="org.eclipse.jgit" version="4.0.3.201509231615-r" match="greaterOrEqual"/>
    </requires>
 
