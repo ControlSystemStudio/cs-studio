@@ -81,8 +81,8 @@ public class LEDModel extends AbstractBoolWidgetModel {
                 WidgetPropertyCategory.Display, false));
         setPropertyVisible(PROP_BOOL_LABEL_POS, false);
 
-        addProperty(new IntegerProperty(PROP_NSTATES,
-                "State Count", WidgetPropertyCategory.Behavior, 2, 2, LEDFigure.MAX_NSTATES));
+        addProperty(new IntegerProperty(PROP_NSTATES, "State Count",
+                WidgetPropertyCategory.Behavior, 2, 2, LEDFigure.MAX_NSTATES));
         setPropertyVisibleAndSavable(PROP_NSTATES, true, false);
 
         WidgetPropertyCategory category = new NameDefinedCategory("State Fallback");
