@@ -16,7 +16,9 @@ import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -62,6 +64,13 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
     /** Label of each bit */
     public static final String PROP_LABELS = "label"; //$NON-NLS-1$
 
+    /** Spacing between square LEDs */
+    public static final String PROP_SQUARE_SPACING = "square_led_border"; //$NON-NLS-1$
+    public static final String PROP_SQUARE_COLOR = "square_led_border_color"; //$NON-NLS-1$
+    public static final Integer DEFAULT_SQUARE_SPACING = 3;
+    public static final Color DEFAULT_SQUARE_SPACING_COLOR = CustomMediaFactory.getInstance().getColor(
+            CustomMediaFactory.COLOR_DARK_GRAY);
+
     public ByteMonitorModel() {
         setSize(292, 20);
     }
@@ -78,7 +87,7 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
         addProperty(new BooleanProperty(PROP_HORIZONTAL, "Horizontal",
                 WidgetPropertyCategory.Display, true));
         addProperty(new BooleanProperty(PROP_BIT_REVERSE, "Reverse Bits",
-        WidgetPropertyCategory.Display, false));
+                WidgetPropertyCategory.Display, false));
         addProperty(new ColorProperty(PROP_ON_COLOR, "On Color",
                 WidgetPropertyCategory.Display, DEFAULT_ON_COLOR));
         addProperty(new ColorProperty(PROP_OFF_COLOR, "Off Color",
@@ -89,6 +98,10 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
                 WidgetPropertyCategory.Display, true));
         addProperty(new StringListProperty(PROP_LABELS, "Labels",
                 WidgetPropertyCategory.Display, new ArrayList<String>()));
+        addProperty(new IntegerProperty(PROP_SQUARE_SPACING, "LED border",
+                WidgetPropertyCategory.Display, DEFAULT_SQUARE_SPACING));
+        addProperty(new ColorProperty(PROP_SQUARE_COLOR, "LED border color",
+                WidgetPropertyCategory.Display, DEFAULT_SQUARE_SPACING_COLOR.getRGB()));
     }
 
     /* (non-Javadoc)
