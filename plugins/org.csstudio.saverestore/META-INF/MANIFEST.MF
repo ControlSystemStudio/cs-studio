@@ -7,6 +7,7 @@ Bundle-Vendor: FRIB
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.diirt.vtype;bundle-version="3.0.1",
  org.diirt.util;bundle-version="3.0.1",
- org.eclipse.ui;bundle-version="3.107.0",
- org.eclipse.core.runtime;bundle-version="3.11.1"
-Export-Package: org.csstudio.saverestore
+ org.eclipse.core.runtime;bundle-version="3.11.1",
+ org.eclipse.ui;bundle-version="3.107.0"
+Export-Package: org.csstudio.saverestore,
+ org.csstudio.saverestore.data

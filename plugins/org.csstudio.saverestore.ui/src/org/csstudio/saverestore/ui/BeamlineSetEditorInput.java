@@ -1,6 +1,6 @@
 package org.csstudio.saverestore.ui;
 
-import org.csstudio.saverestore.BeamlineSetData;
+import org.csstudio.saverestore.data.BeamlineSetData;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -27,6 +27,7 @@ public class BeamlineSetEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
     @Override
@@ -46,6 +47,7 @@ public class BeamlineSetEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#exists()
      */
     @Override
@@ -55,6 +57,7 @@ public class BeamlineSetEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
      */
     @Override
@@ -64,6 +67,7 @@ public class BeamlineSetEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#getName()
      */
     @Override
@@ -73,6 +77,7 @@ public class BeamlineSetEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#getPersistable()
      */
     @Override
@@ -82,6 +87,7 @@ public class BeamlineSetEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#getToolTipText()
      */
     @Override

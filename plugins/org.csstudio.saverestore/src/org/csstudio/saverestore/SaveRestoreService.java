@@ -27,11 +27,11 @@ import org.eclipse.swt.widgets.Display;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class Engine {
+public class SaveRestoreService {
 
     private static final String DATA_PROVIDER_EXT_POINT = "org.csstudio.saverestore.dataprovider";
     /** The common logger */
-    public static final Logger LOGGER = Logger.getLogger(Engine.class.getName());
+    public static final Logger LOGGER = Logger.getLogger(SaveRestoreService.class.getName());
     /** The name of the selectedDataProvider property */
     public static final String SELECTED_DATA_PROVIDER = "selectedDataProvider";
     /** The name of the is engine busy property */
@@ -42,16 +42,16 @@ public class Engine {
     private DataProviderWrapper selectedDataProvider;
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
 
-    private static final Engine INSTANCE = new Engine();
+    private static final SaveRestoreService INSTANCE = new SaveRestoreService();
 
     /**
      * @return the singleton instance of the engine
      */
-    public static final Engine getInstance() {
+    public static final SaveRestoreService getInstance() {
         return INSTANCE;
     }
 
-    private Engine() {
+    private SaveRestoreService() {
     }
 
     /**
@@ -70,12 +70,12 @@ public class Engine {
                     DataProvider provider = (DataProvider) element.createExecutableExtension("dataprovider");
                     dpw.add(new DataProviderWrapper(id, name, description, provider));
                 } catch (CoreException e) {
-                    Engine.LOGGER.log(Level.SEVERE, "Save and restore data provider '" + name + "' could not be loaded.", e);
+                    SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore data provider '" + name + "' could not be loaded.", e);
                 }
             }
             dataProviders = Collections.unmodifiableList(dpw);
             if (dataProviders.isEmpty()) {
-                Engine.LOGGER.log(Level.SEVERE, "Save and restore data providers not found.");
+                SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore data providers not found.");
             }
         }
         return dataProviders;
@@ -133,7 +133,7 @@ public class Engine {
     }
 
     /**
-     * Execute the runnable task on the common save and restore executor.
+     * Execute the runnable task on the background task executor.
      *
      * @param task the task to execute
      */

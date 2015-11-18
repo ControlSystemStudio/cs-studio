@@ -1,6 +1,6 @@
-package org.csstudio.saverestore;
+package org.csstudio.saverestore.data;
 
-import org.csstudio.saverestore.BaseLevel;
+import org.csstudio.saverestore.data.BaseLevel;
 
 /**
  *
@@ -17,6 +17,7 @@ public class SerializableBaseLevel extends BaseLevel {
 
     private final String storageName;
     private final String presentationName;
+    private final Branch branch;
 
     /**
      * Constructs a new serializable base level.
@@ -24,7 +25,7 @@ public class SerializableBaseLevel extends BaseLevel {
      * @param level the source
      */
     public SerializableBaseLevel(BaseLevel level) {
-        this(level.getStorageName(), level.getPresentationName());
+        this(level.getStorageName(), level.getPresentationName(), level.getBranch());
     }
 
     /**
@@ -32,10 +33,12 @@ public class SerializableBaseLevel extends BaseLevel {
      *
      * @param storagetname the storage name of the base level
      * @param presentationName the presentation name of the base level
+     * @param branch the branch on which this base level is located
      */
-    public SerializableBaseLevel(String storageName, String presentationName) {
+    public SerializableBaseLevel(String storageName, String presentationName, Branch branch) {
         this.storageName = storageName;
         this.presentationName = presentationName;
+        this.branch = branch;
     }
 
     /*
@@ -54,5 +57,14 @@ public class SerializableBaseLevel extends BaseLevel {
     @Override
     public String getStorageName() {
         return storageName;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.BaseLevel#getBranch()
+     */
+    @Override
+    public Branch getBranch() {
+        return branch;
     }
 }

@@ -7,7 +7,7 @@ package org.csstudio.saverestore;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class DataProviderException extends Exception{
+public class DataProviderException extends Exception {
 
     private static final long serialVersionUID = -238780177979145997L;
 

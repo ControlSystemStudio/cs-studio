@@ -1,7 +1,8 @@
 package org.csstudio.saverestore.ui.browser;
 
-import org.csstudio.saverestore.ui.browser.logic.Selector;
-import org.csstudio.saverestore.ui.util.FXComboInputDialog;
+import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.ui.Selector;
+import org.csstudio.ui.fx.util.FXComboInputDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
@@ -26,7 +27,7 @@ public class SwitchBranchCommand extends AbstractHandler implements IHandler {
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
             Selector selector = ((BrowserView) part).getSelector();
-            FXComboInputDialog<String> dialog = new FXComboInputDialog<>(HandlerUtil.getActiveShell(event),
+            FXComboInputDialog<Branch> dialog = new FXComboInputDialog<>(HandlerUtil.getActiveShell(event),
                     "Select Branch", "Select the branch you wish to work on", selector.selectedBranchProperty().get(),
                     selector.branchesProperty().get());
             dialog.openAndWait().ifPresent(selector.selectedBranchProperty()::set);

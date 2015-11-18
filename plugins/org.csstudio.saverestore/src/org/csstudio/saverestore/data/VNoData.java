@@ -1,4 +1,4 @@
-package org.csstudio.saverestore;
+package org.csstudio.saverestore.data;
 
 import org.diirt.vtype.VType;
 

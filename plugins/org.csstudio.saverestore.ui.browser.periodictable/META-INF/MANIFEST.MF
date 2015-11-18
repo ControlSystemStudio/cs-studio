@@ -13,4 +13,5 @@ Import-Package: javafx.beans.property;version="2.2.0",
  javafx.scene.text,
  org.eclipse.fx.ui.workbench3
 Require-Bundle: org.csstudio.saverestore;bundle-version="1.0.0",
- org.csstudio.saverestore.ui.browser;bundle-version="1.0.0"
+ org.csstudio.saverestore.ui.browser;bundle-version="1.0.0",
+ org.csstudio.ui.fx.util;bundle-version="1.0.0"

@@ -72,6 +72,24 @@
                visible="true">
          </separator>
          <command
+               commandId="org.csstudio.saverestore.ui.browser.command.resetrepository"
+               mnemonic="R"
+               style="push">
+            <visibleWhen
+                  checkEnabled="true">
+               <with
+                     variable="org.csstudio.saverestore.resettablerepository">
+                  <equals
+                        value="true">
+                  </equals>
+               </with>
+            </visibleWhen>
+         </command>
+         <separator
+               name="org.csstudio.saverestore.ui.browser.separator2"
+               visible="true">
+         </separator>
+         <command
                commandId="org.csstudio.saverestore.ui.browser.command.dataprovider"
                mnemonic="D"
                style="push">
@@ -122,6 +140,12 @@
             description="Select the data provider to use"
             id="org.csstudio.saverestore.ui.browser.command.dataprovider"
             name="Select Data Provider...">
+      </command>
+      <command
+            defaultHandler="org.csstudio.saverestore.ui.browser.ResetRepository"
+            description="Reset the repository to default"
+            id="org.csstudio.saverestore.ui.browser.command.resetrepository"
+            name="Reset Repository">
       </command>
    </extension>
    <extension

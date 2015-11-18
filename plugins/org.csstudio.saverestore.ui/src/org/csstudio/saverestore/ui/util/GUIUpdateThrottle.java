@@ -2,26 +2,21 @@ package org.csstudio.saverestore.ui.util;
 
 import java.util.logging.Level;
 
-import org.csstudio.saverestore.Engine;
+import org.csstudio.saverestore.SaveRestoreService;
 
-/** GUI Update throttle
- *  <p>
- *  Assume that the GUI sometimes receives an update that should be
- *  processed right away.
- *  At other times it receives a burst of updates, where it would
- *  be best to wait a little and then redraw to show "everything"
- *  instead of reacting to each single update right away
- *  which only results in flicker and may even be much slower overall.
- *  <p>
- *  This class delays the first update a little bit,
- *  so in case it's a burst, those updates accumulate.
- *  Then it updates, and suppresses further updates for a while
- *  to limit flicker.
- *  Finally, it starts over.
- *  @author Kay Kasemir
+/**
+ * GUI Update throttle
+ * <p>
+ * Assume that the GUI sometimes receives an update that should be processed right away. At other times it receives a
+ * burst of updates, where it would be best to wait a little and then redraw to show "everything" instead of reacting to
+ * each single update right away which only results in flicker and may even be much slower overall.
+ * <p>
+ * This class delays the first update a little bit, so in case it's a burst, those updates accumulate. Then it updates,
+ * and suppresses further updates for a while to limit flicker. Finally, it starts over.
+ *
+ * @author Kay Kasemir
  */
-abstract public class GUIUpdateThrottle extends Thread
-{
+abstract public class GUIUpdateThrottle extends Thread {
     /** Delay in millisecs for the initial update after trigger */
     final private long initial_millis;
 
@@ -34,28 +29,24 @@ abstract public class GUIUpdateThrottle extends Thread
     /** Flag that tells thread to run or exit */
     private volatile boolean run = true;
 
-
-
-    /** Initialize
-     *  @param initial_millis Delay [ms] for the initial update after trigger
-     *  @param suppression_millis Delay [ms] for the suppression of a burst of events
+    /**
+     * Initialize
+     *
+     * @param initial_millis Delay [ms] for the initial update after trigger
+     * @param suppression_millis Delay [ms] for the suppression of a burst of events
      */
-    public GUIUpdateThrottle(final long initial_millis,
-                             final long suppression_millis)
-    {
+    public GUIUpdateThrottle(final long initial_millis, final long suppression_millis) {
         super("GUIUpdateThrottle"); //$NON-NLS-1$
         this.initial_millis = initial_millis;
         this.suppression_millis = suppression_millis;
         setDaemon(true);
     }
 
-    /** Register an event trigger. Will result in throttled call to
-     *  <code>fire</code>
+    /**
+     * Register an event trigger. Will result in throttled call to <code>fire</code>
      */
-    public void trigger()
-    {
-        synchronized (this)
-        {   // Count suppressed events
+    public void trigger() {
+        synchronized (this) { // Count suppressed events
             ++triggers;
             notifyAll();
         }
@@ -64,15 +55,11 @@ abstract public class GUIUpdateThrottle extends Thread
     /** Thread Runnable that handles received triggers */
     @SuppressWarnings("nls")
     @Override
-    public void run()
-    {
-        try
-        {
-            while (run)
-            {
+    public void run() {
+        try {
+            while (run) {
                 // Wait for a trigger
-                synchronized (this)
-                {
+                synchronized (this) {
                     while (triggers <= 0)
                         wait();
                 }
@@ -80,8 +67,7 @@ abstract public class GUIUpdateThrottle extends Thread
                 // after already receiving more than just the start of the
                 // burst
                 Thread.sleep(initial_millis);
-                synchronized (this)
-                {
+                synchronized (this) {
                     triggers = 0;
                 }
                 if (run)
@@ -89,23 +75,19 @@ abstract public class GUIUpdateThrottle extends Thread
                 // Suppress further updates a little to prevent flicker
                 Thread.sleep(suppression_millis);
             }
-        }
-        catch (InterruptedException ex)
-        {
-            Engine.LOGGER.log(Level.SEVERE, "GUI Update failed", ex);
+        } catch (InterruptedException ex) {
+            SaveRestoreService.LOGGER.log(Level.SEVERE, "GUI Update failed", ex);
         }
     }
 
-    /** To be implemented by derived class:
-     *  Throttled event notification
+    /**
+     * To be implemented by derived class: Throttled event notification
      */
     abstract protected void fire();
 
     /** Tell thread to quit, but don't wait for that to happen */
-    public void dispose()
-    {
+    public void dispose() {
         run = false;
         trigger();
     }
 }
-

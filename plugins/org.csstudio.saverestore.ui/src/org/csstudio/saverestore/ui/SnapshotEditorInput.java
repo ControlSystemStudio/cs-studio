@@ -3,7 +3,7 @@ package org.csstudio.saverestore.ui;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.csstudio.saverestore.VSnapshot;
+import org.csstudio.saverestore.data.VSnapshot;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -30,6 +30,7 @@ public class SnapshotEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
     @Override
@@ -49,6 +50,7 @@ public class SnapshotEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#exists()
      */
     @Override
@@ -58,6 +60,7 @@ public class SnapshotEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#getImageDescriptor()
      */
     @Override
@@ -67,6 +70,7 @@ public class SnapshotEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#getName()
      */
     @Override
@@ -83,6 +87,7 @@ public class SnapshotEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#getPersistable()
      */
     @Override
@@ -92,6 +97,7 @@ public class SnapshotEditorInput implements IEditorInput {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IEditorInput#getToolTipText()
      */
     @Override

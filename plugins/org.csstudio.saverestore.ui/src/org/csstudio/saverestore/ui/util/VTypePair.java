@@ -24,4 +24,13 @@ public class VTypePair {
         this.base = base;
         this.value = value;
     }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return value == null ? null : value.toString();
+    }
 }

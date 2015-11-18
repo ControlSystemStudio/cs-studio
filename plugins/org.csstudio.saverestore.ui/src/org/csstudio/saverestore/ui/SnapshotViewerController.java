@@ -7,18 +7,19 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.logging.Level;
 
-import org.csstudio.saverestore.BeamlineSet;
 import org.csstudio.saverestore.DataProvider;
-import org.csstudio.saverestore.Engine;
-import org.csstudio.saverestore.Snapshot;
+import org.csstudio.saverestore.DataProviderException;
+import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.Utilities;
-import org.csstudio.saverestore.VNoData;
-import org.csstudio.saverestore.VSnapshot;
-import org.csstudio.saverestore.ui.util.FXTextAreaInputDialog;
+import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.GUIUpdateThrottle;
+import org.csstudio.ui.fx.util.FXTextAreaInputDialog;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.PVReader;
 import org.diirt.datasource.PVReaderEvent;
@@ -27,7 +28,6 @@ import org.diirt.datasource.PVWriter;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
-import org.eclipse.jface.dialogs.IInputValidator;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -96,6 +96,8 @@ public class SnapshotViewerController {
     public SnapshotViewerController(SnapshotViewerEditor owner) {
         this.owner = owner;
         throttle.start();
+        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY, e ->
+            snapshotSaveableProperty.set(!getSnapshots(true).isEmpty() && !SaveRestoreService.getInstance().isBusy()));
     }
 
     /**
@@ -108,7 +110,9 @@ public class SnapshotViewerController {
         });
         pvs.clear();
         items.clear();
-        snapshots.clear();
+        synchronized(snapshots) {
+            snapshots.clear();
+        }
         numberOfSnapshots = 0;
     }
 
@@ -137,11 +141,13 @@ public class SnapshotViewerController {
      * @param data the snapshot to set
      * @return a list of table entries that should be shown in the table
      */
-    public synchronized List<TableEntry> setSnapshot(VSnapshot data) {
+    public List<TableEntry> setSnapshot(VSnapshot data) {
         dispose();
         List<String> names = data.getNames();
         List<VType> values = data.getValues();
-        snapshots.add(data);
+        synchronized(snapshots) {
+            snapshots.add(data);
+        }
         snapshotRestorableProperty.set(data.isSaved());
         String name;
         TableEntry e;
@@ -155,7 +161,7 @@ public class SnapshotViewerController {
         }
         numberOfSnapshots = 1;
         connectPVs();
-        snapshotSaveableProperty.set(data.isSaveable());
+        snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
         return new ArrayList<>(items.values());
     }
 
@@ -166,7 +172,7 @@ public class SnapshotViewerController {
      * @param data the snapshot to add
      * @return a list of entries to display in the viewer
      */
-    public synchronized List<TableEntry> addSnapshot(VSnapshot data) {
+    public List<TableEntry> addSnapshot(VSnapshot data) {
         if (numberOfSnapshots == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
             return setSnapshot(data);
         } else if (numberOfSnapshots == 0) {
@@ -188,10 +194,12 @@ public class SnapshotViewerController {
                 e.setSnapshotValue(values.get(i), numberOfSnapshots);
             }
             numberOfSnapshots++;
-            snapshots.add(data);
+            synchronized(snapshots) {
+                snapshots.add(data);
+            }
             connectPVs();
             if (!snapshotSaveableProperty.get()) {
-                snapshotSaveableProperty.set(data.isSaveable());
+                snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
             }
             return new ArrayList<>(items.values());
         }
@@ -220,6 +228,7 @@ public class SnapshotViewerController {
 
     /**
      * Read the live snapshot value and create a new snapshot. The snapshot is added to the viewer for comparison.
+     * This method should not be called from the UI thread.
      */
     public void takeSnapshot() {
         lock();
@@ -231,9 +240,10 @@ public class SnapshotViewerController {
                 VType val = pvs.get(t).value;//t.liveValueProperty().get();
                 values.add(val == null ? VNoData.INSTANCE : val);
             }
-            BeamlineSet set = snapshots.get(0).getBeamlineSet();
+            //taken snapshots always belong to the beamline set of the master snapshot
+            BeamlineSet set = getSnapshot(0).getBeamlineSet();
             Snapshot snapshot = new Snapshot(set);
-            VSnapshot taken = VSnapshot.of(snapshot, names, values, Timestamp.now());
+            VSnapshot taken = new VSnapshot(snapshot, names, values, Timestamp.now());
             owner.addSnapshot(taken);
         } finally {
             unlock();
@@ -256,43 +266,42 @@ public class SnapshotViewerController {
 
     /**
      * Save the snapshot by forwarding it to the {@link DataProvider}. Only the snapshots that belong to this
-     * viewer can be saved.
+     * viewer can be saved. This method should never called on the UI thread.
      *
      * @param snapshot the snapshot to save
      */
-    public void saveSnapshot(VSnapshot snapshot) {
+    public VSnapshot saveSnapshot(VSnapshot snapshot) {
         try {
             lock();
-            if (snapshots.contains(snapshot)) {
-                if (snapshot.getSnapshot().isPresent()) {
-                    FXTextAreaInputDialog dialog = new FXTextAreaInputDialog(
-                            owner.getSite().getShell(), "Snapshot Comment",
-                            "Provide a short comment for the snapshot " + snapshot + ":", "", new IInputValidator() {
-                                @Override
-                                public String isValid(String newText) {
-                                    if (newText == null || newText.trim().length() < 10) {
-                                        return "Comment should be at least 10 characters long.";
+            if (snapshot.getSnapshot().isPresent()) {
+                Optional<String> comment = FXTextAreaInputDialog.get(owner.getSite().getShell(), "Snapshot Comment",
+                        "Provide a short comment for the snapshot " + snapshot, "",
+                        e -> (e == null || e.trim().length() < 10) ?
+                                "Comment should be at least 10 characters long." : null);
+                return comment.map(e -> {
+                    VSnapshot s = null;
+                    try {
+                        s = SaveRestoreService.getInstance().getSelectedDataProvider().provider.saveSnapshot(snapshot,e);
+                        if (s != null) {
+                            synchronized(snapshots) {
+                                for (int i = 0; i < snapshots.size(); i++) {
+                                    if (snapshots.get(i).equals(s)) {
+                                        snapshots.set(i, s);
+                                        break;
                                     }
-                                    return null;
                                 }
-                            });
-                    dialog.openAndWait().ifPresent(c -> {
-                        Engine.getInstance().execute(() -> {
-                            DataProvider provider = Engine.getInstance().getSelectedDataProvider().provider;
-                            try {
-                                provider.saveSnapshot(snapshot, c);
-                            } catch (Exception e) {
-                                Engine.LOGGER.log(Level.WARNING, "Could not save snapshot " + snapshot + ".", e);
                             }
-                        });
-                    });
-                } else {
-                    throw new IllegalArgumentException("Snapshot " + snapshot + " is invalid.");
-                }
-            } else {
-                throw new IllegalArgumentException("Snapshot " + snapshot + " is not a part of this view.");
-            }
+                        }
 
+                    } catch (DataProviderException ex) {
+                        Selector.reportException(ex, owner.getSite().getShell());
+                    }
+                    return s;
+                }).orElse(null);
+            } else {
+                //should never happen at all
+                throw new IllegalArgumentException("Snapshot " + snapshot + " is invalid.");
+            }
         } finally {
             unlock();
         }
@@ -300,32 +309,26 @@ public class SnapshotViewerController {
 
     /**
      * Restore the values from the snapshot and set them on the PVs. Only the snapshot that belongs to this viewer
-     * can be restored.
+     * can be restored. This method should not be called from the UI thread.
      *
      * @param s the snapshot
      */
     public void restoreSnapshot(VSnapshot s) {
         try {
             lock();
-            if (snapshots.contains(s)) {
-                if (s.isSaved()) {
-                    List<String> names = s.getNames();
-                    List<VType> values = s.getValues();
-                    for (int i = 0; i < names.size(); i++) {
-                        TableEntry e = items.get(names.get(i));
-                        if (e.selectedProperty().get()) {
-                            pvs.get(e).writer.write(Utilities.toRawValue(values.get(i)));
-                        }
+            if (s.isSaved()) {
+                List<String> names = s.getNames();
+                List<VType> values = s.getValues();
+                for (int i = 0; i < names.size(); i++) {
+                    TableEntry e = items.get(names.get(i));
+                    if (e.selectedProperty().get()) {
+                        pvs.get(e).writer.write(Utilities.toRawValue(values.get(i)));
                     }
-                } else {
-                    throw new IllegalArgumentException("Snapshot " + s
-                            + " has not been saved yet. Only saved snapshots can be used for restoring.");
                 }
             } else {
-                throw new IllegalArgumentException("Snapshot " + s + " is not part of this view.");
+                throw new IllegalArgumentException("Snapshot " + s
+                        + " has not been saved yet. Only saved snapshots can be used for restoring.");
             }
-
-
         } finally {
             unlock();
         }
@@ -336,7 +339,9 @@ public class SnapshotViewerController {
      * @return the snapshot under the given index (0 for the base snapshot and 1 or more for the compared ones)
      */
     public VSnapshot getSnapshot(int index) {
-        return snapshots.get(index);
+        synchronized(snapshots) {
+            return snapshots.get(index);
+        }
     }
 
     /**
@@ -345,13 +350,15 @@ public class SnapshotViewerController {
      */
     public List<VSnapshot> getSnapshots(boolean saveable) {
         List<VSnapshot> snaps = new ArrayList<>();
-        for (VSnapshot v : snapshots) {
-            if (saveable && v.isSaveable()) {
-                snaps.add(v);
-            } else if (!saveable && v.isSaved()) {
-                snaps.add(v);
-            }
+        synchronized(snapshots) {
+            for (VSnapshot v : snapshots) {
+                if (saveable && v.isSaveable()) {
+                    snaps.add(v);
+                } else if (!saveable && v.isSaved()) {
+                    snaps.add(v);
+                }
 
+            }
         }
         return Collections.unmodifiableList(snaps);
     }

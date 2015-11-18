@@ -19,7 +19,7 @@ public class SynchroniseRepositoryCommand extends AbstractHandler implements IHa
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
-            ((BrowserView)part).getActionManager().synchronise();
+            ((BrowserView) part).getActionManager().synchronise();
         }
         return null;
     }

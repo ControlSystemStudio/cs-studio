@@ -1,14 +1,20 @@
-package org.csstudio.saverestore;
+package org.csstudio.saverestore.data;
 
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
+import org.csstudio.saverestore.Utilities;
 
 /**
  *
- * <code>Snapshot</code> is a descriptor of a single snapshot revision.
+ * <code>Snapshot</code> is a descriptor of a single snapshot revision. When comparing different snapshots all
+ * fields are taken into account (beamline set, date, comment, owner and parameters). However {@link #compareTo(Snapshot)}
+ * only uses the date field. Therefore {@link #compareTo(Snapshot)} might flag two snapshots equal when
+ * {@link #equals(Object)} return false. On the other hand if equals returns true, than the compareTo will return 0.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -123,6 +129,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     @Override
     public int compareTo(Snapshot o) {
         if (o.date != null && this.date != null) {
+            //date is compared in reverse, to make the youngest snapshot the first in the list
             return o.date.compareTo(this.date);
         } else if (o.date != null) {
             return -1;
@@ -132,20 +139,19 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
         return 0;
     }
 
-
-
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((comment == null) ? 0 : comment.hashCode());
-        result = prime * result + ((date == null) ? 0 : date.hashCode());
-        result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-        result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
-        result = prime * result + ((set == null) ? 0 : set.hashCode());
-        return result;
+        return Objects.hash(comment,date,owner,parameters,set);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

@@ -1,13 +1,14 @@
 package org.csstudio.saverestore.ui.browser;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.saverestore.ui.util.FXTextInputDialog;
+import org.csstudio.saverestore.data.Branch;
+import org.csstudio.ui.fx.util.FXTextInputDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.core.commands.IHandler;
-import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -27,20 +28,13 @@ public class CreateBranchCommand extends AbstractHandler implements IHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
-            final List<String> branches = ((BrowserView) part).getSelector().branchesProperty().get();
+            List<Branch> branches = ((BrowserView) part).getSelector().branchesProperty().get();
+            final List<String> names = new ArrayList<>(branches.size());
+            branches.forEach(e -> names.add(e.getShortName()));
             FXTextInputDialog dialog = new FXTextInputDialog(HandlerUtil.getActiveShell(event), "Create New Branch",
-                    "Enter the name of the new branch", "", new IInputValidator() {
-                        @Override
-                        public String isValid(String newText) {
-                            if (branches.contains(newText)) {
-                                return "Branch '" + newText + "' already exists.";
-                            } else if (newText.isEmpty()) {
-                                return "Branch name cannot be empty.";
-                            } else {
-                                return null;
-                            }
-                        }
-                    });
+                    "Enter the name of the new branch", "",
+                    e -> names.contains(e) ? "Branch '" + e + "' already exists."
+                            : e.isEmpty() ? "Branch name cannot be empty." : null);
             dialog.openAndWait().ifPresent(((BrowserView) part).getActionManager()::createNewBranch);
         }
         return null;

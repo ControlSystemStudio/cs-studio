@@ -1,4 +1,4 @@
-package org.csstudio.saverestore.ui.util;
+package org.csstudio.ui.fx.util;
 
 import org.eclipse.fx.ui.workbench3.FXViewPart;
 import org.eclipse.swt.widgets.Composite;
@@ -20,6 +20,7 @@ public abstract class FXEditorPart extends EditorPart {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
      */
     @Override
@@ -40,6 +41,7 @@ public abstract class FXEditorPart extends EditorPart {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
      */
     @Override

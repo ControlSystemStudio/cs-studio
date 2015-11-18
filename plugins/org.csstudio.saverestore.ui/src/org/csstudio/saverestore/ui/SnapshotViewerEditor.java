@@ -3,23 +3,24 @@ package org.csstudio.saverestore.ui;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
+import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
-import org.csstudio.saverestore.Engine;
-import org.csstudio.saverestore.Snapshot;
+import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.Utilities;
-import org.csstudio.saverestore.VNoData;
-import org.csstudio.saverestore.VSnapshot;
-import org.csstudio.saverestore.ui.util.FXComboInputDialog;
-import org.csstudio.saverestore.ui.util.FXEditorPart;
+import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
 import org.csstudio.saverestore.ui.util.VTypePair;
+import org.csstudio.ui.fx.util.FXComboInputDialog;
+import org.csstudio.ui.fx.util.FXEditorPart;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
@@ -55,20 +56,22 @@ import javafx.util.StringConverter;
 
 /**
  *
- * <code>SnapshotViewerEditor</code> is an {@link IEditorPart} implementation for displaying, creating, comparing,
- * and restoring snapshots. It provides a table that displays the stored values (together with the alarm data and
- * timestamp) and live data. In comparison view only the values are displayed. At the top of the editor buttons
- * for taking, saving and restoring the snapshot are located.
+ * <code>SnapshotViewerEditor</code> is an {@link IEditorPart} implementation for displaying, creating, comparing, and
+ * restoring snapshots. It provides a table that displays the stored values (together with the alarm data and timestamp)
+ * and live data. In comparison view only the values are displayed. At the top of the editor buttons for taking, saving
+ * and restoring the snapshot are located.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
 public class SnapshotViewerEditor extends FXEditorPart {
 
+    public static final String ID = "org.csstudio.saverestore.ui.editor.snapshotviewer";
+
     /**
      *
-     * <code>VTypeCellEditor</code> is an editor type for {@link VType} or {@link VTypePair},
-     * which allows editing the value as a string.
+     * <code>VTypeCellEditor</code> is an editor type for {@link VType} or {@link VTypePair}, which allows editing the
+     * value as a string.
      *
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *
@@ -115,6 +118,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
         /*
          * (non-Javadoc)
+         *
          * @see javafx.scene.control.cell.TextFieldTableCell#updateItem(java.lang.Object, boolean)
          */
         @Override
@@ -136,8 +140,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
     }
 
     /**
-     * <code>EditorTableColumn</code> is the common table column implementation, which can also provide
-     * the tooltip.
+     * <code>EditorTableColumn</code> is the common table column implementation, which can also provide the tooltip.
      *
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *
@@ -167,15 +170,14 @@ public class SnapshotViewerEditor extends FXEditorPart {
         }
     }
 
-    public static final String ID = "org.csstudio.saverestore.ui.editor.snapshotviewer";
-
+    // the style for the animated save button
     private static final String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
             + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
 
     private Scene scene;
     private BorderPane contentPane;
     private TableView<TableEntry> table;
-    private SnapshotViewerController model;
+    private SnapshotViewerController controller;
     private TextArea commentField;
     private TextField dateField;
     private TextField creatorField;
@@ -188,28 +190,28 @@ public class SnapshotViewerEditor extends FXEditorPart {
      * Constructs a new editor.
      */
     public SnapshotViewerEditor() {
-        model = new SnapshotViewerController(this);
+        controller = new SnapshotViewerController(this);
     }
 
     private void init() {
-        animation = new FadeTransition(Duration.seconds(0.5),saveSnapshotButton);
+        animation = new FadeTransition(Duration.seconds(0.15), saveSnapshotButton);
         animation.setAutoReverse(true);
         animation.setFromValue(1.0);
-        animation.setToValue(0.6);
-        animation.setCycleCount(FadeTransition.INDEFINITE);
-        model.snapshotSaveableProperty().addListener((a,o,n) -> {
+        animation.setToValue(0.4);
+        animation.setCycleCount(6);
+        controller.snapshotSaveableProperty().addListener((a, o, n) -> {
             if (!n) {
                 animation.pause();
                 animation.jumpTo(Duration.seconds(0));
                 animation.stop();
                 saveSnapshotButton.setStyle(null);
-            } else if (animation.getStatus() != Status.RUNNING){
+            } else if (animation.getStatus() != Status.RUNNING) {
                 saveSnapshotButton.setStyle(ANIMATED_STYLE);
                 animation.play();
             }
             firePropertyChange(PROP_DIRTY);
         });
-        if (model.snapshotSaveableProperty().get()) {
+        if (controller.snapshotSaveableProperty().get()) {
             saveSnapshotButton.setStyle(ANIMATED_STYLE);
             animation.play();
         }
@@ -217,36 +219,42 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.IProgressMonitor)
      */
     @Override
     public void doSave(IProgressMonitor monitor) {
-        List<VSnapshot> snapshots = new ArrayList<>();
-        do {
-            snapshots.addAll(model.getSnapshots(true));
-            if (snapshots.isEmpty()) {
-                break;
-            } else if (snapshots.size() == 1) {
-                model.saveSnapshot(snapshots.remove(0));
-            } else {
-                FXComboInputDialog<VSnapshot> dialog = new FXComboInputDialog<>(getSite().getShell(),
-                        "Select Snapshot", "Select the snapshot that you wish to save:",
-                        snapshots.get(0),snapshots);
-                if (dialog.open() == IDialogConstants.OK_ID) {
-                    //TODO is save snapshot responds with cancel do something
-                    dialog.getValue().ifPresent(model::saveSnapshot);
-                    snapshots.remove(dialog.getValue().get());
-                } else {
+        SaveRestoreService.getInstance().execute("Save Snapshot", () -> {
+            List<VSnapshot> snapshots = new ArrayList<>();
+            snapshots.addAll(controller.getSnapshots(true));
+            do {
+                if (!save(snapshots).map(snapshots::remove).isPresent()) {
                     break;
                 }
-            }
-            firePropertyChange(PROP_DIRTY);
-        } while(!snapshots.isEmpty());
-        monitor.done();
+            } while (!snapshots.isEmpty());
+            getSite().getShell().getDisplay().asyncExec(() ->{
+                monitor.done();
+                firePropertyChange(PROP_DIRTY);
+            });
+        });
+    }
+
+    // this method should never be called on the UI thread
+    private Optional<VSnapshot> save(List<VSnapshot> snapshots) {
+        if (snapshots.isEmpty()) {
+            return null;
+        } else if (snapshots.size() == 1) {
+            return Optional.ofNullable(controller.saveSnapshot(snapshots.remove(0)));
+        } else {
+            return FXComboInputDialog.pick(getSite().getShell(), "Select Snapshot",
+                    "Select the snapshot that you wish to save", snapshots.get(0), snapshots)
+                    .map(controller::saveSnapshot);
+        }
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.part.EditorPart#doSaveAs()
      */
     @Override
@@ -256,6 +264,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite, org.eclipse.ui.IEditorInput)
      */
     @Override
@@ -271,25 +280,28 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.part.WorkbenchPart#dispose()
      */
     @Override
     public void dispose() {
         super.dispose();
-        model.dispose();
+        controller.dispose();
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.part.EditorPart#isDirty()
      */
     @Override
     public boolean isDirty() {
-        return model.snapshotSaveableProperty().get();
+        return controller.snapshotSaveableProperty().get();
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
      */
     @Override
@@ -299,6 +311,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.csstudio.saverestore.ui.util.FXEditorPart#createFxScene()
      */
     @Override
@@ -310,11 +323,10 @@ public class SnapshotViewerEditor extends FXEditorPart {
         GridPane.setHgrow(top, Priority.ALWAYS);
         GridPane.setHgrow(bottom, Priority.NEVER);
         GridPane.setFillHeight(bottom, true);
-        topPane.add(top,0,0);
-        topPane.add(bottom,1,0);
+        topPane.add(top, 0, 0);
+        topPane.add(bottom, 1, 0);
 
         contentPane.setTop(topPane);
-//        contentPane.setBottom(createBottomPane());
         scene = new Scene(contentPane);
         init();
         return scene;
@@ -322,7 +334,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
     private Node createTopPane() {
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(5,5,5,5));
+        grid.setPadding(new Insets(5, 5, 5, 5));
         grid.setVgap(5);
         grid.setHgap(5);
         grid.setAlignment(Pos.TOP_LEFT);
@@ -341,8 +353,8 @@ public class SnapshotViewerEditor extends FXEditorPart {
         dateField.setPrefWidth(150);
 
         grid.add(new Label("Comment:"), 0, 0);
-        grid.add(commentField, 1,0,1,2);
-        grid.add(new Label("Creator:"), 2,0);
+        grid.add(commentField, 1, 0, 1, 2);
+        grid.add(new Label("Creator:"), 2, 0);
         grid.add(new Label("Timestamp:"), 2, 1);
         grid.add(creatorField, 3, 0);
         grid.add(dateField, 3, 1);
@@ -351,46 +363,47 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
     private Node createButtonPane() {
         GridPane grid = new GridPane();
-        grid.setPadding(new Insets(5,5,5,5));
+        grid.setPadding(new Insets(5, 5, 5, 5));
         grid.setHgap(5);
 
         takeSnapshotButton = new Button();
         VBox box = new VBox();
-        box.getChildren().addAll(new Label("Take"),new Label("Snapshot"));
+        box.getChildren().addAll(new Label("Take"), new Label("Snapshot"));
         box.setAlignment(Pos.CENTER);
         takeSnapshotButton.setGraphic(box);
         takeSnapshotButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         takeSnapshotButton.setTooltip(new Tooltip("Take a new snapshot (locally store the live values)"));
-        takeSnapshotButton.setOnAction(e -> model.takeSnapshot());
+        takeSnapshotButton.setOnAction(
+                e -> SaveRestoreService.getInstance().execute("Take Snapshot", () -> controller.takeSnapshot()));
 
         saveSnapshotButton = new Button();
         box = new VBox();
-        box.getChildren().addAll(new Label("Save"),new Label("Snapshot"));
+        box.getChildren().addAll(new Label("Save"), new Label("Snapshot"));
         box.setAlignment(Pos.CENTER);
         saveSnapshotButton.setGraphic(box);
         saveSnapshotButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         saveSnapshotButton.setTooltip(new Tooltip("Save the snapshot values as a new revision"));
 
-        saveSnapshotButton.setOnAction(e -> doSaveAs());
+        saveSnapshotButton.setOnAction(e -> SaveRestoreService.getInstance().execute("Save Snapshot",
+                () -> save(new ArrayList<>(controller.getSnapshots(true)))));
 
-        saveSnapshotButton.disableProperty().bind(model.snapshotSaveableProperty().not());
+        saveSnapshotButton.disableProperty().bind(controller.snapshotSaveableProperty().not());
 
         restoreSnapshotButton = new Button("Restore");
         restoreSnapshotButton.setTooltip(new Tooltip("Set the stored values to PVs"));
-        restoreSnapshotButton.setOnAction(e -> {
-            List<VSnapshot> snapshots = model.getSnapshots(false);
+        restoreSnapshotButton.setOnAction(e -> SaveRestoreService.getInstance().execute("Restore Snapshot", () -> {
+            List<VSnapshot> snapshots = controller.getSnapshots(false);
             if (snapshots.isEmpty()) {
                 return;
             } else if (snapshots.size() == 1) {
-                model.restoreSnapshot(snapshots.get(0));
+                controller.restoreSnapshot(snapshots.get(0));
             } else {
-                FXComboInputDialog<VSnapshot> dialog = new FXComboInputDialog<>(getSite().getShell(),
-                        "Select Snapshot", "Select the snapshot that you wish to restore:",
-                        snapshots.get(0),snapshots);
-                dialog.openAndWait().ifPresent(model::restoreSnapshot);
+                FXComboInputDialog.pick(getSite().getShell(), "Select Snapshot",
+                        "Select the snapshot that you wish to restore", snapshots.get(0), snapshots)
+                        .ifPresent(controller::restoreSnapshot);
             }
-        });
-        restoreSnapshotButton.disableProperty().bind(model.snapshotRestorableProperty().not());
+        }));
+        restoreSnapshotButton.disableProperty().bind(controller.snapshotRestorableProperty().not());
 
         restoreSnapshotButton.setMaxHeight(Integer.MAX_VALUE);
         saveSnapshotButton.setMaxHeight(Integer.MAX_VALUE);
@@ -416,8 +429,8 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
     private TableView<TableEntry> createTableForSingleSnapshot() {
         TableView<TableEntry> table = new TableView<>();
-        TableColumn<TableEntry, Boolean> selectedColumn = new EditorTableColumn<>(
-                "", "Include this PV when restoring values", 30, 30, false);
+        TableColumn<TableEntry, Boolean> selectedColumn = new EditorTableColumn<>("",
+                "Include this PV when restoring values", 30, 30, false);
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
         selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
         selectedColumn.setEditable(true);
@@ -425,16 +438,15 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 .setOnEditCommit((e) -> ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow()))
                         .selectedProperty().setValue(e.getNewValue()));
 
-        TableColumn<TableEntry, Integer> idColumn = new EditorTableColumn<>(
-                "#", "The order number of the PV in the beamline set", 30, 30, false);
+        TableColumn<TableEntry, Integer> idColumn = new EditorTableColumn<>("#",
+                "The order number of the PV in the beamline set", 30, 30, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<TableEntry, String> pvNameColumn = new EditorTableColumn<>(
-                "PV", "The name of the PV", 170);
+        TableColumn<TableEntry, String> pvNameColumn = new EditorTableColumn<>("PV", "The name of the PV", 170);
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
-        TableColumn<TableEntry, Timestamp> timestampColumn = new EditorTableColumn<>(
-                "Timestamp", "Timestamp of the value when the snapshot was taken", 120, 135, true);
+        TableColumn<TableEntry, Timestamp> timestampColumn = new EditorTableColumn<>("Timestamp",
+                "Timestamp of the value when the snapshot was taken", 120, 135, true);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, Timestamp>("timestamp"));
         timestampColumn.setCellFactory(c -> new TableCell<TableEntry, Timestamp>() {
             protected void updateItem(Timestamp item, boolean empty) {
@@ -449,26 +461,25 @@ public class SnapshotViewerEditor extends FXEditorPart {
         });
         timestampColumn.setPrefWidth(135);
 
-        TableColumn<TableEntry, String> statusColumn = new EditorTableColumn<>(
-                "Status", "Alarm status of the PV when the snapshot was taken", 100, 100, true);
+        TableColumn<TableEntry, String> statusColumn = new EditorTableColumn<>("Status",
+                "Alarm status of the PV when the snapshot was taken", 100, 100, true);
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        TableColumn<TableEntry, AlarmSeverity> severityColumn = new EditorTableColumn<>(
-                "Severity", "Alarm severity of the PV when the snapshot was taken", 80, 80, false);
+        TableColumn<TableEntry, AlarmSeverity> severityColumn = new EditorTableColumn<>("Severity",
+                "Alarm severity of the PV when the snapshot was taken", 80, 80, false);
         severityColumn.setCellValueFactory(new PropertyValueFactory<>("severity"));
 
-        TableColumn<TableEntry, VType> storedValueColumn = new EditorTableColumn<>(
-                "Stored Value", "PV value when the snapshot was taken", 100);
+        TableColumn<TableEntry, VType> storedValueColumn = new EditorTableColumn<>("Stored Value",
+                "PV value when the snapshot was taken", 100);
         storedValueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
         storedValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
         storedValueColumn.setEditable(true);
         storedValueColumn.setOnEditCommit((e) -> {
-            ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow()))
-                    .valueProperty().setValue(e.getNewValue());
+            ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow())).valueProperty()
+                    .setValue(e.getNewValue());
         });
 
-        TableColumn<TableEntry, VType> liveValueColumn = new EditorTableColumn<>(
-                "Live Value", "Current PV value", 100);
+        TableColumn<TableEntry, VType> liveValueColumn = new EditorTableColumn<>("Live Value", "Current PV value", 100);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
         liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
         liveValueColumn.setEditable(false);
@@ -498,13 +509,13 @@ public class SnapshotViewerEditor extends FXEditorPart {
             if (e.getDragboard().hasContent(SnapshotDataFormat.INSTANCE)) {
                 Snapshot s = (Snapshot) e.getDragboard().getContent(SnapshotDataFormat.INSTANCE);
                 if (s != null) {
-                    Engine.getInstance().execute(() -> {
+                    final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+                    SaveRestoreService.getInstance().execute("Load snapshot data", () -> {
                         try {
-                            VSnapshot vs = Engine.getInstance().getSelectedDataProvider().provider.getSnapshotContent(s);
+                            VSnapshot vs = provider.getSnapshotContent(s);
                             addSnapshot(vs);
                         } catch (DataProviderException ex) {
-                            ex.printStackTrace();
-                            //TODO
+                            Selector.reportException(ex, getSite().getShell());
                         }
                     });
                 }
@@ -514,8 +525,8 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
     private TableView<TableEntry> createTableForMultipleSnapshots(int n) {
         TableView<TableEntry> table = new TableView<>();
-        TableColumn<TableEntry, Boolean> selectedColumn = new EditorTableColumn<>(
-                "", "Include this PV when restoring values", 30, 30, false);
+        TableColumn<TableEntry, Boolean> selectedColumn = new EditorTableColumn<>("",
+                "Include this PV when restoring values", 30, 30, false);
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
         selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
         selectedColumn.setEditable(true);
@@ -523,32 +534,30 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 .setOnEditCommit(e -> ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow()))
                         .selectedProperty().setValue(e.getNewValue()));
 
-        TableColumn<TableEntry, Integer> idColumn = new EditorTableColumn<>(
-                "#", "The order number of the PV in the beamline set", 30, 30, false);
+        TableColumn<TableEntry, Integer> idColumn = new EditorTableColumn<>("#",
+                "The order number of the PV in the beamline set", 30, 30, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<TableEntry, String> pvNameColumn = new EditorTableColumn<>(
-                "PV", "The name of the PV", 170);
+        TableColumn<TableEntry, String> pvNameColumn = new EditorTableColumn<>("PV", "The name of the PV", 170);
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
-        TableColumn<TableEntry, VType> liveValueColumn = new EditorTableColumn<>(
-                "Live Value", "Current PV value",-1);
+        TableColumn<TableEntry, VType> liveValueColumn = new EditorTableColumn<>("Live Value", "Current PV value", -1);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
         liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
         liveValueColumn.setEditable(false);
 
-        TableColumn<TableEntry, ?> storedValueColumn = new EditorTableColumn<>(
-                "Stored Values", "PV value when the snapshot was taken", -1);
+        TableColumn<TableEntry, ?> storedValueColumn = new EditorTableColumn<>("Stored Values",
+                "PV value when the snapshot was taken", -1);
 
-        TableColumn<TableEntry, VType> baseCol = new EditorTableColumn<>(
-                "Base", "PV value when the snapshot was taken", 100);
+        TableColumn<TableEntry, VType> baseCol = new EditorTableColumn<>("Base", "PV value when the snapshot was taken",
+                100);
         baseCol.setCellValueFactory(e -> e.getValue().valueProperty());
         baseCol.setCellFactory(e -> new VTypeCellEditor<>());
         storedValueColumn.getColumns().add(baseCol);
 
         for (int i = 1; i < n; i++) {
-            TableColumn<TableEntry, VTypePair> col = new EditorTableColumn<>(
-                    model.getSnapshot(i).toString(), "PV value when the snapshot was taken", 100);
+            TableColumn<TableEntry, VTypePair> col = new EditorTableColumn<>(controller.getSnapshot(i).toString(),
+                    "PV value when the snapshot was taken", 100);
             final int a = i;
             col.setCellValueFactory(e -> e.getValue().compareValueProperty(a));
             col.setCellFactory(e -> new VTypeCellEditor<>());
@@ -577,23 +586,25 @@ public class SnapshotViewerEditor extends FXEditorPart {
     }
 
     /**
-     * Set the base snapshot to be displayed in this editor. When the base snapshot is set, the editor is emptied
-     * first. The meta data of the base snapshot are displayed at the top of the editor (comment, date, creator).
+     * Set the base snapshot to be displayed in this editor. When the base snapshot is set, the editor is emptied first.
+     * The meta data of the base snapshot are displayed at the top of the editor (comment, date, creator).
      *
      * @param data the snapshot data to set
      */
-    public synchronized void setSnapshot(final VSnapshot data) {
-        final List<TableEntry> entries = model.setSnapshot(data);
-        final int num = model.getNumberOfSnapshots();
-        Platform.runLater(() -> {
-            data.getSnapshot().ifPresent(t -> {
-                commentField.setText(t.getComment());
-                creatorField.setText(t.getOwner());
-                dateField.setText(Utilities.timestampToBigEndianString(t.getDate()));
+    public void setSnapshot(final VSnapshot data) {
+        SaveRestoreService.getInstance().execute("Open Snapshot", () -> {
+            final List<TableEntry> entries = controller.setSnapshot(data);
+            final int num = controller.getNumberOfSnapshots();
+            Platform.runLater(() -> {
+                data.getSnapshot().ifPresent(t -> {
+                    commentField.setText(t.getComment());
+                    creatorField.setText(t.getOwner());
+                    dateField.setText(Utilities.timestampToBigEndianString(t.getDate(), true));
+                });
+                table = createTable(num);
+                contentPane.setCenter(table);
+                table.getItems().setAll(entries);
             });
-            table = createTable(num);
-            contentPane.setCenter(table);
-            table.getItems().setAll(entries);
         });
     }
 
@@ -602,18 +613,28 @@ public class SnapshotViewerEditor extends FXEditorPart {
      *
      * @param data the snapshot data
      */
-    public synchronized void addSnapshot(VSnapshot data) {
-        final List<TableEntry> entries = model.addSnapshot(data);
-        final int num = model.getNumberOfSnapshots();
-        Platform.runLater(() -> {
-            table = createTable(num);
-            contentPane.setCenter(table);
-            table.getItems().setAll(entries);
-        });
+    public void addSnapshot(VSnapshot data) {
+        Runnable r = () -> {
+            final List<TableEntry> entries = controller.addSnapshot(data);
+            final int num = controller.getNumberOfSnapshots();
+            Platform.runLater(() -> {
+                table = createTable(num);
+                contentPane.setCenter(table);
+                table.getItems().setAll(entries);
+            });
+        };
+
+        if (Platform.isFxApplicationThread()) {
+            SaveRestoreService.getInstance().execute("Add Snapshot",r);
+        } else {
+            r.run();
+        }
+
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see org.csstudio.saverestore.ui.util.FXEditorPart#setFxFocus()
      */
     @Override

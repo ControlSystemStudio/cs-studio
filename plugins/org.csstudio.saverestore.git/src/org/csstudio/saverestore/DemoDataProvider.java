@@ -7,6 +7,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.csstudio.saverestore.data.BaseLevel;
+import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
@@ -46,6 +52,12 @@ public class DemoDataProvider implements DataProvider {
             return name;
         }
 
+        @Override
+        public Branch getBranch() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
     }
 
     public DemoDataProvider() {
@@ -53,12 +65,12 @@ public class DemoDataProvider implements DataProvider {
     }
 
     @Override
-    public String[] getBranches() {
-        return new String[] { "master" };
+    public Branch[] getBranches() {
+        return new Branch[] { new Branch("master","master") };
     }
 
     @Override
-    public BaseLevel[] getBaseLevels(String branch) {
+    public BaseLevel[] getBaseLevels(Branch branch) {
         List<BaseLevel> isotopes = new ArrayList<>();
         for (String s : BASES) {
             isotopes.add(new DemoBaseLevel(s));
@@ -76,7 +88,7 @@ public class DemoDataProvider implements DataProvider {
     }
 
     @Override
-    public BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, String branch) {
+    public BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, Branch branch) {
         List<BeamlineSet> beamlineSets = new ArrayList<>();
         if (baseLevel != null) {
 
@@ -162,7 +174,7 @@ public class DemoDataProvider implements DataProvider {
     }
 
     @Override
-    public String createNewBranch(String originalBranch, String newBranchName) {
+    public String createNewBranch(Branch originalBranch, String newBranchName) {
         System.out.println("Requested to create a new branch: " + newBranchName);
         return newBranchName;
     }
@@ -212,7 +224,7 @@ public class DemoDataProvider implements DataProvider {
                     ValueFactory.displayNone()));
 
         }
-        return VSnapshot.of(snapshot, names, values, Timestamp.of(new Date()));
+        return new VSnapshot(snapshot, names, values, Timestamp.of(new Date()));
     }
 
     @Override
@@ -250,5 +262,23 @@ public class DemoDataProvider implements DataProvider {
     public void removeCompletionNotifier(CompletionNotifier notifier) {
         // TODO Auto-generated method stub
 
+    }
+
+    @Override
+    public boolean isReinitSupported() {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean reinitialise() throws DataProviderException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean deleteBeamlineSet(BeamlineSet set, String comment) throws DataProviderException {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

@@ -42,6 +42,10 @@ public class DataProviderWrapper {
         return name + ": " + description;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return getPresentationName();

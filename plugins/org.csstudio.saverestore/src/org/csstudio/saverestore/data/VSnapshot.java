@@ -1,4 +1,4 @@
-package org.csstudio.saverestore;
+package org.csstudio.saverestore.data;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import org.csstudio.saverestore.Utilities;
 import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ListInt;
 import org.diirt.util.time.Timestamp;
@@ -26,6 +27,12 @@ public class VSnapshot implements VType, Time, Array, Serializable {
 
     private static final long serialVersionUID = 2676226155070688049L;
 
+    private final List<String> names;
+    private final List<VType> values;
+    private final Timestamp snapshotTime;
+    private final BeamlineSet beamlineSet;
+    private final Optional<Snapshot> snapshot;
+
     /**
      * Constructs a new data object.
      *
@@ -34,30 +41,8 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @param values the values of the pvs
      * @param snapshotTime the time when the snapshot was taken (this is not identical to the time when
      *           the snapshot was stored)
-     * @return a snapshot object
      */
-    public static VSnapshot of(Snapshot snapshot, List<String> names, List<VType> values, Timestamp snapshotTime) {
-        return new VSnapshot(snapshot, names, values, snapshotTime);
-    }
-
-    /**
-     * Constructs an empty snapshot object.
-     *
-     * @param set the beamline setfor which the snapshot is for
-     * @param names the names of pvs
-     * @return a snapshot object
-     */
-    public static VSnapshot of(BeamlineSet set, List<String> names) {
-        return new VSnapshot(set, names);
-    }
-
-    private final List<String> names;
-    private final List<VType> values;
-    private final Timestamp snapshotTime;
-    private final BeamlineSet beamlineSet;
-    private final Optional<Snapshot> snapshot;
-
-    private VSnapshot(Snapshot snapshot, List<String> names, List<VType> values, Timestamp snapshotTime) {
+    public VSnapshot(Snapshot snapshot, List<String> names, List<VType> values, Timestamp snapshotTime) {
         if (names.size() != values.size()) {
             throw new IllegalArgumentException("The number of PV names does not match the number of values");
         }
@@ -68,7 +53,13 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.snapshot = Optional.of(snapshot);
     }
 
-    private VSnapshot(BeamlineSet set, List<String> names) {
+    /**
+     * Constructs an empty snapshot object.
+     *
+     * @param set the beamline set for which the snapshot is for
+     * @param names the names of pvs
+     */
+    public VSnapshot(BeamlineSet set, List<String> names) {
         this.names = Collections.unmodifiableList(names);
         List<VType> list = new ArrayList<>();
         this.names.forEach(e -> list.add(VNoData.INSTANCE));

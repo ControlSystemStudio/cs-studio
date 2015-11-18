@@ -1,5 +1,8 @@
 package org.csstudio.saverestore.git.ui;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.csstudio.saverestore.git.Activator;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
@@ -48,7 +51,19 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
     protected void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
 
-        StringFieldEditor url = new StringFieldEditor(Activator.PREF_URL, "Git repository URL:", parent);
+        StringFieldEditor url = new StringFieldEditor(Activator.PREF_URL, "Git repository URL:", parent){
+            @Override
+            protected boolean doCheckState() {
+                String txt = getTextControl().getText();
+                try {
+                    URL url = new URL(txt);
+                    return !url.getHost().isEmpty() && !url.getPath().isEmpty();
+                } catch (MalformedURLException e) {
+                    return false;
+                }
+            }
+        };
+        url.setEmptyStringAllowed(false);
         addField(url);
         StringButtonFieldEditor destination = new StringButtonFieldEditor(Activator.PREF_DESTINATION,
                 "Local git working folder (empty for default setting):",parent) {

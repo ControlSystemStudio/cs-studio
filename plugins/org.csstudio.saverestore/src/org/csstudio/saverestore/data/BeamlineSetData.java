@@ -1,8 +1,9 @@
-package org.csstudio.saverestore;
+package org.csstudio.saverestore.data;
 
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -82,4 +83,46 @@ public class BeamlineSetData {
     public Date getStoredDate() {
         return storedDate;
     }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(description,descriptor,pvList);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        BeamlineSetData other = (BeamlineSetData) obj;
+        if (description == null) {
+            if (other.description != null)
+                return false;
+        } else if (!description.equals(other.description))
+            return false;
+        if (descriptor == null) {
+            if (other.descriptor != null)
+                return false;
+        } else if (!descriptor.equals(other.descriptor))
+            return false;
+        if (pvList == null) {
+            if (other.pvList != null)
+                return false;
+        } else if (!pvList.equals(other.pvList))
+            return false;
+        return true;
+    }
+
+
 }

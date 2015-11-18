@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Level;
 
-import org.csstudio.saverestore.Engine;
+import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.security.preferences.SecurePreferences;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -98,7 +98,7 @@ public class Activator extends AbstractUIPlugin {
         try {
             return SecurePreferences.getSecurePreferences().node(ID).node(user).get(PREF_USERNAME, null);
         } catch (StorageException | IOException e) {
-            Engine.LOGGER.log(Level.WARNING, "Could not read the username from secured storage.", e);
+            SaveRestoreService.LOGGER.log(Level.WARNING, "Could not read the username from secured storage.", e);
             return null;
         }
     }
@@ -125,7 +125,7 @@ public class Activator extends AbstractUIPlugin {
             CharBuffer buffer = Charset.forName("UTF-8").newDecoder().decode(ByteBuffer.wrap(val));
             return Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit());
         } catch (StorageException | IOException e) {
-            Engine.LOGGER.log(Level.WARNING, "Could not read the password for '" + forUser
+            SaveRestoreService.LOGGER.log(Level.WARNING, "Could not read the password for '" + forUser
                     + "' from secured storage.", e);
             return null;
         }
@@ -160,7 +160,7 @@ public class Activator extends AbstractUIPlugin {
                 prefs.node(username).putByteArray(PREF_PASSWORD, passwordData, false);
             }
         } catch (StorageException | IOException e) {
-            Engine.LOGGER.log(Level.WARNING, "Could not store the username and password.", e);
+            SaveRestoreService.LOGGER.log(Level.WARNING, "Could not store the username and password.", e);
         }
     }
 }

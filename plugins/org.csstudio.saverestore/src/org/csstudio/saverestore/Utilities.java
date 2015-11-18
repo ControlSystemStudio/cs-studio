@@ -417,6 +417,11 @@ public class Utilities {
         }
     }
 
+    /**
+     * Transforms the timestamp to string, using the format HH:mm:ss.SSS MMM dd.
+     * @param t the timestamp to transform
+     * @return string representation of the timestamp using the above format
+     */
     public static String timestampToString(Timestamp t) {
         if (t == null) {
             return null;
@@ -424,6 +429,14 @@ public class Utilities {
         return LE_TIMESTAMP_FORMATTER.format(t.toDate());
     }
 
+    /**
+     * Transforms the date to string formatted as yyyy MMM dd HH:mm:ss. Year is only included if the parameter
+     * <code>includeYear</code> is true.
+     *
+     * @param t the date to transform
+     * @param includeYear true if the year should be included or false otherwise
+     * @return string representation of the date
+     */
     public static String timestampToBigEndianString(Date t, boolean includeYear) {
         if (t == null) {
             return null;

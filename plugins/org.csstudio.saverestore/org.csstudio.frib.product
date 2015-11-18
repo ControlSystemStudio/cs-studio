@@ -39,8 +39,8 @@ openFile
 
    <splash
       location="org.csstudio.iter.css.product"
-      startupProgressRect="5,210,445,15"
-      startupMessageRect="7,190,445,20"
+      startupProgressRect="5,280,470,15"
+      startupMessageRect="7,250,466,20"
       startupForegroundColor="0064C6" />
    <launcher name="css">
       <linux icon="/org.csstudio.iter.css.product/icons/css48.xpm"/>

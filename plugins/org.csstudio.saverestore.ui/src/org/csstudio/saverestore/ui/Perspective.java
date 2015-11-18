@@ -14,6 +14,7 @@ public class Perspective implements IPerspectiveFactory {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
      */
     @SuppressWarnings("deprecation")

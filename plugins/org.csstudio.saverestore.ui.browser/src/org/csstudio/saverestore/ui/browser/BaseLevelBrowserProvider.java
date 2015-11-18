@@ -3,8 +3,8 @@ package org.csstudio.saverestore.ui.browser;
 import java.util.Optional;
 import java.util.logging.Level;
 
-import org.csstudio.saverestore.BaseLevel;
-import org.csstudio.saverestore.Engine;
+import org.csstudio.saverestore.SaveRestoreService;
+import org.csstudio.saverestore.data.BaseLevel;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -34,14 +34,16 @@ public class BaseLevelBrowserProvider {
                 IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
                 IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(BASE_LEVEL_BROWSER_EXT_POINT);
                 if (confElements.length > 1) {
-                    throw new PartInitException("Cannot instantiate Save and Restore Browser. Only one base level provider can be defined");
+                    throw new PartInitException(
+                            "Cannot instantiate Save and Restore Browser. Only one base level provider can be defined");
                 }
-                for(IConfigurationElement element : confElements){
+                for (IConfigurationElement element : confElements) {
                     bb = (BaseLevelBrowser<BaseLevel>) element.createExecutableExtension("browser");
                 }
 
             } catch (CoreException e) {
-                Engine.LOGGER.log(Level.SEVERE, "Save and restore base level browser could not be loaded.", e);
+                SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore base level browser could not be loaded.",
+                        e);
                 browser = null;
             }
             browser = Optional.ofNullable(bb);

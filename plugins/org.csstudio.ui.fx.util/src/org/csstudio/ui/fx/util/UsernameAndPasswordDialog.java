@@ -1,10 +1,7 @@
-package org.csstudio.saverestore.git.ui;
+package org.csstudio.ui.fx.util;
 
 import java.util.Optional;
 
-import org.csstudio.saverestore.git.Credentials;
-import org.csstudio.saverestore.ui.util.FXCanvasMaker;
-import org.csstudio.saverestore.ui.util.InputValidator;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.graphics.Color;
@@ -26,8 +23,8 @@ import javafx.scene.layout.Priority;
 
 /**
  *
- * <code>UsernameAndPasswordDialog</code> is a dialog which provides means to enter a username and password.
- * It also provides a checkbox in order to hint the receiver whether to remember the credentials for later or not.
+ * <code>UsernameAndPasswordDialog</code> is a dialog which provides means to enter a username and password. It also
+ * provides a checkbox in order to hint the receiver whether to remember the credentials for later or not.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -39,24 +36,28 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
     private TextField username;
     private CheckBox remember;
     private Credentials value;
-    private InputValidator<String> validator = e -> (e == null || e.trim().isEmpty()) ? "Invalid" : null;
+    private InputValidator<String> validator = e -> (e == null || e.trim().isEmpty())
+            ? "Empty username or password not allowed" : null;
     private String currentUsername;
+    private final String message;
 
     /**
-     * Constructs a new dialog and sets the predefined username. If no username is provided, system user
-     * is used.
+     * Constructs a new dialog and sets the predefined username. If no username is provided, system user is used.
      *
      * @param shell the parent shell
      * @param username predefined username
+     * @param message the message to show in the dialog
      */
-    public UsernameAndPasswordDialog(Shell shell, String username) {
+    public UsernameAndPasswordDialog(Shell shell, String username, String message) {
         super(shell);
         this.currentUsername = username == null ? System.getProperty("user.name") : username;
+        this.message = message;
         setBlockOnOpen(true);
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
      */
     @Override
@@ -71,6 +72,7 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
      */
     @Override
@@ -94,6 +96,7 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
      */
     @Override
@@ -123,6 +126,7 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.jface.dialogs.TitleAreaDialog#createDialogArea(org.eclipse.swt.widgets.Composite)
      */
     @Override
@@ -133,7 +137,7 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
             @Override
             protected Scene createFxScene() {
                 GridPane pane = new GridPane();
-                pane.setPadding(new Insets(10,10,10,10));
+                pane.setPadding(new Insets(10, 10, 10, 10));
                 pane.setHgap(3);
                 pane.setVgap(5);
                 username = new TextField();
@@ -143,14 +147,14 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
                     username.selectAll();
                 }
                 password = new PasswordField();
-                username.setOnAction(e->password.requestFocus());
-                password.setOnAction(e->{
+                username.setOnAction(e -> password.requestFocus());
+                password.setOnAction(e -> {
                     if (!okButton.isDisable()) {
                         buttonPressed(IDialogConstants.OK_ID);
                     }
                 });
-                password.textProperty().addListener((a,o,n)->validateInput());
-                username.textProperty().addListener((a,o,n)->validateInput());
+                password.textProperty().addListener((a, o, n) -> validateInput());
+                username.textProperty().addListener((a, o, n) -> validateInput());
                 password.setMaxWidth(Double.MAX_VALUE);
                 Label uLabel = new Label("Username:");
                 Label pLabel = new Label("Password:");
@@ -158,23 +162,24 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
                 GridPane.setHgrow(password, Priority.ALWAYS);
                 GridPane.setFillWidth(username, true);
                 GridPane.setFillWidth(password, true);
-                pane.add(uLabel, 0,0);
-                pane.add(pLabel, 0,1);
+                pane.add(uLabel, 0, 0);
+                pane.add(pLabel, 0, 1);
                 pane.add(username, 1, 0);
                 pane.add(password, 1, 1);
                 remember = new CheckBox("Remember password for later use");
                 pane.add(remember, 0, 2, 2, 1);
-                pane.setMaxSize(Double.MAX_VALUE,Double.MAX_VALUE);
+                pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 Color c = parent.getBackground();
-                String cl = Integer.toHexString(c.getRed()) + Integer.toHexString(c.getGreen()) + Integer.toHexString(c.getBlue());
-                pane.setStyle("-fx-background-color: #"+cl + ";");
+                String cl = Integer.toHexString(c.getRed()) + Integer.toHexString(c.getGreen())
+                        + Integer.toHexString(c.getBlue());
+                pane.setStyle("-fx-background-color: #" + cl + ";");
                 pane.setPrefWidth(540);
                 return new Scene(pane);
             }
         }.createPartControl(composite);
 
         setTitle("Authentication");
-        setMessage("Please, provide the username and password to access Save and Restore git repository");
+        setMessage(message);
         return composite;
     }
 

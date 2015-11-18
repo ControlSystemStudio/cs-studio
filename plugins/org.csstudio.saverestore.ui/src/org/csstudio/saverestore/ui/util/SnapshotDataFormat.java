@@ -1,10 +1,13 @@
 package org.csstudio.saverestore.ui.util;
 
+import org.csstudio.saverestore.data.Snapshot;
+
 import javafx.scene.input.DataFormat;
 
 /**
  *
- * <code>SnapshotDataFormat</code> is the a descriptor for the snapshot used in combination with JavaFX clipboard.
+ * <code>SnapshotDataFormat</code> is the the data format descriptor for a {@link Snapshot} used in combination with
+ * JavaFX clipboard.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *

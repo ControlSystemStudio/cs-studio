@@ -21,22 +21,22 @@ import javafx.beans.property.StringProperty;
 
 /**
  *
- * <code>TableEntry</code> represents a single line in the snapshot viewer table. It provides values for all
- * columns in the table, be it a single snapshot table or a multi snapthos table.
+ * <code>TableEntry</code> represents a single line in the snapshot viewer table. It provides values for all columns in
+ * the table, be it a single snapshot table or a multi snapthos table.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
 public class TableEntry {
 
-    private IntegerProperty id = new SimpleIntegerProperty(this,"id");
-    private BooleanProperty selected = new SimpleBooleanProperty(this,"selected",true);
+    private IntegerProperty id = new SimpleIntegerProperty(this, "id");
+    private BooleanProperty selected = new SimpleBooleanProperty(this, "selected", true);
     private StringProperty pvName = new SimpleStringProperty(this, "pvName");
     private ObjectProperty<Timestamp> timestamp = new SimpleObjectProperty<>(this, "timestamp");
-    private StringProperty status = new SimpleStringProperty(this,"status","OK");
-    private ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this,"severity",AlarmSeverity.NONE);
-    private ObjectProperty<VType> value = new SimpleObjectProperty<>(this,"value");
-    private ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this,"liveValue");
+    private StringProperty status = new SimpleStringProperty(this, "status", "OK");
+    private ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this, "severity", AlarmSeverity.NONE);
+    private ObjectProperty<VType> value = new SimpleObjectProperty<>(this, "value");
+    private ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue");
     private List<ObjectProperty<VTypePair>> compareValues = new ArrayList<>();
 
     /**
@@ -103,13 +103,13 @@ public class TableEntry {
         if (index == 0) {
             throw new IndexOutOfBoundsException("Index has to be larger than 0.");
         } else {
-            return compareValues.get(index-1);
+            return compareValues.get(index - 1);
         }
     }
 
     /**
-     * Updates the snapshot value for the primary snapshot (index = 0) or for the snapshot compared
-     * to the primary (index > 0).
+     * Updates the snapshot value for the primary snapshot (index = 0) or for the snapshot compared to the primary
+     * (index > 0).
      *
      * @param val the value to set
      * @param index the index of the snapshot to which the value belongs
@@ -117,14 +117,14 @@ public class TableEntry {
     public void setSnapshotValue(VType val, int index) {
         if (index == 0) {
             if (val instanceof Alarm) {
-                severity.set(((Alarm)val).getAlarmSeverity());
-                status.set(((Alarm)val).getAlarmName());
+                severity.set(((Alarm) val).getAlarmSeverity());
+                status.set(((Alarm) val).getAlarmName());
             } else {
                 severity.set(AlarmSeverity.NONE);
                 status.set("OK");
             }
             if (val instanceof Time) {
-                timestamp.set(((Time)val).getTimestamp());
+                timestamp.set(((Time) val).getTimestamp());
             } else {
                 timestamp.set(Timestamp.now());
             }
@@ -134,9 +134,9 @@ public class TableEntry {
             }
         } else {
             for (int i = compareValues.size(); i < index; i++) {
-                compareValues.add(new SimpleObjectProperty<>(this, "CompareValue"+i));
+                compareValues.add(new SimpleObjectProperty<>(this, "CompareValue" + i));
             }
-            compareValues.get(index-1).set(new VTypePair(valueProperty().get(), val));
+            compareValues.get(index - 1).set(new VTypePair(valueProperty().get(), val));
         }
     }
 }

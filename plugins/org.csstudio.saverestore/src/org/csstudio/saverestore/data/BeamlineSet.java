@@ -1,7 +1,8 @@
-package org.csstudio.saverestore;
+package org.csstudio.saverestore.data;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -17,7 +18,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
 
     private static final long serialVersionUID = 3576698958890734750L;
 
-    private final String branch;
+    private final Branch branch;
     private BaseLevel baseLevel;
     private final String[] path;
     private final String folder;
@@ -29,7 +30,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
      * @param baseLevel the base level for which this set is valid
      * @param path the path on which the set is stored (the last element of the pat is the file name)
      */
-    public BeamlineSet(String branch, Optional<BaseLevel> base, String[] path) {
+    public BeamlineSet(Branch branch, Optional<BaseLevel> base, String[] path) {
         this.baseLevel = base.orElse(null);
         this.branch = branch;
         this.path = path;
@@ -76,7 +77,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     /**
      * @return the name of the branch from which the set was loaded
      */
-    public String getBranch() {
+    public Branch getBranch() {
         return branch;
     }
 
@@ -98,7 +99,11 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
      * @return the path as a single string
      */
     public String getPathAsString() {
-        return folder + "/" + getName();
+        if (folder.isEmpty()) {
+            return getName();
+        } else {
+            return folder + "/" + getName();
+        }
     }
 
     /**
@@ -135,16 +140,19 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
         return path.length < otherPath.length ? -1 : 1;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((baseLevel == null) ? 0 : baseLevel.hashCode());
-        result = prime * result + ((branch == null) ? 0 : branch.hashCode());
-        result = prime * result + Arrays.hashCode(path);
-        return result;
+        return 31 * Objects.hash(baseLevel,branch) + Arrays.hashCode(path);
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
