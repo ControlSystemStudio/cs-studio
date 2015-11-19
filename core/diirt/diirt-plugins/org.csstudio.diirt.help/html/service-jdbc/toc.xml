@@ -2,5 +2,5 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="toc.xml#servicesyntax" label="Database Services">
-    <topic label="Database Services"  href="html/jdbc-xml-syntax.html"/>
+    <topic label="Database Services"  href="html/service-jdbc/html/jdbc-xml-syntax.html"/>
 </toc>

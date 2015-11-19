@@ -2,5 +2,7 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="toc.xml#pvsyntax" label="PV Formulas">
-    <topic label="PV Formulas"  href="html/formula.html"/>
+    <topic label="PV Formulas"  href="html/extra/html/formula.html"/>
+    <topic href="html/extra/html/array.html" label="Arrays">
+    </topic>
 </toc>
