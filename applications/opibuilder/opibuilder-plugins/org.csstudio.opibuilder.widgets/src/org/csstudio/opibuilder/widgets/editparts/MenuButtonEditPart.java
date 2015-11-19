@@ -34,6 +34,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WritePVAction;
+import org.csstudio.opibuilder.widgets.Activator;
 import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
@@ -46,12 +47,14 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
+import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -85,6 +88,14 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         final MenuButtonFigure label = new MenuButtonFigure();
         label.setOpaque(!model.isTransparent());
         label.setText(model.getLabel());
+
+        Image downArrow = CustomMediaFactory.getInstance().getImageFromPlugin(
+                Activator.PLUGIN_ID, "icons/downArrow.png");
+        label.setIcon(downArrow);
+        label.setTextPlacement(PositionConstants.WEST);
+        label.setIconAlignment(PositionConstants.CENTER);
+        label.setIconTextGap(4);
+
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
             label.addMouseListener(new MouseListener() {
                 public void mouseDoubleClicked(final MouseEvent me) {
