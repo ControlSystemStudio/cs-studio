@@ -2,5 +2,5 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="toc.xml#servicesyntax" label="Exec Services">
-    <topic label="Exec Services"  href="html/exec-xml-syntax.html"/>
+    <topic label="Exec Services"  href="html/service-exec/html/exec-xml-syntax.html"/>
 </toc>
