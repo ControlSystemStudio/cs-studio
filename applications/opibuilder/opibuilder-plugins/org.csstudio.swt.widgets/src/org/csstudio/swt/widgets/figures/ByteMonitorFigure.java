@@ -69,8 +69,8 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         led.setShowBooleanLabel(false);
         led.setOnColor(getOnColor());
         led.setOffColor(getOffColor());
-        led.setLedBorderWidth(squareBorderWidth);
-        led.setBorderColor(squareBorderColor);
+        led.setBulbBorderWidth(squareBorderWidth);
+        led.setBulbBorderColor(squareBorderColor);
         led.setSquareLED(squareLED);
         led.setEffect3D(effect3D);
         return led;
@@ -403,7 +403,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         squareBorderWidth = value;
 
         for (LEDFigure bulb : ledFigures) {
-            bulb.setLedBorderWidth(squareBorderWidth);
+            bulb.setBulbBorderWidth(squareBorderWidth);
         }
         revalidate();
         repaint();
@@ -420,7 +420,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         squareBorderColor = value;
 
         for (LEDFigure bulb : ledFigures) {
-            bulb.setBorderColor(squareBorderColor);
+            bulb.setBulbBorderColor(squareBorderColor);
         }
         revalidate();
         repaint();

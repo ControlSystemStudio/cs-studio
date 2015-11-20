@@ -64,8 +64,9 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
     /** Label of each bit */
     public static final String PROP_LABELS = "label"; //$NON-NLS-1$
 
-    /** Spacing between square LEDs */
+    /** Spacing between LEDs */
     public static final String PROP_LED_BORDER = "led_border"; //$NON-NLS-1$
+    /** Color of space between LEDs */
     public static final String PROP_LED_BORDER_COLOR = "led_border_color"; //$NON-NLS-1$
 
     public static final Integer DEFAULT_LED_BORDER = 3;

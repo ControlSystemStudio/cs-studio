@@ -64,6 +64,10 @@ public class LEDModel extends AbstractBoolWidgetModel {
 
     public static final int MINIMUM_SIZE = 10;
 
+    /** Border around the bulb -- this is a round border for round LEDs */
+    public static final String PROP_BULB_BORDER = "bulb_border"; //$NON-NLS-1$
+    /** Color of bulb border LEDs */
+    public static final String PROP_BULB_BORDER_COLOR = "bulb_border_color"; //$NON-NLS-1$
 
     public LEDModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -94,6 +98,11 @@ public class LEDModel extends AbstractBoolWidgetModel {
         addProperty(new ColorProperty(PROP_STATE_FALLBACK_COLOR,
                 "Color", category, LEDFigure.DEFAULT_STATE_FALLBACK_COLOR.getRGB()));
         setPropertyVisibleAndSavable(PROP_STATE_FALLBACK_COLOR, false, false);
+
+        addProperty(new IntegerProperty(PROP_BULB_BORDER, "Bulb border",
+                WidgetPropertyCategory.Display, LEDFigure.DEFAULT_BULB_BORDER_WIDTH));
+        addProperty(new ColorProperty(PROP_BULB_BORDER_COLOR, "Bulb border color",
+                WidgetPropertyCategory.Display, LEDFigure.DEFAULT_BULB_BORDER_COLOR.getRGB()));
 
         for(int state=0; state<LEDFigure.MAX_NSTATES; state++) {
 
@@ -158,5 +167,13 @@ public class LEDModel extends AbstractBoolWidgetModel {
 
     public Color getStateFallbackColor() {
         return getSWTColorFromColorProperty(PROP_STATE_FALLBACK_COLOR);
+    }
+
+    public int getBulbBorderWidth() {
+        return (Integer) getProperty(PROP_BULB_BORDER).getPropertyValue();
+    }
+
+    public Color getBulbBorderColor() {
+        return getSWTColorFromColorProperty(PROP_BULB_BORDER_COLOR);
     }
 }
