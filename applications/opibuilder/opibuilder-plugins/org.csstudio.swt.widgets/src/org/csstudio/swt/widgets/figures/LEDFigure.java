@@ -75,16 +75,10 @@ public class LEDFigure extends AbstractBoolFigure {
         bulb.setBulbColor(booleanValue ? onColor : offColor);
     }
 
-    /**
-     * @return the effect3D
-     */
     public boolean isEffect3D() {
         return effect3D;
     }
 
-    /**
-     * @return the squareLED
-     */
     public boolean isSquareLED() {
         return squareLED;
     }
@@ -282,9 +276,6 @@ public class LEDFigure extends AbstractBoolFigure {
             bulb.setBulbColor(onColor);
     }
 
-    /**
-     * @param squareLED the squareLED to set
-     */
     public void setSquareLED(boolean squareLED) {
         if(this.squareLED == squareLED)
             return;

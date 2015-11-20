@@ -64,7 +64,11 @@ public class LEDModel extends AbstractBoolWidgetModel {
 
     public static final int MINIMUM_SIZE = 10;
 
-    /** Border around the bulb -- this is a round border for round LEDs */
+    /**
+     * Border around the bulb - this is drawn in addition to the 'widget border'
+     * set by the widget border style/color/width properties. For round LEDs this is a
+     * round border,
+     */
     public static final String PROP_BULB_BORDER = "bulb_border"; //$NON-NLS-1$
     /** Color of bulb border LEDs */
     public static final String PROP_BULB_BORDER_COLOR = "bulb_border_color"; //$NON-NLS-1$

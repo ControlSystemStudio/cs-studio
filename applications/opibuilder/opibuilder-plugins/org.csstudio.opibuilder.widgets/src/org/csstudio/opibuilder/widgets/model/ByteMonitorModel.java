@@ -155,8 +155,6 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
         setPropertyValue(PROP_HORIZONTAL, !isHorizontal());
     }
 
-
-
     @Override
     public void rotate90(boolean clockwise, Point center) {
         super.rotate90(clockwise, center);
