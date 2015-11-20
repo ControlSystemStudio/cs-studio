@@ -4,30 +4,19 @@
  */
 package org.csstudio.alarm.diirt.datasource;
 
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+
 public class BeastConnectionPayload {
 
-    private final BeastDataSource beastDataSource;
-    // private final Channel channel;
-    private final String readType;
-    private final String writetype;
-    private final String filter;
+    private final AlarmTreePV initial;
+    private final boolean connected;
 
-    public BeastConnectionPayload(BeastChannelHandler channelHandle) {
-        this.beastDataSource = channelHandle.getBeastDatasource();
-        this.readType = channelHandle.getReadType();
-        this.writetype = channelHandle.getWriteType();
-        this.filter = channelHandle.getSelector();
+    public BeastConnectionPayload(AlarmTreePV initial, boolean connected) {
+        this.initial = initial;
+        this.connected = connected;
     }
 
-    public String getReadType() {
-        return this.readType;
-    }
-
-    public String getWriteType() {
-        return this.writetype;
-    }
-    
-    public String getFilter() {
-        return this.filter;
+    public boolean isConnected(){
+        return this.connected;
     }
 }

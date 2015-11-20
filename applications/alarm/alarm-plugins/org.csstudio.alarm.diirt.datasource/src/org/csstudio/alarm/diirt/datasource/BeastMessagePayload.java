@@ -4,7 +4,8 @@
  */
 package org.csstudio.alarm.diirt.datasource;
 
-import javax.jms.Message;
+import org.csstudio.alarm.beast.client.AlarmTreePV;
+
 
 /**
  * @author Kunal Shroff
@@ -12,21 +13,44 @@ import javax.jms.Message;
  */
 public class BeastMessagePayload {
 
-    private final Message message;
-    private final String filter;
+    private final AlarmTreePV pv;
+    private final boolean active;
+    private final boolean acknowledged;
+    private final boolean enable;
 
-    public BeastMessagePayload(Message message, String filter) {
-        this.message = message;
-        this.filter = filter;
+    public BeastMessagePayload(AlarmTreePV pv, boolean active, boolean acknowledged, boolean enable) {
+        this.pv = pv;
+        this.active = active;
+        this.acknowledged = acknowledged;
+        this.enable = enable;
     }
-
-    public Message getMessage() {
-        return message;
-    }
-
-    public String getFilter() {
-        return filter;
-    }
-
     
+    public String getName(){
+        return pv.getName();
+    }
+    
+    public String getDescription(){
+        return pv.getDescription();
+    }
+
+    public String getAlarmStatus() {
+        return pv.getSeverity().getDisplayName();
+    }
+
+    public String getValue() {
+        return pv.getValue();
+    }
+    
+    public boolean isAcknowledged(){
+        return this.acknowledged;
+    }
+    
+    public boolean isActive(){
+        return this.active;
+    }
+
+    public boolean getEnable() {
+        return this.enable;
+    }
+
 }

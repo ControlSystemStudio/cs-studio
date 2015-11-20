@@ -15,29 +15,23 @@ import org.diirt.datasource.ValueCache;
  * @author Kunal Shroff
  *
  */
+@Deprecated
 public class BeastVStringAdapter extends BeastTypeAdapter {
 
     private static Logger log = Logger.getLogger(BeastVStringAdapter.class.getName());
     
     @Override
     public int match(ValueCache<?> cache, BeastConnectionPayload connection) {
-        if(connection.getReadType().equals("VString"))
             return 1;
-        else
-            return 0;
     }
     
     @Override
     public boolean updateCache(ValueCache cache, BeastConnectionPayload connection, BeastMessagePayload message) {
         // TODO Auto-generated method stub
-        log.info(" VString ADAPTER:" + message.getMessage().toString());
-        if(filter(message, connection.getFilter())){
-            cache.writeValue(newVString(message.getMessage().toString(), 
+        log.info(" VString ADAPTER:" + message.toString());
+            cache.writeValue(newVString(message.toString(), 
                     alarmNone(),
                     timeNow()));
             return true;
-        } else {
-            return false;
-        }
     }
 }

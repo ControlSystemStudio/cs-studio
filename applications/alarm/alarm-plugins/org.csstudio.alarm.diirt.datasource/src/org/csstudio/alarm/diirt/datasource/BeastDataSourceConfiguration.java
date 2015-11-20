@@ -24,7 +24,7 @@ import org.w3c.dom.Document;
  */
 public class BeastDataSourceConfiguration extends DataSourceConfiguration<BeastDataSource> {
 
-    private String brokerUrl = "tcp://localhost:61616?jms.prefetchPolicy.all=1000";
+    private String configName = null;
 
     @Override
     public BeastDataSourceConfiguration read(InputStream input) {
@@ -36,16 +36,16 @@ public class BeastDataSourceConfiguration extends DataSourceConfiguration<BeastD
             XPathFactory xpathFactory = XPathFactory.newInstance();
             XPath xPath = xpathFactory.newXPath();
             
-            String ver = xPath.evaluate("/jms/@version", document);
+            String ver = xPath.evaluate("/beast/@version", document);
             if (!ver.equals("1")) {
                 throw new IllegalArgumentException("Unsupported version " + ver);
             }
 
-            String monitorMask = xPath.evaluate("/jms/dataSourceOptions/@brokerURL", document);
-            if (monitorMask != null && !monitorMask.isEmpty()) {
-                this.brokerUrl = monitorMask;
+            String configName = xPath.evaluate("/beast/dataSourceOptions/@configName", document);
+            if (configName != null && !configName.isEmpty()) {
+                this.configName = configName;
             }else{
-                Logger.getLogger(BeastDataSourceConfiguration.class.getName()).log(Level.FINEST, "Couldn't load brokerURL from jms file configuration");
+                Logger.getLogger(BeastDataSourceConfiguration.class.getName()).log(Level.FINEST, "Couldn't load brokerURL from beast file configuration");
             }
         } catch (Exception e) {
             Logger.getLogger(BeastDataSourceConfiguration.class.getName()).log(Level.FINEST, "Couldn't load file configuration", e);
@@ -59,8 +59,8 @@ public class BeastDataSourceConfiguration extends DataSourceConfiguration<BeastD
         return new BeastDataSource(this);
     }
 
-    public String getBrokerUrl() {
-        return brokerUrl;
+    public String getConfigName() {
+        return configName;
     }
 
 }

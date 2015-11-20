@@ -30,7 +30,6 @@ public class BeastTypeSupport extends DataSourceTypeSupport {
             int match,
             List<? extends DataSourceTypeAdapter<?, ?>> matchedConverters) {
         // TODO Auto-generated method stub
-        System.out.println("formatt");
         return super.formatMessage(cache, connection, match, matchedConverters);
     }
 }
