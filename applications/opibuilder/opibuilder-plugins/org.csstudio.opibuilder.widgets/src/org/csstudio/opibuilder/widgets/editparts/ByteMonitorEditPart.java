@@ -69,7 +69,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
         fig.setHorizontal(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_HORIZONTAL)) );
         fig.setReverseBits(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_BIT_REVERSE)) );
         fig.setLedBorderColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_LED_BORDER_COLOR)).getSWTColor());
-        fig.setLedSpacing(((Integer)model.getPropertyValue(ByteMonitorModel.PROP_LED_BORDER)) );
+        fig.setLedBorderWidth(((Integer)model.getPropertyValue(ByteMonitorModel.PROP_LED_BORDER)) );
         fig.setSquareLED(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_SQUARE_LED)) );
         fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getSWTColor() );
         fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getSWTColor() );
@@ -228,7 +228,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 
         setPropertyChangeHandler(ByteMonitorModel.PROP_NUM_BITS, numBitsHandler);
 
-        //Sqaure LED
+        //Square LED
         IWidgetPropertyChangeHandler squareLEDHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
@@ -240,20 +240,20 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
         };
         setPropertyChangeHandler(ByteMonitorModel.PROP_SQUARE_LED, squareLEDHandler);
 
-        //Square LED spacing
-        IWidgetPropertyChangeHandler squareLEDSpacingHandler = new IWidgetPropertyChangeHandler() {
+        //LED spacing
+        IWidgetPropertyChangeHandler ledBorderWidthHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
                 ByteMonitorFigure bm = (ByteMonitorFigure) refreshableFigure;
-                bm.setLedSpacing((int) newValue);
+                bm.setLedBorderWidth((int) newValue);
                 return true;
             }
         };
-        setPropertyChangeHandler(ByteMonitorModel.PROP_LED_BORDER, squareLEDSpacingHandler);
+        setPropertyChangeHandler(ByteMonitorModel.PROP_LED_BORDER, ledBorderWidthHandler);
 
-        //Square LED border colour
-        IWidgetPropertyChangeHandler squareLEDBorderHandler = new IWidgetPropertyChangeHandler() {
+        //LED border color
+        IWidgetPropertyChangeHandler ledBorderColorHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue,
                     final IFigure refreshableFigure) {
@@ -262,7 +262,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
                 return true;
             }
         };
-        setPropertyChangeHandler(ByteMonitorModel.PROP_LED_BORDER_COLOR, squareLEDBorderHandler);
+        setPropertyChangeHandler(ByteMonitorModel.PROP_LED_BORDER_COLOR, ledBorderColorHandler);
 
         //effect 3D
         IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {
