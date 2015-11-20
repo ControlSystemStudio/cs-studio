@@ -37,9 +37,11 @@ public class Opi_ByteClass extends OpiWidget {
         new OpiBoolean(widgetContext, "effect_3d", false);
         new OpiBoolean(widgetContext, "square_led", true);
 
+        // EDM line width is returned as '0' if unchanged from default '1'
+        new OpiInt(widgetContext, "led_border", Math.max(1, r.getLineWidth()));
+        new OpiColor(widgetContext, "led_border_color", r.getLineColor(), r);
 
         new OpiColor(widgetContext, "on_color", r.getOnColor(), r);
-
         new OpiColor(widgetContext, "off_color", r.getOffColor(), r);
 
         if(r.getControlPv() !=null){
