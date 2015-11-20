@@ -143,33 +143,8 @@ public class LEDFigure extends AbstractBoolFigure {
             fillColor = bulb.getBulbColor();
         }
 
-        //draw up border
         graphics.setBackgroundColor(borderColor);
-        graphics.fillPolygon(new int[]{
-                clientArea.x, clientArea.y,
-                clientArea.x + borderWidth, clientArea.y + borderWidth,
-                clientArea.x + clientArea.width - borderWidth, clientArea.y + borderWidth,
-                clientArea.x + clientArea.width, clientArea.y});
-
-        //draw left border
-        graphics.fillPolygon(new int[]{clientArea.x, clientArea.y,
-                clientArea.x + borderWidth, clientArea.y + borderWidth,
-                clientArea.x + borderWidth, clientArea.y + clientArea.height - borderWidth,
-                clientArea.x, clientArea.y + clientArea.height});
-
-        //draw bottom border
-        graphics.fillPolygon(new int[]{clientArea.x, clientArea.y + clientArea.height,
-            clientArea.x + borderWidth, clientArea.y + clientArea.height - borderWidth,
-            clientArea.x + clientArea.width - borderWidth, clientArea.y + clientArea.height - borderWidth,
-            clientArea.x + clientArea.width, clientArea.y + clientArea.height});
-
-        //draw right border
-        graphics.fillPolygon(new int[]{
-                clientArea.x + clientArea.width, clientArea.y,
-                clientArea.x + clientArea.width - borderWidth, clientArea.y + borderWidth,
-                clientArea.x + clientArea.width - borderWidth,
-                clientArea.y + clientArea.height - borderWidth,
-                clientArea.x + clientArea.width, clientArea.y + clientArea.height});
+        graphics.fillRectangle(clientArea);
 
         clientArea.shrink(borderWidth, borderWidth);
         graphics.setBackgroundColor(fillColor);

@@ -198,6 +198,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
             Rectangle clientArea = getClientArea();
             if (isHorizontal){
                 int ledWidth = ledBorderWidth + (clientArea.width - ledBorderWidth)/numBits;
+                int ledSpacing = ledWidth - ledBorderWidth;
                 int startX = clientArea.x;
 
                 int ledHeight = 0;
@@ -208,8 +209,10 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
                 }
 
                 for (LEDFigure led : ledFigures) {
-                    led.setBounds(new Rectangle(startX, clientArea.y, ledWidth, ledHeight));
-                    startX += ledWidth - ledBorderWidth;
+                    // right and bottom edges of the rectangle are 'outside' and not painted
+                    // so inflate the size to compensate
+                    led.setBounds(new Rectangle(startX, clientArea.y, ledWidth + 1, ledHeight + 1));
+                    startX += ledSpacing;
                 }
 
                 startX = clientArea.x;
@@ -221,11 +224,12 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
                         text.setBounds(new Rectangle(
                                 startX, clientArea.y + ledHeight, ledWidth, clientArea.height - ledHeight));
                     }
-                    startX += ledWidth - ledBorderWidth;
+                    startX += ledSpacing;
                 }
             }
             else {
                 int ledHeight = ledBorderWidth + (clientArea.height - ledBorderWidth)/numBits;
+                int ledSpacing = ledHeight - ledBorderWidth;
                 int startY = clientArea.y;
 
                 int ledWidth = 0;
@@ -236,9 +240,10 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
                 }
 
                 for (LEDFigure led : ledFigures) {
-                    led.setBounds(new Rectangle(
-                            clientArea.x, startY, ledWidth, ledHeight));
-                    startY += ledHeight - ledBorderWidth;
+                    // right and bottom edges of the rectangle are 'outside' and not painted
+                    // so inflate the size to compensate
+                    led.setBounds(new Rectangle(clientArea.x, startY, ledWidth + 1, ledHeight + 1));
+                    startY += ledSpacing;
                 }
 
                 startY = clientArea.y;
@@ -250,7 +255,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
                         text.setBounds(new Rectangle(
                                 clientArea.x + ledWidth, startY, clientArea.width - ledWidth, ledHeight));
                     }
-                    startY += ledHeight - ledBorderWidth;
+                    startY += ledSpacing;
                 }
             }
         }
