@@ -136,7 +136,7 @@ public class DemoDataProvider implements DataProvider {
     }
 
     @Override
-    public Snapshot[] getSnapshots(BeamlineSet set) {
+    public Snapshot[] getSnapshots(BeamlineSet set, boolean all, Optional<Snapshot> fromThisOneBack) {
         List<Snapshot> snapshots = new ArrayList<>();
         if (set != null) {
             long time = System.currentTimeMillis();
@@ -193,7 +193,7 @@ public class DemoDataProvider implements DataProvider {
     }
 
     @Override
-    public Snapshot tagSnapshot(Snapshot snapshot, String tagName, String tagMessage) {
+    public Snapshot tagSnapshot(Snapshot snapshot, Optional<String> tagName, Optional<String> tagMessage) {
         System.out.println("Snapshot tagged");
         return snapshot;
     }
@@ -202,6 +202,7 @@ public class DemoDataProvider implements DataProvider {
     public VSnapshot getSnapshotContent(Snapshot snapshot) {
         List<String> names = new ArrayList<>();
         List<VType> values = new ArrayList<>();
+        List<Boolean> selected = new ArrayList<>();
         names.add("demoChannel_98");
         int v = (int) (Math.random() * AlarmSeverity.values().length);
         values.add(ValueFactory.newVBoolean(true, ValueFactory.newAlarm(AlarmSeverity.values()[v], "OK"), ValueFactory
@@ -222,9 +223,10 @@ public class DemoDataProvider implements DataProvider {
                     ValueFactory.newTime(
                             Timestamp.of(new Date(System.currentTimeMillis() - (long) (Math.random() * 10000)))),
                     ValueFactory.displayNone()));
+            selected.add(Boolean.TRUE);
 
         }
-        return new VSnapshot(snapshot, names, values, Timestamp.of(new Date()));
+        return new VSnapshot(snapshot, names, selected, values, Timestamp.of(new Date()));
     }
 
     @Override

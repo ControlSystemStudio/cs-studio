@@ -15,9 +15,13 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  *
@@ -28,6 +32,20 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class SaveRestoreService {
+
+    private ISchedulingRule mutexRule = new ISchedulingRule() {
+        public boolean isConflicting(ISchedulingRule rule) {
+            return rule == this;
+        }
+
+        public boolean contains(ISchedulingRule rule) {
+            return rule == this;
+        }
+    };
+
+    /** Property that defines the maximum number of snapshots loaded in a single call */
+    public static final String PREF_NUMBER_OF_SNAPSHOTS = "maxNumberOfSnapshotsInBatch";
+    private static final String PLUGIN_ID = "org.csstudio.saverestore";
 
     private static final String DATA_PROVIDER_EXT_POINT = "org.csstudio.saverestore.dataprovider";
     /** The common logger */
@@ -41,6 +59,7 @@ public class SaveRestoreService {
     private List<DataProviderWrapper> dataProviders;
     private DataProviderWrapper selectedDataProvider;
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
+    private IPreferenceStore preferences;
 
     private static final SaveRestoreService INSTANCE = new SaveRestoreService();
 
@@ -70,7 +89,8 @@ public class SaveRestoreService {
                     DataProvider provider = (DataProvider) element.createExecutableExtension("dataprovider");
                     dpw.add(new DataProviderWrapper(id, name, description, provider));
                 } catch (CoreException e) {
-                    SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore data provider '" + name + "' could not be loaded.", e);
+                    SaveRestoreService.LOGGER.log(Level.SEVERE,
+                            "Save and restore data provider '" + name + "' could not be loaded.", e);
                 }
             }
             dataProviders = Collections.unmodifiableList(dpw);
@@ -133,12 +153,30 @@ public class SaveRestoreService {
     }
 
     /**
-     * Execute the runnable task on the background task executor.
+     * @return number of snapshots loaded from the repository at once (in a single call)
+     */
+    public int getNumberOfSnapshots() {
+        return getPreferences().getInt(PREF_NUMBER_OF_SNAPSHOTS);
+    }
+
+    /**
+     * @return the preferences store of this plugin
+     */
+    public IPreferenceStore getPreferences() {
+        if (preferences == null) {
+            preferences = new ScopedPreferenceStore(InstanceScope.INSTANCE, PLUGIN_ID);
+        }
+        return preferences;
+    }
+
+    /**
+     * Execute the runnable task on the background task executor. It is guaranteed that the tasks will be executed in
+     * the order as they have been submitted and not two tasks will ever run simultaneously.
      *
      * @param task the task to execute
      */
     public void execute(final String taskName, final Runnable task) {
-        Job job = new Job("Save & Restore: " + taskName) {
+        Job job = new Job("Save and Restore: " + taskName) {
             @Override
             protected IStatus run(IProgressMonitor monitor) {
                 monitor.beginTask(taskName, 1);
@@ -152,6 +190,7 @@ public class SaveRestoreService {
                 }
             }
         };
+        job.setRule(mutexRule);
         job.schedule();
     }
 }

@@ -119,8 +119,8 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         super(owner.getSite().getShell(), "Select Location", "Select location where to store the beamline set",
                 preselection,
                 e -> e == null || e.getName().isEmpty() ? "Beamline Set name not provided"
-                        : e.getBranch() == null ? "No branch selected"
-                                : e.getPath().length == 0 ? "No name and path provided" : null);
+                   : e.getBranch() == null ? "No branch selected"
+                   : e.getPath().length == 0 ? "No name and path provided" : null);
         this.owner = owner;
         this.initialValue = preselection;
     }
@@ -199,25 +199,26 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         pane.setHgap(3);
 
         GridPane.setFillHeight(treeView, true);
-        GridPane.setFillHeight(nameField, false);
         GridPane.setFillHeight(fullNameField, false);
-        GridPane.setFillHeight(nameLabel, false);
         GridPane.setFillHeight(fullNameLabel, false);
         GridPane.setFillWidth(treeView, true);
-        GridPane.setFillWidth(nameField, true);
         GridPane.setFillWidth(fullNameField, true);
-        GridPane.setFillWidth(nameLabel, false);
         GridPane.setFillWidth(fullNameLabel, false);
         GridPane.setHgrow(treeView, Priority.ALWAYS);
-        GridPane.setHgrow(nameField, Priority.ALWAYS);
         GridPane.setHgrow(fullNameField, Priority.ALWAYS);
-        GridPane.setHgrow(nameLabel, Priority.NEVER);
         GridPane.setHgrow(fullNameLabel, Priority.NEVER);
         GridPane.setVgrow(treeView, Priority.ALWAYS);
-        GridPane.setVgrow(nameField, Priority.NEVER);
         GridPane.setVgrow(fullNameField, Priority.NEVER);
-        GridPane.setVgrow(nameLabel, Priority.NEVER);
         GridPane.setVgrow(fullNameLabel, Priority.NEVER);
+
+        GridPane.setFillHeight(nameLabel, false);
+        GridPane.setFillWidth(nameLabel, false);
+        GridPane.setHgrow(nameLabel, Priority.NEVER);
+        GridPane.setVgrow(nameLabel, Priority.NEVER);
+        GridPane.setFillHeight(nameField, false);
+        GridPane.setFillWidth(nameField, true);
+        GridPane.setHgrow(nameField, Priority.ALWAYS);
+        GridPane.setVgrow(nameField, Priority.NEVER);
 
         pane.add(treeView, 0, 0, 2, 1);
         pane.add(nameLabel, 0, 1, 1, 1);
@@ -264,12 +265,12 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
                     throw new IllegalStateException(
                             "The repository structure is corrupted. Could not find the branch '" + branch + "'.");
                 }
-//                if (branchItem.getChildren().size() != 1) {
-//                    Type type = ((BrowsingTreeItem) branchItem.getChildren().get(0)).type;
-//                    if (type == Type.LOADING || type == Type.NOTLOADED) {
-//                        return;
-//                    }
-//                }
+                // if (branchItem.getChildren().size() != 1) {
+                // Type type = ((BrowsingTreeItem) branchItem.getChildren().get(0)).type;
+                // if (type == Type.LOADING || type == Type.NOTLOADED) {
+                // return;
+                // }
+                // }
             }
             BrowsingTreeItem item = new BrowsingTreeItem(b);
             item.getChildren().add(new BrowsingTreeItem());
@@ -277,12 +278,13 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         }
 
         if (branchItem == null || baseLevels.isEmpty()) {
-            //branchItem is always null here, but eclipse complains if there is no check
+            // branchItem is always null here, but eclipse complains if there is no check
             for (TreeItem<String> br : branches) {
                 if (br.isExpanded() && br.getChildren().size() == 1
                         && ((BrowsingTreeItem) br.getChildren().get(0)).type == Type.LOADING) {
                     br.getChildren().clear();
-                    addPresetBaseLevel((BrowsingTreeItem) br, initialValue.getBaseLevel().orElse(null), initialValue.getBranch());
+                    addPresetBaseLevel((BrowsingTreeItem) br, initialValue.getBaseLevel().orElse(null),
+                            initialValue.getBranch());
                     break;
                 }
             }
@@ -436,7 +438,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         for (TreeItem<String> bl : branch.getChildren()) {
             if (((BrowsingTreeItem) bl).type == Type.BASE) {
                 if (base.getStorageName().equals(((BrowsingTreeItem) bl).base.getStorageName()))
-                baseItem = (BrowsingTreeItem) bl;
+                    baseItem = (BrowsingTreeItem) bl;
                 break;
             }
         }

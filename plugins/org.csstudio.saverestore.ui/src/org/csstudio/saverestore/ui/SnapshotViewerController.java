@@ -145,6 +145,7 @@ public class SnapshotViewerController {
         dispose();
         List<String> names = data.getNames();
         List<VType> values = data.getValues();
+        List<Boolean> selected = data.getSelected();
         synchronized(snapshots) {
             snapshots.add(data);
         }
@@ -156,6 +157,7 @@ public class SnapshotViewerController {
             name = names.get(i);
             e.idProperty().setValue(i+1);
             e.pvNameProperty().setValue(name);
+            e.selectedProperty().setValue(selected.get(i));
             e.setSnapshotValue(values.get(i), numberOfSnapshots);
             items.put(name, e);
         }
@@ -235,15 +237,17 @@ public class SnapshotViewerController {
         try {
             List<String> names = new ArrayList<>(items.size());
             List<VType> values = new ArrayList<>(items.size());
+            List<Boolean> selected = new ArrayList<>(items.size());
             for (TableEntry t : items.values()) {
                 names.add(t.pvNameProperty().get());
                 VType val = pvs.get(t).value;//t.liveValueProperty().get();
                 values.add(val == null ? VNoData.INSTANCE : val);
+                selected.add(t.selectedProperty().get());
             }
             //taken snapshots always belong to the beamline set of the master snapshot
             BeamlineSet set = getSnapshot(0).getBeamlineSet();
             Snapshot snapshot = new Snapshot(set);
-            VSnapshot taken = new VSnapshot(snapshot, names, values, Timestamp.now());
+            VSnapshot taken = new VSnapshot(snapshot, names, selected, values, Timestamp.now());
             owner.addSnapshot(taken);
         } finally {
             unlock();

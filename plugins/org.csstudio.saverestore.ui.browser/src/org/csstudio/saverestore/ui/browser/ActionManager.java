@@ -63,7 +63,7 @@ public class ActionManager {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
         SaveRestoreService.getInstance().execute("Tag Snapshot", () -> {
             try {
-                provider.tagSnapshot(snapshot, tagName, tagMessage);
+                provider.tagSnapshot(snapshot,Optional.of(tagName),Optional.of(tagMessage));
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }
@@ -178,26 +178,6 @@ public class ActionManager {
     }
 
     /**
-     * Create an editor for a new beamline set.
-     */
-    public void newBeamlineSet(final String[] suggestedPath) {
-        final Branch branch = selector.selectedBranchProperty().get();
-        final BaseLevel level = selector.selectedBaseLevelProperty().get();
-        SaveRestoreService.getInstance().execute("Open beamline set", () -> {
-            BeamlineSet set = new BeamlineSet(branch, Optional.ofNullable(level), suggestedPath);
-            BeamlineSetData data = new BeamlineSetData(set, new ArrayList<>(), "");
-            owner.getSite().getShell().getDisplay().asyncExec(() -> {
-                try {
-                    owner.getSite().getPage().openEditor(new BeamlineSetEditorInput(data), BeamlineSetEditor.ID);
-                } catch (PartInitException e) {
-                    SaveRestoreService.LOGGER.log(Level.SEVERE,
-                            "Could not find or instantiate a new beamline set editor.", e);
-                }
-            });
-        });
-    }
-
-    /**
      * Load the beamline set data and open it in the snapshot viewer editor.
      *
      * @param set the beamline set to open
@@ -244,6 +224,22 @@ public class ActionManager {
                 if (comment.isPresent()) {
                     provider.deleteBeamlineSet(set,comment.get());
                 }
+            } catch (DataProviderException e) {
+                Selector.reportException(e, owner.getSite().getShell());
+            }
+        });
+    }
+
+    public void deleteTag(final Snapshot snapshot) {
+        if (snapshot == null) {
+            throw new IllegalArgumentException("Snapshot not selected.");
+        } else if (!snapshot.getTagName().isPresent()) {
+            throw new IllegalArgumentException("Selected snapshot is not tagged.");
+        }
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        SaveRestoreService.getInstance().execute("Remove tag", () -> {
+            try {
+                provider.tagSnapshot(snapshot, Optional.empty(),Optional.empty());
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }

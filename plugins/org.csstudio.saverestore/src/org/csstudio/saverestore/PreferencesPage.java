@@ -1,10 +1,8 @@
 package org.csstudio.saverestore;
 
-import org.eclipse.jface.preference.PreferencePage;
-import org.eclipse.swt.SWT;
+import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -15,17 +13,38 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class PreferencesPage extends PreferencePage implements IWorkbenchPreferencePage {
+public class PreferencesPage extends FieldEditorPreferencePage implements IWorkbenchPreferencePage {
 
-    @Override
-    public void init(final IWorkbench workbench) {
+    /**
+     * Constructs a new preferences page.
+     */
+    public PreferencesPage() {
+        super(FieldEditorPreferencePage.GRID);
+        setPreferenceStore(SaveRestoreService.getInstance().getPreferences());
+        setMessage("Save and Restore Properties");
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
+     */
     @Override
-    protected Control createContents(final Composite parent) {
-        final Label label = new Label(parent, SWT.NULL);
-        label.setText("Use these pages to customize Save and Restore application");
-        return label;
+    public void init(IWorkbench workbench) {
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
+     */
+    @Override
+    protected void createFieldEditors() {
+        Composite parent = getFieldEditorParent();
+        IntegerFieldEditor numSnapshots = new IntegerFieldEditor(SaveRestoreService.PREF_NUMBER_OF_SNAPSHOTS,
+                "Number of snapshots loaded at once (all=0)", parent);
+        addField(numSnapshots);
+
     }
 
 }

@@ -17,6 +17,8 @@ import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.FXTaggingDialog;
 import org.eclipse.fx.ui.workbench3.FXViewPart;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -211,8 +213,6 @@ public class BrowserView extends FXViewPart {
             }
         });
 
-
-
         GridPane.setVgrow(beamlineSetsTree, Priority.ALWAYS);
         GridPane.setHgrow(beamlineSetsTree, Priority.ALWAYS);
         GridPane.setFillWidth(beamlineSetsTree, true);
@@ -274,8 +274,8 @@ public class BrowserView extends FXViewPart {
             public ListCell<Snapshot> call(ListView<Snapshot> param) {
                 return new ListCell<Snapshot>() {
                     public void updateItem(Snapshot item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null) {
+                        getStyleClass().remove("tagged-cell");
+                        if (item != null && !empty) {
                             StringBuilder sb = new StringBuilder(300);
                             sb.append(item.getComment());
                             String message = item.getParameters().get(Snapshot.TAG_MESSAGE);
@@ -283,13 +283,14 @@ public class BrowserView extends FXViewPart {
                             if (tag != null) {
                                 sb.append("\n\n").append(tag).append('\n').append(message);
                                 getStyleClass().add("tagged-cell");
-                            } else {
-                                getStyleClass().remove("tagged-cell");
                             }
                             setTooltip(new Tooltip(sb.toString()));
                             setText(item.toString());
-
+                        } else {
+                            setTooltip(null);
+                            setText(null);
                         }
+                        super.updateItem(item, empty);
                     }
                 };
             }
@@ -313,6 +314,32 @@ public class BrowserView extends FXViewPart {
             db.setContent(cc);
             e.consume();
         });
+        final ContextMenu popup = new ContextMenu();
+        MenuItem deleteSetItem = new MenuItem("Remove Tag...");
+        deleteSetItem.setOnAction(e -> {
+            popup.hide();
+            final Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
+            boolean delete = FXMessageDialog.openQuestion(getSite().getShell(), "Remove Tag",
+                    "Are you sure you want to remove the tag '" + item.getTagName().get()
+                            + "' from snapshot '" + item.getDate() + "'?");
+            if (delete) {
+                actionManager.deleteTag(item);
+            }
+        });
+        popup.getItems().add(deleteSetItem);
+        snapshotsList.setContextMenu(popup);
+        snapshotsList.setOnMouseReleased(e -> {
+            if (e.isSecondaryButtonDown()) {
+                final Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
+                if (item.getTagName().isPresent()) {
+                    popup.show(beamlineSetsTree, e.getX(), e.getY());
+                } else {
+                    popup.hide();
+                }
+            }
+        });
+
+
         content.setCenter(snapshotsList);
         snapshotsPane = new TitledPane("Snapshots", content);
         snapshotsPane.setMaxHeight(Double.MAX_VALUE);
@@ -343,11 +370,28 @@ public class BrowserView extends FXViewPart {
         compareButton
                 .setOnAction(e -> actionManager.compareSnapshot(snapshotsList.getSelectionModel().getSelectedItem()));
 
+        final Button nextButton = new Button("",
+                new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/1rightarrow.png"))));
+        nextButton.setTooltip(new Tooltip("Load Next Batch"));
+        nextButton.setOnAction(e -> selector.readSnapshots(false, false));
+        nextButton.disableProperty().bind(selector.selectedBeamlineSetProperty().isNull().or(
+                selector.allSnapshotsLoadedProperty()));
+
+        final Button nextAllButton = new Button("",
+                new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/2rightarrow.png"))));
+        nextAllButton.setTooltip(new Tooltip("Load All"));
+        nextAllButton.setOnAction(e -> selector.readSnapshots(false, true));
+        nextAllButton.disableProperty().bind(selector.selectedBeamlineSetProperty().isNull().or(
+                selector.allSnapshotsLoadedProperty()));
+
+
         setUpTitlePaneNode(titleText, true);
+        setUpTitlePaneNode(nextButton, false);
+        setUpTitlePaneNode(nextAllButton, false);
         setUpTitlePaneNode(tagButton, false);
         setUpTitlePaneNode(openButton, false);
         setUpTitlePaneNode(compareButton, false);
-        titleBox.addRow(0, titleText, openButton, compareButton, tagButton);
+        titleBox.addRow(0, titleText, nextButton, nextAllButton, openButton, compareButton, tagButton);
         titleBox.setMaxWidth(Double.MAX_VALUE);
         titleText.setMaxWidth(Double.MAX_VALUE);
         snapshotsPane.setGraphic(titleBox);
@@ -405,12 +449,7 @@ public class BrowserView extends FXViewPart {
             if (n == null) {
                 snapshotsPane.setText("Snapshots");
             } else {
-                if (n.getBaseLevel().isPresent()) {
-                    snapshotsPane.setText(
-                            "Snapshots of " + n.getName() + " (" + n.getBaseLevel().get().getPresentationName() + ")");
-                } else {
-                    snapshotsPane.setText("Snapshots of " + n.getName());
-                }
+                snapshotsPane.setText("Snapshots of " + n.getName());
             }
         });
         selector.beamlineSetsProperty().addListener((a, o, beamlineSets) -> {
@@ -445,7 +484,10 @@ public class BrowserView extends FXViewPart {
             beamlineSetsTree.setRoot(root);
             root.setExpanded(true);
         });
-        selector.snapshotsProperty().addListener((a, o, n) -> snapshotsList.getItems().setAll(n));
+        selector.snapshotsProperty().addListener((a, o, n) ->{
+            ObservableList<Snapshot> list = FXCollections.observableArrayList(n);
+            snapshotsList.setItems(list);
+        });
 
         List<DataProviderWrapper> dpws = SaveRestoreService.getInstance().getDataProviders();
         if (dpws.size() > 0) {

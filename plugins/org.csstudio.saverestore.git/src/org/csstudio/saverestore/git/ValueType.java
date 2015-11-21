@@ -1,5 +1,6 @@
 package org.csstudio.saverestore.git;
 
+import org.csstudio.saverestore.data.VNoData;
 import org.diirt.vtype.VBoolean;
 import org.diirt.vtype.VBooleanArray;
 import org.diirt.vtype.VByte;
@@ -45,7 +46,8 @@ enum ValueType {
     BYTE("byte", VByte.class),
     BOOLEAN("boolean", VBoolean.class),
     STRING("string", VString.class),
-    ENUM("enum",VEnum.class);
+    ENUM("enum",VEnum.class),
+    NODATA("na",VNoData.class);
 
     /** Name of the value type */
     public final String name;

@@ -143,12 +143,15 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#getSnapshots(org.csstudio.saverestore.BeamlineSet)
+     * @see org.csstudio.saverestore.DataProvider#getSnapshots(org.csstudio.saverestore.data.BeamlineSet, boolean,
+     * java.util.Optional)
      */
     @Override
-    public Snapshot[] getSnapshots(BeamlineSet set) throws DataProviderException {
+    public Snapshot[] getSnapshots(BeamlineSet set, boolean all, Optional<Snapshot> fromThisOneBack)
+            throws DataProviderException {
         try {
-            List<Snapshot> snapshots = grm.getSnapshots(set);
+            List<Snapshot> snapshots = grm.getSnapshots(set,
+                    all ? 0 : SaveRestoreService.getInstance().getNumberOfSnapshots(), fromThisOneBack);
             return snapshots.toArray(new Snapshot[snapshots.size()]);
         } catch (IOException | GitAPIException e) {
             throw new DataProviderException("Error retrieving the snapshots list for '" + set.getPathAsString() + "'.",
@@ -272,14 +275,15 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#tagSnapshot(org.csstudio.saverestore.Snapshot, java.lang.String,
-     * java.lang.String)
+     * @see org.csstudio.saverestore.DataProvider#tagSnapshot(org.csstudio.saverestore.data.Snapshot,
+     * java.util.Optional, java.util.Optional)
      */
     @Override
-    public Snapshot tagSnapshot(Snapshot snapshot, String tagName, String tagMessage) throws DataProviderException {
+    public Snapshot tagSnapshot(Snapshot snapshot, Optional<String> tagName, Optional<String> tagMessage)
+            throws DataProviderException {
         Result<Snapshot> answer = null;
         try {
-            answer = grm.tagSnapshot(snapshot, tagName, tagMessage);
+            answer = grm.tagSnapshot(snapshot, tagName.orElse(null), tagMessage.orElse(null));
         } catch (IOException | GitAPIException e) {
             throw new DataProviderException("Error creating the tag for snapshot '" + snapshot.getDate() + "'.", e);
         }

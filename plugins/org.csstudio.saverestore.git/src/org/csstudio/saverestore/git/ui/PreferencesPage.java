@@ -49,7 +49,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
      */
     @Override
     protected void createFieldEditors() {
-        final Composite parent = getFieldEditorParent();
+        Composite parent = getFieldEditorParent();
 
         StringFieldEditor url = new StringFieldEditor(Activator.PREF_URL, "Git repository URL:", parent){
             @Override
@@ -84,6 +84,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         };
 
         addField(destination);
+
         BooleanFieldEditor automaticSync = new BooleanFieldEditor(Activator.PREF_AUTOMATIC_SYNC,
                 "Automatically synchronise repository after every save?", parent);
         addField(automaticSync);

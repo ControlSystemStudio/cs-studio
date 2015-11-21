@@ -27,8 +27,11 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 
 /**
@@ -77,6 +80,8 @@ public class Selector {
     private ObjectProperty<List<Branch>> branches;
     private ObjectProperty<List<BeamlineSet>> beamlineSets;
     private ObjectProperty<List<Snapshot>> snapshots;
+    private BooleanProperty allSnapshotsLoaded = new SimpleBooleanProperty(false);
+    private Snapshot lastSnapshot;
     private CompletionNotifier notifier = new CompletionNotifier() {
         @Override
         public void synchronised() {
@@ -88,6 +93,7 @@ public class Selector {
                         .set(Collections.unmodifiableList(new ArrayList<>(0)));
                 ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
                         .set(Collections.unmodifiableList(new ArrayList<>(0)));
+                allSnapshotsLoaded.set(false);
                 SaveRestoreService.getInstance().execute("Synchronise", () -> {
                     readBranches(selectedBranchProperty().get());
                 });
@@ -99,7 +105,7 @@ public class Selector {
             List<Snapshot> snp = snapshotsProperty().get();
             final List<Snapshot> newV = new ArrayList<>(snp.size());
             snp.forEach(k -> {
-                if(k.almostEquals(snapshot)) {
+                if (k.almostEquals(snapshot)) {
                     newV.add(snapshot);
                 } else {
                     newV.add(k);
@@ -115,6 +121,7 @@ public class Selector {
             List<Snapshot> newV = new ArrayList<>();
             newV.add(snapshot.getSnapshot().get());
             newV.addAll(snp);
+            Collections.sort(newV);
             runOnGUIThread(() -> ((SimpleObjectProperty<List<Snapshot>>) snapshotsProperty())
                     .set(Collections.unmodifiableList(newV)));
         }
@@ -172,6 +179,7 @@ public class Selector {
             ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty()).set(new ArrayList<>(0));
             ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty()).set(new ArrayList<>(0));
             ((ObjectProperty<List<Snapshot>>) snapshotsProperty()).set(new ArrayList<>(0));
+            allSnapshotsLoaded.set(false);
             readBranches(DEFAULT_BRANCH);
         });
     }
@@ -324,28 +332,59 @@ public class Selector {
         if (selectedBeamlineSet == null) {
             selectedBeamlineSet = new SimpleObjectProperty<BeamlineSet>();
             selectedBeamlineSet.addListener((a, o, n) -> {
-                if (n == null) {
-                    ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
-                            .set(Collections.unmodifiableList(new ArrayList<>(0)));
-                } else {
-                    readSnapshots();
+                allSnapshotsLoaded.set(false);
+                ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
+                        .set(Collections.unmodifiableList(new ArrayList<>(0)));
+                lastSnapshot = null;
+                if (n != null) {
+                    readSnapshots(true, false);
                 }
             });
         }
         return selectedBeamlineSet;
     }
 
-    private void readSnapshots() {
+    /**
+     * Loads the snapshots from the repository. Either all snapshots will be loaded or only the number specified by the
+     * {@link SaveRestoreService#getNumberOfSnapshots()}. The snapshots will also be loaded from the head of the
+     * repository (the latest snapshot) or from the last snapshot that is already part of this selector.
+     *
+     * @param fromHead true if the snapshots should be loaded from the head backward or false if snapshots should be
+     *            loaded from the last received snapshot backwards
+     * @param all true if all snapshots should be loaded or false if only a subset specified by the preferences
+     *
+     * @see SaveRestoreService#getNumberOfSnapshots()
+     */
+    public void readSnapshots(boolean fromHead, final boolean all) {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final BeamlineSet set = selectedBeamlineSetProperty().get();
+        final Snapshot snap = fromHead ? null : lastSnapshot;
         SaveRestoreService.getInstance().execute("Load snapshots", () -> {
             try {
-                final Snapshot[] snapshots = provider.getSnapshots(selectedBeamlineSetProperty().get());
-                runOnGUIThread(() -> ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
-                        .set(Collections.unmodifiableList(Arrays.asList(snapshots))));
+                final Snapshot[] snapshots = provider.getSnapshots(set, all, Optional.ofNullable(snap));
+                final List<Snapshot> allSnapshots = new ArrayList<>(snapshotsProperty().get());
+                for (Snapshot s : snapshots) {
+                    allSnapshots.add(s);
+                }
+                lastSnapshot = allSnapshots.isEmpty() ? null : allSnapshots.get(allSnapshots.size() - 1);
+                Collections.sort(allSnapshots);
+                runOnGUIThread(() -> {
+                    allSnapshotsLoaded.set(snapshots.length == 0);
+                    ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
+                            .set(Collections.unmodifiableList(allSnapshots));
+                });
             } catch (DataProviderException e) {
                 reportException(e, owner.getSite().getShell());
             }
         });
+    }
+
+    /**
+     * @return the property that specifies if all snapshots have already been loaded for the selected beamline set or
+     *         not
+     */
+    public ReadOnlyBooleanProperty allSnapshotsLoadedProperty() {
+        return allSnapshotsLoaded;
     }
 
     /**

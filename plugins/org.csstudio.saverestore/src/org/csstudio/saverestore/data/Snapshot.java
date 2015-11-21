@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.csstudio.saverestore.Utilities;
 
@@ -120,6 +121,20 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      */
     public Map<String,String> getParameters() {
         return Collections.unmodifiableMap(parameters);
+    }
+
+    /**
+     * @return the tag name if it exists
+     */
+    public Optional<String> getTagName() {
+        return Optional.ofNullable(parameters.get(TAG_NAME));
+    }
+
+    /**
+     * @return the tag message if it exists
+     */
+    public Optional<String> getTagMessage() {
+        return Optional.ofNullable(parameters.get(TAG_MESSAGE));
     }
 
     /*

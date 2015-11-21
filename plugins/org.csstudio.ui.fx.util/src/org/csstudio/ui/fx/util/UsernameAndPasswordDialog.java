@@ -34,24 +34,27 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
     private Button okButton;
     private PasswordField password;
     private TextField username;
-    private CheckBox remember;
+    private CheckBox rememberBox;
     private Credentials value;
     private InputValidator<String> validator = e -> (e == null || e.trim().isEmpty())
             ? "Empty username or password not allowed" : null;
     private String currentUsername;
     private final String message;
+    private final boolean remember;
 
     /**
      * Constructs a new dialog and sets the predefined username. If no username is provided, system user is used.
      *
      * @param shell the parent shell
      * @param username predefined username
+     * @param rememeber preset value for the remember checkbox
      * @param message the message to show in the dialog
      */
-    public UsernameAndPasswordDialog(Shell shell, String username, String message) {
+    public UsernameAndPasswordDialog(Shell shell, String username, boolean remember, String message) {
         super(shell);
         this.currentUsername = username == null ? System.getProperty("user.name") : username;
         this.message = message;
+        this.remember = remember;
         setBlockOnOpen(true);
     }
 
@@ -63,7 +66,7 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
     @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
-            value = new Credentials(username.getText(), password.getText().toCharArray(), remember.isSelected());
+            value = new Credentials(username.getText(), password.getText().toCharArray(), rememberBox.isSelected());
         } else {
             value = null;
         }
@@ -166,8 +169,9 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
                 pane.add(pLabel, 0, 1);
                 pane.add(username, 1, 0);
                 pane.add(password, 1, 1);
-                remember = new CheckBox("Remember password for later use");
-                pane.add(remember, 0, 2, 2, 1);
+                rememberBox = new CheckBox("Remember password for later use");
+                rememberBox.setSelected(remember);
+                pane.add(rememberBox, 0, 2, 2, 1);
                 pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
                 Color c = parent.getBackground();
                 String cl = Integer.toHexString(c.getRed()) + Integer.toHexString(c.getGreen())

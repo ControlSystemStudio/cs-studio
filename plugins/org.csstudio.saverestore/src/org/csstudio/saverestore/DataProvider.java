@@ -1,5 +1,7 @@
 package org.csstudio.saverestore;
 
+import java.util.Optional;
+
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.BeamlineSetData;
@@ -76,11 +78,14 @@ public interface DataProvider {
      * information when and by whom they were made including the save comment if supported.
      *
      * @param set the beamline set for which the snapshots are requested
+     * @param loadAll if true all snapshots are loaded regardless of the stored parameter maxNumberOfSnapshotsInBatch
+     * @param fromThisOneBack if provided only the snapshots that were created strictly before the given one
+     *          will be returned, if null all snapshots will be returned
      * @return the list of available snapshots
-     *
+     * @see SaveRestoreService#getNumberOfSnapshots()
      * @throws DataProviderException if the list of snapshots cannot be retrieved
      */
-    Snapshot[] getSnapshots(BeamlineSet set) throws DataProviderException;
+    Snapshot[] getSnapshots(BeamlineSet set, boolean loadAll, Optional<Snapshot> fromThisOneBack) throws DataProviderException;
 
     /**
      * Returns the content of one specific snapshot revision.
@@ -207,5 +212,5 @@ public interface DataProvider {
      *
      * @throws DataProviderException if there was an error during tagging
      */
-    Snapshot tagSnapshot(Snapshot snapshot, String tagName, String tagMessage) throws DataProviderException;
+    Snapshot tagSnapshot(Snapshot snapshot, Optional<String> tagName, Optional<String> tagMessage) throws DataProviderException;
 }

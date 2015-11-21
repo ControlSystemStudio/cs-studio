@@ -29,9 +29,34 @@ public class VSnapshot implements VType, Time, Array, Serializable {
 
     private final List<String> names;
     private final List<VType> values;
+    private final List<Boolean> selected;
     private final Timestamp snapshotTime;
     private final BeamlineSet beamlineSet;
     private final Optional<Snapshot> snapshot;
+
+    /**
+     * Constructs a new data object.
+     *
+     * @param snapshot the descriptor
+     * @param names the names of pvs
+     * @param selected flags indicating if the corresponding PVs are selected in the snapshot or not (only selected
+     *              ones are restored)
+     * @param values the values of the pvs
+     * @param snapshotTime the time when the snapshot was taken (this is not identical to the time when
+     *           the snapshot was stored)
+     */
+    public VSnapshot(Snapshot snapshot, List<String> names, List<Boolean> selected, List<VType> values,
+            Timestamp snapshotTime) {
+        if (names.size() != values.size()) {
+            throw new IllegalArgumentException("The number of PV names does not match the number of values");
+        }
+        this.names = Collections.unmodifiableList(names);
+        this.selected = Collections.unmodifiableList(selected);
+        this.values = Collections.unmodifiableList(values);
+        this.snapshotTime = snapshotTime;
+        this.beamlineSet = snapshot.getBeamlineSet();
+        this.snapshot = Optional.of(snapshot);
+    }
 
     /**
      * Constructs a new data object.
@@ -47,6 +72,9 @@ public class VSnapshot implements VType, Time, Array, Serializable {
             throw new IllegalArgumentException("The number of PV names does not match the number of values");
         }
         this.names = Collections.unmodifiableList(names);
+        final List<Boolean> selList = new ArrayList<>(names.size());
+        this.names.forEach(e -> selList.add(Boolean.TRUE));
+        this.selected = Collections.unmodifiableList(selList);
         this.values = Collections.unmodifiableList(values);
         this.snapshotTime = snapshotTime;
         this.beamlineSet = snapshot.getBeamlineSet();
@@ -61,9 +89,14 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     public VSnapshot(BeamlineSet set, List<String> names) {
         this.names = Collections.unmodifiableList(names);
-        List<VType> list = new ArrayList<>();
-        this.names.forEach(e -> list.add(VNoData.INSTANCE));
+        final List<VType> list = new ArrayList<>(names.size());
+        final List<Boolean> selList = new ArrayList<>(names.size());
+        this.names.forEach(e -> {
+            list.add(VNoData.INSTANCE);
+            selList.add(Boolean.TRUE);
+        });
         this.values = Collections.unmodifiableList(list);
+        this.selected = Collections.unmodifiableList(selList);
         this.snapshotTime = null;
         this.beamlineSet = set;
         this.snapshot = Optional.empty();
@@ -96,6 +129,13 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     public List<VType> getValues() {
         return values;
+    }
+
+    /**
+     * @return the list of selection values
+     */
+    public List<Boolean> getSelected() {
+        return selected;
     }
 
     /*
