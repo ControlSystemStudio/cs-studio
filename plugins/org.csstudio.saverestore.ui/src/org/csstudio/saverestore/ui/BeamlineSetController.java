@@ -39,11 +39,12 @@ public class BeamlineSetController {
      */
     public Optional<BeamlineSetData> save(final BeamlineSetData data) {
         Optional<String> comment = FXTextAreaInputDialog.get(owner.getSite().getShell(), "Beamline Set Comment",
-                "Provide a short comment of the changes to the beamline set " + data.getDescriptor().getFullName(), "",
+                "Provide a short comment of the changes to the beamline set " + data.getDescriptor().getDisplayName(), "",
                 e -> (e == null || e.trim().length() < 10) ? "Comment should be at least 10 characters long." : null);
         return comment.map(c -> {
             try {
-                return SaveRestoreService.getInstance().getSelectedDataProvider().provider.saveBeamlineSet(data, c);
+                String providerId = data.getDescriptor().getDataProviderId();
+                return SaveRestoreService.getInstance().getDataProvider(providerId).provider.saveBeamlineSet(data, c);
             } catch (DataProviderException ex) {
                 Selector.reportException(ex, owner.getSite().getShell());
                 return null;

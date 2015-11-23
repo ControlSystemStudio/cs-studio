@@ -15,18 +15,49 @@ import org.csstudio.saverestore.DataProvider;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public abstract class BaseLevel implements Serializable, Comparable<BaseLevel> {
+public class BaseLevel implements Serializable, Comparable<BaseLevel> {
     private static final long serialVersionUID = 7503287144725281421L;
+
+    private final String storageName;
+    private final String presentationName;
+    private final Branch branch;
+
+    /**
+     * Construct a new BaseLevel using the values provided by the <code>level</code> parameter.
+     * Constructed base level is equal to the provided one.
+     *
+     * @param level the parameters provider
+     */
+    public BaseLevel(BaseLevel level) {
+        this(level.getBranch(),level.getStorageName(),level.getPresentationName());
+    }
+
+    /**
+     * Construct a new base level from pieces.
+     *
+     * @param branch the branch that this base level resides on
+     * @param storageName the storage name of the base level
+     * @param presentationName the presentation name of the base level
+     */
+    public BaseLevel(Branch branch, String storageName, String presentationName) {
+        this.branch = branch;
+        this.storageName = storageName;
+        this.presentationName = presentationName;
+    }
 
     /**
      * @return the name used for presentation of this base level
      */
-    public abstract String getPresentationName();
+    public String getPresentationName() {
+        return presentationName;
+    }
 
     /**
      * @return the name used for storage of this base level; has to be unique and can only contain ASCII characters
      */
-    public abstract String getStorageName();
+    public String getStorageName() {
+        return storageName;
+    }
 
     /**
      * Returns the branch on which the base level is located. The {@link DataProvider} is obliged to fill this
@@ -35,7 +66,9 @@ public abstract class BaseLevel implements Serializable, Comparable<BaseLevel> {
      *
      * @return the branch on which this base level is located
      */
-    public abstract Branch getBranch();
+    public Branch getBranch() {
+        return branch;
+    }
 
     /*
      * (non-Javadoc)

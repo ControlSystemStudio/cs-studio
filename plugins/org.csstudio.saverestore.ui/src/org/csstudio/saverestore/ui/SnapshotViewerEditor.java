@@ -232,7 +232,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
                     break;
                 }
             } while (!snapshots.isEmpty());
-            getSite().getShell().getDisplay().asyncExec(() ->{
+            getSite().getShell().getDisplay().asyncExec(() -> {
                 monitor.done();
                 firePropertyChange(PROP_DIRTY);
             });
@@ -338,17 +338,29 @@ public class SnapshotViewerEditor extends FXEditorPart {
         grid.setVgap(5);
         grid.setHgap(5);
         grid.setAlignment(Pos.TOP_LEFT);
-        commentField = new TextArea();
+        commentField = new TextArea() {
+            @Override
+            public void requestFocus() {
+            }
+        };
         commentField.setEditable(false);
         commentField.setWrapText(true);
         commentField.setPrefWidth(300);
         commentField.setPrefRowCount(2);
         GridPane.setVgrow(commentField, Priority.ALWAYS);
         GridPane.setFillHeight(commentField, true);
-        creatorField = new TextField();
+        creatorField = new TextField() {
+            @Override
+            public void requestFocus() {
+            }
+        };
         creatorField.setEditable(false);
         creatorField.setPrefWidth(150);
-        dateField = new TextField();
+        dateField = new TextField() {
+            @Override
+            public void requestFocus() {
+            }
+        };
         dateField.setEditable(false);
         dateField.setPrefWidth(150);
 
@@ -509,7 +521,8 @@ public class SnapshotViewerEditor extends FXEditorPart {
             if (e.getDragboard().hasContent(SnapshotDataFormat.INSTANCE)) {
                 Snapshot s = (Snapshot) e.getDragboard().getContent(SnapshotDataFormat.INSTANCE);
                 if (s != null) {
-                    final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+                    final DataProvider provider = SaveRestoreService.getInstance()
+                            .getDataProvider(s.getBeamlineSet().getDataProviderId()).provider;
                     SaveRestoreService.getInstance().execute("Load snapshot data", () -> {
                         try {
                             VSnapshot vs = provider.getSnapshotContent(s);
@@ -625,7 +638,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         };
 
         if (Platform.isFxApplicationThread()) {
-            SaveRestoreService.getInstance().execute("Add Snapshot",r);
+            SaveRestoreService.getInstance().execute("Add Snapshot", r);
         } else {
             r.run();
         }

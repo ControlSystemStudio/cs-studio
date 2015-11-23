@@ -22,10 +22,7 @@ public class Isotope extends BaseLevel implements Serializable {
     public final int neutrons;
     /** Ion charge of this isotope */
     public final int charge;
-    /** Styled name with super- and sub- script numbers for atomic number, mass number and charge */
-    private String niceName;
-    /** Name that does not contain any obscure characters */
-    private final String storageName;
+
 
     /**
      * Construct a new Isotope from pieces.
@@ -96,51 +93,56 @@ public class Isotope extends BaseLevel implements Serializable {
         return new Isotope(e, neutrons, charge);
     }
 
+
+
     private Isotope(Element element, int neutrons, int charge) {
+        super(null,composeStorageName(element,neutrons,charge),composePresentationName(element,neutrons,charge));
         this.element = element;
         this.neutrons = neutrons;
         this.charge = charge;
+    }
+
+    /**
+     * Compose the storage name for the given isotope parameters.
+     *
+     * @param element the element
+     * @param neutrons the number of neutrons in the isotope
+     * @param charge the isotope charge
+     * @return the storage representation for the isotope
+     */
+    private static String composeStorageName(Element element, int neutrons, int charge) {
         StringBuilder sb = new StringBuilder().append(element.symbol).append('_')
                 .append(element.atomicNumber + neutrons);
         if (charge != 0) {
             sb.append('_').append(Math.abs(charge)).append(charge < 0 ? 'n' : 'p');
         }
-        this.storageName = sb.toString();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.csstudio.saverestore.BaseLevel#getCrossPlatformName()
-     */
-    @Override
-    public String getStorageName() {
-        return storageName;
+        return sb.toString();
     }
 
     /**
-     * @return styled name with super- and sub- script numbers for atomic number, mass number and charge
+     * Compose the presentation name for the given isotope parameters;
+     *
+     * @param element the element
+     * @param neutrons the number of neutrons in the isotope
+     * @param charge the isotope charge
+     * @return the presentation name for the isotope
      */
-    @Override
-    public String getPresentationName() {
-        if (niceName == null) {
-            StringBuilder s = new StringBuilder(11);
-            for (char c : String.valueOf(element.atomicNumber).toCharArray()) {
-                s.append(getUnicode(c, true));
-            }
-            s.append(element.symbol);
-            for (char c : String.valueOf(neutrons + element.atomicNumber).toCharArray()) {
-                s.append(getUnicode(c, false));
-            }
-            for (char c : String.valueOf(Math.abs(charge)).toCharArray()) {
-                s.append(getUnicode(c, true));
-            }
-            if (charge != 0) {
-                s.append(charge < 0 ? '\u207b' : '\u207a');
-            }
-            niceName = s.toString();
+    private static String composePresentationName(Element element, int neutrons, int charge) {
+        StringBuilder s = new StringBuilder(11);
+        for (char c : String.valueOf(element.atomicNumber).toCharArray()) {
+            s.append(getUnicode(c, true));
         }
-        return niceName;
+        s.append(element.symbol);
+        for (char c : String.valueOf(neutrons + element.atomicNumber).toCharArray()) {
+            s.append(getUnicode(c, false));
+        }
+        for (char c : String.valueOf(Math.abs(charge)).toCharArray()) {
+            s.append(getUnicode(c, true));
+        }
+        if (charge != 0) {
+            s.append(charge < 0 ? '\u207b' : '\u207a');
+        }
+        return s.toString();
     }
 
     /**

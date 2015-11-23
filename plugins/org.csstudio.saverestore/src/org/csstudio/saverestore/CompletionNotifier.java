@@ -1,5 +1,8 @@
 package org.csstudio.saverestore;
 
+import java.util.Optional;
+
+import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.BeamlineSetData;
 import org.csstudio.saverestore.data.Branch;
@@ -62,4 +65,14 @@ public interface CompletionNotifier {
      * @param snapshot the snapshot that was tagged
      */
     void snapshotTagged(Snapshot snapshot);
+
+    /**
+     * Called whenever the data was imported, but only if at the same time no updates due to synchronisation were
+     * made. If the repository wa also updated, only {@link #synchronised()} is called.
+     *
+     * @param source the source of data
+     * @param toBranch the destination branch
+     * @param toBase the destination base level
+     */
+    void dataImported(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBase);
 }

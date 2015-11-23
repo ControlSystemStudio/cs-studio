@@ -81,7 +81,7 @@ public class SnapshotEditorInput implements IEditorInput {
             SimpleDateFormat df = new SimpleDateFormat(" (MMM dd HH:mm:ss)");
             return name + df.format(t);
         } else {
-            return snapshot.getBeamlineSet().getFullName();
+            return snapshot.getBeamlineSet().getDisplayName();
         }
     }
 
@@ -102,6 +102,6 @@ public class SnapshotEditorInput implements IEditorInput {
      */
     @Override
     public String getToolTipText() {
-        return snapshot.getBeamlineSet().getFullName() + ": " + snapshot.getBeamlineSet().getPathAsString();
+        return snapshot.getBeamlineSet().getFullyQualifiedName();
     }
 }

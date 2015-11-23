@@ -157,6 +157,26 @@ public class Selector {
             runOnGUIThread(() -> ((SimpleObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
                     .set(Collections.unmodifiableList(newSets)));
         }
+
+        @Override
+        public void dataImported(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBase) {
+            Branch selected = selectedBranchProperty().get();
+            if (selected.equals(toBranch)) {
+                BaseLevel base = selectedBaseLevelProperty().get();
+                if (base != null && toBase.isPresent() && base.equals(toBase.get())) {
+                    SaveRestoreService.getInstance().execute("Load beamline sets",
+                            () -> reloadBeamlineSets(base, toBranch));
+                } else if (base == null && !toBase.isPresent()) {
+                    SaveRestoreService.getInstance().execute("Load beamline sets",
+                            () -> reloadBeamlineSets(base, toBranch));
+                } else {
+                    SaveRestoreService.getInstance().execute("Load base levels",
+                            () -> readBaseLevels());
+                }
+            }
+            // if branches are different, do nothing
+
+        }
     };
     private final IWorkbenchPart owner;
 

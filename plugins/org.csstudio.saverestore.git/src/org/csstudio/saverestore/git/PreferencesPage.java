@@ -1,9 +1,8 @@
-package org.csstudio.saverestore.git.ui;
+package org.csstudio.saverestore.git;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.csstudio.saverestore.git.Activator;
 import org.csstudio.ui.util.dialogs.ResourceSelectionDialog;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;

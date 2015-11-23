@@ -20,6 +20,17 @@ import org.csstudio.saverestore.data.VSnapshot;
 public interface DataProvider {
 
     /**
+     * <code>ImportType</code> describes possible import actions. Depending on the value, the beamline sets will be
+     * imported, followed by the last snapshot value or by all snapshots for the beamline sets.
+     *
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+     *
+     */
+    public static enum ImportType {
+        BEAMLINE_SET, LAST_SNAPSHOT, ALL_SNAPSHOTS
+    }
+
+    /**
      * Adds a completion notifier which is notified every time when a specific action is completed. The notifiers can be
      * used to refresh the data in the UI, whenever a specific action is triggered by another UI part.
      *
@@ -79,13 +90,14 @@ public interface DataProvider {
      *
      * @param set the beamline set for which the snapshots are requested
      * @param loadAll if true all snapshots are loaded regardless of the stored parameter maxNumberOfSnapshotsInBatch
-     * @param fromThisOneBack if provided only the snapshots that were created strictly before the given one
-     *          will be returned, if null all snapshots will be returned
+     * @param fromThisOneBack if provided only the snapshots that were created strictly before the given one will be
+     *            returned, if null all snapshots will be returned
      * @return the list of available snapshots
      * @see SaveRestoreService#getNumberOfSnapshots()
      * @throws DataProviderException if the list of snapshots cannot be retrieved
      */
-    Snapshot[] getSnapshots(BeamlineSet set, boolean loadAll, Optional<Snapshot> fromThisOneBack) throws DataProviderException;
+    Snapshot[] getSnapshots(BeamlineSet set, boolean loadAll, Optional<Snapshot> fromThisOneBack)
+            throws DataProviderException;
 
     /**
      * Returns the content of one specific snapshot revision.
@@ -212,5 +224,24 @@ public interface DataProvider {
      *
      * @throws DataProviderException if there was an error during tagging
      */
-    Snapshot tagSnapshot(Snapshot snapshot, Optional<String> tagName, Optional<String> tagMessage) throws DataProviderException;
+    Snapshot tagSnapshot(Snapshot snapshot, Optional<String> tagName, Optional<String> tagMessage)
+            throws DataProviderException;
+
+    /**
+     * Imports the data from the given source and imports them into the <code>toBranch</code> and
+     * <code>toBaseLevel</code> using the same structures or paths as they are defined in the source.
+     * Depending on the <code>type</code> only the beamline sets are imported, the beamline sets and the
+     * last snapshot for those beamline sets, or the beamline sets and all snapshots for those beamline sets.
+     *
+     * @param source the source sets; the given source can be an actual source or it can be a pointer to a
+     *          folder, where multiple sets are stored (the name of the beamline set is empty). In the later
+     *          case all sets within that folder should be imported
+     * @param toBranch the destination branch
+     * @param toBaseLevel the destination base level (can be empty if the base level of the sources is also empty)
+     * @param type the type of import
+     * @return true if successful or false otherwise
+     * @throws DataProviderException in case of an error
+     */
+    boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel, ImportType type)
+            throws DataProviderException;
 }

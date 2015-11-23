@@ -34,31 +34,6 @@ public class DemoDataProvider implements DataProvider {
             "Pr_142_2p", "Rb_85", "Tm_166_2p", "Ta_179_5p", "Ra_223_1p", "Mt_265_1n", "Fm_257_2p", "Hg_199_2p",
             "Si_27_4p", "Ne_17_1n", "Tc_101_4p", "Cf_249_2p" };
 
-    static class DemoBaseLevel extends BaseLevel {
-        private static final long serialVersionUID = 5118314106136756595L;
-        final String name;
-
-        DemoBaseLevel(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public String getPresentationName() {
-            return name;
-        }
-
-        @Override
-        public String getStorageName() {
-            return name;
-        }
-
-        @Override
-        public Branch getBranch() {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
-    }
 
     public DemoDataProvider() {
         // TODO Auto-generated constructor stub
@@ -73,7 +48,7 @@ public class DemoDataProvider implements DataProvider {
     public BaseLevel[] getBaseLevels(Branch branch) {
         List<BaseLevel> isotopes = new ArrayList<>();
         for (String s : BASES) {
-            isotopes.add(new DemoBaseLevel(s));
+            isotopes.add(new BaseLevel(null,s,s));
         }
         // Element[] elements = Element.values();
         // for (int i = 0; i < 100; i++) {
@@ -90,39 +65,47 @@ public class DemoDataProvider implements DataProvider {
     @Override
     public BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, Branch branch) {
         List<BeamlineSet> beamlineSets = new ArrayList<>();
+        String id = "org.csstudio.saverestore.git.dataprovider1";
         if (baseLevel != null) {
 
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Front End", "All PVs" }));
             beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
-                    new String[] { "Linac Segments", "Seg 1", "Correctors" }));
+                    new String[] { "Front End", "All PVs" },id));
             beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
-                    new String[] { "Linac Segments", "Seg 1", "Quadrupoles" }));
+                    new String[] { "Linac Segments", "Seg 1", "Correctors" },id));
             beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
-                    new String[] { "Linac Segments", "Seg 1", "Others" }));
+                    new String[] { "Linac Segments", "Seg 1", "Quadrupoles" },id));
             beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
-                    new String[] { "Linac Segments", "Seg 2", "Correctors" }));
+                    new String[] { "Linac Segments", "Seg 1", "Others" },id));
             beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
-                    new String[] { "Linac Segments", "Seg 3", "Correctors" }));
+                    new String[] { "Linac Segments", "Seg 2", "Correctors" },id));
+            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    new String[] { "Linac Segments", "Seg 3", "Correctors" },id));
             beamlineSets
-                    .add(new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Folding Segments", "Seg 1" }));
+                    .add(new BeamlineSet(branch, Optional.of(baseLevel),
+                            new String[] { "Folding Segments", "Seg 1" },id));
             beamlineSets
-                    .add(new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Folding Segments", "Seg 2" }));
+                    .add(new BeamlineSet(branch, Optional.of(baseLevel),
+                            new String[] { "Folding Segments", "Seg 2" },id));
             beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
-                    new String[] { "Production Target Systems", "Sys 1" }));
+                    new String[] { "Production Target Systems", "Sys 1" },id));
             beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
-                    new String[] { "Production Target Systems", "Sys 2" }));
+                    new String[] { "Production Target Systems", "Sys 2" },id));
             beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
-                    new String[] { "Production Target Systems", "Sys 3" }));
+                    new String[] { "Production Target Systems", "Sys 3" },id));
             beamlineSets.add(
-                    new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Fragment Separator", "Set 1" }));
+                    new BeamlineSet(branch, Optional.of(baseLevel),
+                            new String[] { "Fragment Separator", "Set 1" },id));
             beamlineSets.add(
-                    new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Fragment Separator", "Set 2" }));
+                    new BeamlineSet(branch, Optional.of(baseLevel),
+                            new String[] { "Fragment Separator", "Set 2" },id));
             beamlineSets.add(
-                    new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Fragment Separator", "Set 3" }));
+                    new BeamlineSet(branch, Optional.of(baseLevel),
+                            new String[] { "Fragment Separator", "Set 3" },id));
             beamlineSets
-                    .add(new BeamlineSet(branch, Optional.of(baseLevel), new String[] { "Fast Beam Area", "All PVs" }));
+                    .add(new BeamlineSet(branch, Optional.of(baseLevel),
+                            new String[] { "Fast Beam Area", "All PVs" },id));
             beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
-                    new String[] { "Reaccelerated Beam Area", "All PVs" }));
+                    new String[] { "Reaccelerated Beam Area", "All PVs" },id));
 
             // for (int i = 0; i < 100; i++) {
             // BeamlineSet set = new BeamlineSet(branch, isotope, new String[]{"Front End","Set" +i + " "
@@ -280,6 +263,13 @@ public class DemoDataProvider implements DataProvider {
 
     @Override
     public boolean deleteBeamlineSet(BeamlineSet set, String comment) throws DataProviderException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel,
+            ImportType type) throws DataProviderException {
         // TODO Auto-generated method stub
         return false;
     }

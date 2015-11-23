@@ -120,6 +120,24 @@ public class SaveRestoreService {
     }
 
     /**
+     * Returns the data provider for the specified id. If no data provider for that id is found, the selected
+     * one is returned.
+     *
+     * @param id the requested data provider id
+     * @return data provider for the given id
+     */
+    public DataProviderWrapper getDataProvider(String id) {
+        if (id != null) {
+            for (DataProviderWrapper dpw : dataProviders) {
+                if (dpw.id.equals(id)) {
+                    return dpw;
+                }
+            }
+        }
+        return getSelectedDataProvider();
+    }
+
+    /**
      * Adds a property change listener that receives notifications when the value of a property changes.
      *
      * @param propertyName the name of the property to register to

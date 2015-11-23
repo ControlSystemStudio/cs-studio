@@ -5,14 +5,18 @@ import java.util.Optional;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
@@ -223,6 +227,33 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
                 okButton.setDisable(errorMessage != null);
             }
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.eclipse.jface.dialogs.Dialog#getInitialLocation(org.eclipse.swt.graphics.Point)
+     */
+    @Override
+    protected Point getInitialLocation(Point initialSize) {
+        Composite parent = getShell().getParent();
+
+        Monitor monitor = getShell().getDisplay().getPrimaryMonitor();
+        if (parent != null) {
+            monitor = parent.getMonitor();
+        }
+
+        Rectangle monitorBounds = monitor.getClientArea();
+        Point centerPoint;
+        if (parent != null) {
+            centerPoint = Geometry.centerPoint(parent.getBounds());
+        } else {
+            centerPoint = Geometry.centerPoint(monitorBounds);
+        }
+
+        return new Point(centerPoint.x - (initialSize.x / 2), Math.max(
+                monitorBounds.y, Math.min(centerPoint.y
+                        - (initialSize.y / 2), monitorBounds.y
+                        + monitorBounds.height - initialSize.y)));
     }
 
     /*

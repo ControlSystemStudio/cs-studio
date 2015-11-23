@@ -11,18 +11,10 @@
       </dataprovider>
    </extension>
    <extension
-         point="org.csstudio.saverestore.dataprovider">
-      <dataprovider
-            dataprovider="org.csstudio.saverestore.DemoDataProvider"
-            id="org.csstudio.saverestore.git.dataprovider1"
-            name="Demo">
-      </dataprovider>
-   </extension>
-   <extension
          point="org.eclipse.ui.preferencePages">
       <page
             category="org.csstudio.saverestore.preferencespage"
-            class="org.csstudio.saverestore.git.ui.PreferencesPage"
+            class="org.csstudio.saverestore.git.PreferencesPage"
             id="org.csstudio.saverestore.git.preferencespage"
             name="Git">
       </page>

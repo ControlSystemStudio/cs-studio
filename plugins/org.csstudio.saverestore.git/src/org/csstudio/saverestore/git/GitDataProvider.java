@@ -21,7 +21,15 @@ import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
+/**
+ * <code>GitDataProvider</code> the data provider implementation that uses git repository to store all the data.
+ *
+ * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+ *
+ */
 public class GitDataProvider implements DataProvider {
+
+    public static final String ID = "org.csstudio.saverestore.git.dataprovider";
 
     private final GitManager grm;
     private List<CompletionNotifier> notifiers;
@@ -312,6 +320,32 @@ public class GitDataProvider implements DataProvider {
             throw new DataProviderException("Error loading the snapshot content for snapshot '"
                     + snapshot.getBeamlineSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#importData(org.csstudio.saverestore.data.BeamlineSet, org.csstudio.saverestore.data.Branch, java.util.Optional, org.csstudio.saverestore.DataProvider.ImportType)
+     */
+    @Override
+    public boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel,
+            ImportType type) throws DataProviderException {
+        Result<Boolean> answer = null;
+        try {
+            answer = grm.importData(source, toBranch, toBaseLevel, type);
+        } catch (IOException | GitAPIException | ParseException e) {
+            throw new DataProviderException("Error importing data from '" + source.getPathAsString() + "'.", e);
+        }
+
+        if (answer.change == ChangeType.PULL) {
+            for (CompletionNotifier n : getNotifiers()) {
+                n.synchronised();
+            }
+        } else if (answer.change == ChangeType.SAVE) {
+            for (CompletionNotifier n : getNotifiers()) {
+                n.dataImported(source, toBranch, toBaseLevel);
+            }
+        }
+        return answer.data;
     }
 
     /*

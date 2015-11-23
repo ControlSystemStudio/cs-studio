@@ -7,9 +7,9 @@ import java.util.Optional;
 
 /**
  *
- * <code>BeamlineSet</code> is a descriptor for the beamline set files, which are collections of pv names for
- * which a snapshot can be taken. The beamline set belongs to a specific branch and optionally a {@link BaseLevel}.
- * The set if located at a specific path.
+ * <code>BeamlineSet</code> is a descriptor for the beamline set files, which are collections of pv names for which a
+ * snapshot can be taken. The beamline set belongs to a specific branch and optionally a {@link BaseLevel}. The set if
+ * located at a specific path.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -22,6 +22,10 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     private BaseLevel baseLevel;
     private final String[] path;
     private final String folder;
+    private String fullyQualifiedName;
+    private String displayName;
+
+    private final String dataProviderId;
 
     /**
      * Construct a new beamline set from pieces.
@@ -29,23 +33,32 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
      * @param branch the branch on which the beamline set is located
      * @param baseLevel the base level for which this set is valid
      * @param path the path on which the set is stored (the last element of the pat is the file name)
+     * @param the ID of the data provider from which this beamline set was loaded
      */
-    public BeamlineSet(Branch branch, Optional<BaseLevel> base, String[] path) {
+    public BeamlineSet(Branch branch, Optional<BaseLevel> base, String[] path, String dataProviderId) {
         this.baseLevel = base.orElse(null);
         this.branch = branch;
         this.path = path;
+        this.dataProviderId = dataProviderId;
         if (this.path.length == 1) {
             folder = "";
         } else {
             StringBuilder sb = new StringBuilder(100);
             for (int i = 0; i < path.length - 1; i++) {
                 sb.append(path[i]);
-                if (i < path.length - 2){
+                if (i < path.length - 2) {
                     sb.append('/');
                 }
             }
             folder = sb.toString();
         }
+    }
+
+    /**
+     * @return the data provider id
+     */
+    public String getDataProviderId() {
+        return dataProviderId;
     }
 
     /**
@@ -63,14 +76,14 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * Updated the base level in this beamline set. This method should be called before the beamline set
-     * is serialized and deserialized in a different plugin. If the destination plugin does not have
-     * a dependency on the current base level type, the beamline set could not be deserialized. Therefore,
-     * the current base level has to be morphed into an in instance that all plugin have dependency on.
+     * Updated the base level in this beamline set. This method should be called before the beamline set is serialized
+     * and deserialized in a different plugin. If the destination plugin does not have a dependency on the current base
+     * level type, the beamline set could not be deserialized. Therefore, the current base level has to be morphed into
+     * an in instance that all plugin have dependency on.
      */
     public void updateBaseLevel() {
         if (baseLevel != null) {
-            baseLevel = new SerializableBaseLevel(baseLevel);
+            baseLevel = new BaseLevel(baseLevel);
         }
     }
 
@@ -92,11 +105,11 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
      * @return the name of the set (file name)
      */
     public String getName() {
-        return path[path.length-1];
+        return path[path.length - 1];
     }
 
     /**
-     * @return the path as a single string
+     * @return the path as a single string, individual parts are separated by the <code>/</code> character
      */
     public String getPathAsString() {
         if (folder.isEmpty()) {
@@ -107,14 +120,34 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * @return the full name of the beamline set
+     * @return the display name of the beamline set, which may not be a fully qualified name but rather a name that
+     *         quickly shows what this beamline set is about
      */
-    public String getFullName() {
-        return getName() + (baseLevel == null ? "" : " (" + baseLevel.getPresentationName() +")");
+    public String getDisplayName() {
+        if (displayName == null) {
+            displayName = getName() + (baseLevel == null ? "" : " (" + baseLevel.getPresentationName() + ")");
+        }
+        return displayName;
+    }
+
+    /**
+     * @return the fully qualified name, which includes all parts of the path, bease level and branch
+     */
+    public String getFullyQualifiedName() {
+        if (fullyQualifiedName == null) {
+            StringBuilder sb = new StringBuilder(150).append('[').append(getBranch().getShortName());
+            if (baseLevel != null) {
+                sb.append('/').append(baseLevel.getStorageName());
+            }
+            sb.append(']').append(' ').append(getPathAsString());
+            fullyQualifiedName = sb.toString();
+        }
+        return fullyQualifiedName;
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -124,6 +157,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
@@ -131,7 +165,8 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
         String[] otherPath = o.path;
         for (int i = 0; i < path.length && i < otherPath.length; i++) {
             int c = path[i].compareTo(otherPath[i]);
-            if (c != 0) return c;
+            if (c != 0)
+                return c;
         }
 
         if (path.length == otherPath.length) {
@@ -142,15 +177,17 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-        return 31 * Objects.hash(baseLevel,branch) + Arrays.hashCode(path);
+        return 31 * Objects.hash(baseLevel, branch) + Arrays.hashCode(path);
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -176,6 +213,4 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
             return false;
         return true;
     }
-
-
 }

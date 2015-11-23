@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 import org.csstudio.saverestore.DataProvider;
+import org.csstudio.saverestore.DataProvider.ImportType;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BaseLevel;
@@ -18,6 +19,7 @@ import org.csstudio.saverestore.ui.BeamlineSetEditorInput;
 import org.csstudio.saverestore.ui.Selector;
 import org.csstudio.saverestore.ui.SnapshotEditorInput;
 import org.csstudio.saverestore.ui.SnapshotViewerEditor;
+import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.FXTextAreaInputDialog;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
@@ -48,6 +50,47 @@ public class ActionManager {
     }
 
     /**
+     * Import the beamline sets and snapshots from the provided source to the current branch and base level.
+     * Before initiating the import the user has the option to chose whether to import any snapshots as well.
+     *
+     * @param source the source of data
+     */
+    public void importFrom(final BeamlineSet source) {
+        if (source == null) {
+            throw new IllegalArgumentException("The source location cannot be null.");
+        }
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final Branch currentBranch = selector.selectedBranchProperty().get();
+        final BaseLevel baseLevel = selector.selectedBaseLevelProperty().get();
+        if (baseLevel == null && source.getBaseLevel().isPresent()) {
+            throw new IllegalArgumentException("Cannot import to unknown base level.");
+        } else if (!source.getBaseLevel().isPresent() && baseLevel != null) {
+            throw new IllegalArgumentException("Cannot import from an unknown base level.");
+        } else if (currentBranch == null && source.getBranch() != null) {
+            throw new IllegalArgumentException("Cannot import to unknown branch.");
+        } else if (source.getBranch() == null && currentBranch != null) {
+            throw new IllegalArgumentException("Cannot import from an unknown branch.");
+        }
+        int ans = new FXMessageDialog(owner.getSite().getShell(), "Import Snapshots", null,
+                "Do you want to import any snapshots for the selected beamline sets?", FXMessageDialog.QUESTION,
+                new String[]{"No", "Last Only", "All", "Cancel"},0,80).open();
+        if (ans == 3) {
+            //cancelled
+            return;
+        }
+        final ImportType type = ans == 0 ? ImportType.BEAMLINE_SET :
+                                ans == 1 ? ImportType.LAST_SNAPSHOT :
+                                    ImportType.ALL_SNAPSHOTS;
+        SaveRestoreService.getInstance().execute("Import Data", () -> {
+            try {
+                provider.importData(source, currentBranch, Optional.ofNullable(baseLevel),type);
+            } catch (DataProviderException e) {
+                Selector.reportException(e, owner.getSite().getShell());
+            }
+        });
+    }
+
+    /**
      * Tag the snapshot with a specific tag name and tag message.
      *
      * @param snapshot the snapshot to tag
@@ -60,10 +103,11 @@ public class ActionManager {
         } else if (tagName == null) {
             throw new IllegalArgumentException("Tag name not provided.");
         }
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance()
+                .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Tag Snapshot", () -> {
             try {
-                provider.tagSnapshot(snapshot,Optional.of(tagName),Optional.of(tagMessage));
+                provider.tagSnapshot(snapshot, Optional.of(tagName), Optional.of(tagMessage));
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }
@@ -92,7 +136,8 @@ public class ActionManager {
         if (snapshot == null) {
             throw new IllegalArgumentException("Snapshot is not selected");
         }
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance()
+                .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Load snapshot data", () -> {
             try {
                 final VSnapshot s = provider.getSnapshotContent(snapshot);
@@ -139,7 +184,8 @@ public class ActionManager {
         if (set == null) {
             throw new IllegalArgumentException("Beamline set is not selected.");
         }
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance()
+                .getDataProvider(set.getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Load beamline set data", () -> {
             try {
                 BeamlineSetData data = provider.getBeamlineSetContent(set);
@@ -163,8 +209,10 @@ public class ActionManager {
     public void newBeamlineSet() {
         final Branch branch = selector.selectedBranchProperty().get();
         final BaseLevel base = selector.selectedBaseLevelProperty().get();
+        final String dataProvider = SaveRestoreService.getInstance().getSelectedDataProvider().id;
         SaveRestoreService.getInstance().execute("Load beamline set data", () -> {
-            BeamlineSet set = new BeamlineSet(branch, Optional.ofNullable(base), new String[] { "BeamlineSet" });
+            BeamlineSet set = new BeamlineSet(branch, Optional.ofNullable(base), new String[] { "BeamlineSet" },
+                    dataProvider);
             BeamlineSetData data = new BeamlineSetData(set, new ArrayList<>(0), "");
             owner.getSite().getShell().getDisplay().asyncExec(() -> {
                 try {
@@ -186,7 +234,8 @@ public class ActionManager {
         if (set == null) {
             throw new IllegalArgumentException("Beamline set is not selected.");
         }
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance()
+                .getDataProvider(set.getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Open beamline set", () -> {
             try {
                 BeamlineSetData data = provider.getBeamlineSetContent(set);
@@ -214,15 +263,16 @@ public class ActionManager {
         if (set == null) {
             throw new IllegalArgumentException("Beamline set is not selected.");
         }
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance()
+                .getDataProvider(set.getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Delete beamline set", () -> {
             try {
                 Optional<String> comment = FXTextAreaInputDialog.get(owner.getSite().getShell(), "Delete Comment",
                         "Provide a short comment why the set '" + set.getPathAsString() + "' is being deleted", "",
-                        e -> (e == null || e.trim().length() < 10) ?
-                                "Comment should be at least 10 characters long." : null);
+                        e -> (e == null || e.trim().length() < 10) ? "Comment should be at least 10 characters long."
+                                : null);
                 if (comment.isPresent()) {
-                    provider.deleteBeamlineSet(set,comment.get());
+                    provider.deleteBeamlineSet(set, comment.get());
                 }
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
@@ -230,16 +280,22 @@ public class ActionManager {
         });
     }
 
+    /**
+     * Delete the tag for the given snapshot.
+     *
+     * @param snapshot the snapshot to delete the tag for
+     */
     public void deleteTag(final Snapshot snapshot) {
         if (snapshot == null) {
             throw new IllegalArgumentException("Snapshot not selected.");
         } else if (!snapshot.getTagName().isPresent()) {
             throw new IllegalArgumentException("Selected snapshot is not tagged.");
         }
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance()
+                .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Remove tag", () -> {
             try {
-                provider.tagSnapshot(snapshot, Optional.empty(),Optional.empty());
+                provider.tagSnapshot(snapshot, Optional.empty(), Optional.empty());
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }
