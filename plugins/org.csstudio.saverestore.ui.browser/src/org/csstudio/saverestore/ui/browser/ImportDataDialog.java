@@ -118,6 +118,4 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
         Scene scene = new Scene(pane);
         return scene;
     }
-
 }
-

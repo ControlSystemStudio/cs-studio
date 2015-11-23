@@ -370,24 +370,24 @@ public class GitManager {
         setAutomaticSynchronisation(false);
         Credentials cred = getCredentials(Optional.empty());
         Object[] obj = pull(cred);
-        ChangeType change = (Boolean)obj[1] ? ChangeType.PULL : ChangeType.SAVE;
-        cred = (Credentials)obj[0];
+        ChangeType change = (Boolean) obj[1] ? ChangeType.PULL : ChangeType.SAVE;
+        cred = (Credentials) obj[0];
         try {
             if (source.getName().isEmpty()) {
                 // it is a folder
                 List<BeamlineSet> sets = getBeamlineSets(source.getBaseLevel(), source.getBranch(),
                         Optional.of(source.getPathAsString()));
                 for (BeamlineSet s : sets) {
-                    importBeamlineSet(s,toBaseLevel,toBranch,type,cred);
+                    importBeamlineSet(s, toBaseLevel, toBranch, type, cred);
                 }
             } else {
                 // single beamline set
-                importBeamlineSet(source,toBaseLevel,toBranch,type,cred);
+                importBeamlineSet(source, toBaseLevel, toBranch, type, cred);
             }
         } finally {
             setAutomaticSynchronisation(automatic);
         }
-        push(cred,true);
+        push(cred, true);
         return new Result<>(true, change);
     }
 
@@ -396,16 +396,17 @@ public class GitManager {
         BeamlineSetData data = loadBeamlineSetData(source, Optional.empty());
         BeamlineSet newSet = new BeamlineSet(toBranch, toBaseLevel, source.getPath(), source.getDataProviderId());
         BeamlineSetData newData = new BeamlineSetData(newSet, data.getPVList(), data.getDescription());
-        String comment = "Import from " + source.getBranch().getShortName() + "/" + source.getBaseLevel().get()
-                + "/" + source.getPathAsString();
+        String comment = "Import from " + source.getBranch().getShortName() + "/" + source.getBaseLevel().get() + "/"
+                + source.getPathAsString();
         saveBeamlineSet(newData, comment, cred);
         if (type == ImportType.LAST_SNAPSHOT) {
             List<Snapshot> list = getSnapshots(source, 1, Optional.empty());
             if (!list.isEmpty()) {
-                VSnapshot snp = loadSnapshotData(list.get(0));
+                Snapshot snapshot = list.get(0);
+                VSnapshot snp = loadSnapshotData(snapshot);
                 VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
                         snp.getValues(), snp.getTimestamp());
-                saveSnapshot(newSnp, comment);
+                saveSnapshot(newSnp, snapshot.getComment(), snapshot.getDate(), snapshot.getOwner());
             }
         } else if (type == ImportType.ALL_SNAPSHOTS) {
             List<Snapshot> list = getSnapshots(source, 0, Optional.empty());
@@ -413,7 +414,7 @@ public class GitManager {
                 VSnapshot snp = loadSnapshotData(s);
                 VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
                         snp.getValues(), snp.getTimestamp());
-                saveSnapshot(newSnp, comment, s.getDate(), s.getOwner());
+                saveSnapshot(newSnp, s.getComment(), s.getDate(), s.getOwner());
             }
         }
     }
@@ -449,6 +450,7 @@ public class GitManager {
             throws IOException, GitAPIException {
         return getBeamlineSets(baseLevel, branch, Optional.empty());
     }
+
     /**
      * Returns the list of all available beamline sets in the current branch. The search is done by reading the data on
      * the file system, not by searching the git repository.
@@ -469,7 +471,7 @@ public class GitManager {
             if (f.getName().equals(base)) {
                 File b = new File(f, FileType.BEAMLINE_SET.directory);
                 if (basePath.isPresent()) {
-                    b = new File(b,basePath.get());
+                    b = new File(b, basePath.get());
                 }
                 List<File> setFiles = new ArrayList<>();
                 gatherBeamlineSets(b, setFiles);
@@ -644,8 +646,7 @@ public class GitManager {
      * @throws IOException if writing to the file failed
      * @throws GitAPIException if commiting the file failed
      */
-    private synchronized Result<BeamlineSetData> saveBeamlineSet(BeamlineSetData data, String comment,
-            Credentials cred)
+    private synchronized Result<BeamlineSetData> saveBeamlineSet(BeamlineSetData data, String comment, Credentials cred)
             throws IOException, GitAPIException {
         BeamlineSetData bsd = null;
         ChangeType change = ChangeType.NONE;
@@ -664,7 +665,7 @@ public class GitManager {
                 setBranch(data.getDescriptor().getBranch());
                 String relativePath = convertPathToString(data.getDescriptor(), FileType.BEAMLINE_SET);
                 writeToFile(relativePath, FileType.BEAMLINE_SET, data);
-                commit(relativePath, new MetaInfo(comment, cp.getUsername(), null, null));
+                commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null));
                 if (automatic) {
                     push(cp, false);
                 }
@@ -703,7 +704,7 @@ public class GitManager {
                 String relativePath = convertPathToString(set, FileType.BEAMLINE_SET);
                 if (deleteFile(relativePath)) {
                     deleted = set;
-                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), null, null));
+                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null));
                     // delete also the snapshot file
                     relativePath = convertPathToString(set, FileType.SNAPSHOT);
                     deleteFile(relativePath);
@@ -763,7 +764,7 @@ public class GitManager {
                 String relativePath = convertPathToString(descriptor.getBeamlineSet(), FileType.SNAPSHOT);
                 writeToFile(relativePath, FileType.SNAPSHOT, snapshot);
                 MetaInfo info = commit(relativePath,
-                        new MetaInfo(comment, user == null ? cp.getUsername() : user, null, time));
+                        new MetaInfo(comment, user == null ? cp.getUsername() : user, "UNKNOWN", time));
                 if (automatic) {
                     push(cp, false);
                 }
@@ -885,9 +886,9 @@ public class GitManager {
     private MetaInfo commit(String relativePath, MetaInfo metaInfo) throws GitAPIException {
         git.add().addFilepattern(relativePath).call();
         CommitCommand command = git.commit().setMessage(metaInfo.comment);
-        if (metaInfo.timestamp == null) {
-            command.setCommitter(new PersonIdent(metaInfo.creator, metaInfo.eMail, metaInfo.timestamp,
-                    TimeZone.getTimeZone("GMT")));
+        if (metaInfo.timestamp != null) {
+            command.setCommitter(
+                    new PersonIdent(metaInfo.creator, metaInfo.eMail, metaInfo.timestamp, TimeZone.getTimeZone("GMT")));
         } else {
             command.setCommitter(metaInfo.creator, metaInfo.eMail);
         }

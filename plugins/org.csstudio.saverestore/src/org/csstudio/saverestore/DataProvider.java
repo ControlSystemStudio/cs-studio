@@ -82,7 +82,7 @@ public interface DataProvider {
      *
      * @throws DataProviderException if the list of bealine sets cannot be retrieved
      */
-    BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, Branch branch) throws DataProviderException;
+    BeamlineSet[] getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException;
 
     /**
      * Returns the list of all available snapshot revisions for the given beamline set. The returned snapshots contain

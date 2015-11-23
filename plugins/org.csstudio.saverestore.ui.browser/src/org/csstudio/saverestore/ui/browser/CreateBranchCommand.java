@@ -39,5 +39,4 @@ public class CreateBranchCommand extends AbstractHandler implements IHandler {
         }
         return null;
     }
-
 }

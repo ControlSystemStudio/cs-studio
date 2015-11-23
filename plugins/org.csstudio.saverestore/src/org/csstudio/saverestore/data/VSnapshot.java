@@ -255,7 +255,4 @@ public class VSnapshot implements VType, Time, Array, Serializable {
             return false;
         return true;
     }
-
-
-
 }

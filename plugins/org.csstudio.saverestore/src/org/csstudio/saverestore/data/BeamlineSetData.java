@@ -123,6 +123,4 @@ public class BeamlineSetData {
             return false;
         return true;
     }
-
-
 }

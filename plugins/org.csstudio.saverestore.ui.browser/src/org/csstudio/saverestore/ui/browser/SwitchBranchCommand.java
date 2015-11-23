@@ -32,8 +32,6 @@ public class SwitchBranchCommand extends AbstractHandler implements IHandler {
                     selector.branchesProperty().get());
             dialog.openAndWait().ifPresent(selector.selectedBranchProperty()::set);
         }
-
         return null;
     }
-
 }

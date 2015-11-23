@@ -316,7 +316,7 @@ public class Utilities {
      * @param type the data to transform
      * @return string representation of the data
      */
-    public static String valueToString(VType type) {
+    public synchronized static String valueToString(VType type) {
         if (type == null) {
             return null;
         }
@@ -349,7 +349,7 @@ public class Utilities {
      * @param baseValue the base value to compare the transformed value to
      * @return string representing the value and the difference from the base value
      */
-    public static String valueToCompareString(VType type, VType baseValue) {
+    public synchronized static String valueToCompareString(VType type, VType baseValue) {
         if (type == null || baseValue == null) {
             return null;
         }
@@ -426,7 +426,9 @@ public class Utilities {
         if (t == null) {
             return null;
         }
-        return LE_TIMESTAMP_FORMATTER.format(t.toDate());
+        synchronized(LE_TIMESTAMP_FORMATTER) {
+            return LE_TIMESTAMP_FORMATTER.format(t.toDate());
+        }
     }
 
     /**
@@ -441,7 +443,8 @@ public class Utilities {
         if (t == null) {
             return null;
         }
-        return includeYear ? SBE_TIMESTAMP_FORMATTER.format(t) : BE_TIMESTAMP_FORMATTER.format(t);
+        synchronized(BE_TIMESTAMP_FORMATTER) {
+            return includeYear ? SBE_TIMESTAMP_FORMATTER.format(t) : BE_TIMESTAMP_FORMATTER.format(t);
+        }
     }
-
 }

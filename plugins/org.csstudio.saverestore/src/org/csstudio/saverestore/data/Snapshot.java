@@ -248,5 +248,4 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     public String toString() {
         return toString;
     }
-
 }

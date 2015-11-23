@@ -19,9 +19,13 @@ public class VNoData implements VType {
     private VNoData() {
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return TO_STRING;
     }
-
 }

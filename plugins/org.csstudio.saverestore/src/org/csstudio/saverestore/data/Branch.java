@@ -91,6 +91,4 @@ public class Branch implements Serializable, Comparable<Branch> {
             return false;
         return true;
     }
-
-
 }

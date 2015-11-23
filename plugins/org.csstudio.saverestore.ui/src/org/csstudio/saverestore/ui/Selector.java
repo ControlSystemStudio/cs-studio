@@ -207,7 +207,7 @@ public class Selector {
     private void reloadBeamlineSets(BaseLevel baseLevel, Branch branch) {
         try {
             final BeamlineSet[] beamlineSets = SaveRestoreService.getInstance().getSelectedDataProvider().provider
-                    .getBeamlineSets(baseLevel, branch);
+                    .getBeamlineSets(Optional.ofNullable(baseLevel), branch);
             runOnGUIThread(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
                     .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
         } catch (DataProviderException e) {
@@ -326,7 +326,7 @@ public class Selector {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
         SaveRestoreService.getInstance().execute("Load beamline sets", () -> {
             try {
-                final BeamlineSet[] beamlineSets = provider.getBeamlineSets(baseLevel, branch);
+                final BeamlineSet[] beamlineSets = provider.getBeamlineSets(Optional.ofNullable(baseLevel), branch);
                 runOnGUIThread(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
                         .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
             } catch (DataProviderException e) {

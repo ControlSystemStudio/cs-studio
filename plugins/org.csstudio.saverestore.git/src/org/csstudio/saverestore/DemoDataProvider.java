@@ -63,48 +63,48 @@ public class DemoDataProvider implements DataProvider {
     }
 
     @Override
-    public BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, Branch branch) {
+    public BeamlineSet[] getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch) {
         List<BeamlineSet> beamlineSets = new ArrayList<>();
         String id = "org.csstudio.saverestore.git.dataprovider1";
-        if (baseLevel != null) {
+        if (baseLevel.isPresent()) {
 
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Front End", "All PVs" },id));
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Linac Segments", "Seg 1", "Correctors" },id));
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Linac Segments", "Seg 1", "Quadrupoles" },id));
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Linac Segments", "Seg 1", "Others" },id));
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Linac Segments", "Seg 2", "Correctors" },id));
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Linac Segments", "Seg 3", "Correctors" },id));
             beamlineSets
-                    .add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    .add(new BeamlineSet(branch, baseLevel,
                             new String[] { "Folding Segments", "Seg 1" },id));
             beamlineSets
-                    .add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    .add(new BeamlineSet(branch, baseLevel,
                             new String[] { "Folding Segments", "Seg 2" },id));
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Production Target Systems", "Sys 1" },id));
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Production Target Systems", "Sys 2" },id));
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Production Target Systems", "Sys 3" },id));
             beamlineSets.add(
-                    new BeamlineSet(branch, Optional.of(baseLevel),
+                    new BeamlineSet(branch, baseLevel,
                             new String[] { "Fragment Separator", "Set 1" },id));
             beamlineSets.add(
-                    new BeamlineSet(branch, Optional.of(baseLevel),
+                    new BeamlineSet(branch, baseLevel,
                             new String[] { "Fragment Separator", "Set 2" },id));
             beamlineSets.add(
-                    new BeamlineSet(branch, Optional.of(baseLevel),
+                    new BeamlineSet(branch, baseLevel,
                             new String[] { "Fragment Separator", "Set 3" },id));
             beamlineSets
-                    .add(new BeamlineSet(branch, Optional.of(baseLevel),
+                    .add(new BeamlineSet(branch, baseLevel,
                             new String[] { "Fast Beam Area", "All PVs" },id));
-            beamlineSets.add(new BeamlineSet(branch, Optional.of(baseLevel),
+            beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Reaccelerated Beam Area", "All PVs" },id));
 
             // for (int i = 0; i < 100; i++) {

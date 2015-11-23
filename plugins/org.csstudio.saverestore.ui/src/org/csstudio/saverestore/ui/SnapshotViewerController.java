@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
 
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
@@ -252,6 +253,7 @@ public class SnapshotViewerController {
             Snapshot snapshot = new Snapshot(set);
             VSnapshot taken = new VSnapshot(snapshot, names, selected, values, Timestamp.now());
             owner.addSnapshot(taken);
+            SaveRestoreService.LOGGER.log(Level.FINE, "Snapshot taken for '" + set.getFullyQualifiedName() + "'.");
         } finally {
             unlock();
         }
@@ -301,7 +303,9 @@ public class SnapshotViewerController {
                                 }
                             }
                         }
-
+                        SaveRestoreService.LOGGER.log(Level.FINE,
+                                "Successfully saved Snapshot '" + snapshot.getBeamlineSet().getFullyQualifiedName()
+                                        + ": " + snapshot.getSnapshot().get().getDate() + "'.");
                     } catch (DataProviderException ex) {
                         Selector.reportException(ex, owner.getSite().getShell());
                     }
@@ -334,6 +338,8 @@ public class SnapshotViewerController {
                         pvs.get(e).writer.write(Utilities.toRawValue(values.get(i)));
                     }
                 }
+                SaveRestoreService.LOGGER.log(Level.FINE, "Restored snapshot '"
+                        + s.getBeamlineSet().getFullyQualifiedName() + ": " + s.getSnapshot().get() + "'.");
             } else {
                 throw new IllegalArgumentException(
                         "Snapshot " + s + " has not been saved yet. Only saved snapshots can be used for restoring.");
@@ -366,10 +372,8 @@ public class SnapshotViewerController {
                 } else if (!saveable && v.isSaved()) {
                     snaps.add(v);
                 }
-
             }
         }
         return Collections.unmodifiableList(snaps);
     }
-
 }

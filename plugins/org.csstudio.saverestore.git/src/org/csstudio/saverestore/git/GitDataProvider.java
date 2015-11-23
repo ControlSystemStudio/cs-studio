@@ -134,14 +134,12 @@ public class GitDataProvider implements DataProvider {
 
     /*
      * (non-Javadoc)
-     *
-     * @see org.csstudio.saverestore.DataProvider#getBeamlineSets(org.csstudio.saverestore.BaseLevel,
-     * org.csstudio.saverestore.Branch)
+     * @see org.csstudio.saverestore.DataProvider#getBeamlineSets(java.util.Optional, org.csstudio.saverestore.data.Branch)
      */
     @Override
-    public BeamlineSet[] getBeamlineSets(BaseLevel baseLevel, Branch branch) throws DataProviderException {
+    public BeamlineSet[] getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException {
         try {
-            List<BeamlineSet> sets = grm.getBeamlineSets(Optional.ofNullable(baseLevel), branch);
+            List<BeamlineSet> sets = grm.getBeamlineSets(baseLevel, branch);
             return sets.toArray(new BeamlineSet[sets.size()]);
         } catch (IOException | GitAPIException e) {
             throw new DataProviderException("Error loading the beamline set list.", e);
@@ -324,11 +322,13 @@ public class GitDataProvider implements DataProvider {
 
     /*
      * (non-Javadoc)
-     * @see org.csstudio.saverestore.DataProvider#importData(org.csstudio.saverestore.data.BeamlineSet, org.csstudio.saverestore.data.Branch, java.util.Optional, org.csstudio.saverestore.DataProvider.ImportType)
+     *
+     * @see org.csstudio.saverestore.DataProvider#importData(org.csstudio.saverestore.data.BeamlineSet,
+     * org.csstudio.saverestore.data.Branch, java.util.Optional, org.csstudio.saverestore.DataProvider.ImportType)
      */
     @Override
-    public boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel,
-            ImportType type) throws DataProviderException {
+    public boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel, ImportType type)
+            throws DataProviderException {
         Result<Boolean> answer = null;
         try {
             answer = grm.importData(source, toBranch, toBaseLevel, type);

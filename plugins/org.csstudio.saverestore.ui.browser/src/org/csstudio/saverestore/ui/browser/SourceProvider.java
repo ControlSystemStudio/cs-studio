@@ -68,5 +68,4 @@ public class SourceProvider extends AbstractSourceProvider {
     public String[] getProvidedSourceNames() {
         return SOURCE_NAMES;
     }
-
 }

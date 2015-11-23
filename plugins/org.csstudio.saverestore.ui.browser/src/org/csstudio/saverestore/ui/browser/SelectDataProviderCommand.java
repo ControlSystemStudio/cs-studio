@@ -32,5 +32,4 @@ public class SelectDataProviderCommand extends AbstractHandler implements IHandl
         }
         return null;
     }
-
 }

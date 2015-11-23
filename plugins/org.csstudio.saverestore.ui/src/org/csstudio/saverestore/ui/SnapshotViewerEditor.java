@@ -642,7 +642,6 @@ public class SnapshotViewerEditor extends FXEditorPart {
         } else {
             r.run();
         }
-
     }
 
     /*

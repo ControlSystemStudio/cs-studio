@@ -121,5 +121,4 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
     public String toString() {
         return getStorageName();
     }
-
 }

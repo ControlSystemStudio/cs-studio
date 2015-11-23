@@ -23,5 +23,4 @@ public class SynchroniseRepositoryCommand extends AbstractHandler implements IHa
         }
         return null;
     }
-
 }

@@ -260,5 +260,4 @@ public class BeamlineSetEditor extends FXEditorPart {
             contentArea.requestFocus();
         }
     }
-
 }

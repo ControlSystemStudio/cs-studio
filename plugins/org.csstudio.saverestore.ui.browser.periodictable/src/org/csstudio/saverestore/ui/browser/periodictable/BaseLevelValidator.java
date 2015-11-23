@@ -11,6 +11,11 @@ import org.csstudio.ui.fx.util.InputValidator;
  */
 public class BaseLevelValidator implements InputValidator<String> {
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.ui.fx.util.InputValidator#validate(java.lang.Object)
+     */
     @Override
     public String validate(String newText) {
         try {
@@ -22,5 +27,4 @@ public class BaseLevelValidator implements InputValidator<String> {
             return e.getMessage();
         }
     }
-
 }

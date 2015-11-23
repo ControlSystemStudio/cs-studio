@@ -50,8 +50,8 @@ public class ActionManager {
     }
 
     /**
-     * Import the beamline sets and snapshots from the provided source to the current branch and base level.
-     * Before initiating the import the user has the option to chose whether to import any snapshots as well.
+     * Import the beamline sets and snapshots from the provided source to the current branch and base level. Before
+     * initiating the import the user has the option to chose whether to import any snapshots as well.
      *
      * @param source the source of data
      */
@@ -73,17 +73,22 @@ public class ActionManager {
         }
         int ans = new FXMessageDialog(owner.getSite().getShell(), "Import Snapshots", null,
                 "Do you want to import any snapshots for the selected beamline sets?", FXMessageDialog.QUESTION,
-                new String[]{"No", "Last Only", "All", "Cancel"},0,80).open();
+                new String[] { "No", "Last Only", "All", "Cancel" }, 0, 80).open();
         if (ans == 3) {
-            //cancelled
+            // cancelled
             return;
         }
-        final ImportType type = ans == 0 ? ImportType.BEAMLINE_SET :
-                                ans == 1 ? ImportType.LAST_SNAPSHOT :
-                                    ImportType.ALL_SNAPSHOTS;
+        final ImportType type = ans == 0 ? ImportType.BEAMLINE_SET
+                : ans == 1 ? ImportType.LAST_SNAPSHOT : ImportType.ALL_SNAPSHOTS;
         SaveRestoreService.getInstance().execute("Import Data", () -> {
             try {
-                provider.importData(source, currentBranch, Optional.ofNullable(baseLevel),type);
+                if (provider.importData(source, currentBranch, Optional.ofNullable(baseLevel), type)) {
+                    SaveRestoreService.LOGGER.log(Level.FINE,
+                            "Successfully imported data from '" + source.getFullyQualifiedName() + "'.");
+                } else {
+                    SaveRestoreService.LOGGER.log(Level.FINE,
+                            "Failed to import data from '" + source.getFullyQualifiedName() + "'.");
+                }
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }
@@ -108,6 +113,8 @@ public class ActionManager {
         SaveRestoreService.getInstance().execute("Tag Snapshot", () -> {
             try {
                 provider.tagSnapshot(snapshot, Optional.of(tagName), Optional.of(tagMessage));
+                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully tagged snapshot '"
+                        + snapshot.getBeamlineSet().getFullyQualifiedName() + ": " + snapshot.getDate() + "'.");
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }
@@ -272,7 +279,13 @@ public class ActionManager {
                         e -> (e == null || e.trim().length() < 10) ? "Comment should be at least 10 characters long."
                                 : null);
                 if (comment.isPresent()) {
-                    provider.deleteBeamlineSet(set, comment.get());
+                    if (provider.deleteBeamlineSet(set, comment.get())) {
+                        SaveRestoreService.LOGGER.log(Level.FINE, "Successfully deleted beamline set '"
+                            + set.getFullyQualifiedName() + "'.");
+                    } else {
+                        SaveRestoreService.LOGGER.log(Level.FINE, "Failed to delete beamline set '"
+                                + set.getFullyQualifiedName() + "'.");
+                    }
                 }
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
@@ -296,6 +309,8 @@ public class ActionManager {
         SaveRestoreService.getInstance().execute("Remove tag", () -> {
             try {
                 provider.tagSnapshot(snapshot, Optional.empty(), Optional.empty());
+                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully deleted the tag from '"
+                        + snapshot.getBeamlineSet().getFullyQualifiedName() + ": " + snapshot.getDate() + "'.");
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }
@@ -319,6 +334,7 @@ public class ActionManager {
         SaveRestoreService.getInstance().execute("Create new branch", () -> {
             try {
                 provider.createNewBranch(orgBranch, branchName);
+                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully created branch '" + branchName + "'.");
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }
@@ -333,7 +349,11 @@ public class ActionManager {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
         SaveRestoreService.getInstance().execute("Synchronise repository", () -> {
             try {
-                provider.synchronise();
+                if (provider.synchronise()) {
+                    SaveRestoreService.LOGGER.log(Level.FINE, "Repository synchronised.");
+                } else {
+                    SaveRestoreService.LOGGER.log(Level.FINE, "Failed to synchronise repository.");
+                }
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }
@@ -347,7 +367,11 @@ public class ActionManager {
         }
         SaveRestoreService.getInstance().execute("Reset repository", () -> {
             try {
-                provider.reinitialise();
+                if (provider.reinitialise()) {
+                    SaveRestoreService.LOGGER.log(Level.FINE, "Repository reinitialised.");
+                } else {
+                    SaveRestoreService.LOGGER.log(Level.FINE, "Failed to reinitialise repository.");
+                }
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }

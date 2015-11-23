@@ -159,6 +159,7 @@ public class Activator extends AbstractUIPlugin {
                 byte[] passwordData = Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit());
                 prefs.node(username).putByteArray(PREF_PASSWORD, passwordData, false);
             }
+            SaveRestoreService.LOGGER.log(Level.FINE, "Stored new username and password for '" + user + "'.");
         } catch (StorageException | IOException e) {
             SaveRestoreService.LOGGER.log(Level.WARNING, "Could not store the username and password.", e);
         }

@@ -94,6 +94,7 @@ public class SaveRestoreService {
                 }
             }
             dataProviders = Collections.unmodifiableList(dpw);
+            LOGGER.log(Level.FINE, "Data providers loaded: " + dataProviders);
             if (dataProviders.isEmpty()) {
                 SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore data providers not found.");
             }
@@ -107,8 +108,10 @@ public class SaveRestoreService {
      * @param selectedDataProvider the data provider to select
      */
     public void setSelectedDataProvider(DataProviderWrapper selectedDataProvider) {
+        if (this.selectedDataProvider != null && this.selectedDataProvider.equals(selectedDataProvider)) return;
         DataProviderWrapper oldValue = this.selectedDataProvider;
         this.selectedDataProvider = selectedDataProvider;
+        LOGGER.log(Level.FINE, "Selected data provider: " + selectedDataProvider.getPresentationName());
         support.firePropertyChange(SELECTED_DATA_PROVIDER, oldValue, this.selectedDataProvider);
     }
 

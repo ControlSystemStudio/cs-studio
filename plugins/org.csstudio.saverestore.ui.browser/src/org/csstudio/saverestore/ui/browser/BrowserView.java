@@ -192,8 +192,7 @@ public class BrowserView extends FXViewPart {
         MenuItem deleteSetItem = new MenuItem("Delete...");
         deleteSetItem.setOnAction(e -> {
             popup.hide();
-            BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel()
-                    .getSelectedItem();
+            BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
             boolean delete = FXMessageDialog.openQuestion(getSite().getShell(), "Delete Beamline Set",
                     "Are you sure you want to delete beamline set '" + item.getValue().set.getPathAsString() + "'?");
             if (delete) {
@@ -204,8 +203,7 @@ public class BrowserView extends FXViewPart {
         beamlineSetsTree.setContextMenu(popup);
         beamlineSetsTree.setOnMouseReleased(e -> {
             if (e.isSecondaryButtonDown()) {
-                BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel()
-                        .getSelectedItem();
+                BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
                 if (item.getValue().set != null) {
                     popup.show(beamlineSetsTree, e.getX(), e.getY());
                 } else {
@@ -521,6 +519,11 @@ public class BrowserView extends FXViewPart {
         return sb.toString();
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.fx.ui.workbench3.FXViewPart#setFxFocus()
+     */
     @Override
     protected void setFxFocus() {
     }
