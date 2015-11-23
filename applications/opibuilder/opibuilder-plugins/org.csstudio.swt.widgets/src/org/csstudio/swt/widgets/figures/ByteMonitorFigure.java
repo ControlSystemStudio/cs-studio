@@ -14,10 +14,12 @@ import java.util.List;
 
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
+
 /**
  * @author hammonds, Xihui Chen
  * @author Takashi Nakamoto - added labels
@@ -47,6 +49,9 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
     /** Give the objects representing the bits a 3dEffect */
     private boolean effect3D = true;
     private boolean squareLED = false;
+    private int ledBorderWidth = 2;
+    private Color ledBorderColor = CustomMediaFactory.getInstance().getColor(
+            CustomMediaFactory.COLOR_DARK_GRAY);
 
     /** LEDs */
     private List<LEDFigure> ledFigures = new ArrayList<LEDFigure>();
@@ -64,6 +69,8 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         led.setShowBooleanLabel(false);
         led.setOnColor(getOnColor());
         led.setOffColor(getOffColor());
+        led.setBulbBorderWidth(ledBorderWidth);
+        led.setBulbBorderColor(ledBorderColor);
         led.setSquareLED(squareLED);
         led.setEffect3D(effect3D);
         return led;
@@ -190,60 +197,65 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         if(numBits >0){
             Rectangle clientArea = getClientArea();
             if (isHorizontal){
-                int avgWidth = clientArea.width/numBits;
+                int ledWidth = ledBorderWidth + (clientArea.width - ledBorderWidth)/numBits;
+                int ledSpacing = ledWidth - ledBorderWidth;
                 int startX = clientArea.x;
 
                 int ledHeight = 0;
-                if (avgWidth > clientArea.height || squareLED) {
+                if (ledWidth > clientArea.height || squareLED) {
                     ledHeight = clientArea.height;
                 } else {
-                    ledHeight = avgWidth;
+                    ledHeight = ledWidth;
                 }
 
                 for (LEDFigure led : ledFigures) {
-                    led.setBounds(new Rectangle(startX,clientArea.y, avgWidth, ledHeight));
-                    startX += avgWidth;
+                    // right and bottom edges of the rectangle are 'outside' and not painted
+                    // so inflate the size to compensate
+                    led.setBounds(new Rectangle(startX, clientArea.y, ledWidth + 1, ledHeight + 1));
+                    startX += ledSpacing;
                 }
 
                 startX = clientArea.x;
                 for (TextFigure text : textFigures) {
                     if (squareLED) {
                         text.setBounds(new Rectangle(
-                                startX, clientArea.y, avgWidth, ledHeight));
+                                startX, clientArea.y, ledWidth, ledHeight));
                     } else {
                         text.setBounds(new Rectangle(
-                                startX, clientArea.y + ledHeight, avgWidth, clientArea.height - ledHeight));
+                                startX, clientArea.y + ledHeight, ledWidth, clientArea.height - ledHeight));
                     }
-                    startX += avgWidth;
+                    startX += ledSpacing;
                 }
             }
             else {
-                int avgHeight = clientArea.height/numBits;
+                int ledHeight = ledBorderWidth + (clientArea.height - ledBorderWidth)/numBits;
+                int ledSpacing = ledHeight - ledBorderWidth;
                 int startY = clientArea.y;
 
                 int ledWidth = 0;
-                if (avgHeight > clientArea.width || squareLED) {
+                if (ledHeight > clientArea.width || squareLED) {
                     ledWidth = clientArea.width;
                 } else {
-                    ledWidth = avgHeight;
+                    ledWidth = ledHeight;
                 }
 
                 for (LEDFigure led : ledFigures) {
-                    led.setBounds(new Rectangle(
-                            clientArea.x, startY, ledWidth, avgHeight));
-                    startY += avgHeight;
+                    // right and bottom edges of the rectangle are 'outside' and not painted
+                    // so inflate the size to compensate
+                    led.setBounds(new Rectangle(clientArea.x, startY, ledWidth + 1, ledHeight + 1));
+                    startY += ledSpacing;
                 }
 
                 startY = clientArea.y;
                 for (TextFigure text : textFigures) {
                     if (squareLED) {
                         text.setBounds(new Rectangle(
-                                clientArea.x, startY, ledWidth, avgHeight));
+                                clientArea.x, startY, ledWidth, ledHeight));
                     } else {
                         text.setBounds(new Rectangle(
-                                clientArea.x + ledWidth, startY, clientArea.width - ledWidth, avgHeight));
+                                clientArea.x + ledWidth, startY, clientArea.width - ledWidth, ledHeight));
                     }
-                    startY += avgHeight;
+                    startY += ledSpacing;
                 }
             }
         }
@@ -351,6 +363,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
     public void setSquareLED(boolean squareLED) {
         if(this.squareLED == squareLED)
             return;
+
         this.squareLED = squareLED;
         for (LEDFigure bulb : ledFigures) {
             bulb.setSquareLED(this.squareLED);
@@ -382,6 +395,41 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 
     public void setValue(double value){
         setValue((long)value);
+    }
+
+
+    /**
+     * Set the LED border width, i.e. the spacing between
+     * the LEDs in the widget
+     */
+    public void setLedBorderWidth(int value) {
+        if (value == ledBorderWidth)
+            return;
+
+        ledBorderWidth = value;
+
+        for (LEDFigure bulb : ledFigures) {
+            bulb.setBulbBorderWidth(ledBorderWidth);
+        }
+        revalidate();
+        repaint();
+    }
+
+
+    /**
+     * Set the LED border color
+     */
+    public void setLedBorderColor(Color value) {
+        if (ledBorderColor != null && value == ledBorderColor)
+            return;
+
+        ledBorderColor = value;
+
+        for (LEDFigure bulb : ledFigures) {
+            bulb.setBulbBorderColor(ledBorderColor);
+        }
+        revalidate();
+        repaint();
     }
 
     /**
