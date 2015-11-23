@@ -299,7 +299,8 @@ public class RepositoryTree extends TreeView<String> {
         }
 
         if (parentItem.getChildren().size() != 1
-                || ((BrowsingTreeItem) parentItem.getChildren().get(0)).type != Type.LOADING) {
+                || (((BrowsingTreeItem) parentItem.getChildren().get(0)).type != Type.LOADING
+                && ((BrowsingTreeItem) parentItem.getChildren().get(0)).type != Type.NOTLOADED)) {
             return;
         }
 

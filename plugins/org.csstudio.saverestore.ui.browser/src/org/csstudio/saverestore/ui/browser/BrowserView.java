@@ -225,12 +225,12 @@ public class BrowserView extends FXViewPart {
         titleBox.setHgap(5);
         Label titleText = new Label("Beamline Sets");
         titleText.textProperty().bind(beamlineSetsPane.textProperty());
-        Button newButton = new Button("New");
+        final Button newButton = new Button("New");
         newButton.setTooltip(new Tooltip("Create a new Beamline Set"));
         Button editButton = new Button("Edit");
         editButton.setTooltip(new Tooltip("Edit selected Beamline Set"));
-        Button copyButton = new Button("Import");
-        copyButton.setTooltip(new Tooltip("Import Beamline Sets from another location"));
+        Button importButton = new Button("Import");
+        importButton.setTooltip(new Tooltip("Import Beamline Sets from another location"));
         Button openButton = new Button("Open");
         openButton.setTooltip(new Tooltip("Open selected Beamline Set in Snapshot Viewer"));
         openButton.disableProperty()
@@ -239,20 +239,23 @@ public class BrowserView extends FXViewPart {
         editButton.disableProperty()
                 .bind(selector.selectedBeamlineSetProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
         editButton.setOnAction(e -> actionManager.editBeamlineSet(selector.selectedBeamlineSetProperty().get()));
-        newButton.disableProperty()
-                .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
+
         newButton.setOnAction(e -> actionManager.newBeamlineSet());
-        copyButton.disableProperty()
+        importButton.disableProperty()
                 .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
-        copyButton.setOnAction(
+        importButton.setOnAction(
                 e -> new ImportDataDialog(BrowserView.this).openAndWait().ifPresent(actionManager::importFrom));
+
+        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
+                (e) -> setUpSetButtons(newButton, importButton, (DataProviderWrapper) e.getNewValue()));
+        setUpSetButtons(newButton, importButton, SaveRestoreService.getInstance().getSelectedDataProvider());
 
         setUpTitlePaneNode(titleText, true);
         setUpTitlePaneNode(newButton, false);
-        setUpTitlePaneNode(copyButton, false);
+        setUpTitlePaneNode(importButton, false);
         setUpTitlePaneNode(editButton, false);
         setUpTitlePaneNode(openButton, false);
-        titleBox.addRow(0, titleText, copyButton, newButton, editButton, openButton);
+        titleBox.addRow(0, titleText, importButton, newButton, editButton, openButton);
         titleBox.setMaxWidth(Double.MAX_VALUE);
         titleText.setMaxWidth(Double.MAX_VALUE);
         beamlineSetsPane.setGraphic(titleBox);
@@ -262,6 +265,23 @@ public class BrowserView extends FXViewPart {
         beamlineSetsPane.expandedProperty()
                 .addListener((a, o, n) -> VBox.setVgrow(beamlineSetsPane, n ? Priority.ALWAYS : Priority.NEVER));
         return beamlineSetsPane;
+    }
+
+    private void setUpSetButtons(Button newButton, Button importButton, DataProviderWrapper dpw) {
+        newButton.disableProperty().unbind();
+        if (dpw != null) {
+            if (dpw.provider.areBaseLevelsSupported()) {
+                importButton.setVisible(true);
+                newButton.disableProperty().bind(
+                        selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
+            } else {
+                importButton.setVisible(false);
+                newButton.disableProperty().bind(beamlineSetsPane.expandedProperty().not());
+            }
+        } else {
+            importButton.setVisible(false);
+            newButton.setDisable(true);
+        }
     }
 
     private Node createSnapshotsPane() {
@@ -438,8 +458,13 @@ public class BrowserView extends FXViewPart {
         });
         if (baseLevelBrowser != null) {
             selector.selectedBaseLevelProperty().bind(baseLevelBrowser.baseLevelProperty());
-            selector.baseLevelsProperty().addListener(
-                    (a, o, n) -> baseLevelBrowser.availableBaseLevelsProperty().set(baseLevelBrowser.transform(n)));
+            selector.baseLevelsProperty().addListener((a, o, n) -> {
+                try {
+                    baseLevelBrowser.availableBaseLevelsProperty().set(baseLevelBrowser.transform(n));
+                } catch (RuntimeException e) {
+                    FXMessageDialog.openError(getSite().getShell(), "Base Level Error", e.getMessage());
+                }
+            });
         }
         selector.selectedBranchProperty().addListener((a, o, n) -> setUpElementsPaneTitle());
         selector.selectedBeamlineSetProperty().addListener((a, o, n) -> {

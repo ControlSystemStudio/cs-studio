@@ -20,19 +20,20 @@ import org.diirt.vtype.ValueFactory;
 
 public class DemoDataProvider implements DataProvider {
 
-    private static final String[] BASES = new String[] { "Ag_105_1p", "Sn_116_5n", "Rh_100_2p", "Sn_117_5n",
-            "Lu_172_2p", "Co_58_1p", "C_10_4p", "Ni_56_2p", "I_126_2n", "Ce_141_3p", "Ce_141_3p", "Db_260", "Co_61_2p",
-            "Cf_250_3p", "Sb_119_2p", "Rn_224_1n", "Ni_61_2p", "Te_127_4p", "B_12_2p", "Ag_106_1p", "Si_29_3p",
-            "Am_240_2p", "La_136_2p", "Pm_145_2p", "Mt_265_1n", "Li_4_1p", "Er_166_2p", "Eu_150_3p", "W_182_4p",
-            "Bh_262", "Er_168_2p", "Md_259_2p", "Ag_109_1p", "W_183_4p", "Po_207_3p", "Sb_122_3p", "Ni_61_2p",
-            "W_181_4p", "Pa_230_4p", "Ra_223_1p", "Th_233_4p", "Ta_183_5p", "Ir_189_3p", "Au_198_2p", "Sb_122_3p",
-            "La_136_3p", "Pt_196_1p", "Ds_271", "Se_79_2n", "Cr_54_1p", "Zr_93_3p", "Eu_153_3p", "H_3", "Mt_268_1n",
-            "Sc_46_3p", "Ca_41_2p", "Sr_89_2p", "Rn_222", "F_17_2n", "Ti_65_4p", "S_32_3n", "Eu_153_3p", "Pd_107_2p",
-            "Tl_201_2p", "Po_208_4p", "Mt_270", "As_72_4p", "Zn_66_1p", "Cr_50_1p", "Sn_117_4n", "Ce_142_2p",
-            "Fr_222_1p", "Nb_92_5p", "Cr_51_1p", "K_36", "Hf_179_4p", "Re_188_4p", "Th_230_3p", "N_15_3n", "Nb_92_4p",
-            "Os_187_3p", "Pm_142_3p", "S_31_2n", "Au_196_3p", "Lu_173_3p", "W_183_3p", "Nd_143_2p", "Pd_104_1p",
-            "Pr_142_2p", "Rb_85", "Tm_166_2p", "Ta_179_5p", "Ra_223_1p", "Mt_265_1n", "Fm_257_2p", "Hg_199_2p",
-            "Si_27_4p", "Ne_17_1n", "Tc_101_4p", "Cf_249_2p" };
+    private static final String[] BASES = new String[] { "Ag_105_1p", "Sn_116_5n", "Rh_100_2p", "Sn_117_5n"};
+
+//            "Lu_172_2p", "Co_58_1p", "C_10_4p", "Ni_56_2p", "I_126_2n", "Ce_141_3p", "Ce_141_3p", "Db_260_1p", "Co_61_2p",
+//            "Cf_250_3p", "Sb_119_2p", "Rn_224_1n", "Ni_61_2p", "Te_127_4p", "B_150_2p", "Ag_106_1p", "Si_29_3p",
+//            "Am_240_2p", "La_136_2p", "Pm_145_2p", "Mt_265_1n", "Li_4_1p", "Er_166_2p", "Eu_150_3p", "W_182_4p",
+//            "Bh_26_2n2", "Er_168_2p", "Md_259_2p", "Ag_109_1p", "W_183_4p", "Po_207_3p", "Sb_122_3p", "Ni_61_2p",
+//            "W_181_4p", "Pa_230_4p", "Ra_223_1p", "Th_233_4p", "Ta_183_5p", "Ir_189_3p", "Au_198_2p", "Sb_122_3p",
+//            "La_136_3p", "Pt_196_1p", "Ds_271_3n", "Se_79_2n", "Cr_54_1p", "Zr_93_3p", "Eu_153_3p", "H_3_2n", "Mt_268_1n",
+//            "Sc_46_3p", "Ca_41_2p", "Sr_89_2p", "Rn_222_3p", "F_17_2n", "Ti_65_4p", "S_32_3n", "Eu_153_3p", "Pd_107_2p",
+//            "Tl_201_2p", "Po_208_4p", "Mt_270", "As_72_4p", "Zn_66_1p", "Cr_50_1p", "Sn_117_4n", "Ce_142_2p",
+//            "Fr_222_1p", "Nb_92_5p", "Cr_51_1p", "K_36_4p", "Hf_179_4p", "Re_188_4p", "Th_230_3p", "N_15_3n", "Nb_92_4p",
+//            "Os_187_3p", "Pm_142_3p", "S_31_2n", "Au_196_3p", "Lu_173_3p", "W_183_3p", "Nd_143_2p", "Pd_104_1p",
+//            "Pr_142_2p", "Rb_85_2n", "Tm_166_2p", "Ta_179_5p", "Ra_223_1p", "Mt_265_1n", "Fm_257_2p", "Hg_199_2p",
+//            "Si_27_4p", "Ne_17_1n", "Tc_101_4p", "Cf_249_2p" };
 
 
     public DemoDataProvider() {
@@ -66,7 +67,6 @@ public class DemoDataProvider implements DataProvider {
     public BeamlineSet[] getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch) {
         List<BeamlineSet> beamlineSets = new ArrayList<>();
         String id = "org.csstudio.saverestore.git.dataprovider1";
-        if (baseLevel.isPresent()) {
 
             beamlineSets.add(new BeamlineSet(branch, baseLevel,
                     new String[] { "Front End", "All PVs" },id));
@@ -114,7 +114,7 @@ public class DemoDataProvider implements DataProvider {
             // }
             // beamlineSets.add(new BeamlineSet(branch, isotope, new String[]{"Set" + " " + isotope.element.symbol}));
             Collections.sort(beamlineSets);
-        }
+
         return beamlineSets.toArray(new BeamlineSet[beamlineSets.size()]);
     }
 
@@ -214,12 +214,12 @@ public class DemoDataProvider implements DataProvider {
 
     @Override
     public boolean areBranchesSupported() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean areBaseLevelsSupported() {
-        return true;
+        return false;
     }
 
     @Override

@@ -69,14 +69,14 @@ public class Isotope extends BaseLevel implements Serializable {
         int neutrons = e.commonNeutrons;
         int charge = e.commonCharge;
         if (parts.length < 3) {
-            throw new IllegalArgumentException("Mass and charge have to be provided.");
+            throw new IllegalArgumentException(storageName + " does not provide mass and charge.");
         } else if (parts.length > 3) {
             throw new IllegalArgumentException("Too many parts in the name");
         }
 
         neutrons = Integer.parseInt(parts[1]) - e.atomicNumber;
         if (neutrons < 0) {
-            throw new IllegalArgumentException("Mass is too small for '" + e.fullName + "'.");
+            throw new IllegalArgumentException("Mass is too small for '" + e.fullName + "' (min " + e.atomicNumber + ").");
         }
 
         char pn = parts[2].charAt(parts[2].length() - 1);
