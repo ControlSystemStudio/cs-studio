@@ -10,6 +10,8 @@ package org.csstudio.scan.server.httpd;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -46,6 +48,7 @@ public class SimulateServlet extends HttpServlet
         final String format = request.getContentType();
         if (! format.contains("/xml"))
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "POST /simulate got format '" + format + "'");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expecting XML content with scan, got format '" + format + "'");
             return;
         }
@@ -72,6 +75,7 @@ public class SimulateServlet extends HttpServlet
         }
         catch (Exception ex)
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "POST /simulate error", ex);
             response.resetBuffer();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.println("<error>");
