@@ -47,6 +47,11 @@ public final class MenuButtonModel extends AbstractPVWidgetModel implements ITex
     public static final String PROP_TRANSPARENT = "transparent";    //$NON-NLS-1$
 
     /**
+     * The ID of the show down arrow property
+     */
+    public static final String PROP_SHOW_DOWN_ARROW = "show_down_arrow"; //$NON-NLS-1$
+
+    /**
      * The default value of the height property.
      */
     private static final int DEFAULT_HEIGHT = 40;
@@ -80,6 +85,8 @@ public final class MenuButtonModel extends AbstractPVWidgetModel implements ITex
         addProperty(new BooleanProperty(PROP_ACTIONS_FROM_PV, "Actions From PV",
                 WidgetPropertyCategory.Behavior, DEFAULT_ACTIONS_FROM_PV));
         addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent",
+                WidgetPropertyCategory.Display, false));
+        addProperty(new BooleanProperty(PROP_SHOW_DOWN_ARROW, "Show Down Arrow",
                 WidgetPropertyCategory.Display, false));
         removeProperty(PROP_ACTIONS);
         addProperty(new ActionsProperty(PROP_ACTIONS, "Actions",
@@ -123,6 +130,10 @@ public final class MenuButtonModel extends AbstractPVWidgetModel implements ITex
 
     public boolean isTransparent() {
         return (Boolean)getPropertyValue(PROP_TRANSPARENT);
+    }
+
+    public boolean showDownArrow() {
+        return (Boolean)getPropertyValue(PROP_SHOW_DOWN_ARROW);
     }
 
 }

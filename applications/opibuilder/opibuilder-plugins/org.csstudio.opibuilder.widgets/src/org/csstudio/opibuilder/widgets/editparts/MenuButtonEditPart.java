@@ -71,22 +71,27 @@ import org.diirt.vtype.VType;
 public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
     class MenuButtonFigure extends Label implements ITextFigure{
-    	
-    	public static final int ICON_WIDTH = 15;
 
-    	@Override
-    	public void setText(String s) {
-    		super.setText(s);
-    		
-    		MenuButtonModel model = getWidgetModel();
-    		int modelWidth = (int)(model.getProperty(model.PROP_WIDTH).getPropertyValue());
-            this.setIconTextGap((modelWidth - this.getTextBounds().width - ICON_WIDTH)/2);
-    	}
+        public static final int ICON_WIDTH = 15;
+
+        @Override
+        public void setText(String s) {
+            super.setText(s);
+
+            MenuButtonModel model = getWidgetModel();
+            if(model.showDownArrow()) {
+                int modelWidth = (int)(model.getProperty(AbstractWidgetModel.PROP_WIDTH).getPropertyValue());
+                this.setIconTextGap((modelWidth - this.getTextBounds().width - ICON_WIDTH)/2);
+            }
+        }
     }
 
     private IPVListener loadActionsFromPVListener;
 
     private List<String>  meta = null;
+
+    private final Image downArrow = CustomMediaFactory.getInstance().getImageFromPlugin(
+            Activator.PLUGIN_ID, "icons/downArrow.png");
 
     /**
      * {@inheritDoc}
@@ -99,12 +104,13 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         label.setOpaque(!model.isTransparent());
         label.setText(model.getLabel());
 
-        Image downArrow = CustomMediaFactory.getInstance().getImageFromPlugin(
-                Activator.PLUGIN_ID, "icons/downArrow.png");
-        label.setIcon(downArrow);
-        label.setLabelAlignment(PositionConstants.RIGHT);
-        label.setTextPlacement(PositionConstants.WEST);
-        
+        if(model.showDownArrow()) {
+            Image downArrow = CustomMediaFactory.getInstance().getImageFromPlugin(
+                    Activator.PLUGIN_ID, "icons/downArrow.png");
+            label.setIcon(downArrow);
+            label.setLabelAlignment(PositionConstants.RIGHT);
+            label.setTextPlacement(PositionConstants.WEST);
+        }
 
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
             label.addMouseListener(new MouseListener() {
@@ -326,6 +332,25 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         };
         setPropertyChangeHandler(MenuButtonModel.PROP_TRANSPARENT,
                 transparentHandler);
+
+        // Show down arrow
+        IWidgetPropertyChangeHandler downArrowHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                Label label = (Label)refreshableFigure;
+                if((boolean)newValue) {
+                    label.setIcon(downArrow);
+                    label.setLabelAlignment(PositionConstants.RIGHT);
+                    label.setTextPlacement(PositionConstants.WEST);
+                } else {
+                    label.setIcon(null);
+                    label.setLabelAlignment(PositionConstants.CENTER);
+                    }
+                return true;
+            }
+        };
+        setPropertyChangeHandler(MenuButtonModel.PROP_SHOW_DOWN_ARROW,
+                downArrowHandler);
 
         final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
