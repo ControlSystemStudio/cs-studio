@@ -105,15 +105,15 @@ public class RDBArchiveReader implements ArchiveReader
         timeout = RDBArchivePreferences.getSQLTimeoutSecs();
         rdb = ConnectionCache.get(url, user, password);
 
+        // Read-only allows MySQL to use load balancing
+        if (!rdb.getConnection().isReadOnly()) {
+        	rdb.getConnection().setReadOnly(true);
+        }
 
         final Dialect dialect = rdb.getDialect();
         switch (dialect)
         {
         case MySQL:
-        	// Read-only allows MySQL to use load balancing
-        	if (!rdb.getConnection().isReadOnly()) {
-        		rdb.getConnection().setReadOnly(true);
-        	}
             is_oracle = false;
             this.stored_procedure = stored_procedure;
             break;
