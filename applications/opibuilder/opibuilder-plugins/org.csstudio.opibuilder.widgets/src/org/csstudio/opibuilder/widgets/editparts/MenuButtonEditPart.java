@@ -71,7 +71,17 @@ import org.diirt.vtype.VType;
 public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
     class MenuButtonFigure extends Label implements ITextFigure{
+    	
+    	public static final int ICON_WIDTH = 15;
 
+    	@Override
+    	public void setText(String s) {
+    		super.setText(s);
+    		
+    		MenuButtonModel model = getWidgetModel();
+    		int modelWidth = (int)(model.getProperty(model.PROP_WIDTH).getPropertyValue());
+            this.setIconTextGap((modelWidth - this.getTextBounds().width - ICON_WIDTH)/2);
+    	}
     }
 
     private IPVListener loadActionsFromPVListener;
@@ -92,9 +102,9 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         Image downArrow = CustomMediaFactory.getInstance().getImageFromPlugin(
                 Activator.PLUGIN_ID, "icons/downArrow.png");
         label.setIcon(downArrow);
+        label.setLabelAlignment(PositionConstants.RIGHT);
         label.setTextPlacement(PositionConstants.WEST);
-        label.setIconAlignment(PositionConstants.CENTER);
-        label.setIconTextGap(4);
+        
 
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
             label.addMouseListener(new MouseListener() {
