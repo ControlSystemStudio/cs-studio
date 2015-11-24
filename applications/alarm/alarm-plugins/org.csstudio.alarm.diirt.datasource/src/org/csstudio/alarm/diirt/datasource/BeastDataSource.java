@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -38,15 +41,23 @@ public class BeastDataSource extends DataSource {
 
     private static final Logger log = Logger.getLogger(BeastDataSource.class.getName());
 
-    private final BeastDataSourceConfiguration configuration;
     private final BeastTypeSupport typeSupport;
 
-    private AlarmTreeRoot alarmTreeRoot;
+    // The model, activeAlarms and acknowledgedAlarms is shared by the entire
+    // datasource, the benefit of does this at the datasource level instead of
+    // in each channel is that they need to be computed only once and only a single
+    // copy needs to be maintained.
     private AlarmClientModel model;
 
     private List<String> activeAlarms = new ArrayList<String>();
     private List<String> acknowledgedAlarms = new ArrayList<String>();
+
+    private Map<String, List<Consumer>> map = Collections.synchronizedMap(new HashMap<String, List<Consumer>>());
+
+    private Executor executor = Executors.newScheduledThreadPool(4);
     
+//    private final Map<String, AlarmClientModel> configModels = Collections.synchronizedMap(new HashMap<String, AlarmClientModel>());
+
     static {
         // Install type support for the types it generates.
         DataTypeSupport.install();
@@ -54,82 +65,99 @@ public class BeastDataSource extends DataSource {
 
     public BeastDataSource(BeastDataSourceConfiguration configuration) {
         super(true);
-        this.configuration = configuration;
 
         typeSupport = new BeastTypeSupport();
         
         try {
-            
-         // Create an instance to the AlarmClientModel
-            
-            // TODO: this might have to be moved to a different thread
-            if (configuration.getConfigName() != null && !configuration.getConfigName().isEmpty()) {
-                model = AlarmClientModel.getInstance(configuration.getConfigName());
-            } else{
-                model = AlarmClientModel.getInstance();
-            }
-            model.addListener(new AlarmClientModelListener() {
-                
-                @Override
-                public void newAlarmConfiguration(AlarmClientModel model) {
-                    log.fine("newAlarmConfiguration");
-                    synchronized (model) {
-                        activeAlarms = Collections.synchronizedList(Arrays
-                                .asList(model.getActiveAlarms()).stream()
-                                .map(AlarmTreePV::getName)
-                                .collect(Collectors.<String> toList()));
-                        acknowledgedAlarms = Collections.synchronizedList(Arrays
-                                .asList(model.getAcknowledgedAlarms()).stream()
-                                .map(AlarmTreePV::getName)
-                                .collect(Collectors.<String> toList()));
-                    }
-                    for (String channelName : map.keySet()) {
-                        BeastChannelHandler channel = (BeastChannelHandler) getChannels().get(channelHandlerLookupName(channelName));
-                        channel.reconnect();
-                    }
-                }
 
-                @Override
-                public void serverTimeout(AlarmClientModel model) {
-                    // TODO Auto-generated method stub
-                }
+            // Create an instance to the AlarmClientModel
+            final CompletableFuture<Void> future = CompletableFuture
+                    .supplyAsync(() -> initialize(configuration), executor)
+                    .thenAccept((model) -> {
+                        this.model = model;
+                        this.model.addListener(new AlarmClientModelListener() {
 
-                @Override
-                public void serverModeUpdate(AlarmClientModel model, boolean maintenance_mode) {
-                    // TODO Auto-generated method stub
-                }
-
-                @Override
-                public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
-                    log.fine("newAlarmState");
-                    synchronized (model) {
-                        activeAlarms = Collections.synchronizedList(Arrays
-                                .asList(model.getActiveAlarms()).stream()
-                                .map(AlarmTreePV::getName)
-                                .collect(Collectors.<String> toList()));
-                        acknowledgedAlarms = Collections.synchronizedList(Arrays
-                                .asList(model.getAcknowledgedAlarms()).stream()
-                                .map(AlarmTreePV::getName)
-                                .collect(Collectors.<String> toList()));
-                    }
-                    if(pv != null){
-                        log.fine(pv.getName());
-                        List<Consumer> handlers = map.get(pv.getName());
-                        if (handlers != null) {
-                            for (Consumer consumer : handlers) {
-                                consumer.accept(pv);
+                            @Override
+                            public void newAlarmConfiguration(AlarmClientModel model) {
+                                log.fine("newAlarmConfiguration");
+                                synchronized (model) {
+                                    activeAlarms = Collections.synchronizedList(Arrays
+                                            .asList(model.getActiveAlarms())
+                                            .stream()
+                                            .map(AlarmTreePV::getName)
+                                            .collect(Collectors.<String> toList()));
+                                    acknowledgedAlarms = Collections.synchronizedList(Arrays
+                                            .asList(model.getAcknowledgedAlarms())
+                                            .stream()
+                                            .map(AlarmTreePV::getName)
+                                            .collect(Collectors.<String> toList()));
+                                }
+                                for (String channelName : map.keySet()) {
+                                    BeastChannelHandler channel = (BeastChannelHandler) getChannels()
+                                            .get(channelHandlerLookupName(channelName));
+                                    channel.reconnect();
+                                }
                             }
-                        }
-                    }
-                }
-            });
-            alarmTreeRoot = AlarmClientModel.getInstance().getConfigTree().getRoot();
-            
+
+                            @Override
+                            public void serverTimeout(AlarmClientModel model) {
+                                // TODO Auto-generated method stub
+                            }
+
+                            @Override
+                            public void serverModeUpdate(
+                                    AlarmClientModel model,
+                                    boolean maintenance_mode) {
+                                // TODO Auto-generated method stub
+                            }
+
+                            @Override
+                            public void newAlarmState(AlarmClientModel model,
+                                    AlarmTreePV pv, boolean parent_changed) {
+                                log.fine("newAlarmState");
+                                synchronized (model) {
+                                    activeAlarms = Collections.synchronizedList(Arrays
+                                            .asList(model.getActiveAlarms())
+                                            .stream()
+                                            .map(AlarmTreePV::getName)
+                                            .collect(Collectors.<String> toList()));
+                                    acknowledgedAlarms = Collections.synchronizedList(Arrays
+                                            .asList(model.getAcknowledgedAlarms())
+                                            .stream()
+                                            .map(AlarmTreePV::getName)
+                                            .collect(Collectors.<String> toList()));
+                                }
+                                if (pv != null) {
+                                    log.fine(pv.getName());
+                                    List<Consumer> handlers = map.get(pv.getName());
+                                    if (handlers != null) {
+                                        for (Consumer consumer : handlers) {
+                                            consumer.accept(pv);
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
+    private AlarmClientModel initialize(BeastDataSourceConfiguration configuration) {
+        AlarmClientModel alarmModel;
+        try {
+            if (configuration.getConfigName() != null && !configuration.getConfigName().isEmpty()) {
+                alarmModel = AlarmClientModel.getInstance(configuration.getConfigName());
+            } else{
+                alarmModel = AlarmClientModel.getInstance();
+            }
+            return alarmModel;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     protected boolean isActive(String channelName) {
         synchronized (model) {
             return activeAlarms.contains(channelName);
@@ -148,17 +176,8 @@ public class BeastDataSource extends DataSource {
         }
     }
 
-    private Map<String, List<Consumer>> map = Collections.synchronizedMap(new HashMap<String, List<Consumer>>());
-    
     @Override
     protected ChannelHandler createChannel(String channelName) {
-        /**
-         * Parse the name to support defining the read and write types / the
-         * sytax is as follows
-         * 
-         * jms://topic_name<readType, writeType>{filter}
-         **/
-        
         return new BeastChannelHandler(channelName, this);
     }
 
