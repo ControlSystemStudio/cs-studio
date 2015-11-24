@@ -3,7 +3,8 @@
       id="org.csstudio.saverestore.git.feature"
       label="Feature"
       version="1.0.0.qualifier"
-      provider-name="FRIB">
+      provider-name="FRIB"
+      plugin="org.csstudio.saverestore.git">
 
    <description>
       org.csstudio.saverestore.git.feature provides the plugins and features that implement a git-based data provider for Save, Set, and Restore application.

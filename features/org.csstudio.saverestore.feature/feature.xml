@@ -3,7 +3,8 @@
       id="org.csstudio.saverestore.feature"
       label="Feature"
       version="1.0.0.qualifier"
-      provider-name="FRIB">
+      provider-name="FRIB"
+      plugin="org.csstudio.saverestore">
 
    <description>
       org.csstudio.saverestore.feature provides the core functionality for the Save, Set, and Restore application. It contributes the basic browser facilities (which allows browsing for beamline sets and snapshots) as well as the editors for beamline sets and snapshots.

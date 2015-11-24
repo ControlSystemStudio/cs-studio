@@ -3,7 +3,8 @@
       id="org.csstudio.saverestore.periodictable.feature"
       label="Feature"
       version="1.0.0.qualifier"
-      provider-name="FRIB">
+      provider-name="FRIB"
+      plugin="org.csstudio.saverestore.ui.browser.periodictable">
 
    <description>
       org.csstudio.saverestore.periodictable.feature provides the plugin that injects the PeriodicTable browser for the Save, Set, and Restore application.
