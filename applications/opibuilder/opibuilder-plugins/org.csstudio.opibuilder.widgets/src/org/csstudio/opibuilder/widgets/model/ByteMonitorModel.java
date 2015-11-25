@@ -69,6 +69,8 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
     /** Color of space between LEDs */
     public static final String PROP_LED_BORDER_COLOR = "led_border_color"; //$NON-NLS-1$
 
+    public static final String PROP_PACK_LEDS = "led_packed"; //$NON-NLS-1$
+
     public static final Integer DEFAULT_LED_BORDER = 3;
     public static final Color DEFAULT_LED_BORDER_COLOR = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_DARK_GRAY);
@@ -104,6 +106,8 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
                 WidgetPropertyCategory.Display, DEFAULT_LED_BORDER));
         addProperty(new ColorProperty(PROP_LED_BORDER_COLOR, "LED border color",
                 WidgetPropertyCategory.Display, DEFAULT_LED_BORDER_COLOR.getRGB()));
+        addProperty(new BooleanProperty(PROP_PACK_LEDS, "Pack LEDs",
+                WidgetPropertyCategory.Display, false));
     }
 
     /* (non-Javadoc)

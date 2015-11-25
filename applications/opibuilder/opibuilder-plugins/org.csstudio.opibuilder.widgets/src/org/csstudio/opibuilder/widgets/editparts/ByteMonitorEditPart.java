@@ -68,6 +68,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
         fig.setNumBits(((Integer)model.getPropertyValue(ByteMonitorModel.PROP_NUM_BITS)) );
         fig.setHorizontal(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_HORIZONTAL)) );
         fig.setReverseBits(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_BIT_REVERSE)) );
+        fig.setPackedLEDs(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_PACK_LEDS)) );
         fig.setLedBorderColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_LED_BORDER_COLOR)).getSWTColor());
         fig.setLedBorderWidth(((Integer)model.getPropertyValue(ByteMonitorModel.PROP_LED_BORDER)) );
         fig.setSquareLED(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_SQUARE_LED)) );
@@ -288,6 +289,21 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
             }
         };
         setPropertyChangeHandler(ByteMonitorModel.PROP_LABELS, labelsHandler);
+
+
+        //Set the LED rendering style
+        IWidgetPropertyChangeHandler packHandler = new IWidgetPropertyChangeHandler() {
+
+            public boolean handleChange(Object oldValue, Object newValue,
+                    IFigure refreshableFigure) {
+                ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
+                figure.setPackedLEDs((Boolean)newValue);
+                figure.drawValue();
+                return true;
+            }
+        };
+
+        setPropertyChangeHandler(ByteMonitorModel.PROP_PACK_LEDS, packHandler);
     }
 
 }

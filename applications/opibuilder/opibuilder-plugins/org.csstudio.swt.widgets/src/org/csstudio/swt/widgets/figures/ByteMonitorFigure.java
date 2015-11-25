@@ -49,6 +49,7 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
     /** Give the objects representing the bits a 3dEffect */
     private boolean effect3D = true;
     private boolean squareLED = false;
+    private boolean hasPackedLEDs = false;
     private int ledBorderWidth = 2;
     private Color ledBorderColor = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_DARK_GRAY);
@@ -187,6 +188,48 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         return squareLED;
     }
 
+    /**
+     * LEDs are sized to 'fill' the client area.
+     *
+     * If 'packed' borders around LEDs are overlapped giving a higher density.
+     * This gives an odd visual effect for 3d and round LEDs
+     *
+     * @param clientSize
+     * @param borderSize
+     * @return
+     */
+    private int calculateLedSize(int clientSize, int borderSize) {
+        int size;
+
+        if (hasPackedLEDs) {
+            size = (clientSize - borderSize) / numBits + borderSize;
+        }
+        else {
+            size = clientSize / numBits;
+        }
+        return size;
+    }
+
+    /**
+     * LEDs spacing is the offset between the corners of successive LEDs
+     *
+     * If 'packed' borders around LEDs are overlapped giving a higher density.
+     * This gives an odd visual effect for 3d and round LEDs
+     *
+     * @param ledSize
+     * @param borderSize
+     * @return
+     */
+    private int calculateLedSpacing(int ledSize, int borderSize) {
+        int spacing = ledSize;
+
+        if (hasPackedLEDs) {
+            spacing -= borderSize;
+        }
+
+        return spacing;
+    }
+
     /* (non-Javadoc)
      * @see org.eclipse.draw2d.Figure#layout()
      */
@@ -197,8 +240,8 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
         if(numBits >0){
             Rectangle clientArea = getClientArea();
             if (isHorizontal){
-                int ledWidth = ledBorderWidth + (clientArea.width - ledBorderWidth)/numBits;
-                int ledSpacing = ledWidth - ledBorderWidth;
+                int ledWidth = calculateLedSize(clientArea.width, ledBorderWidth);
+                int ledSpacing = calculateLedSpacing(ledWidth, ledBorderWidth);
                 int startX = clientArea.x;
 
                 int ledHeight = 0;
@@ -228,8 +271,8 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
                 }
             }
             else {
-                int ledHeight = ledBorderWidth + (clientArea.height - ledBorderWidth)/numBits;
-                int ledSpacing = ledHeight - ledBorderWidth;
+                int ledHeight = calculateLedSize(clientArea.height, ledBorderWidth);
+                int ledSpacing = calculateLedSpacing(ledHeight, ledBorderWidth);
                 int startY = clientArea.y;
 
                 int ledWidth = 0;
@@ -485,5 +528,14 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
             }
             text.setVerticalAlignment(TextFigure.V_ALIGN.MIDDLE);
         }
+    }
+
+    public void setPackedLEDs(boolean packLEDs) {
+        if(this.hasPackedLEDs  == packLEDs)
+            return;
+
+        this.hasPackedLEDs = packLEDs;
+        revalidate();
+        repaint();
     }
 }
