@@ -34,7 +34,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WritePVAction;
-import org.csstudio.opibuilder.widgets.Activator;
+import org.csstudio.opibuilder.widgets.figures.MenuButtonFigure;
 import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
@@ -47,15 +47,12 @@ import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
-import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Point;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
@@ -71,41 +68,9 @@ import org.diirt.vtype.VType;
  */
 public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
-    class MenuButtonFigure extends Label implements ITextFigure{
-
-        public static final int ICON_WIDTH = 15;
-
-        @Override
-        public void setText(String s) {
-            super.setText(s);
-            layoutIcons();
-        }
-
-        @Override
-        public void setBounds(Rectangle rect) {
-            super.setBounds(rect);
-            layoutIcons();
-        }
-
-        /**
-         * Layout the contents of the widget so that, if an icon is displayed, it is
-         * right aligned and the text remains centred.
-         */
-        private void layoutIcons() {
-            MenuButtonModel model = getWidgetModel();
-            if(model.showDownArrow()) {
-                int modelWidth = (int)(model.getProperty(AbstractWidgetModel.PROP_WIDTH).getPropertyValue());
-                this.setIconTextGap((modelWidth - this.getTextBounds().width - ICON_WIDTH)/2);
-            }
-        }
-    }
-
     private IPVListener loadActionsFromPVListener;
 
     private List<String>  meta = null;
-
-    private final Image downArrow = CustomMediaFactory.getInstance().getImageFromPlugin(
-            Activator.PLUGIN_ID, "icons/downArrow.png");
 
     /**
      * {@inheritDoc}
@@ -118,13 +83,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         label.setOpaque(!model.isTransparent());
         label.setText(model.getLabel());
 
-        if(model.showDownArrow()) {
-            Image downArrow = CustomMediaFactory.getInstance().getImageFromPlugin(
-                    Activator.PLUGIN_ID, "icons/downArrow.png");
-            label.setIcon(downArrow);
-            label.setLabelAlignment(PositionConstants.RIGHT);
-            label.setTextPlacement(PositionConstants.WEST);
-        }
+        label.showDownArrow(model.showDownArrow());
 
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
             label.addMouseListener(new MouseListener() {
@@ -351,15 +310,8 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         IWidgetPropertyChangeHandler downArrowHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
-                Label label = (Label)refreshableFigure;
-                if((boolean)newValue) {
-                    label.setIcon(downArrow);
-                    label.setLabelAlignment(PositionConstants.RIGHT);
-                    label.setTextPlacement(PositionConstants.WEST);
-                } else {
-                    label.setIcon(null);
-                    label.setLabelAlignment(PositionConstants.CENTER);
-                    }
+                MenuButtonFigure label = (MenuButtonFigure)refreshableFigure;
+                label.showDownArrow((boolean)newValue);
                 return true;
             }
         };
