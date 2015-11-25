@@ -21,18 +21,16 @@ public class MenuButtonFigure extends Label implements ITextFigure{
     private static final Image downArrow = CustomMediaFactory.getInstance().
             getImageFromPlugin(Activator.PLUGIN_ID, "icons/downArrow.png");
 
-    private boolean showDownArrow = false;
-
     @Override
     public void setText(String s) {
         super.setText(s);
-        layoutIcons();
+        updateLayout();
     }
 
     @Override
     public void setBounds(Rectangle rect) {
         super.setBounds(rect);
-        layoutIcons();
+        updateLayout();
     }
 
     /**
@@ -42,25 +40,22 @@ public class MenuButtonFigure extends Label implements ITextFigure{
      * @param showArrow if the arrow is to be shown.
      */
     public void showDownArrow(boolean showArrow) {
-        this.showDownArrow = showArrow;
         if(showArrow) {
             setIcon(downArrow);
+            setLabelAlignment(PositionConstants.RIGHT);
+            setTextPlacement(PositionConstants.WEST);
         } else {
             setIcon(null);
+            setLabelAlignment(PositionConstants.CENTER);
         }
-        layoutIcons();
+        updateLayout();
     }
 
     /**
      * Layout the contents of the widget so that, if an icon is displayed, it is
      * right aligned and the text remains centred.
      */
-    private void layoutIcons() {
-        if(showDownArrow) {
-            setLabelAlignment(PositionConstants.RIGHT);
-            setTextPlacement(PositionConstants.WEST);
-        } else {
-            setLabelAlignment(PositionConstants.CENTER);
-        }
+    private void updateLayout() {
+        setIconTextGap((getBounds().width - this.getTextBounds().width - ICON_WIDTH)/2);
     }
 }
