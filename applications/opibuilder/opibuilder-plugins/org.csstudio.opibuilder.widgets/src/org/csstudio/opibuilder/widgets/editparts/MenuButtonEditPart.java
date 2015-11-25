@@ -332,17 +332,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
                                 evt.getNewValue(), getFigure());
                     }
                 });
-
-        /*
-         * // text alignment IWidgetPropertyChangeHandler alignmentHandler = new
-         * IWidgetPropertyChangeHandler() { public boolean handleChange(final
-         * Object oldValue, final Object newValue, final IFigure
-         * refreshableFigure) {
-         * ((Label)refreshableFigure).setTextAlignment((Integer) newValue);
-         * return true; } };
-         * setPropertyChangeHandler(MenuButtonModel.PROP_TEXT_ALIGNMENT,
-         * alignmentHandler);
-         */
     }
 
     /**
