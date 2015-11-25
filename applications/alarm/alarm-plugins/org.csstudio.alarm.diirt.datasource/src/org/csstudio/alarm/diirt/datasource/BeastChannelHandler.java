@@ -7,6 +7,7 @@ package org.csstudio.alarm.diirt.datasource;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
 
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 import org.diirt.datasource.ChannelWriteCallback;
 import org.diirt.datasource.MultiplexedChannelHandler;
@@ -24,8 +25,9 @@ public class BeastChannelHandler extends
 
     private BeastDataSource datasource;
 
-    public BeastChannelHandler(String channelName,
-            BeastDataSource beastDataSource) {
+    private AlarmTreeItem alarmTreeItem;
+
+    public BeastChannelHandler(String channelName, BeastDataSource beastDataSource) {
         super(channelName);
         this.datasource = beastDataSource;
     }
@@ -44,9 +46,9 @@ public class BeastChannelHandler extends
     @Override
     public void write(Object newValue, ChannelWriteCallback callback) {
         log.fine("write");
-        if(newValue instanceof String){
-            try {
-            switch ((String) newValue) {
+        try {
+            if (newValue instanceof String) {
+                switch ((String) newValue) {
                 case "ack":
                 case "ACK":
                     datasource.acknowledge(getChannelName(), true);
@@ -64,11 +66,11 @@ public class BeastChannelHandler extends
                 default:
                     break;
                 }
-            } catch (Exception e) {
-                callback.channelWritten(e);
+            } else if (newValue instanceof Boolean) {
+                datasource.acknowledge(getChannelName(), (boolean) newValue);
             }
-        }else if(newValue instanceof Boolean){
-            datasource.acknowledge(getChannelName(), (boolean) newValue);
+        } catch (Exception e) {
+            callback.channelWritten(e);
         }
         callback.channelWritten(null);
     }
@@ -98,26 +100,26 @@ public class BeastChannelHandler extends
 
     private void initialize() {
         // TODO Auto-generated method stub
-        log.fine("initialize");
-        AlarmTreePV initialState = datasource.findPV(getChannelName());
-        if (initialState != null) {
-            processConnection(new BeastConnectionPayload(initialState, datasource.isConnected()));
-            processMessage(new BeastMessagePayload(initialState,
-                    datasource.isActive(getChannelName()),
-                    datasource.isAcknowledged(getChannelName()),
-                    datasource.isEnabled(getChannelName())));
+        log.info("initialize");
+        AlarmTreeItem initialState;
+        try {
+            initialState = datasource.getState(getChannelName());
+            if (initialState != null && initialState instanceof AlarmTreeItem) {
+                processConnection(new BeastConnectionPayload(initialState, datasource.isConnected()));
+                processMessage(new BeastMessagePayload(initialState));
+            }
+        } catch (Exception e) {
+            reportExceptionToAllReadersAndWriters(e);
         }
+        
     }
 
     @Override
     public void accept(Object o) {
         // Call onMessage or onConnection
-        if (o instanceof AlarmTreePV) {
-            log.fine("processing" + ((AlarmTreePV) o).getName());
-            processMessage(new BeastMessagePayload((AlarmTreePV) o,
-                    datasource.isActive(getChannelName()),
-                    datasource.isAcknowledged(getChannelName()),
-                    datasource.isEnabled(getChannelName())));
+        if (o instanceof AlarmTreeItem) {
+            log.fine("processing" + ((AlarmTreeItem) o).getName());
+            processMessage(new BeastMessagePayload((AlarmTreeItem) o));
         } else {
             log.fine(o.toString());
         }

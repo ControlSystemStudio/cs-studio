@@ -4,6 +4,13 @@
  */
 package org.csstudio.alarm.diirt.datasource;
 
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -112,8 +119,7 @@ public class BeastDataSource extends DataSource {
                             }
 
                             @Override
-                            public void newAlarmState(AlarmClientModel model,
-                                    AlarmTreePV pv, boolean parent_changed) {
+                            public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
                                 log.fine("newAlarmState");
                                 synchronized (model) {
                                     activeAlarms = Collections.synchronizedList(Arrays
@@ -128,8 +134,8 @@ public class BeastDataSource extends DataSource {
                                             .collect(Collectors.<String> toList()));
                                 }
                                 if (pv != null) {
-                                    log.fine(pv.getName());
-                                    List<Consumer> handlers = map.get(pv.getName());
+                                    log.info(pv.getPathName());
+                                    List<Consumer> handlers = map.get(pv.getPathName());
                                     if (handlers != null) {
                                         for (Consumer consumer : handlers) {
                                             consumer.accept(pv);
@@ -163,12 +169,6 @@ public class BeastDataSource extends DataSource {
             return activeAlarms.contains(channelName);
         }
     }
-
-    protected boolean isAcknowledged(String channelName) {
-        synchronized (model) {
-            return acknowledgedAlarms.contains(channelName);
-        }
-    }
     
     protected boolean isEnabled(String channelName){
         synchronized (model) {
@@ -178,7 +178,23 @@ public class BeastDataSource extends DataSource {
 
     @Override
     protected ChannelHandler createChannel(String channelName) {
-        return new BeastChannelHandler(channelName, this);
+        URI uri;
+        String pvName = channelName;
+        try {
+            uri = URI.create(URLEncoder.encode(channelName, "UTF-8"));
+            pvName = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
+            AlarmTreePV alarmTreePV = findPV(pvName);
+            if (alarmTreePV != null) {
+                return new BeastChannelHandler(alarmTreePV.getPathName(), this);
+            } else {
+                String path = URLDecoder.decode(uri.getPath(), "UTF-8");
+                AlarmTreeItem alarmTreeItem = model.getConfigTree().getItemByPath(path);
+                return new BeastChannelHandler(path, this);
+            }
+        } catch (UnsupportedEncodingException e) {
+            throw new IllegalArgumentException("unable to create channel " + channelName);
+        }
+        
     }
 
     @Override
@@ -211,13 +227,26 @@ public class BeastDataSource extends DataSource {
     protected AlarmTreePV findPV(String channelName){
         return model.findPV(channelName);
     }
+    
+    protected AlarmTreeItem getState(String channelName) throws Exception{
+        URI uri = URI.create(URLEncoder.encode(channelName, "UTF-8"));
+        String pvName = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
+        AlarmTreePV alarmTreePV = findPV(pvName);
+        if (alarmTreePV != null) {
+            return alarmTreePV;
+        } else {
+            String path = URLDecoder.decode(uri.getPath(), "UTF-8");
+            AlarmTreeItem alarmTreeItem = model.getConfigTree().getItemByPath(path);
+            return alarmTreeItem;
+        }
+    }
 
     protected boolean isConnected() {
         return model.isServerAlive();
     }
 
-    protected void acknowledge(String channelName, boolean acknowledge){
-        model.acknowledge(model.findPV(channelName), acknowledge);
+    protected void acknowledge(String channelName, boolean acknowledge) throws Exception{
+        getState(channelName).acknowledge(acknowledge);
     }
 
     protected void enable(String channelName, boolean enable) throws Exception {
