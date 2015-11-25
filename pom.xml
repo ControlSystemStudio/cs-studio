@@ -14,10 +14,9 @@
 	<name>maven-osgi-bundles</name>
 
 	<properties>
-		<tycho.version>0.22.0</tycho.version>
+		<tycho.version>0.23.1</tycho.version>
 		<manifest-location>META-INF</manifest-location>
 		<cs-studio-central.url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.2</cs-studio-central.url>
-		<pvmanager.version>2.9.1-SNAPSHOT</pvmanager.version>
 		<epics.util.version>0.3.2</epics.util.version>
 		<epics.caj.version>1.1.14</epics.caj.version>
 		<epics.jca.version>2.3.6</epics.jca.version>
@@ -42,11 +41,6 @@
 	
 	<repositories>
 		<repository>
-			<id>pvmanager-snapshots</id>
-			<name>pvmanager snapshots</name>
-			<url>http://maven.controlsystemstudio.org/snapshot/</url>
-		</repository>
-		<repository>
 			<id>epics</id>
 			<name>EPICS Repository</name>
 			<url>http://epics.sourceforge.net/maven2/</url>
@@ -55,7 +49,6 @@
 
 	<modules>
 		<module>epics</module>
-		<module>pvmanager</module>
 		<module>repository</module>
 	</modules>
 
