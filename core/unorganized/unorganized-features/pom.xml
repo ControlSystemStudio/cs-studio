@@ -12,11 +12,6 @@
   <name>Unorganized features</name>
   <modules>
     <module>org.csstudio.pvmanager.autocomplete.feature</module>
-    <module>org.csstudio.pvmanager.exec.feature</module>
-    <module>org.csstudio.pvmanager.extra.feature</module>
-    <module>org.csstudio.pvmanager.feature</module>
-    <module>org.csstudio.pvmanager.jdbc.feature</module>
-    <module>org.csstudio.pvmanager.pva.feature</module>
     <module>org.csstudio.dal.feature</module>
   </modules>
   <build>
@@ -32,15 +27,6 @@
             <goals>
               <goal>source-feature</goal>
             </goals>
-            <configuration>
-              <excludes>
-                <feature id="org.csstudio.pvmanager.exec.feature"/>
-                <feature id="org.csstudio.pvmanager.extra.feature"/>
-                <feature id="org.csstudio.pvmanager.feature"/>
-                <feature id="org.csstudio.pvmanager.jdbc.feature"/>
-                <feature id="org.csstudio.pvmanager.pva.feature"/>
-              </excludes>
-            </configuration>
           </execution>
         </executions>
       </plugin>
