@@ -49,7 +49,12 @@ public class BeastMessagePayload {
     }
 
     public boolean getEnable() {
-        return true;
+        if(pv instanceof AlarmTreePV){
+            return ((AlarmTreePV) pv).isEnabled();
+        } else{
+            //TODO return enable status for item
+            return true;
+        }
     }
 
 }
