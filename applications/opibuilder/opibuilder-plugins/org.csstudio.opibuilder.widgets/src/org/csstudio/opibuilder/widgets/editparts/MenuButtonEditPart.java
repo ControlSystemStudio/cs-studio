@@ -49,6 +49,7 @@ import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.RequestConstants;
@@ -77,7 +78,20 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         @Override
         public void setText(String s) {
             super.setText(s);
+            layoutIcons();
+        }
 
+        @Override
+        public void setBounds(Rectangle rect) {
+            super.setBounds(rect);
+            layoutIcons();
+        }
+
+        /**
+         * Layout the contents of the widget so that, if an icon is displayed, it is
+         * right aligned and the text remains centred.
+         */
+        private void layoutIcons() {
             MenuButtonModel model = getWidgetModel();
             if(model.showDownArrow()) {
                 int modelWidth = (int)(model.getProperty(AbstractWidgetModel.PROP_WIDTH).getPropertyValue());
