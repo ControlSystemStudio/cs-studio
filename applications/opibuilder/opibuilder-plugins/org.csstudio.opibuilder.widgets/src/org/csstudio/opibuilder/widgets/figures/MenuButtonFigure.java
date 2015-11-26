@@ -56,6 +56,12 @@ public class MenuButtonFigure extends Label implements ITextFigure{
      * right aligned and the text remains centred.
      */
     private void updateLayout() {
+        /*
+         * In Draw2d there appears to be no way adding a right aligned arrow to a
+         * label. We fake the effect here by checking the widths of the text and
+         * of the label then adding an appropriate gap so that the text looks as
+         * if it has been centred.
+         */
         setIconTextGap((getBounds().width - this.getTextBounds().width - ICON_WIDTH)/2);
     }
 }

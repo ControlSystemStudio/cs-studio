@@ -47,7 +47,7 @@ public final class MenuButtonModel extends AbstractPVWidgetModel implements ITex
     public static final String PROP_TRANSPARENT = "transparent";    //$NON-NLS-1$
 
     /**
-     * The ID of the show down arrow property
+     * The ID of the show down arrow property.
      */
     public static final String PROP_SHOW_DOWN_ARROW = "show_down_arrow"; //$NON-NLS-1$
 
