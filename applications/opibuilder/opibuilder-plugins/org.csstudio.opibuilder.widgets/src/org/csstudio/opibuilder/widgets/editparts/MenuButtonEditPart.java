@@ -159,11 +159,11 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
      * Show Menu
      *
      * @param point
-     *            the location of the mouse-event
+     *            the location of the mouse-event in the OPI display
      * @param absolutX
-     *            The x coordinate of the mouse in the display
+     *            The x coordinate of the mouse on the monitor
      * @param absolutY
-     *            The y coordinate of the mouse in the display
+     *            The y coordinate of the mouse on the monitor
      */
     private void showMenu(final Point point, final int absolutX,
             final int absolutY) {
@@ -177,11 +177,16 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
             }
             Menu menu = menuManager.createContextMenu(shell);
 
-            int x = absolutX;
-            int y = absolutY;
-            x = x - point.x + getWidgetModel().getLocation().x;
-            y = y - point.y + getWidgetModel().getLocation().y
-                    + getWidgetModel().getSize().height;
+            /*
+             * We need to position the menu in absolute monitor coordinates.
+             * First we calculate the coordinates of the display, then add the
+             * widget coordinates to these so that the menu opens on the
+             * bottom left of the widget.
+             */
+            int x = absolutX - point.x;
+            int y = absolutY - point.y;
+            x += getWidgetModel().getLocation().x;
+            y += getWidgetModel().getLocation().y + getWidgetModel().getSize().height;
 
             menu.setLocation(x, y);
             menu.setVisible(true);
