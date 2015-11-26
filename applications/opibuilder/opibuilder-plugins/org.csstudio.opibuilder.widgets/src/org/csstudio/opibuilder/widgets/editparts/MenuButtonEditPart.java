@@ -82,7 +82,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         label.setOpaque(!model.isTransparent());
         label.setText(model.getLabel());
 
-        label.showDownArrow(model.showDownArrow());
+        label.setDownArrowVisible(model.showDownArrow());
 
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
             label.addMouseListener(new MouseListener() {
@@ -310,7 +310,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 MenuButtonFigure label = (MenuButtonFigure)refreshableFigure;
-                label.showDownArrow((boolean)newValue);
+                label.setDownArrowVisible((boolean)newValue);
                 return true;
             }
         };

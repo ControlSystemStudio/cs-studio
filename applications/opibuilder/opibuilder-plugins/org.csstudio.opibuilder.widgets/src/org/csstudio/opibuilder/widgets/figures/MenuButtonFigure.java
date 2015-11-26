@@ -37,10 +37,10 @@ public class MenuButtonFigure extends Label implements ITextFigure{
      * Control the appearance of the down arrow indicator
      * on the menu button.
      *
-     * @param showArrow if the arrow is to be shown.
+     * @param isVisible if the arrow is to be shown.
      */
-    public void showDownArrow(boolean showArrow) {
-        if(showArrow) {
+    public void setDownArrowVisible(boolean isVisible) {
+        if(isVisible) {
             setIcon(downArrow);
             setLabelAlignment(PositionConstants.RIGHT);
             setTextPlacement(PositionConstants.WEST);
