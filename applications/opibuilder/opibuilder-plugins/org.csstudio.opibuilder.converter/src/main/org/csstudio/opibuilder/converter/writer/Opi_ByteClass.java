@@ -34,8 +34,10 @@ public class Opi_ByteClass extends OpiWidget {
         //dimensions of the widget
         boolean horizontal = r.getW() > r.getH();
         new OpiBoolean(widgetContext, "horizontal", horizontal);
+
         new OpiBoolean(widgetContext, "effect_3d", false);
         new OpiBoolean(widgetContext, "square_led", true);
+        new OpiBoolean(widgetContext, "led_packed", true);
 
         // EDM line width is returned as '0' if unchanged from default '1'
         new OpiInt(widgetContext, "led_border", Math.max(1, r.getLineWidth()));
