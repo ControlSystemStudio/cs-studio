@@ -78,14 +78,14 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
     protected IFigure doCreateFigure() {
         final MenuButtonModel model = (MenuButtonModel) getWidgetModel();
         updatePropSheet(model.isActionsFromPV());
-        final MenuButtonFigure label = new MenuButtonFigure();
-        label.setOpaque(!model.isTransparent());
-        label.setText(model.getLabel());
+        final MenuButtonFigure figure = new MenuButtonFigure();
+        figure.setOpaque(!model.isTransparent());
+        figure.setText(model.getLabel());
 
-        label.setDownArrowVisible(model.showDownArrow());
+        figure.setDownArrowVisible(model.showDownArrow());
 
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
-            label.addMouseListener(new MouseListener() {
+            figure.addMouseListener(new MouseListener() {
                 public void mouseDoubleClicked(final MouseEvent me) {
                 }
 
@@ -107,14 +107,14 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
                 }
 
             });
-        label.addMouseMotionListener(new MouseMotionListener.Stub() {
+        figure.addMouseMotionListener(new MouseMotionListener.Stub() {
             @Override
             public void mouseEntered(MouseEvent me) {
                 if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-                    Color backColor = label.getBackgroundColor();
+                    Color backColor = figure.getBackgroundColor();
                     RGB darkColor = GraphicsUtil.mixColors(backColor.getRGB(),
                             new RGB(0, 0, 0), 0.9);
-                    label.setBackgroundColor(CustomMediaFactory.getInstance()
+                    figure.setBackgroundColor(CustomMediaFactory.getInstance()
                             .getColor(darkColor));
                 }
 
@@ -123,14 +123,14 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
             @Override
             public void mouseExited(MouseEvent me) {
                 if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-                    label.setBackgroundColor(CustomMediaFactory.getInstance()
+                    figure.setBackgroundColor(CustomMediaFactory.getInstance()
                             .getColor(getWidgetModel().getBackgroundColor()));
                 }
             }
         });
 
         markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
-        return label;
+        return figure;
     }
 
     @Override
@@ -314,8 +314,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         IWidgetPropertyChangeHandler downArrowHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
-                MenuButtonFigure label = (MenuButtonFigure)refreshableFigure;
-                label.setDownArrowVisible((boolean)newValue);
+                ((MenuButtonFigure)refreshableFigure).setDownArrowVisible((boolean)newValue);
                 return true;
             }
         };
