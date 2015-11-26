@@ -42,7 +42,7 @@
     <module>org.csstudio.sds.simpledal.validation.mock</module>
   <module>org.csstudio.sds.ui</module>-->
     <module>org.csstudio.service.channelfinder</module>
-    <module>org.csstudio.service.jdbcsample</module>
+    <!--<module>org.csstudio.service.jdbcsample</module>-->
     <module>org.csstudio.service.math</module>
     <module>org.csstudio.service.unitconversion</module>
     

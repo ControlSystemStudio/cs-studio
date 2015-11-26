@@ -13,13 +13,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
-import org.epics.pvmanager.WriteFunction;
-import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.pvmanager.service.ServiceMethodDescription;
-import org.epics.vtype.VString;
-import org.epics.vtype.VTable;
-import org.epics.vtype.ValueFactory;
+import org.diirt.service.ServiceDescription;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceMethodDescription;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.ValueFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -32,16 +32,14 @@ public class GetConversionInfo extends ServiceMethod {
 
     private ConversionClient client;
 
-    public GetConversionInfo() {
-    super(new ServiceMethodDescription("info", "get conversion Info")
-        .addArgument("name", "device name", VString.class)
-        .addResult("result", "conversion Info", VTable.class));
+    public GetConversionInfo(ServiceMethodDescription serviceMethodDescription, ServiceDescription serviceDescription) {
+        super(serviceMethodDescription, serviceDescription);
     }
 
     @Override
-    public void executeMethod(Map<String, Object> parameters,
-        WriteFunction<Map<String, Object>> callback,
-        WriteFunction<Exception> errorCallback) {
+    public void executeAsync(Map<String, Object> parameters,
+        Consumer<Map<String, Object>> callback,
+        Consumer<Exception> errorCallback) {
     if (client == null) {
         client = new ConversionClient("http://localhost:8000/magnets");
     }
@@ -76,10 +74,10 @@ public class GetConversionInfo extends ServiceMethod {
         resultMap.put("result",
             ValueFactory.newVTable(types, names, values));
         resultMap.put("result_size", result.size());
-        callback.writeValue(resultMap);
+        callback.accept(resultMap);
 
     } catch (IOException e) {
-        errorCallback.writeValue(e);
+        errorCallback.accept(e);
     }
 
     }

@@ -5,7 +5,7 @@ import java.util.concurrent.Executor;
 import org.csstudio.diag.pvfields.gui.GUI;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.epics.pvmanager.PVManager;
+import org.diirt.datasource.PVManager;
 import org.junit.Before;
 import org.junit.Test;
 
