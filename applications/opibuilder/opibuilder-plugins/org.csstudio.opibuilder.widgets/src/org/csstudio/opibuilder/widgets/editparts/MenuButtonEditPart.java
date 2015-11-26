@@ -42,6 +42,8 @@ import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -57,8 +59,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.diirt.vtype.VEnum;
-import org.diirt.vtype.VType;
 
 /**
  *
