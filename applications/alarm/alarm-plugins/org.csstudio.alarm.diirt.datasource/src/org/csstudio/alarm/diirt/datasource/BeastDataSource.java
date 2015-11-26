@@ -181,6 +181,7 @@ public class BeastDataSource extends DataSource {
         URI uri;
         String pvName = channelName;
         try {
+        	java.lang.Thread.sleep(1000);
             uri = URI.create(URLEncoder.encode(channelName, "UTF-8"));
             pvName = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
             AlarmTreePV alarmTreePV = findPV(pvName);
@@ -191,7 +192,7 @@ public class BeastDataSource extends DataSource {
                 AlarmTreeItem alarmTreeItem = model.getConfigTree().getItemByPath(path);
                 return new BeastChannelHandler(path, this);
             }
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException | InterruptedException e) {
             throw new IllegalArgumentException("unable to create channel " + channelName);
         }
         
