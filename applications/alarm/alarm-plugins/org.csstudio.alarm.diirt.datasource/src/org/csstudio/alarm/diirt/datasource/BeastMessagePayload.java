@@ -4,6 +4,7 @@
  */
 package org.csstudio.alarm.diirt.datasource;
 
+import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
 
 
@@ -13,16 +14,10 @@ import org.csstudio.alarm.beast.client.AlarmTreePV;
  */
 public class BeastMessagePayload {
 
-    private final AlarmTreePV pv;
-    private final boolean active;
-    private final boolean acknowledged;
-    private final boolean enable;
+    private final AlarmTreeItem pv;
 
-    public BeastMessagePayload(AlarmTreePV pv, boolean active, boolean acknowledged, boolean enable) {
-        this.pv = pv;
-        this.active = active;
-        this.acknowledged = acknowledged;
-        this.enable = enable;
+    public BeastMessagePayload(AlarmTreeItem initialState) {
+        this.pv = initialState;
     }
     
     public String getName(){
@@ -30,7 +25,7 @@ public class BeastMessagePayload {
     }
     
     public String getDescription(){
-        return pv.getDescription();
+        return pv.getMessage();
     }
 
     public String getAlarmStatus() {
@@ -38,19 +33,28 @@ public class BeastMessagePayload {
     }
 
     public String getValue() {
-        return pv.getValue();
+        if(pv instanceof AlarmTreePV){
+            return ((AlarmTreePV) pv).getValue();
+        } else{
+            return pv.getToolTipText();
+        }
     }
     
-    public boolean isAcknowledged(){
-        return this.acknowledged;
+    public String isAcknowledged(){
+        return pv.getSeverity().getDisplayName();
     }
     
     public boolean isActive(){
-        return this.active;
+        return pv.getSeverity().isActive();
     }
 
     public boolean getEnable() {
-        return this.enable;
+        if(pv instanceof AlarmTreePV){
+            return ((AlarmTreePV) pv).isEnabled();
+        } else{
+            //TODO return enable status for item
+            return true;
+        }
     }
 
 }
