@@ -43,7 +43,6 @@ import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
@@ -278,7 +277,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if (newValue != null)
-                    ((Label) refreshableFigure).setText(VTypeHelper
+                    ((MenuButtonFigure) refreshableFigure).setText(VTypeHelper
                             .getString((VType) newValue));
                 return true;
             }
@@ -289,7 +288,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
-                ((Label) refreshableFigure).setText(newValue.toString());
+                ((MenuButtonFigure) refreshableFigure).setText(newValue.toString());
                 return true;
             }
         };
@@ -299,7 +298,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
-                ((Label) refreshableFigure).setOpaque(!(Boolean) newValue);
+                ((MenuButtonFigure) refreshableFigure).setOpaque(!(Boolean) newValue);
                 return true;
             }
         };
@@ -352,12 +351,12 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
     @Override
     public String getValue() {
-        return ((Label) getFigure()).getText();
+        return ((MenuButtonFigure) getFigure()).getText();
     }
 
     @Override
     public void setValue(Object value) {
-        ((Label) getFigure()).setText(value.toString());
+        ((MenuButtonFigure) getFigure()).setText(value.toString());
     }
 
     @Override
