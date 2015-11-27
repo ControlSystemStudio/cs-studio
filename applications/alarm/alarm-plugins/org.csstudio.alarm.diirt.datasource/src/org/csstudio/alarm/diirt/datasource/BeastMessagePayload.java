@@ -57,4 +57,8 @@ public class BeastMessagePayload {
         }
     }
 
+    public String getCurrentState(){
+        return pv.getCurrentSeverity().getDisplayName();
+    }
+
 }

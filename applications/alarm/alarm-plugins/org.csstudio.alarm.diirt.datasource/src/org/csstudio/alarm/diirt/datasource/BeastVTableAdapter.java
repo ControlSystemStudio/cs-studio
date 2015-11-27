@@ -47,6 +47,9 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
         keys.add("AlarmStatus");
         values.add(message.getAlarmStatus());
         
+        keys.add("CurrentStatus");
+        values.add(message.getCurrentState());
+        
         keys.add("Acknowledged");
         values.add(String.valueOf(message.isAcknowledged()));
         
