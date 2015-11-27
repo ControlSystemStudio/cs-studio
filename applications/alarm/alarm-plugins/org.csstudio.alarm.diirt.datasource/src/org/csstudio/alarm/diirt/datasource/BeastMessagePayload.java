@@ -28,7 +28,11 @@ public class BeastMessagePayload {
         return pv.getMessage();
     }
 
-    public String getAlarmStatus() {
+    public String getCurrentAlarmStatus() {
+        return pv.getCurrentSeverity().getDisplayName();
+    }
+    
+    public String getLatchedAlarmStatus() {
         return pv.getSeverity().getDisplayName();
     }
 
@@ -38,10 +42,6 @@ public class BeastMessagePayload {
         } else{
             return pv.getToolTipText();
         }
-    }
-    
-    public String isAcknowledged(){
-        return pv.getSeverity().getDisplayName();
     }
     
     public boolean isActive(){

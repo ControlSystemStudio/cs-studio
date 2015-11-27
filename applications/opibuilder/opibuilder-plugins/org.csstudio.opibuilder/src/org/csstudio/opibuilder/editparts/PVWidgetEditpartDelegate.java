@@ -234,7 +234,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     	DesiredRateReadWriteExpression<?,Object> expr = formula(getWidgetModel().getAlarmPVName());
     	alarmPV = PVManager
         		.readAndWrite(expr)
-        		.timeout(ofMillis(1000))
+        		.timeout(ofMillis(3000))
                 .notifyOn(swtThread(editpart.getViewer().getControl().getDisplay()))
                 .readListener(new PVReaderListener<Object>() {
 					@Override
@@ -254,7 +254,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     	
                     	AlarmSeverity newSeverity;
                     	boolean updateAndFireEvent = false, alarmEnabled, alarmAck;
-                    	BeastAlarmSeverityLevel severityLevel;
+                    	BeastAlarmSeverityLevel severityLevel, currentSeverityLevel;
                     	
                     	VTable allData = (VTable) event.getPvReader().getValue();
                     	if (allData == null) return;
@@ -269,7 +269,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     		alarmAck = false;
                     	} else {
                     		severityLevel = BeastAlarmSeverityLevel.parse(data.get(1)); 
-                    		newSeverity = severityLevel.getAlarmSeverity();
+                    		currentSeverityLevel = BeastAlarmSeverityLevel.parse(data.get(2));
+//                    		newSeverity = severityLevel.getAlarmSeverity();
+                    		newSeverity = currentSeverityLevel.getAlarmSeverity();
                     		alarmAck = severityLevel.isActive();
                     	}
                     	
@@ -281,14 +283,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                         	isAlarmAcknowledged = alarmAck; 
                     		
     	                    fireAlarmSeverityChanged(newSeverity, editpart.getFigure());
-        	                if (alarmSeverity != AlarmSeverity.NONE) Display.getDefault().timerExec(500, () -> alarmPV.write("ack"));
+//        	                if (alarmSeverity != AlarmSeverity.NONE) Display.getDefault().timerExec(500, () -> alarmPV.write("ack"));
                     	}
                 	}
                 })
-              .asynchWriteAndMaxReadRate(TimeDuration.ofHertz(10));
-    	
-    	if (!alarmPV.isWriteConnected())
-    		log.severe("Alarm PV is not Write Connected !");
+              .asynchWriteAndMaxReadRate(TimeDuration.ofHertz(100));
     }
     
     /**Start all PVs.
@@ -297,7 +296,6 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     public void startPVs() {
         pvsHaveBeenStarted = true;
         //the pv should be started at the last minute
-        log.info("STARTING PVs");
         for(String pvPropId : pvMap.keySet()){
             IPV pv = pvMap.get(pvPropId);
             try {
@@ -310,9 +308,12 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         
         if (isAlarmPVUsedForAlarmSensitivity && editpart.getExecutionMode() == ExecutionMode.RUN_MODE)
         {
+            log.info("STARTING AlarmPV " + getWidgetModel().getAlarmPVName());
 //        	Display.getDefault().asyncExec(() -> createAlarmPVReader());
         	createAlarmPVReader();
-    	}        
+        	// temporary: recreate
+//    		Display.getDefault().timerExec(5000, () -> createAlarmPVReader());
+        }        
     }
 
     public void doDeActivate() {
