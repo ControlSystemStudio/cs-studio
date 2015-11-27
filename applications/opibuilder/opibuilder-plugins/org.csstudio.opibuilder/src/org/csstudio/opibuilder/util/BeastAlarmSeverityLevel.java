@@ -75,7 +75,7 @@ public enum BeastAlarmSeverityLevel {
     {
         return active;
     }
-
+    
     /** @return Name of the severity level for users.
      */
     public String getDisplayName()

@@ -170,6 +170,10 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     private boolean isAlarmEnabled = false;
     private boolean isAlarmAcknowledged = false;
 
+    public boolean isAlarmPVUsed() {
+    	return isAlarmPVUsedForAlarmSensitivity;
+    }
+    
     /**
      * @param editpart the editpart to be delegated.
      * It must implemented {@link IPVWidgetEditpart}
@@ -228,6 +232,17 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         }
     }
 
+    public boolean acknowledgeAlarm() {
+    	if (alarmPV == null) return false;
+    	
+    	if (!isAlarmAcknowledged)
+    		alarmPV.write("ack");
+    	else
+    		alarmPV.write("unack");
+    	
+    	return true;
+    }
+    
     private void createAlarmPVReader() {
     	if (alarmPV != null) alarmPV.close();
     	
@@ -272,7 +287,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     		currentSeverityLevel = BeastAlarmSeverityLevel.parse(data.get(2));
 //                    		newSeverity = severityLevel.getAlarmSeverity();
                     		newSeverity = currentSeverityLevel.getAlarmSeverity();
-                    		alarmAck = severityLevel.isActive();
+                    		alarmAck = !severityLevel.isActive();
                     	}
                     	
 	                	updateAndFireEvent = (newSeverity != alarmSeverity) || (alarmEnabled != isAlarmEnabled) || (alarmAck != isAlarmAcknowledged);
