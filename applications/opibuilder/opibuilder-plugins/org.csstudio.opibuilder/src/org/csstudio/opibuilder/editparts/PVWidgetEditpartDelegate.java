@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.editparts;
 
+import static org.diirt.datasource.formula.ExpressionLanguage.formula;
 import static org.diirt.util.time.TimeDuration.ofMillis;
 
 import java.beans.PropertyChangeEvent;
@@ -51,11 +52,11 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
+import org.diirt.datasource.PV;
 import org.diirt.datasource.PVManager;
-import org.diirt.datasource.PVReader;
 import org.diirt.datasource.PVReaderEvent;
 import org.diirt.datasource.PVReaderListener;
-import org.diirt.datasource.formula.ExpressionLanguage;
+import org.diirt.datasource.expression.DesiredRateReadWriteExpression;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VTable;
@@ -164,7 +165,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     // determines whether a secondary PV is used for alarm-sensitive behaviour 
     private boolean isAlarmPVUsedForAlarmSensitivity;
     // (secondary, alarm) PV on which we listen for Alarm State changes
-    private PVReader<VTable> alarmPV = null;
+    private PV<?, Object> alarmPV = null;
 
     /**
      * @param editpart the editpart to be delegated.
@@ -224,6 +225,61 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         }
     }
 
+    private void createAlarmPVReader() {
+    	if (alarmPV != null) alarmPV.close();
+    	
+    	DesiredRateReadWriteExpression<?,Object> expr = formula(getWidgetModel().getAlarmPVName());
+    	alarmPV = PVManager
+        		.readAndWrite(expr)
+        		.timeout(ofMillis(1000))
+                .notifyOn(swtThread(editpart.getViewer().getControl().getDisplay()))
+                .readListener(new PVReaderListener<Object>() {
+					@Override
+                    public void pvChanged(PVReaderEvent<Object> event) {
+                    	log.info("Received new event of type " + event.toString());
+                    	if (event.isExceptionChanged()) {
+                    		Exception e = event.getPvReader().lastException();
+                    		log.severe("Received EXCEPTION: " + e.toString());
+                    		e.printStackTrace();
+                    	}
+
+                    	if (!event.isValueChanged()) return;
+                    	if (!(event.getPvReader().getValue() instanceof VTable)) {
+                    		log.severe("BeastDataSource listener: data is not a VTable");
+                    		return;
+                    	}
+                    	
+                    	AlarmSeverity newSeverity;
+                    	VTable allData = (VTable) event.getPvReader().getValue();
+                    	if (allData == null) return;
+                    	
+                    	@SuppressWarnings("unchecked")
+						List<String> data = (List<String>) allData.getColumnData(1);
+
+                    	// TODO: find correct column instead of using hardcoded indexes
+                    	if (data.get(6).equalsIgnoreCase("false")){
+                    		// Disabled
+                    		newSeverity = AlarmSeverity.NONE;
+                    	} else {
+                    		BeastAlarmSeverityLevel level = BeastAlarmSeverityLevel.parse(data.get(1)); 
+                    		newSeverity = level.getAlarmSeverity();
+                    	}
+                    	
+    	                if (newSeverity != alarmSeverity) {
+    	                    alarmSeverity = newSeverity;
+    	                    fireAlarmSeverityChanged(newSeverity, editpart.getFigure());
+        	                if (alarmSeverity != AlarmSeverity.NONE) Display.getDefault().timerExec(500, () -> alarmPV.write("ack"));
+    	                }
+
+
+                	}
+                })
+              .asynchWriteAndMaxReadRate(TimeDuration.ofHertz(10));
+    	
+    	if (!alarmPV.isWriteConnected())
+    		log.severe("Alarm PV is not Write Connected !");
+    }
+    
     /**Start all PVs.
      * This should be called as the last step in editpart.activate().
      */
@@ -241,53 +297,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             }
         }
         
-        if (isAlarmPVUsedForAlarmSensitivity
-        		&& editpart.getExecutionMode() == ExecutionMode.RUN_MODE)
+        if (isAlarmPVUsedForAlarmSensitivity && editpart.getExecutionMode() == ExecutionMode.RUN_MODE)
         {
-        	// set up a separate connection to the AlarmPV for alarm sensitive behaviour & acknowledgement
-        	log.info("setting up alarmPV listener");
-        	if (alarmPV != null) alarmPV.close();
-            alarmPV = PVManager
-            		.read(ExpressionLanguage.formula(getWidgetModel().getAlarmPVName(), VTable.class))
-            		.timeout(ofMillis(5000))
-                    .notifyOn(swtThread(editpart.getViewer().getControl().getDisplay()))
-                    .readListener(new PVReaderListener<VTable>() {
-						@Override
-                        public void pvChanged(PVReaderEvent<VTable> event) {
-                        	log.info("Received new pvChanged event: " + event.toString());
-                        	if (event.isExceptionChanged()) {
-                        		Exception e = event.getPvReader().lastException();
-                        		log.info("Received EXCEPTION: " + e.toString());
-                        		e.printStackTrace();
-                        	}
-
-                        	if (!event.isValueChanged()) return;
-                        	
-                        	AlarmSeverity newSeverity;
-                        	VTable allData = event.getPvReader().getValue();
-                        	if (allData == null) return;
-                        	
-                        	@SuppressWarnings("unchecked")
-							List<String> data = (List<String>) allData.getColumnData(1);
-
-                        	// TODO: find correct column instead of using hardcoded indexes
-                        	if (data.get(6).equalsIgnoreCase("false")){
-                        		// Disabled
-                        		newSeverity = AlarmSeverity.NONE;
-                        	} else {
-                        		BeastAlarmSeverityLevel level = BeastAlarmSeverityLevel.parse(data.get(1)); 
-                        		newSeverity = level.getAlarmSeverity();
-                        	}
-                        	
-        	                if (newSeverity != alarmSeverity) {
-        	                    alarmSeverity = newSeverity;
-        	                    fireAlarmSeverityChanged(newSeverity, editpart.getFigure());
-        	                }
-
-                    	}
-                    })
-                  .maxRate(TimeDuration.ofHertz(1));
-        }        
+//        	Display.getDefault().asyncExec(() -> createAlarmPVReader());
+        	createAlarmPVReader();
+    	}        
     }
 
     public void doDeActivate() {

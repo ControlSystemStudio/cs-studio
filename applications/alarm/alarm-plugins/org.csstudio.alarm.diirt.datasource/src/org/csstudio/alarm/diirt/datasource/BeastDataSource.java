@@ -180,8 +180,8 @@ public class BeastDataSource extends DataSource {
     protected ChannelHandler createChannel(String channelName) {
         URI uri;
         String pvName = channelName;
+        
         try {
-        	java.lang.Thread.sleep(1000);
             uri = URI.create(URLEncoder.encode(channelName, "UTF-8"));
             pvName = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
             AlarmTreePV alarmTreePV = findPV(pvName);
@@ -189,10 +189,10 @@ public class BeastDataSource extends DataSource {
                 return new BeastChannelHandler(alarmTreePV.getPathName(), this);
             } else {
                 String path = URLDecoder.decode(uri.getPath(), "UTF-8");
-                AlarmTreeItem alarmTreeItem = model.getConfigTree().getItemByPath(path);
+//                AlarmTreeItem alarmTreeItem = model.getConfigTree().getItemByPath(path);
                 return new BeastChannelHandler(path, this);
             }
-        } catch (UnsupportedEncodingException | InterruptedException e) {
+        } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException("unable to create channel " + channelName);
         }
         
@@ -201,7 +201,7 @@ public class BeastDataSource extends DataSource {
     @Override
     public void close() {
         super.close();
-        model.release();
+        if (model != null) model.release();
     }
 
     public BeastTypeSupport getTypeSupport() {
@@ -226,6 +226,7 @@ public class BeastDataSource extends DataSource {
     }
 
     protected AlarmTreePV findPV(String channelName){
+    	if (model == null) return null;
         return model.findPV(channelName);
     }
     
