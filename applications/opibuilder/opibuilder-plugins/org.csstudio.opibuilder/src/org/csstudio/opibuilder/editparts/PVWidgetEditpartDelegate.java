@@ -166,6 +166,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     private boolean isAlarmPVUsedForAlarmSensitivity;
     // (secondary, alarm) PV on which we listen for Alarm State changes
     private PV<?, Object> alarmPV = null;
+    // used in color calculation for background and border: enabled, acknowledged
+    private boolean isAlarmEnabled = false;
+    private boolean isAlarmAcknowledged = false;
 
     /**
      * @param editpart the editpart to be delegated.
@@ -250,28 +253,36 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     	}
                     	
                     	AlarmSeverity newSeverity;
+                    	boolean updateAndFireEvent = false, alarmEnabled, alarmAck;
+                    	BeastAlarmSeverityLevel severityLevel;
+                    	
                     	VTable allData = (VTable) event.getPvReader().getValue();
                     	if (allData == null) return;
                     	
                     	@SuppressWarnings("unchecked")
 						List<String> data = (List<String>) allData.getColumnData(1);
 
-                    	// TODO: find correct column instead of using hardcoded indexes
-                    	if (data.get(6).equalsIgnoreCase("false")){
-                    		// Disabled
+                    	// TODO: find correct columns instead of using hardcoded indexes
+                    	alarmEnabled = data.get(6).equalsIgnoreCase("true");
+                    	if (!alarmEnabled){
                     		newSeverity = AlarmSeverity.NONE;
+                    		alarmAck = false;
                     	} else {
-                    		BeastAlarmSeverityLevel level = BeastAlarmSeverityLevel.parse(data.get(1)); 
-                    		newSeverity = level.getAlarmSeverity();
+                    		severityLevel = BeastAlarmSeverityLevel.parse(data.get(1)); 
+                    		newSeverity = severityLevel.getAlarmSeverity();
+                    		alarmAck = severityLevel.isActive();
                     	}
                     	
-    	                if (newSeverity != alarmSeverity) {
-    	                    alarmSeverity = newSeverity;
+	                	updateAndFireEvent = (newSeverity != alarmSeverity) || (alarmEnabled != isAlarmEnabled) || (alarmAck != isAlarmAcknowledged);
+
+                    	if (updateAndFireEvent) {
+                    		alarmSeverity = newSeverity;
+                    		isAlarmEnabled = alarmEnabled;
+                        	isAlarmAcknowledged = alarmAck; 
+                    		
     	                    fireAlarmSeverityChanged(newSeverity, editpart.getFigure());
         	                if (alarmSeverity != AlarmSeverity.NONE) Display.getDefault().timerExec(500, () -> alarmPV.write("ack"));
-    	                }
-
-
+                    	}
                 	}
                 })
               .asynchWriteAndMaxReadRate(TimeDuration.ofHertz(10));
@@ -680,29 +691,32 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             return null;
         else {
             Border alarmBorder;
-            switch (alarmSeverity) {
-            case NONE:
-                if(editpart.getWidgetModel().getBorderStyle()== BorderStyle.NONE)
-                    alarmBorder = BORDER_NO_ALARM;
-                else
-                    alarmBorder = BorderFactory.createBorder(
-                            editpart.getWidgetModel().getBorderStyle(),
-                            editpart.getWidgetModel().getBorderWidth(),
-                            editpart.getWidgetModel().getBorderColor(),
-                            editpart.getWidgetModel().getName());
-                break;
-            case MAJOR:
-                alarmBorder = AlarmRepresentationScheme.getMajorBorder(editpart.getWidgetModel().getBorderStyle());
-                break;
-            case MINOR:
-                alarmBorder = AlarmRepresentationScheme.getMinorBorder(editpart.getWidgetModel().getBorderStyle());
-                break;
-            case INVALID:
-            case UNDEFINED:
-            default:
-                alarmBorder = AlarmRepresentationScheme.getInvalidBorder(editpart.getWidgetModel().getBorderStyle());
-                break;
-            }
+            if (isAlarmPVUsedForAlarmSensitivity && !isAlarmEnabled)
+            	alarmBorder = AlarmRepresentationScheme.getDisabledBorder(editpart.getWidgetModel().getBorderStyle());
+            else
+	            switch (alarmSeverity) {
+		            case NONE:
+		                if(editpart.getWidgetModel().getBorderStyle() == BorderStyle.NONE)
+		                    alarmBorder = BORDER_NO_ALARM;
+		                else
+		                    alarmBorder = BorderFactory.createBorder(
+		                            editpart.getWidgetModel().getBorderStyle(),
+		                            editpart.getWidgetModel().getBorderWidth(),
+		                            editpart.getWidgetModel().getBorderColor(),
+		                            editpart.getWidgetModel().getName());
+		                break;
+		            case MAJOR:
+		                alarmBorder = AlarmRepresentationScheme.getMajorBorder(editpart.getWidgetModel().getBorderStyle());
+		                break;
+		            case MINOR:
+		                alarmBorder = AlarmRepresentationScheme.getMinorBorder(editpart.getWidgetModel().getBorderStyle());
+		                break;
+		            case INVALID:
+		            case UNDEFINED:
+		            default:
+		                alarmBorder = AlarmRepresentationScheme.getInvalidBorder(editpart.getWidgetModel().getBorderStyle());
+		                break;
+	            }
 
             return alarmBorder;
         }
@@ -720,9 +734,14 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         if (!isSensitive) {
             return saveColor;
         } else {
-            RGB alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
+            RGB alarmColor;
+            if (isAlarmPVUsedForAlarmSensitivity && !isAlarmEnabled)
+            	alarmColor = AlarmRepresentationScheme.getDisabledColor();
+            else
+            	alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
+            
             if (alarmColor != null) {
-                // Alarm severity is either "Major", "Minor" or "Invalid.
+                // Alarm severity is either "Major", "Minor" or "Invalid".
                 if (isAlarmPulsing &&
                         (alarmSeverity == AlarmSeverity.MINOR || alarmSeverity == AlarmSeverity.MAJOR)) {
                     double alpha = 0.3;
