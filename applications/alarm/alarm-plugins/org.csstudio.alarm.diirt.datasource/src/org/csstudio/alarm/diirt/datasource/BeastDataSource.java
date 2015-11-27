@@ -180,6 +180,17 @@ public class BeastDataSource extends DataSource {
     protected ChannelHandler createChannel(String channelName) {
         URI uri;
         String pvName = channelName;
+        int cnt = 0;
+        
+        while (model == null && ++cnt < 2 * 20)
+        {
+        	// give datasource initialization a bit of time to load the model (at most 20 seconds)
+        	try {
+				java.lang.Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+        }
         
         try {
             uri = URI.create(URLEncoder.encode(channelName, "UTF-8"));
@@ -225,7 +236,6 @@ public class BeastDataSource extends DataSource {
     }
 
     protected AlarmTreePV findPV(String channelName){
-    	if (model == null) return null;
         return model.findPV(channelName);
     }
     
