@@ -35,7 +35,11 @@ import org.csstudio.scan.server.UnknownScanException;
 @SuppressWarnings("nls")
 public class ScanEngine
 {
-    final private ExecutorService executor = Executors.newSingleThreadExecutor(new NamedThreadFactory("ScanEngine"));
+	/** Executor for scans off the queue, handling one by one */
+    final private ExecutorService queue_executor = Executors.newSingleThreadExecutor(new NamedThreadFactory("ScanEngineQueue"));
+    
+    /** Executor for scans that executes all submitted scans in parallel */
+    final private ExecutorService parallel_executor = Executors.newCachedThreadPool(new NamedThreadFactory("ScanEnginePool"));
 
     /** All the scans handled by this engine
      *
@@ -66,10 +70,19 @@ public class ScanEngine
      */
     public void stop()
     {
-        executor.shutdownNow();
+        queue_executor.shutdownNow();
+        parallel_executor.shutdownNow();
         try
         {
-            executor.awaitTermination(10, TimeUnit.SECONDS);
+            queue_executor.awaitTermination(10, TimeUnit.SECONDS);
+        }
+        catch (InterruptedException e)
+        {
+            // Ignore, shutting down anyway
+        }
+        try
+        {
+        	parallel_executor.awaitTermination(10, TimeUnit.SECONDS);
         }
         catch (InterruptedException e)
         {
@@ -83,12 +96,16 @@ public class ScanEngine
 
     /** Submit a scan to the engine for execution
      *  @param scan The {@link ExecutableScan}
+     *  @param queue Queue the scan, or execute as soon as possible?
      *  @throws IllegalStateException if scan had been submitted before
      */
-    public void submit(final ExecutableScan scan)
+    public void submit(final ExecutableScan scan, final boolean queue)
     {
-        scan.submit(executor);
-        synchronized (scan_queue)
+    	if (queue)
+			scan.submit(queue_executor);
+    	else
+    		scan.submit(parallel_executor);
+    	synchronized (scan_queue)
         {
             scan_queue.add(scan);
         }

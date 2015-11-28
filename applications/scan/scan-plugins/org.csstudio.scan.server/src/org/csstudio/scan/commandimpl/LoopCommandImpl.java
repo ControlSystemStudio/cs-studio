@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -48,6 +48,17 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
 
     /** Logger for execution of loop steps, <code>null</code> unless executing the loop */
     private Logger step_logger = null;
+
+    /** Thread that executes the loop variable write
+     *
+     *  SYNC on `this` to prevent race where
+     *  executing thread tries to set thread back to null,
+     *  while next() tries to interrupt.
+     */
+    private Thread thread = null;
+
+    /** Flag to indicate 'next' was invoked on current loop step */
+    private volatile boolean do_skip;
 
     /** Initialize
      *  @param command Command description
@@ -224,35 +235,71 @@ public class LoopCommandImpl extends ScanCommandImpl<LoopCommand>
             final NumericValueCondition condition, final Device readback, double value)
             throws Exception
     {
-        step_logger.log(Level.FINE, "Loop setting {0} = {1}{2}", new Object[] { device.getAlias(), value, (condition!=null ? " (waiting)" : "") });
+        step_logger.log(Level.INFO, "Loop setting {0} = {1}{2}", new Object[] { device.getAlias(), value, (condition!=null ? " (waiting)" : "") });
 
         // Set device to value for current step of loop
-        if (command.getCompletion())
-            device.write(value, TimeDuration.ofSeconds(command.getTimeout()));
+        do_skip = false;
+        synchronized (this)
+        {
+            thread = Thread.currentThread();
+        }
+        try
+        {
+            if (command.getCompletion())
+                device.write(value, TimeDuration.ofSeconds(command.getTimeout()));
+            else
+                device.write(value);
+
+            // .. wait for device to reach value
+            if (condition != null)
+            {
+                condition.setDesiredValue(value);
+                condition.await();
+            }
+
+            // Log the device's value?
+            if (context.isAutomaticLogMode())
+            {
+                final DataLog log = context.getDataLog().get();
+                final long serial = log.getNextScanDataSerial();
+                log.log(readback.getAlias(), VTypeHelper.createSample(serial, readback.read()));
+            }
+        }
+        catch (InterruptedException ex)
+        {   // Ignore if 'next' was requested
+            if (! do_skip)
+                throw ex;
+        }
+        finally
+        {
+            synchronized (this)
+            {
+                thread = null;
+            }
+        }
+
+        // Execute loop body or show some estimate of progress
+        // (not including nested commands)
+        if (do_skip)
+            context.workPerformed(implementation.size());
         else
-            device.write(value);
-
-        // .. wait for device to reach value
-        if (condition != null)
-        {
-            condition.setDesiredValue(value);
-            condition.await();
-        }
-
-        // Log the device's value?
-        if (context.isAutomaticLogMode())
-        {
-            final DataLog log = context.getDataLog().get();
-            final long serial = log.getNextScanDataSerial();
-            log.log(readback.getAlias(), VTypeHelper.createSample(serial, readback.read()));
-        }
-
-        // Execute loop body
-        context.execute(implementation);
+            context.execute(implementation);
 
         // If there are no commands that inc. the work units, do it yourself
         if (implementation.size() <= 0)
             context.workPerformed(1);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void next()
+    {
+        do_skip = true;
+        synchronized (this)
+        {
+            if (thread != null)
+                thread.interrupt();
+        }
     }
 
     /** {@inheritDoc} */

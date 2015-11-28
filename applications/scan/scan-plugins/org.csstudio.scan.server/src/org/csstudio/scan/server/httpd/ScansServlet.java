@@ -9,6 +9,8 @@ package org.csstudio.scan.server.httpd;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -58,8 +60,8 @@ public class ScansServlet extends HttpServlet
         }
         catch (Exception ex)
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /scans error", ex);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
-            ex.printStackTrace();
         }
     }
 
@@ -80,6 +82,7 @@ public class ScansServlet extends HttpServlet
         }
         catch (Exception ex)
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "DELETE /scans/completed error", ex);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
             return;
         }

@@ -1,7 +1,7 @@
 <html>
 <head>
-	<title>Overview</title>
-	<link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css" />
+    <title>Overview</title>
+    <link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css" />
 </head>
 
 <body>
@@ -21,6 +21,7 @@ There are two main items to configure:
     work "out of the box", while the JNI implementation
     might provide maximum compatibility with existing
     EPICS installations.
+</li>
 <li>addr_list and auto_addr_list:<br>
     If all CA servers (IOCs) are on the same subnet
     as the computer running the CSS application,
@@ -32,11 +33,12 @@ There are two main items to configure:
     and un-check the auto_addr_list.
     For details on this as well as the remaining settings,
     refer to the EPICS Channel Access reference manual.
+</li>
 </ul>
 <p>
 Note that changes require a restart of the application,
 they do not take effect at runtime!
-
+</p>
 <h2>Default Settings</h2>
 While each user can specify custom settings for each workspace,
 a site might have some default choices.
@@ -52,7 +54,7 @@ no additional steps should be required.
 To use the JNI version, you need the operating system specific binaries for JNI.
 Refer to the README.txt in the org.csstudio.platform.libs.epics plugin
 for details on the currently included binaries.
-
+</p>
 </body>
 </html>
 

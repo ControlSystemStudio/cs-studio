@@ -16,7 +16,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.scan.condition.WaitWithTimeout;
-import org.epics.util.time.TimeDuration;
+import org.diirt.util.time.TimeDuration;
 import org.junit.Test;
 
 /** JUnit test of the {@link WaitWithTimeout}

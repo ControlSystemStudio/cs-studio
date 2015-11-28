@@ -20,7 +20,7 @@ public class SubmitScanHandler extends AbstractHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-        ScanEditorContributor.getCurrentScanEditor().submitCurrentScan();
+        ScanEditorContributor.getCurrentScanEditor().submitCurrentScan(true);
         return null;
     }
 }

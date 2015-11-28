@@ -129,6 +129,23 @@ public class LEDEditPart extends AbstractBoolEditPart{
         });
 
 
+        //bulbBorderWidth
+        getWidgetModel().getProperty(LEDModel.PROP_BULB_BORDER).addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                initializeStateBulbBorderWidth((Integer)evt.getNewValue(), (LEDFigure)getFigure(), getWidgetModel());
+            }
+        });
+
+
+        //bulbBorderColor
+        getWidgetModel().getProperty(LEDModel.PROP_BULB_BORDER_COLOR).addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                initializeStateBulbBorderColor(((OPIColor)evt.getNewValue()).getSWTColor(), (LEDFigure)getFigure(), getWidgetModel());
+            }
+        });
+
         for(int idx=0; idx<LEDFigure.MAX_NSTATES; idx++) {
             final int state = idx;
             //stateLabelN
@@ -163,6 +180,9 @@ public class LEDEditPart extends AbstractBoolEditPart{
 
         LEDModel model = (LEDModel)abstractModel;
         LEDFigure figure = (LEDFigure)abstractFigure;
+
+        initializeStateBulbBorderColor(model.getBulbBorderColor(), figure, model);
+        initializeStateBulbBorderWidth(model.getBulbBorderWidth(), figure, model);
 
         initializeNStatesProperties(LEDFigure.MAX_NSTATES, model.getNStates(), figure, model);
         initializeStateFallbackLabel(null, model.getStateFallbackLabel(), figure, model);
@@ -228,5 +248,14 @@ public class LEDEditPart extends AbstractBoolEditPart{
 
     protected void initializeStateValue(int state, double oldValue, double newValue, LEDFigure figure, LEDModel model) {
         figure.setStateValue(state, newValue);
+    }
+
+
+    protected void initializeStateBulbBorderWidth(int newWidth, LEDFigure figure, LEDModel model) {
+        figure.setBulbBorderWidth(newWidth);
+    }
+
+    protected void initializeStateBulbBorderColor(Color newColor, LEDFigure figure, LEDModel model) {
+        figure.setBulbBorderColor(newColor);
     }
 }

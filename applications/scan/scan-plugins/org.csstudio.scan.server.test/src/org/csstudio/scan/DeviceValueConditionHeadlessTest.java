@@ -15,7 +15,7 @@
  ******************************************************************************/
 package org.csstudio.scan;
 
-import static org.epics.util.time.TimeDuration.ofSeconds;
+import static org.diirt.util.time.TimeDuration.ofSeconds;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;

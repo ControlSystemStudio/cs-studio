@@ -1,694 +1,691 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
-  <link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
+<link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css"
+    type="text/css"></link>
+<link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
 <title>Data Browser</title>
 </head>
 <body>
+    <h1>Data Browser</h1>
+    <a name="top"></a>
 
-<a name=top><h1>Data Browser</h1></a>
-
-<span class="index">
-- <a href="#overview">Overview</a>
-- <a href="#101">Getting Started</a>
-- <a href="#common">Common Tasks</a>
-- <a href="#perspective">Perspective</a>
-- <a href="#toolbar">Toolbar</a>
-- <a href="#config">Properties Panel</a>
-- <a href="#annotate">Annotations</a>
-- <a href="#search">Search</a>
-- <a href="#export">Export</a>
-- <a href="#import">Import</a>
-- <a href="#inspect">Inspect Samples</a>
-- <a href="#waveforms">Waveforms</a>
-- <a href="#preferences">Preferences</a>
-- <a href="#transition">Older Data Browser</a>
-- <a href="#history">History</a>
--
-</span>
-
-
-<h2><a name=overview>Overview</a></h2> 
-<p>
-The Data Browser is a trending tool. It can display the values of 'live'
-Process Variables (PVs) as well as historic data in a Stripchart-type plot.
-
-</p>
-<div class='figure'>
-   <img src="DataBrowserSnapshot.png" width="95%"/>
-   <p>
-   Fig. 1: Data Browser Screenshot
-   </p>
-</div>
-
-<h3>Live Data</h3>
-<p>
-For each PV, the Data Browser collects 'live' samples from the control system
-and plots them over time. The size of the live sample buffer is configurable,
-as is the sample period.
-</p>
-<h3>Historic Data</h3>
-<p>
-The Data Browser queries archive data sources for historic samples to obtain
-data for time ranges 'before' the live sample buffer.
-You can configure one or more archive data source for each PV.
-</p>
+     <ul class="index">
+        <li><a href="#overview">Overview</a></li>
+        <li><a href="#101">Getting Started</a></li>
+        <li><a href="#common">Common Tasks</a></li>
+        <li><a href="#perspective">Perspective</a></li>
+        <li><a href="#toolbar">Toolbar</a></li>
+        <li><a href="#config">Properties Panel</a></li>
+        <li><a href="#annotate">Annotations</a></li>
+        <li><a href="#search">Search</a></li>
+        <li><a href="#export">Export</a></li>
+        <li><a href="#import">Import</a></li>
+        <li><a href="#inspect">Inspect Samples</a></li>
+        <li><a href="#waveforms">Waveforms</a></li>
+        <li><a href="#preferences">Preferences</a></li>
+        <li><a href="#transition">Older Data Browser</a></li>
+        <li><a href="#history">History</a></li>
+    </ul>
 
 
-<h2><a name=101>Getting Started</a></h2>
-<p>
-To create a new plot:
-<ol>
-<li>Click on the <img src="../icons/new_databrowser.png" width=16 height=16/>
-    "Open new Data Browser plot" icon in the CSS tool bar (top row of the CSS window).
-<li>Open the plot's context menu by right-clicking into the plot.
-    Select <img src="../icons/add.gif" width=16 height=16/> "Add PV".
-<li>Enter the desired PV name, press "OK"
-<li>Use the <a href="#toolbar">Toolbar</a> or <a href="#config">Properties Panel</a>
-    to change the displayed time range, zoom in/out etc. 
-</ol>
-</p>
+    <h2>
+        <a name="overview">Overview</a>
+    </h2>
+    <p>The Data Browser is a trending tool. It can display the values
+        of 'live' Process Variables (PVs) as well as historic data in a
+        Stripchart-type plot.</p>
+    <div class='figure'>
+        <img src="DataBrowserSnapshot.png" width="95%" />
+        <p>Fig. 1: Data Browser Screenshot</p>
+    </div>
+
+    <h3>Live Data</h3>
+    <p>For each PV, the Data Browser collects 'live' samples from the
+        control system and plots them over time. The size of the live sample
+        buffer is configurable, as is the sample period.</p>
+    <h3>Historic Data</h3>
+    <p>The Data Browser queries archive data sources for historic
+        samples to obtain data for time ranges 'before' the live sample
+        buffer. You can configure one or more archive data source for each PV.
+    </p>
 
 
-<h2><a name=common>Common Tasks</a></h2>
-<ul>
-<li>Add PV or Formula: Right-click on plot or trace table in 
-    <a href="#config">Properties Panel</a>,
-    select "Add PV" or "Add Formula".
-<li>Delete PVs or Formulas:
-    In <a href="#config">Properties Panel</a>,
-    right-click on selected item in trace table and select "Delete Item".
-<li>Find PV Name: Use the <a href="#search">Search Panel</a>
-<li>Add archive data source:
-    Select PV in <a href="#config">Properties Panel</a>.
-    Right-click to "Add Archive".
-    Or drag archive from <a href="#search">Search Panel</a>
-    onto PV to cause that PV to be read from archive,
-    or drag archive from <a href="#search">Search Panel</a>
-    onto plot to cause all PVs in plot to be read from that archive.
-<li>Remove archive data source:
-    Select PV in <a href="#config">Properties Panel</a>.
-    In lower "Archive Data Sources" list, 
-    right-click and select "Remove Archive Data Source".
-</ul>
+    <h2>
+        <a name="101">Getting Started</a>
+    </h2>
+    <p>To create a new plot:</p>
+    <ol>
+        <li>Click on the <img src="../icons/new_databrowser.png"
+            width="16" height="16" /> "Open new Data Browser plot" icon in the
+            CSS tool bar (top row of the CSS window).
+        </li>
+        <li>Open the plot's context menu by right-clicking into the plot.
+            Select <img src="../icons/add.gif" width="16" height="16" /> "Add
+            PV".
+        </li>
+        <li>Enter the desired PV name, press "OK"</li>
+        <li>Use the <a href="#toolbar">Toolbar</a> or <a href="#config">Properties
+                Panel</a> to change the displayed time range, zoom in/out etc.
+        </li>
+    </ol>
 
 
-<h2><a name=perspective>Data Browser Perspective</a></h2>
-<p>
-In addition to the Browser plot window itself, you typically use the
-<a href="#config">Properties Panel</a> to change colors etc.,
-or the <a href="#search">Search Panel</a> to locate the names
-of PVs with historic data.
-</p>
-The Data Browser "Perspective" provides a suggested arrangement of these
-additional panels around the plot window, similar to the screenshot in
-Fig. 1 where the Properties and <a href="#export">Export</a> panels are
-below the plot, and a Search panel is to its left.
-</p>
-<p>
-To switch to the Data Browser Perspective in case it is not currently
-selected, right-click on the Data Browser plot and select "Data Browser Perspective".
-</p>
-<p>
-While in the perspective, you can then close the search panel, move the
-properties panel around as desired.
-If you later want to restore the default arrangement, 
-again right-click on the Data Browser plot and select "Data Browser Perspective".
-Since it's already active, it will ask if you want to <em>reset</em> the perspective
-to its original state.
-</p>
+    <h2>
+        <a name="common">Common Tasks</a>
+    </h2>
+    <ul>
+        <li>Add PV or Formula: Right-click on plot or trace table in <a
+            href="#config">Properties Panel</a>, select "Add PV" or "Add
+            Formula".
+        </li>
+        <li>Delete PVs or Formulas: In <a href="#config">Properties
+                Panel</a>, right-click on selected item in trace table and select
+            "Delete Item".
+        </li>
+        <li>Find PV Name: Use the <a href="#search">Search Panel</a></li>
+        <li>Add archive data source: Select PV in <a href="#config">Properties
+                Panel</a>. Right-click to "Add Archive". Or drag archive from <a
+            href="#search">Search Panel</a> onto PV to cause that PV to be read
+            from archive, or drag archive from <a href="#search">Search Panel</a>
+            onto plot to cause all PVs in plot to be read from that archive.
+        </li>
+        <li>Remove archive data source: Select PV in <a href="#config">Properties
+                Panel</a>. In lower "Archive Data Sources" list, right-click and select
+            "Remove Archive Data Source".
+        </li>
+    </ul>
 
 
-<h2><a name=toolbar>Plot Toolbar</a></h2>
-<p>
-The toolbar is displayed on top of a Data Browser plot.
-If it is not visible, right-click on the plot to open the context menu,
-then select "Show Toolbar".
-</p>
-<div class='figure'>
-   <img src="toolbar.png" width="365" height="28"/>
-   <p>
-   Fig. 2: Data Browser Plot Toolbar
-   </p>
-</div>
-<p>
-Tool tips with brief explanations will appear if you hover the mouse pointer
-over a toolbar button for a few seconds. Explanation of toolbar buttons:
-<ul class="plain_icons">
-<li><img src="add_annotation.png" width=16 height=16/> Add <a href="#annotate">Annotation</a>.
-    An annotation 'snaps' to a trace, highlighting a selected sample on the trace.
-    Clicking the "Add Annotation" button opens a dialog to select the trace,
-    and optionally to adjust the text that will be displayed in the annotation.
-    By default, the text will show the name of the trace, the current position of the annotation
-    and the value of the trace at that position.
-    <br/>
-    Once an annotation has been added, it can be moved along the trace by using the mouse.
-<li><img src="edit_annotation.png" width=16 height=16/> Edit or Remove <a href="#annotate">Annotation</a>:
-    Opens a dialog that allows editing the text of an annotation or removing one or more annotations.
-</ul>
-</p>
-<p>
-<ul class="plain_icons">
-<li><img src="crosshair.png" width=16 height=16/> Cross-hair Cursor:
-    Enables a cross-hair cursor, highlighting the values of traces at the cursor position.
-<li><img src="stagger.png" width=16 height=16/> Stagger Axes:
-    Arranges the value axes such that the traces on different axes don't
-    overlap.
-<li><img src="zoom_in.png" width=16 height=16/> Zoom In ...:
-    Allows zooming 'in' to see more detail.<br>
-    Click into plot, hold mouse pointer to drag a 'rubberband' rectangle,
-    release to zoom into that area.<br>
-    Can also be used on a value axis or the time axis to select a start/end
-    range on that axis.
-<li><img src="zoom_out.png" width=16 height=16/> Zoom Out ...:
-    Click on the time axis or a value axes to zoom 'out', centered at the clicked point.
-    May also click inside the plot region to zoom 'out' all value axes and in time.
-<li><img src="pan.png" width=16 height=16/> Panning:
-    Click into plot or axes, hold and drag to desired position, release mouse button.
-<li><img src="pointer.png" width=16 height=16/> Pointer:
-    End zoom or pan operations.
-    Returns the mouse pointer to an inactive state so that clicking into the plot has no effect.
-</ul>
-</p>
-<p>
-<ul class="plain_icons">
-<li><img src="scroll_on.png" width=16 height=16/> Enable/Disable Scrolling:
-    Turns the strip-chart behavior of the Data Browser on or off:
-    Scroll such that the right end of the time axis is always "now", or
-    freeze the time axis.
-<li><img src="../icons/time_range.png" width=16 height=16/> Time Range:
-    Opens a dialog to configure the time range.
-    While the time range can be adjusted by zooming or panning the time axis with the mouse,
-    it is sometimes more convenient to enter a specific time range via this dialog.
-<li><img src="undo.png" width=16 height=16/> Undo:
-    Undo the last operation. Click again to undo the previous operation, the one
-    before that and so on.
-<li><img src="redo.png" width=16 height=16/> Redo:
-    Un-do the last undo, i.e. re-do.
-</ul>
-</p>
+    <h2>
+        <a name="perspective">Data Browser Perspective</a>
+    </h2>
+    <p>
+        In addition to the Browser plot window itself, you typically use the <a
+            href="#config">Properties Panel</a> to change colors etc., or the <a
+            href="#search">Search Panel</a> to locate the names of PVs with
+        historic data.
+    </p>
+    <p>
+        The Data Browser "Perspective" provides a suggested arrangement of
+        these additional panels around the plot window, similar to the
+        screenshot in Fig. 1 where the Properties and <a href="#export">Export</a>
+        panels are below the plot, and a Search panel is to its left.
+    </p>
+    <p>To switch to the Data Browser Perspective in case it is not
+        currently selected, right-click on the Data Browser plot and select
+        "Data Browser Perspective".</p>
+    <p>
+        While in the perspective, you can then close the search panel, move
+        the properties panel around as desired. If you later want to restore
+        the default arrangement, again right-click on the Data Browser plot
+        and select "Data Browser Perspective". Since it's already active, it
+        will ask if you want to <em>reset</em> the perspective to its original
+        state.
+    </p>
 
 
-<h2><a name=config>Properties Panel</a></h2>
-<p>
-The Properties panel allows configuration of the plot, its axes and traces.
-</p>
-<p>
-The same Properties panel is shared with other Data Browser plots or even
-other CSS tools. When you have multiple Data Browser plots open, the Properties
-panel will show the configuration of the plot that was last selected via a mouse
-click. When no Data Browser plot is the active window, the Properties panel
-will be empty or even show the configuration of a different CSS tool.
-</p>
-<p>
-You can force the Properties panel to stay attached to a specific Data Browser
-plot by selecting the "<img src="pin.gif" width=16 height=16/> pin" icon,
-or open more than one Properties panel (which you can then 'pin' to specific
-Data Browser plots) via the "<img src="view_menu.png" width=18 height=15/> drop-down"
-menu of the panel.
-</p>
-
-<h3>Subsection 'Traces'</h3>
-
-<div class='figure'>
-   <img src="prop_traces.png"/>
-   <p>
-   Fig. 3: Properties panel, subsection 'Traces'
-   </p>
-</div>
-
-<p>
-Configure the individual traces in the plot via the table of traces.
-Right-click in the table to open a context menu for adding PVs or Formulas,
-deleting selected items, or adding archive data sources to PVs.
-<ul>
-<li>Show: Allows to <i>temporarily</i> hide a trace from the plot.
-    If the trace is really not needed any more, consider deleting it.
-<li>Item: Edit the item's name. For a PV, this would be the control system
-    process variable. For a formula, this is the name under which the formula
-    can appear as an input to other formulas.
-<li>Display Name: The name shown in the plot legend.
-<li>Color: Click to select the trace color
-<li>Cursor Timestamp, Cursor Value: Display the time stamp and value
-    of the sample for this trace at the cursor position.
-<li>Scan Period: Control system PVs can be scanned at some periodic rate,
-    specified in second, to collect 'live' samples in addition to the data
-    received from an archive.
-    When entering 0 seconds, the Data Browser will show every update received
-    from the PV, and the PV's configuration decides when to send such updates.
-<li>Buffer Size: The Data Browser maintains a fixed-size ring buffer for
-    'live' PV samples. When reaching the end of the ring buffer, older samples
-    are deleted to prevent running out of memory.
-    You can configure the ring buffer size for each trace.
-<li>Width: The line widths of the trace in the plot. Also used for the size of markers. 
-<li>Axis: Click to select the axis on which to plot the trace.
-<li>Trace Type: Click to select how the trace should be displayed: Line, markers like "Square" etc.
-    The size of the lines respectively markers is controlled by the "Width".
-<li>Request: Click to select 'Optimized' vs. 'Raw Data'.
-<li>Index: Index of an element in an array (waveform record). Change this index
-    to see trend of a specified element in an array. The index is zero-based numbering.
-    The index for the first element is 0, the index for the second element is 1, ...   
-    If the index is out of range of the array, the corresponding value will be plotted as
-    NaN which shows a marker on the bottom of the plot.
-</ul>
-</p>
-
-<h3>Optimized vs. Raw Data</h3>
-
-<div class='figure'>
-   <img src="optimized.png"/>
-   <p>
-   Fig. 4a: Traces with 'Optimized' Requests.
-   </p>
-</div>
-
-<p>
-With 'Optimized' requests, the Data Browser requests historic data as a reduced
-(optimized) set of min/max/average samples.
-When using 'Area' traces as shown in Fig. 4a, the average values are plotted
-as a line, and the min/max outline is displayed as a light-colored area.
-This not only reduces the amount of data compared to plotting every single
-raw sample from the archive. In addition it makes it obvious if a value
-was fairly stable over time, or if there was a lot of movement in the data
-as around 06:00 in Fig. 4a.
-</p>
-<p>
-The number of requested min/max/average samples is configurable in the
-<a href="#preferences">Preferences</a>. When there are less 'raw' data points
-than requested min/max/average samples, the 'Optimized' algorithm falls back
-to returning the raw data, meaning:
-When you zoom into the data far enough, you will eventually get raw data.
-</p>
-
-<div class='figure'>
-   <img src="raw.png"/>
-   <p>
-   Fig. 4b: Traces switched to 'Raw' Request.
-   </p>
-</div>
-
-<p>
-When switching to 'Raw Data' requests as in Fig. 4b, each original sample is
-requested from the history. Not only is this usually a larger amount of samples, taking longer
-to receive and then to plot. It also uses more memory, and when you try to
-look at raw data for a long time range your computer will eventually ran out
-of memory.
-The 'Raw Data' requests should therefore only be used when necessary because
-of shortcomings in the 'Optimized' algorithm.
-</p>
+    <h2>
+        <a name="toolbar">Plot Toolbar</a>
+    </h2>
+    <p>The toolbar is displayed on top of a Data Browser plot. If it is
+        not visible, right-click on the plot to open the context menu, then
+        select "Show Toolbar".</p>
+    <div class='figure'>
+        <img src="toolbar.png" width="365" height="28" />
+        <p>Fig. 2: Data Browser Plot Toolbar</p>
+    </div>
+    <p>Tool tips with brief explanations will appear if you hover the
+        mouse pointer over a toolbar button for a few seconds. Explanation of
+        toolbar buttons:</p>
+    <ul class="plain_icons">
+        <li><img src="add_annotation.png" width="16" height="16" /> Add
+            <a href="#annotate">Annotation</a>. An annotation 'snaps' to a trace,
+            highlighting a selected sample on the trace. Clicking the "Add
+            Annotation" button opens a dialog to select the trace, and optionally
+            to adjust the text that will be displayed in the annotation. By
+            default, the text will show the name of the trace, the current
+            position of the annotation and the value of the trace at that
+            position. <br /> Once an annotation has been added, it can be moved
+            along the trace by using the mouse.</li>
+        <li><img src="edit_annotation.png" width="16" height="16" />
+            Edit or Remove <a href="#annotate">Annotation</a>: Opens a dialog
+            that allows editing the text of an annotation or removing one or more
+            annotations.</li>
+    </ul>
+    <ul class="plain_icons">
+        <li><img src="crosshair.png" width="16" height="16" />
+            Cross-hair Cursor: Enables a cross-hair cursor, highlighting the
+            values of traces at the cursor position.</li>
+        <li><img src="stagger.png" width="16" height="16" /> Stagger
+            Axes: Arranges the value axes such that the traces on different axes
+            don't overlap.</li>
+        <li><img src="zoom_in.png" width="16" height="16" /> Zoom In
+            ...: Allows zooming 'in' to see more detail.<br> Click into
+            plot, hold mouse pointer to drag a 'rubberband' rectangle, release to
+            zoom into that area.<br> Can also be used on a value axis or the
+            time axis to select a start/end range on that axis.</li>
+        <li><img src="zoom_out.png" width="16" height="16" /> Zoom Out
+            ...: Click on the time axis or a value axes to zoom 'out', centered
+            at the clicked point. May also click inside the plot region to zoom
+            'out' all value axes and in time.</li>
+        <li><img src="pan.png" width="16" height="16" /> Panning: Click
+            into plot or axes, hold and drag to desired position, release mouse
+            button.</li>
+        <li><img src="pointer.png" width="16" height="16" /> Pointer:
+            End zoom or pan operations. Returns the mouse pointer to an inactive
+            state so that clicking into the plot has no effect.</li>
+    </ul>
+    <ul class="plain_icons">
+        <li><img src="scroll_on.png" width="16" height="16" />
+            Enable/Disable Scrolling: Turns the strip-chart behavior of the Data
+            Browser on or off: Scroll such that the right end of the time axis is
+            always "now", or freeze the time axis.</li>
+        <li><img src="../icons/time_range.png" width="16" height="16" />
+            Time Range: Opens a dialog to configure the time range. While the
+            time range can be adjusted by zooming or panning the time axis with
+            the mouse, it is sometimes more convenient to enter a specific time
+            range via this dialog.</li>
+        <li><img src="undo.png" width="16" height="16" /> Undo: Undo the
+            last operation. Click again to undo the previous operation, the one
+            before that and so on.</li>
+        <li><img src="redo.png" width="16" height="16" /> Redo: Un-do
+            the last undo, i.e. re-do.</li>
+    </ul>
 
 
-<h3>Stair-Step vs. direct Lines</h3>
+    <h2>
+        <a name="config">Properties Panel</a>
+    </h2>
+    <p>The Properties panel allows configuration of the plot, its axes
+        and traces.</p>
+    <p>The same Properties panel is shared with other Data Browser
+        plots or even other CSS tools. When you have multiple Data Browser
+        plots open, the Properties panel will show the configuration of the
+        plot that was last selected via a mouse click. When no Data Browser
+        plot is the active window, the Properties panel will be empty or even
+        show the configuration of a different CSS tool.</p>
+    <p>
+        You can force the Properties panel to stay attached to a specific Data
+        Browser plot by selecting the "<img src="pin.gif" width="16"
+            height="16" /> pin" icon, or open more than one Properties panel
+        (which you can then 'pin' to specific Data Browser plots) via the "<img
+            src="view_menu.png" width="18" height="15" /> drop-down" menu of the
+        panel.
+    </p>
 
-<p>
-Ideally, control system data is only updated when it changes by a significant amount.
-EPICS records actually offer separate update thresholds for live and archived data,
-so that live displays can receive updates for small changes at the noise level of
-a signal, while historic data is only written for changes well above the noise level.
-</p>
-<p>
-When the Data Browser receives either live of historic samples, we assume that those
-represent significant changes in the value, but cannot know how the actual signal behaved
-between those updates.
-</p>
+    <h3>Subsection 'Traces'</h3>
 
-<div class='figure'>
-   <table>
-   <tr> 
-      <td><img src="stair.png"/></td>
-      <td><img src="direct.png"/></td>
-   </tr>
-   </table>
-   <p>
-   Fig. 5: Stair-step (left) vs. direct lines (right) for similar samples.
-   </p>
-</div>
+    <div class='figure'>
+        <img src="prop_traces.png" />
+        <p>Fig. 3: Properties panel, subsection 'Traces'</p>
+    </div>
 
+    <p>Configure the individual traces in the plot via the table of
+        traces. Right-click in the table to open a context menu for adding PVs
+        or Formulas, deleting selected items, or adding archive data sources
+        to PVs.</p>
+    <ul>
+        <li>Show: Allows to <i>temporarily</i> hide a trace from the
+            plot. If the trace is really not needed any more, consider deleting
+            it.
+        </li>
+        <li>Item: Edit the item's name. For a PV, this would be the
+            control system process variable. For a formula, this is the name
+            under which the formula can appear as an input to other formulas.</li>
+        <li>Display Name: The name shown in the plot legend.</li>
+        <li>Color: Click to select the trace color</li>
+        <li>Cursor Timestamp, Cursor Value: Display the time stamp and
+            value of the sample for this trace at the cursor position.</li>
+        <li>Scan Period: Control system PVs can be scanned at some
+            periodic rate, specified in second, to collect 'live' samples in
+            addition to the data received from an archive. When entering 0
+            seconds, the Data Browser will show every update received from the
+            PV, and the PV's configuration decides when to send such updates.</li>
+        <li>Buffer Size: The Data Browser maintains a fixed-size ring
+            buffer for 'live' PV samples. When reaching the end of the ring
+            buffer, older samples are deleted to prevent running out of memory.
+            You can configure the ring buffer size for each trace.</li>
+        <li>Width: The line widths of the trace in the plot. Also used
+            for the size of markers.</li>
+        <li>Axis: Click to select the axis on which to plot the trace.</li>
+        <li>Trace Type: Click to select how the trace should be
+            displayed: Line, markers like "Square" etc. The size of the lines
+            respectively markers is controlled by the "Width".</li>
+        <li>Request: Click to select 'Optimized' vs. 'Raw Data'.</li>
+        <li>Index: Index of an element in an array (waveform record).
+            Change this index to see trend of a specified element in an array.
+            The index is zero-based numbering. The index for the first element is
+            0, the index for the second element is 1, ... If the index is out of
+            range of the array, the corresponding value will be plotted as NaN
+            which shows a marker on the bottom of the plot.</li>
+    </ul>
 
-<p>
-The "Area" and "Single Line" Trace Types use a stair-step type of line that holds the
-value of the last sample until a new sample arrives. This is meant to indicate our assumption
-that the signal has not changed until we receive a new sample.
-</p>
-<p>
-The alternate "Area (direct)" and "Single Line (direct)" Trace Types can be used to obtain
-a direct line between samples, suggesting a linear change of the process variable between
-known samples.
-</p>
+    <h3>Optimized vs. Raw Data</h3>
 
+    <div class='figure'>
+        <img src="optimized.png" />
+        <p>Fig. 4a: Traces with 'Optimized' Requests.</p>
+    </div>
 
-<h3>Subsection 'Time Axis'</h3>
-<p>
-Configure the start and end time of the time (horizontal) axis.
-</p>
+    <p>With 'Optimized' requests, the Data Browser requests historic
+        data as a reduced (optimized) set of min/max/average samples. When
+        using 'Area' traces as shown in Fig. 4a, the average values are
+        plotted as a line, and the min/max outline is displayed as a
+        light-colored area. This not only reduces the amount of data compared
+        to plotting every single raw sample from the archive. In addition it
+        makes it obvious if a value was fairly stable over time, or if there
+        was a lot of movement in the data as around 06:00 in Fig. 4a.</p>
+    <p>
+        The number of requested min/max/average samples is configurable in the
+        <a href="#preferences">Preferences</a>. When there are less 'raw' data
+        points than requested min/max/average samples, the 'Optimized'
+        algorithm falls back to returning the raw data, meaning: When you zoom
+        into the data far enough, you will eventually get raw data.
+    </p>
 
-<h3>Subsection 'Value Axes'</h3>
-<p>
-Add/remove value ('Y', vertical) axes, change their label or color.
-</p>
+    <div class='figure'>
+        <img src="raw.png" />
+        <p>Fig. 4b: Traces switched to 'Raw' Request.</p>
+    </div>
 
-<p>
-Allows enabling 'Auto-Scale', causing an axis to automatically adjust its range to match
-the data.
-Note that this overrides manual zoom or pan operations on this axis.
-</p>
-
-
-<h3>Subsection 'Misc.'</h3>
-<p>
-General plot settings: Background color, refresh rate.
-</p>
-<ul>
-<li>Plot redraw period [seconds]:
-    Configures how often the plot is updated to reflect changes of the data.
-    Longer periods can lower CPU usage.
-<li>Scroll Step [seconds]:
-    When the plot is scolling, this configures how often respectively in which steps
-    the plot is moved.
-    For example, a scroll step of 10 seconds will result in the plot moving 'left' every
-    10 seconds.
-<li>Save Changes:
-    Fundamentally, each time you zoom into the plot, adjust the time axis, this changes
-    the configuration of the plot, and you will be asked if these changes should be saved
-    when closing the plot.
-    If you prepare *.plt configurations, it may be more convenient to open them, then
-    zoom/pan around to inspect some detail, and finally close the plot without saving
-    these adjustments because they are inconsequential.
-    When "Save Changes" is de-selected, users can simply close the plot at any time.
-    If you still want to save changes, use File/Save As to save the settings into a new
-    or even the original *.plt file.
-<li>
-</ul>
-
-
-<h2><a name=annotate>Annotations</a></h2>
-<p>
-The <a href="#toolbar">Toolbar</a> contains buttons to 
-<img src="add_annotation.png" width=16 height=16/> add and
-<img src="edit_annotation.png" width=16 height=16/> edit or remove Annotations.
-</p>
-<p>
-When you <img src="add_annotation.png" width=16 height=16/> add an Annotation,
-you select to which trace it should "snap".
-You can enter an arbitrary annotation text ("Content").
-Within that text, the placeholder "{0}"  will be replaced with the name of the trace.
-Similarly, the placeholder "{1}" is replaced with the position (time) of the annotation
-and "{2}" with the value of the trace at the location of the annotation.
-</p>
-<p>
-Move the annotation around the plot by dragging its reference point with the mouse
-along the trace.
-Note that the reference point is comparably small.
-When selecting the plain <img src="pointer.png" width=16 height=16/> pointer in the toolbar,
-it is easier to move annotations because otherwise each mouse click that misses the
-reference point might start a zoom or pan operation, depending on what is enabled in the toolbar.
-</p>
-<p>
-In addition to the reference point you can also move the content of an annotation by dragging it
-around the reference point.
-</p>
-
-<img src="annotation.png" width=275 height=221/>
-
-<p>
-To edit the content of an annotation or to remove it,
-click <img src="edit_annotation.png" width=16 height=16/> in the toolbar.
-</p>
+    <p>When switching to 'Raw Data' requests as in Fig. 4b, each
+        original sample is requested from the history. Not only is this
+        usually a larger amount of samples, taking longer to receive and then
+        to plot. It also uses more memory, and when you try to look at raw
+        data for a long time range your computer will eventually ran out of
+        memory. The 'Raw Data' requests should therefore only be used when
+        necessary because of shortcomings in the 'Optimized' algorithm.</p>
 
 
-<h2><a name=search>Archive Search Panel</a></h2>
-<p>
-The Archive Search Panel is part of the default
-<a href="#perspective">Perspective</a>. If you cannot find it,
-try to reset the perspective, or open a new one by right-clicking
-into the plot and selecting "Open Archive Search Panel".
-</p>
-<p>
-To locate Process Variable names (PVs) in an archive:
-</p>
-<ol>
-<li>Optional: Select an archive URL other than the default.
-<li>Optional: If the archive has more than one sub-archive, select one or more
-    sub-archive to search.
-<li>Enter PV name pattern, see details below.
-<li>Press "Search".
-</ol>
-<p>
-To show data for the resulting PVs, either right-click on PVs of interest
-and select "CSS/Data Browser" to open a <i>new</i> Data Browser Plot for them,
-or drag/drop the PVs from the search result table into an existing Data Browser
-Plot. 
-</p>
+    <h3>Stair-Step vs. direct Lines</h3>
 
-<h3>Simple Pattern</h3>
-<p>
-By default, PV name patterns can contain a question mark '?' as a place-holder
-for any single character or an asterisk '*' in place of any sequence of characters.
-</p>
+    <p>Ideally, control system data is only updated when it changes by
+        a significant amount. EPICS records actually offer separate update
+        thresholds for live and archived data, so that live displays can
+        receive updates for small changes at the noise level of a signal,
+        while historic data is only written for changes well above the noise
+        level.</p>
+    <p>When the Data Browser receives either live of historic samples,
+        we assume that those represent significant changes in the value, but
+        cannot know how the actual signal behaved between those updates.</p>
 
-<h3>Regular Expression Pattern</h3>
-<p>
-When enabling "Reg.Exp." pattern search via the corresponding check box,
-a more powerful but also slower regular expression can be used:
-</p>
-<p>
-<TABLE BORDER=0>
-<TR BGCOLOR=#FFCC66><TH>Reg.Exp..</TH><TH>Meaning</TH></TR>
-<TR><TD>.</TD><TD>Any Single Character</TD></TR>
-<TR BGCOLOR=#DFDFFF><TD>.*</TD><TD>Zero or More Characters</TD></TR>
-<TR><TD>a?</TD><TD>Single 'a' or no 'a'</TD></TR>
-<TR BGCOLOR=#DFDFFF><TD>a*</TD><TD>Zero or more 'a'</TD></TR>
-<TR><TD>a+</TD><TD>One or more 'a'</TD></TR>
-<TR BGCOLOR=#DFDFFF><TD>.+</TD><TD>One or more arb. characters</TD></TR>
-<TR><TD>a|b</TD><TD>Either single 'a' or 'b'</TD></TR>
-<TR BGCOLOR=#DFDFFF><TD>[0-9]</TD><TD>'0' or '1' or ... or '9'</TD></TR>
-<TR><TD>()</TD><TD>grouping of subexpressions</TD></TR>
-<TR BGCOLOR=#DFDFFF><TD>Temp</TD><TD>Any Channel containing 'Temp'</TD></TR>
-<TR><TD>Temp$</TD><TD>Any Channel <I>ending</I> in 'Temp'</TD></TR>
-<TR BGCOLOR=#DFDFFF><TD>^RFQHR</TD><TD>Any Channel <I>starting</I> with 'RFQHR'</TD></TR>
-<TR><TD>Tin_[0-9]+_sig$</TD><TD>Channels ending in 'Tin_&lt;NUMBER&gt;_sig'</TD></TR>
-<TR BGCOLOR=#DFDFFF><TD>^XYZSys_Temp[2-3]$</TD><TD>'XYZSys_Temp2' or 'XYZSys_Temp3' </TD></TR>
-<TR><TD>Pwr_(in)|(out)</TD><TD>Channels containing 'Pwr_in' or  'Pwr_out'</TD></TR>
-</TABLE>
-</p>
+    <div class='figure'>
+        <table>
+            <tr>
+                <td><img src="stair.png" /></td>
+                <td><img src="direct.png" /></td>
+            </tr>
+        </table>
+        <p>Fig. 5: Stair-step (left) vs. direct lines (right) for similar
+            samples.</p>
+    </div>
 
 
-<h2><a name=export>Data Export</a></h2>
-<p>
-Use the "Export Samples" panel to write data into files suitable for spreadsheet
-programs or Matlab.
-</p>
+    <p>The "Area" and "Single Line" Trace Types use a stair-step type
+        of line that holds the value of the last sample until a new sample
+        arrives. This is meant to indicate our assumption that the signal has
+        not changed until we receive a new sample.</p>
+    <p>The alternate "Area (direct)" and "Single Line (direct)" Trace
+        Types can be used to obtain a direct line between samples, suggesting
+        a linear change of the process variable between known samples.</p>
 
-<h3>Time Range</h3>
-<p>
-By default, the export will use the time range from the plot, but 
-you can export data for a different time range.
-</p>
 
-<h3>Source Options</h3>
-<p>
-By default, the export will use the time range from the plot but fetch raw data from
-the archive, not the optimized, reduced min/max/average data that is displayed in the plot. 
-You can modify the time range of the export to differ from the range of the plot, and also
-select to export either the exact data that is displayed in the plot, or request optimized
-data with a different number of "bins" from the archive.
-</p>
+    <h3>Subsection 'Time Axis'</h3>
+    <p>Configure the start and end time of the time (horizontal) axis.
+    </p>
 
-<ul>
-<li>"Plot":
-    The exact samples currently displayed in the plot
-    will be exported.
-</li>
-<li>"Raw Archived Data":
-    The exported data will contain data that is requested from
-    the archive without modifications.
-</li>
-<li>"Optimized Archived Data":
-    To reduce the number of exported samples, optimized data
-    is requested from the archive.
-    You specify the number of desired samples, and the
-    export will then request roughly this number of averaged samples
-    from the archive data source.
-    <br/>
-    For example, when requesting 800 optimized samples,
-    the start..end time range is split into 800 "bins".
-    The the minimum, maximum and average value
-    of the raw samples within each bin is then exported.
-</li>
-<li>"Linear Interpolation":
-    As an alternative way to reduce the number of exported samples,
-    the exported samples are computed via linear interpolation
-    from the raw data.
-    You specify the interpolation interval in hours, minutes and seconds,
-    for example 00:10:00 to obtain one sample every 10 minutes.
-</li>
-</ul>
+    <h3>Subsection 'Value Axes'</h3>
+    <p>Add/remove value ('Y', vertical) axes, change their label or
+        color.</p>
 
-<h3>Format Options</h3>
-<p>
-The format of the exported file defaults to a spreadsheet suitable for import into
-most spreadsheet programs.
-You can modify these settings:
-</p>
-<ul>
-<li>"Tabular": Instead of a table that lists the samples for all channels, you can
-               export the samples for each channel separately.
-</li>
-<li>".. with error columns": The min...max range of optimzed data is by
-              default export as "error" columns, suitable for an error-bar display.
-</li>
-<li>".. with Severity/Status": The Severity and Status of each sample is by
-              default exported, but you can omit it if not needed.
-</li>
-<li>"Default format": The number of decimal digits will be obtained from the data source.
-</li>
-<li>"Decimal format": You specify the number of decimal digits.
-</li>
-<li>"Exponential notation": Use exponential notation, where you again specify the number
-              of decimal digits.
-</li>
-</ul>
+    <p>Allows enabling 'Auto-Scale', causing an axis to automatically
+        adjust its range to match the data. Note that this overrides manual
+        zoom or pan operations on this axis.</p>
 
-<h3>Excel Spreadsheets</h3>
-<p>
-The exported data files are in a text format with TAB-delimited columns
-suitable for import into spreadsheet programs like Microsoft Excel.
-</p>
-<p>
-Assume you chose a filename of "test.dat" on your Desktop, follow these
-steps for import into Excel:
-<ol>
-<li>In Excel, use File/Open to open the file "test.dat".<br>
-    You might have to select "Files of type: All Files (*.*)"
-    in the file "Open" dialog to do this.
-<li>A "Text Import Wizard" should appear, and the default settings
-    should already be set to
-   <ul>
-   <li>"Delimited - Characters such as ... tabs ..."
-   <li>"Delimiters: Tab"
-   </ul>
-<li>Excel will default to a less useful format for the first column,
-    the "Time" column, and only show time down to minutes, omitting the
-    seconds or microseconds.<br>
-    Fix this by clicking on the "A" table header,
-    i.e. selecting the whole first column; right-click to get
-    the "Format Cells..." dialog, and enter a "Custom" format:
-    <pre>  m/d/yy h:mm:ss.000</pre>
-</ol>
-</p>
-<p>
-When performing computations on the data, values marked "#N/A"
-which have non numerical value because they represent a status or error
-should be ignored by Excel.
-</p>
-<p>
-For plots, the "X/Y scatter" plot type using time as the X
-axis and the value column for the Y axis tends to work best.
-</p>
-<p>
-Note that Excel is limited to about 65000 lines. If your data
-file includes more lines, those will be lost in the import.
-You can work around this by exporting a smaller time range
-into separate files, or by exporting averaged data.
-</p>
-<p>
-The value columns for averaged data will contain text like
-"5 [0 ... 10]" to indicate that the average value for that time
-was 5, with a minimum/maximum range of 0 to 10.
-To perform computations in excel, it might be useful to
-select the column and perform a text replacement of
-"[*]" with "" (nothing) to delete the min/max info.
-</p>
 
-<h3>OpenOffice.org/LibreOffice Calc (Spreadsheets)</h3>
-<p>
-As long as the exported data file has a ".csv" suffix,
-OpenOffice.org/LibreOffice should open the file with an "import" dialog
-similar to MS Excel, where you select "tab" delimited columns
-as explained above.
-</p>
-<p>
-File names ending in ".dat", ".txt" etc. might only
-open in the OpenOffice.org/LibreOffice Writer (word processor), so you have
-to use the correct file suffix.
-</p>
+    <h3>Subsection 'Misc.'</h3>
+    <p>General plot settings: Background color, refresh rate.</p>
+    <ul>
+        <li>Plot redraw period [seconds]: Configures how often the plot
+            is updated to reflect changes of the data. Longer periods can lower
+            CPU usage.</li>
+        <li>Scroll Step [seconds]: When the plot is scolling, this
+            configures how often respectively in which steps the plot is moved.
+            For example, a scroll step of 10 seconds will result in the plot
+            moving 'left' every 10 seconds.</li>
+        <li>Save Changes: Fundamentally, each time you zoom into the
+            plot, adjust the time axis, this changes the configuration of the
+            plot, and you will be asked if these changes should be saved when
+            closing the plot. If you prepare *.plt configurations, it may be more
+            convenient to open them, then zoom/pan around to inspect some detail,
+            and finally close the plot without saving these adjustments because
+            they are inconsequential. When "Save Changes" is de-selected, users
+            can simply close the plot at any time. If you still want to save
+            changes, use File/Save As to save the settings into a new or even the
+            original *.plt file.</li>
+    </ul>
 
-<h3>Matlab</h3>
-<p>
-The Matlab export can use two different file formats:
-</p>
 
-<ul>
-<li>To create binary Matlab data files, use a file name ending in ".mat".</li>
-<li>Matlab text files are created when the file name ends in ".m".</li>
-</ul>
+    <h2>
+        <a name="annotate">Annotations</a>
+    </h2>
+    <p>
+        The <a href="#toolbar">Toolbar</a> contains buttons to <img
+            src="add_annotation.png" width="16" height="16" /> add and <img
+            src="edit_annotation.png" width="16" height="16" /> edit or remove
+        Annotations.
+    </p>
+    <p>
+        When you <img src="add_annotation.png" width="16" height="16" /> add
+        an Annotation, you select to which trace it should "snap". You can
+        enter an arbitrary annotation text ("Content"). Within that text, the
+        placeholder "{0}" will be replaced with the name of the trace.
+        Similarly, the placeholder "{1}" is replaced with the position (time)
+        of the annotation and "{2}" with the value of the trace at the
+        location of the annotation.
+    </p>
+    <p>
+        Move the annotation around the plot by dragging its reference point
+        with the mouse along the trace. Note that the reference point is
+        comparably small. When selecting the plain <img src="pointer.png"
+            width="16" height="16" /> pointer in the toolbar, it is easier to
+        move annotations because otherwise each mouse click that misses the
+        reference point might start a zoom or pan operation, depending on what
+        is enabled in the toolbar.
+    </p>
+    <p>In addition to the reference point you can also move the content
+        of an annotation by dragging it around the reference point.</p>
 
-<h4>Binary Matlab .mat Files</h4>
+    <img src="annotation.png" width="275" height="221" />
 
-<p>
-The binary data file like "example.mat" is suitable for loading into Matlab 5 and newer like this:
-</p>
-<pre>
+    <p>
+        To edit the content of an annotation or to remove it, click <img
+            src="edit_annotation.png" width="16" height="16" /> in the toolbar.
+    </p>
+
+
+    <h2>
+        <a name="search">Archive Search Panel</a>
+    </h2>
+    <p>
+        The Archive Search Panel is part of the default <a href="#perspective">Perspective</a>.
+        If you cannot find it, try to reset the perspective, or open a new one
+        by right-clicking into the plot and selecting "Open Archive Search
+        Panel".
+    </p>
+    <p>To locate Process Variable names (PVs) in an archive:</p>
+    <ol>
+        <li>Optional: Select an archive URL other than the default.</li>
+        <li>Optional: If the archive has more than one sub-archive,
+            select one or more sub-archive to search.</li>
+        <li>Enter PV name pattern, see details below.</li>
+        <li>Press "Search".</li>
+    </ol>
+    <p>
+        To show data for the resulting PVs, either right-click on PVs of
+        interest and select "CSS/Data Browser" to open a <i>new</i> Data
+        Browser Plot for them, or drag/drop the PVs from the search result
+        table into an existing Data Browser Plot.
+    </p>
+
+    <h3>Simple Pattern</h3>
+    <p>By default, PV name patterns can contain a question mark '?' as
+        a place-holder for any single character or an asterisk '*' in place of
+        any sequence of characters.</p>
+
+    <h3>Regular Expression Pattern</h3>
+    <p>When enabling "Reg.Exp." pattern search via the corresponding
+        check box, a more powerful but also slower regular expression can be
+        used:</p>
+    <TABLE BORDER="0">
+        <TR BGCOLOR="#FFCC66">
+            <TH>Reg.Exp..</TH>
+            <TH>Meaning</TH>
+        </TR>
+        <TR>
+            <TD>.</TD>
+            <TD>Any Single Character</TD>
+        </TR>
+        <TR BGCOLOR="#DFDFFF">
+            <TD>.*</TD>
+            <TD>Zero or More Characters</TD>
+        </TR>
+        <TR>
+            <TD>a?</TD>
+            <TD>Single 'a' or no 'a'</TD>
+        </TR>
+        <TR BGCOLOR="#DFDFFF">
+            <TD>a*</TD>
+            <TD>Zero or more 'a'</TD>
+        </TR>
+        <TR>
+            <TD>a+</TD>
+            <TD>One or more 'a'</TD>
+        </TR>
+        <TR BGCOLOR="#DFDFFF">
+            <TD>.+</TD>
+            <TD>One or more arb. characters</TD>
+        </TR>
+        <TR>
+            <TD>a|b</TD>
+            <TD>Either single 'a' or 'b'</TD>
+        </TR>
+        <TR BGCOLOR="#DFDFFF">
+            <TD>[0-9]</TD>
+            <TD>'0' or '1' or ... or '9'</TD>
+        </TR>
+        <TR>
+            <TD>()</TD>
+            <TD>grouping of subexpressions</TD>
+        </TR>
+        <TR BGCOLOR="#DFDFFF">
+            <TD>Temp</TD>
+            <TD>Any Channel containing 'Temp'</TD>
+        </TR>
+        <TR>
+            <TD>Temp$</TD>
+            <TD>Any Channel <I>ending</I> in 'Temp'
+            </TD>
+        </TR>
+        <TR BGCOLOR="#DFDFFF">
+            <TD>^RFQHR</TD>
+            <TD>Any Channel <I>starting</I> with 'RFQHR'
+            </TD>
+        </TR>
+        <TR>
+            <TD>Tin_[0-9]+_sig$</TD>
+            <TD>Channels ending in 'Tin_&lt;NUMBER&gt;_sig'</TD>
+        </TR>
+        <TR BGCOLOR="#DFDFFF">
+            <TD>^XYZSys_Temp[2-3]$</TD>
+            <TD>'XYZSys_Temp2' or 'XYZSys_Temp3'</TD>
+        </TR>
+        <TR>
+            <TD>Pwr_(in)|(out)</TD>
+            <TD>Channels containing 'Pwr_in' or 'Pwr_out'</TD>
+        </TR>
+    </TABLE>
+
+
+    <h2>
+        <a name="export">Data Export</a>
+    </h2>
+    <p>Use the "Export Samples" panel to write data into files suitable
+        for spreadsheet programs or Matlab.</p>
+
+    <h3>Time Range</h3>
+    <p>By default, the export will use the time range from the plot,
+        but you can export data for a different time range.</p>
+
+    <h3>Source Options</h3>
+    <p>By default, the export will use the time range from the plot but
+        fetch raw data from the archive, not the optimized, reduced
+        min/max/average data that is displayed in the plot. You can modify the
+        time range of the export to differ from the range of the plot, and
+        also select to export either the exact data that is displayed in the
+        plot, or request optimized data with a different number of "bins" from
+        the archive.</p>
+
+    <ul>
+        <li>"Plot": The exact samples currently displayed in the plot
+            will be exported.</li>
+        <li>"Raw Archived Data": The exported data will contain data that
+            is requested from the archive without modifications.</li>
+        <li>"Optimized Archived Data": To reduce the number of exported
+            samples, optimized data is requested from the archive. You specify
+            the number of desired samples, and the export will then request
+            roughly this number of averaged samples from the archive data source.
+            <br /> For example, when requesting 800 optimized samples, the
+            start..end time range is split into 800 "bins". The the minimum,
+            maximum and average value of the raw samples within each bin is then
+            exported.
+        </li>
+        <li>"Linear Interpolation": As an alternative way to reduce the
+            number of exported samples, the exported samples are computed via
+            linear interpolation from the raw data. You specify the interpolation
+            interval in hours, minutes and seconds, for example 00:10:00 to
+            obtain one sample every 10 minutes.</li>
+    </ul>
+
+    <h3>Format Options</h3>
+    <p>The format of the exported file defaults to a spreadsheet
+        suitable for import into most spreadsheet programs. You can modify
+        these settings:</p>
+    <ul>
+        <li>"Tabular": Instead of a table that lists the samples for all
+            channels, you can export the samples for each channel separately.</li>
+        <li>".. with error columns": The min...max range of optimzed data
+            is by default export as "error" columns, suitable for an error-bar
+            display.</li>
+        <li>".. with Severity/Status": The Severity and Status of each
+            sample is by default exported, but you can omit it if not needed.</li>
+        <li>"Default format": The number of decimal digits will be
+            obtained from the data source.</li>
+        <li>"Decimal format": You specify the number of decimal digits.</li>
+        <li>"Exponential notation": Use exponential notation, where you
+            again specify the number of decimal digits.</li>
+    </ul>
+
+    <h3>Excel Spreadsheets</h3>
+    <p>The exported data files are in a text format with TAB-delimited
+        columns suitable for import into spreadsheet programs like Microsoft
+        Excel.</p>
+    <p>Assume you chose a filename of "test.dat" on your Desktop,
+        follow these steps for import into Excel:</p>
+    <ol>
+        <li>In Excel, use File/Open to open the file "test.dat".<br>
+            You might have to select "Files of type: All Files (*.*)" in the file
+            "Open" dialog to do this.
+        </li>
+        <li>A "Text Import Wizard" should appear, and the default
+            settings should already be set to
+            <ul>
+                <li>"Delimited - Characters such as ... tabs ..."</li>
+                <li>"Delimiters: Tab"</li>
+            </ul>
+        </li>
+        <li>Excel will default to a less useful format for the first
+            column, the "Time" column, and only show time down to minutes,
+            omitting the seconds or microseconds.<br> Fix this by clicking
+            on the "A" table header, i.e. selecting the whole first column;
+            right-click to get the "Format Cells..." dialog, and enter a "Custom"
+            format: <pre>  m/d/yy h:mm:ss.000</pre>
+        </li>
+    </ol>
+    <p>When performing computations on the data, values marked "#N/A"
+        which have non numerical value because they represent a status or
+        error should be ignored by Excel.</p>
+    <p>For plots, the "X/Y scatter" plot type using time as the X axis
+        and the value column for the Y axis tends to work best.</p>
+    <p>Note that Excel is limited to about 65000 lines. If your data
+        file includes more lines, those will be lost in the import. You can
+        work around this by exporting a smaller time range into separate
+        files, or by exporting averaged data.</p>
+    <p>The value columns for averaged data will contain text like "5 [0
+        ... 10]" to indicate that the average value for that time was 5, with
+        a minimum/maximum range of 0 to 10. To perform computations in excel,
+        it might be useful to select the column and perform a text replacement
+        of "[*]" with "" (nothing) to delete the min/max info.</p>
+
+    <h3>OpenOffice.org/LibreOffice Calc (Spreadsheets)</h3>
+    <p>As long as the exported data file has a ".csv" suffix,
+        OpenOffice.org/LibreOffice should open the file with an "import"
+        dialog similar to MS Excel, where you select "tab" delimited columns
+        as explained above.</p>
+    <p>File names ending in ".dat", ".txt" etc. might only open in the
+        OpenOffice.org/LibreOffice Writer (word processor), so you have to use
+        the correct file suffix.</p>
+
+    <h3>Matlab</h3>
+    <p>The Matlab export can use two different file formats:</p>
+
+    <ul>
+        <li>To create binary Matlab data files, use a file name ending in
+            ".mat".</li>
+        <li>Matlab text files are created when the file name ends in
+            ".m".</li>
+    </ul>
+
+    <h4>Binary Matlab .mat Files</h4>
+
+    <p>The binary data file like "example.mat" is suitable for loading
+        into Matlab 5 and newer like this:</p>
+    <pre>
 load /path/to/the/example.mat
 </pre>
 
-<p>
-In your Matlab workspace you should then find structures named "channel0", "channel1", ..., one
-for each channel that was loaded from the file. Each structure has the following elements:
-</p>
-<ul>
-<li><b>name</b>: Channel name</li>
-<li><b>time</b>: Time stamps</li>
-<li><b>value</b>: Numeric value</li>
-<li><b>severity</b>: Severity</li>
-</ul>
+    <p>In your Matlab workspace you should then find structures named
+        "channel0", "channel1", ..., one for each channel that was loaded from
+        the file. Each structure has the following elements:</p>
+    <ul>
+        <li><b>name</b>: Channel name</li>
+        <li><b>time</b>: Time stamps</li>
+        <li><b>value</b>: Numeric value</li>
+        <li><b>severity</b>: Severity</li>
+    </ul>
 
-<p>
-The time stamps are saved as text. In reasonable modern versions of Matlab you best convert them
-to Matlab serial date numbers, which you can then for example plot over time like this:
-</p>
-<pre>
+    <p>The time stamps are saved as text. In reasonable modern versions
+        of Matlab you best convert them to Matlab serial date numbers, which
+        you can then for example plot over time like this:</p>
+    <pre>
 channel0.date = datenum(channel0.time, 'yyyy/mm/dd HH:MM:SS.FFF');
 plot(channel0.date, channel0.value);
 datetick('x',0);
 title(channel0.name);
 </pre>
 
-<h4>Matlab .m Text Files</h4>
+    <h4>Matlab .m Text Files</h4>
 
-<p>The text file like "example.m" is suitable for loading (executing) in Matlab R2006b
-or newer, creating one 'timeseries' object per trace.
-To load it into Matlab, you execute the file like this:
-</p>
-<pre>cd /path/to/the/file
+    <p>The text file like "example.m" is suitable for loading
+        (executing) in Matlab R2006b or newer, creating one 'timeseries'
+        object per trace. To load it into Matlab, you execute the file like
+        this:</p>
+    <pre>cd /path/to/the/file
 example
 </pre>
-<p>Matlab will then execute the commands in the file which define the data in the Matlab
-workspace and also plot it.
-With Matlab releases older than R2006b you will have to edit the generated file 
-to suit your needs, for example use simply "plot(v);" to show the values.
-</p>
+    <p>Matlab will then execute the commands in the file which define
+        the data in the Matlab workspace and also plot it. With Matlab
+        releases older than R2006b you will have to edit the generated file to
+        suit your needs, for example use simply "plot(v);" to show the values.
+    </p>
 
 
-<h2><a name=import>Data Import</a></h2>
-<p>
-There is basic support for importing data from data files.
-The data file is fundamentally treated like as archive data source.
-The data file must reside in the workspace, i.e. it must be visible in the
-file Navigator.
-</p>
-<p>
-A channel based on a data file can be added in two ways:
-</p>
-<ul>
-<li>'Drag' the file into a plot, or</li>
-<li>Select 'Import' from the plot context menu.</li>
-</ul>
-<p>
-The data file must only contain data for a single channel.
-The lines of this data file must match the following format:
-<pre>
+    <h2>
+        <a name="import">Data Import</a>
+    </h2>
+    <p>There is basic support for importing data from data files. The
+        data file is fundamentally treated like as archive data source. The
+        data file must reside in the workspace, i.e. it must be visible in the
+        file Navigator.</p>
+    <p>A channel based on a data file can be added in two ways:</p>
+    <ul>
+        <li>'Drag' the file into a plot, or</li>
+        <li>Select 'Import' from the plot context menu.</li>
+    </ul>
+    <p>The data file must only contain data for a single channel. The
+        lines of this data file must match the following format:</p>
+    <pre>
 # YYYY-MM-DD HH:MM:SS.SSS   value
 2011-08-09 15:51:16.734     299.634000
 
@@ -696,93 +693,82 @@ The lines of this data file must match the following format:
 # YYYY/MM/DD HH:MM:SS.SSSSSSSSS   value
 2012/12/06 07:38:05.764764346     26.6504 OK      OK
 </pre>
-<p>
-The time stamp and value may be separated by spaces or tab characters.
-Lines that do not match this format are ignored.
-</p>
-<p>
-One example of a suitable data file is the format that results from 'exporting'
-data for a single channel. 
-</p>
-<p>
-When saving a *.plt file that includes channels with imported data,
-the name of the data file is stored, not the actual sample data.
-The next time such a plot is loaded, data will again be imported from the file.
-</p>
+    <p>The time stamp and value may be separated by spaces or tab
+        characters. Lines that do not match this format are ignored.</p>
+    <p>One example of a suitable data file is the format that results
+        from 'exporting' data for a single channel.</p>
+    <p>When saving a *.plt file that includes channels with imported
+        data, the name of the data file is stored, not the actual sample data.
+        The next time such a plot is loaded, data will again be imported from
+        the file.</p>
 
 
-<h2><a name=inspect>Inspect Samples</a></h2>
-<p>
-The "Inspect Samples" panel, accessible from the context menu of the plot,
-provides a tabular view of all samples in the Data Browser memory.
-It is mostly used for debugging.
-</p>
-<p>
-For performance reasons, the table does <u>not</u> update with each received
-sample. Instead, a manual update via the "Refresh" button is required to
-show newly received 'live' samples or to force an update of a table that
-appears inconsitent.
-</p>
+    <h2>
+        <a name="inspect">Inspect Samples</a>
+    </h2>
+    <p>The "Inspect Samples" panel, accessible from the context menu of
+        the plot, provides a tabular view of all samples in the Data Browser
+        memory. It is mostly used for debugging.</p>
+    <p>
+        For performance reasons, the table does <u>not</u> update with each
+        received sample. Instead, a manual update via the "Refresh" button is
+        required to show newly received 'live' samples or to force an update
+        of a table that appears inconsitent.
+    </p>
 
 
-<h2><a name=waveforms>Waveforms (Arrays)</a></h2>
-<p>
-Support for waveform (array) type channels is limited.
-The Data Browser will only display one array element of a waveform channel over time.
-By default this is the first array element of each waveform sample, array element zero.
-The array index can be changed via the "Index" 
-property of the channel in the <a href="#config">Properties Panel</a>.
-</p>
-<p>
-The context menu of the plot has an entry to open the "Inspect Waveform" view.
-It can display each waveform sample individually.
-</p>
-<p>
-The fundamental problem with waveform channels is that the channel data itself
-does not provide sufficient information:
-Is the array sample
-</p>
-<ul>
-<li>a readout of a fast device, where the time stamp identifies the time of the first
-    (or last) array element, and the other array elements were obtained at small, fixed
-    time intervals after (before) the sample's time stamp?
-    This type of waveform could be displayed in the main Data Browser plot over time,
-    but the time detail is not known from the channel data.
-</li>
-<li>a readout of for example a beam position monitor or histogram or
-    multi channel analyzer, where each array element represents the value
-    at a certain position, energy, ...?
-    To display this, one needs to know the "X Axis" information.
-</li>
-<li>other structured data that was encoded in a waveform,
-    because the underlying control system (EPICS Version 3)
-    does not support data types for images or structures?
-    To display this, the data encoding needs to be known. 
-</li>
-</ul>
+    <h2>
+        <a name="waveforms">Waveforms (Arrays)</a>
+    </h2>
+    <p>
+        Support for waveform (array) type channels is limited. The Data
+        Browser will only display one array element of a waveform channel over
+        time. By default this is the first array element of each waveform
+        sample, array element zero. The array index can be changed via the
+        "Index" property of the channel in the <a href="#config">Properties
+            Panel</a>.
+    </p>
+    <p>The context menu of the plot has an entry to open the "Inspect
+        Waveform" view. It can display each waveform sample individually.</p>
+    <p>The fundamental problem with waveform channels is that the
+        channel data itself does not provide sufficient information: Is the
+        array sample</p>
+    <ul>
+        <li>a readout of a fast device, where the time stamp identifies
+            the time of the first (or last) array element, and the other array
+            elements were obtained at small, fixed time intervals after (before)
+            the sample's time stamp? This type of waveform could be displayed in
+            the main Data Browser plot over time, but the time detail is not
+            known from the channel data.</li>
+        <li>a readout of for example a beam position monitor or histogram
+            or multi channel analyzer, where each array element represents the
+            value at a certain position, energy, ...? To display this, one needs
+            to know the "X Axis" information.</li>
+        <li>other structured data that was encoded in a waveform, because
+            the underlying control system (EPICS Version 3) does not support data
+            types for images or structures? To display this, the data encoding
+            needs to be known.</li>
+    </ul>
 
 
-<h2><a name=preferences>Preference Settings</a></h2>
-<p>
-Use the menu Edit/Preferences/CSS Applications/Trends/Data Browser
-to change various settings including the default time range
-of a new plot, the number of 'Plot Bins' used by the
-Optimized request type. 
-</p>
+    <h2>
+        <a name="preferences">Preference Settings</a>
+    </h2>
+    <p>Use the menu Edit/Preferences/CSS Applications/Trends/Data
+        Browser to change various settings including the default time range of
+        a new plot, the number of 'Plot Bins' used by the Optimized request
+        type.</p>
+
+    <h2>
+        Transition from older Data Browser <a name="transition"></a>
+    </h2>
+    <p>The Data Browser code has undergone several changes, but the
+        overall look and behavior remained similar. Older configuration files
+        should still be loaded, preserving their essential Axis, Trace and
+        Archive settings.</p>
 
 
-<a name=transition><h2>Transition from older Data Browser</a></h2>
-<p>
-The Data Browser code has undergone several changes, but the overall look
-and behavior remained similar.
-Older configuration files should still be loaded, preserving their essential
-Axis, Trace and Archive settings.
-</p>
-
-
-<address>
-Kay Kasemir, kasemirk@ornl.gov
-</address>
+    <address>Kay Kasemir, kasemirk@ornl.gov</address>
 
 </body>
 </html>

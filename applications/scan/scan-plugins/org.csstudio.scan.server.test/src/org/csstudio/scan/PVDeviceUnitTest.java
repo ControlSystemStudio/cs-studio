@@ -28,8 +28,8 @@ import org.csstudio.scan.device.PVDevice;
 import org.csstudio.vtype.pv.PVPool;
 import org.csstudio.vtype.pv.jca.JCA_PVFactory;
 import org.csstudio.vtype.pv.local.LocalPVFactory;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VType;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VType;
 import org.junit.Before;
 import org.junit.Test;
 

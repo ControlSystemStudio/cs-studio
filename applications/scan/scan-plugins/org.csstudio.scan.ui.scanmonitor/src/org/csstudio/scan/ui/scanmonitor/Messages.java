@@ -23,6 +23,7 @@ public class Messages extends NLS
     public static String MemInfoTT;
     public static String Name;
     public static String NameFmt;
+    public static String Next;
     public static String NoError;
     public static String NotConnected;
     public static String Pause;

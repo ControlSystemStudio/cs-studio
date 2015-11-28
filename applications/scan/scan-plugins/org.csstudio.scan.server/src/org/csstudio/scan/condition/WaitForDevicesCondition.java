@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import org.csstudio.scan.device.DeviceListener;
 public class WaitForDevicesCondition implements DeviceCondition, DeviceListener
 {
     final private Device[] devices;
-    private volatile boolean all_ready;
+    private boolean all_ready;
 
     /** Initialize
      *  @param devices Devices that all need to be 'ready'
@@ -46,7 +46,7 @@ public class WaitForDevicesCondition implements DeviceCondition, DeviceListener
         {
             all_ready = allReady(devices);
             while (! all_ready)
-            {   // Wait for update from device
+            {   // Wait for update from device or early completion
                 wait();
             }
         }
@@ -60,7 +60,8 @@ public class WaitForDevicesCondition implements DeviceCondition, DeviceListener
     {
         synchronized (this)
         {
-            all_ready = allReady(devices);
+            if (allReady(devices))
+                all_ready = true;
             // Notify execute() to check all devices again
             notifyAll();
         }
@@ -77,6 +78,17 @@ public class WaitForDevicesCondition implements DeviceCondition, DeviceListener
         return true;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public void complete()
+    {
+        synchronized (this)
+        {
+            all_ready = true;
+            // Notify await() so it can check again.
+            notifyAll();
+        }
+    }
 
     /** @return Debug representation */
     @Override

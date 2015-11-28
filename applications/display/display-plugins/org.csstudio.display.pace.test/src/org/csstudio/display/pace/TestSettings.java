@@ -7,14 +7,9 @@
  ******************************************************************************/
 package org.csstudio.display.pace;
 
-import java.io.InputStream;
-
-import org.diirt.datasource.CompositeDataSource;
-import org.diirt.datasource.CompositeDataSourceConfiguration;
-import org.diirt.datasource.PVManager;
-import org.diirt.datasource.loc.LocalDataSource;
-import org.diirt.support.ca.JCADataSource;
-import org.diirt.support.ca.JCADataSourceConfiguration;
+import org.csstudio.vtype.pv.PVPool;
+import org.csstudio.vtype.pv.jca.JCA_PVFactory;
+import org.csstudio.vtype.pv.local.LocalPVFactory;
 
 /** Settings for unit tests
  *
@@ -31,19 +26,15 @@ public class TestSettings
      *  and some also expect to actually connect to
      *  the PVs in there.
      */
-    final public static String TEST_CONFIG_FILE = "configFiles/rf_pwr_limits.pace";
+    final public static String TEST_CONFIG_FILE = "../org.csstudio.display.pace/configFiles/rf_pwr_limits.pace";
 
     public static void setup()
     {
         System.setProperty("gov.aps.jca.jni.JNIContext.addr_list", CA_ADDR_LIST);
         System.setProperty("com.cosylab.epics.caj.CAJContext.addr_list", CA_ADDR_LIST);
 
-        final CompositeDataSource sources = new CompositeDataSource();
-        sources.putDataSource("loc", new LocalDataSource());
-        JCADataSourceConfiguration jcaConf = new JCADataSourceConfiguration().read(TestSettings.class.getResourceAsStream("ca.xml"));
-        sources.putDataSource("ca", jcaConf.create());
-        CompositeDataSourceConfiguration conf = new CompositeDataSourceConfiguration(TestSettings.class.getResourceAsStream("datasource.xml"));
-        sources.setConfiguration(conf);
-        PVManager.setDefaultDataSource(sources);
+        PVPool.addPVFactory(new LocalPVFactory());
+        PVPool.addPVFactory(new JCA_PVFactory());
+        PVPool.setDefaultType(JCA_PVFactory.TYPE);
     }
 }

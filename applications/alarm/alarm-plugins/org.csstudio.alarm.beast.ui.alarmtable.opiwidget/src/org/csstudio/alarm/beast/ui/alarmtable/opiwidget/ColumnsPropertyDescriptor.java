@@ -21,7 +21,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 public class ColumnsPropertyDescriptor extends PropertyDescriptor {
 
     /**
-     * Creates an property descriptor with the given id and display name.
+     * Creates a property descriptor with the given id and display name.
      *
      * @param id the id of the property
      * @param displayName the display name of the property

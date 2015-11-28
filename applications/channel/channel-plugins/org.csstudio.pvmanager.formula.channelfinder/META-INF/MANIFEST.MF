@@ -6,9 +6,10 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.pvmanager.formula.channelfinder.Activator
 Bundle-Vendor: Kunal Shroff <shroffk@bnl.gov>
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.utility.pvmanager,
- org.csstudio.utility.pvmanager.extra,
  gov.bnl.channelfinder.api,
- com.google.guava,
- org.epics.vtype
+ com.google.guava
 Bundle-ActivationPolicy: lazy
+Import-Package: org.diirt.datasource;version="3.0.1",
+ org.diirt.datasource.formula;version="3.0.1",
+ org.diirt.service;version="3.0.1",
+ org.diirt.vtype

@@ -39,6 +39,8 @@ public class AlarmTableWidgetModel extends AbstractWidgetModel {
     static final String PROP_MAX_NUMBER_OF_ALARMS = "max_number_of_alarms";
     static final String PROP_ACK_TABLE_WEIGHT = "table_weight_acknowledge";
     static final String PROP_UNACK_TABLE_WEIGHT = "table_weight_unacknowledge";
+    static final String PROP_TABLE_HEADER_VISIBLE = "table_header_visible";
+    static final String PROP_COLUMNS_HEADERS_VISIBLE = "columns_headers_visible";
 
     /*
      * (non-Javadoc)
@@ -67,6 +69,10 @@ public class AlarmTableWidgetModel extends AbstractWidgetModel {
                 80));
         addProperty(new IntegerProperty(PROP_UNACK_TABLE_WEIGHT, Messages.UnAckTableWeight,
                 WidgetPropertyCategory.Display, 20));
+        addProperty(new BooleanProperty(PROP_TABLE_HEADER_VISIBLE, Messages.TableHeaderVisible,
+                WidgetPropertyCategory.Display, false));
+        addProperty(new BooleanProperty(PROP_COLUMNS_HEADERS_VISIBLE, Messages.ColumnsHeadersVisible,
+                WidgetPropertyCategory.Display, true));
     }
 
     /*
@@ -187,5 +193,21 @@ public class AlarmTableWidgetModel extends AbstractWidgetModel {
                 return;
             }
         }
+    }
+
+    /**
+     * @return true if the columns headers should be visible or false if hidden
+     */
+    public boolean isColumnsHeadersVisible() {
+        Boolean val = getCastedPropertyValue(PROP_COLUMNS_HEADERS_VISIBLE);
+        return val == null ? true : val;
+    }
+
+    /**
+     * @return true if the table header should be visible or false if hidden
+     */
+    public boolean isTableHeaderVisible() {
+        Boolean val = getCastedPropertyValue(PROP_TABLE_HEADER_VISIBLE);
+        return val == null ? true : val;
     }
 }

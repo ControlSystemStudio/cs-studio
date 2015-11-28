@@ -1,20 +1,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-	<title>Data Browser Changelog</title>
-	<link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"></link>
+    <title>Data Browser Changelog</title>
+    <link rel="stylesheet" href="PLUGINS_ROOT/PRODUCT_PLUGIN/book.css" type="text/css"></link>
 </head>
 <body>
 <h1>Data Browser Changelog</h1>
 
 <p>Version numbers in here refer to the plugin org.csstudio.trends.databrowser2.</p>
 
-<h2>Version 4.2.0 - 2015-08-04</h2>
+<h2>Version 4.2.0 - 2015-11-13</h2>
 <ul>
   <li>"Search" view closes underlying archive reader.</li>
   <li>RDB archive reader caches JDBC connection when fetching updates for multiple traces.</li>
   <li>Plot's "Zoom In" requires a rubberband rectangle of at least 20 pixels to avoid
       accidentally click-jerk-zooming into a few pixels.
+  </li>
+  <li>Fix erroneous gap in trace if 'Archive Off' was closely followed by an initial new sample,
+      then no changes for a while.
   </li>
 </ul>
 
@@ -39,7 +42,7 @@
   <li>Context menu action to save snapshot as file.</li>
   <li>Instead of waiting for next regular redraw, update plot right away
       when trace shown/hidden/removed/added, trace color or name changed,
-      axis name changed, axis left/right changed. 
+      axis name changed, axis left/right changed.
   </li>
   <li>Items can be moved up/down within list of traces.</li>
   <li>Plot has title.</li>
@@ -73,7 +76,7 @@ Replaced plot package, updated configuration save/load, fixing several bugs.
   <li>Cursor values determined in background thread via binary search (Not in UI thread, not via linear search. Also fixes #536).</li>
   <li>All configuration options now in 'Properties' view, no plot config that allows corrupting time axis settings.</li>
   <li>All configurable plot options now saved/restored (#428, #632).</li>
-  <li>Consistently persisting configuration of 'Model', instead of separating and then diverging the 'Model' and 'XYGraph' settings (#694, #755).</li>  
+  <li>Consistently persisting configuration of 'Model', instead of separating and then diverging the 'Model' and 'XYGraph' settings (#694, #755).</li>
   <li>Provide DataBrowserSchema.xsd for current *.plt file format.</li>
   <li>Using Java 8 'Instant' for all time operations.</li>
   <li>"Edit Items" dialog (for multiple items) has icon, consistent layout.</li>

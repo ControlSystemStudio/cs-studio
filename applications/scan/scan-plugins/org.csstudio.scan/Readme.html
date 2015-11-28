@@ -42,13 +42,13 @@ Adjust to look at other PVs, store the log in a specific folder etc.
 </p>
 
 <p>The ScanServer product can be run with command-line option
-<pre> 
+<pre>
    -console
-</pre> 
+</pre>
 or
-<pre> 
+<pre>
    -console 4884
-</pre> 
+</pre>
 for the (network) console. Type "help" in the console to see ScanServer commands.
 </p>
 
@@ -58,7 +58,7 @@ By default, the scan server REST interface uses port 4810.
 Use /etc/sysconfig/iptables to enable that port for TCP access.
 </p>
 
-<p>To access such a remote ScanServer, run clients with 
+<p>To access such a remote ScanServer, run clients with
 <pre>
   -DScanServerHost=... -DScanServerPort=4810
 </pre>
@@ -78,7 +78,7 @@ which includes the scan monitor as well as PyDev.
     and example scripts.
 </li>
 <li>To enable full PyDev use, open Edit/Preferences, PyDev.</li>
-<li>Under "Interactive Console", increase the 
+<li>Under "Interactive Console", increase the
     "Maximum connection attempts for initial communication"
     from its default of 50 to 200.
 </li>
@@ -134,7 +134,7 @@ from scan_client import *
 <li><p>A new PyDev console for Jython should appear in the Eclipse console view,
     executing the initial commands like "import sys".
     </p>
-    <p>If you get an error "Failed to read servers response: Connection	refused",
+    <p>If you get an error "Failed to read servers response: Connection refused",
     increase the "Maximum connection attempts for initial communication" setting
     mentioned in the previous section.
     </p>

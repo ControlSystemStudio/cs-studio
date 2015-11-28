@@ -10,5 +10,6 @@
   <modules>
   	<module>org.csstudio.diirt.util</module>  	
   	<module>org.csstudio.diirt.util.preferences</module>
+  	<module>org.csstudio.diirt.help</module>
   </modules>
 </project>
