@@ -15,7 +15,6 @@ import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.rap.core.security.SecurityService;
-import org.csstudio.utility.pvmanager.ConfigurationHelper;
 import org.csstudio.webopi.WebOPIConstants;
 import org.diirt.datasource.CompositeDataSource;
 import org.diirt.datasource.CompositeDataSourceConfiguration;

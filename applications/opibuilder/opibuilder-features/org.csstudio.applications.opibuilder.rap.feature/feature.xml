@@ -792,13 +792,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.e4.emf.xpath"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.emf.ecore"
          download-size="0"
          install-size="0"
