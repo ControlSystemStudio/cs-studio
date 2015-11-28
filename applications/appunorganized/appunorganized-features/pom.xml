@@ -10,9 +10,8 @@
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.email.feature</module>
-    <module>org.csstudio.pvmanager.ca.feature</module>
-    <module>org.csstudio.utilities.feature</module>
-    <module>org.csstudio.utilities.rap.feature</module>
+    <!--<module>org.csstudio.utilities.feature</module>-->
+    <!--<module>org.csstudio.utilities.rap.feature</module>-->
     <module>org.csstudio.utilities.debugging.feature</module>
     <module>org.eclipse.nebula.widgets.grid.feature</module>
   </modules>
