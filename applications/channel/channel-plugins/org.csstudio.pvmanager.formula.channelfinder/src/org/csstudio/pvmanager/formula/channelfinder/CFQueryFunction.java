@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
-import org.epics.pvmanager.WriteFunction;
-import org.epics.pvmanager.formula.StatefulFormulaFunction;
-import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.pvmanager.service.ServiceRegistry;
-import org.epics.vtype.VString;
-import org.epics.vtype.VTable;
+import org.diirt.datasource.WriteFunction;
+import org.diirt.datasource.formula.StatefulFormulaFunction;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceRegistry;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VTable;
 
 /**
  *
@@ -60,18 +61,18 @@ public class CFQueryFunction extends StatefulFormulaFunction {
         if (currentQuery == null || !((VString) args.get(0)).getValue().equals(currentQuery.getValue())) {
             currentQuery = (VString) args.get(0);
             serviceMethod = ServiceRegistry.getDefault().findServiceMethod("cf/find");
-            serviceMethod.executeMethod(Collections.<String, Object>singletonMap("query", currentQuery), new WriteFunction<Map<String, Object>>(){
+            serviceMethod.executeAsync(Collections.<String, Object>singletonMap("query", currentQuery), new Consumer<Map<String, Object>>(){
 
                 @Override
-                public void writeValue(Map<String, Object> newValue) {
+                public void accept(Map<String, Object> newValue) {
                     currentResult = (VTable) newValue.get("result");
                     currentException = null;
                 }
 
-            } , new WriteFunction<Exception>(){
+            } , new Consumer<Exception>(){
 
                 @Override
-                public void writeValue(Exception newValue) {
+                public void accept(Exception newValue) {
                     currentException = newValue;
                     currentResult = null;
                 }

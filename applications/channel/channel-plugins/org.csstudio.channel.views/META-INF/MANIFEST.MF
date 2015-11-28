@@ -13,10 +13,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.channelfinder;bundle-version="1.1.0",
  org.csstudio.utility.channel,
  org.csstudio.channel.widgets;bundle-version="1.0.0",
- org.csstudio.utility.pvmanager,
  org.csstudio.utility.pvmanager.ui;bundle-version="3.1.0",
  org.csstudio.utility.pvmanager.widgets;bundle-version="3.1.0",
- org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0",
  org.diirt.graphene;bundle-version="3.0.1"
 Bundle-ActivationPolicy: lazy
 Bundle-Description: Set of RCP views that expose the channel based widgets in org.csstudio.channel.widgets

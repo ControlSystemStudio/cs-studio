@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.NameDefinedCategory;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.swt.widgets.figures.LEDFigure;
@@ -24,18 +25,6 @@ import org.eclipse.swt.graphics.Color;
  */
 public class LEDModel extends AbstractBoolWidgetModel {
 
-
-    /** Generic category class. This could be used generally if the equivalent does not already exist. */
-    public class GenericCategory implements WidgetPropertyCategory {
-        public String label;
-        public GenericCategory(String label) {
-            this.label = label;
-        }
-        @Override
-        public String toString() {
-            return label;
-        }
-    }
 
     /** The ID of the effect 3D property. */
     public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
@@ -75,6 +64,14 @@ public class LEDModel extends AbstractBoolWidgetModel {
 
     public static final int MINIMUM_SIZE = 10;
 
+    /**
+     * Border around the bulb - this is drawn in addition to the 'widget border'
+     * set by the widget border style/color/width properties. For round LEDs this is a
+     * round border,
+     */
+    public static final String PROP_BULB_BORDER = "bulb_border"; //$NON-NLS-1$
+    /** Color of bulb border LEDs */
+    public static final String PROP_BULB_BORDER_COLOR = "bulb_border_color"; //$NON-NLS-1$
 
     public LEDModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
@@ -92,11 +89,11 @@ public class LEDModel extends AbstractBoolWidgetModel {
                 WidgetPropertyCategory.Display, false));
         setPropertyVisible(PROP_BOOL_LABEL_POS, false);
 
-        addProperty(new IntegerProperty(PROP_NSTATES,
-                "State Count", WidgetPropertyCategory.Behavior, 2, 2, LEDFigure.MAX_NSTATES));
+        addProperty(new IntegerProperty(PROP_NSTATES, "State Count",
+                WidgetPropertyCategory.Behavior, 2, 2, LEDFigure.MAX_NSTATES));
         setPropertyVisibleAndSavable(PROP_NSTATES, true, false);
 
-        WidgetPropertyCategory category = new GenericCategory("State Fallback");
+        WidgetPropertyCategory category = new NameDefinedCategory("State Fallback");
 
         addProperty(new StringProperty(PROP_STATE_FALLBACK_LABEL,
                 "Label", category, LEDFigure.DEFAULT_STATE_FALLBACK_LABAL));
@@ -106,9 +103,14 @@ public class LEDModel extends AbstractBoolWidgetModel {
                 "Color", category, LEDFigure.DEFAULT_STATE_FALLBACK_COLOR.getRGB()));
         setPropertyVisibleAndSavable(PROP_STATE_FALLBACK_COLOR, false, false);
 
+        addProperty(new IntegerProperty(PROP_BULB_BORDER, "Bulb border",
+                WidgetPropertyCategory.Display, LEDFigure.DEFAULT_BULB_BORDER_WIDTH));
+        addProperty(new ColorProperty(PROP_BULB_BORDER_COLOR, "Bulb border color",
+                WidgetPropertyCategory.Display, LEDFigure.DEFAULT_BULB_BORDER_COLOR.getRGB()));
+
         for(int state=0; state<LEDFigure.MAX_NSTATES; state++) {
 
-            category = new GenericCategory(String.format("State %02d", state+1));
+            category = new NameDefinedCategory(String.format("State %02d", state+1));
 
             addProperty(new StringProperty(String.format(PROP_STATE_LABEL, state),
                     "Label", category, LEDFigure.DEFAULT_STATE_LABELS[state]));
@@ -169,5 +171,13 @@ public class LEDModel extends AbstractBoolWidgetModel {
 
     public Color getStateFallbackColor() {
         return getSWTColorFromColorProperty(PROP_STATE_FALLBACK_COLOR);
+    }
+
+    public int getBulbBorderWidth() {
+        return (Integer) getProperty(PROP_BULB_BORDER).getPropertyValue();
+    }
+
+    public Color getBulbBorderColor() {
+        return getSWTColorFromColorProperty(PROP_BULB_BORDER_COLOR);
     }
 }

@@ -29,8 +29,8 @@ import org.csstudio.logbook.LogbookClient;
 import org.csstudio.logbook.Property;
 import org.csstudio.logbook.Tag;
 import org.csstudio.logbook.util.LogEntrySearchUtil;
-import org.epics.util.time.TimeInterval;
-import org.epics.util.time.TimeParser;
+import org.diirt.util.time.TimeInterval;
+import org.diirt.util.time.TimeParser;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
