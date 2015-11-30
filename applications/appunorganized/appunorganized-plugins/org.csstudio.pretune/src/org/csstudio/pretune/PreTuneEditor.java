@@ -3,27 +3,33 @@
  */
 package org.csstudio.pretune;
 
-import static org.epics.pvmanager.ExpressionLanguage.channels;
-import static org.epics.pvmanager.ExpressionLanguage.mapOf;
+import static org.diirt.datasource.ExpressionLanguage.channels;
+import static org.diirt.datasource.ExpressionLanguage.mapOf;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyChangeSupport;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.csstudio.graphene.MultiAxisLineGraph2DWidget;
 import org.csstudio.ui.util.PopupMenuUtil;
 import org.csstudio.ui.util.widgets.ErrorBar;
 import org.csstudio.utility.pvmanager.ui.SWTUtil;
 import org.csstudio.utility.pvmanager.widgets.VTableDisplay;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReader;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.PVWriter;
+import org.diirt.datasource.PVWriterEvent;
+import org.diirt.datasource.PVWriterListener;
+import org.diirt.datasource.formula.ExpressionLanguage;
+import org.diirt.graphene.InterpolationScheme;
+import org.diirt.util.array.ListNumber;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.VTable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -54,19 +60,6 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.ui.part.ViewPart;
-import org.epics.graphene.InterpolationScheme;
-import org.epics.pvmanager.PVManager;
-import org.epics.pvmanager.PVReader;
-import org.epics.pvmanager.PVReaderEvent;
-import org.epics.pvmanager.PVReaderListener;
-import org.epics.pvmanager.PVWriter;
-import org.epics.pvmanager.PVWriterEvent;
-import org.epics.pvmanager.PVWriterListener;
-import org.epics.pvmanager.formula.ExpressionLanguage;
-import org.epics.util.array.ListNumber;
-import org.epics.util.time.TimeDuration;
-import org.epics.vtype.VTable;
 
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
