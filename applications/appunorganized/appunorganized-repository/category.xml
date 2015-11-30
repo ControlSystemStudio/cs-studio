@@ -9,6 +9,12 @@
    <feature id="org.csstudio.utilities.debugging.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.utilities.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
+   <feature id="org.csstudio.utilities.rap.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <feature id="org.eclipse.nebula.widgets.grid.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
