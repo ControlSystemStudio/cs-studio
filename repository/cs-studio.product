@@ -16,7 +16,7 @@
    <launcherArgs>
       <vmArgs>-Xmx1024m
 -Xms128m
--XX:MaxPermSize=256M
+-Dorg.eclipse.update.reconcile=false
 -Dosgi.configuration.cascaded=true
 -Dosgi.sharedConfiguration.area.readOnly=true
 -Dosgi.install.area.readOnly=true
@@ -59,7 +59,6 @@
    </plugins>
 
    <features>
-      <feature id="org.eclipse.rcp"/>
       <feature id="org.eclipse.e4.rcp"/>
       <feature id="org.eclipse.platform"/>
       <feature id="org.eclipse.equinox.p2.user.ui"/>
