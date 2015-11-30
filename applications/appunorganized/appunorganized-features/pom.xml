@@ -15,5 +15,6 @@
     <module>org.csstudio.utilities.rap.feature</module>
     <module>org.csstudio.utilities.debugging.feature</module>
     <module>org.eclipse.nebula.widgets.grid.feature</module>
+    <module>org.csstudio.pretune.feature</module>
   </modules>
 </project>

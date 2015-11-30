@@ -2,21 +2,23 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Pretune
 Bundle-SymbolicName: org.csstudio.pretune;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.0.1.qualifier
 Bundle-Activator: org.csstudio.pretune.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
+ org.csstudio.graphene,
  org.csstudio.ui.util;bundle-version="3.2.0",
- org.epics.vtype;bundle-version="2.5.0",
- org.epics.util;bundle-version="0.3.0",
- org.epics.graphene;bundle-version="0.6.0",
- com.google.common;bundle-version="10.0.1",
- org.csstudio.graphene;bundle-version="1.0.0",
- org.csstudio.platform.libs.jersey;bundle-version="1.1.5",
  org.csstudio.utility.pvmanager.widgets,
- org.csstudio.utility.pvmanager;bundle-version="3.2.0",
- org.csstudio.utility.pvmanager.extra;bundle-version="3.2.0",
- org.csstudio.utility.pvmanager.ui;bundle-version="3.2.0",
- org.csstudio.utility.pvmanager.graphene;bundle-version="3.2.0",
- org.csstudio.logbook;bundle-version="3.1.0"
+ org.csstudio.utility.pvmanager.ui,
+ org.csstudio.logbook;bundle-version="3.1.0",
+ org.diirt.util;bundle-version="3.0.1",
+ org.diirt.vtype;bundle-version="3.0.1",
+ com.sun.jersey;bundle-version="1.17.0",
+ org.codehaus.jackson.core;bundle-version="1.6.0",
+ com.google.guava;bundle-version="18.0.0",
+ org.codehaus.jackson.mapper;bundle-version="1.6.0",
+ org.diirt.datasource;bundle-version="3.0.1",
+ org.diirt.datasource-formula;bundle-version="3.0.1",
+ org.diirt.graphene,
+ org.diirt.datasource-graphene;bundle-version="3.0.1"
 Bundle-ActivationPolicy: lazy

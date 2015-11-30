@@ -70,5 +70,6 @@
     <!--     <module>org.csstudio.utility.speech.mbrola</module> -->
     <!--    <module>org.csstudio.utility.tine</module> -->
     <!--    <module>org.csstudio.utility.tine.ui</module> -->
+    <module>org.csstudio.pretune</module>
   </modules>
 </project>

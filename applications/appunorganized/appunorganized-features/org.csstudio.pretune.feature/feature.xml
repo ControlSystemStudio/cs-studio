@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.pretune.feature"
+      label="Pretune application"
+      version="0.0.1.qualifier">
+
+   <plugin
+         id="org.csstudio.pretune"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>
