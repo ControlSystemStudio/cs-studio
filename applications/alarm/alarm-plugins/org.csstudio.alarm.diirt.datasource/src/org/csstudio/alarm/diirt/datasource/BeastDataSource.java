@@ -40,6 +40,8 @@ import org.diirt.datasource.WriteRecipe;
 import org.diirt.datasource.util.FunctionParser;
 import org.diirt.datasource.vtype.DataTypeSupport;
 
+import com.thoughtworks.xstream.InitializationException;
+
 /**
  * @author Kunal Shroff
  *
@@ -55,9 +57,6 @@ public class BeastDataSource extends DataSource {
     // in each channel is that they need to be computed only once and only a single
     // copy needs to be maintained.
     private AlarmClientModel model;
-
-    private List<String> activeAlarms = new ArrayList<String>();
-    private List<String> acknowledgedAlarms = new ArrayList<String>();
 
     private Map<String, List<Consumer>> map = Collections.synchronizedMap(new HashMap<String, List<Consumer>>());
 
@@ -87,18 +86,6 @@ public class BeastDataSource extends DataSource {
                             @Override
                             public void newAlarmConfiguration(AlarmClientModel model) {
                                 log.fine("newAlarmConfiguration");
-                                synchronized (model) {
-                                    activeAlarms = Collections.synchronizedList(Arrays
-                                            .asList(model.getActiveAlarms())
-                                            .stream()
-                                            .map(AlarmTreePV::getName)
-                                            .collect(Collectors.<String> toList()));
-                                    acknowledgedAlarms = Collections.synchronizedList(Arrays
-                                            .asList(model.getAcknowledgedAlarms())
-                                            .stream()
-                                            .map(AlarmTreePV::getName)
-                                            .collect(Collectors.<String> toList()));
-                                }
                                 for (String channelName : map.keySet()) {
                                     BeastChannelHandler channel = (BeastChannelHandler) getChannels()
                                             .get(channelHandlerLookupName(channelName));
@@ -121,20 +108,8 @@ public class BeastDataSource extends DataSource {
                             @Override
                             public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
                                 log.fine("newAlarmState");
-                                synchronized (model) {
-                                    activeAlarms = Collections.synchronizedList(Arrays
-                                            .asList(model.getActiveAlarms())
-                                            .stream()
-                                            .map(AlarmTreePV::getName)
-                                            .collect(Collectors.<String> toList()));
-                                    acknowledgedAlarms = Collections.synchronizedList(Arrays
-                                            .asList(model.getAcknowledgedAlarms())
-                                            .stream()
-                                            .map(AlarmTreePV::getName)
-                                            .collect(Collectors.<String> toList()));
-                                }
                                 if (pv != null) {
-                                    log.info(pv.getPathName());
+                                    log.fine(pv.getPathName());
                                     List<Consumer> handlers = map.get(pv.getPathName());
                                     if (handlers != null) {
                                         for (Consumer consumer : handlers) {
@@ -164,36 +139,9 @@ public class BeastDataSource extends DataSource {
         }
     }
 
-    protected boolean isActive(String channelName) {
-        synchronized (model) {
-            return activeAlarms.contains(channelName);
-        }
-    }
-    
-    protected boolean isEnabled(String channelName){
-        synchronized (model) {
-            return model.findPV(channelName).isEnabled();
-        }
-    }
-
     @Override
     protected ChannelHandler createChannel(String channelName) {
-        URI uri;
-        String pvName = channelName;
-        try {
-            uri = URI.create(URLEncoder.encode(channelName, "UTF-8"));
-            pvName = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
-            AlarmTreePV alarmTreePV = findPV(pvName);
-            if (alarmTreePV != null) {
-                return new BeastChannelHandler(alarmTreePV.getPathName(), this);
-            } else {
-                String path = URLDecoder.decode(uri.getPath(), "UTF-8");
-                AlarmTreeItem alarmTreeItem = model.getConfigTree().getItemByPath(path);
-                return new BeastChannelHandler(path, this);
-            }
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException("unable to create channel " + channelName);
-        }
+        return new BeastChannelHandler(channelName, this);
         
     }
 
@@ -224,32 +172,49 @@ public class BeastDataSource extends DataSource {
         }
     }
 
-    protected AlarmTreePV findPV(String channelName){
-        return model.findPV(channelName);
-    }
-    
-    protected AlarmTreeItem getState(String channelName) throws Exception{
+    protected AlarmTreeItem getState(String channelName) throws Exception {
         URI uri = URI.create(URLEncoder.encode(channelName, "UTF-8"));
         String pvName = uri.getPath().substring(uri.getPath().lastIndexOf("/") + 1);
-        AlarmTreePV alarmTreePV = findPV(pvName);
-        if (alarmTreePV != null) {
-            return alarmTreePV;
+        if (model != null) {
+            AlarmTreePV alarmTreePV = model.findPV(pvName);
+            if (alarmTreePV != null) {
+                return alarmTreePV;
+            } else {
+                String path = URLDecoder.decode(uri.getPath(), "UTF-8");
+                AlarmTreeItem alarmTreeItem = model.getConfigTree().getItemByPath(path);
+                return alarmTreeItem;
+            }
         } else {
-            String path = URLDecoder.decode(uri.getPath(), "UTF-8");
-            AlarmTreeItem alarmTreeItem = model.getConfigTree().getItemByPath(path);
-            return alarmTreeItem;
+            throw new InitializationException("Model hasn't been created yet");
         }
     }
 
     protected boolean isConnected() {
-        return model.isServerAlive();
+        if (model != null) {
+            return model.isServerAlive();
+        } else {
+            return false;
+        }
     }
 
+    protected boolean isWriteAllowed(){
+        if (model != null) {
+            return model.isWriteAllowed();
+        } else {
+            return false;
+        }
+    }
+    
     protected void acknowledge(String channelName, boolean acknowledge) throws Exception{
         getState(channelName).acknowledge(acknowledge);
     }
 
     protected void enable(String channelName, boolean enable) throws Exception {
-        model.enable(model.findPV(channelName), enable);
+        AlarmTreeItem item = getState(channelName);
+        if(item != null && item instanceof AlarmTreePV){
+            model.enable((AlarmTreePV) item, enable);
+        }else{
+           // TODO implement the enable logic for nodes 
+        }
     }
 }

@@ -65,6 +65,9 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
         keys.add("Enable");
         values.add(String.valueOf(message.getEnable()));
         
+        keys.add("Type");
+        values.add(message.getType());
+        
         VTable table = newVTable(
                 column("Key", newVStringArray(keys, alarmNone(), timeNow())),
                 column("Value", newVStringArray(values, alarmNone(), timeNow())));

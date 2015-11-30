@@ -61,4 +61,11 @@ public class BeastMessagePayload {
         return pv.getCurrentSeverity().getDisplayName();
     }
 
+    public String getType(){
+        if(pv instanceof AlarmTreePV){
+            return "leaf";
+        }else {
+            return "node";
+        }
+    }
 }
