@@ -70,9 +70,9 @@
       <feature id="org.csstudio.product.feature"/>
       <feature id="org.csstudio.product.configuration.feature"/>
       <feature id="org.csstudio.core.diirt.feature"/>
+      <feature id="org.csstudio.graphene.feature"/>
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
       <feature id="org.csstudio.applications.opibuilder.feature"/>
-      <feature id="org.csstudio.pvmanager.ca.feature"/>
       <feature id="org.csstudio.applications.logbook.feature"/>
       <feature id="org.csstudio.applications.pvmanager.diag.feature"/>
       <feature id="org.csstudio.email.feature"/>
