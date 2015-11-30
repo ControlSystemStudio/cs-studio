@@ -1,5 +1,6 @@
 package org.csstudio.saverestore.ui;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -68,6 +69,16 @@ public class SnapshotViewerEditor extends FXEditorPart {
 
     public static final String ID = "org.csstudio.saverestore.ui.editor.snapshotviewer";
 
+    static {
+        //Stupid FX doesn't resize the table appropriately. The hack below does the trick
+        try {
+            Field f = TableView.CONSTRAINED_RESIZE_POLICY.getClass().getDeclaredField("isFirstRun");
+            f.setAccessible(true);
+            f.set(TableView.CONSTRAINED_RESIZE_POLICY, Boolean.FALSE);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     /**
      *
      * <code>VTypeCellEditor</code> is an editor type for {@link VType} or {@link VTypePair}, which allows editing the
@@ -504,7 +515,6 @@ public class SnapshotViewerEditor extends FXEditorPart {
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setMaxWidth(Double.MAX_VALUE);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
         configureTableForDnD(table);
         return table;
     }
