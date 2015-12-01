@@ -309,14 +309,6 @@ public class BrowserView extends FXViewPart {
             }
         });
         snapshotsList.getStylesheets().add(this.getClass().getResource("taggedCell.css").toExternalForm());
-        snapshotsList.setOnMouseClicked(e -> {
-            if (e.getClickCount() == 2) {
-                Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
-                if (snapshot != null) {
-                    actionManager.openSnapshot(snapshot);
-                }
-            }
-        });
 
         snapshotsList.setOnDragDetected(e -> {
             Dragboard db = snapshotsList.startDragAndDrop(TransferMode.ANY);
@@ -328,8 +320,8 @@ public class BrowserView extends FXViewPart {
             e.consume();
         });
         final ContextMenu popup = new ContextMenu();
-        MenuItem deleteSetItem = new MenuItem("Remove Tag...");
-        deleteSetItem.setOnAction(e -> {
+        final MenuItem deleteTagItem = new MenuItem("Remove Tag...");
+        deleteTagItem.setOnAction(e -> {
             popup.hide();
             Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
             if (FXMessageDialog.openQuestion(getSite().getShell(), "Remove Tag",
@@ -338,7 +330,7 @@ public class BrowserView extends FXViewPart {
                 actionManager.deleteTag(item);
             }
         });
-        popup.getItems().add(deleteSetItem);
+        popup.getItems().add(deleteTagItem);
         snapshotsList.setContextMenu(popup);
         snapshotsList.setOnMouseReleased(e -> {
             if (e.isSecondaryButtonDown()) {
@@ -347,6 +339,15 @@ public class BrowserView extends FXViewPart {
                     popup.show(beamlineSetsTree, e.getX(), e.getY());
                 } else {
                     popup.hide();
+                }
+            }
+        });
+        snapshotsList.setOnMouseClicked(e -> {
+            Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
+            deleteTagItem.setDisable(snapshot == null || !snapshot.getTagName().isPresent());
+            if (e.getClickCount() == 2) {
+                if (snapshot != null) {
+                    actionManager.openSnapshot(snapshot);
                 }
             }
         });
