@@ -591,14 +591,23 @@ public class GitManager {
             RevTag tag = tags.get(revision);
             if (tag != null) {
                 String niceTagName = tag.getTagName();
-                int idx = niceTagName.lastIndexOf('(');
-                if (idx > 1) {
-                    niceTagName = niceTagName.substring(niceTagName.lastIndexOf('(') + 1, niceTagName.length() - 1);
+                boolean acceptTag = true;
+                if (niceTagName.charAt(0) == '(') {
+                    String branch = niceTagName.substring(1,niceTagName.indexOf(')'));
+                    if (!branch.equals(beamlineSet.getBranch().getShortName())) {
+                        acceptTag = false;
+                    }
                 }
-                parameters.put(Snapshot.TAG_NAME, niceTagName);
-                parameters.put(PARAM_GIT_TAG_NAME, tag.getTagName());
-                parameters.put(Snapshot.TAG_MESSAGE, tag.getFullMessage());
-                parameters.put(PARAM_TAG_CREATOR, tag.getTaggerIdent().getName());
+                if (acceptTag) {
+                    int idx = niceTagName.lastIndexOf('(');
+                    if (idx > 1) {
+                        niceTagName = niceTagName.substring(niceTagName.lastIndexOf('(') + 1, niceTagName.length() - 1);
+                    }
+                    parameters.put(Snapshot.TAG_NAME, niceTagName);
+                    parameters.put(PARAM_GIT_TAG_NAME, tag.getTagName());
+                    parameters.put(Snapshot.TAG_MESSAGE, tag.getFullMessage());
+                    parameters.put(PARAM_TAG_CREATOR, tag.getTaggerIdent().getName());
+                }
             }
             Snapshot snapshot = new Snapshot(beamlineSet, meta.timestamp, meta.comment, meta.creator, parameters);
             snapshots.add(snapshot);
@@ -834,7 +843,8 @@ public class GitManager {
                 Map<String, String> parameters = new HashMap<>();
                 parameters.put(PARAM_GIT_REVISION, revision);
                 if (name != null && !name.isEmpty()) {
-                    String gitTagName = composeTagName(snapshot.getBeamlineSet().getPath(), name);
+                    String gitTagName = composeTagName(snapshot.getBeamlineSet().getBranch(),
+                            snapshot.getBeamlineSet().getPath(), name);
                     PersonIdent tagger = new PersonIdent(cp.getUsername(), "UNKNOWN");
                     git.tag().setName(gitTagName).setMessage(message).setTagger(tagger).setObjectId(commit).call();
                     if (automatic) {
@@ -909,7 +919,7 @@ public class GitManager {
             return null;
         }
 
-        while (pushTags) {
+        while (true) {
             try {
                 git.push().setCredentialsProvider(toCredentialsProvider(cred)).call();
                 break;
@@ -928,7 +938,7 @@ public class GitManager {
                 }
             }
         }
-        while (true) {
+        while (pushTags) {
             try {
                 git.push().setCredentialsProvider(toCredentialsProvider(cred)).setPushTags().call();
                 break;
@@ -1652,12 +1662,14 @@ public class GitManager {
      * name is composed as a path to the file delimited with '/', followed by the provided tag name in parenthesis (e.g.
      * path/to/tagged/snapshot/(tagName))
      *
+     * @param branch the branch on which the tag is created
      * @param path the path of the file that we want to tag
      * @param tagName the name of the tag
      * @return the tag name that should be used to tag the file
      */
-    private static String composeTagName(String[] path, String tagName) {
+    private static String composeTagName(Branch branch, String[] path, String tagName) {
         StringBuilder sb = new StringBuilder(255);
+        sb.append('(').append(branch.getShortName()).append(')');
         for (int i = 0; i < path.length; i++) {
             String str = TAG_PATTERN.matcher(path[i]).replaceAll("");
             if (str.charAt(0) == '.') {
