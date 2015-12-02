@@ -674,7 +674,7 @@ public class GitManager {
                 setBranch(data.getDescriptor().getBranch());
                 String relativePath = convertPathToString(data.getDescriptor(), FileType.BEAMLINE_SET);
                 writeToFile(relativePath, FileType.BEAMLINE_SET, data);
-                commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null));
+                commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null, null));
                 if (automatic) {
                     push(cp, false);
                 }
@@ -713,11 +713,11 @@ public class GitManager {
                 String relativePath = convertPathToString(set, FileType.BEAMLINE_SET);
                 if (deleteFile(relativePath)) {
                     deleted = set;
-                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null));
+                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null, null));
                     // delete also the snapshot file
                     relativePath = convertPathToString(set, FileType.SNAPSHOT);
                     deleteFile(relativePath);
-                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), null, null));
+                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), null, null, null));
                     if (automatic) {
                         push(cp, false);
                     }
@@ -773,11 +773,14 @@ public class GitManager {
                 String relativePath = convertPathToString(descriptor.getBeamlineSet(), FileType.SNAPSHOT);
                 writeToFile(relativePath, FileType.SNAPSHOT, snapshot);
                 MetaInfo info = commit(relativePath,
-                        new MetaInfo(comment, user == null ? cp.getUsername() : user, "UNKNOWN", time));
+                        new MetaInfo(comment, user == null ? cp.getUsername() : user, "UNKNOWN", time, null));
                 if (automatic) {
                     push(cp, false);
                 }
-                Snapshot snp = new Snapshot(descriptor.getBeamlineSet(), info.timestamp, info.comment, info.creator);
+                Map<String,String> parameters = new HashMap<>();
+                parameters.put(PARAM_GIT_REVISION, info.revision);
+                Snapshot snp = new Snapshot(descriptor.getBeamlineSet(), info.timestamp, info.comment, info.creator,
+                        parameters);
                 vsnp = new VSnapshot(snp, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
                         snapshot.getTimestamp());
             }
@@ -1005,7 +1008,8 @@ public class GitManager {
         String creator = personIdent.getName();
         Date commitTimestamp = personIdent.getWhen();
         String email = personIdent.getEmailAddress();
-        return new MetaInfo(comment, creator, email, commitTimestamp);
+        String revision = revCommit.getName();
+        return new MetaInfo(comment, creator, email, commitTimestamp, revision);
     }
 
     /**

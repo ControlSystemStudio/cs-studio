@@ -14,6 +14,7 @@ class MetaInfo {
     final String creator;
     final Date timestamp;
     final String eMail;
+    final String revision;
 
     /**
      * Constructs <code>GitMetaInfo</code> class.
@@ -22,11 +23,13 @@ class MetaInfo {
      * @param creator the person that made the commit
      * @param email the email of the person that made the commit
      * @param timestamp timestamp of the commit
+     * @param revision the git revision hash
      */
-    MetaInfo(String comment, String creator, String email, Date timestamp) {
+    MetaInfo(String comment, String creator, String email, Date timestamp, String revision) {
         this.comment = comment;
         this.creator = creator;
         this.timestamp = timestamp;
         this.eMail = email == null ? "unknown" : email;
+        this.revision = revision;
     }
 }
