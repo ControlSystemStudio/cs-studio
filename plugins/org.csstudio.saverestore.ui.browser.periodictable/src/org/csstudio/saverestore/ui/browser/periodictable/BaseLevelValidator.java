@@ -22,7 +22,7 @@ public class BaseLevelValidator implements InputValidator<String> {
             Isotope.of(newText);
             return null;
         } catch (IllegalArgumentException e) {
-            return e.getMessage() + " (<element>_<mass>_<abs_charge><p|n>)";
+            return e.getMessage() + " (<element>_<mass>_<abs_charge><p|n>_<energy>)";
         } catch (Exception e) {
             return e.getMessage();
         }
