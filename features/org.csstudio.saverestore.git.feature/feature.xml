@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.saverestore.git.feature"
-      label="Feature"
+      label="Save Restore Git Data Provider"
       version="1.0.0.qualifier"
       provider-name="FRIB"
       plugin="org.csstudio.saverestore.git">
