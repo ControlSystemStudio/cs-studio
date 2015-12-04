@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +84,9 @@ public class XMLUtil {
             (widgetModel instanceof ConnectionModel) ? XMLTAG_CONNECTION : XMLTAG_WIDGET);
         result.setAttribute(XMLATTR_TYPEID, widgetModel.getTypeID());
         result.setAttribute(XMLATTR_VERSION, widgetModel.getVersion().toString());
-        for(String propId : widgetModel.getAllPropertyIDs()){
+        List<String> propIds = new ArrayList<>(widgetModel.getAllPropertyIDs());
+        Collections.sort(propIds);
+        for(String propId : propIds){
             if(widgetModel.getProperty(propId).isSavable()){
                 Element propElement = new Element(propId);
                 widgetModel.getProperty(propId).writeToXML(propElement);
