@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.graphene.opiwidgets.feature"
+      label="Graphene opi widgets"
+      version="0.0.1.qualifier">
+
+   <plugin
+         id="org.csstudio.graphene.opiwidgets"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

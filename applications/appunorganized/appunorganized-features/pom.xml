@@ -16,5 +16,6 @@
     <module>org.csstudio.utilities.debugging.feature</module>
     <module>org.eclipse.nebula.widgets.grid.feature</module>
     <module>org.csstudio.pretune.feature</module>
+    <module>org.csstudio.graphene.opiwidgets.feature</module>
   </modules>
 </project>

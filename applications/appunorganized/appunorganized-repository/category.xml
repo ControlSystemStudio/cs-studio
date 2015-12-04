@@ -21,5 +21,8 @@
    <feature id="org.csstudio.pretune.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.graphene.opiwidgets.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>
 </site>
