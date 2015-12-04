@@ -15,6 +15,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +84,9 @@ public class XMLUtil {
             (widgetModel instanceof ConnectionModel) ? XMLTAG_CONNECTION : XMLTAG_WIDGET);
         result.setAttribute(XMLATTR_TYPEID, widgetModel.getTypeID());
         result.setAttribute(XMLATTR_VERSION, widgetModel.getVersion().toString());
-        for(String propId : widgetModel.getAllPropertyIDs()){
+        List<String> propIds = new ArrayList<>(widgetModel.getAllPropertyIDs());
+        Collections.sort(propIds);
+        for(String propId : propIds){
             if(widgetModel.getProperty(propId).isSavable()){
                 Element propElement = new Element(propId);
                 widgetModel.getProperty(propId).writeToXML(propElement);
@@ -112,18 +115,29 @@ public class XMLUtil {
         return result;
     }
 
+    /**
+     * Create and configure an XMLOutputter object.
+     * @param prettyFormat
+     * @return the XMLOutputter
+     */
+    private static XMLOutputter getXMLOutputter(boolean prettyFormat) {
+        Format format = Format.getRawFormat();
+        if(prettyFormat)
+            format.setIndent("  "); //$NON-NLS-1$
+        // Always use Unix-style line endings.
+        format.setLineSeparator("\n");
+        XMLOutputter xmlOutputter = new XMLOutputter();
+        xmlOutputter.setFormat(format);
+        return xmlOutputter;
+    }
+
     /**Flatten a widget to XML String.
      * @param widgetModel model of the widget.
      * @param prettyFormat true if the string is in pretty format
      * @return the XML String
      */
-    public static String widgetToXMLString(AbstractWidgetModel widgetModel, boolean prettyFormat){
-        Format format = Format.getRawFormat();
-        if(prettyFormat)
-            format.setIndent("  "); //$NON-NLS-1$
-        XMLOutputter xmlOutputter = new XMLOutputter();
-        xmlOutputter.setFormat(format);
-
+    public static String widgetToXMLString(AbstractWidgetModel widgetModel, boolean prettyFormat) {
+        XMLOutputter xmlOutputter = getXMLOutputter(prettyFormat);
         return xmlOutputter.outputString(widgetToXMLElement(widgetModel));
     }
 
@@ -134,10 +148,7 @@ public class XMLUtil {
      * @throws IOException
      */
     public static void widgetToOutputStream(AbstractWidgetModel widgetModel, OutputStream out, boolean prettyFormat) throws IOException{
-        Format format = Format.getRawFormat();
-        if(prettyFormat)
-            format.setIndent("  "); //$NON-NLS-1$
-        XMLOutputter xmlOutputter = new XMLOutputter(format);
+        XMLOutputter xmlOutputter = getXMLOutputter(prettyFormat);
         out.write(XML_HEADER.getBytes("UTF-8")); //$NON-NLS-1$
         xmlOutputter.output(widgetToXMLElement(widgetModel), out);
     }
