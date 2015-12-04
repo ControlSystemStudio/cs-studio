@@ -70,6 +70,7 @@
       <feature id="org.csstudio.product.configuration.feature"/>
       <feature id="org.csstudio.core.diirt.feature"/>
       <feature id="org.csstudio.graphene.feature"/>
+      <feature id="org.csstudio.graphene.opiwidgets.feature"/>
       <feature id="org.csstudio.pvmanager.autocomplete.feature"/>
       <feature id="org.csstudio.applications.opibuilder.feature"/>
       <feature id="org.csstudio.applications.logbook.feature"/>
