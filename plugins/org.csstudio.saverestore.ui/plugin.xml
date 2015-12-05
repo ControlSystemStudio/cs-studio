@@ -52,8 +52,7 @@
             filenames="*.bms"
             icon="icons/txt.png"
             id="org.csstudio.saverestore.ui.editor.beamlineseteditor"
-            name="Beamline Set Editor"
-            symbolicFontName="*.bms">
+            name="Beamline Set Editor">
       </editor>
    </extension>
 

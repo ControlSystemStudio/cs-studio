@@ -40,6 +40,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -202,10 +203,10 @@ public class BrowserView extends FXViewPart {
         popup.getItems().add(deleteSetItem);
         beamlineSetsTree.setContextMenu(popup);
         beamlineSetsTree.setOnMouseReleased(e -> {
-            if (e.isSecondaryButtonDown()) {
+            if (e.getButton() == MouseButton.SECONDARY) {
                 BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
                 if (item.getValue().set != null) {
-                    popup.show(beamlineSetsTree, e.getX(), e.getY());
+                    popup.show(beamlineSetsTree, e.getScreenX(), e.getScreenY());
                 } else {
                     popup.hide();
                 }
@@ -333,10 +334,10 @@ public class BrowserView extends FXViewPart {
         popup.getItems().add(deleteTagItem);
         snapshotsList.setContextMenu(popup);
         snapshotsList.setOnMouseReleased(e -> {
-            if (e.isSecondaryButtonDown()) {
+            if (e.getButton() == MouseButton.SECONDARY) {
                 Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
                 if (item.getTagName().isPresent()) {
-                    popup.show(beamlineSetsTree, e.getX(), e.getY());
+                    popup.show(beamlineSetsTree, e.getScreenX(), e.getScreenY());
                 } else {
                     popup.hide();
                 }

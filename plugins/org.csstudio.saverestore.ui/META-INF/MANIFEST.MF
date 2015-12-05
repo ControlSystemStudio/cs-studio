@@ -19,6 +19,7 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.107.0",
  org.csstudio.ui.fx.util;bundle-version="1.0.0",
  org.diirt.vtype;bundle-version="3.0.1",
  org.diirt.util;bundle-version="3.0.1",
- org.diirt.datasource;bundle-version="3.0.1"
+ org.diirt.datasource;bundle-version="3.0.1",
+ org.csstudio.csdata;bundle-version="3.2.0"
 Export-Package: org.csstudio.saverestore.ui,
  org.csstudio.saverestore.ui.util

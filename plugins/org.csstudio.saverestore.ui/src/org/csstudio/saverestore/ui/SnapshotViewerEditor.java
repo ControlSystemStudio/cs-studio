@@ -6,6 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.csdata.TimestampedPV;
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
@@ -22,9 +24,18 @@ import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 
 import javafx.animation.Animation.Status;
@@ -35,6 +46,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionMode;
@@ -47,6 +59,7 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -65,20 +78,11 @@ import javafx.util.StringConverter;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SnapshotViewerEditor extends FXEditorPart {
+public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProvider {
 
     public static final String ID = "org.csstudio.saverestore.ui.editor.snapshotviewer";
+    private static boolean resizePolicyNotInitialized = true;
 
-    static {
-        //Stupid FX doesn't resize the table appropriately. The hack below does the trick
-        try {
-            Field f = TableView.CONSTRAINED_RESIZE_POLICY.getClass().getDeclaredField("isFirstRun");
-            f.setAccessible(true);
-            f.set(TableView.CONSTRAINED_RESIZE_POLICY, Boolean.FALSE);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     /**
      *
      * <code>VTypeCellEditor</code> is an editor type for {@link VType} or {@link VTypePair}, which allows editing the
@@ -204,7 +208,31 @@ public class SnapshotViewerEditor extends FXEditorPart {
         controller = new SnapshotViewerController(this);
     }
 
+    private Menu contextMenu;
+
+    @Override
+    public void createPartControl(Composite parent) {
+        super.createPartControl(parent);
+
+        MenuManager menu = new MenuManager();
+        menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        contextMenu = menu.createContextMenu(parent);
+        parent.setMenu(contextMenu);
+        getSite().registerContextMenu(menu, this);
+    }
+
     private void init() {
+        if (resizePolicyNotInitialized) {
+            try {
+                Field f = TableView.CONSTRAINED_RESIZE_POLICY.getClass().getDeclaredField("isFirstRun");
+                f.setAccessible(true);
+                f.set(TableView.CONSTRAINED_RESIZE_POLICY, Boolean.FALSE);
+            } catch (Exception e) {
+                // ignore
+            }
+            resizePolicyNotInitialized = false;
+        }
+
         animation = new FadeTransition(Duration.seconds(0.15), saveSnapshotButton);
         animation.setAutoReverse(true);
         animation.setFromValue(1.0);
@@ -235,6 +263,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
      */
     @Override
     public void doSave(IProgressMonitor monitor) {
+        // TODO if input is file editor input than save to the file
         SaveRestoreService.getInstance().execute("Save Snapshot", () -> {
             List<VSnapshot> snapshots = new ArrayList<>();
             snapshots.addAll(controller.getSnapshots(true));
@@ -282,6 +311,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
     public void init(IEditorSite site, IEditorInput input) throws PartInitException {
         setSite(site);
         setInput(input);
+
         setPartName(input.getName());
         VSnapshot snapshot = input.getAdapter(VSnapshot.class);
         if (snapshot != null) {
@@ -451,15 +481,26 @@ public class SnapshotViewerEditor extends FXEditorPart {
     }
 
     private TableView<TableEntry> createTableForSingleSnapshot() {
-        TableView<TableEntry> table = new TableView<>();
+        final TableView<TableEntry> table = new TableView<>();
         TableColumn<TableEntry, Boolean> selectedColumn = new EditorTableColumn<>("",
                 "Include this PV when restoring values", 30, 30, false);
+
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
         selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
         selectedColumn.setEditable(true);
-        selectedColumn
-                .setOnEditCommit((e) -> ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow()))
-                        .selectedProperty().setValue(e.getNewValue()));
+        final CheckBox selectAllCheckBox = new CheckBox();
+        selectAllCheckBox.setSelected(false);
+        selectAllCheckBox.setOnAction(
+                e -> table.getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
+        selectedColumn.setGraphic(selectAllCheckBox);
+//        selectedColumn.setOnEditCommit(e -> {
+//            if (!e.getNewValue()) {
+//                selectAllCheckBox.setSelected(false);
+//            }
+//            ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow())).selectedProperty()
+//                    .setValue(e.getNewValue());
+//
+//        });
 
         TableColumn<TableEntry, Integer> idColumn = new EditorTableColumn<>("#",
                 "The order number of the PV in the beamline set", 30, 30, false);
@@ -511,11 +552,6 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 statusColumn, severityColumn, storedValueColumn, liveValueColumn);
         table.getColumns().addAll(list);
 
-        table.setEditable(true);
-        table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        table.setMaxWidth(Double.MAX_VALUE);
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        configureTableForDnD(table);
         return table;
     }
 
@@ -547,15 +583,24 @@ public class SnapshotViewerEditor extends FXEditorPart {
     }
 
     private TableView<TableEntry> createTableForMultipleSnapshots(int n) {
-        TableView<TableEntry> table = new TableView<>();
+        final TableView<TableEntry> table = new TableView<>();
         TableColumn<TableEntry, Boolean> selectedColumn = new EditorTableColumn<>("",
                 "Include this PV when restoring values", 30, 30, false);
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
         selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
         selectedColumn.setEditable(true);
-        selectedColumn
-                .setOnEditCommit(e -> ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow()))
-                        .selectedProperty().setValue(e.getNewValue()));
+        final CheckBox selectAllCheckBox = new CheckBox();
+        selectAllCheckBox.setSelected(false);
+        selectAllCheckBox.setOnAction(
+                e -> table.getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
+        selectedColumn.setGraphic(selectAllCheckBox);
+//        selectedColumn.setOnEditCommit(e -> {
+//            if (!e.getNewValue()) {
+//                selectAllCheckBox.setSelected(false);
+//            }
+//            ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow())).selectedProperty()
+//                    .setValue(e.getNewValue());
+//        });
 
         TableColumn<TableEntry, Integer> idColumn = new EditorTableColumn<>("#",
                 "The order number of the PV in the beamline set", 30, 30, false);
@@ -591,21 +636,24 @@ public class SnapshotViewerEditor extends FXEditorPart {
         List<TableColumn<TableEntry, ?>> list = Arrays.asList(selectedColumn, idColumn, pvNameColumn, liveValueColumn,
                 storedValueColumn);
         table.getColumns().addAll(list);
+        return table;
+    }
 
+    private TableView<TableEntry> createTable(int numSnapshots) {
+        TableView<TableEntry> table;
+        if (numSnapshots == 1) {
+            table = createTableForSingleSnapshot();
+        } else {
+            table = createTableForMultipleSnapshots(numSnapshots);
+        }
         table.setEditable(true);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setMaxWidth(Double.MAX_VALUE);
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         configureTableForDnD(table);
+        table.setOnMouseReleased(e -> contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY));
         return table;
-    }
 
-    private TableView<TableEntry> createTable(int numSnapshots) {
-        if (numSnapshots == 1) {
-            return createTableForSingleSnapshot();
-        } else {
-            return createTableForMultipleSnapshots(numSnapshots);
-        }
     }
 
     /**
@@ -664,5 +712,62 @@ public class SnapshotViewerEditor extends FXEditorPart {
         if (table != null) {
             table.requestFocus();
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.
+     * ISelectionChangedListener)
+     */
+    @Override
+    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+     */
+    @Override
+    public ISelection getSelection() {
+        if (table == null) {
+            return null;
+        } else {
+            Timestamp timestamp = controller.getSnapshot(0).getTimestamp();
+            if (timestamp == null) {
+                List<ProcessVariable> list = new ArrayList<>();
+                for (TableEntry e : table.selectionModelProperty().get().getSelectedItems()) {
+                    list.add(new ProcessVariable(e.pvNameProperty().get()));
+                }
+                return new StructuredSelection(list);
+            } else {
+                long time = timestamp.toDate().getTime();
+                List<TimestampedPV> list = new ArrayList<>();
+                for (TableEntry e : table.selectionModelProperty().get().getSelectedItems()) {
+                    list.add(new TimestampedPV(e.pvNameProperty().get(), time));
+                }
+                return new StructuredSelection(list);
+            }
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.
+     * ISelectionChangedListener)
+     */
+    @Override
+    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+     */
+    @Override
+    public void setSelection(ISelection selection) {
     }
 }
