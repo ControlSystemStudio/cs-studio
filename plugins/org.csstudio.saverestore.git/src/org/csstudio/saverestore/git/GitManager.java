@@ -103,7 +103,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class GitManager {
 
-    private static class DescriptionDateData<T> {
+    static class DescriptionDateData<T> {
         final List<T> data;
         final List<String> names;
         final List<Boolean> selected;
@@ -1178,7 +1178,7 @@ public class GitManager {
      *         data are the pv values
      * @throws IOException if reading the file failed
      */
-    private static DescriptionDateData<VType> readFromSnapshot(InputStream stream) throws IOException {
+    static DescriptionDateData<VType> readFromSnapshot(InputStream stream) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         String date = null;
         List<String> names = new ArrayList<>();
