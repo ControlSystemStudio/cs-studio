@@ -405,7 +405,7 @@ public final class OPIShell implements IOPIRuntime {
         throw new NotImplementedException();
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public Object getAdapter(Class adapter) {
         if (adapter == ActionRegistry.class)
