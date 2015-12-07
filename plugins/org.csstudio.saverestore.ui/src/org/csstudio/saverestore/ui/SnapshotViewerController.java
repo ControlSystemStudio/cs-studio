@@ -2,6 +2,8 @@ package org.csstudio.saverestore.ui;
 
 import static org.diirt.datasource.ExpressionLanguage.channel;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -14,6 +16,7 @@ import java.util.logging.Level;
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.DataProviderWrapper;
+import org.csstudio.saverestore.FileUtilities;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.data.BeamlineSet;
@@ -21,6 +24,7 @@ import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.GUIUpdateThrottle;
+import org.csstudio.ui.fx.util.FXSaveAsDialog;
 import org.csstudio.ui.fx.util.FXTextAreaInputDialog;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.PVReader;
@@ -30,6 +34,13 @@ import org.diirt.datasource.PVWriter;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.VType;
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.window.Window;
+import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.dialogs.SaveAsDialog;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -271,6 +282,48 @@ public class SnapshotViewerController {
      */
     public ReadOnlyBooleanProperty snapshotRestorableProperty() {
         return snapshotRestorableProperty;
+    }
+
+    /**
+     * Save the snapshot to a file defined by the <code>input</code> or <code>saveAs</code>.
+     *
+     * @param snapshot the snapshot to save
+     * @param input the file input
+     * @param saveAs perform save as if true, or overwrite existing one if false
+     * @return the saved snapshot
+     */
+    public VSnapshot saveSnapshotToFile(VSnapshot snapshot, IFileEditorInput input, boolean saveAs) {
+        if (saveAs) {
+            SaveAsDialog saveAsDialog = new FXSaveAsDialog(owner.getSite().getShell());
+            saveAsDialog.setOriginalFile(((IFileEditorInput) input).getFile());
+            int ret = saveAsDialog.open();
+            if (ret == Window.OK) {
+                try {
+                    IPath targetPath = saveAsDialog.getResult();
+                    IFile targetFile = ResourcesPlugin.getWorkspace().getRoot().getFile(targetPath);
+
+                    if (!targetFile.exists()) {
+                        targetFile.create(null, true, null);
+                    }
+                    String contents = FileUtilities.generateSnapshotFileContent(snapshot);
+                    InputStream stream = new ByteArrayInputStream(contents.getBytes("UTF-8"));
+                    targetFile.setContents(stream, IFile.FORCE, new NullProgressMonitor());
+                } catch (Exception e) {
+                    Selector.reportException(e, owner.getSite().getShell());
+                }
+            }
+        } else {
+            try {
+                IFile file = input.getFile();
+                String contents = FileUtilities.generateSnapshotFileContent(snapshot);
+                InputStream stream = new ByteArrayInputStream(contents.getBytes("UTF-8"));
+                file.setContents(stream, IFile.FORCE, new NullProgressMonitor());
+                return snapshot;
+            } catch (Exception e) {
+                Selector.reportException(e, owner.getSite().getShell());
+            }
+        }
+        return null;
     }
 
     /**

@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
 
@@ -141,7 +142,6 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             super.updateItem(item, empty);
             if (item == null || empty) {
                 setText("---");
-                setStyle("");
                 getTooltip().setText(null);
             } else {
                 if (item instanceof VType) {
@@ -155,18 +155,18 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
     }
 
     /**
-     * <code>EditorTableColumn</code> is the common table column implementation, which can also provide the tooltip.
+     * <code>TooltipTableColumn</code> is the common table column implementation, which can also provide the tooltip.
      *
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *
      * @param <T> the type of the values displayed by this column
      */
-    private static class EditorTableColumn<T> extends TableColumn<TableEntry, T> {
-        EditorTableColumn(String text, String tooltip, int minWidth) {
+    private static class TooltipTableColumn<T> extends TableColumn<TableEntry, T> {
+        TooltipTableColumn(String text, String tooltip, int minWidth) {
             setup(text, tooltip, minWidth, -1, true);
         }
 
-        EditorTableColumn(String text, String tooltip, int minWidth, int prefWidth, boolean resizable) {
+        TooltipTableColumn(String text, String tooltip, int minWidth, int prefWidth, boolean resizable) {
             setup(text, tooltip, minWidth, prefWidth, resizable);
         }
 
@@ -199,7 +199,10 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
     private Button takeSnapshotButton;
     private Button restoreSnapshotButton;
     private Button saveSnapshotButton;
+    private CheckBox selectAllCheckBox;
     private FadeTransition animation;
+
+    private int clickedColumn = -1;
 
     /**
      * Constructs a new editor.
@@ -263,32 +266,58 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      */
     @Override
     public void doSave(IProgressMonitor monitor) {
-        // TODO if input is file editor input than save to the file
-        SaveRestoreService.getInstance().execute("Save Snapshot", () -> {
-            List<VSnapshot> snapshots = new ArrayList<>();
-            snapshots.addAll(controller.getSnapshots(true));
-            do {
-                if (!save(snapshots).map(snapshots::remove).isPresent()) {
-                    break;
-                }
-            } while (!snapshots.isEmpty());
-            getSite().getShell().getDisplay().asyncExec(() -> {
-                monitor.done();
-                firePropertyChange(PROP_DIRTY);
-            });
+        if (getEditorInput() instanceof IFileEditorInput) {
+            save(monitor, false);
+        } else {
+            SaveRestoreService.getInstance().execute("Save Snapshot", () -> save(monitor, false));
+        }
+    }
+
+    private void save(final IProgressMonitor monitor, boolean saveAs) {
+        List<VSnapshot> snapshots = new ArrayList<>();
+        snapshots.addAll(controller.getSnapshots(true));
+        do {
+            if (!save(snapshots, saveAs).map(snapshots::remove).isPresent()) {
+                break;
+            }
+        } while (!snapshots.isEmpty());
+        getSite().getShell().getDisplay().asyncExec(() -> {
+            monitor.done();
+            firePropertyChange(PROP_DIRTY);
         });
     }
 
-    // this method should never be called on the UI thread
-    private Optional<VSnapshot> save(List<VSnapshot> snapshots) {
+    private void doSave(final List<VSnapshot> snapshots) {
+        if (getEditorInput() instanceof IFileEditorInput) {
+            // saving to a resource should always happen in the UI thread, because of the RCP locking system
+            save(snapshots, false);
+        } else {
+            SaveRestoreService.getInstance().execute("Save Snapshot", () -> save(snapshots, false));
+        }
+    }
+
+    private Optional<VSnapshot> save(List<VSnapshot> snapshots, final boolean saveAs) {
         if (snapshots.isEmpty()) {
             return null;
-        } else if (snapshots.size() == 1) {
-            return Optional.ofNullable(controller.saveSnapshot(snapshots.remove(0)));
+        }
+        if (getEditorInput() instanceof IFileEditorInput) {
+            if (snapshots.size() == 1) {
+                return Optional.ofNullable(controller.saveSnapshotToFile(snapshots.remove(0),
+                        (IFileEditorInput) getEditorInput(), saveAs));
+            } else {
+                return FXComboInputDialog
+                        .pick(getSite().getShell(), "Select Snapshot", "Select the snapshot that you wish to save",
+                                snapshots.get(0), snapshots)
+                        .map(e -> controller.saveSnapshotToFile(e, (IFileEditorInput) getEditorInput(), saveAs));
+            }
         } else {
-            return FXComboInputDialog.pick(getSite().getShell(), "Select Snapshot",
-                    "Select the snapshot that you wish to save", snapshots.get(0), snapshots)
-                    .map(controller::saveSnapshot);
+            if (snapshots.size() == 1) {
+                return Optional.ofNullable(controller.saveSnapshot(snapshots.remove(0)));
+            } else {
+                return FXComboInputDialog.pick(getSite().getShell(), "Select Snapshot",
+                        "Select the snapshot that you wish to save", snapshots.get(0), snapshots)
+                        .map(controller::saveSnapshot);
+            }
         }
     }
 
@@ -299,7 +328,11 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      */
     @Override
     public void doSaveAs() {
-        doSave(new NullProgressMonitor());
+        if (getEditorInput() instanceof IFileEditorInput) {
+            save(new NullProgressMonitor(), true);
+        } else {
+            SaveRestoreService.getInstance().execute("Save Snapshot", () -> doSave(new NullProgressMonitor()));
+        }
     }
 
     /*
@@ -347,7 +380,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      */
     @Override
     public boolean isSaveAsAllowed() {
-        return false;
+        return getEditorInput() instanceof IFileEditorInput;
     }
 
     /*
@@ -437,8 +470,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         saveSnapshotButton.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         saveSnapshotButton.setTooltip(new Tooltip("Save the snapshot values as a new revision"));
 
-        saveSnapshotButton.setOnAction(e -> SaveRestoreService.getInstance().execute("Save Snapshot",
-                () -> save(new ArrayList<>(controller.getSnapshots(true)))));
+        saveSnapshotButton.setOnAction(e -> doSave(new ArrayList<>(controller.getSnapshots(true))));
 
         saveSnapshotButton.disableProperty().bind(controller.snapshotSaveableProperty().not());
 
@@ -482,34 +514,27 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
 
     private TableView<TableEntry> createTableForSingleSnapshot() {
         final TableView<TableEntry> table = new TableView<>();
-        TableColumn<TableEntry, Boolean> selectedColumn = new EditorTableColumn<>("",
+        TableColumn<TableEntry, Boolean> selectedColumn = new TooltipTableColumn<>("",
                 "Include this PV when restoring values", 30, 30, false);
 
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
         selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
         selectedColumn.setEditable(true);
-        final CheckBox selectAllCheckBox = new CheckBox();
+        selectedColumn.setSortable(false);
+        selectAllCheckBox = new CheckBox();
         selectAllCheckBox.setSelected(false);
         selectAllCheckBox.setOnAction(
                 e -> table.getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
         selectedColumn.setGraphic(selectAllCheckBox);
-//        selectedColumn.setOnEditCommit(e -> {
-//            if (!e.getNewValue()) {
-//                selectAllCheckBox.setSelected(false);
-//            }
-//            ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow())).selectedProperty()
-//                    .setValue(e.getNewValue());
-//
-//        });
 
-        TableColumn<TableEntry, Integer> idColumn = new EditorTableColumn<>("#",
+        TableColumn<TableEntry, Integer> idColumn = new TooltipTableColumn<>("#",
                 "The order number of the PV in the beamline set", 30, 30, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<TableEntry, String> pvNameColumn = new EditorTableColumn<>("PV", "The name of the PV", 170);
+        TableColumn<TableEntry, String> pvNameColumn = new TooltipTableColumn<>("PV", "The name of the PV", 170);
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
-        TableColumn<TableEntry, Timestamp> timestampColumn = new EditorTableColumn<>("Timestamp",
+        TableColumn<TableEntry, Timestamp> timestampColumn = new TooltipTableColumn<>("Timestamp",
                 "Timestamp of the value when the snapshot was taken", 120, 135, true);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, Timestamp>("timestamp"));
         timestampColumn.setCellFactory(c -> new TableCell<TableEntry, Timestamp>() {
@@ -525,15 +550,15 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         });
         timestampColumn.setPrefWidth(135);
 
-        TableColumn<TableEntry, String> statusColumn = new EditorTableColumn<>("Status",
+        TableColumn<TableEntry, String> statusColumn = new TooltipTableColumn<>("Status",
                 "Alarm status of the PV when the snapshot was taken", 100, 100, true);
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
-        TableColumn<TableEntry, AlarmSeverity> severityColumn = new EditorTableColumn<>("Severity",
+        TableColumn<TableEntry, AlarmSeverity> severityColumn = new TooltipTableColumn<>("Severity",
                 "Alarm severity of the PV when the snapshot was taken", 80, 80, false);
         severityColumn.setCellValueFactory(new PropertyValueFactory<>("severity"));
 
-        TableColumn<TableEntry, VType> storedValueColumn = new EditorTableColumn<>("Stored Value",
+        TableColumn<TableEntry, VType> storedValueColumn = new TooltipTableColumn<>("Stored Value",
                 "PV value when the snapshot was taken", 100);
         storedValueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
         storedValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
@@ -543,7 +568,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                     .setValue(e.getNewValue());
         });
 
-        TableColumn<TableEntry, VType> liveValueColumn = new EditorTableColumn<>("Live Value", "Current PV value", 100);
+        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Live Value", "Current PV value",
+                100);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
         liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
         liveValueColumn.setEditable(false);
@@ -584,47 +610,41 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
 
     private TableView<TableEntry> createTableForMultipleSnapshots(int n) {
         final TableView<TableEntry> table = new TableView<>();
-        TableColumn<TableEntry, Boolean> selectedColumn = new EditorTableColumn<>("",
+        TableColumn<TableEntry, Boolean> selectedColumn = new TooltipTableColumn<>("",
                 "Include this PV when restoring values", 30, 30, false);
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
         selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
         selectedColumn.setEditable(true);
-        final CheckBox selectAllCheckBox = new CheckBox();
+        selectedColumn.setSortable(false);
+        selectAllCheckBox = new CheckBox();
         selectAllCheckBox.setSelected(false);
         selectAllCheckBox.setOnAction(
                 e -> table.getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
         selectedColumn.setGraphic(selectAllCheckBox);
-//        selectedColumn.setOnEditCommit(e -> {
-//            if (!e.getNewValue()) {
-//                selectAllCheckBox.setSelected(false);
-//            }
-//            ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow())).selectedProperty()
-//                    .setValue(e.getNewValue());
-//        });
 
-        TableColumn<TableEntry, Integer> idColumn = new EditorTableColumn<>("#",
+        TableColumn<TableEntry, Integer> idColumn = new TooltipTableColumn<>("#",
                 "The order number of the PV in the beamline set", 30, 30, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
-        TableColumn<TableEntry, String> pvNameColumn = new EditorTableColumn<>("PV", "The name of the PV", 170);
+        TableColumn<TableEntry, String> pvNameColumn = new TooltipTableColumn<>("PV", "The name of the PV", 170);
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
-        TableColumn<TableEntry, VType> liveValueColumn = new EditorTableColumn<>("Live Value", "Current PV value", -1);
+        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Live Value", "Current PV value", -1);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
         liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
         liveValueColumn.setEditable(false);
 
-        TableColumn<TableEntry, ?> storedValueColumn = new EditorTableColumn<>("Stored Values",
+        TableColumn<TableEntry, ?> storedValueColumn = new TooltipTableColumn<>("Stored Values",
                 "PV value when the snapshot was taken", -1);
 
-        TableColumn<TableEntry, VType> baseCol = new EditorTableColumn<>("Base", "PV value when the snapshot was taken",
-                100);
+        TableColumn<TableEntry, VType> baseCol = new TooltipTableColumn<>("Base",
+                "PV value when the snapshot was taken", 100);
         baseCol.setCellValueFactory(e -> e.getValue().valueProperty());
         baseCol.setCellFactory(e -> new VTypeCellEditor<>());
         storedValueColumn.getColumns().add(baseCol);
 
         for (int i = 1; i < n; i++) {
-            TableColumn<TableEntry, VTypePair> col = new EditorTableColumn<>(controller.getSnapshot(i).toString(),
+            TableColumn<TableEntry, VTypePair> col = new TooltipTableColumn<>(controller.getSnapshot(i).toString(),
                     "PV value when the snapshot was taken", 100);
             final int a = i;
             col.setCellValueFactory(e -> e.getValue().compareValueProperty(a));
@@ -633,8 +653,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             storedValueColumn.getColumns().add(col);
         }
 
-        List<TableColumn<TableEntry, ?>> list = Arrays.asList(selectedColumn, idColumn, pvNameColumn, liveValueColumn,
-                storedValueColumn);
+        List<TableColumn<TableEntry, ?>> list = Arrays.asList(selectedColumn, idColumn, pvNameColumn, storedValueColumn,
+                liveValueColumn);
         table.getColumns().addAll(list);
         return table;
     }
@@ -652,6 +672,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         configureTableForDnD(table);
         table.setOnMouseReleased(e -> contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY));
+        table.setOnMouseClicked(e -> clickedColumn = table.getSelectionModel().getSelectedCells().get(0).getColumn());
         return table;
 
     }
@@ -673,6 +694,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                     dateField.setText(Utilities.timestampToBigEndianString(t.getDate(), true));
                 });
                 table = createTable(num);
+                entries.forEach(e -> e.selectedProperty().addListener(
+                        (a, o, n) -> selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false)));
                 contentPane.setCenter(table);
                 table.getItems().setAll(entries);
             });
@@ -690,6 +713,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             final int num = controller.getNumberOfSnapshots();
             Platform.runLater(() -> {
                 table = createTable(num);
+                entries.forEach(e -> e.selectedProperty().addListener(
+                        (a, o, n) -> selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false)));
                 contentPane.setCenter(table);
                 table.getItems().setAll(entries);
             });
@@ -734,7 +759,16 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         if (table == null) {
             return null;
         } else {
-            Timestamp timestamp = controller.getSnapshot(0).getTimestamp();
+            // TablePosition focusedCell = table.getFocusModel().getFocusedCell();
+            // int col = focusedCell.getColumn();
+            // System.out.println(col);
+            Timestamp timestamp = null;
+            if (controller.getNumberOfSnapshots() == 1 || clickedColumn < 0) {
+                timestamp = controller.getSnapshot(0).getTimestamp();
+            } else {
+                timestamp = controller.getSnapshot(clickedColumn - 3).getTimestamp();
+            }
+
             if (timestamp == null) {
                 List<ProcessVariable> list = new ArrayList<>();
                 for (TableEntry e : table.selectionModelProperty().get().getSelectedItems()) {
