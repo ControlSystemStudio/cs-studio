@@ -19,7 +19,6 @@ import org.csstudio.ui.util.SWTConstants;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
-import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
 import org.eclipse.draw2d.Graphics;
@@ -39,6 +38,7 @@ import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Control;
 
 /**The editpart for the root display.
@@ -122,7 +122,7 @@ public class DisplayEditpart extends AbstractContainerEditpart {
                         if(!isActive() || getViewer() == null || getViewer().getControl().isDisposed())
                             return;
                         org.eclipse.swt.graphics.Point size =
-                                ((FigureCanvas)getViewer().getControl()).getSize();
+                                ((Canvas)getViewer().getControl()).getSize();
                         if(size.equals(oldSize))
                             return;
                         //In RAP, each revalidate will enlarge the shell by 1000, see
