@@ -48,7 +48,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
             + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
 
     private static final String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
-            + "-fx-font-size: 19; -fx-font-weight: bold; "
+            + "-fx-font-size: 20; -fx-font-weight: bold; "
             + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
 
     private ObjectProperty<Isotope> isotopeProperty;
@@ -61,11 +61,9 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     private FadeTransition animation;
     private Spinner<Integer> neutronSpinner;
     private Spinner<Integer> chargeSpinner;
-    private Spinner<Integer> energySpinner;
     private ComboBox<Isotope> isotopeCombo;
     private Label neutronLabel;
     private Label chargeLabel;
-    private Label energyLabel;
     private boolean showOnlyAvailable = false;
 
     /**
@@ -218,9 +216,8 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         isotopeButton.setOnAction((e) -> baseLevelProperty().setValue(internalIsotopeProperty().getValue()));
         isotopeButton.setPadding(new Insets(1, 2, 1, 2));
         isotopeButton.setPrefHeight(32);
-        isotopeButton.setMaxWidth(Double.MAX_VALUE);
-//        isotopeButton.setPrefWidth(160);
-        isotopeButton.setFont(Font.font(19));
+        isotopeButton.setPrefWidth(110);
+        isotopeButton.setFont(Font.font(20));
         isotopeButton.disableProperty().bind(disableProperty());
 
         neutronSpinner = new Spinner<>();
@@ -231,7 +228,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         neutronSpinner.valueProperty().addListener((a, o, n) -> {
             Isotope iso = internalIsotopeProperty().getValue();
             if (iso != null) {
-                internalIsotopeProperty().setValue(Isotope.of(iso.element, n, iso.charge, iso.energy));
+                internalIsotopeProperty().setValue(Isotope.of(iso.element, n, iso.charge));
             }
         });
         chargeSpinner = new Spinner<>();
@@ -242,25 +239,15 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         chargeSpinner.valueProperty().addListener((a, o, n) -> {
             Isotope iso = internalIsotopeProperty().getValue();
             if (iso != null) {
-                internalIsotopeProperty().setValue(Isotope.of(iso.element, iso.neutrons, n, iso.energy));
+                internalIsotopeProperty().setValue(Isotope.of(iso.element, iso.neutrons, n));
             }
         });
-        energySpinner = new Spinner<>();
-        energySpinner.disableProperty().bind(disableProperty());
-        energySpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 400, 200));
-        energySpinner.setEditable(true);
-        energySpinner.setPrefSize(3.4 * BTN_SIZE, BTN_SIZE);
-        energySpinner.valueProperty().addListener((a, o, n) -> {
-            Isotope iso = internalIsotopeProperty().getValue();
-            if (iso != null) {
-                internalIsotopeProperty().setValue(Isotope.of(iso.element, iso.neutrons, iso.charge, n));
-            }
-        });
+
         isotopeCombo = new ComboBox<>();
         isotopeCombo.disableProperty().bind(disableProperty());
         isotopeCombo.setPadding(new Insets(1, 0, 1, 0));
         isotopeCombo.setEditable(false);
-        isotopeCombo.setMaxWidth(Double.MAX_VALUE);
+        isotopeCombo.setPrefSize(4.5 * BTN_SIZE + 5, BTN_SIZE);
         isotopeCombo.setCellFactory(c -> new ListCell<Isotope>() {
             protected void updateItem(Isotope item, boolean empty) {
                 super.updateItem(item, empty);
@@ -287,12 +274,12 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
 
         neutronLabel = new Label("Neutrons:");
         chargeLabel = new Label("Charge:");
-        energyLabel = new Label("Energy [MeV/u]:");
 
         GridPane.setVgrow(isotopeCombo, Priority.NEVER);
+        GridPane.setHgrow(isotopeCombo, Priority.ALWAYS);
         GridPane.setValignment(isotopeCombo, VPos.BOTTOM);
         GridPane.setHalignment(isotopeCombo, HPos.CENTER);
-        GridPane.setFillWidth(isotopeCombo, true);
+        GridPane.setFillWidth(isotopeCombo, false);
 
         GridPane.setVgrow(isotopeButton, Priority.NEVER);
         GridPane.setHgrow(isotopeButton, Priority.ALWAYS);
@@ -306,12 +293,10 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         isotopePanel.setHgap(5);
         isotopePanel.add(neutronLabel, 0, 0, 1, 1);
         isotopePanel.add(chargeLabel, 1, 0, 1, 1);
-        isotopePanel.add(energyLabel, 2, 0, 1, 1);
         isotopePanel.add(neutronSpinner, 0, 1, 1, 1);
         isotopePanel.add(chargeSpinner, 1, 1, 1, 1);
-        isotopePanel.add(energySpinner, 2, 1, 1, 1);
-        isotopePanel.add(isotopeCombo, 0, 0, 3, 2);
-        isotopePanel.add(isotopeButton, 0, 2, 3, 1);
+        isotopePanel.add(isotopeCombo, 0, 0, 2, 2);
+        isotopePanel.add(isotopeButton, 2, 0, 1, 2);
         isotopeCombo.setVisible(false);
 
         GridPane.setHgrow(isotopePanel, Priority.ALWAYS);
@@ -343,10 +328,8 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         this.showOnlyAvailable = showOnlyAvailable;
         neutronSpinner.setVisible(!showOnlyAvailable);
         chargeSpinner.setVisible(!showOnlyAvailable);
-        energySpinner.setVisible(!showOnlyAvailable);
         chargeLabel.setVisible(!showOnlyAvailable);
         neutronLabel.setVisible(!showOnlyAvailable);
-        energyLabel.setVisible(!showOnlyAvailable);
         isotopeCombo.setVisible(showOnlyAvailable);
         showOnlyAvailable(this.showOnlyAvailable);
     }
@@ -372,7 +355,6 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         Element e = Element.valueOf(element.toUpperCase());
         int n = e.commonNeutrons;
         int c = e.commonCharge;
-        int en = 200;
         if (showOnlyAvailable) {
             final List<Isotope> isotopes = new ArrayList<>();
             availableBaseLevelsProperty().get().forEach(a -> {
@@ -383,7 +365,6 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
             if (!isotopes.isEmpty()) {
                 n = isotopes.get(0).neutrons;
                 c = isotopes.get(0).charge;
-                en = isotopes.get(0).energy;
                 isotopeCombo.selectionModelProperty().get().select(0);
             }
         } else {
@@ -391,12 +372,11 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
                 if (a.element == e) {
                     n = a.neutrons;
                     c = a.charge;
-                    en = a.energy;
                     break;
                 }
             }
         }
-        internalIsotopeProperty().setValue(Isotope.of(e, n, c, en));
+        internalIsotopeProperty().setValue(Isotope.of(e, n, c));
     }
 
     private Property<Isotope> internalIsotopeProperty() {
@@ -429,8 +409,6 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
 
                     neutronSpinner.valueFactoryProperty().get().setValue(n.neutrons);
                     factory.setValue(n.charge);
-
-                    energySpinner.valueFactoryProperty().get().setValue(n.energy);
 
                     if (showOnlyAvailable) {
                         isotopeCombo.selectionModelProperty().get().select(n);

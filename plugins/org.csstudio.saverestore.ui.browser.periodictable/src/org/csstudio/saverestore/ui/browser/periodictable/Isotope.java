@@ -16,14 +16,12 @@ public class Isotope extends BaseLevel implements Serializable {
 
     private static final long serialVersionUID = -3119527921225304647L;
 
-    /** Element identifier */
+    /** The periodic table element */
     public final Element element;
     /** Number of neutrons of this isotope */
     public final int neutrons;
     /** Ion charge of this isotope */
     public final int charge;
-    /** The ion energy in MeV/u */
-    public final int energy;
 
     /**
      * Construct a new Isotope from pieces.
@@ -33,8 +31,8 @@ public class Isotope extends BaseLevel implements Serializable {
      * @param charge the ion charge
      * @return the isotope
      */
-    public static final Isotope of(Element element, int neutrons, int charge, int energy) {
-        return new Isotope(element, neutrons, charge, energy);
+    public static final Isotope of(Element element, int neutrons, int charge) {
+        return new Isotope(element, neutrons, charge);
     }
 
     /**
@@ -57,9 +55,9 @@ public class Isotope extends BaseLevel implements Serializable {
         }
         int neutrons = e.commonNeutrons;
         int charge = e.commonCharge;
-        if (parts.length < 4) {
+        if (parts.length < 3) {
             throw new IllegalArgumentException(storageName + " does not provide mass, charge and energy.");
-        } else if (parts.length > 4) {
+        } else if (parts.length > 3) {
             throw new IllegalArgumentException("Too many parts in the name.");
         }
 
@@ -79,24 +77,16 @@ public class Isotope extends BaseLevel implements Serializable {
             throw new IllegalArgumentException(
                     "Charge of '" + e.fullName + "' cannot be higher than " + e.atomicNumber + ".");
         }
-        int energy = 0;
-        if (parts.length == 4) {
-            energy = Integer.parseInt(parts[3]);
-        }
-        if (energy < 0) {
-            throw new IllegalArgumentException("Negative energy is not allowed.");
-        }
 
-        return new Isotope(e, neutrons, charge, energy);
+        return new Isotope(e, neutrons, charge);
     }
 
-    private Isotope(Element element, int neutrons, int charge, int energy) {
-        super(null, composeStorageName(element, neutrons, charge, energy),
-                composePresentationName(element, neutrons, charge, energy));
+    private Isotope(Element element, int neutrons, int charge) {
+        super(null, composeStorageName(element, neutrons, charge),
+                composePresentationName(element, neutrons, charge));
         this.element = element;
         this.neutrons = neutrons;
         this.charge = charge;
-        this.energy = energy;
     }
 
     /**
@@ -105,17 +95,12 @@ public class Isotope extends BaseLevel implements Serializable {
      * @param element the element
      * @param neutrons the number of neutrons in the isotope
      * @param charge the isotope charge
-     * @param energy the energy in MeV/u
      * @return the storage representation for the isotope
      */
-    private static String composeStorageName(Element element, int neutrons, int charge, int energy) {
-        StringBuilder sb = new StringBuilder().append(element.symbol).append('_')
+    private static String composeStorageName(Element element, int neutrons, int charge) {
+        return new StringBuilder().append(element.symbol).append('_')
                 .append(element.atomicNumber + neutrons).append('_').append(Math.abs(charge))
-                .append(charge < 0 ? 'n' : 'p');
-        if (energy != 0) {
-            sb.append('_').append(energy).toString();
-        }
-        return sb.toString();
+                .append(charge < 0 ? 'n' : 'p').toString();
     }
 
     /**
@@ -124,10 +109,9 @@ public class Isotope extends BaseLevel implements Serializable {
      * @param element the element
      * @param neutrons the number of neutrons in the isotope
      * @param charge the isotope charge
-     * @param energy the energy in MeV/u
      * @return the presentation name for the isotope
      */
-    private static String composePresentationName(Element element, int neutrons, int charge, int energy) {
+    private static String composePresentationName(Element element, int neutrons, int charge) {
         StringBuilder s = new StringBuilder(11);
         for (char c : String.valueOf(element.atomicNumber).toCharArray()) {
             s.append(getUnicode(c, true));
@@ -142,7 +126,6 @@ public class Isotope extends BaseLevel implements Serializable {
         if (charge != 0) {
             s.append(charge < 0 ? '\u207b' : '\u207a');
         }
-        s.append(':').append(' ').append(energy).append(" MeV/u");
         return s.toString();
     }
 
@@ -227,7 +210,6 @@ public class Isotope extends BaseLevel implements Serializable {
         result = prime * result + charge;
         result = prime * result + ((element == null) ? 0 : element.hashCode());
         result = prime * result + neutrons;
-        result = prime * result + energy;
         return result;
     }
 
@@ -250,8 +232,6 @@ public class Isotope extends BaseLevel implements Serializable {
         if (element != other.element)
             return false;
         if (neutrons != other.neutrons)
-            return false;
-        if (energy != other.energy)
             return false;
         return true;
     }
