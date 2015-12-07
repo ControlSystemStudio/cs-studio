@@ -83,6 +83,7 @@ of the distribution package.
       <feature id="org.csstudio.frib.feature"/>
       <feature id="org.csstudio.saverestore.git.feature"/>
       <feature id="org.csstudio.saverestore.periodictable.feature"/>
+      <feature id="org.csstudio.trends.databrowser2.feature"/>
    </features>
 
    <configurations>
