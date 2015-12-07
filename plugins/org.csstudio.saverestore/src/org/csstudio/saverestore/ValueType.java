@@ -1,4 +1,4 @@
-package org.csstudio.saverestore.git;
+package org.csstudio.saverestore;
 
 import org.csstudio.saverestore.data.VNoData;
 import org.diirt.vtype.VBoolean;
