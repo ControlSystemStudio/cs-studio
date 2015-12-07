@@ -31,6 +31,7 @@ import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
@@ -411,6 +412,8 @@ public final class OPIShell implements IOPIRuntime {
             return this.actionRegistry;
         if (adapter == GraphicalViewer.class)
             return this.viewer;
+        if (adapter == CommandStack.class)
+            return this.viewer.getEditDomain().getCommandStack();
         return null;
     }
 
