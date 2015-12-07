@@ -185,6 +185,15 @@ public class OPIShellSummary extends FXViewPart {
         cachedShells = updatedShells;
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    public Object getAdapter(Class adapter) {
+        if(OPIShell.activeShell == null) {
+            return null;
+        }
+        return OPIShell.activeShell.getAdapter(adapter);
+    }
+
     @Override
     public String toString() {
         return "OpiShell summary: " + getViewSite().getId();
