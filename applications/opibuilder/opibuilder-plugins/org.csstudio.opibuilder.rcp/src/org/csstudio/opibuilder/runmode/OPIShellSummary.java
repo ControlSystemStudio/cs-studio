@@ -185,9 +185,8 @@ public class OPIShellSummary extends FXViewPart {
         cachedShells = updatedShells;
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public Object getAdapter(Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         if(OPIShell.activeShell == null) {
             return null;
         }

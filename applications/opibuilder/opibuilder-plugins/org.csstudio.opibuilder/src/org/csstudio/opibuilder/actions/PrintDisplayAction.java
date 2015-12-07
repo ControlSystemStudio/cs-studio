@@ -72,8 +72,7 @@ public class PrintDisplayAction extends WorkbenchPartAction {
      */
     public void run() {
         final GraphicalViewer viewer;
-        viewer = (GraphicalViewer) getWorkbenchPart().getAdapter(
-                GraphicalViewer.class);
+        viewer = getWorkbenchPart().getAdapter(GraphicalViewer.class);
 
         viewer.getControl().getDisplay().asyncExec(new Runnable() {
             @Override

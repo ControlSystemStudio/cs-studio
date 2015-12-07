@@ -405,15 +405,14 @@ public final class OPIShell implements IOPIRuntime {
         throw new NotImplementedException();
     }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public Object getAdapter(Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         if (adapter == ActionRegistry.class)
-            return this.actionRegistry;
+            return adapter.cast(this.actionRegistry);
         if (adapter == GraphicalViewer.class)
-            return this.viewer;
+            return adapter.cast(this.viewer);
         if (adapter == CommandStack.class)
-            return this.viewer.getEditDomain().getCommandStack();
+            return adapter.cast(this.viewer.getEditDomain().getCommandStack());
         return null;
     }
 
