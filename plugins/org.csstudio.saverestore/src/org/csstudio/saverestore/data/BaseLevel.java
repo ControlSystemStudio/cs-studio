@@ -8,9 +8,8 @@ import org.csstudio.saverestore.DataProvider;
 /**
  *
  * <code>BaseLevel</code> represents the base object that can be selected. These can be for example the top level
- * folders if the data comes from the file system. When the base level is created it is uniquely defined by its
- * storage name. This is also the only property that is required by the {@link DataProvider} to do further loading
- * of data.
+ * folders if the data comes from the file system. When the base level is created it is uniquely defined by its storage
+ * name. This is also the only property that is required by the {@link DataProvider} to do further loading of data.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -23,13 +22,13 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
     private final Branch branch;
 
     /**
-     * Construct a new BaseLevel using the values provided by the <code>level</code> parameter.
-     * Constructed base level is equal to the provided one.
+     * Construct a new BaseLevel using the values provided by the <code>level</code> parameter. Constructed base level
+     * is equal to the provided one.
      *
      * @param level the parameters provider
      */
     public BaseLevel(BaseLevel level) {
-        this(level.getBranch(),level.getStorageName(),level.getPresentationName());
+        this(level.getBranch(), level.getStorageName(), level.getPresentationName());
     }
 
     /**
@@ -38,14 +37,20 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
      * @param branch the branch that this base level resides on
      * @param storageName the storage name of the base level
      * @param presentationName the presentation name of the base level
+     * @throws IllegalArgumentException if the storage name contains non ASCII characters
      */
-    public BaseLevel(Branch branch, String storageName, String presentationName) {
+    public BaseLevel(Branch branch, String storageName, String presentationName) throws IllegalArgumentException {
+        if (!storageName.chars().allMatch(c -> c >= 32 && c < 128)) {
+            throw new IllegalArgumentException("Only ASCII characters are allowed in the storage name.");
+        }
         this.branch = branch;
         this.storageName = storageName;
         this.presentationName = presentationName;
     }
 
     /**
+     * Returns the presentation name of the base level.
+     *
      * @return the name used for presentation of this base level
      */
     public String getPresentationName() {
@@ -53,16 +58,19 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
     }
 
     /**
-     * @return the name used for storage of this base level; has to be unique and can only contain ASCII characters
+     * Returns the storage name of this base level. Storage name has to be unique among all base levels and can only
+     * contain ASCII characters.
+     *
+     * @return the name used for storage of this base level.
      */
     public String getStorageName() {
         return storageName;
     }
 
     /**
-     * Returns the branch on which the base level is located. The {@link DataProvider} is obliged to fill this
-     * field (if branches are supported), but the clients of the data provider are not obliged to provide the
-     * base level with the proper branch.
+     * Returns the branch on which the base level is located. The {@link DataProvider} is obliged to fill this field (if
+     * branches are supported), but the clients of the data provider are not obliged to provide the base level with the
+     * proper branch.
      *
      * @return the branch on which this base level is located
      */
@@ -72,6 +80,7 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -85,20 +94,22 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
         BaseLevel other = (BaseLevel) obj;
         return getStorageName().equals(other.getStorageName())
                 && ((getBranch() != null && getBranch().equals(other.getBranch()))
-                || (getBranch() == null && other.getBranch() == null));
+                        || (getBranch() == null && other.getBranch() == null));
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-        return Objects.hash(BaseLevel.class,getStorageName(),getBranch());
+        return Objects.hash(BaseLevel.class, getStorageName(), getBranch());
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
@@ -115,6 +126,7 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#toString()
      */
     @Override

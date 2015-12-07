@@ -55,6 +55,8 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
+     * The data provider id, which this beamline set originates from.
+     *
      * @return the data provider id
      */
     public String getDataProviderId() {
@@ -62,6 +64,8 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
+     * The path to this beamline set within its base level location, but without the actual file name.
+     *
      * @return the full folder name within the top or base level location and without the file name
      */
     public String getFolder() {
@@ -69,6 +73,8 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
+     * Returns the base level, which this beamline belongs to.
+     *
      * @return the base level which this set is for
      */
     public Optional<BaseLevel> getBaseLevel() {
@@ -76,7 +82,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * Updated the base level in this beamline set. This method should be called before the beamline set is serialized
+     * Updates the base level in this beamline set. This method should be called before the beamline set is serialized
      * and deserialized in a different plugin. If the destination plugin does not have a dependency on the current base
      * level type, the beamline set could not be deserialized. Therefore, the current base level has to be morphed into
      * an in instance that all plugin have dependency on.
@@ -88,13 +94,17 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * @return the name of the branch from which the set was loaded
+     * Returns the branch, which this beamline set originates from.
+     *
+     * @return the branch from which the set was loaded
      */
     public Branch getBranch() {
         return branch;
     }
 
     /**
+     * Returns the full path of this beamline set (including the set name) within the base level.
+     *
      * @return the full path to the beamline set file
      */
     public String[] getPath() {
@@ -102,6 +112,8 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
+     * Returns the name of the beamline set. This is in general identical to the last part of the {@link #getPath()}.
+     *
      * @return the name of the set (file name)
      */
     public String getName() {
@@ -109,6 +121,8 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
+     * Returns the complete path as a single string. Individual parts are separated by the <code>/</code> character.
+     *
      * @return the path as a single string, individual parts are separated by the <code>/</code> character
      */
     public String getPathAsString() {
@@ -120,8 +134,10 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * @return the display name of the beamline set, which may not be a fully qualified name but rather a name that
-     *         quickly shows what this beamline set is about
+     * Returns the display name of the beamline set, which may not be a fully qualified name but rather a name that
+     * quickly shows what this beamline set is about.
+     *
+     * @return the display name of the beamline set
      */
     public String getDisplayName() {
         if (displayName == null) {
@@ -131,7 +147,10 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * @return the fully qualified name, which includes all parts of the path, bease level and branch
+     * Returns the fully qualified name of this beamline set, which includes all parts of the path, base level and
+     * branch.
+     *
+     * @return the fully qualified name
      */
     public String getFullyQualifiedName() {
         if (fullyQualifiedName == null) {

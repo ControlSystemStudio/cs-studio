@@ -11,10 +11,10 @@ import org.csstudio.saverestore.data.VSnapshot;
 
 /**
  *
- * <code>CompletionNotifier</code> is a callback that is notified whenever a specific action is completed by
- * the data provider. When a specific UI part will trigger an action in the data provider, the data provider will
- * complete the action and notify the registered listeners about the completion of the event. The listener may
- * take additional actions to refresh the view.
+ * <code>CompletionNotifier</code> is a callback that is notified whenever a specific action is completed by the data
+ * provider. When a specific UI part will trigger an action in the data provider, the data provider will complete the
+ * action and notify the registered listeners about the completion of the event. The listener may take additional
+ * actions to refresh the view.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -29,8 +29,8 @@ public interface CompletionNotifier {
     void branchCreated(Branch newBranch);
 
     /**
-     * Called whenever the repository was synchronised and as a consequence of the synchronisation the
-     * repository changed. This event could override any other events.
+     * Called whenever the repository was synchronised and as a consequence of the synchronisation the repository
+     * changed. This event could override any other events.
      */
     void synchronised();
 
@@ -43,16 +43,16 @@ public interface CompletionNotifier {
     void beamlineSaved(BeamlineSetData set);
 
     /**
-     * Called whenever the beamline set is successfully deleted, but only if at the same time no updates due to synchronisation were
-     * made. If the repository was also updated, only {@link #synchronised()} is called.
+     * Called whenever the beamline set is successfully deleted, but only if at the same time no updates due to
+     * synchronisation were made. If the repository was also updated, only {@link #synchronised()} is called.
      *
      * @param set the set that was deleted
      */
     void beamlineDeleted(BeamlineSet set);
 
     /**
-     * Called whenever the snapshot was saved, but only if at the same time no updates due to synchronisation were
-     * made. If the repository was also updated, only {@link #synchronised()} is called.
+     * Called whenever the snapshot was saved, but only if at the same time no updates due to synchronisation were made.
+     * If the repository was also updated, only {@link #synchronised()} is called.
      *
      * @param snapshot the saved snapshot
      */
@@ -67,8 +67,8 @@ public interface CompletionNotifier {
     void snapshotTagged(Snapshot snapshot);
 
     /**
-     * Called whenever the data was imported, but only if at the same time no updates due to synchronisation were
-     * made. If the repository wa also updated, only {@link #synchronised()} is called.
+     * Called whenever the data was imported, but only if at the same time no updates due to synchronisation were made.
+     * If the repository wa also updated, only {@link #synchronised()} is called.
      *
      * @param source the source of data
      * @param toBranch the destination branch

@@ -9,9 +9,13 @@ package org.csstudio.saverestore;
  */
 public class DataProviderWrapper {
 
+    /** Implementation of the DataProvider interface provided by an extension point */
     public final DataProvider provider;
+    /** The name of the data provider */
     public final String name;
+    /** Unique id of the data provider */
     public final String id;
+    /** Description of the data provider */
     public final String description;
 
     /**
@@ -36,7 +40,9 @@ public class DataProviderWrapper {
     }
 
     /**
-     * @return the presentation name of this wrapper (name: description)
+     * Returns the presentation name of this wrapper, which is equal to name: description.
+     *
+     * @return the presentation name (name: description)
      */
     public String getPresentationName() {
         return name + ": " + description;
@@ -44,6 +50,7 @@ public class DataProviderWrapper {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -53,6 +60,7 @@ public class DataProviderWrapper {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -65,6 +73,7 @@ public class DataProviderWrapper {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override

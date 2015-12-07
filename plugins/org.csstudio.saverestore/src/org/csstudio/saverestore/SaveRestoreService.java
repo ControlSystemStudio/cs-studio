@@ -47,7 +47,8 @@ public class SaveRestoreService {
     public static final String PREF_NUMBER_OF_SNAPSHOTS = "maxNumberOfSnapshotsInBatch";
     private static final String PLUGIN_ID = "org.csstudio.saverestore";
 
-    private static final String DATA_PROVIDER_EXT_POINT = "org.csstudio.saverestore.dataprovider";
+    /** The name of the data provider extension point definition */
+    public static final String DATA_PROVIDER_EXT_POINT = "org.csstudio.saverestore.dataprovider";
     /** The common logger */
     public static final Logger LOGGER = Logger.getLogger(SaveRestoreService.class.getName());
     /** The name of the selectedDataProvider property */
@@ -64,7 +65,9 @@ public class SaveRestoreService {
     private static final SaveRestoreService INSTANCE = new SaveRestoreService();
 
     /**
-     * @return the singleton instance of the engine
+     * Returns the singleton instance of this service.
+     *
+     * @return the singleton instance
      */
     public static final SaveRestoreService getInstance() {
         return INSTANCE;
@@ -74,6 +77,8 @@ public class SaveRestoreService {
     }
 
     /**
+     * Loads the data provider extension points and returns them as a list.
+     *
      * @return the list of all registered data providers
      */
     public List<DataProviderWrapper> getDataProviders() {
@@ -108,7 +113,8 @@ public class SaveRestoreService {
      * @param selectedDataProvider the data provider to select
      */
     public void setSelectedDataProvider(DataProviderWrapper selectedDataProvider) {
-        if (this.selectedDataProvider != null && this.selectedDataProvider.equals(selectedDataProvider)) return;
+        if (this.selectedDataProvider != null && this.selectedDataProvider.equals(selectedDataProvider))
+            return;
         DataProviderWrapper oldValue = this.selectedDataProvider;
         this.selectedDataProvider = selectedDataProvider;
         LOGGER.log(Level.FINE, "Selected data provider: " + selectedDataProvider.getPresentationName());
@@ -116,6 +122,8 @@ public class SaveRestoreService {
     }
 
     /**
+     * Returns the data provider wrapper that is currently selected.
+     *
      * @return the selected data provider
      */
     public DataProviderWrapper getSelectedDataProvider() {
@@ -123,8 +131,8 @@ public class SaveRestoreService {
     }
 
     /**
-     * Returns the data provider for the specified id. If no data provider for that id is found, the selected
-     * one is returned.
+     * Returns the data provider for the specified id. If no data provider for that id is found, the selected one is
+     * returned.
      *
      * @param id the requested data provider id
      * @return data provider for the given id
@@ -154,7 +162,10 @@ public class SaveRestoreService {
     }
 
     /**
-     * @return true if the engine is currently busy or false otherwise
+     * Whenever the service is executing a task it is flagged as busy, which can be used as an indicator on the UI to
+     * tell the user that something is happening.
+     *
+     * @return true if the service is currently busy or false otherwise
      */
     public boolean isBusy() {
         return busy;
@@ -174,6 +185,9 @@ public class SaveRestoreService {
     }
 
     /**
+     * Service can load the snapshots all at once or in batches (to reduce the network load). In case when the snapshots
+     * are loaded in batches, the number returned by this method defines the size of the batch.
+     *
      * @return number of snapshots loaded from the repository at once (in a single call)
      */
     public int getNumberOfSnapshots() {
@@ -181,6 +195,8 @@ public class SaveRestoreService {
     }
 
     /**
+     * Returns the preference store for this plugin.
+     *
      * @return the preferences store of this plugin
      */
     public IPreferenceStore getPreferences() {

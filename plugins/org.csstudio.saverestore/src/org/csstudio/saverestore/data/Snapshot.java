@@ -12,9 +12,9 @@ import org.csstudio.saverestore.Utilities;
 
 /**
  *
- * <code>Snapshot</code> is a descriptor of a single snapshot revision. When comparing different snapshots all
- * fields are taken into account (beamline set, date, comment, owner and parameters). However {@link #compareTo(Snapshot)}
- * only uses the date field. Therefore {@link #compareTo(Snapshot)} might flag two snapshots equal when
+ * <code>Snapshot</code> is a descriptor of a single snapshot revision. When comparing different snapshots all fields
+ * are taken into account (beamline set, date, comment, owner and parameters). However {@link #compareTo(Snapshot)} only
+ * uses the date field. Therefore {@link #compareTo(Snapshot)} might flag two snapshots equal when
  * {@link #equals(Object)} return false. On the other hand if equals returns true, than the compareTo will return 0.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -34,8 +34,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     private final String owner;
     private final String toString;
 
-    private Map<String,String> parameters;
-
+    private Map<String, String> parameters;
 
     /**
      * Constructs a new snapshot, which belongs to the specific set. Snapshot that is read from the central storage,
@@ -44,7 +43,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param set the set to which the snapshot belongs
      */
     public Snapshot(BeamlineSet set) {
-        this(set,null,null,null);
+        this(set, null, null, null);
     }
 
     /**
@@ -56,7 +55,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param owner the person that created the snapshot
      */
     public Snapshot(BeamlineSet set, Date date, String comment, String owner) {
-        this(set,date,comment,owner,new HashMap<>());
+        this(set, date, comment, owner, new HashMap<>());
     }
 
     /**
@@ -68,7 +67,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @param owner the person that created the snapshot
      * @param parameters a set of optional parameters
      */
-    public Snapshot(BeamlineSet set, Date date, String comment, String owner, Map<String,String> parameters) {
+    public Snapshot(BeamlineSet set, Date date, String comment, String owner, Map<String, String> parameters) {
         this.set = set;
         this.date = date;
         this.comment = comment;
@@ -77,7 +76,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
         if (this.date == null) {
             toString = UNKNOWN;
         } else {
-            StringBuilder sb = new StringBuilder(200).append(Utilities.timestampToBigEndianString(date,true))
+            StringBuilder sb = new StringBuilder(200).append(Utilities.timestampToBigEndianString(date, true))
                     .append(":\t (").append(owner).append(")\n  ").append(comment.split("\\n")[0]);
             String tagMessage = parameters.get(TAG_MESSAGE);
             String tagName = parameters.get(TAG_NAME);
@@ -89,13 +88,18 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     }
 
     /**
-     * @return the beamline set which this snapshot belongs to
+     * Returns the beamline set which this snapshot belongs to.
+     *
+     * @return the beamline set
      */
     public BeamlineSet getBeamlineSet() {
         return set;
     }
 
     /**
+     * Returns the timestamp when the snapshot was stored. This is not the same as the timestamp of when the snapshot
+     * was taken and should not be confused by {@link VSnapshot#getTimestamp()}.
+     *
      * @return the date when the snapshot was stored
      */
     public Date getDate() {
@@ -103,13 +107,17 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     }
 
     /**
-     * @return the comment provided when the snapshot was stored
+     * Returns the comment provided when the snapshot was stored.
+     *
+     * @return the snapshot comment
      */
     public String getComment() {
         return comment;
     }
 
     /**
+     * Returns the username of the person that stored this snapshot.
+     *
      * @return the name of the person that stored the snapshot
      */
     public String getOwner() {
@@ -117,13 +125,19 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     }
 
     /**
+     * Returns additional parameters of this snapshot. Parameters might be any string that is required by the data
+     * provider to work with this snapshot or any other info that is required to be carried around, including the tag
+     * name and message if they exist.
+     *
      * @return unmodifiable map of parameters
      */
-    public Map<String,String> getParameters() {
+    public Map<String, String> getParameters() {
         return Collections.unmodifiableMap(parameters);
     }
 
     /**
+     * Returns the tag name of this snapshot if it exists or empty if it does not exist.
+     *
      * @return the tag name if it exists
      */
     public Optional<String> getTagName() {
@@ -131,6 +145,8 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     }
 
     /**
+     * Returns the tag message of this snapshot if it exists or empty if it does not exist.
+     *
      * @return the tag message if it exists
      */
     public Optional<String> getTagMessage() {
@@ -139,12 +155,13 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
     public int compareTo(Snapshot o) {
         if (o.date != null && this.date != null) {
-            //date is compared in reverse, to make the youngest snapshot the first in the list
+            // date is compared in reverse, to make the youngest snapshot the first in the list
             return o.date.compareTo(this.date);
         } else if (o.date != null) {
             return -1;
@@ -156,15 +173,17 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-        return Objects.hash(comment,date,owner,parameters,set);
+        return Objects.hash(comment, date, owner, parameters, set);
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -242,6 +261,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#toString()
      */
     @Override

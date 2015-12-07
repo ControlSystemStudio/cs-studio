@@ -28,7 +28,7 @@ public class BeamlineSetData {
      * @param description the description of the beamline set
      */
     public BeamlineSetData(BeamlineSet descriptor, List<String> pvList, String description) {
-        this(descriptor,pvList,description,null,null);
+        this(descriptor, pvList, description, null, null);
     }
 
     /**
@@ -40,8 +40,8 @@ public class BeamlineSetData {
      * @param storedComment the comment describing the current revision of this beamline set
      * @param storedDate the creation date of the current revision of this beamline set
      */
-    public BeamlineSetData(BeamlineSet descriptor, List<String> pvList, String description,
-            String storedComment, Date storedDate) {
+    public BeamlineSetData(BeamlineSet descriptor, List<String> pvList, String description, String storedComment,
+            Date storedDate) {
         this.descriptor = descriptor;
         this.description = description;
         this.pvList = Collections.unmodifiableList(pvList);
@@ -86,15 +86,17 @@ public class BeamlineSetData {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
     public int hashCode() {
-        return Objects.hash(description,descriptor,pvList);
+        return Objects.hash(description, descriptor, pvList);
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override

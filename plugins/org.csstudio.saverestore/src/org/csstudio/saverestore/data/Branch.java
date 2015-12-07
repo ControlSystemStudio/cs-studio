@@ -28,6 +28,9 @@ public class Branch implements Serializable, Comparable<Branch> {
     }
 
     /**
+     * Returns the full branch name, which might contain some prefixes or suffixes required by the data provider, but
+     * are of no special use for the user. This full name should be unique among branches.
+     *
      * @return the full branch name
      */
     public String getFullName() {
@@ -35,6 +38,8 @@ public class Branch implements Serializable, Comparable<Branch> {
     }
 
     /**
+     * Returns the readable branch name, which is used in the UI.
+     *
      * @return readable branch name
      */
     public String getShortName() {
@@ -43,6 +48,7 @@ public class Branch implements Serializable, Comparable<Branch> {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
@@ -55,6 +61,7 @@ public class Branch implements Serializable, Comparable<Branch> {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#toString()
      */
     @Override
@@ -64,6 +71,7 @@ public class Branch implements Serializable, Comparable<Branch> {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -73,6 +81,7 @@ public class Branch implements Serializable, Comparable<Branch> {
 
     /*
      * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override

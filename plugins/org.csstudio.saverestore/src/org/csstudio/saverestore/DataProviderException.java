@@ -18,7 +18,7 @@ public class DataProviderException extends Exception {
      * @param cause the cause of the exception
      */
     public DataProviderException(String message, Throwable cause) {
-        super(message,cause);
+        super(message, cause);
     }
 
     /**

@@ -120,17 +120,34 @@ public interface DataProvider {
     BeamlineSetData getBeamlineSetContent(BeamlineSet set) throws DataProviderException;
 
     /**
-     * @return true if the data provider supports branches or false if the structure is "flat" and the branch parameter
-     *         of other methods is ignored
+     * Data provider implementor can decide whether to support branches or not. If branches are supported the clients
+     * will value the decision by first selecting the appropriate branch before making further requests to retrieve base
+     * levels, beamline sets, or snapshots. In case that branches are not supported, the data provider can ignore any
+     * branch parameter given to other methods.
+     *
+     * @return true if the data provider supports branches or false otherwise
      */
     boolean areBranchesSupported();
 
     /**
+     * Data provider implementor can decide whether to support base levels or not. If supported clients will query the
+     * base levels before querying the beamline sets and snapshots; if not supporter the data provider can safely ignore
+     * any base level given as a parameter to other methods.
+     * <p>
+     * Base level can be for example the top folder, which contains the beamline sets and snapshots for a common setting
+     * of the machine. There is no rule, what the base level actually is.
+     * </p>
+     *
      * @return true if the data provider supports base levels (the first level of selection) or false otherwise
      */
     boolean areBaseLevelsSupported();
 
     /**
+     * If the data provider is using a repository, which exists locally and centrally it can implement the
+     * reinitialisation procedure, which means that the local repository can be reinitialised to have the exactly the
+     * same structure and content as the central repository. If reinitialisation is supported, this methods returns
+     * true.
+     *
      * @return true if reinitialisation of the repository is allowed or false otherwise
      */
     boolean isReinitSupported();
