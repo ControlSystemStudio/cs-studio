@@ -24,8 +24,9 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
+import org.csstudio.opibuilder.widgets.figures.ImageFigure;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
-import org.csstudio.swt.widgets.figures.ImageFigure;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
@@ -85,7 +86,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         sip.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
         sip.setBackgroundColor(new Color(Display.getDefault(), model.getBackgroundColor()));
         sip.setAnimationDisabled(model.isStopAnimation());
-        figure.setSymbolProperties(sip);
+        figure.setSymbolProperties(sip, model);
 
         figure.setFilePath(model.getFilename());
         return figure;
@@ -228,6 +229,8 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         };
         setPropertyChangeHandler(ImageModel.PROP_HEIGHT, handle);
         setPropertyChangeHandler(ImageModel.PROP_WIDTH, handle);
+        
+        FigureTransparencyHelper.addHandler(this, figure);
 
         registerCropPropertyHandlers();
         registerImageRotationPropertyHandlers();

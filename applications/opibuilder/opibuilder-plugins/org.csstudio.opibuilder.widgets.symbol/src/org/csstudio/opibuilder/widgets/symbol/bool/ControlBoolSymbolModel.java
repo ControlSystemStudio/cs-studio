@@ -18,6 +18,7 @@ import org.csstudio.opibuilder.properties.MatrixProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolControlModel;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.util.ImagePermuter;
@@ -172,6 +173,8 @@ public class ControlBoolSymbolModel extends AbstractBoolControlModel {
         addProperty(new StringProperty(IMAGE_DISPOSITION, "Image Disposition",
                 WidgetPropertyCategory.Image, "1234"));
         setPropertyVisibleAndSavable(IMAGE_DISPOSITION, false, false);
+
+        FigureTransparencyHelper.addProperty(this);
     }
 
     /* ************************* */

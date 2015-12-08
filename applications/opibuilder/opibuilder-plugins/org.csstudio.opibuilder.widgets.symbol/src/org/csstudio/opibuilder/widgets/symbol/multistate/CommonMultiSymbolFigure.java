@@ -16,6 +16,7 @@ import java.util.logging.Level;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.opibuilder.widgets.symbol.Activator;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolLabelPosition;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolUtils;
@@ -80,6 +81,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
     private boolean useForegroundColor = false;
 
     private boolean animationDisabled = false;
+    private CommonMultiSymbolModel model;
 
     public CommonMultiSymbolFigure(boolean runMode) {
         this.executionMode = runMode ? ExecutionMode.RUN_MODE : ExecutionMode.EDIT_MODE;
@@ -272,6 +274,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
      * @param imagePath
      */
     public void setSymbolImagePath(CommonMultiSymbolModel model, IPath imagePath) {
+    	this.model = model;
         if (imagePath == null || imagePath.isEmpty())
             return;
         if (!SymbolUtils.isExtensionAllowed(imagePath)) {
@@ -428,7 +431,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         else
             currentcolor = currentStateIndex <= 0 ? offColor : onColor;
         symbolImage.setCurrentColor(currentcolor);
-        symbolImage.setBackgroundColor(getBackgroundColor());
+        FigureTransparencyHelper.setBackground(symbolImage, getBackgroundColor(), model);
         symbolImage.paintFigure(gfx);
     }
 

@@ -30,6 +30,7 @@ import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.MatrixProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -152,6 +153,8 @@ public final class ImageModel extends AbstractWidgetModel {
                 "Permutation Matrix", WidgetPropertyCategory.Image,
                 PermutationMatrix.generateIdentityMatrix().getMatrix()));
         setPropertyVisibleAndSavable(PERMUTATION_MATRIX, false, true);
+
+        FigureTransparencyHelper.addProperty(this);
     }
 
     /**

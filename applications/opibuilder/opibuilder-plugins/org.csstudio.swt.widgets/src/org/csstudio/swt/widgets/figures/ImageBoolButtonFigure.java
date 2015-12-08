@@ -5,12 +5,15 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  ******************************************************************************/
-package org.csstudio.swt.widgets.figures;
+package org.csstudio.opibuilder.widgets.figures;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
+import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
+import org.csstudio.swt.widgets.figures.AbstractBoolControlFigure;
 import org.csstudio.swt.widgets.symbol.SymbolImage;
 import org.csstudio.swt.widgets.symbol.SymbolImageFactory;
 import org.csstudio.swt.widgets.symbol.SymbolImageListener;
@@ -50,6 +53,8 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
     private boolean animationDisabled = false;
 
     private IImageListener imageListener;
+    
+    private AbstractBoolWidgetModel model;
 
     public ImageBoolButtonFigure() {
         this(false);
@@ -115,8 +120,9 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
         }
     }
 
-    public void setSymbolProperties(SymbolImageProperties symbolProperties) {
+    public void setSymbolProperties(SymbolImageProperties symbolProperties, AbstractBoolWidgetModel model) {
         this.symbolProperties = symbolProperties;
+        this.model = model;
     }
 
     public Dimension getAutoSizedDimension() {
@@ -179,7 +185,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
         if (!isEnabled() && !indicatorMode) {
             symbolImage.setBackgroundColor(DISABLE_COLOR);
         } else {
-            symbolImage.setBackgroundColor(getBackgroundColor());
+        	FigureTransparencyHelper.setBackground(symbolImage, getBackgroundColor(), model);
         }
         symbolImage.paintFigure(graphics);
         super.paintClientArea(graphics);

@@ -17,6 +17,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.opibuilder.widgets.symbol.util.SymbolUtils;
 import org.csstudio.swt.widgets.figures.AbstractBoolControlFigure;
 import org.csstudio.swt.widgets.symbol.SymbolImage;
@@ -79,6 +80,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
     private boolean useForegroundColor = false;
 
     private boolean animationDisabled = false;
+    private ControlBoolSymbolModel model;
 
     /* ************************* */
     /* Specific code for control */
@@ -230,6 +232,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
      */
     public void setSymbolImagePath(ControlBoolSymbolModel model,
             IPath imagePath) {
+    	this.model = model;
         if (imagePath == null || imagePath.isEmpty()) {
             return;
         }
@@ -444,7 +447,7 @@ public class ControlBoolSymbolFigure extends AbstractBoolControlFigure
         if (useForegroundColor) currentcolor = getForegroundColor();
         else currentcolor = booleanValue ? onColor : offColor;
         symbolImage.setCurrentColor(currentcolor);
-        symbolImage.setBackgroundColor(getBackgroundColor());
+        FigureTransparencyHelper.setBackground(symbolImage, getBackgroundColor(), model);
         symbolImage.paintFigure(gfx);
     }
 
