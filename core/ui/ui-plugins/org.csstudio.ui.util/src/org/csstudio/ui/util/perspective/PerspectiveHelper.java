@@ -57,12 +57,12 @@ public class PerspectiveHelper
                 // Create a new parent shell for the dialog. This ensures that the dialog will be shown on top of a fullscreen OPI on Linux.
                 final Shell parentShell = new Shell(Display.getCurrent(), SWT.NO_TRIM);
                 parentShell.setSize(20, 20);
-                
+
                 boolean shouldReset = MessageDialog.openQuestion(parentShell,
                         Messages.OpenPerspectiveReset,
                         Messages.OpenPerspectiveResetQuestion);
                 parentShell.dispose();
-                
+
 				if (shouldReset)
                     page.resetPerspective();
             }

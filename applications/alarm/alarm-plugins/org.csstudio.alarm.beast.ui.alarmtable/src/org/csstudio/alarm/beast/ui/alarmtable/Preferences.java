@@ -100,14 +100,14 @@ public class Preferences
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(Activator.ID, ALARM_TABLE_BACKGROUND_ALARM_SENSITIVE, false, null);
     }
-    
+
     /** @return use reverse colors for recovered unacknowledged alarms (if background colors are enabled) */
     public static boolean isColorsReversed()
     {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(Activator.ID, ALARM_TABLE_REVERSE_COLORS, false, null);
     }
-    
+
     /** @return use reverse colors for recovered unacknowledged alarms */
     public static String[] getSeverityPairColors()
     {

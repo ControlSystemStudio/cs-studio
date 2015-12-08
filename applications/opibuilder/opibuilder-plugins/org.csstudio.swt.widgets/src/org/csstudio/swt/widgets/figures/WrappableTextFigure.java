@@ -73,7 +73,7 @@ public class WrappableTextFigure extends TextFigure{
         scrollPane.setHorizontalScrollBarVisibility(ScrollPane.NEVER);
         add(scrollPane);
     }
-    
+
     @Override
     public void setHorizontalAlignment(H_ALIGN hAlignment) {
         super.setHorizontalAlignment(hAlignment);

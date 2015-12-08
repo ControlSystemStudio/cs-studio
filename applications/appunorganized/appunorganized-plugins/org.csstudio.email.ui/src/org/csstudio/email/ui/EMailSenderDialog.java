@@ -41,7 +41,7 @@ public class EMailSenderDialog extends TitleAreaDialog
 
     private Text txt_from, txt_to, txt_subject, txt_body;
     private ImageTabFolder image_tabfolder;
-    
+
     // AbstractSendEMailAction creates a new Shell as the parent for this dialog, because otherwise
     // the dialog is opened in the background when running a fullscreen OPI.
     // AbstractSendEMailAction stores this shell for EMailSenderDialog to dispose it on close.
@@ -86,7 +86,7 @@ public class EMailSenderDialog extends TitleAreaDialog
 
     /** Initialize size and position of dialog parent shell, and make EMail dialog dispose of it in onClose().
      *  Call only once, before calling open().
-     * 
+     *
      * @param shell
      */
     public void initializeOwnParentShell(final Shell shell) {
@@ -99,7 +99,7 @@ public class EMailSenderDialog extends TitleAreaDialog
                                    windowBounds.y + 100 + shell.getBounds().y + shell.getBounds().height);
 		shell.setLocation(location);
     }
-    
+
     @Override
 	public boolean close() {
     	if (this.cleanupShell != null) this.cleanupShell.dispose();

@@ -73,14 +73,14 @@ public class DisableComponentAction extends Action
             // Create a new parent shell for the dialog. This ensures that the dialog will be shown on top of a fullscreen OPI on Linux.
             final Shell parentShell = new Shell(Display.getCurrent(), SWT.NO_TRIM);
             parentShell.setSize(20, 20);
-        	
+
             boolean shouldRun = MessageDialog.openConfirm(parentShell, getText(),
                 NLS.bind(doEnable()
                     ? Messages.EnableAlarmsFmt
                     : Messages.DisableAlarmsFmt,
                     pvs.size()));
             parentShell.dispose();
-            
+
 			if (!shouldRun)
                 return;
         }

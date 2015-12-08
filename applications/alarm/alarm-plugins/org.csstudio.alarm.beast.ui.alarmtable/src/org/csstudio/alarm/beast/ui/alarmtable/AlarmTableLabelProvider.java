@@ -30,18 +30,18 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     final private SeverityColorProvider color_provider;
     final private SeverityColorPairProvider color_pair_provider;
     final private SeverityIconProvider icon_provider;
-    
+
     /** Whether rows' background should be painted with the alarm's severity color */
-    final private boolean background_color_alarm_sensitive = Preferences.isBackgroundColorAlarmSensitive(); 
+    final private boolean background_color_alarm_sensitive = Preferences.isBackgroundColorAlarmSensitive();
     /** Whether recovered (cleared) unacknowledged alarms should have their description drawn using reversed colors */
-    final private boolean reverse_colors = Preferences.isColorsReversed(); 
-    
+    final private boolean reverse_colors = Preferences.isColorsReversed();
+
     /** Column handled by this label provider */
     final private ColumnInfo column;
 
     private String timeFormat;
     private SimpleDateFormat formatter;
-    
+
     /** Initialize
      *  @param icon_provider icon provider
      *  @param color_provider Color provider for severity values
@@ -97,7 +97,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
             return alarm.getDescription();
         return alarm.getToolTipText();
     }
-    
+
     /** @return Tooltip shift for the alarm tooltip */
 	@Override
 	public Point getToolTipShift(Object object) {
@@ -107,10 +107,10 @@ public class AlarmTableLabelProvider extends CellLabelProvider
 		 * removed (presumably because the mouse now hovers over the tooltip, however it doesn't
 		 * happen if the tooltip is also automatically moved up and the mouse is smack in the middle
 		 * of it..).
-		 * 
+		 *
 		 * Shifting the tooltip position a bit lower fixed the problem observed on Linux.
 		 */
-		
+
 		return new Point(10, 2);
 	}
 
@@ -141,7 +141,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
                     alarm.getSeverity().getDisplayName(), alarm.getValue(), true);
             cell.setText(annunciation);
             }
-            
+
             break;
         case TIME:
             cell.setText(formatter == null ? alarm.getTimestampText()
@@ -189,13 +189,13 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         default:
             break;
         }
-        
+
         if (column == ColumnInfo.ICON) return;
 
     	// If enabled, the background color will reflect the severity of the alarm (when in alarm state).
-    	// If reverse_colors is also enabled, the background/text colors for unacknowledged cleared alarms will be reversed.    	
+    	// If reverse_colors is also enabled, the background/text colors for unacknowledged cleared alarms will be reversed.
     	if (!background_color_alarm_sensitive) return;
-        
+
         final SeverityLevel severity = alarm.getSeverity();
         if (severity == SeverityLevel.OK)
         {
@@ -208,16 +208,16 @@ public class AlarmTableLabelProvider extends CellLabelProvider
         final SeverityLevel current_severity = alarm.getCurrentSeverity();
         final Color severity_color = color_provider.getColor(severity);
         final Color color_pair = color_pair_provider == null ? null : color_pair_provider.getColor(severity);
-        
+
         Color bg_color = severity_color, fg_color = color_pair;
-        
+
         if (reverse_colors && current_severity == SeverityLevel.OK)
         {
         	// the alarm is currently cleared (recovered), and color reversal is enabled
         	bg_color = color_pair;
         	fg_color = severity_color;
         }
-        
+
         cell.setBackground(bg_color);
         cell.setForeground(fg_color);
     }

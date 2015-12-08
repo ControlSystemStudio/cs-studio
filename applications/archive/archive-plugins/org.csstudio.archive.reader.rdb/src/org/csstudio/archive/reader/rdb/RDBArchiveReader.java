@@ -519,7 +519,7 @@ public class RDBArchiveReader implements ArchiveReader
         cancel();
         ConnectionCache.release(rdb);
     }
-    
+
     @Override
     public void enabledConcurrency(boolean concurrency) {
     	this.concurrency  = concurrency;

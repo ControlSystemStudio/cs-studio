@@ -37,7 +37,7 @@ public class ScanEngine
 {
 	/** Executor for scans off the queue, handling one by one */
     final private ExecutorService queue_executor = Executors.newSingleThreadExecutor(new NamedThreadFactory("ScanEngineQueue"));
-    
+
     /** Executor for scans that executes all submitted scans in parallel */
     final private ExecutorService parallel_executor = Executors.newCachedThreadPool(new NamedThreadFactory("ScanEnginePool"));
 

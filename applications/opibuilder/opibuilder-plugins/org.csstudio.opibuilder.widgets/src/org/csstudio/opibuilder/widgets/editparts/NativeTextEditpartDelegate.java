@@ -80,10 +80,10 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
         default:
             break;
         }
-        
+
         return style;
     }
-    
+
     @Override
     public IFigure doCreateFigure() {
         int style = getTextFigureStyle();
@@ -143,7 +143,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
         }
         return figure;
     }
-    
+
     protected FocusAdapter getTextFocusListener(NativeTextFigure figure){
     	return new FocusAdapter() {
             @Override
@@ -151,7 +151,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                 //On mobile, lost focus should output text since there is not enter hit or ctrl key.
                 if(editpart.getPV() != null && !OPIBuilderPlugin.isMobile(text.getDisplay()))
                     text.setText(model.getText());
-                else if(figure.isEnabled())	
+                else if(figure.isEnabled())
                     outputText(text.getText());
             }
         };

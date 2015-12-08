@@ -43,7 +43,7 @@ public class ShowMacrosAction implements IObjectActionDelegate {
         sb.append("\n");
         sb.append("Note: Macros are loaded during OPI opening, so this won't reflect the macro changes after opening." +
                 "To reflect the latest changes, please reopen the OPI and show macros again.");
-        
+
         InfoDialog.open(targetPart.getSite().getShell(), "Predefined Macros", sb.toString());
         // changed to write the msg to console after dialog because otherwise the console shell is created
         // right after the dialog displays, and this brings the (FullScreen only) OPI window to the foreground,

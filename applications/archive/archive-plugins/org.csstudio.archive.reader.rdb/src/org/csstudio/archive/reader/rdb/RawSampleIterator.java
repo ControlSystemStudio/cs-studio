@@ -27,9 +27,9 @@ public class RawSampleIterator extends AbstractRDBValueIterator
 
     /** Result of <code>sel_samples</code> */
     private ResultSet result_set = null;
-    
+
     private boolean concurrency = false;
-    
+
     /** 'Current' value that <code>next()</code> will return,
      *  or <code>null</code>
      */
@@ -127,7 +127,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         } else {
         	if (concurrency && reader.getDialect() == Dialect.PostgreSQL) {
         		sel_samples = reader.getConnection().prepareStatement(
-                        reader.getSQL().sample_sel_by_id_start_end, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);        		
+                        reader.getSQL().sample_sel_by_id_start_end, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
         	} else {
         		sel_samples = reader.getConnection().prepareStatement(
                         reader.getSQL().sample_sel_by_id_start_end);

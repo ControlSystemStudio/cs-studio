@@ -40,7 +40,7 @@ public class AnnunciationFormatter
      *  @param severity Alarm severity
      *  @param value Alarm value
      *  @param forceCustomFormat Custom-format the message even when format does not start
-     *  						 with '*' (instead of using the default message formatting) 
+     *  						 with '*' (instead of using the default message formatting)
      *  @return Annunciation text
      */
     public static String format(String format, final String severity, String value, boolean forceCustomFormat)
@@ -52,7 +52,7 @@ public class AnnunciationFormatter
             format = format.substring(Messages.PriorityAnnunciationPrefix.length()).trim();
 
         String message;
-        boolean customFormat = format.startsWith(Messages.FormattedAnnunciationPrefix);  
+        boolean customFormat = format.startsWith(Messages.FormattedAnnunciationPrefix);
         // Custom format ?
         if (customFormat || forceCustomFormat)
         {
@@ -80,7 +80,7 @@ public class AnnunciationFormatter
 
         return message;
     }
-    
+
     /** Create message for annunciation
      *  @param format Format to use, either the plain description or a format
      *                that starts with '*' and may then include {0} for the severity
