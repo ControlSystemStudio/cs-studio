@@ -11,9 +11,10 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
+import org.csstudio.opibuilder.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.opibuilder.widgets.model.ImageBoolIndicatorModel;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
-import org.csstudio.swt.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.eclipse.core.runtime.IPath;
@@ -23,7 +24,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * EditPart controller for the image widget.
+ * EditPart controller for the image widg	et.
  *
  * @author Xihui Chen
  *
@@ -58,7 +59,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
         sip.setAnimationDisabled(model.isStopAnimation());
         sip.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
         sip.setBackgroundColor(new Color(Display.getDefault(), model.getBackgroundColor()));
-        figure.setSymbolProperties(sip);
+        figure.setSymbolProperties(sip, model);
         figure.setImageLoadedListener(new IImageListener() {
 
             @Override
@@ -200,7 +201,7 @@ public final class ImageBoolIndicatorEditPart extends AbstractBoolEditPart {
         setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT, handle);
         setPropertyChangeHandler(AbstractWidgetModel.PROP_WIDTH, handle);
 
-
+        FigureTransparencyHelper.addHandler(this, figure);
     }
 
 

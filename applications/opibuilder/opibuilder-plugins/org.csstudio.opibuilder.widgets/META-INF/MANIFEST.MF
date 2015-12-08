@@ -27,7 +27,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.jdom
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: org.csstudio.opibuilder.widgets.actions,
+Export-Package: org.csstudio.opibuilder.widgets,
+ org.csstudio.opibuilder.widgets.actions,
  org.csstudio.opibuilder.widgets.editparts,
  org.csstudio.opibuilder.widgets.feedback,
  org.csstudio.opibuilder.widgets.figures,

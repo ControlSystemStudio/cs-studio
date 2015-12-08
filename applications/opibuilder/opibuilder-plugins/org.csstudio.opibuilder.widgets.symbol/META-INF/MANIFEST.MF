@@ -24,6 +24,7 @@ Require-Bundle: org.eclipse.ui;resolution:=optional,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Eclipse-BuddyPolicy: registered
-Export-Package: org.csstudio.opibuilder.widgets.symbol.bool,
+Export-Package: org.csstudio.opibuilder.widgets.symbol,
+ org.csstudio.opibuilder.widgets.symbol.bool,
  org.csstudio.opibuilder.widgets.symbol.multistate,
  org.csstudio.opibuilder.widgets.symbol.util

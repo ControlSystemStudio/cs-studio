@@ -19,12 +19,14 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.swt.widgets.figures;
+package org.csstudio.opibuilder.widgets.figures;
 
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.symbol.SymbolImage;
@@ -65,6 +67,8 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
     private boolean animationDisabled = false;
 
     private IImageListener imageListener;
+    
+    private AbstractWidgetModel model;
 
     /**
      * dispose the resources used by this figure
@@ -76,8 +80,9 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
         }
     }
 
-    public void setSymbolProperties(SymbolImageProperties symbolProperties) {
+    public void setSymbolProperties(SymbolImageProperties symbolProperties, AbstractWidgetModel model) {
         this.symbolProperties = symbolProperties;
+        this.model = model;
     }
 
     /**
@@ -135,6 +140,7 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
         image.setBounds(bounds);
         image.setAbsoluteScale(gfx.getAbsoluteScale());
         image.setBackgroundColor(getBackgroundColor());
+        FigureTransparencyHelper.setBackground(image, getBackgroundColor(), model);
         image.paintFigure(gfx);
         super.paintClientArea(gfx);
     }

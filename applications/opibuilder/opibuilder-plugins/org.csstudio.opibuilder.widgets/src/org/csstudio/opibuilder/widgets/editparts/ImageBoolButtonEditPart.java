@@ -12,10 +12,11 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
+import org.csstudio.opibuilder.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.opibuilder.widgets.model.ImageBoolButtonModel;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
-import org.csstudio.swt.widgets.figures.ImageBoolButtonFigure;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.eclipse.core.runtime.IPath;
@@ -60,7 +61,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
         sip.setAnimationDisabled(model.isStopAnimation());
         sip.setAlignedToNearestSecond(model.isAlignedToNearestSecond());
         sip.setBackgroundColor(new Color(Display.getDefault(), model.getBackgroundColor()));
-        figure.setSymbolProperties(sip);
+        figure.setSymbolProperties(sip, model);
         figure.setImageLoadedListener(new IImageListener() {
 
             @Override
@@ -152,6 +153,8 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
             }
         };
         setPropertyChangeHandler(ImageBoolButtonModel.PROP_STRETCH, handle);
+        
+        FigureTransparencyHelper.addHandler(this, figure);
 
         // changes to the autosize property
         handle = new IWidgetPropertyChangeHandler() {
