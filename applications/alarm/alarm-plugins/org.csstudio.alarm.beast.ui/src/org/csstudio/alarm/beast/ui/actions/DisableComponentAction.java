@@ -81,7 +81,7 @@ public class DisableComponentAction extends Action
                     pvs.size()));
             parentShell.dispose();
 
-			if (!shouldRun)
+            if (!shouldRun)
                 return;
         }
         for (AlarmTreePV pv : pvs)

@@ -106,21 +106,21 @@ public class DumpPVListAction implements IObjectActionDelegate {
         }
 
         protected PVListDialog(Shell parentShell, Object[] allRuntimePVNames, boolean disposeParentShell) {
-        	this(parentShell, allRuntimePVNames);
-        	this.parentShell = parentShell;
+            this(parentShell, allRuntimePVNames);
+            this.parentShell = parentShell;
 
-        	parentShell.setSize(200, 20);
-    		Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
-    		// center horizontally, but place it over the upper portion of the window
-    		Point location = new Point(windowBounds.x + windowBounds.width / 2 - parentShell.getBounds().x / 2,
+            parentShell.setSize(200, 20);
+            Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
+            // center horizontally, but place it over the upper portion of the window
+            Point location = new Point(windowBounds.x + windowBounds.width / 2 - parentShell.getBounds().x / 2,
                                        windowBounds.y + 100 + parentShell.getBounds().y + parentShell.getBounds().height);
-    		parentShell.setLocation(location);
+            parentShell.setLocation(location);
         }
 
         @Override
-		public boolean close() {
-        	if (this.parentShell != null) this.parentShell.dispose();
-        	return super.close();
+        public boolean close() {
+            if (this.parentShell != null) this.parentShell.dispose();
+            return super.close();
         }
 
         @Override

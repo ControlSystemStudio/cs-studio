@@ -39,7 +39,7 @@ public class DurationAction extends Action
     @Override
     public void run()
     {
-    	InfoDialog.open(shell, Messages.Duration, NLS.bind(Messages.DurationMsgFmt,
+        InfoDialog.open(shell, Messages.Duration, NLS.bind(Messages.DurationMsgFmt,
                 new Object[]
                 {
                    pv.getDescription(),

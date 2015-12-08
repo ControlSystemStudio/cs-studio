@@ -42,6 +42,6 @@ public class GuidanceAction extends Action
     @Override
     public void run()
     {
-    	InfoDialog.open(shell, getText(), guidance.getDetails());
+        InfoDialog.open(shell, getText(), guidance.getDetails());
     }
 }

@@ -50,7 +50,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     public AlarmTableLabelProvider(final SeverityIconProvider icon_provider,
             final SeverityColorProvider color_provider, final ColumnInfo column)
     {
-    	this(icon_provider, color_provider, null, column);
+        this(icon_provider, color_provider, null, column);
     }
 
     /** Initialize
@@ -99,22 +99,22 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     }
 
     /** @return Tooltip shift for the alarm tooltip */
-	@Override
-	public Point getToolTipShift(Object object) {
-		/* Default tooltip position is 10px right and 0px down from the current cursor position.
-		 * This causes a bug on Linux (GTK) when the tooltip is longer than the available
-		 * space on the right of the cursor: the tooltip window is shifted left, but is immediately
-		 * removed (presumably because the mouse now hovers over the tooltip, however it doesn't
-		 * happen if the tooltip is also automatically moved up and the mouse is smack in the middle
-		 * of it..).
-		 *
-		 * Shifting the tooltip position a bit lower fixed the problem observed on Linux.
-		 */
+    @Override
+    public Point getToolTipShift(Object object) {
+        /* Default tooltip position is 10px right and 0px down from the current cursor position.
+         * This causes a bug on Linux (GTK) when the tooltip is longer than the available
+         * space on the right of the cursor: the tooltip window is shifted left, but is immediately
+         * removed (presumably because the mouse now hovers over the tooltip, however it doesn't
+         * happen if the tooltip is also automatically moved up and the mouse is smack in the middle
+         * of it..).
+         *
+         * Shifting the tooltip position a bit lower fixed the problem observed on Linux.
+         */
 
-		return new Point(10, 2);
-	}
+        return new Point(10, 2);
+    }
 
-	/** Update one cell of the table */
+    /** Update one cell of the table */
     @Override
     public void update(final ViewerCell cell)
     {
@@ -192,9 +192,9 @@ public class AlarmTableLabelProvider extends CellLabelProvider
 
         if (column == ColumnInfo.ICON) return;
 
-    	// If enabled, the background color will reflect the severity of the alarm (when in alarm state).
-    	// If reverse_colors is also enabled, the background/text colors for unacknowledged cleared alarms will be reversed.
-    	if (!background_color_alarm_sensitive) return;
+        // If enabled, the background color will reflect the severity of the alarm (when in alarm state).
+        // If reverse_colors is also enabled, the background/text colors for unacknowledged cleared alarms will be reversed.
+        if (!background_color_alarm_sensitive) return;
 
         final SeverityLevel severity = alarm.getSeverity();
         if (severity == SeverityLevel.OK)
@@ -213,9 +213,9 @@ public class AlarmTableLabelProvider extends CellLabelProvider
 
         if (reverse_colors && current_severity == SeverityLevel.OK)
         {
-        	// the alarm is currently cleared (recovered), and color reversal is enabled
-        	bg_color = color_pair;
-        	fg_color = severity_color;
+            // the alarm is currently cleared (recovered), and color reversal is enabled
+            bg_color = color_pair;
+            fg_color = severity_color;
         }
 
         cell.setBackground(bg_color);

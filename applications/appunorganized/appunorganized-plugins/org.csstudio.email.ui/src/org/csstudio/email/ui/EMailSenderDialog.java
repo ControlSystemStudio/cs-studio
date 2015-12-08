@@ -90,23 +90,23 @@ public class EMailSenderDialog extends TitleAreaDialog
      * @param shell
      */
     public void initializeOwnParentShell(final Shell shell) {
-    	this.cleanupShell = shell;
+        this.cleanupShell = shell;
 
-    	shell.setSize(20, 20);
-		Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
-		// center horizontally, but place it near the top of the window
-		Point location = new Point(windowBounds.x + windowBounds.width / 2 - shell.getBounds().x / 2,
+        shell.setSize(20, 20);
+        Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
+        // center horizontally, but place it near the top of the window
+        Point location = new Point(windowBounds.x + windowBounds.width / 2 - shell.getBounds().x / 2,
                                    windowBounds.y + 100 + shell.getBounds().y + shell.getBounds().height);
-		shell.setLocation(location);
+        shell.setLocation(location);
     }
 
     @Override
-	public boolean close() {
-    	if (this.cleanupShell != null) this.cleanupShell.dispose();
-		return super.close();
-	}
+    public boolean close() {
+        if (this.cleanupShell != null) this.cleanupShell.dispose();
+        return super.close();
+    }
 
-	/** Allow resize */
+    /** Allow resize */
     @Override
     protected boolean isResizable()
     {

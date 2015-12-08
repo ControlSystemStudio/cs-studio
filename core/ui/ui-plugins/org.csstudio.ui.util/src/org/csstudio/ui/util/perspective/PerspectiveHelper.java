@@ -63,7 +63,7 @@ public class PerspectiveHelper
                         Messages.OpenPerspectiveResetQuestion);
                 parentShell.dispose();
 
-				if (shouldReset)
+                if (shouldReset)
                     page.resetPerspective();
             }
             else
