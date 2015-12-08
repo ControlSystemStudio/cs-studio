@@ -27,7 +27,7 @@ public class FigureTransparencyHelper {
 	}
 
 	public static void addProperty(AbstractWidgetModel model) {
-		model.addProperty(new BooleanProperty(PROP_TRANSPARENCY, "Transparency of the widget",
+		model.addProperty(new BooleanProperty(PROP_TRANSPARENCY, "Transparency",
 				WidgetPropertyCategory.Display, false));
 		model.getProperty(PROP_TRANSPARENCY).addPropertyChangeListener(new TransparencyPropertyChange(model));
 	}
