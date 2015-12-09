@@ -110,7 +110,7 @@ public class GUI extends Composite implements AlarmClientModelListener
                         if (display == g.display)
                             g.blink();
                         else
-                            g.display.syncExec(() -> blink());
+                            g.display.syncExec(() -> g.blink());
                     }
                     blink();
                 }
