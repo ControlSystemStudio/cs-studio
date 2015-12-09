@@ -31,6 +31,9 @@ public class Opi_activeUpdownButtonClass extends OpiWidget {
         setTypeId(typeId);
         setName(name);
         setVersion(version);
+        // When converting an updown button into a spinner, the readback part of the spinner
+        // is generally not required.  This width makes the widget show only the buttons.
+        new OpiInt(widgetContext, "width", 22);
         if(r.getControlPv()!=null)
             new OpiString(widgetContext, "pv_name", convertPVName(r.getControlPv()));
         if(r.getCoarseValue()!=0)

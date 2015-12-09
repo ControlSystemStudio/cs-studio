@@ -4,10 +4,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>utility-plugins</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <artifactId>appunorganized-features</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>org.csstudio.utility.product</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
-  <packaging>eclipse-plugin</packaging>
+  <groupId>org.csstudio</groupId>
+  <artifactId>org.csstudio.graphene.feature</artifactId>
+  <version>3.0.1-SNAPSHOT</version>
+  <packaging>eclipse-feature</packaging>
 </project>

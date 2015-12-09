@@ -283,7 +283,7 @@
             fastViewWidthRatio="0.3"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.opiViewLEFT"
-            name="OPI View">
+            name="OPI View (Left)">
       </view>
       <view
             allowMultiple="true"
@@ -292,7 +292,7 @@
             fastViewWidthRatio="0.3"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.opiViewRIGHT"
-            name="OPI View">
+            name="OPI View (Right)">
       </view>
       <view
             allowMultiple="true"
@@ -301,7 +301,7 @@
             fastViewWidthRatio="0.3"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.opiViewTOP"
-            name="OPI View">
+            name="OPI View (Top)">
       </view>
       <view
             allowMultiple="true"
@@ -310,7 +310,7 @@
             fastViewWidthRatio="0.3"
             icon="icons/OPIRunner.png"
             id="org.csstudio.opibuilder.opiViewBOTTOM"
-            name="OPI View">
+            name="OPI View (Bottom)">
       </view>
       <view
             allowMultiple="true"

@@ -3,7 +3,11 @@ package org.csstudio.utility.product;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.platform.workspace.WorkspaceIndependentStore;
 import org.csstudio.platform.workspace.WorkspaceInfo;
@@ -68,6 +72,29 @@ public class WorkspacePrompt implements WorkspaceExtPoint {
             //Platform.endSplash();
             return IApplication.EXIT_OK;
         }
+
+        o = parameters.get(StartupParameters.WORKBENCH_XMI_PARAM);
+        if (o != null)
+        {   // Install predefined workbench.xmi
+            final File template = new File((String)o);
+            try
+            {   // Another way to get the workbench.xmi location,
+                // but depends on hardcoded knowledge of ".metadata/.plugins":
+                // ResourcesPlugin.getWorkspace().getRoot().getLocation().append(".metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi");
+                final URL uri = Platform.getInstanceLocation().getDataArea("org.eclipse.e4.workbench/workbench.xmi");
+                final File file = new File(uri.getFile());
+                if (! file.isAbsolute())
+                    throw new Exception("Cannot obtain absolute workbench.xmi location, got " + file);
+                Files.createDirectories(file.toPath().getParent());
+                Files.copy(template.toPath(), file.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            }
+            catch (Exception ex)
+            {
+                Logger.getLogger(getClass().getName())
+                      .log(Level.SEVERE, "Cannot install workbench.xmi template " + template, ex);
+            }
+        }
+
         return null;
     }
 

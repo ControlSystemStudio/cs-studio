@@ -25,32 +25,39 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.wb.swt.TableViewerColumnSorter;
+
 import gov.bnl.shiftClient.Shift;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 
 public class ShiftTable extends Composite implements ISelectionProvider {
     final int TEXT_MARGIN = 2;
 
     // Model
-    Collection<Shift> shifts;
+    Collection<Shift> shifts = Collections.emptyList();
     Shift selectedShift;
 
     // GUI
     private Table shiftTable;
     private TableViewer shiftTableViewer;
 
-    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(
-            this);
+    protected final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
     private Composite composite;
     private AbstractSelectionProviderWrapper selectionProvider;
 
-        private TableColumn tblclmnDate;
+    private TableColumn tblclmnDate;
+
+    private final List<String> columns = Arrays.asList("Type", "Owner", "Lead Operator", "On Shift Personal", "Report", "Close User");
+    private List<String> visibleColumns = Collections.emptyList();
 
     public void addPropertyChangeListener(final PropertyChangeListener listener) {
         changeSupport.addPropertyChangeListener(listener);
@@ -76,39 +83,6 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
         shiftTableViewer = new TableViewer(composite, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION);
         shiftTable = shiftTableViewer.getTable();
-        /*
-         * NOTE: MeasureItem, PaintItem and EraseItem are called repeatedly.
-         * Therefore, it is critical for performance that these methods be as
-         * efficient as possible.
-         */
-        shiftTable.addListener(SWT.MeasureItem, new Listener() {
-            public void handleEvent(final Event event) {
-                final TableItem item = (TableItem) event.item;
-                final String text = item.getText(event.index);
-                final Point size = event.gc.textExtent(text);
-                event.width = size.x + 2 * TEXT_MARGIN;
-                event.height = Math.max(event.height, size.y + TEXT_MARGIN);
-            }
-        });
-        shiftTable.addListener(SWT.EraseItem, new Listener() {
-            public void handleEvent(final Event event) {
-                event.detail &= ~SWT.FOREGROUND;
-            }
-        });
-        shiftTable.addListener(SWT.PaintItem, new Listener() {
-            public void handleEvent(Event event) {
-                final TableItem item = (TableItem) event.item;
-                final String text = item.getText(event.index);
-                    /* center column 1 vertically */
-                int yOffset = 0;
-                if (event.index == 1) {
-                    final Point size = event.gc.textExtent(text);
-                    yOffset = Math.max(0, (event.height - size.y) / 2);
-                }
-                event.gc.drawText(text, event.x + TEXT_MARGIN, event.y + yOffset, true);
-            }
-        });
-
         shiftTable.setHeaderVisible(true);
         shiftTable.setLinesVisible(true);
 
@@ -145,13 +119,12 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             public void propertyChange(final PropertyChangeEvent event) {
                 switch (event.getPropertyName()) {
                     case "shifts":
+                    case "visibleColumns":
                         updateTable();
                         shiftTableViewer.setInput(shifts.toArray());
                         break;
                     case "selectedShiftEntry":
-
                         break;
-
                     default:
                         break;
                 }
@@ -167,9 +140,7 @@ public class ShiftTable extends Composite implements ISelectionProvider {
         }
         final TableColumnLayout shiftTablelayout = (TableColumnLayout) composite.getLayout();
 
-
         // First column is the status of the shift
-
         final TableViewerColumn tableViewerColumnStatus = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
         tableViewerColumnStatus.setLabelProvider(new ColumnLabelProvider() {
             public String getText(final Object element) {
@@ -178,9 +149,9 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnStatus = tableViewerColumnStatus.getColumn();
-        shiftTablelayout.setColumnData(tblclmnStatus, new ColumnWeightData(15, 50));
-        tblclmnStatus.setWidth(50);
+        shiftTablelayout.setColumnData(tblclmnStatus, new ColumnWeightData(10, 50));
         tblclmnStatus.setText("Status");
+
         new TableViewerColumnSorter(tableViewerColumnStatus) {
 
             @Override
@@ -189,8 +160,9 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         };
 
-        // column is date and the default sort column
-        final TableViewerColumn tableViewerColumnDate = new TableViewerColumn(shiftTableViewer, SWT.DOUBLE_BUFFERED);
+        // This column represents the Shift duration
+        // It is also used to sort the shifts, the sorting is performed on the start time
+        final TableViewerColumn tableViewerColumnDate = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.DOUBLE_BUFFERED);
         new TableViewerColumnSorter(tableViewerColumnDate) {
 
             @Override
@@ -202,36 +174,16 @@ public class ShiftTable extends Composite implements ISelectionProvider {
 
             public String getText(final Object element) {
                 final Shift item = ((Shift) element);
-                return item == null || item.getStartDate() == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT,
+                String start = item == null || item.getStartDate() == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT,
                         DateFormat.SHORT).format(item.getStartDate());
+                String end = item == null || item.getEndDate() == null ? "..." : DateFormat.getDateTimeInstance(DateFormat.SHORT,
+                        DateFormat.SHORT).format(item.getEndDate());
+                return start + "\n - \n" + end;
             }
         });
         tblclmnDate = tableViewerColumnDate.getColumn();
-        tblclmnDate.setWidth(100);
-        tblclmnDate.setText("Start Date");
-        shiftTablelayout.setColumnData(tblclmnDate, new ColumnWeightData(15, 50));
-
-        //column
-        final TableViewerColumn tableViewerColumnEndDate = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
-        tableViewerColumnEndDate.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(final Object element) {
-                final Shift item = ((Shift) element);
-                return item == null || item.getEndDate() == null ? "" : DateFormat.getDateTimeInstance(DateFormat.SHORT,
-                        DateFormat.SHORT).format(item.getEndDate());
-            }
-        });
-        final TableColumn tblclmnEndDate = tableViewerColumnEndDate.getColumn();
-        tblclmnEndDate.setWidth(100);
-        shiftTablelayout.setColumnData(tblclmnEndDate, new ColumnWeightData(15, 50));
-        tblclmnEndDate.setText("End Date");
-        new TableViewerColumnSorter(tableViewerColumnEndDate) {
-
-            @Override
-            protected Object getValue(final Object o) {
-                final Shift shift = ((Shift) o);
-                return shift.getEndDate() == null ? new Date().getTime() : shift.getEndDate().getTime();
-            }
-        };
+        tblclmnDate.setText("Duration");
+        shiftTablelayout.setColumnData(tblclmnDate, new ColumnWeightData(20, 50));
 
         final TableViewerColumn tableViewerColumnId = new TableViewerColumn(shiftTableViewer, SWT.DOUBLE_BUFFERED);
         tableViewerColumnId.setLabelProvider(new ColumnLabelProvider() {
@@ -242,9 +194,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnId = tableViewerColumnId.getColumn();
-        tblclmnId.setWidth(50);
         tblclmnId.setText("Id");
-        shiftTablelayout.setColumnData(tblclmnId, new ColumnWeightData(15, 40));
+        shiftTablelayout.setColumnData(tblclmnId, new ColumnWeightData(10, 40));
         new TableViewerColumnSorter(tableViewerColumnId) {
 
             @Override
@@ -263,9 +214,8 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         });
         final TableColumn tblclmnDescription = tableViewerColumnDescription.getColumn();
-        tblclmnDescription.setWidth(250);
         tblclmnDescription.setText("Description");
-        shiftTablelayout.setColumnData(tblclmnDescription, new ColumnWeightData(40, 200));
+        shiftTablelayout.setColumnData(tblclmnDescription, new ColumnWeightData(60, 200));
         new TableViewerColumnSorter(tableViewerColumnDescription) {
 
             @Override
@@ -275,128 +225,174 @@ public class ShiftTable extends Composite implements ISelectionProvider {
             }
         };
 
-        final TableViewerColumn tableViewerColumnType = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
-        tableViewerColumnType.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(final Object element) {
-                final Shift item = ((Shift) element);
-                return item == null ? "" : item.getType().getName();
-            }
-        });
-        final TableColumn tblclmnType = tableViewerColumnType.getColumn();
-        shiftTablelayout.setColumnData(tblclmnType, new ColumnWeightData(15, 50));
-        tblclmnType.setWidth(100);
-        tblclmnType.setText("Type");
-        new TableViewerColumnSorter(tableViewerColumnType) {
+        if (visibleColumns.contains("Type")) {
+            final TableViewerColumn tableViewerColumnType = new TableViewerColumn(
+                    shiftTableViewer, 
+                    SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+            tableViewerColumnType.setLabelProvider(new ColumnLabelProvider() {
+                public String getText(final Object element) {
+                    final Shift item = ((Shift) element);
+                    return item == null ? "" : item.getType().getName();
+                }
+            });
+            final TableColumn tblclmnType = tableViewerColumnType.getColumn();
+            shiftTablelayout.setColumnData(tblclmnType, new ColumnWeightData(15, 50));
+            tblclmnType.setWidth(100);
+            tblclmnType.setText("Type");
+            new TableViewerColumnSorter(tableViewerColumnType) {
 
-            @Override
-            protected Object getValue(final Object o) {
-                return ((Shift) o).getType().getName();
-            }
-        };
+                @Override
+                protected Object getValue(final Object o) {
+                    return ((Shift) o).getType().getName();
+                }
+            };
+        }
 
-        final TableViewerColumn tableViewerColumnOwner = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
-        tableViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(final Object element) {
-                final Shift item = ((Shift) element);
-                return item == null || item.getOwner() == null ? "" : item.getOwner();
-            }
-        });
-        final TableColumn tblclmnOwner = tableViewerColumnOwner.getColumn();
-        shiftTablelayout.setColumnData(tblclmnOwner, new ColumnWeightData(15, 50));
-        tblclmnOwner.setWidth(100);
-        tblclmnOwner.setText("Owner");
-        new TableViewerColumnSorter(tableViewerColumnOwner) {
+        if (visibleColumns.contains("Owner")) {
+            final TableViewerColumn tableViewerColumnOwner = new TableViewerColumn(
+                    shiftTableViewer,
+                    SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+            tableViewerColumnOwner.setLabelProvider(new ColumnLabelProvider() {
+                public String getText(final Object element) {
+                    final Shift item = ((Shift) element);
+                    return item == null || item.getOwner() == null ? "" : item
+                            .getOwner();
+                }
+            });
+            final TableColumn tblclmnOwner = tableViewerColumnOwner.getColumn();
+            shiftTablelayout.setColumnData(tblclmnOwner, new ColumnWeightData(
+                    15, 50));
+            tblclmnOwner.setWidth(100);
+            tblclmnOwner.setText("Owner");
+            new TableViewerColumnSorter(tableViewerColumnOwner) {
 
-            @Override
-            protected Object getValue(final Object o) {
+                @Override
+                protected Object getValue(final Object o) {
                     final Shift item = ((Shift) o);
-                return item == null || item.getOwner() == null ? "" : item.getOwner();
-            }
-        };
+                    return item == null || item.getOwner() == null ? "" : item
+                            .getOwner();
+                }
+            };
+        }
 
-        final TableViewerColumn tableViewerColumnLeadOperator = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
-        tableViewerColumnLeadOperator.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(final Object element) {
-                final Shift item = ((Shift) element);
-                return item == null || item.getLeadOperator() == null ? "" : item.getLeadOperator();
-            }
-        });
-        final TableColumn tblclmnLeadOperator = tableViewerColumnLeadOperator.getColumn();
-        shiftTablelayout.setColumnData(tblclmnLeadOperator, new ColumnWeightData(15, 50));
-        tblclmnLeadOperator.setWidth(100);
-        tblclmnLeadOperator.setText("Lead Operator");
-        new TableViewerColumnSorter(tableViewerColumnLeadOperator) {
+        if (visibleColumns.contains("On Shift Personal")) {
+            final TableViewerColumn tableViewerColumnLeadOperator = new TableViewerColumn(
+                    shiftTableViewer, 
+                    SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+            tableViewerColumnLeadOperator
+                    .setLabelProvider(new ColumnLabelProvider() {
+                        public String getText(final Object element) {
+                            final Shift item = ((Shift) element);
+                            return item == null
+                                    || item.getLeadOperator() == null ? ""
+                                    : item.getLeadOperator();
+                        }
+                    });
+            final TableColumn tblclmnLeadOperator = tableViewerColumnLeadOperator
+                    .getColumn();
+            shiftTablelayout.setColumnData(tblclmnLeadOperator,
+                    new ColumnWeightData(15, 50));
+            tblclmnLeadOperator.setWidth(100);
+            tblclmnLeadOperator.setText("Lead Operator");
+            new TableViewerColumnSorter(tableViewerColumnLeadOperator) {
 
-            @Override
-            protected Object getValue(final Object o) {
-                final Shift item = ((Shift) o);
-                return item == null || item.getLeadOperator() == null ? "" : item.getLeadOperator();
-            }
-        };
-
-
-        final TableViewerColumn tableViewerColumnOnShiftPersonal = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
-        tableViewerColumnOnShiftPersonal.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(final Object element) {
-                final Shift item = ((Shift) element);
-                return item == null || item.getOnShiftPersonal() == null ? "" : item.getOnShiftPersonal();
-            }
-        });
-        final TableColumn tblclmnOnShiftPersonal = tableViewerColumnOnShiftPersonal.getColumn();
-        shiftTablelayout.setColumnData(tblclmnOnShiftPersonal, new ColumnWeightData(15, 50));
-        tblclmnOnShiftPersonal.setWidth(100);
-        tblclmnOnShiftPersonal.setText("On Shift Personal");
-        new TableViewerColumnSorter(tableViewerColumnOnShiftPersonal) {
-
-            @Override
-            protected Object getValue(final Object o) {
-                final Shift item = ((Shift) o);
-                return item == null || item.getOnShiftPersonal() == null ? "" : item.getOnShiftPersonal();
-            }
-        };
-
-        final TableViewerColumn tableViewerColumnReport = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
-        tableViewerColumnReport.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(final Object element) {
-                final Shift item = ((Shift) element);
-                return item == null || item.getReport() == null ? "" : item.getReport();
-            }
-        });
-        final TableColumn tblclmnOnShiftReport = tableViewerColumnReport.getColumn();
-        shiftTablelayout.setColumnData(tblclmnOnShiftReport, new ColumnWeightData(15, 50));
-        tblclmnOnShiftReport.setWidth(100);
-        tblclmnOnShiftReport.setText("Report");
-        new TableViewerColumnSorter(tableViewerColumnReport) {
-
-            @Override
-            protected Object getValue(final Object o) {
+                @Override
+                protected Object getValue(final Object o) {
                     final Shift item = ((Shift) o);
-                return item == null || item.getReport() == null ? "" : item.getReport();
-            }
-        };
+                    return item == null || item.getLeadOperator() == null ? ""
+                            : item.getLeadOperator();
+                }
+            };
+        }
 
-        final TableViewerColumn tableViewerCloseUser = new TableViewerColumn(shiftTableViewer, SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
-        tableViewerCloseUser.setLabelProvider(new ColumnLabelProvider() {
-            public String getText(final Object element) {
-                final Shift item = ((Shift) element);
-                return item == null || item.getCloseShiftUser() == null ? "" : item.getCloseShiftUser();
-            }
-        });
-        final TableColumn tblclmnCloseUser = tableViewerCloseUser.getColumn();
-        shiftTablelayout.setColumnData(tblclmnCloseUser, new ColumnWeightData(10, 45));
-        tblclmnCloseUser.setWidth(100);
-        tblclmnCloseUser.setText("Close User");
-        new TableViewerColumnSorter(tableViewerCloseUser) {
+        if (visibleColumns.contains("On Shift Personal")) {
+            final TableViewerColumn tableViewerColumnOnShiftPersonal = new TableViewerColumn(
+                    shiftTableViewer, 
+                    SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+            tableViewerColumnOnShiftPersonal
+                    .setLabelProvider(new ColumnLabelProvider() {
+                        public String getText(final Object element) {
+                            final Shift item = ((Shift) element);
+                            return item == null
+                                    || item.getOnShiftPersonal() == null ? ""
+                                    : item.getOnShiftPersonal();
+                        }
+                    });
+            final TableColumn tblclmnOnShiftPersonal = tableViewerColumnOnShiftPersonal
+                    .getColumn();
+            shiftTablelayout.setColumnData(tblclmnOnShiftPersonal, new ColumnWeightData(15, 50));
+            tblclmnOnShiftPersonal.setWidth(100);
+            tblclmnOnShiftPersonal.setText("On Shift Personal");
+            new TableViewerColumnSorter(tableViewerColumnOnShiftPersonal) {
 
-            @Override
-            protected Object getValue(final Object o) {
-                final Shift item = ((Shift) o);
-                return item == null || item.getCloseShiftUser() == null ? "" : item.getCloseShiftUser();
-            }
-        };
+                @Override
+                protected Object getValue(final Object o) {
+                    final Shift item = ((Shift) o);
+                    return item == null || item.getOnShiftPersonal() == null ? ""
+                            : item.getOnShiftPersonal();
+                }
+            };
+        }
+
+        if (visibleColumns.contains("Report")) {
+            final TableViewerColumn tableViewerColumnReport = new TableViewerColumn(
+                    shiftTableViewer,
+                    SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+            tableViewerColumnReport.setLabelProvider(new ColumnLabelProvider() {
+                public String getText(final Object element) {
+                    final Shift item = ((Shift) element);
+                    return item == null || item.getReport() == null ? "" : item
+                            .getReport();
+                }
+            });
+            final TableColumn tblclmnOnShiftReport = tableViewerColumnReport
+                    .getColumn();
+            shiftTablelayout.setColumnData(tblclmnOnShiftReport,
+                    new ColumnWeightData(15, 50));
+            tblclmnOnShiftReport.setWidth(100);
+            tblclmnOnShiftReport.setText("Report");
+            new TableViewerColumnSorter(tableViewerColumnReport) {
+
+                @Override
+                protected Object getValue(final Object o) {
+                    final Shift item = ((Shift) o);
+                    return item == null || item.getReport() == null ? "" : item
+                            .getReport();
+                }
+            };
+        }
+
+        if (visibleColumns.contains("Close User")) {
+            final TableViewerColumn tableViewerCloseUser = new TableViewerColumn(
+                    shiftTableViewer,
+                    SWT.MULTI | SWT.WRAP | SWT.DOUBLE_BUFFERED);
+            tableViewerCloseUser.setLabelProvider(new ColumnLabelProvider() {
+                public String getText(final Object element) {
+                    final Shift item = ((Shift) element);
+                    return item == null || item.getCloseShiftUser() == null ? ""
+                            : item.getCloseShiftUser();
+                }
+            });
+            final TableColumn tblclmnCloseUser = tableViewerCloseUser
+                    .getColumn();
+            shiftTablelayout.setColumnData(tblclmnCloseUser,
+                    new ColumnWeightData(10, 45));
+            tblclmnCloseUser.setWidth(100);
+            tblclmnCloseUser.setText("Close User");
+            new TableViewerColumnSorter(tableViewerCloseUser) {
+
+                @Override
+                protected Object getValue(final Object o) {
+                    final Shift item = ((Shift) o);
+                    return item == null || item.getCloseShiftUser() == null ? ""
+                            : item.getCloseShiftUser();
+                }
+            };
+        }
 
         // Now additional Columns are created based on the selected
-        shiftTableViewer.getTable().layout();
+        shiftTableViewer.getTable().pack();
+        shiftTableViewer.getTable().getParent().layout();
     }
 
     public Collection<Shift> getShifts() {
@@ -456,4 +452,18 @@ public class ShiftTable extends Composite implements ISelectionProvider {
         shiftTable.setMenu(menu);
     }
 
+    public List<String> getVisibleColumns() {
+        return visibleColumns;
+    }
+
+    public void setVisibleColumns(List<String> visibleColumns) {
+        final List<String> oldValue = this.visibleColumns;
+        this.visibleColumns = visibleColumns;
+        changeSupport.firePropertyChange("visibleColumns", oldValue, this.visibleColumns);
+    }
+
+    public List<String> getColumns() {
+        return columns;
+    }
+ 
 }

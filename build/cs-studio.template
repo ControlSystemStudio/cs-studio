@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.8"?>
+<target name="cs-studio" sequenceNumber="1">
+<!-- This target definition template is meant to be expanded by the p2target.py utility. -->
+<locations>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<!-- Include all features from the CS Studio 4.1 Update Site. -->
+<repository location="http://download.controlsystemstudio.org/updates/4.1"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<!-- Include only the latest version of these features from the Eclipse 4.4 Update Site -->
+<unit id="org.eclipse.platform.sdk"/>
+<unit id="org.eclipse.jdt.feature.group" />
+<repository location="http://download.eclipse.org/eclipse/updates/4.4"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<!-- Include only the latest version of these features from the Eclipse Luna Update Site -->
+<unit id="org.eclipse.gef.sdk.feature.group" />
+<repository location="http://download.eclipse.org/releases/luna"/>
+</location>
+<location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="true" type="InstallableUnit">
+<!-- Include all features from Orbit Update Site. -->
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20140114142710/repository"/>
+</location>
+</locations>
+</target>
