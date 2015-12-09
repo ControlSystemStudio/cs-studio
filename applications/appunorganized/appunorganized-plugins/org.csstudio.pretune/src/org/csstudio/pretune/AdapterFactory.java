@@ -11,8 +11,8 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.csstudio.logbook.AttachmentBuilder;
 import org.csstudio.logbook.LogEntryBuilder;
 import org.eclipse.core.runtime.IAdapterFactory;
-import org.epics.util.array.ListNumber;
-import org.epics.vtype.VTable;
+import org.diirt.util.array.ListNumber;
+import org.diirt.vtype.VTable;
 /**
  *
  * @author Kunal Shroff
