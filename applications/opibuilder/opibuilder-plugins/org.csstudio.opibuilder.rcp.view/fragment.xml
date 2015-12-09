@@ -29,7 +29,6 @@
    <extension point="org.eclipse.ui.views">
       <view
             allowMultiple="false"
-            category="org.csstudio.opibuilder.views"
             class="org.csstudio.opibuilder.runmode.OPIShellSummary"
             fastViewWidthRatio="0.3"
             icon="icons/OPIRunner.png"
