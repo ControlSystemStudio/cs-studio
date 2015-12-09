@@ -99,8 +99,7 @@ public class GroupingContainerFeedbackFactory extends DefaultGraphicalFeedbackFa
                         IWorkbenchPart activePart = PlatformUI.getWorkbench().
                                 getActiveWorkbenchWindow().getActivePage().getActivePart();
 
-                        CommandStack commandStack =
-                                (CommandStack)activePart.getAdapter(CommandStack.class);
+                        CommandStack commandStack = activePart.getAdapter(CommandStack.class);
                             if(commandStack != null)
                                 commandStack.execute(LockUnlockChildrenAction.createLockUnlockCommand
                                         (((GroupingContainerEditPart)getOwner()).getWidgetModel()));

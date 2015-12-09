@@ -70,8 +70,7 @@ public class SendToElogAction extends Action {
                         final String filename;
                         try {
                             filename = ResourceUtil
-                                    .getScreenshotFile((GraphicalViewer) opiRuntime
-                                            .getAdapter(GraphicalViewer.class));
+                                    .getScreenshotFile(opiRuntime.getAdapter(GraphicalViewer.class));
                         } catch (Exception ex) {
                             MessageDialog.openError(opiRuntime.getSite()
                                     .getShell(), "error", ex.getMessage());
