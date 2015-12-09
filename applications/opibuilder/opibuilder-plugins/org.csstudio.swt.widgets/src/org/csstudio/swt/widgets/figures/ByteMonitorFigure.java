@@ -17,6 +17,7 @@ import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 
@@ -252,9 +253,8 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
                 }
 
                 for (LEDFigure led : ledFigures) {
-                    // right and bottom edges of the rectangle are 'outside' and not painted
-                    // so inflate the size to compensate
-                    led.setBounds(new Rectangle(startX, clientArea.y, ledWidth + 1, ledHeight + 1));
+                    led.setSize(ledWidth, ledHeight);
+                    led.setLocation(new Point(startX, clientArea.y));
                     startX += ledSpacing;
                 }
 
@@ -283,9 +283,8 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
                 }
 
                 for (LEDFigure led : ledFigures) {
-                    // right and bottom edges of the rectangle are 'outside' and not painted
-                    // so inflate the size to compensate
-                    led.setBounds(new Rectangle(clientArea.x, startY, ledWidth + 1, ledHeight + 1));
+                    led.setSize(ledWidth, ledHeight);
+                    led.setLocation(new Point(clientArea.x, startY));
                     startY += ledSpacing;
                 }
 
