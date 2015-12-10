@@ -9,7 +9,6 @@ package org.csstudio.archive.reader.rdb;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import org.csstudio.archive.vtype.TimestampHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
@@ -27,9 +26,9 @@ public class RawSampleIterator extends AbstractRDBValueIterator
 
     /** Result of <code>sel_samples</code> */
     private ResultSet result_set = null;
-    
+
     private boolean concurrency = false;
-    
+
     /** 'Current' value that <code>next()</code> will return,
      *  or <code>null</code>
      */
@@ -117,21 +116,21 @@ public class RawSampleIterator extends AbstractRDBValueIterator
 
         // Fetch the samples
         if (reader.useArrayBlob()) {
-        	if (concurrency && reader.getDialect() == Dialect.PostgreSQL) {
-        		sel_samples = reader.getConnection().prepareStatement(
-        				reader.getSQL().sample_sel_by_id_start_end_with_blob, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
-        	} else {
-        		sel_samples = reader.getConnection().prepareStatement(
-        				reader.getSQL().sample_sel_by_id_start_end_with_blob);
-        	}
+            if (concurrency && reader.getDialect() == Dialect.PostgreSQL) {
+                sel_samples = reader.getConnection().prepareStatement(
+                        reader.getSQL().sample_sel_by_id_start_end_with_blob, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            } else {
+                sel_samples = reader.getConnection().prepareStatement(
+                        reader.getSQL().sample_sel_by_id_start_end_with_blob);
+            }
         } else {
-        	if (concurrency && reader.getDialect() == Dialect.PostgreSQL) {
-        		sel_samples = reader.getConnection().prepareStatement(
-                        reader.getSQL().sample_sel_by_id_start_end, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);        		
-        	} else {
-        		sel_samples = reader.getConnection().prepareStatement(
+            if (concurrency && reader.getDialect() == Dialect.PostgreSQL) {
+                sel_samples = reader.getConnection().prepareStatement(
+                        reader.getSQL().sample_sel_by_id_start_end, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            } else {
+                sel_samples = reader.getConnection().prepareStatement(
                         reader.getSQL().sample_sel_by_id_start_end);
-        	}
+            }
         }
         sel_samples.setFetchDirection(ResultSet.FETCH_FORWARD);
 
@@ -144,7 +143,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
         // So default is bad. 100 or 1000 are good.
         // Bigger numbers don't help much in repeated tests, but
         // just to be on the safe side, use a bigger number.
-    	sel_samples.setFetchSize(Preferences.getFetchSize());
+        sel_samples.setFetchSize(Preferences.getFetchSize());
 
         reader.addForCancellation(sel_samples);
         sel_samples.setInt(1, channel_id);
@@ -237,6 +236,6 @@ public class RawSampleIterator extends AbstractRDBValueIterator
     }
 
     public void setConcurrency(boolean concurrency) {
-    	this.concurrency = concurrency;
+        this.concurrency = concurrency;
     }
 }

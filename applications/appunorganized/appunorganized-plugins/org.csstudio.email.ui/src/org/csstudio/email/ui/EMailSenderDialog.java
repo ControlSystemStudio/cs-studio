@@ -41,7 +41,7 @@ public class EMailSenderDialog extends TitleAreaDialog
 
     private Text txt_from, txt_to, txt_subject, txt_body;
     private ImageTabFolder image_tabfolder;
-    
+
     // AbstractSendEMailAction creates a new Shell as the parent for this dialog, because otherwise
     // the dialog is opened in the background when running a fullscreen OPI.
     // AbstractSendEMailAction stores this shell for EMailSenderDialog to dispose it on close.
@@ -86,27 +86,27 @@ public class EMailSenderDialog extends TitleAreaDialog
 
     /** Initialize size and position of dialog parent shell, and make EMail dialog dispose of it in onClose().
      *  Call only once, before calling open().
-     * 
+     *
      * @param shell
      */
     public void initializeOwnParentShell(final Shell shell) {
-    	this.cleanupShell = shell;
+        this.cleanupShell = shell;
 
-    	shell.setSize(20, 20);
-		Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
-		// center horizontally, but place it near the top of the window
-		Point location = new Point(windowBounds.x + windowBounds.width / 2 - shell.getBounds().x / 2,
+        shell.setSize(20, 20);
+        Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
+        // center horizontally, but place it near the top of the window
+        Point location = new Point(windowBounds.x + windowBounds.width / 2 - shell.getBounds().x / 2,
                                    windowBounds.y + 100 + shell.getBounds().y + shell.getBounds().height);
-		shell.setLocation(location);
+        shell.setLocation(location);
     }
-    
-    @Override
-	public boolean close() {
-    	if (this.cleanupShell != null) this.cleanupShell.dispose();
-		return super.close();
-	}
 
-	/** Allow resize */
+    @Override
+    public boolean close() {
+        if (this.cleanupShell != null) this.cleanupShell.dispose();
+        return super.close();
+    }
+
+    /** Allow resize */
     @Override
     protected boolean isResizable()
     {

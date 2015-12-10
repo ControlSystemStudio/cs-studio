@@ -78,7 +78,7 @@ public class ItemConfigDialog extends TitleAreaDialog
     private int delay = 0;
     private int count = 0;
     private Text count_text, filter_text;
-    
+
     private boolean disposeShell = false;
     private Shell parentShell = null;
 
@@ -103,7 +103,7 @@ public class ItemConfigDialog extends TitleAreaDialog
     }
 
     /** Initialize and (optionally) mark the passed parent shell to be disposed when this dialog is disposed (if it was manually created).
-     * 
+     *
      * @param shell Shell
      * @param item Item whose configuration is initially displayed
      * @param model The AlarmClientModel to which the configuration maps
@@ -112,11 +112,11 @@ public class ItemConfigDialog extends TitleAreaDialog
      */
     public ItemConfigDialog(final Shell shell, final AlarmTreeItem item, final AlarmClientModel model, boolean blocking, boolean disposeShell)
     {
-    	this(shell, item, model, blocking);
-    	this.disposeShell = disposeShell;
-    	if (disposeShell) parentShell = shell;
+        this(shell, item, model, blocking);
+        this.disposeShell = disposeShell;
+        if (disposeShell) parentShell = shell;
     }
-    
+
     @Override
     protected boolean isResizable()
     {
@@ -202,13 +202,13 @@ public class ItemConfigDialog extends TitleAreaDialog
 
         // set up disposal of the shell if necessary
         if (this.disposeShell)
-        	parent.addDisposeListener(new DisposeListener() {
-	            @Override
-	            public void widgetDisposed(DisposeEvent e) {
-	                parentShell.dispose();
-	            }
-	        });
-        
+            parent.addDisposeListener(new DisposeListener() {
+                @Override
+                public void widgetDisposed(DisposeEvent e) {
+                    parentShell.dispose();
+                }
+            });
+
         setTitle(NLS.bind(Messages.Config_ItemFmt, item.getPathName()));
         setMessage(Messages.Config_Message);
 

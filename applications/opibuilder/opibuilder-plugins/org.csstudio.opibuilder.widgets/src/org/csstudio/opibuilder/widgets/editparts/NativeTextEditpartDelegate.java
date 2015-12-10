@@ -80,10 +80,10 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
         default:
             break;
         }
-        
+
         return style;
     }
-    
+
     @Override
     public IFigure doCreateFigure() {
         int style = getTextFigureStyle();
@@ -115,7 +115,7 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
                         outputText(text.getText());
                         switch (model.getFocusTraverse()) {
                         case LOSE:
-                        	text.getShell().setFocus();
+                            text.getShell().setFocus();
                              break;
                         case NEXT:
                             SingleSourceHelper.swtControlTraverse(text, SWT.TRAVERSE_TAB_NEXT);
@@ -143,15 +143,15 @@ public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
         }
         return figure;
     }
-    
+
     protected FocusAdapter getTextFocusListener(NativeTextFigure figure){
-    	return new FocusAdapter() {
+        return new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
                 //On mobile, lost focus should output text since there is not enter hit or ctrl key.
                 if(editpart.getPV() != null && !OPIBuilderPlugin.isMobile(text.getDisplay()))
                     text.setText(model.getText());
-                else if(figure.isEnabled())	
+                else if(figure.isEnabled())
                     outputText(text.getText());
             }
         };

@@ -43,7 +43,7 @@ public class SeverityColorPairProvider implements DisposeListener
 
         final Display display = parent.getDisplay();
         for (String pref : pref_colors) {
-        	final String[] values = pref.split(",");
+            final String[] values = pref.split(",");
             if (values.length != 4) continue; // ignore incorrect setting
             try
             {
@@ -57,9 +57,9 @@ public class SeverityColorPairProvider implements DisposeListener
 
                 // INVALID color pair is also used for UNDEFINED
                 if (level == SeverityLevel.INVALID)
-                	colors[SeverityLevel.UNDEFINED.ordinal()] = new Color(display, red, green, blue);
+                    colors[SeverityLevel.UNDEFINED.ordinal()] = new Color(display, red, green, blue);
                 if (level == SeverityLevel.INVALID_ACK)
-                	colors[SeverityLevel.UNDEFINED_ACK.ordinal()] = new Color(display, red, green, blue);
+                    colors[SeverityLevel.UNDEFINED_ACK.ordinal()] = new Color(display, red, green, blue);
             }
             catch (NumberFormatException ex)
             {
@@ -71,19 +71,19 @@ public class SeverityColorPairProvider implements DisposeListener
         // If the *_ACK severity color pairs weren't specified, the
         // MAJOR, MINOR & INVALID color pair is used for them
         if (colors[SeverityLevel.MINOR_ACK.ordinal()] == null && colors[SeverityLevel.MINOR.ordinal()] != null)
-        	colors[SeverityLevel.MINOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MINOR.ordinal()].getRGB());
+            colors[SeverityLevel.MINOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MINOR.ordinal()].getRGB());
         if (colors[SeverityLevel.MAJOR_ACK.ordinal()] == null && colors[SeverityLevel.MAJOR.ordinal()] != null)
-        	colors[SeverityLevel.MAJOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MAJOR.ordinal()].getRGB());
+            colors[SeverityLevel.MAJOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MAJOR.ordinal()].getRGB());
         if (colors[SeverityLevel.INVALID_ACK.ordinal()] == null && colors[SeverityLevel.INVALID.ordinal()] != null)
-        	colors[SeverityLevel.INVALID_ACK.ordinal()] = new Color(display, colors[SeverityLevel.INVALID.ordinal()].getRGB());
+            colors[SeverityLevel.INVALID_ACK.ordinal()] = new Color(display, colors[SeverityLevel.INVALID.ordinal()].getRGB());
     }
 
     /** @see DisposeListener */
-	@Override
-	public void widgetDisposed(DisposeEvent e) {
+    @Override
+    public void widgetDisposed(DisposeEvent e) {
         for (Color color : colors)
             if (color != null) color.dispose();
-	}
+    }
 
     /** Obtain the color to be used as the color-pair for the given severity level, or null if default should be used.
      *  @param severity SeverityLevel

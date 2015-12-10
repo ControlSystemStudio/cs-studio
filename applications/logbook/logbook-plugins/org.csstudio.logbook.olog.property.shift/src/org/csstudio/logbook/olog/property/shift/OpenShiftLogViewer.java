@@ -49,7 +49,8 @@ public class OpenShiftLogViewer extends AbstractHandler {
         // TODO invalid selection
     }
     try {
-        IWorkbenchPage page = workbench.showPerspective(LogViewerPerspective.ID, window);
+//        IWorkbenchPage page = workbench.showPerspective(LogViewerPerspective.ID, window);
+        IWorkbenchPage page = window.getActivePage();
         LogTreeView logTreeView = (LogTreeView)page.findView(LogTreeView.ID);
         page.showView(LogTreeView.ID);
         logTreeView.setSearchString(searchString);

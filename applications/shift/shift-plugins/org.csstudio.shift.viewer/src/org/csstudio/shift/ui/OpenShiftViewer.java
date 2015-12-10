@@ -1,6 +1,7 @@
 package org.csstudio.shift.ui;
 
 import gov.bnl.shiftClient.Shift;
+
 import org.csstudio.ui.util.dialogs.ExceptionDetailsErrorDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -8,6 +9,7 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -39,12 +41,14 @@ public class OpenShiftViewer extends AbstractHandler {
         } else {
             ShiftViewer.createInstance();
         }
-        try {
-            workbench.showPerspective(ShiftViewerPerspective.ID, window);
-            window.getActivePage().showView(ShiftTableView.ID);
-        } catch (Exception ex) {
-            ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error executing command...", ex);
-        }
+        //TODO: not really sure why the shift table is being opened here
+//        try {
+////            workbench.showPerspective(ShiftViewerPerspective.ID, window);
+//            IWorkbenchPage page = window.getActivePage();
+//            page.showView(ShiftTableView.ID);
+//        } catch (Exception ex) {
+//            ExceptionDetailsErrorDialog.openError(HandlerUtil.getActiveShell(event), "Error executing command...", ex);
+//        }
         return null;
     }
 }

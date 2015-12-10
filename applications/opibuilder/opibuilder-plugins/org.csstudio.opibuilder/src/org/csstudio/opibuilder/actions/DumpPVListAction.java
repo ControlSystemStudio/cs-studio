@@ -55,7 +55,7 @@ public class DumpPVListAction implements IObjectActionDelegate {
             Object[] allRuntimePVNames = ((DisplayEditpart)o).getAllRuntimePVNames().toArray();
 
             Arrays.sort(allRuntimePVNames);
-            
+
             // Create a new parent shell for the dialog. This ensures that the dialog will be shown
             // on top of a fullscreen OPI on linux (otherwise gtk puts it in the background).
             final Shell shell = new Shell(targetPart.getSite().getShell().getDisplay(), SWT.NO_TRIM);
@@ -104,25 +104,25 @@ public class DumpPVListAction implements IObjectActionDelegate {
 
             pvsText = sb.toString();
         }
-        
+
         protected PVListDialog(Shell parentShell, Object[] allRuntimePVNames, boolean disposeParentShell) {
-        	this(parentShell, allRuntimePVNames);
-        	this.parentShell = parentShell;
-        	
-        	parentShell.setSize(200, 20);
-    		Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
-    		// center horizontally, but place it over the upper portion of the window
-    		Point location = new Point(windowBounds.x + windowBounds.width / 2 - parentShell.getBounds().x / 2,
+            this(parentShell, allRuntimePVNames);
+            this.parentShell = parentShell;
+
+            parentShell.setSize(200, 20);
+            Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
+            // center horizontally, but place it over the upper portion of the window
+            Point location = new Point(windowBounds.x + windowBounds.width / 2 - parentShell.getBounds().x / 2,
                                        windowBounds.y + 100 + parentShell.getBounds().y + parentShell.getBounds().height);
-    		parentShell.setLocation(location);
+            parentShell.setLocation(location);
         }
 
         @Override
-		public boolean close() {
-        	if (this.parentShell != null) this.parentShell.dispose();
-        	return super.close();
+        public boolean close() {
+            if (this.parentShell != null) this.parentShell.dispose();
+            return super.close();
         }
-        
+
         @Override
         protected Control createDialogArea(Composite parent) {
             getShell().setText("PV List");

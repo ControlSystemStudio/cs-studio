@@ -103,8 +103,8 @@ public class ConfigureItemAction extends Action
             final AlarmClientModel model, final AlarmTreeItem item)
     {
         // Create a new parent shell for the dialog. This ensures that the dialog will be shown on top of a fullscreen OPI on Linux.
-		final Shell newparent = new Shell(shell.getDisplay(), SWT.NO_TRIM);
-		newparent.setSize(10, 10);
+        final Shell newparent = new Shell(shell.getDisplay(), SWT.NO_TRIM);
+        newparent.setSize(10, 10);
         final ItemConfigDialog dlg = new ItemConfigDialog(newparent, item, model, false, true);
         dlg.open();
     }
