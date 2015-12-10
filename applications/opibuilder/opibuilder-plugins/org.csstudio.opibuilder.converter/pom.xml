@@ -5,10 +5,10 @@
   <parent>
     <groupId>org.csstudio</groupId>
     <artifactId>opibuilder-plugins</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>org.csstudio.opibuilder.converter</artifactId>
-  <version>1.0.2-SNAPSHOT</version>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
   <profiles>
     <!-- run maven with -Dbuild.converter.jar to build the standalone jar file. -->
