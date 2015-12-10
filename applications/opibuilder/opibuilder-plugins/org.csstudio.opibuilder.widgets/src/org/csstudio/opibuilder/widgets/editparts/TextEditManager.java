@@ -144,7 +144,7 @@ private void disposeScaledFont() {
 
 protected void initCellEditor() {
     // update text
-    ITextFigure textFigure = (ITextFigure) getEditPart().getAdapter(ITextFigure.class);
+    ITextFigure textFigure = getEditPart().getAdapter(ITextFigure.class);
 
 //    AbstractWidgetModel labelModel = (AbstractWidgetModel) getEditPart().getModel();
     getCellEditor().setValue(textFigure.getText());

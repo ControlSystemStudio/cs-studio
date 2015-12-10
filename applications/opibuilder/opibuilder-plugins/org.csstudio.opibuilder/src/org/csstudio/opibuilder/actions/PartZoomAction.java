@@ -54,7 +54,7 @@ abstract class PartZoomAction extends Action implements ZoomListener, Disposable
         this.part = part;
         if(zoomManager != null)
             zoomManager.removeZoomListener(this);
-        ZoomManager newZoomManager = (ZoomManager)part.getAdapter(ZoomManager.class);
+        ZoomManager newZoomManager = part.getAdapter(ZoomManager.class);
         if(newZoomManager != null){
             newZoomManager.addZoomListener(this);
             zoomManager = newZoomManager;

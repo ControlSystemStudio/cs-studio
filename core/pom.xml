@@ -18,8 +18,8 @@
     <!-- VERSIONS -->
     <tycho.version>0.23.1</tycho.version>
     <tycho-extras.version>0.23.1</tycho-extras.version>
-    <cs-studio.version>4.2</cs-studio.version>
-    <cs-studio-central.url>http://download.controlsystemstudio.org/core/4.2</cs-studio-central.url>
+    <cs-studio.version>4.3</cs-studio.version>
+    <cs-studio-central.url>http://download.controlsystemstudio.org/core/${cs-studio.version}</cs-studio-central.url>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20150519210750/repository/</orbit-site>
@@ -162,18 +162,18 @@
         </repository>
         <repository>
           <id>csstudio-thirdparty</id>
-          <url>http://download.controlsystemstudio.org/thirdparty/4.2</url>
+	  <url>http://download.controlsystemstudio.org/thirdparty/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
         <repository>
           <id>csstudio-maven-osgi-bundles</id>
-          <url>http://download.controlsystemstudio.org/maven-osgi-bundles/4.2</url>
+          <url>http://download.controlsystemstudio.org/maven-osgi-bundles/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
         <!-- Adding the core to enable building the individual child modules which might depend on each other -->
         <repository>
           <id>csstudio-core</id>
-          <url>http://download.controlsystemstudio.org/core/4.2</url>
+          <url>http://download.controlsystemstudio.org/core/${cs-studio.version}</url>
           <layout>p2</layout>
         </repository>
       </repositories>

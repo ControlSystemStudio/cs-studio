@@ -55,7 +55,7 @@ public abstract class AbstractWidgetTargetAction  implements IObjectActionDelega
      * @return the command stack
      */
     protected CommandStack getCommandStack() {
-        return (CommandStack)targetPart.getAdapter(CommandStack.class);
+        return targetPart.getAdapter(CommandStack.class);
     }
 
     public void selectionChanged(IAction action, ISelection selection) {
