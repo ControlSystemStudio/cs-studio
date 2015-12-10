@@ -50,7 +50,7 @@ public class ImageBoolIndicatorModel extends AbstractBoolWidgetModel {
      * file.
      */
     public static final String PROP_NO_ANIMATION = "no_animation";
-    
+
 
     /**
      * True if the widget animation start should be aligned to the nearest

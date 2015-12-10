@@ -67,7 +67,7 @@ public final class ImageFigure extends Figure implements Introspectable, SymbolI
     private boolean animationDisabled = false;
 
     private IImageListener imageListener;
-    
+
     private AbstractWidgetModel model;
 
     /**

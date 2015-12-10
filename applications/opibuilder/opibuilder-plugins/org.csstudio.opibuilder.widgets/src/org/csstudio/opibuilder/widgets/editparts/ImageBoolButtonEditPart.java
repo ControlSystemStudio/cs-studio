@@ -153,7 +153,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
             }
         };
         setPropertyChangeHandler(ImageBoolButtonModel.PROP_STRETCH, handle);
-        
+
         FigureTransparencyHelper.addHandler(this, figure);
 
         // changes to the autosize property

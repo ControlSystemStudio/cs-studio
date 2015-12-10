@@ -11,41 +11,41 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 public class FigureTransparencyHelper {
-	/** property key */
-	public static final String PROP_TRANSPARENCY = "transparency";
+    /** property key */
+    public static final String PROP_TRANSPARENCY = "transparency";
 
-	public static void setBackground(SymbolImage symbolImage, Color backgroundColor,
-			AbstractWidgetModel model) {
-		boolean transparency = isTransparency(model);
-		RGB rgb = backgroundColor.getRGB();
-		if (transparency && model.getBackgroundColor().red == rgb.red && model.getBackgroundColor().blue == rgb.blue
-				&& model.getBackgroundColor().green == rgb.green) {
-			symbolImage.setBackgroundColor(null);
-		} else {
-			symbolImage.setBackgroundColor(backgroundColor);
-		}
-	}
+    public static void setBackground(SymbolImage symbolImage, Color backgroundColor,
+            AbstractWidgetModel model) {
+        boolean transparency = isTransparency(model);
+        RGB rgb = backgroundColor.getRGB();
+        if (transparency && model.getBackgroundColor().red == rgb.red && model.getBackgroundColor().blue == rgb.blue
+                && model.getBackgroundColor().green == rgb.green) {
+            symbolImage.setBackgroundColor(null);
+        } else {
+            symbolImage.setBackgroundColor(backgroundColor);
+        }
+    }
 
-	public static void addProperty(AbstractWidgetModel model) {
-		model.addProperty(new BooleanProperty(PROP_TRANSPARENCY, "Transparency",
-				WidgetPropertyCategory.Display, false));
-		model.getProperty(PROP_TRANSPARENCY).addPropertyChangeListener(new TransparencyPropertyChange(model));
-	}
-	
-	public static void addHandler(AbstractBaseEditPart editPart, IFigure figure) {
-		editPart.setPropertyChangeHandler(FigureTransparencyHelper.PROP_TRANSPARENCY, new IWidgetPropertyChangeHandler() {
+    public static void addProperty(AbstractWidgetModel model) {
+        model.addProperty(new BooleanProperty(PROP_TRANSPARENCY, "Transparency",
+                WidgetPropertyCategory.Display, false));
+        model.getProperty(PROP_TRANSPARENCY).addPropertyChangeListener(new TransparencyPropertyChange(model));
+    }
+
+    public static void addHandler(AbstractBaseEditPart editPart, IFigure figure) {
+        editPart.setPropertyChangeHandler(FigureTransparencyHelper.PROP_TRANSPARENCY, new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 figure.repaint();
                 return true;
             }
         });
-	}
-	
-	public static boolean isTransparency(AbstractWidgetModel model) {
-		if (model.getProperty(FigureTransparencyHelper.PROP_TRANSPARENCY) != null) {
-			return (Boolean) model.getProperty(FigureTransparencyHelper.PROP_TRANSPARENCY).getPropertyValue();
-		}
-		return false;
-	}
+    }
+
+    public static boolean isTransparency(AbstractWidgetModel model) {
+        if (model.getProperty(FigureTransparencyHelper.PROP_TRANSPARENCY) != null) {
+            return (Boolean) model.getProperty(FigureTransparencyHelper.PROP_TRANSPARENCY).getPropertyValue();
+        }
+        return false;
+    }
 }
