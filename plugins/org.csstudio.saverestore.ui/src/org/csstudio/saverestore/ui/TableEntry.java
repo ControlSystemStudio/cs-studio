@@ -36,7 +36,8 @@ public class TableEntry {
     private ObjectProperty<Timestamp> timestamp = new SimpleObjectProperty<>(this, "timestamp");
     private StringProperty status = new SimpleStringProperty(this, "status", "OK");
     private ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this, "severity", AlarmSeverity.NONE);
-    private ObjectProperty<VType> value = new SimpleObjectProperty<>(this, "value");
+    private ObjectProperty<VTypePair> value = new SimpleObjectProperty<>(this, "value",
+        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE));
     private ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue");
     private List<ObjectProperty<VTypePair>> compareValues = new ArrayList<>();
     private ObjectProperty<VTypePair> readback = new SimpleObjectProperty<>(this, "readback",
@@ -95,7 +96,7 @@ public class TableEntry {
     /**
      * @return the property providing the value of the primary snapshot value
      */
-    public ObjectProperty<VType> valueProperty() {
+    public ObjectProperty<VTypePair> valueProperty() {
         return value;
     }
 
@@ -146,7 +147,7 @@ public class TableEntry {
             } else {
                 timestamp.set(Timestamp.now());
             }
-            valueProperty().set(val);
+            valueProperty().set(new VTypePair(liveValue.get(), val));
             for (ObjectProperty<VTypePair> o : compareValues) {
                 o.set(new VTypePair(val, o.get().value));
             }
@@ -154,7 +155,7 @@ public class TableEntry {
             for (int i = compareValues.size(); i < index; i++) {
                 compareValues.add(new SimpleObjectProperty<>(this, "CompareValue" + i));
             }
-            compareValues.get(index - 1).set(new VTypePair(valueProperty().get(), val));
+            compareValues.get(index - 1).set(new VTypePair(valueProperty().get().value, val));
         }
     }
 
@@ -177,5 +178,6 @@ public class TableEntry {
     public void setLiveValue(VType val) {
         liveValue.set(val);
         readback.set(new VTypePair(val, readback.get().value));
+        value.set(new VTypePair(val, value.get().value));
     }
 }

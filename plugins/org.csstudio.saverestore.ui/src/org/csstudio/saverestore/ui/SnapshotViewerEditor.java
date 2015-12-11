@@ -56,6 +56,7 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import javafx.animation.Animation.Status;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -123,15 +124,15 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         VTypeCellEditor() {
             setConverter(new StringConverter<T>() {
                 @Override
-                public String toString(T object) {
-                    if (object == null) {
-                        return "---";
-                    } else if (object instanceof VType) {
-                        return Utilities.valueToString((VType) object);
-                    } else if (object instanceof VTypePair) {
-                        return Utilities.valueToString(((VTypePair) object).value);
+                public String toString(T item) {
+                    if (item == null) {
+                        return "";
+                    } else if (item instanceof VType) {
+                        return Utilities.valueToString((VType) item);
+                    } else if (item instanceof VTypePair) {
+                        return Utilities.valueToString(((VTypePair) item).value);
                     } else {
-                        return object.toString();
+                        return item.toString();
                     }
                 }
 
@@ -158,6 +159,12 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             setTooltip(new Tooltip());
         }
 
+        @Override
+        public void cancelEdit() {
+            super.cancelEdit();
+            updateItem(getItem(), isEmpty());
+        }
+
         /*
          * (non-Javadoc)
          *
@@ -168,13 +175,18 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             super.updateItem(item, empty);
             getStyleClass().remove("diff-cell");
             if (item == null || empty) {
-                setText("---");
-                getTooltip().setText(null);
+                setText("");
+                setTooltip(null);
                 setGraphic(null);
             } else {
-                if (item instanceof VType) {
+                if (item instanceof VNoData) {
                     setText(Utilities.valueToString((VType) item));
                     setGraphic(null);
+                    getTooltip().setText("No Value Available");
+                } else if (item instanceof VType) {
+                    setText(Utilities.valueToString((VType) item));
+                    setGraphic(null);
+                    getTooltip().setText(item.toString());
                 } else if (item instanceof VTypePair) {
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) item).value,
                         ((VTypePair) item).base);
@@ -183,8 +195,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                         getStyleClass().add("diff-cell");
                         setGraphic(new ImageView(WARNING_IMAGE));
                     }
+                    getTooltip().setText(item.toString());
                 }
-                getTooltip().setText(item.toString());
 
             }
         }
@@ -197,7 +209,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      *
      * @param <T> the type of the values displayed by this column
      */
-    private static class TooltipTableColumn<T> extends TableColumn<TableEntry, T> {
+    private class TooltipTableColumn<T> extends TableColumn<TableEntry, T> {
         TooltipTableColumn(String text, String tooltip, int minWidth) {
             setup(text, tooltip, minWidth, -1, true);
         }
@@ -218,6 +230,9 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                 setPrefWidth(prefWidth);
             }
             setResizable(resizable);
+            setOnEditStart(e -> controller.suspend());
+            setOnEditCancel(e -> controller.resume());
+            setOnEditCommit(e -> controller.resume());
         }
     }
 
@@ -250,7 +265,6 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
-
         MenuManager menu = new MenuManager();
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         contextMenu = menu.createContextMenu(parent);
@@ -690,24 +704,26 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             "Alarm severity of the PV when the snapshot was taken", 80, 80, false);
         severityColumn.setCellValueFactory(new PropertyValueFactory<>("severity"));
 
-        TableColumn<TableEntry, VType> storedValueColumn = new TooltipTableColumn<>("Stored Value",
-            "PV value when the snapshot was taken", 100);
-        storedValueColumn.setCellValueFactory(new PropertyValueFactory<>("value"));
+        TableColumn<TableEntry, VTypePair> storedValueColumn = new TooltipTableColumn<>(
+            "Stored Value (" + Utilities.DELTA_CHAR + " Setpoint)", "PV value when the snapshot was taken", 100);
+        storedValueColumn.setCellValueFactory(e -> e.getValue().valueProperty());
         storedValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
         storedValueColumn.setEditable(true);
-        storedValueColumn
-            .setOnEditCommit(e -> ((TableEntry) e.getTableView().getItems().get(e.getTablePosition().getRow()))
-                .valueProperty().setValue(e.getNewValue()));
+        storedValueColumn.setOnEditCommit(e -> {
+            ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
+            value.setValue(new VTypePair(value.get().base, e.getNewValue().value));
+            controller.resume();
+        });
 
-        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Live Value", "Current PV value",
+        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Setpoint Value", "Current PV value",
             100);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
         liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
         liveValueColumn.setEditable(false);
 
         if (showReadback) {
-            TableColumn<TableEntry, VType> readbackColumn = new TooltipTableColumn<>("Readback",
-                "Current Readback value", 100);
+            TableColumn<TableEntry, VType> readbackColumn = new TooltipTableColumn<>(
+                "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Current Readback value", 100);
             readbackColumn.setCellValueFactory(new PropertyValueFactory<>("readback"));
             readbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
             readbackColumn.setEditable(false);
@@ -741,21 +757,28 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         TableColumn<TableEntry, String> pvNameColumn = new TooltipTableColumn<>("PV", "The name of the PV", 170);
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
-        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Live Value", "Current PV value", -1);
+        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Setpoint Value", "Current PV value",
+            -1);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
         liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
         liveValueColumn.setEditable(false);
 
         TableColumn<TableEntry, ?> storedValueColumn = new TooltipTableColumn<>("Stored Values",
             "PV value when the snapshot was taken", -1);
-        TableColumn<TableEntry, VType> baseCol = new TooltipTableColumn<>("Base",
-            "PV value when the snapshot was taken", 100);
+        TableColumn<TableEntry, VTypePair> baseCol = new TooltipTableColumn<>(
+            "Base (" + Utilities.DELTA_CHAR + " Setpoint)", "PV value when the snapshot was taken", 100);
         baseCol.setCellValueFactory(e -> e.getValue().valueProperty());
         baseCol.setCellFactory(e -> new VTypeCellEditor<>());
+        baseCol.setEditable(true);
+        baseCol.setOnEditCommit(e -> {
+            ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
+            value.setValue(new VTypePair(value.get().base, e.getNewValue().value));
+            controller.resume();
+        });
         storedValueColumn.getColumns().add(baseCol);
         for (int i = 1; i < n; i++) {
             TableColumn<TableEntry, VTypePair> col = new TooltipTableColumn<>("", "", 100);
-            Label label = new Label(controller.getSnapshot(i).toString());
+            Label label = new Label(controller.getSnapshot(i).toString() + " (" + Utilities.DELTA_CHAR + " Base)");
             label.setTooltip(new Tooltip("PV value when the snapshot was taken"));
             col.setGraphic(label);
             final int snapshotIndex = i;
@@ -771,6 +794,11 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             col.setCellValueFactory(e -> e.getValue().compareValueProperty(snapshotIndex));
             col.setCellFactory(e -> new VTypeCellEditor<>());
             col.setEditable(true);
+            col.setOnEditCommit(e -> {
+                ObjectProperty<VTypePair> value = e.getRowValue().compareValueProperty(snapshotIndex);
+                value.setValue(new VTypePair(value.get().base, e.getNewValue().value));
+                controller.resume();
+            });
             label.setOnMouseReleased(e -> {
                 if (e.getButton() == MouseButton.SECONDARY) {
                     menu.show(label, e.getScreenX(), e.getScreenY());
@@ -779,8 +807,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             storedValueColumn.getColumns().add(col);
         }
         if (showReadback) {
-            TableColumn<TableEntry, VType> readbackColumn = new TooltipTableColumn<>("Readback",
-                "Current Readback value", 100);
+            TableColumn<TableEntry, VType> readbackColumn = new TooltipTableColumn<>(
+                "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Current Readback value", 100);
             readbackColumn.setCellValueFactory(new PropertyValueFactory<>("readback"));
             readbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
             readbackColumn.setEditable(false);

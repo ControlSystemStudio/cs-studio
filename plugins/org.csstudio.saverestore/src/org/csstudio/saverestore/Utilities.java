@@ -84,7 +84,7 @@ public final class Utilities {
     private Utilities() {
     }
 
-    private static final String DELTA_CHAR = " \u0394";
+    public static final char DELTA_CHAR = '\u0394';
     private static final ThreadLocal<ValueFormat> FORMAT = ThreadLocal.withInitial(() -> {
         ValueFormat vf = new SimpleValueFormat(3);
         vf.setNumberFormat(NumberFormats.toStringFormat());
@@ -396,7 +396,7 @@ public final class Utilities {
                 double base = ((VNumber) baseValue).getValue().doubleValue();
                 double newd = data - base;
                 diff = Double.compare(data, base);
-                sb.append(DELTA_CHAR);
+                sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
@@ -406,7 +406,7 @@ public final class Utilities {
                 float base = ((VNumber) baseValue).getValue().floatValue();
                 float newd = data - base;
                 diff = Float.compare(data, base);
-                sb.append(DELTA_CHAR);
+                sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
@@ -416,7 +416,7 @@ public final class Utilities {
                 long base = ((VNumber) baseValue).getValue().longValue();
                 long newd = data - base;
                 diff = Long.compare(data, base);
-                sb.append(DELTA_CHAR);
+                sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
@@ -426,7 +426,7 @@ public final class Utilities {
                 int base = ((VNumber) baseValue).getValue().intValue();
                 int newd = data - base;
                 diff = Integer.compare(data, base);
-                sb.append(DELTA_CHAR);
+                sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
@@ -436,7 +436,7 @@ public final class Utilities {
                 short base = ((VNumber) baseValue).getValue().shortValue();
                 short newd = (short) (data - base);
                 diff = Short.compare(data, base);
-                sb.append(DELTA_CHAR);
+                sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
@@ -446,7 +446,7 @@ public final class Utilities {
                 byte base = ((VNumber) baseValue).getValue().byteValue();
                 byte newd = (byte) (data - base);
                 diff = Byte.compare(data, base);
-                sb.append(DELTA_CHAR);
+                sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }

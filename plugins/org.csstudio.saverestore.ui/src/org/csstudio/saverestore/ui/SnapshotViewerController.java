@@ -100,9 +100,8 @@ public class SnapshotViewerController {
             this.readback = readbackReader;
             if (this.readback != null) {
                 this.readback.addPVReaderListener(e -> {
-                    synchronized (SnapshotViewerController.this) {
-                        if (suspend.get() > 0)
-                            return;
+                    if (suspend.get() > 0) {
+                        return;
                     }
                     readbackValue = e.getPvReader().getValue();
                     if (showReadbacks) {
@@ -125,9 +124,8 @@ public class SnapshotViewerController {
         @Override
         protected void fire() {
             Platform.runLater(() -> {
-                synchronized (SnapshotViewerController.this) {
-                    if (suspend.get() > 0)
-                        return;
+                if (suspend.get() > 0) {
+                    return;
                 }
                 pvs.forEach((k, v) -> {
                     k.setLiveValue(v.value);
@@ -327,17 +325,19 @@ public class SnapshotViewerController {
         return showReadbacks;
     }
 
-    private void lock() {
-        synchronized (this) {
-            suspend.incrementAndGet();
-        }
+    /**
+     * Suspend all live updates from the PVs
+     */
+    public void suspend() {
+        suspend.incrementAndGet();
     }
 
-    private void unlock() {
-        synchronized (this) {
-            if (suspend.decrementAndGet() == 0) {
-                this.throttle.trigger();
-            }
+    /**
+     * Resume live updates from pvs
+     */
+    public void resume() {
+        if (suspend.decrementAndGet() == 0) {
+            this.throttle.trigger();
         }
     }
 
@@ -346,7 +346,7 @@ public class SnapshotViewerController {
      * method should not be called from the UI thread.
      */
     public void takeSnapshot() {
-        lock();
+        suspend();
         try {
             List<String> names = new ArrayList<>(items.size());
             List<VType> values = new ArrayList<>(items.size());
@@ -364,7 +364,7 @@ public class SnapshotViewerController {
             owner.addSnapshot(taken);
             SaveRestoreService.LOGGER.log(Level.FINE, "Snapshot taken for '" + set.getFullyQualifiedName() + "'.");
         } finally {
-            unlock();
+            resume();
         }
     }
 
@@ -410,28 +410,30 @@ public class SnapshotViewerController {
         if (file == null) {
             return;
         }
-        lock();
+        suspend();
         try (final PrintWriter pw = new PrintWriter(new FileOutputStream(file))) {
             StringBuilder header = new StringBuilder(200);
             header.append("Setpoint PV,");
             header.append(Utilities.timestampToBigEndianString(snapshots.get(0).getTimestamp().toDate(), true))
                 .append(',');
-            String delta = " (\u0394 First Snapshot),";
+            String delta = " (" + Utilities.DELTA_CHAR + " First Snapshot),";
             for (int i = 1; i < snapshots.size(); i++) {
                 header.append(Utilities.timestampToBigEndianString(snapshots.get(i).getTimestamp().toDate(), true))
                     .append(delta);
             }
             header.append("Live Value,Live Timestamp");
             if (showReadbacks) {
-                header.append(",Readback PV,Readback Value (\u0394 Live),Readback Timestamp");
+                header.append(",Readback PV,Readback Value (").append(Utilities.DELTA_CHAR)
+                    .append(" Live),Readback Timestamp");
             }
             pw.println(header.toString());
             items.values().forEach(e -> {
                 StringBuilder sb = new StringBuilder(200);
                 sb.append(e.pvNameProperty().get()).append(',');
-                sb.append('"').append(Utilities.valueToString(e.valueProperty().get())).append('"').append(',');
+                VTypePair pair = e.valueProperty().get();
+                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base)).append('"').append(',');
                 for (int i = 1; i < snapshots.size(); i++) {
-                    VTypePair pair = e.compareValueProperty(i).get();
+                    pair = e.compareValueProperty(i).get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
                         ((VTypePair) pair).base);
                     sb.append('"').append(vtc.string).append('"').append(',');
@@ -444,7 +446,7 @@ public class SnapshotViewerController {
                 }
                 if (showReadbacks) {
                     sb.append(',').append(e.readbackNameProperty().get());
-                    VTypePair pair = e.readbackProperty().get();
+                    pair = e.readbackProperty().get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
                         ((VTypePair) pair).base);
                     sb.append(',').append('"').append(vtc.string).append('"').append(',');
@@ -457,7 +459,7 @@ public class SnapshotViewerController {
         } catch (FileNotFoundException e) {
             Selector.reportException(e, owner.getSite().getShell());
         } finally {
-            unlock();
+            resume();
         }
     }
 
@@ -490,7 +492,7 @@ public class SnapshotViewerController {
      */
     public VSnapshot saveSnapshot(String comment, VSnapshot snapshot) {
         try {
-            lock();
+            suspend();
             VSnapshot s = null;
             try {
                 DataProviderWrapper dpw = SaveRestoreService.getInstance()
@@ -514,7 +516,7 @@ public class SnapshotViewerController {
             }
             return s;
         } finally {
-            unlock();
+            resume();
         }
     }
 
@@ -526,7 +528,7 @@ public class SnapshotViewerController {
      */
     public void restoreSnapshot(VSnapshot s) {
         try {
-            lock();
+            suspend();
             if (s.isSaved()) {
                 List<String> names = s.getNames();
                 List<VType> values = s.getValues();
@@ -543,7 +545,7 @@ public class SnapshotViewerController {
                     "Snapshot " + s + " has not been saved yet. Only saved snapshots can be used for restoring.");
             }
         } finally {
-            unlock();
+            resume();
         }
     }
 
