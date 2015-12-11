@@ -55,14 +55,14 @@ public class Selector {
             try {
                 IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
                 IConfigurationElement[] confElements = extReg
-                        .getConfigurationElementsFor(BASE_LEVEL_VALIDATOR_EXT_POINT);
+                    .getConfigurationElementsFor(BASE_LEVEL_VALIDATOR_EXT_POINT);
                 for (IConfigurationElement element : confElements) {
                     bb = (InputValidator<String>) element.createExecutableExtension("validator");
                 }
 
             } catch (CoreException e) {
                 SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore base level browser could not be loaded.",
-                        e);
+                    e);
                 baseLevelValidator = null;
             }
             baseLevelValidator = Optional.ofNullable(bb);
@@ -88,11 +88,11 @@ public class Selector {
             runOnGUIThread(() -> {
                 ((ObjectProperty<BaseLevel>) selectedBaseLevelProperty()).set(null);
                 ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
-                        .set(Collections.unmodifiableList(new ArrayList<>(0)));
+                    .set(Collections.unmodifiableList(new ArrayList<>(0)));
                 ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                        .set(Collections.unmodifiableList(new ArrayList<>(0)));
+                    .set(Collections.unmodifiableList(new ArrayList<>(0)));
                 ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
-                        .set(Collections.unmodifiableList(new ArrayList<>(0)));
+                    .set(Collections.unmodifiableList(new ArrayList<>(0)));
                 allSnapshotsLoaded.set(false);
                 SaveRestoreService.getInstance().execute("Synchronise", () -> {
                     readBranches(selectedBranchProperty().get());
@@ -112,7 +112,7 @@ public class Selector {
                 }
             });
             runOnGUIThread(() -> ((SimpleObjectProperty<List<Snapshot>>) snapshotsProperty())
-                    .set(Collections.unmodifiableList(newV)));
+                .set(Collections.unmodifiableList(newV)));
         }
 
         @Override
@@ -123,7 +123,7 @@ public class Selector {
             newV.addAll(snp);
             Collections.sort(newV);
             runOnGUIThread(() -> ((SimpleObjectProperty<List<Snapshot>>) snapshotsProperty())
-                    .set(Collections.unmodifiableList(newV)));
+                .set(Collections.unmodifiableList(newV)));
         }
 
         @Override
@@ -155,7 +155,7 @@ public class Selector {
                 }
             });
             runOnGUIThread(() -> ((SimpleObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                    .set(Collections.unmodifiableList(newSets)));
+                .set(Collections.unmodifiableList(newSets)));
         }
 
         @Override
@@ -165,13 +165,12 @@ public class Selector {
                 BaseLevel base = selectedBaseLevelProperty().get();
                 if (base != null && toBase.isPresent() && base.equals(toBase.get())) {
                     SaveRestoreService.getInstance().execute("Load beamline sets",
-                            () -> reloadBeamlineSets(base, toBranch));
+                        () -> reloadBeamlineSets(base, toBranch));
                 } else if (base == null && !toBase.isPresent()) {
                     SaveRestoreService.getInstance().execute("Load beamline sets",
-                            () -> reloadBeamlineSets(base, toBranch));
+                        () -> reloadBeamlineSets(base, toBranch));
                 } else {
-                    SaveRestoreService.getInstance().execute("Load base levels",
-                            () -> readBaseLevels());
+                    SaveRestoreService.getInstance().execute("Load base levels", () -> readBaseLevels());
                 }
             }
             // if branches are different, do nothing
@@ -207,9 +206,9 @@ public class Selector {
     private void reloadBeamlineSets(BaseLevel baseLevel, Branch branch) {
         try {
             final BeamlineSet[] beamlineSets = SaveRestoreService.getInstance().getSelectedDataProvider().provider
-                    .getBeamlineSets(Optional.ofNullable(baseLevel), branch);
+                .getBeamlineSets(Optional.ofNullable(baseLevel), branch);
             runOnGUIThread(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                    .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
+                .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
         } catch (DataProviderException e) {
             reportException(e, owner.getSite().getShell());
         }
@@ -223,7 +222,7 @@ public class Selector {
                     final Branch[] branches = provider.getBranches();
                     runOnGUIThread(() -> {
                         ((ObjectProperty<List<Branch>>) branchesProperty())
-                                .set(Collections.unmodifiableList(Arrays.asList(branches)));
+                            .set(Collections.unmodifiableList(Arrays.asList(branches)));
                         selectedBranchProperty().set(branchToSelect);
                     });
                 } catch (DataProviderException e) {
@@ -232,7 +231,7 @@ public class Selector {
             });
         } else {
             ((ObjectProperty<List<Branch>>) branchesProperty())
-                    .set(Collections.unmodifiableList(Arrays.asList(DEFAULT_BRANCH)));
+                .set(Collections.unmodifiableList(Arrays.asList(DEFAULT_BRANCH)));
             selectedBranchProperty().set(branchToSelect);
         }
     }
@@ -282,7 +281,7 @@ public class Selector {
                 try {
                     final BaseLevel[] baseLevels = provider.getBaseLevels(branch);
                     runOnGUIThread(() -> ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
-                            .set(Collections.unmodifiableList(Arrays.asList(baseLevels))));
+                        .set(Collections.unmodifiableList(Arrays.asList(baseLevels))));
                 } catch (DataProviderException e) {
                     reportException(e, owner.getSite().getShell());
                 }
@@ -309,8 +308,8 @@ public class Selector {
         if (selectedBaseLevel == null) {
             selectedBaseLevel = new SimpleObjectProperty<>();
             selectedBaseLevel.addListener((a, o, n) -> {
-                if (n == null && SaveRestoreService.getInstance().getSelectedDataProvider().provider
-                        .areBaseLevelsSupported()) {
+                if (n == null
+                    && SaveRestoreService.getInstance().getSelectedDataProvider().provider.areBaseLevelsSupported()) {
                     return;
                 }
                 readBeamlineSets();
@@ -328,7 +327,7 @@ public class Selector {
             try {
                 final BeamlineSet[] beamlineSets = provider.getBeamlineSets(Optional.ofNullable(baseLevel), branch);
                 runOnGUIThread(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                        .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
+                    .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
             } catch (DataProviderException e) {
                 reportException(e, owner.getSite().getShell());
             }
@@ -354,7 +353,7 @@ public class Selector {
             selectedBeamlineSet.addListener((a, o, n) -> {
                 allSnapshotsLoaded.set(false);
                 ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
-                        .set(Collections.unmodifiableList(new ArrayList<>(0)));
+                    .set(Collections.unmodifiableList(new ArrayList<>(0)));
                 lastSnapshot = null;
                 if (n != null) {
                     readSnapshots(true, false);
@@ -391,7 +390,7 @@ public class Selector {
                 runOnGUIThread(() -> {
                     allSnapshotsLoaded.set(snapshots.length == 0);
                     ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
-                            .set(Collections.unmodifiableList(allSnapshots));
+                        .set(Collections.unmodifiableList(allSnapshots));
                 });
             } catch (DataProviderException e) {
                 reportException(e, owner.getSite().getShell());

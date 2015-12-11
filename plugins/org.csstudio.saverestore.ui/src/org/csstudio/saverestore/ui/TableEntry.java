@@ -3,6 +3,7 @@ package org.csstudio.saverestore.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
@@ -38,6 +39,9 @@ public class TableEntry {
     private ObjectProperty<VType> value = new SimpleObjectProperty<>(this, "value");
     private ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue");
     private List<ObjectProperty<VTypePair>> compareValues = new ArrayList<>();
+    private ObjectProperty<VTypePair> readback = new SimpleObjectProperty<>(this, "readback",
+        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE));
+    private StringProperty readbackName = new SimpleStringProperty(this, "readbackName");
 
     /**
      * @return the property describing if the entry is selected or not
@@ -51,6 +55,20 @@ public class TableEntry {
      */
     public StringProperty pvNameProperty() {
         return pvName;
+    }
+
+    /**
+     * @return the property providing the readback pv name
+     */
+    public StringProperty readbackNameProperty() {
+        return readbackName;
+    }
+
+    /**
+     * @return the property providing the readback value
+     */
+    public ObjectProperty<VTypePair> readbackProperty() {
+        return readback;
     }
 
     /**
@@ -138,5 +156,26 @@ public class TableEntry {
             }
             compareValues.get(index - 1).set(new VTypePair(valueProperty().get(), val));
         }
+    }
+
+    /**
+     * Set the readback value of this entry.
+     *
+     * @param val the value
+     */
+    public void setReadbackValue(VType val) {
+        if (readback.get().value != val) {
+            readback.set(new VTypePair(liveValueProperty().get(), val));
+        }
+    }
+
+    /**
+     * Set the live value of this entry and updates the readback value as well.
+     *
+     * @param val the new value
+     */
+    public void setLiveValue(VType val) {
+        liveValue.set(val);
+        readback.set(new VTypePair(val, readback.get().value));
     }
 }

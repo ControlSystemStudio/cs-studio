@@ -382,6 +382,20 @@ public class FXMessageDialog extends IconAndMessageDialog {
     }
 
     /**
+     * Convenience method to open a Yes/No/Cancel dialog.
+     *
+     * @param parent the parent shell of the dialog, or <code>null</code> if none
+     * @param title the dialog's title, or <code>null</code> if none
+     * @param message the message
+     * @return <code>true</code> if the user presses the OK button, <code>false</code> otherwise
+     */
+    public static int openYesNoCancel(Shell parent, String title, String message) {
+        FXMessageDialog dialog = new FXMessageDialog(parent, title, null, message, QUESTION_WITH_CANCEL,
+            getButtonLabels(QUESTION_WITH_CANCEL), 0);
+        return dialog.open();
+    }
+
+    /**
      * Convenience method to open a simple confirm (OK/Cancel) dialog.
      *
      * @param parent the parent shell of the dialog, or <code>null</code> if none

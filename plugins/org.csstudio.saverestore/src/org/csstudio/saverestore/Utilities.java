@@ -60,6 +60,25 @@ import org.diirt.vtype.ValueFormat;
 public final class Utilities {
 
     /**
+     * <code>VTypeComparison</code> is the result of comparison of two {@link VType} values. The {@link #string} field
+     * provides the textual representation of the comparison and the {@link #valuesEqual} provides information whether
+     * the values are equal (0), the first value is greater than second (1), or the first value is less than second
+     * (-1).
+     *
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+     *
+     */
+    public static class VTypeComparison {
+        public final String string;
+        public final int valuesEqual;
+
+        private VTypeComparison(String string, int equal) {
+            this.string = string;
+            this.valuesEqual = equal;
+        }
+    }
+
+    /**
      * Private constructor to prevent instantiation of this class.
      */
     private Utilities() {
@@ -72,13 +91,13 @@ public final class Utilities {
         return vf;
     });
     private static final ThreadLocal<NumberFormat> COMPARE_FORMAT = ThreadLocal
-            .withInitial(() -> NumberFormats.format(2));
+        .withInitial(() -> NumberFormats.format(2));
     private static final ThreadLocal<DateFormat> LE_TIMESTAMP_FORMATTER = ThreadLocal
-            .withInitial(() -> new SimpleDateFormat("HH:mm:ss.SSS MMM dd"));
+        .withInitial(() -> new SimpleDateFormat("HH:mm:ss.SSS MMM dd"));
     private static final ThreadLocal<DateFormat> BE_TIMESTAMP_FORMATTER = ThreadLocal
-            .withInitial(() -> new SimpleDateFormat("MMM dd HH:mm:ss"));
+        .withInitial(() -> new SimpleDateFormat("MMM dd HH:mm:ss"));
     private static final ThreadLocal<DateFormat> SBE_TIMESTAMP_FORMATTER = ThreadLocal
-            .withInitial(() -> new SimpleDateFormat("yyyy MMM dd HH:mm:ss"));
+        .withInitial(() -> new SimpleDateFormat("yyyy MMM dd HH:mm:ss"));
 
     /**
      * Transform the string <code>data</code> to a {@link VType} which is of identical type as the parameter
@@ -358,19 +377,25 @@ public final class Utilities {
      *
      * @param type the value to transform
      * @param baseValue the base value to compare the transformed value to
-     * @return string representing the value and the difference from the base value
+     * @return string representing the value and the difference from the base value together with the flag indicating
+     *         the comparison result
      */
-    public synchronized static String valueToCompareString(VType type, VType baseValue) {
-        if (type == null || baseValue == null) {
-            return null;
+    public synchronized static VTypeComparison valueToCompareString(VType type, VType baseValue) {
+        if (type == null && baseValue == null) {
+            return new VTypeComparison("---", 0);
+        } else if (type == null || baseValue == null) {
+            return type == null ? new VTypeComparison(valueToString(baseValue), -1)
+                : new VTypeComparison(valueToString(type), 1);
         }
         if (type instanceof VNumber && baseValue instanceof VNumber) {
             StringBuilder sb = new StringBuilder(20);
+            int diff = 0;
             sb.append(FORMAT.get().format((VNumber) type));
             if (type instanceof VDouble) {
                 double data = ((VDouble) type).getValue();
                 double base = ((VNumber) baseValue).getValue().doubleValue();
                 double newd = data - base;
+                diff = Double.compare(data, base);
                 sb.append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -380,6 +405,7 @@ public final class Utilities {
                 float data = ((VFloat) type).getValue();
                 float base = ((VNumber) baseValue).getValue().floatValue();
                 float newd = data - base;
+                diff = Float.compare(data, base);
                 sb.append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -389,6 +415,7 @@ public final class Utilities {
                 long data = ((VLong) type).getValue();
                 long base = ((VNumber) baseValue).getValue().longValue();
                 long newd = data - base;
+                diff = Long.compare(data, base);
                 sb.append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -398,6 +425,7 @@ public final class Utilities {
                 int data = ((VInt) type).getValue();
                 int base = ((VNumber) baseValue).getValue().intValue();
                 int newd = data - base;
+                diff = Integer.compare(data, base);
                 sb.append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -407,6 +435,7 @@ public final class Utilities {
                 short data = ((VShort) type).getValue();
                 short base = ((VNumber) baseValue).getValue().shortValue();
                 short newd = (short) (data - base);
+                diff = Short.compare(data, base);
                 sb.append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -416,15 +445,28 @@ public final class Utilities {
                 byte data = ((VByte) type).getValue();
                 byte base = ((VNumber) baseValue).getValue().byteValue();
                 byte newd = (byte) (data - base);
+                diff = Byte.compare(data, base);
                 sb.append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
                 sb.append(COMPARE_FORMAT.get().format(newd));
             }
-            return sb.toString();
+            return new VTypeComparison(sb.toString(), diff);
+        } else if (type instanceof VBoolean && baseValue instanceof VBoolean) {
+            String str = valueToString(type);
+            boolean b = ((VBoolean) type).getValue();
+            boolean c = ((VBoolean) baseValue).getValue();
+            return new VTypeComparison(str, Boolean.compare(b, c));
+        } else if (type instanceof VEnum && baseValue instanceof VEnum) {
+            String str = valueToString(type);
+            int b = ((VEnum) type).getIndex();
+            int c = ((VEnum) baseValue).getIndex();
+            return new VTypeComparison(str, Integer.compare(b, c));
         } else {
-            return valueToString(type);
+            String str = valueToString(type);
+            String base = valueToString(baseValue);
+            return new VTypeComparison(str, str.compareTo(base));
         }
     }
 

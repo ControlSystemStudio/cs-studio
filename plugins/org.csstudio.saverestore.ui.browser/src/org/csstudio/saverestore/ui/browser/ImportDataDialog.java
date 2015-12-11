@@ -14,10 +14,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 /**
- * <code>ImportDataDialog</code> is a dialog that allows to select the location from which the data will be copied.
- * The location is returned in a form of a {@link BeamlineSet} whout it might not be an actual beamlineset. If
- * it is just a folder it will be missing the last part of the path. If it is a baselevel, it will not have the
- * path defined at all.
+ * <code>ImportDataDialog</code> is a dialog that allows to select the location from which the data will be copied. The
+ * location is returned in a form of a {@link BeamlineSet} whout it might not be an actual beamlineset. If it is just a
+ * folder it will be missing the last part of the path. If it is a baselevel, it will not have the path defined at all.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -34,11 +33,13 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
      * @param owner the owner view
      */
     public ImportDataDialog(IWorkbenchPart owner) {
-        super(owner.getSite().getShell(), "Select Source", "Select the location from which to copy the data",
-                null, e -> e == null || e.getBranch() == null || e.getPath().length == 0  ? "Select a single item" :
-                            e.getBranch() != null && !e.getBaseLevel().isPresent() &&
-                                (e.getPath().length == 0 || e.getPath()[0].isEmpty()) ?
-                                    "Select more than just a branch": null);
+        super(owner.getSite().getShell(), "Select Source", "Select the location from which to copy the data", null,
+            e -> e == null || e.getBranch() == null
+                || e.getPath().length == 0
+                    ? "Select a single item"
+                    : e.getBranch() != null && !e.getBaseLevel().isPresent()
+                        && (e.getPath().length == 0 || e.getPath()[0].isEmpty()) ? "Select more than just a branch"
+                            : null);
         this.owner = owner;
     }
 
@@ -47,8 +48,9 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
 
         treeView.getSelectionModel().selectedItemProperty().addListener((a, o, n) -> validateInput());
 
-        fullNameField = new TextField(){
-            public void requestFocus() {}
+        fullNameField = new TextField() {
+            public void requestFocus() {
+            }
         };
         fullNameField.setMaxWidth(Double.MAX_VALUE);
         fullNameField.setEditable(false);

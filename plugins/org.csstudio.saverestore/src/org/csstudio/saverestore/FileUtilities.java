@@ -70,7 +70,7 @@ public final class FileUtilities {
     public static final String H_VALUE = "VALUE";
     // the complete snapshot file header
     private static final String SNAPSHOT_FILE_HEADER = H_PV_NAME + "," + H_SELECTED + "," + H_TIMESTAMP + "," + H_STATUS
-            + "," + H_SEVERITY + "," + H_VALUE_TYPE + "," + H_VALUE;
+        + "," + H_SEVERITY + "," + H_VALUE_TYPE + "," + H_VALUE;
     // delimiter of array values
     private static final String ARRAY_SPLITTER = "\\;";
     // delimiter of enum value and enum constants
@@ -81,7 +81,7 @@ public final class FileUtilities {
     private static final int BSD_ENTRY_LENGTH = 60;
     // the format used to store the timestamp of when the snapshot was taken
     private static final ThreadLocal<DateFormat> TIMESTAMP_FORMATTER = ThreadLocal
-            .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
+        .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
 
     /**
      * Read the contents of the snapshot file from the given input stream.
@@ -177,11 +177,11 @@ public final class FileUtilities {
      * @return VType that contains all parameters and matches the type provided by <code>valueType</code>
      */
     private static VType piecesToVType(String timestamp, String status, String severity, String value,
-            String valueType) {
+        String valueType) {
         String[] t = timestamp.indexOf('.') > 0 ? timestamp.split("\\.") : new String[] { "0", "0" };
         Time time = ValueFactory.newTime(Timestamp.of(Long.parseLong(t[0]), Integer.parseInt(t[1])));
-        Alarm alarm = ValueFactory.newAlarm(
-                severity.isEmpty() ? AlarmSeverity.NONE : AlarmSeverity.valueOf(severity.toUpperCase()), status);
+        Alarm alarm = ValueFactory
+            .newAlarm(severity.isEmpty() ? AlarmSeverity.NONE : AlarmSeverity.valueOf(severity.toUpperCase()), status);
         Display display = ValueFactory.newDisplay(0d, 0d, 0d, null, null, 0d, 0d, 0d, 0d, 0d);
         ValueType vtype = ValueType.forName(valueType);
 

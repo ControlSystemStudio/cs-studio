@@ -28,8 +28,8 @@ public class SwitchBranchCommand extends AbstractHandler implements IHandler {
         if (part instanceof BrowserView) {
             Selector selector = ((BrowserView) part).getSelector();
             FXComboInputDialog<Branch> dialog = new FXComboInputDialog<>(HandlerUtil.getActiveShell(event),
-                    "Select Branch", "Select the branch you wish to work on", selector.selectedBranchProperty().get(),
-                    selector.branchesProperty().get());
+                "Select Branch", "Select the branch you wish to work on", selector.selectedBranchProperty().get(),
+                selector.branchesProperty().get());
             dialog.openAndWait().ifPresent(selector.selectedBranchProperty()::set);
         }
         return null;

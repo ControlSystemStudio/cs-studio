@@ -19,8 +19,6 @@ import org.eclipse.ui.PartInitException;
  */
 public class BaseLevelBrowserProvider {
 
-    public static final String BASE_LEVEL_BROWSER_EXT_POINT = "org.csstudio.saverestore.ui.browser.baselevelbrowser";
-
     private Optional<BaseLevelBrowser<BaseLevel>> browser;
 
     /**
@@ -32,10 +30,10 @@ public class BaseLevelBrowserProvider {
             BaseLevelBrowser<BaseLevel> bb = null;
             try {
                 IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
-                IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(BASE_LEVEL_BROWSER_EXT_POINT);
+                IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(BaseLevelBrowser.EXT_POINT);
                 if (confElements.length > 1) {
                     throw new PartInitException(
-                            "Cannot instantiate Save and Restore Browser. Only one base level provider can be defined");
+                        "Cannot instantiate Save and Restore Browser. Only one base level provider can be defined");
                 }
                 for (IConfigurationElement element : confElements) {
                     bb = (BaseLevelBrowser<BaseLevel>) element.createExecutableExtension("browser");
@@ -43,7 +41,7 @@ public class BaseLevelBrowserProvider {
 
             } catch (CoreException e) {
                 SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore base level browser could not be loaded.",
-                        e);
+                    e);
                 browser = null;
             }
             browser = Optional.ofNullable(bb);

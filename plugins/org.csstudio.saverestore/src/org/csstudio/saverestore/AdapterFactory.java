@@ -2,7 +2,6 @@ package org.csstudio.saverestore;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.Date;
 import java.util.Optional;
 
 import org.csstudio.saverestore.data.BeamlineSet;
@@ -42,7 +41,7 @@ public class AdapterFactory implements IAdapterFactory {
                 SnapshotContent sc = FileUtilities.readFromSnapshot(file.getContents());
                 Timestamp snapshotTime = Timestamp.of(sc.date);
                 BeamlineSet set = new BeamlineSet(new Branch("master", "master"), Optional.empty(), path, null);
-                Snapshot descriptor = new Snapshot(set, new Date(), "No Comment", "OS");
+                Snapshot descriptor = new Snapshot(set, sc.date, "No Comment", "OS");
                 VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, snapshotTime);
                 return adapterType.cast(vs);
             } catch (IOException | CoreException | ParseException ex) {

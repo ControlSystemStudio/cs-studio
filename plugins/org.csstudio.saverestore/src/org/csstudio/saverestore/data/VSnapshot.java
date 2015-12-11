@@ -66,17 +66,17 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         }
         if (n == null) {
             throw new IllegalArgumentException(
-                    "The table does not contain the column " + FileUtilities.H_PV_NAME + ".");
+                "The table does not contain the column " + FileUtilities.H_PV_NAME + ".");
         } else if (s == null) {
             throw new IllegalArgumentException(
-                    "The table does not contain the column " + FileUtilities.H_SELECTED + ".");
+                "The table does not contain the column " + FileUtilities.H_SELECTED + ".");
         } else if (d == null) {
             throw new IllegalArgumentException("The table does not contain the column " + FileUtilities.H_VALUE + ".");
         }
 
-        this.names = Collections.unmodifiableList(n);
-        this.selected = Collections.unmodifiableList(s);
-        this.values = Collections.unmodifiableList(d);
+        this.names = new ArrayList<>(n);
+        this.selected = new ArrayList<>(s);
+        this.values = new ArrayList<>(d);
         this.snapshotTime = snapshotTime;
         this.beamlineSet = snapshot.getBeamlineSet();
         this.snapshot = Optional.of(snapshot);
@@ -94,13 +94,13 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      *            stored)
      */
     public VSnapshot(Snapshot snapshot, List<String> names, List<Boolean> selected, List<VType> values,
-            Timestamp snapshotTime) {
+        Timestamp snapshotTime) {
         if (names.size() != values.size()) {
             throw new IllegalArgumentException("The number of PV names does not match the number of values");
         }
-        this.names = Collections.unmodifiableList(names);
-        this.selected = Collections.unmodifiableList(selected);
-        this.values = Collections.unmodifiableList(values);
+        this.names = new ArrayList<>(names);
+        this.selected = new ArrayList<>(selected);
+        this.values = new ArrayList<>(values);
         this.snapshotTime = snapshotTime;
         this.beamlineSet = snapshot.getBeamlineSet();
         this.snapshot = Optional.of(snapshot);
@@ -119,11 +119,11 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         if (names.size() != values.size()) {
             throw new IllegalArgumentException("The number of PV names does not match the number of values");
         }
-        this.names = Collections.unmodifiableList(names);
+        this.names = new ArrayList<>(names);
         final List<Boolean> selList = new ArrayList<>(names.size());
         this.names.forEach(e -> selList.add(Boolean.TRUE));
-        this.selected = Collections.unmodifiableList(selList);
-        this.values = Collections.unmodifiableList(values);
+        this.selected = new ArrayList<>(selList);
+        this.values = new ArrayList<>(values);
         this.snapshotTime = snapshotTime;
         this.beamlineSet = snapshot.getBeamlineSet();
         this.snapshot = Optional.of(snapshot);
@@ -136,15 +136,15 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @param names the names of pvs
      */
     public VSnapshot(BeamlineSet set, List<String> names) {
-        this.names = Collections.unmodifiableList(names);
+        this.names = new ArrayList<>(names);
         final List<VType> list = new ArrayList<>(names.size());
         final List<Boolean> selList = new ArrayList<>(names.size());
         this.names.forEach(e -> {
             list.add(VNoData.INSTANCE);
             selList.add(Boolean.TRUE);
         });
-        this.values = Collections.unmodifiableList(list);
-        this.selected = Collections.unmodifiableList(selList);
+        this.values = new ArrayList<>(list);
+        this.selected = new ArrayList<>(selList);
         this.snapshotTime = null;
         this.beamlineSet = set;
         this.snapshot = Optional.empty();
@@ -176,7 +176,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return the list of pv names
      */
     public List<String> getNames() {
-        return names;
+        return Collections.unmodifiableList(names);
     }
 
     /**
@@ -185,7 +185,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return the list of pv values
      */
     public List<VType> getValues() {
-        return values;
+        return Collections.unmodifiableList(values);
     }
 
     /**
@@ -195,7 +195,20 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return the list of selection values
      */
     public List<Boolean> getSelected() {
-        return selected;
+        return Collections.unmodifiableList(selected);
+    }
+
+    /**
+     * Add a PV to this snapshot.
+     *
+     * @param name the name of the pv to add
+     * @param selected the selected flag
+     * @param value the pv value
+     */
+    public void addPV(String name, boolean selected, VType value) {
+        this.names.add(name);
+        this.selected.add(selected);
+        this.values.add(value);
     }
 
     /*
@@ -205,7 +218,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     @Override
     public Object getData() {
-        return Collections.unmodifiableList(Arrays.asList(names, values));
+        return Collections.unmodifiableList(Arrays.asList(names, selected, values));
     }
 
     /*
@@ -215,7 +228,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     @Override
     public ListInt getSizes() {
-        return new ArrayInt(2, names.size());
+        return new ArrayInt(3, names.size());
     }
 
     /*
@@ -296,6 +309,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         int result = 1;
         result = prime * result + ((beamlineSet == null) ? 0 : beamlineSet.hashCode());
         result = prime * result + ((names == null) ? 0 : names.hashCode());
+        result = prime * result + ((selected == null) ? 0 : selected.hashCode());
         result = prime * result + ((snapshotTime == null) ? 0 : snapshotTime.hashCode());
         result = prime * result + ((values == null) ? 0 : values.hashCode());
         return result;
@@ -335,14 +349,19 @@ public class VSnapshot implements VType, Time, Array, Serializable {
                 return false;
         } else if (!values.equals(other.values))
             return false;
+        if (selected == null) {
+            if (other.selected != null)
+                return false;
+        } else if (!selected.equals(other.selected))
+            return false;
         return true;
     }
 
     /**
-     * Transforms this snapshot to a {@link VTable} with three columns: names (String), selected state (Boolean),
-     * and data ({@link VType}).
+     * Transforms this snapshot to a {@link VTable} with three columns: names (String), selected state (Boolean), and
+     * data ({@link VType}).
      *
-     * @return  {@link VTable} instance which contains the data
+     * @return {@link VTable} instance which contains the data
      */
     public VTable toVTable() {
         List<Class<?>> classes = Arrays.asList(String.class, Boolean.class, VType.class);

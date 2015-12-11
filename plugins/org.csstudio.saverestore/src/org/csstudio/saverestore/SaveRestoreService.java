@@ -47,8 +47,6 @@ public class SaveRestoreService {
     public static final String PREF_NUMBER_OF_SNAPSHOTS = "maxNumberOfSnapshotsInBatch";
     private static final String PLUGIN_ID = "org.csstudio.saverestore";
 
-    /** The name of the data provider extension point definition */
-    public static final String DATA_PROVIDER_EXT_POINT = "org.csstudio.saverestore.dataprovider";
     /** The common logger */
     public static final Logger LOGGER = Logger.getLogger(SaveRestoreService.class.getName());
     /** The name of the selectedDataProvider property */
@@ -85,7 +83,7 @@ public class SaveRestoreService {
         if (dataProviders == null) {
             List<DataProviderWrapper> dpw = new ArrayList<>();
             IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
-            IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(DATA_PROVIDER_EXT_POINT);
+            IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(DataProvider.EXT_POINT);
             for (IConfigurationElement element : confElements) {
                 String name = element.getAttribute("name");
                 try {
@@ -95,7 +93,7 @@ public class SaveRestoreService {
                     dpw.add(new DataProviderWrapper(id, name, description, provider));
                 } catch (CoreException e) {
                     SaveRestoreService.LOGGER.log(Level.SEVERE,
-                            "Save and restore data provider '" + name + "' could not be loaded.", e);
+                        "Save and restore data provider '" + name + "' could not be loaded.", e);
                 }
             }
             dataProviders = Collections.unmodifiableList(dpw);

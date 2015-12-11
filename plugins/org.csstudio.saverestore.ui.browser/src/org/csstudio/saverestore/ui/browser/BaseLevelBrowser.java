@@ -21,6 +21,9 @@ import javafx.scene.Node;
  */
 public interface BaseLevelBrowser<T extends BaseLevel> {
 
+    /** The name of the extension point */
+    public static final String EXT_POINT = "org.csstudio.saverestore.ui.browser.baselevelbrowser";
+
     /**
      * Returns the title to be used for the container of this browser based on the provided arguments. The title may
      * contain the two given parameters or it may also ignore them. Null return values are not accepted, but empty

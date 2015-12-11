@@ -2,6 +2,8 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension-point id="baselevelvalidator" name="baselevelvalidator" schema="schema/baselevelvalidator.exsd"/>
+   <extension-point id="valueimporter" name="valueimporter" schema="schema/valueimporter.exsd"/>
+   <extension-point id="readbackprovider" name="readbackprovider" schema="schema/readbackprovider.exsd"/>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective

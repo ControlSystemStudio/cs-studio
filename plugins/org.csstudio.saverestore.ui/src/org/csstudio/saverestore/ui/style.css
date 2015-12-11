@@ -1,0 +1,15 @@
+.diff-cell {
+    -fx-background-color: #FF000044;
+    -fx-text-fill: black;
+}
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled:selected > .diff-cell,
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .diff-cell:selected, 
+.table-view:cell-selection > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .diff-cell:hover:selected,
+.table-view:focused > .virtual-flow > .clipped-container > .sheet > .table-row-cell:filled > .diff-cell:focused:selected:hover {
+    -fx-background-color: -fx-selection-bar;
+    -fx-text-fill: -fx-selection-bar-text;
+}
+.separator:vertical .line {
+	-fx-border-style: dashed;
+	-fx-padding: 0.0em 0.0em 0.0em 0.0em;
+} 

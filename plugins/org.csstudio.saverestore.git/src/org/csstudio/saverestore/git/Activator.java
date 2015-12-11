@@ -51,6 +51,7 @@ public class Activator extends AbstractUIPlugin {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
      */
     @Override
@@ -87,8 +88,8 @@ public class Activator extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the git username stored in the secured preferences for the given user. The user is usually the
-     * user that is logged in to CS-Studio. If no user is provided, system user is used.
+     * Returns the git username stored in the secured preferences for the given user. The user is usually the user that
+     * is logged in to CS-Studio. If no user is provided, system user is used.
      *
      * @param forUser the user for whom the username is to be retrieved
      * @return the username if it exists, or null otherwise
@@ -104,8 +105,8 @@ public class Activator extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the password that is bound to the username and is stored for the specified <code>forUser</code>
-     * If the <code>forUser</code> is not specified the system user is used.
+     * Returns the password that is bound to the username and is stored for the specified <code>forUser</code> If the
+     * <code>forUser</code> is not specified the system user is used.
      *
      * @param forUser the user for whom the password is being retrieved
      * @param username the matching username to go with the password
@@ -118,15 +119,15 @@ public class Activator extends AbstractUIPlugin {
         String user = forUser.orElse(System.getProperty("user.name"));
         try {
             byte[] val = SecurePreferences.getSecurePreferences().node(ID).node(user).node(username)
-                    .getByteArray(PREF_PASSWORD, null);
+                .getByteArray(PREF_PASSWORD, null);
             if (val == null) {
                 return null;
             }
             CharBuffer buffer = Charset.forName("UTF-8").newDecoder().decode(ByteBuffer.wrap(val));
             return Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit());
         } catch (StorageException | IOException e) {
-            SaveRestoreService.LOGGER.log(Level.WARNING, "Could not read the password for '" + forUser
-                    + "' from secured storage.", e);
+            SaveRestoreService.LOGGER.log(Level.WARNING,
+                "Could not read the password for '" + forUser + "' from secured storage.", e);
             return null;
         }
     }

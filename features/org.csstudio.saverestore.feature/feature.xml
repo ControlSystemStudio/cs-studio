@@ -19,6 +19,10 @@ This feature does not provide any data provider; the desired provider needs to b
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import plugin="org.csstudio.trends.databrowser2"/>
+   </requires>
+
    <plugin
          id="org.csstudio.saverestore.ui"
          download-size="0"
@@ -42,6 +46,13 @@ This feature does not provide any data provider; the desired provider needs to b
 
    <plugin
          id="org.csstudio.ui.fx.util"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.saverestore.demo"
          download-size="0"
          install-size="0"
          version="0.0.0"

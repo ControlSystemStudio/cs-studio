@@ -64,7 +64,7 @@ public class Isotope extends BaseLevel implements Serializable {
         neutrons = Integer.parseInt(parts[1]) - e.atomicNumber;
         if (neutrons < 0) {
             throw new IllegalArgumentException(
-                    "Mass is too small for '" + e.fullName + "' (min " + e.atomicNumber + ").");
+                "Mass is too small for '" + e.fullName + "' (min " + e.atomicNumber + ").");
         }
 
         char pn = parts[2].charAt(parts[2].length() - 1);
@@ -75,15 +75,14 @@ public class Isotope extends BaseLevel implements Serializable {
         charge *= (pn == 'n' ? -1 : pn == 'p' ? 1 : 0);
         if (charge > e.atomicNumber) {
             throw new IllegalArgumentException(
-                    "Charge of '" + e.fullName + "' cannot be higher than " + e.atomicNumber + ".");
+                "Charge of '" + e.fullName + "' cannot be higher than " + e.atomicNumber + ".");
         }
 
         return new Isotope(e, neutrons, charge);
     }
 
     private Isotope(Element element, int neutrons, int charge) {
-        super(null, composeStorageName(element, neutrons, charge),
-                composePresentationName(element, neutrons, charge));
+        super(null, composeStorageName(element, neutrons, charge), composePresentationName(element, neutrons, charge));
         this.element = element;
         this.neutrons = neutrons;
         this.charge = charge;
@@ -98,9 +97,8 @@ public class Isotope extends BaseLevel implements Serializable {
      * @return the storage representation for the isotope
      */
     private static String composeStorageName(Element element, int neutrons, int charge) {
-        return new StringBuilder().append(element.symbol).append('_')
-                .append(element.atomicNumber + neutrons).append('_').append(Math.abs(charge))
-                .append(charge < 0 ? 'n' : 'p').toString();
+        return new StringBuilder().append(element.symbol).append('_').append(element.atomicNumber + neutrons)
+            .append('_').append(Math.abs(charge)).append(charge < 0 ? 'n' : 'p').toString();
     }
 
     /**

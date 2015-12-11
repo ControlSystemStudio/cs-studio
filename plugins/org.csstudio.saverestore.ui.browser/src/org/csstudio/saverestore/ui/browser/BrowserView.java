@@ -165,7 +165,7 @@ public class BrowserView extends FXViewPart {
         Label titleText = new Label(browser.getTitleFor(Optional.empty(), Optional.empty()));
         titleText.textProperty().bind(elementsPane.textProperty());
         ToggleButton filterButton = new ToggleButton("",
-                new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/filter_ps.png"))));
+            new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/filter_ps.png"))));
         filterButton.setTooltip(new Tooltip("Disable non-existing"));
         filterButton.selectedProperty().addListener((a, o, n) -> baseLevelBrowser.setShowOnlyAvailable(n));
         setUpTitlePaneNode(titleText, true);
@@ -186,7 +186,7 @@ public class BrowserView extends FXViewPart {
 
         beamlineSetsTree = new TreeView<>();
         beamlineSetsTree.getSelectionModel().selectedItemProperty().addListener((a, o, n) -> selector
-                .selectedBeamlineSetProperty().set(n == null || n.getValue().isFolder() ? null : n.getValue().set));
+            .selectedBeamlineSetProperty().set(n == null || n.getValue().isFolder() ? null : n.getValue().set));
         beamlineSetsTree.setShowRoot(false);
 
         final ContextMenu popup = new ContextMenu();
@@ -195,7 +195,7 @@ public class BrowserView extends FXViewPart {
             popup.hide();
             BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
             boolean delete = FXMessageDialog.openQuestion(getSite().getShell(), "Delete Beamline Set",
-                    "Are you sure you want to delete beamline set '" + item.getValue().set.getPathAsString() + "'?");
+                "Are you sure you want to delete beamline set '" + item.getValue().set.getPathAsString() + "'?");
             if (delete) {
                 actionManager.deleteBeamlineSet(item.getValue().set);
             }
@@ -235,20 +235,20 @@ public class BrowserView extends FXViewPart {
         Button openButton = new Button("Open");
         openButton.setTooltip(new Tooltip("Open selected Beamline Set in Snapshot Viewer"));
         openButton.disableProperty()
-                .bind(selector.selectedBeamlineSetProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
+            .bind(selector.selectedBeamlineSetProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
         openButton.setOnAction(e -> actionManager.openBeamlineSet(selector.selectedBeamlineSetProperty().get()));
         editButton.disableProperty()
-                .bind(selector.selectedBeamlineSetProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
+            .bind(selector.selectedBeamlineSetProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
         editButton.setOnAction(e -> actionManager.editBeamlineSet(selector.selectedBeamlineSetProperty().get()));
 
         newButton.setOnAction(e -> actionManager.newBeamlineSet());
         importButton.disableProperty()
-                .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
+            .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
         importButton.setOnAction(
-                e -> new ImportDataDialog(BrowserView.this).openAndWait().ifPresent(actionManager::importFrom));
+            e -> new ImportDataDialog(BrowserView.this).openAndWait().ifPresent(actionManager::importFrom));
 
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
-                (e) -> setUpSetButtons(newButton, importButton, (DataProviderWrapper) e.getNewValue()));
+            (e) -> setUpSetButtons(newButton, importButton, (DataProviderWrapper) e.getNewValue()));
         setUpSetButtons(newButton, importButton, SaveRestoreService.getInstance().getSelectedDataProvider());
 
         setUpTitlePaneNode(titleText, true);
@@ -264,7 +264,7 @@ public class BrowserView extends FXViewPart {
         titleBox.prefWidthProperty().bind(scene.widthProperty().subtract(34));
 
         beamlineSetsPane.expandedProperty()
-                .addListener((a, o, n) -> VBox.setVgrow(beamlineSetsPane, n ? Priority.ALWAYS : Priority.NEVER));
+            .addListener((a, o, n) -> VBox.setVgrow(beamlineSetsPane, n ? Priority.ALWAYS : Priority.NEVER));
         return beamlineSetsPane;
     }
 
@@ -273,8 +273,8 @@ public class BrowserView extends FXViewPart {
         if (dpw != null) {
             if (dpw.provider.areBaseLevelsSupported()) {
                 importButton.setVisible(true);
-                newButton.disableProperty().bind(
-                        selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
+                newButton.disableProperty()
+                    .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
             } else {
                 importButton.setVisible(false);
                 newButton.disableProperty().bind(beamlineSetsPane.expandedProperty().not());
@@ -326,8 +326,8 @@ public class BrowserView extends FXViewPart {
             popup.hide();
             Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
             if (FXMessageDialog.openQuestion(getSite().getShell(), "Remove Tag",
-                    "Are you sure you want to remove the tag '" + item.getTagName().get() + "' from snapshot '"
-                            + item.getDate() + "'?")) {
+                "Are you sure you want to remove the tag '" + item.getTagName().get() + "' from snapshot '"
+                    + item.getDate() + "'?")) {
                 actionManager.deleteTag(item);
             }
         });
@@ -364,7 +364,7 @@ public class BrowserView extends FXViewPart {
         Button tagButton = new Button("Tag");
         tagButton.setTooltip(new Tooltip("Tag selected snapshot"));
         tagButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty().isNull()
-                .or(snapshotsPane.expandedProperty().not()));
+            .or(snapshotsPane.expandedProperty().not()));
         tagButton.setOnAction(e -> {
             final Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
             final FXTaggingDialog dialog = new FXTaggingDialog(getSite().getShell());
@@ -373,15 +373,15 @@ public class BrowserView extends FXViewPart {
         Button openButton = new Button("Open");
         openButton.setTooltip(new Tooltip("Open selected snapshot in a new Snapshot Viewer"));
         openButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty().isNull()
-                .or(snapshotsPane.expandedProperty().not()));
+            .or(snapshotsPane.expandedProperty().not()));
         openButton.setOnAction(e -> actionManager.openSnapshot(snapshotsList.getSelectionModel().getSelectedItem()));
 
         Button compareButton = new Button("Compare");
         compareButton.setTooltip(new Tooltip("Open selected snapshot the active Snapshot Viewer"));
         compareButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty()
-                .isNull().or(snapshotsPane.expandedProperty().not()));
+            .isNull().or(snapshotsPane.expandedProperty().not()));
         compareButton
-                .setOnAction(e -> actionManager.compareSnapshot(snapshotsList.getSelectionModel().getSelectedItem()));
+            .setOnAction(e -> actionManager.compareSnapshot(snapshotsList.getSelectionModel().getSelectedItem()));
 
         setUpTitlePaneNode(titleText, true);
         setUpTitlePaneNode(tagButton, false);
@@ -391,18 +391,18 @@ public class BrowserView extends FXViewPart {
         int num = SaveRestoreService.getInstance().getNumberOfSnapshots();
         if (num > 0) {
             Button nextButton = new Button("",
-                    new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/1rightarrow.png"))));
+                new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/1rightarrow.png"))));
             nextButton.setTooltip(new Tooltip("Load Next Batch"));
             nextButton.setOnAction(e -> selector.readSnapshots(false, false));
             nextButton.disableProperty()
-                    .bind(selector.selectedBeamlineSetProperty().isNull().or(selector.allSnapshotsLoadedProperty()));
+                .bind(selector.selectedBeamlineSetProperty().isNull().or(selector.allSnapshotsLoadedProperty()));
 
             Button nextAllButton = new Button("",
-                    new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/2rightarrow.png"))));
+                new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/2rightarrow.png"))));
             nextAllButton.setTooltip(new Tooltip("Load All"));
             nextAllButton.setOnAction(e -> selector.readSnapshots(false, true));
             nextAllButton.disableProperty()
-                    .bind(selector.selectedBeamlineSetProperty().isNull().or(selector.allSnapshotsLoadedProperty()));
+                .bind(selector.selectedBeamlineSetProperty().isNull().or(selector.allSnapshotsLoadedProperty()));
 
             setUpTitlePaneNode(nextButton, false);
             setUpTitlePaneNode(nextAllButton, false);
@@ -417,7 +417,7 @@ public class BrowserView extends FXViewPart {
         snapshotsPane.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         titleBox.prefWidthProperty().bind(scene.widthProperty().subtract(34));
         snapshotsPane.expandedProperty()
-                .addListener((a, o, n) -> VBox.setVgrow(snapshotsPane, n ? Priority.ALWAYS : Priority.NEVER));
+            .addListener((a, o, n) -> VBox.setVgrow(snapshotsPane, n ? Priority.ALWAYS : Priority.NEVER));
         return snapshotsPane;
     }
 
@@ -445,7 +445,7 @@ public class BrowserView extends FXViewPart {
                 } else {
                     Branch branch = selector.selectedBranchProperty().get();
                     elementsPane
-                            .setText(baseLevelBrowser.getTitleFor(Optional.of(bl), Optional.of(branch.getShortName())));
+                        .setText(baseLevelBrowser.getTitleFor(Optional.of(bl), Optional.of(branch.getShortName())));
                 }
             } else {
                 elementsPane.setText(baseLevelBrowser.getTitleFor(Optional.empty(), Optional.empty()));
@@ -519,7 +519,7 @@ public class BrowserView extends FXViewPart {
         }
 
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
-                e -> updateForDataProviderChange());
+            e -> updateForDataProviderChange());
         updateForDataProviderChange();
     }
 

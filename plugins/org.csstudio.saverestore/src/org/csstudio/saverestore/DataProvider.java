@@ -19,6 +19,9 @@ import org.csstudio.saverestore.data.VSnapshot;
  */
 public interface DataProvider {
 
+    /** The name of the data provider extension point definition */
+    public static final String EXT_POINT = "org.csstudio.saverestore.dataprovider";
+
     /**
      * <code>ImportType</code> describes possible import actions. Depending on the value, the beamline sets will be
      * imported, followed by the last snapshot value or by all snapshots for the beamline sets.
@@ -97,7 +100,7 @@ public interface DataProvider {
      * @throws DataProviderException if the list of snapshots cannot be retrieved
      */
     Snapshot[] getSnapshots(BeamlineSet set, boolean loadAll, Optional<Snapshot> fromThisOneBack)
-            throws DataProviderException;
+        throws DataProviderException;
 
     /**
      * Returns the content of one specific snapshot revision.
@@ -242,7 +245,7 @@ public interface DataProvider {
      * @throws DataProviderException if there was an error during tagging
      */
     Snapshot tagSnapshot(Snapshot snapshot, Optional<String> tagName, Optional<String> tagMessage)
-            throws DataProviderException;
+        throws DataProviderException;
 
     /**
      * Imports the data from the given source and imports them into the <code>toBranch</code> and
@@ -260,5 +263,5 @@ public interface DataProvider {
      * @throws DataProviderException in case of an error
      */
     boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel, ImportType type)
-            throws DataProviderException;
+        throws DataProviderException;
 }

@@ -25,9 +25,9 @@ public class SelectDataProviderCommand extends AbstractHandler implements IHandl
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
             FXComboInputDialog<DataProviderWrapper> dialog = new FXComboInputDialog<>(HandlerUtil.getActiveShell(event),
-                    "Select Data Provider", "Select the data provider you wish to use",
-                    SaveRestoreService.getInstance().getSelectedDataProvider(),
-                    SaveRestoreService.getInstance().getDataProviders());
+                "Select Data Provider", "Select the data provider you wish to use",
+                SaveRestoreService.getInstance().getSelectedDataProvider(),
+                SaveRestoreService.getInstance().getDataProviders());
             dialog.openAndWait().ifPresent(SaveRestoreService.getInstance()::setSelectedDataProvider);
         }
         return null;

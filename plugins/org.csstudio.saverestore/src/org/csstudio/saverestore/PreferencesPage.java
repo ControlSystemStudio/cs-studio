@@ -42,7 +42,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
     protected void createFieldEditors() {
         Composite parent = getFieldEditorParent();
         IntegerFieldEditor numSnapshots = new IntegerFieldEditor(SaveRestoreService.PREF_NUMBER_OF_SNAPSHOTS,
-                "Number of snapshots loaded at once (all=0)", parent);
+            "Number of snapshots loaded at once (all=0)", parent);
         addField(numSnapshots);
 
     }

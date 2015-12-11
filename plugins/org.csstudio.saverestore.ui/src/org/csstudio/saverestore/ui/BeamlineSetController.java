@@ -38,19 +38,16 @@ public class BeamlineSetController {
      * @return the stored data if successful or an empty object if unsuccessful
      */
     public Optional<BeamlineSetData> save(final BeamlineSetData data) {
-        Optional<String> comment = FXTextAreaInputDialog
-                .get(owner.getSite().getShell(), "Beamline Set Comment",
-                        "Provide a short comment of the changes to the beamline set " + data.getDescriptor()
-                                .getDisplayName(),
-                        "", e -> (e == null || e.trim().length() < 10)
-                                ? "Comment should be at least 10 characters long." : null);
+        Optional<String> comment = FXTextAreaInputDialog.get(owner.getSite().getShell(), "Beamline Set Comment",
+            "Provide a short comment of the changes to the beamline set " + data.getDescriptor().getDisplayName(), "",
+            e -> (e == null || e.trim().length() < 10) ? "Comment should be at least 10 characters long." : null);
         return comment.map(c -> {
             try {
                 String providerId = data.getDescriptor().getDataProviderId();
                 BeamlineSetData dd = SaveRestoreService.getInstance().getDataProvider(providerId).provider
-                        .saveBeamlineSet(data, c);
+                    .saveBeamlineSet(data, c);
                 SaveRestoreService.LOGGER.log(Level.FINE,
-                        "Successfully saved the beamline set '" + data.getDescriptor().getFullyQualifiedName() + "'");
+                    "Successfully saved the beamline set '" + data.getDescriptor().getFullyQualifiedName() + "'");
                 return dd;
             } catch (DataProviderException ex) {
                 Selector.reportException(ex, owner.getSite().getShell());

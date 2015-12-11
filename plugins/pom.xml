@@ -17,5 +17,6 @@
     <module>org.csstudio.saverestore.ui</module>
     <module>org.csstudio.saverestore.ui.browser</module>
     <module>org.csstudio.saverestore.ui.browser.periodictable</module>
+    <module>org.csstudio.saverestore.demo</module>
   </modules>
 </project>

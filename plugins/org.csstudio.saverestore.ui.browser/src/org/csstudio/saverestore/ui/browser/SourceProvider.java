@@ -19,8 +19,10 @@ import org.eclipse.ui.services.IServiceLocator;
  */
 public class SourceProvider extends AbstractSourceProvider {
 
-    private static final String[] SOURCE_NAMES = new String[] { "org.csstudio.saverestore.branchessupported",
-            "org.csstudio.saverestore.multipledataproviders", "org.csstudio.saverestore.resettablerepository" };
+    private static final String[] SOURCE_NAMES = new String[] {
+        "org.csstudio.saverestore.branchessupported",
+        "org.csstudio.saverestore.multipledataproviders",
+        "org.csstudio.saverestore.resettablerepository" };
 
     /*
      * (non-Javadoc)
@@ -31,7 +33,7 @@ public class SourceProvider extends AbstractSourceProvider {
     public void initialize(IServiceLocator locator) {
         super.initialize(locator);
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
-                (e) -> fireSourceChanged(ISources.WORKBENCH, getCurrentState()));
+            (e) -> fireSourceChanged(ISources.WORKBENCH, getCurrentState()));
     }
 
     /*

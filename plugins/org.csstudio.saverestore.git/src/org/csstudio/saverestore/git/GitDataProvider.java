@@ -134,7 +134,9 @@ public class GitDataProvider implements DataProvider {
 
     /*
      * (non-Javadoc)
-     * @see org.csstudio.saverestore.DataProvider#getBeamlineSets(java.util.Optional, org.csstudio.saverestore.data.Branch)
+     *
+     * @see org.csstudio.saverestore.DataProvider#getBeamlineSets(java.util.Optional,
+     * org.csstudio.saverestore.data.Branch)
      */
     @Override
     public BeamlineSet[] getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException {
@@ -154,14 +156,14 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public Snapshot[] getSnapshots(BeamlineSet set, boolean all, Optional<Snapshot> fromThisOneBack)
-            throws DataProviderException {
+        throws DataProviderException {
         try {
             List<Snapshot> snapshots = grm.getSnapshots(set,
-                    all ? 0 : SaveRestoreService.getInstance().getNumberOfSnapshots(), fromThisOneBack);
+                all ? 0 : SaveRestoreService.getInstance().getNumberOfSnapshots(), fromThisOneBack);
             return snapshots.toArray(new Snapshot[snapshots.size()]);
         } catch (IOException | GitAPIException e) {
             throw new DataProviderException("Error retrieving the snapshots list for '" + set.getPathAsString() + "'.",
-                    e);
+                e);
         }
     }
 
@@ -176,7 +178,7 @@ public class GitDataProvider implements DataProvider {
             return grm.loadBeamlineSetData(set, Optional.empty());
         } catch (IOException | GitAPIException e) {
             throw new DataProviderException("Error loading the beamline set data for '" + set.getPathAsString() + "'.",
-                    e);
+                e);
         }
     }
 
@@ -212,7 +214,7 @@ public class GitDataProvider implements DataProvider {
             answer = grm.saveBeamlineSet(set, comment);
         } catch (IOException | GitAPIException e) {
             throw new DataProviderException(
-                    "Error saving beamline set '" + set.getDescriptor().getPathAsString() + "'.", e);
+                "Error saving beamline set '" + set.getDescriptor().getPathAsString() + "'.", e);
         }
         if (answer.change == ChangeType.PULL) {
             for (CompletionNotifier n : getNotifiers()) {
@@ -264,7 +266,7 @@ public class GitDataProvider implements DataProvider {
             answer = grm.saveSnapshot(data, comment);
         } catch (IOException | GitAPIException e) {
             throw new DataProviderException(
-                    "Error saving snapshot set for '" + data.getBeamlineSet().getPathAsString() + "'.", e);
+                "Error saving snapshot set for '" + data.getBeamlineSet().getPathAsString() + "'.", e);
         }
         if (answer.change == ChangeType.PULL) {
             for (CompletionNotifier n : getNotifiers()) {
@@ -286,7 +288,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public Snapshot tagSnapshot(Snapshot snapshot, Optional<String> tagName, Optional<String> tagMessage)
-            throws DataProviderException {
+        throws DataProviderException {
         Result<Snapshot> answer = null;
         try {
             answer = grm.tagSnapshot(snapshot, tagName.orElse(null), tagMessage.orElse(null));
@@ -316,7 +318,7 @@ public class GitDataProvider implements DataProvider {
             return grm.loadSnapshotData(snapshot);
         } catch (ParseException | IOException | GitAPIException e) {
             throw new DataProviderException("Error loading the snapshot content for snapshot '"
-                    + snapshot.getBeamlineSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
+                + snapshot.getBeamlineSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
         }
     }
 
@@ -328,7 +330,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel, ImportType type)
-            throws DataProviderException {
+        throws DataProviderException {
         Result<Boolean> answer = null;
         try {
             answer = grm.importData(source, toBranch, toBaseLevel, type);

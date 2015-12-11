@@ -22,9 +22,9 @@ import javafx.scene.control.TreeView;
 /**
  *
  * <code>RepositoryTree</code> is a component that provides a tree browser of the save and restore repository. It allows
- * user to select any single branch, base level, folder or beamline set within the repository. If created with
- * the <code>editable</code> parameter, user can also create new folders by selecting the appropriate item from
- * the popup menu.
+ * user to select any single branch, base level, folder or beamline set within the repository. If created with the
+ * <code>editable</code> parameter, user can also create new folders by selecting the appropriate item from the popup
+ * menu.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -134,7 +134,6 @@ public class RepositoryTree extends TreeView<String> {
         init();
     }
 
-
     private void init() {
         selector = new Selector(owner);
         setShowRoot(false);
@@ -151,7 +150,7 @@ public class RepositoryTree extends TreeView<String> {
         setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY,
-                (e) -> setDisable((Boolean) e.getNewValue()));
+            (e) -> setDisable((Boolean) e.getNewValue()));
         selector.branchesProperty().addListener((a, o, n) -> branchesLoaded(n));
         selector.baseLevelsProperty().addListener((a, o, n) -> baseLevelsLoaded(n));
         selector.beamlineSetsProperty().addListener((a, o, n) -> beamlineSetsLoaded(n));
@@ -168,10 +167,10 @@ public class RepositoryTree extends TreeView<String> {
             final List<String> names = new ArrayList<>();
             item.getChildren().forEach(x -> names.add(x.getValue()));
             new FXTextInputDialog(owner.getSite().getShell(), "Folder Name", "Enter new folder name", null,
-                    s -> names.contains(s) ? "Folder '" + s + "' already exists."
-                            : s.isEmpty() ? "Folder name cannot be empty."
-                                    : item.type == Type.BRANCH ? selector.validateBaseLevelName(s) : null).openAndWait()
-                                            .ifPresent(f -> {
+                s -> names.contains(s) ? "Folder '" + s + "' already exists."
+                    : s.isEmpty() ? "Folder name cannot be empty."
+                        : item.type == Type.BRANCH ? selector.validateBaseLevelName(s) : null).openAndWait()
+                            .ifPresent(f -> {
                 if (item.type == Type.BRANCH) {
                     BrowsingTreeItem newItem = new BrowsingTreeItem(new BaseLevel(item.branch, f, f));
                     item.getChildren().add(newItem);
@@ -225,7 +224,7 @@ public class RepositoryTree extends TreeView<String> {
                 }
                 if (branchItem == null) {
                     throw new IllegalStateException(
-                            "The repository structure is corrupted. Could not find the branch '" + branch + "'.");
+                        "The repository structure is corrupted. Could not find the branch '" + branch + "'.");
                 }
                 // if (branchItem.getChildren().size() != 1) {
                 // Type type = ((BrowsingTreeItem) branchItem.getChildren().get(0)).type;
@@ -243,7 +242,7 @@ public class RepositoryTree extends TreeView<String> {
             // branchItem is always null here, but eclipse complains if there is no check
             for (TreeItem<String> br : branches) {
                 if (br.isExpanded() && br.getChildren().size() == 1
-                        && ((BrowsingTreeItem) br.getChildren().get(0)).type == Type.LOADING) {
+                    && ((BrowsingTreeItem) br.getChildren().get(0)).type == Type.LOADING) {
                     br.getChildren().clear();
                     if (initialValue != null) {
                         addPresetBaseLevel((BrowsingTreeItem) br, initialValue.getBaseLevel().orElse(null),
@@ -283,7 +282,7 @@ public class RepositoryTree extends TreeView<String> {
             }
             if (parentItem == null) {
                 throw new IllegalStateException("The repository structure is corrupted. Could not find the base level '"
-                        + baseLevel.getPresentationName() + "'.");
+                    + baseLevel.getPresentationName() + "'.");
             }
         } else {
             for (TreeItem<String> br : root.getChildren()) {
@@ -294,12 +293,12 @@ public class RepositoryTree extends TreeView<String> {
             }
             if (parentItem == null) {
                 throw new IllegalStateException(
-                        "The repository structure is corrupted. Could not find the branch '" + branch + "'.");
+                    "The repository structure is corrupted. Could not find the branch '" + branch + "'.");
             }
         }
 
         if (parentItem.getChildren().size() != 1
-                || (((BrowsingTreeItem) parentItem.getChildren().get(0)).type != Type.LOADING
+            || (((BrowsingTreeItem) parentItem.getChildren().get(0)).type != Type.LOADING
                 && ((BrowsingTreeItem) parentItem.getChildren().get(0)).type != Type.NOTLOADED)) {
             return;
         }

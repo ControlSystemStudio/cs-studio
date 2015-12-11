@@ -67,9 +67,9 @@ public class BeamlineSetEditor extends FXEditorPart {
             monitor.beginTask("Save beamline set", 1);
             final BeamlineSetData data = createData();
             if (data.getDescription().equals(this.data.getDescription())
-                    && data.getPVList().equals(this.data.getPVList())) {
+                && data.getPVList().equals(this.data.getPVList())) {
                 MessageDialog.openInformation(getSite().getShell(), "Save Beamline Set",
-                        "Theare are no changes between the saved and this beamline set.");
+                    "Theare are no changes between the saved and this beamline set.");
                 return;
             }
 
@@ -77,7 +77,7 @@ public class BeamlineSetEditor extends FXEditorPart {
                 final Optional<BeamlineSetData> ds = controller.save(data);
                 getSite().getShell().getDisplay().asyncExec(() -> {
                     monitor.done();
-                    ds.ifPresent(e->setInput(new BeamlineSetEditorInput(e)));
+                    ds.ifPresent(e -> setInput(new BeamlineSetEditorInput(e)));
                 });
             });
         }
@@ -104,19 +104,18 @@ public class BeamlineSetEditor extends FXEditorPart {
     public void doSaveAs() {
         BeamlineSetData data = createData();
         if (data.getDescription().equals(this.data.getDescription())
-                && data.getPVList().equals(this.data.getPVList())) {
+            && data.getPVList().equals(this.data.getPVList())) {
             boolean ans = MessageDialog.openQuestion(getSite().getShell(), "Save Beamline Set As",
-                    "Theare are no changes between the saved and this beamline set. Are you sure you want to save it as a new beamline set?");
+                "Theare are no changes between the saved and this beamline set. Are you sure you want to save it as a new beamline set?");
             if (!ans) {
                 return;
             }
         }
         new RepositoryTreeBrowser(this, data.getDescriptor()).openAndWait()
-                .ifPresent(beamlineSet -> SaveRestoreService.getInstance().execute("Save Beamline Set", () -> {
-                    controller.save(new BeamlineSetData(beamlineSet, data.getPVList(), data.getDescription()))
-                            .ifPresent(d ->
-                            getSite().getShell().getDisplay().asyncExec(()->setInput(new BeamlineSetEditorInput(d))));
-                }));
+            .ifPresent(beamlineSet -> SaveRestoreService.getInstance().execute("Save Beamline Set", () -> {
+                controller.save(new BeamlineSetData(beamlineSet, data.getPVList(), data.getDescription())).ifPresent(
+                    d -> getSite().getShell().getDisplay().asyncExec(() -> setInput(new BeamlineSetEditorInput(d))));
+            }));
     }
 
     /*

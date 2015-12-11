@@ -6,7 +6,7 @@
          <meta.schema plugin="org.csstudio.saverestore.ui" id="baselevelvalidator" name="Base Level Name Validation"/>
       </appinfo>
       <documentation>
-         Provides an implementation of the base level validator
+         Provides an implementation of the base level validator, which verifies if the newly created base level name matches the desired criteria.
       </documentation>
    </annotation>
 

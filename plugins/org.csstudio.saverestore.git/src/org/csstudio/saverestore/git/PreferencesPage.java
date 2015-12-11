@@ -17,8 +17,8 @@ import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
- * <code>PreferencesPage</code> provides means to set the properties for the git data provider. These properties
- * include the remote repository URL, destination folder etc.
+ * <code>PreferencesPage</code> provides means to set the properties for the git data provider. These properties include
+ * the remote repository URL, destination folder etc.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -36,6 +36,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     @Override
@@ -44,13 +45,14 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
      */
     @Override
     protected void createFieldEditors() {
         Composite parent = getFieldEditorParent();
 
-        StringFieldEditor url = new StringFieldEditor(Activator.PREF_URL, "Git repository URL:", parent){
+        StringFieldEditor url = new StringFieldEditor(Activator.PREF_URL, "Git repository URL:", parent) {
             @Override
             protected boolean doCheckState() {
                 String txt = getTextControl().getText();
@@ -65,17 +67,17 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         url.setEmptyStringAllowed(false);
         addField(url);
         StringButtonFieldEditor destination = new StringButtonFieldEditor(Activator.PREF_DESTINATION,
-                "Local git working folder (empty for default setting):",parent) {
+            "Local git working folder (empty for default setting):", parent) {
 
             @Override
             protected String changePressed() {
                 IPath startPath = new Path(getTextControl().getText());
 
-                ResourceSelectionDialog rsDialog = new ResourceSelectionDialog(
-                        Display.getCurrent().getActiveShell(), "Choose File", new String[0]);
+                ResourceSelectionDialog rsDialog = new ResourceSelectionDialog(Display.getCurrent().getActiveShell(),
+                    "Choose File", new String[0]);
                 rsDialog.setSelectedResource(startPath);
 
-                if (rsDialog.open() == Window.OK){
+                if (rsDialog.open() == Window.OK) {
                     return rsDialog.getSelectedResource().toPortableString();
                 }
                 return null;
@@ -85,7 +87,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         addField(destination);
 
         BooleanFieldEditor automaticSync = new BooleanFieldEditor(Activator.PREF_AUTOMATIC_SYNC,
-                "Automatically synchronise repository after every save?", parent);
+            "Automatically synchronise repository after every save?", parent);
         addField(automaticSync);
     }
 

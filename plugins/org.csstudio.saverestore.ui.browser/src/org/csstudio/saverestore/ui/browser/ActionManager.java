@@ -72,22 +72,22 @@ public class ActionManager {
             throw new IllegalArgumentException("Cannot import from an unknown branch.");
         }
         int ans = new FXMessageDialog(owner.getSite().getShell(), "Import Snapshots", null,
-                "Do you want to import any snapshots for the selected beamline sets?", FXMessageDialog.QUESTION,
-                new String[] { "No", "Last Only", "All", "Cancel" }, 0, 80).open();
+            "Do you want to import any snapshots for the selected beamline sets?", FXMessageDialog.QUESTION,
+            new String[] { "No", "Last Only", "All", "Cancel" }, 0, 80).open();
         if (ans == 3) {
             // cancelled
             return;
         }
         final ImportType type = ans == 0 ? ImportType.BEAMLINE_SET
-                : ans == 1 ? ImportType.LAST_SNAPSHOT : ImportType.ALL_SNAPSHOTS;
+            : ans == 1 ? ImportType.LAST_SNAPSHOT : ImportType.ALL_SNAPSHOTS;
         SaveRestoreService.getInstance().execute("Import Data", () -> {
             try {
                 if (provider.importData(source, currentBranch, Optional.ofNullable(baseLevel), type)) {
                     SaveRestoreService.LOGGER.log(Level.FINE,
-                            "Successfully imported data from '" + source.getFullyQualifiedName() + "'.");
+                        "Successfully imported data from '" + source.getFullyQualifiedName() + "'.");
                 } else {
                     SaveRestoreService.LOGGER.log(Level.FINE,
-                            "Failed to import data from '" + source.getFullyQualifiedName() + "'.");
+                        "Failed to import data from '" + source.getFullyQualifiedName() + "'.");
                 }
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
@@ -109,12 +109,12 @@ public class ActionManager {
             throw new IllegalArgumentException("Tag name not provided.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-                .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
+            .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Tag Snapshot", () -> {
             try {
                 provider.tagSnapshot(snapshot, Optional.of(tagName), Optional.of(tagMessage));
                 SaveRestoreService.LOGGER.log(Level.FINE, "Successfully tagged snapshot '"
-                        + snapshot.getBeamlineSet().getFullyQualifiedName() + ": " + snapshot.getDate() + "'.");
+                    + snapshot.getBeamlineSet().getFullyQualifiedName() + ": " + snapshot.getDate() + "'.");
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }
@@ -144,7 +144,7 @@ public class ActionManager {
             throw new IllegalArgumentException("Snapshot is not selected");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-                .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
+            .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Load snapshot data", () -> {
             try {
                 final VSnapshot s = provider.getSnapshotContent(snapshot);
@@ -168,12 +168,12 @@ public class ActionManager {
                                 ((SnapshotViewerEditor) part).addSnapshot(s);
                             } else {
                                 owner.getSite().getPage().openEditor(new SnapshotEditorInput(s),
-                                        SnapshotViewerEditor.ID);
+                                    SnapshotViewerEditor.ID);
                             }
                         }
                     } catch (PartInitException e) {
                         SaveRestoreService.LOGGER.log(Level.SEVERE,
-                                "Could not find or instantiate a new snapshot editor.", e);
+                            "Could not find or instantiate a new snapshot editor.", e);
                     }
                 });
             } catch (DataProviderException e) {
@@ -192,7 +192,7 @@ public class ActionManager {
             throw new IllegalArgumentException("Beamline set is not selected.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-                .getDataProvider(set.getDataProviderId()).provider;
+            .getDataProvider(set.getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Load beamline set data", () -> {
             try {
                 BeamlineSetData data = provider.getBeamlineSetContent(set);
@@ -201,7 +201,7 @@ public class ActionManager {
                         owner.getSite().getPage().openEditor(new BeamlineSetEditorInput(data), BeamlineSetEditor.ID);
                     } catch (PartInitException e) {
                         SaveRestoreService.LOGGER.log(Level.SEVERE,
-                                "Could not find or instantiate a new beamline set editor.", e);
+                            "Could not find or instantiate a new beamline set editor.", e);
                     }
                 });
             } catch (DataProviderException e) {
@@ -219,14 +219,14 @@ public class ActionManager {
         final String dataProvider = SaveRestoreService.getInstance().getSelectedDataProvider().id;
         SaveRestoreService.getInstance().execute("Load beamline set data", () -> {
             BeamlineSet set = new BeamlineSet(branch, Optional.ofNullable(base), new String[] { "BeamlineSet" },
-                    dataProvider);
+                dataProvider);
             BeamlineSetData data = new BeamlineSetData(set, new ArrayList<>(0), "");
             owner.getSite().getShell().getDisplay().asyncExec(() -> {
                 try {
                     owner.getSite().getPage().openEditor(new BeamlineSetEditorInput(data), BeamlineSetEditor.ID);
                 } catch (PartInitException e) {
                     SaveRestoreService.LOGGER.log(Level.SEVERE,
-                            "Could not find or instantiate a new beamline set editor.", e);
+                        "Could not find or instantiate a new beamline set editor.", e);
                 }
             });
         });
@@ -242,7 +242,7 @@ public class ActionManager {
             throw new IllegalArgumentException("Beamline set is not selected.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-                .getDataProvider(set.getDataProviderId()).provider;
+            .getDataProvider(set.getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Open beamline set", () -> {
             try {
                 BeamlineSetData data = provider.getBeamlineSetContent(set);
@@ -252,7 +252,7 @@ public class ActionManager {
                         owner.getSite().getPage().openEditor(new SnapshotEditorInput(s), SnapshotViewerEditor.ID);
                     } catch (PartInitException e) {
                         SaveRestoreService.LOGGER.log(Level.SEVERE,
-                                "Could not find or instantiate a new snapshot editor.", e);
+                            "Could not find or instantiate a new snapshot editor.", e);
                     }
                 });
             } catch (DataProviderException e) {
@@ -271,20 +271,20 @@ public class ActionManager {
             throw new IllegalArgumentException("Beamline set is not selected.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-                .getDataProvider(set.getDataProviderId()).provider;
+            .getDataProvider(set.getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Delete beamline set", () -> {
             try {
                 Optional<String> comment = FXTextAreaInputDialog.get(owner.getSite().getShell(), "Delete Comment",
-                        "Provide a short comment why the set '" + set.getPathAsString() + "' is being deleted", "",
-                        e -> (e == null || e.trim().length() < 10) ? "Comment should be at least 10 characters long."
-                                : null);
+                    "Provide a short comment why the set '" + set.getPathAsString() + "' is being deleted", "",
+                    e -> (e == null || e.trim().length() < 10) ? "Comment should be at least 10 characters long."
+                        : null);
                 if (comment.isPresent()) {
                     if (provider.deleteBeamlineSet(set, comment.get())) {
-                        SaveRestoreService.LOGGER.log(Level.FINE, "Successfully deleted beamline set '"
-                            + set.getFullyQualifiedName() + "'.");
+                        SaveRestoreService.LOGGER.log(Level.FINE,
+                            "Successfully deleted beamline set '" + set.getFullyQualifiedName() + "'.");
                     } else {
-                        SaveRestoreService.LOGGER.log(Level.FINE, "Failed to delete beamline set '"
-                                + set.getFullyQualifiedName() + "'.");
+                        SaveRestoreService.LOGGER.log(Level.FINE,
+                            "Failed to delete beamline set '" + set.getFullyQualifiedName() + "'.");
                     }
                 }
             } catch (DataProviderException e) {
@@ -305,12 +305,12 @@ public class ActionManager {
             throw new IllegalArgumentException("Selected snapshot is not tagged.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-                .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
+            .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
         SaveRestoreService.getInstance().execute("Remove tag", () -> {
             try {
                 provider.tagSnapshot(snapshot, Optional.empty(), Optional.empty());
                 SaveRestoreService.LOGGER.log(Level.FINE, "Successfully deleted the tag from '"
-                        + snapshot.getBeamlineSet().getFullyQualifiedName() + ": " + snapshot.getDate() + "'.");
+                    + snapshot.getBeamlineSet().getFullyQualifiedName() + ": " + snapshot.getDate() + "'.");
             } catch (DataProviderException e) {
                 Selector.reportException(e, owner.getSite().getShell());
             }

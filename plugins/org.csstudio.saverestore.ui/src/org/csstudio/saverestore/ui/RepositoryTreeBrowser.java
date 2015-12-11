@@ -27,7 +27,6 @@ import javafx.scene.layout.Priority;
  */
 public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
 
-
     private IWorkbenchPart owner;
     private RepositoryTree treeView;
     private TextField nameField;
@@ -43,10 +42,10 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
      */
     public RepositoryTreeBrowser(IWorkbenchPart owner, BeamlineSet preselection) {
         super(owner.getSite().getShell(), "Select Location", "Select location where to store the beamline set",
-                preselection,
-                e -> e == null || e.getName().isEmpty() ? "Beamline Set name not provided"
-                   : e.getBranch() == null ? "No branch selected"
-                   : e.getPath().length == 0 ? "No name and path provided" : null);
+            preselection,
+            e -> e == null || e.getName().isEmpty() ? "Beamline Set name not provided"
+                : e.getBranch() == null ? "No branch selected"
+                    : e.getPath().length == 0 ? "No name and path provided" : null);
         this.owner = owner;
         this.initialValue = preselection;
     }
@@ -66,8 +65,9 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         nameField.setMaxWidth(Double.MAX_VALUE);
         nameField.textProperty().addListener((a, o, n) -> validateInput());
 
-        fullNameField = new TextField(){
-            public void requestFocus() {}
+        fullNameField = new TextField() {
+            public void requestFocus() {
+            }
         };
         fullNameField.setMaxWidth(Double.MAX_VALUE);
         fullNameField.setEditable(false);
@@ -125,7 +125,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         String[] path = set.getPath();
         String name = nameField.getText().trim();
         if (!name.isEmpty()) {
-            path[path.length-1] = name;
+            path[path.length - 1] = name;
         }
 
         BeamlineSet newSet = new BeamlineSet(set.getBranch(), set.getBaseLevel(), path, set.getDataProviderId());
@@ -153,7 +153,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         String name = treeView.getSelectionModel().getSelectedItem().getValue();
         if (value.getName().equals(name)) {
             boolean b = FXMessageDialog.openConfirm(getShell(), "Overwrite",
-                    "Beamline set '" + value.getDisplayName() + "' already exists. Are you sure you want to overwrite it");
+                "Beamline set '" + value.getDisplayName() + "' already exists. Are you sure you want to overwrite it");
             if (!b) {
                 return;
             }

@@ -12,10 +12,10 @@ class Result<T> {
 
     /**
      *
-     * <code>ChangeType</code> represents the possible changes in repository after an action is performed.
-     * If nothing changed in the repository, the change is described by {@link #NONE}, if a new revision of
-     * a file was created it is described by {@link #SAVE}, if changes were pulled from the remote repository
-     * the change is described by {@link #PULL}.
+     * <code>ChangeType</code> represents the possible changes in repository after an action is performed. If nothing
+     * changed in the repository, the change is described by {@link #NONE}, if a new revision of a file was created it
+     * is described by {@link #SAVE}, if changes were pulled from the remote repository the change is described by
+     * {@link #PULL}.
      *
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *
@@ -28,8 +28,8 @@ class Result<T> {
     final ChangeType change;
 
     /**
-     * Constructs a new results object, which provides the data that was stored or created and the type
-     * of change in the repository.
+     * Constructs a new results object, which provides the data that was stored or created and the type of change in the
+     * repository.
      *
      * @param data the data
      * @param change the type of change

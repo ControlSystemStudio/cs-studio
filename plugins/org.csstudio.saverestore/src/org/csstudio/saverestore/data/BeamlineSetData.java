@@ -41,7 +41,7 @@ public class BeamlineSetData {
      * @param storedDate the creation date of the current revision of this beamline set
      */
     public BeamlineSetData(BeamlineSet descriptor, List<String> pvList, String description, String storedComment,
-            Date storedDate) {
+        Date storedDate) {
         this.descriptor = descriptor;
         this.description = description;
         this.pvList = Collections.unmodifiableList(pvList);
