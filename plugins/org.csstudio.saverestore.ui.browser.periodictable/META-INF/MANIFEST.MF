@@ -5,13 +5,11 @@ Bundle-SymbolicName: org.csstudio.saverestore.ui.browser.periodictable;singleton
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: FRIB
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: javafx.beans.property;version="2.2.0",
+Import-Package: javafx.beans.property,
  javafx.scene,
- javafx.scene.canvas,
  javafx.scene.control,
- javafx.scene.layout;version="2.2.0",
- javafx.scene.text,
- org.eclipse.fx.ui.workbench3
+ javafx.scene.layout,
+ javafx.scene.text
 Require-Bundle: org.csstudio.saverestore;bundle-version="1.0.0",
  org.csstudio.saverestore.ui.browser;bundle-version="1.0.0",
  org.csstudio.ui.fx.util;bundle-version="1.0.0"
