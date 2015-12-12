@@ -93,8 +93,6 @@ public final class MediaService {
                 AlarmRepresentationScheme.INVALID, CustomMediaFactory.COLOR_PINK, true));
         colorMap.put(AlarmRepresentationScheme.DISCONNECTED, new OPIColor(
                 AlarmRepresentationScheme.DISCONNECTED, CustomMediaFactory.COLOR_PINK, true));
-        colorMap.put(AlarmRepresentationScheme.DISABLED, new OPIColor(
-                AlarmRepresentationScheme.DISABLED, CustomMediaFactory.COLOR_DARK_GRAY, true));
     }
 
     private void loadPredefinedFonts() {

@@ -164,7 +164,7 @@
                enablesFor="1"
                id="org.csstudio.opibuilder.acknowledgeAlarmAction"
                label="Acknowledge/Unacknowledge Alarm"
-               tooltip="If the widget has an Alarm PV set and enabled, acknowledges/unacknowledges this PV's alarm">
+               tooltip="If the widget is connected to a BEAST AlarmPV, acknowledges/unacknowledges this PV's alarm">
          </action>
          <visibility>
             <and>
@@ -173,7 +173,7 @@
                      value="RUN_MODE">
                </objectState>
                <objectState
-                     name="usesAlarmPV"
+                     name="beastAlarmPV"
                      value="true">
                </objectState>
             </and>

@@ -40,16 +40,6 @@ public interface IPVWidgetModel {
      */
     public static final String PROP_PVNAME= "pv_name"; //$NON-NLS-1$
 
-    /**
-     * The name of the alarm PV.
-     */
-    public static final String PROP_ALARMPV_NAME= "alarmpv_name"; //$NON-NLS-1$
-    
-    /**
-     * If true, the AlarmPV (when set) will be used for alarm-sensitive behaviour.
-     */
-    public static final String PROP_ALARMPV_ENABLED = "alarmpv_enabled"; //$NON-NLS-1$
-    
     public boolean isBorderAlarmSensitve();
 
     public boolean isForeColorAlarmSensitve();
@@ -58,9 +48,5 @@ public interface IPVWidgetModel {
 
     public boolean isAlarmPulsing();
     
-    public boolean isAlarmPVEnabled();
-
     public String getPVName();
-
-    public String getAlarmPVName();
 }

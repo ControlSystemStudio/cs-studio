@@ -26,7 +26,6 @@ public class AlarmRepresentationScheme {
     public static final String MINOR = "Minor"; //$NON-NLS-1$
     public static final String INVALID = "Invalid"; //$NON-NLS-1$
     public static final String DISCONNECTED = "Disconnected"; //$NON-NLS-1$
-    public static final String DISABLED = "Disabled"; //$NON-NLS-1$
 
     private static final AbstractBorder DISCONNECT_BORDER = BorderFactory.createBorder(
             BorderStyle.TITLE_BAR, 1, AlarmRepresentationScheme.getDisconnectedColor(),
@@ -68,10 +67,6 @@ public class AlarmRepresentationScheme {
         return MediaService.getInstance().getColor(DISCONNECTED);
     }
     
-    public static RGB getDisabledColor(){
-    	return MediaService.getInstance().getColor(DISABLED);
-    }
-
     public static Border getMajorBorder(BorderStyle borderStyle){
         BorderStyle newBorderStyle = getNewBorderStyle(borderStyle);
         return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getMajorColor(), ""); //$NON-NLS-1$
@@ -104,12 +99,6 @@ public class AlarmRepresentationScheme {
         return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getInValidColor(), ""); //$NON-NLS-1$
     }
 
-    public static Border getDisabledBorder(BorderStyle borderStyle){
-    	BorderStyle newBorderStyle = getNewBorderStyle(borderStyle);
-    	
-    	return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getDisabledColor(), ""); //$NON-NLS-1$
-    }
-    
     public static Border getDisonnectedBorder(){
         return DISCONNECT_BORDER;
     }

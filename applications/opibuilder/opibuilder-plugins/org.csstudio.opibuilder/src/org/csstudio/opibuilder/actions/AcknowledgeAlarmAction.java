@@ -1,3 +1,10 @@
+/*******************************************************************************
+* Copyright (c) 2010-2015 ITER Organization.
+* All rights reserved. This program and the accompanying materials
+* are made available under the terms of the Eclipse Public License v1.0
+* which accompanies this distribution, and is available at
+* http://www.eclipse.org/legal/epl-v10.html
+******************************************************************************/
 package org.csstudio.opibuilder.actions;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
@@ -22,10 +29,11 @@ public class AcknowledgeAlarmAction implements IObjectActionDelegate {
 		if(selectedWidget == null || selectedWidget.getWidgetModel() == null) return;
         if (!(selectedWidget.getWidgetModel() instanceof IPVWidgetModel) || !(selectedWidget instanceof AbstractPVWidgetEditPart)) return;
         
-        IPVWidgetModel model = (IPVWidgetModel) selectedWidget.getWidgetModel();
-        if (model.isAlarmPVEnabled() == false) return;
+//        IPVWidgetModel model = (IPVWidgetModel) selectedWidget.getWidgetModel();
         
         PVWidgetEditpartDelegate pvDelegate = ((AbstractPVWidgetEditPart) selectedWidget).getPVWidgetEditpartDelegate();
+        if (pvDelegate.isBeastAlarmAndConnected() == false) return;
+        
         pvDelegate.acknowledgeAlarm();
 //        MessageDialog.openInformation(null, "Acknowledge PV", "When implemented, this will acknowledge AlarmPV ");
 	}

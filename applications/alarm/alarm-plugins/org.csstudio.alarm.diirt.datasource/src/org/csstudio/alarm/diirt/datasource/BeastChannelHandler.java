@@ -25,8 +25,6 @@ public class BeastChannelHandler extends
 
     private BeastDataSource datasource;
 
-    private AlarmTreeItem alarmTreeItem;
-
     public BeastChannelHandler(String channelName, BeastDataSource beastDataSource) {
         super(channelName);
         this.datasource = beastDataSource;
@@ -79,7 +77,7 @@ public class BeastChannelHandler extends
 
     @Override
     protected boolean isWriteConnected(BeastConnectionPayload payload) {
-        return true;
+        return datasource.isWriteAllowed();
     }
 
     @Override
@@ -90,30 +88,28 @@ public class BeastChannelHandler extends
     @Override
     protected void connect() {
         // TODO Auto-generated method stub
-        log.fine("connect");
+        log.fine("connect: " + getChannelName());
         datasource.add(getChannelName(), this);
         initialize();
     }
     
     protected void reconnect() {
-        log.fine("reconnect");
+        log.fine("reconnect: " + getChannelName());
         initialize();
     }
 
     private void initialize() {
-        // TODO Auto-generated method stub
-        log.info("initialize");
+        log.fine("initialize: " +  getChannelName());
         AlarmTreeItem initialState;
         try {
             initialState = datasource.getState(getChannelName());
-            if (initialState != null && initialState instanceof AlarmTreeItem) {
+            if (initialState != null) {
                 processConnection(new BeastConnectionPayload(initialState, datasource.isConnected()));
                 processMessage(new BeastMessagePayload(initialState));
             }
         } catch (Exception e) {
             reportExceptionToAllReadersAndWriters(e);
         }
-        
     }
 
     @Override

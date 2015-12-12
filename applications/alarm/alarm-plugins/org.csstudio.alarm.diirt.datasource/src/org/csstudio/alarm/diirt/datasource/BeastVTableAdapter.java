@@ -44,11 +44,14 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
         keys.add("Name");
         values.add(message.getName());
         
-        keys.add("LatchedAlarmStatus");
-        values.add(message.getLatchedAlarmStatus());
+        keys.add("AlarmStatus");
+        values.add(message.getAlarmStatus());
         
-        keys.add("CurrentAlarmStatus");
-        values.add(String.valueOf(message.getCurrentAlarmStatus()));
+        keys.add("CurrentStatus");
+        values.add(message.getCurrentState());
+        
+        keys.add("Acknowledged");
+        values.add(String.valueOf(message.isAcknowledged()));
         
         keys.add("Active");
         values.add(String.valueOf(message.isActive()));
@@ -61,6 +64,9 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
         
         keys.add("Enable");
         values.add(String.valueOf(message.getEnable()));
+        
+        keys.add("Type");
+        values.add(message.getType());
         
         VTable table = newVTable(
                 column("Key", newVStringArray(keys, alarmNone(), timeNow())),

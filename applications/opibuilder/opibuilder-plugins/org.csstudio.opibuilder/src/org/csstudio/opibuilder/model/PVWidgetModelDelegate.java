@@ -33,9 +33,6 @@ public class PVWidgetModelDelegate implements IPVWidgetModel{
         model.addPVProperty(new PVNameProperty(PROP_PVNAME, "PV Name", WidgetPropertyCategory.Basic,
                 ""), new PVValueProperty(PROP_PVVALUE, null));
 
-        model.addProperty(new StringProperty(PROP_ALARMPV_NAME, "Alarm PV Name", WidgetPropertyCategory.Basic, ""));
-        model.addProperty(new BooleanProperty(PROP_ALARMPV_ENABLED, "Alarm PV Enabled", WidgetPropertyCategory.Behavior, false));
-
         model.addProperty(new BooleanProperty(PROP_BORDER_ALARMSENSITIVE,
                 "Alarm Sensitive", WidgetPropertyCategory.Border, true));
         model.addProperty(new BooleanProperty(PROP_FORECOLOR_ALARMSENSITIVE,
@@ -76,14 +73,6 @@ public class PVWidgetModelDelegate implements IPVWidgetModel{
         return (String)model.getCastedPropertyValue(PROP_PVNAME);
     }
 
-	public String getAlarmPVName() {
-		return (String)model.getCastedPropertyValue(PROP_ALARMPV_NAME);
-	}
-	
-	public boolean isAlarmPVEnabled() {
-		return (Boolean)model.getCastedPropertyValue(PROP_ALARMPV_ENABLED);
-	}
-	
     public void processVersionDifference(Version boyVersionOnFile) {
         if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){
             model.setPropertyValue(PROP_PVNAME,

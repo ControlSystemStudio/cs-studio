@@ -28,11 +28,7 @@ public class BeastMessagePayload {
         return pv.getMessage();
     }
 
-    public String getCurrentAlarmStatus() {
-        return pv.getCurrentSeverity().getDisplayName();
-    }
-    
-    public String getLatchedAlarmStatus() {
+    public String getAlarmStatus() {
         return pv.getSeverity().getDisplayName();
     }
 
@@ -42,6 +38,10 @@ public class BeastMessagePayload {
         } else{
             return pv.getToolTipText();
         }
+    }
+
+    public String isAcknowledged(){
+        return pv.getSeverity().getDisplayName();
     }
     
     public boolean isActive(){
@@ -57,4 +57,15 @@ public class BeastMessagePayload {
         }
     }
 
+    public String getCurrentState(){
+        return pv.getCurrentSeverity().getDisplayName();
+    }
+
+    public String getType(){
+        if(pv instanceof AlarmTreePV){
+            return "leaf";
+        }else {
+            return "node";
+        }
+    }
 }

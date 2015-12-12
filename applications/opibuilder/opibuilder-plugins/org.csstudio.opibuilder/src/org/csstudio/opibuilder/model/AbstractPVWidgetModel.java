@@ -61,14 +61,6 @@ public abstract class AbstractPVWidgetModel extends AbstractWidgetModel implemen
         return getDelegate().getPVName();
     }
 
-    public String getAlarmPVName() {
-		return getDelegate().getAlarmPVName();
-	}
-    
-    public boolean isAlarmPVEnabled() {
-    	return getDelegate().isAlarmPVEnabled();
-    }
-    
     /**
      * Override to prevent unsightly unresolved macros including
      * $(pv_name) or $(pv_value).

@@ -60,4 +60,5 @@ public interface IPVWidgetEditpart {
 
     public boolean isPVControlWidget();
 
+    public void performBeastBlink();
 }
