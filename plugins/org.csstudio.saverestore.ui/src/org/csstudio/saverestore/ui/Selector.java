@@ -19,10 +19,6 @@ import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.ui.fx.util.FXMessageDialog;
-import org.csstudio.ui.fx.util.InputValidator;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -43,33 +39,6 @@ import javafx.beans.property.SimpleObjectProperty;
  *
  */
 public class Selector {
-
-    public static final String BASE_LEVEL_VALIDATOR_EXT_POINT = "org.csstudio.saverestore.ui.baselevelvalidator";
-
-    private Optional<InputValidator<String>> baseLevelValidator;
-
-    @SuppressWarnings("unchecked")
-    private Optional<InputValidator<String>> getBaseLevelValidator() {
-        if (baseLevelValidator == null) {
-            InputValidator<String> bb = null;
-            try {
-                IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
-                IConfigurationElement[] confElements = extReg
-                    .getConfigurationElementsFor(BASE_LEVEL_VALIDATOR_EXT_POINT);
-                for (IConfigurationElement element : confElements) {
-                    bb = (InputValidator<String>) element.createExecutableExtension("validator");
-                }
-
-            } catch (CoreException e) {
-                SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore base level browser could not be loaded.",
-                    e);
-                baseLevelValidator = null;
-            }
-            baseLevelValidator = Optional.ofNullable(bb);
-
-        }
-        return baseLevelValidator;
-    }
 
     private static final Branch DEFAULT_BRANCH = new Branch("master", "master");
 
@@ -433,7 +402,8 @@ public class Selector {
     public String validateBaseLevelName(String storageName) {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
         if (provider.areBaseLevelsSupported()) {
-            return getBaseLevelValidator().map((e) -> e.validate(storageName)).orElse(null);
+            return ExtensionPointLoader.getInstance().getBaseLevelValidator().map((e) -> e.validate(storageName))
+                .orElse(null);
         } else {
             return null;
         }

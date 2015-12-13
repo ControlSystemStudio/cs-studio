@@ -176,7 +176,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             getStyleClass().remove("diff-cell");
             if (item == null || empty) {
                 setText("");
-                setTooltip(null);
+                getTooltip().setText(null);
                 setGraphic(null);
             } else {
                 if (item instanceof VNoData) {
@@ -270,6 +270,12 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         contextMenu = menu.createContextMenu(parent);
         parent.setMenu(contextMenu);
         getSite().registerContextMenu(menu, this);
+//        Platform.runLater(()->{
+//            Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
+//                System.out.println("Handler caught exception: "+throwable.getMessage());
+//                throwable.printStackTrace();
+//            });
+//        });
     }
 
     private void init() {

@@ -11,7 +11,7 @@ import org.eclipse.ui.services.IServiceLocator;
 
 /**
  *
- * <code>SourceProvider</code> provides information how many data provides exist in the system and if selected data
+ * <code>SourceProvider</code> provides information how many data providers exist in the system and if selected data
  * provider supports branches.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>

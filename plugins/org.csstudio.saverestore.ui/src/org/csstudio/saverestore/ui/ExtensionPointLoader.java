@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.logging.Level;
 
 import org.csstudio.saverestore.SaveRestoreService;
+import org.csstudio.ui.fx.util.InputValidator;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -22,8 +23,11 @@ import org.eclipse.ui.PartInitException;
  */
 public final class ExtensionPointLoader {
 
+    private static final String BASE_LEVEL_VALIDATOR_EXT_POINT = "org.csstudio.saverestore.ui.baselevelvalidator";
+
     private List<ValueImporterWrapper> importers;
     private Optional<ReadbackProvider> readbackProvider;
+    private Optional<InputValidator<String>> baseLevelValidator;
 
     private static final ExtensionPointLoader INSTANCE = new ExtensionPointLoader();
 
@@ -89,6 +93,34 @@ public final class ExtensionPointLoader {
             readbackProvider = Optional.ofNullable(finder);
         }
         return readbackProvider;
+    }
+
+    /**
+     * Loads the extension point providing the base level validator. If non defined an empty object is returned.
+     *
+     * @return the registered base level validator if any
+     */
+    @SuppressWarnings("unchecked")
+    public synchronized Optional<InputValidator<String>> getBaseLevelValidator() {
+        if (baseLevelValidator == null) {
+            InputValidator<String> bb = null;
+            try {
+                IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
+                IConfigurationElement[] confElements = extReg
+                    .getConfigurationElementsFor(BASE_LEVEL_VALIDATOR_EXT_POINT);
+                for (IConfigurationElement element : confElements) {
+                    bb = (InputValidator<String>) element.createExecutableExtension("validator");
+                }
+
+            } catch (CoreException e) {
+                SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore base level browser could not be loaded.",
+                    e);
+                baseLevelValidator = null;
+            }
+            baseLevelValidator = Optional.ofNullable(bb);
+
+        }
+        return baseLevelValidator;
     }
 
 }
