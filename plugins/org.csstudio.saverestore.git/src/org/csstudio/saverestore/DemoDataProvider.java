@@ -273,4 +273,10 @@ public class DemoDataProvider implements DataProvider {
         // TODO Auto-generated method stub
         return false;
     }
+
+    @Override
+    public Snapshot[] findSnapshots(String expression, Branch branch, List<SearchCriterion> criteria)
+        throws DataProviderException {
+     return new Snapshot[0];
+    }
 }

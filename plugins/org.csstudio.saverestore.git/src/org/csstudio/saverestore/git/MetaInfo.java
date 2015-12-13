@@ -26,6 +26,12 @@ class MetaInfo {
      * @param revision the git revision hash
      */
     MetaInfo(String comment, String creator, String email, Date timestamp, String revision) {
+        if (comment != null) {
+            comment = comment.trim();
+            int i = comment.length()-1;
+            for (; i > -1 && (comment.charAt(i) == '\n' || comment.charAt(i) == '\r') ; i--);
+            comment = comment.substring(0,i+1);
+        }
         this.comment = comment;
         this.creator = creator;
         this.timestamp = timestamp;

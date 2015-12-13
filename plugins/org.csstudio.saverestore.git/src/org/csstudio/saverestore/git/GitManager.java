@@ -1,5 +1,8 @@
 package org.csstudio.saverestore.git;
 
+import static org.csstudio.saverestore.git.CredentialUtilities.getCredentials;
+import static org.csstudio.saverestore.git.CredentialUtilities.toCredentialsProvider;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,8 +24,6 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import javax.security.auth.Subject;
-
 import org.csstudio.saverestore.BeamlineSetContent;
 import org.csstudio.saverestore.DataProvider.ImportType;
 import org.csstudio.saverestore.DataProviderException;
@@ -36,9 +37,7 @@ import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
-import org.csstudio.security.SecuritySupport;
 import org.csstudio.ui.fx.util.Credentials;
-import org.csstudio.ui.fx.util.UsernameAndPasswordDialog;
 import org.diirt.util.time.Timestamp;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.CommitCommand;
@@ -49,6 +48,9 @@ import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.RawTextComparator;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -61,16 +63,16 @@ import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.transport.CredentialsProvider;
+import org.eclipse.jgit.revwalk.filter.MessageRevFilter;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.TagOpt;
-import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.treewalk.AbstractTreeIterator;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.EmptyTreeIterator;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.PathFilter;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 /**
  * <code>GitManager<code> provide access to the git features required by the save and restore application.
@@ -78,6 +80,10 @@ import org.eclipse.ui.PlatformUI;
  * @author <a href="mailto:miha.novak@cosylab.com">Miha Novak</a>
  */
 public class GitManager {
+
+    private static interface TriFunction<A,B,C,R> {
+        R apply(A a, B b, C c) throws IOException, GitAPIException;
+    }
 
     private static final String GIT_PATH_DELIMITER = "/";
     // tags of git specific parameters for the snapshot
@@ -185,11 +191,12 @@ public class GitManager {
                 }
 
                 try {
+                    setBranch(new Branch("master", "master"));
                     Credentials credentials = getCredentials(Optional.empty());
                     if (credentials != null) {
                         pull(credentials);
                     }
-                } catch (GitAPIException e) {
+                } catch (GitAPIException | IOException e) {
                     SaveRestoreService.LOGGER.log(Level.WARNING,
                         "Git repository " + remoteRepository + " is not accessible.", e);
                     localOnly = true;
@@ -478,6 +485,7 @@ public class GitManager {
         String rev = fromThisOneBack.isPresent() ? fromThisOneBack.get().getParameters().get(PARAM_GIT_REVISION) : null;
         List<String> fileRevisions = findCommitsFor(path, numberOfRevisions, Optional.ofNullable(rev));
         Map<String, RevTag> tags = loadTagsForRevisions(fileRevisions);
+        String branch = beamlineSet.getBranch().getShortName();
         for (String revision : fileRevisions) {
             if (rev != null && revision.equals(rev)) {
                 // do not return the revision that the client already knows
@@ -487,27 +495,7 @@ public class GitManager {
             MetaInfo meta = getMetaInfoFromCommit(commit);
             Map<String, String> parameters = new HashMap<>();
             parameters.put(PARAM_GIT_REVISION, revision);
-            RevTag tag = tags.get(revision);
-            if (tag != null) {
-                String niceTagName = tag.getTagName();
-                boolean acceptTag = true;
-                if (niceTagName.charAt(0) == '(') {
-                    String branch = niceTagName.substring(1, niceTagName.indexOf(')'));
-                    if (!branch.equals(beamlineSet.getBranch().getShortName())) {
-                        acceptTag = false;
-                    }
-                }
-                if (acceptTag) {
-                    int idx = niceTagName.lastIndexOf('(');
-                    if (idx > 1) {
-                        niceTagName = niceTagName.substring(niceTagName.lastIndexOf('(') + 1, niceTagName.length() - 1);
-                    }
-                    parameters.put(Snapshot.TAG_NAME, niceTagName);
-                    parameters.put(PARAM_GIT_TAG_NAME, tag.getTagName());
-                    parameters.put(Snapshot.TAG_MESSAGE, tag.getFullMessage());
-                    parameters.put(PARAM_TAG_CREATOR, tag.getTaggerIdent().getName());
-                }
-            }
+            insertTagData(tags.get(revision), parameters, revision, branch);
             Snapshot snapshot = new Snapshot(beamlineSet, meta.timestamp, meta.comment, meta.creator, parameters);
             snapshots.add(snapshot);
         }
@@ -572,7 +560,7 @@ public class GitManager {
                 }
                 setBranch(data.getDescriptor().getBranch());
                 String relativePath = convertPathToString(data.getDescriptor(), FileType.BEAMLINE_SET);
-                writeToFile(relativePath, FileType.BEAMLINE_SET, data);
+                writeToFile(relativePath, repositoryPath, FileType.BEAMLINE_SET, data);
                 commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null, null));
                 if (automatic) {
                     push(cp, false);
@@ -610,12 +598,12 @@ public class GitManager {
                     }
                 }
                 String relativePath = convertPathToString(set, FileType.BEAMLINE_SET);
-                if (deleteFile(relativePath)) {
+                if (deleteFile(relativePath, repositoryPath)) {
                     deleted = set;
                     commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null, null));
                     // delete also the snapshot file
                     relativePath = convertPathToString(set, FileType.SNAPSHOT);
-                    deleteFile(relativePath);
+                    deleteFile(relativePath, repositoryPath);
                     commit(relativePath, new MetaInfo(comment, cp.getUsername(), null, null, null));
                     if (automatic) {
                         push(cp, false);
@@ -670,7 +658,7 @@ public class GitManager {
                 setBranch(snapshot.getBeamlineSet().getBranch());
                 Snapshot descriptor = snapshot.getSnapshot().get();
                 String relativePath = convertPathToString(descriptor.getBeamlineSet(), FileType.SNAPSHOT);
-                writeToFile(relativePath, FileType.SNAPSHOT, snapshot);
+                writeToFile(relativePath, repositoryPath, FileType.SNAPSHOT, snapshot);
                 MetaInfo info = commit(relativePath,
                     new MetaInfo(comment, user == null ? cp.getUsername() : user, "UNKNOWN", time, null));
                 if (automatic) {
@@ -746,7 +734,7 @@ public class GitManager {
                 parameters.put(PARAM_GIT_REVISION, revision);
                 if (name != null && !name.isEmpty()) {
                     String gitTagName = composeTagName(snapshot.getBeamlineSet().getBranch(),
-                        snapshot.getBeamlineSet().getPath(), name);
+                        snapshot.getBeamlineSet().getBaseLevel(), snapshot.getBeamlineSet().getPath(), name);
                     PersonIdent tagger = new PersonIdent(cp.getUsername(), "UNKNOWN");
                     git.tag().setName(gitTagName).setMessage(message).setTagger(tagger).setObjectId(commit).call();
                     if (automatic) {
@@ -825,7 +813,7 @@ public class GitManager {
      * @return credentials that worked
      * @throws GitAPIException if there was an error during push
      */
-    private synchronized Credentials push(Credentials cred, boolean pushTags) throws GitAPIException {
+    private Credentials push(Credentials cred, boolean pushTags) throws GitAPIException {
         if (localOnly) {
             return null;
         }
@@ -877,7 +865,7 @@ public class GitManager {
      *         any changes pulled from the remote repo
      * @throws GitAPIException if there was an error during pull
      */
-    private synchronized Object[] pull(Credentials cred) throws GitAPIException {
+    private Object[] pull(Credentials cred) throws GitAPIException {
         if (localOnly) {
             return new Object[] { null, false };
         }
@@ -948,7 +936,8 @@ public class GitManager {
     }
 
     /**
-     * Retrieves all revisions of the given file.
+     * Retrieves the specified number of revisions of the given file. If the requested number is less than 1, all
+     * revisions are returned.
      *
      * @param filePath file path
      * @param numberOfSnapshots number of snapshots revisions to load
@@ -978,6 +967,207 @@ public class GitManager {
     }
 
     /**
+     * Find all snapshots that are tagged and their tag name or message matches the given partial name or message.
+     * The partial name or message can also be a regular expression.
+     *
+     * @param partialTagNameOrMessage the partial message or name to match
+     * @param branch the branch on which the tag has to be located to be accepted
+     * @return the list of tags
+     * @throws GitAPIException in case of a git error
+     * @throws IOException in case of an IO error
+     */
+    public synchronized List<Snapshot> findSnapshotsByTag(String partialTagNameOrMessage, Branch branch)
+        throws GitAPIException, IOException {
+        partialTagNameOrMessage = partialTagNameOrMessage.toLowerCase();
+        final Pattern pattern = Pattern.compile(".*" + partialTagNameOrMessage + ".*");
+        return findSnapshotsByTag(branch, (w,r,n) -> {
+            String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase();
+            if (pattern.matcher(tagName).matches()) {
+                return w.parseTag(r.getObjectId());
+            } else {
+                RevTag tag = w.parseTag(r.getObjectId());
+                String message = tag.getFullMessage().toLowerCase().replace("\n", " ");
+                return pattern.matcher(message).matches() ? tag : null;
+            }
+        });
+    }
+
+    /**
+     * Find all snapshots that are tagged and their tag message matches the given partial message.
+     * The partial message can also be a regular expression.
+     *
+     * @param partialMessage the partial message to match
+     * @param branch the branch on which the tag has to be located to be accepted
+     * @return the list of tags
+     * @throws GitAPIException in case of a git error
+     * @throws IOException in case of an IO error
+     */
+    public synchronized List<Snapshot> findSnapshotsByTagMessage(String partialMessage, Branch branch)
+        throws GitAPIException, IOException {
+        partialMessage = partialMessage.toLowerCase();
+        final Pattern pattern = Pattern.compile(".*" + partialMessage + ".*");
+        return findSnapshotsByTag(branch, (w,r,n) -> {
+            RevTag tag = w.parseTag(r.getObjectId());
+            String message = tag.getFullMessage().toLowerCase().replace("\n", " ");
+            return pattern.matcher(message).matches() ? tag : null;
+        });
+    }
+
+    /**
+     * Find all snapshots that are tagged and their tag name matches the given partial message.
+     * The partial message can also be a regular expression.
+     *
+     * @param partialTagName the partial tag to match
+     * @param branch the branch on which the tag has to be located to be accepted
+     * @return the list of tags
+     * @throws GitAPIException in case of a git error
+     * @throws IOException in case of an IO error
+     */
+    public synchronized List<Snapshot> findSnapshotsByTagName(String partialTagName, Branch branch) throws GitAPIException,
+        IOException {
+        partialTagName = partialTagName.toLowerCase();
+        final Pattern pattern = Pattern.compile(".*" + partialTagName + ".*");
+        return findSnapshotsByTag(branch, (w,r,n) -> {
+            String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase();
+            return pattern.matcher(tagName).matches() ? w.parseTag(r.getObjectId()) : null;
+        });
+
+    }
+
+    /**
+     * Find all snapshots that are tagged and can be matched by the given trifunction.
+     *
+     * @param branch the name of the branch on which the snapshot should be located
+     * @param f function that receives the revision walk, the tag reference, the nice tag name and returns the
+     *          actual revision tag if the tag is accepted or null if rejected
+     * @return the list of all snapshots that match criterion
+     * @throws GitAPIException in case of a Git related error
+     * @throws IOException in case of an IO error
+     */
+    private List<Snapshot> findSnapshotsByTag(Branch branch, TriFunction<RevWalk,Ref,String,RevTag> f)
+        throws GitAPIException, IOException {
+        setBranch(branch);
+        List<Snapshot> snapshots = new ArrayList<>();
+        Map<String, Ref> tags = repository.getTags();
+        String branchName = new StringBuilder(branch.getShortName().length() + 2).append('(')
+            .append(branch.getShortName()).append(')').toString();
+        try (RevWalk walk = new RevWalk(repository); ObjectReader objectReader = repository.newObjectReader()) {
+            for (Map.Entry<String, Ref> r : tags.entrySet()) {
+                String name = r.getKey();
+                // check if the tag branch name is correct
+                if (name.charAt(0) == '(') {
+                    if (name.startsWith(branchName)) {
+                        name = name.substring(name.indexOf(')') + 1);
+                    } else {
+                        continue;
+                    }
+                }
+                RevTag tag = f.apply(walk,r.getValue(),name);
+                if (tag != null) {
+                    String revision = tag.getObject().getId().getName();
+                    RevCommit commit = getCommitFromRevision(revision);
+                    getPathFromCommit(commit, walk, objectReader)
+                        .ifPresent(p -> pathToBeamline(p, repositoryPath, branch, FileType.SNAPSHOT).ifPresent(e -> {
+                            MetaInfo meta = getMetaInfoFromCommit(commit);
+                            Map<String, String> parameters = new HashMap<>();
+                            parameters.put(PARAM_GIT_REVISION, revision);
+                            insertTagData(tag, parameters, revision, branch.getShortName());
+                            snapshots.add(new Snapshot(e, meta.timestamp, meta.comment, meta.creator, parameters));
+                        }));
+                }
+            }
+        }
+        return snapshots;
+    }
+
+    private Optional<String> getPathFromCommit(RevCommit commit, RevWalk walk, ObjectReader objectReader)
+        throws GitAPIException, IOException {
+        // Utility method to get the path to the snapshot file that changed in the given commit.
+        // Should always at most one.
+        AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
+        if (commit.getParents().length != 0) {
+            RevCommit parentCommit = walk.parseCommit(commit.getParents()[0].getId());
+            oldTreeIterator = new CanonicalTreeParser(null, objectReader, parentCommit.getTree());
+        }
+        AbstractTreeIterator newTreeIterator = new CanonicalTreeParser(null, objectReader, commit.getTree());
+        try (DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE)) {
+            diffFormatter.setRepository(repository);
+            diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
+            List<DiffEntry> diffs = diffFormatter.scan(oldTreeIterator, newTreeIterator);
+            for (DiffEntry diff : diffs) {
+                if (diff.getChangeType() == org.eclipse.jgit.diff.DiffEntry.ChangeType.DELETE
+                    || !diff.getNewPath().endsWith(FileType.SNAPSHOT.suffix)) {
+                    continue;
+                }
+                return Optional.of(diff.getNewPath());
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Find all snapshot that are stored with the given partial comment. All comments are search and any snapshot with a
+     * comment that contain the partial comment and is located on the given branch matches the criteria.
+     *
+     * @param partialComment the partial comment that we search for
+     * @param isRegex true if the partial comment should be treated as a regular expression
+     * @param branch the branch on which to search
+     * @return the list of all snapshots that match the comment criterion
+     * @throws IOException in case of an error
+     * @throws GitAPIException in case of branch checkout or tags loading error
+     */
+    public synchronized List<Snapshot> findSnapshotsByComment(String partialComment, final Branch branch)
+        throws IOException, GitAPIException {
+        List<Snapshot> snapshots = new ArrayList<>();
+        setBranch(branch);
+        List<String> revisions = new ArrayList<>();
+        try (RevWalk revWalk = new RevWalk(repository); ObjectReader objectReader = repository.newObjectReader()) {
+            revWalk.markStart(getHeadCommit());
+            revWalk.setRevFilter(MessageRevFilter.create(partialComment));
+            for (RevCommit commit : revWalk) {
+                AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
+                if (commit.getParents().length != 0) {
+                    oldTreeIterator = new CanonicalTreeParser(null, objectReader, commit.getParents()[0].getTree());
+                }
+                AbstractTreeIterator newTreeIterator = new CanonicalTreeParser(null, objectReader, commit.getTree());
+                try (DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE)) {
+                    diffFormatter.setRepository(repository);
+                    diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
+                    diffFormatter.setDetectRenames(true);
+                    List<DiffEntry> diffs = diffFormatter.scan(oldTreeIterator, newTreeIterator);
+                    for (DiffEntry diff : diffs) {
+                        if (diff.getChangeType() == org.eclipse.jgit.diff.DiffEntry.ChangeType.DELETE
+                            || !diff.getNewPath().endsWith(FileType.SNAPSHOT.suffix)) {
+                            continue;
+                        }
+                        pathToBeamline(diff.getNewPath(), repositoryPath, branch, FileType.SNAPSHOT).ifPresent(e -> {
+                            MetaInfo mi = getMetaInfoFromCommit(commit);
+                            Map<String, String> parameters = new HashMap<>();
+                            parameters.put(PARAM_GIT_REVISION, mi.revision);
+                            revisions.add(mi.revision);
+                            snapshots.add(new Snapshot(e, mi.timestamp, mi.comment, mi.creator, parameters));
+                        });
+                    }
+                }
+            }
+        }
+        final Map<String, RevTag> tags = loadTagsForRevisions(revisions);
+        final List<Snapshot> ret = new ArrayList<>();
+        final String branchName = branch.getShortName();
+        snapshots.forEach(s -> {
+            String revision = s.getParameters().get(PARAM_GIT_REVISION);
+            if (tags.get(revision) == null) {
+                ret.add(s);
+            } else {
+                Map<String, String> parameters = new HashMap<>(s.getParameters());
+                insertTagData(tags.get(revision), parameters, revision, branchName);
+                ret.add(new Snapshot(s.getBeamlineSet(), s.getDate(), s.getComment(), s.getOwner(), parameters));
+            }
+        });
+        return ret;
+    }
+
+    /**
      * Read the contents of the file.
      *
      * @param revision the revision to load
@@ -993,8 +1183,7 @@ public class GitManager {
     private <T> T loadFile(Optional<String> revision, String path, FileType fileType, Class<T> type, Object descriptor)
         throws ParseException, IOException {
         RevCommit revCommit = revision.isPresent() ? getCommitFromRevision(revision.get()) : getHeadCommit();
-        ObjectReader objectReader = repository.newObjectReader();
-        try (TreeWalk treeWalk = new TreeWalk(objectReader)) {
+        try (ObjectReader objectReader = repository.newObjectReader(); TreeWalk treeWalk = new TreeWalk(objectReader)) {
             CanonicalTreeParser treeParser = new CanonicalTreeParser();
             treeParser.reset(objectReader, revCommit.getTree());
             int treeIndex = treeWalk.addTree(treeParser);
@@ -1026,16 +1215,24 @@ public class GitManager {
         throw new FileNotFoundException("Snapshot file '" + path + "' could not be found.");
     }
 
+    // --------------------------------------------------------------------------------------------------
+    //
+    // Utility methods.
+    //
+    // --------------------------------------------------------------------------------------------------
+
     /**
      * Creates (if not exists) file and writes content.
      *
-     * @param filePath file path
+     * @param filePath file path relative to the repository
+     * @param repositoryPath the path to the repository root
      * @param fileSuffix file suffix
      * @param dataObject object from which content is generated
      *
      * @throws IOException when exception occurs.
      */
-    private void writeToFile(String filePath, FileType fileType, Object dataObject) throws IOException {
+    private static void writeToFile(String filePath, File repositoryPath, FileType fileType, Object dataObject)
+        throws IOException {
         Path path = Paths.get(repositoryPath.getAbsolutePath(), filePath);
         if (!Files.exists(path)) {
             Files.createDirectories(path.getParent());
@@ -1048,11 +1245,12 @@ public class GitManager {
     /**
      * Delete the file at the given path.
      *
-     * @param filePath the path
+     * @param filePath the path relative to the repository path
+     * @param repositoryPath the path to the root of the repository
      * @return true if the file was deleted or false otherwise
      * @throws IOException in case of an error
      */
-    private boolean deleteFile(String filePath) throws IOException {
+    private boolean deleteFile(String filePath, File repositoryPath) throws IOException {
         Path path = Paths.get(repositoryPath.getAbsolutePath(), filePath);
         if (!Files.exists(path)) {
             return false;
@@ -1061,11 +1259,53 @@ public class GitManager {
         return true;
     }
 
-    // --------------------------------------------------------------------------------------------------
-    //
-    // Utility methods.
-    //
-    // --------------------------------------------------------------------------------------------------
+    /**
+     * Converts the <code>pathToFile</code> to a beamline set. The repository is expected to be checkout on the correct
+     * branch. If the path is valid so that the beamline set can be determined and if the file actually still exists at
+     * the HEAD of the branch, it is returned. If the path is not valid, or the file does not exist, an empty object is
+     * returned.
+     *
+     * @param pathToFile the path to file
+     * @param repositoryPath the path to the root of the repository
+     * @param branch the branch for the beamline set
+     * @param fromType the type of the file under the given path
+     * @return the beamline set if found or empty if not found
+     */
+    private static Optional<BeamlineSet> pathToBeamline(String pathToFile, File repositoryPath, Branch branch,
+        FileType fromType) {
+        String[] p = pathToFile.split(GIT_PATH_DELIMITER);
+        BaseLevel baseLevel = null;
+        String[] newPath = null;
+        for (int i = 0; i < p.length; i++) {
+            if (fromType.directory.equals(p[i])) {
+                StringBuilder baseLevelName = new StringBuilder(pathToFile.length());
+                List<String> bsPath = new ArrayList<>(p.length);
+                for (int j = 0; j < i; j++) {
+                    baseLevelName.append(GIT_PATH_DELIMITER).append(p[j]);
+                }
+                if (baseLevelName.length() > 0) {
+                    String bl = baseLevelName.substring(1);
+                    baseLevel = new BaseLevel(branch, bl, bl);
+                }
+                for (int j = i + 1; j < p.length; j++) {
+                    bsPath.add(p[j]);
+                }
+                newPath = bsPath.toArray(new String[bsPath.size()]);
+                if (newPath.length > 0) {
+                    newPath[newPath.length - 1] = newPath[newPath.length - 1].replace(fromType.suffix,
+                        FileType.BEAMLINE_SET.suffix);
+                }
+                break;
+            }
+        }
+        if (newPath == null || newPath.length == 0) {
+            return Optional.empty();
+        }
+        BeamlineSet beamlineSet = new BeamlineSet(branch, Optional.ofNullable(baseLevel), newPath, GitDataProvider.ID);
+        String path = convertPathToString(beamlineSet, FileType.BEAMLINE_SET);
+        File fullPath = new File(repositoryPath, path);
+        return fullPath.exists() ? Optional.of(beamlineSet) : Optional.empty();
+    }
 
     /**
      * Recursively gathers the beamline sets that are located in any of the subfolder of the given file. All valid files
@@ -1170,57 +1410,6 @@ public class GitManager {
     }
 
     /**
-     * Loads the username and password from the preferences or shows the dialog where user can enter his credentials.
-     *
-     * @param previous version of credentials that did not work
-     * @return credentials if confirmed or an empty object if cancelled
-     */
-    private static Credentials getCredentials(Optional<Credentials> previous) {
-        final Credentials[] provider = new Credentials[1];
-        Subject subj = SecuritySupport.getSubject();
-        final String currentUser = previous.isPresent() ? previous.get().getUsername()
-            : subj == null ? null : SecuritySupport.getSubjectName(subj);
-        org.eclipse.swt.widgets.Display.getDefault().syncExec(() -> {
-            String username = null;
-            char[] password = null;
-            boolean remember = false;
-            if (previous.isPresent()) {
-                username = previous.get().getUsername();
-                password = previous.get().getPassword();
-                remember = previous.get().isRemember();
-            } else {
-                username = Activator.getInstance().getUsername(Optional.empty());
-                password = Activator.getInstance().getPassword(Optional.empty(), username);
-            }
-            if (username == null || password == null || previous.isPresent()) {
-                UsernameAndPasswordDialog dialog = new UsernameAndPasswordDialog(
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), username, remember,
-                    "Please, provide the username and password to access Save and Restore git repository");
-                dialog.openAndWat().ifPresent(e -> {
-                    provider[0] = e;
-                    if (e.isRemember()) {
-                        Activator.getInstance().storeCredentials(Optional.ofNullable(currentUser), e.getUsername(),
-                            e.getPassword());
-                    }
-                });
-            } else {
-                provider[0] = new Credentials(username, password, false);
-            }
-        });
-        return provider[0];
-    }
-
-    /**
-     * Create a git credentials provider using the username and password from the credentials.
-     *
-     * @param cred the credentials to transform to credentials provider
-     * @return provider if credentials were non null or null if the given credentials were null
-     */
-    private static CredentialsProvider toCredentialsProvider(Credentials cred) {
-        return cred == null ? null : new UsernamePasswordCredentialsProvider(cred.getUsername(), cred.getPassword());
-    }
-
-    /**
      * Checks if the exception was thrown because we are not authorised to perform the action.
      *
      * @param e the exception to check
@@ -1250,11 +1439,16 @@ public class GitManager {
      * @param tagName the name of the tag
      * @return the tag name that should be used to tag the file
      */
-    private static String composeTagName(Branch branch, String[] path, String tagName) {
+    private static String composeTagName(Branch branch, Optional<BaseLevel> baseLevel, String[] path, String tagName) {
         StringBuilder sb = new StringBuilder(255);
         sb.append('(').append(branch.getShortName()).append(')');
+        baseLevel.ifPresent(e -> sb.append(e.getStorageName()).append('/'));
         for (int i = 0; i < path.length; i++) {
-            String str = TAG_PATTERN.matcher(path[i]).replaceAll("");
+            String str = path[i];
+            if (i == path.length - 1) {
+                str.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
+            }
+            str = TAG_PATTERN.matcher(str).replaceAll("");
             if (str.charAt(0) == '.') {
                 str = str.substring(0);
             }
@@ -1268,6 +1462,38 @@ public class GitManager {
         }
         sb.append('(').append(tagName).append(')');
         return sb.toString();
+    }
+
+    /**
+     * Check if the tags contain a tag for the given revision and if yes, fill in the parameters map with the important
+     * tag information.
+     *
+     * @param tag the tag to parse and add to parameters
+     * @param parameters the current parameters
+     * @param revision the revision hash
+     * @param branchName the branch name for which the tag should be loaded
+     */
+    private static void insertTagData(RevTag tag, Map<String, String> parameters, String revision, String branchName) {
+        if (tag != null) {
+            String niceTagName = tag.getTagName();
+            boolean acceptTag = true;
+            if (niceTagName.charAt(0) == '(') {
+                String branch = niceTagName.substring(1, niceTagName.indexOf(')'));
+                if (!branch.equals(branchName)) {
+                    acceptTag = false;
+                }
+            }
+            if (acceptTag) {
+                int idx = niceTagName.lastIndexOf('(');
+                if (idx > 1) {
+                    niceTagName = niceTagName.substring(niceTagName.lastIndexOf('(') + 1, niceTagName.length() - 1);
+                }
+                parameters.put(Snapshot.TAG_NAME, niceTagName);
+                parameters.put(PARAM_GIT_TAG_NAME, tag.getTagName());
+                parameters.put(Snapshot.TAG_MESSAGE, tag.getFullMessage());
+                parameters.put(PARAM_TAG_CREATOR, tag.getTaggerIdent().getName());
+            }
+        }
     }
 
     /**

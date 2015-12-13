@@ -5,13 +5,17 @@ import java.io.IOException;
 import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.csstudio.saverestore.CompletionNotifier;
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
+import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.BeamlineSetData;
@@ -320,6 +324,47 @@ public class GitDataProvider implements DataProvider {
             throw new DataProviderException("Error loading the snapshot content for snapshot '"
                 + snapshot.getBeamlineSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.DataProvider#findSnapshots(java.lang.String, org.csstudio.saverestore.data.Branch,
+     * java.util.List)
+     */
+    @Override
+    public Snapshot[] findSnapshots(String expression, Branch branch, List<SearchCriterion> criteria)
+        throws DataProviderException {
+        Set<Snapshot> list = new LinkedHashSet<>();
+        boolean sort = false;
+        try {
+            if (criteria.contains(SearchCriterion.COMMENT)) {
+                list.addAll(grm.findSnapshotsByComment(expression, branch));
+            }
+            int size = list.size();
+            if (criteria.contains(SearchCriterion.TAG_MESSAGE) && criteria.contains(SearchCriterion.TAG_NAME)) {
+                list.addAll(grm.findSnapshotsByTag(expression, branch));
+            } else {
+                if (criteria.contains(SearchCriterion.TAG_MESSAGE)) {
+                    list.addAll(grm.findSnapshotsByTagMessage(expression, branch));
+                } else if (criteria.contains(SearchCriterion.TAG_NAME)) {
+                    list.addAll(grm.findSnapshotsByTagName(expression, branch));
+                }
+            }
+            if (size > 0 && list.size() != size) {
+                sort = true;
+            }
+        } catch (GitAPIException | IOException e) {
+            throw new DataProviderException("Error search for snapshot that match the expression '" + expression
+                + "' using criteria '" + criteria.toString() + ".", e);
+        }
+        Snapshot[] snapshots = list.toArray(new Snapshot[list.size()]);
+        if (sort) {
+            //there is a natural order of snapshots provided by GitManager. Sort only if the search was performed more
+            //than once.
+            Arrays.sort(snapshots);
+        }
+        return snapshots;
     }
 
     /*

@@ -1,5 +1,6 @@
 package org.csstudio.saverestore;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.csstudio.saverestore.data.BaseLevel;
@@ -100,6 +101,20 @@ public interface DataProvider {
      * @throws DataProviderException if the list of snapshots cannot be retrieved
      */
     Snapshot[] getSnapshots(BeamlineSet set, boolean loadAll, Optional<Snapshot> fromThisOneBack)
+        throws DataProviderException;
+
+    /**
+     * Returns the list of all snapshots that match the given expression and criteria. If one snapshot matches more than
+     * one criterion, if is only included in the returned array once. If snapshots were found they should be returned;
+     * if no snapshot was found an empty array should be returned.
+     *
+     * @param expression the expression to match
+     * @param branch the branch on which to search the snapshots
+     * @param criteria the list of search criteria to use
+     * @return the list of snapshots that match the expression and criteria
+     * @throws DataProviderException in case of any search error
+     */
+    Snapshot[] findSnapshots(String expression, Branch branch, List<SearchCriterion> criteria)
         throws DataProviderException;
 
     /**
