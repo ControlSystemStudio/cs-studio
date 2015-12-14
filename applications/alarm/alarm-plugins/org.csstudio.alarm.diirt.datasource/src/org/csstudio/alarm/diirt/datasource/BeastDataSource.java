@@ -219,12 +219,41 @@ public class BeastDataSource extends DataSource {
         getState(channelName).acknowledge(acknowledge);
     }
 
+    // implementing the enable disable mechanism using the example of the DisableComponentAction
     protected void enable(String channelName, boolean enable) throws Exception {
         AlarmTreeItem item = getState(channelName);
-        if(item != null && item instanceof AlarmTreePV){
-            model.enable((AlarmTreePV) item, enable);
-        }else{
-           // TODO implement the enable logic for nodes 
+        List<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
+        final CompletableFuture<Void> future = CompletableFuture
+                .runAsync(() -> addPVs(pvs, item, enable), executor)
+                .thenRun(() -> {
+                    for (AlarmTreePV alarmTreePV : pvs) {
+                        try {
+                            model.enable(alarmTreePV, enable);
+                        } catch (Exception e) {
+                            //TODO handle raising the write exception
+                            e.printStackTrace();
+                            new Exception("Failed to enable/disable : " + ((AlarmTreePV) item).getName(), e);
+                        }
+                    }
+                });
+    }
+    
+    /** @param pvs List where PVs to enable/disable will be added
+     *  @param item Item for which to locate PVs, recursively
+     */
+    protected void addPVs(final List<AlarmTreePV> pvs, final AlarmTreeItem item, boolean enable)
+    {
+        if (item instanceof AlarmTreePV)
+        {
+            final AlarmTreePV pv = (AlarmTreePV) item;
+            if (pv.isEnabled() != enable)
+                pvs.add(pv);
+        }
+        else
+        {
+            final int N = item.getChildCount();
+            for (int i=0; i<N; ++i)
+                addPVs(pvs, item.getChild(i), enable);
         }
     }
 }
