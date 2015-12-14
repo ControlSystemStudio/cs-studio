@@ -64,13 +64,13 @@ public class DisplayOpenManager {
         if(input instanceof IRunnerInput){
             if(((IRunnerInput)input).getDisplayOpenManager() == null)
                 ((IRunnerInput)input).setDisplayOpenManager(
-                    (DisplayOpenManager)opiRuntime.getAdapter(DisplayOpenManager.class));
+                    opiRuntime.getAdapter(DisplayOpenManager.class));
             return (IRunnerInput)input;
         }
 
         else
             return new RunnerInput(getCurrentPathInEditor(),
-                    (DisplayOpenManager)opiRuntime.getAdapter(DisplayOpenManager.class));
+                    opiRuntime.getAdapter(DisplayOpenManager.class));
 
 
     }

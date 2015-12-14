@@ -31,6 +31,7 @@ import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.Request;
+import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
@@ -81,6 +82,8 @@ public final class OPIShell implements IOPIRuntime {
 
     private static Logger log = OPIBuilderPlugin.getLogger();
     public static final String OPI_SHELLS_CHANGED_ID = "org.csstudio.opibuilder.opiShellsChanged";
+    // The active OPIshell, or null if no OPIShell is active
+    public static OPIShell activeShell = null;
     // Cache of open OPI shells in order of opening.
     private static final Set<OPIShell> openShells = new LinkedHashSet<OPIShell>();
     // The view against which the context menu is registered.
@@ -142,7 +145,9 @@ public final class OPIShell implements IOPIRuntime {
             private boolean firstRun = true;
             public void shellIconified(ShellEvent e) {}
             public void shellDeiconified(ShellEvent e) {}
-            public void shellDeactivated(ShellEvent e) {}
+            public void shellDeactivated(ShellEvent e) {
+                activeShell = null;
+            }
             public void shellClosed(ShellEvent e) {
                 // Remove this shell from the cache.
                 openShells.remove(OPIShell.this);
@@ -156,6 +161,7 @@ public final class OPIShell implements IOPIRuntime {
                     shell.setFocus();
                     firstRun = false;
                 }
+                activeShell = OPIShell.this;
             }
         });
         shell.addDisposeListener(new DisposeListener() {
@@ -399,13 +405,14 @@ public final class OPIShell implements IOPIRuntime {
         throw new NotImplementedException();
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         if (adapter == ActionRegistry.class)
-            return this.actionRegistry;
+            return adapter.cast(this.actionRegistry);
         if (adapter == GraphicalViewer.class)
-            return this.viewer;
+            return adapter.cast(this.viewer);
+        if (adapter == CommandStack.class)
+            return adapter.cast(this.viewer.getEditDomain().getCommandStack());
         return null;
     }
 

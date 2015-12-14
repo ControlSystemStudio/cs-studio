@@ -482,22 +482,21 @@ public class OPIRuntimeDelegate implements IAdaptable{
         job.schedule();
     }
 
-    @SuppressWarnings("rawtypes")
-    public Object getAdapter(Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         if (adapter == DisplayOpenManager.class) {
             if (displayOpenManager == null)
                 displayOpenManager = new DisplayOpenManager(opiRuntime);
-            return displayOpenManager;
+            return adapter.cast(displayOpenManager);
         }
         if (adapter == GraphicalViewer.class)
-            return viewer;
+            return adapter.cast(viewer);
         if (adapter == ActionRegistry.class)
-            return getActionRegistry();
+            return adapter.cast(getActionRegistry());
         if (adapter == CommandStack.class)
-            return viewer.getEditDomain().getCommandStack();
+            return adapter.cast(viewer.getEditDomain().getCommandStack());
         if (adapter == ZoomManager.class)
-            return ((ScalableFreeformRootEditPart) viewer.getRootEditPart())
-                    .getZoomManager();
+            return adapter.cast(((ScalableFreeformRootEditPart) viewer.getRootEditPart())
+                    .getZoomManager());
         return null;
     }
 

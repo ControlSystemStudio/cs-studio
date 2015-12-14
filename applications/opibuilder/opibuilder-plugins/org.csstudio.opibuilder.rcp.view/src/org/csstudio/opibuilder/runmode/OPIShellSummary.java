@@ -186,6 +186,14 @@ public class OPIShellSummary extends FXViewPart {
     }
 
     @Override
+    public <T> T getAdapter(Class<T> adapter) {
+        if(OPIShell.activeShell == null) {
+            return null;
+        }
+        return OPIShell.activeShell.getAdapter(adapter);
+    }
+
+    @Override
     public String toString() {
         return "OpiShell summary: " + getViewSite().getId();
     }
