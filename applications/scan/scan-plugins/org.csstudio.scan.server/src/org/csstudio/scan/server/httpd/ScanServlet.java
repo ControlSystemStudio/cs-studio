@@ -56,6 +56,7 @@ public class ScanServlet extends HttpServlet
         final String format = request.getContentType();
         if (! format.contains("/xml"))
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "POST /scan got format '" + format + "'");
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Expecting XML content with scan, got format '" + format + "'");
             return;
         }
@@ -94,6 +95,7 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "POST /scan error", ex);
             response.resetBuffer();
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             out.println("<error>");
@@ -168,8 +170,8 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "PUT /scan error", ex);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
-            return;
         }
     }
 
@@ -192,8 +194,8 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "DELETE /scan error", ex);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
-            return;
         }
     }
 
@@ -220,6 +222,7 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /scan error", ex);
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
             return;
         }
@@ -270,8 +273,8 @@ public class ScanServlet extends HttpServlet
         }
         catch (Exception ex)
         {
+            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /scan error", ex);
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage());
-            Logger.getLogger(getClass().getName()).log(Level.WARNING, "GET /scan failed", ex);
         }
     }
 }

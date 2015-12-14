@@ -42,7 +42,7 @@
     <module>org.csstudio.sds.simpledal.validation.mock</module>
   <module>org.csstudio.sds.ui</module>-->
     <module>org.csstudio.service.channelfinder</module>
-    <module>org.csstudio.service.jdbcsample</module>
+    <!--<module>org.csstudio.service.jdbcsample</module>-->
     <module>org.csstudio.service.math</module>
     <module>org.csstudio.service.unitconversion</module>
     
@@ -70,5 +70,6 @@
     <!--     <module>org.csstudio.utility.speech.mbrola</module> -->
     <!--    <module>org.csstudio.utility.tine</module> -->
     <!--    <module>org.csstudio.utility.tine.ui</module> -->
+    <module>org.csstudio.pretune</module>
   </modules>
 </project>

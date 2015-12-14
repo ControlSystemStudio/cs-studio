@@ -281,7 +281,7 @@ public class PartZoomComboContributionItem extends ContributionItem implements
         if(this.part == part)
             return;
         this.part = part;
-        ZoomManager newZoomManager = (ZoomManager)part.getAdapter(ZoomManager.class);
+        ZoomManager newZoomManager = part.getAdapter(ZoomManager.class);
         if(newZoomManager != null){
             setZoomManager(newZoomManager);
         }

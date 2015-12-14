@@ -189,8 +189,7 @@ public final class PointListCreationTool extends TargetingTool {
     @Override
     protected boolean handleButtonDown(final int button) {
         if (getTargetEditPart() != null) {
-            _snap2Helper = (SnapToHelper) getTargetEditPart().getAdapter(
-                    SnapToHelper.class);
+            _snap2Helper = getTargetEditPart().getAdapter(SnapToHelper.class);
         }
 
         // only react on left clicks

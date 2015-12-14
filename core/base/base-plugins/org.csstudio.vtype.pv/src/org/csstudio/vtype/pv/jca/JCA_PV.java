@@ -43,6 +43,13 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     /** Request plain DBR type or ..TIME..? */
     final private boolean plain_dbr;
 
+    /** Channel Access does not really distinguish between array and scalar.
+     *  An array may at times only have one value, like a scalar.
+     *  To get more consistent decoding, channels with a max. element count other
+     *  than 1 are considered arrays.
+     */
+    private volatile boolean is_array = false;
+
     /** JCA Channel */
     final private Channel channel;
 
@@ -108,6 +115,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             logger.fine(getName() + " connected");
             final boolean is_readonly = ! channel.getWriteAccess();
             notifyListenersOfPermissions(is_readonly);
+            is_array = channel.getElementCount() != 1;
             getMetaData(); // .. and start subscription
         }
         else
@@ -145,7 +153,8 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         {
             logger.log(Level.FINE, getName() + " subscribes");
             final int mask = Preferences.monitorMask().getMask();
-            final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), channel.getElementCount(), mask, this);
+            // Since EPICS 3.14.12, subscribing to zero elements requests update with current array size
+            final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), 0, mask, this);
 
             final Monitor old_monitor = value_monitor.getAndSet(new_monitor);
             // Could there have been another subscription while we established this one?
@@ -203,7 +212,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             final CAStatus status = ev.getStatus();
             if (status != null  &&  status.isSuccessful())
             {
-                final VType value = DBRHelper.decodeValue(metadata, ev.getDBR());
+                final VType value = DBRHelper.decodeValue(is_array, metadata, ev.getDBR());
                 logger.log(Level.FINE, "{0} = {1}", new Object[] { getName(), value });
                 notifyListenersOfValue(value);
             }
@@ -227,7 +236,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             {
                 if (ev.getStatus().isSuccessful())
                 {
-                    final VType value = DBRHelper.decodeValue(metadata, ev.getDBR());
+                    final VType value = DBRHelper.decodeValue(is_array, metadata, ev.getDBR());
                     logger.log(Level.FINE, "{0} get-callback {1}", new Object[] { getName(), value });
                     complete(value);
                 }

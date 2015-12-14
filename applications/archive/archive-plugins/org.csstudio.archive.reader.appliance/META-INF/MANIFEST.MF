@@ -15,5 +15,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-Vendor: Miha Novak <miha.novak@cosylab.com>
 Bundle-ClassPath: .,
- lib/pbrawclient-0.0.3.jar,
- lib/protobuf-java-2.4.1.jar
+ lib/protobuf-java-2.4.1.jar,
+ lib/pbrawclient-0.0.4.jar

@@ -2,5 +2,5 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="toc.xml#pvsyntax" label="File DataSource">
-    <topic label="File DataSource"  href="html/file-datasource.html"/>
+    <topic label="File DataSource"  href="html/file/html/file-datasource.html"/>
 </toc>

@@ -5,7 +5,6 @@
    <topic label="Diirt">
    </topic>
    <topic label="Process Variables" href="html/pvs.html">
-    <link toc="html/sim/toc.xml"/>
     <anchor id="pvsyntax"/>
    </topic>
    <topic label="Services" href="html/services.html">

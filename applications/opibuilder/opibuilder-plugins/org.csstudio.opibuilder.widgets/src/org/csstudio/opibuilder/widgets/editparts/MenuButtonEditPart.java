@@ -34,6 +34,7 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgetActions.WritePVAction;
+import org.csstudio.opibuilder.widgets.figures.MenuButtonFigure;
 import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.IPVListener;
@@ -41,8 +42,9 @@ import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.swt.widgets.figures.ITextFigure;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.draw2d.MouseMotionListener;
@@ -57,8 +59,6 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.diirt.vtype.VEnum;
-import org.diirt.vtype.VType;
 
 /**
  *
@@ -66,10 +66,6 @@ import org.diirt.vtype.VType;
  *
  */
 public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
-
-    class MenuButtonFigure extends Label implements ITextFigure{
-
-    }
 
     private IPVListener loadActionsFromPVListener;
 
@@ -82,11 +78,14 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
     protected IFigure doCreateFigure() {
         final MenuButtonModel model = (MenuButtonModel) getWidgetModel();
         updatePropSheet(model.isActionsFromPV());
-        final MenuButtonFigure label = new MenuButtonFigure();
-        label.setOpaque(!model.isTransparent());
-        label.setText(model.getLabel());
+        final MenuButtonFigure figure = new MenuButtonFigure();
+        figure.setOpaque(!model.isTransparent());
+        figure.setText(model.getLabel());
+
+        figure.setDownArrowVisible(model.showDownArrow());
+
         if (getExecutionMode() == ExecutionMode.RUN_MODE)
-            label.addMouseListener(new MouseListener() {
+            figure.addMouseListener(new MouseListener() {
                 public void mouseDoubleClicked(final MouseEvent me) {
                 }
 
@@ -108,14 +107,14 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
                 }
 
             });
-        label.addMouseMotionListener(new MouseMotionListener.Stub() {
+        figure.addMouseMotionListener(new MouseMotionListener.Stub() {
             @Override
             public void mouseEntered(MouseEvent me) {
                 if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-                    Color backColor = label.getBackgroundColor();
+                    Color backColor = figure.getBackgroundColor();
                     RGB darkColor = GraphicsUtil.mixColors(backColor.getRGB(),
                             new RGB(0, 0, 0), 0.9);
-                    label.setBackgroundColor(CustomMediaFactory.getInstance()
+                    figure.setBackgroundColor(CustomMediaFactory.getInstance()
                             .getColor(darkColor));
                 }
 
@@ -124,14 +123,14 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
             @Override
             public void mouseExited(MouseEvent me) {
                 if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-                    label.setBackgroundColor(CustomMediaFactory.getInstance()
+                    figure.setBackgroundColor(CustomMediaFactory.getInstance()
                             .getColor(getWidgetModel().getBackgroundColor()));
                 }
             }
         });
 
         markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
-        return label;
+        return figure;
     }
 
     @Override
@@ -160,11 +159,11 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
      * Show Menu
      *
      * @param point
-     *            the location of the mouse-event
+     *            the location of the mouse-event in the OPI display
      * @param absolutX
-     *            The x coordinate of the mouse in the display
+     *            The x coordinate of the mouse on the monitor
      * @param absolutY
-     *            The y coordinate of the mouse in the display
+     *            The y coordinate of the mouse on the monitor
      */
     private void showMenu(final Point point, final int absolutX,
             final int absolutY) {
@@ -178,11 +177,16 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
             }
             Menu menu = menuManager.createContextMenu(shell);
 
-            int x = absolutX;
-            int y = absolutY;
-            x = x - point.x + getWidgetModel().getLocation().x;
-            y = y - point.y + getWidgetModel().getLocation().y
-                    + getWidgetModel().getSize().height;
+            /*
+             * We need to position the menu in absolute monitor coordinates.
+             * First we calculate the coordinates of the display, then add the
+             * widget coordinates to these so that the menu opens on the
+             * bottom left of the widget.
+             */
+            int x = absolutX - point.x;
+            int y = absolutY - point.y;
+            x += getWidgetModel().getLocation().x;
+            y += getWidgetModel().getLocation().y + getWidgetModel().getSize().height;
 
             menu.setLocation(x, y);
             menu.setVisible(true);
@@ -278,7 +282,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 if (newValue != null)
-                    ((Label) refreshableFigure).setText(VTypeHelper
+                    ((MenuButtonFigure) refreshableFigure).setText(VTypeHelper
                             .getString((VType) newValue));
                 return true;
             }
@@ -289,7 +293,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
-                ((Label) refreshableFigure).setText(newValue.toString());
+                ((MenuButtonFigure) refreshableFigure).setText(newValue.toString());
                 return true;
             }
         };
@@ -299,12 +303,23 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
         IWidgetPropertyChangeHandler transparentHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
-                ((Label) refreshableFigure).setOpaque(!(Boolean) newValue);
+                ((MenuButtonFigure) refreshableFigure).setOpaque(!(Boolean) newValue);
                 return true;
             }
         };
         setPropertyChangeHandler(MenuButtonModel.PROP_TRANSPARENT,
                 transparentHandler);
+
+        // Show down arrow
+        IWidgetPropertyChangeHandler downArrowHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                ((MenuButtonFigure)refreshableFigure).setDownArrowVisible((boolean)newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(MenuButtonModel.PROP_SHOW_DOWN_ARROW,
+                downArrowHandler);
 
         final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -320,17 +335,6 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
                                 evt.getNewValue(), getFigure());
                     }
                 });
-
-        /*
-         * // text alignment IWidgetPropertyChangeHandler alignmentHandler = new
-         * IWidgetPropertyChangeHandler() { public boolean handleChange(final
-         * Object oldValue, final Object newValue, final IFigure
-         * refreshableFigure) {
-         * ((Label)refreshableFigure).setTextAlignment((Integer) newValue);
-         * return true; } };
-         * setPropertyChangeHandler(MenuButtonModel.PROP_TEXT_ALIGNMENT,
-         * alignmentHandler);
-         */
     }
 
     /**
@@ -351,12 +355,12 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 
     @Override
     public String getValue() {
-        return ((Label) getFigure()).getText();
+        return ((MenuButtonFigure) getFigure()).getText();
     }
 
     @Override
     public void setValue(Object value) {
-        ((Label) getFigure()).setText(value.toString());
+        ((MenuButtonFigure) getFigure()).setText(value.toString());
     }
 
     @Override

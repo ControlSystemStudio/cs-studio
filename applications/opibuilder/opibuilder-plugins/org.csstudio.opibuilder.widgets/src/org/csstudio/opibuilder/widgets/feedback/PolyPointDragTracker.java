@@ -107,8 +107,7 @@ public final class PolyPointDragTracker extends SimpleDragTracker {
         _oldPoints = ((Polyline) _owner.getFigure()).getPoints().getCopy();
 
         if (getTargetEditPart() != null) {
-            _snapToHelper = (SnapToHelper) getTargetEditPart().getAdapter(
-                    SnapToHelper.class);
+            _snapToHelper = getTargetEditPart().getAdapter(SnapToHelper.class);
         }
     }
 

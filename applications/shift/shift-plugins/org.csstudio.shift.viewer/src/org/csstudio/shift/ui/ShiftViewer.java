@@ -68,35 +68,18 @@ public class ShiftViewer extends EditorPart {
         return editor;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.ui.part.EditorPart#doSave(org.eclipse.core.runtime.
-     * IProgressMonitor)
-     */
     @Override
     public void doSave(IProgressMonitor monitor) {
     // TODO Auto-generated method stub
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.ui.part.EditorPart#doSaveAs()
-     */
     @Override
     public void doSaveAs() {
     // TODO Auto-generated method stub
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.ui.part.EditorPart#init(org.eclipse.ui.IEditorSite,
-     * org.eclipse.ui.IEditorInput)
-     */
     @Override
     public void init(final IEditorSite site, final IEditorInput input) throws PartInitException {
         setSite(site);
@@ -126,35 +109,18 @@ public class ShiftViewer extends EditorPart {
         ss.addSelectionListener(org.csstudio.shift.ui.ShiftTableView.ID, selectionListener);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.ui.part.EditorPart#isDirty()
-     */
     @Override
     public boolean isDirty() {
     // TODO Auto-generated method stub
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
-     */
     @Override
     public boolean isSaveAsAllowed() {
     // TODO Auto-generated method stub
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.ui.part.WorkbenchPart#createPartControl(org.eclipse.swt.widgets
-     * .Composite)
-     */
     @Override
     public void createPartControl(final Composite parent) {
         shiftWidget = new ShiftWidget(parent, SWT.NONE, false, false);
@@ -172,11 +138,6 @@ public class ShiftViewer extends EditorPart {
         });
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.ui.part.WorkbenchPart#setFocus()
-     */
     @Override
     public void setFocus() {
 

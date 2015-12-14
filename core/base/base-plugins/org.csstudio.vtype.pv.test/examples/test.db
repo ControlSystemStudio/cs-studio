@@ -11,3 +11,17 @@ record(waveform, "TestStringArray")
     field(FTVL, "STRING")
     field(NELM, "10")
 }
+
+record(calc, "TestRamp")
+{
+    field(INPA, "TestRamp")
+    field(CALC, "A<100?A+1:0")
+    field(SCAN, "1 second")
+}
+
+record(compress, "TestWF")
+{
+    field(ALG,  "Circular Buffer")
+    field(NSAM, "50")
+    field(INP,  "TestRamp CP")
+}

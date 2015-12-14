@@ -29,8 +29,6 @@ import org.eclipse.swt.widgets.Display;
 public class LEDFigure extends AbstractBoolFigure {
 
     Bulb bulb;
-    private final static int OUTLINE_WIDTH = 2;
-    private final static int SQURE_BORDER_WIDTH = 3;
     private final static Color DARK_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
             CustomMediaFactory.COLOR_DARK_GRAY);
     private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
@@ -50,6 +48,8 @@ public class LEDFigure extends AbstractBoolFigure {
             new double[] { 0.0, 1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 15.0 };
     public final static String DEFAULT_STATE_FALLBACK_LABAL = "ERR";
     public final static Color DEFAULT_STATE_FALLBACK_COLOR = COLOR(100,100,100);
+    public static final int DEFAULT_BULB_BORDER_WIDTH = 3;
+    public static final Color DEFAULT_BULB_BORDER_COLOR = DARK_GRAY_COLOR;
 
 
     private boolean effect3D = true;
@@ -62,6 +62,8 @@ public class LEDFigure extends AbstractBoolFigure {
     private double[] stateValues = Arrays.copyOf(DEFAULT_STATE_VALUES, MAX_NSTATES);
     private Color stateFallbackColor = DEFAULT_STATE_FALLBACK_COLOR;
     private String stateFallbackLabel = DEFAULT_STATE_FALLBACK_LABAL;
+    private int borderWidth = DEFAULT_BULB_BORDER_WIDTH;
+    private Color borderColor = DEFAULT_BULB_BORDER_COLOR;
 
 
     public LEDFigure() {
@@ -73,16 +75,10 @@ public class LEDFigure extends AbstractBoolFigure {
         bulb.setBulbColor(booleanValue ? onColor : offColor);
     }
 
-    /**
-     * @return the effect3D
-     */
     public boolean isEffect3D() {
         return effect3D;
     }
 
-    /**
-     * @return the squareLED
-     */
     public boolean isSquareLED() {
         return squareLED;
     }
@@ -91,7 +87,7 @@ public class LEDFigure extends AbstractBoolFigure {
     protected void layout() {
         Rectangle bulbBounds = getClientArea().getCopy();
         if(bulb.isVisible() && !squareLED){
-            bulbBounds.shrink(OUTLINE_WIDTH, OUTLINE_WIDTH);
+            bulbBounds.shrink(borderWidth, borderWidth);
             bulb.setBounds(bulbBounds);
         }
         if(boolLabel.isVisible()){
@@ -111,106 +107,123 @@ public class LEDFigure extends AbstractBoolFigure {
         boolean support3D = GraphicsUtil.testPatternSupported(graphics);
         if(squareLED){
             if(effect3D && support3D){
-                //draw up border
-                Pattern pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y,
-                    clientArea.x, clientArea.y+SQURE_BORDER_WIDTH, BLACK_COLOR, 20, BLACK_COLOR, 100);
-                graphics.setBackgroundPattern(pattern);
-                graphics.fillPolygon(new int[]{clientArea.x, clientArea.y,
-                    clientArea.x+SQURE_BORDER_WIDTH,clientArea.y + SQURE_BORDER_WIDTH,
-                    clientArea.x + clientArea.width - SQURE_BORDER_WIDTH, clientArea.y + SQURE_BORDER_WIDTH,
-                    clientArea.x + clientArea.width, clientArea.y});
-                pattern.dispose();
-
-                //draw left border
-                pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x, clientArea.y,
-                    clientArea.x + SQURE_BORDER_WIDTH, clientArea.y, BLACK_COLOR, 20, BLACK_COLOR, 100);
-                graphics.setBackgroundPattern(pattern);
-                graphics.fillPolygon(new int[]{clientArea.x, clientArea.y,
-                        clientArea.x+SQURE_BORDER_WIDTH,clientArea.y + SQURE_BORDER_WIDTH,
-                        clientArea.x+SQURE_BORDER_WIDTH, clientArea.y + clientArea.height - SQURE_BORDER_WIDTH,
-                        clientArea.x, clientArea.y + clientArea.height});
-                pattern.dispose();
-
-                //draw bottom border
-                pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x,
-                    clientArea.y+ clientArea.height - SQURE_BORDER_WIDTH,
-                    clientArea.x, clientArea.y+clientArea.height,
-                    WHITE_COLOR, 20, WHITE_COLOR, 30);
-                graphics.setBackgroundPattern(pattern);
-                graphics.fillPolygon(new int[]{clientArea.x, clientArea.y + clientArea.height,
-                    clientArea.x+SQURE_BORDER_WIDTH,clientArea.y +clientArea.height - SQURE_BORDER_WIDTH,
-                    clientArea.x + clientArea.width - SQURE_BORDER_WIDTH,
-                    clientArea.y + clientArea.height - SQURE_BORDER_WIDTH,
-                    clientArea.x + clientArea.width, clientArea.y + clientArea.height});
-                pattern.dispose();
-
-                //draw right border
-                pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH,
-                    clientArea.y,
-                    clientArea.x + clientArea.width, clientArea.y,
-                    WHITE_COLOR, 20, WHITE_COLOR, 30);
-                graphics.setBackgroundPattern(pattern);
-                graphics.fillPolygon(new int[]{clientArea.x + clientArea.width, clientArea.y,
-                    clientArea.x+ clientArea.width - SQURE_BORDER_WIDTH,clientArea.y + SQURE_BORDER_WIDTH,
-                    clientArea.x + clientArea.width - SQURE_BORDER_WIDTH,
-                    clientArea.y + clientArea.height - SQURE_BORDER_WIDTH,
-                    clientArea.x + clientArea.width, clientArea.y + clientArea.height});
-                pattern.dispose();
-
-                //draw light
-                clientArea.shrink(SQURE_BORDER_WIDTH, SQURE_BORDER_WIDTH);
-                Color fillColor;
-                if(nStates <= 2) {
-                    fillColor = booleanValue?onColor:offColor;
-                } else {
-                    fillColor = bulb.getBulbColor();
-                }
-                graphics.setBackgroundColor(fillColor);
-                graphics.fillRectangle(clientArea);
-                pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), clientArea.x,    clientArea.y,
-                        clientArea.x + clientArea.width, clientArea.y + clientArea.height,
-                        WHITE_COLOR, 200, fillColor, 0);
-                graphics.setBackgroundPattern(pattern);
-                   graphics.fillRectangle(clientArea);
-                   pattern.dispose();
-
+                drawSquare3d(graphics, clientArea);
             }else { //if not 3D
-                clientArea.shrink(SQURE_BORDER_WIDTH/2, SQURE_BORDER_WIDTH/2);
-                graphics.setForegroundColor(DARK_GRAY_COLOR);
-                graphics.setLineWidth(SQURE_BORDER_WIDTH);
-                graphics.drawRectangle(clientArea);
-
-                clientArea.shrink(SQURE_BORDER_WIDTH/2, SQURE_BORDER_WIDTH/2);
-                Color fillColor;
-                if(nStates <= 2) {
-                    fillColor = booleanValue?onColor:offColor;
-                } else {
-                    fillColor = bulb.getBulbColor();
-                }
-                graphics.setBackgroundColor(fillColor);
-                graphics.fillRectangle(clientArea);
+                drawSquare2d(graphics, clientArea);
             }
-
-        }else { // if round LED
+        } else { // if round LED
             int width = Math.min(clientArea.width, clientArea.height);
             Rectangle outRect = new Rectangle(getClientArea().x, getClientArea().y,
                 width, width);
             if(effect3D && support3D){
                 graphics.setBackgroundColor(WHITE_COLOR);
                 graphics.fillOval(outRect);
-                Pattern pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(), outRect.x, outRect.y,
-                    outRect.x+width, outRect.y+width, DARK_GRAY_COLOR, 255, DARK_GRAY_COLOR, 0);
+                Pattern pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                        outRect.x, outRect.y,
+                        outRect.x + width, outRect.y + width,
+                        borderColor, 255, borderColor, 0);
                 graphics.setBackgroundPattern(pattern);
                 graphics.fillOval(outRect);
                 pattern.dispose();
             }else {
-                graphics.setBackgroundColor(DARK_GRAY_COLOR);
+                graphics.setBackgroundColor(borderColor);
                 graphics.fillOval(outRect);
             }
         }
 
         graphics.popState();
         super.paintClientArea(graphics);
+    }
+
+    private void drawSquare2d(Graphics graphics, Rectangle clientArea) {
+        Color fillColor;
+        if(nStates <= 2) {
+            fillColor = booleanValue ? onColor : offColor;
+        } else {
+            fillColor = bulb.getBulbColor();
+        }
+
+        graphics.setBackgroundColor(borderColor);
+        graphics.fillRectangle(clientArea);
+
+        clientArea.shrink(borderWidth, borderWidth);
+        graphics.setBackgroundColor(fillColor);
+        graphics.fillRectangle(clientArea);
+    }
+
+    private void drawSquare3d(Graphics graphics, Rectangle clientArea) {
+        // set the background
+        graphics.setBackgroundColor(borderColor);
+        graphics.fillRectangle(clientArea);
+
+        //draw up border
+        Pattern pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                clientArea.x, clientArea.y,
+                clientArea.x, clientArea.y + borderWidth,
+                BLACK_COLOR, 20, BLACK_COLOR, 100);
+        graphics.setBackgroundPattern(pattern);
+        graphics.fillPolygon(new int[]{
+                clientArea.x, clientArea.y,
+                clientArea.x + borderWidth, clientArea.y + borderWidth,
+                clientArea.x + clientArea.width - borderWidth, clientArea.y + borderWidth,
+                clientArea.x + clientArea.width, clientArea.y});
+        pattern.dispose();
+
+        //draw left border
+        pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                clientArea.x, clientArea.y,
+                clientArea.x + borderWidth, clientArea.y,
+                BLACK_COLOR, 20, BLACK_COLOR, 100);
+        graphics.setBackgroundPattern(pattern);
+        graphics.fillPolygon(new int[]{clientArea.x, clientArea.y,
+                clientArea.x + borderWidth, clientArea.y + borderWidth,
+                clientArea.x + borderWidth, clientArea.y + clientArea.height - borderWidth,
+                clientArea.x, clientArea.y + clientArea.height});
+        pattern.dispose();
+
+        //draw bottom border
+        pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                clientArea.x, clientArea.y + clientArea.height - borderWidth,
+                clientArea.x, clientArea.y + clientArea.height,
+                WHITE_COLOR, 20, WHITE_COLOR, 100);
+        graphics.setBackgroundPattern(pattern);
+        graphics.fillPolygon(new int[]{clientArea.x, clientArea.y + clientArea.height,
+            clientArea.x + borderWidth, clientArea.y + clientArea.height - borderWidth,
+            clientArea.x + clientArea.width - borderWidth, clientArea.y + clientArea.height - borderWidth,
+            clientArea.x + clientArea.width, clientArea.y + clientArea.height});
+        pattern.dispose();
+
+        //draw right border
+        pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                clientArea.x + clientArea.width - borderWidth, clientArea.y,
+                clientArea.x + clientArea.width, clientArea.y,
+                WHITE_COLOR, 20, WHITE_COLOR, 100);
+        graphics.setBackgroundPattern(pattern);
+        graphics.fillPolygon(new int[]{
+                clientArea.x + clientArea.width, clientArea.y,
+                clientArea.x + clientArea.width - borderWidth, clientArea.y + borderWidth,
+                clientArea.x + clientArea.width - borderWidth,
+                clientArea.y + clientArea.height - borderWidth,
+                clientArea.x + clientArea.width, clientArea.y + clientArea.height});
+        pattern.dispose();
+
+        //draw light
+        clientArea.shrink(borderWidth, borderWidth);
+        Color fillColor;
+        if(nStates <= 2) {
+            fillColor = booleanValue ? onColor : offColor;
+        } else {
+            fillColor = bulb.getBulbColor();
+        }
+        graphics.setBackgroundColor(fillColor);
+        graphics.fillRectangle(clientArea);
+        pattern = GraphicsUtil.createScaledPattern(graphics, Display.getCurrent(),
+                clientArea.x, clientArea.y,
+                clientArea.x + clientArea.width, clientArea.y + clientArea.height,
+                WHITE_COLOR, 200, fillColor, 0);
+        graphics.setBackgroundPattern(pattern);
+        graphics.fillRectangle(clientArea);
+        pattern.dispose();
     }
 
     /**
@@ -221,6 +234,7 @@ public class LEDFigure extends AbstractBoolFigure {
             return;
         this.effect3D = effect3D;
         bulb.setEffect3D(effect3D);
+        repaint();
     }
 
     @Override
@@ -237,14 +251,13 @@ public class LEDFigure extends AbstractBoolFigure {
             bulb.setBulbColor(onColor);
     }
 
-    /**
-     * @param squareLED the squareLED to set
-     */
     public void setSquareLED(boolean squareLED) {
         if(this.squareLED == squareLED)
             return;
+
         this.squareLED = squareLED;
         bulb.setVisible(!squareLED);
+        repaint();
     }
 
     @Override
@@ -377,5 +390,21 @@ public class LEDFigure extends AbstractBoolFigure {
         }
         bulb.setBulbColor(color);
         boolLabel.setText(label);
+    }
+
+    public void setBulbBorderWidth(int bulbBorderWidth) {
+        if (bulbBorderWidth == borderWidth)
+            return;
+
+        borderWidth = bulbBorderWidth;
+        repaint();
+    }
+
+    public void setBulbBorderColor(Color bulbBorderColor) {
+        if (bulbBorderColor == borderColor)
+            return;
+
+        borderColor = bulbBorderColor;
+        repaint();
     }
 }
