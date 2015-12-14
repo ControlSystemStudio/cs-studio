@@ -18,7 +18,6 @@ import org.csstudio.ui.fx.util.FXTaggingDialog;
 import org.eclipse.fx.ui.workbench3.FXViewPart;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -95,13 +94,15 @@ public class BrowserView extends FXViewPart {
     private TreeView<BeamlineSetWrapper> beamlineSetsTree;
     private ListView<Snapshot> snapshotsList;
     private TitledPane snapshotsPane;
-    private TitledPane elementsPane;
+    private TitledPane baseLevelPane;
     private TitledPane beamlineSetsPane;
     private VBox mainPane;
     private VBox dataPane;
 
     private Selector selector = new Selector(this);
     private ActionManager actionManager = new ActionManager(selector, this);
+
+    private boolean searchMode = false;
 
     private Scene scene;
 
@@ -139,9 +140,9 @@ public class BrowserView extends FXViewPart {
         Optional<BaseLevelBrowser<BaseLevel>> browser = new BaseLevelBrowserProvider().getBaseLevelBrowser();
         if (browser.isPresent()) {
             Node elements = createBaseLevelsPane(browser.get());
-            VBox.setVgrow(elementsPane, Priority.NEVER);
+            VBox.setVgrow(baseLevelPane, Priority.NEVER);
             mainPane.getChildren().setAll(elements, dataPane);
-            elementsPane.setExpanded(true);
+            baseLevelPane.setExpanded(true);
         } else {
             mainPane.getChildren().setAll(dataPane);
         }
@@ -157,13 +158,13 @@ public class BrowserView extends FXViewPart {
         baseLevelBrowser = browser;
 
         content.setCenter(baseLevelBrowser.getFXContent());
-        elementsPane = new TitledPane(browser.getTitleFor(Optional.empty(), Optional.empty()), content);
-        elementsPane.setMaxHeight(Double.MAX_VALUE);
+        baseLevelPane = new TitledPane(browser.getTitleFor(Optional.empty(), Optional.empty()), content);
+        baseLevelPane.setMaxHeight(Double.MAX_VALUE);
 
         GridPane titleBox = new GridPane();
         titleBox.setHgap(5);
         Label titleText = new Label(browser.getTitleFor(Optional.empty(), Optional.empty()));
-        titleText.textProperty().bind(elementsPane.textProperty());
+        titleText.textProperty().bind(baseLevelPane.textProperty());
         ToggleButton filterButton = new ToggleButton("",
             new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/filter_ps.png"))));
         filterButton.setTooltip(new Tooltip("Disable non-existing"));
@@ -173,12 +174,12 @@ public class BrowserView extends FXViewPart {
         titleBox.addRow(0, titleText, filterButton);
         titleBox.setMaxWidth(Double.MAX_VALUE);
         titleText.setMaxWidth(Double.MAX_VALUE);
-        elementsPane.setGraphic(titleBox);
-        elementsPane.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        baseLevelPane.setGraphic(titleBox);
+        baseLevelPane.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         titleBox.prefWidthProperty().bind(scene.widthProperty().subtract(34));
         filterButton.setSelected(true);
 
-        return elementsPane;
+        return baseLevelPane;
     }
 
     private Node createBeamlineSetsPane() {
@@ -290,6 +291,7 @@ public class BrowserView extends FXViewPart {
         snapshotsList = new ListView<>();
         snapshotsList.setCellFactory(e -> new ListCell<Snapshot>() {
             public void updateItem(Snapshot item, boolean empty) {
+                super.updateItem(item, empty);
                 getStyleClass().remove("tagged-cell");
                 if (item != null && !empty) {
                     StringBuilder sb = new StringBuilder(300);
@@ -301,12 +303,20 @@ public class BrowserView extends FXViewPart {
                         getStyleClass().add("tagged-cell");
                     }
                     setTooltip(new Tooltip(sb.toString()));
-                    setText(item.toString());
+                    if (searchMode) {
+                        StringBuilder text = new StringBuilder(300);
+                        item.getBeamlineSet().getBaseLevel()
+                            .ifPresent(e -> text.append('[').append(e).append(']').append(' '));
+                        text.append(item.getBeamlineSet().getPathAsString()).append('\n');
+                        text.append(item.toString());
+                        setText(text.toString());
+                    } else {
+                        setText(item.toString());
+                    }
                 } else {
                     setTooltip(null);
                     setText(null);
                 }
-                super.updateItem(item, empty);
             }
         });
         snapshotsList.getStylesheets().add(this.getClass().getResource("taggedCell.css").toExternalForm());
@@ -441,14 +451,14 @@ public class BrowserView extends FXViewPart {
             BaseLevel bl = selector.selectedBaseLevelProperty().get();
             if (bl != null) {
                 if (selector.isDefaultBranch()) {
-                    elementsPane.setText(baseLevelBrowser.getTitleFor(Optional.of(bl), Optional.empty()));
+                    baseLevelPane.setText(baseLevelBrowser.getTitleFor(Optional.of(bl), Optional.empty()));
                 } else {
                     Branch branch = selector.selectedBranchProperty().get();
-                    elementsPane
+                    baseLevelPane
                         .setText(baseLevelBrowser.getTitleFor(Optional.of(bl), Optional.of(branch.getShortName())));
                 }
             } else {
-                elementsPane.setText(baseLevelBrowser.getTitleFor(Optional.empty(), Optional.empty()));
+                baseLevelPane.setText(baseLevelBrowser.getTitleFor(Optional.empty(), Optional.empty()));
             }
         }
     }
@@ -509,8 +519,8 @@ public class BrowserView extends FXViewPart {
             root.setExpanded(true);
         });
         selector.snapshotsProperty().addListener((a, o, n) -> {
-            ObservableList<Snapshot> list = FXCollections.observableArrayList(n);
-            snapshotsList.setItems(list);
+            searchMode = false;
+            snapshotsList.setItems(FXCollections.observableArrayList(n));
         });
 
         List<DataProviderWrapper> dpws = SaveRestoreService.getInstance().getDataProviders();
@@ -527,8 +537,8 @@ public class BrowserView extends FXViewPart {
         DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
         if (wrapper != null) {
             mainPane.getChildren().clear();
-            if (wrapper.provider.areBaseLevelsSupported() && elementsPane != null) {
-                mainPane.getChildren().addAll(elementsPane, dataPane);
+            if (wrapper.provider.areBaseLevelsSupported() && baseLevelPane != null) {
+                mainPane.getChildren().addAll(baseLevelPane, dataPane);
             } else {
                 mainPane.getChildren().addAll(dataPane);
             }
@@ -544,6 +554,24 @@ public class BrowserView extends FXViewPart {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Sets the snapshot search results. The list of snapshots replaces the current list of snapshots and the expression
+     * is visible in the title of the snapshots pane. The base level and beamline sets panes are collapsed.
+     *
+     * @param expression the expression used for searching
+     * @param snapshots the results
+     */
+    void setSearchResults(String expression, List<Snapshot> snapshots) {
+        if (baseLevelPane != null) {
+            baseLevelPane.expandedProperty().set(false);
+        }
+        beamlineSetsPane.expandedProperty().set(false);
+        snapshotsPane.expandedProperty().set(true);
+        snapshotsPane.setText("Search results for '" + expression + "'");
+        searchMode = true;
+        snapshotsList.setItems(FXCollections.observableArrayList(snapshots));
     }
 
     /*

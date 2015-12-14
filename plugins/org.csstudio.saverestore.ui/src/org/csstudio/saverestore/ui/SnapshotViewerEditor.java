@@ -788,14 +788,21 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             label.setTooltip(new Tooltip("PV value when the snapshot was taken"));
             col.setGraphic(label);
             final int snapshotIndex = i;
-            MenuItem item = new MenuItem("Remove");
-            item.setOnAction(ev -> SaveRestoreService.getInstance().execute("Remove Snapshot", () -> {
+            MenuItem removeItem = new MenuItem("Remove");
+            removeItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Remove Snapshot", () -> {
                 final List<TableEntry> entries = controller.removeSnapshot(snapshotIndex);
                 final int numberOfSnapshots = controller.getNumberOfSnapshots();
                 final boolean show = controller.isShowReadbacks();
                 Platform.runLater(() -> createTable(entries, numberOfSnapshots, show));
             }));
-            final ContextMenu menu = new ContextMenu(item);
+            MenuItem setAsBaseItem = new MenuItem("Set As Base");
+            setAsBaseItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Remove Snapshot", () -> {
+                final List<TableEntry> entries = controller.setAsBase(snapshotIndex);
+                final int numberOfSnapshots = controller.getNumberOfSnapshots();
+                final boolean show = controller.isShowReadbacks();
+                Platform.runLater(() -> createTable(entries, numberOfSnapshots, show));
+            }));
+            final ContextMenu menu = new ContextMenu(removeItem, setAsBaseItem);
             label.setContextMenu(menu);
             col.setCellValueFactory(e -> e.getValue().compareValueProperty(snapshotIndex));
             col.setCellFactory(e -> new VTypeCellEditor<>());
@@ -910,11 +917,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             final boolean show = controller.isShowReadbacks();
             Platform.runLater(() -> createTable(entries, num, show));
         };
-        if (Platform.isFxApplicationThread()) {
-            SaveRestoreService.getInstance().execute("Add Snapshot", r);
-        } else {
-            r.run();
-        }
+        SaveRestoreService.getInstance().execute("Add Snapshot", r);
     }
 
     /*

@@ -307,6 +307,31 @@ public class SnapshotViewerController {
         return new ArrayList<>(items.values());
     }
 
+    public List<TableEntry> setAsBase(int idx) {
+        if (idx == 0) {
+            throw new IllegalArgumentException("Snapshot already set as base.");
+        } else if (idx > numberOfSnapshots) {
+            throw new IllegalArgumentException("The index is greater than the number of snapshots.");
+        }
+        pvs.values().forEach((e) -> {
+            e.reader.close();
+            e.writer.close();
+        });
+        pvs.clear();
+        items.clear();
+        List<VSnapshot> newSnapshots = new ArrayList<>();
+        synchronized (snapshots) {
+            VSnapshot oldBase = snapshots.get(0);
+            VSnapshot newBase = snapshots.get(idx);
+            snapshots.set(0, newBase);
+            snapshots.set(idx, oldBase);
+            numberOfSnapshots = 0;
+            newSnapshots.addAll(snapshots);
+        }
+        newSnapshots.forEach(e -> addSnapshot(e));
+        return new ArrayList<>(items.values());
+    }
+
     /**
      * Returns the number of all snapshots currently visible in the viewer (including the base snapshot).
      *

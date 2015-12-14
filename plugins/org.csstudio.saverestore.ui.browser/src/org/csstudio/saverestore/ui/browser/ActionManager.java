@@ -1,13 +1,17 @@
 package org.csstudio.saverestore.ui.browser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProvider.ImportType;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
+import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.BeamlineSetData;
@@ -25,6 +29,8 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+
+import javafx.application.Platform;
 
 /**
  *
@@ -360,6 +366,9 @@ public class ActionManager {
         });
     }
 
+    /**
+     * Reset repository to the state of the central repository.
+     */
     public void resetRepository() {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
         if (!provider.isReinitSupported()) {
@@ -378,4 +387,25 @@ public class ActionManager {
         });
     }
 
+    /**
+     * Search for snapshots that match the given expression and criteria. Upon completion the consumer receives all
+     * found snapshots (the consumer is updated on UI thread).
+     *
+     * @param expression the expression to search for
+     * @param criteria the criteria or fields on which to perform the search
+     * @param consumer the consumer that receives the results when search completes
+     */
+    public void searchForSnapshots(final String expression, final List<SearchCriterion> criteria,
+        final Consumer<List<Snapshot>> consumer) {
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final Branch branch = selector.selectedBranchProperty().get();
+        SaveRestoreService.getInstance().execute("Search for snapshots", () -> {
+            try {
+                Snapshot[] searchResult = provider.findSnapshots(expression, branch, criteria);
+                Platform.runLater(() -> consumer.accept(Arrays.asList(searchResult)));
+            } catch (DataProviderException e) {
+                Selector.reportException(e, owner.getSite().getShell());
+            }
+        });
+    }
 }

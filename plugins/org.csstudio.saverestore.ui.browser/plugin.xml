@@ -113,6 +113,12 @@
                style="push"
                tooltip="Synchronise view with remote repository">
          </command>
+         <command
+               commandId="org.csstudio.saverestore.ui.browser.command.search"
+               icon="icons/search_src.png"
+               style="push"
+               tooltip="Search repository for snapshots">
+         </command>
       </menuContribution>
    </extension>
    <extension
@@ -146,6 +152,12 @@
             description="Reset the repository to default"
             id="org.csstudio.saverestore.ui.browser.command.resetrepository"
             name="Reset Repository">
+      </command>
+      <command
+            defaultHandler="org.csstudio.saverestore.ui.browser.SearchForSnapshotsCommand"
+            description="Search repository for snapshots"
+            id="org.csstudio.saverestore.ui.browser.command.search"
+            name="Search">
       </command>
    </extension>
    <extension
