@@ -146,6 +146,9 @@ public final class FileUtilities {
                 selected.add(s);
             }
         }
+        if (date == null || date.isEmpty()) {
+            throw new ParseException("Snapshot does not have a date set.",0);
+        }
         Date d = TIMESTAMP_FORMATTER.get().parse(date);
         return new SnapshotContent(d, names, selected, data);
     }

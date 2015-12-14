@@ -501,4 +501,60 @@ public final class Utilities {
             return includeYear ? SBE_TIMESTAMP_FORMATTER.get().format(t) : BE_TIMESTAMP_FORMATTER.get().format(t);
         }
     }
+
+    /**
+     * Checks if the values of the given vtype are equal and returns true if they are or false if they are not.
+     * Timestamps, alarms and other parameters are ignored.
+     *
+     * @param v1 the first value to check
+     * @param v2 the second value to check
+     * @return true if the values are equal or false otherwise
+     */
+    public static boolean areValuesEqual(VType v1, VType v2) {
+        if (v1 == null && v2 == null) {
+            return true;
+        } else if (v1 == null || v2 == null) {
+            return false;
+        }
+        if (v1 instanceof VNumber && v2 instanceof VNumber) {
+            if (v1 instanceof VDouble) {
+                double data = ((VDouble) v1).getValue();
+                double base = ((VNumber) v2).getValue().doubleValue();
+                return Double.compare(data, base) == 0;
+            } else if (v1 instanceof VFloat) {
+                float data = ((VFloat) v1).getValue();
+                float base = ((VNumber) v2).getValue().floatValue();
+                return Float.compare(data, base) == 0;
+            } else if (v1 instanceof VLong) {
+                long data = ((VLong) v1).getValue();
+                long base = ((VNumber) v2).getValue().longValue();
+                return Long.compare(data, base) == 0;
+            } else if (v1 instanceof VInt) {
+                int data = ((VInt) v1).getValue();
+                int base = ((VNumber) v2).getValue().intValue();
+                return Integer.compare(data, base) == 0;
+            } else if (v1 instanceof VShort) {
+                short data = ((VShort) v1).getValue();
+                short base = ((VNumber) v2).getValue().shortValue();
+                return Short.compare(data, base) == 0;
+            } else if (v1 instanceof VByte) {
+                byte data = ((VByte) v1).getValue();
+                byte base = ((VNumber) v2).getValue().byteValue();
+                return Byte.compare(data, base) == 0;
+            }
+        } else if (v1 instanceof VBoolean && v2 instanceof VBoolean) {
+            boolean b = ((VBoolean) v1).getValue();
+            boolean c = ((VBoolean) v2).getValue();
+            return b == c;
+        } else if (v1 instanceof VEnum && v2 instanceof VEnum) {
+            int b = ((VEnum) v1).getIndex();
+            int c = ((VEnum) v2).getIndex();
+            return b == c;
+        } else {
+            String str = valueToString(v1);
+            String base = valueToString(v2);
+            return str.equals(base);
+        }
+        return false;
+    }
 }

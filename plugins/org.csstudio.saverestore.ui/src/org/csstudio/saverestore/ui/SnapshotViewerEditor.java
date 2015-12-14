@@ -81,6 +81,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.DataFormat;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
@@ -180,7 +181,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                 setGraphic(null);
             } else {
                 if (item instanceof VNoData) {
-                    setText(Utilities.valueToString((VType) item));
+                    setText(item.toString());
                     setGraphic(null);
                     getTooltip().setText("No Value Available");
                 } else if (item instanceof VType) {
@@ -270,12 +271,12 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         contextMenu = menu.createContextMenu(parent);
         parent.setMenu(contextMenu);
         getSite().registerContextMenu(menu, this);
-//        Platform.runLater(()->{
-//            Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
-//                System.out.println("Handler caught exception: "+throwable.getMessage());
-//                throwable.printStackTrace();
-//            });
-//        });
+        // Platform.runLater(()->{
+        // Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
+        // System.out.println("Handler caught exception: "+throwable.getMessage());
+        // throwable.printStackTrace();
+        // });
+        // });
     }
 
     private void init() {
@@ -483,8 +484,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
     }
 
     private Node createToolbarPane() {
-        HBox toolbar = new HBox(5);
-        toolbar.setStyle("-fx-background-color: #FBFBFB;");
+        HBox leftToolbar = new HBox(5);
         Button addPVButton = new Button("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/includeMode_filter.png"))));
         addPVButton.setTooltip(new Tooltip("Add a PV from the central archiving system"));
@@ -512,57 +512,117 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             final boolean show = controller.isShowReadbacks();
             Platform.runLater(() -> createTable(b, num, show));
         }));
-        Button exportButton = new Button("",
-            new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/export_wiz.png"))));
-        exportButton.setTooltip(new Tooltip("Export editor contents to file"));
-        exportButton.setOnAction(e -> {
-            File f = null;
-            FileDialog dialog = new FileDialog(getSite().getShell(), SWT.SAVE);
-            dialog.setFilterExtensions(
-                new String[] { "*" + SnapshotViewerController.FEXT_CSV, "*" + SnapshotViewerController.FEXT_SNP });
-            dialog.setFilterNames(new String[] { "All snapshots (*.csv)", "Single Snapshot (*.snp)" });
-            do {
-                String file = dialog.open();
-                if (file == null) {
-                    return;
-                } else {
-                    f = new File(file);
-                    if (f.exists()) {
-                        int ans = FXMessageDialog.openYesNoCancel(getSite().getShell(), "Overwrite File",
-                            "The file '" + file + "' already exists. Do you want to overwrite it?");
-                        if (ans == 0) {
-                            break; // overwrite
-                        } else if (ans == 2) {
-                            return; // cancel
-                        }
-                    } else {
-                        break;
-                    }
-                }
-            } while (true);
-            final File file = f;
-            if (dialog.getFilterIndex() == 1) {
+        Button openSnapshotFromFileButton = new Button("",
+            new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/fldr_obj.png"))));
+        openSnapshotFromFileButton.setTooltip(new Tooltip("Open snapshot from file"));
+        openSnapshotFromFileButton.setOnAction(e -> {
+            FileDialog dialog = new FileDialog(getSite().getShell(), SWT.OPEN);
+            dialog.setFilterExtensions(new String[] { "*" + SnapshotViewerController.FEXT_SNP });
+            dialog.setFilterNames(new String[] { "Single Snapshot (*.snp)" });
+            String ans = dialog.open();
+            if (ans != null) {
+                SaveRestoreService.getInstance().execute("Open file", () -> {
+                    controller.openFromFile(new File(ans)).ifPresent(s -> addSnapshot(s));
+                });
+            }
+        });
+        Button saveSnapshotToFileButton = new Button("",
+            new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/saveas_edit.png"))));
+        saveSnapshotToFileButton.setTooltip(new Tooltip("Save a snapshot to file"));
+        saveSnapshotToFileButton.setOnAction(e -> {
+            selectFile(true).ifPresent(f -> {
                 final List<VSnapshot> snapshots = controller.getAllSnapshots();
                 if (snapshots.size() == 1) {
                     SaveRestoreService.getInstance().execute("Export to snp file",
-                        () -> controller.exportSingleSnapshotToFile(snapshots.get(0), file));
+                        () -> controller.exportSingleSnapshotToFile(snapshots.get(0), f));
                 } else {
                     new FXComboInputDialog<>(getSite().getShell(), "Select Snapshot",
                         "Select the snapshot that you wish to save", snapshots.get(0), snapshots).openAndWait()
                             .ifPresent(s -> SaveRestoreService.getInstance().execute("Export to snp file",
-                                () -> controller.exportSingleSnapshotToFile(s, file)));
+                                () -> controller.exportSingleSnapshotToFile(s, f)));
                 }
-            } else {
-                SaveRestoreService.getInstance().execute("Export to csv file", () -> controller.exportToFile(file));
-            }
+            });
+        });
+        Button exportButton = new Button("",
+            new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/export_wiz.png"))));
+        exportButton.setTooltip(new Tooltip("Export editor contents to file"));
+        exportButton.setOnAction(e -> {
+            selectFile(false).ifPresent(
+                f -> SaveRestoreService.getInstance().execute("Export to csv file", () -> controller.exportToFile(f)));
         });
         javafx.scene.control.Separator separator1 = new javafx.scene.control.Separator(Orientation.VERTICAL);
         separator1.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
         javafx.scene.control.Separator separator2 = new javafx.scene.control.Separator(Orientation.VERTICAL);
         separator2.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
-        toolbar.getChildren().addAll(addPVButton, separator1, addReadbacksButton, separator2, importButton,
-            exportButton);
+        javafx.scene.control.Separator separator3 = new javafx.scene.control.Separator(Orientation.VERTICAL);
+        separator3.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
+        leftToolbar.getChildren().addAll(addPVButton, separator1, addReadbacksButton, separator2, importButton,
+            separator3, openSnapshotFromFileButton, saveSnapshotToFileButton, exportButton);
+
+        HBox rightToolbar = new HBox(5);
+        Button hideEqualItemsButton = new Button("",
+            new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/filter_ps.png"))));
+        hideEqualItemsButton.setTooltip(new Tooltip("Hide items where snapshot value equals current value"));
+        hideEqualItemsButton.setOnAction(e -> {
+            SaveRestoreService.getInstance().execute("Filter items", () -> {
+                final int num = controller.getNumberOfSnapshots();
+                final boolean show = controller.isShowReadbacks();
+                final List<TableEntry> entries = controller.setHideEqualItems(true);
+                Platform.runLater(() -> createTable(entries, num, show));
+            });
+        });
+        Button showEqualItemsButton = new Button("",
+            new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/flatLayout.png"))));
+        showEqualItemsButton.setTooltip(new Tooltip("Show all items"));
+        showEqualItemsButton.setOnAction(e -> {
+            SaveRestoreService.getInstance().execute("Filter items", () -> {
+                final List<TableEntry> entries = controller.setHideEqualItems(false);
+                Platform.runLater(() -> {
+                    table.getItems().setAll(entries);
+                });
+            });
+        });
+        rightToolbar.getChildren().addAll(showEqualItemsButton,hideEqualItemsButton);
+        HBox toolbar = new HBox(5);
+        HBox.setHgrow(leftToolbar, Priority.ALWAYS);
+        HBox.setHgrow(rightToolbar, Priority.NEVER);
+        String background = "-fx-background-color: #FBFBFB;";
+        leftToolbar.setStyle(background);
+        rightToolbar.setStyle(background);
+        toolbar.setStyle(background);
+        toolbar.getChildren().addAll(leftToolbar, rightToolbar);
         return toolbar;
+    }
+
+    private Optional<File> selectFile(boolean snp) {
+        File f = null;
+        FileDialog dialog = new FileDialog(getSite().getShell(), SWT.SAVE);
+        if (snp) {
+            dialog.setFilterExtensions(new String[] { "*" + SnapshotViewerController.FEXT_SNP });
+            dialog.setFilterNames(new String[] { "Single Snapshot (*.snp)" });
+        } else {
+            dialog.setFilterExtensions(new String[] { "*" + SnapshotViewerController.FEXT_CSV });
+            dialog.setFilterNames(new String[] { "All snapshots (*.csv)" });
+        }
+        do {
+            String file = dialog.open();
+            if (file == null) {
+                return Optional.empty();
+            } else {
+                f = new File(file);
+                if (f.exists()) {
+                    int ans = FXMessageDialog.openYesNoCancel(getSite().getShell(), "Overwrite File",
+                        "The file '" + file + "' already exists. Do you want to overwrite it?");
+                    if (ans == 0) {
+                        return Optional.of(f); // overwrite
+                    } else if (ans == 2) {
+                        return Optional.empty(); // cancel
+                    }
+                } else {
+                    return Optional.of(f);
+                }
+            }
+        } while (true);
     }
 
     private Node createMainControlPane() {
@@ -836,12 +896,12 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
 
     private void configureTableForDnD(TableView<TableEntry> table) {
         table.setOnDragOver(e -> {
-            if (e.getGestureSource() != table && e.getDragboard().hasContent(SnapshotDataFormat.INSTANCE)) {
+            if (e.getGestureSource() != table && (e.getDragboard().hasContent(SnapshotDataFormat.INSTANCE)
+                || e.getDragboard().hasContent(DataFormat.FILES))) {
                 e.acceptTransferModes(TransferMode.ANY);
             }
             e.consume();
         });
-
         table.setOnDragDropped(e -> {
             if (e.getDragboard().hasContent(SnapshotDataFormat.INSTANCE)) {
                 Snapshot s = (Snapshot) e.getDragboard().getContent(SnapshotDataFormat.INSTANCE);
@@ -850,12 +910,18 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                         .getDataProvider(s.getBeamlineSet().getDataProviderId()).provider;
                     SaveRestoreService.getInstance().execute("Load snapshot data", () -> {
                         try {
-                            VSnapshot vs = provider.getSnapshotContent(s);
-                            addSnapshot(vs);
+                            addSnapshot(provider.getSnapshotContent(s));
                         } catch (DataProviderException ex) {
                             Selector.reportException(ex, getSite().getShell());
                         }
                     });
+                }
+            } else if (e.getDragboard().hasContent(DataFormat.FILES)) {
+                @SuppressWarnings("unchecked")
+                final List<File> files = (List<File>) e.getDragboard().getContent(DataFormat.FILES);
+                if (files.size() > 0) {
+                    SaveRestoreService.getInstance().execute("Open file",
+                        () -> files.forEach(c -> controller.openFromFile(c).ifPresent(s -> addSnapshot(s))));
                 }
             }
         });
@@ -911,13 +977,12 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      * @param data the snapshot data
      */
     public void addSnapshot(VSnapshot data) {
-        Runnable r = () -> {
+        SaveRestoreService.getInstance().execute("Add Snapshot", () -> {
             final List<TableEntry> entries = controller.addSnapshot(data);
             final int num = controller.getNumberOfSnapshots();
             final boolean show = controller.isShowReadbacks();
             Platform.runLater(() -> createTable(entries, num, show));
-        };
-        SaveRestoreService.getInstance().execute("Add Snapshot", r);
+        });
     }
 
     /*

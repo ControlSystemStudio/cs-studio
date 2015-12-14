@@ -4,12 +4,14 @@ import static org.diirt.datasource.ExpressionLanguage.channel;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -28,9 +30,11 @@ import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.FileUtilities;
 import org.csstudio.saverestore.SaveRestoreService;
+import org.csstudio.saverestore.SnapshotContent;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.Utilities.VTypeComparison;
 import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -230,7 +234,7 @@ public class SnapshotViewerController {
         numberOfSnapshots = 1;
         connectPVs();
         snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
-        return new ArrayList<>(items.values());
+        return filter(items.values(),false);
     }
 
     /**
@@ -274,7 +278,7 @@ public class SnapshotViewerController {
             if (!snapshotSaveableProperty.get()) {
                 snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
             }
-            return new ArrayList<>(items.values());
+            return filter(items.values(),false);
         }
     }
 
@@ -304,9 +308,16 @@ public class SnapshotViewerController {
             newSnapshots.addAll(snapshots);
         }
         newSnapshots.forEach(e -> addSnapshot(e));
-        return new ArrayList<>(items.values());
+        return filter(items.values(),false);
     }
 
+    /**
+     * Set the snapshot under the given index as the base snapshot for this editor. The current base snapshot is set at
+     * the given index.
+     *
+     * @param idx the index of the snapshot to set as base
+     * @return the list of entries
+     */
     public List<TableEntry> setAsBase(int idx) {
         if (idx == 0) {
             throw new IllegalArgumentException("Snapshot already set as base.");
@@ -329,7 +340,7 @@ public class SnapshotViewerController {
             newSnapshots.addAll(snapshots);
         }
         newSnapshots.forEach(e -> addSnapshot(e));
-        return new ArrayList<>(items.values());
+        return filter(items.values(),false);
     }
 
     /**
@@ -364,6 +375,16 @@ public class SnapshotViewerController {
         if (suspend.decrementAndGet() == 0) {
             this.throttle.trigger();
         }
+    }
+
+    /**
+     * Stores the flag whether to show or hide the items where the current and snapshot values are equal.
+     *
+     * @param hideEqualItems true to hide items with equal values or false otherwise
+     * @return the list of filtered entries
+     */
+    public List<TableEntry> setHideEqualItems(boolean hideEqualItems) {
+        return filter(items.values(), hideEqualItems);
     }
 
     /**
@@ -511,6 +532,30 @@ public class SnapshotViewerController {
     }
 
     /**
+     * Open the snapshot from the given file.
+     *
+     * @param file the source file
+     * @return the snapshot as read from file
+     */
+    public Optional<VSnapshot> openFromFile(File file) {
+        try (FileInputStream fis = new FileInputStream(file)){
+            String p = file.getAbsolutePath().replace('\\', '/');
+            int idx = p.indexOf('/');
+            if (idx > -1) {
+                p = p.substring(idx+1);
+            }
+            SnapshotContent sc = FileUtilities.readFromSnapshot(fis);
+            Timestamp snapshotTime = Timestamp.of(sc.date);
+            BeamlineSet set = new BeamlineSet(new Branch("master", "master"), Optional.empty(), p.split("/"), null);
+            Snapshot descriptor = new Snapshot(set, sc.date, "No Comment", "OS");
+            return Optional.of(new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, snapshotTime));
+        } catch (Exception e) {
+            Selector.reportException(e, owner.getSite().getShell());
+            return Optional.empty();
+        }
+    }
+
+    /**
      * Save the snapshot by forwarding it to the {@link DataProvider}. This method should never called on the UI thread.
      *
      * @param snapshot the snapshot to save
@@ -643,11 +688,11 @@ public class SnapshotViewerController {
                     }
                     items.values().forEach(t -> t.readbackNameProperty().set(readbacks.get(t.pvNameProperty().get())));
                     connectPVs();
-                    consumer.accept(new ArrayList<>(items.values()));
+                    consumer.accept(filter(items.values(),false));
                 }));
         } else {
             SaveRestoreService.getInstance().execute("Load readback names",
-                () -> consumer.accept(new ArrayList<>(items.values())));
+                () -> consumer.accept(filter(items.values(),false)));
         }
     }
 
@@ -771,5 +816,28 @@ public class SnapshotViewerController {
                 Selector.reportException(e, owner.getSite().getShell());
             }
         });
+    }
+
+    /**
+     * Filters the values and adds only those where the values are identical to the live values if hide is true or
+     * returns all entries if hide is false.
+     *
+     * @param allEntries the entries to filter
+     * @param hide true if the entries should be filtered or false otherwise
+     * @return filtered list
+     */
+    private static List<TableEntry> filter(Collection<TableEntry> allEntries, boolean hide) {
+        List<TableEntry> entries = new ArrayList<>(allEntries.size());
+        if (hide) {
+            allEntries.forEach(t -> {
+                VTypePair vtp = t.valueProperty().get();
+                if (!Utilities.areValuesEqual(vtp.base,vtp.value)) {
+                    entries.add(t);
+                }
+            });
+        } else {
+            entries.addAll(allEntries);
+        }
+        return entries;
     }
 }
