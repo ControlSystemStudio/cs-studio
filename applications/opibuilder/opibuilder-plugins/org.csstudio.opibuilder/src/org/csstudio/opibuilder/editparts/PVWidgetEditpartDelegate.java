@@ -1,15 +1,21 @@
 package org.csstudio.opibuilder.editparts;
 
+import static org.diirt.datasource.formula.ExpressionLanguage.formula;
+import static org.diirt.util.time.TimeDuration.ofMillis;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.csstudio.java.thread.ExecutionService;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
@@ -23,6 +29,7 @@ import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.BOYPVFactory;
+import org.csstudio.opibuilder.util.BeastAlarmSeverityLevel;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPITimer;
@@ -44,7 +51,15 @@ import org.eclipse.gef.EditPart;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
+import org.diirt.datasource.PV;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.expression.DesiredRateReadWriteExpression;
+import org.diirt.util.time.TimeDuration;
 import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 
 public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
@@ -106,6 +121,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         }
     };
 
+    private static final Logger log = Logger.getLogger("BeastDataSource TESTING");
+    
     private int updateSuppressTime = 1000;
     private String controlPVPropId = null;
 
@@ -115,12 +132,12 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
      * is not useful. Ignore the old pv value will help to reduce memory usage.
      */
     private boolean ignoreOldPVValue =true;
-    private boolean isBackColorAlarmSensitive;
 
+    private boolean isBackColorAlarmSensitive;
     private boolean isBorderAlarmSensitive;
     private boolean isForeColorAlarmSensitive;
     private AlarmSeverity alarmSeverity = AlarmSeverity.NONE;
-
+    
     private Map<String, IPVListener> pvListenerMap = new HashMap<String, IPVListener>();
 
     private Map<String, IPV> pvMap = new HashMap<String, IPV>();
@@ -145,14 +162,24 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
     private boolean pvsHaveBeenStarted = false;
 
+    // determines whether a secondary PV is used for alarm-sensitive behaviour 
+    private boolean isAlarmPVUsedForAlarmSensitivity;
+    // (secondary, alarm) PV on which we listen for Alarm State changes
+    private PV<?, Object> alarmPV = null;
+    // used in color calculation for background and border: enabled, acknowledged
+    private boolean isAlarmEnabled = false;
+    private boolean isAlarmAcknowledged = false;
+
+    public boolean isAlarmPVUsed() {
+    	return isAlarmPVUsedForAlarmSensitivity;
+    }
+    
     /**
      * @param editpart the editpart to be delegated.
      * It must implemented {@link IPVWidgetEditpart}
      */
     public PVWidgetEditpartDelegate(AbstractBaseEditPart editpart) {
         this.editpart = editpart;
-
-
     }
 
     public IPVWidgetModel getWidgetModel() {
@@ -161,34 +188,123 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         return widgetModel;
     }
 
+    private static Executor swtThread(final Display display) {
+        return new Executor() {
+            @Override
+            public void execute(Runnable task) {
+                try {
+                    if (!display.isDisposed())
+                        display.asyncExec(task);
+                    else
+                    	Logger.getLogger("BeastDataSource TESTING").severe("Display is DISPOSED");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+    }
+    
     public void doActivate(){
         saveFigureOKStatus(editpart.getFigure());
         if(editpart.getExecutionMode() == ExecutionMode.RUN_MODE){
-                pvMap.clear();
-                final Map<StringProperty, PVValueProperty> pvPropertyMap = editpart.getWidgetModel().getPVMap();
+            pvMap.clear();
+            final Map<StringProperty, PVValueProperty> pvPropertyMap = editpart.getWidgetModel().getPVMap();
 
-                for(final StringProperty sp : pvPropertyMap.keySet()){
+            for(final StringProperty sp : pvPropertyMap.keySet()){
 
-                    if(sp.getPropertyValue() == null ||
-                            ((String)sp.getPropertyValue()).trim().length() <=0)
-                        continue;
+                if(sp.getPropertyValue() == null ||
+                        ((String)sp.getPropertyValue()).trim().length() <=0)
+                    continue;
 
-                    try {
-                        IPV pv = BOYPVFactory.createPV((String) sp.getPropertyValue(),
-                                isAllValuesBuffered);
-                        pvMap.put(sp.getPropertyID(), pv);
-                        editpart.addToConnectionHandler((String) sp.getPropertyValue(), pv);
-                        WidgetPVListener pvListener = new WidgetPVListener(sp.getPropertyID());
-                        pv.addListener(pvListener);
-                        pvListenerMap.put(sp.getPropertyID(), pvListener);
-                    } catch (Exception e) {
-                        OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                                "Unable to connect to PV:" + (String)sp.getPropertyValue(), e); //$NON-NLS-1$
-                    }
+                try {
+                    IPV pv = BOYPVFactory.createPV((String) sp.getPropertyValue(),
+                            isAllValuesBuffered);
+                    pvMap.put(sp.getPropertyID(), pv);
+                    editpart.addToConnectionHandler((String) sp.getPropertyValue(), pv);
+                    WidgetPVListener pvListener = new WidgetPVListener(sp.getPropertyID());
+                    pv.addListener(pvListener);
+                    pvListenerMap.put(sp.getPropertyID(), pvListener);
+                } catch (Exception e) {
+                    OPIBuilderPlugin.getLogger().log(Level.WARNING,
+                            "Unable to connect to PV:" + (String)sp.getPropertyValue(), e); //$NON-NLS-1$
                 }
             }
+        }
     }
 
+    public boolean acknowledgeAlarm() {
+    	if (alarmPV == null) return false;
+    	
+    	if (!isAlarmAcknowledged)
+    		alarmPV.write("ack");
+    	else
+    		alarmPV.write("unack");
+    	
+    	return true;
+    }
+    
+    private void createAlarmPVReader() {
+    	if (alarmPV != null) alarmPV.close();
+    	
+    	DesiredRateReadWriteExpression<?,Object> expr = formula(getWidgetModel().getAlarmPVName());
+    	alarmPV = PVManager
+        		.readAndWrite(expr)
+        		.timeout(ofMillis(3000))
+                .notifyOn(swtThread(editpart.getViewer().getControl().getDisplay()))
+                .readListener(new PVReaderListener<Object>() {
+					@Override
+                    public void pvChanged(PVReaderEvent<Object> event) {
+                    	log.info("Received new event of type " + event.toString());
+                    	if (event.isExceptionChanged()) {
+                    		Exception e = event.getPvReader().lastException();
+                    		log.severe("Received EXCEPTION: " + e.toString());
+                    		e.printStackTrace();
+                    	}
+
+                    	if (!event.isValueChanged()) return;
+                    	if (!(event.getPvReader().getValue() instanceof VTable)) {
+                    		log.severe("BeastDataSource listener: data is not a VTable");
+                    		return;
+                    	}
+                    	
+                    	AlarmSeverity newSeverity;
+                    	boolean updateAndFireEvent = false, alarmEnabled, alarmAck;
+                    	BeastAlarmSeverityLevel severityLevel, currentSeverityLevel;
+                    	
+                    	VTable allData = (VTable) event.getPvReader().getValue();
+                    	if (allData == null) return;
+                    	
+                    	@SuppressWarnings("unchecked")
+						List<String> data = (List<String>) allData.getColumnData(1);
+
+                    	// TODO: find correct columns instead of using hardcoded indexes
+                    	alarmEnabled = data.get(6).equalsIgnoreCase("true");
+                    	if (!alarmEnabled){
+                    		newSeverity = AlarmSeverity.NONE;
+                    		alarmAck = false;
+                    	} else {
+                    		severityLevel = BeastAlarmSeverityLevel.parse(data.get(1)); 
+                    		currentSeverityLevel = BeastAlarmSeverityLevel.parse(data.get(2));
+//                    		newSeverity = severityLevel.getAlarmSeverity();
+                    		newSeverity = currentSeverityLevel.getAlarmSeverity();
+                    		alarmAck = !severityLevel.isActive();
+                    	}
+                    	
+	                	updateAndFireEvent = (newSeverity != alarmSeverity) || (alarmEnabled != isAlarmEnabled) || (alarmAck != isAlarmAcknowledged);
+
+                    	if (updateAndFireEvent) {
+                    		alarmSeverity = newSeverity;
+                    		isAlarmEnabled = alarmEnabled;
+                        	isAlarmAcknowledged = alarmAck; 
+                    		
+    	                    fireAlarmSeverityChanged(newSeverity, editpart.getFigure());
+//        	                if (alarmSeverity != AlarmSeverity.NONE) Display.getDefault().timerExec(500, () -> alarmPV.write("ack"));
+                    	}
+                	}
+                })
+              .asynchWriteAndMaxReadRate(TimeDuration.ofHertz(100));
+    }
+    
     /**Start all PVs.
      * This should be called as the last step in editpart.activate().
      */
@@ -204,6 +320,15 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                         "Unable to connect to PV:" + pv.getName(), e); //$NON-NLS-1$
             }
         }
+        
+        if (isAlarmPVUsedForAlarmSensitivity && editpart.getExecutionMode() == ExecutionMode.RUN_MODE)
+        {
+            log.info("STARTING AlarmPV " + getWidgetModel().getAlarmPVName());
+//        	Display.getDefault().asyncExec(() -> createAlarmPVReader());
+        	createAlarmPVReader();
+        	// temporary: recreate
+//    		Display.getDefault().timerExec(5000, () -> createAlarmPVReader());
+        }        
     }
 
     public void doDeActivate() {
@@ -212,13 +337,20 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 pv.stop();
             pvsHaveBeenStarted = false;
         }
-            for(String pvPropID : pvListenerMap.keySet()){
-                pvMap.get(pvPropID).removeListener(pvListenerMap.get(pvPropID));
-            }
 
-            pvMap.clear();
-            pvListenerMap.clear();
-            stopPulsing();
+        // disconnect the AlarmPV
+        if (alarmPV != null) {
+        	alarmPV.close();
+        	alarmPV = null;
+        }
+
+        for(String pvPropID : pvListenerMap.keySet()){
+                pvMap.get(pvPropID).removeListener(pvListenerMap.get(pvPropID));
+        }
+
+        pvMap.clear();
+        pvListenerMap.clear();
+        stopPulsing();
     }
 
     public IPV getControlPV(){
@@ -279,6 +411,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         isBackColorAlarmSensitive = getWidgetModel().isBackColorAlarmSensitve();
         isForeColorAlarmSensitive = getWidgetModel().isForeColorAlarmSensitve();
         isAlarmPulsing = getWidgetModel().isAlarmPulsing();
+        isAlarmPVUsedForAlarmSensitivity = getWidgetModel().isAlarmPVEnabled() && (getWidgetModel().getAlarmPVName() != null
+        		&& !getWidgetModel().getAlarmPVName().trim().equals(""));
 
         if(isBorderAlarmSensitive
                 && editpart.getWidgetModel().getBorderStyle()== BorderStyle.NONE){
@@ -344,13 +478,15 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 if (newValue == null || !(newValue instanceof VType))
                     return false;
 
-                AlarmSeverity newSeverity = VTypeHelper.getAlarmSeverity((VType) newValue);
-                if(newSeverity == null)
-                    return false;
-
-                if (newSeverity != alarmSeverity) {
-                    alarmSeverity = newSeverity;
-                    fireAlarmSeverityChanged(newSeverity, figure);
+                if (!isAlarmPVUsedForAlarmSensitivity) {
+	                AlarmSeverity newSeverity = VTypeHelper.getAlarmSeverity((VType) newValue);
+	                if(newSeverity == null)
+	                    return false;
+	
+	                if (newSeverity != alarmSeverity) {
+	                    alarmSeverity = newSeverity;
+	                    fireAlarmSeverityChanged(newSeverity, figure);
+	                }
                 }
                 return true;
             }
@@ -571,29 +707,32 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             return null;
         else {
             Border alarmBorder;
-            switch (alarmSeverity) {
-            case NONE:
-                if(editpart.getWidgetModel().getBorderStyle()== BorderStyle.NONE)
-                    alarmBorder = BORDER_NO_ALARM;
-                else
-                    alarmBorder = BorderFactory.createBorder(
-                            editpart.getWidgetModel().getBorderStyle(),
-                            editpart.getWidgetModel().getBorderWidth(),
-                            editpart.getWidgetModel().getBorderColor(),
-                            editpart.getWidgetModel().getName());
-                break;
-            case MAJOR:
-                alarmBorder = AlarmRepresentationScheme.getMajorBorder(editpart.getWidgetModel().getBorderStyle());
-                break;
-            case MINOR:
-                alarmBorder = AlarmRepresentationScheme.getMinorBorder(editpart.getWidgetModel().getBorderStyle());
-                break;
-            case INVALID:
-            case UNDEFINED:
-            default:
-                alarmBorder = AlarmRepresentationScheme.getInvalidBorder(editpart.getWidgetModel().getBorderStyle());
-                break;
-            }
+            if (isAlarmPVUsedForAlarmSensitivity && !isAlarmEnabled)
+            	alarmBorder = AlarmRepresentationScheme.getDisabledBorder(editpart.getWidgetModel().getBorderStyle());
+            else
+	            switch (alarmSeverity) {
+		            case NONE:
+		                if(editpart.getWidgetModel().getBorderStyle() == BorderStyle.NONE)
+		                    alarmBorder = BORDER_NO_ALARM;
+		                else
+		                    alarmBorder = BorderFactory.createBorder(
+		                            editpart.getWidgetModel().getBorderStyle(),
+		                            editpart.getWidgetModel().getBorderWidth(),
+		                            editpart.getWidgetModel().getBorderColor(),
+		                            editpart.getWidgetModel().getName());
+		                break;
+		            case MAJOR:
+		                alarmBorder = AlarmRepresentationScheme.getMajorBorder(editpart.getWidgetModel().getBorderStyle());
+		                break;
+		            case MINOR:
+		                alarmBorder = AlarmRepresentationScheme.getMinorBorder(editpart.getWidgetModel().getBorderStyle());
+		                break;
+		            case INVALID:
+		            case UNDEFINED:
+		            default:
+		                alarmBorder = AlarmRepresentationScheme.getInvalidBorder(editpart.getWidgetModel().getBorderStyle());
+		                break;
+	            }
 
             return alarmBorder;
         }
@@ -611,9 +750,14 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         if (!isSensitive) {
             return saveColor;
         } else {
-            RGB alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
+            RGB alarmColor;
+            if (isAlarmPVUsedForAlarmSensitivity && !isAlarmEnabled)
+            	alarmColor = AlarmRepresentationScheme.getDisabledColor();
+            else
+            	alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
+            
             if (alarmColor != null) {
-                // Alarm severity is either "Major", "Minor" or "Invalid.
+                // Alarm severity is either "Major", "Minor" or "Invalid".
                 if (isAlarmPulsing &&
                         (alarmSeverity == AlarmSeverity.MINOR || alarmSeverity == AlarmSeverity.MAJOR)) {
                     double alpha = 0.3;

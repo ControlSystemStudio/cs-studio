@@ -248,6 +248,14 @@ public class ArrayModel extends AbstractContainerModel implements IPVWidgetModel
         return getDelegate().getPVName();
     }
 
+    public String getAlarmPVName() {
+		return getDelegate().getAlarmPVName();
+	}
+    
+    public boolean isAlarmPVEnabled() {
+    	return getDelegate().isAlarmPVEnabled();
+    }
+    
     public boolean isAlarmPulsing(){
         return getDelegate().isAlarmPulsing();
     }

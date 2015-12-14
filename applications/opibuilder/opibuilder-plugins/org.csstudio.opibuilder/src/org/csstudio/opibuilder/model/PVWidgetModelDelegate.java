@@ -10,6 +10,7 @@ package org.csstudio.opibuilder.model;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
+import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.UpgradeUtil;
 import org.osgi.framework.Version;
@@ -31,6 +32,9 @@ public class PVWidgetModelDelegate implements IPVWidgetModel{
     public void configureBaseProperties() {
         model.addPVProperty(new PVNameProperty(PROP_PVNAME, "PV Name", WidgetPropertyCategory.Basic,
                 ""), new PVValueProperty(PROP_PVVALUE, null));
+
+        model.addProperty(new StringProperty(PROP_ALARMPV_NAME, "Alarm PV Name", WidgetPropertyCategory.Basic, ""));
+        model.addProperty(new BooleanProperty(PROP_ALARMPV_ENABLED, "Alarm PV Enabled", WidgetPropertyCategory.Behavior, false));
 
         model.addProperty(new BooleanProperty(PROP_BORDER_ALARMSENSITIVE,
                 "Alarm Sensitive", WidgetPropertyCategory.Border, true));
@@ -72,6 +76,14 @@ public class PVWidgetModelDelegate implements IPVWidgetModel{
         return (String)model.getCastedPropertyValue(PROP_PVNAME);
     }
 
+	public String getAlarmPVName() {
+		return (String)model.getCastedPropertyValue(PROP_ALARMPV_NAME);
+	}
+	
+	public boolean isAlarmPVEnabled() {
+		return (Boolean)model.getCastedPropertyValue(PROP_ALARMPV_ENABLED);
+	}
+	
     public void processVersionDifference(Version boyVersionOnFile) {
         if(UpgradeUtil.VERSION_WITH_PVMANAGER.compareTo(boyVersionOnFile)>0){
             model.setPropertyValue(PROP_PVNAME,
