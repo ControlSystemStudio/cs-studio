@@ -39,11 +39,7 @@ public class BeastMessagePayload {
             return pv.getToolTipText();
         }
     }
-    
-    public String isAcknowledged(){
-        return pv.getSeverity().getDisplayName();
-    }
-    
+
     public boolean isActive(){
         return pv.getSeverity().isActive();
     }
