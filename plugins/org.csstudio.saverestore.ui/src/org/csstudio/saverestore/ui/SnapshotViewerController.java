@@ -142,6 +142,7 @@ public class SnapshotViewerController {
     private final SnapshotViewerEditor owner;
 
     private boolean showReadbacks = false;
+    private boolean hideEqualItems = false;
 
     /**
      * Constructs a new controller for the given editor.
@@ -384,7 +385,17 @@ public class SnapshotViewerController {
      * @return the list of filtered entries
      */
     public List<TableEntry> setHideEqualItems(boolean hideEqualItems) {
+        this.hideEqualItems = hideEqualItems;
         return filter(items.values(), hideEqualItems);
+    }
+
+    /**
+     * Returns true if items with equal live and snapshot values are currently hidden or false is shown.
+     *
+     * @return true if equal items are hidden or false otherwise.
+     */
+    public boolean isHideEqualItems() {
+        return hideEqualItems;
     }
 
     /**
@@ -688,11 +699,11 @@ public class SnapshotViewerController {
                     }
                     items.values().forEach(t -> t.readbackNameProperty().set(readbacks.get(t.pvNameProperty().get())));
                     connectPVs();
-                    consumer.accept(filter(items.values(),false));
+                    consumer.accept(filter(items.values(),hideEqualItems));
                 }));
         } else {
             SaveRestoreService.getInstance().execute("Load readback names",
-                () -> consumer.accept(filter(items.values(),false)));
+                () -> consumer.accept(filter(items.values(),hideEqualItems)));
         }
     }
 
@@ -734,7 +745,7 @@ public class SnapshotViewerController {
      * @param consumer the consumer that is notifier when the loading completes and receives the created table entry
      */
     public void addPVFromArchive(final Consumer<TableEntry> consumer) {
-        // TODO this ie temporary - it will be handled by diirt when archive source is ready
+        // TODO this is temporary - it will be handled by diirt when archive source is ready
         ArchiveDataSource[] sources = Preferences.getArchives();
         if (sources.length == 0) {
             FXMessageDialog.openWarning(owner.getSite().getShell(), "Add Archived PV",
@@ -830,8 +841,7 @@ public class SnapshotViewerController {
         List<TableEntry> entries = new ArrayList<>(allEntries.size());
         if (hide) {
             allEntries.forEach(t -> {
-                VTypePair vtp = t.valueProperty().get();
-                if (!Utilities.areValuesEqual(vtp.base,vtp.value)) {
+                if (!t.liveStoredEqualProperty().get()) {
                     entries.add(t);
                 }
             });

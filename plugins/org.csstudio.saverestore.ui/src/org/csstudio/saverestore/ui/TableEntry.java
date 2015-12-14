@@ -3,6 +3,7 @@ package org.csstudio.saverestore.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.util.time.Timestamp;
@@ -14,11 +15,13 @@ import org.diirt.vtype.VType;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.ReadOnlyBooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.beans.value.ChangeListener;
 
 /**
  *
@@ -31,20 +34,52 @@ import javafx.beans.property.StringProperty;
 public class TableEntry {
 
     private IntegerProperty id = new SimpleIntegerProperty(this, "id");
-    private BooleanProperty selected = new SimpleBooleanProperty(this, "selected", true);
+    private BooleanProperty selected = new SimpleBooleanProperty(this, "selected", true) {
+        private boolean listenerSet = false;
+        @Override
+        public void addListener(ChangeListener<? super Boolean> listener) {
+            if (!listenerSet) {
+                listenerSet = true;
+                super.addListener(listener);
+            }
+        };
+    };
     private StringProperty pvName = new SimpleStringProperty(this, "pvName");
     private ObjectProperty<Timestamp> timestamp = new SimpleObjectProperty<>(this, "timestamp");
     private StringProperty status = new SimpleStringProperty(this, "status", "OK");
     private ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this, "severity", AlarmSeverity.NONE);
     private ObjectProperty<VTypePair> value = new SimpleObjectProperty<>(this, "value",
         new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE));
-    private ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue");
+    private ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue", VNoData.INSTANCE);
     private List<ObjectProperty<VTypePair>> compareValues = new ArrayList<>();
     private ObjectProperty<VTypePair> readback = new SimpleObjectProperty<>(this, "readback",
         new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE));
     private StringProperty readbackName = new SimpleStringProperty(this, "readbackName");
+    private BooleanProperty liveStoredEqual = new SimpleBooleanProperty(this, "liveStoredEqual", true) {
+        private boolean listenerSet = false;
+        @Override
+        public void addListener(ChangeListener<? super Boolean> listener) {
+            if (!listenerSet) {
+                listenerSet = true;
+                super.addListener(listener);
+            }
+        };
+    };
 
     /**
+     * Returns the property that describes whether the live and stored values are identical. This property can only have
+     * one listener.
+     *
+     * @return the property describing if live and stored value are identical (in value terms only)
+     */
+    public ReadOnlyBooleanProperty liveStoredEqualProperty() {
+        return liveStoredEqual;
+    }
+
+    /**
+     * Returns the property that describes whether the property is selected or not. This property can only have one
+     * listener.
+     *
      * @return the property describing if the entry is selected or not
      */
     public BooleanProperty selectedProperty() {
@@ -147,10 +182,11 @@ public class TableEntry {
             } else {
                 timestamp.set(Timestamp.now());
             }
-            valueProperty().set(new VTypePair(liveValue.get(), val));
+            value.set(new VTypePair(liveValue.get(), val));
             for (ObjectProperty<VTypePair> o : compareValues) {
                 o.set(new VTypePair(val, o.get().value));
             }
+            liveStoredEqual.set(Utilities.areValuesEqual(liveValue.get(), val));
         } else {
             for (int i = compareValues.size(); i < index; i++) {
                 compareValues.add(new SimpleObjectProperty<>(this, "CompareValue" + i));
@@ -178,6 +214,8 @@ public class TableEntry {
     public void setLiveValue(VType val) {
         liveValue.set(val);
         readback.set(new VTypePair(val, readback.get().value));
-        value.set(new VTypePair(val, value.get().value));
+        VType stored = value.get().value;
+        value.set(new VTypePair(val, stored));
+        liveStoredEqual.set(Utilities.areValuesEqual(val, stored));
     }
 }

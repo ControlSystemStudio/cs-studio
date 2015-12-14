@@ -560,29 +560,16 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             separator3, openSnapshotFromFileButton, saveSnapshotToFileButton, exportButton);
 
         HBox rightToolbar = new HBox(5);
-        Button hideEqualItemsButton = new Button("",
+        ToggleButton hideEqualItemsButton = new ToggleButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/filter_ps.png"))));
-        hideEqualItemsButton.setTooltip(new Tooltip("Hide items where snapshot value equals current value"));
-        hideEqualItemsButton.setOnAction(e -> {
+        hideEqualItemsButton.setTooltip(new Tooltip("Hide/Show items where snapshot value equals current value"));
+        hideEqualItemsButton.selectedProperty().addListener((a, o, n) -> {
             SaveRestoreService.getInstance().execute("Filter items", () -> {
-                final int num = controller.getNumberOfSnapshots();
-                final boolean show = controller.isShowReadbacks();
-                final List<TableEntry> entries = controller.setHideEqualItems(true);
-                Platform.runLater(() -> createTable(entries, num, show));
+                final List<TableEntry> entries = controller.setHideEqualItems(n);
+                Platform.runLater(() -> table.getItems().setAll(entries));
             });
         });
-        Button showEqualItemsButton = new Button("",
-            new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/flatLayout.png"))));
-        showEqualItemsButton.setTooltip(new Tooltip("Show all items"));
-        showEqualItemsButton.setOnAction(e -> {
-            SaveRestoreService.getInstance().execute("Filter items", () -> {
-                final List<TableEntry> entries = controller.setHideEqualItems(false);
-                Platform.runLater(() -> {
-                    table.getItems().setAll(entries);
-                });
-            });
-        });
-        rightToolbar.getChildren().addAll(showEqualItemsButton,hideEqualItemsButton);
+        rightToolbar.getChildren().addAll(hideEqualItemsButton);
         HBox toolbar = new HBox(5);
         HBox.setHgrow(leftToolbar, Priority.ALWAYS);
         HBox.setHgrow(rightToolbar, Priority.NEVER);
@@ -943,10 +930,26 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         });
         table.setOnMouseClicked(e -> clickedColumn = table.getSelectionModel().getSelectedCells().get(0).getColumn());
         table.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
-        entries.forEach(e -> e.selectedProperty()
-            .addListener((a, o, n) -> selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false)));
-        contentPane.setCenter(table);
         table.getItems().setAll(entries);
+        entries.forEach(e -> {
+            e.selectedProperty()
+                .addListener((a, o, n) -> {
+                    selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false);
+                });
+            e.liveStoredEqualProperty().addListener((a,o,n)->{
+                if (controller.isHideEqualItems()) {
+                    if (n) {
+                        table.getItems().remove(e);
+                    } else {
+                        table.getItems().add(e);
+                    }
+                }
+            });
+            if (controller.isHideEqualItems() && e.liveStoredEqualProperty().get()) {
+                table.getItems().remove(e);
+            }
+        });
+        contentPane.setCenter(table);
     }
 
     /**
