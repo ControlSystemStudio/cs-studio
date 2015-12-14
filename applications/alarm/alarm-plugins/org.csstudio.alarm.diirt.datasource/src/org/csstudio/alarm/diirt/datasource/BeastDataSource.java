@@ -61,7 +61,7 @@ public class BeastDataSource extends DataSource {
     private Map<String, List<Consumer>> map = Collections.synchronizedMap(new HashMap<String, List<Consumer>>());
 
     private Executor executor = Executors.newScheduledThreadPool(4);
-    
+
 //    private final Map<String, AlarmClientModel> configModels = Collections.synchronizedMap(new HashMap<String, AlarmClientModel>());
 
     static {
@@ -73,7 +73,7 @@ public class BeastDataSource extends DataSource {
         super(true);
 
         typeSupport = new BeastTypeSupport();
-        
+
         try {
 
             // Create an instance to the AlarmClientModel
@@ -105,12 +105,20 @@ public class BeastDataSource extends DataSource {
                                 // TODO Auto-generated method stub
                             }
 
+                            @SuppressWarnings("rawtypes")
                             @Override
                             public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
                                 log.fine("newAlarmState");
                                 if (pv != null) {
                                     log.fine(pv.getPathName());
                                     List<Consumer> handlers = map.get(pv.getPathName());
+                                    if (handlers != null) {
+                                        for (Consumer consumer : handlers) {
+                                            consumer.accept(pv);
+                                        }
+                                    }
+                                    // listeners that registered with only the PVName as the channelName instead of the full path
+                                    handlers = map.get(pv.getName());
                                     if (handlers != null) {
                                         for (Consumer consumer : handlers) {
                                             consumer.accept(pv);
@@ -124,7 +132,7 @@ public class BeastDataSource extends DataSource {
             e.printStackTrace();
         }
     }
-    
+
     private AlarmClientModel initialize(BeastDataSourceConfiguration configuration) {
         AlarmClientModel alarmModel;
         try {
@@ -142,7 +150,7 @@ public class BeastDataSource extends DataSource {
     @Override
     protected ChannelHandler createChannel(String channelName) {
         return new BeastChannelHandler(channelName, this);
-        
+
     }
 
     @Override
@@ -204,7 +212,7 @@ public class BeastDataSource extends DataSource {
             return false;
         }
     }
-    
+
     protected void acknowledge(String channelName, boolean acknowledge) throws Exception{
         getState(channelName).acknowledge(acknowledge);
     }
@@ -214,7 +222,7 @@ public class BeastDataSource extends DataSource {
         if(item != null && item instanceof AlarmTreePV){
             model.enable((AlarmTreePV) item, enable);
         }else{
-           // TODO implement the enable logic for nodes 
+           // TODO implement the enable logic for nodes
         }
     }
 }

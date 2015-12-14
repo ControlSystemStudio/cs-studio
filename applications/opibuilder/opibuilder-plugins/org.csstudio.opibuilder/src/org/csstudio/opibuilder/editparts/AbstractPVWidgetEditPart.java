@@ -203,4 +203,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     public void performBeastBlink() {
         delegate.performBeastBlink();
     }
+
+    @Override
+    public void resetBeastBlink() {
+        delegate.resetBeastBlink();
+    }
 }

@@ -156,6 +156,11 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
         delegate.performBeastBlink();
     }
 
+    @Override
+    public void resetBeastBlink() {
+        delegate.resetBeastBlink();
+    }
+
     protected void initValueArray() {
         int length = getWidgetModel().getArrayLength();
         switch (getWidgetModel().getDataType()) {
