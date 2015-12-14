@@ -21,6 +21,7 @@ import java.util.logging.Logger;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
+import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.diirt.datasource.ChannelHandler;
@@ -106,6 +107,23 @@ public class BeastDataSource extends DataSource {
                                     if (pvHandlers != null) {
                                         for (Consumer consumer : pvHandlers) {
                                             consumer.accept(pv);
+                                        }
+                                    }
+                                    // Notify all parent nodes if parent changed
+                                    if(parent_changed){
+                                        AlarmTreeItem parent = pv.getParent();
+                                        while (parent != null) {
+                                            List<Consumer> parentHandlers = map.get(parent.getPathName().substring(1));
+                                            if (parentHandlers != null) {
+                                                for (Consumer consumer : parentHandlers) {
+                                                    try {
+                                                        consumer.accept(getState(parent.getPathName()));
+                                                    } catch (Exception e) {
+                                                        
+                                                    }
+                                                }
+                                            }
+                                            parent = parent.getParent();
                                         }
                                     }
                                 }
