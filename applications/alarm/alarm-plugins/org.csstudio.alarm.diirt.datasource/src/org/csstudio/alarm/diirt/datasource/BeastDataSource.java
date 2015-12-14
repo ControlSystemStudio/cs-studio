@@ -4,40 +4,27 @@
  */
 package org.csstudio.alarm.diirt.datasource;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
-import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.diirt.datasource.ChannelHandler;
-import org.diirt.datasource.ChannelReadRecipe;
-import org.diirt.datasource.ChannelWriteRecipe;
 import org.diirt.datasource.DataSource;
-import org.diirt.datasource.MultiplexedChannelHandler;
-import org.diirt.datasource.ReadRecipe;
-import org.diirt.datasource.WriteRecipe;
-import org.diirt.datasource.util.FunctionParser;
 import org.diirt.datasource.vtype.DataTypeSupport;
 
 import com.thoughtworks.xstream.InitializationException;
@@ -61,8 +48,6 @@ public class BeastDataSource extends DataSource {
     private Map<String, List<Consumer>> map = Collections.synchronizedMap(new HashMap<String, List<Consumer>>());
 
     private Executor executor = Executors.newScheduledThreadPool(4);
-    
-//    private final Map<String, AlarmClientModel> configModels = Collections.synchronizedMap(new HashMap<String, AlarmClientModel>());
 
     static {
         // Install type support for the types it generates.
@@ -105,14 +90,21 @@ public class BeastDataSource extends DataSource {
                                 // TODO Auto-generated method stub
                             }
 
+                            @SuppressWarnings("rawtypes")
                             @Override
                             public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
                                 log.fine("newAlarmState");
                                 if (pv != null) {
                                     log.fine(pv.getPathName());
-                                    List<Consumer> handlers = map.get(pv.getPathName());
-                                    if (handlers != null) {
-                                        for (Consumer consumer : handlers) {
+                                    List<Consumer> pathHandlers = map.get(pv.getPathName().substring(1));
+                                    if (pathHandlers != null) {
+                                        for (Consumer consumer : pathHandlers) {
+                                            consumer.accept(pv);
+                                        }
+                                    }
+                                    List<Consumer> pvHandlers = map.get(pv.getName());
+                                    if (pvHandlers != null) {
+                                        for (Consumer consumer : pvHandlers) {
                                             consumer.accept(pv);
                                         }
                                     }
@@ -124,7 +116,7 @@ public class BeastDataSource extends DataSource {
             e.printStackTrace();
         }
     }
-    
+
     private AlarmClientModel initialize(BeastDataSourceConfiguration configuration) {
         AlarmClientModel alarmModel;
         try {
