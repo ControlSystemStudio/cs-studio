@@ -417,7 +417,7 @@ public class GUI extends Composite implements AlarmClientModelListener
             // in response to filter changes
             final ComboHistoryHelper filter_history = new ComboHistoryHelper(Activator.getDefault().getDialogSettings(),
                     "FILTER", filter) //$NON-NLS-1$
-            {
+                    {
                 @Override
                 public void itemSelected(final String selection)
                 {
@@ -431,23 +431,23 @@ public class GUI extends Composite implements AlarmClientModelListener
                         selectFilteredPVs(pattern, acknowledged_table_viewer);
                     }
                 }
-            };
-            filter_history.loadSettings();
+                    };
+                    filter_history.loadSettings();
 
-            // Clear filter, un-select all items
-            unselect.addSelectionListener(new SelectionAdapter()
-            {
-                @Override
-                public void widgetSelected(SelectionEvent e)
-                {
-                    filter.setText(""); //$NON-NLS-1$
-                    active_table_viewer.setSelection(null, true);
-                    if (separate_tables)
+                    // Clear filter, un-select all items
+                    unselect.addSelectionListener(new SelectionAdapter()
                     {
-                        acknowledged_table_viewer.setSelection(null, true);
-                    }
-                }
-            });
+                        @Override
+                        public void widgetSelected(SelectionEvent e)
+                        {
+                            filter.setText(""); //$NON-NLS-1$
+                            active_table_viewer.setSelection(null, true);
+                            if (separate_tables)
+                            {
+                                acknowledged_table_viewer.setSelection(null, true);
+                            }
+                        }
+                    });
         }
         gui_update.start();
         blink();
@@ -639,7 +639,7 @@ public class GUI extends Composite implements AlarmClientModelListener
         if (show_header) {
             current_alarms = new Label(box, SWT.NONE);
             current_alarms.setText(NLS.bind(Messages.CurrentAlarmsFmt, new Object[]
-            { ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER }));
+                    { ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER }));
             current_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false));
 
             error_message = new Label(box, SWT.NONE);
@@ -662,7 +662,7 @@ public class GUI extends Composite implements AlarmClientModelListener
             {
                 acknowledged_alarms = new Label(box, SWT.NONE);
                 acknowledged_alarms.setText(NLS.bind(Messages.AcknowledgedAlarmsFmt, new Object[]
-                { ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER }));
+                        { ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER, ALARM_COUNT_PLACEHOLDER }));
                 acknowledged_alarms.setLayoutData(new GridData(SWT.FILL,SWT.CENTER,true,false,5,1));
             }
         }
@@ -960,7 +960,7 @@ public class GUI extends Composite implements AlarmClientModelListener
                 text = NLS.bind(Messages.CurrentAlarmsFmtAll, filteredAlarms.length);
             else
                 text = NLS.bind(Messages.CurrentAlarmsFmt, new Object[]
-                            { filteredAlarms.length, numberOfRawAlarms, filter_item_parent.getPathName() });
+                        { filteredAlarms.length, numberOfRawAlarms, filter_item_parent.getPathName() });
             current_alarms.setText(text);
             current_alarms.setToolTipText(text);
 
@@ -976,7 +976,7 @@ public class GUI extends Composite implements AlarmClientModelListener
             else
                 text = NLS.bind(Messages.AcknowledgedAlarmsFmt, new Object[]
                         { filteredAcknowledgedAlarms.length, numberOfRawAcknowledgedAlarms,
-                          filter_item_parent.getPathName() });
+                                filter_item_parent.getPathName() });
             acknowledged_alarms.setText(text);
             acknowledged_alarms.setToolTipText(text);
 

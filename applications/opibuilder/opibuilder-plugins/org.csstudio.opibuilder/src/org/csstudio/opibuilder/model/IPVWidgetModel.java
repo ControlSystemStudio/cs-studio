@@ -47,7 +47,6 @@ public interface IPVWidgetModel {
     public boolean isBackColorAlarmSensitve();
 
     public boolean isAlarmPulsing();
-
+    
     public String getPVName();
-
 }

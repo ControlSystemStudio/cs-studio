@@ -156,6 +156,30 @@
          </visibility>
       </objectContribution>
       <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.acknowledgeAlarm"
+            objectClass="org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart">
+         <action
+               class="org.csstudio.opibuilder.actions.AcknowledgeAlarmAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.acknowledgeAlarmAction"
+               label="Acknowledge/Unacknowledge Alarm"
+               tooltip="If the widget is connected to a BEAST AlarmPV, acknowledges/unacknowledges this PV's alarm">
+         </action>
+         <visibility>
+            <and>
+               <objectState
+                     name="executionMode"
+                     value="RUN_MODE">
+               </objectState>
+               <objectState
+                     name="beastAlarmPV"
+                     value="true">
+               </objectState>
+            </and>
+         </visibility>
+      </objectContribution>      
+      <objectContribution
             adaptable="true"
             id="org.csstudio.opibuilder.CSSpopupMenu"
             objectClass="org.csstudio.platform.model.IProcessVariable">
