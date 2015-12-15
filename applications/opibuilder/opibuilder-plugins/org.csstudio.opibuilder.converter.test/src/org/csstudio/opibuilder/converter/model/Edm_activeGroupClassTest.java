@@ -57,7 +57,7 @@ public class Edm_activeGroupClassTest {
 
 
         assertEquals(3, subGroup0.getSubEntityCount());
-        assertEquals(2, subGroup0.getWidgets().size());
+        assertEquals(3, subGroup0.getWidgets().size());
         {
             entity = subGroup0.getSubEntity(0);
             assertTrue(entity instanceof Edm_activeXTextClass);
@@ -108,7 +108,7 @@ public class Edm_activeGroupClassTest {
             assertTrue(subGroup01.getAttribute("h") instanceof EdmInt);
 
             assertEquals(4, subGroup01.getSubEntityCount());
-            assertEquals(3, subGroup01.getWidgets().size());
+            assertEquals(4, subGroup01.getWidgets().size());
             {
                 entity = subGroup01.getSubEntity(0);
                 assertTrue(entity instanceof Edm_activeXTextClass);
@@ -159,7 +159,7 @@ public class Edm_activeGroupClassTest {
                 assertTrue(subGroup011.getAttribute("h") instanceof EdmInt);
 
                 assertEquals(2, subGroup011.getSubEntityCount());
-                assertEquals(1, subGroup011.getWidgets().size());
+                assertEquals(2, subGroup011.getWidgets().size());
                 {
                     entity = subGroup011.getSubEntity(0);
                     assertTrue(entity instanceof Edm_activeXTextClass);
@@ -227,7 +227,7 @@ public class Edm_activeGroupClassTest {
                 assertTrue(subGroup012.getAttribute("h") instanceof EdmInt);
 
                 assertEquals(2, subGroup012.getSubEntityCount());
-                assertEquals(1, subGroup012.getWidgets().size());
+                assertEquals(2, subGroup012.getWidgets().size());
                 {
                     entity = subGroup012.getSubEntity(0);
                     assertTrue(entity instanceof Edm_activeXTextClass);
@@ -329,7 +329,7 @@ public class Edm_activeGroupClassTest {
         assertTrue(subGroup1.getAttribute("h") instanceof EdmInt);
 
         assertEquals(2, subGroup1.getSubEntityCount());
-        assertEquals(1, subGroup1.getWidgets().size());
+        assertEquals(2, subGroup1.getWidgets().size());
         {
             entity = subGroup1.getSubEntity(0);
             assertTrue(entity instanceof Edm_activeXTextClass);

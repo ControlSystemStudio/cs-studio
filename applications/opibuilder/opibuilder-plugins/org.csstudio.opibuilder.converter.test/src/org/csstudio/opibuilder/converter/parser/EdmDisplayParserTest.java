@@ -258,8 +258,8 @@ public class EdmDisplayParserTest {
         assertEquals("More", subE.getAttribute("buttonLabel").getValue(0));
         assertEquals("4", subE.getAttribute("numPvs").getValue(0));
         assertEquals("1", subE.getAttribute("numDsps").getValue(0));
-        assertEquals("0 sin_motorMore.edl", subE.getAttribute("displayFileName").getValue(0));
-        assertEquals("0 DEVICE=$(DEVICE),MRN=$(MRN)", subE.getAttribute("symbols").getValue(0));
+        assertEquals("0 \"sin_motorMore.edl\"", subE.getAttribute("displayFileName").getValue(0));
+        assertEquals("0 \"DEVICE=$(DEVICE),MRN=$(MRN)\"", subE.getAttribute("symbols").getValue(0));
 
         subE = p.getRoot().getSubEntity(1);
         assertEquals("menuMuxClass", subE.getType());
@@ -278,23 +278,23 @@ public class EdmDisplayParserTest {
         assertEquals("$(INITSTATE)", subE.getAttribute("initialState").getValue(0));
         assertEquals("8", subE.getAttribute("numItems").getValue(0));
         assertEquals("val_count", 8, subE.getAttribute("symbolTag").getValueCount());
-        assertEquals("0 MOTOR 1", subE.getAttribute("symbolTag").getValue(0));
-        assertEquals("1 MOTOR 2", subE.getAttribute("symbolTag").getValue(1));
-        assertEquals("2 MOTOR 3", subE.getAttribute("symbolTag").getValue(2));
-        assertEquals("3 MOTOR 4", subE.getAttribute("symbolTag").getValue(3));
-        assertEquals("4 MOTOR 5", subE.getAttribute("symbolTag").getValue(4));
-        assertEquals("5 MOTOR 6", subE.getAttribute("symbolTag").getValue(5));
-        assertEquals("6 MOTOR 7", subE.getAttribute("symbolTag").getValue(6));
-        assertEquals("7 MOTOR 8", subE.getAttribute("symbolTag").getValue(7));
+        assertEquals("0 \"MOTOR 1\"", subE.getAttribute("symbolTag").getValue(0));
+        assertEquals("1 \"MOTOR 2\"", subE.getAttribute("symbolTag").getValue(1));
+        assertEquals("2 \"MOTOR 3\"", subE.getAttribute("symbolTag").getValue(2));
+        assertEquals("3 \"MOTOR 4\"", subE.getAttribute("symbolTag").getValue(3));
+        assertEquals("4 \"MOTOR 5\"", subE.getAttribute("symbolTag").getValue(4));
+        assertEquals("5 \"MOTOR 6\"", subE.getAttribute("symbolTag").getValue(5));
+        assertEquals("6 \"MOTOR 7\"", subE.getAttribute("symbolTag").getValue(6));
+        assertEquals("7 \"MOTOR 8\"", subE.getAttribute("symbolTag").getValue(7));
         assertEquals("val_count", 8, subE.getAttribute("symbol0").getValueCount());
-        assertEquals("0 MRN", subE.getAttribute("symbol0").getValue(0));
-        assertEquals("1 MRN", subE.getAttribute("symbol0").getValue(1));
-        assertEquals("2 MRN", subE.getAttribute("symbol0").getValue(2));
-        assertEquals("3 MRN", subE.getAttribute("symbol0").getValue(3));
-        assertEquals("4 MRN", subE.getAttribute("symbol0").getValue(4));
-        assertEquals("5 MRN", subE.getAttribute("symbol0").getValue(5));
-        assertEquals("6 MRN", subE.getAttribute("symbol0").getValue(6));
-        assertEquals("7 MRN", subE.getAttribute("symbol0").getValue(7));
+        assertEquals("0 \"MRN\"", subE.getAttribute("symbol0").getValue(0));
+        assertEquals("1 \"MRN\"", subE.getAttribute("symbol0").getValue(1));
+        assertEquals("2 \"MRN\"", subE.getAttribute("symbol0").getValue(2));
+        assertEquals("3 \"MRN\"", subE.getAttribute("symbol0").getValue(3));
+        assertEquals("4 \"MRN\"", subE.getAttribute("symbol0").getValue(4));
+        assertEquals("5 \"MRN\"", subE.getAttribute("symbol0").getValue(5));
+        assertEquals("6 \"MRN\"", subE.getAttribute("symbol0").getValue(6));
+        assertEquals("7 \"MRN\"", subE.getAttribute("symbol0").getValue(7));
     }
 
     @Test

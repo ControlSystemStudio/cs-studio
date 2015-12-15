@@ -22,7 +22,6 @@ public class EdmDisplayTest {
         System.setProperty("edm2xml.colorsFile", EdmConverterTest.COLOR_LIST_FILE);
 
         String edlFile = EdmConverterTest.RESOURCES_LOCATION + "EDMDisplayParser_example.edl";
-        //String edlFile = "test/LLRF_AUTO.edl";
         EdmModel.getInstance();
         EdmDisplay d = EdmModel.getDisplay(edlFile);
 
@@ -82,7 +81,8 @@ public class EdmDisplayTest {
         assertEquals(true, d.isDisableScroll());
         assertTrue(d.getAttribute("showGrid") instanceof EdmBoolean);
 
-        assertEquals(5, d.getWidgets().size());
+        // Seven plus one group.
+        assertEquals(8, d.getWidgets().size());
 
         Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getWidgets().get(0);
 
@@ -152,7 +152,7 @@ public class EdmDisplayTest {
         assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
 
-        Edm_activeXTextClass t = (Edm_activeXTextClass)d.getWidgets().get(3);
+        Edm_activeXTextClass t = (Edm_activeXTextClass)d.getWidgets().get(6);
 
         assertEquals(4, t.getMajor());
         assertTrue(t.getAttribute("major") instanceof EdmInt);
@@ -182,9 +182,9 @@ public class EdmDisplayTest {
         assertEquals(true, t.isAutoSize());
         assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
-        assertTrue(d.getWidgets().get(4) instanceof Edm_activeGroupClass);
+        assertTrue(d.getWidgets().get(7) instanceof Edm_activeGroupClass);
         {
-            t = (Edm_activeXTextClass)d.getWidgets().get(4).getSubEntity(0);
+            t = (Edm_activeXTextClass)d.getWidgets().get(7).getSubEntity(0);
 
             assertEquals(4, t.getMajor());
             assertTrue(t.getAttribute("major") instanceof EdmInt);
@@ -275,8 +275,8 @@ public class EdmDisplayTest {
         assertEquals(true, d.isDisableScroll());
         assertTrue(d.getAttribute("showGrid") instanceof EdmBoolean);
 
-        assertEquals(4, d.getWidgets().size());
-
+        // Seven widgets plus a group MINUS incorrectly-formed rectangle.
+        assertEquals(7, d.getWidgets().size());
 
         Edm_activeRectangleClass r = (Edm_activeRectangleClass)d.getWidgets().get(1);
         assertEquals(4, r.getMajor());
@@ -298,7 +298,7 @@ public class EdmDisplayTest {
         EdmComparatorTest.isColorEqual(r.getFillColor(), new EdmColor(0));
         assertTrue(r.getAttribute("fillColor") instanceof EdmColor);
 
-        Edm_activeXTextClass t = (Edm_activeXTextClass)d.getWidgets().get(2);
+        Edm_activeXTextClass t = (Edm_activeXTextClass)d.getWidgets().get(5);
         assertEquals(4, t.getMajor());
         assertTrue(t.getAttribute("major") instanceof EdmInt);
         assertEquals(1, t.getMinor());
@@ -324,9 +324,9 @@ public class EdmDisplayTest {
         assertEquals(true, t.isAutoSize());
         assertTrue(t.getAttribute("autoSize") instanceof EdmBoolean);
 
-        assertTrue(d.getWidgets().get(3) instanceof Edm_activeGroupClass);
+        assertTrue(d.getWidgets().get(6) instanceof Edm_activeGroupClass);
         {
-            t = (Edm_activeXTextClass)d.getWidgets().get(3).getSubEntity(0);
+            t = (Edm_activeXTextClass)d.getWidgets().get(6).getSubEntity(0);
 
             assertEquals(4, t.getMajor());
             assertTrue(t.getAttribute("major") instanceof EdmInt);
