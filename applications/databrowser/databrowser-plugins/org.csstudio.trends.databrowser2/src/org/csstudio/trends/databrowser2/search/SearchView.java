@@ -318,7 +318,7 @@ public class SearchView extends ViewPart
                 {
                     handlerService.executeCommand("org.csstudio.trends.databrowser.OpenDataBrowserPopup", null);
                 } catch (CommandException ex) {
-                    Activator.getLogger().log(Level.WARNING, "Failed to open data browser", this); //$NON-NLS-1$
+                    Activator.getLogger().log(Level.WARNING, "Failed to open data browser", ex); //$NON-NLS-1$
                 }
             }
         });
