@@ -25,7 +25,7 @@ gridSize 5
 disableScroll
 endScreenProperties
 
-
+# Incorrectly-formed rectangle ignored by robust parsing.
 # (Rectangle)
 object activeRectangleClass
 beginObjectProperties
