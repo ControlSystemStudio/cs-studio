@@ -40,8 +40,7 @@ public class SendEMailAction extends AbstractSendEMailAction
     {
         try
         {
-            return ResourceUtil.getScreenshotFile(
-                    (GraphicalViewer) opiRuntime.getAdapter(GraphicalViewer.class));
+            return ResourceUtil.getScreenshotFile(opiRuntime.getAdapter(GraphicalViewer.class));
         }
         catch (Exception ex)
         {

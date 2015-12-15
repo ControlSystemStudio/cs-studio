@@ -35,7 +35,7 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
             final String defaultDiirtConfig = new URL(instanceLoc.getURL(),"diirt").toURI().getPath();
 
             IPreferencesService prefs = Platform.getPreferencesService();
-            String diirtHome = getSubsitutedPath(prefs.getString("org.csstudio.diirt.util.preferences", "diirt.home", defaultDiirtConfig, null));
+            String diirtHome = getSubstitutedPath(prefs.getString("org.csstudio.diirt.util.preferences", "diirt.home", defaultDiirtConfig, null));
             log.config("Setting Diirt configuration folder to :" + diirtHome);
             System.setProperty("diirt.home", diirtHome);
         } catch (Exception e) {
@@ -89,15 +89,14 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
      * @throws MalformedURLException
      * @throws IOException
      */
-    private String getSubsitutedPath(String path) throws MalformedURLException, IOException{
-        if(path != null && !path.isEmpty()){
-            if(path.startsWith(PLATFORM_URI_PREFIX)){
+    static String getSubstitutedPath(String path) throws MalformedURLException, IOException {
+        if(path != null && !path.isEmpty()) {
+            if(path.startsWith(PLATFORM_URI_PREFIX)) {
                 return FileLocator.resolve(new URL(path)).getPath().toString();
-            }
-            else{
+            } else {
                 return path;
             }
-        } else{
+        } else {
             return "root";
         }
     }

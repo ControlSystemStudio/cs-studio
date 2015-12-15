@@ -14,10 +14,10 @@ The Auto-Complete tool helps user to find data using defined providers and
 displays choices when the user starts typing.
 </p>
 <p>
-If there is no implementation for data lookup, the user interface simply remembers values that were entered before. 
+If there is no implementation for data lookup, the user interface simply remembers values that were entered before.
 </p>
 <p>
-If there is a data lookup implementation available, whenever a value need to be entered, CSS offers assistance by listing possible choices. 
+If there is a data lookup implementation available, whenever a value need to be entered, CSS offers assistance by listing possible choices.
 When typing "T" in a PV auto-completed field for instance, the 10 first PV names starting by T will be displayed with an indicator of xxx matching items by provider.
 It allows wildcards * and ?.
 </p>
@@ -63,7 +63,7 @@ Auto-Complete also provides help for formula, sim, sys and loc data sources if t
 </p>
 
 <p>
-Auto-Complete completion is done on cursor position which means that only the text before the cursor will be sent to the auto-complete service. 
+Auto-Complete completion is done on cursor position which means that only the text before the cursor will be sent to the auto-complete service.
 The text after the cursor remains unchanged.
 <center>
   <img src="ac_cursor.png"/>
@@ -72,9 +72,9 @@ The text after the cursor remains unchanged.
 
 <p>
 An assistance is displayed via a pop-up which content and styling are provided by providers.
-The provider can set a list of tooltip data in the <code>AutoCompleteResult</code>. 
+The provider can set a list of tooltip data in the <code>AutoCompleteResult</code>.
 These ones are displayed as soon as the provider ends processing.
-Another way is to set this list in the Proposal itself. 
+Another way is to set this list in the Proposal itself.
 This way, they are displayed when the Proposal is accepted.
 This feature allows providers which receive an already parsed content to assist the user with a styled text.
 <center>
@@ -101,7 +101,7 @@ Some special characters are allowed:
 
 <h2>Preferences</h2>
 <p>
-Each auto-completed field comes with a type. 
+Each auto-completed field comes with a type.
 The type allows users to define a specific behavior for auto-completed fields.
 Each type handles an ordered provider list and a number of maximum displayed results per provider.
 If no provider is defined for a type, the history with a default maximum number of displayed results will be taken.

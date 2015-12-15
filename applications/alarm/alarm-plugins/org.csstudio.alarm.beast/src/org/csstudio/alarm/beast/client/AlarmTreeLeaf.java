@@ -107,16 +107,18 @@ public class AlarmTreeLeaf extends AlarmTreeItem
      *  @param message Alarm message
      *  @param timestamp Time stamp for this update
      *  @see #getTimestamp()
-     *  @return <code>true</code> if alarm state actually changed
+     *  @return NONE if this item already has the same severities and message, PV if only this item has changed,
+     *              or PV_AND_PARENT if both this item and its parent have changed
      */
-    protected boolean setAlarmState(final SeverityLevel current_severity,
+    protected ChangeLevel setAlarmState(final SeverityLevel current_severity,
             final SeverityLevel severity, final String message,
             final Timestamp timestamp)
     {
-        if (! setAlarmState(current_severity, severity, message, this))
-            return false;
+        ChangeLevel level = setAlarmState(current_severity, severity, message, this);
+        if (level == ChangeLevel.NONE)
+            return level;
         this.timestamp = timestamp;
-        return true;
+        return level;
     }
 
     /** PV entries have no sub-entries and thus don't maximize their severity;

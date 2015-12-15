@@ -7,6 +7,16 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.jca;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.csstudio.vtype.pv.PV;
+import org.csstudio.vtype.pv.internal.Preferences;
+import org.diirt.vtype.VType;
+
 import gov.aps.jca.CAStatus;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Monitor;
@@ -22,19 +32,6 @@ import gov.aps.jca.event.MonitorListener;
 import gov.aps.jca.event.PutEvent;
 import gov.aps.jca.event.PutListener;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.csstudio.vtype.pv.PV;
-import org.csstudio.vtype.pv.internal.Preferences;
-import org.diirt.vtype.VType;
-
 /** Channel Access {@link PV}
  *  @author Kay Kasemir
  */
@@ -45,6 +42,13 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
 
     /** Request plain DBR type or ..TIME..? */
     final private boolean plain_dbr;
+
+    /** Channel Access does not really distinguish between array and scalar.
+     *  An array may at times only have one value, like a scalar.
+     *  To get more consistent decoding, channels with a max. element count other
+     *  than 1 are considered arrays.
+     */
+    private volatile boolean is_array = false;
 
     /** JCA Channel */
     final private Channel channel;
@@ -111,6 +115,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             logger.fine(getName() + " connected");
             final boolean is_readonly = ! channel.getWriteAccess();
             notifyListenersOfPermissions(is_readonly);
+            is_array = channel.getElementCount() != 1;
             getMetaData(); // .. and start subscription
         }
         else
@@ -148,7 +153,8 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
         {
             logger.log(Level.FINE, getName() + " subscribes");
             final int mask = Preferences.monitorMask().getMask();
-            final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), channel.getElementCount(), mask, this);
+            // Since EPICS 3.14.12, subscribing to zero elements requests update with current array size
+            final Monitor new_monitor = channel.addMonitor(DBRHelper.getTimeType(plain_dbr, channel.getFieldType()), 0, mask, this);
 
             final Monitor old_monitor = value_monitor.getAndSet(new_monitor);
             // Could there have been another subscription while we established this one?
@@ -206,7 +212,7 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             final CAStatus status = ev.getStatus();
             if (status != null  &&  status.isSuccessful())
             {
-                final VType value = DBRHelper.decodeValue(metadata, ev.getDBR());
+                final VType value = DBRHelper.decodeValue(is_array, metadata, ev.getDBR());
                 logger.log(Level.FINE, "{0} = {1}", new Object[] { getName(), value });
                 notifyListenersOfValue(value);
             }
@@ -221,12 +227,8 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     /** {@link Future} that acts as JCA {@link GetListener}
      *  and provides the value or error to user of the {@link Future}
      */
-    private class GetCallbackFuture implements Future<VType>, GetListener
+    private class GetCallbackFuture extends CompletableFuture<VType> implements GetListener
     {
-        final private CountDownLatch updates = new CountDownLatch(1);
-        private volatile VType value;
-        private volatile Exception error;
-
         @Override
         public void getCompleted(final GetEvent ev)
         {
@@ -234,60 +236,20 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
             {
                 if (ev.getStatus().isSuccessful())
                 {
-                    value = DBRHelper.decodeValue(metadata, ev.getDBR());
+                    final VType value = DBRHelper.decodeValue(is_array, metadata, ev.getDBR());
                     logger.log(Level.FINE, "{0} get-callback {1}", new Object[] { getName(), value });
-                    notifyListenersOfValue(value);
+                    complete(value);
                 }
                 else
                 {
                     notifyListenersOfDisconnect();
-                    error = new Exception(ev.getStatus().getMessage());
+                    completeExceptionally(new Exception(ev.getStatus().getMessage()));
                 }
             }
             catch (Exception ex)
             {
-                error = ex;
+                completeExceptionally(ex);
             }
-            updates.countDown();
-        }
-
-        @Override
-        public boolean cancel(boolean mayInterruptIfRunning)
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isCancelled()
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isDone()
-        {
-            return updates.getCount() == 0;
-        }
-
-        @Override
-        public VType get() throws InterruptedException, ExecutionException
-        {
-            updates.await();
-            if (error != null)
-                throw new ExecutionException(error);
-            return value;
-        }
-
-        @Override
-        public VType get(long timeout, TimeUnit unit)
-                throws InterruptedException, ExecutionException,
-                TimeoutException
-        {
-            if (! updates.await(timeout, unit))
-                throw new TimeoutException(getName() + " read timeout");
-            if (error != null)
-                throw new ExecutionException(error);
-            return value;
         }
     }
 
@@ -306,56 +268,15 @@ public class JCA_PV extends PV implements ConnectionListener, MonitorListener, A
     /** {@link Future} that acts as JCA {@link PutListener}
      *  and provides error to user of the {@link Future}
      */
-    private class PutCallbackFuture implements Future<VType>, PutListener
+    private class PutCallbackFuture extends CompletableFuture<Object>  implements PutListener
     {
-        final private CountDownLatch updates = new CountDownLatch(1);
-        private volatile Exception error;
-
         @Override
         public void putCompleted(final PutEvent ev)
         {
-            if (! ev.getStatus().isSuccessful())
-                error = new Exception(getName() + " write failed: " + ev.getStatus().getMessage());
-            updates.countDown();
-        }
-
-        @Override
-        public boolean cancel(boolean mayInterruptIfRunning)
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isCancelled()
-        {
-            return false;
-        }
-
-        @Override
-        public boolean isDone()
-        {
-            return updates.getCount() == 0;
-        }
-
-        @Override
-        public VType get() throws InterruptedException, ExecutionException
-        {
-            updates.await();
-            if (error != null)
-                throw new ExecutionException(error);
-            return null;
-        }
-
-        @Override
-        public VType get(long timeout, TimeUnit unit)
-                throws InterruptedException, ExecutionException,
-                TimeoutException
-        {
-            if (! updates.await(timeout, unit))
-                throw new TimeoutException(getName() + " write timeout");
-            if (error != null)
-                throw new ExecutionException(error);
-            return null;
+            if (ev.getStatus().isSuccessful())
+                complete(null);
+            else
+                completeExceptionally(new Exception(getName() + " write failed: " + ev.getStatus().getMessage()));
         }
     }
 

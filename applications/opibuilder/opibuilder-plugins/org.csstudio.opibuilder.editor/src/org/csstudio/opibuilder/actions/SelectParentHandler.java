@@ -29,12 +29,12 @@ public class SelectParentHandler extends AbstractHandler {
 
     public Object execute(ExecutionEvent event) throws ExecutionException {
 
-        Object viewer = HandlerUtil.getActivePart(event).getAdapter(
+        GraphicalViewer viewer = HandlerUtil.getActivePart(event).getAdapter(
                 GraphicalViewer.class);
         if (viewer == null)
             return null;
 
-        ISelection currentSelection = ((GraphicalViewer) viewer).getSelection();
+        ISelection currentSelection = viewer.getSelection();
 
         if (currentSelection instanceof IStructuredSelection) {
             Object element = ((IStructuredSelection) currentSelection)

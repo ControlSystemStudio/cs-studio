@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,9 @@ import org.csstudio.scan.device.VTypeHelper;
 import org.csstudio.scan.server.JythonSupport;
 import org.csstudio.scan.server.MacroContext;
 import org.csstudio.scan.server.ScanCommandImpl;
-import org.csstudio.scan.server.ScanCommandUtil;
 import org.csstudio.scan.server.ScanContext;
 import org.csstudio.scan.server.SimulationContext;
+import org.csstudio.scan.server.WriteHelper;
 import org.diirt.util.time.TimeDuration;
 
 /** {@link ScanCommandImpl} that sets a device to a value
@@ -32,6 +32,8 @@ import org.diirt.util.time.TimeDuration;
 @SuppressWarnings("nls")
 public class SetCommandImpl extends ScanCommandImpl<SetCommand>
 {
+    private volatile WriteHelper write = null;
+
     /** {@inheritDoc} */
     public SetCommandImpl(final SetCommand command, final JythonSupport jython) throws Exception
     {
@@ -90,12 +92,29 @@ public class SetCommandImpl extends ScanCommandImpl<SetCommand>
     @Override
     public void execute(final ScanContext context)  throws Exception
     {
-        ScanCommandUtil.write(context,
-                command.getDeviceName(), command.getValue(),
-                command.getCompletion(), command.getWait(),
-                command.getReadback(),
-                command.getTolerance(),
-                TimeDuration.ofSeconds(command.getTimeout()));
+        write = new WriteHelper(context,
+                                command.getDeviceName(), command.getValue(),
+                                command.getCompletion(), command.getWait(),
+                                command.getReadback(),
+                                command.getTolerance(),
+                                TimeDuration.ofSeconds(command.getTimeout()));
+        try
+        {
+            write.perform();
+        }
+        finally
+        {
+            write = null;
+        }
         context.workPerformed(1);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void next()
+    {
+        final WriteHelper save_copy = write;
+        if (save_copy != null)
+            save_copy.cancel();
     }
 }

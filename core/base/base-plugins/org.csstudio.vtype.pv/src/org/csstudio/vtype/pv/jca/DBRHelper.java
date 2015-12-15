@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.jca;
 
+import org.diirt.vtype.VType;
+
 import gov.aps.jca.dbr.DBR;
 import gov.aps.jca.dbr.DBRType;
 import gov.aps.jca.dbr.DBR_String;
@@ -18,8 +20,6 @@ import gov.aps.jca.dbr.DBR_TIME_Int;
 import gov.aps.jca.dbr.DBR_TIME_Short;
 import gov.aps.jca.dbr.GR;
 import gov.aps.jca.dbr.LABELS;
-
-import org.diirt.vtype.VType;
 
 /** Helper for handling DBR types
  *  @author Kay Kasemir
@@ -65,54 +65,56 @@ public class DBRHelper
         return plain ? DBRType.STRING : DBRType.TIME_STRING;
     }
 
-    public static VType decodeValue(final Object metadata, final DBR dbr) throws Exception
+    public static VType decodeValue(final boolean is_array, final Object metadata, final DBR dbr) throws Exception
     {
         // Rough guess, but somewhat in order of most frequently used type
         if (dbr instanceof DBR_TIME_Double)
         {
-            if (dbr.getCount() > 1)
+            if (is_array)
                 return new VTypeForDoubleArray((GR) metadata, (DBR_TIME_Double) dbr);
             return new VTypeForDouble((GR) metadata, (DBR_TIME_Double) dbr);
         }
 
         if (dbr instanceof DBR_String)
-            if (dbr.getCount() > 1)
+        {
+            if (is_array)
                 return new VTypeForStringArray((DBR_String) dbr);
             else
                 return new VTypeForString((DBR_String) dbr);
+        }
 
         if (dbr instanceof DBR_TIME_Enum)
         {
             final LABELS enum_meta = (metadata instanceof LABELS) ? (LABELS) metadata : null;
-            if (dbr.getCount() > 1)
+            if (is_array)
                 return new VTypeForEnumArray(enum_meta, (DBR_TIME_Enum) dbr);
             return new VTypeForEnum(enum_meta, (DBR_TIME_Enum) dbr);
         }
 
         if (dbr instanceof DBR_TIME_Float)
         {
-            if (dbr.getCount() > 1)
+            if (is_array)
                 return new VTypeForFloatArray((GR) metadata, (DBR_TIME_Float) dbr);
             return new VTypeForFloat((GR) metadata, (DBR_TIME_Float) dbr);
         }
 
         if (dbr instanceof DBR_TIME_Int)
         {
-            if (dbr.getCount() > 1)
+            if (is_array)
                 return new VTypeForIntArray((GR) metadata, (DBR_TIME_Int) dbr);
             return new VTypeForInt((GR) metadata, (DBR_TIME_Int) dbr);
         }
 
         if (dbr instanceof DBR_TIME_Short)
         {
-            if (dbr.getCount() > 1)
+            if (is_array)
                 return new VTypeForShortArray((GR) metadata, (DBR_TIME_Short) dbr);
            return new VTypeForShort((GR) metadata, (DBR_TIME_Short) dbr);
         }
 
         if (dbr instanceof DBR_TIME_Byte)
         {
-            if (dbr.getCount() > 1)
+            if (is_array)
                 return new VTypeForByteArray((GR) metadata, (DBR_TIME_Byte) dbr);
            return new VTypeForByte((GR) metadata, (DBR_TIME_Byte) dbr);
         }

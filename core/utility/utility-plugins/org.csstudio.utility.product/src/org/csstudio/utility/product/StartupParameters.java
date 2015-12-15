@@ -74,6 +74,12 @@ public class StartupParameters implements StartupParametersExtPoint
     /** Parameter tag defines the shared link. The value is stored in the returned map. */
     public static final String SHARE_LINK_PARAM = "css.shareLink"; //$NON-NLS-1$
 
+    /** Command-line switch to install workbench.xmi */
+    private static final String WORKBENCH_XMI = "-workbench_xmi"; //$NON-NLS-1$
+
+    /** Parameter tag for WORKBENCH_XMI. Map value contains path to workbench.xmi. */
+    public static final String WORKBENCH_XMI_PARAM = "css.workbench.xmi"; //$NON-NLS-1$
+
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
@@ -120,6 +126,29 @@ public class StartupParameters implements StartupParametersExtPoint
                         default_workspace = new URL("file:" + next); //$NON-NLS-1$
                         ++i;
                     }
+                }
+            }
+            else if (arg.equalsIgnoreCase(WORKBENCH_XMI))
+            {
+                String template = null;
+                if ((i + 1) < args.length)
+                {
+                    final String next = args[i+1];
+                    if (!next.startsWith("-")) //$NON-NLS-1$
+                    {
+                        template = next;
+                        ++i;
+                    }
+                }
+                if (template != null)
+                    parameters.put(WORKBENCH_XMI_PARAM, template);
+                else
+                {
+                    System.out.println("Error: Missing /path/to/workspace.xmi"); //$NON-NLS-1$
+                    showHelp();
+                    // Exit ASAP, see comment below.
+                    parameters.put(EXIT_CODE, IApplication.EXIT_OK);
+                    System.exit(0);
                 }
             }
             else if (arg.equalsIgnoreCase(SHARE_LINK))
@@ -240,6 +269,8 @@ public class StartupParameters implements StartupParametersExtPoint
                 WORKSPACE_PROMPT);
         System.out.format("  %-40s : Present workspace dialog with given default\n",
                 WORKSPACE_PROMPT + " /some/workspace");
+        System.out.format("  %-40s : Initialize workbench.xmi with a given template\n",
+                WORKBENCH_XMI + " /path/to/workbench.xmi");
         System.out.format("  %-40s : Log all messages to the console\n",
                 "-consoleLog");
         System.out.format("  %-40s : Select workspace on command-line, no prompt\n",

@@ -25,8 +25,9 @@ import org.csstudio.diag.pvfields.DataProvider;
 import org.csstudio.diag.pvfields.PVField;
 import org.csstudio.diag.pvfields.PVInfo;
 import org.csstudio.diag.pvfields.Preferences;
-import org.csstudio.utility.pvmanager.ConfigurationHelper;
 import org.diirt.datasource.ChannelHandler;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.DataSource;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.PVReader;
 import org.diirt.datasource.PVReaderEvent;
@@ -66,10 +67,17 @@ public class EPICSDataProvider implements DataProvider
                 // No error:
                 final String full_name;
 
-                if (name.indexOf("://") > 0)
+                if (name.indexOf("://") > 0) {
                     full_name = name;
-                else
-                    full_name = ConfigurationHelper.defaultDataSourceName() + "://" + name;
+                } else {
+                    DataSource defaultDataSource = PVManager.getDefaultDataSource();
+                    if (defaultDataSource instanceof CompositeDataSource) {
+                        CompositeDataSource cds = ((CompositeDataSource) defaultDataSource);
+                        full_name = cds.getConfiguration().getDefaultDataSource() + cds.getConfiguration().getDelimiter() + name;
+                    } else {
+                        full_name = name;
+                    }
+                }
                 final Map<String, ChannelHandler> channels = PVManager.getDefaultDataSource().getChannels();
                 final ChannelHandler channel = channels.get(full_name);
                 if (channel == null)

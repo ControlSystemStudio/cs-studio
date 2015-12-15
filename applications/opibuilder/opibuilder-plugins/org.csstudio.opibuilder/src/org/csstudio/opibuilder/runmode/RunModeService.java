@@ -97,7 +97,7 @@ public class RunModeService
                     mode = DisplayMode.NEW_TAB;
                 else
                 {   // Replace display in current runtime
-                    final DisplayOpenManager manager = (DisplayOpenManager) runtime.get().getAdapter(DisplayOpenManager.class);
+                    final DisplayOpenManager manager = runtime.get().getAdapter(DisplayOpenManager.class);
                     if (manager != null) {
                         manager.openNewDisplay();
                     }

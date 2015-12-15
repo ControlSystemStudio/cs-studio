@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.core.diirt.feature"
+      label="Core Diirt plugins"
       version="0.0.1.qualifier"
       provider-name="CS-Studio Collaboration &lt;cs-studio-core@lists.sourceforge.net&gt;">
 
@@ -183,6 +184,13 @@
 
    <plugin
          id="org.diirt.support.diirt-pva"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.diirt.help"
          download-size="0"
          install-size="0"
          version="0.0.0"

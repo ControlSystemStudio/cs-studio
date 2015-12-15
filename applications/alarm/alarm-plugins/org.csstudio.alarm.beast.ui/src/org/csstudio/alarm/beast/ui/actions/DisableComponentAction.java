@@ -69,8 +69,8 @@ public class DisableComponentAction extends Action
         if (pvs.size() > 0)
             if (!MessageDialog.openConfirm(shell, getText(),
                 NLS.bind(doEnable()
-                    ? Messages.DisableAlarmsFmt
-                    : Messages.EnableAlarmsFmt,
+                    ? Messages.EnableAlarmsFmt
+                    : Messages.DisableAlarmsFmt,
                     pvs.size())))
                 return;
         for (AlarmTreePV pv : pvs)

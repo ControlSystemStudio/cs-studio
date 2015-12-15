@@ -16,14 +16,14 @@
 </span>
 
 
-<h2><a name=overview>Overview</a></h2> 
+<h2><a name=overview>Overview</a></h2>
 <p>
-Archiver Appliance integrates the <a href="http://epicsarchiverap.sourceforge.net/">EPICS Archiver appliance</a> 
+Archiver Appliance integrates the <a href="http://epicsarchiverap.sourceforge.net/">EPICS Archiver appliance</a>
 client into CSS. The plugin connects to the appliance and retrieve the data stored on the server as it is the
 most convenient for the DataBrowser.
 </p>
 
-<h2><a name=started>Getting Started</a></h2> 
+<h2><a name=started>Getting Started</a></h2>
 <p>
 To use the archiver appliance client you first need to set it up. This can be done via <i>Preferences</i> as for
 any other archive reader.
@@ -32,7 +32,7 @@ any other archive reader.
 The appliance protocol is called <i>pbraw</i>. If you have an appliance instance running on a specific IP and port
 you have to define the serverl url as <i>pbraw://[server_ip]:[server_port]/retrieval</i>. This is the default
 location of the archiver appliance. If your system is set up differently you may also need to change the </i>retrieval</i>
-path to something else. 
+path to something else.
 </p>
 </p>
 <div class='figure'>
@@ -42,7 +42,7 @@ path to something else.
    </p>
 </div>
 
-<h2><a name=started>Algorithms</a></h2> 
+<h2><a name=started>Algorithms</a></h2>
 <p>
 The plugin supports two different types of data loading: optimized and raw. The raw algorithm will return all the
 points that are available for the selected time period, while the optimized algorithm will use data reduction
@@ -54,9 +54,9 @@ must be set to <code>true</code> (default setting); to disable this feature, set
 <p>
 Appliance provides two mechanisms to load optimized data: the original one, where it first asks for the number of
 points in the interval and then decide whether to make a raw or average request; and the new one, where this decision
-is made on the server. The setting <code>useNewOptimizedOperator</code> specifies whether the new mechanism will be 
-used or not. If you know that your appliance installation supports the optimization, than set this preference to 
-<code>true</code>. If you have an older installation, set the preference to <code>false</code> in order not to waste 
+is made on the server. The setting <code>useNewOptimizedOperator</code> specifies whether the new mechanism will be
+used or not. If you know that your appliance installation supports the optimization, than set this preference to
+<code>true</code>. If you have an older installation, set the preference to <code>false</code> in order not to waste
 time and network bandwidth.
 </p>
 </body>

@@ -47,6 +47,9 @@ public class Model
     final private CopyOnWriteArrayList<ModelListener> listeners =
         new CopyOnWriteArrayList<ModelListener>();
 
+    /** Has any cell been edited? */
+    private volatile boolean dirty = false;
+
     /** Initialize model from XML file stream
      *  @param stream Stream for XML file
      *  @throws Exception on error: Missing XML elements, errors in macros,
@@ -150,8 +153,19 @@ public class Model
         return instances.get(i);
     }
 
-    /** @return <code>true</code> if any cell has been edited. */
+    /** Fast check if model is 'dirty'
+     *  @return <code>true</code> if any cell has been edited
+     */
     public boolean isEdited()
+    {
+        return dirty;
+    }
+
+    /** Slow check if any cell has been edited.
+     *  <p>Used to update 'dirty' flag.
+     *  @return <code>true</code> if any cell has been edited
+     */
+    private boolean isAnyCellEdited()
     {
         for (Instance instance : instances)
             for (int c = 0; c < getColumnCount(); c++)
@@ -159,6 +173,7 @@ public class Model
                     return true;
         return false;
     }
+
 
     /** Start the PV connections of all cells in model
      *  @throws Exception on error
@@ -199,6 +214,7 @@ public class Model
      */
     public void revertOriginalValues() throws Exception
     {
+        dirty = false;
         for (Instance instance : instances)
         {
             for (int c = 0; c < getColumnCount(); c++)
@@ -212,6 +228,7 @@ public class Model
      */
     public void clearUserValues()
     {
+        dirty = false;
         for (Instance instance : instances)
         {
             for (int c = 0; c < getColumnCount(); c++)
@@ -223,7 +240,16 @@ public class Model
      *  @param cell Cell that changed
      */
     void fireCellUpdate(final Cell cell)
-    {
+    {   // If this cell has been edited, the model is 'dirty'.
+        // If this cell just cleared, need to check all other
+        // cells to determine if model is still dirty or overall clear.
+        // Could also turn 'dirty' into change counter,
+        // but then need to assert that it's always properly
+        // incremented/decremented...
+        if (cell.isEdited())
+            dirty = true;
+        else
+            dirty = isAnyCellEdited();
         for (ModelListener listener : listeners)
             listener.cellUpdate(cell);
     }

@@ -16,14 +16,16 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
-import org.epics.pvmanager.WriteFunction;
-import org.epics.pvmanager.service.ServiceMethod;
-import org.epics.pvmanager.service.ServiceMethodDescription;
-import org.epics.vtype.VNumber;
-import org.epics.vtype.VString;
-import org.epics.vtype.VTable;
-import org.epics.vtype.ValueFactory;
+import org.diirt.datasource.WriteFunction;
+import org.diirt.service.ServiceDescription;
+import org.diirt.service.ServiceMethod;
+import org.diirt.service.ServiceMethodDescription;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VTable;
+import org.diirt.vtype.ValueFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -36,11 +38,8 @@ public class QueryServiceMethod extends ServiceMethod {
 
     /**
      */
-    public QueryServiceMethod() {
-    super(new ServiceMethodDescription("find", "Find Channels")
-        .addArgument("query", "Query String", VString.class)
-        .addResult("result", "Query Result", VTable.class)
-        .addResult("result_size", "Query Result size", VNumber.class));
+    public QueryServiceMethod(ServiceMethodDescription serviceMethodDescription, ServiceDescription serviceDescription) {
+    	super(serviceMethodDescription, serviceDescription);
     }
 
     /*
@@ -51,9 +50,9 @@ public class QueryServiceMethod extends ServiceMethod {
      * org.epics.pvmanager.WriteFunction, org.epics.pvmanager.WriteFunction)
      */
     @Override
-    public void executeMethod(Map<String, Object> parameters,
-        final WriteFunction<Map<String, Object>> callback,
-        final WriteFunction<Exception> errorCallback) {
+    public void executeAsync(Map<String, Object> parameters,
+        final Consumer<Map<String, Object>> callback,
+        final Consumer<Exception> errorCallback) {
     String query = ((VString) parameters.get("query")).getValue();
     ChannelQuery channelQuery = ChannelQuery.query(query).build();
     channelQuery.addChannelQueryListener(new ChannelQueryListener() {
@@ -61,7 +60,7 @@ public class QueryServiceMethod extends ServiceMethod {
         @Override
         public void queryExecuted(final Result result) {
         if (result.exception != null) {
-            errorCallback.writeValue(result.exception);
+            errorCallback.accept(result.exception);
         } else {
 
             List<Channel> channels = new ArrayList<Channel>(
@@ -127,7 +126,7 @@ public class QueryServiceMethod extends ServiceMethod {
             resultMap.put("result",
                 ValueFactory.newVTable(types, names, values));
             resultMap.put("result_size", result.channels.size());
-            callback.writeValue(resultMap);
+            callback.accept(resultMap);
         }
         }
     });

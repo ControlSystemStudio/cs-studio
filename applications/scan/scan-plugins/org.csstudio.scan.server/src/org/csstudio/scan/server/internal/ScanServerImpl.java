@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -178,8 +178,9 @@ public class ScanServerImpl implements ScanServer
 
     /** {@inheritDoc} */
     @Override
-    public long submitScan(final String scan_name, final String commands_as_xml)
-            throws Exception
+    public long submitScan(final String scan_name,
+    		               final String commands_as_xml,
+    		               final boolean queue) throws Exception
     {
         cullScans();
 
@@ -211,7 +212,7 @@ public class ScanServerImpl implements ScanServer
 
             // Submit scan to engine for execution
             final ExecutableScan scan = new ExecutableScan(scan_name, devices, pre_impl, main_impl, post_impl);
-            scan_engine.submit(scan);
+            scan_engine.submit(scan, queue);
             return scan.getId();
         }
         catch (Exception ex)
@@ -319,6 +320,24 @@ public class ScanServerImpl implements ScanServer
         final ExecutableScan scan = scan_engine.getExecutableScan(id);
         if (scan != null)
             scan.updateScanProperty(address, property_id, value);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void next(final long id) throws Exception
+    {
+        if (id >= 0)
+        {
+            final ExecutableScan scan = scan_engine.getExecutableScan(id);
+            if (scan != null)
+                scan.next();
+        }
+        else
+        {
+            final List<ExecutableScan> scans = scan_engine.getExecutableScans();
+            for (ExecutableScan scan : scans)
+                scan.next();
+        }
     }
 
     /** {@inheritDoc} */

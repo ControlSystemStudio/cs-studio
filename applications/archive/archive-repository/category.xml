@@ -9,9 +9,6 @@
    <feature id="org.csstudio.archive.reader.ea4.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
-   <feature id="org.csstudio.archive.reader.pbraw.feature">
-      <category name="org.csstudio.category.applications"/>
-   </feature>
    <feature id="org.csstudio.archive.reader.rdb.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>

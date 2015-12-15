@@ -25,17 +25,20 @@ public class LocalPV extends PV
         // Get initial value: Split name off the initial value
         VType value;
         final int sep = base_name.indexOf('(');
-        if (sep < 0)
-            throw new Exception(getName() + " missing '(' for initial value");
-        final int end = base_name.lastIndexOf(')');
-        if (end <= sep)
-            throw new Exception(getName() + " missing ')' to define initial value");
-        String value_text = base_name.substring(sep+1, end);
+        if (sep > 0)
+        {   // Parse "(...)"
+            final int end = base_name.lastIndexOf(')');
+            if (end <= sep)
+                throw new Exception(getName() + " missing ')' to define initial value");
+            String value_text = base_name.substring(sep+1, end);
 
-        // Remove "quotes around string constant"
-        if (value_text.startsWith("\"")  &&  value_text.endsWith("\""))
-            value_text = value_text.substring(1, value_text.length()-1);
-        value = VTypeHelper.toVType(value_text);
+            // Remove "quotes around string constant"
+            if (value_text.startsWith("\"")  &&  value_text.endsWith("\""))
+                value_text = value_text.substring(1, value_text.length()-1);
+            value = VTypeHelper.toVType(value_text);
+        }
+        else // Default to "(0)"
+            value = ValueFactory.newVDouble(0.0);
         notifyListenersOfValue(value);
     }
 
@@ -48,6 +51,18 @@ public class LocalPV extends PV
             notifyListenersOfValue(ValueFactory.newVDouble( ((Number)new_value).doubleValue() ));
         else if (new_value instanceof String)
             notifyListenersOfValue(VTypeHelper.toVType( (String) new_value));
+        else if (new_value instanceof double[])
+            notifyListenersOfValue(VTypeHelper.toVType( (double[]) new_value));
+        else if (new_value instanceof float[])
+            notifyListenersOfValue(VTypeHelper.toVType( (float[]) new_value));
+        else if (new_value instanceof long[])
+            notifyListenersOfValue(VTypeHelper.toVType( (long[]) new_value));
+        else if (new_value instanceof int[])
+            notifyListenersOfValue(VTypeHelper.toVType( (int[]) new_value));
+        else if (new_value instanceof short[])
+            notifyListenersOfValue(VTypeHelper.toVType( (short[]) new_value));
+        else if (new_value instanceof byte[])
+            notifyListenersOfValue(VTypeHelper.toVType( (byte[]) new_value));
         else
             throw new Exception("Cannot write data of type" + new_value.getClass().getName());
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Oak Ridge National Laboratory.
+ * Copyright (c) 2011-2015 Oak Ridge National Laboratory.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -403,12 +403,13 @@ public class ScanClient
     /** Submit a scan for execution
      *  @param name Name of the new scan
      *  @param xml_commands XML commands of the scan to submit
+     *  @param queue Submit to queue or for immediate execution?
      *  @return Scan ID
      *  @throws Exception on error
      */
-    public long submitScan(final String name, final String xml_commands) throws Exception
+    public long submitScan(final String name, final String xml_commands, final boolean queue) throws Exception
     {
-        final HttpURLConnection connection = connect("/scan/" + name, long_timeout);
+        final HttpURLConnection connection = connect("/scan/" + name + (queue ? "" : "?queue=false"), long_timeout);
         connection.setReadTimeout(0);
         try
         {
@@ -471,6 +472,15 @@ public class ScanClient
         {
             connection.disconnect();
         }
+    }
+
+    /** Request transition to next command
+     *  @param id ID that uniquely identifies a scan (within JVM of the scan engine)
+     *  @throws Exception on error
+     */
+    public void nextCommand(final long id) throws Exception
+    {
+        sendScanCommand(id, "next");
     }
 
     /** Put running scan into paused state

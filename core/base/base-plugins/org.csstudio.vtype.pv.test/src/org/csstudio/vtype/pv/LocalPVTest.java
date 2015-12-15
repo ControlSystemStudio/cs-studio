@@ -12,16 +12,18 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Future;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.local.LocalPVFactory;
-import org.epics.vtype.VString;
-import org.epics.vtype.VType;
-import org.epics.vtype.ValueUtil;
+import org.diirt.vtype.VString;
+import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -102,6 +104,32 @@ public class LocalPVTest implements PVListener
         pv.write("was here");
         System.out.println(pv.read());
         assertThat(((VString)pv.read()).getValue(), equalTo("was here"));
+        PVPool.releasePV(pv);
+    }
+
+    @Test // (timeout=5000)
+    public void testCallbacks() throws Exception
+    {
+        final PV pv = PVPool.getPV("x(3.14)");
+
+        // Async write should be 'immediate'
+        long start = System.currentTimeMillis();
+        Future<?> result = pv.asyncWrite(47.11);
+        result.get();
+        long end = System.currentTimeMillis();
+        double seconds = (end - start) / 1000.0;
+        System.out.println("Write-callback took " + seconds + " seconds");
+        assertTrue(seconds < 0.5);
+
+        // Async write should be 'immediate'
+        start = System.currentTimeMillis();
+        final VType value = pv.asyncRead().get();
+        end = System.currentTimeMillis();
+        seconds = (end - start) / 1000.0;
+        System.out.println("Read-callback took " + seconds + " seconds");
+        assertTrue(seconds < 0.5);
+
+        assertThat(ValueUtil.numericValueOf(value), equalTo(47.11));
         PVPool.releasePV(pv);
     }
 
