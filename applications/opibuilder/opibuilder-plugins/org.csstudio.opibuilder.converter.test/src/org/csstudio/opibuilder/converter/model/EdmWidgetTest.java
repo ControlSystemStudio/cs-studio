@@ -7,20 +7,21 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.converter.model;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
 public class EdmWidgetTest {
 
     @Test
-    public void testEdmWidget() throws EdmException {
+    public void testEdmWidgetThrowsExceptionIfDefaultFieldsNotPresent() throws EdmException {
 
         EdmEntity e = new EdmEntity("test");
-
-        EdmWidget w = new EdmWidget(e);
-        assertNotNull(w);
-        assertTrue(w instanceof EdmEntity);
+        try {
+            new EdmWidget(e);
+        } catch (EdmException ex) {
+            assertEquals(ex.getType(), EdmException.INTEGER_FORMAT_ERROR);
+        }
     }
+
 }
