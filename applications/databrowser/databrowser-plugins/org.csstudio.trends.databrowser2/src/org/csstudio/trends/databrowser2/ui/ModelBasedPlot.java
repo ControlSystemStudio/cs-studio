@@ -287,7 +287,19 @@ public class ModelBasedPlot
     /** @param item ModelItem to remove from plot */
     public void removeTrace(final ModelItem item)
     {
-        final Trace<Instant> trace = findTrace(item);
+        final Trace<Instant> trace;
+        try
+        {
+            trace = findTrace(item);
+        }
+        catch (IllegalArgumentException ex)
+        {   // Could be called with a trace that was not visible,
+            // so it was never in the plot,
+            // and now gets removed.
+            // --> No error, because trace to be removed is already
+            //     absent from plot
+            return;
+        }
         plot.removeTrace(trace);
         items_by_trace.remove(trace);
     }
@@ -325,7 +337,7 @@ public class ModelBasedPlot
         for (Trace<Instant> trace : plot.getTraces())
             if (trace.getData() == item.getSamples())
                 return trace;
-        throw new RuntimeException("Cannot locate trace for " + item);
+        throw new IllegalArgumentException("Cannot locate trace for " + item);
     }
 
     /** @param trace {@link Trace} for which to locate the {@link ModelItem}
