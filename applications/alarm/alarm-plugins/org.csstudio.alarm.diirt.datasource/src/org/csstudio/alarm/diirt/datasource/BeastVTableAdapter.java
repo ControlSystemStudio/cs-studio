@@ -10,7 +10,6 @@ import static org.diirt.vtype.table.VTableFactory.column;
 import static org.diirt.vtype.table.VTableFactory.newVTable;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -23,8 +22,7 @@ import org.diirt.vtype.VTable;
  */
 public class BeastVTableAdapter extends BeastTypeAdapter {
 
-    private static Logger log = Logger.getLogger(BeastVTableAdapter.class
-            .getName());
+    private static Logger log = Logger.getLogger(BeastVTableAdapter.class.getName());
 
     @Override
     public int match(ValueCache<?> cache, BeastConnectionPayload connection) {
@@ -49,9 +47,6 @@ public class BeastVTableAdapter extends BeastTypeAdapter {
         
         keys.add("CurrentStatus");
         values.add(message.getCurrentState());
-        
-        keys.add("Acknowledged");
-        values.add(String.valueOf(message.isAcknowledged()));
         
         keys.add("Active");
         values.add(String.valueOf(message.isActive()));

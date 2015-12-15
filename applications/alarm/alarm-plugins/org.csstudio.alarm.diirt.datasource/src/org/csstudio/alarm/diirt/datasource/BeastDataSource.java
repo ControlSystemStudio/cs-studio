@@ -4,26 +4,20 @@
  */
 package org.csstudio.alarm.diirt.datasource;
 
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import org.csstudio.alarm.beast.client.AlarmTreeItem;
 import org.csstudio.alarm.beast.client.AlarmTreePV;
@@ -31,13 +25,7 @@ import org.csstudio.alarm.beast.client.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelListener;
 import org.diirt.datasource.ChannelHandler;
-import org.diirt.datasource.ChannelReadRecipe;
-import org.diirt.datasource.ChannelWriteRecipe;
 import org.diirt.datasource.DataSource;
-import org.diirt.datasource.MultiplexedChannelHandler;
-import org.diirt.datasource.ReadRecipe;
-import org.diirt.datasource.WriteRecipe;
-import org.diirt.datasource.util.FunctionParser;
 import org.diirt.datasource.vtype.DataTypeSupport;
 
 import com.thoughtworks.xstream.InitializationException;
@@ -62,8 +50,6 @@ public class BeastDataSource extends DataSource {
 
     private Executor executor = Executors.newScheduledThreadPool(4);
 
-//    private final Map<String, AlarmClientModel> configModels = Collections.synchronizedMap(new HashMap<String, AlarmClientModel>());
-
     static {
         // Install type support for the types it generates.
         DataTypeSupport.install();
@@ -73,7 +59,7 @@ public class BeastDataSource extends DataSource {
         super(true);
 
         typeSupport = new BeastTypeSupport();
-
+        
         try {
 
             // Create an instance to the AlarmClientModel
@@ -111,17 +97,33 @@ public class BeastDataSource extends DataSource {
                                 log.fine("newAlarmState");
                                 if (pv != null) {
                                     log.fine(pv.getPathName());
-                                    List<Consumer> handlers = map.get(pv.getPathName());
-                                    if (handlers != null) {
-                                        for (Consumer consumer : handlers) {
+                                    List<Consumer> pathHandlers = map.get(pv.getPathName().substring(1));
+                                    if (pathHandlers != null) {
+                                        for (Consumer consumer : pathHandlers) {
                                             consumer.accept(pv);
                                         }
                                     }
-                                    // listeners that registered with only the PVName as the channelName instead of the full path
-                                    handlers = map.get(pv.getName());
-                                    if (handlers != null) {
-                                        for (Consumer consumer : handlers) {
+                                    List<Consumer> pvHandlers = map.get(pv.getName());
+                                    if (pvHandlers != null) {
+                                        for (Consumer consumer : pvHandlers) {
                                             consumer.accept(pv);
+                                        }
+                                    }
+                                    // Notify all parent nodes if parent changed
+                                    if(parent_changed){
+                                        AlarmTreeItem parent = pv.getParent();
+                                        while (parent != null) {
+                                            List<Consumer> parentHandlers = map.get(parent.getPathName().substring(1));
+                                            if (parentHandlers != null) {
+                                                for (Consumer consumer : parentHandlers) {
+                                                    try {
+                                                        consumer.accept(getState(parent.getPathName()));
+                                                    } catch (Exception e) {
+                                                        
+                                                    }
+                                                }
+                                            }
+                                            parent = parent.getParent();
                                         }
                                     }
                                 }
@@ -150,7 +152,7 @@ public class BeastDataSource extends DataSource {
     @Override
     protected ChannelHandler createChannel(String channelName) {
         return new BeastChannelHandler(channelName, this);
-
+        
     }
 
     @Override
@@ -212,17 +214,46 @@ public class BeastDataSource extends DataSource {
             return false;
         }
     }
-
+    
     protected void acknowledge(String channelName, boolean acknowledge) throws Exception{
         getState(channelName).acknowledge(acknowledge);
     }
 
+    // implementing the enable disable mechanism using the example of the DisableComponentAction
     protected void enable(String channelName, boolean enable) throws Exception {
         AlarmTreeItem item = getState(channelName);
-        if(item != null && item instanceof AlarmTreePV){
-            model.enable((AlarmTreePV) item, enable);
-        }else{
-           // TODO implement the enable logic for nodes
+        List<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
+        final CompletableFuture<Void> future = CompletableFuture
+                .runAsync(() -> addPVs(pvs, item, enable), executor)
+                .thenRun(() -> {
+                    for (AlarmTreePV alarmTreePV : pvs) {
+                        try {
+                            model.enable(alarmTreePV, enable);
+                        } catch (Exception e) {
+                            //TODO handle raising the write exception
+                            e.printStackTrace();
+                            new Exception("Failed to enable/disable : " + ((AlarmTreePV) item).getName(), e);
+                        }
+                    }
+                });
+    }
+    
+    /** @param pvs List where PVs to enable/disable will be added
+     *  @param item Item for which to locate PVs, recursively
+     */
+    protected void addPVs(final List<AlarmTreePV> pvs, final AlarmTreeItem item, boolean enable)
+    {
+        if (item instanceof AlarmTreePV)
+        {
+            final AlarmTreePV pv = (AlarmTreePV) item;
+            if (pv.isEnabled() != enable)
+                pvs.add(pv);
+        }
+        else
+        {
+            final int N = item.getChildCount();
+            for (int i=0; i<N; ++i)
+                addPVs(pvs, item.getChild(i), enable);
         }
     }
 }

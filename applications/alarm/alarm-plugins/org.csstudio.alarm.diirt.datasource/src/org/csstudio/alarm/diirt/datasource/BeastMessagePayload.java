@@ -40,10 +40,6 @@ public class BeastMessagePayload {
         }
     }
 
-    public String isAcknowledged(){
-        return pv.getSeverity().getDisplayName();
-    }
-    
     public boolean isActive(){
         return pv.getSeverity().isActive();
     }
