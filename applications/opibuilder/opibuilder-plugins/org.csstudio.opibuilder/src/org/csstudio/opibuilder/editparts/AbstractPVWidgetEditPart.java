@@ -200,8 +200,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     }
 
     @Override
-    public void performBeastBlink() {
-        delegate.performBeastBlink();
+    public void performBeastBlink(final int blinkState) {
+        delegate.performBeastBlink(blinkState);
     }
 
     @Override

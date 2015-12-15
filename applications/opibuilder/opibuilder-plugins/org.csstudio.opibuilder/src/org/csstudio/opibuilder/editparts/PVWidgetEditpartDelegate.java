@@ -31,10 +31,12 @@ import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.csstudio.opibuilder.util.BOYPVFactory;
+import org.csstudio.opibuilder.util.BeastAlarmInfo;
 import org.csstudio.opibuilder.util.BeastAlarmSeverityLevel;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPITimer;
+import org.csstudio.opibuilder.util.WidgetBlinker;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.simplepv.IPV;
@@ -166,154 +168,15 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
     private boolean pvsHaveBeenStarted = false;
 
-    // BEAST alarm info will be stored in an instance of this class
-    protected final class BeastAlarmInfo {
-        private String alarmPVChannelName;
-        private boolean isBeastChannelConnected;
-        public BeastAlarmSeverityLevel latchedSeverity;
-        public BeastAlarmSeverityLevel currentSeverity;
-
-        /**
-         * The blinking "state" for the Beast Alarm alert: 0 = default color, 1 = severity color.
-         */
-        public int beastAlertBlinkState = 0;
-
-        public BeastAlarmInfo() {
-            alarmPVChannelName = "";
-            isBeastChannelConnected = false;
-            latchedSeverity = BeastAlarmSeverityLevel.OK;
-            currentSeverity = BeastAlarmSeverityLevel.OK;
-        }
-
-        public void setBeastChannelName(String channelName) {
-            alarmPVChannelName = channelName;
-        }
-
-        public String getBeastChannelName() {
-            return alarmPVChannelName;
-        }
-
-        public boolean isAcknowledged() {
-            return !latchedSeverity.isActive() && latchedSeverity != BeastAlarmSeverityLevel.OK;
-        }
-
-        /** @return <code>true</code> if severity indicates an active alarm,
-         *          <code>false</code> for acknowledged or OK state
-         */
-        public boolean isLatchedAlarmActive() {
-            return latchedSeverity.isActive();
-        }
-
-        public void reset() {
-            latchedSeverity = BeastAlarmSeverityLevel.OK;
-            currentSeverity = BeastAlarmSeverityLevel.OK;
-        }
-
-        public boolean isBeastChannelConnected() {
-            return isBeastChannelConnected;
-        }
-
-        public void setBeastChannelConnected(boolean connected) {
-            isBeastChannelConnected = connected;
-        }
-
-        public boolean isLatchedAlarmOK() {
-            return latchedSeverity == BeastAlarmSeverityLevel.OK;
-        }
-
-        public AlarmSeverity getLatchedSeverity() {
-            return latchedSeverity.getAlarmSeverity();
-        }
-    }
-
-    // Singleton that makes ('subscribed') widgets blink if they have a BEAST Alarm PV and require acknowledgement
-    private static enum WidgetBlinker {
-        INSTANCE;
-
-        private final int period = 500; // 2Hz; TODO: preference (frequency or period ?)
-        private final Set<PVWidgetEditpartDelegate> widgets = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
-        private final Display display = Display.getDefault();
-        private boolean active = false;
-
-        void blink(boolean firstBlink)
-        {
-            int delay;
-            if (firstBlink == false)
-                delay = period;
-            else {
-                /* Requirement is to begin blinking "on the nearest second"; subsequent blinks are with a fixed period, not aligned to
-                 * expected time points (e.g. for 2Hz: starts at 1.0sec then every 500ms -- instead of calculating and trying to hit the right
-                 * times: 1.0s, 1.5s, 2.0s, 2.5s..).
-                 * If the next full second is very close (<100ms), schedule the blinking to begin on the next full second.
-                 */
-                long now = java.lang.System.currentTimeMillis();
-                delay = (int)(1000 - (now % 1000));
-                if (delay < 100) delay += 1000;
-            }
-
-            display.timerExec(delay, ()->
-            {
-                if (active)
-                {
-                    for (PVWidgetEditpartDelegate pvw : widgets)
-                    {
-                        //if the widget's thread is this thread perform the blink,
-                        //otherwise 'blink' on the widget's thread
-                        Display wdispl = null;
-                        if (pvw.editpart.getViewer() != null && pvw.editpart.getViewer().getControl() != null)
-                            wdispl = pvw.editpart.getViewer().getControl().getDisplay();
-                        if (wdispl == null) continue;
-
-                        if (display == wdispl)
-                            pvw.performBeastBlink();
-                        else
-                            wdispl.syncExec(() -> pvw.performBeastBlink());
-                    }
-                    blink(false);
-                }
-            });
-        }
-
-        void add(PVWidgetEditpartDelegate pvw)
-        {
-            display.syncExec(() ->
-            {
-                widgets.add(pvw);
-                reset();
-                if (!active)
-                {
-                    active = true;
-                    blink(true);
-                }
-            });
-        }
-
-        void remove(PVWidgetEditpartDelegate pvw)
-        {
-            display.syncExec(() ->
-            {
-                widgets.remove(pvw);
-                active = !widgets.isEmpty();
-            });
-        }
-
-        void reset()
-        {
-            display.syncExec(() ->
-            {
-                for (PVWidgetEditpartDelegate pvw : widgets)
-                    pvw.resetBeastBlink();
-            });
-        }
-    }
-
     // (secondary) PV on which we listen for BEAST events
     private PV<?, Object> alarmPV = null;
     private boolean isBeastAlarm = false;
     private BeastAlarmInfo beastInfo = new BeastAlarmInfo();
 
     public boolean isBeastAlarmAndConnected() {
-        return isBeastAlarm && beastInfo.isBeastChannelConnected();
+    	synchronized (beastInfo) {
+    		return isBeastAlarm && beastInfo.isBeastChannelConnected();
+    	}
     }
 
     /**Returns true when these conditions are met:<br>
@@ -322,7 +185,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
      * - PV is in an Unacknowledged active alarm state -> operator should ACK
      */
     public boolean isBeastAndActiveAlarm() {
-        return isBeastAlarm && beastInfo.isBeastChannelConnected() && beastInfo.isLatchedAlarmActive();
+    	synchronized (beastInfo) {
+    		return isBeastAlarm && beastInfo.isBeastChannelConnected() && beastInfo.isLatchedAlarmActive();
+    	}
     }
 
     public BeastAlarmInfo getBeastAlarmInfo() {
@@ -389,38 +254,34 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     }
 
     public boolean acknowledgeAlarm() {
-        if (!beastInfo.isBeastChannelConnected() || beastInfo.isLatchedAlarmOK() || alarmPV == null) return false;
-
-        if (!beastInfo.isAcknowledged())
-            alarmPV.write("ack");
-        else
-            alarmPV.write("unack");
-
+    	synchronized (beastInfo) {
+	        if (!beastInfo.isBeastChannelConnected() || beastInfo.isLatchedAlarmOK() || alarmPV == null) return false;
+	
+	        if (!beastInfo.isAcknowledged())
+	            alarmPV.write("ack");
+	        else
+	            alarmPV.write("unack");
+    	}
+    	
         return true;
     }
 
     @Override
-    public void performBeastBlink() {
-//        synchronized(beastInfo) {
-            beastInfo.beastAlertBlinkState ^= 1;
-//        }
-        synchronized (PVWidgetEditpartDelegate.this) {
-            IFigure figure = editpart.getFigure();
-            // all Alarm-sensitive properties have an AlarmSeverityListener;
-            // fire this to ensure all props which are sensitive will be updated
-            fireAlarmSeverityChanged(alarmSeverity, figure);
-        }
+    public void performBeastBlink(final int blinkState) {
+    	beastInfo.beastAlertBlinkState = blinkState;
+        IFigure figure = editpart.getFigure();
+        // all Alarm-sensitive properties have an AlarmSeverityListener;
+        // fire this to ensure all props which are sensitive will be updated
+        fireAlarmSeverityChanged(alarmSeverity, figure);
     }
 
     @Override
     public void resetBeastBlink() {
         beastInfo.beastAlertBlinkState = 0;
-        synchronized (PVWidgetEditpartDelegate.this) {
-            IFigure figure = editpart.getFigure();
-            // all Alarm-sensitive properties have an AlarmSeverityListener;
-            // fire this to ensure all props which are sensitive will be updated
-            fireAlarmSeverityChanged(alarmSeverity, figure);
-        }
+        IFigure figure = editpart.getFigure();
+        // all Alarm-sensitive properties have an AlarmSeverityListener;
+        // fire this to ensure all props which are sensitive will be updated
+        fireAlarmSeverityChanged(alarmSeverity, figure);
     }
 
     private String getBeastAlarmChannelName() {
@@ -464,17 +325,21 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
                         // if we receive a ValueChanged event we know we're connected even if we never received the ConnectionChanged event
                         if (event.isConnectionChanged() || (!beastInfo.isBeastChannelConnected() && event.isValueChanged())) {
-
-                            beastInfo.setBeastChannelConnected(event.getPvReader().isConnected());
-
-                            // TODO: remove this check when Kunal adds "connection awareness" to BeastDataSource ?
-                            if (!beastInfo.isBeastChannelConnected() && event.isValueChanged()) {
+//                    	if (event.isConnectionChanged()) {
+                        	boolean connected = event.getPvReader().isConnected();
+                        	
+                    		// TODO: remove this check when Kunal adds "connection awareness" to BeastDataSource, or leave it in as a failsafe ?
+                            if (!connected && event.isValueChanged()) {
                                 // the PVReader says we're not connected but we received a VAL event !
-                                log.severe("BeastDataSource listener: VAL event received, but PVReader says it's not connected to BEAST !");
-                                beastInfo.setBeastChannelConnected(true); // force to TRUE since we received a ValueChanged event..
+                                log.info("BeastDataSource listener: VAL event received, but PVReader says it's not connected to BEAST !");
+                                connected = true; // force to TRUE since we received a ValueChanged event..
                             }
-                            // isBeastAlarm will be true only if we successfully connect to it at least once
-                            isBeastAlarm |= beastInfo.isBeastChannelConnected();
+                        	
+                        	synchronized(beastInfo) {
+                                // isBeastAlarm will be true only if we successfully connected to it at least once
+                        		beastInfo.setBeastChannelConnected(connected);
+                                isBeastAlarm |= beastInfo.isBeastChannelConnected();
+                        	}
                         }
 
                         if (!event.isValueChanged()) return;
@@ -486,7 +351,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                         VTable allData = (VTable) event.getPvReader().getValue();
                         if (allData == null) return;
                         if (allData.getColumnCount() < 2) {
-                            log.severe("BeastDataSource listener: received VTable has less than 2 columns");
+                            log.severe("BeastDataSource listener: received VTable has fewer than 2 columns");
                             return;
                         }
 
@@ -505,25 +370,18 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                             return;
                         }
 
-/*
-                        BeastAlarmSeverityLevel oldLatchedSeverity, oldCurrentSeverity;
-                        oldLatchedSeverity = beastInfo.latchedSeverity;
-                        oldCurrentSeverity = beastInfo.currentSeverity;
-*/
                         synchronized (beastInfo) {
                             beastInfo.latchedSeverity = BeastAlarmSeverityLevel.parse(data.get(latchedSeverityIdx));
                             beastInfo.currentSeverity = BeastAlarmSeverityLevel.parse(data.get(currentSeverityIdx));
                         }
 
-                        synchronized (WidgetBlinker.INSTANCE) {
-                            if (pvWidget.isBeastAndActiveAlarm()) {
-                                WidgetBlinker.INSTANCE.add(pvWidget);
-                                log.info("BeastDataSource listener: adding PVWidget to WidgetBlinker");
-                            } else {
-                                WidgetBlinker.INSTANCE.remove(pvWidget);
-                                resetBeastBlink();
-                                log.info("BeastDataSource listener: removing PVWidget from WidgetBlinker");
-                            }
+                        if (pvWidget.isBeastAndActiveAlarm()) {
+                            WidgetBlinker.INSTANCE.add(pvWidget);
+                            log.info("BeastDataSource listener: adding PVWidget to WidgetBlinker");
+                        } else {
+                            WidgetBlinker.INSTANCE.remove(pvWidget);
+                            pvWidget.resetBeastBlink();
+                            log.info("BeastDataSource listener: removing PVWidget from WidgetBlinker");
                         }
                     }
                 })
@@ -560,10 +418,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             pvsHaveBeenStarted = false;
         }
 
-        // disconnect the AlarmPV
+        // disconnect the AlarmPV beast listener and attempt removal from beast blinking list 
         if (alarmPV != null) {
             alarmPV.close();
             alarmPV = null;
+            WidgetBlinker.INSTANCE.remove(this);
             beastInfo.reset();
         }
 
@@ -944,15 +803,17 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             Border alarmBorder;
             AlarmSeverity borderSeverity = alarmSeverity;
 
-            if (isBeastAndActiveAlarm())
-                if (beastInfo.beastAlertBlinkState == 0) {
-                    // use default border
-                    borderSeverity = AlarmSeverity.NONE;
-                } else {
-                    // use (latched) severity border
-                    borderSeverity = beastInfo.getLatchedSeverity();
-                }
-
+            synchronized (beastInfo) {
+	            if (isBeastAndActiveAlarm())
+	                if (beastInfo.beastAlertBlinkState == 0) {
+	                    // use default border
+	                    borderSeverity = AlarmSeverity.NONE;
+	                } else {
+	                    // use (latched) severity border
+	                    borderSeverity = beastInfo.getLatchedSeverity();
+	                }
+            }
+            
             switch (borderSeverity) {
             case NONE:
                 if(editpart.getWidgetModel().getBorderStyle() == BorderStyle.NONE)
