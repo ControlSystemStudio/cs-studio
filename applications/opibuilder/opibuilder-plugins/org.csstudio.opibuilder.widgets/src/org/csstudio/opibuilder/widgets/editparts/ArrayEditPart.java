@@ -152,8 +152,8 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
     }
 
     @Override
-    public void performBeastBlink() {
-        delegate.performBeastBlink();
+    public void performBeastBlink(final int blinkState) {
+        delegate.performBeastBlink(blinkState);
     }
 
     @Override
