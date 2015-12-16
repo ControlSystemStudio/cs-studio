@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.csstudio.alarm.diirt.datasource
+Bundle-SymbolicName: org.csstudio.alarm.diirt.datasource;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Service-Component: OSGI-INF/ds_beast.xml
+Bundle-ActivationPolicy: lazy
+Require-Bundle: org.diirt.datasource;bundle-version="3.0.1",
+ org.diirt.vtype;bundle-version="3.0.1",
+ org.diirt.util;bundle-version="3.0.1",
+ org.csstudio.platform.libs.jms;bundle-version="5.4.2",
+ org.csstudio.alarm.beast;bundle-version="4.1.1"
+Import-Package: org.diirt.datasource;version="3.0.1",
+ org.diirt.datasource.vtype;version="3.0.1",
+ org.osgi.framework;version="1.8.0"
