@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.handlers.HandlerUtil;
 
+
 /** Command handler for opening Data Browser on the current selection.
  *  Linked from popup menu that is sensitive to {@link ProcessVariable}
  *  @author Kay Kasemir
@@ -42,8 +43,10 @@ public class OpenDataBrowserPopup extends AbstractHandler
     @Override
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
-        //Get selection first because the ApplicationContext might change.
-        final IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getActiveMenuSelection(event);
+        // Get selection first because the ApplicationContext might change.
+        // This works for both context menu and double-clicks.
+        final IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getCurrentSelection(event);
+
         // Create new editor
         final DataBrowserEditor editor = DataBrowserEditor.createInstance();
         if (editor == null)
