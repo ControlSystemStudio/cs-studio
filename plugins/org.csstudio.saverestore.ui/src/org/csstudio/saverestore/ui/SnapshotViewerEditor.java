@@ -843,11 +843,19 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                 Platform.runLater(() -> createTable(entries, numberOfSnapshots, show));
             }));
             MenuItem setAsBaseItem = new MenuItem("Set As Base");
-            setAsBaseItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Remove Snapshot", () -> {
+            setAsBaseItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Set new base Snapshot", () -> {
                 final List<TableEntry> entries = controller.setAsBase(snapshotIndex);
                 final int numberOfSnapshots = controller.getNumberOfSnapshots();
                 final boolean show = controller.isShowReadbacks();
-                Platform.runLater(() -> createTable(entries, numberOfSnapshots, show));
+                final VSnapshot vs = controller.getSnapshot(0);
+                Platform.runLater(() -> {
+                    vs.getSnapshot().ifPresent(t -> {
+                        commentField.setText(t.getComment());
+                        creatorField.setText(t.getOwner());
+                        dateField.setText(Utilities.timestampToBigEndianString(t.getDate(), true));
+                    });
+                    createTable(entries, numberOfSnapshots, show);
+                });
             }));
             final ContextMenu menu = new ContextMenu(removeItem, setAsBaseItem);
             label.setContextMenu(menu);
