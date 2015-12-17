@@ -92,9 +92,8 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
         if (getClass() != obj.getClass())
             return false;
         BaseLevel other = (BaseLevel) obj;
-        return getStorageName().equals(other.getStorageName())
-            && ((getBranch() != null && getBranch().equals(other.getBranch()))
-                || (getBranch() == null && other.getBranch() == null));
+        return Objects.equals(getStorageName(), other.getStorageName())
+            && Objects.equals(getBranch(), other.getBranch());
     }
 
     /*
@@ -104,7 +103,7 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(BaseLevel.class, getStorageName(), getBranch());
+        return Objects.hash(getStorageName(), getBranch());
     }
 
     /*

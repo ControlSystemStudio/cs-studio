@@ -195,32 +195,9 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
         if (getClass() != obj.getClass())
             return false;
         Snapshot other = (Snapshot) obj;
-        if (comment == null) {
-            if (other.comment != null)
-                return false;
-        } else if (!comment.equals(other.comment))
-            return false;
-        if (date == null) {
-            if (other.date != null)
-                return false;
-        } else if (!date.equals(other.date))
-            return false;
-        if (owner == null) {
-            if (other.owner != null)
-                return false;
-        } else if (!owner.equals(other.owner))
-            return false;
-        if (parameters == null) {
-            if (other.parameters != null)
-                return false;
-        } else if (!parameters.equals(other.parameters))
-            return false;
-        if (set == null) {
-            if (other.set != null)
-                return false;
-        } else if (!set.equals(other.set))
-            return false;
-        return true;
+        return Objects.equals(comment, other.comment) && Objects.equals(date, other.date)
+            && Objects.equals(owner, other.owner) && Objects.equals(parameters, other.parameters)
+            && Objects.equals(set, other.set);
     }
 
     /**
@@ -236,27 +213,8 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        if (comment == null) {
-            if (obj.comment != null)
-                return false;
-        } else if (!comment.equals(obj.comment))
-            return false;
-        if (date == null) {
-            if (obj.date != null)
-                return false;
-        } else if (!date.equals(obj.date))
-            return false;
-        if (owner == null) {
-            if (obj.owner != null)
-                return false;
-        } else if (!owner.equals(obj.owner))
-            return false;
-        if (set == null) {
-            if (obj.set != null)
-                return false;
-        } else if (!set.equals(obj.set))
-            return false;
-        return true;
+        return Objects.equals(comment, obj.comment) && Objects.equals(date, obj.date)
+            && Objects.equals(owner, obj.owner) && Objects.equals(set, obj.set);
     }
 
     /*

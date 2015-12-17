@@ -93,11 +93,6 @@ public class Branch implements Serializable, Comparable<Branch> {
         if (getClass() != obj.getClass())
             return false;
         Branch other = (Branch) obj;
-        if (shortName == null) {
-            if (other.shortName != null)
-                return false;
-        } else if (!shortName.equals(other.shortName))
-            return false;
-        return true;
+        return Objects.equals(shortName, other.shortName);
     }
 }

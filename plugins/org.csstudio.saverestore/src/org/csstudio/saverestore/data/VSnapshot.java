@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.csstudio.saverestore.FileUtilities;
@@ -305,14 +306,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((beamlineSet == null) ? 0 : beamlineSet.hashCode());
-        result = prime * result + ((names == null) ? 0 : names.hashCode());
-        result = prime * result + ((selected == null) ? 0 : selected.hashCode());
-        result = prime * result + ((snapshotTime == null) ? 0 : snapshotTime.hashCode());
-        result = prime * result + ((values == null) ? 0 : values.hashCode());
-        return result;
+        return Objects.hash(beamlineSet, names, selected, snapshotTime, values);
     }
 
     /*
@@ -329,32 +323,9 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         if (getClass() != obj.getClass())
             return false;
         VSnapshot other = (VSnapshot) obj;
-        if (beamlineSet == null) {
-            if (other.beamlineSet != null)
-                return false;
-        } else if (!beamlineSet.equals(other.beamlineSet))
-            return false;
-        if (names == null) {
-            if (other.names != null)
-                return false;
-        } else if (!names.equals(other.names))
-            return false;
-        if (snapshotTime == null) {
-            if (other.snapshotTime != null)
-                return false;
-        } else if (!snapshotTime.equals(other.snapshotTime))
-            return false;
-        if (values == null) {
-            if (other.values != null)
-                return false;
-        } else if (!values.equals(other.values))
-            return false;
-        if (selected == null) {
-            if (other.selected != null)
-                return false;
-        } else if (!selected.equals(other.selected))
-            return false;
-        return true;
+        return Objects.equals(beamlineSet, other.beamlineSet) && Objects.equals(names, other.names)
+            && Objects.equals(snapshotTime, other.snapshotTime) && Objects.equals(values, other.values)
+            && Objects.equals(selected, other.selected);
     }
 
     /**

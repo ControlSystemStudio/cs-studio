@@ -108,21 +108,7 @@ public class BeamlineSetData {
         if (getClass() != obj.getClass())
             return false;
         BeamlineSetData other = (BeamlineSetData) obj;
-        if (description == null) {
-            if (other.description != null)
-                return false;
-        } else if (!description.equals(other.description))
-            return false;
-        if (descriptor == null) {
-            if (other.descriptor != null)
-                return false;
-        } else if (!descriptor.equals(other.descriptor))
-            return false;
-        if (pvList == null) {
-            if (other.pvList != null)
-                return false;
-        } else if (!pvList.equals(other.pvList))
-            return false;
-        return true;
+        return Objects.equals(description, other.description) && Objects.equals(descriptor, other.descriptor)
+            && Objects.equals(pvList, other.pvList);
     }
 }

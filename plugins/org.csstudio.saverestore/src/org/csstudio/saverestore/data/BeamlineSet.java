@@ -218,18 +218,8 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
         if (getClass() != obj.getClass())
             return false;
         BeamlineSet other = (BeamlineSet) obj;
-        if (baseLevel == null) {
-            if (other.baseLevel != null)
-                return false;
-        } else if (!baseLevel.equals(other.baseLevel))
-            return false;
-        if (branch == null) {
-            if (other.branch != null)
-                return false;
-        } else if (!branch.equals(other.branch))
-            return false;
-        if (!Arrays.equals(path, other.path))
-            return false;
-        return true;
+        return Objects.equals(baseLevel, other.baseLevel) && Objects.equals(branch, other.branch)
+            && Arrays.equals(path, other.path);
+
     }
 }

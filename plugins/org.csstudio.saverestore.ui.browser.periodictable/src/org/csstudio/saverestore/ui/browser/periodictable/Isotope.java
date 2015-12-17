@@ -1,6 +1,7 @@
 package org.csstudio.saverestore.ui.browser.periodictable;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Branch;
@@ -203,12 +204,7 @@ public class Isotope extends BaseLevel implements Serializable {
      */
     @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + charge;
-        result = prime * result + ((element == null) ? 0 : element.hashCode());
-        result = prime * result + neutrons;
-        return result;
+        return Objects.hash(charge, element, neutrons);
     }
 
     /*
@@ -225,12 +221,7 @@ public class Isotope extends BaseLevel implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Isotope other = (Isotope) obj;
-        if (charge != other.charge)
-            return false;
-        if (element != other.element)
-            return false;
-        if (neutrons != other.neutrons)
-            return false;
-        return true;
+        return Objects.equals(charge, other.charge) && Objects.equals(element, other.element)
+            && Objects.equals(neutrons, other.neutrons);
     }
 }
