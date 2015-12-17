@@ -175,24 +175,45 @@ public class ModelBasedPlot
                 if (item instanceof ChannelInfo[])
                 {
                     final ChannelInfo[] channels = (ChannelInfo[]) item;
-                    for (ChannelInfo channel : channels)
-                        lst.droppedPVName(channel.getProcessVariable(),
-                                channel.getArchiveDataSource());
+                    final int N = channels.length;
+                    final ProcessVariable[] pvs = new ProcessVariable[N];
+                    final ArchiveDataSource[] archives = new ArchiveDataSource[N];
+                    for (int i=0; i<N; ++i)
+                    {
+                        pvs[i] = channels[i].getProcessVariable();
+                        archives[i] = channels[i].getArchiveDataSource();
+                    }
+                    lst.droppedPVNames(pvs, archives);
                 }
                 else if (item instanceof ProcessVariable[])
                 {
                     final ProcessVariable[] pvs = (ProcessVariable[]) item;
-                    for (ProcessVariable pv : pvs)
-                        lst.droppedPVName(pv, null);
+                    lst.droppedPVNames(pvs, null);
                 }
                 else if (item instanceof ArchiveDataSource[])
                 {
                     final ArchiveDataSource[] archives = (ArchiveDataSource[]) item;
-                    for (ArchiveDataSource archive : archives)
-                        lst.droppedPVName(null, archive);
+                    lst.droppedPVNames(null, archives);
                 }
                 else if (item instanceof String)
-                    lst.droppedName(item.toString());
+                {
+                    final List<String> pvs = new ArrayList<>();
+                    // Allow passing in many names, assuming that white space separates them
+                    final String[] names = ((String)item).split("[\\r\\n\\t ]+"); //$NON-NLS-1$
+                    for (String one_name : names)
+                    {   // Might also have received "[pv1, pv2, pv2]", turn that into "pv1", "pv2", "pv3"
+                        String suggestion = one_name;
+                        if (suggestion.startsWith("["))
+                            suggestion = suggestion.substring(1);
+                        if (suggestion.endsWith("]")  &&  !suggestion.contains("["))
+                            suggestion = suggestion.substring(0, suggestion.length()-1);
+                        if (suggestion.endsWith(","))
+                            suggestion = suggestion.substring(0, suggestion.length()-1);
+                        pvs.add(suggestion);
+                    }
+                    if (pvs.size() > 0)
+                        lst.droppedNames(pvs.toArray(new String[pvs.size()]));
+                }
                 else if (item instanceof String[])
                 {   // File names arrive as String[]...
                     final String[] files = (String[])item;
