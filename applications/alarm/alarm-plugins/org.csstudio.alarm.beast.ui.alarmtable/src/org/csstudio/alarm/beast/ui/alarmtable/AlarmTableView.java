@@ -328,6 +328,8 @@ public class AlarmTableView extends ViewPart
         String name;
         if (filterType == FilterType.TREE)
         {
+            if (defaultModel == null)
+                return;
             activeModel = defaultModel;
             name = activeModel.getConfigurationName();
             if (gui != null)
