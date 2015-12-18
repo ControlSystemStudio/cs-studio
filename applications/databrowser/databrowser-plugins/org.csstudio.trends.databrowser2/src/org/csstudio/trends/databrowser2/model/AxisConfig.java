@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser2.model;
 
+import static org.csstudio.trends.databrowser2.persistence.XMLPersistence.loadFontFromDocument;
+
 import java.io.PrintWriter;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,12 +19,9 @@ import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.trends.databrowser2.persistence.XMLPersistence;
 import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.w3c.dom.Element;
-
-import static org.csstudio.trends.databrowser2.persistence.XMLPersistence.*;
 
 /** Information about configuration of an axis
  *  @author Kay Kasemir
@@ -39,7 +38,7 @@ public class AxisConfig
     private String name;
 
     /** Use axis name as axis label? */
-    private boolean use_axis_name = true;
+    private boolean use_axis_name = false;
 
     /** Use trace names as axis label? */
     private boolean use_trace_names = true;
@@ -73,7 +72,7 @@ public class AxisConfig
      */
     public AxisConfig(final String name)
     {
-        this(true, name, true, Preferences.useTraceNames(), false, new RGB(0, 0, 0), new FontData("", 10, 0), new FontData("", 10, 0),0.0, 10.0, false, Preferences.useAutoScale(), false);
+        this(true, name, !Preferences.useTraceNames(), Preferences.useTraceNames(), false, new RGB(0, 0, 0), new FontData("", 10, 0), new FontData("", 10, 0),0.0, 10.0, false, Preferences.useAutoScale(), false);
     }
 
     /** Initialize

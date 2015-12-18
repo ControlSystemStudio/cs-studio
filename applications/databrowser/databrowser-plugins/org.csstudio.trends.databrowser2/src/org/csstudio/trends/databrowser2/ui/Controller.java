@@ -268,59 +268,64 @@ public class Controller
             }
 
             @Override
-            public void droppedName(final String name)
+            public void droppedNames(final String[] names)
             {
                 // Offer potential PV name in dialog so user can edit/cancel
                 final AddPVAction add = new AddPVAction(plot.getPlot().getUndoableActionManager(), shell, model, false);
-                // Allow passing in many names, assuming that white space separates them
-                final String[] names = name.split("[\\r\\n\\t ]+"); //$NON-NLS-1$
                 for (String one_name : names)
-                {   // Might also have received "[pv1, pv2, pv2]", turn that into "pv1", "pv2", "pv3"
-                    String suggestion = one_name;
-                    if (suggestion.startsWith("["))
-                        suggestion = suggestion.substring(1);
-                    if (suggestion.endsWith("]")  &&  !suggestion.contains("["))
-                        suggestion = suggestion.substring(0, suggestion.length()-1);
-                    if (suggestion.endsWith(","))
-                        suggestion = suggestion.substring(0, suggestion.length()-1);
-                    if (! add.runWithSuggestedName(suggestion, null))
+                    if (! add.runWithSuggestedName(one_name, null))
                         break;
-                }
             }
 
             @Override
-            public void droppedPVName(final ProcessVariable name, final ArchiveDataSource archive)
+            public void droppedPVNames(final ProcessVariable[] names, final ArchiveDataSource[] archives)
             {
-                if (name == null)
+                if (names == null)
                 {
-                    if (archive == null)
+                    if (archives == null)
                         return;
-                    // Received only an archive. Add to all PVs
-                    for (ModelItem item : model.getItems())
-                    {
-                        if (! (item instanceof PVItem))
-                            continue;
-                        final PVItem pv = (PVItem) item;
-                        if (pv.hasArchiveDataSource(archive))
-                            continue;
-                        new AddArchiveCommand(plot.getPlot().getUndoableActionManager(), pv, archive);
-                    }
+                    // Received only archives. Add to all PVs
+                    for (ArchiveDataSource archive : archives)
+                        for (ModelItem item : model.getItems())
+                        {
+                            if (! (item instanceof PVItem))
+                                continue;
+                            final PVItem pv = (PVItem) item;
+                            if (pv.hasArchiveDataSource(archive))
+                                continue;
+                            new AddArchiveCommand(plot.getPlot().getUndoableActionManager(), pv, archive);
+                        }
                 }
                 else
-                {   // Received PV name
-
-                    // Add the given PV to the model anyway even if the same PV
-                    // exists in the model.
+                {   // Received PV names, maybe with archive
                     final UndoableActionManager operations_manager = plot.getPlot().getUndoableActionManager();
 
-                    // Add to first empty axis, or create new axis
-                    final AxisConfig axis = model.getEmptyAxis().orElseGet(
-                            () -> new AddAxisCommand(operations_manager, model).getAxis() );
+                    // When multiple PVs are dropped, assert that there is at least one axis.
+                    // Otherwise dialog cannot offer adding all PVs onto the same axis.
+                    if (names.length > 1  &&  model.getAxisCount() <= 0)
+                        new AddAxisCommand(operations_manager, model);
 
-                    // Add new PV
-                    AddModelItemCommand.forPV(shell, operations_manager,
-                            model, name.getName(), Preferences.getScanPeriod(),
-                            axis, archive);
+                    final AddPVDialog dlg = new AddPVDialog(shell, names.length, model, false);
+                    for (int i=0; i<names.length; ++i)
+                        dlg.setName(i, names[i].getName());
+                    if (dlg.open() != Window.OK)
+                        return;
+
+                    for (int i=0; i<names.length; ++i)
+                    {
+                        final AxisConfig axis;
+                        if (dlg.getAxisIndex(i) >= 0)
+                            axis = model.getAxis(dlg.getAxisIndex(i));
+                        else // Use first empty axis, or create a new one
+                            axis = model.getEmptyAxis().orElseGet(() -> new AddAxisCommand(operations_manager, model).getAxis());
+
+                        // Add new PV
+                        final ArchiveDataSource archive =
+                                (archives == null || i>=archives.length) ? null : archives[i];
+                        AddModelItemCommand.forPV(shell, operations_manager,
+                                model, dlg.getName(i), dlg.getScanPeriod(i),
+                                axis, archive);
+                    }
                     return;
                 }
             }
