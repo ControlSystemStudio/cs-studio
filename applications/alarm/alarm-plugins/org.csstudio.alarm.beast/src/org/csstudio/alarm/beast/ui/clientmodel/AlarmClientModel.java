@@ -1003,7 +1003,7 @@ public class AlarmClientModel
      *  @param name Name of PV to locate. May be <code>null</code>.
      *  @return PV or <code>null</code> when not found
      */
-    private synchronized AlarmTreePV findPV(final String name)
+    public synchronized AlarmTreePV findPV(final String name)
     {
         if (config == null)
             return null;

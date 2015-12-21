@@ -15,12 +15,11 @@ import org.diirt.datasource.PVManager;
  */
 public class RegisterDatasource {
 
-    private static final Logger logger = Logger
-            .getLogger(RegisterDatasource.class.getCanonicalName());
+    private static final Logger logger = Logger.getLogger(RegisterDatasource.class.getCanonicalName());
 
     public void registerDatasource(DataSourceProvider dataSourceProvider)
             throws Exception {
-        logger.info("register:" + dataSourceProvider.getName());
+        logger.info("register Datasource:" + dataSourceProvider.getName());
         DataSource defaultDataSource = PVManager.getDefaultDataSource();
         if (defaultDataSource instanceof CompositeDataSource) {
             ((CompositeDataSource) defaultDataSource)
@@ -30,7 +29,7 @@ public class RegisterDatasource {
 
     public void deregisterDatasource(DataSourceProvider dataSourceProvider)
             throws Exception {
-        logger.info("deregister:" + dataSourceProvider.getName());
+        logger.info("deregister Datasource:" + dataSourceProvider.getName());
 
     }
 
