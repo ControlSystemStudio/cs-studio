@@ -32,5 +32,6 @@
     <module>org.csstudio.archive.writer</module>
     <module>org.csstudio.archive.writer.rdb</module>
     <module>org.csstudio.archive.writer.test</module>
+    <module>org.csstudio.archive.diirt.datasource</module>
   </modules>
 </project>
