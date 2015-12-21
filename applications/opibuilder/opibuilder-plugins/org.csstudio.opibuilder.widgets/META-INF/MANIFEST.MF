@@ -32,4 +32,5 @@ Export-Package: org.csstudio.opibuilder.widgets,
  org.csstudio.opibuilder.widgets.editparts,
  org.csstudio.opibuilder.widgets.feedback,
  org.csstudio.opibuilder.widgets.figures,
- org.csstudio.opibuilder.widgets.model
+ org.csstudio.opibuilder.widgets.model,
+ org.csstudio.opibuilder.widgets.util
