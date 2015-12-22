@@ -163,7 +163,7 @@
                class="org.csstudio.opibuilder.actions.AcknowledgeAlarmAction"
                enablesFor="1"
                id="org.csstudio.opibuilder.acknowledgeAlarmAction"
-               label="Acknowledge/Unacknowledge Alarm"
+               label="Acknowledge Alarm"
                tooltip="If the widget is connected to a BEAST AlarmPV, acknowledges/unacknowledges this PV's alarm">
          </action>
          <visibility>

@@ -60,6 +60,7 @@ Export-Package: org.csstudio.opibuilder,
 Bundle-ClassPath: lib/rhino/js.jar,
  .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Import-Package: org.diirt.datasource,
+Import-Package: org.csstudio.ui.resources.alarms,
+ org.diirt.datasource,
  org.diirt.datasource.expression;version="3.0.1",
  org.diirt.datasource.formula;version="3.0.1"
