@@ -9,7 +9,18 @@ import org.diirt.vtype.Time;
 /**
  *
  * <code>DynamicArchiveChannelHandler</code> is a channel handler that is bound to a specific pv. The time window for
- * the channel can be changed through the write method.
+ * the channel can be changed via the write method. The write method accepts different variations of parameters:
+ * <ul>
+ * <li>Boolean - sets the value of the optimised data retrieval</li>
+ * <li>boolean[1] - sets the value of the optimised data retrieval</li>
+ * <li>Long or {@link Date} or {@link Timestamp} or {@link Time} - fetches a single archive value at the given time in
+ * UTC</li>
+ * <li>long[2] or Long[2] or Date[2] or Timestamp[2] or Time[2] - fetches the archived values between the first and
+ * second timestamp given as array elements</li>
+ * <li>Object[3] - fetches the archive values between param[0] and param[1] using optimised or raw retrieval as
+ * specified by param[2]. The first two parameters can be Date, Timestamp, Time or Long, the third parameter has to be
+ * Boolean.</li>
+ * </ul>
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -51,11 +62,11 @@ public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
      */
     @Override
     protected void write(Object newValue, ChannelWriteCallback callback) {
-        //values can be written as
-        //time
-        //startTime, endTime
-        //startTime, endTime, optimised
-        //Time, startTime, endTime can be either Long, Date, Timestamp or Time
+        // values can be written as
+        // time
+        // startTime, endTime
+        // startTime, endTime, optimised
+        // Time, startTime, endTime can be either Long, Date, Timestamp or Time
         try {
             boolean fetchData = startTime != null && endTime != null;
             if (newValue instanceof Boolean) {
@@ -71,17 +82,20 @@ public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
                 }
                 optimised = opt;
             } else if (newValue instanceof Long) {
-                startTime = Timestamp.of(new Date((Long)newValue));
+                startTime = Timestamp.of(new Date((Long) newValue));
                 endTime = startTime;
+            } else if (newValue instanceof long[]) {
+                startTime = Timestamp.of(new Date(((long[]) newValue)[0]));
+                endTime = Timestamp.of(new Date(((long[]) newValue)[1]));
             } else if (newValue instanceof Long[]) {
-                startTime = Timestamp.of(new Date(((Long[])newValue)[0]));
-                endTime = Timestamp.of(new Date(((Long[])newValue)[1]));
+                startTime = Timestamp.of(new Date(((Long[]) newValue)[0]));
+                endTime = Timestamp.of(new Date(((Long[]) newValue)[1]));
             } else if (newValue instanceof Date) {
-                startTime = Timestamp.of((Date)newValue);
+                startTime = Timestamp.of((Date) newValue);
                 endTime = startTime;
             } else if (newValue instanceof Date[]) {
-                startTime = Timestamp.of(((Date[])newValue)[0]);
-                endTime = Timestamp.of(((Date[])newValue)[1]);
+                startTime = Timestamp.of(((Date[]) newValue)[0]);
+                endTime = Timestamp.of(((Date[]) newValue)[1]);
             } else if (newValue instanceof Timestamp) {
                 startTime = (Timestamp) newValue;
                 endTime = startTime;
@@ -116,9 +130,17 @@ public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
                     startTime = (Timestamp) v[0];
                     endTime = (Timestamp) v[1];
                     optimised = (Boolean) v[2];
-                } else if (v[0] instanceof Long && v[2] instanceof Long && v[2] instanceof Boolean) {
+                } else if (v[0] instanceof Long && v[1] instanceof Long && v[2] instanceof Boolean) {
                     startTime = Timestamp.of(new Date((Long) v[0]));
                     endTime = Timestamp.of(new Date((Long) v[1]));
+                    optimised = (Boolean) v[2];
+                } else if (v[0] instanceof Date && v[1] instanceof Date && v[2] instanceof Boolean) {
+                    startTime = Timestamp.of((Date) v[0]);
+                    endTime = Timestamp.of((Date) v[1]);
+                    optimised = (Boolean) v[2];
+                } else if (v[0] instanceof Time && v[1] instanceof Time && v[2] instanceof Boolean) {
+                    startTime = ((Time) v[0]).getTimestamp();
+                    endTime = ((Time) v[1]).getTimestamp();
                     optimised = (Boolean) v[2];
                 } else {
                     throw new IllegalArgumentException("Write value '" + newValue
