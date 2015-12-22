@@ -55,12 +55,18 @@ public class AcknowledgeAlarmAction implements IObjectActionDelegate {
         	action.setEnabled(false);
         	action.setImageDescriptor(null);
         	action.setText("Cannot ACK - not connected to BEAST");
-        	
+        	action.setToolTipText("");
         	return;
         }
         
-		action.setEnabled(true);
+        if (pvDelegate.getBeastAlarmInfo().isLatchedAlarmOK()) {
+        	action.setEnabled(false);
+        }
+
+        action.setEnabled(true);
     	action.setImageDescriptor(getImageDescriptor(pvDelegate.getBeastAlarmInfo().currentSeverity, pvDelegate.getBeastAlarmInfo().latchedSeverity));
+    	action.setToolTipText("Test tooltip:\nLatched Severity: " + pvDelegate.getBeastAlarmInfo().latchedSeverity.getDisplayName()
+    			+ "\nCurrent Severity: " + pvDelegate.getBeastAlarmInfo().currentSeverity.getDisplayName());
     	if (pvDelegate.getBeastAlarmInfo().isAcknowledged()) {
             action.setText("Un-Acknowledge alarm on " + model.getPVName());
         } else {
