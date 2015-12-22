@@ -17,7 +17,6 @@
     <module>org.csstudio.utility.adlParser</module>
     <module>org.csstudio.utility.caSnooperUi</module>
     <module>org.csstudio.utility.clock</module>
-    <module>org.csstudio.csdata.clipboard</module>
     <module>org.csstudio.navigator.applaunch</module>
     <module>org.csstudio.ui.menu.pvscript</module>
     <module>org.csstudio.ui.menu.web</module>
