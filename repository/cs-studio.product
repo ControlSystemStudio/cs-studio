@@ -65,6 +65,9 @@
       <feature id="org.eclipse.equinox.p2.rcp.feature"/>
       <feature id="org.eclipse.equinox.p2.extras.feature"/>
       <feature id="org.eclipse.fx.target.rcp.feature"/>
+      <feature id="org.csstudio.core.base.feature"/>
+      <feature id="org.csstudio.core.platform.feature"/>
+      <feature id="org.csstudio.core.utility.feature"/>
       <feature id="org.csstudio.core.ui.feature"/>
       <feature id="org.csstudio.product.feature"/>
       <feature id="org.csstudio.product.configuration.feature"/>
