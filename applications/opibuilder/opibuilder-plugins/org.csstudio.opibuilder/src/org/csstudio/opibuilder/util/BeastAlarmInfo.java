@@ -43,11 +43,18 @@ public final class BeastAlarmInfo {
         return !latchedSeverity.isActive() && latchedSeverity != BeastAlarmSeverityLevel.OK;
     }
 
-    /** @return <code>true</code> if severity indicates an active alarm,
+    /** @return <code>true</code> if (latched) severity indicates an active alarm,
      *          <code>false</code> for acknowledged or OK state
      */
     public boolean isLatchedAlarmActive() {
         return latchedSeverity.isActive();
+    }
+    
+    /** @return <code>true</code> if (current) severity indicates an active alarm,
+     *          <code>false</code> for acknowledged or OK state
+     */
+    public boolean isCurrentAlarmActive() {
+    	return currentSeverity.isActive();
     }
 
     public void reset() {

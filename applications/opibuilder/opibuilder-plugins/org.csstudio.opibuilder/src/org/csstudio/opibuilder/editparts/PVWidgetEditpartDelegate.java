@@ -186,7 +186,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
      */
     public boolean isBeastAndActiveAlarm() {
     	synchronized (beastInfo) {
-    		return isBeastAlarm && beastInfo.isBeastChannelConnected() && beastInfo.isLatchedAlarmActive();
+    		return isBeastAlarm && beastInfo.isBeastChannelConnected() && beastInfo.isCurrentAlarmActive();
     	}
     }
 
@@ -304,6 +304,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             beastInfo.setBeastChannelConnected(false);
             return;
         }
+
+        log.info("Starting BeastAlarmListener for channel " + alarmPVName);
         beastInfo.setBeastChannelName(alarmPVName);
         PVWidgetEditpartDelegate pvWidget = this;
 
@@ -316,10 +318,12 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     @SuppressWarnings("unchecked")
                     @Override
                     public void pvChanged(PVReaderEvent<Object> event) {
-                        log.info("Received new event of type " + event.toString());
+                    	String pvName = pvWidget.getWidgetModel().getPVName();
+                    	
+                        log.fine("BeastAlarmListener (" + pvName + ") received a new event of type " + event.toString());
                         if (event.isExceptionChanged()) {
                             Exception e = event.getPvReader().lastException();
-                            log.severe("Received EXCEPTION: " + e.toString());
+                            log.severe("BeastAlarmListener (" + pvName + ") received an EXCEPTION: " + e.toString());
                             e.printStackTrace();
                         }
 
@@ -331,7 +335,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     		// TODO: remove this check when Kunal adds "connection awareness" to BeastDataSource, or leave it in as a failsafe ?
                             if (!connected && event.isValueChanged()) {
                                 // the PVReader says we're not connected but we received a VAL event !
-                                log.info("BeastDataSource listener: VAL event received, but PVReader says it's not connected to BEAST !");
+                                log.fine("BeastAlarmListener (" + pvName + "): VAL event received, but PVReader says it's not connected to BEAST ! (forcing connection state to TRUE)");
                                 connected = true; // force to TRUE since we received a ValueChanged event..
                             }
                         	
@@ -344,14 +348,14 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
                         if (!event.isValueChanged()) return;
                         if (!(event.getPvReader().getValue() instanceof VTable)) {
-                            log.severe("BeastDataSource listener: data is not a VTable");
+                            log.severe("BeastAlarmListener (" + pvName + "): data is not a VTable");
                             return;
                         }
 
                         VTable allData = (VTable) event.getPvReader().getValue();
                         if (allData == null) return;
                         if (allData.getColumnCount() < 2) {
-                            log.severe("BeastDataSource listener: received VTable has fewer than 2 columns");
+                            log.severe("BeastAlarmListener (" + pvName + "): received VTable has fewer than 2 columns");
                             return;
                         }
 
@@ -366,7 +370,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                                 currentSeverityIdx = i;
                         }
                         if (latchedSeverityIdx == -1 || currentSeverityIdx == -1) {
-                            log.severe("BeastDataSource listener: received VTable is missing Latched or Current alarm status");
+                            log.severe("BeastAlarmListener (" + pvName + "): received VTable is missing Latched or Current alarm status");
                             return;
                         }
 
@@ -377,11 +381,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
                         if (pvWidget.isBeastAndActiveAlarm()) {
                             WidgetBlinker.INSTANCE.add(pvWidget);
-                            log.info("BeastDataSource listener: adding PVWidget to WidgetBlinker");
+                            log.fine("BeastAlarmListener (" + pvName + "): adding PVWidget to WidgetBlinker");
                         } else {
                             WidgetBlinker.INSTANCE.remove(pvWidget);
                             pvWidget.resetBeastBlink();
-                            log.info("BeastDataSource listener: removing PVWidget from WidgetBlinker");
+                            log.fine("BeastAlarmListener (" + pvName + "): removing PVWidget from WidgetBlinker");
                         }
                     }
                 })
@@ -406,7 +410,6 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
         if (editpart.getExecutionMode() == ExecutionMode.RUN_MODE)
         {
-            log.info("STARTING BeastAlarmListener for channel " + getBeastAlarmChannelName());
             createBeastAlarmListener();
         }
     }
