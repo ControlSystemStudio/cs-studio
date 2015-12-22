@@ -99,53 +99,65 @@ public class GUI extends Composite implements AlarmClientModelListener
 
         void blink()
         {
-            display.timerExec(period, ()->
+            if (!display.isDisposed())
             {
-                if (active)
+                display.timerExec(period, ()->
                 {
-                    for (GUI g : guis)
+                    if (active)
                     {
-                        //if the GUI thread is this thread, blink on this thread,
-                        //otherwise delegate to the GUI's thread and wait for it to finish
-                        if (display == g.display)
-                            g.blink();
-                        else
-                            g.display.syncExec(() -> g.blink());
+                        for (GUI g : guis)
+                        {
+                            //if the GUI thread is this thread, blink on this thread,
+                            //otherwise delegate to the GUI's thread and wait for it to finish
+                            if (display == g.display)
+                                g.blink();
+                            else if (!g.display.isDisposed())
+                                g.display.syncExec(() -> g.blink());
+                        }
+                        blink();
                     }
-                    blink();
-                }
-            });
+                });
+            }
         }
         void reset()
         {
-            display.syncExec(() ->
+            if (!display.isDisposed())
             {
-                for (GUI g : guis)
-                    g.icon_provider.reset();
-            });
+                display.syncExec(() ->
+                {
+                    for (GUI g : guis)
+                        g.icon_provider.reset();
+                });
+            }
         }
         void add(GUI gui)
         {
-            display.syncExec(() ->
+            if (!display.isDisposed())
             {
-                guis.add(gui);
-                //when a new gui is added, always reset everything so that all tables are synchronised
-                reset();
-                if (!active)
+                display.syncExec(() ->
                 {
-                    active = true;
-                    blink();
-                }
-            });
+                    guis.add(gui);
+                    //when a new gui is added, always reset everything so that all tables are synchronised
+                    reset();
+                    if (!active)
+                    {
+                        active = true;
+                        blink();
+                    }
+                });
+            }
         }
         void remove(GUI gui)
         {
-            display.syncExec(() ->
+            if (!display.isDisposed())
             {
-                guis.remove(gui);
-                if (guis.isEmpty())
-                    active = false;
-            });
+                display.syncExec(() ->
+                {
+                    guis.remove(gui);
+                    if (guis.isEmpty())
+                        active = false;
+                });
+            }
         }
     }
 
