@@ -41,16 +41,20 @@ public interface PlotListener
      */
     public void valueAxisChanged(int index, double lower, double upper);
 
-    /** Received a name, presumably a PV name via drag & drop
-     *  @param name PV(?) name
+    /** Received names, presumably for PVs, via drag & drop
+     *  @param name PV(?) names
      */
-    public void droppedName(String name);
+    public void droppedNames(String[] name);
 
-    /** Received a PV name and/or archive data source via drag & drop
-     *  @param name PV name or <code>null</code>
-     *  @param archive Archive data source or <code>null</code>
+    /** Received PV names and/or archive data sources via drag & drop
+     *
+     *  <p>If names with archive are received, the name and archive
+     *  arrays will have the same size.
+     *
+     *  @param name PV names or <code>null</code>
+     *  @param archive Archive data sources or <code>null</code>
      */
-    public void droppedPVName(ProcessVariable name, ArchiveDataSource archive);
+    public void droppedPVNames(ProcessVariable[] name, ArchiveDataSource[] archive);
 
     /** Received a file name */
     public void droppedFilename(String file_name);
