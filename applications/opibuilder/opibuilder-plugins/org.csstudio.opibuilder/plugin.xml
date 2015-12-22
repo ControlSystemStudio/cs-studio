@@ -173,7 +173,7 @@
                      value="RUN_MODE">
                </objectState>
                <objectState
-                     name="beastAlarmPV"
+                     name="beastAlarmPVActionable"
                      value="true">
                </objectState>
             </and>

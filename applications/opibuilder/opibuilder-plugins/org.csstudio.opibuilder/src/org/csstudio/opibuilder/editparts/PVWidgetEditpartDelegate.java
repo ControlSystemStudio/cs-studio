@@ -173,20 +173,31 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     private boolean isBeastAlarm = false;
     private BeastAlarmInfo beastInfo = new BeastAlarmInfo();
 
+    /**Returns true when:
+     * - BEAST Alarm functionality is enabled and the BeastAlarmListener is connected to the BeastDataSource<br>
+     * - Widget's PV was found (== defined in BEAST)
+     */
     public boolean isBeastAlarmAndConnected() {
     	synchronized (beastInfo) {
     		return isBeastAlarm && beastInfo.isBeastChannelConnected();
     	}
     }
 
-    /**Returns true when these conditions are met:<br>
-     * - BEAST Alarm functionality is enabled and BeastDataSource connected<br>
-     * - Widget's PV was found (== defined in BEAST)<br>
-     * - PV is in an Unacknowledged active alarm state -> operator should ACK
+    /**Returns true if connected to BEAST and the latched severity is such that it can be acted upon (either Acknowledged or Unacknowledged).
      */
-    public boolean isBeastAndActiveAlarm() {
+    public boolean isBeastAlarmAndActionable() {
     	synchronized (beastInfo) {
-    		return isBeastAlarm && beastInfo.isBeastChannelConnected() && beastInfo.isCurrentAlarmActive();
+    		return isBeastAlarm && beastInfo.isBeastChannelConnected() && beastInfo.latchedSeverity != BeastAlarmSeverityLevel.OK;
+    	}
+    }
+    
+    /**Returns true when the operator should ACK an alarm:<br>
+     * - PV is currently in an alarm state<br>
+     * - PV was not acknowledged (latched severity is also active)
+     */
+    public boolean isBeastAlarmActiveUnack() {
+    	synchronized (beastInfo) {
+    		return beastInfo.isCurrentAlarmActive() && !beastInfo.isAcknowledged();
     	}
     }
 
@@ -377,15 +388,15 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                         synchronized (beastInfo) {
                             beastInfo.latchedSeverity = BeastAlarmSeverityLevel.parse(data.get(latchedSeverityIdx));
                             beastInfo.currentSeverity = BeastAlarmSeverityLevel.parse(data.get(currentSeverityIdx));
+                            log.fine(pvName + " received: Latched = " + beastInfo.latchedSeverity.getDisplayName() + " | current = " + beastInfo.currentSeverity.getDisplayName());
                         }
 
-                        if (pvWidget.isBeastAndActiveAlarm()) {
-                            WidgetBlinker.INSTANCE.add(pvWidget);
-                            log.fine("BeastAlarmListener (" + pvName + "): adding PVWidget to WidgetBlinker");
-                        } else {
+                        // The widget will Blink only when the PV is currently in alarm and has not yet been acknowledged
+                        if (pvWidget.isBeastAlarmAndConnected() && pvWidget.isBeastAlarmActiveUnack()) {
+                            if (!WidgetBlinker.INSTANCE.isBlinking(pvWidget)) WidgetBlinker.INSTANCE.add(pvWidget);
+                        } else if (WidgetBlinker.INSTANCE.isBlinking(pvWidget)) {
                             WidgetBlinker.INSTANCE.remove(pvWidget);
                             pvWidget.resetBeastBlink();
-                            log.fine("BeastAlarmListener (" + pvName + "): removing PVWidget from WidgetBlinker");
                         }
                     }
                 })
@@ -807,7 +818,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             AlarmSeverity borderSeverity = alarmSeverity;
 
             synchronized (beastInfo) {
-	            if (isBeastAndActiveAlarm())
+	            if (isBeastAlarmAndConnected() && isBeastAlarmActiveUnack())
 	                if (beastInfo.beastAlertBlinkState == 0) {
 	                    // use default border
 	                    borderSeverity = AlarmSeverity.NONE;
@@ -846,15 +857,15 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     }
 
     public Color calculateBackColor() {
-        return calculateAlarmColor(isBackColorAlarmSensitive, saveBackColor, isBeastAndActiveAlarm());
+        return calculateAlarmColor(isBackColorAlarmSensitive, saveBackColor);
     }
 
     public Color calculateForeColor() {
-        return calculateAlarmColor(isForeColorAlarmSensitive, saveForeColor, isBeastAndActiveAlarm());
+        return calculateAlarmColor(isForeColorAlarmSensitive, saveForeColor);
     }
 
     public Color calculateAlarmColor(boolean isSensitive, Color saveColor) {
-        return calculateAlarmColor(isSensitive, saveColor, false);
+        return calculateAlarmColor(isSensitive, saveColor, isBeastAlarmAndConnected() && isBeastAlarmActiveUnack());
     }
 
     public Color calculateAlarmColor(boolean isSensitive, Color saveColor, boolean isBeastAlertFeedback) {

@@ -84,9 +84,9 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
             return new BaseEditPartActionFilter(){
             @Override
             public boolean testAttribute(Object target, String name, String value) {
-                if (name.equals("beastAlarmPV") && value.equalsIgnoreCase("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$
+                if (name.equals("beastAlarmPVActionable") && value.equalsIgnoreCase("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$
                 {
-                	return getPVWidgetEditpartDelegate().isBeastAlarmAndConnected();
+                	return getPVWidgetEditpartDelegate().isBeastAlarmAndActionable();
                 }
                 return super.testAttribute(target, name, value);
             }

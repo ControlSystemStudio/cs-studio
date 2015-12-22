@@ -39,6 +39,9 @@ public final class BeastAlarmInfo {
         return alarmPVChannelName;
     }
 
+    /** @return <code>true</code> if (latched) severity indicates an acknowledged state,
+     *          <code>false</code> for unacknowledged alarm or OK 
+     */
     public boolean isAcknowledged() {
         return !latchedSeverity.isActive() && latchedSeverity != BeastAlarmSeverityLevel.OK;
     }
