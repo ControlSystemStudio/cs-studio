@@ -90,4 +90,13 @@ public enum WidgetBlinker {
             active = !widgets.isEmpty();
         };
     }
+    
+    /** Check whether the given PV editpart delegate exists in the `blink subscribers` list.
+     * 
+     * @param pvw PVWidgetEditpartDelegate to check for existence in the list of widgets for blinking
+     * @return <code>true</code> if WidgetBlinker's blink list contains pvw, <code>false</code> otherwise.
+     */
+    public boolean isBlinking(PVWidgetEditpartDelegate pvw) {
+    	return widgets.contains(pvw);
+    }
 }
