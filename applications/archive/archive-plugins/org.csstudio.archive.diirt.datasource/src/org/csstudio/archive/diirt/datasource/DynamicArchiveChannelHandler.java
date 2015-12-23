@@ -37,11 +37,13 @@ public class DynamicArchiveChannelHandler extends AbstractChannelHandler {
      * @param fullChannelName the full unique channel name
      * @param strippedChannelName stripped channel name (pv name that archiver understands)
      * @param binCount number of bins for optimised data retrieval
+     * @param optimised true if optimised algorithm should be used to fetch data or false for raw data
      * @param sources the sources to use
      */
     protected DynamicArchiveChannelHandler(String fullChannelName, String strippedChannelName, int binCount,
-        ArchiveSource... sources) {
+        boolean optimised, ArchiveSource... sources) {
         super(fullChannelName, strippedChannelName, binCount, sources);
+        this.optimised = optimised;
     }
 
     /*
