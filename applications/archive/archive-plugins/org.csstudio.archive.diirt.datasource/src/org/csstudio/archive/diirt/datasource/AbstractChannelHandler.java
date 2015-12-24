@@ -24,7 +24,7 @@ import org.diirt.vtype.VType;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<Boolean, ArchiveMessagePayload> {
+public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<Boolean, List<VType>> {
 
     protected static final Logger LOGGER = Logger.getLogger(AbstractChannelHandler.class.getName());
 
@@ -141,7 +141,7 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
         } else {
             values = loadValuesForTimeWindow(startTime, endTime, optimised);
         }
-        processMessage(new ArchiveMessagePayload(values));
+        processMessage(values);
     }
 
     /*
