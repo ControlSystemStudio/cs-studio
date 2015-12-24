@@ -14,5 +14,6 @@
     <module>org.csstudio.archive.reader.rdb.feature</module>
     <module>org.csstudio.archive.tools.feature</module>
     <module>org.csstudio.archive.reader.channelarchiver.feature</module>
+    <module>org.csstudio.archive.diirt.datasource.feature</module>
   </modules>
 </project>
