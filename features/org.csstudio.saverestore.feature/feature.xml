@@ -20,7 +20,7 @@ This feature does not provide any data provider; the desired provider needs to b
    </license>
 
    <requires>
-      <import plugin="org.csstudio.trends.databrowser2"/>
+      <import feature="org.csstudio.archive.diirt.datasource.feature" version="1.0.0.qualifier"/>
    </requires>
 
    <plugin
