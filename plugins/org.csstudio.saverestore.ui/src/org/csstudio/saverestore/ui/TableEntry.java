@@ -2,8 +2,10 @@ package org.csstudio.saverestore.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.csstudio.saverestore.Utilities;
+import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.util.time.Timestamp;
@@ -49,11 +51,11 @@ public class TableEntry {
     private StringProperty status = new SimpleStringProperty(this, "status", "OK");
     private ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this, "severity", AlarmSeverity.NONE);
     private ObjectProperty<VTypePair> value = new SimpleObjectProperty<>(this, "value",
-        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE));
+        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
     private ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue", VNoData.INSTANCE);
     private List<ObjectProperty<VTypePair>> compareValues = new ArrayList<>();
     private ObjectProperty<VTypePair> readback = new SimpleObjectProperty<>(this, "readback",
-        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE));
+        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
     private StringProperty readbackName = new SimpleStringProperty(this, "readbackName");
     private BooleanProperty liveStoredEqual = new SimpleBooleanProperty(this, "liveStoredEqual", true) {
         private boolean listenerSet = false;
@@ -65,6 +67,8 @@ public class TableEntry {
             }
         };
     };
+
+    private Optional<Threshold<?>> threshold = Optional.empty();
 
     /**
      * Returns the property that describes whether the live and stored values are identical. This property can only have
@@ -182,16 +186,14 @@ public class TableEntry {
             } else {
                 timestamp.set(Timestamp.now());
             }
-            value.set(new VTypePair(liveValue.get(), val));
-            for (ObjectProperty<VTypePair> o : compareValues) {
-                o.set(new VTypePair(val, o.get().value));
-            }
-            liveStoredEqual.set(Utilities.areValuesEqual(liveValue.get(), val));
+            value.set(new VTypePair(liveValue.get(), val, threshold));
+            compareValues.forEach(o -> o.set(new VTypePair(val, o.get().value, threshold)));
+            liveStoredEqual.set(Utilities.areValuesEqual(liveValue.get(), val, threshold));
         } else {
             for (int i = compareValues.size(); i < index; i++) {
                 compareValues.add(new SimpleObjectProperty<>(this, "CompareValue" + i));
             }
-            compareValues.get(index - 1).set(new VTypePair(valueProperty().get().value, val));
+            compareValues.get(index - 1).set(new VTypePair(valueProperty().get().value, val, threshold));
         }
     }
 
@@ -202,7 +204,7 @@ public class TableEntry {
      */
     public void setReadbackValue(VType val) {
         if (readback.get().value != val) {
-            readback.set(new VTypePair(liveValueProperty().get(), val));
+            readback.set(new VTypePair(liveValueProperty().get(), val, threshold));
         }
     }
 
@@ -213,9 +215,27 @@ public class TableEntry {
      */
     public void setLiveValue(VType val) {
         liveValue.set(val);
-        readback.set(new VTypePair(val, readback.get().value));
+        readback.set(new VTypePair(val, readback.get().value, threshold));
         VType stored = value.get().value;
-        value.set(new VTypePair(val, stored));
-        liveStoredEqual.set(Utilities.areValuesEqual(val, stored));
+        value.set(new VTypePair(val, stored, threshold));
+        liveStoredEqual.set(Utilities.areValuesEqual(val, stored, threshold));
+    }
+
+    /**
+     * Set the threshold value for this entry. All value comparisons related to this entry are calculated using the
+     * threshold (if it exists).
+     *
+     * @param threshold the threshold
+     */
+    public void setThreshold(Optional<Threshold<?>> threshold) {
+        if (!threshold.isPresent()) {
+            return;
+        }
+        this.threshold = threshold;
+        VType val = this.value.get().value;
+        this.value.set(new VTypePair(this.value.get().base, val, threshold));
+        this.liveStoredEqual.set(Utilities.areValuesEqual(liveValue.get(), val, threshold));
+        this.compareValues.forEach(e -> e.set(new VTypePair(val, e.get().value, threshold)));
+        this.readback.set(new VTypePair(this.readback.get().base, this.readback.get().value, threshold));
     }
 }

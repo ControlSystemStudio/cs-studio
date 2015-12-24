@@ -117,8 +117,12 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
             return -1;
         }
         int i = getStorageName().compareTo(o.getStorageName());
-        if (i == 0 && getBranch() != null) {
-            return getBranch().compareTo(o.getBranch());
+        if (i == 0) {
+            if (getBranch() != null) {
+                return getBranch().compareTo(o.getBranch());
+            } else if (o.getBranch() == null) {
+                return i;
+            }
         }
         return i;
     }

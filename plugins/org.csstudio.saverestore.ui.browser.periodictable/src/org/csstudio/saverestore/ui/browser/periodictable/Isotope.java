@@ -52,7 +52,7 @@ public class Isotope extends BaseLevel implements Serializable {
         try {
             e = Element.valueOf(parts[0].toUpperCase());
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("'" + parts[0] + "' is not a valid symbol name.");
+            throw new IllegalArgumentException("'" + parts[0] + "' is not a valid name.");
         }
         int neutrons = e.commonNeutrons;
         int charge = e.commonCharge;
@@ -70,7 +70,7 @@ public class Isotope extends BaseLevel implements Serializable {
 
         char pn = parts[2].charAt(parts[2].length() - 1);
         if (!(pn == 'n' || pn == 'p')) {
-            throw new IllegalArgumentException("The charge sign is not defined (p or n).");
+            throw new IllegalArgumentException("The charge sign is not defined (p or n) for " + storageName + ".");
         }
         charge = Integer.parseInt(parts[2].substring(0, parts[2].length() - 1));
         charge *= (pn == 'n' ? -1 : pn == 'p' ? 1 : 0);

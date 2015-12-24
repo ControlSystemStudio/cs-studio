@@ -169,7 +169,7 @@ public class RepositoryTree extends TreeView<String> {
             new FXTextInputDialog(owner.getSite().getShell(), "Folder Name", "Enter new folder name", null,
                 s -> names.contains(s) ? "Folder '" + s + "' already exists."
                     : s.isEmpty() ? "Folder name cannot be empty."
-                        : item.type == Type.BRANCH ? selector.validateBaseLevelName(s) : null).openAndWait()
+                        : item.type == Type.BRANCH ? Selector.validateBaseLevelName(s) : null).openAndWait()
                             .ifPresent(f -> {
                 if (item.type == Type.BRANCH) {
                     BrowsingTreeItem newItem = new BrowsingTreeItem(new BaseLevel(item.branch, f, f));

@@ -1,5 +1,6 @@
 package org.csstudio.ui.fx.util;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
@@ -73,6 +74,11 @@ public class FXTextInputDialog extends FXBaseDialog<String> {
         text.setMaxWidth(Double.MAX_VALUE);
         text.setPrefWidth(450);
         text.textProperty().addListener((a, o, n) -> validateInput());
+        text.setOnAction(e -> {
+            if (!okButton.isDisable()) {
+                buttonPressed(IDialogConstants.OK_ID);
+            }
+        });
         return new Scene(new BorderPane(text));
     }
 }

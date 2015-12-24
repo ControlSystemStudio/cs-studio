@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
 import javafx.scene.control.ComboBox;
+import javafx.scene.input.KeyCode;
 
 /**
  *
@@ -104,6 +106,13 @@ public class FXComboInputDialog<T> extends FXBaseDialog<T> {
         combo.setMaxWidth(Double.MAX_VALUE);
         combo.setPrefWidth(450);
         combo.getItems().addAll(values);
+        combo.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                if (!okButton.isDisable()) {
+                    buttonPressed(IDialogConstants.OK_ID);
+                }
+            }
+        });
         return new Scene(combo);
     }
 

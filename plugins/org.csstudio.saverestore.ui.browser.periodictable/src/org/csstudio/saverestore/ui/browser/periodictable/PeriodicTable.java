@@ -51,7 +51,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         + "-fx-font-size: 20; -fx-font-weight: bold; "
         + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
 
-    private ObjectProperty<Isotope> isotopeProperty;
+    private ObjectProperty<Isotope> selectedBaseLevelProperty;
     private ObjectProperty<Isotope> internalIsotopeProperty;
     private ObjectProperty<List<Isotope>> availableIsotopesProperty;
 
@@ -213,7 +213,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         GridPane isotopePanel = new GridPane();
         isotopeButton = new Button("---");
         isotopeButton.setCursor(Cursor.HAND);
-        isotopeButton.setOnAction((e) -> baseLevelProperty().setValue(internalIsotopeProperty().getValue()));
+        isotopeButton.setOnAction((e) -> selectedBaseLevelProperty().setValue(internalIsotopeProperty().getValue()));
         isotopeButton.setPadding(new Insets(1, 2, 1, 2));
         isotopeButton.setPrefHeight(32);
         isotopeButton.setPrefWidth(110);
@@ -414,7 +414,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
                         isotopeCombo.selectionModelProperty().get().select(n);
                     }
 
-                    Isotope iso = baseLevelProperty().getValue();
+                    Isotope iso = selectedBaseLevelProperty().getValue();
                     if (!n.equals(iso) && animation.getStatus() != Status.RUNNING) {
                         isotopeButton.setStyle(ANIMATED_STYLE);
                         animation.play();
@@ -433,13 +433,13 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#baseLevelProperty()
+     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#selectedBaseLevelProperty()
      */
     @Override
-    public Property<Isotope> baseLevelProperty() {
-        if (isotopeProperty == null) {
-            isotopeProperty = new SimpleObjectProperty<Isotope>(this, "selectedIsotope", null);
-            isotopeProperty.addListener((a, o, n) -> {
+    public Property<Isotope> selectedBaseLevelProperty() {
+        if (selectedBaseLevelProperty == null) {
+            selectedBaseLevelProperty = new SimpleObjectProperty<Isotope>(this, "selectedBaseLevel", null);
+            selectedBaseLevelProperty.addListener((a, o, n) -> {
                 internalIsotopeProperty().setValue(n);
                 animation.pause();
                 animation.jumpTo(Duration.seconds(0));
@@ -447,7 +447,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
                 isotopeButton.setStyle(null);
             });
         }
-        return isotopeProperty;
+        return selectedBaseLevelProperty;
     }
 
     /*
@@ -486,7 +486,23 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     @Override
     public List<Isotope> transform(List<? extends BaseLevel> list) {
         List<Isotope> ret = new ArrayList<>(list.size());
-        list.forEach(e -> ret.add(Isotope.of(e.getStorageName())));
+        list.forEach(e -> {
+            try {
+                ret.add(Isotope.of(e.getStorageName()));
+            } catch (IllegalArgumentException ex) {
+                // ignore
+            }
+        });
         return Collections.unmodifiableList(ret);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#getReadableName()
+     */
+    @Override
+    public String getReadableName() {
+        return "Periodic Table";
     }
 }

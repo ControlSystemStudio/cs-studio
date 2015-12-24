@@ -36,7 +36,10 @@ public interface BaseLevelBrowser<T extends BaseLevel> {
     public String getTitleFor(Optional<T> baseLevel, Optional<String> branch);
 
     /**
-     * @return the JavaFX node, which contains all the UI nodes used by this browser
+     * Returns the JavaFX node which all UI nodes of this browser. This method may be called more than once and should
+     * always return the same value.
+     *
+     * @return the UI part of the browser
      */
     public Node getFXContent();
 
@@ -66,7 +69,16 @@ public interface BaseLevelBrowser<T extends BaseLevel> {
     public List<T> transform(List<? extends BaseLevel> list);
 
     /**
+     * Returns the property that provides the selected base level.
+     *
      * @return the property that provides the selected base level
      */
-    public Property<T> baseLevelProperty();
+    public Property<T> selectedBaseLevelProperty();
+
+    /**
+     * Returns the human readable name for this browser used for presentation only.
+     *
+     * @return the readable name
+     */
+    public String getReadableName();
 }

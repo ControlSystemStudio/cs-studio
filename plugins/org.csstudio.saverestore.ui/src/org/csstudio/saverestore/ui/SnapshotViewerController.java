@@ -10,21 +10,17 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 
-import org.csstudio.archive.reader.ArchiveReader;
-import org.csstudio.archive.reader.ArchiveRepository;
-import org.csstudio.archive.reader.ValueIterator;
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.DataProviderWrapper;
@@ -36,23 +32,19 @@ import org.csstudio.saverestore.Utilities.VTypeComparison;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.GUIUpdateThrottle;
 import org.csstudio.saverestore.ui.util.VTypePair;
-import org.csstudio.trends.databrowser2.model.ArchiveDataSource;
-import org.csstudio.trends.databrowser2.preferences.Preferences;
 import org.csstudio.ui.fx.util.FXMessageDialog;
-import org.csstudio.ui.fx.util.FXTextInputDialog;
-import org.csstudio.ui.fx.util.FXTextListInputDialog;
 import org.diirt.datasource.PVManager;
 import org.diirt.datasource.PVReader;
-import org.diirt.datasource.PVReaderEvent;
-import org.diirt.datasource.PVReaderListener;
 import org.diirt.datasource.PVWriter;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Time;
+import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -78,6 +70,8 @@ public class SnapshotViewerController {
     public static final String FEXT_SNP = ".snp";
     /** Multiple snapshots (what you see) file extension */
     public static final String FEXT_CSV = ".csv";
+
+    private static final Executor UI_EXECUTOR = command -> Platform.runLater(command);
 
     private class PV {
         final PVReader<VType> reader;
@@ -123,6 +117,7 @@ public class SnapshotViewerController {
     private final ArrayList<VSnapshot> snapshots = new ArrayList<>(10);
     private final Map<String, TableEntry> items = new LinkedHashMap<>();
     private final Map<String, String> readbacks = new HashMap<>();
+    private final Map<String, Threshold<?>> thresholds = new HashMap<>();
     private final Map<TableEntry, PV> pvs = new LinkedHashMap<>();
     private final GUIUpdateThrottle throttle = new GUIUpdateThrottle(20, TABLE_UPDATE_RATE) {
         @Override
@@ -235,7 +230,8 @@ public class SnapshotViewerController {
         numberOfSnapshots = 1;
         connectPVs();
         snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
-        return filter(items.values(),false);
+        updateThresholds();
+        return filter(items.values(), false);
     }
 
     /**
@@ -279,8 +275,29 @@ public class SnapshotViewerController {
             if (!snapshotSaveableProperty.get()) {
                 snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
             }
-            return filter(items.values(),false);
+            updateThresholds();
+            return filter(items.values(), false);
         }
+    }
+
+    private void updateThresholds() {
+        ExtensionPointLoader.getInstance().getParametersProvider()
+            .ifPresent(e -> {
+                List<String> missingThresholds = new ArrayList<>();
+                items.forEach((k, v) -> {
+                    if (thresholds.containsKey(k)) {
+                        v.setThreshold(Optional.of(thresholds.get(k)));
+                    } else {
+                        missingThresholds.add(k);
+                    }
+                });
+                if (!missingThresholds.isEmpty()) {
+                    Map<String, Threshold<?>> rbs = e.getThresholds(missingThresholds);
+                    thresholds.putAll(rbs);
+                }
+                items.forEach((k,v) -> v.setThreshold(Optional.ofNullable(thresholds.get(k))));
+                connectPVs();
+            });
     }
 
     /**
@@ -309,7 +326,7 @@ public class SnapshotViewerController {
             newSnapshots.addAll(snapshots);
         }
         newSnapshots.forEach(e -> addSnapshot(e));
-        return filter(items.values(),false);
+        return filter(items.values(), false);
     }
 
     /**
@@ -341,7 +358,7 @@ public class SnapshotViewerController {
             newSnapshots.addAll(snapshots);
         }
         newSnapshots.forEach(e -> addSnapshot(e));
-        return filter(items.values(),false);
+        return filter(items.values(), false);
     }
 
     /**
@@ -488,11 +505,12 @@ public class SnapshotViewerController {
                 StringBuilder sb = new StringBuilder(200);
                 sb.append(e.pvNameProperty().get()).append(',');
                 VTypePair pair = e.valueProperty().get();
-                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base)).append('"').append(',');
+                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base, pair.threshold)).append('"')
+                    .append(',');
                 for (int i = 1; i < snapshots.size(); i++) {
                     pair = e.compareValueProperty(i).get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
-                        ((VTypePair) pair).base);
+                        ((VTypePair) pair).base, ((VTypePair) pair).threshold);
                     sb.append('"').append(vtc.string).append('"').append(',');
                 }
                 VType v = e.liveValueProperty().get();
@@ -505,7 +523,7 @@ public class SnapshotViewerController {
                     sb.append(',').append(e.readbackNameProperty().get());
                     pair = e.readbackProperty().get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
-                        ((VTypePair) pair).base);
+                        ((VTypePair) pair).base, ((VTypePair) pair).threshold);
                     sb.append(',').append('"').append(vtc.string).append('"').append(',');
                     if (pair.value instanceof Time) {
                         sb.append(((Time) pair.value).getTimestamp());
@@ -549,16 +567,17 @@ public class SnapshotViewerController {
      * @return the snapshot as read from file
      */
     public Optional<VSnapshot> openFromFile(File file) {
-        try (FileInputStream fis = new FileInputStream(file)){
+        try (FileInputStream fis = new FileInputStream(file)) {
             String p = file.getAbsolutePath().replace('\\', '/');
             int idx = p.indexOf('/');
             if (idx > -1) {
-                p = p.substring(idx+1);
+                p = p.substring(idx + 1);
             }
             SnapshotContent sc = FileUtilities.readFromSnapshot(fis);
             Timestamp snapshotTime = Timestamp.of(sc.date);
             BeamlineSet set = new BeamlineSet(new Branch("master", "master"), Optional.empty(), p.split("/"), null);
-            Snapshot descriptor = new Snapshot(set, sc.date, "No Comment", "OS");
+            Snapshot descriptor = new Snapshot(set, sc.date, "No Comment\nLoaded from file " + file.getAbsolutePath(),
+                "OS");
             return Optional.of(new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, snapshotTime));
         } catch (Exception e) {
             Selector.reportException(e, owner.getSite().getShell());
@@ -679,11 +698,13 @@ public class SnapshotViewerController {
      * readback assigned yet and asks the readback provider for the readback names. Readbacks that are known are then
      * assigned to table entries and connected to PVs.
      *
+     * @param show true to show the readbacks or false to hide them
+     * @param consumer consumer that is notified upon completion of the request (always called on non ui thread)
      */
     public void showReadbacks(boolean show, final Consumer<List<TableEntry>> consumer) {
         this.showReadbacks = show;
         if (show) {
-            ExtensionPointLoader.getInstance().getReadbackProvider()
+            ExtensionPointLoader.getInstance().getParametersProvider()
                 .ifPresent(e -> SaveRestoreService.getInstance().execute("Load readback names", () -> {
                     List<String> reads = new ArrayList<>();
                     items.keySet().forEach(k -> {
@@ -692,18 +713,18 @@ public class SnapshotViewerController {
                         }
                     });
                     if (!reads.isEmpty()) {
-                        Map<String, String> rbs = e.getReadbacks(reads);
+                        Map<String, String> rbs = e.getReadbackNames(reads);
                         for (String r : reads) {
                             readbacks.put(r, rbs.get(r));
                         }
                     }
                     items.values().forEach(t -> t.readbackNameProperty().set(readbacks.get(t.pvNameProperty().get())));
                     connectPVs();
-                    consumer.accept(filter(items.values(),hideEqualItems));
+                    consumer.accept(filter(items.values(), hideEqualItems));
                 }));
         } else {
             SaveRestoreService.getInstance().execute("Load readback names",
-                () -> consumer.accept(filter(items.values(),hideEqualItems)));
+                () -> consumer.accept(filter(items.values(), hideEqualItems)));
         }
     }
 
@@ -739,94 +760,62 @@ public class SnapshotViewerController {
     }
 
     /**
-     * Shows the dialog to enter the name of the PV and to select the archive source. After the pv has been successfully
-     * added the consumer is notified on the UI thread.
+     * Adds a pv from the archive to all snapshots. The value of the PV at the timestamp of each snapshot is loaded and
+     * is set as the stored value of that PV for each snapshot. The entry for the pv is added and consumer is notified
+     * on the UI thread. The value from the archive is loaded asynchronously and will set on the item in the background.
+     * This method must be called on the save restore thread.
      *
-     * @param consumer the consumer that is notifier when the loading completes and receives the created table entry
+     * @param pvName the name of the PV to add
+     * @param consumer the consumer that is notified when the loading completes and receives the created table entry
+     *            (consumer is always notified on the UI thread)
      */
-    public void addPVFromArchive(final Consumer<TableEntry> consumer) {
-        // TODO this is temporary - it will be handled by diirt when archive source is ready
-        ArchiveDataSource[] sources = Preferences.getArchives();
-        if (sources.length == 0) {
-            FXMessageDialog.openWarning(owner.getSite().getShell(), "Add Archived PV",
-                "No archived sources specified.");
-            return;
-        } else if (sources.length == 1) {
-            FXTextInputDialog dialog = new FXTextInputDialog(owner.getSite().getShell(), "Add Archived PV",
-                "Enter the name of the PV from the archiving system that you wish to add.", "",
-                e -> e == null || e.isEmpty() ? "The PV name cannot be empty" : null);
-            dialog.openAndWait().ifPresent(e -> addPVFromArchive(e, sources[0], consumer));
-        } else {
-            FXTextListInputDialog<ArchiveDataSource> dialog = new FXTextListInputDialog<>(owner.getSite().getShell(),
-                "Add Archived PV",
-                "Enter the name of the PV from the archiving system that you wish to add and select the archive source.",
-                e -> e == null || e.isEmpty() ? "The PV name cannot be empty" : null, Arrays.asList(sources));
-            dialog.openAndWait().ifPresent(e -> addPVFromArchive(e, dialog.getSelectedOption(), consumer));
-        }
-    }
-
-    private void addPVFromArchive(final String pvName, final ArchiveDataSource source,
-        final Consumer<TableEntry> consumer) {
+    @SuppressWarnings("unchecked")
+    public void addPVFromArchive(final String pvName, final Consumer<TableEntry> consumer) {
         if (items.containsKey(pvName)) {
             FXMessageDialog.openInformation(owner.getSite().getShell(), "Add Archived PV",
                 "The PV '" + pvName + "' is already in the list.");
             return;
         }
-        SaveRestoreService.getInstance().execute("Add archived PV", () -> {
-            try {
-                ArchiveReader archive = ArchiveRepository.getInstance().getArchiveReader(source.getUrl());
-                List<VType> values = new ArrayList<>();
-                List<VSnapshot> snaps = new ArrayList<>();
-                synchronized (snapshots) {
-                    snaps.addAll(snapshots);
-                }
-                for (VSnapshot s : snaps) {
-                    Timestamp start = s.getTimestamp();
-                    Timestamp end = Timestamp.of(new Date(start.toDate().getTime() + 1));
-                    ValueIterator iterator = archive.getRawValues(source.getKey(), pvName, start, end);
-                    VType temp = null;
-                    VType value = null;
-                    while (iterator.hasNext()) {
-                        // find the first value that has a timestamp greater than start
-                        temp = iterator.next();
-                        if (temp instanceof Time) {
-                            if (((Time) temp).getTimestamp().compareTo(start) > 0) {
-                                break;
-                            }
-                        }
-                        value = temp;
-                    }
-
-                    if (value == null) {
-                        value = VNoData.INSTANCE;
-                    }
-                    values.add(value);
-                }
-
-                final TableEntry e = new TableEntry();
-                e.idProperty().set(items.size() + 1);
-                items.put(pvName, e);
-                e.pvNameProperty().setValue(pvName);
-                for (int i = 0; i < values.size(); i++) {
-                    snaps.get(i).addPV(pvName, false, values.get(i));
-                    e.setSnapshotValue(values.get(i), i);
-                }
-                e.selectedProperty().set(false);
-
-                PVReader<VType> reader = PVManager.read(channel(pvName, VType.class, VType.class))
-                    .readListener(new PVReaderListener<VType>() {
-                    @Override
-                    public void pvChanged(PVReaderEvent<VType> event) {
-                        throttle.trigger();
-                    }
-                }).maxRate(TimeDuration.ofMillis(100));
-                PVWriter<Object> writer = PVManager.write(channel(pvName)).timeout(TimeDuration.ofMillis(1000)).async();
-                pvs.put(e, new PV(reader, writer, null));
-                Platform.runLater(() -> consumer.accept(e));
-            } catch (Exception e) {
-                Selector.reportException(e, owner.getSite().getShell());
+        try {
+            final List<VSnapshot> snaps = new ArrayList<>();
+            synchronized (snapshots) {
+                snaps.addAll(snapshots);
             }
-        });
+
+            final TableEntry entry = new TableEntry();
+            entry.idProperty().set(items.size() + 1);
+            entry.pvNameProperty().setValue(pvName);
+            entry.selectedProperty().set(false);
+
+            for (int i = 0; i < snaps.size(); i++) {
+                final int index = i;
+                Timestamp start = snaps.get(i).getTimestamp();
+                String name = "archive://" + pvName + "?time=" + start.toString();
+                PVManager.read(channel(name, VTable.class, VType.class)).readListener(x -> {
+                    if (x.isValueChanged()) {
+                        VTable value = x.getPvReader().getValue();
+                        List<VType> archiveValues = (List<VType>) ((VTable) value).getColumnData(0);
+                        if (!archiveValues.isEmpty()) {
+                            VType v = archiveValues.get(0);
+                            snaps.get(index).addPV(pvName, false, v);
+                            entry.setSnapshotValue(v, index);
+                        }
+                        x.getPvReader().close();
+                    } else if (x.isExceptionChanged()) {
+                        x.getPvReader().close();
+                    }
+                }).timeout(TimeDuration.ofMillis(10000)).notifyOn(UI_EXECUTOR).maxRate(TimeDuration.ofMillis(100));
+            }
+
+            items.put(pvName, entry);
+            PVReader<VType> reader = PVManager.read(channel(pvName, VType.class, VType.class))
+                .readListener(x -> throttle.trigger()).maxRate(TimeDuration.ofMillis(100));
+            PVWriter<Object> writer = PVManager.write(channel(pvName)).timeout(TimeDuration.ofMillis(1000)).async();
+            pvs.put(entry, new PV(reader, writer, null));
+            Platform.runLater(() -> consumer.accept(entry));
+        } catch (Exception e) {
+            Selector.reportException(e, owner.getSite().getShell());
+        }
     }
 
     /**

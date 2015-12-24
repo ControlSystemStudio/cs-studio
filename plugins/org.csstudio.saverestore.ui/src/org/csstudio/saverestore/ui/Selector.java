@@ -128,10 +128,10 @@ public class Selector {
         }
 
         @Override
-        public void dataImported(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBase) {
+        public void dataImported(BeamlineSet source, Branch toBranch, final Optional<BaseLevel> toBase) {
             Branch selected = selectedBranchProperty().get();
             if (selected.equals(toBranch)) {
-                BaseLevel base = selectedBaseLevelProperty().get();
+                BaseLevel base = source.getBaseLevel().orElse(null);
                 if (base != null && toBase.isPresent() && base.equals(toBase.get())) {
                     SaveRestoreService.getInstance().execute("Load beamline sets",
                         () -> reloadBeamlineSets(base, toBranch));
@@ -139,7 +139,7 @@ public class Selector {
                     SaveRestoreService.getInstance().execute("Load beamline sets",
                         () -> reloadBeamlineSets(base, toBranch));
                 } else {
-                    SaveRestoreService.getInstance().execute("Load base levels", () -> readBaseLevels());
+                    SaveRestoreService.getInstance().execute("Load base levels", () -> readBaseLevels(true));
                 }
             }
             // if branches are different, do nothing
@@ -228,7 +228,7 @@ public class Selector {
                     }
                     Branch oldValue = get();
                     if (oldValue != null && oldValue.equals(newValue)) {
-                        readBaseLevels();
+                        readBaseLevels(false);
                         return;
                     }
                     super.set(newValue);
@@ -236,13 +236,13 @@ public class Selector {
                 }
             };
             selectedBranch.addListener((a, o, n) -> {
-                readBaseLevels();
+                readBaseLevels(false);
             });
         }
         return selectedBranch;
     }
 
-    private void readBaseLevels() {
+    private void readBaseLevels(boolean reloadBeamlineSets) {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
         if (provider.areBaseLevelsSupported()) {
             final Branch branch = selectedBranchProperty().get();
@@ -251,6 +251,9 @@ public class Selector {
                     final BaseLevel[] baseLevels = provider.getBaseLevels(branch);
                     runOnGUIThread(() -> ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
                         .set(Collections.unmodifiableList(Arrays.asList(baseLevels))));
+                    if (reloadBeamlineSets) {
+                        readBeamlineSets();
+                    }
                 } catch (DataProviderException e) {
                     reportException(e, owner.getSite().getShell());
                 }
@@ -399,7 +402,7 @@ public class Selector {
      * @param storageName the proposed name
      * @return null if proposed name is OK, or string describing the problem if not OK
      */
-    public String validateBaseLevelName(String storageName) {
+    public static String validateBaseLevelName(String storageName) {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
         if (provider.areBaseLevelsSupported()) {
             return ExtensionPointLoader.getInstance().getBaseLevelValidator().map((e) -> e.validate(storageName))
@@ -421,7 +424,7 @@ public class Selector {
      * @param shell the shell to use for the message dialog parent (cannot be null)
      */
     public static void reportException(Exception e, Shell shell) {
-        SaveRestoreService.LOGGER.log(Level.WARNING, "Error accessing data storage", e);
+        SaveRestoreService.LOGGER.log(Level.FINE, "Error accessing data storage", e);
         shell.getDisplay().syncExec(() -> {
             StringBuilder sb = new StringBuilder();
             sb.append(e.getMessage());

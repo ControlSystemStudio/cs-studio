@@ -174,5 +174,17 @@
          </variable>
       </sourceProvider>
    </extension>
+   <extension
+         point="org.eclipse.ui.activities">
+      <activity
+            id="org.csstudio.saverestore.ui.browser.activity"
+            name="Save Restore Activity">
+      </activity>
+      <activityPatternBinding
+            activityId="org.csstudio.saverestore.ui.browser.activity"
+            pattern=".*org.csstudio.logbook.ui.OpenLogEntryUpdateDialog.*">
+            <!--pattern="org.csstudio.ui.menu.popup.processvariable"-->
+      </activityPatternBinding>
+   </extension>
 
 </plugin>

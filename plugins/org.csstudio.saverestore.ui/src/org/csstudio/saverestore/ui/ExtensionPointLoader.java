@@ -16,7 +16,7 @@ import org.eclipse.ui.PartInitException;
 /**
  *
  * <code>ExtensionPointLoader</code> is the utility class that loads the {@link ValueImporter}s and
- * {@link ReadbackProvider}.
+ * {@link ParametersProvider}.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -26,7 +26,7 @@ public final class ExtensionPointLoader {
     private static final String BASE_LEVEL_VALIDATOR_EXT_POINT = "org.csstudio.saverestore.ui.baselevelvalidator";
 
     private List<ValueImporterWrapper> importers;
-    private Optional<ReadbackProvider> readbackProvider;
+    private Optional<ParametersProvider> parametersProvider;
     private Optional<InputValidator<String>> baseLevelValidator;
 
     private static final ExtensionPointLoader INSTANCE = new ExtensionPointLoader();
@@ -68,31 +68,31 @@ public final class ExtensionPointLoader {
     }
 
     /**
-     * Returns the registered readback provider if it exists.
+     * Returns the registered parameters provider if it exists.
      *
-     * @return returns readback provider
+     * @return returns parameters provider
      */
-    public synchronized Optional<ReadbackProvider> getReadbackProvider() {
-        if (readbackProvider == null) {
-            ReadbackProvider finder = null;
+    public synchronized Optional<ParametersProvider> getParametersProvider() {
+        if (parametersProvider == null) {
+            ParametersProvider finder = null;
             try {
                 IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
-                IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(ReadbackProvider.EXT_POINT);
+                IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(ParametersProvider.EXT_POINT);
                 if (confElements.length > 1) {
                     throw new PartInitException(
                         "Cannot instantiate readback provider. Only one provider can be defined, but "
                             + confElements.length + " were found.");
                 }
                 for (IConfigurationElement element : confElements) {
-                    finder = (ReadbackProvider) element.createExecutableExtension("readbackprovider");
+                    finder = (ParametersProvider) element.createExecutableExtension("parametersprovider");
                 }
             } catch (CoreException e) {
                 SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore readback provider could not be loaded.",
                     e);
             }
-            readbackProvider = Optional.ofNullable(finder);
+            parametersProvider = Optional.ofNullable(finder);
         }
-        return readbackProvider;
+        return parametersProvider;
     }
 
     /**

@@ -9,10 +9,10 @@
       </importer>
    </extension>
    <extension
-         point="org.csstudio.saverestore.ui.readbackprovider">
-      <readbackprovider
-            readbackprovider="org.csstudio.saverestore.demo.Readback">
-      </readbackprovider>
+         point="org.csstudio.saverestore.ui.parametersprovider">
+      <parametersprovider
+            parametersprovider="org.csstudio.saverestore.demo.Readback">
+      </parametersprovider>
    </extension>
 
 

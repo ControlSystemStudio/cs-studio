@@ -2,6 +2,7 @@ package org.csstudio.ui.fx.util;
 
 import java.util.List;
 
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
@@ -80,6 +81,11 @@ public class FXTextListInputDialog<T> extends FXBaseDialog<String> {
         text = new TextField();
         text.setMaxWidth(Double.MAX_VALUE);
         text.textProperty().addListener((a, o, n) -> validateInput());
+        text.setOnAction(e -> {
+            if (!okButton.isDisable()) {
+                buttonPressed(IDialogConstants.OK_ID);
+            }
+        });
         list = new ListView<>();
         list.setMaxWidth(Double.MAX_VALUE);
         list.getItems().addAll(options);

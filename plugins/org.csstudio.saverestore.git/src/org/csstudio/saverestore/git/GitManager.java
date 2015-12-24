@@ -483,15 +483,15 @@ public class GitManager {
         path = path.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
 
         String rev = fromThisOneBack.isPresent() ? fromThisOneBack.get().getParameters().get(PARAM_GIT_REVISION) : null;
-        List<String> fileRevisions = findCommitsFor(path, numberOfRevisions, Optional.ofNullable(rev));
+        List<RevCommit> fileRevisions = findCommitsFor(path, numberOfRevisions, Optional.ofNullable(rev));
         Map<String, RevTag> tags = loadTagsForRevisions(fileRevisions);
         String branch = beamlineSet.getBranch().getShortName();
-        for (String revision : fileRevisions) {
+        for (RevCommit commit : fileRevisions) {
+            String revision = commit.getName();
             if (rev != null && revision.equals(rev)) {
                 // do not return the revision that the client already knows
                 continue;
             }
-            RevCommit commit = getCommitFromRevision(revision);
             MetaInfo meta = getMetaInfoFromCommit(commit);
             Map<String, String> parameters = new HashMap<>();
             parameters.put(PARAM_GIT_REVISION, revision);
@@ -722,7 +722,7 @@ public class GitManager {
                 // remove the existing tag
                 String revision = snapshot.getParameters().get(PARAM_GIT_REVISION);
                 RevCommit commit = getCommitFromRevision(revision);
-                RevTag existingTag = loadTagsForRevisions(Arrays.asList(revision)).get(revision);
+                RevTag existingTag = loadTagsForRevisions(Arrays.asList(commit)).get(revision);
                 if (existingTag != null) {
                     git.tagDelete().setTags(existingTag.getTagName()).call();
                     RefSpec refSpec = new RefSpec().setSource(null)
@@ -767,16 +767,16 @@ public class GitManager {
      * @throws GitAPIException if there was an error loading the tags
      * @throws IOException in case of an IO error
      */
-    private Map<String, RevTag> loadTagsForRevisions(List<String> revisions) throws GitAPIException, IOException {
+    private Map<String, RevTag> loadTagsForRevisions(List<RevCommit> revisions) throws GitAPIException, IOException {
         Map<String, Ref> tags = repository.getTags();
         Map<String, RevTag> ret = new HashMap<>();
         try (RevWalk walk = new RevWalk(repository)) {
-            for (String rev : revisions) {
-                String s = Git.wrap(repository).describe().setTarget(ObjectId.fromString(rev)).call();
+            for (RevCommit rev : revisions) {
+                String s = Git.wrap(repository).describe().setTarget(rev).call();
                 Ref tt = tags.get(s);
                 if (tt != null) {
                     RevTag t = walk.parseTag(tt.getObjectId());
-                    ret.put(rev, t);
+                    ret.put(rev.getName(), t);
                 }
             }
         }
@@ -945,9 +945,9 @@ public class GitManager {
      *
      * @return all revisions of the given file.
      */
-    private List<String> findCommitsFor(String filePath, int numberOfsnapshots, Optional<String> fromRevisionBack)
+    private List<RevCommit> findCommitsFor(String filePath, int numberOfsnapshots, Optional<String> fromRevisionBack)
         throws GitAPIException, IOException {
-        List<String> commitsList = new ArrayList<>();
+        List<RevCommit> commitsList = new ArrayList<>();
         ObjectId obj = fromRevisionBack.isPresent() ? ObjectId.fromString(fromRevisionBack.get())
             : repository.resolve(Constants.HEAD);
         LogCommand log = git.log().add(obj).addPath(filePath);
@@ -960,8 +960,35 @@ public class GitManager {
             log.setMaxCount(numberOfsnapshots);
         }
         Iterable<RevCommit> commits = log.call();
-        for (RevCommit commit : commits) {
-            commitsList.add(commit.getName());
+        //in theory diff is not needed here if everybody only used the Save and Restore application on this repository
+        //however, if someone manually changed the path to a file there can be an issue. Doing a diff increases the
+        //search time for ~70%
+        try (RevWalk revWalk = new RevWalk(repository); ObjectReader objectReader = repository.newObjectReader()) {
+            for (RevCommit commit : commits) {
+                boolean renamed = false;
+                AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
+                if (commit.getParents().length != 0) {
+                    RevCommit parentCommit = revWalk.parseCommit(commit.getParents()[0].getId());
+                    oldTreeIterator = new CanonicalTreeParser(null, objectReader, parentCommit.getTree());
+                }
+                AbstractTreeIterator newTreeIterator = new CanonicalTreeParser(null, objectReader, commit.getTree());
+                try (DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE)) {
+                    diffFormatter.setRepository(repository);
+                    diffFormatter.setDiffComparator(RawTextComparator.DEFAULT);
+                    diffFormatter.setDetectRenames(true);
+                    List<DiffEntry> diffs = diffFormatter.scan(oldTreeIterator, newTreeIterator);
+                    for (DiffEntry diff : diffs) {
+                        if (diff.getChangeType() == org.eclipse.jgit.diff.DiffEntry.ChangeType.DELETE
+                            || diff.getChangeType() == org.eclipse.jgit.diff.DiffEntry.ChangeType.RENAME) {
+                            renamed = true;
+                            break;
+                        }
+                    }
+                }
+                if (!renamed) {
+                    commitsList.add(commit);
+                }
+            }
         }
         return commitsList;
     }
@@ -1070,7 +1097,6 @@ public class GitManager {
                         .ifPresent(p -> pathToBeamline(p, repositoryPath, branch, FileType.SNAPSHOT).ifPresent(e -> {
                             MetaInfo meta = getMetaInfoFromCommit(commit);
                             Map<String, String> parameters = new HashMap<>();
-                            parameters.put(PARAM_GIT_REVISION, revision);
                             insertTagData(tag, parameters, revision, branch.getShortName());
                             snapshots.add(new Snapshot(e, meta.timestamp, meta.comment, meta.creator, parameters));
                         }));
@@ -1096,6 +1122,7 @@ public class GitManager {
             List<DiffEntry> diffs = diffFormatter.scan(oldTreeIterator, newTreeIterator);
             for (DiffEntry diff : diffs) {
                 if (diff.getChangeType() == org.eclipse.jgit.diff.DiffEntry.ChangeType.DELETE
+                    || diff.getChangeType() == org.eclipse.jgit.diff.DiffEntry.ChangeType.RENAME
                     || !diff.getNewPath().endsWith(FileType.SNAPSHOT.suffix)) {
                     continue;
                 }
@@ -1120,7 +1147,7 @@ public class GitManager {
         throws IOException, GitAPIException {
         List<Snapshot> snapshots = new ArrayList<>();
         setBranch(branch);
-        List<String> revisions = new ArrayList<>();
+        List<RevCommit> revisions = new ArrayList<>();
         try (RevWalk revWalk = new RevWalk(repository); ObjectReader objectReader = repository.newObjectReader()) {
             revWalk.markStart(getHeadCommit());
             revWalk.setRevFilter(MessageRevFilter.create(partialComment));
@@ -1137,6 +1164,7 @@ public class GitManager {
                     List<DiffEntry> diffs = diffFormatter.scan(oldTreeIterator, newTreeIterator);
                     for (DiffEntry diff : diffs) {
                         if (diff.getChangeType() == org.eclipse.jgit.diff.DiffEntry.ChangeType.DELETE
+                            || diff.getChangeType() == org.eclipse.jgit.diff.DiffEntry.ChangeType.RENAME
                             || !diff.getNewPath().endsWith(FileType.SNAPSHOT.suffix)) {
                             continue;
                         }
@@ -1144,7 +1172,7 @@ public class GitManager {
                             MetaInfo mi = getMetaInfoFromCommit(commit);
                             Map<String, String> parameters = new HashMap<>();
                             parameters.put(PARAM_GIT_REVISION, mi.revision);
-                            revisions.add(mi.revision);
+                            revisions.add(commit);
                             snapshots.add(new Snapshot(e, mi.timestamp, mi.comment, mi.creator, parameters));
                         });
                     }
@@ -1474,6 +1502,7 @@ public class GitManager {
      * @param branchName the branch name for which the tag should be loaded
      */
     private static void insertTagData(RevTag tag, Map<String, String> parameters, String revision, String branchName) {
+        parameters.put(PARAM_GIT_REVISION,revision);
         if (tag != null) {
             String niceTagName = tag.getTagName();
             boolean acceptTag = true;

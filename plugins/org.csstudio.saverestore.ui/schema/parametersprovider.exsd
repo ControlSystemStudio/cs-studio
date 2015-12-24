@@ -3,10 +3,10 @@
 <schema targetNamespace="org.csstudio.saverestore.ui" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.csstudio.saverestore.ui" id="readbackfinder" name="Readback PV Finder"/>
+         <meta.schema plugin="org.csstudio.saverestore.ui" id="parametersprovider" name="Parameters Provider"/>
       </appinfo>
       <documentation>
-         Provides an implementation of the readback finder, which provides the list of readback PV names for a given list of setpoint PV names.
+         Provides an implementation of the ParametersProvider, which provides the list of readback PV names and threshold values.
       </documentation>
    </annotation>
 
@@ -18,7 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="readbackprovider"/>
+            <element ref="parametersprovider"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -47,15 +47,15 @@
       </complexType>
    </element>
 
-   <element name="readbackprovider">
+   <element name="parametersprovider">
       <complexType>
-         <attribute name="readbackprovider" type="string" use="required">
+         <attribute name="parametersprovider" type="string" use="required">
             <annotation>
                <documentation>
-                  Implementation of the provider, which provides the list of readback pv names for a list of setpoint pv names.
+                  Implementation of the provider, which provides the list of readback pv names for a list of setpoint pv names and the threshold values for comparison of values.
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.csstudio.saverestore.ui.ReadbackProvider"/>
+                  <meta.attribute kind="java" basedOn=":org.csstudio.saverestore.ui.ParametersProvider"/>
                </appinfo>
             </annotation>
          </attribute>

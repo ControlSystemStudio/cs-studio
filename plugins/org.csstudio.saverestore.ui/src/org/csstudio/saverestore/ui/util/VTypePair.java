@@ -1,5 +1,8 @@
 package org.csstudio.saverestore.ui.util;
 
+import java.util.Optional;
+
+import org.csstudio.saverestore.data.Threshold;
 import org.diirt.vtype.VType;
 
 /**
@@ -13,16 +16,19 @@ public class VTypePair {
 
     public final VType base;
     public final VType value;
+    public final Optional<Threshold<?>> threshold;
 
     /**
      * Constructs a new pair.
      *
      * @param base the base value
      * @param value the value that can be compared to base
+     * @param threshold the threshold values used for comparison
      */
-    public VTypePair(VType base, VType value) {
+    public VTypePair(VType base, VType value, Optional<Threshold<?>> threshold) {
         this.base = base;
         this.value = value;
+        this.threshold = threshold;
     }
 
     /*

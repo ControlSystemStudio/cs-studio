@@ -76,7 +76,11 @@ public class GitDataProvider implements DataProvider {
             URI remote = Activator.getInstance().getGitURI();
             File dest = Activator.getInstance().getDestination();
             GitManager.deleteFolder(dest);
-            return grm.initialise(remote, dest);
+            boolean b = grm.initialise(remote, dest);
+            for (CompletionNotifier n : getNotifiers()) {
+                n.synchronised();
+            }
+            return b;
         } catch (GitAPIException e) {
             throw new DataProviderException("Could not initialise git repository.", e);
         }

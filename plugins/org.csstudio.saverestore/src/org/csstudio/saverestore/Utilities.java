@@ -6,7 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
+import org.csstudio.saverestore.data.Threshold;
 import org.diirt.util.array.ArrayBoolean;
 import org.diirt.util.array.ArrayByte;
 import org.diirt.util.array.ArrayDouble;
@@ -71,10 +73,12 @@ public final class Utilities {
     public static class VTypeComparison {
         public final String string;
         public final int valuesEqual;
+        public final boolean withinThreshold;
 
-        private VTypeComparison(String string, int equal) {
+        private VTypeComparison(String string, int equal, boolean withinThreshold) {
             this.string = string;
             this.valuesEqual = equal;
+            this.withinThreshold = withinThreshold;
         }
     }
 
@@ -375,76 +379,99 @@ public final class Utilities {
      * If the base value and the transformed value are both of a {@link VNumber} type, the difference of the transformed
      * value to the base value is added to the returned string.
      *
-     * @param type the value to transform
-     * @param baseValue the base value to compare the transformed value to
+     * @param value the value to compare
+     * @param baseValue the base value to compare the value to
+     * @param threshold the threshold values to use for comparing the values, if defined and difference is within
+     *      threshold limits the values are equal
      * @return string representing the value and the difference from the base value together with the flag indicating
      *         the comparison result
      */
-    public synchronized static VTypeComparison valueToCompareString(VType type, VType baseValue) {
-        if (type == null && baseValue == null) {
-            return new VTypeComparison("---", 0);
-        } else if (type == null || baseValue == null) {
-            return type == null ? new VTypeComparison(valueToString(baseValue), -1)
-                : new VTypeComparison(valueToString(type), 1);
+    @SuppressWarnings("unchecked")
+    public synchronized static VTypeComparison valueToCompareString(VType value, VType baseValue,
+        Optional<Threshold<?>> threshold) {
+        if (value == null && baseValue == null) {
+            return new VTypeComparison("---", 0, true);
+        } else if (value == null || baseValue == null) {
+            return value == null ? new VTypeComparison(valueToString(baseValue), -1, false)
+                : new VTypeComparison(valueToString(value), 1, false);
         }
-        if (type instanceof VNumber && baseValue instanceof VNumber) {
+        if (value instanceof VNumber && baseValue instanceof VNumber) {
             StringBuilder sb = new StringBuilder(20);
             int diff = 0;
-            sb.append(FORMAT.get().format((VNumber) type));
-            if (type instanceof VDouble) {
-                double data = ((VDouble) type).getValue();
+            boolean withinThreshold = threshold.isPresent();
+            sb.append(FORMAT.get().format((VNumber) value));
+            if (value instanceof VDouble) {
+                double data = ((VDouble) value).getValue();
                 double base = ((VNumber) baseValue).getValue().doubleValue();
                 double newd = data - base;
+                if (threshold.isPresent()) {
+                    withinThreshold = ((Threshold<Double>)threshold.get()).isWithinThreshold(newd);
+                }
                 diff = Double.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
                 sb.append(COMPARE_FORMAT.get().format(newd));
-            } else if (type instanceof VFloat) {
-                float data = ((VFloat) type).getValue();
+            } else if (value instanceof VFloat) {
+                float data = ((VFloat) value).getValue();
                 float base = ((VNumber) baseValue).getValue().floatValue();
                 float newd = data - base;
+                if (threshold.isPresent()) {
+                    withinThreshold = ((Threshold<Float>)threshold.get()).isWithinThreshold(newd);
+                }
                 diff = Float.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
                 sb.append(FORMAT.get().getNumberFormat().format(newd));
-            } else if (type instanceof VLong) {
-                long data = ((VLong) type).getValue();
+            } else if (value instanceof VLong) {
+                long data = ((VLong) value).getValue();
                 long base = ((VNumber) baseValue).getValue().longValue();
                 long newd = data - base;
+                if (threshold.isPresent()) {
+                    withinThreshold = ((Threshold<Long>)threshold.get()).isWithinThreshold(newd);
+                }
                 diff = Long.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
                 sb.append(COMPARE_FORMAT.get().format(newd));
-            } else if (type instanceof VInt) {
-                int data = ((VInt) type).getValue();
+            } else if (value instanceof VInt) {
+                int data = ((VInt) value).getValue();
                 int base = ((VNumber) baseValue).getValue().intValue();
                 int newd = data - base;
+                if (threshold.isPresent()) {
+                    withinThreshold = ((Threshold<Integer>)threshold.get()).isWithinThreshold(newd);
+                }
                 diff = Integer.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
                 sb.append(FORMAT.get().getNumberFormat().format(newd));
-            } else if (type instanceof VShort) {
-                short data = ((VShort) type).getValue();
+            } else if (value instanceof VShort) {
+                short data = ((VShort) value).getValue();
                 short base = ((VNumber) baseValue).getValue().shortValue();
                 short newd = (short) (data - base);
+                if (threshold.isPresent()) {
+                    withinThreshold = ((Threshold<Short>)threshold.get()).isWithinThreshold(newd);
+                }
                 diff = Short.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
                 }
                 sb.append(COMPARE_FORMAT.get().format(newd));
-            } else if (type instanceof VByte) {
-                byte data = ((VByte) type).getValue();
+            } else if (value instanceof VByte) {
+                byte data = ((VByte) value).getValue();
                 byte base = ((VNumber) baseValue).getValue().byteValue();
                 byte newd = (byte) (data - base);
+                if (threshold.isPresent()) {
+                    withinThreshold = ((Threshold<Byte>)threshold.get()).isWithinThreshold(newd);
+                }
                 diff = Byte.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
@@ -452,21 +479,21 @@ public final class Utilities {
                 }
                 sb.append(COMPARE_FORMAT.get().format(newd));
             }
-            return new VTypeComparison(sb.toString(), diff);
-        } else if (type instanceof VBoolean && baseValue instanceof VBoolean) {
-            String str = valueToString(type);
-            boolean b = ((VBoolean) type).getValue();
+            return new VTypeComparison(sb.toString(), diff, withinThreshold);
+        } else if (value instanceof VBoolean && baseValue instanceof VBoolean) {
+            String str = valueToString(value);
+            boolean b = ((VBoolean) value).getValue();
             boolean c = ((VBoolean) baseValue).getValue();
-            return new VTypeComparison(str, Boolean.compare(b, c));
-        } else if (type instanceof VEnum && baseValue instanceof VEnum) {
-            String str = valueToString(type);
-            int b = ((VEnum) type).getIndex();
+            return new VTypeComparison(str, Boolean.compare(b, c), false);
+        } else if (value instanceof VEnum && baseValue instanceof VEnum) {
+            String str = valueToString(value);
+            int b = ((VEnum) value).getIndex();
             int c = ((VEnum) baseValue).getIndex();
-            return new VTypeComparison(str, Integer.compare(b, c));
+            return new VTypeComparison(str, Integer.compare(b, c), false);
         } else {
-            String str = valueToString(type);
+            String str = valueToString(value);
             String base = valueToString(baseValue);
-            return new VTypeComparison(str, str.compareTo(base));
+            return new VTypeComparison(str, str.compareTo(base), false);
         }
     }
 
@@ -508,9 +535,11 @@ public final class Utilities {
      *
      * @param v1 the first value to check
      * @param v2 the second value to check
+     * @param threshold the threshold values which define if the difference is within limits or not
      * @return true if the values are equal or false otherwise
      */
-    public static boolean areValuesEqual(VType v1, VType v2) {
+    @SuppressWarnings("unchecked")
+    public static boolean areValuesEqual(VType v1, VType v2, Optional<Threshold<?>> threshold) {
         if (v1 == null && v2 == null) {
             return true;
         } else if (v1 == null || v2 == null) {
@@ -520,26 +549,44 @@ public final class Utilities {
             if (v1 instanceof VDouble) {
                 double data = ((VDouble) v1).getValue();
                 double base = ((VNumber) v2).getValue().doubleValue();
+                if (threshold.isPresent()) {
+                    return ((Threshold<Double>)threshold.get()).isWithinThreshold(data-base);
+                }
                 return Double.compare(data, base) == 0;
             } else if (v1 instanceof VFloat) {
                 float data = ((VFloat) v1).getValue();
                 float base = ((VNumber) v2).getValue().floatValue();
+                if (threshold.isPresent()) {
+                    return ((Threshold<Float>)threshold.get()).isWithinThreshold(data-base);
+                }
                 return Float.compare(data, base) == 0;
             } else if (v1 instanceof VLong) {
                 long data = ((VLong) v1).getValue();
                 long base = ((VNumber) v2).getValue().longValue();
+                if (threshold.isPresent()) {
+                    return ((Threshold<Long>)threshold.get()).isWithinThreshold(data-base);
+                }
                 return Long.compare(data, base) == 0;
             } else if (v1 instanceof VInt) {
                 int data = ((VInt) v1).getValue();
                 int base = ((VNumber) v2).getValue().intValue();
+                if (threshold.isPresent()) {
+                    return ((Threshold<Integer>)threshold.get()).isWithinThreshold(data-base);
+                }
                 return Integer.compare(data, base) == 0;
             } else if (v1 instanceof VShort) {
                 short data = ((VShort) v1).getValue();
                 short base = ((VNumber) v2).getValue().shortValue();
+                if (threshold.isPresent()) {
+                    return ((Threshold<Short>)threshold.get()).isWithinThreshold((short)(data-base));
+                }
                 return Short.compare(data, base) == 0;
             } else if (v1 instanceof VByte) {
                 byte data = ((VByte) v1).getValue();
                 byte base = ((VNumber) v2).getValue().byteValue();
+                if (threshold.isPresent()) {
+                    return ((Threshold<Byte>)threshold.get()).isWithinThreshold((byte)(data-base));
+                }
                 return Byte.compare(data, base) == 0;
             }
         } else if (v1 instanceof VBoolean && v2 instanceof VBoolean) {

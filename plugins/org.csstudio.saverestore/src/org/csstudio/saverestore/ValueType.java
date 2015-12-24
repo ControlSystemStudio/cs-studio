@@ -15,6 +15,8 @@ import org.diirt.vtype.VInt;
 import org.diirt.vtype.VIntArray;
 import org.diirt.vtype.VLong;
 import org.diirt.vtype.VLongArray;
+import org.diirt.vtype.VNumber;
+import org.diirt.vtype.VNumberArray;
 import org.diirt.vtype.VShort;
 import org.diirt.vtype.VShortArray;
 import org.diirt.vtype.VString;
@@ -38,6 +40,7 @@ enum ValueType {
     ENUM_ARRAY("enum_array", VEnumArray.class),
     STRING_ARRAY("string_array", VStringArray.class),
     BOOLEAN_ARRAY("boolean_array", VBooleanArray.class),
+    NUMBER_ARRAY("number_array",VNumberArray.class),
     DOUBLE("double", VDouble.class),
     FLOAT("float", VFloat.class),
     LONG("long", VLong.class),
@@ -47,7 +50,8 @@ enum ValueType {
     BOOLEAN("boolean", VBoolean.class),
     STRING("string", VString.class),
     ENUM("enum",VEnum.class),
-    NODATA("na",VNoData.class);
+    NODATA("na",VNoData.class),
+    NUMBER("number",VNumber.class);
 
     /** Name of the value type */
     public final String name;

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
@@ -16,6 +17,16 @@ import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.FXTaggingDialog;
 import org.eclipse.fx.ui.workbench3.FXViewPart;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.ui.IViewSite;
+import org.eclipse.ui.PartInitException;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
@@ -55,7 +66,7 @@ import javafx.scene.layout.VBox;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class BrowserView extends FXViewPart {
+public class BrowserView extends FXViewPart implements ISelectionProvider {
 
     private static final Image BEAMLINE_SET_IMAGE = new Image(BrowserView.class.getResourceAsStream("/icons/txt.png"));
 
@@ -90,6 +101,7 @@ public class BrowserView extends FXViewPart {
         }
     }
 
+    private DefaultBaseLevelBrowser defaultBaseLevelBrowser;
     private BaseLevelBrowser<BaseLevel> baseLevelBrowser;
     private TreeView<BeamlineSetWrapper> beamlineSetsTree;
     private ListView<Snapshot> snapshotsList;
@@ -104,7 +116,10 @@ public class BrowserView extends FXViewPart {
 
     private boolean searchMode = false;
 
-    private Scene scene;
+    private Menu contextMenu;
+    private Action deleteTagAction;
+
+    private List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
 
     /**
      * @return the selector bound to this view
@@ -120,13 +135,55 @@ public class BrowserView extends FXViewPart {
         return actionManager;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.part.ViewPart#init(org.eclipse.ui.IViewSite)
+     */
+    @Override
+    public void init(IViewSite site) throws PartInitException {
+        super.init(site);
+        getSite().setSelectionProvider(this);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.fx.ui.workbench3.FXViewPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    public void createPartControl(Composite parent) {
+        super.createPartControl(parent);
+        MenuManager menu = new MenuManager();
+        deleteTagAction = new Action("Remove Tag") {
+            @Override
+            public void run() {
+                Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
+                if (FXMessageDialog.openQuestion(getSite().getShell(), "Remove Tag",
+                    "Are you sure you want to remove the tag '" + item.getTagName().get() + "' from snapshot '"
+                        + item.getDate() + "'?")) {
+                    actionManager.deleteTag(item);
+                }
+            }
+        };
+        menu.add(deleteTagAction);
+        contextMenu = menu.createContextMenu(parent);
+        parent.setMenu(contextMenu);
+        getSite().registerContextMenu(menu, this);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.fx.ui.workbench3.FXViewPart#createFxScene()
+     */
     @Override
     protected Scene createFxScene() {
         BorderPane main = new BorderPane();
-        scene = new Scene(main);
+        Scene scene = new Scene(main);
 
-        Node beamlineSets = createBeamlineSetsPane();
-        Node snapshots = createSnapshotsPane();
+        Node beamlineSets = createBeamlineSetsPane(scene);
+        Node snapshots = createSnapshotsPane(scene);
 
         mainPane = new VBox();
         dataPane = new VBox();
@@ -138,26 +195,28 @@ public class BrowserView extends FXViewPart {
         beamlineSetsPane.setExpanded(true);
         snapshotsPane.setExpanded(true);
         Optional<BaseLevelBrowser<BaseLevel>> browser = new BaseLevelBrowserProvider().getBaseLevelBrowser();
-        if (browser.isPresent()) {
-            Node elements = createBaseLevelsPane(browser.get());
-            VBox.setVgrow(baseLevelPane, Priority.NEVER);
-            mainPane.getChildren().setAll(elements, dataPane);
-            baseLevelPane.setExpanded(true);
-        } else {
-            mainPane.getChildren().setAll(dataPane);
-        }
+
+        Node elements = createBaseLevelsPane(browser.orElse(null), scene);
+        VBox.setVgrow(baseLevelPane, Priority.NEVER);
+        mainPane.getChildren().setAll(elements, dataPane);
+        baseLevelPane.setExpanded(true);
+
         main.setCenter(mainPane);
 
         init();
         return scene;
     }
 
-    private Node createBaseLevelsPane(BaseLevelBrowser<BaseLevel> browser) {
+    private Node createBaseLevelsPane(BaseLevelBrowser<BaseLevel> browser, Scene scene) {
         BorderPane content = new BorderPane();
-
         baseLevelBrowser = browser;
+        defaultBaseLevelBrowser = new DefaultBaseLevelBrowser(this);
 
-        content.setCenter(baseLevelBrowser.getFXContent());
+        if (baseLevelBrowser != null) {
+            content.setCenter(baseLevelBrowser.getFXContent());
+        } else {
+            content.setCenter(defaultBaseLevelBrowser.getFXContent());
+        }
         baseLevelPane = new TitledPane(browser.getTitleFor(Optional.empty(), Optional.empty()), content);
         baseLevelPane.setMaxHeight(Double.MAX_VALUE);
 
@@ -168,10 +227,34 @@ public class BrowserView extends FXViewPart {
         ToggleButton filterButton = new ToggleButton("",
             new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/filter_ps.png"))));
         filterButton.setTooltip(new Tooltip("Disable non-existing"));
-        filterButton.selectedProperty().addListener((a, o, n) -> baseLevelBrowser.setShowOnlyAvailable(n));
+        filterButton.selectedProperty().addListener((a, o, n) -> {
+            defaultBaseLevelBrowser.setShowOnlyAvailable(n);
+            if (baseLevelBrowser != null) {
+                baseLevelBrowser.setShowOnlyAvailable(n);
+            }
+        });
+
         setUpTitlePaneNode(titleText, true);
         setUpTitlePaneNode(filterButton, false);
-        titleBox.addRow(0, titleText, filterButton);
+        if (baseLevelBrowser == null) {
+            titleBox.addRow(0, titleText, filterButton);
+        } else {
+            ToggleButton baseLevelPanelFilterButton = new ToggleButton("",
+                new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/Bookshelf16.gif"))));
+            baseLevelPanelFilterButton
+                .setTooltip(new Tooltip("Toggle between custom browser (" + baseLevelBrowser.getReadableName()
+                    + ") and default browser (" + defaultBaseLevelBrowser.getReadableName() + ")"));
+            baseLevelPanelFilterButton.selectedProperty().addListener((a, o, n) -> {
+                if (n) {
+                    content.setCenter(baseLevelBrowser.getFXContent());
+                } else {
+                    content.setCenter(defaultBaseLevelBrowser.getFXContent());
+                }
+            });
+            setUpTitlePaneNode(baseLevelPanelFilterButton, false);
+            baseLevelPanelFilterButton.selectedProperty().setValue(true);
+            titleBox.addRow(0, titleText, baseLevelPanelFilterButton, filterButton);
+        }
         titleBox.setMaxWidth(Double.MAX_VALUE);
         titleText.setMaxWidth(Double.MAX_VALUE);
         baseLevelPane.setGraphic(titleBox);
@@ -182,7 +265,7 @@ public class BrowserView extends FXViewPart {
         return baseLevelPane;
     }
 
-    private Node createBeamlineSetsPane() {
+    private Node createBeamlineSetsPane(Scene scene) {
         GridPane content = new GridPane();
 
         beamlineSetsTree = new TreeView<>();
@@ -286,7 +369,7 @@ public class BrowserView extends FXViewPart {
         }
     }
 
-    private Node createSnapshotsPane() {
+    private Node createSnapshotsPane(Scene scene) {
         BorderPane content = new BorderPane();
         snapshotsList = new ListView<>();
         snapshotsList.setCellFactory(e -> new ListCell<Snapshot>() {
@@ -330,39 +413,26 @@ public class BrowserView extends FXViewPart {
             db.setContent(cc);
             e.consume();
         });
-        final ContextMenu popup = new ContextMenu();
-        final MenuItem deleteTagItem = new MenuItem("Remove Tag...");
-        deleteTagItem.setOnAction(e -> {
-            popup.hide();
-            Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
-            if (FXMessageDialog.openQuestion(getSite().getShell(), "Remove Tag",
-                "Are you sure you want to remove the tag '" + item.getTagName().get() + "' from snapshot '"
-                    + item.getDate() + "'?")) {
-                actionManager.deleteTag(item);
-            }
-        });
-        popup.getItems().add(deleteTagItem);
-        snapshotsList.setContextMenu(popup);
         snapshotsList.setOnMouseReleased(e -> {
-            if (e.getButton() == MouseButton.SECONDARY) {
-                Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
-                if (item.getTagName().isPresent()) {
-                    popup.show(beamlineSetsTree, e.getScreenX(), e.getScreenY());
-                } else {
-                    popup.hide();
-                }
-            }
+            Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
+            deleteTagAction.setEnabled(snapshot != null && snapshot.getTagName().isPresent());
+            contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY);
         });
+
         snapshotsList.setOnMouseClicked(e -> {
             Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
-            deleteTagItem.setDisable(snapshot == null || !snapshot.getTagName().isPresent());
             if (e.getClickCount() == 2) {
                 if (snapshot != null) {
                     actionManager.openSnapshot(snapshot);
                 }
             }
         });
-
+        snapshotsList.selectionModelProperty().get().selectedItemProperty().addListener((a, o, n) -> {
+            SelectionChangedEvent e = new SelectionChangedEvent(BrowserView.this, getSelection());
+            for (ISelectionChangedListener l : selectionChangedListener) {
+                l.selectionChanged(e);
+            }
+        });
         content.setCenter(snapshotsList);
         snapshotsPane = new TitledPane("Snapshots", content);
         snapshotsPane.setMaxHeight(Double.MAX_VALUE);
@@ -447,19 +517,21 @@ public class BrowserView extends FXViewPart {
     }
 
     private void setUpElementsPaneTitle() {
-        if (baseLevelBrowser != null) {
-            BaseLevel bl = selector.selectedBaseLevelProperty().get();
-            if (bl != null) {
-                if (selector.isDefaultBranch()) {
-                    baseLevelPane.setText(baseLevelBrowser.getTitleFor(Optional.of(bl), Optional.empty()));
-                } else {
-                    Branch branch = selector.selectedBranchProperty().get();
-                    baseLevelPane
-                        .setText(baseLevelBrowser.getTitleFor(Optional.of(bl), Optional.of(branch.getShortName())));
-                }
+        BaseLevelBrowser<BaseLevel> br = defaultBaseLevelBrowser;
+        if (baseLevelBrowser != null && baseLevelBrowser.getFXContent().getParent() != null) {
+            br = baseLevelBrowser;
+        }
+
+        BaseLevel bl = selector.selectedBaseLevelProperty().get();
+        if (bl != null) {
+            if (selector.isDefaultBranch()) {
+                baseLevelPane.setText(br.getTitleFor(Optional.of(bl), Optional.empty()));
             } else {
-                baseLevelPane.setText(baseLevelBrowser.getTitleFor(Optional.empty(), Optional.empty()));
+                Branch branch = selector.selectedBranchProperty().get();
+                baseLevelPane.setText(br.getTitleFor(Optional.of(bl), Optional.of(branch.getShortName())));
             }
+        } else {
+            baseLevelPane.setText(br.getTitleFor(Optional.empty(), Optional.empty()));
         }
     }
 
@@ -469,15 +541,29 @@ public class BrowserView extends FXViewPart {
             beamlineSetsPane.setText("Beamline Sets for " + n.getPresentationName());
         });
         if (baseLevelBrowser != null) {
-            selector.selectedBaseLevelProperty().bind(baseLevelBrowser.baseLevelProperty());
-            selector.baseLevelsProperty().addListener((a, o, n) -> {
-                try {
-                    baseLevelBrowser.availableBaseLevelsProperty().set(baseLevelBrowser.transform(n));
-                } catch (RuntimeException e) {
-                    FXMessageDialog.openError(getSite().getShell(), "Base Level Error", e.getMessage());
+            baseLevelBrowser.selectedBaseLevelProperty().addListener((a,o,n) -> {
+                if (baseLevelBrowser.getFXContent().getParent() != null) {
+                    selector.selectedBaseLevelProperty().setValue(n);
                 }
             });
         }
+        defaultBaseLevelBrowser.selectedBaseLevelProperty().addListener((a,o,n) -> {
+            if (defaultBaseLevelBrowser.getFXContent().getParent() != null) {
+                selector.selectedBaseLevelProperty().setValue(n);
+            }
+        });
+        selector.baseLevelsProperty().addListener((a, o, n) -> {
+            try {
+                defaultBaseLevelBrowser.availableBaseLevelsProperty().set(defaultBaseLevelBrowser.transform(n));
+                defaultBaseLevelBrowser.selectedBaseLevelProperty().setValue(selector.selectedBaseLevelProperty().get());
+                if (baseLevelBrowser != null) {
+                    baseLevelBrowser.availableBaseLevelsProperty().set(baseLevelBrowser.transform(n));
+                    baseLevelBrowser.selectedBaseLevelProperty().setValue(selector.selectedBaseLevelProperty().get());
+                }
+            } catch (RuntimeException e) {
+                FXMessageDialog.openError(getSite().getShell(), "Base Level Error", e.getMessage());
+            }
+        });
         selector.selectedBranchProperty().addListener((a, o, n) -> setUpElementsPaneTitle());
         selector.selectedBeamlineSetProperty().addListener((a, o, n) -> {
             if (n == null) {
@@ -581,5 +667,50 @@ public class BrowserView extends FXViewPart {
      */
     @Override
     protected void setFxFocus() {
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.
+     * ISelectionChangedListener)
+     */
+    @Override
+    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+        selectionChangedListener.add(listener);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.
+     * ISelectionChangedListener)
+     */
+    @Override
+    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+        selectionChangedListener.remove(listener);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+     */
+    @Override
+    public void setSelection(ISelection selection) {
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+     */
+    @Override
+    public ISelection getSelection() {
+        Snapshot selectedSnapshot = snapshotsList.selectionModelProperty().get().getSelectedItem();
+        return selectedSnapshot == null ? new LazySnapshotStructuredSelection(null, null)
+            : new LazySnapshotStructuredSelection(selectedSnapshot, SaveRestoreService.getInstance()
+                .getDataProvider(selectedSnapshot.getBeamlineSet().getDataProviderId()).provider);
+
     }
 }

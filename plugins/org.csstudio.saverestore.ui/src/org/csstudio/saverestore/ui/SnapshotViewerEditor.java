@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.csdata.TimestampedPV;
@@ -24,6 +25,7 @@ import org.csstudio.ui.fx.util.FXEditorPart;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.FXSaveAsDialog;
 import org.csstudio.ui.fx.util.FXTextAreaInputDialog;
+import org.csstudio.ui.fx.util.FXTextInputDialog;
 import org.csstudio.ui.fx.util.StaticTextArea;
 import org.csstudio.ui.fx.util.StaticTextField;
 import org.diirt.util.time.Timestamp;
@@ -39,6 +41,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -148,9 +151,9 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                     } else if (item instanceof VTypePair) {
                         VTypePair t = (VTypePair) item;
                         if (t.value instanceof VNoData) {
-                            return (T) new VTypePair(t.base, Utilities.valueFromString(string, t.base));
+                            return (T) new VTypePair(t.base, Utilities.valueFromString(string, t.base), t.threshold);
                         } else {
-                            return (T) new VTypePair(t.base, Utilities.valueFromString(string, t.value));
+                            return (T) new VTypePair(t.base, Utilities.valueFromString(string, t.value), t.threshold);
                         }
                     } else {
                         return null;
@@ -190,9 +193,9 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                     getTooltip().setText(item.toString());
                 } else if (item instanceof VTypePair) {
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) item).value,
-                        ((VTypePair) item).base);
+                        ((VTypePair) item).base, ((VTypePair) item).threshold);
                     setText(vtc.string);
-                    if (vtc.valuesEqual != 0) {
+                    if (!vtc.withinThreshold) {
                         getStyleClass().add("diff-cell");
                         setGraphic(new ImageView(WARNING_IMAGE));
                     }
@@ -211,6 +214,9 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      * @param <T> the type of the values displayed by this column
      */
     private class TooltipTableColumn<T> extends TableColumn<TableEntry, T> {
+        private String text;
+        private Label label;
+
         TooltipTableColumn(String text, String tooltip, int minWidth) {
             setup(text, tooltip, minWidth, -1, true);
         }
@@ -220,7 +226,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         }
 
         private void setup(String text, String tooltip, int minWidth, int prefWidth, boolean resizable) {
-            Label label = new Label(text);
+            label = new Label(text);
             label.setMaxWidth(Double.MAX_VALUE);
             label.setTooltip(new Tooltip(tooltip));
             setGraphic(label);
@@ -234,6 +240,15 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             setOnEditStart(e -> controller.suspend());
             setOnEditCancel(e -> controller.resume());
             setOnEditCommit(e -> controller.resume());
+            this.text = text;
+        }
+
+        void setSaved(boolean saved) {
+            if (saved) {
+                label.setText(text);
+            } else {
+                label.setText(text + "*");
+            }
         }
     }
 
@@ -256,6 +271,10 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
 
     private int clickedColumn = -1;
 
+    private List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
+
+    private List<VSnapshot> uiSnapshots = new ArrayList<>();
+
     /**
      * Constructs a new editor.
      */
@@ -263,6 +282,11 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         controller = new SnapshotViewerController(this);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.ui.fx.util.FXEditorPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     */
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
@@ -271,12 +295,6 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         contextMenu = menu.createContextMenu(parent);
         parent.setMenu(contextMenu);
         getSite().registerContextMenu(menu, this);
-        // Platform.runLater(()->{
-        // Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
-        // System.out.println("Handler caught exception: "+throwable.getMessage());
-        // throwable.printStackTrace();
-        // });
-        // });
     }
 
     private void init() {
@@ -312,6 +330,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             saveSnapshotButton.setStyle(ANIMATED_STYLE);
             animation.play();
         }
+        getSite().setSelectionProvider(this);
     }
 
     /*
@@ -354,6 +373,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                 break;
             }
         } while (!snapshots.isEmpty());
+        updateTableColumnTitles();
         getSite().getShell().getDisplay().asyncExec(() -> {
             monitor.done();
             firePropertyChange(PROP_DIRTY);
@@ -364,8 +384,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         if (snapshots.isEmpty()) {
             return null;
         }
-        // ask the user to choose the snapshot to save if there is more than one snapshot or promptIfOnlyOne is true
-        // and then save the selected snapshot
+        // ask the user to choose the snapshot to save if there is more than one snapshot or "promptIfOnlyOne" is true
+        // then save the selected snapshot
         if (getEditorInput() instanceof IFileEditorInput) {
             if (promptIfOnlyOne || snapshots.size() > 1) {
                 return FXComboInputDialog
@@ -386,12 +406,14 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         }
     }
 
-    private VSnapshot saveSnapshot(VSnapshot snapshot) {
+    private VSnapshot saveSnapshot(final VSnapshot snapshot) {
         if (snapshot.getSnapshot().isPresent()) {
             Optional<String> comment = FXTextAreaInputDialog.get(getSite().getShell(), "Snapshot Comment",
                 "Provide a short comment for the snapshot " + snapshot, "",
                 e -> (e == null || e.trim().length() < 10) ? "Comment should be at least 10 characters long." : null);
-            return comment.map(e -> controller.saveSnapshot(e, snapshot)).orElse(null);
+            Optional<VSnapshot> newSnapshot = comment.map(e -> controller.saveSnapshot(e, snapshot));
+            newSnapshot.ifPresent(e -> Platform.runLater(() -> uiSnapshots.set(uiSnapshots.indexOf(snapshot), e)));
+            return newSnapshot.orElse(null);
         } else {
             // should never happen at all
             throw new IllegalArgumentException("Snapshot " + snapshot + " is invalid.");
@@ -488,7 +510,11 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         Button addPVButton = new Button("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/includeMode_filter.png"))));
         addPVButton.setTooltip(new Tooltip("Add a PV from the central archiving system"));
-        addPVButton.setOnAction(e -> controller.addPVFromArchive(x -> table.getItems().add(x)));
+        addPVButton.setOnAction(e -> new FXTextInputDialog(getSite().getShell(), "Add Archived PV",
+            "Enter the name of the PV from the archiving system that you wish to add.", "",
+            i -> i == null || i.isEmpty() ? "The PV name cannot be empty" : null).openAndWait()
+                .ifPresent(pv -> SaveRestoreService.getInstance().execute("Add PV from Archive",
+                    () -> controller.addPVFromArchive(pv, x -> table.getItems().add(x)))));
         Button importButton = new Button("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/import_wiz.png"))));
         importButton.setTooltip(new Tooltip("Import PV values from external source"));
@@ -506,11 +532,11 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         ToggleButton addReadbacksButton = new ToggleButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/exp_deployplug.png"))));
         addReadbacksButton.setTooltip(new Tooltip("Show column with values from the readback PVs"));
-        addReadbacksButton.setDisable(!ExtensionPointLoader.getInstance().getReadbackProvider().isPresent());
+        addReadbacksButton.setDisable(!ExtensionPointLoader.getInstance().getParametersProvider().isPresent());
         addReadbacksButton.selectedProperty().addListener((a, o, n) -> controller.showReadbacks(n, b -> {
-            final int num = controller.getNumberOfSnapshots();
+            final List<VSnapshot> snapshots = controller.getAllSnapshots();
             final boolean show = controller.isShowReadbacks();
-            Platform.runLater(() -> createTable(b, num, show));
+            Platform.runLater(() -> createTable(b, snapshots, show));
         }));
         Button openSnapshotFromFileButton = new Button("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/fldr_obj.png"))));
@@ -668,9 +694,10 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             // when user presses the big save button, only save one selected snapshot
             final List<VSnapshot> snapshots = controller.getSnapshots(true);
             if (getEditorInput() instanceof IFileEditorInput) {
-                save(snapshots, false, false);
+                save(snapshots, false, false).ifPresent(s -> updateTableColumnTitles());
             } else {
-                SaveRestoreService.getInstance().execute("Save Snapshot", () -> save(snapshots, false, false));
+                SaveRestoreService.getInstance().execute("Save Snapshot",
+                    () -> save(snapshots, false, false).ifPresent(s -> updateTableColumnTitles()));
             }
         });
         saveSnapshotButton.disableProperty().bind(controller.snapshotSaveableProperty().not());
@@ -712,7 +739,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         return grid;
     }
 
-    private TableView<TableEntry> createTableForSingleSnapshot(boolean showReadback) {
+    private TableView<TableEntry> createTableForSingleSnapshot(VSnapshot snapshot, boolean showReadback) {
         final TableView<TableEntry> table = new TableView<>();
         TableColumn<TableEntry, Boolean> selectedColumn = new TooltipTableColumn<>("",
             "Include this PV when restoring values", 30, 30, false);
@@ -764,7 +791,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         storedValueColumn.setEditable(true);
         storedValueColumn.setOnEditCommit(e -> {
             ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
-            value.setValue(new VTypePair(value.get().base, e.getNewValue().value));
+            value.setValue(new VTypePair(value.get().base, e.getNewValue().value, value.get().threshold));
             controller.resume();
         });
 
@@ -789,7 +816,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         return table;
     }
 
-    private TableView<TableEntry> createTableForMultipleSnapshots(int n, boolean showReadback) {
+    private TableView<TableEntry> createTableForMultipleSnapshots(List<VSnapshot> snapshots, boolean showReadback) {
         final TableView<TableEntry> table = new TableView<>();
         TableColumn<TableEntry, Boolean> selectedColumn = new TooltipTableColumn<>("",
             "Include this PV when restoring values", 30, 30, false);
@@ -825,27 +852,26 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         baseCol.setEditable(true);
         baseCol.setOnEditCommit(e -> {
             ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
-            value.setValue(new VTypePair(value.get().base, e.getNewValue().value));
+            value.setValue(new VTypePair(value.get().base, e.getNewValue().value, value.get().threshold));
             controller.resume();
         });
         storedValueColumn.getColumns().add(baseCol);
-        for (int i = 1; i < n; i++) {
-            TableColumn<TableEntry, VTypePair> col = new TooltipTableColumn<>("", "", 100);
-            Label label = new Label(controller.getSnapshot(i).toString() + " (" + Utilities.DELTA_CHAR + " Base)");
-            label.setTooltip(new Tooltip("PV value when the snapshot was taken"));
-            col.setGraphic(label);
+        for (int i = 1; i < snapshots.size(); i++) {
+            TooltipTableColumn<VTypePair> col = new TooltipTableColumn<>(
+                snapshots.get(i).toString() + " (" + Utilities.DELTA_CHAR + " Base)",
+                "PV value when the snapshot was taken", 100);
             final int snapshotIndex = i;
             MenuItem removeItem = new MenuItem("Remove");
             removeItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Remove Snapshot", () -> {
                 final List<TableEntry> entries = controller.removeSnapshot(snapshotIndex);
-                final int numberOfSnapshots = controller.getNumberOfSnapshots();
+                final List<VSnapshot> snaps = controller.getAllSnapshots();
                 final boolean show = controller.isShowReadbacks();
-                Platform.runLater(() -> createTable(entries, numberOfSnapshots, show));
+                Platform.runLater(() -> createTable(entries, snaps, show));
             }));
             MenuItem setAsBaseItem = new MenuItem("Set As Base");
             setAsBaseItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Set new base Snapshot", () -> {
                 final List<TableEntry> entries = controller.setAsBase(snapshotIndex);
-                final int numberOfSnapshots = controller.getNumberOfSnapshots();
+                final List<VSnapshot> snaps = controller.getAllSnapshots();
                 final boolean show = controller.isShowReadbacks();
                 final VSnapshot vs = controller.getSnapshot(0);
                 Platform.runLater(() -> {
@@ -854,22 +880,22 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                         creatorField.setText(t.getOwner());
                         dateField.setText(Utilities.timestampToBigEndianString(t.getDate(), true));
                     });
-                    createTable(entries, numberOfSnapshots, show);
+                    createTable(entries, snaps, show);
                 });
             }));
             final ContextMenu menu = new ContextMenu(removeItem, setAsBaseItem);
-            label.setContextMenu(menu);
+            col.label.setContextMenu(menu);
             col.setCellValueFactory(e -> e.getValue().compareValueProperty(snapshotIndex));
             col.setCellFactory(e -> new VTypeCellEditor<>());
             col.setEditable(true);
             col.setOnEditCommit(e -> {
                 ObjectProperty<VTypePair> value = e.getRowValue().compareValueProperty(snapshotIndex);
-                value.setValue(new VTypePair(value.get().base, e.getNewValue().value));
+                value.setValue(new VTypePair(value.get().base, e.getNewValue().value, value.get().threshold));
                 controller.resume();
             });
-            label.setOnMouseReleased(e -> {
+            col.label.setOnMouseReleased(e -> {
                 if (e.getButton() == MouseButton.SECONDARY) {
-                    menu.show(label, e.getScreenX(), e.getScreenY());
+                    menu.show(col.label, e.getScreenX(), e.getScreenY());
                 }
             });
             storedValueColumn.getColumns().add(col);
@@ -922,12 +948,15 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         });
     }
 
-    private void createTable(List<TableEntry> entries, int numSnapshots, boolean showReadback) {
-        if (numSnapshots == 1) {
-            table = createTableForSingleSnapshot(showReadback);
+    private void createTable(List<TableEntry> entries, List<VSnapshot> snapshots, boolean showReadback) {
+        if (snapshots.size() == 1) {
+            table = createTableForSingleSnapshot(snapshots.get(0), showReadback);
         } else {
-            table = createTableForMultipleSnapshots(numSnapshots, showReadback);
+            table = createTableForMultipleSnapshots(snapshots, showReadback);
         }
+        uiSnapshots.clear();
+        uiSnapshots.addAll(snapshots);
+        updateTableColumnTitles();
         table.setEditable(true);
         table.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         table.setMaxWidth(Double.MAX_VALUE);
@@ -936,15 +965,20 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         table.setOnMouseReleased(e -> {
             contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY);
         });
-        table.setOnMouseClicked(e -> clickedColumn = table.getSelectionModel().getSelectedCells().get(0).getColumn());
+        table.setOnMouseClicked(e -> {
+            clickedColumn = table.getSelectionModel().getSelectedCells().get(0).getColumn();
+            SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
+            for (ISelectionChangedListener l : selectionChangedListener) {
+                l.selectionChanged(event);
+            }
+        });
         table.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
         table.getItems().setAll(entries);
         entries.forEach(e -> {
-            e.selectedProperty()
-                .addListener((a, o, n) -> {
-                    selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false);
-                });
-            e.liveStoredEqualProperty().addListener((a,o,n)->{
+            e.selectedProperty().addListener((a, o, n) -> {
+                selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false);
+            });
+            e.liveStoredEqualProperty().addListener((a, o, n) -> {
                 if (controller.isHideEqualItems()) {
                     if (n) {
                         table.getItems().remove(e);
@@ -960,6 +994,20 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         contentPane.setCenter(table);
     }
 
+    private void updateTableColumnTitles() {
+        Platform.runLater(() -> {
+            // add the * to the title of the column if the snapshot is not saved
+            if (uiSnapshots.size() == 1) {
+                ((TooltipTableColumn<?>) table.getColumns().get(6)).setSaved(uiSnapshots.get(0).isSaved());
+            } else {
+                TableColumn<TableEntry, ?> column = ((TableColumn<TableEntry, ?>) table.getColumns().get(3));
+                for (int i = 0; i < uiSnapshots.size(); i++) {
+                    ((TooltipTableColumn<?>) column.getColumns().get(i)).setSaved(uiSnapshots.get(i).isSaved());
+                }
+            }
+        });
+    }
+
     /**
      * Set the base snapshot to be displayed in this editor. When the base snapshot is set, the editor is emptied first.
      * The meta data of the base snapshot are displayed at the top of the editor (comment, date, creator).
@@ -969,7 +1017,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
     public void setSnapshot(final VSnapshot data) {
         SaveRestoreService.getInstance().execute("Open Snapshot", () -> {
             final List<TableEntry> entries = controller.setSnapshot(data);
-            final int num = controller.getNumberOfSnapshots();
+            final List<VSnapshot> snapshots = controller.getAllSnapshots();
             final boolean show = controller.isShowReadbacks();
             Platform.runLater(() -> {
                 data.getSnapshot().ifPresent(t -> {
@@ -977,7 +1025,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                     creatorField.setText(t.getOwner());
                     dateField.setText(Utilities.timestampToBigEndianString(t.getDate(), true));
                 });
-                createTable(entries, num, show);
+                createTable(entries, snapshots, show);
             });
         });
     }
@@ -990,9 +1038,9 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
     public void addSnapshot(VSnapshot data) {
         SaveRestoreService.getInstance().execute("Add Snapshot", () -> {
             final List<TableEntry> entries = controller.addSnapshot(data);
-            final int num = controller.getNumberOfSnapshots();
+            final List<VSnapshot> snapshots = controller.getAllSnapshots();
             final boolean show = controller.isShowReadbacks();
-            Platform.runLater(() -> createTable(entries, num, show));
+            Platform.runLater(() -> createTable(entries, snapshots, show));
         });
     }
 
@@ -1049,6 +1097,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      */
     @Override
     public void addSelectionChangedListener(ISelectionChangedListener listener) {
+        selectionChangedListener.add(listener);
     }
 
     /*
@@ -1059,6 +1108,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      */
     @Override
     public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+        selectionChangedListener.remove(listener);
     }
 
     /*

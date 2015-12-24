@@ -267,6 +267,14 @@ public final class FileUtilities {
                 }
                 ListBoolean databo = new ArrayBoolean(dbo);
                 return ValueFactory.newVBooleanArray(databo, alarm, time);
+            case NUMBER_ARRAY:
+                String[] nd = value.split(ARRAY_SPLITTER);
+                double[] ndd = new double[nd.length];
+                for (int i = 0; i < nd.length; i++) {
+                    ndd[i] = Double.parseDouble(nd[i]);
+                }
+                ListDouble datand = new ArrayDouble(ndd);
+                return ValueFactory.newVDoubleArray(datand, alarm, time, display);
             case DOUBLE:
                 return ValueFactory.newVDouble(Double.parseDouble(value), alarm, time, display);
             case FLOAT:
@@ -286,6 +294,8 @@ public final class FileUtilities {
             case ENUM:
                 List<String> lbls = Arrays.asList(valueAndLabels[1]);
                 return ValueFactory.newVEnum(lbls.indexOf(value), lbls, alarm, time);
+            case NUMBER:
+                return ValueFactory.newVDouble(Double.parseDouble(value), alarm, time, display);
             case NODATA:
                 return VNoData.INSTANCE;
         }

@@ -43,7 +43,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
     private final InputValidator<T> validator;
     private Text errorMessageText;
     private String errorMessage;
-    private Button okButton;
+    protected Button okButton;
 
     /**
      * Creates an input dialog with OK and Cancel buttons. Note that the dialog will have no visual representation (no

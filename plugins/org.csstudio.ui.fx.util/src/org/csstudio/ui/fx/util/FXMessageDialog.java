@@ -30,16 +30,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
+
 /**
- * A dialog for showing messages to the user.
- * <p>
- * This concrete dialog class can be instantiated as is, or further subclassed as required.
- * </p>
- * <p>
- * <strong>Note:</strong> This class does not use button IDs from IDialogConstants. Instead, the ID is the index of the
- * button in the supplied array.
- * </p>
- * This class is a copy of the {@link MessageDialog}, where the SWT buttons are replaced with FX buttons.
+ * This class is a copy of the {@link MessageDialog}, where the SWT buttons are replaced with FX buttons. The static
+ * methods of this class can be called from anywhere and will be delegated to the UI thread and block the calling
+ * thread while the dialog is open.
+ *
+ * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+ *
  */
 public class FXMessageDialog extends IconAndMessageDialog {
     /**
@@ -159,9 +157,9 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @param defaultIndex the index in the button label array of the default button
      */
     public FXMessageDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage,
-            int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
-        this(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType,
-                dialogButtonLabels, defaultIndex, 60);
+        int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+        this(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,
+            defaultIndex, 60);
     }
 
     /**
@@ -194,7 +192,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @param buttonWidth preferred button width
      */
     public FXMessageDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage,
-            int dialogImageType, String[] dialogButtonLabels, int defaultIndex, int buttonWidth) {
+        int dialogImageType, String[] dialogButtonLabels, int defaultIndex, int buttonWidth) {
         super(parentShell);
         this.title = dialogTitle;
         this.titleImage = dialogTitleImage;
@@ -340,11 +338,15 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @return <code>true</code> if the user presses the OK or Yes button, <code>false</code> otherwise
      * @since 3.5
      */
-    public static boolean open(int kind, Shell parent, String title, String message, int style) {
-        FXMessageDialog dialog = new FXMessageDialog(parent, title, null, message, kind, getButtonLabels(kind), 0);
-        style &= SWT.SHEET;
-        dialog.setShellStyle(dialog.getShellStyle() | style);
-        return dialog.open() == 0;
+    public static boolean open(final int kind, final Shell parent, final String title, final String message,
+        final int style) {
+        final int[] ans = new int[] { -1 };
+        parent.getDisplay().syncExec(() -> {
+            FXMessageDialog dialog = new FXMessageDialog(parent, title, null, message, kind, getButtonLabels(kind), 0);
+            dialog.setShellStyle(dialog.getShellStyle() | (style & SWT.SHEET));
+            ans[0] = dialog.open();
+        });
+        return ans[0] == 0;
     }
 
     private static String[] getButtonLabels(int kind) {
@@ -358,7 +360,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
             }
             case CONFIRM: {
                 dialogButtonLabels = new String[] { trim(IDialogConstants.OK_LABEL),
-                        trim(IDialogConstants.CANCEL_LABEL) };
+                    trim(IDialogConstants.CANCEL_LABEL) };
                 break;
             }
             case QUESTION: {
@@ -367,7 +369,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
             }
             case QUESTION_WITH_CANCEL: {
                 dialogButtonLabels = new String[] { trim(IDialogConstants.YES_LABEL), trim(IDialogConstants.NO_LABEL),
-                        trim(IDialogConstants.CANCEL_LABEL) };
+                    trim(IDialogConstants.CANCEL_LABEL) };
                 break;
             }
             default: {
