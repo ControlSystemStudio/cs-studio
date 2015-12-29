@@ -419,7 +419,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             }
         }
 
-        if (editpart.getExecutionMode() == ExecutionMode.RUN_MODE)
+        if (editpart.getExecutionMode() == ExecutionMode.RUN_MODE && PreferencesHelper.isOpiBeastAlarmsEnabled())
         {
             createBeastAlarmListener();
         }

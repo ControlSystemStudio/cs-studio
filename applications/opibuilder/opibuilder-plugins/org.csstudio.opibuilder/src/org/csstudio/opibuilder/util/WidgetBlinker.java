@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 import org.csstudio.opibuilder.editparts.PVWidgetEditpartDelegate;
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.swt.widgets.Display;
 
 /** Singleton that makes ('subscribed') widgets blink if they have a BEAST Alarm PV and require acknowledgement.
@@ -21,7 +22,8 @@ import org.eclipse.swt.widgets.Display;
 public enum WidgetBlinker {
     INSTANCE;
 
-    private final int period = 500; // 2Hz; TODO: preference (frequency or period ?)
+	private final boolean enabled = PreferencesHelper.isOpiBeastAlarmsEnabled();
+    private final int period = PreferencesHelper.getOpiBeastAlarmsBlinkPeriod();
     private final Set<PVWidgetEditpartDelegate> widgets = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
     private final Display display = Display.getDefault();
     private boolean active = false;
@@ -29,6 +31,8 @@ public enum WidgetBlinker {
 
     void blink(boolean firstBlink)
     {
+    	if (!enabled) return;
+    	
         int delay;
         if (firstBlink == false)
             delay = period;
@@ -67,6 +71,8 @@ public enum WidgetBlinker {
      */
     public void add(PVWidgetEditpartDelegate pvw)
     {
+    	if (!enabled) return; // ignore `subscribers` if BEAST Alarms in OPIs functionality is disabled
+
     	// sync is not needed for the single add(), but we don't want to begin blinking
     	// multiple times if two add's are called concurrently
         synchronized(widgets) {
