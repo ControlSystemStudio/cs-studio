@@ -818,14 +818,12 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
             AlarmSeverity borderSeverity = alarmSeverity;
 
             synchronized (beastInfo) {
-	            if (isBeastAlarmAndConnected() && isBeastAlarmActiveUnack())
-	                if (beastInfo.beastAlertBlinkState == 0) {
-	                    // use default border
-	                    borderSeverity = AlarmSeverity.NONE;
-	                } else {
-	                    // use (latched) severity border
-	                    borderSeverity = beastInfo.getLatchedSeverity();
-	                }
+	            if (isBeastAlarmAndConnected() && isBeastAlarmActiveUnack() && beastInfo.beastAlertBlinkState == 0) {
+                    /* use default border for 'blink state 0';
+                     * otherwise (no blinking or blink state 1) the current severity's border will be used
+                     */
+                    borderSeverity = AlarmSeverity.NONE;
+                }
             }
             
             switch (borderSeverity) {
@@ -880,8 +878,8 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     // use default color
                     return saveColor;
                 } else {
-                    // use (latched) severity color
-                    alarmColor = AlarmRepresentationScheme.getAlarmColor(beastInfo.getLatchedSeverity());
+                    // use (current) severity color
+                    alarmColor = AlarmRepresentationScheme.getAlarmColor(alarmSeverity);
                 }
             }
 
