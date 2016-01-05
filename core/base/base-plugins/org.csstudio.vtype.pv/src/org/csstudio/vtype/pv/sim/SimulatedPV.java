@@ -7,8 +7,6 @@
  ******************************************************************************/
 package org.csstudio.vtype.pv.sim;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -17,16 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.csstudio.vtype.pv.PV;
-import org.diirt.vtype.Display;
-import org.diirt.vtype.VType;
-import org.diirt.vtype.ValueFactory;
 
-/** Base for simulated scalar PVs
- *
- *  <p>Value is of type VDouble.
- *  Display settings use min/max,
- *  warnings generated at 20%/80% of range,
- *  alarms at 10%/90% of range.
+/** Base for simulated PVs
  *
  *  @author Kay Kasemir, based on similar code in org.csstudio.utility.pv and diirt
  */
@@ -36,14 +26,8 @@ abstract public class SimulatedPV extends PV
     private final static ScheduledExecutorService executor =
         Executors.newScheduledThreadPool(1, (Runnable target) -> new Thread(target, "SimPV"));
 
-    /** Format for Display */
-    private final static NumberFormat format = new DecimalFormat();
-
     /** Task that was submitted for periodic updates */
     private ScheduledFuture<?> task;
-
-    /** Display for value updates, also defines warning/alarm range */
-    private Display display;
 
     /** @param name Full PV name */
     public SimulatedPV(final String name)
@@ -54,17 +38,12 @@ abstract public class SimulatedPV extends PV
         notifyListenersOfPermissions(true);
     }
 
-    /** Init. 'display' and start periodic updates
-     *  @param min Display ..
-     *  @param max .. range
-     *  @param period Update period in seconds
+    /** Start periodic updates
+     *  @param update_seconds Update period in seconds
      */
-    protected void start(final double min, final double max, final double period)
+    protected void start(final double update_seconds)
     {
-        final double range = max - min;
-        display = ValueFactory.newDisplay(min, min + range * 0.1, min + range * 0.2, "a.u.", format,
-                                          min + range * 0.8, min + range * 0.9, max, min, max);
-        final long milli = Math.round(Math.max(period, 0.1) * 1000);
+        final long milli = Math.round(Math.max(update_seconds, 0.1) * 1000);
         task = executor.scheduleAtFixedRate(this::update, milli, milli, TimeUnit.MILLISECONDS);
     }
 
@@ -76,18 +55,7 @@ abstract public class SimulatedPV extends PV
     }
 
     /** Called by periodic timer */
-    private void update()
-    {
-        final double value = compute();
-        // Creates vtype with alarm according to display warning/alarm ranges
-        final VType vtype = ValueFactory.newVDouble(value, display);
-        notifyListenersOfValue(vtype);
-    }
-
-    /** Invoked for periodic update.
-     *  @return Current value of the simulated PV
-     */
-    abstract public double compute();
+    abstract protected void update();
 
     @Override
     protected void close()
@@ -97,7 +65,7 @@ abstract public class SimulatedPV extends PV
         {
             task.get(1, TimeUnit.SECONDS);
         }
-        catch (Exception ex)
+        catch (Throwable ex)
         {
             // Shutting down anyway ..
             Logger.getLogger(getClass().getName())

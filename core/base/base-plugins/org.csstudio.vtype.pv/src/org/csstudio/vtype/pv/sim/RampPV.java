@@ -14,7 +14,7 @@ import org.csstudio.vtype.pv.PV;
 /** Simulated PV for ramp
  *  @author Kay Kasemir, based on similar code in org.csstudio.utility.pv and diirt
  */
-public class RampPV extends SimulatedPV
+public class RampPV extends SimulatedDoublePV
 {
     public static PV forParameters(final String name, final List<Double> parameters) throws Exception
     {
@@ -24,20 +24,20 @@ public class RampPV extends SimulatedPV
             return new RampPV(name, parameters.get(0), parameters.get(1), 1, parameters.get(2));
         else if (parameters.size() == 4)
             return new RampPV(name, parameters.get(0), parameters.get(1), parameters.get(2), parameters.get(3));
-        throw new Exception("sim://ramp needs no paramters or (min, max, period) or (min, max, step, period)");
+        throw new Exception("sim://ramp needs no parameters, (min, max, update_seconds) or (min, max, step, update_seconds)");
     }
 
     private final double min, max, step;
     private double value = 0;
 
-    public RampPV(final String name, final double min, final double max, final double step, final double period)
+    public RampPV(final String name, final double min, final double max, final double step, final double update_seconds)
     {
         super(name);
         this.min = min;
         this.max = max;
         this.step = step == 0 ? 1 : step;
         this.value = min - step; // First call to compute() will return 'min'
-        start(min, max, period);
+        start(min, max, update_seconds);
     }
 
     public double compute()

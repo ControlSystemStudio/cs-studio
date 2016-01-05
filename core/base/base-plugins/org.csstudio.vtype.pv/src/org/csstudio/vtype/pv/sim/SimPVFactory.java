@@ -53,6 +53,14 @@ public class SimPVFactory implements PVFactory
             return RampPV.forParameters(name, parseDoubles(parameters));
         else if (func.equals("noise"))
             return NoisePV.forParameters(name, parseDoubles(parameters));
+        else if (func.equals("strings"))
+            return StringsPV.forParameters(name, parseDoubles(parameters));
+        else if (func.startsWith("intermittent"))           // diirt used "intermittentChannel"
+            return IntermittentPV.forParameters(name, parseDoubles(parameters));
+        else if (func.startsWith("sawtooth"))               // diirt used "sawtoothWaveform"
+            return SawtoothWavePV.forParameters(name, parseDoubles(parameters));
+        else if (func.toLowerCase().startsWith("sinewave")) // diirt used "sineWaveform"
+            return SineWavePV.forParameters(name, parseDoubles(parameters));
         else
             throw new Exception("Unknown simulated PV " + name);
     }

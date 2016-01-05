@@ -11,10 +11,10 @@ import java.util.List;
 
 import org.csstudio.vtype.pv.PV;
 
-/** Simulated PV for sine wave
+/** Simulated PV for sine
  *  @author Kay Kasemir, based on similar PV in org.csstudio.utility.pv and diirt
  */
-public class SinePV extends SimulatedPV
+public class SinePV extends SimulatedDoublePV
 {
     private final double min, range, step;
     private double x = 0;
@@ -27,16 +27,16 @@ public class SinePV extends SimulatedPV
             return new SinePV(name, parameters.get(0), parameters.get(1), 10.0, parameters.get(2));
         if (parameters.size() == 4)
             return new SinePV(name, parameters.get(0), parameters.get(1), parameters.get(2), parameters.get(3));
-        throw new Exception("sim://sine needs no paramters or (min, max, period) or (min, max, steps, period)");
+        throw new Exception("sim://sine needs no parameters or (min, max, update_seconds) or (min, max, steps, update_seconds)");
     }
 
-    public SinePV(final String name, final double min, final double max, final double steps, final double period)
+    public SinePV(final String name, final double min, final double max, final double steps, final double update_seconds)
     {
         super(name);
         this.min = min;
         this.range = max - min;
         this.step = 2.0*Math.PI / Math.max(steps, 1);
-        start(min, max, period);
+        start(min, max, update_seconds);
     }
 
     public double compute()

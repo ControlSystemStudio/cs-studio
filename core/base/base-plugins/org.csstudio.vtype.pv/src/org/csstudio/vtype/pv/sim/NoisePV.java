@@ -14,7 +14,7 @@ import org.csstudio.vtype.pv.PV;
 /** Simulated PV for noise
  *  @author Kay Kasemir, based on similar code in org.csstudio.utility.pv and diirt
  */
-public class NoisePV extends SimulatedPV
+public class NoisePV extends SimulatedDoublePV
 {
     public static PV forParameters(final String name, final List<Double> parameters) throws Exception
     {
@@ -22,17 +22,17 @@ public class NoisePV extends SimulatedPV
             return new NoisePV(name, -5, 5, 1);
         else if (parameters.size() == 3)
             return new NoisePV(name, parameters.get(0), parameters.get(1), parameters.get(2));
-        throw new Exception("sim://noise needs no paramters or (min, max, period)");
+        throw new Exception("sim://noise needs no parameters or (min, max, update_seconds)");
     }
 
     private final double min, range;
 
-    public NoisePV(final String name, final double min, final double max, final double period)
+    public NoisePV(final String name, final double min, final double max, final double update_seconds)
     {
         super(name);
         this.min = min;
         this.range = max - min;
-        start(min, max, period);
+        start(min, max, update_seconds);
     }
 
     public double compute()
