@@ -51,8 +51,11 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
+import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 
 /**
  *
@@ -112,6 +115,7 @@ public class SnapshotViewerController {
 
     private BooleanProperty snapshotSaveableProperty = new SimpleBooleanProperty(false);
     private BooleanProperty snapshotRestorableProperty = new SimpleBooleanProperty(false);
+    private ObjectProperty<VSnapshot> baseSnapshotProperty = new SimpleObjectProperty<VSnapshot>(null);
 
     private int numberOfSnapshots = 0;
     private final ArrayList<VSnapshot> snapshots = new ArrayList<>(10);
@@ -201,6 +205,15 @@ public class SnapshotViewerController {
     }
 
     /**
+     * Returns the java fx property that provides the selected base snapshot.
+     *
+     * @return the selected base snapshot property
+     */
+    public ReadOnlyObjectProperty<VSnapshot> baseSnapshotProperty() {
+        return baseSnapshotProperty;
+    }
+
+    /**
      * Set the snapshot as the primary snapshot for this editor. All existing snapshots are cleared. The method returns
      * the list of all table entries that should be displayed in the viewer.
      *
@@ -231,6 +244,7 @@ public class SnapshotViewerController {
         connectPVs();
         snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
         updateThresholds();
+        Platform.runLater(() -> baseSnapshotProperty.set(data));
         return filter(items.values(), false);
     }
 
