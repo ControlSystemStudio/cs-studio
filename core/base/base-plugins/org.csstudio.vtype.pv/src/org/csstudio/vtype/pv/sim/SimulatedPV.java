@@ -60,17 +60,9 @@ abstract public class SimulatedPV extends PV
     @Override
     protected void close()
     {
-        task.cancel(false);
-        try
-        {
-            task.get(1, TimeUnit.SECONDS);
-        }
-        catch (Throwable ex)
-        {
-            // Shutting down anyway ..
+        if (! task.cancel(false))
             Logger.getLogger(getClass().getName())
-                  .log(Level.WARNING, "Error stopping updates for " + getName(), ex);
-        }
+                  .log(Level.WARNING, "Cabbit cancel updates for " + getName());
         super.close();
     }
 }
