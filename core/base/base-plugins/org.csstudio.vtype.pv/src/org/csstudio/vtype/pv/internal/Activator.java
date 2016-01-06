@@ -44,7 +44,7 @@ public class Activator implements BundleActivator
                 final PVFactory factory = (PVFactory) config.createExecutableExtension("class");
                 logger.log(Level.CONFIG, "PV prefix {0} provided by {1} in {2}",
                     new Object[] { factory.getType(), name, plugin });
-                PVPool.addPVFactory(factory);
+                PVPool.addPVFactory(name, factory);
             }
             catch (Exception ex)
             {

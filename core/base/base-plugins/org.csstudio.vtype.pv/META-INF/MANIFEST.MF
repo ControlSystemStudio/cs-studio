@@ -14,6 +14,7 @@ Require-Bundle: org.junit;bundle-version="4.8.2";resolution:=optional,
  org.diirt.util;bundle-version="3.0.1"
 Export-Package: org.csstudio.vtype.pv,
  org.csstudio.vtype.pv.jca,
- org.csstudio.vtype.pv.local
+ org.csstudio.vtype.pv.local,
+ org.csstudio.vtype.pv.sim
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.csstudio.vtype.pv.internal.Activator
