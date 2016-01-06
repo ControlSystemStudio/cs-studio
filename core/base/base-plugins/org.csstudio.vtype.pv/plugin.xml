@@ -6,5 +6,6 @@
       <PVFactory name="pva" class="org.csstudio.vtype.pv.pva.PVA_PVFactory"/>
       <PVFactory name="ca" class="org.csstudio.vtype.pv.jca.JCA_PVFactory"/>
       <PVFactory name="loc" class="org.csstudio.vtype.pv.local.LocalPVFactory"/>
+      <PVFactory name="sim" class="org.csstudio.vtype.pv.sim.SimPVFactory"/>
    </extension>
 </plugin>
