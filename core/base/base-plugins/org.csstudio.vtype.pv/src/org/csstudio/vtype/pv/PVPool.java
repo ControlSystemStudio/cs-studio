@@ -85,7 +85,7 @@ public class PVPool
         default_type = type;
     }
 
-    /** Add a PV Factory
+    /** Add a PV Factory with it's own type
      *
      *  <p>As a side effect, also makes that last added factory the default
      *
@@ -93,8 +93,20 @@ public class PVPool
      */
     public static void addPVFactory(final PVFactory factory)
     {
-        factories.put(factory.getType(), factory);
-        setDefaultType(factory.getType());
+        addPVFactory(factory.getType(), factory);
+    }
+
+    /** Add a PV Factory
+     *
+     *  <p>As a side effect, also makes that last added factory the default
+     *
+     *  @param type Type prefix
+     *  @param factory {@link PVFactory} that the pool can use
+     */
+    public static void addPVFactory(final String type, final PVFactory factory)
+    {
+        factories.put(type, factory);
+        setDefaultType(type);
     }
 
     /** Obtain a PV
