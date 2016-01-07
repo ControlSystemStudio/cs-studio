@@ -8,7 +8,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     token=$line
 done < "$1"
 
-folderChangeSet=(`git diff-tree --name-only --no-commit-id -r -c HEAD | grep '\(core\|applications\)\/[[:alpha:]]' | cut -d/ -f1,2`)
+folderChangeSet=(`git diff-tree --name-only --no-commit-id -r -m HEAD | grep '\(core\|applications\)\/[[:alpha:]]' | cut -d/ -f1,2`)
 sorted_unique=(`echo "${folderChangeSet[@]}" | tr ' ' '\n' | sort -u -r | tr '\n' ' '`)
 
 for project in "${sorted_unique[@]}"
