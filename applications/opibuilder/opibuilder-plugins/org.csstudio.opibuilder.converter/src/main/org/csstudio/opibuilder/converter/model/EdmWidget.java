@@ -46,8 +46,18 @@ public class EdmWidget extends EdmEntity {
         super(genericEntity);
     }
 
+    /**
+     * Return PV to use for alarm sensitivity.
+     * @return alarmPv if present; else colorPv if present; else null
+     */
     public final String getAlarmPv() {
-        return alarmPv==null?colorPv:alarmPv;
+        String pv = null;
+        if ((alarmPv != null) && (!alarmPv.equals(""))) {
+            pv = alarmPv;
+        } else if ((colorPv != null) && (!colorPv.equals(""))) {
+            pv = colorPv;
+        }
+        return pv;
     }
 
     public int getMajor() {
