@@ -944,7 +944,7 @@ public class GUI extends Composite implements AlarmClientModelListener
             int numberOfRawAcknowledgedAlarms, AlarmTreePV[] filteredAcknowledgedAlarms,
             AlarmTreePV[] combinedAlarms)
     {
-        if (model == null) return;
+        if (model == null || active_table_viewer.getTable().isDisposed()) return;
         //if GUI is currently busy, do not update anything, just trigger another update
         if (active_table_viewer.isBusy()) {
             gui_update.trigger();
