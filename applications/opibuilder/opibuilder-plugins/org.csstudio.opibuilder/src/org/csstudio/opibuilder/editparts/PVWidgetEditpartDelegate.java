@@ -334,7 +334,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                         log.fine("BeastAlarmListener (" + pvName + ") received a new event of type " + event.toString());
                         if (event.isExceptionChanged()) {
                             Exception e = event.getPvReader().lastException();
-                            log.severe("BeastAlarmListener (" + pvName + ") received an EXCEPTION: " + e.toString());
+                            log.fine("BeastAlarmListener (" + pvName + ") received an EXCEPTION: " + e.toString());
                             e.printStackTrace();
                         }
 
