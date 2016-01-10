@@ -20,6 +20,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.logging.Level;
+import java.util.regex.Pattern;
 
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
@@ -118,11 +119,12 @@ public class SnapshotViewerController {
     private ObjectProperty<VSnapshot> baseSnapshotProperty = new SimpleObjectProperty<VSnapshot>(null);
 
     private int numberOfSnapshots = 0;
-    private final ArrayList<VSnapshot> snapshots = new ArrayList<>(10);
+    private final List<VSnapshot> snapshots = new ArrayList<>(10);
     private final Map<String, TableEntry> items = new LinkedHashMap<>();
     private final Map<String, String> readbacks = new HashMap<>();
     private final Map<String, Threshold<?>> thresholds = new HashMap<>();
     private final Map<TableEntry, PV> pvs = new LinkedHashMap<>();
+    private List<TableEntry> filteredList = new ArrayList<>(0);
     private final GUIUpdateThrottle throttle = new GUIUpdateThrottle(20, TABLE_UPDATE_RATE) {
         @Override
         protected void fire() {
@@ -142,6 +144,7 @@ public class SnapshotViewerController {
 
     private boolean showReadbacks = false;
     private boolean hideEqualItems = false;
+    private String filter = null;
 
     /**
      * Constructs a new controller for the given editor.
@@ -245,7 +248,7 @@ public class SnapshotViewerController {
         snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
         updateThresholds();
         Platform.runLater(() -> baseSnapshotProperty.set(data));
-        return filter(items.values(), false);
+        return filter(items.values(), filter);
     }
 
     /**
@@ -290,7 +293,7 @@ public class SnapshotViewerController {
                 snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
             }
             updateThresholds();
-            return filter(items.values(), false);
+            return filter(items.values(), filter);
         }
     }
 
@@ -340,7 +343,7 @@ public class SnapshotViewerController {
             newSnapshots.addAll(snapshots);
         }
         newSnapshots.forEach(e -> addSnapshot(e));
-        return filter(items.values(), false);
+        return filter(items.values(), filter);
     }
 
     /**
@@ -372,7 +375,7 @@ public class SnapshotViewerController {
             newSnapshots.addAll(snapshots);
         }
         newSnapshots.forEach(e -> addSnapshot(e));
-        return filter(items.values(), false);
+        return filter(items.values(), filter);
     }
 
     /**
@@ -409,6 +412,11 @@ public class SnapshotViewerController {
         }
     }
 
+    public List<TableEntry> setFilter(String filter) {
+        this.filter = filter;
+        return filter(items.values(), filter);
+    }
+
     /**
      * Stores the flag whether to show or hide the items where the current and snapshot values are equal.
      *
@@ -417,7 +425,7 @@ public class SnapshotViewerController {
      */
     public List<TableEntry> setHideEqualItems(boolean hideEqualItems) {
         this.hideEqualItems = hideEqualItems;
-        return filter(items.values(), hideEqualItems);
+        return filter(items.values(), filter);
     }
 
     /**
@@ -648,7 +656,8 @@ public class SnapshotViewerController {
                 List<VType> values = s.getValues();
                 for (int i = 0; i < names.size(); i++) {
                     TableEntry e = items.get(names.get(i));
-                    if (e.selectedProperty().get()) {
+                    //only restore the value if the entry is in the filtered list as well
+                    if (filteredList.contains(e) && e.selectedProperty().get()) {
                         pvs.get(e).writer.write(Utilities.toRawValue(values.get(i)));
                     }
                 }
@@ -734,11 +743,11 @@ public class SnapshotViewerController {
                     }
                     items.values().forEach(t -> t.readbackNameProperty().set(readbacks.get(t.pvNameProperty().get())));
                     connectPVs();
-                    consumer.accept(filter(items.values(), hideEqualItems));
+                    consumer.accept(filter(items.values(), filter));
                 }));
         } else {
             SaveRestoreService.getInstance().execute("Load readback names",
-                () -> consumer.accept(filter(items.values(), hideEqualItems)));
+                () -> consumer.accept(filter(items.values(), filter)));
         }
     }
 
@@ -837,20 +846,22 @@ public class SnapshotViewerController {
      * returns all entries if hide is false.
      *
      * @param allEntries the entries to filter
-     * @param hide true if the entries should be filtered or false otherwise
+     * @param filter the filter string used for filtering (can be null)
      * @return filtered list
      */
-    private static List<TableEntry> filter(Collection<TableEntry> allEntries, boolean hide) {
-        List<TableEntry> entries = new ArrayList<>(allEntries.size());
-        if (hide) {
-            allEntries.forEach(t -> {
-                if (!t.liveStoredEqualProperty().get()) {
-                    entries.add(t);
-                }
-            });
-        } else {
+    private List<TableEntry> filter(Collection<TableEntry> allEntries, String filter) {
+        final List<TableEntry> entries = new ArrayList<>(allEntries.size());
+        if (filter == null) {
             entries.addAll(allEntries);
+        } else {
+            final Pattern pattern = Pattern.compile(".*" + filter + ".*");
+            allEntries.forEach(t -> {
+                if (pattern.matcher(t.pvNameProperty().get()).matches()) {
+                    entries.add(t);
+                };
+            });
         }
+        filteredList = entries;
         return entries;
     }
 }

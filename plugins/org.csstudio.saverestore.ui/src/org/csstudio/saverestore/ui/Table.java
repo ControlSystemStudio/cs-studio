@@ -17,6 +17,7 @@ import org.diirt.vtype.VType;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
+import javafx.collections.ObservableList;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
@@ -392,11 +393,15 @@ public class Table extends TableView<TableEntry> {
             createTableForMultipleSnapshots(snapshots, showReadback);
         }
         updateTableColumnTitles();
-        getItems().setAll(entries);
+
+        final ObservableList<TableEntry> items = getItems();
+        final boolean notHide = !controller.isHideEqualItems();
+
+        items.clear();
         entries.forEach(e -> {
-            e.selectedProperty().addListener((a, o, n) -> {
-                selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false);
-            });
+            //there is no harm if this is executed more than once, because only one listener is allowed
+            e.selectedProperty().addListener((a, o, n) ->
+                selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false));
             e.liveStoredEqualProperty().addListener((a, o, n) -> {
                 if (controller.isHideEqualItems()) {
                     if (n) {
@@ -406,8 +411,8 @@ public class Table extends TableView<TableEntry> {
                     }
                 }
             });
-            if (controller.isHideEqualItems() && e.liveStoredEqualProperty().get()) {
-                getItems().remove(e);
+            if (notHide || !e.liveStoredEqualProperty().get()) {
+                items.add(e);
             }
         });
     }

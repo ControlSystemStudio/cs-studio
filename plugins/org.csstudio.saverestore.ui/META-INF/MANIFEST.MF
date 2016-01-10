@@ -22,3 +22,5 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.107.0",
  org.diirt.datasource;bundle-version="3.0.1"
 Export-Package: org.csstudio.saverestore.ui,
  org.csstudio.saverestore.ui.util
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.csstudio.saverestore.ui.Activator

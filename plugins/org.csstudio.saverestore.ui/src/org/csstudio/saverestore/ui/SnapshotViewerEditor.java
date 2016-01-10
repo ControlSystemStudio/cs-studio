@@ -52,12 +52,14 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import javafx.animation.Animation.Status;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -92,6 +94,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
     public static final String ID = "org.csstudio.saverestore.ui.editor.snapshotviewer";
     static final String STYLE = "style.css";
 
+    private static final String ALL_ITEMS = "<ALL ITEMS>";
     // the style for the animated save button
     private static final String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
         + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
@@ -421,6 +424,35 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             separator3, openSnapshotFromFileButton, saveSnapshotToFileButton, exportButton);
 
         HBox rightToolbar = new HBox(5);
+        ComboBox<String> filterCombo = new ComboBox<>();
+        filterCombo.getItems().add(ALL_ITEMS);
+        filterCombo.getItems().addAll(Activator.getDefault().getFilters());
+        filterCombo.setMinWidth(100);
+        filterCombo.setEditable(true);
+        filterCombo.setOnAction(e -> {
+            final String selectedFilter = filterCombo.getSelectionModel().getSelectedItem();
+            ObservableList<String> items = filterCombo.getItems();
+            if (items.indexOf(selectedFilter) < 0) {
+                items.add(1, selectedFilter);
+                if (items.size() > Activator.getDefault().getMaxNumberOfFilters()) {
+                    items.remove(items.size()-1);
+                }
+            } else {
+                items.remove(selectedFilter);
+                items.add(1,selectedFilter);
+            }
+            String[] filters = new String[items.size()-1];
+            for (int i = 0; i < filters.length; i++) {
+                filters[i] = items.get(i+1);
+            }
+            Activator.getDefault().storeFilters(filters);
+            SaveRestoreService.getInstance().execute("Filter items", () -> {
+                final List<TableEntry> entries = controller
+                    .setFilter(ALL_ITEMS.equals(selectedFilter) ? null : selectedFilter);
+                Platform.runLater(() -> table.getItems().setAll(entries));
+            });
+        });
+        filterCombo.getSelectionModel().select(ALL_ITEMS);
         ToggleButton hideEqualItemsButton = new ToggleButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/filter_ps.png"))));
         hideEqualItemsButton.setTooltip(new Tooltip("Hide/Show items where snapshot value equals current value"));
@@ -430,7 +462,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                 Platform.runLater(() -> table.getItems().setAll(entries));
             });
         });
-        rightToolbar.getChildren().addAll(hideEqualItemsButton);
+        rightToolbar.setAlignment(Pos.CENTER_RIGHT);
+        rightToolbar.getChildren().addAll(new Label("Filter (regex):"), filterCombo, hideEqualItemsButton);
         HBox toolbar = new HBox(5);
         HBox.setHgrow(leftToolbar, Priority.ALWAYS);
         HBox.setHgrow(rightToolbar, Priority.NEVER);

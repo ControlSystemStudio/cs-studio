@@ -172,6 +172,10 @@
                name="org.csstudio.saverestore.multipledataproviders"
                priorityLevel="workbench">
          </variable>
+         <variable
+               name="org.csstudio.saverestore.resettablerepository"
+               priorityLevel="workbench">
+         </variable>
       </sourceProvider>
    </extension>
    <extension

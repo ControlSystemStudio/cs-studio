@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.ui.util.SingleListenerBooleanProperty;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
@@ -18,12 +19,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyBooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 
 /**
  *
@@ -36,16 +35,7 @@ import javafx.beans.value.ChangeListener;
 public class TableEntry {
 
     private IntegerProperty id = new SimpleIntegerProperty(this, "id");
-    private BooleanProperty selected = new SimpleBooleanProperty(this, "selected", true) {
-        private boolean listenerSet = false;
-        @Override
-        public void addListener(ChangeListener<? super Boolean> listener) {
-            if (!listenerSet) {
-                listenerSet = true;
-                super.addListener(listener);
-            }
-        };
-    };
+    private BooleanProperty selected = new SingleListenerBooleanProperty(this, "selected", true);
     private StringProperty pvName = new SimpleStringProperty(this, "pvName");
     private ObjectProperty<Timestamp> timestamp = new SimpleObjectProperty<>(this, "timestamp");
     private StringProperty status = new SimpleStringProperty(this, "status", "OK");
@@ -57,16 +47,7 @@ public class TableEntry {
     private ObjectProperty<VTypePair> readback = new SimpleObjectProperty<>(this, "readback",
         new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
     private StringProperty readbackName = new SimpleStringProperty(this, "readbackName");
-    private BooleanProperty liveStoredEqual = new SimpleBooleanProperty(this, "liveStoredEqual", true) {
-        private boolean listenerSet = false;
-        @Override
-        public void addListener(ChangeListener<? super Boolean> listener) {
-            if (!listenerSet) {
-                listenerSet = true;
-                super.addListener(listener);
-            }
-        };
-    };
+    private BooleanProperty liveStoredEqual = new SingleListenerBooleanProperty(this, "liveStoredEqual", true);
 
     private Optional<Threshold<?>> threshold = Optional.empty();
 
