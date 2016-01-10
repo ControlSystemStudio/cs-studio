@@ -75,6 +75,15 @@ public class SaveRestoreService {
     }
 
     /**
+     * Returns the number of currently loaded data providers. If the providers have not been loaded yet, 0 is returned.
+     *
+     * @return number of registered and loaded data providers
+     */
+    public int getDataProvidersCount() {
+        return dataProviders == null ? 0 : dataProviders.size();
+    }
+
+    /**
      * Loads the data provider extension points and returns them as a list.
      *
      * @return the list of all registered data providers
@@ -115,6 +124,10 @@ public class SaveRestoreService {
             return;
         DataProviderWrapper oldValue = this.selectedDataProvider;
         this.selectedDataProvider = selectedDataProvider;
+        if (this.selectedDataProvider != null) {
+            final DataProvider provider = this.selectedDataProvider.provider;
+            SaveRestoreService.getInstance().execute("Data Provider Initialise", () -> provider.initialise());
+        }
         LOGGER.log(Level.FINE, "Selected data provider: " + selectedDataProvider.getPresentationName());
         support.firePropertyChange(SELECTED_DATA_PROVIDER, oldValue, this.selectedDataProvider);
     }

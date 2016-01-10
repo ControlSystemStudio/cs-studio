@@ -35,6 +35,14 @@ public interface DataProvider {
     }
 
     /**
+     * Initialises this data provider so that it can be used. This method is only called after the data provider is
+     * selected in the UI in order not to trigger any action that is not required at the time when the data provider is
+     * created (e.g. credentials input). This method might be called more than once in the life cycle of the data
+     * provider.
+     */
+    void initialise();
+
+    /**
      * Adds a completion notifier which is notified every time when a specific action is completed. The notifiers can be
      * used to refresh the data in the UI, whenever a specific action is triggered by another UI part.
      *

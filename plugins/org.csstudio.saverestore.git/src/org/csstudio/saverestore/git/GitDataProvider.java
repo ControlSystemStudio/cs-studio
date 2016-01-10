@@ -44,15 +44,21 @@ public class GitDataProvider implements DataProvider {
     public GitDataProvider() {
         notifiers = new ArrayList<>();
         grm = new GitManager();
-        SaveRestoreService.getInstance().execute("Git Initialise", () -> {
-            try {
-                URI remote = Activator.getInstance().getGitURI();
-                File dest = Activator.getInstance().getDestination();
-                grm.initialise(remote, dest);
-            } catch (GitAPIException e) {
-                throw new RuntimeException("Could not instantiate git data provider.", e);
-            }
-        });
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.csstudio.saverestore.DataProvider#initialise()
+     */
+    @Override
+    public void initialise() {
+        try {
+            URI remote = Activator.getInstance().getGitURI();
+            File dest = Activator.getInstance().getDestination();
+            grm.initialise(remote, dest);
+        } catch (GitAPIException e) {
+            throw new RuntimeException("Could not instantiate git data provider.", e);
+        }
     }
 
     /*

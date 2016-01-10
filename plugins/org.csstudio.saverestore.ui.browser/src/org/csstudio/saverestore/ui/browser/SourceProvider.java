@@ -56,7 +56,7 @@ public class SourceProvider extends AbstractSourceProvider {
         Map<String, Boolean> state = new HashMap<>(2);
         DataProviderWrapper provider = SaveRestoreService.getInstance().getSelectedDataProvider();
         state.put(SOURCE_NAMES[0], provider == null ? false : provider.provider.areBranchesSupported());
-        state.put(SOURCE_NAMES[1], SaveRestoreService.getInstance().getDataProviders().size() > 1);
+        state.put(SOURCE_NAMES[1], SaveRestoreService.getInstance().getDataProvidersCount() > 1);
         state.put(SOURCE_NAMES[2], provider == null ? false : provider.provider.isReinitSupported());
         return state;
     }

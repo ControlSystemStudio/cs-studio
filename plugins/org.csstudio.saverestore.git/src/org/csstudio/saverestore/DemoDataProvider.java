@@ -37,7 +37,11 @@ public class DemoDataProvider implements DataProvider {
 
 
     public DemoDataProvider() {
-        // TODO Auto-generated constructor stub
+    }
+
+    @Override
+    public void initialise() {
+
     }
 
     @Override
