@@ -52,7 +52,10 @@ import org.eclipse.ui.dialogs.SaveAsDialog;
 import javafx.animation.Animation.Status;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -425,32 +428,59 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
 
         HBox rightToolbar = new HBox(5);
         ComboBox<String> filterCombo = new ComboBox<>();
+        filterCombo.setTooltip(new Tooltip("Pnly PVs that fully or partially match the expression will be displayed"));
         filterCombo.getItems().add(ALL_ITEMS);
         filterCombo.getItems().addAll(Activator.getDefault().getFilters());
         filterCombo.setMinWidth(100);
         filterCombo.setEditable(true);
-        filterCombo.setOnAction(e -> {
-            final String selectedFilter = filterCombo.getSelectionModel().getSelectedItem();
-            ObservableList<String> items = filterCombo.getItems();
-            if (items.indexOf(selectedFilter) < 0) {
-                items.add(1, selectedFilter);
-                if (items.size() > Activator.getDefault().getMaxNumberOfFilters()) {
-                    items.remove(items.size()-1);
+        filterCombo.setOnAction(new EventHandler<ActionEvent>() {
+            private boolean suppressUpdate = false;
+            @Override
+            public void handle(ActionEvent event) {
+                if (suppressUpdate) {
+                    return;
                 }
-            } else {
-                items.remove(selectedFilter);
-                items.add(1,selectedFilter);
+                //when a new filter is selected, add that filter to the second row in the combo and store the filters
+                String filter = filterCombo.getSelectionModel().getSelectedItem();
+                if (filter == null || filter.trim().isEmpty()) {
+                    filter = ALL_ITEMS;
+                }
+                final String selectedFilter = filter;
+                List<String> items = new ArrayList<>(filterCombo.getItems());
+                if (items.indexOf(selectedFilter) < 0) {
+                    items.add(1, selectedFilter);
+                    if (items.size() > Activator.getDefault().getMaxNumberOfFilters()) {
+                        items.remove(items.size()-1);
+                    }
+                } else if (!ALL_ITEMS.equals(selectedFilter)){
+                    items.remove(selectedFilter);
+                    items.add(1,selectedFilter);
+                }
+
+                String[] filters = new String[items.size()-1];
+                for (int i = 0; i < filters.length; i++) {
+                    filters[i] = items.get(i+1);
+                }
+                Activator.getDefault().storeFilters(filters);
+
+                Platform.runLater(() -> {
+                    //combo box has to be updated after this event is fully handled
+                    //the lines below might trigger a few more actions, so make sure that those are suppressed.
+                    suppressUpdate = true;
+                    ObservableList<String> list = FXCollections.observableArrayList();
+                    list.add(ALL_ITEMS);
+                    list.addAll(filters);
+                    filterCombo.setItems(list);
+                    filterCombo.getSelectionModel().select(selectedFilter);
+                    suppressUpdate = false;
+                });
+
+                SaveRestoreService.getInstance().execute("Filter items", () -> {
+                    final List<TableEntry> entries = controller
+                        .setFilter(ALL_ITEMS.equals(selectedFilter) ? null : selectedFilter);
+                    Platform.runLater(() -> table.getItems().setAll(entries));
+                });
             }
-            String[] filters = new String[items.size()-1];
-            for (int i = 0; i < filters.length; i++) {
-                filters[i] = items.get(i+1);
-            }
-            Activator.getDefault().storeFilters(filters);
-            SaveRestoreService.getInstance().execute("Filter items", () -> {
-                final List<TableEntry> entries = controller
-                    .setFilter(ALL_ITEMS.equals(selectedFilter) ? null : selectedFilter);
-                Platform.runLater(() -> table.getItems().setAll(entries));
-            });
         });
         filterCombo.getSelectionModel().select(ALL_ITEMS);
         ToggleButton hideEqualItemsButton = new ToggleButton("",
@@ -463,7 +493,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             });
         });
         rightToolbar.setAlignment(Pos.CENTER_RIGHT);
-        rightToolbar.getChildren().addAll(new Label("Filter (regex):"), filterCombo, hideEqualItemsButton);
+        rightToolbar.getChildren().addAll(new Label("Filter (partial match):"), filterCombo, hideEqualItemsButton);
         HBox toolbar = new HBox(5);
         HBox.setHgrow(leftToolbar, Priority.ALWAYS);
         HBox.setHgrow(rightToolbar, Priority.NEVER);

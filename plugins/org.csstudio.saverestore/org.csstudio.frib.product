@@ -40,9 +40,9 @@ openFile
 
    <splash
       location="org.csstudio.iter.css.product"
-      startupProgressRect="5,280,470,15"
-      startupMessageRect="7,250,466,20"
-      startupForegroundColor="0064C6" />
+      startupProgressRect="5,210,470,15"
+      startupMessageRect="7,190,445,20"
+      startupForegroundColor="FFFFFF" />
    <launcher name="css">
       <linux icon="/org.csstudio.iter.css.product/icons/css48.xpm"/>
       <solaris/>
@@ -56,20 +56,6 @@ openFile
    <vm>
    </vm>
 
-   <license>
-        <url>https://portal.iter.org/departments/CHD/CODAC/dev/Pages/trunk.aspx</url>
-        <text>
-   Copyright (c) : 2010-2015 ITER Organization,
-CS 90 046
-13067 St. Paul-lez-Durance Cedex
-France
- 
-This product is part of ITER CODAC software.
-For the terms and conditions of redistribution or use of this software
-refer to the file ITER-LICENSE.TXT located in the top level directory
-of the distribution package.
-         </text>
-   </license>
 
    <plugins>
    </plugins>
