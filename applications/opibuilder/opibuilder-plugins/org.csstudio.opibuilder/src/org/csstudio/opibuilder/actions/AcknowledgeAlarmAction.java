@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2015 ITER Organization.
+* Copyright (c) 2010-2016 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -28,25 +28,25 @@ public class AcknowledgeAlarmAction implements IObjectActionDelegate {
 	@Override
 	public void run(IAction action) {
         final AbstractBaseEditPart selectedWidget = getSelectedWidget();
-        
+
 		if(selectedWidget == null || selectedWidget.getWidgetModel() == null) return;
         if (!(selectedWidget.getWidgetModel() instanceof IPVWidgetModel) || !(selectedWidget instanceof AbstractPVWidgetEditPart)) return;
-        
+
 //        IPVWidgetModel model = (IPVWidgetModel) selectedWidget.getWidgetModel();
-        
+
         PVWidgetEditpartDelegate pvDelegate = ((AbstractPVWidgetEditPart) selectedWidget).getPVWidgetEditpartDelegate();
         if (pvDelegate.isBeastAlarmAndConnected() == false) return;
-        
+
         pvDelegate.acknowledgeAlarm();
 //        MessageDialog.openInformation(null, "Acknowledge PV", "When implemented, this will acknowledge AlarmPV ");
 	}
 
 	private void updateAction(IAction action) {
         final AbstractBaseEditPart selectedWidget = getSelectedWidget();
-        
+
 		if(selectedWidget == null || selectedWidget.getWidgetModel() == null) return;
         if (!(selectedWidget.getWidgetModel() instanceof IPVWidgetModel) || !(selectedWidget instanceof AbstractPVWidgetEditPart)) return;
-        
+
         IPVWidgetModel model = (IPVWidgetModel) selectedWidget.getWidgetModel();
         PVWidgetEditpartDelegate pvDelegate = ((AbstractPVWidgetEditPart) selectedWidget).getPVWidgetEditpartDelegate();
 
@@ -58,7 +58,7 @@ public class AcknowledgeAlarmAction implements IObjectActionDelegate {
         	action.setToolTipText("");
         	return;
         }
-        
+
         if (pvDelegate.getBeastAlarmInfo().isLatchedAlarmOK()) {
         	action.setEnabled(false);
         }
@@ -94,7 +94,7 @@ public class AcknowledgeAlarmAction implements IObjectActionDelegate {
         }else
             return null;
     }
-    
+
     private static ImageDescriptor getImageDescriptor(BeastAlarmSeverityLevel currentSeverity, BeastAlarmSeverityLevel latchedSeverity) {
         AlarmIcons icons = AlarmIcons.getInstance();
         switch (latchedSeverity) {
@@ -120,5 +120,5 @@ public class AcknowledgeAlarmAction implements IObjectActionDelegate {
                 return null;
         }
     }
-	
+
 }

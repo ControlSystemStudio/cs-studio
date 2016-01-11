@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2015 ITER Organization.
+* Copyright (c) 2010-2016 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -82,7 +82,7 @@ public enum BeastAlarmSeverityLevel {
     {
         return active;
     }
-    
+
     /** @return Name of the severity level for users.
      */
     public String getDisplayName()
@@ -102,17 +102,17 @@ public enum BeastAlarmSeverityLevel {
             severity.length() <= 0  ||
             "NO_ALARM".equalsIgnoreCase(severity)) //$NON-NLS-1$
             return OK;
-        
+
         // Most other cases
         for (BeastAlarmSeverityLevel level : values())
             if (level.name().equalsIgnoreCase(severity))
                 return level;
-        
+
         // Cover cases where the 'display name' was received
         for (BeastAlarmSeverityLevel level : values())
             if (level.getDisplayName().equalsIgnoreCase(severity))
                 return level;
-        
+
         // Handle all unknown severities as INVALID, i.e. the worst case
         return INVALID;
     }
