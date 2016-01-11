@@ -127,7 +127,7 @@ public class ValidationFailure implements Comparable<ValidationFailure> {
      * @return the location
      */
     public String getLocation() {
-        return "line " + lineNumber + " (Widget: " + widgetName + ")";
+        return lineNumber > -1 ? "line " + lineNumber + " (Widget: " + widgetName + ")" : "N/A";
     }
 
     /**
