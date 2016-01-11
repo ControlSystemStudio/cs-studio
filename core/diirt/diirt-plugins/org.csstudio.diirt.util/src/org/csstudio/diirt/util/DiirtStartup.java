@@ -6,6 +6,11 @@ import java.net.URL;
 import java.util.logging.Logger;
 
 import org.csstudio.utility.product.IWorkbenchWindowAdvisorExtPoint;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.CompositeDataSourceConfiguration;
+import org.diirt.datasource.DataSource;
+import org.diirt.datasource.DataSourceProvider;
+import org.diirt.datasource.PVManager;
 import org.diirt.util.config.Configuration;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
@@ -42,6 +47,10 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
 //            Configuration;
             log.config("Resetting the configuration folder");
             Configuration.reset();
+            DataSource defaultDataSource = PVManager.getDefaultDataSource();
+            if (defaultDataSource instanceof CompositeDataSource) {
+                PVManager.setDefaultDataSource(DataSourceProvider.createDataSource());
+            }
         } catch (Exception e) {
             log.severe(e.getMessage());
             e.printStackTrace();
