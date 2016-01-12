@@ -76,6 +76,8 @@ public class SeverityColorPairProvider implements DisposeListener
             colors[SeverityLevel.MAJOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MAJOR.ordinal()].getRGB());
         if (colors[SeverityLevel.INVALID_ACK.ordinal()] == null && colors[SeverityLevel.INVALID.ordinal()] != null)
             colors[SeverityLevel.INVALID_ACK.ordinal()] = new Color(display, colors[SeverityLevel.INVALID.ordinal()].getRGB());
+        if (colors[SeverityLevel.UNDEFINED_ACK.ordinal()] == null && colors[SeverityLevel.INVALID_ACK.ordinal()] != null)
+            colors[SeverityLevel.UNDEFINED_ACK.ordinal()] = new Color(display, colors[SeverityLevel.INVALID_ACK.ordinal()].getRGB());
     }
 
     /** @see DisposeListener */
