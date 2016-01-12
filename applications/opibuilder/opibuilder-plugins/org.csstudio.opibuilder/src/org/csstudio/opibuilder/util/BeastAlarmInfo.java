@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2015 ITER Organization.
+* Copyright (c) 2010-2016 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.util;
 import org.diirt.vtype.AlarmSeverity;
 
 /** BEAST alarm info for PV Widgets.
- *  
+ *
  * @author Boris Versic
  */
 public final class BeastAlarmInfo {
@@ -40,7 +40,7 @@ public final class BeastAlarmInfo {
     }
 
     /** @return <code>true</code> if (latched) severity indicates an acknowledged state,
-     *          <code>false</code> for unacknowledged alarm or OK 
+     *          <code>false</code> for unacknowledged alarm or OK
      */
     public boolean isAcknowledged() {
         return !latchedSeverity.isActive() && latchedSeverity != BeastAlarmSeverityLevel.OK;
@@ -52,7 +52,7 @@ public final class BeastAlarmInfo {
     public boolean isLatchedAlarmActive() {
         return latchedSeverity.isActive();
     }
-    
+
     /** @return <code>true</code> if (current) severity indicates an active alarm,
      *          <code>false</code> for acknowledged or OK state
      */

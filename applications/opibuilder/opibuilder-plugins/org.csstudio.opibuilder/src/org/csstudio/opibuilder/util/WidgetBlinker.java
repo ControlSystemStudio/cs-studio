@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2010-2015 ITER Organization.
+* Copyright (c) 2010-2016 ITER Organization.
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
 * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.eclipse.swt.widgets.Display;
 
 /** Singleton that makes ('subscribed') widgets blink if they have a BEAST Alarm PV and require acknowledgement.
- *  
+ *
  * @author Boris Versic
  */
 public enum WidgetBlinker {
@@ -32,7 +32,7 @@ public enum WidgetBlinker {
     void blink(boolean firstBlink)
     {
     	if (!enabled) return;
-    	
+
         int delay;
         if (firstBlink == false)
             delay = period;
@@ -66,7 +66,7 @@ public enum WidgetBlinker {
      * Important: the Beast Datasource listener is configured to be notified on the display (UI) thread;
      * WidgetBlinker expects this -> there are no checks to make sure the pvw.performBeastBlink() will be
      * called on the `correct` thread.
-     * 
+     *
      * @param pvw PVWidgetEditpartDelegate to add to the list of widgets for blinking
      */
     public void add(PVWidgetEditpartDelegate pvw)
@@ -86,7 +86,7 @@ public enum WidgetBlinker {
     }
 
     /** Remove given PV editpart delegate from the WidgetBlinker (if it exists in the blink subscribers list).
-     * 
+     *
      * @param pvw PVWidgetEditpartDelegate to remove from the list of widgets for blinking
      */
     public void remove(PVWidgetEditpartDelegate pvw)
@@ -96,9 +96,9 @@ public enum WidgetBlinker {
             active = !widgets.isEmpty();
         };
     }
-    
+
     /** Check whether the given PV editpart delegate exists in the `blink subscribers` list.
-     * 
+     *
      * @param pvw PVWidgetEditpartDelegate to check for existence in the list of widgets for blinking
      * @return <code>true</code> if WidgetBlinker's blink list contains pvw, <code>false</code> otherwise.
      */

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010-2015 ITER Organization.
+ * Copyright (c) 2010-2016 ITER Organization.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -76,6 +76,8 @@ public class SeverityColorPairProvider implements DisposeListener
             colors[SeverityLevel.MAJOR_ACK.ordinal()] = new Color(display, colors[SeverityLevel.MAJOR.ordinal()].getRGB());
         if (colors[SeverityLevel.INVALID_ACK.ordinal()] == null && colors[SeverityLevel.INVALID.ordinal()] != null)
             colors[SeverityLevel.INVALID_ACK.ordinal()] = new Color(display, colors[SeverityLevel.INVALID.ordinal()].getRGB());
+        if (colors[SeverityLevel.UNDEFINED_ACK.ordinal()] == null && colors[SeverityLevel.INVALID_ACK.ordinal()] != null)
+            colors[SeverityLevel.UNDEFINED_ACK.ordinal()] = new Color(display, colors[SeverityLevel.INVALID_ACK.ordinal()].getRGB());
     }
 
     /** @see DisposeListener */
