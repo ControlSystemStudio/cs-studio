@@ -11,6 +11,7 @@ import sys
 from optparse import OptionParser
 from ConfigParser import SafeConfigParser
 from tempfile import NamedTemporaryFile, mkstemp
+import mmap
 '''
 This Script
 
@@ -154,7 +155,17 @@ class FakeSecHead(object):
         if self.sechead:
             try: return self.sechead
             finally: self.sechead = None
-        else: return self.fp.readline()
+        else:
+            return self.fp.readline()
+
+def check(filetmp, search):
+        datafile = file(filetmp)
+        found = False #this isn't really necessary 
+        for line in datafile:
+            if search in line:
+                #found = True #not necessary 
+                return line
+        return '' #because you finished the search without finding anything
 
     
 if __name__ == '__main__':
@@ -185,9 +196,21 @@ if __name__ == '__main__':
     '''  
     cf = SafeConfigParser()
     cf.readfp(FakeSecHead(open(os.path.join(confBuildDir, 'build.properties'), 'r')))
-    topLevelElementType = cf.get('FakeSection', 'topLevelElementType')
-    topLevelElementId = cf.get('FakeSection', 'topLevelElementId')
-    productFileName = os.path.split(os.path.normpath(cf.get('FakeSection', 'product')))[1]
+
+    topLevelElementType =  ''
+    topLevelElementId =  ''
+    if check(confBuildDir + '/build.properties', 'feature.xml') :
+        topLevelElementType = 'feature'
+        topLevelElementId = 'feature.xml'
+       
+    line = check(confBuildDir + '/build.properties', '.product')
+    productFileName = ''
+    if line :
+        line = line.strip()
+        if ',' in line : 
+            line = line[:line.index(',')]
+        productFileName = line
+    
     if not str(productFileName).endswith('.product'):
         print 'Invalid product specified in build.properties'
         sys.exit(-1)
