@@ -17,18 +17,20 @@ public class Activator extends AbstractUIPlugin {
     /** The shared instance */
     private static Activator plugin;
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+     */
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        setPlugin(this);
+        Activator.plugin = this;
     }
 
-    /** Static setter to avoid FindBugs warning */
-    private static void setPlugin(final Activator thePlugin) {
-        plugin = thePlugin;
-    }
-
-    /** @return The shared instance. */
+    /**
+     * @return the shared instance.
+     */
     public static Activator getDefault() {
         return plugin;
     }

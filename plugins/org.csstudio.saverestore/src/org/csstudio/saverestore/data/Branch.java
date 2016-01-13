@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class Branch implements Serializable, Comparable<Branch> {
+public class Branch implements Comparable<Branch>, Serializable {
 
     private static final long serialVersionUID = 7901647776511062560L;
     private final String fullName;
@@ -86,12 +86,13 @@ public class Branch implements Serializable, Comparable<Branch> {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        } else if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        } else if (getClass() != obj.getClass()) {
             return false;
+        }
         Branch other = (Branch) obj;
         return Objects.equals(shortName, other.shortName);
     }

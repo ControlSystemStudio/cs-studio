@@ -1,5 +1,8 @@
 package org.csstudio.saverestore.data;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,12 +34,14 @@ public class VSnapshot implements VType, Time, Array, Serializable {
 
     private static final long serialVersionUID = 2676226155070688049L;
 
-    private final List<String> names;
-    private final List<VType> values;
-    private final List<Boolean> selected;
-    private final Timestamp snapshotTime;
-    private final BeamlineSet beamlineSet;
-    private final Optional<Snapshot> snapshot;
+    //these could all be final, but can't be because they are set during serialization, which is manual, due
+    //to Timestamp not being serializable
+    private List<String> names;
+    private List<VType> values;
+    private List<Boolean> selected;
+    private Timestamp snapshotTime;
+    private BeamlineSet beamlineSet;
+    private Snapshot snapshot;
 
     /**
      * Constructs a new data object from the {@link VTable}. The table is expected to have 3 columns: pv names, selected
@@ -80,7 +85,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.values = new ArrayList<>(d);
         this.snapshotTime = snapshotTime;
         this.beamlineSet = snapshot.getBeamlineSet();
-        this.snapshot = Optional.of(snapshot);
+        this.snapshot = snapshot;
     }
 
     /**
@@ -104,7 +109,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.values = new ArrayList<>(values);
         this.snapshotTime = snapshotTime;
         this.beamlineSet = snapshot.getBeamlineSet();
-        this.snapshot = Optional.of(snapshot);
+        this.snapshot = snapshot;
     }
 
     /**
@@ -127,7 +132,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.values = new ArrayList<>(values);
         this.snapshotTime = snapshotTime;
         this.beamlineSet = snapshot.getBeamlineSet();
-        this.snapshot = Optional.of(snapshot);
+        this.snapshot = snapshot;
     }
 
     /**
@@ -148,7 +153,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.selected = new ArrayList<>(selList);
         this.snapshotTime = null;
         this.beamlineSet = set;
-        this.snapshot = Optional.empty();
+        this.snapshot = null;
     }
 
     /**
@@ -168,7 +173,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return the snapshot descriptor
      */
     public Optional<Snapshot> getSnapshot() {
-        return snapshot;
+        return Optional.ofNullable(snapshot);
     }
 
     /**
@@ -268,7 +273,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return true if this snapshot is saved or false otherwise
      */
     public boolean isSaved() {
-        return snapshot.isPresent() ? snapshot.get().getComment() != null : false;
+        return snapshot == null ? false : snapshot.getComment() != null;
     }
 
     /**
@@ -290,7 +295,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     @Override
     public String toString() {
         if (isSaved()) {
-            return Utilities.timestampToBigEndianString(snapshot.get().getDate(), true);
+            return Utilities.timestampToBigEndianString(snapshot.getDate(), true);
         } else {
             if (snapshotTime == null) {
                 return beamlineSet.getName();
@@ -316,12 +321,13 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        } else if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        } else if (getClass() != obj.getClass()) {
             return false;
+        }
         VSnapshot other = (VSnapshot) obj;
         return Objects.equals(beamlineSet, other.beamlineSet) && Objects.equals(names, other.names)
             && Objects.equals(snapshotTime, other.snapshotTime) && Objects.equals(values, other.values)
@@ -339,5 +345,43 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         List<Object> values = Arrays.asList(getNames(), getSelected(), getValues());
         List<String> columns = Arrays.asList(FileUtilities.H_PV_NAME, FileUtilities.H_SELECTED, FileUtilities.H_VALUE);
         return ValueFactory.newVTable(classes, columns, values);
+    }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        if (snapshot == null) {
+            out.writeObject("No Snapshot");
+        } else {
+            out.writeObject(snapshot);
+        }
+        if (snapshotTime == null) {
+            out.writeLong(Long.valueOf(-1));
+            out.writeInt(Integer.valueOf(-1));
+        } else {
+            out.writeLong(snapshotTime.getSec());
+            out.writeInt(snapshotTime.getNanoSec());
+        }
+        out.writeObject(beamlineSet);
+        out.writeObject(names);
+        out.writeObject(values);
+        out.writeObject(selected);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        Object obj = in.readObject();
+        if (obj instanceof String && "No Snapshot".equals((String)obj)) {
+            snapshot = null;
+        }
+        long secs = in.readLong();
+        int nano = in.readInt();
+        if (secs == -1 && nano == -1) {
+            snapshotTime = null;
+        } else {
+            snapshotTime = Timestamp.of(secs, nano);
+        }
+        beamlineSet = (BeamlineSet)in.readObject();
+        names = (List<String>) in.readObject();
+        values = (List<VType>) in.readObject();
+        selected = (List<Boolean>) in.readObject();
     }
 }

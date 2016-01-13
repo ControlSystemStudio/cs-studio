@@ -36,12 +36,10 @@ public class FXComboInputDialog<T> extends FXBaseDialog<T> {
      * @return selected value
      */
     public static <T> Optional<T> pick(final Shell shell, final String title, final String message,
-            final T defaultValue, final List<T> values) {
+        final T defaultValue, final List<T> values) {
         final List<Optional<T>> list = new ArrayList<>(1);
-        shell.getDisplay().syncExec(() -> {
-            FXComboInputDialog<T> dialog = new FXComboInputDialog<>(shell, title, message, defaultValue, values);
-            list.add(dialog.openAndWait());
-        });
+        shell.getDisplay().syncExec(
+            () -> list.add(new FXComboInputDialog<>(shell, title, message, defaultValue, values).openAndWait()));
         return list.get(0);
     }
 
@@ -59,7 +57,7 @@ public class FXComboInputDialog<T> extends FXBaseDialog<T> {
      * @param values the list of a predefined values
      */
     public FXComboInputDialog(Shell parentShell, String dialogTitle, String dialogMessage, T initialValue,
-            List<T> values) {
+        List<T> values) {
         super(parentShell, dialogTitle, dialogMessage, initialValue, null);
         this.values = values;
     }
@@ -104,7 +102,7 @@ public class FXComboInputDialog<T> extends FXBaseDialog<T> {
         combo = new ComboBox<>();
         combo.setEditable(false);
         combo.setMaxWidth(Double.MAX_VALUE);
-        combo.setPrefWidth(450);
+        combo.setPrefWidth(getInitialSize().x - 25);
         combo.getItems().addAll(values);
         combo.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {

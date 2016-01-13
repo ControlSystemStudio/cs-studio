@@ -1,5 +1,7 @@
 package org.csstudio.saverestore.data;
 
+import java.io.Serializable;
+
 /**
  *
  * <code>Threshold</code> represents threshold values for a pv. It provides two values, one for positive threshold and
@@ -12,7 +14,9 @@ package org.csstudio.saverestore.data;
  *
  * @param <T>
  */
-public class Threshold<T extends Number> {
+public class Threshold<T extends Number> implements Serializable {
+
+    private static final long serialVersionUID = 7839497629386640415L;
 
     @SuppressWarnings("unchecked")
     private static <U extends Number> U toNegativeValue(U n) {

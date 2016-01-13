@@ -1,5 +1,7 @@
 package org.csstudio.saverestore.data;
 
+import java.io.Serializable;
+
 import org.diirt.vtype.VType;
 
 /**
@@ -9,7 +11,9 @@ import org.diirt.vtype.VType;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class VNoData implements VType {
+public class VNoData implements VType, Serializable {
+
+    private static final long serialVersionUID = -2399970529728581034L;
 
     /** The singleton instance */
     public static final VNoData INSTANCE = new VNoData();

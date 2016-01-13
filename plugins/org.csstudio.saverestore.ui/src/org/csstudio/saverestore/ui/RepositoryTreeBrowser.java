@@ -1,11 +1,14 @@
 package org.csstudio.saverestore.ui;
 
+import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.ui.util.RepositoryTree;
 import org.csstudio.saverestore.ui.util.RepositoryTree.BrowsingTreeItem;
 import org.csstudio.saverestore.ui.util.RepositoryTree.Type;
 import org.csstudio.ui.fx.util.FXBaseDialog;
 import org.csstudio.ui.fx.util.FXMessageDialog;
+import org.csstudio.ui.fx.util.StaticTextField;
+import org.csstudio.ui.fx.util.FXUtilities;
 import org.eclipse.ui.IWorkbenchPart;
 
 import javafx.scene.Node;
@@ -45,7 +48,9 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
             preselection,
             e -> e == null || e.getName().isEmpty() ? "Beamline Set name not provided"
                 : e.getBranch() == null ? "No branch selected"
-                    : e.getPath().length == 0 ? "No name and path provided" : null);
+                    : e.getBaseLevel().isPresent() ? (e.getPath().length == 0 ? "No name and path provided" : null)
+                        : SaveRestoreService.getInstance().getSelectedDataProvider().provider.areBaseLevelsSupported()
+                            ? "No base level selected" : null);
         this.owner = owner;
         this.initialValue = preselection;
     }
@@ -65,42 +70,26 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         nameField.setMaxWidth(Double.MAX_VALUE);
         nameField.textProperty().addListener((a, o, n) -> validateInput());
 
-        fullNameField = new TextField() {
-            public void requestFocus() {
-            }
-        };
+        fullNameField = new StaticTextField();
         fullNameField.setMaxWidth(Double.MAX_VALUE);
-        fullNameField.setEditable(false);
-        fullNameField.setFocusTraversable(false);
 
         Label nameLabel = new Label("Beamline Set Name:");
         Label fullNameLabel = new Label("Full Name:");
 
+        String cl = FXUtilities.toBackgroundColorStyle(parent.getBackground());
+        nameLabel.setStyle(cl);
+        fullNameLabel.setStyle(cl);
+
         GridPane pane = new GridPane();
         pane.setVgap(5);
         pane.setHgap(3);
+        pane.setStyle(cl);
 
-        GridPane.setFillHeight(treeView, true);
-        GridPane.setFillHeight(fullNameField, false);
-        GridPane.setFillHeight(fullNameLabel, false);
-        GridPane.setFillWidth(treeView, true);
-        GridPane.setFillWidth(fullNameField, true);
-        GridPane.setFillWidth(fullNameLabel, false);
-        GridPane.setHgrow(treeView, Priority.ALWAYS);
-        GridPane.setHgrow(fullNameField, Priority.ALWAYS);
-        GridPane.setHgrow(fullNameLabel, Priority.NEVER);
-        GridPane.setVgrow(treeView, Priority.ALWAYS);
-        GridPane.setVgrow(fullNameField, Priority.NEVER);
-        GridPane.setVgrow(fullNameLabel, Priority.NEVER);
-
-        GridPane.setFillHeight(nameLabel, false);
-        GridPane.setFillWidth(nameLabel, false);
-        GridPane.setHgrow(nameLabel, Priority.NEVER);
-        GridPane.setVgrow(nameLabel, Priority.NEVER);
-        GridPane.setFillHeight(nameField, false);
-        GridPane.setFillWidth(nameField, true);
-        GridPane.setHgrow(nameField, Priority.ALWAYS);
-        GridPane.setVgrow(nameField, Priority.NEVER);
+        addConstraints(treeView, true, true, Priority.ALWAYS, Priority.ALWAYS);
+        addConstraints(fullNameField, true, false, Priority.ALWAYS, Priority.NEVER);
+        addConstraints(nameField, true, false, Priority.ALWAYS, Priority.NEVER);
+        addConstraints(fullNameLabel, false, false, Priority.NEVER, Priority.NEVER);
+        addConstraints(nameLabel, false, false, Priority.NEVER, Priority.NEVER);
 
         pane.add(treeView, 0, 0, 2, 1);
         pane.add(nameLabel, 0, 1, 1, 1);
@@ -173,4 +162,11 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         return scene;
     }
 
+    private static void addConstraints(Node component, boolean fillWidth, boolean fillHeight, Priority hgrow,
+        Priority vgrow) {
+        GridPane.setFillHeight(component, fillHeight);
+        GridPane.setFillWidth(component, fillWidth);
+        GridPane.setVgrow(component, vgrow);
+        GridPane.setHgrow(component, hgrow);
+    }
 }

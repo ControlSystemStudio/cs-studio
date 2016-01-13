@@ -23,7 +23,7 @@ public class FXTextListInputDialog<T> extends FXBaseDialog<String> {
 
     private TextField text;
     private ListView<T> list;
-    private List<T> options;
+    private List<T> options; 
 
     /**
      * Creates an input dialog with OK and Cancel buttons. Note that the dialog will have no visual representation (no
@@ -103,7 +103,7 @@ public class FXTextListInputDialog<T> extends FXBaseDialog<String> {
         pane.setVgap(3);
         pane.add(text, 0, 0);
         pane.add(list, 0, 1);
-        pane.setPrefWidth(540);
+        pane.setPrefWidth(getInitialSize().x - 25);
         pane.setPrefHeight(200);
         return new Scene(pane);
     }

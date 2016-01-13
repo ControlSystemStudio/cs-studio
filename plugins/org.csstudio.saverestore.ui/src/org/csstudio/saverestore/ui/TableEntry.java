@@ -204,19 +204,18 @@ public class TableEntry {
 
     /**
      * Set the threshold value for this entry. All value comparisons related to this entry are calculated using the
-     * threshold (if it exists).
+     * threshold (if it exists). Once the threshold is set, it cannot be unset.
      *
      * @param threshold the threshold
      */
     public void setThreshold(Optional<Threshold<?>> threshold) {
-        if (!threshold.isPresent()) {
-            return;
+        if (threshold.isPresent()) {
+            this.threshold = threshold;
+            VType val = this.value.get().value;
+            this.value.set(new VTypePair(this.value.get().base, val, threshold));
+            this.liveStoredEqual.set(Utilities.areValuesEqual(liveValue.get(), val, threshold));
+            this.compareValues.forEach(e -> e.set(new VTypePair(val, e.get().value, threshold)));
+            this.readback.set(new VTypePair(this.readback.get().base, this.readback.get().value, threshold));
         }
-        this.threshold = threshold;
-        VType val = this.value.get().value;
-        this.value.set(new VTypePair(this.value.get().base, val, threshold));
-        this.liveStoredEqual.set(Utilities.areValuesEqual(liveValue.get(), val, threshold));
-        this.compareValues.forEach(e -> e.set(new VTypePair(val, e.get().value, threshold)));
-        this.readback.set(new VTypePair(this.readback.get().base, this.readback.get().value, threshold));
     }
 }

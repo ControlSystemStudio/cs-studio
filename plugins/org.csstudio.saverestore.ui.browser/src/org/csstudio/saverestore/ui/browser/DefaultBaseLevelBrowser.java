@@ -6,7 +6,9 @@ import java.util.Optional;
 
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.ui.Selector;
+import org.csstudio.saverestore.ui.SnapshotViewerEditor;
 import org.csstudio.ui.fx.util.FXMessageDialog;
+import org.eclipse.ui.IWorkbenchSite;
 
 import javafx.animation.Animation.Status;
 import javafx.animation.FadeTransition;
@@ -23,10 +25,17 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.util.Duration;
 
+/**
+ *
+ * <code>DefaultBaseLevelBrowser</code> is an implementation of the base level browser, which uses a list to select the
+ * base level from. It also provides an input text, where a non existing base level can be selected.
+ *
+ * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+ *
+ */
 public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowser<BaseLevel> {
 
-    private static final String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
-        + "-fx-font-weight: bold; " + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
+    private static final String ANIMATED_STYLE = SnapshotViewerEditor.ANIMATED_STYLE + "-fx-font-weight: bold; ";
 
     private ListView<BaseLevel> baseLevelsList;
     private Button okButton;
@@ -36,11 +45,15 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
     private ObjectProperty<BaseLevel> selectedBaseLevelProperty;
     private ObjectProperty<BaseLevel> internalBaseLevelProperty;
     private ObjectProperty<List<BaseLevel>> availableBaseLevelsProperty;
-    private boolean showOnlyAvailable = false;
 
-    private final BrowserView parent;
+    private final IWorkbenchSite parent;
 
-    public DefaultBaseLevelBrowser(BrowserView view) {
+    /**
+     * Constructs a new default base level browser for the given view.
+     *
+     * @param view the parent view (needed only to obtain the shell)
+     */
+    public DefaultBaseLevelBrowser(IWorkbenchSite view) {
         this.parent = view;
         setVgap(5);
         setHgap(5);
@@ -54,8 +67,8 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
             BaseLevel bl = internalBaseLevelProperty().getValue();
             if (bl != null) {
                 String message = Selector.validateBaseLevelName(bl.getStorageName());
-                if (message != null) {
-                    FXMessageDialog.openWarning(parent.getSite().getShell(), "Invalid Name", message);
+                if (message != null && !FXMessageDialog.openQuestion(parent.getShell(), "Invalid Name",
+                    message + "\n Do you still want to continue?")) {
                     return;
                 }
             }
@@ -119,9 +132,6 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
      */
     @Override
     public void setShowOnlyAvailable(boolean onlyAvailable) {
-        if (this.showOnlyAvailable == onlyAvailable)
-            return;
-        this.showOnlyAvailable = onlyAvailable;
         textField.setDisable(onlyAvailable);
     }
 
@@ -134,9 +144,8 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
     public ObjectProperty<List<BaseLevel>> availableBaseLevelsProperty() {
         if (availableBaseLevelsProperty == null) {
             availableBaseLevelsProperty = new SimpleObjectProperty<>(new ArrayList<>());
-            availableBaseLevelsProperty.addListener((a, o, n) -> {
-                baseLevelsList.getItems().setAll(availableBaseLevelsProperty.get());
-            });
+            availableBaseLevelsProperty
+                .addListener((a, o, n) -> baseLevelsList.getItems().setAll(availableBaseLevelsProperty.get()));
         }
         return availableBaseLevelsProperty;
     }

@@ -46,6 +46,7 @@ public class Readback implements ParametersProvider {
         return ret;
     }
 
+    @SuppressWarnings("unchecked")
     private static Class<? extends VNumber>[] types = new Class[] { VByte.class, VShort.class, VInt.class, VLong.class,
         VFloat.class, VDouble.class };
 

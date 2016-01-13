@@ -12,12 +12,14 @@ import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.ui.Selector;
 import org.csstudio.ui.fx.util.FXTextInputDialog;
+import org.csstudio.ui.fx.util.InputValidator;
 import org.eclipse.ui.IWorkbenchPart;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
+import javafx.scene.input.MouseButton;
 
 /**
  *
@@ -167,10 +169,18 @@ public class RepositoryTree extends TreeView<String> {
             final List<String> names = new ArrayList<>();
             item.getChildren().forEach(x -> names.add(x.getValue()));
             new FXTextInputDialog(owner.getSite().getShell(), "Folder Name", "Enter new folder name", null,
-                s -> names.contains(s) ? "Folder '" + s + "' already exists."
-                    : s.isEmpty() ? "Folder name cannot be empty."
-                        : item.type == Type.BRANCH ? Selector.validateBaseLevelName(s) : null).openAndWait()
-                            .ifPresent(f -> {
+                new InputValidator<String>() {
+                    @Override
+                    public String validate(String s) {
+                        return names.contains(s) ? "Folder '" + s + "' already exists."
+                              : s.isEmpty() ? "Folder name cannot be empty."
+                                  : item.type == Type.BRANCH ? Selector.validateBaseLevelName(s) : null;
+                    }
+                    @Override
+                    public boolean isAllowedToProceed(String s) {
+                        return !names.contains(s) && !s.trim().isEmpty();
+                    }
+            }).openAndWait().ifPresent(f -> {
                 if (item.type == Type.BRANCH) {
                     BrowsingTreeItem newItem = new BrowsingTreeItem(new BaseLevel(item.branch, f, f));
                     item.getChildren().add(newItem);
@@ -186,13 +196,14 @@ public class RepositoryTree extends TreeView<String> {
         });
         popup.getItems().add(newFolderItem);
         setContextMenu(popup);
+        
         setOnMouseReleased(e -> {
-            if (e.isSecondaryButtonDown()) {
+            if (e.getButton() == MouseButton.SECONDARY) {
                 final BrowsingTreeItem item = (BrowsingTreeItem) getSelectionModel().getSelectedItem();
                 if (item.type == Type.LOADING || item.type == Type.NOTLOADED || item.type == Type.SET) {
                     return;
                 }
-                popup.show(RepositoryTree.this, e.getX(), e.getY());
+                popup.show(RepositoryTree.this, e.getScreenX(), e.getScreenY());
             }
         });
     }

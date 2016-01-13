@@ -22,7 +22,10 @@ public class BaseLevelBrowserProvider {
     private Optional<BaseLevelBrowser<BaseLevel>> browser;
 
     /**
-     * @return returns the base level browser if it is provided by the extension points (only one can exist)
+     * Returns the base level browser if one is provided by an extension point. If none is defined, empty object is
+     * returned. If more than one are defined, an exception is logged and an empty object is returned.
+     *
+     * @return returns the base level browser if it is defined
      */
     @SuppressWarnings("unchecked")
     public Optional<BaseLevelBrowser<BaseLevel>> getBaseLevelBrowser() {
@@ -33,7 +36,8 @@ public class BaseLevelBrowserProvider {
                 IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(BaseLevelBrowser.EXT_POINT);
                 if (confElements.length > 1) {
                     throw new PartInitException(
-                        "Cannot instantiate Save and Restore Browser. Only one base level provider can be defined");
+                        "Cannot properly instantiate Save and Restore Browser. Only one base level provider can be "
+                            + "defined but there were " + confElements.length + ".");
                 }
                 for (IConfigurationElement element : confElements) {
                     bb = (BaseLevelBrowser<BaseLevel>) element.createExecutableExtension("browser");
@@ -45,7 +49,6 @@ public class BaseLevelBrowserProvider {
                 browser = null;
             }
             browser = Optional.ofNullable(bb);
-
         }
         return browser;
     }

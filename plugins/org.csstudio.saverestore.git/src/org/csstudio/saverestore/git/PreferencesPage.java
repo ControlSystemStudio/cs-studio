@@ -68,27 +68,19 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         addField(url);
         StringButtonFieldEditor destination = new StringButtonFieldEditor(Activator.PREF_DESTINATION,
             "Local git working folder (empty for default setting):", parent) {
-
             @Override
             protected String changePressed() {
                 IPath startPath = new Path(getTextControl().getText());
-
                 ResourceSelectionDialog rsDialog = new ResourceSelectionDialog(Display.getCurrent().getActiveShell(),
                     "Choose File", new String[0]);
                 rsDialog.setSelectedResource(startPath);
-
-                if (rsDialog.open() == Window.OK) {
-                    return rsDialog.getSelectedResource().toPortableString();
-                }
-                return null;
+                return rsDialog.open() == Window.OK ? rsDialog.getSelectedResource().toPortableString() : null;
             }
         };
 
         addField(destination);
-
-        BooleanFieldEditor automaticSync = new BooleanFieldEditor(Activator.PREF_AUTOMATIC_SYNC,
-            "Automatically synchronise repository after every save?", parent);
-        addField(automaticSync);
+        addField(new BooleanFieldEditor(Activator.PREF_AUTOMATIC_SYNC,
+            "Automatically synchronise repository after every save?", parent));
     }
 
 }

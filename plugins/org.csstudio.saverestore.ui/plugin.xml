@@ -36,6 +36,9 @@
          <viewShortcut
                id="org.eclipse.ui.console.ConsoleView">
          </viewShortcut>
+         <viewShortcut
+               id="org.eclipse.ui.views.ResourceNavigator">
+         </viewShortcut>
       </perspectiveExtension>
    </extension>
    <extension

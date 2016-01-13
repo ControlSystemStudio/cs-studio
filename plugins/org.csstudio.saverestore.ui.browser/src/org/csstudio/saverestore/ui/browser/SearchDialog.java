@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.ui.fx.util.FXBaseDialog;
-import org.eclipse.swt.graphics.RGB;
+import org.csstudio.ui.fx.util.FXUtilities;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -53,7 +53,7 @@ public class SearchDialog extends FXBaseDialog<String> {
     private CheckBox commentBox;
     private CheckBox tagNameBox;
     private CheckBox tagMessageBox;
-    private String color;
+    private String backgroundColor;
     private List<SearchCriterion> lastResults = new ArrayList<>(0);
 
     /**
@@ -64,7 +64,7 @@ public class SearchDialog extends FXBaseDialog<String> {
      */
     public SearchDialog(Shell parentShell) {
         super(parentShell, "Search for Snapshot",
-            "Type in the text that you wish to search for and selected the fields on which you wish to perform the search",
+            "Type in the text that you wish to search for and selected the fields on which you wish to perform the search:",
             "", s -> s == null || s.trim().isEmpty() ? "Please enter a search parameter." : null);
     }
 
@@ -125,11 +125,7 @@ public class SearchDialog extends FXBaseDialog<String> {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-        RGB rgb = parent.getBackground().getRGB();
-        String red = Integer.toHexString(rgb.red);
-        String green = Integer.toHexString(rgb.green);
-        String blue = Integer.toHexString(rgb.blue);
-        color = "#" + red + green + blue;
+        backgroundColor = FXUtilities.toBackgroundColorStyle(parent.getBackground());
         return super.createDialogArea(parent);
     }
 
@@ -170,8 +166,8 @@ public class SearchDialog extends FXBaseDialog<String> {
         pane.add(commentBox, 0, 1);
         pane.add(tagNameBox, 0, 2);
         pane.add(tagMessageBox, 0, 3);
-        pane.setPrefWidth(540);
-        pane.setStyle("-fx-background-color:" + color + ";");
+        pane.setPrefWidth(getInitialSize().x);
+        pane.setStyle(backgroundColor);
         return new Scene(pane);
     }
 
@@ -183,7 +179,7 @@ public class SearchDialog extends FXBaseDialog<String> {
     @Override
     protected void validateInput() {
         if (!commentBox.isSelected() && !tagMessageBox.isSelected() && !tagNameBox.isSelected()) {
-            setErrorMessage("Select at least one field to perform the search on");
+            setErrorMessage("Select at least one field to perform the search on", false);
         } else {
             super.validateInput();
         }

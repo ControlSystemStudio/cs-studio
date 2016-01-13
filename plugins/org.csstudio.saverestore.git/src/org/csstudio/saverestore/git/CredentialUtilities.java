@@ -61,10 +61,9 @@ public final class CredentialUtilities {
                 password = getPassword(Optional.empty(), username);
             }
             if (username == null || password == null || previous.isPresent()) {
-                UsernameAndPasswordDialog dialog = new UsernameAndPasswordDialog(
-                    PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), username, remember,
-                    "Please, provide the username and password to access Save and Restore git repository");
-                dialog.openAndWat().ifPresent(e -> {
+                new UsernameAndPasswordDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), username,
+                    remember, "Please, provide the username and password to access Save and Restore git repository")
+                        .openAndWat().ifPresent(e -> {
                     provider[0] = e;
                     if (e.isRemember()) {
                         storeCredentials(Optional.ofNullable(currentUser), e.getUsername(), e.getPassword());

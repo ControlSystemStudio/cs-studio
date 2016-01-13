@@ -14,7 +14,7 @@ import org.csstudio.saverestore.DataProvider;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class BaseLevel implements Serializable, Comparable<BaseLevel> {
+public class BaseLevel implements Comparable<BaseLevel>, Serializable {
     private static final long serialVersionUID = 7503287144725281421L;
 
     private final String storageName;
@@ -85,12 +85,13 @@ public class BaseLevel implements Serializable, Comparable<BaseLevel> {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        } else if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        } else if (getClass() != obj.getClass()) {
             return false;
+        }
         BaseLevel other = (BaseLevel) obj;
         return Objects.equals(getStorageName(), other.getStorageName())
             && Objects.equals(getBranch(), other.getBranch());

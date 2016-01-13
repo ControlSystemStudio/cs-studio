@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -112,8 +111,9 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
                 okButton.setOnAction(e -> buttonPressed(IDialogConstants.OK_ID));
                 Button cancelButton = new Button(IDialogConstants.CANCEL_LABEL);
                 cancelButton.setOnAction(e -> buttonPressed(IDialogConstants.CANCEL_ID));
-                okButton.setPrefWidth(60);
-                cancelButton.setPrefWidth(60);
+                int size = FXUtilities.measureStringWidth("Cancel",cancelButton.getFont()) + 25;
+                okButton.setPrefWidth(size);
+                cancelButton.setPrefWidth(size);
 
                 GridPane pane = new GridPane();
                 pane.setHgap(10);
@@ -135,7 +135,8 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
     @Override
     protected Control createDialogArea(final Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
-
+        setTitle("Authentication");
+        setMessage(message);
         new FXCanvasMaker() {
             @Override
             protected Scene createFxScene() {
@@ -169,21 +170,18 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
                 pane.add(pLabel, 0, 1);
                 pane.add(username, 1, 0);
                 pane.add(password, 1, 1);
-                rememberBox = new CheckBox("Remember password for later use");
+                rememberBox = new CheckBox("Remember password for later use") {
+                    @Override
+                    public void requestFocus() {};
+                };
                 rememberBox.setSelected(remember);
                 pane.add(rememberBox, 0, 2, 2, 1);
                 pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-                Color c = parent.getBackground();
-                String cl = Integer.toHexString(c.getRed()) + Integer.toHexString(c.getGreen())
-                        + Integer.toHexString(c.getBlue());
-                pane.setStyle("-fx-background-color: #" + cl + ";");
-                pane.setPrefWidth(540);
+                pane.setStyle(FXUtilities.toBackgroundColorStyle(parent.getBackground()));
+                pane.setPrefWidth(getInitialSize().x - 20);
                 return new Scene(pane);
             }
         }.createPartControl(composite);
-
-        setTitle("Authentication");
-        setMessage(message);
         return composite;
     }
 

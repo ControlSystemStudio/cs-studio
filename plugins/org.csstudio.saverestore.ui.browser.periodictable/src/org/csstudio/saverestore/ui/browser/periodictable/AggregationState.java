@@ -8,5 +8,8 @@ package org.csstudio.saverestore.ui.browser.periodictable;
  *
  */
 public enum AggregationState {
-    SOLID, LIQUID, GAS, UNKNOWN
+    SOLID,
+    LIQUID,
+    GAS,
+    UNKNOWN
 }

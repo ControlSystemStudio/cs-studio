@@ -188,12 +188,13 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        } else if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        } else if (getClass() != obj.getClass()) {
             return false;
+        }
         Snapshot other = (Snapshot) obj;
         return Objects.equals(comment, other.comment) && Objects.equals(date, other.date)
             && Objects.equals(owner, other.owner) && Objects.equals(parameters, other.parameters)
@@ -207,12 +208,13 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
      * @return true if identical or false otherwise
      */
     public boolean almostEquals(Snapshot obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        } else if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        } else if (getClass() != obj.getClass()) {
             return false;
+        }
         return Objects.equals(comment, obj.comment) && Objects.equals(date, obj.date)
             && Objects.equals(owner, obj.owner) && Objects.equals(set, obj.set);
     }

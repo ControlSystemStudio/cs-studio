@@ -12,6 +12,8 @@ import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.Utilities;
+import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
@@ -21,6 +23,7 @@ import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.FXSaveAsDialog;
 import org.csstudio.ui.fx.util.FXTextAreaInputDialog;
 import org.csstudio.ui.fx.util.FXTextInputDialog;
+import org.csstudio.ui.fx.util.FXUtilities;
 import org.csstudio.ui.fx.util.StaticTextArea;
 import org.csstudio.ui.fx.util.StaticTextField;
 import org.diirt.util.time.Timestamp;
@@ -56,6 +59,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
@@ -99,8 +103,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
 
     private static final String ALL_ITEMS = "<ALL ITEMS>";
     // the style for the animated save button
-    private static final String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
-        + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
+    public static final String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
+        + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1); ";
 
     private BorderPane contentPane;
     private Table table;
@@ -141,6 +145,14 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
     }
 
     private void init() {
+        VSnapshot snapshot = getEditorInput().getAdapter(VSnapshot.class);
+        if (snapshot == null) {
+            snapshot = new VSnapshot(
+                new BeamlineSet(new Branch("master", "master"), Optional.empty(), new String[] { "unknown" }, null),
+                new ArrayList<>(0));
+        }
+        setSnapshot(snapshot);
+
         animation = new FadeTransition(Duration.seconds(0.15), saveSnapshotButton);
         animation.setAutoReverse(true);
         animation.setFromValue(1.0);
@@ -224,7 +236,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
 
     private Optional<VSnapshot> save(List<VSnapshot> snapshots, boolean promptIfOnlyOne, final boolean saveAs) {
         if (snapshots.isEmpty()) {
-            return null;
+            return Optional.empty();
         }
         // ask the user to choose the snapshot to save if there is more than one snapshot or "promptIfOnlyOne" is true
         // then save the selected snapshot
@@ -296,10 +308,6 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         setSite(site);
         setInput(input);
         setPartName(input.getName());
-        VSnapshot snapshot = input.getAdapter(VSnapshot.class);
-        if (snapshot != null) {
-            setSnapshot(snapshot);
-        }
     }
 
     /*
@@ -431,16 +439,17 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         filterCombo.setTooltip(new Tooltip("Pnly PVs that fully or partially match the expression will be displayed"));
         filterCombo.getItems().add(ALL_ITEMS);
         filterCombo.getItems().addAll(Activator.getDefault().getFilters());
-        filterCombo.setMinWidth(100);
+        filterCombo.setMinWidth(140);
         filterCombo.setEditable(true);
         filterCombo.setOnAction(new EventHandler<ActionEvent>() {
             private boolean suppressUpdate = false;
+
             @Override
             public void handle(ActionEvent event) {
                 if (suppressUpdate) {
                     return;
                 }
-                //when a new filter is selected, add that filter to the second row in the combo and store the filters
+                // when a new filter is selected, add that filter to the second row in the combo and store the filters
                 String filter = filterCombo.getSelectionModel().getSelectedItem();
                 if (filter == null || filter.trim().isEmpty()) {
                     filter = ALL_ITEMS;
@@ -450,22 +459,22 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                 if (items.indexOf(selectedFilter) < 0) {
                     items.add(1, selectedFilter);
                     if (items.size() > Activator.getDefault().getMaxNumberOfFilters()) {
-                        items.remove(items.size()-1);
+                        items.remove(items.size() - 1);
                     }
-                } else if (!ALL_ITEMS.equals(selectedFilter)){
+                } else if (!ALL_ITEMS.equals(selectedFilter)) {
                     items.remove(selectedFilter);
-                    items.add(1,selectedFilter);
+                    items.add(1, selectedFilter);
                 }
 
-                String[] filters = new String[items.size()-1];
+                String[] filters = new String[items.size() - 1];
                 for (int i = 0; i < filters.length; i++) {
-                    filters[i] = items.get(i+1);
+                    filters[i] = items.get(i + 1);
                 }
                 Activator.getDefault().storeFilters(filters);
 
                 Platform.runLater(() -> {
-                    //combo box has to be updated after this event is fully handled
-                    //the lines below might trigger a few more actions, so make sure that those are suppressed.
+                    // combo box has to be updated after this event is fully handled
+                    // the lines below might trigger a few more actions, so make sure that those are suppressed.
                     suppressUpdate = true;
                     ObservableList<String> list = FXCollections.observableArrayList();
                     list.add(ALL_ITEMS);
@@ -548,9 +557,10 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         GridPane.setVgrow(commentField, Priority.ALWAYS);
         GridPane.setFillHeight(commentField, true);
         creatorField = new StaticTextField();
-        creatorField.setPrefWidth(150);
+        int width = FXUtilities.measureStringWidth("0000 MMM 00 00:00:00 ", creatorField.getFont()) + 20;
+        creatorField.setPrefWidth(width);
         dateField = new StaticTextField();
-        dateField.setPrefWidth(150);
+        dateField.setPrefWidth(width);
         left.add(new Label("Comment:"), 0, 0);
         left.add(commentField, 1, 0, 1, 2);
         left.add(new Label("Creator:"), 2, 0);
@@ -618,18 +628,9 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         restoreSnapshotButton.setMaxHeight(Integer.MAX_VALUE);
         saveSnapshotButton.setMaxHeight(Integer.MAX_VALUE);
         takeSnapshotButton.setMaxHeight(Integer.MAX_VALUE);
-        GridPane.setHgrow(restoreSnapshotButton, Priority.ALWAYS);
-        GridPane.setHgrow(takeSnapshotButton, Priority.NEVER);
-        GridPane.setHgrow(saveSnapshotButton, Priority.NEVER);
-        GridPane.setVgrow(restoreSnapshotButton, Priority.ALWAYS);
-        GridPane.setVgrow(takeSnapshotButton, Priority.ALWAYS);
-        GridPane.setVgrow(saveSnapshotButton, Priority.ALWAYS);
-        GridPane.setFillHeight(restoreSnapshotButton, true);
-        GridPane.setFillHeight(takeSnapshotButton, true);
-        GridPane.setFillHeight(saveSnapshotButton, true);
-        GridPane.setFillWidth(restoreSnapshotButton, true);
-        GridPane.setFillWidth(takeSnapshotButton, true);
-        GridPane.setFillWidth(saveSnapshotButton, true);
+        addConstraints(restoreSnapshotButton, Priority.ALWAYS);
+        addConstraints(takeSnapshotButton, Priority.NEVER);
+        addConstraints(saveSnapshotButton, Priority.NEVER);
         grid.add(restoreSnapshotButton, 0, 0);
         grid.add(takeSnapshotButton, 1, 0);
         grid.add(saveSnapshotButton, 2, 0);
@@ -672,10 +673,13 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY);
         });
         table.setOnMouseClicked(e -> {
-            clickedColumn = table.getSelectionModel().getSelectedCells().get(0).getColumn();
-            SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
-            for (ISelectionChangedListener l : selectionChangedListener) {
-                l.selectionChanged(event);
+            if (table.getSelectionModel().getSelectedCells() != null
+                && !table.getSelectionModel().getSelectedCells().isEmpty()) {
+                clickedColumn = table.getSelectionModel().getSelectedCells().get(0).getColumn();
+                SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
+                for (ISelectionChangedListener l : selectionChangedListener) {
+                    l.selectionChanged(event);
+                }
             }
         });
         return table;
@@ -732,12 +736,19 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         if (table == null) {
             return null;
         } else {
-            Timestamp timestamp = null;
-            if (controller.getNumberOfSnapshots() == 1 || clickedColumn < 0) {
-                timestamp = controller.getSnapshot(0).getTimestamp();
+            int numSnapshots = controller.getNumberOfSnapshots();
+            VSnapshot snapshot;
+            if (numSnapshots == 1 || clickedColumn < 0) {
+                snapshot = controller.getSnapshot(0);
+            } else if (clickedColumn - 3 < numSnapshots) {
+                snapshot = controller.getSnapshot(clickedColumn - 3);
             } else {
-                timestamp = controller.getSnapshot(clickedColumn - 3).getTimestamp();
+                snapshot = controller.getSnapshot(numSnapshots - 1);
             }
+            if (snapshot == null) {
+                return null;
+            }
+            Timestamp timestamp = snapshot.getTimestamp();
             if (timestamp == null) {
                 List<ProcessVariable> list = new ArrayList<>();
                 for (TableEntry e : table.selectionModelProperty().get().getSelectedItems()) {
@@ -784,5 +795,13 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      */
     @Override
     public void setSelection(ISelection selection) {
+    }
+
+    private static void addConstraints(Node component, Priority hgrow) {
+        GridPane.setHalignment(component, HPos.LEFT);
+        GridPane.setFillHeight(component, true);
+        GridPane.setFillWidth(component, true);
+        GridPane.setVgrow(component, Priority.ALWAYS);
+        GridPane.setHgrow(component, hgrow);
     }
 }

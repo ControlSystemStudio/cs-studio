@@ -111,34 +111,34 @@ public enum Element {
         String style = "";
         switch (type) {
             case ACTINIDE :
-                style = "-fx-background-color: #FF99CC, linear-gradient(#ff77aa, #ffbbD7), radial-gradient(center 50% -40%, radius 200%, #FF99CC 45%, #FF99CC 50%);";
+                style = "-fx-background-color: #FF99CC, linear-gradient(#FF77AA, #FFA9DC), radial-gradient(center 50% -40%, radius 200%, #FF99CC 45%, #FFA9DC 50%);";
                 break;
             case LANTHANIDE :
-                style = "-fx-background-color: #FFBFff, linear-gradient(#ff99ff, #ffddff), radial-gradient(center 50% -40%, radius 200%, #FFBFff 45%, #FFBFff 50%);";
+                style = "-fx-background-color: #FFBFff, linear-gradient(#FF99FF, #FFCFFF), radial-gradient(center 50% -40%, radius 200%, #FFBFff 45%, #FFCFFF 50%);";
                 break;
             case ALKALI_METAL :
-                style = "-fx-background-color: #FF6666, linear-gradient(#ff1111, #ffbbbb), radial-gradient(center 50% -40%, radius 200%, #FF6666 45%, #FF6666 50%);";
+                style = "-fx-background-color: #FF6666, linear-gradient(#FF1111, #FF7676), radial-gradient(center 50% -40%, radius 200%, #FF6666 45%, #FF7676 50%);";
                 break;
             case ALKALINE_EARTH_METAL :
-                style = "-fx-background-color: #FFDEAD, linear-gradient(#ffbd5b, #ddaddf), radial-gradient(center 50% -40%, radius 200%, #FFDEAD 45%, #FFDEAD 50%);";
+                style = "-fx-background-color: #FFDEAD, linear-gradient(#FFBD5B, #FFEEBD), radial-gradient(center 50% -40%, radius 200%, #FFDEAD 45%, #FFEEBD 50%);";
                 break;
             case DIATOMIC_NONMETAL :
-                style = "-fx-background-color: #E7FF8F, linear-gradient(#b1ff00, #f3ffc1), radial-gradient(center 50% -40%, radius 200%, #E7FF8F 45%, #E7FF8F 50%);";
+                style = "-fx-background-color: #E7FF8F, linear-gradient(#B1FF00, #F7FF9F), radial-gradient(center 50% -40%, radius 200%, #E7FF8F 45%, #F7FF9F 50%);";
                 break;
             case METALLOID :
-                style = "-fx-background-color: #CCCC99, linear-gradient(#a0a050, #e7e7cf), radial-gradient(center 50% -40%, radius 200%, #CCCC99 45%, #CCCC99 50%);";
+                style = "-fx-background-color: #CCCC99, linear-gradient(#A0A050, #DCDC99), radial-gradient(center 50% -40%, radius 200%, #CCCC99 45%, #DCDC99 50%);";
                 break;
             case NOBLE_GAS :
-                style = "-fx-background-color: #DCDCFF, linear-gradient(#aaaaff, #ccccff), radial-gradient(center 50% -40%, radius 200%, #DCDCFF 45%, #DCDCFF 50%);";
+                style = "-fx-background-color: #DCDCFF, linear-gradient(#AAAAFF, #ECECFF), radial-gradient(center 50% -40%, radius 200%, #DCDCFF 45%, #ECECFF 50%);";
                 break;
             case POLYATOMIC_NONMETAL :
-                style = "-fx-background-color: #A1FFC3, linear-gradient(#00ff59, #caffdd), radial-gradient(center 50% -40%, radius 200%, #A1FFC3 45%, #A1FFC3 50%);";
+                style = "-fx-background-color: #A1FFC3, linear-gradient(#00FF59, #B1FFD3), radial-gradient(center 50% -40%, radius 200%, #A1FFC3 45%, #B1FFD3 50%);";
                 break;
             case POST_TRANSITION_METAL :
-                style = "-fx-background-color: #CCCCCC, linear-gradient(#aaaaaa, #eeeeee), radial-gradient(center 50% -40%, radius 200%, #CCCCCC 45%, #CCCCCC 50%);";
+                style = "-fx-background-color: #CCCCCC, linear-gradient(#AAAAAA, #CCDCDC), radial-gradient(center 50% -40%, radius 200%, #CCCCCC 45%, #CCDCDC 50%);";
                 break;
             case TRANSITION_METAL :
-                style = "-fx-background-color: #FFC0C0, linear-gradient(#ffaaaa, #ffe1e1), radial-gradient(center 50% -40%, radius 200%, #FFC0C0 45%, #FFC0C0 50%);";
+                style = "-fx-background-color: #FFC0C0, linear-gradient(#FFAAAA, #FFD0D0), radial-gradient(center 50% -40%, radius 200%, #FFC0C0 45%, #FFD0D0 50%);";
                 break;
             case UNKNOWN :
             default :

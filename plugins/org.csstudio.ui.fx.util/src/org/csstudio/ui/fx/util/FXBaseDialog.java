@@ -43,7 +43,10 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
     private final InputValidator<T> validator;
     private Text errorMessageText;
     private String errorMessage;
+    private boolean allowedToContinue;
     protected Button okButton;
+
+    protected Composite parent;
 
     /**
      * Creates an input dialog with OK and Cancel buttons. Note that the dialog will have no visual representation (no
@@ -56,7 +59,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
      * @param validator an input validator, or <code>null</code> if none
      */
     public FXBaseDialog(Shell parentShell, String dialogTitle, String dialogMessage, T initialValue,
-            InputValidator<T> validator) {
+        InputValidator<T> validator) {
         super(parentShell);
         this.title = dialogTitle;
         this.message = dialogMessage;
@@ -95,8 +98,9 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
                 okButton.setOnAction(e -> buttonPressed(IDialogConstants.OK_ID));
                 Button cancelButton = new Button(IDialogConstants.CANCEL_LABEL);
                 cancelButton.setOnAction(e -> buttonPressed(IDialogConstants.CANCEL_ID));
-                okButton.setPrefWidth(60);
-                cancelButton.setPrefWidth(60);
+                int size = FXUtilities.measureStringWidth("Cancel", cancelButton.getFont()) + 25;
+                okButton.setPrefWidth(size);
+                cancelButton.setPrefWidth(size);
 
                 GridPane pane = new GridPane();
                 pane.setHgap(10);
@@ -117,6 +121,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
 
     @Override
     protected Control createDialogArea(Composite parent) {
+        this.parent = parent;
         // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
         // create message
@@ -124,7 +129,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
             Label label = new Label(composite, SWT.WRAP);
             label.setText(message);
             GridData data = new GridData(GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL
-                    | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
+                | GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_CENTER);
             data.widthHint = convertHorizontalDLUsToPixels(IDialogConstants.MINIMUM_MESSAGE_AREA_WIDTH);
             label.setLayoutData(data);
             label.setFont(parent.getFont());
@@ -145,7 +150,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
             errorMessageText.setBackground(errorMessageText.getDisplay().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
             // Set the error message text
             // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=66292
-            setErrorMessage(errorMessage);
+            setErrorMessage(errorMessage, allowedToContinue);
         }
 
         applyDialogFont(composite);
@@ -203,20 +208,25 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
      */
     protected void validateInput() {
         String errorMessage = null;
+        boolean allowedToContinue = false;
         if (validator != null) {
-            errorMessage = validator.validate(getValueFromComponent());
+            T value = getValueFromComponent();
+            errorMessage = validator.validate(value);
+            allowedToContinue = validator.isAllowedToProceed(value);
         }
-        setErrorMessage(errorMessage);
+        setErrorMessage(errorMessage, allowedToContinue);
     }
 
     /**
      * Sets or clears the error message. If not <code>null</code>, the OK button is disabled.
      *
      * @param errorMessage the error message, or <code>null</code> to clear
+     * @param allowedToContinue true if the okButton is enabled even if the error message is non null
      * @since 3.0
      */
-    protected void setErrorMessage(String errorMessage) {
+    protected void setErrorMessage(String errorMessage, boolean allowedToContinue) {
         this.errorMessage = errorMessage;
+        this.allowedToContinue = allowedToContinue;
         if (errorMessageText != null && !errorMessageText.isDisposed()) {
             errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
             boolean hasError = errorMessage != null && (StringConverter.removeWhiteSpaces(errorMessage)).length() > 0;
@@ -224,13 +234,14 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
             errorMessageText.setVisible(hasError);
             errorMessageText.getParent().update();
             if (okButton != null) {
-                okButton.setDisable(errorMessage != null);
+                okButton.setDisable(errorMessage != null && !allowedToContinue);
             }
         }
     }
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.jface.dialogs.Dialog#getInitialLocation(org.eclipse.swt.graphics.Point)
      */
     @Override
@@ -250,10 +261,8 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
             centerPoint = Geometry.centerPoint(monitorBounds);
         }
 
-        return new Point(centerPoint.x - (initialSize.x / 2), Math.max(
-                monitorBounds.y, Math.min(centerPoint.y
-                        - (initialSize.y / 2), monitorBounds.y
-                        + monitorBounds.height - initialSize.y)));
+        return new Point(centerPoint.x - (initialSize.x / 2), Math.max(monitorBounds.y,
+            Math.min(centerPoint.y - (initialSize.y / 2), monitorBounds.y + monitorBounds.height - initialSize.y)));
     }
 
     /*

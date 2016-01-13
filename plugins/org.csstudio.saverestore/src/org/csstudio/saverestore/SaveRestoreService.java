@@ -34,10 +34,12 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 public class SaveRestoreService {
 
     private ISchedulingRule mutexRule = new ISchedulingRule() {
+        @Override
         public boolean isConflicting(ISchedulingRule rule) {
             return rule == this;
         }
 
+        @Override
         public boolean contains(ISchedulingRule rule) {
             return rule == this;
         }
@@ -127,8 +129,8 @@ public class SaveRestoreService {
         if (this.selectedDataProvider != null) {
             final DataProvider provider = this.selectedDataProvider.provider;
             SaveRestoreService.getInstance().execute("Data Provider Initialise", () -> provider.initialise());
+            LOGGER.log(Level.FINE, "Selected data provider: " + selectedDataProvider.getPresentationName());
         }
-        LOGGER.log(Level.FINE, "Selected data provider: " + selectedDataProvider.getPresentationName());
         support.firePropertyChange(SELECTED_DATA_PROVIDER, oldValue, this.selectedDataProvider);
     }
 

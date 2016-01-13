@@ -10,8 +10,8 @@ enum FileType {
     BEAMLINE_SET(".bms","BeamlineSets"),
     SNAPSHOT(".snp","Snapshots");
 
-    public final String suffix;
-    public final String directory;
+    final String suffix;
+    final String directory;
 
     /**
      * Constructs file type with suffix.

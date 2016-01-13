@@ -11,6 +11,7 @@ import org.csstudio.saverestore.Utilities.VTypeComparison;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.VTypePair;
+import org.csstudio.ui.fx.util.FXUtilities;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
@@ -224,14 +225,16 @@ public class Table extends TableView<TableEntry> {
             .setOnAction(e -> getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
         selectedColumn.setGraphic(selectAllCheckBox);
 
+        int width = FXUtilities.measureStringWidth("0000", null);
         TableColumn<TableEntry, Integer> idColumn = new TooltipTableColumn<>("#",
-            "The order number of the PV in the beamline set", 30, 30, false);
+            "The order number of the PV in the beamline set", width, width, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         TableColumn<TableEntry, String> pvNameColumn = new TooltipTableColumn<>("PV", "The name of the PV", 170);
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
+        width = FXUtilities.measureStringWidth("MM:MM:MM.MMM MMM MM", null);
         TableColumn<TableEntry, Timestamp> timestampColumn = new TooltipTableColumn<>("Timestamp",
-            "Timestamp of the value when the snapshot was taken", 120, 135, true);
+            "Timestamp of the value when the snapshot was taken", width, width, true);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, Timestamp>("timestamp"));
         timestampColumn.setCellFactory(c -> new TableCell<TableEntry, Timestamp>() {
             @Override
@@ -245,7 +248,7 @@ public class Table extends TableView<TableEntry> {
                 }
             }
         });
-        timestampColumn.setPrefWidth(135);
+        timestampColumn.setPrefWidth(width);
 
         TableColumn<TableEntry, String> statusColumn = new TooltipTableColumn<>("Status",
             "Alarm status of the PV when the snapshot was taken", 100, 100, true);
@@ -299,8 +302,9 @@ public class Table extends TableView<TableEntry> {
             .setOnAction(e -> getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
         selectedColumn.setGraphic(selectAllCheckBox);
 
+        int width = FXUtilities.measureStringWidth("0000", null);
         TableColumn<TableEntry, Integer> idColumn = new TooltipTableColumn<>("#",
-            "The order number of the PV in the beamline set", 30, 30, false);
+            "The order number of the PV in the beamline set", width, width, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
 
         TableColumn<TableEntry, String> pvNameColumn = new TooltipTableColumn<>("PV", "The name of the PV", 170);
@@ -399,9 +403,9 @@ public class Table extends TableView<TableEntry> {
 
         items.clear();
         entries.forEach(e -> {
-            //there is no harm if this is executed more than once, because only one listener is allowed
-            e.selectedProperty().addListener((a, o, n) ->
-                selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false));
+            // there is no harm if this is executed more than once, because only one listener is allowed
+            e.selectedProperty()
+                .addListener((a, o, n) -> selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false));
             e.liveStoredEqualProperty().addListener((a, o, n) -> {
                 if (controller.isHideEqualItems()) {
                     if (n) {

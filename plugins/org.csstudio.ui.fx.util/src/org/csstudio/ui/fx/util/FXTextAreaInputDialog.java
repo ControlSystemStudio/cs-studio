@@ -31,12 +31,10 @@ public class FXTextAreaInputDialog extends FXBaseDialog<String> {
      * @return entered value if confirmed or empty if cancelled
      */
     public static Optional<String> get(final Shell shell, final String title, final String message,
-            final String initialValue, final InputValidator<String> validator) {
+        final String initialValue, final InputValidator<String> validator) {
         final List<Optional<String>> list = new ArrayList<>(1);
-        shell.getDisplay().syncExec(() -> {
-            FXTextAreaInputDialog dialog = new FXTextAreaInputDialog(shell, title, message, initialValue, validator);
-            list.add(dialog.openAndWait());
-        });
+        shell.getDisplay().syncExec(
+            () -> list.add(new FXTextAreaInputDialog(shell, title, message, initialValue, validator).openAndWait()));
         return list.get(0);
     }
 
@@ -53,7 +51,7 @@ public class FXTextAreaInputDialog extends FXBaseDialog<String> {
      * @param validator an input validator, or <code>null</code> if none
      */
     public FXTextAreaInputDialog(Shell parentShell, String dialogTitle, String dialogMessage, String initialValue,
-            InputValidator<String> validator) {
+        InputValidator<String> validator) {
         super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
     }
 

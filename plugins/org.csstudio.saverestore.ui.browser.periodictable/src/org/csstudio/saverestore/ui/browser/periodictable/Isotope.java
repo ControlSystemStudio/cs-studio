@@ -73,7 +73,7 @@ public class Isotope extends BaseLevel implements Serializable {
             throw new IllegalArgumentException("The charge sign is not defined (p or n) for " + storageName + ".");
         }
         charge = Integer.parseInt(parts[2].substring(0, parts[2].length() - 1));
-        charge *= (pn == 'n' ? -1 : pn == 'p' ? 1 : 0);
+        charge *= pn == 'n' ? -1 : 1;
         if (charge > e.atomicNumber) {
             throw new IllegalArgumentException(
                 "Charge of '" + e.fullName + "' cannot be higher than " + e.atomicNumber + ".");

@@ -3,6 +3,7 @@ package org.csstudio.saverestore.ui.browser;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.ui.util.RepositoryTree;
 import org.csstudio.ui.fx.util.FXBaseDialog;
+import org.csstudio.ui.fx.util.StaticTextField;
 import org.eclipse.ui.IWorkbenchPart;
 
 import javafx.scene.Node;
@@ -45,17 +46,9 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
 
     private Node createContents() {
         treeView = new RepositoryTree(owner, false, null);
-
         treeView.getSelectionModel().selectedItemProperty().addListener((a, o, n) -> validateInput());
-
-        fullNameField = new TextField() {
-            public void requestFocus() {
-            }
-        };
+        fullNameField = new StaticTextField();
         fullNameField.setMaxWidth(Double.MAX_VALUE);
-        fullNameField.setEditable(false);
-        fullNameField.setFocusTraversable(false);
-
         Label fullNameLabel = new Label("Selected Item:");
 
         GridPane pane = new GridPane();
@@ -95,7 +88,6 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
         } else {
             fullNameField.setText(set.getFullyQualifiedName());
         }
-
         return set;
     }
 

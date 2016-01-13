@@ -153,10 +153,14 @@ public class SnapshotViewerController {
      */
     public SnapshotViewerController(SnapshotViewerEditor owner) {
         this.owner = owner;
-        throttle.start();
+        start();
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY,
             e -> snapshotSaveableProperty
                 .set(!getSnapshots(true).isEmpty() && !SaveRestoreService.getInstance().isBusy()));
+    }
+
+    protected void start() {
+        throttle.start();
     }
 
     /**
@@ -527,7 +531,7 @@ public class SnapshotViewerController {
                 StringBuilder sb = new StringBuilder(200);
                 sb.append(e.pvNameProperty().get()).append(',');
                 VTypePair pair = e.valueProperty().get();
-                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base, pair.threshold)).append('"')
+                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base, pair.threshold).string).append('"')
                     .append(',');
                 for (int i = 1; i < snapshots.size(); i++) {
                     pair = e.compareValueProperty(i).get();
@@ -691,7 +695,7 @@ public class SnapshotViewerController {
      */
     public VSnapshot getSnapshot(int index) {
         synchronized (snapshots) {
-            return snapshots.get(index);
+            return index >= snapshots.size() ? null : snapshots.get(index);
         }
     }
 
@@ -765,6 +769,9 @@ public class SnapshotViewerController {
         }
         try {
             Timestamp timestamp = getSnapshot(0).getTimestamp();
+            if (timestamp == null) {
+                timestamp = Timestamp.now();
+            }
             Map<String, VType> values = importer.importer.getValuesForPVs(names, timestamp);
             if (values != null && !values.isEmpty()) {
                 BeamlineSet bs = new BeamlineSet(null, Optional.empty(), new String[] { importer.name }, importer.name);

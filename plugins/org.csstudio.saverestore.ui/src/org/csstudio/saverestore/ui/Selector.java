@@ -143,7 +143,6 @@ public class Selector {
                 }
             }
             // if branches are different, do nothing
-
         }
     };
     private final IWorkbenchPart owner;

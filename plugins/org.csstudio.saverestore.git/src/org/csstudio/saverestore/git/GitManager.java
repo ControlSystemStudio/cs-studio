@@ -179,7 +179,7 @@ public class GitManager {
     private synchronized boolean internalInitialise(URI remoteRepository, File destinationDirectory)
         throws GitAPIException {
         repositoryPath = destinationDirectory;
-        if (repositoryPath.exists()) {
+        if (new File(repositoryPath, ".git").exists()) {
             try (Git git = Git.init().setDirectory(repositoryPath).call()) {
                 this.git = git;
                 this.repository = git.getRepository();
@@ -241,7 +241,7 @@ public class GitManager {
      * @throws IOException if the current branch cannot be determined
      */
     public synchronized void setBranch(Branch branch) throws GitAPIException, IOException {
-        if (!branch.equals(repository.getBranch())) {
+        if (!branch.getShortName().equals(repository.getBranch())) {
             Ref ref = git.checkout().setName(branch.getFullName()).setUpstreamMode(SetupUpstreamMode.TRACK).call();
             if (ref == null) {
                 // local branch does not exist. create it
@@ -375,9 +375,11 @@ public class GitManager {
         setBranch(branch);
         File[] files = repositoryPath.listFiles();
         List<BaseLevel> baseLevels = new ArrayList<>();
-        for (File f : files) {
-            if (f.isDirectory() && f.getName().charAt(0) != '.') {
-                baseLevels.add(new BaseLevel(branch, f.getName(), f.getName()));
+        if (files != null) {
+            for (File f : files) {
+                if (f.isDirectory() && f.getName().charAt(0) != '.') {
+                    baseLevels.add(new BaseLevel(branch, f.getName(), f.getName()));
+                }
             }
         }
         return baseLevels;
@@ -412,29 +414,31 @@ public class GitManager {
         setBranch(branch);
         List<BeamlineSet> descriptorList = new ArrayList<>();
         File[] files = repositoryPath.listFiles();
-        String base = baseLevel.isPresent() ? baseLevel.get().getStorageName() : null;
-        for (File f : files) {
-            if (f.getName().equals(base)) {
-                File b = new File(f, FileType.BEAMLINE_SET.directory);
-                if (basePath.isPresent()) {
-                    b = new File(b, basePath.get());
-                }
-                List<File> setFiles = new ArrayList<>();
-                gatherBeamlineSets(b, setFiles);
-                String path = repositoryPath.getAbsolutePath();
-                int length = path.length();
-                if (!(path.charAt(length - 1) == '/' || path.charAt(length - 1) == '\\')) {
-                    length++;
-                }
-                for (File bf : setFiles) {
-                    String s = bf.getAbsolutePath().substring(length);
-                    String[] filePathArray = convertStringToPath(s, baseLevel);
-                    if (filePathArray != null) {
-                        BeamlineSet beamlineSet = new BeamlineSet(branch, baseLevel, filePathArray, GitDataProvider.ID);
-                        descriptorList.add(beamlineSet);
+        if (files != null) {
+            String base = baseLevel.isPresent() ? baseLevel.get().getStorageName() : null;
+            for (File f : files) {
+                if (f.getName().equals(base)) {
+                    File b = new File(f, FileType.BEAMLINE_SET.directory);
+                    if (basePath.isPresent()) {
+                        b = new File(b, basePath.get());
                     }
+                    List<File> setFiles = new ArrayList<>();
+                    gatherBeamlineSets(b, setFiles);
+                    String path = repositoryPath.getAbsolutePath();
+                    int length = path.length();
+                    if (!(path.charAt(length - 1) == '/' || path.charAt(length - 1) == '\\')) {
+                        length++;
+                    }
+                    for (File bf : setFiles) {
+                        String s = bf.getAbsolutePath().substring(length);
+                        String[] filePathArray = convertStringToPath(s, baseLevel);
+                        if (filePathArray != null) {
+                            BeamlineSet beamlineSet = new BeamlineSet(branch, baseLevel, filePathArray, GitDataProvider.ID);
+                            descriptorList.add(beamlineSet);
+                        }
+                    }
+                    break;
                 }
-                break;
             }
         }
         return descriptorList;
@@ -1263,7 +1267,10 @@ public class GitManager {
         throws IOException {
         Path path = Paths.get(repositoryPath.getAbsolutePath(), filePath);
         if (!Files.exists(path)) {
-            Files.createDirectories(path.getParent());
+            Path parent = path.getParent();
+            if (parent != null) {
+                Files.createDirectories(parent);
+            }
             path = Files.createFile(path);
         }
         String content = generateContent(dataObject, fileType);
@@ -1343,11 +1350,17 @@ public class GitManager {
      * @param sets the list containing all found beamline set files
      */
     private static void gatherBeamlineSets(File file, List<File> sets) {
-        for (File f : file.listFiles()) {
-            if (f.isDirectory()) {
-                gatherBeamlineSets(f, sets);
-            } else if (f.isFile() && f.getName().toLowerCase().endsWith(FileType.BEAMLINE_SET.suffix)) {
-                sets.add(f);
+        if (file != null && file.exists()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                Arrays.sort(files);
+                for (File f : files) {
+                    if (f.isDirectory()) {
+                        gatherBeamlineSets(f, sets);
+                    } else if (f.isFile() && f.getName().toLowerCase().endsWith(FileType.BEAMLINE_SET.suffix)) {
+                        sets.add(f);
+                    }
+                }
             }
         }
     }
@@ -1474,7 +1487,7 @@ public class GitManager {
         for (int i = 0; i < path.length; i++) {
             String str = path[i];
             if (i == path.length - 1) {
-                str.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
+                str = str.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
             }
             str = TAG_PATTERN.matcher(str).replaceAll("");
             if (str.charAt(0) == '.') {

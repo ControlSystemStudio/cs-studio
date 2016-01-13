@@ -46,8 +46,9 @@ public class FXSaveAsDialog extends SaveAsDialog {
                 okButton.setOnAction(e -> buttonPressed(IDialogConstants.OK_ID));
                 Button cancelButton = new Button(IDialogConstants.CANCEL_LABEL);
                 cancelButton.setOnAction(e -> buttonPressed(IDialogConstants.CANCEL_ID));
-                okButton.setPrefWidth(60);
-                cancelButton.setPrefWidth(60);
+                int size = FXUtilities.measureStringWidth("Cancel", cancelButton.getFont()) + 25;
+                okButton.setPrefWidth(size);
+                cancelButton.setPrefWidth(size);
 
                 GridPane pane = new GridPane();
                 pane.setHgap(10);

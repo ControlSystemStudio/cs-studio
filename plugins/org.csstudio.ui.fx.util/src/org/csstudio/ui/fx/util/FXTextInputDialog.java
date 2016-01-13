@@ -72,7 +72,7 @@ public class FXTextInputDialog extends FXBaseDialog<String> {
     protected Scene getScene() {
         text = new TextField();
         text.setMaxWidth(Double.MAX_VALUE);
-        text.setPrefWidth(450);
+        text.setPrefWidth(getInitialSize().x - 25);
         text.textProperty().addListener((a, o, n) -> validateInput());
         text.setOnAction(e -> {
             if (!okButton.isDisable()) {

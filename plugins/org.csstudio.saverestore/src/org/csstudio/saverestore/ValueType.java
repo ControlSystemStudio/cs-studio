@@ -86,7 +86,7 @@ enum ValueType {
                 return v;
             }
         }
-        return null;
+        return NODATA;
     }
 
 }

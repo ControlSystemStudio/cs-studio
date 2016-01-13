@@ -3,6 +3,7 @@ package org.csstudio.ui.fx.util;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -74,7 +75,7 @@ public class FXTaggingDialog extends FXBaseDialog<String> {
         tagName = new TextField();
         tagName.textProperty().addListener((a, o, n) -> validateInput());
         pane.add(tagName, 0, 0);
-        pane.add(new javafx.scene.control.Label("Tag message:"), 0, 1);
+        pane.add(new Label("Tag message:"), 0, 1);
         tagMessage = new TextArea();
         tagMessage.setEditable(true);
         GridPane.setFillHeight(tagMessage, true);

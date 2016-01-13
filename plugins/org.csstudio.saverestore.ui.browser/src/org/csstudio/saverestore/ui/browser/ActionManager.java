@@ -79,7 +79,7 @@ public class ActionManager {
         }
         int ans = new FXMessageDialog(owner.getSite().getShell(), "Import Snapshots", null,
             "Do you want to import any snapshots for the selected beamline sets?", FXMessageDialog.QUESTION,
-            new String[] { "No", "Last Only", "All", "Cancel" }, 0, 80).open();
+            new String[] { "No", "Last Only", "All", "Cancel" }, 0).open();
         if (ans == 3) {
             // cancelled
             return;

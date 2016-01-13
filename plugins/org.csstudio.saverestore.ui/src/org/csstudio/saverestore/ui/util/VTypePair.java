@@ -38,6 +38,6 @@ public class VTypePair {
      */
     @Override
     public String toString() {
-        return value == null ? null : value.toString();
+        return String.valueOf(value);
     }
 }

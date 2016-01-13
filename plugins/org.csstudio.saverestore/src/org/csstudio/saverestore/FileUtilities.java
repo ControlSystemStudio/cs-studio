@@ -127,13 +127,13 @@ public final class FileUtilities {
                 idx = headerMap.get(H_TIMESTAMP);
                 String timestamp = idx == null ? null : trim(split[headerMap.get(H_TIMESTAMP)]);
                 idx = headerMap.get(H_STATUS);
-                String status = idx == null ? null : trim(split[headerMap.get(H_STATUS)]);
+                String status = idx == null ? "" : trim(split[headerMap.get(H_STATUS)]);
                 idx = headerMap.get(H_SEVERITY);
-                String severity = idx == null ? null : trim(split[headerMap.get(H_SEVERITY)]);
+                String severity = idx == null ? "" : trim(split[headerMap.get(H_SEVERITY)]);
                 idx = headerMap.get(H_VALUE_TYPE);
                 String valueType = idx == null ? null : trim(split[headerMap.get(H_VALUE_TYPE)]);
                 idx = headerMap.get(H_VALUE);
-                String value = idx == null ? null : trim(split[headerMap.get(H_VALUE)]);
+                String value = idx == null ? "" : trim(split[headerMap.get(H_VALUE)]);
 
                 data.add(piecesToVType(timestamp, status, severity, value, valueType));
                 names.add(name);
@@ -147,7 +147,7 @@ public final class FileUtilities {
             }
         }
         if (date == null || date.isEmpty()) {
-            throw new ParseException("Snapshot does not have a date set.",0);
+            throw new ParseException("Snapshot does not have a date set.", 0);
         }
         Date d = TIMESTAMP_FORMATTER.get().parse(date);
         return new SnapshotContent(d, names, selected, data);
@@ -181,7 +181,8 @@ public final class FileUtilities {
      */
     private static VType piecesToVType(String timestamp, String status, String severity, String value,
         String valueType) {
-        String[] t = timestamp.indexOf('.') > 0 ? timestamp.split("\\.") : new String[] { "0", "0" };
+        String[] t = timestamp != null && timestamp.indexOf('.') > 0 ? timestamp.split("\\.")
+            : new String[] { "0", "0" };
         Time time = ValueFactory.newTime(Timestamp.of(Long.parseLong(t[0]), Integer.parseInt(t[1])));
         Alarm alarm = ValueFactory
             .newAlarm(severity.isEmpty() ? AlarmSeverity.NONE : AlarmSeverity.valueOf(severity.toUpperCase()), status);
@@ -331,7 +332,11 @@ public final class FileUtilities {
         List<String> names = data.getNames();
         List<Boolean> selected = data.getSelected();
         StringBuilder sb = new StringBuilder(SNP_ENTRY_LENGTH * names.size());
-        sb.append("# Date: ").append(TIMESTAMP_FORMATTER.get().format(data.getTimestamp().toDate())).append('\n');
+        Timestamp timestamp = data.getTimestamp();
+        if (timestamp == null) {
+            timestamp = Timestamp.now();
+        }
+        sb.append("# Date: ").append(TIMESTAMP_FORMATTER.get().format(timestamp.toDate())).append('\n');
         sb.append(SNAPSHOT_FILE_HEADER).append('\n');
         for (int i = 0; i < names.size(); i++) {
             sb.append(createSnapshotFileEntry(names.get(i), selected.get(i), values.get(i))).append('\n');

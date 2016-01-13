@@ -20,6 +20,13 @@
                type="org.csstudio.saverestore.data.VSnapshot">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.eclipse.ui.ide.FileStoreEditorInput"
+            class="org.csstudio.saverestore.AdapterFactory">
+         <adapter
+               type="org.csstudio.saverestore.data.VSnapshot">
+         </adapter>
+      </factory>
    </extension>
 
 </plugin>

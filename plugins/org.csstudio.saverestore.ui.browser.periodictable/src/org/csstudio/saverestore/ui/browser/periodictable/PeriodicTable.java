@@ -23,13 +23,13 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
-import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.SpinnerValueFactory.IntegerSpinnerValueFactory;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 
 /**
@@ -42,14 +42,57 @@ import javafx.util.Duration;
  */
 public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope> {
 
+    private class ElementButton extends Button {
+
+        private ElementButton(Element element) {
+            init(element.symbol, 10);
+            setStyle(element.getStyle());
+            setTooltip(new Tooltip(element.fullName));
+            setOnAction((e) -> setSelectedElement(((Button) e.getSource()).getId()));
+        }
+
+        private ElementButton(String text) {
+            init(text, 8);
+            setDisable(true);
+        }
+
+        private void init(String text, int fontSize) {
+            setText(text);
+            setId(text);
+            setFont(Font.font(getFont().getFamily(), fontSize));
+            setPadding(new Insets(1, 1, 1, 1));
+            setPrefSize(BTN_SIZE, BTN_SIZE);
+            setMaxSize(BTN_SIZE, BTN_SIZE);
+            setMinSize(0, 0);
+            GridPane.setHalignment(this, HPos.CENTER);
+            GridPane.setValignment(this, VPos.CENTER);
+            GridPane.setVgrow(this, Priority.NEVER);
+            GridPane.setFillHeight(this, false);
+            setCursor(Cursor.HAND);
+        }
+    }
+
+    private static class ComboCell extends ListCell<Isotope> {
+        @Override
+        protected void updateItem(Isotope item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item == null || empty) {
+                setText(null);
+            } else {
+                setText(item.getPresentationName());
+            }
+        }
+    }
+
     private static final int BTN_SIZE = 25;
+    // style for the selected element button
     private static final String SELECTED_STYLE = "-fx-background-color: #8080FF; -fx-text-fill: white; "
-        + "-fx-font-weight: bold; -fx-font-size: 9; "
+        + "-fx-font-size: 9; -fx-font-weight: bold; "
         + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
 
-    private static final String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
-        + "-fx-font-size: 20; -fx-font-weight: bold; "
-        + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
+    // must not be final in order to be able to adjust the font size for different operating systems
+    private String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
+        + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1); -fx-font-weight: bold; ";
 
     private ObjectProperty<Isotope> selectedBaseLevelProperty;
     private ObjectProperty<Isotope> internalIsotopeProperty;
@@ -59,8 +102,8 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
 
     private Button isotopeButton;
     private FadeTransition animation;
-    private Spinner<Integer> neutronSpinner;
-    private Spinner<Integer> chargeSpinner;
+    private TinySpinner neutronSpinner;
+    private TinySpinner chargeSpinner;
     private ComboBox<Isotope> isotopeCombo;
     private Label neutronLabel;
     private Label chargeLabel;
@@ -74,12 +117,10 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         setHgap(0);
         createButtons();
         createMainTable();
-
         add(createLanthActPane(), 3, 8, 15, 2);
         add(createIsotopePanel(), 2, 0, 10, 2);
-
-        // label + gap + spinner + gap + button + padding + metals + gap + lant & act
-        int height = 17 + 1 + BTN_SIZE + 1 + 32 + 5 + BTN_SIZE * 4 + 5 + BTN_SIZE * 2;
+        // 9 rows of elements + gap between table and lanthanides
+        int height = 9 * BTN_SIZE + 5;
         setPrefHeight(height);
         setMinHeight(height);
         setMaxHeight(height);
@@ -96,26 +137,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         Element[] elements = Element.values();
         buttons = new ArrayList<>(elements.length);
         for (int i = 0; i < elements.length; i++) {
-            Button b = new Button(elements[i].symbol);
-            b.setId(elements[i].symbol);
-            Font font = b.getFont();
-            b.setFont(Font.font(font.getFamily(), 10));
-            b.setPadding(new Insets(2, 2, 2, 2));
-            b.setPrefSize(BTN_SIZE, BTN_SIZE);
-            b.setOnAction((e) -> setSelectedElement(((Button) e.getSource()).getId()));
-            b.setStyle(elements[i].getStyle());
-            GridPane.setHalignment(b, HPos.CENTER);
-            GridPane.setValignment(b, VPos.BOTTOM);
-            GridPane.setVgrow(b, Priority.NEVER);
-            GridPane.setFillHeight(b, false);
-            b.setCursor(Cursor.HAND);
-            b.setTooltip(new Tooltip(elements[i].fullName));
-            buttons.add(b);
-        }
-        for (int i = 0; i < 2; i++) {
-            Button b = buttons.get(i);
-            GridPane.setVgrow(b, Priority.ALWAYS);
-            GridPane.setMargin(b, new Insets(0, 0, 0, 0));
+            buttons.add(new ElementButton(elements[i]));
         }
     }
 
@@ -129,12 +151,9 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         for (int i = 0; i < 2; i++) {
             add(buttons.get(index++), 0, 1 + i);
             add(buttons.get(index++), 1, 1 + i);
-            add(buttons.get(index++), 12, 1 + i);
-            add(buttons.get(index++), 13, 1 + i);
-            add(buttons.get(index++), 14, 1 + i);
-            add(buttons.get(index++), 15, 1 + i);
-            add(buttons.get(index++), 16, 1 + i);
-            add(buttons.get(index++), 17, 1 + i);
+            for (int j = 12; j < 18; j++) {
+                add(buttons.get(index++), j, 1 + i);
+            }
         }
         // add 4th and 5th row
         for (int i = 1; i < 3; i++) {
@@ -148,14 +167,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         add(buttons.get(index++), 1, 5);
 
         // add a placeholder for lanthanides
-        Button lanthanids = new Button("La-Lu");
-        lanthanids.setPrefSize(BTN_SIZE, BTN_SIZE);
-        lanthanids.setPadding(new Insets(2, 2, 2, 2));
-        lanthanids.setDisable(true);
-        Font font = lanthanids.getFont();
-        font = Font.font(font.getFamily(), 8);
-        lanthanids.setFont(font);
-        add(lanthanids, 2, 5);
+        add(new ElementButton("La-Lu"), 2, 5);
 
         int LANTHANIDES = Element.LA.atomicNumber - 1;
         int ACTINIDES = Element.AC.atomicNumber - 1;
@@ -170,12 +182,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         index = ACTINIDES - 2;
         add(buttons.get(index++), 0, 6);
         add(buttons.get(index++), 1, 6);
-        Button actinides = new Button("Ac-Lr");
-        actinides.setPrefSize(BTN_SIZE, BTN_SIZE);
-        actinides.setPadding(new Insets(2, 2, 2, 2));
-        actinides.setDisable(true);
-        actinides.setFont(font);
-        add(actinides, 2, 6);
+        add(new ElementButton("Ac-Lr"), 2, 6);
         index = ACTINIDES + LA_COUNT;
         for (int i = index; i < buttons.size(); i++) {
             add(buttons.get(i), i - index + 3, 6);
@@ -191,6 +198,12 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         GridPane.setVgrow(aLabel, Priority.ALWAYS);
         add(lLabel, 0, 8, 3, 1);
         add(aLabel, 0, 9, 3, 1);
+
+        int size = getFontSize(lLabel.getText(), lLabel.getFont(), 3 * BTN_SIZE);
+        size = (int) Math.min(BTN_SIZE * 0.9, size);
+        Font font = Font.font(lLabel.getFont().getFamily(), size);
+        lLabel.setFont(font);
+        aLabel.setFont(font);
 
         GridPane lanthActPane = new GridPane();
         lanthActPane.setPadding(new Insets(5, 0, 0, 0));
@@ -216,14 +229,17 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         isotopeButton.setOnAction((e) -> selectedBaseLevelProperty().setValue(internalIsotopeProperty().getValue()));
         isotopeButton.setPadding(new Insets(1, 2, 1, 2));
         isotopeButton.setPrefHeight(32);
-        isotopeButton.setPrefWidth(110);
-        isotopeButton.setFont(Font.font(20));
+        isotopeButton.setMinWidth(0);
+        isotopeButton.setMaxWidth(Double.MAX_VALUE);
+        // Max font is 20, which is good for Windows, but too large for linux
+        // max width = idealWidth (110) - (left + right) padding
+        int siz = getFontSize(Isotope.of(Element.MD, 157, 100).getPresentationName(), Font.font(20), (int) 106);
+        isotopeButton.setFont(Font.font(siz));
         isotopeButton.disableProperty().bind(disableProperty());
+        ANIMATED_STYLE += "-fx-font-size: " + siz + "; ";
 
-        neutronSpinner = new Spinner<>();
+        neutronSpinner = new TinySpinner(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 180));
         neutronSpinner.disableProperty().bind(disableProperty());
-        neutronSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 180));
-        neutronSpinner.setEditable(true);
         neutronSpinner.setPrefSize(2.4 * BTN_SIZE, BTN_SIZE);
         neutronSpinner.valueProperty().addListener((a, o, n) -> {
             Isotope iso = internalIsotopeProperty().getValue();
@@ -231,10 +247,8 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
                 internalIsotopeProperty().setValue(Isotope.of(iso.element, n, iso.charge));
             }
         });
-        chargeSpinner = new Spinner<>();
+        chargeSpinner = new TinySpinner(new SpinnerValueFactory.IntegerSpinnerValueFactory(-100, 112, 0));
         chargeSpinner.disableProperty().bind(disableProperty());
-        chargeSpinner.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(-100, 112, 0));
-        chargeSpinner.setEditable(true);
         chargeSpinner.setPrefSize(2.4 * BTN_SIZE, BTN_SIZE);
         chargeSpinner.valueProperty().addListener((a, o, n) -> {
             Isotope iso = internalIsotopeProperty().getValue();
@@ -247,45 +261,30 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         isotopeCombo.disableProperty().bind(disableProperty());
         isotopeCombo.setPadding(new Insets(1, 0, 1, 0));
         isotopeCombo.setEditable(false);
-        isotopeCombo.setPrefSize(4.5 * BTN_SIZE + 5, BTN_SIZE);
-        isotopeCombo.setCellFactory(c -> new ListCell<Isotope>() {
-            protected void updateItem(Isotope item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setText(null);
-                } else {
-                    setText(item.getPresentationName());
-                }
-            }
-        });
-        isotopeCombo.setButtonCell(new ListCell<Isotope>() {
-            protected void updateItem(Isotope item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setText(null);
-                } else {
-                    setText(item.getPresentationName());
-                }
-            };
-        });
-        isotopeCombo.setStyle("-fx-font-size: 14");
+        isotopeCombo.setMaxWidth(Double.MAX_VALUE);
+        isotopeCombo.setMinWidth(0);
+        //isotopeCombo.setPrefSize(4.5 * BTN_SIZE + 5, BTN_SIZE);
+        isotopeCombo.setCellFactory(c -> new ComboCell());
+        isotopeCombo.setButtonCell(new ComboCell());
+        isotopeCombo.setStyle("-fx-font-size: 14;");
         isotopeCombo.selectionModelProperty().get().selectedItemProperty()
             .addListener((a, o, n) -> internalIsotopeProperty().setValue(n));
+        // adjust the height to always be the same as the button height
+        isotopeCombo.prefHeightProperty().bind(isotopeButton.heightProperty());
+        isotopeCombo.maxHeightProperty().bind(isotopeButton.heightProperty());
 
         neutronLabel = new Label("Neutrons:");
         chargeLabel = new Label("Charge:");
 
-        GridPane.setVgrow(isotopeCombo, Priority.NEVER);
-        GridPane.setHgrow(isotopeCombo, Priority.ALWAYS);
-        GridPane.setValignment(isotopeCombo, VPos.BOTTOM);
-        GridPane.setHalignment(isotopeCombo, HPos.CENTER);
-        GridPane.setFillWidth(isotopeCombo, false);
+        Font font = Font.font(neutronLabel.getFont().getFamily(),
+            getFontSize(neutronLabel.getText(), neutronLabel.getFont(), (int) neutronSpinner.getPrefWidth()));
+        neutronLabel.setFont(font);
+        chargeLabel.setFont(font);
+        neutronSpinner.getEditor().setFont(font);
+        chargeSpinner.getEditor().setFont(font);
 
-        GridPane.setVgrow(isotopeButton, Priority.NEVER);
-        GridPane.setHgrow(isotopeButton, Priority.ALWAYS);
-        GridPane.setValignment(isotopeButton, VPos.BOTTOM);
-        GridPane.setHalignment(isotopeButton, HPos.CENTER);
-        GridPane.setFillWidth(isotopeButton, true);
+        addConstraints(isotopeCombo, true, Priority.ALWAYS, Priority.NEVER, HPos.LEFT, VPos.BOTTOM);
+        addConstraints(isotopeButton, true, Priority.ALWAYS, Priority.NEVER, HPos.LEFT, VPos.BOTTOM);
         GridPane.setMargin(isotopeButton, new Insets(3, 0, 0, 0));
 
         isotopePanel.setPadding(new Insets(0, 5, 5, 5));
@@ -299,45 +298,42 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         isotopePanel.add(isotopeButton, 2, 0, 1, 2);
         isotopeCombo.setVisible(false);
 
-        GridPane.setHgrow(isotopePanel, Priority.ALWAYS);
-        GridPane.setVgrow(isotopePanel, Priority.NEVER);
-        GridPane.setValignment(isotopePanel, VPos.TOP);
-        GridPane.setHalignment(isotopePanel, HPos.CENTER);
-        GridPane.setFillWidth(isotopePanel, false);
+        addConstraints(isotopePanel, true, Priority.ALWAYS, Priority.NEVER, HPos.CENTER, VPos.TOP);
+
+        isotopePanel.setMaxWidth(10 * BTN_SIZE);
+        isotopePanel.setMinWidth(0);
         return isotopePanel;
     }
 
-    private void showOnlyAvailable(boolean only) {
+    private void showOnlyAvailable(final boolean only) {
+        buttons.forEach(b -> b.setDisable(only));
         if (only) {
-            buttons.forEach(b -> b.setDisable(true));
             availableBaseLevelsProperty().get().forEach(i -> buttons.get(i.element.atomicNumber - 1).setDisable(false));
-        } else {
-            buttons.forEach(b -> b.setDisable(false));
         }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#setShowOnlyAvailable(boolean)
+     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#setShowOnlyAvailable (boolean)
      */
     @Override
     public void setShowOnlyAvailable(boolean showOnlyAvailable) {
-        if (this.showOnlyAvailable == showOnlyAvailable)
-            return;
-        this.showOnlyAvailable = showOnlyAvailable;
-        neutronSpinner.setVisible(!showOnlyAvailable);
-        chargeSpinner.setVisible(!showOnlyAvailable);
-        chargeLabel.setVisible(!showOnlyAvailable);
-        neutronLabel.setVisible(!showOnlyAvailable);
-        isotopeCombo.setVisible(showOnlyAvailable);
-        showOnlyAvailable(this.showOnlyAvailable);
+        if (this.showOnlyAvailable != showOnlyAvailable) {
+            this.showOnlyAvailable = showOnlyAvailable;
+            neutronSpinner.setVisible(!showOnlyAvailable);
+            chargeSpinner.setVisible(!showOnlyAvailable);
+            chargeLabel.setVisible(!showOnlyAvailable);
+            neutronLabel.setVisible(!showOnlyAvailable);
+            isotopeCombo.setVisible(showOnlyAvailable);
+            showOnlyAvailable(this.showOnlyAvailable);
+        }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#availableBaseLevelsProperty()
+     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser# availableBaseLevelsProperty()
      */
     public ObjectProperty<List<Isotope>> availableBaseLevelsProperty() {
         if (availableIsotopesProperty == null) {
@@ -358,8 +354,9 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         if (showOnlyAvailable) {
             final List<Isotope> isotopes = new ArrayList<>();
             availableBaseLevelsProperty().get().forEach(a -> {
-                if (a.element == e)
+                if (a.element == e) {
                     isotopes.add(a);
+                }
             });
             isotopeCombo.getItems().setAll(isotopes);
             if (!isotopes.isEmpty()) {
@@ -382,6 +379,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     private Property<Isotope> internalIsotopeProperty() {
         if (internalIsotopeProperty == null) {
             internalIsotopeProperty = new SimpleObjectProperty<Isotope>(this, "internalSelectedIsotope", null) {
+                @Override
                 public void set(Isotope isotope) {
                     Isotope selectedIsotope = get();
                     if (selectedIsotope != null && selectedIsotope.equals(isotope)) {
@@ -433,7 +431,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#selectedBaseLevelProperty()
+     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser# selectedBaseLevelProperty()
      */
     @Override
     public Property<Isotope> selectedBaseLevelProperty() {
@@ -463,7 +461,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#getTitleFor(java.util.Optional, java.util.Optional)
+     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#getTitleFor(java. util.Optional, java.util.Optional)
      */
     @Override
     public String getTitleFor(Optional<Isotope> bl, Optional<String> branch) {
@@ -481,7 +479,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#transform(java.util.List)
+     * @see org.csstudio.saverestore.ui.browser.BaseLevelBrowser#transform(java.util. List)
      */
     @Override
     public List<Isotope> transform(List<? extends BaseLevel> list) {
@@ -490,7 +488,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
             try {
                 ret.add(Isotope.of(e.getStorageName()));
             } catch (IllegalArgumentException ex) {
-                // ignore
+                // only add those base levels, that can be transformed to isotopes and ignore the rest
             }
         });
         return Collections.unmodifiableList(ret);
@@ -504,5 +502,36 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     @Override
     public String getReadableName() {
         return "Periodic Table";
+    }
+
+    /**
+     * Returns the font size that is small enough to show the given text in a component, which maximum width is given by
+     * the <code>maxWidth</code> parameters.
+     *
+     * @param text the text to fit into maxWidth
+     * @param font the initial font size and family
+     * @param maxWidth the maximum allowed width of the text
+     * @return the font size
+     */
+    private static int getFontSize(String text, Font font, int maxWidth) {
+        Text mtext = new Text(text);
+        mtext.setFont(font);
+        double size = mtext.getLayoutBounds().getWidth();
+        int fontSize = (int) font.getSize();
+        while (size > maxWidth && fontSize > 1) {
+            fontSize--;
+            mtext.setFont(Font.font(font.getFamily(), fontSize));
+            size = mtext.getLayoutBounds().getWidth();
+        }
+        return fontSize;
+    }
+
+    private static void addConstraints(Node component, boolean fillWidth, Priority hgrow, Priority vgrow, HPos hpos,
+        VPos vpos) {
+        GridPane.setVgrow(component, vgrow);
+        GridPane.setHgrow(component, hgrow);
+        GridPane.setHalignment(component, hpos);
+        GridPane.setValignment(component, vpos);
+        GridPane.setFillWidth(component, fillWidth);
     }
 }

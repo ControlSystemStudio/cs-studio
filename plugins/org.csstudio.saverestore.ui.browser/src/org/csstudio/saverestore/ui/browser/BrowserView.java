@@ -210,7 +210,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     private Node createBaseLevelsPane(BaseLevelBrowser<BaseLevel> browser, Scene scene) {
         BorderPane content = new BorderPane();
         baseLevelBrowser = browser;
-        defaultBaseLevelBrowser = new DefaultBaseLevelBrowser(this);
+        defaultBaseLevelBrowser = new DefaultBaseLevelBrowser(this.getSite());
 
         if (baseLevelBrowser != null) {
             content.setCenter(baseLevelBrowser.getFXContent());

@@ -29,8 +29,8 @@ import javafx.scene.text.Font;
 
 /**
  *
- * <code>BeamlineSetEditor</code> is an implementation of the {@link EditorPart} which allows editing the beamline set.
- * User is allowed to change the description and the list of pvs.
+ * <code>BeamlineSetEditor</code> is an implementation of the {@link EditorPart} which allows editing the beamline sets.
+ * User is allowed to change the description and the list of pvs in the set.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -50,6 +50,9 @@ public class BeamlineSetEditor extends FXEditorPart {
     private boolean dirty = false;
     private BeamlineSetController controller;
 
+    /**
+     * Constructs a new beamline set editor.
+     */
     public BeamlineSetEditor() {
         this.controller = new BeamlineSetController(this);
     }
@@ -149,6 +152,11 @@ public class BeamlineSetEditor extends FXEditorPart {
         setInput(input);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.part.EditorPart#setInput(org.eclipse.ui.IEditorInput)
+     */
     @Override
     protected void setInput(IEditorInput input) {
         super.setInput(input);
@@ -218,27 +226,10 @@ public class BeamlineSetEditor extends FXEditorPart {
             firePropertyChange(PROP_DIRTY);
         });
 
-        GridPane.setHalignment(descriptionLabel, HPos.LEFT);
-        GridPane.setHalignment(contentLabel, HPos.LEFT);
-        GridPane.setHalignment(descriptionArea, HPos.LEFT);
-        GridPane.setHalignment(contentArea, HPos.LEFT);
-        GridPane.setFillHeight(descriptionLabel, true);
-        GridPane.setFillHeight(contentLabel, true);
-        GridPane.setFillHeight(descriptionArea, true);
-        GridPane.setFillHeight(contentArea, true);
-        GridPane.setFillWidth(descriptionLabel, true);
-        GridPane.setFillWidth(contentLabel, true);
-        GridPane.setFillWidth(descriptionArea, true);
-        GridPane.setFillWidth(contentArea, true);
-
-        GridPane.setVgrow(descriptionLabel, Priority.NEVER);
-        GridPane.setVgrow(contentLabel, Priority.NEVER);
-        GridPane.setVgrow(descriptionArea, Priority.NEVER);
-        GridPane.setVgrow(contentArea, Priority.ALWAYS);
-        GridPane.setHgrow(descriptionLabel, Priority.NEVER);
-        GridPane.setHgrow(contentLabel, Priority.NEVER);
-        GridPane.setHgrow(descriptionArea, Priority.ALWAYS);
-        GridPane.setHgrow(contentArea, Priority.ALWAYS);
+        addConstraints(descriptionLabel, Priority.NEVER, Priority.NEVER);
+        addConstraints(contentLabel, Priority.NEVER, Priority.NEVER);
+        addConstraints(descriptionArea, Priority.ALWAYS, Priority.NEVER);
+        addConstraints(contentArea, Priority.ALWAYS, Priority.ALWAYS);
 
         grid.add(descriptionLabel, 0, 0);
         grid.add(descriptionArea, 0, 1);
@@ -258,5 +249,13 @@ public class BeamlineSetEditor extends FXEditorPart {
         if (contentArea != null) {
             contentArea.requestFocus();
         }
+    }
+
+    private static void addConstraints(Node component, Priority hgrow, Priority vgrow) {
+        GridPane.setHalignment(component, HPos.LEFT);
+        GridPane.setFillHeight(component, true);
+        GridPane.setFillWidth(component, true);
+        GridPane.setVgrow(component, vgrow);
+        GridPane.setHgrow(component, hgrow);
     }
 }
