@@ -35,9 +35,10 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     private static final long serialVersionUID = 2676226155070688049L;
 
     //these could all be final, but can't be because they are set during serialization, which is manual, due
-    //to Timestamp not being serializable
+    //to Timestamp not being serializable. Values cannot be serialized, because VType and none of its known
+    //implementations are serializable.
     private List<String> names;
-    private List<VType> values;
+    private transient final List<VType> values;
     private List<Boolean> selected;
     private Timestamp snapshotTime;
     private BeamlineSet beamlineSet;
@@ -362,7 +363,6 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         }
         out.writeObject(beamlineSet);
         out.writeObject(names);
-        out.writeObject(values);
         out.writeObject(selected);
     }
 
@@ -381,7 +381,6 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         }
         beamlineSet = (BeamlineSet)in.readObject();
         names = (List<String>) in.readObject();
-        values = (List<VType>) in.readObject();
         selected = (List<Boolean>) in.readObject();
     }
 }
