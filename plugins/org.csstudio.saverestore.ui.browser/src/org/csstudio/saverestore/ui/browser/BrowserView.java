@@ -538,7 +538,12 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     private void init() {
         selector.selectedBaseLevelProperty().addListener((a, o, n) -> {
             setUpElementsPaneTitle();
-            beamlineSetsPane.setText("Beamline Sets for " + n.getPresentationName());
+            if (n == null) {
+                beamlineSetsPane.setText("Beamline Sets");
+            } else {
+                beamlineSetsPane.setText("Beamline Sets for " + n.getPresentationName());
+            }
+
         });
         if (baseLevelBrowser != null) {
             baseLevelBrowser.selectedBaseLevelProperty().addListener((a,o,n) -> {
