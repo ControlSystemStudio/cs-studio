@@ -28,8 +28,8 @@ public class ResetRepository extends AbstractHandler implements IHandler {
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
             if (FXMessageDialog.openConfirm(part.getSite().getShell(), "Reset Repository",
-                "Are you sure you want to rese the local repository. You will lose all data that has not been "
-                    + "pushed to the central repository")) {
+                "Are you sure you want to reset the local repository? You will lose all data that has not been "
+                    + "pushed to the central repository.")) {
                 ((BrowserView) part).getActionManager().resetRepository();
             }
         }
