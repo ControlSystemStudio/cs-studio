@@ -1,6 +1,7 @@
 package org.csstudio.ui.fx.util;
 
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.RGB;
 
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -20,12 +21,12 @@ public final class FXUtilities {
     /**
      * Transforms the SWT colour to a hex string representing that colour.
      *
-     * @param color the original colour to transform
+     * @param rgb the original colour to transform
      * @return hex representation of the colour
      */
-    public static final String toHexColor(Color colour) {
-        return Integer.toHexString(colour.getRed()) + Integer.toHexString(colour.getGreen())
-            + Integer.toHexString(colour.getBlue());
+    public static final String toHexColor(RGB rgb) {
+        return Integer.toHexString(rgb.red) + Integer.toHexString(rgb.green)
+            + Integer.toHexString(rgb.blue);
     }
 
     /**
@@ -36,7 +37,18 @@ public final class FXUtilities {
      * @return CSS style for a node background
      */
     public static final String toBackgroundColorStyle(Color colour) {
-        return "-fx-background-color: #" + FXUtilities.toHexColor(colour) + ";";
+        return "-fx-background-color: #" + FXUtilities.toHexColor(colour.getRGB()) + ";";
+    }
+
+    /**
+     * Transforms the SWT colour to a hex string representing that colour and returns a java FX CSS style for the
+     * node background using that colour.
+     *
+     * @param colour the original colour to transform
+     * @return CSS style for a node background
+     */
+    public static final String toBackgroundColorStyle(RGB rgb) {
+        return "-fx-background-color: #" + FXUtilities.toHexColor(rgb) + ";";
     }
 
     /**

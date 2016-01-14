@@ -41,6 +41,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Menu;
@@ -506,7 +507,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         HBox toolbar = new HBox(5);
         HBox.setHgrow(leftToolbar, Priority.ALWAYS);
         HBox.setHgrow(rightToolbar, Priority.NEVER);
-        String background = "-fx-background-color: #FBFBFB;";
+        String background = FXUtilities.toBackgroundColorStyle(new RGB(251,251,251));
         leftToolbar.setStyle(background);
         rightToolbar.setStyle(background);
         toolbar.setStyle(background);
