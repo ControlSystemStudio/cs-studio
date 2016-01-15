@@ -199,9 +199,11 @@ public class PVDevice extends Device
     public VType read(final TimeDuration timeout) throws Exception
     {
         final PV pv; // Copy to access PV outside of lock
+        final VType orig;
         synchronized (this)
         {
             pv = this.pv;
+            orig = value;
         }
         try
         {
@@ -210,9 +212,12 @@ public class PVDevice extends Device
             final VType received_value = (millisec > 0)
                 ? read_result.get(millisec, TimeUnit.MILLISECONDS)
                 : read_result.get();
+            final VType got = wrapReceivedValue(received_value);
             synchronized (this)
             {
-                value = wrapReceivedValue(received_value);;
+                if (value == orig)
+                    value = got;
+                // else: Get-callback superseeded by monitor
                 return value;
             }
         }
