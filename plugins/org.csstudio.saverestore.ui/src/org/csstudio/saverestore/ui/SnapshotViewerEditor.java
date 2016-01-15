@@ -7,6 +7,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
@@ -481,6 +483,14 @@ public class SnapshotViewerEditor extends FXEditorPart {
                     filter = ALL_ITEMS;
                 }
                 final String selectedFilter = filter;
+                if (!selectedFilter.equals(ALL_ITEMS)) {
+                    try {
+                        Pattern.compile(".*" + filter + ".*");
+                    } catch (PatternSyntaxException e) {
+                        FXMessageDialog.openError(getSite().getShell(), "Invalid Filter", e.getMessage());
+                        return;
+                    }
+                }
                 List<String> items = new ArrayList<>(filterCombo.getItems());
                 if (items.indexOf(selectedFilter) < 0) {
                     items.add(1, selectedFilter);
