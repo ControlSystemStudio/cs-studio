@@ -358,7 +358,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(beamlineSet, names, selected, snapshotTime, values);
+        return Objects.hash(beamlineSet, snapshot, names, selected, snapshotTime, values, forcedName);
     }
 
     /*
@@ -376,9 +376,19 @@ public class VSnapshot implements VType, Time, Array, Serializable {
             return false;
         }
         VSnapshot other = (VSnapshot) obj;
-        return Objects.equals(beamlineSet, other.beamlineSet) && Objects.equals(names, other.names)
-            && Objects.equals(snapshotTime, other.snapshotTime) && Objects.equals(values, other.values)
-            && Objects.equals(selected, other.selected);
+        return Objects.equals(snapshot, other.snapshot) && equalsExceptSnapshot(other);
+    }
+
+    /**
+     * Checks if the two snapshots are equal in everything except the snapshot.
+     *
+     * @param other the other object to compare to
+     * @return true if equal or false otherwise
+     */
+    public boolean equalsExceptSnapshot(VSnapshot other) {
+        return Objects.equals(beamlineSet, other.beamlineSet) && Objects.equals(forcedName, other.forcedName)
+            && Objects.equals(names, other.names) && Objects.equals(snapshotTime, other.snapshotTime)
+            && Objects.equals(values, other.values) && Objects.equals(selected, other.selected);
     }
 
     /**

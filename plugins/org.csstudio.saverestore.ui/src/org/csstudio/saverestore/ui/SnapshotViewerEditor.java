@@ -176,12 +176,15 @@ public class SnapshotViewerEditor extends FXEditorPart {
     }
 
     private void updateMetaInfo(VSnapshot snapshot) {
-        if (snapshot != null) {
-            snapshot.getSnapshot().ifPresent(t -> {
-                commentField.setText(t.getComment());
-                creatorField.setText(t.getOwner());
-                dateField.setText(Utilities.timestampToBigEndianString(t.getDate(), true));
-            });
+        if (snapshot != null && snapshot.getSnapshot().isPresent()) {
+            Snapshot s = snapshot.getSnapshot().get();
+            commentField.setText(s.getComment());
+            creatorField.setText(s.getOwner());
+            dateField.setText(Utilities.timestampToBigEndianString(s.getDate(), true));
+        } else {
+            commentField.setText("");
+            creatorField.setText("");
+            dateField.setText("");
         }
     }
 

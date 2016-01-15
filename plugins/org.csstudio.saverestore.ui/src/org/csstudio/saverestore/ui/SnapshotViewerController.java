@@ -644,8 +644,12 @@ public class SnapshotViewerController {
                 if (s != null) {
                     synchronized (snapshots) {
                         for (int i = 0; i < snapshots.size(); i++) {
-                            if (snapshots.get(i).equals(s)) {
+                            if (snapshots.get(i).equalsExceptSnapshot(s)) {
                                 snapshots.set(i, s);
+                                if (i == 0) {
+                                    final VSnapshot n = s;
+                                    Platform.runLater(() -> baseSnapshotProperty.set(n));
+                                }
                                 break;
                             }
                         }
