@@ -22,7 +22,13 @@ public class Readback implements ParametersProvider {
     @Override
     public Map<String, String> getReadbackNames(List<String> setpointNames) {
         Map<String, String> ret = new HashMap<>();
-        setpointNames.forEach(e -> ret.put(e, e));
+        setpointNames.forEach(e -> {
+            if (e.startsWith("static")) {
+                ret.put(e, e.substring(6));
+            } else {
+                ret.put(e, e);
+            }
+        });
         Display.getDefault()
             .syncExec(() -> FXMessageDialog.openInformation(
                 PlatformUI.getWorkbench().getWorkbenchWindows()[0]

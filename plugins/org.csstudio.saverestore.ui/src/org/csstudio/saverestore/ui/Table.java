@@ -259,7 +259,7 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
         TableColumn<TableEntry, String> pvNameColumn = new TooltipTableColumn<>("PV", "The name of the PV", 170);
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
-        width = FXUtilities.measureStringWidth("MM:MM:MM.MMM MMM MM",null);
+        width = FXUtilities.measureStringWidth("MM:MM:MM.MMM MMM MM", null);
         TableColumn<TableEntry, Timestamp> timestampColumn = new TooltipTableColumn<>("Timestamp",
             "Timestamp of the value when the snapshot was taken", width, width, true);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, Timestamp>("timestamp"));
@@ -417,7 +417,6 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
      * @param showReadback true if readback column should be visible or false otherwise
      */
     public void updateTable(List<TableEntry> entries, List<VSnapshot> snapshots, boolean showReadback) {
-        getItems().clear();
         getColumns().clear();
         uiSnapshots.clear();
         uiSnapshots.addAll(snapshots);
@@ -427,10 +426,17 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
             createTableForMultipleSnapshots(snapshots, showReadback);
         }
         updateTableColumnTitles();
+        updateTable(entries);
+    }
 
+    /**
+     * Sets new table entries for this table.
+     *
+     * @param entries the entries to set
+     */
+    public void updateTable(List<TableEntry> entries) {
         final ObservableList<TableEntry> items = getItems();
         final boolean notHide = !controller.isHideEqualItems();
-
         items.clear();
         entries.forEach(e -> {
             // there is no harm if this is executed more than once, because only one listener is allowed
@@ -449,6 +455,28 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
                 items.add(e);
             }
         });
+    }
+
+    /**
+     * Add a new item to the table.
+     *
+     * @param entry the item to add
+     */
+    public void addItem(TableEntry entry) {
+        entry.selectedProperty()
+            .addListener((a, o, n) -> selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false));
+        entry.liveStoredEqualProperty().addListener((a, o, n) -> {
+            if (controller.isHideEqualItems()) {
+                if (n) {
+                    getItems().remove(entry);
+                } else {
+                    getItems().add(entry);
+                }
+            }
+        });
+        if (!controller.isHideEqualItems() || !entry.liveStoredEqualProperty().get()) {
+            getItems().add(entry);
+        }
     }
 
     /**

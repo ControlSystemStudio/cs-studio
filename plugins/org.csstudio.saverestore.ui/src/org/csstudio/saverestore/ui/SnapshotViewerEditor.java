@@ -389,7 +389,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
             "Enter the name of the PV from the archiving system that you wish to add.", "",
             i -> i == null || i.isEmpty() ? "The PV name cannot be empty" : null).openAndWait()
                 .ifPresent(pv -> SaveRestoreService.getInstance().execute("Add PV from Archive",
-                    () -> controller.addPVFromArchive(pv, x -> table.getItems().add(x)))));
+                    () -> controller.addPVFromArchive(pv, x -> table.addItem(x)))));
         Button importButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/import_wiz.png"))));
         importButton.setTooltip(new Tooltip("Import PV values from external source"));
@@ -513,7 +513,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 SaveRestoreService.getInstance().execute("Filter items", () -> {
                     final List<TableEntry> entries = controller
                         .setFilter(ALL_ITEMS.equals(selectedFilter) ? null : selectedFilter);
-                    Platform.runLater(() -> table.getItems().setAll(entries));
+                    Platform.runLater(() -> table.updateTable(entries));
                 });
             }
         });
@@ -524,7 +524,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         hideEqualItemsButton.selectedProperty().addListener((a, o, n) -> {
             SaveRestoreService.getInstance().execute("Filter items", () -> {
                 final List<TableEntry> entries = controller.setHideEqualItems(n);
-                Platform.runLater(() -> table.getItems().setAll(entries));
+                Platform.runLater(() -> table.updateTable(entries));
             });
         });
         rightToolbar.setAlignment(Pos.CENTER_RIGHT);
