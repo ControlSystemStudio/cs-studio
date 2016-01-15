@@ -16,6 +16,7 @@ import static org.csstudio.ui.util.ReflectUtil.*;
  *
  *  @author Gabriele Carcassi
  *  @author Kay Kasemir
+ *  @author Jaka Bobnar
  */
 public class AdapterUtil
 {
