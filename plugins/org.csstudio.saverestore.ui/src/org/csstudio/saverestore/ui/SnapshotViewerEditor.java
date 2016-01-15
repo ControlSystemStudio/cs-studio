@@ -1,13 +1,13 @@
 package org.csstudio.saverestore.ui;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.csdata.ProcessVariable;
-import org.csstudio.csdata.TimestampedPV;
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
@@ -26,7 +26,8 @@ import org.csstudio.ui.fx.util.FXTextInputDialog;
 import org.csstudio.ui.fx.util.FXUtilities;
 import org.csstudio.ui.fx.util.StaticTextArea;
 import org.csstudio.ui.fx.util.StaticTextField;
-import org.diirt.util.time.Timestamp;
+import org.csstudio.ui.fx.util.UnfocusableButton;
+import org.csstudio.ui.fx.util.UnfocusableToggleButton;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -34,11 +35,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.ISelectionProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
@@ -49,8 +45,10 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IURIEditorInput;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 
 import javafx.animation.Animation.Status;
@@ -64,6 +62,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -96,7 +95,7 @@ import javafx.util.Duration;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProvider {
+public class SnapshotViewerEditor extends FXEditorPart {
 
     /** The editor ID */
     public static final String ID = "org.csstudio.saverestore.ui.editor.snapshotviewer";
@@ -119,10 +118,6 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
     private FadeTransition animation;
     private Menu contextMenu;
 
-    private int clickedColumn = -1;
-
-    private List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
-
     /**
      * Constructs a new editor.
      */
@@ -142,7 +137,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         contextMenu = menu.createContextMenu(parent);
         parent.setMenu(contextMenu);
-        getSite().registerContextMenu(menu, this);
+        getSite().registerContextMenu(menu, table);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.csstudio.saverestore.ui.help.snapshotviewer");
     }
 
     private void init() {
@@ -175,7 +171,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             saveSnapshotButton.setStyle(ANIMATED_STYLE);
             animation.play();
         }
-        getSite().setSelectionProvider(this);
+        getSite().setSelectionProvider(table);
         controller.baseSnapshotProperty().addListener((o, a, n) -> updateMetaInfo(n));
     }
 
@@ -196,7 +192,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      */
     @Override
     public void doSave(IProgressMonitor monitor) {
-        if (getEditorInput() instanceof IFileEditorInput) {
+        if (getEditorInput() instanceof IFileEditorInput || getEditorInput() instanceof IURIEditorInput) {
             save(monitor, false);
         } else {
             SaveRestoreService.getInstance().execute("Save Snapshot", () -> save(monitor, false));
@@ -210,7 +206,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      */
     @Override
     public void doSaveAs() {
-        if (getEditorInput() instanceof IFileEditorInput) {
+        if (getEditorInput() instanceof IFileEditorInput || getEditorInput() instanceof IURIEditorInput) {
             // if saving a file that was initially opened from workspace, save it back to workspacae, but let eclipse
             // to choose the thread and proper locking mechanism
             save(new NullProgressMonitor(), true);
@@ -223,7 +219,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
 
     private void save(final IProgressMonitor monitor, boolean saveAs) {
         // loop over all snapshots and save them one by one
-        final List<VSnapshot> snapshots = controller.getSnapshots(true);
+        final List<VSnapshot> snapshots = saveAs ? controller.getAllSnapshots() : controller.getSnapshots(true);
         do {
             if (!save(snapshots, true, saveAs).map(snapshots::remove).isPresent()) {
                 break;
@@ -231,7 +227,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         } while (!snapshots.isEmpty());
         getSite().getShell().getDisplay().asyncExec(() -> {
             monitor.done();
-            firePropertyChange(PROP_DIRTY);
+            checkDirty();
         });
     }
 
@@ -241,15 +237,13 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         }
         // ask the user to choose the snapshot to save if there is more than one snapshot or "promptIfOnlyOne" is true
         // then save the selected snapshot
-        if (getEditorInput() instanceof IFileEditorInput) {
-            if (promptIfOnlyOne || snapshots.size() > 1) {
-                return FXComboInputDialog
-                    .pick(getSite().getShell(), "Select Snapshot", "Select the snapshot that you wish to save",
-                        snapshots.get(0), snapshots)
-                    .map(e -> saveSnapshotToFile(e, (IFileEditorInput) getEditorInput(), saveAs));
+        if (getEditorInput() instanceof IFileEditorInput || getEditorInput() instanceof IURIEditorInput) {
+            if (snapshots.size() > 1) {
+                return FXComboInputDialog.pick(getSite().getShell(), "Select Snapshot",
+                    "Select the snapshot that you wish to save", snapshots.get(0), snapshots)
+                    .map(e -> saveSnapshotToFile(e, saveAs));
             } else {
-                return Optional
-                    .ofNullable(saveSnapshotToFile(snapshots.remove(0), (IFileEditorInput) getEditorInput(), saveAs));
+                return Optional.ofNullable(saveSnapshotToFile(snapshots.remove(0), saveAs));
             }
         } else {
             if (promptIfOnlyOne || snapshots.size() > 1) {
@@ -284,17 +278,37 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      *            overwritten
      * @return the snapshot if successful or null otherwise
      */
-    private VSnapshot saveSnapshotToFile(VSnapshot snapshot, IFileEditorInput input, boolean saveAs) {
-        if (saveAs) {
-            SaveAsDialog saveAsDialog = new FXSaveAsDialog(getSite().getShell());
-            saveAsDialog.setOriginalFile(((IFileEditorInput) input).getFile());
-            if (saveAsDialog.open() == Window.OK) {
-                IPath targetPath = saveAsDialog.getResult();
-                IFile targetFile = ResourcesPlugin.getWorkspace().getRoot().getFile(targetPath);
-                return controller.saveToFile(targetFile, snapshot);
+    private VSnapshot saveSnapshotToFile(VSnapshot snapshot, boolean saveAs) {
+        if (getEditorInput() instanceof IFileEditorInput) {
+            IFile file = ((IFileEditorInput) getEditorInput()).getFile();
+            if (saveAs) {
+                SaveAsDialog saveAsDialog = new FXSaveAsDialog(getSite().getShell());
+                saveAsDialog.setOriginalFile(file);
+                if (saveAsDialog.open() == Window.OK) {
+                    IPath targetPath = saveAsDialog.getResult();
+                    IFile targetFile = ResourcesPlugin.getWorkspace().getRoot().getFile(targetPath);
+                    return controller.saveToFile(targetFile, snapshot, true);
+                }
+            } else if (file != null) {
+                return controller.saveToFile(file, snapshot, true);
             }
-        } else {
-            return controller.saveToFile(input.getFile(), snapshot);
+        } else if (getEditorInput() instanceof IURIEditorInput) {
+            URI uri = ((IURIEditorInput) getEditorInput()).getURI();
+            if (uri.getScheme().equalsIgnoreCase("file")) {
+                final File file = new File(uri);
+                if (saveAs) {
+                    selectFile(true, Optional.of(file))
+                        .ifPresent(f -> SaveRestoreService.getInstance().execute("Save snapshot file", () -> {
+                            controller.exportSingleSnapshotToFile(snapshot, f, true);
+                            Platform.runLater(() -> checkDirty());
+                        }));
+                } else {
+                    SaveRestoreService.getInstance().execute("Save snapshot file", () -> {
+                        controller.exportSingleSnapshotToFile(snapshot, file, true);
+                        Platform.runLater(() -> checkDirty());
+                    });
+                }
+            }
         }
         return null;
     }
@@ -332,6 +346,14 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         return controller.snapshotSaveableProperty().get();
     }
 
+    /**
+     * Updates the column titles and updates the dirty property of this editor.
+     */
+    void checkDirty() {
+        table.updateTableColumnTitles();
+        firePropertyChange(PROP_DIRTY);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -339,7 +361,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
      */
     @Override
     public boolean isSaveAsAllowed() {
-        return getEditorInput() instanceof IFileEditorInput;
+        return getEditorInput() instanceof IFileEditorInput || getEditorInput() instanceof IURIEditorInput;
     }
 
     /*
@@ -357,7 +379,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
 
     private Node createToolbarPane() {
         HBox leftToolbar = new HBox(5);
-        Button addPVButton = new Button("",
+        Button addPVButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/includeMode_filter.png"))));
         addPVButton.setTooltip(new Tooltip("Add a PV from the central archiving system"));
         addPVButton.setOnAction(e -> new FXTextInputDialog(getSite().getShell(), "Add Archived PV",
@@ -365,7 +387,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             i -> i == null || i.isEmpty() ? "The PV name cannot be empty" : null).openAndWait()
                 .ifPresent(pv -> SaveRestoreService.getInstance().execute("Add PV from Archive",
                     () -> controller.addPVFromArchive(pv, x -> table.getItems().add(x)))));
-        Button importButton = new Button("",
+        Button importButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/import_wiz.png"))));
         importButton.setTooltip(new Tooltip("Import PV values from external source"));
         importButton.setDisable(ExtensionPointLoader.getInstance().getValueImporters().isEmpty());
@@ -379,7 +401,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                     .openAndWait().ifPresent(imp -> SaveRestoreService.getInstance().execute("Import Values",
                         () -> controller.importValues(imp, x -> addSnapshot(x))));
         });
-        ToggleButton addReadbacksButton = new ToggleButton("",
+        ToggleButton addReadbacksButton = new UnfocusableToggleButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/exp_deployplug.png"))));
         addReadbacksButton.setTooltip(new Tooltip("Show column with values from the readback PVs"));
         addReadbacksButton.setDisable(!ExtensionPointLoader.getInstance().getParametersProvider().isPresent());
@@ -388,7 +410,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             final boolean show = controller.isShowReadbacks();
             Platform.runLater(() -> table.updateTable(b, snapshots, show));
         }));
-        Button openSnapshotFromFileButton = new Button("",
+        Button openSnapshotFromFileButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/fldr_obj.png"))));
         openSnapshotFromFileButton.setTooltip(new Tooltip("Open snapshot from file"));
         openSnapshotFromFileButton.setOnAction(e -> {
@@ -402,28 +424,28 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
                 });
             }
         });
-        Button saveSnapshotToFileButton = new Button("",
+        Button saveSnapshotToFileButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/saveas_edit.png"))));
         saveSnapshotToFileButton.setTooltip(new Tooltip("Save a snapshot to file"));
         saveSnapshotToFileButton.setOnAction(e -> {
-            selectFile(true).ifPresent(f -> {
+            selectFile(true, Optional.empty()).ifPresent(f -> {
                 final List<VSnapshot> snapshots = controller.getAllSnapshots();
                 if (snapshots.size() == 1) {
                     SaveRestoreService.getInstance().execute("Export to snp file",
-                        () -> controller.exportSingleSnapshotToFile(snapshots.get(0), f));
+                        () -> controller.exportSingleSnapshotToFile(snapshots.get(0), f, false));
                 } else {
                     new FXComboInputDialog<>(getSite().getShell(), "Select Snapshot",
                         "Select the snapshot that you wish to save", snapshots.get(0), snapshots).openAndWait()
                             .ifPresent(s -> SaveRestoreService.getInstance().execute("Export to snp file",
-                                () -> controller.exportSingleSnapshotToFile(s, f)));
+                                () -> controller.exportSingleSnapshotToFile(s, f, false)));
                 }
             });
         });
-        Button exportButton = new Button("",
+        Button exportButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/export_wiz.png"))));
         exportButton.setTooltip(new Tooltip("Export editor contents to file"));
         exportButton.setOnAction(e -> {
-            selectFile(false).ifPresent(
+            selectFile(false, Optional.empty()).ifPresent(
                 f -> SaveRestoreService.getInstance().execute("Export to csv file", () -> controller.exportToFile(f)));
         });
         javafx.scene.control.Separator separator1 = new javafx.scene.control.Separator(Orientation.VERTICAL);
@@ -507,7 +529,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         HBox toolbar = new HBox(5);
         HBox.setHgrow(leftToolbar, Priority.ALWAYS);
         HBox.setHgrow(rightToolbar, Priority.NEVER);
-        String background = FXUtilities.toBackgroundColorStyle(new RGB(251,251,251));
+        String background = FXUtilities.toBackgroundColorStyle(new RGB(251, 251, 251));
         leftToolbar.setStyle(background);
         rightToolbar.setStyle(background);
         toolbar.setStyle(background);
@@ -515,9 +537,10 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         return toolbar;
     }
 
-    private Optional<File> selectFile(boolean snp) {
+    private Optional<File> selectFile(boolean snp, Optional<File> originalFile) {
         File f = null;
         FileDialog dialog = new FileDialog(getSite().getShell(), SWT.SAVE);
+        originalFile.ifPresent(file -> dialog.setFileName(file.getAbsolutePath()));
         if (snp) {
             dialog.setFilterExtensions(new String[] { "*" + SnapshotViewerController.FEXT_SNP });
             dialog.setFilterNames(new String[] { "Single Snapshot (*.snp)" });
@@ -601,11 +624,16 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         saveSnapshotButton.setTooltip(new Tooltip("Save the snapshot values as a new revision"));
         saveSnapshotButton.setOnAction(e -> {
             // when user presses the big save button, only save one selected snapshot
-            final List<VSnapshot> snapshots = controller.getSnapshots(true);
-            if (getEditorInput() instanceof IFileEditorInput) {
-                save(snapshots, false, false);
+            if (getEditorInput() instanceof IFileEditorInput || getEditorInput() instanceof IURIEditorInput) {
+                final List<VSnapshot> snapshots = controller.getAllSnapshots();
+                save(snapshots, false, snapshots.size() > 1);
+                checkDirty();
             } else {
-                SaveRestoreService.getInstance().execute("Save Snapshot", () -> save(snapshots, false, false));
+                final List<VSnapshot> snapshots = controller.getSnapshots(true);
+                SaveRestoreService.getInstance().execute("Save Snapshot", () -> {
+                    save(snapshots, false, false);
+                    checkDirty();
+                });
             }
         });
         saveSnapshotButton.disableProperty().bind(controller.snapshotSaveableProperty().not());
@@ -629,9 +657,9 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         restoreSnapshotButton.setMaxHeight(Integer.MAX_VALUE);
         saveSnapshotButton.setMaxHeight(Integer.MAX_VALUE);
         takeSnapshotButton.setMaxHeight(Integer.MAX_VALUE);
-        addConstraints(restoreSnapshotButton, Priority.ALWAYS);
-        addConstraints(takeSnapshotButton, Priority.NEVER);
-        addConstraints(saveSnapshotButton, Priority.NEVER);
+        setGridConstraints(restoreSnapshotButton, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
+        setGridConstraints(takeSnapshotButton, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.ALWAYS);
+        setGridConstraints(saveSnapshotButton, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.ALWAYS);
         grid.add(restoreSnapshotButton, 0, 0);
         grid.add(takeSnapshotButton, 1, 0);
         grid.add(saveSnapshotButton, 2, 0);
@@ -664,7 +692,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
             } else if (e.getDragboard().hasContent(DataFormat.FILES)) {
                 @SuppressWarnings("unchecked")
                 final List<File> files = (List<File>) e.getDragboard().getContent(DataFormat.FILES);
-                if (files.size() > 0) {
+                if (!files.isEmpty()) {
                     SaveRestoreService.getInstance().execute("Open file",
                         () -> files.forEach(c -> controller.openFromFile(c).ifPresent(s -> addSnapshot(s))));
                 }
@@ -673,16 +701,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         table.setOnMouseReleased(e -> {
             contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY);
         });
-        table.setOnMouseClicked(e -> {
-            if (table.getSelectionModel().getSelectedCells() != null
-                && !table.getSelectionModel().getSelectedCells().isEmpty()) {
-                clickedColumn = table.getSelectionModel().getSelectedCells().get(0).getColumn();
-                SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
-                for (ISelectionChangedListener l : selectionChangedListener) {
-                    l.selectionChanged(event);
-                }
-            }
-        });
+
         return table;
     }
 
@@ -725,84 +744,5 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISelectionProv
         if (table != null) {
             table.requestFocus();
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
-     */
-    @Override
-    public ISelection getSelection() {
-        if (table == null) {
-            return null;
-        } else {
-            int numSnapshots = controller.getNumberOfSnapshots();
-            VSnapshot snapshot;
-            if (numSnapshots == 1 || clickedColumn < 0) {
-                snapshot = controller.getSnapshot(0);
-            } else if (clickedColumn - 3 < numSnapshots) {
-                snapshot = controller.getSnapshot(clickedColumn - 3);
-            } else {
-                snapshot = controller.getSnapshot(numSnapshots - 1);
-            }
-            if (snapshot == null) {
-                return null;
-            }
-            Timestamp timestamp = snapshot.getTimestamp();
-            if (timestamp == null) {
-                List<ProcessVariable> list = new ArrayList<>();
-                for (TableEntry e : table.selectionModelProperty().get().getSelectedItems()) {
-                    list.add(new ProcessVariable(e.pvNameProperty().get()));
-                }
-                return new StructuredSelection(list);
-            } else {
-                long time = timestamp.toDate().getTime();
-                List<TimestampedPV> list = new ArrayList<>();
-                for (TableEntry e : table.selectionModelProperty().get().getSelectedItems()) {
-                    list.add(new TimestampedPV(e.pvNameProperty().get(), time));
-                }
-                return new StructuredSelection(list);
-            }
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.
-     * ISelectionChangedListener)
-     */
-    @Override
-    public void addSelectionChangedListener(ISelectionChangedListener listener) {
-        selectionChangedListener.add(listener);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.
-     * ISelectionChangedListener)
-     */
-    @Override
-    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
-        selectionChangedListener.remove(listener);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
-     */
-    @Override
-    public void setSelection(ISelection selection) {
-    }
-
-    private static void addConstraints(Node component, Priority hgrow) {
-        GridPane.setHalignment(component, HPos.LEFT);
-        GridPane.setFillHeight(component, true);
-        GridPane.setFillWidth(component, true);
-        GridPane.setVgrow(component, Priority.ALWAYS);
-        GridPane.setHgrow(component, hgrow);
     }
 }

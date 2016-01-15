@@ -1,5 +1,7 @@
 package org.csstudio.saverestore.ui;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,14 +11,17 @@ import org.csstudio.saverestore.data.BeamlineSetData;
 import org.csstudio.ui.fx.util.FXEditorPart;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.EditorPart;
 
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -55,6 +60,12 @@ public class BeamlineSetEditor extends FXEditorPart {
      */
     public BeamlineSetEditor() {
         this.controller = new BeamlineSetController(this);
+    }
+
+    @Override
+    public void createPartControl(Composite parent) {
+        super.createPartControl(parent);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.csstudio.saverestore.ui.help.beamlineseteditor");
     }
 
     /*
@@ -226,10 +237,10 @@ public class BeamlineSetEditor extends FXEditorPart {
             firePropertyChange(PROP_DIRTY);
         });
 
-        addConstraints(descriptionLabel, Priority.NEVER, Priority.NEVER);
-        addConstraints(contentLabel, Priority.NEVER, Priority.NEVER);
-        addConstraints(descriptionArea, Priority.ALWAYS, Priority.NEVER);
-        addConstraints(contentArea, Priority.ALWAYS, Priority.ALWAYS);
+        setGridConstraints(descriptionLabel, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.NEVER);
+        setGridConstraints(contentLabel, true, true, HPos.LEFT, VPos.CENTER, Priority.NEVER, Priority.NEVER);
+        setGridConstraints(descriptionArea, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
+        setGridConstraints(contentArea, true, true, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.ALWAYS);
 
         grid.add(descriptionLabel, 0, 0);
         grid.add(descriptionArea, 0, 1);
@@ -249,13 +260,5 @@ public class BeamlineSetEditor extends FXEditorPart {
         if (contentArea != null) {
             contentArea.requestFocus();
         }
-    }
-
-    private static void addConstraints(Node component, Priority hgrow, Priority vgrow) {
-        GridPane.setHalignment(component, HPos.LEFT);
-        GridPane.setFillHeight(component, true);
-        GridPane.setFillWidth(component, true);
-        GridPane.setVgrow(component, vgrow);
-        GridPane.setHgrow(component, hgrow);
     }
 }

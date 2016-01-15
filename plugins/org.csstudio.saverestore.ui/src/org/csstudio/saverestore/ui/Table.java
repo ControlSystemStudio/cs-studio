@@ -4,7 +4,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.csstudio.csdata.ProcessVariable;
+import org.csstudio.csdata.TimestampedPV;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.Utilities.VTypeComparison;
@@ -12,9 +15,15 @@ import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.csstudio.ui.fx.util.FXUtilities;
+import org.csstudio.ui.fx.util.UnfocusableCheckBox;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.VType;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 
 import javafx.application.Platform;
 import javafx.beans.property.ObjectProperty;
@@ -34,17 +43,19 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 
 /**
  *
- * <code>Table</code> is an extension of the JavaFX table, tailored for the presentation of the {@link VSnapshot}. This
- * table is used in combination with the {@link SnapshotViewerEditor} and only provides the UI part of the table.
+ * <code>Table</code> is an extension of the JavaFX table, tailored for the presentation of the {@link VSnapshot}s. The
+ * table also implements {@link ISelectionProvider} interface and provides the selected items as {@link ProcessVariable}
+ * s or {@link TimestampedPV}s. This table is used in combination with the {@link SnapshotViewerEditor}.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class Table extends TableView<TableEntry> {
+public class Table extends TableView<TableEntry> implements ISelectionProvider {
 
     private static boolean resizePolicyNotInitialized = true;
 
@@ -192,6 +203,14 @@ public class Table extends TableView<TableEntry> {
     private final SnapshotViewerController controller;
     private CheckBox selectAllCheckBox;
 
+    private int clickedColumn = -1;
+    private List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
+
+    /**
+     * Constructs a new table.
+     *
+     * @param controller the controller
+     */
     public Table(SnapshotViewerController controller) {
         if (resizePolicyNotInitialized) {
             try {
@@ -210,6 +229,14 @@ public class Table extends TableView<TableEntry> {
         setMaxWidth(Double.MAX_VALUE);
         setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         getStylesheets().add(this.getClass().getResource(SnapshotViewerEditor.STYLE).toExternalForm());
+
+        setOnMouseClicked(e -> {
+            if (getSelectionModel().getSelectedCells() != null && !getSelectionModel().getSelectedCells().isEmpty()) {
+                clickedColumn = getSelectionModel().getSelectedCells().get(0).getColumn();
+                final SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
+                selectionChangedListener.forEach(l -> l.selectionChanged(event));
+            }
+        });
     }
 
     private void createTableForSingleSnapshot(VSnapshot snapshot, boolean showReadback) {
@@ -219,20 +246,20 @@ public class Table extends TableView<TableEntry> {
         selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
         selectedColumn.setEditable(true);
         selectedColumn.setSortable(false);
-        selectAllCheckBox = new CheckBox();
+        selectAllCheckBox = new UnfocusableCheckBox();
         selectAllCheckBox.setSelected(false);
         selectAllCheckBox
             .setOnAction(e -> getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
         selectedColumn.setGraphic(selectAllCheckBox);
 
-        int width = FXUtilities.measureStringWidth("0000", null);
+        int width = FXUtilities.measureStringWidth("0000", Font.font(20));
         TableColumn<TableEntry, Integer> idColumn = new TooltipTableColumn<>("#",
             "The order number of the PV in the beamline set", width, width, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         TableColumn<TableEntry, String> pvNameColumn = new TooltipTableColumn<>("PV", "The name of the PV", 170);
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
-        width = FXUtilities.measureStringWidth("MM:MM:MM.MMM MMM MM", null);
+        width = FXUtilities.measureStringWidth("MM:MM:MM.MMM MMM MM",null);
         TableColumn<TableEntry, Timestamp> timestampColumn = new TooltipTableColumn<>("Timestamp",
             "Timestamp of the value when the snapshot was taken", width, width, true);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, Timestamp>("timestamp"));
@@ -266,6 +293,7 @@ public class Table extends TableView<TableEntry> {
         storedValueColumn.setOnEditCommit(e -> {
             ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
             value.setValue(new VTypePair(value.get().base, e.getNewValue().value, value.get().threshold));
+            controller.updateSnapshot(0, e.getRowValue());
             controller.resume();
         });
 
@@ -296,13 +324,13 @@ public class Table extends TableView<TableEntry> {
         selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
         selectedColumn.setEditable(true);
         selectedColumn.setSortable(false);
-        selectAllCheckBox = new CheckBox();
+        selectAllCheckBox = new UnfocusableCheckBox();
         selectAllCheckBox.setSelected(false);
         selectAllCheckBox
             .setOnAction(e -> getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
         selectedColumn.setGraphic(selectAllCheckBox);
 
-        int width = FXUtilities.measureStringWidth("0000", null);
+        int width = FXUtilities.measureStringWidth("0000", Font.font(20));
         TableColumn<TableEntry, Integer> idColumn = new TooltipTableColumn<>("#",
             "The order number of the PV in the beamline set", width, width, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -326,6 +354,7 @@ public class Table extends TableView<TableEntry> {
         baseCol.setOnEditCommit(e -> {
             ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
             value.setValue(new VTypePair(value.get().base, e.getNewValue().value, value.get().threshold));
+            controller.updateSnapshot(0, e.getRowValue());
             controller.resume();
         });
         storedValueColumn.getColumns().add(baseCol);
@@ -356,6 +385,7 @@ public class Table extends TableView<TableEntry> {
             col.setOnEditCommit(e -> {
                 ObjectProperty<VTypePair> value = e.getRowValue().compareValueProperty(snapshotIndex);
                 value.setValue(new VTypePair(value.get().base, e.getNewValue().value, value.get().threshold));
+                controller.updateSnapshot(snapshotIndex, e.getRowValue());
                 controller.resume();
             });
             col.label.setOnMouseReleased(e -> {
@@ -425,7 +455,7 @@ public class Table extends TableView<TableEntry> {
      * Update the table column titles, by putting an asterisk to non saved snapshots or remove asterisk from saved
      * snapshots.
      */
-    private void updateTableColumnTitles() {
+    void updateTableColumnTitles() {
         // add the * to the title of the column if the snapshot is not saved
         if (uiSnapshots.size() == 1) {
             ((TooltipTableColumn<?>) getColumns().get(6)).setSaved(uiSnapshots.get(0).isSaved());
@@ -443,7 +473,7 @@ public class Table extends TableView<TableEntry> {
      *
      * @param old the old value already present in the table
      * @param n the new value which should be identical to the old value, except that it is saved
-     * @return always true (for pragmmatical reasons)
+     * @return always true (for pragmatic reasons)
      */
     boolean replaceSnapshot(VSnapshot old, VSnapshot n) {
         Platform.runLater(() -> {
@@ -454,5 +484,72 @@ public class Table extends TableView<TableEntry> {
             }
         });
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+     */
+    @Override
+    public ISelection getSelection() {
+        int numSnapshots = controller.getNumberOfSnapshots();
+        VSnapshot snapshot;
+        if (numSnapshots == 1 || clickedColumn < 0) {
+            snapshot = controller.getSnapshot(0);
+        } else if (clickedColumn - 3 < numSnapshots) {
+            snapshot = controller.getSnapshot(clickedColumn - 3);
+        } else {
+            snapshot = controller.getSnapshot(numSnapshots - 1);
+        }
+        if (snapshot == null) {
+            return null;
+        }
+        Timestamp timestamp = snapshot.getTimestamp();
+        if (timestamp == null) {
+            List<ProcessVariable> list = new ArrayList<>();
+            for (TableEntry e : selectionModelProperty().get().getSelectedItems()) {
+                list.add(new ProcessVariable(e.pvNameProperty().get()));
+            }
+            return new StructuredSelection(list);
+        } else {
+            long time = timestamp.toDate().getTime();
+            List<TimestampedPV> list = new ArrayList<>();
+            for (TableEntry e : selectionModelProperty().get().getSelectedItems()) {
+                list.add(new TimestampedPV(e.pvNameProperty().get(), time));
+            }
+            return new StructuredSelection(list);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#addSelectionChangedListener(org.eclipse.jface.viewers.
+     * ISelectionChangedListener)
+     */
+    @Override
+    public void addSelectionChangedListener(ISelectionChangedListener listener) {
+        selectionChangedListener.add(listener);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#removeSelectionChangedListener(org.eclipse.jface.viewers.
+     * ISelectionChangedListener)
+     */
+    @Override
+    public void removeSelectionChangedListener(ISelectionChangedListener listener) {
+        selectionChangedListener.remove(listener);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#setSelection(org.eclipse.jface.viewers.ISelection)
+     */
+    @Override
+    public void setSelection(ISelection selection) {
     }
 }

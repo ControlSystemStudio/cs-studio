@@ -1,5 +1,7 @@
 package org.csstudio.saverestore.ui;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.ui.util.RepositoryTree;
@@ -85,11 +87,11 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         pane.setHgap(3);
         pane.setStyle(cl);
 
-        addConstraints(treeView, true, true, Priority.ALWAYS, Priority.ALWAYS);
-        addConstraints(fullNameField, true, false, Priority.ALWAYS, Priority.NEVER);
-        addConstraints(nameField, true, false, Priority.ALWAYS, Priority.NEVER);
-        addConstraints(fullNameLabel, false, false, Priority.NEVER, Priority.NEVER);
-        addConstraints(nameLabel, false, false, Priority.NEVER, Priority.NEVER);
+        setGridConstraints(treeView, true, true, Priority.ALWAYS, Priority.ALWAYS);
+        setGridConstraints(fullNameField, true, false, Priority.ALWAYS, Priority.NEVER);
+        setGridConstraints(nameField, true, false, Priority.ALWAYS, Priority.NEVER);
+        setGridConstraints(fullNameLabel, false, false, Priority.NEVER, Priority.NEVER);
+        setGridConstraints(nameLabel, false, false, Priority.NEVER, Priority.NEVER);
 
         pane.add(treeView, 0, 0, 2, 1);
         pane.add(nameLabel, 0, 1, 1, 1);
@@ -160,13 +162,5 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         BorderPane pane = new BorderPane(createContents());
         Scene scene = new Scene(pane);
         return scene;
-    }
-
-    private static void addConstraints(Node component, boolean fillWidth, boolean fillHeight, Priority hgrow,
-        Priority vgrow) {
-        GridPane.setFillHeight(component, fillHeight);
-        GridPane.setFillWidth(component, fillWidth);
-        GridPane.setVgrow(component, vgrow);
-        GridPane.setHgrow(component, hgrow);
     }
 }

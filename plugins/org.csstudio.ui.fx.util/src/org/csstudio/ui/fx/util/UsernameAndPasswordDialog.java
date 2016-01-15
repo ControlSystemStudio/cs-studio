@@ -1,5 +1,7 @@
 package org.csstudio.ui.fx.util;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import java.util.Optional;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -11,6 +13,7 @@ import org.eclipse.swt.widgets.Shell;
 
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -114,11 +117,9 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
                 int size = FXUtilities.measureStringWidth("Cancel",cancelButton.getFont()) + 25;
                 okButton.setPrefWidth(size);
                 cancelButton.setPrefWidth(size);
-
                 GridPane pane = new GridPane();
                 pane.setHgap(10);
-                GridPane.setHgrow(okButton, Priority.ALWAYS);
-                GridPane.setHalignment(okButton, HPos.RIGHT);
+                setGridConstraints(okButton, false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
                 pane.add(okButton, 0, 0);
                 pane.add(cancelButton, 1, 0);
                 return new Scene(pane);
@@ -162,18 +163,13 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
                 password.setMaxWidth(Double.MAX_VALUE);
                 Label uLabel = new Label("Username:");
                 Label pLabel = new Label("Password:");
-                GridPane.setHgrow(username, Priority.ALWAYS);
-                GridPane.setHgrow(password, Priority.ALWAYS);
-                GridPane.setFillWidth(username, true);
-                GridPane.setFillWidth(password, true);
+                setGridConstraints(username, true, false, Priority.ALWAYS, Priority.NEVER);
+                setGridConstraints(password, true, false, Priority.ALWAYS, Priority.NEVER);
                 pane.add(uLabel, 0, 0);
                 pane.add(pLabel, 0, 1);
                 pane.add(username, 1, 0);
                 pane.add(password, 1, 1);
-                rememberBox = new CheckBox("Remember password for later use") {
-                    @Override
-                    public void requestFocus() {};
-                };
+                rememberBox = new UnfocusableCheckBox("Remember password for later use");
                 rememberBox.setSelected(remember);
                 pane.add(rememberBox, 0, 2, 2, 1);
                 pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);

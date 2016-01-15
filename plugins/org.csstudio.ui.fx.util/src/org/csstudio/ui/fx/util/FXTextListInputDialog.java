@@ -1,5 +1,7 @@
 package org.csstudio.ui.fx.util;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -23,7 +25,7 @@ public class FXTextListInputDialog<T> extends FXBaseDialog<String> {
 
     private TextField text;
     private ListView<T> list;
-    private List<T> options; 
+    private List<T> options;
 
     /**
      * Creates an input dialog with OK and Cancel buttons. Note that the dialog will have no visual representation (no
@@ -92,19 +94,13 @@ public class FXTextListInputDialog<T> extends FXBaseDialog<String> {
         if (!options.isEmpty()) {
             list.getSelectionModel().select(0);
         }
-        GridPane.setFillHeight(list, true);
-        GridPane.setFillWidth(list, true);
-        GridPane.setFillHeight(text, true);
-        GridPane.setFillWidth(text, true);
-        GridPane.setVgrow(list, Priority.ALWAYS);
-        GridPane.setHgrow(text, Priority.ALWAYS);
-        GridPane.setHgrow(list, Priority.ALWAYS);
+        setGridConstraints(list, true, true, Priority.ALWAYS, Priority.ALWAYS);
+        setGridConstraints(text, true, true, Priority.ALWAYS, Priority.NEVER);
         pane.setMaxWidth(Double.MAX_VALUE);
         pane.setVgap(3);
         pane.add(text, 0, 0);
         pane.add(list, 0, 1);
-        pane.setPrefWidth(getInitialSize().x - 25);
-        pane.setPrefHeight(200);
+        pane.setPrefSize(getInitialSize().x - 25, 200);
         return new Scene(pane);
     }
 

@@ -1,7 +1,10 @@
 package org.csstudio.ui.fx.util;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import org.eclipse.swt.widgets.Shell;
 
+import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -78,13 +81,10 @@ public class FXTaggingDialog extends FXBaseDialog<String> {
         pane.add(new Label("Tag message:"), 0, 1);
         tagMessage = new TextArea();
         tagMessage.setEditable(true);
-        GridPane.setFillHeight(tagMessage, true);
-        GridPane.setFillWidth(tagMessage, true);
-        GridPane.setFillHeight(tagName, true);
-        GridPane.setVgrow(tagMessage, Priority.ALWAYS);
-        GridPane.setHgrow(tagName, Priority.ALWAYS);
-        GridPane.setHgrow(tagMessage, Priority.ALWAYS);
-        pane.setVgap(3);
+        GridPane.setMargin(tagName, new Insets(0, 0, 10, 0));
+        GridPane.setMargin(tagMessage, new Insets(5, 0, 0, 0));
+        setGridConstraints(tagMessage, true, true, Priority.ALWAYS, Priority.ALWAYS);
+        setGridConstraints(tagName, true, true, Priority.ALWAYS, Priority.ALWAYS);
         pane.add(tagMessage, 0, 2);
         return new Scene(pane);
     }

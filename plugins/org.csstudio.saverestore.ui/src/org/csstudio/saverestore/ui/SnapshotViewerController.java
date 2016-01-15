@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
@@ -302,23 +303,22 @@ public class SnapshotViewerController {
     }
 
     private void updateThresholds() {
-        ExtensionPointLoader.getInstance().getParametersProvider()
-            .ifPresent(e -> {
-                List<String> missingThresholds = new ArrayList<>();
-                items.forEach((k, v) -> {
-                    if (thresholds.containsKey(k)) {
-                        v.setThreshold(Optional.of(thresholds.get(k)));
-                    } else {
-                        missingThresholds.add(k);
-                    }
-                });
-                if (!missingThresholds.isEmpty()) {
-                    Map<String, Threshold<?>> rbs = e.getThresholds(missingThresholds);
-                    thresholds.putAll(rbs);
+        ExtensionPointLoader.getInstance().getParametersProvider().ifPresent(e -> {
+            List<String> missingThresholds = new ArrayList<>();
+            items.forEach((k, v) -> {
+                if (thresholds.containsKey(k)) {
+                    v.setThreshold(Optional.of(thresholds.get(k)));
+                } else {
+                    missingThresholds.add(k);
                 }
-                items.forEach((k,v) -> v.setThreshold(Optional.ofNullable(thresholds.get(k))));
-                connectPVs();
             });
+            if (!missingThresholds.isEmpty()) {
+                Map<String, Threshold<?>> rbs = e.getThresholds(missingThresholds);
+                thresholds.putAll(rbs);
+            }
+            items.forEach((k, v) -> v.setThreshold(Optional.ofNullable(thresholds.get(k))));
+            connectPVs();
+        });
     }
 
     /**
@@ -416,6 +416,13 @@ public class SnapshotViewerController {
         }
     }
 
+    /**
+     * Set the regular expression filter to use for filtering the list of PVs. Only those items where the partial PV
+     * name matches the regular expression, will be included. The filtered list is returned.
+     *
+     * @param filter the filter to apply
+     * @return the list of entries that match the filter
+     */
     public List<TableEntry> setFilter(String filter) {
         this.filter = filter;
         return filter(items.values(), filter);
@@ -491,11 +498,16 @@ public class SnapshotViewerController {
      *
      * @param snapshot the snapshot to export
      * @param file the destination file
+     * @param markAsSaved true if the snapshot should be marked as saved when completed or false if left intact
      */
-    public void exportSingleSnapshotToFile(VSnapshot snapshot, File file) {
+    public void exportSingleSnapshotToFile(VSnapshot snapshot, File file, boolean markAsSaved) {
         try (final PrintWriter pw = new PrintWriter(new FileOutputStream(file))) {
             String contents = FileUtilities.generateSnapshotFileContent(snapshot);
             pw.println(contents);
+            if (markAsSaved) {
+                snapshot.markNotDirty();
+            }
+            snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
         } catch (FileNotFoundException ex) {
             Selector.reportException(ex, owner.getSite().getShell());
         }
@@ -531,8 +543,8 @@ public class SnapshotViewerController {
                 StringBuilder sb = new StringBuilder(200);
                 sb.append(e.pvNameProperty().get()).append(',');
                 VTypePair pair = e.valueProperty().get();
-                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base, pair.threshold).string).append('"')
-                    .append(',');
+                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base, pair.threshold).string)
+                    .append('"').append(',');
                 for (int i = 1; i < snapshots.size(); i++) {
                     pair = e.compareValueProperty(i).get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
@@ -569,9 +581,10 @@ public class SnapshotViewerController {
      *
      * @param file the destination file
      * @param snapshot the snapshot to save
+     * @param markAsSaved true to mark the snapshot as not dirty after it has been saved or false to not do anything
      * @return the saved snapshot if successful or null if not successful
      */
-    public VSnapshot saveToFile(IFile file, VSnapshot snapshot) {
+    public VSnapshot saveToFile(IFile file, VSnapshot snapshot, boolean markAsSaved) {
         try {
             if (!file.exists()) {
                 file.create(null, true, null);
@@ -579,6 +592,10 @@ public class SnapshotViewerController {
             String contents = FileUtilities.generateSnapshotFileContent(snapshot);
             InputStream stream = new ByteArrayInputStream(contents.getBytes("UTF-8"));
             file.setContents(stream, IFile.FORCE, new NullProgressMonitor());
+            if (markAsSaved) {
+                snapshot.markNotDirty();
+            }
+            snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
             return snapshot;
         } catch (Exception e) {
             Selector.reportException(e, owner.getSite().getShell());
@@ -660,7 +677,7 @@ public class SnapshotViewerController {
                 List<VType> values = s.getValues();
                 for (int i = 0; i < names.size(); i++) {
                     TableEntry e = items.get(names.get(i));
-                    //only restore the value if the entry is in the filtered list as well
+                    // only restore the value if the entry is in the filtered list as well
                     if (filteredList.contains(e) && e.selectedProperty().get()) {
                         pvs.get(e).writer.write(Utilities.toRawValue(values.get(i)));
                     }
@@ -695,7 +712,9 @@ public class SnapshotViewerController {
      */
     public VSnapshot getSnapshot(int index) {
         synchronized (snapshots) {
-            return index >= snapshots.size() ? null : snapshots.get(index);
+            return snapshots.isEmpty() ? null
+                : index >= snapshots.size() ? snapshots.get(snapshots.size() - 1)
+                    : index < 0 ? snapshots.get(0) : snapshots.get(index);
         }
     }
 
@@ -707,17 +726,11 @@ public class SnapshotViewerController {
      * @return saveable snapshots or restorable snapshots
      */
     public List<VSnapshot> getSnapshots(boolean saveable) {
-        List<VSnapshot> snaps = new ArrayList<>();
         synchronized (snapshots) {
-            for (VSnapshot v : snapshots) {
-                if (saveable && v.isSaveable()) {
-                    snaps.add(v);
-                } else if (!saveable && v.isSaved()) {
-                    snaps.add(v);
-                }
-            }
+            return snapshots.stream().filter(e -> (saveable && e.isSaveable()) || (!saveable && e.isSaved()))
+                .collect(Collectors.toList());
         }
-        return snaps;
+
     }
 
     /**
@@ -733,12 +746,8 @@ public class SnapshotViewerController {
         if (show) {
             ExtensionPointLoader.getInstance().getParametersProvider()
                 .ifPresent(e -> SaveRestoreService.getInstance().execute("Load readback names", () -> {
-                    List<String> reads = new ArrayList<>();
-                    items.keySet().forEach(k -> {
-                        if (!readbacks.containsKey(k)) {
-                            reads.add(k);
-                        }
-                    });
+                    List<String> reads = items.keySet().stream().filter(k -> !readbacks.containsKey(k))
+                        .collect(Collectors.toList());
                     if (!reads.isEmpty()) {
                         Map<String, String> rbs = e.getReadbackNames(reads);
                         for (String r : reads) {
@@ -776,12 +785,9 @@ public class SnapshotViewerController {
             if (values != null && !values.isEmpty()) {
                 BeamlineSet bs = new BeamlineSet(null, Optional.empty(), new String[] { importer.name }, importer.name);
                 Snapshot desc = new Snapshot(bs, timestamp.toDate(), "Imported from " + importer.name, importer.name);
-                final List<VType> vals = new ArrayList<>(names.size());
-                names.forEach(n -> {
-                    VType v = values.get(n);
-                    vals.add(v == null ? VNoData.INSTANCE : v);
-                });
-                final VSnapshot snapshot = new VSnapshot(desc, names, vals, timestamp);
+                final List<VType> vals = names.stream().map(e -> values.get(e))
+                    .map(v -> v == null ? VNoData.INSTANCE : v).collect(Collectors.toList());
+                final VSnapshot snapshot = new VSnapshot(desc, names, vals, timestamp, importer.name);
                 Platform.runLater(() -> consumer.accept(snapshot));
             }
         } catch (Exception ex) {
@@ -827,7 +833,7 @@ public class SnapshotViewerController {
                         List<VType> archiveValues = (List<VType>) ((VTable) value).getColumnData(0);
                         if (!archiveValues.isEmpty()) {
                             VType v = archiveValues.get(0);
-                            snaps.get(index).addPV(pvName, false, v);
+                            snaps.get(index).addOrSetPV(pvName, false, v);
                             entry.setSnapshotValue(v, index);
                         }
                         x.getPvReader().close();
@@ -857,18 +863,30 @@ public class SnapshotViewerController {
      * @return filtered list
      */
     private List<TableEntry> filter(Collection<TableEntry> allEntries, String filter) {
-        final List<TableEntry> entries = new ArrayList<>(allEntries.size());
+        List<TableEntry> entries;
         if (filter == null) {
-            entries.addAll(allEntries);
+            entries = new ArrayList<>(allEntries);
         } else {
             final Pattern pattern = Pattern.compile(".*" + filter + ".*");
-            allEntries.forEach(t -> {
-                if (pattern.matcher(t.pvNameProperty().get()).matches()) {
-                    entries.add(t);
-                };
-            });
+            entries = allEntries.stream().filter(t -> pattern.matcher(t.pvNameProperty().get()).matches())
+                .collect(Collectors.toList());
         }
         filteredList = entries;
         return entries;
+    }
+
+    public void updateSnapshot(int index, TableEntry entry) {
+        VType value;
+        String name = entry.pvNameProperty().get();
+        boolean selected = entry.selectedProperty().get();
+        if (index == 0) {
+            value = entry.valueProperty().get().value;
+        } else {
+            value = entry.compareValueProperty(index).get().value;
+        }
+        VSnapshot snapshot = getSnapshot(index);
+        snapshot.addOrSetPV(name, selected, value);
+        snapshotSaveableProperty.set(true);
+        owner.checkDirty();
     }
 }

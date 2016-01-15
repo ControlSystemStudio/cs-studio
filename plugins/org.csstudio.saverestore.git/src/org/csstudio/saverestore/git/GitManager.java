@@ -342,7 +342,7 @@ public class GitManager {
         BeamlineSetData data = loadBeamlineSetData(source, Optional.empty());
         BeamlineSet newSet = new BeamlineSet(toBranch, toBaseLevel, source.getPath(), source.getDataProviderId());
         BeamlineSetData newData = new BeamlineSetData(newSet, data.getPVList(), data.getDescription());
-        String comment = "Import from " + source.getBranch().getShortName() + "/" + source.getBaseLevel().get() + "/"
+        String comment = "Imported from " + source.getBranch().getShortName() + "/" + source.getBaseLevel().get() + "/"
             + source.getPathAsString();
         saveBeamlineSet(newData, comment, cred);
         if (type == ImportType.LAST_SNAPSHOT) {

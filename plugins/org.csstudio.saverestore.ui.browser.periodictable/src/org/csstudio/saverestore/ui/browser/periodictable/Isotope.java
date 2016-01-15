@@ -37,6 +37,22 @@ public class Isotope extends BaseLevel implements Serializable {
     }
 
     /**
+     * Construct a new isotope from the storage name and returns the isotope if it could be created or null if it failed
+     * to create it.
+     *
+     * @see Isotope#of(String)
+     * @param storageName the storage name in format <code>symbol_mass_chargep/n_energy</code>
+     * @return the isotope if the storage name matches the rules or null if the isotope could not be created
+     */
+    static final Isotope ofFlat(String storageName) {
+        try {
+            return Isotope.of(storageName);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+    }
+
+    /**
      * Construct a new isotope from the storage name which is expected to be in format
      * <code>symbol_mass_chargep/n_energy<code>, where <code>symbol</code> is a 1-3 letter chemical symbol,
      * <code>mass</code> is the atomic mass (number of neutrons plus number of protons), <code>charge</code> is the
@@ -45,8 +61,9 @@ public class Isotope extends BaseLevel implements Serializable {
      *
      * @param storageName the storage name in format <code>symbol_mass_chargep/n_energy</code>
      * @return the isotope
+     * @throws IllegalArgumentException if the storage name does not match the rules
      */
-    public static final Isotope of(String storageName) {
+    public static final Isotope of(String storageName) throws IllegalArgumentException {
         String[] parts = storageName.split("\\_");
         Element e = null;
         try {

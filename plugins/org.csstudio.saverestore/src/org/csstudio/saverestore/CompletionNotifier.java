@@ -40,7 +40,7 @@ public interface CompletionNotifier {
      *
      * @param set the set that was saved
      */
-    void beamlineSaved(BeamlineSetData set);
+    void beamlineSetSaved(BeamlineSetData set);
 
     /**
      * Called whenever the beamline set is successfully deleted, but only if at the same time no updates due to
@@ -48,7 +48,7 @@ public interface CompletionNotifier {
      *
      * @param set the set that was deleted
      */
-    void beamlineDeleted(BeamlineSet set);
+    void beamlineSetDeleted(BeamlineSet set);
 
     /**
      * Called whenever the snapshot was saved, but only if at the same time no updates due to synchronisation were made.

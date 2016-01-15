@@ -1,9 +1,9 @@
 package org.csstudio.saverestore.ui.browser;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.saverestore.DataProvider;
@@ -126,9 +126,7 @@ public class LazySnapshotStructuredSelection implements IStructuredSelection {
             // return dummy stuff, because RCP calls this method and we do not want to initialise the snapshot too soon
             return Arrays.asList(new ProcessVariable("dummy"));
         } else {
-            List<ProcessVariable> ret = new ArrayList<>();
-            lazyData.getNames().forEach(e -> ret.add(new ProcessVariable(e)));
-            return ret;
+            return lazyData.getNames().stream().map(e -> new ProcessVariable(e)).collect(Collectors.toList());
         }
 
     }

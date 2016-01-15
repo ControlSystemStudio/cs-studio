@@ -1,5 +1,7 @@
 package org.csstudio.saverestore.ui.browser;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.ui.util.RepositoryTree;
 import org.csstudio.ui.fx.util.FXBaseDialog;
@@ -55,23 +57,15 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
         pane.setVgap(5);
         pane.setHgap(3);
 
-        GridPane.setFillHeight(treeView, true);
-        GridPane.setFillHeight(fullNameField, false);
-        GridPane.setFillHeight(fullNameLabel, false);
-        GridPane.setFillWidth(treeView, true);
-        GridPane.setFillWidth(fullNameField, true);
-        GridPane.setFillWidth(fullNameLabel, false);
-        GridPane.setHgrow(treeView, Priority.ALWAYS);
-        GridPane.setHgrow(fullNameField, Priority.ALWAYS);
-        GridPane.setHgrow(fullNameLabel, Priority.NEVER);
-        GridPane.setVgrow(treeView, Priority.ALWAYS);
-        GridPane.setVgrow(fullNameField, Priority.NEVER);
-        GridPane.setVgrow(fullNameLabel, Priority.NEVER);
+        setGridConstraints(treeView, true, true, Priority.ALWAYS, Priority.ALWAYS);
+        setGridConstraints(fullNameField, true, false, Priority.ALWAYS, Priority.NEVER);
+        setGridConstraints(fullNameLabel, false, false, Priority.NEVER, Priority.NEVER);
 
         pane.add(treeView, 0, 0, 2, 1);
         pane.add(fullNameLabel, 0, 1, 1, 1);
         pane.add(fullNameField, 1, 1, 1, 1);
 
+        pane.setPrefWidth(getInitialSize().x);
         return pane;
     }
 

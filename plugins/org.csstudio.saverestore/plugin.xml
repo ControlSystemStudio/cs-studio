@@ -21,7 +21,7 @@
          </adapter>
       </factory>
       <factory
-            adaptableType="org.eclipse.ui.ide.FileStoreEditorInput"
+            adaptableType="org.eclipse.ui.IURIEditorInput"
             class="org.csstudio.saverestore.AdapterFactory">
          <adapter
                type="org.csstudio.saverestore.data.VSnapshot">

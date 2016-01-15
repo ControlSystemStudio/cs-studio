@@ -154,7 +154,6 @@ public class ActionManager {
         SaveRestoreService.getInstance().execute("Load snapshot data", () -> {
             try {
                 final VSnapshot s = provider.getSnapshotContent(snapshot);
-
                 owner.getSite().getShell().getDisplay().asyncExec(() -> {
                     try {
                         if (newEditor) {

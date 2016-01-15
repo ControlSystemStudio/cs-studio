@@ -236,7 +236,7 @@ public class GitDataProvider implements DataProvider {
             }
         } else if (answer.change == ChangeType.SAVE) {
             for (CompletionNotifier n : getNotifiers()) {
-                n.beamlineSaved(answer.data);
+                n.beamlineSetSaved(answer.data);
             }
         }
         return answer.data;
@@ -262,7 +262,7 @@ public class GitDataProvider implements DataProvider {
             }
         } else if (answer.change == ChangeType.SAVE) {
             for (CompletionNotifier n : getNotifiers()) {
-                n.beamlineDeleted(answer.data);
+                n.beamlineSetDeleted(answer.data);
             }
         }
         return answer.data != null;

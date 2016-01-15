@@ -1,5 +1,7 @@
 package org.csstudio.saverestore.ui.browser;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +18,8 @@ import org.csstudio.saverestore.ui.Selector;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.FXTaggingDialog;
+import org.csstudio.ui.fx.util.UnfocusableButton;
+import org.csstudio.ui.fx.util.UnfocusableToggleButton;
 import org.eclipse.fx.ui.workbench3.FXViewPart;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -27,6 +31,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
 
 import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
@@ -170,6 +175,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         contextMenu = menu.createContextMenu(parent);
         parent.setMenu(contextMenu);
         getSite().registerContextMenu(menu, this);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.csstudio.saverestore.ui.help.browser");
     }
 
     /*
@@ -184,25 +190,21 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
 
         Node beamlineSets = createBeamlineSetsPane(scene);
         Node snapshots = createSnapshotsPane(scene);
-
         mainPane = new VBox();
         dataPane = new VBox();
         VBox.setVgrow(beamlineSets, Priority.ALWAYS);
         VBox.setVgrow(snapshots, Priority.ALWAYS);
         dataPane.getChildren().addAll(beamlineSets, snapshotsPane);
         VBox.setVgrow(dataPane, Priority.ALWAYS);
-
         beamlineSetsPane.setExpanded(true);
         snapshotsPane.setExpanded(true);
         Optional<BaseLevelBrowser<BaseLevel>> browser = new BaseLevelBrowserProvider().getBaseLevelBrowser();
-
         Node elements = createBaseLevelsPane(browser.orElse(null), scene);
         VBox.setVgrow(baseLevelPane, Priority.NEVER);
         mainPane.getChildren().setAll(elements, dataPane);
         baseLevelPane.setExpanded(true);
 
         main.setCenter(mainPane);
-
         init();
         return scene;
     }
@@ -224,7 +226,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         titleBox.setHgap(5);
         Label titleText = new Label(browser.getTitleFor(Optional.empty(), Optional.empty()));
         titleText.textProperty().bind(baseLevelPane.textProperty());
-        ToggleButton filterButton = new ToggleButton("",
+        ToggleButton filterButton = new UnfocusableToggleButton("",
             new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/filter_ps.png"))));
         filterButton.setTooltip(new Tooltip("Disable non-existing"));
         filterButton.selectedProperty().addListener((a, o, n) -> {
@@ -239,7 +241,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         if (baseLevelBrowser == null) {
             titleBox.addRow(0, titleText, filterButton);
         } else {
-            ToggleButton baseLevelPanelFilterButton = new ToggleButton("",
+            ToggleButton baseLevelPanelFilterButton = new UnfocusableToggleButton("",
                 new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/Bookshelf16.gif"))));
             baseLevelPanelFilterButton
                 .setTooltip(new Tooltip("Toggle between custom browser (" + baseLevelBrowser.getReadableName()
@@ -296,11 +298,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                 }
             }
         });
-
-        GridPane.setVgrow(beamlineSetsTree, Priority.ALWAYS);
-        GridPane.setHgrow(beamlineSetsTree, Priority.ALWAYS);
-        GridPane.setFillWidth(beamlineSetsTree, true);
-        GridPane.setFillHeight(beamlineSetsTree, true);
+        setGridConstraints(beamlineSetsTree, true, true, Priority.ALWAYS, Priority.ALWAYS);
         content.add(beamlineSetsTree, 0, 0);
 
         beamlineSetsPane = new TitledPane("Beamline Sets", content);
@@ -310,13 +308,13 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         titleBox.setHgap(5);
         Label titleText = new Label("Beamline Sets");
         titleText.textProperty().bind(beamlineSetsPane.textProperty());
-        final Button newButton = new Button("New");
+        final Button newButton = new UnfocusableButton("New");
         newButton.setTooltip(new Tooltip("Create a new Beamline Set"));
-        Button editButton = new Button("Edit");
+        Button editButton = new UnfocusableButton("Edit");
         editButton.setTooltip(new Tooltip("Edit selected Beamline Set"));
-        Button importButton = new Button("Import");
+        Button importButton = new UnfocusableButton("Import");
         importButton.setTooltip(new Tooltip("Import Beamline Sets from another location"));
-        Button openButton = new Button("Open");
+        Button openButton = new UnfocusableButton("Open");
         openButton.setTooltip(new Tooltip("Open selected Beamline Set in Snapshot Viewer"));
         openButton.disableProperty()
             .bind(selector.selectedBeamlineSetProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
@@ -428,10 +426,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             }
         });
         snapshotsList.selectionModelProperty().get().selectedItemProperty().addListener((a, o, n) -> {
-            SelectionChangedEvent e = new SelectionChangedEvent(BrowserView.this, getSelection());
-            for (ISelectionChangedListener l : selectionChangedListener) {
-                l.selectionChanged(e);
-            }
+            final SelectionChangedEvent e = new SelectionChangedEvent(BrowserView.this, getSelection());
+            selectionChangedListener.forEach(l -> l.selectionChanged(e));
         });
         content.setCenter(snapshotsList);
         snapshotsPane = new TitledPane("Snapshots", content);
@@ -441,7 +437,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         titleBox.setHgap(5);
         Label titleText = new Label("Snapshots");
         titleText.textProperty().bind(snapshotsPane.textProperty());
-        Button tagButton = new Button("Tag");
+        Button tagButton = new UnfocusableButton("Tag");
         tagButton.setTooltip(new Tooltip("Tag selected snapshot"));
         tagButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty().isNull()
             .or(snapshotsPane.expandedProperty().not()));
@@ -450,13 +446,13 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             final FXTaggingDialog dialog = new FXTaggingDialog(getSite().getShell());
             dialog.openAndWait().ifPresent(a -> actionManager.tagSnapshot(snapshot, a, dialog.getMessage()));
         });
-        Button openButton = new Button("Open");
+        Button openButton = new UnfocusableButton("Open");
         openButton.setTooltip(new Tooltip("Open selected snapshot in a new Snapshot Viewer"));
         openButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty().isNull()
             .or(snapshotsPane.expandedProperty().not()));
         openButton.setOnAction(e -> actionManager.openSnapshot(snapshotsList.getSelectionModel().getSelectedItem()));
 
-        Button compareButton = new Button("Compare");
+        Button compareButton = new UnfocusableButton("Compare");
         compareButton.setTooltip(new Tooltip("Open selected snapshot the active Snapshot Viewer"));
         compareButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty()
             .isNull().or(snapshotsPane.expandedProperty().not()));
@@ -470,14 +466,14 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
 
         int num = SaveRestoreService.getInstance().getNumberOfSnapshots();
         if (num > 0) {
-            Button nextButton = new Button("",
+            Button nextButton = new UnfocusableButton("",
                 new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/1rightarrow.png"))));
             nextButton.setTooltip(new Tooltip("Load Next Batch"));
             nextButton.setOnAction(e -> selector.readSnapshots(false, false));
             nextButton.disableProperty()
                 .bind(selector.selectedBeamlineSetProperty().isNull().or(selector.allSnapshotsLoadedProperty()));
 
-            Button nextAllButton = new Button("",
+            Button nextAllButton = new UnfocusableButton("",
                 new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/2rightarrow.png"))));
             nextAllButton.setTooltip(new Tooltip("Load All"));
             nextAllButton.setOnAction(e -> selector.readSnapshots(false, true));
@@ -499,21 +495,6 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         snapshotsPane.expandedProperty()
             .addListener((a, o, n) -> VBox.setVgrow(snapshotsPane, n ? Priority.ALWAYS : Priority.NEVER));
         return snapshotsPane;
-    }
-
-    private static void setUpTitlePaneNode(Region node, boolean title) {
-        if (title) {
-            GridPane.setHgrow(node, Priority.ALWAYS);
-            GridPane.setHalignment(node, HPos.LEFT);
-            GridPane.setFillWidth(node, true);
-            GridPane.setValignment(node, VPos.CENTER);
-        } else {
-            GridPane.setHgrow(node, Priority.NEVER);
-            GridPane.setHalignment(node, HPos.RIGHT);
-            GridPane.setFillWidth(node, false);
-            GridPane.setValignment(node, VPos.CENTER);
-            node.setPadding(new Insets(3, 5, 3, 5));
-        }
     }
 
     private void setUpElementsPaneTitle() {
@@ -546,13 +527,13 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
 
         });
         if (baseLevelBrowser != null) {
-            baseLevelBrowser.selectedBaseLevelProperty().addListener((a,o,n) -> {
+            baseLevelBrowser.selectedBaseLevelProperty().addListener((a, o, n) -> {
                 if (baseLevelBrowser.getFXContent().getParent() != null) {
                     selector.selectedBaseLevelProperty().setValue(n);
                 }
             });
         }
-        defaultBaseLevelBrowser.selectedBaseLevelProperty().addListener((a,o,n) -> {
+        defaultBaseLevelBrowser.selectedBaseLevelProperty().addListener((a, o, n) -> {
             if (defaultBaseLevelBrowser.getFXContent().getParent() != null) {
                 selector.selectedBaseLevelProperty().setValue(n);
             }
@@ -560,7 +541,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         selector.baseLevelsProperty().addListener((a, o, n) -> {
             try {
                 defaultBaseLevelBrowser.availableBaseLevelsProperty().set(defaultBaseLevelBrowser.transform(n));
-                defaultBaseLevelBrowser.selectedBaseLevelProperty().setValue(selector.selectedBaseLevelProperty().get());
+                defaultBaseLevelBrowser.selectedBaseLevelProperty()
+                    .setValue(selector.selectedBaseLevelProperty().get());
                 if (baseLevelBrowser != null) {
                     baseLevelBrowser.availableBaseLevelsProperty().set(baseLevelBrowser.transform(n));
                     baseLevelBrowser.selectedBaseLevelProperty().setValue(selector.selectedBaseLevelProperty().get());
@@ -645,6 +627,15 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             }
         }
         return sb.toString();
+    }
+
+    private static void setUpTitlePaneNode(Region node, boolean isTitleText) {
+        if (isTitleText) {
+            setGridConstraints(node, true, false, HPos.LEFT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
+        } else {
+            setGridConstraints(node, false, false, HPos.RIGHT, VPos.CENTER, Priority.NEVER, Priority.NEVER);
+            node.setPadding(new Insets(3, 5, 3, 5));
+        }
     }
 
     /**

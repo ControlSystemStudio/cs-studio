@@ -42,7 +42,6 @@ public class BaseLevelBrowserProvider {
                 for (IConfigurationElement element : confElements) {
                     bb = (BaseLevelBrowser<BaseLevel>) element.createExecutableExtension("browser");
                 }
-
             } catch (CoreException e) {
                 SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore base level browser could not be loaded.",
                     e);

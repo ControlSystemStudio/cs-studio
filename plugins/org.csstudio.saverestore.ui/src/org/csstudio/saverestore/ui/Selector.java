@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.CompletionNotifier;
 import org.csstudio.saverestore.DataProvider;
@@ -72,14 +73,8 @@ public class Selector {
         @Override
         public void snapshotTagged(Snapshot snapshot) {
             List<Snapshot> snp = snapshotsProperty().get();
-            final List<Snapshot> newV = new ArrayList<>(snp.size());
-            snp.forEach(k -> {
-                if (k.almostEquals(snapshot)) {
-                    newV.add(snapshot);
-                } else {
-                    newV.add(k);
-                }
-            });
+            final List<Snapshot> newV = snp.stream().map(e -> e.almostEquals(snapshot) ? snapshot : e)
+                .collect(Collectors.toList());
             runOnGUIThread(() -> ((SimpleObjectProperty<List<Snapshot>>) snapshotsProperty())
                 .set(Collections.unmodifiableList(newV)));
         }
@@ -87,7 +82,7 @@ public class Selector {
         @Override
         public void snapshotSaved(VSnapshot snapshot) {
             List<Snapshot> snp = snapshotsProperty().get();
-            List<Snapshot> newV = new ArrayList<>();
+            final List<Snapshot> newV = new ArrayList<>(snp.size() + 1);
             newV.add(snapshot.getSnapshot().get());
             newV.addAll(snp);
             Collections.sort(newV);
@@ -101,7 +96,7 @@ public class Selector {
         }
 
         @Override
-        public void beamlineSaved(BeamlineSetData set) {
+        public void beamlineSetSaved(BeamlineSetData set) {
             final BaseLevel base = selectedBaseLevelProperty().get();
             final Branch branch = selectedBranchProperty().get();
             if (!set.getDescriptor().getBranch().equals(branch)) {
@@ -115,14 +110,9 @@ public class Selector {
         }
 
         @Override
-        public void beamlineDeleted(BeamlineSet set) {
+        public void beamlineSetDeleted(BeamlineSet set) {
             List<BeamlineSet> sets = beamlineSetsProperty().get();
-            final List<BeamlineSet> newSets = new ArrayList<>(sets.size());
-            sets.forEach(e -> {
-                if (!e.equals(set)) {
-                    newSets.add(e);
-                }
-            });
+            final List<BeamlineSet> newSets = sets.stream().filter(e -> !e.equals(set)).collect(Collectors.toList());
             runOnGUIThread(() -> ((SimpleObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
                 .set(Collections.unmodifiableList(newSets)));
         }
@@ -163,9 +153,12 @@ public class Selector {
             if (newValue != null) {
                 newValue.provider.addCompletionNotifier(notifier);
             }
-            ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty()).set(new ArrayList<>(0));
-            ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty()).set(new ArrayList<>(0));
-            ((ObjectProperty<List<Snapshot>>) snapshotsProperty()).set(new ArrayList<>(0));
+            ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
+                .set(Collections.unmodifiableList(new ArrayList<>(0)));
+            ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
+                .set(Collections.unmodifiableList(new ArrayList<>(0)));
+            ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
+                .set(Collections.unmodifiableList(new ArrayList<>(0)));
             allSnapshotsLoaded.set(false);
             readBranches(DEFAULT_BRANCH);
         });

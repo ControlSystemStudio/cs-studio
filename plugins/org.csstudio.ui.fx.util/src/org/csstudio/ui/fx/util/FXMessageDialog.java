@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.csstudio.ui.fx.util;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IconAndMessageDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -24,6 +26,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.input.KeyCode;
@@ -31,11 +34,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 
-
 /**
  * This class is a copy of the {@link MessageDialog}, where the SWT buttons are replaced with FX buttons. The static
- * methods of this class can be called from anywhere and will be delegated to the UI thread and block the calling
- * thread while the dialog is open.
+ * methods of this class can be called from anywhere and will be delegated to the UI thread and block the calling thread
+ * while the dialog is open.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -225,8 +227,8 @@ public class FXMessageDialog extends IconAndMessageDialog {
                     final int k = i;
                     buttons[i].setOnAction(e -> buttonPressed(k));
                     if (i == 0) {
-                        GridPane.setHgrow(buttons[0], Priority.ALWAYS);
-                        GridPane.setHalignment(buttons[0], HPos.RIGHT);
+                        setGridConstraints(buttons[i], false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS,
+                            Priority.NEVER);
                     }
                     pane.add(buttons[i], i, 0);
                 }

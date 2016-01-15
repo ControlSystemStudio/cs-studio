@@ -1,5 +1,7 @@
 package org.csstudio.ui.fx.util;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -7,6 +9,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 
 import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
@@ -52,8 +55,7 @@ public class FXSaveAsDialog extends SaveAsDialog {
 
                 GridPane pane = new GridPane();
                 pane.setHgap(10);
-                GridPane.setHgrow(okButton, Priority.ALWAYS);
-                GridPane.setHalignment(okButton, HPos.RIGHT);
+                setGridConstraints(okButton, false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
                 pane.add(okButton, 0, 0);
                 pane.add(cancelButton, 1, 0);
                 return new Scene(pane);

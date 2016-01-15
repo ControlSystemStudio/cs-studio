@@ -1,12 +1,16 @@
 package org.csstudio.saverestore.ui.browser.periodictable;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.ui.browser.BaseLevelBrowser;
+import org.csstudio.ui.fx.util.UnfocusableButton;
 
 import javafx.animation.Animation.Status;
 import javafx.animation.FadeTransition;
@@ -42,7 +46,7 @@ import javafx.util.Duration;
  */
 public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope> {
 
-    private class ElementButton extends Button {
+    private class ElementButton extends UnfocusableButton {
 
         private ElementButton(Element element) {
             init(element.symbol, 10);
@@ -64,10 +68,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
             setPrefSize(BTN_SIZE, BTN_SIZE);
             setMaxSize(BTN_SIZE, BTN_SIZE);
             setMinSize(0, 0);
-            GridPane.setHalignment(this, HPos.CENTER);
-            GridPane.setValignment(this, VPos.CENTER);
-            GridPane.setVgrow(this, Priority.NEVER);
-            GridPane.setFillHeight(this, false);
+            setGridConstraints(this, false, false, HPos.CENTER, VPos.CENTER, Priority.NEVER, Priority.NEVER);
             setCursor(Cursor.HAND);
         }
     }
@@ -240,7 +241,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
 
         neutronSpinner = new TinySpinner(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 180));
         neutronSpinner.disableProperty().bind(disableProperty());
-        neutronSpinner.setPrefSize(2.4 * BTN_SIZE, BTN_SIZE);
+        neutronSpinner.setPrefSize(2.2 * BTN_SIZE, BTN_SIZE);
         neutronSpinner.valueProperty().addListener((a, o, n) -> {
             Isotope iso = internalIsotopeProperty().getValue();
             if (iso != null) {
@@ -249,7 +250,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         });
         chargeSpinner = new TinySpinner(new SpinnerValueFactory.IntegerSpinnerValueFactory(-100, 112, 0));
         chargeSpinner.disableProperty().bind(disableProperty());
-        chargeSpinner.setPrefSize(2.4 * BTN_SIZE, BTN_SIZE);
+        chargeSpinner.setPrefSize(2.2 * BTN_SIZE, BTN_SIZE);
         chargeSpinner.valueProperty().addListener((a, o, n) -> {
             Isotope iso = internalIsotopeProperty().getValue();
             if (iso != null) {
@@ -263,7 +264,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         isotopeCombo.setEditable(false);
         isotopeCombo.setMaxWidth(Double.MAX_VALUE);
         isotopeCombo.setMinWidth(0);
-        //isotopeCombo.setPrefSize(4.5 * BTN_SIZE + 5, BTN_SIZE);
+        // isotopeCombo.setPrefSize(4.5 * BTN_SIZE + 5, BTN_SIZE);
         isotopeCombo.setCellFactory(c -> new ComboCell());
         isotopeCombo.setButtonCell(new ComboCell());
         isotopeCombo.setStyle("-fx-font-size: 14;");
@@ -283,8 +284,8 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         neutronSpinner.getEditor().setFont(font);
         chargeSpinner.getEditor().setFont(font);
 
-        addConstraints(isotopeCombo, true, Priority.ALWAYS, Priority.NEVER, HPos.LEFT, VPos.BOTTOM);
-        addConstraints(isotopeButton, true, Priority.ALWAYS, Priority.NEVER, HPos.LEFT, VPos.BOTTOM);
+        setGridConstraints(isotopeCombo, true, false, HPos.LEFT, VPos.BOTTOM, Priority.ALWAYS, Priority.NEVER);
+        setGridConstraints(isotopeButton, true, false, HPos.LEFT, VPos.BOTTOM, Priority.ALWAYS, Priority.NEVER);
         GridPane.setMargin(isotopeButton, new Insets(3, 0, 0, 0));
 
         isotopePanel.setPadding(new Insets(0, 5, 5, 5));
@@ -298,7 +299,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         isotopePanel.add(isotopeButton, 2, 0, 1, 2);
         isotopeCombo.setVisible(false);
 
-        addConstraints(isotopePanel, true, Priority.ALWAYS, Priority.NEVER, HPos.CENTER, VPos.TOP);
+        setGridConstraints(isotopePanel, true, false, HPos.CENTER, VPos.TOP, Priority.ALWAYS, Priority.NEVER);
 
         isotopePanel.setMaxWidth(10 * BTN_SIZE);
         isotopePanel.setMinWidth(0);
@@ -483,15 +484,9 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
      */
     @Override
     public List<Isotope> transform(List<? extends BaseLevel> list) {
-        List<Isotope> ret = new ArrayList<>(list.size());
-        list.forEach(e -> {
-            try {
-                ret.add(Isotope.of(e.getStorageName()));
-            } catch (IllegalArgumentException ex) {
-                // only add those base levels, that can be transformed to isotopes and ignore the rest
-            }
-        });
-        return Collections.unmodifiableList(ret);
+        return Collections.unmodifiableList(list.stream().map(e -> Isotope.ofFlat(e.getStorageName()))
+            .filter(e -> e != null).collect(Collectors.toList()));
+
     }
 
     /*
@@ -524,14 +519,5 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
             size = mtext.getLayoutBounds().getWidth();
         }
         return fontSize;
-    }
-
-    private static void addConstraints(Node component, boolean fillWidth, Priority hgrow, Priority vgrow, HPos hpos,
-        VPos vpos) {
-        GridPane.setVgrow(component, vgrow);
-        GridPane.setHgrow(component, hgrow);
-        GridPane.setHalignment(component, hpos);
-        GridPane.setValignment(component, vpos);
-        GridPane.setFillWidth(component, fillWidth);
     }
 }

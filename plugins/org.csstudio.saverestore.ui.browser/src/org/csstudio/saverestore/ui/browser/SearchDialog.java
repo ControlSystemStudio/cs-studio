@@ -1,5 +1,7 @@
 package org.csstudio.saverestore.ui.browser;
 
+import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.Map;
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.ui.fx.util.FXBaseDialog;
 import org.csstudio.ui.fx.util.FXUtilities;
+import org.csstudio.ui.fx.util.UnfocusableCheckBox;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
@@ -140,11 +143,12 @@ public class SearchDialog extends FXBaseDialog<String> {
         text = new TextField();
         text.setMaxWidth(Double.MAX_VALUE);
         text.textProperty().addListener((a, o, n) -> validateInput());
-        commentBox = new CheckBox(SearchCriterion.COMMENT.name);
+        text.setOnAction(e -> okPressed());
+        commentBox = new UnfocusableCheckBox(SearchCriterion.COMMENT.name);
         commentBox.setOnAction(e -> validateInput());
-        tagNameBox = new CheckBox(SearchCriterion.TAG_NAME.name);
+        tagNameBox = new UnfocusableCheckBox(SearchCriterion.TAG_NAME.name);
         tagNameBox.setOnAction(e -> validateInput());
-        tagMessageBox = new CheckBox(SearchCriterion.TAG_MESSAGE.name);
+        tagMessageBox = new UnfocusableCheckBox(SearchCriterion.TAG_MESSAGE.name);
         tagMessageBox.setOnAction(e -> validateInput());
         tagNameBox.setSelected(true);
         if (!lastResults.isEmpty()) {
@@ -152,14 +156,10 @@ public class SearchDialog extends FXBaseDialog<String> {
             tagNameBox.setSelected(lastResults.contains(SearchCriterion.TAG_NAME));
             tagMessageBox.setSelected(lastResults.contains(SearchCriterion.TAG_MESSAGE));
         }
-        GridPane.setFillWidth(text, true);
-        GridPane.setVgrow(commentBox, Priority.NEVER);
-        GridPane.setVgrow(tagNameBox, Priority.NEVER);
-        GridPane.setVgrow(tagMessageBox, Priority.NEVER);
-        GridPane.setHgrow(text, Priority.ALWAYS);
-        GridPane.setHgrow(commentBox, Priority.ALWAYS);
-        GridPane.setHgrow(tagNameBox, Priority.ALWAYS);
-        GridPane.setHgrow(tagMessageBox, Priority.ALWAYS);
+        setGridConstraints(text, true, false, Priority.ALWAYS, Priority.ALWAYS);
+        setGridConstraints(commentBox, false, false, Priority.ALWAYS, Priority.NEVER);
+        setGridConstraints(tagNameBox, false, false, Priority.ALWAYS, Priority.NEVER);
+        setGridConstraints(tagMessageBox, false, false, Priority.ALWAYS, Priority.NEVER);
         pane.setMaxWidth(Double.MAX_VALUE);
         pane.setVgap(5);
         pane.add(text, 0, 0);
