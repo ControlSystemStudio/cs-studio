@@ -51,4 +51,11 @@ This feature does not provide any data provider; the desired provider needs to b
          version="0.0.0"
          unpack="false"/>
 
+   <plugin
+         id="org.csstudio.saverestore.ui.help"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

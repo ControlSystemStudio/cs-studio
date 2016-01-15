@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
+  <link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
+<title>Save, Set & Restore Browser</title>
+</head>
+<body>
+
+<h2><a name=started>Save, Set & Restore Browser</a></h2>
+
+<h3><a name=started>Base Level Browser</a></h3>
+<p>
+Base level browser is only displayed if the selected storage provider supports base levels and is always the top most
+part of the SSR Browser view. The presentation part of this browser is pluggable, which means that different instances
+of Control System Studio can provide different ways how to browse the base levels. A default browser is also provided 
+and will be shown if no additional base level browser is plugged-in to your application.
+</p>
+<p> 
+At any time user also has an option to switch to the default view, by clicking on the bookshelf icon 
+<img src="Bookshelf16.gif"/>. The default browser lists all base levels in a list. User can select an item from the list
+and press the <b>Select</b> button. This will trigger the loading of all beamline sets for the selected base level.
+Whenever a new item is selected in the list the <b>Select</b> button will be red, denoting that the currently beamline
+sets do not match the base level selected in the list.
+</p>
+<div class='figure'>
+   <img src="defaultBaseLevelBrowser.png"/>
+   <p>
+   Fig. 1: Default Base Level Browser shows all base levels in a list
+   </p>
+</div>
+<p>
+By default the base level browser only allows to select those base levels, which actually exist in the storage provider.
+When a non-existent base level needs to be selected, you can click on the filter button <img src="filter_ps.png"/>. 
+Depending on the implementation of the browser you should then be able to select any base level that is applicable for
+your system. If using the default browser you will notice that the text field below the list (next to the select button)
+has become editable. You may enter any acceptable name for your base level and press the <b>Select</b> button.
+</p>
+<h3><a name=started>Beamline Set Browser</a></h3>
+<p>
+The contents of the beamline set browser is defined by the selected base level. All available beamline sets are ordered
+hierarchically and displayed in a tree-like view. You are free to browse the view by clicking on different nodes in the
+tree; a down pointing arrow <img src="downarrow.png"/> describes an expanded node, a right pointing arrow 
+<img src="rightarrow.png"/> describes a collapsed node and a paper icon <img src="txt.png"/> represents a beamline sets. 
+Clicking the arrows will either expand or collapse the node, while clicking on the beamline set node will trigger 
+loading of the snapshots for that beamline set. 
+</p>
+<div class='figure'>
+   <img src="defaultBaseLevelBrowser.png"/>
+   <p>
+   Fig. 2: Beamline Set Browser shows all beamline sets in a tree-like view in lexical order
+   </p>
+</div>
+<p>
+There are four buttons in the title bar of the beamline set browser:
+<ul>
+<li><b>Import</b> opens a dialog, where user can select any existing branch, base level, beamline set, or group of 
+beamline sets, which (s)he wants to import into the currently selected base level. Upon confirming the selection in the 
+dialog, the user has an option to also import (latest or all) existing snapshots that belong to the imported beamline 
+sets.</li>
+<li><b>New</b> opens a new blank Beamline Set Editor and allows user to create and store a new beamline set.</li>
+<li><b>Edit</b> opens the selected beamline set in the Beamline Set Editor and allows user to edit the contents of the
+beamline set and save it as a new beamline set or overwrite the existing one.</li>
+<li><b>Open</b> opens the beamline set in the Snapshot Viewer. The Snapshot Viewer will the list of all PVs defined in
+the beamline set, together with their current values and will allow the user to create a new snapshot.</li>
+</ul>
+</p>
+<p>
+Should one wish to delete a beamline set from the repository, an option is provided in the popup menu.
+</p> 
+<h3><a name=started>Snapshot Browser</a></h3>
+<p>
+The contents of the snapshot browser is defined by the selected beamline set. When a beamline set is selected, all 
+snapshots for that beamline set are loaded and displayed in the list. The snapshots are ordered chronologically, with
+the latest snapshot on top. The snapshot browser displays the date when the snapshot was created, the person that 
+created the snapshot and a message/comment that is associated with that snapshot. If a snapshot has a tag, the tag name
+and beginning of the tag message will also be displayed. All tagged snapshots are also marked with a yellowish colour.
+</p>
+<div class='figure'>
+   <img src="snapshotBrowser.png"/>
+   <p>
+   Fig. 3: Snapshot Browser shows all snapshots in a list ordered chronologically
+   </p>
+</div>
+<p>
+There are three buttons in the title bar of the snapshot browser:
+<ul>
+<li><b>Open</b> opens the snapshot in the Snapshot Viewer, which allows user to see the content, take new snapshots or
+restore the values.</li>
+<li><b>Compare</b> opens the selected snapshot in the currently active Snapshot Viewer in the compare view. If no
+active Snapshot Viewer exists, a new Snapshot Viewer will be opened.</li>
+<li><b>Tag</b> allows to tag the selected snapshot. A dialog will be displayed, where user has to enter a tag name
+and message. If the tagged snapshot already has another tag, the existing tag will be deleted.</li>
+</ul>
+</p>
+<p>
+If at any time a tag needs to be deleted, an option is provided in the context menu of the snapshot browser.
+</p>
+
+</body>
+</html>
