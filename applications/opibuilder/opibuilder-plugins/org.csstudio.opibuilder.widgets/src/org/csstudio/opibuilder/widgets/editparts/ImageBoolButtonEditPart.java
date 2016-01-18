@@ -41,6 +41,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
      *
      * @return the casted {@link ImageModel}
      */
+    @Override
     public ImageBoolButtonModel getWidgetModel() {
         return (ImageBoolButtonModel) getModel();
     }
@@ -72,6 +73,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
         });
         figure.addManualValueChangeListener(new IManualValueChangeListener() {
 
+            @Override
             public void manualValueChanged(double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE)
                     autoSizeWidget(figure);
@@ -108,6 +110,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the on image property
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -126,6 +129,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the off image property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -144,6 +148,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the stretch property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -156,8 +161,10 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
         
         FigureTransparencyHelper.addHandler(this, figure);
 
+
         // changes to the autosize property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -169,6 +176,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the stop animation property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -180,6 +188,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the align to nearest second property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -191,6 +200,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         // changes to the border width property
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -203,6 +213,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
 
         //size change handlers - so we can stretch accordingly
         handle = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue, final Object newValue,
                     final IFigure figure) {
                 ImageBoolButtonFigure imageFigure = (ImageBoolButtonFigure) figure;
@@ -229,6 +240,7 @@ public final class ImageBoolButtonEditPart extends AbstractBoolControlEditPart {
             return;
         maxAttempts = 10;
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 if(maxAttempts-- > 0 && imageFigure.isLoadingImage()){
                     Display.getDefault().timerExec(100, this);
