@@ -7,6 +7,7 @@
 ******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.bool;
 
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -22,7 +23,7 @@ public class MonitorBoolSymbolEditpart extends CommonBoolSymbolEditpart {
     protected IFigure doCreateFigure() {
         MonitorBoolSymbolFigure figure = new MonitorBoolSymbolFigure();
         initializeCommonFigureProperties(figure, getWidgetModel());
-        return (IFigure) figure;
+        return figure;
     }
 
     /**
@@ -41,4 +42,9 @@ public class MonitorBoolSymbolEditpart extends CommonBoolSymbolEditpart {
         ((MonitorBoolSymbolFigure) getFigure()).dispose();
     }
 
+    @Override
+    public void registerPropertyChangeHandlers() {
+        super.registerPropertyChangeHandlers();
+        FigureTransparencyHelper.addHandler(this, figure);
+    }
 }

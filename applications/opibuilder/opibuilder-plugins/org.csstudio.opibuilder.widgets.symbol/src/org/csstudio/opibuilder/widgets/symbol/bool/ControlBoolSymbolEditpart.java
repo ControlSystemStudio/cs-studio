@@ -13,6 +13,7 @@ import org.csstudio.opibuilder.editparts.AlarmSeverityListener;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.opibuilder.widgets.editparts.AbstractBoolControlEditPart;
 import org.csstudio.opibuilder.widgets.symbol.Preferences;
 import org.csstudio.simplepv.IPV;
@@ -21,14 +22,14 @@ import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VEnum;
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VEnum;
-import org.diirt.vtype.VType;
 
 /**
  * Edit part Controller for a Control Boolean Symbol Image widget based on
@@ -48,7 +49,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
     protected IFigure doCreateFigure() {
         ControlBoolSymbolFigure figure = new ControlBoolSymbolFigure();
         initializeCommonFigureProperties(figure, getWidgetModel());
-        return (IFigure) figure;
+        return figure;
     }
 
     /**
@@ -97,6 +98,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
         figure.setSymbolImagePath(model, model.getSymbolImagePath());
 
         figure.addManualValueChangeListener(new IManualValueChangeListener() {
+            @Override
             public void manualValueChanged(double newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE) {
                     // autoSizeWidget(figure);
@@ -132,6 +134,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
             if (pv != null) {
                 if (loadItemsFromPVListener == null)
                     loadItemsFromPVListener = new IPVListener.Stub() {
+                        @Override
                         public void valueChanged(IPV pv) {
                             VType value = pv.getValue();
                             if (value != null && value instanceof VEnum) {
@@ -160,6 +163,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
     public void registerSymbolImagePropertyHandlers() {
         // symbol image filename property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -173,6 +177,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
         // PV Name ForeColor color rule
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(Object oldValue, Object newValue,
                     IFigure figure) {
                 if (newValue == null || ((String) newValue).isEmpty())
@@ -208,6 +213,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
     public void registerImageSizePropertyHandlers() {
         // image auto-size property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -224,6 +230,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
         // changes to the stop animation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -235,6 +242,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
         // changes to the align to nearest second property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -246,6 +254,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
         // image size (height/width) property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -264,6 +273,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
      */
     public void registerImageBorderPropertyHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -282,6 +292,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
      */
     public void registerImageStretchPropertyHandlers() {
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -300,6 +311,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
     public void registerImageRotationPropertyHandlers() {
         // degree rotation property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -323,6 +335,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
         // flip horizontal rotation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -330,7 +343,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
 
-                setPropertyValue(ControlBoolSymbolModel.PROP_FLIP_HORIZONTAL, (Boolean) newValue);
+                setPropertyValue(ControlBoolSymbolModel.PROP_FLIP_HORIZONTAL, newValue);
                 setPropertyValue(ControlBoolSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 imageFigure.setPermutationMatrix(result);
                 // autoSizeWidget(imageFigure);
@@ -341,6 +354,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
         // flip vertical rotation property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -348,7 +362,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
                 PermutationMatrix oldMatrix = imageFigure.getPermutationMatrix();
                 PermutationMatrix result = newMatrix.multiply(oldMatrix);
 
-                setPropertyValue(ControlBoolSymbolModel.PROP_FLIP_VERTICAL, (Boolean) newValue);
+                setPropertyValue(ControlBoolSymbolModel.PROP_FLIP_VERTICAL, newValue);
                 setPropertyValue(ControlBoolSymbolModel.PERMUTATION_MATRIX, result.getMatrix());
                 imageFigure.setPermutationMatrix(result);
                 // autoSizeWidget(imageFigure);
@@ -365,6 +379,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
     public void registerImageCropPropertyHandlers() {
         // top crop property
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 if (newValue == null) {
@@ -380,6 +395,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
         // bottom crop property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -392,6 +408,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
         // left crop property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -404,6 +421,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
 
         // right crop property
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure figure) {
                 ControlBoolSymbolFigure imageFigure = (ControlBoolSymbolFigure) figure;
@@ -424,6 +442,8 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
         registerImageRotationPropertyHandlers();
         registerImageBorderPropertyHandlers();
         registerImageCropPropertyHandlers();
+
+        FigureTransparencyHelper.addHandler(this, figure);
     }
 
     /**
@@ -439,6 +459,7 @@ public class ControlBoolSymbolEditpart extends AbstractBoolControlEditPart {
     public void autoSizeWidget(final ControlBoolSymbolFigure imageFigure) {
         maxAttempts = 10;
         Runnable task = new Runnable() {
+            @Override
             public void run() {
                 if (maxAttempts-- > 0 && imageFigure.isLoadingImage()) {
                     Display.getDefault().timerExec(100, this);
