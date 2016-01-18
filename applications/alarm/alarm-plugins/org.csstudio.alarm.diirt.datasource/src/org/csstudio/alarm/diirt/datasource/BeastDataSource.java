@@ -91,7 +91,7 @@ public class BeastDataSource extends DataSource {
                                 // TODO Auto-generated method stub
                             }
 
-                            @SuppressWarnings("rawtypes")
+                            @SuppressWarnings({ "rawtypes", "unchecked" })
                             @Override
                             public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
                                 log.fine("newAlarmState");
@@ -152,7 +152,6 @@ public class BeastDataSource extends DataSource {
     @Override
     protected ChannelHandler createChannel(String channelName) {
         return new BeastChannelHandler(channelName, this);
-        
     }
 
     @Override
@@ -160,24 +159,46 @@ public class BeastDataSource extends DataSource {
         super.close();
         model.release();
     }
+    
+    /* (non-Javadoc)
+     * Override of default channelHandlerLookupName.
+     * This implementation makes a leading and trailing "/" optional.
+     * All four of these will resolve to the same channel: "/demo/test/", "/demo/test", "demo/test/" & "demo/test".
+     * 
+	 * @see org.diirt.datasource.DataSource#channelHandlerLookupName(java.lang.String)
+	 */
+	@Override
+	protected String channelHandlerLookupName(String channelName) {
+		String channel = channelName;
+    	if (channel != null && channel != "/") {
+    		if (channel.endsWith("/"))
+    			channel = channel.substring(0, channel.length()-1);
+    		if (channel.startsWith("/"))
+    			channel = channel.substring(1);
+		}
 
-    public BeastTypeSupport getTypeSupport() {
+    	return channel;
+	}
+
+	public BeastTypeSupport getTypeSupport() {
         return typeSupport;
     }
 
     protected void add(String channelName, Consumer beastChannelHandler){
+    	String beastChannel = channelHandlerLookupName(channelName);
         synchronized (map) {
-            if (!map.containsKey(channelName) || map.get(channelName) == null) {
-                map.put(channelName, new ArrayList<Consumer>());
+            if (!map.containsKey(beastChannel) || map.get(beastChannel) == null) {
+                map.put(beastChannel, new ArrayList<Consumer>());
             }
-            map.get(channelName).add(beastChannelHandler);
+            map.get(beastChannel).add(beastChannelHandler);
         }
     }
 
     protected void remove(String channelName, Consumer beastChannelHandler) {
+    	String beastChannel = channelHandlerLookupName(channelName);
         synchronized (map) {
-            if (map.containsKey(channelName)) {
-                map.get(channelName).remove(beastChannelHandler);
+            if (map.containsKey(beastChannel)) {
+                map.get(beastChannel).remove(beastChannelHandler);
             }
         }
     }
