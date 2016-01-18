@@ -397,8 +397,7 @@ public class TextFigure extends Figure implements Introspectable, ITextFigure{
             s = "";//$NON-NLS-1$
         if (text.equals(s))
             return;
-        if(s.length() !=  text.length())
-            clearLocationSize();
+        clearLocationSize();
         text = s;
 
         repaint();
