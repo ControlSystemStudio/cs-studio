@@ -42,6 +42,15 @@ import org.csstudio.simplepv.IPVListener;
 import org.csstudio.simplepv.VTypeHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.thread.UIBundlingThread;
+import org.diirt.datasource.PV;
+import org.diirt.datasource.PVManager;
+import org.diirt.datasource.PVReaderEvent;
+import org.diirt.datasource.PVReaderListener;
+import org.diirt.datasource.expression.DesiredRateReadWriteExpression;
+import org.diirt.util.time.TimeDuration;
+import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VTable;
+import org.diirt.vtype.VType;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Border;
@@ -54,15 +63,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
-import org.diirt.datasource.PV;
-import org.diirt.datasource.PVManager;
-import org.diirt.datasource.PVReaderEvent;
-import org.diirt.datasource.PVReaderListener;
-import org.diirt.datasource.expression.DesiredRateReadWriteExpression;
-import org.diirt.util.time.TimeDuration;
-import org.diirt.vtype.AlarmSeverity;
-import org.diirt.vtype.VTable;
-import org.diirt.vtype.VType;
 
 public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
@@ -223,8 +223,6 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 try {
                     if (!display.isDisposed())
                         display.asyncExec(task);
-                    else
-                        Logger.getLogger("BeastDataSource TESTING").severe("Display is DISPOSED");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -249,7 +247,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     // if a Beast channel is set as PV, it will only provide Alarm Sensitivity functionality, not values etc.
                 	continue;
                 }
-                
+
                 try {
                     IPV pv = BOYPVFactory.createPV((String) sp.getPropertyValue(),
                             isAllValuesBuffered);
@@ -358,7 +356,7 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                         	}
                         }
                         if (!event.isValueChanged()) return;
-                        
+
                         if (!(event.getPvReader().getValue() instanceof VTable)) {
                             log.severe("BeastAlarmListener (" + pvName + "): data is not a VTable");
                             return;
