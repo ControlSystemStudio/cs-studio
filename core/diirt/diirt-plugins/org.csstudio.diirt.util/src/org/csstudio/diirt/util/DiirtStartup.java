@@ -45,8 +45,8 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
             log.config("Setting Diirt configuration folder to :" + diirtHome);
             System.setProperty("diirt.home", diirtHome);
 //            Configuration;
-//            log.config("Resetting the configuration folder");
-//            Configuration.reset();
+            log.config("Resetting the configuration folder");
+            Configuration.reset();
             DataSource defaultDataSource = PVManager.getDefaultDataSource();
             if (defaultDataSource instanceof CompositeDataSource) {
                 PVManager.setDefaultDataSource(DataSourceProvider.createDataSource());
