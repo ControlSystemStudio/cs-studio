@@ -3,13 +3,34 @@
 <head>
   <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
   <link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
-<title>Save, Set & Restore Browser</title>
+<title>Save, Set and Restore Browser</title>
 </head>
 <body>
 
-<h2><a name=started>Save, Set & Restore Browser</a></h2>
+<h2>Save, Set & Restore Browser</h2>
 
-<h3><a name=started>Base Level Browser</a></h3>
+<span class="index">
+- <a href="#branch">Branch</a>
+- <a href="#base">Base Level</a>
+- <a href="#beamline">Beamline Set</a>
+- <a href="#snapshot">Snapshot</a>
+- <a href="#other">Other</a>
+</span>
+
+<h3><a name="branch">Branch Selector</a></h3>
+<p>
+Branch selector is only displayed if the selected storage provider supports branches. Selector is available from the 
+browser view drop down menu and is composed of two menu items:
+<ul>
+<li><i>Switch Branch</i> allows selecting any available branch and switching the entire browsing view to use that 
+branch</li>
+<li><i>Create New Branch</i> allows creating a new branch</li>
+</ul>
+Branches are most commonly used when the user needs to switch to entirely different set of beamline sets and snapshots. 
+Branches are also a convenient way to perform tests, because in most cases they can be completely removed by your 
+administrator.
+</p>  
+<h3><a name="base">Base Level Browser</a></h3>
 <p>
 Base level browser is only displayed if the selected storage provider supports base levels and is always the top most
 part of the SSR Browser view. The presentation part of this browser is pluggable, which means that different instances
@@ -23,11 +44,8 @@ and press the <b>Select</b> button. This will trigger the loading of all beamlin
 Whenever a new item is selected in the list the <b>Select</b> button will be red, denoting that the currently beamline
 sets do not match the base level selected in the list.
 </p>
-<div class='figure'>
-   <img src="defaultBaseLevelBrowser.png"/>
-   <p>
-   Fig. 1: Default Base Level Browser shows all base levels in a list
-   </p>
+<div class='figure'><img src="defaultBaseLevelBrowser.png"/>
+	<p>Fig. 1: Default Base Level Browser shows all base levels in a list</p>
 </div>
 <p>
 By default the base level browser only allows to select those base levels, which actually exist in the storage provider.
@@ -36,7 +54,7 @@ Depending on the implementation of the browser you should then be able to select
 your system. If using the default browser you will notice that the text field below the list (next to the select button)
 has become editable. You may enter any acceptable name for your base level and press the <b>Select</b> button.
 </p>
-<h3><a name=started>Beamline Set Browser</a></h3>
+<h3><a name="beamline">Beamline Set Browser</a></h3>
 <p>
 The contents of the beamline set browser is defined by the selected base level. All available beamline sets are ordered
 hierarchically and displayed in a tree-like view. You are free to browse the view by clicking on different nodes in the
@@ -47,9 +65,7 @@ loading of the snapshots for that beamline set.
 </p>
 <div class='figure'>
    <img src="defaultBaseLevelBrowser.png"/>
-   <p>
-   Fig. 2: Beamline Set Browser shows all beamline sets in a tree-like view in lexical order
-   </p>
+   <p>Fig. 2: Beamline Set Browser shows all beamline sets in a tree-like view in lexical order</p>
 </div>
 <p>
 There are four buttons in the title bar of the beamline set browser:
@@ -68,7 +84,7 @@ the beamline set, together with their current values and will allow the user to 
 <p>
 Should one wish to delete a beamline set from the repository, an option is provided in the popup menu.
 </p> 
-<h3><a name=started>Snapshot Browser</a></h3>
+<h3><a name="snapshot">Snapshot Browser</a></h3>
 <p>
 The contents of the snapshot browser is defined by the selected beamline set. When a beamline set is selected, all 
 snapshots for that beamline set are loaded and displayed in the list. The snapshots are ordered chronologically, with
@@ -96,6 +112,42 @@ and message. If the tagged snapshot already has another tag, the existing tag wi
 <p>
 If at any time a tag needs to be deleted, an option is provided in the context menu of the snapshot browser.
 </p>
-
+<h3><a name="other">Other Options</a></h3>
+<p>
+Besides the aforementioned features the Browser View provides several additional options, most of them being available 
+via the view toolbar. Some features are provided as toolbar buttons, others are only available from the drop down menu.  
+</p>
+<ul>
+<li>
+Whenever you require more real estate to display either the base levels, beamline sets, or snapshots you may collapse
+all other browser by clicking on the titles of those browsers.
+</li>
+<li>
+<img src="kaboodleloop.png"/> button executes a repository refresh action. The data in the central repository might be
+changed by more than one user at a time. However, the changes made by other users are not visible on your screen until you 
+refresh your repository. Repository is usually automatically refreshed when you store a new beamline set or snapshot.
+</li>
+<li>
+<img src="search_src.png"/> button opens a dialog allowing user to search for snapshots based on selected criteria. The main 
+search criterion is always a set of characters which the browser will search for in all available snapshots. There are
+three different locations where the characters will be searched for: the snapshot comment, tag name, and tag message. 
+The results of the search will be displayed in the snapshot browser. Selecting another beamline set will remove the
+search results.
+</li>
+<li>
+<i>Reset Repository</i> is available from the drop down menu. Some storage providers work in a way that the entire 
+repository is duplicated on the local machine. In case that something went wrong you may need to dispose of the local
+instance. <i>Reset Repository</i> wipes clean the local copy and creates a fresh duplicate of the central repository.
+</li>
+<li>
+<i>Select Data Provider</i> is available from the drop down menu and is visible only when mode than one data provider
+is registered with the current CS-Studio. The commands brings up a dialog, where user can choose which data provider
+will be used.
+</li>
+<li>
+Snapshot Browser provides a context menu (accessible via right click), which allows you to open that snapshot in 
+numerous applications that can work with process variables. In any of the options is selected, a list of all PVs in 
+that snapshot will be sent to that application.
+</ul>
 </body>
 </html>

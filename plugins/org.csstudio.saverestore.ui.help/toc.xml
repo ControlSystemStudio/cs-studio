@@ -3,7 +3,7 @@
 <toc link_to="../org.csstudio.ui.help/tocApps.xml#display" label="Save, Set &amp; Restore">
   <topic label="Save, Set &amp; Restore">
     <topic label="Overview" href="help/saverestore.html"/>
-  	<topic href="help/saverestore.html" label="Browser">
+  	<topic href="help/browser.html" label="Browser">
     </topic>
     <topic href="help/snapshotviewer.html" label="Snapshot Viewer">
     </topic>

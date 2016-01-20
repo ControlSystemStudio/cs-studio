@@ -9,27 +9,27 @@
 
 <a name=top><h1>Save, Set & Restore</h1></a>
 
-<h2><a name=overview>Overview</a></h2>
+<h2><a name="overview">Overview</a></h2>
 <p>
 Save, Set & Restore provides facilities to simultaneously monitor several PVs, store their values, compare the live or
 stored values with the values at other times, and restore the previously stored values. Application also provides 
 mechanisms to browse and manage the stored sets as well as to export the values to standard file formats.
 </p>
 
-<h2><a name=started>Getting Started</a></h2>
+<h2><a name="started">Getting Started</a></h2>
 <p>
-The two main entities of the Save, Set & Restore application (SSR) are <b>Beamline Set</b> and <b>Snapshot</b>. Beamline Set
-defines the list of PV names, which can be loaded into the spreadsheet, while the Snapshot is a recording of PV values
+The two main entities of the Save, Set & Restore application (SSR) are <b>Beamline Set</b> and <b>Snapshot</b>. Beamline
+Set defines the list of PV names, which can be loaded into the spreadsheet, while the Snapshot is a recording of PV values
 defined by the Beamline Set at one specific time. Snapshot always belong to a particular Beamline Set, which is also the
 way how the entities are made available in the SSR Browser. 
 </p>
 <p>
-The user interface of SSR is composed of three different parts: <b>Save & Restore Browser</b> <i>(view)</i>,
-<b>Snapshot Viewer</b> <i>(Editor)</i>, and <b>Beamline Set Editor</b> </i>(Editor)</i>. Browser provides mechanisms
-to browse and select Beamline Sets and Snapshots, while the two editors provide facilities, to create or display the 
-contents of the SSR entities. 
+The user interface of SSR is composed of three different parts: <a href="#browser"><b>Save & Restore Browser</b></a> <i>(view)</i>,
+<a href="#viewer"><b>Snapshot Viewer</b></a> <i>(Editor)</i>, and <a href="#editor"><b>Beamline Set Editor</b></a> </i>(Editor)</i>.
+Browser provides mechanisms to browse and select Beamline Sets and Snapshots, while the two editors provide facilities,
+to create or display the contents of the SSR entities. 
 </p>
-<h2><a name=started>Browser</a></h2>
+<h2><a name="browser">Browser</a></h2>
 <p>
 Depending on your storage provider the browser is divided into two to four different parts:
 <ul>
@@ -49,6 +49,25 @@ order by time (latest on top) and are displayed together with the creation date,
 <p>
 The details of each browser part are described <a href="browser.html">here</a>.
 </p>
-
+<h2><a name="viewer">Snapshot Viewer</a></h2>
+<p>
+Snapshot Viewer provides facilities to display the contents of any existing snapshot as well as to take and save new
+snapshots. The main part of the Snapshot viewer is the table displaying the PVs, their stored and live values. Above the 
+table one can find the common controls (restore, take and save snapshot) an common properties of the snapshot (comment, 
+timestamp, creator and tag). At the very top of the viewer a toolbar is located which provides additional options for
+viewing the data and exporting/importing data. 
+</p>
+<p>
+The details the snapshot viewer are described <a href="snapshotviewer.html">here</a>.
+</p>
+<h2><a name="editor">Beamline Set Editor</a></h2>
+<p>
+Beamline Set editor allows to create and edit beamline set files. Beamline sets are composed of just two pieces of 
+information: description and pvlist. Editor provides the means to edit these and to save (see the <i>File</i> menu) 
+them by either overwriting the existing beamline set or into a new file.  
+</p>
+<p>
+The details the beamline set editor are described <a href="beamlineseteditor.html">here</a>.
+</p>
 </body>
 </html>

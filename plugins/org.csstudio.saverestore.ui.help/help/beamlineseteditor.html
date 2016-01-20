@@ -6,8 +6,67 @@
 <title>Beamline Set Editor</title>
 </head>
 <body>
-
-<h2><a name=started>Beamline Set Editor</a></h2>
+<h2>Beamline Set Editor</h2>
+<p>
+Beamline set editor is composed of two parts:
+<ul>
+<li><i>Description area</i> displays a simple description of the beamline set</li>
+<li><i>PV List</i> displays the list of PVs and other information</li>
+</ul>
+</p>
+<div class='figure'><img src="beamlineseteditor.png"/><p>Fig. 1: Beamline Set Editor</p></div>
+<h3>Description</h3>
+<p>
+Beamline set description should be a human readable description explaining what this beamline set represents. In a well
+organised system this can be achieved to some extent by placing the beamline set into the most appropriate branch
+of the repository tree. However, additional information might be required in certain cases. There are no limitations to
+the length of the description.
+</p>
+<h3>PV List</h3>
+<p>
+PV list is actually a comma separated spreadsheet. Each entry in the spreadsheet has 3 possible values:
+<ul>
+<li><i>PV</i> is the name of the setpoint PV that will be stored into snapshots and restored when requested</li>
+<li><i>READBACK</i> is the name of the readback PV which will also be stored into snapshots but will not be restored</li>
+<li><i>DELTA</i> is a threshold value for comparison of readback to setpoint (or any other comparison). In values differ 
+for less than this threshold (in any direction) they will be considered equal.</li>
+</ul> 
+</p>
+<p>
+It is desirable that a beamline set provides values for all three spreadsheet columns, though it is not mandatory. The
+only mandatory column is <i>PV</i>, the other two are optional. However, <i>DELTA</i> can only be defined if <i>READBACK</i>
+is also defined. It is also mandatory that all entries follow the same pattern - all rows in the list have to have the
+same number of columns. If certain value cannot be defined for a PV, the value of that column can be left empty. For example:
+</p>
+<p>
+<code>
+PV,READBACK,DELTA<br/>
+PV1,PV1_GET,20<br/>
+PV2,PV2_GET,20<br/>
+PV3,,<br/>
+PV4,PV4_GET,
+</code>
+</p>
+<h4>Editor</h4>
+<p>
+The PV list editor is very simple and does not offer any fancy spreadsheet editing functionality. However, you can use
+certain common editing functions, such as cut, copy, paste, and select all. You may of course use your preferred 
+spreadsheet editor to generate the contents and then copy them as text into the editor and save it.
+</p>
+<p>
+As you change the contents the editor will constantly perform data integrity checks. If it detects that the content is
+malformed (e.g. a row is missing a column) it will paint a red border around the editor. At that time saving the beamline
+set will be disabled.
+</p>
+<p>
+When you are done with editing you have an option to save the contents as a new file or overwrite an existing file. You 
+may choose the appropriate action from the <i>File</i> menu. If you decide to save the set as a new file, a location 
+selector will be displayed. Use the tree in the selector to select the appropriate location (you may create new folders
+by right clicking a parent item and selecting the <i>New Folder...</i> item). After you have selected the appropriate
+location type in the name for the beamline set into the <i>Beamline Set Name</i> field. This is the name that is also
+displayed in the browser.
+</p>
+<div class='figure'><img src="beamlinesetsaveas.png"/><p>Fig. 2: Beamline set Save As Location Selector</p></div>
 
 </body>
 </html>
