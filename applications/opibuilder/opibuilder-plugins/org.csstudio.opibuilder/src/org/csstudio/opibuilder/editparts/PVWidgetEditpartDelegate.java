@@ -167,9 +167,11 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
     // (secondary) PV on which we listen for BEAST events
     private PV<?, Object> alarmPV = null;
     private boolean isBeastAlarm = false;
+    private boolean isBeastAlarmNode = false; // is this an Alarm Node instead of a PV ?
     private BeastAlarmInfo beastInfo = new BeastAlarmInfo();
 
-    /**Returns true when:
+    /**
+     * @return <code>true</code> when:<br>
      * - BEAST Alarm functionality is enabled and the BeastAlarmListener is connected to the BeastDataSource<br>
      * - Widget's PV was found (== defined in BEAST)
      */
@@ -199,6 +201,14 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
 
     public BeastAlarmInfo getBeastAlarmInfo() {
         return beastInfo;
+    }
+
+    /**
+     * @return <code>true</code> if this widget's PVName is actually a BEAST Alarm node,<br>
+     *         <code>false</code> if it's a PV (or not a BeastAlarm - also check {@link #isBeastAlarmAndConnected})
+     */
+    public boolean isBeastAlarmNode() {
+        return isBeastAlarmNode;
     }
 
 
@@ -312,12 +322,14 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         if (alarmPVName.equals("")) {
             alarmPV = null;
             isBeastAlarm = false;
+            isBeastAlarmNode = false;
             beastInfo.setBeastChannelConnected(false);
             return;
         }
 
 //        log.fine("Starting BeastAlarmListener for channel " + alarmPVName);
         beastInfo.setBeastChannelName(alarmPVName);
+        isBeastAlarmNode = getPVName().toLowerCase().startsWith("beast://");
         PVWidgetEditpartDelegate pvWidget = this;
 
         DesiredRateReadWriteExpression<?,Object> expr = formula(alarmPVName);

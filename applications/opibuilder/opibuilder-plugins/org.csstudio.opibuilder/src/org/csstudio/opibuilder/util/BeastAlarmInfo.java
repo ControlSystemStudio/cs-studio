@@ -10,7 +10,7 @@ package org.csstudio.opibuilder.util;
 import org.diirt.vtype.AlarmSeverity;
 
 /** BEAST alarm info for PV Widgets.
- *  
+ *
  * @author Boris Versic
  */
 public final class BeastAlarmInfo {
@@ -39,8 +39,14 @@ public final class BeastAlarmInfo {
         return alarmPVChannelName;
     }
 
+    public String getBeastChannelNameNoScheme() {
+        if (alarmPVChannelName.length() > 8)
+            return alarmPVChannelName.substring(8);
+        return "";
+    }
+
     /** @return <code>true</code> if (latched) severity indicates an acknowledged state,
-     *          <code>false</code> for unacknowledged alarm or OK 
+     *          <code>false</code> for unacknowledged alarm or OK
      */
     public boolean isAcknowledged() {
         return !latchedSeverity.isActive() && latchedSeverity != BeastAlarmSeverityLevel.OK;
@@ -52,7 +58,7 @@ public final class BeastAlarmInfo {
     public boolean isLatchedAlarmActive() {
         return latchedSeverity.isActive();
     }
-    
+
     /** @return <code>true</code> if (current) severity indicates an active alarm,
      *          <code>false</code> for acknowledged or OK state
      */
