@@ -168,7 +168,7 @@ public class BeastDataSource extends DataSource {
     protected String channelHandlerLookupName(String channelName) {
         String channel = channelName;
         if (channel != null && !channel.equals("/") && channel.length() > 0) {
-            if (channel.length() > 0 && channel.charAt(channel.length() - 1) == '/')
+            if (channel.charAt(channel.length() - 1) == '/')
                 channel = channel.substring(0, channel.length() - 1);
             if (channel.length() > 0 && channel.charAt(0) == '/')
                 channel = channel.substring(1);

@@ -157,15 +157,8 @@
       </objectContribution>
       <objectContribution
             adaptable="false"
-            id="org.csstudio.opibuilder.acknowledgeAlarm"
+            id="org.csstudio.opibuilder.beastAlarmPopupMenu"
             objectClass="org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart">
-         <action
-               class="org.csstudio.opibuilder.actions.AcknowledgeAlarmAction"
-               enablesFor="1"
-               id="org.csstudio.opibuilder.acknowledgeAlarmAction"
-               label="Acknowledge Alarm"
-               tooltip="If the widget is connected to a BEAST AlarmPV, acknowledges/unacknowledges this PV's alarm">
-         </action>
          <visibility>
             <and>
                <objectState
@@ -178,6 +171,20 @@
                </objectState>
             </and>
          </visibility>
+         <menu
+             id="org.csstudio.opibuilder.beastSubMenu"
+             label="BEAST Alarm"
+             path="beastsub">
+             <separator name="beastsub1"/>
+         </menu>
+         <action
+               id="org.csstudio.opibuilder.acknowledgeAlarmAction"
+               class="org.csstudio.opibuilder.actions.AcknowledgeAlarmAction"
+               menubarPath="org.csstudio.opibuilder.beastSubMenu/beastsub1"
+               label="Acknowledge Alarm"
+               tooltip="If the widget is connected to a BEAST AlarmPV, acknowledges/unacknowledges this PV's alarm"
+               enablesFor="1">
+         </action>
       </objectContribution>      
       <objectContribution
             adaptable="true"

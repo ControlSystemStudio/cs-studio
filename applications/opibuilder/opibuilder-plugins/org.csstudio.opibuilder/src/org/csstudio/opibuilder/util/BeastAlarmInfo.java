@@ -39,6 +39,12 @@ public final class BeastAlarmInfo {
         return alarmPVChannelName;
     }
 
+    public String getBeastChannelNameNoScheme() {
+        if (alarmPVChannelName.length() > 8)
+            return alarmPVChannelName.substring(8);
+        return "";
+    }
+
     /** @return <code>true</code> if (latched) severity indicates an acknowledged state,
      *          <code>false</code> for unacknowledged alarm or OK
      */
