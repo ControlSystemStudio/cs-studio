@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
- * @param <T>
+ * @param <T> the type of the number that this threshold contains
  */
 public class Threshold<T extends Number> implements Serializable {
 
@@ -50,6 +50,7 @@ public class Threshold<T extends Number> implements Serializable {
 
     private final T positiveThreshold;
     private final T negativeThreshold;
+    private final String function;
 
     /**
      * Construct a new threshold, where the positive and negative threshold value have the same absolute value.
@@ -60,6 +61,7 @@ public class Threshold<T extends Number> implements Serializable {
         checkValue(absoluteThresholdValue, true);
         this.positiveThreshold = absoluteThresholdValue;
         this.negativeThreshold = toNegativeValue(absoluteThresholdValue);
+        this.function = null;
     }
 
     /**
@@ -73,6 +75,47 @@ public class Threshold<T extends Number> implements Serializable {
         checkValue(negativeThreshold, false);
         this.positiveThreshold = positiveThreshold;
         this.negativeThreshold = negativeThreshold;
+        this.function = null;
+    }
+
+    /**
+     * Constructs a new Threshold object from the given input parameter. If the input parameter can be parsed to long,
+     * the threshold will be of long type, if it can be parsed to double it will be of double type, otherwise it will
+     * be a function type threshold.
+     *
+     * @param thresholdDefinition the definition of the threshold (number of function)
+     */
+    @SuppressWarnings("unchecked")
+    public Threshold(String thresholdDefinition) {
+        if (thresholdDefinition == null || thresholdDefinition.isEmpty()) {
+            this.positiveThreshold = (T)Double.valueOf(0);
+            this.negativeThreshold = positiveThreshold;
+            this.function = null;
+        } else {
+            Long l = null;
+            Double d = null;
+            try {
+                l = Long.parseLong(thresholdDefinition);
+            } catch (NumberFormatException e) {
+                //ignore
+                try {
+                    d = Double.parseDouble(thresholdDefinition);
+                } catch (NumberFormatException f) {
+                    //ignore
+                }
+            }
+            if (l != null) {
+                this.positiveThreshold = (T)l;
+                this.negativeThreshold = toNegativeValue(this.positiveThreshold);
+            } else if (d != null) {
+                this.positiveThreshold = (T)d;
+                this.negativeThreshold = toNegativeValue(this.positiveThreshold);
+            } else {
+                this.positiveThreshold = null;
+                this.negativeThreshold = null;
+            }
+            this.function = thresholdDefinition;
+        }
     }
 
     /**
@@ -94,19 +137,38 @@ public class Threshold<T extends Number> implements Serializable {
     }
 
     /**
+     * Returns the function that is used to calculate if the value is within threshold. This functio is only used if
+     * the positive and negative thresholds are not defined.
+     *
+     * @return the function
+     */
+    public String getFunction() {
+        return function;
+    }
+
+    /**
      * Checks if the given value is within the threshold limits. The value is within limits if it is greater or equal
-     * than {@link #getNegativeThreshold()} and smaller or equal than {@link #getPositiveThreshold()}.
+     * than {@link #getNegativeThreshold()} and smaller or equal than {@link #getPositiveThreshold()}. In case that
+     * the threshold values are defined by a function (@see {@link #getFunction()}), the function is used to calculate
+     * whether the value is within limits.
      *
      * @param value the value to compare to the thresholds
      * @return true if the value is within threshold limits or false otherwise
      */
     public boolean isWithinThreshold(T value) {
-        if (value instanceof Long) {
-            long l = value.longValue();
-            return l >= negativeThreshold.longValue() && l <= positiveThreshold.longValue();
+        if (positiveThreshold != null && negativeThreshold != null) {
+            if (value instanceof Long) {
+                long l = value.longValue();
+                return l >= negativeThreshold.longValue() && l <= positiveThreshold.longValue();
+            } else {
+                double v = value.doubleValue();
+                return v >= negativeThreshold.doubleValue() && v <= positiveThreshold.doubleValue();
+            }
+        } else if (function != null) {
+            //TODO
+            return false;
         } else {
-            double v = value.doubleValue();
-            return v >= negativeThreshold.doubleValue() && v <= positiveThreshold.doubleValue();
+            return false;
         }
     }
 }

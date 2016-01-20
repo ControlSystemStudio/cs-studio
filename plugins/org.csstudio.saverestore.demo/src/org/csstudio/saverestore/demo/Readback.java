@@ -3,7 +3,9 @@ package org.csstudio.saverestore.demo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.ui.ParametersProvider;
 import org.csstudio.ui.fx.util.FXMessageDialog;
@@ -14,6 +16,7 @@ import org.diirt.vtype.VInt;
 import org.diirt.vtype.VLong;
 import org.diirt.vtype.VNumber;
 import org.diirt.vtype.VShort;
+import org.diirt.vtype.VType;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
@@ -38,17 +41,11 @@ public class Readback implements ParametersProvider {
         return ret;
     }
 
-    // @Override
-    // public Map<String, Threshold<?>> getThresholds(Map<String,Class<? extends VNumber>> setpointNames) {
-    // Map<String, Threshold<?>> ret = new HashMap<>();
-    // setpointNames.entrySet().forEach(e -> ret.put(e.getKey(), getThreshold(e.getValue())));
-    // return ret;
-    // }
-
     @Override
-    public Map<String, Threshold<?>> getThresholds(List<String> setpointNames) {
+    public Map<String, Threshold<?>> getThresholds(List<String> pvNames, List<VType> values,
+        Optional<BaseLevel> baseLevel) {
         Map<String, Threshold<?>> ret = new HashMap<>();
-        setpointNames.forEach(e -> ret.put(e, getThreshold(getType())));
+        pvNames.forEach(e -> ret.put(e, getThreshold(getType())));
         return ret;
     }
 

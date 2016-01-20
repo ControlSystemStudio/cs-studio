@@ -91,7 +91,12 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
 
         @Override
         public String toString() {
-            return path[path.length - 1];
+            String p = path[path.length - 1];
+            if (p.toLowerCase().endsWith(".bms") && p.length() > 4) {
+                return p.substring(0, p.length()-4);
+            } else {
+                return p;
+            }
         }
 
     }

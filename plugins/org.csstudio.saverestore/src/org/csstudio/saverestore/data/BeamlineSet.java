@@ -28,6 +28,13 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     private final String dataProviderId;
 
     /**
+     * Constructs a new empty beamline (e.g. null beamline set).
+     */
+    public BeamlineSet() {
+        this(new Branch("master", "master"), Optional.empty(), new String[] { "unknown" }, null);
+    }
+
+    /**
      * Construct a new beamline set from pieces.
      *
      * @param branch the branch on which the beamline set is located

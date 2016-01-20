@@ -46,7 +46,8 @@ public class AdapterFactory implements IAdapterFactory {
                     Timestamp snapshotTime = Timestamp.of(sc.date);
                     BeamlineSet set = new BeamlineSet(new Branch("master", "master"), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.date, "<No Comment>", "<OS>");
-                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, snapshotTime);
+                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
+                        sc.readbackData, sc.deltas, snapshotTime);
                     return adapterType.cast(vs);
                 } catch (IOException | CoreException | ParseException ex) {
                     throw new IllegalArgumentException("The file " + file.getName() + " is not a valid snapshot file.");
@@ -61,7 +62,8 @@ public class AdapterFactory implements IAdapterFactory {
                     Timestamp snapshotTime = Timestamp.of(sc.date);
                     BeamlineSet set = new BeamlineSet(new Branch("master", "master"), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.date, "<No Comment>", "<OS>");
-                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, snapshotTime);
+                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
+                        sc.readbackData, sc.deltas, snapshotTime);
                     return adapterType.cast(vs);
                 } catch (IOException | ParseException ex) {
                     throw new IllegalArgumentException("The file " + uri.toString() + " is not a valid snapshot file.");

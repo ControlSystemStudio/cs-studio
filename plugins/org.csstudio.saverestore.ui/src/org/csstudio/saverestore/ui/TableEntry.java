@@ -48,7 +48,9 @@ public class TableEntry {
         new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
     private StringProperty readbackName = new SimpleStringProperty(this, "readbackName");
     private BooleanProperty liveStoredEqual = new SingleListenerBooleanProperty(this, "liveStoredEqual", true);
-
+    private ObjectProperty<VTypePair> storedReadback = new SimpleObjectProperty<>(this, "storedReadback",
+        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
+    private List<ObjectProperty<VTypePair>> compareStoredReadbacks = new ArrayList<>();
     private Optional<Threshold<?>> threshold = Optional.empty();
 
     /**
@@ -135,6 +137,13 @@ public class TableEntry {
     }
 
     /**
+     * @return the property providing the stored readback vs stored setpoint value
+     */
+    public ObjectProperty<VTypePair> storedReadbackProperty() {
+        return storedReadback;
+    }
+
+    /**
      * @param index the index of the compared value (starts with 1)
      * @return the property providing the compared value for the given index
      */
@@ -143,6 +152,18 @@ public class TableEntry {
             throw new IndexOutOfBoundsException("Index has to be larger than 0.");
         } else {
             return compareValues.get(index - 1);
+        }
+    }
+
+    /**
+     * @param index the index of the compared value (starts with 1)
+     * @return the property providing the compares stored readback value for the given index
+     */
+    public ObjectProperty<VTypePair> compareStoredReadbackProperty(int index) {
+        if (index == 0) {
+            throw new IndexOutOfBoundsException("Index has to be larger than 0.");
+        } else {
+            return compareStoredReadbacks.get(index - 1);
         }
     }
 
@@ -170,11 +191,36 @@ public class TableEntry {
             value.set(new VTypePair(liveValue.get(), val, threshold));
             compareValues.forEach(o -> o.set(new VTypePair(val, o.get().value, threshold)));
             liveStoredEqual.set(Utilities.areValuesEqual(liveValue.get(), val, threshold));
+            storedReadback.set(new VTypePair(val, storedReadback.get().value, threshold));
         } else {
             for (int i = compareValues.size(); i < index; i++) {
-                compareValues.add(new SimpleObjectProperty<>(this, "CompareValue" + i));
+                compareValues.add(new SimpleObjectProperty<>(this, "CompareValue" + i,
+                    new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, threshold)));
+                compareStoredReadbacks.add(new SimpleObjectProperty<>(this, "CompareStoredReadback" + i,
+                    new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, threshold)));
             }
             compareValues.get(index - 1).set(new VTypePair(valueProperty().get().value, val, threshold));
+            compareStoredReadbacks.get(index - 1)
+                .set(new VTypePair(val, compareStoredReadbacks.get(index - 1).get().value, threshold));
+        }
+    }
+
+    /**
+     * Set the stored readback value for the primary snapshot of for the snapshots compared to the primary one.
+     *
+     * @param val the value to set
+     * @param index the index of the snapshot
+     */
+    public void setStoredReadbackValue(VType val, int index) {
+        if (index == 0) {
+            storedReadback.set(new VTypePair(storedReadback.get().base, val, threshold));
+        } else {
+            for (int i = compareValues.size(); i < index; i++) {
+                compareStoredReadbacks.add(new SimpleObjectProperty<>(this, "CompareStoredReadback" + i,
+                    new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, threshold)));
+            }
+            compareStoredReadbacks.get(index - 1)
+                .set(new VTypePair(compareStoredReadbacks.get(index - 1).get().base, val, threshold));
         }
     }
 
@@ -216,6 +262,9 @@ public class TableEntry {
             this.liveStoredEqual.set(Utilities.areValuesEqual(liveValue.get(), val, threshold));
             this.compareValues.forEach(e -> e.set(new VTypePair(val, e.get().value, threshold)));
             this.readback.set(new VTypePair(this.readback.get().base, this.readback.get().value, threshold));
+            this.storedReadback
+                .set(new VTypePair(this.storedReadback.get().base, this.storedReadback.get().value, threshold));
+            this.compareStoredReadbacks.forEach(e -> e.set(new VTypePair(e.get().base, e.get().value, threshold)));
         }
     }
 }

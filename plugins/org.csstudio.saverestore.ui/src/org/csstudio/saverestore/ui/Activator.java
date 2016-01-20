@@ -1,5 +1,13 @@
 package org.csstudio.saverestore.ui;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+
+import org.csstudio.saverestore.SaveRestoreService;
+import org.csstudio.saverestore.ui.util.DismissableBlockingQueue;
+import org.csstudio.saverestore.ui.util.RunnableWithID;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -17,6 +25,32 @@ public class Activator extends AbstractUIPlugin {
     /** The shared instance */
     private static Activator plugin;
 
+    private ThreadPoolExecutor backgroundWorker;
+
+    /**
+     * Returns the executor to be used for background tasks. This executor is configured to work with
+     * {@link RunnableWithID} implementations.
+     *
+     * @return the UI background tasks executor
+     */
+    public ExecutorService getBackgroundWorker() {
+        if (backgroundWorker == null) {
+            backgroundWorker = new ThreadPoolExecutor(1, 1, 0, TimeUnit.NANOSECONDS,
+                new DismissableBlockingQueue(1000, true)) {
+                @Override
+                protected void afterExecute(Runnable r, Throwable t) {
+                    super.afterExecute(r, t);
+                    if (t != null) {
+                        SaveRestoreService.LOGGER.log(Level.WARNING, "Error executing request.", t);
+                    }
+                }
+            };
+            backgroundWorker.setRejectedExecutionHandler(
+                (r, t) -> SaveRestoreService.LOGGER.warning("Execution of " + r + " rejected."));
+        }
+        return backgroundWorker;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -26,6 +60,20 @@ public class Activator extends AbstractUIPlugin {
     public void start(BundleContext context) throws Exception {
         super.start(context);
         Activator.plugin = this;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+     */
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        if (backgroundWorker != null) {
+            backgroundWorker.shutdownNow();
+            backgroundWorker = null;
+        }
+        super.stop(context);
     }
 
     /**

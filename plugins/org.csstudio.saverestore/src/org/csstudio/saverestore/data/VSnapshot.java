@@ -1,8 +1,5 @@
 package org.csstudio.saverestore.data;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,15 +31,15 @@ public class VSnapshot implements VType, Time, Array, Serializable {
 
     private static final long serialVersionUID = 2676226155070688049L;
 
-    // these could all be final, but can't be because they are set during serialization, which is manual, due
-    // to Timestamp not being serializable. Values cannot be serialized, because VType and none of its known
-    // implementations are serializable.
-    private List<String> names;
-    private List<VType> values;
-    private List<Boolean> selected;
-    private Timestamp snapshotTime;
-    private BeamlineSet beamlineSet;
-    private Snapshot snapshot;
+    private final List<String> names;
+    private final transient List<VType> values;
+    private final List<Boolean> selected;
+    private final List<String> readbackNames;
+    private final transient List<VType> readbackValues;
+    private final List<String> deltas;
+    private final transient Timestamp snapshotTime;
+    private final BeamlineSet beamlineSet;
+    private final Snapshot snapshot;
     private String forcedName;
     private boolean dirty = false;
 
@@ -63,6 +60,9 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         List<String> n = null;
         List<Boolean> s = null;
         List<VType> d = null;
+        List<String> r = new ArrayList<>(0);
+        List<VType> rv = new ArrayList<>(0);
+        List<String> dt = new ArrayList<>(0);
         for (int i = 0; i < 3; i++) {
             String name = table.getColumnName(i);
             if (FileUtilities.H_PV_NAME.equals(name)) {
@@ -71,6 +71,12 @@ public class VSnapshot implements VType, Time, Array, Serializable {
                 s = (List<Boolean>) table.getColumnData(i);
             } else if (FileUtilities.H_VALUE.equals(name)) {
                 d = (List<VType>) table.getColumnData(i);
+            } else if (FileUtilities.H_READBACK.equals(name)) {
+                r = (List<String>) table.getColumnData(i);
+            } else if (FileUtilities.H_READBACK_VALUE.equals(name)) {
+                rv = (List<VType>) table.getColumnData(i);
+            } else if (FileUtilities.H_DELTA.equals(name)) {
+                dt = (List<String>) table.getColumnData(i);
             }
         }
         if (n == null) {
@@ -89,6 +95,9 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.snapshotTime = snapshotTime;
         this.beamlineSet = snapshot.getBeamlineSet();
         this.snapshot = snapshot;
+        this.readbackNames = new ArrayList<>(r);
+        this.readbackValues = new ArrayList<>(rv);
+        this.deltas = new ArrayList<>(dt);
     }
 
     /**
@@ -103,10 +112,25 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      *            stored)
      */
     public VSnapshot(Snapshot snapshot, List<String> names, List<Boolean> selected, List<VType> values,
-        Timestamp snapshotTime) {
+        List<String> readbackNames, List<VType> readbackValues, List<String> deltas, Timestamp snapshotTime) {
         if (names.size() != values.size()) {
             throw new IllegalArgumentException("The number of PV names does not match the number of values");
         }
+        if (!readbackNames.isEmpty() && readbackNames.size() != names.size()) {
+            throw new IllegalArgumentException(
+                "The number of readback pv names does not match the number of setpoint pv names.");
+        }
+        if (readbackValues.size() != readbackNames.size()) {
+            throw new IllegalArgumentException(
+                "The number of readbacks PV names does not match the number of readback values");
+        }
+        if (!deltas.isEmpty() && deltas.size() != names.size()) {
+            throw new IllegalArgumentException(
+                "The number of delta values does not match the number of setpoint pv names.");
+        }
+        this.readbackNames = new ArrayList<>(readbackNames);
+        this.readbackValues = new ArrayList<>(readbackValues);
+        this.deltas = new ArrayList<>(deltas);
         this.names = new ArrayList<>(names);
         this.selected = new ArrayList<>(selected);
         this.values = new ArrayList<>(values);
@@ -116,29 +140,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     }
 
     /**
-     * Constructs a new data object with all items selected.
-     *
-     * @param snapshot the descriptor
-     * @param names the names of pvs
-     * @param values the values of the pvs
-     * @param snapshotTime the time when the snapshot was taken (this is not identical to the time when the snapshot was
-     *            stored)
-     */
-    public VSnapshot(Snapshot snapshot, List<String> names, List<VType> values, Timestamp snapshotTime) {
-        if (names.size() != values.size()) {
-            throw new IllegalArgumentException("The number of PV names does not match the number of values");
-        }
-        this.names = new ArrayList<>(names);
-        this.selected = new ArrayList<>(names.size());
-        this.names.forEach(e -> selected.add(Boolean.TRUE));
-        this.values = new ArrayList<>(values);
-        this.snapshotTime = snapshotTime;
-        this.beamlineSet = snapshot.getBeamlineSet();
-        this.snapshot = snapshot;
-    }
-
-    /**
-     * Constructs a new data object with all items selected.
+     * Constructs a new data object with all items selected, but no readbacks and deltas.
      *
      * @param snapshot the descriptor
      * @param names the names of pvs
@@ -156,6 +158,9 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         this.names = new ArrayList<>(names);
         this.selected = new ArrayList<>(names.size());
         this.names.forEach(e -> selected.add(Boolean.TRUE));
+        this.readbackNames = new ArrayList<>(0);
+        this.readbackValues = new ArrayList<>(0);
+        this.deltas = new ArrayList<>(0);
         this.values = new ArrayList<>(values);
         this.snapshotTime = snapshotTime;
         this.beamlineSet = snapshot.getBeamlineSet();
@@ -167,16 +172,48 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * Constructs an empty snapshot object.
      *
      * @param set the beamline set for which the snapshot is for
-     * @param names the names of pvs
+     * @param names the names of setpoint pvs
+     * @param readbacks the name readback pvs (the size has to be 0 or match the size of the setpoint pv names)
+     * @param deltas the threshold values or functions for comparison of readbacks and setpoints (the size has to be 0
+     *            or match the size of the setpoint pv names)
      */
-    public VSnapshot(BeamlineSet set, List<String> names) {
+    public VSnapshot(BeamlineSet set, List<String> names, List<String> readbacks, List<String> deltas) {
+        if (!readbacks.isEmpty() && readbacks.size() != names.size()) {
+            throw new IllegalArgumentException(
+                "The number of readback pv names does not match the number of setpoint pv names.");
+        }
+        if (!deltas.isEmpty() && deltas.size() != names.size()) {
+            throw new IllegalArgumentException(
+                "The number of delta values does not match the number of setpoint pv names.");
+        }
         this.names = new ArrayList<>(names);
+        this.readbackNames = new ArrayList<>(readbacks);
+        this.readbackValues = new ArrayList<>(readbacks.size());
+        this.deltas = new ArrayList<>(deltas);
         this.values = new ArrayList<>(names.size());
         this.selected = new ArrayList<>(names.size());
         this.names.forEach(e -> {
             values.add(VNoData.INSTANCE);
             selected.add(Boolean.TRUE);
         });
+        this.readbackNames.forEach(e -> readbackValues.add(VNoData.INSTANCE));
+        this.snapshotTime = null;
+        this.beamlineSet = set;
+        this.snapshot = null;
+    }
+
+    /**
+     * Constructs an empty snapshot object.
+     *
+     * @param set the beamline set for which the snapshot is for
+     */
+    public VSnapshot(BeamlineSet set) {
+        this.names = new ArrayList<>(0);
+        this.values = new ArrayList<>(0);
+        this.selected = new ArrayList<>(0);
+        this.readbackNames = new ArrayList<>(0);
+        this.readbackValues = new ArrayList<>(0);
+        this.deltas = new ArrayList<>(0);
         this.snapshotTime = null;
         this.beamlineSet = set;
         this.snapshot = null;
@@ -231,6 +268,65 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     }
 
     /**
+     * Returns the list of readback pv names. The order matches {@link #getNames()}. If a PV has no readback defined the
+     * readback of that pv is an empty string.
+     *
+     * @return the list of readback pv names
+     */
+    public List<String> getReadbackNames() {
+        return Collections.unmodifiableList(readbackNames);
+    }
+
+    /**
+     * Returns the list of readback pv values. The order matches {@link #getNames()}. If a PV has no readback defined
+     * the value is {@link VNoData}.
+     *
+     * @return the list of readback values
+     */
+    public List<VType> getReadbackValues() {
+        return Collections.unmodifiableList(readbackValues);
+    }
+
+    /**
+     * Returns the list of deltas. Delta represents a threshold value or a function which is used to determine if the
+     * setpoint values is equal (within bounds) to the readback value.
+     *
+     * @return the list of deltas
+     */
+    public List<String> getDeltas() {
+        return Collections.unmodifiableList(deltas);
+    }
+
+    /**
+     * Returns the delta value for the given pv name.
+     *
+     * @param pvName the name of the pv for which the delta is requested
+     * @return the delta value
+     */
+    public String getDelta(String pvName) {
+        if (deltas.isEmpty()) {
+            return null;
+        }
+        int idx = names.indexOf(pvName);
+        return idx < 0 ? null : deltas.get(idx);
+    }
+
+    /**
+     * Constructs and returns the threshold for the given pv name. If the threshold cannot be created (pv name not
+     * defined in this snapshot or the delta for the pv is unknown), null is returned.
+     *
+     * @param pvName the name of the pv for which the threshold is requested
+     * @return the threshold for this pv
+     */
+    public Threshold<?> getThreshold(String pvName) {
+        String delta = getDelta(pvName);
+        if (delta == null || delta.isEmpty()) {
+            return null;
+        }
+        return new Threshold<>(delta);
+    }
+
+    /**
      * Set the value of the PV in this snapshot or adds an additional PV, if the PV does not exist yet. When a PV is
      * added or set this snapshot is marked as dirty, which means that it becomes saveable.
      *
@@ -245,6 +341,11 @@ public class VSnapshot implements VType, Time, Array, Serializable {
             this.names.add(name);
             this.selected.add(selected);
             this.values.add(value);
+            if (!this.readbackNames.isEmpty()) {
+                this.readbackNames.add("");
+                this.readbackValues.add(VNoData.INSTANCE);
+                this.deltas.add("");
+            }
         } else {
             this.selected.set(idx, selected);
             this.values.set(idx, value);
@@ -358,7 +459,8 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(beamlineSet, snapshot, names, selected, snapshotTime, values, forcedName);
+        return Objects.hash(beamlineSet, snapshot, names, selected, snapshotTime, values, readbackNames, readbackValues,
+            deltas, forcedName);
     }
 
     /*
@@ -388,7 +490,9 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     public boolean equalsExceptSnapshot(VSnapshot other) {
         return Objects.equals(beamlineSet, other.beamlineSet) && Objects.equals(forcedName, other.forcedName)
             && Objects.equals(names, other.names) && Objects.equals(snapshotTime, other.snapshotTime)
-            && Objects.equals(values, other.values) && Objects.equals(selected, other.selected);
+            && Objects.equals(values, other.values) && Objects.equals(selected, other.selected)
+            && Objects.equals(readbackNames, other.readbackNames)
+            && Objects.equals(readbackValues, other.readbackValues) && Objects.equals(deltas, other.deltas);
     }
 
     /**
@@ -398,60 +502,63 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return {@link VTable} instance which contains the data
      */
     public VTable toVTable() {
-        List<Class<?>> classes = Arrays.asList(String.class, Boolean.class, VType.class);
-        List<Object> values = Arrays.asList(getNames(), getSelected(), getValues());
-        List<String> columns = Arrays.asList(FileUtilities.H_PV_NAME, FileUtilities.H_SELECTED, FileUtilities.H_VALUE);
+        List<Class<?>> classes = Arrays.asList(String.class, Boolean.class, VType.class, String.class, VType.class,
+            String.class);
+        List<Object> values = Arrays.asList(getNames(), getSelected(), getValues(), getReadbackNames(),
+            getReadbackValues(), getDeltas());
+        List<String> columns = Arrays.asList(FileUtilities.H_PV_NAME, FileUtilities.H_SELECTED, FileUtilities.H_VALUE,
+            FileUtilities.H_READBACK, FileUtilities.H_READBACK_VALUE, FileUtilities.H_DELTA);
         return ValueFactory.newVTable(classes, columns, values);
     }
 
-    private void writeObject(ObjectOutputStream out) throws IOException {
-        if (snapshot == null) {
-            out.writeObject("No Snapshot");
-        } else {
-            out.writeObject(snapshot);
-        }
-        if (snapshotTime == null) {
-            out.writeLong(Long.valueOf(-1));
-            out.writeInt(Integer.valueOf(-1));
-        } else {
-            out.writeLong(snapshotTime.getSec());
-            out.writeInt(snapshotTime.getNanoSec());
-        }
-        out.writeObject(beamlineSet);
-        out.writeObject(names);
-        out.writeObject(selected);
-        if (forcedName == null) {
-            out.writeUTF("No Name");
-        } else {
-            out.writeUTF(forcedName);
-        }
-        out.writeBoolean(dirty);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        Object obj = in.readObject();
-        if (obj instanceof String && "No Snapshot".equals((String) obj)) {
-            this.snapshot = null;
-        }
-        long secs = in.readLong();
-        int nano = in.readInt();
-        if (secs == -1 && nano == -1) {
-            this.snapshotTime = null;
-        } else {
-            this.snapshotTime = Timestamp.of(secs, nano);
-        }
-        this.beamlineSet = (BeamlineSet) in.readObject();
-        this.names = (List<String>) in.readObject();
-        this.selected = (List<Boolean>) in.readObject();
-        String name = in.readUTF();
-        if ("No Name".equals(name)) {
-            this.forcedName = null;
-        } else {
-            this.forcedName = name;
-        }
-        this.dirty = in.readBoolean();
-        this.values = new ArrayList<>(this.names.size());
-        this.names.forEach(e -> this.values.add(VNoData.INSTANCE));
-    }
+    // private void writeObject(ObjectOutputStream out) throws IOException {
+    // if (snapshot == null) {
+    // out.writeObject("No Snapshot");
+    // } else {
+    // out.writeObject(snapshot);
+    // }
+    // if (snapshotTime == null) {
+    // out.writeLong(Long.valueOf(-1));
+    // out.writeInt(Integer.valueOf(-1));
+    // } else {
+    // out.writeLong(snapshotTime.getSec());
+    // out.writeInt(snapshotTime.getNanoSec());
+    // }
+    // out.writeObject(beamlineSet);
+    // out.writeObject(names);
+    // out.writeObject(selected);
+    // if (forcedName == null) {
+    // out.writeUTF("No Name");
+    // } else {
+    // out.writeUTF(forcedName);
+    // }
+    // out.writeBoolean(dirty);
+    // }
+    //
+    // @SuppressWarnings("unchecked")
+    // private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    // Object obj = in.readObject();
+    // if (obj instanceof String && "No Snapshot".equals((String) obj)) {
+    // this.snapshot = null;
+    // }
+    // long secs = in.readLong();
+    // int nano = in.readInt();
+    // if (secs == -1 && nano == -1) {
+    // this.snapshotTime = null;
+    // } else {
+    // this.snapshotTime = Timestamp.of(secs, nano);
+    // }
+    // this.beamlineSet = (BeamlineSet) in.readObject();
+    // this.names = (List<String>) in.readObject();
+    // this.selected = (List<Boolean>) in.readObject();
+    // String name = in.readUTF();
+    // if ("No Name".equals(name)) {
+    // this.forcedName = null;
+    // } else {
+    // this.forcedName = name;
+    // }
+    // this.dirty = in.readBoolean();
+    // this.values = new ArrayList<>(this.names.size());
+    // this.names.forEach(e -> this.values.add(VNoData.INSTANCE));
+    // }
 }

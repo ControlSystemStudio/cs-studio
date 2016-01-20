@@ -2,8 +2,11 @@ package org.csstudio.saverestore.ui;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.Threshold;
+import org.diirt.vtype.VType;
 
 /**
  *
@@ -32,14 +35,17 @@ public interface ParametersProvider {
     Map<String, String> getReadbackNames(List<String> setpointNames);
 
     /**
-     * Returns the list of threshold for the given pv names. For every PV in the list there should be an entry in the
-     * returned map. If a specific PV does not have a threshold value or cannot have it (e.g. is a string type PV) the
-     * value in the map for that PV should be null. These thresholds are used to determine whether two values of the
-     * same PV are equal (they are within the threshold limits) or different.
+     * Returns the list of threshold for the given pv names. For every PV in the snapshot there should be an entry in
+     * the returned map. If a specific PV does not have a threshold value or cannot have it (e.g. is a string type PV)
+     * the value in the map for that PV should be null. These thresholds are used to determine whether two values of the
+     * same PV are equal (they are within the threshold limits) or different. The threshold can depend on the current
+     * value of the PV, timestamp, selected base level etc.
      *
-     * @param setpointNames the setpoint names
+     * @param pvNames the names of PVs
+     * @param values the current values of PVs
+     * @param baseLevel the base level for which the thresholds are requested
      * @return the map of PV name and threshold pairs
      */
-    Map<String, Threshold<?>> getThresholds(List<String> setpointNames);
+    Map<String, Threshold<?>> getThresholds(List<String> pvNames, List<VType> values, Optional<BaseLevel> baseLevel);
 
 }

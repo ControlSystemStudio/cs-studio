@@ -15,7 +15,6 @@ import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
@@ -81,6 +80,7 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -114,6 +114,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
     private TextArea commentField;
     private TextField dateField;
     private TextField creatorField;
+    private TextArea tagField;
     private Button takeSnapshotButton;
     private Button restoreSnapshotButton;
     private Button saveSnapshotButton;
@@ -146,9 +147,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
     private void init() {
         VSnapshot snapshot = getEditorInput().getAdapter(VSnapshot.class);
         if (snapshot == null) {
-            snapshot = new VSnapshot(
-                new BeamlineSet(new Branch("master", "master"), Optional.empty(), new String[] { "unknown" }, null),
-                new ArrayList<>(0));
+            snapshot = new VSnapshot(new BeamlineSet());
         }
         setSnapshot(snapshot);
 
@@ -180,6 +179,15 @@ public class SnapshotViewerEditor extends FXEditorPart {
     private void updateMetaInfo(VSnapshot snapshot) {
         if (snapshot != null && snapshot.getSnapshot().isPresent()) {
             Snapshot s = snapshot.getSnapshot().get();
+            if (s.getTagName().isPresent()) {
+                String tagName = s.getTagName().get();
+                String tagMessage = s.getTagMessage().orElse("");
+                tagField.setText(tagName + "\n" + tagMessage);
+                tagField.setStyle("-fx-control-inner-background: #FFF8D2;");
+            } else {
+                tagField.setText("");
+                tagField.setStyle(null);
+            }
             commentField.setText(s.getComment());
             creatorField.setText(s.getOwner());
             dateField.setText(Utilities.timestampToBigEndianString(s.getDate(), true));
@@ -187,6 +195,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
             commentField.setText("");
             creatorField.setText("");
             dateField.setText("");
+            tagField.setText("");
         }
     }
 
@@ -408,12 +417,19 @@ public class SnapshotViewerEditor extends FXEditorPart {
         });
         ToggleButton addReadbacksButton = new UnfocusableToggleButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/exp_deployplug.png"))));
-        addReadbacksButton.setTooltip(new Tooltip("Show column with values from the readback PVs"));
-        addReadbacksButton.setDisable(!ExtensionPointLoader.getInstance().getParametersProvider().isPresent());
+        addReadbacksButton.setTooltip(new Tooltip("Show column with live values from the readback PVs"));
         addReadbacksButton.selectedProperty().addListener((a, o, n) -> controller.showReadbacks(n, b -> {
             final List<VSnapshot> snapshots = controller.getAllSnapshots();
-            final boolean show = controller.isShowReadbacks();
-            Platform.runLater(() -> table.updateTable(b, snapshots, show));
+            Platform.runLater(() -> table.updateTable(b, snapshots, controller.isShowReadbacks(),
+                controller.isShowStoredReadbacks()));
+        }));
+        ToggleButton showStoredReadbacksButton = new UnfocusableToggleButton("",
+            new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/frgmt_obj.png"))));
+        showStoredReadbacksButton.setTooltip(new Tooltip("Show column with stored values from the readback PVs"));
+        showStoredReadbacksButton.selectedProperty().addListener((a, o, n) -> controller.showStoredReadbacks(n, b -> {
+            final List<VSnapshot> snapshots = controller.getAllSnapshots();
+            Platform.runLater(() -> table.updateTable(b, snapshots, controller.isShowReadbacks(),
+                controller.isShowStoredReadbacks()));
         }));
         Button openSnapshotFromFileButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/fldr_obj.png"))));
@@ -459,8 +475,8 @@ public class SnapshotViewerEditor extends FXEditorPart {
         separator2.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
         javafx.scene.control.Separator separator3 = new javafx.scene.control.Separator(Orientation.VERTICAL);
         separator3.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
-        leftToolbar.getChildren().addAll(addPVButton, separator1, addReadbacksButton, separator2, importButton,
-            separator3, openSnapshotFromFileButton, saveSnapshotToFileButton, exportButton);
+        leftToolbar.getChildren().addAll(addPVButton, separator1, addReadbacksButton, showStoredReadbacksButton,
+            separator2, importButton, separator3, openSnapshotFromFileButton, saveSnapshotToFileButton, exportButton);
 
         HBox rightToolbar = new HBox(5);
         ComboBox<String> filterCombo = new ComboBox<>();
@@ -589,26 +605,38 @@ public class SnapshotViewerEditor extends FXEditorPart {
         left.setHgap(5);
         left.setAlignment(Pos.TOP_LEFT);
         commentField = new StaticTextArea();
-        commentField.setPrefWidth(300);
+        commentField.setPrefWidth(200);
+        commentField.setMaxWidth(Double.MAX_VALUE);
         commentField.setPrefRowCount(2);
-        GridPane.setVgrow(commentField, Priority.ALWAYS);
-        GridPane.setFillHeight(commentField, true);
+        FXUtilities.setGridConstraints(commentField, true, true, Priority.SOMETIMES, Priority.ALWAYS);
+        GridPane.setMargin(commentField, new Insets(0, 5, 0, 0));
         creatorField = new StaticTextField();
         int width = FXUtilities.measureStringWidth("0000 MMM 00 00:00:00 ", creatorField.getFont()) + 20;
         creatorField.setPrefWidth(width);
+        GridPane.setMargin(creatorField, new Insets(0, 5, 0, 0));
         dateField = new StaticTextField();
         dateField.setPrefWidth(width);
+        GridPane.setMargin(dateField, new Insets(0, 5, 0, 0));
+        tagField = new StaticTextArea();
+        tagField.setPrefWidth(200);
+        tagField.setMaxWidth(Double.MAX_VALUE);
+        tagField.setPrefRowCount(2);
+        FXUtilities.setGridConstraints(tagField, true, true, Priority.SOMETIMES, Priority.ALWAYS);
+        GridPane.setMargin(tagField, new Insets(0, 5, 0, 0));
         left.add(new Label("Comment:"), 0, 0);
         left.add(commentField, 1, 0, 1, 2);
         left.add(new Label("Creator:"), 2, 0);
         left.add(new Label("Timestamp:"), 2, 1);
         left.add(creatorField, 3, 0);
         left.add(dateField, 3, 1);
+        left.add(new Label("Tag:"), 4, 0);
+        left.add(tagField, 5, 0, 1, 2);
         GridPane grid = new GridPane();
         Node right = createButtonPane();
         GridPane.setHgrow(left, Priority.ALWAYS);
         GridPane.setHgrow(right, Priority.NEVER);
         GridPane.setFillHeight(right, true);
+        GridPane.setFillWidth(left, true);
         grid.add(left, 0, 0);
         grid.add(right, 1, 0);
         return grid;
@@ -725,12 +753,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
      * @param data the snapshot data to set
      */
     public void setSnapshot(final VSnapshot data) {
-        SaveRestoreService.getInstance().execute("Open Snapshot", () -> {
-            final List<TableEntry> entries = controller.setSnapshot(data);
-            final List<VSnapshot> snapshots = controller.getAllSnapshots();
-            final boolean show = controller.isShowReadbacks();
-            Platform.runLater(() -> table.updateTable(entries, snapshots, show));
-        });
+        addOrSetSnapshot(data, false);
     }
 
     /**
@@ -739,11 +762,15 @@ public class SnapshotViewerEditor extends FXEditorPart {
      * @param data the snapshot data
      */
     public void addSnapshot(VSnapshot data) {
-        SaveRestoreService.getInstance().execute("Add Snapshot", () -> {
-            final List<TableEntry> entries = controller.addSnapshot(data);
+        addOrSetSnapshot(data, true);
+    }
+
+    private void addOrSetSnapshot(final VSnapshot data, final boolean add) {
+        SaveRestoreService.getInstance().execute("Open Snapshot", () -> {
+            final List<TableEntry> entries = add ? controller.addSnapshot(data) : controller.setSnapshot(data);
             final List<VSnapshot> snapshots = controller.getAllSnapshots();
-            final boolean show = controller.isShowReadbacks();
-            Platform.runLater(() -> table.updateTable(entries, snapshots, show));
+            Platform.runLater(() -> table.updateTable(entries, snapshots, controller.isShowReadbacks(),
+                controller.isShowStoredReadbacks()));
         });
     }
 

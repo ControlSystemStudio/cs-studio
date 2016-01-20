@@ -225,7 +225,8 @@ public class ActionManager {
         SaveRestoreService.getInstance().execute("Load beamline set data", () -> {
             BeamlineSet set = new BeamlineSet(branch, Optional.ofNullable(base), new String[] { "BeamlineSet" },
                 dataProvider);
-            BeamlineSetData data = new BeamlineSetData(set, new ArrayList<>(0), "");
+            BeamlineSetData data = new BeamlineSetData(set, new ArrayList<>(0), new ArrayList<>(0), new ArrayList<>(0),
+                "");
             owner.getSite().getShell().getDisplay().asyncExec(() -> {
                 try {
                     owner.getSite().getPage().openEditor(new BeamlineSetEditorInput(data), BeamlineSetEditor.ID);
@@ -251,7 +252,7 @@ public class ActionManager {
         SaveRestoreService.getInstance().execute("Open beamline set", () -> {
             try {
                 BeamlineSetData data = provider.getBeamlineSetContent(set);
-                final VSnapshot s = new VSnapshot(set, data.getPVList());
+                final VSnapshot s = new VSnapshot(set, data.getPVList(), data.getReadbackList(), data.getDeltaList());
                 owner.getSite().getShell().getDisplay().asyncExec(() -> {
                     try {
                         owner.getSite().getPage().openEditor(new SnapshotEditorInput(s), SnapshotViewerEditor.ID);

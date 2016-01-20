@@ -81,7 +81,7 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
  */
 public class GitManager {
 
-    private static interface TriFunction<A,B,C,R> {
+    private static interface TriFunction<A, B, C, R> {
         R apply(A a, B b, C c) throws IOException, GitAPIException;
     }
 
@@ -341,7 +341,8 @@ public class GitManager {
         ImportType type, Credentials cred) throws GitAPIException, IOException, ParseException {
         BeamlineSetData data = loadBeamlineSetData(source, Optional.empty());
         BeamlineSet newSet = new BeamlineSet(toBranch, toBaseLevel, source.getPath(), source.getDataProviderId());
-        BeamlineSetData newData = new BeamlineSetData(newSet, data.getPVList(), data.getDescription());
+        BeamlineSetData newData = new BeamlineSetData(newSet, data.getPVList(), data.getReadbackList(),
+            data.getDeltaList(), data.getDescription());
         String comment = "Imported from " + source.getBranch().getShortName() + "/" + source.getBaseLevel().get() + "/"
             + source.getPathAsString();
         saveBeamlineSet(newData, comment, cred);
@@ -351,7 +352,8 @@ public class GitManager {
                 Snapshot snapshot = list.get(0);
                 VSnapshot snp = loadSnapshotData(snapshot);
                 VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
-                    snp.getValues(), snp.getTimestamp());
+                    snp.getValues(), snp.getReadbackNames(), snp.getReadbackValues(), snp.getDeltas(),
+                    snp.getTimestamp());
                 saveSnapshot(newSnp, snapshot.getComment(), snapshot.getDate(), snapshot.getOwner());
             }
         } else if (type == ImportType.ALL_SNAPSHOTS) {
@@ -359,7 +361,8 @@ public class GitManager {
             for (Snapshot s : list) {
                 VSnapshot snp = loadSnapshotData(s);
                 VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
-                    snp.getValues(), snp.getTimestamp());
+                    snp.getValues(), snp.getReadbackNames(), snp.getReadbackValues(), snp.getDeltas(),
+                    snp.getTimestamp());
                 saveSnapshot(newSnp, s.getComment(), s.getDate(), s.getOwner());
             }
         }
@@ -433,7 +436,8 @@ public class GitManager {
                         String s = bf.getAbsolutePath().substring(length);
                         String[] filePathArray = convertStringToPath(s, baseLevel);
                         if (filePathArray != null) {
-                            BeamlineSet beamlineSet = new BeamlineSet(branch, baseLevel, filePathArray, GitDataProvider.ID);
+                            BeamlineSet beamlineSet = new BeamlineSet(branch, baseLevel, filePathArray,
+                                GitDataProvider.ID);
                             descriptorList.add(beamlineSet);
                         }
                     }
@@ -673,6 +677,7 @@ public class GitManager {
                 Snapshot snp = new Snapshot(descriptor.getBeamlineSet(), info.timestamp, info.comment, info.creator,
                     parameters);
                 vsnp = new VSnapshot(snp, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
+                    snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
                     snapshot.getTimestamp());
             }
         }
@@ -964,9 +969,9 @@ public class GitManager {
             log.setMaxCount(numberOfsnapshots);
         }
         Iterable<RevCommit> commits = log.call();
-        //in theory diff is not needed here if everybody only used the Save and Restore application on this repository
-        //however, if someone manually changed the path to a file there can be an issue. Doing a diff increases the
-        //search time for ~70%
+        // in theory diff is not needed here if everybody only used the Save and Restore application on this repository
+        // however, if someone manually changed the path to a file there can be an issue. Doing a diff increases the
+        // search time for ~70%
         try (RevWalk revWalk = new RevWalk(repository); ObjectReader objectReader = repository.newObjectReader()) {
             for (RevCommit commit : commits) {
                 boolean renamed = false;
@@ -998,8 +1003,8 @@ public class GitManager {
     }
 
     /**
-     * Find all snapshots that are tagged and their tag name or message matches the given partial name or message.
-     * The partial name or message can also be a regular expression.
+     * Find all snapshots that are tagged and their tag name or message matches the given partial name or message. The
+     * partial name or message can also be a regular expression.
      *
      * @param partialTagNameOrMessage the partial message or name to match
      * @param branch the branch on which the tag has to be located to be accepted
@@ -1011,7 +1016,7 @@ public class GitManager {
         throws GitAPIException, IOException {
         partialTagNameOrMessage = partialTagNameOrMessage.toLowerCase();
         final Pattern pattern = Pattern.compile(".*" + partialTagNameOrMessage + ".*");
-        return findSnapshotsByTag(branch, (w,r,n) -> {
+        return findSnapshotsByTag(branch, (w, r, n) -> {
             String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase();
             if (pattern.matcher(tagName).matches()) {
                 return w.parseTag(r.getObjectId());
@@ -1024,8 +1029,8 @@ public class GitManager {
     }
 
     /**
-     * Find all snapshots that are tagged and their tag message matches the given partial message.
-     * The partial message can also be a regular expression.
+     * Find all snapshots that are tagged and their tag message matches the given partial message. The partial message
+     * can also be a regular expression.
      *
      * @param partialMessage the partial message to match
      * @param branch the branch on which the tag has to be located to be accepted
@@ -1037,7 +1042,7 @@ public class GitManager {
         throws GitAPIException, IOException {
         partialMessage = partialMessage.toLowerCase();
         final Pattern pattern = Pattern.compile(".*" + partialMessage + ".*");
-        return findSnapshotsByTag(branch, (w,r,n) -> {
+        return findSnapshotsByTag(branch, (w, r, n) -> {
             RevTag tag = w.parseTag(r.getObjectId());
             String message = tag.getFullMessage().toLowerCase().replace("\n", " ");
             return pattern.matcher(message).matches() ? tag : null;
@@ -1045,8 +1050,8 @@ public class GitManager {
     }
 
     /**
-     * Find all snapshots that are tagged and their tag name matches the given partial message.
-     * The partial message can also be a regular expression.
+     * Find all snapshots that are tagged and their tag name matches the given partial message. The partial message can
+     * also be a regular expression.
      *
      * @param partialTagName the partial tag to match
      * @param branch the branch on which the tag has to be located to be accepted
@@ -1054,11 +1059,11 @@ public class GitManager {
      * @throws GitAPIException in case of a git error
      * @throws IOException in case of an IO error
      */
-    public synchronized List<Snapshot> findSnapshotsByTagName(String partialTagName, Branch branch) throws GitAPIException,
-        IOException {
+    public synchronized List<Snapshot> findSnapshotsByTagName(String partialTagName, Branch branch)
+        throws GitAPIException, IOException {
         partialTagName = partialTagName.toLowerCase();
         final Pattern pattern = Pattern.compile(".*" + partialTagName + ".*");
-        return findSnapshotsByTag(branch, (w,r,n) -> {
+        return findSnapshotsByTag(branch, (w, r, n) -> {
             String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase();
             return pattern.matcher(tagName).matches() ? w.parseTag(r.getObjectId()) : null;
         });
@@ -1069,13 +1074,13 @@ public class GitManager {
      * Find all snapshots that are tagged and can be matched by the given trifunction.
      *
      * @param branch the name of the branch on which the snapshot should be located
-     * @param f function that receives the revision walk, the tag reference, the nice tag name and returns the
-     *          actual revision tag if the tag is accepted or null if rejected
+     * @param f function that receives the revision walk, the tag reference, the nice tag name and returns the actual
+     *            revision tag if the tag is accepted or null if rejected
      * @return the list of all snapshots that match criterion
      * @throws GitAPIException in case of a Git related error
      * @throws IOException in case of an IO error
      */
-    private List<Snapshot> findSnapshotsByTag(Branch branch, TriFunction<RevWalk,Ref,String,RevTag> f)
+    private List<Snapshot> findSnapshotsByTag(Branch branch, TriFunction<RevWalk, Ref, String, RevTag> f)
         throws GitAPIException, IOException {
         setBranch(branch);
         List<Snapshot> snapshots = new ArrayList<>();
@@ -1093,7 +1098,7 @@ public class GitManager {
                         continue;
                     }
                 }
-                RevTag tag = f.apply(walk,r.getValue(),name);
+                RevTag tag = f.apply(walk, r.getValue(), name);
                 if (tag != null) {
                     String revision = tag.getObject().getId().getName();
                     RevCommit commit = getCommitFromRevision(revision);
@@ -1229,8 +1234,8 @@ public class GitManager {
                     MetaInfo meta = getMetaInfoFromCommit(revCommit);
                     try (InputStream stream = objectLoader.openStream()) {
                         BeamlineSetContent bsc = FileUtilities.readFromBeamlineSet(stream);
-                        BeamlineSetData bsd = new BeamlineSetData((BeamlineSet) descriptor, bsc.names, bsc.description,
-                            meta.comment, meta.timestamp);
+                        BeamlineSetData bsd = new BeamlineSetData((BeamlineSet) descriptor, bsc.names, bsc.readbacks,
+                            bsc.deltas, bsc.description, meta.comment, meta.timestamp);
                         return type.cast(bsd);
                     }
                 } else if (fileType == FileType.SNAPSHOT) {
@@ -1238,7 +1243,7 @@ public class GitManager {
                         SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
                         Timestamp snapshotTime = Timestamp.of(sc.date);
                         VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data,
-                            snapshotTime);
+                            sc.readbacks, sc.readbackData, sc.deltas, snapshotTime);
                         return type.cast(vs);
                     }
                 }
@@ -1515,7 +1520,7 @@ public class GitManager {
      * @param branchName the branch name for which the tag should be loaded
      */
     private static void insertTagData(RevTag tag, Map<String, String> parameters, String revision, String branchName) {
-        parameters.put(PARAM_GIT_REVISION,revision);
+        parameters.put(PARAM_GIT_REVISION, revision);
         if (tag != null) {
             String niceTagName = tag.getTagName();
             boolean acceptTag = true;

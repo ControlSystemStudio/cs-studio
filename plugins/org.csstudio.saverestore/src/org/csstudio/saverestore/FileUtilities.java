@@ -62,6 +62,9 @@ public final class FileUtilities {
     private static final String DESCRIPTION_TAG = "Description:";
     // the names of the headers in the csv files
     public static final String H_PV_NAME = "PV";
+    public static final String H_READBACK = "READBACK";
+    public static final String H_READBACK_VALUE = "READBACK_VALUE";
+    public static final String H_DELTA = "DELTA";
     public static final String H_SELECTED = "SELECTED";
     public static final String H_TIMESTAMP = "TIMESTAMP";
     public static final String H_STATUS = "STATUS";
@@ -69,16 +72,18 @@ public final class FileUtilities {
     public static final String H_VALUE_TYPE = "VALUE_TYPE";
     public static final String H_VALUE = "VALUE";
     // the complete snapshot file header
-    private static final String SNAPSHOT_FILE_HEADER = H_PV_NAME + "," + H_SELECTED + "," + H_TIMESTAMP + "," + H_STATUS
-        + "," + H_SEVERITY + "," + H_VALUE_TYPE + "," + H_VALUE;
+    public static final String SNAPSHOT_FILE_HEADER = H_PV_NAME + "," + H_SELECTED + "," + H_TIMESTAMP + "," + H_STATUS
+        + "," + H_SEVERITY + "," + H_VALUE_TYPE + "," + H_VALUE + "," + H_READBACK + "," + H_READBACK_VALUE + ","
+        + H_DELTA;
+    public static final String BEAMLINE_SET_HEADER = H_PV_NAME + "," + H_READBACK + "," + H_DELTA;
     // delimiter of array values
     private static final String ARRAY_SPLITTER = "\\;";
     // delimiter of enum value and enum constants
     private static final String ENUM_VALUE_SPLITTER = "\\~";
     // proposed length of snapshot file data line entry (pv name only)
-    private static final int SNP_ENTRY_LENGTH = 500;
+    private static final int SNP_ENTRY_LENGTH = 700;
     // proposed length of beamline set data line entry (pv name only)
-    private static final int BSD_ENTRY_LENGTH = 60;
+    private static final int BSD_ENTRY_LENGTH = 250;
     // the format used to store the timestamp of when the snapshot was taken
     private static final ThreadLocal<DateFormat> TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
@@ -97,6 +102,9 @@ public final class FileUtilities {
         List<String> names = new ArrayList<>();
         List<VType> data = new ArrayList<>();
         List<Boolean> selected = new ArrayList<>();
+        List<String> readbacks = new ArrayList<>();
+        List<VType> readbackData = new ArrayList<>();
+        List<String> deltas = new ArrayList<>();
         String line = null;
         String[] header = null;
         Map<String, Integer> headerMap = new HashMap<>();
@@ -133,9 +141,18 @@ public final class FileUtilities {
                 idx = headerMap.get(H_VALUE_TYPE);
                 String valueType = idx == null ? null : trim(split[headerMap.get(H_VALUE_TYPE)]);
                 idx = headerMap.get(H_VALUE);
-                String value = idx == null ? "" : trim(split[headerMap.get(H_VALUE)]);
+                String value = idx == null ? null : trim(split[headerMap.get(H_VALUE)]);
+                idx = headerMap.get(H_READBACK);
+                String readback = idx == null ? "" : trim(split[headerMap.get(H_READBACK)]);
+                idx = headerMap.get(H_READBACK_VALUE);
+                String readbackValue = idx == null ? null : trim(split[headerMap.get(H_READBACK_VALUE)]);
+                idx = headerMap.get(H_DELTA);
+                String delta = idx == null ? "" : trim(split[headerMap.get(H_DELTA)]);
 
                 data.add(piecesToVType(timestamp, status, severity, value, valueType));
+                readbacks.add(readback);
+                deltas.add(delta);
+                readbackData.add(piecesToVType(timestamp, status, severity, readbackValue, valueType));
                 names.add(name);
                 boolean s = true;
                 try {
@@ -150,7 +167,7 @@ public final class FileUtilities {
             throw new ParseException("Snapshot does not have a date set.", 0);
         }
         Date d = TIMESTAMP_FORMATTER.get().parse(date);
-        return new SnapshotContent(d, names, selected, data);
+        return new SnapshotContent(d, names, selected, data, readbacks, readbackData, deltas);
     }
 
     /**
@@ -181,6 +198,9 @@ public final class FileUtilities {
      */
     private static VType piecesToVType(String timestamp, String status, String severity, String value,
         String valueType) {
+        if (value == null || value.isEmpty() || "null".equalsIgnoreCase(value)) {
+            return VNoData.INSTANCE;
+        }
         String[] t = timestamp != null && timestamp.indexOf('.') > 0 ? timestamp.split("\\.")
             : new String[] { "0", "0" };
         Time time = ValueFactory.newTime(Timestamp.of(Long.parseLong(t[0]), Integer.parseInt(t[1])));
@@ -331,6 +351,9 @@ public final class FileUtilities {
         List<VType> values = data.getValues();
         List<String> names = data.getNames();
         List<Boolean> selected = data.getSelected();
+        List<String> readbacks = data.getReadbackNames();
+        List<VType> readbackValues = data.getReadbackValues();
+        List<String> deltas = data.getDeltas();
         StringBuilder sb = new StringBuilder(SNP_ENTRY_LENGTH * names.size());
         Timestamp timestamp = data.getTimestamp();
         if (timestamp == null) {
@@ -338,8 +361,12 @@ public final class FileUtilities {
         }
         sb.append("# Date: ").append(TIMESTAMP_FORMATTER.get().format(timestamp.toDate())).append('\n');
         sb.append(SNAPSHOT_FILE_HEADER).append('\n');
+        boolean deltaEmpty = deltas.isEmpty();
+        boolean noReadbacks = readbacks.isEmpty();
         for (int i = 0; i < names.size(); i++) {
-            sb.append(createSnapshotFileEntry(names.get(i), selected.get(i), values.get(i))).append('\n');
+            sb.append(createSnapshotFileEntry(names.get(i), selected.get(i), values.get(i),
+                noReadbacks ? null : readbacks.get(i), noReadbacks ? null : readbackValues.get(i),
+                    deltaEmpty ? null : deltas.get(i))).append('\n');
         }
         return sb.toString();
     }
@@ -350,9 +377,13 @@ public final class FileUtilities {
      * @param name the name of the pv
      * @param selected the selected flag of the pv
      * @param data stored pv value
+     * @param readbackName the name of the readback pv
+     * @param readbackValue the readback pv value
+     * @param delta the threshold value or function
      * @return into string converted given snapshot entry data.
      */
-    private static String createSnapshotFileEntry(String name, boolean selected, VType data) {
+    private static String createSnapshotFileEntry(String name, boolean selected, VType data,
+        String readbackName, VType readbackValue, String delta) {
         StringBuilder sb = new StringBuilder(SNP_ENTRY_LENGTH);
         sb.append(name).append(',');
         sb.append(selected ? 1 : 0).append(',');
@@ -368,6 +399,18 @@ public final class FileUtilities {
         }
         sb.append(vtypeToStringType(data)).append(',');
         sb.append('\"').append(Utilities.toRawStringValue(data)).append('\"');
+        sb.append(',');
+        if (readbackName != null) {
+            sb.append(readbackName);
+        }
+        sb.append(',');
+        if (readbackValue != null) {
+            sb.append('\"').append(Utilities.toRawStringValue(readbackValue)).append('\"');
+        }
+        sb.append(',');
+        if (delta != null) {
+            sb.append(delta);
+        }
         return sb.toString();
     }
 
@@ -381,11 +424,15 @@ public final class FileUtilities {
     public static BeamlineSetContent readFromBeamlineSet(InputStream stream) throws IOException {
         StringBuilder description = new StringBuilder(400);
         List<String> names = new ArrayList<>();
+        List<String> readbacks = new ArrayList<>();
+        List<String> deltas = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         boolean isDescriptionLine = false;
         String line = null;
         String[] header = null;
         int namesIndex = -1;
+        int readbackIndex = -1;
+        int deltaIndex = -1;
         while ((line = reader.readLine()) != null) {
             line = line.trim();
             if (line.isEmpty()) {
@@ -408,14 +455,29 @@ public final class FileUtilities {
                 for (int i = 0; i < header.length; i++) {
                     if (H_PV_NAME.equals(header[i])) {
                         namesIndex = i;
+                    } else if (H_READBACK.equals(header[i])) {
+                        readbackIndex = i;
+                    } else if (H_DELTA.equals(header[i])) {
+                        deltaIndex = i;
                     }
                 }
             } else {
                 String[] split = line.split("\\,", header.length);
-                names.add(split[namesIndex]);
+                // there are no fields in here that may contain a comma
+                if (namesIndex != -1) {
+                    names.add(trim(split[namesIndex]));
+                } else {
+                    continue;
+                }
+                if (readbackIndex != -1) {
+                    readbacks.add(trim(split[readbackIndex]));
+                }
+                if (deltaIndex != -1) {
+                    deltas.add(trim(split[deltaIndex]));
+                }
             }
         }
-        return new BeamlineSetContent(description.toString().trim(), names);
+        return new BeamlineSetContent(description.toString().trim(), names, readbacks, deltas);
     }
 
     /**
@@ -429,11 +491,31 @@ public final class FileUtilities {
         String description = data.getDescription();
         description = description.replaceAll("\n", "# ");
         List<String> pvs = data.getPVList();
+        List<String> readbacks = data.getReadbackList();
+        List<String> deltas = data.getDeltaList();
         final StringBuilder sb = new StringBuilder(BSD_ENTRY_LENGTH * pvs.size());
         sb.append("# ").append(DESCRIPTION_TAG).append("\n# ");
         sb.append(description).append("\n#\n");
-        sb.append(H_PV_NAME).append('\n');
-        pvs.forEach(e -> sb.append(e).append('\n'));
+        if (readbacks.isEmpty() && deltas.isEmpty()) {
+            sb.append(H_PV_NAME).append('\n');
+            pvs.forEach(e -> sb.append(e).append('\n'));
+        } else if (readbacks.isEmpty()) {
+            sb.append(H_PV_NAME).append(',').append(H_DELTA).append('\n');
+            for (int i = 0; i < pvs.size(); i++) {
+                sb.append(pvs.get(i)).append(',').append(deltas.get(i)).append('\n');
+            }
+        } else if (deltas.isEmpty()) {
+            sb.append(H_PV_NAME).append(',').append(H_READBACK).append('\n');
+            for (int i = 0; i < pvs.size(); i++) {
+                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append('\n');
+            }
+        } else {
+            sb.append(H_PV_NAME).append(',').append(H_READBACK).append(',').append(H_DELTA).append('\n');
+            for (int i = 0; i < pvs.size(); i++) {
+                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',').append(deltas.get(i))
+                    .append('\n');
+            }
+        }
         return sb.toString();
     }
 }

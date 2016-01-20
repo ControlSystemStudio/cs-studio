@@ -194,7 +194,7 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
             if (saved) {
                 label.setText(text);
             } else {
-                label.setText(text + "*");
+                label.setText("*" + text + "*");
             }
         }
     }
@@ -239,7 +239,7 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
         });
     }
 
-    private void createTableForSingleSnapshot(VSnapshot snapshot, boolean showReadback) {
+    private void createTableForSingleSnapshot(VSnapshot snapshot, boolean showReadback, boolean showStoredReadback) {
         TableColumn<TableEntry, Boolean> selectedColumn = new TooltipTableColumn<>("",
             "Include this PV when restoring values", 30, 30, false);
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
@@ -297,27 +297,36 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
             controller.resume();
         });
 
-        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Setpoint Value", "Current PV value",
+        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Live Setpoint", "Current PV value",
             100);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
         liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
         liveValueColumn.setEditable(false);
 
+        List<TableColumn<TableEntry, ?>> list = new ArrayList<>(Arrays.asList(selectedColumn, idColumn, pvNameColumn,
+            timestampColumn, statusColumn, severityColumn, storedValueColumn));
+        if (showStoredReadback) {
+            TableColumn<TableEntry, VType> storedReadbackColumn = new TooltipTableColumn<>(
+                "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Stored Readback value", 100);
+            storedReadbackColumn.setCellValueFactory(new PropertyValueFactory<>("storedReadback"));
+            storedReadbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
+            storedReadbackColumn.setEditable(false);
+            list.add(storedReadbackColumn);
+        }
+        list.add(liveValueColumn);
         if (showReadback) {
             TableColumn<TableEntry, VType> readbackColumn = new TooltipTableColumn<>(
-                "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Current Readback value", 100);
+                "Live Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Current Readback value", 100);
             readbackColumn.setCellValueFactory(new PropertyValueFactory<>("readback"));
             readbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
             readbackColumn.setEditable(false);
-            getColumns().addAll(Arrays.asList(selectedColumn, idColumn, pvNameColumn, timestampColumn, statusColumn,
-                severityColumn, storedValueColumn, liveValueColumn, readbackColumn));
-        } else {
-            getColumns().addAll(Arrays.asList(selectedColumn, idColumn, pvNameColumn, timestampColumn, statusColumn,
-                severityColumn, storedValueColumn, liveValueColumn));
+            list.add(readbackColumn);
         }
+        getColumns().addAll(list);
     }
 
-    private void createTableForMultipleSnapshots(List<VSnapshot> snapshots, boolean showReadback) {
+    private void createTableForMultipleSnapshots(List<VSnapshot> snapshots, boolean showReadback,
+        boolean showStoredReadback) {
         TableColumn<TableEntry, Boolean> selectedColumn = new TooltipTableColumn<>("",
             "Include this PV when restoring values", 30, 30, false);
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
@@ -338,7 +347,7 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
         TableColumn<TableEntry, String> pvNameColumn = new TooltipTableColumn<>("PV", "The name of the PV", 170);
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
-        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Setpoint Value", "Current PV value",
+        TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Live Setpoint", "Current PV value",
             -1);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
         liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
@@ -358,6 +367,14 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
             controller.resume();
         });
         storedValueColumn.getColumns().add(baseCol);
+        if (showStoredReadback) {
+            TableColumn<TableEntry, VTypePair> storedReadbackColumn = new TooltipTableColumn<>(
+                "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Stored Readback value", 100);
+            storedReadbackColumn.setCellValueFactory(e -> e.getValue().storedReadbackProperty());
+            storedReadbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
+            storedReadbackColumn.setEditable(false);
+            storedValueColumn.getColumns().add(storedReadbackColumn);
+        }
         for (int i = 1; i < snapshots.size(); i++) {
             TooltipTableColumn<VTypePair> col = new TooltipTableColumn<>(
                 snapshots.get(i).toString() + " (" + Utilities.DELTA_CHAR + " Base)",
@@ -368,14 +385,16 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
                 final List<TableEntry> entries = controller.removeSnapshot(snapshotIndex);
                 final List<VSnapshot> snaps = controller.getAllSnapshots();
                 final boolean show = controller.isShowReadbacks();
-                Platform.runLater(() -> updateTable(entries, snaps, show));
+                final boolean showStored = controller.isShowStoredReadbacks();
+                Platform.runLater(() -> updateTable(entries, snaps, show, showStored));
             }));
             MenuItem setAsBaseItem = new MenuItem("Set As Base");
             setAsBaseItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Set new base Snapshot", () -> {
                 final List<TableEntry> entries = controller.setAsBase(snapshotIndex);
                 final List<VSnapshot> snaps = controller.getAllSnapshots();
                 final boolean show = controller.isShowReadbacks();
-                Platform.runLater(() -> updateTable(entries, snaps, show));
+                final boolean showStored = controller.isShowStoredReadbacks();
+                Platform.runLater(() -> updateTable(entries, snaps, show, showStored));
             }));
             final ContextMenu menu = new ContextMenu(removeItem, setAsBaseItem);
             col.label.setContextMenu(menu);
@@ -394,10 +413,19 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
                 }
             });
             storedValueColumn.getColumns().add(col);
+            if (showStoredReadback) {
+                TableColumn<TableEntry, VTypePair> storedReadbackColumn = new TooltipTableColumn<>(
+                    "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Stored Readback value", 100);
+                storedReadbackColumn
+                    .setCellValueFactory(e -> e.getValue().compareStoredReadbackProperty(snapshotIndex));
+                storedReadbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
+                storedReadbackColumn.setEditable(false);
+                storedValueColumn.getColumns().add(storedReadbackColumn);
+            }
         }
         if (showReadback) {
             TableColumn<TableEntry, VType> readbackColumn = new TooltipTableColumn<>(
-                "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Current Readback value", 100);
+                "Live Readback (" + Utilities.DELTA_CHAR + " Live Setpoint)", "Current Readback value", 100);
             readbackColumn.setCellValueFactory(new PropertyValueFactory<>("readback"));
             readbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
             readbackColumn.setEditable(false);
@@ -415,15 +443,17 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
      * @param entries the table entries (rows) to set on the table
      * @param snapshots the snapshots which are currently displayed
      * @param showReadback true if readback column should be visible or false otherwise
+     * @param showStoredReadback true if the stored readback value columns should be visible or false otherwise
      */
-    public void updateTable(List<TableEntry> entries, List<VSnapshot> snapshots, boolean showReadback) {
+    public void updateTable(List<TableEntry> entries, List<VSnapshot> snapshots, boolean showReadback,
+        boolean showStoredReadback) {
         getColumns().clear();
         uiSnapshots.clear();
         uiSnapshots.addAll(snapshots);
         if (snapshots.size() == 1) {
-            createTableForSingleSnapshot(snapshots.get(0), showReadback);
+            createTableForSingleSnapshot(snapshots.get(0), showReadback, showStoredReadback);
         } else {
-            createTableForMultipleSnapshots(snapshots, showReadback);
+            createTableForMultipleSnapshots(snapshots, showReadback, showStoredReadback);
         }
         updateTableColumnTitles();
         updateTable(entries);

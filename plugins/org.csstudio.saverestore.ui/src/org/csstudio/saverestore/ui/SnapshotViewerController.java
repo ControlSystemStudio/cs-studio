@@ -78,6 +78,8 @@ public class SnapshotViewerController {
 
     private static final Executor UI_EXECUTOR = command -> Platform.runLater(command);
 
+    private static final String EMPTY_STRING = "";
+
     private class PV {
         final PVReader<VType> reader;
         final PVWriter<Object> writer;
@@ -123,7 +125,6 @@ public class SnapshotViewerController {
     private final List<VSnapshot> snapshots = new ArrayList<>(10);
     private final Map<String, TableEntry> items = new LinkedHashMap<>();
     private final Map<String, String> readbacks = new HashMap<>();
-    private final Map<String, Threshold<?>> thresholds = new HashMap<>();
     private final Map<TableEntry, PV> pvs = new LinkedHashMap<>();
     private List<TableEntry> filteredList = new ArrayList<>(0);
     private final GUIUpdateThrottle throttle = new GUIUpdateThrottle(20, TABLE_UPDATE_RATE) {
@@ -144,6 +145,7 @@ public class SnapshotViewerController {
     private final SnapshotViewerEditor owner;
 
     private boolean showReadbacks = false;
+    private boolean showStoredReadbacks = false;
     private boolean hideEqualItems = false;
     private String filter = null;
 
@@ -233,6 +235,8 @@ public class SnapshotViewerController {
         List<String> names = data.getNames();
         List<VType> values = data.getValues();
         List<Boolean> selected = data.getSelected();
+        List<String> rbs = data.getReadbackNames();
+        List<VType> rbValues = data.getReadbackValues();
         synchronized (snapshots) {
             snapshots.add(data);
         }
@@ -246,7 +250,15 @@ public class SnapshotViewerController {
             e.pvNameProperty().setValue(name);
             e.selectedProperty().setValue(selected.get(i));
             e.setSnapshotValue(values.get(i), numberOfSnapshots);
+            if (rbValues.size() > i) {
+                e.setStoredReadbackValue(rbValues.get(i),numberOfSnapshots);
+            }
             items.put(name, e);
+            String s = readbacks.get(name);
+            if (rbs.size() > i && (s == null || s.isEmpty())) {
+                readbacks.put(name, rbs.get(i));
+                e.readbackNameProperty().set(rbs.get(i));
+            }
         }
         numberOfSnapshots = 1;
         connectPVs();
@@ -271,6 +283,9 @@ public class SnapshotViewerController {
         } else {
             List<String> names = data.getNames();
             List<VType> values = data.getValues();
+            List<String> rbs = data.getReadbackNames();
+            List<VType> rbValues = data.getReadbackValues();
+            boolean update = false;
             String n;
             TableEntry e;
             List<TableEntry> withoutValue = new ArrayList<>(items.values());
@@ -282,8 +297,17 @@ public class SnapshotViewerController {
                     e.idProperty().setValue(items.size() + i + 1);
                     e.pvNameProperty().setValue(n);
                     items.put(n, e);
+                    String s = readbacks.get(n);
+                    if (rbs.size() > i && (s == null || s.isEmpty())) {
+                        readbacks.put(n, rbs.get(i));
+                        e.readbackNameProperty().set(rbs.get(i));
+                    }
+                    update = true;
                 }
                 e.setSnapshotValue(values.get(i), numberOfSnapshots);
+                if (rbValues.size() > i) {
+                    e.setStoredReadbackValue(rbValues.get(i),numberOfSnapshots);
+                }
                 withoutValue.remove(e);
             }
             for (TableEntry te : withoutValue) {
@@ -297,28 +321,39 @@ public class SnapshotViewerController {
             if (!snapshotSaveableProperty.get()) {
                 snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
             }
-            updateThresholds();
+            if (update) {
+                updateThresholds();
+            }
             return filter(items.values(), filter);
         }
     }
 
     private void updateThresholds() {
-        ExtensionPointLoader.getInstance().getParametersProvider().ifPresent(e -> {
-            List<String> missingThresholds = new ArrayList<>();
-            items.forEach((k, v) -> {
-                if (thresholds.containsKey(k)) {
-                    v.setThreshold(Optional.of(thresholds.get(k)));
-                } else {
-                    missingThresholds.add(k);
+        Optional<ParametersProvider> provider = ExtensionPointLoader.getInstance().getParametersProvider();
+        if (provider.isPresent()) {
+            final List<String> pvNames = new ArrayList<>(items.size());
+            final List<VType> values = new ArrayList<>(items.size());
+            items.values().forEach(i -> {
+                pvNames.add(i.pvNameProperty().get());
+                values.add(i.valueProperty().get().value);
+            });
+            Map<String, Threshold<?>> thresholds = provider.get().getThresholds(pvNames, values,
+                getSnapshot(0).getBeamlineSet().getBaseLevel());
+            items.forEach((k, v) -> v.setThreshold(Optional.ofNullable(thresholds.get(k))));
+        } else {
+            final Map<String, Threshold<?>> thresholds = new HashMap<>(items.size());
+            items.values().forEach(i -> {
+                String pv = i.pvNameProperty().get();
+                for (VSnapshot s : getAllSnapshots()) {
+                    Threshold<?> d = s.getThreshold(pv);
+                    if (d != null) {
+                        thresholds.put(pv, d);
+                        break;
+                    }
                 }
             });
-            if (!missingThresholds.isEmpty()) {
-                Map<String, Threshold<?>> rbs = e.getThresholds(missingThresholds);
-                thresholds.putAll(rbs);
-            }
             items.forEach((k, v) -> v.setThreshold(Optional.ofNullable(thresholds.get(k))));
-            connectPVs();
-        });
+        }
     }
 
     /**
@@ -458,16 +493,37 @@ public class SnapshotViewerController {
             List<String> names = new ArrayList<>(items.size());
             List<VType> values = new ArrayList<>(items.size());
             List<Boolean> selected = new ArrayList<>(items.size());
+            List<String> readbackNames = new ArrayList<>(items.size());
+            List<VType> readbackValues = new ArrayList<>(items.size());
+            List<String> deltas = new ArrayList<>(items.size());
+            PV pv;
+            String name;
+            String delta = null;
             for (TableEntry t : items.values()) {
-                names.add(t.pvNameProperty().get());
-                VType val = pvs.get(t).value;// t.liveValueProperty().get();
-                values.add(val == null ? VNoData.INSTANCE : val);
+                name = t.pvNameProperty().get();
+                names.add(name);
+                pv = pvs.get(t);
+                values.add(pv == null || pv.value == null ? VNoData.INSTANCE : pv.value);
                 selected.add(t.selectedProperty().get());
+                String readback = readbacks.get(name);
+                readbackNames.add(readback == null ? EMPTY_STRING : readback);
+                readbackValues.add(pv == null || pv.readbackValue == null ? VNoData.INSTANCE : pv.readbackValue);
+                for (VSnapshot s : getAllSnapshots()) {
+                    delta = s.getDelta(name);
+                    if (delta != null) {
+                        break;
+                    }
+                }
+                if (delta == null) {
+                    delta = EMPTY_STRING;
+                }
+                deltas.add(delta);
             }
             // taken snapshots always belong to the beamline set of the master snapshot
             BeamlineSet set = getSnapshot(0).getBeamlineSet();
             Snapshot snapshot = new Snapshot(set);
-            VSnapshot taken = new VSnapshot(snapshot, names, selected, values, Timestamp.now());
+            VSnapshot taken = new VSnapshot(snapshot, names, selected, values, readbackNames, readbackValues, deltas,
+                Timestamp.now());
             owner.addSnapshot(taken);
             SaveRestoreService.LOGGER.log(Level.FINE, "Snapshot taken for '" + set.getFullyQualifiedName() + "'.");
         } finally {
@@ -621,7 +677,8 @@ public class SnapshotViewerController {
             BeamlineSet set = new BeamlineSet(new Branch("master", "master"), Optional.empty(), p.split("/"), null);
             Snapshot descriptor = new Snapshot(set, sc.date, "No Comment\nLoaded from file " + file.getAbsolutePath(),
                 "OS");
-            return Optional.of(new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, snapshotTime));
+            return Optional.of(new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
+                sc.readbackData, sc.deltas, snapshotTime));
         } catch (Exception e) {
             Selector.reportException(e, owner.getSite().getShell());
             return Optional.empty();
@@ -734,7 +791,26 @@ public class SnapshotViewerController {
             return snapshots.stream().filter(e -> (saveable && e.isSaveable()) || (!saveable && e.isSaved()))
                 .collect(Collectors.toList());
         }
+    }
 
+    /**
+     * Toggles the visibility of the stored readback values.
+     *
+     * @param show true to show the stored readback values or false to hide
+     * @param consumer the consumer that is notified when the value is updated
+     */
+    public void showStoredReadbacks(boolean show, final Consumer<List<TableEntry>> consumer) {
+        this.showStoredReadbacks = show;
+        SaveRestoreService.getInstance().execute("Show stored readbacks", () -> consumer.accept(filteredList));
+    }
+
+    /**
+     * Returns whether the stored readbacks are displayed in the table or not.
+     *
+     * @return true if displayed, or false if not displayed
+     */
+    public boolean isShowStoredReadbacks() {
+        return showStoredReadbacks;
     }
 
     /**
@@ -747,25 +823,24 @@ public class SnapshotViewerController {
      */
     public void showReadbacks(boolean show, final Consumer<List<TableEntry>> consumer) {
         this.showReadbacks = show;
-        if (show) {
-            ExtensionPointLoader.getInstance().getParametersProvider()
-                .ifPresent(e -> SaveRestoreService.getInstance().execute("Load readback names", () -> {
+        final Optional<ParametersProvider> provider = ExtensionPointLoader.getInstance().getParametersProvider();
+        SaveRestoreService.getInstance().execute("Load readback names", () -> {
+            if (show) {
+                if (provider.isPresent()) {
                     List<String> reads = items.keySet().stream().filter(k -> !readbacks.containsKey(k))
                         .collect(Collectors.toList());
                     if (!reads.isEmpty()) {
-                        Map<String, String> rbs = e.getReadbackNames(reads);
+                        Map<String, String> rbs = provider.get().getReadbackNames(reads);
                         for (String r : reads) {
                             readbacks.put(r, rbs.get(r));
                         }
                     }
-                    items.values().forEach(t -> t.readbackNameProperty().set(readbacks.get(t.pvNameProperty().get())));
-                    connectPVs();
-                    consumer.accept(filter(items.values(), filter));
-                }));
-        } else {
-            SaveRestoreService.getInstance().execute("Load readback names",
-                () -> consumer.accept(filter(items.values(), filter)));
-        }
+                }
+                items.values().forEach(t -> t.readbackNameProperty().set(readbacks.get(t.pvNameProperty().get())));
+                connectPVs();
+            }
+            consumer.accept(filter(items.values(), filter));
+        });
     }
 
     /**
