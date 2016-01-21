@@ -78,7 +78,7 @@ public class ActionManager {
             throw new IllegalArgumentException("Cannot import from an unknown branch.");
         }
         int ans = new FXMessageDialog(owner.getSite().getShell(), "Import Snapshots", null,
-            "Do you want to import any snapshots for the selected beamline sets?", FXMessageDialog.QUESTION,
+            "Do you want to import any snapshots for the selected beamline sets?", FXMessageDialog.DialogType.QUESTION,
             new String[] { "No", "Last Only", "All", "Cancel" }, 0).open();
         if (ans == 3) {
             // cancelled

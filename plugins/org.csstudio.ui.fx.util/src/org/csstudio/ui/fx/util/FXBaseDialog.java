@@ -49,7 +49,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
     private boolean allowedToContinue;
     protected Button okButton;
 
-    protected Composite parent;
+    private Composite parent;
 
     /**
      * Creates an input dialog with OK and Cancel buttons. Note that the dialog will have no visual representation (no
@@ -69,6 +69,15 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
         this.value = initialValue;
         this.validator = validator;
         setBlockOnOpen(true);
+    }
+
+    /**
+     * Returns the top composite of this dialog.
+     *
+     * @return the main composite
+     */
+    public Composite getTopComposite() {
+        return parent;
     }
 
     @Override

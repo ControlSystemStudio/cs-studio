@@ -78,7 +78,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         Label nameLabel = new Label("Beamline Set Name:");
         Label fullNameLabel = new Label("Full Name:");
 
-        String cl = FXUtilities.toBackgroundColorStyle(parent.getBackground());
+        String cl = FXUtilities.toBackgroundColorStyle(getTopComposite().getBackground());
         nameLabel.setStyle(cl);
         fullNameLabel.setStyle(cl);
 

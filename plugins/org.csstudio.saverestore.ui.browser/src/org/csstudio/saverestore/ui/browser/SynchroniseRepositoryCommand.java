@@ -3,7 +3,6 @@ package org.csstudio.saverestore.ui.browser;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -13,7 +12,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SynchroniseRepositoryCommand extends AbstractHandler implements IHandler {
+public class SynchroniseRepositoryCommand extends AbstractHandler {
 
     /*
      * (non-Javadoc)

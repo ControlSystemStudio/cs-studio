@@ -52,8 +52,6 @@ public class BeamlineSetEditor extends FXEditorPart {
 
     private final PseudoClass alertedPseudoClass = PseudoClass.getPseudoClass("alerted");
 
-    private Scene scene;
-    private BorderPane contentPane;
     private TextArea descriptionArea;
     private TextArea contentArea;
 
@@ -232,21 +230,24 @@ public class BeamlineSetEditor extends FXEditorPart {
         super.setInput(input);
         setPartName(input.getName());
         firePropertyChange(PROP_INPUT);
+        init();
     }
 
     private void setBeamlineSet(final BeamlineSetData data) {
-        this.data = data;
-        List<Entry> list = data.getEntries();
-        final StringBuilder sb = new StringBuilder(list.size() * 200);
-        list.forEach(e -> sb.append(e).append('\n'));
-        Platform.runLater(() -> {
-            String description = data.getDescription();
-            descriptionArea.setText(description);
-            orgText = sb.toString().trim();
-            contentArea.setText(orgText);
-            dirty = false;
-            firePropertyChange(PROP_DIRTY);
-        });
+        if (descriptionArea != null) {
+            this.data = data;
+            List<Entry> list = data.getEntries();
+            final StringBuilder sb = new StringBuilder(list.size() * 200);
+            list.forEach(e -> sb.append(e).append('\n'));
+            Platform.runLater(() -> {
+                String description = data.getDescription();
+                descriptionArea.setText(description);
+                orgText = sb.toString().trim();
+                contentArea.setText(orgText);
+                dirty = false;
+                firePropertyChange(PROP_DIRTY);
+            });
+        }
     }
 
     /*
@@ -256,9 +257,7 @@ public class BeamlineSetEditor extends FXEditorPart {
      */
     @Override
     protected Scene createFxScene() {
-        contentPane = new BorderPane();
-        contentPane.setCenter(createCenterPane());
-        scene = new Scene(contentPane);
+        Scene scene = new Scene(new BorderPane(createCenterPane()));
         init();
         return scene;
     }
@@ -284,7 +283,8 @@ public class BeamlineSetEditor extends FXEditorPart {
         contentLabel.setFont(Font.font(15));
 
         contentArea = new TextArea();
-        contentArea.getStylesheets().add(this.getClass().getResource(SnapshotViewerEditor.STYLE).toExternalForm());
+        contentArea.getStylesheets()
+            .add(BeamlineSetEditor.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
         contentArea.setEditable(true);
         contentArea.setTooltip(new Tooltip("The list of PVs in this beamline set"));
         contentArea.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);

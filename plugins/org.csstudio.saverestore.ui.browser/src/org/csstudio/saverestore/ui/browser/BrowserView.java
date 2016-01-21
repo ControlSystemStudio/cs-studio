@@ -4,6 +4,7 @@ import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -92,7 +93,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         @Override
         public String toString() {
             String p = path[path.length - 1];
-            if (p.toLowerCase().endsWith(".bms") && p.length() > 4) {
+            if (p.toLowerCase(Locale.UK).endsWith(".bms") && p.length() > 4) {
                 return p.substring(0, p.length()-4);
             } else {
                 return p;
@@ -405,7 +406,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                 }
             }
         });
-        snapshotsList.getStylesheets().add(this.getClass().getResource("taggedCell.css").toExternalForm());
+        snapshotsList.getStylesheets().add(BrowserView.class.getResource("taggedCell.css").toExternalForm());
 
         snapshotsList.setOnDragDetected(e -> {
             Dragboard db = snapshotsList.startDragAndDrop(TransferMode.ANY);

@@ -1,6 +1,8 @@
 package org.csstudio.saverestore.ui;
 
 import java.lang.reflect.Field;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,9 +60,41 @@ import javafx.util.StringConverter;
 public class Table extends TableView<TableEntry> implements ISelectionProvider {
 
     private static boolean resizePolicyNotInitialized = true;
+    private static PrivilegedAction<Object> resizePolicyAction = () -> {
+        try {
+            // Java FX bugfix: the table columns are not properly resized for the first table
+            Field f = TableView.CONSTRAINED_RESIZE_POLICY.getClass().getDeclaredField("isFirstRun");
+            f.setAccessible(true);
+            f.set(TableView.CONSTRAINED_RESIZE_POLICY, Boolean.FALSE);
+        } catch (NoSuchFieldException | IllegalAccessException | RuntimeException e) {
+            // ignore
+        }
+        // Even if failed to set the policy, pretend that it was set. In such case the UI will be slightly dorked the
+        // first time, but will be OK in all other cases.
+        resizePolicyNotInitialized = false;
+        return null;
+    };
 
     /**
+     * <code>TimestampTableCell</code> is a table cell for rendering the {@link Timestamp} objects in the table.
      *
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+     *
+     */
+    private static class TimestampTableCell extends TableCell<TableEntry, Timestamp> {
+        @Override
+        protected void updateItem(Timestamp item, boolean empty) {
+            super.updateItem(item, empty);
+            if (item == null || empty) {
+                setText(null);
+                setStyle("");
+            } else {
+                setText(Utilities.timestampToString(item));
+            }
+        }
+    }
+
+    /**
      * <code>VTypeCellEditor</code> is an editor type for {@link VType} or {@link VTypePair}, which allows editing the
      * value as a string.
      *
@@ -213,22 +247,14 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
      */
     public Table(SnapshotViewerController controller) {
         if (resizePolicyNotInitialized) {
-            try {
-                // Java FX bugfix: the table columns are not properly resized for the first table
-                Field f = TableView.CONSTRAINED_RESIZE_POLICY.getClass().getDeclaredField("isFirstRun");
-                f.setAccessible(true);
-                f.set(TableView.CONSTRAINED_RESIZE_POLICY, Boolean.FALSE);
-            } catch (Exception e) {
-                // ignore
-            }
-            resizePolicyNotInitialized = false;
+            AccessController.doPrivileged(resizePolicyAction);
         }
         this.controller = controller;
         setEditable(true);
         getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         setMaxWidth(Double.MAX_VALUE);
         setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        getStylesheets().add(this.getClass().getResource(SnapshotViewerEditor.STYLE).toExternalForm());
+        getStylesheets().add(Table.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
 
         setOnMouseClicked(e -> {
             if (getSelectionModel().getSelectedCells() != null && !getSelectionModel().getSelectedCells().isEmpty()) {
@@ -263,18 +289,7 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
         TableColumn<TableEntry, Timestamp> timestampColumn = new TooltipTableColumn<>("Timestamp",
             "Timestamp of the value when the snapshot was taken", width, width, true);
         timestampColumn.setCellValueFactory(new PropertyValueFactory<TableEntry, Timestamp>("timestamp"));
-        timestampColumn.setCellFactory(c -> new TableCell<TableEntry, Timestamp>() {
-            @Override
-            protected void updateItem(Timestamp item, boolean empty) {
-                super.updateItem(item, empty);
-                if (item == null || empty) {
-                    setText(null);
-                    setStyle("");
-                } else {
-                    setText(Utilities.timestampToString(item));
-                }
-            }
-        });
+        timestampColumn.setCellFactory(c -> new TimestampTableCell());
         timestampColumn.setPrefWidth(width);
 
         TableColumn<TableEntry, String> statusColumn = new TooltipTableColumn<>("Status",

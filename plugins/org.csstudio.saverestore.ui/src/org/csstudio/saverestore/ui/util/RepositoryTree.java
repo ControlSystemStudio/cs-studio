@@ -196,7 +196,7 @@ public class RepositoryTree extends TreeView<String> {
         });
         popup.getItems().add(newFolderItem);
         setContextMenu(popup);
-        
+
         setOnMouseReleased(e -> {
             if (e.getButton() == MouseButton.SECONDARY) {
                 final BrowsingTreeItem item = (BrowsingTreeItem) getSelectionModel().getSelectedItem();
@@ -319,15 +319,15 @@ public class RepositoryTree extends TreeView<String> {
         items.put("/", parentItem);
         for (BeamlineSet set : beamlineSets) {
             String[] path = set.getPath();
-            String currentPath = "";
-            BrowsingTreeItem setParent = parentItem;
+            StringBuilder currentPath = new StringBuilder(100);
+            BrowsingTreeItem setParent;
             BrowsingTreeItem parent = parentItem;
             for (int i = 0; i < path.length - 1; i++) {
-                currentPath += "/" + path[i];
-                setParent = items.get(currentPath);
+                currentPath.append('/').append(path[i]);
+                setParent = items.get(currentPath.toString());
                 if (setParent == null) {
                     setParent = new BrowsingTreeItem(path[i], false);
-                    items.put(currentPath, setParent);
+                    items.put(currentPath.toString(), setParent);
                     parent.getChildren().add(setParent);
                 }
                 parent = setParent;

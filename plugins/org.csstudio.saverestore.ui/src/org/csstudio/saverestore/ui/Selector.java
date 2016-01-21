@@ -127,7 +127,7 @@ public class Selector {
                         () -> reloadBeamlineSets(base, toBranch));
                 } else if (base == null && !toBase.isPresent()) {
                     SaveRestoreService.getInstance().execute("Load beamline sets",
-                        () -> reloadBeamlineSets(base, toBranch));
+                        () -> reloadBeamlineSets(null, toBranch));
                 } else {
                     SaveRestoreService.getInstance().execute("Load base levels", () -> readBaseLevels(true));
                 }
@@ -384,7 +384,7 @@ public class Selector {
      * @return true if the selected branch is the default branch or false otherwise
      */
     public boolean isDefaultBranch() {
-        return DEFAULT_BRANCH.equals(selectedBranch.get());
+        return DEFAULT_BRANCH.equals(selectedBranchProperty().get());
     }
 
     /**

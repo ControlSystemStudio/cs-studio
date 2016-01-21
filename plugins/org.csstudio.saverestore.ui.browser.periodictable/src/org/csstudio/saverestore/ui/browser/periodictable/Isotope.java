@@ -1,6 +1,6 @@
 package org.csstudio.saverestore.ui.browser.periodictable;
 
-import java.io.Serializable;
+import java.util.Locale;
 import java.util.Objects;
 
 import org.csstudio.saverestore.data.BaseLevel;
@@ -13,7 +13,7 @@ import org.csstudio.saverestore.data.Branch;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class Isotope extends BaseLevel implements Serializable {
+public class Isotope extends BaseLevel {
 
     private static final long serialVersionUID = -3119527921225304647L;
 
@@ -67,7 +67,7 @@ public class Isotope extends BaseLevel implements Serializable {
         String[] parts = storageName.split("\\_");
         Element e = null;
         try {
-            e = Element.valueOf(parts[0].toUpperCase());
+            e = Element.valueOf(parts[0].toUpperCase(Locale.UK));
         } catch (IllegalArgumentException ex) {
             throw new IllegalArgumentException("'" + parts[0] + "' is not a valid name.");
         }

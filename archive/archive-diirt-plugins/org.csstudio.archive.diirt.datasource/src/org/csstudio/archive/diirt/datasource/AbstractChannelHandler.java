@@ -28,6 +28,9 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
 
     protected static final Logger LOGGER = Logger.getLogger(AbstractChannelHandler.class.getName());
 
+    private static Comparator<VType> timestampComparator = (o1, o2) -> ((Time) o1).getTimestamp()
+        .compareTo(((Time) o2).getTimestamp());
+
     private final String strippedName;
     private final ArchiveSource[] sources;
     private final int binCount;
@@ -73,12 +76,7 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
                 }
             }
         }
-        Collections.sort(values, new Comparator<VType>() {
-            @Override
-            public int compare(VType o1, VType o2) {
-                return ((Time) o1).getTimestamp().compareTo(((Time) o2).getTimestamp());
-            }
-        });
+        Collections.sort(values, timestampComparator);
         return values;
     }
 
@@ -131,8 +129,7 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
      * @param optimised true for optimised retrieval, false for raw values
      * @throws Exception in case of an error fetching the data from the archive reader
      */
-    protected void fetchData(Timestamp startTime, Timestamp endTime, boolean optimised)
-        throws Exception {
+    protected void fetchData(Timestamp startTime, Timestamp endTime, boolean optimised) throws Exception {
         List<VType> values;
         boolean singleValue = startTime.equals(endTime);
         if (singleValue) {

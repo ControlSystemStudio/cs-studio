@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.csstudio.saverestore.data.Threshold;
 import org.diirt.util.array.ArrayBoolean;
@@ -71,8 +72,11 @@ public final class Utilities {
      *
      */
     public static class VTypeComparison {
+        /** The string representation of the comparison result. May include delta character etc. */
         public final String string;
+        /** 0 if values are identical, -1 if first value is less than second or 1 otherwise */
         public final int valuesEqual;
+        /** Indicates if the values are within the allowed threshold */
         public final boolean withinThreshold;
 
         private VTypeComparison(String string, int equal, boolean withinThreshold) {
@@ -246,15 +250,16 @@ public final class Utilities {
             StringBuilder sb = new StringBuilder(list.size() * 10);
             sb.append('[');
             IteratorNumber it = list.iterator();
+            Pattern pattern = Pattern.compile("\\,");
             if (type instanceof VDoubleArray) {
                 while (it.hasNext()) {
                     String str = String.valueOf(it.nextDouble());
-                    sb.append(str.replaceAll("\\,", "\\.")).append(';');
+                    sb.append(pattern.matcher(str).replaceAll("\\.")).append(';');
                 }
             } else if (type instanceof VFloatArray) {
                 while (it.hasNext()) {
                     String str = String.valueOf(it.nextFloat());
-                    sb.append(str.replaceAll("\\,", "\\.")).append(';');
+                    sb.append(pattern.matcher(str).replaceAll("\\.")).append(';');
                 }
             } else if (type instanceof VLongArray) {
                 while (it.hasNext()) {

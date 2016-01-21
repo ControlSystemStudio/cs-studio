@@ -43,60 +43,16 @@ import javafx.scene.text.Font;
  *
  */
 public class FXMessageDialog extends IconAndMessageDialog {
-    /**
-     * Constant for no image (value 0).
-     *
-     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
-     */
-    public final static int NONE = 0;
 
     /**
-     * Constant for the error image, or a simple dialog with the error image and a single OK button (value 1).
+     * <code>DialogType</code> represents the possible dialog types, which define the image displayed in the dialog.
      *
-     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
-     * @see #open(int, Shell, String, String, int)
-     */
-    public final static int ERROR = 1;
-
-    /**
-     * Constant for the info image, or a simple dialog with the info image and a single OK button (value 2).
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *
-     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
-     * @see #open(int, Shell, String, String, int)
      */
-    public final static int INFORMATION = 2;
-
-    /**
-     * Constant for the question image, or a simple dialog with the question image and Yes/No buttons (value 3).
-     *
-     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
-     * @see #open(int, Shell, String, String, int)
-     */
-    public final static int QUESTION = 3;
-
-    /**
-     * Constant for the warning image, or a simple dialog with the warning image and a single OK button (value 4).
-     *
-     * @see #MessageDialog(Shell, String, Image, String, int, String[], int)
-     * @see #open(int, Shell, String, String, int)
-     */
-    public final static int WARNING = 4;
-
-    /**
-     * Constant for a simple dialog with the question image and OK/Cancel buttons (value 5).
-     *
-     * @see #open(int, Shell, String, String, int)
-     * @since 3.5
-     */
-    public final static int CONFIRM = 5;
-
-    /**
-     * Constant for a simple dialog with the question image and Yes/No/Cancel buttons (value 6).
-     *
-     * @see #open(int, Shell, String, String, int)
-     * @since 3.5
-     */
-    public final static int QUESTION_WITH_CANCEL = 6;
+    public static enum DialogType {
+        NONE, ERROR, INFORMATION, QUESTION, WARNING, CONFIRM, QUESTION_WITH_CANCEL
+    }
 
     /**
      * Labels for buttons in the button bar (localized strings).
@@ -148,19 +104,12 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @param dialogTitle the dialog title, or <code>null</code> if none
      * @param dialogTitleImage the dialog title image, or <code>null</code> if none
      * @param dialogMessage the dialog message
-     * @param dialogImageType one of the following values:
-     *            <ul>
-     *            <li><code>MessageDialog.NONE</code> for a dialog with no image</li>
-     *            <li><code>MessageDialog.ERROR</code> for a dialog with an error image</li>
-     *            <li><code>MessageDialog.INFORMATION</code> for a dialog with an information image</li>
-     *            <li><code>MessageDialog.QUESTION </code> for a dialog with a question image</li>
-     *            <li><code>MessageDialog.WARNING</code> for a dialog with a warning image</li>
-     *            </ul>
+     * @param dialogType one of the possible dialog types
      * @param dialogButtonLabels an array of labels for the buttons in the button bar
      * @param defaultIndex the index in the button label array of the default button
      */
     public FXMessageDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage,
-        int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
+        DialogType dialogType, String[] dialogButtonLabels, int defaultIndex) {
         super(parentShell);
         this.title = dialogTitle;
         this.titleImage = dialogTitleImage;
@@ -171,7 +120,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
         }
         this.buttonWidth += 25;
 
-        switch (dialogImageType) {
+        switch (dialogType) {
             case ERROR: {
                 this.image = getErrorImage();
                 break;
@@ -190,6 +139,10 @@ public class FXMessageDialog extends IconAndMessageDialog {
                 this.image = getWarningImage();
                 break;
             }
+            case NONE:
+            default:
+                this.image = null;
+                break;
         }
         this.buttonLabels = dialogButtonLabels;
         this.defaultButtonIndex = defaultIndex;
@@ -310,7 +263,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @return <code>true</code> if the user presses the OK or Yes button, <code>false</code> otherwise
      * @since 3.5
      */
-    public static boolean open(final int kind, final Shell parent, final String title, final String message,
+    public static boolean open(final DialogType kind, final Shell parent, final String title, final String message,
         final int style) {
         final int[] ans = new int[] { -1 };
         parent.getDisplay().syncExec(() -> {
@@ -321,7 +274,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
         return ans[0] == 0;
     }
 
-    private static String[] getButtonLabels(int kind) {
+    private static String[] getButtonLabels(DialogType kind) {
         String[] dialogButtonLabels;
         switch (kind) {
             case ERROR:
@@ -364,8 +317,8 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @return <code>true</code> if the user presses the OK button, <code>false</code> otherwise
      */
     public static int openYesNoCancel(Shell parent, String title, String message) {
-        FXMessageDialog dialog = new FXMessageDialog(parent, title, null, message, QUESTION_WITH_CANCEL,
-            getButtonLabels(QUESTION_WITH_CANCEL), 0);
+        FXMessageDialog dialog = new FXMessageDialog(parent, title, null, message, DialogType.QUESTION_WITH_CANCEL,
+            getButtonLabels(DialogType.QUESTION_WITH_CANCEL), 0);
         return dialog.open();
     }
 
@@ -378,7 +331,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @return <code>true</code> if the user presses the OK button, <code>false</code> otherwise
      */
     public static boolean openConfirm(Shell parent, String title, String message) {
-        return open(CONFIRM, parent, title, message, SWT.NONE);
+        return open(DialogType.CONFIRM, parent, title, message, SWT.NONE);
     }
 
     /**
@@ -389,7 +342,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @param message the message
      */
     public static void openError(Shell parent, String title, String message) {
-        open(ERROR, parent, title, message, SWT.NONE);
+        open(DialogType.ERROR, parent, title, message, SWT.NONE);
     }
 
     /**
@@ -400,7 +353,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @param message the message
      */
     public static void openInformation(Shell parent, String title, String message) {
-        open(INFORMATION, parent, title, message, SWT.NONE);
+        open(DialogType.INFORMATION, parent, title, message, SWT.NONE);
     }
 
     /**
@@ -412,7 +365,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @return <code>true</code> if the user presses the Yes button, <code>false</code> otherwise
      */
     public static boolean openQuestion(Shell parent, String title, String message) {
-        return open(QUESTION, parent, title, message, SWT.NONE);
+        return open(DialogType.QUESTION, parent, title, message, SWT.NONE);
     }
 
     /**
@@ -423,7 +376,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
      * @param message the message
      */
     public static void openWarning(Shell parent, String title, String message) {
-        open(WARNING, parent, title, message, SWT.NONE);
+        open(DialogType.WARNING, parent, title, message, SWT.NONE);
     }
 
     /**
@@ -438,7 +391,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
             return false;
         }
         if (customArea instanceof CLabel) {
-            return (customArea.getStyle() & SWT.NO_FOCUS) > 0;
+            return (customArea.getStyle() & SWT.NO_FOCUS) != 0;
         }
         return true;
     }

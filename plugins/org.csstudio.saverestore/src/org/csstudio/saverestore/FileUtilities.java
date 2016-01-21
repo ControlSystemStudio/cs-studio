@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.csstudio.saverestore.data.BeamlineSetData;
@@ -120,7 +121,7 @@ public final class FileUtilities {
             } else if (header == null) {
                 header = line.split("\\,");
                 for (int i = 0; i < header.length; i++) {
-                    headerMap.put(header[i].toUpperCase(), Integer.valueOf(i));
+                    headerMap.put(header[i].toUpperCase(Locale.UK), Integer.valueOf(i));
                 }
             } else {
                 if (headerMap.size() == 0) {
@@ -204,8 +205,8 @@ public final class FileUtilities {
         String[] t = timestamp != null && timestamp.indexOf('.') > 0 ? timestamp.split("\\.")
             : new String[] { "0", "0" };
         Time time = ValueFactory.newTime(Timestamp.of(Long.parseLong(t[0]), Integer.parseInt(t[1])));
-        Alarm alarm = ValueFactory
-            .newAlarm(severity.isEmpty() ? AlarmSeverity.NONE : AlarmSeverity.valueOf(severity.toUpperCase()), status);
+        Alarm alarm = ValueFactory.newAlarm(
+            severity.isEmpty() ? AlarmSeverity.NONE : AlarmSeverity.valueOf(severity.toUpperCase(Locale.UK)), status);
         Display display = ValueFactory.newDisplay(0d, 0d, 0d, null, null, 0d, 0d, 0d, 0d, 0d);
         ValueType vtype = ValueType.forName(valueType);
 
@@ -297,6 +298,7 @@ public final class FileUtilities {
                 ListDouble datand = new ArrayDouble(ndd);
                 return ValueFactory.newVDoubleArray(datand, alarm, time, display);
             case DOUBLE:
+            case NUMBER:
                 return ValueFactory.newVDouble(Double.parseDouble(value), alarm, time, display);
             case FLOAT:
                 return ValueFactory.newVFloat(Float.parseFloat(value), alarm, time, display);
@@ -315,8 +317,6 @@ public final class FileUtilities {
             case ENUM:
                 List<String> lbls = Arrays.asList(valueAndLabels[1]);
                 return ValueFactory.newVEnum(lbls.indexOf(value), lbls, alarm, time);
-            case NUMBER:
-                return ValueFactory.newVDouble(Double.parseDouble(value), alarm, time, display);
             case NODATA:
                 return VNoData.INSTANCE;
         }
@@ -366,7 +366,7 @@ public final class FileUtilities {
         for (int i = 0; i < names.size(); i++) {
             sb.append(createSnapshotFileEntry(names.get(i), selected.get(i), values.get(i),
                 noReadbacks ? null : readbacks.get(i), noReadbacks ? null : readbackValues.get(i),
-                    deltaEmpty ? null : deltas.get(i))).append('\n');
+                deltaEmpty ? null : deltas.get(i))).append('\n');
         }
         return sb.toString();
     }
@@ -382,8 +382,8 @@ public final class FileUtilities {
      * @param delta the threshold value or function
      * @return into string converted given snapshot entry data.
      */
-    private static String createSnapshotFileEntry(String name, boolean selected, VType data,
-        String readbackName, VType readbackValue, String delta) {
+    private static String createSnapshotFileEntry(String name, boolean selected, VType data, String readbackName,
+        VType readbackValue, String delta) {
         StringBuilder sb = new StringBuilder(SNP_ENTRY_LENGTH);
         sb.append(name).append(',');
         sb.append(selected ? 1 : 0).append(',');

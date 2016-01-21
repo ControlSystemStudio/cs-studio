@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +19,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.TimeZone;
@@ -1014,15 +1016,15 @@ public class GitManager {
      */
     public synchronized List<Snapshot> findSnapshotsByTag(String partialTagNameOrMessage, Branch branch)
         throws GitAPIException, IOException {
-        partialTagNameOrMessage = partialTagNameOrMessage.toLowerCase();
+        partialTagNameOrMessage = partialTagNameOrMessage.toLowerCase(Locale.UK);
         final Pattern pattern = Pattern.compile(".*" + partialTagNameOrMessage + ".*");
         return findSnapshotsByTag(branch, (w, r, n) -> {
-            String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase();
+            String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase(Locale.UK);
             if (pattern.matcher(tagName).matches()) {
                 return w.parseTag(r.getObjectId());
             } else {
                 RevTag tag = w.parseTag(r.getObjectId());
-                String message = tag.getFullMessage().toLowerCase().replace("\n", " ");
+                String message = tag.getFullMessage().toLowerCase(Locale.UK).replace("\n", " ");
                 return pattern.matcher(message).matches() ? tag : null;
             }
         });
@@ -1040,7 +1042,7 @@ public class GitManager {
      */
     public synchronized List<Snapshot> findSnapshotsByTagMessage(String partialMessage, Branch branch)
         throws GitAPIException, IOException {
-        partialMessage = partialMessage.toLowerCase();
+        partialMessage = partialMessage.toLowerCase(Locale.UK);
         final Pattern pattern = Pattern.compile(".*" + partialMessage + ".*");
         return findSnapshotsByTag(branch, (w, r, n) -> {
             RevTag tag = w.parseTag(r.getObjectId());
@@ -1061,7 +1063,7 @@ public class GitManager {
      */
     public synchronized List<Snapshot> findSnapshotsByTagName(String partialTagName, Branch branch)
         throws GitAPIException, IOException {
-        partialTagName = partialTagName.toLowerCase();
+        partialTagName = partialTagName.toLowerCase(Locale.UK);
         final Pattern pattern = Pattern.compile(".*" + partialTagName + ".*");
         return findSnapshotsByTag(branch, (w, r, n) -> {
             String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase();
@@ -1279,7 +1281,7 @@ public class GitManager {
             path = Files.createFile(path);
         }
         String content = generateContent(dataObject, fileType);
-        Files.write(path, content.getBytes());
+        Files.write(path, content.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -1362,7 +1364,8 @@ public class GitManager {
                 for (File f : files) {
                     if (f.isDirectory()) {
                         gatherBeamlineSets(f, sets);
-                    } else if (f.isFile() && f.getName().toLowerCase().endsWith(FileType.BEAMLINE_SET.suffix)) {
+                    } else if (f.isFile()
+                        && f.getName().toLowerCase(Locale.UK).endsWith(FileType.BEAMLINE_SET.suffix)) {
                         sets.add(f);
                     }
                 }
@@ -1447,7 +1450,7 @@ public class GitManager {
             } else {
                 last = last.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
             }
-            if (!last.toLowerCase().endsWith(fileType.suffix)) {
+            if (!last.toLowerCase(Locale.UK).endsWith(fileType.suffix)) {
                 last += fileType.suffix;
             }
             sb.append(last);
@@ -1462,7 +1465,7 @@ public class GitManager {
      * @return true if we are not authorised or false if it was a different kind of exception
      */
     private static boolean isNotAuthorised(TransportException e) {
-        return e.getMessage().toLowerCase().contains("not authorized");
+        return e.getMessage().toLowerCase(Locale.UK).contains("not authorized");
     }
 
     /**
@@ -1472,7 +1475,7 @@ public class GitManager {
      * @return true if there was nothing to push, false if it was a different kind of exception
      */
     private static boolean isNothingToPush(TransportException e) {
-        return e.getMessage().toLowerCase().contains("nothing to push");
+        return e.getMessage().toLowerCase(Locale.UK).contains("nothing to push");
     }
 
     /**
@@ -1496,7 +1499,7 @@ public class GitManager {
             }
             str = TAG_PATTERN.matcher(str).replaceAll("");
             if (str.charAt(0) == '.') {
-                str = str.substring(0);
+                str = str.substring(1);
             }
             if (str.charAt(str.length() - 1) == '.') {
                 str = str.substring(0, str.length() - 1);

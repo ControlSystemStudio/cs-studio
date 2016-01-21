@@ -4,7 +4,6 @@
  */
 package org.csstudio.saverestore.ui.util;
 
-import java.io.Serializable;
 import java.util.AbstractQueue;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -18,20 +17,13 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * This class is a copy of {@link ArrayBlockingQueue} which works with {@link RunnableWithID}. The queue can contain
- * only one instance of the runnable with the same ID. If another instance is added which has the same ID, it will 
- * replace the existing instance.   
- * 
- * @author Doug Lea
+ * only one instance of the runnable with the same ID. If another instance is added which has the same ID, it will
+ * replace the existing instance.
+ *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  */
-public class DismissableBlockingQueue extends AbstractQueue<Runnable>
-    implements BlockingQueue<Runnable>, Serializable {
+public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> implements BlockingQueue<Runnable> {
 
-    /**
-     * Serialization ID. This class relies on default serialization even for the items array, which is
-     * default-serialized, even if it is empty. Otherwise it could not be declared final, which is necessary here.
-     */
-    private static final long serialVersionUID = -817911632652898426L;
     /** The queued items */
     private final RunnableWithID[] items;
     /** items index for next take, poll or remove */
@@ -54,7 +46,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
     /**
      * Circularly increment i.
      */
-    final int inc(int i) {
+    private final int inc(int i) {
         return (++i == items.length) ? 0 : i;
     }
 
@@ -96,7 +88,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
     /**
      * Utility for remove and iterator.remove: Delete item at position i. Call only when holding lock.
      */
-    void removeAt(int i) {
+    private void removeAt(int i) {
         final RunnableWithID[] items = this.items;
         // if removing front item, just advance
         if (i == takeIndex) {
@@ -126,7 +118,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
      * @param capacity the capacity of this queue
      * @throws IllegalArgumentException if <tt>capacity</tt> is less than 1
      */
-    public DismissableBlockingQueue(int capacity) {
+    public IDBackedBlockingQueue(int capacity) {
         this(capacity, false);
     }
 
@@ -138,7 +130,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
      *            FIFO order; if <tt>false</tt> the access order is unspecified.
      * @throws IllegalArgumentException if <tt>capacity</tt> is less than 1
      */
-    public DismissableBlockingQueue(int capacity, boolean fair) {
+    public IDBackedBlockingQueue(int capacity, boolean fair) {
         if (capacity <= 0)
             throw new IllegalArgumentException();
         this.items = new RunnableWithID[capacity];
@@ -158,7 +150,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
      * @throws IllegalArgumentException if <tt>capacity</tt> is less than <tt>c.size()</tt>, or less than 1.
      * @throws NullPointerException if the specified collection or any of its elements are null
      */
-    public DismissableBlockingQueue(int capacity, boolean fair, Collection<? extends RunnableWithID> c) {
+    public IDBackedBlockingQueue(int capacity, boolean fair, Collection<? extends RunnableWithID> c) {
         this(capacity, fair);
         if (capacity < c.size())
             throw new IllegalArgumentException();
@@ -189,6 +181,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
      *
      * @throws NullPointerException if the specified element is null
      */
+    @Override
     public boolean offer(Runnable e) {
         if (e == null)
             throw new NullPointerException();
@@ -213,6 +206,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
      * @throws InterruptedException {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     public void put(Runnable e) throws InterruptedException {
         if (e == null)
             throw new NullPointerException();
@@ -240,6 +234,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
      * @throws InterruptedException {@inheritDoc}
      * @throws NullPointerException {@inheritDoc}
      */
+    @Override
     public boolean offer(Runnable e, long timeout, TimeUnit unit) throws InterruptedException {
         if (e == null)
             throw new NullPointerException();
@@ -266,6 +261,12 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Queue#poll()
+     */
+    @Override
     public RunnableWithID poll() {
         final ReentrantLock lock = this.lock;
         lock.lock();
@@ -279,6 +280,12 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.concurrent.BlockingQueue#take()
+     */
+    @Override
     public RunnableWithID take() throws InterruptedException {
         final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
@@ -297,6 +304,12 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.concurrent.BlockingQueue#poll(long, java.util.concurrent.TimeUnit)
+     */
+    @Override
     public RunnableWithID poll(long timeout, TimeUnit unit) throws InterruptedException {
         long nanos = unit.toNanos(timeout);
         final ReentrantLock lock = this.lock;
@@ -321,6 +334,12 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.util.Queue#peek()
+     */
+    @Override
     public RunnableWithID peek() {
         final ReentrantLock lock = this.lock;
         lock.lock();
@@ -360,6 +379,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
      * <tt>remainingCapacity</tt> because it may be the case that another thread is about to insert or remove an
      * element.
      */
+    @Override
     public int remainingCapacity() {
         final ReentrantLock lock = this.lock;
         lock.lock();
@@ -553,6 +573,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
      * @throws NullPointerException {@inheritDoc}
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @Override
     public int drainTo(Collection<? super Runnable> c) {
         if (c == null)
             throw new NullPointerException();
@@ -589,6 +610,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
      * @throws NullPointerException {@inheritDoc}
      * @throws IllegalArgumentException {@inheritDoc}
      */
+    @Override
     public int drainTo(Collection<? super Runnable> c, int maxElements) {
         if (c == null)
             throw new NullPointerException();
@@ -669,6 +691,7 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
             }
         }
 
+        @Override
         public boolean hasNext() {
             /*
              * No sync. We can return true by mistake here only if this iterator passed across threads, which we don't
@@ -692,8 +715,9 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
             }
         }
 
+        @Override
         public Runnable next() {
-            final ReentrantLock lock = DismissableBlockingQueue.this.lock;
+            final ReentrantLock lock = IDBackedBlockingQueue.this.lock;
             lock.lock();
             try {
                 if (nextIndex < 0)
@@ -708,8 +732,9 @@ public class DismissableBlockingQueue extends AbstractQueue<Runnable>
             }
         }
 
+        @Override
         public void remove() {
-            final ReentrantLock lock = DismissableBlockingQueue.this.lock;
+            final ReentrantLock lock = IDBackedBlockingQueue.this.lock;
             lock.lock();
             try {
                 int i = lastRet;

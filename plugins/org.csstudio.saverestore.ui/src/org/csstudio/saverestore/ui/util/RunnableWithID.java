@@ -4,7 +4,7 @@ package org.csstudio.saverestore.ui.util;
  * <code>RunnableWithID</code> is an extension of the Runnable which provides an additional method to extract an ID. The
  * ID identifies the runnable and helps trapping same requests before they are executed.
  *
- * @see DismissableBlockingQueue
+ * @see IDBackedBlockingQueue
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  */
 public interface RunnableWithID extends Runnable {

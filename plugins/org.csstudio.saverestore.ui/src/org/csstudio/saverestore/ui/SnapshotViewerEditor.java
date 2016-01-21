@@ -80,7 +80,6 @@ import javafx.scene.input.DataFormat;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -470,11 +469,12 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 f -> SaveRestoreService.getInstance().execute("Export to csv file", () -> controller.exportToFile(f)));
         });
         javafx.scene.control.Separator separator1 = new javafx.scene.control.Separator(Orientation.VERTICAL);
-        separator1.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
+        String style = SnapshotViewerEditor.class.getResource(STYLE).toExternalForm();
+        separator1.getStylesheets().add(style);
         javafx.scene.control.Separator separator2 = new javafx.scene.control.Separator(Orientation.VERTICAL);
-        separator2.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
+        separator2.getStylesheets().add(style);
         javafx.scene.control.Separator separator3 = new javafx.scene.control.Separator(Orientation.VERTICAL);
-        separator3.getStylesheets().add(this.getClass().getResource(STYLE).toExternalForm());
+        separator3.getStylesheets().add(style);
         leftToolbar.getChildren().addAll(addPVButton, separator1, addReadbacksButton, showStoredReadbacksButton,
             separator2, importButton, separator3, openSnapshotFromFileButton, saveSnapshotToFileButton, exportButton);
 

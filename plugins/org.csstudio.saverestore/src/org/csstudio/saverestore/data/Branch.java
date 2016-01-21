@@ -1,6 +1,7 @@
 package org.csstudio.saverestore.data;
 
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -56,7 +57,7 @@ public class Branch implements Comparable<Branch>, Serializable {
         if (o == null) {
             return -1;
         }
-        return shortName.toLowerCase().compareTo(o.shortName.toLowerCase());
+        return shortName.toLowerCase(Locale.UK).compareTo(o.shortName.toLowerCase(Locale.UK));
     }
 
     /*

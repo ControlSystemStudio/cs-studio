@@ -33,7 +33,7 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  */
 public class SaveRestoreService {
 
-    private ISchedulingRule mutexRule = new ISchedulingRule() {
+    private static ISchedulingRule mutexRule = new ISchedulingRule() {
         @Override
         public boolean isConflicting(ISchedulingRule rule) {
             return rule == this;

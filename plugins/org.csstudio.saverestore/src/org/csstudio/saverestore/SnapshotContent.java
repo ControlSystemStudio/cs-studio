@@ -1,5 +1,6 @@
 package org.csstudio.saverestore;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -40,12 +41,12 @@ public class SnapshotContent {
      */
     SnapshotContent(Date date, List<String> names, List<Boolean> selected, List<VType> data, List<String> readbacks,
         List<VType> readbackData, List<String> deltas) {
-        this.data = data;
-        this.readbackData = readbackData;
-        this.readbacks = readbacks;
-        this.deltas = deltas;
-        this.selected = selected;
-        this.names = names;
+        this.data = Collections.unmodifiableList(data);
+        this.readbackData = Collections.unmodifiableList(readbackData);
+        this.readbacks = Collections.unmodifiableList(readbacks);
+        this.deltas = Collections.unmodifiableList(deltas);
+        this.selected = Collections.unmodifiableList(selected);
+        this.names = Collections.unmodifiableList(names);
         this.date = date;
     }
 }

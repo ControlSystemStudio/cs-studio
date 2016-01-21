@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import org.csstudio.saverestore.SaveRestoreService;
-import org.csstudio.saverestore.ui.util.DismissableBlockingQueue;
+import org.csstudio.saverestore.ui.util.IDBackedBlockingQueue;
 import org.csstudio.saverestore.ui.util.RunnableWithID;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -19,6 +19,30 @@ import org.osgi.framework.BundleContext;
  *
  */
 public class Activator extends AbstractUIPlugin {
+
+    /**
+     *
+     * <code>IDBackedExecutor</code> is an executor backed by the {@link IDBackedBlockingQueue} and used primarily
+     * to execute repetitive UI background tasks.
+     *
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+     *
+     */
+    private static class IDBackedExecutor extends ThreadPoolExecutor {
+
+        IDBackedExecutor() {
+            super(1, 1, 0, TimeUnit.NANOSECONDS, new IDBackedBlockingQueue(1000, true));
+            setRejectedExecutionHandler(
+                (r, t) -> SaveRestoreService.LOGGER.warning("Execution of " + r + " rejected."));
+        }
+
+        @Override
+        protected void afterExecute(Runnable r, Throwable t) {
+            if (t != null) {
+                SaveRestoreService.LOGGER.log(Level.WARNING, "Error executing request.", t);
+            }
+        }
+    }
 
     private static final String MAX_NUMBER_OF_FILTERS = "maxNumberOfFilters";
     private static final String FILTERS = "filters";
@@ -35,18 +59,7 @@ public class Activator extends AbstractUIPlugin {
      */
     public ExecutorService getBackgroundWorker() {
         if (backgroundWorker == null) {
-            backgroundWorker = new ThreadPoolExecutor(1, 1, 0, TimeUnit.NANOSECONDS,
-                new DismissableBlockingQueue(1000, true)) {
-                @Override
-                protected void afterExecute(Runnable r, Throwable t) {
-                    super.afterExecute(r, t);
-                    if (t != null) {
-                        SaveRestoreService.LOGGER.log(Level.WARNING, "Error executing request.", t);
-                    }
-                }
-            };
-            backgroundWorker.setRejectedExecutionHandler(
-                (r, t) -> SaveRestoreService.LOGGER.warning("Execution of " + r + " rejected."));
+            backgroundWorker = new IDBackedExecutor();
         }
         return backgroundWorker;
     }

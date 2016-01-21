@@ -142,6 +142,7 @@ public enum Element {
                 break;
             case UNKNOWN :
             default :
+                break;
         }
         switch (state) {
             case GAS : style += "-fx-text-fill: red;";

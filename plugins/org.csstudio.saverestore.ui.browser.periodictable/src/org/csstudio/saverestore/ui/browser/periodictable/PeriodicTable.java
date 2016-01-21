@@ -5,6 +5,7 @@ import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -349,7 +350,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     }
 
     private void setSelectedElement(String element) {
-        Element e = Element.valueOf(element.toUpperCase());
+        Element e = Element.valueOf(element.toUpperCase(Locale.UK));
         int n = e.commonNeutrons;
         int c = e.commonCharge;
         if (showOnlyAvailable) {

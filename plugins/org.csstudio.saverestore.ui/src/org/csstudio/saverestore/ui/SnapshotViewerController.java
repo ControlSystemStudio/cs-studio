@@ -6,9 +6,11 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -378,8 +380,9 @@ public class SnapshotViewerController {
         List<VSnapshot> newSnapshots = new ArrayList<>();
         synchronized (snapshots) {
             snapshots.remove(idx);
-            numberOfSnapshots = 0;
             newSnapshots.addAll(snapshots);
+            numberOfSnapshots = 0;
+            snapshots.clear();
         }
         newSnapshots.forEach(e -> addSnapshot(e));
         return filter(items.values(), filter);
@@ -412,6 +415,7 @@ public class SnapshotViewerController {
             snapshots.set(idx, oldBase);
             numberOfSnapshots = 0;
             newSnapshots.addAll(snapshots);
+            snapshots.clear();
         }
         newSnapshots.forEach(e -> addSnapshot(e));
         return filter(items.values(), filter);
@@ -557,14 +561,14 @@ public class SnapshotViewerController {
      * @param markAsSaved true if the snapshot should be marked as saved when completed or false if left intact
      */
     public void exportSingleSnapshotToFile(VSnapshot snapshot, File file, boolean markAsSaved) {
-        try (final PrintWriter pw = new PrintWriter(new FileOutputStream(file))) {
+        try (PrintWriter pw = new PrintWriter(file, "UTF-8")) {
             String contents = FileUtilities.generateSnapshotFileContent(snapshot);
             pw.println(contents);
             if (markAsSaved) {
                 snapshot.markNotDirty();
             }
             snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
-        } catch (FileNotFoundException ex) {
+        } catch (FileNotFoundException | UnsupportedEncodingException ex) {
             Selector.reportException(ex, owner.getSite().getShell());
         }
     }
@@ -579,14 +583,18 @@ public class SnapshotViewerController {
             return;
         }
         suspend();
-        try (final PrintWriter pw = new PrintWriter(new FileOutputStream(file))) {
+        List<VSnapshot> snaps = new ArrayList<>();
+        synchronized(snapshots) {
+            snaps.addAll(snaps);
+        }
+        try (PrintWriter pw = new PrintWriter(file, "UTF-8")) {
             StringBuilder header = new StringBuilder(200);
             header.append("Setpoint PV,");
-            header.append(Utilities.timestampToBigEndianString(snapshots.get(0).getTimestamp().toDate(), true))
+            header.append(Utilities.timestampToBigEndianString(snaps.get(0).getTimestamp().toDate(), true))
                 .append(',');
             String delta = " (" + Utilities.DELTA_CHAR + " First Snapshot),";
-            for (int i = 1; i < snapshots.size(); i++) {
-                header.append(Utilities.timestampToBigEndianString(snapshots.get(i).getTimestamp().toDate(), true))
+            for (int i = 1; i < snaps.size(); i++) {
+                header.append(Utilities.timestampToBigEndianString(snaps.get(i).getTimestamp().toDate(), true))
                     .append(delta);
             }
             header.append("Live Value,Live Timestamp");
@@ -601,7 +609,7 @@ public class SnapshotViewerController {
                 VTypePair pair = e.valueProperty().get();
                 sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base, pair.threshold).string)
                     .append('"').append(',');
-                for (int i = 1; i < snapshots.size(); i++) {
+                for (int i = 1; i < snaps.size(); i++) {
                     pair = e.compareValueProperty(i).get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
                         ((VTypePair) pair).base, ((VTypePair) pair).threshold);
@@ -625,7 +633,7 @@ public class SnapshotViewerController {
                 }
                 pw.println(sb.toString());
             });
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
             Selector.reportException(e, owner.getSite().getShell());
         } finally {
             resume();
@@ -679,7 +687,7 @@ public class SnapshotViewerController {
                 "OS");
             return Optional.of(new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
                 sc.readbackData, sc.deltas, snapshotTime));
-        } catch (Exception e) {
+        } catch (IOException | RuntimeException | ParseException e) {
             Selector.reportException(e, owner.getSite().getShell());
             return Optional.empty();
         }
@@ -928,7 +936,7 @@ public class SnapshotViewerController {
             PVWriter<Object> writer = PVManager.write(channel(pvName)).timeout(TimeDuration.ofMillis(1000)).async();
             pvs.put(entry, new PV(reader, writer, null));
             Platform.runLater(() -> consumer.accept(entry));
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             Selector.reportException(e, owner.getSite().getShell());
         }
     }

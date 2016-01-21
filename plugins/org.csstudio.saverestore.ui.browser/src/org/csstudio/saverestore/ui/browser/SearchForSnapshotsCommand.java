@@ -6,7 +6,6 @@ import org.csstudio.saverestore.SearchCriterion;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.commands.IHandler;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
@@ -17,7 +16,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SearchForSnapshotsCommand extends AbstractHandler implements IHandler {
+public class SearchForSnapshotsCommand extends AbstractHandler {
 
     /*
      * (non-Javadoc)

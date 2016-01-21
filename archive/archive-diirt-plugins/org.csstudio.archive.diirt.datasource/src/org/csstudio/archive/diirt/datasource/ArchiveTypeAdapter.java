@@ -22,7 +22,7 @@ import org.diirt.vtype.VString;
 import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
-import org.diirt.vtype.next.VEnum;
+import org.diirt.vtype.VEnum;
 
 /**
  *
@@ -153,7 +153,7 @@ public class ArchiveTypeAdapter implements DataSourceTypeAdapter<Boolean, List<V
                         t = ((VEnum) v);
                         Alarm a = (Alarm) t;
                         Time ti = (Time) t;
-                        newValues.add(ValueFactory.newVEnum(t.getIndex(), t.getMetaData().getLabels(),
+                        newValues.add(ValueFactory.newVEnum(t.getIndex(), t.getLabels(),
                             ValueFactory.newAlarm(a.getAlarmSeverity(), a.getAlarmName()),
                             ValueFactory.newTime(ti.getTimestamp(), ti.getTimeUserTag(), ti.isTimeValid())));
                     }

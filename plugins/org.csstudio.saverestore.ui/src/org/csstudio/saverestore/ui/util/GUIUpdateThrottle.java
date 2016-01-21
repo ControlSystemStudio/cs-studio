@@ -16,7 +16,7 @@ import org.csstudio.saverestore.SaveRestoreService;
  *
  * @author Kay Kasemir
  */
-abstract public class GUIUpdateThrottle extends Thread {
+public abstract class GUIUpdateThrottle extends Thread {
     /** Delay in millisecs for the initial update after trigger */
     final private long initial_millis;
 
@@ -28,6 +28,8 @@ abstract public class GUIUpdateThrottle extends Thread {
 
     /** Flag that tells thread to run or exit */
     private volatile boolean run = true;
+
+    private final Object mutex = new Object();
 
     /**
      * Initialize
@@ -46,9 +48,9 @@ abstract public class GUIUpdateThrottle extends Thread {
      * Register an event trigger. Will result in throttled call to <code>fire</code>
      */
     public void trigger() {
-        synchronized (this) { // Count suppressed events
+        synchronized (mutex) { // Count suppressed events
             ++triggers;
-            notifyAll();
+            mutex.notifyAll();
         }
     }
 
@@ -59,15 +61,15 @@ abstract public class GUIUpdateThrottle extends Thread {
         try {
             while (run) {
                 // Wait for a trigger
-                synchronized (this) {
+                synchronized (mutex) {
                     while (triggers <= 0)
-                        wait();
+                        mutex.wait();
                 }
                 // Wait a little longer, so in case of a burst, we update
                 // after already receiving more than just the start of the
                 // burst
                 Thread.sleep(initial_millis);
-                synchronized (this) {
+                synchronized (mutex) {
                     triggers = 0;
                 }
                 if (run)

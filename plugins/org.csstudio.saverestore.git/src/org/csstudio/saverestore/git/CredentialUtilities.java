@@ -143,11 +143,6 @@ public final class CredentialUtilities {
         try {
             ISecurePreferences prefs = SecurePreferences.getSecurePreferences().node(Activator.ID).node(user);
             if (username == null) {
-                prefs.remove(username);
-                prefs = prefs.node(username);
-                if (prefs != null) {
-                    prefs.removeNode();
-                }
                 return;
             } else {
                 prefs.put(PREF_USERNAME, username, false);
