@@ -1,6 +1,7 @@
 package org.csstudio.diirt.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.logging.Logger;
@@ -49,7 +50,14 @@ public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
             Configuration.reset();
             DataSource defaultDataSource = PVManager.getDefaultDataSource();
             if (defaultDataSource instanceof CompositeDataSource) {
-                PVManager.setDefaultDataSource(DataSourceProvider.createDataSource());
+                CompositeDataSource ds = ((CompositeDataSource) defaultDataSource);
+                try (InputStream input = Configuration.getFileAsStream("datasources" + "/datasources.xml", ds, "datasources.default.xml")) {
+                    CompositeDataSourceConfiguration conf = new CompositeDataSourceConfiguration(input);
+                    ds.setConfiguration(conf);
+                    PVManager.setDefaultDataSource(ds);
+                } catch (Exception e) {
+                    log.severe(e.getMessage());
+                }
             }
         } catch (Exception e) {
             log.severe(e.getMessage());
