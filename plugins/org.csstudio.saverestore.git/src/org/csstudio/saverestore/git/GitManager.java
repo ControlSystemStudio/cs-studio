@@ -138,9 +138,11 @@ public class GitManager {
         try {
             if (repository != null) {
                 repository.close();
+                repository = null;
             }
             if (git != null) {
                 git.close();
+                git = null;
             }
         } catch (Exception e) {
             SaveRestoreService.LOGGER.log(Level.SEVERE, "Git cleanup error", e);
@@ -181,29 +183,29 @@ public class GitManager {
     private synchronized boolean internalInitialise(URI remoteRepository, File destinationDirectory)
         throws GitAPIException {
         repositoryPath = destinationDirectory;
+        dispose();
         if (new File(repositoryPath, ".git").exists()) {
-            try (Git git = Git.init().setDirectory(repositoryPath).call()) {
-                this.git = git;
-                this.repository = git.getRepository();
-                StoredConfig config = this.repository.getConfig();
-                String url = config.getString("remote", "origin", "url");
-                if (url == null || !url.equals(remoteRepository.toString())) {
-                    repository.close();
-                    return false;
-                }
+            Git git = Git.init().setDirectory(repositoryPath).call();
+            this.git = git;
+            this.repository = git.getRepository();
+            StoredConfig config = this.repository.getConfig();
+            String url = config.getString("remote", "origin", "url");
+            if (url == null || !url.equals(remoteRepository.toString())) {
+                dispose();
+                return false;
+            }
 
-                try {
-                    setBranch(new Branch("master", "master"));
-                    Credentials credentials = getCredentials(Optional.empty());
-                    if (credentials != null) {
-                        pull(credentials);
-                    }
-                } catch (GitAPIException | IOException e) {
-                    SaveRestoreService.LOGGER.log(Level.WARNING,
-                        "Git repository " + remoteRepository + " is not accessible.", e);
-                    localOnly = true;
-                    setAutomaticSynchronisation(false);
+            try {
+                setBranch(new Branch("master", "master"));
+                Credentials credentials = getCredentials(Optional.empty());
+                if (credentials != null) {
+                    pull(credentials);
                 }
+            } catch (GitAPIException | IOException e) {
+                SaveRestoreService.LOGGER.log(Level.WARNING,
+                    "Git repository " + remoteRepository + " is not accessible.", e);
+                localOnly = true;
+                setAutomaticSynchronisation(false);
             }
         } else {
             Credentials credentials = getCredentials(Optional.empty());
@@ -215,7 +217,8 @@ public class GitManager {
 
             while (true) {
                 cloneCommand.setCredentialsProvider(toCredentialsProvider(credentials));
-                try (Git git = cloneCommand.call()) {
+                try {
+                    Git git = cloneCommand.call();
                     this.git = git;
                     this.repository = git.getRepository();
                     break;
@@ -838,7 +841,7 @@ public class GitManager {
                     // if there are no changes the message is Nothing to push
                     break;
                 } else if (isNotAuthorised(e)) {
-                    // if the authorization failed repeat
+                    // if the authorisation failed repeat
                     cred = getCredentials(Optional.ofNullable(cred));
                     if (cred == null) {
                         return null;
@@ -849,6 +852,8 @@ public class GitManager {
             }
         }
         while (pushTags) {
+            // if tags should be pushed, they should be in a separate push command, because the command below pushes
+            // only the tags and not the actual changes
             try {
                 git.push().setCredentialsProvider(toCredentialsProvider(cred)).setPushTags().call();
                 break;
@@ -873,7 +878,7 @@ public class GitManager {
      *
      * @param cred the credentials to use when fetching and pull from remote repository
      * @return an array of size 2: credentials that worked or null if cancelled and a Boolean describing if there were
-     *         any changes pulled from the remote repo
+     *         any changes pulled from the remote repository
      * @throws GitAPIException if there was an error during pull
      */
     private Object[] pull(Credentials cred) throws GitAPIException {
