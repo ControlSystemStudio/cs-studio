@@ -1,7 +1,5 @@
 package org.csstudio.archive.diirt.datasource;
 
-import java.util.logging.Level;
-
 import org.diirt.datasource.ChannelWriteCallback;
 import org.diirt.util.time.Timestamp;
 
@@ -65,7 +63,9 @@ public class StaticArchiveChannelHandler extends AbstractChannelHandler {
         try {
             fetchData(startTime, endTime, optimised);
         } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Cannot load archive data for channel " + getChannelName(), e);
+            //FIXME ideally this should be some common diirt exception type
+            throw new UnsupportedOperationException("Cannot load archive data for channel " + getChannelName(), e);
+            //LOGGER.log(Level.WARNING, "Cannot load archive data for channel " + getChannelName(), e);
         }
     }
 
