@@ -47,6 +47,7 @@ import org.diirt.datasource.PVReader;
 import org.diirt.datasource.PVWriter;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VTable;
 import org.diirt.vtype.VType;
@@ -123,7 +124,6 @@ public class SnapshotViewerController {
     private BooleanProperty snapshotRestorableProperty = new SimpleBooleanProperty(false);
     private ObjectProperty<VSnapshot> baseSnapshotProperty = new SimpleObjectProperty<VSnapshot>(null);
 
-    private int numberOfSnapshots = 0;
     private final List<VSnapshot> snapshots = new ArrayList<>(10);
     private final Map<String, TableEntry> items = new LinkedHashMap<>();
     private final Map<String, String> readbacks = new HashMap<>();
@@ -184,7 +184,6 @@ public class SnapshotViewerController {
         synchronized (snapshots) {
             snapshots.clear();
         }
-        numberOfSnapshots = 0;
     }
 
     private void connectPVs() {
@@ -251,9 +250,9 @@ public class SnapshotViewerController {
             e.idProperty().setValue(i + 1);
             e.pvNameProperty().setValue(name);
             e.selectedProperty().setValue(selected.get(i));
-            e.setSnapshotValue(values.get(i), numberOfSnapshots);
+            e.setSnapshotValue(values.get(i), 0);
             if (rbValues.size() > i) {
-                e.setStoredReadbackValue(rbValues.get(i),numberOfSnapshots);
+                e.setStoredReadbackValue(rbValues.get(i),0);
             }
             items.put(name, e);
             String s = readbacks.get(name);
@@ -262,7 +261,6 @@ public class SnapshotViewerController {
                 e.readbackNameProperty().set(rbs.get(i));
             }
         }
-        numberOfSnapshots = 1;
         connectPVs();
         snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
         updateThresholds();
@@ -278,6 +276,7 @@ public class SnapshotViewerController {
      * @return a list of entries to display in the viewer
      */
     public List<TableEntry> addSnapshot(VSnapshot data) {
+        int numberOfSnapshots = getNumberOfSnapshots();
         if (numberOfSnapshots == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
             return setSnapshot(data);
         } else if (numberOfSnapshots == 0) {
@@ -315,7 +314,6 @@ public class SnapshotViewerController {
             for (TableEntry te : withoutValue) {
                 te.setSnapshotValue(VNoData.INSTANCE, numberOfSnapshots);
             }
-            numberOfSnapshots++;
             synchronized (snapshots) {
                 snapshots.add(data);
             }
@@ -368,22 +366,19 @@ public class SnapshotViewerController {
     public List<TableEntry> removeSnapshot(int idx) {
         if (idx == 0) {
             throw new IllegalArgumentException("Cannot remove the base snapshot.");
-        } else if (idx > numberOfSnapshots) {
+        } else if (idx >= getNumberOfSnapshots()) {
             throw new IllegalArgumentException("The index is greater than the number of snapshots.");
         }
-        pvs.values().forEach((e) -> {
-            e.reader.close();
-            e.writer.close();
-        });
-        pvs.clear();
-        items.clear();
-        List<VSnapshot> newSnapshots = new ArrayList<>();
+        List<VSnapshot> newSnapshots;
         synchronized (snapshots) {
-            snapshots.remove(idx);
-            newSnapshots.addAll(snapshots);
-            numberOfSnapshots = 0;
-            snapshots.clear();
+            newSnapshots = new ArrayList<>(snapshots.size()-1);
+            for (int i = 0; i < snapshots.size(); i++) {
+                if (i != idx) {
+                    newSnapshots.add(snapshots.get(i));
+                }
+            }
         }
+        dispose();
         newSnapshots.forEach(e -> addSnapshot(e));
         return filter(items.values(), filter);
     }
@@ -398,25 +393,18 @@ public class SnapshotViewerController {
     public List<TableEntry> setAsBase(int idx) {
         if (idx == 0) {
             throw new IllegalArgumentException("Snapshot already set as base.");
-        } else if (idx > numberOfSnapshots) {
+        } else if (idx > getNumberOfSnapshots()) {
             throw new IllegalArgumentException("The index is greater than the number of snapshots.");
         }
-        pvs.values().forEach((e) -> {
-            e.reader.close();
-            e.writer.close();
-        });
-        pvs.clear();
-        items.clear();
-        List<VSnapshot> newSnapshots = new ArrayList<>();
+        List<VSnapshot> newSnapshots;
         synchronized (snapshots) {
-            VSnapshot oldBase = snapshots.get(0);
-            VSnapshot newBase = snapshots.get(idx);
-            snapshots.set(0, newBase);
-            snapshots.set(idx, oldBase);
-            numberOfSnapshots = 0;
-            newSnapshots.addAll(snapshots);
-            snapshots.clear();
+            newSnapshots = new ArrayList<>(snapshots);
+            VSnapshot oldBase = newSnapshots.get(0);
+            VSnapshot newBase = newSnapshots.get(idx);
+            newSnapshots.set(0, newBase);
+            newSnapshots.set(idx, oldBase);
         }
+        dispose();
         newSnapshots.forEach(e -> addSnapshot(e));
         return filter(items.values(), filter);
     }
@@ -427,7 +415,9 @@ public class SnapshotViewerController {
      * @return the number of all snapshots
      */
     public int getNumberOfSnapshots() {
-        return numberOfSnapshots;
+        synchronized(snapshots) {
+            return snapshots.size();
+        }
     }
 
     /**
@@ -910,11 +900,15 @@ public class SnapshotViewerController {
             entry.pvNameProperty().setValue(pvName);
             entry.selectedProperty().set(false);
 
+            // Hard reference is required, otherwise diirt might flush the reader, before the value even arrives.
+            final ArrayList<PVReader<VTable>> archiveReaders = new ArrayList<>();
             for (int i = 0; i < snaps.size(); i++) {
                 final int index = i;
                 Timestamp start = snaps.get(i).getTimestamp();
+                if (start == null) continue;
                 String name = "archive://" + pvName + "?time=" + start.toString();
-                PVManager.read(channel(name, VTable.class, VType.class)).readListener(x -> {
+                PVReader<VTable> reader = PVManager.read(channel(name, VTable.class, VType.class)).readListener(x -> {
+                    boolean handled = false;
                     if (x.isValueChanged()) {
                         VTable value = x.getPvReader().getValue();
                         List<VType> archiveValues = (List<VType>) ((VTable) value).getColumnData(0);
@@ -923,13 +917,44 @@ public class SnapshotViewerController {
                             snaps.get(index).addOrSetPV(pvName, false, v);
                             entry.setSnapshotValue(v, index);
                         }
-                        x.getPvReader().close();
+                        handled = true;
                     } else if (x.isExceptionChanged()) {
-                        x.getPvReader().close();
+                        entry.statusProperty().set(x.getPvReader().lastException().getMessage());
+                        entry.severityProperty().set(AlarmSeverity.INVALID);
+                        handled = true;
                     }
-                }).timeout(TimeDuration.ofMillis(10000)).notifyOn(UI_EXECUTOR).maxRate(TimeDuration.ofMillis(100));
+                    if (handled) {
+                        x.getPvReader().close();
+                        synchronized(archiveReaders) {
+                            archiveReaders.remove(x.getPvReader());
+                            archiveReaders.notifyAll();
+                        }
+                    }
+                }).timeout(TimeDuration.ofMillis(30000)).notifyOn(UI_EXECUTOR).maxRate(TimeDuration.ofMillis(100));
+                synchronized(archiveReaders) {
+                    archiveReaders.add(reader);
+                }
             }
 
+            try {
+                long time = System.currentTimeMillis();
+                while(System.currentTimeMillis() - time < 30000
+                    && !SaveRestoreService.getInstance().isCurrentJobCancelled()) {
+                    synchronized(archiveReaders) {
+                        if (archiveReaders.isEmpty()) {
+                            break;
+                        } else {
+                            archiveReaders.wait(100);
+                        }
+                    }
+                }
+                if (SaveRestoreService.getInstance().isCurrentJobCancelled()) {
+                    archiveReaders.forEach(e -> e.close());
+                    archiveReaders.clear();
+                }
+            } catch (InterruptedException e) {
+                //ignore
+            }
             items.put(pvName, entry);
             PVReader<VType> reader = PVManager.read(channel(pvName, VType.class, VType.class))
                 .readListener(x -> throttle.trigger()).maxRate(TimeDuration.ofMillis(100));
