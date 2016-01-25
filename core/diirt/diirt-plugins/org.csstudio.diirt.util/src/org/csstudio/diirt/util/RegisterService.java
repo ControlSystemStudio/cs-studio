@@ -7,16 +7,15 @@ import org.diirt.service.ServiceRegistry;
 
 public class RegisterService {
 
-    private static final Logger logger = Logger.getLogger(RegisterService.class
-            .getCanonicalName());
+    private static final Logger logger = Logger.getLogger(RegisterService.class.getCanonicalName());
 
     public void registerService(ServiceProvider serviceProvider) {
-        logger.info("register:" + serviceProvider.getName());
+        logger.info("register service:" + serviceProvider.getName());
         ServiceRegistry.getDefault().registerServices(serviceProvider);
     }
 
     public void deregisterService(ServiceProvider serviceProvider) {
-        logger.info("deregister:" + serviceProvider.getName());
+        logger.info("deregister service:" + serviceProvider.getName());
     }
 
 }

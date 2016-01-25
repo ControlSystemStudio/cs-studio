@@ -7,18 +7,17 @@ import org.diirt.datasource.formula.FormulaRegistry;
 
 public class RegisterFormulaFunctionSet {
 
-    private static final Logger logger = Logger
-            .getLogger(RegisterFormulaFunctionSet.class.getCanonicalName());
+    private static final Logger logger = Logger.getLogger(RegisterFormulaFunctionSet.class.getCanonicalName());
 
     public void registerFormulaFunctionSet(FormulaFunctionSet formulaFunctionSet) {
-        logger.info("register:" + formulaFunctionSet.getName());
+        logger.info("register FormulaFunctionSet:" + formulaFunctionSet.getName());
         FormulaRegistry.getDefault().registerFormulaFunctionSet(
                 formulaFunctionSet);
     }
 
     public void deregisterFormulaFunctionSet(
             FormulaFunctionSet formulaFunctionSet) {
-        logger.info("deregister:" + formulaFunctionSet.getName());
+        logger.info("deregister FormulaFunctionSet:" + formulaFunctionSet.getName());
     }
 
 }
