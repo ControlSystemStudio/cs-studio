@@ -1,13 +1,22 @@
 package org.csstudio.diirt.util;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.osgi.service.datalocation.Location;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 public class Activator implements BundleActivator {
 
     public static final String ID = "org.csstudio.diirt.util";
+
+    private static final String PLATFORM_URI_PREFIX = "platform:";
 
     private static final Logger log = Logger.getLogger(ID);
 

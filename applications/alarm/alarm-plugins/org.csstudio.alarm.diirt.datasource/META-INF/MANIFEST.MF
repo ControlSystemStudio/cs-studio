@@ -14,4 +14,3 @@ Require-Bundle: org.diirt.datasource;bundle-version="3.0.1",
 Import-Package: org.diirt.datasource;version="3.0.1",
  org.diirt.datasource.vtype;version="3.0.1",
  org.osgi.framework;version="1.8.0"
-Bundle-Activator: org.csstudio.alarm.diirt.datasource.Activator

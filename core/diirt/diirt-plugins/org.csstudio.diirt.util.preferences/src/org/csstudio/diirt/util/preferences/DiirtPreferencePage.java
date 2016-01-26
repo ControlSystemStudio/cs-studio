@@ -2,10 +2,13 @@ package org.csstudio.diirt.util.preferences;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.preference.StringButtonFieldEditor;
@@ -50,6 +53,8 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
     private StringButtonFieldEditor diirtPathEditor;
     private Composite top;
 
+    private static final String PLATFORM_URI_PREFIX = "platform:";
+
     public DiirtPreferencePage() {
     }
 
@@ -67,7 +72,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
                 DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.SHEET);
                 if (lastPath != null) {
                     try {
-                        lastPath = DiirtStartup.getSubstitutedPath(lastPath);
+                        lastPath = getSubstitutedPath(lastPath);
                         if (new File(lastPath).exists()) {
                             File lastDir = new File(lastPath);
                             dialog.setFilterPath(lastDir.getCanonicalPath());
@@ -105,7 +110,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
         tv.setContentProvider(new FileTreeContentProvider());
         tv.setLabelProvider(new FileTreeLabelProvider());
         try {
-            final String configPath = DiirtStartup.getSubstitutedPath(store.getString("diirt.home"));
+            final String configPath = getSubstitutedPath(store.getString("diirt.home"));
             if (Files.exists(Paths.get(configPath))) {
                 tv.setInput(configPath);
             }
@@ -138,7 +143,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
             if (event.getProperty() == "diirt.home") {
                 if (!getControl().isDisposed()) {
                     try {
-                        String fullPath = DiirtStartup.getSubstitutedPath(store.getString("diirt.home"));
+                        String fullPath = getSubstitutedPath(store.getString("diirt.home"));
                         if (verifyDiirtPath(fullPath)) {
                             tv.setInput(fullPath);
                             setMessage("Restart is needed", ERROR);
@@ -181,7 +186,7 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
     @Override
     public boolean performOk() {
         try {
-            final String lastDir = DiirtStartup.getSubstitutedPath(diirtPathEditor.getStringValue());
+            final String lastDir = getSubstitutedPath(diirtPathEditor.getStringValue());
             if (verifyDiirtPath(lastDir)) {
                diirtPathEditor.store();
             }
@@ -342,6 +347,26 @@ public class DiirtPreferencePage extends PreferencePage implements IWorkbenchPre
         @Override
         public void addListener(ILabelProviderListener listener) {
 
+        }
+    }
+
+    /**
+     * handles the platform urls
+     *
+     * @param path
+     * @return
+     * @throws MalformedURLException
+     * @throws IOException
+     */
+    static String getSubstitutedPath(String path) throws MalformedURLException, IOException {
+        if(path != null && !path.isEmpty()) {
+            if(path.startsWith(PLATFORM_URI_PREFIX)) {
+                return FileLocator.resolve(new URL(path)).getPath().toString();
+            } else {
+                return path;
+            }
+        } else {
+            return "root";
         }
     }
 }
