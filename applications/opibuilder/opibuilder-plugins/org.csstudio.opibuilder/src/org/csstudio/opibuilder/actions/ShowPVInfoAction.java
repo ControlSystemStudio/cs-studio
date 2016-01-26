@@ -92,7 +92,7 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
         }
 
         // "custom" parent shell (to fix the dialog opening in the background when running fullscreen OPI on Linux)
-        Shell shell = new Shell(targetPart.getSite().getShell(), SWT.NO_TRIM);
+        Shell shell = new Shell(targetPart.getSite().getShell().getDisplay(), SWT.NO_TRIM);
         shell.setSize(100, 30);
         Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
         // center horizontally, but place it a little higher vertically
