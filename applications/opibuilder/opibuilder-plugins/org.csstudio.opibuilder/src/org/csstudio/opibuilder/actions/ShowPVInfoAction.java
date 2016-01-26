@@ -101,8 +101,7 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
         Point location = new Point(dialogCenter.x - shell.getBounds().x / 2, dialogCenter.y - shell.getBounds().y / 2);
         shell.setLocation(location);
 
-        PVsInfoDialog dialog = new PVsInfoDialog(
-                targetPart.getSite().getShell(), "PV Info", getSelectedWidget().getAllPVs());
+        PVsInfoDialog dialog = new PVsInfoDialog(shell, "PV Info", getSelectedWidget().getAllPVs());
         dialog.open();
         shell.dispose();
     }

@@ -113,11 +113,47 @@ record(calc, "signal")
     field(HOPR, "1")
 }
 
+# Text waveform with slowly following read back
 record(waveform, "text")
 {
     field(DESC, "Text PV")
     field(FTVL, "CHAR")
     field(NELM, "100")
+    field(FLNK, "start")
+    field(TPRO, "1")
+}
+
+record(bo, "start")
+{
+    field(DOL, "1")
+    field(OMSL, "closed_loop")
+    field(OUT, "delay PP")
+    field(TPRO, "1")
+}
+
+record(bo, "delay")
+{
+    field(HIGH, "1")
+    field(FLNK, "update_readback")
+    field(TPRO, "1")
+}
+
+record(calcout, "update_readback")
+{
+    field(INPA, "delay")
+    field(CALC, "A")
+    field(OOPT, "When Zero")
+    field(OUT, "text_RBV.PROC PP")
+    field(TPRO, "1")
+}
+
+record(waveform, "text_RBV")
+{
+    field(DESC, "Text PV")
+    field(INP,  "text")
+    field(FTVL, "CHAR")
+    field(NELM, "100")
+    field(TPRO, "1")
 }
 
 # record that takes ~4 seconds to process,
