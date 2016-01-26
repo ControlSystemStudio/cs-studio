@@ -293,7 +293,20 @@ public class XMLUtil {
 
             if(result instanceof AbstractContainerModel)
                 fillLinkingContainersSub((AbstractContainerModel)result, trace);
-            fillConnections(element, displayModel);
+            Display.getDefault().asyncExec(new Runnable() {
+                @Override
+                public void run() {
+                    //Fix for ITER: widgets from one linking container might be connected to widgets in a
+                    //different linking container.
+                    //This allows the linking containers to be fully loaded/activated before
+                    //trying to connect any of its widgets to anywhere outside that linking container.
+                    try {
+                        fillConnections(element, displayModel);
+                    } catch (Exception e) {
+                        ConsoleService.getInstance().writeError(e.getMessage());
+                    }
+                }
+            });
 
             return result;
         } else {

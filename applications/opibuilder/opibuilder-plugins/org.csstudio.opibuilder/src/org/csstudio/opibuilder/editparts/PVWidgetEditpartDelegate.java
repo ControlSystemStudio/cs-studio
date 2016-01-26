@@ -1,7 +1,6 @@
 package org.csstudio.opibuilder.editparts;
 
 import static org.diirt.datasource.formula.ExpressionLanguage.formula;
-import static org.diirt.util.time.TimeDuration.ofMillis;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -333,95 +332,99 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
         PVWidgetEditpartDelegate pvWidget = this;
 
         DesiredRateReadWriteExpression<?,Object> expr = formula(alarmPVName);
-        alarmPV = PVManager
-                .readAndWrite(expr)
-                .timeout(ofMillis(10000))
-                .notifyOn(swtThread(editpart.getViewer().getControl().getDisplay()))
-                .readListener(new PVReaderListener<Object>() {
-                    @SuppressWarnings("unchecked")
-                    @Override
-                    public void pvChanged(PVReaderEvent<Object> event) {
-                    	String pvName = pvWidget.getWidgetModel().getPVName();
 
-                        if (event.isExceptionChanged()) {
-                            Exception e = event.getPvReader().lastException();
-                            log.fine("BeastAlarmListener (" + pvName + ") received an EXCEPTION: " + e.toString());
-                            e.printStackTrace();
-                        }
+        try {
+            alarmPV = PVManager
+                    .readAndWrite(expr)
+                    .timeout(TimeDuration.ofMillis(10000))
+                    .notifyOn(swtThread(editpart.getViewer().getControl().getDisplay()))
+                    .readListener(new PVReaderListener<Object>() {
+                        @SuppressWarnings("unchecked")
+                        @Override
+                        public void pvChanged(PVReaderEvent<Object> event) {
+                        	String pvName = pvWidget.getWidgetModel().getPVName();
 
-                        // if we receive a ValueChanged event we know we're connected even if we
-                        // never received the ConnectionChanged event (with isConnected being true)
-                        if (event.isConnectionChanged() || (!beastInfo.isBeastChannelConnected() && event.isValueChanged())) {
-                        	boolean connected = event.getPvReader().isConnected();
-
-                    		// TODO: remove this check when Kunal adds "connection awareness" to BeastDataSource,
-                        	// or leave it in as a failsafe ?
-                            if (!connected && event.isValueChanged()) {
-                                // the PVReader says it's not connected but we received a VAL event !
-                                connected = true; // force to TRUE since we received a ValueChanged event..
+                            if (event.isExceptionChanged()) {
+                                Exception e = event.getPvReader().lastException();
+                                log.fine("BeastAlarmListener (" + pvName + ") received an EXCEPTION: " + e.toString());
                             }
 
-                        	synchronized(beastInfo) {
-                                // isBeastAlarm will be true only if we successfully connected to it at least once
-                        		beastInfo.setBeastChannelConnected(connected);
-                                isBeastAlarm |= beastInfo.isBeastChannelConnected();
-                        	}
-                        }
-                        if (!event.isValueChanged()) return;
+                            // if we receive a ValueChanged event we know we're connected even if we
+                            // never received the ConnectionChanged event (with isConnected being true)
+                            if (event.isConnectionChanged() || (!beastInfo.isBeastChannelConnected() && event.isValueChanged())) {
+                            	boolean connected = event.getPvReader().isConnected();
 
-                        if (!(event.getPvReader().getValue() instanceof VTable)) {
-                            log.severe("BeastAlarmListener (" + pvName + "): data is not a VTable");
-                            return;
-                        }
+                        		// TODO: remove this check when Kunal adds "connection awareness" to BeastDataSource,
+                            	// or leave it in as a failsafe ?
+                                if (!connected && event.isValueChanged()) {
+                                    // the PVReader says it's not connected but we received a VAL event !
+                                    connected = true; // force to TRUE since we received a ValueChanged event..
+                                }
 
-                        VTable allData = (VTable) event.getPvReader().getValue();
-                        if (allData == null) return;
-                        if (allData.getColumnCount() < 2) {
-                            log.severe("BeastAlarmListener (" + pvName + "): received VTable has fewer than 2 columns");
-                            return;
-                        }
+                            	synchronized(beastInfo) {
+                                    // isBeastAlarm will be true only if we successfully connected to it at least once
+                            		beastInfo.setBeastChannelConnected(connected);
+                                    isBeastAlarm |= beastInfo.isBeastChannelConnected();
+                            	}
+                            }
+                            if (!event.isValueChanged()) return;
 
-                        List<String> keys = (List<String>) allData.getColumnData(0);
-                        List<String> data = (List<String>) allData.getColumnData(1);
+                            if (!(event.getPvReader().getValue() instanceof VTable)) {
+                                log.severe("BeastAlarmListener (" + pvName + "): data is not a VTable");
+                                return;
+                            }
 
-                        int latchedSeverityIdx = -1, currentSeverityIdx = -1;
-                        for (int i=0;i<keys.size();i++) {
-                            if ("AlarmStatus".equalsIgnoreCase(keys.get(i)))
-                                latchedSeverityIdx = i;
-                            if ("CurrentStatus".equalsIgnoreCase(keys.get(i)))
-                                currentSeverityIdx = i;
-                        }
-                        if (latchedSeverityIdx == -1 || currentSeverityIdx == -1) {
-                            log.severe("BeastAlarmListener (" + pvName + "): received VTable is missing Latched or Current alarm status");
-                            return;
-                        }
+                            VTable allData = (VTable) event.getPvReader().getValue();
+                            if (allData == null) return;
+                            if (allData.getColumnCount() < 2) {
+                                log.severe("BeastAlarmListener (" + pvName + "): received VTable has fewer than 2 columns");
+                                return;
+                            }
 
-                        synchronized (beastInfo) {
-                            beastInfo.latchedSeverity = BeastAlarmSeverityLevel.parse(data.get(latchedSeverityIdx));
-                            beastInfo.currentSeverity = BeastAlarmSeverityLevel.parse(data.get(currentSeverityIdx));
-                        }
+                            List<String> keys = (List<String>) allData.getColumnData(0);
+                            List<String> data = (List<String>) allData.getColumnData(1);
 
-                        AlarmSeverity beastSeverity = beastInfo.currentSeverity.getAlarmSeverity();
-                        boolean fireEvent = false;
-                        if (alarmSeverity != beastSeverity) {
-                            alarmSeverity = beastSeverity;
-                            fireEvent = true;
-                        }
+                            int latchedSeverityIdx = -1, currentSeverityIdx = -1;
+                            for (int i=0;i<keys.size();i++) {
+                                if ("AlarmStatus".equalsIgnoreCase(keys.get(i)))
+                                    latchedSeverityIdx = i;
+                                if ("CurrentStatus".equalsIgnoreCase(keys.get(i)))
+                                    currentSeverityIdx = i;
+                            }
+                            if (latchedSeverityIdx == -1 || currentSeverityIdx == -1) {
+                                log.severe("BeastAlarmListener (" + pvName + "): received VTable is missing Latched or Current alarm status");
+                                return;
+                            }
 
-                        // The widget will Blink only when the PV is currently in alarm and has not yet been acknowledged
-                        if (pvWidget.isBeastAlarmAndConnected() && pvWidget.isBeastAlarmActiveUnack()) {
-                            if (!WidgetBlinker.INSTANCE.isBlinking(pvWidget))
-                                WidgetBlinker.INSTANCE.add(pvWidget);
-                        } else if (WidgetBlinker.INSTANCE.isBlinking(pvWidget)) {
-                            WidgetBlinker.INSTANCE.remove(pvWidget);
-                            fireEvent = false; // because resetBeastBlink() will fire it, no need to do it twice
-                            pvWidget.resetBeastBlink();
-                        }
+                            synchronized (beastInfo) {
+                                beastInfo.latchedSeverity = BeastAlarmSeverityLevel.parse(data.get(latchedSeverityIdx));
+                                beastInfo.currentSeverity = BeastAlarmSeverityLevel.parse(data.get(currentSeverityIdx));
+                            }
 
-                        if (fireEvent) fireAlarmSeverityChanged(beastSeverity, pvWidget.editpart.getFigure());
-                    }
-                })
-                .asynchWriteAndMaxReadRate(TimeDuration.ofHertz(25));
+                            AlarmSeverity beastSeverity = beastInfo.currentSeverity.getAlarmSeverity();
+                            boolean fireEvent = false;
+                            if (alarmSeverity != beastSeverity) {
+                                alarmSeverity = beastSeverity;
+                                fireEvent = true;
+                            }
+
+                            // The widget will Blink only when the PV is currently in alarm and has not yet been acknowledged
+                            if (pvWidget.isBeastAlarmAndConnected() && pvWidget.isBeastAlarmActiveUnack()) {
+                                if (!WidgetBlinker.INSTANCE.isBlinking(pvWidget))
+                                    WidgetBlinker.INSTANCE.add(pvWidget);
+                            } else if (WidgetBlinker.INSTANCE.isBlinking(pvWidget)) {
+                                WidgetBlinker.INSTANCE.remove(pvWidget);
+                                fireEvent = false; // because resetBeastBlink() will fire it, no need to do it twice
+                                pvWidget.resetBeastBlink();
+                            }
+
+                            if (fireEvent) fireAlarmSeverityChanged(beastSeverity, pvWidget.editpart.getFigure());
+                        }
+                    })
+                    .asynchWriteAndMaxReadRate(TimeDuration.ofHertz(25));
+        } catch (Exception e) {
+            log.fine("BeastAlarmListener instantiation failed: " + e.toString());
+        }
     }
 
     /**Start all PVs.
