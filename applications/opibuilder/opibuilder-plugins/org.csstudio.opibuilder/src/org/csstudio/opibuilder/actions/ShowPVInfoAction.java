@@ -13,15 +13,13 @@ import java.util.Map.Entry;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.VTypeHelper;
+import org.csstudio.ui.util.dialogs.InfoDialog;
 import org.diirt.vtype.Display;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -31,21 +29,19 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.PlatformUI;
 
 /**Show details information of widget's primary PV.
  * @author Xihui Chen
- * @author Boris Versic - 'custom' parent shell to fix dialog opening in background on Linux
+ *
  */
 public class ShowPVInfoAction implements IObjectActionDelegate {
 
-    private final class PVsInfoDialog extends MessageDialog {
+    private final class PVsInfoDialog extends InfoDialog {
 
         private Map<String, IPV> pvMap;
 
         public PVsInfoDialog(Shell parentShell, String dialogTitle, Map<String, IPV> pvMap) {
-            super(parentShell, dialogTitle, null, "PVs' details on this widget:",
-                    MessageDialog.INFORMATION, new String[] { JFaceResources.getString("ok")}, 0); //$NON-NLS-1$
+            super(parentShell, dialogTitle, "PVs' details on this widget:"); //$NON-NLS-1$
             this.pvMap = pvMap;
         }
 
@@ -75,14 +71,12 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
     public ShowPVInfoAction() {
     }
 
-    @Override
     public void setActivePart(IAction action, IWorkbenchPart targetPart) {
         this.targetPart = targetPart;
     }
 
 
 
-    @Override
     public void run(IAction action) {
         if(getSelectedWidget() == null ||
                 getSelectedWidget().getAllPVs() == null ||
@@ -91,19 +85,10 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
             return;
         }
 
-        // "custom" parent shell (to fix the dialog opening in the background when running fullscreen OPI on Linux)
-        Shell shell = new Shell(targetPart.getSite().getShell().getDisplay(), SWT.NO_TRIM);
-        shell.setSize(100, 30);
-        Rectangle windowBounds = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell().getBounds();
-        // center horizontally, but place it a little higher vertically
-        Point dialogCenter = new Point(windowBounds.x + windowBounds.width / 2,
-                (windowBounds.y + windowBounds.height) / 2);
-        Point location = new Point(dialogCenter.x - shell.getBounds().x / 2, dialogCenter.y - shell.getBounds().y / 2);
-        shell.setLocation(location);
-
-        PVsInfoDialog dialog = new PVsInfoDialog(shell, "PV Info", getSelectedWidget().getAllPVs());
+        PVsInfoDialog dialog = new PVsInfoDialog(
+                targetPart.getSite().getShell(), "PV Info", getSelectedWidget().getAllPVs());
         dialog.open();
-        shell.dispose();
+
     }
 
     private String getPVInfo(IPV pv) {
@@ -121,10 +106,10 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: " + pv.getName() + "\n"); //$NON-NLS-2$
-        sb.append("State: " + stateInfo + "\n"); //$NON-NLS-2$
+        sb.append("Name: ").append(pv.getName()).append('\n'); //$NON-NLS-2$
+        sb.append("State: ").append(stateInfo).append('\n'); //$NON-NLS-2$
         if(pv.getValue() != null){
-            sb.append((pv.isConnected()? "Value: " : "Last received value: ") + pv.getValue()+ "\n"); //$NON-NLS-2$
+            sb.append((pv.isConnected()? "Value: " : "Last received value: ")).append(pv.getValue()).append('\n'); //$NON-NLS-2$
             sb.append("Display Info: ");
             Display displayInfo = VTypeHelper.getDisplayInfo(pv.getValue());
             if(displayInfo != null){
@@ -153,7 +138,6 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
     }
 
 
-    @Override
     public void selectionChanged(IAction action, ISelection selection) {
         if (selection instanceof IStructuredSelection) {
             this.selection = (IStructuredSelection) selection;
