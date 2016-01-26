@@ -97,7 +97,9 @@ public class PerspectiveChecker implements IStartup {
                     if (prefs.getString(PreferencesHelper.SWITCH_TO_OPI_EDITOR_PERSPECTIVE).equals(MessageDialogWithToggle.PROMPT)) {
                         MessageDialogWithToggle md = MessageDialogWithToggle.openYesNoQuestion(
                                 activeWindow.getShell(),
-                                "Switch perspective?", "Switch to OPI Editor perspective?",
+                                "Switch to OPI Editor perspective?",
+                                "The OPI Editor perspective contains the tools needed for creating and editing OPIs."
+                                + "Would you like to switch to this perspective?",
                                 "Remember my decision", false,
                                 prefs, PreferencesHelper.SWITCH_TO_OPI_EDITOR_PERSPECTIVE);
                         if (md.getReturnCode() != IDialogConstants.YES_ID) {
