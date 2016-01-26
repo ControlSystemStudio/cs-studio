@@ -54,7 +54,7 @@ public class AcknowledgeAlarmAction implements IObjectActionDelegate {
         	// cannot ack/unack
         	action.setEnabled(false);
         	action.setImageDescriptor(null);
-        	action.setText("Cannot ACK - not connected to BEAST");
+        	action.setText("Cannot ACK - not connected");
         	action.setToolTipText("");
         	return;
         }
@@ -67,11 +67,12 @@ public class AcknowledgeAlarmAction implements IObjectActionDelegate {
     	action.setImageDescriptor(getImageDescriptor(pvDelegate.getBeastAlarmInfo().currentSeverity, pvDelegate.getBeastAlarmInfo().latchedSeverity));
     	action.setToolTipText("Test tooltip:\nLatched Severity: " + pvDelegate.getBeastAlarmInfo().latchedSeverity.getDisplayName()
     			+ "\nCurrent Severity: " + pvDelegate.getBeastAlarmInfo().currentSeverity.getDisplayName());
-    	if (pvDelegate.getBeastAlarmInfo().isAcknowledged()) {
-            action.setText("Un-Acknowledge alarm on " + model.getPVName());
-        } else {
-            action.setText("Acknowledge alarm on " + model.getPVName());
-    	}
+
+    	String actionDesc = String.format("%1$sAcknowledge %2$s: %3$s",
+    	        pvDelegate.getBeastAlarmInfo().isAcknowledged() ? "Un-" : "",
+    	        pvDelegate.isBeastAlarmNode() ? "NODE" : "PV",
+                pvDelegate.getBeastAlarmInfo().getBeastChannelNameNoScheme());
+    	action.setText(actionDesc);
 	}
 
 	@Override
@@ -103,16 +104,16 @@ public class AcknowledgeAlarmAction implements IObjectActionDelegate {
                 return icons.getInvalidAcknowledged(false);
             case UNDEFINED:
             case INVALID:
-                return currentSeverity == BeastAlarmSeverityLevel.OK ? icons.getInvalidClearedNotAcknowledged(false) : icons
-                        .getInvalidNotAcknowledged(false);
+                return currentSeverity == BeastAlarmSeverityLevel.OK ?
+                        icons.getInvalidClearedNotAcknowledged(false) : icons.getInvalidNotAcknowledged(false);
             case MAJOR:
-                return currentSeverity == BeastAlarmSeverityLevel.OK ? icons.getMajorClearedNotAcknowledged(false) : icons
-                        .getMajorNotAcknowledged(false);
+                return currentSeverity == BeastAlarmSeverityLevel.OK ?
+                        icons.getMajorClearedNotAcknowledged(false) : icons.getMajorNotAcknowledged(false);
             case MAJOR_ACK:
                 return icons.getMajorAcknowledged(false);
             case MINOR:
-                return currentSeverity == BeastAlarmSeverityLevel.OK ? icons.getMinorClearedNotAcknowledged(false) : icons
-                        .getMinorNotAcknowledged(false);
+                return currentSeverity == BeastAlarmSeverityLevel.OK ?
+                        icons.getMinorClearedNotAcknowledged(false) : icons.getMinorNotAcknowledged(false);
             case MINOR_ACK:
                 return icons.getMinorAcknowledged(false);
             case OK:

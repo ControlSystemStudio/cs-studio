@@ -7,10 +7,12 @@
 ******************************************************************************/
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
-import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
+import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
+import org.csstudio.swt.widgets.datadefinition.IManualStringValueChangeListener;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -18,6 +20,7 @@ import org.eclipse.draw2d.IFigure;
  */
 public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
 
+    @Override
     public ControlMultiSymbolModel getWidgetModel() {
         return (ControlMultiSymbolModel) getModel();
     }
@@ -36,6 +39,7 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
         figure.setConfirmTip(model.getConfirmTip());
         figure.setPassword(model.getPassword());
         figure.addManualValueChangeListener(new IManualStringValueChangeListener() {
+            @Override
             public void manualValueChanged(final String newValue) {
                 if (getExecutionMode() == ExecutionMode.RUN_MODE) {
                     setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue.trim());
@@ -53,6 +57,7 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
      */
     private void configureButtonListener(final ControlMultiSymbolFigure figure) {
         figure.addManualValueChangeListener(new IManualStringValueChangeListener() {
+            @Override
             public void manualValueChanged(String newValue) {
                 // If the display is not in run mode, don't do anything.
                 if (getExecutionMode() != ExecutionMode.RUN_MODE)
@@ -74,12 +79,14 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
      * convenience of subclasses, which can call this method in their
      * implementation of {@link #registerPropertyChangeHandlers()}.
      */
+    @Override
     protected void registerPropertyChangeHandlers() {
         super.registerCommonPropertyChangeHandlers();
         configureButtonListener((ControlMultiSymbolFigure) getFigure());
 
         // show confirm dialog
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ControlMultiSymbolFigure figure = (ControlMultiSymbolFigure) refreshableFigure;
@@ -93,6 +100,7 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
 
         // confirm tip
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ControlMultiSymbolFigure figure = (ControlMultiSymbolFigure) refreshableFigure;
@@ -105,6 +113,7 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
 
         // password
         handler = new IWidgetPropertyChangeHandler() {
+            @Override
             public boolean handleChange(final Object oldValue,
                     final Object newValue, final IFigure refreshableFigure) {
                 ControlMultiSymbolFigure figure = (ControlMultiSymbolFigure) refreshableFigure;
@@ -113,6 +122,7 @@ public class ControlMultiSymbolEditPart extends CommonMultiSymbolEditPart {
             }
         };
         setPropertyChangeHandler(ControlMultiSymbolModel.PROP_PASSWORD, handler);
+        FigureTransparencyHelper.addHandler(this, figure);
     }
 
 }
