@@ -66,8 +66,6 @@ public class PerspectiveChecker implements IStartup {
      * <li>Adds an EditorPartListener to any pages
      * <li>Adds an EditorPageListener to the new window
      * </ul>
-     * @author hgs15624
-     *
      */
     private class EditorWindowListener implements IWindowListener {
         @Override
