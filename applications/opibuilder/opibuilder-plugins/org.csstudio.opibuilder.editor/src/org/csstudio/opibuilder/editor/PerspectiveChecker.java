@@ -21,10 +21,33 @@ import org.eclipse.ui.WorkbenchException;
 /**
  * Attach relevant listeners to workbench components in order that perspective
  * handling can be triggered when an OPIEditor is opened.
+ *
+ * This class could be converted into an abstract class with no dependency on
+ * OPIBuilder, then extended by different classes wanting similar behaviour
+ * that set up state in the constructor.
  */
 public class PerspectiveChecker implements IStartup {
 
     private static Logger log = Logger.getLogger(PerspectiveChecker.class.getName());
+
+    public final String perspectiveID;
+    public final IPreferenceStore prefs;
+    public final String preferenceKey;
+    public final String dialogTitle;
+    public final String dialogMessage;
+    public final String savePreferenceMessage;
+    public final String switchFailedMessage;
+
+    public PerspectiveChecker() {
+        perspectiveID = OPIEditorPerspective.ID;
+        prefs = OPIBuilderPlugin.getDefault().getPreferenceStore();
+        preferenceKey = PreferencesHelper.SWITCH_TO_OPI_EDITOR_PERSPECTIVE;
+        dialogTitle = "Switch to OPI Editor perspective?";
+        dialogMessage = "The OPI Editor perspective contains the tools needed for creating and editing OPIs."
+                + "Would you like to switch to this perspective?";
+        savePreferenceMessage = "Remember my decision";
+        switchFailedMessage = "Failed to change to OPI Editor perspective: ";
+    }
 
     @Override
     public void earlyStartup() {
@@ -94,11 +117,9 @@ public class PerspectiveChecker implements IStartup {
         public void partOpened(IWorkbenchPart part) {
             if (part instanceof OPIEditor) {
                 IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                if (!activeWindow.getActivePage().getPerspective().getId().equals(OPIEditorPerspective.ID)) {
+                if (!activeWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
                     boolean switchPerspective = false;
-                    IPreferenceStore prefs = OPIBuilderPlugin.getDefault().getPreferenceStore();
-                    String preferenceSetting = prefs.getString(PreferencesHelper.SWITCH_TO_OPI_EDITOR_PERSPECTIVE);
-
+                    String preferenceSetting = prefs.getString(preferenceKey);
                     switch (preferenceSetting) {
                         case MessageDialogWithToggle.PROMPT:
                             switchPerspective = promptForPerspectiveSwitch(prefs, activeWindow);
@@ -112,9 +133,9 @@ public class PerspectiveChecker implements IStartup {
 
                     if (switchPerspective) {
                         try {
-                            PlatformUI.getWorkbench().showPerspective(OPIEditorPerspective.ID, activeWindow);
+                            PlatformUI.getWorkbench().showPerspective(perspectiveID, activeWindow);
                         } catch (WorkbenchException we) {
-                            log.warning("Failed to change to OPI Editor perspective: " + we);
+                            log.warning(switchFailedMessage + we);
                         }
                     }
                 }
@@ -130,12 +151,8 @@ public class PerspectiveChecker implements IStartup {
          */
         private boolean promptForPerspectiveSwitch(IPreferenceStore prefs, IWorkbenchWindow window) {
             MessageDialogWithToggle md = MessageDialogWithToggle.openYesNoQuestion(
-                    window.getShell(),
-                    "Switch to OPI Editor perspective?",
-                    "The OPI Editor perspective contains the tools needed for creating and editing OPIs."
-                    + "Would you like to switch to this perspective?",
-                    "Remember my decision", false,
-                    prefs, PreferencesHelper.SWITCH_TO_OPI_EDITOR_PERSPECTIVE);
+                    window.getShell(), dialogTitle, dialogMessage, savePreferenceMessage, false,
+                    prefs, preferenceKey);
             return md.getReturnCode() == IDialogConstants.YES_ID;
         }
 
