@@ -45,8 +45,11 @@ public class OpenDataBrowserPopup extends AbstractHandler
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         // Get selection first because the ApplicationContext might change.
-        // This works for both context menu and double-clicks.
-        ISelection selection = HandlerUtil.getCurrentSelection(event);
+        ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+        if (selection == null) {
+            // This works for double-clicks.
+            selection = HandlerUtil.getCurrentSelection(event);
+        }
 
         // Create new editor
         final DataBrowserEditor editor = DataBrowserEditor.createInstance();
