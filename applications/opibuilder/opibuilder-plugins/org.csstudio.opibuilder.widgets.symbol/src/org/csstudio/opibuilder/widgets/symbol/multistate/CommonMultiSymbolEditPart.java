@@ -25,6 +25,7 @@ import org.csstudio.swt.widgets.symbol.SymbolImageProperties;
 import org.csstudio.swt.widgets.symbol.util.IImageListener;
 import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
 import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VBoolean;
 import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VNumber;
 import org.diirt.vtype.VType;
@@ -198,9 +199,11 @@ public abstract class CommonMultiSymbolEditPart extends AbstractPVWidgetEditPart
                     if (newValue instanceof VNumber) {
                         Double doubleValue = VTypeHelper.getDouble((VType) newValue);
                         symbolFigure.setState(doubleValue);
-                    } else {
-                        String stringValue = VTypeHelper.getString((VType) newValue);
-                        symbolFigure.setState(stringValue);
+                    }else if (newValue instanceof VBoolean) {
+                    	symbolFigure.setState((VBoolean)newValue);
+                    }else {
+                    	String stringValue = VTypeHelper.getString((VType) newValue);
+                    	symbolFigure.setState(stringValue);
                     }
                     // autoSizeWidget(symbolFigure);
                 }

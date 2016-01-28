@@ -30,6 +30,7 @@ import org.csstudio.swt.widgets.symbol.util.PermutationMatrix;
 import org.csstudio.swt.widgets.util.TextPainter;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.Draw2dSingletonUtil;
+import org.diirt.vtype.VBoolean;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Figure;
@@ -46,7 +47,8 @@ import org.eclipse.swt.graphics.Font;
  */
 public abstract class CommonMultiSymbolFigure extends Figure implements SymbolImageListener {
 
-    protected String baseImagePath;
+    private static final String BOOLEAN_VALUE_TRUE = "true";
+	protected String baseImagePath;
     protected Map<Integer, String> statesMap;
 
     protected SymbolImageProperties symbolProperties;
@@ -222,6 +224,34 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         }
         setState(index);
     }
+    
+    public synchronized void setState(VBoolean stateBoolean) {
+    	String state = ((VBoolean) stateBoolean).getValue().toString().toLowerCase();
+    	int index = statesStr.indexOf(state);
+    	if (index < 0) { // search if image exists
+    		try {
+    			statesDbl.add(Double.valueOf(state));
+    		} catch (NumberFormatException e) {
+    			statesDbl.add(null);
+    		}
+    		statesStr.add(state);
+    		index = BOOLEAN_VALUE_TRUE.equals(state)?1:0;
+    		statesMap.put(index, state);
+    		initRemainingStates(statesMap);
+    		IPath path = findImage(index);
+    		if (path == null)
+    			path = symbolImagePath;
+    		remainingImagesToLoad = 1;
+    		loadImageFromFile(path, index);
+    	}
+    	setState(index);
+    }
+
+	private void initRemainingStates(Map<Integer, String> statesMapCurrent) {
+		for(int i=2; i<8; i++){
+			statesMapCurrent.put(i,String.valueOf(i));
+		}
+	}
 
     /**
      * Set all the state string values.
@@ -327,6 +357,7 @@ public abstract class CommonMultiSymbolFigure extends Figure implements SymbolIm
         IPath path = SymbolUtils.searchStateImage(statesMap.get(stateIndex), baseImagePath);
         if (path == null)
             path = SymbolUtils.searchStateImage(stateIndex, baseImagePath);
+        
         return path;
     }
 
