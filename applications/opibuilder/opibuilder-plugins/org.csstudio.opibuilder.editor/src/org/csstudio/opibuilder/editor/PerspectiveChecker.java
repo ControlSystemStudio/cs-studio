@@ -115,25 +115,26 @@ public class PerspectiveChecker implements IStartup {
         public void partOpened(IWorkbenchPart part) {
             if (part instanceof OPIEditor) {
                 IWorkbenchWindow activeWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                if (!activeWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
-                    boolean switchPerspective = false;
-                    String preferenceSetting = prefs.getString(preferenceKey);
-                    switch (preferenceSetting) {
-                        case MessageDialogWithToggle.PROMPT:
-                            switchPerspective = promptForPerspectiveSwitch(prefs, activeWindow);
-                            break;
-                        case MessageDialogWithToggle.ALWAYS:
-                            switchPerspective = true;
-                            break;
-                        default:
-                            switchPerspective = false;
-                    }
-
-                    if (switchPerspective) {
-                        try {
-                            PlatformUI.getWorkbench().showPerspective(perspectiveID, activeWindow);
-                        } catch (WorkbenchException we) {
-                            log.warning(switchFailedMessage + we);
+                if (activeWindow != null) {
+                    if (!activeWindow.getActivePage().getPerspective().getId().equals(perspectiveID)) {
+                        boolean switchPerspective = false;
+                        String preferenceSetting = prefs.getString(preferenceKey);
+                        switch (preferenceSetting) {
+                            case MessageDialogWithToggle.PROMPT:
+                                switchPerspective = promptForPerspectiveSwitch(prefs, activeWindow);
+                                break;
+                            case MessageDialogWithToggle.ALWAYS:
+                                switchPerspective = true;
+                                break;
+                            default:
+                                switchPerspective = false;
+                        }
+                        if (switchPerspective) {
+                            try {
+                                PlatformUI.getWorkbench().showPerspective(perspectiveID, activeWindow);
+                            } catch (WorkbenchException we) {
+                                log.warning(switchFailedMessage + we);
+                            }
                         }
                     }
                 }
