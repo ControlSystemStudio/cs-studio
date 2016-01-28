@@ -140,12 +140,10 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
                 IPath path = null;
                 if (opiShell != null) {
                     path = opiShell.getDisplayModel().getOpiFilePath();
-                } else {
-                    if (part instanceof OPIView) {
-                        DisplayModel displayModel = ((OPIView) part).getDisplayModel();
-                        if (displayModel != null) {
-                            path = displayModel.getOpiFilePath();
-                        }
+                } else if (part instanceof OPIView) {
+                    DisplayModel displayModel = ((OPIView) part).getDisplayModel();
+                    if (displayModel != null) {
+                        path = displayModel.getOpiFilePath();
                     }
                 }
                 // We only support filesystem paths.
