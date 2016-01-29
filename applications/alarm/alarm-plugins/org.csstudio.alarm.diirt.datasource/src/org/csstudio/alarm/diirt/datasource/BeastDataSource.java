@@ -93,15 +93,15 @@ public class BeastDataSource extends DataSource {
                             @Override
                             public void serverModeUpdate(AlarmClientModel model, boolean maintenance_mode) {
                                 // TODO Auto-generated method stub
-                                log.info("beast  datasource: server mode update");
+                                log.fine("beast  datasource: server mode update");
                             }
 
                             @SuppressWarnings({ "rawtypes", "unchecked" })
                             @Override
                             public void newAlarmState(AlarmClientModel alarmModel, AlarmTreePV pv, boolean parent_changed) {
-                                log.config("beast  datasource: new alarm state " + pv );
+                                log.finest("beast  datasource: new alarm state " + pv );
                                 if (pv != null) {
-                                    log.fine(pv.getPathName());
+                                    log.finest(pv.getPathName());
                                     List<Consumer> pathHandlers = map.get(pv.getPathName().substring(1));
                                     if (pathHandlers != null) {
                                         for (Consumer consumer : pathHandlers) {
