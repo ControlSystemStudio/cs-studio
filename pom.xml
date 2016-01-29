@@ -76,7 +76,7 @@
 				<eclipse-site>http://download.eclipse.org/releases/mars</eclipse-site>
 				<eclipse-update-site>http://download.eclipse.org/eclipse/updates/4.5</eclipse-update-site>
 				<rap-site>http://download.eclipse.org/rt/rap/3.0</rap-site>
-				<rap-incubator-site>http://download.eclipse.org/rt/rap/incubator/nightly/gef/20150122-1538</rap-incubator-site>
+				<rap-incubator-site>http://archive.eclipse.org/rt/rap/incubator/nightly/gef/20150122-1538/</rap-incubator-site>
 				<platform-version>[4.4,4.5)</platform-version>
 				<swtbot-site>http://download.eclipse.org/technology/swtbot/mars/dev-build/update-site</swtbot-site>
 			</properties>
