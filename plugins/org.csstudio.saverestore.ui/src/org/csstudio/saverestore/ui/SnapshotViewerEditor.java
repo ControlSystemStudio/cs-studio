@@ -35,7 +35,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
@@ -70,6 +69,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContentDisplay;
 import javafx.scene.control.Label;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
@@ -136,7 +136,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
         MenuManager menu = new MenuManager();
-        menu.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+        menu.add(new org.eclipse.jface.action.Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         contextMenu = menu.createContextMenu(parent);
         parent.setMenu(contextMenu);
         getSite().registerContextMenu(menu, table);
@@ -468,12 +468,12 @@ public class SnapshotViewerEditor extends FXEditorPart {
             selectFile(false, Optional.empty()).ifPresent(
                 f -> SaveRestoreService.getInstance().execute("Export to csv file", () -> controller.exportToFile(f)));
         });
-        javafx.scene.control.Separator separator1 = new javafx.scene.control.Separator(Orientation.VERTICAL);
+        Separator separator1 = new Separator(Orientation.VERTICAL);
         String style = SnapshotViewerEditor.class.getResource(STYLE).toExternalForm();
         separator1.getStylesheets().add(style);
-        javafx.scene.control.Separator separator2 = new javafx.scene.control.Separator(Orientation.VERTICAL);
+        Separator separator2 = new Separator(Orientation.VERTICAL);
         separator2.getStylesheets().add(style);
-        javafx.scene.control.Separator separator3 = new javafx.scene.control.Separator(Orientation.VERTICAL);
+        Separator separator3 = new Separator(Orientation.VERTICAL);
         separator3.getStylesheets().add(style);
         leftToolbar.getChildren().addAll(addPVButton, separator1, addReadbacksButton, showStoredReadbacksButton,
             separator2, importButton, separator3, openSnapshotFromFileButton, saveSnapshotToFileButton, exportButton);
@@ -726,7 +726,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
                         try {
                             addSnapshot(provider.getSnapshotContent(s));
                         } catch (DataProviderException ex) {
-                            Selector.reportException(ex, getSite().getShell());
+                            ActionManager.reportException(ex, getSite().getShell());
                         }
                     });
                 }

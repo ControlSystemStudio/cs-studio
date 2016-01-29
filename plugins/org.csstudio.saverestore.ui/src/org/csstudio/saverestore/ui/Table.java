@@ -35,6 +35,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -57,7 +58,7 @@ import javafx.util.StringConverter;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class Table extends TableView<TableEntry> implements ISelectionProvider {
+class Table extends TableView<TableEntry> implements ISelectionProvider {
 
     private static boolean resizePolicyNotInitialized = true;
     private static PrivilegedAction<Object> resizePolicyAction = () -> {
@@ -245,7 +246,7 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
      *
      * @param controller the controller
      */
-    public Table(SnapshotViewerController controller) {
+    Table(SnapshotViewerController controller) {
         if (resizePolicyNotInitialized) {
             AccessController.doPrivileged(resizePolicyAction);
         }
@@ -396,22 +397,17 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
                 "PV value when the snapshot was taken", 100);
             final int snapshotIndex = i;
             MenuItem removeItem = new MenuItem("Remove");
-            removeItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Remove Snapshot", () -> {
-                final List<TableEntry> entries = controller.removeSnapshot(snapshotIndex);
-                final List<VSnapshot> snaps = controller.getAllSnapshots();
-                final boolean show = controller.isShowReadbacks();
-                final boolean showStored = controller.isShowStoredReadbacks();
-                Platform.runLater(() -> updateTable(entries, snaps, show, showStored));
-            }));
+            removeItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Remove Snapshot",
+                () -> update(controller.removeSnapshot(snapshotIndex))));
             MenuItem setAsBaseItem = new MenuItem("Set As Base");
-            setAsBaseItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Set new base Snapshot", () -> {
-                final List<TableEntry> entries = controller.setAsBase(snapshotIndex);
-                final List<VSnapshot> snaps = controller.getAllSnapshots();
-                final boolean show = controller.isShowReadbacks();
-                final boolean showStored = controller.isShowStoredReadbacks();
-                Platform.runLater(() -> updateTable(entries, snaps, show, showStored));
-            }));
-            final ContextMenu menu = new ContextMenu(removeItem, setAsBaseItem);
+            setAsBaseItem.setOnAction(ev -> SaveRestoreService.getInstance().execute("Set new base Snapshot",
+                () -> update(controller.setAsBase(snapshotIndex))));
+            MenuItem moveToNewEditor = new MenuItem("Move To New Editor");
+            moveToNewEditor.setOnAction(ev -> SaveRestoreService.getInstance().execute("Open Snapshot",
+                () -> update(controller.moveSnapshotToNewEditor(snapshotIndex))));
+
+            final ContextMenu menu = new ContextMenu(removeItem, setAsBaseItem, new SeparatorMenuItem(),
+                moveToNewEditor);
             col.label.setContextMenu(menu);
             col.setCellValueFactory(e -> e.getValue().compareValueProperty(snapshotIndex));
             col.setCellFactory(e -> new VTypeCellEditor<>());
@@ -452,6 +448,13 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
         }
     }
 
+    private void update(final List<TableEntry> entries) {
+        final List<VSnapshot> snaps = controller.getAllSnapshots();
+        final boolean show = controller.isShowReadbacks();
+        final boolean showStored = controller.isShowStoredReadbacks();
+        Platform.runLater(() -> updateTable(entries, snaps, show, showStored));
+    }
+
     /**
      * Updates the table by setting new content.
      *
@@ -460,7 +463,7 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
      * @param showReadback true if readback column should be visible or false otherwise
      * @param showStoredReadback true if the stored readback value columns should be visible or false otherwise
      */
-    public void updateTable(List<TableEntry> entries, List<VSnapshot> snapshots, boolean showReadback,
+    void updateTable(List<TableEntry> entries, List<VSnapshot> snapshots, boolean showReadback,
         boolean showStoredReadback) {
         getColumns().clear();
         uiSnapshots.clear();
@@ -479,7 +482,7 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
      *
      * @param entries the entries to set
      */
-    public void updateTable(List<TableEntry> entries) {
+    void updateTable(List<TableEntry> entries) {
         final ObservableList<TableEntry> items = getItems();
         final boolean notHide = !controller.isHideEqualItems();
         items.clear();
@@ -507,7 +510,7 @@ public class Table extends TableView<TableEntry> implements ISelectionProvider {
      *
      * @param entry the item to add
      */
-    public void addItem(TableEntry entry) {
+    void addItem(TableEntry entry) {
         entry.selectedProperty()
             .addListener((a, o, n) -> selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false));
         entry.liveStoredEqualProperty().addListener((a, o, n) -> {

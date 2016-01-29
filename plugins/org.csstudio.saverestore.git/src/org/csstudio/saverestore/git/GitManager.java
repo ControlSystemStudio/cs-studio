@@ -53,6 +53,7 @@ import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.errors.StopWalkException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -65,7 +66,12 @@ import org.eclipse.jgit.merge.MergeStrategy;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.revwalk.filter.AndRevFilter;
+import org.eclipse.jgit.revwalk.filter.CommitTimeRevFilter;
+import org.eclipse.jgit.revwalk.filter.CommitterRevFilter;
 import org.eclipse.jgit.revwalk.filter.MessageRevFilter;
+import org.eclipse.jgit.revwalk.filter.OrRevFilter;
+import org.eclipse.jgit.revwalk.filter.RevFilter;
 import org.eclipse.jgit.transport.FetchResult;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.TagOpt;
@@ -196,7 +202,7 @@ public class GitManager {
             }
 
             try {
-                setBranch(new Branch("master", "master"));
+                setBranch(new Branch());
                 Credentials credentials = getCredentials(Optional.empty());
                 if (credentials != null) {
                     pull(credentials);
@@ -287,7 +293,7 @@ public class GitManager {
      * Pull all changes from remote repository and push all local changes to remote.
      *
      * @param cp credentials provider, if not provided it will be retrieved via a UI
-     * @return true is changes in the local repository were made
+     * @return true if changes in the local repository were made
      * @throws GitAPIException if there is an error during push or pull
      */
     public synchronized boolean synchronise(Optional<Credentials> cp) throws GitAPIException {
@@ -766,12 +772,6 @@ public class GitManager {
         return new Result<>(snp, change);
     }
 
-    // --------------------------------------------------------------------------------------------------
-    //
-    // Methods for working with GIT
-    //
-    // --------------------------------------------------------------------------------------------------
-
     /**
      * Load the tags for the list of revisions provided as parameter. The tags are returned in a map, where the key is
      * the revision name and the value is the actual tag object.
@@ -908,23 +908,6 @@ public class GitManager {
     }
 
     /**
-     * Retrieves and returns meta info for given commit.
-     *
-     * @param revCommit commit from which meta info are retrieved
-     *
-     * @return meta info for given commit.
-     */
-    private static MetaInfo getMetaInfoFromCommit(RevCommit revCommit) {
-        PersonIdent personIdent = revCommit.getCommitterIdent();
-        String comment = revCommit.getFullMessage();
-        String creator = personIdent.getName();
-        Date commitTimestamp = personIdent.getWhen();
-        String email = personIdent.getEmailAddress();
-        String revision = revCommit.getName();
-        return new MetaInfo(comment, creator, email, commitTimestamp, revision);
-    }
-
-    /**
      * Retrieves the commit for given revision.
      *
      * @param revision revision
@@ -1015,15 +998,17 @@ public class GitManager {
      *
      * @param partialTagNameOrMessage the partial message or name to match
      * @param branch the branch on which the tag has to be located to be accepted
+     * @param start only commits done after start will be accepted
+     * @param end only commits done before end will be accepted
      * @return the list of tags
      * @throws GitAPIException in case of a git error
      * @throws IOException in case of an IO error
      */
-    public synchronized List<Snapshot> findSnapshotsByTag(String partialTagNameOrMessage, Branch branch)
-        throws GitAPIException, IOException {
+    public synchronized List<Snapshot> findSnapshotsByTag(String partialTagNameOrMessage, Branch branch,
+        Optional<Date> start, Optional<Date> end) throws GitAPIException, IOException {
         partialTagNameOrMessage = partialTagNameOrMessage.toLowerCase(Locale.UK);
         final Pattern pattern = Pattern.compile(".*" + partialTagNameOrMessage + ".*");
-        return findSnapshotsByTag(branch, (w, r, n) -> {
+        return findSnapshotsByTag(branch, start, end, (w, r, n) -> {
             String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase(Locale.UK);
             if (pattern.matcher(tagName).matches()) {
                 return w.parseTag(r.getObjectId());
@@ -1041,15 +1026,17 @@ public class GitManager {
      *
      * @param partialMessage the partial message to match
      * @param branch the branch on which the tag has to be located to be accepted
+     * @param start only commits done after start will be accepted
+     * @param end only commits done before end will be accepted
      * @return the list of tags
      * @throws GitAPIException in case of a git error
      * @throws IOException in case of an IO error
      */
-    public synchronized List<Snapshot> findSnapshotsByTagMessage(String partialMessage, Branch branch)
-        throws GitAPIException, IOException {
+    public synchronized List<Snapshot> findSnapshotsByTagMessage(String partialMessage, Branch branch,
+        Optional<Date> start, Optional<Date> end) throws GitAPIException, IOException {
         partialMessage = partialMessage.toLowerCase(Locale.UK);
         final Pattern pattern = Pattern.compile(".*" + partialMessage + ".*");
-        return findSnapshotsByTag(branch, (w, r, n) -> {
+        return findSnapshotsByTag(branch, start, end, (w, r, n) -> {
             RevTag tag = w.parseTag(r.getObjectId());
             String message = tag.getFullMessage().toLowerCase().replace("\n", " ");
             return pattern.matcher(message).matches() ? tag : null;
@@ -1062,39 +1049,50 @@ public class GitManager {
      *
      * @param partialTagName the partial tag to match
      * @param branch the branch on which the tag has to be located to be accepted
+     * @param start only commits done after start will be accepted
+     * @param end only commits done before end will be accepted
      * @return the list of tags
      * @throws GitAPIException in case of a git error
      * @throws IOException in case of an IO error
      */
-    public synchronized List<Snapshot> findSnapshotsByTagName(String partialTagName, Branch branch)
-        throws GitAPIException, IOException {
+    public synchronized List<Snapshot> findSnapshotsByTagName(String partialTagName, Branch branch,
+        Optional<Date> start, Optional<Date> end) throws GitAPIException, IOException {
         partialTagName = partialTagName.toLowerCase(Locale.UK);
         final Pattern pattern = Pattern.compile(".*" + partialTagName + ".*");
-        return findSnapshotsByTag(branch, (w, r, n) -> {
+        return findSnapshotsByTag(branch, start, end, (w, r, n) -> {
             String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase();
             return pattern.matcher(tagName).matches() ? w.parseTag(r.getObjectId()) : null;
         });
-
     }
 
     /**
      * Find all snapshots that are tagged and can be matched by the given trifunction.
      *
      * @param branch the name of the branch on which the snapshot should be located
+     * @param start only commits done after start will be accepted
+     * @param end only commits done before end will be accepted
      * @param f function that receives the revision walk, the tag reference, the nice tag name and returns the actual
      *            revision tag if the tag is accepted or null if rejected
      * @return the list of all snapshots that match criterion
      * @throws GitAPIException in case of a Git related error
      * @throws IOException in case of an IO error
      */
-    private List<Snapshot> findSnapshotsByTag(Branch branch, TriFunction<RevWalk, Ref, String, RevTag> f)
-        throws GitAPIException, IOException {
+    private List<Snapshot> findSnapshotsByTag(Branch branch, Optional<Date> start, Optional<Date> end,
+        TriFunction<RevWalk, Ref, String, RevTag> f) throws GitAPIException, IOException {
         setBranch(branch);
         List<Snapshot> snapshots = new ArrayList<>();
         Map<String, Ref> tags = repository.getTags();
         String branchName = new StringBuilder(branch.getShortName().length() + 2).append('(')
             .append(branch.getShortName()).append(')').toString();
         try (RevWalk walk = new RevWalk(repository); ObjectReader objectReader = repository.newObjectReader()) {
+            RevFilter timeFilter = null;
+            if (start.isPresent() && end.isPresent()) {
+                timeFilter = CommitTimeRevFilter.between(start.get(), end.get());
+            } else if (start.isPresent()) {
+                timeFilter = CommitTimeRevFilter.after(start.get());
+            } else if (end.isPresent()) {
+                timeFilter = CommitTimeRevFilter.before(end.get());
+            }
             for (Map.Entry<String, Ref> r : tags.entrySet()) {
                 String name = r.getKey();
                 // check if the tag branch name is correct
@@ -1109,6 +1107,17 @@ public class GitManager {
                 if (tag != null) {
                     String revision = tag.getObject().getId().getName();
                     RevCommit commit = getCommitFromRevision(revision);
+                    if (timeFilter != null) {
+                        try {
+                            if (!timeFilter.include(walk, commit)) {
+                                continue;
+                            }
+                        } catch (StopWalkException e) {
+                            // thrown by the filter, because it expects that commit times are ordered. That is generally
+                            // true, but not in this case, because we are not walking through the tree
+                            continue;
+                        }
+                    }
                     getPathFromCommit(commit, walk, objectReader)
                         .ifPresent(p -> pathToBeamline(p, repositoryPath, branch, FileType.SNAPSHOT).ifPresent(e -> {
                             MetaInfo meta = getMetaInfoFromCommit(commit);
@@ -1149,24 +1158,57 @@ public class GitManager {
     }
 
     /**
-     * Find all snapshot that are stored with the given partial comment. All comments are search and any snapshot with a
-     * comment that contain the partial comment and is located on the given branch matches the criteria.
+     * Find all snapshot that are stored with the comment that contains the partial text or were created by the user
+     * whose username contains the partial text and were created during the given time period. If time range is
+     * provided, only commits that belong to that time range are search and any snapshot with a comment or user that
+     * contain the partial text and is located on the given branch matches the criteria. This method is faster than
+     * making separate search for user and comment and combining the results, because this method only traverses the
+     * revision tree once.
      *
-     * @param partialComment the partial comment that we search for
-     * @param isRegex true if the partial comment should be treated as a regular expression
+     * @param partialText the partial comment or username that we search for
      * @param branch the branch on which to search
+     * @param byComment indicates if search is made by comment
+     * @param byUser indicates if search is made by username
+     * @param start the start date of the time window to search
+     * @param end the end date of the time window to search
      * @return the list of all snapshots that match the comment criterion
      * @throws IOException in case of an error
      * @throws GitAPIException in case of branch checkout or tags loading error
      */
-    public synchronized List<Snapshot> findSnapshotsByComment(String partialComment, final Branch branch)
-        throws IOException, GitAPIException {
+    public synchronized List<Snapshot> findSnapshotsByCommentOrUser(String partialText, final Branch branch,
+        boolean byComment, boolean byUser, Optional<Date> start, Optional<Date> end)
+            throws IOException, GitAPIException {
         List<Snapshot> snapshots = new ArrayList<>();
         setBranch(branch);
         List<RevCommit> revisions = new ArrayList<>();
         try (RevWalk revWalk = new RevWalk(repository); ObjectReader objectReader = repository.newObjectReader()) {
             revWalk.markStart(getHeadCommit());
-            revWalk.setRevFilter(MessageRevFilter.create(partialComment));
+            RevFilter userCommentFilter = null;
+            if (byComment && byUser) {
+                userCommentFilter = OrRevFilter.create(MessageRevFilter.create(partialText),
+                    CommitterRevFilter.create(partialText));
+            } else if (byComment) {
+                userCommentFilter = MessageRevFilter.create(partialText);
+            } else if (byUser) {
+                userCommentFilter = CommitterRevFilter.create(partialText);
+            }
+            RevFilter timeFilter = null;
+            if (start.isPresent() && end.isPresent()) {
+                timeFilter = CommitTimeRevFilter.between(start.get(), end.get());
+            } else if (start.isPresent()) {
+                timeFilter = CommitTimeRevFilter.after(start.get());
+            } else if (end.isPresent()) {
+                timeFilter = CommitTimeRevFilter.before(end.get());
+            }
+            if (userCommentFilter == null && timeFilter == null) {
+                throw new IllegalArgumentException("No search parameters provided.");
+            } else if (userCommentFilter != null && timeFilter != null) {
+                revWalk.setRevFilter(AndRevFilter.create(userCommentFilter, timeFilter));
+            } else if (userCommentFilter != null) {
+                revWalk.setRevFilter(userCommentFilter);
+            } else {
+                revWalk.setRevFilter(timeFilter);
+            }
             for (RevCommit commit : revWalk) {
                 AbstractTreeIterator oldTreeIterator = new EmptyTreeIterator();
                 if (commit.getParents().length != 0) {
@@ -1266,6 +1308,23 @@ public class GitManager {
     // --------------------------------------------------------------------------------------------------
 
     /**
+     * Retrieves and returns meta info for given commit.
+     *
+     * @param revCommit commit from which meta info are retrieved
+     *
+     * @return meta info for given commit.
+     */
+    private static MetaInfo getMetaInfoFromCommit(RevCommit revCommit) {
+        PersonIdent personIdent = revCommit.getCommitterIdent();
+        String comment = revCommit.getFullMessage();
+        String creator = personIdent.getName();
+        Date commitTimestamp = personIdent.getWhen();
+        String email = personIdent.getEmailAddress();
+        String revision = revCommit.getName();
+        return new MetaInfo(comment, creator, email, commitTimestamp, revision);
+    }
+
+    /**
      * Creates (if not exists) file and writes content.
      *
      * @param filePath file path relative to the repository
@@ -1297,7 +1356,7 @@ public class GitManager {
      * @return true if the file was deleted or false otherwise
      * @throws IOException in case of an error
      */
-    private boolean deleteFile(String filePath, File repositoryPath) throws IOException {
+    private static boolean deleteFile(String filePath, File repositoryPath) throws IOException {
         Path path = Paths.get(repositoryPath.getAbsolutePath(), filePath);
         if (!Files.exists(path)) {
             return false;

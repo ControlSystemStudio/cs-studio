@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feature
+      id="org.csstudio.saverestore.masar.feature"
+      label="Save Restore Masar Data Provider"
+      version="1.0.0.qualifier"
+      provider-name="FRIB"
+      plugin="org.csstudio.saverestore.masar">
+
+   <description>
+      org.csstudio.saverestore.masar.feature provides the plugins and features that implement a masar data provider for Save, Set, and Restore application.
+   </description>
+
+   <copyright url="http://www.example.com/copyright">
+      [Enter Copyright Description here.]
+   </copyright>
+
+   <license url="http://www.example.com/license">
+      [Enter License Description here.]
+   </license>
+
+   <requires>
+      <import feature="org.csstudio.saverestore.feature" version="1.0.0" match="greaterOrEqual"/>
+   </requires>
+
+   <plugin
+         id="org.csstudio.saverestore.masar"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

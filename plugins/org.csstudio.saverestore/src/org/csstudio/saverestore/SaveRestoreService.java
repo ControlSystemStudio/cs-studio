@@ -6,9 +6,6 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +19,7 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
@@ -47,33 +45,6 @@ public class SaveRestoreService {
         }
     };
 
-    private static final int WAIT_PERIOD = 100;
-
-    /**
-     * <code>RunnableWrapper</code> is a wrapper for {@link Runnable} tasks, which upon completion notifies all
-     * monitors locked on the object instance.
-     *
-     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
-     *
-     */
-    private static class RunnableWrapper implements Runnable {
-        private final Runnable task;
-        private boolean completed = false;
-
-        RunnableWrapper(Runnable task) {
-            this.task = task;
-        }
-
-        @Override
-        public void run() {
-            task.run();
-            synchronized (this) {
-                completed = false;
-                this.notifyAll();
-            }
-        }
-    }
-
     /**
      * <code>SaveRestoreJob</code> is a cancellable job for executing save and restore tasks. Once the job has been
      * cancelled the {@link #isCancelled()} method returns true, which allows other objects to check the current state
@@ -86,7 +57,6 @@ public class SaveRestoreService {
 
         private final String taskName;
         private final Runnable task;
-        private volatile boolean cancelled = false;
 
         SaveRestoreJob(String taskName, Runnable task) {
             super("Save and Restore: " + taskName);
@@ -98,38 +68,16 @@ public class SaveRestoreService {
         @Override
         protected IStatus run(IProgressMonitor monitor) {
             monitor.beginTask(taskName, 1);
-            setCurrentJob(this);
+            setCurrentJob(monitor);
             try {
                 setBusy(true);
-                RunnableWrapper wrapper = new RunnableWrapper(task);
-                Future<?> done = executor.submit(wrapper);
-                while (!done.isDone()) {
-                    synchronized (wrapper) {
-                        // could be synchronized on done, but is is not recommended to lock on an object from
-                        // java.util.concurrent
-                        if (wrapper.completed) {
-                            break;
-                        } else {
-                            wrapper.wait(WAIT_PERIOD);
-                        }
-                    }
-                    if (monitor.isCanceled()) {
-                        cancelled = true;
-                    }
-                }
-                return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
-            } catch (InterruptedException e) {
-                monitor.setCanceled(true);
-                return Status.CANCEL_STATUS;
+                BusyIndicator.showWhile(null, task);
+                return Status.OK_STATUS;
             } finally {
                 setCurrentJob(null);
                 monitor.done();
                 setBusy(false);
             }
-        }
-
-        boolean isCancelled() {
-            return cancelled;
         }
     }
 
@@ -149,8 +97,7 @@ public class SaveRestoreService {
     private DataProviderWrapper selectedDataProvider;
     private PropertyChangeSupport support = new PropertyChangeSupport(this);
     private IPreferenceStore preferences;
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-    private SaveRestoreJob currentJob;
+    private IProgressMonitor currentJob;
     private static final SaveRestoreService INSTANCE = new SaveRestoreService();
 
     /**
@@ -217,7 +164,7 @@ public class SaveRestoreService {
         this.selectedDataProvider = selectedDataProvider;
         if (this.selectedDataProvider != null) {
             final DataProvider provider = this.selectedDataProvider.provider;
-            SaveRestoreService.getInstance().execute("Data Provider Initialise", () -> provider.initialise());
+            execute("Data Provider Initialise", () -> provider.initialise());
             LOGGER.log(Level.FINE, "Selected data provider: " + selectedDataProvider.getPresentationName());
         }
         support.firePropertyChange(SELECTED_DATA_PROVIDER, oldValue, this.selectedDataProvider);
@@ -319,12 +266,12 @@ public class SaveRestoreService {
     }
 
     /**
-     * Sets the job that is currently being executed. The jobs are defined in a way that at any given time only one job
-     * is being executed.
+     * Sets the progress monitor of the job that is currently being executed. The jobs are defined in a way that at any
+     * given time only one job is being executed, so there can always be only one progress monitor.
      *
      * @param job the job that is currently being executed (can be null)
      */
-    private void setCurrentJob(SaveRestoreJob job) {
+    private void setCurrentJob(IProgressMonitor job) {
         synchronized (this) {
             this.currentJob = job;
         }
@@ -342,7 +289,7 @@ public class SaveRestoreService {
      */
     public boolean isCurrentJobCancelled() {
         synchronized (this) {
-            return this.currentJob == null ? true : this.currentJob.isCancelled();
+            return this.currentJob == null ? true : this.currentJob.isCanceled();
         }
     }
 }

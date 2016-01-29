@@ -6,12 +6,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.FileUtilities;
 import org.csstudio.saverestore.SaveRestoreService;
+import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.BeamlineSetData;
 import org.csstudio.saverestore.data.BeamlineSetData.Entry;
 import org.csstudio.saverestore.ui.util.RunnableWithID;
 import org.csstudio.ui.fx.util.FXEditorPart;
+import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.StaticTextField;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -55,9 +58,6 @@ public class BeamlineSetEditor extends FXEditorPart {
     private TextArea descriptionArea;
     private TextArea contentArea;
 
-    private BeamlineSetData data;
-    private String orgText;
-
     private boolean dirty = false;
     private BeamlineSetController controller;
 
@@ -68,10 +68,37 @@ public class BeamlineSetEditor extends FXEditorPart {
         this.controller = new BeamlineSetController(this);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.ui.fx.util.FXEditorPart#createPartControl(org.eclipse.swt.widgets.Composite)
+     */
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
         PlatformUI.getWorkbench().getHelpSystem().setHelp(parent, "org.csstudio.saverestore.ui.help.beamlineseteditor");
+    }
+
+    /**
+     * Checks if the data provider of edited beamline set supports saving or editing of beamline sets. If yes, the
+     * method returns true, otherwise it returns false.
+     *
+     * @return true if beamline set can be saved or false otherwise
+     */
+    private boolean canExecute() {
+        return controller.getSavedBeamlineSetData().filter(d -> {
+            DataProviderWrapper wrapper = SaveRestoreService.getInstance()
+                .getDataProvider(d.getDescriptor().getDataProviderId());
+            if (wrapper == null) {
+                return false;
+            }
+            if (!wrapper.provider.isBeamlineSetSavingSupported()) {
+                FXMessageDialog.openInformation(getSite().getShell(), "Save Beamline Set",
+                    wrapper.name + " does not support editing or saving beamline sets.");
+                return false;
+            }
+            return true;
+        }).isPresent();
     }
 
     /*
@@ -81,9 +108,10 @@ public class BeamlineSetEditor extends FXEditorPart {
      */
     @Override
     public void doSave(final IProgressMonitor monitor) {
-        if (data.getStoredDate() == null) {
+        Optional<BeamlineSetData> d = controller.getSavedBeamlineSetData();
+        if (!d.isPresent() || d.get().getStoredDate() == null) {
             doSaveAs();
-        } else {
+        } else if (canExecute()) {
             monitor.beginTask("Save beamline set", 1);
             final BeamlineSetData data = createData();
             if (data == null) {
@@ -91,11 +119,10 @@ public class BeamlineSetEditor extends FXEditorPart {
                     "There is an error in the file contents.");
                 return;
             }
-            if (data.equalContent(this.data)) {
+            if (data.equalContent(d.get())) {
                 MessageDialog.openInformation(getSite().getShell(), "Save Beamline Set",
                     "Theare are no changes between the saved and this beamline set.");
-                dirty = false;
-                firePropertyChange(PROP_DIRTY);
+                setDirty(false);
                 return;
             }
 
@@ -145,7 +172,9 @@ public class BeamlineSetEditor extends FXEditorPart {
                 deltasList.add(d[2].trim());
             }
         }
-        return new BeamlineSetData(data.getDescriptor(), pvList, readbacksList, deltasList, description);
+        Optional<BeamlineSetData> bsd = controller.getSavedBeamlineSetData();
+        BeamlineSet descriptor = bsd.isPresent() ? bsd.get().getDescriptor() : new BeamlineSet();
+        return new BeamlineSetData(descriptor, pvList, readbacksList, deltasList, description);
     }
 
     /*
@@ -155,29 +184,28 @@ public class BeamlineSetEditor extends FXEditorPart {
      */
     @Override
     public void doSaveAs() {
-        BeamlineSetData data = createData();
-        if (data == null) {
-            MessageDialog.openError(getSite().getShell(), "Save Beamline Set",
-                "There is an error in the file contents.");
-            return;
-        }
-        if (data.equalContent(this.data)) {
-            boolean ans = MessageDialog.openQuestion(getSite().getShell(), "Save Beamline Set As",
-                "Theare are no changes between the saved and this beamline set. Are you sure you want to save it as a new beamline set?");
-            if (!ans) {
-                dirty = false;
-                firePropertyChange(PROP_DIRTY);
+        if (canExecute()) {
+            final BeamlineSetData data = createData();
+            if (data == null) {
+                MessageDialog.openError(getSite().getShell(), "Save Beamline Set",
+                    "There is an error in the file contents.");
                 return;
             }
+            if (data.equalContent(controller.getSavedBeamlineSetData().orElse(null)) && MessageDialog.openQuestion(
+                getSite().getShell(), "Save Beamline Set As",
+                "Theare are no changes between the saved and this beamline set. Are you sure you want to save it as a new beamline set?")) {
+                setDirty(false);
+                return;
+            }
+            new RepositoryTreeBrowser(this, data.getDescriptor()).openAndWait()
+                .ifPresent(beamlineSet -> SaveRestoreService.getInstance().execute("Save Beamline Set", () -> {
+                    controller
+                        .save(new BeamlineSetData(beamlineSet, data.getPVList(), data.getReadbackList(),
+                            data.getDeltaList(), data.getDescription()))
+                        .ifPresent(d -> getSite().getShell().getDisplay()
+                            .asyncExec(() -> setInput(new BeamlineSetEditorInput(d))));
+                }));
         }
-        new RepositoryTreeBrowser(this, data.getDescriptor()).openAndWait()
-            .ifPresent(beamlineSet -> SaveRestoreService.getInstance().execute("Save Beamline Set", () -> {
-                controller
-                    .save(new BeamlineSetData(beamlineSet, data.getPVList(), data.getReadbackList(),
-                        data.getDeltaList(), data.getDescription()))
-                    .ifPresent(d -> getSite().getShell().getDisplay()
-                        .asyncExec(() -> setInput(new BeamlineSetEditorInput(d))));
-            }));
     }
 
     /*
@@ -200,6 +228,16 @@ public class BeamlineSetEditor extends FXEditorPart {
         return dirty;
     }
 
+    /**
+     * Sets the dirt property of this editor and fires a change event.
+     *
+     * @param dirty true if the editor should be marked dirty or false if not dirty
+     */
+    private void setDirty(boolean dirty) {
+        this.dirty = dirty;
+        firePropertyChange(PROP_DIRTY);
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -220,6 +258,20 @@ public class BeamlineSetEditor extends FXEditorPart {
         firePropertyChange(PROP_TITLE);
     }
 
+    private void setBeamlineSet(final BeamlineSetData data) {
+        if (descriptionArea != null) {
+            List<Entry> list = data.getEntries();
+            final StringBuilder sb = new StringBuilder(list.size() * 200);
+            list.forEach(e -> sb.append(e).append('\n'));
+            Platform.runLater(() -> {
+                controller.setSavedBeamlineSetData(data);
+                descriptionArea.setText(data.getDescription());
+                contentArea.setText(sb.toString().trim());
+                setDirty(false);
+            });
+        }
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -231,23 +283,6 @@ public class BeamlineSetEditor extends FXEditorPart {
         setPartName(input.getName());
         firePropertyChange(PROP_INPUT);
         init();
-    }
-
-    private void setBeamlineSet(final BeamlineSetData data) {
-        if (descriptionArea != null) {
-            this.data = data;
-            List<Entry> list = data.getEntries();
-            final StringBuilder sb = new StringBuilder(list.size() * 200);
-            list.forEach(e -> sb.append(e).append('\n'));
-            Platform.runLater(() -> {
-                String description = data.getDescription();
-                descriptionArea.setText(description);
-                orgText = sb.toString().trim();
-                contentArea.setText(orgText);
-                dirty = false;
-                firePropertyChange(PROP_DIRTY);
-            });
-        }
     }
 
     /*
@@ -274,10 +309,7 @@ public class BeamlineSetEditor extends FXEditorPart {
         descriptionArea.setMaxWidth(Double.MAX_VALUE);
         descriptionArea.setWrapText(true);
         descriptionArea.setPrefRowCount(4);
-        descriptionArea.textProperty().addListener((a, o, n) -> {
-            dirty = true;
-            firePropertyChange(PROP_DIRTY);
-        });
+        descriptionArea.textProperty().addListener((a, o, n) -> setDirty(false));
 
         Label contentLabel = new Label("PV List:");
         contentLabel.setFont(Font.font(15));
@@ -290,8 +322,7 @@ public class BeamlineSetEditor extends FXEditorPart {
         contentArea.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         contentArea.setWrapText(false);
         contentArea.textProperty().addListener((a, o, n) -> {
-            dirty = true;
-            firePropertyChange(PROP_DIRTY);
+            setDirty(true);
             final String description = descriptionArea.getText();
             final String content = n;
             // execute the content check in the background thread, but only if the same task is not already being

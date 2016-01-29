@@ -56,7 +56,6 @@ openFile
    <vm>
    </vm>
 
-
    <plugins>
    </plugins>
 
@@ -73,6 +72,7 @@ openFile
       <feature id="org.csstudio.trends.databrowser2.feature"/>
       <feature id="org.csstudio.iter.opibuilder.feature"/>
       <feature id="org.csstudio.display.pvtable.feature"/>
+      <feature id="org.csstudio.saverestore.masar.feature"/>
    </features>
 
    <configurations>

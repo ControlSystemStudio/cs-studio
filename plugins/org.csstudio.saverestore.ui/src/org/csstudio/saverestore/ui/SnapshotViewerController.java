@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.FileUtilities;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.SnapshotContent;
+import org.csstudio.saverestore.UnsupportedActionException;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.Utilities.VTypeComparison;
 import org.csstudio.saverestore.data.BeamlineSet;
@@ -98,6 +100,10 @@ public class SnapshotViewerController {
                     if (suspend.get() > 0)
                         return;
                 }
+                if (e.isExceptionChanged()) {
+                    SaveRestoreService.LOGGER.log(Level.WARNING, "DIIRT Connection Error",
+                        e.getPvReader().lastException());
+                }
                 value = e.getPvReader().getValue();
                 throttle.trigger();
             });
@@ -118,6 +124,18 @@ public class SnapshotViewerController {
                 });
             }
         }
+
+        void dispose() {
+            if (!reader.isClosed()) {
+                reader.close();
+            }
+            if (!writer.isClosed()) {
+                writer.close();
+            }
+            if (readback != null && !readback.isClosed()) {
+                readback.close();
+            }
+        }
     }
 
     private BooleanProperty snapshotSaveableProperty = new SimpleBooleanProperty(false);
@@ -127,7 +145,8 @@ public class SnapshotViewerController {
     private final List<VSnapshot> snapshots = new ArrayList<>(10);
     private final Map<String, TableEntry> items = new LinkedHashMap<>();
     private final Map<String, String> readbacks = new HashMap<>();
-    private final Map<TableEntry, PV> pvs = new LinkedHashMap<>();
+    private final Map<TableEntry, PV> pvs = new HashMap<>();
+    private final Map<String, PV> pvsForDisposal = new HashMap<>();
     private List<TableEntry> filteredList = new ArrayList<>(0);
     private final GUIUpdateThrottle throttle = new GUIUpdateThrottle(20, TABLE_UPDATE_RATE) {
         @Override
@@ -172,16 +191,30 @@ public class SnapshotViewerController {
      * Dispose of all allocated resources.
      */
     public void dispose() {
-        pvs.values().forEach((e) -> {
-            e.reader.close();
-            e.writer.close();
-            if (e.readback != null) {
-                e.readback.close();
-            }
-        });
-        pvs.clear();
-        items.clear();
+        dispose(true);
+    }
+
+    /**
+     * Dispose of all allocated resources, except PVs. If <code>closePVs</code> is true the pvs are disposed of,
+     * otherwise they are only marked for disposal. It is expected that the caller to this method later checks the PVs
+     * and disposes of those that have not been unmarked.
+     *
+     * @param closePVs true if the PVs should be closed and map cleared or false if they should only be marked for
+     *            disposal
+     */
+    private void dispose(boolean closePVs) {
         synchronized (snapshots) {
+            // synchronise, because this method can be called from the UI thread by Eclipse, when the editor is closing
+            if (closePVs) {
+                pvsForDisposal.values().forEach(e -> e.dispose());
+                pvsForDisposal.clear();
+                pvs.values().forEach(e -> e.dispose());
+                pvs.clear();
+            } else {
+                pvs.forEach((e, p) -> pvsForDisposal.put(e.pvNameProperty().get(), p));
+                pvs.clear();
+            }
+            items.clear();
             snapshots.clear();
         }
     }
@@ -189,6 +222,12 @@ public class SnapshotViewerController {
     private void connectPVs() {
         items.values().forEach((e) -> {
             PV pv = pvs.get(e);
+            if (pv == null) {
+                pv = pvsForDisposal.remove(e.pvNameProperty().get());
+                if (pv != null) {
+                    pvs.put(e, pv);
+                }
+            }
             if (pv == null) {
                 String name = e.pvNameProperty().get();
                 PVReader<VType> reader = PVManager.read(channel(name, VType.class, VType.class))
@@ -232,7 +271,14 @@ public class SnapshotViewerController {
      * @return a list of table entries that should be shown in the table
      */
     public List<TableEntry> setSnapshot(VSnapshot data) {
-        dispose();
+        dispose(false);
+        List<TableEntry> ret = setSnapshotInternal(data);
+        pvsForDisposal.values().forEach(p -> p.dispose());
+        pvsForDisposal.clear();
+        return ret;
+    }
+
+    private List<TableEntry> setSnapshotInternal(VSnapshot data) {
         List<String> names = data.getNames();
         List<VType> values = data.getValues();
         List<Boolean> selected = data.getSelected();
@@ -252,7 +298,7 @@ public class SnapshotViewerController {
             e.selectedProperty().setValue(selected.get(i));
             e.setSnapshotValue(values.get(i), 0);
             if (rbValues.size() > i) {
-                e.setStoredReadbackValue(rbValues.get(i),0);
+                e.setStoredReadbackValue(rbValues.get(i), 0);
             }
             items.put(name, e);
             String s = readbacks.get(name);
@@ -277,10 +323,9 @@ public class SnapshotViewerController {
      */
     public List<TableEntry> addSnapshot(VSnapshot data) {
         int numberOfSnapshots = getNumberOfSnapshots();
-        if (numberOfSnapshots == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
-            return setSnapshot(data);
-        } else if (numberOfSnapshots == 0) {
-            return setSnapshot(data);
+        if (numberOfSnapshots == 0
+            || (numberOfSnapshots == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved())) {
+            return setSnapshotInternal(data); // do not dispose of anything
         } else {
             List<String> names = data.getNames();
             List<VType> values = data.getValues();
@@ -307,7 +352,7 @@ public class SnapshotViewerController {
                 }
                 e.setSnapshotValue(values.get(i), numberOfSnapshots);
                 if (rbValues.size() > i) {
-                    e.setStoredReadbackValue(rbValues.get(i),numberOfSnapshots);
+                    e.setStoredReadbackValue(rbValues.get(i), numberOfSnapshots);
                 }
                 withoutValue.remove(e);
             }
@@ -357,6 +402,24 @@ public class SnapshotViewerController {
     }
 
     /**
+     * Move the snapshot under the given index to a new editor. After the action is completed the current editor no
+     * longer contains this snapshot.
+     *
+     * @param idx the index of the snapshot to move
+     * @return the list of table entries for this editor after removal of the current snapshot
+     */
+    public List<TableEntry> moveSnapshotToNewEditor(int idx) {
+        return redoSnapshots(idx, () -> {
+            final VSnapshot s = getSnapshot(idx);
+            // this happens in a new thread, so it is OK
+            new ActionManager(owner).openSnapshot(s);
+            synchronized (snapshots) {
+                return snapshots.stream().filter(e -> e != s).collect(Collectors.toList());
+            }
+        });
+    }
+
+    /**
      * Removes the snapshot under the given index and recreates the table entries. The base snapshot is not allowed to
      * be removed.
      *
@@ -364,23 +427,12 @@ public class SnapshotViewerController {
      * @return the list of new table entries
      */
     public List<TableEntry> removeSnapshot(int idx) {
-        if (idx == 0) {
-            throw new IllegalArgumentException("Cannot remove the base snapshot.");
-        } else if (idx >= getNumberOfSnapshots()) {
-            throw new IllegalArgumentException("The index is greater than the number of snapshots.");
-        }
-        List<VSnapshot> newSnapshots;
-        synchronized (snapshots) {
-            newSnapshots = new ArrayList<>(snapshots.size()-1);
-            for (int i = 0; i < snapshots.size(); i++) {
-                if (i != idx) {
-                    newSnapshots.add(snapshots.get(i));
-                }
+        return redoSnapshots(idx, () -> {
+            synchronized (snapshots) {
+                final VSnapshot s = getSnapshot(idx);
+                return snapshots.stream().filter(e -> e != s).collect(Collectors.toList());
             }
-        }
-        dispose();
-        newSnapshots.forEach(e -> addSnapshot(e));
-        return filter(items.values(), filter);
+        });
     }
 
     /**
@@ -391,21 +443,30 @@ public class SnapshotViewerController {
      * @return the list of entries
      */
     public List<TableEntry> setAsBase(int idx) {
+        return redoSnapshots(idx, () -> {
+            List<VSnapshot> newSnapshots;
+            synchronized (snapshots) {
+                newSnapshots = new ArrayList<>(snapshots);
+                VSnapshot oldBase = newSnapshots.get(0);
+                VSnapshot newBase = newSnapshots.get(idx);
+                newSnapshots.set(0, newBase);
+                newSnapshots.set(idx, oldBase);
+            }
+            return newSnapshots;
+        });
+    }
+
+    private List<TableEntry> redoSnapshots(int idx, Supplier<List<VSnapshot>> supplier) {
         if (idx == 0) {
             throw new IllegalArgumentException("Snapshot already set as base.");
         } else if (idx > getNumberOfSnapshots()) {
             throw new IllegalArgumentException("The index is greater than the number of snapshots.");
         }
-        List<VSnapshot> newSnapshots;
-        synchronized (snapshots) {
-            newSnapshots = new ArrayList<>(snapshots);
-            VSnapshot oldBase = newSnapshots.get(0);
-            VSnapshot newBase = newSnapshots.get(idx);
-            newSnapshots.set(0, newBase);
-            newSnapshots.set(idx, oldBase);
-        }
-        dispose();
+        List<VSnapshot> newSnapshots = supplier.get();
+        dispose(false);
         newSnapshots.forEach(e -> addSnapshot(e));
+        pvsForDisposal.values().forEach(p -> p.dispose());
+        pvsForDisposal.clear();
         return filter(items.values(), filter);
     }
 
@@ -415,7 +476,7 @@ public class SnapshotViewerController {
      * @return the number of all snapshots
      */
     public int getNumberOfSnapshots() {
-        synchronized(snapshots) {
+        synchronized (snapshots) {
             return snapshots.size();
         }
     }
@@ -484,40 +545,55 @@ public class SnapshotViewerController {
     public void takeSnapshot() {
         suspend();
         try {
-            List<String> names = new ArrayList<>(items.size());
-            List<VType> values = new ArrayList<>(items.size());
-            List<Boolean> selected = new ArrayList<>(items.size());
-            List<String> readbackNames = new ArrayList<>(items.size());
-            List<VType> readbackValues = new ArrayList<>(items.size());
-            List<String> deltas = new ArrayList<>(items.size());
-            PV pv;
-            String name;
-            String delta = null;
-            for (TableEntry t : items.values()) {
-                name = t.pvNameProperty().get();
-                names.add(name);
-                pv = pvs.get(t);
-                values.add(pv == null || pv.value == null ? VNoData.INSTANCE : pv.value);
-                selected.add(t.selectedProperty().get());
-                String readback = readbacks.get(name);
-                readbackNames.add(readback == null ? EMPTY_STRING : readback);
-                readbackValues.add(pv == null || pv.readbackValue == null ? VNoData.INSTANCE : pv.readbackValue);
-                for (VSnapshot s : getAllSnapshots()) {
-                    delta = s.getDelta(name);
-                    if (delta != null) {
-                        break;
-                    }
-                }
-                if (delta == null) {
-                    delta = EMPTY_STRING;
-                }
-                deltas.add(delta);
-            }
-            // taken snapshots always belong to the beamline set of the master snapshot
             BeamlineSet set = getSnapshot(0).getBeamlineSet();
-            Snapshot snapshot = new Snapshot(set);
-            VSnapshot taken = new VSnapshot(snapshot, names, selected, values, readbackNames, readbackValues, deltas,
-                Timestamp.now());
+            DataProviderWrapper provider = SaveRestoreService.getInstance()
+                .getDataProvider(set.getDataProviderId());
+            VSnapshot taken = null;
+            if (provider.provider.isTakingSnapshotsSupported()) {
+                try {
+                    taken = provider.provider.takeSnapshot(set);
+                } catch (UnsupportedActionException e) {
+                    SaveRestoreService.LOGGER.log(Level.SEVERE, "The provider " + provider.name
+                        + " claims that it can take snapshots, but does not implement the action.", e);
+                } catch (DataProviderException e) {
+                    //notify the user about the exception and continue taking the snapshot normally
+                    ActionManager.reportException(e, owner.getSite().getShell());
+                }
+            }
+            if (taken == null) {
+                List<String> names = new ArrayList<>(items.size());
+                List<VType> values = new ArrayList<>(items.size());
+                List<Boolean> selected = new ArrayList<>(items.size());
+                List<String> readbackNames = new ArrayList<>(items.size());
+                List<VType> readbackValues = new ArrayList<>(items.size());
+                List<String> deltas = new ArrayList<>(items.size());
+                PV pv;
+                String name;
+                String delta = null;
+                for (TableEntry t : items.values()) {
+                    name = t.pvNameProperty().get();
+                    names.add(name);
+                    pv = pvs.get(t);
+                    values.add(pv == null || pv.value == null ? VNoData.INSTANCE : pv.value);
+                    selected.add(t.selectedProperty().get());
+                    String readback = readbacks.get(name);
+                    readbackNames.add(readback == null ? EMPTY_STRING : readback);
+                    readbackValues.add(pv == null || pv.readbackValue == null ? VNoData.INSTANCE : pv.readbackValue);
+                    for (VSnapshot s : getAllSnapshots()) {
+                        delta = s.getDelta(name);
+                        if (delta != null) {
+                            break;
+                        }
+                    }
+                    if (delta == null) {
+                        delta = EMPTY_STRING;
+                    }
+                    deltas.add(delta);
+                }
+                // taken snapshots always belong to the beamline set of the master snapshot
+                taken = new VSnapshot(new Snapshot(set), names, selected, values, readbackNames, readbackValues, deltas,
+                    Timestamp.now());
+            }
             owner.addSnapshot(taken);
             SaveRestoreService.LOGGER.log(Level.FINE, "Snapshot taken for '" + set.getFullyQualifiedName() + "'.");
         } finally {
@@ -559,7 +635,7 @@ public class SnapshotViewerController {
             }
             snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            Selector.reportException(ex, owner.getSite().getShell());
+            ActionManager.reportException(ex, owner.getSite().getShell());
         }
     }
 
@@ -574,14 +650,13 @@ public class SnapshotViewerController {
         }
         suspend();
         List<VSnapshot> snaps = new ArrayList<>();
-        synchronized(snapshots) {
+        synchronized (snapshots) {
             snaps.addAll(snaps);
         }
         try (PrintWriter pw = new PrintWriter(file, "UTF-8")) {
             StringBuilder header = new StringBuilder(200);
             header.append("Setpoint PV,");
-            header.append(Utilities.timestampToBigEndianString(snaps.get(0).getTimestamp().toDate(), true))
-                .append(',');
+            header.append(Utilities.timestampToBigEndianString(snaps.get(0).getTimestamp().toDate(), true)).append(',');
             String delta = " (" + Utilities.DELTA_CHAR + " First Snapshot),";
             for (int i = 1; i < snaps.size(); i++) {
                 header.append(Utilities.timestampToBigEndianString(snaps.get(i).getTimestamp().toDate(), true))
@@ -624,7 +699,7 @@ public class SnapshotViewerController {
                 pw.println(sb.toString());
             });
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            Selector.reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, owner.getSite().getShell());
         } finally {
             resume();
         }
@@ -652,7 +727,7 @@ public class SnapshotViewerController {
             snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
             return snapshot;
         } catch (Exception e) {
-            Selector.reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, owner.getSite().getShell());
             return null;
         }
     }
@@ -672,13 +747,13 @@ public class SnapshotViewerController {
             }
             SnapshotContent sc = FileUtilities.readFromSnapshot(fis);
             Timestamp snapshotTime = Timestamp.of(sc.date);
-            BeamlineSet set = new BeamlineSet(new Branch("master", "master"), Optional.empty(), p.split("/"), null);
+            BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), p.split("/"), null);
             Snapshot descriptor = new Snapshot(set, sc.date, "No Comment\nLoaded from file " + file.getAbsolutePath(),
                 "OS");
             return Optional.of(new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
                 sc.readbackData, sc.deltas, snapshotTime));
         } catch (IOException | RuntimeException | ParseException e) {
-            Selector.reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, owner.getSite().getShell());
             return Optional.empty();
         }
     }
@@ -714,7 +789,7 @@ public class SnapshotViewerController {
                     "Successfully saved Snapshot '" + snapshot.getBeamlineSet().getFullyQualifiedName() + ": "
                         + snapshot.getSnapshot().get().getDate() + "'.");
             } catch (DataProviderException ex) {
-                Selector.reportException(ex, owner.getSite().getShell());
+                ActionManager.reportException(ex, owner.getSite().getShell());
             }
             return s;
         } finally {
@@ -868,7 +943,7 @@ public class SnapshotViewerController {
                 Platform.runLater(() -> consumer.accept(snapshot));
             }
         } catch (Exception ex) {
-            Selector.reportException(ex, owner.getSite().getShell());
+            ActionManager.reportException(ex, owner.getSite().getShell());
         }
     }
 
@@ -905,7 +980,8 @@ public class SnapshotViewerController {
             for (int i = 0; i < snaps.size(); i++) {
                 final int index = i;
                 Timestamp start = snaps.get(i).getTimestamp();
-                if (start == null) continue;
+                if (start == null)
+                    continue;
                 String name = "archive://" + pvName + "?time=" + start.toString();
                 PVReader<VTable> reader = PVManager.read(channel(name, VTable.class, VType.class)).readListener(x -> {
                     boolean handled = false;
@@ -925,22 +1001,22 @@ public class SnapshotViewerController {
                     }
                     if (handled) {
                         x.getPvReader().close();
-                        synchronized(archiveReaders) {
+                        synchronized (archiveReaders) {
                             archiveReaders.remove(x.getPvReader());
                             archiveReaders.notifyAll();
                         }
                     }
                 }).timeout(TimeDuration.ofMillis(30000)).notifyOn(UI_EXECUTOR).maxRate(TimeDuration.ofMillis(100));
-                synchronized(archiveReaders) {
+                synchronized (archiveReaders) {
                     archiveReaders.add(reader);
                 }
             }
 
             try {
                 long time = System.currentTimeMillis();
-                while(System.currentTimeMillis() - time < 30000
+                while (System.currentTimeMillis() - time < 30000
                     && !SaveRestoreService.getInstance().isCurrentJobCancelled()) {
-                    synchronized(archiveReaders) {
+                    synchronized (archiveReaders) {
                         if (archiveReaders.isEmpty()) {
                             break;
                         } else {
@@ -953,7 +1029,7 @@ public class SnapshotViewerController {
                     archiveReaders.clear();
                 }
             } catch (InterruptedException e) {
-                //ignore
+                // ignore
             }
             items.put(pvName, entry);
             PVReader<VType> reader = PVManager.read(channel(pvName, VType.class, VType.class))
@@ -962,7 +1038,7 @@ public class SnapshotViewerController {
             pvs.put(entry, new PV(reader, writer, null));
             Platform.runLater(() -> consumer.accept(entry));
         } catch (RuntimeException e) {
-            Selector.reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, owner.getSite().getShell());
         }
     }
 

@@ -3,6 +3,7 @@ package org.csstudio.saverestore.ui;
 import java.util.Optional;
 import java.util.logging.Level;
 
+import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BeamlineSetData;
@@ -20,6 +21,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class BeamlineSetController {
 
     private IWorkbenchPart owner;
+    private BeamlineSetData selectedData;
 
     /**
      * Constructs a new controller.
@@ -38,21 +40,45 @@ public class BeamlineSetController {
      * @return the stored data if successful or an empty object if unsuccessful
      */
     public Optional<BeamlineSetData> save(final BeamlineSetData data) {
+        String providerId = data.getDescriptor().getDataProviderId();
+        DataProvider provider = SaveRestoreService.getInstance().getDataProvider(providerId).provider;
+        if (!provider.isBeamlineSetSavingSupported()) {
+            return Optional.empty();
+        }
         Optional<String> comment = FXTextAreaInputDialog.get(owner.getSite().getShell(), "Beamline Set Comment",
             "Provide a short comment of the changes to the beamline set " + data.getDescriptor().getDisplayName(), "",
             e -> (e == null || e.trim().length() < 10) ? "Comment should be at least 10 characters long." : null);
         return comment.map(c -> {
             try {
-                String providerId = data.getDescriptor().getDataProviderId();
-                BeamlineSetData dd = SaveRestoreService.getInstance().getDataProvider(providerId).provider
-                    .saveBeamlineSet(data, c);
+                BeamlineSetData dd = provider.saveBeamlineSet(data, c);
                 SaveRestoreService.LOGGER.log(Level.FINE,
                     "Successfully saved the beamline set '" + data.getDescriptor().getFullyQualifiedName() + "'");
                 return dd;
             } catch (DataProviderException ex) {
-                Selector.reportException(ex, owner.getSite().getShell());
+                ActionManager.reportException(ex, owner.getSite().getShell());
                 return null;
             }
         });
+    }
+
+    /**
+     * Set the beamline set data, which the editor currently displays. The object always represents the saved instance;
+     * therefore this is either the object which was delivered at the time when the editor was opened, or created when
+     * the editor was last saved. This method is not thread safe.
+     *
+     * @param data the data
+     */
+    public void setSavedBeamlineSetData(BeamlineSetData data) {
+        this.selectedData = data;
+    }
+
+    /**
+     * Returns the saved data of this editor - either the data provided when editor was opened or data created when
+     * editor was saved. This method is not thread safe.
+     *
+     * @return the saved beamline set data
+     */
+    public Optional<BeamlineSetData> getSavedBeamlineSetData() {
+        return Optional.ofNullable(this.selectedData);
     }
 }

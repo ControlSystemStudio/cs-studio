@@ -19,8 +19,13 @@ import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ArrayShort;
 import org.diirt.util.array.IteratorNumber;
 import org.diirt.util.array.ListBoolean;
+import org.diirt.util.array.ListByte;
+import org.diirt.util.array.ListDouble;
+import org.diirt.util.array.ListFloat;
 import org.diirt.util.array.ListInt;
+import org.diirt.util.array.ListLong;
 import org.diirt.util.array.ListNumber;
+import org.diirt.util.array.ListShort;
 import org.diirt.util.text.NumberFormats;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
@@ -387,7 +392,7 @@ public final class Utilities {
      * @param value the value to compare
      * @param baseValue the base value to compare the value to
      * @param threshold the threshold values to use for comparing the values, if defined and difference is within
-     *      threshold limits the values are equal
+     *            threshold limits the values are equal
      * @return string representing the value and the difference from the base value together with the flag indicating
      *         the comparison result
      */
@@ -410,7 +415,7 @@ public final class Utilities {
                 double base = ((VNumber) baseValue).getValue().doubleValue();
                 double newd = data - base;
                 if (threshold.isPresent()) {
-                    withinThreshold = ((Threshold<Double>)threshold.get()).isWithinThreshold(newd);
+                    withinThreshold = ((Threshold<Double>) threshold.get()).isWithinThreshold(data, base);
                 }
                 diff = Double.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
@@ -423,7 +428,7 @@ public final class Utilities {
                 float base = ((VNumber) baseValue).getValue().floatValue();
                 float newd = data - base;
                 if (threshold.isPresent()) {
-                    withinThreshold = ((Threshold<Float>)threshold.get()).isWithinThreshold(newd);
+                    withinThreshold = ((Threshold<Float>) threshold.get()).isWithinThreshold(data, base);
                 }
                 diff = Float.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
@@ -436,7 +441,7 @@ public final class Utilities {
                 long base = ((VNumber) baseValue).getValue().longValue();
                 long newd = data - base;
                 if (threshold.isPresent()) {
-                    withinThreshold = ((Threshold<Long>)threshold.get()).isWithinThreshold(newd);
+                    withinThreshold = ((Threshold<Long>) threshold.get()).isWithinThreshold(data, base);
                 }
                 diff = Long.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
@@ -449,7 +454,7 @@ public final class Utilities {
                 int base = ((VNumber) baseValue).getValue().intValue();
                 int newd = data - base;
                 if (threshold.isPresent()) {
-                    withinThreshold = ((Threshold<Integer>)threshold.get()).isWithinThreshold(newd);
+                    withinThreshold = ((Threshold<Integer>) threshold.get()).isWithinThreshold(data, base);
                 }
                 diff = Integer.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
@@ -462,7 +467,7 @@ public final class Utilities {
                 short base = ((VNumber) baseValue).getValue().shortValue();
                 short newd = (short) (data - base);
                 if (threshold.isPresent()) {
-                    withinThreshold = ((Threshold<Short>)threshold.get()).isWithinThreshold(newd);
+                    withinThreshold = ((Threshold<Short>) threshold.get()).isWithinThreshold(data, base);
                 }
                 diff = Short.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
@@ -475,7 +480,7 @@ public final class Utilities {
                 byte base = ((VNumber) baseValue).getValue().byteValue();
                 byte newd = (byte) (data - base);
                 if (threshold.isPresent()) {
-                    withinThreshold = ((Threshold<Byte>)threshold.get()).isWithinThreshold(newd);
+                    withinThreshold = ((Threshold<Byte>) threshold.get()).isWithinThreshold(data, base);
                 }
                 diff = Byte.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
@@ -489,16 +494,95 @@ public final class Utilities {
             String str = valueToString(value);
             boolean b = ((VBoolean) value).getValue();
             boolean c = ((VBoolean) baseValue).getValue();
-            return new VTypeComparison(str, Boolean.compare(b, c), false);
+            return new VTypeComparison(str, Boolean.compare(b, c), b == c);
         } else if (value instanceof VEnum && baseValue instanceof VEnum) {
             String str = valueToString(value);
             int b = ((VEnum) value).getIndex();
             int c = ((VEnum) baseValue).getIndex();
-            return new VTypeComparison(str, Integer.compare(b, c), false);
+            return new VTypeComparison(str, Integer.compare(b, c), b == c);
+        } else if (value instanceof VNumberArray && baseValue instanceof VNumberArray) {
+            StringBuilder sb = new StringBuilder(20);
+            boolean equal = true;
+            sb.append(FORMAT.get().format(value));
+            if (value instanceof VDoubleArray) {
+                ListDouble data = ((VDoubleArray) value).getData();
+                ListNumber base = ((VNumberArray) baseValue).getData();
+                equal = data.size() == base.size();
+                if (equal) {
+                    for (int i = 0; i < data.size(); i++) {
+                        if (Double.compare(data.getDouble(i), base.getDouble(i)) != 0) {
+                            equal = false;
+                            break;
+                        }
+                    }
+                }
+            } else if (value instanceof VFloatArray) {
+                ListFloat data = ((VFloatArray) value).getData();
+                ListNumber base = ((VNumberArray) baseValue).getData();
+                equal = data.size() == base.size();
+                if (equal) {
+                    for (int i = 0; i < data.size(); i++) {
+                        if (Float.compare(data.getFloat(i), base.getFloat(i)) != 0) {
+                            equal = false;
+                            break;
+                        }
+                    }
+                }
+            } else if (value instanceof VLongArray) {
+                ListLong data = ((VLongArray) value).getData();
+                ListNumber base = ((VNumberArray) baseValue).getData();
+                equal = data.size() == base.size();
+                if (equal) {
+                    for (int i = 0; i < data.size(); i++) {
+                        if (Long.compare(data.getLong(i), base.getLong(i)) != 0) {
+                            equal = false;
+                            break;
+                        }
+                    }
+                }
+            } else if (value instanceof VIntArray) {
+                ListInt data = ((VIntArray) value).getData();
+                ListNumber base = ((VNumberArray) baseValue).getData();
+                equal = data.size() == base.size();
+                if (equal) {
+                    for (int i = 0; i < data.size(); i++) {
+                        if (Integer.compare(data.getInt(i), base.getInt(i)) != 0) {
+                            equal = false;
+                            break;
+                        }
+                    }
+                }
+            } else if (value instanceof VShortArray) {
+                ListShort data = ((VShortArray) value).getData();
+                ListNumber base = ((VNumberArray) baseValue).getData();
+                equal = data.size() == base.size();
+                if (equal) {
+                    for (int i = 0; i < data.size(); i++) {
+                        if (Short.compare(data.getShort(i), base.getShort(i)) != 0) {
+                            equal = false;
+                            break;
+                        }
+                    }
+                }
+            } else if (value instanceof VByteArray) {
+                ListByte data = ((VByteArray) value).getData();
+                ListNumber base = ((VNumberArray) baseValue).getData();
+                equal = data.size() == base.size();
+                if (equal) {
+                    for (int i = 0; i < data.size(); i++) {
+                        if (Byte.compare(data.getByte(i), base.getByte(i)) != 0) {
+                            equal = false;
+                            break;
+                        }
+                    }
+                }
+            }
+            return new VTypeComparison(sb.toString(), equal ? 0 : 1, true);
         } else {
             String str = valueToString(value);
             String base = valueToString(baseValue);
-            return new VTypeComparison(str, str.compareTo(base), false);
+            int diff = str.compareTo(base);
+            return new VTypeComparison(str, diff, diff == 0);
         }
     }
 
@@ -555,42 +639,42 @@ public final class Utilities {
                 double data = ((VDouble) v1).getValue();
                 double base = ((VNumber) v2).getValue().doubleValue();
                 if (threshold.isPresent()) {
-                    return ((Threshold<Double>)threshold.get()).isWithinThreshold(data-base);
+                    return ((Threshold<Double>) threshold.get()).isWithinThreshold(data, base);
                 }
                 return Double.compare(data, base) == 0;
             } else if (v1 instanceof VFloat) {
                 float data = ((VFloat) v1).getValue();
                 float base = ((VNumber) v2).getValue().floatValue();
                 if (threshold.isPresent()) {
-                    return ((Threshold<Float>)threshold.get()).isWithinThreshold(data-base);
+                    return ((Threshold<Float>) threshold.get()).isWithinThreshold(data, base);
                 }
                 return Float.compare(data, base) == 0;
             } else if (v1 instanceof VLong) {
                 long data = ((VLong) v1).getValue();
                 long base = ((VNumber) v2).getValue().longValue();
                 if (threshold.isPresent()) {
-                    return ((Threshold<Long>)threshold.get()).isWithinThreshold(data-base);
+                    return ((Threshold<Long>) threshold.get()).isWithinThreshold(data, base);
                 }
                 return Long.compare(data, base) == 0;
             } else if (v1 instanceof VInt) {
                 int data = ((VInt) v1).getValue();
                 int base = ((VNumber) v2).getValue().intValue();
                 if (threshold.isPresent()) {
-                    return ((Threshold<Integer>)threshold.get()).isWithinThreshold(data-base);
+                    return ((Threshold<Integer>) threshold.get()).isWithinThreshold(data, base);
                 }
                 return Integer.compare(data, base) == 0;
             } else if (v1 instanceof VShort) {
                 short data = ((VShort) v1).getValue();
                 short base = ((VNumber) v2).getValue().shortValue();
                 if (threshold.isPresent()) {
-                    return ((Threshold<Short>)threshold.get()).isWithinThreshold((short)(data-base));
+                    return ((Threshold<Short>) threshold.get()).isWithinThreshold(data, base);
                 }
                 return Short.compare(data, base) == 0;
             } else if (v1 instanceof VByte) {
                 byte data = ((VByte) v1).getValue();
                 byte base = ((VNumber) v2).getValue().byteValue();
                 if (threshold.isPresent()) {
-                    return ((Threshold<Byte>)threshold.get()).isWithinThreshold((byte)(data-base));
+                    return ((Threshold<Byte>) threshold.get()).isWithinThreshold(data, base);
                 }
                 return Byte.compare(data, base) == 0;
             }

@@ -44,7 +44,7 @@ public class AdapterFactory implements IAdapterFactory {
                     String[] path = file.getFullPath().segments();
                     SnapshotContent sc = FileUtilities.readFromSnapshot(file.getContents());
                     Timestamp snapshotTime = Timestamp.of(sc.date);
-                    BeamlineSet set = new BeamlineSet(new Branch("master", "master"), Optional.empty(), path, null);
+                    BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.date, "<No Comment>", "<OS>");
                     VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
                         sc.readbackData, sc.deltas, snapshotTime);
@@ -60,7 +60,7 @@ public class AdapterFactory implements IAdapterFactory {
                     String[] path = absPath.split("\\/");
                     SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
                     Timestamp snapshotTime = Timestamp.of(sc.date);
-                    BeamlineSet set = new BeamlineSet(new Branch("master", "master"), Optional.empty(), path, null);
+                    BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.date, "<No Comment>", "<OS>");
                     VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
                         sc.readbackData, sc.deltas, snapshotTime);

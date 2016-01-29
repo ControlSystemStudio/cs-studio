@@ -2,12 +2,14 @@ package org.csstudio.saverestore.ui.browser;
 
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.BooleanSupplier;
 
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
@@ -94,7 +96,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         public String toString() {
             String p = path[path.length - 1];
             if (p.toLowerCase(Locale.UK).endsWith(".bms") && p.length() > 4) {
-                return p.substring(0, p.length()-4);
+                return p.substring(0, p.length() - 4);
             } else {
                 return p;
             }
@@ -123,7 +125,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     private VBox dataPane;
 
     private Selector selector = new Selector(this);
-    private ActionManager actionManager = new ActionManager(selector, this);
+    private BrowserActionManager actionManager = new BrowserActionManager(selector, this);
 
     private boolean searchMode = false;
 
@@ -142,7 +144,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     /**
      * @return the action manager bound to this view
      */
-    public ActionManager getActionManager() {
+    public BrowserActionManager getActionManager() {
         return actionManager;
     }
 
@@ -169,11 +171,15 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         deleteTagAction = new Action("Remove Tag") {
             @Override
             public void run() {
-                Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
-                if (FXMessageDialog.openQuestion(getSite().getShell(), "Remove Tag",
-                    "Are you sure you want to remove the tag '" + item.getTagName().get() + "' from snapshot '"
-                        + item.getDate() + "'?")) {
-                    actionManager.deleteTag(item);
+                DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
+                if (canExecute("Tag Snapshot", wrapper.name + " data provider does not support tagging.",
+                    wrapper.provider::isTaggingSupported)) {
+                    Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
+                    if (FXMessageDialog.openQuestion(getSite().getShell(), "Remove Tag",
+                        "Are you sure you want to remove the tag '" + item.getTagName().get() + "' from snapshot '"
+                            + item.getDate() + "'?")) {
+                        actionManager.deleteTag(item);
+                    }
                 }
             }
         };
@@ -285,11 +291,16 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         MenuItem deleteSetItem = new MenuItem("Delete...");
         deleteSetItem.setOnAction(e -> {
             popup.hide();
-            BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
-            boolean delete = FXMessageDialog.openQuestion(getSite().getShell(), "Delete Beamline Set",
-                "Are you sure you want to delete beamline set '" + item.getValue().set.getPathAsString() + "'?");
-            if (delete) {
-                actionManager.deleteBeamlineSet(item.getValue().set);
+            DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
+            if (canExecute("Delete Beamline Set",
+                wrapper.name + " data provider does not support deleting of beamline sets.",
+                wrapper.provider::isBeamlineSetSavingSupported)) {
+
+                BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
+                if (FXMessageDialog.openQuestion(getSite().getShell(), "Delete Beamline Set",
+                    "Are you sure you want to delete beamline set '" + item.getValue().set.getPathAsString() + "'?")) {
+                    actionManager.deleteBeamlineSet(item.getValue().set);
+                }
             }
         });
         popup.getItems().add(deleteSetItem);
@@ -327,13 +338,32 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         openButton.setOnAction(e -> actionManager.openBeamlineSet(selector.selectedBeamlineSetProperty().get()));
         editButton.disableProperty()
             .bind(selector.selectedBeamlineSetProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
-        editButton.setOnAction(e -> actionManager.editBeamlineSet(selector.selectedBeamlineSetProperty().get()));
+        editButton.setOnAction(e -> {
+            DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
+            if (canExecute("Edit Beamline Set",
+                wrapper.name + " data provider does not support editing of beamline sets.",
+                wrapper.provider::isBeamlineSetSavingSupported)) {
+                actionManager.editBeamlineSet(selector.selectedBeamlineSetProperty().get());
+            }
+        });
 
-        newButton.setOnAction(e -> actionManager.newBeamlineSet());
+        newButton.setOnAction(e -> {
+            DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
+            if (canExecute("New Beamline Set",
+                wrapper.name + " data provider does not support creation of new beamline sets.",
+                wrapper.provider::isBeamlineSetSavingSupported)) {
+                actionManager.newBeamlineSet();
+            }
+        });
         importButton.disableProperty()
             .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
-        importButton.setOnAction(
-            e -> new ImportDataDialog(BrowserView.this).openAndWait().ifPresent(actionManager::importFrom));
+        importButton.setOnAction(e -> {
+            DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
+            if (canExecute("Import Data", wrapper.name + " data provider does not support data importing.",
+                wrapper.provider::isImportSupported)) {
+                new ImportDataDialog(BrowserView.this).openAndWait().ifPresent(actionManager::importFrom);
+            }
+        });
 
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
             (e) -> setUpSetButtons(newButton, importButton, (DataProviderWrapper) e.getNewValue()));
@@ -371,6 +401,14 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             importButton.setVisible(false);
             newButton.setDisable(true);
         }
+    }
+
+    private boolean canExecute(String title, String message, BooleanSupplier testingFunction) {
+        if (!testingFunction.getAsBoolean()) {
+            FXMessageDialog.openInformation(getSite().getShell(), title, message);
+            return false;
+        }
+        return true;
     }
 
     private Node createSnapshotsPane(Scene scene) {
@@ -448,9 +486,13 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         tagButton.disableProperty().bind(snapshotsList.selectionModelProperty().get().selectedItemProperty().isNull()
             .or(snapshotsPane.expandedProperty().not()));
         tagButton.setOnAction(e -> {
-            final Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
-            final FXTaggingDialog dialog = new FXTaggingDialog(getSite().getShell());
-            dialog.openAndWait().ifPresent(a -> actionManager.tagSnapshot(snapshot, a, dialog.getMessage()));
+            DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
+            if (canExecute("Tag Snapshot", wrapper.name + " data provider does not support tagging.",
+                wrapper.provider::isTaggingSupported)) {
+                final Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
+                final FXTaggingDialog dialog = new FXTaggingDialog(getSite().getShell());
+                dialog.openAndWait().ifPresent(a -> actionManager.tagSnapshot(snapshot, a, dialog.getMessage()));
+            }
         });
         Button openButton = new UnfocusableButton("Open");
         openButton.setTooltip(new Tooltip("Open selected snapshot in a new Snapshot Viewer"));
@@ -551,7 +593,13 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                     .setValue(selector.selectedBaseLevelProperty().get());
                 if (baseLevelBrowser != null) {
                     baseLevelBrowser.availableBaseLevelsProperty().set(baseLevelBrowser.transform(n));
-                    baseLevelBrowser.selectedBaseLevelProperty().setValue(selector.selectedBaseLevelProperty().get());
+                    BaseLevel base = selector.selectedBaseLevelProperty().get();
+                    if (base != null) {
+                        List<BaseLevel> bl = baseLevelBrowser.transform(Arrays.asList(base));
+                        baseLevelBrowser.selectedBaseLevelProperty().setValue(bl.isEmpty() ? null : bl.get(0));
+                    } else {
+                        baseLevelBrowser.selectedBaseLevelProperty().setValue(null);
+                    }
                 }
             } catch (RuntimeException e) {
                 FXMessageDialog.openError(getSite().getShell(), "Base Level Error", e.getMessage());

@@ -30,7 +30,7 @@ import org.diirt.vtype.VType;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-enum ValueType {
+public enum ValueType {
     DOUBLE_ARRAY("double_array", VDoubleArray.class),
     FLOAT_ARRAY("float_array", VFloatArray.class),
     LONG_ARRAY("long_array", VLongArray.class),
@@ -71,6 +71,15 @@ enum ValueType {
      */
     public boolean instanceOf(VType type) {
         return this.type.isAssignableFrom(type.getClass());
+    }
+
+    /**
+     * Returns true if this value type represents an array of false otherwise.
+     *
+     * @return true if it is an array or false otherwise
+     */
+    public boolean isArray() {
+        return ordinal() < DOUBLE.ordinal();
     }
 
     /**

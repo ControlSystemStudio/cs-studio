@@ -2,11 +2,16 @@ package org.csstudio.saverestore.ui.browser;
 
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.csstudio.saverestore.DataProviderWrapper;
+import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.ui.fx.util.FXBaseDialog;
 import org.csstudio.ui.fx.util.FXUtilities;
@@ -17,6 +22,8 @@ import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -56,7 +63,12 @@ public class SearchDialog extends FXBaseDialog<String> {
     private CheckBox commentBox;
     private CheckBox tagNameBox;
     private CheckBox tagMessageBox;
+    private CheckBox userBox;
+    private DatePicker startPicker;
+    private DatePicker endPicker;
     private String backgroundColor;
+    private Date startDate;
+    private Date endDate;
     private List<SearchCriterion> lastResults = new ArrayList<>(0);
 
     /**
@@ -87,6 +99,9 @@ public class SearchDialog extends FXBaseDialog<String> {
         }
         if (tagMessageBox.isSelected()) {
             lastResults.add(SearchCriterion.TAG_MESSAGE);
+        }
+        if (userBox.isSelected()) {
+            lastResults.add(SearchCriterion.USER);
         }
         super.okPressed();
     }
@@ -150,22 +165,57 @@ public class SearchDialog extends FXBaseDialog<String> {
         tagNameBox.setOnAction(e -> validateInput());
         tagMessageBox = new UnfocusableCheckBox(SearchCriterion.TAG_MESSAGE.name);
         tagMessageBox.setOnAction(e -> validateInput());
+        userBox = new UnfocusableCheckBox(SearchCriterion.USER.name);
+        userBox.setOnAction(e -> validateInput());
         tagNameBox.setSelected(true);
+        DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
+        if (!wrapper.provider.isTaggingSupported()) {
+            tagNameBox.setSelected(false);
+            tagNameBox.setDisable(true);
+            tagMessageBox.setDisable(true);
+            commentBox.setSelected(true);
+        }
         if (!lastResults.isEmpty()) {
             commentBox.setSelected(lastResults.contains(SearchCriterion.COMMENT));
             tagNameBox.setSelected(lastResults.contains(SearchCriterion.TAG_NAME));
             tagMessageBox.setSelected(lastResults.contains(SearchCriterion.TAG_MESSAGE));
+            userBox.setSelected(lastResults.contains(SearchCriterion.USER));
         }
+        startPicker = new DatePicker();
+        startPicker.setOnAction(e -> {
+            LocalDate date = startPicker.getValue();
+            startDate = date == null ? null : java.sql.Date.valueOf(date);
+            validateInput();
+        });
+        endPicker = new DatePicker();
+        endPicker.setOnAction(e -> {
+            LocalDate date = endPicker.getValue();
+            endDate = date == null ? null : java.sql.Date.valueOf(date);
+            validateInput();
+        });
         setGridConstraints(text, true, false, Priority.ALWAYS, Priority.ALWAYS);
         setGridConstraints(commentBox, false, false, Priority.ALWAYS, Priority.NEVER);
         setGridConstraints(tagNameBox, false, false, Priority.ALWAYS, Priority.NEVER);
         setGridConstraints(tagMessageBox, false, false, Priority.ALWAYS, Priority.NEVER);
+        setGridConstraints(userBox, false, false, Priority.ALWAYS, Priority.NEVER);
+
+        GridPane datePane = new GridPane();
+        datePane.setHgap(5);
+        setGridConstraints(startPicker, false, false, Priority.NEVER, Priority.NEVER);
+        setGridConstraints(endPicker, false, false, Priority.NEVER, Priority.NEVER);
+        datePane.add(new Label("Start Date:"), 0, 0);
+        datePane.add(new Label("End Date:"), 1, 0);
+        datePane.add(startPicker, 0, 1);
+        datePane.add(endPicker, 1, 1);
+
         pane.setMaxWidth(Double.MAX_VALUE);
         pane.setVgap(5);
         pane.add(text, 0, 0);
         pane.add(commentBox, 0, 1);
         pane.add(tagNameBox, 0, 2);
         pane.add(tagMessageBox, 0, 3);
+        pane.add(userBox, 0, 4);
+        pane.add(datePane, 0, 5);
         pane.setPrefWidth(getInitialSize().x);
         pane.setStyle(backgroundColor);
         return new Scene(pane);
@@ -178,8 +228,11 @@ public class SearchDialog extends FXBaseDialog<String> {
      */
     @Override
     protected void validateInput() {
-        if (!commentBox.isSelected() && !tagMessageBox.isSelected() && !tagNameBox.isSelected()) {
-            setErrorMessage("Select at least one field to perform the search on", false);
+        if (!commentBox.isSelected() && !tagMessageBox.isSelected() && !tagNameBox.isSelected() && !userBox.isSelected()
+            && startDate == null && endDate == null) {
+            setErrorMessage("Select a time range or at least one field to perform the search on", false);
+        } else if (startDate != null || endDate != null) {
+            setErrorMessage(null, true);
         } else {
             super.validateInput();
         }
@@ -192,5 +245,23 @@ public class SearchDialog extends FXBaseDialog<String> {
      */
     public List<SearchCriterion> getSelectedCriteria() {
         return lastResults;
+    }
+
+    /**
+     * Returns the start date of the selected time window.
+     *
+     * @return start date
+     */
+    public Optional<Date> getStartDate() {
+        return Optional.ofNullable(startDate);
+    }
+
+    /**
+     * Returns the end date of the selected time window.
+     *
+     * @return end date
+     */
+    public Optional<Date> getEndDate() {
+        return Optional.ofNullable(endDate);
     }
 }

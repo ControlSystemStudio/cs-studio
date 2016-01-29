@@ -6,6 +6,7 @@ import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
@@ -48,6 +49,7 @@ public class GitDataProvider implements DataProvider {
 
     /*
      * (non-Javadoc)
+     *
      * @see org.csstudio.saverestore.DataProvider#initialise()
      */
     @Override
@@ -59,16 +61,6 @@ public class GitDataProvider implements DataProvider {
         } catch (GitAPIException e) {
             throw new RuntimeException("Could not instantiate git data provider.", e);
         }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.csstudio.saverestore.DataProvider#isReinitSupported()
-     */
-    @Override
-    public boolean isReinitSupported() {
-        return true;
     }
 
     /*
@@ -340,38 +332,41 @@ public class GitDataProvider implements DataProvider {
      * (non-Javadoc)
      *
      * @see org.csstudio.saverestore.DataProvider#findSnapshots(java.lang.String, org.csstudio.saverestore.data.Branch,
-     * java.util.List)
+     * java.util.List, java.util.Optional, java.util.Optional)
      */
     @Override
-    public Snapshot[] findSnapshots(String expression, Branch branch, List<SearchCriterion> criteria)
-        throws DataProviderException {
+    public Snapshot[] findSnapshots(String expression, Branch branch, List<SearchCriterion> criteria,
+        Optional<Date> start, Optional<Date> end) throws DataProviderException {
         Set<Snapshot> list = new LinkedHashSet<>();
         boolean sort = false;
         try {
-            if (criteria.contains(SearchCriterion.COMMENT)) {
-                list.addAll(grm.findSnapshotsByComment(expression, branch));
+            if (criteria.contains(SearchCriterion.COMMENT) || criteria.contains(SearchCriterion.USER)) {
+                list.addAll(grm.findSnapshotsByCommentOrUser(expression, branch,
+                    criteria.contains(SearchCriterion.COMMENT), criteria.contains(SearchCriterion.USER), start, end));
+            } else if (!(criteria.contains(SearchCriterion.TAG_MESSAGE) || criteria.contains(SearchCriterion.TAG_NAME))
+                && (start.isPresent() || end.isPresent())) {
+                list.addAll(grm.findSnapshotsByCommentOrUser(expression, branch, false, false, start, end));
             }
+
             int size = list.size();
             if (criteria.contains(SearchCriterion.TAG_MESSAGE) && criteria.contains(SearchCriterion.TAG_NAME)) {
-                list.addAll(grm.findSnapshotsByTag(expression, branch));
+                list.addAll(grm.findSnapshotsByTag(expression, branch, start, end));
             } else {
                 if (criteria.contains(SearchCriterion.TAG_MESSAGE)) {
-                    list.addAll(grm.findSnapshotsByTagMessage(expression, branch));
+                    list.addAll(grm.findSnapshotsByTagMessage(expression, branch, start, end));
                 } else if (criteria.contains(SearchCriterion.TAG_NAME)) {
-                    list.addAll(grm.findSnapshotsByTagName(expression, branch));
+                    list.addAll(grm.findSnapshotsByTagName(expression, branch, start, end));
                 }
             }
-            if (size > 0 && list.size() != size) {
-                sort = true;
-            }
+            sort = size > 0 && list.size() != size;
         } catch (GitAPIException | IOException e) {
             throw new DataProviderException("Error search for snapshot that match the expression '" + expression
                 + "' using criteria '" + criteria.toString() + ".", e);
         }
         Snapshot[] snapshots = list.toArray(new Snapshot[list.size()]);
         if (sort) {
-            //there is a natural order of snapshots provided by GitManager. Sort only if the search was performed more
-            //than once.
+            // there is a natural order of snapshots provided by GitManager. Sort only if the search was performed more
+            // than once.
             Arrays.sort(snapshots);
         }
         return snapshots;
@@ -403,26 +398,6 @@ public class GitDataProvider implements DataProvider {
             }
         }
         return answer.data;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.csstudio.saverestore.DataProvider#areBranchesSupported()
-     */
-    @Override
-    public boolean areBranchesSupported() {
-        return true;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.csstudio.saverestore.DataProvider#areBaseLevelsSupported()
-     */
-    @Override
-    public boolean areBaseLevelsSupported() {
-        return true;
     }
 
     /*

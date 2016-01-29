@@ -218,7 +218,7 @@ public class BeamlineSetData implements Serializable {
      * @return true if the content is identical or false otherwise
      */
     public boolean equalContent(BeamlineSetData other) {
-        return Objects.equals(description, other.description) && Objects.equals(pvList, other.pvList)
+        return other != null && Objects.equals(description, other.description) && Objects.equals(pvList, other.pvList)
             && Objects.equals(readbackList, other.readbackList) && Objects.equals(deltaList, other.deltaList);
     }
 }

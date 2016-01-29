@@ -66,19 +66,14 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
         baseLevelsList.selectionModelProperty().get().setSelectionMode(SelectionMode.SINGLE);
         baseLevelsList.selectionModelProperty().get().selectedItemProperty()
             .addListener((a, o, n) -> baseSelected(true));
+        baseLevelsList.setOnMouseClicked(e -> {
+            if (e.getClickCount() == 2) {
+                confirmSelectBaseLevel();
+            }
+        });
         baseLevelsList.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         okButton = new UnfocusableButton("Select");
-        okButton.setOnAction(e -> {
-            BaseLevel bl = internalBaseLevelProperty().getValue();
-            if (bl != null && !availableBaseLevelsProperty.get().contains(bl)) {
-                String message = Selector.validateBaseLevelName(bl.getStorageName());
-                if (message != null && !FXMessageDialog.openQuestion(parent.getShell(), "Invalid Name",
-                    message + "\n Do you still want to continue?")) {
-                    return;
-                }
-            }
-            selectedBaseLevelProperty().setValue(bl);
-        });
+        okButton.setOnAction(e -> confirmSelectBaseLevel());
         textField = new TextField();
         textField.textProperty().addListener((a, o, n) -> baseSelected(false));
         textField.setMaxWidth(Double.MAX_VALUE);
@@ -109,6 +104,18 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
             n = new BaseLevel(n == null ? null : n.getBranch(), s, s);
         }
         internalBaseLevelProperty().setValue(n);
+    }
+
+    private void confirmSelectBaseLevel() {
+        BaseLevel bl = internalBaseLevelProperty().getValue();
+        if (bl != null && !availableBaseLevelsProperty.get().contains(bl)) {
+            String message = Selector.validateBaseLevelName(bl.getStorageName());
+            if (message != null && !FXMessageDialog.openQuestion(parent.getShell(), "Invalid Name",
+                message + "\n Do you still want to continue?")) {
+                return;
+            }
+        }
+        selectedBaseLevelProperty().setValue(bl);
     }
 
     /*

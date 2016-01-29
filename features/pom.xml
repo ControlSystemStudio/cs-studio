@@ -11,6 +11,7 @@
   <modules>
     <module>org.csstudio.saverestore.feature</module>
     <module>org.csstudio.saverestore.git.feature</module>
+    <module>org.csstudio.saverestore.masar.feature</module>
     <module>org.csstudio.saverestore.periodictable.feature</module>
   </modules>
 </project>

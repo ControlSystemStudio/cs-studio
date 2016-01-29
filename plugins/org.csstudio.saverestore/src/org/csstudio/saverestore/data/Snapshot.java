@@ -33,8 +33,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
     private final String comment;
     private final String owner;
     private final String toString;
-
-    private Map<String, String> parameters;
+    private final Map<String, String> parameters;
 
     /**
      * Constructs a new snapshot, which belongs to the specific set. Snapshot that is read from the central storage,

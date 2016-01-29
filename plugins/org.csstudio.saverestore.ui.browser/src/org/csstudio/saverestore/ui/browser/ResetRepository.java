@@ -1,5 +1,7 @@
 package org.csstudio.saverestore.ui.browser;
 
+import org.csstudio.saverestore.DataProviderWrapper;
+import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -26,10 +28,13 @@ public class ResetRepository extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
-            if (FXMessageDialog.openConfirm(part.getSite().getShell(), "Reset Repository",
-                "Are you sure you want to reset the local repository? You will lose all data that has not been "
-                    + "pushed to the central repository.")) {
-                ((BrowserView) part).getActionManager().resetRepository();
+            DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
+            if (wrapper != null && wrapper.provider.isReinitSupported()) {
+                if (FXMessageDialog.openConfirm(part.getSite().getShell(), "Reset Repository",
+                    "Are you sure you want to reset the local repository? You will lose all data that has not been "
+                        + "pushed to the central repository.")) {
+                    ((BrowserView) part).getActionManager().resetRepository();
+                }
             }
         }
         return null;

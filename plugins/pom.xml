@@ -14,6 +14,7 @@
     <module>org.csstudio.ui.fx.util</module>
     <module>org.csstudio.saverestore</module>
     <module>org.csstudio.saverestore.git</module>
+    <module>org.csstudio.saverestore.masar</module>
     <module>org.csstudio.saverestore.ui</module>
     <module>org.csstudio.saverestore.ui.help</module>
     <module>org.csstudio.saverestore.ui.browser</module>

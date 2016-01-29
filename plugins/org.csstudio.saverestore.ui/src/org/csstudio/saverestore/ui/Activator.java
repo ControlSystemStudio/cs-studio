@@ -22,8 +22,8 @@ public class Activator extends AbstractUIPlugin {
 
     /**
      *
-     * <code>IDBackedExecutor</code> is an executor backed by the {@link IDBackedBlockingQueue} and used primarily
-     * to execute repetitive UI background tasks.
+     * <code>IDBackedExecutor</code> is an executor backed by the {@link IDBackedBlockingQueue} and used primarily to
+     * execute repetitive UI background tasks.
      *
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *

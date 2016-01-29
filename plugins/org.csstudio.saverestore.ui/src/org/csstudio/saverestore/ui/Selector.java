@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 import org.csstudio.saverestore.CompletionNotifier;
@@ -19,8 +18,6 @@ import org.csstudio.saverestore.data.BeamlineSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.csstudio.ui.fx.util.FXMessageDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
 
 import javafx.application.Platform;
@@ -41,7 +38,7 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 public class Selector {
 
-    private static final Branch DEFAULT_BRANCH = new Branch("master", "master");
+    private static final Branch DEFAULT_BRANCH = new Branch();
 
     private ObjectProperty<Branch> selectedBranch;
     private ObjectProperty<BaseLevel> selectedBaseLevel;
@@ -171,7 +168,7 @@ public class Selector {
             runOnGUIThread(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
                 .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
         } catch (DataProviderException e) {
-            reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, owner.getSite().getShell());
         }
     }
 
@@ -187,7 +184,7 @@ public class Selector {
                         selectedBranchProperty().set(branchToSelect);
                     });
                 } catch (DataProviderException e) {
-                    reportException(e, owner.getSite().getShell());
+                    ActionManager.reportException(e, owner.getSite().getShell());
                 }
             });
         } else {
@@ -247,7 +244,7 @@ public class Selector {
                         readBeamlineSets();
                     }
                 } catch (DataProviderException e) {
-                    reportException(e, owner.getSite().getShell());
+                    ActionManager.reportException(e, owner.getSite().getShell());
                 }
             });
         } else {
@@ -293,7 +290,7 @@ public class Selector {
                 runOnGUIThread(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
                     .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
             } catch (DataProviderException e) {
-                reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite().getShell());
             }
         });
     }
@@ -357,7 +354,7 @@ public class Selector {
                         .set(Collections.unmodifiableList(allSnapshots));
                 });
             } catch (DataProviderException e) {
-                reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, owner.getSite().getShell());
             }
         });
     }
@@ -406,24 +403,5 @@ public class Selector {
 
     private void runOnGUIThread(Runnable r) {
         Platform.runLater(r);
-    }
-
-    /**
-     * Report exception that happened during the selector action. The exception is logged and a message is displayed.
-     * The call can be made by any thread. The thread will be blocked until the message dialog is closed.
-     *
-     * @param e the exception to report
-     * @param shell the shell to use for the message dialog parent (cannot be null)
-     */
-    public static void reportException(Exception e, Shell shell) {
-        SaveRestoreService.LOGGER.log(Level.FINE, "Error accessing data storage", e);
-        shell.getDisplay().syncExec(() -> {
-            StringBuilder sb = new StringBuilder();
-            sb.append(e.getMessage());
-            if (e.getCause() != null) {
-                sb.append('\n').append(e.getCause().getMessage());
-            }
-            FXMessageDialog.openError(shell, "Error accessing data storage", sb.toString());
-        });
     }
 }

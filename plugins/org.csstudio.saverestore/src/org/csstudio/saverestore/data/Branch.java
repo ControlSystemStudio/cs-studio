@@ -14,8 +14,17 @@ import java.util.Objects;
 public class Branch implements Comparable<Branch>, Serializable {
 
     private static final long serialVersionUID = 7901647776511062560L;
+    public static final String MASTER = "master";
+
     private final String fullName;
     private final String shortName;
+
+    /**
+     * Constructs default Branch.
+     */
+    public Branch() {
+        this(MASTER, MASTER);
+    }
 
     /**
      * Constructs a new branch.
@@ -96,5 +105,14 @@ public class Branch implements Comparable<Branch>, Serializable {
         }
         Branch other = (Branch) obj;
         return Objects.equals(shortName, other.shortName);
+    }
+
+    /**
+     * Returns true if this is a default branch or false otherwise
+     *
+     * @return true if default branch or false otherwise
+     */
+    public boolean isDefault() {
+        return MASTER.equals(shortName);
     }
 }

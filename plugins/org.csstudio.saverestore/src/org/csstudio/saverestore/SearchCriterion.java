@@ -9,7 +9,7 @@ package org.csstudio.saverestore;
  *
  */
 public enum SearchCriterion {
-    COMMENT("Snapshot Comment"), TAG_NAME("Snapshot tag name"), TAG_MESSAGE("Snapshot tag message");
+    COMMENT("Snapshot Comment"), TAG_NAME("Snapshot tag name"), TAG_MESSAGE("Snapshot tag message"), USER("User");
 
     /** The human readable name of the search criterion */
     public final String name;

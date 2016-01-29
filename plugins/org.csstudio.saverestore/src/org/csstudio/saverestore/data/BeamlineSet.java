@@ -2,6 +2,9 @@ package org.csstudio.saverestore.data;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,14 +27,14 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     private final String folder;
     private String fullyQualifiedName;
     private String displayName;
-
+    private final Map<String, String> parameters;
     private final String dataProviderId;
 
     /**
      * Constructs a new empty beamline (e.g. null beamline set).
      */
     public BeamlineSet() {
-        this(new Branch("master", "master"), Optional.empty(), new String[] { "unknown" }, null);
+        this(new Branch(), Optional.empty(), new String[] { "unknown" }, null);
     }
 
     /**
@@ -43,10 +46,25 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
      * @param the ID of the data provider from which this beamline set was loaded
      */
     public BeamlineSet(Branch branch, Optional<BaseLevel> base, String[] path, String dataProviderId) {
+        this(branch, base, path, dataProviderId, new HashMap<>());
+    }
+
+    /**
+     * Construct a new beamline set from pieces.
+     *
+     * @param branch the branch on which the beamline set is located
+     * @param baseLevel the base level for which this set is valid
+     * @param path the path on which the set is stored (the last element of the pat is the file name)
+     * @param the ID of the data provider from which this beamline set was loaded
+     * @param parameters a map of optional parameters usually required by the data provider
+     */
+    public BeamlineSet(Branch branch, Optional<BaseLevel> base, String[] path, String dataProviderId,
+        Map<String, String> parameters) {
         this.baseLevel = base.orElse(null);
         this.branch = branch;
         this.path = path;
         this.dataProviderId = dataProviderId;
+        this.parameters = new HashMap<>(parameters);
         if (this.path.length == 1) {
             folder = "";
         } else {
@@ -59,6 +77,16 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
             }
             folder = sb.toString();
         }
+    }
+
+    /**
+     * Returns additional parameters of this beamline set. A parameter might be any string that is required by the data
+     * provider to work with this beamline set or any other info that is required to be carried around.
+     *
+     * @return unmodifiable map of parameters
+     */
+    public Map<String, String> getParameters() {
+        return Collections.unmodifiableMap(parameters);
     }
 
     /**
