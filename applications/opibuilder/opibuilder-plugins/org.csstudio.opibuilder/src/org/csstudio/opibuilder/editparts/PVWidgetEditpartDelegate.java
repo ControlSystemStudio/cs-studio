@@ -682,8 +682,16 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                 }
                 pvMap.remove(pvNamePropID);
                 String newPVName = ((String)newValue).trim();
-                if(newPVName.length() <= 0 || newPVName.toLowerCase().startsWith("beast://"))
+                if(newPVName.length() <= 0)
                     return false;
+
+                if (newPVName.toLowerCase().startsWith("beast://")) {
+                    // beast:// PVs are for Alarm Tree nodes, so they won't be added to pvMap
+                    // we do however need to recreate the BeastAlarmListener when PVName changes
+                    createBeastAlarmListener();
+                    return false;
+                }
+
                 try {
                     lastWriteAccess = null;
                     IPV newPV = BOYPVFactory.createPV(newPVName, isAllValuesBuffered);
@@ -699,6 +707,9 @@ public class PVWidgetEditpartDelegate implements IPVWidgetEditpart {
                     OPIBuilderPlugin.getLogger().log(Level.WARNING, "Unable to connect to PV:" + //$NON-NLS-1$
                             newPVName, e);
                 }
+
+                // recreate the BeastAlarmListener (PVName changed)
+                createBeastAlarmListener();
 
                 return false;
             }
