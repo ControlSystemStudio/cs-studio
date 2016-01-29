@@ -19,37 +19,32 @@ import org.diirt.vtype.VType;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SavedScalarValue extends SavedValue
-{
+public class SavedScalarValue extends SavedValue {
     final private String saved_value;
 
     /** Initialize from text
      *  @param value_text
      */
-    public SavedScalarValue(final String value_text)
-    {
+    public SavedScalarValue(final String value_text) {
         saved_value = value_text;
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception
-    {
-        if (current_value == null)
+    public boolean isEqualTo(final VType current_value, final double tolerance) throws Exception {
+        if (current_value == null) {
             return true;
-        if (current_value instanceof VNumber)
-        {
+        }
+        if (current_value instanceof VNumber) {
             final double v1 = ((VNumber)current_value).getValue().doubleValue();
             final double v2 = getSavedNumber(saved_value).doubleValue();
             return Math.abs(v2 - v1) <= tolerance;
         }
-        if (current_value instanceof VString)
-        {
+        if (current_value instanceof VString) {
             final String v1 = ((VString)current_value).getValue();
             return v1.equals(saved_value);
         }
-        if (current_value instanceof VEnum)
-        {
+        if (current_value instanceof VEnum) {
             final int v1 = ((VEnum)current_value).getIndex();
             final int v2 = Integer.parseInt(saved_value);
             return Math.abs(v2 - v1) <= tolerance;
@@ -59,22 +54,23 @@ public class SavedScalarValue extends SavedValue
 
     /** {@inheritDoc} */
     @Override
-    public void restore(final PV pv) throws Exception
-    {
+    public void restore(final PV pv) throws Exception {
         // Determine what type to write based on current value of the PV
         final VType pv_type = pv.read();
-        if ((pv_type instanceof VDouble) || (pv_type instanceof VFloat))
+        if ((pv_type instanceof VDouble) || (pv_type instanceof VFloat)) {
             pv.write(Double.parseDouble(saved_value));
-        else if (pv_type instanceof VNumber)
+        }
+        else if (pv_type instanceof VNumber) {
             pv.write(getSavedNumber(saved_value).longValue());
-        else // Write as text
+        }
+        else { // Write as text
             pv.write(saved_value);
+        }
     }
 
     /** {@inheritDoc} */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return saved_value;
     }
 }

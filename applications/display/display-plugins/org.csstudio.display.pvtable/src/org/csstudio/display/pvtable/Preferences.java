@@ -43,6 +43,10 @@ public class Preferences
     {
         return getBoolOption("show_description");
     }
+    
+    public static boolean showSaveTimestamp(){
+    	return getBoolOption("show_save_timestamp");
+    }
 
     public static boolean showUnits()
     {

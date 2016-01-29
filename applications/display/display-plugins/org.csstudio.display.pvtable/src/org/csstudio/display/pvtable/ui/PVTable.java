@@ -20,6 +20,8 @@ import org.csstudio.autocomplete.ui.AutoCompleteUIHelper;
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Preferences;
+import org.csstudio.display.pvtable.model.Configuration;
+import org.csstudio.display.pvtable.model.Mesure;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
@@ -31,6 +33,7 @@ import org.csstudio.ui.util.dnd.ControlSystemDragSource;
 import org.csstudio.ui.util.dnd.SerializableItemTransfer;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.CellLabelProvider;
@@ -72,30 +75,26 @@ import org.diirt.vtype.VType;
  *  @author Kay Kasemir
  *  @author Kunal Shroff - Original PVManager version of PVTable that used similar editing behavior
  */
-public class PVTable implements PVTableModelListener
-{
+public class PVTable implements PVTableModelListener {
     private PVTableModel model = null;
     private TableViewer viewer;
     private Color changed_background;
     private Map<AlarmSeverity, Color> alarm_colors = new HashMap<AlarmSeverity, Color>();
+	private MenuManager manager;
+	private Menu menu;
 
     /** Initialize
      *  @param parent Parent widget
      *  @param site Workbench site or <code>null</code>
      */
-    public PVTable(final Composite parent, final IWorkbenchPartSite site)
-    {
+    public PVTable(final Composite parent, final IWorkbenchPartSite site) {
         initColors(parent.getDisplay());
         createComponents(parent);
         createContextMenu(viewer, site);
-
         hookDragDrop();
-
         // Disconnect from model when disposed
-        parent.addDisposeListener((DisposeEvent e) ->
-        {
-            if (model != null)
-            {
+        parent.addDisposeListener((DisposeEvent e) -> {
+            if (model != null) {
                 model.removeListener(PVTable.this);
                 model.dispose();
             }
@@ -105,8 +104,7 @@ public class PVTable implements PVTableModelListener
     /** Initialize colors
      *  @param display Display
      */
-    private void initColors(final Display display)
-    {
+    private void initColors(final Display display) {
         changed_background = display.getSystemColor(SWT.COLOR_CYAN);
         alarm_colors.put(AlarmSeverity.MINOR, display.getSystemColor(SWT.COLOR_DARK_YELLOW));
         alarm_colors.put(AlarmSeverity.MAJOR, display.getSystemColor(SWT.COLOR_RED));
@@ -117,8 +115,7 @@ public class PVTable implements PVTableModelListener
     /** Create GUI components
      *  @param parent
      */
-    private void createComponents(final Composite parent)
-    {
+    private void createComponents(final Composite parent) {
         // TableColumnLayout requires table to be only child of parent.
         // To assert that'll always be the case, create box.
         final Composite table_box = new Composite(parent, 0);
@@ -135,150 +132,178 @@ public class PVTable implements PVTableModelListener
         table.setLinesVisible(true);
 
         // PV Name column: Has the 'check box' to select, allows editing
-        final TableViewerColumn pv_column = createColumn(viewer, layout, Messages.PV, 75, 100,
-            new PVTableCellLabelProvider()
-            {
-                @Override
-                public void update(final ViewerCell cell)
-                {
-                    final TableItem tab_item = (TableItem) cell.getItem();
-                    final PVTableItem item = (PVTableItem) cell.getElement();
-
-                    if (item.isComment())
-                    {
-                        cell.setText(item.getComment());
-                        cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_BLUE));
-                    }
-                    else
-                    {
-                        tab_item.setChecked(item.isSelected());
-                        cell.setText(item.getName());
-                        cell.setForeground(null);
-                    }
-                }
-            });
-        pv_column.setEditingSupport(new EditingSupport(viewer)
-        {
+        final TableViewerColumn pv_column = createColumn(viewer, layout, Messages.PV, 75, 100, new PVTableCellLabelProvider() {
             @Override
-            protected boolean canEdit(final Object element)
-            {
+            public void update(final ViewerCell cell) {
+                final TableItem tab_item = (TableItem) cell.getItem();
+                final PVTableItem item = (PVTableItem) cell.getElement();
+                if(item.isConfHeader()) {
+            		cell.setText(item.getConfHeader());
+            		cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_DARK_BLUE));
+            		return;
+                }
+                 if(item.isMesureHeader() && model.getConfig() != null) {
+                	cell.setText(item.getMesureHeader());
+            		cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
+            		return;
+                }
+                if (item.isComment()) {
+	        		cell.setText(item.getComment());
+	        		cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_BLUE));
+	        		return;
+                }
+                tab_item.setChecked(item.isSelected());
+                cell.setText(item.getName());
+                cell.setForeground(null);
+            }
+        });
+        pv_column.setEditingSupport(new EditingSupport(viewer) {
+            @Override
+            protected boolean canEdit(final Object element) {
+                final PVTableItem item = (PVTableItem) element;
+                if(item.isMesure() && !item.isMesureHeader()) {
+                	return false;
+                }
                 return true;
             }
-
+            
             @Override
-            protected CellEditor getCellEditor(final Object element)
-            {
-                return AutoCompleteUIHelper
-                        .createAutoCompleteTextCellEditor(table, AutoCompleteTypes.PV);
+            protected CellEditor getCellEditor(final Object element) {
+                return AutoCompleteUIHelper.createAutoCompleteTextCellEditor(table, AutoCompleteTypes.PV);
             }
-
+            
             @Override
-            protected void setValue(final Object element, final Object value)
-            {
+            protected void setValue(final Object element, final Object value) {
                 final String new_name = value.toString().trim();
                 final PVTableItem item = (PVTableItem) element;
-
-                if (item == PVTableModelContentProvider.NEW_ITEM)
-                {   // Set name of magic NEW_ITEM: Add new item
-                    if (new_name.isEmpty())
+                
+                if (item == PVTableModelContentProvider.NEW_ITEM) {
+                	// Set name of magic NEW_ITEM: Add new item
+                    if (new_name.isEmpty()) {
                         return;
+                    }
                     model.addItem(new_name);
                     viewer.setInput(model);
                 }
-                else if (new_name.isEmpty())
-                {   // Setting name to nothing: Remove item
+                else if(item.isMesureHeader() && !new_name.startsWith("#mesure#")) {
+                	return;
+                }
+                else if (new_name.isEmpty()) {
+                	
+                	if(item.isConfHeader()){
+                    	boolean isDelete = MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), Messages.InformationPopup, Messages.InformationPopup_DelConfHeader);
+                    	
+                    	if(isDelete == false){
+                    		return;
+                    	}
+                    	
+                    	Configuration conf = model.getConfig();
+                    	System.out.println("PVTable.createComponents(...).new EditingSupport() {...}.setValue() " +  conf + " " + ((conf!=null)?conf.getMesures():""));
+                        List<Mesure> allMesures = conf.getMesures();
+                    	for(Mesure mesure : allMesures) {
+                	        List<PVTableItem> itemsMesure = mesure.getItems();
+                	        for(PVTableItem itemMes : itemsMesure) {
+                	        	model.removeItem(itemMes);
+                	        }
+                        }
+                    }
+                	// Setting name to nothing: Remove item
                     model.removeItem(item);
                     viewer.remove(item);
+                    
+                    viewer.setItemCount(model.getItemCount() + 1);
+                    viewer.refresh();
                 }
-                else // Change name of existing item
-                {
-                    item.updateName(new_name);
+                else { 
+                	// Change name of existing item
+                	item.updateName(new_name);
+                 	model.isConfHeaderToAdd(item);
                     model.fireModelChange();
                 }
             }
 
             @Override
-            protected Object getValue(final Object element)
-            {
+            protected Object getValue(final Object element) {
                 final PVTableItem item = (PVTableItem) element;
                 return item.getName();
             }
         });
         // Allow check/uncheck to select items for restore
-        viewer.getTable().addListener(SWT.Selection, new Listener()
-        {
+        viewer.getTable().addListener(SWT.Selection, new Listener() {
             @Override
-            public void handleEvent(final Event event)
-            {
+            public void handleEvent(final Event event) {
                 final TableItem tab_item = (TableItem) event.item;
                 final PVTableItem item = (PVTableItem) tab_item.getData();
-                if (event.detail != SWT.CHECK)
-                    return;
-                if (item.isComment())
-                {
-                    tab_item.setChecked(false);
+             
+                if (event.detail != SWT.CHECK) {
+                	changeContextMenu(item);
                     return;
                 }
-                // Toggle selection of PVTableItem, then update
-                // the TableItem to reflect current state.
-                // When instead updating the PVTableItem from the
-                // TableItem's check mark, the result was inconsistent
-                // behavior for selected rows: Could not un-check the
-                // checkbox for a selected row...
-                if (item == PVTableModelContentProvider.NEW_ITEM)
-                    item.setSelected(false);
-                else
-                    item.setSelected(! item.isSelected());
+                
+                if (item.isComment() || item.isMesure()) {
+                	tab_item.setChecked(false);
+                    return;
+                }
+                
+                /* Toggle selection of PVTableItem, then update
+                 * the TableItem to reflect current state.
+                 * When instead updating the PVTableItem from the
+                 * TableItem's check mark, the result was inconsistent
+                 * behavior for selected rows: Could not un-check the
+                 * checkbox for a selected row...
+                 */
+                if (item == PVTableModelContentProvider.NEW_ITEM) {
+                	item.setSelected(false);
+                }
+                else {
+                    item.setSelected(! item.isSelected());  
+                }
                 tab_item.setChecked(item.isSelected());
             }
         });
 
         // Optionally, add column to display item.getDescription()
-        if (Preferences.showDescription())
-            createColumn(viewer, layout, Messages.Description, 50, 40,
-                new PVTableCellLabelProvider()
-                {
-                    @Override
-                    public void update(final ViewerCell cell)
-                    {
-                        final PVTableItem item = (PVTableItem) cell.getElement();
-                        cell.setText(item.getDescription());
-                    }
-                });
-
-        // Read-only time stamp
-        createColumn(viewer, layout, Messages.Time, 50, 100,
-            new PVTableCellLabelProvider()
-            {
+        if (Preferences.showDescription()) {
+            createColumn(viewer, layout, Messages.Description, 50, 40, new PVTableCellLabelProvider() {
                 @Override
-                public void update(final ViewerCell cell)
-                {
+                public void update(final ViewerCell cell) {
                     final PVTableItem item = (PVTableItem) cell.getElement();
-                    final VType value = item.getValue();
-                    if (value == null  ||  item.isComment())
-                        cell.setText(""); //$NON-NLS-1$
-                    else
-                        cell.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
+                    cell.setText(item.getDescription());
                 }
             });
+        }
+        
+        // Read-only time stamp
+        createColumn(viewer, layout, Messages.Time, 50, 100, new PVTableCellLabelProvider() {
+            @Override
+            public void update(final ViewerCell cell) {
+                final PVTableItem item = (PVTableItem) cell.getElement();
+                final VType value = item.getValue();
+                if (!item.isMesureHeader() && (value == null  ||  item.isComment())) {
+                    cell.setText(""); //$NON-NLS-1$
+                }
+                else {
+                    cell.setText(TimestampHelper.format(VTypeHelper.getTimestamp(value)));
+                }
+            }
+        });
         // Editable value
         final TableViewerColumn value_column = createColumn(viewer, layout, Messages.Value, 100, 50,
-            new PVTableCellLabelProviderWithChangeIndicator(changed_background)
-            {
-                @Override
-                public void update(final ViewerCell cell)
-                {
-                    final PVTableItem item = (PVTableItem) cell.getElement();
-                    final VType value = item.getValue();
-                    if (value == null)
-                        cell.setText(""); //$NON-NLS-1$
-                    else
-                        cell.setText(VTypeHelper.toString(value));
-                    super.update(cell);
+        new PVTableCellLabelProviderWithChangeIndicator(changed_background) {
+            @Override
+            public void update(final ViewerCell cell) {
+                final PVTableItem item = (PVTableItem) cell.getElement();
+                final VType value = item.getValue();
+                if (value == null) {
+                    cell.setText(""); //$NON-NLS-1$
                 }
-            });
-        value_column.setEditingSupport(new EditingSupport(viewer)
-        {
+                else {
+                    cell.setText(VTypeHelper.toString(value));
+                }
+                super.update(cell);
+            }
+        });
+        value_column.setEditingSupport(new EditingSupport(viewer) {
             /** When a combo box editor is created, its value must be the integer index.
              *  Note that this variable is shared for all rows.
              *  When editing, the UI thread calls getCellEditor() for the row,
@@ -287,82 +312,87 @@ public class PVTable implements PVTableModelListener
             private boolean need_index = false;
 
             @Override
-            protected boolean canEdit(final Object element)
-            {
+            protected boolean canEdit(final Object element) {
                 final PVTableItem item = (PVTableItem) element;
                 return item.isWritable();
             }
 
             @Override
-            protected CellEditor getCellEditor(final Object element)
-            {
+            protected CellEditor getCellEditor(final Object element) {
                 final PVTableItem item = (PVTableItem) element;
                 final String[] options = item.getValueOptions();
                 need_index = options != null;
-                if (need_index)
+                if (need_index) {
                     return new ComboBoxCellEditor(table, options, SWT.READ_ONLY);
+                }
                 return new TextCellEditor(table);
             }
 
             @Override
-            protected void setValue(final Object element, final Object value)
-            {
+            protected void setValue(final Object element, final Object value) {
                 final PVTableItem item = (PVTableItem) element;
                 item.setValue(value.toString());
             }
 
             @Override
-            protected Object getValue(final Object element)
-            {
+            protected Object getValue(final Object element) {
                 final PVTableItem item = (PVTableItem) element;
                 final VType value = item.getValue();
-                if (need_index)
-                {
-                    if (value == null  ||  ! (value instanceof VEnum))
+                if (need_index) {
+                    if (value == null  ||  ! (value instanceof VEnum)) {
                         return 0;
+                    }
                     return ((VEnum)value).getIndex();
                 }
-                if (value == null)
+                if (value == null) {
                     return ""; //$NON-NLS-1$
+                }
                 return VTypeHelper.toString(value);
             }
         });
         // Remaining columns are read-only
-        createColumn(viewer, layout, Messages.Alarm, 100, 50,
-            new PVTableCellLabelProvider()
-            {
+        createColumn(viewer, layout, Messages.Alarm, 100, 50, new PVTableCellLabelProvider() {
+            @Override
+            public void update(final ViewerCell cell) {
+                final PVTableItem item = (PVTableItem) cell.getElement();
+                final VType value = item.getValue();
+                if (value == null) {
+                    cell.setText(""); //$NON-NLS-1$
+                }
+                else {
+                    cell.setText(VTypeHelper.formatAlarm(value));
+                    cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
+                }
+            }
+        });
+        // Column Saved Value
+        createColumn(viewer, layout, Messages.Saved, 100, 50, new PVTableCellLabelProviderWithChangeIndicator(changed_background) {
+            @Override
+            public void update(final ViewerCell cell) {
+                final PVTableItem item = (PVTableItem) cell.getElement();
+                final SavedValue value = item.getSavedValue().orElse(null);
+                if (value == null) {
+                    cell.setText(""); //$NON-NLS-1$
+                }
+                else {
+                    cell.setText(value.toString());
+                }
+                super.update(cell);
+            }
+        });
+        
+     // Optionally, add column to display item.getTime_saved()
+        if(Preferences.showSaveTimestamp()){
+        	createColumn(viewer, layout, Messages.Saved_Value_TimeStamp, 50, 40, new PVTableCellLabelProvider() {
                 @Override
-                public void update(final ViewerCell cell)
-                {
+                public void update(final ViewerCell cell) {
                     final PVTableItem item = (PVTableItem) cell.getElement();
-                    final VType value = item.getValue();
-                    if (value == null)
-                        cell.setText(""); //$NON-NLS-1$
-                    else
-                    {
-                        cell.setText(VTypeHelper.formatAlarm(value));
-                        cell.setForeground(alarm_colors.get(VTypeHelper.getSeverity(value)));
-                    }
+                    cell.setText(item.getTime_saved());
                 }
             });
-        createColumn(viewer, layout, Messages.Saved, 100, 50,
-            new PVTableCellLabelProviderWithChangeIndicator(changed_background)
-            {
-                @Override
-                public void update(final ViewerCell cell)
-                {
-                    final PVTableItem item = (PVTableItem) cell.getElement();
-                    final SavedValue value = item.getSavedValue().orElse(null);
-                    if (value == null)
-                        cell.setText(""); //$NON-NLS-1$
-                    else
-                        cell.setText(value.toString());
-                    super.update(cell);
-                }
-            });
-
+        }
+       
         ColumnViewerToolTipSupport.enableFor(viewer);
-
         viewer.setContentProvider(new PVTableModelContentProvider());
     }
 
@@ -375,13 +405,11 @@ public class PVTable implements PVTableModelListener
      *  @param label_provider
      *  @return Created viewer column
      */
-    private TableViewerColumn createColumn(final TableViewer viewer,
-            final TableColumnLayout layout,
-            final String header,
-            final int weight,
-            final int min_width,
-            final CellLabelProvider label_provider)
-    {
+    private TableViewerColumn createColumn(final TableViewer viewer, final TableColumnLayout layout,
+    final String header,
+    final int weight,
+    final int min_width,
+    final CellLabelProvider label_provider) {
         final TableViewerColumn view_col = new TableViewerColumn(viewer, 0);
         final TableColumn col = view_col.getColumn();
         col.setText(header);
@@ -391,34 +419,54 @@ public class PVTable implements PVTableModelListener
         view_col.setLabelProvider(label_provider);
         return view_col;
     }
-
-    /** Helper for creating context menu
+    
+    /** Helper for creating context menu.
+     *  Be carefull if you modify to modify the changeContextMenu method too.
      *  @param viewer
      *  @param site
      */
-    private void createContextMenu(final TableViewer viewer, IWorkbenchPartSite site)
-    {
-        final MenuManager manager = new MenuManager();
-        manager.add(new SnapshotAction(viewer));
-        manager.add(new RestoreAction(viewer));
-        manager.add(new SelectAllAction(viewer));
-        manager.add(new DeSelectAllAction(viewer));
-        manager.add(new Separator());
-        manager.add(new SnapshotCurrentSelectionAction(viewer));
-        manager.add(new RestoreCurrentSelectionAction(viewer));
-        manager.add(new Separator());
-        manager.add(new ToleranceAction(viewer));
-        manager.add(new Separator());
-        manager.add(new InsertAction(viewer));
-        manager.add(new DeleteAction(viewer));
-        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-
+    private void createContextMenu(final TableViewer viewer, IWorkbenchPartSite site) { 
+        manager = new MenuManager();
+        manager.add(new SnapshotAction(viewer)); // 0
+        manager.add(new RestoreAction(viewer)); // 1
+        manager.add(new SelectAllAction(viewer)); // 2 
+        manager.add(new DeSelectAllAction(viewer)); // 3
+        manager.add(new ExportXLSAction(viewer));// 4
+        manager.add(new Separator()); // 5
+        manager.add(new SnapshotCurrentSelectionAction(viewer)); // 6
+        manager.add(new RestoreCurrentSelectionAction(viewer)); // 7
+        manager.add(new Separator()); // 8
+        manager.add(new ToleranceAction(viewer)); // 9
+        manager.add(new Separator()); // 10
+        manager.add(new InsertAction(viewer)); // 11
+        manager.add(new DeleteAction(viewer)); // 12
+        manager.add(new DeleteMesureAction(viewer)); // 13
+        manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS)); // 14
         final Control control = viewer.getControl();
-        final Menu menu = manager.createContextMenu(control);
+        menu = manager.createContextMenu(control);
         control.setMenu(menu);
-
-        if (site != null)
-            site.registerContextMenu(manager, viewer);
+        if (site != null) {
+            site.registerContextMenu(manager, viewer);  
+        }
+    }
+    
+    private void changeContextMenu(PVTableItem item) {
+    	
+    	if(item == null)return;
+    	manager.getItems()[5].setVisible(!(item.isMesure() || item.isMesureHeader() || item.isConfHeader()));
+		manager.getItems()[6].setVisible(!(item.isMesure() || item.isMesureHeader() || item.isConfHeader()));
+		manager.getItems()[7].setVisible(!(item.isMesure() || item.isMesureHeader() || item.isConfHeader()));
+		manager.getItems()[8].setVisible(!item.isMesure());
+		manager.getItems()[9].setVisible(!item.isMesure());
+		manager.getItems()[10].setVisible(!item.isMesure());
+		
+		if(model.getConfig() != null){
+			if(!model.getConfig().getMesures().isEmpty()){
+				manager.getItems()[11].setVisible(!item.isMesure() || (model.getConfig().getMesures().get(0) == item.getMesure() && item.isMesureHeader()));
+			}
+    	}
+		manager.getItems()[12].setVisible(!item.isMesure());
+		manager.getItems()[13].setVisible(item.isMesure());
     }
 
     /** Set to currently dragged items to allow 'drop'
@@ -426,119 +474,121 @@ public class PVTable implements PVTableModelListener
      */
     private final AtomicReference<List<PVTableItem>> dragged_items = new AtomicReference<>(Collections.emptyList());
 
-    private void hookDragDrop()
-    {
+    private void hookDragDrop() {
         // Support 'dragging' ProcessVariable[]
         // Tried to drag PVTableItem[] to ease accepting that within this or other table,
         // but combination of ControlSystemDragSource and registered adapter from PVTableItem to ProcessVariable
         // always resulted in receiving ProcessVariable[]
-        new ControlSystemDragSource(viewer.getTable())
-        {
+        new ControlSystemDragSource(viewer.getTable()) {
             @Override
-            public Object getSelection()
-            {
+            public Object getSelection() {
                 final List<PVTableItem> items = new ArrayList<>();
                 final IStructuredSelection sel = (IStructuredSelection)viewer.getSelection();
-                if (sel != null)
-                {
+                if (sel != null) {
                     final Iterator<?> iterator = sel.iterator();
-                    while (iterator.hasNext())
-                        items.add((PVTableItem)iterator.next());
+                    while (iterator.hasNext()) {
+                    	
+                    	PVTableItem itemIt = (PVTableItem)iterator.next();
+                    	if(itemIt.isMesure() || itemIt.isConfHeader()) {
+                    		return null;
+                    	}
+                        items.add(itemIt);
+                    }
                 }
                 dragged_items.set(items);
                 final ProcessVariable[] pvs = new ProcessVariable[items.size()];
-                for (int i=0; i<pvs.length; ++i)
+                for (int i=0; i<pvs.length; ++i) {
                     pvs[i] = new ProcessVariable(items.get(i).getName());
+                }
                 return pvs;
             }
         };
 
         // Allow 'dropping' PV names
         final DropTarget target = new DropTarget(viewer.getTable(), DND.DROP_COPY | DND.DROP_MOVE | DND.DROP_LINK);
-        target.setTransfer(new Transfer[]
-        {
+        target.setTransfer(new Transfer[] {
             // Tried also receiving PVTableItem[], but always got ProcessVariable[]
             SerializableItemTransfer.getTransfer(ProcessVariable[].class.getName()),
             SerializableItemTransfer.getTransfer(ProcessVariable.class.getName()),
             TextTransfer.getInstance()
         });
-        target.addDropListener(new DropTargetAdapter()
-        {
+        target.addDropListener(new DropTargetAdapter() {
             @Override
-            public void dragEnter(final DropTargetEvent event)
-            {
-                if ((event.operations & DND.DROP_COPY) != 0)
+            public void dragEnter(final DropTargetEvent event) {
+                if ((event.operations & DND.DROP_COPY) != 0) {
                     event.detail = DND.DROP_COPY;
-                else
+                }
+                else {
                     event.detail = DND.DROP_NONE;
+                }
             }
 
             @Override
-            public void drop(final DropTargetEvent event)
-            {
+            public void drop(final DropTargetEvent event) {
                 // Dropping on a valid existing item?
                 PVTableItem existing = null;
-                if (event.item instanceof TableItem)
-                {
+                if (event.item instanceof TableItem) {
                     final TableItem tab_item = (TableItem) event.item;
-                    if (tab_item.getData() instanceof PVTableItem)
-                    {
+                    if (tab_item.getData() instanceof PVTableItem) {
                         existing = (PVTableItem) tab_item.getData();
-                        if (existing == PVTableModelContentProvider.NEW_ITEM)
+                        if(existing.isMesure() || existing.isMesureHeader()) {
+                        	return;
+                        }
+                        if (existing == PVTableModelContentProvider.NEW_ITEM) {
                             existing = null;
+                        }
                     }
                 }
 
                 // Was this data dragged from the PV table?
                 final List<PVTableItem> moved = dragged_items.getAndSet(Collections.emptyList());
-                if (moved.size() > 0)
-                {   // Move items within the table
-                    for (PVTableItem item : moved)
-                    {
+                if (moved.size() > 0) {
+                	// Move items within the table
+                    for (PVTableItem item : moved) {
                         System.out.println("Moving original " + item);
                         model.removeItem(item);
                         model.addItemAbove(existing, item);
                     }
                 }
-                else
-                {   // Add items received from outside this table
+                else {
+                	// Add items received from outside this table
                     final Object item = event.data;
-                    if (item instanceof ProcessVariable)
+                    if (item instanceof ProcessVariable) {
                         model.addItemAbove(existing, ((ProcessVariable)item).getName());
-                    else if (item instanceof String)
-                        model.addItemAbove(existing, (String)item);
-                    else if (item instanceof ProcessVariable[])
-                    {
-                        for (ProcessVariable pv : (ProcessVariable[]) item)
-                            model.addItemAbove(existing, pv.getName());
                     }
-                    else
+                    else if (item instanceof String) {
+                        model.addItemAbove(existing, (String)item);
+                    }
+                    else if (item instanceof ProcessVariable[]) {
+                        for (ProcessVariable pv : (ProcessVariable[]) item) {
+                            model.addItemAbove(existing, pv.getName());
+                        }
+                    }
+                    else {
                         return;
+                    }
                 }
-
                 viewer.setInput(model);
             }
         });
     }
 
     /** @return Table viewer */
-    public TableViewer getTableViewer()
-    {
+    public TableViewer getTableViewer() {
         return viewer;
     }
 
     /** @return PV table model */
-    public PVTableModel getModel()
-    {
+    public PVTableModel getModel() {
         return  model;
     }
 
     /** @param model Model to display in table */
-    public void setModel(final PVTableModel model)
-    {
+    public void setModel(final PVTableModel model) {
         // Remove this as listener from previous model
-        if (this.model != null)
+        if (this.model != null) {
             this.model.removeListener(this);
+        }
         this.model = model;
         viewer.setInput(model);
         model.addListener(this);
@@ -546,43 +596,41 @@ public class PVTable implements PVTableModelListener
 
     /** {@inheritDoc} */
     @Override
-    public void tableItemSelectionChanged(final PVTableItem item)
-    {
-        // Ignore
+    public void tableItemSelectionChanged(final PVTableItem item) {
+    	  // System.out.println("PVTable.tableItemSelectionChanged() OK" );
     }
 
     /** {@inheritDoc} */
     @Override
-    public void tableItemChanged(final PVTableItem item)
-    {
+    public void tableItemChanged(final PVTableItem item) {
         final Table table = viewer.getTable();
-        if (table.isDisposed())
+        if (table.isDisposed()) {
             return;
-        table.getDisplay().asyncExec(() ->
-        {
-            if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
+        }
+        table.getDisplay().asyncExec(() -> {
+            if (!table.isDisposed()  &&  !viewer.isCellEditorActive()) {
                 viewer.refresh(item);
+            }
         });
     }
 
     /** {@inheritDoc} */
     @Override
-    public void tableItemsChanged()
-    {
+    public void tableItemsChanged() {
         final Table table = viewer.getTable();
-        if (table.isDisposed())
+        if (table.isDisposed()) {
             return;
-        table.getDisplay().asyncExec(() ->
-        {
-            if (!table.isDisposed()  &&  !viewer.isCellEditorActive())
+        }
+        table.getDisplay().asyncExec(() -> {
+            if (!table.isDisposed()  &&  !viewer.isCellEditorActive()) {
                 viewer.refresh();
+            }
         });
     }
 
     /** {@inheritDoc} */
     @Override
-    public void modelChanged()
-    {
+    public void modelChanged() {
         // Ignore
     }
 }

@@ -29,4 +29,10 @@ public class PVTableAction extends Action
         this.viewer = viewer;
         setEnabled(viewer != null);
     }
+
+	public TableViewer getViewer() {
+		return viewer;
+	}
+    
+    
 }

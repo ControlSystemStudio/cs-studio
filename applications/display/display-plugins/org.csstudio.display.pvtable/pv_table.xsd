@@ -12,6 +12,7 @@
   <xs:complexType >
     <xs:sequence>
       <xs:element name="tolerance" type="xs:double" minOccurs="0"/>
+      <xs:element name="nbMesure" type="xs:int" minOccurs="1"/>
       <xs:element name="pvlist" type="pvlist"/>
     </xs:sequence>
     <xs:attribute name="version" type="xs:string" default="3.0"/>
@@ -29,8 +30,12 @@
         <xs:element name="selected" type="xs:boolean" minOccurs="0"/>
         <xs:element name="name" type="xs:string" minOccurs="1"/>
         <xs:element name="tolerance" type="xs:double" minOccurs="0"/>
+        <xs:element name="time_value" type="xs:string" minOccurs="0"/>
+        <xs:element name="conf" type="xs:string" minOccurs="0"/>
+        <xs:element name="mesure" type="xs:string" minOccurs="0"/>
         <xs:element name="saved_value" type="xs:string" minOccurs="0"/>
         <xs:element name="saved_array_value" type="array_data" minOccurs="0"/>
+        
     </xs:sequence>
 </xs:complexType>
 

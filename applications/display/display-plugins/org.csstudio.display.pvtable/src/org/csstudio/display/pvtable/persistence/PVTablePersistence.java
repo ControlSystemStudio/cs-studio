@@ -20,17 +20,16 @@ import org.diirt.vtype.VType;
 /** Base for persisting PVTableModel to/from file
  *  @author Kay Kasemir
  */
-abstract public class PVTablePersistence
-{
+abstract public class PVTablePersistence {
     /** Create a persistance helper based on file extension
      *  @param filename File name
      *  @return {@link PVTablePersistence}
      */
-    public static PVTablePersistence forFilename(final String filename)
-    {
+    public static PVTablePersistence forFilename(final String filename) {
         // Use Autosave for *.sav files
-        if (filename != null && filename.endsWith(PVTableAutosavePersistence.FILE_EXTENSION))
+        if (filename != null && filename.endsWith(PVTableAutosavePersistence.FILE_EXTENSION)) {
             return new PVTableAutosavePersistence();
+        }
         // Use XML for anything else, because at some time "css-pvtable" was used
         return new PVTableXMLPersistence();
     }
@@ -43,8 +42,7 @@ abstract public class PVTablePersistence
      *  @return PV table model
      *  @throws Exception on error
      */
-    public PVTableModel read(final String filename) throws Exception
-    {
+    public PVTableModel read(final String filename) throws Exception {
         return read(filename);
     }
 
@@ -60,8 +58,7 @@ abstract public class PVTablePersistence
      *  @param filename Filename
      *  @throws Exception on error
      */
-    public void write(final PVTableModel model, final String filename) throws Exception
-    {
+    public void write(final PVTableModel model, final String filename) throws Exception {
         write(model, new FileOutputStream(filename));
     }
 
@@ -76,14 +73,16 @@ abstract public class PVTablePersistence
      *  @param value VType returned by <code>createValue</code>
      *  @return Text for the value
      */
-    protected String formatValue(final VType value)
-    {
-        if (value instanceof VLong)
+    protected String formatValue(final VType value) {
+        if (value instanceof VLong) {
             return Long.toString(((VLong) value).getValue());
-        if (value instanceof VDouble)
+        }
+        if (value instanceof VDouble) {
             return Double.toString(((VDouble) value).getValue());
-        if (value instanceof VString)
+        }
+        if (value instanceof VString) {
             return ((VString) value).getValue();
+        }
         return value.toString();
     }
 }
