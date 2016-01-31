@@ -59,7 +59,7 @@ public class BeastDataSource extends DataSource {
         super(true);
 
         typeSupport = new BeastTypeSupport();
-        
+
         try {
 
             // Create an instance to the AlarmClientModel
@@ -119,7 +119,7 @@ public class BeastDataSource extends DataSource {
                                                     try {
                                                         consumer.accept(getState(parent.getPathName()));
                                                     } catch (Exception e) {
-                                                        
+
                                                     }
                                                 }
                                             }
@@ -152,7 +152,7 @@ public class BeastDataSource extends DataSource {
     @Override
     protected ChannelHandler createChannel(String channelName) {
         return new BeastChannelHandler(channelName, this);
-        
+
     }
 
     @Override
@@ -214,7 +214,7 @@ public class BeastDataSource extends DataSource {
             return false;
         }
     }
-    
+
     protected void acknowledge(String channelName, boolean acknowledge) throws Exception{
         getState(channelName).acknowledge(acknowledge);
     }
@@ -237,7 +237,7 @@ public class BeastDataSource extends DataSource {
                     }
                 });
     }
-    
+
     /** @param pvs List where PVs to enable/disable will be added
      *  @param item Item for which to locate PVs, recursively
      */

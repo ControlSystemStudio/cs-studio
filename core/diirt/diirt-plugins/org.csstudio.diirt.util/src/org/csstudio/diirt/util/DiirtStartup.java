@@ -31,7 +31,7 @@ import org.eclipse.ui.WorkbenchException;
 public class DiirtStartup implements IWorkbenchWindowAdvisorExtPoint {
 
     private static final String PLATFORM_URI_PREFIX = "platform:";
-    
+
     private Logger log = Logger.getLogger(DiirtStartup.ID);
 
     @Override
