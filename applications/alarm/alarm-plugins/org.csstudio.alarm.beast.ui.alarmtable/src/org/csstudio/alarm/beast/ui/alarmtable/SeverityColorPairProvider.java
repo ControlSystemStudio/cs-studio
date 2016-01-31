@@ -30,13 +30,13 @@ public class SeverityColorPairProvider implements DisposeListener
     {
         colors = new Color[SeverityLevel.values().length];
         parent.addDisposeListener(this);
-        
+
         final String[] pref_colors = Preferences.getSeverityPairColors();
         if (pref_colors.length == 0) return;
 
         final Display display = parent.getDisplay();
         for (String pref : pref_colors) {
-        	final String[] values = pref.split(",");
+            final String[] values = pref.split(",");
             if (values.length != 4) continue; // ignore incorrect setting
             try
             {
@@ -44,15 +44,15 @@ public class SeverityColorPairProvider implements DisposeListener
                 final int red = Integer.parseInt(values[1].trim());
                 final int green = Integer.parseInt(values[2].trim());
                 final int blue = Integer.parseInt(values[3].trim());
-                
+
                 SeverityLevel level = SeverityLevel.parse(severity);
                 colors[level.ordinal()] = new Color(display, red, green, blue);
-                
+
                 // INVALID color pair is also used for UNDEFINED
                 if (level == SeverityLevel.INVALID)
-                	colors[SeverityLevel.UNDEFINED.ordinal()] = new Color(display, red, green, blue);
+                    colors[SeverityLevel.UNDEFINED.ordinal()] = new Color(display, red, green, blue);
                 if (level == SeverityLevel.INVALID_ACK)
-                	colors[SeverityLevel.UNDEFINED_ACK.ordinal()] = new Color(display, red, green, blue);
+                    colors[SeverityLevel.UNDEFINED_ACK.ordinal()] = new Color(display, red, green, blue);
             }
             catch (NumberFormatException ex)
             {
@@ -63,15 +63,15 @@ public class SeverityColorPairProvider implements DisposeListener
     }
 
     /** @see DisposeListener */
-	@Override
-	public void widgetDisposed(DisposeEvent e) {
+    @Override
+    public void widgetDisposed(DisposeEvent e) {
         for (Color color : colors)
             if (color != null) color.dispose();
-	}
-	
+    }
+
     /** Obtain the color to be used as the color-pair for the given severity level, or null if default should be used.
      *  @param severity SeverityLevel
-     *  @return Color for that level or null if default should be used 
+     *  @return Color for that level or null if default should be used
      */
     public Color getColor(final SeverityLevel severity)
     {

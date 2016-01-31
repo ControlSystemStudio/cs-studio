@@ -179,8 +179,8 @@ public class ScanServerImpl implements ScanServer
     /** {@inheritDoc} */
     @Override
     public long submitScan(final String scan_name,
-    		               final String commands_as_xml,
-    		               final boolean queue) throws Exception
+                           final String commands_as_xml,
+                           final boolean queue) throws Exception
     {
         cullScans();
 

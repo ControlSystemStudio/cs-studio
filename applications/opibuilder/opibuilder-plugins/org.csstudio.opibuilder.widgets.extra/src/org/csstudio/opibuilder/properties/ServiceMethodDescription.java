@@ -55,14 +55,14 @@ public class ServiceMethodDescription {
 
     public static ServiceMethodDescription createServiceMethodDescription(
         String service, ServiceMethod serviceMethod) {
-	HashMap<String, String> argumentDescriptions = new HashMap<String, String>();
-	for(Entry<String, DataDescription> argumentDescription: serviceMethod.getArgumentMap().entrySet()){
-	    argumentDescriptions.put(argumentDescription.getKey(), argumentDescription.getValue().getDescription());
-	}
-	HashMap<String, String> resultDescriptions = new HashMap<String, String>();
-	for(Entry<String, DataDescription> resultDescription: serviceMethod.getResultMap().entrySet()){
-	    resultDescriptions.put(resultDescription.getKey(), resultDescription.getValue().getDescription());
-	}
+    HashMap<String, String> argumentDescriptions = new HashMap<String, String>();
+    for(Entry<String, DataDescription> argumentDescription: serviceMethod.getArgumentMap().entrySet()){
+        argumentDescriptions.put(argumentDescription.getKey(), argumentDescription.getValue().getDescription());
+    }
+    HashMap<String, String> resultDescriptions = new HashMap<String, String>();
+    for(Entry<String, DataDescription> resultDescription: serviceMethod.getResultMap().entrySet()){
+        resultDescriptions.put(resultDescription.getKey(), resultDescription.getValue().getDescription());
+    }
     return new ServiceMethodDescription(service, serviceMethod.getName(),
         serviceMethod.getDescription(), argumentDescriptions,resultDescriptions);
     }
