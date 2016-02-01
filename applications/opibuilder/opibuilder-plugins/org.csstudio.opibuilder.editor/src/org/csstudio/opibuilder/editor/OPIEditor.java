@@ -661,9 +661,6 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 
     @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class type) {
-        if (type == ISaveablePart.class) {
-            System.out.println("tetet");
-        }
         if(type == IPropertySheetPage.class)
             return getPropertySheetPage();
         else if (type == ZoomManager.class)
