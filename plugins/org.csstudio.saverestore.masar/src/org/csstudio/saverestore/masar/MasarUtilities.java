@@ -12,15 +12,17 @@ import java.util.function.Function;
 
 import javax.security.auth.Subject;
 
-import org.csstudio.saverestore.ValueType;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.security.SecuritySupport;
+import org.diirt.util.array.ArrayBoolean;
+import org.diirt.util.array.ArrayByte;
 import org.diirt.util.array.ArrayDouble;
 import org.diirt.util.array.ArrayFloat;
 import org.diirt.util.array.ArrayInt;
 import org.diirt.util.array.ArrayLong;
+import org.diirt.util.array.ArrayShort;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
@@ -29,19 +31,45 @@ import org.diirt.vtype.Time;
 import org.diirt.vtype.VType;
 import org.diirt.vtype.ValueFactory;
 import org.epics.pvdata.pv.BooleanArrayData;
+import org.epics.pvdata.pv.ByteArrayData;
 import org.epics.pvdata.pv.DoubleArrayData;
+import org.epics.pvdata.pv.FloatArrayData;
 import org.epics.pvdata.pv.IntArrayData;
 import org.epics.pvdata.pv.LongArrayData;
+import org.epics.pvdata.pv.PVArray;
+import org.epics.pvdata.pv.PVBoolean;
 import org.epics.pvdata.pv.PVBooleanArray;
+import org.epics.pvdata.pv.PVByte;
+import org.epics.pvdata.pv.PVByteArray;
+import org.epics.pvdata.pv.PVDouble;
 import org.epics.pvdata.pv.PVDoubleArray;
+import org.epics.pvdata.pv.PVField;
+import org.epics.pvdata.pv.PVFloat;
+import org.epics.pvdata.pv.PVFloatArray;
+import org.epics.pvdata.pv.PVInt;
 import org.epics.pvdata.pv.PVIntArray;
+import org.epics.pvdata.pv.PVLong;
 import org.epics.pvdata.pv.PVLongArray;
+import org.epics.pvdata.pv.PVScalar;
+import org.epics.pvdata.pv.PVScalarArray;
+import org.epics.pvdata.pv.PVShort;
+import org.epics.pvdata.pv.PVShortArray;
+import org.epics.pvdata.pv.PVString;
 import org.epics.pvdata.pv.PVStringArray;
 import org.epics.pvdata.pv.PVStructure;
-import org.epics.pvdata.pv.PVStructureArray;
+import org.epics.pvdata.pv.PVUByte;
+import org.epics.pvdata.pv.PVUByteArray;
+import org.epics.pvdata.pv.PVUInt;
+import org.epics.pvdata.pv.PVUIntArray;
+import org.epics.pvdata.pv.PVULong;
+import org.epics.pvdata.pv.PVULongArray;
+import org.epics.pvdata.pv.PVUShort;
+import org.epics.pvdata.pv.PVUShortArray;
+import org.epics.pvdata.pv.PVUnionArray;
 import org.epics.pvdata.pv.ScalarType;
+import org.epics.pvdata.pv.ShortArrayData;
 import org.epics.pvdata.pv.StringArrayData;
-import org.epics.pvdata.pv.StructureArrayData;
+import org.epics.pvdata.pv.UnionArrayData;
 
 import gov.aps.jca.dbr.Severity;
 
@@ -106,116 +134,54 @@ public final class MasarUtilities implements MasarConstants {
      * @param result the result structure
      * @param snapshot the snapshot which was taken or being loaded
      * @param snapshotTime the time for the returned snapshot data
-     * @param snapshotTaken true if the result structure is a result of the saveSnapshot command or false if it is
-     *            result of the retrieveSnapshot command
      * @return the VSnapshot
      */
-    static VSnapshot resultToSnapshot(PVStructure result, Snapshot snapshot, Timestamp snapshotTime,
-        boolean snapshotTaken) {
+    static VSnapshot resultToVSnapshot(PVStructure result, Snapshot snapshot, Timestamp snapshotTime) {
 
-        // These 3 items are identical for take snapshot and load snapshot
         PVStringArray pvAlarmMessage = (PVStringArray) result.getScalarArrayField(P_ALARM_MESSAGE, ScalarType.pvString);
         PVLongArray pvSeconds = (PVLongArray) result.getScalarArrayField(P_SECONDS, ScalarType.pvLong);
-        PVStructureArray pvArrayData = result.getStructureArrayField(P_ARRAY_VALUE);
+        PVStringArray pvPVName = (PVStringArray) result.getScalarArrayField(P_S_CHANNEL_NAME, ScalarType.pvString);
+        PVIntArray pvDBRType = (PVIntArray) result.getScalarArrayField(P_S_DBR_TYPE, ScalarType.pvInt);
+        PVBooleanArray pvIsConnected = (PVBooleanArray) result.getScalarArrayField(P_IS_CONNECTED,ScalarType.pvBoolean);
+        PVIntArray pvNanos = (PVIntArray) result.getScalarArrayField(P_NANOS, ScalarType.pvInt);
+        PVIntArray pvTimestampTag = (PVIntArray) result.getScalarArrayField(P_TIMESTAMP_TAG, ScalarType.pvInt);
+        PVIntArray pvAlarmSeverity = (PVIntArray) result.getScalarArrayField(P_ALARM_SEVERITY, ScalarType.pvInt);
+        PVIntArray pvAlarmStatus = (PVIntArray) result.getScalarArrayField(P_ALARM_STATUS, ScalarType.pvInt);
+        PVUnionArray array = result.getUnionArrayField(P_STRUCTURE_VALUE);
 
+        StringArrayData pvName = new StringArrayData();
+        pvPVName.get(0, pvPVName.getLength(), pvName);
         StringArrayData alarmMessage = new StringArrayData();
         pvAlarmMessage.get(0, pvAlarmMessage.getLength(), alarmMessage);
         LongArrayData seconds = new LongArrayData();
         pvSeconds.get(0, pvSeconds.getLength(), seconds);
-        StructureArrayData arrayData = new StructureArrayData();
-        pvArrayData.get(0, pvArrayData.getLength(), arrayData);
-
-        // these 4 items have different field names (when doing take snapshot and load snapshot)
-        PVStringArray pvPVName = (PVStringArray) result.getScalarArrayField(snapshotTaken ? P_S_CHANNEL_NAME : P_PVNAME,
-            ScalarType.pvString);
-        PVStringArray pvStringValue = (PVStringArray) result
-            .getScalarArrayField(snapshotTaken ? P_S_STRING_VALUE : P_STRING_VALUE, ScalarType.pvString);
-        PVDoubleArray pvDoubleValue = (PVDoubleArray) result
-            .getScalarArrayField(snapshotTaken ? P_S_DOUBLE_VALUE : P_DOUBLE_VALUE, ScalarType.pvDouble);
-        PVLongArray pvLongValue = (PVLongArray) result
-            .getScalarArrayField(snapshotTaken ? P_S_LONG_VALUE : P_LONG_VALUE, ScalarType.pvLong);
-
-        StringArrayData pvName = new StringArrayData();
-        pvPVName.get(0, pvPVName.getLength(), pvName);
-        StringArrayData stringValue = new StringArrayData();
-        pvStringValue.get(0, pvStringValue.getLength(), stringValue);
-        DoubleArrayData doubleValue = new DoubleArrayData();
-        pvDoubleValue.get(0, pvDoubleValue.getLength(), doubleValue);
-        LongArrayData longValue = new LongArrayData();
-        pvLongValue.get(0, pvLongValue.getLength(), longValue);
+        IntArrayData dbrType = new IntArrayData();
+        pvDBRType.get(0, pvDBRType.getLength(), dbrType);
+        BooleanArrayData isConnected = new BooleanArrayData();
+        pvIsConnected.get(0, pvIsConnected.getLength(), isConnected);
+        IntArrayData nanos = new IntArrayData();
+        pvNanos.get(0, pvNanos.getLength(), nanos);
+        IntArrayData timestampTag = new IntArrayData();
+        pvTimestampTag.get(0, pvTimestampTag.getLength(), timestampTag);
+        IntArrayData alarmSeverity = new IntArrayData();
+        pvAlarmSeverity.get(0, pvAlarmSeverity.getLength(), alarmSeverity);
+        IntArrayData alarmStatus = new IntArrayData();
+        pvAlarmStatus.get(0, pvAlarmStatus.getLength(), alarmStatus);
+        UnionArrayData data = new UnionArrayData();
+        array.get(0, array.getLength(), data);
 
         int length = pvName.data.length;
         List<String> names = new ArrayList<>(length);
         List<VType> values = new ArrayList<>(length);
 
-        if (snapshotTaken) {
-            // all other items are of different types (when doing take snapshot and load snapshot)
-            PVIntArray pvDBRType = (PVIntArray) result.getScalarArrayField(P_S_DBR_TYPE, ScalarType.pvInt);
-            PVBooleanArray pvIsConnected = (PVBooleanArray) result.getScalarArrayField(P_IS_CONNECTED,
-                ScalarType.pvBoolean);
-            PVIntArray pvNanos = (PVIntArray) result.getScalarArrayField(P_NANOS, ScalarType.pvInt);
-            PVIntArray pvTimestampTag = (PVIntArray) result.getScalarArrayField(P_TIMESTAMP_TAG, ScalarType.pvInt);
-            PVIntArray pvAlarmSeverity = (PVIntArray) result.getScalarArrayField(P_ALARM_SEVERITY, ScalarType.pvInt);
-            PVIntArray pvAlarmStatus = (PVIntArray) result.getScalarArrayField(P_ALARM_STATUS, ScalarType.pvInt);
-            PVBooleanArray pvIsArray = (PVBooleanArray) result.getScalarArrayField(P_IS_ARRAY, ScalarType.pvInt);
-
-            IntArrayData dbrType = new IntArrayData();
-            pvDBRType.get(0, pvDBRType.getLength(), dbrType);
-            BooleanArrayData isConnected = new BooleanArrayData();
-            pvIsConnected.get(0, pvIsConnected.getLength(), isConnected);
-            IntArrayData nanos = new IntArrayData();
-            pvNanos.get(0, pvNanos.getLength(), nanos);
-            IntArrayData timestampTag = new IntArrayData();
-            pvTimestampTag.get(0, pvTimestampTag.getLength(), timestampTag);
-            IntArrayData alarmSeverity = new IntArrayData();
-            pvAlarmSeverity.get(0, pvAlarmSeverity.getLength(), alarmSeverity);
-            IntArrayData alarmStatus = new IntArrayData();
-            pvAlarmStatus.get(0, pvAlarmStatus.getLength(), alarmStatus);
-            BooleanArrayData isArray = new BooleanArrayData();
-            pvIsArray.get(0, pvIsArray.getLength(), isArray);
-
-            for (int i = 0; i < length; i++) {
-                names.add(pvName.data[i]);
-                Time time = ValueFactory.newTime(Timestamp.of(seconds.data[i], nanos.data[i]));
-                Alarm alarm = ValueFactory.newAlarm(fromEpics(alarmSeverity.data[i]),
-                    gov.aps.jca.dbr.Status.forValue(alarmStatus.data[i]).getName());
-                ValueType vt = toValueType(dbrType.data[i], isArray.data[i]);
-                values.add(vt.isArray() ? toValue(arrayData.data[i], vt, time, alarm)
-                    : toValue(stringValue.data[i], doubleValue.data[i], longValue.data[i], vt, time, alarm));
-            }
-        } else {
-            PVLongArray pvDBRType = (PVLongArray) result.getScalarArrayField(P_DBR_TYPE, ScalarType.pvLong);
-            PVLongArray pvIsConnected = (PVLongArray) result.getScalarArrayField(P_IS_CONNECTED, ScalarType.pvLong);
-            PVLongArray pvNanos = (PVLongArray) result.getScalarArrayField(P_NANOS, ScalarType.pvLong);
-            PVLongArray pvTimestampTag = (PVLongArray) result.getScalarArrayField(P_TIMESTAMP_TAG, ScalarType.pvLong);
-            PVLongArray pvAlarmSeverity = (PVLongArray) result.getScalarArrayField(P_ALARM_SEVERITY, ScalarType.pvLong);
-            PVLongArray pvAlarmStatus = (PVLongArray) result.getScalarArrayField(P_ALARM_STATUS, ScalarType.pvLong);
-            PVLongArray pvIsArray = (PVLongArray) result.getScalarArrayField(P_IS_ARRAY, ScalarType.pvLong);
-
-            LongArrayData dbrType = new LongArrayData();
-            pvDBRType.get(0, pvDBRType.getLength(), dbrType);
-            LongArrayData isConnected = new LongArrayData();
-            pvIsConnected.get(0, pvIsConnected.getLength(), isConnected);
-            LongArrayData nanos = new LongArrayData();
-            pvNanos.get(0, pvNanos.getLength(), nanos);
-            LongArrayData timestampTag = new LongArrayData();
-            pvTimestampTag.get(0, pvTimestampTag.getLength(), timestampTag);
-            LongArrayData alarmSeverity = new LongArrayData();
-            pvAlarmSeverity.get(0, pvAlarmSeverity.getLength(), alarmSeverity);
-            LongArrayData alarmStatus = new LongArrayData();
-            pvAlarmStatus.get(0, pvAlarmStatus.getLength(), alarmStatus);
-            LongArrayData isArray = new LongArrayData();
-            pvIsArray.get(0, pvIsArray.getLength(), isArray);
-
-            for (int i = 0; i < length; i++) {
-                names.add(pvName.data[i]);
-                Time time = ValueFactory.newTime(Timestamp.of(seconds.data[i], (int) nanos.data[i]));
-                Alarm alarm = ValueFactory.newAlarm(fromEpics((int) alarmSeverity.data[i]),
-                    gov.aps.jca.dbr.Status.forValue((int) alarmStatus.data[i]).getName());
-                ValueType vt = toValueType((int) dbrType.data[i], isArray.data[i] != 0);
-                values.add(vt.isArray() ? toValue(arrayData.data[i], vt, time, alarm)
-                    : toValue(stringValue.data[i], doubleValue.data[i], longValue.data[i], vt, time, alarm));
-            }
+        for (int i = 0; i < length; i++) {
+            names.add(pvName.data[i]);
+            Time time = ValueFactory.newTime(Timestamp.of(seconds.data[i], nanos.data[i]));
+            Alarm alarm = ValueFactory.newAlarm(fromEpics(alarmSeverity.data[i]),
+                gov.aps.jca.dbr.Status.forValue(alarmStatus.data[i]).getName());
+            boolean isarray = data.data[i].get() instanceof PVArray;
+            values.add(isarray ? toValue((PVArray)data.data[i].get(), time, alarm)
+                : toValue(data.data[i].get(), time, alarm));
         }
         return new VSnapshot(snapshot, names, values, snapshotTime, null);
     }
@@ -241,142 +207,106 @@ public final class MasarUtilities implements MasarConstants {
         }
     }
 
-    /**
-     * Transform EPICS dbr type to the save and restore {@link ValueType}.
-     *
-     * @param dbrType epics type
-     * @param isArray true if is is an array or false if scalar
-     * @return the save and restore type
-     */
-    private static ValueType toValueType(int dbrType, boolean isArray) {
-        int baseType = dbrType % 7;
-        switch (baseType) {
-            case 0:
-                return isArray ? ValueType.STRING_ARRAY : ValueType.STRING;
-            case 1:
-                return isArray ? ValueType.INT_ARRAY : ValueType.INT;
-            case 2:
-                return isArray ? ValueType.FLOAT_ARRAY : ValueType.FLOAT;
-            case 3:
-                return isArray ? ValueType.ENUM_ARRAY : ValueType.ENUM;
-            case 4:
-                return isArray ? ValueType.STRING_ARRAY : ValueType.STRING;
-            case 5:
-                return isArray ? ValueType.LONG_ARRAY : ValueType.LONG;
-            case 6:
-                return isArray ? ValueType.DOUBLE_ARRAY : ValueType.DOUBLE;
-            default:
-                return isArray ? ValueType.NUMBER_ARRAY : ValueType.NUMBER;
+    private static VType toValue(PVArray val, Time time, Alarm alarm) {
+        if (!(val instanceof PVScalarArray)) {
+            throw new IllegalArgumentException("The value type should be a scalar array type, but it was not: " + val.getClass());
         }
-    }
-
-    /**
-     * Transform array data to DIIRT value.
-     *
-     * @param val the V4 structure with values
-     * @param type the save restore value type to transform to
-     * @param time the time for the returned value
-     * @param alarm the alarm for the returned value
-     * @return the DIIRT value
-     */
-    private static VType toValue(PVStructure val, ValueType type, Time time, Alarm alarm) {
-        if (!type.isArray()) {
-            throw new IllegalArgumentException("The value type should be an array type, but it was not: " + type);
-        }
-        PVDoubleArray pvDoubleValue = (PVDoubleArray) val.getScalarArrayField(P_A_DOUBLE, ScalarType.pvDouble);
-        PVStringArray pvStringValue = (PVStringArray) val.getScalarArrayField(P_A_STRING, ScalarType.pvString);
-        PVIntArray pvIntValue = (PVIntArray) val.getScalarArrayField(P_A_INT, ScalarType.pvInt);
-
-        StringArrayData sval = new StringArrayData();
-        pvStringValue.get(0, pvStringValue.getLength(), sval);
-        DoubleArrayData dval = new DoubleArrayData();
-        pvDoubleValue.get(0, pvDoubleValue.getLength(), dval);
-        IntArrayData ival = new IntArrayData();
-        pvIntValue.get(0, pvIntValue.getLength(), ival);
-
         Display display = ValueFactory.displayNone();
+        ScalarType type = ((PVScalarArray)val).getScalarArray().getElementType();
         switch (type) {
-            case INT_ARRAY:
+            case pvBoolean:
+                BooleanArrayData booval = new BooleanArrayData();
+                ((PVBooleanArray)val).get(0, val.getLength(), booval);
+                return ValueFactory.newVBooleanArray(new ArrayBoolean(booval.data), alarm, time);
+            case pvByte:
+                ByteArrayData bval = new ByteArrayData();
+                ((PVByteArray)val).get(0, val.getLength(), bval);
+                return ValueFactory.newVNumberArray(new ArrayByte(bval.data), alarm, time, display);
+            case pvUByte:
+                ByteArrayData buval = new ByteArrayData();
+                ((PVUByteArray)val).get(0, val.getLength(), buval);
+                return ValueFactory.newVNumberArray(new ArrayByte(buval.data), alarm, time, display);
+            case pvShort:
+                ShortArrayData shval = new ShortArrayData();
+                ((PVShortArray)val).get(0, val.getLength(), shval);
+                return ValueFactory.newVShortArray(new ArrayShort(shval.data), alarm, time, display);
+            case pvUShort:
+                ShortArrayData shuval = new ShortArrayData();
+                ((PVUShortArray)val).get(0, val.getLength(), shuval);
+                return ValueFactory.newVShortArray(new ArrayShort(shuval.data), alarm, time, display);
+            case pvInt:
+                IntArrayData ival = new IntArrayData();
+                ((PVIntArray)val).get(0, val.getLength(), ival);
                 return ValueFactory.newVIntArray(new ArrayInt(ival.data), alarm, time, display);
-            case LONG_ARRAY:
-                long[] lvals = new long[ival.data.length];
-                for (int i = 0; i < lvals.length; i++) {
-                    lvals[i] = ival.data[i];
-                }
-                return ValueFactory.newVLongArray(new ArrayLong(lvals), alarm, time, display);
-            case ENUM_ARRAY:
-                List<String> labels = new ArrayList<>();
-                int[] values = new int[sval.data.length];
-                for (int i = 0; i < sval.data.length; i++) {
-                    int idx = labels.indexOf(sval.data[i]);
-                    if (idx < 0) {
-                        idx = labels.size();
-                        labels.add(sval.data[i]);
-                    }
-                    values[i] = idx;
-                }
-                return ValueFactory.newVEnumArray(new ArrayInt(values), labels, alarm, time);
-            case DOUBLE_ARRAY:
+            case pvUInt:
+                IntArrayData iuval = new IntArrayData();
+                ((PVUIntArray)val).get(0, val.getLength(), iuval);
+                return ValueFactory.newVIntArray(new ArrayInt(iuval.data), alarm, time, display);
+            case pvLong:
+                LongArrayData lval = new LongArrayData();
+                ((PVLongArray)val).get(0, val.getLength(), lval);
+                return ValueFactory.newVLongArray(new ArrayLong(lval.data), alarm, time, display);
+            case pvULong:
+                LongArrayData luval = new LongArrayData();
+                ((PVULongArray)val).get(0, val.getLength(), luval);
+                return ValueFactory.newVLongArray(new ArrayLong(luval.data), alarm, time, display);
+            case pvDouble:
+                DoubleArrayData dval = new DoubleArrayData();
+                ((PVDoubleArray)val).get(0, val.getLength(), dval);
                 return ValueFactory.newVDoubleArray(new ArrayDouble(dval.data), alarm, time, display);
-            case FLOAT_ARRAY:
-                float[] fvals = new float[dval.data.length];
-                for (int i = 0; i < fvals.length; i++) {
-                    fvals[i] = (float) dval.data[i];
-                }
-                return ValueFactory.newVFloatArray(new ArrayFloat(fvals), alarm, time, display);
-            case NUMBER_ARRAY:
-                try {
-                    double[] dvals = new double[sval.data.length];
-                    for (int i = 0; i < dvals.length; i++) {
-                        dvals[i] = Double.parseDouble(sval.data[i]);
-                    }
-                    return ValueFactory.newVDoubleArray(new ArrayDouble(dvals), alarm, time, display);
-                } catch (NumberFormatException e) {
-                    // fall through to string
-                }
-            case STRING_ARRAY:
-            default:
+            case pvFloat:
+                FloatArrayData fval = new FloatArrayData();
+                ((PVFloatArray)val).get(0, val.getLength(), fval);
+                return ValueFactory.newVFloatArray(new ArrayFloat(fval.data), alarm, time, display);
+            case pvString:
+                StringArrayData sval = new StringArrayData();
+                ((PVStringArray)val).get(0, val.getLength(), sval);
                 return ValueFactory.newVStringArray(Arrays.asList(sval.data), alarm, time);
         }
+        throw new IllegalArgumentException("Cannot transform the " + val + " to vtype.");
     }
 
-    /**
-     * Transform the scalar value to DIIRT value.
-     *
-     * @param sval the string representation of the value
-     * @param dval double representation of the value
-     * @param lval integer representation of the value
-     * @param type destination value type
-     * @param time the time for the returned value
-     * @param alarm the alarm for the returned value
-     * @return the DIIRT value
-     */
-    private static VType toValue(String sval, double dval, long lval, ValueType type, Time time, Alarm alarm) {
-        if (type.isArray()) {
-            throw new IllegalArgumentException("The value type should not be an array type, but it was: " + type);
+    private static VType toValue(PVField val, Time time, Alarm alarm) {
+        if (val instanceof PVScalar) {
+            Display display = ValueFactory.displayNone();
+            ScalarType type = ((PVScalar)val).getScalar().getScalarType();
+            switch (type) {
+                case pvBoolean:
+                    return ValueFactory.newVBoolean(((PVBoolean)val).get(), alarm, time);
+                case pvByte:
+                    return ValueFactory.newVByte(((PVByte)val).get(), alarm, time, display);
+                case pvUByte:
+                    return ValueFactory.newVByte(((PVUByte)val).get(), alarm, time, display);
+                case pvShort:
+                    return ValueFactory.newVShort(((PVShort)val).get(), alarm, time, display);
+                case pvUShort:
+                    return ValueFactory.newVShort(((PVUShort)val).get(), alarm, time, display);
+                case pvInt:
+                    return ValueFactory.newVInt(((PVInt)val).get(), alarm, time, display);
+                case pvUInt:
+                    return ValueFactory.newVInt(((PVUInt)val).get(), alarm, time, display);
+                case pvLong:
+                    return ValueFactory.newVLong(((PVLong)val).get(), alarm, time, display);
+                case pvULong:
+                    return ValueFactory.newVLong(((PVULong)val).get(), alarm, time, display);
+                case pvDouble:
+                    return ValueFactory.newVDouble(((PVDouble)val).get(), alarm, time, display);
+                case pvFloat:
+                    return ValueFactory.newVFloat(((PVFloat)val).get(), alarm, time, display);
+                case pvString:
+                    return ValueFactory.newVString(((PVString)val).get(), alarm, time);
+            }
+        } else if (val instanceof PVStructure) {
+            PVStructure str = (PVStructure)val;
+            if (T_ENUM.equals(str.getStructure().getID())) {
+                int index = str.getIntField(P_E_INDEX).get();
+                PVStringArray pvLabels = (PVStringArray)str.getScalarArrayField(P_E_LABELS, ScalarType.pvString);
+                StringArrayData labels = new StringArrayData();
+                pvLabels.get(0, pvLabels.getLength(), labels);
+                return ValueFactory.newVEnum(index, Arrays.asList(labels.data), alarm, time);
+            }
         }
-        Display display = ValueFactory.displayNone();
-        switch (type) {
-            case INT:
-                return ValueFactory.newVInt(Integer.valueOf((int) lval), alarm, time, display);
-            case LONG:
-                return ValueFactory.newVLong(lval, alarm, time, display);
-            case ENUM:
-                return ValueFactory.newVEnum(0, Arrays.asList(sval), alarm, time);
-            case DOUBLE:
-                return ValueFactory.newVDouble(dval, alarm, time, display);
-            case FLOAT:
-                return ValueFactory.newVFloat((float) dval, alarm, time, display);
-            case NUMBER:
-                try {
-                    return ValueFactory.newVDouble(Double.parseDouble(sval), alarm, time, display);
-                } catch (NumberFormatException e) {
-                    // fall through to string
-                }
-            case STRING:
-            default:
-                return ValueFactory.newVString(sval, alarm, time);
-        }
+        throw new IllegalArgumentException("Cannot transform the " + val + " to vtype.");
     }
 
     /**

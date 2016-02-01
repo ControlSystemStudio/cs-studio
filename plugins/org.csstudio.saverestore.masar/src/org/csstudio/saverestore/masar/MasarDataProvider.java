@@ -151,8 +151,11 @@ public class MasarDataProvider implements DataProvider {
      */
     @Override
     public BeamlineSetData getBeamlineSetContent(BeamlineSet set) throws DataProviderException {
-        throw new UnsupportedActionException(
-            "MASAR does not provide facilities to read the contents of beamline sets.");
+        try {
+            return mc.loadBeamlineSetData(set);
+        } catch (MasarException | ParseException e) {
+            throw new DataProviderException("Error loading contents of a beamline set.", e);
+        }
     }
 
     /*

@@ -23,7 +23,12 @@ public interface MasarConstants {
     final static ThreadLocal<SimpleDateFormat> DATE_FORMAT = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
+    //various structure names and ids
+    static final String T_ENUM = "enum_t";
+    static final String P_STRUCTURE_VALUE = "value";
     // Output parameters IDs
+    static final String P_E_INDEX = "index";
+    static final String P_E_LABELS = "choices";
     static final String P_NAME = "config_name";
     static final String P_INDEX = "config_idx";
     static final String P_DESCRIPTION = "config_desc";
@@ -41,29 +46,19 @@ public interface MasarConstants {
     static final String P_ALARM = "alarm";
     static final String P_MESSAGE = "message";
     // Snapshot data output parameters
-    static final String P_PVNAME = "pv name";
-    static final String P_STRING_VALUE = "string value";
-    static final String P_DOUBLE_VALUE = "double value";
-    static final String P_LONG_VALUE = "long value";
-    static final String P_DBR_TYPE = "dbr type";
+    static final String P_S_CHANNEL_NAME = "channelName";
+    static final String P_S_DBR_TYPE = "dbrType";
     static final String P_IS_CONNECTED = "isConnected";
     static final String P_SECONDS = "secondsPastEpoch";
-    static final String P_NANOS = "nanoSeconds";
-    static final String P_TIMESTAMP_TAG = "timeStampTag";
-    static final String P_ALARM_SEVERITY = "alarmSeverity";
-    static final String P_ALARM_STATUS = "alarmStatus";
-    static final String P_ALARM_MESSAGE = "alarmMessage";
-    static final String P_IS_ARRAY = "is_array";
+    static final String P_NANOS = "nanoseconds";
+    static final String P_TIMESTAMP_TAG = "userTag";
+    static final String P_ALARM_SEVERITY = "severity";
+    static final String P_ALARM_STATUS = "status";
+    static final String P_ALARM_MESSAGE = "message";
     static final String P_ARRAY_VALUE = "array_value";
     static final String P_A_STRING = "stringVal";
     static final String P_A_DOUBLE = "doubleVal";
     static final String P_A_INT = "intVal";
-    // Take Snapshot data output parameters
-    static final String P_S_CHANNEL_NAME = "channelName";
-    static final String P_S_STRING_VALUE = "stringValue";
-    static final String P_S_DOUBLE_VALUE = "doubleValue";
-    static final String P_S_LONG_VALUE = "longValue";
-    static final String P_S_DBR_TYPE = "dbrType";
     // The input parameter IDS
     static final String F_FUNCTION = "function";
     static final String F_SYSTEM = "system";
