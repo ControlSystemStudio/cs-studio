@@ -168,7 +168,13 @@ public final class OPIShell implements IOPIRuntime {
 
             @Override
             public void widgetDisposed(DisposeEvent e) {
-                if (!icon.isDisposed()) icon.dispose();
+                if (!icon.isDisposed()) {
+                    icon.dispose();
+                }
+                if (openShells.contains(OPIShell.this)) {
+                    log.warning("Disposed shell not removed by shellClosed()");
+                    openShells.remove(OPIShell.this);
+                }
             }
         });
         /*
@@ -458,4 +464,7 @@ public final class OPIShell implements IOPIRuntime {
         return Objects.hash(OPIShell.class, macrosInput, path);
     }
 
+    public boolean isDisposed() {
+        return ((shell == null) || (shell.isDisposed()));
+    }
 }
