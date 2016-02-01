@@ -20,13 +20,13 @@ public interface InputValidator<T> {
      * @return error description if no acceptable or null if acceptable
      */
     public String validate(T input);
-    
+
     /**
      * Validation may block or allow the procedure to continue. In case if the process is allowed to continue even if
      * the validation of the input fails, this method should return true. If the process should be blocked this method
-     * should return false. The method can be used when the validation result is just a warning but still acceptable 
+     * should return false. The method can be used when the validation result is just a warning but still acceptable
      * (e.g. allow user to confirm the dialog input even if the input is not valid).
-     * 
+     *
      * @param input the input that is being validated
      * @return true if the process is allowed to continue or false otherwise
      */

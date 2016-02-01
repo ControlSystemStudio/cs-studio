@@ -173,8 +173,11 @@ public class MasarDataProvider implements DataProvider {
      */
     @Override
     public VSnapshot takeSnapshot(BeamlineSet beamlineSet) throws DataProviderException, UnsupportedActionException {
-        //TODO take new snapshot
-        return null;
+        try {
+            return mc.takeSnapshot(beamlineSet);
+        } catch (MasarException e) {
+            throw new DataProviderException("Error taking a snapshot for '" + beamlineSet.getPathAsString() + "'.", e);
+        }
     }
 
     /*

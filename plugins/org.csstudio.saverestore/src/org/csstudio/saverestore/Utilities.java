@@ -577,7 +577,7 @@ public final class Utilities {
                     }
                 }
             }
-            return new VTypeComparison(sb.toString(), equal ? 0 : 1, true);
+            return new VTypeComparison(sb.toString(), equal ? 0 : 1, equal);
         } else {
             String str = valueToString(value);
             String base = valueToString(baseValue);
