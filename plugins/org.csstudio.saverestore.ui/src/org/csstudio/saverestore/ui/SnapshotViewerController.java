@@ -323,9 +323,10 @@ public class SnapshotViewerController {
      */
     public List<TableEntry> addSnapshot(VSnapshot data) {
         int numberOfSnapshots = getNumberOfSnapshots();
-        if (numberOfSnapshots == 0
-            || (numberOfSnapshots == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved())) {
+        if (numberOfSnapshots == 0) {
             return setSnapshotInternal(data); // do not dispose of anything
+        } else if (numberOfSnapshots == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
+            return setSnapshot(data);
         } else {
             List<String> names = data.getNames();
             List<VType> values = data.getValues();
