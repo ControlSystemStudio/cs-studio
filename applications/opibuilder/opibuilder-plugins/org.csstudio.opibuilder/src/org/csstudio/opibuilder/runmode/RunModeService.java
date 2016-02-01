@@ -15,6 +15,7 @@ import org.csstudio.opibuilder.runmode.OPIRunnerPerspective.Position;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
+import org.csstudio.opibuilder.util.SingleSourceRuntimeTypeHelper;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.csstudio.utility.singlesource.SingleSourcePlugin;
 import org.eclipse.core.runtime.IPath;
@@ -122,7 +123,7 @@ public class RunModeService
                 break;
             }
             case NEW_WINDOW:
-                if (SWT.getPlatform().startsWith("rap"))
+                if (OPIBuilderPlugin.isRAP())
                     SingleSourceHelper.rapOpenOPIInNewWindow(path);
                 else
                 {
@@ -137,7 +138,7 @@ public class RunModeService
                 }
                 break;
             case NEW_SHELL:
-                SingleSourceHelper.openOPIShell(path, macros.orElse(null));
+                SingleSourceRuntimeTypeHelper.openOPIShell(path, macros.orElse(null));
                 break;
             default:
                 throw new Exception("Unknown display mode " + mode);
@@ -176,71 +177,7 @@ public class RunModeService
     {
         UIBundlingThread.getInstance().addRunnable(() ->
         {
-            if (OPIBuilderPlugin.isRAP())
-            {
-                try
-                {
-                    page.openEditor(input, OPIRunner.ID);
-                }
-                catch (PartInitException e)
-                {
-                    ErrorHandlerUtil.handleError(NLS.bind("Failed to open {0}.", input.getPath()), e);
-                }
-            } else {
-                try
-                {
-                    // Check for existing view with same input.
-                    for (IViewReference viewReference : page.getViewReferences())
-                        if (viewReference.getId().startsWith(OPIView.ID))
-                        {
-                            final IViewPart view = viewReference.getView(true);
-                            if (view instanceof OPIView)
-                            {
-                                final OPIView opi_view = (OPIView)view;
-                                if (input.equals(opi_view.getOPIInput()))
-                                {
-                                    page.showView(viewReference.getId(), viewReference.getSecondaryId(), IWorkbenchPage.VIEW_ACTIVATE);
-                                    return;
-                                }
-                            }
-                            else
-                                OPIBuilderPlugin.getLogger().log(Level.WARNING,
-                                    "Found view " + view.getTitle() + " but its type is " + view.getClass().getName());
-                        }
-
-                    // Open new View
-                    // Create view ID that - when used with OPIRunnerPerspective -
-                    // causes view to appear in desired location
-                    final String secondID =  OPIView.createSecondaryID();
-                    final Position position;
-                    switch (mode)
-                    {
-                    case NEW_TAB_LEFT:     position = Position.LEFT;     break;
-                    case NEW_TAB_RIGHT:    position = Position.RIGHT;    break;
-                    case NEW_TAB_TOP:      position = Position.TOP;      break;
-                    case NEW_TAB_BOTTOM:   position = Position.BOTTOM;   break;
-                    case NEW_TAB_DETACHED: position = Position.DETACHED; break;
-                    default:               position = Position.DEFAULT_VIEW;
-                    }
-                    final IViewPart view = page.showView(position.getOPIViewID(), secondID, IWorkbenchPage.VIEW_ACTIVATE);
-                    if (! (view instanceof OPIView))
-                        throw new PartInitException("Expected OPIView, got " + view);
-                    final OPIView opiView = (OPIView) view;
-
-                    // Set content of view
-                    opiView.setOPIInput(input);
-
-                    // Adjust position
-                    if (position == Position.DETACHED) {
-                        SingleSourcePlugin.getUIHelper().detachView(opiView);
-                        opiView.positionFromModel();
-                    }
-                }
-                catch (Exception e)
-                {
-                    ErrorHandlerUtil.handleError(NLS.bind("Failed to open {0} in view.", input.getPath()), e);
-                }
-            }
+            SingleSourceRuntimeTypeHelper.openDisplay(page, input, mode);
         });
     }
 }

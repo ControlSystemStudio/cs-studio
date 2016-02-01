@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Opiruntime
+Bundle-SymbolicName: org.csstudio.opibuilder.rcp.opiruntime;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: ITER
+Fragment-Host: org.csstudio.opibuilder;bundle-version="4.0.104"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
