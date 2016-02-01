@@ -21,10 +21,10 @@ SELECT * FROM pg_user;
 
 -- The following would have to be executed _after_ creating the tables:
 GRANT SELECT, INSERT, UPDATE, DELETE
-  ON alarm_tree, command, display, guidance, pv, severity, status TO alarm;
+  ON alarm_tree, automated_action, command, display, guidance, pv, severity, status TO alarm;
 
 GRANT SELECT
-  ON alarm_tree, command, display, guidance, pv, severity, status  TO report;
+  ON alarm_tree, automated_action, command, display, guidance, pv, severity, status  TO report;
 
 */
 
