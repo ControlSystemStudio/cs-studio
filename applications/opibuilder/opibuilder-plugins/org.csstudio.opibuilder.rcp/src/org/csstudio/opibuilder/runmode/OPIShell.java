@@ -83,7 +83,7 @@ public final class OPIShell implements IOPIRuntime {
     private static Logger log = OPIBuilderPlugin.getLogger();
     public static final String OPI_SHELLS_CHANGED_ID = "org.csstudio.opibuilder.opiShellsChanged";
     // The active OPIshell, or null if no OPIShell is active
-    public static OPIShell activeShell = null;
+    private static OPIShell activeShell = null;
     // Cache of open OPI shells in order of opening.
     private static final Set<OPIShell> openShells = new LinkedHashSet<OPIShell>();
     // The view against which the context menu is registered.
@@ -342,6 +342,14 @@ public final class OPIShell implements IOPIRuntime {
      */
     public static Set<OPIShell> getAllShells() {
         return new LinkedHashSet<OPIShell>(openShells);
+    }
+
+    /**
+     * Return the active shell, which may be null
+     * @return the active OPIShell
+     */
+    public static OPIShell getActiveShell() {
+        return activeShell;
     }
 
     /**
