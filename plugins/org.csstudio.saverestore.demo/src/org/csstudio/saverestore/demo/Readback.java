@@ -41,10 +41,11 @@ public class Readback implements ParametersProvider {
         return ret;
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public Map<String, Threshold<?>> getThresholds(List<String> pvNames, List<VType> values,
+    public Map<String, Threshold> getThresholds(List<String> pvNames, List<VType> values,
         Optional<BaseLevel> baseLevel) {
-        Map<String, Threshold<?>> ret = new HashMap<>();
+        Map<String, Threshold> ret = new HashMap<>();
         pvNames.forEach(e -> ret.put(e, getThreshold(getType())));
         return ret;
     }

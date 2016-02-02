@@ -218,14 +218,14 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
      * </p>
      */
     protected void validateInput() {
-        String errorMessage = null;
-        boolean allowedToContinue = false;
+        String theErrorMessage = null;
+        boolean allowed = false;
         if (validator != null) {
-            T value = getValueFromComponent();
-            errorMessage = validator.validate(value);
-            allowedToContinue = validator.isAllowedToProceed(value);
+            T theValue = getValueFromComponent();
+            theErrorMessage = validator.validate(theValue);
+            allowed = validator.isAllowedToProceed(theValue);
         }
-        setErrorMessage(errorMessage, allowedToContinue);
+        setErrorMessage(theErrorMessage, allowed);
     }
 
     /**
@@ -257,17 +257,17 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
      */
     @Override
     protected Point getInitialLocation(Point initialSize) {
-        Composite parent = getShell().getParent();
+        Composite theParent = getShell().getParent();
 
         Monitor monitor = getShell().getDisplay().getPrimaryMonitor();
-        if (parent != null) {
-            monitor = parent.getMonitor();
+        if (theParent != null) {
+            monitor = theParent.getMonitor();
         }
 
         Rectangle monitorBounds = monitor.getClientArea();
         Point centerPoint;
-        if (parent != null) {
-            centerPoint = Geometry.centerPoint(parent.getBounds());
+        if (theParent != null) {
+            centerPoint = Geometry.centerPoint(theParent.getBounds());
         } else {
             centerPoint = Geometry.centerPoint(monitorBounds);
         }

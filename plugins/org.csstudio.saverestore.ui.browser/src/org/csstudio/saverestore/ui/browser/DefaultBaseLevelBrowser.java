@@ -171,7 +171,7 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
     @Override
     public Property<BaseLevel> selectedBaseLevelProperty() {
         if (selectedBaseLevelProperty == null) {
-            selectedBaseLevelProperty = new SimpleObjectProperty<BaseLevel>(this, "selectedBaseLevel", null);
+            selectedBaseLevelProperty = new SimpleObjectProperty<>(this, "selectedBaseLevel", null);
             selectedBaseLevelProperty.addListener((a, o, n) -> {
                 baseLevelsList.selectionModelProperty().get().select(n);
                 animation.pause();
@@ -185,7 +185,7 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
 
     private Property<BaseLevel> internalBaseLevelProperty() {
         if (internalBaseLevelProperty == null) {
-            internalBaseLevelProperty = new SimpleObjectProperty<BaseLevel>(this, "internalSelectedBaseLevel", null);
+            internalBaseLevelProperty = new SimpleObjectProperty<>(this, "internalSelectedBaseLevel", null);
             internalBaseLevelProperty.addListener((a, o, n) -> {
                 if (n != null) {
                     BaseLevel iso = selectedBaseLevelProperty().getValue();

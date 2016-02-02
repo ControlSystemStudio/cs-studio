@@ -86,37 +86,34 @@ public class ActionManager {
         if (snapshot == null) {
             throw new IllegalArgumentException("Snapshot not provided.");
         }
-        SaveRestoreService.getInstance().execute("Load snapshot data", () -> {
-            snapshotProvider.apply(snapshot).ifPresent(s -> {
-                owner.getSite().getShell().getDisplay().asyncExec(() -> {
-                    try {
-                        if (newEditor) {
-                            owner.getSite().getPage().openEditor(new SnapshotEditorInput(s), SnapshotViewerEditor.ID);
-                        } else {
-                            IEditorPart part = owner.getSite().getPage().getActiveEditor();
-                            if (!(part instanceof SnapshotViewerEditor)) {
-                                IEditorReference[] parts = owner.getSite().getPage().getEditorReferences();
-                                for (IEditorReference e : parts) {
-                                    if (SnapshotViewerEditor.ID.equals(e.getId())) {
-                                        part = e.getEditor(true);
-                                        break;
-                                    }
-                                }
-                            }
-                            if (part instanceof SnapshotViewerEditor) {
-                                ((SnapshotViewerEditor) part).addSnapshot(s);
-                            } else {
-                                owner.getSite().getPage().openEditor(new SnapshotEditorInput(s),
-                                    SnapshotViewerEditor.ID);
-                            }
+        SaveRestoreService.getInstance().execute("Load snapshot data", () -> snapshotProvider.apply(snapshot)
+            .ifPresent(s -> owner.getSite().getShell().getDisplay().asyncExec(() -> openSnapshotEditor(s, newEditor))));
+    }
+
+    private void openSnapshotEditor(VSnapshot s, boolean newEditor) {
+        try {
+            if (newEditor) {
+                owner.getSite().getPage().openEditor(new SnapshotEditorInput(s), SnapshotViewerEditor.ID);
+            } else {
+                IEditorPart part = owner.getSite().getPage().getActiveEditor();
+                if (!(part instanceof SnapshotViewerEditor)) {
+                    IEditorReference[] parts = owner.getSite().getPage().getEditorReferences();
+                    for (IEditorReference e : parts) {
+                        if (SnapshotViewerEditor.ID.equals(e.getId())) {
+                            part = e.getEditor(true);
+                            break;
                         }
-                    } catch (PartInitException e) {
-                        SaveRestoreService.LOGGER.log(Level.SEVERE,
-                            "Could not find or instantiate a new snapshot editor.", e);
                     }
-                });
-            });
-        });
+                }
+                if (part instanceof SnapshotViewerEditor) {
+                    ((SnapshotViewerEditor) part).addSnapshot(s);
+                } else {
+                    owner.getSite().getPage().openEditor(new SnapshotEditorInput(s), SnapshotViewerEditor.ID);
+                }
+            }
+        } catch (PartInitException e) {
+            SaveRestoreService.LOGGER.log(Level.SEVERE, "Could not find or instantiate a new snapshot editor.", e);
+        }
     }
 
     /**

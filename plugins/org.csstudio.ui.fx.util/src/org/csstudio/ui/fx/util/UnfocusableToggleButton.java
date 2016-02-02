@@ -44,5 +44,6 @@ public class UnfocusableToggleButton extends ToggleButton {
      */
     @Override
     public void requestFocus() {
+        // ignore focus
     }
 }

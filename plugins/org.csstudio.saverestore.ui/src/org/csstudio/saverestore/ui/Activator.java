@@ -46,8 +46,7 @@ public class Activator extends AbstractUIPlugin {
 
     private static final String MAX_NUMBER_OF_FILTERS = "maxNumberOfFilters";
     private static final String FILTERS = "filters";
-    /** The shared instance */
-    private static Activator plugin;
+    private static Activator defaultInstance;
 
     private ThreadPoolExecutor backgroundWorker;
 
@@ -72,7 +71,7 @@ public class Activator extends AbstractUIPlugin {
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        Activator.plugin = this;
+        defaultInstance = this;
     }
 
     /*
@@ -93,7 +92,7 @@ public class Activator extends AbstractUIPlugin {
      * @return the shared instance.
      */
     public static Activator getDefault() {
-        return plugin;
+        return defaultInstance;
     }
 
     /**
@@ -118,7 +117,8 @@ public class Activator extends AbstractUIPlugin {
      *
      * @param filters the filters to store
      */
-    public void storeFilters(String[] filters) {
+    public void storeFilters(String[] newFilters) {
+        String[] filters = newFilters;
         if (filters == null) {
             filters = new String[0];
         } else if (filters.length > getMaxNumberOfFilters()) {

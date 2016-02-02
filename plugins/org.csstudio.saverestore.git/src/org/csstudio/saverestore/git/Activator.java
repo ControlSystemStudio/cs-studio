@@ -25,7 +25,7 @@ public class Activator extends AbstractUIPlugin {
     public static final String PREF_DESTINATION = "destination";
     public static final String PREF_AUTOMATIC_SYNC = "automaticSynhronisation";
 
-    private static Activator INSTANCE;
+    private static Activator defaultInstance;
 
     /**
      * The default instance.
@@ -33,7 +33,7 @@ public class Activator extends AbstractUIPlugin {
      * @return the instance
      */
     public static Activator getInstance() {
-        return INSTANCE;
+        return defaultInstance;
     }
 
     /*
@@ -44,7 +44,7 @@ public class Activator extends AbstractUIPlugin {
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        INSTANCE = this;
+        defaultInstance = this;
     }
 
     /**

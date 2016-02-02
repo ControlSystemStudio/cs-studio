@@ -47,7 +47,7 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      * Circularly increment i.
      */
     private final int inc(int i) {
-        return (++i == items.length) ? 0 : i;
+        return (i + 1 == items.length) ? 0 : i;
     }
 
     /**
@@ -76,7 +76,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      * Extracts element at current take position, advances, and signals. Call only when holding lock.
      */
     private RunnableWithID extract() {
-        final RunnableWithID[] items = this.items;
         RunnableWithID x = items[takeIndex];
         items[takeIndex] = null;
         takeIndex = inc(takeIndex);
@@ -89,7 +88,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      * Utility for remove and iterator.remove: Delete item at position i. Call only when holding lock.
      */
     private void removeAt(int i) {
-        final RunnableWithID[] items = this.items;
         // if removing front item, just advance
         if (i == takeIndex) {
             items[takeIndex] = null;
@@ -133,7 +131,7 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
     public IDBackedBlockingQueue(int capacity, boolean fair) {
         if (capacity <= 0)
             throw new IllegalArgumentException();
-        this.items = new RunnableWithID[capacity];
+        items = new RunnableWithID[capacity];
         lock = new ReentrantLock(fair);
         notEmpty = lock.newCondition();
         notFull = lock.newCondition();
@@ -160,21 +158,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
 
     /**
      * Inserts the specified element at the tail of this queue if it is possible to do so immediately without exceeding
-     * the queue's capacity, returning <tt>true</tt> upon success and throwing an <tt>IllegalStateException</tt> if this
-     * queue is full.
-     *
-     * @param e the element to add
-     * @return <tt>true</tt> (as specified by {@link Collection#add})
-     * @throws IllegalStateException if this queue is full
-     * @throws NullPointerException if the specified element is null
-     */
-    @Override
-    public boolean add(Runnable e) {
-        return super.add(e);
-    }
-
-    /**
-     * Inserts the specified element at the tail of this queue if it is possible to do so immediately without exceeding
      * the queue's capacity, returning <tt>true</tt> upon success and <tt>false</tt> if this queue is full. This method
      * is generally preferable to method {@link #add}, which can fail to insert an element only by throwing an
      * exception.
@@ -185,7 +168,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
     public boolean offer(Runnable e) {
         if (e == null)
             throw new NullPointerException();
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             if (count == items.length)
@@ -210,8 +192,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
     public void put(Runnable e) throws InterruptedException {
         if (e == null)
             throw new NullPointerException();
-        final RunnableWithID[] items = this.items;
-        final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
             try {
@@ -239,7 +219,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
         if (e == null)
             throw new NullPointerException();
         long nanos = unit.toNanos(timeout);
-        final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
             for (;;) {
@@ -268,13 +247,11 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      */
     @Override
     public RunnableWithID poll() {
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             if (count == 0)
                 return null;
-            RunnableWithID x = extract();
-            return x;
+            return extract();
         } finally {
             lock.unlock();
         }
@@ -287,7 +264,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      */
     @Override
     public RunnableWithID take() throws InterruptedException {
-        final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
             try {
@@ -297,8 +273,7 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
                 notEmpty.signal(); // propagate to non-interrupted thread
                 throw ie;
             }
-            RunnableWithID x = extract();
-            return x;
+            return extract();
         } finally {
             lock.unlock();
         }
@@ -312,13 +287,11 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
     @Override
     public RunnableWithID poll(long timeout, TimeUnit unit) throws InterruptedException {
         long nanos = unit.toNanos(timeout);
-        final ReentrantLock lock = this.lock;
         lock.lockInterruptibly();
         try {
             for (;;) {
                 if (count != 0) {
-                    RunnableWithID x = extract();
-                    return x;
+                    return extract();
                 }
                 if (nanos <= 0)
                     return null;
@@ -341,7 +314,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      */
     @Override
     public RunnableWithID peek() {
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             return (count == 0) ? null : items[takeIndex];
@@ -359,7 +331,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      */
     @Override
     public int size() {
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             return count;
@@ -381,7 +352,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      */
     @Override
     public int remainingCapacity() {
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             return items.length - count;
@@ -403,8 +373,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
     public boolean remove(Object o) {
         if (o == null)
             return false;
-        final RunnableWithID[] items = this.items;
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             int i = takeIndex;
@@ -434,8 +402,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
     public boolean contains(Object o) {
         if (o == null)
             return false;
-        final RunnableWithID[] items = this.items;
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             int i = takeIndex;
@@ -463,8 +429,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      */
     @Override
     public Object[] toArray() {
-        final RunnableWithID[] items = this.items;
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             Object[] a = new Object[count];
@@ -512,8 +476,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
     @SuppressWarnings("unchecked")
     @Override
     public <T> T[] toArray(T[] a) {
-        final RunnableWithID[] items = this.items;
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             if (a.length < count)
@@ -534,7 +496,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
 
     @Override
     public String toString() {
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             return super.toString();
@@ -548,8 +509,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      */
     @Override
     public void clear() {
-        final RunnableWithID[] items = this.items;
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             int i = takeIndex;
@@ -579,8 +538,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
             throw new NullPointerException();
         if (c == this)
             throw new IllegalArgumentException();
-        final RunnableWithID[] items = this.items;
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             int i = takeIndex;
@@ -618,8 +575,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
             throw new IllegalArgumentException();
         if (maxElements <= 0)
             return 0;
-        final RunnableWithID[] items = this.items;
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             int i = takeIndex;
@@ -652,7 +607,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
      */
     @Override
     public Iterator<Runnable> iterator() {
-        final ReentrantLock lock = this.lock;
         lock.lock();
         try {
             return new Itr();
@@ -717,7 +671,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
 
         @Override
         public Runnable next() {
-            final ReentrantLock lock = IDBackedBlockingQueue.this.lock;
             lock.lock();
             try {
                 if (nextIndex < 0)
@@ -734,7 +687,6 @@ public final class IDBackedBlockingQueue extends AbstractQueue<Runnable> impleme
 
         @Override
         public void remove() {
-            final ReentrantLock lock = IDBackedBlockingQueue.this.lock;
             lock.lock();
             try {
                 int i = lastRet;

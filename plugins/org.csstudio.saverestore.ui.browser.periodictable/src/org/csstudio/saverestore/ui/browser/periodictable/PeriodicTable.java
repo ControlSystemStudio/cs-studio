@@ -53,7 +53,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
             init(element.symbol, 10);
             setStyle(element.getStyle());
             setTooltip(new Tooltip(element.fullName));
-            setOnAction((e) -> setSelectedElement(((Button) e.getSource()).getId()));
+            setOnAction(e -> setSelectedElement(((Button) e.getSource()).getId()));
         }
 
         private ElementButton(String text) {
@@ -93,7 +93,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1);";
 
     // must not be final in order to be able to adjust the font size for different operating systems
-    private String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
+    private String animatedStyle = "-fx-background-color: #FF8080; -fx-text-fill: white; "
         + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1); -fx-font-weight: bold; ";
 
     private ObjectProperty<Isotope> selectedBaseLevelProperty;
@@ -166,26 +166,26 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
 
         // add 1st and 2nd column in 6th row
         add(buttons.get(index++), 0, 5);
-        add(buttons.get(index++), 1, 5);
+        add(buttons.get(index), 1, 5);
 
         // add a placeholder for lanthanides
         add(new ElementButton("La-Lu"), 2, 5);
 
-        int LANTHANIDES = Element.LA.atomicNumber - 1;
-        int ACTINIDES = Element.AC.atomicNumber - 1;
-        int LA_COUNT = Element.HF.atomicNumber - Element.LA.atomicNumber;
-        index = LANTHANIDES + LA_COUNT;
+        int lanthanides = Element.LA.atomicNumber - 1;
+        int actinides = Element.AC.atomicNumber - 1;
+        int laCount = Element.HF.atomicNumber - Element.LA.atomicNumber;
+        index = lanthanides + laCount;
         // add the rest of the 6th row
-        for (int i = index; i < ACTINIDES - 2; i++) {
+        for (int i = index; i < actinides - 2; i++) {
             add(buttons.get(i), i - index + 3, 5);
         }
 
         // repeat the process for actinedes
-        index = ACTINIDES - 2;
+        index = actinides - 2;
         add(buttons.get(index++), 0, 6);
-        add(buttons.get(index++), 1, 6);
+        add(buttons.get(index), 1, 6);
         add(new ElementButton("Ac-Lr"), 2, 6);
-        index = ACTINIDES + LA_COUNT;
+        index = actinides + laCount;
         for (int i = index; i < buttons.size(); i++) {
             add(buttons.get(i), i - index + 3, 6);
         }
@@ -212,14 +212,14 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         lanthActPane.setVgap(0);
         lanthActPane.setHgap(0);
         lanthActPane.setAlignment(Pos.CENTER_LEFT);
-        int LANTHANIDES = Element.LA.atomicNumber - 1;
-        int ACTINIDES = Element.AC.atomicNumber - 1;
-        int LA_COUNT = Element.HF.atomicNumber - Element.LA.atomicNumber;
-        for (int i = LANTHANIDES; i < LANTHANIDES + LA_COUNT; i++) {
-            lanthActPane.add(buttons.get(i), i - LANTHANIDES, 0);
+        int lanthanides = Element.LA.atomicNumber - 1;
+        int actinides = Element.AC.atomicNumber - 1;
+        int laCount = Element.HF.atomicNumber - Element.LA.atomicNumber;
+        for (int i = lanthanides; i < lanthanides + laCount; i++) {
+            lanthActPane.add(buttons.get(i), i - lanthanides, 0);
         }
-        for (int i = ACTINIDES; i < ACTINIDES + LA_COUNT; i++) {
-            lanthActPane.add(buttons.get(i), i - ACTINIDES, 1);
+        for (int i = actinides; i < actinides + laCount; i++) {
+            lanthActPane.add(buttons.get(i), i - actinides, 1);
         }
         return lanthActPane;
     }
@@ -228,7 +228,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         GridPane isotopePanel = new GridPane();
         isotopeButton = new Button("---");
         isotopeButton.setCursor(Cursor.HAND);
-        isotopeButton.setOnAction((e) -> selectedBaseLevelProperty().setValue(internalIsotopeProperty().getValue()));
+        isotopeButton.setOnAction(e -> selectedBaseLevelProperty().setValue(internalIsotopeProperty().getValue()));
         isotopeButton.setPadding(new Insets(1, 2, 1, 2));
         isotopeButton.setPrefHeight(32);
         isotopeButton.setMinWidth(0);
@@ -238,7 +238,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         int siz = getFontSize(Isotope.of(Element.MD, 157, 100).getPresentationName(), Font.font(20), (int) 106);
         isotopeButton.setFont(Font.font(siz));
         isotopeButton.disableProperty().bind(disableProperty());
-        ANIMATED_STYLE += "-fx-font-size: " + siz + "; ";
+        animatedStyle += "-fx-font-size: " + siz + "; ";
 
         neutronSpinner = new TinySpinner(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 180));
         neutronSpinner.disableProperty().bind(disableProperty());
@@ -265,7 +265,6 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
         isotopeCombo.setEditable(false);
         isotopeCombo.setMaxWidth(Double.MAX_VALUE);
         isotopeCombo.setMinWidth(0);
-        // isotopeCombo.setPrefSize(4.5 * BTN_SIZE + 5, BTN_SIZE);
         isotopeCombo.setCellFactory(c -> new ComboCell());
         isotopeCombo.setButtonCell(new ComboCell());
         isotopeCombo.setStyle("-fx-font-size: 14;");
@@ -416,7 +415,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
 
                     Isotope iso = selectedBaseLevelProperty().getValue();
                     if (!n.equals(iso) && animation.getStatus() != Status.RUNNING) {
-                        isotopeButton.setStyle(ANIMATED_STYLE);
+                        isotopeButton.setStyle(animatedStyle);
                         animation.play();
                     } else if (n.equals(iso)) {
                         animation.pause();
@@ -438,7 +437,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     @Override
     public Property<Isotope> selectedBaseLevelProperty() {
         if (selectedBaseLevelProperty == null) {
-            selectedBaseLevelProperty = new SimpleObjectProperty<Isotope>(this, "selectedBaseLevel", null);
+            selectedBaseLevelProperty = new SimpleObjectProperty<>(this, "selectedBaseLevel", null);
             selectedBaseLevelProperty.addListener((a, o, n) -> {
                 internalIsotopeProperty().setValue(n);
                 animation.pause();

@@ -84,6 +84,6 @@ public class DataProviderWrapper {
         } else if (getClass() != obj.getClass()) {
             return false;
         }
-        return Objects.equals(id, ((DataProviderWrapper)obj).id);
+        return Objects.equals(id, ((DataProviderWrapper) obj).id);
     }
 }

@@ -33,5 +33,6 @@ public class UnfocusableCheckBox extends CheckBox {
      */
     @Override
     public void requestFocus() {
+        // ignore focus
     }
 }

@@ -1,5 +1,7 @@
 package org.csstudio.saverestore.ui.browser;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,12 +19,10 @@ import org.eclipse.ui.services.IServiceLocator;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SourceProvider extends AbstractSourceProvider {
+public class SourceProvider extends AbstractSourceProvider implements PropertyChangeListener {
 
-    private static final String[] SOURCE_NAMES = new String[] {
-        "org.csstudio.saverestore.branchessupported",
-        "org.csstudio.saverestore.multipledataproviders",
-        "org.csstudio.saverestore.resettablerepository" };
+    private static final String[] SOURCE_NAMES = new String[] { "org.csstudio.saverestore.branchessupported",
+        "org.csstudio.saverestore.multipledataproviders", "org.csstudio.saverestore.resettablerepository" };
 
     /*
      * (non-Javadoc)
@@ -32,8 +32,17 @@ public class SourceProvider extends AbstractSourceProvider {
     @Override
     public void initialize(IServiceLocator locator) {
         super.initialize(locator);
-        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
-            (e) -> fireSourceChanged(ISources.WORKBENCH, getCurrentState()));
+        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, this);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        fireSourceChanged(ISources.WORKBENCH, getCurrentState());
     }
 
     /*
@@ -43,6 +52,7 @@ public class SourceProvider extends AbstractSourceProvider {
      */
     @Override
     public void dispose() {
+        SaveRestoreService.getInstance().removePropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, this);
     }
 
     /*

@@ -40,7 +40,7 @@ public enum ValueType {
     ENUM_ARRAY("enum_array", VEnumArray.class),
     STRING_ARRAY("string_array", VStringArray.class),
     BOOLEAN_ARRAY("boolean_array", VBooleanArray.class),
-    NUMBER_ARRAY("number_array",VNumberArray.class),
+    NUMBER_ARRAY("number_array", VNumberArray.class),
     DOUBLE("double", VDouble.class),
     FLOAT("float", VFloat.class),
     LONG("long", VLong.class),
@@ -49,17 +49,17 @@ public enum ValueType {
     BYTE("byte", VByte.class),
     BOOLEAN("boolean", VBoolean.class),
     STRING("string", VString.class),
-    ENUM("enum",VEnum.class),
-    NODATA("na",VNoData.class),
-    NUMBER("number",VNumber.class);
+    ENUM("enum", VEnum.class),
+    NODATA("na", VNoData.class),
+    NUMBER("number", VNumber.class);
 
     /** Name of the value type */
-    public final String name;
+    public final String typeName;
     /** Type of VType represented by this value type */
     public final Class<? extends VType> type;
 
-    private ValueType(String name, Class<? extends VType> type) {
-        this.name = name;
+    private ValueType(String typeName, Class<? extends VType> type) {
+        this.typeName = typeName;
         this.type = type;
     }
 
@@ -88,10 +88,10 @@ public enum ValueType {
      * @param name the name to match
      * @return the value type, where {@link ValueType#name} is equals to <code>name</code> parameter
      */
-    public static ValueType forName(String name) {
+    public static ValueType forName(String typeName) {
         ValueType[] values = values();
         for (ValueType v : values) {
-            if (v.name.equals(name)) {
+            if (v.typeName.equals(typeName)) {
                 return v;
             }
         }

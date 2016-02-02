@@ -121,24 +121,20 @@ public class FXMessageDialog extends IconAndMessageDialog {
         this.buttonWidth += 25;
 
         switch (dialogType) {
-            case ERROR: {
+            case ERROR:
                 this.image = getErrorImage();
                 break;
-            }
-            case INFORMATION: {
+            case INFORMATION:
                 this.image = getInfoImage();
                 break;
-            }
             case QUESTION:
             case QUESTION_WITH_CANCEL:
-            case CONFIRM: {
+            case CONFIRM:
                 this.image = getQuestionImage();
                 break;
-            }
-            case WARNING: {
+            case WARNING:
                 this.image = getWarningImage();
                 break;
-            }
             case NONE:
             default:
                 this.image = null;
@@ -279,27 +275,22 @@ public class FXMessageDialog extends IconAndMessageDialog {
         switch (kind) {
             case ERROR:
             case INFORMATION:
-            case WARNING: {
+            case WARNING:
                 dialogButtonLabels = new String[] { trim(IDialogConstants.OK_LABEL) };
                 break;
-            }
-            case CONFIRM: {
+            case CONFIRM:
                 dialogButtonLabels = new String[] { trim(IDialogConstants.OK_LABEL),
                     trim(IDialogConstants.CANCEL_LABEL) };
                 break;
-            }
-            case QUESTION: {
+            case QUESTION:
                 dialogButtonLabels = new String[] { trim(IDialogConstants.YES_LABEL), trim(IDialogConstants.NO_LABEL) };
                 break;
-            }
-            case QUESTION_WITH_CANCEL: {
+            case QUESTION_WITH_CANCEL:
                 dialogButtonLabels = new String[] { trim(IDialogConstants.YES_LABEL), trim(IDialogConstants.NO_LABEL),
                     trim(IDialogConstants.CANCEL_LABEL) };
                 break;
-            }
-            default: {
+            default:
                 throw new IllegalArgumentException("Illegal value for kind in MessageDialog.open()"); //$NON-NLS-1$
-            }
         }
         return dialogButtonLabels;
     }

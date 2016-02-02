@@ -40,8 +40,10 @@ public interface DataProvider {
      * selected in the UI in order not to trigger any action that is not required at the time when the data provider is
      * created (e.g. credentials input). This method might be called more than once in the life cycle of the data
      * provider.
+     *
+     * @throws DataProviderException if the provider could not be initialised
      */
-    void initialise();
+    void initialise() throws DataProviderException;
 
     /**
      * Adds a completion notifier which is notified every time when a specific action is completed. The notifiers can be
@@ -267,12 +269,12 @@ public interface DataProvider {
      * @param originalBranch the name of the branch used as a starting point
      * @param newBranchName the name of the branch to create
      *
-     * @return the name of the new branch
+     * @return the new branch
      *
      * @throws DataProviderException if there was an error during branch creation
      * @throws UnsupportedActionException if the {@link #areBranchesSupported()} returns false
      */
-    String createNewBranch(Branch originalBranch, String newBranchName)
+    Branch createNewBranch(Branch originalBranch, String newBranchName)
         throws DataProviderException, UnsupportedActionException;
 
     /**

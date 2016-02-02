@@ -46,6 +46,7 @@ public interface ParametersProvider {
      * @param baseLevel the base level for which the thresholds are requested
      * @return the map of PV name and threshold pairs
      */
-    Map<String, Threshold<?>> getThresholds(List<String> pvNames, List<VType> values, Optional<BaseLevel> baseLevel);
+    @SuppressWarnings("rawtypes")
+    Map<String, Threshold> getThresholds(List<String> pvNames, List<VType> values, Optional<BaseLevel> baseLevel);
 
 }

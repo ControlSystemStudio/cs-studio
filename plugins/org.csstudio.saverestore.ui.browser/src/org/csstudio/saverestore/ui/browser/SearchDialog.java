@@ -38,7 +38,7 @@ import javafx.scene.layout.Priority;
  */
 public class SearchDialog extends FXBaseDialog<String> {
 
-    private static Map<Shell, SearchDialog> INSTANCE = new HashMap<>();
+    private static final Map<Shell, SearchDialog> INSTANCE = new HashMap<>();
 
     /**
      * Creates and return the shared instance of this dialog. The dialog is specific to the parent and preserves the
@@ -51,9 +51,7 @@ public class SearchDialog extends FXBaseDialog<String> {
         SearchDialog dialog = INSTANCE.get(parent);
         if (dialog == null) {
             dialog = new SearchDialog(parent);
-            parent.addDisposeListener(e -> {
-                INSTANCE.remove(parent);
-            });
+            parent.addDisposeListener(e -> INSTANCE.remove(parent));
             INSTANCE.put(parent, dialog);
         }
         return dialog;
@@ -159,13 +157,13 @@ public class SearchDialog extends FXBaseDialog<String> {
         text.setMaxWidth(Double.MAX_VALUE);
         text.textProperty().addListener((a, o, n) -> validateInput());
         text.setOnAction(e -> okPressed());
-        commentBox = new UnfocusableCheckBox(SearchCriterion.COMMENT.name);
+        commentBox = new UnfocusableCheckBox(SearchCriterion.COMMENT.readableName);
         commentBox.setOnAction(e -> validateInput());
-        tagNameBox = new UnfocusableCheckBox(SearchCriterion.TAG_NAME.name);
+        tagNameBox = new UnfocusableCheckBox(SearchCriterion.TAG_NAME.readableName);
         tagNameBox.setOnAction(e -> validateInput());
-        tagMessageBox = new UnfocusableCheckBox(SearchCriterion.TAG_MESSAGE.name);
+        tagMessageBox = new UnfocusableCheckBox(SearchCriterion.TAG_MESSAGE.readableName);
         tagMessageBox.setOnAction(e -> validateInput());
-        userBox = new UnfocusableCheckBox(SearchCriterion.USER.name);
+        userBox = new UnfocusableCheckBox(SearchCriterion.USER.readableName);
         userBox.setOnAction(e -> validateInput());
         tagNameBox.setSelected(true);
         DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();

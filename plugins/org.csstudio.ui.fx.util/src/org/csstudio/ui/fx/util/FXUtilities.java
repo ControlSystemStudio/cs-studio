@@ -82,7 +82,7 @@ public final class FXUtilities {
     public static void setGridConstraints(Node component, boolean fillWidth, boolean fillHeight, Priority hgrow,
         Priority vgrow) {
         GridPane.setFillWidth(component, fillWidth);
-        GridPane.setFillHeight(component, fillWidth);
+        GridPane.setFillHeight(component, fillHeight);
         if (vgrow != null) {
             GridPane.setVgrow(component, vgrow);
         }

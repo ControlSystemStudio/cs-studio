@@ -26,6 +26,13 @@ public class Threshold<T extends Number> implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(Threshold.class.getName());
     private static final long serialVersionUID = 7839497629386640415L;
 
+    private static final String[] FUNCTIONS = new String[] { "PI", "E", "abs", "acos", "cos", "cosh", "asin", "sin",
+        "sinh", "atan", "tan", "tanh", "atan2", "cbrt", "exp", "log", "log10", "max", "min", "pow", "sqrt" };
+    private static final Pattern PATTERN = Pattern.compile("[xy]");
+    private static final Pattern PATTERN_BASE = Pattern.compile("base");
+    private static final Pattern PATTERN_VALUE = Pattern.compile("value");
+    private static final ScriptEngine EVALUATOR = new ScriptEngineManager().getEngineByName("JavaScript");
+
     @SuppressWarnings("unchecked")
     private static <U extends Number> U toNegativeValue(U n) {
         if (n instanceof Byte) {
@@ -54,18 +61,6 @@ public class Threshold<T extends Number> implements Serializable {
         } else if (!positive && n.doubleValue() > 0.) {
             throw new IllegalArgumentException("The value " + n + " should be non positive.");
         }
-    }
-
-    private static final String[] FUNCTIONS = new String[] { "PI", "E", "abs", "acos", "cos", "cosh", "asin", "sin",
-        "sinh", "atan", "tan", "tanh", "atan2", "cbrt", "exp", "log", "log10", "max", "min", "pow", "sqrt" };
-    private static final Pattern PATTERN = Pattern.compile("[xy]");
-    private static final Pattern PATTERN_BASE = Pattern.compile("base");
-    private static final Pattern PATTERN_VALUE = Pattern.compile("value");
-    private static final ScriptEngine EVALUATOR;
-
-    static {
-        ScriptEngineManager mgr = new ScriptEngineManager();
-        EVALUATOR = mgr.getEngineByName("JavaScript");
     }
 
     private final T positiveThreshold;
@@ -217,7 +212,7 @@ public class Threshold<T extends Number> implements Serializable {
             } catch (ScriptException | ClassCastException | NullPointerException e) {
                 if (logError) {
                     LOGGER.log(Level.WARNING, "Threshold function " + function + " cannot be evaluated.",
-                        (Throwable) null);
+                        (Throwable) e);
                     logError = false;
                 }
             }
@@ -228,9 +223,10 @@ public class Threshold<T extends Number> implements Serializable {
     }
 
     private static String compileFunction(String function) {
+        String newFunction = function;
         for (String s : FUNCTIONS) {
-            function = function.replace(s, "Math." + s);
+            newFunction = newFunction.replace(s, "Math." + s);
         }
-        return function.replace("ln", "Math.log");
+        return newFunction.replace("ln", "Math.log");
     }
 }

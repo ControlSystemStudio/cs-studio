@@ -36,7 +36,7 @@ import javafx.beans.property.SimpleObjectProperty;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class Selector {
+public class Selector implements CompletionNotifier {
 
     private static final Branch DEFAULT_BRANCH = new Branch();
 
@@ -49,89 +49,6 @@ public class Selector {
     private ObjectProperty<List<Snapshot>> snapshots;
     private BooleanProperty allSnapshotsLoaded = new SimpleBooleanProperty(false);
     private Snapshot lastSnapshot;
-    private CompletionNotifier notifier = new CompletionNotifier() {
-        @Override
-        public void synchronised() {
-            runOnGUIThread(() -> {
-                ((ObjectProperty<BaseLevel>) selectedBaseLevelProperty()).set(null);
-                ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
-                    .set(Collections.unmodifiableList(new ArrayList<>(0)));
-                ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                    .set(Collections.unmodifiableList(new ArrayList<>(0)));
-                ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
-                    .set(Collections.unmodifiableList(new ArrayList<>(0)));
-                allSnapshotsLoaded.set(false);
-                SaveRestoreService.getInstance().execute("Synchronise", () -> {
-                    readBranches(selectedBranchProperty().get());
-                });
-            });
-        }
-
-        @Override
-        public void snapshotTagged(Snapshot snapshot) {
-            List<Snapshot> snp = snapshotsProperty().get();
-            final List<Snapshot> newV = snp.stream().map(e -> e.almostEquals(snapshot) ? snapshot : e)
-                .collect(Collectors.toList());
-            runOnGUIThread(() -> ((SimpleObjectProperty<List<Snapshot>>) snapshotsProperty())
-                .set(Collections.unmodifiableList(newV)));
-        }
-
-        @Override
-        public void snapshotSaved(VSnapshot snapshot) {
-            List<Snapshot> snp = snapshotsProperty().get();
-            final List<Snapshot> newV = new ArrayList<>(snp.size() + 1);
-            newV.add(snapshot.getSnapshot().get());
-            newV.addAll(snp);
-            Collections.sort(newV);
-            runOnGUIThread(() -> ((SimpleObjectProperty<List<Snapshot>>) snapshotsProperty())
-                .set(Collections.unmodifiableList(newV)));
-        }
-
-        @Override
-        public void branchCreated(Branch newBranch) {
-            SaveRestoreService.getInstance().execute("Load branches", () -> readBranches(newBranch));
-        }
-
-        @Override
-        public void beamlineSetSaved(BeamlineSetData set) {
-            final BaseLevel base = selectedBaseLevelProperty().get();
-            final Branch branch = selectedBranchProperty().get();
-            if (!set.getDescriptor().getBranch().equals(branch)) {
-                return;
-            }
-            Optional<BaseLevel> bl = set.getDescriptor().getBaseLevel();
-            if (bl.isPresent() && !bl.get().getStorageName().equals(base.getStorageName())) {
-                return;
-            }
-            SaveRestoreService.getInstance().execute("Load beamline sets", () -> reloadBeamlineSets(base, branch));
-        }
-
-        @Override
-        public void beamlineSetDeleted(BeamlineSet set) {
-            List<BeamlineSet> sets = beamlineSetsProperty().get();
-            final List<BeamlineSet> newSets = sets.stream().filter(e -> !e.equals(set)).collect(Collectors.toList());
-            runOnGUIThread(() -> ((SimpleObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                .set(Collections.unmodifiableList(newSets)));
-        }
-
-        @Override
-        public void dataImported(BeamlineSet source, Branch toBranch, final Optional<BaseLevel> toBase) {
-            Branch selected = selectedBranchProperty().get();
-            if (selected.equals(toBranch)) {
-                BaseLevel base = source.getBaseLevel().orElse(null);
-                if (base != null && toBase.isPresent() && base.equals(toBase.get())) {
-                    SaveRestoreService.getInstance().execute("Load beamline sets",
-                        () -> reloadBeamlineSets(base, toBranch));
-                } else if (base == null && !toBase.isPresent()) {
-                    SaveRestoreService.getInstance().execute("Load beamline sets",
-                        () -> reloadBeamlineSets(null, toBranch));
-                } else {
-                    SaveRestoreService.getInstance().execute("Load base levels", () -> readBaseLevels(true));
-                }
-            }
-            // if branches are different, do nothing
-        }
-    };
     private final IWorkbenchPart owner;
 
     /**
@@ -141,14 +58,14 @@ public class Selector {
      */
     public Selector(IWorkbenchPart owner) {
         this.owner = owner;
-        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, (e) -> {
+        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, e -> {
             DataProviderWrapper oldValue = (DataProviderWrapper) e.getOldValue();
             DataProviderWrapper newValue = (DataProviderWrapper) e.getNewValue();
             if (oldValue != null) {
-                oldValue.provider.removeCompletionNotifier(notifier);
+                oldValue.provider.removeCompletionNotifier(this);
             }
             if (newValue != null) {
-                newValue.provider.addCompletionNotifier(notifier);
+                newValue.provider.addCompletionNotifier(this);
             }
             ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
                 .set(Collections.unmodifiableList(new ArrayList<>(0)));
@@ -163,10 +80,10 @@ public class Selector {
 
     private void reloadBeamlineSets(BaseLevel baseLevel, Branch branch) {
         try {
-            final BeamlineSet[] beamlineSets = SaveRestoreService.getInstance().getSelectedDataProvider().provider
+            final BeamlineSet[] theBeamlineSets = SaveRestoreService.getInstance().getSelectedDataProvider().provider
                 .getBeamlineSets(Optional.ofNullable(baseLevel), branch);
             runOnGUIThread(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
+                .set(Collections.unmodifiableList(Arrays.asList(theBeamlineSets))));
         } catch (DataProviderException e) {
             ActionManager.reportException(e, owner.getSite().getShell());
         }
@@ -177,10 +94,10 @@ public class Selector {
         if (provider.areBranchesSupported()) {
             SaveRestoreService.getInstance().execute("Load branches", () -> {
                 try {
-                    final Branch[] branches = provider.getBranches();
+                    final Branch[] theBranches = provider.getBranches();
                     runOnGUIThread(() -> {
                         ((ObjectProperty<List<Branch>>) branchesProperty())
-                            .set(Collections.unmodifiableList(Arrays.asList(branches)));
+                            .set(Collections.unmodifiableList(Arrays.asList(theBranches)));
                         selectedBranchProperty().set(branchToSelect);
                     });
                 } catch (DataProviderException e) {
@@ -224,9 +141,7 @@ public class Selector {
 
                 }
             };
-            selectedBranch.addListener((a, o, n) -> {
-                readBaseLevels(false);
-            });
+            selectedBranch.addListener((a, o, n) -> readBaseLevels(false));
         }
         return selectedBranch;
     }
@@ -237,9 +152,9 @@ public class Selector {
             final Branch branch = selectedBranchProperty().get();
             SaveRestoreService.getInstance().execute("Load base levels", () -> {
                 try {
-                    final BaseLevel[] baseLevels = provider.getBaseLevels(branch);
+                    final BaseLevel[] theBaseLevels = provider.getBaseLevels(branch);
                     runOnGUIThread(() -> ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
-                        .set(Collections.unmodifiableList(Arrays.asList(baseLevels))));
+                        .set(Collections.unmodifiableList(Arrays.asList(theBaseLevels))));
                     if (reloadBeamlineSets) {
                         readBeamlineSets();
                     }
@@ -286,9 +201,9 @@ public class Selector {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
         SaveRestoreService.getInstance().execute("Load beamline sets", () -> {
             try {
-                final BeamlineSet[] beamlineSets = provider.getBeamlineSets(Optional.ofNullable(baseLevel), branch);
+                final BeamlineSet[] theBeamlineSets = provider.getBeamlineSets(Optional.ofNullable(baseLevel), branch);
                 runOnGUIThread(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
-                    .set(Collections.unmodifiableList(Arrays.asList(beamlineSets))));
+                    .set(Collections.unmodifiableList(Arrays.asList(theBeamlineSets))));
             } catch (DataProviderException e) {
                 ActionManager.reportException(e, owner.getSite().getShell());
             }
@@ -310,7 +225,7 @@ public class Selector {
      */
     public ObjectProperty<BeamlineSet> selectedBeamlineSetProperty() {
         if (selectedBeamlineSet == null) {
-            selectedBeamlineSet = new SimpleObjectProperty<BeamlineSet>();
+            selectedBeamlineSet = new SimpleObjectProperty<>();
             selectedBeamlineSet.addListener((a, o, n) -> {
                 allSnapshotsLoaded.set(false);
                 ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
@@ -341,15 +256,15 @@ public class Selector {
         final Snapshot snap = fromHead ? null : lastSnapshot;
         SaveRestoreService.getInstance().execute("Load snapshots", () -> {
             try {
-                final Snapshot[] snapshots = provider.getSnapshots(set, all, Optional.ofNullable(snap));
+                final Snapshot[] theSnapshots = provider.getSnapshots(set, all, Optional.ofNullable(snap));
                 final List<Snapshot> allSnapshots = new ArrayList<>(snapshotsProperty().get());
-                for (Snapshot s : snapshots) {
+                for (Snapshot s : theSnapshots) {
                     allSnapshots.add(s);
                 }
                 lastSnapshot = allSnapshots.isEmpty() ? null : allSnapshots.get(allSnapshots.size() - 1);
                 Collections.sort(allSnapshots);
                 runOnGUIThread(() -> {
-                    allSnapshotsLoaded.set(snapshots.length == 0);
+                    allSnapshotsLoaded.set(theSnapshots.length == 0);
                     ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
                         .set(Collections.unmodifiableList(allSnapshots));
                 });
@@ -394,7 +309,7 @@ public class Selector {
     public static String validateBaseLevelName(String storageName) {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
         if (provider.areBaseLevelsSupported()) {
-            return ExtensionPointLoader.getInstance().getBaseLevelValidator().map((e) -> e.validate(storageName))
+            return ExtensionPointLoader.getInstance().getBaseLevelValidator().map(e -> e.validate(storageName))
                 .orElse(null);
         } else {
             return null;
@@ -403,5 +318,121 @@ public class Selector {
 
     private void runOnGUIThread(Runnable r) {
         Platform.runLater(r);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.CompletionNotifier#synchronised()
+     */
+    @Override
+    public void synchronised() {
+        runOnGUIThread(() -> {
+            ((ObjectProperty<BaseLevel>) selectedBaseLevelProperty()).set(null);
+            ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
+                .set(Collections.unmodifiableList(new ArrayList<>(0)));
+            ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
+                .set(Collections.unmodifiableList(new ArrayList<>(0)));
+            ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
+                .set(Collections.unmodifiableList(new ArrayList<>(0)));
+            allSnapshotsLoaded.set(false);
+            SaveRestoreService.getInstance().execute("Synchronise", () -> readBranches(selectedBranchProperty().get()));
+        });
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.CompletionNotifier#snapshotTagged(org.csstudio.saverestore.data.Snapshot)
+     */
+    @Override
+    public void snapshotTagged(Snapshot snapshot) {
+        List<Snapshot> snp = snapshotsProperty().get();
+        final List<Snapshot> newV = snp.stream().map(e -> e.almostEquals(snapshot) ? snapshot : e)
+            .collect(Collectors.toList());
+        runOnGUIThread(
+            () -> ((SimpleObjectProperty<List<Snapshot>>) snapshotsProperty()).set(Collections.unmodifiableList(newV)));
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.CompletionNotifier#snapshotSaved(org.csstudio.saverestore.data.VSnapshot)
+     */
+    @Override
+    public void snapshotSaved(VSnapshot snapshot) {
+        List<Snapshot> snp = snapshotsProperty().get();
+        final List<Snapshot> newV = new ArrayList<>(snp.size() + 1);
+        newV.add(snapshot.getSnapshot().get());
+        newV.addAll(snp);
+        Collections.sort(newV);
+        runOnGUIThread(
+            () -> ((SimpleObjectProperty<List<Snapshot>>) snapshotsProperty()).set(Collections.unmodifiableList(newV)));
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.CompletionNotifier#branchCreated(org.csstudio.saverestore.data.Branch)
+     */
+    @Override
+    public void branchCreated(Branch newBranch) {
+        SaveRestoreService.getInstance().execute("Load branches", () -> readBranches(newBranch));
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.CompletionNotifier#beamlineSetSaved(org.csstudio.saverestore.data.BeamlineSetData)
+     */
+    @Override
+    public void beamlineSetSaved(BeamlineSetData set) {
+        final BaseLevel base = selectedBaseLevelProperty().get();
+        final Branch branch = selectedBranchProperty().get();
+        if (!set.getDescriptor().getBranch().equals(branch)) {
+            return;
+        }
+        Optional<BaseLevel> bl = set.getDescriptor().getBaseLevel();
+        if (bl.isPresent() && !bl.get().getStorageName().equals(base.getStorageName())) {
+            return;
+        }
+        SaveRestoreService.getInstance().execute("Load beamline sets", () -> reloadBeamlineSets(base, branch));
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.CompletionNotifier#beamlineSetDeleted(org.csstudio.saverestore.data.BeamlineSet)
+     */
+    @Override
+    public void beamlineSetDeleted(BeamlineSet set) {
+        List<BeamlineSet> sets = beamlineSetsProperty().get();
+        final List<BeamlineSet> newSets = sets.stream().filter(e -> !e.equals(set)).collect(Collectors.toList());
+        runOnGUIThread(() -> ((SimpleObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
+            .set(Collections.unmodifiableList(newSets)));
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.CompletionNotifier#dataImported(org.csstudio.saverestore.data.BeamlineSet,
+     * org.csstudio.saverestore.data.Branch, java.util.Optional)
+     */
+    @Override
+    public void dataImported(BeamlineSet source, Branch toBranch, final Optional<BaseLevel> toBase) {
+        Branch selected = selectedBranchProperty().get();
+        if (selected.equals(toBranch)) {
+            BaseLevel base = source.getBaseLevel().orElse(null);
+            if (base != null && toBase.isPresent() && base.equals(toBase.get())) {
+                SaveRestoreService.getInstance().execute("Load beamline sets",
+                    () -> reloadBeamlineSets(base, toBranch));
+            } else if (base == null && !toBase.isPresent()) {
+                SaveRestoreService.getInstance().execute("Load beamline sets",
+                    () -> reloadBeamlineSets(null, toBranch));
+            } else {
+                SaveRestoreService.getInstance().execute("Load base levels", () -> readBaseLevels(true));
+            }
+        }
+        // if branches are different, do nothing
     }
 }

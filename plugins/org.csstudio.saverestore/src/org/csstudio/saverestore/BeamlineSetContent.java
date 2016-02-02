@@ -16,9 +16,11 @@ public class BeamlineSetContent {
     public final List<String> names;
     /** The names of readback pvs, if one PV does not have a readback, there should be an empty string at that index */
     public final List<String> readbacks;
-    /** The deltas defining how to treat the difference between values. If two values differ less than delta, they are
+    /**
+     * The deltas defining how to treat the difference between values. If two values differ less than delta, they are
      * considered equal. The delta can be a number, or a function. If there is no known delta for a PV the entry should
-     * be an empty string. */
+     * be an empty string.
+     */
     public final List<String> deltas;
     /** The description of the beamline set */
     public final String description;

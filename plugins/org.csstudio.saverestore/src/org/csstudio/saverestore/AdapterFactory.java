@@ -50,7 +50,8 @@ public class AdapterFactory implements IAdapterFactory {
                         sc.readbackData, sc.deltas, snapshotTime);
                     return adapterType.cast(vs);
                 } catch (IOException | CoreException | ParseException ex) {
-                    throw new IllegalArgumentException("The file " + file.getName() + " is not a valid snapshot file.");
+                    throw new IllegalArgumentException("The file " + file.getName() + " is not a valid snapshot file.",
+                        ex);
                 }
             } else if (adaptableObject instanceof IURIEditorInput) {
                 IURIEditorInput input = (IURIEditorInput) adaptableObject;
@@ -66,7 +67,8 @@ public class AdapterFactory implements IAdapterFactory {
                         sc.readbackData, sc.deltas, snapshotTime);
                     return adapterType.cast(vs);
                 } catch (IOException | ParseException ex) {
-                    throw new IllegalArgumentException("The file " + uri.toString() + " is not a valid snapshot file.");
+                    throw new IllegalArgumentException("The file " + uri.toString() + " is not a valid snapshot file.",
+                        ex);
                 }
             }
         }

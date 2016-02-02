@@ -307,7 +307,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
             }
         } else if (getEditorInput() instanceof IURIEditorInput) {
             URI uri = ((IURIEditorInput) getEditorInput()).getURI();
-            if (uri.getScheme().equalsIgnoreCase("file")) {
+            if ("file".equalsIgnoreCase(uri.getScheme())) {
                 final File file = new File(uri);
                 if (saveAs) {
                     selectFile(true, Optional.of(file))
@@ -399,7 +399,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
             "Enter the name of the PV from the archiving system that you wish to add.", "",
             i -> i == null || i.isEmpty() ? "The PV name cannot be empty" : null).openAndWait()
                 .ifPresent(pv -> SaveRestoreService.getInstance().execute("Add PV from Archive",
-                    () -> controller.addPVFromArchive(pv, x -> table.addItem(x)))));
+                    () -> controller.addPVFromArchive(pv, table::addItem))));
         Button importButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/import_wiz.png"))));
         importButton.setTooltip(new Tooltip("Import PV values from external source"));
@@ -412,7 +412,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
             new FXComboInputDialog<>(getSite().getShell(), "Select Value Importer",
                 "Select the value importer from which you wish to import the values", importers.get(0), importers)
                     .openAndWait().ifPresent(imp -> SaveRestoreService.getInstance().execute("Import Values",
-                        () -> controller.importValues(imp, x -> addSnapshot(x))));
+                        () -> controller.importValues(imp, SnapshotViewerEditor.this::addSnapshot)));
         });
         ToggleButton addReadbacksButton = new UnfocusableToggleButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/exp_deployplug.png"))));
@@ -439,35 +439,30 @@ public class SnapshotViewerEditor extends FXEditorPart {
             dialog.setFilterNames(new String[] { "Single Snapshot (*.snp)" });
             String ans = dialog.open();
             if (ans != null) {
-                SaveRestoreService.getInstance().execute("Open file", () -> {
-                    controller.openFromFile(new File(ans)).ifPresent(s -> addSnapshot(s));
-                });
+                SaveRestoreService.getInstance().execute("Open file",
+                    () -> controller.openFromFile(new File(ans)).ifPresent(SnapshotViewerEditor.this::addSnapshot));
             }
         });
         Button saveSnapshotToFileButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/saveas_edit.png"))));
         saveSnapshotToFileButton.setTooltip(new Tooltip("Save a snapshot to file"));
-        saveSnapshotToFileButton.setOnAction(e -> {
-            selectFile(true, Optional.empty()).ifPresent(f -> {
-                final List<VSnapshot> snapshots = controller.getAllSnapshots();
-                if (snapshots.size() == 1) {
-                    SaveRestoreService.getInstance().execute("Export to snp file",
-                        () -> controller.exportSingleSnapshotToFile(snapshots.get(0), f, false));
-                } else {
-                    new FXComboInputDialog<>(getSite().getShell(), "Select Snapshot",
-                        "Select the snapshot that you wish to save", snapshots.get(0), snapshots).openAndWait()
-                            .ifPresent(s -> SaveRestoreService.getInstance().execute("Export to snp file",
-                                () -> controller.exportSingleSnapshotToFile(s, f, false)));
-                }
-            });
-        });
+        saveSnapshotToFileButton.setOnAction(e -> selectFile(true, Optional.empty()).ifPresent(f -> {
+            final List<VSnapshot> snapshots = controller.getAllSnapshots();
+            if (snapshots.size() == 1) {
+                SaveRestoreService.getInstance().execute("Export to snp file",
+                    () -> controller.exportSingleSnapshotToFile(snapshots.get(0), f, false));
+            } else {
+                new FXComboInputDialog<>(getSite().getShell(), "Select Snapshot",
+                    "Select the snapshot that you wish to save", snapshots.get(0), snapshots).openAndWait()
+                        .ifPresent(s -> SaveRestoreService.getInstance().execute("Export to snp file",
+                            () -> controller.exportSingleSnapshotToFile(s, f, false)));
+            }
+        }));
         Button exportButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/export_wiz.png"))));
         exportButton.setTooltip(new Tooltip("Export editor contents to file"));
-        exportButton.setOnAction(e -> {
-            selectFile(false, Optional.empty()).ifPresent(
-                f -> SaveRestoreService.getInstance().execute("Export to csv file", () -> controller.exportToFile(f)));
-        });
+        exportButton.setOnAction(e -> selectFile(false, Optional.empty()).ifPresent(
+            f -> SaveRestoreService.getInstance().execute("Export to csv file", () -> controller.exportToFile(f))));
         Separator separator1 = new Separator(Orientation.VERTICAL);
         String style = SnapshotViewerEditor.class.getResource(STYLE).toExternalForm();
         separator1.getStylesheets().add(style);
@@ -487,7 +482,6 @@ public class SnapshotViewerEditor extends FXEditorPart {
         filterCombo.setEditable(true);
         filterCombo.setOnAction(new EventHandler<ActionEvent>() {
             private boolean suppressUpdate = false;
-
             @Override
             public void handle(ActionEvent event) {
                 if (suppressUpdate) {
@@ -547,12 +541,11 @@ public class SnapshotViewerEditor extends FXEditorPart {
         ToggleButton hideEqualItemsButton = new ToggleButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/filter_ps.png"))));
         hideEqualItemsButton.setTooltip(new Tooltip("Hide/Show items where snapshot value equals current value"));
-        hideEqualItemsButton.selectedProperty().addListener((a, o, n) -> {
-            SaveRestoreService.getInstance().execute("Filter items", () -> {
+        hideEqualItemsButton.selectedProperty()
+            .addListener((a, o, n) -> SaveRestoreService.getInstance().execute("Filter items", () -> {
                 final List<TableEntry> entries = controller.setHideEqualItems(n);
                 Platform.runLater(() -> table.updateTable(entries));
-            });
-        });
+            }));
         rightToolbar.setAlignment(Pos.CENTER_RIGHT);
         rightToolbar.getChildren().addAll(new Label("Filter (partial match):"), filterCombo, hideEqualItemsButton);
         HBox toolbar = new HBox(5);
@@ -567,7 +560,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
     }
 
     private Optional<File> selectFile(boolean snp, Optional<File> originalFile) {
-        File f = null;
+        File f;
         FileDialog dialog = new FileDialog(getSite().getShell(), SWT.SAVE);
         originalFile.ifPresent(file -> dialog.setFileName(file.getAbsolutePath()));
         if (snp) {
@@ -734,14 +727,12 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 @SuppressWarnings("unchecked")
                 final List<File> files = (List<File>) e.getDragboard().getContent(DataFormat.FILES);
                 if (!files.isEmpty()) {
-                    SaveRestoreService.getInstance().execute("Open file",
-                        () -> files.forEach(c -> controller.openFromFile(c).ifPresent(s -> addSnapshot(s))));
+                    SaveRestoreService.getInstance().execute("Open file", () -> files
+                        .forEach(c -> controller.openFromFile(c).ifPresent(SnapshotViewerEditor.this::addSnapshot)));
                 }
             }
         });
-        table.setOnMouseReleased(e -> {
-            contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY);
-        });
+        table.setOnMouseReleased(e -> contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY));
 
         return table;
     }

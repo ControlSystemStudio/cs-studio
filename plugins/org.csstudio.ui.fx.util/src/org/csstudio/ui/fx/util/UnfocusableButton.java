@@ -44,5 +44,6 @@ public class UnfocusableButton extends Button {
      */
     @Override
     public void requestFocus() {
+        // ignore focus
     }
 }

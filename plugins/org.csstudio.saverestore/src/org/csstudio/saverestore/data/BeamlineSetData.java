@@ -19,8 +19,17 @@ public class BeamlineSetData implements Serializable {
 
     private static final long serialVersionUID = 510361139183432408L;
 
+    /**
+     * <code>Entry</code> describes a single entry in the beamline set, which is composed from the pv name, readback
+     * name and the delta value to be used in combination with the {@link Threshold}.
+     *
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+     *
+     */
     public static class Entry {
-        public final String pv, readback, delta;
+        public final String pv;
+        public final String readback;
+        public final String delta;
 
         Entry(String pv, String readback, String delta) {
             this.pv = pv;

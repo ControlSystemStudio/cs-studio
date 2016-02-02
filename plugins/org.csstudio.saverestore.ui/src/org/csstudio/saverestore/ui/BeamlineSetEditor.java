@@ -198,13 +198,12 @@ public class BeamlineSetEditor extends FXEditorPart {
                 return;
             }
             new RepositoryTreeBrowser(this, data.getDescriptor()).openAndWait()
-                .ifPresent(beamlineSet -> SaveRestoreService.getInstance().execute("Save Beamline Set", () -> {
-                    controller
+                .ifPresent(beamlineSet -> SaveRestoreService.getInstance().execute("Save Beamline Set",
+                    () -> controller
                         .save(new BeamlineSetData(beamlineSet, data.getPVList(), data.getReadbackList(),
                             data.getDeltaList(), data.getDescription()))
-                        .ifPresent(d -> getSite().getShell().getDisplay()
-                            .asyncExec(() -> setInput(new BeamlineSetEditorInput(d))));
-                }));
+                    .ifPresent(d -> getSite().getShell().getDisplay()
+                        .asyncExec(() -> setInput(new BeamlineSetEditorInput(d))))));
         }
     }
 

@@ -69,17 +69,15 @@ public class Isotope extends BaseLevel {
         try {
             e = Element.valueOf(parts[0].toUpperCase(Locale.UK));
         } catch (IllegalArgumentException ex) {
-            throw new IllegalArgumentException("'" + parts[0] + "' is not a valid name.");
+            throw new IllegalArgumentException("'" + parts[0] + "' is not a valid name.", ex);
         }
-        int neutrons = e.commonNeutrons;
-        int charge = e.commonCharge;
         if (parts.length < 3) {
             throw new IllegalArgumentException(storageName + " does not provide mass, charge and energy.");
         } else if (parts.length > 3) {
             throw new IllegalArgumentException("Too many parts in the name.");
         }
 
-        neutrons = Integer.parseInt(parts[1]) - e.atomicNumber;
+        int neutrons = Integer.parseInt(parts[1]) - e.atomicNumber;
         if (neutrons < 0) {
             throw new IllegalArgumentException(
                 "Mass is too small for '" + e.fullName + "' (min " + e.atomicNumber + ").");
@@ -89,7 +87,7 @@ public class Isotope extends BaseLevel {
         if (!(pn == 'n' || pn == 'p')) {
             throw new IllegalArgumentException("The charge sign is not defined (p or n) for " + storageName + ".");
         }
-        charge = Integer.parseInt(parts[2].substring(0, parts[2].length() - 1));
+        int charge = Integer.parseInt(parts[2].substring(0, parts[2].length() - 1));
         charge *= pn == 'n' ? -1 : 1;
         if (charge > e.atomicNumber) {
             throw new IllegalArgumentException(

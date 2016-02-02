@@ -25,5 +25,6 @@ public class StaticTextField extends TextField {
      */
     @Override
     public void requestFocus() {
+        // ignore focus
     }
 }

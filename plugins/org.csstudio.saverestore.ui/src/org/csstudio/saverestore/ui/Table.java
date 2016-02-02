@@ -266,7 +266,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         });
     }
 
-    private void createTableForSingleSnapshot(VSnapshot snapshot, boolean showReadback, boolean showStoredReadback) {
+    private void createTableForSingleSnapshot(boolean showReadback, boolean showStoredReadback) {
         TableColumn<TableEntry, Boolean> selectedColumn = new TooltipTableColumn<>("",
             "Include this PV when restoring values", 30, 30, false);
         selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
@@ -469,7 +469,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         uiSnapshots.clear();
         uiSnapshots.addAll(snapshots);
         if (snapshots.size() == 1) {
-            createTableForSingleSnapshot(snapshots.get(0), showReadback, showStoredReadback);
+            createTableForSingleSnapshot(showReadback, showStoredReadback);
         } else {
             createTableForMultipleSnapshots(snapshots, showReadback, showStoredReadback);
         }
@@ -536,7 +536,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         if (uiSnapshots.size() == 1) {
             ((TooltipTableColumn<?>) getColumns().get(6)).setSaved(uiSnapshots.get(0).isSaved());
         } else {
-            TableColumn<TableEntry, ?> column = ((TableColumn<TableEntry, ?>) getColumns().get(3));
+            TableColumn<TableEntry, ?> column = (TableColumn<TableEntry, ?>) getColumns().get(3);
             for (int i = 0; i < uiSnapshots.size(); i++) {
                 ((TooltipTableColumn<?>) column.getColumns().get(i)).setSaved(uiSnapshots.get(i).isSaved());
             }
@@ -627,5 +627,6 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
      */
     @Override
     public void setSelection(ISelection selection) {
+        // selecting action not supported
     }
 }

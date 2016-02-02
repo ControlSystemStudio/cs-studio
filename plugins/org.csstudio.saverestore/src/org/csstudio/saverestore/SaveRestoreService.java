@@ -32,8 +32,20 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
  */
 public class SaveRestoreService {
 
+    /** Property that defines the maximum number of snapshots loaded in a single call */
+    public static final String PREF_NUMBER_OF_SNAPSHOTS = "maxNumberOfSnapshotsInBatch";
+    /** Plugin ID */
+    public static final String PLUGIN_ID = "org.csstudio.saverestore";
+
+    /** The common logger */
+    public static final Logger LOGGER = Logger.getLogger(SaveRestoreService.class.getName());
+    /** The name of the selectedDataProvider property */
+    public static final String SELECTED_DATA_PROVIDER = "selectedDataProvider";
+    /** The name of the is engine busy property */
+    public static final String BUSY = "busy";
+
     /** mutex rule takes care that no two save and restore jobs can be executed at the same time */
-    private static ISchedulingRule mutexRule = new ISchedulingRule() {
+    private static final ISchedulingRule MUTEX_RULE = new ISchedulingRule() {
         @Override
         public boolean isConflicting(ISchedulingRule rule) {
             return rule == this;
@@ -53,7 +65,7 @@ public class SaveRestoreService {
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *
      */
-    private class SaveRestoreJob extends Job {
+    private static class SaveRestoreJob extends Job {
 
         private final String taskName;
         private final Runnable task;
@@ -62,42 +74,25 @@ public class SaveRestoreService {
             super("Save and Restore: " + taskName);
             this.taskName = taskName;
             this.task = task;
-            setRule(mutexRule);
+            setRule(MUTEX_RULE);
         }
 
         @Override
         protected IStatus run(IProgressMonitor monitor) {
             monitor.beginTask(taskName, 1);
-            setCurrentJob(monitor);
+            SaveRestoreService.getInstance().setCurrentJob(monitor);
             try {
-                setBusy(true);
+                SaveRestoreService.getInstance().setBusy(true);
                 BusyIndicator.showWhile(null, task);
                 return Status.OK_STATUS;
             } finally {
-                setCurrentJob(null);
+                SaveRestoreService.getInstance().setCurrentJob(null);
                 monitor.done();
-                setBusy(false);
+                SaveRestoreService.getInstance().setBusy(false);
             }
         }
     }
 
-    /** Property that defines the maximum number of snapshots loaded in a single call */
-    public static final String PREF_NUMBER_OF_SNAPSHOTS = "maxNumberOfSnapshotsInBatch";
-    private static final String PLUGIN_ID = "org.csstudio.saverestore";
-
-    /** The common logger */
-    public static final Logger LOGGER = Logger.getLogger(SaveRestoreService.class.getName());
-    /** The name of the selectedDataProvider property */
-    public static final String SELECTED_DATA_PROVIDER = "selectedDataProvider";
-    /** The name of the is engine busy property */
-    public static final String BUSY = "busy";
-
-    private boolean busy = false;
-    private List<DataProviderWrapper> dataProviders;
-    private DataProviderWrapper selectedDataProvider;
-    private PropertyChangeSupport support = new PropertyChangeSupport(this);
-    private IPreferenceStore preferences;
-    private IProgressMonitor currentJob;
     private static final SaveRestoreService INSTANCE = new SaveRestoreService();
 
     /**
@@ -108,6 +103,13 @@ public class SaveRestoreService {
     public static final SaveRestoreService getInstance() {
         return INSTANCE;
     }
+
+    private boolean serviceIsBusy = false;
+    private List<DataProviderWrapper> dataProviders;
+    private DataProviderWrapper selectedDataProvider;
+    private PropertyChangeSupport support = new PropertyChangeSupport(this);
+    private IPreferenceStore preferences;
+    private IProgressMonitor currentJob;
 
     private SaveRestoreService() {
     }
@@ -164,7 +166,13 @@ public class SaveRestoreService {
         this.selectedDataProvider = selectedDataProvider;
         if (this.selectedDataProvider != null) {
             final DataProvider provider = this.selectedDataProvider.provider;
-            execute("Data Provider Initialise", () -> provider.initialise());
+            execute("Data Provider Initialise", () -> {
+                try {
+                    provider.initialise();
+                } catch (DataProviderException e) {
+                    LOGGER.log(Level.SEVERE, "Data provider initialisation failed.", e);
+                }
+            });
             LOGGER.log(Level.FINE, "Selected data provider: " + selectedDataProvider.getPresentationName());
         }
         support.firePropertyChange(SELECTED_DATA_PROVIDER, oldValue, this.selectedDataProvider);
@@ -211,13 +219,23 @@ public class SaveRestoreService {
     }
 
     /**
+     * Removes a property change listener for the given property.
+     *
+     * @param propertyName the name of the property to unregister from
+     * @param listener the listener to unregister
+     */
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
+        support.removePropertyChangeListener(propertyName, listener);
+    }
+
+    /**
      * Whenever the service is executing a task it is flagged as busy, which can be used as an indicator on the UI to
      * tell the user that something is happening.
      *
      * @return true if the service is currently busy or false otherwise
      */
     public boolean isBusy() {
-        return busy;
+        return serviceIsBusy;
     }
 
     /**
@@ -226,10 +244,10 @@ public class SaveRestoreService {
      * @param busy true if the engine is busy or false otherwise
      */
     private void setBusy(boolean busy) {
-        if (this.busy == busy) {
+        if (this.serviceIsBusy == busy) {
             return;
         }
-        this.busy = busy;
+        this.serviceIsBusy = busy;
         support.firePropertyChange(BUSY, !busy, busy);
     }
 

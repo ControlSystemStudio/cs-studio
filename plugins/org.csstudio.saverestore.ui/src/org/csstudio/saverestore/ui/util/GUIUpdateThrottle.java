@@ -17,11 +17,11 @@ import org.csstudio.saverestore.SaveRestoreService;
  * @author Kay Kasemir
  */
 public abstract class GUIUpdateThrottle extends Thread {
-    /** Delay in millisecs for the initial update after trigger */
-    final private long initial_millis;
+    /** Delay in milliseconds for the initial update after trigger */
+    private final long initialMillis;
 
-    /** Delay in millisecs for the suppression of a burst of events */
-    final private long suppression_millis;
+    /** Delay in milliseconds for the suppression of a burst of events */
+    private final long suppressionMillis;
 
     /** Counter for trigger events that arrived */
     private int triggers = 0;
@@ -32,15 +32,15 @@ public abstract class GUIUpdateThrottle extends Thread {
     private final Object mutex = new Object();
 
     /**
-     * Initialize
+     * Initialise
      *
-     * @param initial_millis Delay [ms] for the initial update after trigger
-     * @param suppression_millis Delay [ms] for the suppression of a burst of events
+     * @param initialMillis Delay [ms] for the initial update after trigger
+     * @param suppressionMillis Delay [ms] for the suppression of a burst of events
      */
-    public GUIUpdateThrottle(final long initial_millis, final long suppression_millis) {
-        super("GUIUpdateThrottle"); //$NON-NLS-1$
-        this.initial_millis = initial_millis;
-        this.suppression_millis = suppression_millis;
+    public GUIUpdateThrottle(final long initialMillis, final long suppressionMillis) {
+        super("Save Restore GUI Update"); //$NON-NLS-1$
+        this.initialMillis = initialMillis;
+        this.suppressionMillis = suppressionMillis;
         setDaemon(true);
     }
 
@@ -68,14 +68,14 @@ public abstract class GUIUpdateThrottle extends Thread {
                 // Wait a little longer, so in case of a burst, we update
                 // after already receiving more than just the start of the
                 // burst
-                Thread.sleep(initial_millis);
+                Thread.sleep(initialMillis);
                 synchronized (mutex) {
                     triggers = 0;
                 }
                 if (run)
                     fire();
                 // Suppress further updates a little to prevent flicker
-                Thread.sleep(suppression_millis);
+                Thread.sleep(suppressionMillis);
             }
         } catch (InterruptedException ex) {
             SaveRestoreService.LOGGER.log(Level.SEVERE, "GUI Update failed", ex);
@@ -85,7 +85,7 @@ public abstract class GUIUpdateThrottle extends Thread {
     /**
      * To be implemented by derived class: Throttled event notification
      */
-    abstract protected void fire();
+    protected abstract void fire();
 
     /** Tell thread to quit, but don't wait for that to happen */
     public void dispose() {

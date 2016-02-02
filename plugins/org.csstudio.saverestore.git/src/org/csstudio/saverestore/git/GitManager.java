@@ -89,6 +89,7 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
  */
 public class GitManager {
 
+    @FunctionalInterface
     private static interface TriFunction<A, B, C, R> {
         R apply(A a, B b, C c) throws IOException, GitAPIException;
     }
@@ -98,9 +99,11 @@ public class GitManager {
     private static final String PARAM_GIT_REVISION = "gitRevision";
     private static final String PARAM_GIT_TAG_NAME = "gitTagName";
     private static final String PARAM_TAG_CREATOR = "tagCreator";
+    private static final String UNKNOWN = "UNKNOWN";
 
     // the pattern describing all forbidden characters in git tag
-    private static Pattern TAG_PATTERN = Pattern.compile("[\\x00-\\x1F\\x7E-\\xFF()~\\^: /?*\\[\\]@\\\\{\\.{2}]+");
+    private static final Pattern TAG_PATTERN = Pattern
+        .compile("[\\x00-\\x1F\\x7E-\\xFF()~\\^: /?*\\[\\]@\\\\{\\.{2}]+");
 
     private Git git;
     private Repository repository;
@@ -113,6 +116,7 @@ public class GitManager {
      * anything can be done with this manager.
      */
     public GitManager() {
+        // default constructor to allow extensions
     }
 
     /**
@@ -191,8 +195,7 @@ public class GitManager {
         repositoryPath = destinationDirectory;
         dispose();
         if (new File(repositoryPath, ".git").exists()) {
-            Git git = Git.init().setDirectory(repositoryPath).call();
-            this.git = git;
+            this.git = Git.init().setDirectory(repositoryPath).call();
             this.repository = git.getRepository();
             StoredConfig config = this.repository.getConfig();
             String url = config.getString("remote", "origin", "url");
@@ -224,8 +227,7 @@ public class GitManager {
             while (true) {
                 cloneCommand.setCredentialsProvider(toCredentialsProvider(credentials));
                 try {
-                    Git git = cloneCommand.call();
-                    this.git = git;
+                    this.git = cloneCommand.call();
                     this.repository = git.getRepository();
                     break;
                 } catch (TransportException e) {
@@ -323,7 +325,7 @@ public class GitManager {
      */
     public synchronized Result<Boolean> importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel,
         ImportType type) throws GitAPIException, IOException, ParseException {
-        boolean automatic = this.automatic;
+        boolean oldAutomatic = this.automatic;
         setAutomaticSynchronisation(false);
         Credentials cred = getCredentials(Optional.empty());
         Object[] obj = pull(cred);
@@ -342,7 +344,7 @@ public class GitManager {
                 importBeamlineSet(source, toBaseLevel, toBranch, type, cred);
             }
         } finally {
-            setAutomaticSynchronisation(automatic);
+            setAutomaticSynchronisation(oldAutomatic);
         }
         push(cred, true);
         return new Result<>(true, change);
@@ -446,7 +448,7 @@ public class GitManager {
                     for (File bf : setFiles) {
                         String s = bf.getAbsolutePath().substring(length);
                         String[] filePathArray = convertStringToPath(s, baseLevel);
-                        if (filePathArray != null) {
+                        if (filePathArray.length > 0) {
                             BeamlineSet beamlineSet = new BeamlineSet(branch, baseLevel, filePathArray,
                                 GitDataProvider.ID);
                             descriptorList.add(beamlineSet);
@@ -580,7 +582,7 @@ public class GitManager {
                 setBranch(data.getDescriptor().getBranch());
                 String relativePath = convertPathToString(data.getDescriptor(), FileType.BEAMLINE_SET);
                 writeToFile(relativePath, repositoryPath, FileType.BEAMLINE_SET, data);
-                commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null, null));
+                commit(relativePath, new MetaInfo(comment, cp.getUsername(), UNKNOWN, null, null));
                 if (automatic) {
                     push(cp, false);
                 }
@@ -619,7 +621,7 @@ public class GitManager {
                 String relativePath = convertPathToString(set, FileType.BEAMLINE_SET);
                 if (deleteFile(relativePath, repositoryPath)) {
                     deleted = set;
-                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), "UNKNOWN", null, null));
+                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), UNKNOWN, null, null));
                     // delete also the snapshot file
                     relativePath = convertPathToString(set, FileType.SNAPSHOT);
                     deleteFile(relativePath, repositoryPath);
@@ -679,7 +681,7 @@ public class GitManager {
                 String relativePath = convertPathToString(descriptor.getBeamlineSet(), FileType.SNAPSHOT);
                 writeToFile(relativePath, repositoryPath, FileType.SNAPSHOT, snapshot);
                 MetaInfo info = commit(relativePath,
-                    new MetaInfo(comment, user == null ? cp.getUsername() : user, "UNKNOWN", time, null));
+                    new MetaInfo(comment, user == null ? cp.getUsername() : user, UNKNOWN, time, null));
                 if (automatic) {
                     push(cp, false);
                 }
@@ -755,7 +757,7 @@ public class GitManager {
                 if (name != null && !name.isEmpty()) {
                     String gitTagName = composeTagName(snapshot.getBeamlineSet().getBranch(),
                         snapshot.getBeamlineSet().getBaseLevel(), snapshot.getBeamlineSet().getPath(), name);
-                    PersonIdent tagger = new PersonIdent(cp.getUsername(), "UNKNOWN");
+                    PersonIdent tagger = new PersonIdent(cp.getUsername(), UNKNOWN);
                     git.tag().setName(gitTagName).setMessage(message).setTagger(tagger).setObjectId(commit).call();
                     if (automatic) {
                         push(cp, true);
@@ -822,16 +824,16 @@ public class GitManager {
     /**
      * Push the local commits to remote repository.
      *
-     * @param cred credentials provider to use for pushing
+     * @param credentials credentials provider to use for pushing
      * @param pushTags true if tags should be pushed as well or false if tags can be skipped
      * @return credentials that worked
      * @throws GitAPIException if there was an error during push
      */
-    private Credentials push(Credentials cred, boolean pushTags) throws GitAPIException {
+    private Credentials push(Credentials credentials, boolean pushTags) throws GitAPIException {
         if (localOnly) {
             return null;
         }
-
+        Credentials cred = credentials;
         while (true) {
             try {
                 git.push().setCredentialsProvider(toCredentialsProvider(cred)).call();
@@ -876,15 +878,16 @@ public class GitManager {
     /**
      * Pull the changes from remote repository.
      *
-     * @param cred the credentials to use when fetching and pull from remote repository
+     * @param credentials the credentials to use when fetching and pull from remote repository
      * @return an array of size 2: credentials that worked or null if cancelled and a Boolean describing if there were
      *         any changes pulled from the remote repository
      * @throws GitAPIException if there was an error during pull
      */
-    private Object[] pull(Credentials cred) throws GitAPIException {
+    private Object[] pull(Credentials credentials) throws GitAPIException {
         if (localOnly) {
             return new Object[] { null, false };
         }
+        Credentials cred = credentials;
         while (true) {
             try {
                 FetchResult fetch = git.fetch().setCredentialsProvider(toCredentialsProvider(cred))
@@ -951,12 +954,10 @@ public class GitManager {
             : repository.resolve(Constants.HEAD);
         LogCommand log = git.log().add(obj).addPath(filePath);
         if (numberOfsnapshots > 0) {
-            if (fromRevisionBack.isPresent()) {
-                // in case we are not going from the head, increase the number of logs by one, because we
-                // don't need to first revision, which is already the same as fromRevisionBack
-                numberOfsnapshots++;
-            }
-            log.setMaxCount(numberOfsnapshots);
+            // in case we are not going from the head, increase the number of logs by one, because we
+            // don't need to first revision, which is already the same as fromRevisionBack
+            int num = fromRevisionBack.isPresent() ? numberOfsnapshots + 1 : numberOfsnapshots;
+            log.setMaxCount(num);
         }
         Iterable<RevCommit> commits = log.call();
         // in theory diff is not needed here if everybody only used the Save and Restore application on this repository
@@ -1006,8 +1007,7 @@ public class GitManager {
      */
     public synchronized List<Snapshot> findSnapshotsByTag(String partialTagNameOrMessage, Branch branch,
         Optional<Date> start, Optional<Date> end) throws GitAPIException, IOException {
-        partialTagNameOrMessage = partialTagNameOrMessage.toLowerCase(Locale.UK);
-        final Pattern pattern = Pattern.compile(".*" + partialTagNameOrMessage + ".*");
+        final Pattern pattern = Pattern.compile(".*" + partialTagNameOrMessage.toLowerCase(Locale.UK) + ".*");
         return findSnapshotsByTag(branch, start, end, (w, r, n) -> {
             String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase(Locale.UK);
             if (pattern.matcher(tagName).matches()) {
@@ -1034,8 +1034,7 @@ public class GitManager {
      */
     public synchronized List<Snapshot> findSnapshotsByTagMessage(String partialMessage, Branch branch,
         Optional<Date> start, Optional<Date> end) throws GitAPIException, IOException {
-        partialMessage = partialMessage.toLowerCase(Locale.UK);
-        final Pattern pattern = Pattern.compile(".*" + partialMessage + ".*");
+        final Pattern pattern = Pattern.compile(".*" + partialMessage.toLowerCase(Locale.UK) + ".*");
         return findSnapshotsByTag(branch, start, end, (w, r, n) -> {
             RevTag tag = w.parseTag(r.getObjectId());
             String message = tag.getFullMessage().toLowerCase().replace("\n", " ");
@@ -1057,8 +1056,7 @@ public class GitManager {
      */
     public synchronized List<Snapshot> findSnapshotsByTagName(String partialTagName, Branch branch,
         Optional<Date> start, Optional<Date> end) throws GitAPIException, IOException {
-        partialTagName = partialTagName.toLowerCase(Locale.UK);
-        final Pattern pattern = Pattern.compile(".*" + partialTagName + ".*");
+        final Pattern pattern = Pattern.compile(".*" + partialTagName.toLowerCase(Locale.UK) + ".*");
         return findSnapshotsByTag(branch, start, end, (w, r, n) -> {
             String tagName = n.substring(n.indexOf('(') + 1, n.length() - 1).toLowerCase();
             return pattern.matcher(tagName).matches() ? w.parseTag(r.getObjectId()) : null;
@@ -1446,14 +1444,10 @@ public class GitManager {
      * @return generated file content.
      */
     private static String generateContent(Object dataObject, FileType fileType) {
-        if (fileType == FileType.BEAMLINE_SET) {
-            if (dataObject instanceof BeamlineSetData) {
-                return FileUtilities.generateBeamlineSetContent((BeamlineSetData) dataObject);
-            }
-        } else if (fileType == FileType.SNAPSHOT) {
-            if (dataObject instanceof VSnapshot) {
-                return FileUtilities.generateSnapshotFileContent((VSnapshot) dataObject);
-            }
+        if (fileType == FileType.BEAMLINE_SET && dataObject instanceof BeamlineSetData) {
+            return FileUtilities.generateBeamlineSetContent((BeamlineSetData) dataObject);
+        } else if (fileType == FileType.SNAPSHOT && dataObject instanceof VSnapshot) {
+            return FileUtilities.generateSnapshotFileContent((VSnapshot) dataObject);
         }
         throw new IllegalArgumentException(
             "The data '" + dataObject + "' does not match the file type '" + fileType + "'.");
@@ -1470,11 +1464,11 @@ public class GitManager {
      */
     private static String[] convertStringToPath(String path, Optional<BaseLevel> level) {
         if (path != null && !path.isEmpty()) {
-            path = path.replace("\\", GIT_PATH_DELIMITER);
-            String[] pp = path.split(GIT_PATH_DELIMITER);
+            String newPath = path.replace("\\", GIT_PATH_DELIMITER);
+            String[] pp = newPath.split(GIT_PATH_DELIMITER);
             if (level.isPresent()) {
                 if (pp.length < 3)
-                    return null;
+                    return new String[0];
                 if (pp[0].equals(level.get().getStorageName())) {
                     String[] ret = new String[pp.length - 2];
                     System.arraycopy(pp, 2, ret, 0, ret.length);
@@ -1482,14 +1476,14 @@ public class GitManager {
                 }
             } else {
                 if (pp.length < 2)
-                    return null;
+                    return new String[0];
                 String[] ret = new String[pp.length - 1];
                 System.arraycopy(pp, 1, ret, 0, ret.length);
                 return ret;
             }
 
         }
-        return null;
+        return new String[0];
     }
 
     /**

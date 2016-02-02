@@ -102,8 +102,6 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
      */
     @Override
     protected Scene getScene() {
-        BorderPane pane = new BorderPane(createContents());
-        Scene scene = new Scene(pane);
-        return scene;
+        return new Scene(new BorderPane(createContents()));
     }
 }

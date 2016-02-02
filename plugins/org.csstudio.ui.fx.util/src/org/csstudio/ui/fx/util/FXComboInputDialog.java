@@ -105,10 +105,8 @@ public class FXComboInputDialog<T> extends FXBaseDialog<T> {
         combo.setPrefWidth(getInitialSize().x - 25);
         combo.getItems().addAll(values);
         combo.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                if (!okButton.isDisable()) {
-                    buttonPressed(IDialogConstants.OK_ID);
-                }
+            if (e.getCode() == KeyCode.ENTER && !okButton.isDisable()) {
+                buttonPressed(IDialogConstants.OK_ID);
             }
         });
         return new Scene(combo);

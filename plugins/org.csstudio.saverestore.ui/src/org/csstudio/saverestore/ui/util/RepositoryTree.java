@@ -97,7 +97,7 @@ public class RepositoryTree extends TreeView<String> {
             expandedProperty().addListener((a, o, expanded) -> {
                 if (expanded) {
                     List<TreeItem<String>> items = getChildren();
-                    if (items.size() > 0) {
+                    if (!items.isEmpty()) {
                         BrowsingTreeItem child = (BrowsingTreeItem) items.get(0);
                         if (child.type == Type.NOTLOADED) {
                             child.type = Type.LOADING;
@@ -152,7 +152,7 @@ public class RepositoryTree extends TreeView<String> {
         setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY,
-            (e) -> setDisable((Boolean) e.getNewValue()));
+            e -> setDisable((Boolean) e.getNewValue()));
         selector.branchesProperty().addListener((a, o, n) -> branchesLoaded(n));
         selector.baseLevelsProperty().addListener((a, o, n) -> baseLevelsLoaded(n));
         selector.beamlineSetsProperty().addListener((a, o, n) -> beamlineSetsLoaded(n));
@@ -237,12 +237,6 @@ public class RepositoryTree extends TreeView<String> {
                     throw new IllegalStateException(
                         "The repository structure is corrupted. Could not find the branch '" + branch + "'.");
                 }
-                // if (branchItem.getChildren().size() != 1) {
-                // Type type = ((BrowsingTreeItem) branchItem.getChildren().get(0)).type;
-                // if (type == Type.LOADING || type == Type.NOTLOADED) {
-                // return;
-                // }
-                // }
             }
             BrowsingTreeItem item = new BrowsingTreeItem(b);
             item.getChildren().add(new BrowsingTreeItem());
@@ -346,8 +340,8 @@ public class RepositoryTree extends TreeView<String> {
         Branch branch = null;
         BaseLevel baseLevel = null;
         BeamlineSet set = null;
-        TreeItem<String> root = getRoot();
-        while (item != root) {
+        TreeItem<String> theRoot = getRoot();
+        while (item != theRoot) {
             if (item.type == Type.SET) {
                 set = item.set;
             } else if (item.type == Type.FOLDER) {

@@ -31,6 +31,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
      */
     @Override
     public void init(IWorkbench workbench) {
+        // nothing to initialise
     }
 
     /*
@@ -41,9 +42,8 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
     @Override
     protected void createFieldEditors() {
         Composite parent = getFieldEditorParent();
-        IntegerFieldEditor numSnapshots = new IntegerFieldEditor(SaveRestoreService.PREF_NUMBER_OF_SNAPSHOTS,
-            "Number of snapshots loaded at once (all=0)", parent);
-        addField(numSnapshots);
+        addField(new IntegerFieldEditor(SaveRestoreService.PREF_NUMBER_OF_SNAPSHOTS,
+            "Number of snapshots loaded at once (all=0)", parent));
 
     }
 

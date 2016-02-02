@@ -12,9 +12,9 @@ public enum SearchCriterion {
     COMMENT("Snapshot Comment"), TAG_NAME("Snapshot tag name"), TAG_MESSAGE("Snapshot tag message"), USER("User");
 
     /** The human readable name of the search criterion */
-    public final String name;
+    public final String readableName;
 
-    private SearchCriterion(String name) {
-        this.name = name;
+    private SearchCriterion(String readableName) {
+        this.readableName = readableName;
     }
 }

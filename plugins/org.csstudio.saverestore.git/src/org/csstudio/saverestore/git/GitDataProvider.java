@@ -53,13 +53,13 @@ public class GitDataProvider implements DataProvider {
      * @see org.csstudio.saverestore.DataProvider#initialise()
      */
     @Override
-    public void initialise() {
+    public void initialise() throws DataProviderException {
         try {
             URI remote = Activator.getInstance().getGitURI();
             File dest = Activator.getInstance().getDestination();
             grm.initialise(remote, dest);
         } catch (GitAPIException e) {
-            throw new RuntimeException("Could not instantiate git data provider.", e);
+            throw new DataProviderException("Could not instantiate git data provider.", e);
         }
     }
 
@@ -194,7 +194,7 @@ public class GitDataProvider implements DataProvider {
      * @see org.csstudio.saverestore.DataProvider#createNewBranch(org.csstudio.saverestore.Branch, java.lang.String)
      */
     @Override
-    public String createNewBranch(Branch originalBranch, String newBranchName) throws DataProviderException {
+    public Branch createNewBranch(Branch originalBranch, String newBranchName) throws DataProviderException {
         Branch branch = null;
         try {
             branch = grm.createBranch(originalBranch, newBranchName);
@@ -204,7 +204,7 @@ public class GitDataProvider implements DataProvider {
         for (CompletionNotifier n : getNotifiers()) {
             n.branchCreated(branch);
         }
-        return newBranchName;
+        return branch;
     }
 
     /*
@@ -420,7 +420,7 @@ public class GitDataProvider implements DataProvider {
     }
 
     private CompletionNotifier[] getNotifiers() {
-        CompletionNotifier[] nots = null;
+        CompletionNotifier[] nots;
         synchronized (notifiers) {
             nots = notifiers.toArray(new CompletionNotifier[notifiers.size()]);
         }

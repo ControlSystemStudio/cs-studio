@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,7 +82,7 @@ public class SnapshotViewerController {
     /** Multiple snapshots (what you see) file extension */
     public static final String FEXT_CSV = ".csv";
 
-    private static final Executor UI_EXECUTOR = command -> Platform.runLater(command);
+    private static final Executor UI_EXECUTOR = Platform::runLater;
 
     private static final String EMPTY_STRING = "";
 
@@ -140,7 +141,7 @@ public class SnapshotViewerController {
 
     private BooleanProperty snapshotSaveableProperty = new SimpleBooleanProperty(false);
     private BooleanProperty snapshotRestorableProperty = new SimpleBooleanProperty(false);
-    private ObjectProperty<VSnapshot> baseSnapshotProperty = new SimpleObjectProperty<VSnapshot>(null);
+    private ObjectProperty<VSnapshot> baseSnapshotProperty = new SimpleObjectProperty<>(null);
 
     private final List<VSnapshot> snapshots = new ArrayList<>(10);
     private final Map<String, TableEntry> items = new LinkedHashMap<>();
@@ -220,7 +221,7 @@ public class SnapshotViewerController {
     }
 
     private void connectPVs() {
-        items.values().forEach((e) -> {
+        items.values().forEach(e -> {
             PV pv = pvs.get(e);
             if (pv == null) {
                 pv = pvsForDisposal.remove(e.pvNameProperty().get());
@@ -374,6 +375,7 @@ public class SnapshotViewerController {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     private void updateThresholds() {
         Optional<ParametersProvider> provider = ExtensionPointLoader.getInstance().getParametersProvider();
         if (provider.isPresent()) {
@@ -383,15 +385,15 @@ public class SnapshotViewerController {
                 pvNames.add(i.pvNameProperty().get());
                 values.add(i.valueProperty().get().value);
             });
-            Map<String, Threshold<?>> thresholds = provider.get().getThresholds(pvNames, values,
+            Map<String, Threshold> thresholds = provider.get().getThresholds(pvNames, values,
                 getSnapshot(0).getBeamlineSet().getBaseLevel());
             items.forEach((k, v) -> v.setThreshold(Optional.ofNullable(thresholds.get(k))));
         } else {
-            final Map<String, Threshold<?>> thresholds = new HashMap<>(items.size());
+            final Map<String, Threshold> thresholds = new HashMap<>(items.size());
             items.values().forEach(i -> {
                 String pv = i.pvNameProperty().get();
                 for (VSnapshot s : getAllSnapshots()) {
-                    Threshold<?> d = s.getThreshold(pv);
+                    Threshold d = s.getThreshold(pv);
                     if (d != null) {
                         thresholds.put(pv, d);
                         break;
@@ -465,7 +467,7 @@ public class SnapshotViewerController {
         }
         List<VSnapshot> newSnapshots = supplier.get();
         dispose(false);
-        newSnapshots.forEach(e -> addSnapshot(e));
+        newSnapshots.forEach(this::addSnapshot);
         pvsForDisposal.values().forEach(p -> p.dispose());
         pvsForDisposal.clear();
         return filter(items.values(), filter);
@@ -547,8 +549,7 @@ public class SnapshotViewerController {
         suspend();
         try {
             BeamlineSet set = getSnapshot(0).getBeamlineSet();
-            DataProviderWrapper provider = SaveRestoreService.getInstance()
-                .getDataProvider(set.getDataProviderId());
+            DataProviderWrapper provider = SaveRestoreService.getInstance().getDataProvider(set.getDataProviderId());
             VSnapshot taken = null;
             if (provider.provider.isTakingSnapshotsSupported()) {
                 try {
@@ -557,7 +558,7 @@ public class SnapshotViewerController {
                     SaveRestoreService.LOGGER.log(Level.SEVERE, "The provider " + provider.name
                         + " claims that it can take snapshots, but does not implement the action.", e);
                 } catch (DataProviderException e) {
-                    //notify the user about the exception and continue taking the snapshot normally
+                    // notify the user about the exception and continue taking the snapshot normally
                     ActionManager.reportException(e, owner.getSite().getShell());
                 }
             }
@@ -628,7 +629,7 @@ public class SnapshotViewerController {
      * @param markAsSaved true if the snapshot should be marked as saved when completed or false if left intact
      */
     public void exportSingleSnapshotToFile(VSnapshot snapshot, File file, boolean markAsSaved) {
-        try (PrintWriter pw = new PrintWriter(file, "UTF-8")) {
+        try (PrintWriter pw = new PrintWriter(file, StandardCharsets.UTF_8.name())) {
             String contents = FileUtilities.generateSnapshotFileContent(snapshot);
             pw.println(contents);
             if (markAsSaved) {
@@ -652,9 +653,9 @@ public class SnapshotViewerController {
         suspend();
         List<VSnapshot> snaps = new ArrayList<>();
         synchronized (snapshots) {
-            snaps.addAll(snaps);
+            snaps.addAll(snapshots);
         }
-        try (PrintWriter pw = new PrintWriter(file, "UTF-8")) {
+        try (PrintWriter pw = new PrintWriter(file, StandardCharsets.UTF_8.name())) {
             StringBuilder header = new StringBuilder(200);
             header.append("Setpoint PV,");
             header.append(Utilities.timestampToBigEndianString(snaps.get(0).getTimestamp().toDate(), true)).append(',');
@@ -720,7 +721,7 @@ public class SnapshotViewerController {
                 file.create(null, true, null);
             }
             String contents = FileUtilities.generateSnapshotFileContent(snapshot);
-            InputStream stream = new ByteArrayInputStream(contents.getBytes("UTF-8"));
+            InputStream stream = new ByteArrayInputStream(contents.getBytes(StandardCharsets.UTF_8.name()));
             file.setContents(stream, IFile.FORCE, new NullProgressMonitor());
             if (markAsSaved) {
                 snapshot.markNotDirty();
@@ -926,7 +927,7 @@ public class SnapshotViewerController {
      */
     public void importValues(final ValueImporterWrapper importer, final Consumer<VSnapshot> consumer) {
         List<String> names = new ArrayList<>(items.keySet());
-        if (names.size() == 0) {
+        if (names.isEmpty()) {
             return;
         }
         try {
@@ -938,8 +939,8 @@ public class SnapshotViewerController {
             if (values != null && !values.isEmpty()) {
                 BeamlineSet bs = new BeamlineSet(null, Optional.empty(), new String[] { importer.name }, importer.name);
                 Snapshot desc = new Snapshot(bs, timestamp.toDate(), "Imported from " + importer.name, importer.name);
-                final List<VType> vals = names.stream().map(e -> values.get(e))
-                    .map(v -> v == null ? VNoData.INSTANCE : v).collect(Collectors.toList());
+                final List<VType> vals = names.stream().map(values::get).map(v -> v == null ? VNoData.INSTANCE : v)
+                    .collect(Collectors.toList());
                 final VSnapshot snapshot = new VSnapshot(desc, names, vals, timestamp, importer.name);
                 Platform.runLater(() -> consumer.accept(snapshot));
             }

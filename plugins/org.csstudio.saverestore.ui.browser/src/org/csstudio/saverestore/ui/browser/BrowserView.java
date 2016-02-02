@@ -366,7 +366,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         });
 
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
-            (e) -> setUpSetButtons(newButton, importButton, (DataProviderWrapper) e.getNewValue()));
+            e -> setUpSetButtons(newButton, importButton, (DataProviderWrapper) e.getNewValue()));
         setUpSetButtons(newButton, importButton, SaveRestoreService.getInstance().getSelectedDataProvider());
 
         setUpTitlePaneNode(titleText, true);
@@ -463,10 +463,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
 
         snapshotsList.setOnMouseClicked(e -> {
             Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
-            if (e.getClickCount() == 2) {
-                if (snapshot != null) {
-                    actionManager.openSnapshot(snapshot);
-                }
+            if (e.getClickCount() == 2 && snapshot != null) {
+                actionManager.openSnapshot(snapshot);
             }
         });
         snapshotsList.selectionModelProperty().get().selectedItemProperty().addListener((a, o, n) -> {
@@ -717,6 +715,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
      */
     @Override
     protected void setFxFocus() {
+        // no focus
     }
 
     /*
@@ -748,6 +747,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
      */
     @Override
     public void setSelection(ISelection selection) {
+        // nothing to select
     }
 
     /*

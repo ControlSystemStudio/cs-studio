@@ -318,7 +318,8 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @param pvName the name of the pv for which the threshold is requested
      * @return the threshold for this pv
      */
-    public Threshold<?> getThreshold(String pvName) {
+    @SuppressWarnings("rawtypes")
+    public Threshold getThreshold(String pvName) {
         String delta = getDelta(pvName);
         if (delta == null || delta.isEmpty()) {
             return null;
@@ -504,61 +505,10 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     public VTable toVTable() {
         List<Class<?>> classes = Arrays.asList(String.class, Boolean.class, VType.class, String.class, VType.class,
             String.class);
-        List<Object> values = Arrays.asList(getNames(), getSelected(), getValues(), getReadbackNames(),
+        List<Object> tableValues = Arrays.asList(getNames(), getSelected(), getValues(), getReadbackNames(),
             getReadbackValues(), getDeltas());
         List<String> columns = Arrays.asList(FileUtilities.H_PV_NAME, FileUtilities.H_SELECTED, FileUtilities.H_VALUE,
             FileUtilities.H_READBACK, FileUtilities.H_READBACK_VALUE, FileUtilities.H_DELTA);
-        return ValueFactory.newVTable(classes, columns, values);
+        return ValueFactory.newVTable(classes, columns, tableValues);
     }
-
-    // private void writeObject(ObjectOutputStream out) throws IOException {
-    // if (snapshot == null) {
-    // out.writeObject("No Snapshot");
-    // } else {
-    // out.writeObject(snapshot);
-    // }
-    // if (snapshotTime == null) {
-    // out.writeLong(Long.valueOf(-1));
-    // out.writeInt(Integer.valueOf(-1));
-    // } else {
-    // out.writeLong(snapshotTime.getSec());
-    // out.writeInt(snapshotTime.getNanoSec());
-    // }
-    // out.writeObject(beamlineSet);
-    // out.writeObject(names);
-    // out.writeObject(selected);
-    // if (forcedName == null) {
-    // out.writeUTF("No Name");
-    // } else {
-    // out.writeUTF(forcedName);
-    // }
-    // out.writeBoolean(dirty);
-    // }
-    //
-    // @SuppressWarnings("unchecked")
-    // private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-    // Object obj = in.readObject();
-    // if (obj instanceof String && "No Snapshot".equals((String) obj)) {
-    // this.snapshot = null;
-    // }
-    // long secs = in.readLong();
-    // int nano = in.readInt();
-    // if (secs == -1 && nano == -1) {
-    // this.snapshotTime = null;
-    // } else {
-    // this.snapshotTime = Timestamp.of(secs, nano);
-    // }
-    // this.beamlineSet = (BeamlineSet) in.readObject();
-    // this.names = (List<String>) in.readObject();
-    // this.selected = (List<Boolean>) in.readObject();
-    // String name = in.readUTF();
-    // if ("No Name".equals(name)) {
-    // this.forcedName = null;
-    // } else {
-    // this.forcedName = name;
-    // }
-    // this.dirty = in.readBoolean();
-    // this.values = new ArrayList<>(this.names.size());
-    // this.names.forEach(e -> this.values.add(VNoData.INSTANCE));
-    // }
 }

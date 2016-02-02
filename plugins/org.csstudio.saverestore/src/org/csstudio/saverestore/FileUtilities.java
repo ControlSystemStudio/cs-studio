@@ -51,12 +51,6 @@ import org.diirt.vtype.ValueFactory;
  */
 public final class FileUtilities {
 
-    /**
-     * Private constructor to prevent instantiation of this class.
-     */
-    private FileUtilities() {
-    }
-
     // the date tag for the snapshot files
     private static final String DATE_TAG = "Date:";
     // the description tag for the beamline set files
@@ -90,6 +84,12 @@ public final class FileUtilities {
         .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
 
     /**
+     * Private constructor to prevent instantiation of this class.
+     */
+    private FileUtilities() {
+    }
+
+    /**
      * Read the contents of the snapshot file from the given input stream.
      *
      * @param stream the source of data
@@ -106,7 +106,7 @@ public final class FileUtilities {
         List<String> readbacks = new ArrayList<>();
         List<VType> readbackData = new ArrayList<>();
         List<String> deltas = new ArrayList<>();
-        String line = null;
+        String line;
         String[] header = null;
         Map<String, Integer> headerMap = new HashMap<>();
         while ((line = reader.readLine()) != null) {
@@ -158,7 +158,7 @@ public final class FileUtilities {
                 boolean s = true;
                 try {
                     s = Integer.parseInt(sel) != 0;
-                } catch (Exception e) {
+                } catch (NumberFormatException e) {
                     // ignore
                 }
                 selected.add(s);
@@ -177,12 +177,10 @@ public final class FileUtilities {
      * @param value the value to trim
      * @return trimmed value
      */
-    private static String trim(String value) {
-        value = value.trim();
-        if (!value.isEmpty()) {
-            if (value.charAt(0) == '"') {
-                value = value.substring(1, value.length() - 1).trim();
-            }
+    private static String trim(String valueToTrim) {
+        String value = valueToTrim.trim();
+        if (!value.isEmpty() && value.charAt(0) == '"') {
+            value = value.substring(1, value.length() - 1).trim();
         }
         return value;
     }
@@ -219,10 +217,10 @@ public final class FileUtilities {
                 valueAndLabels[1] = valueAndLabels[1].substring(1, valueAndLabels[1].length() - 1);
             }
         }
-        value = valueAndLabels[0];
+        String theValue = valueAndLabels[0];
         switch (vtype) {
             case DOUBLE_ARRAY:
-                String[] sd = value.split(ARRAY_SPLITTER);
+                String[] sd = theValue.split(ARRAY_SPLITTER);
                 double[] dd = new double[sd.length];
                 for (int i = 0; i < sd.length; i++) {
                     dd[i] = Double.parseDouble(sd[i]);
@@ -230,7 +228,7 @@ public final class FileUtilities {
                 ListDouble datad = new ArrayDouble(dd);
                 return ValueFactory.newVDoubleArray(datad, alarm, time, display);
             case FLOAT_ARRAY:
-                String[] sf = value.split(ARRAY_SPLITTER);
+                String[] sf = theValue.split(ARRAY_SPLITTER);
                 float[] df = new float[sf.length];
                 for (int i = 0; i < sf.length; i++) {
                     df[i] = Float.parseFloat(sf[i]);
@@ -238,7 +236,7 @@ public final class FileUtilities {
                 ListFloat dataf = new ArrayFloat(df);
                 return ValueFactory.newVFloatArray(dataf, alarm, time, display);
             case LONG_ARRAY:
-                String[] sl = value.split(ARRAY_SPLITTER);
+                String[] sl = theValue.split(ARRAY_SPLITTER);
                 long[] dl = new long[sl.length];
                 for (int i = 0; i < sl.length; i++) {
                     dl[i] = Long.parseLong(sl[i]);
@@ -246,7 +244,7 @@ public final class FileUtilities {
                 ListLong datal = new ArrayLong(dl);
                 return ValueFactory.newVLongArray(datal, alarm, time, display);
             case INT_ARRAY:
-                String[] si = value.split(ARRAY_SPLITTER);
+                String[] si = theValue.split(ARRAY_SPLITTER);
                 int[] di = new int[si.length];
                 for (int i = 0; i < si.length; i++) {
                     di[i] = Integer.parseInt(si[i]);
@@ -254,7 +252,7 @@ public final class FileUtilities {
                 ListInt datai = new ArrayInt(di);
                 return ValueFactory.newVIntArray(datai, alarm, time, display);
             case SHORT_ARRAY:
-                String[] ss = value.split(ARRAY_SPLITTER);
+                String[] ss = theValue.split(ARRAY_SPLITTER);
                 short[] ds = new short[ss.length];
                 for (int i = 0; i < ss.length; i++) {
                     ds[i] = Short.parseShort(ss[i]);
@@ -262,7 +260,7 @@ public final class FileUtilities {
                 ListShort datas = new ArrayShort(ds);
                 return ValueFactory.newVShortArray(datas, alarm, time, display);
             case BYTE_ARRAY:
-                String[] sb = value.split(ARRAY_SPLITTER);
+                String[] sb = theValue.split(ARRAY_SPLITTER);
                 byte[] db = new byte[sb.length];
                 for (int i = 0; i < sb.length; i++) {
                     db[i] = Byte.parseByte(sb[i]);
@@ -270,7 +268,7 @@ public final class FileUtilities {
                 ListByte datab = new ArrayByte(db);
                 return ValueFactory.newVNumberArray(datab, alarm, time, display);
             case ENUM_ARRAY:
-                String[] se = value.split(ARRAY_SPLITTER);
+                String[] se = theValue.split(ARRAY_SPLITTER);
                 List<String> labels = Arrays.asList(valueAndLabels[1].split(ARRAY_SPLITTER));
                 int[] de = new int[se.length];
                 for (int i = 0; i < se.length; i++) {
@@ -279,10 +277,10 @@ public final class FileUtilities {
                 ListInt datae = new ArrayInt(de);
                 return ValueFactory.newVEnumArray(datae, labels, alarm, time);
             case STRING_ARRAY:
-                String[] str = value.split(ARRAY_SPLITTER);
+                String[] str = theValue.split(ARRAY_SPLITTER);
                 return ValueFactory.newVStringArray(Arrays.asList(str), alarm, time);
             case BOOLEAN_ARRAY:
-                String[] sbo = value.split(ARRAY_SPLITTER);
+                String[] sbo = theValue.split(ARRAY_SPLITTER);
                 boolean[] dbo = new boolean[sbo.length];
                 for (int i = 0; i < sbo.length; i++) {
                     dbo[i] = Boolean.parseBoolean(sbo[i]);
@@ -290,7 +288,7 @@ public final class FileUtilities {
                 ListBoolean databo = new ArrayBoolean(dbo);
                 return ValueFactory.newVBooleanArray(databo, alarm, time);
             case NUMBER_ARRAY:
-                String[] nd = value.split(ARRAY_SPLITTER);
+                String[] nd = theValue.split(ARRAY_SPLITTER);
                 double[] ndd = new double[nd.length];
                 for (int i = 0; i < nd.length; i++) {
                     ndd[i] = Double.parseDouble(nd[i]);
@@ -299,24 +297,24 @@ public final class FileUtilities {
                 return ValueFactory.newVDoubleArray(datand, alarm, time, display);
             case DOUBLE:
             case NUMBER:
-                return ValueFactory.newVDouble(Double.parseDouble(value), alarm, time, display);
+                return ValueFactory.newVDouble(Double.parseDouble(theValue), alarm, time, display);
             case FLOAT:
-                return ValueFactory.newVFloat(Float.parseFloat(value), alarm, time, display);
+                return ValueFactory.newVFloat(Float.parseFloat(theValue), alarm, time, display);
             case LONG:
-                return ValueFactory.newVLong(Long.parseLong(value), alarm, time, display);
+                return ValueFactory.newVLong(Long.parseLong(theValue), alarm, time, display);
             case INT:
-                return ValueFactory.newVInt(Integer.parseInt(value), alarm, time, display);
+                return ValueFactory.newVInt(Integer.parseInt(theValue), alarm, time, display);
             case SHORT:
-                return ValueFactory.newVShort(Short.parseShort(value), alarm, time, display);
+                return ValueFactory.newVShort(Short.parseShort(theValue), alarm, time, display);
             case BYTE:
-                return ValueFactory.newVByte(Byte.parseByte(value), alarm, time, display);
+                return ValueFactory.newVByte(Byte.parseByte(theValue), alarm, time, display);
             case BOOLEAN:
-                return ValueFactory.newVBoolean(Boolean.parseBoolean(value), alarm, time);
+                return ValueFactory.newVBoolean(Boolean.parseBoolean(theValue), alarm, time);
             case STRING:
-                return ValueFactory.newVString(value, alarm, time);
+                return ValueFactory.newVString(theValue, alarm, time);
             case ENUM:
                 List<String> lbls = Arrays.asList(valueAndLabels[1]);
-                return ValueFactory.newVEnum(lbls.indexOf(value), lbls, alarm, time);
+                return ValueFactory.newVEnum(lbls.indexOf(theValue), lbls, alarm, time);
             case NODATA:
                 return VNoData.INSTANCE;
         }
@@ -334,7 +332,7 @@ public final class FileUtilities {
     private static String vtypeToStringType(VType type) {
         for (ValueType t : ValueType.values()) {
             if (t.instanceOf(type)) {
-                return t.name;
+                return t.typeName;
             }
         }
         throw new IllegalArgumentException("Unknown data type " + type.getClass() + ".");
@@ -428,7 +426,7 @@ public final class FileUtilities {
         List<String> deltas = new ArrayList<>();
         BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8));
         boolean isDescriptionLine = false;
-        String line = null;
+        String line;
         String[] header = null;
         int namesIndex = -1;
         int readbackIndex = -1;
@@ -444,10 +442,8 @@ public final class FileUtilities {
                 }
                 if (isDescriptionLine) {
                     description.append(line).append('\n');
-                } else {
-                    if (line.contains(DESCRIPTION_TAG)) {
-                        isDescriptionLine = true;
-                    }
+                } else if (line.contains(DESCRIPTION_TAG)) {
+                    isDescriptionLine = true;
                 }
             } else if (header == null) {
                 isDescriptionLine = false;

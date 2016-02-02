@@ -91,13 +91,9 @@ public final class Utilities {
         }
     }
 
-    /**
-     * Private constructor to prevent instantiation of this class.
-     */
-    private Utilities() {
-    }
-
+    /** The character code for the greek delta letter */
     public static final char DELTA_CHAR = '\u0394';
+    // All formats use thread locals, to avoid problems if any of the static methods is invoked concurrently
     private static final ThreadLocal<ValueFormat> FORMAT = ThreadLocal.withInitial(() -> {
         ValueFormat vf = new SimpleValueFormat(3);
         vf.setNumberFormat(NumberFormats.toStringFormat());
@@ -111,6 +107,12 @@ public final class Utilities {
         .withInitial(() -> new SimpleDateFormat("MMM dd HH:mm:ss"));
     private static final ThreadLocal<DateFormat> SBE_TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy MMM dd HH:mm:ss"));
+
+    /**
+     * Private constructor to prevent instantiation of this class.
+     */
+    private Utilities() {
+    }
 
     /**
      * Transform the string <code>data</code> to a {@link VType} which is of identical type as the parameter
@@ -360,7 +362,7 @@ public final class Utilities {
      * @param type the data to transform
      * @return string representation of the data
      */
-    public synchronized static String valueToString(VType type) {
+    public static String valueToString(VType type) {
         if (type == null) {
             return null;
         }
@@ -397,8 +399,7 @@ public final class Utilities {
      *         the comparison result
      */
     @SuppressWarnings("unchecked")
-    public synchronized static VTypeComparison valueToCompareString(VType value, VType baseValue,
-        Optional<Threshold<?>> threshold) {
+    public static VTypeComparison valueToCompareString(VType value, VType baseValue, Optional<Threshold<?>> threshold) {
         if (value == null && baseValue == null) {
             return new VTypeComparison("---", 0, true);
         } else if (value == null || baseValue == null) {

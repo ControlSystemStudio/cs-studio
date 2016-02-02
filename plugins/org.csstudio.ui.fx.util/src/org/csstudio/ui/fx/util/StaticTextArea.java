@@ -26,5 +26,6 @@ public class StaticTextArea extends TextArea {
      */
     @Override
     public void requestFocus() {
+        // ignore focus
     }
 }

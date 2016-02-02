@@ -31,8 +31,9 @@ import org.eclipse.ui.PlatformUI;
  */
 public final class CredentialUtilities {
 
-    public static final String PREF_USERNAME = "username";
-    public static final String PREF_PASSWORD = "password";
+    private static final String PREF_USERNAME = "username";
+    private static final String PREF_PASSWORD = "password";
+    private static final String SYSTEM_PROPERTY_USER_NAME = "user.name";
 
     private CredentialUtilities() {
     }
@@ -58,7 +59,7 @@ public final class CredentialUtilities {
                 remember = previous.get().isRemember();
             } else {
                 username = getUsername(Optional.empty());
-                password = getPassword(Optional.empty(), username);
+                password = getPassword(Optional.empty(), username).orElse(null);
             }
             if (username == null || password == null || previous.isPresent()) {
                 new UsernameAndPasswordDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), username,
@@ -94,7 +95,7 @@ public final class CredentialUtilities {
      * @return the username if it exists, or null otherwise
      */
     public static String getUsername(Optional<String> forUser) {
-        String user = forUser.orElse(System.getProperty("user.name"));
+        String user = forUser.orElse(System.getProperty(SYSTEM_PROPERTY_USER_NAME));
         try {
             return SecurePreferences.getSecurePreferences().node(Activator.ID).node(user).get(PREF_USERNAME, null);
         } catch (StorageException | IOException e) {
@@ -109,25 +110,25 @@ public final class CredentialUtilities {
      *
      * @param forUser the user for whom the password is being retrieved
      * @param username the matching username to go with the password
-     * @return the password as a character array
+     * @return the password as a character array or empty object if password could not be loaded
      */
-    public static char[] getPassword(Optional<String> forUser, String username) {
+    public static Optional<char[]> getPassword(Optional<String> forUser, String username) {
         if (username == null) {
-            return null;
+            return Optional.empty();
         }
-        String user = forUser.orElse(System.getProperty("user.name"));
+        String user = forUser.orElse(System.getProperty(SYSTEM_PROPERTY_USER_NAME));
         try {
             byte[] val = SecurePreferences.getSecurePreferences().node(Activator.ID).node(user).node(username)
                 .getByteArray(PREF_PASSWORD, null);
             if (val == null) {
-                return null;
+                return Optional.empty();
             }
             CharBuffer buffer = Charset.forName("UTF-8").newDecoder().decode(ByteBuffer.wrap(val));
-            return Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit());
+            return Optional.of(Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit()));
         } catch (StorageException | IOException e) {
             SaveRestoreService.LOGGER.log(Level.WARNING,
                 "Could not read the password for '" + forUser + "' from secured storage.", e);
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -139,7 +140,7 @@ public final class CredentialUtilities {
      * @param password the password to store
      */
     public static void storeCredentials(Optional<String> forUser, String username, char[] password) {
-        String user = forUser.orElse(System.getProperty("user.name"));
+        String user = forUser.orElse(System.getProperty(SYSTEM_PROPERTY_USER_NAME));
         try {
             ISecurePreferences prefs = SecurePreferences.getSecurePreferences().node(Activator.ID).node(user);
             if (username == null) {
