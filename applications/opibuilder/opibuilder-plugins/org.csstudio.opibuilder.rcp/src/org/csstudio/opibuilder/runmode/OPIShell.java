@@ -436,20 +436,24 @@ public final class OPIShell implements IOPIRuntime {
     }
 
     /**
-     * Render a new OPI in the same shell.  The file path
-     * changes but the macros remain the same.  Is this correct?
+     * Render a new OPI in the same shell.
      */
     @Override
     public void setOPIInput(IEditorInput input) throws PartInitException {
         try {
+            // The old OPIShell needs to be removed from the cache and the new one
+            // added afterwards, because they don't evaluate as equal.
+            openShells.remove(this);
             if (input instanceof IFileEditorInput) {
                 this.path = ((IFileEditorInput) input).getFile().getFullPath();
             } else if (input instanceof RunnerInput) {
                 this.path = ((RunnerInput) input).getPath();
+                this.macrosInput = ((RunnerInput) input).getMacrosInput();
             }
             displayModel = createDisplayModel();
             setTitle();
             resizeToContents();
+            openShells.add(this);
         } catch (Exception e) {
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to replace OPIShell contents.", e);
         }
