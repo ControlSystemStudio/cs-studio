@@ -288,7 +288,7 @@ public final class Utilities {
             if (list.size() == 0) {
                 sb.append(']');
             } else {
-                sb.setCharAt(list.size() - 1, ']');
+                sb.setCharAt(sb.length() - 1, ']');
             }
             return sb.toString();
         } else if (type instanceof VEnumArray) {

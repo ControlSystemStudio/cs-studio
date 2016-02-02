@@ -128,27 +128,27 @@ public final class FileUtilities {
                     throw new IOException("The Snapshot content is invalid. No CSV header is defined.");
                 }
                 // there are no fields in here that may contain a comma
-                String[] split = line.split("\\,");
+                String[] split = line.split("\\,", headerMap.size());
                 Integer idx = headerMap.get(H_PV_NAME);
                 String name = idx == null ? null : trim(split[idx]);
                 idx = headerMap.get(H_SELECTED);
-                String sel = idx == null ? null : trim(split[headerMap.get(H_SELECTED)]);
+                String sel = idx == null ? null : trim(split[idx]);
                 idx = headerMap.get(H_TIMESTAMP);
-                String timestamp = idx == null ? null : trim(split[headerMap.get(H_TIMESTAMP)]);
+                String timestamp = idx == null ? null : trim(split[idx]);
                 idx = headerMap.get(H_STATUS);
-                String status = idx == null ? "" : trim(split[headerMap.get(H_STATUS)]);
+                String status = idx == null ? "" : trim(split[idx]);
                 idx = headerMap.get(H_SEVERITY);
-                String severity = idx == null ? "" : trim(split[headerMap.get(H_SEVERITY)]);
+                String severity = idx == null ? "" : trim(split[idx]);
                 idx = headerMap.get(H_VALUE_TYPE);
-                String valueType = idx == null ? null : trim(split[headerMap.get(H_VALUE_TYPE)]);
+                String valueType = idx == null ? null : trim(split[idx]);
                 idx = headerMap.get(H_VALUE);
-                String value = idx == null ? null : trim(split[headerMap.get(H_VALUE)]);
+                String value = idx == null ? null : trim(split[idx]);
                 idx = headerMap.get(H_READBACK);
-                String readback = idx == null ? "" : trim(split[headerMap.get(H_READBACK)]);
+                String readback = idx == null ? "" : trim(split[idx]);
                 idx = headerMap.get(H_READBACK_VALUE);
-                String readbackValue = idx == null ? null : trim(split[headerMap.get(H_READBACK_VALUE)]);
+                String readbackValue = idx == null ? null : trim(split[idx]);
                 idx = headerMap.get(H_DELTA);
-                String delta = idx == null ? "" : trim(split[headerMap.get(H_DELTA)]);
+                String delta = idx == null ? "" : trim(split[idx]);
 
                 data.add(piecesToVType(timestamp, status, severity, value, valueType));
                 readbacks.add(readback);
@@ -313,7 +313,7 @@ public final class FileUtilities {
             case STRING:
                 return ValueFactory.newVString(theValue, alarm, time);
             case ENUM:
-                List<String> lbls = Arrays.asList(valueAndLabels[1]);
+                List<String> lbls = Arrays.asList(valueAndLabels[1].split("\\;"));
                 return ValueFactory.newVEnum(lbls.indexOf(theValue), lbls, alarm, time);
             case NODATA:
                 return VNoData.INSTANCE;

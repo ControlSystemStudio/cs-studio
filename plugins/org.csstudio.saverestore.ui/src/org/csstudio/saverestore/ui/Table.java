@@ -15,12 +15,16 @@ import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.Utilities.VTypeComparison;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
+import org.csstudio.saverestore.ui.util.MultitypeTableCell;
+import org.csstudio.saverestore.ui.util.VTypeNamePair;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.csstudio.ui.fx.util.FXUtilities;
 import org.csstudio.ui.fx.util.UnfocusableCheckBox;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.AlarmSeverity;
+import org.diirt.vtype.VEnum;
 import org.diirt.vtype.VType;
+import org.diirt.vtype.ValueFactory;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -42,7 +46,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -103,7 +106,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
      *
      * @param <T> {@link VType} or {@link VTypePair}
      */
-    private static class VTypeCellEditor<T> extends TextFieldTableCell<TableEntry, T> {
+    private static class VTypeCellEditor<T> extends MultitypeTableCell<TableEntry, T> {
         private static final Image WARNING_IMAGE = new Image(
             SnapshotViewerEditor.class.getResourceAsStream("/icons/hprio_tsk.png"));
 
@@ -145,6 +148,40 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             setTooltip(new Tooltip());
         }
 
+        @SuppressWarnings("unchecked")
+        @Override
+        public boolean isTextFieldType() {
+            T item = getItem();
+            if (item instanceof VEnum) {
+                if (getItems().isEmpty()) {
+                    VEnum value = (VEnum) item;
+                    List<String> labels = value.getLabels();
+                    List<T> values = new ArrayList<>(labels.size());
+                    for (int i = 0; i < labels.size(); i++) {
+                        values.add((T)ValueFactory.newVEnum(i, labels, value, value));
+                    }
+                    setItems(values);
+                }
+                return false;
+            } else if (item instanceof VTypePair) {
+                VTypePair v = ((VTypePair)item);
+                VType type = v.value;
+                if (type instanceof VEnum) {
+                    if (getItems().isEmpty()) {
+                        VEnum value = (VEnum)type;
+                        List<String> labels = value.getLabels();
+                        List<T> values = new ArrayList<>(labels.size());
+                        for (int i = 0; i < labels.size(); i++) {
+                            values.add((T)new VTypePair(v.base,ValueFactory.newVEnum(i, labels, value, value),v.threshold));
+                        }
+                        setItems(values);
+                    }
+                    return false;
+                }
+            }
+            return true;
+        }
+
         @Override
         public void cancelEdit() {
             super.cancelEdit();
@@ -183,7 +220,6 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                     }
                     getTooltip().setText(item.toString());
                 }
-
             }
         }
     }
@@ -239,6 +275,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     private CheckBox selectAllCheckBox;
 
     private int clickedColumn = -1;
+    private int clickedRow = -1;
     private List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
 
     /**
@@ -260,6 +297,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         setOnMouseClicked(e -> {
             if (getSelectionModel().getSelectedCells() != null && !getSelectionModel().getSelectedCells().isEmpty()) {
                 clickedColumn = getSelectionModel().getSelectedCells().get(0).getColumn();
+                clickedRow = getSelectionModel().getSelectedCells().get(0).getRow();
                 final SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
                 selectionChangedListener.forEach(l -> l.selectionChanged(event));
             }
@@ -628,5 +666,31 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     @Override
     public void setSelection(ISelection selection) {
         // selecting action not supported
+    }
+
+    /**
+     * Returns the most recently clicked (selected) item in the table.
+     *
+     * @return the item clicked in the table
+     */
+    VTypeNamePair getClickedItem() {
+        if (clickedRow < 0) {
+            return null;
+        }
+        int col;
+        int numSnapshots = controller.getNumberOfSnapshots();
+        if (numSnapshots == 1 || clickedColumn < 0) {
+            col = 0;
+        } else if (clickedColumn - 3 < numSnapshots) {
+            col = clickedColumn - 3;
+        } else {
+            col = numSnapshots - 1;
+        }
+        TableEntry entry = getItems().get(clickedRow);
+        if (col == 0) {
+            return new VTypeNamePair(entry.valueProperty().get().value, entry.pvNameProperty().get());
+        } else {
+            return new VTypeNamePair(entry.compareValueProperty(col).get().value, entry.pvNameProperty().get());
+        }
     }
 }

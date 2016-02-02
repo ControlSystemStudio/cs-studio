@@ -18,6 +18,7 @@ import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
+import org.csstudio.saverestore.ui.util.VTypeNamePair;
 import org.csstudio.ui.fx.util.FXComboInputDialog;
 import org.csstudio.ui.fx.util.FXEditorPart;
 import org.csstudio.ui.fx.util.FXMessageDialog;
@@ -29,11 +30,13 @@ import org.csstudio.ui.fx.util.StaticTextArea;
 import org.csstudio.ui.fx.util.StaticTextField;
 import org.csstudio.ui.fx.util.UnfocusableButton;
 import org.csstudio.ui.fx.util.UnfocusableToggleButton;
+import org.diirt.vtype.VNumberArray;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -119,6 +122,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
     private Button saveSnapshotButton;
     private FadeTransition animation;
     private Menu contextMenu;
+    private Action openChartAction;
 
     /**
      * Constructs a new editor.
@@ -136,6 +140,21 @@ public class SnapshotViewerEditor extends FXEditorPart {
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
         MenuManager menu = new MenuManager();
+        openChartAction = new Action("Open In Chart") {
+            @Override
+            public void run() {
+                VTypeNamePair type = table.getClickedItem();
+                if (type != null && type.value instanceof VNumberArray) {
+                    new ChartDialog(getSite().getShell(), type).open();
+                }
+            }
+        };
+        menu.add(openChartAction);
+        openChartAction.setEnabled(false);
+        table.addSelectionChangedListener(e -> {
+           VTypeNamePair type = table.getClickedItem();
+           openChartAction.setEnabled(type != null && type.value instanceof VNumberArray);
+        });
         menu.add(new org.eclipse.jface.action.Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         contextMenu = menu.createContextMenu(parent);
         parent.setMenu(contextMenu);
