@@ -9,5 +9,8 @@
    <feature id="org.csstudio.saverestore.git.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.saverestore.masar.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <category-def name="org.csstudio.category.applications" label="CS-Studio Applications"/>
 </site>
