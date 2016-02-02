@@ -263,11 +263,12 @@ public final class OPIShell implements IOPIRuntime {
      *************************************************************/
 
     /**
-     * This is the only way to create an OPIShell
+     * This is the only way to create an OPIShell.
+     * Logs an error and cleans up if path is null.
      */
     public static void openOPIShell(IPath path, MacrosInput macrosInput) {
         if (macrosInput == null) {
-            macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), false);
+            macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
         }
         boolean alreadyOpen = false;
         for (OPIShell opiShell : openShells) {
