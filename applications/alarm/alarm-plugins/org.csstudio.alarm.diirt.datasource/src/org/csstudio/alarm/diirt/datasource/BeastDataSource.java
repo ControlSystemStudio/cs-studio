@@ -50,6 +50,8 @@ public class BeastDataSource extends DataSource {
 
     private Executor executor = Executors.newScheduledThreadPool(4);
 
+    private boolean serverTimeout = false;
+
     static {
         // Install type support for the types it generates.
         DataTypeSupport.install();
@@ -71,7 +73,7 @@ public class BeastDataSource extends DataSource {
 
                             @Override
                             public void newAlarmConfiguration(AlarmClientModel model) {
-                                log.fine("newAlarmConfiguration");
+                                log.config("beast  datasource: new alarm configuration");
                                 for (String channelName : map.keySet()) {
                                     BeastChannelHandler channel = (BeastChannelHandler) getChannels()
                                             .get(channelHandlerLookupName(channelName));
@@ -82,6 +84,13 @@ public class BeastDataSource extends DataSource {
                             @Override
                             public void serverTimeout(AlarmClientModel model) {
                                 // TODO Auto-generated method stub
+                                log.warning("beast  datasource: server timeout " + model.isServerAlive());
+                                serverTimeout = true;
+                                for (String channelName : map.keySet()) {
+                                    BeastChannelHandler channel = (BeastChannelHandler) getChannels()
+                                            .get(channelHandlerLookupName(channelName));
+                                    channel.reconnect();
+                                }
                             }
 
                             @Override
@@ -89,12 +98,13 @@ public class BeastDataSource extends DataSource {
                                     AlarmClientModel model,
                                     boolean maintenance_mode) {
                                 // TODO Auto-generated method stub
+                                log.info("beast  datasource: server mode update");
                             }
 
                             @SuppressWarnings("rawtypes")
                             @Override
-                            public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
-                                log.fine("newAlarmState");
+                            public void newAlarmState(AlarmClientModel alarmModel, AlarmTreePV pv, boolean parent_changed) {
+                                log.config("beast  datasource: new alarm state " + pv );
                                 if (pv != null) {
                                     log.fine(pv.getPathName());
                                     List<Consumer> pathHandlers = map.get(pv.getPathName().substring(1));
@@ -125,6 +135,15 @@ public class BeastDataSource extends DataSource {
                                             }
                                             parent = parent.getParent();
                                         }
+                                    }
+                                }else if(serverTimeout && alarmModel.isServerAlive()){
+                                    // The server has recovered from a disconnect event.
+                                    // Attempt to reconnect all pv's
+                                    serverTimeout = alarmModel.isServerAlive();
+                                    for (String channelName : map.keySet()) {
+                                        BeastChannelHandler channel = (BeastChannelHandler) getChannels()
+                                                .get(channelHandlerLookupName(channelName));
+                                        channel.reconnect();
                                     }
                                 }
                             }
@@ -209,7 +228,7 @@ public class BeastDataSource extends DataSource {
 
     protected boolean isWriteAllowed(){
         if (model != null) {
-            return model.isWriteAllowed();
+            return model.isServerAlive() && model.isWriteAllowed();
         } else {
             return false;
         }
