@@ -48,11 +48,11 @@ public class MasarDataProvider implements DataProvider {
      * @see org.csstudio.saverestore.DataProvider#initialise()
      */
     @Override
-    public void initialise() {
+    public void initialise() throws DataProviderException {
         try {
             mc.initialise(Activator.getInstance().getServices());
         } catch (MasarException e) {
-            throw new RuntimeException("Could not instantiate masar data provider.", e);
+            throw new DataProviderException("Could not instantiate masar data provider.", e);
         }
     }
 
@@ -91,7 +91,7 @@ public class MasarDataProvider implements DataProvider {
      */
     @Override
     public Branch[] getBranches() throws DataProviderException {
-        List<Branch> branches = mc.getBranches();
+        List<Branch> branches = mc.getServices();
         return branches.toArray(new Branch[branches.size()]);
     }
 
@@ -164,9 +164,17 @@ public class MasarDataProvider implements DataProvider {
      * @see org.csstudio.saverestore.DataProvider#createNewBranch(org.csstudio.saverestore.Branch, java.lang.String)
      */
     @Override
-    public String createNewBranch(Branch originalBranch, String newBranchName) throws DataProviderException {
-        // TODO define a new service and check if it exists
-        return null;
+    public Branch createNewBranch(Branch originalService, String newServiceName) throws DataProviderException {
+        Branch service = null;
+        try {
+            service = mc.createService(newServiceName);
+        } catch (MasarException e) {
+            throw new DataProviderException("Error connecting to service '" + newServiceName + "'.", e);
+        }
+        for (CompletionNotifier n : getNotifiers()) {
+            n.branchCreated(service);
+        }
+        return service;
     }
 
     /*
@@ -412,7 +420,7 @@ public class MasarDataProvider implements DataProvider {
     }
 
     private CompletionNotifier[] getNotifiers() {
-        CompletionNotifier[] nots = null;
+        CompletionNotifier[] nots;
         synchronized (notifiers) {
             nots = notifiers.toArray(new CompletionNotifier[notifiers.size()]);
         }

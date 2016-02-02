@@ -1,6 +1,7 @@
 package org.csstudio.saverestore.masar;
 
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -29,6 +30,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
      */
     @Override
     public void init(IWorkbench workbench) {
+        // no initialisation required
     }
 
     /*
@@ -40,6 +42,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
     protected void createFieldEditors() {
         Composite parent = getFieldEditorParent();
         addField(new ServicesFieldEditor(parent));
+        addField(new IntegerFieldEditor(Activator.PREF_TIMEOUT, "Connection Timeout", parent));
     }
 
 }

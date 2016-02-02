@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Label;
  *
  */
 public class ServicesFieldEditor extends FieldEditor {
-    private List<String> services;
+    private List<String> services = new ArrayList<>();
     private Label label;
     private StringTableEditor editor;
 
@@ -48,10 +48,12 @@ public class ServicesFieldEditor extends FieldEditor {
      */
     @Override
     protected void adjustForNumColumns(int numColumns) {
-        GridData gd = (GridData) label.getLayoutData();
-        gd.horizontalSpan = numColumns;
-        gd = (GridData) editor.getLayoutData();
-        gd.horizontalSpan = numColumns;
+        if (editor != null && label != null) {
+            GridData gd = (GridData) label.getLayoutData();
+            gd.horizontalSpan = numColumns;
+            gd = (GridData) editor.getLayoutData();
+            gd.horizontalSpan = numColumns;
+        }
     }
 
     /*
@@ -67,7 +69,6 @@ public class ServicesFieldEditor extends FieldEditor {
         gd.horizontalSpan = numColumns;
         label.setLayoutData(gd);
 
-        services = new ArrayList<String>();
         editor = new StringTableEditor(parent, services);
         editor.setToolTipText("The list of all available MASAR services");
         gd = new GridData();
@@ -96,11 +97,11 @@ public class ServicesFieldEditor extends FieldEditor {
      */
     @Override
     protected void doLoadDefault() {
-        String services = getPreferenceStore().getDefaultString(Activator.PREF_SERVICES);
-        if (services == null) {
+        String defaultServices = getPreferenceStore().getDefaultString(Activator.PREF_SERVICES);
+        if (defaultServices == null) {
             updateColumns(new String[0]);
         } else {
-            updateColumns(services.split("\\,"));
+            updateColumns(defaultServices.split("\\,"));
         }
     }
 
@@ -109,7 +110,9 @@ public class ServicesFieldEditor extends FieldEditor {
         for (String s : services) {
             this.services.add(s);
         }
-        editor.refresh();
+        if (editor != null) {
+            editor.refresh();
+        }
     }
 
     /*

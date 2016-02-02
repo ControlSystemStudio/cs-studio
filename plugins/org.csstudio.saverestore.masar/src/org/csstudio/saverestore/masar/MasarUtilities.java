@@ -8,11 +8,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 import javax.security.auth.Subject;
 
+import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.security.SecuritySupport;
@@ -80,27 +83,80 @@ import gov.aps.jca.dbr.Severity;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public final class MasarUtilities implements MasarConstants {
+public final class MasarUtilities {
 
     private MasarUtilities() {
+    }
+
+    /**
+     * Transform the result structure of <code>retrieveServiceConfigs</code> call to a list of beamline sets.
+     *
+     * @param result the result structure
+     * @param branch the service descriptor
+     * @param baseLevel the selected base level
+     * @return the list of beamline sets
+     */
+    static List<BeamlineSet> createBeamlineSetsList(PVStructure result, Branch service, Optional<BaseLevel> baseLevel) {
+        PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
+        PVLongArray pvIndices = (PVLongArray) value.getScalarArrayField(MasarConstants.P_CONFIG_INDEX,
+            ScalarType.pvLong);
+        PVStringArray pvNames = (PVStringArray) value.getScalarArrayField(MasarConstants.P_CONFIG_NAME,
+            ScalarType.pvString);
+        PVStringArray pvDesciptions = (PVStringArray) value.getScalarArrayField(MasarConstants.P_CONFIG_DESCRIPTION,
+            ScalarType.pvString);
+        PVStringArray pvDates = (PVStringArray) value.getScalarArrayField(MasarConstants.P_CONFIG_DATE,
+            ScalarType.pvString);
+        PVStringArray pvVersions = (PVStringArray) value.getScalarArrayField(MasarConstants.P_CONFIG_VERSION,
+            ScalarType.pvString);
+        PVStringArray pvStatuses = (PVStringArray) value.getScalarArrayField(MasarConstants.P_CONFIG_STATUS,
+            ScalarType.pvString);
+
+        StringArrayData names = new StringArrayData();
+        pvNames.get(0, pvNames.getLength(), names);
+        StringArrayData descriptions = new StringArrayData();
+        pvDesciptions.get(0, pvDesciptions.getLength(), descriptions);
+        StringArrayData dates = new StringArrayData();
+        pvDates.get(0, pvDates.getLength(), dates);
+        StringArrayData versions = new StringArrayData();
+        pvVersions.get(0, pvVersions.getLength(), versions);
+        StringArrayData statuses = new StringArrayData();
+        pvStatuses.get(0, pvStatuses.getLength(), statuses);
+        LongArrayData indices = new LongArrayData();
+        pvIndices.get(0, pvIndices.getLength(), indices);
+
+        List<BeamlineSet> beamlines = new ArrayList<>(names.data.length);
+        for (int i = 0; i < names.data.length; i++) {
+            Map<String, String> parameters = new HashMap<>(6);
+            parameters.put(MasarConstants.P_CONFIG_NAME, names.data[i]);
+            parameters.put(MasarConstants.P_CONFIG_INDEX, String.valueOf(indices.data[i]));
+            parameters.put(MasarConstants.P_CONFIG_DESCRIPTION, descriptions.data[i]);
+            parameters.put(MasarConstants.P_CONFIG_DATE, dates.data[i]);
+            parameters.put(MasarConstants.P_CONFIG_VERSION, versions.data[i]);
+            parameters.put(MasarConstants.P_CONFIG_STATUS, statuses.data[i]);
+            beamlines.add(
+                new BeamlineSet(service, baseLevel, new String[] { names.data[i] }, MasarDataProvider.ID, parameters));
+        }
+        return beamlines;
     }
 
     /**
      * Transform the result of the <code>retrieveServiceEvents</code> to a list of snapshots.
      *
      * @param result the V4 result structure
-     * @param beamlineSetSupplier the function providing the beamline set for each snapshot; the function receives
-     *          the ID of the configuration (beamline set) and returns the best possible value for this id
+     * @param beamlineSetSupplier the function providing the beamline set for each snapshot; the function receives the
+     *            ID of the configuration (beamline set) and returns the best possible value for this id
      * @return the list of snapshots
      * @throws ParseException if the date of snapshot could not be parsed
      */
-    static List<Snapshot> parseSnapshots(PVStructure result, Function<String, BeamlineSet> beamlineSetSupplier)
+    static List<Snapshot> createSnapshotsList(PVStructure result, Function<String, BeamlineSet> beamlineSetSupplier)
         throws ParseException {
-        PVLongArray pvEvents = (PVLongArray) result.getScalarArrayField(P_EVENT_ID, ScalarType.pvLong);
-        PVLongArray pvConfigs = (PVLongArray) result.getScalarArrayField(P_CONFIG_ID, ScalarType.pvLong);
-        PVStringArray pvComments = (PVStringArray) result.getScalarArrayField(P_COMMENT, ScalarType.pvString);
-        PVStringArray pvTimes = (PVStringArray) result.getScalarArrayField(P_EVENT_TIME, ScalarType.pvString);
-        PVStringArray pvUsers = (PVStringArray) result.getScalarArrayField(P_USER, ScalarType.pvString);
+        PVLongArray pvEvents = (PVLongArray) result.getScalarArrayField(MasarConstants.P_EVENT_ID, ScalarType.pvLong);
+        PVLongArray pvConfigs = (PVLongArray) result.getScalarArrayField(MasarConstants.P_CONFIG_ID, ScalarType.pvLong);
+        PVStringArray pvComments = (PVStringArray) result.getScalarArrayField(MasarConstants.P_COMMENT,
+            ScalarType.pvString);
+        PVStringArray pvTimes = (PVStringArray) result.getScalarArrayField(MasarConstants.P_EVENT_TIME,
+            ScalarType.pvString);
+        PVStringArray pvUsers = (PVStringArray) result.getScalarArrayField(MasarConstants.P_USER, ScalarType.pvString);
 
         StringArrayData comments = new StringArrayData();
         pvComments.get(0, pvComments.getLength(), comments);
@@ -114,11 +170,11 @@ public final class MasarUtilities implements MasarConstants {
         pvConfigs.get(0, pvConfigs.getLength(), configs);
 
         List<Snapshot> snapshots = new ArrayList<>(events.data.length);
-        SimpleDateFormat format = DATE_FORMAT.get();
+        SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
         for (int i = 0; i < events.data.length; i++) {
             Map<String, String> parameters = new HashMap<>();
-            parameters.put(P_EVENT_ID, String.valueOf(events.data[i]));
-            parameters.put(P_CONFIG_ID, String.valueOf(configs.data[i]));
+            parameters.put(MasarConstants.P_EVENT_ID, String.valueOf(events.data[i]));
+            parameters.put(MasarConstants.P_CONFIG_ID, String.valueOf(configs.data[i]));
             Date date = format.parse(times.data[i]);
             snapshots.add(new Snapshot(beamlineSetSupplier.apply(String.valueOf(configs.data[i])), date,
                 comments.data[i].trim(), users.data[i].trim(), parameters));
@@ -137,17 +193,24 @@ public final class MasarUtilities implements MasarConstants {
      * @return the VSnapshot
      */
     static VSnapshot resultToVSnapshot(PVStructure result, Snapshot snapshot, Timestamp snapshotTime) {
-
-        PVStringArray pvAlarmMessage = (PVStringArray) result.getScalarArrayField(P_ALARM_MESSAGE, ScalarType.pvString);
-        PVLongArray pvSeconds = (PVLongArray) result.getScalarArrayField(P_SECONDS, ScalarType.pvLong);
-        PVStringArray pvPVName = (PVStringArray) result.getScalarArrayField(P_S_CHANNEL_NAME, ScalarType.pvString);
-        PVIntArray pvDBRType = (PVIntArray) result.getScalarArrayField(P_S_DBR_TYPE, ScalarType.pvInt);
-        PVBooleanArray pvIsConnected = (PVBooleanArray) result.getScalarArrayField(P_IS_CONNECTED,ScalarType.pvBoolean);
-        PVIntArray pvNanos = (PVIntArray) result.getScalarArrayField(P_NANOS, ScalarType.pvInt);
-        PVIntArray pvTimestampTag = (PVIntArray) result.getScalarArrayField(P_TIMESTAMP_TAG, ScalarType.pvInt);
-        PVIntArray pvAlarmSeverity = (PVIntArray) result.getScalarArrayField(P_ALARM_SEVERITY, ScalarType.pvInt);
-        PVIntArray pvAlarmStatus = (PVIntArray) result.getScalarArrayField(P_ALARM_STATUS, ScalarType.pvInt);
-        PVUnionArray array = result.getUnionArrayField(P_STRUCTURE_VALUE);
+        PVStringArray pvAlarmMessage = (PVStringArray) result
+            .getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_MESSAGE, ScalarType.pvString);
+        PVLongArray pvSeconds = (PVLongArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_SECONDS,
+            ScalarType.pvLong);
+        PVStringArray pvPVName = (PVStringArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_CHANNEL_NAME,
+            ScalarType.pvString);
+        PVIntArray pvDBRType = (PVIntArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_DBR_TYPE,
+            ScalarType.pvInt);
+        PVBooleanArray pvIsConnected = (PVBooleanArray) result
+            .getScalarArrayField(MasarConstants.P_SNAPSHOT_IS_CONNECTED, ScalarType.pvBoolean);
+        PVIntArray pvNanos = (PVIntArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_NANOS, ScalarType.pvInt);
+        PVIntArray pvTimestampTag = (PVIntArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_USER_TAG,
+            ScalarType.pvInt);
+        PVIntArray pvAlarmSeverity = (PVIntArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_SEVERITY,
+            ScalarType.pvInt);
+        PVIntArray pvAlarmStatus = (PVIntArray) result.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_STATUS,
+            ScalarType.pvInt);
+        PVUnionArray array = result.getUnionArrayField(MasarConstants.P_STRUCTURE_VALUE);
 
         StringArrayData pvName = new StringArrayData();
         pvPVName.get(0, pvPVName.getLength(), pvName);
@@ -180,7 +243,7 @@ public final class MasarUtilities implements MasarConstants {
             Alarm alarm = ValueFactory.newAlarm(fromEpics(alarmSeverity.data[i]),
                 gov.aps.jca.dbr.Status.forValue(alarmStatus.data[i]).getName());
             boolean isarray = data.data[i].get() instanceof PVArray;
-            values.add(isarray ? toValue((PVArray)data.data[i].get(), time, alarm)
+            values.add(isarray ? toValue((PVArray) data.data[i].get(), time, alarm)
                 : toValue(data.data[i].get(), time, alarm));
         }
         return new VSnapshot(snapshot, names, values, snapshotTime, null);
@@ -207,100 +270,120 @@ public final class MasarUtilities implements MasarConstants {
         }
     }
 
+    /**
+     * Transform the value of the PVArray to a VType. The value is expected to be a {@link PVScalarArray} which means
+     * that is is an array of primitive types. The {@link Display} of the value is always <code>none</code>.
+     *
+     * @param val the value to transform
+     * @param time the time to use for the value
+     * @param alarm the alarm to use for the value
+     * @return the {@link VType} representing the input parameters
+     */
     private static VType toValue(PVArray val, Time time, Alarm alarm) {
         if (!(val instanceof PVScalarArray)) {
-            throw new IllegalArgumentException("The value type should be a scalar array type, but it was not: " + val.getClass());
+            throw new IllegalArgumentException(
+                "The value type should be a scalar array type, but it was not: " + val.getClass());
         }
         Display display = ValueFactory.displayNone();
-        ScalarType type = ((PVScalarArray)val).getScalarArray().getElementType();
+        ScalarType type = ((PVScalarArray) val).getScalarArray().getElementType();
         switch (type) {
             case pvBoolean:
                 BooleanArrayData booval = new BooleanArrayData();
-                ((PVBooleanArray)val).get(0, val.getLength(), booval);
+                ((PVBooleanArray) val).get(0, val.getLength(), booval);
                 return ValueFactory.newVBooleanArray(new ArrayBoolean(booval.data), alarm, time);
             case pvByte:
                 ByteArrayData bval = new ByteArrayData();
-                ((PVByteArray)val).get(0, val.getLength(), bval);
+                ((PVByteArray) val).get(0, val.getLength(), bval);
                 return ValueFactory.newVNumberArray(new ArrayByte(bval.data), alarm, time, display);
             case pvUByte:
                 ByteArrayData buval = new ByteArrayData();
-                ((PVUByteArray)val).get(0, val.getLength(), buval);
+                ((PVUByteArray) val).get(0, val.getLength(), buval);
                 return ValueFactory.newVNumberArray(new ArrayByte(buval.data), alarm, time, display);
             case pvShort:
                 ShortArrayData shval = new ShortArrayData();
-                ((PVShortArray)val).get(0, val.getLength(), shval);
+                ((PVShortArray) val).get(0, val.getLength(), shval);
                 return ValueFactory.newVShortArray(new ArrayShort(shval.data), alarm, time, display);
             case pvUShort:
                 ShortArrayData shuval = new ShortArrayData();
-                ((PVUShortArray)val).get(0, val.getLength(), shuval);
+                ((PVUShortArray) val).get(0, val.getLength(), shuval);
                 return ValueFactory.newVShortArray(new ArrayShort(shuval.data), alarm, time, display);
             case pvInt:
                 IntArrayData ival = new IntArrayData();
-                ((PVIntArray)val).get(0, val.getLength(), ival);
+                ((PVIntArray) val).get(0, val.getLength(), ival);
                 return ValueFactory.newVIntArray(new ArrayInt(ival.data), alarm, time, display);
             case pvUInt:
                 IntArrayData iuval = new IntArrayData();
-                ((PVUIntArray)val).get(0, val.getLength(), iuval);
+                ((PVUIntArray) val).get(0, val.getLength(), iuval);
                 return ValueFactory.newVIntArray(new ArrayInt(iuval.data), alarm, time, display);
             case pvLong:
                 LongArrayData lval = new LongArrayData();
-                ((PVLongArray)val).get(0, val.getLength(), lval);
+                ((PVLongArray) val).get(0, val.getLength(), lval);
                 return ValueFactory.newVLongArray(new ArrayLong(lval.data), alarm, time, display);
             case pvULong:
                 LongArrayData luval = new LongArrayData();
-                ((PVULongArray)val).get(0, val.getLength(), luval);
+                ((PVULongArray) val).get(0, val.getLength(), luval);
                 return ValueFactory.newVLongArray(new ArrayLong(luval.data), alarm, time, display);
             case pvDouble:
                 DoubleArrayData dval = new DoubleArrayData();
-                ((PVDoubleArray)val).get(0, val.getLength(), dval);
+                ((PVDoubleArray) val).get(0, val.getLength(), dval);
                 return ValueFactory.newVDoubleArray(new ArrayDouble(dval.data), alarm, time, display);
             case pvFloat:
                 FloatArrayData fval = new FloatArrayData();
-                ((PVFloatArray)val).get(0, val.getLength(), fval);
+                ((PVFloatArray) val).get(0, val.getLength(), fval);
                 return ValueFactory.newVFloatArray(new ArrayFloat(fval.data), alarm, time, display);
             case pvString:
                 StringArrayData sval = new StringArrayData();
-                ((PVStringArray)val).get(0, val.getLength(), sval);
+                ((PVStringArray) val).get(0, val.getLength(), sval);
                 return ValueFactory.newVStringArray(Arrays.asList(sval.data), alarm, time);
         }
         throw new IllegalArgumentException("Cannot transform the " + val + " to vtype.");
     }
 
+    /**
+     * Transforms the given scalar value to a VType. The value is expected to be either a {@link PVScalar} or a
+     * {@link PVStructure} of the {@link MasarConstants#T_ENUM} type.
+     *
+     * @param val the value
+     * @param time the time of value
+     * @param alarm the alarm of the value
+     * @return the {@link VType} describing the value
+     */
     private static VType toValue(PVField val, Time time, Alarm alarm) {
         if (val instanceof PVScalar) {
             Display display = ValueFactory.displayNone();
-            ScalarType type = ((PVScalar)val).getScalar().getScalarType();
+            ScalarType type = ((PVScalar) val).getScalar().getScalarType();
             switch (type) {
                 case pvBoolean:
-                    return ValueFactory.newVBoolean(((PVBoolean)val).get(), alarm, time);
+                    return ValueFactory.newVBoolean(((PVBoolean) val).get(), alarm, time);
                 case pvByte:
-                    return ValueFactory.newVByte(((PVByte)val).get(), alarm, time, display);
+                    return ValueFactory.newVByte(((PVByte) val).get(), alarm, time, display);
                 case pvUByte:
-                    return ValueFactory.newVByte(((PVUByte)val).get(), alarm, time, display);
+                    return ValueFactory.newVByte(((PVUByte) val).get(), alarm, time, display);
                 case pvShort:
-                    return ValueFactory.newVShort(((PVShort)val).get(), alarm, time, display);
+                    return ValueFactory.newVShort(((PVShort) val).get(), alarm, time, display);
                 case pvUShort:
-                    return ValueFactory.newVShort(((PVUShort)val).get(), alarm, time, display);
+                    return ValueFactory.newVShort(((PVUShort) val).get(), alarm, time, display);
                 case pvInt:
-                    return ValueFactory.newVInt(((PVInt)val).get(), alarm, time, display);
+                    return ValueFactory.newVInt(((PVInt) val).get(), alarm, time, display);
                 case pvUInt:
-                    return ValueFactory.newVInt(((PVUInt)val).get(), alarm, time, display);
+                    return ValueFactory.newVInt(((PVUInt) val).get(), alarm, time, display);
                 case pvLong:
-                    return ValueFactory.newVLong(((PVLong)val).get(), alarm, time, display);
+                    return ValueFactory.newVLong(((PVLong) val).get(), alarm, time, display);
                 case pvULong:
-                    return ValueFactory.newVLong(((PVULong)val).get(), alarm, time, display);
+                    return ValueFactory.newVLong(((PVULong) val).get(), alarm, time, display);
                 case pvDouble:
-                    return ValueFactory.newVDouble(((PVDouble)val).get(), alarm, time, display);
+                    return ValueFactory.newVDouble(((PVDouble) val).get(), alarm, time, display);
                 case pvFloat:
-                    return ValueFactory.newVFloat(((PVFloat)val).get(), alarm, time, display);
+                    return ValueFactory.newVFloat(((PVFloat) val).get(), alarm, time, display);
                 case pvString:
-                    return ValueFactory.newVString(((PVString)val).get(), alarm, time);
+                    return ValueFactory.newVString(((PVString) val).get(), alarm, time);
             }
         } else if (val instanceof PVStructure) {
-            PVStructure str = (PVStructure)val;
-            if (T_ENUM.equals(str.getStructure().getID())) {
-                int index = str.getIntField(P_E_INDEX).get();
-                PVStringArray pvLabels = (PVStringArray)str.getScalarArrayField(P_E_LABELS, ScalarType.pvString);
+            PVStructure str = (PVStructure) val;
+            if (MasarConstants.T_ENUM.equals(str.getStructure().getID())) {
+                int index = str.getIntField(MasarConstants.P_ENUM_INDEX).get();
+                PVStringArray pvLabels = (PVStringArray) str.getScalarArrayField(MasarConstants.P_ENUM_LABELS,
+                    ScalarType.pvString);
                 StringArrayData labels = new StringArrayData();
                 pvLabels.get(0, pvLabels.getLength(), labels);
                 return ValueFactory.newVEnum(index, Arrays.asList(labels.data), alarm, time);
@@ -318,7 +401,7 @@ public final class MasarUtilities implements MasarConstants {
         Subject subj = null;
         try {
             subj = SecuritySupport.getSubject();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             // ignore
         }
         return subj == null ? System.getProperty("user.name") : SecuritySupport.getSubjectName(subj);

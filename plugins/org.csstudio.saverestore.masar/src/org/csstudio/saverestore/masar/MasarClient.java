@@ -34,27 +34,21 @@ import org.epics.pvaccess.client.ChannelRPCRequester;
 import org.epics.pvaccess.client.ChannelRequester;
 import org.epics.pvaccess.util.logging.LoggingUtils;
 import org.epics.pvdata.factory.PVDataFactory;
-import org.epics.pvdata.pv.BooleanArrayData;
-import org.epics.pvdata.pv.LongArrayData;
 import org.epics.pvdata.pv.MessageType;
-import org.epics.pvdata.pv.PVBooleanArray;
-import org.epics.pvdata.pv.PVLongArray;
+import org.epics.pvdata.pv.PVBoolean;
 import org.epics.pvdata.pv.PVStringArray;
 import org.epics.pvdata.pv.PVStructure;
-import org.epics.pvdata.pv.PVUnion;
-import org.epics.pvdata.pv.PVUnionArray;
 import org.epics.pvdata.pv.ScalarType;
 import org.epics.pvdata.pv.Status;
 import org.epics.pvdata.pv.Status.StatusType;
 import org.epics.pvdata.pv.StringArrayData;
-import org.epics.pvdata.pv.UnionArrayData;
 
 /**
  * <code>MasarClient<code> provide access to the masar features required by the save and restore application.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  */
-public class MasarClient implements MasarConstants {
+public class MasarClient {
 
     private static class MasarChannelRequester implements ChannelRequester {
 
@@ -70,7 +64,8 @@ public class MasarClient implements MasarConstants {
 
         @Override
         public void channelCreated(Status status, Channel channel) {
-            SaveRestoreService.LOGGER.info("Channel '" + channel.getChannelName() + "' created with status: " + status + ".");
+            SaveRestoreService.LOGGER
+                .info("Channel '" + channel.getChannelName() + "' created with status: " + status + ".");
         }
 
         @Override
@@ -101,7 +96,7 @@ public class MasarClient implements MasarConstants {
         public void channelRPCConnect(Status status, ChannelRPC channelRPC) {
             SaveRestoreService.LOGGER.info("ChannelRPC for '" + channelRPC.getChannel().getChannelName()
                 + "' connected with status: " + status + ".");
-            boolean reconnect = (this.channelRPC != null);
+            boolean reconnect = this.channelRPC != null;
             this.channelRPC = channelRPC;
             connectedSignaler.countDown();
             // in case of reconnect, issued request was lost
@@ -143,46 +138,33 @@ public class MasarClient implements MasarConstants {
         }
     }
 
-    private String[] services;
-    private String selectedService;
-    private MasarChannelRPCRequester channelRPCRequester;
-
-
-    public static void main(String[] args) throws Exception {
+    private static MasarChannelRPCRequester createChannel(String service) throws MasarException {
+        if (service == null) {
+            throw new MasarException("No service selected.");
+        }
         org.epics.pvaccess.ClientFactory.start();
 
         ChannelProvider channelProvider = ChannelProviderRegistryFactory.getChannelProviderRegistry()
             .getProvider(org.epics.pvaccess.ClientFactory.PROVIDER_NAME);
 
         MasarChannelRequester channelRequester = new MasarChannelRequester();
-        Channel channel = channelProvider.createChannel("masarService", channelRequester,
-            ChannelProvider.PRIORITY_DEFAULT);
+        Channel channel = channelProvider.createChannel(service, channelRequester, ChannelProvider.PRIORITY_DEFAULT);
 
         MasarChannelRPCRequester channelRPCRequester = new MasarChannelRPCRequester();
         channel.createChannelRPC(channelRPCRequester, null);
-        channelRPCRequester.waitUntilConnected(3, TimeUnit.SECONDS);
-
-        PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_SNAPSHOT_TAKE);
-        request.getStringField(F_FUNCTION).put(FC_TAKE_SNAPSHOT);
-        request.getStringField(F_CONFIGNAME).put("BL_BM_01");
-
-        PVStructure result = channelRPCRequester.request(request);
-        PVUnionArray union = result.getUnionArrayField("value");
-        UnionArrayData uad = new UnionArrayData();
-        union.get(0, union.getLength(), uad);
-        PVUnion[] u = uad.data;
-        PVStructure str = ((PVStructure)u[3].get());
-        System.out.println(str);
-        System.out.println(str.getIntField("index").get());
-        VSnapshot s = MasarUtilities.resultToVSnapshot(result, new Snapshot(new BeamlineSet()), Timestamp.now());
-        System.out.println(s);
-        org.epics.pvaccess.ClientFactory.stop();
+        return channelRPCRequester;
     }
+
+    private String[] services;
+    private String selectedService;
+    private MasarChannelRPCRequester channelRPCRequester;
+
     /**
      * Creates a new client, but does not initialise it. {@link #initialise(String[])} has to be called before anything
      * can be done with this client.
      */
     public MasarClient() {
+        // default constructor to allow extensions
     }
 
     /**
@@ -221,8 +203,8 @@ public class MasarClient implements MasarConstants {
     }
 
     /**
-     * Initialises this masar client by setting up the available services and connecting to either the selected service
-     * or the first available service.
+     * Initialises this MASAR client by setting up the available services and connecting to either the selected service
+     * or the first available service in the list.
      *
      * @param services the list of available services
      * @return true if successfully initialised or false otherwise
@@ -256,44 +238,63 @@ public class MasarClient implements MasarConstants {
      * @throws MasarException if there was an exception selecting the service (e.g. service unavailable)
      */
     public synchronized void setService(Branch service) throws MasarException {
-        if (!service.getShortName().equals(selectedService)) {
-            if (selectedService == null || !service.isDefault()) {
-                selectedService = service.getShortName();
-                connect();
-            }
+        if (!service.getShortName().equals(selectedService) && (selectedService == null || !service.isDefault())) {
+            selectedService = service.getShortName();
+            connect();
         }
     }
 
     private boolean connect() throws MasarException {
         dispose();
-        if (this.selectedService == null) {
-            throw new MasarException("No service selected.");
-        }
-        org.epics.pvaccess.ClientFactory.start();
-
-        ChannelProvider channelProvider = ChannelProviderRegistryFactory.getChannelProviderRegistry()
-            .getProvider(org.epics.pvaccess.ClientFactory.PROVIDER_NAME);
-
-        MasarChannelRequester channelRequester = new MasarChannelRequester();
-        Channel channel = channelProvider.createChannel(selectedService, channelRequester,
-            ChannelProvider.PRIORITY_DEFAULT);
-
-        channelRPCRequester = new MasarChannelRPCRequester();
-        channel.createChannelRPC(channelRPCRequester, null);
-
+        channelRPCRequester = createChannel(selectedService);
         try {
-            return channelRPCRequester.waitUntilConnected(3, TimeUnit.SECONDS);
+            return channelRPCRequester.waitUntilConnected(Activator.getInstance().getTimeout(), TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new MasarException("Could not connecto to masar service", e);
         }
     }
 
     /**
-     * Returns the list of all branches (services).
+     * Tries to connect to the given service. If successful the new service is selected and the Branch describing the
+     * service is returned. The new service is also added to the list of available services.
      *
-     * @return the list of branches (services)
+     * @param newBranch the name of the new service
+     * @return branch describing this service if the service exists
+     * @throws MasarException in case of unreachable service
      */
-    public synchronized List<Branch> getBranches() {
+    public synchronized Branch createService(String newService) throws MasarException {
+        if (Arrays.asList(services).contains(newService)) {
+            throw new MasarException("Service '" + newService + "' already exists.");
+        }
+        MasarChannelRPCRequester channel = createChannel(newService);
+        boolean connected = false;
+        try {
+            connected = channel.waitUntilConnected(Activator.getInstance().getTimeout(), TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            // ignore
+        }
+        if (connected) {
+            dispose();
+            this.channelRPCRequester = channel;
+            this.selectedService = newService;
+            List<String> newServices = new ArrayList<>(this.services.length + 1);
+            newServices.add(newService);
+            for (String s : services) {
+                newServices.add(s);
+            }
+            this.services = newServices.toArray(new String[newServices.size()]);
+            Activator.getInstance().setServices(services);
+            return new Branch(newService, newService);
+        }
+        throw new MasarException("Service '" + newService + "' is unreachable.");
+    }
+
+    /**
+     * Returns the list of all services (branches).
+     *
+     * @return the list of services (branches)
+     */
+    public synchronized List<Branch> getServices() {
         List<Branch> branches = new ArrayList<>(Arrays.asList(services)).stream().map(s -> new Branch(s, s))
             .collect(Collectors.toList());
         Collections.sort(branches);
@@ -310,11 +311,12 @@ public class MasarClient implements MasarConstants {
     public synchronized List<BaseLevel> getBaseLevels(Branch service) throws MasarException {
         setService(service);
         try {
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_BASE_LEVEL);
-            request.getStringField(F_FUNCTION).put(FC_LOAD_BASE_LEVELS);
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BASE_LEVEL);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_BASE_LEVELS);
             PVStructure result = channelRPCRequester.request(request);
-            PVStructure value = result.getStructureField(P_STRUCTURE_VALUE);
-            PVStringArray array = (PVStringArray) value.getScalarArrayField(P_BASE_LEVEL_NAME, ScalarType.pvString);
+            PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
+            PVStringArray array = (PVStringArray) value.getScalarArrayField(MasarConstants.P_BASE_LEVEL_NAME,
+                ScalarType.pvString);
             StringArrayData data = new StringArrayData();
             int l = array.get(0, array.getLength(), data);
             Set<BaseLevel> bls = new HashSet<>(l);
@@ -343,47 +345,12 @@ public class MasarClient implements MasarConstants {
         throws MasarException {
         setService(branch);
         try {
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_BEAMLINE_SET);
-            request.getStringField(F_FUNCTION).put(FC_LOAD_BEAMLINE_SETS);
-            request.getStringField(F_SYSTEM).put(baseLevel.get().getStorageName());
-            request.getStringField(F_CONFIGNAME).put("*");
-
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BEAMLINE_SET);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_BEAMLINE_SETS);
+            request.getStringField(MasarConstants.F_SYSTEM).put(baseLevel.get().getStorageName());
+            request.getStringField(MasarConstants.F_CONFIGNAME).put("*");
             PVStructure result = channelRPCRequester.request(request);
-            PVStructure value = result.getStructureField(P_STRUCTURE_VALUE);
-            PVLongArray pvIndices = (PVLongArray) value.getScalarArrayField(P_INDEX, ScalarType.pvLong);
-            PVStringArray pvNames = (PVStringArray) value.getScalarArrayField(P_NAME, ScalarType.pvString);
-            PVStringArray pvDesciptions = (PVStringArray) value.getScalarArrayField(P_DESCRIPTION,
-                ScalarType.pvString);
-            PVStringArray pvDates = (PVStringArray) value.getScalarArrayField(P_DATE, ScalarType.pvString);
-            PVStringArray pvVersions = (PVStringArray) value.getScalarArrayField(P_VERSION, ScalarType.pvString);
-            PVStringArray pvStatuses = (PVStringArray) value.getScalarArrayField(P_STATUS, ScalarType.pvString);
-
-            StringArrayData names = new StringArrayData();
-            pvNames.get(0, pvNames.getLength(), names);
-            StringArrayData descriptions = new StringArrayData();
-            pvDesciptions.get(0, pvDesciptions.getLength(), descriptions);
-            StringArrayData dates = new StringArrayData();
-            pvDates.get(0, pvDates.getLength(), dates);
-            StringArrayData versions = new StringArrayData();
-            pvVersions.get(0, pvVersions.getLength(), versions);
-            StringArrayData statuses = new StringArrayData();
-            pvStatuses.get(0, pvStatuses.getLength(), statuses);
-            LongArrayData indices = new LongArrayData();
-            pvIndices.get(0, pvIndices.getLength(), indices);
-
-            List<BeamlineSet> beamlines = new ArrayList<>(names.data.length);
-            for (int i = 0; i < names.data.length; i++) {
-                Map<String, String> parameters = new HashMap<>(6);
-                parameters.put(P_NAME, names.data[i]);
-                parameters.put(P_INDEX, String.valueOf(indices.data[i]));
-                parameters.put(P_DESCRIPTION, descriptions.data[i]);
-                parameters.put(P_DATE, dates.data[i]);
-                parameters.put(P_VERSION, versions.data[i]);
-                parameters.put(P_STATUS, statuses.data[i]);
-                beamlines.add(new BeamlineSet(branch, baseLevel, new String[] { names.data[i] }, MasarDataProvider.ID,
-                    parameters));
-            }
-            return beamlines;
+            return MasarUtilities.createBeamlineSetsList(result, branch, baseLevel);
         } catch (InterruptedException e) {
             throw new MasarException("Error loading beamline sets.", e);
         }
@@ -402,33 +369,34 @@ public class MasarClient implements MasarConstants {
      * @param end the end date of the time range to search
      * @return list of snapshots that match criteria
      * @throws MasarException in case of an error
-     * @throws ParseException in case that the time
+     * @throws ParseException in case that the returned timestamp could not be parsed
      */
     public synchronized List<Snapshot> findSnapshots(Branch service, String expression, boolean byUser,
         boolean byComment, Optional<Date> start, Optional<Date> end) throws MasarException, ParseException {
         setService(service);
         try {
-            PVStructure request = PVDataFactory.getPVDataCreate()
-                .createPVStructure(createSearchStructure(true, true, start.isPresent(), end.isPresent()));
-            request.getStringField(F_FUNCTION).put(FC_FIND_SNAPSHOTS);
-            request.getStringField(F_COMMENT).put("*");
-            request.getStringField(F_USER).put("*");
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(
+                MasarConstants.createSearchStructure(true, true, start.isPresent(), end.isPresent()));
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_FIND_SNAPSHOTS);
+            request.getStringField(MasarConstants.F_COMMENT).put("*");
+            request.getStringField(MasarConstants.F_USER).put("*");
             String newExpression = "*" + expression + "*";
             if (byComment) {
-                request.getStringField(F_COMMENT).put(newExpression);
+                request.getStringField(MasarConstants.F_COMMENT).put(newExpression);
             }
             if (byUser) {
-                request.getStringField(F_USER).put(newExpression);
+                request.getStringField(MasarConstants.F_USER).put(newExpression);
             }
             if (start.isPresent()) {
-                request.getStringField(F_START).put(DATE_FORMAT.get().format(start.get()));
+                request.getStringField(MasarConstants.F_START)
+                    .put(MasarConstants.DATE_FORMAT.get().format(start.get()));
             }
             if (end.isPresent()) {
-                request.getStringField(F_END).put(DATE_FORMAT.get().format(end.get()));
+                request.getStringField(MasarConstants.F_END).put(MasarConstants.DATE_FORMAT.get().format(end.get()));
             }
             PVStructure result = channelRPCRequester.request(request);
-            PVStructure value = result.getStructureField(P_STRUCTURE_VALUE);
-            return MasarUtilities.parseSnapshots(value, s -> new BeamlineSet(service, Optional.empty(),
+            PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
+            return MasarUtilities.createSnapshotsList(value, s -> new BeamlineSet(service, Optional.empty(),
                 new String[] { "Beamline Set: " + s }, MasarDataProvider.ID));
         } catch (InterruptedException e) {
             throw new MasarException("Error loading snapshots.", e);
@@ -449,17 +417,17 @@ public class MasarClient implements MasarConstants {
         setService(beamlineSet.getBranch());
         try {
             PVStructure request;
-            String index = beamlineSet.getParameters().get(P_INDEX);
+            String index = beamlineSet.getParameters().get(MasarConstants.P_CONFIG_INDEX);
             if (index != null) {
-                request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_SNAPSHOT);
-                request.getStringField(F_CONFIGID).put(index);
+                request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_SNAPSHOT);
+                request.getStringField(MasarConstants.F_CONFIGID).put(index);
             } else {
-                request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_BASE_LEVEL);
+                request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BASE_LEVEL);
             }
-            request.getStringField(F_FUNCTION).put(FC_LOAD_SNAPSHOTS);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SNAPSHOTS);
             PVStructure result = channelRPCRequester.request(request);
-            PVStructure value = result.getStructureField(P_STRUCTURE_VALUE);
-            return MasarUtilities.parseSnapshots(value, s -> beamlineSet);
+            PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
+            return MasarUtilities.createSnapshotsList(value, s -> beamlineSet);
         } catch (InterruptedException e) {
             throw new MasarException("Error loading snapshots.", e);
         }
@@ -475,13 +443,14 @@ public class MasarClient implements MasarConstants {
     public synchronized VSnapshot loadSnapshotData(Snapshot snapshot) throws MasarException {
         setService(snapshot.getBeamlineSet().getBranch());
         try {
-            String index = snapshot.getParameters().get(P_EVENT_ID);
+            String index = snapshot.getParameters().get(MasarConstants.P_EVENT_ID);
             if (index == null) {
                 throw new MasarException("Unknown snapshot: " + snapshot);
             }
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_SNAPSHOT_DATA);
-            request.getStringField(F_FUNCTION).put(FC_LOAD_SNAPSHOT_DATA);
-            request.getStringField(F_EVENTID).put(index);
+            PVStructure request = PVDataFactory.getPVDataCreate()
+                .createPVStructure(MasarConstants.STRUCT_SNAPSHOT_DATA);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SNAPSHOT_DATA);
+            request.getStringField(MasarConstants.F_EVENTID).put(index);
             PVStructure result = channelRPCRequester.request(request);
             return MasarUtilities.resultToVSnapshot(result, snapshot, Timestamp.of(snapshot.getDate()));
         } catch (InterruptedException e) {
@@ -503,29 +472,31 @@ public class MasarClient implements MasarConstants {
             if (!snapshot.getSnapshot().isPresent()) {
                 throw new MasarException("Snapshot " + snapshot + " cannot be saved by MASAR.");
             }
-            String id = snapshot.getSnapshot().get().getParameters().get(P_EVENT_ID);
+            String id = snapshot.getSnapshot().get().getParameters().get(MasarConstants.P_EVENT_ID);
             if (id == null) {
                 throw new MasarException("Snapshot " + snapshot + " is not a valid MASAR snapshot.");
             }
             String user = MasarUtilities.getUser();
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_SNAPSHOT_SAVE);
-            request.getStringField(F_FUNCTION).put(FC_SAVE_SNAPSHOT);
-            request.getStringField(F_EVENTID).put(id);
-            request.getStringField(F_USER).put(user);
-            request.getStringField(F_DESCRIPTION).put(comment);
+            PVStructure request = PVDataFactory.getPVDataCreate()
+                .createPVStructure(MasarConstants.STRUCT_SNAPSHOT_SAVE);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_SAVE_SNAPSHOT);
+            request.getStringField(MasarConstants.F_EVENTID).put(id);
+            request.getStringField(MasarConstants.F_USER).put(user);
+            request.getStringField(MasarConstants.F_DESCRIPTION).put(comment);
             PVStructure result = channelRPCRequester.request(request);
-            PVBooleanArray status = (PVBooleanArray) result.getScalarArrayField(P_STATUS, ScalarType.pvBoolean);
-            BooleanArrayData st = new BooleanArrayData();
-            //TODO status does not exist anymore
-            status.get(0, status.getLength(), st);
-            if (!st.data[0]) {
+            PVBoolean status = (PVBoolean) result.getBooleanField(MasarConstants.P_STRUCTURE_VALUE);
+            if (!status.get()) {
                 // masar returns status=false, error description is given in the alarm message
-                PVStructure alarm = result.getStructureField(P_ALARM);
-                String message = alarm.getStringField(P_MESSAGE).get();
+                PVStructure alarm = result.getStructureField(MasarConstants.P_ALARM);
+                String message = alarm.getStringField(MasarConstants.P_MESSAGE).get();
                 throw new MasarException(message);
             }
             Snapshot newSnap = snapshot.getSnapshot().get();
-            newSnap = new Snapshot(newSnap.getBeamlineSet(), newSnap.getDate(), comment, user, newSnap.getParameters());
+            Date date = newSnap.getDate();
+            if (date == null) {
+                date = snapshot.getTimestamp().toDate();
+            }
+            newSnap = new Snapshot(newSnap.getBeamlineSet(), date, comment, user, newSnap.getParameters());
             return new VSnapshot(newSnap, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
                 snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
                 snapshot.getTimestamp());
@@ -544,30 +515,29 @@ public class MasarClient implements MasarConstants {
     public synchronized VSnapshot takeSnapshot(BeamlineSet set) throws MasarException {
         setService(set.getBranch());
         try {
-            String name = set.getParameters().get(P_NAME);
+            String name = set.getParameters().get(MasarConstants.P_CONFIG_NAME);
             if (name == null) {
                 throw new MasarException("Unknown beamline set: " + set);
             }
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_SNAPSHOT_TAKE);
-            request.getStringField(F_FUNCTION).put(FC_TAKE_SNAPSHOT);
-            request.getStringField(F_CONFIGNAME).put(name);
+            PVStructure request = PVDataFactory.getPVDataCreate()
+                .createPVStructure(MasarConstants.STRUCT_SNAPSHOT_TAKE);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_TAKE_SNAPSHOT);
+            request.getStringField(MasarConstants.F_CONFIGNAME).put(name);
 
             PVStructure result = channelRPCRequester.request(request);
-            PVStructure alarm = result.getStructureField(P_ALARM);
-//TODO what alarm message denotes an error
-//                if (!st.data[0]) {
-//                    // masar returns status=false, error description is given in the alarm message
-//
-//                    String message = alarm.getStringField(P_MESSAGE).get();
-//                    throw new MasarException(message);
-//                }
-
-            PVStructure timestamp = result.getStructureField(P_TIMESTAMP);
-            long sec = timestamp.getLongField(P_SECONDS).get();
-            int nano = timestamp.getIntField(P_NANOS).get();
-            int id = timestamp.getIntField(P_USER_TAG).get();
+            if (result.getScalarArrayField(MasarConstants.P_SNAPSHOT_IS_CONNECTED, ScalarType.pvBoolean) == null) {
+                // if there was an error masar does not return anything but the alarm and timestamp,
+                // error description is given in the alarm message
+                PVStructure alarm = result.getStructureField(MasarConstants.P_ALARM);
+                String message = alarm.getStringField(MasarConstants.P_MESSAGE).get();
+                throw new MasarException(message);
+            }
+            PVStructure timestamp = result.getStructureField(MasarConstants.P_TIMESTAMP);
+            long sec = timestamp.getLongField(MasarConstants.P_SECONDS).get();
+            int nano = timestamp.getIntField(MasarConstants.P_NANOS).get();
+            int id = timestamp.getIntField(MasarConstants.P_USER_TAG).get();
             Map<String, String> parameters = new HashMap<>();
-            parameters.put(P_EVENT_ID, String.valueOf(id));
+            parameters.put(MasarConstants.P_EVENT_ID, String.valueOf(id));
             Snapshot snapshot = new Snapshot(set, null, null, null, parameters);
             return MasarUtilities.resultToVSnapshot(result, snapshot, Timestamp.of(sec, nano));
         } catch (InterruptedException e) {
@@ -575,10 +545,19 @@ public class MasarClient implements MasarConstants {
         }
     }
 
+    /**
+     * Loads the beamline set data by trying to read the contents from one of the snapshot for this beamline set. If no
+     * snapshot exists, one is taken and parsed. The snapshot that is taken is never saved.
+     *
+     * @param set the beamline set for which the content is being loaded
+     * @return the beamline set data
+     * @throws MasarException in case of an error
+     * @throws ParseException if an existing snapshot was being parsed and failed to read the timestamp
+     */
     public synchronized BeamlineSetData loadBeamlineSetData(BeamlineSet set) throws MasarException, ParseException {
         setService(set.getBranch());
         List<Snapshot> snapshots = getSnapshots(set);
-        VSnapshot snapshot = null;
+        VSnapshot snapshot;
         if (snapshots.isEmpty()) {
             snapshot = takeSnapshot(set);
         } else {

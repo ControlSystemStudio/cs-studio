@@ -11,55 +11,54 @@ import org.epics.pvdata.pv.Structure;
 
 /**
  *
- * <code>MasarConstants</code> provides a set of string and other constants that are used by MASAR. These include
- * different field and function names, as well as V4 structures and date parsers
+ * <code>MasarConstants</code> provides a set of strings and other constants that are used by MASAR. These include
+ * different field and function names, as well as V4 structures and date parsers.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public interface MasarConstants {
+public final class MasarConstants {
 
     // used for transforming the date string from the MASAR format string to Date and vice versa
-    final static ThreadLocal<SimpleDateFormat> DATE_FORMAT = ThreadLocal
+    static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
     //various structure names and ids
     static final String T_ENUM = "enum_t";
-    static final String P_STRUCTURE_VALUE = "value";
     // Output parameters IDs
-    static final String P_E_INDEX = "index";
-    static final String P_E_LABELS = "choices";
-    static final String P_NAME = "config_name";
-    static final String P_INDEX = "config_idx";
-    static final String P_DESCRIPTION = "config_desc";
-    static final String P_DATE = "config_create_date";
-    static final String P_VERSION = "config_version";
-    static final String P_STATUS = "status";
+    static final String P_STRUCTURE_VALUE = "value";
+    static final String P_ENUM_INDEX = "index";
+    static final String P_ENUM_LABELS = "choices";
+    static final String P_CONFIG_NAME = "config_name";
+    static final String P_CONFIG_INDEX = "config_idx";
+    static final String P_CONFIG_DESCRIPTION = "config_desc";
+    static final String P_CONFIG_DATE = "config_create_date";
+    static final String P_CONFIG_VERSION = "config_version";
+    static final String P_CONFIG_STATUS = "status";
     static final String P_BASE_LEVEL_NAME = "system_val";
     static final String P_EVENT_ID = "event_id";
     static final String P_CONFIG_ID = "config_id";
     static final String P_COMMENT = "comments";
     static final String P_EVENT_TIME = "event_time";
     static final String P_USER = "user_name";
-    static final String P_USER_TAG = "userTag";
+    //Timestamp and alarm tags
     static final String P_TIMESTAMP = "timeStamp";
+    static final String P_USER_TAG = "userTag";
+    static final String P_SECONDS = "secondsPastEpoch";
+    static final String P_NANOS = "nanoseconds";
     static final String P_ALARM = "alarm";
     static final String P_MESSAGE = "message";
     // Snapshot data output parameters
-    static final String P_S_CHANNEL_NAME = "channelName";
-    static final String P_S_DBR_TYPE = "dbrType";
-    static final String P_IS_CONNECTED = "isConnected";
-    static final String P_SECONDS = "secondsPastEpoch";
-    static final String P_NANOS = "nanoseconds";
-    static final String P_TIMESTAMP_TAG = "userTag";
-    static final String P_ALARM_SEVERITY = "severity";
-    static final String P_ALARM_STATUS = "status";
-    static final String P_ALARM_MESSAGE = "message";
-    static final String P_ARRAY_VALUE = "array_value";
-    static final String P_A_STRING = "stringVal";
-    static final String P_A_DOUBLE = "doubleVal";
-    static final String P_A_INT = "intVal";
-    // The input parameter IDS
+    static final String P_SNAPSHOT_CHANNEL_NAME = "channelName";
+    static final String P_SNAPSHOT_DBR_TYPE = "dbrType";
+    static final String P_SNAPSHOT_IS_CONNECTED = "isConnected";
+    static final String P_SNAPSHOT_SECONDS = "secondsPastEpoch";
+    static final String P_SNAPSHOT_NANOS = "nanoseconds";
+    static final String P_SNAPSHOT_USER_TAG = "userTag";
+    static final String P_SNAPSHOT_ALARM_SEVERITY = "severity";
+    static final String P_SNAPSHOT_ALARM_STATUS = "status";
+    static final String P_SNAPSHOT_ALARM_MESSAGE = "message";
+    // The input parameter IDs
     static final String F_FUNCTION = "function";
     static final String F_SYSTEM = "system";
     static final String F_CONFIGNAME = "configname";
@@ -80,41 +79,45 @@ public interface MasarConstants {
     static final String FC_FIND_SNAPSHOTS = FC_LOAD_SNAPSHOTS;
 
     // Structure description for loading the base levels
-    final static Structure STRUCT_BASE_LEVEL = FieldFactory.getFieldCreate().createStructure(
+    static final Structure STRUCT_BASE_LEVEL = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION }, new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
 
     // Structure description for loading the list of beamline sets
-    final static Structure STRUCT_BEAMLINE_SET = FieldFactory.getFieldCreate().createStructure(
+    static final Structure STRUCT_BEAMLINE_SET = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION, F_SYSTEM, F_CONFIGNAME },
         new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
 
     // Structure description for loading the list of snapshots
-    final static Structure STRUCT_SNAPSHOT = FieldFactory.getFieldCreate().createStructure(
+    static final Structure STRUCT_SNAPSHOT = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION, F_CONFIGID },
         new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
 
     // Structure description for loading the snapshot data
-    final static Structure STRUCT_SNAPSHOT_DATA = FieldFactory.getFieldCreate().createStructure(
+    static final Structure STRUCT_SNAPSHOT_DATA = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION, F_EVENTID },
         new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
 
     // Structure description for taking a snapshot
-    final static Structure STRUCT_SNAPSHOT_TAKE = FieldFactory.getFieldCreate().createStructure(
+    static final Structure STRUCT_SNAPSHOT_TAKE = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION, F_CONFIGNAME },
         new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
 
     // Structure description for saving a snapshot
-    final static Structure STRUCT_SNAPSHOT_SAVE = FieldFactory.getFieldCreate().createStructure(
+    static final Structure STRUCT_SNAPSHOT_SAVE = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION, F_EVENTID, F_USER, F_DESCRIPTION },
         new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
+
+    private MasarConstants() {
+        //prevent instantiation
+    }
 
     /**
      * Creates a structure description for performing the snapshot search.
@@ -125,7 +128,7 @@ public interface MasarConstants {
      * @param end true if upper time boundary will be specified in the search
      * @return the structure for the given parameters
      */
-    default Structure createSearchStructure(boolean comment, boolean user, boolean start, boolean end) {
+    static Structure createSearchStructure(boolean comment, boolean user, boolean start, boolean end) {
         List<String> names = new ArrayList<>(5);
         names.add(F_FUNCTION);
         if (comment)

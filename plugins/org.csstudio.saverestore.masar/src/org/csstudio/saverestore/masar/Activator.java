@@ -14,8 +14,9 @@ public class Activator extends AbstractUIPlugin {
     public static final String ID = "org.csstudio.saverestore.masar";
 
     public static final String PREF_SERVICES = "services";
+    public static final String PREF_TIMEOUT = "timeout";
 
-    private static Activator INSTANCE;
+    private static Activator defaultInstance;
 
     /**
      * The default instance.
@@ -24,7 +25,7 @@ public class Activator extends AbstractUIPlugin {
      * @return the instance
      */
     public static Activator getInstance() {
-        return INSTANCE;
+        return defaultInstance;
     }
 
     /*
@@ -35,7 +36,7 @@ public class Activator extends AbstractUIPlugin {
     @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
-        INSTANCE = this;
+        defaultInstance = this;
     }
 
     /**
@@ -69,5 +70,15 @@ public class Activator extends AbstractUIPlugin {
             value = sb.toString();
         }
         getPreferenceStore().setValue(PREF_SERVICES, value);
+    }
+
+    /**
+     * Returns the timeout for connecting to masar service in seconds.
+     *
+     * @return the timeout in seconds
+     */
+    public int getTimeout() {
+        int timeout = getPreferenceStore().getInt(PREF_TIMEOUT);
+        return timeout == 0 ? 3 : timeout;
     }
 }
