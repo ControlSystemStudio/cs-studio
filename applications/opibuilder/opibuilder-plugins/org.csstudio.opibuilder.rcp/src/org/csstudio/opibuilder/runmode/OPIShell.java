@@ -171,10 +171,6 @@ public final class OPIShell implements IOPIRuntime {
                 if (!icon.isDisposed()) {
                     icon.dispose();
                 }
-                if (openShells.contains(OPIShell.this)) {
-                    log.warning("Disposed shell not removed by shellClosed()");
-                    openShells.remove(OPIShell.this);
-                }
             }
         });
         /*

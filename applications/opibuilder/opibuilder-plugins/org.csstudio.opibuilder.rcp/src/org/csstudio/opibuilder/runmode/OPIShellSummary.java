@@ -8,9 +8,7 @@
 package org.csstudio.opibuilder.runmode;
 
 import java.util.Set;
-import java.util.logging.Logger;
 
-import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.eclipse.fx.ui.workbench3.FXViewPart;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -41,7 +39,6 @@ import javafx.scene.layout.VBox;
 public class OPIShellSummary extends FXViewPart {
 
     public static final String ID = "org.csstudio.opibuilder.opiShellSummary";
-    private static Logger log = OPIBuilderPlugin.getLogger();
 
     private ScrollPane scrollpane;
     private GridPane grid;
@@ -158,10 +155,6 @@ public class OPIShellSummary extends FXViewPart {
             summaryLabel.setText("There " + isAre + " " + updatedShells.size() + " standalone OPI" + plural + " open.");
             // Register right-click with any new shells.
             for (OPIShell shell : updatedShells) {
-                if (shell.isDisposed()) {
-                    log.warning("Summary view ignoring disposed shell.");
-                    continue;
-                }
                 if ( ! cachedShells.contains(shell)) {
                     shell.registerWithView(this);
                 }
