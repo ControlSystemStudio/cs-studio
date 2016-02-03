@@ -35,9 +35,9 @@ import org.csstudio.scan.server.UnknownScanException;
 @SuppressWarnings("nls")
 public class ScanEngine
 {
-	/** Executor for scans off the queue, handling one by one */
+    /** Executor for scans off the queue, handling one by one */
     final private ExecutorService queue_executor = Executors.newSingleThreadExecutor(new NamedThreadFactory("ScanEngineQueue"));
-    
+
     /** Executor for scans that executes all submitted scans in parallel */
     final private ExecutorService parallel_executor = Executors.newCachedThreadPool(new NamedThreadFactory("ScanEnginePool"));
 
@@ -82,7 +82,7 @@ public class ScanEngine
         }
         try
         {
-        	parallel_executor.awaitTermination(10, TimeUnit.SECONDS);
+            parallel_executor.awaitTermination(10, TimeUnit.SECONDS);
         }
         catch (InterruptedException e)
         {
@@ -101,11 +101,11 @@ public class ScanEngine
      */
     public void submit(final ExecutableScan scan, final boolean queue)
     {
-    	if (queue)
-			scan.submit(queue_executor);
-    	else
-    		scan.submit(parallel_executor);
-    	synchronized (scan_queue)
+        if (queue)
+            scan.submit(queue_executor);
+        else
+            scan.submit(parallel_executor);
+        synchronized (scan_queue)
         {
             scan_queue.add(scan);
         }

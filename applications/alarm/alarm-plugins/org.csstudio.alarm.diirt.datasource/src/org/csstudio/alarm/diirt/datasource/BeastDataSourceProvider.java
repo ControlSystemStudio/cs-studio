@@ -8,7 +8,7 @@ import org.diirt.datasource.ConfigurableDataSourceProvider;
 
 /**
  * DatasourceProvider for jms access
- * 
+ *
  * @author Kunal Shroff
  *
  */

@@ -9,23 +9,22 @@ import de.desy.language.snl.parser.nodes.StringNode;
 
 public class StringParser_Test extends TestCase {
 
-	@Test
-	public void testParser() {
-		final StringParser parser = new StringParser();
+    @Test
+    public void testParser() {
+        final StringParser parser = new StringParser();
 
-		parser.findNext("//...\nstring \"Hallo\";\n// usw...\n");
-		Assert.assertTrue(parser.hasFoundElement());
+        parser.findNext("//...\nstring \"Hallo\";\n// usw...\n");
+        Assert.assertTrue(parser.hasFoundElement());
 
-		Assert.assertEquals("\"Hallo\"", parser.getLastFoundStatement());
-		final StringNode lastFoundAsNode = parser.getLastFoundAsNode();
-		Assert.assertEquals("\"Hallo\"", lastFoundAsNode.getSourceIdentifier());
-		Assert.assertTrue(lastFoundAsNode.hasOffsets());
-		Assert.assertEquals(13, lastFoundAsNode.getStatementStartOffset());
-		Assert.assertEquals(20, lastFoundAsNode.getStatementEndOffset());
-		Assert.assertFalse(lastFoundAsNode.hasChildren());
-		Assert.assertFalse(lastFoundAsNode.hasContent());
+        Assert.assertEquals("\"Hallo\"", parser.getLastFoundStatement());
+        final StringNode lastFoundAsNode = parser.getLastFoundAsNode();
+        Assert.assertEquals("\"Hallo\"", lastFoundAsNode.getSourceIdentifier());
+        Assert.assertTrue(lastFoundAsNode.hasOffsets());
+        Assert.assertEquals(13, lastFoundAsNode.getStatementStartOffset());
+        Assert.assertEquals(20, lastFoundAsNode.getStatementEndOffset());
+        Assert.assertFalse(lastFoundAsNode.hasChildren());
+        Assert.assertFalse(lastFoundAsNode.hasContent());
 
-		Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode
-				.getStatementEndOffset());
-	}
+        Assert.assertEquals(parser.getEndOffsetLastFound(), lastFoundAsNode.getStatementEndOffset());
+    }
 }

@@ -64,7 +64,7 @@ public class ScanServlet extends HttpServlet
         // Determine name of scan
         String scan_name = request.getPathInfo();
         if (scan_name == null)
-        	scan_name = "Scan from " + request.getRemoteHost();
+            scan_name = "Scan from " + request.getRemoteHost();
         else
         {
             if (! scan_name.startsWith("/"))
