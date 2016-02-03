@@ -33,7 +33,7 @@ public interface BaseLevelBrowser<T extends BaseLevel> {
      * @param branch the selected branch
      * @return a title composed of parameters, but not necessary
      */
-    public String getTitleFor(Optional<T> baseLevel, Optional<String> branch);
+    String getTitleFor(Optional<T> baseLevel, Optional<String> branch);
 
     /**
      * Returns the JavaFX node which all UI nodes of this browser. This method may be called more than once and should
@@ -41,7 +41,7 @@ public interface BaseLevelBrowser<T extends BaseLevel> {
      *
      * @return the UI part of the browser
      */
-    public Node getFXContent();
+    Node getFXContent();
 
     /**
      * Toggles whether only those base levels for which the beamline sets already exist or all base levels should be
@@ -49,7 +49,7 @@ public interface BaseLevelBrowser<T extends BaseLevel> {
      *
      * @param onlyAvailable true if only existing are available or false if all are available in the table
      */
-    public void setShowOnlyAvailable(boolean onlyAvailable);
+    void setShowOnlyAvailable(boolean onlyAvailable);
 
     /**
      * Returns the property that contains the list of all available base levels. This type of base levels is not defined
@@ -58,7 +58,7 @@ public interface BaseLevelBrowser<T extends BaseLevel> {
      *
      * @return the property that contains the list of all available base levels
      */
-    public ObjectProperty<List<T>> availableBaseLevelsProperty();
+    ObjectProperty<List<T>> availableBaseLevelsProperty();
 
     /**
      * Transforms objects of any type of BaseLevels to the type that is understood by this browser.
@@ -66,19 +66,19 @@ public interface BaseLevelBrowser<T extends BaseLevel> {
      * @param list of objects to transform
      * @return the transformed list
      */
-    public List<T> transform(List<? extends BaseLevel> list);
+    List<T> transform(List<? extends BaseLevel> list);
 
     /**
      * Returns the property that provides the selected base level.
      *
      * @return the property that provides the selected base level
      */
-    public Property<T> selectedBaseLevelProperty();
+    Property<T> selectedBaseLevelProperty();
 
     /**
      * Returns the human readable name for this browser used for presentation only.
      *
      * @return the readable name
      */
-    public String getReadableName();
+    String getReadableName();
 }

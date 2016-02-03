@@ -11,9 +11,12 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractUIPlugin {
 
+    /** The plugin ID */
     public static final String ID = "org.csstudio.saverestore.masar";
 
+    /** The preference name for the services list */
     public static final String PREF_SERVICES = "services";
+    /** The preference name for the timeout  for accessing masar service */
     public static final String PREF_TIMEOUT = "timeout";
 
     private static Activator defaultInstance;
@@ -47,11 +50,7 @@ public class Activator extends AbstractUIPlugin {
      */
     public String[] getServices() {
         String str = getPreferenceStore().getString(PREF_SERVICES);
-        if (str == null) {
-            return new String[0];
-        } else {
-            return str.split("\\,");
-        }
+        return str == null ? new String[0] : str.split("\\,");
     }
 
     /**

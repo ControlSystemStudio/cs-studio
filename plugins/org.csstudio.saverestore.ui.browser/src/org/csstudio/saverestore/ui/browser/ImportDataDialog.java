@@ -26,7 +26,7 @@ import javafx.scene.layout.Priority;
  */
 public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
 
-    private IWorkbenchPart owner;
+    private final IWorkbenchPart owner;
     private RepositoryTree treeView;
     private TextField fullNameField;
 

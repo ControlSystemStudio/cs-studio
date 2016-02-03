@@ -62,8 +62,6 @@ public class SearchDialog extends FXBaseDialog<String> {
     private CheckBox tagNameBox;
     private CheckBox tagMessageBox;
     private CheckBox userBox;
-    private DatePicker startPicker;
-    private DatePicker endPicker;
     private String backgroundColor;
     private Date startDate;
     private Date endDate;
@@ -179,13 +177,13 @@ public class SearchDialog extends FXBaseDialog<String> {
             tagMessageBox.setSelected(lastResults.contains(SearchCriterion.TAG_MESSAGE));
             userBox.setSelected(lastResults.contains(SearchCriterion.USER));
         }
-        startPicker = new DatePicker();
+        final DatePicker startPicker = new DatePicker();
         startPicker.setOnAction(e -> {
             LocalDate date = startPicker.getValue();
             startDate = date == null ? null : java.sql.Date.valueOf(date);
             validateInput();
         });
-        endPicker = new DatePicker();
+        final DatePicker endPicker = new DatePicker();
         endPicker.setOnAction(e -> {
             LocalDate date = endPicker.getValue();
             endDate = date == null ? null : java.sql.Date.valueOf(date);

@@ -270,13 +270,13 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         }
     }
 
-    private List<VSnapshot> uiSnapshots = new ArrayList<>();
+    private final List<VSnapshot> uiSnapshots = new ArrayList<>();
     private final SnapshotViewerController controller;
     private CheckBox selectAllCheckBox;
 
     private int clickedColumn = -1;
     private int clickedRow = -1;
-    private List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
+    private final List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
 
     /**
      * Constructs a new table.

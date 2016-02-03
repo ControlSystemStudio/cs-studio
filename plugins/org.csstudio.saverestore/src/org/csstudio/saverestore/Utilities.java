@@ -84,7 +84,7 @@ public final class Utilities {
         /** Indicates if the values are within the allowed threshold */
         public final boolean withinThreshold;
 
-        private VTypeComparison(String string, int equal, boolean withinThreshold) {
+        VTypeComparison(String string, int equal, boolean withinThreshold) {
             this.string = string;
             this.valuesEqual = equal;
             this.withinThreshold = withinThreshold;

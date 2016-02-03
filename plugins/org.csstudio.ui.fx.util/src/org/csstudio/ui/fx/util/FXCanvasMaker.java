@@ -1,6 +1,11 @@
 package org.csstudio.ui.fx.util;
 
+import java.util.function.Supplier;
+
 import org.eclipse.fx.ui.workbench3.FXViewPart;
+import org.eclipse.swt.widgets.Composite;
+
+import javafx.scene.Scene;
 
 /**
  *
@@ -10,6 +15,18 @@ import org.eclipse.fx.ui.workbench3.FXViewPart;
  *
  */
 public abstract class FXCanvasMaker extends FXViewPart {
+
+//    private final Supplier<Scene> sceneSupplier;
+//
+//    public FXCanvasMaker(Composite parent, Supplier<Scene> sceneSupplier) {
+//        this.sceneSupplier = sceneSupplier;
+//        createPartControl(parent);
+//    }
+//
+//    @Override
+//    protected Scene createFxScene() {
+//        return sceneSupplier.get();
+//    }
 
     /*
      * (non-Javadoc)

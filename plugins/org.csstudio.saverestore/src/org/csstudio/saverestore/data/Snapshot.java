@@ -80,7 +80,7 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
             String tagMessage = parameters.get(TAG_MESSAGE);
             String tagName = parameters.get(TAG_NAME);
             if (tagName != null) {
-                sb.append("\n  ").append("TAG: " + tagName).append(": ").append(tagMessage.split("\\n")[0]);
+                sb.append("\n  ").append("TAG: ").append(tagName).append(':').append(' ').append(tagMessage.split("\\n")[0]);
             }
             this.toString = sb.toString();
         }

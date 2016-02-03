@@ -32,12 +32,12 @@ import javafx.scene.layout.Priority;
  */
 public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
 
-    private IWorkbenchPart owner;
+    private final IWorkbenchPart owner;
     private RepositoryTree treeView;
     private TextField nameField;
     private TextField fullNameField;
 
-    private BeamlineSet initialValue;
+    private final BeamlineSet initialValue;
 
     /**
      * Construct a new repository tree browser.

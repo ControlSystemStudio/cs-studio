@@ -52,11 +52,7 @@ public class Activator extends AbstractUIPlugin {
      */
     public URI getGitURI() {
         String str = getPreferenceStore().getString(PREF_URL);
-        if (str == null) {
-            return null;
-        } else {
-            return URI.create(str);
-        }
+        return str == null ? null : URI.create(str);
     }
 
     /**

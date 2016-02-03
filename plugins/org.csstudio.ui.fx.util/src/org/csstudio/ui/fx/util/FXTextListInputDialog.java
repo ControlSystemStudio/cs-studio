@@ -25,7 +25,7 @@ public class FXTextListInputDialog<T> extends FXBaseDialog<String> {
 
     private TextField text;
     private ListView<T> list;
-    private List<T> options;
+    private final List<T> options;
 
     /**
      * Creates an input dialog with OK and Cancel buttons. Note that the dialog will have no visual representation (no

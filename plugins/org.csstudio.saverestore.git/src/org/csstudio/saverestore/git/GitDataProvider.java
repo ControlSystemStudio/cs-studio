@@ -37,7 +37,7 @@ public class GitDataProvider implements DataProvider {
     public static final String ID = "org.csstudio.saverestore.git.dataprovider";
 
     private final GitManager grm;
-    private List<CompletionNotifier> notifiers;
+    private final List<CompletionNotifier> notifiers;
 
     /**
      * Constructs a new GitDataProvider.

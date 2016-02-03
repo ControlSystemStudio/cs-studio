@@ -34,23 +34,23 @@ import javafx.beans.property.StringProperty;
  */
 public class TableEntry {
 
-    private IntegerProperty id = new SimpleIntegerProperty(this, "id");
-    private BooleanProperty selected = new SingleListenerBooleanProperty(this, "selected", true);
-    private StringProperty pvName = new SimpleStringProperty(this, "pvName");
-    private ObjectProperty<Timestamp> timestamp = new SimpleObjectProperty<>(this, "timestamp");
-    private StringProperty status = new SimpleStringProperty(this, "status", "OK");
-    private ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this, "severity", AlarmSeverity.NONE);
-    private ObjectProperty<VTypePair> value = new SimpleObjectProperty<>(this, "value",
+    private final IntegerProperty id = new SimpleIntegerProperty(this, "id");
+    private final BooleanProperty selected = new SingleListenerBooleanProperty(this, "selected", true);
+    private final StringProperty pvName = new SimpleStringProperty(this, "pvName");
+    private final ObjectProperty<Timestamp> timestamp = new SimpleObjectProperty<>(this, "timestamp");
+    private final StringProperty status = new SimpleStringProperty(this, "status", "OK");
+    private final ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this, "severity", AlarmSeverity.NONE);
+    private final ObjectProperty<VTypePair> value = new SimpleObjectProperty<>(this, "value",
         new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
-    private ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue", VNoData.INSTANCE);
-    private List<ObjectProperty<VTypePair>> compareValues = new ArrayList<>();
-    private ObjectProperty<VTypePair> readback = new SimpleObjectProperty<>(this, "readback",
+    private final ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue", VNoData.INSTANCE);
+    private final List<ObjectProperty<VTypePair>> compareValues = new ArrayList<>();
+    private final ObjectProperty<VTypePair> readback = new SimpleObjectProperty<>(this, "readback",
         new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
-    private StringProperty readbackName = new SimpleStringProperty(this, "readbackName");
-    private BooleanProperty liveStoredEqual = new SingleListenerBooleanProperty(this, "liveStoredEqual", true);
-    private ObjectProperty<VTypePair> storedReadback = new SimpleObjectProperty<>(this, "storedReadback",
+    private final StringProperty readbackName = new SimpleStringProperty(this, "readbackName");
+    private final BooleanProperty liveStoredEqual = new SingleListenerBooleanProperty(this, "liveStoredEqual", true);
+    private final ObjectProperty<VTypePair> storedReadback = new SimpleObjectProperty<>(this, "storedReadback",
         new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
-    private List<ObjectProperty<VTypePair>> compareStoredReadbacks = new ArrayList<>();
+    private final List<ObjectProperty<VTypePair>> compareStoredReadbacks = new ArrayList<>();
     private Optional<Threshold<?>> threshold = Optional.empty();
 
     /**

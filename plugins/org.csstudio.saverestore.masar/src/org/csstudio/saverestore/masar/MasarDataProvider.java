@@ -32,7 +32,7 @@ public class MasarDataProvider implements DataProvider {
     public static final String ID = "org.csstudio.saverestore.masar.dataprovider";
 
     private final MasarClient mc;
-    private List<CompletionNotifier> notifiers;
+    private final List<CompletionNotifier> notifiers;
 
     /**
      * Constructs a new GitDataProvider.

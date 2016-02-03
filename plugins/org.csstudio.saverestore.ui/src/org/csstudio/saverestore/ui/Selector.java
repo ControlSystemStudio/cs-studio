@@ -43,11 +43,15 @@ public class Selector implements CompletionNotifier {
     private ObjectProperty<Branch> selectedBranch;
     private ObjectProperty<BaseLevel> selectedBaseLevel;
     private ObjectProperty<BeamlineSet> selectedBeamlineSet;
-    private ObjectProperty<List<BaseLevel>> baseLevels;
-    private ObjectProperty<List<Branch>> branches;
-    private ObjectProperty<List<BeamlineSet>> beamlineSets;
-    private ObjectProperty<List<Snapshot>> snapshots;
-    private BooleanProperty allSnapshotsLoaded = new SimpleBooleanProperty(false);
+    private final ObjectProperty<List<BaseLevel>> baseLevels = new SimpleObjectProperty<>(
+        Collections.unmodifiableList(new ArrayList<>()));
+    private final ObjectProperty<List<Branch>> branches = new SimpleObjectProperty<>(
+        Collections.unmodifiableList(new ArrayList<>()));
+    private final ObjectProperty<List<BeamlineSet>> beamlineSets = new SimpleObjectProperty<>(
+        Collections.unmodifiableList(new ArrayList<>()));
+    private final ObjectProperty<List<Snapshot>> snapshots = new SimpleObjectProperty<>(
+        Collections.unmodifiableList(new ArrayList<>()));
+    private final BooleanProperty allSnapshotsLoaded = new SimpleBooleanProperty(false);
     private Snapshot lastSnapshot;
     private final IWorkbenchPart owner;
 
@@ -115,9 +119,6 @@ public class Selector implements CompletionNotifier {
      * @return the property containing the list of all available branches
      */
     public ReadOnlyObjectProperty<List<Branch>> branchesProperty() {
-        if (branches == null) {
-            branches = new SimpleObjectProperty<>(Collections.unmodifiableList(new ArrayList<>()));
-        }
         return branches;
     }
 
@@ -171,9 +172,6 @@ public class Selector implements CompletionNotifier {
      * @return property containing all available base levels for the current branch
      */
     public ReadOnlyObjectProperty<List<BaseLevel>> baseLevelsProperty() {
-        if (baseLevels == null) {
-            baseLevels = new SimpleObjectProperty<>(Collections.unmodifiableList(new ArrayList<>()));
-        }
         return baseLevels;
     }
 
@@ -214,9 +212,6 @@ public class Selector implements CompletionNotifier {
      * @return property containing all available beamline sets for the selected branch and base level
      */
     public ReadOnlyObjectProperty<List<BeamlineSet>> beamlineSetsProperty() {
-        if (beamlineSets == null) {
-            beamlineSets = new SimpleObjectProperty<>(Collections.unmodifiableList(new ArrayList<>()));
-        }
         return beamlineSets;
     }
 
@@ -286,9 +281,6 @@ public class Selector implements CompletionNotifier {
      * @return property containing all available snapshots for the selected branch, base level, and beamline set
      */
     public ReadOnlyObjectProperty<List<Snapshot>> snapshotsProperty() {
-        if (snapshots == null) {
-            snapshots = new SimpleObjectProperty<>(Collections.unmodifiableList(new ArrayList<>()));
-        }
         return snapshots;
     }
 
@@ -387,11 +379,11 @@ public class Selector implements CompletionNotifier {
      */
     @Override
     public void beamlineSetSaved(BeamlineSetData set) {
-        final BaseLevel base = selectedBaseLevelProperty().get();
         final Branch branch = selectedBranchProperty().get();
         if (!set.getDescriptor().getBranch().equals(branch)) {
             return;
         }
+        final BaseLevel base = selectedBaseLevelProperty().get();
         Optional<BaseLevel> bl = set.getDescriptor().getBaseLevel();
         if (bl.isPresent() && !bl.get().getStorageName().equals(base.getStorageName())) {
             return;

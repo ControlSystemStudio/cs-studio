@@ -85,7 +85,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
 
         BeamlineSetWrapper(BeamlineSet set, String name) {
             this.set = set;
-            this.path = name != null ? name.split("\\/") : set.getPath();
+            this.path = name == null ? set.getPath() : name.split("\\/") ;
         }
 
         boolean isFolder() {
@@ -124,15 +124,15 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     private VBox mainPane;
     private VBox dataPane;
 
-    private Selector selector = new Selector(this);
-    private BrowserActionManager actionManager = new BrowserActionManager(selector, this);
+    private final Selector selector = new Selector(this);
+    private final BrowserActionManager actionManager = new BrowserActionManager(selector, this);
 
-    private boolean searchMode = false;
+    private boolean searchMode;
 
     private Menu contextMenu;
     private Action deleteTagAction;
 
-    private List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
+    private final List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
 
     /**
      * @return the selector bound to this view
@@ -226,10 +226,10 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         baseLevelBrowser = browser;
         defaultBaseLevelBrowser = new DefaultBaseLevelBrowser(this.getSite());
 
-        if (baseLevelBrowser != null) {
-            content.setCenter(baseLevelBrowser.getFXContent());
-        } else {
+        if (baseLevelBrowser == null) {
             content.setCenter(defaultBaseLevelBrowser.getFXContent());
+        } else {
+            content.setCenter(baseLevelBrowser.getFXContent());
         }
         baseLevelPane = new TitledPane(browser.getTitleFor(Optional.empty(), Optional.empty()), content);
         baseLevelPane.setMaxHeight(Double.MAX_VALUE);
@@ -308,10 +308,10 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         beamlineSetsTree.setOnMouseReleased(e -> {
             if (e.getButton() == MouseButton.SECONDARY) {
                 BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
-                if (item.getValue().set != null) {
-                    popup.show(beamlineSetsTree, e.getScreenX(), e.getScreenY());
-                } else {
+                if (item.getValue().set == null) {
                     popup.hide();
+                } else {
+                    popup.show(beamlineSetsTree, e.getScreenX(), e.getScreenY());
                 }
             }
         });
@@ -388,7 +388,10 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
 
     private void setUpSetButtons(Button newButton, Button importButton, DataProviderWrapper dpw) {
         newButton.disableProperty().unbind();
-        if (dpw != null) {
+        if (dpw == null) {
+            importButton.setVisible(false);
+            newButton.setDisable(true);
+        } else {
             if (dpw.provider.areBaseLevelsSupported()) {
                 importButton.setVisible(true);
                 newButton.disableProperty()
@@ -397,9 +400,6 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                 importButton.setVisible(false);
                 newButton.disableProperty().bind(beamlineSetsPane.expandedProperty().not());
             }
-        } else {
-            importButton.setVisible(false);
-            newButton.setDisable(true);
         }
     }
 
@@ -418,7 +418,10 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             public void updateItem(Snapshot item, boolean empty) {
                 super.updateItem(item, empty);
                 getStyleClass().remove("tagged-cell");
-                if (item != null && !empty) {
+                if (item == null || empty) {
+                    setTooltip(null);
+                    setText(null);
+                } else {
                     StringBuilder sb = new StringBuilder(300);
                     sb.append(item.getComment());
                     String message = item.getParameters().get(Snapshot.TAG_MESSAGE);
@@ -438,9 +441,6 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                     } else {
                         setText(item.toString());
                     }
-                } else {
-                    setTooltip(null);
-                    setText(null);
                 }
             }
         });
@@ -548,17 +548,16 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         if (baseLevelBrowser != null && baseLevelBrowser.getFXContent().getParent() != null) {
             br = baseLevelBrowser;
         }
-
         BaseLevel bl = selector.selectedBaseLevelProperty().get();
-        if (bl != null) {
+        if (bl == null) {
+            baseLevelPane.setText(br.getTitleFor(Optional.empty(), Optional.empty()));
+        } else {
             if (selector.isDefaultBranch()) {
                 baseLevelPane.setText(br.getTitleFor(Optional.of(bl), Optional.empty()));
             } else {
                 Branch branch = selector.selectedBranchProperty().get();
                 baseLevelPane.setText(br.getTitleFor(Optional.of(bl), Optional.of(branch.getShortName())));
             }
-        } else {
-            baseLevelPane.setText(br.getTitleFor(Optional.empty(), Optional.empty()));
         }
     }
 
@@ -592,11 +591,11 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                 if (baseLevelBrowser != null) {
                     baseLevelBrowser.availableBaseLevelsProperty().set(baseLevelBrowser.transform(n));
                     BaseLevel base = selector.selectedBaseLevelProperty().get();
-                    if (base != null) {
+                    if (base == null) {
+                        baseLevelBrowser.selectedBaseLevelProperty().setValue(null);
+                    } else {
                         List<BaseLevel> bl = baseLevelBrowser.transform(Arrays.asList(base));
                         baseLevelBrowser.selectedBaseLevelProperty().setValue(bl.isEmpty() ? null : bl.get(0));
-                    } else {
-                        baseLevelBrowser.selectedBaseLevelProperty().setValue(null);
                     }
                 }
             } catch (RuntimeException e) {

@@ -49,14 +49,14 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
 
     private class ElementButton extends UnfocusableButton {
 
-        private ElementButton(Element element) {
+        ElementButton(Element element) {
             init(element.symbol, 10);
             setStyle(element.getStyle());
             setTooltip(new Tooltip(element.fullName));
             setOnAction(e -> setSelectedElement(((Button) e.getSource()).getId()));
         }
 
-        private ElementButton(String text) {
+        ElementButton(String text) {
             init(text, 8);
             setDisable(true);
         }
@@ -103,7 +103,7 @@ public class PeriodicTable extends GridPane implements BaseLevelBrowser<Isotope>
     private List<Button> buttons;
 
     private Button isotopeButton;
-    private FadeTransition animation;
+    private final FadeTransition animation;
     private TinySpinner neutronSpinner;
     private TinySpinner chargeSpinner;
     private ComboBox<Isotope> isotopeCombo;

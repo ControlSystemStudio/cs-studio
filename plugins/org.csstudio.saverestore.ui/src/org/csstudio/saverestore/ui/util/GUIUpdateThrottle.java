@@ -24,7 +24,7 @@ public abstract class GUIUpdateThrottle extends Thread {
     private final long suppressionMillis;
 
     /** Counter for trigger events that arrived */
-    private int triggers = 0;
+    private int triggers;
 
     /** Flag that tells thread to run or exit */
     private volatile boolean run = true;
@@ -62,8 +62,9 @@ public abstract class GUIUpdateThrottle extends Thread {
             while (run) {
                 // Wait for a trigger
                 synchronized (mutex) {
-                    while (triggers <= 0)
+                    while (triggers <= 0) {
                         mutex.wait();
+                    }
                 }
                 // Wait a little longer, so in case of a burst, we update
                 // after already receiving more than just the start of the
@@ -72,8 +73,9 @@ public abstract class GUIUpdateThrottle extends Thread {
                 synchronized (mutex) {
                     triggers = 0;
                 }
-                if (run)
+                if (run) {
                     fire();
+                }
                 // Suppress further updates a little to prevent flicker
                 Thread.sleep(suppressionMillis);
             }

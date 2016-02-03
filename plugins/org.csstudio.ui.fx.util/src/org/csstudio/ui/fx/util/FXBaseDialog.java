@@ -13,6 +13,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -147,7 +148,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
         }
         Composite fxComposite = new Composite(composite, SWT.NONE);
         fxComposite.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-        fxComposite.setLayout(new GridLayout());
+        fxComposite.setLayout(new FillLayout());
         new FXCanvasMaker() {
             @Override
             protected Scene createFxScene() {
@@ -168,8 +169,10 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
         return composite;
     }
 
+    /**
+     * Set the default focus.
+     */
     protected void setFocus() {
-
     }
 
     /**
@@ -266,10 +269,10 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
 
         Rectangle monitorBounds = monitor.getClientArea();
         Point centerPoint;
-        if (theParent != null) {
-            centerPoint = Geometry.centerPoint(theParent.getBounds());
-        } else {
+        if (theParent == null) {
             centerPoint = Geometry.centerPoint(monitorBounds);
+        } else {
+            centerPoint = Geometry.centerPoint(theParent.getBounds());
         }
 
         return new Point(centerPoint.x - (initialSize.x / 2), Math.max(monitorBounds.y,

@@ -20,7 +20,7 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class BeamlineSetController {
 
-    private IWorkbenchPart owner;
+    private final IWorkbenchPart owner;
     private BeamlineSetData selectedData;
 
     /**

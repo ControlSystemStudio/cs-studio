@@ -12,7 +12,7 @@ import javafx.scene.input.DataFormat;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SnapshotDataFormat extends DataFormat {
+public final class SnapshotDataFormat extends DataFormat {
 
     /** Singleton instance of the DataFormat */
     public static final DataFormat INSTANCE = new SnapshotDataFormat();

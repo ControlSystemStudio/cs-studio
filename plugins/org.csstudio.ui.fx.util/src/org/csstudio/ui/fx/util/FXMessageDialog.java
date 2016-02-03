@@ -57,27 +57,27 @@ public class FXMessageDialog extends IconAndMessageDialog {
     /**
      * Labels for buttons in the button bar (localized strings).
      */
-    private String[] buttonLabels;
+    private final String[] buttonLabels;
 
     /**
      * Index into <code>buttonLabels</code> of the default button.
      */
-    private int defaultButtonIndex;
+    private final int defaultButtonIndex;
 
     /**
      * Dialog title (a localized string).
      */
-    private String title;
+    private final String title;
 
     /**
      * Dialog title image.
      */
-    private Image titleImage;
+    private final Image titleImage;
 
     /**
      * Image, or <code>null</code> if none.
      */
-    private Image image = null;
+    private final Image image;
 
     /**
      * The custom dialog area.

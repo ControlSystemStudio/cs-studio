@@ -104,10 +104,10 @@ public class SaveRestoreService {
         return INSTANCE;
     }
 
-    private boolean serviceIsBusy = false;
+    private boolean serviceIsBusy;
     private List<DataProviderWrapper> dataProviders;
     private DataProviderWrapper selectedDataProvider;
-    private PropertyChangeSupport support = new PropertyChangeSupport(this);
+    private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private IPreferenceStore preferences;
     private IProgressMonitor currentJob;
 
@@ -160,8 +160,9 @@ public class SaveRestoreService {
      * @param selectedDataProvider the data provider to select
      */
     public void setSelectedDataProvider(DataProviderWrapper selectedDataProvider) {
-        if (this.selectedDataProvider != null && this.selectedDataProvider.equals(selectedDataProvider))
+        if (this.selectedDataProvider != null && this.selectedDataProvider.equals(selectedDataProvider)) {
             return;
+        }
         DataProviderWrapper oldValue = this.selectedDataProvider;
         this.selectedDataProvider = selectedDataProvider;
         if (this.selectedDataProvider != null) {

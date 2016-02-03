@@ -64,23 +64,23 @@ public class MasarClient {
 
         @Override
         public void channelCreated(Status status, Channel channel) {
-            SaveRestoreService.LOGGER
-                .info("Channel '" + channel.getChannelName() + "' created with status: " + status + ".");
+            SaveRestoreService.LOGGER.log(Level.INFO, "Channel {0} created with status {1}.",
+                new Object[] { channel.getChannelName(), status });
         }
 
         @Override
         public void channelStateChange(Channel channel, ConnectionState connectionState) {
-            SaveRestoreService.LOGGER.info("Channel '" + channel.getChannelName() + "' " + connectionState + ".");
+            SaveRestoreService.LOGGER.log(Level.INFO, "State of channel {0} channel to {1}.",
+                new Object[] { channel.getChannelName(), connectionState });
         }
-
     }
 
     private static class MasarChannelRPCRequester implements ChannelRPCRequester {
         private final CountDownLatch connectedSignaler = new CountDownLatch(1);
         private final Semaphore doneSemaphore = new Semaphore(0);
 
-        private volatile ChannelRPC channelRPC = null;
-        private volatile PVStructure result = null;
+        private volatile ChannelRPC channelRPC;
+        private volatile PVStructure result;
 
         @Override
         public String getRequesterName() {
@@ -94,8 +94,8 @@ public class MasarClient {
 
         @Override
         public void channelRPCConnect(Status status, ChannelRPC channelRPC) {
-            SaveRestoreService.LOGGER.info("ChannelRPC for '" + channelRPC.getChannel().getChannelName()
-                + "' connected with status: " + status + ".");
+            SaveRestoreService.LOGGER.log(Level.INFO, "ChannelRPC for {0} connected with status {1}.",
+                new Object[] { channelRPC.getChannel().getChannelName(), status });
             boolean reconnect = this.channelRPC != null;
             this.channelRPC = channelRPC;
             connectedSignaler.countDown();
@@ -113,8 +113,8 @@ public class MasarClient {
         @Override
         public void requestDone(Status status, ChannelRPC channelRPC, PVStructure result) {
             if (status.getType() != StatusType.OK) {
-                SaveRestoreService.LOGGER.log(Level.WARNING, "RequestDone for '"
-                    + channelRPC.getChannel().getChannelName() + "' called with status: " + status + ".");
+                SaveRestoreService.LOGGER.log(Level.WARNING, "RequestDone for {0} called with status {1}.",
+                    new Object[] { channelRPC.getChannel().getChannelName(), status });
             }
             this.result = result;
             doneSemaphore.release();
@@ -122,9 +122,9 @@ public class MasarClient {
 
         PVStructure request(PVStructure pvArgument) throws InterruptedException {
             ChannelRPC rpc = channelRPC;
-            if (rpc == null)
+            if (rpc == null) {
                 throw new IllegalStateException("ChannelRPC never connected.");
-
+            }
             rpc.request(pvArgument);
             // use tryAcquire if you need timeout support
             doneSemaphore.acquire(1);
@@ -380,7 +380,8 @@ public class MasarClient {
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_FIND_SNAPSHOTS);
             request.getStringField(MasarConstants.F_COMMENT).put("*");
             request.getStringField(MasarConstants.F_USER).put("*");
-            String newExpression = "*" + expression + "*";
+            String newExpression = new StringBuilder(expression.length() + 2).append('*').append(expression).append('*')
+                .toString();
             if (byComment) {
                 request.getStringField(MasarConstants.F_COMMENT).put(newExpression);
             }
@@ -418,11 +419,11 @@ public class MasarClient {
         try {
             PVStructure request;
             String index = beamlineSet.getParameters().get(MasarConstants.P_CONFIG_INDEX);
-            if (index != null) {
+            if (index == null) {
+                request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BASE_LEVEL);
+            } else {
                 request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_SNAPSHOT);
                 request.getStringField(MasarConstants.F_CONFIGID).put(index);
-            } else {
-                request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BASE_LEVEL);
             }
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SNAPSHOTS);
             PVStructure result = channelRPCRequester.request(request);

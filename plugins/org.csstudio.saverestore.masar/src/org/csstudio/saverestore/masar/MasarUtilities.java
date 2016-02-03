@@ -397,7 +397,7 @@ public final class MasarUtilities {
      *
      * @return the username
      */
-    static final String getUser() {
+    static String getUser() {
         Subject subj = null;
         try {
             subj = SecuritySupport.getSubject();

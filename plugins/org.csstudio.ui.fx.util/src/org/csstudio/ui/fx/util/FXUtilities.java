@@ -29,7 +29,7 @@ public final class FXUtilities {
      * @param rgb the original colour to transform
      * @return hex representation of the colour
      */
-    public static final String toHexColor(RGB rgb) {
+    public static String toHexColor(RGB rgb) {
         return Integer.toHexString(rgb.red) + Integer.toHexString(rgb.green) + Integer.toHexString(rgb.blue);
     }
 
@@ -40,7 +40,7 @@ public final class FXUtilities {
      * @param colour the original colour to transform
      * @return CSS style for a node background
      */
-    public static final String toBackgroundColorStyle(Color colour) {
+    public static String toBackgroundColorStyle(Color colour) {
         return "-fx-background-color: #" + FXUtilities.toHexColor(colour.getRGB()) + ";";
     }
 
@@ -51,7 +51,7 @@ public final class FXUtilities {
      * @param colour the original colour to transform
      * @return CSS style for a node background
      */
-    public static final String toBackgroundColorStyle(RGB rgb) {
+    public static String toBackgroundColorStyle(RGB rgb) {
         return "-fx-background-color: #" + FXUtilities.toHexColor(rgb) + ";";
     }
 

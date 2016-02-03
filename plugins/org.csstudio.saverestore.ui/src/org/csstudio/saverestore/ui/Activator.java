@@ -135,9 +135,6 @@ public class Activator extends AbstractUIPlugin {
      */
     public int getMaxNumberOfFilters() {
         int num = getPreferenceStore().getInt(MAX_NUMBER_OF_FILTERS);
-        if (num < 2) {
-            num = 20;
-        }
-        return num;
+        return num < 2 ? 20 : num;
     }
 }

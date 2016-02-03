@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.csstudio.saverestore.ui.util.VTypeNamePair;
 import org.csstudio.ui.fx.util.FXCanvasMaker;
+import org.csstudio.ui.fx.util.FXParentComposite;
 import org.csstudio.ui.fx.util.FXUtilities;
 import org.diirt.util.array.ListNumber;
 import org.diirt.vtype.VNumberArray;
@@ -15,10 +16,12 @@ import org.eclipse.jface.util.Geometry;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
@@ -39,7 +42,7 @@ public class ChartDialog extends Dialog {
     private Composite parent;
 
     /**
-     * Creates a passive dialog that show a chart of a number array.
+     * Creates a passive dialog that shows a chart of a number array.
      *
      * @param parentShell the parent shell, or <code>null</code> to create a top-level shell
      * @param value the value to display
@@ -50,11 +53,21 @@ public class ChartDialog extends Dialog {
         setBlockOnOpen(false);
     }
 
-//    @Override
-//    protected boolean isResizable() {
-//        return true;
-//    }
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.dialogs.Dialog#isResizable()
+     */
+    @Override
+    protected boolean isResizable() {
+        return true;
+    }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+     */
     @Override
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
@@ -63,13 +76,18 @@ public class ChartDialog extends Dialog {
         }
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+     */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         ((GridLayout) parent.getLayout()).numColumns++;
         new FXCanvasMaker() {
             @Override
             protected Scene createFxScene() {
-                Button closeButton = new Button(IDialogConstants.CLOSE_LABEL);
+                Button closeButton = new Button("Close");
                 closeButton.setOnAction(e -> buttonPressed(IDialogConstants.OK_ID));
                 GridPane pane = new GridPane();
                 pane.setHgap(10);
@@ -80,20 +98,21 @@ public class ChartDialog extends Dialog {
         }.createPartControl(parent);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     */
     @Override
     protected Control createDialogArea(Composite parent) {
         this.parent = parent;
         Composite composite = (Composite) super.createDialogArea(parent);
-        Composite fxComposite = new Composite(composite, SWT.NONE);
-        fxComposite
-            .setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL, GridData.VERTICAL_ALIGN_FILL, true, true));
-        fxComposite.setLayout(new GridLayout());
         new FXCanvasMaker() {
             @Override
             protected Scene createFxScene() {
                 return getScene();
             }
-        }.createPartControl(fxComposite);
+        }.createPartControl(new FXParentComposite(parent));
         applyDialogFont(composite);
         return composite;
     }
@@ -115,8 +134,8 @@ public class ChartDialog extends Dialog {
         lineChart.getStylesheets()
             .add(SnapshotViewerEditor.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
         lineChart.setStyle(FXUtilities.toBackgroundColorStyle(parent.getBackground()));
-        Scene scene = new Scene(lineChart, 600, 400);
-        return scene;
+        lineChart.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        return new Scene(lineChart, 600, 400);
     }
 
     /*
@@ -135,10 +154,10 @@ public class ChartDialog extends Dialog {
 
         Rectangle monitorBounds = monitor.getClientArea();
         Point centerPoint;
-        if (theParent != null) {
-            centerPoint = Geometry.centerPoint(theParent.getBounds());
-        } else {
+        if (theParent == null) {
             centerPoint = Geometry.centerPoint(monitorBounds);
+        } else {
+            centerPoint = Geometry.centerPoint(theParent.getBounds());
         }
 
         return new Point(centerPoint.x - (initialSize.x / 2), Math.max(monitorBounds.y,

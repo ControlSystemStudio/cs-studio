@@ -41,7 +41,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
     private final BeamlineSet beamlineSet;
     private final Snapshot snapshot;
     private String forcedName;
-    private boolean dirty = false;
+    private boolean dirty;
 
     /**
      * Constructs a new data object from the {@link VTable}. The table is expected to have 3 columns: pv names, selected

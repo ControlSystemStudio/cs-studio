@@ -19,7 +19,7 @@ public interface InputValidator<T> {
      * @param input the value to validate
      * @return error description if no acceptable or null if acceptable
      */
-    public String validate(T input);
+    String validate(T input);
 
     /**
      * Validation may block or allow the procedure to continue. In case if the process is allowed to continue even if
@@ -30,7 +30,7 @@ public interface InputValidator<T> {
      * @param input the input that is being validated
      * @return true if the process is allowed to continue or false otherwise
      */
-    public default boolean isAllowedToProceed(T input){
+    default boolean isAllowedToProceed(T input){
         return false;
     }
 }

@@ -26,9 +26,9 @@ public class MultitypeTableCell<S, T> extends TableCell<S, T> {
 
     private TextField textField;
     private ComboBox<T> comboBox;
-    private ObjectProperty<StringConverter<T>> converter = new SimpleObjectProperty<StringConverter<T>>(this,
+    private final ObjectProperty<StringConverter<T>> converter = new SimpleObjectProperty<StringConverter<T>>(this,
         "converter");
-    private ObservableList<T> items = FXCollections.observableArrayList();
+    private final ObservableList<T> items = FXCollections.observableArrayList();
 
     /**
      * Return true if this cell should display a text field or false if it should display the combo box. If the cell
@@ -47,7 +47,7 @@ public class MultitypeTableCell<S, T> extends TableCell<S, T> {
      * @param converter the converter
      */
     public void setConverter(StringConverter<T> converter) {
-        this.converter.set(converter != null ? converter : CellUtils.<T> defaultStringConverter());
+        this.converter.set(converter == null ? CellUtils.<T> defaultStringConverter() : converter);
     }
 
     /**

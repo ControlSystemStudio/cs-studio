@@ -44,7 +44,7 @@ public class FXComboInputDialog<T> extends FXBaseDialog<T> {
     }
 
     private ComboBox<T> combo;
-    private List<T> values;
+    private final List<T> values;
 
     /**
      * Creates a combo input dialog with OK and Cancel buttons. Note that the dialog will have no visual representation

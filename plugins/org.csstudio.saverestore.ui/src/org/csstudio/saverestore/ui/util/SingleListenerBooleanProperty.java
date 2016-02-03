@@ -13,7 +13,7 @@ import javafx.beans.value.ChangeListener;
  */
 public class SingleListenerBooleanProperty extends SimpleBooleanProperty {
 
-    private boolean listenerSet = false;
+    private boolean listenerSet;
     private ChangeListener<? super Boolean> listener;
 
     /**

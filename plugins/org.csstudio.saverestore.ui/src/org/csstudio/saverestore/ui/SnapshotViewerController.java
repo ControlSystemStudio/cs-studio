@@ -98,8 +98,9 @@ public class SnapshotViewerController {
             this.writer = writer;
             this.reader.addPVReaderListener(e -> {
                 synchronized (SnapshotViewerController.this) {
-                    if (suspend.get() > 0)
+                    if (suspend.get() > 0) {
                         return;
+                    }
                 }
                 if (e.isExceptionChanged()) {
                     SaveRestoreService.LOGGER.log(Level.WARNING, "DIIRT Connection Error",
@@ -139,9 +140,9 @@ public class SnapshotViewerController {
         }
     }
 
-    private BooleanProperty snapshotSaveableProperty = new SimpleBooleanProperty(false);
-    private BooleanProperty snapshotRestorableProperty = new SimpleBooleanProperty(false);
-    private ObjectProperty<VSnapshot> baseSnapshotProperty = new SimpleObjectProperty<>(null);
+    private final BooleanProperty snapshotSaveableProperty = new SimpleBooleanProperty(false);
+    private final BooleanProperty snapshotRestorableProperty = new SimpleBooleanProperty(false);
+    private final ObjectProperty<VSnapshot> baseSnapshotProperty = new SimpleObjectProperty<>(null);
 
     private final List<VSnapshot> snapshots = new ArrayList<>(10);
     private final Map<String, TableEntry> items = new LinkedHashMap<>();
@@ -166,10 +167,10 @@ public class SnapshotViewerController {
     private final AtomicInteger suspend = new AtomicInteger(0);
     private final SnapshotViewerEditor owner;
 
-    private boolean showReadbacks = false;
-    private boolean showStoredReadbacks = false;
-    private boolean hideEqualItems = false;
-    private String filter = null;
+    private boolean showReadbacks;
+    private boolean showStoredReadbacks;
+    private boolean hideEqualItems;
+    private String filter;
 
     /**
      * Constructs a new controller for the given editor.
@@ -982,8 +983,9 @@ public class SnapshotViewerController {
             for (int i = 0; i < snaps.size(); i++) {
                 final int index = i;
                 Timestamp start = snaps.get(i).getTimestamp();
-                if (start == null)
+                if (start == null) {
                     continue;
+                }
                 String name = "archive://" + pvName + "?time=" + start.toString();
                 PVReader<VTable> reader = PVManager.read(channel(name, VTable.class, VType.class)).readListener(x -> {
                     boolean handled = false;

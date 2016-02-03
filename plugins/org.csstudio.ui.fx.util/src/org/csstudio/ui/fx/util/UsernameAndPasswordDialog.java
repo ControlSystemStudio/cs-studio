@@ -38,9 +38,9 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
     private TextField username;
     private CheckBox rememberBox;
     private Credentials value;
-    private InputValidator<String> validator = e -> (e == null || e.trim().isEmpty())
+    private final InputValidator<String> validator = e -> (e == null || e.trim().isEmpty())
             ? "Empty username or password not allowed" : null;
-    private String currentUsername;
+    private final String currentUsername;
     private final String message;
     private final boolean remember;
 

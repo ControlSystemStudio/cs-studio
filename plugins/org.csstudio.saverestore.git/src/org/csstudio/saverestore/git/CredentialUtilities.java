@@ -44,7 +44,7 @@ public final class CredentialUtilities {
      * @param previous version of credentials that did not work
      * @return credentials if confirmed or an empty object if cancelled
      */
-    public static final Credentials getCredentials(Optional<Credentials> previous) {
+    public static Credentials getCredentials(Optional<Credentials> previous) {
         final Credentials[] provider = new Credentials[1];
         Subject subj = SecuritySupport.getSubject();
         final String currentUser = previous.isPresent() ? previous.get().getUsername()
@@ -83,7 +83,7 @@ public final class CredentialUtilities {
      * @param cred the credentials to transform to credentials provider
      * @return provider if credentials were non null or null if the given credentials were null
      */
-    public static final CredentialsProvider toCredentialsProvider(Credentials cred) {
+    public static CredentialsProvider toCredentialsProvider(Credentials cred) {
         return cred == null ? null : new UsernamePasswordCredentialsProvider(cred.getUsername(), cred.getPassword());
     }
 
@@ -120,16 +120,15 @@ public final class CredentialUtilities {
         try {
             byte[] val = SecurePreferences.getSecurePreferences().node(Activator.ID).node(user).node(username)
                 .getByteArray(PREF_PASSWORD, null);
-            if (val == null) {
-                return Optional.empty();
+            if (val != null) {
+                CharBuffer buffer = Charset.forName("UTF-8").newDecoder().decode(ByteBuffer.wrap(val));
+                return Optional.of(Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit()));
             }
-            CharBuffer buffer = Charset.forName("UTF-8").newDecoder().decode(ByteBuffer.wrap(val));
-            return Optional.of(Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit()));
         } catch (StorageException | IOException e) {
             SaveRestoreService.LOGGER.log(Level.WARNING,
                 "Could not read the password for '" + forUser + "' from secured storage.", e);
-            return Optional.empty();
         }
+        return Optional.empty();
     }
 
     /**
@@ -155,7 +154,8 @@ public final class CredentialUtilities {
                 byte[] passwordData = Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit());
                 prefs.node(username).putByteArray(PREF_PASSWORD, passwordData, false);
             }
-            SaveRestoreService.LOGGER.log(Level.FINE, "Stored new username and password for '" + user + "'.");
+            SaveRestoreService.LOGGER.log(Level.FINE, "Stored new username and password for {0}.",
+                new Object[] { user });
         } catch (StorageException | IOException e) {
             SaveRestoreService.LOGGER.log(Level.WARNING, "Could not store the username and password.", e);
         }

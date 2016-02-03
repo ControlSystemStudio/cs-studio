@@ -13,7 +13,7 @@ import org.csstudio.saverestore.data.Branch;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class Isotope extends BaseLevel {
+public final class Isotope extends BaseLevel {
 
     private static final long serialVersionUID = -3119527921225304647L;
 
@@ -229,12 +229,13 @@ public class Isotope extends BaseLevel {
      */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        } else if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        } else if (getClass() != obj.getClass()) {
             return false;
+        }
         Isotope other = (Isotope) obj;
         return Objects.equals(charge, other.charge) && Objects.equals(element, other.element)
             && Objects.equals(neutrons, other.neutrons);

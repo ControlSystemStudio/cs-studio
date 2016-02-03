@@ -42,10 +42,10 @@ public class DefaultBaseLevelBrowser extends GridPane implements BaseLevelBrowse
 
     private static final String ANIMATED_STYLE = SnapshotViewerEditor.ANIMATED_STYLE + "-fx-font-weight: bold; ";
 
-    private ListView<BaseLevel> baseLevelsList;
-    private Button okButton;
-    private TextField textField;
-    private FadeTransition animation;
+    private final ListView<BaseLevel> baseLevelsList;
+    private final Button okButton;
+    private final TextField textField;
+    private final FadeTransition animation;
 
     private ObjectProperty<BaseLevel> selectedBaseLevelProperty;
     private ObjectProperty<BaseLevel> internalBaseLevelProperty;

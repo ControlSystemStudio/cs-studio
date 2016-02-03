@@ -124,7 +124,7 @@ public final class FileUtilities {
                     headerMap.put(header[i].toUpperCase(Locale.UK), Integer.valueOf(i));
                 }
             } else {
-                if (headerMap.size() == 0) {
+                if (headerMap.isEmpty()) {
                     throw new IOException("The Snapshot content is invalid. No CSV header is defined.");
                 }
                 // there are no fields in here that may contain a comma
@@ -460,7 +460,7 @@ public final class FileUtilities {
             } else {
                 String[] split = line.split("\\,", header.length);
                 // there are no fields in here that may contain a comma
-                if (namesIndex != -1) {
+                if (namesIndex > -1) {
                     names.add(trim(split[namesIndex]));
                 } else {
                     continue;
@@ -490,7 +490,7 @@ public final class FileUtilities {
         List<String> readbacks = data.getReadbackList();
         List<String> deltas = data.getDeltaList();
         final StringBuilder sb = new StringBuilder(BSD_ENTRY_LENGTH * pvs.size());
-        sb.append("# ").append(DESCRIPTION_TAG).append("\n# ");
+        sb.append('#').append(' ').append(DESCRIPTION_TAG).append("\n# ");
         sb.append(description).append("\n#\n");
         if (readbacks.isEmpty() && deltas.isEmpty()) {
             sb.append(H_PV_NAME).append('\n');

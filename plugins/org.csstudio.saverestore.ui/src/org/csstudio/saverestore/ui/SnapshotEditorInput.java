@@ -17,6 +17,8 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class SnapshotEditorInput implements IEditorInput {
 
+    private static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = ThreadLocal
+        .withInitial(() -> new SimpleDateFormat(" (MMM dd HH:mm:ss)"));
     private final VSnapshot snapshot;
 
     /**
@@ -78,8 +80,7 @@ public class SnapshotEditorInput implements IEditorInput {
         if (snapshot.isSaved()) {
             Date t = snapshot.getSnapshot().get().getDate();
             String name = snapshot.getBeamlineSet().getName();
-            SimpleDateFormat df = new SimpleDateFormat(" (MMM dd HH:mm:ss)");
-            return name + df.format(t);
+            return name + DATE_FORMAT.get().format(t);
         } else {
             return snapshot.getBeamlineSet().getDisplayName();
         }

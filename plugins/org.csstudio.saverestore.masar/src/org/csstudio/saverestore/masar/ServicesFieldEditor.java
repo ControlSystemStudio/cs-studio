@@ -18,7 +18,7 @@ import org.eclipse.swt.widgets.Label;
  *
  */
 public class ServicesFieldEditor extends FieldEditor {
-    private List<String> services = new ArrayList<>();
+    private final List<String> services = new ArrayList<>();
     private Label label;
     private StringTableEditor editor;
 

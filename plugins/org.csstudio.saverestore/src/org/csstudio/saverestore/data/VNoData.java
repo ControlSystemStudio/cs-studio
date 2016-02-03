@@ -11,7 +11,7 @@ import org.diirt.vtype.VType;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class VNoData implements VType, Serializable {
+public final class VNoData implements VType, Serializable {
 
     private static final long serialVersionUID = -2399970529728581034L;
 

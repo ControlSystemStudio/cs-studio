@@ -131,14 +131,18 @@ public final class MasarConstants {
     static Structure createSearchStructure(boolean comment, boolean user, boolean start, boolean end) {
         List<String> names = new ArrayList<>(5);
         names.add(F_FUNCTION);
-        if (comment)
+        if (comment) {
             names.add(F_COMMENT);
-        if (user)
+        }
+        if (user) {
             names.add(F_USER);
-        if (start)
+        }
+        if (start) {
             names.add(F_START);
-        if (end)
+        }
+        if (end) {
             names.add(F_END);
+        }
         Field[] fields = new Field[names.size()];
         for (int i = 0; i < fields.length; i++) {
             fields[i] = FieldFactory.getFieldCreate().createScalar(ScalarType.pvString);

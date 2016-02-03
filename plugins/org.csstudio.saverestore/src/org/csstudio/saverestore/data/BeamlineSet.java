@@ -219,8 +219,9 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
         String[] otherPath = o.path;
         for (int i = 0; i < path.length && i < otherPath.length; i++) {
             int c = path[i].compareTo(otherPath[i]);
-            if (c != 0)
+            if (c != 0) {
                 return c;
+            }
         }
 
         if (path.length == otherPath.length) {

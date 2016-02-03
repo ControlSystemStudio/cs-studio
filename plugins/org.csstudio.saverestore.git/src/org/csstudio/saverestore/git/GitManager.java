@@ -275,8 +275,9 @@ public class GitManager {
         List<Branch> branches = new ArrayList<>(branchesRef.size());
         for (Ref b : branchesRef) {
             String name = b.getName();
-            if ("HEAD".equals(name))
+            if ("HEAD".equals(name)) {
                 continue;
+            }
             Branch branch;
             if (name.indexOf('/') > 0) {
                 branch = new Branch(name, name.substring(name.lastIndexOf('/') + 1));
@@ -509,7 +510,7 @@ public class GitManager {
         String branch = beamlineSet.getBranch().getShortName();
         for (RevCommit commit : fileRevisions) {
             String revision = commit.getName();
-            if (rev != null && revision.equals(rev)) {
+            if (rev != null && rev.equals(revision)) {
                 // do not return the revision that the client already knows
                 continue;
             }
@@ -811,11 +812,11 @@ public class GitManager {
     private MetaInfo commit(String relativePath, MetaInfo metaInfo) throws GitAPIException {
         git.add().addFilepattern(relativePath).call();
         CommitCommand command = git.commit().setMessage(metaInfo.comment);
-        if (metaInfo.timestamp != null) {
+        if (metaInfo.timestamp == null) {
+            command.setCommitter(metaInfo.creator, metaInfo.eMail);
+        } else {
             command.setCommitter(
                 new PersonIdent(metaInfo.creator, metaInfo.eMail, metaInfo.timestamp, TimeZone.getTimeZone("GMT")));
-        } else {
-            command.setCommitter(metaInfo.creator, metaInfo.eMail);
         }
         RevCommit commit = command.call();
         return getMetaInfoFromCommit(commit);
@@ -1467,16 +1468,17 @@ public class GitManager {
             String newPath = path.replace("\\", GIT_PATH_DELIMITER);
             String[] pp = newPath.split(GIT_PATH_DELIMITER);
             if (level.isPresent()) {
-                if (pp.length < 3)
+                if (pp.length < 3) {
                     return new String[0];
-                if (pp[0].equals(level.get().getStorageName())) {
+                } else if (pp[0].equals(level.get().getStorageName())) {
                     String[] ret = new String[pp.length - 2];
                     System.arraycopy(pp, 2, ret, 0, ret.length);
                     return ret;
                 }
             } else {
-                if (pp.length < 2)
+                if (pp.length < 2) {
                     return new String[0];
+                }
                 String[] ret = new String[pp.length - 1];
                 System.arraycopy(pp, 1, ret, 0, ret.length);
                 return ret;
@@ -1508,10 +1510,10 @@ public class GitManager {
             } else {
                 last = last.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
             }
-            if (!last.toLowerCase(Locale.UK).endsWith(fileType.suffix)) {
-                last += fileType.suffix;
-            }
             sb.append(last);
+            if (!last.toLowerCase(Locale.UK).endsWith(fileType.suffix)) {
+                sb.append(fileType.suffix);
+            }
         }
         return sb.substring(0, sb.length());
     }

@@ -58,8 +58,8 @@ public class BeamlineSetEditor extends FXEditorPart {
     private TextArea descriptionArea;
     private TextArea contentArea;
 
-    private boolean dirty = false;
-    private BeamlineSetController controller;
+    private boolean dirty;
+    private final BeamlineSetController controller;
 
     /**
      * Constructs a new beamline set editor.
@@ -151,8 +151,9 @@ public class BeamlineSetEditor extends FXEditorPart {
         List<String> deltasList = new ArrayList<>(content.length);
         String[] d;
         for (String s : content) {
-            if (s.trim().isEmpty())
+            if (s.trim().isEmpty()) {
                 continue;
+            }
             d = s.split("\\,", 3);
             if (d.length != length) {
                 if (markError) {
@@ -308,7 +309,7 @@ public class BeamlineSetEditor extends FXEditorPart {
         descriptionArea.setMaxWidth(Double.MAX_VALUE);
         descriptionArea.setWrapText(true);
         descriptionArea.setPrefRowCount(4);
-        descriptionArea.textProperty().addListener((a, o, n) -> setDirty(false));
+        descriptionArea.textProperty().addListener((a, o, n) -> setDirty(true));
 
         Label contentLabel = new Label("PV List:");
         contentLabel.setFont(Font.font(15));

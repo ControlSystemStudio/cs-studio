@@ -110,19 +110,14 @@ public class SnapshotViewerEditor extends FXEditorPart {
     public static final String ANIMATED_STYLE = "-fx-background-color: #FF8080; -fx-text-fill: white; "
         + "-fx-effect: dropshadow(three-pass-box,rgba(0,0,0,0.6),5,0.0,0,1); ";
 
-    private BorderPane contentPane;
     private Table table;
-    private SnapshotViewerController controller;
+    private final SnapshotViewerController controller;
     private TextArea commentField;
     private TextField dateField;
     private TextField creatorField;
     private TextArea tagField;
-    private Button takeSnapshotButton;
-    private Button restoreSnapshotButton;
     private Button saveSnapshotButton;
-    private FadeTransition animation;
     private Menu contextMenu;
-    private Action openChartAction;
 
     /**
      * Constructs a new editor.
@@ -140,7 +135,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
         MenuManager menu = new MenuManager();
-        openChartAction = new Action("Open In Chart") {
+        final Action openChartAction = new Action("Open In Chart") {
             @Override
             public void run() {
                 VTypeNamePair type = table.getClickedItem();
@@ -169,7 +164,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         }
         setSnapshot(snapshot);
 
-        animation = new FadeTransition(Duration.seconds(0.15), saveSnapshotButton);
+        final FadeTransition animation = new FadeTransition(Duration.seconds(0.15), saveSnapshotButton);
         animation.setAutoReverse(true);
         animation.setFromValue(1.0);
         animation.setToValue(0.4);
@@ -403,7 +398,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
      */
     @Override
     protected Scene createFxScene() {
-        contentPane = new BorderPane(createTable());
+        BorderPane contentPane = new BorderPane(createTable());
         contentPane.setTop(new BorderPane(createMainControlPane(), createToolbarPane(), null, null, null));
         init();
         return new Scene(contentPane);
@@ -500,7 +495,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         filterCombo.setMinWidth(140);
         filterCombo.setEditable(true);
         filterCombo.setOnAction(new EventHandler<ActionEvent>() {
-            private boolean suppressUpdate = false;
+            private boolean suppressUpdate;
             @Override
             public void handle(ActionEvent event) {
                 if (suppressUpdate) {
@@ -620,7 +615,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         commentField.setPrefWidth(200);
         commentField.setMaxWidth(Double.MAX_VALUE);
         commentField.setPrefRowCount(2);
-        FXUtilities.setGridConstraints(commentField, true, true, Priority.SOMETIMES, Priority.ALWAYS);
+        setGridConstraints(commentField, true, true, Priority.SOMETIMES, Priority.ALWAYS);
         GridPane.setMargin(commentField, new Insets(0, 5, 0, 0));
         creatorField = new StaticTextField();
         int width = FXUtilities.measureStringWidth("0000 MMM 00 00:00:00 ", creatorField.getFont()) + 20;
@@ -633,7 +628,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         tagField.setPrefWidth(200);
         tagField.setMaxWidth(Double.MAX_VALUE);
         tagField.setPrefRowCount(2);
-        FXUtilities.setGridConstraints(tagField, true, true, Priority.SOMETIMES, Priority.ALWAYS);
+        setGridConstraints(tagField, true, true, Priority.SOMETIMES, Priority.ALWAYS);
         GridPane.setMargin(tagField, new Insets(0, 5, 0, 0));
         left.add(new Label("Comment:"), 0, 0);
         left.add(commentField, 1, 0, 1, 2);
@@ -658,7 +653,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         GridPane grid = new GridPane();
         grid.setPadding(new Insets(5, 5, 5, 5));
         grid.setHgap(5);
-        takeSnapshotButton = new Button();
+        Button takeSnapshotButton = new Button();
         VBox box = new VBox();
         box.getChildren().addAll(new Label("Take"), new Label("Snapshot"));
         box.setAlignment(Pos.CENTER);
@@ -691,7 +686,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         });
         saveSnapshotButton.disableProperty().bind(controller.snapshotSaveableProperty().not());
 
-        restoreSnapshotButton = new Button("Restore");
+        Button restoreSnapshotButton = new Button("Restore");
         restoreSnapshotButton.setTooltip(new Tooltip("Set the stored values to PVs"));
         restoreSnapshotButton.setOnAction(e -> SaveRestoreService.getInstance().execute("Restore Snapshot", () -> {
             List<VSnapshot> snapshots = controller.getSnapshots(false);

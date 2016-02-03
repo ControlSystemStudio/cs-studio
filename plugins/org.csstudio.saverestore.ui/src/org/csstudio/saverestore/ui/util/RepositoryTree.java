@@ -114,12 +114,12 @@ public class RepositoryTree extends TreeView<String> {
         }
     }
 
-    private IWorkbenchPart owner;
+    private final IWorkbenchPart owner;
     private Selector selector;
     private TreeItem<String> root;
-    private boolean editable;
-    private BeamlineSet initialValue;
-    private String dataProviderId;
+    private final boolean editable;
+    private final BeamlineSet initialValue;
+    private final String dataProviderId;
 
     /**
      * Constructs a new repository tree.
@@ -359,10 +359,10 @@ public class RepositoryTree extends TreeView<String> {
             path[i] = names.get(length - 1 - i);
         }
 
-        if (set != null) {
-            path[length] = set.getName();
-        } else {
+        if (set == null) {
             path[length] = "";
+        } else {
+            path[length] = set.getName();
         }
 
         BeamlineSet newSet = new BeamlineSet(branch, Optional.ofNullable(baseLevel), path, dataProviderId);
@@ -394,8 +394,9 @@ public class RepositoryTree extends TreeView<String> {
         BrowsingTreeItem baseItem = null;
         for (TreeItem<String> bl : branch.getChildren()) {
             if (((BrowsingTreeItem) bl).type == Type.BASE) {
-                if (base.getStorageName().equals(((BrowsingTreeItem) bl).base.getStorageName()))
+                if (base.getStorageName().equals(((BrowsingTreeItem) bl).base.getStorageName())) {
                     baseItem = (BrowsingTreeItem) bl;
+                }
                 break;
             }
         }
