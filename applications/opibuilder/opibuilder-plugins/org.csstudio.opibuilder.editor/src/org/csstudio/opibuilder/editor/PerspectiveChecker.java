@@ -49,14 +49,18 @@ public class PerspectiveChecker implements IStartup {
         switchFailedMessage = "Failed to change to OPI Editor perspective: ";
     }
 
+    /**
+     * Add an EditorWindowListener to the workbench, and an EditorPageListener
+     * to any open workbench windows.
+     */
     @Override
     public void earlyStartup() {
         IWorkbench bench = PlatformUI.getWorkbench();
+        bench.addWindowListener(new EditorWindowListener());
         for (IWorkbenchWindow window : bench.getWorkbenchWindows()) {
             for (IWorkbenchPage page : window.getPages()) {
                 page.addPartListener(new EditorPartListener());
             }
-            bench.addWindowListener(new EditorWindowListener());
         }
     }
 
@@ -76,10 +80,10 @@ public class PerspectiveChecker implements IStartup {
         public void windowDeactivated(IWorkbenchWindow window) {}
         @Override
         public void windowOpened(IWorkbenchWindow window) {
+            window.addPageListener(new EditorPageListener());
             for (IWorkbenchPage page : window.getPages()) {
                 page.addPartListener(new EditorPartListener());
             }
-            window.addPageListener(new EditorPageListener());
         }
     }
 
