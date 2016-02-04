@@ -197,7 +197,8 @@ public final class FileUtilities {
      */
     private static VType piecesToVType(String timestamp, String status, String severity, String value,
         String valueType) {
-        if (value == null || value.isEmpty() || "null".equalsIgnoreCase(value)) {
+        if (value == null || value.isEmpty() || "null".equalsIgnoreCase(value)
+            || VNoData.INSTANCE.toString().equals(value)) {
             return VNoData.INSTANCE;
         }
         String[] t = timestamp != null && timestamp.indexOf('.') > 0 ? timestamp.split("\\.")
