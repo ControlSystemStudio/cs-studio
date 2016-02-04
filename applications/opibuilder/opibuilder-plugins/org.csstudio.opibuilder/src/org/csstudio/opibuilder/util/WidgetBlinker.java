@@ -1,10 +1,10 @@
 /*******************************************************************************
-* Copyright (c) 2010-2016 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
+ * Copyright (c) 2010-2016 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
 import java.util.Collections;
@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Display;
 public enum WidgetBlinker {
     INSTANCE;
 
-	private final boolean enabled = PreferencesHelper.isOpiBeastAlarmsEnabled();
+    private final boolean enabled = PreferencesHelper.isOpiBeastAlarmsEnabled();
     private final int period = PreferencesHelper.getOpiBeastAlarmsBlinkPeriod();
     private final Set<PVWidgetEditpartDelegate> widgets = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
     private final Display display = Display.getDefault();
@@ -31,7 +31,7 @@ public enum WidgetBlinker {
 
     void blink(boolean firstBlink)
     {
-    	if (!enabled) return;
+        if (!enabled) return;
 
         int delay;
         if (firstBlink == false)
@@ -55,9 +55,9 @@ public enum WidgetBlinker {
             if (!active || display.isDisposed()) return;
 
             beastBlinkState ^= 1;
-        	synchronized (widgets) {
-        		widgets.forEach((pvw) -> display.asyncExec(() -> pvw.performBeastBlink(beastBlinkState)));
-        	}
+            synchronized (widgets) {
+                widgets.forEach((pvw) -> display.asyncExec(() -> pvw.performBeastBlink(beastBlinkState)));
+            }
             blink(false);
         });
     }
@@ -71,12 +71,12 @@ public enum WidgetBlinker {
      */
     public void add(PVWidgetEditpartDelegate pvw)
     {
-    	if (!enabled) return; // ignore `subscribers` if BEAST Alarms in OPIs functionality is disabled
+        if (!enabled) return; // ignore `subscribers` if BEAST Alarms in OPIs functionality is disabled
 
-    	// sync is not needed for the single add(), but we don't want to begin blinking
-    	// multiple times if two add's are called concurrently
+        // sync is not needed for the single add(), but we don't want to begin blinking
+        // multiple times if two add's are called concurrently
         synchronized(widgets) {
-        	widgets.add(pvw);
+            widgets.add(pvw);
             if (!active)
             {
                 active = true;
@@ -103,6 +103,6 @@ public enum WidgetBlinker {
      * @return <code>true</code> if WidgetBlinker's blink list contains pvw, <code>false</code> otherwise.
      */
     public boolean isBlinking(PVWidgetEditpartDelegate pvw) {
-    	return widgets.contains(pvw);
+        return widgets.contains(pvw);
     }
 }
