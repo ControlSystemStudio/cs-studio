@@ -89,11 +89,11 @@ public class BrowserActionManager extends ActionManager {
         SaveRestoreService.getInstance().execute("Import Data", () -> {
             try {
                 if (provider.importData(source, currentBranch, Optional.ofNullable(baseLevel), type)) {
-                    SaveRestoreService.LOGGER.log(Level.FINE,
-                        "Successfully imported data from '" + source.getFullyQualifiedName() + "'.");
+                    SaveRestoreService.LOGGER.log(Level.FINE, "Successfully imported data from {0}.",
+                        new Object[] { source.getFullyQualifiedName() });
                 } else {
-                    SaveRestoreService.LOGGER.log(Level.FINE,
-                        "Failed to import data from '" + source.getFullyQualifiedName() + "'.");
+                    SaveRestoreService.LOGGER.log(Level.FINE, "Failed to import data from {0}.",
+                        new Object[] { source.getFullyQualifiedName() });
                 }
             } catch (DataProviderException e) {
                 ActionManager.reportException(e, owner.getSite().getShell());
@@ -122,8 +122,8 @@ public class BrowserActionManager extends ActionManager {
         SaveRestoreService.getInstance().execute("Tag Snapshot", () -> {
             try {
                 provider.tagSnapshot(snapshot, Optional.of(tagName), Optional.of(tagMessage));
-                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully tagged snapshot '"
-                    + snapshot.getBeamlineSet().getFullyQualifiedName() + ": " + snapshot.getDate() + "'.");
+                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully tagged snapshot {0}: {1}.",
+                    new Object[] { snapshot.getBeamlineSet().getFullyQualifiedName(), snapshot.getDate() });
             } catch (DataProviderException e) {
                 ActionManager.reportException(e, owner.getSite().getShell());
             }
@@ -179,11 +179,11 @@ public class BrowserActionManager extends ActionManager {
                         : null);
                 if (comment.isPresent()) {
                     if (provider.deleteBeamlineSet(set, comment.get())) {
-                        SaveRestoreService.LOGGER.log(Level.FINE,
-                            "Successfully deleted beamline set '" + set.getFullyQualifiedName() + "'.");
+                        SaveRestoreService.LOGGER.log(Level.FINE, "Successfully deleted beamline set {0}.",
+                            new Object[] { set.getFullyQualifiedName() });
                     } else {
-                        SaveRestoreService.LOGGER.log(Level.FINE,
-                            "Failed to delete beamline set '" + set.getFullyQualifiedName() + "'.");
+                        SaveRestoreService.LOGGER.log(Level.FINE, "Failed to delete beamline set {0}.",
+                            new Object[] { set.getFullyQualifiedName() });
                     }
                 }
             } catch (DataProviderException e) {
@@ -211,8 +211,8 @@ public class BrowserActionManager extends ActionManager {
         SaveRestoreService.getInstance().execute("Remove tag", () -> {
             try {
                 provider.tagSnapshot(snapshot, Optional.empty(), Optional.empty());
-                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully deleted the tag from '"
-                    + snapshot.getBeamlineSet().getFullyQualifiedName() + ": " + snapshot.getDate() + "'.");
+                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully deleted the tag from {0}: {1}.",
+                    new Object[] { snapshot.getBeamlineSet().getFullyQualifiedName(), snapshot.getDate() });
             } catch (DataProviderException e) {
                 ActionManager.reportException(e, owner.getSite().getShell());
             }
@@ -236,7 +236,8 @@ public class BrowserActionManager extends ActionManager {
         SaveRestoreService.getInstance().execute("Create new branch", () -> {
             try {
                 provider.createNewBranch(orgBranch, branchName);
-                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully created branch '" + branchName + "'.");
+                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully created branch {0}.",
+                    new Object[] { branchName });
             } catch (DataProviderException e) {
                 ActionManager.reportException(e, owner.getSite().getShell());
             }

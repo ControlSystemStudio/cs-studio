@@ -6,22 +6,17 @@ import java.util.List;
 
 import org.csstudio.saverestore.ui.util.VTypeNamePair;
 import org.csstudio.ui.fx.util.FXCanvasMaker;
-import org.csstudio.ui.fx.util.FXParentComposite;
 import org.csstudio.ui.fx.util.FXUtilities;
 import org.diirt.util.array.ListNumber;
 import org.diirt.vtype.VNumberArray;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.util.Geometry;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
@@ -33,13 +28,21 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
+/**
+ *
+ * <code>ChartDialog</code> is a dialog which displays the values of a {@link VNumberArray} in a simple line chart.
+ *
+ * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+ *
+ */
 public class ChartDialog extends Dialog {
 
+    private static final String CLOSE_LABEL = IDialogConstants.CLOSE_LABEL.replace("&", "");
     private final VTypeNamePair value;
-    private Composite parent;
 
     /**
      * Creates a passive dialog that shows a chart of a number array.
@@ -83,19 +86,18 @@ public class ChartDialog extends Dialog {
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        ((GridLayout) parent.getLayout()).numColumns++;
-        new FXCanvasMaker() {
-            @Override
-            protected Scene createFxScene() {
-                Button closeButton = new Button("Close");
-                closeButton.setOnAction(e -> buttonPressed(IDialogConstants.OK_ID));
-                GridPane pane = new GridPane();
-                pane.setHgap(10);
-                setGridConstraints(closeButton, false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
-                pane.add(closeButton, 0, 0);
-                return new Scene(pane);
-            }
-        }.createPartControl(parent);
+        ((GridLayout) parent.getLayout()).numColumns = 1;
+        new FXCanvasMaker(parent, this::createFXButtonBar);
+    }
+
+    private Scene createFXButtonBar(Composite parent) {
+        Button closeButton = new Button(CLOSE_LABEL);
+        closeButton.setOnAction(e -> buttonPressed(IDialogConstants.OK_ID));
+        GridPane pane = new GridPane();
+        pane.setHgap(10);
+        setGridConstraints(closeButton, false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
+        pane.add(closeButton, 0, 0);
+        return new Scene(pane);
     }
 
     /*
@@ -105,19 +107,13 @@ public class ChartDialog extends Dialog {
      */
     @Override
     protected Control createDialogArea(Composite parent) {
-        this.parent = parent;
         Composite composite = (Composite) super.createDialogArea(parent);
-        new FXCanvasMaker() {
-            @Override
-            protected Scene createFxScene() {
-                return getScene();
-            }
-        }.createPartControl(new FXParentComposite(parent));
+        new FXCanvasMaker(composite, this::getScene);
         applyDialogFont(composite);
         return composite;
     }
 
-    private Scene getScene() {
+    private Scene getScene(Composite parent) {
         NumberAxis xAxis = new NumberAxis();
         NumberAxis yAxis = new NumberAxis();
         xAxis.setLabel("Array Index");
@@ -135,6 +131,10 @@ public class ChartDialog extends Dialog {
             .add(SnapshotViewerEditor.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
         lineChart.setStyle(FXUtilities.toBackgroundColorStyle(parent.getBackground()));
         lineChart.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        for (XYChart.Data<Number, Number> d : list) {
+            Tooltip.install(d.getNode(),
+                new Tooltip(String.format("(%d, %3.2f)", d.getXValue().longValue(), d.getYValue().doubleValue())));
+        }
         return new Scene(lineChart, 600, 400);
     }
 

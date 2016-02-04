@@ -39,6 +39,7 @@ import javafx.beans.property.SimpleObjectProperty;
 public class Selector implements CompletionNotifier {
 
     private static final Branch DEFAULT_BRANCH = new Branch();
+    private Branch firstTimeBranch;
 
     private ObjectProperty<Branch> selectedBranch;
     private ObjectProperty<BaseLevel> selectedBaseLevel;
@@ -78,8 +79,26 @@ public class Selector implements CompletionNotifier {
             ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
                 .set(Collections.unmodifiableList(new ArrayList<>(0)));
             allSnapshotsLoaded.set(false);
-            readBranches(DEFAULT_BRANCH);
+            if (firstTimeBranch == null) {
+                readBranches(DEFAULT_BRANCH);
+            } else {
+                Branch branch = firstTimeBranch;
+                firstTimeBranch = null;
+                readBranches(branch);
+            }
         });
+    }
+
+    /**
+     * Set the branch that is selected at startup.
+     *
+     * @param branch the default branch
+     */
+    public void setFirstTimeBranch(String branch) {
+        if (branch == null || branch.isEmpty()) {
+            return;
+        }
+        this.firstTimeBranch = new Branch(branch, branch);
     }
 
     private void reloadBeamlineSets(BaseLevel baseLevel, Branch branch) {
@@ -99,10 +118,26 @@ public class Selector implements CompletionNotifier {
             SaveRestoreService.getInstance().execute("Load branches", () -> {
                 try {
                     final Branch[] theBranches = provider.getBranches();
+                    // Check the available branches and the branch that needs to be selected
+                    // Maybe the given branch is not really available (most likely because it is the default branch)
+                    // In that case select the first available branch
+                    Branch newBranchToSelect = null;
+                    if (theBranches.length > 0) {
+                        for (Branch b : theBranches) {
+                            if (b.equals(branchToSelect)) {
+                                newBranchToSelect = b;
+                                break;
+                            }
+                        }
+                        if (newBranchToSelect == null || branchToSelect != null && branchToSelect.isDefault()) {
+                            newBranchToSelect = theBranches[0];
+                        }
+                    }
+                    final Branch b = newBranchToSelect;
                     runOnGUIThread(() -> {
                         ((ObjectProperty<List<Branch>>) branchesProperty())
                             .set(Collections.unmodifiableList(Arrays.asList(theBranches)));
-                        selectedBranchProperty().set(branchToSelect);
+                        selectedBranchProperty().set(b);
                     });
                 } catch (DataProviderException e) {
                     ActionManager.reportException(e, owner.getSite().getShell());
@@ -385,7 +420,7 @@ public class Selector implements CompletionNotifier {
         }
         final BaseLevel base = selectedBaseLevelProperty().get();
         Optional<BaseLevel> bl = set.getDescriptor().getBaseLevel();
-        if (bl.isPresent() && !bl.get().getStorageName().equals(base.getStorageName())) {
+        if (bl.isPresent() && base != null && !bl.get().getStorageName().equals(base.getStorageName())) {
             return;
         }
         SaveRestoreService.getInstance().execute("Load beamline sets", () -> reloadBeamlineSets(base, branch));

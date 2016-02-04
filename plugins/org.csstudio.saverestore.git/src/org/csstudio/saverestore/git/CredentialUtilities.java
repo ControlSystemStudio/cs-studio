@@ -3,7 +3,7 @@ package org.csstudio.saverestore.git;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -121,7 +121,7 @@ public final class CredentialUtilities {
             byte[] val = SecurePreferences.getSecurePreferences().node(Activator.ID).node(user).node(username)
                 .getByteArray(PREF_PASSWORD, null);
             if (val != null) {
-                CharBuffer buffer = Charset.forName("UTF-8").newDecoder().decode(ByteBuffer.wrap(val));
+                CharBuffer buffer = StandardCharsets.UTF_8.newDecoder().decode(ByteBuffer.wrap(val));
                 return Optional.of(Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit()));
             }
         } catch (StorageException | IOException e) {
@@ -150,7 +150,7 @@ public final class CredentialUtilities {
             if (password == null) {
                 prefs.node(username).remove(PREF_PASSWORD);
             } else {
-                ByteBuffer buffer = Charset.forName("UTF-8").newEncoder().encode(CharBuffer.wrap(password));
+                ByteBuffer buffer = StandardCharsets.UTF_8.newEncoder().encode(CharBuffer.wrap(password));
                 byte[] passwordData = Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit());
                 prefs.node(username).putByteArray(PREF_PASSWORD, passwordData, false);
             }

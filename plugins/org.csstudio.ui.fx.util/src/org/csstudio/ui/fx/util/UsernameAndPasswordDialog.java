@@ -11,9 +11,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -106,26 +104,14 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        ((GridLayout) parent.getLayout()).numColumns++;
-        new FXCanvasMaker() {
-            @Override
-            protected Scene createFxScene() {
-                okButton = new Button(IDialogConstants.OK_LABEL);
-                okButton.setOnAction(e -> buttonPressed(IDialogConstants.OK_ID));
-                Button cancelButton = new Button(IDialogConstants.CANCEL_LABEL);
-                cancelButton.setOnAction(e -> buttonPressed(IDialogConstants.CANCEL_ID));
-                int size = FXUtilities.measureStringWidth("Cancel",cancelButton.getFont()) + 25;
-                okButton.setPrefWidth(size);
-                cancelButton.setPrefWidth(size);
-                GridPane pane = new GridPane();
-                pane.setHgap(10);
-                setGridConstraints(okButton, false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
-                pane.add(okButton, 0, 0);
-                pane.add(cancelButton, 1, 0);
-                return new Scene(pane);
-            }
-        }.createPartControl(parent);
+        ((GridLayout) parent.getLayout()).numColumns = 1;
+        new FXCanvasMaker(parent,this::createFXButtonBar);
         validateInput();
+    }
+
+    private Scene createFXButtonBar(Composite parent) {
+        okButton = FXUtilities.createButtonBarWithOKandCancel(e -> buttonPressed(e));
+        return okButton.getScene();
     }
 
     /*
@@ -138,47 +124,46 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
         Composite composite = (Composite) super.createDialogArea(parent);
         setTitle("Authentication");
         setMessage(message);
-        new FXCanvasMaker() {
-            @Override
-            protected Scene createFxScene() {
-                GridPane pane = new GridPane();
-                pane.setPadding(new Insets(10, 10, 10, 10));
-                pane.setHgap(3);
-                pane.setVgap(5);
-                username = new TextField();
-                username.setMaxWidth(Double.MAX_VALUE);
-                if (currentUsername != null) {
-                    username.setText(currentUsername);
-                    username.selectAll();
-                }
-                password = new PasswordField();
-                username.setOnAction(e -> password.requestFocus());
-                password.setOnAction(e -> {
-                    if (!okButton.isDisable()) {
-                        buttonPressed(IDialogConstants.OK_ID);
-                    }
-                });
-                password.textProperty().addListener((a, o, n) -> validateInput());
-                username.textProperty().addListener((a, o, n) -> validateInput());
-                password.setMaxWidth(Double.MAX_VALUE);
-                Label uLabel = new Label("Username:");
-                Label pLabel = new Label("Password:");
-                setGridConstraints(username, true, false, Priority.ALWAYS, Priority.NEVER);
-                setGridConstraints(password, true, false, Priority.ALWAYS, Priority.NEVER);
-                pane.add(uLabel, 0, 0);
-                pane.add(pLabel, 0, 1);
-                pane.add(username, 1, 0);
-                pane.add(password, 1, 1);
-                rememberBox = new UnfocusableCheckBox("Remember password for later use");
-                rememberBox.setSelected(remember);
-                pane.add(rememberBox, 0, 2, 2, 1);
-                pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-                pane.setStyle(FXUtilities.toBackgroundColorStyle(parent.getBackground()));
-                pane.setPrefWidth(getInitialSize().x - 20);
-                return new Scene(pane);
-            }
-        }.createPartControl(composite);
+        new FXCanvasMaker(composite,this::createScene);
         return composite;
+    }
+
+    private Scene createScene(Composite parent) {
+        GridPane pane = new GridPane();
+        pane.setPadding(new Insets(10, 10, 10, 10));
+        pane.setHgap(3);
+        pane.setVgap(5);
+        username = new TextField();
+        username.setMaxWidth(Double.MAX_VALUE);
+        if (currentUsername != null) {
+            username.setText(currentUsername);
+            username.selectAll();
+        }
+        password = new PasswordField();
+        username.setOnAction(e -> password.requestFocus());
+        password.setOnAction(e -> {
+            if (!okButton.isDisable()) {
+                buttonPressed(IDialogConstants.OK_ID);
+            }
+        });
+        password.textProperty().addListener((a, o, n) -> validateInput());
+        username.textProperty().addListener((a, o, n) -> validateInput());
+        password.setMaxWidth(Double.MAX_VALUE);
+        Label uLabel = new Label("Username:");
+        Label pLabel = new Label("Password:");
+        setGridConstraints(username, true, false, Priority.ALWAYS, Priority.NEVER);
+        setGridConstraints(password, true, false, Priority.ALWAYS, Priority.NEVER);
+        pane.add(uLabel, 0, 0);
+        pane.add(pLabel, 0, 1);
+        pane.add(username, 1, 0);
+        pane.add(password, 1, 1);
+        rememberBox = new UnfocusableCheckBox("Remember password for later use");
+        rememberBox.setSelected(remember);
+        pane.add(rememberBox, 0, 2, 2, 1);
+        pane.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        pane.setStyle(FXUtilities.toBackgroundColorStyle(parent.getBackground()));
+        pane.setPrefWidth(getInitialSize().x - 20);
+        return new Scene(pane);
     }
 
     private void validateInput() {

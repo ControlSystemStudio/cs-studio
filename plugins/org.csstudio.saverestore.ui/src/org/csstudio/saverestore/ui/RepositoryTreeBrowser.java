@@ -11,6 +11,7 @@ import org.csstudio.ui.fx.util.FXBaseDialog;
 import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.StaticTextField;
 import org.csstudio.ui.fx.util.FXUtilities;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 
 import javafx.scene.Node;
@@ -57,7 +58,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         this.initialValue = preselection;
     }
 
-    private Node createContents() {
+    private Node createFXContents(Composite parent) {
         treeView = new RepositoryTree(owner, true, initialValue);
 
         treeView.getSelectionModel().selectedItemProperty().addListener((a, o, n) -> {
@@ -78,7 +79,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         Label nameLabel = new Label("Beamline Set Name:");
         Label fullNameLabel = new Label("Full Name:");
 
-        String cl = FXUtilities.toBackgroundColorStyle(getTopComposite().getBackground());
+        String cl = FXUtilities.toBackgroundColorStyle(parent.getBackground());
         nameLabel.setStyle(cl);
         fullNameLabel.setStyle(cl);
 
@@ -143,9 +144,8 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
     protected void okPressed() {
         String name = treeView.getSelectionModel().getSelectedItem().getValue();
         if (value.getName().equals(name)) {
-            boolean b = FXMessageDialog.openConfirm(getShell(), "Overwrite",
-                "Beamline set '" + value.getDisplayName() + "' already exists. Are you sure you want to overwrite it");
-            if (!b) {
+            if (!FXMessageDialog.openConfirm(getShell(), "Overwrite",
+                "Beamline set '" + value.getDisplayName() + "' already exists. Are you sure you want to overwrite it")) {
                 return;
             }
         }
@@ -155,10 +155,10 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getScene()
+     * @see org.csstudio.ui.fx.util.FXBaseDialog#getScene(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected Scene getScene() {
-        return new Scene(new BorderPane(createContents()));
+    protected Scene getScene(Composite parent) {
+        return new Scene(new BorderPane(createFXContents(parent)));
     }
 }

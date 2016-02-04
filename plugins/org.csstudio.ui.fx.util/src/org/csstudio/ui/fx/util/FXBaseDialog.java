@@ -1,7 +1,5 @@
 package org.csstudio.ui.fx.util;
 
-import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
-
 import java.util.Optional;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -13,7 +11,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -23,12 +20,8 @@ import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 
 /**
  *
@@ -41,16 +34,15 @@ import javafx.scene.layout.Priority;
  */
 public abstract class FXBaseDialog<T> extends Dialog implements ControlListener {
 
-    private final String title;
-    private final String message;
     protected T value;
     private final InputValidator<T> validator;
+
+    private final String title;
+    private final String message;
     private Text errorMessageText;
     private String errorMessage;
     private boolean allowedToContinue;
     protected Button okButton;
-
-    private Composite parent;
 
     /**
      * Creates an input dialog with OK and Cancel buttons. Note that the dialog will have no visual representation (no
@@ -72,15 +64,11 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
         setBlockOnOpen(true);
     }
 
-    /**
-     * Returns the top composite of this dialog.
+    /*
+     * (non-Javadoc)
      *
-     * @return the main composite
+     * @see org.eclipse.jface.dialogs.Dialog#buttonPressed(int)
      */
-    public Composite getTopComposite() {
-        return parent;
-    }
-
     @Override
     protected void buttonPressed(int buttonId) {
         if (buttonId == IDialogConstants.OK_ID) {
@@ -91,6 +79,11 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
         super.buttonPressed(buttonId);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell)
+     */
     @Override
     protected void configureShell(Shell shell) {
         super.configureShell(shell);
@@ -100,30 +93,15 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
         shell.addControlListener(this);
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.dialogs.Dialog#createButtonsForButtonBar(org.eclipse.swt.widgets.Composite)
+     */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         ((GridLayout) parent.getLayout()).numColumns++;
-        new FXCanvasMaker() {
-            @Override
-            protected Scene createFxScene() {
-
-                okButton = new Button(IDialogConstants.OK_LABEL);
-                okButton.setOnAction(e -> buttonPressed(IDialogConstants.OK_ID));
-                Button cancelButton = new Button(IDialogConstants.CANCEL_LABEL);
-                cancelButton.setOnAction(e -> buttonPressed(IDialogConstants.CANCEL_ID));
-                int size = FXUtilities.measureStringWidth("Cancel", cancelButton.getFont()) + 25;
-                okButton.setPrefWidth(size);
-                cancelButton.setPrefWidth(size);
-
-                GridPane pane = new GridPane();
-                pane.setHgap(10);
-                setGridConstraints(okButton, false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
-                pane.add(okButton, 0, 0);
-                pane.add(cancelButton, 1, 0);
-                return new Scene(pane);
-            }
-        }.createPartControl(parent);
-
+        new FXCanvasMaker(parent, this::createFXButtonBar);
         setFocus();
         if (value != null) {
             setValueToComponent(value);
@@ -131,12 +109,19 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
         validateInput();
     }
 
+    private Scene createFXButtonBar(Composite parent) {
+        okButton = FXUtilities.createButtonBarWithOKandCancel(e -> buttonPressed(e));
+        return okButton.getScene();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite)
+     */
     @Override
     protected Control createDialogArea(Composite parent) {
-        this.parent = parent;
-        // create composite
         Composite composite = (Composite) super.createDialogArea(parent);
-        // create message
         if (message != null) {
             Label label = new Label(composite, SWT.WRAP);
             label.setText(message);
@@ -146,16 +131,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
             label.setLayoutData(data);
             label.setFont(parent.getFont());
         }
-        Composite fxComposite = new Composite(composite, SWT.NONE);
-        fxComposite.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
-        fxComposite.setLayout(new FillLayout());
-        new FXCanvasMaker() {
-            @Override
-            protected Scene createFxScene() {
-                return getScene();
-            }
-        }.createPartControl(fxComposite);
-
+        new FXCanvasMaker(composite, this::getScene);
         if (validator != null) {
             errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
             errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));
@@ -186,9 +162,10 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
     protected abstract void setValueToComponent(T value);
 
     /**
+     * @param parent the parent composite (to extract the color etc.)
      * @return the scene containing all components
      */
-    protected abstract Scene getScene();
+    protected abstract Scene getScene(Composite parent);
 
     /**
      * Returns the string typed into this input dialog.
@@ -242,7 +219,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
         this.errorMessage = errorMessage;
         this.allowedToContinue = allowedToContinue;
         if (errorMessageText != null && !errorMessageText.isDisposed()) {
-            errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
+            errorMessageText.setText(errorMessage == null ? " \n " : errorMessage);
             boolean hasError = errorMessage != null && (StringConverter.removeWhiteSpaces(errorMessage)).length() > 0;
             errorMessageText.setEnabled(hasError);
             errorMessageText.setVisible(hasError);

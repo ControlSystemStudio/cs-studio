@@ -222,38 +222,43 @@ public class SnapshotViewerController {
     }
 
     private void connectPVs() {
-        items.values().forEach(e -> {
-            PV pv = pvs.get(e);
-            if (pv == null) {
-                pv = pvsForDisposal.remove(e.pvNameProperty().get());
-                if (pv != null) {
-                    pvs.put(e, pv);
+        suspend();
+        try {
+            items.values().forEach(e -> {
+                PV pv = pvs.get(e);
+                if (pv == null) {
+                    pv = pvsForDisposal.remove(e.pvNameProperty().get());
+                    if (pv != null) {
+                        pvs.put(e, pv);
+                    }
                 }
-            }
-            if (pv == null) {
-                String name = e.pvNameProperty().get();
-                PVReader<VType> reader = PVManager.read(channel(name, VType.class, VType.class))
-                    .maxRate(TimeDuration.ofMillis(100));
-                PVWriter<Object> writer = PVManager.write(channel(name)).timeout(TimeDuration.ofMillis(1000)).async();
-                String readback = e.readbackNameProperty().get();
-                PVReader<VType> readbackReader = null;
-                if (readback != null && !readback.isEmpty()) {
-                    readbackReader = PVManager.read(channel(readback, VType.class, VType.class))
+                if (pv == null) {
+                    String name = e.pvNameProperty().get();
+                    PVReader<VType> reader = PVManager.read(channel(name, VType.class, VType.class))
                         .maxRate(TimeDuration.ofMillis(100));
-                }
-                pvs.put(e, new PV(reader, writer, readbackReader));
-            } else {
-                if (pv.readback == null && showReadbacks) {
-                    PVReader<VType> readbackReader = null;
+                    PVWriter<Object> writer = PVManager.write(channel(name)).timeout(TimeDuration.ofMillis(1000))
+                        .async();
                     String readback = e.readbackNameProperty().get();
+                    PVReader<VType> readbackReader = null;
                     if (readback != null && !readback.isEmpty()) {
                         readbackReader = PVManager.read(channel(readback, VType.class, VType.class))
                             .maxRate(TimeDuration.ofMillis(100));
                     }
-                    pv.setReadbackReader(readbackReader);
+                    pvs.put(e, new PV(reader, writer, readbackReader));
+                } else {
+                    if (pv.readback == null) {
+                        String readback = e.readbackNameProperty().get();
+                        if (readback != null && !readback.isEmpty()) {
+                            PVReader<VType> readbackReader = PVManager.read(channel(readback, VType.class, VType.class))
+                                .maxRate(TimeDuration.ofMillis(100));
+                            pv.setReadbackReader(readbackReader);
+                        }
+                    }
                 }
-            }
-        });
+            });
+        } finally {
+            resume();
+        }
     }
 
     /**
@@ -466,12 +471,17 @@ public class SnapshotViewerController {
         } else if (idx > getNumberOfSnapshots()) {
             throw new IllegalArgumentException("The index is greater than the number of snapshots.");
         }
-        List<VSnapshot> newSnapshots = supplier.get();
-        dispose(false);
-        newSnapshots.forEach(this::addSnapshot);
-        pvsForDisposal.values().forEach(p -> p.dispose());
-        pvsForDisposal.clear();
-        return filter(items.values(), filter);
+        suspend();
+        try {
+            List<VSnapshot> newSnapshots = supplier.get();
+            dispose(false);
+            newSnapshots.forEach(this::addSnapshot);
+            pvsForDisposal.values().forEach(p -> p.dispose());
+            pvsForDisposal.clear();
+            return filter(items.values(), filter);
+        } finally {
+            resume();
+        }
     }
 
     /**
@@ -483,15 +493,6 @@ public class SnapshotViewerController {
         synchronized (snapshots) {
             return snapshots.size();
         }
-    }
-
-    /**
-     * Returns true if the readbacks are shown in the table or false if they are not shown.
-     *
-     * @return true if readbacks should be shown or false otherwise
-     */
-    public boolean isShowReadbacks() {
-        return showReadbacks;
     }
 
     /**
@@ -646,8 +647,9 @@ public class SnapshotViewerController {
      * Export all snapshots to the given file.
      *
      * @param file the destination file
+     * @param includeReadback true if the readback pv and value should be included or false if not
      */
-    public void exportToFile(File file) {
+    public void exportToFile(File file, boolean showReadback) {
         if (file == null) {
             return;
         }
@@ -666,7 +668,7 @@ public class SnapshotViewerController {
                     .append(delta);
             }
             header.append("Live Value,Live Timestamp");
-            if (showReadbacks) {
+            if (showReadback) {
                 header.append(",Readback PV,Readback Value (").append(Utilities.DELTA_CHAR)
                     .append(" Live),Readback Timestamp");
             }
@@ -689,7 +691,7 @@ public class SnapshotViewerController {
                 if (v instanceof Time) {
                     sb.append(((Time) v).getTimestamp());
                 }
-                if (showReadbacks) {
+                if (showReadback) {
                     sb.append(',').append(e.readbackNameProperty().get());
                     pair = e.readbackProperty().get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
@@ -920,6 +922,15 @@ public class SnapshotViewerController {
     }
 
     /**
+     * Returns true if the readbacks are shown in the table or false if they are not shown.
+     *
+     * @return true if readbacks should be shown or false otherwise
+     */
+    public boolean isShowReadbacks() {
+        return showReadbacks;
+    }
+
+    /**
      * Import values using the given value importer. This method should not be called on the UI thread. Upon successful
      * import the consumer is called on the UI thread.
      *
@@ -1067,6 +1078,13 @@ public class SnapshotViewerController {
         return entries;
     }
 
+    /**
+     * Update the snapshot under the given index according to the data in the given entry. Only the setpoint value can
+     * be changed.
+     *
+     * @param index the index of the snapshot to update
+     * @param entry the table entry providing the new data
+     */
     public void updateSnapshot(int index, TableEntry entry) {
         VType value;
         String name = entry.pvNameProperty().get();

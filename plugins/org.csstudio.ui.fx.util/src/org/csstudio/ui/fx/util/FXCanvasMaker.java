@@ -1,8 +1,11 @@
 package org.csstudio.ui.fx.util;
 
-import java.util.function.Supplier;
+import java.util.function.Function;
 
 import org.eclipse.fx.ui.workbench3.FXViewPart;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 import javafx.scene.Scene;
@@ -14,19 +17,41 @@ import javafx.scene.Scene;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public abstract class FXCanvasMaker extends FXViewPart {
+public class FXCanvasMaker extends FXViewPart {
 
-//    private final Supplier<Scene> sceneSupplier;
-//
-//    public FXCanvasMaker(Composite parent, Supplier<Scene> sceneSupplier) {
-//        this.sceneSupplier = sceneSupplier;
-//        createPartControl(parent);
-//    }
-//
-//    @Override
-//    protected Scene createFxScene() {
-//        return sceneSupplier.get();
-//    }
+    private static class FXParentComposite extends Composite {
+
+        FXParentComposite(Composite parent) {
+            super(parent, SWT.NONE);
+            setLayoutData(new GridData(GridData.FILL_BOTH));
+            setLayout(new FillLayout());
+        }
+    }
+
+    private final Function<Composite, Scene> sceneSupplier;
+    private final Composite parent;
+
+    /**
+     * Constructs a new FXCanvasMaker.
+     *
+     * @param parent the parent of the fx canvas
+     * @param sceneSupplier the function that receives the given parent and returns the scene to display by this canvas
+     */
+    public FXCanvasMaker(Composite parent, Function<Composite, Scene> sceneSupplier) {
+        this.sceneSupplier = sceneSupplier;
+        this.parent = parent;
+        createPartControl(new FXParentComposite(parent));
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.fx.ui.workbench3.FXViewPart#createFxScene()
+     */
+    @Override
+    protected Scene createFxScene() {
+        return sceneSupplier.apply(parent);
+    }
 
     /*
      * (non-Javadoc)

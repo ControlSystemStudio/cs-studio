@@ -1,6 +1,7 @@
 package org.csstudio.ui.fx.util;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
@@ -29,7 +30,7 @@ public class FXTextInputDialog extends FXBaseDialog<String> {
      * @param validator an input validator, or <code>null</code> if none
      */
     public FXTextInputDialog(Shell parentShell, String dialogTitle, String dialogMessage, String initialValue,
-            InputValidator<String> validator) {
+        InputValidator<String> validator) {
         super(parentShell, dialogTitle, dialogMessage, initialValue, validator);
     }
 
@@ -66,10 +67,10 @@ public class FXTextInputDialog extends FXBaseDialog<String> {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getScene()
+     * @see org.csstudio.ui.fx.util.FXBaseDialog#getScene(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected Scene getScene() {
+    protected Scene getScene(Composite parent) {
         text = new TextField();
         text.setMaxWidth(Double.MAX_VALUE);
         text.setPrefWidth(getInitialSize().x - 25);

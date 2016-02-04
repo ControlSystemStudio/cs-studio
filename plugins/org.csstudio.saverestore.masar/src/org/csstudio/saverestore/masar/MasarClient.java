@@ -78,9 +78,13 @@ public class MasarClient {
     private static class MasarChannelRPCRequester implements ChannelRPCRequester {
         private final CountDownLatch connectedSignaler = new CountDownLatch(1);
         private final Semaphore doneSemaphore = new Semaphore(0);
-
+        private final String service;
         private volatile ChannelRPC channelRPC;
         private volatile PVStructure result;
+
+        MasarChannelRPCRequester(String service) {
+            this.service = service;
+        }
 
         @Override
         public String getRequesterName() {
@@ -120,10 +124,10 @@ public class MasarClient {
             doneSemaphore.release();
         }
 
-        PVStructure request(PVStructure pvArgument) throws InterruptedException {
+        PVStructure request(PVStructure pvArgument) throws InterruptedException, MasarException {
             ChannelRPC rpc = channelRPC;
             if (rpc == null) {
-                throw new IllegalStateException("ChannelRPC never connected.");
+                throw new MasarException("Cannot connect to the MASAR service " + service + ".");
             }
             rpc.request(pvArgument);
             // use tryAcquire if you need timeout support
@@ -150,7 +154,7 @@ public class MasarClient {
         MasarChannelRequester channelRequester = new MasarChannelRequester();
         Channel channel = channelProvider.createChannel(service, channelRequester, ChannelProvider.PRIORITY_DEFAULT);
 
-        MasarChannelRPCRequester channelRPCRequester = new MasarChannelRPCRequester();
+        MasarChannelRPCRequester channelRPCRequester = new MasarChannelRPCRequester(service);
         channel.createChannelRPC(channelRPCRequester, null);
         return channelRPCRequester;
     }

@@ -163,33 +163,32 @@ public class FXMessageDialog extends IconAndMessageDialog {
 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        ((GridLayout) parent.getLayout()).numColumns++;
-        new FXCanvasMaker() {
-            @Override
-            protected Scene createFxScene() {
-                GridPane pane = new GridPane();
-                pane.setHgap(10);
-                buttons = new Button[buttonLabels.length];
-                for (int i = 0; i < buttonLabels.length; i++) {
-                    buttons[i] = new Button(buttonLabels[i]);
-                    buttons[i].setPrefWidth(buttonWidth);
-                    final int k = i;
-                    buttons[i].setOnAction(e -> buttonPressed(k));
-                    if (i == 0) {
-                        setGridConstraints(buttons[i], false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS,
-                            Priority.NEVER);
-                    }
-                    pane.add(buttons[i], i, 0);
-                }
-                return new Scene(pane);
-            }
-        }.createPartControl(parent);
+        ((GridLayout) parent.getLayout()).numColumns = 1;
+        new FXCanvasMaker(parent, this::createFxButtonBar);
         buttons[defaultButtonIndex].requestFocus();
         buttons[defaultButtonIndex].setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 buttonPressed(defaultButtonIndex);
             }
         });
+    }
+
+    private Scene createFxButtonBar(Composite parent) {
+        GridPane pane = new GridPane();
+        pane.setHgap(10);
+        buttons = new Button[buttonLabels.length];
+        for (int i = 0; i < buttonLabels.length; i++) {
+            buttons[i] = new Button(buttonLabels[i]);
+            buttons[i].setPrefWidth(buttonWidth);
+            final int k = i;
+            buttons[i].setOnAction(e -> buttonPressed(k));
+            if (i == 0) {
+                setGridConstraints(buttons[i], false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS,
+                    Priority.NEVER);
+            }
+            pane.add(buttons[i], i, 0);
+        }
+        return new Scene(pane);
     }
 
     /**

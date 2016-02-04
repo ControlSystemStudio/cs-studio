@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Collectors;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.csdata.TimestampedPV;
@@ -146,6 +147,10 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 }
             });
             setTooltip(new Tooltip());
+            // FX does not provide any facilities to get the column index at mouse position, so use this hack, to know
+            // where the mouse is located
+            setOnMouseEntered(e -> ((Table) getTableView()).setColumnAndRowAtMouse(getTableColumn(), getIndex()));
+            setOnMouseExited(e -> ((Table) getTableView()).setColumnAndRowAtMouse(null, -1));
         }
 
         @SuppressWarnings("unchecked")
@@ -158,21 +163,22 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                     List<String> labels = value.getLabels();
                     List<T> values = new ArrayList<>(labels.size());
                     for (int i = 0; i < labels.size(); i++) {
-                        values.add((T)ValueFactory.newVEnum(i, labels, value, value));
+                        values.add((T) ValueFactory.newVEnum(i, labels, value, value));
                     }
                     setItems(values);
                 }
                 return false;
             } else if (item instanceof VTypePair) {
-                VTypePair v = ((VTypePair)item);
+                VTypePair v = ((VTypePair) item);
                 VType type = v.value;
                 if (type instanceof VEnum) {
                     if (getItems().isEmpty()) {
-                        VEnum value = (VEnum)type;
+                        VEnum value = (VEnum) type;
                         List<String> labels = value.getLabels();
                         List<T> values = new ArrayList<>(labels.size());
                         for (int i = 0; i < labels.size(); i++) {
-                            values.add((T)new VTypePair(v.base,ValueFactory.newVEnum(i, labels, value, value),v.threshold));
+                            values.add(
+                                (T) new VTypePair(v.base, ValueFactory.newVEnum(i, labels, value, value), v.threshold));
                         }
                         setItems(values);
                     }
@@ -271,9 +277,12 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     }
 
     private final List<VSnapshot> uiSnapshots = new ArrayList<>();
+    private boolean showStoredReadbacks;
     private final SnapshotViewerController controller;
     private CheckBox selectAllCheckBox;
 
+    private TableColumn<TableEntry, ?> columnAtMouse;
+    private int rowAtMouse = -1;
     private int clickedColumn = -1;
     private int clickedRow = -1;
     private final List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
@@ -296,12 +305,46 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
 
         setOnMouseClicked(e -> {
             if (getSelectionModel().getSelectedCells() != null && !getSelectionModel().getSelectedCells().isEmpty()) {
-                clickedColumn = getSelectionModel().getSelectedCells().get(0).getColumn();
-                clickedRow = getSelectionModel().getSelectedCells().get(0).getRow();
+                if (columnAtMouse == null) {
+                    clickedColumn = getSelectionModel().getSelectedCells().get(0).getColumn();
+                } else {
+                    int idx = getColumns().indexOf(columnAtMouse);
+                    if (uiSnapshots.size() > 1) {
+                        if (idx < 0) {
+                            // it is one of the grouped stored values columns
+                            idx = getColumns().get(3).getColumns().indexOf(columnAtMouse);
+                            if (idx >= 0) {
+                                idx += 3;
+                            }
+                        } else {
+                            // it is either one of the first 3 columns (do nothing) or one of the live columns
+                            if (idx > 3) {
+                                idx = getColumns().get(3).getColumns().size() + idx - 1;
+                            }
+                        }
+                    }
+                    if (idx < 0) {
+                        clickedColumn = getSelectionModel().getSelectedCells().get(0).getColumn();
+                    } else {
+                        clickedColumn = idx;
+                    }
+                }
+                clickedRow = rowAtMouse == -1 ? getSelectionModel().getSelectedCells().get(0).getRow() : rowAtMouse;
                 final SelectionChangedEvent event = new SelectionChangedEvent(this, getSelection());
                 selectionChangedListener.forEach(l -> l.selectionChanged(event));
             }
         });
+    }
+
+    /**
+     * Set the column and row number at current mouse position.
+     *
+     * @param column the column at mouse cursor (null if none)
+     * @param row the row index at mouse cursor
+     */
+    private void setColumnAndRowAtMouse(TableColumn<TableEntry, ?> column, int row) {
+        this.columnAtMouse = column;
+        this.rowAtMouse = row;
     }
 
     private void createTableForSingleSnapshot(boolean showReadback, boolean showStoredReadback) {
@@ -488,13 +531,16 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
 
     private void update(final List<TableEntry> entries) {
         final List<VSnapshot> snaps = controller.getAllSnapshots();
-        final boolean show = controller.isShowReadbacks();
-        final boolean showStored = controller.isShowStoredReadbacks();
-        Platform.runLater(() -> updateTable(entries, snaps, show, showStored));
+        // the readback properties are changed on the UI thread, however they are just flags, which do not have any
+        // effect on the data model, so they can be read by anyone at anytime
+        Platform.runLater(
+            () -> updateTable(entries, snaps, controller.isShowReadbacks(), controller.isShowStoredReadbacks()));
     }
 
     /**
-     * Updates the table by setting new content.
+     * Updates the table by setting new content, including the structure. The table is always recreated, even if the new
+     * structure is identical to the old one. This is slightly more expensive; however, this method is only invoked per
+     * user request (button click).
      *
      * @param entries the table entries (rows) to set on the table
      * @param snapshots the snapshots which are currently displayed
@@ -505,8 +551,10 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         boolean showStoredReadback) {
         getColumns().clear();
         uiSnapshots.clear();
+        // we should always know if we are showing the stored readback or not, to properly extract the selection
+        this.showStoredReadbacks = showStoredReadback;
         uiSnapshots.addAll(snapshots);
-        if (snapshots.size() == 1) {
+        if (uiSnapshots.size() == 1) {
             createTableForSingleSnapshot(showReadback, showStoredReadback);
         } else {
             createTableForMultipleSnapshots(snapshots, showReadback, showStoredReadback);
@@ -516,7 +564,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     }
 
     /**
-     * Sets new table entries for this table.
+     * Sets new table entries for this table, but do not change the structure of the table.
      *
      * @param entries the entries to set
      */
@@ -525,7 +573,8 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         final boolean notHide = !controller.isHideEqualItems();
         items.clear();
         entries.forEach(e -> {
-            // there is no harm if this is executed more than once, because only one listener is allowed
+            // there is no harm if this is executed more than once, because only one listener is allowed for these
+            // two properties (see SingleListenerBooleanProperty for more details)
             e.selectedProperty()
                 .addListener((a, o, n) -> selectAllCheckBox.setSelected(n ? selectAllCheckBox.isSelected() : false));
             e.liveStoredEqualProperty().addListener((a, o, n) -> {
@@ -607,32 +656,40 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
      */
     @Override
     public ISelection getSelection() {
-        int numSnapshots = controller.getNumberOfSnapshots();
+        int numSnapshots = uiSnapshots.size();
+        if (numSnapshots == 0) {
+            return null;
+        }
+        // find the snapshot that matches the clicked column
         VSnapshot snapshot;
-        if (numSnapshots == 1 || clickedColumn < 0) {
-            snapshot = controller.getSnapshot(0);
-        } else if (clickedColumn - 3 < numSnapshots) {
-            snapshot = controller.getSnapshot(clickedColumn - 3);
+        if (numSnapshots == 1 || clickedColumn < 4) {
+            snapshot = uiSnapshots.get(0);
         } else {
-            snapshot = controller.getSnapshot(numSnapshots - 1);
+            int subColumns = getColumns().get(3).getColumns().size();
+            if (2 + subColumns < clickedColumn) {
+                // clicked on one of the live columns - in this case select the right most snapshot
+                snapshot = uiSnapshots.get(numSnapshots - 1);
+            } else {
+                int clickedSubColumn = clickedColumn - 3;
+                if (showStoredReadbacks) {
+                    snapshot = uiSnapshots.get(clickedSubColumn / 2);
+                } else {
+                    snapshot = uiSnapshots.get(clickedSubColumn);
+                }
+            }
         }
         if (snapshot == null) {
             return null;
         }
+        // if snapshot was found, use its timestamp and create timestamped PVs
         Timestamp timestamp = snapshot.getTimestamp();
         if (timestamp == null) {
-            List<ProcessVariable> list = new ArrayList<>();
-            for (TableEntry e : selectionModelProperty().get().getSelectedItems()) {
-                list.add(new ProcessVariable(e.pvNameProperty().get()));
-            }
-            return new StructuredSelection(list);
+            return new StructuredSelection(selectionModelProperty().get().getSelectedItems().stream()
+                .map(e -> new ProcessVariable(e.pvNameProperty().get())).collect(Collectors.toList()));
         } else {
             long time = timestamp.toDate().getTime();
-            List<TimestampedPV> list = new ArrayList<>();
-            for (TableEntry e : selectionModelProperty().get().getSelectedItems()) {
-                list.add(new TimestampedPV(e.pvNameProperty().get(), time));
-            }
-            return new StructuredSelection(list);
+            return new StructuredSelection(selectionModelProperty().get().getSelectedItems().stream()
+                .map(e -> new TimestampedPV(e.pvNameProperty().get(), time)).collect(Collectors.toList()));
         }
     }
 
@@ -665,11 +722,13 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
      */
     @Override
     public void setSelection(ISelection selection) {
-        // selecting action not supported
+        // select action not supported
     }
 
     /**
-     * Returns the most recently clicked (selected) item in the table.
+     * Returns the most recently clicked (selected) item in the table. If the clicked column is a value column, that
+     * value is returned. If the clicked column is not a value column, the stored value of the base snapshot is
+     * returned.
      *
      * @return the item clicked in the table
      */
@@ -677,20 +736,48 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         if (clickedRow < 0) {
             return null;
         }
-        int col;
-        int numSnapshots = controller.getNumberOfSnapshots();
-        if (numSnapshots == 1 || clickedColumn < 0) {
-            col = 0;
-        } else if (clickedColumn - 3 < numSnapshots) {
-            col = clickedColumn - 3;
+        int numSnapshots = uiSnapshots.size();
+        if (numSnapshots == 0) {
+            return null;
+        } else if (numSnapshots == 1) {
+            // in case of a single snapshot it is easy, because the colums are single
+            Object obj = getColumns().get(clickedColumn).getCellData(clickedRow);
+            return extractValue(obj, clickedRow);
         } else {
-            col = numSnapshots - 1;
+            if (clickedColumn < 4) {
+                Object obj = getColumns().get(3).getColumns().get(0).getCellData(clickedRow);
+                return extractValue(obj, clickedRow);
+            } else {
+                int subColumns = getColumns().get(3).getColumns().size();
+                if (clickedColumn < subColumns + 3) {
+                    Object obj = getColumns().get(3).getColumns().get(clickedColumn - 3).getCellData(clickedRow);
+                    return extractValue(obj, clickedRow);
+                } else {
+                    Object obj = getColumns().get(clickedColumn - subColumns + 1).getCellData(clickedRow);
+                    return extractValue(obj, clickedRow);
+                }
+            }
+        }
+    }
+
+    /**
+     * Extract the VType data from the cellData object (if possible) and return the pair containing that value and the
+     * pv name at the given row.
+     *
+     * @param cellData the cell data object (should belong to the row given as a parameter)
+     * @param row the row to extract the pv name
+     * @return the value name pair if the cell data is value or null if cell data is anything else.
+     */
+    private VTypeNamePair extractValue(Object cellData, int row) {
+        VType value;
+        if (cellData instanceof VType) {
+            value = (VType) cellData;
+        } else if (cellData instanceof VTypePair) {
+            value = ((VTypePair) cellData).value;
+        } else {
+            return null;
         }
         TableEntry entry = getItems().get(clickedRow);
-        if (col == 0) {
-            return new VTypeNamePair(entry.valueProperty().get().value, entry.pvNameProperty().get());
-        } else {
-            return new VTypeNamePair(entry.compareValueProperty(col).get().value, entry.pvNameProperty().get());
-        }
+        return new VTypeNamePair(value, entry.pvNameProperty().get());
     }
 }

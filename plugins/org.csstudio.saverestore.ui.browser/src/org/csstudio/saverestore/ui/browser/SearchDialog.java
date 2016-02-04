@@ -146,10 +146,10 @@ public class SearchDialog extends FXBaseDialog<String> {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getScene()
+     * @see org.csstudio.ui.fx.util.FXBaseDialog#getScene(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected Scene getScene() {
+    protected Scene getScene(Composite parent) {
         GridPane pane = new GridPane();
         text = new TextField();
         text.setMaxWidth(Double.MAX_VALUE);

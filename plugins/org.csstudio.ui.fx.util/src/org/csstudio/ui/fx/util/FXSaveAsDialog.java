@@ -1,19 +1,12 @@
 package org.csstudio.ui.fx.util;
 
-import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
-
-import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Priority;
 
 /**
  *
@@ -41,26 +34,13 @@ public class FXSaveAsDialog extends SaveAsDialog {
      */
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
-        ((GridLayout) parent.getLayout()).numColumns++;
-        new FXCanvasMaker() {
-            @Override
-            protected Scene createFxScene() {
-                okButton = new Button(IDialogConstants.OK_LABEL);
-                okButton.setOnAction(e -> buttonPressed(IDialogConstants.OK_ID));
-                Button cancelButton = new Button(IDialogConstants.CANCEL_LABEL);
-                cancelButton.setOnAction(e -> buttonPressed(IDialogConstants.CANCEL_ID));
-                int size = FXUtilities.measureStringWidth("Cancel", cancelButton.getFont()) + 25;
-                okButton.setPrefWidth(size);
-                cancelButton.setPrefWidth(size);
+        ((GridLayout) parent.getLayout()).numColumns = 1;
+        new FXCanvasMaker(parent,this::createFxButtonBar);
+    }
 
-                GridPane pane = new GridPane();
-                pane.setHgap(10);
-                setGridConstraints(okButton, false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
-                pane.add(okButton, 0, 0);
-                pane.add(cancelButton, 1, 0);
-                return new Scene(pane);
-            }
-        }.createPartControl(parent);
+    private Scene createFxButtonBar(Composite parent) {
+        okButton = FXUtilities.createButtonBarWithOKandCancel(e -> buttonPressed(e));
+        return okButton.getScene();
     }
 
     /*

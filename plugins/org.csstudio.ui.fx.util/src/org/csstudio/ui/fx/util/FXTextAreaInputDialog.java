@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
@@ -88,10 +89,10 @@ public class FXTextAreaInputDialog extends FXBaseDialog<String> {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getScene()
+     * @see org.csstudio.ui.fx.util.FXBaseDialog#getScene(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected Scene getScene() {
+    protected Scene getScene(Composite parent) {
         text = new TextArea();
         text.setPrefRowCount(5);
         text.textProperty().addListener((a, o, n) -> validateInput());

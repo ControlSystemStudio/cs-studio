@@ -135,7 +135,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
         MenuManager menu = new MenuManager();
-        final Action openChartAction = new Action("Open In Chart") {
+        final Action openChartTableAction = new Action("Show Chart/Table...") {
             @Override
             public void run() {
                 VTypeNamePair type = table.getClickedItem();
@@ -144,11 +144,11 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 }
             }
         };
-        menu.add(openChartAction);
-        openChartAction.setEnabled(false);
+        menu.add(openChartTableAction);
+        openChartTableAction.setEnabled(false);
         table.addSelectionChangedListener(e -> {
-           VTypeNamePair type = table.getClickedItem();
-           openChartAction.setEnabled(type != null && type.value instanceof VNumberArray);
+            VTypeNamePair type = table.getClickedItem();
+            openChartTableAction.setEnabled(type != null && type.value instanceof VNumberArray);
         });
         menu.add(new org.eclipse.jface.action.Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         contextMenu = menu.createContextMenu(parent);
@@ -475,8 +475,11 @@ public class SnapshotViewerEditor extends FXEditorPart {
         Button exportButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/export_wiz.png"))));
         exportButton.setTooltip(new Tooltip("Export editor contents to file"));
-        exportButton.setOnAction(e -> selectFile(false, Optional.empty()).ifPresent(
-            f -> SaveRestoreService.getInstance().execute("Export to csv file", () -> controller.exportToFile(f))));
+        exportButton.setOnAction(e -> selectFile(false, Optional.empty()).ifPresent(f -> {
+            final boolean includeReadback = controller.isShowReadbacks();
+            SaveRestoreService.getInstance().execute("Export to csv file",
+                () -> controller.exportToFile(f, includeReadback));
+        }));
         Separator separator1 = new Separator(Orientation.VERTICAL);
         String style = SnapshotViewerEditor.class.getResource(STYLE).toExternalForm();
         separator1.getStylesheets().add(style);
@@ -496,6 +499,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         filterCombo.setEditable(true);
         filterCombo.setOnAction(new EventHandler<ActionEvent>() {
             private boolean suppressUpdate;
+
             @Override
             public void handle(ActionEvent event) {
                 if (suppressUpdate) {

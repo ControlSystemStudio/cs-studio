@@ -1,11 +1,16 @@
 package org.csstudio.ui.fx.util;
 
+import java.util.function.Consumer;
+
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
@@ -111,5 +116,30 @@ public final class FXUtilities {
             GridPane.setHalignment(component, halignment);
         }
         setGridConstraints(component, fillWidth, fillHeight, hgrow, vgrow);
+    }
+
+    /**
+     * Creates a scene which contains buttons OK and Cancel. On action the buttons call the provided consumer. The
+     * method returns a reference to the OK button. To obtain the scene, invoke {@link Button#getScene()}.
+     *
+     * @param action the action executed on button pressed (consumer is invoked using {@link IDialogConstants#OK_ID} or
+     *          {@link IDialogConstants#CANCEL_ID}
+     * @return reference to the OK button
+     */
+    public static Button createButtonBarWithOKandCancel(Consumer<Integer> action) {
+        Button okButton = new Button(IDialogConstants.OK_LABEL);
+        okButton.setOnAction(e -> action.accept(IDialogConstants.OK_ID));
+        Button cancelButton = new Button(IDialogConstants.CANCEL_LABEL);
+        cancelButton.setOnAction(e -> action.accept(IDialogConstants.CANCEL_ID));
+        int size = FXUtilities.measureStringWidth(IDialogConstants.CANCEL_LABEL, cancelButton.getFont()) + 25;
+        okButton.setPrefWidth(size);
+        cancelButton.setPrefWidth(size);
+        GridPane pane = new GridPane();
+        pane.setHgap(10);
+        setGridConstraints(okButton, false, false, HPos.RIGHT, VPos.CENTER, Priority.ALWAYS, Priority.NEVER);
+        pane.add(okButton, 0, 0);
+        pane.add(cancelButton, 1, 0);
+        new Scene(pane);
+        return okButton;
     }
 }

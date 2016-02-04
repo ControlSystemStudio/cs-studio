@@ -17,6 +17,7 @@ import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.ui.Activator;
 import org.csstudio.saverestore.ui.Selector;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
 import org.csstudio.ui.fx.util.FXMessageDialog;
@@ -26,6 +27,7 @@ import org.csstudio.ui.fx.util.UnfocusableToggleButton;
 import org.eclipse.fx.ui.workbench3.FXViewPart;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -75,6 +77,11 @@ import javafx.scene.layout.VBox;
  *
  */
 public class BrowserView extends FXViewPart implements ISelectionProvider {
+
+    private static final String SETTINGS_SELECTED_BRANCH = "selectedBranch";
+    private static final String SETTINGS_SELECTED_DATA_PROVIDER = "selectedDataProvider";
+    private static final String SETTINGS_DEFAULT_BASE_LEVEL_BROWSER = "defaultBaseLevelBrowser";
+    private static final String SETTINGS_BASE_LEVEL_FILTER_NOT_SELECTED = "baseLevelFilterNotSelected";
 
     private static final Image BEAMLINE_SET_IMAGE = new Image(BrowserView.class.getResourceAsStream("/icons/txt.png"));
 
@@ -226,7 +233,9 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         baseLevelBrowser = browser;
         defaultBaseLevelBrowser = new DefaultBaseLevelBrowser(this.getSite());
 
-        if (baseLevelBrowser == null) {
+        IDialogSettings settings = Activator.getDefault().getDialogSettings();
+        boolean useSpecialBrowser = !settings.getBoolean(SETTINGS_DEFAULT_BASE_LEVEL_BROWSER);
+        if (baseLevelBrowser == null || !useSpecialBrowser) {
             content.setCenter(defaultBaseLevelBrowser.getFXContent());
         } else {
             content.setCenter(baseLevelBrowser.getFXContent());
@@ -242,6 +251,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/filter_ps.png"))));
         filterButton.setTooltip(new Tooltip("Disable non-existing"));
         filterButton.selectedProperty().addListener((a, o, n) -> {
+            Activator.getDefault().getDialogSettings().put(SETTINGS_BASE_LEVEL_FILTER_NOT_SELECTED, !n);
             defaultBaseLevelBrowser.setShowOnlyAvailable(n);
             if (baseLevelBrowser != null) {
                 baseLevelBrowser.setShowOnlyAvailable(n);
@@ -259,6 +269,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                 .setTooltip(new Tooltip("Toggle between custom browser (" + baseLevelBrowser.getReadableName()
                     + ") and default browser (" + defaultBaseLevelBrowser.getReadableName() + ")"));
             baseLevelPanelFilterButton.selectedProperty().addListener((a, o, n) -> {
+                Activator.getDefault().getDialogSettings().put(SETTINGS_DEFAULT_BASE_LEVEL_BROWSER,!n);
                 if (n) {
                     content.setCenter(baseLevelBrowser.getFXContent());
                 } else {
@@ -266,15 +277,15 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                 }
             });
             setUpTitlePaneNode(baseLevelPanelFilterButton, false);
-            baseLevelPanelFilterButton.selectedProperty().setValue(true);
             titleBox.addRow(0, titleText, baseLevelPanelFilterButton, filterButton);
+            baseLevelPanelFilterButton.selectedProperty().set(useSpecialBrowser);
         }
         titleBox.setMaxWidth(Double.MAX_VALUE);
         titleText.setMaxWidth(Double.MAX_VALUE);
         baseLevelPane.setGraphic(titleBox);
         baseLevelPane.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         titleBox.prefWidthProperty().bind(scene.widthProperty().subtract(34));
-        filterButton.setSelected(true);
+        filterButton.setSelected(!settings.getBoolean(SETTINGS_BASE_LEVEL_FILTER_NOT_SELECTED));
 
         return baseLevelPane;
     }
@@ -562,6 +573,13 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     }
 
     private void init() {
+        selector.selectedBranchProperty().addListener((a,o,n) -> {
+            if (selector.isDefaultBranch()) {
+                Activator.getDefault().getDialogSettings().put(SETTINGS_SELECTED_BRANCH, (String)null);
+            } else {
+                Activator.getDefault().getDialogSettings().put(SETTINGS_SELECTED_BRANCH, n.getShortName());
+            }
+        });
         selector.selectedBaseLevelProperty().addListener((a, o, n) -> {
             setUpElementsPaneTitle();
             if (n == null) {
@@ -569,7 +587,6 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             } else {
                 beamlineSetsPane.setText("Beamline Sets for " + n.getPresentationName());
             }
-
         });
         if (baseLevelBrowser != null) {
             baseLevelBrowser.selectedBaseLevelProperty().addListener((a, o, n) -> {
@@ -649,7 +666,19 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
 
         List<DataProviderWrapper> dpws = SaveRestoreService.getInstance().getDataProviders();
         if (!dpws.isEmpty()) {
-            SaveRestoreService.getInstance().setSelectedDataProvider(dpws.get(0));
+            IDialogSettings settings = Activator.getDefault().getDialogSettings();
+            String selectedDataProvider = settings.get(SETTINGS_SELECTED_DATA_PROVIDER);
+            if (selectedDataProvider != null) {
+                selector.setFirstTimeBranch(settings.get(SETTINGS_SELECTED_BRANCH));
+            }
+            DataProviderWrapper dpw = dpws.get(0);
+            for (DataProviderWrapper w : dpws) {
+                if (w.id.equals(selectedDataProvider)) {
+                    dpw = w;
+                    break;
+                }
+            }
+            SaveRestoreService.getInstance().setSelectedDataProvider(dpw);
         }
 
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
@@ -660,6 +689,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     private void updateForDataProviderChange() {
         DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
         if (wrapper != null) {
+            IDialogSettings settings = Activator.getDefault().getDialogSettings();
+            settings.put(SETTINGS_SELECTED_DATA_PROVIDER, wrapper.id);
             mainPane.getChildren().clear();
             if (wrapper.provider.areBaseLevelsSupported() && baseLevelPane != null) {
                 mainPane.getChildren().addAll(baseLevelPane, dataPane);

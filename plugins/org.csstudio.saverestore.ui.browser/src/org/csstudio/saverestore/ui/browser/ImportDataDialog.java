@@ -6,6 +6,7 @@ import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.ui.util.RepositoryTree;
 import org.csstudio.ui.fx.util.FXBaseDialog;
 import org.csstudio.ui.fx.util.StaticTextField;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbenchPart;
 
 import javafx.scene.Node;
@@ -98,10 +99,10 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getScene()
+     * @see org.csstudio.ui.fx.util.FXBaseDialog#getScene(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected Scene getScene() {
+    protected Scene getScene(Composite parent) {
         return new Scene(new BorderPane(createContents()));
     }
 }

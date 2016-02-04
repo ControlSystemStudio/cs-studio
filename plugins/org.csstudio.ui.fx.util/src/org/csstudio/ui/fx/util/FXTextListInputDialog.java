@@ -5,6 +5,7 @@ import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 import java.util.List;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
@@ -37,7 +38,7 @@ public class FXTextListInputDialog<T> extends FXBaseDialog<String> {
      * @param validator the input validator for the text input field
      */
     public FXTextListInputDialog(Shell parentShell, String title, String message, InputValidator<String> validator,
-            List<T> options) {
+        List<T> options) {
         super(parentShell, title, message, "", validator);
         this.options = options;
     }
@@ -75,10 +76,10 @@ public class FXTextListInputDialog<T> extends FXBaseDialog<String> {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getScene()
+     * @see org.csstudio.ui.fx.util.FXBaseDialog#getScene(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected Scene getScene() {
+    protected Scene getScene(Composite parent) {
         GridPane pane = new GridPane();
         text = new TextField();
         text.setMaxWidth(Double.MAX_VALUE);

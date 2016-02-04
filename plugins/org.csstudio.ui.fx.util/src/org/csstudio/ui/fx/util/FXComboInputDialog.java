@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
@@ -95,10 +96,10 @@ public class FXComboInputDialog<T> extends FXBaseDialog<T> {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getScene()
+     * @see org.csstudio.ui.fx.util.FXBaseDialog#getScene(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected Scene getScene() {
+    protected Scene getScene(Composite parent) {
         combo = new ComboBox<>();
         combo.setEditable(false);
         combo.setMaxWidth(Double.MAX_VALUE);

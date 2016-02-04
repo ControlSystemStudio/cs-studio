@@ -2,6 +2,7 @@ package org.csstudio.ui.fx.util;
 
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.geometry.Insets;
@@ -33,8 +34,8 @@ public class FXTaggingDialog extends FXBaseDialog<String> {
      */
     public FXTaggingDialog(Shell parentShell) {
         super(parentShell, "Tag Snapshot",
-                "Provide the name of the tag and an optional tag message for the selected snapshot:", "",
-                e -> (e == null || e.trim().isEmpty()) ? "The tag name cannot be empty." : null);
+            "Provide the name of the tag and an optional tag message for the selected snapshot:", "",
+            e -> (e == null || e.trim().isEmpty()) ? "The tag name cannot be empty." : null);
     }
 
     /*
@@ -70,10 +71,10 @@ public class FXTaggingDialog extends FXBaseDialog<String> {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getScene()
+     * @see org.csstudio.ui.fx.util.FXBaseDialog#getScene(org.eclipse.swt.widgets.Composite)
      */
     @Override
-    protected Scene getScene() {
+    protected Scene getScene(Composite parent) {
         GridPane pane = new GridPane();
         tagName = new TextField();
         tagName.textProperty().addListener((a, o, n) -> validateInput());
