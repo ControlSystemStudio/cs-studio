@@ -19,6 +19,7 @@ import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.MultitypeTableCell;
 import org.csstudio.saverestore.ui.util.VTypeNamePair;
 import org.csstudio.saverestore.ui.util.VTypePair;
+import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.FXUtilities;
 import org.csstudio.ui.fx.util.UnfocusableCheckBox;
 import org.diirt.util.time.Timestamp;
@@ -110,8 +111,10 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     private static class VTypeCellEditor<T> extends MultitypeTableCell<TableEntry, T> {
         private static final Image WARNING_IMAGE = new Image(
             SnapshotViewerEditor.class.getResourceAsStream("/icons/hprio_tsk.png"));
+        private final SnapshotViewerController controller;
 
-        VTypeCellEditor() {
+        VTypeCellEditor(SnapshotViewerController cntrl) {
+            this.controller = cntrl;
             setConverter(new StringConverter<T>() {
                 @Override
                 public String toString(T item) {
@@ -130,19 +133,27 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 @Override
                 public T fromString(String string) {
                     T item = getItem();
-                    if (string == null) {
-                        return null;
-                    } else if (item instanceof VType) {
-                        return (T) Utilities.valueFromString(string, (VType) item);
-                    } else if (item instanceof VTypePair) {
-                        VTypePair t = (VTypePair) item;
-                        if (t.value instanceof VNoData) {
-                            return (T) new VTypePair(t.base, Utilities.valueFromString(string, t.base), t.threshold);
+                    try {
+                        if (string == null) {
+                            return item;
+                        } else if (item instanceof VType) {
+                            return (T) Utilities.valueFromString(string, (VType) item);
+                        } else if (item instanceof VTypePair) {
+                            VTypePair t = (VTypePair) item;
+                            if (t.value instanceof VNoData) {
+                                return (T) new VTypePair(t.base, Utilities.valueFromString(string, t.base),
+                                    t.threshold);
+                            } else {
+                                return (T) new VTypePair(t.base, Utilities.valueFromString(string, t.value),
+                                    t.threshold);
+                            }
                         } else {
-                            return (T) new VTypePair(t.base, Utilities.valueFromString(string, t.value), t.threshold);
+                            return item;
                         }
-                    } else {
-                        return null;
+                    } catch (IllegalArgumentException e) {
+                        FXMessageDialog.openError(controller.getOwner().getSite().getShell(), "Editing Error",
+                            e.getMessage());
+                        return item;
                     }
                 }
             });
@@ -385,7 +396,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         TableColumn<TableEntry, VTypePair> storedValueColumn = new TooltipTableColumn<>(
             "Stored Value (" + Utilities.DELTA_CHAR + " Setpoint)", "PV value when the snapshot was taken", 100);
         storedValueColumn.setCellValueFactory(e -> e.getValue().valueProperty());
-        storedValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
+        storedValueColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
         storedValueColumn.setEditable(true);
         storedValueColumn.setOnEditCommit(e -> {
             ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
@@ -397,7 +408,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Live Setpoint", "Current PV value",
             100);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
-        liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
+        liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
         liveValueColumn.setEditable(false);
 
         List<TableColumn<TableEntry, ?>> list = new ArrayList<>(Arrays.asList(selectedColumn, idColumn, pvNameColumn,
@@ -406,7 +417,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             TableColumn<TableEntry, VType> storedReadbackColumn = new TooltipTableColumn<>(
                 "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Stored Readback value", 100);
             storedReadbackColumn.setCellValueFactory(new PropertyValueFactory<>("storedReadback"));
-            storedReadbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
+            storedReadbackColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
             storedReadbackColumn.setEditable(false);
             list.add(storedReadbackColumn);
         }
@@ -415,7 +426,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             TableColumn<TableEntry, VType> readbackColumn = new TooltipTableColumn<>(
                 "Live Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Current Readback value", 100);
             readbackColumn.setCellValueFactory(new PropertyValueFactory<>("readback"));
-            readbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
+            readbackColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
             readbackColumn.setEditable(false);
             list.add(readbackColumn);
         }
@@ -447,7 +458,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Live Setpoint", "Current PV value",
             -1);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
-        liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>());
+        liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
         liveValueColumn.setEditable(false);
 
         TableColumn<TableEntry, ?> storedValueColumn = new TooltipTableColumn<>("Stored Values",
@@ -455,7 +466,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         TableColumn<TableEntry, VTypePair> baseCol = new TooltipTableColumn<>(
             "Base (" + Utilities.DELTA_CHAR + " Setpoint)", "PV value when the snapshot was taken", 100);
         baseCol.setCellValueFactory(e -> e.getValue().valueProperty());
-        baseCol.setCellFactory(e -> new VTypeCellEditor<>());
+        baseCol.setCellFactory(e -> new VTypeCellEditor<>(controller));
         baseCol.setEditable(true);
         baseCol.setOnEditCommit(e -> {
             ObjectProperty<VTypePair> value = e.getRowValue().valueProperty();
@@ -468,7 +479,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             TableColumn<TableEntry, VTypePair> storedReadbackColumn = new TooltipTableColumn<>(
                 "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Stored Readback value", 100);
             storedReadbackColumn.setCellValueFactory(e -> e.getValue().storedReadbackProperty());
-            storedReadbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
+            storedReadbackColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
             storedReadbackColumn.setEditable(false);
             storedValueColumn.getColumns().add(storedReadbackColumn);
         }
@@ -491,7 +502,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 moveToNewEditor);
             col.label.setContextMenu(menu);
             col.setCellValueFactory(e -> e.getValue().compareValueProperty(snapshotIndex));
-            col.setCellFactory(e -> new VTypeCellEditor<>());
+            col.setCellFactory(e -> new VTypeCellEditor<>(controller));
             col.setEditable(true);
             col.setOnEditCommit(e -> {
                 ObjectProperty<VTypePair> value = e.getRowValue().compareValueProperty(snapshotIndex);
@@ -510,7 +521,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                     "Readback (" + Utilities.DELTA_CHAR + " Setpoint)", "Stored Readback value", 100);
                 storedReadbackColumn
                     .setCellValueFactory(e -> e.getValue().compareStoredReadbackProperty(snapshotIndex));
-                storedReadbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
+                storedReadbackColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
                 storedReadbackColumn.setEditable(false);
                 storedValueColumn.getColumns().add(storedReadbackColumn);
             }
@@ -519,7 +530,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             TableColumn<TableEntry, VType> readbackColumn = new TooltipTableColumn<>(
                 "Live Readback (" + Utilities.DELTA_CHAR + " Live Setpoint)", "Current Readback value", 100);
             readbackColumn.setCellValueFactory(new PropertyValueFactory<>("readback"));
-            readbackColumn.setCellFactory(e -> new VTypeCellEditor<>());
+            readbackColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
             readbackColumn.setEditable(false);
             getColumns().addAll(Arrays.asList(selectedColumn, idColumn, pvNameColumn, storedValueColumn,
                 liveValueColumn, readbackColumn));

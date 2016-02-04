@@ -3,21 +3,19 @@ package org.csstudio.saverestore.ui;
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.csstudio.saverestore.ui.util.VTypeNamePair;
 import org.csstudio.ui.fx.util.FXCanvasMaker;
 import org.csstudio.ui.fx.util.FXUtilities;
+import org.csstudio.ui.fx.util.ZoomableLineChart;
 import org.diirt.util.array.ListNumber;
 import org.diirt.vtype.VNumberArray;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
-import org.eclipse.jface.util.Geometry;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Monitor;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.geometry.HPos;
@@ -31,6 +29,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.util.StringConverter;
 
 /**
  *
@@ -114,11 +113,10 @@ public class ChartDialog extends Dialog {
     }
 
     private Scene getScene(Composite parent) {
-        NumberAxis xAxis = new NumberAxis();
-        NumberAxis yAxis = new NumberAxis();
-        xAxis.setLabel("Array Index");
-        LineChart<Number, Number> lineChart = new LineChart<Number, Number>(xAxis, yAxis);
-        lineChart.setTitle(value.name + " @ " + ((VNumberArray) value.value).getTimestamp().toDate());
+        ZoomableLineChart chart = new ZoomableLineChart(
+            Optional.of(value.name + " @ " + ((VNumberArray) value.value).getTimestamp().toDate()),
+            Optional.of("Array Index"), Optional.empty());
+
         XYChart.Series<Number, Number> series = new XYChart.Series<>();
         series.setName(value.name);
         ListNumber data = ((VNumberArray) value.value).getData();
@@ -126,41 +124,32 @@ public class ChartDialog extends Dialog {
         for (int i = 0; i < data.size(); i++) {
             list.add(new Data<>(i, data.getDouble(i)));
         }
+        boolean createSymbols = data.size() < 30;
+        LineChart<Number,Number> lineChart = chart.getChart();
+        lineChart.setLegendVisible(false);
+        lineChart.setCreateSymbols(createSymbols);
         lineChart.getData().add(series);
+        ((NumberAxis)lineChart.getXAxis()).setTickLabelFormatter(new StringConverter<Number>() {
+            @Override
+            public String toString(Number object) {
+                return String.valueOf(object.longValue());
+            }
+            @Override
+            public Number fromString(String string) {
+                return Long.parseLong(string);
+            }
+        });
+        if (createSymbols) {
+            // this has to be executed after the series has been added to the chart so that the nodes already exist
+            for (XYChart.Data<Number, Number> d : list) {
+                Tooltip.install(d.getNode(),
+                    new Tooltip(String.format("(%d, %3.2f)", d.getXValue().longValue(), d.getYValue().doubleValue())));
+            }
+        }
         lineChart.getStylesheets()
             .add(SnapshotViewerEditor.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
         lineChart.setStyle(FXUtilities.toBackgroundColorStyle(parent.getBackground()));
         lineChart.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        for (XYChart.Data<Number, Number> d : list) {
-            Tooltip.install(d.getNode(),
-                new Tooltip(String.format("(%d, %3.2f)", d.getXValue().longValue(), d.getYValue().doubleValue())));
-        }
-        return new Scene(lineChart, 600, 400);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.jface.dialogs.Dialog#getInitialLocation(org.eclipse.swt.graphics.Point)
-     */
-    @Override
-    protected Point getInitialLocation(Point initialSize) {
-        Composite theParent = getShell().getParent();
-
-        Monitor monitor = getShell().getDisplay().getPrimaryMonitor();
-        if (theParent != null) {
-            monitor = theParent.getMonitor();
-        }
-
-        Rectangle monitorBounds = monitor.getClientArea();
-        Point centerPoint;
-        if (theParent == null) {
-            centerPoint = Geometry.centerPoint(monitorBounds);
-        } else {
-            centerPoint = Geometry.centerPoint(theParent.getBounds());
-        }
-
-        return new Point(centerPoint.x - (initialSize.x / 2), Math.max(monitorBounds.y,
-            Math.min(centerPoint.y - (initialSize.y / 2), monitorBounds.y + monitorBounds.height - initialSize.y)));
+        return new Scene(chart, 600, 400);
     }
 }

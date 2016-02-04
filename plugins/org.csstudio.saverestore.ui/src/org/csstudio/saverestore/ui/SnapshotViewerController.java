@@ -50,6 +50,7 @@ import org.diirt.datasource.PVReader;
 import org.diirt.datasource.PVWriter;
 import org.diirt.util.time.TimeDuration;
 import org.diirt.util.time.Timestamp;
+import org.diirt.vtype.Alarm;
 import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VTable;
@@ -185,8 +186,20 @@ public class SnapshotViewerController {
                 .set(!getSnapshots(true).isEmpty() && !SaveRestoreService.getInstance().isBusy()));
     }
 
+    /**
+     * Start the gui throttle.
+     */
     protected void start() {
         throttle.start();
+    }
+
+    /**
+     * Returns the editor that owns this controller.
+     *
+     * @return the owner
+     */
+    public SnapshotViewerEditor getOwner() {
+        return owner;
     }
 
     /**
@@ -1091,6 +1104,10 @@ public class SnapshotViewerController {
         boolean selected = entry.selectedProperty().get();
         if (index == 0) {
             value = entry.valueProperty().get().value;
+            if (value instanceof Alarm) {
+                entry.statusProperty().set(((Alarm)value).getAlarmName());
+                entry.severityProperty().set(((Alarm)value).getAlarmSeverity());
+            }
         } else {
             value = entry.compareValueProperty(index).get().value;
         }

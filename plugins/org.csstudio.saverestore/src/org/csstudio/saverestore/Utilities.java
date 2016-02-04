@@ -19,16 +19,13 @@ import org.diirt.util.array.ArrayLong;
 import org.diirt.util.array.ArrayShort;
 import org.diirt.util.array.IteratorNumber;
 import org.diirt.util.array.ListBoolean;
-import org.diirt.util.array.ListByte;
-import org.diirt.util.array.ListDouble;
-import org.diirt.util.array.ListFloat;
 import org.diirt.util.array.ListInt;
 import org.diirt.util.array.ListLong;
 import org.diirt.util.array.ListNumber;
-import org.diirt.util.array.ListShort;
 import org.diirt.util.text.NumberFormats;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
+import org.diirt.vtype.AlarmSeverity;
 import org.diirt.vtype.Array;
 import org.diirt.vtype.SimpleValueFormat;
 import org.diirt.vtype.Time;
@@ -93,14 +90,14 @@ public final class Utilities {
 
     /** The character code for the greek delta letter */
     public static final char DELTA_CHAR = '\u0394';
-    // All formats use thread locals, to avoid problems if any of the static methods is invoked concurrently
+    private static final char SEMI_COLON = ';';
+    private static final char COMMA = ',';
+    // All formats use thread locals, to avoid problems if any of the static methods are invoked concurrently
     private static final ThreadLocal<ValueFormat> FORMAT = ThreadLocal.withInitial(() -> {
         ValueFormat vf = new SimpleValueFormat(3);
         vf.setNumberFormat(NumberFormats.toStringFormat());
         return vf;
     });
-    private static final ThreadLocal<NumberFormat> COMPARE_FORMAT = ThreadLocal
-        .withInitial(() -> NumberFormats.format(2));
     private static final ThreadLocal<DateFormat> LE_TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("HH:mm:ss.SSS MMM dd"));
     private static final ThreadLocal<DateFormat> BE_TIMESTAMP_FORMATTER = ThreadLocal
@@ -117,18 +114,34 @@ public final class Utilities {
     /**
      * Transform the string <code>data</code> to a {@link VType} which is of identical type as the parameter
      * <code>type</code>. The data is expected to be in a proper format so that it can be parsed into the requested
-     * type. The alarm of the returned object is none and the timestamp of the object is now.
+     * type. The alarm of the returned object is none, with message USER DEFINED and the timestamp of the object is now.
+     * If the given type is an array type, the number of elements in the new value has to match the number of elements
+     * in the type.
      *
      * @param data the data to parse and transform into VType
      * @param type the type of the destination object
-     * @return VType representing the data
+     * @return VType representing the data#
+     * @throws IllegalArgumentException if the numbers of array elements do not match
      */
-    public static VType valueFromString(String data, VType type) {
-        Alarm alarm = ValueFactory.alarmNone();
+    public static VType valueFromString(String indata, VType type) throws IllegalArgumentException {
+        String data = indata.trim();
+        if (data.isEmpty()) {
+            return type;
+        }
+        if (data.charAt(0) == '[') {
+            data = data.substring(1);
+        }
+        if (data.charAt(data.length() - 1) == ']') {
+            data = data.substring(0, data.length() - 1);
+        }
+        Alarm alarm = ValueFactory.newAlarm(AlarmSeverity.NONE, "USER DEFINED");
         Time time = ValueFactory.timeNow();
         if (type instanceof VNumberArray) {
             ListNumber list = null;
             String[] elements = data.split("\\,");
+            if (((VNumberArray)type).getData().size() != elements.length) {
+                throw new IllegalArgumentException("The number of array elements is different from the original.");
+            }
             if (type instanceof VDoubleArray) {
                 double[] array = new double[elements.length];
                 for (int i = 0; i < elements.length; i++) {
@@ -170,6 +183,9 @@ public final class Utilities {
             return ValueFactory.newVNumberArray(list, alarm, time, (VNumberArray) type);
         } else if (type instanceof VEnumArray) {
             String[] elements = data.split("\\,");
+            if (((VEnumArray) type).getIndexes().size() != elements.length) {
+                throw new IllegalArgumentException("The number of array elements is different from the original.");
+            }
             int[] array = new int[elements.length];
             List<String> labels = ((VEnumArray) type).getLabels();
             for (int i = 0; i < elements.length; i++) {
@@ -179,10 +195,16 @@ public final class Utilities {
             return ValueFactory.newVEnumArray(list, labels, alarm, time);
         } else if (type instanceof VStringArray) {
             String[] elements = data.split("\\,");
+            if (((VStringArray)type).getData().size() != elements.length) {
+                throw new IllegalArgumentException("The number of array elements is different from the original.");
+            }
             List<String> list = Arrays.asList(elements);
             return ValueFactory.newVStringArray(list, alarm, time);
         } else if (type instanceof VBooleanArray) {
             String[] elements = data.split("\\,");
+            if (((VBooleanArray)type).getData().size() != elements.length) {
+                throw new IllegalArgumentException("The number of array elements is different from the original.");
+            }
             boolean[] array = new boolean[elements.length];
             for (int i = 0; i < elements.length; i++) {
                 array[i] = Boolean.parseBoolean(elements[i]);
@@ -246,7 +268,8 @@ public final class Utilities {
     /**
      * Transforms the vtype to a string representing the raw value in the vtype. If the value is an array it is
      * encapsulated into rectangular parenthesis and individual items are separated by semi-colon. In case of enums the
-     * value is followd by a tilda and another rectangular parenthesis containing all possible enumaration values.
+     * value is followed by a tilda and another rectangular parenthesis containing all possible enumeration values. This
+     * method should be used to create a string representation of the value for storage.
      *
      * @param type the type to transform
      * @return the string representing the raw value
@@ -261,28 +284,28 @@ public final class Utilities {
             if (type instanceof VDoubleArray) {
                 while (it.hasNext()) {
                     String str = String.valueOf(it.nextDouble());
-                    sb.append(pattern.matcher(str).replaceAll("\\.")).append(';');
+                    sb.append(pattern.matcher(str).replaceAll("\\.")).append(SEMI_COLON);
                 }
             } else if (type instanceof VFloatArray) {
                 while (it.hasNext()) {
                     String str = String.valueOf(it.nextFloat());
-                    sb.append(pattern.matcher(str).replaceAll("\\.")).append(';');
+                    sb.append(pattern.matcher(str).replaceAll("\\.")).append(SEMI_COLON);
                 }
             } else if (type instanceof VLongArray) {
                 while (it.hasNext()) {
-                    sb.append(it.nextLong()).append(';');
+                    sb.append(it.nextLong()).append(SEMI_COLON);
                 }
             } else if (type instanceof VIntArray) {
                 while (it.hasNext()) {
-                    sb.append(it.nextInt()).append(';');
+                    sb.append(it.nextInt()).append(SEMI_COLON);
                 }
             } else if (type instanceof VShortArray) {
                 while (it.hasNext()) {
-                    sb.append(it.nextShort()).append(';');
+                    sb.append(it.nextShort()).append(SEMI_COLON);
                 }
             } else if (type instanceof VByteArray) {
                 while (it.hasNext()) {
-                    sb.append(it.nextByte()).append(';');
+                    sb.append(it.nextByte()).append(SEMI_COLON);
                 }
             }
             if (list.size() == 0) {
@@ -296,14 +319,14 @@ public final class Utilities {
             List<String> labels = ((VEnumArray) type).getLabels();
             final StringBuilder sb = new StringBuilder((list.size() + labels.size()) * 10);
             sb.append('[');
-            list.forEach(s -> sb.append(s).append(';'));
+            list.forEach(s -> sb.append(s).append(SEMI_COLON));
             if (list.isEmpty()) {
                 sb.append(']');
             } else {
                 sb.setCharAt(sb.length() - 1, ']');
             }
             sb.append('~').append('[');
-            labels.forEach(s -> sb.append(s).append(';'));
+            labels.forEach(s -> sb.append(s).append(SEMI_COLON));
             if (labels.isEmpty()) {
                 sb.append(']');
             } else {
@@ -314,7 +337,7 @@ public final class Utilities {
             List<String> list = ((VStringArray) type).getData();
             final StringBuilder sb = new StringBuilder(list.size() * 20);
             sb.append('[');
-            list.forEach(s -> sb.append(s).append(';'));
+            list.forEach(s -> sb.append(s).append(SEMI_COLON));
             if (list.isEmpty()) {
                 sb.append(']');
             } else {
@@ -325,8 +348,9 @@ public final class Utilities {
             ListBoolean list = ((VBooleanArray) type).getData();
             final StringBuilder sb = new StringBuilder(list.size() * 6);
             sb.append('[');
-            for (int i = 0; i < list.size(); i++) {
-                sb.append(list.getBoolean(i)).append(';');
+            int size = list.size();
+            for (int i = 0; i < size; i++) {
+                sb.append(list.getBoolean(i)).append(SEMI_COLON);
             }
             if (list.size() == 0) {
                 sb.append(']');
@@ -341,7 +365,7 @@ public final class Utilities {
             final StringBuilder sb = new StringBuilder((labels.size() + 1) * 10);
             sb.append(((VEnum) type).getValue());
             sb.append('~').append('[');
-            labels.forEach(s -> sb.append(s).append(';'));
+            labels.forEach(s -> sb.append(s).append(SEMI_COLON));
             if (labels.isEmpty()) {
                 sb.append(']');
             } else {
@@ -353,29 +377,136 @@ public final class Utilities {
         } else if (type instanceof VBoolean) {
             return String.valueOf(((VBoolean) type).getValue());
         }
-        return null;
+        return type.toString();
     }
 
     /**
-     * Transforms the value of the given {@link VType} to a human readable string.
+     * Transforms the value of the given {@link VType} to a human readable string. This method uses formatting to format
+     * all values, which may result in the arrays being truncated.
      *
      * @param type the data to transform
      * @return string representation of the data
      */
     public static String valueToString(VType type) {
+        return valueToString(type, 15);
+    }
+
+    /**
+     * Transforms the value of the given {@link VType} to a human readable string. All values are formatted, which means
+     * that they may not be exact. If the value is an array type, the maximum number of elements that are included is
+     * given by the <code>arrayLimi</code> parameter. This method should only be used for presentation of the value on
+     * the screen.
+     *
+     * @param type the data to transform
+     * @param arrayLimit the maximum number of array elements to include
+     * @return string representation of the data
+     */
+    public static String valueToString(VType type, int arrayLimit) {
         if (type == null) {
             return null;
         }
         if (type instanceof VNumberArray) {
-            return FORMAT.get().format((VNumberArray) type);
+            ListNumber list = ((VNumberArray) type).getData();
+            int size = Math.min(arrayLimit, list.size());
+            StringBuilder sb = new StringBuilder(size * 15 + 2);
+            sb.append('[');
+            Pattern pattern = Pattern.compile("\\,");
+            NumberFormat formatter = FORMAT.get().getNumberFormat();
+            if (type instanceof VDoubleArray) {
+                for (int i = 0; i < size; i++) {
+                    sb.append(pattern.matcher(formatter.format(list.getDouble(i))).replaceAll("\\.")).append(COMMA)
+                        .append(' ');
+                }
+            } else if (type instanceof VFloatArray) {
+                for (int i = 0; i < size; i++) {
+                    sb.append(pattern.matcher(formatter.format(list.getFloat(i))).replaceAll("\\.")).append(COMMA)
+                        .append(' ');
+                }
+            } else if (type instanceof VLongArray) {
+                for (int i = 0; i < size; i++) {
+                    sb.append(list.getLong(i)).append(COMMA).append(' ');
+                }
+            } else if (type instanceof VIntArray) {
+                for (int i = 0; i < size; i++) {
+                    sb.append(list.getInt(i)).append(COMMA).append(' ');
+                }
+            } else if (type instanceof VShortArray) {
+                for (int i = 0; i < size; i++) {
+                    sb.append(list.getShort(i)).append(COMMA).append(' ');
+                }
+            } else if (type instanceof VByteArray) {
+                for (int i = 0; i < size; i++) {
+                    sb.append(list.getByte(i)).append(COMMA).append(' ');
+                }
+            }
+            if (size == 0) {
+                sb.append(']');
+            } else if (size < list.size()) {
+                sb.setCharAt(sb.length() - 1, '.');
+                sb.append("..]");
+            } else {
+                sb.setCharAt(sb.length() - 2, ']');
+            }
+            return sb.toString().trim();
         } else if (type instanceof VEnumArray) {
-            return FORMAT.get().format((VEnumArray) type);
+            List<String> list = ((VEnumArray) type).getData();
+            int size = Math.min(arrayLimit, list.size());
+            final StringBuilder sb = new StringBuilder(size * 15 + 2);
+            sb.append('[');
+            for (int i = 0; i < size; i++) {
+                sb.append(list.get(i)).append(COMMA).append(' ');
+            }
+            if (size == 0) {
+                sb.append(']');
+            } else if (size < list.size()) {
+                sb.setCharAt(sb.length() - 1, '.');
+                sb.append("..]");
+            } else {
+                sb.setCharAt(sb.length() - 2, ']');
+            }
+            return sb.toString().trim();
         } else if (type instanceof VStringArray) {
-            return FORMAT.get().format((VStringArray) type);
+            List<String> list = ((VStringArray) type).getData();
+            int size = Math.min(arrayLimit, list.size());
+            final StringBuilder sb = new StringBuilder(size * 20 + 2);
+            sb.append('[');
+            for (int i = 0; i < size; i++) {
+                sb.append(list.get(i)).append(COMMA).append(' ');
+            }
+            if (size == 0) {
+                sb.append(']');
+            } else if (size < list.size()) {
+                sb.setCharAt(sb.length() - 1, '.');
+                sb.append("..]");
+            } else {
+                sb.setCharAt(sb.length() - 2, ']');
+            }
+            return sb.toString().trim();
         } else if (type instanceof VBooleanArray) {
-            return FORMAT.get().format((VBooleanArray) type);
+            ListBoolean list = ((VBooleanArray) type).getData();
+            int size = Math.min(arrayLimit, list.size());
+            final StringBuilder sb = new StringBuilder(size * 7 + 2);
+            sb.append('[');
+            for (int i = 0; i < size; i++) {
+                sb.append(list.getBoolean(i)).append(COMMA).append(' ');
+            }
+            if (list.size() == 0) {
+                sb.append(']');
+            } else if (size < list.size()) {
+                sb.setCharAt(sb.length() - 1, '.');
+                sb.append("..]");
+            } else {
+                sb.setCharAt(sb.length() - 2, ']');
+            }
+            return sb.toString().trim();
         } else if (type instanceof VNumber) {
-            return String.valueOf(((VNumber) type).getValue());
+            if (type instanceof VDouble) {
+                return FORMAT.get().getNumberFormat().format(((VDouble) type).getValue());
+            } else if (type instanceof VFloat) {
+                return FORMAT.get().getNumberFormat().format(((VFloat) type).getValue());
+            } else {
+                return String.valueOf(((VNumber) type).getValue());
+            }
         } else if (type instanceof VEnum) {
             return ((VEnum) type).getValue();
         } else if (type instanceof VString) {
@@ -383,7 +514,9 @@ public final class Utilities {
         } else if (type instanceof VBoolean) {
             return String.valueOf(((VBoolean) type).getValue());
         }
-        return type.toString();
+        // no support for MultiScalars (VMultiDouble, VMultiInt, VMultiString, VMultiEnum), VStatistics, VTable and
+        // VImage)
+        return null;
     }
 
     /**
@@ -423,7 +556,7 @@ public final class Utilities {
                 if (newd > 0) {
                     sb.append('+');
                 }
-                sb.append(COMPARE_FORMAT.get().format(newd));
+                sb.append(FORMAT.get().getNumberFormat().format(newd));
             } else if (value instanceof VFloat) {
                 float data = ((VFloat) value).getValue();
                 float base = ((VNumber) baseValue).getValue().floatValue();
@@ -449,7 +582,7 @@ public final class Utilities {
                 if (newd > 0) {
                     sb.append('+');
                 }
-                sb.append(COMPARE_FORMAT.get().format(newd));
+                sb.append(FORMAT.get().getNumberFormat().format(newd));
             } else if (value instanceof VInt) {
                 int data = ((VInt) value).getValue();
                 int base = ((VNumber) baseValue).getValue().intValue();
@@ -475,7 +608,7 @@ public final class Utilities {
                 if (newd > 0) {
                     sb.append('+');
                 }
-                sb.append(COMPARE_FORMAT.get().format(newd));
+                sb.append(FORMAT.get().getNumberFormat().format(newd));
             } else if (value instanceof VByte) {
                 byte data = ((VByte) value).getValue();
                 byte base = ((VNumber) baseValue).getValue().byteValue();
@@ -488,7 +621,7 @@ public final class Utilities {
                 if (newd > 0) {
                     sb.append('+');
                 }
-                sb.append(COMPARE_FORMAT.get().format(newd));
+                sb.append(FORMAT.get().getNumberFormat().format(newd));
             }
             return new VTypeComparison(sb.toString(), diff, withinThreshold);
         } else if (value instanceof VBoolean && baseValue instanceof VBoolean) {
@@ -502,88 +635,13 @@ public final class Utilities {
             int c = ((VEnum) baseValue).getIndex();
             return new VTypeComparison(str, Integer.compare(b, c), b == c);
         } else if (value instanceof VNumberArray && baseValue instanceof VNumberArray) {
-            StringBuilder sb = new StringBuilder(20);
-            boolean equal = true;
-            sb.append(FORMAT.get().format(value));
-            if (value instanceof VDoubleArray) {
-                ListDouble data = ((VDoubleArray) value).getData();
-                ListNumber base = ((VNumberArray) baseValue).getData();
-                equal = data.size() == base.size();
-                if (equal) {
-                    for (int i = 0; i < data.size(); i++) {
-                        if (Double.compare(data.getDouble(i), base.getDouble(i)) != 0) {
-                            equal = false;
-                            break;
-                        }
-                    }
-                }
-            } else if (value instanceof VFloatArray) {
-                ListFloat data = ((VFloatArray) value).getData();
-                ListNumber base = ((VNumberArray) baseValue).getData();
-                equal = data.size() == base.size();
-                if (equal) {
-                    for (int i = 0; i < data.size(); i++) {
-                        if (Float.compare(data.getFloat(i), base.getFloat(i)) != 0) {
-                            equal = false;
-                            break;
-                        }
-                    }
-                }
-            } else if (value instanceof VLongArray) {
-                ListLong data = ((VLongArray) value).getData();
-                ListNumber base = ((VNumberArray) baseValue).getData();
-                equal = data.size() == base.size();
-                if (equal) {
-                    for (int i = 0; i < data.size(); i++) {
-                        if (Long.compare(data.getLong(i), base.getLong(i)) != 0) {
-                            equal = false;
-                            break;
-                        }
-                    }
-                }
-            } else if (value instanceof VIntArray) {
-                ListInt data = ((VIntArray) value).getData();
-                ListNumber base = ((VNumberArray) baseValue).getData();
-                equal = data.size() == base.size();
-                if (equal) {
-                    for (int i = 0; i < data.size(); i++) {
-                        if (Integer.compare(data.getInt(i), base.getInt(i)) != 0) {
-                            equal = false;
-                            break;
-                        }
-                    }
-                }
-            } else if (value instanceof VShortArray) {
-                ListShort data = ((VShortArray) value).getData();
-                ListNumber base = ((VNumberArray) baseValue).getData();
-                equal = data.size() == base.size();
-                if (equal) {
-                    for (int i = 0; i < data.size(); i++) {
-                        if (Short.compare(data.getShort(i), base.getShort(i)) != 0) {
-                            equal = false;
-                            break;
-                        }
-                    }
-                }
-            } else if (value instanceof VByteArray) {
-                ListByte data = ((VByteArray) value).getData();
-                ListNumber base = ((VNumberArray) baseValue).getData();
-                equal = data.size() == base.size();
-                if (equal) {
-                    for (int i = 0; i < data.size(); i++) {
-                        if (Byte.compare(data.getByte(i), base.getByte(i)) != 0) {
-                            equal = false;
-                            break;
-                        }
-                    }
-                }
-            }
-            return new VTypeComparison(sb.toString(), equal ? 0 : 1, equal);
+            String sb = valueToString(value);
+            boolean equal = areValuesEqual(value, baseValue, Optional.empty());
+            return new VTypeComparison(sb, equal ? 0 : 1, equal);
         } else {
             String str = valueToString(value);
-            String base = valueToString(baseValue);
-            int diff = str.compareTo(base);
-            return new VTypeComparison(str, diff, diff == 0);
+            boolean valuesEqual = areValuesEqual(value, baseValue, Optional.empty());
+            return new VTypeComparison(str, valuesEqual ? 0 : 1, valuesEqual);
         }
     }
 
@@ -687,11 +745,58 @@ public final class Utilities {
             int b = ((VEnum) v1).getIndex();
             int c = ((VEnum) v2).getIndex();
             return b == c;
-        } else {
-            String str = valueToString(v1);
-            String base = valueToString(v2);
-            return str.equals(base);
+        } else if (v1 instanceof VNumberArray && v2 instanceof VNumberArray) {
+            if ((v1 instanceof VByteArray && v2 instanceof VByteArray)
+                || (v1 instanceof VShortArray && v2 instanceof VShortArray)
+                || (v1 instanceof VIntArray && v2 instanceof VIntArray)
+                || (v1 instanceof VFloatArray && v2 instanceof VFloatArray)
+                || (v1 instanceof VDoubleArray && v2 instanceof VDoubleArray)) {
+                ListNumber b = ((VNumberArray) v1).getData();
+                ListNumber c = ((VNumberArray) v2).getData();
+                int size = b.size();
+                if (size != c.size()) {
+                    return false;
+                }
+                for (int i = 0; i < size; i++) {
+                    if (Double.compare(b.getDouble(i), c.getDouble(i)) != 0) {
+                        return false;
+                    }
+                }
+                return true;
+            } else if (v1 instanceof VLongArray || v2 instanceof VLongArray) {
+                ListLong b = ((VLongArray) v1).getData();
+                ListLong c = ((VLongArray) v2).getData();
+                int size = b.size();
+                if (size != c.size()) {
+                    return false;
+                }
+                for (int i = 0; i < size; i++) {
+                    if (Long.compare(b.getLong(i), c.getLong(i)) != 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else if (v1 instanceof VStringArray && v2 instanceof VStringArray) {
+            List<String> b = ((VStringArray) v1).getData();
+            List<String> c = ((VStringArray) v2).getData();
+            return b.equals(c);
+        } else if (v1 instanceof VEnumArray && v2 instanceof VEnumArray) {
+            ListInt b = ((VEnumArray) v1).getIndexes();
+            ListInt c = ((VEnumArray) v2).getIndexes();
+            int size = b.size();
+            if (size != c.size()) {
+                return false;
+            }
+            for (int i = 0; i < size; i++) {
+                if (Integer.compare(b.getInt(i), c.getInt(i)) != 0) {
+                    return false;
+                }
+            }
+            return true;
         }
+        // no support for MultiScalars (VMultiDouble, VMultiInt, VMultiString, VMultiEnum), VStatistics, VTable and
+        // VImage)
         return false;
     }
 }
