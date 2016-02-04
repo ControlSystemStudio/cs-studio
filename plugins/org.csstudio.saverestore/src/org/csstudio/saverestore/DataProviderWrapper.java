@@ -33,7 +33,7 @@ public class DataProviderWrapper {
             throw new IllegalArgumentException("Data provider id not defined.");
         }
         if (provider == null) {
-            throw new IllegalArgumentException("Data provider implementatio unknown for " + id);
+            throw new IllegalArgumentException("Data provider implementation for " + id + " missing");
         }
         this.id = id;
         this.name = name == null ? id : name;

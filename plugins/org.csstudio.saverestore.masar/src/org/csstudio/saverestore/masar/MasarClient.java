@@ -202,7 +202,7 @@ public class MasarClient {
                 channelRPCRequester = null;
             }
         } catch (Exception e) {
-            SaveRestoreService.LOGGER.log(Level.SEVERE, "Git cleanup error", e);
+            SaveRestoreService.LOGGER.log(Level.SEVERE, "MASAR Client cleanup error.", e);
         }
     }
 

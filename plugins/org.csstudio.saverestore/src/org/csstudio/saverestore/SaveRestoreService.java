@@ -36,7 +36,6 @@ public class SaveRestoreService {
     public static final String PREF_NUMBER_OF_SNAPSHOTS = "maxNumberOfSnapshotsInBatch";
     /** Plugin ID */
     public static final String PLUGIN_ID = "org.csstudio.saverestore";
-
     /** The common logger */
     public static final Logger LOGGER = Logger.getLogger(SaveRestoreService.class.getName());
     /** The name of the selectedDataProvider property */
@@ -141,12 +140,12 @@ public class SaveRestoreService {
                     DataProvider provider = (DataProvider) element.createExecutableExtension("dataprovider");
                     dpw.add(new DataProviderWrapper(id, name, description, provider));
                 } catch (CoreException e) {
-                    SaveRestoreService.LOGGER.log(Level.SEVERE,
-                        "Save and restore data provider '" + name + "' could not be loaded.", e);
+                    SaveRestoreService.LOGGER.log(Level.SEVERE, e,
+                        () -> "Save and restore data provider '" + name + "' could not be loaded.");
                 }
             }
             dataProviders = Collections.unmodifiableList(dpw);
-            LOGGER.log(Level.FINE, "Data providers loaded: " + dataProviders);
+            LOGGER.log(Level.FINE, "Data providers loaded: {0}.", new Object[] { dataProviders });
             if (dataProviders.isEmpty()) {
                 SaveRestoreService.LOGGER.log(Level.SEVERE, "Save and restore data providers not found.");
             }
@@ -166,15 +165,16 @@ public class SaveRestoreService {
         DataProviderWrapper oldValue = this.selectedDataProvider;
         this.selectedDataProvider = selectedDataProvider;
         if (this.selectedDataProvider != null) {
-            final DataProvider provider = this.selectedDataProvider.provider;
+            final DataProviderWrapper provider = this.selectedDataProvider;
             execute("Data Provider Initialise", () -> {
                 try {
-                    provider.initialise();
+                    provider.provider.initialise();
                 } catch (DataProviderException e) {
-                    LOGGER.log(Level.SEVERE, "Data provider initialisation failed.", e);
+                    LOGGER.log(Level.SEVERE, e, () -> provider.id + " data provider initialisation failed.");
                 }
             });
-            LOGGER.log(Level.FINE, "Selected data provider: " + selectedDataProvider.getPresentationName());
+            LOGGER.log(Level.FINE, "Selected data provider: {0}.",
+                new Object[] { selectedDataProvider.getPresentationName() });
         }
         support.firePropertyChange(SELECTED_DATA_PROVIDER, oldValue, this.selectedDataProvider);
     }

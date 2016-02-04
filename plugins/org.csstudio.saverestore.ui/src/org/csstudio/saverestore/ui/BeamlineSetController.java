@@ -51,8 +51,8 @@ public class BeamlineSetController {
         return comment.map(c -> {
             try {
                 BeamlineSetData dd = provider.saveBeamlineSet(data, c);
-                SaveRestoreService.LOGGER.log(Level.FINE,
-                    "Successfully saved the beamline set '" + data.getDescriptor().getFullyQualifiedName() + "'");
+                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully saved the beamline set {0}.",
+                    new Object[] { data.getDescriptor().getFullyQualifiedName() });
                 return dd;
             } catch (DataProviderException ex) {
                 ActionManager.reportException(ex, owner.getSite().getShell());

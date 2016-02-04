@@ -103,7 +103,7 @@ public class SnapshotViewerController {
                     }
                 }
                 if (e.isExceptionChanged()) {
-                    SaveRestoreService.LOGGER.log(Level.WARNING, "DIIRT Connection Error",
+                    SaveRestoreService.LOGGER.log(Level.WARNING, "DIIRT Connection Error.",
                         e.getPvReader().lastException());
                 }
                 value = e.getPvReader().getValue();
@@ -557,8 +557,8 @@ public class SnapshotViewerController {
                 try {
                     taken = provider.provider.takeSnapshot(set);
                 } catch (UnsupportedActionException e) {
-                    SaveRestoreService.LOGGER.log(Level.SEVERE, "The provider " + provider.name
-                        + " claims that it can take snapshots, but does not implement the action.", e);
+                    SaveRestoreService.LOGGER.log(Level.SEVERE, e, () -> "The provider " + provider.name
+                        + " claims that it can take snapshots, but does not implement the action.");
                 } catch (DataProviderException e) {
                     // notify the user about the exception and continue taking the snapshot normally
                     ActionManager.reportException(e, owner.getSite().getShell());
@@ -599,7 +599,8 @@ public class SnapshotViewerController {
                     Timestamp.now());
             }
             owner.addSnapshot(taken);
-            SaveRestoreService.LOGGER.log(Level.FINE, "Snapshot taken for '" + set.getFullyQualifiedName() + "'.");
+            SaveRestoreService.LOGGER.log(Level.FINE, "Snapshot taken for {0}.",
+                new Object[] { set.getFullyQualifiedName() });
         } finally {
             resume();
         }
@@ -790,9 +791,8 @@ public class SnapshotViewerController {
                         }
                     }
                 }
-                SaveRestoreService.LOGGER.log(Level.FINE,
-                    "Successfully saved Snapshot '" + snapshot.getBeamlineSet().getFullyQualifiedName() + ": "
-                        + snapshot.getSnapshot().get().getDate() + "'.");
+                SaveRestoreService.LOGGER.log(Level.FINE, "Successfully saved Snapshot {0}: {1}.", new Object[] {
+                    snapshot.getBeamlineSet().getFullyQualifiedName(), snapshot.getSnapshot().get().getDate() });
             } catch (DataProviderException ex) {
                 ActionManager.reportException(ex, owner.getSite().getShell());
             }
@@ -821,8 +821,8 @@ public class SnapshotViewerController {
                         pvs.get(e).writer.write(Utilities.toRawValue(values.get(i)));
                     }
                 }
-                SaveRestoreService.LOGGER.log(Level.FINE, "Restored snapshot '"
-                    + s.getBeamlineSet().getFullyQualifiedName() + ": " + s.getSnapshot().get() + "'.");
+                SaveRestoreService.LOGGER.log(Level.FINE, "Restored snapshot {0}: {1}.",
+                    new Object[] { s.getBeamlineSet().getFullyQualifiedName(), s.getSnapshot().get() });
             } else {
                 throw new IllegalArgumentException(
                     "Snapshot " + s + " has not been saved yet. Only saved snapshots can be used for restoring.");

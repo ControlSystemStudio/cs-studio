@@ -32,8 +32,8 @@ public class Activator extends AbstractUIPlugin {
 
         IDBackedExecutor() {
             super(1, 1, 0, TimeUnit.NANOSECONDS, new IDBackedBlockingQueue(1000, true));
-            setRejectedExecutionHandler(
-                (r, t) -> SaveRestoreService.LOGGER.warning("Execution of " + r + " rejected."));
+            setRejectedExecutionHandler((r, t) -> SaveRestoreService.LOGGER.log(Level.WARNING,
+                "Execution of {0} rejected.", new Object[] { r }));
         }
 
         @Override

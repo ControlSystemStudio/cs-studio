@@ -125,8 +125,8 @@ public final class CredentialUtilities {
                 return Optional.of(Arrays.copyOfRange(buffer.array(), buffer.position(), buffer.limit()));
             }
         } catch (StorageException | IOException e) {
-            SaveRestoreService.LOGGER.log(Level.WARNING,
-                "Could not read the password for '" + forUser + "' from secured storage.", e);
+            SaveRestoreService.LOGGER.log(Level.WARNING, e,
+                () -> "Could not read the password for '" + forUser + "' from secured storage.");
         }
         return Optional.empty();
     }

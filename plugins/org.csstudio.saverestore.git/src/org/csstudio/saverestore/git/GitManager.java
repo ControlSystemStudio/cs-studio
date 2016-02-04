@@ -155,7 +155,7 @@ public class GitManager {
                 git = null;
             }
         } catch (Exception e) {
-            SaveRestoreService.LOGGER.log(Level.SEVERE, "Git cleanup error", e);
+            SaveRestoreService.LOGGER.log(Level.SEVERE, "Git cleanup error.", e);
         }
     }
 
@@ -211,8 +211,8 @@ public class GitManager {
                     pull(credentials);
                 }
             } catch (GitAPIException | IOException e) {
-                SaveRestoreService.LOGGER.log(Level.WARNING,
-                    "Git repository " + remoteRepository + " is not accessible.", e);
+                SaveRestoreService.LOGGER.log(Level.WARNING, e,
+                    () -> "Git repository " + remoteRepository + " is not accessible.");
                 localOnly = true;
                 setAutomaticSynchronisation(false);
             }
