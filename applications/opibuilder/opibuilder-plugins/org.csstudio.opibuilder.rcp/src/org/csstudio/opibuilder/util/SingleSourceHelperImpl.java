@@ -153,8 +153,10 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
         action = actionRegistry.getAction(SendEMailAction.ID);
         if (action != null)
             menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
-        menu.appendToGroup(GEFActionConstants.GROUP_EDIT,
-                actionRegistry.getAction(ActionFactory.PRINT.getId()));
+        action = actionRegistry.getAction(ActionFactory.PRINT.getId());
+        if (action != null) {
+            menu.appendToGroup(GEFActionConstants.GROUP_EDIT, action);
+        }
 
     }
 

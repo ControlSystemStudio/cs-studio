@@ -25,6 +25,7 @@ import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.handlers.HandlerUtil;
@@ -44,8 +45,11 @@ public class OpenDataBrowserPopup extends AbstractHandler
     public Object execute(final ExecutionEvent event) throws ExecutionException
     {
         // Get selection first because the ApplicationContext might change.
-        // This works for both context menu and double-clicks.
-        final IStructuredSelection selection = (IStructuredSelection) HandlerUtil.getCurrentSelection(event);
+        ISelection selection = HandlerUtil.getActiveMenuSelection(event);
+        if (selection == null) {
+            // This works for double-clicks.
+            selection = HandlerUtil.getCurrentSelection(event);
+        }
 
         // Create new editor
         final DataBrowserEditor editor = DataBrowserEditor.createInstance();
@@ -56,9 +60,10 @@ public class OpenDataBrowserPopup extends AbstractHandler
         final Model model = editor.getModel();
         try
         {
-            if (selection.getFirstElement() instanceof ChannelInfo)
+            if (selection instanceof IStructuredSelection
+                && ((IStructuredSelection)selection).getFirstElement() instanceof ChannelInfo)
             {   // Received items are from search dialog
-                final Object channels[] = selection.toArray();
+                final Object channels[] = ((IStructuredSelection)selection).toArray();
                 for (Object channel : channels)
                 {
                     final ChannelInfo info = (ChannelInfo) channel;

@@ -19,11 +19,11 @@ public class BeastMessagePayload {
     public BeastMessagePayload(AlarmTreeItem initialState) {
         this.pv = initialState;
     }
-    
+
     public String getName(){
         return pv.getName();
     }
-    
+
     public String getDescription(){
         return pv.getMessage();
     }
