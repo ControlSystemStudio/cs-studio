@@ -112,6 +112,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         private static final Image WARNING_IMAGE = new Image(
             SnapshotViewerEditor.class.getResourceAsStream("/icons/hprio_tsk.png"));
         private final SnapshotViewerController controller;
+        private final Tooltip tooltip = new Tooltip();
 
         VTypeCellEditor(SnapshotViewerController cntrl) {
             this.controller = cntrl;
@@ -157,7 +158,6 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                     }
                 }
             });
-            setTooltip(new Tooltip());
             // FX does not provide any facilities to get the column index at mouse position, so use this hack, to know
             // where the mouse is located
             setOnMouseEntered(e -> ((Table) getTableView()).setColumnAndRowAtMouse(getTableColumn(), getIndex()));
@@ -216,17 +216,19 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             getStyleClass().remove("diff-cell");
             if (item == null || empty) {
                 setText("");
-                getTooltip().setText(null);
+                setTooltip(null);
                 setGraphic(null);
             } else {
                 if (item instanceof VNoData) {
                     setText(item.toString());
                     setGraphic(null);
-                    getTooltip().setText("No Value Available");
+                    tooltip.setText("No Value Available");
+                    setTooltip(tooltip);
                 } else if (item instanceof VType) {
                     setText(Utilities.valueToString((VType) item));
                     setGraphic(null);
-                    getTooltip().setText(item.toString());
+                    tooltip.setText(item.toString());
+                    setTooltip(tooltip);
                 } else if (item instanceof VTypePair) {
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) item).value,
                         ((VTypePair) item).base, ((VTypePair) item).threshold);
@@ -235,7 +237,8 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                         getStyleClass().add("diff-cell");
                         setGraphic(new ImageView(WARNING_IMAGE));
                     }
-                    getTooltip().setText(item.toString());
+                    tooltip.setText(item.toString());
+                    setTooltip(tooltip);
                 }
             }
         }
