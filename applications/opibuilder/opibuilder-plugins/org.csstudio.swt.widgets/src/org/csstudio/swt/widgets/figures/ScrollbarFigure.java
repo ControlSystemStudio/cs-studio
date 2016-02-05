@@ -24,6 +24,7 @@ import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.OPITimer;
 import org.csstudio.swt.widgets.util.RapButtonModel;
 import org.csstudio.ui.util.CSSButtonBorder;
+import org.csstudio.ui.util.CSSSchemeBorder;
 import org.csstudio.ui.util.ColorConstants;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ActionEvent;
@@ -215,7 +216,7 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
         thumb.setMinimumSize(new Dimension(6, 6));
         thumb.setBackgroundColor(ColorConstants.button);
 
-        thumb.setBorder(new SchemeBorder(CSSButtonBorder.SCHEMES.BUTTON_CONTRAST));
+        thumb.setBorder(new SchemeBorder(CSSSchemeBorder.SCHEMES.BUTTON_CONTRAST));
         return thumb;
     }
 
