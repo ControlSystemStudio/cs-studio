@@ -1,10 +1,10 @@
 /*******************************************************************************
-* Copyright (c) 2010-2016 ITER Organization.
-* All rights reserved. This program and the accompanying materials
-* are made available under the terms of the Eclipse Public License v1.0
-* which accompanies this distribution, and is available at
-* http://www.eclipse.org/legal/epl-v10.html
-******************************************************************************/
+ * Copyright (c) 2010-2016 ITER Organization.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.opibuilder.util;
 
 import org.diirt.vtype.AlarmSeverity;
@@ -99,8 +99,8 @@ public enum BeastAlarmSeverityLevel {
         // Assume that 'OK' is the most common case, so handle first;
         // empty severity assumed to be OK
         if (severity == null  ||
-            severity.length() <= 0  ||
-            "NO_ALARM".equalsIgnoreCase(severity)) //$NON-NLS-1$
+                severity.length() <= 0  ||
+                "NO_ALARM".equalsIgnoreCase(severity)) //$NON-NLS-1$
             return OK;
 
         // Most other cases
