@@ -67,10 +67,10 @@ public class Selector implements CompletionNotifier {
             DataProviderWrapper oldValue = (DataProviderWrapper) e.getOldValue();
             DataProviderWrapper newValue = (DataProviderWrapper) e.getNewValue();
             if (oldValue != null) {
-                oldValue.provider.removeCompletionNotifier(this);
+                oldValue.getProvider().removeCompletionNotifier(this);
             }
             if (newValue != null) {
-                newValue.provider.addCompletionNotifier(this);
+                newValue.getProvider().addCompletionNotifier(this);
             }
             ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
                 .set(Collections.unmodifiableList(new ArrayList<>(0)));
@@ -103,8 +103,8 @@ public class Selector implements CompletionNotifier {
 
     private void reloadBeamlineSets(BaseLevel baseLevel, Branch branch) {
         try {
-            final BeamlineSet[] theBeamlineSets = SaveRestoreService.getInstance().getSelectedDataProvider().provider
-                .getBeamlineSets(Optional.ofNullable(baseLevel), branch);
+            final BeamlineSet[] theBeamlineSets = SaveRestoreService.getInstance().getSelectedDataProvider()
+                .getProvider().getBeamlineSets(Optional.ofNullable(baseLevel), branch);
             runOnGUIThread(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
                 .set(Collections.unmodifiableList(Arrays.asList(theBeamlineSets))));
         } catch (DataProviderException e) {
@@ -113,7 +113,7 @@ public class Selector implements CompletionNotifier {
     }
 
     private void readBranches(final Branch branchToSelect) {
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         if (provider.areBranchesSupported()) {
             SaveRestoreService.getInstance().execute("Load branches", () -> {
                 try {
@@ -183,7 +183,7 @@ public class Selector implements CompletionNotifier {
     }
 
     private void readBaseLevels(boolean reloadBeamlineSets) {
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         if (provider.areBaseLevelsSupported()) {
             final Branch branch = selectedBranchProperty().get();
             SaveRestoreService.getInstance().execute("Load base levels", () -> {
@@ -217,8 +217,8 @@ public class Selector implements CompletionNotifier {
         if (selectedBaseLevel == null) {
             selectedBaseLevel = new SimpleObjectProperty<>();
             selectedBaseLevel.addListener((a, o, n) -> {
-                if (n == null
-                    && SaveRestoreService.getInstance().getSelectedDataProvider().provider.areBaseLevelsSupported()) {
+                if (n == null && SaveRestoreService.getInstance().getSelectedDataProvider().getProvider()
+                    .areBaseLevelsSupported()) {
                     return;
                 }
                 readBeamlineSets();
@@ -231,7 +231,7 @@ public class Selector implements CompletionNotifier {
         selectedBeamlineSetProperty().set(null);
         final BaseLevel baseLevel = selectedBaseLevelProperty().get();
         final Branch branch = selectedBranchProperty().get();
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         SaveRestoreService.getInstance().execute("Load beamline sets", () -> {
             try {
                 final BeamlineSet[] theBeamlineSets = provider.getBeamlineSets(Optional.ofNullable(baseLevel), branch);
@@ -281,7 +281,7 @@ public class Selector implements CompletionNotifier {
      * @see SaveRestoreService#getNumberOfSnapshots()
      */
     public void readSnapshots(boolean fromHead, final boolean all) {
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         final BeamlineSet set = selectedBeamlineSetProperty().get();
         final Snapshot snap = fromHead ? null : lastSnapshot;
         SaveRestoreService.getInstance().execute("Load snapshots", () -> {
@@ -334,7 +334,7 @@ public class Selector implements CompletionNotifier {
      * @return null if proposed name is OK, or string describing the problem if not OK
      */
     public static String validateBaseLevelName(String storageName) {
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         if (provider.areBaseLevelsSupported()) {
             return ExtensionPointLoader.getInstance().getBaseLevelValidator().map(e -> e.validate(storageName))
                 .orElse(null);

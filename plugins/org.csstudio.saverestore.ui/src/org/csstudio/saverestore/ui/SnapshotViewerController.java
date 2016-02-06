@@ -566,11 +566,11 @@ public class SnapshotViewerController {
             BeamlineSet set = getSnapshot(0).getBeamlineSet();
             DataProviderWrapper provider = SaveRestoreService.getInstance().getDataProvider(set.getDataProviderId());
             VSnapshot taken = null;
-            if (provider.provider.isTakingSnapshotsSupported()) {
+            if (provider.getProvider().isTakingSnapshotsSupported()) {
                 try {
-                    taken = provider.provider.takeSnapshot(set);
+                    taken = provider.getProvider().takeSnapshot(set);
                 } catch (UnsupportedActionException e) {
-                    SaveRestoreService.LOGGER.log(Level.SEVERE, e, () -> "The provider " + provider.name
+                    SaveRestoreService.LOGGER.log(Level.SEVERE, e, () -> "The provider " + provider.getName()
                         + " claims that it can take snapshots, but does not implement the action.");
                 } catch (DataProviderException e) {
                     // notify the user about the exception and continue taking the snapshot normally
@@ -611,7 +611,11 @@ public class SnapshotViewerController {
                 taken = new VSnapshot(new Snapshot(set), names, selected, values, readbackNames, readbackValues, deltas,
                     Timestamp.now());
             }
-            owner.addSnapshot(taken);
+            if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
+                owner.addSnapshot(taken);
+            } else {
+                new ActionManager(owner).openSnapshot(taken);
+            }
             SaveRestoreService.LOGGER.log(Level.FINE, "Snapshot taken for {0}.",
                 new Object[] { set.getFullyQualifiedName() });
         } finally {
@@ -691,13 +695,13 @@ public class SnapshotViewerController {
                 StringBuilder sb = new StringBuilder(200);
                 sb.append(e.pvNameProperty().get()).append(',');
                 VTypePair pair = e.valueProperty().get();
-                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base, pair.threshold).string)
+                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base, pair.threshold).getString())
                     .append('"').append(',');
                 for (int i = 1; i < snaps.size(); i++) {
                     pair = e.compareValueProperty(i).get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
                         ((VTypePair) pair).base, ((VTypePair) pair).threshold);
-                    sb.append('"').append(vtc.string).append('"').append(',');
+                    sb.append('"').append(vtc.getString()).append('"').append(',');
                 }
                 VType v = e.liveValueProperty().get();
                 sb.append('"').append(Utilities.valueToString(v)).append('"');
@@ -710,7 +714,7 @@ public class SnapshotViewerController {
                     pair = e.readbackProperty().get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
                         ((VTypePair) pair).base, ((VTypePair) pair).threshold);
-                    sb.append(',').append('"').append(vtc.string).append('"').append(',');
+                    sb.append(',').append('"').append(vtc.getString()).append('"').append(',');
                     if (pair.value instanceof Time) {
                         sb.append(((Time) pair.value).getTimestamp());
                     }
@@ -765,12 +769,12 @@ public class SnapshotViewerController {
                 p = p.substring(idx + 1);
             }
             SnapshotContent sc = FileUtilities.readFromSnapshot(fis);
-            Timestamp snapshotTime = Timestamp.of(sc.date);
+            Timestamp snapshotTime = Timestamp.of(sc.getDate());
             BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), p.split("/"), null);
-            Snapshot descriptor = new Snapshot(set, sc.date, "No Comment\nLoaded from file " + file.getAbsolutePath(),
-                "OS");
-            return Optional.of(new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
-                sc.readbackData, sc.deltas, snapshotTime));
+            Snapshot descriptor = new Snapshot(set, sc.getDate(),
+                "No Comment\nLoaded from file " + file.getAbsolutePath(), "OS");
+            return Optional.of(new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
+                sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), snapshotTime));
         } catch (IOException | RuntimeException | ParseException e) {
             ActionManager.reportException(e, owner.getSite().getShell());
             return Optional.empty();
@@ -789,7 +793,7 @@ public class SnapshotViewerController {
             try {
                 DataProviderWrapper dpw = SaveRestoreService.getInstance()
                     .getDataProvider(snapshot.getBeamlineSet().getDataProviderId());
-                s = dpw.provider.saveSnapshot(snapshot, comment);
+                s = dpw.getProvider().saveSnapshot(snapshot, comment);
                 if (s != null) {
                     synchronized (snapshots) {
                         for (int i = 0; i < snapshots.size(); i++) {
@@ -1105,8 +1109,8 @@ public class SnapshotViewerController {
         if (index == 0) {
             value = entry.valueProperty().get().value;
             if (value instanceof Alarm) {
-                entry.statusProperty().set(((Alarm)value).getAlarmName());
-                entry.severityProperty().set(((Alarm)value).getAlarmSeverity());
+                entry.statusProperty().set(((Alarm) value).getAlarmName());
+                entry.severityProperty().set(((Alarm) value).getAlarmSeverity());
             }
         } else {
             value = entry.compareValueProperty(index).get().value;

@@ -72,7 +72,7 @@ public class ActionManager {
             throw new IllegalArgumentException("Snapshot not provided.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-            .getDataProvider(descriptor.getBeamlineSet().getDataProviderId()).provider;
+            .getDataProvider(descriptor.getBeamlineSet().getDataProviderId()).getProvider();
         try {
             return Optional.ofNullable(provider.getSnapshotContent(descriptor));
         } catch (DataProviderException e) {
@@ -126,7 +126,7 @@ public class ActionManager {
             throw new IllegalArgumentException("Beamline set is not selected.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-            .getDataProvider(set.getDataProviderId()).provider;
+            .getDataProvider(set.getDataProviderId()).getProvider();
         if (!provider.isBeamlineSetSavingSupported()) {
             return;
         }
@@ -157,7 +157,7 @@ public class ActionManager {
             throw new IllegalArgumentException("Beamline set is not selected.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-            .getDataProvider(set.getDataProviderId()).provider;
+            .getDataProvider(set.getDataProviderId()).getProvider();
         SaveRestoreService.getInstance().execute("Open beamline set", () -> {
             try {
                 BeamlineSetData data = provider.getBeamlineSetContent(set);

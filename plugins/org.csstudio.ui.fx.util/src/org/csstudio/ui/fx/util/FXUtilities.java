@@ -1,10 +1,12 @@
 package org.csstudio.ui.fx.util;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Composite;
 
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
@@ -26,6 +28,16 @@ import javafx.scene.text.Text;
 public final class FXUtilities {
 
     private FXUtilities() {
+    }
+
+    /**
+     * Constructs a new bridge between the parent and the scene provided by the sceneSupplier.
+     *
+     * @param parent the parent of the fx canvas
+     * @param sceneSupplier the function that receives a parent and returns the scene to display by this bridge
+     */
+    public static void createFXBridge(Composite parent, Function<Composite, Scene> sceneSupplier) {
+        SWT2FXBridge.createFXBridge(parent, sceneSupplier);
     }
 
     /**
@@ -123,7 +135,7 @@ public final class FXUtilities {
      * method returns a reference to the OK button. To obtain the scene, invoke {@link Button#getScene()}.
      *
      * @param action the action executed on button pressed (consumer is invoked using {@link IDialogConstants#OK_ID} or
-     *          {@link IDialogConstants#CANCEL_ID}
+     *            {@link IDialogConstants#CANCEL_ID}
      * @return reference to the OK button
      */
     public static Button createButtonBarWithOKandCancel(Consumer<Integer> action) {

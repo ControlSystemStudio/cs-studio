@@ -34,6 +34,8 @@ public class SaveRestoreService {
 
     /** Property that defines the maximum number of snapshots loaded in a single call */
     public static final String PREF_NUMBER_OF_SNAPSHOTS = "maxNumberOfSnapshotsInBatch";
+    /** Property that defines if new snapshots should be open in compare mode or in a separate editor */
+    public static final String PREF_OPEN_NEW_SNAPSHOTS_IN_COMPARE_VIEW = "openNewSnapshotsInCompareView";
     /** Plugin ID */
     public static final String PLUGIN_ID = "org.csstudio.saverestore";
     /** The common logger */
@@ -168,9 +170,9 @@ public class SaveRestoreService {
             final DataProviderWrapper provider = this.selectedDataProvider;
             execute("Data Provider Initialise", () -> {
                 try {
-                    provider.provider.initialise();
+                    provider.getProvider().initialise();
                 } catch (DataProviderException e) {
-                    LOGGER.log(Level.SEVERE, e, () -> provider.id + " data provider initialisation failed.");
+                    LOGGER.log(Level.SEVERE, e, () -> provider.getId() + " data provider initialisation failed.");
                 }
             });
             LOGGER.log(Level.FINE, "Selected data provider: {0}.",
@@ -198,7 +200,7 @@ public class SaveRestoreService {
     public DataProviderWrapper getDataProvider(String id) {
         if (id != null) {
             for (DataProviderWrapper dpw : dataProviders) {
-                if (dpw.id.equals(id)) {
+                if (dpw.getId().equals(id)) {
                     return dpw;
                 }
             }
@@ -260,6 +262,16 @@ public class SaveRestoreService {
      */
     public int getNumberOfSnapshots() {
         return getPreferences().getInt(PREF_NUMBER_OF_SNAPSHOTS);
+    }
+
+    /**
+     * Returns true if new snapshots (the ones taken by the user) are opened in compare view or if a separate editor is
+     * created.
+     *
+     * @return true if new snapshots are opened in compare view or false for a separate editor
+     */
+    public boolean isOpenNewSnapshotsInCompareView() {
+        return getPreferences().getBoolean(PREF_OPEN_NEW_SNAPSHOTS_IN_COMPARE_VIEW);
     }
 
     /**

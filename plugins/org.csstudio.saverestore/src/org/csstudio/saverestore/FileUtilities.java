@@ -324,22 +324,6 @@ public final class FileUtilities {
     }
 
     /**
-     * Transforms the vtype to a string representing only the type of the vtype (e.g. double, string_array etc.).
-     *
-     * @see ValueType#name
-     * @param type the type to transform
-     * @return the value type as string
-     */
-    private static String vtypeToStringType(VType type) {
-        for (ValueType t : ValueType.values()) {
-            if (t.instanceOf(type)) {
-                return t.typeName;
-            }
-        }
-        throw new IllegalArgumentException("Unknown data type " + type.getClass() + ".");
-    }
-
-    /**
      * Generates snapshot file content and returns it.
      *
      * @param data snapshot file data
@@ -396,7 +380,7 @@ public final class FileUtilities {
         } else {
             sb.append(",,");
         }
-        sb.append(vtypeToStringType(data)).append(',');
+        sb.append(ValueType.vtypeToStringType(data)).append(',');
         sb.append('\"').append(Utilities.toRawStringValue(data)).append('\"');
         sb.append(',');
         if (readbackName != null) {

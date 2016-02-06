@@ -164,7 +164,7 @@ public class FXMessageDialog extends IconAndMessageDialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         ((GridLayout) parent.getLayout()).numColumns = 1;
-        new FXCanvasMaker(parent, this::createFxButtonBar);
+        FXUtilities.createFXBridge(parent, this::createFxButtonBar);
         buttons[defaultButtonIndex].requestFocus();
         buttons[defaultButtonIndex].setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {

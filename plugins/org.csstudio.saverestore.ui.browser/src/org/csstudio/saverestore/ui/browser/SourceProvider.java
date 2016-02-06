@@ -65,9 +65,9 @@ public class SourceProvider extends AbstractSourceProvider implements PropertyCh
     public Map getCurrentState() {
         Map<String, Boolean> state = new HashMap<>(2);
         DataProviderWrapper provider = SaveRestoreService.getInstance().getSelectedDataProvider();
-        state.put(SOURCE_NAMES[0], provider == null ? false : provider.provider.areBranchesSupported());
+        state.put(SOURCE_NAMES[0], provider == null ? false : provider.getProvider().areBranchesSupported());
         state.put(SOURCE_NAMES[1], SaveRestoreService.getInstance().getDataProvidersCount() > 1);
-        state.put(SOURCE_NAMES[2], provider == null ? false : provider.provider.isReinitSupported());
+        state.put(SOURCE_NAMES[2], provider == null ? false : provider.getProvider().isReinitSupported());
         return state;
     }
 

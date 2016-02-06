@@ -105,7 +105,7 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         ((GridLayout) parent.getLayout()).numColumns = 1;
-        new FXCanvasMaker(parent,this::createFXButtonBar);
+        FXUtilities.createFXBridge(parent,this::createFXButtonBar);
         validateInput();
     }
 
@@ -124,7 +124,7 @@ public class UsernameAndPasswordDialog extends TitleAreaDialog {
         Composite composite = (Composite) super.createDialogArea(parent);
         setTitle("Authentication");
         setMessage(message);
-        new FXCanvasMaker(composite,this::createScene);
+        FXUtilities.createFXBridge(composite,this::createScene);
         return composite;
     }
 

@@ -73,6 +73,10 @@ openFile
       <feature id="org.csstudio.iter.opibuilder.feature"/>
       <feature id="org.csstudio.display.pvtable.feature"/>
       <feature id="org.csstudio.saverestore.masar.feature"/>
+      <feature id="org.csstudio.applications.logbook.feature"/>
+      <feature id="org.csstudio.iter.logbook.feature"/>
+      <feature id="org.csstudio.logbook.viewer.feature"/>
+      <feature id="org.csstudio.olog.feature"/>
    </features>
 
    <configurations>

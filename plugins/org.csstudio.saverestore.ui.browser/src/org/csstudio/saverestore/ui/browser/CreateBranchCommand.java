@@ -33,14 +33,15 @@ public class CreateBranchCommand extends AbstractHandler {
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-            if (wrapper != null && wrapper.provider.areBranchesSupported()) {
+            if (wrapper != null && wrapper.getProvider().areBranchesSupported()) {
                 List<Branch> branches = ((BrowserView) part).getSelector().branchesProperty().get();
                 final List<String> names = new ArrayList<>(branches.size());
                 branches.forEach(e -> names.add(e.getShortName()));
-                FXTextInputDialog dialog = new FXTextInputDialog(HandlerUtil.getActiveShell(event), "Create New Branch",
-                    "Enter the name of the new branch", "", e -> names.contains(e) ? "Branch '" + e + "' already exists."
-                        : e.isEmpty() ? "Branch name cannot be empty." : null);
-                dialog.openAndWait().ifPresent(((BrowserView) part).getActionManager()::createNewBranch);
+                FXTextInputDialog
+                    .get(HandlerUtil.getActiveShell(event), "Create New Branch", "Enter the name of the new branch", "",
+                        e -> names.contains(e) ? "Branch '" + e + "' already exists."
+                            : e.isEmpty() ? "Branch name cannot be empty." : null)
+                    .ifPresent(((BrowserView) part).getActionManager()::createNewBranch);
             }
         }
         return null;

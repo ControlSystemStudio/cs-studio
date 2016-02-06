@@ -132,7 +132,7 @@ public class RepositoryTree extends TreeView<String> {
         this.owner = owner;
         this.editable = editable;
         this.initialValue = initialValue;
-        this.dataProviderId = SaveRestoreService.getInstance().getSelectedDataProvider().id;
+        this.dataProviderId = SaveRestoreService.getInstance().getSelectedDataProvider().getId();
         init();
     }
 
@@ -168,19 +168,20 @@ public class RepositoryTree extends TreeView<String> {
             final BrowsingTreeItem item = (BrowsingTreeItem) getSelectionModel().getSelectedItem();
             final List<String> names = new ArrayList<>();
             item.getChildren().forEach(x -> names.add(x.getValue()));
-            new FXTextInputDialog(owner.getSite().getShell(), "Folder Name", "Enter new folder name", null,
+            FXTextInputDialog.get(owner.getSite().getShell(), "Folder Name", "Enter new folder name", null,
                 new InputValidator<String>() {
-                    @Override
-                    public String validate(String s) {
-                        return names.contains(s) ? "Folder '" + s + "' already exists."
-                              : s.isEmpty() ? "Folder name cannot be empty."
-                                  : item.type == Type.BRANCH ? Selector.validateBaseLevelName(s) : null;
-                    }
-                    @Override
-                    public boolean isAllowedToProceed(String s) {
-                        return !names.contains(s) && !s.trim().isEmpty();
-                    }
-            }).openAndWait().ifPresent(f -> {
+                @Override
+                public String validate(String s) {
+                    return names.contains(s) ? "Folder '" + s + "' already exists."
+                        : s.isEmpty() ? "Folder name cannot be empty."
+                            : item.type == Type.BRANCH ? Selector.validateBaseLevelName(s) : null;
+                }
+
+                @Override
+                public boolean isAllowedToProceed(String s) {
+                    return !names.contains(s) && !s.trim().isEmpty();
+                }
+            }).ifPresent(f -> {
                 if (item.type == Type.BRANCH) {
                     BrowsingTreeItem newItem = new BrowsingTreeItem(new BaseLevel(item.branch, f, f));
                     item.getChildren().add(newItem);

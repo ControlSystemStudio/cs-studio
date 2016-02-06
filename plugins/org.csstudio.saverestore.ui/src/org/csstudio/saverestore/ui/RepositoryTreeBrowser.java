@@ -52,7 +52,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
             e -> e == null || e.getName().isEmpty() ? "Beamline Set name not provided"
                 : e.getBranch() == null ? "No branch selected"
                     : e.getBaseLevel().isPresent() ? (e.getPath().length == 0 ? "No name and path provided" : null)
-                        : SaveRestoreService.getInstance().getSelectedDataProvider().provider.areBaseLevelsSupported()
+                        : SaveRestoreService.getInstance().getSelectedDataProvider().getProvider().areBaseLevelsSupported()
                             ? "No base level selected" : null);
         this.owner = owner;
         this.initialValue = preselection;

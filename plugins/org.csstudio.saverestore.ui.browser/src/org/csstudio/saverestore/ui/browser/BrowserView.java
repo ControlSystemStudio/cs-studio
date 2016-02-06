@@ -92,7 +92,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
 
         BeamlineSetWrapper(BeamlineSet set, String name) {
             this.set = set;
-            this.path = name == null ? set.getPath() : name.split("\\/") ;
+            this.path = name == null ? set.getPath() : name.split("\\/");
         }
 
         boolean isFolder() {
@@ -179,8 +179,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             @Override
             public void run() {
                 DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-                if (canExecute("Tag Snapshot", wrapper.name + " data provider does not support tagging.",
-                    wrapper.provider::isTaggingSupported)) {
+                if (canExecute("Tag Snapshot", wrapper.getName() + " data provider does not support tagging.",
+                    wrapper.getProvider()::isTaggingSupported)) {
                     Snapshot item = snapshotsList.getSelectionModel().getSelectedItem();
                     if (FXMessageDialog.openQuestion(getSite().getShell(), "Remove Tag",
                         "Are you sure you want to remove the tag '" + item.getTagName().get() + "' from snapshot '"
@@ -269,7 +269,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                 .setTooltip(new Tooltip("Toggle between custom browser (" + baseLevelBrowser.getReadableName()
                     + ") and default browser (" + defaultBaseLevelBrowser.getReadableName() + ")"));
             baseLevelPanelFilterButton.selectedProperty().addListener((a, o, n) -> {
-                Activator.getDefault().getDialogSettings().put(SETTINGS_DEFAULT_BASE_LEVEL_BROWSER,!n);
+                Activator.getDefault().getDialogSettings().put(SETTINGS_DEFAULT_BASE_LEVEL_BROWSER, !n);
                 if (n) {
                     content.setCenter(baseLevelBrowser.getFXContent());
                 } else {
@@ -304,8 +304,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             popup.hide();
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
             if (canExecute("Delete Beamline Set",
-                wrapper.name + " data provider does not support deleting of beamline sets.",
-                wrapper.provider::isBeamlineSetSavingSupported)) {
+                wrapper.getName() + " data provider does not support deleting of beamline sets.",
+                wrapper.getProvider()::isBeamlineSetSavingSupported)) {
 
                 BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
                 if (FXMessageDialog.openQuestion(getSite().getShell(), "Delete Beamline Set",
@@ -352,8 +352,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         editButton.setOnAction(e -> {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
             if (canExecute("Edit Beamline Set",
-                wrapper.name + " data provider does not support editing of beamline sets.",
-                wrapper.provider::isBeamlineSetSavingSupported)) {
+                wrapper.getName() + " data provider does not support editing of beamline sets.",
+                wrapper.getProvider()::isBeamlineSetSavingSupported)) {
                 actionManager.editBeamlineSet(selector.selectedBeamlineSetProperty().get());
             }
         });
@@ -361,8 +361,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         newButton.setOnAction(e -> {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
             if (canExecute("New Beamline Set",
-                wrapper.name + " data provider does not support creation of new beamline sets.",
-                wrapper.provider::isBeamlineSetSavingSupported)) {
+                wrapper.getName() + " data provider does not support creation of new beamline sets.",
+                wrapper.getProvider()::isBeamlineSetSavingSupported)) {
                 actionManager.newBeamlineSet();
             }
         });
@@ -370,8 +370,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
         importButton.setOnAction(e -> {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-            if (canExecute("Import Data", wrapper.name + " data provider does not support data importing.",
-                wrapper.provider::isImportSupported)) {
+            if (canExecute("Import Data", wrapper.getName() + " data provider does not support data importing.",
+                wrapper.getProvider()::isImportSupported)) {
                 new ImportDataDialog(BrowserView.this).openAndWait().ifPresent(actionManager::importFrom);
             }
         });
@@ -403,7 +403,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             importButton.setVisible(false);
             newButton.setDisable(true);
         } else {
-            if (dpw.provider.areBaseLevelsSupported()) {
+            if (dpw.getProvider().areBaseLevelsSupported()) {
                 importButton.setVisible(true);
                 newButton.disableProperty()
                     .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
@@ -471,7 +471,6 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             deleteTagAction.setEnabled(snapshot != null && snapshot.getTagName().isPresent());
             contextMenu.setVisible(e.getButton() == MouseButton.SECONDARY);
         });
-
         snapshotsList.setOnMouseClicked(e -> {
             Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
             if (e.getClickCount() == 2 && snapshot != null) {
@@ -496,8 +495,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             .or(snapshotsPane.expandedProperty().not()));
         tagButton.setOnAction(e -> {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-            if (canExecute("Tag Snapshot", wrapper.name + " data provider does not support tagging.",
-                wrapper.provider::isTaggingSupported)) {
+            if (canExecute("Tag Snapshot", wrapper.getName() + " data provider does not support tagging.",
+                wrapper.getProvider()::isTaggingSupported)) {
                 final Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
                 final FXTaggingDialog dialog = new FXTaggingDialog(getSite().getShell());
                 dialog.openAndWait().ifPresent(a -> actionManager.tagSnapshot(snapshot, a, dialog.getMessage()));
@@ -521,7 +520,27 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         setUpTitlePaneNode(openButton, false);
         setUpTitlePaneNode(compareButton, false);
 
+        SaveRestoreService.getInstance().getPreferences().addPropertyChangeListener(e -> {
+            if (SaveRestoreService.PREF_NUMBER_OF_SNAPSHOTS.equals(e.getProperty())) {
+                setUpFetchButtons(titleBox, titleText, openButton, compareButton, tagButton);
+            }
+        });
+        setUpFetchButtons(titleBox, titleText, openButton, compareButton, tagButton);
+
+        titleBox.setMaxWidth(Double.MAX_VALUE);
+        titleText.setMaxWidth(Double.MAX_VALUE);
+        snapshotsPane.setGraphic(titleBox);
+        snapshotsPane.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        titleBox.prefWidthProperty().bind(scene.widthProperty().subtract(34));
+        snapshotsPane.expandedProperty()
+            .addListener((a, o, n) -> VBox.setVgrow(snapshotsPane, n ? Priority.ALWAYS : Priority.NEVER));
+        return snapshotsPane;
+    }
+
+    private void setUpFetchButtons(GridPane titleBox, Label titleText, Button openButton, Button compareButton,
+        Button tagButton) {
         int num = SaveRestoreService.getInstance().getNumberOfSnapshots();
+        titleBox.getChildren().clear();
         if (num > 0) {
             Button nextButton = new UnfocusableButton("",
                 new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/1rightarrow.png"))));
@@ -543,15 +562,6 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         } else {
             titleBox.addRow(0, titleText, openButton, compareButton, tagButton);
         }
-
-        titleBox.setMaxWidth(Double.MAX_VALUE);
-        titleText.setMaxWidth(Double.MAX_VALUE);
-        snapshotsPane.setGraphic(titleBox);
-        snapshotsPane.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
-        titleBox.prefWidthProperty().bind(scene.widthProperty().subtract(34));
-        snapshotsPane.expandedProperty()
-            .addListener((a, o, n) -> VBox.setVgrow(snapshotsPane, n ? Priority.ALWAYS : Priority.NEVER));
-        return snapshotsPane;
     }
 
     private void setUpElementsPaneTitle() {
@@ -573,9 +583,9 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     }
 
     private void init() {
-        selector.selectedBranchProperty().addListener((a,o,n) -> {
+        selector.selectedBranchProperty().addListener((a, o, n) -> {
             if (selector.isDefaultBranch()) {
-                Activator.getDefault().getDialogSettings().put(SETTINGS_SELECTED_BRANCH, (String)null);
+                Activator.getDefault().getDialogSettings().put(SETTINGS_SELECTED_BRANCH, (String) null);
             } else {
                 Activator.getDefault().getDialogSettings().put(SETTINGS_SELECTED_BRANCH, n.getShortName());
             }
@@ -673,7 +683,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             }
             DataProviderWrapper dpw = dpws.get(0);
             for (DataProviderWrapper w : dpws) {
-                if (w.id.equals(selectedDataProvider)) {
+                if (w.getId().equals(selectedDataProvider)) {
                     dpw = w;
                     break;
                 }
@@ -690,9 +700,9 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
         if (wrapper != null) {
             IDialogSettings settings = Activator.getDefault().getDialogSettings();
-            settings.put(SETTINGS_SELECTED_DATA_PROVIDER, wrapper.id);
+            settings.put(SETTINGS_SELECTED_DATA_PROVIDER, wrapper.getId());
             mainPane.getChildren().clear();
-            if (wrapper.provider.areBaseLevelsSupported() && baseLevelPane != null) {
+            if (wrapper.getProvider().areBaseLevelsSupported() && baseLevelPane != null) {
                 mainPane.getChildren().addAll(baseLevelPane, dataPane);
             } else {
                 mainPane.getChildren().addAll(dataPane);
@@ -701,12 +711,11 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     }
 
     private static String makeStringFromParts(String[] parts, int from, int to) {
+        if (from == to) return "";
         StringBuilder sb = new StringBuilder(100);
-        for (int i = from; i < to; i++) {
-            sb.append(parts[i]);
-            if (i < to - 1) {
-                sb.append('/');
-            }
+        sb.append(parts[from]);
+        for (int i = from + 1; i < to; i++) {
+            sb.append('/').append(parts[i]);
         }
         return sb.toString();
     }
@@ -790,7 +799,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         Snapshot selectedSnapshot = snapshotsList.selectionModelProperty().get().getSelectedItem();
         return selectedSnapshot == null ? new LazySnapshotStructuredSelection(null, null)
             : new LazySnapshotStructuredSelection(selectedSnapshot, SaveRestoreService.getInstance()
-                .getDataProvider(selectedSnapshot.getBeamlineSet().getDataProviderId()).provider);
+                .getDataProvider(selectedSnapshot.getBeamlineSet().getDataProviderId()).getProvider());
 
     }
 }

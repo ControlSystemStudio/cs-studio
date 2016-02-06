@@ -1282,16 +1282,16 @@ public class GitManager {
                     MetaInfo meta = getMetaInfoFromCommit(revCommit);
                     try (InputStream stream = objectLoader.openStream()) {
                         BeamlineSetContent bsc = FileUtilities.readFromBeamlineSet(stream);
-                        BeamlineSetData bsd = new BeamlineSetData((BeamlineSet) descriptor, bsc.names, bsc.readbacks,
-                            bsc.deltas, bsc.description, meta.comment, meta.timestamp);
+                        BeamlineSetData bsd = new BeamlineSetData((BeamlineSet) descriptor, bsc.getNames(),
+                            bsc.getReadbacks(), bsc.getDeltas(), bsc.getDescription(), meta.comment, meta.timestamp);
                         return type.cast(bsd);
                     }
                 } else if (fileType == FileType.SNAPSHOT) {
                     try (InputStream stream = objectLoader.openStream()) {
                         SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
-                        Timestamp snapshotTime = Timestamp.of(sc.date);
-                        VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data,
-                            sc.readbacks, sc.readbackData, sc.deltas, snapshotTime);
+                        Timestamp snapshotTime = Timestamp.of(sc.getDate());
+                        VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(),
+                            sc.getData(), sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), snapshotTime);
                         return type.cast(vs);
                     }
                 }

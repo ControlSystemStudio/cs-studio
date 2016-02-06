@@ -9,16 +9,12 @@ import java.util.Objects;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class DataProviderWrapper {
+public final class DataProviderWrapper {
 
-    /** Implementation of the DataProvider interface provided by an extension point */
-    public final DataProvider provider;
-    /** The name of the data provider */
-    public final String name;
-    /** Unique id of the data provider */
-    public final String id;
-    /** Description of the data provider */
-    public final String description;
+    private final DataProvider provider;
+    private final String name;
+    private final String id;
+    private final String description;
 
     /**
      * Constructs a new wrapper.
@@ -39,6 +35,42 @@ public class DataProviderWrapper {
         this.name = name == null ? id : name;
         this.description = description == null ? "" : description;
         this.provider = provider;
+    }
+
+    /**
+     * Returns the implementation of the DataProvider interface provided by the extension point.
+     *
+     * @return the provider instance
+     */
+    public DataProvider getProvider() {
+        return provider;
+    }
+
+    /**
+     * Returns the name of the data provider.
+     *
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Returns the unique id of the data provider.
+     *
+     * @return the id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * Returns the human readabble description of the data provider.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
     }
 
     /**

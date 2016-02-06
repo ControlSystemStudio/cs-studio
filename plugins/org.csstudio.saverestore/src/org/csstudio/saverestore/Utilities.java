@@ -74,17 +74,41 @@ public final class Utilities {
      *
      */
     public static class VTypeComparison {
-        /** The string representation of the comparison result. May include delta character etc. */
-        public final String string;
-        /** 0 if values are identical, -1 if first value is less than second or 1 otherwise */
-        public final int valuesEqual;
-        /** Indicates if the values are within the allowed threshold */
-        public final boolean withinThreshold;
+        private final String string;
+        private final int valuesEqual;
+        private final boolean withinThreshold;
 
         VTypeComparison(String string, int equal, boolean withinThreshold) {
             this.string = string;
             this.valuesEqual = equal;
             this.withinThreshold = withinThreshold;
+        }
+
+        /**
+         * Returns the string representation of the comparison result.
+         *
+         * @return the comparison result as a string
+         */
+        public String getString() {
+            return string;
+        }
+
+        /**
+         * Returns 0 if values are identical, -1 if first value is less than second or 1 otherwise.
+         *
+         * @return the code describing the values equality
+         */
+        public int getValuesEqual() {
+            return valuesEqual;
+        }
+
+        /**
+         * Indicates if the values are within the allowed threshold or not.
+         *
+         * @return true if values are within threshold or false otherwise
+         */
+        public boolean isWithinThreshold() {
+            return withinThreshold;
         }
     }
 
@@ -139,7 +163,7 @@ public final class Utilities {
         if (type instanceof VNumberArray) {
             ListNumber list = null;
             String[] elements = data.split("\\,");
-            if (((VNumberArray)type).getData().size() != elements.length) {
+            if (((VNumberArray) type).getData().size() != elements.length) {
                 throw new IllegalArgumentException("The number of array elements is different from the original.");
             }
             if (type instanceof VDoubleArray) {
@@ -195,14 +219,14 @@ public final class Utilities {
             return ValueFactory.newVEnumArray(list, labels, alarm, time);
         } else if (type instanceof VStringArray) {
             String[] elements = data.split("\\,");
-            if (((VStringArray)type).getData().size() != elements.length) {
+            if (((VStringArray) type).getData().size() != elements.length) {
                 throw new IllegalArgumentException("The number of array elements is different from the original.");
             }
             List<String> list = Arrays.asList(elements);
             return ValueFactory.newVStringArray(list, alarm, time);
         } else if (type instanceof VBooleanArray) {
             String[] elements = data.split("\\,");
-            if (((VBooleanArray)type).getData().size() != elements.length) {
+            if (((VBooleanArray) type).getData().size() != elements.length) {
                 throw new IllegalArgumentException("The number of array elements is different from the original.");
             }
             boolean[] array = new boolean[elements.length];

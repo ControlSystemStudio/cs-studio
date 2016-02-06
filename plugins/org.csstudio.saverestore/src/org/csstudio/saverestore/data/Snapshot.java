@@ -24,7 +24,9 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
 
     private static final String UNKNOWN = "Unknown";
 
+    /** The parameter name under which the snapshot tag name is stored */
     public static final String TAG_NAME = "tagName";
+    /** The parameter name under which the snapshot tag message is stored */
     public static final String TAG_MESSAGE = "tagMessage";
 
     private static final long serialVersionUID = 2377640937070572130L;

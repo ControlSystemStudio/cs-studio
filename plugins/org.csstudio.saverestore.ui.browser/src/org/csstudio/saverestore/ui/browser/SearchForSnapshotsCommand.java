@@ -30,7 +30,7 @@ public class SearchForSnapshotsCommand extends AbstractHandler {
         final IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-            if (wrapper != null && wrapper.provider.isSearchSupported()) {
+            if (wrapper != null && wrapper.getProvider().isSearchSupported()) {
                 final SearchDialog dialog = SearchDialog.getSingletonInstance(part.getSite().getShell());
                 dialog.openAndWait().ifPresent(expr -> {
                     List<SearchCriterion> criteria = dialog.getSelectedCriteria();

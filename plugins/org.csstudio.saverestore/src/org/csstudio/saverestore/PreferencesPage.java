@@ -1,5 +1,6 @@
 package org.csstudio.saverestore;
 
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -42,8 +43,21 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
     @Override
     protected void createFieldEditors() {
         Composite parent = getFieldEditorParent();
-        addField(new IntegerFieldEditor(SaveRestoreService.PREF_NUMBER_OF_SNAPSHOTS,
-            "Number of snapshots loaded at once (all=0)", parent));
+        IntegerFieldEditor numberOfSnapshots = new IntegerFieldEditor(SaveRestoreService.PREF_NUMBER_OF_SNAPSHOTS,
+            "Number of snapshots loaded at once (0 = all)", parent);
+        numberOfSnapshots.getLabelControl(parent)
+            .setToolTipText("Set the maximum number of snapshots that are loaded in a single\n"
+                          + "call to avoid long delays in retrieving the snapshots. Setting\n"
+                          + "this value to 0 means that all snapshots are loaded.\n"
+                          + "Data provider may respect this setting or not.");
+        addField(numberOfSnapshots);
+        BooleanFieldEditor newSnapshots = new BooleanFieldEditor(
+            SaveRestoreService.PREF_OPEN_NEW_SNAPSHOTS_IN_COMPARE_VIEW, "Open new snapshots in compare view", parent);
+        newSnapshots.getDescriptionControl(parent)
+            .setToolTipText("When new snapshots are created in the editor,\n"
+                          + "they can be opened in a new editor or added as\n"
+                          + "compared snapshots to the current editor");
+        addField(newSnapshots);
 
     }
 

@@ -29,7 +29,7 @@ public class ResetRepository extends AbstractHandler {
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-            if (wrapper != null && wrapper.provider.isReinitSupported()) {
+            if (wrapper != null && wrapper.getProvider().isReinitSupported()) {
                 if (FXMessageDialog.openConfirm(part.getSite().getShell(), "Reset Repository",
                     "Are you sure you want to reset the local repository? You will lose all data that has not been "
                         + "pushed to the central repository.")) {

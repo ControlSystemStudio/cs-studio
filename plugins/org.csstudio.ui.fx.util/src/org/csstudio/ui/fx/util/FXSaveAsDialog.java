@@ -35,7 +35,7 @@ public class FXSaveAsDialog extends SaveAsDialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         ((GridLayout) parent.getLayout()).numColumns = 1;
-        new FXCanvasMaker(parent,this::createFxButtonBar);
+        FXUtilities.createFXBridge(parent,this::createFxButtonBar);
     }
 
     private Scene createFxButtonBar(Composite parent) {

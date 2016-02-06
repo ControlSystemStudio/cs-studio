@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.csstudio.saverestore.ui.util.VTypeNamePair;
-import org.csstudio.ui.fx.util.FXCanvasMaker;
 import org.csstudio.ui.fx.util.FXUtilities;
 import org.csstudio.ui.fx.util.ZoomableLineChart;
 import org.diirt.util.array.ListNumber;
@@ -39,6 +38,18 @@ import javafx.util.StringConverter;
  *
  */
 public class ChartDialog extends Dialog {
+
+    private static class LabelFormatter extends StringConverter<Number> {
+        @Override
+        public String toString(Number object) {
+            return String.valueOf(object.longValue());
+        }
+
+        @Override
+        public Number fromString(String string) {
+            return Long.parseLong(string);
+        }
+    }
 
     private static final String CLOSE_LABEL = IDialogConstants.CLOSE_LABEL.replace("&", "");
     private final VTypeNamePair value;
@@ -86,7 +97,7 @@ public class ChartDialog extends Dialog {
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         ((GridLayout) parent.getLayout()).numColumns = 1;
-        new FXCanvasMaker(parent, this::createFXButtonBar);
+        FXUtilities.createFXBridge(parent, this::createFXButtonBar);
     }
 
     private Scene createFXButtonBar(Composite parent) {
@@ -107,7 +118,7 @@ public class ChartDialog extends Dialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite composite = (Composite) super.createDialogArea(parent);
-        new FXCanvasMaker(composite, this::getScene);
+        FXUtilities.createFXBridge(composite, this::getScene);
         applyDialogFont(composite);
         return composite;
     }
@@ -125,20 +136,11 @@ public class ChartDialog extends Dialog {
             list.add(new Data<>(i, data.getDouble(i)));
         }
         boolean createSymbols = data.size() < 30;
-        LineChart<Number,Number> lineChart = chart.getChart();
+        LineChart<Number, Number> lineChart = chart.getChart();
         lineChart.setLegendVisible(false);
         lineChart.setCreateSymbols(createSymbols);
         lineChart.getData().add(series);
-        ((NumberAxis)lineChart.getXAxis()).setTickLabelFormatter(new StringConverter<Number>() {
-            @Override
-            public String toString(Number object) {
-                return String.valueOf(object.longValue());
-            }
-            @Override
-            public Number fromString(String string) {
-                return Long.parseLong(string);
-            }
-        });
+        ((NumberAxis) lineChart.getXAxis()).setTickLabelFormatter(new LabelFormatter());
         if (createSymbols) {
             // this has to be executed after the series has been added to the chart so that the nodes already exist
             for (XYChart.Data<Number, Number> d : list) {

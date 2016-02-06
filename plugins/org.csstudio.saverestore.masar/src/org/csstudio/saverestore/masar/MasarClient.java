@@ -129,10 +129,13 @@ public class MasarClient {
             if (rpc == null) {
                 throw new MasarException("Cannot connect to the MASAR service " + service + ".");
             }
+            this.result = null;
             rpc.request(pvArgument);
-            // use tryAcquire if you need timeout support
-            doneSemaphore.acquire(1);
-            return result;
+            if (doneSemaphore.tryAcquire(Activator.getInstance().getTimeout(), TimeUnit.SECONDS)) {
+                return result;
+            } else {
+                throw new MasarException("Error sending request to masar service. Timeout occurred.");
+            }
         }
 
         void destroy() {
@@ -144,7 +147,7 @@ public class MasarClient {
 
     private static MasarChannelRPCRequester createChannel(String service) throws MasarException {
         if (service == null) {
-            throw new MasarException("No service selected.");
+            throw new MasarException("No service name provided.");
         }
         org.epics.pvaccess.ClientFactory.start();
 

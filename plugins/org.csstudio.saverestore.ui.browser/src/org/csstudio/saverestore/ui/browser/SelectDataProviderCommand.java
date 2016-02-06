@@ -1,6 +1,5 @@
 package org.csstudio.saverestore.ui.browser;
 
-import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.ui.fx.util.FXComboInputDialog;
 import org.eclipse.core.commands.AbstractHandler;
@@ -28,11 +27,10 @@ public class SelectDataProviderCommand extends AbstractHandler {
     public Object execute(ExecutionEvent event) throws ExecutionException {
         IWorkbenchPart part = HandlerUtil.getActivePart(event);
         if (part instanceof BrowserView) {
-            FXComboInputDialog<DataProviderWrapper> dialog = new FXComboInputDialog<>(HandlerUtil.getActiveShell(event),
-                "Select Data Provider", "Select the data provider you wish to use",
-                SaveRestoreService.getInstance().getSelectedDataProvider(),
-                SaveRestoreService.getInstance().getDataProviders());
-            dialog.openAndWait().ifPresent(SaveRestoreService.getInstance()::setSelectedDataProvider);
+            FXComboInputDialog.pick(HandlerUtil.getActiveShell(event), "Select Data Provider",
+                "Select the data provider you wish to use", SaveRestoreService.getInstance().getSelectedDataProvider(),
+                SaveRestoreService.getInstance().getDataProviders())
+                .ifPresent(SaveRestoreService.getInstance()::setSelectedDataProvider);
         }
         return null;
     }

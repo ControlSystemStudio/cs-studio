@@ -92,9 +92,9 @@ public class BeamlineSetEditor extends FXEditorPart {
             if (wrapper == null) {
                 return false;
             }
-            if (!wrapper.provider.isBeamlineSetSavingSupported()) {
+            if (!wrapper.getProvider().isBeamlineSetSavingSupported()) {
                 FXMessageDialog.openInformation(getSite().getShell(), "Save Beamline Set",
-                    wrapper.name + " does not support editing or saving beamline sets.");
+                    wrapper.getName() + " does not support editing or saving beamline sets.");
                 return false;
             }
             return true;

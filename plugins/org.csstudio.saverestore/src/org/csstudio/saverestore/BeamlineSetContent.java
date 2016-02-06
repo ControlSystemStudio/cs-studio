@@ -3,6 +3,8 @@ package org.csstudio.saverestore;
 import java.util.Collections;
 import java.util.List;
 
+import org.csstudio.saverestore.data.Threshold;
+
 /**
  *
  * <code>BeamlineSetContent</code> provides the contents of a beamline set file.
@@ -10,20 +12,12 @@ import java.util.List;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class BeamlineSetContent {
+public final class BeamlineSetContent {
 
-    /** The names of all pvs */
-    public final List<String> names;
-    /** The names of readback pvs, if one PV does not have a readback, there should be an empty string at that index */
-    public final List<String> readbacks;
-    /**
-     * The deltas defining how to treat the difference between values. If two values differ less than delta, they are
-     * considered equal. The delta can be a number, or a function. If there is no known delta for a PV the entry should
-     * be an empty string.
-     */
-    public final List<String> deltas;
-    /** The description of the beamline set */
-    public final String description;
+    private final List<String> names;
+    private final List<String> readbacks;
+    private final List<String> deltas;
+    private final String description;
 
     /**
      * Constructs a new beamline set content.
@@ -45,4 +39,46 @@ public class BeamlineSetContent {
         this.deltas = Collections.unmodifiableList(deltas);
         this.description = description;
     }
+
+    /**
+     * Return the names of all PVs in the beamline set.
+     *
+     * @return the names
+     */
+    public List<String> getNames() {
+        return names;
+    }
+
+    /**
+     * Returns the names of readback pvs, if one PV does not have a readback, there should be an empty string at that
+     * index. If none of the pvs have a readback PV associated with it, the list can be empty.
+     *
+     * @return the readback pv names
+     */
+    public List<String> getReadbacks() {
+        return readbacks;
+    }
+
+    /**
+     * Returns the deltas list, which define how to treat the difference between values. The deltas are later
+     * transformed to {@link Threshold}s, which evaluate the difference between the values. In general if two values
+     * differ less than delta, they are considered equal or at least non-critically different. The delta can be a
+     * number, or a function. If there is no known delta for a PV the entry should be an empty string. If none of the
+     * PVs have a delta associated with it, the list can be empty.
+     *
+     * @return the deltas list
+     */
+    public List<String> getDeltas() {
+        return deltas;
+    }
+
+    /**
+     * Return the description of the beamline set.
+     *
+     * @return the description
+     */
+    public String getDescription() {
+        return description;
+    }
+
 }

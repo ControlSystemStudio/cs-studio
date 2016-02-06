@@ -101,7 +101,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
     @Override
     protected void createButtonsForButtonBar(Composite parent) {
         ((GridLayout) parent.getLayout()).numColumns++;
-        new FXCanvasMaker(parent, this::createFXButtonBar);
+        FXUtilities.createFXBridge(parent, this::createFXButtonBar);
         setFocus();
         if (value != null) {
             setValueToComponent(value);
@@ -131,7 +131,7 @@ public abstract class FXBaseDialog<T> extends Dialog implements ControlListener 
             label.setLayoutData(data);
             label.setFont(parent.getFont());
         }
-        new FXCanvasMaker(composite, this::getScene);
+        FXUtilities.createFXBridge(composite, this::getScene);
         if (validator != null) {
             errorMessageText = new Text(composite, SWT.READ_ONLY | SWT.WRAP);
             errorMessageText.setLayoutData(new GridData(GridData.GRAB_HORIZONTAL | GridData.HORIZONTAL_ALIGN_FILL));

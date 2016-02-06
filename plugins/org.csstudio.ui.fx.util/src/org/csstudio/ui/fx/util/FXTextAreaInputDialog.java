@@ -33,10 +33,14 @@ public class FXTextAreaInputDialog extends FXBaseDialog<String> {
      */
     public static Optional<String> get(final Shell shell, final String title, final String message,
         final String initialValue, final InputValidator<String> validator) {
-        final List<Optional<String>> list = new ArrayList<>(1);
-        shell.getDisplay().syncExec(
-            () -> list.add(new FXTextAreaInputDialog(shell, title, message, initialValue, validator).openAndWait()));
-        return list.get(0);
+        if (shell.getDisplay().getThread() == Thread.currentThread()) {
+            return new FXTextAreaInputDialog(shell, title, message, initialValue, validator).openAndWait();
+        } else {
+            final List<Optional<String>> list = new ArrayList<>(1);
+            shell.getDisplay().syncExec(
+                () -> list.add(new FXTextAreaInputDialog(shell, title, message, initialValue, validator).openAndWait()));
+            return list.get(0);
+        }
     }
 
     private TextArea text;

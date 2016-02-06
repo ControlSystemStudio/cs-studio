@@ -7,7 +7,7 @@ package org.csstudio.ui.fx.util;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class Credentials {
+public final class Credentials {
 
     private final String username;
     private final char[] password;

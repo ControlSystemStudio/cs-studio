@@ -150,6 +150,10 @@ public class SnapshotViewerEditor extends FXEditorPart {
             VTypeNamePair type = table.getClickedItem();
             openChartTableAction.setEnabled(type != null && type.value instanceof VNumberArray);
         });
+        menu.add(new org.eclipse.jface.action.Separator());
+        if (SendToELogAction.isElogAvailable()) {
+            menu.add(new SendToELogAction(getSite().getShell(), table));
+        }
         menu.add(new org.eclipse.jface.action.Separator(IWorkbenchActionConstants.MB_ADDITIONS));
         contextMenu = menu.createContextMenu(parent);
         parent.setMenu(contextMenu);
@@ -409,11 +413,12 @@ public class SnapshotViewerEditor extends FXEditorPart {
         Button addPVButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/includeMode_filter.png"))));
         addPVButton.setTooltip(new Tooltip("Add a PV from the central archiving system"));
-        addPVButton.setOnAction(e -> new FXTextInputDialog(getSite().getShell(), "Add Archived PV",
-            "Enter the name of the PV from the archiving system that you wish to add.", "",
-            i -> i == null || i.isEmpty() ? "The PV name cannot be empty" : null).openAndWait()
-                .ifPresent(pv -> SaveRestoreService.getInstance().execute("Add PV from Archive",
-                    () -> controller.addPVFromArchive(pv, table::addItem))));
+        addPVButton.setOnAction(e -> FXTextInputDialog
+            .get(getSite().getShell(), "Add Archived PV",
+                "Enter the name of the PV from the archiving system that you wish to add.", "",
+                i -> i == null || i.isEmpty() ? "The PV name cannot be empty" : null)
+            .ifPresent(pv -> SaveRestoreService.getInstance().execute("Add PV from Archive",
+                () -> controller.addPVFromArchive(pv, table::addItem))));
         Button importButton = new UnfocusableButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/import_wiz.png"))));
         importButton.setTooltip(new Tooltip("Import PV values from external source"));
@@ -423,10 +428,11 @@ public class SnapshotViewerEditor extends FXEditorPart {
             if (importers.isEmpty()) {
                 return;
             }
-            new FXComboInputDialog<>(getSite().getShell(), "Select Value Importer",
-                "Select the value importer from which you wish to import the values", importers.get(0), importers)
-                    .openAndWait().ifPresent(imp -> SaveRestoreService.getInstance().execute("Import Values",
-                        () -> controller.importValues(imp, SnapshotViewerEditor.this::addSnapshot)));
+            FXComboInputDialog
+                .pick(getSite().getShell(), "Select Value Importer",
+                    "Select the value importer from which you wish to import the values", importers.get(0), importers)
+                .ifPresent(imp -> SaveRestoreService.getInstance().execute("Import Values",
+                    () -> controller.importValues(imp, SnapshotViewerEditor.this::addSnapshot)));
         });
         ToggleButton addReadbacksButton = new UnfocusableToggleButton("",
             new ImageView(new Image(SnapshotViewerEditor.class.getResourceAsStream("/icons/exp_deployplug.png"))));
@@ -466,10 +472,11 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 SaveRestoreService.getInstance().execute("Export to snp file",
                     () -> controller.exportSingleSnapshotToFile(snapshots.get(0), f, false));
             } else {
-                new FXComboInputDialog<>(getSite().getShell(), "Select Snapshot",
-                    "Select the snapshot that you wish to save", snapshots.get(0), snapshots).openAndWait()
-                        .ifPresent(s -> SaveRestoreService.getInstance().execute("Export to snp file",
-                            () -> controller.exportSingleSnapshotToFile(s, f, false)));
+                FXComboInputDialog
+                    .pick(getSite().getShell(), "Select Snapshot", "Select the snapshot that you wish to save",
+                        snapshots.get(0), snapshots)
+                    .ifPresent(s -> SaveRestoreService.getInstance().execute("Export to snp file",
+                        () -> controller.exportSingleSnapshotToFile(s, f, false)));
             }
         }));
         Button exportButton = new UnfocusableButton("",
@@ -732,7 +739,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
                 Snapshot s = (Snapshot) e.getDragboard().getContent(SnapshotDataFormat.INSTANCE);
                 if (s != null) {
                     final DataProvider provider = SaveRestoreService.getInstance()
-                        .getDataProvider(s.getBeamlineSet().getDataProviderId()).provider;
+                        .getDataProvider(s.getBeamlineSet().getDataProviderId()).getProvider();
                     SaveRestoreService.getInstance().execute("Load snapshot data", () -> {
                         try {
                             addSnapshot(provider.getSnapshotContent(s));

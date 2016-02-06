@@ -43,11 +43,11 @@ public class AdapterFactory implements IAdapterFactory {
                 try {
                     String[] path = file.getFullPath().segments();
                     SnapshotContent sc = FileUtilities.readFromSnapshot(file.getContents());
-                    Timestamp snapshotTime = Timestamp.of(sc.date);
+                    Timestamp snapshotTime = Timestamp.of(sc.getDate());
                     BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), path, null);
-                    Snapshot descriptor = new Snapshot(set, sc.date, "<No Comment>", "<OS>");
-                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
-                        sc.readbackData, sc.deltas, snapshotTime);
+                    Snapshot descriptor = new Snapshot(set, sc.getDate(), "<No Comment>", "<OS>");
+                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
+                        sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), snapshotTime);
                     return adapterType.cast(vs);
                 } catch (IOException | CoreException | ParseException ex) {
                     throw new IllegalArgumentException("The file " + file.getName() + " is not a valid snapshot file.",
@@ -60,11 +60,11 @@ public class AdapterFactory implements IAdapterFactory {
                     String absPath = uri.toString().replace('\\', '/');
                     String[] path = absPath.split("\\/");
                     SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
-                    Timestamp snapshotTime = Timestamp.of(sc.date);
+                    Timestamp snapshotTime = Timestamp.of(sc.getDate());
                     BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), path, null);
-                    Snapshot descriptor = new Snapshot(set, sc.date, "<No Comment>", "<OS>");
-                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.names, sc.selected, sc.data, sc.readbacks,
-                        sc.readbackData, sc.deltas, snapshotTime);
+                    Snapshot descriptor = new Snapshot(set, sc.getDate(), "<No Comment>", "<OS>");
+                    VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
+                        sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), snapshotTime);
                     return adapterType.cast(vs);
                 } catch (IOException | ParseException ex) {
                     throw new IllegalArgumentException("The file " + uri.toString() + " is not a valid snapshot file.",

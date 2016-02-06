@@ -14,7 +14,8 @@ import java.util.Objects;
 public class Branch implements Comparable<Branch>, Serializable {
 
     private static final long serialVersionUID = 7901647776511062560L;
-    public static final String MASTER = "master";
+    /** The name of the default branch */
+    private static final String MASTER = "master";
 
     private final String fullName;
     private final String shortName;

@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.Threshold;
 import org.diirt.vtype.VType;
 
 /**
@@ -11,22 +13,15 @@ import org.diirt.vtype.VType;
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  */
-public class SnapshotContent {
+public final class SnapshotContent {
 
-    /** The list of all PV data (value, timestamp, alarm stuff). Order matches the {@link #names} */
-    public final List<VType> data;
-    /** The list of all PV names */
-    public final List<String> names;
-    /** The list of selected states. Order matches the {@link #names} */
-    public final List<Boolean> selected;
-    /** The readback pv names */
-    public final List<String> readbacks;
-    /** The list of stored readback values */
-    public final List<VType> readbackData;
-    /** The threshold values for comparing the setpoints to readbacks */
-    public final List<String> deltas;
-    /** The date of the snapshot */
-    public final Date date;
+    private final List<VType> data;
+    private final List<String> names;
+    private final List<Boolean> selected;
+    private final List<String> readbacks;
+    private final List<VType> readbackData;
+    private final List<String> deltas;
+    private final Date date;
 
     /**
      * Constructs a new snapshot content.
@@ -49,4 +44,71 @@ public class SnapshotContent {
         this.names = Collections.unmodifiableList(names);
         this.date = date;
     }
+
+    /**
+     * Returns the list of all PV values (value, timestamp, alarm stuff). Order of values matches the order in the
+     * {@link #getNames()} list.
+     *
+     * @return the data list
+     */
+    public List<VType> getData() {
+        return data;
+    }
+
+    /**
+     * Returns the list of all setpoint pv names. The list is ordered as it is stored.
+     *
+     * @return the names list
+     */
+    public List<String> getNames() {
+        return names;
+    }
+
+    /**
+     * Returns the list of selected states for all pvs. The list is ordered according to order in the names list.
+     *
+     * @return the selected states
+     */
+    public List<Boolean> getSelected() {
+        return selected;
+    }
+
+    /**
+     * Returns the list of the readback pv names associated with the setpoint names.
+     *
+     * @return the readback names
+     */
+    public List<String> getReadbacks() {
+        return readbacks;
+    }
+
+    /**
+     * Returns the list of all readback pv values as they were at the time when the snapshot was taken.
+     *
+     * @return the readback pv values
+     */
+    public List<VType> getReadbackData() {
+        return readbackData;
+    }
+
+    /**
+     * Returns the list of deltas that are used to compare the values of PVs.
+     *
+     * @see BeamlineSetData#getDeltaList()
+     * @see Threshold
+     * @return the deltas list
+     */
+    public List<String> getDeltas() {
+        return deltas;
+    }
+
+    /**
+     * Returns the full date, when this snapshot was taken.
+     *
+     * @return the date
+     */
+    public Date getDate() {
+        return date;
+    }
+
 }

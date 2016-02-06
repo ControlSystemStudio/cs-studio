@@ -27,9 +27,9 @@ public class BeamlineSetData implements Serializable {
      *
      */
     public static class Entry {
-        public final String pv;
-        public final String readback;
-        public final String delta;
+        private final String pv;
+        private final String readback;
+        private final String delta;
 
         Entry(String pv, String readback, String delta) {
             this.pv = pv;

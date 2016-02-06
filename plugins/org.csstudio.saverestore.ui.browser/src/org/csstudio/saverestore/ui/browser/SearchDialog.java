@@ -155,17 +155,17 @@ public class SearchDialog extends FXBaseDialog<String> {
         text.setMaxWidth(Double.MAX_VALUE);
         text.textProperty().addListener((a, o, n) -> validateInput());
         text.setOnAction(e -> okPressed());
-        commentBox = new UnfocusableCheckBox(SearchCriterion.COMMENT.readableName);
+        commentBox = new UnfocusableCheckBox(SearchCriterion.COMMENT.getReadableName());
         commentBox.setOnAction(e -> validateInput());
-        tagNameBox = new UnfocusableCheckBox(SearchCriterion.TAG_NAME.readableName);
+        tagNameBox = new UnfocusableCheckBox(SearchCriterion.TAG_NAME.getReadableName());
         tagNameBox.setOnAction(e -> validateInput());
-        tagMessageBox = new UnfocusableCheckBox(SearchCriterion.TAG_MESSAGE.readableName);
+        tagMessageBox = new UnfocusableCheckBox(SearchCriterion.TAG_MESSAGE.getReadableName());
         tagMessageBox.setOnAction(e -> validateInput());
-        userBox = new UnfocusableCheckBox(SearchCriterion.USER.readableName);
+        userBox = new UnfocusableCheckBox(SearchCriterion.USER.getReadableName());
         userBox.setOnAction(e -> validateInput());
         tagNameBox.setSelected(true);
         DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-        if (!wrapper.provider.isTaggingSupported()) {
+        if (!wrapper.getProvider().isTaggingSupported()) {
             tagNameBox.setSelected(false);
             tagNameBox.setDisable(true);
             tagMessageBox.setDisable(true);

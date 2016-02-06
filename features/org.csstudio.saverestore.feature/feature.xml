@@ -21,6 +21,7 @@ This feature does not provide any data provider; the desired provider needs to b
 
    <requires>
       <import feature="org.csstudio.archive.diirt.datasource.feature" version="1.0.0.qualifier"/>
+      <import plugin="org.csstudio.logbook"/>
    </requires>
 
    <plugin

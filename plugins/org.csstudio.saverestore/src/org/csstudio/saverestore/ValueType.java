@@ -53,14 +53,30 @@ public enum ValueType {
     NODATA("na", VNoData.class),
     NUMBER("number", VNumber.class);
 
-    /** Name of the value type */
-    public final String typeName;
-    /** Type of VType represented by this value type */
-    public final Class<? extends VType> type;
+    private final String typeName;
+    private final Class<? extends VType> type;
 
     private ValueType(String typeName, Class<? extends VType> type) {
         this.typeName = typeName;
         this.type = type;
+    }
+
+    /**
+     * Returns the interface that represents this value type.
+     *
+     * @return the interface class
+     */
+    public Class<? extends VType> getType() {
+        return type;
+    }
+
+    /**
+     * Return the name of the value type.
+     *
+     * @return the name
+     */
+    public String getTypeName() {
+        return typeName;
     }
 
     /**
@@ -98,4 +114,18 @@ public enum ValueType {
         return NODATA;
     }
 
+    /**
+     * Transforms the vtype to a string representing the type of the vtype (e.g. double, string_array etc.).
+     *
+     * @param type the type to transform
+     * @return the value type as string
+     */
+    public static String vtypeToStringType(VType type) {
+        for (ValueType t : ValueType.values()) {
+            if (t.instanceOf(type)) {
+                return t.typeName;
+            }
+        }
+        throw new IllegalArgumentException("Unknown data type " + type.getClass() + ".");
+    }
 }

@@ -232,8 +232,8 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 } else if (item instanceof VTypePair) {
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) item).value,
                         ((VTypePair) item).base, ((VTypePair) item).threshold);
-                    setText(vtc.string);
-                    if (!vtc.withinThreshold) {
+                    setText(vtc.getString());
+                    if (!vtc.isWithinThreshold()) {
                         getStyleClass().add("diff-cell");
                         setGraphic(new ImageView(WARNING_IMAGE));
                     }
@@ -663,13 +663,13 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
+    /**
+     * Returns the snapshot that is currently selected in the UI. Selected snapshot is the snapshot which was last
+     * clicked.
      *
-     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+     * @return the selected snapshot
      */
-    @Override
-    public ISelection getSelection() {
+    VSnapshot getSelectedSnapshot() {
         int numSnapshots = uiSnapshots.size();
         if (numSnapshots == 0) {
             return null;
@@ -692,6 +692,17 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 }
             }
         }
+        return snapshot;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.viewers.ISelectionProvider#getSelection()
+     */
+    @Override
+    public ISelection getSelection() {
+        VSnapshot snapshot = getSelectedSnapshot();
         if (snapshot == null) {
             return null;
         }

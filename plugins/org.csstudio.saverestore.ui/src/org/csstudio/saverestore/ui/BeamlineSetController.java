@@ -41,7 +41,7 @@ public class BeamlineSetController {
      */
     public Optional<BeamlineSetData> save(final BeamlineSetData data) {
         String providerId = data.getDescriptor().getDataProviderId();
-        DataProvider provider = SaveRestoreService.getInstance().getDataProvider(providerId).provider;
+        DataProvider provider = SaveRestoreService.getInstance().getDataProvider(providerId).getProvider();
         if (!provider.isBeamlineSetSavingSupported()) {
             return Optional.empty();
         }

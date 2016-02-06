@@ -38,10 +38,14 @@ public class FXComboInputDialog<T> extends FXBaseDialog<T> {
      */
     public static <T> Optional<T> pick(final Shell shell, final String title, final String message,
         final T defaultValue, final List<T> values) {
-        final List<Optional<T>> list = new ArrayList<>(1);
-        shell.getDisplay().syncExec(
-            () -> list.add(new FXComboInputDialog<>(shell, title, message, defaultValue, values).openAndWait()));
-        return list.get(0);
+        if (shell.getDisplay().getThread() == Thread.currentThread()) {
+            return new FXComboInputDialog<>(shell, title, message, defaultValue, values).openAndWait();
+        } else {
+            final List<Optional<T>> list = new ArrayList<>(1);
+            shell.getDisplay().syncExec(
+                () -> list.add(new FXComboInputDialog<>(shell, title, message, defaultValue, values).openAndWait()));
+            return list.get(0);
+        }
     }
 
     private ComboBox<T> combo;

@@ -62,7 +62,7 @@ public class BrowserActionManager extends ActionManager {
         if (source == null) {
             throw new IllegalArgumentException("The source location cannot be null.");
         }
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         if (!provider.isImportSupported()) {
             return;
         }
@@ -115,7 +115,7 @@ public class BrowserActionManager extends ActionManager {
             throw new IllegalArgumentException("Tag name not provided.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-            .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
+            .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).getProvider();
         if (!provider.isTaggingSupported()) {
             return;
         }
@@ -135,12 +135,12 @@ public class BrowserActionManager extends ActionManager {
      */
     public void newBeamlineSet() {
         DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-        if (!wrapper.provider.isBeamlineSetSavingSupported()) {
+        if (!wrapper.getProvider().isBeamlineSetSavingSupported()) {
             return;
         }
         final Branch branch = selector.selectedBranchProperty().get();
         final BaseLevel base = selector.selectedBaseLevelProperty().get();
-        final String dataProvider = wrapper.id;
+        final String dataProvider = wrapper.getId();
         SaveRestoreService.getInstance().execute("Load beamline set data", () -> {
             BeamlineSet set = new BeamlineSet(branch, Optional.ofNullable(base), new String[] { "BeamlineSet" },
                 dataProvider);
@@ -167,7 +167,7 @@ public class BrowserActionManager extends ActionManager {
             throw new IllegalArgumentException("Beamline set is not selected.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-            .getDataProvider(set.getDataProviderId()).provider;
+            .getDataProvider(set.getDataProviderId()).getProvider();
         if (!provider.isBeamlineSetSavingSupported()) {
             return;
         }
@@ -204,7 +204,7 @@ public class BrowserActionManager extends ActionManager {
             throw new IllegalArgumentException("Selected snapshot is not tagged.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-            .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).provider;
+            .getDataProvider(snapshot.getBeamlineSet().getDataProviderId()).getProvider();
         if (!provider.isTaggingSupported()) {
             return;
         }
@@ -228,7 +228,7 @@ public class BrowserActionManager extends ActionManager {
         if (branchName == null || branchName.trim().isEmpty()) {
             throw new IllegalArgumentException("Branch name cannot be null or empty.");
         }
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         if (!provider.areBranchesSupported()) {
             return;
         }
@@ -248,7 +248,7 @@ public class BrowserActionManager extends ActionManager {
      * Synchronise the local repository with the remote one.
      */
     public void synchronise() {
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         SaveRestoreService.getInstance().execute("Synchronise repository", () -> {
             try {
                 if (provider.synchronise()) {
@@ -266,7 +266,7 @@ public class BrowserActionManager extends ActionManager {
      * Reset repository to the state of the central repository.
      */
     public void resetRepository() {
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         if (!provider.isReinitSupported()) {
             return;
         }
@@ -295,7 +295,7 @@ public class BrowserActionManager extends ActionManager {
      */
     public void searchForSnapshots(final String expression, final List<SearchCriterion> criteria,
         final Optional<Date> start, final Optional<Date> end, final Consumer<List<Snapshot>> consumer) {
-        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().provider;
+        final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         if (!provider.isSearchSupported()) {
             return;
         }
