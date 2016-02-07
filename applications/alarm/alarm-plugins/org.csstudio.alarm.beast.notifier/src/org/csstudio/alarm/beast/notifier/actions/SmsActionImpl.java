@@ -38,7 +38,7 @@ public class SmsActionImpl extends AbstractMailActionImpl {
         List<String> phoneNumbers = smsCmdHandler.getTo();
         ListIterator < String > list = phoneNumbers.listIterator();
         while (list.hasNext()) {
-        	list.set(PhoneUtils.format(list.next()));
+            list.set(PhoneUtils.format(list.next()));
         }
         mailSender.setTo(phoneNumbers);
         mailSender.setSubject("<NONE>");
