@@ -42,7 +42,7 @@ import org.eclipse.swt.graphics.RGB;
  */
 public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
 
-    /**	
+    /**
      * File path of the image.
      */
     public static final String PROP_SYMBOL_IMAGE_FILE = "image_file";
@@ -150,7 +150,7 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
                 "Flip Horizontal", WidgetPropertyCategory.Image, false));
         addProperty(new BooleanProperty(PROP_FLIP_VERTICAL,
                 "Flip Vertical", WidgetPropertyCategory.Image, false));
-        
+
         FigureTransparencyHelper.addProperty(this);
 //        setPropertyVisibleAndSavable(PROP_DEGREE, false, true);
 //        setPropertyVisibleAndSavable(PROP_FLIP_HORIZONTAL, false, true);
@@ -388,8 +388,8 @@ public abstract class CommonMultiSymbolModel extends AbstractPVWidgetModel {
                 .getPropertyValue();
     }
 
-	public boolean isTransparency() {
-		return FigureTransparencyHelper.isTransparency(this);
-	}
+    public boolean isTransparency() {
+        return FigureTransparencyHelper.isTransparency(this);
+    }
 
 }

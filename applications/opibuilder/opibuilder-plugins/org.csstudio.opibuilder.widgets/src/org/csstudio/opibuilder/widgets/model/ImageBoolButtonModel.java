@@ -56,7 +56,7 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
      * second.
      */
     public static final String PROP_ALIGN_TO_NEAREST_SECOND = "align_to_nearest_second";
-    
+
     public static final String PROP_TRANSPARENCY = "transparency";
 
     public ImageBoolButtonModel() {

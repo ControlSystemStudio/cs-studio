@@ -53,7 +53,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure implements
     private boolean animationDisabled = false;
 
     private IImageListener imageListener;
-    
+
     private AbstractBoolWidgetModel model;
 
     public ImageBoolButtonFigure() {

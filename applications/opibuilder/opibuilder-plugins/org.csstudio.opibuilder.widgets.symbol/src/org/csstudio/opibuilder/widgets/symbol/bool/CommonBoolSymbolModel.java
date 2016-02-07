@@ -112,7 +112,7 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
                 WidgetPropertyCategory.Display, DEFAULT_ON_COLOR));
         addProperty(new ColorProperty(PROP_OFF_COLOR, "Off Color",
                 WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));
-        
+
         FigureTransparencyHelper.addProperty(this);
 
         addProperty(new FilePathPropertyWithFilter(PROP_SYMBOL_IMAGE_FILE,
@@ -323,8 +323,8 @@ public abstract class CommonBoolSymbolModel extends AbstractBoolWidgetModel {
                 .getPropertyValue();
     }
 
-	public boolean isTransparency() {
-		return FigureTransparencyHelper.isTransparency(this);
-	}
+    public boolean isTransparency() {
+        return FigureTransparencyHelper.isTransparency(this);
+    }
 
 }

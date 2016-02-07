@@ -229,7 +229,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
         };
         setPropertyChangeHandler(ImageModel.PROP_HEIGHT, handle);
         setPropertyChangeHandler(ImageModel.PROP_WIDTH, handle);
-        
+
         FigureTransparencyHelper.addHandler(this, figure);
 
         registerCropPropertyHandlers();
