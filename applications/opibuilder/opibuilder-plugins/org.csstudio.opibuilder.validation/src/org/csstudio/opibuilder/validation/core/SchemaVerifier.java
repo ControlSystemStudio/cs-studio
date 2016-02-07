@@ -22,6 +22,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
@@ -104,14 +105,14 @@ public class SchemaVerifier {
 
         @Override
         public boolean add(T e) {
-            if (e == null)
+            if (e == null) {
                 return false;
+            }
             return super.add(e);
         }
     }
 
     private List<ValidationFailure> validationFailures = new ArrayList<>();
-    private IPath validatedPath;
     private Map<String, AbstractWidgetModel> schema;
     private Map<AbstractWidgetModel, List<String>> deprecatedProperties;
     private OPIColor[] colors;
@@ -405,7 +406,7 @@ public class SchemaVerifier {
                         if (!deprecated.isEmpty()) {
                             deprecatedProperties.put(model, deprecated);
                         }
-                    } catch (Exception e) {
+                    } catch (IllegalAccessException | IllegalArgumentException e) {
                         // ignore
                     }
                 }
@@ -429,18 +430,17 @@ public class SchemaVerifier {
                 LOGGER.log(Level.WARNING, "Cannot register property change handlers.", e);
             }
         }
-        this.validatedPath = validatedPath;
         File file = null;
         try {
-            IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(this.validatedPath);
+            IFile ifile = ResourcesPlugin.getWorkspace().getRoot().getFile(validatedPath);
             file = ifile.getLocation().toFile();
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             // maybe it is already a file
-            file = this.validatedPath.toFile();
+            file = validatedPath.toFile();
         }
         List<ValidationFailure> failures = new ArrayList<>();
         if (file.isFile()) {
-            failures.addAll(check(this.validatedPath));
+            failures.addAll(check(validatedPath));
         } else {
             throw new IllegalArgumentException(validatedPath.toString() + " is a directory.");
         }
@@ -520,9 +520,8 @@ public class SchemaVerifier {
                         + widgetJSEmbedded + (widgetJSEmbedded > 1 ? " widgets)." : " widget).")));
             }
             if (rules > 0) {
-                scriptFailure.addSubFailure(new SubValidationFailure(opi,
-                    rules + (rules == 1 ? " rule" : " rules") + " used in the OPI ("
-                        + widgetRules + (widgetRules > 1 ? " widgets)." : " widget).")));
+                scriptFailure.addSubFailure(new SubValidationFailure(opi, rules + (rules == 1 ? " rule" : " rules")
+                    + " used in the OPI (" + widgetRules + (widgetRules > 1 ? " widgets)." : " widget).")));
             }
         }
 
@@ -601,7 +600,7 @@ public class SchemaVerifier {
                 AbstractWidgetModel model = e.getKey();
                 for (LineAwareElement w : widgets) {
                     Element n = w.getChild(AbstractWidgetModel.PROP_WIDGET_TYPE);
-                    boolean correct = false;
+                    boolean correct;
                     if (n == null) {
                         Attribute attr = w.getAttribute(XMLUtil.XMLATTR_TYPEID);
                         String fullt = attr.getValue();
@@ -640,8 +639,7 @@ public class SchemaVerifier {
         }
     }
 
-    private void setPropertyLineNumber(LineAwareElement widget, String name, List<ValidationFailure> failures, int m)
-        throws Exception {
+    private void setPropertyLineNumber(LineAwareElement widget, String name, List<ValidationFailure> failures, int m) {
         // find the node describing the property, but only if the name of the widget matches the one in the failure
         LineAwareElement node = findPropertyElement(widget, name, failures.get(m).getProperty());
         if (node == null) {
@@ -656,23 +654,24 @@ public class SchemaVerifier {
         if (failure.hasSubFailures()) {
             SubValidationFailure[] subs = failure.getSubFailures();
             for (SubValidationFailure s : subs) {
-                if (s.getActualValue() != null) {
+                if (s.getActualValue() == null) {
+                    s.setLineNumber(line);
+                } else {
                     LineAwareElement n = findSubNode(node, s.getSubPropertyTag(), s.getActualValue(),
                         s.getModelClass());
                     if (n != null) {
                         s.setLineNumber(n.getLineNumber());
                     }
-                } else {
-                    s.setLineNumber(line);
                 }
             }
         }
     }
 
     private static LineAwareElement findSubNode(LineAwareElement parent, String tagName, Object actualValue,
-        Class<? extends AbstractWidgetModel> modelClass) throws Exception {
-        if (parent.getName().equals(tagName))
+        Class<? extends AbstractWidgetModel> modelClass) {
+        if (parent.getName().equals(tagName)) {
             return parent;
+        }
         List<?> children = parent.getChildren();
         try {
             if (actualValue instanceof RuleData) {
@@ -746,10 +745,8 @@ public class SchemaVerifier {
         Field[] fields = model.getFields();
         for (Field f : fields) {
             int mod = f.getModifiers();
-            if (Modifier.isFinal(mod) && Modifier.isStatic(mod)) {
-                if (f.getAnnotation(Deprecated.class) != null) {
-                    deprecated.add(String.valueOf(f.get(model)));
-                }
+            if (Modifier.isFinal(mod) && Modifier.isStatic(mod) && f.getAnnotation(Deprecated.class) != null) {
+                deprecated.add(String.valueOf(f.get(model)));
             }
         }
         return deprecated;
@@ -781,8 +778,8 @@ public class SchemaVerifier {
                 }
                 // actions, rules and scripts are a bit nasty
                 if (AbstractWidgetModel.PROP_ACTIONS.equals(p)) {
-                    ActionsInput mi = ((ActionsInput) modelVal);
-                    ActionsInput oi = ((ActionsInput) orgVal);
+                    ActionsInput mi = (ActionsInput) modelVal;
+                    ActionsInput oi = (ActionsInput) orgVal;
                     failures.add(checkAction(pathToFile, mi, oi, model, rule));
                 } else if (AbstractWidgetModel.PROP_RULES.equals(p)) {
                     List<RuleData> modelRules = ((RulesInput) modelVal).getRuleDataList();
@@ -790,8 +787,8 @@ public class SchemaVerifier {
                     ValidationFailure vf = handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
                         model.getName(), model.getClass(), p, modelRules, originalRules, modelVal, orgVal, rule,
                         lineNumber, (orgRule, modelRule) -> Utilities.areRulesIdentical(orgRule, modelRule),
-                        (theRule) -> RulesProperty.XML_ELEMENT_RULE, (therule) -> therule.getName(),
-                        (match) -> Utilities.ruleMatchValueToMessage(match), (theRule) -> theRule.getName());
+                        theRule -> RulesProperty.XML_ELEMENT_RULE, therule -> therule.getName(),
+                        Utilities::ruleMatchValueToMessage, theRule -> theRule.getName());
                     vf = checkWhatRulesDo(pathToFile, lineNumber, vf, (RulesInput) modelVal);
                     if (!modelRules.isEmpty()) {
                         numberOfWidgetsWithRules++;
@@ -804,10 +801,10 @@ public class SchemaVerifier {
                     ValidationFailure vf = handleActionsScriptsRules(pathToFile, model.getWUID(), widgetType,
                         model.getName(), model.getClass(), p, modelScripts, originalScripts, modelVal, orgVal, rule,
                         lineNumber, (orgScript, modelScript) -> Utilities.areScriptsIdentical(orgScript, modelScript),
-                        (script) -> ScriptProperty.XML_ELEMENT_PATH,
-                        (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString(),
-                        (match) -> Utilities.scriptMatchValueToMessage(match),
-                        (script) -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString());
+                        script -> ScriptProperty.XML_ELEMENT_PATH,
+                        script -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString(),
+                        Utilities::scriptMatchValueToMessage,
+                        script -> script.isEmbedded() ? script.getScriptName() : script.getPath().toString());
                     vf = checkWhatScriptsDo(pathToFile, lineNumber, vf, modelScripts, model);
                     if (!modelScripts.isEmpty()) {
                         numberOfWidgetsWithScripts++;
@@ -832,7 +829,7 @@ public class SchemaVerifier {
                                 numberOfPythonStandalone++;
                             }
                         } else if (sd.getScriptType() == null) {
-                            String path = sd.getPath().toString().toLowerCase();
+                            String path = sd.getPath().toString().toLowerCase(Locale.UK);
                             if (path.endsWith(".js")) {
                                 vals[sd.isEmbedded() ? 0 : 1] = true;
                                 if (sd.isEmbedded()) {
@@ -851,32 +848,34 @@ public class SchemaVerifier {
                             }
                         }
                     }
-                    if (vals[0])
+                    if (vals[0]) {
                         numberOfWidgetsWithJavascriptEmbedded++;
-                    if (vals[1])
+                    }
+                    if (vals[1]) {
                         numberOfWidgetsWithJavascriptStandalone++;
-                    if (vals[2])
+                    }
+                    if (vals[2]) {
                         numberOfWidgetsWithPythonEmbedded++;
-                    if (vals[3])
+                    }
+                    if (vals[3]) {
                         numberOfWidgetsWithPythonStandalone++;
-                    if (warnAboutJythonScripts) {
+                    }
+                    if (warnAboutJythonScripts && (vals[2] || vals[3])) {
                         // put jython scripts validation failure to the problems view
-                        if (vals[2] || vals[3]) {
-                            if (vf == null) {
-                                vf = new ValidationFailure(pathToFile, model.getWUID(), widgetType, model.getName(), p,
-                                    orgVal, modelVal, ValidationRule.WRITE, false, false,
-                                    "Jython scripts attached to widget.", lineNumber, false, model.getClass());
-                            }
-                            final ValidationFailure vff = vf;
-                            final String message = vals[2] && vals[3]
-                                ? "Embedded and standalone jython scripts attached to widget"
-                                : vals[2] ? "Embedded jython scripts attached to widget"
-                                    : "Standalone jython scripts attached to widget";
-                            jythonScripts.forEach(e -> vff.addSubFailure(new SubValidationFailure(pathToFile,
-                                model.getWUID(), widgetType, model.getName(), p, ScriptProperty.XML_ELEMENT_PATH,
-                                e.getScriptName() == null ? e.getPath().toString() : e.getScriptName(), e, null,
-                                ValidationRule.WRITE, false, false, message, lineNumber, model.getClass())));
+                        if (vf == null) {
+                            vf = new ValidationFailure(pathToFile, model.getWUID(), widgetType, model.getName(), p,
+                                orgVal, modelVal, ValidationRule.WRITE, false, false,
+                                "Jython scripts attached to widget.", lineNumber, false, model.getClass());
                         }
+                        final ValidationFailure vff = vf;
+                        final String message = vals[2] && vals[3]
+                            ? "Embedded and standalone jython scripts attached to widget"
+                            : vals[2] ? "Embedded jython scripts attached to widget"
+                                : "Standalone jython scripts attached to widget";
+                        jythonScripts.forEach(e -> vff.addSubFailure(new SubValidationFailure(pathToFile,
+                            model.getWUID(), widgetType, model.getName(), p, ScriptProperty.XML_ELEMENT_PATH,
+                            e.getScriptName() == null ? e.getPath().toString() : e.getScriptName(), e, null,
+                            ValidationRule.WRITE, false, false, message, lineNumber, model.getClass())));
                     }
 
                     failures.add(vf);
@@ -934,8 +933,9 @@ public class SchemaVerifier {
 
         // do not create linking container, because that might try reloading the linked OPI, which we don't want at this
         // point
-        if (model instanceof LinkingContainerModel)
+        if (model instanceof LinkingContainerModel) {
             return;
+        }
         Display.getDefault().syncExec(() -> {
             EditPart editPart = editPartFactory.createEditPart(null, model);
             if (editPart instanceof AbstractBaseEditPart) {
@@ -1003,8 +1003,9 @@ public class SchemaVerifier {
         }
         String value = String.valueOf(modelVal);
         for (String s : acceptableValues) {
-            if (value.equals(s))
+            if (value.equals(s)) {
                 return true;
+            }
         }
         return false;
     }
@@ -1017,9 +1018,9 @@ public class SchemaVerifier {
             model.getClass(), AbstractWidgetModel.PROP_ACTIONS, modelActions, originalActions, modelInput,
             originalInput, rule, model.getLineNumber(),
             (orgAction, modelAction) -> Utilities.areActionsIdentical(orgAction, modelAction),
-            (action) -> ActionsProperty.XML_ELEMENT_ACTION,
-            (action) -> action.getActionType().getDescription() + ": " + action.getDescription(),
-            (match) -> Utilities.actionMatchValueToMessage(match), (action) -> "");
+            action -> ActionsProperty.XML_ELEMENT_ACTION,
+            action -> action.getActionType().getDescription() + ": " + action.getDescription(),
+            Utilities::actionMatchValueToMessage, action -> "");
         List<SubValidationFailure> ff = new ArrayList<>(2);
         if (rule == ValidationRule.RO) {
             if (modelInput.isFirstActionHookedUpToWidget() != originalInput.isFirstActionHookedUpToWidget()) {
@@ -1078,7 +1079,7 @@ public class SchemaVerifier {
 
         if (rule == ValidationRule.RW) {
             List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName, widgetModel,
-                property, model, rule, lineNumber, subPropertyTagger, subPropDescriptor, messageGenerator, naming);
+                property, model, rule, lineNumber, subPropertyTagger, subPropDescriptor, naming);
             if (!ffs.isEmpty()) {
                 numberOfRWFailures++;
                 ValidationFailure f = new ValidationFailure(resource, wuid, widgetType, widgetName, property, orgVal,
@@ -1125,7 +1126,7 @@ public class SchemaVerifier {
                     widgetModel);
             }
             List<SubValidationFailure> ffs = checkRemovedValues(resource, wuid, widgetType, widgetName, widgetModel,
-                property, model, rule, lineNumber, subPropertyTagger, subPropDescriptor, messageGenerator, naming);
+                property, model, rule, lineNumber, subPropertyTagger, subPropDescriptor, naming);
             if (!ffs.isEmpty()) {
                 if (f == null) {
                     numberOfWRITEFailures++;
@@ -1186,7 +1187,7 @@ public class SchemaVerifier {
     private <T> List<SubValidationFailure> checkRemovedValues(IPath resource, String wuid, String widgetType,
         String widgetName, Class<? extends AbstractWidgetModel> widgetModel, String property, List<T> model,
         ValidationRule rule, int lineNumber, Function<T, String> subPropertyTagger,
-        Function<T, String> subPropDescriptor, Function<Integer, String> messageGenerator, Function<T, String> naming) {
+        Function<T, String> subPropDescriptor, Function<T, String> naming) {
         String[] valuesToRemove = getValueFromMap(widgetType, property, removedValues, patternsRemovedValues);
         List<SubValidationFailure> ffs = new ArrayList<>();
         if (valuesToRemove != null) {
@@ -1235,7 +1236,7 @@ public class SchemaVerifier {
         if (scripts.isEmpty()) {
             return vf;
         }
-        List<SubValidationFailure> failures = new ArrayList<SubValidationFailure>();
+        List<SubValidationFailure> failures = new ArrayList<>();
         for (ScriptData sd : scripts) {
             String text = sd.getScriptText();
             if (text != null) {
@@ -1299,7 +1300,7 @@ public class SchemaVerifier {
             IResource resource = ResourcesPlugin.getWorkspace().getRoot().findMember(absoluteScriptPath);
             while (reader.ready()) {
                 line = reader.readLine();
-                if (!line.isEmpty()) {
+                if (line != null && !line.isEmpty()) {
                     failures.addAll(checkScriptLine(data, line, model, absoluteScriptPath, lineNumber, path, resource));
                 }
                 lineNumber++;
@@ -1322,13 +1323,15 @@ public class SchemaVerifier {
     private boolean isPropertyDefined(Object modelVal) {
         if (modelVal instanceof OPIColor) {
             for (OPIColor c : colors) {
-                if (c.equals(modelVal))
+                if (c.equals(modelVal)) {
                     return true;
+                }
             }
         } else if (modelVal instanceof OPIFont) {
             for (OPIFont c : fonts) {
-                if (c.equals(modelVal))
+                if (c.equals(modelVal)) {
                     return true;
+                }
             }
         }
         return false;
@@ -1380,8 +1383,8 @@ public class SchemaVerifier {
      */
     private static <T> T getValueFromMap(String widget, String property, Map<String, T> values,
         Map<Pattern, T> patterns) {
-        widget = widget.toLowerCase();
-        property = property.toLowerCase();
+        widget = widget.toLowerCase(Locale.UK);
+        property = property.toLowerCase(Locale.UK);
         String fullProp = widget + "." + property;
         String prop = null;
         T value = values.get(fullProp);
