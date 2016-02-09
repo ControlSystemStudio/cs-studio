@@ -17,10 +17,8 @@ import org.csstudio.java.string.StringSplitter;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MacroTable implements IMacroTableProvider
+public class MacroTable extends Macros implements IMacroTableProvider
 {
-    /** Map of macro names to values */
-    final private Map<String, String> macros;
 
    /** Initialize
     *  @param macros Map with macro name/value entries
@@ -28,9 +26,9 @@ public class MacroTable implements IMacroTableProvider
    public MacroTable(final Map<String, String> macros)
    {
        if (macros == null)
-           this.macros = new HashMap<String, String>(0);
+           this.macrosMap = new HashMap<String, String>(0);
        else
-           this.macros = macros;
+           this.macrosMap = macros;
    }
 
     /** Initialize
@@ -39,14 +37,14 @@ public class MacroTable implements IMacroTableProvider
      */
     public MacroTable(final String names_and_values) throws Exception
     {
-        macros = new HashMap<String, String>();
+        macrosMap = new HashMap<String, String>();
         final String pairs[] = StringSplitter.splitIgnoreInQuotes(names_and_values, ',', true);
         for (String pair : pairs)
         {
             final String name_value[] = StringSplitter.splitIgnoreInQuotes(pair, '=', true);
             if (name_value.length != 2)
                 throw new Exception("Input '" + pair + "' does not match 'name=value'");
-            macros.put(name_value[0], name_value[1]);
+            macrosMap.put(name_value[0], name_value[1]);
         }
     }
 
@@ -54,21 +52,7 @@ public class MacroTable implements IMacroTableProvider
     @Override
     public String getMacroValue(final String name)
     {
-        return macros.get(name);
+        return get(name);
     }
 
-    /** @return String representation for debugging */
-    @Override
-    public String toString()
-    {
-        final StringBuilder buf = new StringBuilder();
-        final String names[] = macros.keySet().toArray(new String[macros.size()]);
-        for (String name: names)
-        {
-            if (buf.length() > 0)
-                buf.append(", ");
-            buf.append(name + "=\"" + getMacroValue(name) + "\"");
-        }
-        return buf.toString();
-    }
 }
