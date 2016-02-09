@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.util;
+package org.csstudio.apputil.macros;
 
 import java.util.Map;
 import java.util.Set;

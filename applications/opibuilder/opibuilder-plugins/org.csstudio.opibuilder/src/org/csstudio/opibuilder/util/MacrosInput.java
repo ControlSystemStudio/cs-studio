@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.apputil.macros.Macros;
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.properties.MacrosProperty;
 
