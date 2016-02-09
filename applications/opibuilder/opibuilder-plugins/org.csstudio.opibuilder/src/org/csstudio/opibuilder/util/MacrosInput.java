@@ -51,8 +51,7 @@ public class MacrosInput extends Macros {
     }
 
     public MacrosInput getCopy(){
-        MacrosInput result = new MacrosInput(
-                new LinkedHashMap<String, String>(), include_parent_macros);
+        MacrosInput result = new MacrosInput(null, include_parent_macros);
         result.putAll(macrosMap);
         return result;
     }
@@ -124,7 +123,7 @@ public class MacrosInput extends Macros {
      */
     public static MacrosInput recoverFromString(String s) throws Exception{
         String[] items = StringSplitter.splitIgnoreInQuotes(s, ITEM_SEPARATOR, true);
-        MacrosInput macrosInput = new MacrosInput(new LinkedHashMap<String, String>(), true);
+        MacrosInput macrosInput = new MacrosInput(null, true);
         for(int i= 0; i<items.length; i++){
             if(i == 0)
                 macrosInput.setInclude_parent_macros(Boolean.valueOf(items[i]));
