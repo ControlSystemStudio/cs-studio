@@ -8,9 +8,9 @@
 package org.csstudio.opibuilder.util;
 
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.csstudio.apputil.macros.Macros;
 import org.csstudio.java.string.StringSplitter;
@@ -99,7 +99,8 @@ public class MacrosInput extends Macros {
      * @return a shallow copy of the macros map.
      */
     public Map<String, String> getMapCopy() {
-        return new LinkedHashMap<String, String>(macrosMap);
+        // Use a ConcurrentHashMap for consistency with Macros implementation.
+        return new ConcurrentHashMap<String, String>(macrosMap);
     }
 
     /**
