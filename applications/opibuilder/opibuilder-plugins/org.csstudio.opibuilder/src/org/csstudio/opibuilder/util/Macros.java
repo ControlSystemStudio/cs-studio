@@ -39,4 +39,19 @@ public class Macros implements IMacros {
         return macrosMap.keySet();
     }
 
+    /** @return String representation for debugging */
+    @Override
+    public String toString()
+    {
+        final StringBuilder buf = new StringBuilder();
+        final String names[] = macrosMap.keySet().toArray(new String[macrosMap.size()]);
+        for (String name: names)
+        {
+            if (buf.length() > 0)
+                buf.append(", ");
+            buf.append(name + "=\"" + get(name) + "\"");
+        }
+        return buf.toString();
+    }
+
 }
