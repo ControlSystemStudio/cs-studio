@@ -40,6 +40,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
      */
     @Override
@@ -48,21 +49,23 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
 
     /*
      * (non-Javadoc)
+     *
      * @see org.eclipse.jface.preference.FieldEditorPreferencePage#createFieldEditors()
      */
     @Override
     protected void createFieldEditors() {
         final Composite parent = getFieldEditorParent();
 
-        WorkspaceFileFieldEditor rules = new WorkspaceFileFieldEditor(Activator.PREF_RULES_FILE,
-                    "Validation Rules: ", new String[]{"def"}, parent);
+        WorkspaceFileFieldEditor rules = new WorkspaceFileFieldEditor(Activator.PREF_RULES_FILE, "Validation Rules: ",
+            new String[] { "def" }, parent);
         rules.getTextControl(parent).setToolTipText(
-                    "The file that defines the rules for validation of properties (read-only, write, read/write)");
+            "The file that defines the rules for validation of properties (read-only, write, read/write)");
         addField(rules);
 
         BooleanFieldEditor askForBackup = new BooleanFieldEditor(Activator.PREF_SHOW_BACKUP_DIALOG,
-                "Ask to do backup before applying quick fix?", parent){
+            "Ask to do backup before applying quick fix?", parent) {
             private Button button;
+
             @Override
             protected Button getChangeControl(Composite parent) {
                 if (button == null) {
@@ -72,6 +75,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
                         public void widgetSelected(SelectionEvent e) {
                             makeBackup.setEnabled(!getBooleanValue(), parent);
                         }
+
                         @Override
                         public void widgetDefaultSelected(SelectionEvent e) {
                         }
@@ -82,36 +86,39 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
         };
         addField(askForBackup);
 
-        makeBackup = new BooleanFieldEditor(Activator.PREF_DO_BACKUP,
-                "Do backup when applying quick fix?", parent);
+        makeBackup = new BooleanFieldEditor(Activator.PREF_DO_BACKUP, "Do backup when applying quick fix?", parent);
         makeBackup.setEnabled(!Activator.getInstance().isShowBackupDialog(), parent);
         addField(makeBackup);
 
         BooleanFieldEditor showSummary = new BooleanFieldEditor(Activator.PREF_SHOW_SUMMARY,
-                "Show summary dialog after validation?", parent);
+            "Show summary dialog after validation?", parent);
         addField(showSummary);
 
         BooleanFieldEditor nestMarkers = new BooleanFieldEditor(Activator.PREF_NEST_MARKERS,
-                "Nest markers in the Problems View?", parent);
+            "Nest markers in the Problems View?", parent);
         nestMarkers.getDescriptionControl(parent).setToolTipText(
-                "Display sub validation failures (action, script, rule) as children of their parent properties (actions, scripts, rules).");
+            "Display sub validation failures (action, script, rule) as children of their parent properties (actions, scripts, rules).");
         addField(nestMarkers);
 
         BooleanFieldEditor clearMarkers = new BooleanFieldEditor(Activator.PREF_CLEAR_MARKERS,
-                "Clear old markers when validation starts?", parent);
-        clearMarkers.getDescriptionControl(parent).setToolTipText(
-                "Clear all validation markers on every new validation restart");
+            "Clear old markers when validation starts?", parent);
+        clearMarkers.getDescriptionControl(parent)
+            .setToolTipText("Clear all validation markers on every new validation restart");
         addField(clearMarkers);
 
         BooleanFieldEditor useDefaultEditor = new BooleanFieldEditor(Activator.PREF_CLEAR_MARKERS,
-                "Display markers in default editor?", parent);
+            "Display markers in default editor?", parent);
         useDefaultEditor.getDescriptionControl(parent).setToolTipText(
-                "If checked a validation marker will be displayed in the default editor. If unchecked, the marker will "
+            "If checked a validation marker will be displayed in the default editor. If unchecked, the marker will "
                 + "always be displayed in the text editor.");
         addField(useDefaultEditor);
 
         BooleanFieldEditor saveResourcesEditor = new BooleanFieldEditor(Activator.PREF_SAVE_BEFORE_VALIDATION,
-                "Save all modified resources automatically prior to validation?", parent);
+            "Save all modified resources automatically prior to validation?", parent);
         addField(saveResourcesEditor);
+
+        BooleanFieldEditor warnAboutJythonScriptsEditor = new BooleanFieldEditor(
+            Activator.PREF_WARN_ABOUT_JYTHON_SCRIPTS, "Warn whenever a jython script is attached to a widget?", parent);
+        addField(warnAboutJythonScriptsEditor);
     }
 }
