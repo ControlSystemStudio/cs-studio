@@ -1,16 +1,15 @@
 package org.csstudio.apputil.macros;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Macros implements IMacros {
 
     protected Map<String, String> macrosMap;
 
     public Macros() {
-        macrosMap = new HashMap<String, String>();
+        macrosMap = new ConcurrentHashMap<String, String>();
     }
 
     @Override
