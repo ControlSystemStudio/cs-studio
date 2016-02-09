@@ -23,9 +23,7 @@ import org.csstudio.opibuilder.properties.MacrosProperty;
  * TODO Why does the order of macros matter? For environment vars, the order doesn't matter. Can still replace macros recursively as in $($(M))
  * @author Xihui Chen
  */
-public class MacrosInput implements IMacros {
-
-    private Map<String, String> macrosMap;
+public class MacrosInput extends Macros {
 
     private boolean include_parent_macros;
 
@@ -36,45 +34,6 @@ public class MacrosInput implements IMacros {
     public MacrosInput(Map<String, String> macros, boolean include_parent_macros) {
         this.macrosMap = macros;
         this.include_parent_macros = include_parent_macros;
-    }
-
-    /**
-     * Return a macro value
-     * @param macroName macro key
-     * @return macro value
-     */
-    @Override
-    public final String get(String macroName) {
-        return macrosMap.get(macroName);
-    }
-
-    /**Add or replace a macro.
-     * @param macroName
-     * @param macroValue
-     */
-    @Override
-    public final void put(String macroName, String macroValue){
-        macrosMap.put(macroName, macroValue);
-    }
-
-    /**
-     * Add all the macros.
-     * @param macros as a map
-     */
-    @Override
-    public final void putAll(Map<String, String> macros) {
-        macrosMap.putAll(macros);
-    }
-
-    /**
-     * Add all the macros.
-     * @param macros as a MacrosInput object
-     */
-    @Override
-    public final void putAll(IMacros macros) {
-        for (String s : macros.keySet()) {
-            macrosMap.put(s, macros.get(s));
-        }
     }
 
     /**
