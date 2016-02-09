@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.csstudio.apputil.macros.Macros;
 import org.csstudio.java.string.StringSplitter;
@@ -137,14 +136,6 @@ public class MacrosInput extends Macros {
             }
         }
         return macrosInput;
-    }
-
-    /**
-     * Keys for all the defined macros.
-     * @return keySet from the underlying map.
-     */
-    public Set<String> keySet() {
-        return macrosMap.keySet();
     }
 
 }
