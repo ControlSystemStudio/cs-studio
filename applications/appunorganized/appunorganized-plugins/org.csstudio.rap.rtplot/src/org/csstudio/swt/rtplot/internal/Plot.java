@@ -553,7 +553,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         legend.setBounds(0,  bounds.height-legend_height, bounds.width, legend_height);
 
         // X Axis as high as desired. Width will depend on Y axes.
-        final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc, label_font, scale_font);
+//        x_axis.setLabelFont(label_font.getFontData()[0]);
+//        x_axis.setScaleFont(scale_font);
+        final int x_axis_height = x_axis.getDesiredPixelSize(bounds, gc);
         final int y_axis_height = bounds.height - title_height - x_axis_height - legend_height;
 
         // Ask each Y Axis for its widths, which changes based on number of labels
@@ -567,7 +569,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             if (! axis.isOnRight())
             {
                 final Rectangle axis_region = new Rectangle(total_left_axes_width, title_height, plot_width, y_axis_height);
-                axis_region.width = axis.getDesiredPixelSize(axis_region, gc, label_font, scale_font);
+//                axis.setLabelFont(label_font);
+//                axis.setScaleFont(scale_font);
+                axis_region.width = axis.getDesiredPixelSize(axis_region, gc);
                 axis.setBounds(axis_region);
                 total_left_axes_width += axis_region.width;
                 plot_width -= axis_region.width;
@@ -577,7 +581,9 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
             if (axis.isOnRight())
             {
                 final Rectangle axis_region = new Rectangle(total_left_axes_width, title_height, plot_width, y_axis_height);
-                axis_region.width = axis.getDesiredPixelSize(axis_region, gc, label_font, scale_font);
+//                axis.setLabelFont(label_font);
+//                axis.setScaleFont(scale_font);
+                axis_region.width = axis.getDesiredPixelSize(axis_region, gc);
                 total_right_axes_width += axis_region.width;
                 axis_region.x = bounds.width - total_right_axes_width;
                 axis.setBounds(axis_region);
@@ -610,10 +616,16 @@ public class Plot<XTYPE extends Comparable<XTYPE>> extends Canvas implements Pai
         // Fetch x_axis transformation and use that to paint all traces,
         // because X Axis tends to change from scrolling
         // while we're painting traces
-        x_axis.paint(gc, media, label_font, scale_font, plot_bounds);
+//        x_axis.setLabelFont(label_font);
+//        x_axis.setScaleFont(scale_font);
+        x_axis.paint(gc, media, plot_bounds);
         final ScreenTransform<XTYPE> x_transform = x_axis.getScreenTransform();
         for (YAxisImpl<XTYPE> y_axis : y_axes)
-            y_axis.paint(gc, media, label_font, scale_font, plot_bounds);
+        {
+//            y_axis.setLabelFont(label_font);
+//            y_axis.setScaleFont(scale_font);
+            y_axis.paint(gc, media, plot_bounds);
+        }
 
         gc.setClipping(plot_bounds);
         plot_area.paint(gc, media);
