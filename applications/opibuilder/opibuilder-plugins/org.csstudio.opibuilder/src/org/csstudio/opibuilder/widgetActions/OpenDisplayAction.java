@@ -224,7 +224,7 @@ public class OpenDisplayAction extends AbstractWidgetAction
     protected MacrosInput getMacrosInput()
     {
         MacrosInput result = new MacrosInput(
-                new LinkedHashMap<String, String>(), false);
+                new LinkedHashMap<String, String>(), true);
 
         MacrosInput macrosInput = ((MacrosInput) getPropertyValue(PROP_MACROS))
                 .getCopy();

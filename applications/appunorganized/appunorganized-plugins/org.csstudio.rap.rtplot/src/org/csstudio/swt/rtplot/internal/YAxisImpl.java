@@ -21,7 +21,6 @@ import org.csstudio.swt.rtplot.internal.util.GraphicsUtils;
 import org.csstudio.swt.rtplot.internal.util.IntList;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -198,14 +197,14 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
 
     /** {@inheritDoc */
     @Override
-    public int getDesiredPixelSize(final Rectangle region, final GC gc, final Font label_font, final Font scale_font)
+    public int getDesiredPixelSize(final Rectangle region, final GC gc)
     {
         Activator.getLogger().log(Level.FINE, "YAxis({0}) layout for {1}", new Object[] { getName(),  region });
 
         if (! isVisible())
             return 0;
 
-        gc.setFont(label_font);
+        gc.setFont(getLabelFont());
         final int x_sep = gc.getFontMetrics().getHeight();
         // Start layout of labels at x=0, 'left',
         // to determine how many fit into one line.
@@ -267,7 +266,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         for (int i=label_x.size()-1; i>=0; --i)
             label_x.set(i, label_x.get(i) + x_correction);
 
-        gc.setFont(scale_font);
+        gc.setFont(getScaleFont());
         final int scale_size = gc.getFontMetrics().getHeight();
 
         // Width of labels, width of axis text, tick markers.
@@ -276,8 +275,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
 
     /** {@inheritDoc} */
     @Override
-    public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font,
-                      final Rectangle plot_bounds)
+    public void paint(final GC gc, final SWTMediaPool media, final Rectangle plot_bounds)
     {
         if (! isVisible())
             return;
@@ -289,7 +287,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         final Color old_bg = gc.getBackground();
         final Color old_fg = gc.getForeground();
         gc.setForeground(media.get(getColor()));
-        gc.setFont(scale_font);
+        gc.setFont(getScaleFont());
 
         // Simple line for the axis
         final int line_x, tick_x, minor_x;
@@ -336,9 +334,9 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
             // Grid line
             if (show_grid)
             {
-//                gc.setLineStyle(SWT.LINE_DOT);
+                //gc.setLineStyle(SWT.LINE_DOT);
                 gc.drawLine(plot_bounds.x, y, plot_bounds.x + plot_bounds.width-1, y);
-//                gc.setLineStyle(SWT.LINE_SOLID);
+                //gc.setLineStyle(SWT.LINE_SOLID);
             }
 
             // Tick Label
@@ -360,7 +358,7 @@ public class YAxisImpl<XTYPE extends Comparable<XTYPE>> extends NumericAxis impl
         gc.setForeground(old_fg);
         gc.setBackground(old_bg);
 
-        gc.setFont(label_font);
+        gc.setFont(getLabelFont());
         paintLabels(gc, media);
     }
 
