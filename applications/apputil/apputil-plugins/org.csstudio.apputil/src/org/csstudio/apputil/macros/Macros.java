@@ -12,6 +12,13 @@ public class Macros implements IMacros {
         macrosMap = new ConcurrentHashMap<String, String>();
     }
 
+    public Macros(Map<String, String> macros) {
+        this.macrosMap = new ConcurrentHashMap<String, String>();
+        if (macros != null) {
+            putAll(macros);
+        }
+    }
+
     @Override
     public String get(String key) {
         return macrosMap.get(key);

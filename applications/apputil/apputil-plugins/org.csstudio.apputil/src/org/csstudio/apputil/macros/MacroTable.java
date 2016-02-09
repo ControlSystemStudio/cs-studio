@@ -25,10 +25,7 @@ public class MacroTable extends Macros implements IMacroTableProvider
     */
    public MacroTable(final Map<String, String> macros)
    {
-       if (macros == null)
-           this.macrosMap = new HashMap<String, String>(0);
-       else
-           this.macrosMap = macros;
+       super(macros);
    }
 
     /** Initialize
@@ -37,7 +34,7 @@ public class MacroTable extends Macros implements IMacroTableProvider
      */
     public MacroTable(final String names_and_values) throws Exception
     {
-        macrosMap = new HashMap<String, String>();
+        super();
         final String pairs[] = StringSplitter.splitIgnoreInQuotes(names_and_values, ',', true);
         for (String pair : pairs)
         {
