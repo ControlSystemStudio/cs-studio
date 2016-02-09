@@ -38,13 +38,6 @@ public class MacrosInput extends Macros {
     }
 
     /**
-     * @param macrosMap the macrosMap to set
-     */
-    public final void setMacrosMap(Map<String, String> macrosMap) {
-        this.macrosMap = macrosMap;
-    }
-
-    /**
      * @return the include_parent_macros
      */
     public final boolean isInclude_parent_macros() {
