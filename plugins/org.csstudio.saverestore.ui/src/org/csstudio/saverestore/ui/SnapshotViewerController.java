@@ -110,6 +110,7 @@ public class SnapshotViewerController {
                 value = e.getPvReader().getValue();
                 throttle.trigger();
             });
+            this.value = reader.getValue();
             setReadbackReader(readback);
         }
 
@@ -125,6 +126,14 @@ public class SnapshotViewerController {
                         throttle.trigger();
                     }
                 });
+                this.readbackValue = readback.getValue();
+            }
+        }
+
+        void resume() {
+            this.value = reader.getValue();
+            if (readback != null) {
+                readbackValue = readback.getValue();
             }
         }
 
@@ -520,6 +529,7 @@ public class SnapshotViewerController {
      */
     public void resume() {
         if (suspend.decrementAndGet() == 0) {
+            pvs.values().forEach(e -> e.resume());
             this.throttle.trigger();
         }
     }
@@ -612,6 +622,9 @@ public class SnapshotViewerController {
                     Timestamp.now());
             }
             if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
+                owner.addSnapshot(taken);
+            } else if (getNumberOfSnapshots() == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
+                //if there is only one snapshot which was actually opened as a beamline set, add it to the same editor
                 owner.addSnapshot(taken);
             } else {
                 new ActionManager(owner).openSnapshot(taken);
