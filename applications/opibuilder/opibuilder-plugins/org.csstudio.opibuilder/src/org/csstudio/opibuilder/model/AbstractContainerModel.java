@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
@@ -43,7 +44,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 
     final private List<AbstractWidgetModel> childrenList = new LinkedList<AbstractWidgetModel>();
 
-    private LinkedHashMap<String, String> macroMap = new LinkedHashMap<String, String>();
+    private Map<String, String> macroMap = new LinkedHashMap<String, String>();
 
     private AbstractLayoutModel layoutWidget;
 
@@ -216,12 +217,12 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
      *  Container keeps reference to the map, no copy.
      *  @param macroMap Map of macro name/value entries
      */
-    public void setMacroMap(final LinkedHashMap<String, String> macroMap) {
+    public void setMacroMap(final Map<String, String> macroMap) {
         this.macroMap = macroMap;
     }
 
     /** @return Map of macro name/value entries */
-    public LinkedHashMap<String, String> getMacroMap() {
+    public Map<String, String> getMacroMap() {
         return macroMap;
     }
 
@@ -241,7 +242,7 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
     /**
      * @return the macros of its parent.
      */
-    public LinkedHashMap<String, String> getParentMacroMap(){
+    public Map<String, String> getParentMacroMap(){
         if(getParent() != null)
             return getParent().getMacroMap();
         else

@@ -233,9 +233,9 @@ public class OpenDisplayAction extends AbstractWidgetAction
             Map<String, String> macrosMap = getWidgetModel() instanceof AbstractContainerModel ? ((AbstractContainerModel) getWidgetModel())
                     .getParentMacroMap() : getWidgetModel().getParent()
                     .getMacroMap();
-            result.getMacrosMap().putAll(macrosMap);
+            result.putAll(macrosMap);
         }
-        result.getMacrosMap().putAll(macrosInput.getMacrosMap());
+        result.putAll(macrosInput);
         return result;
     }
 

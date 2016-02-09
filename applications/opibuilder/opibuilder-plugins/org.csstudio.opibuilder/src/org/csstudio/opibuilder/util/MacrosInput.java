@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.java.string.StringSplitter;
 import org.csstudio.opibuilder.properties.MacrosProperty;
@@ -38,17 +39,19 @@ public class MacrosInput {
     }
 
     /**
-     * @return the macrosMap
-     */
-    public final Map<String, String> getMacrosMap() {
-        return macrosMap;
-    }
-
-    /**
      * @param macrosMap the macrosMap to set
      */
     public final void setMacrosMap(Map<String, String> macrosMap) {
         this.macrosMap = macrosMap;
+    }
+
+    /**
+     * Return a macro value
+     * @param macroName macro key
+     * @return macro value
+     */
+    public final String get(String macroName) {
+        return macrosMap.get(macroName);
     }
 
     /**Add or replace a macro.
@@ -57,6 +60,24 @@ public class MacrosInput {
      */
     public final void put(String macroName, String macroValue){
         macrosMap.put(macroName, macroValue);
+    }
+
+    /**
+     * Add all the macros.
+     * @param macros as a map
+     */
+    public final void putAll(Map<String, String> macros) {
+        macrosMap.putAll(macros);
+    }
+
+    /**
+     * Add all the macros.
+     * @param macros as a MacrosInput object
+     */
+    public final void putAll(MacrosInput macros) {
+        for (String s : macros.keySet()) {
+            macrosMap.put(s, macros.get(s));
+        }
     }
 
     /**
@@ -76,7 +97,7 @@ public class MacrosInput {
     public MacrosInput getCopy(){
         MacrosInput result = new MacrosInput(
                 new LinkedHashMap<String, String>(), include_parent_macros);
-        result.getMacrosMap().putAll(macrosMap);
+        result.putAll(macrosMap);
         return result;
     }
 
@@ -103,10 +124,10 @@ public class MacrosInput {
             MacrosInput input = (MacrosInput)obj;
             if(include_parent_macros != input.isInclude_parent_macros())
                 return false;
-            if(!macrosMap.equals(input.getMacrosMap()))
+            if(!macrosMap.equals(input.getMapCopy()))
                 return false;
             List<Object> keyList = Arrays.asList(macrosMap.keySet().toArray());
-            List<Object> inputKeyList = Arrays.asList(input.getMacrosMap().keySet().toArray());
+            List<Object> inputKeyList = Arrays.asList(input.keySet().toArray());
             if(keyList.equals(inputKeyList))
                 return true;
             else
@@ -117,6 +138,13 @@ public class MacrosInput {
 
     }
 
+    /**
+     * Return a map corresponding to all defined macros.
+     * @return a shallow copy of the macros map.
+     */
+    public Map<String, String> getMapCopy() {
+        return new LinkedHashMap<String, String>(macrosMap);
+    }
 
     /**
      * @return a String with format like this: "true", "macro1 = hello", "macro2 = hello2"
@@ -146,12 +174,20 @@ public class MacrosInput {
             else{
                 String[] macro = StringSplitter.splitIgnoreInQuotes(items[i], MACRO_SEPARATOR, true);
                 if(macro.length == 2)
-                    macrosInput.getMacrosMap().put(macro[0], macro[1]);
+                    macrosInput.put(macro[0], macro[1]);
                 else if(macro.length == 1) //if it is an empty value macro
-                    macrosInput.getMacrosMap().put(macro[0], ""); //$NON-NLS-1$
+                    macrosInput.put(macro[0], ""); //$NON-NLS-1$
             }
         }
         return macrosInput;
+    }
+
+    /**
+     * Keys for all the defined macros.
+     * @return keySet from the underlying map.
+     */
+    public Set<String> keySet() {
+        return macrosMap.keySet();
     }
 
 }

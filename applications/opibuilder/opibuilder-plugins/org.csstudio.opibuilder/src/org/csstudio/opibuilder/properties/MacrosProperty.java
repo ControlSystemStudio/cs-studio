@@ -57,10 +57,10 @@ public class MacrosProperty extends AbstractWidgetProperty {
     public Object getPropertyValue() {
         if(executionMode == ExecutionMode.RUN_MODE && widgetModel !=null){
             MacrosInput value = ((MacrosInput) super.getPropertyValue()).getCopy();
-            for(String key : value.getMacrosMap().keySet()){
-                    String newS = OPIBuilderMacroUtil.replaceMacros(widgetModel, value.getMacrosMap().get(key));
-                    if(!newS.equals(value.getMacrosMap().get(key))){
-                        value.getMacrosMap().put(key, newS);
+            for(String key : value.keySet()){
+                    String newS = OPIBuilderMacroUtil.replaceMacros(widgetModel, value.get(key));
+                    if(!newS.equals(value.get(key))){
+                        value.put(key, newS);
                     }
                 }
             return value;
@@ -97,9 +97,9 @@ public class MacrosProperty extends AbstractWidgetProperty {
         Element be = new Element(XML_ELEMENT_INCLUDE_PARENT_MACROS);
         be.setText("" + macros.isInclude_parent_macros()); //$NON-NLS-1$
         propElement.addContent(be);
-        for(String key : macros.getMacrosMap().keySet()){
+        for(String key : macros.keySet()){
             Element newElement = new Element(key);
-            newElement.setText(macros.getMacrosMap().get(key));
+            newElement.setText(macros.get(key));
             propElement.addContent(newElement);
         }
     }

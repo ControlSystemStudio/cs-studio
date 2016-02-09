@@ -293,7 +293,7 @@ public class LinkingContainerEditpart extends AbstractLinkingContainerEditpart{
                     displayModel.getParentMacroMap());
         }
         //Load macro from its macrosInput
-        map.putAll(displayModel.getMacrosInput().getMacrosMap());
+        map.putAll(displayModel.getMacrosInput().getMapCopy());
         //It also include the macros on this linking container
         //which includes the macros from action and global macros if included
         //It will replace the old one too.

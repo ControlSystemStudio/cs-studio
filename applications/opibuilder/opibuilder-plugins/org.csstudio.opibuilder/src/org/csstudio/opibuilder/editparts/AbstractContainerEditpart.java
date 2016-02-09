@@ -206,7 +206,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
             if(getWidgetModel().getMacrosInput().isInclude_parent_macros()){
                 macrosMap.putAll(getWidgetModel().getParentMacroMap());
             }
-            macrosMap.putAll(getWidgetModel().getMacrosInput().getMacrosMap());
+            macrosMap.putAll(getWidgetModel().getMacrosInput().getMapCopy());
             getWidgetModel().setMacroMap(macrosMap);
         }
 
@@ -224,7 +224,7 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
                 if(macrosInput.isInclude_parent_macros()){
                     macrosMap.putAll(getWidgetModel().getParentMacroMap());
                 }
-                macrosMap.putAll(macrosInput.getMacrosMap());
+                macrosMap.putAll(macrosInput.getMapCopy());
                 getWidgetModel().setMacroMap(macrosMap);
                 return false;
             }

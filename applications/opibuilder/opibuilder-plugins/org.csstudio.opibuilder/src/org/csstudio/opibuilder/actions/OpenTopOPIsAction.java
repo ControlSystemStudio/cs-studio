@@ -65,7 +65,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
         for (final IPath path : topOPIs.keySet()) {
             if (path != null) {
                 MenuItem item = new MenuItem(menu, SWT.PUSH);
-                String alias = topOPIs.get(path).getMacrosMap().get(ALIAS_KEY);
+                String alias = topOPIs.get(path).get(ALIAS_KEY);
                 if (alias != null)
                     item.setText(alias);
                 else
@@ -102,7 +102,7 @@ public class OpenTopOPIsAction implements IWorkbenchWindowPulldownDelegate {
         DisplayMode mode =  DisplayMode.NEW_TAB;
         if (macrosInput != null)
         {
-            final String position = macrosInput.getMacrosMap().get(TOP_OPI_POSITION_KEY);
+            final String position = macrosInput.get(TOP_OPI_POSITION_KEY);
             if (position != null)
             {
                 if (position.toUpperCase().equals("NEW_SHELL"))
