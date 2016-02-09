@@ -17,13 +17,13 @@ import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figureparts.RapArrowButton;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.ActionEvent;
 import org.eclipse.draw2d.ActionListener;
 import org.eclipse.draw2d.ArrowButton;
 import org.eclipse.draw2d.ButtonBorder;
 import org.eclipse.draw2d.ButtonBorder.ButtonScheme;
 import org.eclipse.draw2d.Clickable;
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FocusEvent;
 import org.eclipse.draw2d.FocusListener;
@@ -42,7 +42,7 @@ import org.eclipse.swt.graphics.Color;
  *
  */
 public class SpinnerFigure extends Figure implements Introspectable {
-    public enum NumericFormatType {
+    public static enum NumericFormatType {
         DECIAML("Decimal"),
         EXP("Exponential"),
         HEX("Hex");

@@ -16,6 +16,10 @@ import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.rap.core.security.SecurityService;
 import org.csstudio.webopi.WebOPIConstants;
+import org.diirt.datasource.CompositeDataSource;
+import org.diirt.datasource.CompositeDataSourceConfiguration;
+import org.diirt.datasource.DataSource;
+import org.diirt.datasource.PVManager;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.rap.rwt.RWT;
@@ -139,6 +143,16 @@ public class RequestUtil {
                 display.dispose();
                 throw new RuntimeException("Failed to login.");
             }
+        }
+    }
+
+    private static final String DEFAULT_DATASOURCE_NAME = "ca";
+
+    public static void initDefaultDatasource() {
+        DataSource dataSource = PVManager.getDefaultDataSource();
+        if (dataSource instanceof CompositeDataSource) {
+            CompositeDataSourceConfiguration conf = ((CompositeDataSource)dataSource).getConfiguration();
+            conf.defaultDataSource(DEFAULT_DATASOURCE_NAME);
         }
     }
 

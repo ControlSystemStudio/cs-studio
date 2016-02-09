@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.opibuilder.editpolicies;
 
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Locator;

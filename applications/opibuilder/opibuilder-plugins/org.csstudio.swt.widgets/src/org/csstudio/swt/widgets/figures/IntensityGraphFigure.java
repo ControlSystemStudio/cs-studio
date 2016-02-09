@@ -32,7 +32,7 @@ import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.csstudio.ui.util.SWTConstants;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
@@ -70,7 +70,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
      * @author Xihui Chen
      *
      */
-    public enum ColorDepth {
+    public static enum ColorDepth {
         BIT8("8 bit"), //No need to convert
         BIT16("16 bit"), //Convert by >>8
         BIT24("24 bit"), //Convert by >>16

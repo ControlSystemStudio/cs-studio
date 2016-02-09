@@ -313,7 +313,8 @@ public class SearchView extends ViewPart
             @Override
             public void doubleClick(DoubleClickEvent event)
             {
-                IHandlerService handlerService = getSite().getService(IHandlerService.class);
+                //casting is needed for RAP
+                IHandlerService handlerService = (IHandlerService)getSite().getService(IHandlerService.class);
                 try
                 {
                     handlerService.executeCommand("org.csstudio.trends.databrowser.OpenDataBrowserPopup", null);
