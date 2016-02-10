@@ -83,7 +83,7 @@ public final class OPIShell implements IOPIRuntime {
     private static Logger log = OPIBuilderPlugin.getLogger();
     public static final String OPI_SHELLS_CHANGED_ID = "org.csstudio.opibuilder.opiShellsChanged";
     // The active OPIshell, or null if no OPIShell is active
-    public static OPIShell activeShell = null;
+    private static OPIShell activeShell = null;
     // Cache of open OPI shells in order of opening.
     private static final Set<OPIShell> openShells = new LinkedHashSet<OPIShell>();
     // The view against which the context menu is registered.
@@ -168,7 +168,9 @@ public final class OPIShell implements IOPIRuntime {
 
             @Override
             public void widgetDisposed(DisposeEvent e) {
-                if (!icon.isDisposed()) icon.dispose();
+                if (!icon.isDisposed()) {
+                    icon.dispose();
+                }
             }
         });
         /*
@@ -340,6 +342,14 @@ public final class OPIShell implements IOPIRuntime {
     }
 
     /**
+     * Return the active shell, which may be null
+     * @return the active OPIShell
+     */
+    public static OPIShell getActiveShell() {
+        return activeShell;
+    }
+
+    /**
      * Alert whoever is listening that a new OPIShell has been created.
      */
     private static void sendUpdateCommand() {
@@ -423,20 +433,24 @@ public final class OPIShell implements IOPIRuntime {
     }
 
     /**
-     * Render a new OPI in the same shell.  The file path
-     * changes but the macros remain the same.  Is this correct?
+     * Render a new OPI in the same shell.
      */
     @Override
     public void setOPIInput(IEditorInput input) throws PartInitException {
         try {
+            // The old OPIShell needs to be removed from the cache and the new one
+            // added afterwards, because they don't evaluate as equal.
+            openShells.remove(this);
             if (input instanceof IFileEditorInput) {
                 this.path = ((IFileEditorInput) input).getFile().getFullPath();
             } else if (input instanceof RunnerInput) {
                 this.path = ((RunnerInput) input).getPath();
+                this.macrosInput = ((RunnerInput) input).getMacrosInput();
             }
             displayModel = createDisplayModel();
             setTitle();
             resizeToContents();
+            openShells.add(this);
         } catch (Exception e) {
             OPIBuilderPlugin.getLogger().log(Level.WARNING, "Failed to replace OPIShell contents.", e);
         }
@@ -458,4 +472,7 @@ public final class OPIShell implements IOPIRuntime {
         return Objects.hash(OPIShell.class, macrosInput, path);
     }
 
+    public boolean isDisposed() {
+        return ((shell == null) || (shell.isDisposed()));
+    }
 }
