@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.csstudio.applications.opibuilder.medm.feature"
-      label="MEDM Extentions for BOY"
+      label="MEDM Extensions for BOY"
       version="5.0.0.qualifier"
       provider-name="Matthew Furseman &lt;matthew.furseman@diamond.ac.uk&gt; - DLS">
 
    <description>
-      MEDM Extentions and converter for BOY.
+      MEDM Extensions and converter for BOY.
    </description>
 
    <copyright>
