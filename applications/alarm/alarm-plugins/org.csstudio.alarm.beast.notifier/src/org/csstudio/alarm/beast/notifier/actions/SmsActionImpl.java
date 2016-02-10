@@ -8,6 +8,7 @@
 package org.csstudio.alarm.beast.notifier.actions;
 
 import java.util.List;
+import java.util.ListIterator;
 
 import org.csstudio.alarm.beast.notifier.AAData;
 import org.csstudio.alarm.beast.notifier.ItemInfo;
@@ -35,17 +36,10 @@ public class SmsActionImpl extends AbstractMailActionImpl {
         mailSender = new JavaxMailSender();
         SmsCommandHandler smsCmdHandler = (SmsCommandHandler) handler;
         List<String> phoneNumbers = smsCmdHandler.getTo();
-        StringBuilder sb = new StringBuilder();
-        sb.append("[sms:");
-        for (int index = 0; index < phoneNumbers.size(); index++) {
-            String number = phoneNumbers.get(index);
-            sb.append(PhoneUtils.format(number));
-            if (index < phoneNumbers.size() - 1)
-                sb.append(",");
+        ListIterator < String > list = phoneNumbers.listIterator();
+        while (list.hasNext()) {
+            list.set(PhoneUtils.format(list.next()));
         }
-        sb.append("]");
-        phoneNumbers.clear();
-        phoneNumbers.add(sb.toString());
         mailSender.setTo(phoneNumbers);
         mailSender.setSubject("<NONE>");
         mailSender.setBody(smsCmdHandler.getBody());
