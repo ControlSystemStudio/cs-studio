@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -50,6 +51,7 @@ public class ImageBoolIndicatorModel extends AbstractBoolWidgetModel {
      */
     public static final String PROP_NO_ANIMATION = "no_animation";
 
+
     /**
      * True if the widget animation start should be aligned to the nearest
      * second.
@@ -79,7 +81,7 @@ public class ImageBoolIndicatorModel extends AbstractBoolWidgetModel {
         setPropertyVisible(PROP_ON_COLOR, false);
         setPropertyVisible(PROP_OFF_COLOR, false);
 
-
+        FigureTransparencyHelper.addProperty(this);
     }
     /**
      * The ID of this widget model.

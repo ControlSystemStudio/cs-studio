@@ -8,6 +8,7 @@
 package org.csstudio.opibuilder.widgets.symbol.multistate;
 
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -27,8 +28,10 @@ public class MonitorMultiSymbolEditPart extends CommonMultiSymbolEditPart {
         return figure;
     }
 
+    @Override
     protected void registerPropertyChangeHandlers() {
         super.registerCommonPropertyChangeHandlers();
+        FigureTransparencyHelper.addHandler(this, figure);
     }
 
 }

@@ -12,6 +12,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.opibuilder.widgets.FigureTransparencyHelper;
 import org.csstudio.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -56,6 +57,8 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
      */
     public static final String PROP_ALIGN_TO_NEAREST_SECOND = "align_to_nearest_second";
 
+    public static final String PROP_TRANSPARENCY = "transparency";
+
     public ImageBoolButtonModel() {
         setForegroundColor(CustomMediaFactory.COLOR_BLACK);
     }
@@ -82,7 +85,7 @@ public class ImageBoolButtonModel extends AbstractBoolControlModel {
         setPropertyVisible(PROP_ON_COLOR, false);
         setPropertyVisible(PROP_OFF_COLOR, false);
 
-
+        FigureTransparencyHelper.addProperty(this);
     }
     /**
      * The ID of this widget model.
