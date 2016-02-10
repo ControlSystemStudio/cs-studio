@@ -49,7 +49,7 @@ public class PVTableModel implements PVTableItemListener {
     private Configuration config = null;
     
     /** The number of time the measure was done */
-    private int nbMesure = 1;
+    private int nbMeasure = 1;
 
     /** Initialize */
     public PVTableModel() {
@@ -94,19 +94,19 @@ public class PVTableModel implements PVTableItemListener {
     }
     
     /**
-     * Set nbMesure
-     * @param nbMesure
+     * Set nbMeasure
+     * @param nbMeasure
      */
-    public void setNbMesure(int nbMesure) {
-    	this.nbMesure = nbMesure;
+    public void setNbMeasure(int nbMeasure) {
+    	this.nbMeasure = nbMeasure;
     }
     
     /**
-     * get nbMesure
+     * get nbMeasure
      * @return
      */
-    public int getNbMesure() {
-    	return this.nbMesure;
+    public int getNbMeasure() {
+    	return this.nbMeasure;
     }
 
     /** Add table item
@@ -119,7 +119,7 @@ public class PVTableModel implements PVTableItemListener {
     
     /** Add table item
      *  @param pv_name PV Name
-     *  @param inital Initial value (Time mesure)
+     *  @param inital Initial value (Time measure)
      *  @return Added item
      */
     public PVTableItem addItem(final String pv_name, VType initial) {
@@ -135,8 +135,8 @@ public class PVTableModel implements PVTableItemListener {
      * @param conf
      * @return added item
      */
-    public PVTableItem addItem(final String pv_name, final double tolerance, final SavedValue saved, final String time, final boolean conf, final Mesure mesure) {
-    	return addItem(new PVTableItem(pv_name, time, conf, mesure, tolerance, saved, this));
+    public PVTableItem addItem(final String pv_name, final double tolerance, final SavedValue saved, final String time, final boolean conf, final Measure measure) {
+    	return addItem(new PVTableItem(pv_name, time, conf, measure, tolerance, saved, this));
     }
 
     /** Add table item
@@ -146,8 +146,8 @@ public class PVTableModel implements PVTableItemListener {
      */
     public PVTableItem addItem(final PVTableItem item) {
     	// A conf already exist
-    	if(item.isMesureHeader() && !items.contains(item)) {
-        	this.nbMesure++;
+    	if(item.isMeasureHeader() && !items.contains(item)) {
+        	this.nbMeasure++;
     	}
     	items.add(item);
     	// Add a conf header
@@ -157,7 +157,7 @@ public class PVTableModel implements PVTableItemListener {
         if(config != null) {
         	// If the item is not the first one in the table, that a conf already exist and that the item
         	// above it belongs to the conf, add it to the conf.
-        	if(items.indexOf(item) > 0 && items.get(items.indexOf(item)-1).isConf() == true && !item.isMesureHeader()) {
+        	if(items.indexOf(item) > 0 && items.get(items.indexOf(item)-1).isConf() == true && !item.isMeasureHeader()) {
         		config.addItem(item);
         		item.setConf(true);
         	}
@@ -195,7 +195,7 @@ public class PVTableModel implements PVTableItemListener {
         if(config != null) {
         	// If the item is not the first one in the table, that a conf already exist and that the item
         	// above it belongs to the conf, add it to the conf.
-        	if(items.indexOf(newItem) > 0 && items.get(items.indexOf(newItem)-1).isConf() == true && !newItem.isMesureHeader()) {
+        	if(items.indexOf(newItem) > 0 && items.get(items.indexOf(newItem)-1).isConf() == true && !newItem.isMeasureHeader()) {
         		config.addItem(newItem);
         		newItem.setConf(true);
         	}
@@ -278,7 +278,7 @@ public class PVTableModel implements PVTableItemListener {
         		// If rows below, add them to conf
         		int indexHeader = items.indexOf(item);
         		for(int i = indexHeader ; i < items.size(); i++) {
-        			if(items.get(i).isMesureHeader() == false && items.get(i).isMesure() == false){
+        			if(items.get(i).isMeasureHeader() == false && items.get(i).isMeasure() == false){
 	        			items.get(i).setConf(true);
 	        			config.addItem(items.get(i));
         			}
@@ -296,7 +296,7 @@ public class PVTableModel implements PVTableItemListener {
         		config = new Configuration(item);
         		// If rows below, add them to conf
         		int indexHeader = items.indexOf(item);
-        		for(int i = indexHeader ; items.get(items.indexOf(item)).isMesure() == false && i < items.size() ; i++) {
+        		for(int i = indexHeader ; items.get(items.indexOf(item)).isMeasure() == false && i < items.size() ; i++) {
         			items.get(i).setConf(true);
         			config.addItem(items.get(i));
         		}

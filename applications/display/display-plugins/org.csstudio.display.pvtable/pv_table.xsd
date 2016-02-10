@@ -12,7 +12,7 @@
   <xs:complexType >
     <xs:sequence>
       <xs:element name="tolerance" type="xs:double" minOccurs="0"/>
-      <xs:element name="nbMesure" type="xs:int" minOccurs="1"/>
+      <xs:element name="measure_count" type="xs:int" minOccurs="1"/>
       <xs:element name="pvlist" type="pvlist"/>
     </xs:sequence>
     <xs:attribute name="version" type="xs:string" default="3.0"/>

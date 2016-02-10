@@ -19,7 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.csstudio.apputil.xml.DOMHelper;
 import org.csstudio.apputil.xml.XMLWriter;
 import org.csstudio.display.pvtable.Preferences;
-import org.csstudio.display.pvtable.model.Mesure;
+import org.csstudio.display.pvtable.model.Measure;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.SavedArrayValue;
@@ -50,11 +50,11 @@ public class PVTableXMLPersistence extends PVTablePersistence {
     final private static String SAVED_VALUE = "saved_value";
     final private static String SAVED_ARRAY = "saved_array_value";
     final private static String SAVED_TIME = "saved_value_timestamp";
-    final private static String TIME_MESURE = "timestamp_measure";
+    final private static String TIME_MEASURE = "timestamp_measure";
     final private static String ITEM = "item";
     final private static String CONF = "conf";
-    final private static String MESURE = "measure";
-    final private static String NBMESURE = "nbMeasure";
+    final private static String MEASURE = "measure";
+    final private static String NBMEASURE = "nbMeasure";
     final private static String READBACK_NAME = "readback";
     final private static String READBACK_SAVED = "readback_value";
 
@@ -96,52 +96,52 @@ public class PVTableXMLPersistence extends PVTablePersistence {
 
         // Get the <pvlist> entry
         Element pvlist = DOMHelper.findFirstElementNode(root_node.getFirstChild(), PVLIST);
-        int nbMesure = DOMHelper.getSubelementInt(root_node, NBMESURE, 0);
-        model.setNbMesure(nbMesure);
+        int nbMeasure = DOMHelper.getSubelementInt(root_node, NBMEASURE, 0);
+        model.setNbMeasure(nbMeasure);
         if (pvlist != null) {
             Element pv = DOMHelper.findFirstElementNode(pvlist.getFirstChild(), PV);
-            Mesure mesure = null;
+            Measure measure = null;
             while (pv != null) {
                 String pv_name = DOMHelper.getSubelementString(pv, NAME);
                 if (! pv_name.isEmpty()) {
                     final double tolerance = DOMHelper.getSubelementDouble(pv, TOLERANCE, default_tolerance);
                     final boolean selected = DOMHelper.getSubelementBoolean(pv, SELECTED, true);
                     String timeSaved = DOMHelper.getSubelementString(pv, SAVED_TIME, "");
-                    String timeMesure = DOMHelper.getSubelementString(pv, TIME_MESURE, "");
+                    String timeMeasure = DOMHelper.getSubelementString(pv, TIME_MEASURE, "");
                     boolean conf = DOMHelper.getSubelementBoolean(pv, CONF, false);
-                    boolean isMesure = DOMHelper.getSubelementBoolean(pv, MESURE, false);
+                    boolean isMeasure = DOMHelper.getSubelementBoolean(pv, MEASURE, false);
                     SavedValue saved = readSavedValue(pv);
                     PVTableItem pvItem = null;
                     if(pv_name.startsWith("#mesure#")) {
-                    	pvItem = model.addItem(pv_name, ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.NONE, ""), ValueFactory.newTime(TimestampHelper.parse(timeMesure))));
+                    	pvItem = model.addItem(pv_name, ValueFactory.newVString("", ValueFactory.newAlarm(AlarmSeverity.NONE, ""), ValueFactory.newTime(TimestampHelper.parse(timeMeasure))));
                     }
                     else {
-                    	pvItem = model.addItem(pv_name, tolerance, saved, timeSaved, conf, mesure);
+                    	pvItem = model.addItem(pv_name, tolerance, saved, timeSaved, conf, measure);
                     }
                     pvItem.setSelected(selected);
                     // Legacy files may contain a separate readback PV and value for this entry
                     pv_name = DOMHelper.getSubelementString(pv, READBACK_NAME);
                     // This legacy entry never supported arrays..
                     saved = new SavedScalarValue(DOMHelper.getSubelementString(pv, READBACK_SAVED));
-                    if(isMesure == true && model.getConfig() != null) {
-                    	if(pvItem.isMesureHeader()) {
-                    		mesure = model.getConfig().addMesure();
+                    if(isMeasure == true && model.getConfig() != null) {
+                    	if(pvItem.isMeasureHeader()) {
+                    		measure = model.getConfig().addMeasure();
                     	}
-                    	if(mesure != null) {
-                    		pvItem.setMesure(mesure);
-                    		mesure.getItems().add(pvItem);
+                    	if(measure != null) {
+                    		pvItem.setMeasure(measure);
+                    		measure.getItems().add(pvItem);
                     	}
                     }
                     if (! pv_name.isEmpty()) {
                     	// If found, add as separate PV, not selected to be restored
-                    	pvItem = model.addItem(pv_name, tolerance, saved, timeSaved, conf, mesure);
+                    	pvItem = model.addItem(pv_name, tolerance, saved, timeSaved, conf, measure);
                     	pvItem.setSelected(false);
                     }
                 }
                 pv = DOMHelper.findNextElementNode(pv, PV);
             }
         }
-        model.setNbMesure(nbMesure);
+        model.setNbMeasure(nbMeasure);
         return model;
     }
 
@@ -171,7 +171,7 @@ public class PVTableXMLPersistence extends PVTablePersistence {
     public void write(final PVTableModel model, final OutputStream stream) {
         final PrintWriter out = new PrintWriter(stream);
         out.println(XML_HEADER);
-        XMLWriter.XML(out, 1, NBMESURE, model.getNbMesure());
+        XMLWriter.XML(out, 1, NBMEASURE, model.getNbMeasure());
         XMLWriter.start(out, 1, PVLIST);
         out.println();
         final int N = model.getItemCount();
@@ -183,9 +183,9 @@ public class PVTableXMLPersistence extends PVTablePersistence {
             XMLWriter.XML(out, 3, NAME, item.getName());
             XMLWriter.XML(out, 3, TOLERANCE, item.getTolerance());
             XMLWriter.XML(out, 3, SAVED_TIME, item.getTime_saved());
-            XMLWriter.XML(out, 3, TIME_MESURE, TimestampHelper.format(VTypeHelper.getTimestamp(item.getValue())));
+            XMLWriter.XML(out, 3, TIME_MEASURE, TimestampHelper.format(VTypeHelper.getTimestamp(item.getValue())));
             XMLWriter.XML(out, 3, CONF, item.isConf());
-            XMLWriter.XML(out, 3, MESURE, item.isMesure());
+            XMLWriter.XML(out, 3, MEASURE, item.isMeasure());
             final SavedValue saved = item.getSavedValue().orElse(null);
             if (saved instanceof SavedScalarValue) {
                 XMLWriter.XML(out, 3, SAVED_VALUE, saved.toString());

@@ -12,7 +12,7 @@ import java.util.List;
 
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.model.Configuration;
-import org.csstudio.display.pvtable.model.Mesure;
+import org.csstudio.display.pvtable.model.Measure;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.eclipse.jface.action.Action;
@@ -51,10 +51,10 @@ public class DeleteAction extends PVTableAction {
             	}
             	
             	Configuration conf = model.getConfig();
-                List<Mesure> allMesures = conf.getMesures();
-            	for(Mesure mesure : allMesures) {
-        	        List<PVTableItem> itemsMesure = mesure.getItems();
-        	        for(PVTableItem itemMes : itemsMesure) {
+                List<Measure> allMeasures = conf.getMeasures();
+            	for(Measure measure : allMeasures) {
+        	        List<PVTableItem> itemsMeasure = measure.getItems();
+        	        for(PVTableItem itemMes : itemsMeasure) {
         	        	model.removeItem(itemMes);
         	        }
                 }

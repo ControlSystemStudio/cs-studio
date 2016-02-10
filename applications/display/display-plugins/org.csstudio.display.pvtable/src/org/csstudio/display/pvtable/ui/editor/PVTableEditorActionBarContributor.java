@@ -7,10 +7,10 @@
  ******************************************************************************/
 package org.csstudio.display.pvtable.ui.editor;
 
-import org.csstudio.display.pvtable.ui.DeleteAllMesureAction;
-import org.csstudio.display.pvtable.ui.DeleteLastMesureAction;
+import org.csstudio.display.pvtable.ui.DeleteAllMeasureAction;
+import org.csstudio.display.pvtable.ui.DeleteLastMeasureAction;
 import org.csstudio.display.pvtable.ui.ExportXLSAction;
-import org.csstudio.display.pvtable.ui.MesureAction;
+import org.csstudio.display.pvtable.ui.MeasureAction;
 import org.csstudio.display.pvtable.ui.PVTableAction;
 import org.csstudio.display.pvtable.ui.RestoreAction;
 import org.csstudio.display.pvtable.ui.SnapshotAction;
@@ -30,18 +30,18 @@ public class PVTableEditorActionBarContributor extends EditorActionBarContributo
 	final private PVTableAction snap = new SnapshotAction(null);
 	final private PVTableAction restore = new RestoreAction(null);
 	final private PVTableAction tolerance = new ToleranceAction(null);
-	final private PVTableAction mesure = new MesureAction(null);
-	final private PVTableAction deleteAllMesure = new DeleteAllMesureAction(null);
-	final private PVTableAction deleteLastMesure = new DeleteLastMesureAction(null);
+	final private PVTableAction measure = new MeasureAction(null);
+	final private PVTableAction deleteAllMeasure = new DeleteAllMeasureAction(null);
+	final private PVTableAction deleteLastMeasure = new DeleteLastMeasureAction(null);
 	final private PVTableAction exportXLS = new ExportXLSAction(null);
-	final private String mesureActionID = "org.csstudio.display.pvtable.mesureAction";
-	final private String deleteAllMesureActionID = "org.csstudio.display.pvtable.deleteAllMesureAction";
-	final private String deleteLastMesureActionID = "org.csstudio.display.pvtable.deleteLastAction";
+	final private String measureActionID = "org.csstudio.display.pvtable.measureAction";
+	final private String deleteAllMeasureActionID = "org.csstudio.display.pvtable.deleteAllMeasureAction";
+	final private String deleteLastMeasureActionID = "org.csstudio.display.pvtable.deleteLastAction";
 	final private String exportXLSActionID = "org.csstudio.display.pvtable.exportXLSAction";
 	{
-		mesure.setId(mesureActionID);
-		deleteAllMesure.setId(deleteAllMesureActionID);
-		deleteLastMesure.setId(deleteLastMesureActionID);
+		measure.setId(measureActionID);
+		deleteAllMeasure.setId(deleteAllMeasureActionID);
+		deleteLastMeasure.setId(deleteLastMeasureActionID);
 		exportXLS.setId(exportXLSActionID);
 	}
 
@@ -66,9 +66,9 @@ public class PVTableEditorActionBarContributor extends EditorActionBarContributo
 		snap.setViewer(editor.getTableViewer());
 		restore.setViewer(editor.getTableViewer());
 		tolerance.setViewer(editor.getTableViewer());
-		mesure.setViewer(editor.getTableViewer());
-		deleteLastMesure.setViewer(editor.getTableViewer());
-		deleteAllMesure.setViewer(editor.getTableViewer());
+		measure.setViewer(editor.getTableViewer());
+		deleteLastMeasure.setViewer(editor.getTableViewer());
+		deleteAllMeasure.setViewer(editor.getTableViewer());
 		exportXLS.setViewer(editor.getTableViewer());
 		
 		this.refreshMeasureItemVisibility(editor);
@@ -76,15 +76,15 @@ public class PVTableEditorActionBarContributor extends EditorActionBarContributo
 
 	public void refreshMeasureItemVisibility(PVTableEditor editor) {
 		if (editor.getModel().getConfig() != null) {
-			if(manager.find(mesureActionID) == null){
-				manager.add(mesure);
-				manager.add(deleteLastMesure);
-				manager.add(deleteAllMesure);
+			if(manager.find(measureActionID) == null){
+				manager.add(measure);
+				manager.add(deleteLastMeasure);
+				manager.add(deleteAllMeasure);
 			}
 		} else {
-			manager.remove(mesureActionID);
-			manager.remove(deleteAllMesureActionID);
-			manager.remove(deleteLastMesureActionID);
+			manager.remove(measureActionID);
+			manager.remove(deleteAllMeasureActionID);
+			manager.remove(deleteLastMeasureActionID);
 		}
 		// Force the update.
 		manager.update(true);
@@ -96,9 +96,9 @@ public class PVTableEditorActionBarContributor extends EditorActionBarContributo
 		snap.setViewer(null);
 		restore.setViewer(null);
 		tolerance.setViewer(null);
-		mesure.setViewer(null);
-		deleteLastMesure.setViewer(null);
-		deleteAllMesure.setViewer(null);
+		measure.setViewer(null);
+		deleteLastMeasure.setViewer(null);
+		deleteAllMeasure.setViewer(null);
 		exportXLS.setViewer(null);
 		super.dispose();
 	}

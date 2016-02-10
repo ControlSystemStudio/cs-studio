@@ -49,7 +49,7 @@ public class PVTableModelContentProvider implements ILazyContentProvider
         this.viewer = (TableViewer) viewer;
         model = (PVTableModel) newInput;
         if (viewer != null   &&  model != null) {
-        	if(model.getConfig() != null && model.getConfig().getMesures().size() > 0){
+        	if(model.getConfig() != null && model.getConfig().getMeasures().size() > 0){
         		this.viewer.setItemCount(model.getItemCount());
         	}else{
         		this.viewer.setItemCount(model.getItemCount() + 1);

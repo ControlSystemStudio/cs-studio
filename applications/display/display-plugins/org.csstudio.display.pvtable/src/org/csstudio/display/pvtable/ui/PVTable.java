@@ -21,7 +21,7 @@ import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.display.pvtable.Messages;
 import org.csstudio.display.pvtable.Preferences;
 import org.csstudio.display.pvtable.model.Configuration;
-import org.csstudio.display.pvtable.model.Mesure;
+import org.csstudio.display.pvtable.model.Measure;
 import org.csstudio.display.pvtable.model.PVTableItem;
 import org.csstudio.display.pvtable.model.PVTableModel;
 import org.csstudio.display.pvtable.model.PVTableModelListener;
@@ -142,8 +142,8 @@ public class PVTable implements PVTableModelListener {
             		cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_DARK_BLUE));
             		return;
                 }
-                 if(item.isMesureHeader() && model.getConfig() != null) {
-                	cell.setText(item.getMesureHeader());
+                 if(item.isMeasureHeader() && model.getConfig() != null) {
+                	cell.setText(item.getMeasureHeader());
             		cell.setForeground(tab_item.getDisplay().getSystemColor(SWT.COLOR_DARK_GREEN));
             		return;
                 }
@@ -161,7 +161,7 @@ public class PVTable implements PVTableModelListener {
             @Override
             protected boolean canEdit(final Object element) {
                 final PVTableItem item = (PVTableItem) element;
-                if(item.isMesure() && !item.isMesureHeader()) {
+                if(item.isMeasure() && !item.isMeasureHeader()) {
                 	return false;
                 }
                 return true;
@@ -185,7 +185,7 @@ public class PVTable implements PVTableModelListener {
                     model.addItem(new_name);
                     viewer.setInput(model);
                 }
-                else if(item.isMesureHeader() && !new_name.startsWith("#mesure#")) {
+                else if(item.isMeasureHeader() && !new_name.startsWith("#mesure#")) {
                 	return;
                 }
                 else if (new_name.isEmpty()) {
@@ -198,11 +198,11 @@ public class PVTable implements PVTableModelListener {
                     	}
                     	
                     	Configuration conf = model.getConfig();
-                    	System.out.println("PVTable.createComponents(...).new EditingSupport() {...}.setValue() " +  conf + " " + ((conf!=null)?conf.getMesures():""));
-                        List<Mesure> allMesures = conf.getMesures();
-                    	for(Mesure mesure : allMesures) {
-                	        List<PVTableItem> itemsMesure = mesure.getItems();
-                	        for(PVTableItem itemMes : itemsMesure) {
+                    	System.out.println("PVTable.createComponents(...).new EditingSupport() {...}.setValue() " +  conf + " " + ((conf!=null)?conf.getMeasures():""));
+                        List<Measure> allMeasures = conf.getMeasures();
+                    	for(Measure measure : allMeasures) {
+                	        List<PVTableItem> itemsMeasure = measure.getItems();
+                	        for(PVTableItem itemMes : itemsMeasure) {
                 	        	model.removeItem(itemMes);
                 	        }
                         }
@@ -240,7 +240,7 @@ public class PVTable implements PVTableModelListener {
                     return;
                 }
                 
-                if (item.isComment() || item.isMesure()) {
+                if (item.isComment() || item.isMeasure()) {
                 	tab_item.setChecked(false);
                     return;
                 }
@@ -279,7 +279,7 @@ public class PVTable implements PVTableModelListener {
             public void update(final ViewerCell cell) {
                 final PVTableItem item = (PVTableItem) cell.getElement();
                 final VType value = item.getValue();
-                if (!item.isMesureHeader() && (value == null  ||  item.isComment())) {
+                if (!item.isMeasureHeader() && (value == null  ||  item.isComment())) {
                     cell.setText(""); //$NON-NLS-1$
                 }
                 else {
@@ -440,7 +440,7 @@ public class PVTable implements PVTableModelListener {
         manager.add(new Separator()); // 10
         manager.add(new InsertAction(viewer)); // 11
         manager.add(new DeleteAction(viewer)); // 12
-        manager.add(new DeleteMesureAction(viewer)); // 13
+        manager.add(new DeleteMeasureAction(viewer)); // 13
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS)); // 14
         final Control control = viewer.getControl();
         menu = manager.createContextMenu(control);
@@ -453,20 +453,20 @@ public class PVTable implements PVTableModelListener {
     private void changeContextMenu(PVTableItem item) {
     	
     	if(item == null)return;
-    	manager.getItems()[5].setVisible(!(item.isMesure() || item.isMesureHeader() || item.isConfHeader()));
-		manager.getItems()[6].setVisible(!(item.isMesure() || item.isMesureHeader() || item.isConfHeader()));
-		manager.getItems()[7].setVisible(!(item.isMesure() || item.isMesureHeader() || item.isConfHeader()));
-		manager.getItems()[8].setVisible(!item.isMesure());
-		manager.getItems()[9].setVisible(!item.isMesure());
-		manager.getItems()[10].setVisible(!item.isMesure());
+    	manager.getItems()[5].setVisible(!(item.isMeasure() || item.isMeasureHeader() || item.isConfHeader()));
+		manager.getItems()[6].setVisible(!(item.isMeasure() || item.isMeasureHeader() || item.isConfHeader()));
+		manager.getItems()[7].setVisible(!(item.isMeasure() || item.isMeasureHeader() || item.isConfHeader()));
+		manager.getItems()[8].setVisible(!item.isMeasure());
+		manager.getItems()[9].setVisible(!item.isMeasure());
+		manager.getItems()[10].setVisible(!item.isMeasure());
 		
 		if(model.getConfig() != null){
-			if(!model.getConfig().getMesures().isEmpty()){
-				manager.getItems()[11].setVisible(!item.isMesure() || (model.getConfig().getMesures().get(0) == item.getMesure() && item.isMesureHeader()));
+			if(!model.getConfig().getMeasures().isEmpty()){
+				manager.getItems()[11].setVisible(!item.isMeasure() || (model.getConfig().getMeasures().get(0) == item.getMeasure() && item.isMeasureHeader()));
 			}
     	}
-		manager.getItems()[12].setVisible(!item.isMesure());
-		manager.getItems()[13].setVisible(item.isMesure());
+		manager.getItems()[12].setVisible(!item.isMeasure());
+		manager.getItems()[13].setVisible(item.isMeasure());
     }
 
     /** Set to currently dragged items to allow 'drop'
@@ -489,7 +489,7 @@ public class PVTable implements PVTableModelListener {
                     while (iterator.hasNext()) {
                     	
                     	PVTableItem itemIt = (PVTableItem)iterator.next();
-                    	if(itemIt.isMesure() || itemIt.isConfHeader()) {
+                    	if(itemIt.isMeasure() || itemIt.isConfHeader()) {
                     		return null;
                     	}
                         items.add(itemIt);
@@ -531,7 +531,7 @@ public class PVTable implements PVTableModelListener {
                     final TableItem tab_item = (TableItem) event.item;
                     if (tab_item.getData() instanceof PVTableItem) {
                         existing = (PVTableItem) tab_item.getData();
-                        if(existing.isMesure() || existing.isMesureHeader()) {
+                        if(existing.isMeasure() || existing.isMeasureHeader()) {
                         	return;
                         }
                         if (existing == PVTableModelContentProvider.NEW_ITEM) {
