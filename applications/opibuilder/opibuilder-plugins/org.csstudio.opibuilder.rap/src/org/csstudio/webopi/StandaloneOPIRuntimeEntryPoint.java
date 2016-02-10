@@ -10,6 +10,7 @@ import org.eclipse.ui.application.WorkbenchAdvisor;
 public class StandaloneOPIRuntimeEntryPoint implements EntryPoint {
 
     public int createUI() {
+        RequestUtil.initDefaultDatasource();
         Display display = PlatformUI.createDisplay();
         RequestUtil.login(display);
         DisplayManager.getInstance().registerDisplay(display, true);

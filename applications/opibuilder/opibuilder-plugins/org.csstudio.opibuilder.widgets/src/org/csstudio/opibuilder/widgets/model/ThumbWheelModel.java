@@ -28,7 +28,7 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 

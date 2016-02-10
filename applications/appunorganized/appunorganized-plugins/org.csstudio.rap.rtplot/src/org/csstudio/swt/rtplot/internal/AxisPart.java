@@ -18,8 +18,11 @@ import org.csstudio.swt.rtplot.RTPlot;
 import org.csstudio.swt.rtplot.SWTMediaPool;
 import org.csstudio.swt.rtplot.internal.util.ScreenTransform;
 import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Rectangle;
+
+import org.eclipse.swt.widgets.Display;
 
 /** Base class for X and Y axes.
  *  <p>
@@ -42,6 +45,12 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
 
     private AtomicBoolean visible = new AtomicBoolean(true);
 
+    private AtomicBoolean axisNameVisible = new AtomicBoolean(true);
+
+    private Font labelFont;
+
+    private Font scaleFont;
+
     /** Is this a horizontal axis? Otherwise: Vertical. */
     final private boolean horizontal;
 
@@ -63,6 +72,8 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
     /** High end of screen range. */
     private volatile int high_screen = 1;
 
+    final private SWTMediaPool media;
+
     /** @param name Axis name
      *  @param listener {@link PlotPartListener}
      *  @param horizontal <code>true</code> if axis is horizontal
@@ -81,7 +92,37 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
         this.transform = Objects.requireNonNull(transform);
         this.range = new AxisRange<T>(low_value, high_value);
         this.ticks = Objects.requireNonNull(ticks);
+
+        //TODO there might be a better way to create this resource
+        media = new SWTMediaPool(Display.getCurrent());
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setLabelFont(FontData font) {
+        this.labelFont = media.get(font);
+        requestLayout();
+    };
+
+    /** {@inheritDoc} */
+    @Override
+    public Font getLabelFont() {
+        return labelFont;
+    };
+
+    /** {@inheritDoc} */
+    @Override
+    public void setScaleFont(FontData font) {
+        this.scaleFont = media.get(font);
+        requestLayout();
+    };
+
+    /** {@inheritDoc} */
+    @Override
+    public Font getScaleFont() {
+        return scaleFont;
+    };
+
 
     /** {@inheritDoc} */
     @Override
@@ -99,6 +140,24 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
         show_grid = grid;
         requestLayout();
         requestRefresh();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isAxisNameVisible()
+    {
+        return axisNameVisible.get();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setAxisNameVisible(final boolean visible)
+    {
+        if (this.axisNameVisible.getAndSet(visible) != visible)
+        {
+            requestLayout();
+            requestRefresh();
+        }
     }
 
     /** {@inheritDoc} */
@@ -125,12 +184,10 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
      *                For horizontal axis, x, y and width are set, and height is tentative.
      *                For vertical axis, x, y and height are set, and width is tentative.
      *  @param gc {@link GC} that can be used to determine font measurements
-     *  @param label_font Font for labels
-     *  @param scale_font Font for scale
      *  @return For horizontal axis, desired height in pixels.
      *          For vertical axis, desired width in pixels.
      */
-    abstract public int getDesiredPixelSize(Rectangle region, GC gc, Font label_font, Font scale_font);
+    abstract public int getDesiredPixelSize(Rectangle region, GC gc);
 
     /** {@inheritDoc} */
     @Override
@@ -272,12 +329,9 @@ public abstract class AxisPart<T extends Comparable<T>> extends PlotPart impleme
      *
      *  @param gc {@link GC} for painting in background thread
      *  @param media {@link SWTMediaPool}
-     *  @param label_font Font for labels
-     *  @param scale_font Font for scale
      *  @param plot_bounds Bounds of the plot, the area used for grid lines and traces
      */
-    abstract public void paint(final GC gc, final SWTMediaPool media, final Font label_font, final Font scale_font,
-                               final Rectangle plot_bounds);
+    abstract public void paint(final GC gc, final SWTMediaPool media, final Rectangle plot_bounds);
 
     /** Draw a tick label, used both to paint the normal axis labels
      *  and for special, cursor-related tick locations.

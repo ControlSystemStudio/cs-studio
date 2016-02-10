@@ -3,6 +3,9 @@
    <feature id="org.csstudio.applications.opibuilder.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>
+   <feature id="org.csstudio.applications.opibuilder.rap.feature">
+      <category name="org.csstudio.category.applications"/>
+   </feature>
    <feature id="org.csstudio.applications.opibuilder.edm.feature">
       <category name="org.csstudio.category.applications"/>
    </feature>

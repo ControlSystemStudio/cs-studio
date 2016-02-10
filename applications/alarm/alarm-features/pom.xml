@@ -12,6 +12,7 @@
     <module>org.csstudio.alarm.beast.ui.feature</module>
     <module>org.csstudio.alarm.beast.tools.feature</module>
     <module>org.csstudio.alarm.beast.ui.alarmtable.opiwidget.feature</module>
+    <module>org.csstudio.alarm.beast.ui.rap.feature</module>
     <module>org.csstudio.alarm.diirt.datasource.feature</module>
   </modules>
 </project>
