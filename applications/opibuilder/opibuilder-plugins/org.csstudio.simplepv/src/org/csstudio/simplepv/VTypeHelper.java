@@ -447,6 +447,7 @@ public class VTypeHelper {
         case DECIMAL:
         case EXP:
         case COMPACT:
+        case ENG:
             return Integer.toString(enumValue.getIndex());
         case HEX:
         case HEX64:
@@ -475,6 +476,9 @@ public class VTypeHelper {
             Number numValue, int precision) {
         if (pmValue != null)
             numValue = (Number) ((Scalar) pmValue).getValue();
+
+        NumberFormat numberFormat;
+
         switch (formatEnum) {
         case DECIMAL:
         case DEFAULT:
@@ -498,7 +502,7 @@ public class VTypeHelper {
                         return Double.toString(numValue.doubleValue());
                     }
 
-                    NumberFormat numberFormat = formatCacheMap.get(precision);
+                    numberFormat = formatCacheMap.get(precision);
                     if (numberFormat == null) {
                         numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
                         numberFormat.setMinimumFractionDigits(precision);
@@ -518,17 +522,33 @@ public class VTypeHelper {
             } else {
                 return formatScalarNumber(FormatEnum.EXP, numValue, precision == -1 ? 4 : precision);
             }
+
+        case ENG:
+            double value = numValue.doubleValue();
+            if (value == 0) {
+                return formatScalarNumber(FormatEnum.EXP, numValue, precision == -1 ? 4 : precision);
+            }
+
+            if (precision == -1 && numValue instanceof Display) {
+                precision = ((Display) numValue).getFormat().getMinimumFractionDigits();
+            }
+            if (precision == -1)
+                precision = DEFAULT_PRECISION;
+
+            double log10 = Math.log10(Math.abs(value));
+            int power = 3 * (int) Math.floor(log10 / 3);
+            return String.format("%." + precision + "fE%d", value / Math.pow(10, power), power);
+
         case EXP:
             if (precision == -1 && numValue instanceof Display) {
                 precision = ((Display) numValue).getFormat().getMinimumFractionDigits();
             }
-            NumberFormat numberFormat;
             if (precision == -1)
                 precision = DEFAULT_PRECISION;
 
             // Assert positive precision
             precision = Math.abs(precision);
-            // Exponential notation itentified as 'negative' precision in cached
+            // Exponential notation identified as 'negative' precision in cached
             numberFormat = formatCacheMap.get(-precision);
             if (numberFormat == null) {
                 final StringBuffer pattern = new StringBuffer(10);
