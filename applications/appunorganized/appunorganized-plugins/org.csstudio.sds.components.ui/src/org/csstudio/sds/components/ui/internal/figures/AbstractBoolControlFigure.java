@@ -46,6 +46,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 
     class ButtonPresser extends MouseListener.Stub {
         private boolean canceled = false;
+            @Override
             public void mousePressed(MouseEvent me) {
                 if (me.button != 1)
                     return;
@@ -60,6 +61,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                             fireManualValueChange(true);
                             if(showConfirmDialog)
                                 Display.getCurrent().timerExec(100, new Runnable(){
+                                    @Override
                                     public void run() {
                                         fireManualValueChange(false);
                                     }
@@ -71,6 +73,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
                     repaint();
                 }
             }
+            @Override
             public void mouseReleased(MouseEvent me) {
                 if (me.button != 1)
                     return;
@@ -155,16 +158,17 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
         if(showConfirmDialog && runMode){
             if(password == null || password.equals("")){
                 MessageBox mb = new MessageBox(Display.getCurrent().getActiveShell(),
-                        SWT.ICON_QUESTION | SWT.YES | SWT.NO |SWT.CANCEL);
+                        SWT.ICON_QUESTION | SWT.YES | SWT.NO);
                 mb.setMessage(confirmTip);
                 mb.setText("Confirm Dialog");
                 int val = mb.open();
-                if(val == SWT.NO || val == SWT.CANCEL)
+                if(val == SWT.NO)
                     return false;
             }else {
                 InputDialog  dlg = new InputDialog(Display.getCurrent().getActiveShell(),
                         "Password Input Dialog", "Please input the password", "",
                         new IInputValidator(){
+                            @Override
                             public String isValid(String newText) {
                                 if (newText.equals(password))
                                     return null;
