@@ -231,6 +231,7 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
         SingleSourcePlugin.getUIHelper().openEditor(page, path);
     }
 
+
     @Override
     protected void iOpenOPIShell(IPath path, MacrosInput input) {
         OPIShell.openOPIShell(path, input);
@@ -240,5 +241,4 @@ public class SingleSourceHelperImpl extends SingleSourceHelper{
     protected IOPIRuntime iGetOPIShellForShell(Shell shell) {
         return OPIShell.getOPIShellForShell(shell);
     }
-
 }

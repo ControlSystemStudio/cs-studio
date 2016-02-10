@@ -19,7 +19,8 @@ import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.eclipse.core.runtime.ListenerList;
 import org.eclipse.draw2d.Border;
-import org.eclipse.draw2d.ColorConstants;
+import org.csstudio.ui.util.CSSSchemeBorder;
+import org.csstudio.ui.util.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -172,7 +173,7 @@ public class ArrayFigure extends Figure implements Introspectable {
         scrollbar.setMinimum(0);
         scrollbar.setStepIncrement(1);
         scrollbar.setShowValueTip(false);
-        Border loweredBorder = new SchemeBorder(SchemeBorder.SCHEMES.LOWERED);
+        Border loweredBorder = new SchemeBorder(CSSSchemeBorder.SCHEMES.LOWERED);
         pane.setBorder(loweredBorder);
         spinner.setBorder(loweredBorder);
         add(spinner);
