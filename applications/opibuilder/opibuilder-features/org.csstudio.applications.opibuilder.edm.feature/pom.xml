@@ -4,10 +4,10 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.csstudio</groupId>
-    <artifactId>opibuilder-plugins</artifactId>
+    <artifactId>opibuilder-features</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-  <artifactId>org.csstudio.opibuilder</artifactId>
-  <version>5.1.0-SNAPSHOT</version>
-  <packaging>eclipse-plugin</packaging>
+  <artifactId>org.csstudio.applications.opibuilder.edm.feature</artifactId>
+  <version>5.0.0-SNAPSHOT</version>
+  <packaging>eclipse-feature</packaging>
 </project>

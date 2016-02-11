@@ -187,10 +187,10 @@ public class OPIShellSummary extends FXViewPart {
 
     @Override
     public <T> T getAdapter(Class<T> adapter) {
-        if(OPIShell.activeShell == null) {
+        if (OPIShell.getActiveShell() == null) {
             return null;
         }
-        return OPIShell.activeShell.getAdapter(adapter);
+        return OPIShell.getActiveShell().getAdapter(adapter);
     }
 
     @Override

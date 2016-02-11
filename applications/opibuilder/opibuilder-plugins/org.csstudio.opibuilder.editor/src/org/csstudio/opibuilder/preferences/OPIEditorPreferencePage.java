@@ -8,8 +8,10 @@
 package org.csstudio.opibuilder.preferences;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.eclipse.jface.dialogs.MessageDialogWithToggle;
 import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -47,7 +49,14 @@ public class OPIEditorPreferencePage extends FieldEditorPreferencePage
                     "Automatically save file before running.", parent);
         addField(autoSaveEditor);
 
-
+        RadioGroupFieldEditor perspectiveEditor = new RadioGroupFieldEditor(
+                PreferencesHelper.SWITCH_TO_OPI_EDITOR_PERSPECTIVE,
+                "Switch to OPI Editor perspective when opening opi file?", 3,
+                new String[][] {{"Always", MessageDialogWithToggle.ALWAYS},
+                                {"Never", MessageDialogWithToggle.NEVER},
+                                {"Prompt", MessageDialogWithToggle.PROMPT}},
+                parent, true);
+        addField(perspectiveEditor);
 
     }
 

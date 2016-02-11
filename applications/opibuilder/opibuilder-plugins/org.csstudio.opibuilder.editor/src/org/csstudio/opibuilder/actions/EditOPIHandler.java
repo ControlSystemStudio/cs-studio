@@ -1,4 +1,5 @@
 package org.csstudio.opibuilder.actions;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.runmode.OPIView;
@@ -129,9 +130,10 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
                 IPath path = null;
                 if (opiShell != null) {
                     path = opiShell.getDisplayModel().getOpiFilePath();
-                } else {
-                    if (part instanceof OPIView) {
-                        path = ((IOPIRuntime)part).getDisplayModel().getOpiFilePath();
+                } else if (part instanceof OPIView) {
+                    DisplayModel displayModel = ((OPIView) part).getDisplayModel();
+                    if (displayModel != null) {
+                        path = displayModel.getOpiFilePath();
                     }
                 }
                 // We only support filesystem paths.

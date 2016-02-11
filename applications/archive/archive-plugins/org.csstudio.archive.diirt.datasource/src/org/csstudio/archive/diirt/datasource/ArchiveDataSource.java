@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -116,7 +117,7 @@ public class ArchiveDataSource extends DataSource {
                         parameters = "";
                     }
                     idx = param.indexOf('=');
-                    key = param.substring(0, idx).toLowerCase().trim();
+                    key = param.substring(0, idx).toLowerCase(Locale.UK).trim();
                     value = param.substring(idx + 2).trim();
                 } else {
                     idx = parameters.indexOf('&');
@@ -130,7 +131,7 @@ public class ArchiveDataSource extends DataSource {
                         parameters = parameters.substring(idx + 1);
                     }
                     idx = param.indexOf('=');
-                    key = param.substring(0, idx).toLowerCase().trim();
+                    key = param.substring(0, idx).toLowerCase(Locale.UK).trim();
                     value = param.substring(idx + 1).trim();
                 }
                 if ("optimised".equals(key) || "optimized".equals(key)) {

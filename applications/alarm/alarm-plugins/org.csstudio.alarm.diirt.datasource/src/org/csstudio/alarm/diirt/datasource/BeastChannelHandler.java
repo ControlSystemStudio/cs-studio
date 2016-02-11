@@ -92,7 +92,7 @@ public class BeastChannelHandler extends
         datasource.add(getChannelName(), this);
         initialize();
     }
-    
+
     protected void reconnect() {
         log.fine("reconnect: " + getChannelName());
         initialize();

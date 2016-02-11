@@ -43,14 +43,19 @@ public class Opi_activeSymbolClass extends OpiWidget {
         }
         new OpiInt(widgetContext, "border_style", 0);
         new OpiString(widgetContext, "group_name", "1");
-        //single pv, no truth table
+        // Single pv, no truth table
         if (!r.isTruthTable() && r.getNumPvs() == 1 && r.getControlPvs()!=null) {
             LinkedHashMap<String, Element> expressions = new LinkedHashMap<String, Element>();
+            // Invalid PV always displays symbol zero in EDM.
+            Element valueNode = widgetContext.getDocument().createElement("value");
+            valueNode.setTextContent("0");
+            expressions.put("pvSev0==-1", valueNode);
+
             Map<String, EdmDouble> minMap = r.getMinValues().getEdmAttributesMap();
             Map<String, EdmDouble> maxMap = r.getMaxValues().getEdmAttributesMap();
 
             for (int i = 0; i < r.getNumStates(); i++) {
-                Element valueNode = widgetContext.getDocument().createElement("value");
+                valueNode = widgetContext.getDocument().createElement("value");
                 double min = 0;
                 double max = 0;
                 if (minMap.get("" + i) != null)
@@ -60,9 +65,11 @@ public class Opi_activeSymbolClass extends OpiWidget {
                 valueNode.setTextContent("" + i);
                 expressions.put("pv0>=" + min + "&&pv0<" + max, valueNode);
             }
-            Element valueNode = widgetContext.getDocument().createElement("value");
+            // Final catch-all
+            valueNode = widgetContext.getDocument().createElement("value");
             valueNode.setTextContent("0");
             expressions.put("true", valueNode);
+
 
             new OpiRule(widgetContext, "symbol_single_pv", "group_name", false, Arrays.asList(convertPVName(r
                     .getControlPvs().getEdmAttributesMap().get("0").get())), expressions);
