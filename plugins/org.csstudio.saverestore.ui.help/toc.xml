@@ -9,6 +9,8 @@
     </topic>
     <topic href="help/beamlineseteditor.html" label="Beamline Set Editor">
     </topic>
+    <topic href="help/preferences.html" label="Preferences">
+    </topic>
     <anchor id="saverestore"/>
   </topic>
 </toc>
