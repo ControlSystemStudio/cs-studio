@@ -29,8 +29,6 @@ public class OPIEditorPreferencePage extends FieldEditorPreferencePage
         setPreferenceStore(OPIBuilderPlugin.getDefault().getPreferenceStore());
 
         setMessage("OPI Editor Preferences");
-
-
     }
 
     @Override

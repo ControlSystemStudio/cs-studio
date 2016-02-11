@@ -10,8 +10,8 @@ package org.csstudio.alarm.beast.ui.actions;
 import org.csstudio.alarm.beast.client.AlarmTreeLeaf;
 import org.csstudio.alarm.beast.ui.Activator;
 import org.csstudio.alarm.beast.ui.Messages;
-import org.csstudio.ui.util.dialogs.InfoDialog;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 
@@ -39,12 +39,13 @@ public class DurationAction extends Action
     @Override
     public void run()
     {
-        InfoDialog.open(shell, Messages.Duration, NLS.bind(Messages.DurationMsgFmt,
-                new Object[]
-                {
-                   pv.getDescription(),
-                   pv.getTimestampText(),
-                   pv.getDuration()
-                }));
+        MessageDialog.openInformation(shell, Messages.Duration,
+                NLS.bind(Messages.DurationMsgFmt,
+                         new Object[]
+                         {
+                            pv.getDescription(),
+                            pv.getTimestampText(),
+                            pv.getDuration()
+                         }));
     }
 }

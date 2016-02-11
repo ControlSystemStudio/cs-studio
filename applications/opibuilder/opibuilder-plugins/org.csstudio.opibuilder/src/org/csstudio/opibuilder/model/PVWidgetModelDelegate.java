@@ -10,7 +10,6 @@ package org.csstudio.opibuilder.model;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.PVNameProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.UpgradeUtil;
 import org.osgi.framework.Version;

@@ -49,7 +49,7 @@ import org.eclipse.gef.handles.HandleBounds;
  */
 public final class PolylineFigure extends Polyline implements HandleBounds, Introspectable {
 
-    public enum ArrowType{
+    public static enum ArrowType{
         None("None"),
         From("From"),
         To("To"),

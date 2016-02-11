@@ -13,10 +13,9 @@ import java.util.Map.Entry;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.simplepv.IPV;
 import org.csstudio.simplepv.VTypeHelper;
-import org.csstudio.ui.util.dialogs.InfoDialog;
-import org.diirt.vtype.Display;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.swt.SWT;
@@ -29,6 +28,7 @@ import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
+import org.diirt.vtype.Display;
 
 /**Show details information of widget's primary PV.
  * @author Xihui Chen
@@ -36,12 +36,13 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public class ShowPVInfoAction implements IObjectActionDelegate {
 
-    private final class PVsInfoDialog extends InfoDialog {
+    private final class PVsInfoDialog extends MessageDialog {
 
         private Map<String, IPV> pvMap;
 
         public PVsInfoDialog(Shell parentShell, String dialogTitle, Map<String, IPV> pvMap) {
-            super(parentShell, dialogTitle, "PVs' details on this widget:"); //$NON-NLS-1$
+            super(parentShell, dialogTitle, null, "PVs' details on this widget:",
+                    MessageDialog.INFORMATION, new String[] { JFaceResources.getString("ok")}, 0); //$NON-NLS-1$
             this.pvMap = pvMap;
         }
 
@@ -106,10 +107,10 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 
 
         StringBuilder sb = new StringBuilder();
-        sb.append("Name: ").append(pv.getName()).append('\n'); //$NON-NLS-2$
-        sb.append("State: ").append(stateInfo).append('\n'); //$NON-NLS-2$
+        sb.append("Name: " + pv.getName() + "\n"); //$NON-NLS-2$
+        sb.append("State: " + stateInfo + "\n"); //$NON-NLS-2$
         if(pv.getValue() != null){
-            sb.append((pv.isConnected()? "Value: " : "Last received value: ")).append(pv.getValue()).append('\n'); //$NON-NLS-2$
+            sb.append((pv.isConnected()? "Value: " : "Last received value: ") + pv.getValue()+ "\n"); //$NON-NLS-2$
             sb.append("Display Info: ");
             Display displayInfo = VTypeHelper.getDisplayInfo(pv.getValue());
             if(displayInfo != null){

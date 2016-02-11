@@ -42,7 +42,7 @@ import org.eclipse.swt.graphics.Color;
  *
  */
 public class SpinnerFigure extends Figure implements Introspectable {
-    public enum NumericFormatType {
+    public static enum NumericFormatType {
         DECIAML("Decimal"),
         EXP("Exponential"),
         HEX("Hex");

@@ -66,7 +66,7 @@ public class AlarmRepresentationScheme {
     public static RGB getDisconnectedColor(){
         return MediaService.getInstance().getColor(DISCONNECTED);
     }
-    
+
     public static Border getMajorBorder(BorderStyle borderStyle){
         BorderStyle newBorderStyle = getNewBorderStyle(borderStyle);
         return BorderFactory.createBorder(newBorderStyle, ALARM_BORDER_WIDTH, getMajorColor(), ""); //$NON-NLS-1$

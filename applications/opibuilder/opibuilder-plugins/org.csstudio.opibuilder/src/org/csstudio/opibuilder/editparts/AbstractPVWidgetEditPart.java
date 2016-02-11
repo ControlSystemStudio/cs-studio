@@ -98,7 +98,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     /**
      * @return A String array with all PV names from PV properties.
      */
-    @Override
     public String[] getAllPVNames(){
         return delegate.getAllPVNames();
     }
@@ -106,7 +105,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     /**
      * @return the control PV. null if no control PV on this widget.
      */
-    @Override
     public IPV getControlPV(){
         return delegate.getControlPV();
     }
@@ -116,7 +114,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
      * @return the PV corresponding to the <code>PV Name</code> property.
      * null if PV Name is not configured for this widget.
      */
-    @Override
     public IPV getPV(){
         return delegate.getPV();
     }
@@ -125,7 +122,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
      * @param pvPropId the PV property id.
      * @return the corresponding pv for the pvPropId. null if the pv doesn't exist.
      */
-    @Override
     public IPV getPV(String pvPropId){
         return delegate.getPV(pvPropId);
     }
@@ -138,7 +134,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
     /**
      * @return the first PV name.
      */
-    @Override
     public String getPVName() {
         return delegate.getPVName();
     }
@@ -148,7 +143,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
      * @param pvPropId the property id of the PV. It is "pv_name" for the main PV.
      * @return the {@link IValue} of the PV.
      */
-    @Override
     public VType getPVValue(String pvPropId){
         return delegate.getPVValue(pvPropId);
     }
@@ -181,7 +175,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
      * @param pvPropId
      * @param value
      */
-    @Override
     public void setPVValue(String pvPropId, Object value){
         delegate.setPVValue(pvPropId, value);
     }

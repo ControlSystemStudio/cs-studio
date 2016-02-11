@@ -29,6 +29,8 @@ import org.csstudio.swt.xygraph.figures.Trace.PointStyle;
 import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.ui.util.CustomMediaFactory;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.osgi.framework.Version;
 
@@ -159,7 +161,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
     private static final double DEFAULT_MIN = 0;
 
     /** The default value of the maximum property. */
-    public static final double DEFAULT_MAX = 100;
+    private static final double DEFAULT_MAX = 100;
 
     /** The default value of the buffer size property. */
     private static final int DEFAULT_BUFFER_SIZE = 100;

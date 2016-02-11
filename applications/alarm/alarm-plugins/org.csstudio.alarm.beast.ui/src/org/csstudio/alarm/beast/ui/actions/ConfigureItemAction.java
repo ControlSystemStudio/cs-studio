@@ -19,9 +19,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Shell;
 
 /** Action that configures an alarm tree item
@@ -102,10 +99,7 @@ public class ConfigureItemAction extends Action
     public static void performItemConfiguration(final Shell shell,
             final AlarmClientModel model, final AlarmTreeItem item)
     {
-        // Create a new parent shell for the dialog. This ensures that the dialog will be shown on top of a fullscreen OPI on Linux.
-        final Shell newparent = new Shell(shell.getDisplay(), SWT.NO_TRIM);
-        newparent.setSize(10, 10);
-        final ItemConfigDialog dlg = new ItemConfigDialog(newparent, item, model, false, true);
+        final ItemConfigDialog dlg = new ItemConfigDialog(shell, item, model, false);
         dlg.open();
     }
 }
