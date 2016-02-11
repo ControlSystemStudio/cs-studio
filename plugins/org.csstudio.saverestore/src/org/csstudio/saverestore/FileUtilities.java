@@ -128,27 +128,31 @@ public final class FileUtilities {
                     throw new IOException("The Snapshot content is invalid. No CSV header is defined.");
                 }
                 // there are no fields in here that may contain a comma
-                String[] split = line.split("\\,", headerMap.size());
+                String[] split = split(line);
+                if (split == null) {
+                    throw new IOException("Invalid content: " + line);
+                }
+                int length = split.length - 1;
                 Integer idx = headerMap.get(H_PV_NAME);
-                String name = idx == null ? null : trim(split[idx]);
+                String name = idx == null || idx > length ? null : trim(split[idx]);
                 idx = headerMap.get(H_SELECTED);
-                String sel = idx == null ? null : trim(split[idx]);
+                String sel = idx == null || idx > length ? null : trim(split[idx]);
                 idx = headerMap.get(H_TIMESTAMP);
-                String timestamp = idx == null ? null : trim(split[idx]);
+                String timestamp = idx == null || idx > length ? null : trim(split[idx]);
                 idx = headerMap.get(H_STATUS);
-                String status = idx == null ? "" : trim(split[idx]);
+                String status = idx == null || idx > length ? "" : trim(split[idx]);
                 idx = headerMap.get(H_SEVERITY);
-                String severity = idx == null ? "" : trim(split[idx]);
+                String severity = idx == null || idx > length ? "" : trim(split[idx]);
                 idx = headerMap.get(H_VALUE_TYPE);
-                String valueType = idx == null ? null : trim(split[idx]);
+                String valueType = idx == null || idx > length ? null : trim(split[idx]);
                 idx = headerMap.get(H_VALUE);
-                String value = idx == null ? null : trim(split[idx]);
+                String value = idx == null || idx > length ? null : trim(split[idx]);
                 idx = headerMap.get(H_READBACK);
-                String readback = idx == null ? "" : trim(split[idx]);
+                String readback = idx == null || idx > length ? "" : trim(split[idx]);
                 idx = headerMap.get(H_READBACK_VALUE);
-                String readbackValue = idx == null ? null : trim(split[idx]);
+                String readbackValue = idx == null || idx > length ? null : trim(split[idx]);
                 idx = headerMap.get(H_DELTA);
-                String delta = idx == null ? "" : trim(split[idx]);
+                String delta = idx == null || idx > length ? "" : trim(split[idx]);
 
                 data.add(piecesToVType(timestamp, status, severity, value, valueType));
                 readbacks.add(readback);
@@ -392,7 +396,11 @@ public final class FileUtilities {
         }
         sb.append(',');
         if (delta != null) {
-            sb.append(delta);
+            if (delta.indexOf(',') > -1) {
+                sb.append('"').append(delta).append('"');
+            } else {
+                sb.append(delta);
+            }
         }
         return sb.toString();
     }
@@ -443,7 +451,10 @@ public final class FileUtilities {
                     }
                 }
             } else {
-                String[] split = line.split("\\,", header.length);
+                String[] split = split(line);
+                if (split == null) {
+                    throw new IOException("Invalid content: " + line);
+                }
                 // there are no fields in here that may contain a comma
                 if (namesIndex > -1) {
                     names.add(trim(split[namesIndex]));
@@ -493,10 +504,80 @@ public final class FileUtilities {
         } else {
             sb.append(H_PV_NAME).append(',').append(H_READBACK).append(',').append(H_DELTA).append('\n');
             for (int i = 0; i < pvs.size(); i++) {
-                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',').append(deltas.get(i))
-                    .append('\n');
+                String delta = deltas.get(i);
+                sb.append(pvs.get(i)).append(',').append(readbacks.get(i)).append(',');
+                if (delta.indexOf(',') > -1) {
+                    sb.append('"').append(delta).append('"');
+                } else {
+                    sb.append(delta);
+                }
+                sb.append('\n');
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * Split the given content by comma. However if a part of the content is in quotes, that part should not be split
+     * if it contains any commas. For example foo,bar will be returned as an array of length 2; "foo,bar" will be
+     * returned as an array of 1.
+     *
+     * @param content the content to split
+     * @return the array containing individual parts of the content
+     */
+    public static String[] split(String content) {
+        content = content.trim();
+        int idx = content.indexOf(',');
+        if (idx < 0) {
+            return new String[] { content };
+        } else if (content.indexOf('"') < 0) {
+            return content.split("\\,", -1);
+        } else {
+            List<String> parts = new ArrayList<>();
+
+            while (true) {
+                idx = content.indexOf(',');
+                int quote = content.indexOf('"');
+                int quote2 = content.indexOf('"', quote + 1);
+                if (quote > -1 && quote2 < 0) {
+                    // something is wrong - only one quote
+                    return null;
+                } else if (quote < 0) {
+                    parts.addAll(Arrays.asList(content.split("\\,", -1)));
+                    break;
+                }
+
+                if (quote < idx) {
+                    // started with a quote
+                    parts.add(content.substring(1, quote2).trim());
+                } else if (quote > idx) {
+                    // quoted part is in between
+                    String firstPart = content.substring(0, quote - 1).trim();
+                    parts.addAll(Arrays.asList(firstPart.split("\\,", -1)));
+                    String secondPart = content.substring(quote + 1, quote2).trim();
+                    parts.add(secondPart);
+                }
+                if (content.length() > quote2 + 1) {
+                    content = content.substring(quote2 + 1).trim();
+                    if (content.charAt(0) == ',') {
+                        content = content.substring(1);
+                    } else {
+                        return null;
+                    }
+                } else {
+                    break;
+                }
+            }
+            return parts.toArray(new String[parts.size()]);
+        }
+    }
+
+    public static void main(String[] args) {
+        String j = "TEST1,1,1454595641.463352838,HIHI_ALARM,MAJOR,double,\"1.2323212342342342E16\",,\"---\",";
+        String[] d = split(j);
+        for (String s : d) {
+            System.out.println(s);
+        }
+        System.out.println(Arrays.toString(d));
     }
 }

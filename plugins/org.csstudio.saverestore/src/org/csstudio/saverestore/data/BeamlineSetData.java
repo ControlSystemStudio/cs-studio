@@ -53,7 +53,12 @@ public class BeamlineSetData implements Serializable {
                 sb.append(',').append(readback);
             }
             if (delta != null) {
-                sb.append(',').append(delta);
+                sb.append(',');
+                if (delta.indexOf(',') > -1) {
+                    sb.append('"').append(delta).append('"');
+                } else {
+                    sb.append(delta);
+                }
             }
             return sb.toString();
         }

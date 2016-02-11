@@ -128,7 +128,7 @@ public final class Utilities {
         .withInitial(() -> new SimpleDateFormat("MMM dd HH:mm:ss"));
     private static final ThreadLocal<DateFormat> SBE_TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy MMM dd HH:mm:ss"));
-
+    private static final Pattern COMMA_PATTERN = Pattern.compile("\\,");
     /**
      * Private constructor to prevent instantiation of this class.
      */
@@ -304,16 +304,15 @@ public final class Utilities {
             StringBuilder sb = new StringBuilder(list.size() * 10);
             sb.append('[');
             IteratorNumber it = list.iterator();
-            Pattern pattern = Pattern.compile("\\,");
             if (type instanceof VDoubleArray) {
                 while (it.hasNext()) {
                     String str = String.valueOf(it.nextDouble());
-                    sb.append(pattern.matcher(str).replaceAll("\\.")).append(SEMI_COLON);
+                    sb.append(COMMA_PATTERN.matcher(str).replaceAll("\\.")).append(SEMI_COLON);
                 }
             } else if (type instanceof VFloatArray) {
                 while (it.hasNext()) {
                     String str = String.valueOf(it.nextFloat());
-                    sb.append(pattern.matcher(str).replaceAll("\\.")).append(SEMI_COLON);
+                    sb.append(COMMA_PATTERN.matcher(str).replaceAll("\\.")).append(SEMI_COLON);
                 }
             } else if (type instanceof VLongArray) {
                 while (it.hasNext()) {
@@ -382,6 +381,10 @@ public final class Utilities {
                 sb.setCharAt(sb.length() - 1, ']');
             }
             return sb.toString();
+        } else if (type instanceof VDouble || type instanceof VFloat) {
+            //for some locales string.valueof might produce
+            String str = String.valueOf(((VNumber) type).getValue());
+            return COMMA_PATTERN.matcher(str).replaceAll("\\.");
         } else if (type instanceof VNumber) {
             return String.valueOf(((VNumber) type).getValue());
         } else if (type instanceof VEnum) {
@@ -572,10 +575,12 @@ public final class Utilities {
                 double data = ((VDouble) value).getValue();
                 double base = ((VNumber) baseValue).getValue().doubleValue();
                 double newd = data - base;
+                diff = Double.compare(data, base);
                 if (threshold.isPresent()) {
                     withinThreshold = ((Threshold<Double>) threshold.get()).isWithinThreshold(data, base);
+                } else {
+                    withinThreshold = diff == 0;
                 }
-                diff = Double.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -585,10 +590,12 @@ public final class Utilities {
                 float data = ((VFloat) value).getValue();
                 float base = ((VNumber) baseValue).getValue().floatValue();
                 float newd = data - base;
+                diff = Float.compare(data, base);
                 if (threshold.isPresent()) {
                     withinThreshold = ((Threshold<Float>) threshold.get()).isWithinThreshold(data, base);
+                } else {
+                    withinThreshold = diff == 0;
                 }
-                diff = Float.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -598,10 +605,12 @@ public final class Utilities {
                 long data = ((VLong) value).getValue();
                 long base = ((VNumber) baseValue).getValue().longValue();
                 long newd = data - base;
+                diff = Long.compare(data, base);
                 if (threshold.isPresent()) {
                     withinThreshold = ((Threshold<Long>) threshold.get()).isWithinThreshold(data, base);
+                } else {
+                    withinThreshold = diff == 0;
                 }
-                diff = Long.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -611,10 +620,12 @@ public final class Utilities {
                 int data = ((VInt) value).getValue();
                 int base = ((VNumber) baseValue).getValue().intValue();
                 int newd = data - base;
+                diff = Integer.compare(data, base);
                 if (threshold.isPresent()) {
                     withinThreshold = ((Threshold<Integer>) threshold.get()).isWithinThreshold(data, base);
+                } else {
+                    withinThreshold = diff == 0;
                 }
-                diff = Integer.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -624,10 +635,12 @@ public final class Utilities {
                 short data = ((VShort) value).getValue();
                 short base = ((VNumber) baseValue).getValue().shortValue();
                 short newd = (short) (data - base);
+                diff = Short.compare(data, base);
                 if (threshold.isPresent()) {
                     withinThreshold = ((Threshold<Short>) threshold.get()).isWithinThreshold(data, base);
+                } else {
+                    withinThreshold = diff == 0;
                 }
-                diff = Short.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');
@@ -637,10 +650,12 @@ public final class Utilities {
                 byte data = ((VByte) value).getValue();
                 byte base = ((VNumber) baseValue).getValue().byteValue();
                 byte newd = (byte) (data - base);
+                diff = Byte.compare(data, base);
                 if (threshold.isPresent()) {
                     withinThreshold = ((Threshold<Byte>) threshold.get()).isWithinThreshold(data, base);
+                } else {
+                    withinThreshold = diff == 0;
                 }
-                diff = Byte.compare(data, base);
                 sb.append(' ').append(DELTA_CHAR);
                 if (newd > 0) {
                     sb.append('+');

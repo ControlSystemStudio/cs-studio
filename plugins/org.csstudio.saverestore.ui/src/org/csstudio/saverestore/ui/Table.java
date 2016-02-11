@@ -459,7 +459,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         pvNameColumn.setCellValueFactory(new PropertyValueFactory<>("pvName"));
 
         TableColumn<TableEntry, VType> liveValueColumn = new TooltipTableColumn<>("Live Setpoint", "Current PV value",
-            -1);
+            100);
         liveValueColumn.setCellValueFactory(new PropertyValueFactory<>("liveValue"));
         liveValueColumn.setCellFactory(e -> new VTypeCellEditor<>(controller));
         liveValueColumn.setEditable(false);

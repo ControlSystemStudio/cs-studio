@@ -316,7 +316,7 @@ public class SnapshotViewerController {
         synchronized (snapshots) {
             snapshots.add(data);
         }
-        snapshotRestorableProperty.set(data.isSaved());
+        snapshotRestorableProperty.set(data.getSnapshot().isPresent());
         String name;
         TableEntry e;
         for (int i = 0; i < names.size(); i++) {
@@ -396,6 +396,7 @@ public class SnapshotViewerController {
             if (!snapshotSaveableProperty.get()) {
                 snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
             }
+            snapshotRestorableProperty.set(true);
             if (update) {
                 updateThresholds();
             }
@@ -624,7 +625,7 @@ public class SnapshotViewerController {
             if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
                 owner.addSnapshot(taken);
             } else if (getNumberOfSnapshots() == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
-                //if there is only one snapshot which was actually opened as a beamline set, add it to the same editor
+                // if there is only one snapshot which was actually opened as a beamline set, add it to the same editor
                 owner.addSnapshot(taken);
             } else {
                 new ActionManager(owner).openSnapshot(taken);
@@ -675,12 +676,13 @@ public class SnapshotViewerController {
     }
 
     /**
-     * Export all snapshots to the given file.
+     * Export all snapshots to the given file in csv format. The exported file will contain the stored values, the live
+     * values and if requested also the live and/or stored readback values.
      *
      * @param file the destination file
-     * @param includeReadback true if the readback pv and value should be included or false if not
+     * @param showLiveReadback true if the live readback values should be included or false if not
      */
-    public void exportToFile(File file, boolean showReadback) {
+    public void exportToFile(File file, boolean showLiveReadback) {
         if (file == null) {
             return;
         }
@@ -698,8 +700,8 @@ public class SnapshotViewerController {
                 header.append(Utilities.timestampToBigEndianString(snaps.get(i).getTimestamp().toDate(), true))
                     .append(delta);
             }
-            header.append("Live Value,Live Timestamp");
-            if (showReadback) {
+            header.append("Live Setpoint,Live Timestamp");
+            if (showLiveReadback) {
                 header.append(",Readback PV,Readback Value (").append(Utilities.DELTA_CHAR)
                     .append(" Live),Readback Timestamp");
             }
@@ -722,7 +724,7 @@ public class SnapshotViewerController {
                 if (v instanceof Time) {
                     sb.append(((Time) v).getTimestamp());
                 }
-                if (showReadback) {
+                if (showLiveReadback) {
                     sb.append(',').append(e.readbackNameProperty().get());
                     pair = e.readbackProperty().get();
                     VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
@@ -783,7 +785,7 @@ public class SnapshotViewerController {
             }
             SnapshotContent sc = FileUtilities.readFromSnapshot(fis);
             Timestamp snapshotTime = Timestamp.of(sc.getDate());
-            BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), p.split("/"), null);
+            BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), p.split("\\/"), null);
             Snapshot descriptor = new Snapshot(set, sc.getDate(),
                 "No Comment\nLoaded from file " + file.getAbsolutePath(), "OS");
             return Optional.of(new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),

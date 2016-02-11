@@ -145,19 +145,23 @@ public class BeamlineSetEditor extends FXEditorPart {
         if (content.length == 0) {
             return null;
         }
-        int length = content[0].split("\\,", 3).length;
+        String[] d = FileUtilities.split(content[0]); // TODO, there could be some "
+        if (d == null) {
+            return null;
+        }
+        int length = d.length;
         List<String> pvList = new ArrayList<>(content.length);
         List<String> readbacksList = new ArrayList<>(content.length);
         List<String> deltasList = new ArrayList<>(content.length);
-        String[] d;
         for (String s : content) {
-            if (s.trim().isEmpty()) {
+            s = s.trim();
+            if (s.isEmpty()) {
                 continue;
             }
-            d = s.split("\\,", 3);
-            if (d.length != length) {
+            d = FileUtilities.split(s);
+            if (d == null || d.length != length) {
                 if (markError) {
-                    // if true should be in the UI thread
+                    // if marError == true we are in the UI thread
                     int idx = text.indexOf(s);
                     if (idx > -1) {
                         contentArea.selectRange(idx, idx + s.length());

@@ -231,7 +231,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
 
     /**
      * Returns the snapshot descriptor if it exists, or an empty object, if this snapshot does not have a descriptor.
-     * Snapshot does not have a descriptor if it has not been stored yet.
+     * Snapshot does not have a descriptor if it has not been taken yet.
      *
      * @return the snapshot descriptor
      */

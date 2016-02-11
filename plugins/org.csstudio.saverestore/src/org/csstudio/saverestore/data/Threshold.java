@@ -3,11 +3,12 @@ package org.csstudio.saverestore.data;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
+import javax.script.Bindings;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.script.SimpleBindings;
 
 /**
  *
@@ -26,11 +27,10 @@ public class Threshold<T extends Number> implements Serializable {
     private static final Logger LOGGER = Logger.getLogger(Threshold.class.getName());
     private static final long serialVersionUID = 7839497629386640415L;
 
-    private static final String[] FUNCTIONS = new String[] { "PI", "E", "abs", "acos", "cos", "cosh", "asin", "sin",
-        "sinh", "atan", "tan", "tanh", "atan2", "cbrt", "exp", "log", "log10", "max", "min", "pow", "sqrt" };
-    private static final Pattern PATTERN = Pattern.compile("[xy]");
-    private static final Pattern PATTERN_BASE = Pattern.compile("base");
-    private static final Pattern PATTERN_VALUE = Pattern.compile("value");
+//    private static final String[] FUNCTIONS = new String[] { "PI", "E", "abs(", "cos(", "acos(", "sin(", "asin(",
+//        "tan(", "atan(", "exp(", "log(", "max(", "min(", "pow(", "sqrt(" };
+    private static final String BASE = "base";
+    private static final String VALUE = "value";
     private static final ScriptEngine EVALUATOR = new ScriptEngineManager().getEngineByName("JavaScript");
 
     @SuppressWarnings("unchecked")
@@ -67,8 +67,8 @@ public class Threshold<T extends Number> implements Serializable {
     private final T negativeThreshold;
     private final String function;
     private final boolean isBooleanFunction;
-    private String compiledFunction;
     private boolean logError = true;
+    private boolean isMalformed = false;
 
     /**
      * Construct a new threshold, where the positive and negative threshold value have the same absolute value.
@@ -185,6 +185,9 @@ public class Threshold<T extends Number> implements Serializable {
      * @return true if the value is within threshold limits or false otherwise
      */
     public boolean isWithinThreshold(T value, T base) {
+        if (isMalformed) {
+            return false;
+        }
         if (positiveThreshold != null && negativeThreshold != null) {
             if (value instanceof Long) {
                 long l = value.longValue() - base.longValue();
@@ -194,22 +197,23 @@ public class Threshold<T extends Number> implements Serializable {
                 return v >= negativeThreshold.doubleValue() && v <= positiveThreshold.doubleValue();
             }
         } else if (function != null && !function.isEmpty()) {
-            if (compiledFunction == null) {
-                compiledFunction = compileFunction(function);
-            }
             try {
                 if (isBooleanFunction) {
-                    String f = PATTERN_BASE.matcher(compiledFunction).replaceAll(String.valueOf(base));
-                    f = PATTERN_VALUE.matcher(f).replaceAll(String.valueOf(value));
-                    return (Boolean) EVALUATOR.eval(f);
+                    Bindings b = new SimpleBindings();
+                    b.put(BASE, base);
+                    b.put(VALUE, value);
+                    return (Boolean) EVALUATOR.eval(function, b);
                 } else {
                     // value to string is good enough here
-                    String f = PATTERN.matcher(compiledFunction).replaceAll(String.valueOf(base));
-                    double threshold = Math.abs(((Number) EVALUATOR.eval(f)).doubleValue());
+                    Bindings b = new SimpleBindings();
+                    b.put(BASE, base);
+                    b.put("x", base);
+                    double threshold = Math.abs(((Number) EVALUATOR.eval(function,b)).doubleValue());
                     double v = Math.abs(value.doubleValue() - base.doubleValue());
                     return v <= threshold;
                 }
             } catch (ScriptException | ClassCastException | NullPointerException e) {
+                isMalformed = true;
                 if (logError) {
                     LOGGER.log(Level.WARNING, "Threshold function " + function + " cannot be evaluated.",
                         (Throwable) e);
@@ -222,11 +226,19 @@ public class Threshold<T extends Number> implements Serializable {
         }
     }
 
-    private static String compileFunction(String function) {
-        String newFunction = function;
-        for (String s : FUNCTIONS) {
-            newFunction = newFunction.replace(s, "Math." + s);
-        }
-        return newFunction.replace("ln", "Math.log");
+    /**
+     * Test if this threshold is defined in a way that it can be evaluated. If it is, the method returns true, otherwise
+     * it returns false. Note that if the method returns false it does not necessary means that the definition is not
+     * correct, but is only an indication that it should be double checked.
+     *
+     * @return true if the definition is acceptable or false if there is a potential error
+     */
+    @SuppressWarnings("unchecked")
+    public boolean test() {
+        boolean log = logError;
+        logError = false;
+        isWithinThreshold((T)Long.valueOf(1), (T)Long.valueOf(0));
+        logError = log;
+        return !isMalformed;
     }
 }

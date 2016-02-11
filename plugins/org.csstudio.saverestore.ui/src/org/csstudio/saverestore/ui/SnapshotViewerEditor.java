@@ -700,7 +700,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         Button restoreSnapshotButton = new Button("Restore");
         restoreSnapshotButton.setTooltip(new Tooltip("Set the stored values to PVs"));
         restoreSnapshotButton.setOnAction(e -> SaveRestoreService.getInstance().execute("Restore Snapshot", () -> {
-            List<VSnapshot> snapshots = controller.getSnapshots(false);
+            List<VSnapshot> snapshots = controller.getAllSnapshots();//getSnapshots(false); allow to restore non saved snapshots as well
             if (snapshots.isEmpty()) {
                 return;
             } else if (snapshots.size() == 1) {

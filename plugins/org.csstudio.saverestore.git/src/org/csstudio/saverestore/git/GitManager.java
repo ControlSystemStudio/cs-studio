@@ -583,11 +583,12 @@ public class GitManager {
                 setBranch(data.getDescriptor().getBranch());
                 String relativePath = convertPathToString(data.getDescriptor(), FileType.BEAMLINE_SET);
                 writeToFile(relativePath, repositoryPath, FileType.BEAMLINE_SET, data);
-                commit(relativePath, new MetaInfo(comment, cp.getUsername(), UNKNOWN, null, null));
+                MetaInfo info = commit(relativePath, new MetaInfo(comment, cp.getUsername(), UNKNOWN, null, null));
                 if (automatic) {
                     push(cp, false);
                 }
-                bsd = data;
+                bsd = new BeamlineSetData(data.getDescriptor(), data.getPVList(), data.getReadbackList(),
+                    data.getDeltaList(), data.getDescription(), info.comment, info.timestamp);
             }
         }
         return new Result<>(bsd, change);
@@ -647,7 +648,8 @@ public class GitManager {
      */
     public synchronized Result<VSnapshot> saveSnapshot(VSnapshot snapshot, String comment)
         throws IOException, GitAPIException {
-        return saveSnapshot(snapshot, comment, null, null);
+        Timestamp t = snapshot.getTimestamp();
+        return saveSnapshot(snapshot, comment, t == null ? null : t.toDate(), null);
     }
 
     /**
