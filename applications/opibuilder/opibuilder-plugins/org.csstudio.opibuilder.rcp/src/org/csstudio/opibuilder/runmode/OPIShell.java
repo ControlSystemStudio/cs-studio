@@ -182,6 +182,9 @@ public final class OPIShell implements IOPIRuntime {
          * default. Related to Eclipse bug 96700.
          */
         shell.setSize(displayModel.getSize().width + WINDOW_BORDER_X, displayModel.getSize().height + WINDOW_BORDER_Y);
+        if (!displayModel.getLocation().equals(DisplayModel.NULL_LOCATION)) {
+            shell.setLocation(displayModel.getLocation().getSWTPoint());
+        }
         shell.setVisible(true);
 
     }
