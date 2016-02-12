@@ -81,7 +81,7 @@ public class BeastDataSource extends DataSource {
                             @Override
                             public void serverTimeout(AlarmClientModel model) {
                                 // TODO Auto-generated method stub
-                                log.warning("beast  datasource: server timeout " + model.isServerAlive());
+                                log.fine("beast  datasource: server timeout (server alive: " + model.isServerAlive() + ")");
                                 serverTimeout = true;
                                 for (String channelName : map.keySet()) {
                                     BeastChannelHandler channel = (BeastChannelHandler) getChannels()
