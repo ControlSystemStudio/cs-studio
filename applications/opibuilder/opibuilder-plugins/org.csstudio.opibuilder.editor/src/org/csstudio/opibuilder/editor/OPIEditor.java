@@ -257,8 +257,9 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
             Display.getDefault().asyncExec(() -> getSite().getPage().closeEditor(OPIEditor.this, false));
 
         }
-        else
+        else {
             super.init(site, input instanceof NoResourceEditorInput ? input : new NoResourceEditorInput(input));
+        }
     }
 
     @Override
