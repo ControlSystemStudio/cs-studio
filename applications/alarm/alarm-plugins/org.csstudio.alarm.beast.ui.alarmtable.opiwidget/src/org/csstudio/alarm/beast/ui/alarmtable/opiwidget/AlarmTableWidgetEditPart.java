@@ -23,6 +23,7 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.util.AlarmRepresentationScheme;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Display;
 
 /**
  *
@@ -224,14 +225,13 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
      */
     @Override
     public void newAlarmConfiguration(AlarmClientModel model) {
-        getViewer().getControl().getDisplay().asyncExec(() -> {
+        executeWithDisplay(() -> {
             updateFilter(getAlarmTable());
             if (!getWidgetModel().isTableHeaderVisible()) {
                 if (model.isServerAlive()) {
-                    getViewer().getControl().getDisplay().asyncExec(() -> figure.setBorder(calculateBorder()));
+                    figure.setBorder(calculateBorder());
                 } else {
-                    getViewer().getControl().getDisplay().asyncExec(() ->
-                        figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
+                    figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder());
                 }
             }
         });
@@ -259,8 +259,8 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
     public void serverTimeout(AlarmClientModel model) {
         // ignore
         if (!getWidgetModel().isTableHeaderVisible()) {
-            getViewer().getControl().getDisplay().asyncExec(() ->
-                figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
+            executeWithDisplay(() -> figure.setBorder(AlarmRepresentationScheme.getDisonnectedBorder()));
+
         }
     }
 
@@ -273,8 +273,24 @@ public class AlarmTableWidgetEditPart extends AbstractWidgetEditPart implements 
     @Override
     public void newAlarmState(AlarmClientModel model, AlarmTreePV pv, boolean parent_changed) {
         if (!getWidgetModel().isTableHeaderVisible()) {
-            getViewer().getControl().getDisplay().asyncExec(() -> figure.setBorder(calculateBorder()));
+            executeWithDisplay(() -> figure.setBorder(calculateBorder()));
         }
+    }
+
+    private void executeWithDisplay(Runnable r) {
+        if (getViewer().getControl().isDisposed()) {
+            return;
+        }
+        final Display display = getViewer().getControl().getDisplay();
+        if (display.isDisposed()) {
+            return;
+        }
+
+        display.asyncExec(() -> {
+            if (!display.isDisposed()) {
+                r.run();
+            }
+        });
     }
 
 }
