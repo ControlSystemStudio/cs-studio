@@ -180,7 +180,7 @@
 									<id>org.apache.commons:commons-csv:1.2</id>
 								</artifact>
 								<artifact>
-									<id>org.epics.channelfinder:cf-client-api:2.2.0</id>
+									<id>org.epics.channelfinder:cf-client-api:3.0.3</id>
 								</artifact>
 								<artifact>
 									<id>com.sun.jersey:jersey-client:1.1.5</id>
