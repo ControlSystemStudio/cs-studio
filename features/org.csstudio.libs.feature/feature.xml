@@ -30,13 +30,6 @@
    </requires>
 
    <plugin
-         id="com.google.common"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="javax.mail"
          download-size="0"
          install-size="0"
@@ -52,13 +45,6 @@
 
    <plugin
          id="org.apache.commons.collections"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.apache.jackrabbit"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -110,5 +96,12 @@
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="com.google.guava"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
