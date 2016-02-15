@@ -1,5 +1,6 @@
 package org.csstudio.saverestore.ui.util;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,6 +121,7 @@ public class RepositoryTree extends TreeView<String> {
     private final boolean editable;
     private final BeamlineSet initialValue;
     private final String dataProviderId;
+    private PropertyChangeListener busyListener =  e -> setDisable((Boolean) e.getNewValue());
 
     /**
      * Constructs a new repository tree.
@@ -134,6 +136,13 @@ public class RepositoryTree extends TreeView<String> {
         this.initialValue = initialValue;
         this.dataProviderId = SaveRestoreService.getInstance().getSelectedDataProvider().getId();
         init();
+    }
+
+    /**
+     * Dispose of all resources and listeners allocated by this class.
+     */
+    public void dispose() {
+        SaveRestoreService.getInstance().removePropertyChangeListener(SaveRestoreService.BUSY, busyListener);
     }
 
     private void init() {
@@ -151,8 +160,7 @@ public class RepositoryTree extends TreeView<String> {
         setPrefSize(500, 500);
         setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
 
-        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY,
-            e -> setDisable((Boolean) e.getNewValue()));
+        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY,busyListener);
         selector.branchesProperty().addListener((a, o, n) -> branchesLoaded(n));
         selector.baseLevelsProperty().addListener((a, o, n) -> baseLevelsLoaded(n));
         selector.beamlineSetsProperty().addListener((a, o, n) -> beamlineSetsLoaded(n));

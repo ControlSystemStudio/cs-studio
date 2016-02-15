@@ -38,13 +38,23 @@ public class GitDataProvider implements DataProvider {
 
     private final GitManager grm;
     private final List<CompletionNotifier> notifiers;
+    private boolean initialized = false;
 
     /**
      * Constructs a new GitDataProvider.
      */
     public GitDataProvider() {
+        this(new GitManager());
+    }
+
+    /**
+     * Constructs a new GitDataProvider using the provider git manager.
+     *
+     * @param grm git manager which implements all underlying git stuff
+     */
+    public GitDataProvider(GitManager grm) {
         notifiers = new ArrayList<>();
-        grm = new GitManager();
+        this.grm = grm;
     }
 
     /*
@@ -56,8 +66,12 @@ public class GitDataProvider implements DataProvider {
     public void initialise() throws DataProviderException {
         try {
             URI remote = Activator.getInstance().getGitURI();
+            if (remote.toString().isEmpty()) {
+                throw new DataProviderException("Repository was not defined.");
+            }
             File dest = Activator.getInstance().getDestination();
             grm.initialise(remote, dest);
+            initialized = true;
         } catch (GitAPIException e) {
             throw new DataProviderException("Could not instantiate git data provider.", e);
         }
@@ -70,11 +84,17 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public boolean reinitialise() throws DataProviderException {
+        if (grm.isLocalOnly()) {
+            throw new DataProviderException("You are working with a local git copy. Automatic reinitialisation "
+                + "is not supported because you will lose all data.");
+        }
         try {
+            initialized = false;
             URI remote = Activator.getInstance().getGitURI();
             File dest = Activator.getInstance().getDestination();
             GitManager.deleteFolder(dest);
             boolean b = grm.initialise(remote, dest);
+            initialized = true;
             for (CompletionNotifier n : getNotifiers()) {
                 n.synchronised();
             }
@@ -115,6 +135,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public Branch[] getBranches() throws DataProviderException {
+        checkInitialised();
         try {
             List<Branch> branches = grm.getBranches();
             return branches.toArray(new Branch[branches.size()]);
@@ -130,6 +151,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public BaseLevel[] getBaseLevels(Branch branch) throws DataProviderException {
+        checkInitialised();
         try {
             List<BaseLevel> bls = grm.getBaseLevels(branch);
             return bls.toArray(new BaseLevel[bls.size()]);
@@ -146,6 +168,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public BeamlineSet[] getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException {
+        checkInitialised();
         try {
             List<BeamlineSet> sets = grm.getBeamlineSets(baseLevel, branch);
             return sets.toArray(new BeamlineSet[sets.size()]);
@@ -163,6 +186,7 @@ public class GitDataProvider implements DataProvider {
     @Override
     public Snapshot[] getSnapshots(BeamlineSet set, boolean all, Optional<Snapshot> fromThisOneBack)
         throws DataProviderException {
+        checkInitialised();
         try {
             List<Snapshot> snapshots = grm.getSnapshots(set,
                 all ? 0 : SaveRestoreService.getInstance().getNumberOfSnapshots(), fromThisOneBack);
@@ -180,6 +204,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public BeamlineSetData getBeamlineSetContent(BeamlineSet set) throws DataProviderException {
+        checkInitialised();
         try {
             return grm.loadBeamlineSetData(set, Optional.empty());
         } catch (IOException | GitAPIException e) {
@@ -195,6 +220,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public Branch createNewBranch(Branch originalBranch, String newBranchName) throws DataProviderException {
+        checkInitialised();
         Branch branch = null;
         try {
             branch = grm.createBranch(originalBranch, newBranchName);
@@ -215,6 +241,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public BeamlineSetData saveBeamlineSet(BeamlineSetData set, String comment) throws DataProviderException {
+        checkInitialised();
         Result<BeamlineSetData> answer = null;
         try {
             answer = grm.saveBeamlineSet(set, comment);
@@ -242,6 +269,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public boolean deleteBeamlineSet(BeamlineSet set, String comment) throws DataProviderException {
+        checkInitialised();
         Result<BeamlineSet> answer = null;
         try {
             answer = grm.deleteBeamlineSet(set, comment);
@@ -267,6 +295,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public VSnapshot saveSnapshot(VSnapshot data, String comment) throws DataProviderException {
+        checkInitialised();
         Result<VSnapshot> answer = null;
         try {
             answer = grm.saveSnapshot(data, comment);
@@ -295,6 +324,7 @@ public class GitDataProvider implements DataProvider {
     @Override
     public Snapshot tagSnapshot(Snapshot snapshot, Optional<String> tagName, Optional<String> tagMessage)
         throws DataProviderException {
+        checkInitialised();
         Result<Snapshot> answer = null;
         try {
             answer = grm.tagSnapshot(snapshot, tagName.orElse(null), tagMessage.orElse(null));
@@ -320,6 +350,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public VSnapshot getSnapshotContent(Snapshot snapshot) throws DataProviderException {
+        checkInitialised();
         try {
             return grm.loadSnapshotData(snapshot);
         } catch (ParseException | IOException | GitAPIException e) {
@@ -337,6 +368,7 @@ public class GitDataProvider implements DataProvider {
     @Override
     public Snapshot[] findSnapshots(String expression, Branch branch, List<SearchCriterion> criteria,
         Optional<Date> start, Optional<Date> end) throws DataProviderException {
+        checkInitialised();
         Set<Snapshot> list = new LinkedHashSet<>();
         boolean sort = false;
         try {
@@ -381,6 +413,7 @@ public class GitDataProvider implements DataProvider {
     @Override
     public boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel, ImportType type)
         throws DataProviderException {
+        checkInitialised();
         Result<Boolean> answer = null;
         try {
             answer = grm.importData(source, toBranch, toBaseLevel, type);
@@ -407,6 +440,7 @@ public class GitDataProvider implements DataProvider {
      */
     @Override
     public boolean synchronise() throws DataProviderException {
+        checkInitialised();
         boolean sync = false;
         try {
             sync = grm.synchronise(Optional.empty());
@@ -417,6 +451,12 @@ public class GitDataProvider implements DataProvider {
             n.synchronised();
         }
         return sync;
+    }
+
+    private void checkInitialised() throws DataProviderException {
+        if (!initialized) {
+            throw new DataProviderException("Git Data Provider hase not been initialised.");
+        }
     }
 
     private CompletionNotifier[] getNotifiers() {

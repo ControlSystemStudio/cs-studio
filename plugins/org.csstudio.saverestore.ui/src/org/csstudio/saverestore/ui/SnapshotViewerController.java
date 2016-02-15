@@ -2,6 +2,7 @@ package org.csstudio.saverestore.ui;
 
 import static org.diirt.datasource.ExpressionLanguage.channel;
 
+import java.beans.PropertyChangeListener;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -83,7 +84,8 @@ public class SnapshotViewerController {
     /** Multiple snapshots (what you see) file extension */
     public static final String FEXT_CSV = ".csv";
 
-    private static final Executor UI_EXECUTOR = Platform::runLater;
+    // for testing purposes this should not be final
+    private static Executor UI_EXECUTOR = Platform::runLater;
 
     private static final String EMPTY_STRING = "";
 
@@ -163,7 +165,7 @@ public class SnapshotViewerController {
     private final GUIUpdateThrottle throttle = new GUIUpdateThrottle(20, TABLE_UPDATE_RATE) {
         @Override
         protected void fire() {
-            Platform.runLater(() -> {
+            UI_EXECUTOR.execute(() -> {
                 if (suspend.get() > 0) {
                     return;
                 }
@@ -182,6 +184,9 @@ public class SnapshotViewerController {
     private boolean hideEqualItems;
     private String filter;
 
+    private PropertyChangeListener busyListener = e -> snapshotSaveableProperty
+        .set(!getSnapshots(true).isEmpty() && !SaveRestoreService.getInstance().isBusy());
+
     /**
      * Constructs a new controller for the given editor.
      *
@@ -190,9 +195,7 @@ public class SnapshotViewerController {
     public SnapshotViewerController(SnapshotViewerEditor owner) {
         this.owner = owner;
         start();
-        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY,
-            e -> snapshotSaveableProperty
-                .set(!getSnapshots(true).isEmpty() && !SaveRestoreService.getInstance().isBusy()));
+        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY, busyListener);
     }
 
     /**
@@ -216,6 +219,7 @@ public class SnapshotViewerController {
      */
     public void dispose() {
         dispose(true);
+        SaveRestoreService.getInstance().removePropertyChangeListener(SaveRestoreService.BUSY, busyListener);
     }
 
     /**
@@ -339,7 +343,7 @@ public class SnapshotViewerController {
         connectPVs();
         snapshotSaveableProperty.set(data.isSaveable() && !SaveRestoreService.getInstance().isBusy());
         updateThresholds();
-        Platform.runLater(() -> baseSnapshotProperty.set(data));
+        UI_EXECUTOR.execute(() -> baseSnapshotProperty.set(data));
         return filter(items.values(), filter);
     }
 
@@ -490,7 +494,7 @@ public class SnapshotViewerController {
 
     private List<TableEntry> redoSnapshots(int idx, Supplier<List<VSnapshot>> supplier) {
         if (idx == 0) {
-            throw new IllegalArgumentException("Snapshot already set as base.");
+            throw new IllegalArgumentException("Base snapshot cannot be moved/removed.");
         } else if (idx > getNumberOfSnapshots()) {
             throw new IllegalArgumentException("The index is greater than the number of snapshots.");
         }
@@ -816,7 +820,7 @@ public class SnapshotViewerController {
                                 snapshots.set(i, s);
                                 if (i == 0) {
                                     final VSnapshot n = s;
-                                    Platform.runLater(() -> baseSnapshotProperty.set(n));
+                                    UI_EXECUTOR.execute(() -> baseSnapshotProperty.set(n));
                                 }
                                 break;
                             }
@@ -986,7 +990,7 @@ public class SnapshotViewerController {
                 final List<VType> vals = names.stream().map(values::get).map(v -> v == null ? VNoData.INSTANCE : v)
                     .collect(Collectors.toList());
                 final VSnapshot snapshot = new VSnapshot(desc, names, vals, timestamp, importer.name);
-                Platform.runLater(() -> consumer.accept(snapshot));
+                UI_EXECUTOR.execute(() -> consumer.accept(snapshot));
             }
         } catch (Exception ex) {
             ActionManager.reportException(ex, owner.getSite().getShell());
@@ -1083,7 +1087,7 @@ public class SnapshotViewerController {
                 .readListener(x -> throttle.trigger()).maxRate(TimeDuration.ofMillis(100));
             PVWriter<Object> writer = PVManager.write(channel(pvName)).timeout(TimeDuration.ofMillis(1000)).async();
             pvs.put(entry, new PV(reader, writer, null));
-            Platform.runLater(() -> consumer.accept(entry));
+            UI_EXECUTOR.execute(() -> consumer.accept(entry));
         } catch (RuntimeException e) {
             ActionManager.reportException(e, owner.getSite().getShell());
         }

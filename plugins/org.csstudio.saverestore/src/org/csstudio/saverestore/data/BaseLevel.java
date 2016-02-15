@@ -32,6 +32,17 @@ public class BaseLevel implements Comparable<BaseLevel>, Serializable {
     }
 
     /**
+     * Construct a new BaseLevel using the values provided by the <code>level</code> parameter and the given branch.
+     * Constructed base level is equal to the provided one.
+     *
+     * @param branch the branch of the new base level
+     * @param level the parameters provider
+     */
+    public BaseLevel(Branch branch, BaseLevel level) {
+        this(branch, level.getStorageName(), level.getPresentationName());
+    }
+
+    /**
      * Construct a new base level from pieces.
      *
      * @param branch the branch that this base level resides on

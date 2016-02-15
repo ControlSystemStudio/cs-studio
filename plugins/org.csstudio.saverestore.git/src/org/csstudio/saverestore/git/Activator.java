@@ -21,6 +21,7 @@ public class Activator extends AbstractUIPlugin {
 
     public static final String ID = "org.csstudio.saverestore.git";
 
+    public static final String PREF_LOCAL = "local";
     public static final String PREF_URL = "url";
     public static final String PREF_DESTINATION = "destination";
     public static final String PREF_AUTOMATIC_SYNC = "automaticSynhronisation";
@@ -48,6 +49,8 @@ public class Activator extends AbstractUIPlugin {
     }
 
     /**
+     * Returns the URL to the remote git repository.
+     *
      * @return the URL to git repository
      */
     public URI getGitURI() {
@@ -56,6 +59,8 @@ public class Activator extends AbstractUIPlugin {
     }
 
     /**
+     * Returns the destination folder with the local git clone.
+     *
      * @return the file to the location where a local git clone exists or will exist after first usage
      */
     public File getDestination() {

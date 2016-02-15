@@ -2,6 +2,7 @@ package org.csstudio.saverestore.ui.browser;
 
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
+import java.beans.PropertyChangeListener;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -128,6 +129,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     private TitledPane snapshotsPane;
     private TitledPane baseLevelPane;
     private TitledPane beamlineSetsPane;
+    private Button importButton;
+    private Button newButton;
     private VBox mainPane;
     private VBox dataPane;
 
@@ -140,6 +143,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     private Action deleteTagAction;
 
     private final List<ISelectionChangedListener> selectionChangedListener = new CopyOnWriteArrayList<>();
+
+    private PropertyChangeListener dpl = e -> updateForDataProviderChange();
 
     /**
      * @return the selector bound to this view
@@ -164,6 +169,12 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
     public void init(IViewSite site) throws PartInitException {
         super.init(site);
         getSite().setSelectionProvider(this);
+    }
+
+    @Override
+    public void dispose() {
+        SaveRestoreService.getInstance().removePropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, dpl);
+        super.dispose();
     }
 
     /*
@@ -336,11 +347,11 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         titleBox.setHgap(5);
         Label titleText = new Label("Beamline Sets");
         titleText.textProperty().bind(beamlineSetsPane.textProperty());
-        final Button newButton = new UnfocusableButton("New");
+        newButton = new UnfocusableButton("New");
         newButton.setTooltip(new Tooltip("Create a new Beamline Set"));
         Button editButton = new UnfocusableButton("Edit");
         editButton.setTooltip(new Tooltip("Edit selected Beamline Set"));
-        Button importButton = new UnfocusableButton("Import");
+        importButton = new UnfocusableButton("Import");
         importButton.setTooltip(new Tooltip("Import Beamline Sets from another location"));
         Button openButton = new UnfocusableButton("Open");
         openButton.setTooltip(new Tooltip("Open selected Beamline Set in Snapshot Viewer"));
@@ -376,8 +387,6 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             }
         });
 
-        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
-            e -> setUpSetButtons(newButton, importButton, (DataProviderWrapper) e.getNewValue()));
         setUpSetButtons(newButton, importButton, SaveRestoreService.getInstance().getSelectedDataProvider());
 
         setUpTitlePaneNode(titleText, true);
@@ -691,8 +700,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
             SaveRestoreService.getInstance().setSelectedDataProvider(dpw);
         }
 
-        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER,
-            e -> updateForDataProviderChange());
+        SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, dpl);
         updateForDataProviderChange();
     }
 
@@ -708,10 +716,12 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
                 mainPane.getChildren().addAll(dataPane);
             }
         }
+        setUpSetButtons(newButton, importButton, wrapper);
     }
 
     private static String makeStringFromParts(String[] parts, int from, int to) {
-        if (from == to) return "";
+        if (from == to)
+            return "";
         StringBuilder sb = new StringBuilder(100);
         sb.append(parts[from]);
         for (int i = from + 1; i < to; i++) {

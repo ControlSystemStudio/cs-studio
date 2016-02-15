@@ -571,13 +571,4 @@ public final class FileUtilities {
             return parts.toArray(new String[parts.size()]);
         }
     }
-
-    public static void main(String[] args) {
-        String j = "TEST1,1,1454595641.463352838,HIHI_ALARM,MAJOR,double,\"1.2323212342342342E16\",,\"---\",";
-        String[] d = split(j);
-        for (String s : d) {
-            System.out.println(s);
-        }
-        System.out.println(Arrays.toString(d));
-    }
 }

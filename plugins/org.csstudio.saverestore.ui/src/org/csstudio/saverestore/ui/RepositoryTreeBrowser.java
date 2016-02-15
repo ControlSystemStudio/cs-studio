@@ -159,6 +159,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
      */
     @Override
     protected Scene getScene(Composite parent) {
+        parent.addDisposeListener(e -> treeView.dispose());
         return new Scene(new BorderPane(createFXContents(parent)));
     }
 }

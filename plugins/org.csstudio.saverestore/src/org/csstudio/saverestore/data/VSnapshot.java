@@ -54,8 +54,8 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      */
     @SuppressWarnings("unchecked")
     public VSnapshot(Snapshot snapshot, VTable table, Timestamp snapshotTime) {
-        if (table.getColumnCount() != 3) {
-            throw new IllegalArgumentException("The table parameter has incorrect number of columns. Should be 3.");
+        if (table.getColumnCount() != 6) {
+            throw new IllegalArgumentException("The table parameter has incorrect number of columns. Should be 6.");
         }
         List<String> n = null;
         List<Boolean> s = null;
@@ -422,7 +422,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return true if this snapshot can be saved or false if already saved or has no data
      */
     public boolean isSaveable() {
-        return dirty || (snapshotTime != null && !isSaved());
+        return snapshotTime != null && (dirty || !isSaved());
     }
 
     /**
@@ -489,11 +489,41 @@ public class VSnapshot implements VType, Time, Array, Serializable {
      * @return true if equal or false otherwise
      */
     public boolean equalsExceptSnapshot(VSnapshot other) {
-        return Objects.equals(beamlineSet, other.beamlineSet) && Objects.equals(forcedName, other.forcedName)
+        return Objects.equals(beamlineSet, other.beamlineSet) && equalsExceptSnapshotOrBeamlineSet(other);
+    }
+
+    /**
+     * Checks if the two snapshots are equal in everything except the snapshot.
+     *
+     * @param other the other object to compare to
+     * @return true if equal or false otherwise
+     */
+    public boolean equalsExceptSnapshotOrBeamlineSet(VSnapshot other) {
+        boolean b = Objects.equals(forcedName, other.forcedName)
             && Objects.equals(names, other.names) && Objects.equals(snapshotTime, other.snapshotTime)
-            && Objects.equals(values, other.values) && Objects.equals(selected, other.selected)
-            && Objects.equals(readbackNames, other.readbackNames)
-            && Objects.equals(readbackValues, other.readbackValues) && Objects.equals(deltas, other.deltas);
+            && Objects.equals(selected, other.selected) && Objects.equals(readbackNames, other.readbackNames)
+            && Objects.equals(deltas, other.deltas);
+        if (b) {
+            if (values.size() != other.values.size()) {
+                return false;
+            }
+            if (readbackValues.size() != other.readbackValues.size()) {
+                return false;
+            }
+            List<VType> val = other.values;
+            for (int i = 0; i < val.size(); i++) {
+                if (!Utilities.areVTypesIdentical(val.get(i), values.get(i), true)) {
+                    return false;
+                }
+            }
+            val = other.readbackValues;
+            for (int i = 0; i < val.size(); i++) {
+                if (!Utilities.areVTypesIdentical(val.get(i), readbackValues.get(i), false)) {
+                    return false;
+                }
+            }
+        }
+        return b;
     }
 
     /**

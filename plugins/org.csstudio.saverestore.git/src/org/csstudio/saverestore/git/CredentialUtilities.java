@@ -46,35 +46,40 @@ public final class CredentialUtilities {
      */
     public static Credentials getCredentials(Optional<Credentials> previous) {
         final Credentials[] provider = new Credentials[1];
-        Subject subj = SecuritySupport.getSubject();
-        final String currentUser = previous.isPresent() ? previous.get().getUsername()
-            : subj == null ? null : SecuritySupport.getSubjectName(subj);
-        org.eclipse.swt.widgets.Display.getDefault().syncExec(() -> {
-            String username = null;
-            char[] password = null;
-            boolean remember = false;
-            if (previous.isPresent()) {
-                username = previous.get().getUsername();
-                password = previous.get().getPassword();
-                remember = previous.get().isRemember();
-            } else {
-                username = getUsername(Optional.empty());
-                password = getPassword(Optional.empty(), username).orElse(null);
-            }
-            if (username == null || password == null || previous.isPresent()) {
-                new UsernameAndPasswordDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), username,
-                    remember, "Please, provide the username and password to access Save and Restore git repository")
-                        .openAndWat().ifPresent(e -> {
-                    provider[0] = e;
-                    if (e.isRemember()) {
-                        storeCredentials(Optional.ofNullable(currentUser), e.getUsername(), e.getPassword());
-                    }
-                });
-            } else {
-                provider[0] = new Credentials(username, password, false);
-            }
-        });
-        return provider[0];
+        try {
+            Subject subj = SecuritySupport.getSubject();
+            final String currentUser = previous.isPresent() ? previous.get().getUsername()
+                : subj == null ? null : SecuritySupport.getSubjectName(subj);
+            org.eclipse.swt.widgets.Display.getDefault().syncExec(() -> {
+                String username = null;
+                char[] password = null;
+                boolean remember = false;
+                if (previous.isPresent()) {
+                    username = previous.get().getUsername();
+                    password = previous.get().getPassword();
+                    remember = previous.get().isRemember();
+                } else {
+                    username = getUsername(Optional.empty());
+                    password = getPassword(Optional.empty(), username).orElse(null);
+                }
+                if (username == null || password == null || previous.isPresent()) {
+                    new UsernameAndPasswordDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), username,
+                        remember, "Please, provide the username and password to access Save and Restore git repository")
+                            .openAndWat().ifPresent(e -> {
+                        provider[0] = e;
+                        if (e.isRemember()) {
+                            storeCredentials(Optional.ofNullable(currentUser), e.getUsername(), e.getPassword());
+                        }
+                    });
+                } else {
+                    provider[0] = new Credentials(username, password, false);
+                }
+            });
+            return provider[0];
+        } catch (RuntimeException e) {
+            //can happen during testing, when SecuritySupport is not available;
+            return new Credentials("", new char[0], false);
+        }
     }
 
     /**

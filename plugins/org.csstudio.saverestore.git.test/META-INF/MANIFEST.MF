@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Saverestore Git Test
+Bundle-SymbolicName: org.csstudio.saverestore.git.test;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: FRIB
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Fragment-Host: org.csstudio.saverestore.git
+Require-Bundle: org.junit,
+ org.mockito.mockito-core;bundle-version="1.9.5",
+ org.csstudio.platform.libs.easymock;bundle-version="3.0.0",
+ org.csstudio.platform.libs.jmock;bundle-version="1.1.0"
+

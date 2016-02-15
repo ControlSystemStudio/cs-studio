@@ -78,11 +78,13 @@ public class Snapshot implements Comparable<Snapshot>, Serializable {
             toString = UNKNOWN;
         } else {
             StringBuilder sb = new StringBuilder(200).append(Utilities.timestampToBigEndianString(date, true))
-                .append(":\t (").append(owner).append(")\n  ").append(comment.split("\\n")[0]);
+                .append(":\t (").append(owner).append(")\n  ")
+                .append(comment == null ? "no comment" : comment.split("\\n")[0]);
             String tagMessage = parameters.get(TAG_MESSAGE);
             String tagName = parameters.get(TAG_NAME);
             if (tagName != null) {
-                sb.append("\n  ").append("TAG: ").append(tagName).append(':').append(' ').append(tagMessage.split("\\n")[0]);
+                sb.append("\n  ").append("TAG: ").append(tagName).append(':').append(' ')
+                    .append(tagMessage.split("\\n")[0]);
             }
             this.toString = sb.toString();
         }

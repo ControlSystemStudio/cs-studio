@@ -18,8 +18,13 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.custom.BusyIndicator;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
@@ -172,6 +177,11 @@ public class SaveRestoreService {
                 try {
                     provider.getProvider().initialise();
                 } catch (DataProviderException e) {
+                    Display.getDefault().asyncExec(() -> {
+                        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                        Shell shell = window == null ? null : window.getShell();
+                        MessageDialog.openError(shell, "Save Restore Initialisation", e.getMessage());
+                    });
                     LOGGER.log(Level.SEVERE, e, () -> provider.getId() + " data provider initialisation failed.");
                 }
             });
@@ -261,7 +271,11 @@ public class SaveRestoreService {
      * @return number of snapshots loaded from the repository at once (in a single call)
      */
     public int getNumberOfSnapshots() {
-        return getPreferences().getInt(PREF_NUMBER_OF_SNAPSHOTS);
+        try {
+            return getPreferences().getInt(PREF_NUMBER_OF_SNAPSHOTS);
+        } catch (RuntimeException e) {
+            return 0;
+        }
     }
 
     /**
@@ -271,7 +285,11 @@ public class SaveRestoreService {
      * @return true if new snapshots are opened in compare view or false for a separate editor
      */
     public boolean isOpenNewSnapshotsInCompareView() {
-        return getPreferences().getBoolean(PREF_OPEN_NEW_SNAPSHOTS_IN_COMPARE_VIEW);
+        try {
+            return getPreferences().getBoolean(PREF_OPEN_NEW_SNAPSHOTS_IN_COMPARE_VIEW);
+        } catch (RuntimeException e) {
+            return true;
+        }
     }
 
     /**
@@ -292,7 +310,7 @@ public class SaveRestoreService {
      *
      * @param task the task to execute
      */
-    public void execute(final String taskName, final Runnable task) {
+    public void execute(String taskName, Runnable task) {
         new SaveRestoreJob(taskName, task).schedule();
     }
 

@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -129,6 +130,7 @@ public final class Utilities {
     private static final ThreadLocal<DateFormat> SBE_TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy MMM dd HH:mm:ss"));
     private static final Pattern COMMA_PATTERN = Pattern.compile("\\,");
+
     /**
      * Private constructor to prevent instantiation of this class.
      */
@@ -140,7 +142,8 @@ public final class Utilities {
      * <code>type</code>. The data is expected to be in a proper format so that it can be parsed into the requested
      * type. The alarm of the returned object is none, with message USER DEFINED and the timestamp of the object is now.
      * If the given type is an array type, the number of elements in the new value has to match the number of elements
-     * in the type.
+     * in the type. Individual elements in the input data are separated by comma. This method is the inverse of the
+     * {@link #valueToString(VType)}.
      *
      * @param data the data to parse and transform into VType
      * @param type the type of the destination object
@@ -169,37 +172,37 @@ public final class Utilities {
             if (type instanceof VDoubleArray) {
                 double[] array = new double[elements.length];
                 for (int i = 0; i < elements.length; i++) {
-                    array[i] = Double.parseDouble(elements[i]);
+                    array[i] = Double.parseDouble(elements[i].trim());
                 }
                 list = new ArrayDouble(array);
             } else if (type instanceof VFloatArray) {
                 float[] array = new float[elements.length];
                 for (int i = 0; i < elements.length; i++) {
-                    array[i] = Float.parseFloat(elements[i]);
+                    array[i] = Float.parseFloat(elements[i].trim());
                 }
                 list = new ArrayFloat(array);
             } else if (type instanceof VLongArray) {
                 long[] array = new long[elements.length];
                 for (int i = 0; i < elements.length; i++) {
-                    array[i] = Long.parseLong(elements[i]);
+                    array[i] = Long.parseLong(elements[i].trim());
                 }
                 list = new ArrayLong(array);
             } else if (type instanceof VIntArray) {
                 int[] array = new int[elements.length];
                 for (int i = 0; i < elements.length; i++) {
-                    array[i] = Integer.parseInt(elements[i]);
+                    array[i] = Integer.parseInt(elements[i].trim());
                 }
                 list = new ArrayInt(array);
             } else if (type instanceof VShortArray) {
                 short[] array = new short[elements.length];
                 for (int i = 0; i < elements.length; i++) {
-                    array[i] = Short.parseShort(elements[i]);
+                    array[i] = Short.parseShort(elements[i].trim());
                 }
                 list = new ArrayShort(array);
             } else if (type instanceof VByteArray) {
                 byte[] array = new byte[elements.length];
                 for (int i = 0; i < elements.length; i++) {
-                    array[i] = Byte.parseByte(elements[i]);
+                    array[i] = Byte.parseByte(elements[i].trim());
                 }
                 list = new ArrayByte(array);
             }
@@ -213,7 +216,7 @@ public final class Utilities {
             int[] array = new int[elements.length];
             List<String> labels = ((VEnumArray) type).getLabels();
             for (int i = 0; i < elements.length; i++) {
-                array[i] = labels.indexOf(elements[i]);
+                array[i] = labels.indexOf(elements[i].trim());
             }
             ListInt list = new ArrayInt(array);
             return ValueFactory.newVEnumArray(list, labels, alarm, time);
@@ -221,6 +224,9 @@ public final class Utilities {
             String[] elements = data.split("\\,");
             if (((VStringArray) type).getData().size() != elements.length) {
                 throw new IllegalArgumentException("The number of array elements is different from the original.");
+            }
+            for (int i = 0; i < elements.length; i++) {
+                elements[i] = elements[i].trim();
             }
             List<String> list = Arrays.asList(elements);
             return ValueFactory.newVStringArray(list, alarm, time);
@@ -231,7 +237,7 @@ public final class Utilities {
             }
             boolean[] array = new boolean[elements.length];
             for (int i = 0; i < elements.length; i++) {
-                array[i] = Boolean.parseBoolean(elements[i]);
+                array[i] = Boolean.parseBoolean(elements[i].trim());
             }
             ListBoolean list = new ArrayBoolean(array);
             return ValueFactory.newVBooleanArray(list, alarm, time);
@@ -382,7 +388,7 @@ public final class Utilities {
             }
             return sb.toString();
         } else if (type instanceof VDouble || type instanceof VFloat) {
-            //for some locales string.valueof might produce
+            // for some locales string.valueof might produce
             String str = String.valueOf(((VNumber) type).getValue());
             return COMMA_PATTERN.matcher(str).replaceAll("\\.");
         } else if (type instanceof VNumber) {
@@ -802,7 +808,7 @@ public final class Utilities {
                     }
                 }
                 return true;
-            } else if (v1 instanceof VLongArray || v2 instanceof VLongArray) {
+            } else if (v1 instanceof VLongArray && v2 instanceof VLongArray) {
                 ListLong b = ((VLongArray) v1).getData();
                 ListLong c = ((VLongArray) v2).getData();
                 int size = b.size();
@@ -837,5 +843,139 @@ public final class Utilities {
         // no support for MultiScalars (VMultiDouble, VMultiInt, VMultiString, VMultiEnum), VStatistics, VTable and
         // VImage)
         return false;
+    }
+
+    /**
+     * Compares two instances of {@link VType} and returns true if they are identical or false of they are not.
+     * Values are identical if their alarm signatures are identical, timestamps are the same, values are the same and
+     * in case of enum and enum array also the labels have to be identical.
+     *
+     * @param v1 the first value
+     * @param v2 the second value to compare to the first one
+     * @param compareAlarmAndTime true if alarm and time values should be compare or false if no
+     * @return true if values are identical or false otherwise
+     */
+    public static boolean areVTypesIdentical(VType v1, VType v2, boolean compareAlarmAndTime) {
+        if (v1 == v2) {
+            return true;
+        } else if (v1 == null && v2 == null) {
+            return true;
+        } else if (v1 == null || v2 == null) {
+            return false;
+        }
+        if (compareAlarmAndTime && !isAlarmAndTimeEqual(v1, v2)) {
+            return false;
+        }
+        if (v1 instanceof VNumber && v2 instanceof VNumber) {
+            if (v1 instanceof VDouble && v2 instanceof VDouble) {
+                double data = ((VDouble) v1).getValue();
+                double base = ((VDouble) v2).getValue();
+                return Double.compare(data, base) == 0;
+            } else if (v1 instanceof VFloat && v2 instanceof VFloat) {
+                float data = ((VFloat) v1).getValue();
+                float base = ((VFloat) v2).getValue();
+                return Float.compare(data, base) == 0;
+            } else if (v1 instanceof VLong && v2 instanceof VLong) {
+                long data = ((VLong) v1).getValue();
+                long base = ((VLong) v2).getValue();
+                return Long.compare(data, base) == 0;
+            } else if (v1 instanceof VInt && v2 instanceof VInt) {
+                int data = ((VInt) v1).getValue();
+                int base = ((VInt) v2).getValue();
+                return Integer.compare(data, base) == 0;
+            } else if (v1 instanceof VShort && v2 instanceof VShort) {
+                short data = ((VShort) v1).getValue();
+                short base = ((VShort) v2).getValue();
+                return Short.compare(data, base) == 0;
+            } else if (v1 instanceof VByte && v2 instanceof VByte) {
+                byte data = ((VByte) v1).getValue();
+                byte base = ((VByte) v2).getValue().byteValue();
+                return Byte.compare(data, base) == 0;
+            }
+        } else if (v1 instanceof VBoolean && v2 instanceof VBoolean) {
+            boolean b = ((VBoolean) v1).getValue();
+            boolean c = ((VBoolean) v2).getValue();
+            return b == c;
+        } else if (v1 instanceof VEnum && v2 instanceof VEnum) {
+            int b = ((VEnum) v1).getIndex();
+            int c = ((VEnum) v2).getIndex();
+            if (b == c) {
+                List<String> l1 = ((VEnum) v1).getLabels();
+                List<String> l2 = ((VEnum) v2).getLabels();
+                return l1.equals(l2);
+            }
+            return false;
+        } else if (v1 instanceof VNumberArray && v2 instanceof VNumberArray) {
+            if ((v1 instanceof VByteArray && v2 instanceof VByteArray)
+                || (v1 instanceof VShortArray && v2 instanceof VShortArray)
+                || (v1 instanceof VIntArray && v2 instanceof VIntArray)
+                || (v1 instanceof VFloatArray && v2 instanceof VFloatArray)
+                || (v1 instanceof VDoubleArray && v2 instanceof VDoubleArray)) {
+                ListNumber b = ((VNumberArray) v1).getData();
+                ListNumber c = ((VNumberArray) v2).getData();
+                int size = b.size();
+                if (size != c.size()) {
+                    return false;
+                }
+                for (int i = 0; i < size; i++) {
+                    if (Double.compare(b.getDouble(i), c.getDouble(i)) != 0) {
+                        return false;
+                    }
+                }
+                return true;
+            } else if (v1 instanceof VLongArray && v2 instanceof VLongArray) {
+                ListLong b = ((VLongArray) v1).getData();
+                ListLong c = ((VLongArray) v2).getData();
+                int size = b.size();
+                if (size != c.size()) {
+                    return false;
+                }
+                for (int i = 0; i < size; i++) {
+                    if (Long.compare(b.getLong(i), c.getLong(i)) != 0) {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        } else if (v1 instanceof VStringArray && v2 instanceof VStringArray) {
+            List<String> b = ((VStringArray) v1).getData();
+            List<String> c = ((VStringArray) v2).getData();
+            return b.equals(c);
+        } else if (v1 instanceof VEnumArray && v2 instanceof VEnumArray) {
+            ListInt b = ((VEnumArray) v1).getIndexes();
+            ListInt c = ((VEnumArray) v2).getIndexes();
+            int size = b.size();
+            if (size != c.size()) {
+                return false;
+            }
+            for (int i = 0; i < size; i++) {
+                if (Integer.compare(b.getInt(i), c.getInt(i)) != 0) {
+                    return false;
+                }
+            }
+            List<String> l1 = ((VEnum) v1).getLabels();
+            List<String> l2 = ((VEnum) v2).getLabels();
+            return l1.equals(l2);
+        }
+        // no support for MultiScalars (VMultiDouble, VMultiInt, VMultiString, VMultiEnum), VStatistics, VTable and
+        // VImage)
+        return false;
+    }
+
+    private static boolean isAlarmAndTimeEqual(VType a1, VType a2) {
+        if (a1 instanceof Alarm && a2 instanceof Alarm) {
+            if (!Objects.equals(((Alarm)a1).getAlarmSeverity(), ((Alarm)a2).getAlarmSeverity())
+                || !Objects.equals(((Alarm)a1).getAlarmName(), ((Alarm)a2).getAlarmName())) {
+                return false;
+            }
+        } else if (a1 instanceof Alarm || a2 instanceof Alarm) {
+            return false;
+        }
+        if (a1 instanceof Time && a2 instanceof Time) {
+            return ((Time)a1).getTimestamp().equals(((Time)a2).getTimestamp());
+        } else if (a1 instanceof Time || a2 instanceof Time) {
+            return false;
+        }
+        return true;
     }
 }

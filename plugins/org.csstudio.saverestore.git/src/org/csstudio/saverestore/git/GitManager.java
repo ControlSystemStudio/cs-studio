@@ -49,6 +49,7 @@ import org.eclipse.jgit.api.ListBranchCommand.ListMode;
 import org.eclipse.jgit.api.LogCommand;
 import org.eclipse.jgit.api.PullResult;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.RefNotFoundException;
 import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
@@ -142,6 +143,15 @@ public class GitManager {
     }
 
     /**
+     * Returns true if this manager only works with a local copy.
+     *
+     * @return true if only local or false for remote only
+     */
+    boolean isLocalOnly() {
+        return localOnly;
+    }
+
+    /**
      * Dispose of all resources allocated by this manager.
      */
     public void dispose() {
@@ -192,8 +202,43 @@ public class GitManager {
 
     private synchronized boolean internalInitialise(URI remoteRepository, File destinationDirectory)
         throws GitAPIException {
-        repositoryPath = destinationDirectory;
+        if (!remoteRepository.toString().contains("://")) {
+            // it is not git:// or http:// or https:// or ssh://
+            File file = null;
+            try {
+                file = new File(remoteRepository);
+            } catch (RuntimeException e) {
+                file = new File(remoteRepository.toString());
+            }
+
+            if (!file.exists()) {
+                throw new InvalidRepositoryException("GIT repository URL is not valid.");
+            }
+            dispose();
+            repositoryPath = file;
+            if (new File(repositoryPath, ".git").exists()) {
+                localOnly = true;
+                setAutomaticSynchronisation(false);
+                this.git = Git.init().setDirectory(repositoryPath).call();
+                this.repository = git.getRepository();
+                try {
+                    setBranch(new Branch());
+                    Credentials credentials = getCredentials(Optional.empty());
+                    if (credentials != null) {
+                        pull(credentials);
+                    }
+                } catch (GitAPIException | IOException e) {
+                    SaveRestoreService.LOGGER.log(Level.WARNING, e,
+                        () -> "Git repository " + remoteRepository + " is not accessible.");
+                }
+            } else {
+                throw new InvalidRepositoryException("GIT repository URL is not valid.");
+            }
+            return true;
+        }
+
         dispose();
+        repositoryPath = destinationDirectory;
         if (new File(repositoryPath, ".git").exists()) {
             this.git = Git.init().setDirectory(repositoryPath).call();
             this.repository = git.getRepository();
@@ -253,9 +298,14 @@ public class GitManager {
      * @throws GitAPIException if there was an exception during the checkout
      * @throws IOException if the current branch cannot be determined
      */
-    public synchronized void setBranch(Branch branch) throws GitAPIException, IOException {
+    private synchronized void setBranch(Branch branch) throws GitAPIException, IOException {
         if (!branch.getShortName().equals(repository.getBranch())) {
-            Ref ref = git.checkout().setName(branch.getFullName()).setUpstreamMode(SetupUpstreamMode.TRACK).call();
+            Ref ref = null;
+            try {
+                ref = git.checkout().setName(branch.getFullName()).setUpstreamMode(SetupUpstreamMode.TRACK).call();
+            } catch (RefNotFoundException e) {
+                //branch does not exist, create it
+            }
             if (ref == null) {
                 // local branch does not exist. create it
                 git.branchCreate().setName(branch.getShortName()).call();
@@ -372,7 +422,8 @@ public class GitManager {
             }
         } else if (type == ImportType.ALL_SNAPSHOTS) {
             List<Snapshot> list = getSnapshots(source, 0, Optional.empty());
-            for (Snapshot s : list) {
+            for (int i = list.size() - 1; i > -1; i--) {
+                Snapshot s = list.get(i);
                 VSnapshot snp = loadSnapshotData(s);
                 VSnapshot newSnp = new VSnapshot(new Snapshot(newSet), snp.getNames(), snp.getSelected(),
                     snp.getValues(), snp.getReadbackNames(), snp.getReadbackValues(), snp.getDeltas(),
@@ -433,6 +484,12 @@ public class GitManager {
         File[] files = repositoryPath.listFiles();
         if (files != null) {
             String base = baseLevel.isPresent() ? baseLevel.get().getStorageName() : null;
+            String basePresentation = baseLevel.isPresent() ? baseLevel.get().getPresentationName() : null;
+            Branch bbranch = baseLevel.isPresent() ? baseLevel.get().getBranch() : null;
+            if (bbranch == null || !bbranch.equals(branch)) {
+                bbranch = branch;
+            }
+            Optional<BaseLevel> bl = Optional.of(new BaseLevel(bbranch,base,basePresentation));
             for (File f : files) {
                 if (f.getName().equals(base)) {
                     File b = new File(f, FileType.BEAMLINE_SET.directory);
@@ -448,9 +505,9 @@ public class GitManager {
                     }
                     for (File bf : setFiles) {
                         String s = bf.getAbsolutePath().substring(length);
-                        String[] filePathArray = convertStringToPath(s, baseLevel);
+                        String[] filePathArray = convertStringToPath(s, bl);
                         if (filePathArray.length > 0) {
-                            BeamlineSet beamlineSet = new BeamlineSet(branch, baseLevel, filePathArray,
+                            BeamlineSet beamlineSet = new BeamlineSet(branch, bl, filePathArray,
                                 GitDataProvider.ID);
                             descriptorList.add(beamlineSet);
                         }
@@ -750,9 +807,11 @@ public class GitManager {
                 RevTag existingTag = loadTagsForRevisions(Arrays.asList(commit)).get(revision);
                 if (existingTag != null) {
                     git.tagDelete().setTags(existingTag.getTagName()).call();
-                    RefSpec refSpec = new RefSpec().setSource(null)
-                        .setDestination("refs/tags/" + existingTag.getTagName());
-                    git.push().setCredentialsProvider(toCredentialsProvider(cp)).setRefSpecs(refSpec).call();
+                    if (!localOnly) {
+                        RefSpec refSpec = new RefSpec().setSource(null)
+                            .setDestination("refs/tags/" + existingTag.getTagName());
+                        git.push().setCredentialsProvider(toCredentialsProvider(cp)).setRefSpecs(refSpec).call();
+                    }
                 }
 
                 Map<String, String> parameters = new HashMap<>();
@@ -1613,7 +1672,7 @@ public class GitManager {
      *
      * @param folder the folder to delete
      */
-    static void deleteFolder(File folder) {
+    public static void deleteFolder(File folder) {
         if (folder.exists()) {
             File[] files = folder.listFiles();
             if (files != null) {

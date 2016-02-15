@@ -77,6 +77,10 @@ public final class ExtensionPointLoader {
             ParametersProvider finder = null;
             try {
                 IExtensionRegistry extReg = org.eclipse.core.runtime.Platform.getExtensionRegistry();
+                if (extReg == null) {
+                    //only happens during test execution
+                    return Optional.empty();
+                }
                 IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(ParametersProvider.EXT_POINT);
                 if (confElements.length > 1) {
                     throw new PartInitException(

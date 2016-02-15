@@ -30,7 +30,6 @@ import org.epics.pvaccess.client.Channel.ConnectionState;
 import org.epics.pvaccess.client.ChannelProvider;
 import org.epics.pvaccess.client.ChannelProviderRegistryFactory;
 import org.epics.pvaccess.client.ChannelRPC;
-import org.epics.pvaccess.client.ChannelRPCRequester;
 import org.epics.pvaccess.client.ChannelRequester;
 import org.epics.pvaccess.util.logging.LoggingUtils;
 import org.epics.pvdata.factory.PVDataFactory;
@@ -75,7 +74,7 @@ public class MasarClient {
         }
     }
 
-    private static class MasarChannelRPCRequester implements ChannelRPCRequester {
+    private static class MasarChannelRPCRequester implements RPCRequester {
         private final CountDownLatch connectedSignaler = new CountDownLatch(1);
         private final Semaphore doneSemaphore = new Semaphore(0);
         private final String service;
@@ -110,8 +109,10 @@ public class MasarClient {
             }
         }
 
-        boolean waitUntilConnected(long timeout, TimeUnit unit) throws InterruptedException {
-            return connectedSignaler.await(timeout, unit) && channelRPC != null;
+        @Override
+        public boolean waitUntilConnected() throws InterruptedException {
+            return connectedSignaler.await(Activator.getInstance().getTimeout(), TimeUnit.SECONDS)
+                && channelRPC != null;
         }
 
         @Override
@@ -124,13 +125,14 @@ public class MasarClient {
             doneSemaphore.release();
         }
 
-        PVStructure request(PVStructure pvArgument) throws InterruptedException, MasarException {
+        @Override
+        public PVStructure request(PVStructure requestData) throws InterruptedException, MasarException {
             ChannelRPC rpc = channelRPC;
             if (rpc == null) {
                 throw new MasarException("Cannot connect to the MASAR service " + service + ".");
             }
             this.result = null;
-            rpc.request(pvArgument);
+            rpc.request(requestData);
             if (doneSemaphore.tryAcquire(Activator.getInstance().getTimeout(), TimeUnit.SECONDS)) {
                 return result;
             } else {
@@ -138,14 +140,15 @@ public class MasarClient {
             }
         }
 
-        void destroy() {
+        @Override
+        public void destroy() {
             if (channelRPC != null) {
                 channelRPC.destroy();
             }
         }
     }
 
-    private static MasarChannelRPCRequester createChannel(String service) throws MasarException {
+    private static RPCRequester createChannel(String service) throws MasarException {
         if (service == null) {
             throw new MasarException("No service name provided.");
         }
@@ -164,7 +167,7 @@ public class MasarClient {
 
     private String[] services;
     private String selectedService;
-    private MasarChannelRPCRequester channelRPCRequester;
+    private RPCRequester channelRPCRequester;
 
     /**
      * Creates a new client, but does not initialise it. {@link #initialise(String[])} has to be called before anything
@@ -255,7 +258,7 @@ public class MasarClient {
         dispose();
         channelRPCRequester = createChannel(selectedService);
         try {
-            return channelRPCRequester.waitUntilConnected(Activator.getInstance().getTimeout(), TimeUnit.SECONDS);
+            return channelRPCRequester.waitUntilConnected();
         } catch (InterruptedException e) {
             throw new MasarException("Could not connecto to masar service", e);
         }
@@ -273,10 +276,10 @@ public class MasarClient {
         if (Arrays.asList(services).contains(newService)) {
             throw new MasarException("Service '" + newService + "' already exists.");
         }
-        MasarChannelRPCRequester channel = createChannel(newService);
+        RPCRequester channel = createChannel(newService);
         boolean connected = false;
         try {
-            connected = channel.waitUntilConnected(Activator.getInstance().getTimeout(), TimeUnit.SECONDS);
+            connected = channel.waitUntilConnected();
         } catch (InterruptedException e) {
             // ignore
         }
