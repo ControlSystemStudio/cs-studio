@@ -49,7 +49,8 @@ import org.diirt.vtype.ValueUtil;
  */
 public class VTypeHelper {
 
-    public static final int DEFAULT_PRECISION = 4;
+    public static final int DEFAULT_PRECISION = 4;//$NON-NLS-1$
+    public static final int UNSET_PRECISION = -1;//$NON-NLS-1$
     public static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
     /**
      * The max count of values to be formatted into string. The value beyond
@@ -483,34 +484,34 @@ public class VTypeHelper {
         case DECIMAL:
         case DEFAULT:
         default:
-            if (precision == -1 && pmValue != null && pmValue instanceof Display
-                    && ((Display) pmValue).getFormat() != null) {
-                return ((Display) pmValue).getFormat().format(((Number) numValue).doubleValue());
-            } else {
-                if (precision == -1)
+            if (precision == UNSET_PRECISION) {
+                if (pmValue instanceof Display && ((Display) pmValue).getFormat() != null) {
+                    return ((Display) pmValue).getFormat().format(((Number) numValue).doubleValue());
+                } else {
                     return formatScalarNumber(FormatEnum.COMPACT, numValue, precision);
-                else {
-                    // Sun's implementation of the JDK returns the Unicode replacement
-                    // character, U+FFFD, when asked to parse a NaN. This is more
-                    // consistent with the rest of CSS.
-                    if(Double.isNaN(numValue.doubleValue())) {
-                        return Double.toString(Double.NaN);
-                    }
-
-                    // Also check for positive and negative infinity.
-                    if(Double.isInfinite(numValue.doubleValue())) {
-                        return Double.toString(numValue.doubleValue());
-                    }
-
-                    numberFormat = formatCacheMap.get(precision);
-                    if (numberFormat == null) {
-                        numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
-                        numberFormat.setMinimumFractionDigits(precision);
-                        numberFormat.setMaximumFractionDigits(precision);
-                        formatCacheMap.put(precision, numberFormat);
-                    }
-                    return numberFormat.format(numValue.doubleValue());
                 }
+
+            } else {
+                // Sun's implementation of the JDK returns the Unicode replacement
+                // character, U+FFFD, when asked to parse a NaN. This is more
+                // consistent with the rest of CSS.
+                if(Double.isNaN(numValue.doubleValue())) {
+                    return Double.toString(Double.NaN);
+                }
+
+                // Also check for positive and negative infinity.
+                if(Double.isInfinite(numValue.doubleValue())) {
+                    return Double.toString(numValue.doubleValue());
+                }
+
+                numberFormat = formatCacheMap.get(precision);
+                if (numberFormat == null) {
+                    numberFormat = new DecimalFormat("0"); //$NON-NLS-1$
+                    numberFormat.setMinimumFractionDigits(precision);
+                    numberFormat.setMaximumFractionDigits(precision);
+                    formatCacheMap.put(precision, numberFormat);
+                }
+                return numberFormat.format(numValue.doubleValue());
             }
 
         case COMPACT:
