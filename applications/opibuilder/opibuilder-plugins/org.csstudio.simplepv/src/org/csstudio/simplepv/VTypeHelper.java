@@ -518,36 +518,25 @@ public class VTypeHelper {
             double dValue = numValue.doubleValue();
             if (((dValue > 0.0001) && (dValue < 10000))
                     || ((dValue < -0.0001) && (dValue > -10000)) || dValue == 0.0) {
-                return formatScalarNumber(FormatEnum.DECIMAL, numValue, precision == -1 ? 4
-                        : precision);
+                return formatScalarNumber(FormatEnum.DECIMAL, numValue, handleUnsetPrecision(precision));
             } else {
-                return formatScalarNumber(FormatEnum.EXP, numValue, precision == -1 ? 4 : precision);
+                return formatScalarNumber(FormatEnum.EXP, numValue, handleUnsetPrecision(precision));
             }
 
         case ENG:
             double value = numValue.doubleValue();
             if (value == 0) {
-                return formatScalarNumber(FormatEnum.EXP, numValue, precision == -1 ? 4 : precision);
+                return formatScalarNumber(FormatEnum.EXP, numValue, handleUnsetPrecision(precision));
             }
 
-            if (precision == -1 && numValue instanceof Display) {
-                precision = ((Display) numValue).getFormat().getMinimumFractionDigits();
-            }
-            if (precision == -1)
-                precision = DEFAULT_PRECISION;
-
+            precision = getPrecision(numValue, precision);
             double log10 = Math.log10(Math.abs(value));
             int power = 3 * (int) Math.floor(log10 / 3);
             return String.format("%." + precision + "fE%d", value / Math.pow(10, power), power);
 
         case EXP:
-            if (precision == -1 && numValue instanceof Display) {
-                precision = ((Display) numValue).getFormat().getMinimumFractionDigits();
-            }
-            if (precision == -1)
-                precision = DEFAULT_PRECISION;
-
             // Assert positive precision
+            precision = getPrecision(numValue, precision);
             precision = Math.abs(precision);
             // Exponential notation identified as 'negative' precision in cached
             numberFormat = formatCacheMap.get(-precision);
@@ -561,6 +550,7 @@ public class VTypeHelper {
                 formatCacheMap.put(-precision, numberFormat);
             }
             return numberFormat.format(numValue.doubleValue());
+
         case HEX:
             return HEX_PREFIX + Integer.toHexString(numValue.intValue()).toUpperCase();
         case HEX64:
@@ -570,6 +560,28 @@ public class VTypeHelper {
         }
     }
 
+    /** Convert an unset precision to the default value
+     *
+     * @param precision
+     * @return
+     */
+    private static int handleUnsetPrecision(int precision) {
+        return (precision == UNSET_PRECISION) ? DEFAULT_PRECISION : precision;
+    }
+
+    /** Convert an unset precision to the correct display precision or
+     *  default value
+     *
+     * @param numValue
+     * @param precision
+     * @return
+     */
+    private static int getPrecision(Number numValue, int precision) {
+        if (precision == UNSET_PRECISION && numValue instanceof Display) {
+            precision = ((Display) numValue).getFormat().getMinimumFractionDigits();
+        }
+        return handleUnsetPrecision(precision);
+    }
 
     private static double[] ListNumberToDoubleArray(ListNumber listNumber) {
         Object wrappedArray = CollectionNumbers.wrappedArray(listNumber);
