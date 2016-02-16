@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
@@ -18,10 +19,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -177,11 +176,9 @@ public class SaveRestoreService {
                 try {
                     provider.getProvider().initialise();
                 } catch (DataProviderException e) {
-                    Display.getDefault().asyncExec(() -> {
-                        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-                        Shell shell = window == null ? null : window.getShell();
-                        MessageDialog.openError(shell, "Save Restore Initialisation", e.getMessage());
-                    });
+                    IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+                    Shell shell = window == null ? null : window.getShell();
+                    FXMessageDialog.openError(shell, "Save Restore Initialisation", e.getMessage());
                     LOGGER.log(Level.SEVERE, e, () -> provider.getId() + " data provider initialisation failed.");
                 }
             });

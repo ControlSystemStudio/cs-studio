@@ -8,7 +8,7 @@ package org.csstudio.saverestore.git;
  *
  * @param <T> the type of the data provided by this result object
  */
-class Result<T> {
+public class Result<T> {
 
     /**
      *

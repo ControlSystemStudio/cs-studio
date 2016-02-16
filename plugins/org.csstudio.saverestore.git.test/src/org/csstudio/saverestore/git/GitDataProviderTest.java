@@ -39,7 +39,7 @@ import org.mockito.Mockito;
 
 /**
  *
- * <code>GitDataProviderTest</code> tests the methods of the {@link GitDataProvider}. This mostly a test if the data
+ * <code>GitDataProviderTest</code> tests the methods of the {@link GitDataProvider}. This is mostly a test if the data
  * provider properly notifies the registered {@link CompletionNotifier}s.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>

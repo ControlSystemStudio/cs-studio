@@ -14,6 +14,7 @@
     <cs-studio.version>4.2</cs-studio.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.2</cs-studio-central.url>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
+    <orbit-site>${eclipse.mirror.url}/tools/orbit/downloads/drops/R20150519210750/repository/</orbit-site>
     <eclipse.mirror.url>${eclipse.central.url}</eclipse.mirror.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jgit.dirtyWorkingTree>error</jgit.dirtyWorkingTree>
@@ -175,6 +176,11 @@
       <url>${efx-site}</url>
       <layout>p2</layout>
     </repository>
+    <repository>
+      <id>orbit</id>
+      <url>${orbit-site}</url>
+      <layout>p2</layout>
+    </repository>
   </repositories>
    <distributionManagement>
     <site>
@@ -258,6 +264,16 @@
               <arch>x86_64</arch>
             </environment>
           </environments>
+          <dependency-resolution>
+            <extraRequirements>
+                <!-- These requirements are needed to execute the mockito unit tests -->
+                <requirement>
+                    <type>eclipse-plugin</type>
+                    <id>org.hamcrest</id>
+                    <versionRange>[1.0.0,2.0.0)</versionRange>
+                </requirement>
+            </extraRequirements>
+          </dependency-resolution>
         </configuration>
       </plugin>
       <plugin>
@@ -310,9 +326,14 @@
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>tycho-surefire-plugin</artifactId>
         <version>${tycho.version}</version>
+        <configuration>
+          <skipTests>${skipTests}</skipTests>
+          <testFailureIgnore>false</testFailureIgnore>
+          <failIfNoTests>false</failIfNoTests>
+        </configuration>
       </plugin>
       <!-- Used for collecting tests results before sending them to Sonar. -->
-      <plugin>
+      <!--plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.5.3.201107060350</version>
@@ -327,7 +348,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
     </plugins>
   </build>
 </project>

@@ -26,6 +26,7 @@ openFile
       </programArgs>
       <vmArgs>-Xmx1024m
 -Xms512m
+-Djava.net.preferIPv4Stack=true
 -Dorg.apache.commons.logging.Log=org.apache.commons.logging.impl.SimpleLog
 -Dorg.apache.commons.logging.simplelog.defaultlog=fatal
 -Dpython.cachedir.skip=true

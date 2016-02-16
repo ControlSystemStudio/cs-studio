@@ -13,15 +13,16 @@
   <modules>
     <module>org.csstudio.ui.fx.util</module>
     <module>org.csstudio.saverestore</module>
-    <module>org.csstudio.saverestore.test</module>
     <module>org.csstudio.saverestore.git</module>
-    <module>org.csstudio.saverestore.git.test</module>
     <module>org.csstudio.saverestore.masar</module>
     <module>org.csstudio.saverestore.ui</module>
-    <module>org.csstudio.saverestore.ui.test</module>
     <module>org.csstudio.saverestore.ui.help</module>
     <module>org.csstudio.saverestore.ui.browser</module>
     <module>org.csstudio.saverestore.ui.browser.periodictable</module>
     <module>org.csstudio.saverestore.demo</module>
+    <module>org.csstudio.saverestore.test</module>
+    <!-- MAVEN complains that it cannot find javafx.scene.Node when executing the tests in these plugins -->
+    <!--module>org.csstudio.saverestore.git.test</module-->
+    <!--module>org.csstudio.saverestore.ui.test</module-->
   </modules>
 </project>
