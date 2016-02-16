@@ -11,4 +11,30 @@
             name="%Perspective">
       </perspective>
    </extension>
+         <extension
+         point="org.csstudio.utility.product.module">
+      <workbench
+            class="org.csstudio.utility.product.PerspectiveHandler">
+      </workbench>
+   </extension>
+      <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.utility.product.PerspectiveHandler"
+            id="org.cstudio.utility.product.LoadPerspectives"
+            name="Load Perspectives">
+      </command>
+   </extension>
+    <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:utility">
+         <command
+              commandId="org.cstudio.utility.product.LoadPerspectives"
+              label="Load Perspective"
+              style="push"
+              tooltip="Load Perspective">
+         </command>
+      </menuContribution>
+   </extension>
 </plugin>
