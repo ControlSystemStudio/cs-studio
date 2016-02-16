@@ -47,8 +47,8 @@ private CellEditorActionHandler actionHandler;
 private IAction copy, cut, paste, undo, redo, find, selectAll, delete;
 private double cachedZoom = -1.0;
 private Font scaledFont;
-protected boolean multiLine = true;
-protected AbstractBaseEditPart editPart;
+private boolean multiLine = true;
+private AbstractBaseEditPart editPart;
 private ZoomListener zoomListener = new ZoomListener() {
     public void zoomChanged(double newZoom) {
         updateScaledFont(newZoom);

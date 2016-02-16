@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.Text;
 public class NativeTextEditpartDelegate implements ITextInputEditPartDelegate {
 
 
-    protected TextInputEditpart editpart;
-    protected TextInputModel model;
+    private TextInputEditpart editpart;
+    private TextInputModel model;
     protected Text text;
 
 
