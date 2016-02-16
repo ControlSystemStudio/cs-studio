@@ -381,9 +381,7 @@ public class PVUtil{
     public final static void writePV(String pvName, Object value){
         writePV(pvName, value, 10);
     }
-    
-    
-    
+
     /**
      * Get the list of Enum values 
      * @param pv the PV.
@@ -391,18 +389,13 @@ public class PVUtil{
      */
     public final static String[] getLabels(IPV pv) {
 
-		final VType value = checkPVValue(pv);
-		
-		
-		if (value instanceof VEnum) {
-	
-			final List<String> labels = ((VEnum) value).getLabels();
-			
-			return labels.toArray(new String[]{});
-		}
-		
-		return new String[] { };
-	
-	}
+        final VType value = checkPVValue(pv);
+
+        if (value instanceof VEnum) {
+            final List<String> labels = ((VEnum) value).getLabels();
+            return labels.toArray(new String[]{});
+        }
+        return new String[] { };
+    }
 
 }
