@@ -126,6 +126,8 @@ public final class Utilities {
     });
     private static final ThreadLocal<DateFormat> LE_TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("HH:mm:ss.SSS MMM dd"));
+    private static final ThreadLocal<DateFormat> SLE_TIMESTAMP_FORMATTER = ThreadLocal
+        .withInitial(() -> new SimpleDateFormat("HH:mm:ss.SSS MMM dd yyyy"));
     private static final ThreadLocal<DateFormat> BE_TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("MMM dd HH:mm:ss"));
     private static final ThreadLocal<DateFormat> SBE_TIMESTAMP_FORMATTER = ThreadLocal
@@ -701,12 +703,21 @@ public final class Utilities {
      * @return string representation of the timestamp using the above format
      */
     public static String timestampToString(Timestamp t) {
+        return timestampToLittleEndianString(t, false);
+    }
+
+    /**
+     * Transforms the timestamp to string, using the format HH:mm:ss.SSS MMM dd (yyyy).
+     *
+     * @param t the timestamp to transform
+     * @param includeYear true if the year should included in the format
+     * @return string representation of the timestamp using the above format
+     */
+    public static String timestampToLittleEndianString(Timestamp t, boolean includeYear) {
         if (t == null) {
             return null;
         }
-        synchronized (LE_TIMESTAMP_FORMATTER) {
-            return LE_TIMESTAMP_FORMATTER.get().format(t.toDate());
-        }
+        return includeYear ? SLE_TIMESTAMP_FORMATTER.get().format(t.toDate()) : LE_TIMESTAMP_FORMATTER.get().format(t.toDate());
     }
 
     /**
@@ -721,9 +732,7 @@ public final class Utilities {
         if (t == null) {
             return null;
         }
-        synchronized (BE_TIMESTAMP_FORMATTER) {
-            return includeYear ? SBE_TIMESTAMP_FORMATTER.get().format(t) : BE_TIMESTAMP_FORMATTER.get().format(t);
-        }
+        return includeYear ? SBE_TIMESTAMP_FORMATTER.get().format(t) : BE_TIMESTAMP_FORMATTER.get().format(t);
     }
 
     /**

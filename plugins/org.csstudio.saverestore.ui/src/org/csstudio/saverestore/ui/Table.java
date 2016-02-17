@@ -95,7 +95,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 setText(null);
                 setStyle("");
             } else {
-                setText(Utilities.timestampToString(item));
+                setText(Utilities.timestampToLittleEndianString(item,true));
             }
         }
     }
