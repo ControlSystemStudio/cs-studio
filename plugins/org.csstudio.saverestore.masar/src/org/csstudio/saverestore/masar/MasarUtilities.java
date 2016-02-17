@@ -75,6 +75,7 @@ import org.epics.pvdata.pv.StringArrayData;
 import org.epics.pvdata.pv.UnionArrayData;
 
 import gov.aps.jca.dbr.Severity;
+import gov.aps.jca.dbr.Status;
 
 /**
  *
@@ -240,12 +241,23 @@ public final class MasarUtilities {
             names.add(pvName.data[i]);
             Time time = ValueFactory.newTime(Timestamp.of(seconds.data[i], nanos.data[i]));
             Alarm alarm = ValueFactory.newAlarm(fromEpics(alarmSeverity.data[i]),
-                gov.aps.jca.dbr.Status.forValue(alarmStatus.data[i]).getName());
+                toStatus(alarmStatus.data[i]));
             boolean isarray = data.data[i].get() instanceof PVArray;
             values.add(isarray ? toValue((PVArray) data.data[i].get(), time, alarm)
                 : toValue(data.data[i].get(), time, alarm));
         }
         return new VSnapshot(snapshot, names, values, snapshotTime, null);
+    }
+
+    /**
+     * Transforms the epics alarm status code to a string.
+     *
+     * @param code the alarm status code
+     * @return string representation of the alarm code
+     */
+    private static String toStatus(int code) {
+        Status status = gov.aps.jca.dbr.Status.forValue(code);
+        return status == null ? "" : status.getName();
     }
 
     /**
@@ -256,7 +268,9 @@ public final class MasarUtilities {
      */
     private static AlarmSeverity fromEpics(int severity) {
         Severity s = Severity.forValue(severity);
-        if (Severity.NO_ALARM.isEqualTo(s)) {
+        if (s == null) {
+            return AlarmSeverity.UNDEFINED;
+        } else if (Severity.NO_ALARM.isEqualTo(s)) {
             return AlarmSeverity.NONE;
         } else if (Severity.MINOR_ALARM.isEqualTo(s)) {
             return AlarmSeverity.MINOR;
