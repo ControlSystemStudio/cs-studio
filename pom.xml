@@ -333,7 +333,7 @@
         </configuration>
       </plugin>
       <!-- Used for collecting tests results before sending them to Sonar. -->
-      <plugin>
+      <!--plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <version>0.5.3.201107060350</version>
@@ -348,7 +348,7 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
+      </plugin-->
     </plugins>
   </build>
 </project>
