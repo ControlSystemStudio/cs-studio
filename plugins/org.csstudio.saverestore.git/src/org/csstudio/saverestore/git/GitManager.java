@@ -1,6 +1,5 @@
 package org.csstudio.saverestore.git;
 
-import static org.csstudio.saverestore.git.CredentialUtilities.getCredentials;
 import static org.csstudio.saverestore.git.CredentialUtilities.toCredentialsProvider;
 
 import java.io.File;
@@ -129,6 +128,18 @@ public class GitManager {
      */
     public GitManager(URI remoteRepo, File destinationDirectory) throws GitAPIException {
         initialise(remoteRepo, destinationDirectory);
+    }
+
+    /**
+     * Returns the credentials to use. This method allows to override the mechanism for loading the credentials,
+     * which can be useful at least for testing.
+     *
+     * @param previous the previous credentials used
+     * @return the new credentials
+     * @see CredentialUtilities#getCredentials(Optional)
+     */
+    protected Credentials getCredentials(Optional<Credentials> previous) {
+        return CredentialUtilities.getCredentials(previous);
     }
 
     /*

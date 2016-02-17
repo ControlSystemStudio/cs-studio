@@ -39,4 +39,11 @@ public interface RPCRequester extends ChannelRPCRequester {
      * Destroys this channel requester.
      */
     void destroy();
+
+    /**
+     * Returns true if the channel is connected or false otherwise.
+     *
+     * @return true if connected or false otherwise
+     */
+    boolean isConnected();
 }

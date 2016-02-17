@@ -17,6 +17,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import org.csstudio.saverestore.CompletionNotifier;
@@ -311,36 +312,37 @@ public class GitDataProviderTest {
 
     @Test
     public void testFindSnapshots() throws DataProviderException {
+        List<SearchCriterion> criteria = dataProvider.getSupportedSearchCriteria();
         Snapshot[] snapshots = dataProvider.findSnapshots("temp", branch,
-            Arrays.asList(SearchCriterion.COMMENT, SearchCriterion.USER), Optional.empty(), Optional.empty());
+            Arrays.asList(criteria.get(0), criteria.get(3)), Optional.empty(), Optional.empty());
         assertEquals(2, snapshots.length);
         assertEquals(branchSnapshot, snapshots[0]);
         assertEquals(branchSnapshot3, snapshots[1]);
 
-        snapshots = dataProvider.findSnapshots("temp", branch, Arrays.asList(SearchCriterion.USER), Optional.empty(),
+        snapshots = dataProvider.findSnapshots("temp", branch, Arrays.asList(criteria.get(3)), Optional.empty(),
             Optional.empty());
         assertEquals(1, snapshots.length);
         assertEquals(branchSnapshot2, snapshots[0]);
 
-        snapshots = dataProvider.findSnapshots("temp", branch, Arrays.asList(SearchCriterion.COMMENT), Optional.empty(),
+        snapshots = dataProvider.findSnapshots("temp", branch, Arrays.asList(criteria.get(0)), Optional.empty(),
             Optional.empty());
         assertEquals(1, snapshots.length);
         assertEquals(branchSnapshot3, snapshots[0]);
 
         snapshots = dataProvider.findSnapshots("temp", branch,
-            Arrays.asList(SearchCriterion.COMMENT, SearchCriterion.TAG_NAME, SearchCriterion.TAG_MESSAGE),
+            Arrays.asList(criteria.get(0), criteria.get(1), criteria.get(2)),
             Optional.empty(), Optional.empty());
         assertEquals(2, snapshots.length);
         assertEquals(branchSnapshot3, snapshots[0]);
         assertEquals(branchSnapshot, snapshots[1]);
 
         snapshots = dataProvider.findSnapshots("temp", branch,
-            Arrays.asList(SearchCriterion.USER, SearchCriterion.TAG_NAME), Optional.empty(), Optional.empty());
+            Arrays.asList(criteria.get(3), criteria.get(1)), Optional.empty(), Optional.empty());
         assertEquals(2, snapshots.length);
         assertEquals(branchSnapshot3, snapshots[0]);
         assertEquals(branchSnapshot2, snapshots[1]);
 
-        snapshots = dataProvider.findSnapshots("temp", branch, Arrays.asList(SearchCriterion.TAG_MESSAGE),
+        snapshots = dataProvider.findSnapshots("temp", branch, Arrays.asList(criteria.get(2)),
             Optional.empty(), Optional.empty());
         assertEquals(1, snapshots.length);
         assertEquals(branchSnapshot2, snapshots[0]);

@@ -2,12 +2,16 @@ package org.csstudio.saverestore.ui;
 
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.csstudio.saverestore.ui.util.VTypeNamePair;
 import org.csstudio.ui.fx.util.FXUtilities;
 import org.csstudio.ui.fx.util.ZoomableLineChart;
+import org.diirt.util.array.ListDouble;
+import org.diirt.util.array.ListFloat;
+import org.diirt.util.array.ListLong;
 import org.diirt.util.array.ListNumber;
 import org.diirt.vtype.VNumberArray;
 import org.eclipse.jface.dialogs.Dialog;
@@ -17,14 +21,22 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.chart.XYChart.Data;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TabPane.TabClosingPolicy;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -124,6 +136,53 @@ public class ChartDialog extends Dialog {
     }
 
     private Scene getScene(Composite parent) {
+        TabPane tabPane = new TabPane(new Tab("Chart",getChartNode(parent)), new Tab("Table", getTableNode()));
+        tabPane.getStylesheets()
+            .add(SnapshotViewerEditor.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
+        tabPane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
+        return new Scene(tabPane, 600, 400);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Node getTableNode() {
+        TableView<Object[]> table = new TableView<>();
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        table.setEditable(false);
+        TableColumn<Object[],Integer> indexColumn = new TableColumn<>("Index");
+        indexColumn.setCellValueFactory(e -> new SimpleObjectProperty<Integer>((Integer)e.getValue()[0]));
+        indexColumn.setMaxWidth(80);
+        indexColumn.setMinWidth(80);
+        indexColumn.setPrefWidth(80);
+        TableColumn<Object[],Number> valueColumn = new TableColumn<>("Value");
+        valueColumn.setCellValueFactory(e -> new SimpleObjectProperty<Number>((Number)e.getValue()[1]));
+
+        table.getColumns().addAll(indexColumn, valueColumn);
+
+        ListNumber data = ((VNumberArray) value.value).getData();
+        int length = data.size();
+        List<Object[]> dataList = new ArrayList<>(length);
+        if (data instanceof ListLong) {
+            for (int i = 0; i < length; i++) {
+                dataList.add(new Object[]{i, data.getLong(i)});
+            }
+        } else if (data instanceof ListFloat) {
+            for (int i = 0; i < length; i++) {
+                dataList.add(new Object[]{i, data.getFloat(i)});
+            }
+        } else if (data instanceof ListDouble) {
+            for (int i = 0; i < length; i++) {
+                dataList.add(new Object[]{i, data.getDouble(i)});
+            }
+        } else {
+            for (int i = 0; i < length; i++) {
+                dataList.add(new Object[]{i, data.getInt(i)});
+            }
+        }
+        table.setItems(FXCollections.observableList(dataList));
+        return table;
+    }
+
+    private Node getChartNode(Composite parent) {
         ZoomableLineChart chart = new ZoomableLineChart(
             Optional.of(value.name + " @ " + ((VNumberArray) value.value).getTimestamp().toDate()),
             Optional.of("Array Index"), Optional.empty());
@@ -152,6 +211,6 @@ public class ChartDialog extends Dialog {
             .add(SnapshotViewerEditor.class.getResource(SnapshotViewerEditor.STYLE).toExternalForm());
         lineChart.setStyle(FXUtilities.toBackgroundColorStyle(parent.getBackground()));
         lineChart.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        return new Scene(chart, 600, 400);
+        return lineChart;
     }
 }

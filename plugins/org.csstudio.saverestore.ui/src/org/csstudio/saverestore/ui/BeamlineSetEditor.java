@@ -18,7 +18,9 @@ import org.csstudio.ui.fx.util.FXMessageDialog;
 import org.csstudio.ui.fx.util.StaticTextField;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
@@ -49,7 +51,7 @@ import javafx.scene.text.Font;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class BeamlineSetEditor extends FXEditorPart {
+public class BeamlineSetEditor extends FXEditorPart implements IShellProvider {
 
     public static final String ID = "org.csstudio.saverestore.ui.editor.beamlineseteditor";
 
@@ -145,7 +147,7 @@ public class BeamlineSetEditor extends FXEditorPart {
         if (content.length == 0) {
             return null;
         }
-        String[] d = FileUtilities.split(content[0]); // TODO, there could be some "
+        String[] d = FileUtilities.split(content[0]);
         if (d == null) {
             return null;
         }
@@ -377,5 +379,15 @@ public class BeamlineSetEditor extends FXEditorPart {
         if (contentArea != null) {
             contentArea.requestFocus();
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.window.IShellProvider#getShell()
+     */
+    @Override
+    public Shell getShell() {
+        return getSite().getShell();
     }
 }

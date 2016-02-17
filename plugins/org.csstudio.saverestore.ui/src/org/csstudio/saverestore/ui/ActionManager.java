@@ -184,12 +184,27 @@ public class ActionManager {
      * @param shell the shell to use for the message dialog parent (cannot be null)
      */
     public static void reportException(Exception e, Shell shell) {
+        reportException(e, null, shell);
+    }
+
+    /**
+     * Report exception that happened during the selector action. The exception is logged and a message is displayed.
+     * The call can be made by any thread. The thread will be blocked until the message dialog is closed.
+     *
+     * @param e the exception to report
+     * @param additionalMessage the message which will be appended to the dialog message
+     * @param shell the shell to use for the message dialog parent (cannot be null)
+     */
+    public static void reportException(Exception e, String additionalMessage, Shell shell) {
         SaveRestoreService.LOGGER.log(Level.FINE, "Error accessing data storage", e);
         shell.getDisplay().syncExec(() -> {
             StringBuilder sb = new StringBuilder();
             sb.append(e.getMessage());
             if (e.getCause() != null) {
                 sb.append('\n').append(e.getCause().getMessage());
+            }
+            if (additionalMessage != null) {
+                sb.append('\n').append('\n').append(additionalMessage);
             }
             FXMessageDialog.openError(shell, "Error accessing data storage", sb.toString());
         });

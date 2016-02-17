@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -57,11 +56,17 @@ public class SearchDialog extends FXBaseDialog<String> {
         return dialog;
     }
 
+    private static class CriterionBox extends UnfocusableCheckBox {
+        SearchCriterion criterion;
+        CriterionBox(SearchCriterion criterion) {
+            super(criterion.getReadableName());
+            this.criterion = criterion;
+            setSelected(this.criterion.isDefault());
+        }
+    }
+
     private TextField text;
-    private CheckBox commentBox;
-    private CheckBox tagNameBox;
-    private CheckBox tagMessageBox;
-    private CheckBox userBox;
+    private CriterionBox[] criteriaBoxes;
     private String backgroundColor;
     private Date startDate;
     private Date endDate;
@@ -87,17 +92,10 @@ public class SearchDialog extends FXBaseDialog<String> {
     @Override
     protected void okPressed() {
         lastResults = new ArrayList<>();
-        if (commentBox.isSelected()) {
-            lastResults.add(SearchCriterion.COMMENT);
-        }
-        if (tagNameBox.isSelected()) {
-            lastResults.add(SearchCriterion.TAG_NAME);
-        }
-        if (tagMessageBox.isSelected()) {
-            lastResults.add(SearchCriterion.TAG_MESSAGE);
-        }
-        if (userBox.isSelected()) {
-            lastResults.add(SearchCriterion.USER);
+        for (CriterionBox cb : criteriaBoxes) {
+            if (cb.isSelected() && !cb.disabledProperty().get()) {
+                lastResults.add(cb.criterion);
+            }
         }
         super.okPressed();
     }
@@ -155,28 +153,24 @@ public class SearchDialog extends FXBaseDialog<String> {
         text.setMaxWidth(Double.MAX_VALUE);
         text.textProperty().addListener((a, o, n) -> validateInput());
         text.setOnAction(e -> okPressed());
-        commentBox = new UnfocusableCheckBox(SearchCriterion.COMMENT.getReadableName());
-        commentBox.setOnAction(e -> validateInput());
-        tagNameBox = new UnfocusableCheckBox(SearchCriterion.TAG_NAME.getReadableName());
-        tagNameBox.setOnAction(e -> validateInput());
-        tagMessageBox = new UnfocusableCheckBox(SearchCriterion.TAG_MESSAGE.getReadableName());
-        tagMessageBox.setOnAction(e -> validateInput());
-        userBox = new UnfocusableCheckBox(SearchCriterion.USER.getReadableName());
-        userBox.setOnAction(e -> validateInput());
-        tagNameBox.setSelected(true);
+        setGridConstraints(text, true, false, Priority.ALWAYS, Priority.ALWAYS);
         DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-        if (!wrapper.getProvider().isTaggingSupported()) {
-            tagNameBox.setSelected(false);
-            tagNameBox.setDisable(true);
-            tagMessageBox.setDisable(true);
-            commentBox.setSelected(true);
+        List<SearchCriterion> availableCriteria = wrapper.getProvider().getSupportedSearchCriteria();
+        criteriaBoxes = new CriterionBox[availableCriteria.size()];
+        for (int i = 0; i < criteriaBoxes.length; i++) {
+            SearchCriterion criterion = availableCriteria.get(i);
+            criteriaBoxes[i] = new CriterionBox(criterion);
+            criteriaBoxes[i].setOnAction(e -> {
+                checkExclusiveSelection();
+                validateInput();
+            });
+            if (!lastResults.isEmpty() && lastResults.contains(criterion)) {
+                criteriaBoxes[i].setSelected(true);
+            }
+            setGridConstraints(criteriaBoxes[i], false, false, Priority.ALWAYS, Priority.NEVER);
         }
-        if (!lastResults.isEmpty()) {
-            commentBox.setSelected(lastResults.contains(SearchCriterion.COMMENT));
-            tagNameBox.setSelected(lastResults.contains(SearchCriterion.TAG_NAME));
-            tagMessageBox.setSelected(lastResults.contains(SearchCriterion.TAG_MESSAGE));
-            userBox.setSelected(lastResults.contains(SearchCriterion.USER));
-        }
+        checkExclusiveSelection();
+
         final DatePicker startPicker = new DatePicker();
         startPicker.setOnAction(e -> {
             LocalDate date = startPicker.getValue();
@@ -189,11 +183,6 @@ public class SearchDialog extends FXBaseDialog<String> {
             endDate = date == null ? null : java.sql.Date.valueOf(date);
             validateInput();
         });
-        setGridConstraints(text, true, false, Priority.ALWAYS, Priority.ALWAYS);
-        setGridConstraints(commentBox, false, false, Priority.ALWAYS, Priority.NEVER);
-        setGridConstraints(tagNameBox, false, false, Priority.ALWAYS, Priority.NEVER);
-        setGridConstraints(tagMessageBox, false, false, Priority.ALWAYS, Priority.NEVER);
-        setGridConstraints(userBox, false, false, Priority.ALWAYS, Priority.NEVER);
 
         GridPane datePane = new GridPane();
         datePane.setHgap(5);
@@ -207,14 +196,29 @@ public class SearchDialog extends FXBaseDialog<String> {
         pane.setMaxWidth(Double.MAX_VALUE);
         pane.setVgap(5);
         pane.add(text, 0, 0);
-        pane.add(commentBox, 0, 1);
-        pane.add(tagNameBox, 0, 2);
-        pane.add(tagMessageBox, 0, 3);
-        pane.add(userBox, 0, 4);
+        for (int i = 0; i < criteriaBoxes.length; i++) {
+            pane.add(criteriaBoxes[i], 0, i+1);
+        }
         pane.add(datePane, 0, 5);
         pane.setPrefWidth(getInitialSize().x);
         pane.setStyle(backgroundColor);
         return new Scene(pane);
+    }
+
+    private void checkExclusiveSelection() {
+        for (int i = 0; i < criteriaBoxes.length; i++) {
+            if (criteriaBoxes[i].criterion.isExclusive()) {
+                if (criteriaBoxes[i].isSelected()) {
+                    for (int j = 0; j < criteriaBoxes.length; j++) {
+                        criteriaBoxes[j].setDisable(j != i);
+                    }
+                    return;
+                }
+            }
+        }
+        for (int j = 0; j < criteriaBoxes.length; j++) {
+            criteriaBoxes[j].setDisable(false);
+        }
     }
 
     /*
@@ -224,8 +228,14 @@ public class SearchDialog extends FXBaseDialog<String> {
      */
     @Override
     protected void validateInput() {
-        if (!commentBox.isSelected() && !tagMessageBox.isSelected() && !tagNameBox.isSelected() && !userBox.isSelected()
-            && startDate == null && endDate == null) {
+        boolean noneSelected = true;
+        for (CriterionBox cb : criteriaBoxes) {
+            if (cb.isSelected()) {
+                noneSelected = false;
+                break;
+            }
+        }
+        if (noneSelected && startDate == null && endDate == null) {
             setErrorMessage("Select a time range or at least one field to perform the search on", false);
         } else if (startDate != null || endDate != null) {
             setErrorMessage(null, true);

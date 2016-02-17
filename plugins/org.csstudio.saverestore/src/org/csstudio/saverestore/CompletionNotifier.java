@@ -26,13 +26,15 @@ public interface CompletionNotifier {
      *
      * @param newBranch the new branch
      */
-    void branchCreated(Branch newBranch);
+    default void branchCreated(Branch newBranch) {
+    }
 
     /**
      * Called whenever the repository was synchronised and as a consequence of the synchronisation the repository
      * changed. This event could override any other events.
      */
-    void synchronised();
+    default void synchronised() {
+    }
 
     /**
      * Called whenever the beamline set was saved, but only if at the same time no updates due to synchronisation were
@@ -40,7 +42,8 @@ public interface CompletionNotifier {
      *
      * @param set the set that was saved
      */
-    void beamlineSetSaved(BeamlineSetData set);
+    default void beamlineSetSaved(BeamlineSetData set) {
+    }
 
     /**
      * Called whenever the beamline set is successfully deleted, but only if at the same time no updates due to
@@ -48,7 +51,8 @@ public interface CompletionNotifier {
      *
      * @param set the set that was deleted
      */
-    void beamlineSetDeleted(BeamlineSet set);
+    default void beamlineSetDeleted(BeamlineSet set) {
+    }
 
     /**
      * Called whenever the snapshot was saved, but only if at the same time no updates due to synchronisation were made.
@@ -56,7 +60,8 @@ public interface CompletionNotifier {
      *
      * @param snapshot the saved snapshot
      */
-    void snapshotSaved(VSnapshot snapshot);
+    default void snapshotSaved(VSnapshot snapshot) {
+    }
 
     /**
      * Called whenever the snapshot was tagged, but only if at the same time no updates due to synchronisation were
@@ -64,7 +69,8 @@ public interface CompletionNotifier {
      *
      * @param snapshot the snapshot that was tagged
      */
-    void snapshotTagged(Snapshot snapshot);
+    default void snapshotTagged(Snapshot snapshot) {
+    }
 
     /**
      * Called whenever the data was imported, but only if at the same time no updates due to synchronisation were made.
@@ -74,5 +80,6 @@ public interface CompletionNotifier {
      * @param toBranch the destination branch
      * @param toBase the destination base level
      */
-    void dataImported(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBase);
+    default void dataImported(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBase) {
+    }
 }

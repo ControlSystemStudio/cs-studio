@@ -31,6 +31,7 @@ import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
+import org.csstudio.ui.fx.util.Credentials;
 import org.diirt.util.array.ArrayDouble;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Alarm;
@@ -252,7 +253,12 @@ public class GitManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        manager = new GitManager();
+        manager = new GitManager(){
+            @Override
+            protected Credentials getCredentials(Optional<Credentials> previous) {
+                return new Credentials("", new char[0], false);
+            }
+        };
         manager.initialise(repositoryPath.toURI(), repositoryPath);
         // clean up just in case
         tearDown();

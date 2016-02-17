@@ -33,8 +33,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -77,7 +79,7 @@ import javafx.scene.layout.VBox;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class BrowserView extends FXViewPart implements ISelectionProvider {
+public class BrowserView extends FXViewPart implements ISelectionProvider, IShellProvider {
 
     private static final String SETTINGS_SELECTED_BRANCH = "selectedBranch";
     private static final String SETTINGS_SELECTED_DATA_PROVIDER = "selectedDataProvider";
@@ -810,6 +812,15 @@ public class BrowserView extends FXViewPart implements ISelectionProvider {
         return selectedSnapshot == null ? new LazySnapshotStructuredSelection(null, null)
             : new LazySnapshotStructuredSelection(selectedSnapshot, SaveRestoreService.getInstance()
                 .getDataProvider(selectedSnapshot.getBeamlineSet().getDataProviderId()).getProvider());
+    }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.eclipse.jface.window.IShellProvider#getShell()
+     */
+    @Override
+    public Shell getShell() {
+        return getSite().getShell();
     }
 }

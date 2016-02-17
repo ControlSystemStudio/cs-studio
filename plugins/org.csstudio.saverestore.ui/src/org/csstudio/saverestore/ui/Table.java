@@ -111,6 +111,8 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     private static class VTypeCellEditor<T> extends MultitypeTableCell<TableEntry, T> {
         private static final Image WARNING_IMAGE = new Image(
             SnapshotViewerEditor.class.getResourceAsStream("/icons/hprio_tsk.png"));
+        private static final Image DISCONNECTED_IMAGE = new Image(
+            SnapshotViewerEditor.class.getResourceAsStream("/icons/showerr_tsk.png"));
         private final SnapshotViewerController controller;
         private final Tooltip tooltip = new Tooltip();
 
@@ -152,7 +154,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                             return item;
                         }
                     } catch (IllegalArgumentException e) {
-                        FXMessageDialog.openError(controller.getOwner().getSite().getShell(), "Editing Error",
+                        FXMessageDialog.openError(controller.getSnapshotReceiver().getShell(), "Editing Error",
                             e.getMessage());
                         return item;
                     }
@@ -220,23 +222,28 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 setGraphic(null);
             } else {
                 if (item instanceof VNoData) {
-                    setText(item.toString());
-                    setGraphic(null);
+                    setText("DISCONNECTED");
+                    setGraphic(new ImageView(DISCONNECTED_IMAGE));
                     tooltip.setText("No Value Available");
                     setTooltip(tooltip);
+                    getStyleClass().add("diff-cell");
                 } else if (item instanceof VType) {
                     setText(Utilities.valueToString((VType) item));
                     setGraphic(null);
                     tooltip.setText(item.toString());
                     setTooltip(tooltip);
                 } else if (item instanceof VTypePair) {
-                    VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) item).value,
-                        ((VTypePair) item).base, ((VTypePair) item).threshold);
+                    VTypePair pair = (VTypePair) item;
+                    VTypeComparison vtc = Utilities.valueToCompareString(pair.value, pair.base, pair.threshold);
                     setText(vtc.getString());
-                    if (!vtc.isWithinThreshold()) {
+                    if (pair.value instanceof VNoData) {
+                        getStyleClass().add("diff-cell");
+                        setGraphic(new ImageView(DISCONNECTED_IMAGE));
+                    } else if (!vtc.isWithinThreshold()) {
                         getStyleClass().add("diff-cell");
                         setGraphic(new ImageView(WARNING_IMAGE));
                     }
+
                     tooltip.setText(item.toString());
                     setTooltip(tooltip);
                 }

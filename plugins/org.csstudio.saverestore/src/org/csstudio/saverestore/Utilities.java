@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.csstudio.saverestore.data.Threshold;
+import org.csstudio.saverestore.data.VNoData;
 import org.diirt.util.array.ArrayBoolean;
 import org.diirt.util.array.ArrayByte;
 import org.diirt.util.array.ArrayDouble;
@@ -566,10 +567,13 @@ public final class Utilities {
      */
     @SuppressWarnings("unchecked")
     public static VTypeComparison valueToCompareString(VType value, VType baseValue, Optional<Threshold<?>> threshold) {
-        if (value == null && baseValue == null) {
-            return new VTypeComparison("---", 0, true);
+        if (value == null && baseValue == null || value instanceof VNoData && baseValue instanceof VNoData) {
+            return new VTypeComparison(VNoData.INSTANCE.toString(), 0, true);
         } else if (value == null || baseValue == null) {
-            return value == null ? new VTypeComparison(valueToString(baseValue), -1, false)
+            return value == null ? new VTypeComparison(VNoData.INSTANCE.toString(), -1, false)
+                : new VTypeComparison(valueToString(value), 1, false);
+        } else if (value instanceof VNoData || baseValue instanceof VNoData) {
+            return value instanceof VNoData ? new VTypeComparison(VNoData.INSTANCE.toString(), -1, false)
                 : new VTypeComparison(valueToString(value), 1, false);
         }
         if (value instanceof VNumber && baseValue instanceof VNumber) {

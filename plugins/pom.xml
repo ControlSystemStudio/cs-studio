@@ -21,8 +21,9 @@
     <module>org.csstudio.saverestore.ui.browser.periodictable</module>
     <module>org.csstudio.saverestore.demo</module>
     <module>org.csstudio.saverestore.test</module>
+    <module>org.csstudio.saverestore.git.test</module>
+    <module>org.csstudio.saverestore.masar.test</module>
     <!-- MAVEN complains that it cannot find javafx.scene.Node when executing the tests in these plugins -->
-    <!--module>org.csstudio.saverestore.git.test</module-->
     <!--module>org.csstudio.saverestore.ui.test</module-->
   </modules>
 </project>

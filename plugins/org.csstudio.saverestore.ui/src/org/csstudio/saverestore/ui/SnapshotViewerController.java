@@ -177,7 +177,7 @@ public class SnapshotViewerController {
         }
     };
     private final AtomicInteger suspend = new AtomicInteger(0);
-    private final SnapshotViewerEditor owner;
+    private final ISnapshotReceiver receiver;
 
     private boolean showReadbacks;
     private boolean showStoredReadbacks;
@@ -190,10 +190,10 @@ public class SnapshotViewerController {
     /**
      * Constructs a new controller for the given editor.
      *
-     * @param owner the editor
+     * @param receiver the receiver of created snapshots and shell provider for the parent shell of all popup dialogs
      */
-    public SnapshotViewerController(SnapshotViewerEditor owner) {
-        this.owner = owner;
+    public SnapshotViewerController(ISnapshotReceiver receiver) {
+        this.receiver = receiver;
         start();
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY, busyListener);
     }
@@ -206,12 +206,12 @@ public class SnapshotViewerController {
     }
 
     /**
-     * Returns the editor that owns this controller.
+     * Returns the snapshot receiver.
      *
-     * @return the owner
+     * @return the snapshot receiver
      */
-    public SnapshotViewerEditor getOwner() {
-        return owner;
+    public ISnapshotReceiver getSnapshotReceiver() {
+        return receiver;
     }
 
     /**
@@ -448,7 +448,7 @@ public class SnapshotViewerController {
         return redoSnapshots(idx, () -> {
             final VSnapshot s = getSnapshot(idx);
             // this happens in a new thread, so it is OK
-            new ActionManager(owner).openSnapshot(s);
+            new ActionManager(receiver).openSnapshot(s);
             synchronized (snapshots) {
                 return snapshots.stream().filter(e -> e != s).collect(Collectors.toList());
             }
@@ -589,7 +589,8 @@ public class SnapshotViewerController {
                         + " claims that it can take snapshots, but does not implement the action.");
                 } catch (DataProviderException e) {
                     // notify the user about the exception and continue taking the snapshot normally
-                    ActionManager.reportException(e, owner.getSite().getShell());
+                    ActionManager.reportException(e,
+                        "Snapshot will taken locally, but it might not be possible to save it.", receiver.getShell());
                 }
             }
             if (taken == null) {
@@ -627,12 +628,12 @@ public class SnapshotViewerController {
                     Timestamp.now());
             }
             if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
-                owner.addSnapshot(taken);
+                receiver.addSnapshot(taken);
             } else if (getNumberOfSnapshots() == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
                 // if there is only one snapshot which was actually opened as a beamline set, add it to the same editor
-                owner.addSnapshot(taken);
+                receiver.addSnapshot(taken);
             } else {
-                new ActionManager(owner).openSnapshot(taken);
+                new ActionManager(receiver).openSnapshot(taken);
             }
             SaveRestoreService.LOGGER.log(Level.FINE, "Snapshot taken for {0}.",
                 new Object[] { set.getFullyQualifiedName() });
@@ -675,7 +676,7 @@ public class SnapshotViewerController {
             }
             snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
         } catch (FileNotFoundException | UnsupportedEncodingException ex) {
-            ActionManager.reportException(ex, owner.getSite().getShell());
+            ActionManager.reportException(ex, receiver.getShell());
         }
     }
 
@@ -741,7 +742,7 @@ public class SnapshotViewerController {
                 pw.println(sb.toString());
             });
         } catch (FileNotFoundException | UnsupportedEncodingException e) {
-            ActionManager.reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, receiver.getShell());
         } finally {
             resume();
         }
@@ -769,7 +770,7 @@ public class SnapshotViewerController {
             snapshotSaveableProperty.set(!getSnapshots(true).isEmpty());
             return snapshot;
         } catch (Exception e) {
-            ActionManager.reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, receiver.getShell());
             return null;
         }
     }
@@ -795,7 +796,7 @@ public class SnapshotViewerController {
             return Optional.of(new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
                 sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), snapshotTime));
         } catch (IOException | RuntimeException | ParseException e) {
-            ActionManager.reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, receiver.getShell());
             return Optional.empty();
         }
     }
@@ -830,7 +831,7 @@ public class SnapshotViewerController {
                 SaveRestoreService.LOGGER.log(Level.FINE, "Successfully saved Snapshot {0}: {1}.", new Object[] {
                     snapshot.getBeamlineSet().getFullyQualifiedName(), snapshot.getSnapshot().get().getDate() });
             } catch (DataProviderException ex) {
-                ActionManager.reportException(ex, owner.getSite().getShell());
+                ActionManager.reportException(ex, receiver.getShell());
             }
             return s;
         } finally {
@@ -993,7 +994,7 @@ public class SnapshotViewerController {
                 UI_EXECUTOR.execute(() -> consumer.accept(snapshot));
             }
         } catch (Exception ex) {
-            ActionManager.reportException(ex, owner.getSite().getShell());
+            ActionManager.reportException(ex, receiver.getShell());
         }
     }
 
@@ -1010,7 +1011,7 @@ public class SnapshotViewerController {
     @SuppressWarnings("unchecked")
     public void addPVFromArchive(final String pvName, final Consumer<TableEntry> consumer) {
         if (items.containsKey(pvName)) {
-            FXMessageDialog.openInformation(owner.getSite().getShell(), "Add Archived PV",
+            FXMessageDialog.openInformation(receiver.getShell(), "Add Archived PV",
                 "The PV '" + pvName + "' is already in the list.");
             return;
         }
@@ -1089,7 +1090,7 @@ public class SnapshotViewerController {
             pvs.put(entry, new PV(reader, writer, null));
             UI_EXECUTOR.execute(() -> consumer.accept(entry));
         } catch (RuntimeException e) {
-            ActionManager.reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, receiver.getShell());
         }
     }
 
@@ -1137,6 +1138,6 @@ public class SnapshotViewerController {
         VSnapshot snapshot = getSnapshot(index);
         snapshot.addOrSetPV(name, selected, value);
         snapshotSaveableProperty.set(true);
-        owner.checkDirty();
+        receiver.checkDirty();
     }
 }

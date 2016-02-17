@@ -38,9 +38,8 @@ import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.csstudio.saverestore.ui.Selector;
-import org.csstudio.saverestore.ui.SnapshotViewerEditor;
 import org.diirt.util.time.Timestamp;
+import org.eclipse.jface.window.IShellProvider;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -87,7 +86,8 @@ public class SelectorTest {
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
-        SnapshotViewerEditor editor = mock(SnapshotViewerEditor.class);
+        IShellProvider editor = mock(IShellProvider.class);
+        when(editor.getShell()).thenReturn(null);
         selector = new Selector(editor);
 
         Field f = Selector.class.getDeclaredField("UI_EXECUTOR");

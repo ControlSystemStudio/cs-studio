@@ -26,3 +26,7 @@
 .chart-plot-background {
     -fx-background-color: #ffffff;
 }
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-opacity: 0;
+}

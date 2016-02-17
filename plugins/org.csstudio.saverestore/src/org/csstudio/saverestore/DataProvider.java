@@ -137,7 +137,7 @@ public interface DataProvider {
      * @return true if it is possible to find a snapshot by specific keywords or false if not
      */
     default boolean isSearchSupported() {
-        return true;
+        return !getSupportedSearchCriteria().isEmpty();
     }
 
     /**
@@ -380,4 +380,11 @@ public interface DataProvider {
     default VSnapshot takeSnapshot(BeamlineSet beamlineSet) throws DataProviderException, UnsupportedActionException {
         throw new UnsupportedActionException("Service cannot take a snapshot.");
     }
+
+    /**
+     * Returns the list of all search criteria that is supported by this data provider.
+     *
+     * @return supported search criteria
+     */
+    List<SearchCriterion> getSupportedSearchCriteria();
 }

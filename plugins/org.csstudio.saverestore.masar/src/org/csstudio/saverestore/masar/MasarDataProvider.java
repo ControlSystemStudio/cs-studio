@@ -3,6 +3,7 @@ package org.csstudio.saverestore.masar;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -30,16 +31,39 @@ import org.csstudio.saverestore.data.VSnapshot;
 public class MasarDataProvider implements DataProvider {
 
     public static final String ID = "org.csstudio.saverestore.masar.dataprovider";
+    private static final SearchCriterion COMMENT = SearchCriterion.of("Snapshot Comment", true, false);
+    private static final SearchCriterion USER = SearchCriterion.of("User", true, false);
+    private static final SearchCriterion SNAPSHOT_ID = SearchCriterion.of("Snapshot ID", false, true);
+    private static final List<SearchCriterion> SEARCH_CRITERIA = Collections
+        .unmodifiableList(Arrays.asList(COMMENT, USER, SNAPSHOT_ID));
 
     private final MasarClient mc;
     private final List<CompletionNotifier> notifiers;
+
+    private final CompletionNotifier connectionListener = new CompletionNotifier() {
+        @Override
+        public void synchronised() {
+            for (CompletionNotifier n : getNotifiers()) {
+                n.synchronised();
+            }
+        }
+    };
 
     /**
      * Constructs a new GitDataProvider.
      */
     public MasarDataProvider() {
+        this(new MasarClient());
+    }
+
+    /**
+     * Constructs a new GitDataProvider.
+     *
+     * @param client the masar client to use
+     */
+    public MasarDataProvider(MasarClient client) {
         notifiers = new ArrayList<>();
-        mc = new MasarClient();
+        mc = client;
     }
 
     /*
@@ -50,7 +74,7 @@ public class MasarDataProvider implements DataProvider {
     @Override
     public void initialise() throws DataProviderException {
         try {
-            mc.initialise(Activator.getInstance().getServices());
+            mc.initialise(Activator.getInstance().getServices(), connectionListener);
         } catch (MasarException e) {
             throw new DataProviderException("Could not instantiate masar data provider.", e);
         }
@@ -74,7 +98,7 @@ public class MasarDataProvider implements DataProvider {
     @Override
     public boolean reinitialise() throws DataProviderException {
         try {
-            boolean b = mc.initialise(Activator.getInstance().getServices());
+            boolean b = mc.initialise(Activator.getInstance().getServices(), connectionListener);
             for (CompletionNotifier n : getNotifiers()) {
                 n.synchronised();
             }
@@ -106,7 +130,7 @@ public class MasarDataProvider implements DataProvider {
             List<BaseLevel> bls = mc.getBaseLevels(branch);
             return bls.toArray(new BaseLevel[bls.size()]);
         } catch (MasarException e) {
-            throw new DataProviderException("Could not read the base levels.", e);
+            throw new DataProviderException("Could not load the systems list.", e);
         }
     }
 
@@ -186,6 +210,9 @@ public class MasarDataProvider implements DataProvider {
     public VSnapshot takeSnapshot(BeamlineSet beamlineSet) throws DataProviderException, UnsupportedActionException {
         try {
             return mc.takeSnapshot(beamlineSet);
+        } catch (MasarResponseException e) {
+            throw new DataProviderException("Error taking a snapshot for '" + beamlineSet.getPathAsString()
+                + "'.\nService responded with message: " + e.getMessage());
         } catch (MasarException e) {
             throw new DataProviderException("Error taking a snapshot for '" + beamlineSet.getPathAsString() + "'.", e);
         }
@@ -223,9 +250,12 @@ public class MasarDataProvider implements DataProvider {
         VSnapshot snapshot = null;
         try {
             snapshot = mc.saveSnapshot(data, comment);
+        } catch (MasarResponseException e) {
+            throw new DataProviderException("Error saving a snapshot for '" + data.getBeamlineSet().getPathAsString()
+            + "'.\nService responded with message: " + e.getMessage());
         } catch (MasarException e) {
             throw new DataProviderException(
-                "Error saving snapshot set for '" + data.getBeamlineSet().getPathAsString() + "'.", e);
+                "Error saving snapshot for '" + data.getBeamlineSet().getPathAsString() + "'.", e);
         }
 
         for (CompletionNotifier n : getNotifiers()) {
@@ -274,15 +304,23 @@ public class MasarDataProvider implements DataProvider {
         Set<Snapshot> list = new LinkedHashSet<>();
         boolean sort = false;
         try {
-            if (criteria.contains(SearchCriterion.COMMENT) && criteria.contains(SearchCriterion.USER)) {
+            if (criteria.contains(SNAPSHOT_ID)) {
+                try {
+                    int id = Integer.parseInt(expression.trim());
+                    mc.findSnapshotById(branch, id).ifPresent(e -> list.add(e));
+                } catch (NumberFormatException e) {
+                    throw new DataProviderException("'" + expression
+                        + "' is not a valid expression for search by snapshot ID. Number is required.");
+                }
+            } else if (criteria.contains(COMMENT) && criteria.contains(USER)) {
                 // we want OR between user and comments matches, but the MasarClient does AND
                 list.addAll(mc.findSnapshots(branch, expression, true, false, start, end));
                 int size = list.size();
                 list.addAll(mc.findSnapshots(branch, expression, false, true, start, end));
                 sort = size > 0 && list.size() != size;
-            } else if (criteria.contains(SearchCriterion.COMMENT)) {
+            } else if (criteria.contains(COMMENT)) {
                 list.addAll(mc.findSnapshots(branch, expression, false, true, start, end));
-            } else if (criteria.contains(SearchCriterion.USER)) {
+            } else if (criteria.contains(USER)) {
                 list.addAll(mc.findSnapshots(branch, expression, true, false, start, end));
             } else if (start.isPresent() || end.isPresent()) {
                 list.addAll(mc.findSnapshots(branch, expression, false, false, start, end));
@@ -323,6 +361,16 @@ public class MasarDataProvider implements DataProvider {
             n.synchronised();
         }
         return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.DataProvider#getSupportedSearchCriteria()
+     */
+    @Override
+    public List<SearchCriterion> getSupportedSearchCriteria() {
+        return SEARCH_CRITERIA;
     }
 
     /*

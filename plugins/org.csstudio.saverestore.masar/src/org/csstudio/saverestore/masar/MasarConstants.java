@@ -95,6 +95,11 @@ public final class MasarConstants {
         new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
 
+    static final Structure STRUCT_SNAPSHOT_BY_ID = FieldFactory.getFieldCreate().createStructure(
+        new String[] { F_FUNCTION, F_EVENTID },
+        new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
+            FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
+
     // Structure description for loading the snapshot data
     static final Structure STRUCT_SNAPSHOT_DATA = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION, F_EVENTID },

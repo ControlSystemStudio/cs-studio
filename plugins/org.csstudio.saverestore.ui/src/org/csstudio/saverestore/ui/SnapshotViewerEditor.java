@@ -99,7 +99,7 @@ import javafx.util.Duration;
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class SnapshotViewerEditor extends FXEditorPart {
+public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotReceiver {
 
     /** The editor ID */
     public static final String ID = "org.csstudio.saverestore.ui.editor.snapshotviewer";
@@ -166,7 +166,7 @@ public class SnapshotViewerEditor extends FXEditorPart {
         if (snapshot == null) {
             snapshot = new VSnapshot(new BeamlineSet());
         }
-        setSnapshot(snapshot);
+        addOrSetSnapshot(snapshot, false);
 
         final FadeTransition animation = new FadeTransition(Duration.seconds(0.15), saveSnapshotButton);
         animation.setAutoReverse(true);
@@ -377,10 +377,13 @@ public class SnapshotViewerEditor extends FXEditorPart {
         return controller.snapshotSaveableProperty().get();
     }
 
-    /**
-     * Updates the column titles and updates the dirty property of this editor.
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.ui.ISnapshotReceiver#checkDirty()
      */
-    void checkDirty() {
+    @Override
+    public void checkDirty() {
         table.updateTableColumnTitles();
         firePropertyChange(PROP_DIRTY);
     }
@@ -700,7 +703,8 @@ public class SnapshotViewerEditor extends FXEditorPart {
         Button restoreSnapshotButton = new Button("Restore");
         restoreSnapshotButton.setTooltip(new Tooltip("Set the stored values to PVs"));
         restoreSnapshotButton.setOnAction(e -> SaveRestoreService.getInstance().execute("Restore Snapshot", () -> {
-            List<VSnapshot> snapshots = controller.getAllSnapshots();//getSnapshots(false); allow to restore non saved snapshots as well
+            List<VSnapshot> snapshots = controller.getAllSnapshots();// getSnapshots(false); allow to restore non saved
+                                                                     // snapshots as well
             if (snapshots.isEmpty()) {
                 return;
             } else if (snapshots.size() == 1) {
@@ -762,21 +766,12 @@ public class SnapshotViewerEditor extends FXEditorPart {
         return table;
     }
 
-    /**
-     * Set the base snapshot to be displayed in this editor. When the base snapshot is set, the editor is emptied first.
-     * The meta data of the base snapshot are displayed at the top of the editor (comment, date, creator).
+    /*
+     * (non-Javadoc)
      *
-     * @param data the snapshot data to set
+     * @see org.csstudio.saverestore.ui.ISnapshotReceiver#addSnapshot(org.csstudio.saverestore.data.VSnapshot)
      */
-    public void setSnapshot(final VSnapshot data) {
-        addOrSetSnapshot(data, false);
-    }
-
-    /**
-     * Adds a snapshot to this editor. This snapshot is compared to the base snapshot.
-     *
-     * @param data the snapshot data
-     */
+    @Override
     public void addSnapshot(VSnapshot data) {
         addOrSetSnapshot(data, true);
     }

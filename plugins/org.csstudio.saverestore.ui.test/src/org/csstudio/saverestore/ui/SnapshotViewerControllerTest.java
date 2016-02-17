@@ -26,9 +26,6 @@ import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.csstudio.saverestore.ui.SnapshotViewerController;
-import org.csstudio.saverestore.ui.SnapshotViewerEditor;
-import org.csstudio.saverestore.ui.TableEntry;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.util.array.ArrayDouble;
 import org.diirt.util.time.Timestamp;
@@ -54,7 +51,8 @@ public class SnapshotViewerControllerTest {
 
     @Before
     public void setUp() throws Exception {
-        SnapshotViewerEditor editor = mock(SnapshotViewerEditor.class);
+        ISnapshotReceiver editor = mock(ISnapshotReceiver.class);
+        when(editor.getShell()).thenReturn(null);
         controller = new SnapshotViewerController(editor);
 
         Field f = SnapshotViewerController.class.getDeclaredField("UI_EXECUTOR");
@@ -144,7 +142,7 @@ public class SnapshotViewerControllerTest {
         when(provider.isTakingSnapshotsSupported()).thenReturn(true);
         controller.takeSnapshot();
         verify(provider, times(1)).takeSnapshot(snapshot1.getBeamlineSet());
-        verify(controller.getOwner(), times(2)).addSnapshot(any(VSnapshot.class));
+        verify(controller.getSnapshotReceiver(), times(2)).addSnapshot(any(VSnapshot.class));
         VSnapshot snapshot2 = createSnapshot(false);
         controller.addSnapshot(snapshot2);
         assertEquals(1, controller.getSnapshots(true).size());

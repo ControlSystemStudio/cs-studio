@@ -6,6 +6,7 @@ import java.net.URI;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -35,6 +36,13 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 public class GitDataProvider implements DataProvider {
 
     public static final String ID = "org.csstudio.saverestore.git.dataprovider";
+
+    private static final SearchCriterion COMMENT = SearchCriterion.of("Snapshot Comment",false, false);
+    private static final SearchCriterion TAG_NAME = SearchCriterion.of("Snapshot tag name",true, false);
+    private static final SearchCriterion TAG_MESSAGE = SearchCriterion.of("Snapshot tag message",false, false);
+    private static final SearchCriterion USER = SearchCriterion.of("User",false, false);
+    private static final List<SearchCriterion> SEARCH_CRITERIA = Collections
+        .unmodifiableList(Arrays.asList(COMMENT, TAG_NAME, TAG_MESSAGE, USER));
 
     private final GitManager grm;
     private final List<CompletionNotifier> notifiers;
@@ -172,7 +180,7 @@ public class GitDataProvider implements DataProvider {
         try {
             List<BeamlineSet> sets = grm.getBeamlineSets(baseLevel, branch);
             return sets.toArray(new BeamlineSet[sets.size()]);
-        } catch (IOException | GitAPIException e) {
+        } catch (IOException | GitAPIException | RuntimeException e) {
             throw new DataProviderException("Error loading the beamline set list.", e);
         }
     }
@@ -353,7 +361,7 @@ public class GitDataProvider implements DataProvider {
         checkInitialised();
         try {
             return grm.loadSnapshotData(snapshot);
-        } catch (ParseException | IOException | GitAPIException e) {
+        } catch (ParseException | IOException | GitAPIException | RuntimeException e) {
             throw new DataProviderException("Error loading the snapshot content for snapshot '"
                 + snapshot.getBeamlineSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
         }
@@ -372,21 +380,21 @@ public class GitDataProvider implements DataProvider {
         Set<Snapshot> list = new LinkedHashSet<>();
         boolean sort = false;
         try {
-            if (criteria.contains(SearchCriterion.COMMENT) || criteria.contains(SearchCriterion.USER)) {
-                list.addAll(grm.findSnapshotsByCommentOrUser(expression, branch,
-                    criteria.contains(SearchCriterion.COMMENT), criteria.contains(SearchCriterion.USER), start, end));
-            } else if (!(criteria.contains(SearchCriterion.TAG_MESSAGE) || criteria.contains(SearchCriterion.TAG_NAME))
+            if (criteria.contains(COMMENT) || criteria.contains(USER)) {
+                list.addAll(grm.findSnapshotsByCommentOrUser(expression, branch, criteria.contains(COMMENT),
+                    criteria.contains(USER), start, end));
+            } else if (!(criteria.contains(TAG_MESSAGE) || criteria.contains(TAG_NAME))
                 && (start.isPresent() || end.isPresent())) {
                 list.addAll(grm.findSnapshotsByCommentOrUser(expression, branch, false, false, start, end));
             }
 
             int size = list.size();
-            if (criteria.contains(SearchCriterion.TAG_MESSAGE) && criteria.contains(SearchCriterion.TAG_NAME)) {
+            if (criteria.contains(TAG_MESSAGE) && criteria.contains(TAG_NAME)) {
                 list.addAll(grm.findSnapshotsByTag(expression, branch, start, end));
             } else {
-                if (criteria.contains(SearchCriterion.TAG_MESSAGE)) {
+                if (criteria.contains(TAG_MESSAGE)) {
                     list.addAll(grm.findSnapshotsByTagMessage(expression, branch, start, end));
-                } else if (criteria.contains(SearchCriterion.TAG_NAME)) {
+                } else if (criteria.contains(TAG_NAME)) {
                     list.addAll(grm.findSnapshotsByTagName(expression, branch, start, end));
                 }
             }
@@ -451,6 +459,16 @@ public class GitDataProvider implements DataProvider {
             n.synchronised();
         }
         return sync;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.csstudio.saverestore.DataProvider#getSupportedSearchCriteria()
+     */
+    @Override
+    public List<SearchCriterion> getSupportedSearchCriteria() {
+        return SEARCH_CRITERIA;
     }
 
     private void checkInitialised() throws DataProviderException {

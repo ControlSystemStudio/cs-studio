@@ -236,7 +236,6 @@ public final class MasarUtilities {
         int length = pvName.data.length;
         List<String> names = new ArrayList<>(length);
         List<VType> values = new ArrayList<>(length);
-
         for (int i = 0; i < length; i++) {
             names.add(pvName.data[i]);
             Time time = ValueFactory.newTime(Timestamp.of(seconds.data[i], nanos.data[i]));
@@ -402,7 +401,7 @@ public final class MasarUtilities {
         try {
             subj = SecuritySupport.getSubject();
         } catch (RuntimeException e) {
-            // ignore
+            // ignore: during testing the security support might not be initialised
         }
         return subj == null ? System.getProperty("user.name") : SecuritySupport.getSubjectName(subj);
     }

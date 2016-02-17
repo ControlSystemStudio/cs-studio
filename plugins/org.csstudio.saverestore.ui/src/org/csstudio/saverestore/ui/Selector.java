@@ -21,7 +21,7 @@ import org.csstudio.saverestore.data.BeamlineSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.jface.window.IShellProvider;
 
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
@@ -61,7 +61,7 @@ public class Selector implements CompletionNotifier {
         Collections.unmodifiableList(new ArrayList<>(0)));
     private final BooleanProperty allSnapshotsLoaded = new SimpleBooleanProperty(false);
     private Snapshot lastSnapshot;
-    private final IWorkbenchPart owner;
+    private final IShellProvider shellProvider;
 
     private final PropertyChangeListener pcl = e -> {
         DataProviderWrapper oldValue = (DataProviderWrapper) e.getOldValue();
@@ -75,10 +75,10 @@ public class Selector implements CompletionNotifier {
     /**
      * Creates a new selector for the workbench part.
      *
-     * @param owner the part that owns this selector
+     * @param shellProvider provides the shell which is used as a parent of all dialogs
      */
-    public Selector(IWorkbenchPart owner) {
-        this.owner = owner;
+    public Selector(IShellProvider shellProvider) {
+        this.shellProvider = shellProvider;
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.SELECTED_DATA_PROVIDER, pcl);
         init(SaveRestoreService.getInstance().getSelectedDataProvider());
     }
@@ -129,7 +129,7 @@ public class Selector implements CompletionNotifier {
             UI_EXECUTOR.execute(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty()).set(Collections
                 .unmodifiableList(theBeamlineSets == null ? new ArrayList<>(0) : Arrays.asList(theBeamlineSets))));
         } catch (DataProviderException e) {
-            ActionManager.reportException(e, owner.getSite().getShell());
+            ActionManager.reportException(e, shellProvider.getShell());
         }
     }
 
@@ -161,7 +161,7 @@ public class Selector implements CompletionNotifier {
                         selectedBranchProperty().set(b);
                     });
                 } catch (DataProviderException e) {
-                    ActionManager.reportException(e, owner.getSite().getShell());
+                    ActionManager.reportException(e, shellProvider.getShell());
                 }
             });
         } else {
@@ -216,7 +216,7 @@ public class Selector implements CompletionNotifier {
                         readBeamlineSets();
                     }
                 } catch (DataProviderException e) {
-                    ActionManager.reportException(e, owner.getSite().getShell());
+                    ActionManager.reportException(e, shellProvider.getShell());
                 }
             });
         } else {
@@ -259,7 +259,7 @@ public class Selector implements CompletionNotifier {
                 UI_EXECUTOR.execute(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty()).set(Collections
                     .unmodifiableList(theBeamlineSets == null ? new ArrayList<>(0) : Arrays.asList(theBeamlineSets))));
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, shellProvider.getShell());
             }
         });
     }
@@ -320,7 +320,7 @@ public class Selector implements CompletionNotifier {
                         .set(Collections.unmodifiableList(allSnapshots));
                 });
             } catch (DataProviderException e) {
-                ActionManager.reportException(e, owner.getSite().getShell());
+                ActionManager.reportException(e, shellProvider.getShell());
             }
         });
     }

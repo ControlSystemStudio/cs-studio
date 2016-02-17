@@ -6,8 +6,8 @@ import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.ui.util.RepositoryTree;
 import org.csstudio.ui.fx.util.FXBaseDialog;
 import org.csstudio.ui.fx.util.StaticTextField;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbenchPart;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -27,28 +27,28 @@ import javafx.scene.layout.Priority;
  */
 public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
 
-    private final IWorkbenchPart owner;
+    private final IShellProvider shellProvider;
     private RepositoryTree treeView;
     private TextField fullNameField;
 
     /**
      * Construct a new repository tree browser.
      *
-     * @param owner the owner view
+     * @param shellProvider the provider of the parent shell of all popup dialogs
      */
-    public ImportDataDialog(IWorkbenchPart owner) {
-        super(owner.getSite().getShell(), "Select Source", "Select the location from which to copy the data", null,
+    public ImportDataDialog(IShellProvider shellProvider) {
+        super(shellProvider.getShell(), "Select Source", "Select the location from which to copy the data", null,
             e -> e == null || e.getBranch() == null
                 || e.getPath().length == 0
                     ? "Select a single item"
                     : e.getBranch() != null && !e.getBaseLevel().isPresent()
                         && (e.getPath().length == 0 || e.getPath()[0].isEmpty()) ? "Select more than just a branch"
                             : null);
-        this.owner = owner;
+        this.shellProvider = shellProvider;
     }
 
     private Node createContents() {
-        treeView = new RepositoryTree(owner, false, null);
+        treeView = new RepositoryTree(shellProvider, false, null);
         treeView.getSelectionModel().selectedItemProperty().addListener((a, o, n) -> validateInput());
         fullNameField = new StaticTextField();
         fullNameField.setMaxWidth(Double.MAX_VALUE);

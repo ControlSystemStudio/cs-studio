@@ -171,10 +171,11 @@ public class TableEntry {
      * Updates the snapshot value for the primary snapshot (index = 0) or for the snapshot compared to the primary
      * (index > 0).
      *
-     * @param val the value to set
+     * @param snapshotValue the value to set
      * @param index the index of the snapshot to which the value belongs
      */
-    public void setSnapshotValue(VType val, int index) {
+    public void setSnapshotValue(VType snapshotValue, int index) {
+        final VType val = snapshotValue == null ? VNoData.INSTANCE : snapshotValue;
         if (index == 0) {
             if (val instanceof Alarm) {
                 severity.set(((Alarm) val).getAlarmSeverity());
@@ -212,6 +213,9 @@ public class TableEntry {
      * @param index the index of the snapshot
      */
     public void setStoredReadbackValue(VType val, int index) {
+        if (val == null) {
+            val = VNoData.INSTANCE;
+        }
         if (index == 0) {
             storedReadback.set(new VTypePair(storedReadback.get().base, val, threshold));
         } else {
@@ -230,6 +234,9 @@ public class TableEntry {
      * @param val the value
      */
     public void setReadbackValue(VType val) {
+        if (val == null) {
+            val = VNoData.INSTANCE;
+        }
         if (readback.get().value != val) {
             readback.set(new VTypePair(liveValueProperty().get(), val, threshold));
         }
@@ -241,6 +248,9 @@ public class TableEntry {
      * @param val the new value
      */
     public void setLiveValue(VType val) {
+        if (val == null) {
+            val = VNoData.INSTANCE;
+        }
         liveValue.set(val);
         readback.set(new VTypePair(val, readback.get().value, threshold));
         VType stored = value.get().value;

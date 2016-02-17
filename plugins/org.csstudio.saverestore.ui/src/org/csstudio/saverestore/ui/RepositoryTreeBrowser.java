@@ -9,10 +9,10 @@ import org.csstudio.saverestore.ui.util.RepositoryTree.BrowsingTreeItem;
 import org.csstudio.saverestore.ui.util.RepositoryTree.Type;
 import org.csstudio.ui.fx.util.FXBaseDialog;
 import org.csstudio.ui.fx.util.FXMessageDialog;
-import org.csstudio.ui.fx.util.StaticTextField;
 import org.csstudio.ui.fx.util.FXUtilities;
+import org.csstudio.ui.fx.util.StaticTextField;
+import org.eclipse.jface.window.IShellProvider;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.IWorkbenchPart;
 
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -33,7 +33,7 @@ import javafx.scene.layout.Priority;
  */
 public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
 
-    private final IWorkbenchPart owner;
+    private final IShellProvider shellProvider;
     private RepositoryTree treeView;
     private TextField nameField;
     private TextField fullNameField;
@@ -43,23 +43,23 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
     /**
      * Construct a new repository tree browser.
      *
-     * @param owner the owner view
+     * @param shellProvider the provider of the parent shell for all popup dialogs
      * @param preselection the preselected beamline set
      */
-    public RepositoryTreeBrowser(IWorkbenchPart owner, BeamlineSet preselection) {
-        super(owner.getSite().getShell(), "Select Location", "Select location where to store the beamline set",
+    public RepositoryTreeBrowser(IShellProvider shellProvider, BeamlineSet preselection) {
+        super(shellProvider.getShell(), "Select Location", "Select location where to store the beamline set",
             preselection,
             e -> e == null || e.getName().isEmpty() ? "Beamline Set name not provided"
                 : e.getBranch() == null ? "No branch selected"
                     : e.getBaseLevel().isPresent() ? (e.getPath().length == 0 ? "No name and path provided" : null)
                         : SaveRestoreService.getInstance().getSelectedDataProvider().getProvider().areBaseLevelsSupported()
                             ? "No base level selected" : null);
-        this.owner = owner;
+        this.shellProvider = shellProvider;
         this.initialValue = preselection;
     }
 
     private Node createFXContents(Composite parent) {
-        treeView = new RepositoryTree(owner, true, initialValue);
+        treeView = new RepositoryTree(shellProvider, true, initialValue);
 
         treeView.getSelectionModel().selectedItemProperty().addListener((a, o, n) -> {
             BrowsingTreeItem item = (BrowsingTreeItem) n;

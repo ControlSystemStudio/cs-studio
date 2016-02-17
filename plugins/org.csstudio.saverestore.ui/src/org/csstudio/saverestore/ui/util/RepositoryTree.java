@@ -14,7 +14,7 @@ import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.ui.Selector;
 import org.csstudio.ui.fx.util.FXTextInputDialog;
 import org.csstudio.ui.fx.util.InputValidator;
-import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.jface.window.IShellProvider;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -115,7 +115,7 @@ public class RepositoryTree extends TreeView<String> {
         }
     }
 
-    private final IWorkbenchPart owner;
+    private final IShellProvider shellProvider;
     private Selector selector;
     private TreeItem<String> root;
     private final boolean editable;
@@ -126,12 +126,12 @@ public class RepositoryTree extends TreeView<String> {
     /**
      * Constructs a new repository tree.
      *
-     * @param owner the owner of this repository, used only for the popup message dialogs
+     * @param shellProvider the provider of parent shell for all popup message dialogs
      * @param editable true if user is allowed to create new folders
      * @param initialValue the initial value to select or add
      */
-    public RepositoryTree(IWorkbenchPart owner, boolean editable, BeamlineSet initialValue) {
-        this.owner = owner;
+    public RepositoryTree(IShellProvider shellProvider, boolean editable, BeamlineSet initialValue) {
+        this.shellProvider = shellProvider;
         this.editable = editable;
         this.initialValue = initialValue;
         this.dataProviderId = SaveRestoreService.getInstance().getSelectedDataProvider().getId();
@@ -146,7 +146,7 @@ public class RepositoryTree extends TreeView<String> {
     }
 
     private void init() {
-        selector = new Selector(owner);
+        selector = new Selector(shellProvider);
         setShowRoot(false);
 
         if (editable) {
@@ -176,7 +176,7 @@ public class RepositoryTree extends TreeView<String> {
             final BrowsingTreeItem item = (BrowsingTreeItem) getSelectionModel().getSelectedItem();
             final List<String> names = new ArrayList<>();
             item.getChildren().forEach(x -> names.add(x.getValue()));
-            FXTextInputDialog.get(owner.getSite().getShell(), "Folder Name", "Enter new folder name", null,
+            FXTextInputDialog.get(shellProvider.getShell(), "Folder Name", "Enter new folder name", null,
                 new InputValidator<String>() {
                 @Override
                 public String validate(String s) {
