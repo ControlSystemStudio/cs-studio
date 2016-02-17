@@ -11,6 +11,7 @@
   <packaging>pom</packaging>
   <modules>
     <module>org.csstudio.simplepv</module>
+    <module>org.csstudio.simplepv.test</module>
     <module>org.csstudio.simplepv.pvmanager</module>
     <module>org.csstudio.simplepv.pvmanager.test</module>
     <module>org.csstudio.simplepv.testutil</module>
