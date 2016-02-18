@@ -204,7 +204,7 @@ public class Opi_xyGraphClass extends OpiWidget {
             new OpiInt(widgetContext, "trace_"+i+"_update_delay", r.getUpdateTimerMs());
             if(r.getPlotMode()==null && r.getnPts()<5){//assume it is a waveform
                 new OpiBoolean(widgetContext, "trace_"+i+"_concatenate_data", false);
-                new OpiInt(widgetContext, "trace_"+i+"_buffer_size", 5000);
+                new OpiInt(widgetContext, "trace_"+i+"_buffer_size", 65536);
             }
         }
 
