@@ -42,7 +42,7 @@ public class PreferencesPage extends FieldEditorPreferencePage implements IWorkb
     protected void createFieldEditors() {
         Composite parent = getFieldEditorParent();
         addField(new ServicesFieldEditor(parent));
-        addField(new IntegerFieldEditor(Activator.PREF_TIMEOUT, "Connection Timeout", parent));
+        addField(new IntegerFieldEditor(Activator.PREF_TIMEOUT, "Request Timeout in Seconds (0 = forever)", parent));
     }
 
 }

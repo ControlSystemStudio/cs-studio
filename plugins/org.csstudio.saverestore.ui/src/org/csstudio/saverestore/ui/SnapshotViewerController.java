@@ -588,9 +588,16 @@ public class SnapshotViewerController {
                     SaveRestoreService.LOGGER.log(Level.SEVERE, e, () -> "The provider " + provider.getName()
                         + " claims that it can take snapshots, but does not implement the action.");
                 } catch (DataProviderException e) {
-                    // notify the user about the exception and continue taking the snapshot normally
-                    ActionManager.reportException(e,
-                        "Snapshot will taken locally, but it might not be possible to save it.", receiver.getShell());
+                    if (SaveRestoreService.getInstance().isCurrentJobCancelled()) {
+                        // if cancelled display the message and return
+                        ActionManager.reportException(e, receiver.getShell());
+                        return;
+                    } else {
+                        // notify the user about the exception and continue taking the snapshot normally
+                        ActionManager.reportException(e,
+                            "Snapshot will be taken locally, but it might not be possible to save it.",
+                            receiver.getShell());
+                    }
                 }
             }
             if (taken == null) {

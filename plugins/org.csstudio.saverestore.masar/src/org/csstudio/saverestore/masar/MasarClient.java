@@ -53,12 +53,15 @@ public class MasarClient {
     private static class MasarChannelRequester implements ChannelRequester {
 
         private final CompletionNotifier notifier;
-        private final MasarClient client;
         private ConnectionState lastConnectionState = ConnectionState.NEVER_CONNECTED;
 
-        public MasarChannelRequester(MasarClient client, CompletionNotifier notifier) {
+        public MasarChannelRequester(CompletionNotifier notifier, boolean neverConnected) {
             this.notifier = notifier;
-            this.client = client;
+            if (neverConnected) {
+                lastConnectionState = ConnectionState.NEVER_CONNECTED;
+            } else {
+                lastConnectionState = ConnectionState.CONNECTED;
+            }
         }
 
         @Override
@@ -83,14 +86,17 @@ public class MasarClient {
                 new Object[] { channel.getChannelName(), connectionState });
             if (connectionState == ConnectionState.CONNECTED) {
                 if (lastConnectionState == ConnectionState.NEVER_CONNECTED && notifier != null) {
+                    //this is to bring up a service which was disconnected at start up time, but became online later
                     notifier.synchronised();
-                } else {
-                    try {
-                        client.connect();
-                    } catch (MasarException e) {
-                        SaveRestoreService.LOGGER.log(Level.SEVERE, "Cannot reconnect to masar service", e);
-                    }
                 }
+                //if not working, reconnect will happen at the next request
+//                else if (lastConnectionState != ConnectionState.CONNECTED) {
+//                    try {
+//                        client.connect(true);
+//                    } catch (MasarException e) {
+//                        SaveRestoreService.LOGGER.log(Level.SEVERE, "Cannot reconnect to masar service", e);
+//                    }
+//                }
             }
             lastConnectionState = connectionState;
         }
@@ -133,7 +139,7 @@ public class MasarClient {
 
         @Override
         public boolean waitUntilConnected() throws InterruptedException {
-            return connectedSignaler.await(Activator.getInstance().getTimeout(), TimeUnit.SECONDS)
+            return connectedSignaler.await(Activator.getInstance().getConnectionTimeout(), TimeUnit.SECONDS)
                 && channelRPC != null;
         }
 
@@ -155,11 +161,14 @@ public class MasarClient {
             }
             this.result = null;
             rpc.request(requestData);
-            if (doneSemaphore.tryAcquire(1, Activator.getInstance().getTimeout(), TimeUnit.SECONDS)) {
-                return result;
+            if (Activator.getInstance().getTimeout() > 0) {
+                if (!doneSemaphore.tryAcquire(1, Activator.getInstance().getTimeout(), TimeUnit.SECONDS)) {
+                    throw new MasarException("Timeout sending request to " + service + ".");
+                }
             } else {
-                throw new MasarException("Error sending request to masar service. Timeout occurred.");
+                doneSemaphore.acquire(1);
             }
+            return result;
         }
 
         @Override
@@ -175,8 +184,8 @@ public class MasarClient {
         }
     }
 
-    private static RPCRequester createChannel(String service, MasarClient client, CompletionNotifier notifier)
-        throws MasarException {
+    private static RPCRequester createChannel(String service, CompletionNotifier notifier,
+        boolean neverConnected) throws MasarException {
         if (service == null) {
             throw new MasarException("No service name provided.");
         }
@@ -185,7 +194,7 @@ public class MasarClient {
         ChannelProvider channelProvider = ChannelProviderRegistryFactory.getChannelProviderRegistry()
             .getProvider(org.epics.pvaccess.ClientFactory.PROVIDER_NAME);
 
-        MasarChannelRequester channelRequester = new MasarChannelRequester(client, notifier);
+        MasarChannelRequester channelRequester = new MasarChannelRequester(notifier, neverConnected);
         Channel channel = channelProvider.createChannel(service, channelRequester, ChannelProvider.PRIORITY_DEFAULT);
 
         MasarChannelRPCRequester channelRPCRequester = new MasarChannelRPCRequester(service);
@@ -204,6 +213,7 @@ public class MasarClient {
      */
     public MasarClient() {
         // default constructor to allow extensions
+
     }
 
     /**
@@ -267,7 +277,7 @@ public class MasarClient {
                 }
                 this.selectedService = this.services[0];
             }
-            return connect();
+            return connect(true);
         }
         return false;
     }
@@ -282,13 +292,17 @@ public class MasarClient {
     public synchronized void setService(Branch service) throws MasarException {
         if (!service.getShortName().equals(selectedService) && (selectedService == null || !service.isDefault())) {
             selectedService = service.getShortName();
-            connect();
+            connect(true);
         }
     }
 
     private boolean connect() throws MasarException {
+        return connect(false);
+    }
+
+    private boolean connect(boolean neverConnected) throws MasarException {
         dispose();
-        channelRPCRequester = createChannel(selectedService, this, connectionNotifier);
+        channelRPCRequester = createChannel(selectedService, connectionNotifier, neverConnected);
         try {
             return channelRPCRequester.waitUntilConnected();
         } catch (InterruptedException e) {
@@ -308,7 +322,7 @@ public class MasarClient {
         if (Arrays.asList(services).contains(newService)) {
             throw new MasarException("Service '" + newService + "' already exists.");
         }
-        RPCRequester channel = createChannel(newService, this, null);
+        RPCRequester channel = createChannel(newService, null, true);
         boolean connected = false;
         try {
             connected = channel.waitUntilConnected();
@@ -351,12 +365,29 @@ public class MasarClient {
      * @throws MasarException in case of an error
      */
     public synchronized List<BaseLevel> getBaseLevels(Branch service) throws MasarException {
+        return getBaseLevels(service, true);
+    }
+
+    /**
+     * Reads and returns the list of all base levels (system configurations) in the given service.
+     *
+     * @param service the service from which to retrieve base levels
+     * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
+     *            request sent again
+     * @return the list of base levels
+     * @throws MasarException in case of an error
+     */
+    private List<BaseLevel> getBaseLevels(Branch service, boolean retryOnError) throws MasarException {
         setService(service);
         try {
             PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BASE_LEVEL);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_BASE_LEVELS);
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return getBaseLevels(service, false);
+                }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
@@ -374,7 +405,7 @@ public class MasarClient {
             list.add(0, new BaseLevel(service, "all", "all"));
             return list;
         } catch (InterruptedException e) {
-            throw new MasarException("Error loading base levels.", e);
+            throw new MasarException("Loading system configurations aborted.", e);
         }
     }
 
@@ -383,13 +414,29 @@ public class MasarClient {
      * the file system, not by searching the git repository.
      *
      * @param baseLevel the base level for which the beamline sets are requested (optional, if base levels are not used)
-     * @param branch the branch to switch to
+     * @param service the service to switch to
      * @return the list of beamline sets
      * @throws MasarException in case of an error
      */
-    public synchronized List<BeamlineSet> getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch)
+    public synchronized List<BeamlineSet> getBeamlineSets(Optional<BaseLevel> baseLevel, Branch service)
         throws MasarException {
-        setService(branch);
+        return getBeamlineSets(baseLevel, service, true);
+    }
+
+    /**
+     * Returns the list of all available beamline sets in the current branch. The search is done by reading the data on
+     * the file system, not by searching the git repository.
+     *
+     * @param baseLevel the base level for which the beamline sets are requested (optional, if base levels are not used)
+     * @param service the service to switch to
+     * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
+     *            request sent again
+     * @return the list of beamline sets
+     * @throws MasarException in case of an error
+     */
+    private List<BeamlineSet> getBeamlineSets(Optional<BaseLevel> baseLevel, Branch service, boolean retryOnError)
+        throws MasarException {
+        setService(service);
         try {
             PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BEAMLINE_SET);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_BEAMLINE_SETS);
@@ -397,13 +444,17 @@ public class MasarClient {
             request.getStringField(MasarConstants.F_CONFIGNAME).put("*");
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return getBeamlineSets(baseLevel, service, false);
+                }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
 
-            return MasarUtilities.createBeamlineSetsList(result, branch, baseLevel);
+            return MasarUtilities.createBeamlineSetsList(result, service, baseLevel);
         } catch (InterruptedException e) {
-            throw new MasarException("Error loading beamline sets.", e);
+            throw new MasarException("Loading save sets aborted.", e);
         }
     }
 
@@ -424,6 +475,28 @@ public class MasarClient {
      */
     public synchronized List<Snapshot> findSnapshots(Branch service, String expression, boolean byUser,
         boolean byComment, Optional<Date> start, Optional<Date> end) throws MasarException, ParseException {
+        return findSnapshots(service, expression, byUser, byComment, start, end, true);
+    }
+
+    /**
+     * Search for snapshots that match the given criteria. Snapshot is accepted if the search is performed by user or by
+     * comment and expression is found in either the snapshot comment or creator. The snapshot also has to be created
+     * after start and before end if those two parameters are provided.
+     *
+     * @param service the service on which to search
+     * @param expression the expression to search for
+     * @param byUser true if the username should match the expression
+     * @param byComment true if the comment should match the expression
+     * @param start the start date of the time range to search
+     * @param end the end date of the time range to search
+     * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
+     *            request sent again
+     * @return list of snapshots that match criteria
+     * @throws MasarException in case of an error
+     * @throws ParseException in case that the returned timestamp could not be parsed
+     */
+    private List<Snapshot> findSnapshots(Branch service, String expression, boolean byUser, boolean byComment,
+        Optional<Date> start, Optional<Date> end, boolean retryOnError) throws MasarException, ParseException {
         setService(service);
         try {
             PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(
@@ -448,6 +521,10 @@ public class MasarClient {
             }
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return findSnapshots(service, expression, byUser, byComment, start, end, false);
+                }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
@@ -455,7 +532,7 @@ public class MasarClient {
             return MasarUtilities.createSnapshotsList(value, s -> new BeamlineSet(service, Optional.empty(),
                 new String[] { "Beamline Set: " + s }, MasarDataProvider.ID));
         } catch (InterruptedException e) {
-            throw new MasarException("Error loading snapshots.", e);
+            throw new MasarException("Searching snapshots aborted.", e);
         }
     }
 
@@ -470,6 +547,22 @@ public class MasarClient {
      */
     public synchronized Optional<Snapshot> findSnapshotById(Branch service, int id)
         throws MasarException, ParseException {
+        return findSnapshotById(service, id, true);
+    }
+
+    /**
+     * Finds the snapshot that has the given id. If the snapshot was not found an empty optional is returned.
+     *
+     * @param service the service on which to search for the snapshot
+     * @param id the snapshot id
+     * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
+     *            request sent again
+     * @return the snapshot if found
+     * @throws ParseException if the snapshot date could not be parsed
+     * @throws MasarException in case of an error
+     */
+    private Optional<Snapshot> findSnapshotById(Branch service, int id, boolean retryOnError)
+        throws MasarException, ParseException {
         setService(service);
         try {
             String index = String.valueOf(id);
@@ -479,6 +572,10 @@ public class MasarClient {
             request.getStringField(MasarConstants.F_EVENTID).put(index);
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return findSnapshotById(service, id, false);
+                }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
@@ -491,7 +588,7 @@ public class MasarClient {
                 return Optional.of(list.get(0));
             }
         } catch (InterruptedException e) {
-            throw new MasarException("Error loading snapshots data.", e);
+            throw new MasarException("Searching snapshots aborted.", e);
         }
     }
 
@@ -499,13 +596,26 @@ public class MasarClient {
      * Returns the list of all snapshots for the given beamline set.
      *
      * @param beamlineSet the beamline set for which the snapshots are requested
-     * @param numberOfRevisions the maximum number of snapshot revisions to load
-     * @param fromThisOneBack the revision at which to start and then going back
      * @return the list of all snapshot revisions for this beamline set
      * @throws MasarException in case of an error
      * @throws ParseException if parsing of date failed
      */
     public synchronized List<Snapshot> getSnapshots(BeamlineSet beamlineSet) throws MasarException, ParseException {
+        return getSnapshots(beamlineSet, true);
+    }
+
+    /**
+     * Returns the list of all snapshots for the given beamline set.
+     *
+     * @param beamlineSet the beamline set for which the snapshots are requested
+     * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
+     *            request sent again
+     * @return the list of all snapshot revisions for this beamline set
+     * @throws MasarException in case of an error
+     * @throws ParseException if parsing of date failed
+     */
+    private List<Snapshot> getSnapshots(BeamlineSet beamlineSet, boolean retryOnError)
+        throws MasarException, ParseException {
         setService(beamlineSet.getBranch());
         try {
             PVStructure request;
@@ -519,13 +629,17 @@ public class MasarClient {
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SNAPSHOTS);
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return getSnapshots(beamlineSet, false);
+                }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
             PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
             return MasarUtilities.createSnapshotsList(value, s -> beamlineSet);
         } catch (InterruptedException e) {
-            throw new MasarException("Error loading snapshots.", e);
+            throw new MasarException("Loading snapshots aborted.", e);
         }
     }
 
@@ -537,6 +651,19 @@ public class MasarClient {
      * @throws MasarException in case of an error
      */
     public synchronized VSnapshot loadSnapshotData(Snapshot snapshot) throws MasarException {
+        return loadSnapshotData(snapshot, true);
+    }
+
+    /**
+     * Loads the data from the snapshot revision.
+     *
+     * @param snapshot the snapshot descriptor to read
+     * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
+     *            request sent again
+     * @return the content of the snapshot
+     * @throws MasarException in case of an error
+     */
+    private VSnapshot loadSnapshotData(Snapshot snapshot, boolean retryOnError) throws MasarException {
         setService(snapshot.getBeamlineSet().getBranch());
         try {
             String index = snapshot.getParameters().get(MasarConstants.P_EVENT_ID);
@@ -549,12 +676,16 @@ public class MasarClient {
             request.getStringField(MasarConstants.F_EVENTID).put(index);
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return loadSnapshotData(snapshot, false);
+                }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
             return MasarUtilities.resultToVSnapshot(result, snapshot, Timestamp.of(snapshot.getDate()));
         } catch (InterruptedException e) {
-            throw new MasarException("Error loading snapshots data.", e);
+            throw new MasarException("Loading snapshots data aborted.", e);
         }
     }
 
@@ -567,6 +698,20 @@ public class MasarClient {
      * @throws MasarException in case of an error
      */
     public synchronized VSnapshot saveSnapshot(VSnapshot snapshot, String comment) throws MasarException {
+        return saveSnapshot(snapshot, comment, true);
+    }
+
+    /**
+     * Signal to the service that this snapshot should be stored permanently.
+     *
+     * @param snapshot the snapshot data
+     * @param comment the comment for the commit
+     * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
+     *            request sent again
+     * @return saved snapshot
+     * @throws MasarException in case of an error
+     */
+    private VSnapshot saveSnapshot(VSnapshot snapshot, String comment, boolean retryOnError) throws MasarException {
         setService(snapshot.getBeamlineSet().getBranch());
         try {
             if (!snapshot.getSnapshot().isPresent()) {
@@ -585,6 +730,10 @@ public class MasarClient {
             request.getStringField(MasarConstants.F_DESCRIPTION).put(comment);
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return saveSnapshot(snapshot, comment, false);
+                }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
@@ -605,7 +754,7 @@ public class MasarClient {
                 snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
                 snapshot.getTimestamp());
         } catch (InterruptedException e) {
-            throw new MasarException("Error saving snapshots.", e);
+            throw new MasarException("Saving snapshot aborted.", e);
         }
     }
 
@@ -617,6 +766,19 @@ public class MasarClient {
      * @throws MasarException in case of an error
      */
     public synchronized VSnapshot takeSnapshot(BeamlineSet set) throws MasarException {
+        return takeSnapshot(set, true);
+    }
+
+    /**
+     * Take a new snapshot for the given beamline set and return it.
+     *
+     * @param set the beamline set for which the snapshot will be taken
+     * @param retryOnError if true and there is a communication error the channel will be reconnected and request sent
+     *            again
+     * @return saved snapshot and change type describing what kind of updates were made to the repository
+     * @throws MasarException in case of an error
+     */
+    private VSnapshot takeSnapshot(BeamlineSet set, boolean retryOnError) throws MasarException {
         setService(set.getBranch());
         try {
             String name = set.getParameters().get(MasarConstants.P_CONFIG_NAME);
@@ -626,10 +788,15 @@ public class MasarClient {
             PVStructure request = PVDataFactory.getPVDataCreate()
                 .createPVStructure(MasarConstants.STRUCT_SNAPSHOT_TAKE);
             request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_TAKE_SNAPSHOT);
+            // request.getStringField(MasarConstants.F_SERVICENAME).put(set.getBranch().getShortName());
             request.getStringField(MasarConstants.F_CONFIGNAME).put(name);
 
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
+                if (retryOnError && channelRPCRequester.isConnected()) {
+                    connect();
+                    return takeSnapshot(set, false);
+                }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
@@ -649,7 +816,7 @@ public class MasarClient {
             Snapshot snapshot = new Snapshot(set, null, null, null, parameters);
             return MasarUtilities.resultToVSnapshot(result, snapshot, Timestamp.of(sec, nano));
         } catch (InterruptedException e) {
-            throw new MasarException("Error taking a snapshot.", e);
+            throw new MasarException("Taking snapshot aborted.", e);
         }
     }
 

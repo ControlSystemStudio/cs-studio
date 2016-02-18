@@ -23,7 +23,7 @@ public final class MasarConstants {
     static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
-    //various structure names and ids
+    // various structure names and ids
     static final String T_ENUM = "enum_t";
     // Output parameters IDs
     static final String P_STRUCTURE_VALUE = "value";
@@ -41,7 +41,7 @@ public final class MasarConstants {
     static final String P_COMMENT = "comments";
     static final String P_EVENT_TIME = "event_time";
     static final String P_USER = "user_name";
-    //Timestamp and alarm tags
+    // Timestamp and alarm tags
     static final String P_TIMESTAMP = "timeStamp";
     static final String P_USER_TAG = "userTag";
     static final String P_SECONDS = "secondsPastEpoch";
@@ -62,6 +62,7 @@ public final class MasarConstants {
     static final String F_FUNCTION = "function";
     static final String F_SYSTEM = "system";
     static final String F_CONFIGNAME = "configname";
+    static final String F_SERVICENAME = "servicename";
     static final String F_CONFIGID = "configid";
     static final String F_EVENTID = "eventid";
     static final String F_COMMENT = "comment";
@@ -121,7 +122,7 @@ public final class MasarConstants {
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
 
     private MasarConstants() {
-        //prevent instantiation
+        // prevent instantiation
     }
 
     /**

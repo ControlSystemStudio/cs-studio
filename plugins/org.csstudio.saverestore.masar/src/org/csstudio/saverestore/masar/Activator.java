@@ -16,8 +16,10 @@ public class Activator extends AbstractUIPlugin {
 
     /** The preference name for the services list */
     public static final String PREF_SERVICES = "services";
-    /** The preference name for the timeout  for accessing masar service */
+    /** The preference name for the timeout for accessing masar service */
     public static final String PREF_TIMEOUT = "timeout";
+    /** The preference name for the connection timeout */
+    public static final String PREF_CONNECTION_TIMEOUT = "connectionTimeout";
 
     private static Activator defaultInstance;
 
@@ -72,12 +74,22 @@ public class Activator extends AbstractUIPlugin {
     }
 
     /**
-     * Returns the timeout for connecting to masar service in seconds.
+     * Returns the timeout for making requests to masar service in seconds.
      *
      * @return the timeout in seconds
      */
     public int getTimeout() {
         int timeout = getPreferenceStore().getInt(PREF_TIMEOUT);
-        return timeout == 0 ? 3 : timeout;
+        return timeout < 0 ? 0 : timeout;
+    }
+
+    /**
+     * Returns the connection timeout for connecting to masar service in seconds.
+     *
+     * @return the timeout in seconds
+     */
+    public int getConnectionTimeout() {
+        int timeout = getPreferenceStore().getInt(PREF_CONNECTION_TIMEOUT);
+        return timeout <= 0 ? 3 : timeout;
     }
 }

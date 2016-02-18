@@ -17,6 +17,7 @@ import org.csstudio.saverestore.data.BaseLevel;
 import org.csstudio.saverestore.data.BeamlineSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
+import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.security.SecuritySupport;
 import org.diirt.util.array.ArrayBoolean;
@@ -362,7 +363,10 @@ public final class MasarUtilities {
      * @return the {@link VType} describing the value
      */
     private static VType toValue(PVField val, Time time, Alarm alarm) {
-        if (val instanceof PVScalar) {
+        if (val == null) {
+            //this happens when a PV is not connected
+            return VNoData.INSTANCE;
+        } else if (val instanceof PVScalar) {
             Display display = ValueFactory.displayNone();
             ScalarType type = ((PVScalar) val).getScalar().getScalarType();
             switch (type) {

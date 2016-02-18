@@ -440,8 +440,7 @@ public final class Utilities {
     public static String valueToString(VType type, int arrayLimit) {
         if (type == null) {
             return null;
-        }
-        if (type instanceof VNumberArray) {
+        } else if (type instanceof VNumberArray) {
             ListNumber list = ((VNumberArray) type).getData();
             int size = Math.min(arrayLimit, list.size());
             StringBuilder sb = new StringBuilder(size * 15 + 2);
@@ -569,13 +568,13 @@ public final class Utilities {
      */
     @SuppressWarnings("unchecked")
     public static VTypeComparison valueToCompareString(VType value, VType baseValue, Optional<Threshold<?>> threshold) {
-        if (value == null && baseValue == null || value instanceof VNoData && baseValue instanceof VNoData) {
+        if (value == null && baseValue == null || value == VNoData.INSTANCE && baseValue == VNoData.INSTANCE) {
             return new VTypeComparison(VNoData.INSTANCE.toString(), 0, true);
         } else if (value == null || baseValue == null) {
             return value == null ? new VTypeComparison(VNoData.INSTANCE.toString(), -1, false)
                 : new VTypeComparison(valueToString(value), 1, false);
-        } else if (value instanceof VNoData || baseValue instanceof VNoData) {
-            return value instanceof VNoData ? new VTypeComparison(VNoData.INSTANCE.toString(), -1, false)
+        } else if (value == VNoData.INSTANCE || baseValue == VNoData.INSTANCE) {
+            return value == VNoData.INSTANCE ? new VTypeComparison(VNoData.INSTANCE.toString(), -1, false)
                 : new VTypeComparison(valueToString(value), 1, false);
         }
         if (value instanceof VNumber && baseValue instanceof VNumber) {
@@ -750,6 +749,10 @@ public final class Utilities {
             return true;
         } else if (v1 == null || v2 == null) {
             return false;
+        } else if (v1 == VNoData.INSTANCE && v2 == VNoData.INSTANCE) {
+            return true;
+        } else if (v1 == VNoData.INSTANCE || v2 == VNoData.INSTANCE) {
+            return false;
         }
         if (v1 instanceof VNumber && v2 instanceof VNumber) {
             if (v1 instanceof VDouble) {
@@ -870,6 +873,7 @@ public final class Utilities {
      */
     public static boolean areVTypesIdentical(VType v1, VType v2, boolean compareAlarmAndTime) {
         if (v1 == v2) {
+            //this works for no data as well
             return true;
         } else if (v1 == null && v2 == null) {
             return true;

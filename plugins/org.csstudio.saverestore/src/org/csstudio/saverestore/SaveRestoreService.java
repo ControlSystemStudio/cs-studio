@@ -6,6 +6,9 @@ import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,7 +23,6 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
@@ -62,18 +64,51 @@ public class SaveRestoreService {
         }
     };
 
+    /** The wait period for checking the results of the task execution */
+    private static final int WAIT_PERIOD = 100;
+
     /**
-     * <code>SaveRestoreJob</code> is a cancellable job for executing save and restore tasks. Once the job has been
-     * cancelled the {@link #isCancelled()} method returns true, which allows other objects to check the current state
-     * of the job.
+     * <code>RunnableWrapper</code> is a wrapper for {@link Runnable} tasks, which upon completion notifies all monitors
+     * locked on the object instance.
      *
      * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
      *
      */
-    private static class SaveRestoreJob extends Job {
+    private static class RunnableWrapper implements Runnable {
+        private final Runnable task;
+        private boolean completed = false;
+
+        RunnableWrapper(Runnable task) {
+            this.task = task;
+        }
+
+        @Override
+        public void run() {
+            task.run();
+            synchronized (this) {
+                completed = false;
+                this.notifyAll();
+            }
+        }
+    }
+
+    /**
+     * <code>SaveRestoreJob</code> is a cancellable job for executing save and restore tasks. Once the job has been
+     * cancelled the {@link #isCancelled()} method returns true, which allows other objects to check the current state
+     * of the job. Under the hood this job uses a separate thread for execution of the task, which allows the execution
+     * thread to be terminated in case when the job is cancelled and the task is currently sleeping, waiting or
+     * yielding. The approach is also useful if any of the tasks is checking {@link Thread#isInterrupted()} rather than
+     * {@link SaveRestoreService#isCurrentJobCancelled()}, which might be common when using 3rd party libraries (e.g.
+     * pvaccess).
+     *
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+     *
+     */
+    private class SaveRestoreJob extends Job {
 
         private final String taskName;
         private final Runnable task;
+        private volatile boolean cancelled = false;
 
         SaveRestoreJob(String taskName, Runnable task) {
             super("Save and Restore: " + taskName);
@@ -85,18 +120,78 @@ public class SaveRestoreService {
         @Override
         protected IStatus run(IProgressMonitor monitor) {
             monitor.beginTask(taskName, 1);
-            SaveRestoreService.getInstance().setCurrentJob(monitor);
+            setCurrentJob(this);
+            setBusy(true);
             try {
-                SaveRestoreService.getInstance().setBusy(true);
-                BusyIndicator.showWhile(null, task);
-                return Status.OK_STATUS;
+                RunnableWrapper wrapper = new RunnableWrapper(task);
+                Future<?> done = getExecutor().submit(wrapper);
+                while (!done.isDone()) {
+                    synchronized (wrapper) {
+                        // could be synchronised on done, but is is not recommended to lock on an object from
+                        // java.util.concurrent, since it might break some internal concurrency implementation
+                        if (wrapper.completed) {
+                            break;
+                        } else {
+                            wrapper.wait(WAIT_PERIOD);
+                        }
+                    }
+                    if (monitor.isCanceled()) {
+                        cancelled = true;
+                        getExecutor().shutdownNow();
+                        executor = null;
+                    }
+                }
+                return monitor.isCanceled() ? Status.CANCEL_STATUS : Status.OK_STATUS;
+            } catch (InterruptedException e) {
+                monitor.setCanceled(true);
+                return Status.CANCEL_STATUS;
             } finally {
                 SaveRestoreService.getInstance().setCurrentJob(null);
                 monitor.done();
                 SaveRestoreService.getInstance().setBusy(false);
             }
         }
+
+        boolean isCancelled() {
+            return cancelled;
+        }
     }
+
+    // /**
+    // * <code>SaveRestoreJob</code> is a cancellable job for executing save and restore tasks. Once the job has been
+    // * cancelled the {@link #isCancelled()} method returns true, which allows other objects to check the current state
+    // * of the job.
+    // *
+    // * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+    // *
+    // */
+    // private static class SaveRestoreJob extends Job {
+    //
+    // private final String taskName;
+    // private final Runnable task;
+    //
+    // SaveRestoreJob(String taskName, Runnable task) {
+    // super("Save and Restore: " + taskName);
+    // this.taskName = taskName;
+    // this.task = task;
+    // setRule(MUTEX_RULE);
+    // }
+    //
+    // @Override
+    // protected IStatus run(IProgressMonitor monitor) {
+    // monitor.beginTask(taskName, 1);
+    // SaveRestoreService.getInstance().setCurrentJob(monitor);
+    // try {
+    // SaveRestoreService.getInstance().setBusy(true);
+    // BusyIndicator.showWhile(null, task);
+    // return Status.OK_STATUS;
+    // } finally {
+    // SaveRestoreService.getInstance().setCurrentJob(null);
+    // monitor.done();
+    // SaveRestoreService.getInstance().setBusy(false);
+    // }
+    // }
+    // }
 
     private static final SaveRestoreService INSTANCE = new SaveRestoreService();
 
@@ -114,9 +209,24 @@ public class SaveRestoreService {
     private DataProviderWrapper selectedDataProvider;
     private final PropertyChangeSupport support = new PropertyChangeSupport(this);
     private IPreferenceStore preferences;
-    private IProgressMonitor currentJob;
+    private SaveRestoreJob currentJob;
+    private ExecutorService executor;
 
     private SaveRestoreService() {
+    }
+
+    /**
+     * Creates and returns the single thread executor used for job scheduling. The method is only called from the
+     * {@link SaveRestoreJob}. Because two jobs can never run simultaneously, two threads never access the executor
+     * simultaneously. Therefore, no synchronisation is need.
+     *
+     * @return the executor
+     */
+    private ExecutorService getExecutor() {
+        if (executor == null) {
+            executor = Executors.newSingleThreadExecutor();
+        }
+        return executor;
     }
 
     /**
@@ -317,9 +427,10 @@ public class SaveRestoreService {
      *
      * @param job the job that is currently being executed (can be null)
      */
-    private void setCurrentJob(IProgressMonitor job) {
+    private void setCurrentJob(SaveRestoreJob job) {
         synchronized (this) {
             this.currentJob = job;
+            setBusy(job != null);
         }
     }
 
@@ -335,7 +446,7 @@ public class SaveRestoreService {
      */
     public boolean isCurrentJobCancelled() {
         synchronized (this) {
-            return this.currentJob == null ? true : this.currentJob.isCanceled();
+            return this.currentJob == null ? true : this.currentJob.isCancelled();
         }
     }
 }
