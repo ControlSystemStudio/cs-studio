@@ -1,5 +1,8 @@
 package org.csstudio.ui.fx.util;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
@@ -26,6 +29,8 @@ public class FXSaveAsDialog extends SaveAsDialog {
      */
     public FXSaveAsDialog(Shell parentShell) {
         super(parentShell);
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(""));
+        setOriginalFile(file);
     }
 
     /*
