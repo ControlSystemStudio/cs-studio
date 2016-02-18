@@ -146,7 +146,7 @@ public class Opi_xyGraphClass extends OpiWidget {
             new OpiString(widgetContext, "trigger_pv", r.getTriggerPv());
 
 
-        // axis properties
+        // Axis properties. EDM doesn't instantly scale in even with no threshold
         for (int i = 0; i < 2; i++) {
             new OpiBoolean(widgetContext, "axis_" + i + "_auto_scale",
                     r.isAutoScaleBothDirections());
@@ -154,21 +154,37 @@ public class Opi_xyGraphClass extends OpiWidget {
                     r.getAutoScaleThreshPct() / 100);
 
         }
-        if(r.getxAxisSrc()!=null && r.getxAxisSrc().equals("AutoScale"))
+
+        // Don't assume defaults are true or false
+        if(r.getxAxisSrc()!=null && r.getxAxisSrc().equals("AutoScale")) {
             new OpiBoolean(widgetContext, "axis_0_auto_scale",    true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_0_auto_scale",    false);
+        }
 
-        if(r.getyAxisSrc()!=null && r.getyAxisSrc().equals("AutoScale"))
+        if(r.getyAxisSrc()!=null && r.getyAxisSrc().equals("AutoScale")) {
             new OpiBoolean(widgetContext, "axis_1_auto_scale",    true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_1_auto_scale",    false);
+        }
 
-
-        if(r.getY2AxisSrc()!=null && r.getY2AxisSrc().equals("AutoScale"))
+        if(r.getY2AxisSrc()!=null && r.getY2AxisSrc().equals("AutoScale")) {
             new OpiBoolean(widgetContext, "axis_2_auto_scale",    true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_2_auto_scale",    false);
+        }
 
-        if(r.getxAxisStyle()!=null && r.getxAxisStyle().equals("log10"))
+        if(r.getxAxisStyle()!=null && r.getxAxisStyle().equals("log10")) {
             new OpiBoolean(widgetContext, "axis_0_log_scale", true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_0_log_scale", false);
+        }
 
-        if(r.getyAxisStyle()!=null && r.getyAxisStyle().equals("log10"))
+        if(r.getyAxisStyle()!=null && r.getyAxisStyle().equals("log10")) {
             new OpiBoolean(widgetContext, "axis_1_log_scale", true);
+        } else {
+            new OpiBoolean(widgetContext, "axis_1_log_scale", false);
+        }
 
         // trace properties
         new OpiInt(widgetContext, "trace_count", r.getNumTraces());
