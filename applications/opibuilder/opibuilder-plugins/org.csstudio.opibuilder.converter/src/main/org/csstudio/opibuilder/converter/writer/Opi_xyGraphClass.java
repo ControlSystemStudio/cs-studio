@@ -100,9 +100,13 @@ public class Opi_xyGraphClass extends OpiWidget {
         new OpiDouble(widgetContext, "axis_1_maximum", r.getyMax());
         new OpiDouble(widgetContext, "axis_2_maximum", r.getY2Max());
 
-        new OpiBoolean(widgetContext, "axis_0_show_grid", r.isxShowMajorGrid());
-        new OpiBoolean(widgetContext, "axis_1_show_grid", r.isyShowMajorGrid());
-        new OpiBoolean(widgetContext, "axis_2_show_grid", r.isY2ShowMajorGrid());
+        // CSS only has coarse grid lines, show them if any EDM Grid is enabled
+        new OpiBoolean(widgetContext, "axis_0_show_grid",
+                r.isxShowMajorGrid() || r.isxShowMinorGrid() || r.isxShowLabelGrid());
+        new OpiBoolean(widgetContext, "axis_1_show_grid",
+                r.isyShowMajorGrid() || r.isyShowMinorGrid() || r.isyShowLabelGrid());
+        new OpiBoolean(widgetContext, "axis_2_show_grid",
+                r.isY2ShowMajorGrid() || r.isY2ShowMinorGrid() || r.isY2ShowLabelGrid());
 
         // There is no legend on EDM xygraphs.
         new OpiBoolean(widgetContext, "show_legend", false);
