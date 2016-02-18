@@ -29,7 +29,7 @@ public class PerspectiveLoader {
     @Preference(nodePath = "org.eclipse.ui.workbench")
     private IEclipsePreferences preferences;
 
-    private String perspToString(MPerspective persp) throws IOException {
+    public static String perspToString(MPerspective persp) throws IOException {
         Resource resource = new E4XMIResourceFactory().createResource(null);
         resource.getContents().add((EObject) persp);
         ByteArrayOutputStream output = new ByteArrayOutputStream();

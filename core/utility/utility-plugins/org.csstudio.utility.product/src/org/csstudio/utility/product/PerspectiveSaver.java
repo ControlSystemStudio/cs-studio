@@ -12,6 +12,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.e4.core.di.extensions.Preference;
 import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.e4.ui.internal.workbench.E4XMIResourceFactory;
 import org.eclipse.e4.ui.model.application.ui.advanced.MPerspective;
@@ -31,6 +33,10 @@ public class PerspectiveSaver implements EventHandler {
 
     @Inject
     private EModelService modelService;
+
+    @Inject
+    @Preference(nodePath = "org.eclipse.ui.workbench")
+    private IEclipsePreferences preferences;
 
     private URL url;
 
@@ -83,19 +89,20 @@ public class PerspectiveSaver implements EventHandler {
         if (o instanceof MPerspective) {
             try {
                 MPerspective p = (MPerspective) o;
-                MPerspective perspClone = (MPerspective) modelService
-                        .cloneElement(p, null);
-                List<MPlaceholder> phs = modelService.findElements(p, null,
-                        MPlaceholder.class, null);
+
+                List<MPlaceholder> phs = modelService.findElements(p, null, MPlaceholder.class, null);
                 for (MPlaceholder ph : phs) {
-                    System.out.println("placeholder " + ph);
                     ph.getPersistedState()
                             .putAll(ph.getRef().getPersistedState());
-                    ph.getPersistedState().put("Hello",  "World");
                 }
-                String name = p.getLabel();
-                savePerspective(perspClone, url.getFile() + "/perspective_"  + name + ".xmi");
-                System.out.println("Saved perspective " + name);
+                MPerspective clone = (MPerspective) modelService.cloneElement(p, null);
+                savePerspective(clone, url.getFile() + "/perspective_"  + p.getLabel() + ".xmi");
+                // The new perspective import and export mechanism will intercept
+                // this preference change and import the perspective for us.
+                // I'm not sure why we need to import explicitly even though the 
+                // perspective has been saved.
+                String perspAsString = PerspectiveLoader.perspToString(clone);
+                preferences.put(clone.getLabel() + "_e4persp", perspAsString);
             } catch (IOException e) {
                 e.printStackTrace();
             }
