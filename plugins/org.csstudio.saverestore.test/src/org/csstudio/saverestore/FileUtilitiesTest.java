@@ -7,6 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -116,7 +117,8 @@ public class FileUtilitiesTest {
             Arrays.asList("50", "Math.min(x,3)"), time.getTimestamp());
 
         String content = FileUtilities.generateSnapshotFileContent(vs);
-        String CONTENT = "# Date: 2016-02-12 18:08:29.369\n"
+        String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(d);
+        String CONTENT = "# Date: " + date + "\n"
             + "PV,SELECTED,TIMESTAMP,STATUS,SEVERITY,VALUE_TYPE,VALUE,READBACK,READBACK_VALUE,DELTA\n"
             + "pv1,1,1455296909.369000000,HIGH,MINOR,double,\"5.0\",rb1,\"6.0\",50\n"
             + "pv2,0,1455296909.379000000,NONE,NONE,double_array,\"[1.0;2.0;3.0]\",rb2,\"[1.0;1.0;1.0]\",\"Math.min(x,3)\"\n";
