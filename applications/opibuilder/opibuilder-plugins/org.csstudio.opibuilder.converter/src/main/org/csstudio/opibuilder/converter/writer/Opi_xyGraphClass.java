@@ -151,8 +151,7 @@ public class Opi_xyGraphClass extends OpiWidget {
             new OpiBoolean(widgetContext, "axis_" + i + "_auto_scale",
                     r.isAutoScaleBothDirections());
             new OpiDouble(widgetContext, "axis_" + i + "_auto_scale_threshold",
-                    r.getAutoScaleThreshPct() / 100);
-
+                    Math.max(r.getAutoScaleThreshPct() / 100, 0.95));
         }
 
         // Don't assume defaults are true or false
