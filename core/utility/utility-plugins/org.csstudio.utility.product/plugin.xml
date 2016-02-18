@@ -10,13 +10,7 @@
             id="org.csstudio.utility.product.CSStudioPerspective"
             name="%Perspective">
       </perspective>
-   </extension>
-         <extension
-         point="org.csstudio.utility.product.module">
-      <workbench
-            class="org.csstudio.utility.product.PerspectiveHandler">
-      </workbench>
-   </extension>
+      </extension>
       <extension
          point="org.eclipse.ui.commands">
       <command
