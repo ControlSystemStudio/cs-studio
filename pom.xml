@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright (c) 2013 DESY.
-  All rights reserved. This program and the accompanying materials
-  are made available under the terms of the Eclipse Distribution License v1.0
-  which accompanies this distribution, and is available at
-  http://www.eclipse.org/org/documents/edl-v10.php
- 
-  Contributors:
-     Jan Hatje - created the pom to build the plug-ins
--->
+<!-- Copyright (c) 2013 DESY. All rights reserved. This program and the accompanying 
+  materials are made available under the terms of the Eclipse Distribution 
+  License v1.0 which accompanies this distribution, and is available at http://www.eclipse.org/org/documents/edl-v10.php 
+  Contributors: Jan Hatje - created the pom to build the plug-ins -->
 <project
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
   xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -18,16 +12,12 @@
   <version>BUILD-VERSION</version>
   <packaging>pom</packaging>
 
-  <!--
-    USE MAVEN 3.0
-  --> 
+  <!-- USE MAVEN 3.0 -->
   <prerequisites>
     <maven>3.0</maven>
   </prerequisites>
 
-  <!-- 
-    PROPERTIES
-  -->
+  <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
     <tycho.version>0.23.1</tycho.version>
@@ -38,21 +28,21 @@
     <baselineMode>fail</baselineMode>
   </properties>
 
-  <!--
-    PLUGIN REPOSITORIES
-  -->
+  <!-- PLUGIN REPOSITORIES -->
   <pluginRepositories>
     <pluginRepository>
       <id>tycho</id>
       <url>https://oss.sonatype.org/content/groups/public</url>
-      <releases><enabled>false</enabled></releases>
-      <snapshots><enabled>true</enabled></snapshots>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
     </pluginRepository>
   </pluginRepositories>
 
-  <!--
-    P2 REPOSITORIES
-  -->
+  <!-- P2 REPOSITORIES -->
   <repositories>
     <repository>
       <id>csstudio-maven-osgi-bundles</id>
@@ -70,7 +60,7 @@
       <layout>p2</layout>
     </repository>
   </repositories>
-  
+
   <!-- If a local repository is specified then enable that repository -->
   <profiles>
     <profile>
@@ -89,21 +79,19 @@
       </repositories>
     </profile>
     <profile>
-    	<id>local-dev</id>
-		<properties>
-			<jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
-			<baselineMode>warn</baselineMode>
-		</properties>
-		<repositories>
-		</repositories>
-		<pluginRepositories>
-		</pluginRepositories>
-	</profile>
+      <id>local-dev</id>
+      <properties>
+        <jgit.dirtyWorkingTree>warning</jgit.dirtyWorkingTree>
+        <baselineMode>warn</baselineMode>
+      </properties>
+      <repositories>
+      </repositories>
+      <pluginRepositories>
+      </pluginRepositories>
+    </profile>
   </profiles>
 
-  <!--
-    CHILD MODULES
-  -->
+  <!-- CHILD MODULES -->
   <modules>
     <module>plugins</module>
     <module>features</module>
@@ -112,9 +100,7 @@
 
 
   <build>
-    <!--
-      PLUGIN MANAGEMENT
-    -->
+    <!-- PLUGIN MANAGEMENT -->
     <pluginManagement>
       <plugins>
         <plugin>
@@ -146,21 +132,19 @@
             <baselineMode>${baselineMode}</baselineMode>
             <!-- baselineReplace options: none, all -->
             <baselineReplace>none</baselineReplace>
-            <baselineRepositories> 
+            <baselineRepositories>
               <repository>
                 <url>${cs-studio-central.url}</url>
               </repository>
             </baselineRepositories>
           </configuration>
         </plugin>
-      </plugins> 
+      </plugins>
     </pluginManagement>
 
-    <!--
-      PLUGIN CONFIGURATION
-    -->
+    <!-- PLUGIN CONFIGURATION -->
     <plugins>
-     <plugin>
+      <plugin>
         <groupId>org.eclipse.tycho</groupId>
         <artifactId>target-platform-configuration</artifactId>
         <configuration>
@@ -181,27 +165,24 @@
         <version>${tycho.version}</version>
         <extensions>true</extensions>
       </plugin>
-        <plugin>
-          <groupId>org.eclipse.tycho</groupId>
-          <artifactId>target-platform-configuration</artifactId>
-          <version>${tycho.version}</version>
-          <configuration>
-            <dependency-resolution>
-              <extraRequirements>
-                <!-- Extra Target Bundles Here -->
-              </extraRequirements>
-              <!-- Default behavior is to resolve ALL dependencies. -->
-              <!--<optionalDependencies>ignore</optionalDependencies>-->
-            </dependency-resolution>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>target-platform-configuration</artifactId>
+        <version>${tycho.version}</version>
+        <configuration>
+          <dependency-resolution>
+            <extraRequirements>
+              <!-- Extra Target Bundles Here -->
+            </extraRequirements>
+            <!-- Default behavior is to resolve ALL dependencies. -->
+            <!--<optionalDependencies>ignore</optionalDependencies> -->
+          </dependency-resolution>
 
-            <filters>
-              <!-- This is how features/plugins can be ignored. -->
-              <!--<filter>
-                <type>eclipse-plugin</type>
-                <id>artifactId</id>
-                <removeAll />
-              </filter>-->
-            </filters>
+          <filters>
+            <!-- This is how features/plugins can be ignored. -->
+            <!--<filter> <type>eclipse-plugin</type> <id>artifactId</id> 
+              <removeAll /> </filter> -->
+          </filters>
 
             <environments>
               <environment>
@@ -227,7 +208,7 @@
         <artifactId>tycho-compiler-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <!--<compilerArgument>-err:-forbidden</compilerArgument>-->
+          <!--<compilerArgument>-err:-forbidden</compilerArgument> -->
         </configuration>
       </plugin>
       <plugin>
@@ -235,7 +216,8 @@
         <artifactId>tycho-packaging-plugin</artifactId>
         <version>${tycho.version}</version>
         <configuration>
-          <!--Some project include things that no longer exists. This should be fixed, but for now this parameter lets the build continue.-->
+          <!--Some project include things that no longer exists. This should 
+            be fixed, but for now this parameter lets the build continue. -->
           <strictBinIncludes>false</strictBinIncludes>
         </configuration>
       </plugin>
@@ -250,7 +232,8 @@
               <goal>plugin-source</goal>
             </goals>
             <configuration>
-              <!--Some project include things that no longer exists. This should be fixed, but for now this parameter lets the build continue.-->
+              <!--Some project include things that no longer exists. This 
+                should be fixed, but for now this parameter lets the build continue. -->
               <strictSrcIncludes>false</strictSrcIncludes>
             </configuration>
           </execution>
