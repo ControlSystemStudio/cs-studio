@@ -183,9 +183,16 @@
 									<id>org.epics.channelfinder:cf-client-api:3.0.3</id>
 								</artifact>
 								<artifact>
-									<id>com.sun.jersey:jersey-client:1.1.5</id>
+									<id>com.sun.jersey:jersey-bundle:1.19</id>
+                                    <override>true</override>
+									<instructions>
+									    <Embed-Dependency>*;scope=compile|runtime;inline=true</Embed-Dependency>
+									    <Embed-Transitive>true</Embed-Transitive>
+									</instructions>
 								</artifact>
-								
+								<artifact>
+									<id>com.sun.jersey.contribs:jersey-multipart:1.19</id>
+								</artifact>
 
 								<!-- pvmanager-plugins from reactor -->
 								<artifact>
