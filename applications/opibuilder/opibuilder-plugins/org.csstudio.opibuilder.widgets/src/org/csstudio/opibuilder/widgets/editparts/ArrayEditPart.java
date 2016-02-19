@@ -151,16 +151,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
         delegate.startPVs();
     }
 
-    @Override
-    public void performBeastBlink(final int blinkState) {
-        delegate.performBeastBlink(blinkState);
-    }
-
-    @Override
-    public void resetBeastBlink() {
-        delegate.resetBeastBlink();
-    }
-
     protected void initValueArray() {
         int length = getWidgetModel().getArrayLength();
         switch (getWidgetModel().getDataType()) {
@@ -637,7 +627,7 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
 
 
                         if (value instanceof VNumberArray) {
-                            Object wrappedArray = VTypeHelper.getWrappedArray((value));
+                            Object wrappedArray = VTypeHelper.getWrappedArray(((VNumberArray)value));
                             if(wrappedArray!=null)
                                 setValue(wrappedArray);
                             else
@@ -973,7 +963,6 @@ public class ArrayEditPart extends AbstractContainerEditpart implements IPVWidge
         return r;
     }
 
-    @Override
     public void setControlEnabled(boolean enabled) {
         delegate.setControlEnabled(enabled);
     }

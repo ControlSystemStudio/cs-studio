@@ -156,37 +156,6 @@
          </visibility>
       </objectContribution>
       <objectContribution
-            adaptable="false"
-            id="org.csstudio.opibuilder.beastAlarmPopupMenu"
-            objectClass="org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart">
-         <visibility>
-            <and>
-               <objectState
-                     name="executionMode"
-                     value="RUN_MODE">
-               </objectState>
-               <objectState
-                     name="beastAlarmPVActionable"
-                     value="true">
-               </objectState>
-            </and>
-         </visibility>
-         <menu
-             id="org.csstudio.opibuilder.beastSubMenu"
-             label="BEAST Alarm"
-             path="beastsub">
-             <separator name="beastsub1"/>
-         </menu>
-         <action
-               id="org.csstudio.opibuilder.acknowledgeAlarmAction"
-               class="org.csstudio.opibuilder.actions.AcknowledgeAlarmAction"
-               menubarPath="org.csstudio.opibuilder.beastSubMenu/beastsub1"
-               label="Acknowledge Alarm"
-               tooltip="If the widget is connected to a BEAST AlarmPV, acknowledges/unacknowledges this PV's alarm"
-               enablesFor="1">
-         </action>
-      </objectContribution>      
-      <objectContribution
             adaptable="true"
             id="org.csstudio.opibuilder.CSSpopupMenu"
             objectClass="org.csstudio.platform.model.IProcessVariable">

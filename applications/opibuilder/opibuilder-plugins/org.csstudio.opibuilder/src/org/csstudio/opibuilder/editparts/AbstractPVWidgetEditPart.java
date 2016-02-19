@@ -9,11 +9,9 @@ package org.csstudio.opibuilder.editparts;
 
 import org.csstudio.csdata.ProcessVariable;
 import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
-import org.csstudio.opibuilder.editparts.AbstractBaseEditPart.BaseEditPartActionFilter;
 import org.csstudio.simplepv.IPV;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.ui.IActionFilter;
 import org.diirt.vtype.VType;
 
 /**The abstract edit part for all PV armed widgets.
@@ -80,18 +78,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
         if(key == ProcessVariable.class){
             return new ProcessVariable(getPVName());
         }
-        if (key == IActionFilter.class)
-            return new BaseEditPartActionFilter(){
-            @Override
-            public boolean testAttribute(Object target, String name, String value) {
-                if (name.equals("beastAlarmPVActionable") && value.equalsIgnoreCase("TRUE")) //$NON-NLS-1$ //$NON-NLS-2$
-                {
-                	return getPVWidgetEditpartDelegate().isBeastAlarmAndActionable();
-                }
-                return super.testAttribute(target, name, value);
-            }
-        };
-
         return super.getAdapter(key);
     }
 
@@ -192,13 +178,4 @@ public abstract class AbstractPVWidgetEditPart extends AbstractBaseEditPart impl
         delegate.setControlEnabled(enabled);
     }
 
-    @Override
-    public void performBeastBlink(final int blinkState) {
-        delegate.performBeastBlink(blinkState);
-    }
-
-    @Override
-    public void resetBeastBlink() {
-        delegate.resetBeastBlink();
-    }
 }

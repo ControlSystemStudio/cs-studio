@@ -11,5 +11,7 @@
   <modules>
     <module>org.csstudio.applications.opibuilder.feature</module>
     <module>org.csstudio.applications.opibuilder.rap.feature</module>
+    <module>org.csstudio.applications.opibuilder.edm.feature</module>
+    <module>org.csstudio.applications.opibuilder.medm.feature</module>
   </modules>
 </project>

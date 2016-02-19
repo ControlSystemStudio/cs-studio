@@ -202,4 +202,14 @@ public class SingleSourceHelperImpl extends SingleSourceHelper {
         String id = defaultEditor.getId();
         page.openEditor(new PathEditorInput(path), id);
     }
+
+    @Override
+    protected void iOpenOPIShell(IPath path, MacrosInput input) {
+    }
+
+    @Override
+    protected IOPIRuntime iGetOPIShellForShell(Shell shell) {
+        return null;
+    }
+
 }

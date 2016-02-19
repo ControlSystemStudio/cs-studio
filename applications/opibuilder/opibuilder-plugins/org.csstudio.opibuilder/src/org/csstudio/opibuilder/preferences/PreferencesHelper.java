@@ -71,10 +71,6 @@ public class PreferencesHelper {
     //The widgets that are hidden from palette.
     public static final String HIDDEN_WIDGETS="hidden_widgets"; //$NON-NLS-1$
 
-    // BEAST Alarm functionality in BOY: enabled/disabled & blinking period (in ms)
-    public static final String OPI_BEAST_ALARMS_ENABLED = "opi_beast_alarms_enabled"; //$NON-NLS-1$
-    public static final String OPI_BEAST_ALARMS_BLINK_PERIOD = "opi_beast_alarms_blink_period"; //$NON-NLS-1$
-    
 //WebOPI preferences
 
     public static final String OPI_REPOSITORY = "opi_repository"; //$NON-NLS-1$
@@ -468,21 +464,5 @@ public class PreferencesHelper {
     public static boolean isAboutShowLinks(){
           final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, ABOUT_SHOW_LINKS, true, null);
-    }
-    
-    /**
-     * @return true if BEAST Alarms functionality should be enabled for BOY OPIs
-     */
-    public static boolean isOpiBeastAlarmsEnabled(){
-    	final IPreferencesService service = Platform.getPreferencesService();
-    	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, OPI_BEAST_ALARMS_ENABLED, false, null);
-    }
-    
-    /**
-     * @return Blinking period in ms for BEAST Alarm visual feedback in BOY
-     */
-    public static Integer getOpiBeastAlarmsBlinkPeriod(){
-    	final IPreferencesService service = Platform.getPreferencesService();
-    	return service.getInt(OPIBuilderPlugin.PLUGIN_ID, OPI_BEAST_ALARMS_BLINK_PERIOD, 500, null);
     }
 }

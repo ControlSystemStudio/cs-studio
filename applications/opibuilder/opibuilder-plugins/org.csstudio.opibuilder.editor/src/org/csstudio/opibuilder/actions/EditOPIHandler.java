@@ -5,7 +5,7 @@ import org.csstudio.opibuilder.runmode.IOPIRuntime;
 import org.csstudio.opibuilder.runmode.OPIView;
 import org.csstudio.opibuilder.util.ErrorHandlerUtil;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.opibuilder.util.SingleSourceRuntimeTypeHelper;
+import org.csstudio.opibuilder.util.SingleSourceHelper;
 import org.csstudio.ui.util.perspective.PerspectiveHelper;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -26,6 +26,7 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.handlers.HandlerUtil;
 import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -43,7 +44,16 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
 
-        IOPIRuntime opiRuntime = SingleSourceRuntimeTypeHelper.getOPIRuntimeForEvent(event);
+        IOPIRuntime opiRuntime = SingleSourceHelper.getOPIShellForShell(HandlerUtil.getActiveShell(event));
+        if (opiRuntime == null) {
+            // if the selected object isn't an OPIShell so grab the
+            // OPIView or OPIRunner currently selected
+            IWorkbenchPart part = HandlerUtil.getActivePart(event);
+            if (part instanceof IOPIRuntime)
+            {
+                opiRuntime = (IOPIRuntime)part;
+            }
+        }
 
         if (opiRuntime != null) {
             IPath path = opiRuntime.getDisplayModel().getOpiFilePath();
@@ -125,7 +135,7 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
         if (!PreferencesHelper.isNoEdit()) {
             if (evaluationContext instanceof IEvaluationContext) {
                 IWorkbenchPart part = getActivePart((IEvaluationContext) evaluationContext);
-                IOPIRuntime opiShell = SingleSourceRuntimeTypeHelper.getOPIRuntimeForShell(
+                IOPIRuntime opiShell = SingleSourceHelper.getOPIShellForShell(
                         getActiveShell((IEvaluationContext) evaluationContext));
                 IPath path = null;
                 if (opiShell != null) {
