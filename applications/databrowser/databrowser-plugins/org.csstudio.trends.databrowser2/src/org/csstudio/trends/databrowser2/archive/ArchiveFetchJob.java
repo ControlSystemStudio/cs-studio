@@ -45,10 +45,10 @@ public class ArchiveFetchJob extends Job
     private static final int POLL_PERIOD_MS = 1000;
 
     /**to manage concurrency on postgresql*/
-    protected Boolean concurrency = false;
+    private final boolean concurrency;
 
     /** display UnknownChannelException */
-    protected boolean displayUnknowChannelException = true;
+    private final boolean displayUnknowChannelException;
 
     /** Item for which to fetch samples */
     final private PVItem item;
@@ -125,7 +125,7 @@ public class ArchiveFetchJob extends Job
                     {
                         the_reader = reader = ArchiveRepository.getInstance().getArchiveReader(url);
                     }
-                    the_reader.enabledConcurrency(concurrency);
+                    the_reader.enableConcurrency(concurrency);
                     final ValueIterator value_iter;
                     if (item.getRequestType() == RequestType.RAW)
                         value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
@@ -135,16 +135,8 @@ public class ArchiveFetchJob extends Job
                                                                    TimeHelper.toTimestamp(start), TimeHelper.toTimestamp(end), bins);
                     // Get samples into array
                     final List<VType> result = new ArrayList<VType>();
-                    try
-                    {
-                        while (value_iter.hasNext())
-                            result.add(value_iter.next());
-                    }
-                    catch (Exception e)
-                    {
-                            throw e;
-                    }
-
+                    while (value_iter.hasNext())
+                        result.add(value_iter.next());
                     samples += result.size();
                     item.mergeArchivedSamples(the_reader.getServerName(), result);
                     if (cancelled)
@@ -197,6 +189,13 @@ public class ArchiveFetchJob extends Job
     public ArchiveFetchJob(PVItem item, final Instant start,
             final Instant end, final ArchiveFetchJobListener listener)
     {
+        this(item, start, end, listener, false, true);
+    }
+
+    protected ArchiveFetchJob(PVItem item, final Instant start,
+        final Instant end, final ArchiveFetchJobListener listener, boolean enableConcurrency,
+        boolean displayUnknownChannelException)
+    {
         super(NLS.bind(Messages.ArchiveFetchJobFmt,
                 new Object[] { item.getName(), TimeHelper.format(start),
                         TimeHelper.format(end) }));
@@ -204,6 +203,8 @@ public class ArchiveFetchJob extends Job
         this.start = start;
         this.end = end;
         this.listener = listener;
+        this.concurrency = enableConcurrency;
+        this.displayUnknowChannelException = displayUnknownChannelException;
     }
 
     /** @return PVItem for which this job was created */

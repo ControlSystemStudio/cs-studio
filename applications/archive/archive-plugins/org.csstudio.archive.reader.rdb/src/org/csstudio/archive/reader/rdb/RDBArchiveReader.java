@@ -65,7 +65,7 @@ public class RDBArchiveReader implements ArchiveReader
     private ArrayList<Statement> cancellable_statements =
         new ArrayList<Statement>();
 
-	private boolean concurrency = false;
+    private boolean concurrency = false;
 
     /** Initialize
      *  @param url Database URL
@@ -107,7 +107,7 @@ public class RDBArchiveReader implements ArchiveReader
 
         // Read-only allows MySQL to use load balancing
         if (!rdb.getConnection().isReadOnly()) {
-        	rdb.getConnection().setReadOnly(true);
+            rdb.getConnection().setReadOnly(true);
         }
 
         final Dialect dialect = rdb.getDialect();
@@ -519,9 +519,9 @@ public class RDBArchiveReader implements ArchiveReader
         cancel();
         ConnectionCache.release(rdb);
     }
-    
+
     @Override
-    public void enabledConcurrency(boolean concurrency) {
-    	this.concurrency  = concurrency;
+    public void enableConcurrency(boolean concurrency) {
+        this.concurrency  = concurrency;
     }
 }
