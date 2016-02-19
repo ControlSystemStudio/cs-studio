@@ -3,5 +3,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="lib" path="lib/com.sun.jersey.contribs.jersey-multipart_1.19.0.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
 </classpath>
