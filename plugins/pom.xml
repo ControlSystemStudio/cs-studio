@@ -13,13 +13,13 @@
   <packaging>pom</packaging>
   <modules>
     <module>edu.msu.nscl.olog.api</module>
-    <module>org.csstudio.platform.libs.jersey</module>
+    
     <module>gov.bnl.channelfinder.api</module>
-    <module>gov.bnl.unitconversion</module>
+    
     <module>org.csstudio.platform.libs.easymock</module>
     <module>org.csstudio.platform.libs.hibernate</module>
     <module>org.csstudio.platform.libs.jdbc</module>
-    <module>org.csstudio.platform.libs.jfreechart</module>
+    
     <module>org.csstudio.platform.libs.jmock</module>
     <module>org.csstudio.platform.libs.jms</module>
     <module>org.csstudio.platform.libs.tine</module>
