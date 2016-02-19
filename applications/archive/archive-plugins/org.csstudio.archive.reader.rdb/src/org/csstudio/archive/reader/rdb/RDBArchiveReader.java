@@ -521,7 +521,7 @@ public class RDBArchiveReader implements ArchiveReader
     }
 
     @Override
-    public void enabledConcurrency(boolean concurrency) {
+    public void enableConcurrency(boolean concurrency) {
         this.concurrency  = concurrency;
     }
 }
