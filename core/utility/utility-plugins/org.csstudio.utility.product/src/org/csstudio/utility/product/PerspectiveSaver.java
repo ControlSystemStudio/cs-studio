@@ -49,26 +49,22 @@ public class PerspectiveSaver implements EventHandler {
 
     private File resourceDirectory;
 
-    public PerspectiveSaver() {
-
+    @PostConstruct
+    public void init() {
         try {
+            logger.config("Initialising perspective saver.");
             url = Platform.getInstanceLocation().getDataArea("org.csstudio.startup");
             resourceDirectory = new File(url.getFile());
             Files.createDirectories(resourceDirectory.toPath());
+            // Subscribe to perspective save events.
+            broker.subscribe(UIEvents.UILifeCycle.PERSPECTIVE_SAVED, this);
         } catch (IOException e) {
             logger.log(Level.WARNING, INIT_FAILED, e);
         }
-
-    }
-
-    @PostConstruct
-    public void init() {
-        // Subscribe to perspective save events.
-        broker.subscribe(UIEvents.UILifeCycle.PERSPECTIVE_SAVED, this);
     }
 
     private void savePerspective(MPerspective persp, String file) throws IOException {
-        URI uri = URI.createURI("file://" + file);
+        URI uri = URI.createURI(PerspectiveLoader.FILE_PREFIX + file);
         Resource resource = new E4XMIResourceFactory().createResource(uri);
         resource.getContents().add((EObject) persp);
         resource.save(Collections.EMPTY_MAP);

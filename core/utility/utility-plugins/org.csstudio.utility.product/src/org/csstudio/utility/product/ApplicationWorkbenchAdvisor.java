@@ -70,9 +70,9 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
 
         declareWorkbenchImages();
 
+        // Create perspective saver.
         IEclipseContext context = PlatformUI.getWorkbench().getService(IEclipseContext.class);
         PerspectiveSaver ps = ContextInjectionFactory.make(PerspectiveSaver.class, context);
-        ps.init();
     }
 
     /** @return ID of initial perspective */
