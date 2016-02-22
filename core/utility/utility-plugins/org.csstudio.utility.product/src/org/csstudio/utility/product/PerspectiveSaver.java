@@ -45,9 +45,7 @@ public class PerspectiveSaver implements EventHandler {
     public PerspectiveSaver() {
 
         try {
-            url = Platform.getInstanceLocation()
-                    .getDataArea("org.csstudio.startup");
-            System.out.println("The url: " + url);
+            url = Platform.getInstanceLocation().getDataArea("org.csstudio.startup");
             resourceDirectory = new File(url.getFile());
             Files.createDirectories(resourceDirectory.toPath());
         } catch (IOException e) {
@@ -63,7 +61,6 @@ public class PerspectiveSaver implements EventHandler {
     }
 
     private void savePerspective(MPerspective persp, String file) throws IOException {
-        System.out.println("The file is " + file);
         URI uri = URI.createURI("file://" + file);
         Resource resource = new E4XMIResourceFactory().createResource(uri);
         resource.getContents().add((EObject) persp);

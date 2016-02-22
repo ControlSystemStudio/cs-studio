@@ -185,12 +185,10 @@ public class OPIView extends ViewPart implements IOPIRuntime
         final IEclipseContext globalContext = PlatformUI.getWorkbench().getService(IEclipseContext.class);
         final MApplication app = globalContext.get(MApplication.class);
         final List<MPlaceholder> phs = service.findElements(app, null, MPlaceholder.class, null);
-        System.out.println("phs is " + phs);
         for (MPlaceholder ph : phs)
         {
             if (ph.getRef() == part)
             {
-                System.out.println("Persisted state is " + ph.getPersistedState());
                 return ph;
             }
         }

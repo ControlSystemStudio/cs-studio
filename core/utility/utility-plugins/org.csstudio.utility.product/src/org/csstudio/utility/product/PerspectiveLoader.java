@@ -47,15 +47,12 @@ public class PerspectiveLoader {
     }
 
     public void loadPerspectives() {
-        System.out.println("The model service " + modelService);
-        System.out.println("Handled.");
         FileDialog chooser = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
         chooser.setText("Choose a perspective file");
         chooser.setFilterExtensions(new String[] {"*.xmi"});
         chooser.open();
         File dirname = new File(chooser.getFilterPath());
         File fullPath = new File(dirname, chooser.getFileName());
-        System.out.println(fullPath.getPath());
         ResourceSet rs = new ResourceSetImpl();
         URI uri = URI.createURI("file://" + fullPath.getPath());
         Resource res = rs.getResource(uri, true);
