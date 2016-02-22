@@ -15,7 +15,7 @@ import java.util.function.BooleanSupplier;
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.ui.Activator;
@@ -74,7 +74,7 @@ import javafx.scene.layout.VBox;
 /**
  *
  * <code>BrowserView</code> is the view that provides the browsing facilities for save and restore. The view consists of
- * an accordion panel, composed of three parts: isotopes, beamline sets and snapshots selector.
+ * an accordion panel, composed of three parts: isotopes, save sets and snapshots selector.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -86,14 +86,14 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
     private static final String SETTINGS_DEFAULT_BASE_LEVEL_BROWSER = "defaultBaseLevelBrowser";
     private static final String SETTINGS_BASE_LEVEL_FILTER_NOT_SELECTED = "baseLevelFilterNotSelected";
 
-    private static final Image BEAMLINE_SET_IMAGE = new Image(BrowserView.class.getResourceAsStream("/icons/txt.png"));
+    private static final Image SAVE_SET_IMAGE = new Image(BrowserView.class.getResourceAsStream("/icons/txt.png"));
 
-    private static class BeamlineSetWrapper {
+    private static class SaveSetWrapper {
 
-        final BeamlineSet set;
+        final SaveSet set;
         final String[] path;
 
-        BeamlineSetWrapper(BeamlineSet set, String name) {
+        SaveSetWrapper(SaveSet set, String name) {
             this.set = set;
             this.path = name == null ? set.getPath() : name.split("\\/");
         }
@@ -114,23 +114,23 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
 
     }
 
-    private static class BeamlineSetTreeItem extends TreeItem<BeamlineSetWrapper> {
-        BeamlineSetTreeItem(BeamlineSetWrapper set) {
-            super(set, new ImageView(BEAMLINE_SET_IMAGE));
+    private static class SaveSetTreeItem extends TreeItem<SaveSetWrapper> {
+        SaveSetTreeItem(SaveSetWrapper set) {
+            super(set, new ImageView(SAVE_SET_IMAGE));
         }
 
-        BeamlineSetTreeItem(String name) {
-            super(new BeamlineSetWrapper(null, name));
+        SaveSetTreeItem(String name) {
+            super(new SaveSetWrapper(null, name));
         }
     }
 
     private DefaultBaseLevelBrowser defaultBaseLevelBrowser;
     private BaseLevelBrowser<BaseLevel> baseLevelBrowser;
-    private TreeView<BeamlineSetWrapper> beamlineSetsTree;
+    private TreeView<SaveSetWrapper> saveSetsTree;
     private ListView<Snapshot> snapshotsList;
     private TitledPane snapshotsPane;
     private TitledPane baseLevelPane;
-    private TitledPane beamlineSetsPane;
+    private TitledPane saveSetsPane;
     private Button importButton;
     private Button newButton;
     private VBox mainPane;
@@ -220,15 +220,15 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
         BorderPane main = new BorderPane();
         Scene scene = new Scene(main);
 
-        Node beamlineSets = createBeamlineSetsPane(scene);
+        Node saveSets = createSaveSetsPane(scene);
         Node snapshots = createSnapshotsPane(scene);
         mainPane = new VBox();
         dataPane = new VBox();
-        VBox.setVgrow(beamlineSets, Priority.ALWAYS);
+        VBox.setVgrow(saveSets, Priority.ALWAYS);
         VBox.setVgrow(snapshots, Priority.ALWAYS);
-        dataPane.getChildren().addAll(beamlineSets, snapshotsPane);
+        dataPane.getChildren().addAll(saveSets, snapshotsPane);
         VBox.setVgrow(dataPane, Priority.ALWAYS);
-        beamlineSetsPane.setExpanded(true);
+        saveSetsPane.setExpanded(true);
         snapshotsPane.setExpanded(true);
         Optional<BaseLevelBrowser<BaseLevel>> browser = new BaseLevelBrowserProvider().getBaseLevelBrowser();
         Node elements = createBaseLevelsPane(browser.orElse(null), scene);
@@ -303,84 +303,84 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
         return baseLevelPane;
     }
 
-    private Node createBeamlineSetsPane(Scene scene) {
+    private Node createSaveSetsPane(Scene scene) {
         GridPane content = new GridPane();
 
-        beamlineSetsTree = new TreeView<>();
-        beamlineSetsTree.getSelectionModel().selectedItemProperty().addListener((a, o, n) -> selector
-            .selectedBeamlineSetProperty().set(n == null || n.getValue().isFolder() ? null : n.getValue().set));
-        beamlineSetsTree.setShowRoot(false);
+        saveSetsTree = new TreeView<>();
+        saveSetsTree.getSelectionModel().selectedItemProperty().addListener((a, o, n) -> selector
+            .selectedSaveSetProperty().set(n == null || n.getValue().isFolder() ? null : n.getValue().set));
+        saveSetsTree.setShowRoot(false);
 
         final ContextMenu popup = new ContextMenu();
         MenuItem deleteSetItem = new MenuItem("Delete...");
         deleteSetItem.setOnAction(e -> {
             popup.hide();
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-            if (canExecute("Delete Beamline Set",
-                wrapper.getName() + " data provider does not support deleting of beamline sets.",
-                wrapper.getProvider()::isBeamlineSetSavingSupported)) {
+            if (canExecute("Delete Save Set",
+                wrapper.getName() + " data provider does not support deleting of save sets.",
+                wrapper.getProvider()::isSaveSetSavingSupported)) {
 
-                BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
-                if (FXMessageDialog.openQuestion(getSite().getShell(), "Delete Beamline Set",
-                    "Are you sure you want to delete beamline set '" + item.getValue().set.getPathAsString() + "'?")) {
-                    actionManager.deleteBeamlineSet(item.getValue().set);
+                SaveSetTreeItem item = (SaveSetTreeItem) saveSetsTree.getSelectionModel().getSelectedItem();
+                if (FXMessageDialog.openQuestion(getSite().getShell(), "Delete Save Set",
+                    "Are you sure you want to delete save set '" + item.getValue().set.getPathAsString() + "'?")) {
+                    actionManager.deleteSaveSet(item.getValue().set);
                 }
             }
         });
         popup.getItems().add(deleteSetItem);
-        beamlineSetsTree.setContextMenu(popup);
-        beamlineSetsTree.setOnMouseReleased(e -> {
+        saveSetsTree.setContextMenu(popup);
+        saveSetsTree.setOnMouseReleased(e -> {
             if (e.getButton() == MouseButton.SECONDARY) {
-                BeamlineSetTreeItem item = (BeamlineSetTreeItem) beamlineSetsTree.getSelectionModel().getSelectedItem();
+                SaveSetTreeItem item = (SaveSetTreeItem) saveSetsTree.getSelectionModel().getSelectedItem();
                 if (item.getValue().set == null) {
                     popup.hide();
                 } else {
-                    popup.show(beamlineSetsTree, e.getScreenX(), e.getScreenY());
+                    popup.show(saveSetsTree, e.getScreenX(), e.getScreenY());
                 }
             }
         });
-        setGridConstraints(beamlineSetsTree, true, true, Priority.ALWAYS, Priority.ALWAYS);
-        content.add(beamlineSetsTree, 0, 0);
+        setGridConstraints(saveSetsTree, true, true, Priority.ALWAYS, Priority.ALWAYS);
+        content.add(saveSetsTree, 0, 0);
 
-        beamlineSetsPane = new TitledPane("Beamline Sets", content);
-        beamlineSetsPane.setMaxHeight(Double.MAX_VALUE);
+        saveSetsPane = new TitledPane("Save Sets", content);
+        saveSetsPane.setMaxHeight(Double.MAX_VALUE);
 
         GridPane titleBox = new GridPane();
         titleBox.setHgap(5);
-        Label titleText = new Label("Beamline Sets");
-        titleText.textProperty().bind(beamlineSetsPane.textProperty());
+        Label titleText = new Label("Save Sets");
+        titleText.textProperty().bind(saveSetsPane.textProperty());
         newButton = new UnfocusableButton("New");
-        newButton.setTooltip(new Tooltip("Create a new Beamline Set"));
+        newButton.setTooltip(new Tooltip("Create a new Save Set"));
         Button editButton = new UnfocusableButton("Edit");
-        editButton.setTooltip(new Tooltip("Edit selected Beamline Set"));
+        editButton.setTooltip(new Tooltip("Edit selected Save Set"));
         importButton = new UnfocusableButton("Import");
-        importButton.setTooltip(new Tooltip("Import Beamline Sets from another location"));
+        importButton.setTooltip(new Tooltip("Import Save Sets from another location"));
         Button openButton = new UnfocusableButton("Open");
-        openButton.setTooltip(new Tooltip("Open selected Beamline Set in Snapshot Viewer"));
+        openButton.setTooltip(new Tooltip("Open selected Save Set in Snapshot Viewer"));
         openButton.disableProperty()
-            .bind(selector.selectedBeamlineSetProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
-        openButton.setOnAction(e -> actionManager.openBeamlineSet(selector.selectedBeamlineSetProperty().get()));
+            .bind(selector.selectedSaveSetProperty().isNull().or(saveSetsPane.expandedProperty().not()));
+        openButton.setOnAction(e -> actionManager.openSaveSet(selector.selectedSaveSetProperty().get()));
         editButton.disableProperty()
-            .bind(selector.selectedBeamlineSetProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
+            .bind(selector.selectedSaveSetProperty().isNull().or(saveSetsPane.expandedProperty().not()));
         editButton.setOnAction(e -> {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-            if (canExecute("Edit Beamline Set",
-                wrapper.getName() + " data provider does not support editing of beamline sets.",
-                wrapper.getProvider()::isBeamlineSetSavingSupported)) {
-                actionManager.editBeamlineSet(selector.selectedBeamlineSetProperty().get());
+            if (canExecute("Edit Save Set",
+                wrapper.getName() + " data provider does not support editing of save sets.",
+                wrapper.getProvider()::isSaveSetSavingSupported)) {
+                actionManager.editSaveSet(selector.selectedSaveSetProperty().get());
             }
         });
 
         newButton.setOnAction(e -> {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
-            if (canExecute("New Beamline Set",
-                wrapper.getName() + " data provider does not support creation of new beamline sets.",
-                wrapper.getProvider()::isBeamlineSetSavingSupported)) {
-                actionManager.newBeamlineSet();
+            if (canExecute("New Save Set",
+                wrapper.getName() + " data provider does not support creation of new save sets.",
+                wrapper.getProvider()::isSaveSetSavingSupported)) {
+                actionManager.newSaveSet();
             }
         });
         importButton.disableProperty()
-            .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
+            .bind(selector.selectedBaseLevelProperty().isNull().or(saveSetsPane.expandedProperty().not()));
         importButton.setOnAction(e -> {
             DataProviderWrapper wrapper = SaveRestoreService.getInstance().getSelectedDataProvider();
             if (canExecute("Import Data", wrapper.getName() + " data provider does not support data importing.",
@@ -399,13 +399,13 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
         titleBox.addRow(0, titleText, importButton, newButton, editButton, openButton);
         titleBox.setMaxWidth(Double.MAX_VALUE);
         titleText.setMaxWidth(Double.MAX_VALUE);
-        beamlineSetsPane.setGraphic(titleBox);
-        beamlineSetsPane.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
+        saveSetsPane.setGraphic(titleBox);
+        saveSetsPane.setContentDisplay(ContentDisplay.GRAPHIC_ONLY);
         titleBox.prefWidthProperty().bind(scene.widthProperty().subtract(34));
 
-        beamlineSetsPane.expandedProperty()
-            .addListener((a, o, n) -> VBox.setVgrow(beamlineSetsPane, n ? Priority.ALWAYS : Priority.NEVER));
-        return beamlineSetsPane;
+        saveSetsPane.expandedProperty()
+            .addListener((a, o, n) -> VBox.setVgrow(saveSetsPane, n ? Priority.ALWAYS : Priority.NEVER));
+        return saveSetsPane;
     }
 
     private void setUpSetButtons(Button newButton, Button importButton, DataProviderWrapper dpw) {
@@ -417,10 +417,10 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
             if (dpw.getProvider().areBaseLevelsSupported()) {
                 importButton.setVisible(true);
                 newButton.disableProperty()
-                    .bind(selector.selectedBaseLevelProperty().isNull().or(beamlineSetsPane.expandedProperty().not()));
+                    .bind(selector.selectedBaseLevelProperty().isNull().or(saveSetsPane.expandedProperty().not()));
             } else {
                 importButton.setVisible(false);
-                newButton.disableProperty().bind(beamlineSetsPane.expandedProperty().not());
+                newButton.disableProperty().bind(saveSetsPane.expandedProperty().not());
             }
         }
     }
@@ -446,8 +446,8 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
                 } else {
                     StringBuilder sb = new StringBuilder(300);
                     sb.append(item.getComment());
-                    String message = item.getParameters().get(Snapshot.TAG_MESSAGE);
-                    String tag = item.getParameters().get(Snapshot.TAG_NAME);
+                    String message = item.getTagMessage().orElse(null);
+                    String tag = item.getTagName().orElse(null);
                     if (tag != null) {
                         sb.append("\n\n").append(tag).append('\n').append(message);
                         getStyleClass().add("tagged-cell");
@@ -455,9 +455,9 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
                     setTooltip(new Tooltip(sb.toString()));
                     if (searchMode) {
                         StringBuilder text = new StringBuilder(300);
-                        item.getBeamlineSet().getBaseLevel()
+                        item.getSaveSet().getBaseLevel()
                             .ifPresent(e -> text.append('[').append(e).append(']').append(' '));
-                        text.append(item.getBeamlineSet().getPathAsString()).append('\n');
+                        text.append(item.getSaveSet().getPathAsString()).append('\n');
                         text.append(item.toString());
                         setText(text.toString());
                     } else {
@@ -472,7 +472,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
             Dragboard db = snapshotsList.startDragAndDrop(TransferMode.ANY);
             ClipboardContent cc = new ClipboardContent();
             Snapshot snapshot = snapshotsList.getSelectionModel().getSelectedItem();
-            snapshot.getBeamlineSet().updateBaseLevel();
+            snapshot.getSaveSet().updateBaseLevel();
             cc.put(SnapshotDataFormat.INSTANCE, snapshot);
             db.setContent(cc);
             e.consume();
@@ -558,14 +558,14 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
             nextButton.setTooltip(new Tooltip("Load Next Batch"));
             nextButton.setOnAction(e -> selector.readSnapshots(false, false));
             nextButton.disableProperty()
-                .bind(selector.selectedBeamlineSetProperty().isNull().or(selector.allSnapshotsLoadedProperty()));
+                .bind(selector.selectedSaveSetProperty().isNull().or(selector.allSnapshotsLoadedProperty()));
 
             Button nextAllButton = new UnfocusableButton("",
                 new ImageView(new Image(BrowserView.class.getResourceAsStream("/icons/2rightarrow.png"))));
             nextAllButton.setTooltip(new Tooltip("Load All"));
             nextAllButton.setOnAction(e -> selector.readSnapshots(false, true));
             nextAllButton.disableProperty()
-                .bind(selector.selectedBeamlineSetProperty().isNull().or(selector.allSnapshotsLoadedProperty()));
+                .bind(selector.selectedSaveSetProperty().isNull().or(selector.allSnapshotsLoadedProperty()));
 
             setUpTitlePaneNode(nextButton, false);
             setUpTitlePaneNode(nextAllButton, false);
@@ -604,9 +604,9 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
         selector.selectedBaseLevelProperty().addListener((a, o, n) -> {
             setUpElementsPaneTitle();
             if (n == null) {
-                beamlineSetsPane.setText("Beamline Sets");
+                saveSetsPane.setText("Save Sets");
             } else {
-                beamlineSetsPane.setText("Beamline Sets for " + n.getPresentationName());
+                saveSetsPane.setText("Save Sets for " + n.getPresentationName());
             }
         });
         if (baseLevelBrowser != null) {
@@ -641,31 +641,31 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
             }
         });
         selector.selectedBranchProperty().addListener((a, o, n) -> setUpElementsPaneTitle());
-        selector.selectedBeamlineSetProperty().addListener((a, o, n) -> {
+        selector.selectedSaveSetProperty().addListener((a, o, n) -> {
             if (n == null) {
                 snapshotsPane.setText("Snapshots");
             } else {
                 snapshotsPane.setText("Snapshots of " + n.getName());
             }
         });
-        selector.beamlineSetsProperty().addListener((a, o, beamlineSets) -> {
-            TreeItem<BeamlineSetWrapper> root = new BeamlineSetTreeItem("Root");
-            Map<String, TreeItem<BeamlineSetWrapper>> items = new HashMap<>();
+        selector.saveSetsProperty().addListener((a, o, saveSets) -> {
+            TreeItem<SaveSetWrapper> root = new SaveSetTreeItem("Root");
+            Map<String, TreeItem<SaveSetWrapper>> items = new HashMap<>();
             items.put("", root);
-            for (BeamlineSet set : beamlineSets) {
+            for (SaveSet set : saveSets) {
                 String folder = set.getFolder();
-                TreeItem<BeamlineSetWrapper> parent = items.get(folder);
+                TreeItem<SaveSetWrapper> parent = items.get(folder);
                 if (parent == null) {
-                    parent = new BeamlineSetTreeItem(folder);
+                    parent = new SaveSetTreeItem(folder);
                     items.put(folder, parent);
 
                     String[] path = parent.getValue().path;
-                    TreeItem<BeamlineSetWrapper> currentChild = parent;
+                    TreeItem<SaveSetWrapper> currentChild = parent;
                     for (int i = path.length - 1; i > -1; i--) {
                         String m = makeStringFromParts(path, 0, i);
-                        TreeItem<BeamlineSetWrapper> ti = items.get(m);
+                        TreeItem<SaveSetWrapper> ti = items.get(m);
                         if (ti == null) {
-                            ti = new BeamlineSetTreeItem(m);
+                            ti = new SaveSetTreeItem(m);
                             items.put(m, ti);
                             ti.getChildren().add(currentChild);
                             currentChild = ti;
@@ -675,9 +675,9 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
                         }
                     }
                 }
-                parent.getChildren().add(new BeamlineSetTreeItem(new BeamlineSetWrapper(set, null)));
+                parent.getChildren().add(new SaveSetTreeItem(new SaveSetWrapper(set, null)));
             }
-            beamlineSetsTree.setRoot(root);
+            saveSetsTree.setRoot(root);
             root.setExpanded(true);
         });
         selector.snapshotsProperty().addListener((a, o, n) -> {
@@ -743,7 +743,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
 
     /**
      * Sets the snapshot search results. The list of snapshots replaces the current list of snapshots and the expression
-     * is visible in the title of the snapshots pane. The base level and beamline sets panes are collapsed.
+     * is visible in the title of the snapshots pane. The base level and save sets panes are collapsed.
      *
      * @param expression the expression used for searching
      * @param snapshots the results
@@ -752,7 +752,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
         if (baseLevelPane != null) {
             baseLevelPane.expandedProperty().set(false);
         }
-        beamlineSetsPane.expandedProperty().set(false);
+        saveSetsPane.expandedProperty().set(false);
         snapshotsPane.expandedProperty().set(true);
         snapshotsPane.setText("Search results for '" + expression + "'");
         searchMode = true;
@@ -811,7 +811,7 @@ public class BrowserView extends FXViewPart implements ISelectionProvider, IShel
         Snapshot selectedSnapshot = snapshotsList.selectionModelProperty().get().getSelectedItem();
         return selectedSnapshot == null ? new LazySnapshotStructuredSelection(null, null)
             : new LazySnapshotStructuredSelection(selectedSnapshot, SaveRestoreService.getInstance()
-                .getDataProvider(selectedSnapshot.getBeamlineSet().getDataProviderId()).getProvider());
+                .getDataProvider(selectedSnapshot.getSaveSet().getDataProviderId()).getProvider());
     }
 
     /*

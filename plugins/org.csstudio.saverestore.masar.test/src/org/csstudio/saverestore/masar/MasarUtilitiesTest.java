@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -61,7 +61,7 @@ public class MasarUtilitiesTest {
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString), });
 
-    static final Structure STRUCT_BEAMLINE_SET = FieldFactory.getFieldCreate()
+    static final Structure STRUCT_SAVE_SET = FieldFactory.getFieldCreate()
         .createStructure(new String[] { MasarConstants.P_STRUCTURE_VALUE }, new Field[] { VALUE_STRUCTURE });
 
     static final Structure STRUCT_SNAPSHOT = FieldFactory.getFieldCreate().createStructure(
@@ -92,13 +92,13 @@ public class MasarUtilitiesTest {
                 .createUnionArray(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0])) });
 
     @Test
-    public void testCreateBeamlineSetList() {
+    public void testCreateSaveSetList() {
         SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
         long time = System.currentTimeMillis();
         Date date1 = new Date(time - 1000);
         Date date2 = new Date(time - 2500);
         Date date3 = new Date(time - 3000);
-        PVStructure structure = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_BEAMLINE_SET);
+        PVStructure structure = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_SAVE_SET);
         PVStructure struct = structure.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
         ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_CONFIG_INDEX, ScalarType.pvLong)).put(0, 3,
             new long[] { 1, 2, 3 }, 0);
@@ -115,10 +115,10 @@ public class MasarUtilitiesTest {
 
         Branch branch = new Branch();
         BaseLevel base = new BaseLevel(branch, "base", "base");
-        List<BeamlineSet> sets = MasarUtilities.createBeamlineSetsList(structure, branch, Optional.of(base));
+        List<SaveSet> sets = MasarUtilities.createSaveSetsList(structure, branch, Optional.of(base));
 
         assertEquals(3, sets.size());
-        BeamlineSet set = sets.get(0);
+        SaveSet set = sets.get(0);
         assertEquals(branch, set.getBranch());
         assertEquals(base, set.getBaseLevel().get());
         assertEquals(MasarDataProvider.ID, set.getDataProviderId());
@@ -177,12 +177,12 @@ public class MasarUtilitiesTest {
 
         Branch branch = new Branch();
         BaseLevel base = new BaseLevel(branch, "base", "base");
-        BeamlineSet set = new BeamlineSet(branch, Optional.of(base), new String[] { "name" }, MasarDataProvider.ID);
+        SaveSet set = new SaveSet(branch, Optional.of(base), new String[] { "name" }, MasarDataProvider.ID);
         List<Snapshot> snaps = MasarUtilities.createSnapshotsList(struct, e -> set);
 
         assertEquals(3, snaps.size());
         Snapshot snapshot = snaps.get(0);
-        assertEquals(set, snapshot.getBeamlineSet());
+        assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment1", snapshot.getComment());
         assertEquals("bugsbunny", snapshot.getOwner());
         assertEquals(date1, snapshot.getDate());
@@ -190,10 +190,10 @@ public class MasarUtilitiesTest {
         assertFalse(snapshot.getTagName().isPresent());
         Map<String, String> parameters = snapshot.getParameters();
         assertEquals("1", parameters.get(MasarConstants.P_CONFIG_ID));
-        assertEquals("1", parameters.get(MasarConstants.P_EVENT_ID));
+        assertEquals("1", parameters.get(MasarConstants.PARAM_SNAPSHOT_ID));
 
         snapshot = snaps.get(1);
-        assertEquals(set, snapshot.getBeamlineSet());
+        assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment2", snapshot.getComment());
         assertEquals("elmerfudd", snapshot.getOwner());
         assertEquals(date2, snapshot.getDate());
@@ -201,10 +201,10 @@ public class MasarUtilitiesTest {
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
         assertEquals("1", parameters.get(MasarConstants.P_CONFIG_ID));
-        assertEquals("2", parameters.get(MasarConstants.P_EVENT_ID));
+        assertEquals("2", parameters.get(MasarConstants.PARAM_SNAPSHOT_ID));
 
         snapshot = snaps.get(2);
-        assertEquals(set, snapshot.getBeamlineSet());
+        assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment3", snapshot.getComment());
         assertEquals("duffyduck", snapshot.getOwner());
         assertEquals(date3, snapshot.getDate());
@@ -212,7 +212,7 @@ public class MasarUtilitiesTest {
         assertFalse(snapshot.getTagName().isPresent());
         parameters = snapshot.getParameters();
         assertEquals("1", parameters.get(MasarConstants.P_CONFIG_ID));
-        assertEquals("3", parameters.get(MasarConstants.P_EVENT_ID));
+        assertEquals("3", parameters.get(MasarConstants.PARAM_SNAPSHOT_ID));
     }
 
     @Test
@@ -257,7 +257,7 @@ public class MasarUtilitiesTest {
         ((PVUnionArray) struct.getUnionArrayField(MasarConstants.P_STRUCTURE_VALUE)).put(0, 3,
             new PVUnion[] { u1, u2, u3 }, 0);
 
-        Snapshot s = new Snapshot(new BeamlineSet());
+        Snapshot s = new Snapshot(new SaveSet());
         Timestamp time = Timestamp.now();
         VSnapshot snapshot = MasarUtilities.resultToVSnapshot(struct, s, time);
 

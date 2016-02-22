@@ -21,10 +21,10 @@ import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.util.array.ArrayDouble;
@@ -61,7 +61,7 @@ public class SnapshotViewerControllerTest {
         f.set(null, ex);
 
         DataProvider dpr = mock(DataProvider.class);
-        when(dpr.takeSnapshot(any(BeamlineSet.class))).thenReturn(null);
+        when(dpr.takeSnapshot(any(SaveSet.class))).thenReturn(null);
         DataProviderWrapper dpw = new DataProviderWrapper("someId", "name", "description", dpr);
         // Mockito.when(service.getDataProvider("someId")).thenReturn(dpw);
         f = SaveRestoreService.class.getDeclaredField("dataProviders");
@@ -138,10 +138,10 @@ public class SnapshotViewerControllerTest {
         controller.takeSnapshot();
         DataProvider provider = SaveRestoreService.getInstance().getDataProvider("someId").getProvider();
         verify(provider, times(1)).isTakingSnapshotsSupported();
-        verify(provider, times(0)).takeSnapshot(snapshot1.getBeamlineSet());
+        verify(provider, times(0)).takeSnapshot(snapshot1.getSaveSet());
         when(provider.isTakingSnapshotsSupported()).thenReturn(true);
         controller.takeSnapshot();
-        verify(provider, times(1)).takeSnapshot(snapshot1.getBeamlineSet());
+        verify(provider, times(1)).takeSnapshot(snapshot1.getSaveSet());
         verify(controller.getSnapshotReceiver(), times(2)).addSnapshot(any(VSnapshot.class));
         VSnapshot snapshot2 = createSnapshot(false);
         controller.addSnapshot(snapshot2);
@@ -176,7 +176,7 @@ public class SnapshotViewerControllerTest {
     }
 
     private static VSnapshot createSnapshot(boolean saved) {
-        BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), new String[] { "first", "second", "third" },
+        SaveSet set = new SaveSet(new Branch(), Optional.empty(), new String[] { "first", "second", "third" },
             "someId");
         Snapshot snapshot;
         if (saved) {
@@ -198,8 +198,8 @@ public class SnapshotViewerControllerTest {
         VDoubleArray rval2 = ValueFactory.newVDoubleArray(new ArrayDouble(1, 1, 1), alarmNone, time, display);
 
         return new VSnapshot(snapshot, Arrays.asList("pv1", "pv2", "complexName:2a"), Arrays.asList(true, false, true),
-            Arrays.asList(val1, val2, VNoData.INSTANCE), Arrays.asList("rb1", "rb2", "rb3"),
-            Arrays.asList(rval1, rval2, VNoData.INSTANCE), Arrays.asList("50", "Math.min(x,3)", "30"),
+            Arrays.asList(val1, val2, VDisconnectedData.INSTANCE), Arrays.asList("rb1", "rb2", "rb3"),
+            Arrays.asList(rval1, rval2, VDisconnectedData.INSTANCE), Arrays.asList("50", "Math.min(x,3)", "30"),
             time.getTimestamp());
     }
 }

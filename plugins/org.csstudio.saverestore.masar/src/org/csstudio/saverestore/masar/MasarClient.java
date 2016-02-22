@@ -20,8 +20,8 @@ import java.util.stream.Collectors;
 import org.csstudio.saverestore.CompletionNotifier;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -410,49 +410,47 @@ public class MasarClient {
     }
 
     /**
-     * Returns the list of all available beamline sets in the current branch. The search is done by reading the data on
-     * the file system, not by searching the git repository.
+     * Returns the list of all available save sets in the current service.
      *
-     * @param baseLevel the base level for which the beamline sets are requested (optional, if base levels are not used)
+     * @param baseLevel the base level for which the save sets are requested (optional, if base levels are not used)
      * @param service the service to switch to
-     * @return the list of beamline sets
+     * @return the list of save sets
      * @throws MasarException in case of an error
      */
-    public synchronized List<BeamlineSet> getBeamlineSets(Optional<BaseLevel> baseLevel, Branch service)
+    public synchronized List<SaveSet> getSaveSets(Optional<BaseLevel> baseLevel, Branch service)
         throws MasarException {
-        return getBeamlineSets(baseLevel, service, true);
+        return getSaveSets(baseLevel, service, true);
     }
 
     /**
-     * Returns the list of all available beamline sets in the current branch. The search is done by reading the data on
-     * the file system, not by searching the git repository.
+     * Returns the list of all available save sets in the current branch.
      *
-     * @param baseLevel the base level for which the beamline sets are requested (optional, if base levels are not used)
+     * @param baseLevel the base level for which the save sets are requested (optional, if base levels are not used)
      * @param service the service to switch to
      * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
      *            request sent again
-     * @return the list of beamline sets
+     * @return the list of save sets
      * @throws MasarException in case of an error
      */
-    private List<BeamlineSet> getBeamlineSets(Optional<BaseLevel> baseLevel, Branch service, boolean retryOnError)
+    private List<SaveSet> getSaveSets(Optional<BaseLevel> baseLevel, Branch service, boolean retryOnError)
         throws MasarException {
         setService(service);
         try {
-            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BEAMLINE_SET);
-            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_BEAMLINE_SETS);
+            PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_SAVE_SET);
+            request.getStringField(MasarConstants.F_FUNCTION).put(MasarConstants.FC_LOAD_SAVE_SETS);
             request.getStringField(MasarConstants.F_SYSTEM).put(baseLevel.get().getStorageName());
             request.getStringField(MasarConstants.F_CONFIGNAME).put("*");
             PVStructure result = channelRPCRequester.request(request);
             if (result == null) {
                 if (retryOnError && channelRPCRequester.isConnected()) {
                     connect();
-                    return getBeamlineSets(baseLevel, service, false);
+                    return getSaveSets(baseLevel, service, false);
                 }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
 
-            return MasarUtilities.createBeamlineSetsList(result, service, baseLevel);
+            return MasarUtilities.createSaveSetsList(result, service, baseLevel);
         } catch (InterruptedException e) {
             throw new MasarException("Loading save sets aborted.", e);
         }
@@ -529,8 +527,8 @@ public class MasarClient {
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
             PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
-            return MasarUtilities.createSnapshotsList(value, s -> new BeamlineSet(service, Optional.empty(),
-                new String[] { "Beamline Set: " + s }, MasarDataProvider.ID));
+            return MasarUtilities.createSnapshotsList(value, s -> new SaveSet(service, Optional.empty(),
+                new String[] { "Save Set: " + s }, MasarDataProvider.ID));
         } catch (InterruptedException e) {
             throw new MasarException("Searching snapshots aborted.", e);
         }
@@ -580,8 +578,8 @@ public class MasarClient {
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
             PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
-            List<Snapshot> list = MasarUtilities.createSnapshotsList(value, s -> new BeamlineSet(service,
-                Optional.empty(), new String[] { "Beamline Set: " + s }, MasarDataProvider.ID));
+            List<Snapshot> list = MasarUtilities.createSnapshotsList(value, s -> new SaveSet(service,
+                Optional.empty(), new String[] { "Save Set: " + s }, MasarDataProvider.ID));
             if (list.isEmpty()) {
                 return Optional.empty();
             } else {
@@ -593,33 +591,33 @@ public class MasarClient {
     }
 
     /**
-     * Returns the list of all snapshots for the given beamline set.
+     * Returns the list of all snapshots for the given save set.
      *
-     * @param beamlineSet the beamline set for which the snapshots are requested
-     * @return the list of all snapshot revisions for this beamline set
+     * @param saveSet the save set for which the snapshots are requested
+     * @return the list of all snapshot revisions for this save set
      * @throws MasarException in case of an error
      * @throws ParseException if parsing of date failed
      */
-    public synchronized List<Snapshot> getSnapshots(BeamlineSet beamlineSet) throws MasarException, ParseException {
-        return getSnapshots(beamlineSet, true);
+    public synchronized List<Snapshot> getSnapshots(SaveSet saveSet) throws MasarException, ParseException {
+        return getSnapshots(saveSet, true);
     }
 
     /**
-     * Returns the list of all snapshots for the given beamline set.
+     * Returns the list of all snapshots for the given save set.
      *
-     * @param beamlineSet the beamline set for which the snapshots are requested
+     * @param saveSet the save set for which the snapshots are requested
      * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
      *            request sent again
-     * @return the list of all snapshot revisions for this beamline set
+     * @return the list of all snapshot revisions for this save set
      * @throws MasarException in case of an error
      * @throws ParseException if parsing of date failed
      */
-    private List<Snapshot> getSnapshots(BeamlineSet beamlineSet, boolean retryOnError)
+    private List<Snapshot> getSnapshots(SaveSet saveSet, boolean retryOnError)
         throws MasarException, ParseException {
-        setService(beamlineSet.getBranch());
+        setService(saveSet.getBranch());
         try {
             PVStructure request;
-            String index = beamlineSet.getParameters().get(MasarConstants.P_CONFIG_INDEX);
+            String index = saveSet.getParameters().get(MasarConstants.P_CONFIG_INDEX);
             if (index == null) {
                 request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BASE_LEVEL);
             } else {
@@ -631,13 +629,13 @@ public class MasarClient {
             if (result == null) {
                 if (retryOnError && channelRPCRequester.isConnected()) {
                     connect();
-                    return getSnapshots(beamlineSet, false);
+                    return getSnapshots(saveSet, false);
                 }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
             }
             PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
-            return MasarUtilities.createSnapshotsList(value, s -> beamlineSet);
+            return MasarUtilities.createSnapshotsList(value, s -> saveSet);
         } catch (InterruptedException e) {
             throw new MasarException("Loading snapshots aborted.", e);
         }
@@ -664,9 +662,9 @@ public class MasarClient {
      * @throws MasarException in case of an error
      */
     private VSnapshot loadSnapshotData(Snapshot snapshot, boolean retryOnError) throws MasarException {
-        setService(snapshot.getBeamlineSet().getBranch());
+        setService(snapshot.getSaveSet().getBranch());
         try {
-            String index = snapshot.getParameters().get(MasarConstants.P_EVENT_ID);
+            String index = snapshot.getParameters().get(MasarConstants.PARAM_SNAPSHOT_ID);
             if (index == null) {
                 throw new MasarException("Unknown snapshot: " + snapshot);
             }
@@ -712,12 +710,12 @@ public class MasarClient {
      * @throws MasarException in case of an error
      */
     private VSnapshot saveSnapshot(VSnapshot snapshot, String comment, boolean retryOnError) throws MasarException {
-        setService(snapshot.getBeamlineSet().getBranch());
+        setService(snapshot.getSaveSet().getBranch());
         try {
             if (!snapshot.getSnapshot().isPresent()) {
                 throw new MasarException("Snapshot " + snapshot + " cannot be saved by MASAR.");
             }
-            String id = snapshot.getSnapshot().get().getParameters().get(MasarConstants.P_EVENT_ID);
+            String id = snapshot.getSnapshot().get().getParameters().get(MasarConstants.PARAM_SNAPSHOT_ID);
             if (id == null) {
                 throw new MasarException("Snapshot " + snapshot + " is not a valid MASAR snapshot.");
             }
@@ -749,7 +747,8 @@ public class MasarClient {
             if (date == null) {
                 date = snapshot.getTimestamp().toDate();
             }
-            newSnap = new Snapshot(newSnap.getBeamlineSet(), date, comment, user, newSnap.getParameters());
+            newSnap = new Snapshot(newSnap.getSaveSet(), date, comment, user, newSnap.getParameters(),
+                newSnap.getPublicParameters());
             return new VSnapshot(newSnap, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
                 snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
                 snapshot.getTimestamp());
@@ -759,31 +758,31 @@ public class MasarClient {
     }
 
     /**
-     * Take a new snapshot for the given beamline set and return it.
+     * Take a new snapshot for the given save set and return it.
      *
-     * @param set the beamline set for which the snapshot will be taken
+     * @param set the save set for which the snapshot will be taken
      * @return saved snapshot and change type describing what kind of updates were made to the repository
      * @throws MasarException in case of an error
      */
-    public synchronized VSnapshot takeSnapshot(BeamlineSet set) throws MasarException {
+    public synchronized VSnapshot takeSnapshot(SaveSet set) throws MasarException {
         return takeSnapshot(set, true);
     }
 
     /**
-     * Take a new snapshot for the given beamline set and return it.
+     * Take a new snapshot for the given save set and return it.
      *
-     * @param set the beamline set for which the snapshot will be taken
+     * @param set the save set for which the snapshot will be taken
      * @param retryOnError if true and there is a communication error the channel will be reconnected and request sent
      *            again
      * @return saved snapshot and change type describing what kind of updates were made to the repository
      * @throws MasarException in case of an error
      */
-    private VSnapshot takeSnapshot(BeamlineSet set, boolean retryOnError) throws MasarException {
+    private VSnapshot takeSnapshot(SaveSet set, boolean retryOnError) throws MasarException {
         setService(set.getBranch());
         try {
             String name = set.getParameters().get(MasarConstants.P_CONFIG_NAME);
             if (name == null) {
-                throw new MasarException("Unknown beamline set: " + set);
+                throw new MasarException("Unknown save set: " + set);
             }
             PVStructure request = PVDataFactory.getPVDataCreate()
                 .createPVStructure(MasarConstants.STRUCT_SNAPSHOT_TAKE);
@@ -812,8 +811,9 @@ public class MasarClient {
             int nano = timestamp.getIntField(MasarConstants.P_NANOS).get();
             int id = timestamp.getIntField(MasarConstants.P_USER_TAG).get();
             Map<String, String> parameters = new HashMap<>();
-            parameters.put(MasarConstants.P_EVENT_ID, String.valueOf(id));
-            Snapshot snapshot = new Snapshot(set, null, null, null, parameters);
+            parameters.put(MasarConstants.PARAM_SNAPSHOT_ID, String.valueOf(id));
+            Snapshot snapshot = new Snapshot(set, null, null, null, parameters,
+                Arrays.asList(MasarConstants.PARAM_SNAPSHOT_ID));
             return MasarUtilities.resultToVSnapshot(result, snapshot, Timestamp.of(sec, nano));
         } catch (InterruptedException e) {
             throw new MasarException("Taking snapshot aborted.", e);
@@ -821,15 +821,15 @@ public class MasarClient {
     }
 
     /**
-     * Loads the beamline set data by trying to read the contents from one of the snapshot for this beamline set. If no
+     * Loads the save set data by trying to read the contents from one of the snapshot for this save set. If no
      * snapshot exists, one is taken and parsed. The snapshot that is taken is never saved.
      *
-     * @param set the beamline set for which the content is being loaded
-     * @return the beamline set data
+     * @param set the save set for which the content is being loaded
+     * @return the save set data
      * @throws MasarException in case of an error
      * @throws ParseException if an existing snapshot was being parsed and failed to read the timestamp
      */
-    public synchronized BeamlineSetData loadBeamlineSetData(BeamlineSet set) throws MasarException, ParseException {
+    public synchronized SaveSetData loadSaveSetData(SaveSet set) throws MasarException, ParseException {
         setService(set.getBranch());
         List<Snapshot> snapshots = getSnapshots(set);
         VSnapshot snapshot;
@@ -838,6 +838,6 @@ public class MasarClient {
         } else {
             snapshot = loadSnapshotData(snapshots.get(0));
         }
-        return new BeamlineSetData(set, snapshot.getNames(), null, null, null);
+        return new SaveSetData(set, snapshot.getNames(), null, null, null);
     }
 }

@@ -16,8 +16,8 @@ import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.saverestore.UnsupportedActionException;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -137,27 +137,27 @@ public class MasarDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#getBeamlineSets(java.util.Optional,
+     * @see org.csstudio.saverestore.DataProvider#getSaveSets(java.util.Optional,
      * org.csstudio.saverestore.data.Branch)
      */
     @Override
-    public BeamlineSet[] getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException {
+    public SaveSet[] getSaveSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException {
         try {
-            List<BeamlineSet> sets = mc.getBeamlineSets(baseLevel, branch);
-            return sets.toArray(new BeamlineSet[sets.size()]);
+            List<SaveSet> sets = mc.getSaveSets(baseLevel, branch);
+            return sets.toArray(new SaveSet[sets.size()]);
         } catch (MasarException e) {
-            throw new DataProviderException("Error loading the beamline set list.", e);
+            throw new DataProviderException("Error loading the save set list.", e);
         }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#getSnapshots(org.csstudio.saverestore.data.BeamlineSet, boolean,
+     * @see org.csstudio.saverestore.DataProvider#getSnapshots(org.csstudio.saverestore.data.SaveSet, boolean,
      * java.util.Optional)
      */
     @Override
-    public Snapshot[] getSnapshots(BeamlineSet set, boolean all, Optional<Snapshot> fromThisOneBack)
+    public Snapshot[] getSnapshots(SaveSet set, boolean all, Optional<Snapshot> fromThisOneBack)
         throws DataProviderException {
         try {
             List<Snapshot> snapshots = mc.getSnapshots(set);
@@ -171,14 +171,14 @@ public class MasarDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#getBeamlineSetContent(org.csstudio.saverestore.BeamlineSet)
+     * @see org.csstudio.saverestore.DataProvider#getSaveSetContent(org.csstudio.saverestore.SaveSet)
      */
     @Override
-    public BeamlineSetData getBeamlineSetContent(BeamlineSet set) throws DataProviderException {
+    public SaveSetData getSaveSetContent(SaveSet set) throws DataProviderException {
         try {
-            return mc.loadBeamlineSetData(set);
+            return mc.loadSaveSetData(set);
         } catch (MasarException | ParseException e) {
-            throw new DataProviderException("Error loading contents of a beamline set.", e);
+            throw new DataProviderException("Error loading contents of a save set.", e);
         }
     }
 
@@ -204,40 +204,40 @@ public class MasarDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#takeSnapshot(org.csstudio.saverestore.data.BeamlineSet)
+     * @see org.csstudio.saverestore.DataProvider#takeSnapshot(org.csstudio.saverestore.data.SaveSet)
      */
     @Override
-    public VSnapshot takeSnapshot(BeamlineSet beamlineSet) throws DataProviderException, UnsupportedActionException {
+    public VSnapshot takeSnapshot(SaveSet saveSet) throws DataProviderException, UnsupportedActionException {
         try {
-            return mc.takeSnapshot(beamlineSet);
+            return mc.takeSnapshot(saveSet);
         } catch (MasarResponseException e) {
-            throw new DataProviderException("Error taking a snapshot for '" + beamlineSet.getPathAsString()
+            throw new DataProviderException("Error taking a snapshot for '" + saveSet.getPathAsString()
                 + "'.\nService responded with message: " + e.getMessage());
         } catch (MasarException e) {
-            throw new DataProviderException("Error taking a snapshot for '" + beamlineSet.getPathAsString() + "'.", e);
+            throw new DataProviderException("Error taking a snapshot for '" + saveSet.getPathAsString() + "'.", e);
         }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#saveBeamlineSet(org.csstudio.saverestore.BeamlineSetData,
+     * @see org.csstudio.saverestore.DataProvider#saveSaveSet(org.csstudio.saverestore.SaveSetData,
      * java.lang.String)
      */
     @Override
-    public BeamlineSetData saveBeamlineSet(BeamlineSetData set, String comment) throws DataProviderException {
-        throw new UnsupportedActionException("MASAR does not support beamline set editing.");
+    public SaveSetData saveSaveSet(SaveSetData set, String comment) throws DataProviderException {
+        throw new UnsupportedActionException("MASAR does not support save set editing.");
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#deleteBeamlineSet(org.csstudio.saverestore.data.BeamlineSet,
+     * @see org.csstudio.saverestore.DataProvider#deleteSaveSet(org.csstudio.saverestore.data.SaveSet,
      * java.lang.String)
      */
     @Override
-    public boolean deleteBeamlineSet(BeamlineSet set, String comment) throws DataProviderException {
-        throw new UnsupportedActionException("MASAR does not support beamline set editing.");
+    public boolean deleteSaveSet(SaveSet set, String comment) throws DataProviderException {
+        throw new UnsupportedActionException("MASAR does not support save set editing.");
     }
 
     /*
@@ -251,11 +251,11 @@ public class MasarDataProvider implements DataProvider {
         try {
             snapshot = mc.saveSnapshot(data, comment);
         } catch (MasarResponseException e) {
-            throw new DataProviderException("Error saving a snapshot for '" + data.getBeamlineSet().getPathAsString()
+            throw new DataProviderException("Error saving a snapshot for '" + data.getSaveSet().getPathAsString()
             + "'.\nService responded with message: " + e.getMessage());
         } catch (MasarException e) {
             throw new DataProviderException(
-                "Error saving snapshot for '" + data.getBeamlineSet().getPathAsString() + "'.", e);
+                "Error saving snapshot for '" + data.getSaveSet().getPathAsString() + "'.", e);
         }
 
         for (CompletionNotifier n : getNotifiers()) {
@@ -288,7 +288,7 @@ public class MasarDataProvider implements DataProvider {
             return mc.loadSnapshotData(snapshot);
         } catch (MasarException e) {
             throw new DataProviderException("Error loading the snapshot content for snapshot '"
-                + snapshot.getBeamlineSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
+                + snapshot.getSaveSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
         }
     }
 
@@ -339,13 +339,13 @@ public class MasarDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#importData(org.csstudio.saverestore.data.BeamlineSet,
+     * @see org.csstudio.saverestore.DataProvider#importData(org.csstudio.saverestore.data.SaveSet,
      * org.csstudio.saverestore.data.Branch, java.util.Optional, org.csstudio.saverestore.DataProvider.ImportType)
      */
     @Override
-    public boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel, ImportType type)
+    public boolean importData(SaveSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel, ImportType type)
         throws DataProviderException {
-        throw new UnsupportedActionException("MASAR does not provide facilities to import beamline sets.");
+        throw new UnsupportedActionException("MASAR does not provide facilities to import save sets.");
     }
 
     /*
@@ -386,10 +386,10 @@ public class MasarDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#isBeamlineSetSavingSupported()
+     * @see org.csstudio.saverestore.DataProvider#isSaveSetSavingSupported()
      */
     @Override
-    public boolean isBeamlineSetSavingSupported() {
+    public boolean isSaveSetSavingSupported() {
         return false;
     }
 

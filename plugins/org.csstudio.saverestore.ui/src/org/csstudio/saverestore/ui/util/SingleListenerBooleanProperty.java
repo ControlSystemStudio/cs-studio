@@ -17,7 +17,7 @@ public class SingleListenerBooleanProperty extends SimpleBooleanProperty {
     private ChangeListener<? super Boolean> listener;
 
     /**
-     * Constructs a new property for the given beam with the given name and initial value.
+     * Constructs a new property for the given bean with the given name and initial value.
      *
      * @param bean the bean to which the property belongs to
      * @param name the name of the property

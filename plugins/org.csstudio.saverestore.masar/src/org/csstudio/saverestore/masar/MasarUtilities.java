@@ -14,10 +14,10 @@ import java.util.function.Function;
 import javax.security.auth.Subject;
 
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.security.SecuritySupport;
 import org.diirt.util.array.ArrayBoolean;
@@ -91,14 +91,14 @@ public final class MasarUtilities {
     }
 
     /**
-     * Transform the result structure of <code>retrieveServiceConfigs</code> call to a list of beamline sets.
+     * Transform the result structure of <code>retrieveServiceConfigs</code> call to a list of save sets.
      *
      * @param result the result structure
      * @param branch the service descriptor
      * @param baseLevel the selected base level
-     * @return the list of beamline sets
+     * @return the list of save sets
      */
-    static List<BeamlineSet> createBeamlineSetsList(PVStructure result, Branch service, Optional<BaseLevel> baseLevel) {
+    static List<SaveSet> createSaveSetsList(PVStructure result, Branch service, Optional<BaseLevel> baseLevel) {
         PVStructure value = result.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
         PVLongArray pvIndices = (PVLongArray) value.getScalarArrayField(MasarConstants.P_CONFIG_INDEX,
             ScalarType.pvLong);
@@ -126,7 +126,7 @@ public final class MasarUtilities {
         LongArrayData indices = new LongArrayData();
         pvIndices.get(0, pvIndices.getLength(), indices);
 
-        List<BeamlineSet> beamlines = new ArrayList<>(names.data.length);
+        List<SaveSet> saveSets = new ArrayList<>(names.data.length);
         for (int i = 0; i < names.data.length; i++) {
             Map<String, String> parameters = new HashMap<>(6);
             parameters.put(MasarConstants.P_CONFIG_NAME, names.data[i]);
@@ -135,22 +135,22 @@ public final class MasarUtilities {
             parameters.put(MasarConstants.P_CONFIG_DATE, dates.data[i]);
             parameters.put(MasarConstants.P_CONFIG_VERSION, versions.data[i]);
             parameters.put(MasarConstants.P_CONFIG_STATUS, statuses.data[i]);
-            beamlines.add(
-                new BeamlineSet(service, baseLevel, new String[] { names.data[i] }, MasarDataProvider.ID, parameters));
+            saveSets.add(
+                new SaveSet(service, baseLevel, new String[] { names.data[i] }, MasarDataProvider.ID, parameters));
         }
-        return beamlines;
+        return saveSets;
     }
 
     /**
      * Transform the result of the <code>retrieveServiceEvents</code> to a list of snapshots.
      *
      * @param result the V4 result structure
-     * @param beamlineSetSupplier the function providing the beamline set for each snapshot; the function receives the
-     *            ID of the configuration (beamline set) and returns the best possible value for this id
+     * @param saveSetSupplier the function providing the save set for each snapshot; the function receives the
+     *            ID of the configuration (save set) and returns the best possible value for this id
      * @return the list of snapshots
      * @throws ParseException if the date of snapshot could not be parsed
      */
-    static List<Snapshot> createSnapshotsList(PVStructure result, Function<String, BeamlineSet> beamlineSetSupplier)
+    static List<Snapshot> createSnapshotsList(PVStructure result, Function<String, SaveSet> saveSetSupplier)
         throws ParseException {
         PVLongArray pvEvents = (PVLongArray) result.getScalarArrayField(MasarConstants.P_EVENT_ID, ScalarType.pvLong);
         PVLongArray pvConfigs = (PVLongArray) result.getScalarArrayField(MasarConstants.P_CONFIG_ID, ScalarType.pvLong);
@@ -175,18 +175,19 @@ public final class MasarUtilities {
         SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
         for (int i = 0; i < events.data.length; i++) {
             Map<String, String> parameters = new HashMap<>();
-            parameters.put(MasarConstants.P_EVENT_ID, String.valueOf(events.data[i]));
+            parameters.put(MasarConstants.PARAM_SNAPSHOT_ID, String.valueOf(events.data[i]));
             parameters.put(MasarConstants.P_CONFIG_ID, String.valueOf(configs.data[i]));
             Date date = format.parse(times.data[i]);
-            snapshots.add(new Snapshot(beamlineSetSupplier.apply(String.valueOf(configs.data[i])), date,
-                comments.data[i].trim(), users.data[i].trim(), parameters));
+            snapshots.add(new Snapshot(saveSetSupplier.apply(String.valueOf(configs.data[i])), date,
+                comments.data[i].trim(), users.data[i].trim(), parameters,
+                Arrays.asList(MasarConstants.PARAM_SNAPSHOT_ID)));
         }
         return snapshots;
     }
 
     /**
      * Transform the result structure to a VSnapshot. The result is expected to be either the return value of the
-     * saveSnapshot ({@link #takeSnapshot(BeamlineSet)}) or retrieveSnapshot ({@link #loadSnapshotData(Snapshot)}
+     * saveSnapshot ({@link #takeSnapshot(SaveSet)}) or retrieveSnapshot ({@link #loadSnapshotData(Snapshot)}
      * command.
      *
      * @param result the result structure
@@ -365,7 +366,7 @@ public final class MasarUtilities {
     private static VType toValue(PVField val, Time time, Alarm alarm) {
         if (val == null) {
             //this happens when a PV is not connected
-            return VNoData.INSTANCE;
+            return VDisconnectedData.INSTANCE;
         } else if (val instanceof PVScalar) {
             Display display = ValueFactory.displayNone();
             ScalarType type = ((PVScalar) val).getScalar().getScalarType();

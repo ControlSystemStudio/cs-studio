@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 import org.csstudio.saverestore.data.Threshold;
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.diirt.util.array.ArrayBoolean;
 import org.diirt.util.array.ArrayByte;
 import org.diirt.util.array.ArrayDouble;
@@ -568,13 +568,13 @@ public final class Utilities {
      */
     @SuppressWarnings("unchecked")
     public static VTypeComparison valueToCompareString(VType value, VType baseValue, Optional<Threshold<?>> threshold) {
-        if (value == null && baseValue == null || value == VNoData.INSTANCE && baseValue == VNoData.INSTANCE) {
-            return new VTypeComparison(VNoData.INSTANCE.toString(), 0, true);
+        if (value == null && baseValue == null || value == VDisconnectedData.INSTANCE && baseValue == VDisconnectedData.INSTANCE) {
+            return new VTypeComparison(VDisconnectedData.INSTANCE.toString(), 0, true);
         } else if (value == null || baseValue == null) {
-            return value == null ? new VTypeComparison(VNoData.INSTANCE.toString(), -1, false)
+            return value == null ? new VTypeComparison(VDisconnectedData.INSTANCE.toString(), -1, false)
                 : new VTypeComparison(valueToString(value), 1, false);
-        } else if (value == VNoData.INSTANCE || baseValue == VNoData.INSTANCE) {
-            return value == VNoData.INSTANCE ? new VTypeComparison(VNoData.INSTANCE.toString(), -1, false)
+        } else if (value == VDisconnectedData.INSTANCE || baseValue == VDisconnectedData.INSTANCE) {
+            return value == VDisconnectedData.INSTANCE ? new VTypeComparison(VDisconnectedData.INSTANCE.toString(), -1, false)
                 : new VTypeComparison(valueToString(value), 1, false);
         }
         if (value instanceof VNumber && baseValue instanceof VNumber) {
@@ -716,7 +716,8 @@ public final class Utilities {
         if (t == null) {
             return null;
         }
-        return includeYear ? SLE_TIMESTAMP_FORMATTER.get().format(t.toDate()) : LE_TIMESTAMP_FORMATTER.get().format(t.toDate());
+        return includeYear ? SLE_TIMESTAMP_FORMATTER.get().format(t.toDate())
+            : LE_TIMESTAMP_FORMATTER.get().format(t.toDate());
     }
 
     /**
@@ -749,9 +750,9 @@ public final class Utilities {
             return true;
         } else if (v1 == null || v2 == null) {
             return false;
-        } else if (v1 == VNoData.INSTANCE && v2 == VNoData.INSTANCE) {
+        } else if (v1 == VDisconnectedData.INSTANCE && v2 == VDisconnectedData.INSTANCE) {
             return true;
-        } else if (v1 == VNoData.INSTANCE || v2 == VNoData.INSTANCE) {
+        } else if (v1 == VDisconnectedData.INSTANCE || v2 == VDisconnectedData.INSTANCE) {
             return false;
         }
         if (v1 instanceof VNumber && v2 instanceof VNumber) {
@@ -862,9 +863,9 @@ public final class Utilities {
     }
 
     /**
-     * Compares two instances of {@link VType} and returns true if they are identical or false of they are not.
-     * Values are identical if their alarm signatures are identical, timestamps are the same, values are the same and
-     * in case of enum and enum array also the labels have to be identical.
+     * Compares two instances of {@link VType} and returns true if they are identical or false of they are not. Values
+     * are identical if their alarm signatures are identical, timestamps are the same, values are the same and in case
+     * of enum and enum array also the labels have to be identical.
      *
      * @param v1 the first value
      * @param v2 the second value to compare to the first one
@@ -873,7 +874,7 @@ public final class Utilities {
      */
     public static boolean areVTypesIdentical(VType v1, VType v2, boolean compareAlarmAndTime) {
         if (v1 == v2) {
-            //this works for no data as well
+            // this works for no data as well
             return true;
         } else if (v1 == null && v2 == null) {
             return true;
@@ -981,15 +982,15 @@ public final class Utilities {
 
     private static boolean isAlarmAndTimeEqual(VType a1, VType a2) {
         if (a1 instanceof Alarm && a2 instanceof Alarm) {
-            if (!Objects.equals(((Alarm)a1).getAlarmSeverity(), ((Alarm)a2).getAlarmSeverity())
-                || !Objects.equals(((Alarm)a1).getAlarmName(), ((Alarm)a2).getAlarmName())) {
+            if (!Objects.equals(((Alarm) a1).getAlarmSeverity(), ((Alarm) a2).getAlarmSeverity())
+                || !Objects.equals(((Alarm) a1).getAlarmName(), ((Alarm) a2).getAlarmName())) {
                 return false;
             }
         } else if (a1 instanceof Alarm || a2 instanceof Alarm) {
             return false;
         }
         if (a1 instanceof Time && a2 instanceof Time) {
-            return ((Time)a1).getTimestamp().equals(((Time)a2).getTimestamp());
+            return ((Time) a1).getTimestamp().equals(((Time) a2).getTimestamp());
         } else if (a1 instanceof Time || a2 instanceof Time) {
             return false;
         }

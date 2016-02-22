@@ -25,16 +25,16 @@ import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 
-import org.csstudio.saverestore.BeamlineSetContent;
 import org.csstudio.saverestore.DataProvider.ImportType;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.FileUtilities;
 import org.csstudio.saverestore.SaveRestoreService;
+import org.csstudio.saverestore.SaveSetContent;
 import org.csstudio.saverestore.SnapshotContent;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
 import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
@@ -99,6 +99,8 @@ public class GitManager {
     private static final String PARAM_GIT_REVISION = "gitRevision";
     private static final String PARAM_GIT_TAG_NAME = "gitTagName";
     private static final String PARAM_TAG_CREATOR = "tagCreator";
+    private static final String PARAM_TAG_NAME = "tagName";
+    private static final String PARAM_TAG_MESSAGE = "tagMessage";
     private static final String UNKNOWN = "UNKNOWN";
 
     // the pattern describing all forbidden characters in git tag
@@ -110,6 +112,9 @@ public class GitManager {
     private File repositoryPath;
     private boolean automatic = true;
     private boolean localOnly = false;
+
+    @SuppressWarnings("unchecked")
+    private static final List<String> EMPTY_LIST = Collections.EMPTY_LIST;
 
     /**
      * Creates a new manager, but does not initialise it. {@link #initialise(URI, File)} has to be called before
@@ -131,8 +136,8 @@ public class GitManager {
     }
 
     /**
-     * Returns the credentials to use. This method allows to override the mechanism for loading the credentials,
-     * which can be useful at least for testing.
+     * Returns the credentials to use. This method allows to override the mechanism for loading the credentials, which
+     * can be useful at least for testing.
      *
      * @param previous the previous credentials used
      * @return the new credentials
@@ -315,7 +320,7 @@ public class GitManager {
             try {
                 ref = git.checkout().setName(branch.getFullName()).setUpstreamMode(SetupUpstreamMode.TRACK).call();
             } catch (RefNotFoundException e) {
-                //branch does not exist, create it
+                // branch does not exist, create it
             }
             if (ref == null) {
                 // local branch does not exist. create it
@@ -371,21 +376,21 @@ public class GitManager {
     }
 
     /**
-     * Import data from the given beamline set <code>source</code> into the branch and base level provided. The beamline
-     * set in this case does not to be a true beamline set - it can also point to a folder containing multiple beamline
-     * sets. All files from the source or below it are copied to the branch and base level. If the import type specifies
-     * the corresponding snapshots are also imported.
+     * Import data from the given save set <code>source</code> into the branch and base level provided. The save set in
+     * this case does not to be a true save set - it can also point to a folder containing multiple save sets. All files
+     * from the source or below it are copied to the branch and base level. If the import type specifies the
+     * corresponding snapshots are also imported.
      *
      * @param source the source of data (file or folder)
      * @param toBranch the destination branch
      * @param toBaseLevel the destination base level
-     * @param type the type of import (only beamline set, beamline set and last snapsho, beamline set and all snapshots)
+     * @param type the type of import (only save set, save set and last snapshot, save set and all snapshots)
      * @return true if successful combined with the type of change that was done to the repository
      * @throws GitAPIException if there was an error executing git actions
      * @throws IOException in case of an IO error
      * @throws ParseException if the snapshot content could not be parsed
      */
-    public synchronized Result<Boolean> importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel,
+    public synchronized Result<Boolean> importData(SaveSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel,
         ImportType type) throws GitAPIException, IOException, ParseException {
         boolean oldAutomatic = this.automatic;
         setAutomaticSynchronisation(false);
@@ -396,14 +401,14 @@ public class GitManager {
         try {
             if (source.getName().isEmpty()) {
                 // it is a folder
-                List<BeamlineSet> sets = getBeamlineSets(source.getBaseLevel(), source.getBranch(),
+                List<SaveSet> sets = getSaveSets(source.getBaseLevel(), source.getBranch(),
                     Optional.of(source.getPathAsString()));
-                for (BeamlineSet s : sets) {
-                    importBeamlineSet(s, toBaseLevel, toBranch, type, cred);
+                for (SaveSet s : sets) {
+                    importSaveSet(s, toBaseLevel, toBranch, type, cred);
                 }
             } else {
-                // single beamline set
-                importBeamlineSet(source, toBaseLevel, toBranch, type, cred);
+                // single save set
+                importSaveSet(source, toBaseLevel, toBranch, type, cred);
             }
         } finally {
             setAutomaticSynchronisation(oldAutomatic);
@@ -412,15 +417,15 @@ public class GitManager {
         return new Result<>(true, change);
     }
 
-    private void importBeamlineSet(BeamlineSet source, Optional<BaseLevel> toBaseLevel, Branch toBranch,
-        ImportType type, Credentials cred) throws GitAPIException, IOException, ParseException {
-        BeamlineSetData data = loadBeamlineSetData(source, Optional.empty());
-        BeamlineSet newSet = new BeamlineSet(toBranch, toBaseLevel, source.getPath(), source.getDataProviderId());
-        BeamlineSetData newData = new BeamlineSetData(newSet, data.getPVList(), data.getReadbackList(),
-            data.getDeltaList(), data.getDescription());
+    private void importSaveSet(SaveSet source, Optional<BaseLevel> toBaseLevel, Branch toBranch, ImportType type,
+        Credentials cred) throws GitAPIException, IOException, ParseException {
+        SaveSetData data = loadSaveSetData(source, Optional.empty());
+        SaveSet newSet = new SaveSet(toBranch, toBaseLevel, source.getPath(), source.getDataProviderId());
+        SaveSetData newData = new SaveSetData(newSet, data.getPVList(), data.getReadbackList(), data.getDeltaList(),
+            data.getDescription());
         String comment = "Imported from " + source.getBranch().getShortName() + "/" + source.getBaseLevel().get() + "/"
             + source.getPathAsString();
-        saveBeamlineSet(newData, comment, cred);
+        saveSaveSet(newData, comment, cred);
         if (type == ImportType.LAST_SNAPSHOT) {
             List<Snapshot> list = getSnapshots(source, 1, Optional.empty());
             if (!list.isEmpty()) {
@@ -465,33 +470,33 @@ public class GitManager {
     }
 
     /**
-     * Returns the list of all available beamline sets in the current branch. The search is done by reading the data on
-     * the file system, not by searching the git repository.
+     * Returns the list of all available save sets in the current branch. The search is done by reading the data on the
+     * file system, not by searching the git repository.
      *
-     * @param baseLevel the base level for which the beamline sets are requested (optional, if base levels are not used)
+     * @param baseLevel the base level for which the save sets are requested (optional, if base levels are not used)
      * @param branch the branch to switch to
-     * @return the list of beamline sets
+     * @return the list of save sets
      * @throws IOException if the current branch could not be retrieved
      */
-    public synchronized List<BeamlineSet> getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch)
+    public synchronized List<SaveSet> getSaveSets(Optional<BaseLevel> baseLevel, Branch branch)
         throws IOException, GitAPIException {
-        return getBeamlineSets(baseLevel, branch, Optional.empty());
+        return getSaveSets(baseLevel, branch, Optional.empty());
     }
 
     /**
-     * Returns the list of all available beamline sets in the current branch. The search is done by reading the data on
-     * the file system, not by searching the git repository.
+     * Returns the list of all available save sets in the current branch. The search is done by reading the data on the
+     * file system, not by searching the git repository.
      *
-     * @param baseLevel the base level for which the beamline sets are requested (optional, if base levels are not used)
+     * @param baseLevel the base level for which the save sets are requested (optional, if base levels are not used)
      * @param branch the branch to switch to
-     * @param basePath the base path at which to look for the beamline sets
-     * @return the list of beamline sets
+     * @param basePath the base path at which to look for the save sets
+     * @return the list of save sets
      * @throws IOException if the current branch could not be retrieved
      */
-    private List<BeamlineSet> getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch, Optional<String> basePath)
+    private List<SaveSet> getSaveSets(Optional<BaseLevel> baseLevel, Branch branch, Optional<String> basePath)
         throws IOException, GitAPIException {
         setBranch(branch);
-        List<BeamlineSet> descriptorList = new ArrayList<>();
+        List<SaveSet> descriptorList = new ArrayList<>();
         File[] files = repositoryPath.listFiles();
         if (files != null) {
             String base = baseLevel.isPresent() ? baseLevel.get().getStorageName() : null;
@@ -500,15 +505,15 @@ public class GitManager {
             if (bbranch == null || !bbranch.equals(branch)) {
                 bbranch = branch;
             }
-            Optional<BaseLevel> bl = Optional.of(new BaseLevel(bbranch,base,basePresentation));
+            Optional<BaseLevel> bl = Optional.of(new BaseLevel(bbranch, base, basePresentation));
             for (File f : files) {
                 if (f.getName().equals(base)) {
-                    File b = new File(f, FileType.BEAMLINE_SET.directory);
+                    File b = new File(f, FileType.SAVE_SET.directory);
                     if (basePath.isPresent()) {
                         b = new File(b, basePath.get());
                     }
                     List<File> setFiles = new ArrayList<>();
-                    gatherBeamlineSets(b, setFiles);
+                    gatherSaveSets(b, setFiles);
                     String path = repositoryPath.getAbsolutePath();
                     int length = path.length();
                     if (!(path.charAt(length - 1) == '/' || path.charAt(length - 1) == '\\')) {
@@ -518,9 +523,8 @@ public class GitManager {
                         String s = bf.getAbsolutePath().substring(length);
                         String[] filePathArray = convertStringToPath(s, bl);
                         if (filePathArray.length > 0) {
-                            BeamlineSet beamlineSet = new BeamlineSet(branch, bl, filePathArray,
-                                GitDataProvider.ID);
-                            descriptorList.add(beamlineSet);
+                            SaveSet saveSet = new SaveSet(branch, bl, filePathArray, GitDataProvider.ID);
+                            descriptorList.add(saveSet);
                         }
                     }
                     break;
@@ -531,51 +535,51 @@ public class GitManager {
     }
 
     /**
-     * Loads and returns the beamline set data for the provided descriptor and the git revision. If git revision is not
+     * Loads and returns the save set data for the provided descriptor and the git revision. If git revision is not
      * specified the head revision is returned.
      *
      * @param descriptor the descriptor for which the data should be returned
      * @param revision optional revision number; if not given head revision is used
-     * @return the content of the beamline set file
-     * @throws IOException if there was an error reading the contentof the file
+     * @return the content of the save set file
+     * @throws IOException if there was an error reading the contents of the file
      * @throws GitAPIException if setting the branch failed
      */
-    public synchronized BeamlineSetData loadBeamlineSetData(BeamlineSet descriptor, Optional<String> revision)
+    public synchronized SaveSetData loadSaveSetData(SaveSet descriptor, Optional<String> revision)
         throws IOException, GitAPIException {
         setBranch(descriptor.getBranch());
-        String path = convertPathToString(descriptor, FileType.BEAMLINE_SET);
+        String path = convertPathToString(descriptor, FileType.SAVE_SET);
         try {
-            return loadFile(revision, path, FileType.BEAMLINE_SET, BeamlineSetData.class, descriptor);
+            return loadFile(revision, path, FileType.SAVE_SET, SaveSetData.class, descriptor);
         } catch (ParseException e) {
             // cannot happen, but just in case, make a log
-            SaveRestoreService.LOGGER.log(Level.SEVERE, "Unexpected error when loading beamline set content", e);
+            SaveRestoreService.LOGGER.log(Level.SEVERE, "Unexpected error when loading save set content", e);
             return null;
         }
     }
 
     /**
-     * Returns the list of all snapshots for the given beamline set.
+     * Returns the list of all snapshots for the given save set.
      *
-     * @param beamlineSet the beamline set for which the snapshots are requested
+     * @param saveSet the save set for which the snapshots are requested
      * @param numberOfRevisions the maximum number of snapshot revisions to load
      * @param fromThisOneBack the revision at which to start and then going back
-     * @return the list of all snapshot revisions for this beamline set
+     * @return the list of all snapshot revisions for this save set
      * @throws IOException if the commits could not be read
      * @throws GitAPIException if the commits could not be read
      */
-    public synchronized List<Snapshot> getSnapshots(BeamlineSet beamlineSet, int numberOfRevisions,
+    public synchronized List<Snapshot> getSnapshots(SaveSet saveSet, int numberOfRevisions,
         Optional<Snapshot> fromThisOneBack) throws IOException, GitAPIException {
-        setBranch(beamlineSet.getBranch());
+        setBranch(saveSet.getBranch());
         List<Snapshot> snapshots = new ArrayList<>();
 
-        String path = convertPathToString(beamlineSet, FileType.SNAPSHOT);
-        path = path.replace(FileType.BEAMLINE_SET.directory, FileType.SNAPSHOT.directory);
-        path = path.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
+        String path = convertPathToString(saveSet, FileType.SNAPSHOT);
+        path = path.replace(FileType.SAVE_SET.directory, FileType.SNAPSHOT.directory);
+        path = path.replace(FileType.SAVE_SET.suffix, FileType.SNAPSHOT.suffix);
 
         String rev = fromThisOneBack.isPresent() ? fromThisOneBack.get().getParameters().get(PARAM_GIT_REVISION) : null;
         List<RevCommit> fileRevisions = findCommitsFor(path, numberOfRevisions, Optional.ofNullable(rev));
         Map<String, RevTag> tags = loadTagsForRevisions(fileRevisions);
-        String branch = beamlineSet.getBranch().getShortName();
+        String branch = saveSet.getBranch().getShortName();
         for (RevCommit commit : fileRevisions) {
             String revision = commit.getName();
             if (rev != null && rev.equals(revision)) {
@@ -586,7 +590,8 @@ public class GitManager {
             Map<String, String> parameters = new HashMap<>();
             parameters.put(PARAM_GIT_REVISION, revision);
             insertTagData(tags.get(revision), parameters, revision, branch);
-            Snapshot snapshot = new Snapshot(beamlineSet, meta.timestamp, meta.comment, meta.creator, parameters);
+            Snapshot snapshot = new Snapshot(saveSet, meta.timestamp, meta.comment, meta.creator,
+                parameters.remove(PARAM_TAG_NAME), parameters.remove(PARAM_TAG_MESSAGE), parameters, EMPTY_LIST);
             snapshots.add(snapshot);
         }
         return snapshots;
@@ -602,39 +607,39 @@ public class GitManager {
      */
     public synchronized VSnapshot loadSnapshotData(Snapshot snapshot)
         throws ParseException, IOException, GitAPIException {
-        setBranch(snapshot.getBeamlineSet().getBranch());
-        String path = convertPathToString(snapshot.getBeamlineSet(), FileType.SNAPSHOT);
+        setBranch(snapshot.getSaveSet().getBranch());
+        String path = convertPathToString(snapshot.getSaveSet(), FileType.SNAPSHOT);
         return loadFile(Optional.ofNullable(snapshot.getParameters().get(PARAM_GIT_REVISION)), path, FileType.SNAPSHOT,
             VSnapshot.class, snapshot);
     }
 
     /**
-     * Save the beamline set and commit it.
+     * Save the save set and commit it.
      *
-     * @param data the contents of the beamline set file
+     * @param data the contents of the save set file
      * @param comment the commit comment
-     * @return the saved beamline set and change type describing what kind of updates were made to the repository
+     * @return the saved save set and change type describing what kind of updates were made to the repository
      * @throws IOException if writing to the file failed
-     * @throws GitAPIException if commiting the file failed
+     * @throws GitAPIException if committing the file failed
      */
-    public synchronized Result<BeamlineSetData> saveBeamlineSet(BeamlineSetData data, String comment)
+    public synchronized Result<SaveSetData> saveSaveSet(SaveSetData data, String comment)
         throws IOException, GitAPIException {
-        return saveBeamlineSet(data, comment, null);
+        return saveSaveSet(data, comment, null);
     }
 
     /**
-     * Save the beamline set and commit it.
+     * Save the save set and commit it.
      *
-     * @param data the contents of the beamline set file
+     * @param data the contents of the save set file
      * @param comment the commit comment
      * @param cred optional credentials to use, if null a popup will be displayed
-     * @return the saved beamline set and change type describing what kind of updates were made to the repository
+     * @return the saved save set and change type describing what kind of updates were made to the repository
      * @throws IOException if writing to the file failed
      * @throws GitAPIException if commiting the file failed
      */
-    private Result<BeamlineSetData> saveBeamlineSet(BeamlineSetData data, String comment, Credentials cred)
+    private Result<SaveSetData> saveSaveSet(SaveSetData data, String comment, Credentials cred)
         throws IOException, GitAPIException {
-        BeamlineSetData bsd = null;
+        SaveSetData bsd = null;
         ChangeType change = ChangeType.NONE;
         save: {
             Credentials cp = cred == null ? getCredentials(Optional.empty()) : cred;
@@ -649,13 +654,14 @@ public class GitManager {
                     }
                 }
                 setBranch(data.getDescriptor().getBranch());
-                String relativePath = convertPathToString(data.getDescriptor(), FileType.BEAMLINE_SET);
-                writeToFile(relativePath, repositoryPath, FileType.BEAMLINE_SET, data);
-                MetaInfo info = commit(relativePath, new MetaInfo(comment, cp.getUsername(), UNKNOWN, null, null));
+                String relativePath = convertPathToString(data.getDescriptor(), FileType.SAVE_SET);
+                writeToFile(relativePath, repositoryPath, FileType.SAVE_SET, data);
+                MetaInfo info = commit(relativePath, new MetaInfo(comment, cp.getUsername(), UNKNOWN, null, null),
+                    false);
                 if (automatic) {
                     push(cp, false);
                 }
-                bsd = new BeamlineSetData(data.getDescriptor(), data.getPVList(), data.getReadbackList(),
+                bsd = new SaveSetData(data.getDescriptor(), data.getPVList(), data.getReadbackList(),
                     data.getDeltaList(), data.getDescription(), info.comment, info.timestamp);
             }
         }
@@ -663,7 +669,7 @@ public class GitManager {
     }
 
     /**
-     * Delete the beamline set from the repository. Beamline set and snapshot files are deleted.
+     * Delete the save set from the repository. Save set and snapshot files are deleted.
      *
      * @param data the set to delete
      * @param comment the comment why the set was deleted
@@ -671,9 +677,8 @@ public class GitManager {
      * @throws IOException in case of an error
      * @throws GitAPIException in case of an error
      */
-    public synchronized Result<BeamlineSet> deleteBeamlineSet(BeamlineSet set, String comment)
-        throws IOException, GitAPIException {
-        BeamlineSet deleted = null;
+    public synchronized Result<SaveSet> deleteSaveSet(SaveSet set, String comment) throws IOException, GitAPIException {
+        SaveSet deleted = null;
         ChangeType change = ChangeType.NONE;
         delete: {
             Credentials cp = getCredentials(Optional.empty());
@@ -688,14 +693,14 @@ public class GitManager {
                         break delete;
                     }
                 }
-                String relativePath = convertPathToString(set, FileType.BEAMLINE_SET);
+                String relativePath = convertPathToString(set, FileType.SAVE_SET);
                 if (deleteFile(relativePath, repositoryPath)) {
                     deleted = set;
-                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), UNKNOWN, null, null));
+                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), UNKNOWN, null, null), true);
                     // delete also the snapshot file
                     relativePath = convertPathToString(set, FileType.SNAPSHOT);
                     deleteFile(relativePath, repositoryPath);
-                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), null, null, null));
+                    commit(relativePath, new MetaInfo(comment, cp.getUsername(), null, null, null), true);
                     if (automatic) {
                         push(cp, false);
                     }
@@ -747,19 +752,19 @@ public class GitManager {
                         break save;
                     }
                 }
-                setBranch(snapshot.getBeamlineSet().getBranch());
+                setBranch(snapshot.getSaveSet().getBranch());
                 Snapshot descriptor = snapshot.getSnapshot().get();
-                String relativePath = convertPathToString(descriptor.getBeamlineSet(), FileType.SNAPSHOT);
+                String relativePath = convertPathToString(descriptor.getSaveSet(), FileType.SNAPSHOT);
                 writeToFile(relativePath, repositoryPath, FileType.SNAPSHOT, snapshot);
                 MetaInfo info = commit(relativePath,
-                    new MetaInfo(comment, user == null ? cp.getUsername() : user, UNKNOWN, time, null));
+                    new MetaInfo(comment, user == null ? cp.getUsername() : user, UNKNOWN, time, null), false);
                 if (automatic) {
                     push(cp, false);
                 }
                 Map<String, String> parameters = new HashMap<>();
                 parameters.put(PARAM_GIT_REVISION, info.revision);
-                Snapshot snp = new Snapshot(descriptor.getBeamlineSet(), info.timestamp, info.comment, info.creator,
-                    parameters);
+                Snapshot snp = new Snapshot(descriptor.getSaveSet(), info.timestamp, info.comment, info.creator,
+                    parameters, new ArrayList<>(0));
                 vsnp = new VSnapshot(snp, snapshot.getNames(), snapshot.getSelected(), snapshot.getValues(),
                     snapshot.getReadbackNames(), snapshot.getReadbackValues(), snapshot.getDeltas(),
                     snapshot.getTimestamp());
@@ -802,7 +807,7 @@ public class GitManager {
         tag: {
             Credentials cp = getCredentials(Optional.empty());
             if (cp != null) {
-                setBranch(snapshot.getBeamlineSet().getBranch());
+                setBranch(snapshot.getSaveSet().getBranch());
                 change = ChangeType.SAVE;
                 if (automatic) {
                     Object[] obj = pull(cp);
@@ -827,21 +832,23 @@ public class GitManager {
 
                 Map<String, String> parameters = new HashMap<>();
                 parameters.put(PARAM_GIT_REVISION, revision);
+                String tagName = null;
+                String tagMessage = null;
                 if (name != null && !name.isEmpty()) {
-                    String gitTagName = composeTagName(snapshot.getBeamlineSet().getBranch(),
-                        snapshot.getBeamlineSet().getBaseLevel(), snapshot.getBeamlineSet().getPath(), name);
+                    String gitTagName = composeTagName(snapshot.getSaveSet().getBranch(),
+                        snapshot.getSaveSet().getBaseLevel(), snapshot.getSaveSet().getPath(), name);
                     PersonIdent tagger = new PersonIdent(cp.getUsername(), UNKNOWN);
                     git.tag().setName(gitTagName).setMessage(message).setTagger(tagger).setObjectId(commit).call();
                     if (automatic) {
                         push(cp, true);
                     }
                     parameters.put(PARAM_GIT_TAG_NAME, gitTagName);
-                    parameters.put(Snapshot.TAG_NAME, name);
-                    parameters.put(Snapshot.TAG_MESSAGE, message);
                     parameters.put(PARAM_TAG_CREATOR, cp.getUsername());
+                    tagName = name;
+                    tagMessage = message;
                 }
-                snp = new Snapshot(snapshot.getBeamlineSet(), snapshot.getDate(), snapshot.getComment(),
-                    snapshot.getOwner(), parameters);
+                snp = new Snapshot(snapshot.getSaveSet(), snapshot.getDate(), snapshot.getComment(),
+                    snapshot.getOwner(), tagName, tagMessage, parameters, EMPTY_LIST);
             }
         }
         return new Result<>(snp, change);
@@ -877,12 +884,16 @@ public class GitManager {
      *
      * @param relativePath the path to the file relative to the repository root
      * @param metaInfo meta information
-     *
+     * @param delete true if the file was deleted or false if added
      * @return the actual meta information read back from the system
      * @throws GitAPIException if there is an error during commit
      */
-    private MetaInfo commit(String relativePath, MetaInfo metaInfo) throws GitAPIException {
-        git.add().addFilepattern(relativePath).call();
+    private MetaInfo commit(String relativePath, MetaInfo metaInfo, boolean delete) throws GitAPIException {
+        if (delete) {
+            git.rm().addFilepattern(relativePath).call();
+        } else {
+            git.add().addFilepattern(relativePath).call();
+        }
         CommitCommand command = git.commit().setMessage(metaInfo.comment);
         if (metaInfo.timestamp == null) {
             command.setCommitter(metaInfo.creator, metaInfo.eMail);
@@ -1190,11 +1201,13 @@ public class GitManager {
                         }
                     }
                     getPathFromCommit(commit, walk, objectReader)
-                        .ifPresent(p -> pathToBeamline(p, repositoryPath, branch, FileType.SNAPSHOT).ifPresent(e -> {
+                        .ifPresent(p -> pathToSaveSet(p, repositoryPath, branch, FileType.SNAPSHOT).ifPresent(e -> {
                             MetaInfo meta = getMetaInfoFromCommit(commit);
                             Map<String, String> parameters = new HashMap<>();
                             insertTagData(tag, parameters, revision, branch.getShortName());
-                            snapshots.add(new Snapshot(e, meta.timestamp, meta.comment, meta.creator, parameters));
+                            snapshots.add(new Snapshot(e, meta.timestamp, meta.comment, meta.creator,
+                                parameters.remove(PARAM_TAG_NAME), parameters.remove(PARAM_TAG_MESSAGE), parameters,
+                                EMPTY_LIST));
                         }));
                 }
             }
@@ -1297,12 +1310,13 @@ public class GitManager {
                             || !diff.getNewPath().endsWith(FileType.SNAPSHOT.suffix)) {
                             continue;
                         }
-                        pathToBeamline(diff.getNewPath(), repositoryPath, branch, FileType.SNAPSHOT).ifPresent(e -> {
+                        pathToSaveSet(diff.getNewPath(), repositoryPath, branch, FileType.SNAPSHOT).ifPresent(e -> {
                             MetaInfo mi = getMetaInfoFromCommit(commit);
                             Map<String, String> parameters = new HashMap<>();
                             parameters.put(PARAM_GIT_REVISION, mi.revision);
                             revisions.add(commit);
-                            snapshots.add(new Snapshot(e, mi.timestamp, mi.comment, mi.creator, parameters));
+                            snapshots.add(
+                                new Snapshot(e, mi.timestamp, mi.comment, mi.creator, parameters, new ArrayList<>(0)));
                         });
                     }
                 }
@@ -1318,7 +1332,8 @@ public class GitManager {
             } else {
                 Map<String, String> parameters = new HashMap<>(s.getParameters());
                 insertTagData(tags.get(revision), parameters, revision, branchName);
-                ret.add(new Snapshot(s.getBeamlineSet(), s.getDate(), s.getComment(), s.getOwner(), parameters));
+                ret.add(new Snapshot(s.getSaveSet(), s.getDate(), s.getComment(), s.getOwner(),
+                    parameters.remove(PARAM_TAG_NAME), parameters.remove(PARAM_TAG_MESSAGE), parameters, EMPTY_LIST));
             }
         });
         return ret;
@@ -1331,7 +1346,7 @@ public class GitManager {
      * @param path the path to the file (relative to the repository root)
      * @param fileType the type of file that is being loaded
      * @param type the return type
-     * @param descriptor descriptor of the returned data (BeamlineSet or Snapshot)
+     * @param descriptor descriptor of the returned data (SaveSet or Snapshot)
      * @return the content of the file
      *
      * @throws ParseException if parsing the timestamp data failed (for snapshots only)
@@ -1350,12 +1365,12 @@ public class GitManager {
                 AbstractTreeIterator iterator = treeWalk.getTree(treeIndex, AbstractTreeIterator.class);
                 ObjectId objectId = iterator.getEntryObjectId();
                 ObjectLoader objectLoader = objectReader.open(objectId);
-                if (fileType == FileType.BEAMLINE_SET) {
+                if (fileType == FileType.SAVE_SET) {
                     MetaInfo meta = getMetaInfoFromCommit(revCommit);
                     try (InputStream stream = objectLoader.openStream()) {
-                        BeamlineSetContent bsc = FileUtilities.readFromBeamlineSet(stream);
-                        BeamlineSetData bsd = new BeamlineSetData((BeamlineSet) descriptor, bsc.getNames(),
-                            bsc.getReadbacks(), bsc.getDeltas(), bsc.getDescription(), meta.comment, meta.timestamp);
+                        SaveSetContent bsc = FileUtilities.readFromSaveSet(stream);
+                        SaveSetData bsd = new SaveSetData((SaveSet) descriptor, bsc.getNames(), bsc.getReadbacks(),
+                            bsc.getDeltas(), bsc.getDescription(), meta.comment, meta.timestamp);
                         return type.cast(bsd);
                     }
                 } else if (fileType == FileType.SNAPSHOT) {
@@ -1433,22 +1448,33 @@ public class GitManager {
             return false;
         }
         Files.delete(path);
+        File file = path.toFile();
+        while (!file.equals(repositoryPath)) {
+            File parent = file.getParentFile();
+            File[] files = parent.listFiles();
+            if (files.length == 0) {
+                parent.delete();
+                file = parent;
+            } else {
+                break;
+            }
+        }
         return true;
     }
 
     /**
-     * Converts the <code>pathToFile</code> to a beamline set. The repository is expected to be checkout on the correct
-     * branch. If the path is valid so that the beamline set can be determined and if the file actually still exists at
-     * the HEAD of the branch, it is returned. If the path is not valid, or the file does not exist, an empty object is
+     * Converts the <code>pathToFile</code> to a save set. The repository is expected to be checkout on the correct
+     * branch. If the path is valid so that the save set can be determined and if the file actually still exists at the
+     * HEAD of the branch, it is returned. If the path is not valid, or the file does not exist, an empty object is
      * returned.
      *
      * @param pathToFile the path to file
      * @param repositoryPath the path to the root of the repository
-     * @param branch the branch for the beamline set
+     * @param branch the branch for the save set
      * @param fromType the type of the file under the given path
-     * @return the beamline set if found or empty if not found
+     * @return the save set if found or empty if not found
      */
-    private static Optional<BeamlineSet> pathToBeamline(String pathToFile, File repositoryPath, Branch branch,
+    private static Optional<SaveSet> pathToSaveSet(String pathToFile, File repositoryPath, Branch branch,
         FileType fromType) {
         String[] p = pathToFile.split(GIT_PATH_DELIMITER);
         BaseLevel baseLevel = null;
@@ -1470,7 +1496,7 @@ public class GitManager {
                 newPath = bsPath.toArray(new String[bsPath.size()]);
                 if (newPath.length > 0) {
                     newPath[newPath.length - 1] = newPath[newPath.length - 1].replace(fromType.suffix,
-                        FileType.BEAMLINE_SET.suffix);
+                        FileType.SAVE_SET.suffix);
                 }
                 break;
             }
@@ -1478,29 +1504,28 @@ public class GitManager {
         if (newPath == null || newPath.length == 0) {
             return Optional.empty();
         }
-        BeamlineSet beamlineSet = new BeamlineSet(branch, Optional.ofNullable(baseLevel), newPath, GitDataProvider.ID);
-        String path = convertPathToString(beamlineSet, FileType.BEAMLINE_SET);
+        SaveSet saveSet = new SaveSet(branch, Optional.ofNullable(baseLevel), newPath, GitDataProvider.ID);
+        String path = convertPathToString(saveSet, FileType.SAVE_SET);
         File fullPath = new File(repositoryPath, path);
-        return fullPath.exists() ? Optional.of(beamlineSet) : Optional.empty();
+        return fullPath.exists() ? Optional.of(saveSet) : Optional.empty();
     }
 
     /**
-     * Recursively gathers the beamline sets that are located in any of the subfolder of the given file. All valid files
+     * Recursively gathers the save sets that are located in any of the sub folder of the given file. All valid files
      * are placed into the <code>sets</code> list.
      *
      * @param file the parent file to start the search from
-     * @param sets the list containing all found beamline set files
+     * @param sets the list containing all found save set files
      */
-    private static void gatherBeamlineSets(File file, List<File> sets) {
+    private static void gatherSaveSets(File file, List<File> sets) {
         if (file != null && file.exists()) {
             File[] files = file.listFiles();
             if (files != null) {
                 Arrays.sort(files);
                 for (File f : files) {
                     if (f.isDirectory()) {
-                        gatherBeamlineSets(f, sets);
-                    } else if (f.isFile()
-                        && f.getName().toLowerCase(Locale.UK).endsWith(FileType.BEAMLINE_SET.suffix)) {
+                        gatherSaveSets(f, sets);
+                    } else if (f.isFile() && f.getName().toLowerCase(Locale.UK).endsWith(FileType.SAVE_SET.suffix)) {
                         sets.add(f);
                     }
                 }
@@ -1517,8 +1542,8 @@ public class GitManager {
      * @return generated file content.
      */
     private static String generateContent(Object dataObject, FileType fileType) {
-        if (fileType == FileType.BEAMLINE_SET && dataObject instanceof BeamlineSetData) {
-            return FileUtilities.generateBeamlineSetContent((BeamlineSetData) dataObject);
+        if (fileType == FileType.SAVE_SET && dataObject instanceof SaveSetData) {
+            return FileUtilities.generateSaveSetContent((SaveSetData) dataObject);
         } else if (fileType == FileType.SNAPSHOT && dataObject instanceof VSnapshot) {
             return FileUtilities.generateSnapshotFileContent((VSnapshot) dataObject);
         }
@@ -1527,12 +1552,12 @@ public class GitManager {
     }
 
     /**
-     * Convert the path to an array. The array contains the segments relative to the BeamlineSets or Snapshots folder
-     * within the base level or root.
+     * Convert the path to an array. The array contains the segments relative to the SaveSets or Snapshots folder within
+     * the base level or root.
      *
      * @param path the path to parse
      * @param level optional base level; if given the path will be relative to the {@link BaseLevel#getStorageName()}
-     *            /DIR_NAME, otherwise the path is relative to /DIR_NAME, where DIR_NAME is Snapshots or BeamlineSets
+     *            /DIR_NAME, otherwise the path is relative to /DIR_NAME, where DIR_NAME is Snapshots or SaveSets
      * @return the path segments
      */
     private static String[] convertStringToPath(String path, Optional<BaseLevel> level) {
@@ -1567,7 +1592,7 @@ public class GitManager {
      * @param fileType the type of file for which the path is requested
      * @return the path relative to the repository
      */
-    private static String convertPathToString(BeamlineSet descriptor, FileType fileType) {
+    private static String convertPathToString(SaveSet descriptor, FileType fileType) {
         final StringBuilder sb = new StringBuilder(200);
         String[] path = descriptor.getPath();
         descriptor.getBaseLevel().ifPresent(c -> sb.append(c.getStorageName()).append(GIT_PATH_DELIMITER));
@@ -1577,10 +1602,10 @@ public class GitManager {
         }
         if (path.length > 0) {
             String last = path[path.length - 1];
-            if (fileType == FileType.BEAMLINE_SET) {
-                last = last.replace(FileType.SNAPSHOT.suffix, FileType.BEAMLINE_SET.suffix);
+            if (fileType == FileType.SAVE_SET) {
+                last = last.replace(FileType.SNAPSHOT.suffix, FileType.SAVE_SET.suffix);
             } else {
-                last = last.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
+                last = last.replace(FileType.SAVE_SET.suffix, FileType.SNAPSHOT.suffix);
             }
             sb.append(last);
             if (!last.toLowerCase(Locale.UK).endsWith(fileType.suffix)) {
@@ -1627,7 +1652,7 @@ public class GitManager {
         for (int i = 0; i < path.length; i++) {
             String str = path[i];
             if (i == path.length - 1) {
-                str = str.replace(FileType.BEAMLINE_SET.suffix, FileType.SNAPSHOT.suffix);
+                str = str.replace(FileType.SAVE_SET.suffix, FileType.SNAPSHOT.suffix);
             }
             str = TAG_PATTERN.matcher(str).replaceAll("");
             if (str.charAt(0) == '.') {
@@ -1653,8 +1678,10 @@ public class GitManager {
      * @param parameters the current parameters
      * @param revision the revision hash
      * @param branchName the branch name for which the tag should be loaded
+     * @return true if the tag exists or false otherwise
      */
-    private static void insertTagData(RevTag tag, Map<String, String> parameters, String revision, String branchName) {
+    private static boolean insertTagData(RevTag tag, Map<String, String> parameters, String revision,
+        String branchName) {
         parameters.put(PARAM_GIT_REVISION, revision);
         if (tag != null) {
             String niceTagName = tag.getTagName();
@@ -1670,16 +1697,18 @@ public class GitManager {
                 if (idx > 1) {
                     niceTagName = niceTagName.substring(niceTagName.lastIndexOf('(') + 1, niceTagName.length() - 1);
                 }
-                parameters.put(Snapshot.TAG_NAME, niceTagName);
+                parameters.put(PARAM_TAG_NAME, niceTagName);
                 parameters.put(PARAM_GIT_TAG_NAME, tag.getTagName());
-                parameters.put(Snapshot.TAG_MESSAGE, tag.getFullMessage());
+                parameters.put(PARAM_TAG_MESSAGE, tag.getFullMessage());
                 parameters.put(PARAM_TAG_CREATOR, tag.getTaggerIdent().getName());
+                return true;
             }
         }
+        return false;
     }
 
     /**
-     * Delete the entire folder including all subfolders and files.
+     * Delete the entire folder including all sub folders and files.
      *
      * @param folder the folder to delete
      */

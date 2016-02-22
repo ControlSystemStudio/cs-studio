@@ -8,21 +8,22 @@ import org.diirt.vtype.VType;
 
 /**
  *
- * <code>VNoData</code> represents a {@link VType} without any known value, while not being disconnected.
+ * <code>VDisconnectedData</code> represents a {@link VType} for a disconnected PV, where the data type is not known.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class VNoData implements VType, Alarm, Serializable {
+public final class VDisconnectedData implements VType, Alarm, Serializable {
 
     private static final long serialVersionUID = -2399970529728581034L;
 
     /** The singleton instance */
-    public static final VNoData INSTANCE = new VNoData();
+    public static final VDisconnectedData INSTANCE = new VDisconnectedData();
 
     private static final String TO_STRING = "---";
+    public static final String DISCONNECTED = "DISCONNECTED";
 
-    private VNoData() {
+    private VDisconnectedData() {
     }
 
     /*
@@ -42,7 +43,7 @@ public class VNoData implements VType, Alarm, Serializable {
      */
     @Override
     public AlarmSeverity getAlarmSeverity() {
-        return AlarmSeverity.NONE;
+        return AlarmSeverity.UNDEFINED;
     }
 
     /*
@@ -52,6 +53,6 @@ public class VNoData implements VType, Alarm, Serializable {
      */
     @Override
     public String getAlarmName() {
-        return TO_STRING;
+        return DISCONNECTED;
     }
 }

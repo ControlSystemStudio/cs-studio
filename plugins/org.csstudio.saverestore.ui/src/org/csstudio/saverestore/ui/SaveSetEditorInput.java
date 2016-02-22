@@ -1,28 +1,28 @@
 package org.csstudio.saverestore.ui;
 
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 /**
  *
- * <code>BeamlineSetEditorInput</code> is the editor input for the beamline set editor.
+ * <code>SaveSetEditorInput</code> is the editor input for the save set editor.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class BeamlineSetEditorInput implements IEditorInput {
+public class SaveSetEditorInput implements IEditorInput {
 
-    private final BeamlineSetData beamlineSet;
+    private final SaveSetData saveSet;
 
     /**
      * Creates a new editor input.
      *
      * @param set the data provided by this input
      */
-    public BeamlineSetEditorInput(BeamlineSetData set) {
-        this.beamlineSet = set;
+    public SaveSetEditorInput(SaveSetData set) {
+        this.saveSet = set;
     }
 
     /*
@@ -32,17 +32,17 @@ public class BeamlineSetEditorInput implements IEditorInput {
      */
     @Override
     public <T> T getAdapter(Class<T> adapter) {
-        if (BeamlineSetData.class.isAssignableFrom(adapter)) {
-            return adapter.cast(beamlineSet);
+        if (SaveSetData.class.isAssignableFrom(adapter)) {
+            return adapter.cast(saveSet);
         }
         return null;
     }
 
     /**
-     * @return the beamline set
+     * @return the save set
      */
-    public BeamlineSetData getBeamlineSet() {
-        return beamlineSet;
+    public SaveSetData getSaveSet() {
+        return saveSet;
     }
 
     /*
@@ -52,7 +52,7 @@ public class BeamlineSetEditorInput implements IEditorInput {
      */
     @Override
     public boolean exists() {
-        return beamlineSet != null;
+        return saveSet != null;
     }
 
     /*
@@ -72,7 +72,7 @@ public class BeamlineSetEditorInput implements IEditorInput {
      */
     @Override
     public String getName() {
-        return beamlineSet.getDescriptor().getPathAsString();
+        return saveSet.getDescriptor().getPathAsString();
     }
 
     /*
@@ -92,6 +92,6 @@ public class BeamlineSetEditorInput implements IEditorInput {
      */
     @Override
     public String getToolTipText() {
-        return beamlineSet.getDescriptor().getPathAsString();
+        return saveSet.getDescriptor().getPathAsString();
     }
 }

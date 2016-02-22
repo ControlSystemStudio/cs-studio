@@ -7,7 +7,7 @@
       plugin="org.csstudio.saverestore">
 
    <description>
-      org.csstudio.saverestore.feature provides the core functionality for the Save, Set, and Restore application. It contributes the basic browser facilities (which allows browsing for beamline sets and snapshots) as well as the editors for beamline sets and snapshots.
+      org.csstudio.saverestore.feature provides the core functionality for the Save, Set, and Restore application. It contributes the basic browser facilities (which allows browsing for save sets and snapshots) as well as the editors for save sets and snapshots.
 This feature does not provide any data provider; the desired provider needs to be included via a different feature.
    </description>
 

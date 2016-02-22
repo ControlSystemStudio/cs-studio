@@ -1,6 +1,6 @@
 package org.csstudio.saverestore;
 
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.diirt.vtype.VBoolean;
 import org.diirt.vtype.VBooleanArray;
 import org.diirt.vtype.VByte;
@@ -50,7 +50,7 @@ public enum ValueType {
     BOOLEAN("boolean", VBoolean.class),
     STRING("string", VString.class),
     ENUM("enum", VEnum.class),
-    NODATA("na", VNoData.class),
+    NODATA("na", VDisconnectedData.class),
     NUMBER("number", VNumber.class);
 
     private final String typeName;
@@ -107,7 +107,7 @@ public enum ValueType {
     public static ValueType forName(String typeName) {
         ValueType[] values = values();
         for (ValueType v : values) {
-            if (v.typeName.equals(typeName)) {
+            if (v.typeName.equalsIgnoreCase(typeName)) {
                 return v;
             }
         }

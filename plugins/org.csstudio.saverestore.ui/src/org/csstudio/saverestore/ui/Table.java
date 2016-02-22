@@ -13,6 +13,7 @@ import org.csstudio.csdata.TimestampedPV;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.Utilities.VTypeComparison;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VNoData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.MultitypeTableCell;
@@ -91,8 +92,11 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         @Override
         protected void updateItem(Timestamp item, boolean empty) {
             super.updateItem(item, empty);
-            if (item == null || empty) {
+            if (empty) {
                 setText(null);
+                setStyle("");
+            } else if (item == null) {
+                setText("---");
                 setStyle("");
             } else {
                 setText(Utilities.timestampToLittleEndianString(item, true));
@@ -113,7 +117,6 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             SnapshotViewerEditor.class.getResourceAsStream("/icons/hprio_tsk.png"));
         private static final Image DISCONNECTED_IMAGE = new Image(
             SnapshotViewerEditor.class.getResourceAsStream("/icons/showerr_tsk.png"));
-        private static final String DISCONNECTED = "DISCONNECTED";
         private final SnapshotViewerController controller;
         private final Tooltip tooltip = new Tooltip();
 
@@ -144,7 +147,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                             return (T) Utilities.valueFromString(string, (VType) item);
                         } else if (item instanceof VTypePair) {
                             VTypePair t = (VTypePair) item;
-                            if (t.value instanceof VNoData) {
+                            if (t.value instanceof VDisconnectedData) {
                                 return (T) new VTypePair(t.base, Utilities.valueFromString(string, t.base),
                                     t.threshold);
                             } else {
@@ -222,12 +225,16 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 setTooltip(null);
                 setGraphic(null);
             } else {
-                if (item == VNoData.INSTANCE) {
-                    setText(DISCONNECTED);
+                if (item == VDisconnectedData.INSTANCE) {
+                    setText(VDisconnectedData.DISCONNECTED);
                     setGraphic(new ImageView(DISCONNECTED_IMAGE));
                     tooltip.setText("No Value Available");
                     setTooltip(tooltip);
                     getStyleClass().add("diff-cell");
+                } else if (item == VNoData.INSTANCE) {
+                    setText(item.toString());
+                    tooltip.setText("No Value Available");
+                    setTooltip(tooltip);
                 } else if (item instanceof VType) {
                     setText(Utilities.valueToString((VType) item));
                     setGraphic(null);
@@ -235,12 +242,14 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                     setTooltip(tooltip);
                 } else if (item instanceof VTypePair) {
                     VTypePair pair = (VTypePair) item;
-                    if (pair.value == VNoData.INSTANCE) {
-                        setText(DISCONNECTED);
-                        if (pair.base != VNoData.INSTANCE) {
+                    if (pair.value == VDisconnectedData.INSTANCE) {
+                        setText(VDisconnectedData.DISCONNECTED);
+                        if (pair.base != VDisconnectedData.INSTANCE) {
                             getStyleClass().add("diff-cell");
                         }
                         setGraphic(new ImageView(DISCONNECTED_IMAGE));
+                    } else if (pair.value == VNoData.INSTANCE) {
+                        setText(pair.value.toString());
                     } else {
                         VTypeComparison vtc = Utilities.valueToCompareString(pair.value, pair.base, pair.threshold);
                         setText(vtc.getString());
@@ -399,7 +408,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
 
         int width = FXUtilities.measureStringWidth("0000", Font.font(20));
         TableColumn<TableEntry, Integer> idColumn = new TooltipTableColumn<>("#",
-            "The order number of the PV in the beamline set", width, width, false);
+            "The order number of the PV in the save set", width, width, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         list.add(idColumn);
 
@@ -491,7 +500,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
 
         int width = FXUtilities.measureStringWidth("0000", Font.font(20));
         TableColumn<TableEntry, Integer> idColumn = new TooltipTableColumn<>("#",
-            "The order number of the PV in the beamline set", width, width, false);
+            "The order number of the PV in the save set", width, width, false);
         idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         list.add(idColumn);
 

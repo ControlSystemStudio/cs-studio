@@ -7,7 +7,7 @@ package org.csstudio.saverestore.git;
  */
 enum FileType {
 
-    BEAMLINE_SET(".bms", "BeamlineSets"), SNAPSHOT(".snp", "Snapshots");
+    SAVE_SET(".bms", "BeamlineSets"), SNAPSHOT(".snp", "Snapshots");
 
     final String suffix;
     final String directory;

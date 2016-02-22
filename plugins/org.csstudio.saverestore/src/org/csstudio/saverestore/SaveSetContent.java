@@ -7,12 +7,12 @@ import org.csstudio.saverestore.data.Threshold;
 
 /**
  *
- * <code>BeamlineSetContent</code> provides the contents of a beamline set file.
+ * <code>SaveSetContent</code> provides the contents of a save set file.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public final class BeamlineSetContent {
+public final class SaveSetContent {
 
     private final List<String> names;
     private final List<String> readbacks;
@@ -20,14 +20,14 @@ public final class BeamlineSetContent {
     private final String description;
 
     /**
-     * Constructs a new beamline set content.
+     * Constructs a new save set content.
      *
      * @param description the description of the file
-     * @param names the list of pv names
-     * @param readbacks the list of readback values
+     * @param names the list of PV names
+     * @param readbacks the list of save values
      * @param deltas the list of delta values
      */
-    BeamlineSetContent(String description, List<String> names, List<String> readbacks, List<String> deltas) {
+    SaveSetContent(String description, List<String> names, List<String> readbacks, List<String> deltas) {
         if (!readbacks.isEmpty() && readbacks.size() != names.size()) {
             throw new IllegalArgumentException("The number of readbacks does not match the number of pv names.");
         }
@@ -41,7 +41,7 @@ public final class BeamlineSetContent {
     }
 
     /**
-     * Return the names of all PVs in the beamline set.
+     * Return the names of all PVs in the save set.
      *
      * @return the names
      */
@@ -50,10 +50,10 @@ public final class BeamlineSetContent {
     }
 
     /**
-     * Returns the names of readback pvs, if one PV does not have a readback, there should be an empty string at that
-     * index. If none of the pvs have a readback PV associated with it, the list can be empty.
+     * Returns the names of readback PVs, if one PV does not have a readback, there should be an empty string at that
+     * index. If none of the PVs have a readback PV associated with it, the list can be empty.
      *
-     * @return the readback pv names
+     * @return the readback PV names
      */
     public List<String> getReadbacks() {
         return readbacks;
@@ -73,7 +73,7 @@ public final class BeamlineSetContent {
     }
 
     /**
-     * Return the description of the beamline set.
+     * Return the description of the save set.
      *
      * @return the description
      */

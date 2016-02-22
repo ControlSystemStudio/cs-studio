@@ -18,15 +18,15 @@ mechanisms to browse and manage the stored sets as well as to export the values 
 
 <h2><a name="started">Getting Started</a></h2>
 <p>
-The two main entities of the Save, Set & Restore application (SSR) are <b>Beamline Set</b> and <b>Snapshot</b>. Beamline
+The two main entities of the Save, Set & Restore application (SSR) are <b>Save Set</b> and <b>Snapshot</b>. Save
 Set defines the list of PV names, which can be loaded into the spreadsheet, while the Snapshot is a recording of PV values
-defined by the Beamline Set at one specific time. Snapshot always belong to a particular Beamline Set, which is also the
+defined by the Save Set at one specific time. Snapshot always belong to a particular Save Set, which is also the
 way how the entities are made available in the SSR Browser. 
 </p>
 <p>
 The user interface of SSR is composed of three different parts: <a href="#browser"><b>Save & Restore Browser</b></a> <i>(view)</i>,
-<a href="#viewer"><b>Snapshot Viewer</b></a> <i>(Editor)</i>, and <a href="#editor"><b>Beamline Set Editor</b></a> </i>(Editor)</i>.
-Browser provides mechanisms to browse and select Beamline Sets and Snapshots, while the two editors provide facilities,
+<a href="#viewer"><b>Snapshot Viewer</b></a> <i>(Editor)</i>, and <a href="#editor"><b>Save Set Editor</b></a> </i>(Editor)</i>.
+Browser provides mechanisms to browse and select Save Sets and Snapshots, while the two editors provide facilities,
 to create or display the contents of the SSR entities. 
 </p>
 <h2><a name="browser">Browser</a></h2>
@@ -34,14 +34,14 @@ to create or display the contents of the SSR entities.
 Depending on your storage provider the browser is divided into two to four different parts:
 <ul>
 <li><b>Branch Selector</b> <i>(Optional)</i> is available in the drop down menu. It displays the list of available
-branches as provided by the storage provider. A branches can be anything that provides a group of beamline sets,
+branches as provided by the storage provider. A branches can be anything that provides a group of Save sets,
 snapshots (and base levels if supported).</li>
 <li><b>Base Level Browser</b> <i>(Optional)</i> is available as the top most part of the browser view. The base level
-defines a distinctive set of beamline sets, for example for one particular experiment</li>
-<li><b>Beamline Set Browser</b> provides a list of all available Beamline Sets for the selected branch and base level.
-If branches and base levels are not supported, the Beamline Set Browser is the top most selector that is available. The 
-beamline sets are ordered hierarchically and are displayed in a tree-like view.</li>
-<li><b>Snapshot Browser</b> provides a list of all available Snapshots for the selected Beamline Set. The snapshots are
+defines a distinctive set of Save sets, for example for one particular experiment</li>
+<li><b>Save Set Browser</b> provides a list of all available Save Sets for the selected branch and base level.
+If branches and base levels are not supported, the Save Set Browser is the top most selector that is available. The 
+save sets are ordered hierarchically and are displayed in a tree-like view.</li>
+<li><b>Snapshot Browser</b> provides a list of all available Snapshots for the selected Save Set. The snapshots are
 order by time (latest on top) and are displayed together with the creation date, creator name and message/description.
 </li>
 </ul>
@@ -60,14 +60,14 @@ viewing the data and exporting/importing data.
 <p>
 The details of the snapshot viewer are described <a href="snapshotviewer.html">here</a>.
 </p>
-<h2><a name="editor">Beamline Set Editor</a></h2>
+<h2><a name="editor">Save Set Editor</a></h2>
 <p>
-Beamline Set editor allows to create and edit beamline set files. Beamline sets are composed of just two pieces of 
+Save Set editor allows to create and edit Save set files. Save sets are composed of just two pieces of 
 information: description and pvlist. Editor provides the means to edit these and to save (see the <i>File</i> menu) 
-them by either overwriting the existing beamline set or into a new file.  
+them by either overwriting the existing save set or into a new file.  
 </p>
 <p>
-The details of the beamline set editor are described <a href="beamlineseteditor.html">here</a>.
+The details of the save set editor are described <a href="saveseteditor.html">here</a>.
 </p>
 </body>
 </html>

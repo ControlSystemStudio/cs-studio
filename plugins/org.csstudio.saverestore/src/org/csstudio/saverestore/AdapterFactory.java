@@ -6,7 +6,7 @@ import java.net.URI;
 import java.text.ParseException;
 import java.util.Optional;
 
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -44,7 +44,7 @@ public class AdapterFactory implements IAdapterFactory {
                     String[] path = file.getFullPath().segments();
                     SnapshotContent sc = FileUtilities.readFromSnapshot(file.getContents());
                     Timestamp snapshotTime = Timestamp.of(sc.getDate());
-                    BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), path, null);
+                    SaveSet set = new SaveSet(new Branch(), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.getDate(), "<No Comment>", "<OS>");
                     VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
                         sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), snapshotTime);
@@ -61,7 +61,7 @@ public class AdapterFactory implements IAdapterFactory {
                     String[] path = absPath.split("\\/");
                     SnapshotContent sc = FileUtilities.readFromSnapshot(stream);
                     Timestamp snapshotTime = Timestamp.of(sc.getDate());
-                    BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), path, null);
+                    SaveSet set = new SaveSet(new Branch(), Optional.empty(), path, null);
                     Snapshot descriptor = new Snapshot(set, sc.getDate(), "<No Comment>", "<OS>");
                     VSnapshot vs = new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
                         sc.getReadbacks(), sc.getReadbackData(), sc.getDeltas(), snapshotTime);

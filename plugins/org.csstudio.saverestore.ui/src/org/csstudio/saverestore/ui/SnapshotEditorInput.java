@@ -79,10 +79,10 @@ public class SnapshotEditorInput implements IEditorInput {
     public String getName() {
         if (snapshot.isSaved()) {
             Date t = snapshot.getSnapshot().get().getDate();
-            String name = snapshot.getBeamlineSet().getName();
+            String name = snapshot.getSaveSet().getName();
             return name + DATE_FORMAT.get().format(t);
         } else {
-            return snapshot.getBeamlineSet().getDisplayName();
+            return snapshot.getSaveSet().getDisplayName();
         }
     }
 
@@ -103,6 +103,6 @@ public class SnapshotEditorInput implements IEditorInput {
      */
     @Override
     public String getToolTipText() {
-        return snapshot.getBeamlineSet().getFullyQualifiedName();
+        return snapshot.getSaveSet().getFullyQualifiedName();
     }
 }

@@ -9,7 +9,7 @@ import java.util.Optional;
 
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.ui.Selector;
 import org.csstudio.ui.fx.util.FXTextInputDialog;
@@ -25,7 +25,7 @@ import javafx.scene.input.MouseButton;
 /**
  *
  * <code>RepositoryTree</code> is a component that provides a tree browser of the save and restore repository. It allows
- * user to select any single branch, base level, folder or beamline set within the repository. If created with the
+ * user to select any single branch, base level, folder or save set within the repository. If created with the
  * <code>editable</code> parameter, user can also create new folders by selecting the appropriate item from the popup
  * menu.
  *
@@ -55,7 +55,7 @@ public class RepositoryTree extends TreeView<String> {
         Type type;
         Branch branch;
         BaseLevel base;
-        BeamlineSet set;
+        SaveSet set;
 
         BrowsingTreeItem(Branch item) {
             super(item.getShortName());
@@ -71,7 +71,7 @@ public class RepositoryTree extends TreeView<String> {
             setUp();
         }
 
-        BrowsingTreeItem(BeamlineSet item) {
+        BrowsingTreeItem(SaveSet item) {
             super(item.getName());
             this.set = item;
             this.type = Type.SET;
@@ -119,7 +119,7 @@ public class RepositoryTree extends TreeView<String> {
     private Selector selector;
     private TreeItem<String> root;
     private final boolean editable;
-    private final BeamlineSet initialValue;
+    private final SaveSet initialValue;
     private final String dataProviderId;
     private PropertyChangeListener busyListener =  e -> setDisable((Boolean) e.getNewValue());
 
@@ -130,7 +130,7 @@ public class RepositoryTree extends TreeView<String> {
      * @param editable true if user is allowed to create new folders
      * @param initialValue the initial value to select or add
      */
-    public RepositoryTree(IShellProvider shellProvider, boolean editable, BeamlineSet initialValue) {
+    public RepositoryTree(IShellProvider shellProvider, boolean editable, SaveSet initialValue) {
         this.shellProvider = shellProvider;
         this.editable = editable;
         this.initialValue = initialValue;
@@ -163,7 +163,7 @@ public class RepositoryTree extends TreeView<String> {
         SaveRestoreService.getInstance().addPropertyChangeListener(SaveRestoreService.BUSY,busyListener);
         selector.branchesProperty().addListener((a, o, n) -> branchesLoaded(n));
         selector.baseLevelsProperty().addListener((a, o, n) -> baseLevelsLoaded(n));
-        selector.beamlineSetsProperty().addListener((a, o, n) -> beamlineSetsLoaded(n));
+        selector.saveSetsProperty().addListener((a, o, n) -> saveSetsLoaded(n));
         branchesLoaded(selector.branchesProperty().get());
 
     }
@@ -274,12 +274,12 @@ public class RepositoryTree extends TreeView<String> {
         }
     }
 
-    private void beamlineSetsLoaded(List<BeamlineSet> beamlineSets) {
-        if (beamlineSets.isEmpty()) {
+    private void saveSetsLoaded(List<SaveSet> saveSets) {
+        if (saveSets.isEmpty()) {
             return;
         }
-        Branch branch = beamlineSets.get(0).getBranch();
-        Optional<BaseLevel> base = beamlineSets.get(0).getBaseLevel();
+        Branch branch = saveSets.get(0).getBranch();
+        Optional<BaseLevel> base = saveSets.get(0).getBaseLevel();
         BrowsingTreeItem parentItem = null;
         if (base.isPresent()) {
             BaseLevel baseLevel = base.get();
@@ -320,7 +320,7 @@ public class RepositoryTree extends TreeView<String> {
         Map<String, BrowsingTreeItem> items = new HashMap<>();
         parentItem.getChildren().clear();
         items.put("/", parentItem);
-        for (BeamlineSet set : beamlineSets) {
+        for (SaveSet set : saveSets) {
             String[] path = set.getPath();
             StringBuilder currentPath = new StringBuilder(100);
             BrowsingTreeItem setParent;
@@ -340,7 +340,7 @@ public class RepositoryTree extends TreeView<String> {
         parentItem.setExpanded(true);
     }
 
-    public BeamlineSet getValueFromComponent() {
+    public SaveSet getValueFromComponent() {
         BrowsingTreeItem item = (BrowsingTreeItem) getSelectionModel().getSelectedItem();
         if (item == null) {
             return null;
@@ -348,7 +348,7 @@ public class RepositoryTree extends TreeView<String> {
         List<String> names = new ArrayList<>();
         Branch branch = null;
         BaseLevel baseLevel = null;
-        BeamlineSet set = null;
+        SaveSet set = null;
         TreeItem<String> theRoot = getRoot();
         while (item != theRoot) {
             if (item.type == Type.SET) {
@@ -374,7 +374,7 @@ public class RepositoryTree extends TreeView<String> {
             path[length] = set.getName();
         }
 
-        BeamlineSet newSet = new BeamlineSet(branch, Optional.ofNullable(baseLevel), path, dataProviderId);
+        SaveSet newSet = new SaveSet(branch, Optional.ofNullable(baseLevel), path, dataProviderId);
         StringBuilder sb = new StringBuilder(150).append('[').append(newSet.getBranch().getShortName());
         if (baseLevel != null) {
             sb.append('/').append(baseLevel.getStorageName());
@@ -383,7 +383,7 @@ public class RepositoryTree extends TreeView<String> {
         return newSet;
     }
 
-    public void setValueToComponent(BeamlineSet value) {
+    public void setValueToComponent(SaveSet value) {
         if (value == null) {
             return;
         }

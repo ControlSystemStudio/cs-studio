@@ -6,6 +6,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -14,7 +15,7 @@ import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.Utilities;
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.SnapshotDataFormat;
@@ -115,7 +116,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
     private TextArea commentField;
     private TextField dateField;
     private TextField creatorField;
-    private TextArea tagField;
+    private TextArea parametersField;
     private Button saveSnapshotButton;
     private Menu contextMenu;
 
@@ -164,7 +165,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
     private void init() {
         VSnapshot snapshot = getEditorInput().getAdapter(VSnapshot.class);
         if (snapshot == null) {
-            snapshot = new VSnapshot(new BeamlineSet());
+            snapshot = new VSnapshot(new SaveSet());
         }
         addOrSetSnapshot(snapshot, false);
 
@@ -199,11 +200,29 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
             if (s.getTagName().isPresent()) {
                 String tagName = s.getTagName().get();
                 String tagMessage = s.getTagMessage().orElse("");
-                tagField.setText(tagName + "\n" + tagMessage);
-                tagField.setStyle("-fx-control-inner-background: #FFF8D2;");
+                List<String> parameters = s.getPublicParameters();
+                StringBuilder sb = new StringBuilder(
+                    tagName.length() + tagMessage.length() + 30 + parameters.size() * 100);
+                sb.append("TAG NAME: ").append(tagName).append("\nTAG MESSAGE: ").append(tagMessage);
+                for (String p : parameters) {
+                    sb.append('\n').append(p.toUpperCase(Locale.UK)).append(':').append(' ')
+                        .append(s.getParameters().get(p));
+                }
+                parametersField.setText(sb.toString());
+                parametersField.setStyle("-fx-control-inner-background: #FFF8D2;");
             } else {
-                tagField.setText("");
-                tagField.setStyle(null);
+                List<String> parameters = s.getPublicParameters();
+                if (parameters.isEmpty()) {
+                    parametersField.setText("");
+                } else {
+                    StringBuilder sb = new StringBuilder(parameters.size() * 100);
+                    for (String p : parameters) {
+                        sb.append(p.toUpperCase(Locale.UK)).append(':').append(' ')
+                            .append(s.getParameters().get(p)).append('\n');
+                    }
+                    parametersField.setText(sb.substring(0,sb.length()-1));
+                }
+                parametersField.setStyle(null);
             }
             commentField.setText(s.getComment());
             creatorField.setText(s.getOwner());
@@ -212,7 +231,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
             commentField.setText("");
             creatorField.setText("");
             dateField.setText("");
-            tagField.setText("");
+            parametersField.setText("");
         }
     }
 
@@ -638,20 +657,20 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
         dateField = new StaticTextField();
         dateField.setPrefWidth(width);
         GridPane.setMargin(dateField, new Insets(0, 5, 0, 0));
-        tagField = new StaticTextArea();
-        tagField.setPrefWidth(200);
-        tagField.setMaxWidth(Double.MAX_VALUE);
-        tagField.setPrefRowCount(2);
-        setGridConstraints(tagField, true, true, Priority.SOMETIMES, Priority.ALWAYS);
-        GridPane.setMargin(tagField, new Insets(0, 5, 0, 0));
+        parametersField = new StaticTextArea();
+        parametersField.setPrefWidth(200);
+        parametersField.setMaxWidth(Double.MAX_VALUE);
+        parametersField.setPrefRowCount(2);
+        setGridConstraints(parametersField, true, true, Priority.SOMETIMES, Priority.ALWAYS);
+        GridPane.setMargin(parametersField, new Insets(0, 5, 0, 0));
         left.add(new Label("Comment:"), 0, 0);
         left.add(commentField, 1, 0, 1, 2);
         left.add(new Label("Creator:"), 2, 0);
         left.add(new Label("Timestamp:"), 2, 1);
         left.add(creatorField, 3, 0);
         left.add(dateField, 3, 1);
-        left.add(new Label("Tag:"), 4, 0);
-        left.add(tagField, 5, 0, 1, 2);
+        left.add(new Label("Info:"), 4, 0);
+        left.add(parametersField, 5, 0, 1, 2);
         GridPane grid = new GridPane();
         Node right = createButtonPane();
         GridPane.setHgrow(left, Priority.ALWAYS);
@@ -703,8 +722,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
         Button restoreSnapshotButton = new Button("Restore");
         restoreSnapshotButton.setTooltip(new Tooltip("Set the stored values to PVs"));
         restoreSnapshotButton.setOnAction(e -> SaveRestoreService.getInstance().execute("Restore Snapshot", () -> {
-            List<VSnapshot> snapshots = controller.getAllSnapshots();// getSnapshots(false); allow to restore non saved
-                                                                     // snapshots as well
+            // allow to restore non saved snapshots as well
+            List<VSnapshot> snapshots = controller.getAllSnapshots();
             if (snapshots.isEmpty()) {
                 return;
             } else if (snapshots.size() == 1) {
@@ -743,7 +762,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
                 Snapshot s = (Snapshot) e.getDragboard().getContent(SnapshotDataFormat.INSTANCE);
                 if (s != null) {
                     final DataProvider provider = SaveRestoreService.getInstance()
-                        .getDataProvider(s.getBeamlineSet().getDataProviderId()).getProvider();
+                        .getDataProvider(s.getSaveSet().getDataProviderId()).getProvider();
                     SaveRestoreService.getInstance().execute("Load snapshot data", () -> {
                         try {
                             addSnapshot(provider.getSnapshotContent(s));

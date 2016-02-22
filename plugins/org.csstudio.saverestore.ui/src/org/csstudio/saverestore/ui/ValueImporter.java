@@ -3,7 +3,7 @@ package org.csstudio.saverestore.ui;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.diirt.util.time.Timestamp;
 import org.diirt.vtype.Time;
 import org.diirt.vtype.VDouble;
@@ -28,7 +28,7 @@ public interface ValueImporter {
      * the timestamp. The returned values should be of type VType. They do not need to be all of the same type, some can
      * be {@link VDouble}, others {@link VInt} etc. While not necessary it is desired for the values to be also
      * instances of {@link Time}. If a value for a particular pv is missing it will be shown on the UI as
-     * {@link VNoData}.
+     * {@link VDisconnectedData}.
      * </p>
      * <p>
      * This method will always be called on a non-UI thread.

@@ -17,9 +17,7 @@ import static org.mockito.Mockito.when;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
@@ -32,11 +30,11 @@ import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.UnsupportedActionException;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.util.time.Timestamp;
 import org.eclipse.jface.window.IShellProvider;
@@ -63,24 +61,24 @@ public class SelectorTest {
     private BaseLevel branchBaseLevel = new BaseLevel(branch, "base1", "base1");
     private BaseLevel branchBaseLevel2 = new BaseLevel(branch, "base2", "base2");
     private BaseLevel someBranchBaseLevel = new BaseLevel(someBranch, "someBase", "someBase");
-    private BeamlineSet branchBeamlineSet = new BeamlineSet(branch, Optional.of(branchBaseLevel),
+    private SaveSet branchSaveSet = new SaveSet(branch, Optional.of(branchBaseLevel),
         new String[] { "first", "second.bms" }, "someId");
-    private BeamlineSet branchBeamlineSet2 = new BeamlineSet(branch, Optional.of(branchBaseLevel),
+    private SaveSet branchSaveSet2 = new SaveSet(branch, Optional.of(branchBaseLevel),
         new String[] { "first", "foo", "bar", "second.bms" }, "someId");
-    private BeamlineSet someBranchBeamlineSet = new BeamlineSet(someBranch, Optional.of(someBranchBaseLevel),
+    private SaveSet someBranchSaveSet = new SaveSet(someBranch, Optional.of(someBranchBaseLevel),
         new String[] { "first", "foo", "haha", "second.bms" }, "someId");
-    private Snapshot branchSnapshot = new Snapshot(branchBeamlineSet, date, "comment", "owner");
-    private Snapshot branchSnapshot2 = new Snapshot(branchBeamlineSet, new Date(date.getTime() - 5000),
+    private Snapshot branchSnapshot = new Snapshot(branchSaveSet, date, "comment", "owner");
+    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, new Date(date.getTime() - 5000),
         "another comment", "user");
-    private Snapshot branchSnapshot3 = new Snapshot(branchBeamlineSet, new Date(date.getTime() + 5000), "new snapshot",
+    private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, new Date(date.getTime() + 5000), "new snapshot",
         "user");
-    private Snapshot someBranchSnapshot = new Snapshot(someBranchBeamlineSet, new Date(date.getTime() + 5000), "new snapshot",
+    private Snapshot someBranchSnapshot = new Snapshot(someBranchSaveSet, new Date(date.getTime() + 5000), "new snapshot",
         "user");
-    private BeamlineSetData bsd = new BeamlineSetData(branchBeamlineSet, Arrays.asList("pv1", "pv"),
+    private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"),
         Arrays.asList("rb1", "rb2"), Arrays.asList("d1", "d2"), "description");
-    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"), Arrays.asList(VNoData.INSTANCE),
+    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"), Arrays.asList(VDisconnectedData.INSTANCE),
         Timestamp.now(), null);
-    private VSnapshot xSnapshot = new VSnapshot(someBranchSnapshot, Arrays.asList("pv1"), Arrays.asList(VNoData.INSTANCE),
+    private VSnapshot xSnapshot = new VSnapshot(someBranchSnapshot, Arrays.asList("pv1"), Arrays.asList(VDisconnectedData.INSTANCE),
         Timestamp.now(), null);
 
     @SuppressWarnings("unchecked")
@@ -113,12 +111,12 @@ public class SelectorTest {
         when(dpr.getBaseLevels(branch)).thenReturn(new BaseLevel[] { branchBaseLevel, branchBaseLevel2 });
         when(dpr.getBaseLevels(someBranch)).thenReturn(new BaseLevel[] { someBranchBaseLevel });
         when(dpr.getBaseLevels(newBranch)).thenReturn(new BaseLevel[0]);
-        when(dpr.getBeamlineSets(Optional.of(branchBaseLevel), branch))
-            .thenReturn(new BeamlineSet[] { branchBeamlineSet, branchBeamlineSet2 });
-        when(dpr.getBeamlineSets(Optional.of(branchBaseLevel2), branch)).thenReturn(new BeamlineSet[0]);
-        when(dpr.getSnapshots(branchBeamlineSet, false, Optional.empty()))
+        when(dpr.getSaveSets(Optional.of(branchBaseLevel), branch))
+            .thenReturn(new SaveSet[] { branchSaveSet, branchSaveSet2 });
+        when(dpr.getSaveSets(Optional.of(branchBaseLevel2), branch)).thenReturn(new SaveSet[0]);
+        when(dpr.getSnapshots(branchSaveSet, false, Optional.empty()))
             .thenReturn(new Snapshot[] { branchSnapshot, branchSnapshot2 });
-        when(dpr.getSnapshots(branchBeamlineSet2, false, Optional.empty())).thenReturn(new Snapshot[0]);
+        when(dpr.getSnapshots(branchSaveSet2, false, Optional.empty())).thenReturn(new Snapshot[0]);
 
         final CompletionNotifier[] notifier = new CompletionNotifier[1];
         doAnswer(inv -> {
@@ -131,22 +129,22 @@ public class SelectorTest {
             notifier[0].branchCreated(newBranch);
             return null;
         });
-        when(dpr.deleteBeamlineSet(branchBeamlineSet, "comment")).then(inv -> {
-            notifier[0].beamlineSetDeleted(branchBeamlineSet);
+        when(dpr.deleteSaveSet(branchSaveSet, "comment")).then(inv -> {
+            notifier[0].saveSetDeleted(branchSaveSet);
             return null;
         });
-        when(dpr.saveBeamlineSet(bsd, "comment")).then(inv -> {
-            notifier[0].beamlineSetSaved((BeamlineSetData) inv.getArguments()[0]);
+        when(dpr.saveSaveSet(bsd, "comment")).then(inv -> {
+            notifier[0].saveSetSaved((SaveSetData) inv.getArguments()[0]);
             return null;
         });
         when(dpr.synchronise()).then(inv -> {
             notifier[0].synchronised();
             return null;
         });
-        when(dpr.importData(any(BeamlineSet.class), any(Branch.class), any(Optional.class), any(ImportType.class)))
+        when(dpr.importData(any(SaveSet.class), any(Branch.class), any(Optional.class), any(ImportType.class)))
             .then(inv -> {
                 Object[] args = inv.getArguments();
-                notifier[0].dataImported((BeamlineSet) args[0], (Branch) args[1], (Optional<BaseLevel>) args[2]);
+                notifier[0].dataImported((SaveSet) args[0], (Branch) args[1], (Optional<BaseLevel>) args[2]);
                 return null;
             });
         when(dpr.saveSnapshot(any(VSnapshot.class), anyString())).then(inv -> {
@@ -154,11 +152,10 @@ public class SelectorTest {
             return null;
         });
         when(dpr.tagSnapshot(branchSnapshot, Optional.of("name"), Optional.of("message"))).then(inv -> {
-            Map<String,String> parameters = new HashMap<>();
-            parameters.put(Snapshot.TAG_NAME, ((Optional<String>)inv.getArguments()[1]).get());
-            parameters.put(Snapshot.TAG_MESSAGE, ((Optional<String>)inv.getArguments()[2]).get());
-            Snapshot snapshot = new Snapshot(branchSnapshot.getBeamlineSet(),branchSnapshot.getDate(),
-                branchSnapshot.getComment(), branchSnapshot.getOwner(), parameters);
+            Snapshot snapshot = new Snapshot(branchSnapshot.getSaveSet(),branchSnapshot.getDate(),
+                branchSnapshot.getComment(), branchSnapshot.getOwner(),
+                ((Optional<String>)inv.getArguments()[1]).get(),
+                ((Optional<String>)inv.getArguments()[2]).get());
             notifier[0].snapshotTagged(snapshot);
             return null;
         });
@@ -194,36 +191,36 @@ public class SelectorTest {
         assertEquals("The order of base levels is prescribed", branchBaseLevel, baseLevels.get(0));
         assertEquals("The order of base levels is prescribed", branchBaseLevel2, baseLevels.get(1));
         assertNull("No base level is selected by default", selector.selectedBaseLevelProperty().get());
-        assertTrue("No beamline sets are available", selector.beamlineSetsProperty().get().isEmpty());
-        assertNull("No beamline set is selected by default", selector.selectedBeamlineSetProperty().get());
+        assertTrue("No save sets are available", selector.saveSetsProperty().get().isEmpty());
+        assertNull("No save set is selected by default", selector.selectedSaveSetProperty().get());
         assertTrue("No snapshots are available", selector.snapshotsProperty().get().isEmpty());
         verify(dataProvider.getProvider(), times(1)).addCompletionNotifier(any(CompletionNotifier.class));
-        verify(dataProvider.getProvider(), never()).getBeamlineSets(any(Optional.class), any(Branch.class));
-        verify(dataProvider.getProvider(), never()).getSnapshots(any(BeamlineSet.class), any(Boolean.class),
+        verify(dataProvider.getProvider(), never()).getSaveSets(any(Optional.class), any(Branch.class));
+        verify(dataProvider.getProvider(), never()).getSnapshots(any(SaveSet.class), any(Boolean.class),
             any(Optional.class));
     }
 
     /**
-     * Test the output of selecting different values (branches, base levels, beamline sets).
+     * Test the output of selecting different values (branches, base levels, save sets).
      */
     @Test
     public void testSelecting() {
         SaveRestoreService.getInstance().setSelectedDataProvider(dataProvider);
         selector.selectedBaseLevelProperty().set(branchBaseLevel);
-        List<BeamlineSet> beamlineSets = selector.beamlineSetsProperty().get();
-        assertEquals("Exactly 2 beamline sets are available for the selected base level", 2, beamlineSets.size());
-        assertEquals("Order of beamline sets is prescribed", branchBeamlineSet, beamlineSets.get(0));
-        assertEquals("Order of beamline sets is prescribed", branchBeamlineSet2, beamlineSets.get(1));
-        assertNull("No beamline set is selected by default", selector.selectedBeamlineSetProperty().get());
-        selector.selectedBeamlineSetProperty().set(branchBeamlineSet);
+        List<SaveSet> saveSets = selector.saveSetsProperty().get();
+        assertEquals("Exactly 2 save sets are available for the selected base level", 2, saveSets.size());
+        assertEquals("Order of save sets is prescribed", branchSaveSet, saveSets.get(0));
+        assertEquals("Order of save sets is prescribed", branchSaveSet2, saveSets.get(1));
+        assertNull("No save set is selected by default", selector.selectedSaveSetProperty().get());
+        selector.selectedSaveSetProperty().set(branchSaveSet);
         List<Snapshot> snapshots = selector.snapshotsProperty().get();
-        assertEquals("Exactly 2 snapshots are available for the selected beamline set", 2, snapshots.size());
+        assertEquals("Exactly 2 snapshots are available for the selected save set", 2, snapshots.size());
         assertEquals("Order of snapshots is prescribed", branchSnapshot, snapshots.get(0));
         assertEquals("Order of snapshots is prescribed", branchSnapshot2, snapshots.get(1));
         selector.selectedBaseLevelProperty().set(branchBaseLevel2);
-        assertTrue("No beamline sets are available for the second base level",
-            selector.beamlineSetsProperty().get().isEmpty());
-        assertNull("No beamline set is selected by default", selector.selectedBeamlineSetProperty().get());
+        assertTrue("No save sets are available for the second base level",
+            selector.saveSetsProperty().get().isEmpty());
+        assertNull("No save set is selected by default", selector.selectedSaveSetProperty().get());
         assertTrue("No snapshots are available", selector.snapshotsProperty().get().isEmpty());
     }
 
@@ -258,46 +255,46 @@ public class SelectorTest {
     }
 
     /**
-     * Test notifications when beamline set is deleted.
+     * Test notifications when save set is deleted.
      *
      * @throws UnsupportedActionException
      * @throws DataProviderException
      */
     @Test
-    public void testDeleteBeamlineSetNotifications() throws UnsupportedActionException, DataProviderException {
+    public void testDeleteSaveSetNotifications() throws UnsupportedActionException, DataProviderException {
         SaveRestoreService.getInstance().setSelectedDataProvider(dataProvider);
         selector.selectedBranchProperty().set(branch);
         selector.selectedBaseLevelProperty().set(branchBaseLevel);
 
-        List<BeamlineSet> beamlineSets = selector.beamlineSetsProperty().get();
-        assertEquals("There are two beamline sets initially", 2, beamlineSets.size());
-        assertTrue(beamlineSets.contains(branchBeamlineSet));
-        dataProvider.getProvider().deleteBeamlineSet(branchBeamlineSet, "comment");
-        beamlineSets = selector.beamlineSetsProperty().get();
-        assertEquals("Only one beamline set remains after 1 is deleted", 1, beamlineSets.size());
-        assertFalse("Deleted beamline set should not be available", beamlineSets.contains(branchBeamlineSet));
+        List<SaveSet> saveSets = selector.saveSetsProperty().get();
+        assertEquals("There are two save sets initially", 2, saveSets.size());
+        assertTrue(saveSets.contains(branchSaveSet));
+        dataProvider.getProvider().deleteSaveSet(branchSaveSet, "comment");
+        saveSets = selector.saveSetsProperty().get();
+        assertEquals("Only one save set remains after 1 is deleted", 1, saveSets.size());
+        assertFalse("Deleted save set should not be available", saveSets.contains(branchSaveSet));
     }
 
     /**
-     * Test notifications when beamline set is saved.
+     * Test notifications when save set is saved.
      *
      * @throws UnsupportedActionException
      * @throws DataProviderException
      */
     @Test
-    public void testSaveBeamlineSetNotifications() throws UnsupportedActionException, DataProviderException {
+    public void testSaveSaveSetNotifications() throws UnsupportedActionException, DataProviderException {
         SaveRestoreService.getInstance().setSelectedDataProvider(dataProvider);
         selector.selectedBaseLevelProperty().set(branchBaseLevel);
-        // after calling saveBeamlineSet the selector should fetch the beamline sets again
-        verify(dataProvider.getProvider(), times(1)).getBeamlineSets(Optional.of(branchBaseLevel), branch);
-        dataProvider.getProvider().saveBeamlineSet(bsd, "comment");
-        verify(dataProvider.getProvider(), times(2)).getBeamlineSets(Optional.of(branchBaseLevel), branch);
+        // after calling saveSaveSet the selector should fetch the save sets again
+        verify(dataProvider.getProvider(), times(1)).getSaveSets(Optional.of(branchBaseLevel), branch);
+        dataProvider.getProvider().saveSaveSet(bsd, "comment");
+        verify(dataProvider.getProvider(), times(2)).getSaveSets(Optional.of(branchBaseLevel), branch);
 
-        // save a beamline set in a different base level
-        // if the beamline set was saved for another base level, there should be no refetching of the beamline sets
+        // save a save set in a different base level
+        // if the save set was saved for another base level, there should be no refetching of the save sets
         selector.selectedBaseLevelProperty().set(branchBaseLevel2);
-        dataProvider.getProvider().saveBeamlineSet(bsd, "comment");
-        verify(dataProvider.getProvider(), times(2)).getBeamlineSets(Optional.of(branchBaseLevel), branch);
+        dataProvider.getProvider().saveSaveSet(bsd, "comment");
+        verify(dataProvider.getProvider(), times(2)).getSaveSets(Optional.of(branchBaseLevel), branch);
     }
 
     /**
@@ -309,13 +306,13 @@ public class SelectorTest {
     public void testSynchronisedNotifications() throws DataProviderException {
         SaveRestoreService.getInstance().setSelectedDataProvider(dataProvider);
         selector.selectedBaseLevelProperty().set(branchBaseLevel);
-        selector.selectedBeamlineSetProperty().set(branchBeamlineSet);
+        selector.selectedSaveSetProperty().set(branchSaveSet);
         dataProvider.getProvider().synchronise();
         verify(dataProvider.getProvider(), times(2)).getBranches();
         assertNull("No base level is selected after synchronisation", selector.selectedBaseLevelProperty().get());
-        assertNull("No beamline set is selected after synchronisation", selector.selectedBeamlineSetProperty().get());
-        assertTrue("No beamline sets are available after synchronisation",
-            selector.beamlineSetsProperty().get().isEmpty());
+        assertNull("No save set is selected after synchronisation", selector.selectedSaveSetProperty().get());
+        assertTrue("No save sets are available after synchronisation",
+            selector.saveSetsProperty().get().isEmpty());
         assertTrue("No snapshots are available after synchronisation", selector.snapshotsProperty().get().isEmpty());
     }
 
@@ -330,28 +327,28 @@ public class SelectorTest {
         selector.selectedBaseLevelProperty().set(branchBaseLevel);
         verify(dataProvider.getProvider(), times(1)).getBranches();
         verify(dataProvider.getProvider(), times(1)).getBaseLevels(branch);
-        verify(dataProvider.getProvider(), times(1)).getBeamlineSets(Optional.of(branchBaseLevel), branch);
-        dataProvider.getProvider().importData(branchBeamlineSet, someBranch, Optional.of(someBranchBaseLevel),
-            ImportType.BEAMLINE_SET);
+        verify(dataProvider.getProvider(), times(1)).getSaveSets(Optional.of(branchBaseLevel), branch);
+        dataProvider.getProvider().importData(branchSaveSet, someBranch, Optional.of(someBranchBaseLevel),
+            ImportType.SAVE_SET);
         // data imported into a different branch
         verify(dataProvider.getProvider(), times(1)).getBranches();
         verify(dataProvider.getProvider(), times(1)).getBaseLevels(branch);
-        verify(dataProvider.getProvider(), times(1)).getBeamlineSets(Optional.of(branchBaseLevel), branch);
+        verify(dataProvider.getProvider(), times(1)).getSaveSets(Optional.of(branchBaseLevel), branch);
 
-        // imported into the selected base level - beamline sets should be reloaded
-        dataProvider.getProvider().importData(someBranchBeamlineSet, branch, Optional.of(branchBaseLevel),
-            ImportType.BEAMLINE_SET);
+        // imported into the selected base level - save sets should be reloaded
+        dataProvider.getProvider().importData(someBranchSaveSet, branch, Optional.of(branchBaseLevel),
+            ImportType.SAVE_SET);
         verify(dataProvider.getProvider(), times(1)).getBranches();
         verify(dataProvider.getProvider(), times(1)).getBaseLevels(branch);
-        verify(dataProvider.getProvider(), times(2)).getBeamlineSets(Optional.of(branchBaseLevel), branch);
+        verify(dataProvider.getProvider(), times(2)).getSaveSets(Optional.of(branchBaseLevel), branch);
 
-        // imported into selected branch, different base level - base levels and beamline sets should be
+        // imported into selected branch, different base level - base levels and save sets should be
         // refetched, in case it is a new base level
-        dataProvider.getProvider().importData(someBranchBeamlineSet, branch, Optional.of(branchBaseLevel2),
-            ImportType.BEAMLINE_SET);
+        dataProvider.getProvider().importData(someBranchSaveSet, branch, Optional.of(branchBaseLevel2),
+            ImportType.SAVE_SET);
         verify(dataProvider.getProvider(), times(1)).getBranches();
         verify(dataProvider.getProvider(), times(2)).getBaseLevels(branch);
-        verify(dataProvider.getProvider(), times(3)).getBeamlineSets(Optional.of(branchBaseLevel), branch);
+        verify(dataProvider.getProvider(), times(3)).getSaveSets(Optional.of(branchBaseLevel), branch);
     }
 
     /**
@@ -363,7 +360,7 @@ public class SelectorTest {
     public void testSnapshotSaved() throws DataProviderException {
         SaveRestoreService.getInstance().setSelectedDataProvider(dataProvider);
         selector.selectedBaseLevelProperty().set(branchBaseLevel);
-        selector.selectedBeamlineSetProperty().set(branchBeamlineSet);
+        selector.selectedSaveSetProperty().set(branchSaveSet);
         List<Snapshot> snapshots = selector.snapshotsProperty().get();
         assertEquals("Exactly 2 snapshots are available", 2, snapshots.size());
         dataProvider.getProvider().saveSnapshot(snapshot, "comment");
@@ -373,7 +370,7 @@ public class SelectorTest {
         assertEquals(branchSnapshot, snapshots.get(1));
         assertEquals(branchSnapshot2, snapshots.get(2));
 
-        //nothing should change because the saved snapshot is in a different beamline set
+        //nothing should change because the saved snapshot is in a different save set
         dataProvider.getProvider().saveSnapshot(xSnapshot, "comment");
         snapshots = selector.snapshotsProperty().get();
         assertEquals("Exactly 3 snapshots are available", 3, snapshots.size());
@@ -392,7 +389,7 @@ public class SelectorTest {
     public void testSnapshotTagged() throws DataProviderException {
         SaveRestoreService.getInstance().setSelectedDataProvider(dataProvider);
         selector.selectedBaseLevelProperty().set(branchBaseLevel);
-        selector.selectedBeamlineSetProperty().set(branchBeamlineSet);
+        selector.selectedSaveSetProperty().set(branchSaveSet);
         List<Snapshot> snapshots = selector.snapshotsProperty().get();
         assertEquals("Exactly 2 snapshots are available", 2, snapshots.size());
         assertFalse("No tag name", snapshots.get(0).getTagName().isPresent());

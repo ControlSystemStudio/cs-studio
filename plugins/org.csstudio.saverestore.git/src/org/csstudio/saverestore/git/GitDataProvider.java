@@ -19,8 +19,8 @@ import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -171,28 +171,28 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#getBeamlineSets(java.util.Optional,
+     * @see org.csstudio.saverestore.DataProvider#getSaveSets(java.util.Optional,
      * org.csstudio.saverestore.data.Branch)
      */
     @Override
-    public BeamlineSet[] getBeamlineSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException {
+    public SaveSet[] getSaveSets(Optional<BaseLevel> baseLevel, Branch branch) throws DataProviderException {
         checkInitialised();
         try {
-            List<BeamlineSet> sets = grm.getBeamlineSets(baseLevel, branch);
-            return sets.toArray(new BeamlineSet[sets.size()]);
+            List<SaveSet> sets = grm.getSaveSets(baseLevel, branch);
+            return sets.toArray(new SaveSet[sets.size()]);
         } catch (IOException | GitAPIException | RuntimeException e) {
-            throw new DataProviderException("Error loading the beamline set list.", e);
+            throw new DataProviderException("Error loading the save set list.", e);
         }
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#getSnapshots(org.csstudio.saverestore.data.BeamlineSet, boolean,
+     * @see org.csstudio.saverestore.DataProvider#getSnapshots(org.csstudio.saverestore.data.SaveSet, boolean,
      * java.util.Optional)
      */
     @Override
-    public Snapshot[] getSnapshots(BeamlineSet set, boolean all, Optional<Snapshot> fromThisOneBack)
+    public Snapshot[] getSnapshots(SaveSet set, boolean all, Optional<Snapshot> fromThisOneBack)
         throws DataProviderException {
         checkInitialised();
         try {
@@ -208,15 +208,15 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#getBeamlineSetContent(org.csstudio.saverestore.BeamlineSet)
+     * @see org.csstudio.saverestore.DataProvider#getSaveSetContent(org.csstudio.saverestore.SaveSet)
      */
     @Override
-    public BeamlineSetData getBeamlineSetContent(BeamlineSet set) throws DataProviderException {
+    public SaveSetData getSaveSetContent(SaveSet set) throws DataProviderException {
         checkInitialised();
         try {
-            return grm.loadBeamlineSetData(set, Optional.empty());
+            return grm.loadSaveSetData(set, Optional.empty());
         } catch (IOException | GitAPIException e) {
-            throw new DataProviderException("Error loading the beamline set data for '" + set.getPathAsString() + "'.",
+            throw new DataProviderException("Error loading the save set data for '" + set.getPathAsString() + "'.",
                 e);
         }
     }
@@ -244,18 +244,18 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#saveBeamlineSet(org.csstudio.saverestore.BeamlineSetData,
+     * @see org.csstudio.saverestore.DataProvider#saveSaveSet(org.csstudio.saverestore.SaveSetData,
      * java.lang.String)
      */
     @Override
-    public BeamlineSetData saveBeamlineSet(BeamlineSetData set, String comment) throws DataProviderException {
+    public SaveSetData saveSaveSet(SaveSetData set, String comment) throws DataProviderException {
         checkInitialised();
-        Result<BeamlineSetData> answer = null;
+        Result<SaveSetData> answer = null;
         try {
-            answer = grm.saveBeamlineSet(set, comment);
+            answer = grm.saveSaveSet(set, comment);
         } catch (IOException | GitAPIException e) {
             throw new DataProviderException(
-                "Error saving beamline set '" + set.getDescriptor().getPathAsString() + "'.", e);
+                "Error storing save set '" + set.getDescriptor().getPathAsString() + "'.", e);
         }
         if (answer.change == ChangeType.PULL) {
             for (CompletionNotifier n : getNotifiers()) {
@@ -263,7 +263,7 @@ public class GitDataProvider implements DataProvider {
             }
         } else if (answer.change == ChangeType.SAVE) {
             for (CompletionNotifier n : getNotifiers()) {
-                n.beamlineSetSaved(answer.data);
+                n.saveSetSaved(answer.data);
             }
         }
         return answer.data;
@@ -272,17 +272,17 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#deleteBeamlineSet(org.csstudio.saverestore.data.BeamlineSet,
+     * @see org.csstudio.saverestore.DataProvider#deleteSaveSet(org.csstudio.saverestore.data.SaveSet,
      * java.lang.String)
      */
     @Override
-    public boolean deleteBeamlineSet(BeamlineSet set, String comment) throws DataProviderException {
+    public boolean deleteSaveSet(SaveSet set, String comment) throws DataProviderException {
         checkInitialised();
-        Result<BeamlineSet> answer = null;
+        Result<SaveSet> answer = null;
         try {
-            answer = grm.deleteBeamlineSet(set, comment);
+            answer = grm.deleteSaveSet(set, comment);
         } catch (IOException | GitAPIException e) {
-            throw new DataProviderException("Error deleting beamline set '" + set.getPathAsString() + "'.", e);
+            throw new DataProviderException("Error deleting save set '" + set.getPathAsString() + "'.", e);
         }
         if (answer.change == ChangeType.PULL) {
             for (CompletionNotifier n : getNotifiers()) {
@@ -290,7 +290,7 @@ public class GitDataProvider implements DataProvider {
             }
         } else if (answer.change == ChangeType.SAVE) {
             for (CompletionNotifier n : getNotifiers()) {
-                n.beamlineSetDeleted(answer.data);
+                n.saveSetDeleted(answer.data);
             }
         }
         return answer.data != null;
@@ -309,7 +309,7 @@ public class GitDataProvider implements DataProvider {
             answer = grm.saveSnapshot(data, comment);
         } catch (IOException | GitAPIException e) {
             throw new DataProviderException(
-                "Error saving snapshot set for '" + data.getBeamlineSet().getPathAsString() + "'.", e);
+                "Error saving snapshot set for '" + data.getSaveSet().getPathAsString() + "'.", e);
         }
         if (answer.change == ChangeType.PULL) {
             for (CompletionNotifier n : getNotifiers()) {
@@ -363,7 +363,7 @@ public class GitDataProvider implements DataProvider {
             return grm.loadSnapshotData(snapshot);
         } catch (ParseException | IOException | GitAPIException | RuntimeException e) {
             throw new DataProviderException("Error loading the snapshot content for snapshot '"
-                + snapshot.getBeamlineSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
+                + snapshot.getSaveSet().getPathAsString() + "[" + snapshot.getDate() + "]'.", e);
         }
     }
 
@@ -415,11 +415,11 @@ public class GitDataProvider implements DataProvider {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.DataProvider#importData(org.csstudio.saverestore.data.BeamlineSet,
+     * @see org.csstudio.saverestore.DataProvider#importData(org.csstudio.saverestore.data.SaveSet,
      * org.csstudio.saverestore.data.Branch, java.util.Optional, org.csstudio.saverestore.DataProvider.ImportType)
      */
     @Override
-    public boolean importData(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel, ImportType type)
+    public boolean importData(SaveSet source, Branch toBranch, Optional<BaseLevel> toBaseLevel, ImportType type)
         throws DataProviderException {
         checkInitialised();
         Result<Boolean> answer = null;

@@ -44,7 +44,7 @@ public interface BaseLevelBrowser<T extends BaseLevel> {
     Node getFXContent();
 
     /**
-     * Toggles whether only those base levels for which the beamline sets already exist or all base levels should be
+     * Toggles whether only those base levels for which the save sets already exist or all base levels should be
      * available.
      *
      * @param onlyAvailable true if only existing are available or false if all are available in the table

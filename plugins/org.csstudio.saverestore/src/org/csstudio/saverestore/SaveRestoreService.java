@@ -42,7 +42,7 @@ public class SaveRestoreService {
     public static final String PREF_NUMBER_OF_SNAPSHOTS = "maxNumberOfSnapshotsInBatch";
     /** Property that defines if new snapshots should be open in compare mode or in a separate editor */
     public static final String PREF_OPEN_NEW_SNAPSHOTS_IN_COMPARE_VIEW = "openNewSnapshotsInCompareView";
-    /** Plugin ID */
+    /** Plug-in ID */
     public static final String PLUGIN_ID = "org.csstudio.saverestore";
     /** The common logger */
     public static final Logger LOGGER = Logger.getLogger(SaveRestoreService.class.getName());
@@ -51,7 +51,7 @@ public class SaveRestoreService {
     /** The name of the is engine busy property */
     public static final String BUSY = "busy";
 
-    /** mutex rule takes care that no two save and restore jobs can be executed at the same time */
+    /** Mutex rule takes care that no two save and restore jobs can be executed at the same time */
     private static final ISchedulingRule MUTEX_RULE = new ISchedulingRule() {
         @Override
         public boolean isConflicting(ISchedulingRule rule) {
@@ -156,42 +156,6 @@ public class SaveRestoreService {
             return cancelled;
         }
     }
-
-    // /**
-    // * <code>SaveRestoreJob</code> is a cancellable job for executing save and restore tasks. Once the job has been
-    // * cancelled the {@link #isCancelled()} method returns true, which allows other objects to check the current state
-    // * of the job.
-    // *
-    // * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
-    // *
-    // */
-    // private static class SaveRestoreJob extends Job {
-    //
-    // private final String taskName;
-    // private final Runnable task;
-    //
-    // SaveRestoreJob(String taskName, Runnable task) {
-    // super("Save and Restore: " + taskName);
-    // this.taskName = taskName;
-    // this.task = task;
-    // setRule(MUTEX_RULE);
-    // }
-    //
-    // @Override
-    // protected IStatus run(IProgressMonitor monitor) {
-    // monitor.beginTask(taskName, 1);
-    // SaveRestoreService.getInstance().setCurrentJob(monitor);
-    // try {
-    // SaveRestoreService.getInstance().setBusy(true);
-    // BusyIndicator.showWhile(null, task);
-    // return Status.OK_STATUS;
-    // } finally {
-    // SaveRestoreService.getInstance().setCurrentJob(null);
-    // monitor.done();
-    // SaveRestoreService.getInstance().setBusy(false);
-    // }
-    // }
-    // }
 
     private static final SaveRestoreService INSTANCE = new SaveRestoreService();
 

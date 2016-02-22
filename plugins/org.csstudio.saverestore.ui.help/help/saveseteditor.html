@@ -3,22 +3,22 @@
 <head>
   <link rel="stylesheet" href="../../PRODUCT_PLUGIN/book.css" type="text/css"></link>
   <link rel="stylesheet" href="section_numbers.css" type="text/css"></link>
-<title>Beamline Set Editor</title>
+<title>Save Set Editor</title>
 </head>
 <body>
-<h2>Beamline Set Editor</h2>
+<h2>Save Set Editor</h2>
 <p>
-Beamline set editor is composed of two parts:
+Save set editor is composed of two parts:
 <ul>
-<li><i>Description area</i> displays a simple description of the beamline set</li>
+<li><i>Description area</i> displays a simple description of the save set</li>
 <li><i>PV List</i> displays the list of PVs and other information</li>
 </ul>
 </p>
-<div class='figure'><img src="beamlineseteditor.png"/><p>Fig. 1: Beamline Set Editor</p></div>
+<div class='figure'><img src="saveseteditor.png"/><p>Fig. 1: Save Set Editor</p></div>
 <h3>Description</h3>
 <p>
-Beamline set description should be a human readable description explaining what this beamline set represents. In a well
-organised system this can be achieved to some extent by placing the beamline set into the most appropriate branch
+Save set description should be a human readable description explaining what this save set represents. In a well
+organised system this can be achieved to some extent by placing the save set into the most appropriate branch
 of the repository tree. However, additional information might be required in certain cases. There are no limitations to
 the length of the description.
 </p>
@@ -34,7 +34,7 @@ be marked in the snapshot viewer.</li>
 </ul> 
 </p>
 <p>
-It is desirable that a beamline set provides values for all three spreadsheet columns, though it is not mandatory. The
+It is desirable that a save set provides values for all three spreadsheet columns, though it is not mandatory. The
 only mandatory column is <i>PV</i>, the other two are optional. However, <i>DELTA</i> can only be defined if <i>READBACK</i>
 is also defined. It is also mandatory that all entries follow the same pattern - all rows in the list have to have the
 same number of columns. If certain value cannot be defined for a PV, the value of that column can be left empty. For example:
@@ -98,7 +98,7 @@ within limits when the function evaluates to <code>true</code>, meaning <code>(Y
 or (Y &#60; 10 and Z &#60; 5)</code></li>
 <li><code>Math.abs(base - value) &le; 20</code>: the values will be within limits when <code>|Z-Y| &le; 20</code></li>
 </ul>
-An example of the beamline set file with functions:
+An example of the save set file with functions:
 <p>
 <code>
 PV,READBACK,DELTA<br/>
@@ -120,7 +120,7 @@ spreadsheet editor to generate the contents and then copy them as text into the 
 </p>
 <p>
 As you change the contents the editor will constantly perform data integrity checks. If it detects that the content is
-malformed (e.g. a row is missing a column) it will paint a red border around the editor. At that time saving the beamline
+malformed (e.g. a row is missing a column) it will paint a red border around the editor. At that time saving the save
 set will be disabled.
 </p>
 <p>
@@ -128,10 +128,10 @@ When you are done with editing you have an option to save the contents as a new 
 may choose the appropriate action from the <i>File</i> menu. If you decide to save the set as a new file, a location 
 selector will be displayed. Use the tree in the selector to select the appropriate location (you may create new folders
 by right clicking a parent item and selecting the <i>New Folder...</i> item). After you have selected the appropriate
-location type in the name for the beamline set into the <i>Beamline Set Name</i> field. This is the name that is also
+location type in the name for the save set into the <i>Save Set Name</i> field. This is the name that is also
 displayed in the browser.
 </p>
-<div class='figure'><img src="beamlinesetsaveas.png"/><p>Fig. 2: Beamline set Save As Location Selector</p></div>
+<div class='figure'><img src="savesetsaveas.png"/><p>Fig. 2: Save set Save As Location Selector</p></div>
 
 </body>
 </html>

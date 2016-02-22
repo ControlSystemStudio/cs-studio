@@ -69,7 +69,7 @@ public class SendToELogAction extends Action {
             Attachment fileAttachment = createFileAttachment(snapshot);
             final StringBuilder sb = new StringBuilder(1000);
             sb.append("Save, Set & Restore\n");
-            sb.append(snapshot.getBeamlineSet().getFullyQualifiedName());
+            sb.append(snapshot.getSaveSet().getFullyQualifiedName());
             sb.append("\nTime: ").append(snapshot.getTimestamp() != null
                 ? Utilities.timestampToBigEndianString(snapshot.getTimestamp().toDate(), true) : "Unknown");
             snapshot.getSnapshot()

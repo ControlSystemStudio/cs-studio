@@ -3,7 +3,7 @@ package org.csstudio.saverestore.ui;
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
 import org.csstudio.saverestore.SaveRestoreService;
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.ui.util.RepositoryTree;
 import org.csstudio.saverestore.ui.util.RepositoryTree.BrowsingTreeItem;
 import org.csstudio.saverestore.ui.util.RepositoryTree.Type;
@@ -25,31 +25,31 @@ import javafx.scene.layout.Priority;
 /**
  *
  * <code>RepositoryTreeBrowser</code> is a dialog that provides a tree browser for the save and restore repository. The
- * dialog displays all branches, base levels and beamline sets that already exists and provide means to select an
- * existing location or create a new location for a new beamline set.
+ * dialog displays all branches, base levels and save sets that already exists and provide means to select an
+ * existing location or create a new location for a new save set.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
+public class RepositoryTreeBrowser extends FXBaseDialog<SaveSet> {
 
     private final IShellProvider shellProvider;
     private RepositoryTree treeView;
     private TextField nameField;
     private TextField fullNameField;
 
-    private final BeamlineSet initialValue;
+    private final SaveSet initialValue;
 
     /**
      * Construct a new repository tree browser.
      *
      * @param shellProvider the provider of the parent shell for all popup dialogs
-     * @param preselection the preselected beamline set
+     * @param preselection the preselected save set
      */
-    public RepositoryTreeBrowser(IShellProvider shellProvider, BeamlineSet preselection) {
-        super(shellProvider.getShell(), "Select Location", "Select location where to store the beamline set",
+    public RepositoryTreeBrowser(IShellProvider shellProvider, SaveSet preselection) {
+        super(shellProvider.getShell(), "Select Location", "Select location where to store the save set",
             preselection,
-            e -> e == null || e.getName().isEmpty() ? "Beamline Set name not provided"
+            e -> e == null || e.getName().isEmpty() ? "Save Set name not provided"
                 : e.getBranch() == null ? "No branch selected"
                     : e.getBaseLevel().isPresent() ? (e.getPath().length == 0 ? "No name and path provided" : null)
                         : SaveRestoreService.getInstance().getSelectedDataProvider().getProvider().areBaseLevelsSupported()
@@ -76,7 +76,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         fullNameField = new StaticTextField();
         fullNameField.setMaxWidth(Double.MAX_VALUE);
 
-        Label nameLabel = new Label("Beamline Set Name:");
+        Label nameLabel = new Label("Save Set Name:");
         Label fullNameLabel = new Label("Full Name:");
 
         String cl = FXUtilities.toBackgroundColorStyle(parent.getBackground());
@@ -109,8 +109,8 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
      * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getValueFromComponent()
      */
     @Override
-    protected BeamlineSet getValueFromComponent() {
-        BeamlineSet set = treeView.getValueFromComponent();
+    protected SaveSet getValueFromComponent() {
+        SaveSet set = treeView.getValueFromComponent();
         if (set == null) {
             return null;
         }
@@ -120,7 +120,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
             path[path.length - 1] = name;
         }
 
-        BeamlineSet newSet = new BeamlineSet(set.getBranch(), set.getBaseLevel(), path, set.getDataProviderId());
+        SaveSet newSet = new SaveSet(set.getBranch(), set.getBaseLevel(), path, set.getDataProviderId());
         fullNameField.setText(newSet.getFullyQualifiedName());
         return newSet;
     }
@@ -131,7 +131,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
      * @see org.csstudio.saverestore.ui.util.FXBaseDialog#setValueToComponent(java.lang.Object)
      */
     @Override
-    protected void setValueToComponent(BeamlineSet value) {
+    protected void setValueToComponent(SaveSet value) {
         treeView.setValueToComponent(value);
     }
 
@@ -145,7 +145,7 @@ public class RepositoryTreeBrowser extends FXBaseDialog<BeamlineSet> {
         String name = treeView.getSelectionModel().getSelectedItem().getValue();
         if (value.getName().equals(name)) {
             if (!FXMessageDialog.openConfirm(getShell(), "Overwrite",
-                "Beamline set '" + value.getDisplayName() + "' already exists. Are you sure you want to overwrite it")) {
+                "Save set '" + value.getDisplayName() + "' already exists. Are you sure you want to overwrite it")) {
                 return;
             }
         }

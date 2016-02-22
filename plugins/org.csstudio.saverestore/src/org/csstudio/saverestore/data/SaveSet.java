@@ -10,14 +10,14 @@ import java.util.Optional;
 
 /**
  *
- * <code>BeamlineSet</code> is a descriptor for the beamline set files, which are collections of pv names for which a
- * snapshot can be taken. The beamline set belongs to a specific branch and optionally a {@link BaseLevel}. The set if
- * located at a specific path.
+ * <code>SaveSet</code> is a descriptor for the save set files, which are collections of pv names for which a snapshot
+ * can be taken. The SaveSet belongs to a specific branch and optionally a {@link BaseLevel}. The set is always located
+ * on a specific path, which uniquely describes it.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
+public class SaveSet implements Comparable<SaveSet>, Serializable {
 
     private static final long serialVersionUID = 3576698958890734750L;
 
@@ -31,34 +31,34 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     private final String dataProviderId;
 
     /**
-     * Constructs a new empty beamline (e.g. null beamline set).
+     * Constructs a new empty save set.
      */
-    public BeamlineSet() {
+    public SaveSet() {
         this(new Branch(), Optional.empty(), new String[] { "unknown" }, null);
     }
 
     /**
-     * Construct a new beamline set from pieces.
+     * Construct a new save set from pieces.
      *
-     * @param branch the branch on which the beamline set is located
+     * @param branch the branch on which the save set is located
      * @param baseLevel the base level for which this set is valid
      * @param path the path on which the set is stored (the last element of the pat is the file name)
-     * @param the ID of the data provider from which this beamline set was loaded
+     * @param the ID of the data provider from which this save set was loaded
      */
-    public BeamlineSet(Branch branch, Optional<BaseLevel> base, String[] path, String dataProviderId) {
+    public SaveSet(Branch branch, Optional<BaseLevel> base, String[] path, String dataProviderId) {
         this(branch, base, path, dataProviderId, new HashMap<>());
     }
 
     /**
-     * Construct a new beamline set from pieces.
+     * Construct a new save set from pieces.
      *
-     * @param branch the branch on which the beamline set is located
+     * @param branch the branch on which the save set is located
      * @param baseLevel the base level for which this set is valid
      * @param path the path on which the set is stored (the last element of the pat is the file name)
-     * @param the ID of the data provider from which this beamline set was loaded
+     * @param the ID of the data provider from which this save set was loaded
      * @param parameters a map of optional parameters usually required by the data provider
      */
-    public BeamlineSet(Branch branch, Optional<BaseLevel> base, String[] path, String dataProviderId,
+    public SaveSet(Branch branch, Optional<BaseLevel> base, String[] path, String dataProviderId,
         Map<String, String> parameters) {
         this.baseLevel = base.orElse(null);
         this.branch = branch;
@@ -80,8 +80,8 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * Returns additional parameters of this beamline set. A parameter might be any string that is required by the data
-     * provider to work with this beamline set or any other info that is required to be carried around.
+     * Returns additional parameters of this save set. A parameter might be any string that is required by the data
+     * provider to work with this save set or any other info that is required to be carried around.
      *
      * @return unmodifiable map of parameters
      */
@@ -90,7 +90,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * The data provider id, which this beamline set originates from.
+     * The data provider id, which this save set originates from.
      *
      * @return the data provider id
      */
@@ -99,7 +99,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * The path to this beamline set within its base level location, but without the actual file name.
+     * The path to this save set within its base level location, but without the actual file name.
      *
      * @return the full folder name within the top or base level location and without the file name
      */
@@ -108,7 +108,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * Returns the base level, which this beamline belongs to.
+     * Returns the base level, which this save set belongs to.
      *
      * @return the base level which this set is for
      */
@@ -117,10 +117,10 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * Updates the base level in this beamline set. This method should be called before the beamline set is serialized
-     * and deserialized in a different plugin. If the destination plugin does not have a dependency on the current base
-     * level type, the beamline set could not be deserialized. Therefore, the current base level has to be morphed into
-     * an in instance that all plugin have dependency on.
+     * Updates the base level in this save set. This method should be called before the save set is serialised and
+     * deserialised in a different plug-in. If the destination plug-in does not have a dependency on the current base
+     * level type, the save set could not be deserialised. Therefore, the current base level has to be morphed into an
+     * in instance that all plug-ins have dependency on.
      */
     public void updateBaseLevel() {
         if (baseLevel != null) {
@@ -129,7 +129,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * Returns the branch, which this beamline set originates from.
+     * Returns the branch, which this save set originates from.
      *
      * @return the branch from which the set was loaded
      */
@@ -138,16 +138,16 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * Returns the full path of this beamline set (including the set name) within the base level.
+     * Returns the full path of this save set (including the set name) within the base level.
      *
-     * @return the full path to the beamline set file
+     * @return the full path to the save set file
      */
     public String[] getPath() {
         return path;
     }
 
     /**
-     * Returns the name of the beamline set. This is in general identical to the last part of the {@link #getPath()}.
+     * Returns the name of the save set. This is in general identical to the last part of the {@link #getPath()}.
      *
      * @return the name of the set (file name)
      */
@@ -169,10 +169,10 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * Returns the display name of the beamline set, which may not be a fully qualified name but rather a name that
-     * quickly shows what this beamline set is about.
+     * Returns the display name of the save set, which may not be a fully qualified name but rather a name that
+     * quickly shows what this save set is about.
      *
-     * @return the display name of the beamline set
+     * @return the display name of the save set
      */
     public String getDisplayName() {
         if (displayName == null) {
@@ -182,7 +182,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
     }
 
     /**
-     * Returns the fully qualified name of this beamline set, which includes all parts of the path, base level and
+     * Returns the fully qualified name of this save set, which includes all parts of the path, base level and
      * branch.
      *
      * @return the fully qualified name
@@ -215,7 +215,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
      * @see java.lang.Comparable#compareTo(java.lang.Object)
      */
     @Override
-    public int compareTo(BeamlineSet o) {
+    public int compareTo(SaveSet o) {
         String[] otherPath = o.path;
         for (int i = 0; i < path.length && i < otherPath.length; i++) {
             int c = path[i].compareTo(otherPath[i]);
@@ -254,7 +254,7 @@ public class BeamlineSet implements Comparable<BeamlineSet>, Serializable {
         } else if (getClass() != obj.getClass()) {
             return false;
         }
-        BeamlineSet other = (BeamlineSet) obj;
+        SaveSet other = (SaveSet) obj;
         return Objects.equals(baseLevel, other.baseLevel) && Objects.equals(branch, other.branch)
             && Arrays.equals(path, other.path);
 

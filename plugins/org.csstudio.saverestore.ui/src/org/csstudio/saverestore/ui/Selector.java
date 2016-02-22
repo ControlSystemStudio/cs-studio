@@ -16,8 +16,8 @@ import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.DataProviderWrapper;
 import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -34,7 +34,7 @@ import javafx.beans.property.SimpleObjectProperty;
 /**
  *
  * <code>Selector</code> provides the selection logic and model for browsing the data provider. It contains the
- * available and selected items for each individual section (branch, base level, beamline set and snapshot).
+ * available and selected items for each individual section (branch, base level, save set and snapshot).
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -50,12 +50,12 @@ public class Selector implements CompletionNotifier {
 
     private ObjectProperty<Branch> selectedBranch;
     private ObjectProperty<BaseLevel> selectedBaseLevel;
-    private ObjectProperty<BeamlineSet> selectedBeamlineSet;
+    private ObjectProperty<SaveSet> selectedSaveSet;
     private final ObjectProperty<List<BaseLevel>> baseLevels = new SimpleObjectProperty<>(
         Collections.unmodifiableList(new ArrayList<>(0)));
     private final ObjectProperty<List<Branch>> branches = new SimpleObjectProperty<>(
         Collections.unmodifiableList(new ArrayList<>(0)));
-    private final ObjectProperty<List<BeamlineSet>> beamlineSets = new SimpleObjectProperty<>(
+    private final ObjectProperty<List<SaveSet>> saveSets = new SimpleObjectProperty<>(
         Collections.unmodifiableList(new ArrayList<>(0)));
     private final ObjectProperty<List<Snapshot>> snapshots = new SimpleObjectProperty<>(
         Collections.unmodifiableList(new ArrayList<>(0)));
@@ -95,7 +95,7 @@ public class Selector implements CompletionNotifier {
             wrapper.getProvider().addCompletionNotifier(this);
         }
         ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty()).set(Collections.unmodifiableList(new ArrayList<>(0)));
-        ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
+        ((ObjectProperty<List<SaveSet>>) saveSetsProperty())
             .set(Collections.unmodifiableList(new ArrayList<>(0)));
         ((ObjectProperty<List<Snapshot>>) snapshotsProperty()).set(Collections.unmodifiableList(new ArrayList<>(0)));
         if (wrapper != null) {
@@ -122,12 +122,12 @@ public class Selector implements CompletionNotifier {
         this.firstTimeBranch = new Branch(branch, branch);
     }
 
-    private void reloadBeamlineSets(BaseLevel baseLevel, Branch branch) {
+    private void reloadSaveSets(BaseLevel baseLevel, Branch branch) {
         try {
-            final BeamlineSet[] theBeamlineSets = SaveRestoreService.getInstance().getSelectedDataProvider()
-                .getProvider().getBeamlineSets(Optional.ofNullable(baseLevel), branch);
-            UI_EXECUTOR.execute(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty()).set(Collections
-                .unmodifiableList(theBeamlineSets == null ? new ArrayList<>(0) : Arrays.asList(theBeamlineSets))));
+            final SaveSet[] theSaveSets = SaveRestoreService.getInstance().getSelectedDataProvider()
+                .getProvider().getSaveSets(Optional.ofNullable(baseLevel), branch);
+            UI_EXECUTOR.execute(() -> ((ObjectProperty<List<SaveSet>>) saveSetsProperty()).set(Collections
+                .unmodifiableList(theSaveSets == null ? new ArrayList<>(0) : Arrays.asList(theSaveSets))));
         } catch (DataProviderException e) {
             ActionManager.reportException(e, shellProvider.getShell());
         }
@@ -203,7 +203,7 @@ public class Selector implements CompletionNotifier {
         return selectedBranch;
     }
 
-    private void readBaseLevels(boolean reloadBeamlineSets) {
+    private void readBaseLevels(boolean reloadSaveSets) {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
         if (provider.areBaseLevelsSupported()) {
             final Branch branch = selectedBranchProperty().get();
@@ -212,15 +212,15 @@ public class Selector implements CompletionNotifier {
                     final BaseLevel[] theBaseLevels = provider.getBaseLevels(branch);
                     UI_EXECUTOR.execute(() -> ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty()).set(Collections
                         .unmodifiableList(theBaseLevels == null ? new ArrayList<>(0) : Arrays.asList(theBaseLevels))));
-                    if (reloadBeamlineSets) {
-                        readBeamlineSets();
+                    if (reloadSaveSets) {
+                        readSaveSets();
                     }
                 } catch (DataProviderException e) {
                     ActionManager.reportException(e, shellProvider.getShell());
                 }
             });
         } else {
-            readBeamlineSets();
+            readSaveSets();
         }
     }
 
@@ -242,22 +242,22 @@ public class Selector implements CompletionNotifier {
                     .areBaseLevelsSupported()) {
                     return;
                 }
-                readBeamlineSets();
+                readSaveSets();
             });
         }
         return selectedBaseLevel;
     }
 
-    private void readBeamlineSets() {
-        selectedBeamlineSetProperty().set(null);
+    private void readSaveSets() {
+        selectedSaveSetProperty().set(null);
         final BaseLevel baseLevel = selectedBaseLevelProperty().get();
         final Branch branch = selectedBranchProperty().get();
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
-        SERVICE_EXECUTOR.accept("Load beamline sets", () -> {
+        SERVICE_EXECUTOR.accept("Load save sets", () -> {
             try {
-                final BeamlineSet[] theBeamlineSets = provider.getBeamlineSets(Optional.ofNullable(baseLevel), branch);
-                UI_EXECUTOR.execute(() -> ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty()).set(Collections
-                    .unmodifiableList(theBeamlineSets == null ? new ArrayList<>(0) : Arrays.asList(theBeamlineSets))));
+                final SaveSet[] theSaveSets = provider.getSaveSets(Optional.ofNullable(baseLevel), branch);
+                UI_EXECUTOR.execute(() -> ((ObjectProperty<List<SaveSet>>) saveSetsProperty()).set(Collections
+                    .unmodifiableList(theSaveSets == null ? new ArrayList<>(0) : Arrays.asList(theSaveSets))));
             } catch (DataProviderException e) {
                 ActionManager.reportException(e, shellProvider.getShell());
             }
@@ -265,19 +265,19 @@ public class Selector implements CompletionNotifier {
     }
 
     /**
-     * @return property containing all available beamline sets for the selected branch and base level
+     * @return property containing all available save sets for the selected branch and base level
      */
-    public ReadOnlyObjectProperty<List<BeamlineSet>> beamlineSetsProperty() {
-        return beamlineSets;
+    public ReadOnlyObjectProperty<List<SaveSet>> saveSetsProperty() {
+        return saveSets;
     }
 
     /**
-     * @return property containing the selected beamline set
+     * @return property containing the selected save set
      */
-    public ObjectProperty<BeamlineSet> selectedBeamlineSetProperty() {
-        if (selectedBeamlineSet == null) {
-            selectedBeamlineSet = new SimpleObjectProperty<>();
-            selectedBeamlineSet.addListener((a, o, n) -> {
+    public ObjectProperty<SaveSet> selectedSaveSetProperty() {
+        if (selectedSaveSet == null) {
+            selectedSaveSet = new SimpleObjectProperty<>();
+            selectedSaveSet.addListener((a, o, n) -> {
                 allSnapshotsLoaded.set(false);
                 ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
                     .set(Collections.unmodifiableList(new ArrayList<>(0)));
@@ -287,7 +287,7 @@ public class Selector implements CompletionNotifier {
                 }
             });
         }
-        return selectedBeamlineSet;
+        return selectedSaveSet;
     }
 
     /**
@@ -303,7 +303,7 @@ public class Selector implements CompletionNotifier {
      */
     public void readSnapshots(boolean fromHead, final boolean all) {
         final DataProvider provider = SaveRestoreService.getInstance().getSelectedDataProvider().getProvider();
-        final BeamlineSet set = selectedBeamlineSetProperty().get();
+        final SaveSet set = selectedSaveSetProperty().get();
         final Snapshot snap = fromHead ? null : lastSnapshot;
         SERVICE_EXECUTOR.accept("Load snapshots", () -> {
             try {
@@ -326,7 +326,7 @@ public class Selector implements CompletionNotifier {
     }
 
     /**
-     * @return the property that specifies if all snapshots have already been loaded for the selected beamline set or
+     * @return the property that specifies if all snapshots have already been loaded for the selected save set or
      *         not
      */
     public ReadOnlyBooleanProperty allSnapshotsLoadedProperty() {
@@ -334,7 +334,7 @@ public class Selector implements CompletionNotifier {
     }
 
     /**
-     * @return property containing all available snapshots for the selected branch, base level, and beamline set
+     * @return property containing all available snapshots for the selected branch, base level, and save set
      */
     public ReadOnlyObjectProperty<List<Snapshot>> snapshotsProperty() {
         return snapshots;
@@ -373,10 +373,10 @@ public class Selector implements CompletionNotifier {
     public void synchronised() {
         UI_EXECUTOR.execute(() -> {
             ((ObjectProperty<BaseLevel>) selectedBaseLevelProperty()).set(null);
-            ((ObjectProperty<BeamlineSet>) selectedBeamlineSetProperty()).set(null);
+            ((ObjectProperty<SaveSet>) selectedSaveSetProperty()).set(null);
             ((ObjectProperty<List<BaseLevel>>) baseLevelsProperty())
                 .set(Collections.unmodifiableList(new ArrayList<>(0)));
-            ((ObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
+            ((ObjectProperty<List<SaveSet>>) saveSetsProperty())
                 .set(Collections.unmodifiableList(new ArrayList<>(0)));
             ((ObjectProperty<List<Snapshot>>) snapshotsProperty())
                 .set(Collections.unmodifiableList(new ArrayList<>(0)));
@@ -406,8 +406,8 @@ public class Selector implements CompletionNotifier {
      */
     @Override
     public void snapshotSaved(VSnapshot snapshot) {
-        BeamlineSet set = selectedBeamlineSet.get();
-        if (set != null && set.equals(snapshot.getBeamlineSet())) {
+        SaveSet set = selectedSaveSet.get();
+        if (set != null && set.equals(snapshot.getSaveSet())) {
             List<Snapshot> snp = snapshotsProperty().get();
             final List<Snapshot> newV = new ArrayList<>(snp.size() + 1);
             newV.add(snapshot.getSnapshot().get());
@@ -431,10 +431,10 @@ public class Selector implements CompletionNotifier {
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.CompletionNotifier#beamlineSetSaved(org.csstudio.saverestore.data.BeamlineSetData)
+     * @see org.csstudio.saverestore.CompletionNotifier#saveSetSaved(org.csstudio.saverestore.data.SaveSetData)
      */
     @Override
-    public void beamlineSetSaved(BeamlineSetData set) {
+    public void saveSetSaved(SaveSetData set) {
         final Branch branch = selectedBranchProperty().get();
         if (!set.getDescriptor().getBranch().equals(branch)) {
             return;
@@ -444,37 +444,37 @@ public class Selector implements CompletionNotifier {
         if (bl.isPresent() && base != null && !bl.get().getStorageName().equals(base.getStorageName())) {
             return;
         }
-        SERVICE_EXECUTOR.accept("Load beamline sets", () -> reloadBeamlineSets(base, branch));
+        SERVICE_EXECUTOR.accept("Load save sets", () -> reloadSaveSets(base, branch));
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.CompletionNotifier#beamlineSetDeleted(org.csstudio.saverestore.data.BeamlineSet)
+     * @see org.csstudio.saverestore.CompletionNotifier#saveSetDeleted(org.csstudio.saverestore.data.SaveSet)
      */
     @Override
-    public void beamlineSetDeleted(BeamlineSet set) {
-        List<BeamlineSet> sets = beamlineSetsProperty().get();
-        final List<BeamlineSet> newSets = sets.stream().filter(e -> !e.equals(set)).collect(Collectors.toList());
-        UI_EXECUTOR.execute(() -> ((SimpleObjectProperty<List<BeamlineSet>>) beamlineSetsProperty())
+    public void saveSetDeleted(SaveSet set) {
+        List<SaveSet> sets = saveSetsProperty().get();
+        final List<SaveSet> newSets = sets.stream().filter(e -> !e.equals(set)).collect(Collectors.toList());
+        UI_EXECUTOR.execute(() -> ((SimpleObjectProperty<List<SaveSet>>) saveSetsProperty())
             .set(Collections.unmodifiableList(newSets)));
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.CompletionNotifier#dataImported(org.csstudio.saverestore.data.BeamlineSet,
+     * @see org.csstudio.saverestore.CompletionNotifier#dataImported(org.csstudio.saverestore.data.SaveSet,
      * org.csstudio.saverestore.data.Branch, java.util.Optional)
      */
     @Override
-    public void dataImported(BeamlineSet source, Branch toBranch, final Optional<BaseLevel> toBase) {
+    public void dataImported(SaveSet source, Branch toBranch, final Optional<BaseLevel> toBase) {
         Branch selected = selectedBranchProperty().get();
         if (selected.equals(toBranch)) {
             BaseLevel base = selectedBaseLevel.get();
             if (base != null && toBase.isPresent() && base.equals(toBase.get())) {
-                SERVICE_EXECUTOR.accept("Load beamline sets", () -> reloadBeamlineSets(base, toBranch));
+                SERVICE_EXECUTOR.accept("Load save sets", () -> reloadSaveSets(base, toBranch));
             } else if (base == null && !toBase.isPresent()) {
-                SERVICE_EXECUTOR.accept("Load beamline sets", () -> reloadBeamlineSets(null, toBranch));
+                SERVICE_EXECUTOR.accept("Load save sets", () -> reloadSaveSets(null, toBranch));
             } else {
                 SERVICE_EXECUTOR.accept("Load base levels", () -> readBaseLevels(true));
             }

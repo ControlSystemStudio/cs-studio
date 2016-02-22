@@ -37,11 +37,11 @@ import org.csstudio.saverestore.SnapshotContent;
 import org.csstudio.saverestore.UnsupportedActionException;
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.Utilities.VTypeComparison;
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.Threshold;
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.ui.util.GUIUpdateThrottle;
 import org.csstudio.saverestore.ui.util.VTypePair;
@@ -93,8 +93,8 @@ public class SnapshotViewerController {
         final PVReader<VType> reader;
         final PVWriter<Object> writer;
         PVReader<VType> readback;
-        VType value = VNoData.INSTANCE;
-        VType readbackValue = VNoData.INSTANCE;
+        VType value = VDisconnectedData.INSTANCE;
+        VType readbackValue = VDisconnectedData.INSTANCE;
 
         PV(PVReader<VType> reader, PVWriter<Object> writer, PVReader<VType> readback) {
             this.reader = reader;
@@ -109,7 +109,7 @@ public class SnapshotViewerController {
                     SaveRestoreService.LOGGER.log(Level.WARNING, "DIIRT Connection Error.",
                         e.getPvReader().lastException());
                 }
-                value = e.getPvReader().getValue();
+                value = e.getPvReader().isConnected() ? e.getPvReader().getValue() : VDisconnectedData.INSTANCE;
                 throttle.trigger();
             });
             this.value = reader.getValue();
@@ -123,7 +123,8 @@ public class SnapshotViewerController {
                     if (suspend.get() > 0) {
                         return;
                     }
-                    readbackValue = e.getPvReader().getValue();
+                    readbackValue = e.getPvReader().isConnected() ? e.getPvReader().getValue()
+                        : VDisconnectedData.INSTANCE;
                     if (showReadbacks) {
                         throttle.trigger();
                     }
@@ -391,7 +392,7 @@ public class SnapshotViewerController {
                 withoutValue.remove(e);
             }
             for (TableEntry te : withoutValue) {
-                te.setSnapshotValue(VNoData.INSTANCE, numberOfSnapshots);
+                te.setSnapshotValue(VDisconnectedData.INSTANCE, numberOfSnapshots);
             }
             synchronized (snapshots) {
                 snapshots.add(data);
@@ -419,7 +420,7 @@ public class SnapshotViewerController {
                 values.add(i.valueProperty().get().value);
             });
             Map<String, Threshold> thresholds = provider.get().getThresholds(pvNames, values,
-                getSnapshot(0).getBeamlineSet().getBaseLevel());
+                getSnapshot(0).getSaveSet().getBaseLevel());
             items.forEach((k, v) -> v.setThreshold(Optional.ofNullable(thresholds.get(k))));
         } else {
             final Map<String, Threshold> thresholds = new HashMap<>(items.size());
@@ -578,7 +579,7 @@ public class SnapshotViewerController {
     public void takeSnapshot() {
         suspend();
         try {
-            BeamlineSet set = getSnapshot(0).getBeamlineSet();
+            SaveSet set = getSnapshot(0).getSaveSet();
             DataProviderWrapper provider = SaveRestoreService.getInstance().getDataProvider(set.getDataProviderId());
             VSnapshot taken = null;
             if (provider.getProvider().isTakingSnapshotsSupported()) {
@@ -614,11 +615,12 @@ public class SnapshotViewerController {
                     name = t.pvNameProperty().get();
                     names.add(name);
                     pv = pvs.get(t);
-                    values.add(pv == null || pv.value == null ? VNoData.INSTANCE : pv.value);
+                    values.add(pv == null || pv.value == null ? VDisconnectedData.INSTANCE : pv.value);
                     selected.add(t.selectedProperty().get());
                     String readback = readbacks.get(name);
                     readbackNames.add(readback == null ? EMPTY_STRING : readback);
-                    readbackValues.add(pv == null || pv.readbackValue == null ? VNoData.INSTANCE : pv.readbackValue);
+                    readbackValues
+                        .add(pv == null || pv.readbackValue == null ? VDisconnectedData.INSTANCE : pv.readbackValue);
                     for (VSnapshot s : getAllSnapshots()) {
                         delta = s.getDelta(name);
                         if (delta != null) {
@@ -630,14 +632,14 @@ public class SnapshotViewerController {
                     }
                     deltas.add(delta);
                 }
-                // taken snapshots always belong to the beamline set of the master snapshot
+                // taken snapshots always belong to the save set of the master snapshot
                 taken = new VSnapshot(new Snapshot(set), names, selected, values, readbackNames, readbackValues, deltas,
                     Timestamp.now());
             }
             if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
                 receiver.addSnapshot(taken);
             } else if (getNumberOfSnapshots() == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
-                // if there is only one snapshot which was actually opened as a beamline set, add it to the same editor
+                // if there is only one snapshot which was actually opened as a save set, add it to the same editor
                 receiver.addSnapshot(taken);
             } else {
                 new ActionManager(receiver).openSnapshot(taken);
@@ -797,7 +799,7 @@ public class SnapshotViewerController {
             }
             SnapshotContent sc = FileUtilities.readFromSnapshot(fis);
             Timestamp snapshotTime = Timestamp.of(sc.getDate());
-            BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), p.split("\\/"), null);
+            SaveSet set = new SaveSet(new Branch(), Optional.empty(), p.split("\\/"), null);
             Snapshot descriptor = new Snapshot(set, sc.getDate(),
                 "No Comment\nLoaded from file " + file.getAbsolutePath(), "OS");
             return Optional.of(new VSnapshot((Snapshot) descriptor, sc.getNames(), sc.getSelected(), sc.getData(),
@@ -819,7 +821,7 @@ public class SnapshotViewerController {
             VSnapshot s = null;
             try {
                 DataProviderWrapper dpw = SaveRestoreService.getInstance()
-                    .getDataProvider(snapshot.getBeamlineSet().getDataProviderId());
+                    .getDataProvider(snapshot.getSaveSet().getDataProviderId());
                 s = dpw.getProvider().saveSnapshot(snapshot, comment);
                 if (s != null) {
                     synchronized (snapshots) {
@@ -836,7 +838,7 @@ public class SnapshotViewerController {
                     }
                 }
                 SaveRestoreService.LOGGER.log(Level.FINE, "Successfully saved Snapshot {0}: {1}.", new Object[] {
-                    snapshot.getBeamlineSet().getFullyQualifiedName(), snapshot.getSnapshot().get().getDate() });
+                    snapshot.getSaveSet().getFullyQualifiedName(), snapshot.getSnapshot().get().getDate() });
             } catch (DataProviderException ex) {
                 ActionManager.reportException(ex, receiver.getShell());
             }
@@ -866,7 +868,7 @@ public class SnapshotViewerController {
                     }
                 }
                 SaveRestoreService.LOGGER.log(Level.FINE, "Restored snapshot {0}: {1}.",
-                    new Object[] { s.getBeamlineSet().getFullyQualifiedName(), s.getSnapshot().get() });
+                    new Object[] { s.getSaveSet().getFullyQualifiedName(), s.getSnapshot().get() });
             } else {
                 throw new IllegalArgumentException(
                     "Snapshot " + s + " has not been saved yet. Only saved snapshots can be used for restoring.");
@@ -993,10 +995,10 @@ public class SnapshotViewerController {
             }
             Map<String, VType> values = importer.importer.getValuesForPVs(names, timestamp);
             if (values != null && !values.isEmpty()) {
-                BeamlineSet bs = new BeamlineSet(null, Optional.empty(), new String[] { importer.name }, importer.name);
+                SaveSet bs = new SaveSet(null, Optional.empty(), new String[] { importer.name }, importer.name);
                 Snapshot desc = new Snapshot(bs, timestamp.toDate(), "Imported from " + importer.name, importer.name);
-                final List<VType> vals = names.stream().map(values::get).map(v -> v == null ? VNoData.INSTANCE : v)
-                    .collect(Collectors.toList());
+                final List<VType> vals = names.stream().map(values::get)
+                    .map(v -> v == null ? VDisconnectedData.INSTANCE : v).collect(Collectors.toList());
                 final VSnapshot snapshot = new VSnapshot(desc, names, vals, timestamp, importer.name);
                 UI_EXECUTOR.execute(() -> consumer.accept(snapshot));
             }

@@ -13,11 +13,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.csstudio.saverestore.BeamlineSetContent;
+import org.csstudio.saverestore.SaveSetContent;
 import org.csstudio.saverestore.FileUtilities;
 import org.csstudio.saverestore.SnapshotContent;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -63,24 +63,24 @@ public class FileUtilitiesTest {
     }
 
     /**
-     * Test {@link FileUtilities#generateBeamlineSetContent(BeamlineSetData)} and
-     * {@link FileUtilities#readFromBeamlineSet(java.io.InputStream)}.
+     * Test {@link FileUtilities#generateSaveSetContent(SaveSetData)} and
+     * {@link FileUtilities#readFromSaveSet(java.io.InputStream)}.
      *
      * @throws IOException
      */
     @Test
-    public void testBeamlineSetData() throws IOException {
-        BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), new String[] { "first", "second", "third" },
+    public void testSaveSetData() throws IOException {
+        SaveSet set = new SaveSet(new Branch(), Optional.empty(), new String[] { "first", "second", "third" },
             "someId");
-        BeamlineSetData bsd = new BeamlineSetData(set, Arrays.asList("pv1", "pv2"), Arrays.asList("rb1", "rb2"),
+        SaveSetData bsd = new SaveSetData(set, Arrays.asList("pv1", "pv2"), Arrays.asList("rb1", "rb2"),
             Arrays.asList("d1", "Math.pow(x,3)"), "some description");
-        String content = FileUtilities.generateBeamlineSetContent(bsd);
+        String content = FileUtilities.generateSaveSetContent(bsd);
         assertEquals(
             "# Description:\n# some description\n#\nPV,READBACK,DELTA\npv1,rb1,d1\npv2,rb2,\"Math.pow(x,3)\"\n",
             content);
 
-        BeamlineSetContent bsc = FileUtilities
-            .readFromBeamlineSet(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
+        SaveSetContent bsc = FileUtilities
+            .readFromSaveSet(new ByteArrayInputStream(content.getBytes(StandardCharsets.UTF_8)));
         assertEquals("some description", bsc.getDescription());
         assertArrayEquals(new String[] { "pv1", "pv2" }, bsc.getNames().toArray(new String[0]));
         assertArrayEquals(new String[] { "rb1", "rb2" }, bsc.getReadbacks().toArray(new String[0]));
@@ -96,7 +96,7 @@ public class FileUtilitiesTest {
      */
     @Test
     public void testSnapshotData() throws IOException, ParseException {
-        BeamlineSet set = new BeamlineSet(new Branch(), Optional.empty(), new String[] { "first", "second", "third" },
+        SaveSet set = new SaveSet(new Branch(), Optional.empty(), new String[] { "first", "second", "third" },
             "someId");
         Snapshot snapshot = new Snapshot(set, new Date(), "comment", "owner");
         Date d = new Date(1455296909369L);

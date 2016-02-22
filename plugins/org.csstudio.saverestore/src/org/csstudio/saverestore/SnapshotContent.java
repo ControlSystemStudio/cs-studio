@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Threshold;
 import org.diirt.vtype.VType;
 
@@ -27,10 +27,10 @@ public final class SnapshotContent {
      * Constructs a new snapshot content.
      *
      * @param date the time when snapshot was taken
-     * @param names the list of pv names
-     * @param selected the selected/unselected states of the pvs
-     * @param data the individual pv data
-     * @param readbacks the readback pv names
+     * @param names the list of PV names
+     * @param selected the selected/unselected states of the PVs
+     * @param data the individual PV data
+     * @param readbacks the readback PV names
      * @param readbackData the stored readback values
      * @param deltas the threshold values of functions
      */
@@ -56,7 +56,7 @@ public final class SnapshotContent {
     }
 
     /**
-     * Returns the list of all setpoint pv names. The list is ordered as it is stored.
+     * Returns the list of all setpoint PV names. The list is ordered as it is stored.
      *
      * @return the names list
      */
@@ -65,7 +65,7 @@ public final class SnapshotContent {
     }
 
     /**
-     * Returns the list of selected states for all pvs. The list is ordered according to order in the names list.
+     * Returns the list of selected states for all PVs. The list is ordered according to order in the names list.
      *
      * @return the selected states
      */
@@ -74,7 +74,7 @@ public final class SnapshotContent {
     }
 
     /**
-     * Returns the list of the readback pv names associated with the setpoint names.
+     * Returns the list of the readback PV names associated with the setpoint PV names.
      *
      * @return the readback names
      */
@@ -83,9 +83,9 @@ public final class SnapshotContent {
     }
 
     /**
-     * Returns the list of all readback pv values as they were at the time when the snapshot was taken.
+     * Returns the list of all readback PV values as they were at the time when the snapshot was taken.
      *
-     * @return the readback pv values
+     * @return the readback PV values
      */
     public List<VType> getReadbackData() {
         return readbackData;
@@ -94,7 +94,7 @@ public final class SnapshotContent {
     /**
      * Returns the list of deltas that are used to compare the values of PVs.
      *
-     * @see BeamlineSetData#getDeltaList()
+     * @see SaveSetData#getDeltaList()
      * @see Threshold
      * @return the deltas list
      */

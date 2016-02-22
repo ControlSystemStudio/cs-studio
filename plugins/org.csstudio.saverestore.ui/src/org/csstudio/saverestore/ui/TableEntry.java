@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import org.csstudio.saverestore.Utilities;
 import org.csstudio.saverestore.data.Threshold;
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.ui.util.SingleListenerBooleanProperty;
 import org.csstudio.saverestore.ui.util.VTypePair;
 import org.diirt.util.time.Timestamp;
@@ -41,15 +41,15 @@ public class TableEntry {
     private final StringProperty status = new SimpleStringProperty(this, "status", "OK");
     private final ObjectProperty<AlarmSeverity> severity = new SimpleObjectProperty<>(this, "severity", AlarmSeverity.NONE);
     private final ObjectProperty<VTypePair> value = new SimpleObjectProperty<>(this, "value",
-        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
-    private final ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue", VNoData.INSTANCE);
+        new VTypePair(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE, Optional.empty()));
+    private final ObjectProperty<VType> liveValue = new SimpleObjectProperty<>(this, "liveValue", VDisconnectedData.INSTANCE);
     private final List<ObjectProperty<VTypePair>> compareValues = new ArrayList<>();
     private final ObjectProperty<VTypePair> readback = new SimpleObjectProperty<>(this, "readback",
-        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
+        new VTypePair(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE, Optional.empty()));
     private final StringProperty readbackName = new SimpleStringProperty(this, "readbackName");
     private final BooleanProperty liveStoredEqual = new SingleListenerBooleanProperty(this, "liveStoredEqual", true);
     private final ObjectProperty<VTypePair> storedReadback = new SimpleObjectProperty<>(this, "storedReadback",
-        new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, Optional.empty()));
+        new VTypePair(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE, Optional.empty()));
     private final List<ObjectProperty<VTypePair>> compareStoredReadbacks = new ArrayList<>();
     private Optional<Threshold<?>> threshold = Optional.empty();
 
@@ -175,7 +175,7 @@ public class TableEntry {
      * @param index the index of the snapshot to which the value belongs
      */
     public void setSnapshotValue(VType snapshotValue, int index) {
-        final VType val = snapshotValue == null ? VNoData.INSTANCE : snapshotValue;
+        final VType val = snapshotValue == null ? VDisconnectedData.INSTANCE : snapshotValue;
         if (index == 0) {
             if (val instanceof Alarm) {
                 severity.set(((Alarm) val).getAlarmSeverity());
@@ -187,7 +187,7 @@ public class TableEntry {
             if (val instanceof Time) {
                 timestamp.set(((Time) val).getTimestamp());
             } else {
-                timestamp.set(Timestamp.now());
+                timestamp.set(null);
             }
             value.set(new VTypePair(liveValue.get(), val, threshold));
             compareValues.forEach(o -> o.set(new VTypePair(val, o.get().value, threshold)));
@@ -196,9 +196,9 @@ public class TableEntry {
         } else {
             for (int i = compareValues.size(); i < index; i++) {
                 compareValues.add(new SimpleObjectProperty<>(this, "CompareValue" + i,
-                    new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, threshold)));
+                    new VTypePair(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE, threshold)));
                 compareStoredReadbacks.add(new SimpleObjectProperty<>(this, "CompareStoredReadback" + i,
-                    new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, threshold)));
+                    new VTypePair(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE, threshold)));
             }
             compareValues.get(index - 1).set(new VTypePair(valueProperty().get().value, val, threshold));
             compareStoredReadbacks.get(index - 1)
@@ -214,14 +214,14 @@ public class TableEntry {
      */
     public void setStoredReadbackValue(VType val, int index) {
         if (val == null) {
-            val = VNoData.INSTANCE;
+            val = VDisconnectedData.INSTANCE;
         }
         if (index == 0) {
             storedReadback.set(new VTypePair(storedReadback.get().base, val, threshold));
         } else {
             for (int i = compareValues.size(); i < index; i++) {
                 compareStoredReadbacks.add(new SimpleObjectProperty<>(this, "CompareStoredReadback" + i,
-                    new VTypePair(VNoData.INSTANCE, VNoData.INSTANCE, threshold)));
+                    new VTypePair(VDisconnectedData.INSTANCE, VDisconnectedData.INSTANCE, threshold)));
             }
             compareStoredReadbacks.get(index - 1)
                 .set(new VTypePair(compareStoredReadbacks.get(index - 1).get().base, val, threshold));
@@ -235,7 +235,7 @@ public class TableEntry {
      */
     public void setReadbackValue(VType val) {
         if (val == null) {
-            val = VNoData.INSTANCE;
+            val = VDisconnectedData.INSTANCE;
         }
         if (readback.get().value != val) {
             readback.set(new VTypePair(liveValueProperty().get(), val, threshold));
@@ -249,7 +249,7 @@ public class TableEntry {
      */
     public void setLiveValue(VType val) {
         if (val == null) {
-            val = VNoData.INSTANCE;
+            val = VDisconnectedData.INSTANCE;
         }
         liveValue.set(val);
         readback.set(new VTypePair(val, readback.get().value, threshold));

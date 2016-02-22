@@ -25,11 +25,11 @@ import org.csstudio.saverestore.DataProvider.ImportType;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SearchCriterion;
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.saverestore.git.Result.ChangeType;
 import org.diirt.util.time.Timestamp;
@@ -58,18 +58,18 @@ public class GitDataProviderTest {
     private BaseLevel branchBase1 = new BaseLevel(new Branch(), "base1", "base1");
     private BaseLevel branchBase2 = new BaseLevel(new Branch(), "base2", "base2");
     private BaseLevel someBaseLevel = new BaseLevel(someBranch, "sbase2", "sbase2");
-    private BeamlineSet branchBeamlineSet = new BeamlineSet(branch, Optional.of(branchBase1),
+    private SaveSet branchSaveSet = new SaveSet(branch, Optional.of(branchBase1),
         new String[] { "first", "second.bms" }, "someId");
-    private BeamlineSet branchBeamlineSet2 = new BeamlineSet(branch, Optional.of(branchBase1),
+    private SaveSet branchSaveSet2 = new SaveSet(branch, Optional.of(branchBase1),
         new String[] { "first", "foo", "bar", "second.bms" }, "someId");
-    private Snapshot branchSnapshot = new Snapshot(branchBeamlineSet, date, "comment", "owner");
-    private Snapshot branchSnapshot2 = new Snapshot(branchBeamlineSet, new Date(date.getTime() - 5000),
+    private Snapshot branchSnapshot = new Snapshot(branchSaveSet, date, "comment", "owner");
+    private Snapshot branchSnapshot2 = new Snapshot(branchSaveSet, new Date(date.getTime() - 5000),
         "another comment", "user");
-    private Snapshot branchSnapshot3 = new Snapshot(branchBeamlineSet, new Date(date.getTime() + 5000), "new snapshot",
+    private Snapshot branchSnapshot3 = new Snapshot(branchSaveSet, new Date(date.getTime() + 5000), "new snapshot",
         "user");
-    private BeamlineSetData bsd = new BeamlineSetData(branchBeamlineSet, Arrays.asList("pv1", "pv"),
+    private SaveSetData bsd = new SaveSetData(branchSaveSet, Arrays.asList("pv1", "pv"),
         Arrays.asList("rb1", "rb2"), Arrays.asList("d1", "d2"), "description");
-    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"), Arrays.asList(VNoData.INSTANCE),
+    private VSnapshot snapshot = new VSnapshot(branchSnapshot3, Arrays.asList("pv1"), Arrays.asList(VDisconnectedData.INSTANCE),
         Timestamp.now(), null);
 
     @Before
@@ -88,23 +88,23 @@ public class GitDataProviderTest {
         when(grm.getBranches()).thenReturn(Arrays.asList(branch, demoBranch));
         when(grm.getBaseLevels(branch)).thenReturn(Arrays.asList(branchBase1, branchBase2));
         when(grm.getBaseLevels(demoBranch)).thenReturn(new ArrayList<>(0));
-        when(grm.getBeamlineSets(Optional.of(branchBase1), branch))
-            .thenReturn(Arrays.asList(branchBeamlineSet, branchBeamlineSet2));
-        when(grm.getSnapshots(branchBeamlineSet, 0, Optional.empty()))
+        when(grm.getSaveSets(Optional.of(branchBase1), branch))
+            .thenReturn(Arrays.asList(branchSaveSet, branchSaveSet2));
+        when(grm.getSnapshots(branchSaveSet, 0, Optional.empty()))
             .thenReturn(Arrays.asList(branchSnapshot, branchSnapshot2));
-        when(grm.loadBeamlineSetData(branchBeamlineSet, Optional.empty())).thenReturn(bsd);
+        when(grm.loadSaveSetData(branchSaveSet, Optional.empty())).thenReturn(bsd);
         when(grm.createBranch(branch, "someBranch")).thenReturn(someBranch);
         when(grm.createBranch(branch, "bla")).thenThrow(exception);
-        when(grm.saveBeamlineSet(bsd, "comment")).thenReturn(new Result<BeamlineSetData>(bsd, ChangeType.SAVE));
-        when(grm.saveBeamlineSet(bsd, "comment2")).thenReturn(new Result<BeamlineSetData>(bsd, ChangeType.PULL));
-        when(grm.saveBeamlineSet(bsd, "comment3")).thenThrow(exception);
-        when(grm.deleteBeamlineSet(branchBeamlineSet, "comment"))
-            .thenReturn(new Result<BeamlineSet>(branchBeamlineSet, ChangeType.SAVE));
-        when(grm.deleteBeamlineSet(branchBeamlineSet, "comment2"))
-            .thenReturn(new Result<BeamlineSet>(branchBeamlineSet, ChangeType.PULL));
-        when(grm.deleteBeamlineSet(branchBeamlineSet, "comment4"))
-            .thenReturn(new Result<BeamlineSet>(null, ChangeType.NONE));
-        when(grm.deleteBeamlineSet(branchBeamlineSet, "comment3")).thenThrow(exception);
+        when(grm.saveSaveSet(bsd, "comment")).thenReturn(new Result<SaveSetData>(bsd, ChangeType.SAVE));
+        when(grm.saveSaveSet(bsd, "comment2")).thenReturn(new Result<SaveSetData>(bsd, ChangeType.PULL));
+        when(grm.saveSaveSet(bsd, "comment3")).thenThrow(exception);
+        when(grm.deleteSaveSet(branchSaveSet, "comment"))
+            .thenReturn(new Result<SaveSet>(branchSaveSet, ChangeType.SAVE));
+        when(grm.deleteSaveSet(branchSaveSet, "comment2"))
+            .thenReturn(new Result<SaveSet>(branchSaveSet, ChangeType.PULL));
+        when(grm.deleteSaveSet(branchSaveSet, "comment4"))
+            .thenReturn(new Result<SaveSet>(null, ChangeType.NONE));
+        when(grm.deleteSaveSet(branchSaveSet, "comment3")).thenThrow(exception);
         when(grm.saveSnapshot(snapshot, "comment")).thenReturn(new Result<VSnapshot>(snapshot, ChangeType.SAVE));
         when(grm.saveSnapshot(snapshot, "comment2")).thenReturn(new Result<VSnapshot>(snapshot, ChangeType.PULL));
         when(grm.saveSnapshot(snapshot, "comment3")).thenReturn(new Result<VSnapshot>(null, ChangeType.NONE));
@@ -129,11 +129,11 @@ public class GitDataProviderTest {
             .thenReturn(Arrays.asList(branchSnapshot2));
         when(grm.findSnapshotsByTagName("temp", branch, Optional.empty(), Optional.empty()))
             .thenReturn(Arrays.asList(branchSnapshot3));
-        when(grm.importData(branchBeamlineSet, someBranch, Optional.of(someBaseLevel), ImportType.BEAMLINE_SET))
+        when(grm.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel), ImportType.SAVE_SET))
             .thenReturn(new Result<Boolean>(true, ChangeType.SAVE));
-        when(grm.importData(branchBeamlineSet, someBranch, Optional.of(someBaseLevel), ImportType.ALL_SNAPSHOTS))
+        when(grm.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel), ImportType.ALL_SNAPSHOTS))
             .thenReturn(new Result<Boolean>(true, ChangeType.PULL));
-        when(grm.importData(branchBeamlineSet, someBranch, Optional.of(someBaseLevel), ImportType.LAST_SNAPSHOT))
+        when(grm.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel), ImportType.LAST_SNAPSHOT))
             .thenReturn(new Result<Boolean>(false, ChangeType.NONE));
         when(grm.synchronise(Optional.empty())).thenReturn(true);
     }
@@ -157,24 +157,24 @@ public class GitDataProviderTest {
     }
 
     @Test
-    public void testGetBeamlineSets() throws DataProviderException {
-        BeamlineSet[] sets = dataProvider.getBeamlineSets(Optional.of(branchBase1), branch);
+    public void testGetSaveSets() throws DataProviderException {
+        SaveSet[] sets = dataProvider.getSaveSets(Optional.of(branchBase1), branch);
         assertEquals("2 base levels are defined for default branch", 2, sets.length);
-        assertEquals(branchBeamlineSet, sets[0]);
-        assertEquals(branchBeamlineSet2, sets[1]);
+        assertEquals(branchSaveSet, sets[0]);
+        assertEquals(branchSaveSet2, sets[1]);
     }
 
     @Test
     public void testGetSnapshots() throws DataProviderException {
-        Snapshot[] snaps = dataProvider.getSnapshots(branchBeamlineSet, true, Optional.empty());
+        Snapshot[] snaps = dataProvider.getSnapshots(branchSaveSet, true, Optional.empty());
         assertEquals("2 base levels are defined for default branch", 2, snaps.length);
         assertEquals(branchSnapshot, snaps[0]);
         assertEquals(branchSnapshot2, snaps[1]);
     }
 
     @Test
-    public void testGetBeamlineSetContent() throws DataProviderException {
-        BeamlineSetData data = dataProvider.getBeamlineSetContent(branchBeamlineSet);
+    public void testGetSaveSetContent() throws DataProviderException {
+        SaveSetData data = dataProvider.getSaveSetContent(branchSaveSet);
         assertEquals(bsd, data);
     }
 
@@ -197,20 +197,20 @@ public class GitDataProviderTest {
     }
 
     @Test
-    public void testSaveBeamlineSet() throws DataProviderException {
-        BeamlineSetData data = dataProvider.saveBeamlineSet(bsd, "comment");
+    public void testSaveSaveSet() throws DataProviderException {
+        SaveSetData data = dataProvider.saveSaveSet(bsd, "comment");
         assertEquals(bsd, data);
-        verify(notifier, times(1)).beamlineSetSaved(data);
-        verify(notifier, only()).beamlineSetSaved(data);
+        verify(notifier, times(1)).saveSetSaved(data);
+        verify(notifier, only()).saveSetSaved(data);
         Mockito.reset(notifier);
 
-        data = dataProvider.saveBeamlineSet(bsd, "comment2");
+        data = dataProvider.saveSaveSet(bsd, "comment2");
         assertEquals(bsd, data);
         verify(notifier, times(1)).synchronised();
         verify(notifier, only()).synchronised();
 
         try {
-            dataProvider.saveBeamlineSet(bsd, "comment3");
+            dataProvider.saveSaveSet(bsd, "comment3");
             fail("Exception should happen");
         } catch (DataProviderException e) {
             assertNotNull(e.getMessage());
@@ -220,25 +220,25 @@ public class GitDataProviderTest {
     }
 
     @Test
-    public void testDeleteBeamlineSet() throws DataProviderException {
-        boolean b = dataProvider.deleteBeamlineSet(branchBeamlineSet, "comment");
+    public void testDeleteSaveSet() throws DataProviderException {
+        boolean b = dataProvider.deleteSaveSet(branchSaveSet, "comment");
         assertTrue(b);
-        verify(notifier, times(1)).beamlineSetDeleted(branchBeamlineSet);
-        verify(notifier, only()).beamlineSetDeleted(branchBeamlineSet);
+        verify(notifier, times(1)).saveSetDeleted(branchSaveSet);
+        verify(notifier, only()).saveSetDeleted(branchSaveSet);
         Mockito.reset(notifier);
 
-        b = dataProvider.deleteBeamlineSet(branchBeamlineSet, "comment4");
+        b = dataProvider.deleteSaveSet(branchSaveSet, "comment4");
         assertFalse(b);
         verify(notifier, never()).synchronised();
         Mockito.reset(notifier);
 
-        b = dataProvider.deleteBeamlineSet(branchBeamlineSet, "comment2");
+        b = dataProvider.deleteSaveSet(branchSaveSet, "comment2");
         assertTrue(b);
         verify(notifier, times(1)).synchronised();
         verify(notifier, only()).synchronised();
 
         try {
-            dataProvider.deleteBeamlineSet(branchBeamlineSet, "comment3");
+            dataProvider.deleteSaveSet(branchSaveSet, "comment3");
             fail("Exception should happen");
         } catch (DataProviderException e) {
             assertNotNull(e.getMessage());
@@ -350,20 +350,20 @@ public class GitDataProviderTest {
 
     @Test
     public void testImportData() throws DataProviderException {
-        boolean b = dataProvider.importData(branchBeamlineSet, someBranch, Optional.of(someBaseLevel),
-            ImportType.BEAMLINE_SET);
+        boolean b = dataProvider.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel),
+            ImportType.SAVE_SET);
         assertTrue(b);
-        verify(notifier, times(1)).dataImported(branchBeamlineSet, someBranch, Optional.of(someBaseLevel));
-        verify(notifier, only()).dataImported(branchBeamlineSet, someBranch, Optional.of(someBaseLevel));
+        verify(notifier, times(1)).dataImported(branchSaveSet, someBranch, Optional.of(someBaseLevel));
+        verify(notifier, only()).dataImported(branchSaveSet, someBranch, Optional.of(someBaseLevel));
         Mockito.reset(notifier);
 
-        b = dataProvider.importData(branchBeamlineSet, someBranch, Optional.of(someBaseLevel),
+        b = dataProvider.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel),
             ImportType.LAST_SNAPSHOT);
         assertFalse(b);
         verify(notifier, never()).synchronised();
         Mockito.reset(notifier);
 
-        b = dataProvider.importData(branchBeamlineSet, someBranch, Optional.of(someBaseLevel),
+        b = dataProvider.importData(branchSaveSet, someBranch, Optional.of(someBaseLevel),
             ImportType.ALL_SNAPSHOTS);
         assertTrue(b);
         verify(notifier, times(1)).synchronised();

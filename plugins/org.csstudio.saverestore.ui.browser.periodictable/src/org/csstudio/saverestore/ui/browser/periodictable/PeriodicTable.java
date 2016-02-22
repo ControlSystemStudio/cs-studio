@@ -40,7 +40,7 @@ import javafx.util.Duration;
 /**
  *
  * <code>PeriodicTable</code> provides a periodic table, where user can select the element, isotope, and charge for
- * which the beamline sets will be loaded.
+ * which the save sets will be loaded.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *

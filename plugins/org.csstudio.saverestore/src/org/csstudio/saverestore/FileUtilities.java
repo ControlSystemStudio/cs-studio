@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.csstudio.saverestore.data.BeamlineSetData;
-import org.csstudio.saverestore.data.VNoData;
+import org.csstudio.saverestore.data.SaveSetData;
+import org.csstudio.saverestore.data.VDisconnectedData;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.util.array.ArrayBoolean;
 import org.diirt.util.array.ArrayByte;
@@ -43,7 +43,7 @@ import org.diirt.vtype.ValueFactory;
 
 /**
  *
- * <code>FileUtilities</code> provides utility methods for reading and writing snapshot and beamline set files. All
+ * <code>FileUtilities</code> provides utility methods for reading and writing snapshot and save set files. All
  * methods in this class are thread safe.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
@@ -53,7 +53,7 @@ public final class FileUtilities {
 
     // the date tag for the snapshot files
     private static final String DATE_TAG = "Date:";
-    // the description tag for the beamline set files
+    // the description tag for the save set files
     private static final String DESCRIPTION_TAG = "Description:";
     // the names of the headers in the csv files
     public static final String H_PV_NAME = "PV";
@@ -70,14 +70,14 @@ public final class FileUtilities {
     public static final String SNAPSHOT_FILE_HEADER = H_PV_NAME + "," + H_SELECTED + "," + H_TIMESTAMP + "," + H_STATUS
         + "," + H_SEVERITY + "," + H_VALUE_TYPE + "," + H_VALUE + "," + H_READBACK + "," + H_READBACK_VALUE + ","
         + H_DELTA;
-    public static final String BEAMLINE_SET_HEADER = H_PV_NAME + "," + H_READBACK + "," + H_DELTA;
+    public static final String SAVE_SET_HEADER = H_PV_NAME + "," + H_READBACK + "," + H_DELTA;
     // delimiter of array values
     private static final String ARRAY_SPLITTER = "\\;";
     // delimiter of enum value and enum constants
     private static final String ENUM_VALUE_SPLITTER = "\\~";
     // proposed length of snapshot file data line entry (pv name only)
     private static final int SNP_ENTRY_LENGTH = 700;
-    // proposed length of beamline set data line entry (pv name only)
+    // proposed length of save set data line entry (pv name only)
     private static final int BSD_ENTRY_LENGTH = 250;
     // the format used to store the timestamp of when the snapshot was taken
     private static final ThreadLocal<DateFormat> TIMESTAMP_FORMATTER = ThreadLocal
@@ -154,10 +154,20 @@ public final class FileUtilities {
                 idx = headerMap.get(H_DELTA);
                 String delta = idx == null || idx > length ? "" : trim(split[idx]);
 
-                data.add(piecesToVType(timestamp, status, severity, value, valueType));
+                try {
+                    data.add(piecesToVType(timestamp, status, severity, value, valueType));
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    // number format covers errors in parsing to VNumber, index out of bounds covers the enum parsing
+                    // errors
+                    data.add(VDisconnectedData.INSTANCE);
+                }
                 readbacks.add(readback);
                 deltas.add(delta);
-                readbackData.add(piecesToVType(timestamp, status, severity, readbackValue, valueType));
+                try {
+                    readbackData.add(piecesToVType(timestamp, status, severity, readbackValue, valueType));
+                } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+                    readbackData.add(VDisconnectedData.INSTANCE);
+                }
                 names.add(name);
                 boolean s = true;
                 try {
@@ -202,8 +212,8 @@ public final class FileUtilities {
     private static VType piecesToVType(String timestamp, String status, String severity, String value,
         String valueType) {
         if (value == null || value.isEmpty() || "null".equalsIgnoreCase(value)
-            || VNoData.INSTANCE.toString().equals(value)) {
-            return VNoData.INSTANCE;
+            || VDisconnectedData.INSTANCE.toString().equals(value)) {
+            return VDisconnectedData.INSTANCE;
         }
         String[] t = timestamp != null && timestamp.indexOf('.') > 0 ? timestamp.split("\\.")
             : new String[] { "0", "0" };
@@ -321,7 +331,7 @@ public final class FileUtilities {
                 List<String> lbls = Arrays.asList(valueAndLabels[1].split("\\;"));
                 return ValueFactory.newVEnum(lbls.indexOf(theValue), lbls, alarm, time);
             case NODATA:
-                return VNoData.INSTANCE;
+                return VDisconnectedData.INSTANCE;
         }
 
         throw new IllegalArgumentException("Unknown data type " + valueType + ".");
@@ -406,13 +416,13 @@ public final class FileUtilities {
     }
 
     /**
-     * Read the contents of the beamline set from the input stream.
+     * Read the contents of the save set from the input stream.
      *
      * @param stream the source of data
      * @return the data, where the description is the description read from the file and there are no data, just names
      * @throws IOException if there was an error reading the file content
      */
-    public static BeamlineSetContent readFromBeamlineSet(InputStream stream) throws IOException {
+    public static SaveSetContent readFromSaveSet(InputStream stream) throws IOException {
         StringBuilder description = new StringBuilder(400);
         List<String> names = new ArrayList<>();
         List<String> readbacks = new ArrayList<>();
@@ -469,17 +479,17 @@ public final class FileUtilities {
                 }
             }
         }
-        return new BeamlineSetContent(description.toString().trim(), names, readbacks, deltas);
+        return new SaveSetContent(description.toString().trim(), names, readbacks, deltas);
     }
 
     /**
-     * Generates beamline set file content and returns it.
+     * Generates save set file content and returns it.
      *
-     * @param data beamline set data to transform to string
+     * @param data save set data to transform to string
      *
-     * @return generated beamline set file content
+     * @return generated save set file content
      */
-    public static String generateBeamlineSetContent(BeamlineSetData data) {
+    public static String generateSaveSetContent(SaveSetData data) {
         String description = data.getDescription();
         description = description.replaceAll("\n", "# ");
         List<String> pvs = data.getPVList();
@@ -518,9 +528,9 @@ public final class FileUtilities {
     }
 
     /**
-     * Split the given content by comma. However if a part of the content is in quotes, that part should not be split
-     * if it contains any commas. For example foo,bar will be returned as an array of length 2; "foo,bar" will be
-     * returned as an array of 1.
+     * Split the given content by comma. However if a part of the content is in quotes, that part should not be split if
+     * it contains any commas. For example foo,bar will be returned as an array of length 2; "foo,bar" will be returned
+     * as an array of 1.
      *
      * @param content the content to split
      * @return the array containing individual parts of the content

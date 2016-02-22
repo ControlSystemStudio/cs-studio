@@ -23,6 +23,7 @@ public final class MasarConstants {
     static final ThreadLocal<SimpleDateFormat> DATE_FORMAT = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 
+    static final String PARAM_SNAPSHOT_ID = "Snapshot ID";
     // various structure names and ids
     static final String T_ENUM = "enum_t";
     // Output parameters IDs
@@ -73,7 +74,7 @@ public final class MasarConstants {
     // Masar function names
     static final String FC_TAKE_SNAPSHOT = "saveSnapshot";
     static final String FC_LOAD_SNAPSHOT_DATA = "retrieveSnapshot";
-    static final String FC_LOAD_BEAMLINE_SETS = "retrieveServiceConfigs";
+    static final String FC_LOAD_SAVE_SETS = "retrieveServiceConfigs";
     static final String FC_LOAD_BASE_LEVELS = "retrieveServiceConfigProps";
     static final String FC_SAVE_SNAPSHOT = "updateSnapshotEvent";
     static final String FC_LOAD_SNAPSHOTS = "retrieveServiceEvents";
@@ -83,8 +84,8 @@ public final class MasarConstants {
     static final Structure STRUCT_BASE_LEVEL = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION }, new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString) });
 
-    // Structure description for loading the list of beamline sets
-    static final Structure STRUCT_BEAMLINE_SET = FieldFactory.getFieldCreate().createStructure(
+    // Structure description for loading the list of save sets
+    static final Structure STRUCT_SAVE_SET = FieldFactory.getFieldCreate().createStructure(
         new String[] { F_FUNCTION, F_SYSTEM, F_CONFIGNAME },
         new Field[] { FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),
             FieldFactory.getFieldCreate().createScalar(ScalarType.pvString),

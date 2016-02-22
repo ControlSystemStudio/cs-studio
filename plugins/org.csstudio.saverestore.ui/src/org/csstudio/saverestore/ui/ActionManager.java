@@ -7,8 +7,8 @@ import java.util.logging.Level;
 import org.csstudio.saverestore.DataProvider;
 import org.csstudio.saverestore.DataProviderException;
 import org.csstudio.saverestore.SaveRestoreService;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.csstudio.ui.fx.util.FXMessageDialog;
@@ -20,7 +20,7 @@ import org.eclipse.ui.PartInitException;
 
 /**
  *
- * <code>ActionManager</code> executes various actions related to the editors, such as open snapshot or beamline set.
+ * <code>ActionManager</code> executes various actions related to the editors, such as open snapshot or save set.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -72,7 +72,7 @@ public class ActionManager {
             throw new IllegalArgumentException("Snapshot not provided.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
-            .getDataProvider(descriptor.getBeamlineSet().getDataProviderId()).getProvider();
+            .getDataProvider(descriptor.getSaveSet().getDataProviderId()).getProvider();
         try {
             return Optional.ofNullable(provider.getSnapshotContent(descriptor));
         } catch (DataProviderException e) {
@@ -117,28 +117,28 @@ public class ActionManager {
     }
 
     /**
-     * Load the beamline set data and open it in the beamline set editor.
+     * Load the save set data and open it in the save set editor.
      *
-     * @param set the beamline set to open for editing
+     * @param set the save set to open for editing
      */
-    public void editBeamlineSet(final BeamlineSet set) {
+    public void editSaveSet(final SaveSet set) {
         if (set == null) {
-            throw new IllegalArgumentException("Beamline set is not selected.");
+            throw new IllegalArgumentException("Save set is not selected.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
             .getDataProvider(set.getDataProviderId()).getProvider();
-        if (!provider.isBeamlineSetSavingSupported()) {
+        if (!provider.isSaveSetSavingSupported()) {
             return;
         }
-        SaveRestoreService.getInstance().execute("Load beamline set data", () -> {
+        SaveRestoreService.getInstance().execute("Load save set data", () -> {
             try {
-                BeamlineSetData data = provider.getBeamlineSetContent(set);
+                SaveSetData data = provider.getSaveSetContent(set);
                 owner.getSite().getShell().getDisplay().asyncExec(() -> {
                     try {
-                        owner.getSite().getPage().openEditor(new BeamlineSetEditorInput(data), BeamlineSetEditor.ID);
+                        owner.getSite().getPage().openEditor(new SaveSetEditorInput(data), SaveSetEditor.ID);
                     } catch (PartInitException e) {
                         SaveRestoreService.LOGGER.log(Level.SEVERE,
-                            "Could not find or instantiate a new beamline set editor.", e);
+                            "Could not find or instantiate a new save set editor.", e);
                     }
                 });
             } catch (DataProviderException e) {
@@ -148,19 +148,19 @@ public class ActionManager {
     }
 
     /**
-     * Load the beamline set data and open it in the snapshot viewer editor.
+     * Load the save set data and open it in the snapshot viewer editor.
      *
-     * @param set the beamline set to open
+     * @param set the save set to open
      */
-    public void openBeamlineSet(final BeamlineSet set) {
+    public void openSaveSet(final SaveSet set) {
         if (set == null) {
-            throw new IllegalArgumentException("Beamline set is not selected.");
+            throw new IllegalArgumentException("Save set is not selected.");
         }
         final DataProvider provider = SaveRestoreService.getInstance()
             .getDataProvider(set.getDataProviderId()).getProvider();
-        SaveRestoreService.getInstance().execute("Open beamline set", () -> {
+        SaveRestoreService.getInstance().execute("Open save set", () -> {
             try {
-                BeamlineSetData data = provider.getBeamlineSetContent(set);
+                SaveSetData data = provider.getSaveSetContent(set);
                 final VSnapshot s = new VSnapshot(set, data.getPVList(), data.getReadbackList(), data.getDeltaList());
                 owner.getSite().getShell().getDisplay().asyncExec(() -> {
                     try {

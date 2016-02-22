@@ -52,12 +52,12 @@
             name="Snapshot Viewer">
       </editor>
       <editor
-            class="org.csstudio.saverestore.ui.BeamlineSetEditor"
+            class="org.csstudio.saverestore.ui.SaveSetEditor"
             default="false"
             filenames="*.bms"
             icon="icons/txt.png"
-            id="org.csstudio.saverestore.ui.editor.beamlineseteditor"
-            name="Beamline Set Editor">
+            id="org.csstudio.saverestore.ui.editor.saveseteditor"
+            name="Save Set Editor">
       </editor>
    </extension>
 </plugin>

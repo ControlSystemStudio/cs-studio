@@ -2,7 +2,7 @@ package org.csstudio.saverestore.ui.browser;
 
 import static org.csstudio.ui.fx.util.FXUtilities.setGridConstraints;
 
-import org.csstudio.saverestore.data.BeamlineSet;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.ui.util.RepositoryTree;
 import org.csstudio.ui.fx.util.FXBaseDialog;
 import org.csstudio.ui.fx.util.StaticTextField;
@@ -19,13 +19,13 @@ import javafx.scene.layout.Priority;
 
 /**
  * <code>ImportDataDialog</code> is a dialog that allows to select the location from which the data will be copied. The
- * location is returned in a form of a {@link BeamlineSet} whout it might not be an actual beamlineset. If it is just a
- * folder it will be missing the last part of the path. If it is a baselevel, it will not have the path defined at all.
+ * location is returned in a form of a {@link SaveSet} though it might not be an actual save set. If it is just a
+ * folder it will be missing the last part of the path. If it is a base level, it will not have the path defined at all.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
  */
-public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
+public class ImportDataDialog extends FXBaseDialog<SaveSet> {
 
     private final IShellProvider shellProvider;
     private RepositoryTree treeView;
@@ -76,8 +76,8 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
      * @see org.csstudio.saverestore.ui.util.FXBaseDialog#getValueFromComponent()
      */
     @Override
-    protected BeamlineSet getValueFromComponent() {
-        BeamlineSet set = treeView.getValueFromComponent();
+    protected SaveSet getValueFromComponent() {
+        SaveSet set = treeView.getValueFromComponent();
         if (set == null) {
             fullNameField.setText("");
         } else {
@@ -92,7 +92,7 @@ public class ImportDataDialog extends FXBaseDialog<BeamlineSet> {
      * @see org.csstudio.saverestore.ui.util.FXBaseDialog#setValueToComponent(java.lang.Object)
      */
     @Override
-    protected void setValueToComponent(BeamlineSet value) {
+    protected void setValueToComponent(SaveSet value) {
         treeView.setValueToComponent(value);
     }
 

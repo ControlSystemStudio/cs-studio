@@ -3,8 +3,8 @@ package org.csstudio.saverestore;
 import java.util.Optional;
 
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.BeamlineSet;
-import org.csstudio.saverestore.data.BeamlineSetData;
+import org.csstudio.saverestore.data.SaveSet;
+import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.Branch;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
@@ -37,21 +37,21 @@ public interface CompletionNotifier {
     }
 
     /**
-     * Called whenever the beamline set was saved, but only if at the same time no updates due to synchronisation were
-     * made. If the repository was also updated, only {@link #synchronised()} is called.
+     * Called whenever the save set was saved, but only if at the same time no updates due to synchronisation were made.
+     * If the repository was also updated, only {@link #synchronised()} is called.
      *
      * @param set the set that was saved
      */
-    default void beamlineSetSaved(BeamlineSetData set) {
+    default void saveSetSaved(SaveSetData set) {
     }
 
     /**
-     * Called whenever the beamline set is successfully deleted, but only if at the same time no updates due to
+     * Called whenever the save set is successfully deleted, but only if at the same time no updates due to
      * synchronisation were made. If the repository was also updated, only {@link #synchronised()} is called.
      *
      * @param set the set that was deleted
      */
-    default void beamlineSetDeleted(BeamlineSet set) {
+    default void saveSetDeleted(SaveSet set) {
     }
 
     /**
@@ -74,12 +74,13 @@ public interface CompletionNotifier {
 
     /**
      * Called whenever the data was imported, but only if at the same time no updates due to synchronisation were made.
-     * If the repository wa also updated, only {@link #synchronised()} is called.
+     * If the repository was also updated during the import action (e.g. new data fetched from central service) only
+     * {@link #synchronised()} is called.
      *
      * @param source the source of data
      * @param toBranch the destination branch
      * @param toBase the destination base level
      */
-    default void dataImported(BeamlineSet source, Branch toBranch, Optional<BaseLevel> toBase) {
+    default void dataImported(SaveSet source, Branch toBranch, Optional<BaseLevel> toBase) {
     }
 }
