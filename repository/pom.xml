@@ -185,7 +185,25 @@
 								<artifact>
 									<id>com.sun.jersey:jersey-client:1.1.5</id>
 								</artifact>
-								
+								<artifact>
+									<id>org.apache.poi:poi:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-examples:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-excelant:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-ooxml:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-ooxml-schemas:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-scratchpad:3.13</id>
+								</artifact>
+							        	
 
 								<!-- pvmanager-plugins from reactor -->
 								<artifact>
