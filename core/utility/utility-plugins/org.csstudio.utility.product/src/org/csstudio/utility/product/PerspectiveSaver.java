@@ -1,6 +1,5 @@
 package org.csstudio.utility.product;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -72,17 +71,7 @@ public class PerspectiveSaver implements EventHandler {
         URI uri = URI.createURI("file://" + file);
         Resource resource = new E4XMIResourceFactory().createResource(uri);
         resource.getContents().add((EObject) persp);
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try {
-            resource.save(Collections.EMPTY_MAP);
-        } finally {
-            try {
-                output.close();
-            } catch (IOException e) {
-                logger.log(Level.WARNING, SAVE_FAILED, e);
-            }
-        }
-        resource.getContents().clear();
+        resource.save(Collections.EMPTY_MAP);
     }
 
     /**
