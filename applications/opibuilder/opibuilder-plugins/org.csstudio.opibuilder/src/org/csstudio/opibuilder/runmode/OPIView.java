@@ -155,6 +155,10 @@ public class OPIView extends ViewPart implements IOPIRuntime
         setOPIInput((IEditorInput)input, false);
     }
 
+    /**
+     * Retrieve memento persisted in MPlaceholder if present.
+     * @return memento persisted in the placeholder.
+     */
     private IMemento findMementoFromPlaceholder() {
         IMemento memento = null;
         MPlaceholder placeholder = findPlaceholder();
@@ -167,6 +171,11 @@ public class OPIView extends ViewPart implements IOPIRuntime
         return memento;
     }
 
+    /**
+     * Create memento from string.
+     * @param mementoString
+     * @return
+     */
     private IMemento loadMemento(String mementoString) {
         StringReader reader = new StringReader(mementoString);
         try {
@@ -177,6 +186,11 @@ public class OPIView extends ViewPart implements IOPIRuntime
         }
     }
 
+    /**
+     * Find the MPlaceholder corresponding to this MPart in the MPerspective.  This
+     * may have persisted information relevant to loading this OPIView.
+     * @return corresponding placeholder
+     */
     private MPlaceholder findPlaceholder()
     {
         final IEclipseContext localContext = getViewSite().getService(IEclipseContext.class);

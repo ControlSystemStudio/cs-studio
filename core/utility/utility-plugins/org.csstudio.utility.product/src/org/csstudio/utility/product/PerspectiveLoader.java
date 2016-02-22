@@ -33,6 +33,7 @@ public class PerspectiveLoader {
     public static final String FILE_PREFIX = "file://";
 
     public static final String LOAD_FAILED = "Failed loading perspective.";
+    public static final String FILE_NOT_UNDERSTOOD = "Could not load perspective from file ";
 
     @Inject
     private EModelService modelService;
@@ -41,6 +42,12 @@ public class PerspectiveLoader {
     @Preference(nodePath = "org.eclipse.ui.workbench")
     private IEclipsePreferences preferences;
 
+    /**
+     * Convert an MPerspective object into an XMI XML string.
+     * @param persp Perspective to convert.
+     * @return XML string
+     * @throws IOException
+     */
     public static String perspToString(MPerspective persp) throws IOException {
         Resource resource = new E4XMIResourceFactory().createResource(null);
         resource.getContents().add((EObject) persp);
@@ -50,6 +57,11 @@ public class PerspectiveLoader {
         }
     }
 
+    /**
+     * Present a FileDialog to the user to select a .xmi file.  Load file into XML
+     * string.  Put into preferences; this triggers the new perspective import mechanism
+     * in Eclipse 4.5.2 which imports the perspective properly.
+     */
     public void loadPerspectives() {
         FileDialog chooser = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
         chooser.setText(SELECT_PERSPECTIVE);
@@ -63,8 +75,7 @@ public class PerspectiveLoader {
         EObject obj = res.getContents().get(0);
         if (obj instanceof MPerspective) {
             MPerspective p = (MPerspective) obj;
-            MPerspective pclone = (MPerspective) modelService.cloneElement(p,
-                    null);
+            MPerspective pclone = (MPerspective) modelService.cloneElement(p, null);
             try {
                 String perspAsString = perspToString(pclone);
                 // The new perspective import and export mechanism will intercept
@@ -73,6 +84,8 @@ public class PerspectiveLoader {
             } catch (IOException e) {
                 logger.log(Level.WARNING, LOAD_FAILED, e);
             }
+        } else {
+            logger.warning(FILE_NOT_UNDERSTOOD + uri);
         }
     }
 

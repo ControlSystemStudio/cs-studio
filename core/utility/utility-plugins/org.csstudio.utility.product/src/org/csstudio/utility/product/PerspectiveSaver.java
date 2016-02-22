@@ -49,6 +49,10 @@ public class PerspectiveSaver implements EventHandler {
 
     private File resourceDirectory;
 
+    /**
+     * Create required resources and subscribe to the e4 event broker listening for
+     * perspective save events.
+     */
     @PostConstruct
     public void init() {
         try {
@@ -63,6 +67,12 @@ public class PerspectiveSaver implements EventHandler {
         }
     }
 
+    /**
+     * Save a perspective object to a .xmi file.
+     * @param persp Perspective object to save
+     * @param file Filepath of file to save into
+     * @throws IOException
+     */
     private void savePerspective(MPerspective persp, String file) throws IOException {
         URI uri = URI.createURI(PerspectiveLoader.FILE_PREFIX + file);
         Resource resource = new E4XMIResourceFactory().createResource(uri);
@@ -71,7 +81,17 @@ public class PerspectiveSaver implements EventHandler {
     }
 
     /**
-     * When a perspective is saved by a user, save it also to a file.
+     * When a perspective is saved by a user, save it also to a file in .xmi format.
+     *
+     * Importantly, it is necessary to save any persisted state from an MPart into
+     * the corresponding MPlaceholder in the perspective.  This allows OPIView to
+     * get access to the persisted state when loading.
+     *
+     * Finally, it is necessary to re-import the perspective once the new state has been
+     * added.  This ensures that the registered perspective has this information available
+     * for the specific case of Window | New Window when the perspective has just been
+     * saved.
+     * @param Event the event object supplied by the event broker
      */
     @Override
     public void handleEvent(Event event) {
