@@ -7,6 +7,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -28,7 +30,11 @@ import org.osgi.service.event.EventHandler;
 
 public class PerspectiveSaver implements EventHandler {
 
+    private static final Logger logger = Logger.getLogger(PerspectiveSaver.class.getCanonicalName());
+
     public static final String PERSPECTIVE_PREFIX  = "perspective_";
+    public static final String INIT_FAILED = "Failed to initialise PerspectiveSaver.";
+    public static final String SAVE_FAILED = "Failed to save perspective.";
 
     @Inject
     private IEventBroker broker;
@@ -51,7 +57,7 @@ public class PerspectiveSaver implements EventHandler {
             resourceDirectory = new File(url.getFile());
             Files.createDirectories(resourceDirectory.toPath());
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.WARNING, INIT_FAILED, e);
         }
 
     }
@@ -73,7 +79,7 @@ public class PerspectiveSaver implements EventHandler {
             try {
                 output.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(Level.WARNING, SAVE_FAILED, e);
             }
         }
         resource.getContents().clear();
@@ -103,7 +109,7 @@ public class PerspectiveSaver implements EventHandler {
                 String perspAsString = PerspectiveLoader.perspToString(clone);
                 preferences.put(clone.getLabel() + PerspectiveLoader.PERSPECTIVE_SUFFIX, perspAsString);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(Level.WARNING, SAVE_FAILED, e);
             }
         }
     }

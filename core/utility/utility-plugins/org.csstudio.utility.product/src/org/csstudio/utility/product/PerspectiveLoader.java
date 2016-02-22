@@ -4,6 +4,8 @@ package org.csstudio.utility.product;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.inject.Inject;
 
@@ -22,11 +24,15 @@ import org.eclipse.ui.PlatformUI;
 
 public class PerspectiveLoader {
 
+    private static final Logger logger = Logger.getLogger(PerspectiveLoader.class.getCanonicalName());
+
     public static final String ASCII_ENCODING = "ascii";
     public static final String PERSPECTIVE_SUFFIX = "_e4persp";
     public static final String SELECT_PERSPECTIVE = "Choose a perspective file";
     public static final String XMI_EXTENSION = ".xmi";
     public static final String FILE_PREFIX = "file://";
+
+    public static final String LOAD_FAILED = "Failed loading perspective.";
 
     @Inject
     private EModelService modelService;
@@ -45,7 +51,7 @@ public class PerspectiveLoader {
             try {
                 output.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(Level.WARNING, LOAD_FAILED, e);
             }
         }
         resource.getContents().clear();
@@ -73,7 +79,7 @@ public class PerspectiveLoader {
                 // this preference change and import the perspective for us.
                 preferences.put(pclone.getLabel() + PERSPECTIVE_SUFFIX, perspAsString);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.log(Level.WARNING, LOAD_FAILED, e);
             }
         }
     }
