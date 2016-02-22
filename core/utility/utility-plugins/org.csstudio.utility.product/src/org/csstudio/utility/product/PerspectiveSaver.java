@@ -28,6 +28,8 @@ import org.osgi.service.event.EventHandler;
 
 public class PerspectiveSaver implements EventHandler {
 
+    public static final String PERSPECTIVE_PREFIX  = "perspective_";
+
     @Inject
     private IEventBroker broker;
 
@@ -82,7 +84,7 @@ public class PerspectiveSaver implements EventHandler {
      */
     @Override
     public void handleEvent(Event event) {
-        Object o = event.getProperty("ChangedElement");
+        Object o = event.getProperty(UIEvents.EventTags.ELEMENT);
         if (o instanceof MPerspective) {
             try {
                 MPerspective p = (MPerspective) o;
@@ -93,13 +95,13 @@ public class PerspectiveSaver implements EventHandler {
                             .putAll(ph.getRef().getPersistedState());
                 }
                 MPerspective clone = (MPerspective) modelService.cloneElement(p, null);
-                savePerspective(clone, url.getFile() + "/perspective_"  + p.getLabel() + ".xmi");
+                savePerspective(clone, url.getFile() + "/" + PERSPECTIVE_PREFIX  + p.getLabel() + PerspectiveLoader.XMI_EXTENSION);
                 // The new perspective import and export mechanism will intercept
                 // this preference change and import the perspective for us.
                 // I'm not sure why we need to import explicitly even though the 
                 // perspective has been saved.
                 String perspAsString = PerspectiveLoader.perspToString(clone);
-                preferences.put(clone.getLabel() + "_e4persp", perspAsString);
+                preferences.put(clone.getLabel() + PerspectiveLoader.PERSPECTIVE_SUFFIX, perspAsString);
             } catch (IOException e) {
                 e.printStackTrace();
             }

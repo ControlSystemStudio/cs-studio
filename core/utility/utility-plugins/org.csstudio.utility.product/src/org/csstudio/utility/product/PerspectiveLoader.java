@@ -22,6 +22,12 @@ import org.eclipse.ui.PlatformUI;
 
 public class PerspectiveLoader {
 
+    public static final String ASCII_ENCODING = "ascii";
+    public static final String PERSPECTIVE_SUFFIX = "_e4persp";
+    public static final String SELECT_PERSPECTIVE = "Choose a perspective file";
+    public static final String XMI_EXTENSION = ".xmi";
+    public static final String FILE_PREFIX = "file://";
+
     @Inject
     private EModelService modelService;
 
@@ -43,18 +49,18 @@ public class PerspectiveLoader {
             }
         }
         resource.getContents().clear();
-        return new String(output.toByteArray(), "ascii");
+        return new String(output.toByteArray(), ASCII_ENCODING);
     }
 
     public void loadPerspectives() {
         FileDialog chooser = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
-        chooser.setText("Choose a perspective file");
-        chooser.setFilterExtensions(new String[] {"*.xmi"});
+        chooser.setText(SELECT_PERSPECTIVE);
+        chooser.setFilterExtensions(new String[] {"*" + XMI_EXTENSION});
         chooser.open();
         File dirname = new File(chooser.getFilterPath());
         File fullPath = new File(dirname, chooser.getFileName());
         ResourceSet rs = new ResourceSetImpl();
-        URI uri = URI.createURI("file://" + fullPath.getPath());
+        URI uri = URI.createURI(FILE_PREFIX + fullPath.getPath());
         Resource res = rs.getResource(uri, true);
         EObject obj = res.getContents().get(0);
         if (obj instanceof MPerspective) {
@@ -65,7 +71,7 @@ public class PerspectiveLoader {
                 String perspAsString = perspToString(pclone);
                 // The new perspective import and export mechanism will intercept
                 // this preference change and import the perspective for us.
-                preferences.put(pclone.getLabel() + "_e4persp", perspAsString);
+                preferences.put(pclone.getLabel() + PERSPECTIVE_SUFFIX, perspAsString);
             } catch (IOException e) {
                 e.printStackTrace();
             }
