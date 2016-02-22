@@ -18,11 +18,13 @@ import org.eclipse.ui.IWorkbenchPart;
 public interface ISnapshotReceiver extends IWorkbenchPart, IShellProvider {
 
     /**
-     * Adds a snapshot to this received. This snapshot is compared to the base snapshot if it exists.
+     * Adds a snapshot to this receiver. This snapshot is compared to the base snapshot if it exists.
      *
      * @param data the snapshot data
+     * @param useBackgroundThread true to add the snapshot in background or false to add them in the same thread
+     *          this method is invoked from
      */
-    void addSnapshot(VSnapshot snapshot);
+    void addSnapshot(VSnapshot snapshot, boolean useBackgroundThread);
 
     /**
      * Checks if the receiver is dirty and properly marks it.

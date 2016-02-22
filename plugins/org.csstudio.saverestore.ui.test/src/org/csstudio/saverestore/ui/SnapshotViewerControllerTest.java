@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -142,7 +143,7 @@ public class SnapshotViewerControllerTest {
         when(provider.isTakingSnapshotsSupported()).thenReturn(true);
         controller.takeSnapshot();
         verify(provider, times(1)).takeSnapshot(snapshot1.getSaveSet());
-        verify(controller.getSnapshotReceiver(), times(2)).addSnapshot(any(VSnapshot.class));
+        verify(controller.getSnapshotReceiver(), times(2)).addSnapshot(any(VSnapshot.class), anyBoolean());
         VSnapshot snapshot2 = createSnapshot(false);
         controller.addSnapshot(snapshot2);
         assertEquals(1, controller.getSnapshots(true).size());

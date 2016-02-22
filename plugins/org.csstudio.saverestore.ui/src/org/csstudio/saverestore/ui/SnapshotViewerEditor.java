@@ -167,7 +167,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
         if (snapshot == null) {
             snapshot = new VSnapshot(new SaveSet());
         }
-        addOrSetSnapshot(snapshot, false);
+        addOrSetSnapshot(snapshot, false, true);
 
         final FadeTransition animation = new FadeTransition(Duration.seconds(0.15), saveSnapshotButton);
         animation.setAutoReverse(true);
@@ -217,10 +217,10 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
                 } else {
                     StringBuilder sb = new StringBuilder(parameters.size() * 100);
                     for (String p : parameters) {
-                        sb.append(p.toUpperCase(Locale.UK)).append(':').append(' ')
-                            .append(s.getParameters().get(p)).append('\n');
+                        sb.append(p.toUpperCase(Locale.UK)).append(':').append(' ').append(s.getParameters().get(p))
+                            .append('\n');
                     }
-                    parametersField.setText(sb.substring(0,sb.length()-1));
+                    parametersField.setText(sb.substring(0, sb.length() - 1));
                 }
                 parametersField.setStyle(null);
             }
@@ -785,23 +785,34 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
         return table;
     }
 
+
+    private void addSnapshot(VSnapshot data) {
+        addOrSetSnapshot(data, true, true);
+    }
+
     /*
      * (non-Javadoc)
      *
-     * @see org.csstudio.saverestore.ui.ISnapshotReceiver#addSnapshot(org.csstudio.saverestore.data.VSnapshot)
+     * @see org.csstudio.saverestore.ui.ISnapshotReceiver#addSnapshot(org.csstudio.saverestore.data.VSnapshot, boolean)
      */
     @Override
-    public void addSnapshot(VSnapshot data) {
-        addOrSetSnapshot(data, true);
+    public void addSnapshot(VSnapshot data, boolean useBackgroundThread) {
+        addOrSetSnapshot(data, true, useBackgroundThread);
     }
 
-    private void addOrSetSnapshot(final VSnapshot data, final boolean add) {
-        SaveRestoreService.getInstance().execute("Open Snapshot", () -> {
+    private void addOrSetSnapshot(final VSnapshot data, final boolean add, final boolean useBackgroundThread) {
+        Runnable r = () -> {
             final List<TableEntry> entries = add ? controller.addSnapshot(data) : controller.setSnapshot(data);
             final List<VSnapshot> snapshots = controller.getAllSnapshots();
             Platform.runLater(() -> table.updateTable(entries, snapshots, controller.isShowReadbacks(),
                 controller.isShowStoredReadbacks()));
-        });
+        };
+        if (useBackgroundThread) {
+            SaveRestoreService.getInstance().execute("Open Snapshot", r);
+        } else {
+            r.run();
+        }
+
     }
 
     /*

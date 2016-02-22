@@ -106,7 +106,7 @@ public class ActionManager {
                     }
                 }
                 if (part instanceof SnapshotViewerEditor) {
-                    ((SnapshotViewerEditor) part).addSnapshot(s);
+                    ((SnapshotViewerEditor) part).addSnapshot(s, true);
                 } else {
                     owner.getSite().getPage().openEditor(new SnapshotEditorInput(s), SnapshotViewerEditor.ID);
                 }

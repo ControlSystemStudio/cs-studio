@@ -637,10 +637,10 @@ public class SnapshotViewerController {
                     Timestamp.now());
             }
             if (SaveRestoreService.getInstance().isOpenNewSnapshotsInCompareView()) {
-                receiver.addSnapshot(taken);
+                receiver.addSnapshot(taken, false);
             } else if (getNumberOfSnapshots() == 1 && !getSnapshot(0).isSaveable() && !getSnapshot(0).isSaved()) {
                 // if there is only one snapshot which was actually opened as a save set, add it to the same editor
-                receiver.addSnapshot(taken);
+                receiver.addSnapshot(taken, false);
             } else {
                 new ActionManager(receiver).openSnapshot(taken);
             }
