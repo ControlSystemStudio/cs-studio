@@ -194,6 +194,26 @@
 									<id>com.sun.jersey.contribs:jersey-multipart:1.19</id>
 								</artifact>
 
+								<artifact>
+									<id>org.apache.poi:poi:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-examples:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-excelant:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-ooxml:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-ooxml-schemas:3.13</id>
+								</artifact>
+								<artifact>
+									<id>org.apache.poi:poi-scratchpad:3.13</id>
+								</artifact>
+							        	
+
 								<!-- pvmanager-plugins from reactor -->
 								<artifact>
 									<id>org.csstudio:org.csstudio.platform.libs.epics:${csstudio.version}</id>
