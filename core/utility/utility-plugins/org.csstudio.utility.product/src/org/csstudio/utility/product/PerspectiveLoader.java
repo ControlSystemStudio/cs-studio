@@ -44,18 +44,10 @@ public class PerspectiveLoader {
     public static String perspToString(MPerspective persp) throws IOException {
         Resource resource = new E4XMIResourceFactory().createResource(null);
         resource.getContents().add((EObject) persp);
-        ByteArrayOutputStream output = new ByteArrayOutputStream();
-        try {
+        try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             resource.save(output, null);
-        } finally {
-            try {
-                output.close();
-            } catch (IOException e) {
-                logger.log(Level.WARNING, LOAD_FAILED, e);
-            }
+            return new String(output.toByteArray(), ASCII_ENCODING);
         }
-        resource.getContents().clear();
-        return new String(output.toByteArray(), ASCII_ENCODING);
     }
 
     public void loadPerspectives() {
