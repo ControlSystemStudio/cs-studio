@@ -16,8 +16,11 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.e4.core.contexts.ContextInjectionFactory;
+import org.eclipse.e4.core.contexts.IEclipseContext;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.application.IWorkbenchConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchAdvisor;
@@ -66,6 +69,10 @@ public class ApplicationWorkbenchAdvisor extends WorkbenchAdvisor
                 Activator.getImageDescriptor("icons/project_close.png"), true);
 
         declareWorkbenchImages();
+
+        // Create perspective saver.
+        IEclipseContext context = PlatformUI.getWorkbench().getService(IEclipseContext.class);
+        PerspectiveSaver ps = ContextInjectionFactory.make(PerspectiveSaver.class, context);
     }
 
     /** @return ID of initial perspective */
