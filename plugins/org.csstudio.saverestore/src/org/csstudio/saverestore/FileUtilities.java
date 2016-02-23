@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.csstudio.saverestore.data.SaveSetData;
 import org.csstudio.saverestore.data.VDisconnectedData;
@@ -82,7 +83,7 @@ public final class FileUtilities {
     // the format used to store the timestamp of when the snapshot was taken
     private static final ThreadLocal<DateFormat> TIMESTAMP_FORMATTER = ThreadLocal
         .withInitial(() -> new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS"));
-
+    private static final Pattern LINE_BREAK_PATTERN = Pattern.compile("\\n");
     /**
      * Private constructor to prevent instantiation of this class.
      */
@@ -412,7 +413,11 @@ public final class FileUtilities {
                 sb.append(delta);
             }
         }
-        return sb.toString();
+        String s = sb.toString();
+        if (s.indexOf('\n') > -1) {
+            s = LINE_BREAK_PATTERN.matcher(s).replaceAll(" ");
+        }
+        return s;
     }
 
     /**

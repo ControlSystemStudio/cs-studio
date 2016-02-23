@@ -319,6 +319,37 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         }
     }
 
+    /**
+     * <code>SelectionTableColumn</code> is the table column for the first column in the table, which displays
+     * a checkbox, whether the PV should be selected or not.
+     *
+     * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
+     *
+     */
+    private class SelectionTableColumn extends TooltipTableColumn<Boolean> {
+        SelectionTableColumn() {
+            super("", "Include this PV when restoring values", 30, 30, false);
+            setCellValueFactory(new PropertyValueFactory<>("selected"));
+            setCellFactory(CheckBoxTableCell.forTableColumn(this));
+            setEditable(true);
+            setSortable(false);
+            selectAllCheckBox = new UnfocusableCheckBox();
+            selectAllCheckBox.setSelected(false);
+            selectAllCheckBox.setOnAction(
+                e -> getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
+            setGraphic(selectAllCheckBox);
+            MenuItem inverseMI = new MenuItem("Inverse Selection");
+            inverseMI.setOnAction(
+                e -> getItems().forEach(te -> te.selectedProperty().setValue(!te.selectedProperty().get())));
+            final ContextMenu contextMenu = new ContextMenu(inverseMI);
+            selectAllCheckBox.setOnMouseReleased(e -> {
+                if (e.getButton() == MouseButton.SECONDARY) {
+                    contextMenu.show(selectAllCheckBox, e.getScreenX(), e.getScreenY());
+                }
+            });
+        }
+    }
+
     private final List<VSnapshot> uiSnapshots = new ArrayList<>();
     private boolean showStoredReadbacks;
     private boolean showReadbacks;
@@ -395,17 +426,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     private void createTableForSingleSnapshot(boolean showReadback, boolean showStoredReadback) {
         List<TableColumn<TableEntry, ?>> list = new ArrayList<>(12);
 
-        TableColumn<TableEntry, Boolean> selectedColumn = new TooltipTableColumn<>("",
-            "Include this PV when restoring values", 30, 30, false);
-        selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
-        selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
-        selectedColumn.setEditable(true);
-        selectedColumn.setSortable(false);
-        selectAllCheckBox = new UnfocusableCheckBox();
-        selectAllCheckBox.setSelected(false);
-        selectAllCheckBox
-            .setOnAction(e -> getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
-        selectedColumn.setGraphic(selectAllCheckBox);
+        TableColumn<TableEntry, Boolean> selectedColumn = new SelectionTableColumn();
         list.add(selectedColumn);
 
         int width = FXUtilities.measureStringWidth("0000", Font.font(20));
@@ -487,17 +508,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     private void createTableForMultipleSnapshots(List<VSnapshot> snapshots, boolean showReadback,
         boolean showStoredReadback) {
         List<TableColumn<TableEntry, ?>> list = new ArrayList<>(7);
-        TableColumn<TableEntry, Boolean> selectedColumn = new TooltipTableColumn<>("",
-            "Include this PV when restoring values", 30, 30, false);
-        selectedColumn.setCellValueFactory(new PropertyValueFactory<>("selected"));
-        selectedColumn.setCellFactory(CheckBoxTableCell.forTableColumn(selectedColumn));
-        selectedColumn.setEditable(true);
-        selectedColumn.setSortable(false);
-        selectAllCheckBox = new UnfocusableCheckBox();
-        selectAllCheckBox.setSelected(false);
-        selectAllCheckBox
-            .setOnAction(e -> getItems().forEach(te -> te.selectedProperty().setValue(selectAllCheckBox.isSelected())));
-        selectedColumn.setGraphic(selectAllCheckBox);
+        TableColumn<TableEntry, Boolean> selectedColumn = new SelectionTableColumn();
         list.add(selectedColumn);
 
         int width = FXUtilities.measureStringWidth("0000", Font.font(20));
