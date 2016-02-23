@@ -127,7 +127,7 @@ public class MasarDataProvider implements DataProvider {
     @Override
     public BaseLevel[] getBaseLevels(Branch branch) throws DataProviderException {
         try {
-            List<BaseLevel> bls = mc.getBaseLevels(branch);
+            List<BaseLevel> bls = mc.getSystemConfigs(branch);
             return bls.toArray(new BaseLevel[bls.size()]);
         } catch (MasarException e) {
             throw new DataProviderException("Could not load the systems list.", e);

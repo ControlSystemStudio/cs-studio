@@ -75,8 +75,8 @@ public class MasarDataProviderTest {
         dataProvider.addCompletionNotifier(notifier);
 
         when(mc.getServices()).thenReturn(Arrays.asList(branch, demoBranch));
-        when(mc.getBaseLevels(branch)).thenReturn(Arrays.asList(branchBase1, branchBase2));
-        when(mc.getBaseLevels(demoBranch)).thenReturn(new ArrayList<>(0));
+        when(mc.getSystemConfigs(branch)).thenReturn(Arrays.asList(branchBase1, branchBase2));
+        when(mc.getSystemConfigs(demoBranch)).thenReturn(new ArrayList<>(0));
         when(mc.getSaveSets(Optional.of(branchBase1), branch))
             .thenReturn(Arrays.asList(branchSaveSet, branchSaveSet2));
         when(mc.getSnapshots(branchSaveSet)).thenReturn(Arrays.asList(branchSnapshot, branchSnapshot2));

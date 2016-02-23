@@ -358,26 +358,26 @@ public class MasarClient {
     }
 
     /**
-     * Reads and returns the list of all base levels in the given service.
+     * Reads and returns the list of all system configs in the given service.
      *
      * @param service the service from which to retrieve base levels
-     * @return the list of base levels
+     * @return the list of system configurations levels
      * @throws MasarException in case of an error
      */
-    public synchronized List<BaseLevel> getBaseLevels(Branch service) throws MasarException {
-        return getBaseLevels(service, true);
+    public synchronized List<BaseLevel> getSystemConfigs(Branch service) throws MasarException {
+        return getSystemConfigs(service, true);
     }
 
     /**
-     * Reads and returns the list of all base levels (system configurations) in the given service.
+     * Reads and returns the list of all system configs (base levels) in the given service.
      *
-     * @param service the service from which to retrieve base levels
+     * @param service the service from which to retrieve the system configs
      * @param retryOnError if true and there is an error in communication the channel will be reconnected and the
      *            request sent again
-     * @return the list of base levels
+     * @return the list of system configs
      * @throws MasarException in case of an error
      */
-    private List<BaseLevel> getBaseLevels(Branch service, boolean retryOnError) throws MasarException {
+    private List<BaseLevel> getSystemConfigs(Branch service, boolean retryOnError) throws MasarException {
         setService(service);
         try {
             PVStructure request = PVDataFactory.getPVDataCreate().createPVStructure(MasarConstants.STRUCT_BASE_LEVEL);
@@ -386,7 +386,7 @@ public class MasarClient {
             if (result == null) {
                 if (retryOnError && channelRPCRequester.isConnected()) {
                     connect();
-                    return getBaseLevels(service, false);
+                    return getSystemConfigs(service, false);
                 }
                 throw new MasarException(
                     channelRPCRequester.isConnected() ? "Unknown error." : "Masar service not available.");
@@ -666,6 +666,9 @@ public class MasarClient {
         try {
             String index = snapshot.getParameters().get(MasarConstants.PARAM_SNAPSHOT_ID);
             if (index == null) {
+                index = snapshot.getParameters().get(MasarConstants.P_EVENT_ID);
+            }
+            if (index == null) {
                 throw new MasarException("Unknown snapshot: " + snapshot);
             }
             PVStructure request = PVDataFactory.getPVDataCreate()
@@ -716,6 +719,9 @@ public class MasarClient {
                 throw new MasarException("Snapshot " + snapshot + " cannot be saved by MASAR.");
             }
             String id = snapshot.getSnapshot().get().getParameters().get(MasarConstants.PARAM_SNAPSHOT_ID);
+            if (id == null) {
+                id = snapshot.getSnapshot().get().getParameters().get(MasarConstants.P_EVENT_ID);
+            }
             if (id == null) {
                 throw new MasarException("Snapshot " + snapshot + " is not a valid MASAR snapshot.");
             }

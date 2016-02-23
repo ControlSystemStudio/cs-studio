@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.csstudio.saverestore.data.BaseLevel;
-import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.util.time.Timestamp;
@@ -38,7 +38,6 @@ import org.epics.pvdata.pv.PVUnionArray;
 import org.epics.pvdata.pv.Scalar;
 import org.epics.pvdata.pv.ScalarArray;
 import org.epics.pvdata.pv.ScalarType;
-import org.epics.pvdata.pv.Structure;
 import org.epics.pvdata.pv.Union;
 import org.junit.Test;
 
@@ -51,46 +50,6 @@ import org.junit.Test;
  */
 public class MasarUtilitiesTest {
 
-    static final Structure VALUE_STRUCTURE = FieldFactory.getFieldCreate().createStructure(
-        new String[] { MasarConstants.P_CONFIG_INDEX, MasarConstants.P_CONFIG_NAME, MasarConstants.P_CONFIG_DESCRIPTION,
-            MasarConstants.P_CONFIG_DATE, MasarConstants.P_CONFIG_VERSION, MasarConstants.P_CONFIG_STATUS },
-        new Field[] { FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvLong),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString), });
-
-    static final Structure STRUCT_SAVE_SET = FieldFactory.getFieldCreate()
-        .createStructure(new String[] { MasarConstants.P_STRUCTURE_VALUE }, new Field[] { VALUE_STRUCTURE });
-
-    static final Structure STRUCT_SNAPSHOT = FieldFactory.getFieldCreate().createStructure(
-        new String[] { MasarConstants.P_EVENT_ID, MasarConstants.P_CONFIG_ID, MasarConstants.P_COMMENT,
-            MasarConstants.P_EVENT_TIME, MasarConstants.P_USER },
-        new Field[] { FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvLong),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvLong),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString), });
-
-    static final Structure STRUCT_VSNAPSHOT = FieldFactory.getFieldCreate().createStructure(
-        new String[] { MasarConstants.P_SNAPSHOT_ALARM_MESSAGE, MasarConstants.P_SNAPSHOT_SECONDS,
-            MasarConstants.P_SNAPSHOT_CHANNEL_NAME, MasarConstants.P_SNAPSHOT_DBR_TYPE,
-            MasarConstants.P_SNAPSHOT_IS_CONNECTED, MasarConstants.P_SNAPSHOT_NANOS, MasarConstants.P_SNAPSHOT_USER_TAG,
-            MasarConstants.P_SNAPSHOT_ALARM_SEVERITY, MasarConstants.P_SNAPSHOT_ALARM_STATUS,
-            MasarConstants.P_STRUCTURE_VALUE },
-        new Field[] { FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvLong),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvString),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvBoolean),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
-            FieldFactory.getFieldCreate().createScalarArray(ScalarType.pvInt),
-            FieldFactory.getFieldCreate()
-                .createUnionArray(FieldFactory.getFieldCreate().createUnion("any", new String[0], new Field[0])) });
-
     @Test
     public void testCreateSaveSetList() {
         SimpleDateFormat format = MasarConstants.DATE_FORMAT.get();
@@ -98,7 +57,7 @@ public class MasarUtilitiesTest {
         Date date1 = new Date(time - 1000);
         Date date2 = new Date(time - 2500);
         Date date3 = new Date(time - 3000);
-        PVStructure structure = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_SAVE_SET);
+        PVStructure structure = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_SAVE_SET);
         PVStructure struct = structure.getStructureField(MasarConstants.P_STRUCTURE_VALUE);
         ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_CONFIG_INDEX, ScalarType.pvLong)).put(0, 3,
             new long[] { 1, 2, 3 }, 0);
@@ -163,7 +122,7 @@ public class MasarUtilitiesTest {
         Date date2 = new Date(time - 25000);
         Date date3 = new Date(time - 30000);
 
-        PVStructure struct = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_SNAPSHOT);
+        PVStructure struct = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.SNAPSHOT_VALUE_STRUCTURE);
         ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_EVENT_ID, ScalarType.pvLong)).put(0, 3,
             new long[] { 1, 2, 3 }, 0);
         ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_CONFIG_ID, ScalarType.pvLong)).put(0, 3,
@@ -173,7 +132,7 @@ public class MasarUtilitiesTest {
         ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_EVENT_TIME, ScalarType.pvString)).put(0, 3,
             new String[] { format.format(date1), format.format(date2), format.format(date3) }, 0);
         ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_USER, ScalarType.pvString)).put(0, 3,
-            new String[] { "bugsbunny", "elmerfudd", "duffyduck" }, 0);
+            new String[] { "bugsbunny", "elmerfudd", "daffyduck" }, 0);
 
         Branch branch = new Branch();
         BaseLevel base = new BaseLevel(branch, "base", "base");
@@ -206,7 +165,7 @@ public class MasarUtilitiesTest {
         snapshot = snaps.get(2);
         assertEquals(set, snapshot.getSaveSet());
         assertEquals("comment3", snapshot.getComment());
-        assertEquals("duffyduck", snapshot.getOwner());
+        assertEquals("daffyduck", snapshot.getOwner());
         assertEquals(date3, snapshot.getDate());
         assertFalse(snapshot.getTagMessage().isPresent());
         assertFalse(snapshot.getTagName().isPresent());
@@ -217,7 +176,7 @@ public class MasarUtilitiesTest {
 
     @Test
     public void testResultToVSnapshot() {
-        PVStructure struct = PVDataFactory.getPVDataCreate().createPVStructure(STRUCT_VSNAPSHOT);
+        PVStructure struct = PVDataFactory.getPVDataCreate().createPVStructure(Utilities.STRUCT_VSNAPSHOT);
         ((PVLongArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_SECONDS, ScalarType.pvLong)).put(0, 3,
             new long[] { 1, 2, 3 }, 0);
         ((PVStringArray) struct.getScalarArrayField(MasarConstants.P_SNAPSHOT_ALARM_MESSAGE, ScalarType.pvString)).put(0, 3,
