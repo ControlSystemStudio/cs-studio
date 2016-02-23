@@ -4,6 +4,7 @@
  * All rights reserved. Use is subject to license terms.
  */
 /**
+ * {@literal
  * <div style="float: right; margin-top: -170px" id="contents"></div>
  * 
  * <h1>Contents</h1>
@@ -94,7 +95,7 @@
  * multiValuedMap.add("device", "magnet");
  * Collection<Channel> foundChannels = client.find(multiValuedMap);
  * </pre>
- * 
+ * }
  */
 
 package gov.bnl.channelfinder.api;

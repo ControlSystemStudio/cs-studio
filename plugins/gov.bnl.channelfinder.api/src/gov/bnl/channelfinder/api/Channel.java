@@ -146,7 +146,7 @@ public class Channel {
 		 * 
 		 * @return a {@link XmlChannel}
 		 */
-		XmlChannel toXml() {
+		public XmlChannel toXml() {
 			XmlChannel xmlChannel = new XmlChannel(name, owner);
 			for (Tag.Builder tag : tags) {
 				xmlChannel.addXmlTag(tag.toXml());
@@ -155,7 +155,6 @@ public class Channel {
 				xmlChannel.addXmlProperty(property.toXml());
 			}
 			return xmlChannel;
-
 		}
 
 		/**
@@ -172,12 +171,12 @@ public class Channel {
 		this.name = channel.getName();
 		this.owner = channel.getOwner();
 		Map<String, Tag> newTags = new HashMap<String, Tag>();
-		for (XmlTag tag : channel.getXmlTags().getTags()) {
+		for (XmlTag tag : channel.getTags()) {
 			newTags.put(tag.getName(), new Tag(tag));
 		}
 		this.tags = Collections.unmodifiableMap(newTags);
 		Map<String, Property> newProperties = new HashMap<String, Property>();
-		for (XmlProperty property : channel.getXmlProperties().getProperties()) {
+		for (XmlProperty property : channel.getProperties()) {
 			newProperties.put(property.getName(), new Property(property));
 		}
 		this.properties = Collections.unmodifiableMap(newProperties);
@@ -230,7 +229,7 @@ public class Channel {
 	 * Returns the tag with name = tagName is present on this channel else
 	 * returns null
 	 * 
-	 * @param tagName
+	 * @param tagName - tag name
 	 * @return {@link Tag} with name=tagName else null is tag with same name not
 	 *         present
 	 */
@@ -276,11 +275,6 @@ public class Channel {
 		return properties.keySet();
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -289,11 +283,6 @@ public class Channel {
 		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -311,11 +300,6 @@ public class Channel {
 		return true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		return "Channel [name=" + name + ", owner=" + owner + "]";

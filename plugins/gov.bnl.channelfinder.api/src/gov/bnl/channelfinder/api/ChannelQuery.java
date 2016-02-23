@@ -200,7 +200,7 @@ public class ChannelQuery {
 	 * If the query was already executed, the listener is called
 	 * immediately with the result.
 	 * 
-	 * @param listener
+	 * @param listener - channel query listener
 	 */
 	public void execute(ChannelQueryListener listener) {
 		addChannelQueryListener(listener);

@@ -3,12 +3,14 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Olog Client Library
 Bundle-SymbolicName: edu.msu.nscl.olog.api;singleton:=true
 Bundle-Version: 2.2.8.qualifier
-Require-Bundle: org.csstudio.platform.libs.jersey,
- org.eclipse.core.runtime
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.core.runtime,
+ com.google.guava,
+ com.sun.jersey.bundle;bundle-version="1.19.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: edu.msu.nscl.olog.api
 Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov> - BNL
-Bundle-Activator: org.csstudio.utility.olog.Activator
+Bundle-Activator: edu.msu.nscl.olog.api.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-Description: Olog Client Library
-Import-Package: com.google.common.collect
+Bundle-ClassPath: lib/com.sun.jersey.contribs.jersey-multipart_1.19.0.jar,
+ .

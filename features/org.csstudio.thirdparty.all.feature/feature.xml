@@ -26,21 +26,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jersey"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="gov.bnl.channelfinder.api"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="gov.bnl.unitconversion"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -62,13 +48,6 @@
 
    <plugin
          id="org.csstudio.platform.libs.jdbc"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.platform.libs.jfreechart"
          download-size="0"
          install-size="0"
          version="0.0.0"

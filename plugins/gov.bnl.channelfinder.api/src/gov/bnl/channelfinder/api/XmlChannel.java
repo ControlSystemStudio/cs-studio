@@ -5,22 +5,22 @@
  */
 package gov.bnl.channelfinder.api;
 
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlAttribute;
+import java.util.ArrayList;
+import java.util.List;
+import com.fasterxml.jackson.annotation.*;
 
 /**
  * Channel object that can be represented as XML/JSON in payload data.
  *
- * @author Ralph Lange <Ralph.Lange@bessy.de>
+ * @author Kunal Shroff {@literal <shroffk@bnl.gov>}, Ralph Lange {@literal <ralph.lange@gmx.de>}
  */
 
-@XmlRootElement(name = "channel")
+@JsonRootName("channel") 
 public class XmlChannel {
     private String name;
     private String owner;
-    private XmlProperties properties = new XmlProperties();
-    private XmlTags tags = new XmlTags();
+    private List<XmlProperty> properties = new ArrayList<XmlProperty>();
+    private List<XmlTag> tags = new ArrayList<XmlTag>();
   
     /** Creates a new instance of XmlChannel */
     public XmlChannel() {
@@ -47,11 +47,25 @@ public class XmlChannel {
     }
 
     /**
+     * 
+     * @param name - channel name
+     * @param owner - channel owner
+     * @param properties - list of channel properties
+     * @param tags - list of channel tags
+     */
+    public XmlChannel(String name, String owner, List<XmlProperty> properties, List<XmlTag> tags) {
+        this.name = name;
+        this.owner = owner;
+        this.properties = properties;
+        this.tags = tags;
+    }
+
+    /**
      * Getter for channel name.
      *
-     * @return name
+     * @return name - channel name
      */
-    @XmlAttribute
+    @JsonProperty("name")
     public String getName() {
         return name;
     }
@@ -61,6 +75,7 @@ public class XmlChannel {
      *
      * @param name the value to set
      */
+    @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
     }
@@ -70,7 +85,7 @@ public class XmlChannel {
      *
      * @return owner
      */
-    @XmlAttribute
+    @JsonProperty("owner")
     public String getOwner() {
         return owner;
     }
@@ -78,68 +93,51 @@ public class XmlChannel {
     /**
      * Setter for channel owner.
      *
-     * @param owner
+     * @param owner - channel owner
      */
+    @JsonProperty("owner")
     public void setOwner(String owner) {
         this.owner = owner;
     }
 
-    /**
-     * Getter for channel's XmlProperties.
-     *
-     * @return XmlProperties
-     */
-    @XmlElement(name = "properties")
-    public XmlProperties getXmlProperties() {
+    @JsonProperty("properties")
+    public List<XmlProperty> getProperties() {
         return properties;
     }
 
-    /**
-     * Setter for channel's XmlProperties.
-     *
-     * @param properties XmlProperties
-     */
-    public void setXmlProperties(XmlProperties properties) {
+    @JsonProperty("properties")
+    public void setProperties(List<XmlProperty> properties) {
         this.properties = properties;
     }
-
+    
     /**
      * Adds an XmlProperty to the channel.
      *
      * @param property single XmlProperty
      */
     public void addXmlProperty(XmlProperty property) {
-        this.properties.addXmlProperty(property);
+        this.properties.add(property);
     }
 
-    /**
-     * Getter for the channel's XmlTags.
-     *
-     * @return XmlTags for this channel
-     */
-    @XmlElement(name = "tags")
-    public XmlTags getXmlTags() {
+    @JsonProperty("tags")
+    public List<XmlTag> getTags() {
         return tags;
     }
 
-    /**
-     * Setter for the channel's XmlTags.
-     *
-     * @param tags XmlTags
-     */
-    public void setXmlTags(XmlTags tags) {
+    @JsonProperty("tags")
+    public void setTags(List<XmlTag> tags) {
         this.tags = tags;
     }
 
     /**
      * Adds an XmlTag to the collection.
      *
-     * @param tag
+     * @param tag - tag to be added to channel
      */
     public void addXmlTag(XmlTag tag) {
-        this.tags.addXmlTag(tag);
+        this.tags.add(tag);
     }
-
+    
     /**
      * Creates a compact string representation for the log.
      *
@@ -148,8 +146,8 @@ public class XmlChannel {
      */
     public static String toLog(XmlChannel data) {
         return data.getName() + "(" + data.getOwner() + "):["
-                + XmlProperties.toLog(data.properties)
-                + XmlTags.toLog(data.tags)
+                + (data.properties)
+                + (data.tags)
                 + "]";
     }
 }

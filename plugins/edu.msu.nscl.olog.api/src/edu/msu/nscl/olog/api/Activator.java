@@ -1,4 +1,4 @@
-package org.csstudio.utility.olog;
+package edu.msu.nscl.olog.api;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,8 +8,6 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-import edu.msu.nscl.olog.api.Olog;
-import edu.msu.nscl.olog.api.OlogClient;
 import edu.msu.nscl.olog.api.OlogClientImpl.OlogClientBuilder;
 
 public class Activator implements BundleActivator {
@@ -18,7 +16,11 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void start(BundleContext context) throws Exception {
-		Olog.setClient(retrieveClient());
+		try {
+			Olog.setClient(retrieveClient());
+		} catch (Exception e) {
+			log.warning("Failed to create default olog client");
+		}
 	}
 
 	private OlogClient retrieveClient() {

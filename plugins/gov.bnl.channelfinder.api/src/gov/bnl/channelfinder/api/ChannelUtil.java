@@ -5,20 +5,16 @@
  */
 package gov.bnl.channelfinder.api;
 
-import gov.bnl.channelfinder.api.Channel.Builder;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-
-import static gov.bnl.channelfinder.api.Channel.Builder.*;
 
 /**
  * @author shroffk
@@ -36,7 +32,7 @@ public class ChannelUtil {
 	/**
 	 * Return a list of tag names associated with this channel
 	 * 
-	 * @param channel
+	 * @param channel - channel to be processed
 	 * @return Collection of names of tags
 	 */
 	public static Collection<String> getTagNames(Channel channel) {
@@ -50,7 +46,7 @@ public class ChannelUtil {
 	/**
 	 * Return a union of tag names associated with channels
 	 * 
-	 * @param channels
+	 * @param channels - list of channels
 	 * @return a set of all unique tag names associated with atleast one or more
 	 *         channel in channels
 	 */
@@ -65,7 +61,7 @@ public class ChannelUtil {
 	/**
 	 * Return a list of property names associated with this channel
 	 * 
-	 * @param channel
+	 * @param channel - channel to be processed
 	 * @return Collection of names of properties
 	 */
 	public static Collection<String> getPropertyNames(Channel channel) {
@@ -83,9 +79,9 @@ public class ChannelUtil {
 	 * Return the Tag object with name <tt>tagName</tt> if it exists on the
 	 * channel <tt>channel</tt> else return null
 	 * 
-	 * @param channel
-	 * @param tagName
-	 * @return Tag
+	 * @param channel - channel
+	 * @param tagName - tag name
+	 * @return Tag - tag object found on channel
 	 */
 	@Deprecated
 	public static Tag getTag(Channel channel, String tagName) {
@@ -119,9 +115,9 @@ public class ChannelUtil {
 	 * Return the property object with the name <tt>propertyName</tt> if it
 	 * exists on the channel <tt>channel</tt> else return null
 	 * 
-	 * @param channel
-	 * @param propertyName
-	 * @return Property
+	 * @param channel - channel
+	 * @param propertyName - property name
+	 * @return Property - property object found on channel
 	 */
 	@Deprecated
 	public static Property getProperty(Channel channel, String propertyName) {
@@ -153,7 +149,7 @@ public class ChannelUtil {
 	/**
 	 * Return a union of property names associated with channels
 	 * 
-	 * @param channels
+	 * @param channels - list of channels
 	 * @return a set of all unique property names associated with atleast one or
 	 *         more channel in channels
 	 */
@@ -181,7 +177,7 @@ public class ChannelUtil {
 	/**
 	 * Returns all the channel Names in the given Collection of channels
 	 * 
-	 * @param channels
+	 * @param channels - list of channels
 	 * @return a set of all the unique names associated with the each channel in
 	 *         channels
 	 */
@@ -220,7 +216,7 @@ public class ChannelUtil {
 	/**
 	 * Given a Collection of channels returns a new collection of channels
 	 * containing only those channels which have all the tags in the
-	 * <tt>tagNames</tt> AND all the properties in <tt></tt>
+	 * <tt>tagNames</tt>
 	 * 
 	 * @param channels
 	 *            - the input list of channels
@@ -275,7 +271,7 @@ public class ChannelUtil {
 	 *            - list of Channel.Builder to be built.
 	 * @return Collection of {@link Channel} built from the channelBuilders
 	 */
-	static Collection<Channel> toChannels(
+	public static Collection<Channel> toChannels(
 			Collection<Channel.Builder> channelBuilders) {
 		Collection<Channel> channels = new HashSet<Channel>();
 		for (Channel.Builder builder : channelBuilders) {
@@ -283,21 +279,20 @@ public class ChannelUtil {
 		}
 		return Collections.unmodifiableCollection(channels);
 	}
-
+	
 	/**
-	 * Returns a {@link XmlChannels} object built from the list of
+	 * Returns a list of {@link Channel} built from the list of
 	 * {@link Channel.Builder}s
 	 * 
 	 * @param channelBuilders
 	 *            - list of Channel.Builder to be built.
-	 * @return A {@link XmlChannels} built from the channelBuilders
+	 * @return Collection of {@link Channel} built from the channelBuilders
 	 */
-	static XmlChannels toXmlChannels(Collection<Channel.Builder> channelBuilders) {
-		XmlChannels xmlChannels = new XmlChannels();
-		for (Builder channel : channelBuilders) {
-			xmlChannels.addXmlChannel(channel.toXml());
+	public static List<XmlChannel> toCollectionXmlChannels(Collection<Channel.Builder> channelBuilders) {
+		List<XmlChannel> xmlchannels = new ArrayList<XmlChannel>();
+		for (Channel.Builder builder : channelBuilders) {
+			xmlchannels.add(builder.toXml());
 		}
-		return xmlChannels;
+		return xmlchannels;
 	}
-
 }

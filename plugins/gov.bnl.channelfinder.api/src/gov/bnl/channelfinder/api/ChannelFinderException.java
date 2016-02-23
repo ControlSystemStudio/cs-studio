@@ -6,12 +6,13 @@
 package gov.bnl.channelfinder.api;
 
 
-import com.sun.jersey.api.client.ClientResponse.Status;
-import com.sun.jersey.api.client.UniformInterfaceException;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import javax.swing.text.html.parser.ParserDelegator;
+
+import com.sun.jersey.api.client.ClientResponse.Status;
+import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * A Exception Type for various channelfinder exception conditions.

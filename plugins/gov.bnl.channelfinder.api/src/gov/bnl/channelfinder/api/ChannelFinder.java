@@ -9,26 +9,26 @@ import static gov.bnl.channelfinder.api.ChannelFinderClientImpl.CFCBuilder.servi
 
 public class ChannelFinder {
 
-	public static final String DEFAULT_CLIENT = "composite_client";
-	private static volatile ChannelFinderClient client;
+    public static final String DEFAULT_CLIENT = "composite_client";
+    private static volatile ChannelFinderClient client;
 
-	private ChannelFinder() {
+    private ChannelFinder() {
 
-	}
+    }
 
-	public static void setClient(ChannelFinderClient client) {
-		ChannelFinder.client = client;
-	}
+    public static void setClient(ChannelFinderClient client) {
+        ChannelFinder.client = client;
+    }
 
-	/**
-	 * 
-	 * @return returns the default {@link ChannelFinderClient}. 
-	 */
-	public static ChannelFinderClient getClient() {
-		if(client == null){
-			ChannelFinder.client = serviceURL().withHTTPAuthentication(false).create();
-		}
-		return client;
-	}
+    /**
+     * 
+     * @return returns the default {@link ChannelFinderClient}.
+     */
+    public static ChannelFinderClient getClient() {
+        if (client == null) {
+            ChannelFinder.client = serviceURL().withHTTPAuthentication(false).create();
+        }
+        return client;
+    }
 
 }

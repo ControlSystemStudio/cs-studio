@@ -25,6 +25,9 @@ public class Property {
 
 		/**
 		 * Builder class to aid in a construction of a {@link Property}.
+		 * 
+		 * @param name - property name
+		 * @return property builder
 		 */
 		public static Builder property(String name) {
 			Builder propertyBuilder = new Builder();
@@ -87,17 +90,17 @@ public class Property {
 		/**
 		 * Build a {@link XmlProperty} object using this builder.
 		 * 
-		 * @return 
+		 * @return {@link XmlProperty} xmlProperty object
 		 */
-		XmlProperty toXml() {
+		public XmlProperty toXml() {
 			return new XmlProperty(name, owner, value);
 		}
 
 		/**
 		 * Build a {@link Property} object using this builder.
-		 * @return
+		 * @return {@link Property} property object
 		 */
-		Property build() {
+		public Property build() {
 			return new Property(this);
 		}
 	}
@@ -142,11 +145,6 @@ public class Property {
 		return value;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#hashCode()
-	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;

@@ -5,22 +5,23 @@
  */
 package gov.bnl.channelfinder.api;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.core.*;
 
 /**
  * Tag object that can be represented as XML/JSON in payload data.
  *
- * @author Ralph Lange <Ralph.Lange@bessy.de>
+ * @author Kunal Shroff {@literal <shroffk@bnl.gov>}, Ralph Lange {@literal <ralph.lange@gmx.de>}
  */
-@XmlType(propOrder = {"name","owner","xmlChannels"})
-@XmlRootElement(name = "tag")
+@JsonRootName("tag")
 public class XmlTag {
     private String name = null;
     private String owner = null;
-    private XmlChannels channels = null;
+    private List<XmlChannel> channels = new ArrayList<XmlChannel>();
 
     /**
      * Creates a new instance of XmlTag.
@@ -32,7 +33,7 @@ public class XmlTag {
     /**
      * Creates a new instance of XmlTag.
      *
-     * @param name
+     * @param name - tag name
      */
     public XmlTag(String name) {
         this.name = name;
@@ -41,8 +42,8 @@ public class XmlTag {
     /**
      * Creates a new instance of XmlTag.
      *
-     * @param name
-     * @param owner
+     * @param name - tag name
+     * @param owner - tag owner
      */
     public XmlTag(String name, String owner) {
         this.name = name;
@@ -54,7 +55,7 @@ public class XmlTag {
      *
      * @return tag name
      */
-    @XmlAttribute
+    @JsonProperty("name")
     public String getName() {
         return name;
     }
@@ -64,6 +65,7 @@ public class XmlTag {
      *
      * @param name tag name
      */
+    @JsonProperty("name")
     public void setName(String name) {
         this.name = name;
     }
@@ -73,7 +75,7 @@ public class XmlTag {
      *
      * @return tag owner
      */
-    @XmlAttribute
+    @JsonProperty("owner")
     public String getOwner() {
         return owner;
     }
@@ -83,6 +85,7 @@ public class XmlTag {
      *
      * @param owner tag owner
      */
+    @JsonProperty("owner")
     public void setOwner(String owner) {
         this.owner = owner;
     }
@@ -92,8 +95,8 @@ public class XmlTag {
      *
      * @return XmlChannels object
      */
-    @XmlElement(name = "channels")
-    public XmlChannels getXmlChannels() {
+    @JsonProperty("channels")
+    public List<XmlChannel> getChannels() {
         return channels;
     }
 
@@ -102,7 +105,8 @@ public class XmlTag {
      *
      * @param channels XmlChannels object
      */
-    public void setXmlChannels(XmlChannels channels) {
+    @JsonProperty("channels")
+    public void setChannels(List<XmlChannel> channels) {
         this.channels = channels;
     }
 
@@ -116,8 +120,7 @@ public class XmlTag {
         if (data.channels == null) {
             return data.getName() + "(" + data.getOwner() + ")";
         } else {
-            return data.getName() + "(" + data.getOwner() + ")"
-                    + XmlChannels.toLog(data.channels);
+            return data.getName() + "(" + data.getOwner() + ")" + (data.channels);
         }
     }
 }
