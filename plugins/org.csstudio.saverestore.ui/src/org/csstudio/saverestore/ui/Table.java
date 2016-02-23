@@ -321,6 +321,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
 
     private final List<VSnapshot> uiSnapshots = new ArrayList<>();
     private boolean showStoredReadbacks;
+    private boolean showReadbacks;
     private final SnapshotViewerController controller;
     private CheckBox selectAllCheckBox;
 
@@ -353,16 +354,17 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
                 } else {
                     int idx = getColumns().indexOf(columnAtMouse);
                     if (uiSnapshots.size() > 1) {
+                        int i = showReadbacks ? 4 : 3;
                         if (idx < 0) {
                             // it is one of the grouped stored values columns
-                            idx = getColumns().get(3).getColumns().indexOf(columnAtMouse);
+                            idx = getColumns().get(i).getColumns().indexOf(columnAtMouse);
                             if (idx >= 0) {
-                                idx += 3;
+                                idx += i;
                             }
                         } else {
                             // it is either one of the first 3 columns (do nothing) or one of the live columns
-                            if (idx > 3) {
-                                idx = getColumns().get(3).getColumns().size() + idx - 1;
+                            if (idx > i) {
+                                idx = getColumns().get(i).getColumns().size() + idx - 1;
                             }
                         }
                     }
@@ -601,8 +603,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         MenuItem moveToNewEditor = new MenuItem("Move To New Editor");
         moveToNewEditor.setOnAction(ev -> SaveRestoreService.getInstance().execute("Open Snapshot",
             () -> update(controller.moveSnapshotToNewEditor(snapshotIndex))));
-        return new ContextMenu(removeItem, setAsBaseItem, new SeparatorMenuItem(),
-            moveToNewEditor);
+        return new ContextMenu(removeItem, setAsBaseItem, new SeparatorMenuItem(), moveToNewEditor);
     }
 
     private void update(final List<TableEntry> entries) {
@@ -629,6 +630,7 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         uiSnapshots.clear();
         // we should always know if we are showing the stored readback or not, to properly extract the selection
         this.showStoredReadbacks = showStoredReadback;
+        this.showReadbacks = showReadback;
         uiSnapshots.addAll(snapshots);
         if (uiSnapshots.size() == 1) {
             createTableForSingleSnapshot(showReadback, showStoredReadback);
@@ -738,15 +740,16 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         }
         // find the snapshot that matches the clicked column
         VSnapshot snapshot;
-        if (numSnapshots == 1 || clickedColumn < 4) {
+        int i = showReadbacks ? 4 : 3;
+        if (numSnapshots == 1 || clickedColumn <= i) {
             snapshot = uiSnapshots.get(0);
         } else {
-            int subColumns = getColumns().get(3).getColumns().size();
+            int subColumns = getColumns().get(i).getColumns().size();
             if (2 + subColumns < clickedColumn) {
                 // clicked on one of the live columns - in this case select the right most snapshot
                 snapshot = uiSnapshots.get(numSnapshots - 1);
             } else {
-                int clickedSubColumn = clickedColumn - 3;
+                int clickedSubColumn = clickedColumn - i;
                 if (showStoredReadbacks) {
                     snapshot = uiSnapshots.get(clickedSubColumn / 2);
                 } else {
@@ -827,21 +830,34 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         if (numSnapshots == 0) {
             return null;
         } else if (numSnapshots == 1) {
-            // in case of a single snapshot it is easy, because the colums are single
+            // in case of a single snapshot it is easy
+            boolean readback = showStoredReadbacks && clickedColumn == 7
+                || showReadbacks && clickedColumn == getColumns().size() - 1;
+            boolean live = showStoredReadbacks ? clickedColumn > 7 : clickedColumn > 6;
             Object obj = getColumns().get(clickedColumn).getCellData(clickedRow);
-            return extractValue(obj, clickedRow);
+            return extractValue(obj, clickedRow, live ? -1 : 0, readback);
         } else {
-            if (clickedColumn < 4) {
-                Object obj = getColumns().get(3).getColumns().get(0).getCellData(clickedRow);
-                return extractValue(obj, clickedRow);
+            int i = showReadbacks ? 4 : 3;
+            if (clickedColumn <= i) {
+                Object obj = getColumns().get(i).getColumns().get(0).getCellData(clickedRow);
+                return extractValue(obj, clickedRow, 0, false);
             } else {
-                int subColumns = getColumns().get(3).getColumns().size();
-                if (clickedColumn < subColumns + 3) {
-                    Object obj = getColumns().get(3).getColumns().get(clickedColumn - 3).getCellData(clickedRow);
-                    return extractValue(obj, clickedRow);
+                int subColumns = getColumns().get(i).getColumns().size();
+                if (clickedColumn < subColumns + i) {
+                    // one of the subcolumns were clicked, extract the data and find the corresponding snapshot
+                    int col = clickedColumn - i;
+                    Object obj = getColumns().get(i).getColumns().get(col).getCellData(clickedRow);
+                    // if stored readbacks are displayed, there are twice the number of columns as there are snapshots
+                    // snapshot is only provided for the setpoints, we ignore the readbacks
+                    boolean readback = showStoredReadbacks && col % 2 == 1;
+                    col = showStoredReadbacks ? col / 2 : col;
+                    return extractValue(obj, clickedRow, col, readback);
                 } else {
-                    Object obj = getColumns().get(clickedColumn - subColumns + 1).getCellData(clickedRow);
-                    return extractValue(obj, clickedRow);
+                    // live data, no snapshot associated
+                    int col = clickedColumn - subColumns + 1;
+                    boolean readback = showReadbacks && col == getColumns().size() - 1;
+                    Object obj = getColumns().get(col).getCellData(clickedRow);
+                    return extractValue(obj, clickedRow, -1, readback);
                 }
             }
         }
@@ -853,9 +869,10 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
      *
      * @param cellData the cell data object (should belong to the row given as a parameter)
      * @param row the row to extract the pv name
+     * @param snapshotIndex the index which defines the clicked snapshot
      * @return the value name pair if the cell data is value or null if cell data is anything else.
      */
-    private VTypeNamePair extractValue(Object cellData, int row) {
+    private VTypeNamePair extractValue(Object cellData, int row, int snapshotIndex, boolean readback) {
         VType value;
         if (cellData instanceof VType) {
             value = (VType) cellData;
@@ -865,6 +882,8 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
             return null;
         }
         TableEntry entry = getItems().get(clickedRow);
-        return new VTypeNamePair(value, entry.pvNameProperty().get());
+        VSnapshot snapshot = snapshotIndex > -1 ? uiSnapshots.get(snapshotIndex) : null;
+        String name = (readback ? entry.readbackNameProperty() : entry.pvNameProperty()).get();
+        return new VTypeNamePair(value, name, snapshot, readback);
     }
 }

@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VDisconnectedData;
+import org.csstudio.saverestore.data.VNoData;
 import org.diirt.util.array.ArrayBoolean;
 import org.diirt.util.array.ArrayByte;
 import org.diirt.util.array.ArrayDouble;
@@ -263,6 +264,20 @@ public final class Utilities {
             return ValueFactory.newVString(data, alarm, time);
         } else if (type instanceof VBoolean) {
             return ValueFactory.newVBoolean(Boolean.parseBoolean(data), alarm, time);
+        } else if (type == VDisconnectedData.INSTANCE || type == VNoData.INSTANCE) {
+            try {
+                long v = Long.parseLong(indata);
+                return ValueFactory.newVLong(v, alarm, time, ValueFactory.displayNone());
+            } catch (NumberFormatException e) {
+                //ignore
+            }
+            try {
+                double v = Double.parseDouble(indata);
+                return ValueFactory.newVDouble(v, alarm, time, ValueFactory.displayNone());
+            } catch (NumberFormatException e) {
+                //ignore
+            }
+            return ValueFactory.newVString(indata, alarm, time);
         }
         return type;
     }

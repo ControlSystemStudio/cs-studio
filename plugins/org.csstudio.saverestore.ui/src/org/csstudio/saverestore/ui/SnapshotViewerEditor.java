@@ -31,7 +31,7 @@ import org.csstudio.ui.fx.util.StaticTextArea;
 import org.csstudio.ui.fx.util.StaticTextField;
 import org.csstudio.ui.fx.util.UnfocusableButton;
 import org.csstudio.ui.fx.util.UnfocusableToggleButton;
-import org.diirt.vtype.VNumberArray;
+import org.diirt.vtype.Array;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -140,8 +140,8 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
             @Override
             public void run() {
                 VTypeNamePair type = table.getClickedItem();
-                if (type != null && type.value instanceof VNumberArray) {
-                    new ChartDialog(getSite().getShell(), type).open();
+                if (type != null && type.value instanceof Array) {
+                    new WaveformDialog(getSite().getShell(), type, controller).open();
                 }
             }
         };
@@ -149,7 +149,7 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
         openChartTableAction.setEnabled(false);
         table.addSelectionChangedListener(e -> {
             VTypeNamePair type = table.getClickedItem();
-            openChartTableAction.setEnabled(type != null && type.value instanceof VNumberArray);
+            openChartTableAction.setEnabled(type != null && type.value instanceof Array);
         });
         menu.add(new org.eclipse.jface.action.Separator());
         if (SendToELogAction.isElogAvailable()) {

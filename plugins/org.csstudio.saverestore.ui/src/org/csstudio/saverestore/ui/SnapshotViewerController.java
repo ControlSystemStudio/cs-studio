@@ -1149,4 +1149,32 @@ public class SnapshotViewerController {
         snapshotSaveableProperty.set(true);
         receiver.checkDirty();
     }
+
+    /**
+     * Update the given snapshot. The value of the provided PV name is changed to the given value, but only if the
+     * snapshot is still present in this controller.
+     *
+     * @param snapshot the snapshot to update
+     * @param pvNname the PV name
+     * @param value the new value
+     */
+    public void updateSnapshot(VSnapshot snapshot, String pvName, VType value) {
+        int index = snapshots.indexOf(snapshot);
+        if (index < 0) {
+            return;
+        }
+        TableEntry entry = null;
+        for (TableEntry e : items.values()) {
+            if (pvName.equals(e.pvNameProperty().get())) {
+                entry = e;
+                break;
+            }
+        }
+        if (entry != null) {
+            entry.setSnapshotValue(value, index);
+            snapshot.addOrSetPV(pvName, entry.selectedProperty().get(), value);
+            snapshotSaveableProperty.set(true);
+            receiver.checkDirty();
+        }
+    }
 }

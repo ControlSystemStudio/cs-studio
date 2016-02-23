@@ -1,5 +1,6 @@
 package org.csstudio.saverestore.ui.util;
 
+import org.csstudio.saverestore.data.VSnapshot;
 import org.diirt.vtype.VType;
 
 /**
@@ -13,15 +14,21 @@ public class VTypeNamePair {
 
     public final VType value;
     public final String name;
+    public final VSnapshot snapshot;
+    public final boolean readback;
 
     /**
      * Construct a new vtype name pair.
      *
      * @param value the pv value
      * @param name the pv name
+     * @param snapshot the snapshot to which the values belong
+     * @param readback true if this is a readback or false if a setpoint (readback is not editable)
      */
-    public VTypeNamePair(VType value, String name) {
+    public VTypeNamePair(VType value, String name, VSnapshot snapshot, boolean readback) {
         this.value = value;
         this.name = name;
+        this.snapshot = snapshot;
+        this.readback = readback;
     }
 }
