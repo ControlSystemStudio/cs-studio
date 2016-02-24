@@ -6,7 +6,7 @@ Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.csstudio.utility.olog.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
- edu.msu.nscl.olog.api;bundle-version="[2.2.1,2.2.2)",
+ edu.msu.nscl.olog.api;bundle-version="2.2.8",
  org.csstudio.security;bundle-version="1.0.0",
  org.csstudio.logbook;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

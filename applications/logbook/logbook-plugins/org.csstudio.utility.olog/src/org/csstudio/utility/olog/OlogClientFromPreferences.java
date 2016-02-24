@@ -336,4 +336,9 @@ public class OlogClientFromPreferences implements OlogClient {
         return client.getAttachment(logId, attachmentName);
     }
 
+    @Override
+    public InputStream getAttachment(Long logId, Attachment attachment) {
+        return client.getAttachment(logId, attachment);
+    }
+
 }
