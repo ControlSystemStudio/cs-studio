@@ -10,11 +10,4 @@
   <artifactId>org.csstudio.display.pvtable</artifactId>
   <version>4.2.0-SNAPSHOT</version>
   <packaging>eclipse-plugin</packaging>
-  <dependencies>
-  	<dependency>
-  		<groupId>org.apache.poi</groupId>
-  		<artifactId>poi</artifactId>
-  		<version>3.13</version>
-  	</dependency>
-  </dependencies>
 </project>
