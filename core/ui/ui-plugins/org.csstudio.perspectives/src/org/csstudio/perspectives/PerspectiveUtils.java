@@ -20,9 +20,8 @@ public class PerspectiveUtils implements IPerspectiveUtils {
      * @throws IOException
      */
     @Override
-    public void savePerspective(MPerspective persp, String file) throws IOException {
-        URI uri = URI.createURI(IPerspectiveUtils.FILE_PREFIX + file);
-        Resource resource = new E4XMIResourceFactory().createResource(uri);
+    public void savePerspective(MPerspective persp, URI fileUri) throws IOException {
+        Resource resource = new E4XMIResourceFactory().createResource(fileUri);
         resource.getContents().add((EObject) persp);
         resource.save(Collections.EMPTY_MAP);
     }
