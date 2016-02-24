@@ -152,8 +152,11 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
             public void run() {
                 VTypeNamePair type = table.getClickedItem();
                 if (type != null) {
-                    SaveRestoreService.getInstance().execute("Remove PV",
-                        () -> controller.removePV(type.entry, table::removeItem));
+                    if (FXMessageDialog.openConfirm(getShell(), "Remove PV",
+                        "Are you sure you want to remove PV " + type.entry.pvNameProperty().get() + "?")) {
+                        SaveRestoreService.getInstance().execute("Remove PV",
+                            () -> controller.removePV(type.entry, table::removeItem));
+                    }
                 }
             }
         };
