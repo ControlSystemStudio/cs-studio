@@ -59,7 +59,7 @@ public class PerspectiveSaver implements EventHandler {
     public void init() {
         try {
             logger.config("Initialising perspective saver.");
-            URL dataUri = instanceLocation.getDataArea("org.csstudio.startup");
+            URL dataUri = instanceLocation.getDataArea(Plugin.ID);
             dataDirectory = new File(dataUri.getFile());
             Files.createDirectories(dataDirectory.toPath());
             // Subscribe to perspective save events.
@@ -104,7 +104,7 @@ public class PerspectiveSaver implements EventHandler {
                 // I'm not sure why we need to import explicitly even though the 
                 // perspective has been saved.
                 String perspAsString = perspectiveUtils.perspToString(clone);
-                preferences.put(clone.getLabel() + IPerspectiveUtils.PERSPECTIVE_SUFFIX, perspAsString);
+                preferences.put(clone.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
                 logger.config("Saved perspective to " + uri);
             } catch (IOException e) {
                 logger.log(Level.WARNING, Messages.PerspectiveSaver_saveFailed, e);
@@ -113,11 +113,11 @@ public class PerspectiveSaver implements EventHandler {
     }
 
     private URI constructUri(String perspectiveName) {
-        StringBuilder sb = new StringBuilder(IPerspectiveUtils.FILE_PREFIX);
+        StringBuilder sb = new StringBuilder(Plugin.FILE_PREFIX);
         sb.append("/");
         sb.append(PERSPECTIVE_PREFIX);
         sb.append(perspectiveName);
-        sb.append(IPerspectiveUtils.XMI_EXTENSION);
+        sb.append(Plugin.XMI_EXTENSION);
         return URI.createURI(sb.toString());
     }
 

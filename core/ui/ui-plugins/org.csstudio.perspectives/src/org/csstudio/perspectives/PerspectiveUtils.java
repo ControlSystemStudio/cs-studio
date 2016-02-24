@@ -42,7 +42,7 @@ public class PerspectiveUtils implements IPerspectiveUtils {
         resource.getContents().add((EObject) persp);
         try (ByteArrayOutputStream output = new ByteArrayOutputStream()) {
             resource.save(output, null);
-            return new String(output.toByteArray(), ASCII_ENCODING);
+            return new String(output.toByteArray(), Plugin.ASCII_ENCODING);
         }
     }
 }

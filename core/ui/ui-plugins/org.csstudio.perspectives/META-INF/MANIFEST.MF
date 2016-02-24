@@ -30,3 +30,4 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.csstudio.perspectives
+Bundle-Activator: org.csstudio.perspectives.Plugin

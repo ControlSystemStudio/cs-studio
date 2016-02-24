@@ -41,7 +41,7 @@ public class PerspectiveLoader {
         File selectedFile = promptForXmiFile();
         if (selectedFile != null && selectedFile.isFile()) {
             ResourceSet rs = new ResourceSetImpl();
-            URI uri = URI.createURI(IPerspectiveUtils.FILE_PREFIX + selectedFile.getPath());
+            URI uri = URI.createURI(Plugin.FILE_PREFIX + selectedFile.getPath());
             Resource res = rs.getResource(uri, true);
             EObject obj = res.getContents().get(0);
             if (obj instanceof MPerspective) {
@@ -50,7 +50,7 @@ public class PerspectiveLoader {
                     String perspAsString = perspectiveUtils.perspToString(p);
                     // The new perspective import and export mechanism will intercept
                     // this preference change and import the perspective for us.
-                    preferences.put(p.getLabel() + IPerspectiveUtils.PERSPECTIVE_SUFFIX, perspAsString);
+                    preferences.put(p.getLabel() + Plugin.PERSPECTIVE_SUFFIX, perspAsString);
                 } catch (IOException e) {
                     logger.log(Level.WARNING, Messages.PerspectiveLoader_loadFailed, e);
                 }
@@ -63,7 +63,7 @@ public class PerspectiveLoader {
     private File promptForXmiFile() {
         FileDialog chooser = new FileDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell());
         chooser.setText(Messages.PerspectiveLoader_selectFile);
-        chooser.setFilterExtensions(new String[] {"*" + IPerspectiveUtils.XMI_EXTENSION});
+        chooser.setFilterExtensions(new String[] {"*" + Plugin.XMI_EXTENSION});
         chooser.open();
         File dirname = new File(chooser.getFilterPath());
         String filename = chooser.getFileName();
