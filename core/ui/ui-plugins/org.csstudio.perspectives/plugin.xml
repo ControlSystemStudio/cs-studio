@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.csstudio.perspectives.PerspectiveHandler"
+            id="org.cstudio.perspectives.LoadPerspectives"
+            name="Load Perspectives">
+      </command>
+   </extension>
+    <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:utility">
+         <command
+              commandId="org.cstudio.perspectives.LoadPerspectives"
+              label="Load Perspective"
+              style="push"
+              icon="icons/load-download-icon.png"
+              tooltip="Load Perspective">
+         </command>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.startup">
+      <startup class="org.csstudio.perspectives.PerspectiveStartup"> </startup>
+   </extension>
+</plugin>
