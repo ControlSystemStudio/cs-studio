@@ -42,13 +42,6 @@ public class QueryServiceMethod extends ServiceMethod {
     	super(serviceMethodDescription, serviceDescription);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.epics.pvmanager.service.ServiceMethod#executeMethod(java.util.Map,
-     * org.epics.pvmanager.WriteFunction, org.epics.pvmanager.WriteFunction)
-     */
     @Override
     public void executeAsync(Map<String, Object> parameters,
         final Consumer<Map<String, Object>> callback,
