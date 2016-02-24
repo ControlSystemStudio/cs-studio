@@ -36,9 +36,8 @@ import org.csstudio.saverestore.SaveRestoreService;
 import org.csstudio.saverestore.SnapshotContent;
 import org.csstudio.saverestore.UnsupportedActionException;
 import org.csstudio.saverestore.Utilities;
-import org.csstudio.saverestore.Utilities.VTypeComparison;
-import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Branch;
+import org.csstudio.saverestore.data.SaveSet;
 import org.csstudio.saverestore.data.Snapshot;
 import org.csstudio.saverestore.data.Threshold;
 import org.csstudio.saverestore.data.VDisconnectedData;
@@ -707,45 +706,39 @@ public class SnapshotViewerController {
         }
         try (PrintWriter pw = new PrintWriter(file, StandardCharsets.UTF_8.name())) {
             StringBuilder header = new StringBuilder(200);
-            header.append("Setpoint PV,");
+            header.append("Setpoint PV Name,");
             header.append(Utilities.timestampToBigEndianString(snaps.get(0).getTimestamp().toDate(), true)).append(',');
-            String delta = " (" + Utilities.DELTA_CHAR + " First Snapshot),";
             for (int i = 1; i < snaps.size(); i++) {
                 header.append(Utilities.timestampToBigEndianString(snaps.get(i).getTimestamp().toDate(), true))
-                    .append(delta);
+                    .append(',');
             }
-            header.append("Live Setpoint,Live Timestamp");
+            header.append("Live Setpoint Value,Live Setpoint Timestamp");
             if (showLiveReadback) {
-                header.append(",Readback PV,Readback Value (").append(Utilities.DELTA_CHAR)
-                    .append(" Live),Readback Timestamp");
+                header.append(",Readback PV,Live Readback Value,Live Readback Timestamp");
             }
             pw.println(header.toString());
             items.values().forEach(e -> {
                 StringBuilder sb = new StringBuilder(200);
                 sb.append(e.pvNameProperty().get()).append(',');
                 VTypePair pair = e.valueProperty().get();
-                sb.append('"').append(Utilities.valueToCompareString(pair.value, pair.base, pair.threshold).getString())
-                    .append('"').append(',');
+                sb.append('"').append(Utilities.valueToString(pair.value)).append('"').append(',');
                 for (int i = 1; i < snaps.size(); i++) {
                     pair = e.compareValueProperty(i).get();
-                    VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
-                        ((VTypePair) pair).base, ((VTypePair) pair).threshold);
-                    sb.append('"').append(vtc.getString()).append('"').append(',');
+                    sb.append('"').append(Utilities.valueToString(((VTypePair) pair).value)).append('"').append(',');
                 }
                 VType v = e.liveValueProperty().get();
                 sb.append('"').append(Utilities.valueToString(v)).append('"');
                 sb.append(',');
                 if (v instanceof Time) {
-                    sb.append(((Time) v).getTimestamp());
+                    sb.append(Utilities.timestampToLittleEndianString(((Time) v).getTimestamp(),true));
                 }
                 if (showLiveReadback) {
                     sb.append(',').append(e.readbackNameProperty().get());
                     pair = e.readbackProperty().get();
-                    VTypeComparison vtc = Utilities.valueToCompareString(((VTypePair) pair).value,
-                        ((VTypePair) pair).base, ((VTypePair) pair).threshold);
-                    sb.append(',').append('"').append(vtc.getString()).append('"').append(',');
+                    sb.append(',').append('"').append(Utilities.valueToString(((VTypePair) pair).value)).append('"')
+                        .append(',');
                     if (pair.value instanceof Time) {
-                        sb.append(((Time) pair.value).getTimestamp());
+                        sb.append(Utilities.timestampToLittleEndianString(((Time) pair.value).getTimestamp(),true));
                     }
                 }
                 pw.println(sb.toString());
@@ -1097,6 +1090,36 @@ public class SnapshotViewerController {
                 .readListener(x -> throttle.trigger()).maxRate(TimeDuration.ofMillis(100));
             PVWriter<Object> writer = PVManager.write(channel(pvName)).timeout(TimeDuration.ofMillis(1000)).async();
             pvs.put(entry, new PV(reader, writer, null));
+            UI_EXECUTOR.execute(() -> consumer.accept(entry));
+        } catch (RuntimeException e) {
+            ActionManager.reportException(e, receiver.getShell());
+        }
+    }
+
+    public void removePV(TableEntry entry, Consumer<TableEntry> consumer) {
+        if (entry == null) {
+            return;
+        }
+        try {
+            String pvName = entry.pvNameProperty().get();
+            TableEntry e = items.get(pvName);
+            if (e == entry) {
+                items.remove(pvName);
+            } else {
+                return;
+            }
+            filteredList.remove(entry);
+            PV pv = pvs.remove(entry);
+            if (pv != null) {
+                pv.dispose();
+            }
+            final List<VSnapshot> snaps = new ArrayList<>();
+            synchronized (snapshots) {
+                snaps.addAll(snapshots);
+            }
+            for (VSnapshot s : snaps) {
+                s.removePV(pvName);
+            }
             UI_EXECUTOR.execute(() -> consumer.accept(entry));
         } catch (RuntimeException e) {
             ActionManager.reportException(e, receiver.getShell());

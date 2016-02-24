@@ -344,7 +344,7 @@ public class VSnapshot implements VType, Time, Array, Serializable {
             this.values.add(value);
             if (!this.readbackNames.isEmpty()) {
                 this.readbackNames.add("");
-                this.readbackValues.add(VDisconnectedData.INSTANCE);
+                this.readbackValues.add(VNoData.INSTANCE);
                 this.deltas.add("");
             }
         } else {
@@ -353,6 +353,28 @@ public class VSnapshot implements VType, Time, Array, Serializable {
         }
         dirty = true;
         return idx < 0;
+    }
+
+    /**
+     * Removes the pv from this snapshot.
+     *
+     * @param name the name of the pv to add
+     * @return true if the PV was removed, or false if the PV could not be found
+     */
+    public boolean removePV(String name) {
+        int idx = names.indexOf(name);
+        if (idx >= 0) {
+            this.names.remove(idx);
+            this.values.remove(idx);
+            this.selected.remove(idx);
+            if (!this.readbackNames.isEmpty()) {
+                this.readbackNames.remove(idx);
+                this.readbackValues.remove(idx);
+                this.deltas.remove(idx);
+            }
+        }
+        dirty = true;
+        return idx >= 0;
     }
 
     /*

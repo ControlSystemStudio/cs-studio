@@ -704,6 +704,15 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
     }
 
     /**
+     * Removes the given entry from this table.
+     *
+     * @param entry the entry to remove
+     */
+    void removeItem(TableEntry entry) {
+        getItems().remove(entry);
+    }
+
+    /**
      * Update the table column titles, by putting an asterisk to non saved snapshots or remove asterisk from saved
      * snapshots.
      */
@@ -890,11 +899,11 @@ class Table extends TableView<TableEntry> implements ISelectionProvider {
         } else if (cellData instanceof VTypePair) {
             value = ((VTypePair) cellData).value;
         } else {
-            return null;
+            value = null;
         }
         TableEntry entry = getItems().get(clickedRow);
         VSnapshot snapshot = snapshotIndex > -1 ? uiSnapshots.get(snapshotIndex) : null;
         String name = (readback ? entry.readbackNameProperty() : entry.pvNameProperty()).get();
-        return new VTypeNamePair(value, name, snapshot, readback);
+        return new VTypeNamePair(value, name, snapshot, readback, entry);
     }
 }

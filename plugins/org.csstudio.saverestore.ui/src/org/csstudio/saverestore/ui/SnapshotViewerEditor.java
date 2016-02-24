@@ -147,9 +147,22 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
         };
         menu.add(openChartTableAction);
         openChartTableAction.setEnabled(false);
+        final Action removePVAction = new Action("Remove PV") {
+            @Override
+            public void run() {
+                VTypeNamePair type = table.getClickedItem();
+                if (type != null) {
+                    SaveRestoreService.getInstance().execute("Remove PV",
+                        () -> controller.removePV(type.entry, table::removeItem));
+                }
+            }
+        };
+        menu.add(removePVAction);
+        openChartTableAction.setEnabled(false);
         table.addSelectionChangedListener(e -> {
             VTypeNamePair type = table.getClickedItem();
             openChartTableAction.setEnabled(type != null && type.value instanceof Array);
+            removePVAction.setEnabled(type != null);
         });
         menu.add(new org.eclipse.jface.action.Separator());
         if (SendToELogAction.isElogAvailable()) {
@@ -784,7 +797,6 @@ public class SnapshotViewerEditor extends FXEditorPart implements ISnapshotRecei
 
         return table;
     }
-
 
     private void addSnapshot(VSnapshot data) {
         addOrSetSnapshot(data, true, true);

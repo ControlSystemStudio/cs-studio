@@ -1,11 +1,12 @@
 package org.csstudio.saverestore.ui.util;
 
 import org.csstudio.saverestore.data.VSnapshot;
+import org.csstudio.saverestore.ui.TableEntry;
 import org.diirt.vtype.VType;
 
 /**
  * <code>VTypeNamePair</code> is a wrapper object around the {@link VType}, which in addition to the value provides also
- * the name of the PV that the value belongs to.
+ * the name of the PV that the value belongs to, the snapshot, the entry etc.
  *
  * @author <a href="mailto:jaka.bobnar@cosylab.com">Jaka Bobnar</a>
  *
@@ -16,6 +17,7 @@ public class VTypeNamePair {
     public final String name;
     public final VSnapshot snapshot;
     public final boolean readback;
+    public final TableEntry entry;
 
     /**
      * Construct a new vtype name pair.
@@ -24,11 +26,13 @@ public class VTypeNamePair {
      * @param name the pv name
      * @param snapshot the snapshot to which the values belong
      * @param readback true if this is a readback or false if a setpoint (readback is not editable)
+     * @param entry the entry that the value belongs to
      */
-    public VTypeNamePair(VType value, String name, VSnapshot snapshot, boolean readback) {
+    public VTypeNamePair(VType value, String name, VSnapshot snapshot, boolean readback, TableEntry entry) {
         this.value = value;
         this.name = name;
         this.snapshot = snapshot;
         this.readback = readback;
+        this.entry = entry;
     }
 }
